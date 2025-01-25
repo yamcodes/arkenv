@@ -57,8 +57,8 @@ console.log(env.NODE_ENV); // 'development' | 'production' | 'test'
 ## Features
 
 - 🔒 **Type-safe**: Full TypeScript support with inferred types
-- 🚀 **Runtime validation**: Catches missing or invalid environment variables early
-- 💪 **Powered by ArkType**: Leverages ArkType's powerful type system
+- 🚀 **Runtime validation**: Catch missing or invalid environment variables early
+- 💪 **Powered by ArkType**: Leverage ArkType's powerful type system
 - 🪶 **Lightweight**: Zero dependencies, minimal bundle size
 - ⚡ **Fast**: Optimized for performance with minimal overhead
 
