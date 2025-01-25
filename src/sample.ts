@@ -8,9 +8,11 @@ const User = type({
 });
 export type User = typeof User.infer;
 
-const { HOST, PORT } = defineEnv({
+const env = defineEnv({
 	HOST: host,
-	PORT: port
+	PORT: port,
+	NODE_ENV: "'development' | 'production' | 'test'",
 });
+console.log(env.HOST, env.PORT, env.NODE_ENV);
 
-console.log(`${HOST}:${PORT}`);
+console.log(`${env.HOST}:${env.PORT} in ${env.NODE_ENV}`);

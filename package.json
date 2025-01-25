@@ -14,8 +14,8 @@
 	"scripts": {
 		"build": "tsup",
 		"prepack": "bun run build",
-		"sample": "bun src/sample/index.ts",
-		"sample:watch": "bun --watch src/sample/index.ts",
+		"sample": "bun src/sample",
+		"sample:watch": "bun --watch src/sample",
 		"test": "bun test",
 		"test:watch": "bun test --watch",
 		"release": "bun run build && changeset publish",

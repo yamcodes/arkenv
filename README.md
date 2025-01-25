@@ -34,24 +34,25 @@ bun add ark.env
 ```
 </details>
 
-## Quick Start
+## Quickstart
 
-> [!IMPORTANT]
-> This section is not yet complete and is likely inaccurate. For usage example, please see [src/sample/index.ts](./src/sample/index.ts).
+> [!TIP]
+> For more usage examples, please see [src/sample/index.ts](./src/sample.ts).
 
 ```ts
-import { createEnv } from 'ark.env';
+import { defineEnv, host, port } from 'ark.env';
 
-const env = createEnv({
-  PORT: 'number',
-  DATABASE_URL: 'string',
-  NODE_ENV: ['development', 'production', 'test']
+const env = defineEnv({
+  HOST: host, // validate IP addresses and 'localhost'
+  PORT: port, // validate port numbers (0-65535)
+  NODE_ENV: "'development' | 'production' | 'test'", // validate string union
 });
 
-// Automatically validates and parses process.env
-// TypeScript knows the exact types!
-console.log(env.PORT); // number
-console.log(env.NODE_ENV); // 'development' | 'production' | 'test'
+// Automatically validate and parse process.env
+// TypeScript knows the ✨exact✨ types!
+console.log(env.HOST); // (property) HOST: string
+console.log(env.PORT); // (property) PORT: string
+console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" | "test"
 ```
 
 ## Features
@@ -67,7 +68,7 @@ console.log(env.NODE_ENV); // 'development' | 'production' | 'test'
 > [!NOTE]
 > Our documentation site is still under construction. Please check back soon!
 
-For detailed documentation and examples, visit our [documentation site](https://github.com/yamcodes/ark.env/docs).
+For detailed documentation and examples, visit our [documentation site](https://http.cat/503).
 
 ## Thanks / Inspiration
 
