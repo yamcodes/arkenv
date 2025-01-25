@@ -7,36 +7,53 @@
 
 ## Installation
 
-```bash
-# Using bun
-bun add ark.env
+<details open>
+<summary>Using npm</summary>
 
-# Using npm
+```sh
 npm install ark.env
+```
+</details>
 
-# Using yarn
-yarn add ark.env
+<details>
+<summary>Using pnpm</summary>
 
-# Using pnpm
+```sh
 pnpm add ark.env
 ```
+</details>
 
+<details>
+<summary>Using yarn</summary>
+
+```sh
+yarn add ark.env
+```
+</details>
+
+<details>
+<summary>Using bun</summary>
+
+```sh
+bun add ark.env
+```
+</details>
 
 ## Quick Start
 
-```typescript
-import { createEnv } from 'ark.env'
+```ts
+import { createEnv } from 'ark.env';
 
 const env = createEnv({
   PORT: 'number',
   DATABASE_URL: 'string',
   NODE_ENV: ['development', 'production', 'test']
-})
+});
 
 // Automatically validates and parses process.env
 // TypeScript knows the exact types!
-console.log(env.PORT) // number
-console.log(env.NODE_ENV) // 'development' | 'production' | 'test'
+console.log(env.PORT); // number
+console.log(env.NODE_ENV); // 'development' | 'production' | 'test'
 ```
 
 ## Features
@@ -49,7 +66,7 @@ console.log(env.NODE_ENV) // 'development' | 'production' | 'test'
 
 ## Documentation
 
-For detailed documentation and examples, visit our [documentation site](https://github.com/username/ark.env/docs).
+For detailed documentation and examples, visit our [documentation site](https://github.com/yamcodes/ark.env/docs).
 
 ## License
 
