@@ -36,6 +36,9 @@ bun add ark.env
 
 ## Quick Start
 
+> [!IMPORTANT]
+> This section is not yet complete and is likely inaccurate. For usage example, please see [src/sample/index.ts](./src/sample/index.ts).
+
 ```ts
 import { createEnv } from 'ark.env';
 
@@ -60,6 +63,9 @@ console.log(env.NODE_ENV); // 'development' | 'production' | 'test'
 - ⚡ **Fast**: Optimized for performance with minimal overhead
 
 ## Documentation
+
+> [!NOTE]
+> Our documentation site is still under construction. Please check back soon!
 
 For detailed documentation and examples, visit our [documentation site](https://github.com/yamcodes/ark.env/docs).
 
