@@ -12,7 +12,7 @@
 		"require": "./dist/index.cjs"
 	},
 	"scripts": {
-		"build": "bun run build.ts",
+		"build": "bun run bin/build.ts",
 		"prepack": "bun run build",
 		"sample": "bun src/sample/index.ts",
 		"sample:watch": "bun --watch src/sample/index.ts",
@@ -38,6 +38,7 @@
 		"@types/bun": "^1.2.0",
 		"bun-plugin-dts": "^0.3.0",
 		"changesets-changelog-clean": "^1.3.0",
+		"rimraf": "^6.0.1",
 		"typescript": "^5.7.3"
 	},
 	"dependencies": {

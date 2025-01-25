@@ -6,6 +6,17 @@ const defaultBuildConfig: BuildConfig = {
 	outdir: "./dist",
 };
 
+// Rimraf
+
+try {
+	Bun.spawn(["rm", "-rf", "./dist"]);
+} catch (error) {
+	console.error("Failed to clean dist directory:", error);
+	process.exit(1);
+}
+
+// Build
+
 await Promise.all([
 	Bun.build({
 		...defaultBuildConfig,

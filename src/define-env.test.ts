@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { defineEnv } from "./define-env";
 
 describe("defineEnv", () => {
@@ -10,7 +10,7 @@ describe("defineEnv", () => {
 		// Mock process.exit
 		process.exit = ((code?: number) => {
 			exitCode = code;
-			throw new Error('process.exit');
+			throw new Error("process.exit");
 		}) as (code?: number) => never;
 	});
 
@@ -22,7 +22,7 @@ describe("defineEnv", () => {
 
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
-		
+
 		const env = defineEnv({
 			TEST_STRING: "string",
 		});
@@ -43,7 +43,7 @@ describe("defineEnv", () => {
 
 	it("should throw when env variable has wrong type", () => {
 		process.env.WRONG_TYPE = "not a number";
-		
+
 		try {
 			defineEnv({
 				WRONG_TYPE: "number",
