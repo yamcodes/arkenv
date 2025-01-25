@@ -43,15 +43,15 @@ bun add ark.env
 import { defineEnv, host, port } from 'ark.env';
 
 const env = defineEnv({
-  HOST: host, // validate IP addresses and 'localhost'
-  PORT: port, // validate port numbers (0-65535)
-  NODE_ENV: "'development' | 'production' | 'test'", // validate string union
+  HOST: host, // valid IP address or localhost
+  PORT: port, // valid port number (0-65535)
+  NODE_ENV: "'development' | 'production' | 'test'",
 });
 
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
-console.log(env.HOST); // (property) HOST: string
-console.log(env.PORT); // (property) PORT: number
+console.log(env.HOST);     // (property) HOST: string
+console.log(env.PORT);     // (property) PORT: number
 console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" | "test"
 ```
 
