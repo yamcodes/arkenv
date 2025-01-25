@@ -34,9 +34,13 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@types/bun": "^1.2.0",
-		"bun-plugin-dts": "^0.3.0"
+		"bun-plugin-dts": "^0.3.0",
+		"typescript": "^5.7.3"
 	},
 	"dependencies": {
 		"@changesets/cli": "^2.27.12"
+	},
+	"peerDependencies": {
+		"arktype": "^2.0.2"
 	}
 }
