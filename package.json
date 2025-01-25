@@ -1,7 +1,7 @@
 {
 	"name": "ark.env",
 	"type": "module",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -23,8 +23,12 @@
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error"
 	},
-	"files": ["dist"],
-	"keywords": ["bun"],
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"bun"
+	],
 	"license": "MIT",
 	"homepage": "https://github.com/yamcodes/ark.env#readme",
 	"repository": {
