@@ -72,4 +72,4 @@ For detailed documentation and examples, please visit our [documentation site](h
 
 ## Thanks / Inspiration
 
-Find projects and people who helped or inspired this project in [THANKS.md](./THANKS.md). Thank you 🙏
+Find projects and people who helped or inspired the creation of `ark.env` in [THANKS.md](./THANKS.md). Thank you 🙏
