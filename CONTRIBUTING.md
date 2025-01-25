@@ -1,6 +1,6 @@
 # Contributing to `ark.env`
 
-We love your input! We want to make contributing to ark.env as easy and transparent as possible.
+First off, thank you for considering a contribution to `ark.env`! As an open source project, `ark.env` welcomes contributions of all kinds.
 
 > [!IMPORTANT]
 > `ark.env` is built with [Bun](https://bun.sh). To develop on this project, you'll need [to have Bun installed](https://bun.sh/docs/installation).
