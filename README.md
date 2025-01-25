@@ -66,9 +66,9 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 ## Documentation
 
 > [!NOTE]
-> Our documentation site is still under construction. Please check back soon!
+> Our docs are under construction. Please check back soon!
 
-For detailed documentation and examples, visit our [documentation site](https://http.cat/503).
+For detailed documentation and examples, please visit our [documentation site](https://http.cat/503).
 
 ## Thanks / Inspiration
 
