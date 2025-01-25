@@ -1,21 +1,24 @@
+import type { BaseRoot as TypeFunction } from "@ark/schema";
 import { type } from "arktype";
 
-type EmptyObject = Record<string, never>;
-type AnyObject = Record<string, unknown>;
+/**
+ * Define an environment variable schema and validate it against process.env
+ * @param def - The environment variable schema
+ * @returns The validated environment variable schema
+ */
+export const defineEnv = <const def>(def: type.validate<def, {}>) => {
+	// TODO: Find a way to remove the assertion by narrowing the type in the function signature
+	const schema = type(def) as TypeFunction;
 
-export const defineEnv = <const Def extends AnyObject, $ = EmptyObject>(
-	def: type.validate<Def, $>,
-) => {
-	// biome-ignore lint/suspicious/noExplicitAny: Must fix later
-	const schema = type(def as any); // Create the schema
-	const env = schema(process.env); // Validate process.env
+	// Validate process.env
+	const env = schema(process.env);
 
-	// Handle validation errors
 	if (env instanceof type.errors) {
 		console.error("Environment validation failed:", env.summary);
 		process.exit(1);
 	}
 
 	console.log("Validation passed, success!");
-	return env; // Return the validated and inferred environment
+	// TODO: Find a way to remove the assertion
+	return env as type.infer<def, {}>;
 };

@@ -8,8 +8,8 @@ const User = type({
 });
 export type User = typeof User.infer;
 
-const myEnv = defineEnv({
-	HELLO: "string",
+const { HOST } = defineEnv({
+	HOST: "string.ip",
 });
 
-console.log(myEnv);
+console.log(HOST);

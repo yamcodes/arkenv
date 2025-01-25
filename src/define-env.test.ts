@@ -4,6 +4,8 @@ import { defineEnv } from "./define-env";
 describe("defineEnv", () => {
 	const originalEnv = { ...process.env };
 	const originalExit = process.exit;
+	const originalConsoleLog = console.log;
+	const originalConsoleError = console.error;
 	let exitCode: number | undefined;
 
 	beforeEach(() => {
@@ -12,11 +14,17 @@ describe("defineEnv", () => {
 			exitCode = code;
 			throw new Error("process.exit");
 		}) as (code?: number) => never;
+
+		// Mock console methods to suppress output
+		console.log = () => {};
+		console.error = () => {};
 	});
 
 	afterEach(() => {
 		process.env = { ...originalEnv };
 		process.exit = originalExit;
+		console.log = originalConsoleLog;
+		console.error = originalConsoleError;
 		exitCode = undefined;
 	});
 
