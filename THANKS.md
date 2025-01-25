@@ -1,4 +1,8 @@
-# Special Thanks
+# Thanks / Inspiration
 
-- [@wobsoriano](https://github.com/wobsoriano) - for the [bun-lib-starter](https://github.com/wobsoriano/bun-lib-starter) template. This allowed me to quickly get started with the project.
-- [@arktypeio](https://github.com/arktypeio) - for the [ArkType](https://arktype.dev/) type system. Naturally, this project exists solely because of ArkType.
+I'd like to thank the following projects and people for their help and inspiration:
+
+- [wobsoriano/bun-lib-starter](https://github.com/wobsoriano/bun-lib-starter) - This starter allowed me to get up and running quickly.
+- [ArkType](https://arktype.dev/) - This project exists solely because of ArkType.
+
+Thank you 🙏

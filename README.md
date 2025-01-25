@@ -1,5 +1,5 @@
 <div align="center">
-<span style="font-size: 3em">🌿</span>
+🌿
 <h1>ark.env</h1>
 
 <p>Type-safe environment variables parsing and validation for Node.js with ArkType</p>
@@ -68,6 +68,6 @@ console.log(env.NODE_ENV); // 'development' | 'production' | 'test'
 
 For detailed documentation and examples, visit our [documentation site](https://github.com/yamcodes/ark.env/docs).
 
-## Special Thanks
+## Thanks / Inspiration
 
 Find projects and people who helped or inspired this project in [THANKS.md](./THANKS.md). Thank you 🙏

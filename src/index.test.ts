@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { one, two } from "../src";
+import { one, two } from ".";
 
 describe("should", () => {
 	it("export 1", () => {
