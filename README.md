@@ -67,7 +67,3 @@ console.log(env.NODE_ENV); // 'development' | 'production' | 'test'
 ## Documentation
 
 For detailed documentation and examples, visit our [documentation site](https://github.com/yamcodes/ark.env/docs).
-
-## License
-
-MIT

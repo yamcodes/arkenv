@@ -29,4 +29,4 @@ bun run build
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under its MIT License. 
+By contributing your code to the `ark.env` GitHub repository, you agree to license your contributions under the MIT License.
