@@ -13,8 +13,9 @@
 	},
 	"scripts": {
 		"build": "bun run build.ts",
-		"prepublishOnly": "bun run build",
+		"prepack": "bun run build",
 		"test": "bun test",
+		"release": "bun run build && changeset publish",
 		"fix": "biome check --write .",
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error"
@@ -33,5 +34,8 @@
 		"@biomejs/biome": "1.9.4",
 		"@types/bun": "^1.1.10",
 		"bun-plugin-dts": "^0.3.0"
+	},
+	"dependencies": {
+		"@changesets/cli": "^2.27.12"
 	}
 }
