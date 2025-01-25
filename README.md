@@ -1,5 +1,4 @@
 <img src="assets/banner.png" alt="ark.env">
-<div align="right"><sub><a href="https://lovepik.com/images/backgrounds-blue-sky.html">Blue Sky Png vectors by Lovepik.com</a></sub></div>
 
 ## Installation
 
