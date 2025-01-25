@@ -15,6 +15,7 @@
 		"build": "bun run build.ts",
 		"prepack": "bun run build",
 		"test": "bun test",
+		"test:watch": "bun test --watch",
 		"release": "bun run build && changeset publish",
 		"fix": "biome check --write .",
 		"check": "biome check",
