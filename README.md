@@ -70,6 +70,10 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 
 For detailed documentation and examples, please visit our [documentation site](https://http.cat/503).
 
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
+
 ## Thanks / Inspiration
 
 Find projects and people who helped or inspired the creation of `ark.env` in [THANKS.md](./THANKS.md). Thank you 🙏
