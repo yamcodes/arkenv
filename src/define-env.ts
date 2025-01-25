@@ -1,5 +1,5 @@
 import type { BaseRoot as TypeFunction } from "@ark/schema";
-import { type } from "arktype";
+import { type distill, type } from "arktype";
 
 /**
  * Define an environment variable schema and validate it against process.env
@@ -11,14 +11,19 @@ export const defineEnv = <const def>(def: type.validate<def, {}>) => {
 	const schema = type(def) as TypeFunction;
 
 	// Validate process.env
-	const env = schema(process.env);
+    const requiredEnvKeys = Object.keys(def as Record<string, unknown>);
+    const filteredEnvVars = Object.fromEntries(
+        Object.entries(process.env)
+        .filter(([key]) => requiredEnvKeys.includes(key))
+    );
+	const validatedEnv = schema(filteredEnvVars);
 
-	if (env instanceof type.errors) {
-		console.error("Environment validation failed:", env.summary);
+	if (validatedEnv instanceof type.errors) {
+		console.error("Environment validation failed:", validatedEnv.summary);
 		process.exit(1);
 	}
 
 	console.log("Validation passed, success!");
 	// TODO: Find a way to remove the assertion
-	return env as type.infer<def, {}>;
+	return validatedEnv as distill.Out<type.infer<def>>;
 };

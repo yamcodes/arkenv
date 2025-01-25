@@ -1,5 +1,5 @@
 import { type } from "arktype";
-import { defineEnv } from "..";
+import { defineEnv, host, port } from "..";
 
 const User = type({
 	name: "string",
@@ -8,8 +8,9 @@ const User = type({
 });
 export type User = typeof User.infer;
 
-const { HOST } = defineEnv({
-	HOST: "string.ip",
+const { HOST, PORT } = defineEnv({
+	HOST: host,
+	PORT: port,
 });
 
-console.log(HOST);
+console.log(`${HOST}:${PORT}`);
