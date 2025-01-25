@@ -14,6 +14,7 @@
 	"scripts": {
 		"build": "bun run build.ts",
 		"prepublishOnly": "bun run build",
+		"test": "bun test",
 		"fix": "biome check --write .",
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error"
