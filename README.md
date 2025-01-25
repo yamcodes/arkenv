@@ -1,25 +1,55 @@
-# bun starter
+<div align="center">
+<div style="font-size: 48px">🌿</div>
+<h1>ark.env</h1>
 
-## Getting Started
+<p>Type-safe environment variables parsing and validation for Node.js with ArkType</p>
 
-Click the [Use this template](https://github.com/wobsoriano/bun-lib-starter/generate) button to create a new repository with the contents starter.
-
-OR
-
-Run `bun create wobsoriano/bun-lib-starter ./my-lib`.
-
-## Setup
+## Installation
 
 ```bash
-# install dependencies
-bun install
+# Using bun
+bun add ark.env
 
-# test the app
-bun test
+# Using npm
+npm install ark.env
 
-# build the app, available under dist
-bun run build
+# Using yarn
+yarn add ark.env
+
+# Using pnpm
+pnpm add ark.env
 ```
+
+</div>
+
+## Quick Start
+
+```typescript
+import { createEnv } from 'ark.env'
+
+const env = createEnv({
+  PORT: 'number',
+  DATABASE_URL: 'string',
+  NODE_ENV: ['development', 'production', 'test']
+})
+
+// Automatically validates and parses process.env
+// TypeScript knows the exact types!
+console.log(env.PORT) // number
+console.log(env.NODE_ENV) // 'development' | 'production' | 'test'
+```
+
+## Features
+
+- 🔒 **Type-safe**: Full TypeScript support with inferred types
+- 🚀 **Runtime validation**: Catches missing or invalid environment variables early
+- 💪 **Powered by ArkType**: Leverages ArkType's powerful type system
+- 🪶 **Lightweight**: Zero dependencies, minimal bundle size
+- ⚡ **Fast**: Optimized for performance with minimal overhead
+
+## Documentation
+
+For detailed documentation and examples, visit our [documentation site](https://github.com/username/ark.env/docs).
 
 ## License
 
