@@ -1,9 +1,4 @@
-<div align="center">
-🌿
-<h1>ark.env</h1>
-
-<p>Type-safe environment variables parsing and validation for Node.js with ArkType</p>
-</div>
+<img src="assets/banner.png" alt="ark.env">
 
 ## Installation
 
