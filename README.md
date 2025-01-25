@@ -1,8 +1,9 @@
 <div align="center">
-<div style="font-size: 48px">🌿</div>
+<span style="font-size: 3em">🌿</span>
 <h1>ark.env</h1>
 
 <p>Type-safe environment variables parsing and validation for Node.js with ArkType</p>
+</div>
 
 ## Installation
 
@@ -20,7 +21,6 @@ yarn add ark.env
 pnpm add ark.env
 ```
 
-</div>
 
 ## Quick Start
 
