@@ -1,10 +1,6 @@
 name: Continuous Integration
 
 on:
-  push:
-    branches:
-      - main
-
   pull_request:
     branches:
       - main
@@ -34,3 +30,26 @@ jobs:
 
       - name: Run test
         run: bun test
+
+  biome:
+    name: runner / Biome
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reviewdog (Checks)
+        uses: mongolyy/reviewdog-action-biome@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-check
+          level: error
+          biome_flags: "--diagnostic-level=error"
+      - name: Reviewdog (PR)
+        uses: mongolyy/reviewdog-action-biome@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: error
+          biome_flags: "--diagnostic-level=error"
