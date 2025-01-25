@@ -32,7 +32,7 @@
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@types/bun": "^1.1.10",
+		"@types/bun": "^1.2.0",
 		"bun-plugin-dts": "^0.3.0"
 	},
 	"dependencies": {
