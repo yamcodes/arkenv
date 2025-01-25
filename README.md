@@ -3,7 +3,7 @@
 ## Installation
 
 <details open>
-<summary>Using npm</summary>
+<summary>npm</summary>
 
 ```sh
 npm install ark.env
@@ -11,7 +11,7 @@ npm install ark.env
 </details>
 
 <details>
-<summary>Using pnpm</summary>
+<summary>pnpm</summary>
 
 ```sh
 pnpm add ark.env
@@ -19,7 +19,7 @@ pnpm add ark.env
 </details>
 
 <details>
-<summary>Using yarn</summary>
+<summary>Yarn</summary>
 
 ```sh
 yarn add ark.env
@@ -27,7 +27,7 @@ yarn add ark.env
 </details>
 
 <details>
-<summary>Using bun</summary>
+<summary>Bun</summary>
 
 ```sh
 bun add ark.env
@@ -37,7 +37,7 @@ bun add ark.env
 ## Quickstart
 
 > [!TIP]
-> For more usage examples, please see [src/sample.ts](./src/sample.ts).
+> For comprehensive usage examples, please see [src/sample.ts](./src/sample.ts).
 
 ```ts
 import { defineEnv, host, port } from 'ark.env';
