@@ -10,7 +10,7 @@ export type User = typeof User.infer;
 
 const { HOST, PORT } = defineEnv({
 	HOST: host,
-	PORT: port,
+	PORT: port
 });
 
 console.log(`${HOST}:${PORT}`);

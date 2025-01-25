@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { defineEnv } from "./define-env";
-import { port } from "./types";
+import { host, port } from "./types";
 
 /**
  * Test if the code does not reach this line
@@ -125,5 +125,20 @@ describe("defineEnv", () => {
 		} catch (error) {
 			expect(exitCode).toBe(1);
 		}
+	});
+
+	it("should validate against a custom environment", () => {
+		const env = {
+			HOST: "127.0.0.1",
+			PORT: "8080",
+		};
+
+		const { HOST, PORT } = defineEnv({
+			HOST: host,
+			PORT: port,
+		}, env);
+
+		expect(HOST).toBe("127.0.0.1");
+		expect(PORT).toBe(8080);
 	});
 });
