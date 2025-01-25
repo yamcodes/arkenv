@@ -16,9 +16,9 @@
 
   We're adding utility types with this feature, the first are `host` and `port`.
 
-  `host`: An IP address or `"localhost"`
+  `host`: An IP address or `localhost`
 
-  `port`: A `string` that can be parsed into a number between 0 and 65535
+  `port`: A `string` that can be parsed into a `number` between 0 and 65535
 
 - TypeScript inference _[`f9297e0`](https://github.com/yamcodes/ark.env/commit/f9297e05438f2a43c0a5855567b5fbf3d529cfd6) [@yamcodes](https://github.com/yamcodes)_
 
