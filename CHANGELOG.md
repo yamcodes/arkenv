@@ -1,5 +1,13 @@
 # ark.env
 
+## 0.0.3
+
+### Patch Changes
+
+- Support custom user environments _[`dfa942b`](https://github.com/yamcodes/ark.env/commit/dfa942b7eaa9f49dae2a968c4cb24f6c90bfa3f4) [@yamcodes](https://github.com/yamcodes)_
+
+  We've added a new optional parameter to `defineEnv` to allow for custom environment variables. This can be used for example in Vite apps by passing `import.meta.env` as the second parameter.
+
 ## 0.0.2
 
 ### Patch Changes
