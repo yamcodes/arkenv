@@ -23,13 +23,13 @@
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
 		"typecheck": "tsc --noEmit",
-		"docs": "cd docs && astro dev",
-		"docs:dev": "cd docs && astro dev",
-		"docs:start": "cd docs && astro dev",
-		"docs:build": "cd docs && astro build",
-		"docs:preview": "cd docs && astro preview",
-		"docs:astro": "cd docs && astro",
-		"docs:sync": "bun run --cwd docs astro sync"
+		"docs": "bun --cwd docs astro dev",
+		"docs:dev": "bun --cwd docs astro dev",
+		"docs:start": "bun --cwd docs astro dev",
+		"docs:build": "bun --cwd docs astro build",
+		"docs:preview": "bun --cwd docs astro preview",
+		"docs:astro": "bun --cwd docs astro",
+		"docs:sync": "bun --cwd docs astro sync"
 	},
 	"tsup": {
 		"clean": true,
