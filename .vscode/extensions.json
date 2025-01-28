@@ -1,5 +1,5 @@
 {
-	"recommendations": ["biomejs.biome"],
+	"recommendations": ["biomejs.biome", "astro-build.astro-vscode"],
 	"unwantedRecommendations": [
 		"esbenp.prettier-vscode",
 		"dbaeumer.vscode-eslint"
