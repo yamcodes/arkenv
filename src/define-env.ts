@@ -9,16 +9,18 @@ type UserEnvironment = Record<string, string | undefined>;
  * @param env - The environment variables to validate, defaults to `process.env`
  * @returns The validated environment variable schema
  */
-export const defineEnv = <const def>(def: type.validate<def>, env: UserEnvironment = process.env) => {
+export const defineEnv = <const def>(
+	def: type.validate<def>,
+	env: UserEnvironment = process.env,
+) => {
 	// TODO: Find a way to remove the assertion by narrowing the type in the function signature
 	const schema = type(def) as TypeFunction;
 
 	// Validate the environment variables
-    const requiredEnvKeys = Object.keys(def as Record<string, unknown>);
-    const filteredEnvVars = Object.fromEntries(
-        Object.entries(env)
-        .filter(([key]) => requiredEnvKeys.includes(key))
-    );
+	const requiredEnvKeys = Object.keys(def as Record<string, unknown>);
+	const filteredEnvVars = Object.fromEntries(
+		Object.entries(env).filter(([key]) => requiredEnvKeys.includes(key)),
+	);
 	const validatedEnv = schema(filteredEnvVars);
 
 	if (validatedEnv instanceof type.errors) {

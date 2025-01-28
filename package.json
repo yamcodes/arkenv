@@ -35,20 +35,11 @@
 	"tsup": {
 		"clean": true,
 		"dts": true,
-		"entry": [
-			"src/index.ts"
-		],
-		"format": [
-			"esm",
-			"cjs"
-		]
+		"entry": ["src/index.ts"],
+		"format": ["esm", "cjs"]
 	},
-	"files": [
-		"dist"
-	],
-	"keywords": [
-		"bun"
-	],
+	"files": ["dist"],
+	"keywords": ["bun"],
 	"license": "MIT",
 	"homepage": "https://github.com/yamcodes/ark.env#readme",
 	"repository": {

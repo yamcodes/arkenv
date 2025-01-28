@@ -133,10 +133,13 @@ describe("defineEnv", () => {
 			PORT: "8080",
 		};
 
-		const { HOST, PORT } = defineEnv({
-			HOST: host,
-			PORT: port,
-		}, env);
+		const { HOST, PORT } = defineEnv(
+			{
+				HOST: host,
+				PORT: port,
+			},
+			env,
+		);
 
 		expect(HOST).toBe("127.0.0.1");
 		expect(PORT).toBe(8080);
