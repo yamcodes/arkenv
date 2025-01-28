@@ -29,7 +29,8 @@
 		"docs:build": "bun --cwd docs astro build",
 		"docs:preview": "bun --cwd docs astro preview",
 		"docs:astro": "bun --cwd docs astro",
-		"docs:sync": "bun --cwd docs astro sync"
+		"docs:sync": "bun --cwd docs astro sync",
+		"clean": "rimraf dist node_modules docs/node_modules docs/dist"
 	},
 	"tsup": {
 		"clean": true,
