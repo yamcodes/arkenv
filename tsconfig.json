@@ -1,19 +1,8 @@
 {
-	"compilerOptions": {
-		"target": "es2020",
-		"module": "esnext",
-		"strict": true,
-		"esModuleInterop": true,
-		"moduleResolution": "node",
-		"skipLibCheck": true,
-		"exactOptionalPropertyTypes": true,
-		"noUnusedLocals": true,
-		"noImplicitAny": true,
-		"allowJs": true,
-		"noEmit": true,
-		"outDir": "dist",
-		"resolveJsonModule": true
-	},
-	"include": ["src"],
-	"exclude": ["docs", "dist"]
-}
+    "files": [],
+    "references": [
+      { "path": "./tsconfig.lib.json" },
+      { "path": "./tsconfig.docs.json" }
+    ]
+  }
+  
