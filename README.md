@@ -66,9 +66,9 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 ## Documentation
 
 > [!NOTE]
-> Our docs are under construction. Please check back soon!
+> Our docs are under active construction. Please bear with us while we get everything ready.
 
-For detailed documentation and examples, please visit our [documentation site](https://http.cat/503).
+For detailed documentation and examples, please visit our [documentation site](https://yamcodes.github.io/ark.env).
 
 ## Contributing
 
