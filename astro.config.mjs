@@ -10,9 +10,9 @@ export default defineConfig({
 	outDir: "dist/docs",
 	integrations: [
 		starlight({
-			title: "My Docs",
+			title: "ark.env",
 			social: {
-				github: "https://github.com/withastro/starlight",
+				github: "https://github.com/yamcodes/ark.env",
 			},
 			sidebar: [
 				{
