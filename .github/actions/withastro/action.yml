@@ -1,4 +1,5 @@
-# Modified version of withastro/action@v3, with customized build command
+# Modified version of withastro/action@v3, with customized build command and dist folder
+# TODO: This should just be a fork, not stored in the repo
 
 name: "Astro Deploy"
 description: "A composite action that prepares your Astro site to be deployed to GitHub Pages"
@@ -101,4 +102,4 @@ runs:
     - name: Upload Pages Artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: "${{ inputs.path }}/dist/"
+        path: "${{ inputs.path }}/dist/docs"

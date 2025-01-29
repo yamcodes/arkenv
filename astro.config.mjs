@@ -5,8 +5,7 @@ import { defineConfig } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
 	srcDir: ".",
-	site: "https://yamcodes.github.io",
-	base: "ark.env",
+	site: "https://yamcodes.github.io/ark.env",
 	outDir: "dist/docs",
 	integrations: [
 		starlight({
