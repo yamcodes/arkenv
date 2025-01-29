@@ -2,14 +2,14 @@
 	"name": "ark.env",
 	"type": "module",
 	"version": "0.0.3",
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"description": "",
+	"main": "./dist/lib/index.cjs",
+	"module": "./dist/lib/index.js",
+	"types": "./dist/lib/index.d.ts",
+	"description": "Type-safe environment variables parsing and validation for Node.js with ArkType",
 	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
+		"types": "./dist/lib/index.d.ts",
+		"import": "./dist/lib/index.js",
+		"require": "./dist/lib/index.cjs"
 	},
 	"scripts": {
 		"build": "tsup",
@@ -30,7 +30,7 @@
 		"docs:preview": "astro preview",
 		"docs:astro": "astro",
 		"docs:sync": "astro sync",
-		"clean": "rimraf dist node_modules docs/node_modules docs/dist"
+		"clean": "rimraf dist node_modules"
 	},
 	"files": ["dist"],
 	"keywords": ["bun"],
