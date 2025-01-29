@@ -26,7 +26,7 @@ jobs:
       - name: Install, build, and upload your site
         uses: ./.github/actions/withastro
         with:
-          node-version: 20 # The specific version of Node that should be used to build your site. Defaults to 20. (optional)
+          node-version: 20
 
   deploy:
     needs: build
