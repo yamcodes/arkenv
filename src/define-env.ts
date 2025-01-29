@@ -17,7 +17,9 @@ export const defineEnv = <const def>(
 	const schema = type(def) as TypeFunction;
 
 	// Validate the environment variables
-	const requiredEnvKeys = Object.keys(def as Record<string, unknown>);
+	const requiredEnvKeys = Object.keys(
+		def as unknown as Record<string, unknown>,
+	);
 	const filteredEnvVars = Object.fromEntries(
 		Object.entries(env).filter(([key]) => requiredEnvKeys.includes(key)),
 	);

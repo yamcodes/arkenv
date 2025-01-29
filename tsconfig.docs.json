@@ -5,6 +5,5 @@
 		"docs",
 		"content.config.ts",
 		"astro.config.mjs"
-	],
-	"exclude": ["dist", "src"]
+	]
 }

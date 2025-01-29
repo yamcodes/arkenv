@@ -32,12 +32,6 @@
 		"docs:sync": "astro sync",
 		"clean": "rimraf dist node_modules docs/node_modules docs/dist"
 	},
-	"tsup": {
-		"clean": true,
-		"dts": true,
-		"entry": ["src/index.ts"],
-		"format": ["esm", "cjs"]
-	},
 	"files": ["dist"],
 	"keywords": ["bun"],
 	"license": "MIT",

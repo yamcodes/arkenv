@@ -1,10 +1,10 @@
 {
 	"compilerOptions": {
 		"target": "es2020",
-		"module": "esnext",
+		"module": "preserve",
 		"strict": true,
 		"esModuleInterop": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"skipLibCheck": true,
 		"exactOptionalPropertyTypes": true,
 		"noUnusedLocals": true,
@@ -14,6 +14,5 @@
 		"outDir": "dist",
 		"resolveJsonModule": true
 	},
-	"include": ["src"],
-	"exclude": ["docs", "dist"]
+	"include": ["src"]
 }
