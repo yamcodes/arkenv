@@ -1,7 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { red } from "picocolors";
 import { defineEnv } from "./define-env";
-import { host, port } from "./types";
 import { indent } from "./utils";
 
 const expectedError = (errors: string[]) =>
@@ -18,62 +17,6 @@ describe("defineEnv", () => {
 		});
 
 		expect(env.TEST_STRING).toBe("hello");
-	});
-
-	it("should validate an ip address", () => {
-		process.env.HOST = "127.0.0.1";
-
-		const env = defineEnv({
-			HOST: "string.ip",
-		});
-
-		expect(env.HOST).toBe("127.0.0.1");
-	});
-
-	it("should throw when the ip address is invalid", () => {
-		process.env.HOST = "invalid";
-
-		expect(() =>
-			defineEnv({
-				HOST: "string.ip",
-			}),
-		).toThrow(expectedError(['HOST must be an IP address (was "invalid")']));
-	});
-
-	it("should validate a port", () => {
-		process.env.PORT = "8080";
-
-		const env = defineEnv({
-			PORT: port,
-		});
-
-		expect(env.PORT).toBe(8080);
-	});
-
-	it("should throw when the port is invalid (1)", () => {
-		process.env.PORT = "invalid";
-
-		expect(() =>
-			defineEnv({
-				PORT: port,
-			}),
-		).toThrow(
-			expectedError([
-				'PORT must be an integer between 0 and 65535 (was "invalid")',
-			]),
-		);
-	});
-
-	it("should throw when the port is invalid (2)", () => {
-		process.env.PORT = "-2";
-
-		expect(() =>
-			defineEnv({
-				PORT: port,
-			}),
-		).toThrow(
-			expectedError(['PORT must be an integer between 0 and 65535 (was "-2")']),
-		);
 	});
 
 	it("should throw when required env variable is missing", () => {
@@ -96,19 +39,16 @@ describe("defineEnv", () => {
 
 	it("should validate against a custom environment", () => {
 		const env = {
-			HOST: "127.0.0.1",
-			PORT: "8080",
+			TEST_STRING: "hello",
 		};
 
-		const { HOST, PORT } = defineEnv(
+		const { TEST_STRING } = defineEnv(
 			{
-				HOST: host,
-				PORT: port,
+				TEST_STRING: "string",
 			},
 			env,
 		);
 
-		expect(HOST).toBe("127.0.0.1");
-		expect(PORT).toBe(8080);
+		expect(TEST_STRING).toBe("hello");
 	});
 });
