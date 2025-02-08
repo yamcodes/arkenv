@@ -1,5 +1,13 @@
 # ark.env
 
+## 0.0.5
+
+### Patch Changes
+
+- Throw custom ArkEnvError _[`f6e4856`](https://github.com/yamcodes/ark.env/commit/f6e485620aa7f27d6674e1828afd61be023cea99) [@yamcodes](https://github.com/yamcodes)_
+
+  Improve error handling by throwing ArkEnvError when environment validation fails
+
 ## 0.0.4
 
 ### Patch Changes
