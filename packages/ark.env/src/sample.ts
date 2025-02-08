@@ -1,5 +1,5 @@
-import { blue, bold, green, red } from "picocolors";
 import { defineEnv, host, port } from "ark.env";
+import { blue, bold, green, red } from "picocolors";
 
 const env = defineEnv({
 	HOST: host,

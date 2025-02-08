@@ -1,4 +1,4 @@
-import { defineDocs, defineConfig } from "fumadocs-mdx/config";
+import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { rehypeGithubAlerts } from "rehype-github-alerts";
 
 export const docs = defineDocs({

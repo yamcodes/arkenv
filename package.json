@@ -1,24 +1,21 @@
 {
-  "name": "ark.env-monorepo",
-  "private": true,
-  "workspaces": [
-    "packages/*",
-		"apps/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --filter=ark.env",
-    "typecheck": "turbo run typecheck",
-    "docs": "turbo run dev --filter=docs",
-    "docs:dev": "turbo run dev --filter=docs",
-    "docs:start": "turbo run dev --filter=docs",
-    "docs:build": "turbo run build --filter=docs",
+	"name": "ark.env-monorepo",
+	"private": true,
+	"workspaces": ["packages/*", "apps/*"],
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --filter=ark.env",
+		"typecheck": "turbo run typecheck",
+		"docs": "turbo run dev --filter=docs",
+		"docs:dev": "turbo run dev --filter=docs",
+		"docs:start": "turbo run dev --filter=docs",
+		"docs:build": "turbo run build --filter=docs",
 		"release": "bun run build && changeset publish",
 		"fix": "biome check --write .",
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
-		"clean": "rimraf dist node_modules" 
-  },
+		"clean": "rimraf dist node_modules"
+	},
 	"devDependencies": {
 		"turbo": "^2.4.0",
 		"typescript": "^5.7.3",
