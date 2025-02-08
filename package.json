@@ -14,8 +14,8 @@
 	"scripts": {
 		"build": "tsup",
 		"prepack": "bun run build",
-		"sample": "bun src/sample",
-		"sample:watch": "bun --watch src/sample",
+		"sample": "bun --watch src/sample",
+		"sample:once": "bun src/sample",
 		"test": "bun test --watch",
 		"test:once": "bun test",
 		"release": "bun run build && changeset publish",
@@ -58,5 +58,8 @@
 	},
 	"peerDependencies": {
 		"arktype": "^2.0.2"
+	},
+	"dependencies": {
+		"picocolors": "^1.1.1"
 	}
 }

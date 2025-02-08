@@ -1,5 +1,7 @@
 import type { BaseRoot as TypeFunction } from "@ark/schema";
 import { type distill, type } from "arktype";
+import { red } from "picocolors";
+import { indent } from "./utils";
 
 type UserEnvironment = Record<string, string | undefined>;
 
@@ -26,11 +28,12 @@ export const defineEnv = <const def>(
 	const validatedEnv = schema(filteredEnvVars);
 
 	if (validatedEnv instanceof type.errors) {
-		console.error("Environment validation failed:", validatedEnv.summary);
-		process.exit(1);
+		throw new Error(
+			`${red("Errors found while validating environment variables:")}\n${indent(
+				validatedEnv.summary,
+			)}\n`,
+		);
 	}
-
-	console.log("Validation passed, success!");
 	// TODO: Find a way to remove the assertion
 	return validatedEnv as distill.Out<type.infer<def>>;
 };

@@ -1,39 +1,15 @@
-import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { defineEnv } from "./define-env";
 import { host, port } from "./types";
+import { red } from "picocolors";
+import { indent } from "./utils";
 
-/**
- * Test if the code does not reach this line
- */
-const unreachable = () => expect(true).toBe(false);
+const expectedError = (errors: string[]) =>
+	`${red("Errors found while validating environment variables:")}\n${indent(
+		errors.join("\n"),
+	)}\n`;
 
 describe("defineEnv", () => {
-	const originalEnv = { ...process.env };
-	const originalExit = process.exit;
-	const originalConsoleLog = console.log;
-	const originalConsoleError = console.error;
-	let exitCode: number | undefined;
-
-	beforeEach(() => {
-		// Mock process.exit
-		process.exit = ((code?: number) => {
-			exitCode = code;
-			throw new Error("process.exit");
-		}) as (code?: number) => never;
-
-		// Mock console methods to suppress output
-		console.log = () => {};
-		console.error = () => {};
-	});
-
-	afterEach(() => {
-		process.env = { ...originalEnv };
-		process.exit = originalExit;
-		console.log = originalConsoleLog;
-		console.error = originalConsoleError;
-		exitCode = undefined;
-	});
-
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
@@ -57,14 +33,11 @@ describe("defineEnv", () => {
 	it("should throw when the ip address is invalid", () => {
 		process.env.HOST = "invalid";
 
-		try {
+		expect(() =>
 			defineEnv({
 				HOST: "string.ip",
-			});
-			unreachable();
-		} catch (error) {
-			expect(exitCode).toBe(1);
-		}
+			}),
+		).toThrow(expectedError(['HOST must be an IP address (was "invalid")']));
 	});
 
 	it("should validate a port", () => {
@@ -80,51 +53,45 @@ describe("defineEnv", () => {
 	it("should throw when the port is invalid (1)", () => {
 		process.env.PORT = "invalid";
 
-		try {
+		expect(() =>
 			defineEnv({
 				PORT: port,
-			});
-			unreachable();
-		} catch (error) {
-			expect(exitCode).toBe(1);
-		}
+			}),
+		).toThrow(
+			expectedError([
+				'PORT must be an integer between 0 and 65535 (was "invalid")',
+			]),
+		);
 	});
 
 	it("should throw when the port is invalid (2)", () => {
 		process.env.PORT = "-2";
 
-		try {
+		expect(() =>
 			defineEnv({
 				PORT: port,
-			});
-			unreachable();
-		} catch (error) {
-			expect(exitCode).toBe(1);
-		}
+			}),
+		).toThrow(
+			expectedError(['PORT must be an integer between 0 and 65535 (was "-2")']),
+		);
 	});
 
 	it("should throw when required env variable is missing", () => {
-		try {
+		expect(() =>
 			defineEnv({
 				MISSING_VAR: "string",
-			});
-			unreachable();
-		} catch (error) {
-			expect(exitCode).toBe(1);
-		}
+			}),
+		).toThrow(expectedError(["MISSING_VAR must be a string (was missing)"]));
 	});
 
 	it("should throw when env variable has wrong type", () => {
 		process.env.WRONG_TYPE = "not a number";
 
-		try {
+		expect(() =>
 			defineEnv({
 				WRONG_TYPE: "number",
-			});
-			unreachable();
-		} catch (error) {
-			expect(exitCode).toBe(1);
-		}
+			}),
+		).toThrow(expectedError(["WRONG_TYPE must be a number (was a string)"]));
 	});
 
 	it("should validate against a custom environment", () => {
