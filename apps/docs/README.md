@@ -1,5 +1,5 @@
 # `ark.env` Documentation
 
-This directory contains the documentation for the `ark.env` package.
+Welcome to the `ark.env` documentation!
 
-You can also browse the documentation online at [ark.env.dev](https://yamcodes.github.io/ark.env).
+You can also view the documentation on our [docsite](https://yamcodes.github.io/ark.env ).
