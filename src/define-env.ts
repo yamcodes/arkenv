@@ -1,7 +1,6 @@
 import type { BaseRoot as TypeFunction } from "@ark/schema";
 import { type distill, type } from "arktype";
-import { red } from "picocolors";
-import { indent } from "./utils";
+import { ArkEnvError } from "./errors";
 
 type UserEnvironment = Record<string, string | undefined>;
 
@@ -14,7 +13,7 @@ type UserEnvironment = Record<string, string | undefined>;
 export const defineEnv = <const def>(
 	def: type.validate<def>,
 	env: UserEnvironment = process.env,
-) => {
+): distill.Out<type.infer<def>> => {
 	// TODO: Find a way to remove the assertion by narrowing the type in the function signature
 	const schema = type(def) as TypeFunction;
 
@@ -28,12 +27,9 @@ export const defineEnv = <const def>(
 	const validatedEnv = schema(filteredEnvVars);
 
 	if (validatedEnv instanceof type.errors) {
-		throw new Error(
-			`${red("Errors found while validating environment variables:")}\n${indent(
-				validatedEnv.summary,
-			)}\n`,
-		);
+		throw new ArkEnvError(validatedEnv);
 	}
+
 	// TODO: Find a way to remove the assertion
 	return validatedEnv as distill.Out<type.infer<def>>;
 };

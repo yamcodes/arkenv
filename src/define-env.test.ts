@@ -1,12 +1,28 @@
 import { describe, expect, it } from "bun:test";
-import { red } from "picocolors";
+import { red, yellow } from "picocolors";
 import { defineEnv } from "./define-env";
 import { indent } from "./utils";
 
-const expectedError = (errors: string[]) =>
-	`${red("Errors found while validating environment variables:")}\n${indent(
-		errors.join("\n"),
-	)}\n`;
+/**
+ * Format the errors returned by defineEnv for testing purposes
+ * @param errors - The errors returned by defineEnv
+ * @returns A string of the formatted errors
+ */
+const expectedError = (
+	errors: {
+		requiredType: string;
+		providedType: string;
+		name: string;
+	}[],
+) => {
+	const formattedErrors = errors.map((error) => {
+		return `${red("Errors found while validating environment variables")}\n${indent(
+			`${yellow(error.name)} must be ${error.requiredType} (was ${error.providedType})`,
+		)}\n`;
+	});
+
+	return formattedErrors.join("\n");
+};
 
 describe("defineEnv", () => {
 	it("should validate string env variables", () => {
@@ -24,7 +40,15 @@ describe("defineEnv", () => {
 			defineEnv({
 				MISSING_VAR: "string",
 			}),
-		).toThrow(expectedError(["MISSING_VAR must be a string (was missing)"]));
+		).toThrow(
+			expectedError([
+				{
+					requiredType: "a string",
+					providedType: "missing",
+					name: "MISSING_VAR",
+				},
+			]),
+		);
 	});
 
 	it("should throw when env variable has wrong type", () => {
@@ -34,7 +58,15 @@ describe("defineEnv", () => {
 			defineEnv({
 				WRONG_TYPE: "number",
 			}),
-		).toThrow(expectedError(["WRONG_TYPE must be a number (was a string)"]));
+		).toThrow(
+			expectedError([
+				{
+					requiredType: "a number",
+					providedType: "a string",
+					name: "WRONG_TYPE",
+				},
+			]),
+		);
 	});
 
 	it("should validate against a custom environment", () => {
