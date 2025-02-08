@@ -4,5 +4,6 @@
 		"strings": "on"
 	},
 	// prioritize ArkType's "type" for autoimports
-	"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"]
+	"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
+	"editor.tabSize": 2
 }
