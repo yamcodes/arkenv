@@ -4,8 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'apps/docs/**'
-  workflow_dispatch: # temporarily
+      - 'docs/**'
+      - 'content.config.ts'
+      - 'astro.config.mjs'
+      - 'tsconfig.docs.json'
+      - 'public/**'
+      - 'assets/**'
 
 # Allow this job to clone the repo and create a page deployment
 permissions:
@@ -17,21 +21,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository using git
+      - name: Checkout your repository using git
         uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - name: Install, build, and upload your site
+        uses: ./.github/actions/withastro
         with:
-          bun-version: 1.2.0
-      - name: Caching for Turborepo
-        uses: rharkor/caching-for-turbo@v1.5
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - run: bun install
-      - run: bun run docs:build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: apps/docs/out
+          node-version: 20
 
   deploy:
     needs: build
