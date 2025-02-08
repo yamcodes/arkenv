@@ -32,12 +32,8 @@
 		"docs:sync": "astro sync",
 		"clean": "rimraf dist node_modules"
 	},
-	"files": [
-		"dist"
-	],
-	"keywords": [
-		"bun"
-	],
+	"files": ["dist"],
+	"keywords": ["bun"],
 	"license": "MIT",
 	"homepage": "https://github.com/yamcodes/ark.env#readme",
 	"repository": {
