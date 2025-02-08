@@ -1,5 +1,17 @@
 # ark.env
 
+## 0.0.4
+
+### Patch Changes
+
+- Fix `port` type _[`6be6305`](https://github.com/yamcodes/ark.env/commit/6be630501af6b69bfaebd438814dfe5ab4dcacd3) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix the `port` type to be a `number`.
+
+- Better error handling _[`80052dd`](https://github.com/yamcodes/ark.env/commit/80052dd9ba5e46ac8233d37cb47d40b5177b521f) [@yamcodes](https://github.com/yamcodes)_
+
+  Error handling has been overhauled. Now, errors are thrown (instead of crashing the process) when the environment variables are invalid. The errors are formatted with colors and indentation for better readability.
+
 ## 0.0.3
 
 ### Patch Changes
