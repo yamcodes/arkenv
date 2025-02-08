@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
+import { red } from "picocolors";
 import { defineEnv } from "./define-env";
 import { host, port } from "./types";
-import { red } from "picocolors";
 import { indent } from "./utils";
 
 const expectedError = (errors: string[]) =>

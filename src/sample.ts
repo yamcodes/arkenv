@@ -1,5 +1,5 @@
+import { blue, bold, green, red } from "picocolors";
 import { defineEnv, host, port } from "./index";
-import { red, green, bold, blue } from "picocolors";
 
 const env = defineEnv({
 	HOST: host,
