@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { formatErrors, ArkEnvError } from "./errors";
 import type { ArkErrors } from "arktype";
+import { ArkEnvError, formatErrors } from "./errors";
 
 /**
  * Define ArkErrorsForTest as a subset of ArkErrors

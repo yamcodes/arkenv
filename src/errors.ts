@@ -1,6 +1,6 @@
-import { red, yellow, cyan } from "picocolors";
-import { indent } from "./utils";
 import type { ArkErrors } from "arktype";
+import { cyan, red, yellow } from "picocolors";
+import { indent } from "./utils";
 
 /**
  * Format the errors returned by ArkType to be more readable
