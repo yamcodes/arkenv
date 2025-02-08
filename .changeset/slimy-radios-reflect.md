@@ -1,5 +1,5 @@
 ---
-"ark.env": major
+"ark.env": patch
 ---
 
 Better error handling

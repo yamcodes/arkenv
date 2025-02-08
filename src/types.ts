@@ -8,7 +8,7 @@ export const port = type("string", "=>", (data, ctx) => {
 	const isInteger = Number.isInteger(asNumber);
 	const isBetween = 0 <= asNumber && asNumber <= 65535;
 	if (!isInteger || !isBetween) {
-		return ctx.mustBe("an integer between 0 and 65535");
+		ctx.mustBe("an integer between 0 and 65535");
 	}
 	return asNumber;
 });

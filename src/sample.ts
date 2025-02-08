@@ -1,4 +1,5 @@
 import { defineEnv, host, port } from "./index";
+import { red, green, bold, blue } from "picocolors";
 
 const env = defineEnv({
 	HOST: host,
@@ -6,5 +7,8 @@ const env = defineEnv({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 
-console.log(env.HOST, env.PORT, env.NODE_ENV);
-console.log(`${env.HOST}:${env.PORT} in ${env.NODE_ENV}`);
+console.log(
+	`🚀 Server running at ${bold(blue(env.HOST))}:${bold(green(env.PORT))} in ${bold(
+		env.NODE_ENV === "production" ? red(env.NODE_ENV) : blue(env.NODE_ENV),
+	)} mode`,
+);
