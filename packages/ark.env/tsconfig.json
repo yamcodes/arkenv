@@ -1,7 +1,18 @@
 {
-	"files": [],
-	"references": [
-		{ "path": "./tsconfig.lib.json" },
-		{ "path": "./tsconfig.docs.json" }
-	]
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "preserve",
+		"strict": true,
+		"esModuleInterop": true,
+		"moduleResolution": "bundler",
+		"skipLibCheck": true,
+		"exactOptionalPropertyTypes": true,
+		"noUnusedLocals": true,
+		"noImplicitAny": true,
+		"allowJs": true,
+		"noEmit": true,
+		"outDir": "dist",
+		"resolveJsonModule": true
+	},
+	"include": ["src"]
 }

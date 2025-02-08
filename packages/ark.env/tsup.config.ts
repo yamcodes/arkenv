@@ -6,6 +6,5 @@ export default defineConfig({
 	outDir: "dist",
 	entry: ["src/index.ts"],
 	format: ["esm", "cjs"],
-	tsconfig: "tsconfig.lib.json",
-	pure
+	tsconfig: "tsconfig.json",
 });
