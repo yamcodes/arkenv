@@ -37,7 +37,7 @@ bun add ark.env
 ## Quickstart
 
 > [!TIP]
-> For comprehensive usage examples, please see [src/sample.ts](./src/sample.ts).
+> For comprehensive usage examples, please see [src/sample.ts](./packages/ark.env/src/sample.ts).
 
 ```ts
 import { defineEnv, host, port } from 'ark.env';
