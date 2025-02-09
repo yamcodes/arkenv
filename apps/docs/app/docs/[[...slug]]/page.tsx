@@ -14,6 +14,25 @@ const HorizontalLine = () => {
 	return <div className="w-full h-px bg-gray-200" />;
 };
 
+const getLinkTitleAndHref = (path?: string) => {
+	try {
+		if (!path) throw new Error("Path is required");
+		const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL;
+		if (!githubUrl) throw new Error("NEXT_PUBLIC_GITHUB_URL is not configured");
+		const defaultBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "main";
+		const cleanUrl = githubUrl.replace(/\/$/, "");
+		// Use URL API for robust parsing
+		const url = new URL(cleanUrl);
+		const [owner, repo] = url.pathname.split("/").filter(Boolean).slice(-2);
+		if (!owner || !repo) throw new Error("Invalid GitHub URL format");
+		const title = `Editing ${repo}/${path} at ${defaultBranch} · ${owner}/${repo}`;
+		const href = `${githubUrl}/edit/${defaultBranch}/${path}`;
+		return { title, href };
+	} catch {
+		return { title: "Edit this page on GitHub", href: "#" };
+	}
+};
+
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
@@ -22,11 +41,6 @@ export default async function Page(props: {
 	if (!page) notFound();
 
 	const MDX = page.data.body;
-
-	const sha = "main";
-	const owner = "yamcodes";
-	const repo = "ark.env";
-	const path = `apps/docs/content/docs/${page.file.path}`;
 
 	return (
 		<DocsPage toc={page.data.toc} full={page.data.full}>
@@ -40,10 +54,9 @@ export default async function Page(props: {
 				</div>
 				<div className="flex flex-col pt-16">
 					<Link
-						href={`https://github.com/${owner}/${repo}/edit/${sha}/${path}`}
+						{...getLinkTitleAndHref(`apps/docs/content/docs/${page.file.path}`)}
 						target="_blank"
 						rel="noopener noreferrer"
-						title={`Editing ${repo}/${path} at ${sha} · ${owner}/${repo}`}
 						className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 hover:underline transition-colors"
 					>
 						<SquarePen className="w-4 h-4" />
