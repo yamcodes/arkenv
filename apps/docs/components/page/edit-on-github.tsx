@@ -1,6 +1,7 @@
 
 import Link from "next/link";
 import { SquarePen } from "lucide-react";
+import { Button } from "../ui/button";
 
 const getLinkTitleAndHref = (path?: string) => {
 	try {
@@ -35,14 +36,15 @@ type EditOnGithubProps = {
 
 export const EditOnGithub = ({ path }: EditOnGithubProps) => {
   return (
-    <Link
-      {...getLinkTitleAndHref(`apps/docs/content/docs/${path}`)}
-      target="_blank"
-      rel="noopener noreferrer"
-    className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 hover:underline transition-colors"
+		<Button asChild variant="link" className="p-0">
+			<Link
+				{...getLinkTitleAndHref(`apps/docs/content/docs/${path}`)}
+				target="_blank"
+				rel="noopener noreferrer"
   >
-			<SquarePen className="w-4 h-4" />
-			Edit this page on GitHub
-		</Link>
+				<SquarePen className="w-4 h-4" />
+				Edit this page on GitHub
+			</Link>
+		</Button>
 	);
 };

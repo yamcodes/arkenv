@@ -29,9 +29,9 @@ export default async function Page(props: {
 						<MDX components={{ ...defaultMdxComponents }} />
 					</DocsBody>
 				</div>
-				<div className="flex flex-col pt-16">
+				<div className="flex flex-col items-start pt-16">
 					<EditOnGithub path={page.file.path} />
-					<div className="mt-8">
+					<div className="mt-8 w-full">
 						<Separator />
 					</div>
 				</div>
