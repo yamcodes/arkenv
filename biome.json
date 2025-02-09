@@ -8,7 +8,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["node_modules", "dist", ".astro", ".gitignore"]
+		"ignore": ["node_modules", "dist", ".astro", ".gitignore", ".next"]
 	},
 	"formatter": {
 		"enabled": true,

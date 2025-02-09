@@ -7,8 +7,8 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { SquarePen } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import Link from 'next/link';
 
 const HorizontalLine = () => {
 	return <div className="w-full h-px bg-gray-200" />;
@@ -39,7 +39,7 @@ export default async function Page(props: {
 					</DocsBody>
 				</div>
 				<div className="flex flex-col pt-16">
-					<Link 
+					<Link
 						href={`https://github.com/${owner}/${repo}/edit/${sha}/${path}`}
 						target="_blank"
 						rel="noopener noreferrer"
