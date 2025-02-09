@@ -26,3 +26,5 @@ pnpm-debug.log*
 # Next.js
 .next/
 .source/
+.vercel
+.env*.local

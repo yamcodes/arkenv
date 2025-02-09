@@ -14,6 +14,25 @@ const HorizontalLine = () => {
 	return <div className="w-full h-px bg-gray-200" />;
 };
 
+const getLinkTitleAndHref = (path?: string) => {
+	try {
+		if (!path) throw Error();
+		const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL;
+		if (!githubUrl) throw Error();
+		const sha = "main";
+		const cleanUrl = githubUrl.replace(/\/$/, "");
+		const urlParts = cleanUrl.split("/");
+		const owner = urlParts[urlParts.length - 2];
+		const repo = urlParts[urlParts.length - 1];
+		if (!owner || !repo) throw Error();
+		const title = `Editing ${repo}/${path} at ${sha} · ${owner}/${repo}`;
+		const href = `${githubUrl}/edit/${sha}/${path}`
+		return { title, href };
+	} catch {
+		return { title: "Edit this page on GitHub", href: "https://http.cat/404" };
+	}
+}
+
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
@@ -22,11 +41,6 @@ export default async function Page(props: {
 	if (!page) notFound();
 
 	const MDX = page.data.body;
-
-	const sha = "main";
-	const owner = "yamcodes";
-	const repo = "ark.env";
-	const path = `apps/docs/content/docs/${page.file.path}`;
 
 	return (
 		<DocsPage toc={page.data.toc} full={page.data.full}>
@@ -40,10 +54,9 @@ export default async function Page(props: {
 				</div>
 				<div className="flex flex-col pt-16">
 					<Link
-						href={`https://github.com/${owner}/${repo}/edit/${sha}/${path}`}
+						{...getLinkTitleAndHref(`apps/docs/content/docs/${page.file.path}`)}
 						target="_blank"
 						rel="noopener noreferrer"
-						title={`Editing ${repo}/${path} at ${sha} · ${owner}/${repo}`}
 						className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 hover:underline transition-colors"
 					>
 						<SquarePen className="w-4 h-4" />

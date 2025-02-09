@@ -8,7 +8,7 @@ import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
  * Docs Layout: app/docs/layout.tsx
  */
 export const baseOptions: BaseLayoutProps = {
-	githubUrl: "https://github.com/yamcodes/ark.env",
+	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL,
 	nav: {
 		title: "ark.env",
 	},
