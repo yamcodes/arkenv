@@ -8,6 +8,7 @@ import {
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
 
+
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
@@ -40,7 +41,7 @@ export async function generateMetadata(props: {
 	if (!page) notFound();
 
 	return {
-		title: page.data.title,
+		title: `${page.data.title} · ark.env`,
 		description: page.data.description,
 	};
 }
