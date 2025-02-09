@@ -16,22 +16,22 @@ const HorizontalLine = () => {
 
 const getLinkTitleAndHref = (path?: string) => {
 	try {
-		if (!path) throw Error();
+		if (!path) throw new Error('Path is required');
 		const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL;
-		if (!githubUrl) throw Error();
-		const sha = "main";
+		if (!githubUrl) throw new Error('NEXT_PUBLIC_GITHUB_URL is not configured');
+		const defaultBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "main";
 		const cleanUrl = githubUrl.replace(/\/$/, "");
-		const urlParts = cleanUrl.split("/");
-		const owner = urlParts[urlParts.length - 2];
-		const repo = urlParts[urlParts.length - 1];
-		if (!owner || !repo) throw Error();
-		const title = `Editing ${repo}/${path} at ${sha} · ${owner}/${repo}`;
-		const href = `${githubUrl}/edit/${sha}/${path}`;
+		// Use URL API for robust parsing
+		const url = new URL(cleanUrl);
+		const [owner, repo] = url.pathname.split('/').filter(Boolean).slice(-2);
+		if (!owner || !repo) throw new Error('Invalid GitHub URL format');
+		const title = `Editing ${repo}/${path} at ${defaultBranch} · ${owner}/${repo}`;
+		const href = `${githubUrl}/edit/${defaultBranch}/${path}`
 		return { title, href };
 	} catch {
-		return { title: "Edit this page on GitHub", href: "https://http.cat/404" };
+		return { title: "Edit this page on GitHub", href: "#" };
 	}
-};
+}
 
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
