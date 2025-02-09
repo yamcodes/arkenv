@@ -68,7 +68,7 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 > [!NOTE]
 > Our docs are under active construction. Please bear with us while we get everything ready.
 
-For detailed documentation and examples, please visit our [documentation site](https://ark-env-docs.vercel.app).
+For detailed documentation and examples, please visit our [documentation site](https://yam.codes/ark.env).
 
 ## Contributing
 
