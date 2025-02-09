@@ -49,7 +49,7 @@ export default async function Page(props: {
 						<SquarePen className="w-4 h-4" />
 						Edit this page on GitHub
 					</Link>
-					<div className="mt-6">
+					<div className="mt-8">
 						<HorizontalLine />
 					</div>
 				</div>
