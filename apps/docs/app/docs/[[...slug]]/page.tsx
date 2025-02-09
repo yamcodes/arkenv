@@ -18,8 +18,19 @@ export default async function Page(props: {
 
 	const MDX = page.data.body;
 
+	const sha = "main";
+	const owner = "yamcodes";
+	const repo = "ark.env";
+	const path = `apps/docs/content/docs/${page.file.path}`;
+
 	return (
-		<DocsPage toc={page.data.toc} full={page.data.full}>
+		<DocsPage toc={page.data.toc} full={page.data.full} editOnGithub={{
+			owner,
+			repo,
+			sha,
+			path,	
+			title: `${repo}/${path} at ${sha} · ${owner}`,
+		}}>
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<DocsBody>
