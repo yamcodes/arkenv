@@ -11,6 +11,9 @@
 		},
 		"clean": {
 			"cache": false
+		},
+		"//#fix": {
+			"cache": false
 		}
 	}
 }

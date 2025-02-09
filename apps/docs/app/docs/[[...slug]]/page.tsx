@@ -1,4 +1,3 @@
-import { source } from "~/lib/source";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import {
 	DocsBody,
@@ -9,6 +8,7 @@ import {
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { source } from "~/lib/source";
 
 const HorizontalLine = () => {
 	return <div className="w-full h-px bg-gray-200" />;
