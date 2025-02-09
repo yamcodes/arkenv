@@ -1,15 +1,13 @@
 @import "tailwindcss";
-
-@plugin "tailwindcss-animate";
-
-@custom-variant dark (&:is(.dark *));
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
 @import "../../../node_modules/rehype-github-alerts/dist/styling/css/index.css";
-@source '../../../node_modules/fumadocs-ui/dist/**/*.js';
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: hsl(0 0% 100%);
+  --background: #f5f5f5;
   --foreground: hsl(240 10% 3.9%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(240 10% 3.9%);
@@ -37,7 +35,7 @@
 }
 
 .dark {
-  --background: hsl(240 10% 3.9%);
+  --background: hsl(0 0% 7%);
   --foreground: hsl(0 0% 98%);
   --card: hsl(240 10% 3.9%);
   --card-foreground: hsl(0 0% 98%);
@@ -102,3 +100,4 @@
     @apply bg-background text-foreground;
   }
 }
+@source '../../../node_modules/fumadocs-ui/dist/**/*.js';
