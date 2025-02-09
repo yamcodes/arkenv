@@ -1,6 +1,5 @@
-
-import Link from "next/link";
 import { SquarePen } from "lucide-react";
+import Link from "next/link";
 import { Button } from "../ui/button";
 
 const getLinkTitleAndHref = (path?: string) => {
@@ -25,23 +24,23 @@ const getLinkTitleAndHref = (path?: string) => {
 type EditOnGithubProps = {
 	/**
 	 * The path to the file to edit on GitHub.
-	 * 
+	 *
 	 * @example
 	 * ```ts
 	 * <EditOnGithub path="/index.mdx" />
 	 * ```
 	 */
-  path: string;
-}
+	path: string;
+};
 
 export const EditOnGithub = ({ path }: EditOnGithubProps) => {
-  return (
+	return (
 		<Button asChild variant="link" className="p-0">
 			<Link
 				{...getLinkTitleAndHref(`apps/docs/content/docs/${path}`)}
 				target="_blank"
 				rel="noopener noreferrer"
-  >
+			>
 				<SquarePen className="w-4 h-4" />
 				Edit this page on GitHub
 			</Link>
