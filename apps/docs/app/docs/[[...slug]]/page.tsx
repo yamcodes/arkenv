@@ -8,11 +8,8 @@ import {
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Separator } from "~/components/ui/separator";
 import { source } from "~/lib/source";
-
-const HorizontalLine = () => {
-	return <div className="w-full h-px bg-gray-200" />;
-};
 
 const getLinkTitleAndHref = (path?: string) => {
 	try {
@@ -63,7 +60,7 @@ export default async function Page(props: {
 						Edit this page on GitHub
 					</Link>
 					<div className="mt-8">
-						<HorizontalLine />
+						<Separator />
 					</div>
 				</div>
 			</div>
