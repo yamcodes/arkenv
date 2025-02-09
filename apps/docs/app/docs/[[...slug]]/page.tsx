@@ -41,7 +41,7 @@ export async function generateMetadata(props: {
 	if (!page) notFound();
 
 	return {
-		title: `${page.data.title} | ark.env`,
+		title: `${page.data.title} · ark.env`,
 		description: page.data.description,
 	};
 }

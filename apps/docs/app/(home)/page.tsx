@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-	title: "ark.env - Typesafe Environment Variables",
+	title: "ark.env: Typesafe Environment Variables",
 	description: "ark.env is a tool for managing environment variables in your project.",
 };
 
