@@ -1,4 +1,4 @@
-import { source } from "@/lib/source";
+import { source } from "~/lib/source";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import {
 	DocsBody,
