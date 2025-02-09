@@ -26,12 +26,12 @@ const getLinkTitleAndHref = (path?: string) => {
 		const repo = urlParts[urlParts.length - 1];
 		if (!owner || !repo) throw Error();
 		const title = `Editing ${repo}/${path} at ${sha} · ${owner}/${repo}`;
-		const href = `${githubUrl}/edit/${sha}/${path}`
+		const href = `${githubUrl}/edit/${sha}/${path}`;
 		return { title, href };
 	} catch {
 		return { title: "Edit this page on GitHub", href: "https://http.cat/404" };
 	}
-}
+};
 
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
