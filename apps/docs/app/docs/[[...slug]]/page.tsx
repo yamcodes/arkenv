@@ -16,22 +16,22 @@ const HorizontalLine = () => {
 
 const getLinkTitleAndHref = (path?: string) => {
 	try {
-		if (!path) throw new Error('Path is required');
+		if (!path) throw new Error("Path is required");
 		const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL;
-		if (!githubUrl) throw new Error('NEXT_PUBLIC_GITHUB_URL is not configured');
+		if (!githubUrl) throw new Error("NEXT_PUBLIC_GITHUB_URL is not configured");
 		const defaultBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "main";
 		const cleanUrl = githubUrl.replace(/\/$/, "");
 		// Use URL API for robust parsing
 		const url = new URL(cleanUrl);
-		const [owner, repo] = url.pathname.split('/').filter(Boolean).slice(-2);
-		if (!owner || !repo) throw new Error('Invalid GitHub URL format');
+		const [owner, repo] = url.pathname.split("/").filter(Boolean).slice(-2);
+		if (!owner || !repo) throw new Error("Invalid GitHub URL format");
 		const title = `Editing ${repo}/${path} at ${defaultBranch} · ${owner}/${repo}`;
-		const href = `${githubUrl}/edit/${defaultBranch}/${path}`
+		const href = `${githubUrl}/edit/${defaultBranch}/${path}`;
 		return { title, href };
 	} catch {
 		return { title: "Edit this page on GitHub", href: "#" };
 	}
-}
+};
 
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
