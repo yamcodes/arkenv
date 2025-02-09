@@ -2,7 +2,6 @@
 
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
-import { ErrorBoundary } from "react-error-boundary";
 import { Button } from "../ui/button";
 
 const getLinkTitleAndHref = (path: string) => {
