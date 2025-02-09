@@ -11,8 +11,15 @@ const inter = Inter({
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en" className={inter.className} suppressHydrationWarning>
-			<body className="flex flex-col min-h-screen">
-				<RootProvider>{children}</RootProvider>
+			<body className="flex flex-col min-h-screen"><RootProvider
+					search={{
+						options: {
+							api: "/ark.env/api/search",
+						},
+					}}
+				>
+					{children}
+				</RootProvider>
 			</body>
 		</html>
 	);
