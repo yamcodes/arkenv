@@ -26,8 +26,5 @@
 		"@changesets/cli": "^2.27.12",
 		"astro": "^5.1.5"
 	},
-	"packageManager": "bun@1.2.0",
-	"dependencies": {
-		"@icons-pack/react-simple-icons": "^11.2.0"
-	}
+	"packageManager": "bun@1.2.0"
 }
