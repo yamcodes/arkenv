@@ -5,8 +5,8 @@
 	--card-foreground: hsl(0 0% 98%);
 	--popover: hsl(240 10% 3.9%);
 	--popover-foreground: hsl(0 0% 98%);
-	--primary: hsl(0 0% 98%);
-	--primary-foreground: hsl(240 5.9% 10%);
+	--primary: rgb(158, 203, 255);
+	--primary-foreground: rgb(10, 52, 93); /** can be rgb(3, 47, 98) */
 	--secondary: hsl(240 3.7% 15.9%);
 	--secondary-foreground: hsl(0 0% 98%);
 	--muted: hsl(240 3.7% 15.9%);
