@@ -47,12 +47,6 @@
 			// The URL of the WebSocket inspector to attach to.
 			// This value can be retrieved by using `bun --inspect`.
 			"url": "ws://localhost:6499/"
-		},
-		{
-			"command": "./node_modules/.bin/astro docs:dev",
-			"name": "Docs Development server",
-			"request": "launch",
-			"type": "node-terminal"
 		}
 	]
 }
