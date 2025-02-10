@@ -131,12 +131,11 @@
 	border-left: calc(var(--rehype-github-alerts-default-space) / 4) solid var(--rehype-github-alerts-default-color);
 	font-family: var(--rehype-github-alerts-default-fontFamily);
   }
-  .markdown-alert > :first-child {
-	margin-top: 0;
-  }
 
-  .markdown-alert > :nth-child(2) {
-	margin-top: 0.5rem;
+  .markdown-alert > * {
+	line-height: 1.5;
+	margin-top: 0;
+	margin-bottom: 1rem;
   }
   
   .markdown-alert > :last-child {
@@ -158,8 +157,8 @@
 	border-left-color: var(--rehype-github-alerts-caution-color);
   }
   .markdown-alert-title {
+	line-height: 1;
 	display: flex;
-	margin-bottom: calc(var(--rehype-github-alerts-default-space) / 32);
 	align-items: center;
 	font-weight: var(--rehype-github-alerts-default-fontWeight, 500);
   }
