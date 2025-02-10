@@ -1,8 +1,8 @@
+import { ChevronRight, Copy, Sailboat } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "~/components/ui/button";
-import { ChevronRight, Copy, Sailboat } from "lucide-react";
 import { CopyButton } from "~/components/page/copy-button";
+import { Button } from "~/components/ui/button";
 
 export const metadata: Metadata = {
 	title: "ark.env: Typesafe Environment Variables",
@@ -13,11 +13,16 @@ export const metadata: Metadata = {
 export default function HomePage() {
 	return (
 		<main className="flex flex-1 flex-col justify-center text-center">
-			<h1 className="mb-4 text-2xl font-bold"><code className="text-fd-foreground">ark.env</code></h1>
+			<h1 className="mb-4 text-2xl font-bold">
+				<code className="text-fd-foreground">ark.env</code>
+			</h1>
 			<p className="text-fd-muted-foreground">Typesafe Environment Variables</p>
 			<div className="flex justify-center my-4 gap-4">
 				<Button asChild>
-					<Link href="/docs/setup"><Sailboat />Set sail --&gt;</Link>
+					<Link href="/docs/setup">
+						<Sailboat />
+						Set sail --&gt;
+					</Link>
 				</Button>
 			</div>
 			<p className="text-fd-muted-foreground text-sm mb-2">...or simply run:</p>
