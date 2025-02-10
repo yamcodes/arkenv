@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import { Sailboat } from "lucide-react";
 
 export const metadata: Metadata = {
 	title: "ark.env: Typesafe Environment Variables",
@@ -17,7 +18,7 @@ export default function HomePage() {
 			<p className="text-fd-muted-foreground">Typesafe Environment Variables</p>
 			<div className="flex justify-center mt-4">
 				<Button asChild>
-					<Link href="/docs">Set sail --&gt;</Link>
+					<Link href="/docs"><Sailboat />Set sail --&gt;</Link>
 				</Button>
 			</div>
 		</main>
