@@ -1,8 +1,8 @@
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import { DocsLayout, type LinkItemType } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
 import { baseOptions } from "~/app/layout.config";
 import { source } from "~/lib/source";
-import { SiGithub } from "@icons-pack/react-simple-icons";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
