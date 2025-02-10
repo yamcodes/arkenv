@@ -1,3 +1,4 @@
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import {
 	DocsBody,
@@ -26,7 +27,13 @@ export default async function Page(props: {
 					<DocsTitle>{page.data.title}</DocsTitle>
 					<DocsDescription>{page.data.description}</DocsDescription>
 					<DocsBody>
-						<MDX components={{ ...defaultMdxComponents }} />
+						<MDX
+							components={{
+								...defaultMdxComponents,
+								Tab,
+								Tabs,
+							}}
+						/>
 					</DocsBody>
 				</div>
 				<div className="flex flex-col items-start pt-16">

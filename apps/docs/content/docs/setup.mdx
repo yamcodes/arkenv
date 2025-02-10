@@ -1,0 +1,44 @@
+---
+title: Getting Started
+description: Learn how to install & setup `ark.env`
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+<Steps>
+  <Step>
+    #### Install
+    ```package-install
+    ark.env arktype
+    ```
+  </Step>
+  <Step>
+    #### Setup ArkType
+
+    Follow the [ArkType setup instructions](https://arktype.io/docs/intro/setup) to configure your project.
+  </Step>
+  <Step>
+    #### Create a `.env` file
+
+    ```bash
+    touch .env
+    ```
+  </Step>
+  <Step>
+    #### Add your environment variables
+
+    ```bash
+    echo "NEXT_PUBLIC_GITHUB_URL=https://github.com/your-repo" >> .env
+    ```
+  </Step>
+  <Step>
+    #### Use the environment variables in your code
+
+    ```ts
+    const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL;
+    ```
+  </Step>
+  <Step>
+  #### :tada: Done!
+  </Step>
+</Steps>
