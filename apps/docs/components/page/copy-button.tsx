@@ -42,6 +42,7 @@ export function CopyButton({ command }: CopyButtonProps) {
 				copied ? "cursor-default" : "cursor-pointer",
 				"hover:bg-slate-800 text-slate-400 hover:text-slate-100", // Force dark-themed colors
 			)}
+			aria-label="Copy command"
 		>
 			{copied ? <Check /> : <Copy />}
 			<span className="sr-only">Copy command</span>
