@@ -1,3 +1,9 @@
 {
-	"pages": ["---Guide---", "index", "setup"]
+	"pages": [
+		"---Introduction---",
+		"index",
+		"setup",
+		"---Guides---",
+		"guides/environment-configuration"
+	]
 }
