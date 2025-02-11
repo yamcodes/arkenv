@@ -1,5 +1,5 @@
 .dark {
-	--background: hsl(0 0% 7%);
+	--background: hsl(220, 60%, 6%);
 	--foreground: hsl(0 0% 98%);
 	--card: hsl(240 10% 3.9%);
 	--card-foreground: hsl(0 0% 98%);
@@ -7,7 +7,7 @@
 	--popover-foreground: hsl(0 0% 98%);
 	--primary: rgb(158, 203, 255);
 	--primary-foreground: rgb(10, 52, 93); /** can be rgb(3, 47, 98) */
-	--secondary: rgb(10, 52, 93);
+	--secondary: color-mix(in srgb, var(--background) 80%, transparent);
 	--secondary-foreground: hsl(0 0% 98%);
 	--muted: hsl(240 3.7% 15.9%);
 	--muted-foreground: hsl(240 5% 64.9%);

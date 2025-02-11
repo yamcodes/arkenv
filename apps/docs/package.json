@@ -13,6 +13,7 @@
 		"@icons-pack/react-simple-icons": "^11.2.0",
 		"@radix-ui/react-separator": "^1.1.2",
 		"@radix-ui/react-slot": "^1.1.2",
+		"@radix-ui/react-toast": "^1.2.6",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"fumadocs-core": "15.0.6",

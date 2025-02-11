@@ -36,9 +36,8 @@ export default function HomePage() {
 				</div>
 				<div className="flex items-center gap-2">
 					<code>
-						<span className="text-blue-400">$</span>
-						<span> </span>
-						<span className="text-yellow-400">npm</span>
+						<span className="text-green-300 select-none font-bold">❯ </span>
+						<span className="text-green-400">npm</span>
 						<span className="text-white"> install ark.env arktype</span>
 						<span className="inline-block w-4" />
 						<CopyButton command="npm install ark.env arktype" />

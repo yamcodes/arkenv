@@ -1,7 +1,9 @@
+import { getGithubLastEdit } from "fumadocs-core/server";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import {
 	DocsBody,
+	DocsCategory,
 	DocsDescription,
 	DocsPage,
 	DocsTitle,
@@ -24,7 +26,7 @@ export default async function Page(props: {
 		<DocsPage toc={page.data.toc} full={page.data.full}>
 			<div className="flex flex-col h-full">
 				<div className="flex-grow">
-					<DocsTitle>{page.data.title}</DocsTitle>
+					<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 					<DocsDescription>{page.data.description}</DocsDescription>
 					<DocsBody>
 						<MDX
