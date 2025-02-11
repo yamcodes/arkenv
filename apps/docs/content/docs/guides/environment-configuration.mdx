@@ -1,0 +1,266 @@
+---
+title: Loading Environment Variables
+description: Learn how to manage environment variables across different environments and deployment scenarios
+---
+
+## Local Development
+
+### Using .env Files
+
+The most common way to manage environment variables during development is using `.env` files:
+
+```bash
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+NODE_ENV=development
+API_KEY=your-secret-key
+LOG_LEVEL=debug
+```
+
+### Best Practices for .env Files
+
+1. **Document Required Variables**
+   Create a `.env.example` file to document required variables:
+   ```bash
+   DATABASE_HOST=localhost
+   DATABASE_PORT=5432
+   NODE_ENV=development
+   API_KEY=your-secret-key-here
+   LOG_LEVEL=info
+   ```
+
+2. **Gitignore Configuration**
+   Add these patterns to your `.gitignore`:
+   ```bash
+   .env
+   .env.*
+   !.env.example
+   ```
+
+3. **Environment-Specific Files**
+   Use different files for different environments:
+   - `.env.development` - Development settings
+   - `.env.test` - Test environment settings
+   - `.env.production` - Production defaults (if needed)
+
+## Loading Environment Variables
+
+### Using dotenv
+
+The simplest way to load environment variables is using the `dotenv` package:
+
+```typescript
+import 'dotenv/config';
+// or
+import * as dotenv from 'dotenv';
+dotenv.config();
+```
+
+### Framework-Specific Solutions
+
+Many frameworks have built-in support for environment variables:
+
+#### Next.js
+- Automatically loads `.env*` files
+- Supports environment-specific files (`.env.development`, `.env.production`)
+- [Next.js Environment Variables Documentation](https://nextjs.org/docs/basic-features/environment-variables)
+
+#### Vite
+- Automatically loads `.env` files
+- Supports mode-specific files (`.env.development`, `.env.production`)
+- [Vite Env Variables Documentation](https://vitejs.dev/guide/env-and-mode.html)
+
+#### Express
+```typescript
+import express from 'express';
+import dotenv from 'dotenv';
+
+dotenv.config();
+const app = express();
+```
+
+#### Nest.js
+```typescript
+import { ConfigModule } from '@nestjs/config';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
+})
+```
+
+### Runtime Arguments
+
+You can also supply variables when running your application:
+
+```bash
+DATABASE_HOST=localhost DATABASE_PORT=5432 npm start
+```
+
+## Production Deployment
+
+### Cloud Platforms
+
+#### AWS
+- Use AWS Systems Manager Parameter Store for non-sensitive values
+- Use AWS Secrets Manager for sensitive values
+- Set environment variables in ECS Task Definitions or Lambda configurations
+
+#### Google Cloud Platform
+- Use Cloud Secret Manager for sensitive values
+- Set environment variables in Cloud Run or App Engine configurations
+
+#### Azure
+- Use Azure Key Vault for sensitive values
+- Configure App Settings in Azure App Service
+
+### Container Environments
+
+#### Docker
+```dockerfile
+# Dockerfile
+ENV NODE_ENV=production
+```
+
+```yaml
+# docker-compose.yml
+services:
+  app:
+    environment:
+      - NODE_ENV=production
+      - DATABASE_HOST=db
+```
+
+#### Kubernetes
+```yaml
+# deployment.yaml
+spec:
+  containers:
+    - name: app
+      env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: database-host
+```
+
+### Traditional Hosting
+
+- Set environment variables through the hosting platform's dashboard
+- Use deployment scripts to configure environment variables
+- Consider using configuration management tools
+
+## Security Best Practices
+
+1. **Never commit sensitive values**
+   - Keep `.env` files out of version control
+   - Use secrets management services in production
+
+2. **Use different values per environment**
+   - Don't share sensitive credentials between environments
+   - Use environment-specific configurations
+
+3. **Access Control**
+   - Limit access to production environment variables
+   - Use role-based access control for secrets management
+
+4. **Encryption**
+   - Encrypt sensitive values at rest
+   - Use secure channels for transmitting secrets
+
+## Validation and Type Safety
+
+ark.env helps ensure your environment variables are valid:
+
+```typescript
+import ark, { host, port } from 'ark.env';
+
+export const env = ark.env({
+  // Required variables with validation
+  DATABASE_HOST: host,
+  DATABASE_PORT: port,
+  
+  // Optional variables with defaults
+  LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+  
+  // Optional variables
+  "FEATURE_FLAGS?": 'string[]',
+  
+  // Custom validation
+  API_URL: (value: string) => {
+    try {
+      new URL(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+});
+```
+
+## Common Patterns
+
+### Configuration Factory
+
+Create a configuration factory to handle different environments:
+
+```typescript
+import ark, { host, port } from 'ark.env';
+
+const createConfig = () => {
+  const env = ark.env({
+    NODE_ENV: "'development' | 'test' | 'production'",
+    DATABASE_HOST: host,
+    DATABASE_PORT: port,
+  });
+
+  return {
+    isProduction: env.NODE_ENV === 'production',
+    database: {
+      host: env.DATABASE_HOST,
+      port: env.DATABASE_PORT,
+    }
+  };
+};
+
+export const config = createConfig();
+```
+
+### Feature Flags
+
+Use environment variables for feature flags:
+
+```typescript
+import ark from 'ark.env';
+
+export const env = ark.env({
+  "ENABLE_BETA_FEATURES?": 'boolean = false',
+  "MAINTENANCE_MODE?": 'boolean = false',
+  "ALLOWED_ORIGINS?": 'string[] = []'
+});
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Missing Variables**
+   - Check if `.env` file exists
+   - Verify variable names match exactly
+   - Ensure variables are loaded before use
+
+2. **Type Errors**
+   - Verify variable types match schema
+   - Check for typos in variable names
+   - Ensure all required variables are provided
+
+3. **Loading Order**
+   - Load environment variables before importing config
+   - Consider using a bootstrap file
+   - Check framework-specific loading behavior

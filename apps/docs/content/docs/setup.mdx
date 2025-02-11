@@ -1,0 +1,155 @@
+---
+title: Quickstart
+description: Get started with ark.env in your TypeScript project
+icon: Rocket
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+<Steps>
+  <Step>
+    ### Install
+    > [!NOTE]
+    > `ark.env` is built on top of [ArkType](https://arktype.io/). Both must be installed in your project.
+
+    ```package-install
+    ark.env arktype
+    ```
+  </Step>
+
+  <Step>
+    ### Configure TypeScript & ArkType
+
+    Ensure your `tsconfig.json` has strict mode enabled for the best type safety:
+
+    ```json
+    {
+      "compilerOptions": {
+        "strict": true
+      }
+    }
+    ```
+
+    Then, follow the [ArkType setup instructions](https://arktype.io/docs/intro/setup) to configure your project.
+  </Step>
+
+  <Step>
+    ### Define the environment schema
+
+    Create a new file (e.g., `config/env.ts`) to define your environment variables:
+
+    ```typescript
+    import { defineEnv, host, port } from 'ark.env';
+
+    export const env = defineEnv({
+      // Built-in validators
+      DATABASE_HOST: host,
+      DATABASE_PORT: port,
+      
+      // Custom string literals
+      NODE_ENV: "'development' | 'production' | 'test'",
+      
+      // Optional variables with defaults
+      LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+      
+      // Optional environment variable
+      "API_KEY?": 'string'
+    });
+    ```
+  </Step>
+
+  <Step>
+    ### Set up environment variables
+
+    Create a `.env` file in your project root:
+
+    ```bash
+    DATABASE_HOST=localhost
+    DATABASE_PORT=5432
+    NODE_ENV=development
+    API_KEY=your-secret-key
+    ```
+
+    > [!TIP]
+    > It's recommended to [never commit your `.env` file to version control](https://12factor.net/config):
+    >
+    > ```bash
+    > echo ".env" >> .gitignore
+    > ```
+
+    <Accordions>
+      <Accordion title="How to load environment variables?">
+        The simplest way is to set variables at the system level:
+
+        ```bash
+        # Unix/Mac
+        DATABASE_HOST=localhost npm start
+
+        # Windows (PowerShell)
+        $env:DATABASE_HOST="localhost"; npm start
+
+        # Windows (CMD)
+        set DATABASE_HOST=localhost && npm start
+        ```
+
+        For cross-platform compatibility, use [cross-env](https://www.npmjs.com/package/cross-env):
+        ```package-install
+        -D cross-env
+        ```
+        ```json
+        {
+          "scripts": {
+            "start": "cross-env DATABASE_HOST=localhost NODE_ENV=development npm start"
+          }
+        }
+        ```
+
+        ### Using `.env` files
+        
+        For development, `.env` files are recommended. If you're on Node.js v20.6.0 or higher, [`.env` files support is built-in](https://nodejs.org/en/blog/release/v20.6.0#built-in-env-file-support).
+        Otherwise, you can use a framework-specific solution or [the `dotenv` package](https://github.com/motdotla/dotenv).
+
+        #### Framework-Specific solutions
+        - **Next.js**: [Environment Variables](https://nextjs.org/docs/basic-features/environment-variables)
+        - **Vite**: [Env Variables and Modes ](https://vitejs.dev/guide/env-and-mode.html)
+        - **Nest.js**: [Configuration](https://docs.nestjs.com/techniques/configuration)
+
+        Read more in [Loading Environment Variables](/docs/guides/environment-configuration).
+      </Accordion>
+    </Accordions>
+  </Step>
+
+  <Step>
+    ### Use environment variables
+
+    Import and use your typed environment variables anywhere in your code:
+
+    ```typescript
+    import { env } from './config/env';
+
+    // TypeScript knows the exact types!
+    const dbConfig = {
+      host: env.DATABASE_HOST,  // string (valid host)
+      port: env.DATABASE_PORT,  // number (valid port)
+    };
+    ```
+  </Step>
+</Steps>
+
+## Next Steps
+
+<Cards>
+  <Card 
+    title="Loading Environment Variables" 
+    href="/docs/guides/environment-configuration" 
+    description="Learn how to manage environment variables across different environments."
+  />
+  {process.env.NEXT_PUBLIC_EXAMPLES_URL && (
+    <Card 
+      title="Examples" 
+      href={process.env.NEXT_PUBLIC_EXAMPLES_URL} 
+      description="See examples of ark.env in action."
+    />
+  )}
+</Cards>

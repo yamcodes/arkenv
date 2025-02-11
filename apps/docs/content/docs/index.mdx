@@ -1,13 +1,49 @@
 ---
-title: ark.env Documentation
-description: Your first document
+title: What is ark.env?
+icon: Album
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+`ark.env` is a powerful TypeScript-first environment variable management library that provides runtime validation and type safety for your application's configuration.
 
-## What is Next?
+## Key Features
+
+- 🔒 **Type-safe**: Full TypeScript support with precise type inference
+- 🚀 **Runtime validation**: Catch missing or invalid environment variables early in development
+- 💪 **Powered by ArkType**: Built on top of ArkType's powerful type system
+- 🪶 **Lightweight**: Zero dependencies, minimal bundle size
+- ⚡ **Fast**: Optimized for performance with minimal overhead
+
+## Why `ark.env`?
+
+Managing environment variables in TypeScript applications can be error-prone. Common issues include:
+- Missing environment variables causing runtime crashes
+- Type mismatches between expected and actual values
+- Lack of validation for critical configuration
+- No autocomplete or type hints in your IDE
+
+`ark.env` solves these problems by providing a typesafe, validated way to define and use environment variables in your TypeScript applications.
+
+## Quick Example
+
+```ts
+import { defineEnv, host, port } from 'ark.env';
+
+const env = defineEnv({
+  HOST: host,           // Validates IP address or localhost
+  PORT: port,           // Ensures valid port number (0-65535)
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+
+// TypeScript knows the exact types!
+console.log(env.HOST);     // string
+console.log(env.PORT);     // number
+console.log(env.NODE_ENV); // "development" | "production" | "test"
+```
+
+## What's Next?
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about ark.env" href="https://github.com/yamcodes/ark.env" />
+  <Card title="Installation & Setup" href="/docs/setup" description="Get started with ark.env in your project." />
+  <Card title="GitHub Repository" href="https://github.com/yamcodes/ark.env" description="View the source code and contribute to the project." />
+  <Card title="ArkType Documentation" href="https://arktype.io/docs" description="Learn more about the underlying type system." />
 </Cards>

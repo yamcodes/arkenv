@@ -1,13 +1,13 @@
 .dark {
-	--background: hsl(0 0% 7%);
+	--background: hsl(220, 60%, 6%);
 	--foreground: hsl(0 0% 98%);
 	--card: hsl(240 10% 3.9%);
 	--card-foreground: hsl(0 0% 98%);
 	--popover: hsl(240 10% 3.9%);
 	--popover-foreground: hsl(0 0% 98%);
-	--primary: hsl(0 0% 98%);
-	--primary-foreground: hsl(240 5.9% 10%);
-	--secondary: hsl(240 3.7% 15.9%);
+	--primary: rgb(158, 203, 255);
+	--primary-foreground: rgb(10, 52, 93); /** can be rgb(3, 47, 98) */
+	--secondary: color-mix(in srgb, var(--background) 80%, transparent);
 	--secondary-foreground: hsl(0 0% 98%);
 	--muted: hsl(240 3.7% 15.9%);
 	--muted-foreground: hsl(240 5% 64.9%);
@@ -15,7 +15,7 @@
 	--accent-foreground: hsl(0 0% 98%);
 	--destructive: hsl(0 62.8% 30.6%);
 	--destructive-foreground: hsl(0 0% 98%);
-	--border: hsl(240 3.7% 15.9%);
+	--border: var(--color-fd-border);
 	--input: hsl(240 3.7% 15.9%);
 	--ring: hsl(240 4.9% 83.9%);
 	--chart-1: hsl(220 70% 50%);

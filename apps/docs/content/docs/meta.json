@@ -1,0 +1,9 @@
+{
+	"pages": [
+		"---Introduction---",
+		"index",
+		"setup",
+		"---Guides---",
+		"guides/environment-configuration"
+	]
+}

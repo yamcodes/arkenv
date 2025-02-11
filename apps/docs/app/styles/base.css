@@ -2,7 +2,10 @@
 	* {
 		@apply border-border outline-ring/50;
 	}
-	body {
-		@apply bg-background text-foreground;
+
+	code,
+	pre {
+		font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo,
+			Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 	}
 }

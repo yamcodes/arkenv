@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/ocean.css";
 @import "fumadocs-ui/css/preset.css";
 @import "./styles/theme/light.css";
 @import "./styles/theme/dark.css";
@@ -9,3 +9,13 @@
 
 @plugin "tailwindcss-animate";
 @source '../../../node_modules/fumadocs-ui/dist/**/*.js';
+
+button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 100%);
+	--color-fd-accent: hsl(0, 0%, 100%);
+}
+
+.dark button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 0%);
+	--color-fd-accent: hsl(0, 0%, 0%);
+}
