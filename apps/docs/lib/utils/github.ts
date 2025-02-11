@@ -20,10 +20,13 @@ export const breakDownGithubUrl = (githubUrl?: string) => {
  * @param path - File path within the repository
  * @param githubUrl - Optional GitHub repository URL
  * @returns Object containing title and href for the GitHub edit page
+ * @throws {Error} If URL is not configured or has invalid format
  */
 export const getLinkTitleAndHref = (path: string, githubUrl?: string) => {
-	const { owner, repo, defaultBranch } = breakDownGithubUrl(githubUrl);
+	const url = githubUrl ?? process.env.NEXT_PUBLIC_GITHUB_URL;
+	if (!url) throw new Error("NEXT_PUBLIC_GITHUB_URL is not configured");
+	const { owner, repo, defaultBranch } = breakDownGithubUrl(url);
 	const title = `Editing ${repo}/${path} at ${defaultBranch} · ${owner}/${repo}`;
-	const href = `${githubUrl}/edit/${defaultBranch}/${path}`;
+	const href = `${url}/edit/${defaultBranch}/${path}`;
 	return { title, href };
 };
