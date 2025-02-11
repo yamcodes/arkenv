@@ -38,7 +38,10 @@ export function CopyButton({ command }: CopyButtonProps) {
 			variant="ghost"
 			size="icon"
 			onClick={handleClick}
-			className={copied ? "cursor-default" : "cursor-pointer"}
+			className={clsx(
+				copied ? "cursor-default" : "cursor-pointer",
+				"hover:bg-slate-800 text-slate-400 hover:text-slate-100", // Force dark-themed colors
+			)}
 		>
 			{copied ? <Check /> : <Copy />}
 			<span className="sr-only">Copy command</span>

@@ -9,3 +9,13 @@
 
 @plugin "tailwindcss-animate";
 @source '../../../node_modules/fumadocs-ui/dist/**/*.js';
+
+button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 100%);
+	--color-fd-accent: hsl(0, 0%, 100%);
+}
+
+.dark button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 0%);
+	--color-fd-accent: hsl(0, 0%, 0%);
+}

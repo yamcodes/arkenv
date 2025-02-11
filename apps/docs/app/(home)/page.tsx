@@ -18,7 +18,11 @@ export default function HomePage() {
 			</h1>
 			<p className="text-fd-muted-foreground">Typesafe Environment Variables</p>
 			<div className="flex justify-center my-4 gap-4">
-				<Button asChild>
+				<Button
+					asChild
+					variant="outline"
+					className="dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/80 dark:hover:text-primary-foreground"
+				>
 					<Link href="/docs/setup">
 						<Sailboat />
 						Set sail --&gt;
@@ -26,7 +30,7 @@ export default function HomePage() {
 				</Button>
 			</div>
 			<p className="text-fd-muted-foreground text-sm mb-2">...or simply run:</p>
-			<div className="mx-auto w-fit rounded-lg bg-black/90 p-4 ring-1 ring-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)] shadow-blue-500/20">
+			<div className="mx-auto w-fit rounded-lg bg-black p-4 ring-1 ring-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)] shadow-blue-500/20">
 				<div className="flex items-center justify-between gap-2 mb-4">
 					<div className="flex items-center gap-2">
 						<div className="h-3 w-3 rounded-full bg-red-400/30" />
