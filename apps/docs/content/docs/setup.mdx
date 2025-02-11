@@ -71,6 +71,13 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
     API_KEY=your-secret-key
     ```
 
+    > [!TIP]
+    > It's recommended to [never commit your `.env` file to version control](https://12factor.net/config):
+    >
+    > ```bash
+    > echo ".env" >> .gitignore
+    > ```
+
     <Accordions>
       <Accordion title="How to load environment variables?">
         The simplest way is to set variables at the system level:
@@ -98,7 +105,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
         }
         ```
 
-        ### Using .env Files
+        ### Using `.env` files
         
         For development, `.env` files are recommended. If you're on Node.js v20.6.0 or higher, [`.env` files support is built-in](https://nodejs.org/en/blog/release/v20.6.0#built-in-env-file-support).
         Otherwise, you can use a framework-specific solution or [the `dotenv` package](https://github.com/motdotla/dotenv).
@@ -114,7 +121,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   </Step>
 
   <Step>
-    ### Use Environment Variables
+    ### Use environment variables
 
     Import and use your typed environment variables anywhere in your code:
 
