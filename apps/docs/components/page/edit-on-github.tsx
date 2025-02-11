@@ -2,8 +2,8 @@
 
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
 import { getLinkTitleAndHref } from "~/lib/utils";
+import { Button } from "../ui/button";
 
 type EditOnGithubProps = {
 	/**
