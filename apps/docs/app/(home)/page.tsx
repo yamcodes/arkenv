@@ -14,7 +14,9 @@ export default function HomePage() {
 	return (
 		<main className="flex flex-1 flex-col justify-center text-center">
 			<h1 className="mb-4 text-2xl font-bold sm:mt-0 mt-16">
-				<code className="text-fd-foreground">ark.env</code>
+				<code className="text-fd-foreground relative decoration-[rgb(180,215,255)] decoration-wavy decoration-2 underline underline-offset-4">
+					ark.env
+				</code>
 			</h1>
 			<p className="text-fd-muted-foreground">Typesafe Environment Variables</p>
 			<div className="flex justify-center my-4 gap-4 sm:mb-6 mb-16">
