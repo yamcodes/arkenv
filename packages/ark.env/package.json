@@ -5,7 +5,7 @@
 	"main": "./dist/lib/index.cjs",
 	"module": "./dist/lib/index.js",
 	"types": "./dist/lib/index.d.ts",
-	"description": "Type-safe environment variables parsing and validation for Node.js with ArkType",
+	"description": "Typesafe environment variables parsing and validation for Node.js with ArkType",
 	"exports": {
 		"types": "./dist/lib/index.d.ts",
 		"import": "./dist/lib/index.js",
