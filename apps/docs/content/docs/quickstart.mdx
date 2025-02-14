@@ -16,7 +16,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   </Step>
 
   <Step>
-    ### Configure TypeScript & ArkType
+    ### Configure your project
 
     Enable strict mode in your `tsconfig.json` for the best typesafety:
 
@@ -32,9 +32,9 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   </Step>
 
   <Step>
-    ### Define the environment schema
+    ### Define the schema
 
-    Create a new file (e.g., `config/env.ts`) to define your environment variables:
+    Create a new file (e.g., `config/env.ts`) to define your environment variables' schema:
 
     ```typescript
     import { defineEnv, host, port } from 'ark.env';
@@ -57,9 +57,9 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   </Step>
 
   <Step>
-    ### Set up environment variables
+    ### Define environment variables
 
-    Create a `.env` file in your project root:
+    Create a `.env` file in your project root with some following variables:
 
     ```bash
     DATABASE_HOST=localhost
@@ -88,7 +88,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   </Step>
 
   <Step>
-    ### Use environment variables
+    ### Use in your code
 
     Import and use your typed environment variables anywhere in your code. As an example, you might have a `database.ts` file that looks like this:
 
