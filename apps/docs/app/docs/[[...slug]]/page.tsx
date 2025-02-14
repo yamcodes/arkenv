@@ -1,9 +1,7 @@
-import { getGithubLastEdit } from "fumadocs-core/server";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import {
 	DocsBody,
-	DocsCategory,
 	DocsDescription,
 	DocsPage,
 	DocsTitle,

@@ -1,25 +1,23 @@
 ---
 title: Quickstart
 icon: Rocket
+description: Let's get you started with a few simple steps
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
-
-## Getting Started
-
-Let's get you started with a few simple steps:
+import { Card } from '~/components/ui/card';
 
 <Steps>
   <Step>
-    ### Install
+    ## Install
     ```package-install
     ark.env arktype
     ```
   </Step>
 
   <Step>
-    ### Configure your project
+    ## Configure your project
 
     Enable strict mode in your `tsconfig.json` for the best typesafety:
 
@@ -35,7 +33,7 @@ Let's get you started with a few simple steps:
   </Step>
 
   <Step>
-    ### Define the schema
+    ## Define the schema
 
     Create a new file (e.g., `config/env.ts`) with a schema for your environment variables:
 
@@ -57,11 +55,11 @@ Let's get you started with a few simple steps:
       "API_KEY?": 'string'
     });
     ```
-    This schema will be used to make your environment variables **validated** and **typesafe**.
+    This schema will be used to make your environment variables **validated** and **typed**.
   </Step>
 
   <Step>
-    ### Define environment variables
+    ## Define environment variables
 
     Create a `.env` file in your project root with some environment variables:
 
@@ -81,6 +79,7 @@ Let's get you started with a few simple steps:
 
     <Accordions>
       <Accordion title="How to load environment variables from .env files?">
+      Each framework has its own best practices. Here are some common ones:
         - **Next.js**: [Environment Variables](https://nextjs.org/docs/basic-features/environment-variables)
         - **Vite**: [Env Variables and Modes ](https://vitejs.dev/guide/env-and-mode.html)
         - **Nest.js**: [Configuration](https://docs.nestjs.com/techniques/configuration)
@@ -92,9 +91,9 @@ Let's get you started with a few simple steps:
   </Step>
 
   <Step>
-    ### Use in your code
+    ## Use in your code
 
-    Import and use your typed environment variables anywhere in your code. As an example, you might have a `database.ts` file that looks like this:
+    Import and use your **validated** and **typed** environment variables. For example, you might have a file like `database.ts`:
 
     ```typescript
     import { env } from './config/env';
@@ -108,7 +107,7 @@ Let's get you started with a few simple steps:
   </Step>
 </Steps>
 
-## Next Steps
+## Next steps
 
 <Cards>
   <Card 

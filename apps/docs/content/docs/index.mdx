@@ -3,9 +3,11 @@ title: What is ark.env?
 icon: Album
 ---
 
+import { Card } from '~/components/ui/card';
+
 `ark.env` is a powerful TypeScript-first environment variable management library that provides runtime validation and typesafety for your application's configuration.
 
-## Key Features
+## Key features
 
 - 🔒 **Typesafe**: Full TypeScript support with precise type inference
 - 🚀 **Runtime validation**: Catch missing or invalid environment variables early in development
@@ -23,7 +25,9 @@ Managing environment variables in TypeScript applications can be error-prone. Co
 
 `ark.env` solves these problems by providing a typesafe, validated way to define and use environment variables in your TypeScript applications.
 
-## Quick Example
+## Quick example
+
+Here's the kind of code you can expect when using `ark.env`:
 
 ```ts
 import { defineEnv, host, port } from 'ark.env';
@@ -40,10 +44,10 @@ console.log(env.PORT);     // number
 console.log(env.NODE_ENV); // "development" | "production" | "test"
 ```
 
-## What's Next?
+## Next steps
 
 <Cards>
-  <Card title="Installation & Setup" href="/docs/setup" description="Get started with ark.env in your project." />
-  <Card title="GitHub Repository" href="https://github.com/yamcodes/ark.env" description="View the source code and contribute to the project." />
-  <Card title="ArkType Documentation" href="https://arktype.io/docs" description="Learn more about the underlying type system." />
+  <Card title="Quickstart" href="/docs/quickstart" description="Quickly get started with ark.env in your project" />
+  <Card title="GitHub Repository" href="https://github.com/yamcodes/ark.env" description="View the source code and contribute to the project" />
+  <Card title="ArkType Documentation" href="https://arktype.io/docs" description="Learn more about the underlying type system" className="bg-blue-900" />
 </Cards>
