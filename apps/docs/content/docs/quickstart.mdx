@@ -34,7 +34,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   <Step>
     ### Define the schema
 
-    Create a new file (e.g., `config/env.ts`) to define your environment variables' schema:
+    Create a new file (e.g., `config/env.ts`) with a schema for your environment variables:
 
     ```typescript
     import { defineEnv, host, port } from 'ark.env';
@@ -54,6 +54,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
       "API_KEY?": 'string'
     });
     ```
+    This schema will be used to make your environment variables **validated** and **typesafe**.
   </Step>
 
   <Step>
