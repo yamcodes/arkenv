@@ -2,7 +2,7 @@
 	"pages": [
 		"---Introduction---",
 		"index",
-		"setup",
+		"quickstart",
 		"---Guides---",
 		"guides/environment-configuration"
 	]

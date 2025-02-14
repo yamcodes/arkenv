@@ -38,7 +38,7 @@ export function SailButton() {
 			>
 				<Sailboat
 					className={`transition-transform duration-[1500ms] ease-in-out ${isSailing ? "translate-x-[1000%]" : ""}`}
-					onTransitionEnd={() => router.push("/docs/setup")}
+					onTransitionEnd={() => router.push("/docs/quickstart")}
 				/>
 				<span
 					className={`transition-transform duration-[1500ms] ease-in-out ${isSailing ? "translate-x-2" : ""}`}

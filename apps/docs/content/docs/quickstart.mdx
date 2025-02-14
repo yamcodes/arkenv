@@ -10,9 +10,6 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 <Steps>
   <Step>
     ### Install
-    > [!NOTE]
-    > `ark.env` is built on top of [ArkType](https://arktype.io/). Both must be installed in your project.
-
     ```package-install
     ark.env arktype
     ```
@@ -21,7 +18,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   <Step>
     ### Configure TypeScript & ArkType
 
-    Ensure your `tsconfig.json` has strict mode enabled for the best typesafety:
+    Enable strict mode in your `tsconfig.json` for the best typesafety:
 
     ```json
     {
@@ -30,8 +27,8 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
       }
     }
     ```
-
-    Then, follow the [ArkType setup instructions](https://arktype.io/docs/intro/setup) to configure your project.
+    
+    `ark.env` is built on top of [ArkType](https://arktype.io/). Follow the [ArkType setup instructions](https://arktype.io/docs/intro/setup) to configure your project.
   </Step>
 
   <Step>
@@ -79,41 +76,12 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
     > ```
 
     <Accordions>
-      <Accordion title="How to load environment variables?">
-        The simplest way is to set variables at the system level:
-
-        ```bash
-        # Unix/Mac
-        DATABASE_HOST=localhost npm start
-
-        # Windows (PowerShell)
-        $env:DATABASE_HOST="localhost"; npm start
-
-        # Windows (CMD)
-        set DATABASE_HOST=localhost && npm start
-        ```
-
-        For cross-platform compatibility, use [cross-env](https://www.npmjs.com/package/cross-env):
-        ```package-install
-        -D cross-env
-        ```
-        ```json
-        {
-          "scripts": {
-            "start": "cross-env DATABASE_HOST=localhost NODE_ENV=development npm start"
-          }
-        }
-        ```
-
-        ### Using `.env` files
-        
-        For development, `.env` files are recommended. If you're on Node.js v20.6.0 or higher, [`.env` files support is built-in](https://nodejs.org/en/blog/release/v20.6.0#built-in-env-file-support).
-        Otherwise, you can use a framework-specific solution or [the `dotenv` package](https://github.com/motdotla/dotenv).
-
-        #### Framework-Specific solutions
+      <Accordion title="How to load environment variables">
+        For development, `.env` files are recommended.
         - **Next.js**: [Environment Variables](https://nextjs.org/docs/basic-features/environment-variables)
         - **Vite**: [Env Variables and Modes ](https://vitejs.dev/guide/env-and-mode.html)
         - **Nest.js**: [Configuration](https://docs.nestjs.com/techniques/configuration)
+        - **Node.js**: [v20.6.0 built-in `.env` file support](https://nodejs.org/en/blog/release/v20.6.0#built-in-env-file-support) or [dotenv](https://github.com/motdotla/dotenv)
 
         Read more in [Loading Environment Variables](/docs/guides/environment-configuration).
       </Accordion>
@@ -123,12 +91,12 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
   <Step>
     ### Use environment variables
 
-    Import and use your typed environment variables anywhere in your code:
+    Import and use your typed environment variables anywhere in your code. As an example, you might have a `database.ts` file that looks like this:
 
     ```typescript
     import { env } from './config/env';
 
-    // TypeScript knows the exact types!
+    // TypeScript knows the ✨exact✨ types!
     const dbConfig = {
       host: env.DATABASE_HOST,  // string (valid host)
       port: env.DATABASE_PORT,  // number (valid port)
