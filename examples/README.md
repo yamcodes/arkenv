@@ -24,7 +24,7 @@ Each example is a self-contained project with its own `package.json` and depende
 
 ## Contributing examples
 
-We welcome new examples! If you'd like to contribute an example:
+New examples are welcome! If you'd like to contribute an example:
 
 1. Create a new directory under `examples/`
 2. Include a comprehensive `README.md` explaining the example

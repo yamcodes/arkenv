@@ -41,7 +41,7 @@ bun run build
 
 ## Changesets
 
-We use [Changesets](https://github.com/changesets/changesets) to manage versions and changelogs. Each PR that makes changes to the functionality of the package should include a changeset.
+[Changesets](https://github.com/changesets/changesets) is used to manage versions and changelogs. Each PR that makes changes to the functionality of the package should include a changeset.
 
 To create a changeset:
 1. Run `bun changeset`

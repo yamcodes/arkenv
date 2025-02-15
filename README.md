@@ -2,6 +2,15 @@
   <a href="https://yam.codes/ark.env">
   <img alt="ark.env - Typesafe Environment Variables" src="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=text-[%23e9eef9]%20font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-[5px]%20underline%20underline-offset-[16px]%20text-5xl%20mb-8&text=Typesafe%20Environment%20Variables&textTailwind=text-[%238b9dc1]%20text-3xl&bgTailwind=bg-gradient-to-b%20from-[%23061a3a]%20to-black" width="600px">
   </a>
+  <a href="https://www.npmjs.com/package/ark.env">
+    <img alt="Bundle Size" src="https://badgen.net/bundlephobia/minzip/ark.env?icon=npm">
+  </a>
+  <a href="https://www.npmjs.com/package/ark.env">
+    <img alt="Bundle Size" src="https://badgen.net/bundlephobia/dependency-count/ark.env?icon=npm">
+  </a>
+  <a href="https://github.com/arktypeio/arktype">
+    <img alt="License" src="https://badgen.net/static/powered by/ArkType?icon=github">
+  </a>
 </p>
 
 ## Installation
@@ -64,16 +73,12 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 - 🔒 **Type-safe**: Full TypeScript support with inferred types
 - 🚀 **Runtime validation**: Catch missing or invalid environment variables early
 - 💪 **Powered by ArkType**: Leverage ArkType's powerful type system
-- 🪶 **Lightweight**: Zero dependencies, minimal bundle size
+- 🪶 **Lightweight**: Only a single dependency ([7 kB](https://github.com/alexeyraspopov/picocolors#benchmarks))
 - ⚡ **Fast**: Optimized for performance with minimal overhead
 
 ## Documentation
 
 For detailed documentation and examples, please visit our [documentation site](https://yam.codes/ark.env).
-
-## Examples
-
-Check out our [examples](https://github.com/yamcodes/ark.env/tree/main/examples) to see how to use `ark.env` in different environments.
 
 ## Contributing
 
