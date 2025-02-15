@@ -1,5 +1,13 @@
 # ark.env
 
+## 0.1.2
+
+### Patch Changes
+
+- Fix npm README _[`cddd970`](https://github.com/yamcodes/ark.env/commit/cddd970e9d8f0213ece7b8b8cb3d6cf47fbbeecd) [@yamcodes](https://github.com/yamcodes)_
+
+  This is just a documentation fix to display the correct README.md file in the npm registry.
+
 ## 0.1.1
 
 ### Patch Changes
