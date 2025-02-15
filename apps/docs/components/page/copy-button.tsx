@@ -1,10 +1,12 @@
 "use client";
 
+import { captureException } from "@sentry/nextjs";
 import clsx from "clsx";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
+
 type CopyButtonProps = {
 	command: string;
 };
@@ -23,7 +25,7 @@ export function CopyButton({ command }: CopyButtonProps) {
 				duration: 2000,
 			});
 		} catch (error) {
-			console.error("Failed to copy:", error);
+			captureException(error);
 			toast({
 				title: "Uh oh! Something went wrong.",
 				description:
