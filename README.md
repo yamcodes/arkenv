@@ -41,7 +41,7 @@ bun add ark.env arktype
 ## Quickstart
 
 > [!TIP]
-> For comprehensive usage examples, please see [src/sample.ts](./packages/ark.env/src/sample.ts).
+> Find more examples in the [examples](./examples) directory.
 
 ```ts
 import ark, { host, port } from 'ark.env';

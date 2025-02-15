@@ -14,8 +14,6 @@
 	"scripts": {
 		"build": "rimraf dist && tsup",
 		"prepack": "bun run build",
-		"sample": "bun --watch src/sample",
-		"sample:once": "bun src/sample",
 		"test": "bun test --watch",
 		"test:once": "bun test",
 		"typecheck": "tsc --noEmit",
