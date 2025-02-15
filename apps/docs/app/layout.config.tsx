@@ -10,7 +10,7 @@ import { Logo } from "~/components/page/logo";
  */
 export const baseOptions: BaseLayoutProps = {
 	nav: {
-		title: <Logo />,
+		title: <Logo className="text-xl mb-1" />,
 	},
 	links: [
 		{
