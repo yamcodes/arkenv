@@ -3,7 +3,9 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+			"inputs": [".env", ".env.local"],
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+			"env": ["SENTRY_*"]
 		},
 		"dev": {
 			"cache": false,
