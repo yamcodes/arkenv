@@ -7,7 +7,7 @@
 		"dev": "bun --watch run src/index.ts"
 	},
 	"dependencies": {
-		"ark.env": "^0.1.0",
+		"ark.env": "^0.1.1",
 		"picocolors": "latest"
 	},
 	"devDependencies": {

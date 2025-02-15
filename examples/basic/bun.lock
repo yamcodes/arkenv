@@ -4,7 +4,7 @@
     "": {
       "name": "ark.env-basic-example",
       "dependencies": {
-        "ark.env": "^0.1.0",
+        "ark.env": "^0.1.1",
         "picocolors": "latest",
       },
       "devDependencies": {
@@ -21,7 +21,7 @@
 
     "@types/ws": ["@types/ws@8.5.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-bd/YFLW+URhBzMXurx7lWByOu+xzU9+kb3RboOteXYDfW+tr+JZa99OyNmPINEGB/ahzKrEuc8rcv4gnpJmxTw=="],
 
-    "ark.env": ["ark.env@0.1.0", "", { "dependencies": { "picocolors": "^1.1.1" }, "peerDependencies": { "arktype": "^2.0.2" } }, "sha512-QHtCK7TvW3zTJS5f7o1nKAmhfvGPDP3FdutMF1nyUVfEVoZNqdWgAmXaznhaj4HQAwyYqkBHW7ih8rpjnwY4kw=="],
+    "ark.env": ["ark.env@0.1.1", "", { "dependencies": { "picocolors": "^1.1.1" }, "peerDependencies": { "arktype": "^2.0.2" } }, "sha512-H4aLYGqI0Qz/Bk6LpIxr4PgiOHZVwoAyfQV96OseF0yOQjbqzeHOz60NMq2zgRK4Bc+OmUFyVaiIfD7P2ab52A=="],
 
     "arktype": ["arktype@2.0.4", "", { "dependencies": { "@ark/schema": "0.39.0", "@ark/util": "0.39.0" } }, "sha512-S68rWVDnJauwH7/QCm8zCUM3aTe9Xk6oRihdcc3FSUAtxCo/q1Fwq46JhcwB5Ufv1YStwdQRz+00Y/URlvbhAQ=="],
 
