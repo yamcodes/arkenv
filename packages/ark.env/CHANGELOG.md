@@ -1,5 +1,28 @@
 # ark.env
 
+## 0.1.0
+
+### Minor Changes
+
+- Rename main function to `env` and use support a default export _[`ba5bee4`](https://github.com/yamcodes/ark.env/commit/ba5bee435154b183e0973ec1e17e5739473af866) [@yamcodes](https://github.com/yamcodes)_
+
+  This change allows importing and using the library in the following way:
+
+  ```ts
+  import ark from "ark.env";
+
+  const env = ark.env({
+    HOST: host,
+    PORT: port,
+  });
+  ```
+
+  You can also import the `env` function (and any other exports) directly:
+
+  ```ts
+  import { env } from "ark.env";
+  ```
+
 ## 0.0.5
 
 ### Patch Changes
