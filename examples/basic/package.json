@@ -11,7 +11,7 @@
 		"arktype": "^2.0.4"
 	},
 	"devDependencies": {
-		"bun-types": "latest",
+		"@types/bun": "^1.2.2",
 		"picocolors": "^1.1.1"
 	}
 }
