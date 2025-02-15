@@ -10,7 +10,7 @@ type UserEnvironment = Record<string, string | undefined>;
  * @param env - The environment variables to validate, defaults to `process.env`
  * @returns The validated environment variable schema
  */
-export const defineEnv = <const def>(
+export const env = <const def>(
 	def: type.validate<def>,
 	env: UserEnvironment = process.env,
 ): distill.Out<type.infer<def>> => {

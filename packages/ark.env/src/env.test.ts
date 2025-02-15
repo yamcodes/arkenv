@@ -1,11 +1,11 @@
 import { describe, expect, it } from "bun:test";
 import { red, yellow } from "picocolors";
-import { defineEnv } from "./define-env";
+import * as ark from "./env";
 import { indent } from "./utils";
 
 /**
- * Format the errors returned by defineEnv for testing purposes
- * @param errors - The errors returned by defineEnv
+ * Format the errors returned by env for testing purposes
+ * @param errors - The errors returned by env
  * @returns A string of the formatted errors
  */
 const expectedError = (
@@ -24,11 +24,11 @@ const expectedError = (
 	return formattedErrors.join("\n");
 };
 
-describe("defineEnv", () => {
+describe("env", () => {
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
-		const env = defineEnv({
+		const env = ark.env({
 			TEST_STRING: "string",
 		});
 
@@ -37,7 +37,7 @@ describe("defineEnv", () => {
 
 	it("should throw when required env variable is missing", () => {
 		expect(() =>
-			defineEnv({
+			ark.env({
 				MISSING_VAR: "string",
 			}),
 		).toThrow(
@@ -55,7 +55,7 @@ describe("defineEnv", () => {
 		process.env.WRONG_TYPE = "not a number";
 
 		expect(() =>
-			defineEnv({
+			ark.env({
 				WRONG_TYPE: "number",
 			}),
 		).toThrow(
@@ -74,7 +74,7 @@ describe("defineEnv", () => {
 			TEST_STRING: "hello",
 		};
 
-		const { TEST_STRING } = defineEnv(
+		const { TEST_STRING } = ark.env(
 			{
 				TEST_STRING: "string",
 			},

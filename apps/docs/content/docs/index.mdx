@@ -30,9 +30,9 @@ Managing environment variables in TypeScript applications can be error-prone. Co
 Here's the kind of code you can expect when using `ark.env`:
 
 ```ts
-import { defineEnv, host, port } from 'ark.env';
+import ark, { host, port } from 'ark.env';
 
-const env = defineEnv({
+const env = ark.env({
   HOST: host,           // Validates IP address or localhost
   PORT: port,           // Ensures valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",

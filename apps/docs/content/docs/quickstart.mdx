@@ -38,9 +38,9 @@ import { Card } from '~/components/ui/card';
     Create a new file (e.g., `config/env.ts`) with a schema for your environment variables:
 
     ```typescript
-    import { defineEnv, host, port } from 'ark.env';
+    import ark, { host, port } from 'ark.env';
 
-    export const env = defineEnv({
+    export const env = ark.env({
       // Built-in validators
       DATABASE_HOST: host,
       DATABASE_PORT: port,

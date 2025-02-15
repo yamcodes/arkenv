@@ -26,7 +26,7 @@
 
 - Support custom user environments _[`dfa942b`](https://github.com/yamcodes/ark.env/commit/dfa942b7eaa9f49dae2a968c4cb24f6c90bfa3f4) [@yamcodes](https://github.com/yamcodes)_
 
-  We've added a new optional parameter to `defineEnv` to allow for custom environment variables. This can be used for example in Vite apps by passing `import.meta.env` as the second parameter.
+  We've added a new optional parameter to `env` to allow for custom environment variables. This can be used for example in Vite apps by passing `import.meta.env` as the second parameter.
 
 ## 0.0.2
 
@@ -45,7 +45,7 @@
   ** `ark.env` now supports TypeScript inference** - check out this quick example:
 
   ```ts
-  const { HOST } = defineEnv({
+  const { HOST } = env({
     HOST: "string.ip",
   });
   console.log(HOST); // <-- the type is "string"!

@@ -1,7 +1,7 @@
+import ark, { host, port } from "ark.env";
 import { blue, bold, green, red } from "picocolors";
-import { defineEnv, host, port } from ".";
 
-const env = defineEnv({
+const env = ark.env({
 	HOST: host,
 	PORT: port.default("3000"),
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
