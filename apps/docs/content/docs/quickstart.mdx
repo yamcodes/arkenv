@@ -79,13 +79,17 @@ import { Card } from '~/components/ui/card';
 
     <Accordions>
       <Accordion title="How to load environment variables from .env files?">
-      Each framework has its own best practices. Here are some common ones:
+      Each framework has its own best practices. Common ones include:
         - **Next.js**: [Environment Variables](https://nextjs.org/docs/basic-features/environment-variables)
         - **Vite**: [Env Variables and Modes ](https://vitejs.dev/guide/env-and-mode.html)
         - **Nest.js**: [Configuration](https://docs.nestjs.com/techniques/configuration)
         - **Node.js**: [v20.6.0 built-in `.env` file support](https://nodejs.org/en/blog/release/v20.6.0#built-in-env-file-support) or [dotenv](https://github.com/motdotla/dotenv)
-
-        Read more: [Loading Environment Variables](/docs/guides/environment-configuration)
+  
+        <Card
+          title="Loading Environment Variables"
+          href="/docs/guides/environment-configuration"
+          description="Learn how to manage environment variables across different environments and deployment scenarios"
+        />
       </Accordion>
     </Accordions>
   </Step>
@@ -113,13 +117,13 @@ import { Card } from '~/components/ui/card';
   <Card 
     title="Loading Environment Variables" 
     href="/docs/guides/environment-configuration" 
-    description="Learn how to manage environment variables across different environments."
+    description="Learn how to manage environment variables across different environments and deployment scenarios"
   />
   {process.env.NEXT_PUBLIC_EXAMPLES_URL && (
     <Card 
       title="Examples" 
       href={process.env.NEXT_PUBLIC_EXAMPLES_URL} 
-      description="See examples of ark.env in action."
+      description="See examples of ark.env in action"
     />
   )}
 </Cards>

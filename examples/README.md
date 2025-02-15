@@ -22,7 +22,7 @@ Each example is a self-contained project with its own `package.json` and depende
 
 3. Follow the example-specific instructions in its README.
 
-## Contributing examples
+## Contributing an example
 
 New examples are welcome! If you'd like to contribute an example:
 
