@@ -1,4 +1,10 @@
-<img src="assets/banner.png" alt="ark.env">
+# ark.env
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-2%20underline%20underline-offset-4%20text-2xl&text=Typesafe%20Environment%20Variables&textTailwind=text-gray-600&bgTailwind=bg-transparent">
+  <source media="(prefers-color-scheme: light)" srcset="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-2%20underline%20underline-offset-4%20text-2xl&text=Typesafe%20Environment%20Variables&textTailwind=text-gray-600&bgTailwind=bg-transparent">
+  <img alt="ark.env - Typesafe Environment Variables" src="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-2%20underline%20underline-offset-4%20text-2xl&text=Typesafe%20Environment%20Variables&textTailwind=text-gray-600&bgTailwind=bg-transparent">
+</picture>
 
 ## Installation
 
@@ -40,9 +46,9 @@ bun add ark.env
 > For comprehensive usage examples, please see [src/sample.ts](./packages/ark.env/src/sample.ts).
 
 ```ts
-import { defineEnv, host, port } from 'ark.env';
+import ark, { host, port } from 'ark.env';
 
-const env = defineEnv({
+const env = ark.env({
   HOST: host, // valid IP address or localhost
   PORT: port, // valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",
