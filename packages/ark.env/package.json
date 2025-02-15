@@ -2,14 +2,14 @@
 	"name": "ark.env",
 	"type": "module",
 	"version": "0.1.0",
-	"main": "./dist/lib/index.cjs",
-	"module": "./dist/lib/index.js",
-	"types": "./dist/lib/index.d.ts",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"description": "Typesafe environment variables parsing and validation for Node.js with ArkType",
 	"exports": {
-		"types": "./dist/lib/index.d.ts",
-		"import": "./dist/lib/index.js",
-		"require": "./dist/lib/index.cjs"
+		"types": "./dist/index.d.ts",
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
 	},
 	"scripts": {
 		"build": "rimraf dist && tsup",
