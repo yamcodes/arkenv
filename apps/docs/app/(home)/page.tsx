@@ -1,6 +1,4 @@
-import { ChevronRight, Copy } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CopyButton } from "~/components/page/copy-button";
 import { Logo } from "~/components/page/logo";
 import { SailButton } from "~/components/page/sail-button";

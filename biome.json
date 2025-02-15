@@ -23,6 +23,9 @@
 			"recommended": true,
 			"complexity": {
 				"noBannedTypes": "off"
+			},
+			"correctness": {
+				"noUnusedImports": "warn"
 			}
 		}
 	},
