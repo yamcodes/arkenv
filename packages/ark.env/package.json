@@ -1,7 +1,7 @@
 {
 	"name": "ark.env",
 	"type": "module",
-	"version": "0.0.5",
+	"version": "0.1.0",
 	"main": "./dist/lib/index.cjs",
 	"module": "./dist/lib/index.js",
 	"types": "./dist/lib/index.d.ts",
@@ -21,8 +21,12 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules"
 	},
-	"files": ["dist"],
-	"keywords": ["bun"],
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"bun"
+	],
 	"license": "MIT",
 	"homepage": "https://github.com/yamcodes/ark.env#readme",
 	"repository": {
