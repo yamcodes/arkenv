@@ -14,11 +14,11 @@ export function CopyButton({ command }: CopyButtonProps) {
 	const [copied, setCopied] = useState(false);
 	const { toast } = useToast();
 
-	const handleClick = () => {
+	const handleClick = async () => {
 		try {
-			navigator.clipboard.writeText(command);
+			await navigator.clipboard.writeText(command);
 			setCopied(true);
-			setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+			setTimeout(() => setCopied(false), 2000);
 			toast({
 				description: "Command copied to clipboard!",
 				duration: 2000,
