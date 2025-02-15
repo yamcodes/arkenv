@@ -1,4 +1,8 @@
-<img src="assets/banner.png" alt="ark.env">
+<p align="center">
+  <a href="https://yam.codes/ark.env">
+  <img alt="ark.env - Typesafe Environment Variables" src="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=text-[%23e9eef9]%20font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-4%20underline%20underline-offset-[16px]%20text-5xl%20mb-8&text=Typesafe%20Environment%20Variables&textTailwind=text-[%238b9dc1]%20text-3xl&bgTailwind=bg-gradient-to-b%20from-[%23061a3a]%20to-black" width="600px">
+  </a>
+</p>
 
 ## Installation
 
@@ -40,9 +44,9 @@ bun add ark.env
 > For comprehensive usage examples, please see [src/sample.ts](./packages/ark.env/src/sample.ts).
 
 ```ts
-import { defineEnv, host, port } from 'ark.env';
+import ark, { host, port } from 'ark.env';
 
-const env = defineEnv({
+const env = ark.env({
   HOST: host, // valid IP address or localhost
   PORT: port, // valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",
