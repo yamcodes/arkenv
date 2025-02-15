@@ -6,6 +6,7 @@ const env = ark.env({
 	HOST: host.default("localhost"),
 	PORT: port.default("3000"),
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+	MY_ENV_VAR: "string",
 });
 
 // Pretty print the configuration
@@ -18,3 +19,5 @@ console.log(
 // This is just an example - in a real app you would use these values
 // to configure your server or application
 export default env;
+
+console.log(env.MY_ENV_VAR);
