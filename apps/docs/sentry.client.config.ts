@@ -35,4 +35,15 @@ Sentry.init({
 
 	// Setting this option to true will print useful information to the console while you're setting up Sentry.
 	debug: false,
+
+	beforeSend(event, hint) {
+		if (process.env.NODE_ENV === "development") {
+			// Log the original error with full stack trace
+			// biome-ignore lint/suspicious/noConsole: Logger
+			console.error(hint.originalException || hint.syntheticException || event);
+			// Drop the event in development
+			return null;
+		}
+		return event;
+	},
 });

@@ -26,6 +26,9 @@
 			},
 			"correctness": {
 				"noUnusedImports": "warn"
+			},
+			"suspicious": {
+				"noConsole": "warn"
 			}
 		}
 	},
