@@ -1,4 +1,4 @@
-name: linter
+name: lint
 description: "Check linting on pull requests"
 
 on:
