@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import { Logo } from "~/components/page/logo";
 
 /**
  * Shared layout configurations
@@ -9,7 +10,7 @@ import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
  */
 export const baseOptions: BaseLayoutProps = {
 	nav: {
-		title: "ark.env",
+		title: <Logo />,
 	},
 	links: [
 		{

@@ -2,6 +2,7 @@ import { ChevronRight, Copy } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyButton } from "~/components/page/copy-button";
+import { Logo } from "~/components/page/logo";
 import { SailButton } from "~/components/page/sail-button";
 
 export const metadata: Metadata = {
@@ -13,10 +14,8 @@ export const metadata: Metadata = {
 export default function HomePage() {
 	return (
 		<main className="flex flex-1 flex-col justify-center text-center">
-			<h1 className="mb-4 text-2xl font-bold sm:mt-0 mt-16">
-				<code className="text-fd-foreground relative decoration-[rgb(180,215,255)] decoration-wavy underline underline-offset-4">
-					ark.env
-				</code>
+			<h1 className="mb-4 text-2xl sm:mt-0 mt-16">
+				<Logo />
 			</h1>
 			<p className="text-fd-muted-foreground">Typesafe Environment Variables</p>
 			<div className="flex justify-center my-4 gap-4 sm:mb-6 mb-16">
