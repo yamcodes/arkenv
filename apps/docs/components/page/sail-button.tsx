@@ -18,9 +18,9 @@ export function SailButton() {
 			<style jsx global>{`
 				@keyframes double-nudge {
 					0%, 100% { transform: translateX(0); }
-					5%, 7% { transform: translateX(4px); }
-					8% { transform: translateX(2px); }
-					15%, 17% { transform: translateX(4px); }
+					5%, 7% { transform: translateX(2px); }
+					8% { transform: translateX(1px); }
+					15%, 17% { transform: translateX(2px); }
 					18% { transform: translateX(2.5px); }
 					21% { transform: translateX(1.5px); }
 					25% { transform: translateX(0.5px); }
@@ -41,7 +41,7 @@ export function SailButton() {
 					onTransitionEnd={() => router.push("/docs/quickstart")}
 				/>
 				<span
-					className={`transition-transform duration-[1500ms] ease-in-out ${isSailing ? "translate-x-2" : ""}`}
+					className={`transition-transform duration-[1500ms] ease-in-out ${isSailing ? "translate-x-0.5" : ""}`}
 				>
 					Set sail{" "}
 					<span
