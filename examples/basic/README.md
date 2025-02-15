@@ -39,21 +39,21 @@ curl -fsSL https://bun.sh/install | bash
 
 ### Adding environment variables
 
-With the development server running (if it's not - just run `bun dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `NEW_ENV_VAR`.
+With the development server running (if it's not - just run `bun dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
 
 1. Define the new environment variable in the schema as a **required** string:
     ```typescript
     // index.ts
     const env = ark.env({
         // other definitions...
-        NEW_ENV_VAR: "string"
+        MY_ENV_VAR: "string"
     });
     ```
 
 2.  Notice that the development server will show an error:
     ```bash
     ArkEnvError: Errors found while validating environment variables
-      NEW_ENV_VAR must be a string (was missing)
+      MY_ENV_VAR must be a string (was missing)
     ```
     This is **good**! It means that the environment variable is required and that the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://yam.codes/ark.env/docs/guides/environment-configuration#using-env-files).
 
