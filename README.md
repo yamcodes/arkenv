@@ -67,7 +67,7 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 
 ## Features
 
-- 🔒 **Type-safe**: Full TypeScript support with inferred types
+- 🔒 **Typesafe**: Full TypeScript support with inferred types
 - 🚀 **Runtime validation**: Catch missing or invalid environment variables early
 - 💪 **Powered by ArkType**: Leverage ArkType's powerful type system
 - 🪶 **Lightweight**: Only a single dependency ([7 kB](https://github.com/alexeyraspopov/picocolors#benchmarks))

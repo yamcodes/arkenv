@@ -4,7 +4,7 @@ This directory contains a collection of example projects that demonstrate variou
 
 ## Examples
 
-- [`basic`](./basic) - A minimal example showing how to use `ark.env` in a Bun application with type-safe environment variables.
+- [`basic`](./basic) - A minimal example showing *how to use `ark.env` in a [Bun](https://bun.sh/) application*. Perfect for learning the fundamentals.
 
 ## Running an example
 

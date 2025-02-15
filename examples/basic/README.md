@@ -8,7 +8,7 @@ This example shows how to use `ark.env` in a basic Bun application.
 The example demonstrates:
 - Setting up environment variables with ark.env
 - Using default values
-- Type-safe environment configuration
+- Typesafe environment configuration
 - Pretty console output with picocolors
 
 ## Getting Started
