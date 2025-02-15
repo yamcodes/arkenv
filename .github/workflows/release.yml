@@ -1,4 +1,5 @@
-name: Release
+name: release
+description: "Release a new version of the package if needed"
 
 on:
   push:
