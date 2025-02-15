@@ -1,5 +1,5 @@
-# `ark.env` Documentation
+# `ark.env` Documentation Site
 
-Welcome to the `ark.env` documentation!
+Welcome to the `ark.env` documentation site!
 
-You can also view the documentation on our [docsite](https://yam.codes/ark.env).
+:rocket: We are live on [yam.codes/ark.env](https://yam.codes/ark.env).
