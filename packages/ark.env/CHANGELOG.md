@@ -1,5 +1,13 @@
 # ark.env
 
+## 0.1.1
+
+### Patch Changes
+
+- Fix build exports _[`05f60dd`](https://github.com/yamcodes/ark.env/commit/05f60ddb4f2869f2a6a771dd6aa4b79d4b4cb738) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix the built package by modifying the exports to the correct path.
+
 ## 0.1.0
 
 ### Minor Changes
