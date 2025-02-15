@@ -41,7 +41,7 @@ bun add ark.env arktype
 ## Quickstart
 
 > [!TIP]
-> Find more examples in the [examples](./examples) directory.
+> Find more examples in the [examples](https://github.com/yamcodes/ark.env/tree/main/examples) directory.
 
 ```ts
 import ark, { host, port } from 'ark.env';
@@ -71,10 +71,14 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 
 For detailed documentation and examples, please visit our [documentation site](https://yam.codes/ark.env).
 
+## Examples
+
+Check out our [examples](https://github.com/yamcodes/ark.env/tree/main/examples) to see how to use `ark.env` in different environments.
+
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
+Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/yamcodes/ark.env/blob/main/CONTRIBUTING.md) for more information.
 
 ## Thanks / Inspiration
 
-Find projects and people who helped or inspired the creation of `ark.env` in [THANKS.md](./THANKS.md). Thank you 🙏
+Find projects and people who helped or inspired the creation of `ark.env` in [THANKS.md](https://github.com/yamcodes/ark.env/blob/main/THANKS.md). Thank you 🙏

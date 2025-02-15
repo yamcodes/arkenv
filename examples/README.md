@@ -1,4 +1,4 @@
-# `ark.env` Examples
+# `ark.env` examples
 
 This directory contains a collection of example projects that demonstrate various use cases and features of `ark.env`. Each example is a standalone project that can be run independently.
 
@@ -6,7 +6,7 @@ This directory contains a collection of example projects that demonstrate variou
 
 - [`basic`](./basic) - A minimal example showing how to use `ark.env` in a Bun application with type-safe environment variables.
 
-## Running an Example
+## Running an example
 
 Each example is a self-contained project with its own `package.json` and dependencies. To run an example:
 
@@ -22,7 +22,7 @@ Each example is a self-contained project with its own `package.json` and depende
 
 3. Follow the example-specific instructions in its README.
 
-## Contributing Examples
+## Contributing examples
 
 We welcome new examples! If you'd like to contribute an example:
 
