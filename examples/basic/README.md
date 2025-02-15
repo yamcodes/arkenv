@@ -41,7 +41,7 @@ curl -fsSL https://bun.sh/install | bash
 
 With the development server running (if it isn't - just run `bun dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
 
-1. #### Define the new environment variable in the schema as a *required* string:
+1. #### Define the new environment variable in the schema as a _required_ string
     ```typescript
     // index.ts
     const env = ark.env({
