@@ -3,7 +3,7 @@
 This example shows how to use `ark.env` in a basic Bun application.
 
 
-## What's Inside
+## What's inside?
 
 The example demonstrates:
 - Setting up environment variables with ark.env
@@ -11,7 +11,7 @@ The example demonstrates:
 - Typesafe environment configuration
 - Pretty console output with picocolors
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
