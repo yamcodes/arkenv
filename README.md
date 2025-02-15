@@ -1,10 +1,8 @@
-# ark.env
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-2%20underline%20underline-offset-4%20text-2xl&text=Typesafe%20Environment%20Variables&textTailwind=text-gray-600&bgTailwind=bg-transparent">
-  <source media="(prefers-color-scheme: light)" srcset="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-2%20underline%20underline-offset-4%20text-2xl&text=Typesafe%20Environment%20Variables&textTailwind=text-gray-600&bgTailwind=bg-transparent">
-  <img alt="ark.env - Typesafe Environment Variables" src="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-2%20underline%20underline-offset-4%20text-2xl&text=Typesafe%20Environment%20Variables&textTailwind=text-gray-600&bgTailwind=bg-transparent">
-</picture>
+<h1 align="center">
+  <a href="https://yam.codes/ark.env">
+  <img alt="ark.env - Typesafe Environment Variables" src="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ark.env&titleTailwind=text-[%23e9eef9]%20font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-8%20underline%20underline-offset-8%20text-5xl%20mb-8&text=Typesafe%20Environment%20Variables&textTailwind=text-[%238b9dc1]%20text-3xl&bgTailwind=bg-gradient-to-b%20from-[%23061a3a]%20to-black" width="600px">
+  </a>
+</h1>
 
 ## Installation
 
