@@ -7,10 +7,11 @@
 		"dev": "bun --watch run index.ts"
 	},
 	"dependencies": {
-		"ark.env": "^0.1.0",
-		"picocolors": "latest"
+		"ark.env": "^0.1.1",
+		"arktype": "^2.0.4"
 	},
 	"devDependencies": {
-		"bun-types": "latest"
+		"bun-types": "latest",
+		"picocolors": "^1.1.1"
 	}
 }
