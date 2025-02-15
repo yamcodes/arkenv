@@ -87,6 +87,6 @@ With the development server running (if it's not - just run `bun dev`), let's se
 
 ### Next steps
 
-- [`ark.env` docs](https://github.com/yam-codes/ark.env)
+- [`ark.env` docs](https://github.com/yamcodes/ark.env)
 - [ArkType docs](https://arktype.io/)
 - [Bun docs](https://bun.sh)
