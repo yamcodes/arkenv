@@ -5,11 +5,9 @@
   <br />
   <a href="https://www.npmjs.com/package/ark.env">
     <img alt="Bundle Size" src="https://badgen.net/bundlephobia/minzip/ark.env?icon=npm">
-  </a>
-  <a href="https://www.npmjs.com/package/ark.env">
+  </a><a href="https://www.npmjs.com/package/ark.env">
     <img alt="Bundle Size" src="https://badgen.net/bundlephobia/dependency-count/ark.env?icon=npm">
-  </a>
-  <a href="https://github.com/arktypeio/arktype">
+  </a><a href="https://github.com/arktypeio/arktype">
     <img alt="License" src="https://badgen.net/static/powered by/ArkType?icon=github">
   </a>
 </p>
