@@ -119,11 +119,9 @@ import { Card } from '~/components/ui/card';
     href="/docs/guides/environment-configuration" 
     description="Learn how to manage environment variables across different environments and deployment scenarios"
   />
-  {process.env.NEXT_PUBLIC_EXAMPLES_URL && (
-    <Card 
-      title="Examples" 
-      href={process.env.NEXT_PUBLIC_EXAMPLES_URL} 
-      description="See examples of ark.env in action"
-    />
-  )}
+  <Card 
+    title="Examples" 
+    href="/docs/examples#examples"
+    description="See examples of ark.env in action"
+  />
 </Cards>
