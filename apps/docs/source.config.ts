@@ -5,6 +5,9 @@ import remarkGemoji from "remark-gemoji";
 
 export const docs = defineDocs({
 	dir: "content/docs",
+	docs: {
+		files: ["**/*", "!**/README.md"],
+	},
 });
 
 export default defineConfig({
