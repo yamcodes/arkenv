@@ -10,7 +10,7 @@
 <summary>npm</summary>
 
 ```sh
-npm install ark.env
+npm install ark.env arktype
 ```
 </details>
 
@@ -18,7 +18,7 @@ npm install ark.env
 <summary>pnpm</summary>
 
 ```sh
-pnpm add ark.env
+pnpm add ark.env arktype
 ```
 </details>
 
@@ -26,7 +26,7 @@ pnpm add ark.env
 <summary>Yarn</summary>
 
 ```sh
-yarn add ark.env
+yarn add ark.env arktype
 ```
 </details>
 
@@ -34,7 +34,7 @@ yarn add ark.env
 <summary>Bun</summary>
 
 ```sh
-bun add ark.env
+bun add ark.env arktype
 ```
 </details>
 
