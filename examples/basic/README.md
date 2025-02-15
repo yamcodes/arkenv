@@ -28,11 +28,6 @@ curl -fsSL https://bun.sh/install | bash
     bun install
     ```
 
-    Note: When using this example in your own project, use the published version:
-    ```bash
-    bun add ark.env
-    ```
-
 2. Start the development server with hot reloading enabled: 
     ```bash
     bun dev
