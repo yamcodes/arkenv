@@ -4,7 +4,7 @@
   </a>
   <br />
   <a href="https://github.com/yamcodes/ark.env/actions/workflows/tests.yml"><img alt="CI Status" src="https://github.com/yamcodes/ark.env/actions/workflows/tests.yml/badge.svg?event=push&branch=main"></a>
-  <a href="https://www.npmjs.com/package/ark.env"><img alt="Total Downloads" src="https://badgen.net/npm/dt/ark.env/total?icon=npm"></a>
+  <a href="https://www.npmjs.com/package/ark.env"><img alt="Total Downloads" src="https://badgen.net/npm/dt/ark.env/total?icon=npm&color=blue"></a>
   <a href="https://www.npmjs.com/package/ark.env"><img alt="Bundle Size" src="https://badgen.net/bundlephobia/minzip/ark.env?icon=npm&label=bundle%20size"></a>
   <a href="https://www.npmjs.com/package/ark.env"><img alt="Dependency Count" src="https://badgen.net/bundlephobia/dependency-count/ark.env?icon=npm&label=dependencies"></a>
   <a href="https://arktype.io/"><img alt="License" src="https://badgen.net/static/powered by/ArkType"></a>
