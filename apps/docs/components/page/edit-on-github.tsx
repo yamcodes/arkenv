@@ -1,5 +1,6 @@
 "use client";
 
+import { captureMessage } from "@sentry/nextjs";
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
 import { getLinkTitleAndHref } from "~/lib/utils";
@@ -34,7 +35,12 @@ export const EditOnGithub = ({ path }: EditOnGithubProps) => {
 			</Button>
 		);
 	} catch (error) {
-		console.warn("Could not render GitHub edit button:", error);
+		captureMessage("Could not render GitHub edit button", {
+			level: "warning",
+			extra: {
+				error: error instanceof Error ? error.message : String(error),
+			},
+		});
 		return null;
 	}
 };

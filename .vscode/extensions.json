@@ -1,5 +1,9 @@
 {
-	"recommendations": ["biomejs.biome", "unifiedjs.vscode-mdx"],
+	"recommendations": [
+		"biomejs.biome",
+		"unifiedjs.vscode-mdx",
+		"dotenv.dotenv-vscode"
+	],
 	"unwantedRecommendations": [
 		"esbenp.prettier-vscode",
 		"dbaeumer.vscode-eslint"
