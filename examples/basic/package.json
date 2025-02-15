@@ -8,10 +8,11 @@
 	},
 	"dependencies": {
 		"ark.env": "^0.1.1",
-		"arktype": "^2.0.4"
+		"arktype": "^2.0.4",
+		"picocolors": "^1.1.1"
 	},
 	"devDependencies": {
-		"@types/bun": "^1.2.2",
-		"picocolors": "^1.1.1"
+		"bun-types": "^1.2.2",
+		"typescript": "^5.0.0"
 	}
 }
