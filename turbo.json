@@ -11,11 +11,11 @@
 			"cache": false,
 			"persistent": true
 		},
-    "test:once": {},
-    "test": {
-      "cache": false, 
-      "persistent": true
-    },
+		"test:once": {},
+		"test": {
+			"cache": false,
+			"persistent": true
+		},
 		"coverage": {},
 		"clean": {
 			"cache": false
