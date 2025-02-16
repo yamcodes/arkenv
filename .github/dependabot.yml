@@ -11,7 +11,7 @@ updates:
     schedule:
       interval: "weekly" # Check for updates daily
     groups:
-      non-major-dependencies:
+      bun:
         patterns:
           - "*"
         update-types:
@@ -23,7 +23,7 @@ updates:
     schedule:
       interval: "weekly" # Check for updates daily
     groups:
-      non-major-dependencies:
+      actions:
         patterns:
           - "*"
         update-types:
