@@ -34,6 +34,7 @@ jobs:
 
       - name: Run test
         run: bun test
+
   test-build:
     runs-on: ubuntu-latest
     steps:
