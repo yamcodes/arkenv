@@ -5,7 +5,27 @@
 
 version: 2
 updates:
+  # Bun updates
   - package-ecosystem: "bun"
     directory: "/"
     schedule:
-      interval: "daily" 
+      interval: "weekly" # Check for updates daily
+    groups:
+      non-major-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly" # Check for updates daily
+    groups:
+      non-major-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
