@@ -9,3 +9,9 @@
 			Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 	}
 }
+
+@layer utilities {
+	.fd-steps {
+		padding-left: 2.3rem;
+	}
+}
