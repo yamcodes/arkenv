@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CopyButton } from "~/components/page/copy-button";
 import { Logo } from "~/components/page/logo";
 import { SailButton } from "~/components/page/sail-button";
+import { StackBlitzDemo } from "~/components/page/stackblitz-demo";
 
 export const metadata: Metadata = {
 	title: "ark.env: Typesafe Environment Variables",
@@ -40,6 +41,14 @@ export default function HomePage() {
 						<CopyButton command="npm install ark.env arktype" />
 					</div>
 				</div>
+			</div>
+
+			<div className="mt-12 px-4 sm:px-8 max-w-5xl mx-auto w-full">
+				<h2 className="text-xl font-semibold mb-4">Try it out</h2>
+				<p className="text-fd-muted-foreground mb-6">
+					Explore our basic example directly in your browser
+				</p>
+				<StackBlitzDemo />
 			</div>
 		</main>
 	);
