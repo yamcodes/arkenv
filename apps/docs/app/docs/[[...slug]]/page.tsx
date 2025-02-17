@@ -1,4 +1,5 @@
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
+import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
 import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
@@ -49,6 +50,11 @@ export default async function Page(props: {
 								h4: (props) => <Heading {...props} as="h4" />,
 								h5: (props) => <Heading {...props} as="h5" />,
 								h6: (props) => <Heading {...props} as="h6" />,
+								pre: ({ ref: _ref, ...props }) => (
+									<CodeBlock {...props}>
+										<Pre>{props.children}</Pre>
+									</CodeBlock>
+								),
 							}}
 						/>
 					</DocsBody>

@@ -9,7 +9,7 @@ description: Learn how to manage environment variables across different environm
 
 The most common way to manage environment variables during development is using `.env` files:
 
-```bash
+```dotenv title=".env"
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 NODE_ENV=development
@@ -21,7 +21,7 @@ LOG_LEVEL=debug
 
 1. **Document Required Variables**
    Create a `.env.example` file to document required variables:
-   ```bash
+   ```dotenv title=".env.example"
    DATABASE_HOST=localhost
    DATABASE_PORT=5432
    NODE_ENV=development
@@ -31,7 +31,7 @@ LOG_LEVEL=debug
 
 2. **Gitignore Configuration**
    Add these patterns to your `.gitignore`:
-   ```bash
+   ```dotenv title=".gitignore"
    .env
    .env.*
    !.env.example
@@ -49,7 +49,7 @@ LOG_LEVEL=debug
 
 The simplest way to load environment variables is using the `dotenv` package:
 
-```typescript
+```typescript title="src/index.ts"
 import 'dotenv/config';
 // or
 import * as dotenv from 'dotenv';
@@ -71,7 +71,7 @@ Many frameworks have built-in support for environment variables:
 - [Vite Env Variables Documentation](https://vitejs.dev/guide/env-and-mode.html)
 
 #### Express
-```typescript
+```typescript title="src/app.ts"
 import express from 'express';
 import dotenv from 'dotenv';
 
@@ -80,7 +80,7 @@ const app = express();
 ```
 
 #### Nest.js
-```typescript
+```typescript title="src/app.module.ts"
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -120,13 +120,12 @@ DATABASE_HOST=localhost DATABASE_PORT=5432 npm start
 ### Container Environments
 
 #### Docker
-```dockerfile
-# Dockerfile
+
+```dockerfile title="Dockerfile"
 ENV NODE_ENV=production
 ```
 
-```yaml
-# docker-compose.yml
+```yaml title="docker-compose.yml"
 services:
   app:
     environment:
@@ -135,8 +134,7 @@ services:
 ```
 
 #### Kubernetes
-```yaml
-# deployment.yaml
+```yaml title="deployment.yaml"
 spec:
   containers:
     - name: app
@@ -178,7 +176,7 @@ spec:
 
 ark.env helps ensure your environment variables are valid:
 
-```typescript
+```typescript title="src/config/env.ts"
 import ark, { host, port } from 'ark.env';
 
 export const env = ark.env({
@@ -210,7 +208,7 @@ export const env = ark.env({
 
 Create a configuration factory to handle different environments:
 
-```typescript
+```typescript title="src/config/index.ts"
 import ark, { host, port } from 'ark.env';
 
 const createConfig = () => {
@@ -236,7 +234,7 @@ export const config = createConfig();
 
 Use environment variables for feature flags:
 
-```typescript
+```typescript title="src/config/features.ts"
 import ark from 'ark.env';
 
 export const env = ark.env({

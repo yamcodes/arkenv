@@ -15,12 +15,13 @@ description: Let's get you started with a few simple steps
   <Step>
     ## Configure your project
 
-    Enable strict mode in your `tsconfig.json` for the best typesafety:
+    Enable strict mode for the best typesafety:
 
-    ```json
+    ```json title="tsconfig.json"
+    // [!code word:config]
     {
       "compilerOptions": {
-        "strict": true
+        "strict": true // [!code highlight]
       }
     }
     ```
@@ -31,9 +32,9 @@ description: Let's get you started with a few simple steps
   <Step>
     ## Define the schema
 
-    Create a new file (e.g., `config/env.ts`) with a schema for your environment variables:
+    Add a schema to make your environment variables **validated** and **typesafe**:
 
-    ```typescript
+    ```typescript title="config/env.ts"
     import ark, { host, port } from 'ark.env';
 
     export const env = ark.env({
@@ -51,7 +52,6 @@ description: Let's get you started with a few simple steps
       "API_KEY?": 'string'
     });
     ```
-    This schema will be used to make your environment variables **validated** and **typed**.
   </Step>
 
   <Step>
@@ -59,7 +59,7 @@ description: Let's get you started with a few simple steps
 
     Create a `.env` file in your project root with some environment variables:
 
-    ```bash
+    ```dotenv title=".env"
     DATABASE_HOST=localhost
     DATABASE_PORT=5432
     NODE_ENV=development
@@ -95,7 +95,7 @@ description: Let's get you started with a few simple steps
 
     Import and use your **validated** and **typed** environment variables. For example, you might have a file like `database.ts`:
 
-    ```typescript
+    ```typescript title="database.ts"
     import { env } from './config/env';
 
     // TypeScript knows the ✨exact✨ types!
