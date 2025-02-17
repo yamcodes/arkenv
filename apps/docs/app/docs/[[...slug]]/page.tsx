@@ -1,3 +1,5 @@
+import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
+import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import {
@@ -8,6 +10,8 @@ import {
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
 import { EditOnGithub } from "~/components/page/edit-on-github";
+import { Button } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { source } from "~/lib/source";
 
@@ -32,6 +36,12 @@ export default async function Page(props: {
 								...defaultMdxComponents,
 								Tab,
 								Tabs,
+								Button,
+								Card,
+								Step,
+								Steps,
+								Accordion,
+								Accordions,
 							}}
 						/>
 					</DocsBody>
