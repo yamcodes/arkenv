@@ -2,7 +2,7 @@
 	"recommendations": [
 		"biomejs.biome",
 		"unifiedjs.vscode-mdx",
-		"dotenv.dotenv-vscode"
+		"mikestead.dotenv"
 	],
 	"unwantedRecommendations": [
 		"esbenp.prettier-vscode",
