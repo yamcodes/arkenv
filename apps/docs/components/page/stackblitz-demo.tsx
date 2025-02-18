@@ -10,7 +10,8 @@ export function StackBlitzDemo() {
 		if (!embedRef.current) return;
 		sdk.embedGithubProject(
 			embedRef.current,
-			"yamcodes/ark.env/tree/stackblitz/examples/basic",
+			process.env.NEXT_PUBLIC_STACKBLITZ_GITHUB_REPO_SLUG ??
+				"yamcodes/ark.env/tree/stackblitz/examples/basic",
 			{
 				openFile: "index.ts",
 				view: "editor",
