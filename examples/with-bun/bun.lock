@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "basic",
+      "name": "with-bun",
       "dependencies": {
         "ansis": "^3.15.0",
         "ark.env": "^0.1.3",
