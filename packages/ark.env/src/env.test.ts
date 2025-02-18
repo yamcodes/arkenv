@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { red, yellow } from "picocolors";
+import pc from "picocolors";
 import * as ark from "./env";
 import { indent } from "./utils";
 
@@ -16,8 +16,8 @@ const expectedError = (
 	}[],
 ) => {
 	const formattedErrors = errors.map((error) => {
-		return `${red("Errors found while validating environment variables")}\n${indent(
-			`${yellow(error.name)} must be ${error.requiredType} (was ${error.providedType})`,
+		return `${pc.red("Errors found while validating environment variables")}\n${indent(
+			`${pc.yellow(error.name)} must be ${error.requiredType} (was ${error.providedType})`,
 		)}\n`;
 	});
 

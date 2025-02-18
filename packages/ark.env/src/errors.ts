@@ -1,5 +1,5 @@
 import type { ArkErrors } from "arktype";
-import { cyan, red, yellow } from "picocolors";
+import pc from "picocolors";
 import { indent } from "./utils";
 
 /**
@@ -19,11 +19,11 @@ export const formatErrors = (errors: ArkErrors): string =>
 			const formattedMessage = valueMatch
 				? messageWithoutPath.replace(
 						`(was "${valueMatch[1]}")`,
-						`(was ${cyan(`"${valueMatch[1]}"`)})`,
+						`(was ${pc.cyan(`"${valueMatch[1]}"`)})`,
 					)
 				: messageWithoutPath;
 
-			return `${yellow(path)}${formattedMessage}`;
+			return `${pc.yellow(path)}${formattedMessage}`;
 		})
 		.join("\n");
 
@@ -32,7 +32,7 @@ export class ArkEnvError extends Error {
 		errors: ArkErrors,
 		message = "Errors found while validating environment variables",
 	) {
-		super(`${red(message)}\n${indent(formatErrors(errors))}\n`);
+		super(`${pc.red(message)}\n${indent(formatErrors(errors))}\n`);
 		this.name = "ArkEnvError";
 	}
 }
