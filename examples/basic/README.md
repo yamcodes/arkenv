@@ -28,10 +28,7 @@ Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [
     ```bash
     npm run dev
     ```
-    :white_check_mark: You will see the following output:
-    ```bash
-    🚀 Server running at localhost:3000 in development mode
-    ```
+    :white_check_mark: You will see the environment variables printed in the console.
 
 ### Adding environment variables
 
@@ -64,22 +61,15 @@ With the development server running (if it isn't - just run `npm run dev`), let'
     ```bash
     echo "MY_ENV_VAR=new_value" >> .env
     ```
+    
+    Notice the development server will once again print the existing environment variables.
 
-5. #### Notice the development server will once again show the success message
-    ```bash
-    🚀 Server running at localhost:3000 in development mode
-    ```
-    **Awesome!** Now you can print its value:
-
-6. #### Add the following line to the `index.ts` file
+5. #### Add the following line to the `index.ts` file
     ```typescript
     console.log(env.MY_ENV_VAR);
     ```
-    You will see the following output:
-    ```bash
-    🚀 Server running at localhost:3000 in development mode
-    my_value
-    ```
+    You will see the new environment variable printed in the console.
+    
     **Congratulations!** :tada: You've just added a new environment variable and printed its value.
 
 ### Next steps
