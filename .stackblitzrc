@@ -1,7 +1,0 @@
-{
-  "installDependencies": true,
-  "startCommand": "bun run dev",
-  "env": {
-    "NODE_VERSION": "20"
-  }
-}
