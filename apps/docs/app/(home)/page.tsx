@@ -23,7 +23,7 @@ export default function HomePage() {
 				</div>
 				<div className="text-xl mt-4 text-gray-600 dark:text-gray-400">
 					Bring the power of ArkType to your environment variables <br /> and
-					ship confidently.
+					ship with confidence.
 				</div>
 			</h1>
 			<div className="flex justify-center my-4 gap-4 sm:mb-6 mb-16">
