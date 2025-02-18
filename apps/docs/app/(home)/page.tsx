@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { CopyButton } from "~/components/page/copy-button";
-import { Logo } from "~/components/page/logo";
+import { Bricolage_Grotesque } from "next/font/google";
 import { SailButton } from "~/components/page/sail-button";
 import { StackBlitzDemo } from "~/components/page/stackblitz-demo";
-import { Bricolage_Grotesque } from "next/font/google";
 
 const bricolageGrotesque = Bricolage_Grotesque({
 	subsets: ["latin"],

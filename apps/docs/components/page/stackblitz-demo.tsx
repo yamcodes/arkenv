@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import sdk from "@stackblitz/sdk";
+import { useEffect, useRef } from "react";
 
 export function StackBlitzDemo() {
 	const embedRef = useRef<HTMLDivElement>(null);
