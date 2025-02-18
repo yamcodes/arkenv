@@ -32,7 +32,7 @@ export class ArkEnvError extends Error {
 		errors: ArkErrors,
 		message = "Errors found while validating environment variables",
 	) {
-		super(`${red(message)}\n${indent(formatErrors(errors))}\n`);
+		super(`${pc.red(message)}\n${indent(formatErrors(errors))}\n`);
 		this.name = "ArkEnvError";
 	}
 }
