@@ -1,6 +1,6 @@
 # `ark.env` basic example
 
-This example shows how to use `ark.env` in a basic Bun application.
+This example shows how to use `ark.env` in a basic Node.js application.
 
 
 ## What's inside?
@@ -15,22 +15,18 @@ The example demonstrates:
 
 ### Prerequisites
 
-Make sure you have [Bun](https://bun.sh) installed:
-
-```bash
-curl -fsSL https://bun.sh/install | bash
-```
+Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [nvm](https://github.com/nvm-sh/nvm) to install it.
 
 ### Quickstart
 
 1. #### Install dependencies
     ```bash
-    bun install
+    npm install
     ```
 
 2. #### Start the development server with hot reloading enabled
     ```bash
-    bun dev
+    npm run dev
     ```
     :white_check_mark: You will see the following output:
     ```bash
@@ -39,7 +35,7 @@ curl -fsSL https://bun.sh/install | bash
 
 ### Adding environment variables
 
-With the development server running (if it isn't - just run `bun dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
+With the development server running (if it isn't - just run `npm run dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
 
 1. #### Define the new environment variable in the schema as a _required_ string
     ```typescript
@@ -90,4 +86,3 @@ With the development server running (if it isn't - just run `bun dev`), let's se
 
 - [`ark.env` docs](https://github.com/yamcodes/ark.env)
 - [ArkType docs](https://arktype.io/)
-- [Bun docs](https://bun.sh)

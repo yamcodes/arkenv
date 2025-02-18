@@ -34,20 +34,19 @@ export function SailButton() {
 			<Button
 				onClick={handleSailClick}
 				variant="outline"
-				className="relative overflow-hidden cursor-pointer dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/80 dark:hover:text-primary-foreground"
+				size="lg"
+				className="text-lg font-bold relative overflow-hidden cursor-pointer dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/80 dark:hover:text-primary-foreground"
 			>
 				<Sailboat
 					className={`transition-transform duration-[1500ms] ease-in-out ${isSailing ? "translate-x-[1000%]" : ""}`}
 					onTransitionEnd={() => router.push("/docs/quickstart")}
 				/>
-				<span
-					className={`transition-transform duration-[1500ms] ease-in-out ${isSailing ? "translate-x-0.5" : ""}`}
-				>
+				<span>
 					Set sail{" "}
 					<span
-						className={`inline-block ${!isSailing ? "nudge-animation" : ""}`}
+						className={`inline-block ${!isSailing ? "nudge-animation" : ""} ml-1`}
 					>
-						--&gt;
+						-&gt;
 					</span>
 				</span>
 			</Button>
