@@ -1,5 +1,11 @@
 # ark.env
 
+## 0.1.4
+
+### Patch Changes
+
+- Fix badges in README _[`9e07e48`](https://github.com/yamcodes/ark.env/commit/9e07e4872ece404fe2075af55c4d14dd1944bd93) [@yamcodes](https://github.com/yamcodes)_
+
 ## 0.1.3
 
 ### Patch Changes
