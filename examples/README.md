@@ -6,8 +6,8 @@ This directory contains a collection of example projects that demonstrate variou
 
 | Name | Description |
 | --- | --- |
-| [`basic`](./basic) | A minimal example showing *how to use `ark.env` in a [Node.js](https://nodejs.org/) application*. Perfect for learning the fundamentals. |
-| [`with-bun`](./with-bun) | A minimal example showing *how to use `ark.env` in a [Bun](https://bun.sh/) application*. Perfect for learning the fundamentals. |
+| [`basic`](./basic) | Minimal example of *using `ark.env` in a [Node.js](https://nodejs.org/) app* for learning the fundamentals. |
+| [`with-bun`](./with-bun) | Minimal example of *using `ark.env` in a [Bun](https://bun.sh/) app*. |
 
 ## Contributing an example
 
