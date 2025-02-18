@@ -3,6 +3,12 @@ import { CopyButton } from "~/components/page/copy-button";
 import { Logo } from "~/components/page/logo";
 import { SailButton } from "~/components/page/sail-button";
 import { StackBlitzDemo } from "~/components/page/stackblitz-demo";
+import { Bricolage_Grotesque } from "next/font/google";
+
+const bricolageGrotesque = Bricolage_Grotesque({
+	subsets: ["latin"],
+	display: "swap",
+});
 
 export const metadata: Metadata = {
 	title: "ark.env: Typesafe Environment Variables",
@@ -13,41 +19,22 @@ export const metadata: Metadata = {
 export default function HomePage() {
 	return (
 		<main className="flex flex-1 flex-col justify-center text-center">
-			<h1 className="mb-4 text-2xl sm:mt-0 mt-16">
-				<Logo />
+			<h1 className={`mb-4 ${bricolageGrotesque.className} mt-16`}>
+				<div className="text-5xl font-extrabold">
+					Your environment variables, but 100% typesafe.
+				</div>
+				<div className="text-xl mt-4 text-gray-600 dark:text-gray-400">
+					Bring the power of ArkType to your environment variables <br /> and
+					ship confidently.
+				</div>
 			</h1>
-			<p className="text-fd-muted-foreground">Typesafe Environment Variables</p>
 			<div className="flex justify-center my-4 gap-4 sm:mb-6 mb-16">
 				<SailButton />
 			</div>
-			<p className="text-fd-muted-foreground text-sm mb-2">...or simply run:</p>
-			<div className="mx-auto w-full sm:w-fit max-w-full rounded-none sm:rounded-lg bg-black p-4 ring-1 ring-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)] shadow-blue-500/20 sm:min-h-fit flex-1 sm:flex-none">
-				<div className="hidden sm:flex items-center justify-between gap-2 mb-4">
-					<div className="flex items-center gap-2">
-						<div className="h-3 w-3 rounded-full bg-red-400/30" />
-						<div className="h-3 w-3 rounded-full bg-yellow-500/30" />
-						<div className="h-3 w-3 rounded-full bg-green-400/30" />
-					</div>
-				</div>
-				<div className="relative flex items-center">
-					<div className="overflow-x-auto pr-12">
-						<code className="text-sm whitespace-nowrap">
-							<span className="text-green-300 select-none font-bold">❯ </span>
-							<span className="text-green-400">npm</span>
-							<span className="text-white"> install ark.env arktype</span>
-						</code>
-					</div>
-					<div className="absolute right-0 bg-black">
-						<CopyButton command="npm install ark.env arktype" />
-					</div>
-				</div>
-			</div>
-
 			<div className="mt-12 px-4 sm:px-8 max-w-5xl mx-auto w-full">
-				<h2 className="text-xl font-semibold mb-4">Try it out</h2>
-				<p className="text-fd-muted-foreground mb-6">
-					Explore our basic example directly in your browser
-				</p>
+				<h2 className="text-xl font-semibold mb-4">
+					...or try it out below 👇
+				</h2>
 				<StackBlitzDemo />
 			</div>
 		</main>
