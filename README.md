@@ -5,8 +5,8 @@
   <br />
   <a href="https://github.com/yamcodes/ark.env/actions/workflows/tests.yml?query=branch%3Amain"><img alt="Tests Status" src="https://github.com/yamcodes/ark.env/actions/workflows/tests.yml/badge.svg?event=push&branch=main"></a>
   <a href="https://www.npmjs.com/package/ark.env"><img alt="Total Downloads" src="https://badgen.net/npm/dt/ark.env/total?icon=npm&color=blue"></a>
-  <a href="https://www.npmjs.com/package/ark.env"><img alt="Bundle Size" src="https://badgen.net/bundlephobia/min/ark.env?icon=npm"></a>
-  <a href="https://www.npmjs.com/package/ark.env"><img alt="Dependency Count" src="https://badgen.net/bundlephobia/dependency-count/ark.env?icon=npm"></a>
+  <a href="https://www.npmjs.com/package/ark.env"><img alt="Bundle Size" src="https://badgen.net/bundlephobia/min/ark.env?icon=npm&color=blue&label=bundle%20size"></a>
+  <a href="https://www.npmjs.com/package/ark.env"><img alt="Dependency Count" src="https://badgen.net/bundlephobia/dependency-count/ark.env?icon=npm&color=blue&label=dependencies"></a>
   <a href="https://arktype.io/"><img alt="Powered By ArkType" src="https://badgen.net/static/powered by/ArkType"></a>
 </p>
 
