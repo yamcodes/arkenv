@@ -1,7 +1,7 @@
 {
 	"name": "@arkenv/vite-plugin",
 	"type": "module",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -17,8 +17,12 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules"
 	},
-	"files": ["dist"],
-	"keywords": ["bun"],
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"bun"
+	],
 	"license": "MIT",
 	"homepage": "https://github.com/wobsoriano/pkg-name#readme",
 	"repository": {
