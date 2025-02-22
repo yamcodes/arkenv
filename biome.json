@@ -14,6 +14,11 @@
 		"enabled": true,
 		"indentStyle": "tab"
 	},
+	"json": {
+		"parser": {
+			"allowComments": true
+		}
+	},
 	"organizeImports": {
 		"enabled": true
 	},
