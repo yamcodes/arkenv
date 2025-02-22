@@ -34,10 +34,11 @@
 		"type": "git",
 		"url": "git+https://github.com/yamcodes/ark.env.git"
 	},
-	"bugs": "https://github.com/yamcodes/ark.env/issues",
+	"bugs": "https://github.com/yamcodes/ark.env/labels/ark.env",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"bun-plugin-dts": "^0.3.0",
+		"@ark/schema": "^0.39.0",
+		"@types/node": "22.13.4",
 		"tsup": "^8.3.6",
 		"typescript": "^5.7.3"
 	},
