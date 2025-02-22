@@ -23,17 +23,21 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
 
-      - id: setup-bun
-        name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          bun-version: 1.2.0
+          version: 10
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: bun install
+        run: pnpm install
 
       - name: Run test
-        run: bun test
+        run: pnpm test
   test-build:
     runs-on: ubuntu-latest
     steps:
@@ -41,17 +45,21 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
 
-      - id: setup-bun
-        name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          bun-version: 1.2.0
+          version: 10
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: bun install
+        run: pnpm install
 
       - name: Caching for Turbo
         uses: rharkor/caching-for-turbo@v1.5
 
       - name: Run build
-        run: bun run build
+        run: pnpm run build

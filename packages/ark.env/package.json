@@ -13,15 +13,15 @@
 	},
 	"scripts": {
 		"build": "rimraf dist && tsup",
-		"prepack": "bun run build",
-		"test": "bun test --watch",
-		"test:once": "bun test",
+		"prepack": "pnpm run build",
+		"test": "pnpm test --watch",
+		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules"
 	},
 	"files": ["dist"],
 	"keywords": [
-		"bun",
+		"pnpm",
 		"arktype",
 		"environment",
 		"variables",

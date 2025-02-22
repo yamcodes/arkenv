@@ -16,12 +16,19 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          bun-version: 1.2.0
+          version: 10
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
       - name: Install Dependencies
-        run: bun install
+        run: pnpm install
 
       - name: Cache for Turbo
         uses: rharkor/caching-for-turbo@v1.5
@@ -30,7 +37,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: bun run release
+          publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

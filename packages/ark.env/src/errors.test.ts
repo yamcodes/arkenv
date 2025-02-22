@@ -1,5 +1,5 @@
-import { describe, expect, it } from "bun:test";
 import type { ArkErrors } from "arktype";
+import { describe, expect, it } from "vitest";
 import { ArkEnvError, formatErrors } from "./errors";
 
 /**
