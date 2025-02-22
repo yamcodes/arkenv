@@ -1,5 +1,5 @@
 {
-	"name": "@arkenv/vite",
+	"name": "@arkenv/vite-plugin",
 	"type": "module",
 	"version": "0.0.0",
 	"main": "./dist/index.cjs",
