@@ -1,26 +1,29 @@
 # Contributing to `ark.env`
 
-First off, thank you for considering a contribution to `ark.env`! As an open source project, `ark.env` welcomes contributions of all kinds.
+Thank you for considering a contribution to `ark.env`! As an open source project, `ark.env` welcomes contributions of all kinds.
 
-> [!IMPORTANT]
-> `ark.env` is built with [Bun](https://bun.sh). To develop on this project, you'll need [to have Bun installed](https://bun.sh/docs/installation).
 
 ## Development Setup
 
-```sh
-# Clone the repository
-git clone https://github.com/yamcodes/ark.env.git
-cd ark.env
+1. ### Install pnpm
 
-# Install dependencies
-bun install
+   ```sh
+   curl -fsSL https://get.pnpm.io/install.sh | sh -
+   ```
+   (Or follow the instructions in the [pnpm docs](https://pnpm.io/installation))
 
-# Run tests
-bun test
+2. ### Clone the repository
 
-# Build the library
-bun run build
-```
+   ```sh
+   git clone https://github.com/yamcodes/ark.env.git
+   cd ark.env
+   ```
+
+3. ### Install dependencies
+
+   ```sh
+   pnpm install
+   ```
 
 ## Making Changes
 
@@ -30,7 +33,7 @@ bun run build
 4. Update the documentation if needed
 5. Create a changeset for your changes:
    ```sh
-   bun changeset
+   pnpm changeset
    ```
    This will prompt you to:
    - Select which packages you want to release
@@ -44,7 +47,7 @@ bun run build
 [Changesets](https://github.com/changesets/changesets) is used to manage versions and changelogs. Each PR that makes changes to the functionality of the package should include a changeset.
 
 To create a changeset:
-1. Run `bun changeset`
+1. Run `pnpm changeset`
 2. Follow the prompts to describe your changes
 3. Commit the generated `.changeset/*.md` file
 

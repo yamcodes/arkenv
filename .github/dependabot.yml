@@ -5,13 +5,13 @@
 
 version: 2
 updates:
-  # Bun updates
-  - package-ecosystem: "bun"
+  # pnpm updates
+  - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly" # Check for updates daily
     groups:
-      bun:
+      pnpm:
         patterns:
           - "*"
         update-types:

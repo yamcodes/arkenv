@@ -1,35 +1,49 @@
 {
 	"name": "@arkenv/vite-plugin",
-	"type": "module",
 	"version": "0.0.1",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/ark.env.git"
+	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"description": "Vite plugin for ark.env",
+	"dependencies": {
+		"ark.env": "workspace:*"
+	},
+	"devDependencies": {
+		"tsup": "^8.3.6",
+		"typescript": "^5.7.3"
+	},
+	"peerDependencies": {
+		"arktype": "^2.0.0",
+		"vite": "^6.0.0"
+	},
 	"exports": {
 		"types": "./dist/index.d.ts",
 		"import": "./dist/index.js",
 		"require": "./dist/index.cjs"
 	},
+	"bugs": "https://github.com/yamcodes/ark.env/labels/%40arkenv%2Fvite-plugin",
+	"description": "Vite plugin for ark.env",
+	"files": ["dist"],
+	"homepage": "https://yam.codes/ark.env",
+	"keywords": [
+		"arktype",
+		"arkenv",
+		"ark.env",
+		"environment",
+		"variables",
+		"vite",
+		"plugin"
+	],
+	"license": "MIT",
 	"scripts": {
 		"build": "rimraf dist && tsup",
-		"prepack": "bun run build",
+		"prepack": "pnpm run build",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules"
 	},
-	"files": ["dist"],
-	"keywords": ["bun"],
-	"license": "MIT",
-	"homepage": "https://github.com/wobsoriano/pkg-name#readme",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/wobsoriano/pkg-name.git"
-	},
-	"bugs": "https://github.com/wobsoriano/pkg-name/issues",
-	"author": "Robert Soriano <sorianorobertc@gmail.com>",
-	"devDependencies": {
-		"@types/bun": "^1.1.10",
-		"bun-plugin-dts": "^0.3.0",
-		"tsup": "^8.3.6"
-	}
+	"type": "module",
+	"types": "./dist/index.d.ts"
 }

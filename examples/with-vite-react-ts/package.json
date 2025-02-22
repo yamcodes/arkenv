@@ -9,6 +9,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@arkenv/vite-plugin": "file:../../packages/vite-plugin/arkenv-vite-plugin-0.0.1.tgz",
 		"ark.env": "^0.1.4",
 		"arktype": "^2.0.4",
 		"react": "^19.0.0",
