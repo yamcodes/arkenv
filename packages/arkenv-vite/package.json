@@ -1,0 +1,35 @@
+{
+	"name": "@arkenv/vite",
+	"type": "module",
+	"version": "0.0.0",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"description": "Vite plugin for ark.env",
+	"exports": {
+		"types": "./dist/index.d.ts",
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
+	},
+	"scripts": {
+		"build": "rimraf dist && tsup",
+		"prepack": "bun run build",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules"
+	},
+	"files": ["dist"],
+	"keywords": ["bun"],
+	"license": "MIT",
+	"homepage": "https://github.com/wobsoriano/pkg-name#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/wobsoriano/pkg-name.git"
+	},
+	"bugs": "https://github.com/wobsoriano/pkg-name/issues",
+	"author": "Robert Soriano <sorianorobertc@gmail.com>",
+	"devDependencies": {
+		"@types/bun": "^1.1.10",
+		"bun-plugin-dts": "^0.3.0",
+		"tsup": "^8.3.6"
+	}
+}
