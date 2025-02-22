@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - arkenv-vite # TODO: Remove this once the vite plugin is published
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
