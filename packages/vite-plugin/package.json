@@ -26,9 +26,7 @@
 	},
 	"bugs": "https://github.com/yamcodes/ark.env/labels/%40arkenv%2Fvite-plugin",
 	"description": "Vite plugin for ark.env",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"homepage": "https://yam.codes/ark.env",
 	"keywords": [
 		"arktype",
