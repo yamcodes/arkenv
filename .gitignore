@@ -26,3 +26,11 @@ pnpm-debug.log*
 .source/
 .vercel
 .env*.local
+
+# archives
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.wim
