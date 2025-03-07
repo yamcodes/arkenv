@@ -70,7 +70,7 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 - 🔒 **Typesafe**: Full TypeScript support with inferred types
 - 🚀 **Runtime validation**: Catch missing or invalid environment variables early
 - 💪 **Powered by ArkType**: Leverage ArkType's powerful type system
-- 🪶 **Lightweight**: Only a single dependency ([7 kB](https://github.com/alexeyraspopov/picocolors#benchmarks))
+- 🪶 **Lightweight**: Only a single dependency ([5.6 kB](https://bundlephobia.com/package/chalk@5.4.1))
 - ⚡ **Fast**: Optimized for performance with minimal overhead
 
 ## Documentation

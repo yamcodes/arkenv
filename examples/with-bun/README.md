@@ -9,7 +9,7 @@ The example demonstrates:
 - Setting up environment variables with ark.env
 - Using default values
 - Typesafe environment configuration
-- Pretty console output with picocolors
+- Pretty console output with [Chalk](https://github.com/chalk/chalk)
 
 ## Getting started
 

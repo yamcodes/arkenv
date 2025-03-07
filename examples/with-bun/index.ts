@@ -1,4 +1,4 @@
-import { blue, bold, green, red } from "ansis";
+import chalk from "chalk";
 import ark, { host, port } from "ark.env";
 
 // Define our environment configuration
@@ -10,8 +10,12 @@ const env = ark.env({
 
 // Pretty print the configuration
 console.log(
-	`🚀 Server running at ${bold(blue(env.HOST))}:${bold(green(env.PORT))} in ${bold(
-		env.NODE_ENV === "production" ? red(env.NODE_ENV) : blue(env.NODE_ENV),
+	`🚀 Server running at ${chalk.bold(chalk.blue(env.HOST))}:${chalk.bold(
+		chalk.green(env.PORT),
+	)} in ${chalk.bold(
+		env.NODE_ENV === "production"
+			? chalk.red(env.NODE_ENV)
+			: chalk.blue(env.NODE_ENV),
 	)} mode`,
 );
 

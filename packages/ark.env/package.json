@@ -19,7 +19,9 @@
 		"clean": "rimraf dist node_modules",
 		"test": "pnpm -w test --project ark.env"
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"keywords": [
 		"pnpm",
 		"arktype",
@@ -46,6 +48,6 @@
 		"arktype": "^2.0.2"
 	},
 	"dependencies": {
-		"picocolors": "^1.1.1"
+		"chalk": "^5.4.1"
 	}
 }

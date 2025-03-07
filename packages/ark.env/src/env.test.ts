@@ -1,4 +1,4 @@
-import pc from "picocolors";
+import chalk from "chalk";
 import { describe, expect, it } from "vitest";
 import * as ark from "./env";
 import { indent } from "./utils";
@@ -16,8 +16,8 @@ const expectedError = (
 	}[],
 ) => {
 	const formattedErrors = errors.map((error) => {
-		return `${pc.red("Errors found while validating environment variables")}\n${indent(
-			`${pc.yellow(error.name)} must be ${error.requiredType} (was ${error.providedType})`,
+		return `${chalk.red("Errors found while validating environment variables")}\n${indent(
+			`${chalk.yellow(error.name)} must be ${error.requiredType} (was ${error.providedType})`,
 		)}\n`;
 	});
 
