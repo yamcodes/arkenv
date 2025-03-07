@@ -1,5 +1,21 @@
 # @arkenv/vite-plugin
 
+## 0.0.3
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`f7c6501`](https://github.com/yamcodes/ark.env/commit/f7c6501272064d13a6f048d68ba826d58eb2eee7)
+
+</small>
+
+- `ark.env@0.1.5`
+
+</details>
+
 ## 0.0.2
 
 ### Patch Changes

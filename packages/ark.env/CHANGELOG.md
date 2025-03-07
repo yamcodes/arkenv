@@ -1,5 +1,13 @@
 # ark.env
 
+## 0.1.5
+
+### Patch Changes
+
+- Switch from picocolors to Chalk _[`f7c6501`](https://github.com/yamcodes/ark.env/commit/f7c6501272064d13a6f048d68ba826d58eb2eee7) [@yamcodes](https://github.com/yamcodes)_
+
+  Switch the CLI coloring tool from [picocolors](https://github.com/alexeyraspopov/picocolors) to [Chalk](https://github.com/chalk/chalk). Chalk is a much more popular library that is already included in our lockfile, and is more modern [by being ESM](https://github.com/chalk/chalk#install).
+
 ## 0.1.4
 
 ### Patch Changes
