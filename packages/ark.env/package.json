@@ -39,8 +39,8 @@
 	"bugs": "https://github.com/yamcodes/ark.env/labels/ark.env",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@ark/schema": "^0.44.5",
-		"@types/node": "22.13.10",
+		"@ark/schema": "^0.45.5",
+		"@types/node": "22.13.14",
 		"tsup": "^8.4.0",
 		"typescript": "^5.8.2"
 	},
