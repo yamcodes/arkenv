@@ -29,7 +29,7 @@ jobs:
         run: pnpm install
 
       - name: Cache for Turbo
-        uses: rharkor/caching-for-turbo@v1.6
+        uses: rharkor/caching-for-turbo@v1.8
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
