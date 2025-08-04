@@ -39,15 +39,15 @@
 	"bugs": "https://github.com/yamcodes/ark.env/labels/ark.env",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@ark/schema": "^0.45.8",
+		"@ark/schema": "^0.46.0",
 		"@types/node": "22.14.0",
-		"tsup": "^8.4.0",
-		"typescript": "^5.8.3"
+		"tsup": "^8.5.0",
+		"typescript": "^5.9.2"
 	},
 	"peerDependencies": {
 		"arktype": "^2.0.2"
 	},
 	"dependencies": {
-		"chalk": "^5.4.1"
+		"chalk": "^5.5.0"
 	}
 }
