@@ -1,1 +1,1 @@
-export const BASE_URL = "/ark.env";
+export const BASE_URL = "/arkenv";

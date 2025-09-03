@@ -8,7 +8,7 @@ description: Let's get you started with a few simple steps
   <Step>
     ## Install
     ```package-install
-    ark.env arktype
+    arkenv arktype
     ```
   </Step>
 
@@ -26,7 +26,7 @@ description: Let's get you started with a few simple steps
     }
     ```
     
-    `ark.env` is built on top of [ArkType](https://arktype.io/). Follow the [ArkType setup instructions](https://arktype.io/docs/intro/setup) to configure your project.
+    `arkenv` is built on top of [ArkType](https://arktype.io/). Follow the [ArkType setup instructions](https://arktype.io/docs/intro/setup) to configure your project.
   </Step>
 
   <Step>
@@ -35,9 +35,9 @@ description: Let's get you started with a few simple steps
     Add a schema to make your environment variables **validated** and **typesafe**:
 
     ```typescript title="config/env.ts"
-    import ark, { host, port } from 'ark.env';
+    import { defineEnv, host, port } from 'arkenv';
 
-    export const env = ark.env({
+    export const env = defineEnv({
       // Built-in validators
       DATABASE_HOST: host,
       DATABASE_PORT: port,
@@ -118,6 +118,6 @@ description: Let's get you started with a few simple steps
   <Card 
     title="Examples" 
     href="/docs/examples#examples"
-    description="See examples of ark.env in action"
+    description="See examples of arkenv in action"
   />
 </Cards>

@@ -9,7 +9,7 @@ export default withSentryConfig(
 		async redirects() {
 			return [
 				// This is pretty much just for the local dev experience
-				// Will redirect localhost:3000 to localhost:3000/ark.env
+				// Will redirect localhost:3000 to localhost:3000/arkenv
 				// To support our basePath
 				{
 					source: "/",

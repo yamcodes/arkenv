@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"vcs": {
 		"enabled": false,
 		"clientKind": "git",
@@ -8,7 +8,14 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["node_modules", "dist", ".gitignore", ".next", ".source"]
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/.gitignore",
+			"!**/.next",
+			"!**/.source"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -19,9 +26,7 @@
 			"allowComments": true
 		}
 	},
-	"organizeImports": {
-		"enabled": true
-	},
+	"assist": { "actions": { "source": { "organizeImports": "on" } } },
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -34,6 +39,18 @@
 			},
 			"suspicious": {
 				"noConsole": "warn"
+			},
+			"style": {
+				"noParameterAssign": "error",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error"
 			}
 		}
 	},
@@ -44,7 +61,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["examples/**/*"],
+			"includes": ["**/examples/**/*"],
 			"linter": {
 				"rules": {
 					"suspicious": {

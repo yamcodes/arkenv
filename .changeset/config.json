@@ -1,6 +1,6 @@
 {
 	"$schema": "https://unpkg.com/@changesets/config@3.0.5/schema.json",
-	"changelog": ["changesets-changelog-clean", { "repo": "yamcodes/ark.env" }],
+	"changelog": ["changesets-changelog-clean", { "repo": "yamcodes/arkenv" }],
 	"commit": false,
 	"fixed": [],
 	"linked": [],

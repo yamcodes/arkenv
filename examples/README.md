@@ -1,13 +1,14 @@
-# `ark.env` examples
+# ArkEnv examples
 
-This directory contains a collection of example projects that demonstrate various use cases and features of `ark.env`. Each example is a standalone project that can be run independently.
+This directory contains a collection of example projects that demonstrate various use cases and features of ArkEnv. Each example is a standalone project that can be run independently.
 
 ## Examples
 
-| Name | Description |
-| --- | --- |
-| [`basic`](./basic) | Minimal example of *using `ark.env` in a [Node.js](https://nodejs.org/) app* for learning the fundamentals. |
-| [`with-bun`](./with-bun) | Minimal example of *using `ark.env` in a [Bun](https://bun.sh/) app*. |
+| Name                                         | Description                                                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| [`basic`](./basic)                           | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals. |
+| [`with-bun`](./with-bun)                     | Minimal example of *using ArkEnv in a [Bun](https://bun.sh/) app*.                                       |
+| [`with-vite-react-ts`](./with-vite-react-ts) | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/) app*.                                    |
 
 ## Contributing an example
 

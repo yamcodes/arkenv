@@ -4,12 +4,12 @@
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/yamcodes/ark.env.git"
+		"url": "git+https://github.com/yamcodes/arkenv.git"
 	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
-		"ark.env": "workspace:*"
+		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
 		"tsup": "^8.5.0",
@@ -24,16 +24,16 @@
 		"import": "./dist/index.js",
 		"require": "./dist/index.cjs"
 	},
-	"bugs": "https://github.com/yamcodes/ark.env/labels/%40arkenv%2Fvite-plugin",
-	"description": "Vite plugin for ark.env",
+	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fvite-plugin",
+	"description": "Vite plugin for ArkEnv",
 	"files": [
 		"dist"
 	],
-	"homepage": "https://yam.codes/ark.env",
+	"homepage": "https://yam.codes/arkenv",
 	"keywords": [
 		"arktype",
 		"arkenv",
-		"ark.env",
+		"arkenv",
 		"environment",
 		"variables",
 		"vite",

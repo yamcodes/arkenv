@@ -1,9 +1,9 @@
-import ark from "ark.env";
+import { defineEnv } from "arkenv";
 import type { type } from "arktype";
-import { type Plugin, loadEnv } from "vite";
+import { loadEnv, type Plugin } from "vite";
 
-// This is the same `EnvSchema` type as in `ark.env`.
-// We are re-defining it here since TypeScript loses inference when using the type from `ark.env`.
+// This is the same `EnvSchema` type as in `arkenv`.
+// We are re-defining it here since TypeScript loses inference when using the type from `arkenv`.
 // TODO: Fix this. We shouldn't have to re-define the type here.
 type EnvSchema<
 	T extends Record<string, string | undefined> = Record<
@@ -15,6 +15,6 @@ type EnvSchema<
 export default <T extends EnvSchema>(options: EnvSchema<T>): Plugin => ({
 	name: "@arkenv/vite-plugin",
 	config(_config, { mode }) {
-		ark.env(options, loadEnv(mode, process.cwd(), ""));
+		defineEnv(options, loadEnv(mode, process.cwd(), ""));
 	},
 });

@@ -5,8 +5,8 @@
 			"name": "~ (root)"
 		},
 		{
-			"path": "packages/ark.env",
-			"name": "ark.env (package)"
+			"path": "packages/arkenv",
+			"name": "arkenv (package)"
 		},
 		{
 			"path": "packages/vite-plugin",
