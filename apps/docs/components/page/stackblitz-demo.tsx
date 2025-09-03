@@ -11,7 +11,7 @@ export function StackBlitzDemo() {
 		sdk.embedGithubProject(
 			embedRef.current,
 			process.env.NEXT_PUBLIC_STACKBLITZ_GITHUB_REPO_SLUG ??
-				"yamcodes/ark.env/tree/main/examples/basic",
+				"yamcodes/arkenv/tree/main/examples/basic",
 			{
 				openFile: "index.ts",
 				view: "editor",

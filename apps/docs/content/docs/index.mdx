@@ -1,11 +1,11 @@
 ---
-title: What is ark.env?
+title: What is arkenv?
 icon: Album
 ---
 
 import { BookOpen } from "lucide-react";
 
-`ark.env` is a powerful TypeScript-first environment variable management library that provides runtime validation and typesafety for your application's configuration.
+`arkenv` is a powerful TypeScript-first environment variable management library that provides runtime validation and typesafety for your application's configuration.
 
 ## Key features
 
@@ -15,7 +15,7 @@ import { BookOpen } from "lucide-react";
 - 🪶 **Lightweight**: Only a single dependency ([5.6 kB](https://bundlephobia.com/package/chalk@5.4.1))
 - ⚡ **Fast**: Optimized for performance with minimal overhead
 
-## Why `ark.env`?
+## Why `arkenv`?
 
 Managing environment variables in TypeScript applications can be error-prone. Common issues include:
 - Missing environment variables causing runtime crashes
@@ -23,16 +23,16 @@ Managing environment variables in TypeScript applications can be error-prone. Co
 - Lack of validation for critical configuration
 - No autocomplete or type hints in your IDE
 
-`ark.env` solves these problems by providing a typesafe, validated way to define and use environment variables in your TypeScript applications.
+`arkenv` solves these problems by providing a typesafe, validated way to define and use environment variables in your TypeScript applications.
 
 ## Quick example
 
-Here's the kind of code you can expect when using `ark.env`:
+Here's the kind of code you can expect when using `arkenv`:
 
 ```ts title="example.ts"
-import ark, { host, port } from 'ark.env';
+import ark, { host, port } from 'arkenv';
 
-const env = ark.env({
+const env = arkenv({
   HOST: host,           // Validates IP address or localhost
   PORT: port,           // Ensures valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",
@@ -47,7 +47,7 @@ console.log(env.NODE_ENV); // "development" | "production" | "test"
 ## Next steps
 
 <Cards>
-  <Card title="Quickstart" href="/docs/quickstart" description="Quickly get started with ark.env in your project" />
-  <Card title="ark.env on GitHub" href="https://github.com/yamcodes/ark.env" description="View the source code and contribute to the project" />
+  <Card title="Quickstart" href="/docs/quickstart" description="Quickly get started with arkenv in your project" />
+  <Card title="arkenv on GitHub" href="https://github.com/yamcodes/arkenv" description="View the source code and contribute to the project" />
   <Card icon={<BookOpen />} title="ArkType Documentation" href="https://arktype.io/docs" description="Learn more about the underlying type system" className="bg-blue-900" />
 </Cards>

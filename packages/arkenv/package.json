@@ -1,11 +1,11 @@
 {
-	"name": "ark.env",
+	"name": "arkenv",
 	"type": "module",
 	"version": "0.1.5",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"description": "Typesafe environment variables parsing and validation for Node.js with ArkType",
+	"description": "Typesafe environment variables parsing and validation with ArkType",
 	"exports": {
 		"types": "./dist/index.d.ts",
 		"import": "./dist/index.js",
@@ -17,11 +17,9 @@
 		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
-		"test": "pnpm -w test --project ark.env"
+		"test": "pnpm -w test --project arkenv"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"keywords": [
 		"pnpm",
 		"arktype",
@@ -31,12 +29,12 @@
 		"validation"
 	],
 	"license": "MIT",
-	"homepage": "https://yam.codes/ark.env",
+	"homepage": "https://yam.codes/arkenv",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/yamcodes/ark.env.git"
+		"url": "git+https://github.com/yamcodes/arkenv.git"
 	},
-	"bugs": "https://github.com/yamcodes/ark.env/labels/ark.env",
+	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
 		"@ark/schema": "^0.46.0",

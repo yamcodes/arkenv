@@ -28,7 +28,7 @@ describe("env", () => {
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
-		const env = ark.env({
+		const env = arkenv({
 			TEST_STRING: "string",
 		});
 
@@ -37,7 +37,7 @@ describe("env", () => {
 
 	it("should throw when required env variable is missing", () => {
 		expect(() =>
-			ark.env({
+			arkenv({
 				MISSING_VAR: "string",
 			}),
 		).toThrow(
@@ -55,7 +55,7 @@ describe("env", () => {
 		process.env.WRONG_TYPE = "not a number";
 
 		expect(() =>
-			ark.env({
+			arkenv({
 				WRONG_TYPE: "number",
 			}),
 		).toThrow(
@@ -74,7 +74,7 @@ describe("env", () => {
 			TEST_STRING: "hello",
 		};
 
-		const { TEST_STRING } = ark.env(
+		const { TEST_STRING } = arkenv(
 			{
 				TEST_STRING: "string",
 			},

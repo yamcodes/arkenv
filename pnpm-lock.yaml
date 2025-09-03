@@ -118,7 +118,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/ark.env:
+  packages/arkenv:
     dependencies:
       arktype:
         specifier: ^2.0.2
@@ -142,9 +142,9 @@ importers:
 
   packages/vite-plugin:
     dependencies:
-      ark.env:
+      arkenv:
         specifier: workspace:*
-        version: link:../ark.env
+        version: link:../arkenv
       arktype:
         specifier: ^2.0.0
         version: 2.0.4

@@ -1,5 +1,5 @@
-# `ark.env` Documentation
+# ArkEnv Documentation
 
-Welcome to the `ark.env` documentation!
+Welcome to the ArkEnv documentation!
 
-You can also view the documentation on our [docsite](https://yam.codes/ark.env).
+You can also view the documentation on our [docsite](https://yam.codes/arkenv).

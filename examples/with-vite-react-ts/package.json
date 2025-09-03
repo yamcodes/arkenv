@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@arkenv/vite-plugin": "^0.0.2",
-		"ark.env": "^0.1.4",
+		"arkenv": "^0.1.4",
 		"arktype": "^2.0.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"

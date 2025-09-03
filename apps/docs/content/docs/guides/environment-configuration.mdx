@@ -174,12 +174,12 @@ spec:
 
 ## Validation and Typesafety
 
-ark.env helps ensure your environment variables are valid:
+arkenv helps ensure your environment variables are valid:
 
 ```typescript title="src/config/env.ts"
-import ark, { host, port } from 'ark.env';
+import ark, { host, port } from 'arkenv';
 
-export const env = ark.env({
+export const env = arkenv({
   // Required variables with validation
   DATABASE_HOST: host,
   DATABASE_PORT: port,
@@ -209,10 +209,10 @@ export const env = ark.env({
 Create a configuration factory to handle different environments:
 
 ```typescript title="src/config/index.ts"
-import ark, { host, port } from 'ark.env';
+import ark, { host, port } from 'arkenv';
 
 const createConfig = () => {
-  const env = ark.env({
+  const env = arkenv({
     NODE_ENV: "'development' | 'test' | 'production'",
     DATABASE_HOST: host,
     DATABASE_PORT: port,
@@ -235,9 +235,9 @@ export const config = createConfig();
 Use environment variables for feature flags:
 
 ```typescript title="src/config/features.ts"
-import ark from 'ark.env';
+import ark from 'arkenv';
 
-export const env = ark.env({
+export const env = arkenv({
   "ENABLE_BETA_FEATURES?": 'boolean = false',
   "MAINTENANCE_MODE?": 'boolean = false',
   "ALLOWED_ORIGINS?": 'string[] = []'

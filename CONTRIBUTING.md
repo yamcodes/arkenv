@@ -1,6 +1,6 @@
-# Contributing to `ark.env`
+# Contributing to ArkEnv
 
-Thank you for considering a contribution to `ark.env`! As an open source project, `ark.env` welcomes contributions of all kinds.
+Thank you for considering a contribution to ArkEnv! As an open source project, ArkEnv welcomes contributions of all kinds.
 
 
 ## Development Setup
@@ -15,8 +15,8 @@ Thank you for considering a contribution to `ark.env`! As an open source project
 2. ### Clone the repository
 
    ```sh
-   git clone https://github.com/yamcodes/ark.env.git
-   cd ark.env
+   git clone https://github.com/yamcodes/arkenv.git
+   cd arkenv
    ```
 
 3. ### Install dependencies
@@ -55,4 +55,4 @@ The changeset will be automatically used to bump versions and update the changel
 
 ## License
 
-By contributing your code to the `ark.env` GitHub repository, you agree to license your contributions under the MIT License.
+By contributing your code to the ArkEnv GitHub repository, you agree to license your contributions under the MIT License.

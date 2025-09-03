@@ -1,17 +1,14 @@
 {
-	"name": "ark.env-monorepo",
+	"name": "arkenv-monorepo",
 	"private": true,
-	"workspaces": [
-		"packages/*",
-		"apps/*"
-	],
+	"workspaces": ["packages/*", "apps/*"],
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
-		"dev": "turbo run dev --filter=ark.env",
+		"dev": "turbo run dev --filter=arkenv",
 		"typecheck": "turbo run typecheck",
 		"docs": "turbo run dev --filter=docs",
-		"release": "mv README.md packages/ark.env && pnpm run build:packages && changeset publish",
+		"release": "mv README.md packages/arkenv && pnpm run build:packages && changeset publish",
 		"fix": "biome check --write .",
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
@@ -29,13 +26,7 @@
 	},
 	"packageManager": "pnpm@10.15.1",
 	"pnpm": {
-		"ignoredBuiltDependencies": [
-			"esbuild",
-			"sharp"
-		],
-		"onlyBuiltDependencies": [
-			"@biomejs/biome",
-			"@sentry/cli"
-		]
+		"ignoredBuiltDependencies": ["esbuild", "sharp"],
+		"onlyBuiltDependencies": ["@biomejs/biome", "@sentry/cli"]
 	}
 }
