@@ -14,7 +14,7 @@ export function Logo({ className }: { className?: string }) {
 				className,
 			)}
 		>
-			arkenv
+			ArkEnv
 		</code>
 	);
 }
