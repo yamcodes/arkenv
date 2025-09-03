@@ -1,3 +1,3 @@
 # `@arkenv/vite-plugin`
 
-A Vite plugin for using ArkEnv to validate environment variables in **build time**.
+A Vite plugin for using ArkEnv to validate environment variables at build time.
