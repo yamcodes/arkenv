@@ -1,7 +1,10 @@
 {
 	"name": "arkenv-monorepo",
 	"private": true,
-	"workspaces": ["packages/*", "apps/*"],
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
@@ -16,7 +19,7 @@
 		"test": "vitest"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
+		"@biomejs/biome": "2.0.6",
 		"@changesets/cli": "^2.29.6",
 		"changesets-changelog-clean": "^1.3.0",
 		"rimraf": "^6.0.1",
@@ -26,7 +29,13 @@
 	},
 	"packageManager": "pnpm@10.15.1",
 	"pnpm": {
-		"ignoredBuiltDependencies": ["esbuild", "sharp"],
-		"onlyBuiltDependencies": ["@biomejs/biome", "@sentry/cli"]
+		"ignoredBuiltDependencies": [
+			"esbuild",
+			"sharp"
+		],
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"@sentry/cli"
+		]
 	}
 }

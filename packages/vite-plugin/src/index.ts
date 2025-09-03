@@ -1,5 +1,5 @@
 import type { type } from "arktype";
-import { type Plugin, loadEnv } from "vite";
+import { loadEnv, type Plugin } from "vite";
 
 // This is the same `EnvSchema` type as in `arkenv`.
 // We are re-defining it here since TypeScript loses inference when using the type from `arkenv`.

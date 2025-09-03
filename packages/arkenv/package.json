@@ -19,7 +19,9 @@
 		"clean": "rimraf dist node_modules",
 		"test": "pnpm -w test --project arkenv"
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"keywords": [
 		"pnpm",
 		"arktype",
