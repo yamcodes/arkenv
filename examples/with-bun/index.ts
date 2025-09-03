@@ -1,5 +1,5 @@
+import { host, port } from "arkenv";
 import chalk from "chalk";
-import ark, { host, port } from "arkenv";
 
 // Define our environment configuration
 const env = arkenv({

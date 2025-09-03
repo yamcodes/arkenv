@@ -1,4 +1,3 @@
-import ark from "arkenv";
 import type { type } from "arktype";
 import { type Plugin, loadEnv } from "vite";
 

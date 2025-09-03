@@ -1,4 +1,4 @@
-import ark, { host, port } from "arkenv";
+import { host, port } from "arkenv";
 
 const env = arkenv({
 	HOST: host.default("localhost"),
