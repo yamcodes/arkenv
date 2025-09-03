@@ -1,5 +1,35 @@
 # ArkEnv
 
+## 0.2.0
+
+### Minor Changes
+
+- Rename from `ark.env` to `arkenv` _[`#102`](https://github.com/yamcodes/arkenv/pull/102) [`dfdc17f`](https://github.com/yamcodes/arkenv/commit/dfdc17f3510a9c07586201ecaf310cba3b22d67f) [@yamcodes](https://github.com/yamcodes)_
+
+  BREAKING CHANGE:
+
+  Package renamed from `ark.env` to `arkenv`, main export renamed from `env` to `defineEnv`.
+
+  Before:
+
+  ```ts
+  import ark, { host, port } from "ark.env";
+  const env = ark.env({
+    HOST: host,
+    PORT: port,
+  });
+  ```
+
+  After:
+
+  ```ts
+  import { defineEnv, host, port } from "arkenv";
+  const env = defineEnv({
+    HOST: host,
+    PORT: port,
+  });
+  ```
+
 ## 0.1.5
 
 ### Patch Changes
