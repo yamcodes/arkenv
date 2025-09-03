@@ -1,5 +1,25 @@
 # @arkenv/vite-plugin
 
+## 0.0.4
+
+### Patch Changes
+
+- Use new `arkenv` package _[`#102`](https://github.com/yamcodes/arkenv/pull/102) [`dfdc17f`](https://github.com/yamcodes/arkenv/commit/dfdc17f3510a9c07586201ecaf310cba3b22d67f) [@yamcodes](https://github.com/yamcodes)_
+
+  This package has been updated to use the new `arkenv` package. No changes from your side are required.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dfdc17f`](https://github.com/yamcodes/arkenv/commit/dfdc17f3510a9c07586201ecaf310cba3b22d67f)
+
+</small>
+
+- `arkenv@0.2.0`
+
+</details>
+
 ## 0.0.3
 
 ### Patch Changes
