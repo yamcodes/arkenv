@@ -1,7 +1,10 @@
 {
 	"name": "ark.env-monorepo",
 	"private": true,
-	"workspaces": ["packages/*", "apps/*"],
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
@@ -24,9 +27,15 @@
 		"typescript": "^5.9.2",
 		"vitest": "^3.2.4"
 	},
-	"packageManager": "pnpm@10.4.1",
+	"packageManager": "pnpm@10.15.1",
 	"pnpm": {
-		"ignoredBuiltDependencies": ["esbuild", "sharp"],
-		"onlyBuiltDependencies": ["@biomejs/biome", "@sentry/cli"]
+		"ignoredBuiltDependencies": [
+			"esbuild",
+			"sharp"
+		],
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"@sentry/cli"
+		]
 	}
 }
