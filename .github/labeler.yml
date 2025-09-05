@@ -5,14 +5,14 @@ arkenv:
   - changed-files:
     - any-glob-to-any-file: 'packages/arkenv/**/*'
 
-vite-plugin:
+"@arkenv/vite-plugin":
   - changed-files:
     - any-glob-to-any-file: 'packages/vite-plugin/**/*'
 
-documentation:
+docs:
   - changed-files:
     - any-glob-to-any-file: 'apps/docs/**/*'
 
-examples:
+example:
   - changed-files:
     - any-glob-to-any-file: 'examples/**/*'
