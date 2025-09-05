@@ -37,18 +37,17 @@ describe("@arkenv/vite-plugin", () => {
 			// Import the plugin
 			const plugin = (await import("./index")).default;
 
-			// Create a simple vite config with the plugin
-			const config = {
+			// Build the project to trigger the plugin
+			await build({
 				plugins: [
 					plugin({
 						VITE_TEST: "string",
 					}),
 				],
 				root: EXAMPLE_ROOT,
-			};
-
-			// Build the project to trigger the plugin
-			await build(config);
+				// Override the config file to avoid importing the package
+				configFile: false,
+			});
 
 			// Verify that defineEnv was called with the correct environment variables
 			expect(mockDefineEnv).toHaveBeenCalledWith(
@@ -62,12 +61,11 @@ describe("@arkenv/vite-plugin", () => {
 		it("should work with multiple environment variables", async () => {
 			const plugin = (await import("./index")).default;
 
-			const config = {
+			await build({
 				plugins: [plugin(TEST_ENV_VARS)],
 				root: EXAMPLE_ROOT,
-			};
-
-			await build(config);
+				configFile: false,
+			});
 
 			expect(mockDefineEnv).toHaveBeenCalledWith(
 				TEST_ENV_VARS,
@@ -94,20 +92,19 @@ describe("@arkenv/vite-plugin", () => {
 
 			const plugin = (await import("./index")).default;
 
-			const config = {
-				plugins: [
-					plugin({
-						VITE_TEST: "string",
-					}),
-				],
-				root: EXAMPLE_ROOT,
-			};
-
 			// This should throw because the required environment variable is missing
 			// This is the correct behavior - the plugin should enforce required env vars
-			await expect(build(config)).rejects.toThrow(
-				"VITE_TEST must be a string (was missing)",
-			);
+			await expect(
+				build({
+					plugins: [
+						plugin({
+							VITE_TEST: "string",
+						}),
+					],
+					root: EXAMPLE_ROOT,
+					configFile: false,
+				}),
+			).rejects.toThrow("VITE_TEST must be a string (was missing)");
 
 			// Restore the original value and mock
 			if (originalViteTest !== undefined) {
@@ -130,18 +127,17 @@ describe("@arkenv/vite-plugin", () => {
 
 			const plugin = (await import("./index")).default;
 
-			const config = {
-				plugins: [
-					plugin({
-						VITE_NUMBER: "number",
-					}),
-				],
-				root: EXAMPLE_ROOT,
-			};
-
-			await expect(build(config)).rejects.toThrow(
-				"VITE_NUMBER must be a number (was string)",
-			);
+			await expect(
+				build({
+					plugins: [
+						plugin({
+							VITE_NUMBER: "number",
+						}),
+					],
+					root: EXAMPLE_ROOT,
+					configFile: false,
+				}),
+			).rejects.toThrow("VITE_NUMBER must be a number (was string)");
 
 			// Restore the original mock implementation
 			if (originalMockImplementation) {
@@ -158,22 +154,20 @@ describe("@arkenv/vite-plugin", () => {
 
 			const plugin = (await import("./index")).default;
 
-			// Use the actual vite config from the example
-			const config = {
+			// Build the example project
+			const result = await build({
 				plugins: [
 					plugin({
 						VITE_TEST: "string",
 					}),
 				],
 				root: EXAMPLE_ROOT,
+				configFile: false,
 				build: {
 					outDir: "dist-test",
 					write: false,
 				},
-			};
-
-			// Build the example project
-			const result = await build(config);
+			});
 
 			// Verify the build succeeded
 			expect(result).toBeDefined();
@@ -199,19 +193,18 @@ describe("@arkenv/vite-plugin", () => {
 		it("should handle complex Vite configurations", async () => {
 			const plugin = (await import("./index")).default;
 
-			const config = {
+			const result = await build({
 				plugins: [plugin(TEST_ENV_VARS)],
 				root: EXAMPLE_ROOT,
+				configFile: false,
 				build: {
 					outDir: "dist-complex-test",
 					write: false,
-					minify: "terser" as const,
+					minify: "terser",
 					sourcemap: true,
 				},
-				mode: "production" as const,
-			};
-
-			const result = await build(config);
+				mode: "production",
+			});
 
 			expect(result).toBeDefined();
 			expect(mockDefineEnv).toHaveBeenCalledWith(
