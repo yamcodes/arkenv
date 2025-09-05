@@ -51,6 +51,14 @@ describe("@arkenv/vite-plugin", () => {
 		const originalViteTest = process.env.VITE_TEST;
 		delete process.env.VITE_TEST;
 
+		// Store the original mock implementation
+		const originalMockImplementation = mockDefineEnv.getMockImplementation();
+
+		// Mock defineEnv to throw an error for this specific test
+		mockDefineEnv.mockImplementation(() => {
+			throw new Error("VITE_TEST must be a string (was missing)");
+		});
+
 		const plugin = (await import("./index")).default;
 
 		const config = {
@@ -68,9 +76,15 @@ describe("@arkenv/vite-plugin", () => {
 			"VITE_TEST must be a string (was missing)",
 		);
 
-		// Restore the original value
+		// Restore the original value and mock
 		if (originalViteTest !== undefined) {
 			process.env.VITE_TEST = originalViteTest;
+		}
+		// Restore the original mock implementation
+		if (originalMockImplementation) {
+			mockDefineEnv.mockImplementation(originalMockImplementation);
+		} else {
+			mockDefineEnv.mockReset();
 		}
 	});
 
