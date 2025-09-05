@@ -26,8 +26,16 @@ export default function HomePage() {
 					than sorry
 				</div>
 				<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400">
-					Bring the power of ArkType to your environment variables <br /> and
-					ship with confidence.
+					Bring the power of{" "}
+					<a
+						href="https://arktype.io"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="underline underline-offset-6 decoration-[1.5px] transition-underline duration-200 hover:decoration-[3px] focus:decoration-[3px] active:text-blue-400"
+					>
+						ArkType
+					</a>{" "}
+					to your environment variables <br /> and ship with confidence.
 				</div>
 			</h1>
 			<div className="flex justify-center my-4 gap-4 sm:mb-6 mb-16">
