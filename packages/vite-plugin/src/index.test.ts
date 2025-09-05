@@ -22,7 +22,7 @@ describe("@arkenv/vite-plugin", () => {
 		// Environment variable is loaded from .env.test file
 
 		// Import the plugin
-		const plugin = (await import("./index.js")).default;
+		const plugin = (await import("./index")).default;
 
 		// Create a simple vite config with the plugin
 		const config = {
@@ -51,7 +51,7 @@ describe("@arkenv/vite-plugin", () => {
 		const originalViteTest = process.env.VITE_TEST;
 		delete process.env.VITE_TEST;
 
-		const plugin = (await import("./index.js")).default;
+		const plugin = (await import("./index")).default;
 
 		const config = {
 			plugins: [
@@ -77,7 +77,7 @@ describe("@arkenv/vite-plugin", () => {
 	it("should work with the actual example project", async () => {
 		// Environment variable is loaded from .env.test file
 
-		const plugin = (await import("./index.js")).default;
+		const plugin = (await import("./index")).default;
 
 		// Use the actual vite config from the example
 		const config = {
