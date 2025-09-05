@@ -1,5 +1,5 @@
 import path from "node:path";
-import { build } from "vite";
+import { build, InlineConfig } from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module to capture calls
@@ -20,34 +20,29 @@ const EXAMPLE_ROOT = path.resolve(
 	"../../../examples/with-vite-react-ts",
 );
 
+// Helper function to build with our plugin
+async function buildWithPlugin(
+	envVars: Record<string, string>,
+	options: InlineConfig = {},
+) {
+	const plugin = (await import("./index")).default;
+
+	return build({
+		plugins: [plugin(envVars)],
+		root: EXAMPLE_ROOT,
+		...options,
+	});
+}
+
 describe("@arkenv/vite-plugin", () => {
 	beforeEach(() => {
 		mockDefineEnv.mockClear();
 	});
 
-	afterEach(() => {
-		// Clean up environment variables (but keep VITE_TEST for tests that need it)
-		// VITE_TEST is loaded from .env.test file and should persist across tests
-	});
-
 	describe("Plugin Integration", () => {
 		it("should call defineEnv with loaded environment variables", async () => {
 			// Environment variable is loaded from .env.test file
-
-			// Import the plugin
-			const plugin = (await import("./index")).default;
-
-			// Build the project to trigger the plugin
-			await build({
-				plugins: [
-					plugin({
-						VITE_TEST: "string",
-					}),
-				],
-				root: EXAMPLE_ROOT,
-				// Override the config file to avoid importing the package
-				configFile: false,
-			});
+			await buildWithPlugin({ VITE_TEST: "string" });
 
 			// Verify that defineEnv was called with the correct environment variables
 			expect(mockDefineEnv).toHaveBeenCalledWith(
@@ -59,13 +54,7 @@ describe("@arkenv/vite-plugin", () => {
 		});
 
 		it("should work with multiple environment variables", async () => {
-			const plugin = (await import("./index")).default;
-
-			await build({
-				plugins: [plugin(TEST_ENV_VARS)],
-				root: EXAMPLE_ROOT,
-				configFile: false,
-			});
+			await buildWithPlugin(TEST_ENV_VARS);
 
 			expect(mockDefineEnv).toHaveBeenCalledWith(
 				TEST_ENV_VARS,
@@ -90,21 +79,10 @@ describe("@arkenv/vite-plugin", () => {
 				throw new Error("VITE_TEST must be a string (was missing)");
 			});
 
-			const plugin = (await import("./index")).default;
-
 			// This should throw because the required environment variable is missing
-			// This is the correct behavior - the plugin should enforce required env vars
-			await expect(
-				build({
-					plugins: [
-						plugin({
-							VITE_TEST: "string",
-						}),
-					],
-					root: EXAMPLE_ROOT,
-					configFile: false,
-				}),
-			).rejects.toThrow("VITE_TEST must be a string (was missing)");
+			await expect(buildWithPlugin({ VITE_TEST: "string" })).rejects.toThrow(
+				"VITE_TEST must be a string (was missing)",
+			);
 
 			// Restore the original value and mock
 			if (originalViteTest !== undefined) {
@@ -125,19 +103,9 @@ describe("@arkenv/vite-plugin", () => {
 				throw new Error("VITE_NUMBER must be a number (was string)");
 			});
 
-			const plugin = (await import("./index")).default;
-
-			await expect(
-				build({
-					plugins: [
-						plugin({
-							VITE_NUMBER: "number",
-						}),
-					],
-					root: EXAMPLE_ROOT,
-					configFile: false,
-				}),
-			).rejects.toThrow("VITE_NUMBER must be a number (was string)");
+			await expect(buildWithPlugin({ VITE_NUMBER: "number" })).rejects.toThrow(
+				"VITE_NUMBER must be a number (was string)",
+			);
 
 			// Restore the original mock implementation
 			if (originalMockImplementation) {
@@ -151,23 +119,15 @@ describe("@arkenv/vite-plugin", () => {
 	describe("Integration Tests", () => {
 		it("should work with the actual example project", async () => {
 			// Environment variable is loaded from .env.test file
-
-			const plugin = (await import("./index")).default;
-
-			// Build the example project
-			const result = await build({
-				plugins: [
-					plugin({
-						VITE_TEST: "string",
-					}),
-				],
-				root: EXAMPLE_ROOT,
-				configFile: false,
-				build: {
-					outDir: "dist-test",
-					write: false,
+			const result = await buildWithPlugin(
+				{ VITE_TEST: "string" },
+				{
+					build: {
+						outDir: "dist-test",
+						write: false,
+					},
 				},
-			});
+			);
 
 			// Verify the build succeeded
 			expect(result).toBeDefined();
@@ -191,12 +151,7 @@ describe("@arkenv/vite-plugin", () => {
 		});
 
 		it("should handle complex Vite configurations", async () => {
-			const plugin = (await import("./index")).default;
-
-			const result = await build({
-				plugins: [plugin(TEST_ENV_VARS)],
-				root: EXAMPLE_ROOT,
-				configFile: false,
+			const result = await buildWithPlugin(TEST_ENV_VARS, {
 				build: {
 					outDir: "dist-complex-test",
 					write: false,
