@@ -79,7 +79,7 @@ For detailed documentation and examples, please visit our [documentation site](h
 
 ## Plugins
 
-- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build time.
+- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build time
 
 ## Contributing
 
