@@ -12,7 +12,6 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
-		"dotenv": "^16.4.5",
 		"tsup": "^8.5.0",
 		"typescript": "^5.9.2",
 		"vite": "^7.0.0",

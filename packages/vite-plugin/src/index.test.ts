@@ -1,10 +1,6 @@
 import path from "node:path";
-import { config } from "dotenv";
 import { build } from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-// Load test environment variables
-config({ path: path.resolve(__dirname, "../.env.test") });
 
 // Mock the arkenv module to capture calls
 const mockDefineEnv = vi.fn();
