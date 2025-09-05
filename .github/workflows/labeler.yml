@@ -1,0 +1,21 @@
+name: labeler
+description: "Automatically label pull requests based on changed files"
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Label PR
+        uses: actions/labeler@v5
+        with:
+          configuration-path: '.github/labeler.yml'
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
