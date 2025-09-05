@@ -1,6 +1,10 @@
 import path from "node:path";
+import { config } from "dotenv";
 import { build } from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+// Load test environment variables
+config({ path: path.resolve(__dirname, "../.env.test") });
 
 // Mock the arkenv module to capture calls
 const mockDefineEnv = vi.fn();
@@ -14,13 +18,12 @@ describe("@arkenv/vite-plugin", () => {
 	});
 
 	afterEach(() => {
-		// Clean up environment variables
-		delete process.env.VITE_TEST;
+		// Clean up environment variables (but keep VITE_TEST for tests that need it)
+		// VITE_TEST is loaded from .env.test file and should persist across tests
 	});
 
 	it("should call defineEnv with loaded environment variables", async () => {
-		// Set up environment variable
-		process.env.VITE_TEST = "test-value";
+		// Environment variable is loaded from .env.test file
 
 		// Import the plugin
 		const plugin = (await import("./index.js")).default;
@@ -48,7 +51,9 @@ describe("@arkenv/vite-plugin", () => {
 	});
 
 	it("should handle missing environment variables", async () => {
-		// Don't set VITE_TEST environment variable
+		// Temporarily remove VITE_TEST to test missing env var behavior
+		const originalViteTest = process.env.VITE_TEST;
+		delete process.env.VITE_TEST;
 
 		const plugin = (await import("./index.js")).default;
 
@@ -66,11 +71,15 @@ describe("@arkenv/vite-plugin", () => {
 		await expect(build(config)).rejects.toThrow(
 			"VITE_TEST must be a string (was missing)",
 		);
+
+		// Restore the original value
+		if (originalViteTest !== undefined) {
+			process.env.VITE_TEST = originalViteTest;
+		}
 	});
 
 	it("should work with the actual example project", async () => {
-		// Set the required environment variable
-		process.env.VITE_TEST = "integration-test-value";
+		// Environment variable is loaded from .env.test file
 
 		const plugin = (await import("./index.js")).default;
 
@@ -101,7 +110,7 @@ describe("@arkenv/vite-plugin", () => {
 		expect(mockDefineEnv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			expect.objectContaining({
-				VITE_TEST: "integration-test-value",
+				VITE_TEST: "test-value",
 			}),
 		);
 	});
