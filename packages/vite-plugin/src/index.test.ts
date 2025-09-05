@@ -89,6 +89,7 @@ describe("@arkenv/vite-plugin", () => {
 			root: path.resolve(__dirname, "../../../examples/with-vite-react-ts"),
 			build: {
 				outDir: "dist-test",
+				write: false,
 			},
 		};
 
