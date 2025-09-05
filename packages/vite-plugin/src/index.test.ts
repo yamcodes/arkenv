@@ -1,6 +1,6 @@
 import path from "node:path";
-import { build, InlineConfig } from "vite";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { build, type InlineConfig } from "vite";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module to capture calls
 const mockDefineEnv = vi.fn();
