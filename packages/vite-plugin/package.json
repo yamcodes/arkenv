@@ -19,7 +19,7 @@
 	},
 	"peerDependencies": {
 		"arktype": "^2.0.0",
-		"vite": "^6.0.0"
+		"vite": "^6.0.0 || ^7.0.0"
 	},
 	"exports": {
 		"types": "./dist/index.d.ts",
