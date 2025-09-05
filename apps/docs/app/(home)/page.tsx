@@ -9,7 +9,7 @@ const bricolageGrotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-	title: "ArkEnv: Typesafe environment variables, powered by ArkType",
+	title: "ArkEnv: Typesafe environment variables powered by ArkType",
 	description:
 		"ArkEnv is a tool for managing environment variables in your project.",
 };
@@ -18,10 +18,14 @@ export default function HomePage() {
 	return (
 		<main className="flex flex-1 flex-col justify-center text-center">
 			<h1 className={`mb-4 ${bricolageGrotesque.className} mt-16`}>
-				<div className="text-5xl font-extrabold">
-					Your environment variables, but 100% typesafe.
+				<div className="text-6xl font-extrabold">
+					Better{" "}
+					<span className="decoration-[rgb(180,215,255)] decoration-wavy decoration-1 underline underline-offset-4">
+						typesafe
+					</span>{" "}
+					than sorry
 				</div>
-				<div className="text-xl mt-4 text-gray-600 dark:text-gray-400">
+				<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400">
 					Bring the power of ArkType to your environment variables <br /> and
 					ship with confidence.
 				</div>
