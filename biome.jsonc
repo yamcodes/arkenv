@@ -12,6 +12,7 @@
 			"**",
 			"!**/node_modules",
 			"!**/dist",
+			"!**/dist-test",
 			"!**/.gitignore",
 			"!**/.next",
 			"!**/.source"
