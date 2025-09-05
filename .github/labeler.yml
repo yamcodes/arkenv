@@ -1,0 +1,18 @@
+# Configuration for GitHub PR Labeler
+# https://github.com/actions/labeler
+
+arkenv:
+  - changed-files:
+    - any-glob-to-any-file: 'packages/arkenv/**/*'
+
+"@arkenv/vite-plugin":
+  - changed-files:
+    - any-glob-to-any-file: 'packages/vite-plugin/**/*'
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file: 'apps/docs/**/*'
+
+example:
+  - changed-files:
+    - any-glob-to-any-file: 'examples/**/*'
