@@ -98,10 +98,11 @@ describe("@arkenv/vite-plugin", () => {
 
 		// Verify the build succeeded
 		expect(result).toBeDefined();
-		// Vite build returns a build result object
-		expect(result).toHaveProperty("output");
-		expect(Array.isArray(result.output)).toBe(true);
-		expect(result.output.length).toBeGreaterThan(0);
+		// Vite build returns a RollupOutput array when write: false
+		expect(Array.isArray(result)).toBe(true);
+		if (Array.isArray(result)) {
+			expect(result.length).toBeGreaterThan(0);
+		}
 
 		// Verify that defineEnv was called
 		expect(mockDefineEnv).toHaveBeenCalledWith(
