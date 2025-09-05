@@ -98,10 +98,14 @@ describe("@arkenv/vite-plugin", () => {
 
 		// Verify the build succeeded
 		expect(result).toBeDefined();
-		// Vite build returns a RollupOutput array when write: false
-		expect(Array.isArray(result)).toBe(true);
-		if (Array.isArray(result)) {
-			expect(result.length).toBeGreaterThan(0);
+
+		// Vite build returns a RollupOutput object when write: false
+		// Use type guard to ensure we have the correct type
+		if (result && typeof result === "object" && "output" in result) {
+			expect(Array.isArray(result.output)).toBe(true);
+			expect(result.output.length).toBeGreaterThan(0);
+		} else {
+			throw new Error("Expected RollupOutput object with output property");
 		}
 
 		// Verify that defineEnv was called
