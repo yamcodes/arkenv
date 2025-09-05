@@ -77,6 +77,10 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 
 For detailed documentation and examples, please visit our [documentation site](https://yam.codes/arkenv).
 
+## Plugins
+
+- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build time.
+
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md) for more information.
