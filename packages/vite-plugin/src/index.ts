@@ -1,4 +1,4 @@
-import { defineEnv } from "arkenv";
+import { createEnv } from "arkenv";
 import type { type } from "arktype";
 import { loadEnv, type Plugin } from "vite";
 
@@ -15,6 +15,6 @@ type EnvSchema<
 export default <T extends EnvSchema>(options: EnvSchema<T>): Plugin => ({
 	name: "@arkenv/vite-plugin",
 	config(_config, { mode }) {
-		defineEnv(options, loadEnv(mode, process.cwd(), ""));
+		createEnv(options, loadEnv(mode, process.cwd(), ""));
 	},
 });

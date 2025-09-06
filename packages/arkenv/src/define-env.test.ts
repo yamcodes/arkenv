@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { describe, expect, it } from "vitest";
-import { defineEnv } from "./define-env";
+import { createEnv } from "./define-env";
 import { indent } from "./utils";
 
 /**
@@ -28,7 +28,7 @@ describe("env", () => {
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
-		const env = defineEnv({
+		const env = createEnv({
 			TEST_STRING: "string",
 		});
 
@@ -37,7 +37,7 @@ describe("env", () => {
 
 	it("should throw when required env variable is missing", () => {
 		expect(() =>
-			defineEnv({
+			createEnv({
 				MISSING_VAR: "string",
 			}),
 		).toThrow(
@@ -55,7 +55,7 @@ describe("env", () => {
 		process.env.WRONG_TYPE = "not a number";
 
 		expect(() =>
-			defineEnv({
+			createEnv({
 				WRONG_TYPE: "number",
 			}),
 		).toThrow(
@@ -74,7 +74,7 @@ describe("env", () => {
 			TEST_STRING: "hello",
 		};
 
-		const { TEST_STRING } = defineEnv(
+		const { TEST_STRING } = createEnv(
 			{
 				TEST_STRING: "string",
 			},

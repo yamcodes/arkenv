@@ -17,7 +17,7 @@ export type EnvSchema<
  * @param env - The environment variables to validate, defaults to `process.env`
  * @returns The validated environment variable schema
  */
-export const defineEnv = <const T extends Record<string, string | undefined>>(
+export const createEnv = <const T extends Record<string, string | undefined>>(
 	def: EnvSchema<T>,
 	env: UserEnvironment = process.env,
 ): distill.Out<type.infer<T>> => {

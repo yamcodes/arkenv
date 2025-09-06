@@ -30,9 +30,9 @@ ArkEnv solves these problems by providing a typesafe, validated way to define an
 Here's the kind of code you can expect when using ArkEnv:
 
 ```ts title="example.ts"
-import { defineEnv, host, port } from 'arkenv';
+import { createEnv, host, port } from 'arkenv';
 
-const env = defineEnv({
+const env = createEnv({
   HOST: host,           // Validates IP address or localhost
   PORT: port,           // Ensures valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",

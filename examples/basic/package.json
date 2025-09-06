@@ -1,5 +1,5 @@
 {
-	"name": "basic",
+	"name": "arkenv-example-basic",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"arkenv": "^0.2.0",
-		"arktype": "^2.0.4"
+		"arktype": "^2.1.22"
 	},
 	"devDependencies": {
 		"tsx": "^4.19.2",

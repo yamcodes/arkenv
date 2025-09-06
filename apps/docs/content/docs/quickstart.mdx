@@ -35,9 +35,9 @@ description: Let's get you started with a few simple steps
     Add a schema to make your environment variables **validated** and **typesafe**:
 
     ```typescript title="config/env.ts"
-    import { defineEnv, host, port } from 'arkenv';
+    import { createEnv, host, port } from 'arkenv';
 
-    export const env = defineEnv({
+    export const env = createEnv({
       // Built-in validators
       DATABASE_HOST: host,
       DATABASE_PORT: port,
