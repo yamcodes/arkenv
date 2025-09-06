@@ -22,27 +22,51 @@
 		},
 		{
 			"path": "apps/www",
-			"name": "  www (arkenv.vercel.app)"
-		},
-		{
-			"path": "examples",
-			"name": "examples"
-		},
-		{
-			"path": "examples/basic",
-			"name": "  basic"
-		},
-		{
-			"path": "examples/with-bun",
-			"name": "  with-bun"
-		},
-		{
-			"path": "examples/with-vite-react-ts",
-			"name": "  with-vite-react-ts"
-		},
-		{
-			"path": "apps/www/content/docs",
-			"name": "docs"
+			"name": "  www (arkenv.js.org)"
+
 		}
-	]
-}
+
+		
+
+			"path": "examples"
+
+			"name": "examples
+
+		}
+
+		
+
+			"path": "examples/basic"
+
+			"name": "  basic
+
+		}
+
+		
+
+			"path": "examples/with-bun"
+
+			"name": "  with-bun
+
+		}
+
+		
+
+			"path": "examples/with-vite-react-ts"
+
+			"name": "  with-vite-react-ts
+
+		}
+
+		
+
+			"path": "apps/www/content/docs"
+
+			"name": "docs
+
+		
+
+	
+
+
+
