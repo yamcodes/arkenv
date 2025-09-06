@@ -2,35 +2,47 @@
 	"folders": [
 		{
 			"path": ".",
-			"name": "~ (root)"
+			"name": "~"
+		},
+		{
+			"path": "packages",
+			"name": "packages"
 		},
 		{
 			"path": "packages/arkenv",
-			"name": "arkenv (package)"
+			"name": "  arkenv"
 		},
 		{
 			"path": "packages/vite-plugin",
-			"name": "@arkenv/vite-plugin (package)"
+			"name": "  @arkenv/vite-plugin"
 		},
 		{
-			"path": "apps/docs",
-			"name": "docs (app)"
+			"path": "apps",
+			"name": "apps"
+		},
+		{
+			"path": "apps/www",
+			"name": "  www (arkenv.vercel.app)"
+		},
+		{
+			"path": "examples",
+			"name": "examples"
 		},
 		{
 			"path": "examples/basic",
-			"name": "basic (example)"
+			"name": "  basic"
 		},
 		{
 			"path": "examples/with-bun",
-			"name": "with-bun (example)"
+			"name": "  with-bun"
 		},
 		{
 			"path": "examples/with-vite-react-ts",
-			"name": "with-vite-react-ts (example)"
+			"name": "  with-vite-react-ts"
 		},
 		{
-			"path": "apps/docs/content/docs",
-			"name": "docs (content)"
+			"path": "apps/www/content/docs",
+			"name": "docs"
 		}
 	]
 }
