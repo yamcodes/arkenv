@@ -1,4 +1,5 @@
 import path from "node:path";
+import react from "@vitejs/plugin-react";
 import { build, type InlineConfig } from "vite";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -28,8 +29,9 @@ async function buildWithPlugin(
 	const plugin = (await import("./index")).default;
 
 	return build({
-		plugins: [plugin(envVars)],
+		plugins: [react(), plugin(envVars)],
 		root: EXAMPLE_ROOT,
+		configFile: false,
 		...options,
 	});
 }
