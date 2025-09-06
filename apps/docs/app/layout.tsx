@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { Toaster } from "~/components/ui/toaster";
-import { BASE_URL } from "~/config/constants";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -37,7 +36,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 				<RootProvider
 					search={{
 						options: {
-							api: `${BASE_URL}/api/search`,
+							api: "/api/search",
 						},
 					}}
 					theme={{
