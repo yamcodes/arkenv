@@ -16,6 +16,9 @@
 		},
 		"//#fix": {
 			"cache": false
+		},
+		"typecheck": {
+			"inputs": ["*.ts", "*.tsx"]
 		}
 	}
 }

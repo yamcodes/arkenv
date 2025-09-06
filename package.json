@@ -1,10 +1,6 @@
 {
 	"name": "arkenv-monorepo",
 	"private": true,
-	"workspaces": [
-		"packages/*",
-		"apps/*"
-	],
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",

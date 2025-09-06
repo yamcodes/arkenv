@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"vcs": {
-		"enabled": false,
+		"enabled": true,
 		"clientKind": "git",
 		"useIgnoreFile": true,
 		"defaultBranch": "main"
@@ -12,6 +12,7 @@
 			"**",
 			"!**/node_modules",
 			"!**/dist",
+			"!**/dist-test",
 			"!**/.gitignore",
 			"!**/.next",
 			"!**/.source"
