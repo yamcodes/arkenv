@@ -31,7 +31,7 @@
 		"validation"
 	],
 	"license": "MIT",
-	"homepage": "https://yam.codes/arkenv",
+	"homepage": "https://arkenv.js.org",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/yamcodes/arkenv.git"
