@@ -1,7 +1,7 @@
 {
 	"name": "ark.env-monorepo",
 	"private": true,
-	"workspaces": ["packages/*", "apps/*"],
+	"workspaces": ["packages/*", "apps/*", "examples/*"],
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
