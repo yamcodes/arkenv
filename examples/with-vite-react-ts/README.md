@@ -123,6 +123,6 @@ arkenv({
 
 ### Next steps
 
-- [ArkEnv docs](https://arkenv.vercel.app/)
+- [ArkEnv docs](https://arkenv.vercel.app/docs)
 - [ArkType docs](https://arktype.io/)
 - [Vite Environment Variables guide](https://vitejs.dev/guide/env-and-mode.html)

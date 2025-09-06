@@ -1,5 +1,5 @@
-# ArkEnv Documentation Site
+# ArkEnv site
 
 Welcome to the ArkEnv documentation site!
 
-:rocket: We are live on [arkenv.vercel.app](https://arkenv.vercel.app/docs).
+:rocket: We are live on [arkenv.vercel.app](https://arkenv.vercel.app).

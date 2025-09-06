@@ -31,7 +31,7 @@
 		"validation"
 	],
 	"license": "MIT",
-	"homepage": "https://arkenv.vercel.app/docs",
+	"homepage": "https://arkenv.vercel.app",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/yamcodes/arkenv.git"
