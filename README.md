@@ -75,7 +75,7 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 
 ## Documentation
 
-For detailed documentation and examples, please visit our [documentation site](https://arkenv.vercel.app).
+For detailed documentation and examples, please visit our [documentation site](https://arkenv.vercel.app/docs).
 
 ## Plugins
 

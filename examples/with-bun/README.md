@@ -88,6 +88,6 @@ With the development server running (if it isn't - just run `bun dev`), let's se
 
 ### Next steps
 
-- [ArkEnv docs](https://arkenv.vercel.app/)
+- [ArkEnv docs](https://arkenv.vercel.app/docs)
 - [ArkType docs](https://arktype.io/)
 - [Bun docs](https://bun.sh)

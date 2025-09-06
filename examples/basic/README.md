@@ -74,5 +74,5 @@ With the development server running (if it isn't - just run `npm run dev`), let'
 
 ### Next steps
 
-- [ArkEnv docs](https://arkenv.vercel.app/)
+- [ArkEnv docs](https://arkenv.vercel.app/docs)
 - [ArkType docs](https://arktype.io/)

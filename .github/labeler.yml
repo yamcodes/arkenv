@@ -9,10 +9,18 @@ arkenv:
   - changed-files:
     - any-glob-to-any-file: 'packages/vite-plugin/**/*'
 
+www:
+  - changed-files:
+    - any-glob-to-any-file: 'apps/www/**/*'
+
 docs:
   - changed-files:
-    - any-glob-to-any-file: 'apps/docs/**/*'
+      - any-glob-to-any-file: ['apps/www/content/docs/**/*', '**/*.md']
 
 example:
   - changed-files:
     - any-glob-to-any-file: 'examples/**/*'
+
+tests
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.test.ts', '**/*.test.tsx']
