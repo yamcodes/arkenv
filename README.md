@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://arkenv.vercel.app">
+  <a href="https://arkenv.js.org">
     <img alt="arkenv - Typesafe Environment Variables" src="https://og.tailgraph.com/og?titleFontFamily=JetBrains+Mono&textFontFamily=Inter&title=ArkEnv&titleTailwind=text-[%23e9eef9]%20font-bold%20relative%20decoration-%5Brgb(180,215,255)%5D%20decoration-wavy%20decoration-[5px]%20underline%20underline-offset-[16px]%20text-5xl%20mb-8&text=Typesafe%20environment%20variables%20powered%20by%20ArkType&textTailwind=text-[%238b9dc1]%20text-3xl&bgTailwind=bg-gradient-to-b%20from-[%23061a3a]%20to-black" width="645px">
   </a>
   <br />
@@ -75,7 +75,7 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 
 ## Documentation
 
-For detailed documentation and examples, please visit our [documentation site](https://arkenv.vercel.app/docs).
+For detailed documentation and examples, please visit our [documentation site](https://arkenv.js.org/docs).
 
 ## Plugins
 

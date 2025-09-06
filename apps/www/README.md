@@ -1,3 +1,3 @@
 # ArkEnv site
 
-Welcome! We are live on [arkenv.vercel.app](https://arkenv.vercel.app) :rocket:
+Welcome! We are live on [arkenv.js.org](https://arkenv.js.org) :rocket:
