@@ -11,7 +11,7 @@ arkenv:
 
 docs:
   - changed-files:
-    - any-glob-to-any-file: 'apps/docs/**/*'
+    - any-glob-to-any-file: 'apps/www/**/*'
 
 example:
   - changed-files:
