@@ -17,10 +17,6 @@
 			"name": "docs (app)"
 		},
 		{
-			"path": "apps/docs/content/docs",
-			"name": "docs (content)"
-		},
-		{
 			"path": "examples/basic",
 			"name": "basic (example)"
 		},
@@ -31,6 +27,10 @@
 		{
 			"path": "examples/with-vite-react-ts",
 			"name": "with-vite-react-ts (example)"
+		},
+		{
+			"path": "apps/docs/content/docs",
+			"name": "docs (content)"
 		}
 	]
 }
