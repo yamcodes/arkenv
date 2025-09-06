@@ -32,7 +32,7 @@
 	"files": [
 		"dist"
 	],
-	"homepage": "https://arkenv.js.org",
+	"homepage": "https://arkenv.vercel.app",
 	"keywords": [
 		"arktype",
 		"arkenv",
