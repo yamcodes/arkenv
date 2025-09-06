@@ -48,7 +48,7 @@ With the development server running (if it isn't - just run `npm run dev`), let'
     ArkEnvError: Errors found while validating environment variables
       MY_ENV_VAR must be a string (was missing)
     ```
-    This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.vercel.app/docs/guides/environment-configuration#using-env-files).
+    This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.js.org/docs/guides/environment-configuration#using-env-files).
 
 3. #### Copy the `.env.example` file to `.env`
    
