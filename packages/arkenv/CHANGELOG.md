@@ -1,5 +1,37 @@
 # ArkEnv
 
+## 0.3.0
+
+### Minor Changes
+
+- Rename `defineEnv` to `createEnv` _[`d46b233`](https://github.com/yamcodes/arkenv/commit/d46b23355546fd0531123cfaaffab95f74a472da) [@yamcodes](https://github.com/yamcodes)_
+
+  The main API for building a validated env object is now `createEnv`.
+
+  **Before**
+
+  ```ts
+  import { defineEnv } from "arkenv";
+
+  const env = defineEnv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  **After**
+
+  ```ts
+  import { createEnv } from "arkenv";
+
+  const env = createEnv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  This aligns better with the actual behavior: ArkEnv creates, validates, and returns a typesafe env object.
+
+  BREAKING CHANGE: `defineEnv` has been removed in favor of `createEnv`.
+
 ## 0.2.0
 
 ### Minor Changes
