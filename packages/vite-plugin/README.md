@@ -80,7 +80,7 @@ See the [with-vite-react-ts example](https://github.com/yamcodes/arkenv/tree/mai
 
 ## Documentation
 
-For detailed documentation and more examples, visit the [ArkEnv documentation site](https://arkenv.js.org).
+For detailed documentation and more examples, visit the [ArkEnv documentation site](https://arkenv.js.org/docs).
 
 ## Related
 

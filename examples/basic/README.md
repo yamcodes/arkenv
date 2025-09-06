@@ -74,5 +74,5 @@ With the development server running (if it isn't - just run `npm run dev`), let'
 
 ### Next steps
 
-- [ArkEnv docs](https://arkenv.js.org/)
+- [ArkEnv docs](https://arkenv.js.org/docs)
 - [ArkType docs](https://arktype.io/)
