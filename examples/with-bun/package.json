@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"start": "bun run index.ts",
-		"dev": "bun --watch run index.ts"
+		"dev": "bun --watch run index.ts",
+		"build": "bun build index.ts --outdir ./dist"
 	},
 	"dependencies": {
 		"arkenv": "^0.1.3",
