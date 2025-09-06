@@ -21,7 +21,7 @@ arkenv/
 │   ├── arkenv/          # Core library
 │   └── vite-plugin/     # Vite integration plugin
 ├── apps/
-│   └── docs/           # Documentation site
+│   └── www/            # ArkEnv site (w/ documentation)
 ├── examples/           # Usage examples
 │   ├── basic/          # Basic Node.js example
 │   ├── with-bun/       # Bun runtime example

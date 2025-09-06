@@ -24,7 +24,7 @@ export const EditOnGithub = ({ path }: EditOnGithubProps) => {
 			<Button asChild variant="link" className="p-0">
 				<Link
 					{...getLinkTitleAndHref(
-						`${process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ?? "apps/docs/content/docs/"}${path}`,
+						`${process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ?? "apps/www/content/docs/"}${path}`,
 					)}
 					target="_blank"
 					rel="noopener noreferrer"
