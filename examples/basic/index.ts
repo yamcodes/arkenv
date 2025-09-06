@@ -1,8 +1,8 @@
-import { defineEnv, host, port } from "arkenv";
+import { createEnv, host, port } from "arkenv";
 
 // TODO: Uncomment once we fix
 
-const env = defineEnv({
+const env = createEnv({
 	// HOST: host.default("localhost"),
 	// PORT: port.default("3000"),
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
