@@ -50,11 +50,11 @@ bun add arkenv arktype
 > Find more examples in the [examples](https://github.com/yamcodes/arkenv/tree/main/examples) directory.
 
 ```ts
-import { createEnv, host, port } from 'arkenv';
+import { createEnv } from 'arkenv';
 
 const env = createEnv({
-  HOST: host, // valid IP address or localhost
-  PORT: port, // valid port number (0-65535)
+  HOST: "string.host", // valid IP address or localhost
+  PORT: "number.port", // valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",
 });
 
