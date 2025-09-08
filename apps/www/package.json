@@ -10,7 +10,7 @@
 		"clean": "rimraf node_modules .next .source"
 	},
 	"dependencies": {
-		"@icons-pack/react-simple-icons": "^12.5.0",
+		"@icons-pack/react-simple-icons": "^13.7.0",
 		"@radix-ui/react-separator": "^1.1.7",
 		"@radix-ui/react-slot": "^1.2.3",
 		"@radix-ui/react-toast": "^1.2.15",
