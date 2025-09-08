@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./define-env";
+import { createEnv } from "./create-env";
 import { indent } from "./utils";
 
 /**
