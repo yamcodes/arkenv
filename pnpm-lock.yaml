@@ -231,8 +231,8 @@ importers:
         specifier: workspace:*
         version: link:../arkenv
       arktype:
-        specifier: ^2.0.0
-        version: 2.0.4
+        specifier: ^2.1.22
+        version: 2.1.22
     devDependencies:
       '@vitejs/plugin-react':
         specifier: ^5.0.2
