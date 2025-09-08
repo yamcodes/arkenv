@@ -30,6 +30,19 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@22.14.0)(jiti@2.5.1)(jsdom@25.0.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.5)
 
+  apps/playground:
+    dependencies:
+      arkenv:
+        specifier: workspace:*
+        version: link:../../packages/arkenv
+      arktype:
+        specifier: ^2.1.22
+        version: 2.1.22
+    devDependencies:
+      '@types/node':
+        specifier: 22.14.0
+        version: 22.14.0
+
   apps/www:
     dependencies:
       '@icons-pack/react-simple-icons':
@@ -193,8 +206,8 @@ importers:
   packages/arkenv:
     dependencies:
       arktype:
-        specifier: ^2.0.2
-        version: 2.0.4
+        specifier: ^2.1.22
+        version: 2.1.22
       chalk:
         specifier: ^5.6.0
         version: 5.6.0

@@ -1,0 +1,16 @@
+{
+	"name": "playground",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch --env-file .env index.ts",
+		"start": "tsx --env-file .env index.ts"
+	},
+	"dependencies": {
+		"arkenv": "workspace:*",
+		"arktype": "^2.1.22"
+	},
+	"devDependencies": {
+		"@types/node": "22.14.0"
+	}
+}
