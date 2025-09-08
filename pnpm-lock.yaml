@@ -137,8 +137,8 @@ importers:
   examples/basic:
     dependencies:
       arkenv:
-        specifier: ^0.3.0
-        version: 0.3.0(arktype@2.1.22)
+        specifier: ^0.4.0
+        version: 0.4.0(arktype@2.1.22)
       arktype:
         specifier: ^2.1.22
         version: 2.1.22
@@ -153,11 +153,11 @@ importers:
   examples/with-bun:
     dependencies:
       arkenv:
-        specifier: ^0.3.0
-        version: 0.3.0(arktype@2.0.4)
+        specifier: ^0.4.0
+        version: 0.4.0(arktype@2.1.22)
       arktype:
-        specifier: ^2.0.4
-        version: 2.0.4
+        specifier: ^2.1.22
+        version: 2.1.22
       chalk:
         specifier: ^5.4.1
         version: 5.6.0
@@ -172,14 +172,14 @@ importers:
   examples/with-vite-react-ts:
     dependencies:
       '@arkenv/vite-plugin':
-        specifier: ^0.0.6
-        version: 0.0.6(arktype@2.0.4)(vite@7.1.3(@types/node@22.14.0)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.5))
+        specifier: ^0.0.7
+        version: 0.0.7(arktype@2.1.22)(vite@7.1.3(@types/node@22.14.0)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.5))
       arkenv:
-        specifier: ^0.3.0
-        version: 0.3.0(arktype@2.0.4)
+        specifier: ^0.4.0
+        version: 0.4.0(arktype@2.1.22)
       arktype:
-        specifier: ^2.0.4
-        version: 2.0.4
+        specifier: ^2.1.22
+        version: 2.1.22
       react:
         specifier: ^19.0.0
         version: 19.1.1
@@ -263,17 +263,11 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@ark/schema@0.39.0':
-    resolution: {integrity: sha512-LQbQUb3Sj461LgklXObAyUJNtsUUCBxZlO2HqRLYvRSqpStm0xTMrXn51DwBNNxeSULvKVpXFwoxiSec9kwKww==}
-
   '@ark/schema@0.46.0':
     resolution: {integrity: sha512-c2UQdKgP2eqqDArfBqQIJppxJHvNNXuQPeuSPlDML4rjw+f1cu0qAlzOG4b8ujgm9ctIDWwhpyw6gjG5ledIVQ==}
 
   '@ark/schema@0.49.0':
     resolution: {integrity: sha512-GphZBLpW72iS0v4YkeUtV3YIno35Gimd7+ezbPO9GwEi9kzdUrPVjvf6aXSBAfHikaFc/9pqZOpv3pOXnC71tw==}
-
-  '@ark/util@0.39.0':
-    resolution: {integrity: sha512-90APHVklk8BP4kku7hIh1BgrhuyKYqoZ4O7EybtFRo7cDl9mIyc/QUbGvYDg//73s0J2H0I/gW9pzroA1R4IBQ==}
 
   '@ark/util@0.46.0':
     resolution: {integrity: sha512-JPy/NGWn/lvf1WmGCPw2VGpBg5utZraE84I7wli18EDF3p3zc/e9WolT35tINeZO3l7C77SjqRJeAUoT0CvMRg==}
@@ -281,10 +275,10 @@ packages:
   '@ark/util@0.49.0':
     resolution: {integrity: sha512-/BtnX7oCjNkxi2vi6y1399b+9xd1jnCrDYhZ61f0a+3X8x8DxlK52VgEEzyuC2UQMPACIfYrmHkhD3lGt2GaMA==}
 
-  '@arkenv/vite-plugin@0.0.6':
-    resolution: {integrity: sha512-3A911QeDdZZyE7y2NhnKZ4CzNYbSIFqkCDOgmiD9q9uTgqv8/mhZ7SNo+AAEyBumtYONyBjZnhqPX93KvW4q1g==}
+  '@arkenv/vite-plugin@0.0.7':
+    resolution: {integrity: sha512-WUPai3IfdyFedShV9h/TRaFtfRrrwBNdLjmsT8vk7eRMLRalqsDdd4Lme4hCT0B1ZzsCR/ZB4Q+Uiu6MG9H0gA==}
     peerDependencies:
-      arktype: ^2.0.0
+      arktype: ^2.1.22
       vite: ^6.0.0 || ^7.0.0
 
   '@asamuzakjp/css-color@3.2.0':
@@ -2320,13 +2314,10 @@ packages:
     resolution: {integrity: sha512-ik3ZgC9dY/lYVVM++OISsaYDeg1tb0VtP5uL3ouh1koGOaUMDPpbFIei4JkFimWUFPn90sbMNMXQAIVOlnYKJA==}
     engines: {node: '>=10'}
 
-  arkenv@0.3.0:
-    resolution: {integrity: sha512-lSNPipwBaaagtjqhyoyZfjguWM46e5XsRSyadIWkdDtrvPjdhvbQvo5g87Z7FV4r0Gng2++Ob0CWczwJ389Lpg==}
+  arkenv@0.4.0:
+    resolution: {integrity: sha512-QOurnv9ELR+Ty+K/7ezHge1jAD4P9OOl7F2QcztF1A+536V7e8ZZiNV2c/r2PsR8Ipp9cmMNf6x+ut2N1tkZJQ==}
     peerDependencies:
-      arktype: ^2.0.2
-
-  arktype@2.0.4:
-    resolution: {integrity: sha512-S68rWVDnJauwH7/QCm8zCUM3aTe9Xk6oRihdcc3FSUAtxCo/q1Fwq46JhcwB5Ufv1YStwdQRz+00Y/URlvbhAQ==}
+      arktype: ^2.1.22
 
   arktype@2.1.22:
     resolution: {integrity: sha512-xdzl6WcAhrdahvRRnXaNwsipCgHuNoLobRqhiP8RjnfL9Gp947abGlo68GAIyLtxbD+MLzNyH2YR4kEqioMmYQ==}
@@ -4534,10 +4525,6 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.30
 
-  '@ark/schema@0.39.0':
-    dependencies:
-      '@ark/util': 0.39.0
-
   '@ark/schema@0.46.0':
     dependencies:
       '@ark/util': 0.46.0
@@ -4546,16 +4533,14 @@ snapshots:
     dependencies:
       '@ark/util': 0.49.0
 
-  '@ark/util@0.39.0': {}
-
   '@ark/util@0.46.0': {}
 
   '@ark/util@0.49.0': {}
 
-  '@arkenv/vite-plugin@0.0.6(arktype@2.0.4)(vite@7.1.3(@types/node@22.14.0)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.5))':
+  '@arkenv/vite-plugin@0.0.7(arktype@2.1.22)(vite@7.1.3(@types/node@22.14.0)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.5))':
     dependencies:
-      arkenv: 0.3.0(arktype@2.0.4)
-      arktype: 2.0.4
+      arkenv: 0.4.0(arktype@2.1.22)
+      arktype: 2.1.22
       vite: 7.1.3(@types/node@22.14.0)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.5)
 
   '@asamuzakjp/css-color@3.2.0':
@@ -6719,20 +6704,10 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  arkenv@0.3.0(arktype@2.0.4):
-    dependencies:
-      arktype: 2.0.4
-      chalk: 5.6.0
-
-  arkenv@0.3.0(arktype@2.1.22):
+  arkenv@0.4.0(arktype@2.1.22):
     dependencies:
       arktype: 2.1.22
       chalk: 5.6.0
-
-  arktype@2.0.4:
-    dependencies:
-      '@ark/schema': 0.39.0
-      '@ark/util': 0.39.0
 
   arktype@2.1.22:
     dependencies:
