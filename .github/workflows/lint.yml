@@ -16,14 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Reviewdog (Checks)
-        uses: mongolyy/reviewdog-action-biome@v1
+        uses: mongolyy/reviewdog-action-biome@v2
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-check
           level: error
           biome_flags: "--diagnostic-level=error"
       - name: Reviewdog (PR)
-        uses: mongolyy/reviewdog-action-biome@v1
+        uses: mongolyy/reviewdog-action-biome@v2
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
