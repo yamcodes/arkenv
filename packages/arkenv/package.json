@@ -39,7 +39,7 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@ark/schema": "^0.46.0",
+		"@ark/schema": "^0.49.0",
 		"@types/node": "22.14.0",
 		"tsup": "^8.5.0",
 		"typescript": "^5.9.2"
@@ -48,6 +48,6 @@
 		"arktype": "^2.0.2"
 	},
 	"dependencies": {
-		"chalk": "^5.6.0"
+		"chalk": "^5.6.2"
 	}
 }
