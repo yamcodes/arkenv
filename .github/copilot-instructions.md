@@ -69,11 +69,11 @@ The core library provides:
 
 ### Environment Schema Definition
 ```typescript
-import { createEnv, host, port } from 'arkenv';
+import { createEnv } from 'arkenv';
 
 const env = createEnv({
-  HOST: host,                                    // Built-in validator
-  PORT: port,                                    // Built-in validator  
+  HOST: "string.host",                                    // Built-in validator
+  PORT: "number.port",                                    // Built-in validator  
   NODE_ENV: "'development' | 'production' | 'test'", // ArkType string literal
   DATABASE_URL: "string",                        // Simple ArkType schema
   FEATURE_FLAG: "boolean = false",               // Default value
@@ -124,7 +124,7 @@ afterEach(() => {
 
 it('should validate environment variables', () => {
   process.env.PORT = '3000';
-  const env = createEnv({ PORT: port });
+  const env = createEnv({ PORT: "number.port" });
   expect(env.PORT).toBe(3000);
 });
 ```

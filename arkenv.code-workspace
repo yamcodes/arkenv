@@ -21,6 +21,10 @@
 			"name": "apps"
 		},
 		{
+			"path": "apps/playground",
+			"name": "  playground"
+		},
+		{
 			"path": "apps/www",
 			"name": "  www (arkenv.js.org)"
 		},

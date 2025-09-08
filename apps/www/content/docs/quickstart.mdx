@@ -35,12 +35,12 @@ description: Let's get you started with a few simple steps
     Add a schema to make your environment variables **validated** and **typesafe**:
 
     ```typescript title="config/env.ts"
-    import { createEnv, host, port } from 'arkenv';
+    import { createEnv } from 'arkenv';
 
     export const env = createEnv({
       // Built-in validators
-      DATABASE_HOST: host,
-      DATABASE_PORT: port,
+      DATABASE_HOST: "string.host",
+      DATABASE_PORT: "number.port",
       
       // Custom string literals
       NODE_ENV: "'development' | 'production' | 'test'",

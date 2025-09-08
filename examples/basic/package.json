@@ -3,8 +3,8 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "tsx index.ts",
-		"dev": "tsx watch index.ts",
+		"start": "tsx --env-file .env index.ts",
+		"dev": "tsx watch --env-file .env index.ts",
 		"build": "tsc"
 	},
 	"dependencies": {

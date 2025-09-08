@@ -19,7 +19,7 @@
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
-		"arktype": "^2.0.0",
+		"arktype": "^2.1.22",
 		"vite": "^6.0.0 || ^7.0.0"
 	},
 	"exports": {
