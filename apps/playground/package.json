@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch --env-file .env index.ts",
-		"start": "tsx --env-file .env index.ts"
+		"start": "tsx --env-file .env index.ts",
+		"fix": "pnpm -w run fix"
 	},
 	"dependencies": {
 		"arkenv": "workspace:*",
