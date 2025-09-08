@@ -21,6 +21,6 @@ example:
   - changed-files:
     - any-glob-to-any-file: 'examples/**/*'
 
-tests
+tests:
   - changed-files:
     - any-glob-to-any-file: ['**/*.test.ts', '**/*.test.tsx']
