@@ -42,6 +42,9 @@ importers:
       '@types/node':
         specifier: 22.14.0
         version: 22.14.0
+      tsx:
+        specifier: ^4.20.5
+        version: 4.20.5
 
   apps/www:
     dependencies:
