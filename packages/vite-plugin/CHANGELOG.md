@@ -1,5 +1,23 @@
 # @arkenv/vite-plugin
 
+## 0.0.7
+
+### Patch Changes
+
+- Upgraded ArkType peer dependency from `^2.0.0` to `^2.1.22` for compatibility with the latest version of ArkEnv _[`#129`](https://github.com/yamcodes/arkenv/pull/129) [`dd15b60`](https://github.com/yamcodes/arkenv/commit/dd15b608281b04eaac1bf93d3911a234e7e7565d) [@yamcodes](https://github.com/yamcodes)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dd15b60`](https://github.com/yamcodes/arkenv/commit/dd15b608281b04eaac1bf93d3911a234e7e7565d)
+
+</small>
+
+- `arkenv@0.4.0`
+
+</details>
+
 ## 0.0.6
 
 ### Patch Changes
