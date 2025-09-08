@@ -9,11 +9,11 @@
 	},
 	"dependencies": {
 		"arkenv": "^0.3.0",
-		"arktype": "^2.0.4",
+		"arktype": "^2.1.22",
 		"chalk": "^5.4.1"
 	},
 	"devDependencies": {
 		"bun-types": "^1.2.2",
-		"typescript": "^5.0.0"
+		"typescript": "^5.9.2"
 	}
 }
