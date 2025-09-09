@@ -4,6 +4,7 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils/cn";
 
 type StarUsProps = {
 	className?: string;
@@ -30,14 +31,6 @@ export function StarUsButton({ className }: StarUsProps) {
 
 		fetchStarCount();
 	}, []);
-
-	const handleClick = () => {
-		// Open GitHub repository in new tab with fallback URL
-		const url =
-			process.env.NEXT_PUBLIC_GITHUB_URL ||
-			"https://github.com/yamcodes/arkenv";
-		window.open(url, "_blank", "noopener,noreferrer");
-	};
 
 	return (
 		<>
@@ -76,56 +69,65 @@ export function StarUsButton({ className }: StarUsProps) {
 				<div className="absolute inset-0 rounded-lg shadow-[0_16px_20px] [--tw-shadow-color:rgba(255,150,0,0.15)] dark:[--tw-shadow-color:rgba(255,150,0,0.15)] pointer-events-none" />
 
 				<Button
-					onClick={handleClick}
+					asChild
 					variant="outline"
 					size="lg"
-					className={`
-						relative overflow-hidden cursor-pointer text-lg font-bold
-						bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20
-						border-2 border-yellow-200 dark:border-yellow-700
-						text-yellow-800 dark:text-yellow-200 hover:text-yellow-800 dark:hover:text-yellow-200
-						transition-all duration-200 ease-in-out scale-100
-						focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0
-						hover:scale-105
-						${className}
-					`}
+					className={cn(
+						"relative overflow-hidden cursor-pointer text-lg font-bold",
+						"bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
+						"border-2 border-yellow-200 dark:border-yellow-700",
+						"text-yellow-800 dark:text-yellow-200 hover:text-yellow-800 dark:hover:text-yellow-200",
+						"transition-all duration-200 ease-in-out scale-100",
+						"focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0",
+						"hover:scale-105",
+						className,
+					)}
 				>
-					{/* Sparkle effects */}
-					<div className="absolute inset-0 pointer-events-none">
-						<div
-							className="absolute top-1 left-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
-							style={{ animationDelay: "0s" }}
-						/>
-						<div
-							className="absolute top-2 right-3 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
-							style={{ animationDelay: "0.5s" }}
-						/>
-						<div
-							className="absolute bottom-2 left-4 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
-							style={{ animationDelay: "1s" }}
-						/>
-						<div
-							className="absolute bottom-1 right-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
-							style={{ animationDelay: "1.5s" }}
-						/>
-					</div>
+					<a
+						href={
+							process.env.NEXT_PUBLIC_GITHUB_URL ??
+							"https://github.com/your-org/your-repo"
+						}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{/* Sparkle effects */}
+						<div className="absolute inset-0 pointer-events-none">
+							<div
+								className="absolute top-1 left-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "0s" }}
+							/>
+							<div
+								className="absolute top-2 right-3 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "0.5s" }}
+							/>
+							<div
+								className="absolute bottom-2 left-4 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "1s" }}
+							/>
+							<div
+								className="absolute bottom-1 right-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "1.5s" }}
+							/>
+						</div>
 
-					{/* Main content */}
-					<div className="flex items-center gap-2 relative z-10">
-						<SiGithub className="w-4 h-4" />
-						<span className="font-semibold">Star us on GitHub!</span>
-						<Star
-							className="w-5 h-5 transition-all duration-300 star-bounce text-yellow-600 dark:text-yellow-400"
-							fill="currentColor"
-						/>
-						{starCount !== null && (
-							<span className="font-semibold text-yellow-700 dark:text-yellow-300">
-								{starCount.toLocaleString()}
-							</span>
-						)}
-					</div>
+						{/* Main content */}
+						<div className="flex items-center gap-2 relative z-10">
+							<SiGithub className="w-4 h-4" />
+							<span className="font-semibold">Star us on GitHub!</span>
+							<Star
+								className="w-5 h-5 transition-all duration-300 star-bounce text-yellow-600 dark:text-yellow-400"
+								fill="currentColor"
+							/>
+							{starCount !== null && (
+								<span className="font-semibold text-yellow-700 dark:text-yellow-300">
+									{starCount.toLocaleString()}
+								</span>
+							)}
+						</div>
 
-					{/* Removed hover overlay to keep glow constant */}
+						{/* Removed hover overlay to keep glow constant */}
+					</a>
 				</Button>
 			</div>
 		</>
