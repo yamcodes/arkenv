@@ -39,7 +39,8 @@
 				"noUnusedImports": "warn"
 			},
 			"suspicious": {
-				"noConsole": "warn"
+				"noConsole": "warn",
+				"noUnknownAtRules": "off"
 			},
 			"style": {
 				"noParameterAssign": "error",

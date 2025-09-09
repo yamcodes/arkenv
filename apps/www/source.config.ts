@@ -1,4 +1,4 @@
-import { remarkInstall } from "fumadocs-docgen";
+import { remarkNpm } from "fumadocs-core/mdx-plugins";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { rehypeGithubAlerts } from "rehype-github-alerts";
 import remarkGemoji from "remark-gemoji";
@@ -13,6 +13,6 @@ export const docs = defineDocs({
 export default defineConfig({
 	mdxOptions: {
 		rehypePlugins: [rehypeGithubAlerts],
-		remarkPlugins: [remarkGemoji, remarkInstall],
+		remarkPlugins: [remarkGemoji, remarkNpm],
 	},
 });

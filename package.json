@@ -8,7 +8,7 @@
 		"typecheck": "turbo run typecheck",
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
-		"release": "mv README.md packages/arkenv && pnpm run build:packages && changeset publish",
+		"release": "pnpm run build:packages && changeset publish",
 		"fix": "biome check --write .",
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
