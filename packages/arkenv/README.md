@@ -10,6 +10,11 @@
   <a href="https://arktype.io/"><img alt="Powered By ArkType" src="https://badgen.net/static/powered by/ArkType"></a>
 </p>
 
+## Requirements
+
+- TypeScript >= 5
+- Runtimes: Node.js ([example](examples/basic/README.md)), Bun ([example](examples/with-bun/README.md)), Vite ([example](examples/with-vite-react-ts/README.md))
+
 ## Installation
 
 <details open>
