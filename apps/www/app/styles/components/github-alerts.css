@@ -93,6 +93,7 @@
 .octicon {
 	margin-right: calc(var(--rehype-github-alerts-default-space) / 2);
 	display: inline-block;
+	/* biome-ignore lint/complexity/noImportantStyles: it just works */
 	overflow: visible !important;
 	vertical-align: text-bottom;
 }

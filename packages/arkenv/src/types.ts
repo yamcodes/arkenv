@@ -4,7 +4,7 @@ import { type } from "arktype";
  * A `string` that can be parsed into a number between 0 and 65535
  */
 export const port = type("string", "=>", (data, ctx) => {
-	const asNumber = Number.parseInt(data);
+	const asNumber = Number.parseInt(data, 10);
 	const isInteger = Number.isInteger(asNumber);
 	const isBetween = 0 <= asNumber && asNumber <= 65535;
 	if (!isInteger || !isBetween) {
