@@ -37,7 +37,7 @@ With the development server running (if it isn't - just run `npm run dev`), let'
 1. #### Define the new environment variable in the schema as a _required_ string
     ```typescript
     // index.ts
-    const env = arkenv({
+    const env = createEnv({
         // other definitions...
         MY_ENV_VAR: "string"
     });
