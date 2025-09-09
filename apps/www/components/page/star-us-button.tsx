@@ -32,12 +32,11 @@ export function StarUsButton({ className }: StarUsProps) {
 	}, []);
 
 	const handleClick = () => {
-		// Open GitHub repository in new tab
-		window.open(
-			process.env.NEXT_PUBLIC_GITHUB_URL,
-			"_blank",
-			"noopener,noreferrer",
-		);
+		// Open GitHub repository in new tab with fallback URL
+		const url =
+			process.env.NEXT_PUBLIC_GITHUB_URL ||
+			"https://github.com/yamcodes/arkenv";
+		window.open(url, "_blank", "noopener,noreferrer");
 	};
 
 	return (
