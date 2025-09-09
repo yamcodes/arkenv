@@ -1,8 +1,9 @@
+import { Banner } from "fumadocs-ui/components/banner";
 import "./globals.css";
 import { RootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import type { ReactNode } from "react";
+import { type ReactNode, useId } from "react";
 import { Toaster } from "~/components/ui/toaster";
 
 const inter = Inter({
@@ -44,6 +45,18 @@ export default function Layout({ children }: { children: ReactNode }) {
 						enableSystem: true,
 					}}
 				>
+					<Banner variant="rainbow" id={useId()}>
+						🎉 We are now featured on&nbsp;
+						<a
+							href="https://arktype.io/docs/ecosystem#arkenv"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="underline underline-offset-2 hover:text-blue-500"
+						>
+							arktype.io
+						</a>
+						!
+					</Banner>
 					{children}
 					<Toaster />
 				</RootProvider>

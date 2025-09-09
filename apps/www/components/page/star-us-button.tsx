@@ -1,0 +1,135 @@
+"use client";
+
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils/cn";
+
+type StarUsProps = {
+	className?: string;
+};
+
+export function StarUsButton({ className }: StarUsProps) {
+	const [starCount, setStarCount] = useState<number | null>(null);
+
+	// Fetch star count from GitHub API
+	useEffect(() => {
+		const fetchStarCount = async () => {
+			try {
+				const response = await fetch(
+					"https://api.github.com/repos/yamcodes/arkenv",
+				);
+				if (response.ok) {
+					const data = await response.json();
+					setStarCount(data.stargazers_count);
+				}
+			} catch {
+				// Silently fail - we'll just not show the count
+			}
+		};
+
+		fetchStarCount();
+	}, []);
+
+	return (
+		<>
+			<style jsx global>{`
+				@keyframes sparkle {
+					0%, 100% { 
+						opacity: 0;
+						transform: scale(0) rotate(0deg);
+					}
+					50% { 
+						opacity: 1;
+						transform: scale(1) rotate(180deg);
+					}
+				}
+				
+				@keyframes star-bounce {
+					0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+					25% { transform: translateY(-3px) scale(1.05) rotate(5deg); }
+					50% { transform: translateY(-6px) scale(1.1) rotate(0deg); }
+					75% { transform: translateY(-3px) scale(1.05) rotate(-5deg); }
+				}
+				.star-sparkle {
+					animation: sparkle 2s ease-in-out infinite;
+				}
+				
+				.star-bounce {
+					animation: star-bounce 2.5s ease-in-out infinite;
+				}
+				
+				.pulse-glow {
+					animation: pulse-glow 3s ease-in-out infinite;
+				}
+			`}</style>
+			<div className="relative">
+				{/* Shadow element that doesn't scale */}
+				<div className="absolute inset-0 rounded-lg shadow-[0_16px_20px] [--tw-shadow-color:rgba(255,150,0,0.15)] dark:[--tw-shadow-color:rgba(255,150,0,0.15)] pointer-events-none" />
+
+				<Button
+					asChild
+					variant="outline"
+					size="lg"
+					className={cn(
+						"relative overflow-hidden cursor-pointer text-lg font-bold",
+						"bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
+						"border-2 border-yellow-200 dark:border-yellow-700",
+						"text-yellow-800 dark:text-yellow-200 hover:text-yellow-800 dark:hover:text-yellow-200",
+						"transition-all duration-200 ease-in-out scale-100",
+						"focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0",
+						"hover:scale-105",
+						className,
+					)}
+				>
+					<a
+						href={
+							process.env.NEXT_PUBLIC_GITHUB_URL ??
+							"https://github.com/your-org/your-repo"
+						}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{/* Sparkle effects */}
+						<div className="absolute inset-0 pointer-events-none">
+							<div
+								className="absolute top-1 left-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "0s" }}
+							/>
+							<div
+								className="absolute top-2 right-3 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "0.5s" }}
+							/>
+							<div
+								className="absolute bottom-2 left-4 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "1s" }}
+							/>
+							<div
+								className="absolute bottom-1 right-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
+								style={{ animationDelay: "1.5s" }}
+							/>
+						</div>
+
+						{/* Main content */}
+						<div className="flex items-center gap-2 relative z-10">
+							<SiGithub className="w-4 h-4" />
+							<span className="font-semibold">Star us on GitHub!</span>
+							<Star
+								className="w-5 h-5 transition-all duration-300 star-bounce text-yellow-600 dark:text-yellow-400"
+								fill="currentColor"
+							/>
+							{starCount !== null && (
+								<span className="font-semibold text-yellow-700 dark:text-yellow-300">
+									{starCount.toLocaleString()}
+								</span>
+							)}
+						</div>
+
+						{/* Removed hover overlay to keep glow constant */}
+					</a>
+				</Button>
+			</div>
+		</>
+	);
+}
