@@ -34,37 +34,78 @@ export function StarUsButton({ className }: StarUsProps) {
 
 	return (
 		<>
+			{/* Desktop styles - only apply on sm and up */}
 			<style jsx global>{`
-				@keyframes sparkle {
-					0%, 100% { 
-						opacity: 0;
-						transform: scale(0) rotate(0deg);
+				@media (min-width: 640px) {
+					@keyframes sparkle {
+						0%, 100% { 
+							opacity: 0;
+							transform: scale(0) rotate(0deg);
+						}
+						50% { 
+							opacity: 1;
+							transform: scale(1) rotate(180deg);
+						}
 					}
-					50% { 
-						opacity: 1;
-						transform: scale(1) rotate(180deg);
+					
+					@keyframes star-bounce {
+						0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+						25% { transform: translateY(-3px) scale(1.05) rotate(5deg); }
+						50% { transform: translateY(-6px) scale(1.1) rotate(0deg); }
+						75% { transform: translateY(-3px) scale(1.05) rotate(-5deg); }
 					}
-				}
-				
-				@keyframes star-bounce {
-					0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-					25% { transform: translateY(-3px) scale(1.05) rotate(5deg); }
-					50% { transform: translateY(-6px) scale(1.1) rotate(0deg); }
-					75% { transform: translateY(-3px) scale(1.05) rotate(-5deg); }
-				}
-				.star-sparkle {
-					animation: sparkle 2s ease-in-out infinite;
-				}
-				
-				.star-bounce {
-					animation: star-bounce 2.5s ease-in-out infinite;
-				}
-				
-				.pulse-glow {
-					animation: pulse-glow 3s ease-in-out infinite;
+					.star-sparkle {
+						animation: sparkle 2s ease-in-out infinite;
+					}
+					
+					.star-bounce {
+						animation: star-bounce 2.5s ease-in-out infinite;
+					}
 				}
 			`}</style>
-			<div className="relative">
+
+			{/* Mobile: Simple button with glow */}
+			<div className="sm:hidden w-full">
+				<Button
+					asChild
+					variant="outline"
+					size="lg"
+					className={cn(
+						"w-full text-lg font-bold shadow-[0_8px_16px] [--tw-shadow-color:rgba(255,150,0,0.2)] dark:[--tw-shadow-color:rgba(255,150,0,0.2)]",
+						"bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
+						"border-2 border-yellow-200 dark:border-yellow-700",
+						"text-yellow-800 dark:text-yellow-200 hover:text-yellow-800 dark:hover:text-yellow-200",
+						"transition-colors duration-200",
+						className,
+					)}
+				>
+					<a
+						href={
+							process.env.NEXT_PUBLIC_GITHUB_URL ??
+							"https://github.com/your-org/your-repo"
+						}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<div className="flex items-center gap-2">
+							<SiGithub className="w-4 h-4" />
+							<span className="font-semibold">Star us on GitHub!</span>
+							<Star
+								className="w-5 h-5 text-yellow-600 dark:text-yellow-400"
+								fill="currentColor"
+							/>
+							{starCount !== null && (
+								<span className="font-semibold text-yellow-700 dark:text-yellow-300">
+									{starCount.toLocaleString()}
+								</span>
+							)}
+						</div>
+					</a>
+				</Button>
+			</div>
+
+			{/* Desktop: Complex button with animations and effects */}
+			<div className="hidden sm:block relative">
 				{/* Shadow element that doesn't scale */}
 				<div className="absolute inset-0 rounded-lg shadow-[0_16px_20px] [--tw-shadow-color:rgba(255,150,0,0.15)] dark:[--tw-shadow-color:rgba(255,150,0,0.15)] pointer-events-none" />
 
@@ -125,8 +166,6 @@ export function StarUsButton({ className }: StarUsProps) {
 								</span>
 							)}
 						</div>
-
-						{/* Removed hover overlay to keep glow constant */}
 					</a>
 				</Button>
 			</div>

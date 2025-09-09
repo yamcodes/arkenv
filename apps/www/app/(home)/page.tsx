@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
 	return (
-		<main className="flex flex-1 flex-col justify-center text-center">
+		<main className="flex flex-1 flex-col justify-center text-center px-4 sm:px-0">
 			<h1 className={`mb-4 ${bricolageGrotesque.className} mt-16`}>
 				<div className="text-6xl font-extrabold">
 					Better{" "}
@@ -37,7 +37,7 @@ export default function HomePage() {
 					to your environment variables <br /> and ship with confidence.
 				</div>
 			</h1>
-			<div className="flex justify-center my-4 gap-4 sm:mb-6 mb-16">
+			<div className="flex flex-col sm:flex-row justify-center my-4 gap-4 sm:mb-6 mb-16">
 				<SailButton />
 				<StarUsButton />
 			</div>
