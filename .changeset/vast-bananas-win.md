@@ -12,7 +12,7 @@ import arkenv from "arkenv";
 
 This enables syntax highlighting along with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark):
 
-![ArkType syntax highlighting in VS Code](/assets/dx.png)
+![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
 
 Note that named imports still work:
 
