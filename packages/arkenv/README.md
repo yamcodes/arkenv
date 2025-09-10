@@ -58,6 +58,7 @@ bun add arkenv arktype
 
 ```ts
 import arkenv from 'arkenv';
+// or: import { arkenv } from 'arkenv';
 
 const env = arkenv({
   HOST: "string.host", // valid IP address or localhost

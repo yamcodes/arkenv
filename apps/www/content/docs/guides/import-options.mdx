@@ -23,8 +23,9 @@ The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemN
 
 ## Getting Syntax Highlighting
 
-To get syntax highlighting for your ArkEnv schemas, use the **default import** and name it `arkenv`:
+To get syntax highlighting for your ArkEnv schemas, you have two options:
 
+### Option 1: Default Import
 ```typescript
 import arkenv from 'arkenv';
 
@@ -34,22 +35,55 @@ const env = arkenv({
 });
 ```
 
+### Option 2: Named Import (New!)
+```typescript
+import { arkenv } from 'arkenv';
+
+const env = arkenv({
+  PORT: "number.port", 
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+Both approaches provide the same syntax highlighting benefits!
+
 ### Example with Syntax Highlighting
 
 ![ArkType syntax highlighting in VS Code](/dx.png)
 
 ### Benefits
 
-When you use the default import (`import arkenv from 'arkenv'`) and have the ArkType extension installed, you get:
+When you use either the default import (`import arkenv from 'arkenv'`) or the new named import (`import { arkenv } from 'arkenv'`) and have the ArkType extension installed, you get:
 
 - **Syntax highlighting** for ArkType definitions in your schema
 - **Inline error summaries** via ErrorLens integration
 - **Better developer experience** with visual feedback
 
-## Alternative Import Styles
+## Import Options Summary
 
-You can also use named imports, though you won't get syntax highlighting:
+ArkEnv provides three ways to import and use the library:
 
+### 1. Default Import (Recommended for VS Code)
+```typescript
+import arkenv from 'arkenv';
+
+const env = arkenv({
+  PORT: "number.port",
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+### 2. Named Import: `arkenv` (New!)
+```typescript
+import { arkenv } from 'arkenv';
+
+const env = arkenv({
+  PORT: "number.port",
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+### 3. Named Import: `createEnv`
 ```typescript
 import { createEnv } from 'arkenv';
 
@@ -59,9 +93,12 @@ const env = createEnv({
 });
 ```
 
+> [!TIP]
+> Options 1 and 2 provide syntax highlighting with the ArkType VS Code extension, while option 3 does not. All three approaches are functionally identical.
+
 ## Migration Guide
 
-If you're currently using named imports and want to switch to default imports for better VS Code support:
+If you're currently using the `createEnv` named import and want to switch for better VS Code support, you have two options:
 
 ### Before
 ```typescript
@@ -72,7 +109,7 @@ const env = createEnv({
 });
 ```
 
-### After
+### After: Option 1 (Default Import)
 ```typescript
 import arkenv from 'arkenv';
 
@@ -81,11 +118,20 @@ const env = arkenv({
 });
 ```
 
-The functionality is identical - only the import style changes!
+### After: Option 2 (Named Import)
+```typescript
+import { arkenv } from 'arkenv';
+
+const env = arkenv({
+  PORT: "number.port", 
+});
+```
+
+All approaches are functionally identical - only the import style changes!
 
 ## Best Practices
 
-- **Use default import** if you're using VS Code and want enhanced syntax highlighting
-- **Use named import** if you prefer explicit imports or are using other editors
+- **Use default import or `arkenv` named import** if you're using VS Code and want enhanced syntax highlighting
+- **Use `createEnv` named import** if you prefer explicit imports or are using other editors  
 - **Be consistent** within your project - choose one style and stick with it
 - **Install the ArkType extension** for the best development experience
