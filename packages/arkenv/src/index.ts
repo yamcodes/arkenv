@@ -1,8 +1,6 @@
-import * as env from "./create-env";
-
-// Export all exports as a default export
-export default { ...env };
-
+// Type exports
 export type { EnvSchema } from "./create-env";
-// Also export as named exports
+// Named exports
 export * from "./create-env";
+// Export createEnv as the main default export
+export { createEnv as default } from "./create-env";
