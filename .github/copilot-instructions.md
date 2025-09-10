@@ -54,13 +54,13 @@ The project uses modern tooling:
 
 The core library provides:
 
-1. **`createEnv(schema)`** - Main function to create validated environment objects
+1. **`createEnv(schema)`** - Main function to create validated environment objects. Also available as the default export, typically imported as `arkenv`.
 2. **Built-in validators** - Common validators like `host`, `port`, `url`, etc.
 3. **ArkType integration** - Uses ArkType for schema definition and validation
 4. **Type inference** - Full TypeScript type inference from schemas
 
 ### Key Files
-- `src/define-env.ts` - Core `createEnv` implementation
+- `src/create-env.ts` - Core `createEnv` implementation
 - `src/types.ts` - Built-in type validators (host, port, url, etc.)
 - `src/errors.ts` - Error handling and formatting
 - `src/utils.ts` - Utility functions
@@ -69,9 +69,9 @@ The core library provides:
 
 ### Environment Schema Definition
 ```typescript
-import { createEnv } from 'arkenv';
+import arkenv from 'arkenv';
 
-const env = createEnv({
+const env = arkenv({
   HOST: "string.host",                                    // Built-in validator
   PORT: "number.port",                                    // Built-in validator  
   NODE_ENV: "'development' | 'production' | 'test'", // ArkType string literal
@@ -97,7 +97,7 @@ Environment validation errors are thrown early with descriptive messages showing
 
 ### Test Structure
 Tests are located alongside source files with `.test.ts` suffix:
-- `define-env.test.ts` - Tests for main `createEnv` functionality
+- `create-env.test.ts` - Tests for main `createEnv` functionality
 - `types.test.ts` - Tests for built-in validators
 - `errors.test.ts` - Tests for error handling
 - `utils.test.ts` - Tests for utility functions
@@ -124,7 +124,7 @@ afterEach(() => {
 
 it('should validate environment variables', () => {
   process.env.PORT = '3000';
-  const env = createEnv({ PORT: "number.port" });
+  const env = arkenv({ PORT: "number.port" });
   expect(env.PORT).toBe(3000);
 });
 ```

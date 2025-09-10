@@ -1,13 +1,18 @@
 import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { build, type InlineConfig } from "vite";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module to capture calls
-const mockcreateEnv = vi.fn();
+const mockCreateEnv = vi.fn();
 vi.mock("arkenv", () => ({
-	createEnv: mockcreateEnv,
+	__esModule: true,
+	default: mockCreateEnv,
+	createEnv: mockCreateEnv,
 }));
+
+// Capture snapshot of process.env at module level
+const ORIGINAL_ENV = { ...process.env };
 
 // Test data
 const TEST_ENV_VARS = {
@@ -38,7 +43,16 @@ async function buildWithPlugin(
 
 describe("@arkenv/vite-plugin", () => {
 	beforeEach(() => {
-		mockcreateEnv.mockClear();
+		// Complete module isolation and clean environment start
+		vi.resetModules();
+		process.env = { ...ORIGINAL_ENV };
+		mockCreateEnv.mockClear();
+	});
+
+	afterEach(() => {
+		// Complete cleanup: restore environment and reset mocks
+		process.env = { ...ORIGINAL_ENV };
+		mockCreateEnv.mockReset();
 	});
 
 	describe("Plugin Integration", () => {
@@ -47,7 +61,7 @@ describe("@arkenv/vite-plugin", () => {
 			await buildWithPlugin({ VITE_TEST: "string" });
 
 			// Verify that createEnv was called with the correct environment variables
-			expect(mockcreateEnv).toHaveBeenCalledWith(
+			expect(mockCreateEnv).toHaveBeenCalledWith(
 				{ VITE_TEST: "string" },
 				expect.objectContaining({
 					VITE_TEST: "test-value",
@@ -58,7 +72,7 @@ describe("@arkenv/vite-plugin", () => {
 		it("should work with multiple environment variables", async () => {
 			await buildWithPlugin(TEST_ENV_VARS);
 
-			expect(mockcreateEnv).toHaveBeenCalledWith(
+			expect(mockCreateEnv).toHaveBeenCalledWith(
 				TEST_ENV_VARS,
 				expect.objectContaining({
 					VITE_TEST: "test-value",
@@ -70,14 +84,13 @@ describe("@arkenv/vite-plugin", () => {
 	describe("Error Handling", () => {
 		it("should handle missing environment variables", async () => {
 			// Temporarily remove VITE_TEST to test missing env var behavior
-			const originalViteTest = process.env.VITE_TEST;
 			delete process.env.VITE_TEST;
 
 			// Store the original mock implementation
-			const originalMockImplementation = mockcreateEnv.getMockImplementation();
+			const originalMockImplementation = mockCreateEnv.getMockImplementation();
 
 			// Mock createEnv to throw an error for this specific test
-			mockcreateEnv.mockImplementation(() => {
+			mockCreateEnv.mockImplementation(() => {
 				throw new Error("VITE_TEST must be a string (was missing)");
 			});
 
@@ -86,22 +99,18 @@ describe("@arkenv/vite-plugin", () => {
 				"VITE_TEST must be a string (was missing)",
 			);
 
-			// Restore the original value and mock
-			if (originalViteTest !== undefined) {
-				process.env.VITE_TEST = originalViteTest;
-			}
 			// Restore the original mock implementation
 			if (originalMockImplementation) {
-				mockcreateEnv.mockImplementation(originalMockImplementation);
+				mockCreateEnv.mockImplementation(originalMockImplementation);
 			} else {
-				mockcreateEnv.mockReset();
+				mockCreateEnv.mockReset();
 			}
 		});
 
 		it("should handle invalid environment variable types", async () => {
-			const originalMockImplementation = mockcreateEnv.getMockImplementation();
+			const originalMockImplementation = mockCreateEnv.getMockImplementation();
 
-			mockcreateEnv.mockImplementation(() => {
+			mockCreateEnv.mockImplementation(() => {
 				throw new Error("VITE_NUMBER must be a number (was string)");
 			});
 
@@ -111,9 +120,9 @@ describe("@arkenv/vite-plugin", () => {
 
 			// Restore the original mock implementation
 			if (originalMockImplementation) {
-				mockcreateEnv.mockImplementation(originalMockImplementation);
+				mockCreateEnv.mockImplementation(originalMockImplementation);
 			} else {
-				mockcreateEnv.mockReset();
+				mockCreateEnv.mockReset();
 			}
 		});
 	});
@@ -144,7 +153,7 @@ describe("@arkenv/vite-plugin", () => {
 			}
 
 			// Verify that createEnv was called
-			expect(mockcreateEnv).toHaveBeenCalledWith(
+			expect(mockCreateEnv).toHaveBeenCalledWith(
 				{ VITE_TEST: "string" },
 				expect.objectContaining({
 					VITE_TEST: "test-value",
@@ -164,7 +173,7 @@ describe("@arkenv/vite-plugin", () => {
 			});
 
 			expect(result).toBeDefined();
-			expect(mockcreateEnv).toHaveBeenCalledWith(
+			expect(mockCreateEnv).toHaveBeenCalledWith(
 				TEST_ENV_VARS,
 				expect.objectContaining({
 					VITE_TEST: "test-value",

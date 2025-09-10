@@ -1,6 +1,6 @@
-import { createEnv } from "arkenv";
+import arkenv from "arkenv";
 
-const env = createEnv({
+const env = arkenv({
 	HOST: "string.host",
 	PORT: "number.port",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",

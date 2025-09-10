@@ -5,6 +5,7 @@
 		"quickstart",
 		"examples",
 		"---Guides---",
+		"guides/import-options",
 		"guides/environment-configuration"
 	]
 }

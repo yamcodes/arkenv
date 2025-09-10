@@ -177,9 +177,9 @@ spec:
 ArkEnv helps ensure your environment variables are valid:
 
 ```typescript title="src/config/env.ts"
-import { createEnv } from 'arkenv';
+import arkenv from 'arkenv';
 
-export const env = createEnv({
+export const env = arkenv({
   // Required variables with validation
   DATABASE_HOST: "string.host",
   DATABASE_PORT: "number.port",
@@ -209,10 +209,10 @@ export const env = createEnv({
 Create a configuration factory to handle different environments:
 
 ```typescript title="src/config/index.ts"
-import { createEnv } from 'arkenv';
+import arkenv from 'arkenv';
 
 const createConfig = () => {
-  const env = createEnv({
+  const env = arkenv({
     NODE_ENV: "'development' | 'test' | 'production'",
     DATABASE_HOST: "string.host",
     DATABASE_PORT: "number.port",
@@ -235,9 +235,9 @@ export const config = createConfig();
 Use environment variables for feature flags:
 
 ```typescript title="src/config/features.ts"
-import { createEnv } from 'arkenv';
+import arkenv from 'arkenv';
 
-export const env = createEnv({
+export const env = arkenv({
   "ENABLE_BETA_FEATURES?": 'boolean = false',
   "MAINTENANCE_MODE?": 'boolean = false',
   "ALLOWED_ORIGINS?": 'string[] = []'
