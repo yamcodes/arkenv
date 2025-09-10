@@ -6,9 +6,13 @@
   </a>
   <br />
   <a href="https://github.com/yamcodes/arkenv/actions/workflows/tests.yml?query=branch%3Amain"><img alt="Tests Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests.yml/badge.svg?event=push&branch=main"></a>
-  <a href="https://bundlephobia.com/package/arkenv"><img alt="Bundle Size" src="https://img.shields.io/bundlephobia/min/arkenv?label=bundle%20size&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzcgMTU3IiB3aWR0aD0iMTM3IiBoZWlnaHQ9IjE1NyI+PHJlY3QgZmlsbD0iI2ZmZiIgeD0iNjIuMzEiIHk9IjEwMi4zMSIgd2lkdGg9IjE2Ljc0IiBoZWlnaHQ9IjE1Ljk0IiByeD0iNy45NyIvPjxyZWN0IGZpbGw9IiNmZmYiIHg9IjYyLjMxIiB5PSI4Ni4zNyIgd2lkdGg9IjE2Ljc0IiBoZWlnaHQ9IjMxLjg4IiByeD0iOC4zNyIvPjxlbGxpcHNlIGZpbGw9IiNmZmYiIGN4PSI0NC4zNCIgY3k9IjU0LjIyIiByeD0iNy4xMyIgcnk9IjguNDUiLz48ZWxsaXBzZSBmaWxsPSIjZmZmIiBjeD0iOTMuNzUiIGN5PSI1NC4yMiIgcng9IjcuMTMiIHJ5PSI4LjQ1Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTExNC4xIDExNy44NGMxLjItMS4wMiAxLjc0LTEuOTYgMi40OC0zLjU2bDE5LjMtNDIuOTJjLTIuMDItMjcuMS0zLjQ0LTQwLjctMy40NC00MC43NyAwLTIuNy0yLjE0LTQuOC00Ljc4LTQuOC0yLjYgMC00LjczIDIuMS00Ljc4IDQuNzBsLTMuMDUgMzcuNy0xNC43NiA0Mi4xYy0uNDQuOC0uNyAxLjgtLjcgMi44IDAgLjgzLjIgMS42NC41IDIuNGwxMC40MyA0MC4xMiAxMS41NS0zLjEtMTIuNzQtMzQuOHoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjMuMjcgMTE3Ljg0Yy0xLjItMS4wMi0xLjczLTEuOTYtMi40Ny0zLjU2TDEuNSA3MS4zNmMyLjAyLTI3LjEgMy40My00MC43IDMuNDMtNDAuNzcgMC0yLjcgMi4xNC00LjggNC44LTQuOCAyLjYgMCA0LjcyIDIuMSA0Ljc3IDQuN2wzLjA1IDM3LjcgMTQuNzUgNDIuMmMuNDUuOC43IDEuOC43IDIuOCAwIC44LS4xOCAxLjYtLjUgMi40bC0xMC40IDQwLjEtMTEuNTUtMy4xIDEyLjc0LTM0Ljh6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTk0LjI2IDkxLjIzYzEyLjItNy41NCAyMC4yNS0yMC4zOCAyMC4yNS0zNC45NCAwLTMuOS0uNS03LjYtMS41LTExLjFDMTEyLjggMjEgOTMuMiAxLjUgNjguOTggMS41UzI1IDIxLjAyIDI0Ljg3IDQ1LjJjLTEuMDUgMy41Mi0xLjYgNy4yMy0xLjYgMTEuMDUgMCAxNi41NCAxMC40MyAzMC45IDI1LjYgMzcuNzItLjEgMS40LS4xIDIuODItLjEgNC4yNiAwIDIzLjIyIDEwLjIyIDQyLjA0IDIyLjkgNDIuMDQgMTIuNjUgMCAyMi45Mi0xOC44IDIyLjkyLTQyLjAzIDAtMi40LS4yLTQuOC0uNC03LjF6Ii8+PC9zdmc+"></a>
   <a href="https://www.npmjs.com/package/arkenv?activeTab=versions"><img alt="Total Downloads" src="https://img.shields.io/npm/dt/arkenv?logo=npm&color=blue&label=downloads"></a>
-  <a href="https://arktype.io/"><img alt="Powered By ArkType" src="https://img.shields.io/badge/powered%20by-ArkType-blue"></a>
+  <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
+  <a href="https://arktype.io/"><img alt="Powered By ArkType" src="https://custom-icon-badges.demolab.com/badge/ArkType-0d1526?logo=arktype2&logoColor=e9eef9"></a>
+  <a href="https://nodejs.org/en"><img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white"></a>
+  <a href="https://bun.com/"><img alt="Bun" src="https://img.shields.io/badge/Bun-14151a?logo=bun&logoColor=fbf0df"></a>
+  <a href="https://vite.dev/"><img alt="Vite" src="https://custom-icon-badges.demolab.com/badge/Vite-2e2742?logo=vite2&logoColor=dfdfd6"></a>
+  <a href="https://github.com/yamcodes/arkenv"><img alt="GitHub Repo stars" src="https://custom-icon-badges.demolab.com/github/stars/yamcodes/arkenv?logo=star&logoColor=373737&label=Star%20us!"></a>
 </p>
 
 ## Requirements
@@ -87,9 +91,11 @@ For detailed documentation and examples, please visit our [documentation site](h
 
 - [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build time
 
-## Contributing
+## Supporting ArkEnv
 
-Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md) for more information.
+If you love ArkEnv, you can support the project by starring it on GitHub!
+
+You are also welcome to directly [contribute to the project's development](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md).
 
 ## Thanks / Inspiration
 
