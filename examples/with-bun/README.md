@@ -44,7 +44,7 @@ With the development server running (if it isn't - just run `bun dev`), let's se
 1. #### Define the new environment variable in the schema as a _required_ string
     ```typescript
     // index.ts
-    const env = createEnv({
+    const env = arkenv({
         // other definitions...
         MY_ENV_VAR: "string"
     });

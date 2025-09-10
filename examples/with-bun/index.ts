@@ -1,8 +1,8 @@
-import { createEnv } from "arkenv";
+import arkenv from "arkenv";
 import chalk from "chalk";
 
 // Define our environment configuration
-const env = createEnv({
+const env = arkenv({
 	HOST: "string.host",
 	PORT: "number.port",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
