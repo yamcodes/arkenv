@@ -1,5 +1,41 @@
 # ArkEnv
 
+## 0.5.0
+
+### Minor Changes
+
+- #### Export `createEnv` as the default export _[`#136`](https://github.com/yamcodes/arkenv/pull/136) [`2b06c4c`](https://github.com/yamcodes/arkenv/commit/2b06c4c09f3be7192dbd0e23a1bc78506a4d7293) [@yamcodes](https://github.com/yamcodes)_
+
+  You can now import `createEnv` as the default export:
+
+  ```ts
+  import arkenv from "arkenv";
+  ```
+
+  This enables syntax highlighting along with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark):
+
+  ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
+
+  Note that named imports still work:
+
+  ```ts
+  import { createEnv } from "arkenv";
+  ```
+
+  **BREAKING CHANGE:** The default export now directly exports `createEnv` instead of an object containing all exports. If you previously used:
+
+  ```ts
+  import arkenv from "arkenv";
+  const env = arkenv.createEnv({ ... });
+  ```
+
+  Update to:
+
+  ```ts
+  import arkenv from "arkenv";
+  const env = arkenv({ ... });
+  ```
+
 ## 0.4.0
 
 ### Minor Changes
