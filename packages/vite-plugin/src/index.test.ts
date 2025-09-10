@@ -37,6 +37,12 @@ async function buildWithPlugin(
 		plugins: [react(), plugin(envVars)],
 		root: EXAMPLE_ROOT,
 		configFile: false,
+		build: {
+			rollupOptions: {
+				external: ["react", "react/jsx-dev-runtime", "react/jsx-runtime"],
+			},
+			...options.build,
+		},
 		...options,
 	});
 }
