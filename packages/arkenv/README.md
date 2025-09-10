@@ -77,7 +77,7 @@ You can find more examples in the [examples](https://github.com/yamcodes/arkenv/
 
 > [!TIP]
 > **VS Code Users:** Get syntax highlighting and inline error summaries for the ArkType ecosystem with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark). For even better TypeScript highlighting, try [ArkThemes](https://marketplace.cursorapi.com/items/?itemName=arktypeio.arkthemes).
-> ![ArkType syntax highlighting in VS Code](/../../assets/dx.png)
+> ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
 
 ## Features
 
