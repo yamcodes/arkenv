@@ -17,8 +17,8 @@
 
 ## Requirements
 
-- TypeScript >= 5
-- Node.js ([example](examples/basic/README.md)), Bun ([example](examples/with-bun/README.md)), Vite ([example](examples/with-vite-react-ts/README.md))
+- TypeScript >= 5.1 and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
+- We support Node.js ([example](examples/basic/README.md)), Bun ([example](examples/with-bun/README.md)), and Vite ([example](examples/with-vite-react-ts/README.md))
 
 ## Installation
 
