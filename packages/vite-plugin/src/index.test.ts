@@ -43,8 +43,7 @@ async function buildWithPlugin(
 
 describe("@arkenv/vite-plugin", () => {
 	beforeEach(() => {
-		// Complete module isolation and clean environment start
-		vi.resetModules();
+		// Clean environment start and mock cleanup
 		process.env = { ...ORIGINAL_ENV };
 		mockCreateEnv.mockClear();
 	});
