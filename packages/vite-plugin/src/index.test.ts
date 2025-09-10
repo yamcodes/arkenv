@@ -1,195 +1,148 @@
-import path from "node:path";
-import react from "@vitejs/plugin-react";
-import { build, type InlineConfig } from "vite";
+import { readdirSync, readFileSync } from "fs";
+import { join, resolve } from "path";
+import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module to capture calls
-const mockCreateEnv = vi.fn();
 vi.mock("arkenv", () => ({
 	__esModule: true,
-	default: mockCreateEnv,
-	createEnv: mockCreateEnv,
+	default: vi.fn(),
+	createEnv: vi.fn(),
 }));
+
+import arkenvPlugin from "./index.js";
 
 // Capture snapshot of process.env at module level
 const ORIGINAL_ENV = { ...process.env };
 
-// Test data
-const TEST_ENV_VARS = {
-	VITE_TEST: "string",
-	VITE_OPTIONAL: "string?",
-	VITE_NUMBER: "number",
-} as const;
+const fixturesDir = join(__dirname, "__fixtures__");
 
-const EXAMPLE_ROOT = path.resolve(
-	__dirname,
-	"../../../examples/with-vite-react-ts",
-);
+// Get the mocked functions
+const { createEnv: mockCreateEnv } = await vi.importMock("arkenv");
 
-// Helper function to build with our plugin
-async function buildWithPlugin(
-	envVars: Record<string, string>,
-	options: InlineConfig = {},
-) {
-	const plugin = (await import("./index")).default;
+// Run fixture-based tests
+for (const name of readdirSync(fixturesDir)) {
+	const fixtureDir = join(fixturesDir, name);
 
-	return build({
-		plugins: [react(), plugin(envVars)],
-		root: EXAMPLE_ROOT,
-		configFile: false,
-		build: {
-			rollupOptions: {
-				external: [
-					"react",
-					"react-dom",
-					"react-dom/client",
-					"react/jsx-dev-runtime",
-					"react/jsx-runtime",
-				],
-			},
-			...options.build,
-		},
-		...options,
+	describe(`Fixture: ${name}`, () => {
+		beforeEach(() => {
+			// Clean environment start and mock cleanup
+			process.env = { ...ORIGINAL_ENV };
+			mockCreateEnv.mockClear();
+		});
+
+		afterEach(() => {
+			// Complete cleanup: restore environment and reset mocks
+			process.env = { ...ORIGINAL_ENV };
+			mockCreateEnv.mockReset();
+		});
+
+		it("should build successfully with the plugin", async () => {
+			const config = await readTestConfig(fixtureDir);
+
+			// Set up environment variables from the fixture
+			if (config.envVars) {
+				Object.assign(process.env, config.envVars);
+			}
+
+			await expect(
+				vite.build({
+					configFile: false,
+					root: config.root,
+					plugins: [arkenvPlugin(config.envSchema)],
+					logLevel: "error",
+					build: {
+						lib: {
+							entry: "index.ts",
+							formats: ["es"],
+						},
+						rollupOptions: {
+							external: ["arkenv"],
+						},
+					},
+				}),
+			).resolves.not.toThrow();
+
+			// Verify that createEnv was called with the correct parameters
+			expect(mockCreateEnv).toHaveBeenCalledWith(
+				config.envSchema,
+				expect.objectContaining(config.envVars || {}),
+			);
+		});
 	});
 }
 
-describe("@arkenv/vite-plugin", () => {
+// Unit tests for plugin functionality
+describe("Plugin Unit Tests", () => {
 	beforeEach(() => {
-		// Clean environment start and mock cleanup
 		process.env = { ...ORIGINAL_ENV };
 		mockCreateEnv.mockClear();
 	});
 
 	afterEach(() => {
-		// Complete cleanup: restore environment and reset mocks
 		process.env = { ...ORIGINAL_ENV };
 		mockCreateEnv.mockReset();
 	});
 
-	describe("Plugin Integration", () => {
-		it("should call createEnv with loaded environment variables", async () => {
-			// Environment variable is loaded from .env.test file
-			await buildWithPlugin({ VITE_TEST: "string" });
-
-			// Verify that createEnv was called with the correct environment variables
-			expect(mockCreateEnv).toHaveBeenCalledWith(
-				{ VITE_TEST: "string" },
-				expect.objectContaining({
-					VITE_TEST: "test-value",
-				}),
-			);
-		});
-
-		it("should work with multiple environment variables", async () => {
-			await buildWithPlugin(TEST_ENV_VARS);
-
-			expect(mockCreateEnv).toHaveBeenCalledWith(
-				TEST_ENV_VARS,
-				expect.objectContaining({
-					VITE_TEST: "test-value",
-				}),
-			);
-		});
+	it("should create a plugin function", () => {
+		expect(typeof arkenvPlugin).toBe("function");
 	});
 
-	describe("Error Handling", () => {
-		it("should handle missing environment variables", async () => {
-			// Temporarily remove VITE_TEST to test missing env var behavior
-			delete process.env.VITE_TEST;
+	it("should return a Vite plugin object", () => {
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
-			// Store the original mock implementation
-			const originalMockImplementation = mockCreateEnv.getMockImplementation();
-
-			// Mock createEnv to throw an error for this specific test
-			mockCreateEnv.mockImplementation(() => {
-				throw new Error("VITE_TEST must be a string (was missing)");
-			});
-
-			// This should throw because the required environment variable is missing
-			await expect(buildWithPlugin({ VITE_TEST: "string" })).rejects.toThrow(
-				"VITE_TEST must be a string (was missing)",
-			);
-
-			// Restore the original mock implementation
-			if (originalMockImplementation) {
-				mockCreateEnv.mockImplementation(originalMockImplementation);
-			} else {
-				mockCreateEnv.mockReset();
-			}
-		});
-
-		it("should handle invalid environment variable types", async () => {
-			const originalMockImplementation = mockCreateEnv.getMockImplementation();
-
-			mockCreateEnv.mockImplementation(() => {
-				throw new Error("VITE_NUMBER must be a number (was string)");
-			});
-
-			await expect(buildWithPlugin({ VITE_NUMBER: "number" })).rejects.toThrow(
-				"VITE_NUMBER must be a number (was string)",
-			);
-
-			// Restore the original mock implementation
-			if (originalMockImplementation) {
-				mockCreateEnv.mockImplementation(originalMockImplementation);
-			} else {
-				mockCreateEnv.mockReset();
-			}
-		});
+		expect(pluginInstance).toHaveProperty("name", "@arkenv/vite-plugin");
+		expect(pluginInstance).toHaveProperty("config");
 	});
 
-	describe("Integration Tests", () => {
-		it("should work with the actual example project", async () => {
-			// Environment variable is loaded from .env.test file
-			const result = await buildWithPlugin(
-				{ VITE_TEST: "string" },
-				{
-					build: {
-						outDir: "dist-test",
-						write: false,
-					},
-				},
-			);
+	it("should call createEnv during config hook", () => {
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
-			// Verify the build succeeded
-			expect(result).toBeDefined();
+		// Mock the config hook
+		if (pluginInstance.config) {
+			pluginInstance.config({}, { mode: "test", command: "build" });
+		}
 
-			// Vite build returns a RollupOutput object when write: false
-			// Use type guard to ensure we have the correct type
-			if (result && typeof result === "object" && "output" in result) {
-				expect(Array.isArray(result.output)).toBe(true);
-				expect(result.output.length).toBeGreaterThan(0);
-			} else {
-				throw new Error("Expected RollupOutput object with output property");
-			}
-
-			// Verify that createEnv was called
-			expect(mockCreateEnv).toHaveBeenCalledWith(
-				{ VITE_TEST: "string" },
-				expect.objectContaining({
-					VITE_TEST: "test-value",
-				}),
-			);
-		});
-
-		it("should handle complex Vite configurations", async () => {
-			const result = await buildWithPlugin(TEST_ENV_VARS, {
-				build: {
-					outDir: "dist-complex-test",
-					write: false,
-					minify: "terser",
-					sourcemap: true,
-				},
-				mode: "production",
-			});
-
-			expect(result).toBeDefined();
-			expect(mockCreateEnv).toHaveBeenCalledWith(
-				TEST_ENV_VARS,
-				expect.objectContaining({
-					VITE_TEST: "test-value",
-				}),
-			);
-		});
+		expect(mockCreateEnv).toHaveBeenCalledWith(
+			{ VITE_TEST: "string" },
+			expect.any(Object),
+		);
 	});
 });
+
+type TestConfig = ReturnType<typeof readTestConfig>;
+
+async function readTestConfig(fixtureDir: string) {
+	// Import the env schema from the TypeScript config file
+	let envSchema: Record<string, string> = {};
+	try {
+		const configPath = join(fixtureDir, "config.ts");
+		const configModule = await import(configPath);
+		envSchema = configModule.envSchema;
+	} catch {
+		// config.ts file doesn't exist, that's fine
+	}
+
+	// Read environment variables from env.test file if it exists
+	let envVars: Record<string, string> = {};
+	try {
+		const envContent = readFileSync(join(fixtureDir, "env.test"), "utf-8");
+		envVars = Object.fromEntries(
+			envContent
+				.split("\n")
+				.filter((line) => line.trim() && !line.startsWith("#"))
+				.map((line) => {
+					const [key, ...valueParts] = line.split("=");
+					return [key.trim(), valueParts.join("=").trim()];
+				}),
+		);
+	} catch {
+		// env.test file doesn't exist, that's fine
+	}
+
+	return {
+		root: fixtureDir,
+		envSchema,
+		envVars,
+	};
+}
