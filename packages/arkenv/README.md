@@ -14,7 +14,7 @@
 ## Requirements
 
 - TypeScript >= 5
-- Runtimes: Node.js ([example](examples/basic/README.md)), Bun ([example](examples/with-bun/README.md)), Vite ([example](examples/with-vite-react-ts/README.md))
+- Node.js ([example](examples/basic/README.md)), Bun ([example](examples/with-bun/README.md)), Vite ([example](examples/with-vite-react-ts/README.md))
 
 ## Installation
 
