@@ -7,7 +7,7 @@ import {
 	it,
 	vi,
 } from "vitest";
-import arkenv, { createEnv } from "./index";
+import arkenvDefault, { arkenv, createEnv } from "./index";
 
 // Capture snapshot of process.env at module level
 const originalEnv = { ...process.env };
@@ -25,16 +25,23 @@ describe("index.ts exports", () => {
 	});
 
 	it("should export createEnv as default export", () => {
+		expect(arkenvDefault).toBe(createEnv);
+		expect(typeof arkenvDefault).toBe("function");
+	});
+
+	it("should export arkenv as named export", () => {
 		expect(arkenv).toBe(createEnv);
 		expect(typeof arkenv).toBe("function");
 	});
 
 	it("should have correct types for exported functions", () => {
 		// Type assertion to verify exported function types
-		expectTypeOf(arkenv).toBeFunction();
+		expectTypeOf(arkenvDefault).toBeFunction();
 		expectTypeOf(createEnv).toBeFunction();
+		expectTypeOf(arkenv).toBeFunction();
 
 		// Verify they have the same type signature
+		expectTypeOf(arkenvDefault).toEqualTypeOf(createEnv);
 		expectTypeOf(arkenv).toEqualTypeOf(createEnv);
 	});
 
@@ -42,7 +49,7 @@ describe("index.ts exports", () => {
 		// Set test environment variable
 		process.env.TEST_DEFAULT_IMPORT = "test-value";
 
-		const env = arkenv({
+		const env = arkenvDefault({
 			TEST_DEFAULT_IMPORT: "string",
 		});
 
@@ -62,10 +69,30 @@ describe("index.ts exports", () => {
 		expect(typeof env.TEST_NAMED_IMPORT).toBe("string");
 	});
 
+	it("should work with arkenv named import", () => {
+		// Set test environment variable
+		process.env.TEST_ARKENV_IMPORT = "test-value";
+
+		const env = arkenv({
+			TEST_ARKENV_IMPORT: "string",
+		});
+
+		expect(env.TEST_ARKENV_IMPORT).toBe("test-value");
+		expect(typeof env.TEST_ARKENV_IMPORT).toBe("string");
+	});
+
 	it("should throw error with default import when validation fails", () => {
 		expect(() =>
-			arkenv({
+			arkenvDefault({
 				MISSING_DEFAULT_VAR: "string",
+			}),
+		).toThrow();
+	});
+
+	it("should throw error with arkenv named import when validation fails", () => {
+		expect(() =>
+			arkenv({
+				MISSING_ARKENV_VAR: "string",
 			}),
 		).toThrow();
 	});
@@ -82,7 +109,7 @@ describe("index.ts exports", () => {
 		// Set test environment variable
 		process.env.COMPARISON_TEST = "same-value";
 
-		const envFromDefault = arkenv({
+		const envFromDefault = arkenvDefault({
 			COMPARISON_TEST: "string",
 		});
 
@@ -90,9 +117,15 @@ describe("index.ts exports", () => {
 			COMPARISON_TEST: "string",
 		});
 
+		const envFromArkenv = arkenv({
+			COMPARISON_TEST: "string",
+		});
+
 		expect(envFromDefault.COMPARISON_TEST).toBe(envFromNamed.COMPARISON_TEST);
+		expect(envFromDefault.COMPARISON_TEST).toBe(envFromArkenv.COMPARISON_TEST);
 		expect(envFromDefault.COMPARISON_TEST).toBe("same-value");
 		expect(typeof envFromDefault.COMPARISON_TEST).toBe("string");
 		expect(typeof envFromNamed.COMPARISON_TEST).toBe("string");
+		expect(typeof envFromArkenv.COMPARISON_TEST).toBe("string");
 	});
 });
