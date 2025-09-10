@@ -1,13 +1,16 @@
 import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { build, type InlineConfig } from "vite";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module to capture calls
 const mockCreateEnv = vi.fn();
 vi.mock("arkenv", () => ({
 	createEnv: mockCreateEnv,
 }));
+
+// Capture snapshot of process.env at module level
+const ORIGINAL_ENV = { ...process.env };
 
 // Test data
 const TEST_ENV_VARS = {
@@ -41,6 +44,11 @@ describe("@arkenv/vite-plugin", () => {
 		mockCreateEnv.mockClear();
 	});
 
+	afterEach(() => {
+		// Restore process.env to original snapshot to prevent env leakage
+		process.env = { ...ORIGINAL_ENV };
+	});
+
 	describe("Plugin Integration", () => {
 		it("should call createEnv with loaded environment variables", async () => {
 			// Environment variable is loaded from .env.test file
@@ -70,7 +78,6 @@ describe("@arkenv/vite-plugin", () => {
 	describe("Error Handling", () => {
 		it("should handle missing environment variables", async () => {
 			// Temporarily remove VITE_TEST to test missing env var behavior
-			const originalViteTest = process.env.VITE_TEST;
 			delete process.env.VITE_TEST;
 
 			// Store the original mock implementation
@@ -86,10 +93,6 @@ describe("@arkenv/vite-plugin", () => {
 				"VITE_TEST must be a string (was missing)",
 			);
 
-			// Restore the original value and mock
-			if (originalViteTest !== undefined) {
-				process.env.VITE_TEST = originalViteTest;
-			}
 			// Restore the original mock implementation
 			if (originalMockImplementation) {
 				mockCreateEnv.mockImplementation(originalMockImplementation);

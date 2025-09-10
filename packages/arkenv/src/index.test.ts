@@ -1,24 +1,41 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import {
+	afterEach,
+	beforeEach,
+	describe,
+	expect,
+	expectTypeOf,
+	it,
+	vi,
+} from "vitest";
 import arkenv, { createEnv } from "./index";
 
-describe("index.ts exports", () => {
-	let originalEnv: NodeJS.ProcessEnv;
+// Capture snapshot of process.env at module level
+const originalEnv = { ...process.env };
 
+describe("index.ts exports", () => {
 	beforeEach(() => {
-		// Snapshot the original process.env
-		originalEnv = { ...process.env };
 		// Replace with a clean environment for each test
 		process.env = {};
 	});
 
 	afterEach(() => {
-		// Restore the original process.env
-		process.env = originalEnv;
+		// Restore mocks and reset process.env to captured snapshot
+		vi.restoreAllMocks();
+		process.env = { ...originalEnv };
 	});
 
 	it("should export createEnv as default export", () => {
 		expect(arkenv).toBe(createEnv);
 		expect(typeof arkenv).toBe("function");
+	});
+
+	it("should have correct types for exported functions", () => {
+		// Type assertion to verify exported function types
+		expectTypeOf(arkenv).toBeFunction();
+		expectTypeOf(createEnv).toBeFunction();
+
+		// Verify they have the same type signature
+		expectTypeOf(arkenv).toEqualTypeOf(createEnv);
 	});
 
 	it("should work with default import", () => {
