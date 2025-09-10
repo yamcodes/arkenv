@@ -6,6 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // Mock the arkenv module to capture calls
 const mockCreateEnv = vi.fn();
 vi.mock("arkenv", () => ({
+	__esModule: true,
+	default: mockCreateEnv,
 	createEnv: mockCreateEnv,
 }));
 
