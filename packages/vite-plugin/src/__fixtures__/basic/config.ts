@@ -1,5 +1,4 @@
-// TODO: import this from arkenv
-import { type } from "arktype";
+import { type } from "arkenv";
 
 export const envSchema = type({
 	VITE_API_URL: "string",
