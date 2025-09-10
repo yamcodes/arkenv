@@ -1,5 +1,31 @@
 # ArkEnv
 
+## 0.6.0
+
+### Minor Changes
+
+- #### Expose `type` function _[`#139`](https://github.com/yamcodes/arkenv/pull/139) [`721c014`](https://github.com/yamcodes/arkenv/commit/721c014679983d18a235cece0259fe6940269b07) [@yamcodes](https://github.com/yamcodes)_
+
+  ArkEnv now exposes a `type` function with built-in ArkEnv scope, providing access to environment-specific types like `string.host` and `number.port`.
+
+  ```ts
+  import { type } from "arkenv";
+
+  const env = type({
+    NODE_ENV: "string",
+    HOST: "string.host",
+    PORT: "number.port",
+  });
+
+  const result = env.assert({
+    NODE_ENV: "development",
+    HOST: "localhost",
+    PORT: "3000",
+  });
+  ```
+
+  This extends ArkType's `type` function with ArkEnv-specific validations for common environment variable patterns.
+
 ## 0.5.0
 
 ### Minor Changes
