@@ -36,7 +36,6 @@ description: Let's get you started with a few simple steps
 
     ```typescript title="config/env.ts"
     import arkenv from 'arkenv';
-    // Alternative: import arkenv from 'arkenv'; (recommended for VS Code users with ArkType extension)
 
     export const env = arkenv({
       // Built-in validators
@@ -53,6 +52,9 @@ description: Let's get you started with a few simple steps
       "API_KEY?": 'string'
     });
     ```
+
+    > [!TIP]
+    > **VS Code Users:** Want syntax highlighting for your ArkType schemas? Check out our [VS Code Integration guide](/docs/guides/import-options) to learn about the ArkType extension and enhanced developer experience!
   </Step>
 
   <Step>
@@ -111,6 +113,11 @@ description: Let's get you started with a few simple steps
 ## Next steps
 
 <Cards>
+  <Card 
+    title="VS Code Integration" 
+    href="/docs/guides/import-options" 
+    description="Get syntax highlighting and enhanced developer experience with the ArkType VS Code extension"
+  />
   <Card 
     title="Loading environment variables" 
     href="/docs/guides/environment-configuration" 

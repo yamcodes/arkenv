@@ -1,14 +1,29 @@
 ---
-title: Import Options & VS Code Integration
-icon: Code
-description: Learn about different import styles and VS Code extension benefits
+title: Integrating with VS Code
+icon: New
+description: Get syntax highlighting and enhanced developer experience with the ArkType VS Code extension
 ---
 
-## Import Styles
+## ArkType VS Code Extension
 
-ArkEnv supports both named and default imports for the main export, `createEnv`.
+The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) provides syntax highlighting and inline error summaries for ArkType definitions, making your development experience with ArkEnv much more pleasant.
 
-### Default Import (Recommended for VS Code)
+<Card
+  title="Install ArkType VS Code Extension"
+  href="https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark"
+  description="Get syntax highlighting and inline error summaries for ArkType functions"
+/>
+
+### Installation
+
+1. Open VS Code
+2. Go to Extensions (Ctrl+Shift+X)
+3. Search for "ArkType"
+4. Install the extension by arktypeio
+
+## Getting Syntax Highlighting
+
+To get syntax highlighting for your ArkEnv schemas, use the **default import** and name it `arkenv`:
 
 ```typescript
 import arkenv from 'arkenv';
@@ -19,7 +34,21 @@ const env = arkenv({
 });
 ```
 
-### Named Import
+### Example with Syntax Highlighting
+
+![ArkType syntax highlighting in VS Code](/dx.png)
+
+### Benefits
+
+When you use the default import (`import arkenv from 'arkenv'`) and have the ArkType extension installed, you get:
+
+- **Syntax highlighting** for ArkType definitions in your schema
+- **Inline error summaries** via ErrorLens integration
+- **Better developer experience** with visual feedback
+
+## Alternative Import Styles
+
+You can also use named imports, though you won't get syntax highlighting:
 
 ```typescript
 import { createEnv } from 'arkenv';
@@ -29,33 +58,6 @@ const env = createEnv({
   NODE_ENV: "'development' | 'production' | 'test'",
 });
 ```
-
-## VS Code Integration
-
-<Card
-  title="ArkType VS Code Extension"
-  href="https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark"
-  description="Get syntax highlighting and inline error summaries for ArkType functions"
-/>
-
-### Benefits of Using Default Import
-
-When you use the default import (`import arkenv from 'arkenv'`) and have the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) installed, you get:
-
-- **Syntax highlighting** for ArkType definitions in your schema
-- **Inline error summaries** via ErrorLens integration
-- **Better developer experience** with visual feedback
-
-### Installation
-
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "ArkType"
-4. Install the extension by arktypeio
-
-### Example with Syntax Highlighting
-
-![ArkType syntax highlighting in VS Code](/dx.png)
 
 ## Migration Guide
 
