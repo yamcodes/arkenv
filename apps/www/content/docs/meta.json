@@ -6,6 +6,7 @@
 		"examples",
 		"---Guides---",
 		"guides/import-options",
+		"guides/type-function",
 		"guides/environment-configuration"
 	]
 }
