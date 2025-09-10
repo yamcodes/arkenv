@@ -39,7 +39,13 @@ async function buildWithPlugin(
 		configFile: false,
 		build: {
 			rollupOptions: {
-				external: ["react", "react/jsx-dev-runtime", "react/jsx-runtime"],
+				external: [
+					"react",
+					"react-dom",
+					"react-dom/client",
+					"react/jsx-dev-runtime",
+					"react/jsx-runtime",
+				],
 			},
 			...options.build,
 		},
