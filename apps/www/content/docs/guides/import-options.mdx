@@ -6,18 +6,7 @@ description: Learn about different import styles and VS Code extension benefits
 
 ## Import Styles
 
-ArkEnv supports both named and default imports, giving you flexibility in how you structure your code:
-
-### Named Import (Standard)
-
-```typescript
-import { createEnv } from 'arkenv';
-
-const env = createEnv({
-  PORT: "number.port",
-  NODE_ENV: "'development' | 'production' | 'test'",
-});
-```
+ArkEnv supports both named and default imports for the main export, `createEnv`.
 
 ### Default Import (Recommended for VS Code)
 
@@ -26,6 +15,17 @@ import arkenv from 'arkenv';
 
 const env = arkenv({
   PORT: "number.port", 
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+### Named Import
+
+```typescript
+import { createEnv } from 'arkenv';
+
+const env = createEnv({
+  PORT: "number.port",
   NODE_ENV: "'development' | 'production' | 'test'",
 });
 ```
@@ -55,17 +55,7 @@ When you use the default import (`import arkenv from 'arkenv'`) and have the [Ar
 
 ### Example with Syntax Highlighting
 
-```typescript
-import arkenv from 'arkenv';
-
-const env = arkenv({
-  // These will have syntax highlighting with the extension
-  DATABASE_URL: "string.url",
-  PORT: "number.port",
-  NODE_ENV: "'development' | 'production' | 'test'",
-  API_KEY: "string.min(32)",
-});
-```
+![ArkType syntax highlighting in VS Code](/../../assets/dx.png)
 
 ## Migration Guide
 

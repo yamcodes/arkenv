@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
-import createEnvDefault, { createEnv } from "./index";
+import arkenv, { createEnv } from "./index";
 
 describe("index.ts exports", () => {
 	it("should export createEnv as default export", () => {
-		expect(createEnvDefault).toBe(createEnv);
-		expect(typeof createEnvDefault).toBe("function");
+		expect(arkenv).toBe(createEnv);
+		expect(typeof arkenv).toBe("function");
 	});
 
 	it("should work with default import", () => {
 		process.env.TEST_DEFAULT_IMPORT = "test-value";
 
-		const env = createEnvDefault({
+		const env = arkenv({
 			TEST_DEFAULT_IMPORT: "string",
 		});
 
@@ -29,7 +29,7 @@ describe("index.ts exports", () => {
 
 	it("should throw error with default import when validation fails", () => {
 		expect(() =>
-			createEnvDefault({
+			arkenv({
 				MISSING_DEFAULT_VAR: "string",
 			}),
 		).toThrow();
@@ -46,7 +46,7 @@ describe("index.ts exports", () => {
 	it("should have same behavior for both default and named imports", () => {
 		process.env.COMPARISON_TEST = "same-value";
 
-		const envFromDefault = createEnvDefault({
+		const envFromDefault = arkenv({
 			COMPARISON_TEST: "string",
 		});
 
