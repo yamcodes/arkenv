@@ -56,17 +56,15 @@ bun add arkenv arktype
 
 ## Quickstart
 
-> [!TIP]
-> Find more examples in the [examples](https://github.com/yamcodes/arkenv/tree/main/examples) directory.
-
 ```ts
-import { createEnv } from 'arkenv';
+import arkenv from 'arkenv';
 
-const env = createEnv({
+const env = arkenv({
   HOST: "string.host", // valid IP address or localhost
   PORT: "number.port", // valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",
 });
+
 
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
@@ -74,6 +72,11 @@ console.log(env.HOST);     // (property) HOST: string
 console.log(env.PORT);     // (property) PORT: number
 console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" | "test"
 ```
+
+You can find more examples in the [examples](https://github.com/yamcodes/arkenv/tree/main/examples) directory.
+
+> [!TIP]
+> **VS Code Users:** Get syntax highlighting and inline error summaries for the ArkType ecosystem with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark). For even better TypeScript highlighting, try [ArkThemes](https://marketplace.cursorapi.com/items/?itemName=arktypeio.arkthemes).
 
 ## Features
 
