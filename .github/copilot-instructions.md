@@ -8,7 +8,7 @@ ArkEnv is a TypeScript library that provides typesafe environment variable parsi
 - **Typesafe**: Full TypeScript support with inferred types  
 - **Runtime validation**: Catch missing or invalid environment variables early
 - **Powered by ArkType**: Leverage ArkType's powerful type system
-- **Lightweight**: Zero external dependencies with minimal bundle size
+- **Lightweight**: Zero external,tinyt bundle size
 - **Fast**: Optimized for performance with minimal overhead
 
 ## Repository Structure
