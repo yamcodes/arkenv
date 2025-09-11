@@ -7,7 +7,10 @@
 		"dev": "next dev",
 		"start": "next start",
 		"postinstall": "fumadocs-mdx",
-		"clean": "rimraf node_modules .next .source"
+		"clean": "rimraf node_modules .next .source",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest --coverage"
 	},
 	"dependencies": {
 		"@icons-pack/react-simple-icons": "^13.7.0",
@@ -38,6 +41,12 @@
 		"@types/mdx": "^2.0.13",
 		"@tailwindcss/postcss": "^4.1.13",
 		"tailwindcss": "^4.1.13",
-		"postcss": "^8.5.6"
+		"postcss": "^8.5.6",
+		"@testing-library/react": "^16.2.0",
+		"@testing-library/jest-dom": "^6.7.0",
+		"@testing-library/user-event": "^14.5.2",
+		"@vitejs/plugin-react": "^4.4.2",
+		"jsdom": "^26.0.1",
+		"vitest": "^3.2.4"
 	}
 }
