@@ -1,5 +1,5 @@
 import arkenv from "arkenv";
-import { blue, bold, green, red } from "yoctocolors";
+import { styleText } from "node:util";
 
 // Define our environment configuration
 const env = arkenv({
@@ -10,10 +10,8 @@ const env = arkenv({
 
 // Pretty print the configuration
 console.log(
-	`🚀 Server running at ${bold(blue(env.HOST))}:${bold(
-		green(env.PORT),
-	)} in ${bold(
-		env.NODE_ENV === "production" ? red(env.NODE_ENV) : blue(env.NODE_ENV),
+	`🚀 Server running at ${styleText(['blue', 'bold'], env.HOST)}:${styleText(['green', 'bold'], env.PORT)} in ${styleText('bold', 
+		env.NODE_ENV === "production" ? styleText('red', env.NODE_ENV) : styleText('blue', env.NODE_ENV),
 	)} mode`,
 );
 
