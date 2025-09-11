@@ -83,4 +83,51 @@ describe("env", () => {
 
 		expect(TEST_STRING).toBe("hello");
 	});
+
+	it("should validate boolean env variables", () => {
+		process.env.TEST_BOOLEAN_TRUE = "true";
+		process.env.TEST_BOOLEAN_FALSE = "false";
+		process.env.TEST_BOOLEAN_ONE = "1";
+		process.env.TEST_BOOLEAN_ZERO = "0";
+
+		const env = createEnv({
+			TEST_BOOLEAN_TRUE: "string.boolean",
+			TEST_BOOLEAN_FALSE: "string.boolean",
+			TEST_BOOLEAN_ONE: "string.boolean",
+			TEST_BOOLEAN_ZERO: "string.boolean",
+		});
+
+		expect(env.TEST_BOOLEAN_TRUE).toBe(true);
+		expect(env.TEST_BOOLEAN_FALSE).toBe(false);
+		expect(env.TEST_BOOLEAN_ONE).toBe(true);
+		expect(env.TEST_BOOLEAN_ZERO).toBe(false);
+	});
+
+	it("should validate boolean env variables with default values", () => {
+		const env = createEnv({
+			FEATURE_ENABLED: "string.boolean = 'false'",
+			DEBUG_MODE: "string.boolean = 'true'",
+		});
+
+		expect(env.FEATURE_ENABLED).toBe(false);
+		expect(env.DEBUG_MODE).toBe(true);
+	});
+
+	it("should throw when boolean env variable has invalid value", () => {
+		process.env.INVALID_BOOLEAN = "maybe";
+
+		expect(() =>
+			createEnv({
+				INVALID_BOOLEAN: "string.boolean",
+			}),
+		).toThrow(
+			expectedError([
+				{
+					requiredType: "a boolean value (true, false, 1, 0, yes, no, on, off)",
+					providedType: '"maybe"',
+					name: "INVALID_BOOLEAN",
+				},
+			]),
+		);
+	});
 });

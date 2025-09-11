@@ -30,6 +30,23 @@ describe("scope", () => {
 		expect(() => portType.assert({ PORT: "99999" })).toThrow();
 	});
 
+	it("should validate string.boolean", () => {
+		const boolType = $.type({ ENABLED: "string.boolean" });
+		const result = boolType.assert({ ENABLED: "true" });
+		expect(result.ENABLED).toBe(true);
+	});
+
+	it("should validate string.boolean for false values", () => {
+		const boolType = $.type({ ENABLED: "string.boolean" });
+		const result = boolType.assert({ ENABLED: "false" });
+		expect(result.ENABLED).toBe(false);
+	});
+
+	it("should throw for invalid boolean", () => {
+		const boolType = $.type({ ENABLED: "string.boolean" });
+		expect(() => boolType.assert({ ENABLED: "maybe" })).toThrow();
+	});
+
 	it("should validate combined host and port", () => {
 		const envType = $.type({
 			HOST: "string.host",
