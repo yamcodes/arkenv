@@ -35,5 +35,6 @@
 			"@biomejs/biome",
 			"@sentry/cli"
 		]
-	}
+	},
+	"version": "0.0.1"
 }
