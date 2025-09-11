@@ -48,6 +48,6 @@
 		"arktype": "^2.1.22"
 	},
 	"dependencies": {
-		"chalk": "^5.6.2"
+		"yoctocolors": "^2.1.2"
 	}
 }
