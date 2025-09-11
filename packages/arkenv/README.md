@@ -84,7 +84,7 @@ You can find more examples in the [examples](https://github.com/yamcodes/arkenv/
 - 🔒 **Typesafe**: Full TypeScript support with inferred types
 - 🚀 **Runtime validation**: Catch missing or invalid environment variables early
 - 💪 **Powered by ArkType**: Leverage ArkType's powerful type system
-- 🪶 **Lightweight**: Only a single dependency ([see size](https://bundlephobia.com/package/arkenv))
+- 🪶 **Lightweight**: Zero external dependencies ([see size](https://bundlephobia.com/package/arkenv))
 - ⚡ **Fast**: Optimized for performance with minimal overhead
 
 ## Documentation
