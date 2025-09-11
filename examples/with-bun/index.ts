@@ -1,5 +1,5 @@
-import arkenv from "arkenv";
 import { styleText } from "node:util";
+import arkenv from "arkenv";
 
 // Define our environment configuration
 const env = arkenv({
@@ -10,8 +10,11 @@ const env = arkenv({
 
 // Pretty print the configuration
 console.log(
-	`🚀 Server running at ${styleText(['blue', 'bold'], env.HOST)}:${styleText(['green', 'bold'], env.PORT)} in ${styleText('bold', 
-		env.NODE_ENV === "production" ? styleText('red', env.NODE_ENV) : styleText('blue', env.NODE_ENV),
+	`🚀 Server running at ${styleText(["blue", "bold"], env.HOST)}:${styleText(["green", "bold"], String(env.PORT))} in ${styleText(
+		"bold",
+		env.NODE_ENV === "production"
+			? styleText("red", env.NODE_ENV)
+			: styleText("blue", env.NODE_ENV),
 	)} mode`,
 );
 
