@@ -7,7 +7,9 @@
 		"dev": "next dev",
 		"start": "next start",
 		"postinstall": "fumadocs-mdx",
-		"clean": "rimraf node_modules .next .source"
+		"clean": "rimraf node_modules .next .source",
+		"test": "vitest",
+		"test:run": "vitest run"
 	},
 	"dependencies": {
 		"@icons-pack/react-simple-icons": "^13.7.0",
@@ -38,6 +40,8 @@
 		"@types/mdx": "^2.0.13",
 		"@tailwindcss/postcss": "^4.1.13",
 		"tailwindcss": "^4.1.13",
-		"postcss": "^8.5.6"
+		"postcss": "^8.5.6",
+		"vitest": "^3.2.4",
+		"jsdom": "^26.0.0"
 	}
 }
