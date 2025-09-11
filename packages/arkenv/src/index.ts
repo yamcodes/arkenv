@@ -1,4 +1,8 @@
 export type { EnvSchema } from "./create-env";
-export * from "./create-env";
-export { createEnv as default } from "./create-env";
-export * from "./type";
+
+import { createEnv } from "./create-env";
+
+const arkenv = createEnv;
+export default arkenv;
+export { type } from "./type";
+export { createEnv };
