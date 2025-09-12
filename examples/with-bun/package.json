@@ -8,7 +8,7 @@
 		"build": "bun build index.ts --outdir ./dist"
 	},
 	"dependencies": {
-		"arkenv": "^0.5.0",
+		"arkenv": "^0.7.0",
 		"arktype": "^2.1.22"
 	},
 	"devDependencies": {

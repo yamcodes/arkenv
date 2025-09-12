@@ -10,8 +10,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@arkenv/vite-plugin": "^0.0.8",
-		"arkenv": "^0.5.0",
+		"@arkenv/vite-plugin": "^0.0.10",
+		"arkenv": "^0.7.0",
 		"arktype": "^2.1.22",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
