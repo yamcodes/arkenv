@@ -26,7 +26,7 @@
 ## Introduction
 
 
-ArkEnv is an environment variable validator and parser for TypeScript. Built on top of [ArkType](https://arktype.io/), a runtime type system that serves as a 1:1 validator for TypeScript, ArkEnv lets you use familiar syntax:
+ArkEnv is an environment variable parser built on top of [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
 
 
 ```ts
