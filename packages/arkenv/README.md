@@ -23,9 +23,10 @@
 <br/>
 <br/>
 
-## What is ArkEnv?
+## Introduction
 
-ArkEnv is an environment variable validator and parser for TypeScript. Built on top of [ArkType](https://arktype.io/), a runtime type system that serves as a 1:1 validator for TypeScript, ArkEnv lets you use TypeScript-like syntax:
+
+ArkEnv is an environment variable parser built on top of [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
 
 
 ```ts
@@ -47,11 +48,11 @@ console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" 
 
 ## Features
 
-- [Build-time](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) or [Runtime](https://github.com/yamcodes/arkenv/tree/main/examples/basic) validation
 - Zero external dependencies
-- Works in Node.js, Bun, and Vite
-- Tiny: 778 bytes ([gzipped](https://bundlephobia.com/package/arkenv))
-- Dead simple
+- Works in [Node.js](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [Bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [Vite](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts)
+- Tiny: <1kB ([gzipped](https://bundlephobia.com/package/arkenv))
+- [Build-time](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) and [runtime](https://github.com/yamcodes/arkenv/tree/main/examples/basic) validation
+- Single import, zero config for most projects
 - [Powered by ArkType](https://arktype.io/docs/ecosystem#arkenv), TypeScript's 1:1 validator
 
 ## Installation
@@ -110,6 +111,4 @@ If you love ArkEnv, you can support the project by starring it on GitHub!
 
 You are also welcome to directly [contribute to the project's development](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md).
 
-## Thanks / Inspiration
-
-[THANKS.md](https://github.com/yamcodes/arkenv/blob/main/THANKS.md) lists projects and people who helped or inspired the creation of ArkEnv. Thank you 🙏
+## [Thanks / Inspiration](https://github.com/yamcodes/arkenv/blob/main/THANKS.md)
