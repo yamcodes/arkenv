@@ -4,7 +4,7 @@ import { $ } from "./scope";
 
 type RuntimeEnvironment = Record<string, string | undefined>;
 
-export type EnvSchema<def, $ = {}> = type.validate<def, $>;
+export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
 
 /**
  * Create an environment variables object from a schema and an environment
@@ -14,14 +14,9 @@ export type EnvSchema<def, $ = {}> = type.validate<def, $>;
  * @throws An error if the environment variables are invalid. See {@link ArkEnvError}
  */
 export function createEnv<const T extends Record<string, string | undefined>>(
-	def: EnvSchema<T, (typeof $)["t"]>,
-	env?: RuntimeEnvironment,
-): distill.Out<type.infer<T, (typeof $)["t"]>>;
-export function createEnv<const T extends Record<string, string | undefined>>(
 	def: EnvSchema<T>,
 	env?: RuntimeEnvironment,
-): distill.Out<type.infer<T>>;
-export function createEnv(def: unknown, env: RuntimeEnvironment = process.env) {
+): distill.Out<type.infer<T, (typeof $)["t"]>> {
 	const schema = $.type.raw(def);
 
 	const validatedEnv = schema(env);
