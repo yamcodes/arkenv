@@ -15,7 +15,7 @@ export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
  */
 export function createEnv<const T extends Record<string, string | undefined>>(
 	def: EnvSchema<T>,
-	env?: RuntimeEnvironment,
+	env: RuntimeEnvironment = process.env,
 ): distill.Out<type.infer<T, (typeof $)["t"]>> {
 	const schema = $.type.raw(def);
 
