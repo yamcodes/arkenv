@@ -11,7 +11,7 @@ function createNewElement() {
 				"bg-gradient-to-r from-yellow-400 to-yellow-100 text-amber-800 px-1.5 py-0.5 rounded text-xs font-medium",
 			"data-new": "true",
 		},
-		"New!",
+		"New",
 	);
 }
 
