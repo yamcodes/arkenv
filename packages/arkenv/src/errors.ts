@@ -1,5 +1,5 @@
+import { styleText } from "node:util";
 import type { ArkErrors } from "arktype";
-import chalk from "chalk";
 import { indent } from "./utils";
 
 /**
@@ -19,11 +19,11 @@ export const formatErrors = (errors: ArkErrors): string =>
 			const formattedMessage = valueMatch
 				? messageWithoutPath.replace(
 						`(was "${valueMatch[1]}")`,
-						`(was ${chalk.cyan(`"${valueMatch[1]}"`)})`,
+						`(was ${styleText("cyan", `"${valueMatch[1]}"`)})`,
 					)
 				: messageWithoutPath;
 
-			return `${chalk.yellow(path)}${formattedMessage}`;
+			return `${styleText("yellow", path)}${formattedMessage}`;
 		})
 		.join("\n");
 
@@ -32,7 +32,7 @@ export class ArkEnvError extends Error {
 		errors: ArkErrors,
 		message = "Errors found while validating environment variables",
 	) {
-		super(`${chalk.red(message)}\n${indent(formatErrors(errors))}\n`);
+		super(`${styleText("red", message)}\n${indent(formatErrors(errors))}\n`);
 		this.name = "ArkEnvError";
 	}
 }

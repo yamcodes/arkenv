@@ -1,49 +1,13 @@
 ---
 title: What is ArkEnv?
 icon: Album
+
 ---
 
 import { BookOpen } from "lucide-react";
 
-ArkEnv is a powerful TypeScript-first environment variable management library that provides runtime validation and typesafety for your application's configuration.
-
-## Key features
-
-- 🔒 **Typesafe**: Full TypeScript support with precise type inference
-- 🚀 **Runtime validation**: Catch missing or invalid environment variables early in development
-- 💪 **Powered by ArkType**: Built on top of ArkType's powerful type system
-- 🛠️ **Type function**: Use `type()` to separate schema definition from validation
-- 🪶 **Lightweight**: Only a single dependency ([see size](https://bundlephobia.com/package/arkenv))
-- ⚡ **Fast**: Optimized for performance with minimal overhead
-
-## Why ArkEnv?
-
-Managing environment variables in TypeScript applications can be error-prone. Common issues include:
-- Missing environment variables causing runtime crashes
-- Type mismatches between expected and actual values
-- Lack of validation for critical configuration
-- No autocomplete or type hints in your IDE
-
-ArkEnv solves these problems by providing a typesafe, validated way to define and use environment variables in your TypeScript applications.
-
-## Quick example
-
-Here's the kind of code you can expect when using ArkEnv:
-
-```ts title="example.ts"
-import arkenv from 'arkenv';
-
-const env = arkenv({
-  HOST: "string.host",           // Validates IP address or localhost
-  PORT: "number.port",           // Ensures valid port number (0-65535)
-  NODE_ENV: "'development' | 'production' | 'test'",
-});
-
-// TypeScript knows the exact types!
-console.log(env.HOST);     // string
-console.log(env.PORT);     // number
-console.log(env.NODE_ENV); // "development" | "production" | "test"
-```
+<include cwd>../../packages/arkenv/README.md#introduction</include>
+<include cwd>../../packages/arkenv/README.md#features</include>
 
 ## Next steps
 

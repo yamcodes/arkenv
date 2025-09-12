@@ -21,8 +21,12 @@
 			"name": "apps"
 		},
 		{
-			"path": "apps/playground",
-			"name": "  playground"
+			"path": "apps/playgrounds/node",
+			"name": "  playgrounds/node"
+		},
+		{
+			"path": "apps/playgrounds/vite",
+			"name": "  playgrounds/vite"
 		},
 		{
 			"path": "apps/www",

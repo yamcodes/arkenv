@@ -63,7 +63,7 @@
 	},
 	"overrides": [
 		{
-			"includes": ["**/examples/**/*", "**/playground/**/*"],
+			"includes": ["**/examples/**/*", "**/playgrounds/**/*"],
 			"linter": {
 				"rules": {
 					"suspicious": {
