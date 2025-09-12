@@ -1,5 +1,5 @@
-import { readdirSync, readFileSync } from "fs";
-import { join, resolve } from "path";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -109,8 +109,6 @@ describe("Plugin Unit Tests", () => {
 		);
 	});
 });
-
-type TestConfig = ReturnType<typeof readTestConfig>;
 
 async function readTestConfig(fixtureDir: string) {
 	// Import the env schema from the TypeScript config file
