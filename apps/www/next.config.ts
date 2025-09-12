@@ -1,9 +1,11 @@
+import path from "node:path";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 
 export default withSentryConfig(
 	createMDX()({
 		reactStrictMode: true,
+		outputFileTracingRoot: path.join(__dirname, "../../"),
 	}),
 	{
 		// For all available options, see:
