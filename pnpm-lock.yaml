@@ -97,6 +97,9 @@ importers:
 
   apps/www:
     dependencies:
+      '@ark/util':
+        specifier: ^0.49.0
+        version: 0.49.0
       '@icons-pack/react-simple-icons':
         specifier: ^13.7.0
         version: 13.7.0(react@19.1.1)
@@ -155,9 +158,6 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.13)
     devDependencies:
-      '@ark/util':
-        specifier: ^0.49.0
-        version: 0.49.0
       '@tailwindcss/postcss':
         specifier: ^4.1.13
         version: 4.1.13
