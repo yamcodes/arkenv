@@ -93,6 +93,7 @@ bun add arkenv arktype
 
 > [!TIP]
 > **VS Code Users:** Get syntax highlighting and inline error summaries for the ArkType ecosystem with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark). Step-by-step guide [here](https://arkenv.js.org/docs/guides/import-options).
+> 
 > ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
 
 ## Requirements
