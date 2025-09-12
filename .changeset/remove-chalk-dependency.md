@@ -1,5 +1,5 @@
 ---
-"arkenv": minor
+"arkenv": patch
 ---
 
 Replace Chalk dependency with Node.js built-in `util.styleText`
