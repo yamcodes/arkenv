@@ -15,5 +15,8 @@
 		"tsx": "^4.19.2",
 		"typescript": "^5.9.2"
 	},
-	"packageManager": "npm@10.9.2"
+	"packageManager": "npm@10.9.2",
+	"engines": {
+		"node": "22"
+	}
 }

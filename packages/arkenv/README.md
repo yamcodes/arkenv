@@ -4,6 +4,7 @@
   </a>
   <br />
   <a href="https://github.com/yamcodes/arkenv/actions/workflows/tests.yml?query=branch%3Amain"><img alt="Tests Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests.yml/badge.svg?event=push&branch=main"></a>
+  <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv">
   <a href="https://discord.com/channels/957797212103016458/1415373591394127894"><img alt="Chat on Discord" src="https://img.shields.io/discord/957797212103016458?label=Chat&color=5865f4&logo=discord&labelColor=121214"></a>
   <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
   <a href="https://arktype.io/"><img alt="Powered By ArkType" src="https://custom-icon-badges.demolab.com/badge/ArkType-0d1526?logo=arktype2&logoColor=e9eef9"></a>
@@ -46,7 +47,7 @@ console.log(env.PORT);     // (property) PORT: number
 console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" | "test"
 ```
 
-With ArkEnv, your environment variables are **guaranteed to be valid based on your schema**. If any variable is incorrect or missing, the app won't start and a special error will be thrown:
+With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
 ```
 ArkEnvError: Errors found while validating environment variables
@@ -57,11 +58,11 @@ ArkEnvError: Errors found while validating environment variables
 ## Features
 
 - Zero external dependencies
-- Works in [Node.js](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [Bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [Vite](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts)
-- Tiny: <1kB ([gzipped](https://bundlephobia.com/package/arkenv))
-- [Build-time](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) and [runtime](https://github.com/yamcodes/arkenv/tree/main/examples/basic) validation
+- Works in Node.js, Bun, and Vite
+- Tiny: <1kB gzipped
+- Build-time and runtime validation
 - Single import, zero config for most projects
-- [Powered by ArkType](https://arktype.io/docs/ecosystem#arkenv), TypeScript's 1:1 validator
+- Powered by ArkType, TypeScript's 1:1 validator
 
 ## Installation
 
@@ -108,6 +109,7 @@ bun add arkenv arktype
 ## Requirements
 
 - TypeScript >= 5.1 and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
+-  [Node.js 22 LTS](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [Bun 1.2](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [Vite 7](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) are tested. Older versions may work but aren't officially supported
 
 ## Plugins
 
