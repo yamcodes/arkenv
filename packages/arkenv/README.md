@@ -26,7 +26,7 @@
 ## Introduction
 
 
-ArkEnv is an environment variable parser built on top of [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
+ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
 
 
 ```ts
@@ -44,6 +44,14 @@ const env = arkenv({
 console.log(env.HOST);     // (property) HOST: string
 console.log(env.PORT);     // (property) PORT: number
 console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" | "test"
+```
+
+With ArkEnv, your environment variables are **guaranteed to be valid based on your schema**. If any variable is incorrect or missing, the app won't start and a special error will be thrown:
+
+```
+ArkEnvError: Errors found while validating environment variables
+  HOST must be a string or "localhost" (was missing)
+  PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
 ## Features
@@ -93,7 +101,7 @@ bun add arkenv arktype
 
 
 > [!TIP]
-> **VS Code Users:** Get syntax highlighting and inline error summaries for the ArkType ecosystem with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark). Step-by-step guide [here](https://arkenv.js.org/docs/guides/import-options).
+> Improve your DX with syntax highlighting in [VS Code & Cursor](/docs/integrations/vscode) or [JetBrains IDEs](/docs/integrations/jetbrains).
 > 
 > ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
 
@@ -103,7 +111,7 @@ bun add arkenv arktype
 
 ## Plugins
 
-- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build time
+- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build-time
 
 ## Supporting ArkEnv
 
