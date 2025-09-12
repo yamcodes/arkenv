@@ -1,5 +1,5 @@
+import { styleText } from "node:util";
 import arkenv from "arkenv";
-import chalk from "chalk";
 
 // Define our environment configuration
 const env = arkenv({
@@ -10,12 +10,11 @@ const env = arkenv({
 
 // Pretty print the configuration
 console.log(
-	`🚀 Server running at ${chalk.bold(chalk.blue(env.HOST))}:${chalk.bold(
-		chalk.green(env.PORT),
-	)} in ${chalk.bold(
+	`🚀 Server running at ${styleText(["blue", "bold"], env.HOST)}:${styleText(["green", "bold"], String(env.PORT))} in ${styleText(
+		"bold",
 		env.NODE_ENV === "production"
-			? chalk.red(env.NODE_ENV)
-			: chalk.blue(env.NODE_ENV),
+			? styleText("red", env.NODE_ENV)
+			: styleText("blue", env.NODE_ENV),
 	)} mode`,
 );
 

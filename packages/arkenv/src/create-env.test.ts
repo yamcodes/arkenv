@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import { styleText } from "node:util";
 import { describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
 import { indent } from "./utils";
@@ -16,8 +16,8 @@ const expectedError = (
 	}[],
 ) => {
 	const formattedErrors = errors.map((error) => {
-		return `${chalk.red("Errors found while validating environment variables")}\n${indent(
-			`${chalk.yellow(error.name)} must be ${error.requiredType} (was ${error.providedType})`,
+		return `${styleText("red", "Errors found while validating environment variables")}\n${indent(
+			`${styleText("yellow", error.name)} must be ${error.requiredType} (was ${error.providedType})`,
 		)}\n`;
 	});
 
