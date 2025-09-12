@@ -9,8 +9,7 @@
 	},
 	"dependencies": {
 		"arkenv": "^0.5.0",
-		"arktype": "^2.1.22",
-		"chalk": "^5.6.2"
+		"arktype": "^2.1.22"
 	},
 	"devDependencies": {
 		"bun-types": "^1.2.2",

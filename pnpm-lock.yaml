@@ -136,9 +136,6 @@ importers:
       arktype:
         specifier: ^2.1.22
         version: 2.1.22
-      chalk:
-        specifier: ^5.6.2
-        version: 5.6.2
     devDependencies:
       '@ark/schema':
         specifier: ^0.49.0
@@ -2276,10 +2273,6 @@ packages:
   chalk@3.0.0:
     resolution: {integrity: sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==}
     engines: {node: '>=8'}
-
-  chalk@5.6.2:
-    resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   changesets-changelog-clean@1.3.0:
     resolution: {integrity: sha512-3bGEYg+SuzS4TizAVwGxkiV+c/IMQI7+JPnrEApbvGeb5//c2cfcLG9pteNqpySVY6BNkpCFMM4dpZucnCPxtQ==}
@@ -6612,8 +6605,6 @@ snapshots:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
-
-  chalk@5.6.2: {}
 
   changesets-changelog-clean@1.3.0:
     dependencies:
