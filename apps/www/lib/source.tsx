@@ -26,7 +26,7 @@ export const source = loader({
 
 		if (icon in icons) return createElement(icons[icon as never]);
 		if (icon === "New")
-			return <Badge className="h-4 text-[10px] px-[0.2rem] order-2">new</Badge>;
+			return <Badge className="h-4 text-[10px] px-[0.2rem] order-1">new</Badge>;
 
 		throw new Error(`${icon} is not a valid icon`);
 	},
