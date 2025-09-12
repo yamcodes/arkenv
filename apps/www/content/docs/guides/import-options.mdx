@@ -1,12 +1,14 @@
 ---
 title: Integrating with VS Code
 icon: New
-description: Get syntax highlighting and enhanced developer experience with the ArkType VS Code extension
+description: Get syntax highlighting and enhanced developer experience with the ArkType ecosystem extensions
 ---
 
-## ArkType VS Code Extension
+ArkEnv works great with modern code editors that support syntax highlighting for ArkType definitions. There are two levels of support you can choose from, depending on your needs and editor preferences.
 
-The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) provides syntax highlighting and inline error summaries for ArkType definitions, making your development experience with ArkEnv much more pleasant.
+## Minimum Recommendation: Basic Syntax Highlighting
+
+For VS Code users, the [ArkType extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) provides essential syntax highlighting and inline error summaries for your ArkEnv schemas.
 
 <Card
   title="Install ArkType VS Code Extension"
@@ -14,16 +16,7 @@ The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemN
   description="Get syntax highlighting and inline error summaries for ArkType functions"
 />
 
-### Installation
-
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "ArkType"
-4. Install the extension by arktypeio
-
-## Getting Syntax Highlighting
-
-To get syntax highlighting for your ArkEnv schemas, use the **default import** and name it `arkenv`:
+To enable syntax highlighting, use the **default import** and name it `arkenv`:
 
 ```typescript
 import arkenv from 'arkenv';
@@ -33,23 +26,33 @@ const env = arkenv({
   NODE_ENV: "'development' | 'production' | 'test'",
 });
 ```
-
-### Example with Syntax Highlighting
 
 ![ArkType syntax highlighting in VS Code](/dx.png)
 
-### Benefits
-
-When you use the default import (`import arkenv from 'arkenv'`) and have the ArkType extension installed, you get:
-
+This gives you:
 - **Syntax highlighting** for ArkType definitions in your schema
 - **Inline error summaries** via ErrorLens integration
-- **Better developer experience** with visual feedback
+- **Basic validation feedback** for common mistakes
 
-## Alternative Import Styles
+## Enhanced Option: Full TypeScript-like Syntax Highlighting
 
-You can also use named imports, though you won't get syntax highlighting:
+For an even better development experience, [ArkThemes](https://marketplace.cursorapi.com/items/?itemName=arktypeio.arkthemes) provides full TypeScript-like syntax highlighting for ArkType definitions. Currently available for Cursor editor, this extension offers more comprehensive highlighting that makes ArkType schemas feel like native TypeScript code.
 
+## Import Styles
+
+ArkEnv supports both default and named imports. The functionality is identical - only the syntax highlighting support differs:
+
+### Default Import (Recommended for Syntax Highlighting)
+```typescript
+import arkenv from 'arkenv';
+
+const env = arkenv({
+  PORT: "number.port",
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+### Named Import
 ```typescript
 import { createEnv } from 'arkenv';
 
@@ -59,33 +62,8 @@ const env = createEnv({
 });
 ```
 
-## Migration Guide
-
-If you're currently using named imports and want to switch to default imports for better VS Code support:
-
-### Before
-```typescript
-import { createEnv } from 'arkenv';
-
-const env = createEnv({
-  PORT: "number.port",
-});
-```
-
-### After
-```typescript
-import arkenv from 'arkenv';
-
-const env = arkenv({
-  PORT: "number.port", 
-});
-```
-
-The functionality is identical - only the import style changes!
-
 ## Best Practices
 
-- **Use default import** if you're using VS Code and want enhanced syntax highlighting
-- **Use named import** if you prefer explicit imports or are using other editors
+- **Use default import** (`import arkenv`) if you want syntax highlighting in VS Code or Cursor
+- **Use named import** (`import { createEnv }`) if you prefer explicit imports or use other editors
 - **Be consistent** within your project - choose one style and stick with it
-- **Install the ArkType extension** for the best development experience
