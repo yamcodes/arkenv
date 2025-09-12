@@ -14,5 +14,8 @@
 	"devDependencies": {
 		"bun-types": "^1.2.2",
 		"typescript": "^5.9.2"
+	},
+	"engines": {
+		"bun": "1.2"
 	}
 }
