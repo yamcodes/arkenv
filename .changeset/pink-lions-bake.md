@@ -2,7 +2,7 @@
 "arkenv": minor
 ---
 
-`createEnv` signature simplified
+#### `createEnv` signature simplified
 
 The `createEnv` function now has a simpler signature:
 - No longer uses multiple overloads. Return type now always uses the ArkEnv scope

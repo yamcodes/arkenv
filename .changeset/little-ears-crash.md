@@ -2,7 +2,7 @@
 "arkenv": minor
 ---
 
-`EnvSchema` type now always uses ArkEnv scope
+#### `EnvSchema` type now always uses ArkEnv scope
 
 The `EnvSchema` type has been simplified and fixed to include the ArkEnv scope.
 
