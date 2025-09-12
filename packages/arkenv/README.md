@@ -12,7 +12,7 @@
   <a href="https://nodejs.org/en"><img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white"></a>
   <a href="https://bun.com/"><img alt="Bun" src="https://img.shields.io/badge/Bun-14151a?logo=bun&logoColor=fbf0df"></a>
   <a href="https://vite.dev/"><img alt="Vite" src="https://custom-icon-badges.demolab.com/badge/Vite-2e2742?logo=vite2&logoColor=dfdfd6"></a>
-  <a href="https://github.com/yamcodes/arkenv"><img alt="GitHub Repo stars" src="https://custom-icon-badges.demolab.com/github/stars/yamcodes/arkenv?logo=star&logoColor=373737&label=Star%20us!"></a>
+  <a href="https://github.com/yamcodes/arkenv"><img alt="GitHub Repo stars" src="https://custom-icon-badges.demolab.com/github/stars/yamcodes/arkenv?logo=star&logoColor=373737&label=Star%20us!&"></a>
 </p>
 
 ## Requirements
