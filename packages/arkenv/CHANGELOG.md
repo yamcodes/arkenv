@@ -1,5 +1,68 @@
 # ArkEnv
 
+## 0.7.0
+
+### Minor Changes
+
+- #### `EnvSchema` type now always uses ArkEnv scope _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
+
+  The `EnvSchema` type has been simplified and fixed to include the ArkEnv scope.
+
+  Before:
+
+  ```
+  export type EnvSchema<def, $ = {}> = type.validate<def, $>;
+  ```
+
+  After:
+
+  ```
+  export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>; // (Whereas $ is the ArkEnv scope)
+  ```
+
+  BREAKING CHANGE:
+
+  We no longer allow specifying a custom scope in the `EnvSchema` type.
+
+- #### `createEnv` signature simplified _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
+
+  The `createEnv` function now has a simpler signature:
+
+  - No longer uses multiple overloads. Return type now always uses the ArkEnv scope
+
+  BREAKING CHANGE:
+
+  You can no longer rely on `EnvSchema` to type `createEnv` with a custom scope. Only the ArkEnv scope is supported.
+
+### Patch Changes
+
+- #### Fix default export autocomplete for better developer experience _[`#147`](https://github.com/yamcodes/arkenv/pull/147) [`2ec4daa`](https://github.com/yamcodes/arkenv/commit/2ec4daae714f6fde09e75d9fae417015111ee007) [@yamcodes](https://github.com/yamcodes)_
+
+  The default export now properly aliases as `arkenv` instead of `createEnv`, providing better autocomplete when importing.
+
+  For example, in VS Code (and other IDEs that support autocomplete), when writing the following code:
+
+  ```ts
+  // top of file
+
+  const env = arke;
+  ```
+
+  Your IDE will now show completion for `arkenv`, resulting in:
+
+  ```ts
+  // top of file
+  import arkenv from "arkenv";
+
+  const env = arkenv();
+  ```
+
+  This change maintains full backward compatibility - all existing imports continue to work unchanged (like `import { createEnv } from "arkenv";`).
+
+- #### Replace Chalk dependency with Node.js built-in `util.styleText` _[`e6eca4f`](https://github.com/yamcodes/arkenv/commit/e6eca4f34eeed2bc2249c3a5a2fced9880bee081) [@yamcodes](https://github.com/yamcodes)_
+
+  Remove the external `chalk` dependency and replace it with Node.js built-in `util.styleText`, available [from Node.js v20.12.0](https://nodejs.org/api/util.html#utilstyletextformat-text-options). This makes ArkEnv zero-dependency.
+
 ## 0.6.0
 
 ### Minor Changes
