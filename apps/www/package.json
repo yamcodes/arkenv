@@ -7,7 +7,8 @@
 		"dev": "next dev",
 		"start": "next start",
 		"postinstall": "fumadocs-mdx",
-		"clean": "rimraf node_modules .next .source"
+		"clean": "rimraf node_modules .next .source",
+		"fix": "pnpm -w run fix"
 	},
 	"dependencies": {
 		"@icons-pack/react-simple-icons": "^13.7.0",
@@ -31,13 +32,14 @@
 		"tailwindcss-animate": "^1.0.7"
 	},
 	"devDependencies": {
+		"@ark/util": "^0.49.0",
+		"@tailwindcss/postcss": "^4.1.13",
+		"@types/mdx": "^2.0.13",
 		"@types/node": "24.3.1",
 		"@types/react": "^19.1.12",
 		"@types/react-dom": "^19.1.9",
-		"typescript": "^5.9.2",
-		"@types/mdx": "^2.0.13",
-		"@tailwindcss/postcss": "^4.1.13",
+		"postcss": "^8.5.6",
 		"tailwindcss": "^4.1.13",
-		"postcss": "^8.5.6"
+		"typescript": "^5.9.2"
 	}
 }
