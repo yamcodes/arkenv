@@ -1,31 +1,20 @@
 ---
-title: Integrating with VS Code & Cursor
-description: Syntax highlighting and improved developer experience with VS Code extensions
+title: Integrate with VS Code & Cursor
 ---
 
-## ArkType VS Code Extension: Syntax Highlighting and ErrorLens
+Install the [ArkType extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) for syntax highlighting and inline error detection. For improved DX, use a theme from [ArkThemes](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes).
 
-The [ArkType extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) provides syntax highlighting and inline error summaries for ArkEnv.
-
+<Cards>
 <Card
-  title="Install ArkType VS Code Extension"
+  title="ArkType - Visual Studio Marketplace"
   href="https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark"
-  description="Get syntax highlighting and inline error summaries for ArkType"
+  description="Syntax highlighting and inline errors for ArkType ⛵"
 />
+<Card
+  title="ArkThemes - Visual Studio Marketplace"
+  href="https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes"
+  description="A collection of themes with special highlighting for TypeScript generics ⛵"
+/>
+</Cards>
 
-To integrate ArkEnv, use the **default import** and name it `arkenv`:
-
-```typescript
-import arkenv from 'arkenv';
-
-const env = arkenv({
-  PORT: "number.port", 
-  NODE_ENV: "'development' | 'production' | 'test'",
-});
-```
-
-## ArkThemes: Special Highlighting
-
-For an even better DX, [ArkThemes](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes) provides special highlighting for TypeScript generics in ArkType definitions.
-
-![ArkType syntax highlighting in VS Code](/dx.png)
+<include>./import-guide.mdx</include>

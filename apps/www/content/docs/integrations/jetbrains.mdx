@@ -1,25 +1,13 @@
 ---
-title: Integrating with JetBrains IDEs
-description: Syntax highlighting and improved developer experience with JetBrains IDEs
+title: Integrate with JetBrains IDEs
 ---
 
-## ArkType JetBrains Extension: Syntax Highlighting
-
-The [ArkType extension](https://plugins.jetbrains.com/plugin/27099-arktype) provides syntax highlighting for ArkEnv.
+Install the [ArkType extension](https://plugins.jetbrains.com/plugin/27099-arktype) for syntax highlighting.
 
 <Card
-  title="Install ArkType JetBrains Extension"
+  title="ArkType | JetBrains Marketplace"
   href="https://plugins.jetbrains.com/plugin/27099-arktype"
-  description="Get syntax highlighting for ArkType"
+  description="Syntax highlighting for ArkType ⛵"
 />
 
-To integrate ArkEnv, use the **default import** and name it `arkenv`:
-
-```typescript
-import arkenv from 'arkenv';
-
-const env = arkenv({
-  PORT: "number.port", 
-  NODE_ENV: "'development' | 'production' | 'test'",
-});
-```
+<include>./import-guide.mdx</include>
