@@ -67,11 +67,7 @@ VITE_ALLOWED_ORIGINS=http://localhost:3000,https://example.com
 
 * [with-vite-react-ts](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts)
 
-## Documentation
-
-For detailed documentation and more examples, visit the [ArkEnv documentation site](https://arkenv.js.org/docs).
-
 ## Related
 
-- [ArkEnv](https://arkenv.js.org) - The core library
-- [ArkType](https://arktype.io/) - The underlying validator / type system
+- [ArkEnv](https://arkenv.js.org) - Core library and docs
+- [ArkType](https://arktype.io/) - Underlying validator / type system
