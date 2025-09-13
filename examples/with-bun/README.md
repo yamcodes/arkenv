@@ -9,7 +9,7 @@ The example demonstrates:
 - Setting up environment variables with ArkEnv
 - Using default values
 - Typesafe environment configuration
-- Pretty console output with [Chalk](https://github.com/chalk/chalk)
+- Pretty console output with [`util.style`](https://nodejs.org/api/util.html#utilstyletextformat-text-optionsNode.js)
 
 ## Getting started
 
