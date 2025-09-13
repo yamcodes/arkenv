@@ -113,11 +113,11 @@ bun add arkenv arktype
 
 ## Plugins
 
-- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build-time
+- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin)
 
 ## Supporting ArkEnv
 
-If you love ArkEnv, you can support the project by starring it on GitHub!
+If you love ArkEnv, you can support the project by **starring it on GitHub**!
 
 You are also welcome to directly [contribute to the project's development](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md).
 
