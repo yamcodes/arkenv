@@ -22,11 +22,11 @@
 		},
 		{
 			"path": "apps/playgrounds/node",
-			"name": "  playgrounds/node"
+			"name": "  node-playground"
 		},
 		{
 			"path": "apps/playgrounds/vite",
-			"name": "  playgrounds/vite"
+			"name": "  vite-playground"
 		},
 		{
 			"path": "apps/www",
