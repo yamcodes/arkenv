@@ -14,7 +14,7 @@ export function Heading({
 		<Component id={id} className="group relative" {...props}>
 			<a
 				href={`#${id}`}
-				className="select-none text-primary opacity-50 sm:opacity-0 hover:opacity-100 group-hover:opacity-100 no-underline absolute -left-5 transition-opacity duration-200"
+				className="select-none text-primary opacity-0 hover:opacity-100 group-hover:opacity-100 group-active:opacity-100 active:opacity-100 focus:opacity-100 no-underline absolute -left-5 transition-opacity duration-200"
 				aria-label="Link to section"
 			>
 				#

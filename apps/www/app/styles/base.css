@@ -3,6 +3,15 @@
 		@apply border-border outline-ring/50;
 	}
 
+	html {
+		scroll-behavior: smooth;
+	}
+
+	/* Add scroll margin to headings to prevent scroll offset issues */
+	h1, h2, h3, h4, h5, h6 {
+		scroll-margin-top: 2rem;
+	}
+
 	code,
 	pre {
 		font-family:
