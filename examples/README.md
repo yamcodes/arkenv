@@ -4,11 +4,11 @@ This directory contains a collection of example projects that demonstrate variou
 
 ## Examples
 
-| Name                                         | Description                                                                                              |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| [`basic`](./basic)                           | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals. |
-| [`with-bun`](./with-bun)                     | Minimal example of *using ArkEnv in a [Bun](https://bun.sh/) app*.                                       |
-| [`with-vite-react-ts`](./with-vite-react-ts) | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/) app*.                                    |
+| Name                                                                                             | Description                                                                                              |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| [`basic`](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                           | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals. |
+| [`with-bun`](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun)                     | Minimal example of *using ArkEnv in a [Bun](https://bun.sh/) app*.                                       |
+| [`with-vite-react-ts`](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/) app*.                                    |
 
 ## Contributing an example
 
