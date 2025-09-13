@@ -7,6 +7,7 @@ import { boolean, host, port } from "./types";
  * The root scope for the ArkEnv library, containing extensions to the ArkType scopes with ArkEnv-specific types like `string.host` and `number.port`.
  */
 export const $ = scope({
+	boolean,
 	string: type.module({
 		...type.keywords.string,
 		host,

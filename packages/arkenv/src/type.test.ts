@@ -16,7 +16,7 @@ describe("type", () => {
 
 	it("should create a type from a boolean schema", () => {
 		const envType = type({ DEBUG: "boolean" });
-		const result = envType.assert({ DEBUG: true });
+		const result = envType.assert({ DEBUG: "true" });
 		expect(result.DEBUG).toBe(true);
 	});
 
@@ -90,7 +90,7 @@ describe("type", () => {
 			API_URL: "https://api.example.com",
 			HOST: "localhost",
 			PORT: "3000",
-			DEBUG: true,
+			DEBUG: "true",
 			// API_KEY is optional, so we can omit it
 		});
 
@@ -175,7 +175,7 @@ describe("type", () => {
 		const result = envType.assert({
 			STRING_VALUE: "hello",
 			NUMBER_VALUE: 42,
-			BOOLEAN_VALUE: true,
+			BOOLEAN_VALUE: "true",
 		});
 
 		expect(result.STRING_VALUE).toBe("hello");

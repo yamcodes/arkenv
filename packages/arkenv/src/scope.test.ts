@@ -47,6 +47,23 @@ describe("scope", () => {
 		expect(() => boolType.assert({ ENABLED: "maybe" })).toThrow();
 	});
 
+	it("should validate boolean directly", () => {
+		const boolType = $.type({ ENABLED: "boolean" });
+		const result = boolType.assert({ ENABLED: "true" });
+		expect(result.ENABLED).toBe(true);
+	});
+
+	it("should validate boolean for false values directly", () => {
+		const boolType = $.type({ ENABLED: "boolean" });
+		const result = boolType.assert({ ENABLED: "false" });
+		expect(result.ENABLED).toBe(false);
+	});
+
+	it("should throw for invalid boolean when used directly", () => {
+		const boolType = $.type({ ENABLED: "boolean" });
+		expect(() => boolType.assert({ ENABLED: "maybe" })).toThrow();
+	});
+
 	it("should validate combined host and port", () => {
 		const envType = $.type({
 			HOST: "string.host",

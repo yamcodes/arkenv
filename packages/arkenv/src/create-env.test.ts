@@ -130,4 +130,45 @@ describe("env", () => {
 			]),
 		);
 	});
+
+	it("should validate boolean env variables using direct boolean type", () => {
+		process.env.TEST_DIRECT_BOOLEAN_TRUE = "true";
+		process.env.TEST_DIRECT_BOOLEAN_FALSE = "false";
+
+		const env = createEnv({
+			TEST_DIRECT_BOOLEAN_TRUE: "boolean",
+			TEST_DIRECT_BOOLEAN_FALSE: "boolean",
+		});
+
+		expect(env.TEST_DIRECT_BOOLEAN_TRUE).toBe(true);
+		expect(env.TEST_DIRECT_BOOLEAN_FALSE).toBe(false);
+	});
+
+	it("should validate boolean env variables with default values using direct boolean type", () => {
+		const env = createEnv({
+			FEATURE_ENABLED: "boolean = 'false'",
+			DEBUG_MODE: "boolean = 'true'",
+		});
+
+		expect(env.FEATURE_ENABLED).toBe(false);
+		expect(env.DEBUG_MODE).toBe(true);
+	});
+
+	it("should throw when direct boolean env variable has invalid value", () => {
+		process.env.INVALID_DIRECT_BOOLEAN = "maybe";
+
+		expect(() =>
+			createEnv({
+				INVALID_DIRECT_BOOLEAN: "boolean",
+			}),
+		).toThrow(
+			expectedError([
+				{
+					requiredType: "a boolean value (true, false, 1, 0, yes, no, on, off)",
+					providedType: '"maybe"',
+					name: "INVALID_DIRECT_BOOLEAN",
+				},
+			]),
+		);
+	});
 });
