@@ -35,5 +35,8 @@
 			"@biomejs/biome",
 			"@sentry/cli"
 		]
+	},
+	"dependencies": {
+		"arktype": "^2.1.22"
 	}
 }
