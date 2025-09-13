@@ -44,6 +44,12 @@ export default async function Page(props: {
 								Steps,
 								Accordion,
 								Accordions,
+								h1: (props) => <Heading {...props} as="h1" />,
+								h2: (props) => <Heading {...props} as="h2" />,
+								h3: (props) => <Heading {...props} as="h3" />,
+								h4: (props) => <Heading {...props} as="h4" />,
+								h5: (props) => <Heading {...props} as="h5" />,
+								h6: (props) => <Heading {...props} as="h6" />,
 								pre: ({ ref: _ref, ...props }) => (
 									<CodeBlock {...props}>
 										<Pre>{props.children}</Pre>
