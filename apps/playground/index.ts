@@ -4,9 +4,9 @@ const env = arkenv({
 	HOST: "string.host",
 	PORT: "number.port",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-	// Both string.boolean and direct boolean work!
+	// Direct boolean usage
 	SOME_FLAG: "boolean",
-	DEBUG_MODE: "string.boolean",
+	DEBUG_MODE: "boolean",
 });
 
 // Automatically validate and parse process.env

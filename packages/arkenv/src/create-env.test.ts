@@ -91,10 +91,10 @@ describe("env", () => {
 		process.env.TEST_BOOLEAN_ZERO = "0";
 
 		const env = createEnv({
-			TEST_BOOLEAN_TRUE: "string.boolean",
-			TEST_BOOLEAN_FALSE: "string.boolean",
-			TEST_BOOLEAN_ONE: "string.boolean",
-			TEST_BOOLEAN_ZERO: "string.boolean",
+			TEST_BOOLEAN_TRUE: "boolean",
+			TEST_BOOLEAN_FALSE: "boolean",
+			TEST_BOOLEAN_ONE: "boolean",
+			TEST_BOOLEAN_ZERO: "boolean",
 		});
 
 		expect(env.TEST_BOOLEAN_TRUE).toBe(true);
@@ -105,8 +105,8 @@ describe("env", () => {
 
 	it("should validate boolean env variables with default values", () => {
 		const env = createEnv({
-			FEATURE_ENABLED: "string.boolean = 'false'",
-			DEBUG_MODE: "string.boolean = 'true'",
+			FEATURE_ENABLED: "boolean = 'false'",
+			DEBUG_MODE: "boolean = 'true'",
 		});
 
 		expect(env.FEATURE_ENABLED).toBe(false);
@@ -118,7 +118,7 @@ describe("env", () => {
 
 		expect(() =>
 			createEnv({
-				INVALID_BOOLEAN: "string.boolean",
+				INVALID_BOOLEAN: "boolean",
 			}),
 		).toThrow(
 			expectedError([

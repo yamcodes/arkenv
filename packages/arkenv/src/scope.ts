@@ -11,7 +11,6 @@ export const $ = scope({
 	string: type.module({
 		...type.keywords.string,
 		host,
-		boolean,
 	}),
 	number: type.module({
 		...type.keywords.number,
