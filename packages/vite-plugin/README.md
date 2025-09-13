@@ -1,6 +1,6 @@
 # `@arkenv/vite-plugin`
 
-Vite plugin to validate environment variables at build-time with ArkEnv.
+[Vite](https://vite.dev/) plugin to validate environment variables at build-time with ArkEnv.
 
 ## Installation
 
@@ -65,7 +65,7 @@ VITE_ALLOWED_ORIGINS=http://localhost:3000,https://example.com
 
 ## Examples
 
-See the [with-vite-react-ts example](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) for a complete working setup.
+* [with-vite-react-ts](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts)
 
 ## Documentation
 
