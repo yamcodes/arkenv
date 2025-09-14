@@ -18,7 +18,9 @@ const ORIGINAL_ENV = { ...process.env };
 const fixturesDir = join(__dirname, "__fixtures__");
 
 // Get the mocked functions
-const { createEnv: mockCreateEnv } = await vi.importMock("arkenv");
+const { createEnv: mockCreateEnv } = (await vi.importMock("arkenv")) as {
+	createEnv: ReturnType<typeof vi.fn>;
+};
 
 // Run fixture-based tests
 for (const name of readdirSync(fixturesDir)) {
@@ -98,9 +100,25 @@ describe("Plugin Unit Tests", () => {
 	it("should call createEnv during config hook", () => {
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
-		// Mock the config hook
-		if (pluginInstance.config) {
-			pluginInstance.config({}, { mode: "test", command: "build" });
+		// Mock the config hook with proper context
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
 		}
 
 		expect(mockCreateEnv).toHaveBeenCalledWith(

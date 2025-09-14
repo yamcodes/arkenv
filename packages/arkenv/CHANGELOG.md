@@ -1,5 +1,21 @@
 # ArkEnv
 
+## 0.7.1
+
+### Patch Changes
+
+- Export `ArkEnvError` _[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)_
+
+  You can now import `ArkEnvError` from `arkenv`:
+
+  ```ts
+  import { ArkEnvError } from "arkenv";
+  ```
+
+- Improve JSDoc _[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)_
+
+  The JSDoc for `arkenv` and `createEnv` is now more descriptive.
+
 ## 0.7.0
 
 ### Minor Changes

@@ -29,7 +29,7 @@
 ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
 
 
-```ts
+```ts twoslash
 import arkenv from 'arkenv';
 
 const env = arkenv({

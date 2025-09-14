@@ -34,7 +34,7 @@ description: Let's get you started with a few simple steps
 
     Add a schema to make your environment variables **validated** and **typesafe**:
 
-    ```typescript title="config/env.ts"
+    ```ts title="config/env.ts" twoslash
     import arkenv from 'arkenv';
 
     export const env = arkenv({
@@ -54,7 +54,7 @@ description: Let's get you started with a few simple steps
     ```
 
     > [!TIP]
-    > **VS Code Users:** Want syntax highlighting for your ArkType schemas? Check out our [VS Code Integration guide](/docs/guides/import-options) to learn about the ArkType extension and improve your DX!
+    > **VS Code Users:** Want syntax highlighting for your ArkType schemas? Check out our [VS Code Integration guide](/docs/integrations/vscode) to learn about the ArkType extension and improve your DX!
   </Step>
 
   <Step>
@@ -98,7 +98,18 @@ description: Let's get you started with a few simple steps
 
     Import and use your **validated** and **typed** environment variables. For example, you might have a file like `database.ts`:
 
-    ```typescript title="database.ts"
+    ```typescript title="database.ts" twoslash
+    // @filename: config/env.ts
+    import arkenv from 'arkenv';
+    export const env = arkenv({
+      DATABASE_HOST: "string.host",
+      DATABASE_PORT: "number.port",
+      NODE_ENV: "'development' | 'production' | 'test'",
+      LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+      "API_KEY?": 'string'
+    });
+    // @filename: database.ts
+    // ---cut---
     import { env } from './config/env';
 
     // TypeScript knows the ✨exact✨ types!
@@ -115,7 +126,7 @@ description: Let's get you started with a few simple steps
 <Cards>
   <Card 
     title="VS Code Integration" 
-    href="/docs/guides/import-options" 
+    href="/docs/integrations/vscode" 
     description="Get syntax highlighting and enhanced developer experience with the ArkType VS Code extension"
   />
   <Card 

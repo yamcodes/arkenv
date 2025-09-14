@@ -13,11 +13,4 @@ export const baseOptions: BaseLayoutProps = {
 		title: <Logo className="text-xl mb-1" />,
 	},
 	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL,
-	links: [
-		{
-			text: "Documentation",
-			url: "/docs",
-			active: "none",
-		},
-	],
 };
