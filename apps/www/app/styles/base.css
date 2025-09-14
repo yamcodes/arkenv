@@ -24,6 +24,6 @@
 
 	/* Twoslash code block max height */
 	.fd-twoslash-popover {
-		max-height: 160px;
+		max-height: 160px !important;
 	}
 }
