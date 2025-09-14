@@ -1,9 +1,9 @@
-import arkenv from "arkenv";
+import arkenv, { createEnv } from "arkenv";
 
 const env = arkenv({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	HOST: "string.host",
 	PORT: "number.port",
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 
 // Automatically validate and parse process.env

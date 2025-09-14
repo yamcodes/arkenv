@@ -118,6 +118,9 @@ importers:
       '@stackblitz/sdk':
         specifier: ^1.11.0
         version: 1.11.0
+      arkenv:
+        specifier: workspace:*
+        version: link:../../packages/arkenv
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -157,6 +160,9 @@ importers:
       remark-gemoji:
         specifier: ^8.0.0
         version: 8.0.0
+      require-in-the-middle:
+        specifier: ^7.5.2
+        version: 7.5.2
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.3.1

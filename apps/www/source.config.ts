@@ -1,6 +1,7 @@
 import { rehypeCodeDefaultOptions, remarkNpm } from "fumadocs-core/mdx-plugins";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
+import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import { rehypeGithubAlerts } from "rehype-github-alerts";
 import remarkGemoji from "remark-gemoji";
 
@@ -22,7 +23,9 @@ export default defineConfig({
 			},
 			transformers: [
 				...(rehypeCodeDefaultOptions.transformers ?? []),
-				transformerTwoslash(),
+				transformerTwoslash({
+					typesCache: createFileSystemTypesCache(),
+				}),
 			],
 		},
 	},

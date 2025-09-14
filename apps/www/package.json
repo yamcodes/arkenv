@@ -18,6 +18,7 @@
 		"@radix-ui/react-toast": "^1.2.15",
 		"@sentry/nextjs": "^10.10.0",
 		"@stackblitz/sdk": "^1.11.0",
+		"arkenv": "workspace:*",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"fumadocs-core": "15.7.10",
@@ -31,6 +32,7 @@
 		"react-dom": "^19.1.1",
 		"rehype-github-alerts": "^4.1.1",
 		"remark-gemoji": "^8.0.0",
+		"require-in-the-middle": "^7.5.2",
 		"tailwind-merge": "^3.3.1",
 		"tailwindcss-animate": "^1.0.7",
 		"twoslash": "^0.3.4"
