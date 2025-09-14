@@ -3,8 +3,10 @@
 		@apply border-border outline-ring/50;
 	}
 
-	html {
-		scroll-behavior: smooth;
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
 	}
 
 	code,

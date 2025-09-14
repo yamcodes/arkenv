@@ -58,6 +58,17 @@ export function Heading({
 		window.location.hash = `#${id}`;
 	};
 
+	const handleHeadingClick = (e: React.MouseEvent) => {
+		// Don't handle if the click was on the anchor itself
+		if ((e.target as Element).closest('a[href^="#"]')) {
+			return;
+		}
+
+		// Show the anchor and navigate
+		setActiveHeading(id ?? null);
+		window.location.hash = `#${id}`;
+	};
+
 	if (!id)
 		return (
 			<Component className={className} {...props}>
@@ -69,14 +80,15 @@ export function Heading({
 		<Component
 			id={id}
 			className={`group relative scroll-mt-40 ${className || ""}`}
+			onClick={handleHeadingClick}
 			{...props}
 		>
 			<a
 				href={`#${id}`}
 				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
 					isActive
-						? "opacity-100"
-						: "opacity-0 hover:opacity-100 group-hover:opacity-100 focus:opacity-100"
+						? "opacity-100 pointer-events-auto"
+						: "opacity-0 pointer-events-none hover:opacity-100 hover:pointer-events-auto group-hover:opacity-100 group-hover:pointer-events-auto focus:opacity-100 focus:pointer-events-auto"
 				}`}
 				aria-label="Link to section"
 				tabIndex={0}
