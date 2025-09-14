@@ -90,8 +90,8 @@ export function Heading({
 				href={`#${id}`}
 				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
 					isActive
-						? "opacity-100 pointer-events-auto"
-						: "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto hover:opacity-100 hover:pointer-events-auto focus:opacity-100 focus:pointer-events-auto"
+						? "opacity-100"
+						: "opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100"
 				}`}
 				aria-label="Link to section"
 				tabIndex={0}
