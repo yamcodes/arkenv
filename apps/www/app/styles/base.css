@@ -23,7 +23,7 @@
 	}
 
 	/* Twoslash code block max height */
-	.twoslash .fd-scroll-component {
+	.twoslash .fd-scroll-container {
 		max-height: 160px !important;
 	}
 }
