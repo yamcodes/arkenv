@@ -57,7 +57,14 @@ export function Heading({
 	const handleAnchorClick = (e: React.MouseEvent) => {
 		e.preventDefault();
 		setActiveHeading(id ?? null);
-		// Still navigate to the anchor
+
+		// Always scroll to the element, even if hash is already set
+		const element = document.getElementById(id || "");
+		if (element) {
+			element.scrollIntoView({ behavior: "smooth", block: "start" });
+		}
+
+		// Update the hash after scrolling
 		window.location.hash = `#${id}`;
 	};
 
@@ -69,6 +76,14 @@ export function Heading({
 
 		// Show the anchor and navigate
 		setActiveHeading(id ?? null);
+
+		// Always scroll to the element, even if hash is already set
+		const element = document.getElementById(id || "");
+		if (element) {
+			element.scrollIntoView({ behavior: "smooth", block: "start" });
+		}
+
+		// Update the hash after scrolling
 		window.location.hash = `#${id}`;
 	};
 
