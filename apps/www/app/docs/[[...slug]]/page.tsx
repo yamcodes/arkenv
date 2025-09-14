@@ -1,3 +1,4 @@
+import * as Twoslash from "fumadocs-twoslash/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
 import { Step, Steps } from "fumadocs-ui/components/steps";
@@ -55,6 +56,7 @@ export default async function Page(props: {
 										<Pre>{props.children}</Pre>
 									</CodeBlock>
 								),
+								...Twoslash,
 							}}
 						/>
 					</DocsBody>

@@ -21,4 +21,9 @@
 	.fd-steps {
 		padding-left: 2.3rem;
 	}
+
+	/* Twoslash code block max height */
+	.twoslash .fd-scroll-container {
+		max-height: 160px !important;
+	}
 }

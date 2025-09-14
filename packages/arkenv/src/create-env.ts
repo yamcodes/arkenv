@@ -11,7 +11,7 @@ export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
  * @param def - The environment variable schema
  * @param env - The environment variables to validate, defaults to `process.env`
  * @returns The validated environment variable schema
- * @throws An error if the environment variables are invalid. See {@link ArkEnvError}
+ * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
 export function createEnv<const T extends Record<string, string | undefined>>(
 	def: EnvSchema<T>,

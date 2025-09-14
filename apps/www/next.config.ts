@@ -1,52 +1,56 @@
 import path from "node:path";
-import { withSentryConfig } from "@sentry/nextjs";
+import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
+import type { NextConfig } from "next";
 
-export default withSentryConfig(
-	createMDX()({
-		reactStrictMode: true,
-		outputFileTracingRoot: path.join(__dirname, "../../"),
-	}),
-	{
-		// For all available options, see:
-		// https://github.com/getsentry/sentry-webpack-plugin#options
+const config = {
+	reactStrictMode: true,
+	cleanDistDir: true,
+	outputFileTracingRoot: path.join(__dirname, "../../"),
+	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
+} as const satisfies NextConfig;
 
-		org: process.env.SENTRY_ORG,
-		project: process.env.SENTRY_PROJECT,
+const sentryConfig = {
+	// For all available options, see:
+	// https://github.com/getsentry/sentry-webpack-plugin#options
 
-		// Only print logs for uploading source maps in CI
-		silent: !process.env.CI,
+	org: process.env.SENTRY_ORG,
+	project: process.env.SENTRY_PROJECT,
 
-		// For all available options, see:
-		// https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+	// Only print logs for uploading source maps in CI
+	silent: !process.env.CI,
 
-		// Upload a larger set of source maps for prettier stack traces (increases build time)
-		widenClientFileUpload: true,
+	// For all available options, see:
+	// https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
-		// Automatically annotate React components to show their full name in breadcrumbs and session replay
-		reactComponentAnnotation: {
-			enabled: true,
-		},
+	// Upload a larger set of source maps for prettier stack traces (increases build time)
+	widenClientFileUpload: true,
 
-		// Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-		// This can increase your server load as well as your hosting bill.
-		// Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-		// side errors will fail.
-		tunnelRoute: "/monitoring",
-
-		// Automatically tree-shake Sentry logger statements to reduce bundle size
-		disableLogger: true,
-
-		// Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-		// See the following for more information:
-		// https://docs.sentry.io/product/crons/
-		// https://vercel.com/docs/cron-jobs
-		automaticVercelMonitors: true,
-
-		sourcemaps: {
-			deleteSourcemapsAfterUpload: true,
-		},
-
-		authToken: process.env.SENTRY_AUTH_TOKEN,
+	// Automatically annotate React components to show their full name in breadcrumbs and session replay
+	reactComponentAnnotation: {
+		enabled: true,
 	},
-);
+
+	// Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
+	// This can increase your server load as well as your hosting bill.
+	// Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
+	// side errors will fail.
+	tunnelRoute: "/monitoring",
+
+	// Automatically tree-shake Sentry logger statements to reduce bundle size
+	disableLogger: true,
+
+	// Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
+	// See the following for more information:
+	// https://docs.sentry.io/product/crons/
+	// https://vercel.com/docs/cron-jobs
+	automaticVercelMonitors: true,
+
+	sourcemaps: {
+		deleteSourcemapsAfterUpload: true,
+	},
+
+	authToken: process.env.SENTRY_AUTH_TOKEN,
+} as const satisfies SentryBuildOptions;
+
+export default withSentryConfig(createMDX()(config), sentryConfig);
