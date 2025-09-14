@@ -23,15 +23,7 @@
 	}
 
 	/* Twoslash code block max height */
-	pre.twoslash {
-		max-height: 400px;
-		overflow-y: auto;
-		overflow-x: auto;
-	}
-
-	/* Alternative: Target the type source section specifically */
-	.twoslash .twoslash-type-source {
-		max-height: 300px;
-		overflow-y: auto;
+	.fd-twoslash-popover {
+		max-height: 160px;
 	}
 }
