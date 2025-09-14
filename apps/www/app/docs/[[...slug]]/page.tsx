@@ -60,7 +60,7 @@ export default async function Page(props: {
 					</DocsBody>
 				</div>
 				<div className="flex flex-col items-start pt-16">
-					<EditOnGithub path={page.file.path} />
+					<EditOnGithub path={page.path} />
 					<div className="mt-8 w-full">
 						<Separator />
 					</div>
