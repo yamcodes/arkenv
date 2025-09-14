@@ -36,9 +36,12 @@ export function Heading({
 		setIsActive(activeHeadingId === id);
 
 		const handleClickOutside = (event: MouseEvent) => {
-			// Check if the click is outside any heading
+			// Check if the click is outside any heading or anchor
 			const target = event.target as Element;
-			if (!target.closest("h1, h2, h3, h4, h5, h6")) {
+			if (
+				!target.closest("h1, h2, h3, h4, h5, h6") &&
+				!target.closest('a[href^="#"]')
+			) {
 				setActiveHeading(null);
 			}
 		};
@@ -79,7 +82,7 @@ export function Heading({
 	return (
 		<Component
 			id={id}
-			className={`group relative scroll-mt-28 pl-5 -ml-5 ${className || ""}`}
+			className={`group relative scroll-mt-28 ${className || ""}`}
 			onClick={handleHeadingClick}
 			{...props}
 		>
@@ -88,7 +91,7 @@ export function Heading({
 				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
 					isActive
 						? "opacity-100 pointer-events-auto"
-						: "opacity-0 pointer-events-none hover:opacity-100 hover:pointer-events-auto group-hover:opacity-100 group-hover:pointer-events-auto focus:opacity-100 focus:pointer-events-auto"
+						: "opacity-0 pointer-events-auto group-hover:opacity-100 hover:opacity-100 focus:opacity-100"
 				}`}
 				aria-label="Link to section"
 				tabIndex={0}
