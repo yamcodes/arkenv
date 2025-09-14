@@ -79,17 +79,19 @@ export function Heading({
 	return (
 		<Component
 			id={id}
-			className={`group relative scroll-mt-28 pl-5 -ml-5 ${className || ""}`}
+			className={`group relative scroll-mt-28 ${className || ""}`}
 			onClick={handleHeadingClick}
 			{...props}
+			style={{ paddingLeft: '1.25rem', marginLeft: '-1.25rem' }}
 		>
 			<a
 				href={`#${id}`}
-				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
+				className={`select-none text-primary no-underline absolute transition-opacity duration-200 ${
 					isActive
 						? "opacity-100 pointer-events-auto"
 						: "opacity-0 pointer-events-none hover:opacity-100 hover:pointer-events-auto group-hover:opacity-100 group-hover:pointer-events-auto focus:opacity-100 focus:pointer-events-auto"
 				}`}
+				style={{ left: '0rem' }}
 				aria-label="Link to section"
 				tabIndex={0}
 				onClick={handleAnchorClick}
