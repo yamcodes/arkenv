@@ -23,7 +23,7 @@
 	}
 
 	/* Twoslash code block max height */
-	.twoslash .fd-scroll-container {
+	.fd-twoslash-popover .fd-scroll-container {
 		max-height: 160px !important;
 	}
 }
