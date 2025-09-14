@@ -1,4 +1,4 @@
-import arkenv, { createEnv } from "arkenv";
+import arkenv from "arkenv";
 
 const env = arkenv({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
