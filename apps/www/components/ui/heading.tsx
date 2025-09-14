@@ -3,6 +3,17 @@
 import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
 
+// Global state to track the active heading ID
+let activeHeadingId: string | null = null;
+const headingListeners = new Set<(activeId: string | null) => void>();
+
+const setActiveHeading = (id: string | null) => {
+	activeHeadingId = id;
+	headingListeners.forEach((listener) => {
+		listener(id);
+	});
+};
+
 export function Heading({
 	id,
 	children,
@@ -15,21 +26,34 @@ export function Heading({
 	const [isActive, setIsActive] = useState(false);
 
 	useEffect(() => {
+		const handleActiveChange = (activeId: string | null) => {
+			setIsActive(activeId === id);
+		};
+
+		headingListeners.add(handleActiveChange);
+
+		// Set initial state
+		setIsActive(activeHeadingId === id);
+
 		const handleClickOutside = (event: MouseEvent) => {
 			// Check if the click is outside any heading
 			const target = event.target as Element;
 			if (!target.closest("h1, h2, h3, h4, h5, h6")) {
-				setIsActive(false);
+				setActiveHeading(null);
 			}
 		};
 
 		document.addEventListener("click", handleClickOutside);
-		return () => document.removeEventListener("click", handleClickOutside);
-	}, []);
+
+		return () => {
+			headingListeners.delete(handleActiveChange);
+			document.removeEventListener("click", handleClickOutside);
+		};
+	}, [id]);
 
 	const handleAnchorClick = (e: React.MouseEvent) => {
 		e.preventDefault();
-		setIsActive(true);
+		setActiveHeading(id ?? null);
 		// Still navigate to the anchor
 		window.location.hash = `#${id}`;
 	};
