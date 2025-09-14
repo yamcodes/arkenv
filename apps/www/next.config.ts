@@ -6,6 +6,7 @@ export default withSentryConfig(
 	createMDX()({
 		reactStrictMode: true,
 		outputFileTracingRoot: path.join(__dirname, "../../"),
+		serverExternalPackages: ["typescript", "twoslash"],
 	}),
 	{
 		// For all available options, see:
