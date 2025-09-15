@@ -23,13 +23,12 @@
 <br/>
 <br/>
 
-## Introduction
+## Introduction 
 
 > [!TIP]
 > 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs) to hover over code blocks and get type hints!
 
 ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
-
 
 ```ts twoslash
 import arkenv from 'arkenv';
@@ -39,7 +38,6 @@ const env = arkenv({
   PORT: "number.port", // valid port number (0-65535)
   NODE_ENV: "'development' | 'production' | 'test'",
 });
-
 
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
