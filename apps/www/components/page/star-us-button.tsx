@@ -12,10 +12,10 @@ const starUsButtonVariants = cva("text-lg font-bold", {
 		variant: {
 			mobile: [
 				"w-full",
-				"shadow-[0_8px_16px] [--tw-shadow-color:rgba(255,150,0,0.2)]",
-				"dark:shadow-[0_8px_16px_rgba(255,150,0,0.6)]",
 				"bg-gradient-to-r from-yellow-50 to-orange-50",
+				"hover:bg-gradient-to-r hover:from-yellow-100 hover:to-orange-100",
 				"dark:from-yellow-900/20 dark:to-orange-900/20",
+				"dark:hover:from-yellow-900/30 dark:hover:to-orange-900/30",
 				"border-2 border-yellow-200 dark:border-yellow-700",
 				"text-yellow-800 dark:text-yellow-200",
 				"hover:text-yellow-800 dark:hover:text-yellow-200",
@@ -44,9 +44,13 @@ const starUsShadowVariants = cva(
 	{
 		variants: {
 			variant: {
+				mobile: [
+					"shadow-[0_8px_16px] [--tw-shadow-color:rgba(255,150,0,0.1)]",
+					"dark:shadow-[0_8px_16px] dark:[--tw-shadow-color:rgba(255,150,0,0.15)]",
+				],
 				desktop: [
-					"shadow-[0_16px_20px_rgba(255,150,0,0.6)]",
-					"dark:shadow-[0_16px_20px_rgba(255,150,0,0.6)]",
+					"shadow-[0_16px_20px] [--tw-shadow-color:rgba(255,150,0,0.1)]",
+					"dark:shadow-[0_16px_20px] dark:[--tw-shadow-color:rgba(255,150,0,0.15)]",
 				],
 			},
 		},
@@ -115,7 +119,10 @@ export function StarUsButton({ className }: StarUsProps) {
 			`}</style>
 
 			{/* Mobile: Simple button with glow */}
-			<div className="sm:hidden w-full">
+			<div className="sm:hidden w-full relative">
+				{/* Shadow element for mobile */}
+				<div className={starUsShadowVariants({ variant: "mobile" })} />
+
 				<Button
 					asChild
 					variant="outline"
