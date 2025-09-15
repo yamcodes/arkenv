@@ -45,12 +45,12 @@ const starUsShadowVariants = cva(
 		variants: {
 			variant: {
 				mobile: [
-					"shadow-[0_8px_16px] [--tw-shadow-color:rgba(255,150,0,0.1)]",
-					"dark:shadow-[0_8px_16px] dark:[--tw-shadow-color:rgba(255,150,0,0.15)]",
+					"shadow-[0_8px_16px_rgba(255,150,0,0.1)]",
+					"dark:shadow-[0_8px_16px_rgba(255,150,0,0.15)]",
 				],
 				desktop: [
-					"shadow-[0_16px_20px] [--tw-shadow-color:rgba(255,150,0,0.1)]",
-					"dark:shadow-[0_16px_20px] dark:[--tw-shadow-color:rgba(255,150,0,0.15)]",
+					"shadow-[0_16px_20px_rgba(255,150,0,0.1)]",
+					"dark:shadow-[0_16px_20px_rgba(255,150,0,0.15)]",
 				],
 			},
 		},
