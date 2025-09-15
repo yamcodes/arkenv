@@ -88,7 +88,7 @@ export function Heading({
 	return (
 		<Component
 			id={id}
-			className={`group relative scroll-mt-32 ${className || ""}`}
+			className={`group relative scroll-mt-36 ${className || ""}`}
 			onClick={handleHeadingClick}
 			{...props}
 		>
