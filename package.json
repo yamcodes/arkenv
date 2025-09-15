@@ -17,8 +17,8 @@
 		"changeset": "changeset"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.3",
-		"@changesets/cli": "^2.29.6",
+		"@biomejs/biome": "2.2.4",
+		"@changesets/cli": "^2.29.7",
 		"changesets-changelog-clean": "^1.3.0",
 		"jsdom": "^26.1.0",
 		"rimraf": "^6.0.1",
