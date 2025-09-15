@@ -1,14 +1,64 @@
 "use client";
 
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import { cva, type VariantProps } from "class-variance-authority";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils/cn";
 
+const starUsButtonVariants = cva("text-lg font-bold", {
+	variants: {
+		variant: {
+			mobile: [
+				"w-full",
+				"shadow-[0_8px_16px] [--tw-shadow-color:rgba(255,150,0,0.2)]",
+				"dark:shadow-[0_8px_16px_rgba(255,150,0,0.6)]",
+				"bg-gradient-to-r from-yellow-50 to-orange-50",
+				"dark:from-yellow-900/20 dark:to-orange-900/20",
+				"border-2 border-yellow-200 dark:border-yellow-700",
+				"text-yellow-800 dark:text-yellow-200",
+				"hover:text-yellow-800 dark:hover:text-yellow-200",
+				"transition-colors duration-200",
+			],
+			desktop: [
+				"relative overflow-hidden cursor-pointer",
+				"bg-gradient-to-r from-yellow-50 to-orange-50",
+				"dark:from-yellow-900/20 dark:to-orange-900/20",
+				"border-2 border-yellow-200 dark:border-yellow-700",
+				"text-yellow-800 dark:text-yellow-200",
+				"hover:text-yellow-800 dark:hover:text-yellow-200",
+				"transition-all duration-200 ease-in-out scale-100",
+				"focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0",
+				"hover:scale-105",
+			],
+		},
+	},
+	defaultVariants: {
+		variant: "mobile",
+	},
+});
+
+const starUsShadowVariants = cva(
+	"absolute inset-0 rounded-lg pointer-events-none",
+	{
+		variants: {
+			variant: {
+				desktop: [
+					"shadow-[0_16px_20px_rgba(255,150,0,0.6)]",
+					"dark:shadow-[0_16px_20px_rgba(255,150,0,0.6)]",
+				],
+			},
+		},
+		defaultVariants: {
+			variant: "desktop",
+		},
+	},
+);
+
 type StarUsProps = {
 	className?: string;
-};
+} & VariantProps<typeof starUsButtonVariants>;
 
 export function StarUsButton({ className }: StarUsProps) {
 	const [starCount, setStarCount] = useState<number | null>(null);
@@ -70,14 +120,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					asChild
 					variant="outline"
 					size="lg"
-					className={cn(
-						"w-full text-lg font-bold shadow-[0_8px_16px_rgba(255,150,0,0.6)] dark:shadow-[0_8px_16px_rgba(255,150,0,0.6)]",
-						"bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
-						"border-2 border-yellow-200 dark:border-yellow-700",
-						"text-yellow-800 dark:text-yellow-200 hover:text-yellow-800 dark:hover:text-yellow-200",
-						"transition-colors duration-200",
-						className,
-					)}
+					className={cn(starUsButtonVariants({ variant: "mobile" }), className)}
 				>
 					<a
 						href={
@@ -107,20 +150,14 @@ export function StarUsButton({ className }: StarUsProps) {
 			{/* Desktop: Complex button with animations and effects */}
 			<div className="hidden sm:block relative">
 				{/* Shadow element that doesn't scale */}
-				<div className="absolute inset-0 rounded-lg shadow-[0_16px_20px_rgba(255,150,0,0.6)] dark:shadow-[0_16px_20px_rgba(255,150,0,0.6)] pointer-events-none" />
+				<div className={starUsShadowVariants({ variant: "desktop" })} />
 
 				<Button
 					asChild
 					variant="outline"
 					size="lg"
 					className={cn(
-						"relative overflow-hidden cursor-pointer text-lg font-bold",
-						"bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
-						"border-2 border-yellow-200 dark:border-yellow-700",
-						"text-yellow-800 dark:text-yellow-200 hover:text-yellow-800 dark:hover:text-yellow-200",
-						"transition-all duration-200 ease-in-out scale-100",
-						"focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0",
-						"hover:scale-105",
+						starUsButtonVariants({ variant: "desktop" }),
 						className,
 					)}
 				>
