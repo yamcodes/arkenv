@@ -74,17 +74,8 @@ export function Heading({
 			return;
 		}
 
-		// Show the anchor and navigate
+		// Show the anchor but don't scroll - only the pound symbol should scroll
 		setActiveHeading(id ?? null);
-
-		// Always scroll to the element, even if hash is already set
-		const element = document.getElementById(id || "");
-		if (element) {
-			element.scrollIntoView({ behavior: "smooth", block: "start" });
-		}
-
-		// Update the hash after scrolling
-		window.location.hash = `#${id}`;
 	};
 
 	if (!id)
@@ -97,7 +88,7 @@ export function Heading({
 	return (
 		<Component
 			id={id}
-			className={`group relative scroll-mt-28 ${className || ""}`}
+			className={`group relative scroll-mt-32 ${className || ""}`}
 			onClick={handleHeadingClick}
 			{...props}
 		>
