@@ -61,7 +61,9 @@ ArkEnvError: Errors found while validating environment variables
 - Tiny: <1kB gzipped
 - Build-time and runtime validation
 - Single import, zero config for most projects
+- Validated, defaultable, typesafe environment variables
 - Powered by ArkType, TypeScript's 1:1 validator
+- Optimized from editor to runtime
 
 ## Installation
 

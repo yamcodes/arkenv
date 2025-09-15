@@ -57,7 +57,14 @@ export function Heading({
 	const handleAnchorClick = (e: React.MouseEvent) => {
 		e.preventDefault();
 		setActiveHeading(id ?? null);
-		// Still navigate to the anchor
+
+		// Always scroll to the element, even if hash is already set
+		const element = document.getElementById(id || "");
+		if (element) {
+			element.scrollIntoView({ behavior: "smooth", block: "start" });
+		}
+
+		// Update the hash after scrolling
 		window.location.hash = `#${id}`;
 	};
 
@@ -67,9 +74,8 @@ export function Heading({
 			return;
 		}
 
-		// Show the anchor and navigate
+		// Show the anchor but don't scroll - only the pound symbol should scroll
 		setActiveHeading(id ?? null);
-		window.location.hash = `#${id}`;
 	};
 
 	if (!id)
@@ -82,7 +88,7 @@ export function Heading({
 	return (
 		<Component
 			id={id}
-			className={`group relative scroll-mt-28 ${className || ""}`}
+			className={`group relative scroll-mt-36 ${className || ""}`}
 			onClick={handleHeadingClick}
 			{...props}
 		>
@@ -90,8 +96,8 @@ export function Heading({
 				href={`#${id}`}
 				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
 					isActive
-						? "opacity-100 pointer-events-auto"
-						: "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto hover:opacity-100 hover:pointer-events-auto focus:opacity-100 focus:pointer-events-auto"
+						? "opacity-100"
+						: "opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100"
 				}`}
 				aria-label="Link to section"
 				tabIndex={0}
