@@ -71,7 +71,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					variant="outline"
 					size="lg"
 					className={cn(
-						"w-full text-lg font-bold shadow-[0_8px_16px] [--tw-shadow-color:rgba(255,150,0,0.6)] dark:[--tw-shadow-color:rgba(255,150,0,0.6)]",
+						"w-full text-lg font-bold shadow-[0_8px_16px_rgba(255,150,0,0.6)] dark:shadow-[0_8px_16px_rgba(255,150,0,0.6)]",
 						"bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
 						"border-2 border-yellow-200 dark:border-yellow-700",
 						"text-yellow-800 dark:text-yellow-200 hover:text-yellow-800 dark:hover:text-yellow-200",
@@ -107,7 +107,7 @@ export function StarUsButton({ className }: StarUsProps) {
 			{/* Desktop: Complex button with animations and effects */}
 			<div className="hidden sm:block relative">
 				{/* Shadow element that doesn't scale */}
-				<div className="absolute inset-0 rounded-lg shadow-[0_16px_20px] [--tw-shadow-color:rgba(255,150,0,0.6)] dark:[--tw-shadow-color:rgba(255,150,0,0.6)] pointer-events-none" />
+				<div className="absolute inset-0 rounded-lg shadow-[0_16px_20px_rgba(255,150,0,0.6)] dark:shadow-[0_16px_20px_rgba(255,150,0,0.6)] pointer-events-none" />
 
 				<Button
 					asChild
