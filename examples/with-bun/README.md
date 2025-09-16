@@ -90,4 +90,4 @@ With the development server running (if it isn't - just run `bun dev`), let's se
 
 - [ArkEnv docs](https://arkenv.js.org/docs)
 - [ArkType docs](https://arktype.io/)
-- [Bun docs](https://bun.sh)
+- [Bun docs](https://bun.com/docs)
