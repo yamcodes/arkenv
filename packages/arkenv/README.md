@@ -103,7 +103,7 @@ bun add arkenv arktype
 
 
 > [!TIP]
-> Improve your DX with syntax highlighting in [VS Code & Cursor](/docs/integrations/vscode) or [JetBrains IDEs](/docs/integrations/jetbrains).
+> Improve your DX with syntax highlighting in [VS Code & Cursor](https://arkenv.js.org/docs/integrations/vscode) or [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
 > 
 > ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
 
