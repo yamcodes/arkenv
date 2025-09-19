@@ -39,8 +39,7 @@ const env = arkenv({
   NODE_ENV: "'development' | 'production' | 'test'",
 });
 
-// Automatically validate and parse process.env
-// TypeScript knows the ✨exact✨ types!
+// Hover to see ✨exact✨ types
 const host = env.HOST;
 const port = env.PORT;
 const nodeEnv = env.NODE_ENV;
