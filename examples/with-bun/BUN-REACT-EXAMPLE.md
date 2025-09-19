@@ -30,7 +30,7 @@ This example demonstrates using ArkEnv in a Bun + React application with fronten
    export const env = arkenv(
      {
        API_URL: "string",
-       DEBUG: "boolean = false",
+       DEBUG: "'true' | 'false' = 'false'", // String literal for env vars
        APP_NAME: "'MyApp' | 'TestApp' = 'MyApp'",
      },
      {
@@ -57,7 +57,7 @@ This example demonstrates using ArkEnv in a Bun + React application with fronten
        <div>
          <h1>{env.APP_NAME}</h1>
          <p>API URL: {env.API_URL}</p>
-         {env.DEBUG && <p>Debug mode is enabled</p>}
+         {env.DEBUG === 'true' && <p>Debug mode is enabled</p>}
        </div>
      );
    }
