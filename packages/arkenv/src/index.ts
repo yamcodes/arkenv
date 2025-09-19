@@ -1,4 +1,4 @@
-export type { EnvSchema } from "./create-env";
+export type { CreateEnvOptions, EnvSchema } from "./create-env";
 
 import { createEnv } from "./create-env";
 

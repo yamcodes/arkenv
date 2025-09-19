@@ -1,7 +1,6 @@
 # ArkEnv Bun example
 
-This example shows how to use ArkEnv in a Bun application.
-
+This example shows how to use ArkEnv in a Bun application, including support for frontend environment variables with prefix filtering.
 
 ## What's inside?
 
@@ -9,7 +8,8 @@ The example demonstrates:
 - Setting up environment variables with ArkEnv
 - Using default values
 - Typesafe environment configuration
-- Pretty console output with [`util.style`](https://nodejs.org/api/util.html#utilstyletextformat-text-optionsNode.js)
+- **NEW**: Frontend environment variable support with prefix filtering (for Bun frontend builds)
+- Cross-platform compatibility (browser-safe builds)
 
 ## Getting started
 
@@ -24,18 +24,66 @@ curl -fsSL https://bun.sh/install | bash
 ### Quickstart
 
 1. #### Install dependencies
-    ```bash
-    bun install
-    ```
+   ```bash
+   bun install
+   ```
 
-2. #### Start the development server with hot reloading enabled
-    ```bash
-    bun dev
-    ```
-    :white_check_mark: You will see the following output:
-    ```bash
-    🚀 Server running at localhost:3000 in development mode
-    ```
+2. #### Copy environment file
+   ```bash
+   cp .env.example .env
+   ```
+
+3. #### Start the development server with hot reloading enabled
+   ```bash
+   bun dev
+   ```
+   :white_check_mark: You will see the following output:
+   ```bash
+   🚀 Server running at localhost:3000 in development mode
+   ```
+
+## Frontend Environment Variables
+
+For Bun frontend builds, environment variables need to be prefixed with `BUN_PUBLIC_` to be accessible in browser code. ArkEnv now supports this with prefix filtering:
+
+### Example usage:
+
+```typescript
+// frontend-example.ts
+import arkenv from "arkenv";
+
+const env = arkenv(
+  {
+    API_URL: "string",
+    PORT: "number.port", 
+    DEBUG: "boolean = false",
+  },
+  {
+    prefix: "BUN_PUBLIC_", // Only use variables with this prefix
+  },
+);
+
+// env.API_URL comes from BUN_PUBLIC_API_URL
+// env.PORT comes from BUN_PUBLIC_PORT  
+// env.DEBUG comes from BUN_PUBLIC_DEBUG (defaults to false if not set)
+```
+
+### Environment file setup:
+
+```bash
+# .env.frontend.example
+BUN_PUBLIC_API_URL=https://api.example.com
+BUN_PUBLIC_PORT=8080
+BUN_PUBLIC_DEBUG=true
+```
+
+### Building for frontend:
+
+```bash
+bun build frontend-example.ts --outdir ./dist
+```
+
+This will create a browser-compatible build that doesn't import Node.js-specific modules.
 
 ### Adding environment variables
 

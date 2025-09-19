@@ -1,4 +1,3 @@
-import { styleText } from "node:util";
 import arkenv from "arkenv";
 
 // Define our environment configuration
@@ -8,14 +7,9 @@ const env = arkenv({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 
-// Pretty print the configuration
+// Pretty print the configuration without using node:util for compatibility
 console.log(
-	`🚀 Server running at ${styleText(["blue", "bold"], env.HOST)}:${styleText(["green", "bold"], String(env.PORT))} in ${styleText(
-		"bold",
-		env.NODE_ENV === "production"
-			? styleText("red", env.NODE_ENV)
-			: styleText("blue", env.NODE_ENV),
-	)} mode`,
+	`🚀 Server running at ${env.HOST}:${env.PORT} in ${env.NODE_ENV} mode`,
 );
 
 // This is just an example - in a real app you would use these values
