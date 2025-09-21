@@ -115,11 +115,13 @@ export function Heading({
 						? "opacity-100"
 						: "opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100"
 				}`}
-				aria-label="Link to section"
-				tabIndex={0}
+				aria-label={`Link to section: ${id}`}
+				// Keep keyboard access on desktop; hide when inactive on mobile
+				tabIndex={isMobile && !isActive ? -1 : 0}
 				onClick={handleAnchorClick}
 			>
-				#
+				<span className="sr-only">Link to section: {id}</span>
+				<span aria-hidden="true">#</span>
 			</a>
 			{children}
 		</Component>
