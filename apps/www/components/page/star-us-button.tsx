@@ -132,7 +132,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					<a
 						href={
 							process.env.NEXT_PUBLIC_GITHUB_URL ??
-							"https://github.com/your-org/your-repo"
+							"https://github.com/yamcodes/arkenv"
 						}
 						target="_blank"
 						rel="noopener noreferrer"
@@ -171,7 +171,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					<a
 						href={
 							process.env.NEXT_PUBLIC_GITHUB_URL ??
-							"https://github.com/your-org/your-repo"
+							"https://github.com/yamcodes/arkenv"
 						}
 						target="_blank"
 						rel="noopener noreferrer"

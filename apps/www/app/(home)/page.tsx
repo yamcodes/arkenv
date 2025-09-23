@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
-import { SailButton, StackBlitzDemo, StarUsButton } from "~/components/page";
+import { SailButton, StarUsButton, TypeScriptSandbox } from "~/components/page";
 
 const bricolageGrotesque = Bricolage_Grotesque({
 	subsets: ["latin"],
@@ -43,7 +43,7 @@ export default function HomePage() {
 			</div>
 			<div className="mt-6 sm:mt-12 sm:px-8 max-w-5xl mx-auto w-full">
 				<h2 className="text-xl font-semibold mb-4">See ArkEnv in action 👇</h2>
-				<StackBlitzDemo />
+				<TypeScriptSandbox />
 			</div>
 		</main>
 	);
