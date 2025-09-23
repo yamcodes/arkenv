@@ -10,7 +10,7 @@ export function VideoDemo() {
 	return (
 		<div className="inline-block relative mb-4">
 			{/* Shadow element for glow effect */}
-			<div className="absolute inset-0 rounded-lg pointer-events-none shadow-[0_0_20px_rgba(96,165,250,0.6)] dark:shadow-[0_0_30px_rgba(96,165,250,0.6)]" />
+			<div className="absolute inset-0 rounded-lg pointer-events-none shadow-[0_0_20px_rgba(96,165,250,0.6)] dark:shadow-[0_0_100px_rgba(96,165,250,0.2)]" />
 
 			{/* Main video container */}
 			<div
