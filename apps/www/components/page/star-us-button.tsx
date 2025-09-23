@@ -6,6 +6,7 @@ import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils/cn";
+import { breakDownGithubUrl } from "~/lib/utils/github";
 
 const starUsButtonVariants = cva("text-lg font-bold", {
 	variants: {
@@ -67,12 +68,17 @@ type StarUsProps = {
 export function StarUsButton({ className }: StarUsProps) {
 	const [starCount, setStarCount] = useState<number | null>(null);
 
+	// Compute githubUrl once and extract owner/repo
+	const githubUrl =
+		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
+	const { owner, repo } = breakDownGithubUrl(githubUrl);
+
 	// Fetch star count from GitHub API
 	useEffect(() => {
 		const fetchStarCount = async () => {
 			try {
 				const response = await fetch(
-					"https://api.github.com/repos/yamcodes/arkenv",
+					`https://api.github.com/repos/${owner}/${repo}`,
 				);
 				if (response.ok) {
 					const data = await response.json();
@@ -84,7 +90,7 @@ export function StarUsButton({ className }: StarUsProps) {
 		};
 
 		fetchStarCount();
-	}, []);
+	}, [owner, repo]);
 
 	return (
 		<>
@@ -130,10 +136,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					className={cn(starUsButtonVariants({ variant: "mobile" }), className)}
 				>
 					<a
-						href={
-							process.env.NEXT_PUBLIC_GITHUB_URL ??
-							"https://github.com/your-org/your-repo"
-						}
+						href={`https://github.com/${owner}/${repo}`}
 						target="_blank"
 						rel="noopener noreferrer"
 					>
@@ -169,10 +172,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					)}
 				>
 					<a
-						href={
-							process.env.NEXT_PUBLIC_GITHUB_URL ??
-							"https://github.com/your-org/your-repo"
-						}
+						href={`https://github.com/${owner}/${repo}`}
 						target="_blank"
 						rel="noopener noreferrer"
 					>
