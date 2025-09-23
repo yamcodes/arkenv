@@ -1,6 +1,7 @@
 import * as Twoslash from "fumadocs-twoslash/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
+import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
@@ -51,6 +52,31 @@ export default async function Page(props: {
 								h4: (props) => <Heading {...props} as="h4" />,
 								h5: (props) => <Heading {...props} as="h5" />,
 								h6: (props) => <Heading {...props} as="h6" />,
+								img: (props) => {
+									// Check if the image filename matches pattern "*.retina-screenshot.*"
+									const isRetinaScreenshot =
+										(typeof props.src === "string" &&
+											(props.src as string).includes(".retina-screenshot.")) ||
+										(typeof props.src === "object" &&
+											"src" in props.src &&
+											(props.src.src as string).includes(
+												".retina-screenshot.",
+											));
+
+									return (
+										<ImageZoom
+											// biome-ignore lint/suspicious/noExplicitAny: See https://fumadocs.dev/docs/ui/components/image-zoom#usage
+											{...(props as any)}
+											style={{
+												...props.style,
+												maxWidth: isRetinaScreenshot
+													? "50% !important"
+													: "100%",
+												height: "auto",
+											}}
+										/>
+									);
+								},
 								pre: ({ ref: _ref, ...props }) => (
 									<CodeBlock {...props}>
 										<Pre>{props.children}</Pre>

@@ -119,7 +119,7 @@
 
   This enables syntax highlighting along with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark):
 
-  ![ArkType syntax highlighting in VS Code](https://arkenv.js.org/assets/dx.png)
+  ![ArkType syntax highlighting in VS Code](https://arkenv.js.org/assets/dx.retina-screenshot.png)
 
   Note that named imports still work:
 
