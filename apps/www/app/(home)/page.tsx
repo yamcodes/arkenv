@@ -8,9 +8,8 @@ const bricolageGrotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-	title: "ArkEnv: Typesafe environment variables powered by ArkType",
-	description:
-		"ArkEnv is a tool for managing environment variables in your project.",
+	title: "ArkEnv",
+	description: "Typesafe environment variables powered by ArkType ⛵️",
 };
 
 export default function HomePage() {
