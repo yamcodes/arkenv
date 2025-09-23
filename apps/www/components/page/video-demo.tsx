@@ -17,7 +17,7 @@ export function VideoDemo() {
 				type="button"
 				className="rounded-lg overflow-hidden border border-fd-border shadow-lg bg-black/5 dark:bg-black/20 cursor-pointer"
 				onClick={handleVideoClick}
-				aria-label="Play demo video"
+				aria-label="Open interactive demo in a new tab"
 			>
 				<video
 					autoPlay
