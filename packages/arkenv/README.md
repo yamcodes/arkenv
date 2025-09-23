@@ -14,6 +14,10 @@
 </p>
 <h3 align="center">Proud member of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
 
+<p align="center">
+  <img alt="ArkEnv Demo" src="https://arkenv.js.org/assets/demo.gif" />
+</p>
+
 <br/>
 <br/>
 <br/>
@@ -104,7 +108,7 @@ bun add arkenv arktype
 > [!TIP]
 > Improve your DX with syntax highlighting in [VS Code & Cursor](https://arkenv.js.org/docs/integrations/vscode) or [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
 > 
-> ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
+> ![ArkType syntax highlighting in VS Code](https://arkenv.js.org/assets/dx.png)
 
 ## Requirements
 

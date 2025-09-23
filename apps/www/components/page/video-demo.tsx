@@ -26,7 +26,7 @@ export function VideoDemo() {
 					playsInline
 					className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 				>
-					<source src="/arkenv-video.mov" type="video/quicktime" />
+					<source src="/assets/demo.mov" type="video/quicktime" />
 					Your browser does not support the video tag.
 				</video>
 			</button>
