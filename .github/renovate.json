@@ -35,20 +35,6 @@
 			"groupSlug": "github-actions"
 		},
 		{
-			"description": "Auto-merge non-major dependencies",
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"matchManagers": ["npm"],
-			"automerge": true,
-			"automergeType": "pr"
-		},
-		{
-			"description": "Auto-merge GitHub Actions minor/patch updates",
-			"matchManagers": ["github-actions"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"automerge": true,
-			"automergeType": "pr"
-		},
-		{
 			"description": "Require manual approval for major updates",
 			"matchUpdateTypes": ["major"],
 			"dependencyDashboardApproval": true
