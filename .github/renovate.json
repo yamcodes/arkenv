@@ -1,0 +1,98 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"config:recommended",
+		":dependencyDashboardApproval",
+		":semanticCommits",
+		"helpers:pinGitHubActionDigests"
+	],
+	"labels": ["dependencies"],
+	"prConcurrentLimit": 5,
+	"prHourlyLimit": 2,
+	"schedule": ["before 6am on Monday"],
+	"timezone": "UTC",
+	"rangeStrategy": "bump",
+	"recreateWhen": "never",
+	"vulnerabilityAlerts": {
+		"enabled": true,
+		"rangeStrategy": "bump",
+		"schedule": ["at any time"],
+		"prCreation": "immediate"
+	},
+	"packageRules": [
+		{
+			"description": "Group all non-major dependencies together",
+			"matchUpdateTypes": ["minor", "patch"],
+			"matchManagers": ["npm"],
+			"groupName": "all non-major dependencies",
+			"groupSlug": "all-minor-patch"
+		},
+		{
+			"description": "Group all major dependencies together",
+			"matchUpdateTypes": ["major"],
+			"matchManagers": ["npm"],
+			"groupName": "all major dependencies",
+			"groupSlug": "all-major"
+		},
+		{
+			"description": "Group GitHub Actions updates",
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"groupName": "GitHub Actions",
+			"groupSlug": "github-actions"
+		},
+		{
+			"description": "Auto-merge non-major dependencies",
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"matchManagers": ["npm"],
+			"automerge": true,
+			"automergeType": "pr"
+		},
+		{
+			"description": "Auto-merge GitHub Actions minor/patch updates",
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"automerge": true,
+			"automergeType": "pr"
+		},
+		{
+			"description": "Require manual approval for major updates",
+			"matchUpdateTypes": ["major"],
+			"dependencyDashboardApproval": true
+		},
+		{
+			"description": "Add monorepo package context to commit messages",
+			"matchFileNames": ["packages/arkenv/**"],
+			"semanticCommitScope": "arkenv"
+		},
+		{
+			"description": "Add vite-plugin package context to commit messages",
+			"matchFileNames": ["packages/vite-plugin/**"],
+			"semanticCommitScope": "vite-plugin"
+		},
+		{
+			"description": "Add www app context to commit messages",
+			"matchFileNames": ["apps/www/**"],
+			"semanticCommitScope": "www"
+		},
+		{
+			"description": "Add playground context to commit messages",
+			"matchFileNames": ["apps/playgrounds/**"],
+			"semanticCommitScope": "playground"
+		},
+		{
+			"description": "Add examples context to commit messages",
+			"matchFileNames": ["examples/**"],
+			"semanticCommitScope": "examples"
+		},
+		{
+			"description": "Add root workspace context to commit messages",
+			"matchFileNames": [
+				"package.json",
+				"pnpm-workspace.yaml",
+				"pnpm-lock.yaml"
+			],
+			"semanticCommitScope": "workspace"
+		}
+	]
+}
