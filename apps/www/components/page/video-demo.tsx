@@ -9,13 +9,10 @@ export function VideoDemo() {
 
 	return (
 		<div className="inline-block relative mb-4">
-			{/* Shadow element for glow effect */}
-			<div className="absolute inset-0 rounded-lg pointer-events-none shadow-[0_0_20px_rgba(96,165,250,0.6)] dark:shadow-[0_0_100px_rgba(96,165,250,0.2)]" />
-
 			{/* Main video container */}
 			<button
 				type="button"
-				className="rounded-lg overflow-hidden border border-fd-border shadow-lg bg-black/5 dark:bg-black/20 cursor-pointer"
+				className="relative rounded-lg overflow-hidden border border-fd-border shadow-lg bg-black/5 dark:bg-black/20 cursor-pointer m-0 p-0 shadow-[0_0_20px_rgba(96,165,250,0.6)] dark:shadow-[0_0_100px_rgba(96,165,250,0.2)]"
 				onClick={handleVideoClick}
 				aria-label="Open interactive demo in a new tab"
 			>
@@ -28,7 +25,10 @@ export function VideoDemo() {
 					poster="/assets/demo.png"
 					className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 				>
-					<source src="/assets/demo.mp4" type="video/mp4" />
+					<source
+						src="https://x9fkbqb4whr3w456.public.blob.vercel-storage.com/hero.mp4"
+						type="video/mp4"
+					/>
 					You need a browser that supports HTML5 video to view this video.
 				</video>
 			</button>
