@@ -14,6 +14,8 @@
 </p>
 <h3 align="center">Proud member of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
 
+<img alt="ArkEnv Demo" src="https://github.com/yamcodes/arkenv/raw/refs/heads/main/apps/www/public/arkenv-video.gif" />
+
 <br/>
 <br/>
 <br/>
