@@ -25,7 +25,10 @@ export function VideoDemo() {
 					poster="/assets/demo.png"
 					className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 				>
-					<source src="/assets/demo.mp4" type="video/mp4" />
+					<source
+						src="https://x9fkbqb4whr3w456.public.blob.vercel-storage.com/hero.mp4"
+						type="video/mp4"
+					/>
 					You need a browser that supports HTML5 video to view this video.
 				</video>
 			</button>
