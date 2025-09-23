@@ -9,8 +9,8 @@
 	"labels": ["dependencies"],
 	"prConcurrentLimit": 5,
 	"prHourlyLimit": 2,
-	"schedule": ["before 6am on Monday"],
-	"timezone": "UTC",
+	"schedule": ["before 11am on Friday"],
+	"timezone": "Asia/Almaty",
 	"rangeStrategy": "bump",
 	"recreateWhen": "never",
 	"vulnerabilityAlerts": {
@@ -26,13 +26,6 @@
 			"matchManagers": ["npm"],
 			"groupName": "all non-major dependencies",
 			"groupSlug": "all-minor-patch"
-		},
-		{
-			"description": "Group all major dependencies together",
-			"matchUpdateTypes": ["major"],
-			"matchManagers": ["npm"],
-			"groupName": "all major dependencies",
-			"groupSlug": "all-major"
 		},
 		{
 			"description": "Group GitHub Actions updates",
