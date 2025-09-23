@@ -3,7 +3,7 @@
 export function VideoDemo() {
 	const handleVideoClick = () => {
 		const stackblitzUrl =
-			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts&embed=1&theme=dark&view=editor&terminalHeight=4&hideExplorer=false&forceEmbedLayout=true&showSidebar=true&hideNavigation=true";
+			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts";
 		window.open(stackblitzUrl, "_blank", "noopener,noreferrer");
 	};
 
@@ -26,7 +26,6 @@ export function VideoDemo() {
 					className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 				>
 					<source src="/arkenv-video.mov" type="video/quicktime" />
-					<source src="/arkenv-video.mov" type="video/mp4" />
 					Your browser does not support the video tag.
 				</video>
 			</button>
