@@ -52,31 +52,7 @@ export default async function Page(props: {
 								h4: (props) => <Heading {...props} as="h4" />,
 								h5: (props) => <Heading {...props} as="h5" />,
 								h6: (props) => <Heading {...props} as="h6" />,
-								img: (props) => {
-									// Check if the image filename matches pattern "*.retina-screenshot.*"
-									const isRetinaScreenshot =
-										(typeof props.src === "string" &&
-											(props.src as string).includes(".retina-screenshot.")) ||
-										(typeof props.src === "object" &&
-											"src" in props.src &&
-											(props.src.src as string).includes(
-												".retina-screenshot.",
-											));
-
-									return (
-										<ImageZoom
-											// biome-ignore lint/suspicious/noExplicitAny: See https://fumadocs.dev/docs/ui/components/image-zoom#usage
-											{...(props as any)}
-											style={{
-												...props.style,
-												maxWidth: isRetinaScreenshot
-													? "50% !important"
-													: "100%",
-												height: "auto",
-											}}
-										/>
-									);
-								},
+								img: (props) => <ImageZoom {...(props as any)} quality={100} />,
 								pre: ({ ref: _ref, ...props }) => (
 									<CodeBlock {...props}>
 										<Pre>{props.children}</Pre>
