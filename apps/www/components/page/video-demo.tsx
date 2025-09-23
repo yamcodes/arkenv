@@ -24,6 +24,8 @@ export function VideoDemo() {
 					loop
 					muted
 					playsInline
+					width={958}
+					poster="/assets/demo.png"
 					className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 				>
 					<source src="/assets/demo.mov" type="video/quicktime" />
