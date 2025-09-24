@@ -42,12 +42,20 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [22, lts, latest]
+        node-version: [22, lts/*, latest]
     
     steps:
       - id: checkout
         name: Checkout
         uses: actions/checkout@v5
+ 
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -65,9 +73,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Caching for Turbo
-        uses: rharkor/caching-for-turbo@v1.8
 
       - name: Run build
         run: pnpm run build
