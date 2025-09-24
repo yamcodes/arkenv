@@ -7,7 +7,7 @@
 		"---[New]Integrations---",
 		"[Blocks][VS Code & Cursor](/docs/integrations/vscode)",
 		"[Blocks][JetBrains IDEs](/docs/integrations/jetbrains)",
-		"---Guides---",
-		"guides/environment-configuration"
+		"---How-to---",
+		"[Load environment variables](/docs/how-to/load-environment-variables)"
 	]
 }
