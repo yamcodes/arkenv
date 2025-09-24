@@ -1,5 +1,4 @@
 name: tests
-description: "Run build and unit tests on pull requests"
 
 on:
   pull_request:
@@ -16,6 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        node-version: [22, lts, latest]
       fail-fast: false
 
     steps:
@@ -39,6 +39,11 @@ jobs:
         run: pnpm test
   test-build:
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [22, lts, latest]
+    
     steps:
       - id: checkout
         name: Checkout
