@@ -45,6 +45,10 @@
 			"name": "  with-bun"
 		},
 		{
+			"path": "examples/with-bun-react",
+			"name": "  with-bun-react"
+		},
+		{
 			"path": "examples/with-vite-react-ts",
 			"name": "  with-vite-react-ts"
 		},
