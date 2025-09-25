@@ -4,12 +4,12 @@ on:
     branches:
       - main
     paths: 
-      - 'packages/*'
+      - 'packages/**'
   push:
     branches:
       - main
     paths: 
-      - 'packages/*'
+      - 'packages/**'
       - '.github/workflows/pkg-pr-new.yml'
     tags:
       - '!**'
