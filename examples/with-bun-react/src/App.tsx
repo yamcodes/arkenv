@@ -1,3 +1,4 @@
+import { EnvDisplay } from "@/components/env-display";
 import { Card, CardContent } from "@/components/ui/card";
 import { APITester } from "./APITester";
 import "./index.css";
@@ -34,6 +35,10 @@ export function App() {
 					<APITester />
 				</CardContent>
 			</Card>
+
+			<div className="mt-8">
+				<EnvDisplay />
+			</div>
 		</div>
 	);
 }
