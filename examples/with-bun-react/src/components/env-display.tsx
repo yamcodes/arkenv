@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { env } from "@/config/env";
 
 export function EnvDisplay() {
 	// Get the MY_VALUE environment variable
 	// In Bun, client-side env vars need to be prefixed with BUN_PUBLIC_
-	const myValue = process.env.BUN_PUBLIC_MY_VALUE || "Not set";
+	const myValue = env.BUN_PUBLIC_MY_VALUE || "Not set";
 
 	return (
 		<Card className="bg-card/50 backdrop-blur-sm border-muted">
