@@ -13,7 +13,7 @@ export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
  * @returns The validated environment variable schema
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
-export function createEnv<const T extends Record<string, string | undefined>>(
+export function createEnv<const T>(
 	def: EnvSchema<T>,
 	env: RuntimeEnvironment = process.env,
 ): distill.Out<type.infer<T, (typeof $)["t"]>> {
