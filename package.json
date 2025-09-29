@@ -8,6 +8,7 @@
 		"typecheck": "turbo run typecheck",
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
+		"e2e": "turbo run e2e --filter=www",
 		"release": "pnpm run build:packages && changeset publish",
 		"fix": "biome check --write .",
 		"check": "biome check",

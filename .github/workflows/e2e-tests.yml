@@ -1,0 +1,65 @@
+name: e2e-tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/www/**'
+      - '.github/workflows/e2e-tests.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/www/**'
+      - '.github/workflows/e2e-tests.yml'
+
+jobs:
+  e2e:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        
+      - name: Use Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 'lts/*'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Install Playwright Browsers
+        working-directory: apps/www
+        run: pnpm e2e:install
+
+      - name: Run E2E tests
+        working-directory: apps/www
+        run: pnpm e2e
+        env:
+          NEXT_PUBLIC_GITHUB_URL: https://github.com/yamcodes/arkenv
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/www/playwright-report/
+          retention-days: 30

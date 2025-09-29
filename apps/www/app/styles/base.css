@@ -24,6 +24,7 @@
 
 	/* Twoslash code block max height */
 	.fd-twoslash-popover .fd-scroll-container {
+		/* biome-ignore lint/complexity/noImportantStyles: Required to override fumadocs styles */
 		max-height: 160px !important;
 	}
 }
