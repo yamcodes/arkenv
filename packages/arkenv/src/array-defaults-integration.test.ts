@@ -30,11 +30,14 @@ describe("arkenv array defaults", () => {
 	});
 
 	it("should support arrays with defaults and environment overrides", () => {
-		const env = arkenv({
-			NUMBERS: type("number[]").default(() => [1, 2, 3]),
-		}, {
-			NUMBERS: [4, 5, 6], // Non-string environment for testing
-		});
+		const env = arkenv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+			},
+			{
+				NUMBERS: [4, 5, 6], // Non-string environment for testing
+			},
+		);
 
 		expect(env.NUMBERS).toEqual([4, 5, 6]);
 	});
