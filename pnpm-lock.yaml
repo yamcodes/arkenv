@@ -173,8 +173,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       require-in-the-middle:
-        specifier: ^7.5.2
-        version: 7.5.2
+        specifier: ^8.0.0
+        version: 8.0.0
       shiki:
         specifier: ^3.13.0
         version: 3.13.0
@@ -2498,6 +2498,10 @@ packages:
     resolution: {integrity: sha512-mcE+Wr2CAhHNWxXN/DdTI+n4gsPc5QpXpWnyCQWiQYIYZX+ZMJ8juXZgjRa/0/YPJo/NSsgW15/YgmI4nbysYw==}
     hasBin: true
 
+  baseline-browser-mapping@2.8.9:
+    resolution: {integrity: sha512-hY/u2lxLrbecMEWSB0IpGzGyDyeoMFQhCvZd2jGFSE5I17Fh01sYUBPCJtkWERw7zrac9+cIghxm/ytJa2X8iA==}
+    hasBin: true
+
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
@@ -2528,6 +2532,11 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
+  browserslist@4.26.2:
+    resolution: {integrity: sha512-ECFzp6uFOSB+dcZ5BK/IBaGWssbSYBHvuMeMt3MMFyhI0Z8SqGgEkBLARgpRH3hutIgPVsALcMwbDrJqPxQ65A==}
+    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
+    hasBin: true
+
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
@@ -2547,6 +2556,9 @@ packages:
 
   caniuse-lite@1.0.30001741:
     resolution: {integrity: sha512-QGUGitqsc8ARjLdgAfxETDhRbJ0REsP6O3I96TAth/mVjh2cYzN2u+3AzPP3aVSm2FehEItaJw1xd+IGBXWeSw==}
+
+  caniuse-lite@1.0.30001745:
+    resolution: {integrity: sha512-ywt6i8FzvdgrrrGbr1jZVObnVv6adj+0if2/omv9cmR2oiZs30zL4DIyaptKcbOrBdOIc74QTMoJvSE2QHh5UQ==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -2757,6 +2769,9 @@ packages:
 
   electron-to-chromium@1.5.218:
     resolution: {integrity: sha512-uwwdN0TUHs8u6iRgN8vKeWZMRll4gBkz+QMqdS7DDe49uiK68/UX92lFb61oiFPrpYZNeZIqa4bA7O6Aiasnzg==}
+
+  electron-to-chromium@1.5.227:
+    resolution: {integrity: sha512-ITxuoPfJu3lsNWUi2lBM2PaBPYgH3uqmxut5vmBxgYvyI4AlJ6P3Cai1O76mOrkJCBzq0IxWg/NtqOrpu/0gKA==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -4123,6 +4138,10 @@ packages:
   require-in-the-middle@7.5.2:
     resolution: {integrity: sha512-gAZ+kLqBdHarXB64XpAe2VCjB7rIRv+mU8tfRWziHRJ5umKsIHN2tLLv6EtMw7WCdP19S0ERVMldNvxYCHnhSQ==}
     engines: {node: '>=8.6.0'}
+
+  require-in-the-middle@8.0.0:
+    resolution: {integrity: sha512-9s0pnM5tH8G4dSI3pms2GboYOs25LwOGnRMxN/Hx3TYT1K0rh6OjaWf4dI0DAQnMyaEXWoGVnSTPQasqwzTTAA==}
+    engines: {node: '>=9.3.0 || >=8.10.0 <9.0.0'}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -6972,7 +6991,7 @@ snapshots:
 
   '@typescript/vfs@1.6.1(typescript@5.9.2)':
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
       typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
@@ -7214,6 +7233,8 @@ snapshots:
 
   baseline-browser-mapping@2.8.3: {}
 
+  baseline-browser-mapping@2.8.9: {}
+
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
@@ -7249,6 +7270,14 @@ snapshots:
       node-releases: 2.0.21
       update-browserslist-db: 1.1.3(browserslist@4.26.0)
 
+  browserslist@4.26.2:
+    dependencies:
+      baseline-browser-mapping: 2.8.9
+      caniuse-lite: 1.0.30001745
+      electron-to-chromium: 1.5.227
+      node-releases: 2.0.21
+      update-browserslist-db: 1.1.3(browserslist@4.26.2)
+
   buffer-from@1.1.2: {}
 
   bundle-require@5.1.0(esbuild@0.25.9):
@@ -7261,6 +7290,8 @@ snapshots:
   callsites@3.1.0: {}
 
   caniuse-lite@1.0.30001741: {}
+
+  caniuse-lite@1.0.30001745: {}
 
   ccount@2.0.1: {}
 
@@ -7443,6 +7474,8 @@ snapshots:
   eastasianwidth@0.2.0: {}
 
   electron-to-chromium@1.5.218: {}
+
+  electron-to-chromium@1.5.227: {}
 
   emoji-regex@8.0.0: {}
 
@@ -9198,9 +9231,16 @@ snapshots:
 
   require-in-the-middle@7.5.2:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
       module-details-from-path: 1.0.4
       resolve: 1.22.8
+    transitivePeerDependencies:
+      - supports-color
+
+  require-in-the-middle@8.0.0:
+    dependencies:
+      debug: 4.4.3
+      module-details-from-path: 1.0.4
     transitivePeerDependencies:
       - supports-color
 
@@ -9741,6 +9781,12 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
+  update-browserslist-db@1.1.3(browserslist@4.26.2):
+    dependencies:
+      browserslist: 4.26.2
+      escalade: 3.2.0
+      picocolors: 1.1.1
+
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
@@ -9904,7 +9950,7 @@ snapshots:
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.15.0
-      browserslist: 4.26.0
+      browserslist: 4.26.2
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.18.3
       es-module-lexer: 1.7.0
