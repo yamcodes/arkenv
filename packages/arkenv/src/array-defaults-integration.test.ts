@@ -12,11 +12,17 @@ describe("arkenv array defaults", () => {
 	});
 
 	it("should work with complex array defaults", () => {
-		const env = arkenv({
-			ALLOWED_HOSTS: type("string[]").default(() => ["localhost", "127.0.0.1"]),
-			FEATURE_FLAGS: type("string[]").default(() => []),
-			PORTS: type("number[]").default(() => [3000, 8080]),
-		}, {});
+		const env = arkenv(
+			{
+				ALLOWED_HOSTS: type("string[]").default(() => [
+					"localhost",
+					"127.0.0.1",
+				]),
+				FEATURE_FLAGS: type("string[]").default(() => []),
+				PORTS: type("number[]").default(() => [3000, 8080]),
+			},
+			{},
+		);
 
 		expect(env.ALLOWED_HOSTS).toEqual(["localhost", "127.0.0.1"]);
 		expect(env.FEATURE_FLAGS).toEqual([]);
