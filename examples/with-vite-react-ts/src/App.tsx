@@ -29,7 +29,7 @@ function App() {
 				<p>Test Variable: {import.meta.env.VITE_TEST}</p>
 				<p>API URL: {import.meta.env.VITE_API_URL}</p>
 				<p>Port: {import.meta.env.VITE_PORT}</p>
-				<p>Debug Mode: {import.meta.env.VITE_DEBUG ? 'enabled' : 'disabled'}</p>
+				<p>Debug Mode: {import.meta.env.VITE_DEBUG ? "enabled" : "disabled"}</p>
 				<p>Environment: {import.meta.env.VITE_NODE_ENV}</p>
 			</div>
 			<p className="read-the-docs">

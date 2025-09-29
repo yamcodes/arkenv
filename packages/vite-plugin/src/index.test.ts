@@ -128,8 +128,11 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should have configResolved hook for type generation", () => {
-		const pluginInstance = arkenvPlugin({ VITE_TEST: "string", VITE_API_URL: "string" });
-		
+		const pluginInstance = arkenvPlugin({
+			VITE_TEST: "string",
+			VITE_API_URL: "string",
+		});
+
 		// Verify that the plugin has a configResolved hook
 		expect(typeof pluginInstance.configResolved).toBe("function");
 	});
