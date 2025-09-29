@@ -7,5 +7,10 @@ export default defineConfig({
 		alias: {
 			"~": resolve(__dirname, "."),
 		},
+		exclude: [
+			"**/node_modules/**",
+			"**/dist/**",
+			"**/e2e/**", // Exclude Playwright E2E tests
+		],
 	},
 });

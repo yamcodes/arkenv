@@ -19,6 +19,11 @@
 		},
 		"typecheck": {
 			"inputs": ["*.ts", "*.tsx"]
+		},
+		"e2e": {
+			"dependsOn": ["^build"],
+			"cache": false,
+			"inputs": ["e2e/**/*.ts", "playwright.config.ts"]
 		}
 	}
 }

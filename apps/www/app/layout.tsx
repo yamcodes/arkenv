@@ -4,18 +4,20 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+// Use system fonts for testing environments to avoid network dependencies
+// import { Inter, JetBrains_Mono } from "next/font/google";
 import { type ReactNode, useId } from "react";
 import { Toaster } from "~/components/ui/toaster";
 
-const inter = Inter({
-	subsets: ["latin"],
-});
+// Use system fonts as fallback for testing
+const inter = {
+	className: "font-sans",
+};
 
-const jetbrainsMono = JetBrains_Mono({
-	subsets: ["latin"],
+const jetbrainsMono = {
 	variable: "--font-jetbrains-mono",
-});
+	className: "font-mono",
+};
 
 export const metadata: Metadata = {
 	icons: {

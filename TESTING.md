@@ -22,10 +22,16 @@ This approach ensures the library works in real scenarios while keeping examples
 - Validate that the plugin works with real Vite projects
 - Ensure environment variable injection works correctly
 
+### End-to-End Tests (`apps/www/e2e/*.spec.ts`)
+- Test the complete ArkEnv website functionality
+- Validate user interactions and page navigation
+- Test responsive design and accessibility
+- Powered by Playwright for cross-browser testing
+
 ## Running Tests
 
 ```bash
-# Run all tests
+# Run all unit and integration tests
 pnpm test -- --run
 
 # Run only unit tests
@@ -33,6 +39,15 @@ pnpm test --project arkenv -- --run
 
 # Run only vite plugin tests
 pnpm test --project vite-plugin -- --run
+
+# Run end-to-end tests for the website
+pnpm e2e
+
+# Run E2E tests with visible browser
+cd apps/www && pnpm e2e:headed
+
+# Run E2E tests with Playwright UI
+cd apps/www && pnpm e2e:ui
 ```
 
 ## Test Coverage
@@ -48,6 +63,13 @@ pnpm test --project vite-plugin -- --run
 - ✅ Environment variable loading and injection
 - ✅ Real project build testing using the example as a fixture
 - ✅ Error handling for missing environment variables
+
+### Website (`apps/www`)
+- ✅ Homepage functionality and content
+- ✅ Documentation navigation and search
+- ✅ Responsive design across devices
+- ✅ Accessibility and error handling
+- ✅ Banner and external link functionality
 
 ## Benefits of This Approach
 
@@ -69,6 +91,7 @@ Examples are kept clean and focused on demonstrating usage:
 The CI pipeline runs:
 - Unit tests for core functionality
 - Integration tests for the vite plugin using real examples
+- End-to-end tests for the website using Playwright
 - Ensures no regressions in real-world usage scenarios
 
 This approach provides comprehensive test coverage while maintaining clean, focused examples.
