@@ -86,10 +86,13 @@ describe("env", () => {
 	});
 
 	it("should support array types with default values", () => {
-		const env = createEnv({
-			NUMBERS: type("number[]").default(() => [1, 2, 3]),
-			STRINGS: type("string[]").default(() => ["a", "b"]),
-		}, {});
+		const env = createEnv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+				STRINGS: type("string[]").default(() => ["a", "b"]),
+			},
+			{},
+		);
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
 		expect(env.STRINGS).toEqual(["a", "b"]);
@@ -97,9 +100,12 @@ describe("env", () => {
 
 	it("should support array types with defaults when no environment value provided", () => {
 		// Test default value usage when environment variable is not set
-		const env = createEnv({
-			NUMBERS: type("number[]").default(() => [1, 2, 3]),
-		}, {});
+		const env = createEnv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+			},
+			{},
+		);
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
 	});
