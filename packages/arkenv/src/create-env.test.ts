@@ -1,6 +1,6 @@
-import { styleText } from "node:util";
 import { describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
+import { styleText } from "./style";
 import { indent } from "./utils";
 
 /**
@@ -82,5 +82,91 @@ describe("env", () => {
 		);
 
 		expect(TEST_STRING).toBe("hello");
+	});
+
+	it("should validate against a custom environment using options interface", () => {
+		const env = {
+			TEST_STRING: "hello",
+		};
+
+		const { TEST_STRING } = createEnv(
+			{
+				TEST_STRING: "string",
+			},
+			{ env },
+		);
+
+		expect(TEST_STRING).toBe("hello");
+	});
+
+	it("should filter environment variables by prefix", () => {
+		const env = {
+			BUN_PUBLIC_API_URL: "https://api.example.com",
+			BUN_PUBLIC_PORT: "3000",
+			PRIVATE_KEY: "secret", // Should be filtered out
+		};
+
+		const result = createEnv(
+			{
+				API_URL: "string",
+				PORT: "string", // Changed to string since env vars are always strings
+			},
+			{ env, prefix: "BUN_PUBLIC_" },
+		);
+
+		expect(result.API_URL).toBe("https://api.example.com");
+		expect(result.PORT).toBe("3000");
+	});
+
+	it("should filter environment variables by prefix with number parsing", () => {
+		const env = {
+			BUN_PUBLIC_API_URL: "https://api.example.com",
+			BUN_PUBLIC_PORT: "3000",
+			PRIVATE_KEY: "secret", // Should be filtered out
+		};
+
+		const result = createEnv(
+			{
+				API_URL: "string",
+				PORT: "number.port", // Using number.port type
+			},
+			{ env, prefix: "BUN_PUBLIC_" },
+		);
+
+		expect(result.API_URL).toBe("https://api.example.com");
+		expect(result.PORT).toBe(3000);
+	});
+
+	it("should handle empty prefix gracefully", () => {
+		const env = {
+			TEST_STRING: "hello",
+		};
+
+		const { TEST_STRING } = createEnv(
+			{
+				TEST_STRING: "string",
+			},
+			{ env, prefix: "" },
+		);
+
+		expect(TEST_STRING).toBe("hello");
+	});
+
+	it("should ignore variables that don't match prefix", () => {
+		const env = {
+			BUN_PUBLIC_API_URL: "https://api.example.com",
+			VITE_PORT: "3000", // Different prefix
+			NO_PREFIX: "value", // No prefix
+		};
+
+		expect(() =>
+			createEnv(
+				{
+					API_URL: "string",
+					PORT: "string", // This should fail because only BUN_PUBLIC_API_URL exists, no PORT after filtering
+				},
+				{ env, prefix: "BUN_PUBLIC_" },
+			),
+		).toThrow("PORT");
 	});
 });

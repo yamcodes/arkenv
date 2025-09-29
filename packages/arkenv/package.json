@@ -7,9 +7,16 @@
 	"types": "./dist/index.d.ts",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
 	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./web": {
+			"types": "./dist/web.d.ts",
+			"import": "./dist/web.js",
+			"require": "./dist/web.cjs"
+		}
 	},
 	"scripts": {
 		"build": "rimraf dist && tsup",
