@@ -7,6 +7,11 @@ type RuntimeEnvironment = Record<string, string | undefined>;
 export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
 
 /**
+ * TODO: If possible, find a better type than "const T extends Record<string, unknown>",
+ * and be as close as possible to the type accepted by ArkType's `type`.
+ */
+
+/**
  * Create an environment variables object from a schema and an environment
  * @param def - The environment variable schema
  * @param env - The environment variables to validate, defaults to `process.env`
