@@ -40,9 +40,9 @@
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
 		"@ark/schema": "^0.49.0",
-		"@types/node": "24.5.2",
+		"@types/node": "24.6.2",
 		"tsup": "^8.5.0",
-		"typescript": "^5.9.2"
+		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"
