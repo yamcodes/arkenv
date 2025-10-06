@@ -1,5 +1,5 @@
 ---
-"arkenv": minor
+"arkenv": patch
 ---
 
 #### Support array defaults using type().default() syntax
