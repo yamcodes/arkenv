@@ -3,7 +3,8 @@ title: What is ArkEnv?
 icon: Album
 ---
 
-import { BookOpen } from "lucide-react";
+import { BookOpen, Github, Rocket } from "lucide-react";
+import { SiGithub as GitHub } from "@icons-pack/react-simple-icons";
 
 <include cwd>../../packages/arkenv/README.md#introduction</include>
 <include cwd>../../packages/arkenv/README.md#features</include>
@@ -11,7 +12,7 @@ import { BookOpen } from "lucide-react";
 ## Next steps
 
 <Cards>
-  <Card title="Quickstart" href="/docs/quickstart" description="Quickly get started with ArkEnv in your project" />
-  <Card title="ArkEnv on GitHub" href="https://github.com/yamcodes/arkenv" description="View the source code and contribute to the project" />
+  <Card icon={<Rocket />} title="Quickstart" href="/docs/quickstart" description="Quickly get started with ArkEnv in your project" />
+  <Card icon={<GitHub />} title="ArkEnv on GitHub" href="https://github.com/yamcodes/arkenv" description="View the source code and contribute to the project" />
   <Card icon={<BookOpen />} title="ArkType Documentation" href="https://arktype.io/docs" description="Learn more about the underlying type system" className="bg-blue-900" />
 </Cards>
