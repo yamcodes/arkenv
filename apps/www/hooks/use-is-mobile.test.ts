@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { useIsMobile } from "./use-is-mobile";
 
 // Mock window.matchMedia
