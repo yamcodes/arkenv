@@ -2,6 +2,18 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-		projects: ["packages/arkenv", "packages/vite-plugin", "apps/www"],
+		projects: ["packages/*", "apps/*"],
+		coverage: {
+			provider: "v8",
+			reporter: ["text", "json", "html"],
+			exclude: [
+				"node_modules/",
+				".next/",
+				"**/*.test.*",
+				"**/*.config.*",
+				"**/coverage/**",
+				"**/dist/**",
+			],
+		},
 	},
 });
