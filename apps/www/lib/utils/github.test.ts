@@ -56,7 +56,7 @@ describe("github utilities", () => {
 		});
 
 		it("should throw error when no URL is configured", () => {
-			vi.stubEnv("NEXT_PUBLIC_GITHUB_URL", undefined);
+			vi.unstubAllEnvs();
 
 			expect(() => breakDownGithubUrl()).toThrow(
 				"NEXT_PUBLIC_GITHUB_URL is not configured",
@@ -143,7 +143,7 @@ describe("github utilities", () => {
 		});
 
 		it("should throw error when no URL is configured", () => {
-			vi.stubEnv("NEXT_PUBLIC_GITHUB_URL", undefined);
+			vi.unstubAllEnvs();
 
 			expect(() => getLinkTitleAndHref("test.md")).toThrow(
 				"NEXT_PUBLIC_GITHUB_URL is not configured",
