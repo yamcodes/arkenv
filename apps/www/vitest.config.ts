@@ -1,5 +1,5 @@
 import path from "node:path";
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
 import { defineProject } from "vitest/config";
 
 export default defineProject({
