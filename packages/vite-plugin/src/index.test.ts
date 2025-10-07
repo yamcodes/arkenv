@@ -12,9 +12,6 @@ vi.mock("arkenv", () => ({
 
 import arkenvPlugin from "./index.js";
 
-// Capture snapshot of process.env at module level
-const ORIGINAL_ENV = { ...process.env };
-
 const fixturesDir = join(__dirname, "__fixtures__");
 
 // Get the mocked functions
@@ -28,14 +25,14 @@ for (const name of readdirSync(fixturesDir)) {
 
 	describe(`Fixture: ${name}`, () => {
 		beforeEach(() => {
-			// Clean environment start and mock cleanup
-			process.env = { ...ORIGINAL_ENV };
+			// Clear environment variables and mock cleanup
+			vi.unstubAllEnvs();
 			mockCreateEnv.mockClear();
 		});
 
 		afterEach(() => {
 			// Complete cleanup: restore environment and reset mocks
-			process.env = { ...ORIGINAL_ENV };
+			vi.unstubAllEnvs();
 			mockCreateEnv.mockReset();
 		});
 
@@ -44,7 +41,9 @@ for (const name of readdirSync(fixturesDir)) {
 
 			// Set up environment variables from the fixture
 			if (config.envVars) {
-				Object.assign(process.env, config.envVars);
+				for (const [key, value] of Object.entries(config.envVars)) {
+					vi.stubEnv(key, value);
+				}
 			}
 
 			await expect(
@@ -77,12 +76,12 @@ for (const name of readdirSync(fixturesDir)) {
 // Unit tests for plugin functionality
 describe("Plugin Unit Tests", () => {
 	beforeEach(() => {
-		process.env = { ...ORIGINAL_ENV };
+		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
 	});
 
 	afterEach(() => {
-		process.env = { ...ORIGINAL_ENV };
+		vi.unstubAllEnvs();
 		mockCreateEnv.mockReset();
 	});
 

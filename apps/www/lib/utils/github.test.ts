@@ -1,16 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { breakDownGithubUrl, getLinkTitleAndHref } from "./github";
 
 describe("github utilities", () => {
-	const originalEnv = process.env;
-
 	beforeEach(() => {
 		vi.resetModules();
-		process.env = { ...originalEnv };
-	});
-
-	afterEach(() => {
-		process.env = originalEnv;
 	});
 
 	describe("breakDownGithubUrl", () => {
@@ -35,7 +28,7 @@ describe("github utilities", () => {
 		});
 
 		it("should use environment variable when no URL provided", () => {
-			process.env.NEXT_PUBLIC_GITHUB_URL = "https://github.com/example/repo";
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_URL", "https://github.com/example/repo");
 
 			const result = breakDownGithubUrl();
 
@@ -47,8 +40,11 @@ describe("github utilities", () => {
 		});
 
 		it("should use custom branch from environment variable", () => {
-			process.env.NEXT_PUBLIC_GITHUB_URL = "https://github.com/yamcodes/arkenv";
-			process.env.NEXT_PUBLIC_GITHUB_BRANCH = "develop";
+			vi.stubEnv(
+				"NEXT_PUBLIC_GITHUB_URL",
+				"https://github.com/yamcodes/arkenv",
+			);
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "develop");
 
 			const result = breakDownGithubUrl();
 
@@ -60,7 +56,7 @@ describe("github utilities", () => {
 		});
 
 		it("should throw error when no URL is configured", () => {
-			delete process.env.NEXT_PUBLIC_GITHUB_URL;
+			vi.unstubAllEnvs();
 
 			expect(() => breakDownGithubUrl()).toThrow(
 				"NEXT_PUBLIC_GITHUB_URL is not configured",
@@ -121,7 +117,7 @@ describe("github utilities", () => {
 		});
 
 		it("should use environment variable when no URL provided", () => {
-			process.env.NEXT_PUBLIC_GITHUB_URL = "https://github.com/example/repo";
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_URL", "https://github.com/example/repo");
 
 			const result = getLinkTitleAndHref("test.md");
 
@@ -132,8 +128,11 @@ describe("github utilities", () => {
 		});
 
 		it("should use custom branch from environment variable", () => {
-			process.env.NEXT_PUBLIC_GITHUB_URL = "https://github.com/yamcodes/arkenv";
-			process.env.NEXT_PUBLIC_GITHUB_BRANCH = "develop";
+			vi.stubEnv(
+				"NEXT_PUBLIC_GITHUB_URL",
+				"https://github.com/yamcodes/arkenv",
+			);
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "develop");
 
 			const result = getLinkTitleAndHref("package.json");
 
@@ -144,7 +143,7 @@ describe("github utilities", () => {
 		});
 
 		it("should throw error when no URL is configured", () => {
-			delete process.env.NEXT_PUBLIC_GITHUB_URL;
+			vi.unstubAllEnvs();
 
 			expect(() => getLinkTitleAndHref("test.md")).toThrow(
 				"NEXT_PUBLIC_GITHUB_URL is not configured",

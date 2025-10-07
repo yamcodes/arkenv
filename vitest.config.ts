@@ -28,5 +28,6 @@ export default defineConfig({
 				"**/public/**",
 			],
 		},
+		unstubEnvs: true,
 	},
 });

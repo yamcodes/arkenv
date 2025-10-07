@@ -14,5 +14,6 @@ export default defineProject({
 		environment: "jsdom",
 		setupFiles: ["./tests/setup.ts"],
 		restoreMocks: true,
+		unstubEnvs: true,
 	},
 });
