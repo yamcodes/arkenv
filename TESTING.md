@@ -1,14 +1,38 @@
 # Testing Strategy
 
-This project uses a focused testing approach that combines unit tests with integration tests that use examples as test fixtures.
+This project uses focused testing that combines unit tests with integration tests using examples as fixtures.
 
 ## Testing Philosophy
 
-**"Examples as Test Fixtures"** - Our examples serve dual purposes:
+**"Examples as Test Fixtures"** - Examples serve dual purposes:
 1. **Documentation** - Show real-world usage patterns
 2. **Test Fixtures** - Provide real projects to test against
 
-This approach ensures the library works in real scenarios while keeping examples clean and focused.
+This ensures the library works in real scenarios while keeping examples clean.
+
+## Component Testing Philosophy
+
+**Test behavior, not aesthetics.** Focus on what users can do and what the component guarantees through its API.
+
+### What We Test
+- **Public API** - props, events, and component contract
+- **User behavior** - clicks, typing, focus, keyboard, ARIA
+- **State transitions** - loading, success, error, disabled states
+- **Accessibility** - focus order, keyboard activation, aria attributes
+- **Side effects** - UI changes that affect user experience
+
+### What We Don't Test
+- Pure styling or CSS classes
+- Library internals (Radix/shadcn/MUI)
+- Implementation details (hooks, setState, private variables)
+- Visual variants (use Storybook instead)
+
+### Testing Rules
+- Use Testing Library + user-event for real user simulation
+- Query by role, name, label, and text (accessibility first)
+- Mock at component boundaries (network, time, context)
+- Keep tests fast, deterministic, and parallelizable
+- Co-locate tests: `Component.tsx` next to `Component.test.tsx`
 
 ## Test Structure
 
@@ -49,14 +73,6 @@ pnpm test --project vite-plugin -- --run
 - ✅ Real project build testing using the example as a fixture
 - ✅ Error handling for missing environment variables
 
-## Benefits of This Approach
-
-1. **Clean Separation** - Examples remain pure examples, not test files
-2. **Real-World Validation** - Plugin tests use actual Vite projects
-3. **Low Maintenance** - Examples don't need test maintenance
-4. **Focused Testing** - Each package tests its own functionality
-5. **Integration Coverage** - Plugin tests catch real-world issues
-
 ## Examples
 
 Examples are kept clean and focused on demonstrating usage:
@@ -70,5 +86,3 @@ The CI pipeline runs:
 - Unit tests for core functionality
 - Integration tests for the vite plugin using real examples
 - Ensures no regressions in real-world usage scenarios
-
-This approach provides comprehensive test coverage while maintaining clean, focused examples.

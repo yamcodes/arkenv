@@ -11,14 +11,14 @@
 		"fix": "pnpm -w run fix"
 	},
 	"dependencies": {
+		"@arkenv/vite-plugin": "workspace:*",
 		"react": "^19.2.0",
-		"react-dom": "^19.2.0",
-		"@arkenv/vite-plugin": "workspace:*"
+		"react-dom": "^19.2.0"
 	},
 	"devDependencies": {
 		"@types/react": "^19.2.0",
 		"@types/react-dom": "^19.2.0",
-		"@vitejs/plugin-react": "^5.0.4",
+		"@vitejs/plugin-react-swc": "^4.1.0",
 		"globals": "^16.3.0",
 		"typescript": "~5.9.3",
 		"vite": "^7.1.9"

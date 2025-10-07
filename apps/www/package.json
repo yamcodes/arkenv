@@ -8,6 +8,9 @@
 		"start": "next start",
 		"postinstall": "fumadocs-mdx",
 		"clean": "rimraf node_modules .next .source",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest --coverage",
 		"fix": "pnpm -w run fix"
 	},
 	"dependencies": {
@@ -42,14 +45,24 @@
 		"twoslash": "^0.3.4"
 	},
 	"devDependencies": {
+		"@swc/plugin-styled-jsx": "^9.1.0",
 		"@tailwindcss/postcss": "^4.1.14",
+		"@testing-library/dom": "^10.4.1",
+		"@testing-library/jest-dom": "^6.7.0",
+		"@testing-library/react": "^16.2.0",
+		"@testing-library/user-event": "^14.5.2",
 		"@types/mdx": "^2.0.13",
 		"@types/node": "24.6.2",
 		"@types/react": "^19.2.0",
 		"@types/react-dom": "^19.2.0",
+		"@types/styled-jsx": "^3.4.4",
+		"@vitejs/plugin-react-swc": "^4.1.0",
+		"jsdom": "^26.0.1",
 		"postcss": "^8.5.6",
+		"styled-jsx": "^5.1.7",
 		"tailwindcss": "^4.1.14",
 		"typescript": "^5.9.3",
+		"vite-tsconfig-paths": "^5.1.4",
 		"vitest": "^3.2.4"
 	}
 }
