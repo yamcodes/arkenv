@@ -1,5 +1,90 @@
 # @arkenv/vite-plugin
 
+## 0.0.12
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c)
+
+</small>
+
+- `arkenv@0.7.2`
+
+</details>
+
+## 0.0.11
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82)
+
+</small>
+
+- `arkenv@0.7.1`
+
+</details>
+
+## 0.0.10
+
+### Patch Changes
+
+- #### Fix types _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix types in the vite plugin to correctly include all ArkType keywords as well as custom ArkEnv keywords like `string.host` and `number.port`.
+
+- #### Fix default export autocomplete for better developer experience _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
+
+  The default export now properly aliases as `arkenv` instead of being anonymous, providing better autocomplete when importing.
+
+  For example, in VS Code (and other IDEs that support autocomplete), when writing the following code:
+
+  ```ts
+  import { defineConfig } from "vite";
+
+  // https://vite.dev/config/
+  export default defineConfig({
+    plugins: [
+      arke, // Your cursor is here
+    ],
+  });
+  ```
+
+  Your IDE will now show completion for `arkenv`, resulting in:
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin";
+  import { defineConfig } from "vite";
+
+  // https://vite.dev/config/
+  export default defineConfig({
+    plugins: [
+      arkenv(), // Your cursor is here
+    ],
+  });
+  ```
+
+  This change maintains full backward compatibility - all existing imports continue to work unchanged.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`2ec4daa`](https://github.com/yamcodes/arkenv/commit/2ec4daae714f6fde09e75d9fae417015111ee007) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [`e6eca4f`](https://github.com/yamcodes/arkenv/commit/e6eca4f34eeed2bc2249c3a5a2fced9880bee081)
+
+</small>
+
+- `arkenv@0.7.0`
+
+</details>
+
 ## 0.0.9
 
 ### Patch Changes

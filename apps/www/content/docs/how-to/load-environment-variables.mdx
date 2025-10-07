@@ -1,11 +1,11 @@
 ---
-title: Loading environment variables
-description: Learn how to manage environment variables across different environments and deployment scenarios
+title: How to load environment variables
+description: Learn environment variables management in different environments and deployment scenarios.
 ---
 
-## Local Development
+## Local development
 
-### Using `.env` Files
+### Using `.env` files
 
 The most common way to manage environment variables during development is using `.env` files:
 
@@ -17,9 +17,9 @@ API_KEY=your-secret-key
 LOG_LEVEL=debug
 ```
 
-### Best Practices for `.env` Files
+### Best practices for `.env` files
 
-1. **Document Required Variables**
+1. **Document required variables**
    Create a `.env.example` file to document required variables:
    ```dotenv title=".env.example"
    DATABASE_HOST=localhost
@@ -29,7 +29,7 @@ LOG_LEVEL=debug
    LOG_LEVEL=info
    ```
 
-2. **Gitignore Configuration**
+2. **Gitignore configuration**
    Add these patterns to your `.gitignore`:
    ```dotenv title=".gitignore"
    .env
@@ -37,7 +37,7 @@ LOG_LEVEL=debug
    !.env.example
    ```
 
-3. **Environment-Specific Files**
+3. **Environment-specific files**
    Use different files for different environments:
    - `.env.development` - Development settings
    - `.env.test` - Test environment settings
@@ -56,7 +56,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 ```
 
-### Framework-Specific Solutions
+### Framework-specific solutions
 
 Many frameworks have built-in support for environment variables:
 
@@ -92,7 +92,7 @@ import { ConfigModule } from '@nestjs/config';
 })
 ```
 
-### Runtime Arguments
+### Runtime arguments
 
 You can also supply variables when running your application:
 
@@ -100,9 +100,9 @@ You can also supply variables when running your application:
 DATABASE_HOST=localhost DATABASE_PORT=5432 npm start
 ```
 
-## Production Deployment
+## Production deployment
 
-### Cloud Platforms
+### Cloud platforms
 
 #### AWS
 - Use AWS Systems Manager Parameter Store for non-sensitive values
@@ -117,7 +117,7 @@ DATABASE_HOST=localhost DATABASE_PORT=5432 npm start
 - Use Azure Key Vault for sensitive values
 - Configure App Settings in Azure App Service
 
-### Container Environments
+### Container environments
 
 #### Docker
 
@@ -148,13 +148,13 @@ spec:
               key: database-host
 ```
 
-### Traditional Hosting
+### Traditional hosting
 
 - Set environment variables through the hosting platform's dashboard
 - Use deployment scripts to configure environment variables
 - Consider using configuration management tools
 
-## Security Best Practices
+## Security best practices
 
 1. **Never commit sensitive values**
    - Keep `.env` files out of version control
@@ -164,7 +164,7 @@ spec:
    - Don't share sensitive credentials between environments
    - Use environment-specific configurations
 
-3. **Access Control**
+3. **Access control**
    - Limit access to production environment variables
    - Use role-based access control for secrets management
 
@@ -172,11 +172,11 @@ spec:
    - Encrypt sensitive values at rest
    - Use secure channels for transmitting secrets
 
-## Validation and Typesafety
+## Validation and typesafety
 
 ArkEnv helps ensure your environment variables are valid:
 
-```typescript title="src/config/env.ts"
+```typescript title="src/config/env.ts" twoslash
 import arkenv from 'arkenv';
 
 export const env = arkenv({
@@ -188,27 +188,17 @@ export const env = arkenv({
   LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
   
   // Optional variables
-  "FEATURE_FLAGS?": 'string[]',
-  
-  // Custom validation
-  API_URL: (value: string) => {
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
-    }
-  }
+  "FEATURE_FLAGS?": 'string[]'
 });
 ```
 
-## Common Patterns
+## Common patterns
 
-### Configuration Factory
+### Configuration factory
 
 Create a configuration factory to handle different environments:
 
-```typescript title="src/config/index.ts"
+```typescript title="src/config/index.ts" twoslash
 import arkenv from 'arkenv';
 
 const createConfig = () => {
@@ -230,35 +220,35 @@ const createConfig = () => {
 export const config = createConfig();
 ```
 
-### Feature Flags
+### Feature flags
 
 Use environment variables for feature flags:
 
-```typescript title="src/config/features.ts"
+```typescript title="src/config/features.ts" twoslash
 import arkenv from 'arkenv';
 
 export const env = arkenv({
-  "ENABLE_BETA_FEATURES?": 'boolean = false',
-  "MAINTENANCE_MODE?": 'boolean = false',
-  "ALLOWED_ORIGINS?": 'string[] = []'
+  "ENABLE_BETA_FEATURES": 'boolean = false',
+  "MAINTENANCE_MODE": 'boolean = false',
+  "ALLOWED_ORIGINS": 'string[]'
 });
 ```
 
 ## Troubleshooting
 
-### Common Issues
+### Common issues
 
-1. **Missing Variables**
+1. **Missing variables**
    - Check if `.env` file exists
    - Verify variable names match exactly
    - Ensure variables are loaded before use
 
-2. **Type Errors**
+2. **Type errors**
    - Verify variable types match schema
    - Check for typos in variable names
    - Ensure all required variables are provided
 
-3. **Loading Order**
+3. **Loading order**
    - Load environment variables before importing config
    - Consider using a bootstrap file
    - Check framework-specific loading behavior

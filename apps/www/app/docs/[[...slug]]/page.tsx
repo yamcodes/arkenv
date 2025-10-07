@@ -1,5 +1,7 @@
+import * as Twoslash from "fumadocs-twoslash/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
+import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
@@ -50,17 +52,20 @@ export default async function Page(props: {
 								h4: (props) => <Heading {...props} as="h4" />,
 								h5: (props) => <Heading {...props} as="h5" />,
 								h6: (props) => <Heading {...props} as="h6" />,
+								// biome-ignore lint/suspicious/noExplicitAny: See https://fumadocs.dev/docs/ui/components/image-zoom#usage
+								img: (props) => <ImageZoom {...(props as any)} quality={100} />,
 								pre: ({ ref: _ref, ...props }) => (
 									<CodeBlock {...props}>
 										<Pre>{props.children}</Pre>
 									</CodeBlock>
 								),
+								...Twoslash,
 							}}
 						/>
 					</DocsBody>
 				</div>
 				<div className="flex flex-col items-start pt-16">
-					<EditOnGithub path={page.file.path} />
+					<EditOnGithub path={page.path} />
 					<div className="mt-8 w-full">
 						<Separator />
 					</div>

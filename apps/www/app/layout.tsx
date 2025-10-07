@@ -1,5 +1,7 @@
 import { Banner } from "fumadocs-ui/components/banner";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
@@ -32,6 +34,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 			lang="en"
 			className={`${inter.className} ${jetbrainsMono.variable}`}
 			suppressHydrationWarning
+			data-scroll-behavior="smooth"
 		>
 			<body className="flex flex-col min-h-screen">
 				<RootProvider
@@ -58,6 +61,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 						!
 					</Banner>
 					{children}
+					<SpeedInsights />
+					<Analytics />
 					<Toaster />
 				</RootProvider>
 			</body>

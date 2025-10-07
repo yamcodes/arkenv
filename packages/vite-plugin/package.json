@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/vite-plugin",
-	"version": "0.0.9",
+	"version": "0.0.12",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -12,14 +12,14 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/react": "^19.1.12",
-		"@types/react-dom": "^19.1.9",
-		"@vitejs/plugin-react": "^5.0.2",
-		"react": "^19.1.1",
-		"react-dom": "^19.1.1",
+		"@types/react": "^19.2.0",
+		"@types/react-dom": "^19.2.0",
+		"@vitejs/plugin-react": "^5.0.4",
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0",
 		"tsup": "^8.5.0",
-		"typescript": "^5.9.2",
-		"vite": "^7.1.5",
+		"typescript": "^5.9.3",
+		"vite": "^7.1.9",
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {

@@ -3,6 +3,12 @@
 		@apply border-border outline-ring/50;
 	}
 
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
 	code,
 	pre {
 		font-family:
@@ -14,5 +20,10 @@
 @layer utilities {
 	.fd-steps {
 		padding-left: 2.3rem;
+	}
+
+	/* Twoslash code block max height */
+	.fd-twoslash-popover .fd-scroll-container {
+		max-height: 160px !important;
 	}
 }

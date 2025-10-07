@@ -1,0 +1,26 @@
+{
+	"name": "arkenv-vite-playground",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"start": "vite",
+		"build": "tsc -b && vite build",
+		"preview": "vite preview",
+		"fix": "pnpm -w run fix"
+	},
+	"dependencies": {
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0",
+		"@arkenv/vite-plugin": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/react": "^19.2.0",
+		"@types/react-dom": "^19.2.0",
+		"@vitejs/plugin-react": "^5.0.4",
+		"globals": "^16.3.0",
+		"typescript": "~5.9.3",
+		"vite": "^7.1.9"
+	}
+}

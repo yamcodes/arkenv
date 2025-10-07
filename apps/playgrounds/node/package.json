@@ -1,5 +1,5 @@
 {
-	"name": "playground",
+	"name": "arkenv-node-playground",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -12,7 +12,7 @@
 		"arktype": "^2.1.22"
 	},
 	"devDependencies": {
-		"@types/node": "24.3.1",
-		"tsx": "^4.20.5"
+		"@types/node": "24.6.2",
+		"tsx": "^4.20.6"
 	}
 }

@@ -182,4 +182,14 @@ describe("type", () => {
 		expect(result.NUMBER_VALUE).toBe(42);
 		expect(result.BOOLEAN_VALUE).toBe(true);
 	});
+
+	it("should work with array defaults using type function", () => {
+		// This demonstrates the specific issue mentioned in the GitHub issue
+		const envType = type({
+			array: type("number.integer[]").default(() => []),
+		});
+
+		const result = envType.assert({});
+		expect(result.array).toEqual([]);
+	});
 });

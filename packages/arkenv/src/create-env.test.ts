@@ -1,6 +1,7 @@
-import chalk from "chalk";
+import { styleText } from "node:util";
 import { describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
+import { type } from "./type";
 import { indent } from "./utils";
 
 /**
@@ -16,8 +17,8 @@ const expectedError = (
 	}[],
 ) => {
 	const formattedErrors = errors.map((error) => {
-		return `${chalk.red("Errors found while validating environment variables")}\n${indent(
-			`${chalk.yellow(error.name)} must be ${error.requiredType} (was ${error.providedType})`,
+		return `${styleText("red", "Errors found while validating environment variables")}\n${indent(
+			`${styleText("yellow", error.name)} must be ${error.requiredType} (was ${error.providedType})`,
 		)}\n`;
 	});
 
@@ -82,5 +83,30 @@ describe("env", () => {
 		);
 
 		expect(TEST_STRING).toBe("hello");
+	});
+
+	it("should support array types with default values", () => {
+		const env = createEnv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+				STRINGS: type("string[]").default(() => ["a", "b"]),
+			},
+			{},
+		);
+
+		expect(env.NUMBERS).toEqual([1, 2, 3]);
+		expect(env.STRINGS).toEqual(["a", "b"]);
+	});
+
+	it("should support array types with defaults when no environment value provided", () => {
+		// Test default value usage when environment variable is not set
+		const env = createEnv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+			},
+			{},
+		);
+
+		expect(env.NUMBERS).toEqual([1, 2, 3]);
 	});
 });

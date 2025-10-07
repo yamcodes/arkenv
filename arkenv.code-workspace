@@ -21,8 +21,12 @@
 			"name": "apps"
 		},
 		{
-			"path": "apps/playground",
-			"name": "  playground"
+			"path": "apps/playgrounds/node",
+			"name": "  node-playground"
+		},
+		{
+			"path": "apps/playgrounds/vite",
+			"name": "  vite-playground"
 		},
 		{
 			"path": "apps/www",
@@ -47,6 +51,10 @@
 		{
 			"path": "apps/www/content/docs",
 			"name": "docs"
+		},
+		{
+			"path": "apps/www/public/assets",
+			"name": "assets"
 		}
 	],
 	"settings": {

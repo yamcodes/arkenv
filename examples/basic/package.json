@@ -5,15 +5,22 @@
 	"scripts": {
 		"start": "tsx --env-file .env index.ts",
 		"dev": "tsx watch --env-file .env index.ts",
+		"dev:example": "tsx watch --env-file .env.example index.ts",
 		"build": "tsc"
 	},
 	"dependencies": {
-		"arkenv": "^0.5.0",
+		"arkenv": "^0.7.0",
 		"arktype": "^2.1.22"
 	},
 	"devDependencies": {
 		"tsx": "^4.19.2",
 		"typescript": "^5.9.2"
 	},
-	"packageManager": "npm@10.9.2"
+	"packageManager": "npm@10.9.2",
+	"engines": {
+		"node": "22"
+	},
+	"stackblitz": {
+		"startCommand": "npm install && npm run dev:example"
+	}
 }

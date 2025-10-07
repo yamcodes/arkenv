@@ -4,9 +4,10 @@
 		"index",
 		"quickstart",
 		"examples",
-		"---Guides---",
-		"guides/import-options",
-		"guides/type-function",
-		"guides/environment-configuration"
+		"---[New]Integrations---",
+		"[Blocks][VS Code & Cursor](/docs/integrations/vscode)",
+		"[Blocks][JetBrains IDEs](/docs/integrations/jetbrains)",
+		"---How-to---",
+		"[Load environment variables](/docs/how-to/load-environment-variables)"
 	]
 }

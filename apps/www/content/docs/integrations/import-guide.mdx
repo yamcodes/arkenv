@@ -1,0 +1,18 @@
+---
+title: How to import ArkEnv to enable syntax highlighting
+---
+
+To integrate ArkEnv, use the **default import** and name it `arkenv`:
+
+```ts twoslash
+import arkenv from 'arkenv';
+
+const env = arkenv({
+  PORT: "number.port", 
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+Type syntax is now highlighted:
+
+![ArkType syntax highlighting in VS Code](/assets/dx.png)

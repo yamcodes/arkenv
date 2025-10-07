@@ -52,7 +52,11 @@
 				"noUnusedTemplateLiteral": "error",
 				"useNumberNamespace": "error",
 				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"noUselessElse": "error",
+				"useNodejsImportProtocol": {
+					"level": "warn",
+					"fix": "safe"
+				}
 			}
 		}
 	},
@@ -63,7 +67,7 @@
 	},
 	"overrides": [
 		{
-			"includes": ["**/examples/**/*", "**/playground/**/*"],
+			"includes": ["**/examples/**/*", "**/playgrounds/**/*"],
 			"linter": {
 				"rules": {
 					"suspicious": {

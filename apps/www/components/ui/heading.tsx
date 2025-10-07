@@ -1,23 +1,127 @@
+"use client";
+
 import type { ComponentProps } from "react";
+import { useEffect, useState } from "react";
+import { useIsMobile } from "../../hooks/use-is-mobile";
+
+// Global state to track the active heading ID
+let activeHeadingId: string | null = null;
+const headingListeners = new Set<(activeId: string | null) => void>();
+
+const setActiveHeading = (id: string | null) => {
+	activeHeadingId = id;
+	headingListeners.forEach((listener) => {
+		listener(id);
+	});
+};
 
 export function Heading({
 	id,
 	children,
 	as: Component = "h1",
+	className,
 	...props
 }: ComponentProps<"h1"> & {
 	as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }) {
-	if (!id) return <Component {...props}>{children}</Component>;
+	const [isActive, setIsActive] = useState(false);
+	const isMobile = useIsMobile();
+
+	useEffect(() => {
+		const handleActiveChange = (activeId: string | null) => {
+			// Only set active state on mobile devices
+			if (isMobile) {
+				setIsActive(activeId === id);
+			}
+		};
+
+		headingListeners.add(handleActiveChange);
+
+		// Set initial state only on mobile
+		if (isMobile) {
+			setIsActive(activeHeadingId === id);
+		}
+
+		const handleClickOutside = (event: MouseEvent) => {
+			// Only handle click outside on mobile devices
+			if (!isMobile) return;
+
+			// Check if the click is outside any heading or anchor
+			const target = event.target as Element;
+			if (
+				!target.closest("h1, h2, h3, h4, h5, h6") &&
+				!target.closest('a[href^="#"]')
+			) {
+				setActiveHeading(null);
+			}
+		};
+
+		document.addEventListener("click", handleClickOutside);
+
+		return () => {
+			headingListeners.delete(handleActiveChange);
+			document.removeEventListener("click", handleClickOutside);
+		};
+	}, [id, isMobile]);
+
+	const handleAnchorClick = (e: React.MouseEvent) => {
+		e.preventDefault();
+
+		// Only set active state on mobile devices
+		if (isMobile) {
+			setActiveHeading(id ?? null);
+		}
+
+		// Always scroll to the element, even if hash is already set
+		const element = document.getElementById(id || "");
+		if (element) {
+			element.scrollIntoView({ behavior: "smooth", block: "start" });
+		}
+
+		// Update the hash after scrolling
+		window.location.hash = `#${id}`;
+	};
+
+	const handleHeadingClick = (e: React.MouseEvent) => {
+		// Don't handle if the click was on the anchor itself
+		if ((e.target as Element).closest('a[href^="#"]')) {
+			return;
+		}
+
+		// Only show the anchor on mobile - on desktop it will only show on hover
+		if (isMobile) {
+			setActiveHeading(id ?? null);
+		}
+	};
+
+	if (!id)
+		return (
+			<Component className={className} {...props}>
+				{children}
+			</Component>
+		);
 
 	return (
-		<Component id={id} className="group relative" {...props}>
+		<Component
+			id={id}
+			className={`group relative scroll-mt-36 ${className || ""}`}
+			onClick={handleHeadingClick}
+			{...props}
+		>
 			<a
 				href={`#${id}`}
-				className="select-none text-primary opacity-0 hover:opacity-100 group-hover:opacity-100 no-underline absolute -left-5 transition-opacity duration-200"
-				aria-label="Link to section"
+				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
+					isMobile && isActive
+						? "opacity-100"
+						: "opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100"
+				}`}
+				aria-label={`Link to section: ${id}`}
+				// Keep keyboard access on desktop; hide when inactive on mobile
+				tabIndex={isMobile && !isActive ? -1 : 0}
+				onClick={handleAnchorClick}
 			>
-				#
+				<span className="sr-only">Link to section: {id}</span>
+				<span aria-hidden="true">#</span>
 			</a>
 			{children}
 		</Component>

@@ -1,5 +1,4 @@
 name: tests
-description: "Run build and unit tests on pull requests"
 
 on:
   pull_request:
@@ -16,6 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        node-version: [22, lts/*, latest]
       fail-fast: false
 
     steps:
@@ -39,10 +39,23 @@ jobs:
         run: pnpm test
   test-build:
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [22, lts/*, latest]
+    
     steps:
       - id: checkout
         name: Checkout
         uses: actions/checkout@v5
+ 
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -60,9 +73,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Caching for Turbo
-        uses: rharkor/caching-for-turbo@v1.8
 
       - name: Run build
         run: pnpm run build
