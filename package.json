@@ -35,7 +35,9 @@
 		],
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
-			"@sentry/cli"
+			"@sentry/cli",
+			"@swc/core",
+			"@vercel/speed-insights"
 		]
 	},
 	"version": "0.0.1"
