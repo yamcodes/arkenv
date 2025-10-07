@@ -12,14 +12,6 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("SailButton", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		cleanup();
-	});
-
 	it("renders sail button with correct text", () => {
 		render(<SailButton />);
 		expect(screen.getByText("Set sail")).toBeInTheDocument();

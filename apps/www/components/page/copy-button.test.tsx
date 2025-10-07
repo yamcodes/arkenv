@@ -14,11 +14,6 @@ vi.mock("@sentry/nextjs", () => ({
 }));
 
 describe("CopyButton", () => {
-	afterEach(() => {
-		cleanup();
-		vi.clearAllMocks();
-	});
-
 	it("renders copy button with correct accessibility", () => {
 		render(<CopyButton command="npm install arkenv" />);
 		const button = screen.getByRole("button");

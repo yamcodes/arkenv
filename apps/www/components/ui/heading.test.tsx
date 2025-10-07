@@ -9,16 +9,6 @@ vi.mock("../../hooks/use-is-mobile", () => ({
 }));
 
 describe("Heading", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		cleanup();
-		// Restore document.getElementById mock to prevent test pollution
-		vi.restoreAllMocks();
-	});
-
 	it("renders without id when no id provided", () => {
 		render(<Heading>Simple Heading</Heading>);
 		const heading = screen.getByText("Simple Heading");

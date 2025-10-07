@@ -13,5 +13,6 @@ export default defineProject({
 		name: "arkenv.js.org",
 		environment: "jsdom",
 		setupFiles: ["./tests/setup.ts"],
+		restoreMocks: true,
 	},
 });

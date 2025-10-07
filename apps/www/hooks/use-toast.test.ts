@@ -7,7 +7,6 @@ describe("useToast", () => {
 	});
 
 	afterEach(() => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	});
 

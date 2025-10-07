@@ -45,7 +45,6 @@ describe("EditOnGithub", () => {
 	const mockCaptureMessage = vi.mocked(captureMessage);
 
 	beforeEach(() => {
-		vi.clearAllMocks();
 		// Set up default environment variables
 		process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH = "apps/www/content/docs/";
 		process.env.NEXT_PUBLIC_GITHUB_URL = "https://github.com/yamcodes/arkenv";

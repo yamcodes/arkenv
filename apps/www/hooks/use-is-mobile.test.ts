@@ -10,10 +10,6 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 describe("useIsMobile", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
 	it("returns true for mobile screen size", () => {
 		// Mock window.innerWidth for mobile
 		Object.defineProperty(window, "innerWidth", {

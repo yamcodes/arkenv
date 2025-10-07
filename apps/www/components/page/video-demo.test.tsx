@@ -11,12 +11,7 @@ Object.defineProperty(window, "open", {
 
 describe("VideoDemo", () => {
 	beforeEach(() => {
-		vi.clearAllMocks();
 		mockWindowOpen.mockClear();
-	});
-
-	afterEach(() => {
-		cleanup();
 	});
 
 	it("renders video demo container", () => {

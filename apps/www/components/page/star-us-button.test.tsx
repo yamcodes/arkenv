@@ -6,11 +6,6 @@ import { StarUsButton } from "./star-us-button";
 global.fetch = vi.fn();
 
 describe("StarUsButton", () => {
-	afterEach(() => {
-		cleanup();
-		vi.clearAllMocks();
-	});
-
 	it("renders star button with correct text", () => {
 		render(<StarUsButton />);
 
