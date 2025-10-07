@@ -15,6 +15,8 @@ describe("Heading", () => {
 
 	afterEach(() => {
 		cleanup();
+		// Restore document.getElementById mock to prevent test pollution
+		vi.restoreAllMocks();
 	});
 
 	it("renders without id when no id provided", () => {
