@@ -10,15 +10,6 @@ import {
 import arkenv, { createEnv } from "./index";
 
 describe("index.ts exports", () => {
-	beforeEach(() => {
-		// Clear environment variables for each test
-		vi.stubEnv("TEST_DEFAULT_IMPORT", undefined);
-		vi.stubEnv("TEST_NAMED_IMPORT", undefined);
-		vi.stubEnv("COMPARISON_TEST", undefined);
-		vi.stubEnv("MISSING_DEFAULT_VAR", undefined);
-		vi.stubEnv("MISSING_NAMED_VAR", undefined);
-	});
-
 	afterEach(() => {
 		// Restore mocks and unstub all environment variables
 		vi.restoreAllMocks();
