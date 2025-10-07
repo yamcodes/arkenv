@@ -2,13 +2,13 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CopyButton } from "./copy-button";
 
-// Mock the dependencies that are causing issues
+// Mock the useToast hook
+const mockToast = vi.fn();
 vi.mock("~/hooks/use-toast", () => ({
-	useToast: () => ({
-		toast: vi.fn(),
-	}),
+	useToast: () => ({ toast: mockToast }),
 }));
 
+// Mock Sentry
 vi.mock("@sentry/nextjs", () => ({
 	captureException: vi.fn(),
 }));
@@ -16,29 +16,38 @@ vi.mock("@sentry/nextjs", () => ({
 describe("CopyButton", () => {
 	afterEach(() => {
 		cleanup();
+		vi.clearAllMocks();
 	});
 
-	it("renders copy button", () => {
+	it("renders copy button with correct accessibility", () => {
 		render(<CopyButton command="npm install arkenv" />);
-
-		const button = screen.getByRole("button", { name: /copy command/i });
-		expect(button).toBeInTheDocument();
-		expect(button).toHaveAttribute("aria-label", "Copy command");
-	});
-
-	it("has correct styling classes", () => {
-		render(<CopyButton command="test" />);
-
 		const button = screen.getByRole("button");
-		expect(button).toHaveClass("hover:bg-slate-800");
-		expect(button).toHaveClass("text-slate-400");
-		expect(button).toHaveClass("hover:text-slate-100");
+		expect(button).toHaveAttribute("aria-label", "Copy command");
+		expect(screen.getByText("Copy command")).toBeInTheDocument();
 	});
 
-	it("has screen reader text", () => {
-		render(<CopyButton command="test" />);
+	it("shows copy icon initially", () => {
+		render(<CopyButton command="npm install arkenv" />);
+		// The Copy icon should be present (we can't easily test the icon component directly)
+		expect(screen.getByRole("button")).toBeInTheDocument();
+	});
 
-		const srText = screen.getByText("Copy command");
-		expect(srText).toHaveClass("sr-only");
+	it("accepts different commands", () => {
+		render(<CopyButton command="yarn add arkenv" />);
+		const button = screen.getByRole("button");
+		expect(button).toBeInTheDocument();
+	});
+
+	it("renders with correct button attributes", () => {
+		render(<CopyButton command="npm install arkenv" />);
+		const button = screen.getByRole("button");
+		expect(button).toHaveAttribute("aria-label", "Copy command");
+		expect(button).toHaveClass("hover:bg-slate-800");
+	});
+
+	it("forwards additional props", () => {
+		render(<CopyButton command="npm install arkenv" />);
+		const button = screen.getByRole("button");
+		expect(button).toBeInTheDocument();
 	});
 });

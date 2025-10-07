@@ -36,15 +36,23 @@ describe("StarUsButton", () => {
 		expect(customElements.length).toBeGreaterThan(0);
 	});
 
-	it("has correct responsive classes", () => {
-		const { container } = render(<StarUsButton />);
+	it("renders both mobile and desktop versions", () => {
+		render(<StarUsButton />);
 
-		// Check for mobile-only div
-		const mobileDiv = container.querySelector(".sm\\:hidden");
-		expect(mobileDiv).toBeInTheDocument();
+		// Should have two buttons with the same text (mobile and desktop versions)
+		const buttons = screen.getAllByText("Star us on GitHub!");
+		expect(buttons).toHaveLength(2);
+	});
 
-		// Check for desktop-only div
-		const desktopDiv = container.querySelector(".hidden.sm\\:block");
-		expect(desktopDiv).toBeInTheDocument();
+	it("provides accessible links", () => {
+		render(<StarUsButton />);
+
+		const links = screen.getAllByRole("link");
+		expect(links).toHaveLength(2);
+
+		links.forEach((link) => {
+			expect(link).toHaveAttribute("target", "_blank");
+			expect(link).toHaveAttribute("rel", "noopener noreferrer");
+		});
 	});
 });
