@@ -9,19 +9,20 @@ import {
 } from "vitest";
 import arkenv, { createEnv } from "./index";
 
-// Capture snapshot of process.env at module level
-const originalEnv = { ...process.env };
-
 describe("index.ts exports", () => {
 	beforeEach(() => {
-		// Replace with a clean environment for each test
-		process.env = {};
+		// Clear environment variables for each test
+		vi.stubEnv("TEST_DEFAULT_IMPORT", undefined);
+		vi.stubEnv("TEST_NAMED_IMPORT", undefined);
+		vi.stubEnv("COMPARISON_TEST", undefined);
+		vi.stubEnv("MISSING_DEFAULT_VAR", undefined);
+		vi.stubEnv("MISSING_NAMED_VAR", undefined);
 	});
 
 	afterEach(() => {
-		// Restore mocks and reset process.env to captured snapshot
+		// Restore mocks and unstub all environment variables
 		vi.restoreAllMocks();
-		process.env = { ...originalEnv };
+		vi.unstubAllEnvs();
 	});
 
 	it("should export createEnv as default export", () => {
@@ -40,7 +41,7 @@ describe("index.ts exports", () => {
 
 	it("should work with default import", () => {
 		// Set test environment variable
-		process.env.TEST_DEFAULT_IMPORT = "test-value";
+		vi.stubEnv("TEST_DEFAULT_IMPORT", "test-value");
 
 		const env = arkenv({
 			TEST_DEFAULT_IMPORT: "string",
@@ -52,7 +53,7 @@ describe("index.ts exports", () => {
 
 	it("should work with named import", () => {
 		// Set test environment variable
-		process.env.TEST_NAMED_IMPORT = "test-value";
+		vi.stubEnv("TEST_NAMED_IMPORT", "test-value");
 
 		const env = createEnv({
 			TEST_NAMED_IMPORT: "string",
@@ -80,7 +81,7 @@ describe("index.ts exports", () => {
 
 	it("should have same behavior for both default and named imports", () => {
 		// Set test environment variable
-		process.env.COMPARISON_TEST = "same-value";
+		vi.stubEnv("COMPARISON_TEST", "same-value");
 
 		const envFromDefault = arkenv({
 			COMPARISON_TEST: "string",
