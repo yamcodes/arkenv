@@ -52,6 +52,9 @@ describe("EditOnGithub", () => {
 
 	afterEach(() => {
 		cleanup();
+		// Clean up environment variables to prevent test pollution
+		delete process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH;
+		delete process.env.NEXT_PUBLIC_GITHUB_URL;
 	});
 
 	it("renders edit button with correct content", () => {
