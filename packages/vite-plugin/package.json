@@ -54,5 +54,10 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"type": "module",
-	"types": "./dist/index.d.ts"
+	"types": "./dist/index.d.ts",
+	"pnpm": {
+		"overrides": {
+			"vite": "npm:rolldown-vite@latest"
+		}
+	}
 }

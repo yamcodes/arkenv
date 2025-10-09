@@ -41,6 +41,7 @@
 			"@biomejs/biome",
 			"@sentry/cli",
 			"@swc/core",
+			"@tailwindcss/oxide",
 			"@vercel/speed-insights"
 		]
 	},

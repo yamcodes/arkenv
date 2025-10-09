@@ -21,6 +21,6 @@
 		"@vitejs/plugin-react-swc": "^4.1.0",
 		"globals": "^16.3.0",
 		"typescript": "~5.9.3",
-		"vite": "^7.1.9"
+		"vite": "npm:rolldown-vite@latest"
 	}
 }
