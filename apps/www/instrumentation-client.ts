@@ -1,54 +1,106 @@
-// This file configures the initialization of Sentry on the client.
-// The config you add here will be used whenever a users loads a page in their browser.
-// https://docs.sentry.io/platforms/javascript/guides/nextjs/
-
+// instrumentation-client.ts
 import * as Sentry from "@sentry/nextjs";
+
+// Resolve environment consistently on the client
+const ENV =
+	process.env.NEXT_PUBLIC_VERCEL_ENV ||
+	process.env.VERCEL_ENV ||
+	process.env.NODE_ENV; // fallback
+
+// biome-ignore lint/correctness/noUnusedVariables: Might be used later
+const isDev = ENV === "development";
+const isPreview = ENV === "preview";
+const isProd = ENV === "production";
+
+// Optional manual kill-switch
+const explicitEnabled =
+	typeof process.env.NEXT_PUBLIC_SENTRY_ENABLED === "string"
+		? process.env.NEXT_PUBLIC_SENTRY_ENABLED === "true"
+		: undefined;
+
+// Enable only in preview/prod unless explicitly overridden
+const enabled = explicitEnabled ?? (isPreview || isProd);
+
+// Safer defaults from env with sensible fallbacks
+const tracesRateEnv = Number(
+	process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE_CLIENT,
+);
+const replaysSessionRateEnv = Number(
+	process.env.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE,
+);
+const replaysOnErrorRateEnv = Number(
+	process.env.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE,
+);
 
 Sentry.init({
 	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+	enabled,
 
-	// Add optional integrations for additional features
+	environment: ENV, // "development" | "preview" | "production"
+
+	// Keep console capture out of prod to reduce noise. Use it in preview for QA.
 	integrations: [
-		Sentry.replayIntegration(),
-		Sentry.captureConsoleIntegration(),
+		...(isPreview || (explicitEnabled && !isProd)
+			? [Sentry.captureConsoleIntegration()]
+			: []),
+		...(isProd || isPreview ? [Sentry.replayIntegration()] : []),
 	],
 
-	// Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-	tracesSampleRate:
-		process.env.NODE_ENV === "production"
-			? (Number(process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE_CLIENT) ??
-				0.2)
-			: 1,
+	// Tracing: higher in preview for catch-rate, lower in prod by default
+	tracesSampleRate: isProd
+		? Number.isFinite(tracesRateEnv)
+			? tracesRateEnv
+			: 0.15
+		: isPreview
+			? Number.isFinite(tracesRateEnv)
+				? tracesRateEnv
+				: 0.3
+			: 0, // dev off
 
-	// Define how likely Replay events are sampled.
-	// This sets the sample rate to be 10%. You may want this to be 100% while
-	// in development and sample at a lower rate in production
-	replaysSessionSampleRate:
-		process.env.NODE_ENV === "production"
-			? (Number(process.env.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE) ??
-				0.1)
-			: 1,
+	// Replay only outside dev, and keep prod modest
+	replaysSessionSampleRate: isProd
+		? Number.isFinite(replaysSessionRateEnv)
+			? replaysSessionRateEnv
+			: 0.05
+		: isPreview
+			? Number.isFinite(replaysSessionRateEnv)
+				? replaysSessionRateEnv
+				: 0.2
+			: 0,
 
-	// Define how likely Replay events are sampled when an error occurs.
 	replaysOnErrorSampleRate:
-		process.env.NODE_ENV === "production"
-			? (Number(process.env.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE) ??
-				1.0)
-			: 1,
+		isProd || isPreview
+			? Number.isFinite(replaysOnErrorRateEnv)
+				? replaysOnErrorRateEnv
+				: 1
+			: 0,
 
-	// Setting this option to true will print useful information to the console while you're setting up Sentry.
-	debug: false,
+	// Never ship PII by default
+	sendDefaultPii: false,
 
-	beforeSend(event, hint) {
-		if (process.env.NODE_ENV === "development") {
-			// Log the original error with full stack trace
-			// biome-ignore lint/suspicious/noConsole: Logger
-			console.error(hint.originalException || hint.syntheticException || event);
-			// Drop the event in development
-			return null;
+	// Helpful when you explicitly opt in during local troubleshooting
+	debug: Boolean(process.env.NEXT_PUBLIC_SENTRY_DEBUG) && !isProd,
+
+	// Extra guardrails
+	ignoreErrors: [
+		// add known noisy errors here if needed
+	],
+	denyUrls: isProd
+		? [/^chrome-extension:\/\//, /extensions\//, /^moz-extension:\/\//]
+		: [],
+
+	beforeSend(event) {
+		// If someone flipped the kill-switch at runtime via env injection
+		if (!enabled) return null;
+
+		// Example scrubber
+		if (event.request?.headers) {
+			delete event.request.headers.cookie;
+			delete event.request.headers.authorization;
 		}
 		return event;
 	},
 });
 
+// Next.js router transition helper
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

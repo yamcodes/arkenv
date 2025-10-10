@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "0.7.1",
+	"version": "0.7.2",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -12,7 +12,7 @@
 		"require": "./dist/index.cjs"
 	},
 	"scripts": {
-		"build": "rimraf dist && tsup",
+		"build": "tsdown",
 		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
@@ -40,9 +40,9 @@
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
 		"@ark/schema": "^0.49.0",
-		"@types/node": "24.5.2",
-		"tsup": "^8.5.0",
-		"typescript": "^5.9.2"
+		"@types/node": "24.6.2",
+		"tsdown": "^0.15.6",
+		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"

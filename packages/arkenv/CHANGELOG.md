@@ -1,5 +1,29 @@
 # ArkEnv
 
+## 0.7.2
+
+### Patch Changes
+
+- #### Support array defaults using type().default() syntax _[`#199`](https://github.com/yamcodes/arkenv/pull/199) [`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by `createEnv` due to overly restrictive type constraints. The function now accepts any string-keyed record while still maintaining type safety through ArkType's validation system.
+
+  ##### New Features
+
+  - Array defaults to empty using `type("string[]").default(() => [])` syntax
+  - Support for complex array types with defaults
+  - Mixed schemas combining string-based and type-based defaults
+
+  ##### Example
+
+  ```typescript
+  const env = arkenv({
+    ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
+    FEATURE_FLAGS: type("string[]").default(() => []),
+    PORT: "number.port",
+  });
+  ```
+
 ## 0.7.1
 
 ### Patch Changes

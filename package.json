@@ -14,20 +14,24 @@
 		"check:errors": "biome check --diagnostic-level=error",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest --coverage",
 		"changeset": "changeset"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.4",
+		"@biomejs/biome": "2.2.5",
 		"@changesets/cli": "^2.29.7",
+		"@vitest/coverage-v8": "3.2.4",
+		"@vitest/ui": "^3.2.4",
 		"brace-expansion": "4.0.1",
 		"changesets-changelog-clean": "^1.3.0",
 		"jsdom": "^27.0.0",
 		"rimraf": "^6.0.1",
 		"turbo": "^2.5.8",
-		"typescript": "^5.9.2",
+		"typescript": "^5.9.3",
 		"vitest": "^3.2.4"
 	},
-	"packageManager": "pnpm@10.15.1",
+	"packageManager": "pnpm@10.18.1",
 	"pnpm": {
 		"ignoredBuiltDependencies": [
 			"esbuild",
@@ -35,7 +39,10 @@
 		],
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
-			"@sentry/cli"
+			"@sentry/cli",
+			"@swc/core",
+			"@tailwindcss/oxide",
+			"@vercel/speed-insights"
 		]
 	},
 	"version": "0.0.1"

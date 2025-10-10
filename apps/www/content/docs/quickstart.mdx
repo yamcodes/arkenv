@@ -4,6 +4,8 @@ icon: Rocket
 description: Let's get you started with a few simple steps.
 ---
 
+import { FolderCode, Blocks } from "lucide-react";
+
 <Steps>
   <Step>
     ## Install
@@ -35,7 +37,7 @@ description: Let's get you started with a few simple steps.
     Add a schema to make your environment variables **validated** and **typesafe**:
 
     ```ts title="config/env.ts" twoslash
-    import arkenv from 'arkenv';
+    import arkenv, { type } from 'arkenv';
 
     export const env = arkenv({
       // Built-in validators
@@ -47,6 +49,10 @@ description: Let's get you started with a few simple steps.
       
       // Optional variables with defaults
       LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+      
+      // Array defaults using type function
+      ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
+      FEATURE_FLAGS: type("string[]").default(() => []),
       
       // Optional environment variable
       "API_KEY?": 'string'
@@ -121,7 +127,7 @@ description: Let's get you started with a few simple steps.
   </Step>
 </Steps>
 
-Now you might start to see the :sparkles: _magic_ :sparkles: of ArkType and TypeScript working together to make your environment variables more reliable, more readable, and more typesafe.
+Now you might start to see the :sparkles:_magic_:sparkles: of ArkType and TypeScript working together to make your environment variables more reliable, more readable, and more typesafe.
 
 This is just the beginning of your ArkEnv journey. **Ready or not, it's time to dive in!** 🌊
 
@@ -130,17 +136,25 @@ This is just the beginning of your ArkEnv journey. **Ready or not, it's time to 
 <Cards>
   <Card 
     title="Integrate with VS Code & Cursor" 
-    href="/docs/integrations/vscode" 
+    href="/docs/integrations/vscode"
+    icon={<Blocks />}
     description="Get syntax highlighting and enhanced developer experience with the ArkType VS Code extension"
   />
   <Card 
-    title="Load environment variables" 
-    href="/docs/how-to/load-environment-variables" 
-    description="Learn how to manage environment variables across different environments and deployment scenarios"
+    title="Integrate with JetBrains IDEs" 
+    href="/docs/integrations/jetbrains"
+    icon={<Blocks />}
+    description="Get syntax highlighting and enhanced developer experience with the ArkType JetBrains IDEs extension"
   />
   <Card 
     title="Examples" 
     href="/docs/examples#examples"
+    icon={<FolderCode />}
     description="See examples of ArkEnv in action"
+  />
+  <Card 
+    title="Load environment variables" 
+    href="/docs/how-to/load-environment-variables"
+    description="Learn environment variables management in different environments and deployment scenarios"
   />
 </Cards>
