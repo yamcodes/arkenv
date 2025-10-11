@@ -45,6 +45,7 @@
 		"environment",
 		"variables",
 		"vite",
+		"vite-plugin",
 		"plugin"
 	],
 	"license": "MIT",
