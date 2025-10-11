@@ -3,7 +3,12 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				".env*",
+				"!src/**/*.test.ts",
+				"!src/**/*.test.tsx"
+			],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"],
 			"env": ["SENTRY_*"]
 		},
