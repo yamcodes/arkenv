@@ -184,6 +184,9 @@ export const env = arkenv({
   DATABASE_HOST: "string.host",
   DATABASE_PORT: "number.port",
   
+  // Boolean values (accepts "true"/"false" strings, converts to boolean)
+  DEBUG: "boolean",
+  
   // Optional variables with defaults
   LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
   

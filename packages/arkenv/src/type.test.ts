@@ -16,8 +16,14 @@ describe("type", () => {
 
 	it("should create a type from a boolean schema", () => {
 		const envType = type({ DEBUG: "boolean" });
-		const result = envType.assert({ DEBUG: true });
+		const result = envType.assert({ DEBUG: "true" });
 		expect(result.DEBUG).toBe(true);
+	});
+
+	it("should convert 'false' string to false boolean", () => {
+		const envType = type({ DEBUG: "boolean" });
+		const result = envType.assert({ DEBUG: "false" });
+		expect(result.DEBUG).toBe(false);
 	});
 
 	it("should create a type with optional fields", () => {
@@ -90,7 +96,7 @@ describe("type", () => {
 			API_URL: "https://api.example.com",
 			HOST: "localhost",
 			PORT: "3000",
-			DEBUG: true,
+			DEBUG: "true",
 			// API_KEY is optional, so we can omit it
 		});
 
@@ -120,7 +126,7 @@ describe("type", () => {
 
 		expect(() => envType.assert({ PORT: "not-a-number" })).toThrow();
 		expect(() => envType.assert({ DEBUG: "not-a-boolean" })).toThrow();
-		expect(() => envType.assert({ PORT: "123", DEBUG: true })).toThrow();
+		expect(() => envType.assert({ PORT: "123", DEBUG: "invalid" })).toThrow();
 	});
 
 	it("should work with nested object types", () => {
@@ -175,7 +181,7 @@ describe("type", () => {
 		const result = envType.assert({
 			STRING_VALUE: "hello",
 			NUMBER_VALUE: 42,
-			BOOLEAN_VALUE: true,
+			BOOLEAN_VALUE: "true",
 		});
 
 		expect(result.STRING_VALUE).toBe("hello");
@@ -191,5 +197,22 @@ describe("type", () => {
 
 		const result = envType.assert({});
 		expect(result.array).toEqual([]);
+	});
+
+	it("should work with boolean defaults", () => {
+		const envType = type({
+			DEBUG: "boolean = false",
+			ENABLE_FEATURES: "boolean = true",
+		});
+
+		// Test with no environment variables (should use defaults)
+		const result1 = envType.assert({});
+		expect(result1.DEBUG).toBe(false);
+		expect(result1.ENABLE_FEATURES).toBe(true);
+
+		// Test with environment variables (should override defaults)
+		const result2 = envType.assert({ DEBUG: "true", ENABLE_FEATURES: "false" });
+		expect(result2.DEBUG).toBe(true);
+		expect(result2.ENABLE_FEATURES).toBe(false);
 	});
 });

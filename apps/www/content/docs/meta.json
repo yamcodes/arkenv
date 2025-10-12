@@ -4,6 +4,8 @@
 		"index",
 		"quickstart",
 		"examples",
+		"---API---",
+		"morphs",
 		"---[New]Integrations---",
 		"[Blocks][VS Code & Cursor](/docs/integrations/vscode)",
 		"[Blocks][JetBrains IDEs](/docs/integrations/jetbrains)",
