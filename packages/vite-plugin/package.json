@@ -47,7 +47,10 @@
 	"scripts": {
 		"build": "tsdown",
 		"typecheck": "tsc --noEmit",
-		"clean": "rimraf dist node_modules"
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"test:ci": "vitest run",
+		"fix": "pnpm -w run fix"
 	},
 	"type": "module",
 	"types": "./dist/index.d.ts"

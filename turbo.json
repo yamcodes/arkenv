@@ -19,6 +19,16 @@
 		},
 		"typecheck": {
 			"inputs": ["*.ts", "*.tsx"]
+		},
+		"test": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:ci": {
+			"dependsOn": ["transit"]
+		},
+		"transit": {
+			"dependsOn": ["^transit"]
 		}
 	}
 }
