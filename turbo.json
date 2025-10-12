@@ -1,32 +1,45 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"tasks": {
+		"clean": {
+			"cache": false
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.test.ts", "!**/*.test.tsx"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"],
 			"env": ["SENTRY_*"]
 		},
+		// Development task
+		// See:
+		// https://turborepo.com/docs/crafting-your-repository/developing-applications#configuring-development-tasks
 		"dev": {
 			"cache": false,
 			"persistent": true
 		},
-		"clean": {
-			"cache": false
-		},
-		"//#fix": {
-			"cache": false
-		},
-		"//#check": {},
+		// TypeScript
+		// See: https://turborepo.com/docs/guides/tools/typescript#linting-your-codebase
 		"typecheck": {
 			"dependsOn": ["transit"],
 			"inputs": ["*.ts", "*.tsx"]
 		},
+		// Biome
+		// See: https://turborepo.com/docs/guides/tools/biome
+		"//#fix": {
+			"cache": false
+		},
+		"//#check": {},
 		"check:errors": {},
+		// Vitest
+		// See: https://turborepo.com/docs/guides/tools/vitest
 		"test": {
 			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
 			"dependsOn": ["transit"]
 		},
+		// Transit Nodes
+		// See:
+		// https://turborepo.com/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-run-in-parallel
+		// https://turborepo.com/docs/core-concepts/package-and-task-graph#transit-nodes
 		"transit": {
 			"dependsOn": ["^transit"]
 		}
