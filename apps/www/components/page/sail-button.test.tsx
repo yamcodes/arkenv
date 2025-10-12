@@ -69,7 +69,7 @@ describe("SailButton", () => {
 
 		// Simulate meta+click (Cmd on Mac)
 		await user.pointer({
-			keys: "[MetaLeft>][MouseLeft][MetaLeft/]",
+			keys: "[MetaLeft>][MouseLeft][/MetaLeft]",
 			target: link,
 		});
 
