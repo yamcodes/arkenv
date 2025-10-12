@@ -63,6 +63,12 @@ VITE_DEBUG=true
 VITE_ALLOWED_ORIGINS=http://localhost:3000,https://example.com
 ```
 
+## FAQ
+
+### Why is this a Vite only plugin? (And not a Rollup plugin?)
+
+This plugin uses [the Vite specific `config` hook](https://vite.dev/guide/api-plugin.html#config), which is not available in Rollup.
+
 ## Examples
 
 * [with-vite-react-ts](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts)
