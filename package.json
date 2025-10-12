@@ -13,7 +13,8 @@
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
 		"clean": "rimraf dist node_modules",
-		"test": "vitest",
+		"test": "turbo run test",
+		"test:ci": "turbo run test:ci",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest --coverage",
 		"changeset": "changeset"
