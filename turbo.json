@@ -24,6 +24,7 @@
 		},
 		"check:errors": {},
 		"test": {
+			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
 			"dependsOn": ["transit"]
 		},
 		"transit": {
