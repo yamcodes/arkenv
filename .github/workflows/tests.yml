@@ -40,7 +40,7 @@ jobs:
         run: pnpm install
 
       - name: Run test
-        run: pnpm test:ci
+        run: pnpm turbo run test
   test-build:
     runs-on: ubuntu-latest
     
