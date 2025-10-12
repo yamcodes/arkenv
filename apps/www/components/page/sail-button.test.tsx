@@ -54,7 +54,7 @@ describe("SailButton", () => {
 
 		// Simulate ctrl+click
 		await user.pointer({
-			keys: "[ControlLeft>][MouseLeft][ControlLeft/]",
+			keys: "[ControlLeft>][MouseLeft][/ControlLeft]",
 			target: link,
 		});
 
