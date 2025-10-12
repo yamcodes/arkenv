@@ -9,7 +9,8 @@
 		"postinstall": "fumadocs-mdx",
 		"clean": "rimraf node_modules .next .source",
 		"test": "vitest",
-		"fix": "pnpm -w run fix"
+		"fix": "pnpm -w run fix",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@ark/util": "^0.49.0",

@@ -41,7 +41,7 @@ describe("SailButton", () => {
 		const link = screen.getByRole("link");
 
 		// Simulate middle click
-		await user.click(link, { button: 1 });
+		await user.pointer({ keys: "[MouseMiddle]", target: link });
 
 		// Should not prevent default behavior
 		expect(link).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("SailButton", () => {
 		const link = screen.getByRole("link");
 
 		// Simulate ctrl+click
-		await user.click(link, { ctrlKey: true });
+		await user.pointer({ keys: "[MouseLeft>]", target: link });
 
 		// Should not prevent default behavior
 		expect(link).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe("SailButton", () => {
 		const link = screen.getByRole("link");
 
 		// Simulate meta+click (Cmd on Mac)
-		await user.click(link, { metaKey: true });
+		await user.pointer({ keys: "[MetaLeft>]", target: link });
 
 		// Should not prevent default behavior
 		expect(link).toBeInTheDocument();
