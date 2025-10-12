@@ -41,6 +41,29 @@ jobs:
 
       - name: Run test
         run: pnpm turbo run test
+
+  test-typesafety:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v5
+        
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        
+      - name: Use Node.js 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run typecheck
+        run: pnpm run typecheck
+
   test-build:
     runs-on: ubuntu-latest
     
