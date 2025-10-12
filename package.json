@@ -13,10 +13,8 @@
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
 		"clean": "rimraf dist node_modules",
-		"test": "turbo run test",
+		"test": "vitest",
 		"test:ci": "turbo run test:ci",
-		"test:ui": "vitest --ui",
-		"test:coverage": "vitest --coverage",
 		"changeset": "changeset"
 	},
 	"devDependencies": {
@@ -27,7 +25,8 @@
 		"jsdom": "^27.0.0",
 		"rimraf": "^6.0.1",
 		"turbo": "^2.5.8",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"vitest": "^3.2.4"
 	},
 	"packageManager": "pnpm@10.18.2",
 	"pnpm": {
