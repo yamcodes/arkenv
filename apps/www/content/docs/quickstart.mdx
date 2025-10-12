@@ -44,6 +44,9 @@ import { FolderCode, Blocks } from "lucide-react";
       DATABASE_HOST: "string.host",
       DATABASE_PORT: "number.port",
       
+      // Boolean values (accepts "true"/"false" strings, converts to boolean)
+      DEBUG: "boolean",
+      
       // Custom string literals
       NODE_ENV: "'development' | 'production' | 'test'",
       
@@ -71,6 +74,7 @@ import { FolderCode, Blocks } from "lucide-react";
     ```dotenv title=".env"
     DATABASE_HOST=localhost
     DATABASE_PORT=5432
+    DEBUG=true
     NODE_ENV=development
     API_KEY=your-secret-key
     ```

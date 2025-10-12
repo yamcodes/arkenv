@@ -20,7 +20,7 @@
 		// TypeScript
 		// See: https://turborepo.com/docs/guides/tools/typescript#linting-your-codebase
 		"typecheck": {
-			"dependsOn": ["transit"],
+			"dependsOn": ["transit", "^build"],
 			"inputs": ["*.ts", "*.tsx"]
 		},
 		// Biome

@@ -5,6 +5,7 @@ const env = arkenv({
 	PORT: "number.port",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	ALLOWED_ORIGINS: type("string[]").default(() => []),
+	DEBUG: "boolean = true",
 });
 
 // Automatically validate and parse process.env
@@ -13,7 +14,13 @@ const host = env.HOST;
 const port = env.PORT;
 const nodeEnv = env.NODE_ENV;
 const allowedOrigins = env.ALLOWED_ORIGINS;
-
-console.log({ host, port, nodeEnv, allowedOrigins });
+const debug = env.DEBUG;
+console.log({
+	host,
+	port,
+	nodeEnv,
+	allowedOrigins,
+	debug,
+});
 
 export default env;
