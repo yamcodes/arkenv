@@ -14,7 +14,7 @@
 	"devDependencies": {
 		"tsdown": "^0.15.6",
 		"typescript": "^5.9.3",
-		"vite": "2.9.18",
+		"vite": "7.1.9",
 		"vite-tsconfig-paths": "^5.1.4",
 		"vitest": "^3.2.4"
 	},
