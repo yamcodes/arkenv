@@ -28,17 +28,14 @@
 	},
 	"packageManager": "pnpm@10.18.2",
 	"pnpm": {
-		"ignoredBuiltDependencies": [
-			"esbuild",
-			"sharp"
-		],
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
 			"@sentry/cli",
 			"@swc/core",
 			"@tailwindcss/oxide",
-			"@vercel/speed-insights"
+			"@vercel/speed-insights",
+			"esbuild",
+			"sharp"
 		]
-	},
-	"version": "0.0.1"
+	}
 }
