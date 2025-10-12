@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-node-playground",
+	"name": "node-playground",
 	"private": true,
 	"type": "module",
 	"scripts": {

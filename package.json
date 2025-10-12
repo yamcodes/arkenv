@@ -4,7 +4,7 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
-		"dev": "turbo run dev --filter=arkenv",
+		"dev": "turbo run dev --ui tui",
 		"typecheck": "turbo run typecheck",
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
