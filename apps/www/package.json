@@ -9,9 +9,6 @@
 		"postinstall": "fumadocs-mdx",
 		"clean": "rimraf node_modules .next .source",
 		"test": "vitest",
-		"test:ci": "vitest run",
-		"test:ui": "vitest --ui",
-		"test:coverage": "vitest --coverage",
 		"fix": "pnpm -w run fix"
 	},
 	"dependencies": {
