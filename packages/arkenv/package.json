@@ -16,7 +16,8 @@
 		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
-		"test": "pnpm -w test --project arkenv",
+		"test": "vitest",
+		"test:ci": "vitest run",
 		"fix": "pnpm -w run fix"
 	},
 	"files": [
@@ -42,7 +43,8 @@
 		"@ark/schema": "^0.49.0",
 		"@types/node": "24.6.2",
 		"tsdown": "^0.15.6",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"
