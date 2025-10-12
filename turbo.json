@@ -17,14 +17,14 @@
 		"//#fix": {
 			"cache": false
 		},
+		"//#check": {},
 		"typecheck": {
+			"dependsOn": ["transit"],
 			"inputs": ["*.ts", "*.tsx"]
 		},
+		"check:errors": {},
 		"test": {
-			"cache": false,
-			"persistent": true
-		},
-		"test:ci": {
+			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
 			"dependsOn": ["transit"]
 		},
 		"transit": {

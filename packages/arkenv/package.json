@@ -17,7 +17,6 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
-		"test:ci": "vitest run",
 		"fix": "pnpm -w run fix"
 	},
 	"files": [
