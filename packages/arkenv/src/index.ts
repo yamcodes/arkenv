@@ -12,3 +12,5 @@ export default arkenv;
 export { type } from "./type";
 export { createEnv };
 export { ArkEnvError } from "./errors";
+
+function f(a = 0, b) {}
