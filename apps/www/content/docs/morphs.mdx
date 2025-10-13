@@ -10,9 +10,9 @@ Since environment variables are defined as strings, ArkEnv automatically transfo
 The `boolean` type automatically morphs (or coalesces) string values from environment variables to boolean.
 
 ```ts twoslash
-import { createEnv } from 'arkenv';
+import arkenv from 'arkenv';
 
-const env = createEnv({ DEBUG: "boolean" });
+const env = arkenv({ DEBUG: "boolean" });
 const isDebug = env.DEBUG;
 
 // Hover to see the type
