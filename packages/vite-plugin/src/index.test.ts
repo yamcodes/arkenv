@@ -39,6 +39,9 @@ for (const name of readdirSync(fixturesDir)) {
 		it("should build successfully with the plugin", async () => {
 			const config = await readTestConfig(fixtureDir);
 
+			// Mock createEnv to return a valid object
+			mockCreateEnv.mockReturnValue(config.envVars || {});
+
 			// Set up environment variables from the fixture
 			if (config.envVars) {
 				for (const [key, value] of Object.entries(config.envVars)) {
@@ -97,6 +100,9 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should call createEnv during config hook", () => {
+		// Mock createEnv to return a valid object
+		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		// Mock the config hook with proper context
@@ -124,6 +130,211 @@ describe("Plugin Unit Tests", () => {
 			{ VITE_TEST: "string" },
 			expect.any(Object),
 		);
+	});
+
+	it("should return define object with transformed environment variables", () => {
+		// Mock createEnv to return transformed values
+		const mockTransformedEnv = {
+			VITE_STRING: "hello",
+			VITE_NUMBER: 42,
+			VITE_BOOLEAN: true,
+		};
+		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+
+		const pluginInstance = arkenvPlugin({
+			VITE_STRING: "string",
+			VITE_NUMBER: "number",
+			VITE_BOOLEAN: "boolean",
+		});
+
+		// Call the config hook
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify the define object is returned
+		expect(result).toHaveProperty("define");
+		expect(result.define).toBeDefined();
+
+		// Verify all transformed values are properly serialized
+		expect(result.define).toEqual({
+			"import.meta.env.VITE_STRING": '"hello"',
+			"import.meta.env.VITE_NUMBER": "42",
+			"import.meta.env.VITE_BOOLEAN": "true",
+		});
+	});
+
+	it("should handle different data types in define object", () => {
+		const mockTransformedEnv = {
+			VITE_NULL: null,
+			VITE_UNDEFINED: undefined,
+			VITE_EMPTY_STRING: "",
+			VITE_ZERO: 0,
+			VITE_FALSE: false,
+		};
+		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+
+		const pluginInstance = arkenvPlugin({
+			VITE_NULL: "string",
+			VITE_UNDEFINED: "string",
+			VITE_EMPTY_STRING: "string",
+			VITE_ZERO: "number",
+			VITE_FALSE: "boolean",
+		});
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		expect(result.define).toEqual({
+			"import.meta.env.VITE_NULL": "null",
+			"import.meta.env.VITE_UNDEFINED": undefined, // JSON.stringify(undefined) returns undefined
+			"import.meta.env.VITE_EMPTY_STRING": '""',
+			"import.meta.env.VITE_ZERO": "0",
+			"import.meta.env.VITE_FALSE": "false",
+		});
+	});
+
+	it("should handle empty environment object", () => {
+		mockCreateEnv.mockReturnValue({});
+
+		const pluginInstance = arkenvPlugin({});
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		expect(result.define).toEqual({});
+	});
+
+	it("should preserve key names exactly as provided", () => {
+		const mockTransformedEnv = {
+			VITE_SPECIAL_CHARS: "test",
+			VITE_123_NUMERIC: "test",
+			VITE_UPPERCASE: "test",
+			vite_lowercase: "test",
+		};
+		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+
+		const pluginInstance = arkenvPlugin({
+			VITE_SPECIAL_CHARS: "string",
+			VITE_123_NUMERIC: "string",
+			VITE_UPPERCASE: "string",
+			vite_lowercase: "string",
+		});
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		expect(result.define).toEqual({
+			"import.meta.env.VITE_SPECIAL_CHARS": '"test"',
+			"import.meta.env.VITE_123_NUMERIC": '"test"',
+			"import.meta.env.VITE_UPPERCASE": '"test"',
+			"import.meta.env.vite_lowercase": '"test"',
+		});
+	});
+
+	it("should propagate errors from createEnv", () => {
+		const error = new Error("Environment validation failed");
+		mockCreateEnv.mockImplementation(() => {
+			throw error;
+		});
+
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
+
+		expect(() => {
+			if (
+				pluginInstance.config &&
+				typeof pluginInstance.config === "function"
+			) {
+				const mockContext = {
+					meta: {
+						framework: "vite",
+						version: "1.0.0",
+						rollupVersion: "4.0.0",
+						viteVersion: "5.0.0",
+					},
+					error: vi.fn(),
+					warn: vi.fn(),
+					info: vi.fn(),
+					debug: vi.fn(),
+				} as any;
+				pluginInstance.config.call(
+					mockContext,
+					{},
+					{ mode: "test", command: "build" },
+				);
+			}
+		}).toThrow("Environment validation failed");
 	});
 });
 
