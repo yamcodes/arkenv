@@ -49,7 +49,8 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
-		"fix": "pnpm -w run fix"
+		"fix": "pnpm -w run fix",
+		"changeset": "pnpm -w run changeset"
 	},
 	"type": "module",
 	"types": "./dist/index.d.ts"
