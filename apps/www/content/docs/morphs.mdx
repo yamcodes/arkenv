@@ -1,6 +1,6 @@
 ---
 title: Morphs
-icon: WandSparkles
+icon: New
 ---
 
 Since environment variables are defined as strings, ArkEnv automatically transforms certain ArkType keywords when imported through ArkEnv instead of directly from ArkType. These "morphs" provide environment-variable-specific behavior that's optimized for configuration management.
@@ -10,10 +10,9 @@ Since environment variables are defined as strings, ArkEnv automatically transfo
 The `boolean` type automatically morphs (or coalesces) string values from environment variables to boolean.
 
 ```ts twoslash
-// When using ArkEnv
-import arkenv from 'arkenv';
+import { createEnv } from 'arkenv';
 
-const env = arkenv({ DEBUG: "boolean" });
+const env = createEnv({ DEBUG: "boolean" });
 const isDebug = env.DEBUG;
 
 // Hover to see the type

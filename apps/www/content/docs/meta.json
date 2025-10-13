@@ -6,9 +6,9 @@
 		"examples",
 		"---API---",
 		"morphs",
-		"---[New]Integrations---",
-		"[Blocks][VS Code & Cursor](/docs/integrations/vscode)",
-		"[Blocks][JetBrains IDEs](/docs/integrations/jetbrains)",
+		"---Integrations---",
+		"[VS Code & Cursor](/docs/integrations/vscode)",
+		"[JetBrains IDEs](/docs/integrations/jetbrains)",
 		"---How-to---",
 		"[Load environment variables](/docs/how-to/load-environment-variables)"
 	]
