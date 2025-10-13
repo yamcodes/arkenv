@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-vite-playground",
+	"name": "vite-playground",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
@@ -12,12 +12,15 @@
 	},
 	"dependencies": {
 		"@arkenv/vite-plugin": "workspace:*",
+		"arkenv": "workspace:*",
+		"arktype": "^2.1.22",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
 	},
 	"devDependencies": {
-		"@types/react": "^19.2.0",
-		"@types/react-dom": "^19.2.0",
+		"@julr/vite-plugin-validate-env": "^2.2.0",
+		"@types/react": "^19.2.2",
+		"@types/react-dom": "^19.2.1",
 		"@vitejs/plugin-react": "^5.0.4",
 		"globals": "^16.3.0",
 		"typescript": "~5.9.3",

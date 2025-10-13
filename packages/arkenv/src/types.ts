@@ -17,3 +17,13 @@ export const port = type("string", "=>", (data, ctx) => {
  * An IP address or `"localhost"`
  */
 export const host = type("string.ip | 'localhost'");
+
+/**
+ * A boolean that accepts string values and converts them to boolean
+ * Accepts "true" or "false" strings and converts them to actual boolean values
+ */
+export const boolean = type(
+	"'true' | 'false' | true | false",
+	"=>",
+	(str) => str === "true" || str === true,
+);

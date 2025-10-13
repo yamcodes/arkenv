@@ -1,5 +1,27 @@
 # @arkenv/vite-plugin
 
+## 0.0.13
+
+### Patch Changes
+
+- #### Support Vite 2.x _[`#212`](https://github.com/yamcodes/arkenv/pull/212) [`bfe08f6`](https://github.com/yamcodes/arkenv/commit/bfe08f6d9f21352186420f0f68611840e164da52) [@yamcodes](https://github.com/yamcodes)_
+
+  Extended the supported Vite versions to include **2.9.18** through **7.x** (inclusive).
+
+  Also, we've added the `vite-plugin` keyword to the `package.json`, and a section in the `README.md` explaining why this plugin is a Vite only plugin (and not a Rollup plugin).
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e554e2b`](https://github.com/yamcodes/arkenv/commit/e554e2b41aab1b8e29d873982ea587c069f4732d)
+
+</small>
+
+- `arkenv@0.7.3`
+
+</details>
+
 ## 0.0.12
 
 ### Patch Changes

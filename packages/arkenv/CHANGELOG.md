@@ -1,5 +1,35 @@
 # ArkEnv
 
+## 0.7.3
+
+### Patch Changes
+
+- #### Automatic boolean string conversion _[`#218`](https://github.com/yamcodes/arkenv/pull/218) [`e554e2b`](https://github.com/yamcodes/arkenv/commit/e554e2b41aab1b8e29d873982ea587c069f4732d) [@yamcodes](https://github.com/yamcodes)_
+
+  The `boolean` type now accepts `"true"`/`"false"` strings from environment variables and converts them to actual boolean values. This also works with boolean defaults.
+
+  Example:
+
+  ```ts
+  import arkenv from "arkenv";
+
+  const env = arkenv({
+    DEBUG: "boolean",
+    ENABLE_FEATURE: "boolean = true",
+  });
+
+  console.log(env.DEBUG);
+  console.log(env.ENABLE_FEATURE);
+  ```
+
+  Result:
+
+  ```sh
+  ❯ DEBUG=true npx tsx index.ts
+  true
+  true
+  ```
+
 ## 0.7.2
 
 ### Patch Changes

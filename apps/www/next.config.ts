@@ -4,10 +4,16 @@ import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 
 const config = {
-	reactStrictMode: true,
-	cleanDistDir: true,
 	outputFileTracingRoot: path.join(__dirname, "../../"),
 	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
+	eslint: {
+		// We don't use eslint, we use biome on ci
+		ignoreDuringBuilds: true,
+	},
+	typescript: {
+		// We check typesafety on ci
+		ignoreBuildErrors: true,
+	},
 } as const satisfies NextConfig;
 
 const sentryConfig = {
