@@ -91,7 +91,7 @@ test.describe("Integration Pages", () => {
 		if (linkCount > 0) {
 			const firstLink = marketplaceLinks.first();
 			await expect(firstLink).toHaveAttribute("target", "_blank");
-			await expect(firstLink).toHaveAttribute("rel", "noopener noreferrer");
+			await expect(firstLink).toHaveAttribute("rel", "noreferrer noopener");
 		}
 	});
 
@@ -100,8 +100,10 @@ test.describe("Integration Pages", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check for extension descriptions
-		await expect(page.locator("text=syntax highlighting")).toBeVisible();
-		await expect(page.locator("text=JetBrains")).toBeVisible();
+		await expect(
+			page.locator("text=syntax highlighting").first(),
+		).toBeVisible();
+		await expect(page.locator("text=JetBrains").first()).toBeVisible();
 	});
 
 	test("should have proper page structure for both integration pages", async ({
@@ -114,7 +116,7 @@ test.describe("Integration Pages", () => {
 			await page.waitForLoadState("networkidle");
 
 			// Check for main content area
-			await expect(page.locator("main, article, [role='main']")).toBeVisible();
+			await expect(page.locator("main").first()).toBeVisible();
 
 			// Check for heading hierarchy
 			const h1 = page.locator("h1");
@@ -139,7 +141,7 @@ test.describe("Integration Pages", () => {
 				for (let i = 0; i < Math.min(linkCount, 3); i++) {
 					const link = externalLinks.nth(i);
 					await expect(link).toHaveAttribute("target", "_blank");
-					await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+					await expect(link).toHaveAttribute("rel", "noreferrer noopener");
 				}
 			}
 		}
