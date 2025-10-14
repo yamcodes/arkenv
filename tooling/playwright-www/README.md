@@ -42,7 +42,7 @@ You can also run tests using Turbo from the root:
 
 ```bash
 # Run e2e tests for this package
-turbo run e2e --filter=@repo/playwright-www
+turbo run test:e2e --filter=@repo/playwright-www
 ```
 
 ## Test Structure
