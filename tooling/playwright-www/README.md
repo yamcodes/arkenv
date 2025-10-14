@@ -14,10 +14,16 @@ Before running tests, ensure you have:
 
 ### Install Dependencies
 
-First, install the Playwright browsers:
+First, install project dependencies:
 
 ```bash
-npx playwright install
+pnpm install
+```
+
+Then install the Playwright browsers using the workspace-pinned version:
+
+```bash
+pnpm exec playwright install
 ```
 
 ### Running Tests
