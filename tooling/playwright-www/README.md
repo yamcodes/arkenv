@@ -2,6 +2,14 @@
 
 This package contains end-to-end tests for the www application using Playwright.
 
+## Environment Requirements
+
+Before running tests, ensure you have:
+
+- **Node.js**: v18.x or higher
+- **Operating System**: macOS, Linux, or Windows
+- **Browsers**: Playwright browsers installed (see installation below)
+
 ## Getting Started
 
 ### Install Dependencies
@@ -16,16 +24,16 @@ npx playwright install
 
 ```bash
 # Run all tests
-pnpm e2e
+pnpm run test:e2e
 
 # Run tests with UI
-pnpm e2e:ui
+pnpm run test:e2e:ui
 
 # Run tests in headed mode (visible browser)
-pnpm e2e:headed
+pnpm run test:e2e:headed
 
 # Run tests in debug mode
-pnpm e2e:debug
+pnpm run test:e2e:debug
 ```
 
 ### Using Turbo
