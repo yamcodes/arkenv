@@ -16,6 +16,9 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:e2e": "turbo run test:e2e",
+		"test:e2e:report": "turbo run test:e2e:report",
+		"test:e2e:ui": "turbo run test:e2e:ui",
+		"test:e2e:update": "turbo run test:e2e:update",
 		"changeset": "changeset"
 	},
 	"devDependencies": {

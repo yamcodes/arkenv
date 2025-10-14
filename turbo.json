@@ -48,6 +48,15 @@
 		"test:e2e": {
 			"dependsOn": ["^transit"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
-		}
+		},
+		"test:e2e:report": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:e2e:ui": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:e2e:update": {}
 	}
 }
