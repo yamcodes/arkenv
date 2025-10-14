@@ -16,7 +16,7 @@ test("hello world - basic page load", async ({ page }) => {
 	await expect(body).toBeVisible();
 
 	// Take a screenshot for visual verification
-	await page.screenshot({ path: "tests/screenshots/hello-world.png" });
+	await page.screenshot({ path: "tests/test-results/hello-world.png" });
 });
 
 test("hello world - check for basic HTML structure", async ({ page }) => {

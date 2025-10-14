@@ -3,4 +3,4 @@
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-tests/screenshots/
+tests/test-results/

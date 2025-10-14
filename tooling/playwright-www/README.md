@@ -48,7 +48,7 @@ turbo run e2e --filter=@repo/playwright-www
 ## Test Structure
 
 - `tests/` - Contains all test files
-- `tests/screenshots/` - Screenshots taken during tests
+- `tests/test-results/` - Test artifacts (screenshots, traces, reports)
 - `playwright.config.ts` - Playwright configuration
 
 ## Configuration
