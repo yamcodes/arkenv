@@ -20,13 +20,6 @@ test("hello world - basic page load", async ({ page }) => {
 });
 
 test("hello world - check for basic HTML structure", async ({ page }) => {
-	await page.goto("/");
-
-	// Check that we have a proper HTML structure
-	await expect(page.locator("html")).toBeVisible();
-	await expect(page.locator("head")).toBeAttached();
-	await expect(page.locator("body")).toBeVisible();
-
 	// Check that the page has loaded without major errors
 	const consoleErrors: string[] = [];
 	page.on("console", (msg) => {
@@ -34,6 +27,13 @@ test("hello world - check for basic HTML structure", async ({ page }) => {
 			consoleErrors.push(msg.text());
 		}
 	});
+
+	await page.goto("/");
+
+	// Check that we have a proper HTML structure
+	await expect(page.locator("html")).toBeVisible();
+	await expect(page.locator("head")).toBeAttached();
+	await expect(page.locator("body")).toBeVisible();
 
 	await page.waitForLoadState("networkidle");
 
