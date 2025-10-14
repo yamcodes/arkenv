@@ -1,0 +1,6 @@
+{
+	"name": "@repo/playwright-web",
+	"dependencies": {
+		"www": "workspace:*"
+	}
+}
