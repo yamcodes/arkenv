@@ -1,6 +1,6 @@
 # Testing Strategy
 
-This project uses focused testing that combines unit tests with integration tests using examples as fixtures.
+This project uses a comprehensive testing approach that combines unit tests, integration tests, and end-to-end tests to ensure reliability across all layers.
 
 ## Testing Philosophy
 
@@ -8,7 +8,9 @@ This project uses focused testing that combines unit tests with integration test
 1. **Documentation** - Show real-world usage patterns
 2. **Test Fixtures** - Provide real projects to test against
 
-This ensures the library works in real scenarios while keeping examples clean.
+**"Test the User Journey"** - End-to-end tests validate complete user workflows in real applications.
+
+This ensures the library works in real scenarios while keeping examples clean and validating user experiences.
 
 ## Component Testing Philosophy
 
@@ -46,6 +48,12 @@ This ensures the library works in real scenarios while keeping examples clean.
 - Validate that the plugin works with real Vite projects
 - Ensure environment variable injection works correctly
 
+### End-to-End Tests (`tooling/playwright-www/`)
+- Test complete user workflows in the www application
+- Validate real browser behavior across Chromium, Firefox, and WebKit
+- Ensure the application works correctly in production-like environments
+- Catch integration issues that unit tests might miss
+
 ## Running Tests
 
 ```bash
@@ -57,6 +65,15 @@ pnpm test --project arkenv -- --run
 
 # Run only vite plugin tests
 pnpm test --project vite-plugin -- --run
+
+# Run end-to-end tests
+pnpm run test:e2e
+
+# Run e2e tests with UI
+pnpm run test:e2e:ui
+
+# Run e2e tests in headed mode
+pnpm run test:e2e:headed
 ```
 
 ## Test Coverage
@@ -73,6 +90,13 @@ pnpm test --project vite-plugin -- --run
 - ✅ Real project build testing using the example as a fixture
 - ✅ Error handling for missing environment variables
 
+### End-to-End Tests (`www` application)
+- ✅ Application loads correctly across all browsers
+- ✅ Basic HTML structure validation
+- ✅ Console error monitoring and reporting
+- ✅ Screenshot capture for visual verification
+- ✅ Cross-browser compatibility (Chromium, Firefox, WebKit)
+
 ## Examples
 
 Examples are kept clean and focused on demonstrating usage:
@@ -85,4 +109,6 @@ Examples are kept clean and focused on demonstrating usage:
 The CI pipeline runs:
 - Unit tests for core functionality
 - Integration tests for the vite plugin using real examples
+- End-to-end tests for the www application across multiple browsers
 - Ensures no regressions in real-world usage scenarios
+- Validates complete user journeys in production-like environments
