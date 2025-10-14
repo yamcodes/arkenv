@@ -5,6 +5,14 @@
 			"name": "~"
 		},
 		{
+			"path": "apps/www/content/docs",
+			"name": "docs"
+		},
+		{
+			"path": "apps/www/public/assets",
+			"name": "assets"
+		},
+		{
 			"path": "packages",
 			"name": "packages"
 		},
@@ -15,6 +23,14 @@
 		{
 			"path": "packages/vite-plugin",
 			"name": "  @arkenv/vite-plugin"
+		},
+		{
+			"path": "tooling",
+			"name": "tooling"
+		},
+		{
+			"path": "tooling/playwright-www",
+			"name": "  playwright-www (arkenv.js.org)"
 		},
 		{
 			"path": "apps",
@@ -47,14 +63,6 @@
 		{
 			"path": "examples/with-vite-react-ts",
 			"name": "  with-vite-react-ts"
-		},
-		{
-			"path": "apps/www/content/docs",
-			"name": "docs"
-		},
-		{
-			"path": "apps/www/public/assets",
-			"name": "assets"
 		}
 	],
 	"settings": {
