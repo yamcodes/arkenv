@@ -102,6 +102,31 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # for checking against main
+
+      - name: Fetch base commit for PRs
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          BASE_SHA='${{ github.event.pull_request.base.sha }}'
+          BASE_REF='${{ github.event.pull_request.base.ref }}'
+          BASE_REPO='${{ github.event.pull_request.base.repo.full_name }}'
+          THIS_REPO='${{ github.repository }}'
+          if [ "$BASE_REPO" != "$THIS_REPO" ]; then
+            git remote add upstream '${{ github.event.pull_request.base.repo.clone_url }}'
+            # Fetch the exact base SHA to avoid shallow-history issues
+            git fetch --no-tags --depth=1 upstream "$BASE_SHA"
+          else
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          fi
+
+      # Set Turbo base/head for PRs, see: https://turborepo.com/docs/reference/run#--affected
+      - name: Set Turbo base/head for PRs
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -126,8 +151,14 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: pnpm run test:e2e --filter=...[origin/main]
+      - name: Run E2E (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: pnpm turbo run test:e2e --affected
+
+      # Pushes to main - run everything
+      - name: Run E2E (main)
+        if: ${{ github.event_name != 'pull_request' }}
+        run: pnpm turbo run test:e2e
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
