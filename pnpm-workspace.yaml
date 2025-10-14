@@ -3,3 +3,5 @@ packages:
   - 'apps/*'
   - 'apps/playgrounds/*'
   - 'tooling/*'
+overrides:
+  "@playwright/test": "^1.56.0"
