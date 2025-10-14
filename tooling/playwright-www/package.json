@@ -1,6 +1,19 @@
 {
-	"name": "@repo/playwright-web",
+	"name": "@repo/playwright-www",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:headed": "playwright test --headed",
+		"test:e2e:debug": "playwright test --debug"
+	},
 	"dependencies": {
 		"www": "workspace:*"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.56.0",
+		"@types/node": "24.7.2",
+		"typescript": "^5.9.3"
 	}
 }
