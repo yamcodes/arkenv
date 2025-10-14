@@ -146,6 +146,10 @@ test.describe("Quickstart Page", () => {
 		if (await envGuideLink.isVisible()) {
 			await expect(envGuideLink).toBeVisible();
 			await envGuideLink.click();
+			// Wait for navigation to complete
+			await page.waitForURL("**/docs/how-to/load-environment-variables", {
+				timeout: 10000,
+			});
 			await expect(page).toHaveURL("/docs/how-to/load-environment-variables");
 		}
 	});

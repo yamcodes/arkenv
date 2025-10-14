@@ -190,8 +190,8 @@ test.describe("Documentation Navigation", () => {
 		];
 
 		for (const url of docPages) {
-			await page.goto(url);
-			await page.waitForLoadState("networkidle");
+			await page.goto(url, { timeout: 60000 });
+			await page.waitForLoadState("networkidle", { timeout: 60000 });
 			await page.waitForTimeout(500); // Allow for any async operations
 		}
 

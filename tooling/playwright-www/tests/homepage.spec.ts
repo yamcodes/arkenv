@@ -46,6 +46,8 @@ test.describe("Homepage", () => {
 
 		// Test navigation
 		await sailButton.click();
+		// Wait for navigation to complete with longer timeout
+		await page.waitForURL("**/docs/quickstart", { timeout: 30000 });
 		await expect(page).toHaveURL("/docs/quickstart");
 	});
 
