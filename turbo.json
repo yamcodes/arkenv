@@ -42,6 +42,21 @@
 		// https://turborepo.com/docs/core-concepts/package-and-task-graph#transit-nodes
 		"transit": {
 			"dependsOn": ["^transit"]
-		}
+		},
+		// Playwright
+		// See: https://turborepo.com/docs/guides/tools/playwright
+		"test:e2e": {
+			"dependsOn": ["^transit"],
+			"passThroughEnv": ["PLAYWRIGHT_*"]
+		},
+		"test:e2e:report": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:e2e:ui": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:e2e:update": {}
 	}
 }
