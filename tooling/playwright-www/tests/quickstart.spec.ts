@@ -25,11 +25,11 @@ test.describe("Quickstart Page", () => {
 		await expect(
 			page.locator("text=Configure your project").first(),
 		).toBeVisible();
-		await expect(page.locator("text=Define the schema")).toBeVisible();
+		await expect(page.locator("text=Define the schema").first()).toBeVisible();
 		await expect(
-			page.locator("text=Define environment variables"),
+			page.locator("text=Define environment variables").first(),
 		).toBeVisible();
-		await expect(page.locator("text=Use in your code")).toBeVisible();
+		await expect(page.locator("text=Use in your code").first()).toBeVisible();
 	});
 
 	test("should display installation command", async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe("Quickstart Page", () => {
 		// Check for specific code examples
 		await expect(page.locator("text=import arkenv")).toBeVisible();
 		await expect(page.locator("text=DATABASE_HOST").first()).toBeVisible();
-		await expect(page.locator("text=DATABASE_PORT")).toBeVisible();
+		await expect(page.locator("text=DATABASE_PORT").first()).toBeVisible();
 	});
 
 	test("should display environment variable examples", async ({ page }) => {
