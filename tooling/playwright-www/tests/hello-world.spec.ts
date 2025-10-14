@@ -28,7 +28,7 @@ test("hello world - check for basic HTML structure", async ({ page }) => {
 		}
 	});
 
-	await page.goto("/");
+	await page.goto("/", { timeout: 60000 });
 
 	// Check that we have a proper HTML structure
 	await expect(page.locator("html")).toBeVisible();

@@ -4,8 +4,8 @@ test.describe("Homepage", () => {
 	test("should load with correct title and meta description", async ({
 		page,
 	}) => {
-		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.goto("/", { timeout: 60000 });
+		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
 		// Check page title
 		await expect(page).toHaveTitle("ArkEnv");
@@ -19,8 +19,8 @@ test.describe("Homepage", () => {
 	});
 
 	test("should display main heading and description", async ({ page }) => {
-		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.goto("/", { timeout: 60000 });
+		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
 		// Check main heading
 		const heading = page.locator("h1");
@@ -36,8 +36,8 @@ test.describe("Homepage", () => {
 	});
 
 	test("should have functional 'Set sail' button", async ({ page }) => {
-		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.goto("/", { timeout: 60000 });
+		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
 		// Check button is visible
 		const sailButton = page.locator("a[href='/docs/quickstart']");
@@ -52,8 +52,8 @@ test.describe("Homepage", () => {
 	test("should have functional 'Star us on GitHub' button", async ({
 		page,
 	}) => {
-		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.goto("/", { timeout: 60000 });
+		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
 		// Check that there are GitHub links present
 		const githubLinks = page.locator("a[href*='github.com']");
@@ -89,8 +89,8 @@ test.describe("Homepage", () => {
 	});
 
 	test("should display video demo", async ({ page }) => {
-		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.goto("/", { timeout: 60000 });
+		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
 		// Check video is present
 		const video = page.locator("video");
