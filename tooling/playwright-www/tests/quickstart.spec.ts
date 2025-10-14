@@ -22,7 +22,9 @@ test.describe("Quickstart Page", () => {
 		const installElements = page.locator("text=Install");
 		const installCount = await installElements.count();
 		expect(installCount).toBeGreaterThan(0);
-		await expect(page.locator("text=Configure your project").first()).toBeVisible();
+		await expect(
+			page.locator("text=Configure your project").first(),
+		).toBeVisible();
 		await expect(page.locator("text=Define the schema")).toBeVisible();
 		await expect(
 			page.locator("text=Define environment variables"),
@@ -87,7 +89,9 @@ test.describe("Quickstart Page", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check for integration links
-		const vscodeLink = page.locator("a[href='/docs/integrations/vscode']").first();
+		const vscodeLink = page
+			.locator("a[href='/docs/integrations/vscode']")
+			.first();
 		if (await vscodeLink.isVisible()) {
 			await expect(vscodeLink).toBeVisible();
 			await vscodeLink.click();
@@ -98,9 +102,9 @@ test.describe("Quickstart Page", () => {
 		await page.goto("/docs/quickstart");
 		await page.waitForLoadState("networkidle");
 
-		const jetbrainsLink = page.locator(
-			"a[href='/docs/integrations/jetbrains']",
-		).first();
+		const jetbrainsLink = page
+			.locator("a[href='/docs/integrations/jetbrains']")
+			.first();
 		if (await jetbrainsLink.isVisible()) {
 			await expect(jetbrainsLink).toBeVisible();
 			await jetbrainsLink.click();
@@ -136,9 +140,9 @@ test.describe("Quickstart Page", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Look for link to environment variables guide
-		const envGuideLink = page.locator(
-			"a[href='/docs/how-to/load-environment-variables']",
-		).first();
+		const envGuideLink = page
+			.locator("a[href='/docs/how-to/load-environment-variables']")
+			.first();
 		if (await envGuideLink.isVisible()) {
 			await expect(envGuideLink).toBeVisible();
 			await envGuideLink.click();

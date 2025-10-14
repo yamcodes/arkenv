@@ -116,7 +116,7 @@ test.describe("Morphs/API Page", () => {
 			for (let i = 0; i < Math.min(linkCount, 3); i++) {
 				const link = externalLinks.nth(i);
 				await expect(link).toHaveAttribute("target", "_blank");
-					await expect(link).toHaveAttribute("rel", "noreferrer noopener");
+				await expect(link).toHaveAttribute("rel", "noreferrer noopener");
 			}
 		}
 	});
