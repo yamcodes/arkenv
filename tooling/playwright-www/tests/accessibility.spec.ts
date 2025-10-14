@@ -217,7 +217,10 @@ test.describe("Accessibility", () => {
 			if (msg.type() === "error") {
 				// Filter out known non-critical errors
 				const errorText = msg.text();
-				if (!errorText.includes("403") && !errorText.includes("Failed to load resource")) {
+				if (
+					!errorText.includes("403") &&
+					!errorText.includes("Failed to load resource")
+				) {
 					consoleErrors.push(errorText);
 				}
 			}

@@ -67,9 +67,9 @@ test.describe("Examples Page", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Look for example descriptions or cards
-		const exampleCards = page.locator(
-			"[class*='card'], .example, [class*='example']",
-		).first();
+		const exampleCards = page
+			.locator("[class*='card'], .example, [class*='example']")
+			.first();
 		if (await exampleCards.isVisible()) {
 			await expect(exampleCards).toBeVisible();
 		}
@@ -93,7 +93,10 @@ test.describe("Examples Page", () => {
 			if (msg.type() === "error") {
 				// Filter out known non-critical errors
 				const errorText = msg.text();
-				if (!errorText.includes("403") && !errorText.includes("Failed to load resource")) {
+				if (
+					!errorText.includes("403") &&
+					!errorText.includes("Failed to load resource")
+				) {
 					consoleErrors.push(errorText);
 				}
 			}
