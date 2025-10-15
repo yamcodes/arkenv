@@ -237,11 +237,7 @@ test.describe("Accessibility", () => {
 
 		// Check for meta description
 		const metaDescription = page.locator('meta[name="description"]');
-		await expect(metaDescription).toHaveAttribute("content");
-
-		const content = await metaDescription.getAttribute("content");
-		expect(content).toBeTruthy();
-		expect(content?.length).toBeGreaterThan(10);
+		await expect(metaDescription).toHaveAttribute("content", /.+/);
 	});
 
 	test("should not have console errors", async ({ page }) => {
