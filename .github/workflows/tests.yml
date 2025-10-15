@@ -154,14 +154,27 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
 
+      - name: Verify web server is running
+        run: |
+          echo "Checking if web server is accessible..."
+          timeout 30 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 1; done' || echo "Web server not accessible after 30 seconds"
+
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm turbo run test:e2e --affected
+        run: pnpm run test:e2e --affected
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          DEBUG: pw:api
 
       # Pushes to main - run everything
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm turbo run test:e2e
+        run: pnpm run test:e2e
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          DEBUG: pw:api
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
