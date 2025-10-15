@@ -38,7 +38,7 @@ export default defineConfig({
 		},
 
 		{
-			name: "fiefox",
+			name: "firefox",
 			use: {
 				...devices["Desktop Firefox"],
 				// Firefox-specific timeout configuration
