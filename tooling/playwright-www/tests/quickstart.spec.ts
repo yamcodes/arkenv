@@ -130,7 +130,7 @@ test.describe("Quickstart Page", () => {
 		if (await firstCard.isVisible()) {
 			await firstCard.click();
 			// Should navigate to another docs page
-			await expect(page.url()).toMatch(/\/docs\//);
+			await expect(page).toHaveURL(/\/docs\//);
 		}
 	});
 
