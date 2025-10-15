@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Morphs/API Page", () => {
 	test("should load morphs page", async ({ page }) => {
@@ -143,24 +144,6 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should not have console errors", async ({ page }) => {
-		const consoleErrors: string[] = [];
-		page.on("console", (msg) => {
-			if (msg.type() === "error") {
-				// Filter out known non-critical errors
-				const errorText = msg.text();
-				if (
-					!errorText.includes("403") &&
-					!errorText.includes("Failed to load resource")
-				) {
-					consoleErrors.push(errorText);
-				}
-			}
-		});
-
-		await page.goto("/docs/morphs");
-		await page.waitForLoadState("networkidle");
-		await page.waitForTimeout(1000);
-
-		expect(consoleErrors).toHaveLength(0);
+		await assertNoConsoleErrors(page, "/docs/morphs");
 	});
 });

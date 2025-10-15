@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Documentation Navigation", () => {
 	test("should load main documentation pages", async ({ page }) => {
@@ -165,20 +166,6 @@ test.describe("Documentation Navigation", () => {
 	});
 
 	test("should not have console errors on any docs page", async ({ page }) => {
-		const consoleErrors: string[] = [];
-		page.on("console", (msg) => {
-			if (msg.type() === "error") {
-				// Filter out known non-critical errors
-				const errorText = msg.text();
-				if (
-					!errorText.includes("403") &&
-					!errorText.includes("Failed to load resource")
-				) {
-					consoleErrors.push(errorText);
-				}
-			}
-		});
-
 		const docPages = [
 			"/docs",
 			"/docs/quickstart",
@@ -189,12 +176,6 @@ test.describe("Documentation Navigation", () => {
 			"/docs/how-to/load-environment-variables",
 		];
 
-		for (const url of docPages) {
-			await page.goto(url, { timeout: 60000 });
-			await page.waitForLoadState("networkidle", { timeout: 60000 });
-			await page.waitForTimeout(500); // Allow for any async operations
-		}
-
-		expect(consoleErrors).toHaveLength(0);
+		await assertNoConsoleErrors(page, docPages);
 	});
 });
