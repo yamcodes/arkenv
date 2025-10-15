@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 test.describe("Accessibility", () => {
 	test("should have proper heading hierarchy on homepage", async ({ page }) => {
@@ -166,12 +167,26 @@ test.describe("Accessibility", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// Check that text is visible (basic contrast check)
-		const textElements = page.locator("p, h1, h2, h3, h4, h5, h6, span, div");
-		const textCount = await textElements.count();
+		// Run axe-core accessibility scan
+		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
-		// At least some text should be visible
-		expect(textCount).toBeGreaterThan(0);
+		// Filter for color-contrast violations
+		const colorContrastViolations = accessibilityScanResults.violations.filter(
+			(violation) => violation.id === "color-contrast",
+		);
+
+		// Assert no color contrast violations
+		expect(colorContrastViolations).toHaveLength(0);
+
+		// If there are violations, provide detailed error message
+		if (colorContrastViolations.length > 0) {
+			const violationDetails = colorContrastViolations.map((violation) => {
+				return `${violation.description}: ${violation.nodes.map((node) => node.html).join(", ")}`;
+			});
+			throw new Error(
+				`Color contrast violations found:\n${violationDetails.join("\n")}`,
+			);
+		}
 	});
 
 	test("should have proper semantic HTML", async ({ page }) => {
