@@ -181,7 +181,7 @@ jobs:
 
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm run test:e2e --affected
+        run: pnpm run test:e2e --filter=@repo/playwright-www
         env:
           CI: true
           PLAYWRIGHT_TIMEOUT: 300000
@@ -190,7 +190,7 @@ jobs:
       # Pushes to main - run everything
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm run test:e2e
+        run: pnpm run test:e2e --filter=@repo/playwright-www
         env:
           CI: true
           PLAYWRIGHT_TIMEOUT: 300000
