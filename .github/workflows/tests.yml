@@ -14,7 +14,7 @@ env:
 
 jobs:
   test:
-    timeout-minutes: 4
+    timeout-minutes: 5
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -44,7 +44,7 @@ jobs:
         run: pnpm turbo run test
 
   test-typesafety:
-    timeout-minutes: 4
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - id: checkout
@@ -67,7 +67,7 @@ jobs:
         run: pnpm run typecheck
 
   test-build:
-    timeout-minutes: 4
+    timeout-minutes: 5
     runs-on: ubuntu-latest
 
     strategy:
@@ -100,36 +100,20 @@ jobs:
         run: pnpm run build
 
   test-e2e:
-    timeout-minutes: 8
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0 # for checking against main
-
-      - name: Fetch base commit for PRs
-        if: ${{ github.event_name == 'pull_request' }}
-        shell: bash
-        run: |
-          BASE_SHA='${{ github.event.pull_request.base.sha }}'
-          BASE_REF='${{ github.event.pull_request.base.ref }}'
-          BASE_REPO='${{ github.event.pull_request.base.repo.full_name }}'
-          THIS_REPO='${{ github.repository }}'
-          if [ "$BASE_REPO" != "$THIS_REPO" ]; then
-            git remote add upstream '${{ github.event.pull_request.base.repo.clone_url }}'
-            # Fetch the exact base SHA to avoid shallow-history issues
-            git fetch --no-tags --depth=1 upstream "$BASE_SHA"
-          else
-            git fetch --no-tags --depth=1 origin "$BASE_SHA"
-          fi
+          fetch-depth: 2 # for checking against main and for following the PR history
 
       # Set Turbo base/head for PRs, see: https://turborepo.com/docs/reference/run#--affected
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
-          echo "TURBO_SCM_HEAD=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -154,43 +138,20 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
 
-      - name: Start web server in background
-        run: |
-          echo "Starting web server in background..."
-          pnpm --filter=www run dev &
-          WEB_SERVER_PID=$!
-          echo "WEB_SERVER_PID=$WEB_SERVER_PID" >> $GITHUB_ENV
-          echo "Web server started with PID: $WEB_SERVER_PID"
-
-      - name: Verify web server is running
-        run: |
-          echo "Waiting for web server to be accessible..."
-          echo "Checking if web server is accessible..."
-          timeout 120 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do 
-            echo "Waiting for web server... ($(date))"
-            sleep 2
-          done' || {
-            echo "Web server not accessible after 120 seconds"
-            echo "Checking if web server process is still running..."
-            ps aux | grep -E "(next|node)" | grep -v grep || echo "No web server processes found"
-            echo "Checking port 3000..."
-            netstat -tlnp | grep :3000 || echo "Port 3000 not in use"
-            exit 1
-          }
-          echo "Web server is accessible!"
-
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm run test:e2e --filter=@repo/playwright-www
+        run: pnpm run test:e2e --affected
         env:
           CI: true
           PLAYWRIGHT_TIMEOUT: 300000
+          TURBO_LOG: info  # or 'trace' for debugging
           DEBUG: pw:api
+          PLAYWRIGHT_HEADLESS: true
 
       # Pushes to main - run everything
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm run test:e2e --filter=@repo/playwright-www
+        run: pnpm run test:e2e
         env:
           CI: true
           PLAYWRIGHT_TIMEOUT: 300000
