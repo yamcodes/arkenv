@@ -13,7 +13,7 @@ export default defineConfig({
 	retries: process.env.CI ? 2 : 0,
 	/* Opt out of parallel tests on CI. */
 	workers: process.env.CI ? 1 : undefined,
-	/* WebKit-specific: Reduce workers for stability */
+	/* Limit test failures to prevent runaway failures */
 	maxFailures: 5,
 	/* Global timeout for the entire test suite */
 	timeout: process.env.CI ? 300000 : 60000, // 5 minutes on CI, 1 minute locally
