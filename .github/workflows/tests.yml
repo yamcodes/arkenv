@@ -157,10 +157,6 @@ jobs:
         with:
           fetch-depth: 0 # fetch all history for proper affected detection
 
-      # Configure Git for proper affected detection
-      - name: Configure Git
-        run: |
-          git config --global --add safe.directory /__w/arkenv/arkenv
 
       # Set Turbo base/head for PRs, see: https://turborepo.com/docs/reference/run#--affected
       - name: Set Turbo base/head for PRs
