@@ -150,13 +150,12 @@ jobs:
 
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
-      options: --user root
+      options: --user 1001
 
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0 # fetch all history for proper affected detection
-
+          fetch-depth: 2
 
       # Set Turbo base/head for PRs, see: https://turborepo.com/docs/reference/run#--affected
       - name: Set Turbo base/head for PRs
