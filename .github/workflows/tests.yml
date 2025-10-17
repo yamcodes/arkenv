@@ -93,7 +93,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results
+          name: test-results-e2e
           path: "**/test-results/**"
           retention-days: 30
   test-windows:
@@ -127,7 +127,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results
+          name: test-results-windows
           path: "**/test-results/**"
           retention-days: 30
 
@@ -162,6 +162,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results
+          name: test-results-macos
           path: "**/test-results/**"
           retention-days: 30
