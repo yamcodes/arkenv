@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # Every Saturday
+    - cron: '0 0 * * 6'
 
 # Workflow-level concurrency control - cancels previous runs when new commits arrive
 concurrency:
@@ -16,6 +19,10 @@ concurrency:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   resolve-playwright-version:
@@ -49,12 +56,11 @@ jobs:
           echo "version=$VER" >> "$GITHUB_OUTPUT"
   test:
     timeout-minutes: 5
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        node-version: [22, lts/*, latest]
+        node-version: [lts/*, latest]
         # See: https://github.com/fuma-nama/fumadocs/issues/2456
       fail-fast: false
 
@@ -107,7 +113,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22, lts/*, latest]
+        node-version: [lts/*, latest]
 
     steps:
       - id: checkout
@@ -186,6 +192,121 @@ jobs:
         run: pnpm run test:e2e
         env:
           DEBUG: pw:api
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: |
+            **/test-results/**
+          retention-days: 30
+  test-windows:
+    if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'windows')
+    timeout-minutes: 15
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [lts/*, latest]
+    continue-on-error: ${{ matrix.node-version == 'latest' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2 # for checking against main and for following the PR history
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            windows-latest-pw-
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run test
+        run: pnpm turbo run test
+
+      - name: Test e2e
+        run: pnpm run test:e2e
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          DEBUG: pw:api
+          PLAYWRIGHT_HEADLESS: true
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: |
+            **/test-results/**
+          retention-days: 30
+
+  test-macos:
+    if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'macos')
+    timeout-minutes: 15
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: [lts/*, latest]
+    continue-on-error: ${{ matrix.node-version == 'latest' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2 # for checking against main and for following the PR history
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            macos-latest-pw-
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run test
+        run: pnpm turbo run test
+
+      - name: Test e2e
+        run: pnpm run test:e2e
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          DEBUG: pw:api
+          PLAYWRIGHT_HEADLESS: true
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
