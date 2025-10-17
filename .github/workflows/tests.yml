@@ -18,6 +18,35 @@ env:
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
+  resolve-playwright-version:
+    name: Resolve Playwright version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # Install dependencies to ensure node_modules/@playwright/test exists
+      - name: Install dependencies
+        env:
+          # do not download browsers here
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: pnpm install --frozen-lockfile
+
+      - name: Read @playwright/test version
+        id: out
+        run: |
+          VER=$(node -e "console.log(require(require.resolve('@playwright/test/package.json')).version)")
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
   test:
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -106,8 +135,22 @@ jobs:
         run: pnpm run build
 
   test-e2e:
+    name: Test E2E
+    needs: resolve-playwright-version
     timeout-minutes: 10
     runs-on: ubuntu-latest
+
+    env:
+      HOME: /root
+      CI: true
+      PLAYWRIGHT_TIMEOUT: 300000
+      PLAYWRIGHT_HEADLESS: true
+      # ensure pnpm install does not try to fetch browsers in the container either
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
+      options: --user root
 
     steps:
       - uses: actions/checkout@v5
@@ -124,49 +167,33 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Use Node.js 22
+      - name: Use Node.js 
         uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: lts/*
           cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-pw-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pw-
-
-      - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
-
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: pnpm run test:e2e --affected
         env:
-          CI: true
-          PLAYWRIGHT_TIMEOUT: 300000
-          TURBO_LOG: info # or 'trace' for debugging
+          TURBO_LOG: info
           DEBUG: pw:api
-          PLAYWRIGHT_HEADLESS: true
 
       # Pushes to main - run everything
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
         run: pnpm run test:e2e
         env:
-          CI: true
-          PLAYWRIGHT_TIMEOUT: 300000
           DEBUG: pw:api
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
+          name: test-results
           path: |
-            **/playwright-report/**
+            **/test-results/**
           retention-days: 30
