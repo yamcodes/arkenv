@@ -24,3 +24,7 @@ example:
 tests:
   - changed-files:
     - any-glob-to-any-file: ['**/*.test.ts', '**/*.test.tsx']
+
+github_actions:
+  - changed-files:
+    - any-glob-to-any-file: '**/.github/**/*'
