@@ -110,7 +110,7 @@ bun add arkenv arktype
 ## Requirements
 
 - TypeScript >= 5.1 and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
--  Tested on [Node.js **v22 (LTS)** and **v25 (Current)**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [Bun 1.2](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts). Older versions may work but are not officially supported
+-  Tested on [Node.js **LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [Bun 1.2](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts). Older versions may work but are not officially supported
 
 ## Plugins
 
