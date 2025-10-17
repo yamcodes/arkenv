@@ -215,6 +215,11 @@ jobs:
 
       - name: Test e2e
         run: pnpm run test:e2e
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          DEBUG: pw:api
+          PLAYWRIGHT_HEADLESS: true
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -268,6 +273,11 @@ jobs:
 
       - name: Test e2e
         run: pnpm run test:e2e
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          DEBUG: pw:api
+          PLAYWRIGHT_HEADLESS: true
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
