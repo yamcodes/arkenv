@@ -40,8 +40,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
+      # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run test
-        run: pnpm turbo run test
+        run: |
+          NODE_VERSION=$(node -v | sed 's/v//')
+          if (( $(echo "$NODE_VERSION >= 25" | bc -l) )); then
+            echo "Excluding www app due to Node 25+ compatibility issues with fumadocs"
+            pnpm turbo run test --filter='!www'
+          else
+            pnpm turbo run test
+          fi
 
   test-typesafety:
     timeout-minutes: 5
@@ -96,8 +105,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
+      # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run build
-        run: pnpm run build
+        run: |
+          NODE_VERSION=$(node -v | sed 's/v//')
+          if (( $(echo "$NODE_VERSION >= 25" | bc -l) )); then
+            echo "Excluding www app due to Node 25+ compatibility issues with fumadocs"
+            pnpm turbo run build --filter='!www'
+          else
+            pnpm run build
+          fi
 
   test-e2e:
     timeout-minutes: 10

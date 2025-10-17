@@ -15,7 +15,7 @@ export default defineConfig({
 	workers: process.env.CI ? 1 : undefined,
 	/* Limit test failures to prevent runaway failures */
 	maxFailures: 5,
-	/* Global timeout for the entire test suite */
+	/* Timeout for each test in milliseconds */
 	timeout: process.env.CI ? 300000 : 60000, // 5 minutes on CI, 1 minute locally
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: "html",
@@ -30,8 +30,8 @@ export default defineConfig({
 		trace: "on-first-retry",
 
 		/* Global timeout configuration */
-		actionTimeout: 60000,
-		navigationTimeout: 60000,
+		actionTimeout: 15000,
+		navigationTimeout: 30000,
 	},
 
 	/* Configure projects for major browsers */
@@ -46,8 +46,8 @@ export default defineConfig({
 			use: {
 				...devices["Desktop Firefox"],
 				// Firefox-specific timeout configuration
-				actionTimeout: 60000,
-				navigationTimeout: 60000,
+				actionTimeout: 15000,
+				navigationTimeout: 30000,
 			},
 		},
 
