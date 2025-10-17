@@ -8,7 +8,8 @@
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.test.ts", "!**/*.test.tsx"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-			"env": ["SENTRY_*"]
+			"env": ["SENTRY_*"],
+			"passThroughEnv": ["SENTRY_AUTH_TOKEN"]
 		},
 		// Development task
 		// See:
