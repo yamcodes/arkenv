@@ -3,10 +3,10 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"build": "next build",
+		"build": "node ./bin/build next build",
 		"dev": "next dev --turbopack",
 		"start": "next start",
-		"postinstall": "fumadocs-mdx",
+		"postinstall": "node ./bin/postinstall",
 		"clean": "rimraf node_modules .next .source",
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
