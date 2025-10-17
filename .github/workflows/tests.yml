@@ -20,7 +20,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node-version: [22, lts/*, latest]
+        node-version: [22, lts/*] # TODO: add "latest" once fumadocs fixes Node 25 support
+        # See: https://github.com/fuma-nama/fumadocs/issues/2456
       fail-fast: false
 
     steps:
@@ -43,14 +44,7 @@ jobs:
       # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
       # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run test
-        run: |
-          NODE_VERSION=$(node -v | sed 's/v//')
-          if (( $(echo "$NODE_VERSION >= 25" | bc -l) )); then
-            echo "Excluding www app due to Node 25+ compatibility issues with fumadocs"
-            pnpm turbo run test --filter='!www'
-          else
-            pnpm turbo run test
-          fi
+        run: pnpm turbo run test
 
   test-typesafety:
     timeout-minutes: 5
@@ -81,7 +75,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22, lts/*, latest]
+        node-version: [22, lts/*] # TODO: add "latest" once fumadocs fixes Node 25 support
 
     steps:
       - id: checkout
@@ -108,14 +102,7 @@ jobs:
       # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
       # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run build
-        run: |
-          NODE_VERSION=$(node -v | sed 's/v//')
-          if (( $(echo "$NODE_VERSION >= 25" | bc -l) )); then
-            echo "Excluding www app due to Node 25+ compatibility issues with fumadocs"
-            pnpm turbo run build --filter='!www'
-          else
-            pnpm run build
-          fi
+        run: pnpm run build
 
   test-e2e:
     timeout-minutes: 10
@@ -158,7 +145,7 @@ jobs:
 
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm run test:e2e --affected -vv
+        run: pnpm run test:e2e --affected
         env:
           CI: true
           PLAYWRIGHT_TIMEOUT: 300000
