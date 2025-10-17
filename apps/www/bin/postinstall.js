@@ -10,11 +10,17 @@ const majorVersion = Number.parseInt(nodeVersion.slice(1).split(".")[0]);
 // Set NODE_OPTIONS based on Node.js version
 if (majorVersion >= 25) {
 	// Node.js 25+ has Web Storage enabled by default, disable it to avoid localStorage conflicts
-	process.env.NODE_OPTIONS = "--no-experimental-webstorage";
-} else {
-	// Node.js 24 and below don't have Web Storage enabled, no flags needed
-	process.env.NODE_OPTIONS = "";
+	const existingOptions = process.env.NODE_OPTIONS || "";
+	const flag = "--no-experimental-webstorage";
+
+	// Only add the flag if it's not already present
+	if (!existingOptions.includes(flag)) {
+		process.env.NODE_OPTIONS = existingOptions
+			? `${existingOptions} ${flag}`
+			: flag;
+	}
 }
+// For Node.js 24 and below, leave existing NODE_OPTIONS unchanged
 
 // Spawn fumadocs-mdx with the appropriate NODE_OPTIONS
 const child = spawn(
