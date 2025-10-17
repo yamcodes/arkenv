@@ -122,8 +122,6 @@ jobs:
       - run: pnpm build
       - run: pnpm turbo run test
       - run: pnpm run test:e2e
-        env:
-          CI: true
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -157,8 +155,6 @@ jobs:
       - run: pnpm build
       - run: pnpm turbo run test
       - run: pnpm run test:e2e
-        env:
-          CI: true
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
