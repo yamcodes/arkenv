@@ -6,7 +6,7 @@
 		"build": "next build",
 		"dev": "next dev --turbopack",
 		"start": "next start",
-		"postinstall": "./bin/fumadocs-mdx.sh",
+		"postinstall": "node ./bin/fumadocs-mdx.js",
 		"clean": "rimraf node_modules .next .source",
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
