@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { spawn } = require("node:child_process");
+const { spawn, execSync } = require("node:child_process");
 const path = require("node:path");
 
 // Get Node.js major version
@@ -21,6 +21,14 @@ if (majorVersion >= 25) {
 	}
 }
 // For Node.js 24 and below, leave existing NODE_OPTIONS unchanged
+
+// Check if pnpm is available
+try {
+	execSync("pnpm --version", { stdio: "ignore" });
+} catch {
+	console.error("Error: pnpm is required but not found in PATH");
+	process.exit(1);
+}
 
 // Spawn fumadocs-mdx with the appropriate NODE_OPTIONS
 const child = spawn(
