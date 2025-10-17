@@ -127,7 +127,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows
+          name: test-results-windows-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30
 
@@ -162,6 +162,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos
+          name: test-results-macos-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30
