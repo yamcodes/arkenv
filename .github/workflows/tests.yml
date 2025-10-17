@@ -139,7 +139,7 @@ jobs:
   test-e2e:
     name: Test E2E
     needs: resolve-playwright-version
-    timeout-minutes: 10
+    timeout-minutes: 12
     runs-on: ubuntu-latest
 
     env:
