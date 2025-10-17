@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const { spawn, execSync } = require("node:child_process");
-const path = require("node:path");
 
 // Get Node.js major version
 const nodeVersion = process.version;
