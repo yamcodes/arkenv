@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test("hello world - basic page load", async ({ page }) => {
 	// Navigate to the homepage
@@ -20,15 +21,7 @@ test("hello world - basic page load", async ({ page }) => {
 });
 
 test("hello world - check for basic HTML structure", async ({ page }) => {
-	// Check that the page has loaded without major errors
-	const consoleErrors: string[] = [];
-	page.on("console", (msg) => {
-		if (msg.type() === "error") {
-			consoleErrors.push(msg.text());
-		}
-	});
-
-	await page.goto("/");
+	await page.goto("/", { timeout: 60000 });
 
 	// Check that we have a proper HTML structure
 	await expect(page.locator("html")).toBeVisible();
@@ -36,9 +29,8 @@ test("hello world - check for basic HTML structure", async ({ page }) => {
 	await expect(page.locator("body")).toBeVisible();
 
 	await page.waitForLoadState("networkidle");
+});
 
-	// Log any console errors for debugging
-	if (consoleErrors.length > 0) {
-		console.log("Console errors found:", consoleErrors);
-	}
+test("hello world - should not have console errors", async ({ page }) => {
+	await assertNoConsoleErrors(page, "/");
 });

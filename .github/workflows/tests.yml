@@ -14,12 +14,14 @@ env:
 
 jobs:
   test:
+    timeout-minutes: 5
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node-version: [22, lts/*, latest]
+        node-version: [22, lts/*] # TODO: add "latest" once fumadocs fixes Node 25 support
+        # See: https://github.com/fuma-nama/fumadocs/issues/2456
       fail-fast: false
 
     steps:
@@ -39,10 +41,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
+      # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run test
         run: pnpm turbo run test
 
   test-typesafety:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - id: checkout
@@ -65,11 +70,12 @@ jobs:
         run: pnpm run typecheck
 
   test-build:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [22, lts/*, latest]
+        node-version: [22, lts/*] # TODO: add "latest" once fumadocs fixes Node 25 support
 
     steps:
       - id: checkout
@@ -93,40 +99,26 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
+      # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run build
         run: pnpm run build
 
   test-e2e:
-    timeout-minutes: 60
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0 # for checking against main
-
-      - name: Fetch base commit for PRs
-        if: ${{ github.event_name == 'pull_request' }}
-        shell: bash
-        run: |
-          BASE_SHA='${{ github.event.pull_request.base.sha }}'
-          BASE_REF='${{ github.event.pull_request.base.ref }}'
-          BASE_REPO='${{ github.event.pull_request.base.repo.full_name }}'
-          THIS_REPO='${{ github.repository }}'
-          if [ "$BASE_REPO" != "$THIS_REPO" ]; then
-            git remote add upstream '${{ github.event.pull_request.base.repo.clone_url }}'
-            # Fetch the exact base SHA to avoid shallow-history issues
-            git fetch --no-tags --depth=1 upstream "$BASE_SHA"
-          else
-            git fetch --no-tags --depth=1 origin "$BASE_SHA"
-          fi
+          fetch-depth: 2 # for checking against main and for following the PR history
 
       # Set Turbo base/head for PRs, see: https://turborepo.com/docs/reference/run#--affected
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
-          echo "TURBO_SCM_HEAD=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -153,12 +145,22 @@ jobs:
 
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm turbo run test:e2e --affected
+        run: pnpm run test:e2e --affected
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          TURBO_LOG: info # or 'trace' for debugging
+          DEBUG: pw:api
+          PLAYWRIGHT_HEADLESS: true
 
       # Pushes to main - run everything
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm turbo run test:e2e
+        run: pnpm run test:e2e
+        env:
+          CI: true
+          PLAYWRIGHT_TIMEOUT: 300000
+          DEBUG: pw:api
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
