@@ -141,11 +141,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      HOME: /root
-      CI: true
       PLAYWRIGHT_TIMEOUT: 300000
       PLAYWRIGHT_HEADLESS: true
-      # ensure pnpm install does not try to fetch browsers in the container either
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
 
     container:
