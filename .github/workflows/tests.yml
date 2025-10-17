@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node-version: [22, lts/*] # TODO: add "latest" once fumadocs fixes Node 25 support
+        node-version: [22, lts/*, latest]
         # See: https://github.com/fuma-nama/fumadocs/issues/2456
       fail-fast: false
 
@@ -41,8 +41,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
-      # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run test
         run: pnpm turbo run test
 
@@ -75,7 +73,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22, lts/*] # TODO: add "latest" once fumadocs fixes Node 25 support
+        node-version: [22, lts/*, latest]
 
     steps:
       - id: checkout
@@ -99,8 +97,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # TODO: Remove Node 25 filter once fumadocs fixes Node 25 support
-      # See: https://github.com/fuma-nama/fumadocs/issues/2456
       - name: Run build
         run: pnpm run build
 

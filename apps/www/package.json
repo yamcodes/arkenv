@@ -6,7 +6,7 @@
 		"build": "next build",
 		"dev": "next dev --turbopack",
 		"start": "next start",
-		"postinstall": "fumadocs-mdx",
+		"postinstall": "NODE_OPTIONS='--no-webstorage' fumadocs-mdx",
 		"clean": "rimraf node_modules .next .source",
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
