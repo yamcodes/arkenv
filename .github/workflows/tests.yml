@@ -70,7 +70,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 2
+          fetch-depth: 2 # Comparing with the base branch
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
@@ -78,6 +78,7 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm exec playwright install --with-deps
+      # See: https://turborepo.com/docs/reference/run#--affected for more information about the --affected flag
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -105,7 +106,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 2
+          fetch-depth: 2 # Comparing with the base branch
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
@@ -140,7 +141,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 2
+          fetch-depth: 2 # Comparing with the base branch
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
