@@ -42,7 +42,7 @@ const child = spawn(
 
 // Forward exit code
 child.on("exit", (code) => {
-	process.exit(code);
+	process.exit(code ?? 1);
 });
 
 child.on("error", (error) => {
