@@ -47,7 +47,7 @@
 		// Playwright
 		// See: https://turborepo.com/docs/guides/tools/playwright
 		"test:e2e": {
-			"dependsOn": ["^transit", "^build"],
+			"dependsOn": ["^transit"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
 		"test:e2e:report": {
