@@ -109,10 +109,10 @@ jobs:
       - run: pnpm install
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm run test:e2e --affected
+        run: pnpm run test:e2e --affected -v
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm run test:e2e
+        run: pnpm run test:e2e -v
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
