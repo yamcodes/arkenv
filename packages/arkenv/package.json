@@ -39,9 +39,9 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@ark/schema": "^0.49.0",
-		"@types/node": "24.7.2",
-		"tsdown": "^0.15.6",
+		"@ark/schema": "^0.51.0",
+		"@types/node": "24.8.1",
+		"tsdown": "^0.15.8",
 		"typescript": "^5.9.3",
 		"vitest": "^3.2.4"
 	},
