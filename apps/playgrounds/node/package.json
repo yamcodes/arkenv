@@ -9,10 +9,10 @@
 	},
 	"dependencies": {
 		"arkenv": "workspace:*",
-		"arktype": "^2.1.22"
+		"arktype": "^2.1.23"
 	},
 	"devDependencies": {
-		"@types/node": "24.7.2",
+		"@types/node": "24.8.1",
 		"tsx": "^4.20.6"
 	}
 }
