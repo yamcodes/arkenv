@@ -139,8 +139,10 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: windows-latest-pw-
+          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          restore-keys: |
+            windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            windows-latest-pw-
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
       - run: pnpm build
@@ -173,8 +175,10 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: macos-latest-pw-
+          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          restore-keys: |
+            macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            macos-latest-pw-
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
       - run: pnpm build
