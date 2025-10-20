@@ -2,16 +2,12 @@ name: tests
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
   schedule:
-    # Every Saturday
-    - cron: '0 0 * * 6'
+    - cron: "0 0 * * 6" # Every Saturday
 
-# Workflow-level concurrency control - cancels previous runs when new commits arrive
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -19,186 +15,112 @@ concurrency:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [lts/*, latest]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm turbo run test
+
+  test-typesafety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm run typecheck
+
+  test-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [lts/*, latest]
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.21
+      - run: pnpm install
+      - run: pnpm run build
+
   resolve-playwright-version:
-    name: Resolve Playwright version
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.out.outputs.version }}
     steps:
       - uses: actions/checkout@v5
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js 22
-        uses: actions/setup-node@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
-
-      # Install dependencies to ensure node_modules/@playwright/test exists
       - name: Install dependencies
         env:
-          # do not download browsers here
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: pnpm install --frozen-lockfile
-
       - name: Read @playwright/test version
         id: out
         run: |
           VER=$(node -e "console.log(require(require.resolve('@playwright/test/package.json')).version)")
           echo "version=$VER" >> "$GITHUB_OUTPUT"
-  test:
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [lts/*, latest]
-        # See: https://github.com/fuma-nama/fumadocs/issues/2456
-      fail-fast: false
-
-    steps:
-      - id: checkout
-        name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run test
-        run: pnpm turbo run test
-
-  test-typesafety:
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    steps:
-      - id: checkout
-        name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js 22
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run typecheck
-        run: pnpm run typecheck
-
-  test-build:
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [lts/*, latest]
-
-    steps:
-      - id: checkout
-        name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
-
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.21
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run build
-        run: pnpm run build
 
   test-e2e:
-    name: Test E2E
     needs: resolve-playwright-version
-    timeout-minutes: 12
     runs-on: ubuntu-latest
-
-    env:
-      PLAYWRIGHT_TIMEOUT: 300000
-      PLAYWRIGHT_HEADLESS: true
-      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-
+    timeout-minutes: 12
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
       options: --user 1001
-
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 2
-
-      # Set Turbo base/head for PRs, see: https://turborepo.com/docs/reference/run#--affected
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js 
-        uses: actions/setup-node@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: lts/*
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
+          cache: pnpm
+      - run: pnpm install
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm run test:e2e --affected
-        env:
-          TURBO_LOG: info
-          DEBUG: pw:api
-
-      # Pushes to main - run everything
+        run: pnpm run test:e2e --affected -v
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm run test:e2e
-        env:
-          DEBUG: pw:api
-
+        run: pnpm run test:e2e -v
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results
-          path: |
-            **/test-results/**
+          name: test-results-e2e
+          path: "**/test-results/**"
           retention-days: 30
   test-windows:
     if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'windows')
-    timeout-minutes: 15
     runs-on: windows-latest
     strategy:
       matrix:
@@ -216,47 +138,29 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
+          cache: pnpm
+      - run: pnpm install
+      - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
+          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
           restore-keys: |
+            windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
             windows-latest-pw-
-
-      - name: Install Playwright Browsers
+      - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
-
-      - name: Build
-        run: pnpm build
-
-      - name: Run test
-        run: pnpm turbo run test
-
-      - name: Test e2e
-        run: pnpm run test:e2e
-        env:
-          CI: true
-          PLAYWRIGHT_TIMEOUT: 300000
-          DEBUG: pw:api
-          PLAYWRIGHT_HEADLESS: true
-
+      - run: pnpm build
+      - run: pnpm turbo run test
+      - run: pnpm run test:e2e
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results
-          path: |
-            **/test-results/**
+          name: test-results-windows-${{ matrix.node-version }}
+          path: "**/test-results/**"
           retention-days: 30
 
   test-macos:
     if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'macos')
-    timeout-minutes: 15
     runs-on: macos-latest
     strategy:
       matrix:
@@ -274,40 +178,23 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
+          cache: pnpm
+      - run: pnpm install
+      - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
+          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
           restore-keys: |
+            macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
             macos-latest-pw-
-
-      - name: Install Playwright Browsers
+      - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
-
-      - name: Build
-        run: pnpm build
-
-      - name: Run test
-        run: pnpm turbo run test
-
-      - name: Test e2e
-        run: pnpm run test:e2e
-        env:
-          CI: true
-          PLAYWRIGHT_TIMEOUT: 300000
-          DEBUG: pw:api
-          PLAYWRIGHT_HEADLESS: true
-
+      - run: pnpm build
+      - run: pnpm turbo run test
+      - run: pnpm run test:e2e
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results
-          path: |
-            **/test-results/**
+          name: test-results-macos-${{ matrix.node-version }}
+          path: "**/test-results/**"
           retention-days: 30
