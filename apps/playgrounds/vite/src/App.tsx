@@ -41,6 +41,10 @@ function App() {
 				My boolean: {String(import.meta.env.VITE_MY_BOOLEAN)} (of type{" "}
 				{typeof import.meta.env.VITE_MY_BOOLEAN})
 			</p>
+			<p>
+				No prefix: {String(import.meta.env.NO_PREFIX)} (of type{" "}
+				{typeof import.meta.env.NO_PREFIX})
+			</p>
 		</>
 	);
 }

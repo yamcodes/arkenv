@@ -11,6 +11,7 @@ export default defineConfig({
 			VITE_MY_VAR: "string",
 			VITE_MY_NUMBER: type("string").pipe((str) => Number.parseInt(str, 10)),
 			VITE_MY_BOOLEAN: type("string").pipe((str) => str === "true"),
+			NO_PREFIX: "string.email",
 		}),
 	],
 });
