@@ -31,7 +31,7 @@
 		"fumadocs-mdx": "12.0.3",
 		"fumadocs-twoslash": "^3.1.8",
 		"fumadocs-ui": "15.8.5",
-		"import-in-the-middle": "^1.15.0",
+		"import-in-the-middle": "^2.0.0",
 		"lucide-react": "^0.545.0",
 		"next": "15.5.4",
 		"react": "^19.2.0",
