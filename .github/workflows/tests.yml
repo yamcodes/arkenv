@@ -64,14 +64,38 @@ jobs:
       - run: pnpm install
       - run: pnpm run build
 
+  resolve-playwright-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: pnpm install --frozen-lockfile
+      - name: Read @playwright/test version
+        id: out
+        run: |
+          VER=$(node -e "console.log(require(require.resolve('@playwright/test/package.json')).version)")
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+
   test-e2e:
+    needs: resolve-playwright-version
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
+      options: --user 1001
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 2 # Comparing with the base branch
-      # See: https://turborepo.com/docs/reference/run#--affected for more information about the --affected flag
+          fetch-depth: 2
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -83,8 +107,6 @@ jobs:
           node-version: lts/*
           cache: pnpm
       - run: pnpm install
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
       - name: Run E2E (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: pnpm run test:e2e --affected
