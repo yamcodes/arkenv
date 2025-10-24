@@ -23,7 +23,7 @@
 		"@vitejs/plugin-react-swc": "^4.1.0",
 		"globals": "^15.14.0",
 		"typescript": "~5.9.2",
-		"vite": "^7.1.5"
+		"vite": "^7.1.11"
 	},
 	"engines": {
 		"node": "22"
