@@ -45,7 +45,7 @@
 		"twoslash": "^0.3.4"
 	},
 	"devDependencies": {
-		"@swc/plugin-styled-jsx": "^9.1.0",
+		"@swc/plugin-styled-jsx": "^10.0.0",
 		"@tailwindcss/postcss": "^4.1.16",
 		"@testing-library/dom": "^10.4.1",
 		"@testing-library/jest-dom": "^6.7.0",
