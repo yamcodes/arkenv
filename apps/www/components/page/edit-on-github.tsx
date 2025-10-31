@@ -3,7 +3,6 @@
 import { captureMessage } from "@sentry/nextjs";
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { Button } from "../ui/button";
 
@@ -47,9 +46,5 @@ const EditOnGithubClient = ({ path }: EditOnGithubProps) => {
 };
 
 export const EditOnGithub = (props: EditOnGithubProps) => {
-	return (
-		<Suspense fallback={null}>
-			<EditOnGithubClient {...props} />
-		</Suspense>
-	);
+	return <EditOnGithubClient {...props} />;
 };
