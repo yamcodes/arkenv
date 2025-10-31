@@ -3,6 +3,7 @@
 import { captureMessage } from "@sentry/nextjs";
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { Button } from "../ui/button";
 
@@ -18,7 +19,7 @@ type EditOnGithubProps = {
 	path: string;
 };
 
-export const EditOnGithub = ({ path }: EditOnGithubProps) => {
+const EditOnGithubClient = ({ path }: EditOnGithubProps) => {
 	try {
 		return (
 			<Button asChild variant="link" className="p-0">
@@ -43,4 +44,12 @@ export const EditOnGithub = ({ path }: EditOnGithubProps) => {
 		});
 		return null;
 	}
+};
+
+export const EditOnGithub = (props: EditOnGithubProps) => {
+	return (
+		<Suspense fallback={null}>
+			<EditOnGithubClient {...props} />
+		</Suspense>
+	);
 };
