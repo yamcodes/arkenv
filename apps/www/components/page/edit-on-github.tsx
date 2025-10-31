@@ -18,7 +18,7 @@ type EditOnGithubProps = {
 	path: string;
 };
 
-const EditOnGithubClient = ({ path }: EditOnGithubProps) => {
+export const EditOnGithub = ({ path }: EditOnGithubProps) => {
 	try {
 		return (
 			<Button asChild variant="link" className="p-0">
@@ -43,8 +43,4 @@ const EditOnGithubClient = ({ path }: EditOnGithubProps) => {
 		});
 		return null;
 	}
-};
-
-export const EditOnGithub = (props: EditOnGithubProps) => {
-	return <EditOnGithubClient {...props} />;
 };
