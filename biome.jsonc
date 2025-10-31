@@ -94,6 +94,16 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": ["**/bin/**/*"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConsole": "off" // Not needed in scripts
+					}
+				}
+			}
 		}
 	]
 }
