@@ -113,7 +113,7 @@ jobs:
       - name: Run E2E (main)
         if: ${{ github.event_name != 'pull_request' }}
         run: pnpm run test:e2e --log-order=stream
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: test-results-e2e
@@ -152,7 +152,7 @@ jobs:
       - run: pnpm build
       - run: pnpm turbo run test
       - run: pnpm run test:e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: test-results-windows-${{ matrix.node-version }}
@@ -192,7 +192,7 @@ jobs:
       - run: pnpm build
       - run: pnpm turbo run test
       - run: pnpm run test:e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: test-results-macos-${{ matrix.node-version }}
