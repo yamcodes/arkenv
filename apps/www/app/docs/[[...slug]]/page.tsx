@@ -24,7 +24,7 @@ export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
 	// Access headers() to mark route as dynamic and allow crypto.randomUUID()
-	headers();
+	await headers();
 
 	const params = await props.params;
 	const page = source.getPage(params.slug);
