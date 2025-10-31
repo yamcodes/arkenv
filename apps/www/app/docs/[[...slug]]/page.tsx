@@ -11,7 +11,6 @@ import {
 	DocsPage,
 	DocsTitle,
 } from "fumadocs-ui/page";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { EditOnGithub } from "~/components/page/edit-on-github";
 import { Button } from "~/components/ui/button";
@@ -23,9 +22,6 @@ import { source } from "~/lib/source";
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
-	// Access headers() to mark route as dynamic and allow crypto.randomUUID()
-	await headers();
-
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
