@@ -6,6 +6,7 @@ import type { NextConfig } from "next";
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
 	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
+	cacheComponents: true,
 	typescript: {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
