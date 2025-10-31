@@ -6,10 +6,6 @@ import type { NextConfig } from "next";
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
 	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
-	eslint: {
-		// We don't use eslint, we use biome on ci
-		ignoreDuringBuilds: true,
-	},
 	typescript: {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
