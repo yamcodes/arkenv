@@ -36,7 +36,11 @@
 				"noBannedTypes": "off"
 			},
 			"correctness": {
-				"noUnusedImports": "warn"
+				"noUnusedImports": "warn",
+				"useParseIntRadix": {
+					"fix": "safe",
+					"level": "warn"
+				}
 			},
 			"suspicious": {
 				"noConsole": "warn",

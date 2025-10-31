@@ -10,6 +10,7 @@
 		"www": "turbo run dev --filter=www",
 		"release": "pnpm run build:packages && changeset publish",
 		"fix": "biome check --write .",
+		"fix:unsafe": "biome check --write --unsafe .",
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
 		"clean": "rimraf dist node_modules",

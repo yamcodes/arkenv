@@ -4,7 +4,7 @@ const { spawn, execSync } = require("node:child_process");
 
 // Get Node.js major version
 const nodeVersion = process.version;
-const majorVersion = Number.parseInt(nodeVersion.slice(1).split(".")[0]);
+const majorVersion = Number.parseInt(nodeVersion.slice(1).split(".")[0], 10);
 
 // Set NODE_OPTIONS based on Node.js version
 if (majorVersion >= 25) {
