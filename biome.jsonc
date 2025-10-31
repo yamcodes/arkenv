@@ -65,6 +65,11 @@
 			"quoteStyle": "double"
 		}
 	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
 	"overrides": [
 		{
 			"includes": ["**/examples/**/*", "**/playgrounds/**/*"],
