@@ -9,6 +9,59 @@ Object.defineProperty(window, "open", {
 	writable: true,
 });
 
+// Mock next-video's fetch behavior to prevent URL fetch errors in tests
+global.fetch = vi.fn(() =>
+	Promise.resolve({
+		ok: true,
+		status: 200,
+		json: async () => ({}),
+		text: async () => "",
+	} as Response),
+) as typeof fetch;
+
+// Mock Next.js Image component
+vi.mock("next/image", () => ({
+	default: ({ src, alt, width, height, className }: any) => (
+		// eslint-disable-next-line @next/next/no-img-element
+		<img
+			src={src}
+			alt={alt}
+			width={width}
+			height={height}
+			className={className}
+		/>
+	),
+}));
+
+// Mock next-video/background-video to prevent fetch errors and match test expectations
+vi.mock("next-video/background-video", () => ({
+	default: ({ src, width, onError, ...props }: any) => {
+		// Extract the video URL from the src object if it's an asset
+		const videoSrc =
+			typeof src === "string" ? src : src?.src || "/videos/demo.mp4";
+		return (
+			<video
+				src={videoSrc}
+				width={width}
+				autoPlay
+				loop
+				muted
+				playsInline
+				poster="/assets/demo.png"
+				onError={onError}
+				className="block max-h-[600px] sm:max-h-[1000px] object-contain"
+				{...props}
+			>
+				<source
+					src="https://x9fkbqb4whr3w456.public.blob.vercel-storage.com/hero.mp4"
+					type="video/mp4"
+				/>
+				You need a browser that supports HTML5 video to view this video.
+			</video>
+		);
+	},
+}));
+
 describe("VideoDemo", () => {
 	beforeEach(() => {
 		mockWindowOpen.mockClear();
