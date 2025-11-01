@@ -6,10 +6,7 @@ import type { NextConfig } from "next";
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
 	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
-	eslint: {
-		// We don't use eslint, we use biome on ci
-		ignoreDuringBuilds: true,
-	},
+	// cacheComponents: true, // TODO: Uncomment this once https://github.com/getsentry/sentry-javascript/issues/17895 is fixed
 	typescript: {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
