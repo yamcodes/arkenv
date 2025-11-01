@@ -12,7 +12,6 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { EditOnGithub } from "~/components/page/edit-on-github";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -66,9 +65,7 @@ export default async function Page(props: {
 					</DocsBody>
 				</div>
 				<div className="flex flex-col items-start pt-16">
-					<Suspense fallback={null}>
-						<EditOnGithub path={page.path} />
-					</Suspense>
+					<EditOnGithub path={page.path} />
 					<div className="mt-8 w-full">
 						<Separator />
 					</div>
