@@ -42,30 +42,36 @@ vi.mock("next/image", () => ({
 vi.mock("next-video/background-video", () => ({
 	default: ({
 		src,
-		width,
-		onError,
+		poster,
+		className,
 		...props
 	}: {
 		src: string | { src: string };
-		width?: number;
-		onError?: () => void;
+		poster?: string;
 		className?: string;
+		[key: string]: unknown;
 	}) => {
-		// Extract the video URL from the src object if it's an asset
+		// Determine the video src from the incoming src prop
+		// Support both string URLs and asset objects like { src: string }
 		const videoSrc =
 			typeof src === "string" ? src : src?.src || "/videos/demo.mp4";
+
+		// Forward all props (including onError, width, className, etc.)
+		// so tests see real behavior
+		// Set poster to props.poster || "/assets/demo.png" so the mock reflects
+		// the actual poster prop when provided
 		return (
 			<video
 				autoPlay
 				loop
 				muted
 				playsInline
-				src={videoSrc}
-				poster="/assets/demo.png"
-				width={width || 958}
-				className="block max-h-[600px] sm:max-h-[1000px] object-contain"
-				onError={onError}
 				{...props}
+				src={videoSrc}
+				poster={poster || "/assets/demo.png"}
+				className={
+					className || "block max-h-[600px] sm:max-h-[1000px] object-contain"
+				}
 			>
 				You need a browser that supports HTML5 video to view this video.
 			</video>
