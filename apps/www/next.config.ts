@@ -6,7 +6,7 @@ import type { NextConfig } from "next";
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
 	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
-	cacheComponents: true,
+	// cacheComponents: true, // TODO: Uncomment this once https://github.com/getsentry/sentry-javascript/issues/17895 is fixed
 	typescript: {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
@@ -30,8 +30,9 @@ const sentryConfig = {
 	widenClientFileUpload: true,
 
 	// Automatically annotate React components to show their full name in breadcrumbs and session replay
+	// Disabled to avoid crypto.randomUUID() issues with static generation
 	reactComponentAnnotation: {
-		enabled: true,
+		enabled: false,
 	},
 
 	// Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
