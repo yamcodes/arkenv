@@ -2,6 +2,7 @@ import path from "node:path";
 import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
+import { withNextVideo } from "next-video/process";
 
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
@@ -56,4 +57,6 @@ const sentryConfig = {
 	authToken: process.env.SENTRY_AUTH_TOKEN,
 } as const satisfies SentryBuildOptions;
 
-export default withSentryConfig(createMDX()(config), sentryConfig);
+export default withNextVideo(
+	withSentryConfig(createMDX()(config), sentryConfig),
+);

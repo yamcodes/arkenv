@@ -28,3 +28,10 @@ yarn-error.log*
 next-env.d.ts
 # Sentry Config File
 .env.sentry-build-plugin
+
+# next-video
+videos/*
+!videos/*.json
+!videos/*.js
+!videos/*.ts
+public/_next-video
