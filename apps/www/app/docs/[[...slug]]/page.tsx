@@ -11,7 +11,6 @@ import {
 	DocsPage,
 	DocsTitle,
 } from "fumadocs-ui/page";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { EditOnGithub } from "~/components/page/edit-on-github";
@@ -24,10 +23,6 @@ import { source } from "~/lib/source";
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
-	// Access headers() to enable crypto.randomUUID() for Sentry instrumentation
-	// This must be called before MetadataOutlet renders
-	await headers();
-
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
@@ -90,9 +85,6 @@ export async function generateStaticParams() {
 export async function generateMetadata(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
-	// Access headers() to enable crypto.randomUUID() for Sentry instrumentation
-	await headers();
-
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();

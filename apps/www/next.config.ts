@@ -30,9 +30,8 @@ const sentryConfig = {
 	widenClientFileUpload: true,
 
 	// Automatically annotate React components to show their full name in breadcrumbs and session replay
-	// Disabled to avoid crypto.randomUUID() issues with static generation
 	reactComponentAnnotation: {
-		enabled: false,
+		enabled: true,
 	},
 
 	// Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
