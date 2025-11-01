@@ -1,6 +1,12 @@
 "use client";
 
+import Image from "next/image";
+import BackgroundVideo from "next-video/background-video";
 import { useState } from "react";
+import demo from "~/videos/demo.mp4";
+
+const WIDTH = 958;
+const HEIGHT = 600;
 
 export function VideoDemo() {
 	const [videoError, setVideoError] = useState(false);
@@ -25,29 +31,19 @@ export function VideoDemo() {
 				aria-label="Open interactive demo in a new tab"
 			>
 				{videoError ? (
-					<img
+					<Image
 						src="/assets/demo.gif"
 						alt="ArkEnv Demo"
-						width={958}
+						width={WIDTH}
+						height={HEIGHT}
 						className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 					/>
 				) : (
-					<video
-						autoPlay
-						loop
-						muted
-						playsInline
-						width={958}
-						poster="/assets/demo.png"
-						className="block max-h-[600px] sm:max-h-[1000px] object-contain"
+					<BackgroundVideo
+						src={demo}
+						width={WIDTH}
 						onError={handleVideoError}
-					>
-						<source
-							src="https://x9fkbqb4whr3w456.public.blob.vercel-storage.com/hero.mp4"
-							type="video/mp4"
-						/>
-						You need a browser that supports HTML5 video to view this video.
-					</video>
+					/>
 				)}
 			</button>
 		</div>
