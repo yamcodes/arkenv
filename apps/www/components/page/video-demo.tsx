@@ -42,6 +42,7 @@ export function VideoDemo() {
 					<BackgroundVideo
 						src={demo}
 						width={WIDTH}
+						height={HEIGHT}
 						poster="/assets/demo.png"
 						className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 						onError={handleVideoError}
