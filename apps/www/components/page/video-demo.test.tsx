@@ -213,4 +213,50 @@ describe("VideoDemo", () => {
 			"noopener,noreferrer",
 		);
 	});
+
+	it("falls back to demo.gif when video fails to load", () => {
+		render(<VideoDemo />);
+
+		const button = screen.getByRole("button");
+		const video = button.querySelector("video");
+
+		// Initially, video should be present
+		expect(video).toBeInTheDocument();
+
+		// Simulate video error
+		fireEvent.error(video!);
+
+		// After error, video should be replaced with img
+		expect(button.querySelector("video")).not.toBeInTheDocument();
+		const img = button.querySelector("img");
+		expect(img).toBeInTheDocument();
+		expect(img).toHaveAttribute("src", "/assets/demo.gif");
+		expect(img).toHaveAttribute("alt", "ArkEnv Demo");
+		expect(img).toHaveAttribute("width", "958");
+		expect(img).toHaveClass(
+			"block",
+			"max-h-[600px]",
+			"sm:max-h-[1000px]",
+			"object-contain",
+		);
+	});
+
+	it("maintains button click behavior after fallback to demo.gif", () => {
+		render(<VideoDemo />);
+
+		const button = screen.getByRole("button");
+		const video = button.querySelector("video");
+
+		// Simulate video error
+		fireEvent.error(video!);
+
+		// Button should still be clickable and open StackBlitz URL
+		fireEvent.click(button);
+
+		expect(mockWindowOpen).toHaveBeenCalledWith(
+			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts",
+			"_blank",
+			"noopener,noreferrer",
+		);
+	});
 });

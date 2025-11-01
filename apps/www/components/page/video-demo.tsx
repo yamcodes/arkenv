@@ -1,10 +1,18 @@
 "use client";
 
+import { useState } from "react";
+
 export function VideoDemo() {
+	const [videoError, setVideoError] = useState(false);
+
 	const handleVideoClick = () => {
 		const stackblitzUrl =
 			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts";
 		window.open(stackblitzUrl, "_blank", "noopener,noreferrer");
+	};
+
+	const handleVideoError = () => {
+		setVideoError(true);
 	};
 
 	return (
@@ -16,21 +24,31 @@ export function VideoDemo() {
 				onClick={handleVideoClick}
 				aria-label="Open interactive demo in a new tab"
 			>
-				<video
-					autoPlay
-					loop
-					muted
-					playsInline
-					width={958}
-					poster="/assets/demo.png"
-					className="block max-h-[600px] sm:max-h-[1000px] object-contain"
-				>
-					<source
-						src="https://x9fkbqb4whr3w456.public.blob.vercel-storage.com/hero.mp4"
-						type="video/mp4"
+				{videoError ? (
+					<img
+						src="/assets/demo.gif"
+						alt="ArkEnv Demo"
+						width={958}
+						className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 					/>
-					You need a browser that supports HTML5 video to view this video.
-				</video>
+				) : (
+					<video
+						autoPlay
+						loop
+						muted
+						playsInline
+						width={958}
+						poster="/assets/demo.png"
+						className="block max-h-[600px] sm:max-h-[1000px] object-contain"
+						onError={handleVideoError}
+					>
+						<source
+							src="https://x9fkbqb4whr3w456.public.blob.vercel-storage.com/hero.mp4"
+							type="video/mp4"
+						/>
+						You need a browser that supports HTML5 video to view this video.
+					</video>
+				)}
 			</button>
 		</div>
 	);
