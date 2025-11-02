@@ -45,6 +45,11 @@ export function VideoDemo() {
 						height={HEIGHT}
 						poster="/assets/demo.png"
 						onError={handleVideoError}
+						autoPlay
+						loop
+						muted
+						playsInline
+						className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 					/>
 				)}
 			</button>
