@@ -19,12 +19,12 @@ function isHlsJsLibraryError(errorText: string): boolean {
 	// 2. HLS-specific error details like manifestIncompatibleCodecsError
 	// 3. HLS manifest file references (.m3u8) combined with HLS error types
 	// 4. HLS.js-specific error messages about codec compatibility
-	
+
 	const hasHlsJsIndicator =
 		errorText.includes("getErrorFromHlsErrorData") ||
 		errorText.includes("manifestIncompatibleCodecsError") ||
 		errorText.includes("no level with compatible codecs found");
-	
+
 	// If mediaError is present, ensure it's in HLS.js context
 	// by checking for HLS indicators or .m3u8 file references
 	if (errorText.includes("mediaError")) {
@@ -35,7 +35,7 @@ function isHlsJsLibraryError(errorText: string): boolean {
 			errorText.includes("manifest")
 		);
 	}
-	
+
 	return hasHlsJsIndicator;
 }
 
@@ -58,7 +58,7 @@ export async function assertNoConsoleErrors(
 		if (msg.type() === "error") {
 			// Filter out known non-critical errors
 			const errorText = msg.text();
-			
+
 			// Filter out generic non-critical errors
 			if (
 				errorText.includes("403") ||
@@ -66,12 +66,12 @@ export async function assertNoConsoleErrors(
 			) {
 				return; // Skip this error
 			}
-			
+
 			// Filter out HLS.js library errors (but not generic media errors)
 			if (isHlsJsLibraryError(errorText)) {
 				return; // Skip HLS.js library errors
 			}
-			
+
 			// All other errors should be reported
 			consoleErrors.push(errorText);
 		}
