@@ -20,7 +20,7 @@ This project is built on [ArkType](https://arktype.io/), TypeScript's 1:1 valida
 Define environment variable schemas using ArkType syntax:
 
 ```typescript
-import { type } from "./type";
+import { type } from "arktype";
 
 const env = createEnv({
   HOST: "string.host", // Custom host type
