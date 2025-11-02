@@ -1,0 +1,87 @@
+---
+description: ArkType-specific patterns and conventions
+globs:
+  - "packages/arkenv/**/*.ts"
+alwaysApply: false
+---
+
+# ArkType Patterns
+
+This project is built on [ArkType](https://arktype.io/), TypeScript's 1:1 validator.
+
+## Core Concepts
+
+- Use ArkType's `type()` function to define schemas
+- Leverage ArkType's type inference for TypeScript types
+- Use the scoped `$` type system for custom types (see `scope.ts`)
+
+## Schema Definition
+
+Define environment variable schemas using ArkType syntax:
+
+```typescript
+import { type } from "./type";
+
+const env = createEnv({
+  HOST: "string.host", // Custom host type
+  PORT: "number.port", // Custom port type
+  NODE_ENV: "'development' | 'production' | 'test'", // Union type
+});
+```
+
+## Type Validation
+
+- ArkType validates at runtime
+- TypeScript types are inferred from the schema
+- Invalid values throw `ArkEnvError`
+
+## Custom Types
+
+Custom types are defined in `scope.ts` using ArkType's scoped type system:
+
+```typescript
+import { $ } from "./scope";
+
+// Custom types are defined using $ and available as:
+// "string.host", "number.port", etc.
+```
+
+## Type Inference
+
+- Use `type.infer` to extract TypeScript types from schemas
+- The return type of `createEnv` is inferred from the schema
+- No manual type definitions needed
+
+## Error Handling
+
+- ArkType returns `type.errors` for validation failures
+- Convert to `ArkEnvError` for user-friendly messages
+- Error messages include variable name and expected type
+
+## Best Practices
+
+- Keep schemas readable and TypeScript-like
+- Use union types for enums (e.g., `"'dev' | 'prod'"`)
+- Leverage ArkType's built-in types where possible
+- Custom types should be defined in `scope.ts` for reusability
+
+## Example
+
+```typescript
+import arkenv from "arkenv";
+
+const env = arkenv({
+  HOST: "string.host",
+  PORT: "number.port",
+  NODE_ENV: "'development' | 'production' | 'test'",
+  DEBUG: "boolean",
+  TIMEOUT: "number >= 0",
+});
+
+// TypeScript knows the exact types:
+// env.HOST: string (validated as host)
+// env.PORT: number (validated as port 0-65535)
+// env.NODE_ENV: "development" | "production" | "test"
+// env.DEBUG: boolean
+// env.TIMEOUT: number (>= 0)
+```

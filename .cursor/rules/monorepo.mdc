@@ -1,0 +1,101 @@
+---
+description: Monorepo structure and conventions
+globs:
+  - "**/package.json"
+  - "turbo.json"
+alwaysApply: true
+---
+
+# Monorepo Guidelines
+
+This is a pnpm + Turborepo monorepo.
+
+## Directory Structure
+
+```
+arkenv/
+├── packages/          # Published npm packages
+│   ├── arkenv/       # Core package
+│   └── vite-plugin/  # Vite plugin package
+├── apps/             # Applications
+│   ├── www/          # Documentation site (Next.js)
+│   └── playgrounds/  # Playground apps for testing
+├── examples/         # Example projects
+├── tooling/          # Development tools (not published)
+└── turbo.json        # Turborepo configuration
+```
+
+## Package Types
+
+### Published Packages (`packages/`)
+- These are published to npm
+- Require changesets for versioning
+- Must have proper exports and types
+- Examples: `arkenv`, `@arkenv/vite-plugin`
+
+### Applications (`apps/`)
+- Not published to npm
+- May depend on workspace packages
+- Examples: `www`, `playgrounds/*`
+
+### Examples (`examples/`)
+- Standalone example projects
+- Not published
+- May have their own lock files
+- Used as test fixtures
+
+### Tooling (`tooling/`)
+- Development and testing tools
+- Not published to npm
+- Excluded from changesets
+- Examples: `playwright-www`
+
+## Turborepo
+
+Tasks are defined in `turbo.json`. Common tasks:
+- `build` - Build packages
+- `dev` - Development mode
+- `typecheck` - Type checking
+- `test` - Run tests
+- `test:e2e` - End-to-end tests
+
+## Filtering
+
+Use Turborepo filters to run tasks on specific packages:
+
+```bash
+# Run build for specific package
+turbo run build --filter=arkenv
+
+# Run tests for all packages
+turbo run test --filter=./packages/*
+
+# Run for package and its dependencies
+turbo run build --filter=www...
+```
+
+## Changesets
+
+- Published packages require changesets
+- Create changeset with: `pnpm changeset`
+- Changesets are in `.changeset/` directory
+- Examples and tooling don't need changesets
+
+## Dependencies Between Packages
+
+- Use `workspace:*` protocol for workspace dependencies
+- `packages/arkenv` should not depend on other workspace packages
+- `packages/vite-plugin` depends on `arkenv`
+- `apps/www` may depend on workspace packages
+
+## Build Output
+
+- Package builds go to `dist/` directory
+- Build output should be gitignored
+- Source files are in `src/` directory
+
+## Publishing
+
+- Only packages in `packages/` are published
+- Publishing is handled by changesets
+- Run `pnpm release` to publish after merging PRs
