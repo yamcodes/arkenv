@@ -1,0 +1,149 @@
+---
+description: Testing patterns and guidelines
+globs:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/__tests__/**/*.ts"
+  - "**/__tests__/**/*.tsx"
+alwaysApply: true
+---
+
+# Test Patterns
+
+## Testing Philosophy
+
+**"Examples as Test Fixtures"** - Examples serve dual purposes:
+1. **Documentation** - Show real-world usage patterns
+2. **Test Fixtures** - Provide real projects to test against
+
+**"Test the User Journey"** - End-to-end tests validate complete user workflows in real applications.
+
+## Test Structure
+
+### Unit Tests (`packages/arkenv/src/*.test.ts`)
+- Test individual functions and edge cases
+- Validate error handling and type checking
+- Fast, isolated tests for core logic
+- Co-locate with source: `create-env.ts` → `create-env.test.ts`
+
+### Integration Tests (`packages/vite-plugin/src/*.test.ts`)
+- Test the vite plugin using the `with-vite-react-ts` example as a fixture
+- Validate that the plugin works with real Vite projects
+- Use fixture-based testing pattern (see `__fixtures__` directory)
+
+### End-to-End Tests (`tooling/playwright-www/`)
+- Test complete user workflows in the www application
+- Validate real browser behavior across Chromium, Firefox, and WebKit
+- Focus on user-facing behavior, not implementation details
+
+## Component Testing (www app)
+
+**Test behavior, not aesthetics.** Focus on what users can do and what the component guarantees through its API.
+
+### What We Test
+- **Public API** - props, events, and component contract
+- **User behavior** - clicks, typing, focus, keyboard, ARIA
+- **State transitions** - loading, success, error, disabled states
+- **Accessibility** - focus order, keyboard activation, aria attributes
+- **Side effects** - UI changes that affect user experience
+
+### What We Don't Test
+- Pure styling or CSS classes
+- Library internals (Radix/shadcn)
+- Implementation details (hooks, setState, private variables)
+- Visual variants (use Storybook instead)
+
+## Test Framework
+
+- Use **Vitest** for unit and integration tests
+- Use **Playwright** for end-to-end tests
+- Use **Testing Library** for component tests (with `user-event` for real user simulation)
+
+## Test Patterns
+
+### Unit Test Example
+
+```typescript
+import { describe, expect, it } from "vitest";
+import { createEnv } from "./create-env";
+
+describe("createEnv", () => {
+  it("should validate string env variables", () => {
+    process.env.TEST_STRING = "hello";
+    const env = createEnv({
+      TEST_STRING: "string",
+    });
+    expect(env.TEST_STRING).toBe("hello");
+  });
+});
+```
+
+### Fixture-Based Integration Test Example
+
+```typescript
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
+import { describe } from "vitest";
+
+const fixturesDir = join(__dirname, "__fixtures__");
+
+for (const name of readdirSync(fixturesDir)) {
+  describe(`Fixture: ${name}`, () => {
+    // Test each fixture
+  });
+}
+```
+
+### Component Test Example
+
+```typescript
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it } from "vitest";
+import { Component } from "./component";
+
+describe("Component", () => {
+  it("should handle user interaction", async () => {
+    const user = userEvent.setup();
+    render(<Component />);
+    
+    const button = screen.getByRole("button", { name: /submit/i });
+    await user.click(button);
+    
+    expect(screen.getByText("Success")).toBeInTheDocument();
+  });
+});
+```
+
+## Running Tests
+
+```bash
+# Run all tests
+pnpm test -- --run
+
+# Run specific package tests
+pnpm test --project arkenv -- --run
+pnpm test --project vite-plugin -- --run
+
+# Run end-to-end tests
+pnpm run test:e2e
+
+# Run e2e with UI
+pnpm run test:e2e:ui
+```
+
+## Test Organization
+
+- Keep tests fast, deterministic, and parallelizable
+- Mock at component boundaries (network, time, context)
+- Query by role, name, label, and text (accessibility first)
+- Use `beforeEach`/`afterEach` for cleanup, not `beforeAll`/`afterAll` when possible
+
+## Coverage Goals
+
+- ✅ Environment variable parsing and validation
+- ✅ Type checking and error handling
+- ✅ Default value handling
+- ✅ Custom type validation (host, port, etc.)
+- ✅ Plugin integration with Vite
+- ✅ Real project build testing using examples as fixtures
