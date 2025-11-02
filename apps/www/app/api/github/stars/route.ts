@@ -29,7 +29,10 @@ export async function GET(_request: NextRequest) {
 		// Use GitHub token if available for higher rate limits (5,000/hour vs 60/hour)
 		const githubToken = process.env.GITHUB_TOKEN;
 		if (githubToken) {
-			headers.Authorization = `Bearer ${githubToken}`;
+			// Classic PATs (ghp_*) require "token" scheme, fine-grained tokens use "Bearer"
+			headers.Authorization = githubToken.startsWith("ghp_")
+				? `token ${githubToken}`
+				: `Bearer ${githubToken}`;
 		}
 
 		const response = await fetch(
