@@ -5,8 +5,8 @@ import BackgroundVideo from "next-video/background-video";
 import { useState } from "react";
 import demo from "~/videos/demo.mp4";
 
-const WIDTH = 958;
-const HEIGHT = 600;
+const WIDTH = 800;
+const HEIGHT = 653;
 
 export function VideoDemo() {
 	const [videoError, setVideoError] = useState(false);
@@ -44,7 +44,6 @@ export function VideoDemo() {
 						width={WIDTH}
 						height={HEIGHT}
 						poster="/assets/demo.png"
-						className="block max-h-[600px] sm:max-h-[1000px] object-contain"
 						onError={handleVideoError}
 					/>
 				)}
