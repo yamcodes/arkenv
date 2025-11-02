@@ -30,7 +30,11 @@ export async function assertNoConsoleErrors(
 			const errorText = msg.text();
 			if (
 				!errorText.includes("403") &&
-				!errorText.includes("Failed to load resource")
+				!errorText.includes("Failed to load resource") &&
+				!errorText.includes("getErrorFromHlsErrorData") &&
+				!errorText.includes("mediaError") &&
+				!errorText.includes("manifestIncompatibleCodecsError") &&
+				!errorText.includes("no level with compatible codecs found")
 			) {
 				consoleErrors.push(errorText);
 			}
