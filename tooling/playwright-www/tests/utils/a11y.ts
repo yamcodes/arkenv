@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 interface AxeScanOptions {
 	/** Tags to include in the scan (default: ["wcag2a", "wcag2aa", "wcag21aa"]) */
@@ -12,7 +12,13 @@ interface AxeScanOptions {
 	allowedViolations?: string[];
 }
 
-type ImpactLevel = "critical" | "serious" | "moderate" | "minor";
+type ImpactLevel =
+	| "critical"
+	| "serious"
+	| "moderate"
+	| "minor"
+	| null
+	| undefined;
 
 /**
  * Format violation details for error messages
@@ -80,10 +86,28 @@ export async function assertNoA11yViolations(
 		(v) => v.impact === "moderate" || v.impact === "minor",
 	);
 
+	// Handle violations without impact (impact is null, undefined, or empty)
+	const unknownImpactViolations = allViolations.filter(
+		(v) => !v.impact || v.impact === null,
+	);
+	const unallowedUnknownImpactViolations = unknownImpactViolations.filter(
+		(v) => !allowedViolations.includes(v.id),
+	);
+
 	// Filter out explicitly allowed violations from moderate/minor
 	const unallowedModerateMinorViolations = moderateMinorViolations.filter(
 		(v) => !allowedViolations.includes(v.id),
 	);
+
+	// Fail on unknown impact violations first (they're most suspicious)
+	if (unallowedUnknownImpactViolations.length > 0) {
+		const errorDetails = formatViolationDetails(
+			unallowedUnknownImpactViolations,
+		);
+		throw new Error(
+			`Axe returned violations without an impact rating (treated as failures):\n\n${errorDetails}\n\nIf these should be tolerated, add their IDs to the 'allowedViolations' option.`,
+		);
+	}
 
 	// Fail on critical/serious violations
 	if (criticalSeriousViolations.length > 0) {
