@@ -81,10 +81,9 @@ export async function assertNoAccessibilityViolations(
 	);
 
 	// Filter out explicitly allowed violations from moderate/minor
-	const unallowedModerateMinorViolations =
-		moderateMinorViolations.filter(
-			(v) => !allowedViolations.includes(v.id),
-		);
+	const unallowedModerateMinorViolations = moderateMinorViolations.filter(
+		(v) => !allowedViolations.includes(v.id),
+	);
 
 	// Fail on critical/serious violations
 	if (criticalSeriousViolations.length > 0) {
@@ -113,4 +112,3 @@ export async function assertNoAccessibilityViolations(
 	// - Only moderate/minor violations that are explicitly allowed
 	// Both cases are acceptable
 }
-
