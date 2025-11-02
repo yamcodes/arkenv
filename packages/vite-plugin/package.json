@@ -12,6 +12,7 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
+		"arktype": "^2.1.23",
 		"tsdown": "^0.15.10",
 		"typescript": "^5.9.3",
 		"vite": "7.1.12",

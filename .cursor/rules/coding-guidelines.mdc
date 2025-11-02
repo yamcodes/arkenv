@@ -1,0 +1,72 @@
+---
+description: Coding guidelines and standards for ArkEnv
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+alwaysApply: true
+---
+
+# Coding Guidelines
+
+## TypeScript
+
+- Prefer `type` over `interface` for type definitions
+- Use TypeScript 5.1+ features when appropriate
+- Leverage `const` type parameters for better inference
+- Use JSDoc comments for public APIs
+
+## Code Style
+
+This project uses [Biome](https://biomejs.dev/) for formatting and linting. The configuration is in `biome.jsonc`.
+
+### Key Style Rules
+
+- **Indentation**: Use tabs (not spaces)
+- **Quotes**: Use double quotes for strings
+- **Imports**: Organize imports automatically (Biome handles this)
+- **Types**: Use `type` instead of `interface`
+- **Type inference**: Avoid explicit types when TypeScript can infer them (`noInferrableTypes` error)
+- **Const assertions**: Use `as const` where appropriate (`useAsConstAssertion` error)
+
+### Linting Rules
+
+- **Parameter assignment**: Don't reassign function parameters (`noParameterAssign` error)
+- **Const assertions**: Always use `as const` for immutable values (`useAsConstAssertion` error)
+- **Default parameters**: Place default parameters last (`useDefaultParameterLast` error)
+- **Enums**: Always initialize enum values (`useEnumInitializers` error)
+- **Self-closing elements**: Use self-closing JSX elements (`useSelfClosingElements` error)
+- **Single variable declarations**: Declare one variable per statement (`useSingleVarDeclarator` error)
+- **Unused template literals**: Avoid unnecessary template literals (`noUnusedTemplateLiteral` error)
+- **Number namespace**: Prefer `Number.parseInt` over global `parseInt` (`useNumberNamespace` error)
+- **Console usage**: Console usage is a warning (allowed in `bin/` and examples/playgrounds)
+
+## File Organization
+
+- Co-locate tests: `Component.tsx` next to `Component.test.tsx`
+- Use barrel exports (`index.ts`) for package entry points
+- Keep files focused and single-purpose
+
+## Naming Conventions
+
+- **Files**: Use kebab-case for files (`create-env.ts`)
+- **Functions**: Use camelCase (`createEnv`)
+- **Types**: Use PascalCase (`ArkEnvError`)
+- **Constants**: Use UPPER_SNAKE_CASE for environment variables and constants
+
+## Documentation
+
+- Use JSDoc comments for public APIs
+- Include examples in JSDoc when helpful
+- Document complex type logic
+
+## Error Handling
+
+- Use `ArkEnvError` for environment variable validation errors
+- Provide clear, actionable error messages
+- Include the variable name and expected type in errors
+
+## Performance
+
+- Keep bundle size small (< 1kB gzipped goal)
+- Avoid unnecessary dependencies
+- Prefer tree-shakeable exports

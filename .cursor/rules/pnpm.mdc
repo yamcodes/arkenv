@@ -1,0 +1,75 @@
+---
+description: pnpm package manager guidelines
+globs:
+  - "**/package.json"
+  - "pnpm-lock.yaml"
+  - "pnpm-workspace.yaml"
+alwaysApply: true
+---
+
+# pnpm Guidelines
+
+This monorepo uses **pnpm** as the package manager.
+
+## Package Manager
+
+- Always use `pnpm` for all package management operations
+- Never use `npm` or `yarn` commands
+- The project uses `pnpm@10.20.0` (specified in `packageManager` field)
+
+## Common Commands
+
+```bash
+# Install dependencies
+pnpm install
+
+# Add a dependency to a workspace package
+pnpm add <package> --filter <workspace-name>
+
+# Add a dev dependency
+pnpm add -D <package> --filter <workspace-name>
+
+# Run a script in a specific package
+pnpm --filter <workspace-name> <script>
+
+# Run a script across all packages
+pnpm run <script>
+```
+
+## Workspace Structure
+
+This is a pnpm workspace monorepo. Packages are defined in:
+- `packages/` - Published npm packages
+- `apps/` - Applications (www, playgrounds)
+- `tooling/` - Development tools (not published)
+- `examples/` - Example projects
+
+## Workspace Protocol
+
+When referencing workspace packages, use the `workspace:*` protocol:
+
+```json
+{
+  "dependencies": {
+    "arkenv": "workspace:*"
+  }
+}
+```
+
+## Only Built Dependencies
+
+Certain dependencies are configured to use `onlyBuiltDependencies` in `pnpm.onlyBuiltDependencies`. These are typically native dependencies that need special handling:
+
+- `@biomejs/biome`
+- `@sentry/cli`
+- `@swc/core`
+- `@tailwindcss/oxide`
+- `@vercel/speed-insights`
+- `esbuild`
+- `sharp`
+
+## Lock File
+
+- Always commit `pnpm-lock.yaml`
+- Never manually edit the lock file
+- Run `pnpm install` to update the lock file when dependencies change
