@@ -3,7 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 const isCi = Boolean(process.env.CI);
 
 // Worker configuration for parallel test execution
-// 
+//
 // Parallelization strategy:
 // - CI: Tests are split into parallel jobs (a11y vs functional) via GitHub Actions matrix
 // - Each job runs tests across 3 browsers (chromium, firefox, webkit) in parallel
