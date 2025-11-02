@@ -10,8 +10,38 @@ interface ConsoleErrorOptions {
 }
 
 /**
+ * Check if an error is an HLS.js library error (not a generic media error).
+ * Only filters HLS.js-specific errors to avoid suppressing legitimate app-level media errors.
+ */
+function isHlsJsLibraryError(errorText: string): boolean {
+	// HLS.js library errors typically contain one of these patterns:
+	// 1. getErrorFromHlsErrorData() function call - indicates HLS.js internal error handling
+	// 2. HLS-specific error details like manifestIncompatibleCodecsError
+	// 3. HLS manifest file references (.m3u8) combined with HLS error types
+	// 4. HLS.js-specific error messages about codec compatibility
+	
+	const hasHlsJsIndicator =
+		errorText.includes("getErrorFromHlsErrorData") ||
+		errorText.includes("manifestIncompatibleCodecsError") ||
+		errorText.includes("no level with compatible codecs found");
+	
+	// If mediaError is present, ensure it's in HLS.js context
+	// by checking for HLS indicators or .m3u8 file references
+	if (errorText.includes("mediaError")) {
+		return (
+			hasHlsJsIndicator ||
+			errorText.includes(".m3u8") ||
+			errorText.includes("hls") ||
+			errorText.includes("manifest")
+		);
+	}
+	
+	return hasHlsJsIndicator;
+}
+
+/**
  * Assert that there are no console errors on the given page after navigating to the URL(s).
- * Filter out known non-critical errors (403, Failed to load resource).
+ * Filter out known non-critical errors (403, Failed to load resource) and HLS.js library errors.
  *
  * @param page - The Playwright page instance
  * @param urls - URLs to navigate to - can be a single URL or array of URLs
@@ -28,16 +58,22 @@ export async function assertNoConsoleErrors(
 		if (msg.type() === "error") {
 			// Filter out known non-critical errors
 			const errorText = msg.text();
+			
+			// Filter out generic non-critical errors
 			if (
-				!errorText.includes("403") &&
-				!errorText.includes("Failed to load resource") &&
-				!errorText.includes("getErrorFromHlsErrorData") &&
-				!errorText.includes("mediaError") &&
-				!errorText.includes("manifestIncompatibleCodecsError") &&
-				!errorText.includes("no level with compatible codecs found")
+				errorText.includes("403") ||
+				errorText.includes("Failed to load resource")
 			) {
-				consoleErrors.push(errorText);
+				return; // Skip this error
 			}
+			
+			// Filter out HLS.js library errors (but not generic media errors)
+			if (isHlsJsLibraryError(errorText)) {
+				return; // Skip HLS.js library errors
+			}
+			
+			// All other errors should be reported
+			consoleErrors.push(errorText);
 		}
 	});
 
