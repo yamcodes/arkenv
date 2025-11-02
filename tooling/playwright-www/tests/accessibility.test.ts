@@ -216,12 +216,12 @@ test.describe("Accessibility", () => {
 		let problematicImages = 0;
 		for (let i = 0; i < imageCount; i++) {
 			const img = imagesWithoutAlt.nth(i);
-			
+
 			// Check if image is decorative by examining ancestors
 			const isDecorative = await img.evaluate((element) => {
 				let current = element.parentElement;
 				let depth = 0;
-				
+
 				// Check up to 5 levels of ancestors
 				while (current && depth < 5) {
 					const tagName = current.tagName.toLowerCase();
@@ -230,7 +230,7 @@ test.describe("Accessibility", () => {
 					const ariaLabel = current.getAttribute("aria-label");
 					const ariaLabelledBy = current.getAttribute("aria-labelledby");
 					const textContent = current.textContent?.trim() || "";
-					
+
 					// If ancestor has aria-label, aria-labelledby, or is interactive with text
 					if (
 						ariaLabel ||
@@ -240,14 +240,14 @@ test.describe("Accessibility", () => {
 					) {
 						return true; // Image is decorative
 					}
-					
+
 					current = current.parentElement;
 					depth++;
 				}
-				
+
 				return false; // Image is not decorative
 			});
-			
+
 			if (!isDecorative) {
 				problematicImages++;
 			}
