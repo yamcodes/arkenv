@@ -112,4 +112,3 @@ export async function assertNoA11yViolations(
 	// - Only moderate/minor violations that are explicitly allowed
 	// Both cases are acceptable
 }
-
