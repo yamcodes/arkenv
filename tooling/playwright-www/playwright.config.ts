@@ -2,8 +2,14 @@ import { defineConfig, devices } from "@playwright/test";
 
 const isCi = Boolean(process.env.CI);
 
-// Use 2-3x CPU cores for workers (GitHub Actions ubuntu-latest has 2 cores)
-// For CI, use 4 workers to allow parallel test execution
+// Worker configuration for parallel test execution
+// 
+// Parallelization strategy:
+// - CI: Tests are split into parallel jobs (a11y vs functional) via GitHub Actions matrix
+// - Each job runs tests across 3 browsers (chromium, firefox, webkit) in parallel
+// - Within each job, workers run multiple tests concurrently
+//
+// For CI, use 4 workers to allow parallel test execution across browsers
 // For local, use 50% of CPU cores (Playwright's default calculation)
 const getWorkers = () => {
 	if (isCi) {
