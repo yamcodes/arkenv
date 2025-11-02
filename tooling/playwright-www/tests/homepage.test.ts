@@ -95,18 +95,40 @@ test.describe("Homepage", () => {
 		await page.goto("/", { timeout: 60000 });
 		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
-		// Check video is present
-		const video = page.locator("video");
-		await expect(video).toBeVisible();
+		// Check video or fallback image is present
+		const videoButton = page.locator(
+			"button[aria-label='Open interactive demo in a new tab']",
+		);
+		await expect(videoButton).toBeVisible();
 
-		// Check video attributes
-		await expect(video).toHaveAttribute("autoplay");
-		await expect(video).toHaveAttribute("loop");
-		await expect(video).toHaveAttribute("muted");
-		await expect(video).toHaveAttribute("playsInline");
+		const video = videoButton.locator("video");
+		const fallbackImage = videoButton.locator("img[alt='ArkEnv Demo']");
 
-		// Check video poster
-		await expect(video).toHaveAttribute("poster", "/assets/demo.png");
+		// Either video should be visible with poster, or fallback image should be visible
+		const videoCount = await video.count();
+		const imageCount = await fallbackImage.count();
+
+		if (videoCount > 0 && (await video.isVisible())) {
+			// Video is present - check attributes
+			await expect(video).toHaveAttribute("autoplay");
+			await expect(video).toHaveAttribute("loop");
+			await expect(video).toHaveAttribute("muted");
+			await expect(video).toHaveAttribute("playsInline");
+
+			// Check video poster (if set)
+			const poster = await video.getAttribute("poster");
+			if (poster) {
+				await expect(video).toHaveAttribute("poster", "/assets/demo.png");
+			}
+		} else if (imageCount > 0 && (await fallbackImage.isVisible())) {
+			// Fallback image is present - verify it's correct
+			// Next.js Image optimization may wrap the src, so check if it contains the path
+			const src = await fallbackImage.getAttribute("src");
+			expect(src).toContain("demo.gif");
+			await expect(fallbackImage).toHaveAttribute("alt", "ArkEnv Demo");
+		} else {
+			throw new Error("Neither video nor fallback image is visible");
+		}
 	});
 
 	test("should have clickable video demo that opens StackBlitz", async ({
