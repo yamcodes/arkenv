@@ -38,7 +38,7 @@ function formatViolationDetails(
 }
 
 /**
- * Run an accessibility scan using axe-core and assert no violations.
+ * Run an a11y scan using axe-core and assert no violations.
  * Violations are gated by impact:
  * - critical|serious → CI fail
  * - moderate|minor → warn, allowed only if explicitly listed
@@ -46,7 +46,7 @@ function formatViolationDetails(
  * @param page - The Playwright page instance
  * @param options - Configuration options for the axe scan
  */
-export async function assertNoAccessibilityViolations(
+export async function assertNoA11yViolations(
 	page: Page,
 	options: AxeScanOptions = {},
 ): Promise<void> {
@@ -67,9 +67,9 @@ export async function assertNoAccessibilityViolations(
 		builder = builder.disableRules(disableRules);
 	}
 
-	const accessibilityScanResults = await builder.analyze();
+	const a11yScanResults = await builder.analyze();
 
-	const allViolations = accessibilityScanResults.violations;
+	const allViolations = a11yScanResults.violations;
 
 	// Separate violations by impact level
 	const criticalSeriousViolations = allViolations.filter(
@@ -89,7 +89,7 @@ export async function assertNoAccessibilityViolations(
 	if (criticalSeriousViolations.length > 0) {
 		const errorDetails = formatViolationDetails(criticalSeriousViolations);
 		throw new Error(
-			`Critical or serious accessibility violations found:\n\n${errorDetails}`,
+			`Critical or serious a11y violations found:\n\n${errorDetails}`,
 		);
 	}
 
@@ -103,7 +103,7 @@ export async function assertNoAccessibilityViolations(
 				? `\n\nAllowed violations: ${allowedViolations.join(", ")}`
 				: "";
 		throw new Error(
-			`Moderate or minor accessibility violations found (not explicitly allowed):\n\n${errorDetails}${allowedList}\n\nTo allow these violations, add their IDs to the 'allowedViolations' option.`,
+			`Moderate or minor a11y violations found (not explicitly allowed):\n\n${errorDetails}${allowedList}\n\nTo allow these violations, add their IDs to the 'allowedViolations' option.`,
 		);
 	}
 
@@ -112,3 +112,4 @@ export async function assertNoAccessibilityViolations(
 	// - Only moderate/minor violations that are explicitly allowed
 	// Both cases are acceptable
 }
+

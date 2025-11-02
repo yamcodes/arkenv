@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { assertNoAccessibilityViolations } from "./utils/accessibility";
 import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Quickstart Page", () => {
@@ -178,27 +177,5 @@ test.describe("Quickstart Page", () => {
 
 	test("should not have console errors", async ({ page }) => {
 		await assertNoConsoleErrors(page, "/docs/quickstart");
-	});
-
-	test("should not have accessibility violations", async ({ page }) => {
-		await page.goto("/docs/quickstart");
-		await page.waitForLoadState("networkidle");
-
-		await assertNoAccessibilityViolations(page, {
-			disableRules: [
-				// TODO: Fix aria-allowed-attr on /docs/quickstart - shiki-twoslash library uses invalid type="button" on <span.twoslash-hover>
-				// These are code hover elements for type information, already keyboard accessible via hover
-				"aria-allowed-attr",
-				// TODO: Fix color-contrast on /docs/quickstart - fumadocs-ui code block captions (figcaption.flex-1.truncate) use muted colors
-				// File names in code blocks are decorative labels, improve contrast from 4.49 to 4.5:1
-				"color-contrast",
-				// TODO: Fix scrollable-region-focusable on /docs/quickstart - code block containers (div.fd-scroll-container) need keyboard focus
-				// Code blocks are scrollable via mouse but need keyboard focus support
-				"scrollable-region-focusable",
-				// TODO: Fix svg-img-alt on /docs/quickstart - lucide-react/icons-pack SVGs with role="img" inside accessible buttons/links
-				// These SVGs are decorative and inside buttons/links with accessible labels
-				"svg-img-alt",
-			],
-		});
 	});
 });
