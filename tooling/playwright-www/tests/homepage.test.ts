@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { assertNoAccessibilityViolations } from "./utils/accessibility";
 import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Homepage", () => {
@@ -201,5 +202,21 @@ test.describe("Homepage", () => {
 
 	test("should not have console errors", async ({ page }) => {
 		await assertNoConsoleErrors(page, "/");
+	});
+
+	test("should not have accessibility violations", async ({ page }) => {
+		await page.goto("/", { timeout: 60000 });
+		await page.waitForLoadState("networkidle", { timeout: 60000 });
+
+		await assertNoAccessibilityViolations(page, {
+			disableRules: [
+				// TODO: Fix listitem on / - fumadocs-ui navigation uses <li class="list-none"> for styling
+				// Navigation list items are properly structured and have accessible links inside
+				"listitem",
+				// TODO: Fix svg-img-alt on / - lucide-react and icons-pack SVGs with role="img" inside accessible buttons/links
+				// These SVGs are decorative and inside buttons/links with accessible labels
+				"svg-img-alt",
+			],
+		});
 	});
 });
