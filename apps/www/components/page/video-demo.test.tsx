@@ -115,7 +115,7 @@ describe("VideoDemo", () => {
 		expect(video).toHaveAttribute("loop");
 		expect(video).toHaveProperty("muted", true);
 		expect(video).toHaveAttribute("playsinline");
-		expect(video).toHaveAttribute("width", "958");
+		expect(video).toHaveAttribute("width", "800");
 		expect(video).toHaveAttribute("poster", "/assets/demo.png");
 		expect(video).toHaveClass(
 			"block",
@@ -241,7 +241,7 @@ describe("VideoDemo", () => {
 			"sm:max-h-[1000px]",
 			"object-contain",
 		);
-		expect(video).toHaveAttribute("width", "958");
+		expect(video).toHaveAttribute("width", "800");
 	});
 
 	it("maintains video autoplay and loop behavior", () => {
@@ -303,7 +303,7 @@ describe("VideoDemo", () => {
 		expect(img).toBeInTheDocument();
 		expect(img).toHaveAttribute("src", "/assets/demo.gif");
 		expect(img).toHaveAttribute("alt", "ArkEnv Demo");
-		expect(img).toHaveAttribute("width", "958");
+		expect(img).toHaveAttribute("width", "800");
 		expect(img).toHaveClass(
 			"block",
 			"max-h-[600px]",
