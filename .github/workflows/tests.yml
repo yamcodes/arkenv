@@ -88,7 +88,7 @@ jobs:
   test-e2e:
     needs: resolve-playwright-version
     runs-on: ubuntu-latest
-    timeout-minutes: 14
+    timeout-minutes: 12 # Reduced from 14 as parallelization should speed up tests significantly
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
       options: --user 1001
