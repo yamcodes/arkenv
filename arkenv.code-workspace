@@ -64,20 +64,5 @@
 			"path": "examples/with-vite-react-ts",
 			"name": "  with-vite-react-ts"
 		}
-	],
-	"settings": {
-		"files.exclude": {
-			"**/.git": true,
-			"**/.svn": true,
-			"**/.hg": true,
-			"**/.DS_Store": true,
-			"**/Thumbs.db": false,
-			"**/.trunk/*actions/": true,
-			"**/.trunk/*logs/": true,
-			"**/.trunk/*notifications/": true,
-			"**/.trunk/*out/": true,
-			"**/.trunk/*plugins/": true
-		},
-		"explorerExclude.backup": {}
-	}
+	]
 }

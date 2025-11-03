@@ -73,16 +73,14 @@ export function StarUsButton({ className }: StarUsProps) {
 		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
 	const { owner, repo } = breakDownGithubUrl(githubUrl);
 
-	// Fetch star count from GitHub API
+	// Fetch star count from our API route (server-side with caching)
 	useEffect(() => {
 		const fetchStarCount = async () => {
 			try {
-				const response = await fetch(
-					`https://api.github.com/repos/${owner}/${repo}`,
-				);
+				const response = await fetch("/api/github/stars");
 				if (response.ok) {
-					const data = await response.json();
-					setStarCount(data.stargazers_count);
+					const data = (await response.json()) as { stars: number };
+					setStarCount(data.stars);
 				}
 			} catch {
 				// Silently fail - we'll just not show the count
@@ -90,7 +88,7 @@ export function StarUsButton({ className }: StarUsProps) {
 		};
 
 		fetchStarCount();
-	}, [owner, repo]);
+	}, []);
 
 	return (
 		<>
