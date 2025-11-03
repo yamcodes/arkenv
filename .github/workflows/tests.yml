@@ -88,7 +88,11 @@ jobs:
   test-e2e:
     needs: resolve-playwright-version
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 16
+    strategy:
+      matrix:
+        suite: [a11y, e2e]
+      fail-fast: false
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
       options: --user 1001
@@ -107,16 +111,16 @@ jobs:
           node-version: lts/*
           cache: pnpm
       - run: pnpm install
-      - name: Run E2E (PR)
+      - name: Run ${{ matrix.suite }} tests (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm run test:e2e --affected --log-order=stream
-      - name: Run E2E (main)
+        run: pnpm run test:${{ matrix.suite }} --affected --log-order=stream
+      - name: Run ${{ matrix.suite }} tests (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm run test:e2e --log-order=stream
+        run: pnpm run test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
       - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
-          name: test-results-e2e
+          name: test-results-${{ matrix.suite }}
           path: "**/test-results/**"
           retention-days: 30
   test-windows:

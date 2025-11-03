@@ -2,13 +2,38 @@ import { defineConfig, devices } from "@playwright/test";
 
 const isCi = Boolean(process.env.CI);
 
+// Worker configuration for parallel test execution
+//
+// Parallelization strategy:
+// - CI: Tests are split into parallel jobs (a11y vs functional) via GitHub Actions matrix
+// - Each job runs tests across 3 browsers (chromium, firefox, webkit) in parallel
+// - Within each job, workers run multiple tests concurrently
+//
+// For CI, use 4 workers to allow parallel test execution across browsers
+// For local, use 50% of CPU cores (Playwright's default calculation)
+const getWorkers = () => {
+	if (isCi) {
+		// Allow override via environment variable
+		const envWorkers = process.env.PLAYWRIGHT_WORKERS;
+		if (envWorkers) {
+			return Number.parseInt(envWorkers, 10);
+		}
+		// Default: 4 workers for CI (2x CPU cores, safe for resource usage)
+		return 4;
+	}
+	// Local: use Playwright's default (50% of CPU cores)
+	return undefined;
+};
+
 export default defineConfig({
 	testDir: "./tests",
 	fullyParallel: true,
 	forbidOnly: isCi,
 	retries: isCi ? 2 : 0,
-	workers: isCi ? 1 : undefined,
+	workers: getWorkers(),
 	reporter: "html",
+	// Increase timeout for CI (slower environment, networkidle waits, axe-core scans)
+	timeout: isCi ? 60000 : 30000, // 60s for CI, 30s for local
 	use: {
 		baseURL: "http://localhost:3000",
 		trace: "on-first-retry",
