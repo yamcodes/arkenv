@@ -35,8 +35,6 @@ export function VideoDemo() {
 					<Image
 						src="/assets/demo.gif"
 						alt="ArkEnv Demo"
-						width={WIDTH}
-						height={HEIGHT}
 						fill
 						className="object-contain"
 						sizes="(max-width: 768px) 100vw, 800px"
