@@ -116,7 +116,7 @@ jobs:
         run: pnpm run test:${{ matrix.suite }} --affected --log-order=stream
       - name: Run ${{ matrix.suite }} tests (main)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm run test:${{ matrix.suite }} --log-order=stream --filter=@repo/playwright-www
+        run: pnpm run test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
       - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
