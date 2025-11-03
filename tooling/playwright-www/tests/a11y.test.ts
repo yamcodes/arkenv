@@ -4,6 +4,9 @@ import { assertNoA11yViolations } from "./utils/a11y";
 import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("A11y Smoke Tests", () => {
+	// Set longer timeout for a11y tests (they're slower in CI due to axe-core scans)
+	test.setTimeout(60000); // 60 seconds per test
+
 	// All top-level routes for smoke testing
 	const topRoutes = [
 		"/",
