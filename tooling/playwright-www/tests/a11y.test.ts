@@ -4,6 +4,9 @@ import { assertNoA11yViolations } from "./utils/a11y";
 import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("A11y Smoke Tests", () => {
+	// Set longer timeout for a11y tests (they're slower in CI due to axe-core scans)
+	test.setTimeout(60000); // 60 seconds per test
+
 	// All top-level routes for smoke testing
 	const topRoutes = [
 		"/",
@@ -92,33 +95,6 @@ test.describe("A11y Smoke Tests", () => {
 			if (skipLinkCount > 0) {
 				await expect(skipLink).toBeVisible();
 			}
-		}
-	});
-
-	test("should have proper color contrast on all top routes", async ({
-		page,
-	}) => {
-		for (const url of topRoutes) {
-			await page.goto(url);
-			await page.waitForLoadState("networkidle");
-
-			// Run axe-core scan focusing on color contrast
-			const scanResults = await new AxeBuilder({ page })
-				.withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-				.disableRules([
-					// Allow known issues with syntax highlighting
-					"color-contrast",
-				])
-				.analyze();
-
-			// Filter for color-contrast violations
-			const colorContrastViolations = scanResults.violations.filter(
-				(violation) => violation.id === "color-contrast",
-			);
-
-			// Note: We disable color-contrast rule above, but we can still check if violations exist
-			// For smoke tests, we're checking that the page structure allows for proper contrast
-			// Actual contrast violations should be handled in design system tests
 		}
 	});
 
