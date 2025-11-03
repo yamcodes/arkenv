@@ -239,8 +239,7 @@ describe("VideoDemo", () => {
 			"w-full",
 			"max-w-[800px]",
 			"mx-auto",
-			"px-4",
-			"sm:px-0",
+			"sm:px-8",
 		);
 	});
 
