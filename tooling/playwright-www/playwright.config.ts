@@ -32,6 +32,8 @@ export default defineConfig({
 	retries: isCi ? 2 : 0,
 	workers: getWorkers(),
 	reporter: "html",
+	// Increase timeout for CI (slower environment, networkidle waits, axe-core scans)
+	timeout: isCi ? 60000 : 30000, // 60s for CI, 30s for local
 	use: {
 		baseURL: "http://localhost:3000",
 		trace: "on-first-retry",
