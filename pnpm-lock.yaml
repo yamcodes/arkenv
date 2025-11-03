@@ -192,8 +192,8 @@ importers:
         version: 0.3.4(typescript@5.9.3)
     devDependencies:
       '@swc/plugin-styled-jsx':
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: ^11.0.0
+        version: 11.0.0
       '@tailwindcss/postcss':
         specifier: ^4.1.16
         version: 4.1.16
@@ -2918,8 +2918,8 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@swc/plugin-styled-jsx@10.0.0':
-    resolution: {integrity: sha512-JebIJJBFIZQ/1Cq3q1oPSAVP+SAWTTxIYhvv35y11bs+eoDQwS0ZqiuNQ3/X7+yYjvsjfcqeFI3Nv/eraLGmjw==}
+  '@swc/plugin-styled-jsx@11.0.0':
+    resolution: {integrity: sha512-fkplOHQsoxwh8xo5FYTEUrVRRZZAsXs0Aq0v3mm0Kk4Frao1JOdd6ZMlGBFDe5K0prYz+jx1KlEntFkwMFyA6g==}
 
   '@swc/types@0.1.25':
     resolution: {integrity: sha512-iAoY/qRhNH8a/hBvm3zKj9qQ4oc2+3w1unPJa2XvTK3XjeLXtzcCingVPw/9e5mn1+0yPqxcBGp9Jf0pkfMb1g==}
@@ -9195,7 +9195,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@swc/plugin-styled-jsx@10.0.0':
+  '@swc/plugin-styled-jsx@11.0.0':
     dependencies:
       '@swc/counter': 0.1.3
 
