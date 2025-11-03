@@ -98,33 +98,6 @@ test.describe("A11y Smoke Tests", () => {
 		}
 	});
 
-	test("should have proper color contrast on all top routes", async ({
-		page,
-	}) => {
-		for (const url of topRoutes) {
-			await page.goto(url);
-			await page.waitForLoadState("networkidle");
-
-			// Run axe-core scan focusing on color contrast
-			const scanResults = await new AxeBuilder({ page })
-				.withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-				.disableRules([
-					// Allow known issues with syntax highlighting
-					"color-contrast",
-				])
-				.analyze();
-
-			// Filter for color-contrast violations
-			const colorContrastViolations = scanResults.violations.filter(
-				(violation) => violation.id === "color-contrast",
-			);
-
-			// Note: We disable color-contrast rule above, but we can still check if violations exist
-			// For smoke tests, we're checking that the page structure allows for proper contrast
-			// Actual contrast violations should be handled in design system tests
-		}
-	});
-
 	test("should support keyboard navigation on all top routes", async ({
 		page,
 	}) => {
