@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import type React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { VideoDemo } from "./video-demo";
 
@@ -19,21 +20,27 @@ vi.mock("next/image", () => ({
 		alt,
 		width,
 		height,
+		fill,
 		className,
+		sizes,
 	}: {
 		src: string;
 		alt?: string;
 		width?: number;
 		height?: number;
+		fill?: boolean;
 		className?: string;
+		sizes?: string;
 	}) => (
 		// biome-ignore lint/performance/noImgElement: Mock for testing
 		<img
 			src={src}
 			alt={alt}
-			width={width}
-			height={height}
+			width={fill ? undefined : width}
+			height={fill ? undefined : height}
 			className={className}
+			sizes={sizes}
+			data-fill={fill ? "true" : undefined}
 		/>
 	),
 }));
@@ -56,7 +63,7 @@ vi.mock("next-video/background-video", () => ({
 		const videoSrc =
 			typeof src === "string" ? src : src?.src || "/videos/demo.mp4";
 
-		// Forward all props (including onError, width, className, etc.)
+		// Forward all props (including onError, className, etc.)
 		// so tests see real behavior
 		// Set poster to props.poster || "/assets/demo.png" so the mock reflects
 		// the actual poster prop when provided
@@ -70,7 +77,7 @@ vi.mock("next-video/background-video", () => ({
 				src={videoSrc}
 				poster={poster || "/assets/demo.png"}
 				className={
-					className || "block max-h-[600px] sm:max-h-[1000px] object-contain"
+					className || "absolute inset-0 w-full h-full object-contain"
 				}
 			>
 				You need a browser that supports HTML5 video to view this video.
@@ -115,12 +122,12 @@ describe("VideoDemo", () => {
 		expect(video).toHaveAttribute("loop");
 		expect(video).toHaveProperty("muted", true);
 		expect(video).toHaveAttribute("playsinline");
-		expect(video).toHaveAttribute("width", "800");
 		expect(video).toHaveAttribute("poster", "/assets/demo.png");
 		expect(video).toHaveClass(
-			"block",
-			"max-h-[600px]",
-			"sm:max-h-[1000px]",
+			"absolute",
+			"inset-0",
+			"w-full",
+			"h-full",
 			"object-contain",
 		);
 	});
@@ -160,6 +167,7 @@ describe("VideoDemo", () => {
 			"cursor-pointer",
 			"m-0",
 			"p-0",
+			"w-full",
 			"shadow-[0_0_20px_rgba(96,165,250,0.6)]",
 			"dark:shadow-[0_0_100px_rgba(96,165,250,0.2)]",
 		);
@@ -228,7 +236,15 @@ describe("VideoDemo", () => {
 		render(<VideoDemo />);
 
 		const container = screen.getByRole("button").parentElement;
-		expect(container).toHaveClass("inline-block", "relative", "mb-4");
+		expect(container).toHaveClass(
+			"relative",
+			"mb-4",
+			"w-full",
+			"max-w-[800px]",
+			"mx-auto",
+			"px-4",
+			"sm:px-0",
+		);
 	});
 
 	it("video has correct dimensions and styling", () => {
@@ -236,12 +252,12 @@ describe("VideoDemo", () => {
 
 		const video = screen.getByRole("button").querySelector("video");
 		expect(video).toHaveClass(
-			"block",
-			"max-h-[600px]",
-			"sm:max-h-[1000px]",
+			"absolute",
+			"inset-0",
+			"w-full",
+			"h-full",
 			"object-contain",
 		);
-		expect(video).toHaveAttribute("width", "800");
 	});
 
 	it("maintains video autoplay and loop behavior", () => {
@@ -303,13 +319,8 @@ describe("VideoDemo", () => {
 		expect(img).toBeInTheDocument();
 		expect(img).toHaveAttribute("src", "/assets/demo.gif");
 		expect(img).toHaveAttribute("alt", "ArkEnv Demo");
-		expect(img).toHaveAttribute("width", "800");
-		expect(img).toHaveClass(
-			"block",
-			"max-h-[600px]",
-			"sm:max-h-[1000px]",
-			"object-contain",
-		);
+		expect(img).toHaveAttribute("data-fill", "true");
+		expect(img).toHaveClass("object-contain");
 	});
 
 	it("maintains button click behavior after fallback to demo.gif", () => {
@@ -331,5 +342,30 @@ describe("VideoDemo", () => {
 			"_blank",
 			"noopener,noreferrer",
 		);
+	});
+
+	it("button has aspect ratio style for responsive scaling", () => {
+		render(<VideoDemo />);
+
+		const button = screen.getByRole("button");
+		expect(button).toBeInTheDocument();
+		expect(button).toHaveStyle({ aspectRatio: "800 / 653" });
+	});
+
+	it("fallback image has sizes attribute and fill prop for responsive loading", () => {
+		render(<VideoDemo />);
+
+		const button = screen.getByRole("button");
+		const video = button.querySelector("video");
+
+		// Simulate video error to show fallback image
+		if (video) {
+			fireEvent.error(video);
+		}
+
+		const img = button.querySelector("img");
+		expect(img).toBeInTheDocument();
+		expect(img).toHaveAttribute("sizes", "(max-width: 768px) 100vw, 800px");
+		expect(img).toHaveAttribute("data-fill", "true");
 	});
 });

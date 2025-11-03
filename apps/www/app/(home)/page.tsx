@@ -40,7 +40,7 @@ export default function HomePage() {
 				<SailButton />
 				<StarUsButton />
 			</div>
-			<div className="mt-4 sm:mt-8 sm:px-8 max-w-5xl mx-auto w-full">
+			<div className="sm:mt-8 sm:px-2 max-w-5xl mx-auto w-full">
 				<VideoDemo />
 			</div>
 		</main>
