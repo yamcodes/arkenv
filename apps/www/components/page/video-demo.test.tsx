@@ -76,9 +76,7 @@ vi.mock("next-video/background-video", () => ({
 				{...props}
 				src={videoSrc}
 				poster={poster || "/assets/demo.png"}
-				className={
-					className || "absolute inset-0 w-full h-full object-contain"
-				}
+				className={className || "absolute inset-0 w-full h-full object-contain"}
 			>
 				You need a browser that supports HTML5 video to view this video.
 			</video>
