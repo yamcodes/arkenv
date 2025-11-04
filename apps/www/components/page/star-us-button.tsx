@@ -176,7 +176,10 @@ export function StarUsButton({ className }: StarUsProps) {
 						rel="noopener noreferrer"
 					>
 						{/* Sparkle effects */}
-						<div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+						<div
+							className="absolute inset-0 pointer-events-none"
+							aria-hidden="true"
+						>
 							<div
 								className="absolute top-1 left-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
 								style={{ animationDelay: "0s" }}
