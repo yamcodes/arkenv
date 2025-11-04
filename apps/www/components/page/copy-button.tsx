@@ -42,11 +42,7 @@ export function CopyButton({ command }: CopyButtonProps) {
 			className="hover:bg-slate-800 text-slate-400 hover:text-slate-100"
 			aria-label={copied ? "Copied" : "Copy command"}
 		>
-			{copied ? (
-				<Check aria-label="Check icon" />
-			) : (
-				<Copy aria-label="Copy icon" />
-			)}
+			{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
 		</Button>
 	);
 }
