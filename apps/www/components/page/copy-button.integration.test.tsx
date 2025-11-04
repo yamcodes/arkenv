@@ -164,19 +164,8 @@ describe("CopyButton + useToast + Toaster integration", () => {
 			).toBeInTheDocument();
 		});
 
-		// Wait for toast to disappear (it has a timeout)
-		await waitFor(
-			() => {
-				expect(
-					screen.queryByText(/command copied to clipboard/i),
-				).not.toBeInTheDocument();
-			},
-			{ timeout: 3000 },
-		).catch(() => {
-			// If toast is still visible, that's okay for this test
-		});
-
-		// Click again - should show toast again
+		// Click again - should show toast again (multiple operations work)
+		// Note: We don't wait for dismissal - the test focuses on multiple operations working
 		await user.click(button);
 		await waitFor(() => {
 			expect(

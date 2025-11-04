@@ -47,7 +47,6 @@ export function CopyButton({ command }: CopyButtonProps) {
 			) : (
 				<Copy aria-label="Copy icon" />
 			)}
-			<span className="sr-only">Copy command</span>
 		</Button>
 	);
 }
