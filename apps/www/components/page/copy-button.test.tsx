@@ -18,7 +18,7 @@ describe("CopyButton", () => {
 		render(<CopyButton command="npm install arkenv" />);
 		const button = screen.getByRole("button");
 		expect(button).toHaveAttribute("aria-label", "Copy command");
-		expect(screen.getByText("Copy command")).toBeInTheDocument();
+		// aria-label is the single source of accessibility text (no redundant sr-only span)
 	});
 
 	it("shows copy icon initially", () => {

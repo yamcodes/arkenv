@@ -20,13 +20,46 @@ alwaysApply: true
 
 ## Test Structure
 
-### Unit Tests (`packages/arkenv/src/*.test.ts`)
-- Test individual functions and edge cases
-- Validate error handling and type checking
-- Fast, isolated tests for core logic
+### Unit Tests (`*.test.ts` or `*.test.tsx`)
+**What:** Test individual functions, components, and hooks in isolation with mocked dependencies.
+
+**Focus:**
+- Individual function logic and edge cases
+- Component rendering and props
+- Error handling and validation
+- Type checking
+
+**Key Characteristics:**
+- Fast execution (< 100ms per test)
+- Mocked external dependencies (clipboard, network, etc.)
+- Focused on single unit behavior
 - Co-locate with source: `create-env.ts` → `create-env.test.ts`
 
-### Integration Tests (`packages/vite-plugin/src/*.test.ts`)
+### Integration Tests (`*.integration.test.ts` or `*.integration.test.tsx`)
+**What:** Test how multiple units (components, hooks, functions) work together without mocking their interactions.
+
+**Focus:**
+- Component + Hook interactions
+- Function composition and data flow
+- Real dependencies between units
+- State synchronization across boundaries
+
+**Examples:**
+- `custom-types.integration.test.ts` - Tests `createEnv` + `scope` + custom types working together
+- `error.integration.test.ts` - Tests error propagation through `createEnv` + `formatErrors` + `ArkEnvError`
+- `copy-button.integration.test.tsx` - Tests `CopyButton` + `useToast` + `Toaster` as a complete flow
+- `heading.integration.test.tsx` - Tests `Heading` + `useIsMobile` responding to viewport changes
+- `toaster.integration.test.tsx` - Tests `useToast` hook + `Toaster` component state synchronization
+
+**Key Characteristics:**
+- Slower than unit tests (100ms - 2000ms per test)
+- Real interactions between units (not mocked)
+- External APIs still mocked (clipboard, network)
+- Verifies integration contracts
+
+**Naming Convention:** Use `*.integration.test.ts` suffix to distinguish from unit tests.
+
+### Vite Plugin Tests (`packages/vite-plugin/src/*.test.ts`)
 - Test the vite plugin using the `with-vite-react-ts` example as a fixture
 - Validate that the plugin works with real Vite projects
 - Use fixture-based testing pattern (see `__fixtures__` directory)
@@ -78,7 +111,38 @@ describe("createEnv", () => {
 });
 ```
 
-### Fixture-Based Integration Test Example
+### Integration Test Example
+
+```typescript
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it } from "vitest";
+import { CopyButton } from "./copy-button";
+import { Toaster } from "~/components/ui/toaster";
+
+describe("CopyButton + useToast + Toaster integration", () => {
+  it("should show toast when copy succeeds", async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <>
+        <CopyButton command="npm install arkenv" />
+        <Toaster />
+      </>
+    );
+
+    const button = screen.getByRole("button", { name: /copy command/i });
+    await user.click(button);
+
+    // Verify toast appears (integration between CopyButton, useToast, and Toaster)
+    await waitFor(() => {
+      expect(screen.getByText(/command copied to clipboard/i)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+### Fixture-Based Test Example
 
 ```typescript
 import { readdirSync } from "node:fs";
@@ -118,8 +182,15 @@ describe("Component", () => {
 ## Running Tests
 
 ```bash
-# Run all tests
+# Run all tests (unit + integration)
 pnpm test -- --run
+
+# Run only integration tests (across all packages)
+pnpm test -- --run "integration"
+
+# Run integration tests for specific package
+pnpm test --project arkenv -- --run "integration"
+pnpm test --project arkenv.js.org -- --run "integration"
 
 # Run specific package tests
 pnpm test --project arkenv -- --run

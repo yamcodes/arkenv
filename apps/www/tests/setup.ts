@@ -40,6 +40,32 @@ Object.defineProperty(globalThis, "matchMedia", {
 	value: window.matchMedia,
 });
 
+// Polyfill for Pointer Events API (required by Radix UI components)
+// JSDOM doesn't implement hasPointerCapture and releasePointerCapture
+if (!Element.prototype.hasPointerCapture) {
+	Element.prototype.hasPointerCapture = () => false;
+}
+
+if (!Element.prototype.releasePointerCapture) {
+	Element.prototype.releasePointerCapture = () => {
+		// Mock implementation
+	};
+}
+
+// Suppress JSDOM CSS parsing warnings for styled-jsx
+// JSDOM tries to parse styled-jsx CSS and warns about syntax it doesn't understand
+// This is harmless - the styles work fine in real browsers
+// biome-ignore lint/suspicious/noConsole: Mocking console.error for test setup
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+	const message = String(args[0]);
+	// Suppress "Could not parse CSS stylesheet" warnings from JSDOM
+	if (message.includes("Could not parse CSS stylesheet")) {
+		return;
+	}
+	originalConsoleError.call(console, ...args);
+};
+
 afterEach(() => {
 	cleanup();
 });

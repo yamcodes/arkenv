@@ -96,11 +96,47 @@ Environment validation errors are thrown early with descriptive messages showing
 ## Testing Guidelines
 
 ### Test Structure
+
+The project uses three types of tests:
+
+#### Unit Tests (`*.test.ts` or `*.test.tsx`)
+**What:** Test individual functions, components, and hooks in isolation with mocked dependencies.
+
 Tests are located alongside source files with `.test.ts` suffix:
 - `create-env.test.ts` - Tests for main `createEnv` functionality
 - `types.test.ts` - Tests for built-in validators
 - `errors.test.ts` - Tests for error handling
 - `utils.test.ts` - Tests for utility functions
+- `copy-button.test.tsx` - Tests `CopyButton` component with mocked dependencies
+
+**Key Characteristics:**
+- Fast execution (< 100ms per test)
+- Mocked external dependencies (clipboard, network, etc.)
+- Focused on single unit behavior
+
+#### Integration Tests (`*.integration.test.ts` or `*.integration.test.tsx`)
+**What:** Test how multiple units work together without mocking their interactions.
+
+**Examples:**
+- `custom-types.integration.test.ts` - Tests `createEnv` + `scope` + custom types working together
+- `error.integration.test.ts` - Tests error propagation through validation pipeline
+- `copy-button.integration.test.tsx` - Tests `CopyButton` + `useToast` + `Toaster` flow
+- `heading.integration.test.tsx` - Tests `Heading` + `useIsMobile` responsive behavior
+- `toaster.integration.test.tsx` - Tests `useToast` + `Toaster` state synchronization
+
+**Key Characteristics:**
+- Slower than unit tests (100ms - 2000ms per test)
+- Real interactions between units (not mocked)
+- External APIs still mocked (clipboard, network)
+- Naming convention: `*.integration.test.ts` suffix
+
+#### End-to-End Tests (`tooling/playwright-www/`)
+**What:** Test complete user workflows in real browsers.
+
+**Key Characteristics:**
+- Slowest tests (multiple seconds)
+- No mocking - tests real application
+- Cross-browser compatibility testing
 
 ### Testing Patterns
 - Use Vitest's `describe`/`it` structure
@@ -108,7 +144,7 @@ Tests are located alongside source files with `.test.ts` suffix:
 - Mock `process.env` for testing different scenarios
 - Verify both runtime behavior and TypeScript types
 
-### Environment Testing
+### Unit Test Example
 ```typescript
 import { beforeEach, afterEach, it, expect } from 'vitest';
 
@@ -127,6 +163,51 @@ it('should validate environment variables', () => {
   const env = arkenv({ PORT: "number.port" });
   expect(env.PORT).toBe(3000);
 });
+```
+
+### Integration Test Example
+```typescript
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it } from "vitest";
+import { CopyButton } from "./copy-button";
+import { Toaster } from "~/components/ui/toaster";
+
+describe("CopyButton + useToast + Toaster integration", () => {
+  it("should show toast when copy succeeds", async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <>
+        <CopyButton command="npm install arkenv" />
+        <Toaster />
+      </>
+    );
+
+    const button = screen.getByRole("button", { name: /copy command/i });
+    await user.click(button);
+
+    // Verify toast appears (integration between components)
+    await waitFor(() => {
+      expect(screen.getByText(/command copied to clipboard/i)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+### Running Tests
+```bash
+# Run all tests (unit + integration)
+pnpm test -- --run
+
+# Run only integration tests
+pnpm test -- --run "integration"
+
+# Run tests for specific package
+pnpm test --project arkenv -- --run
+
+# Run end-to-end tests
+pnpm run test:e2e
 ```
 
 ## Contributing Workflow
