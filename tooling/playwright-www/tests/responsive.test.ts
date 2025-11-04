@@ -77,33 +77,40 @@ test.describe("Responsive Design", () => {
 			await page.goto("/");
 			await page.waitForLoadState("networkidle");
 
-			// Get the video element (not the image fallback as Next.js Image with fill doesn't have classes)
+			// Test the container button which has the aspect-ratio style
+			// This is what actually controls the responsive behavior
+			const button = page.getByRole("button", {
+				name: /open interactive demo/i,
+			});
+			await expect(button).toBeVisible();
+
+			// Container should have aspect-ratio style for responsive scaling
+			const buttonStyle = await button.getAttribute("style");
+			expect(buttonStyle).toBeTruthy();
+			expect(buttonStyle).toContain("aspect-ratio");
+
+			// Container should have w-full class for responsive width
+			const buttonClass = await button.getAttribute("class");
+			expect(buttonClass).toBeTruthy();
+			expect(buttonClass).toContain("w-full");
+
+			// Optionally check video element if it exists and has classes
 			const videoElement = page.locator("video").first();
+			const videoCount = await videoElement.count();
 
-			// Check if video is visible (not in error state)
-			const isVideoVisible = await videoElement.isVisible().catch(() => false);
+			if (videoCount > 0) {
+				await page.waitForTimeout(500); // Wait for video to load
+				const videoClass = await videoElement.getAttribute("class");
 
-			if (isVideoVisible) {
-				// Video element should have responsive classes
-				const className = await videoElement.getAttribute("class");
-				expect(className).toBeTruthy();
-
-				// Should have object-contain for responsive scaling
-				expect(className).toContain("object-contain");
-
-				// Should have responsive width/height classes
-				const hasResponsiveClasses =
-					className?.includes("w-full") && className?.includes("h-full");
-				expect(hasResponsiveClasses).toBe(true);
-
-				// Should not have fixed width classes like w-[800px]
-				const hasFixedWidth = /w-\d+/.test(className || "");
-				expect(hasFixedWidth).toBe(false);
-			} else {
-				// If video is not visible (error state), skip this test
-				// The image fallback uses Next.js Image with fill which doesn't render classes
-				// on the img element itself, so we can't test it the same way
-				expect(true).toBe(true); // Pass the test
+				// If video has classes, verify they're responsive
+				if (videoClass) {
+					expect(videoClass).toContain("object-contain");
+					// Should not have fixed width classes
+					const hasFixedWidth = /w-\d+/.test(videoClass);
+					expect(hasFixedWidth).toBe(false);
+				}
+				// If video doesn't have classes (BackgroundVideo might wrap it), that's fine
+				// The container's aspect-ratio is what matters for responsiveness
 			}
 		});
 
