@@ -65,15 +65,27 @@ The tests are configured to:
 - Take screenshots for visual verification
 - Retry failed tests on CI
 
+### Build Requirements
+
+**Important**: The `arkenv` package must be built before running tests. This is because:
+
+1. The www app's MDX documentation files import from `arkenv`
+2. `fumadocs-twoslash` validates TypeScript code examples in MDX at build/dev time  
+3. Without built types, TypeScript validation fails with "Cannot find module 'arkenv'"
+
+**In CI**: GitHub Actions runs `pnpm run build --filter=www...` which builds `www` and all its dependencies (including `arkenv`)
+
+**Locally**: Run `pnpm run build` (at least once) from the root, or `pnpm run build --filter=www...`
+
 ### Web Server Configuration
 
 The test suite uses **different server modes** for CI vs local development:
 
 #### CI (Production Server)
 - **Mode**: Production build (`next start`)
-- **Rationale**: Faster, more stable, matches production environment
+- **Rationale**: Faster startup, more stable, matches production environment
 - **Timeout**: 2 minutes (120s)
-- **Build Step**: GitHub Actions pre-builds the app before tests
+- **Build Step**: `turbo run build --filter=www...` (builds www + dependencies)
 
 #### Local (Development Server)
 - **Mode**: Development server (`next dev`)
@@ -81,16 +93,11 @@ The test suite uses **different server modes** for CI vs local development:
 - **Timeout**: 2 minutes (120s)
 - **Server Reuse**: Enabled (reuses existing dev server if running)
 
-This dual-mode approach optimizes for:
-- ✅ **CI stability** - production build eliminates dev mode variability
-- ✅ **CI speed** - production server starts faster than dev server
-- ✅ **Local DX** - dev mode with hot reload for test development
-
-If you encounter `webServer` timeout errors:
-1. **CI**: Check build logs - build may be failing
-2. **Local**: Check that `pnpm --filter=www run dev` starts successfully
-3. Check for port conflicts on 3000: `lsof -ti:3000 | xargs kill`
-4. Review stdout/stderr output for startup errors
+**Why production in CI?**
+- ✅ **Faster startup** - Production server starts in ~15-30s vs 60-120s for dev
+- ✅ **More stable** - No hot reload, no file watchers, deterministic behavior
+- ✅ **Tests what users see** - Production build = actual deployed code
+- ✅ **Fewer flakes** - Dev mode variability eliminated
 
 ## Troubleshooting
 
@@ -98,21 +105,24 @@ If you encounter `webServer` timeout errors:
 
 This error occurs when the web server takes too long to start.
 
-**CI (Production Server)**:
-- Usually means the build failed or took too long
-- Check GitHub Actions logs for build errors
+**In CI (Production Server)**:
 - Production server should start in < 30 seconds
+- Usually means the build failed (check earlier workflow steps)
+- Check that `pnpm --filter=www run build` succeeded
+- Verify `pnpm --filter=www run start` works locally
 
-**Local (Dev Server)**:
-- First-time compilation can take 2+ minutes
+**Locally (Dev Server)**:
+- First-time compilation can take 1-2 minutes (Next.js 16 + React 19)
 - Resource constraints on low-memory systems
 - Port conflicts (another process using port 3000)
+- Missing `arkenv` build (dev server needs it for MDX type checking)
 
 **Solutions**:
-1. **CI**: Fix build errors, check `pnpm --filter=www run build`
-2. **Local**: Free up system resources, clear Next.js cache
-3. **Both**: Kill port 3000 processes: `lsof -ti:3000 | xargs kill`
-4. **Both**: Clear cache: `pnpm --filter=www run clean`
+1. **Test build locally**: `pnpm run build --filter=www...` (builds www + dependencies)
+2. **For CI failures**: Check build logs in earlier workflow steps
+3. **Kill port 3000 processes**: `lsof -ti:3000 | xargs kill`
+4. **Clear Next.js cache**: `pnpm --filter=www run clean`
+5. **Verify production server starts**: `pnpm --filter=www run start` (should start in < 30s)
 
 ### Reporter and Artifacts
 

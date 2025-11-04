@@ -68,7 +68,7 @@ export default defineConfig({
 	webServer: isCi
 		? {
 				// CI: Production server (faster, more stable, matches production)
-				// Requires: pnpm --filter=www run build in GitHub Actions before tests
+				// Requires: pnpm run build --filter=www... in GitHub Actions before tests
 				command: "pnpm --filter=www run start",
 				url: "http://localhost:3000",
 				reuseExistingServer: false,

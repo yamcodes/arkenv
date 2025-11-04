@@ -31,7 +31,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
       - run: pnpm install
-      - run: pnpm turbo run test
+      - run: pnpm run test
 
   test-typesafety:
     runs-on: ubuntu-latest
@@ -111,8 +111,8 @@ jobs:
           node-version: lts/*
           cache: pnpm
       - run: pnpm install
-      - name: Build www app for production
-        run: pnpm --filter=www run build
+      - name: Build www and dependencies
+        run: pnpm run build --filter=www...
       - name: Run ${{ matrix.suite }} tests (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: pnpm run test:${{ matrix.suite }} --affected --log-order=stream
@@ -156,7 +156,7 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
       - run: pnpm build
-      - run: pnpm turbo run test
+      - run: pnpm run test
       - run: pnpm run test:e2e
       - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
@@ -196,7 +196,7 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
       - run: pnpm build
-      - run: pnpm turbo run test
+      - run: pnpm run test
       - run: pnpm run test:e2e
       - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
