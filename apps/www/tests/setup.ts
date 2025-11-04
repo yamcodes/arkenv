@@ -40,6 +40,18 @@ Object.defineProperty(globalThis, "matchMedia", {
 	value: window.matchMedia,
 });
 
+// Polyfill for Pointer Events API (required by Radix UI components)
+// JSDOM doesn't implement hasPointerCapture and releasePointerCapture
+if (!Element.prototype.hasPointerCapture) {
+	Element.prototype.hasPointerCapture = () => false;
+}
+
+if (!Element.prototype.releasePointerCapture) {
+	Element.prototype.releasePointerCapture = () => {
+		// Mock implementation
+	};
+}
+
 afterEach(() => {
 	cleanup();
 });

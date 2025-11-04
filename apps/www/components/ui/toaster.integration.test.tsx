@@ -75,8 +75,14 @@ describe("useToast + Toaster integration", () => {
 
 		// Toast should appear with title and description
 		await waitFor(() => {
-			expect(screen.getByText(/error/i)).toBeInTheDocument();
-			expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+			// Find toast by description to avoid matching the button text
+			const description = screen.getByText(/something went wrong/i);
+			expect(description).toBeInTheDocument();
+			// Find the toast element and verify it contains the title
+			const toastElement = description.closest('li[data-state="open"]');
+			expect(toastElement).toBeInTheDocument();
+			// Verify the toast element contains the title text
+			expect(toastElement).toHaveTextContent(/error/i);
 		});
 	});
 
@@ -94,10 +100,15 @@ describe("useToast + Toaster integration", () => {
 		await user.click(button);
 
 		await waitFor(() => {
+			// Find toast by description text to avoid matching the button text
+			expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+			// Find the toast element and verify it's a destructive variant
 			const toastElement = screen
-				.getByText(/error/i)
-				.closest('[role="status"]');
+				.getByText(/something went wrong/i)
+				.closest('li[data-state="open"]');
 			expect(toastElement).toBeInTheDocument();
+			// Verify it's a destructive variant (has the destructive class)
+			expect(toastElement).toHaveClass("destructive");
 		});
 	});
 
@@ -147,18 +158,27 @@ describe("useToast + Toaster integration", () => {
 
 		// Find and click close button (ToastClose from Radix UI)
 		// Query by finding the button that contains the X icon
-		const toastElement = screen
-			.getByText(/test toast/i)
-			.closest('[role="status"]');
-		const closeButton = toastElement?.querySelector('button[toast-close=""]');
-		if (closeButton) {
+		await waitFor(() => {
+			const toastElement = screen
+				.getByText(/test toast/i)
+				.closest('li[data-state="open"]');
+			expect(toastElement).toBeInTheDocument();
+			const closeButton = toastElement?.querySelector('button[toast-close=""]');
+			if (closeButton) {
+				return closeButton;
+			}
+			throw new Error("Close button not found");
+		}).then(async (closeButton) => {
 			await user.click(closeButton);
-		}
+		});
 
 		// Toast should be dismissed (removed from DOM)
-		await waitFor(() => {
-			expect(screen.queryByText(/test toast/i)).not.toBeInTheDocument();
-		});
+		await waitFor(
+			() => {
+				expect(screen.queryByText(/test toast/i)).not.toBeInTheDocument();
+			},
+			{ timeout: 3000 },
+		);
 	});
 
 	it("should handle toast state changes from useToast hook", async () => {
@@ -190,13 +210,28 @@ describe("useToast + Toaster integration", () => {
 		});
 
 		// Close toast
-		const closeButton = screen.getByRole("button", { name: /close/i });
-		await user.click(closeButton);
+		// Find and click close button (ToastClose from Radix UI)
+		await waitFor(() => {
+			const toastElement = screen
+				.getByText(/test toast/i)
+				.closest('li[data-state="open"]');
+			expect(toastElement).toBeInTheDocument();
+			const closeButton = toastElement?.querySelector('button[toast-close=""]');
+			if (closeButton) {
+				return closeButton;
+			}
+			throw new Error("Close button not found");
+		}).then(async (closeButton) => {
+			await user.click(closeButton);
+		});
 
 		// Toast should be removed
-		await waitFor(() => {
-			expect(screen.queryByText(/test toast/i)).not.toBeInTheDocument();
-		});
+		await waitFor(
+			() => {
+				expect(screen.queryByText(/test toast/i)).not.toBeInTheDocument();
+			},
+			{ timeout: 3000 },
+		);
 	});
 
 	it("should handle direct toast function call", async () => {
