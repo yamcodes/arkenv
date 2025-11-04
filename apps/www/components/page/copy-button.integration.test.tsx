@@ -87,6 +87,7 @@ describe("CopyButton + useToast + Toaster integration", () => {
 
 	it("should update button icon when copy succeeds", async () => {
 		const user = userEvent.setup();
+		mockWriteText.mockResolvedValue(undefined);
 
 		render(
 			<>
@@ -95,16 +96,22 @@ describe("CopyButton + useToast + Toaster integration", () => {
 			</>,
 		);
 
+		// Initially should show Copy icon
 		const button = screen.getByRole("button", { name: /copy command/i });
+		expect(screen.getByLabelText(/copy icon/i)).toBeInTheDocument();
+		expect(screen.queryByLabelText(/check icon/i)).not.toBeInTheDocument();
+
 		await user.click(button);
 
-		// Verify clipboard was called
-		expect(mockWriteText).toHaveBeenCalledWith("npm install arkenv");
-
-		// Button should show check icon after copy (icon change happens via state)
-		// We can verify the button is still visible and functional
+		// Button should show Check icon after copy and aria-label should change
+		// The icon change happens when setCopied(true) is called in handleClick
 		await waitFor(() => {
-			expect(button).toBeInTheDocument();
+			// Button aria-label changes from "Copy command" to "Copied"
+			expect(screen.getByRole("button", { name: /copied/i })).toBeInTheDocument();
+			// Check icon should be visible
+			expect(screen.getByLabelText(/check icon/i)).toBeInTheDocument();
+			// Copy icon should no longer be visible
+			expect(screen.queryByLabelText(/copy icon/i)).not.toBeInTheDocument();
 		});
 	});
 
