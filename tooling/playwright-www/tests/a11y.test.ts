@@ -165,7 +165,6 @@ test.describe("A11y Smoke Tests", () => {
 					// fumadocs-ui renders secondary nav items in <div> instead of <ul>
 					// Track: https://github.com/fuma-nama/fumadocs/issues/2566
 					"listitem",
-					"svg-img-alt", // decorative SVGs in buttons/links
 				],
 			});
 		}
