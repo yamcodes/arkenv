@@ -111,6 +111,8 @@ jobs:
           node-version: lts/*
           cache: pnpm
       - run: pnpm install
+      - name: Build www app for production
+        run: pnpm --filter=www run build
       - name: Run ${{ matrix.suite }} tests (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: pnpm run test:${{ matrix.suite }} --affected --log-order=stream
