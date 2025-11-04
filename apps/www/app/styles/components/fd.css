@@ -1,3 +1,24 @@
 header {
 	background-color: var(--secondary);
 }
+
+/**
+ * Keyboard focus styles for scrollable code block containers
+ *
+ * These styles provide visual feedback when scrollable code blocks receive keyboard focus.
+ * This is required for WCAG 2.4.7 (Focus Visible) compliance.
+ */
+.fd-scroll-container:focus {
+	outline: 2px solid var(--color-fd-primary, hsl(210, 100%, 50%));
+	outline-offset: 2px;
+}
+
+/* Ensure focus is visible in dark mode */
+.dark .fd-scroll-container:focus {
+	outline-color: var(--color-fd-primary, hsl(210, 100%, 70%));
+}
+
+/* Remove outline for mouse users (only show for keyboard users) */
+.fd-scroll-container:focus:not(:focus-visible) {
+	outline: none;
+}

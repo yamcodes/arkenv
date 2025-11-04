@@ -160,7 +160,6 @@ test.describe("A11y Smoke Tests", () => {
 					// Known issues from third-party libraries
 					"aria-allowed-attr", // shiki-twoslash
 					"color-contrast", // syntax highlighting themes
-					"scrollable-region-focusable", // code block containers (only on docs pages)
 					// TODO: Re-enable once fumadocs-ui fixes listitem issue
 					// fumadocs-ui renders secondary nav items in <div> instead of <ul>
 					// Track: https://github.com/fuma-nama/fumadocs/issues/2566
