@@ -107,7 +107,9 @@ describe("CopyButton + useToast + Toaster integration", () => {
 		// The icon change happens when setCopied(true) is called in handleClick
 		await waitFor(() => {
 			// Button aria-label changes from "Copy command" to "Copied"
-			expect(screen.getByRole("button", { name: /copied/i })).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: /copied/i }),
+			).toBeInTheDocument();
 			// Check icon should be visible
 			expect(screen.getByLabelText(/check icon/i)).toBeInTheDocument();
 			// Copy icon should no longer be visible
