@@ -1,7 +1,5 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { assertNoA11yViolations } from "./utils/a11y";
-import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("A11y Smoke Tests", () => {
 	// Set longer timeout for a11y tests (they're slower in CI due to axe-core scans)
