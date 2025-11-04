@@ -31,12 +31,20 @@ export default defineConfig({
 	forbidOnly: isCi,
 	retries: isCi ? 2 : 0,
 	workers: getWorkers(),
-	reporter: "html",
-	// Increase timeout for CI (slower environment, networkidle waits, axe-core scans)
-	timeout: isCi ? 60000 : 30000, // 60s for CI, 30s for local
+	// Reporter: dot/html for CI (less noise), list/html for local (immediate feedback)
+	reporter: isCi
+		? [["dot"], ["html", { open: "never" }]]
+		: [["list"], ["html", { open: "on-failure" }]],
+	// Test timeout: 60s for CI (networkidle waits, axe-core scans), 30s for local
+	timeout: isCi ? 60_000 : 30_000,
+	// Explicit expect timeout prevents flaky assertions
+	expect: { timeout: 5_000 },
 	use: {
 		baseURL: "http://localhost:3000",
 		trace: "on-first-retry",
+		// Capture videos and screenshots only on failure to reduce CI artifact size
+		video: "retain-on-failure",
+		screenshot: "only-on-failure",
 	},
 
 	projects: [
@@ -54,9 +62,29 @@ export default defineConfig({
 		},
 	],
 
-	webServer: {
-		command: "pnpm --filter=www run dev",
-		url: "http://localhost:3000",
-		reuseExistingServer: !isCi,
-	},
+	// Web server configuration
+	// CI: Use production server (next start) for stability - requires pre-build in workflow
+	// Local: Use dev server (next dev) for hot reload and better DX
+	webServer: isCi
+		? {
+				// CI: Production server (faster, more stable, matches production)
+				// Requires: pnpm run build --filter=www... in GitHub Actions before tests
+				command: "pnpm --filter=www run start",
+				url: "http://localhost:3000",
+				reuseExistingServer: false,
+				timeout: 120_000, // 2min should be enough for production server
+				stdout: "pipe",
+				stderr: "pipe",
+				env: { PORT: "3000" },
+			}
+		: {
+				// Local: Dev server (hot reload, sourcemaps, better DX)
+				command: "pnpm --filter=www run dev",
+				url: "http://localhost:3000",
+				reuseExistingServer: true,
+				timeout: 120_000, // 2min for dev server cold start
+				stdout: "pipe",
+				stderr: "pipe",
+				env: { PORT: "3000" },
+			},
 });
