@@ -55,11 +55,11 @@ describe("CopyButton + useToast + Toaster integration", () => {
 	it("should show error toast when copy fails", async () => {
 		const user = userEvent.setup();
 		const error = new Error("Clipboard failed");
-		
+
 		// Set up the mock to reject - must be set before rendering
 		mockWriteText.mockReset();
 		mockWriteText.mockRejectedValue(error);
-		
+
 		// Ensure clipboard is set up with the rejecting mock
 		Object.defineProperty(navigator, "clipboard", {
 			writable: true,
@@ -83,28 +83,33 @@ describe("CopyButton + useToast + Toaster integration", () => {
 		// The error toast appearing confirms the component -> hook -> toaster integration works
 		// Note: This test verifies the integration when clipboard fails
 		// If clipboard mock doesn't work in test environment, we verify the error handling path
-		await waitFor(() => {
-			// Check if any toast appears with error-related text
-			// The text might be broken up by multiple elements, so check document content
-			const allText = document.body.textContent?.toLowerCase() ?? "";
-			const hasErrorText =
-				allText.includes("problem copying") ||
-				allText.includes("something went wrong") ||
-				allText.includes("uh oh");
-			
-			if (hasErrorText) {
-				// Error toast appeared - verify integration works
-				const toastElements = document.querySelectorAll('li[data-state="open"]');
-				expect(toastElements.length).toBeGreaterThan(0);
-			} else {
-				// If clipboard mock isn't working, we can't test the error path
-				// But we've already verified the success path works in other tests
-				// This is acceptable for integration testing - we verify what we can
-				expect.fail(
-					"Clipboard mock may not be working in test environment. Error toast integration cannot be verified.",
-				);
-			}
-		}, { timeout: 3000 });
+		await waitFor(
+			() => {
+				// Check if any toast appears with error-related text
+				// The text might be broken up by multiple elements, so check document content
+				const allText = document.body.textContent?.toLowerCase() ?? "";
+				const hasErrorText =
+					allText.includes("problem copying") ||
+					allText.includes("something went wrong") ||
+					allText.includes("uh oh");
+
+				if (hasErrorText) {
+					// Error toast appeared - verify integration works
+					const toastElements = document.querySelectorAll(
+						'li[data-state="open"]',
+					);
+					expect(toastElements.length).toBeGreaterThan(0);
+				} else {
+					// If clipboard mock isn't working, we can't test the error path
+					// But we've already verified the success path works in other tests
+					// This is acceptable for integration testing - we verify what we can
+					expect.fail(
+						"Clipboard mock may not be working in test environment. Error toast integration cannot be verified.",
+					);
+				}
+			},
+			{ timeout: 3000 },
+		);
 	});
 
 	it("should update button icon when copy succeeds", async () => {
