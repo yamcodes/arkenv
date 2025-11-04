@@ -161,7 +161,10 @@ test.describe("A11y Smoke Tests", () => {
 					"aria-allowed-attr", // shiki-twoslash
 					"color-contrast", // syntax highlighting themes
 					"scrollable-region-focusable", // code block containers (only on docs pages)
-					"listitem", // fumadocs-ui navigation styling
+					// TODO: Re-enable once fumadocs-ui fixes listitem issue
+					// fumadocs-ui renders secondary nav items in <div> instead of <ul>
+					// Track: https://github.com/fuma-nama/fumadocs/issues/2566
+					"listitem",
 					"svg-img-alt", // decorative SVGs in buttons/links
 				],
 			});
