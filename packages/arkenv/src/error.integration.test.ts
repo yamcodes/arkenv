@@ -125,15 +125,21 @@ describe("createEnv + type + errors + utils integration", () => {
 				const lines = envError.message.split("\n");
 				const errorLine = lines.find((line) => line.includes("PORT"));
 				expect(errorLine).toBeDefined();
-				// Indented lines should start with spaces (from indent function)
+				// Indented lines should start with spaces (from indent function, default is 2 spaces)
 				if (errorLine) {
-					expect(errorLine.trim()).toContain("PORT");
+					// Check that the line contains PORT
+					expect(errorLine).toContain("PORT");
+					// Check that the line starts with leading spaces (indentation)
+					expect(errorLine).toMatch(/^\s+PORT/);
+					// Verify it has at least 2 spaces (default indent amount)
+					expect(errorLine.startsWith("  ")).toBe(true);
 				}
 			}
 		});
 
 		it("should include value in error message when provided", () => {
-			vi.stubEnv("PORT", "abc");
+			const invalidValue = "abc";
+			vi.stubEnv("PORT", invalidValue);
 
 			try {
 				createEnv({
@@ -145,6 +151,8 @@ describe("createEnv + type + errors + utils integration", () => {
 				const envError = error as ArkEnvError;
 				// Error should include the provided value in formatted output
 				expect(envError.message).toContain("PORT");
+				// Verify the actual invalid value appears in the error message
+				expect(envError.message).toContain(invalidValue);
 			}
 		});
 

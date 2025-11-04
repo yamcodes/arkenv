@@ -35,6 +35,7 @@ describe("Heading + useIsMobile integration", () => {
 	});
 
 	it("should show anchor on hover on desktop", async () => {
+		const user = userEvent.setup();
 		Object.defineProperty(window, "innerWidth", {
 			writable: true,
 			configurable: true,
@@ -51,6 +52,22 @@ describe("Heading + useIsMobile integration", () => {
 			name: /link to section: test-heading/i,
 		});
 		expect(anchor).toBeInTheDocument();
+
+		// Initially anchor should have opacity-0 (hidden)
+		expect(anchor).toHaveClass("opacity-0");
+		// Verify it has the hover classes that will make it visible
+		expect(anchor).toHaveClass("group-hover:opacity-100");
+		expect(anchor).toHaveClass("hover:opacity-100");
+
+		// Hover over the heading (which has the 'group' class)
+		await user.hover(heading);
+
+		// On desktop, hovering the heading should make the anchor visible
+		// The anchor uses group-hover:opacity-100 which applies when the parent group is hovered
+		// We can verify the heading has the 'group' class for group-hover to work
+		expect(heading).toHaveClass("group");
+		// The anchor should still have the hover classes that enable visibility
+		expect(anchor).toHaveClass("group-hover:opacity-100");
 	});
 
 	it("should show anchor on click on mobile", async () => {
