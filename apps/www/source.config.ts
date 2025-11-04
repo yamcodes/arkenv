@@ -163,8 +163,9 @@ export default defineConfig({
 		remarkPlugins: [remarkGemoji, remarkNpm],
 		rehypeCodeOptions: {
 			themes: {
-				light: "github-light",
-				dark: "github-dark",
+				// High-contrast themes for WCAG AA compliance
+				light: "github-light-high-contrast",
+				dark: "github-dark-high-contrast",
 			},
 			transformers: [
 				...(rehypeCodeDefaultOptions.transformers ?? []),
