@@ -29,7 +29,11 @@ export const EditOnGithub = ({ path }: EditOnGithubProps) => {
 					target="_blank"
 					rel="noopener noreferrer"
 				>
-					<SquarePen className="w-4 h-4" data-testid="square-pen-icon" />
+					<SquarePen
+						aria-hidden="true"
+						className="w-4 h-4"
+						data-testid="square-pen-icon"
+					/>
 					Edit this page on GitHub
 				</Link>
 			</Button>

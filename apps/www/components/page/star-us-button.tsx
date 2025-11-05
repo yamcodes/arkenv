@@ -139,9 +139,10 @@ export function StarUsButton({ className }: StarUsProps) {
 						rel="noopener noreferrer"
 					>
 						<div className="flex items-center gap-2">
-							<SiGithub className="w-4 h-4" />
+							<SiGithub aria-hidden="true" className="w-4 h-4" />
 							<span className="font-semibold">Star us on GitHub!</span>
 							<Star
+								aria-hidden="true"
 								className="w-5 h-5 text-yellow-600 dark:text-yellow-400"
 								fill="currentColor"
 							/>
@@ -175,7 +176,10 @@ export function StarUsButton({ className }: StarUsProps) {
 						rel="noopener noreferrer"
 					>
 						{/* Sparkle effects */}
-						<div className="absolute inset-0 pointer-events-none">
+						<div
+							className="absolute inset-0 pointer-events-none"
+							aria-hidden="true"
+						>
 							<div
 								className="absolute top-1 left-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
 								style={{ animationDelay: "0s" }}
@@ -196,9 +200,10 @@ export function StarUsButton({ className }: StarUsProps) {
 
 						{/* Main content */}
 						<div className="flex items-center gap-2 relative z-10">
-							<SiGithub className="w-4 h-4" />
+							<SiGithub aria-hidden="true" className="w-4 h-4" />
 							<span className="font-semibold">Star us on GitHub!</span>
 							<Star
+								aria-hidden="true"
 								className="w-5 h-5 transition-all duration-300 star-bounce text-yellow-600 dark:text-yellow-400"
 								fill="currentColor"
 							/>

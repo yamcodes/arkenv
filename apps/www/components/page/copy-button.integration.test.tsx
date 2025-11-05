@@ -125,8 +125,9 @@ describe("CopyButton + useToast + Toaster integration", () => {
 
 		// Initially should show Copy icon
 		const button = screen.getByRole("button", { name: /copy command/i });
-		expect(screen.getByLabelText(/copy icon/i)).toBeInTheDocument();
-		expect(screen.queryByLabelText(/check icon/i)).not.toBeInTheDocument();
+		// Icons are decorative (aria-hidden), so check by SVG class
+		expect(button.querySelector(".lucide-copy")).toBeInTheDocument();
+		expect(button.querySelector(".lucide-check")).not.toBeInTheDocument();
 
 		await user.click(button);
 
@@ -137,10 +138,10 @@ describe("CopyButton + useToast + Toaster integration", () => {
 			expect(
 				screen.getByRole("button", { name: /copied/i }),
 			).toBeInTheDocument();
-			// Check icon should be visible
-			expect(screen.getByLabelText(/check icon/i)).toBeInTheDocument();
+			// Check icon should be visible (decorative, aria-hidden)
+			expect(button.querySelector(".lucide-check")).toBeInTheDocument();
 			// Copy icon should no longer be visible
-			expect(screen.queryByLabelText(/copy icon/i)).not.toBeInTheDocument();
+			expect(button.querySelector(".lucide-copy")).not.toBeInTheDocument();
 		});
 	});
 
