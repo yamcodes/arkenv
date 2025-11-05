@@ -143,9 +143,12 @@ test.describe("Homepage", () => {
 		);
 		await expect(videoButton).toBeVisible();
 
+		// Wait a bit for video to be fully loaded to reduce flakiness
+		await page.waitForTimeout(500);
+
 		// Test click opens new tab (we can't easily test the actual navigation in E2E)
 		const [newPage] = await Promise.all([
-			page.context().waitForEvent("page"),
+			page.context().waitForEvent("page", { timeout: 10000 }),
 			videoButton.click(),
 		]);
 

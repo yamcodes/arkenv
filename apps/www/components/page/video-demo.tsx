@@ -5,8 +5,12 @@ import BackgroundVideo from "next-video/background-video";
 import { useState } from "react";
 import demo from "~/videos/demo.mp4";
 
-const WIDTH = 800;
-const HEIGHT = 653;
+// Actual video dimensions
+const WIDTH = 2048;
+const HEIGHT = 1672;
+
+const getAspectRatio = (width: number, height: number) =>
+	`${width} / ${height}`;
 
 export function VideoDemo() {
 	const [videoError, setVideoError] = useState(false);
@@ -22,14 +26,14 @@ export function VideoDemo() {
 	};
 
 	return (
-		<div className="relative mb-4 w-full max-w-[800px] mx-auto sm:px-8">
+		<div className="relative mb-4 w-full mx-auto sm:px-8">
 			{/* Main video container with aspect ratio */}
 			<button
 				type="button"
 				className="relative rounded-lg overflow-hidden border border-fd-border shadow-lg bg-black/5 dark:bg-black/20 cursor-pointer m-0 p-0 w-full shadow-[0_0_20px_rgba(96,165,250,0.6)] dark:shadow-[0_0_100px_rgba(96,165,250,0.2)]"
 				onClick={handleVideoClick}
 				aria-label="Open interactive demo in a new tab"
-				style={{ aspectRatio: `${WIDTH} / ${HEIGHT}` }}
+				style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
 			>
 				{videoError ? (
 					<Image
@@ -37,7 +41,7 @@ export function VideoDemo() {
 						alt="ArkEnv Demo"
 						fill
 						className="object-contain"
-						sizes="(max-width: 768px) 100vw, 800px"
+						sizes="100vw"
 					/>
 				) : (
 					<BackgroundVideo
