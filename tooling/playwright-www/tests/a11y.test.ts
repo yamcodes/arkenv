@@ -158,12 +158,11 @@ test.describe("A11y Smoke Tests", () => {
 			await assertNoA11yViolations(page, {
 				disableRules: [
 					// Known issues from third-party libraries
-					"aria-allowed-attr", // shiki-twoslash
 					// TODO: Re-enable once fumadocs-twoslash fixes aria-allowed-attr violation
 					// fumadocs-twoslash renders <span class="twoslash-hover" type="button"> which is invalid HTML
 					// Should use <button> element instead of <span> for interactive hover triggers
 					// Track: https://github.com/fuma-nama/fumadocs/issues/2574
-					"color-contrast", // syntax highlighting themes
+					"aria-allowed-attr", // shiki-twoslash
 					// TODO: Re-enable once fumadocs-ui fixes scrollable-region-focusable
 					// code block containers need keyboard focus
 					// Track: https://github.com/fuma-nama/fumadocs/issues/2573

@@ -1,3 +1,16 @@
 header {
 	background-color: var(--secondary);
 }
+
+/* Override fumadocs muted-foreground for WCAG AA compliance */
+:root {
+	--color-fd-muted-foreground: hsl(
+		240 4% 40%
+	); /* WCAG AA compliant: 6.13:1 contrast on white background */
+}
+
+.dark {
+	--color-fd-muted-foreground: hsl(
+		240 5% 70%
+	); /* WCAG AA compliant: 8.88:1 contrast on dark background */
+}
