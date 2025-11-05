@@ -37,6 +37,7 @@ pnpm-debug.log*
 *.tar.bz2
 *.tar.xz
 *.tar.wim
+*.tgz
 
 # coverage
 coverage/
