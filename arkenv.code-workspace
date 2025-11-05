@@ -71,10 +71,6 @@
 		{
 			"path": "examples/with-vite-react-ts",
 			"name": "  with-vite-react-ts"
-		},
-		{
-			"path": "examples/with-bun-react",
-			"name": "  with-bun-react"
 		}
 	]
 }
