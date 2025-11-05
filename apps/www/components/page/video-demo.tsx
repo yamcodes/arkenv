@@ -42,6 +42,7 @@ export function VideoDemo() {
 						fill
 						className="object-contain"
 						sizes="100vw"
+						unoptimized
 					/>
 				) : (
 					<BackgroundVideo
