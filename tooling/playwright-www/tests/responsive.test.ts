@@ -169,9 +169,9 @@ test.describe("Responsive Design", () => {
 			expect(boundingBox).not.toBeNull();
 
 			if (boundingBox) {
-				// Video should not exceed its natural maximum width (800px)
-				// Allow a small margin for sub-pixel rendering
-				expect(boundingBox.width).toBeLessThanOrEqual(810);
+				// Video should not exceed max-w-6xl constraint (1280px)
+				// Allow a small margin for padding and sub-pixel rendering
+				expect(boundingBox.width).toBeLessThanOrEqual(1300);
 			}
 		});
 	});
