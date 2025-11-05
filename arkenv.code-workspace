@@ -45,6 +45,10 @@
 			"name": "  vite-playground"
 		},
 		{
+			"path": "apps/playgrounds/bun-react",
+			"name": "  bun-react-playground"
+		},
+		{
 			"path": "apps/www",
 			"name": "  www (arkenv.js.org)"
 		},
@@ -63,6 +67,10 @@
 		{
 			"path": "examples/with-vite-react-ts",
 			"name": "  with-vite-react-ts"
+		},
+		{
+			"path": "examples/with-bun-react",
+			"name": "  with-bun-react"
 		}
 	]
 }
