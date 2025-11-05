@@ -237,7 +237,6 @@ describe("VideoDemo", () => {
 			"relative",
 			"mb-4",
 			"w-full",
-			"max-w-[800px]",
 			"mx-auto",
 			"sm:px-8",
 		);
@@ -345,7 +344,7 @@ describe("VideoDemo", () => {
 
 		const button = screen.getByRole("button");
 		expect(button).toBeInTheDocument();
-		expect(button).toHaveStyle({ aspectRatio: "800 / 653" });
+		expect(button).toHaveStyle({ aspectRatio: "2048 / 1672" });
 	});
 
 	it("fallback image has sizes attribute and fill prop for responsive loading", () => {
@@ -361,7 +360,7 @@ describe("VideoDemo", () => {
 
 		const img = button.querySelector("img");
 		expect(img).toBeInTheDocument();
-		expect(img).toHaveAttribute("sizes", "(max-width: 768px) 100vw, 800px");
+		expect(img).toHaveAttribute("sizes", "100vw");
 		expect(img).toHaveAttribute("data-fill", "true");
 	});
 });
