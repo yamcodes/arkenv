@@ -5,6 +5,7 @@
 	"scripts": {
 		"start": "tsx --env-file .env index.ts",
 		"dev": "tsx watch --env-file .env index.ts",
+		"dev:example": "tsx watch --env-file .env.example index.ts",
 		"build": "tsc"
 	},
 	"dependencies": {
@@ -18,5 +19,8 @@
 	"packageManager": "npm@10.9.2",
 	"engines": {
 		"node": "22"
+	},
+	"stackblitz": {
+		"startCommand": "npm install && npm run dev:example"
 	}
 }

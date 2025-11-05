@@ -1,0 +1,23 @@
+{
+	"status": "ready",
+	"originalFilePath": "videos/demo.mp4",
+	"provider": "mux",
+	"providerMetadata": {
+		"mux": {
+			"uploadId": "eKcTJ66Pa02uhEfpLxzKePbzp9zcwiMXXIMOz3dWfP1M",
+			"assetId": "ZItbu96eFskuka5JbFPGMSdvcB01lMi1DZOsle00Qe4NE",
+			"playbackId": "vZQ2QhNzGFqfQZ4Jwo4LQshLs54Powt8W9415CpBdYc"
+		}
+	},
+	"createdAt": 1762008083563,
+	"updatedAt": 1762008097619,
+	"size": 0,
+	"sources": [
+		{
+			"src": "https://stream.mux.com/vZQ2QhNzGFqfQZ4Jwo4LQshLs54Powt8W9415CpBdYc.m3u8",
+			"type": "application/x-mpegURL"
+		}
+	],
+	"poster": "https://image.mux.com/vZQ2QhNzGFqfQZ4Jwo4LQshLs54Powt8W9415CpBdYc/thumbnail.webp",
+	"blurDataURL": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQAA0AAQAcJZwCdAD0iF6qfcAA/v8v+bLtfkWaOuzupuIhTZdQ8k0iayImMaTC1pUEV4AAAAA="
+}

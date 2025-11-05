@@ -1,5 +1,59 @@
 # ArkEnv
 
+## 0.7.3
+
+### Patch Changes
+
+- #### Automatic boolean string conversion _[`#218`](https://github.com/yamcodes/arkenv/pull/218) [`e554e2b`](https://github.com/yamcodes/arkenv/commit/e554e2b41aab1b8e29d873982ea587c069f4732d) [@yamcodes](https://github.com/yamcodes)_
+
+  The `boolean` type now accepts `"true"`/`"false"` strings from environment variables and converts them to actual boolean values. This also works with boolean defaults.
+
+  Example:
+
+  ```ts
+  import arkenv from "arkenv";
+
+  const env = arkenv({
+    DEBUG: "boolean",
+    ENABLE_FEATURE: "boolean = true",
+  });
+
+  console.log(env.DEBUG);
+  console.log(env.ENABLE_FEATURE);
+  ```
+
+  Result:
+
+  ```sh
+  ❯ DEBUG=true npx tsx index.ts
+  true
+  true
+  ```
+
+## 0.7.2
+
+### Patch Changes
+
+- #### Support array defaults using type().default() syntax _[`#199`](https://github.com/yamcodes/arkenv/pull/199) [`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by `createEnv` due to overly restrictive type constraints. The function now accepts any string-keyed record while still maintaining type safety through ArkType's validation system.
+
+  ##### New Features
+
+  - Array defaults to empty using `type("string[]").default(() => [])` syntax
+  - Support for complex array types with defaults
+  - Mixed schemas combining string-based and type-based defaults
+
+  ##### Example
+
+  ```typescript
+  const env = arkenv({
+    ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
+    FEATURE_FLAGS: type("string[]").default(() => []),
+    PORT: "number.port",
+  });
+  ```
+
 ## 0.7.1
 
 ### Patch Changes
@@ -119,7 +173,7 @@
 
   This enables syntax highlighting along with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark):
 
-  ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
+  ![ArkType syntax highlighting in VS Code](https://arkenv.js.org/assets/dx.png)
 
   Note that named imports still work:
 

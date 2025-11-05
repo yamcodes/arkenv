@@ -2,12 +2,16 @@ import path from "node:path";
 import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
+import { withNextVideo } from "next-video/process";
 
 const config = {
-	reactStrictMode: true,
-	cleanDistDir: true,
 	outputFileTracingRoot: path.join(__dirname, "../../"),
 	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
+	// cacheComponents: true, // TODO: Uncomment this once https://github.com/getsentry/sentry-javascript/issues/17895 is fixed
+	typescript: {
+		// We check typesafety on ci
+		ignoreBuildErrors: true,
+	},
 } as const satisfies NextConfig;
 
 const sentryConfig = {
@@ -53,4 +57,6 @@ const sentryConfig = {
 	authToken: process.env.SENTRY_AUTH_TOKEN,
 } as const satisfies SentryBuildOptions;
 
-export default withSentryConfig(createMDX()(config), sentryConfig);
+export default withNextVideo(
+	withSentryConfig(createMDX()(config), sentryConfig),
+);

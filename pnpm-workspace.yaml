@@ -2,3 +2,7 @@ packages:
   - 'packages/*'
   - 'apps/*'
   - 'apps/playgrounds/*'
+  - '!apps/playgrounds/bun-react'
+  - 'tooling/*'
+overrides:
+  "@playwright/test": "^1.56.0"

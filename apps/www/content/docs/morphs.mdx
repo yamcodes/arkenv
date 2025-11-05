@@ -1,0 +1,62 @@
+---
+title: Morphs
+icon: New
+---
+
+Since environment variables are defined as strings, ArkEnv automatically transforms certain ArkType keywords when imported through ArkEnv instead of directly from ArkType. These "morphs" provide environment-variable-specific behavior that's optimized for configuration management.
+
+### `boolean`
+
+The `boolean` type automatically morphs (or coalesces) string values from environment variables to boolean.
+
+```ts twoslash
+import arkenv from 'arkenv';
+
+const env = arkenv({ DEBUG: "boolean" });
+const isDebug = env.DEBUG;
+
+// Hover to see the type
+console.log(isDebug);
+```
+Result:
+```sh
+❯ DEBUG=true npx tsx index.ts
+true
+```
+
+This works by checking if the value is one of the following:
+- `"true"`
+- `"false"`
+
+You can set boolean defaults:
+
+```ts
+const env = arkenv({ 
+  DEBUG: "boolean = false",
+  ENABLE_FEATURES: "boolean = true"
+});
+```
+
+If you wish to customize this behavior (and allow other string representations of boolean), you can define your own morph function:
+
+```ts
+import arkenv, { type } from 'arkenv';
+
+const env = arkenv({ 
+  DEBUG: type("'true' | 'false' | '0' | '1'").pipe((str) => str === "true" || str === "1")
+});
+const isDebug = env.DEBUG;
+
+console.log(isDebug);
+```
+Result:
+```sh
+❯ DEBUG=false npx tsx index.ts
+false
+❯ DEBUG=0 npx tsx index.ts
+false
+❯ DEBUG=true npx tsx index.ts
+true
+❯ DEBUG=1 npx tsx index.ts
+true
+```

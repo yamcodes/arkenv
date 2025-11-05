@@ -50,13 +50,18 @@ function filterEnvByPrefix(
 }
 
 /**
+ * TODO: If possible, find a better type than "const T extends Record<string, unknown>",
+ * and be as close as possible to the type accepted by ArkType's `type`.
+ */
+
+/**
  * Create an environment variables object from a schema and an environment
  * @param def - The environment variable schema
  * @param options - Configuration options or environment variables (for backward compatibility)
  * @returns The validated environment variable schema
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
-export function createEnv<const T extends Record<string, string | undefined>>(
+export function createEnv<const T extends Record<string, unknown>>(
 	def: EnvSchema<T>,
 	options?: CreateEnvOptions | RuntimeEnvironment,
 ): distill.Out<type.infer<T, (typeof $)["t"]>> {

@@ -1,5 +1,86 @@
 # @arkenv/vite-plugin
 
+## 0.0.14
+
+### Patch Changes
+
+- #### Support array defaults using `type().default()` syntax _[`#224`](https://github.com/yamcodes/arkenv/pull/224) [`ecf9b64`](https://github.com/yamcodes/arkenv/commit/ecf9b64a680d3af5c5786b288fda35608590f7a9) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by the plugin due to overly restrictive type constraints. The plugin now accepts any string-keyed record while still maintaining type safety through ArkType's validation system.
+
+  ##### New Features
+
+  - Array defaults to empty using `type("string[]").default(() => [])` syntax
+  - Support for complex array types with defaults
+  - Mixed schemas combining string-based and type-based defaults
+
+  ##### Example
+
+  ```typescript
+  // vite.config.ts
+  import arkenv from "@arkenv/vite-plugin";
+  import { type } from "arkenv";
+
+  export default defineConfig({
+    plugins: [
+      arkenv({
+        ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
+        FEATURE_FLAGS: type("string[]").default(() => []),
+        PORT: "number.port",
+      }),
+    ],
+  });
+  ```
+
+  > [!NOTE]
+  > This is the same fix as in [`arkenv@0.7.2` (the core library)](https://github.com/yamcodes/arkenv/releases/tag/arkenv%400.7.2), but for the Vite plugin.
+
+- #### Fix `import.meta.env` not respecting morphed environment variables _[`#227`](https://github.com/yamcodes/arkenv/pull/227) [`d41878f`](https://github.com/yamcodes/arkenv/commit/d41878fe9cc2524f06ac2f0ef35f2f5ba58ee06b) [@yamcodes](https://github.com/yamcodes)_
+
+  The Vite plugin now properly exposes transformed environment variables through `import.meta.env`.
+
+  Previously, type transformations (`string → number`, `string → boolean`) and default values were lost because the plugin only called `createEnv()` without integrating the results with Vite's environment system.
+
+  Now the plugin uses Vite's `define` option to expose the morphed values, ensuring all schema transformations are respected.
+
+## 0.0.13
+
+### Patch Changes
+
+- #### Support Vite 2.x _[`#212`](https://github.com/yamcodes/arkenv/pull/212) [`bfe08f6`](https://github.com/yamcodes/arkenv/commit/bfe08f6d9f21352186420f0f68611840e164da52) [@yamcodes](https://github.com/yamcodes)_
+
+  Extended the supported Vite versions to include **2.9.18** through **7.x** (inclusive).
+
+  Also, we've added the `vite-plugin` keyword to the `package.json`, and a section in the `README.md` explaining why this plugin is a Vite only plugin (and not a Rollup plugin).
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e554e2b`](https://github.com/yamcodes/arkenv/commit/e554e2b41aab1b8e29d873982ea587c069f4732d)
+
+</small>
+
+- `arkenv@0.7.3`
+
+</details>
+
+## 0.0.12
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c)
+
+</small>
+
+- `arkenv@0.7.2`
+
+</details>
+
 ## 0.0.11
 
 ### Patch Changes

@@ -50,6 +50,7 @@ export function SailButton() {
 					className="inline-flex items-center justify-center gap-2 whitespace-nowrap"
 				>
 					<Sailboat
+						aria-hidden="true"
 						className={`transition-transform duration-[700ms] ease-in ${isSailing ? "translate-x-[1000%]" : ""}`}
 						onTransitionEnd={() => router.push("/docs/quickstart")}
 					/>

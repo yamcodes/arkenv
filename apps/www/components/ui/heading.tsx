@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
+import { useIsMobile } from "../../hooks/use-is-mobile";
 
 // Global state to track the active heading ID
 let activeHeadingId: string | null = null;
@@ -24,18 +25,27 @@ export function Heading({
 	as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }) {
 	const [isActive, setIsActive] = useState(false);
+	const isMobile = useIsMobile();
 
 	useEffect(() => {
 		const handleActiveChange = (activeId: string | null) => {
-			setIsActive(activeId === id);
+			// Only set active state on mobile devices
+			if (isMobile) {
+				setIsActive(activeId === id);
+			}
 		};
 
 		headingListeners.add(handleActiveChange);
 
-		// Set initial state
-		setIsActive(activeHeadingId === id);
+		// Set initial state only on mobile
+		if (isMobile) {
+			setIsActive(activeHeadingId === id);
+		}
 
 		const handleClickOutside = (event: MouseEvent) => {
+			// Only handle click outside on mobile devices
+			if (!isMobile) return;
+
 			// Check if the click is outside any heading or anchor
 			const target = event.target as Element;
 			if (
@@ -52,11 +62,15 @@ export function Heading({
 			headingListeners.delete(handleActiveChange);
 			document.removeEventListener("click", handleClickOutside);
 		};
-	}, [id]);
+	}, [id, isMobile]);
 
 	const handleAnchorClick = (e: React.MouseEvent) => {
 		e.preventDefault();
-		setActiveHeading(id ?? null);
+
+		// Only set active state on mobile devices
+		if (isMobile) {
+			setActiveHeading(id ?? null);
+		}
 
 		// Always scroll to the element, even if hash is already set
 		const element = document.getElementById(id || "");
@@ -74,8 +88,10 @@ export function Heading({
 			return;
 		}
 
-		// Show the anchor but don't scroll - only the pound symbol should scroll
-		setActiveHeading(id ?? null);
+		// Only show the anchor on mobile - on desktop it will only show on hover
+		if (isMobile) {
+			setActiveHeading(id ?? null);
+		}
 	};
 
 	if (!id)
@@ -95,15 +111,17 @@ export function Heading({
 			<a
 				href={`#${id}`}
 				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
-					isActive
+					isMobile && isActive
 						? "opacity-100"
 						: "opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100"
 				}`}
-				aria-label="Link to section"
-				tabIndex={0}
+				aria-label={`Link to section: ${id}`}
+				// Keep keyboard access on desktop; hide when inactive on mobile
+				tabIndex={isMobile && !isActive ? -1 : 0}
 				onClick={handleAnchorClick}
 			>
-				#
+				<span className="sr-only">Link to section: {id}</span>
+				<span aria-hidden="true">#</span>
 			</a>
 			{children}
 		</Component>

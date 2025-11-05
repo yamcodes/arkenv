@@ -38,3 +38,6 @@ pnpm-debug.log*
 *.tar.xz
 *.tar.wim
 *.tgz
+
+# coverage
+coverage/

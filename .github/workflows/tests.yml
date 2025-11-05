@@ -1,68 +1,206 @@
 name: tests
-description: "Run build and unit tests on pull requests"
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * 6" # Every Saturday
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        node-version: [lts/*, latest]
       fail-fast: false
 
     steps:
-      - id: checkout
-        name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm run test
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run test
-        run: pnpm test
-  test-build:
+  test-typesafety:
     runs-on: ubuntu-latest
     steps:
-      - id: checkout
-        name: Checkout
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm run typecheck
+
+  test-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [lts/*, latest]
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.21
+      - run: pnpm install
+      - run: pnpm run build
+
+  resolve-playwright-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: pnpm install --frozen-lockfile
+      - name: Read @playwright/test version
+        id: out
+        run: |
+          VER=$(node -e "console.log(require(require.resolve('@playwright/test/package.json')).version)")
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+
+  test-e2e:
+    needs: resolve-playwright-version
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    strategy:
+      matrix:
+        suite: [a11y, e2e]
+      fail-fast: false
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+      - name: Set Turbo base/head for PRs
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: pnpm
+      - run: pnpm install
+      - name: Build www and dependencies
+        run: pnpm run build --filter=www...
+      - name: Run ${{ matrix.suite }} tests (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: pnpm run test:${{ matrix.suite }} --affected --log-order=stream
+      - name: Run ${{ matrix.suite }} tests (main)
+        if: ${{ github.event_name != 'pull_request' }}
+        run: pnpm run test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
+      - uses: actions/upload-artifact@v5
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-${{ matrix.suite }}
+          path: "**/test-results/**"
+          retention-days: 30
+  test-windows:
+    if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'windows')
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [lts/*, latest]
+    continue-on-error: ${{ matrix.node-version == 'latest' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2 # for checking against main and for following the PR history
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        
+
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
+          cache: pnpm
+      - run: pnpm install
+      - uses: actions/cache@v4
         with:
-          bun-version: 1.2.21
+          path: ~/.cache/ms-playwright
+          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          restore-keys: |
+            windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            windows-latest-pw-
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+      - run: pnpm build
+      - run: pnpm run test
+      - run: pnpm run test:e2e
+      - uses: actions/upload-artifact@v5
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-windows-${{ matrix.node-version }}
+          path: "**/test-results/**"
+          retention-days: 30
 
-      - name: Install dependencies
-        run: pnpm install
+  test-macos:
+    if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'macos')
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: [lts/*, latest]
+    continue-on-error: ${{ matrix.node-version == 'latest' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2 # for checking against main and for following the PR history
 
-      - name: Caching for Turbo
-        uses: rharkor/caching-for-turbo@v1.8
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Run build
-        run: pnpm run build
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - run: pnpm install
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          restore-keys: |
+            macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            macos-latest-pw-
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+      - run: pnpm build
+      - run: pnpm run test
+      - run: pnpm run test:e2e
+      - uses: actions/upload-artifact@v5
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-macos-${{ matrix.node-version }}
+          path: "**/test-results/**"
+          retention-days: 30

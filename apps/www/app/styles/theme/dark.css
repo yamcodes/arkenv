@@ -10,7 +10,7 @@
 	--secondary: color-mix(in srgb, var(--background) 80%, transparent);
 	--secondary-foreground: hsl(0 0% 98%);
 	--muted: hsl(240 3.7% 15.9%);
-	--muted-foreground: hsl(240 5% 64.9%);
+	--muted-foreground: hsl(240 5% 70%); /* WCAG AA compliant: 8.88:1 contrast */
 	--accent: hsl(240 3.7% 15.9%);
 	--accent-foreground: hsl(0 0% 98%);
 	--destructive: hsl(0 62.8% 30.6%);

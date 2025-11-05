@@ -28,6 +28,19 @@ function App() {
 			<p className="read-the-docs">
 				Click on the Vite and React logos to learn more
 			</p>
+			<h1>My env vars</h1>
+			<p>
+				My var: {String(import.meta.env.VITE_MY_VAR)} (of type{" "}
+				{typeof import.meta.env.VITE_MY_VAR})
+			</p>
+			<p>
+				My number: {String(import.meta.env.VITE_MY_NUMBER)} (of type{" "}
+				{typeof import.meta.env.VITE_MY_NUMBER})
+			</p>
+			<p>
+				My boolean: {String(import.meta.env.VITE_MY_BOOLEAN)} (of type{" "}
+				{typeof import.meta.env.VITE_MY_BOOLEAN})
+			</p>
 		</>
 	);
 }

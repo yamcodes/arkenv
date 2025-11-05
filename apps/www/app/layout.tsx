@@ -1,6 +1,8 @@
 import { Banner } from "fumadocs-ui/components/banner";
 import "./globals.css";
-import { RootProvider } from "fumadocs-ui/provider";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { type ReactNode, useId } from "react";
@@ -59,6 +61,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 						!
 					</Banner>
 					{children}
+					<SpeedInsights />
+					<Analytics />
 					<Toaster />
 				</RootProvider>
 			</body>

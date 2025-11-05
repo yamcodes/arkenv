@@ -3,7 +3,9 @@
 		"biomejs.biome",
 		"unifiedjs.vscode-mdx",
 		"mikestead.dotenv",
-		"vitest.explorer"
+		"vitest.explorer",
+		"arktypeio.arkdark",
+		"arktypeio.arkthemes"
 	],
 	"unwantedRecommendations": [
 		"esbenp.prettier-vscode",

@@ -4,39 +4,47 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
-		"dev": "turbo run dev --filter=arkenv",
+		"dev": "turbo run dev --ui tui",
 		"typecheck": "turbo run typecheck",
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
 		"release": "pnpm run build:packages && changeset publish",
-		"fix": "biome check --write .",
-		"check": "biome check",
+		"fix": "biome check --write . && manypkg fix",
+		"fix:unsafe": "biome check --write --unsafe . && manypkg fix",
+		"check": "biome check && manypkg check",
 		"check:errors": "biome check --diagnostic-level=error",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:e2e": "turbo run test:e2e",
+		"test:a11y": "turbo run test:a11y",
+		"test:e2e:report": "turbo run test:e2e:report",
+		"test:e2e:ui": "turbo run test:e2e:ui",
+		"test:e2e:update": "turbo run test:e2e:update",
 		"changeset": "changeset"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.4",
+		"@biomejs/biome": "2.3.2",
 		"@changesets/cli": "^2.29.7",
+		"@manypkg/cli": "^0.25.1",
+		"@playwright/test": "^1.56.1",
+		"@vitest/ui": "^3.2.4",
 		"changesets-changelog-clean": "^1.3.0",
-		"jsdom": "^27.0.0",
-		"rimraf": "^6.0.1",
-		"brace-expansion": "2.0.2",
-		"turbo": "^2.5.6",
-		"typescript": "^5.9.2",
+		"rimraf": "^6.1.0",
+		"turbo": "^2.6.0",
+		"typescript": "^5.9.3",
 		"vitest": "^3.2.4"
 	},
-	"packageManager": "pnpm@10.15.1",
+	"packageManager": "pnpm@10.20.0",
 	"pnpm": {
-		"ignoredBuiltDependencies": [
-			"esbuild",
-			"sharp"
-		],
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
-			"@sentry/cli"
+			"@sentry/cli",
+			"@swc/core",
+			"@tailwindcss/oxide",
+			"@vercel/speed-insights",
+			"esbuild",
+			"sharp"
 		]
-	},
-	"version": "0.0.1"
+	}
 }

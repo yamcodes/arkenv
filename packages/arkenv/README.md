@@ -14,6 +14,10 @@
 </p>
 <h3 align="center">Proud member of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
 
+<p align="center">
+  <img alt="ArkEnv Demo" src="https://arkenv.js.org/assets/demo.gif" />
+</p>
+
 <br/>
 <br/>
 <br/>
@@ -23,11 +27,12 @@
 <br/>
 <br/>
 
-## Introduction
+## Introduction 
 
+> [!TIP]
+> 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs) to hover over code blocks and get type hints!
 
 ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
-
 
 ```ts twoslash
 import arkenv from 'arkenv';
@@ -38,12 +43,10 @@ const env = arkenv({
   NODE_ENV: "'development' | 'production' | 'test'",
 });
 
-
-// Automatically validate and parse process.env
-// TypeScript knows the ✨exact✨ types!
-console.log(env.HOST);     // (property) HOST: string
-console.log(env.PORT);     // (property) PORT: number
-console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" | "test"
+// Hover to see ✨exact✨ types
+const host = env.HOST;
+const port = env.PORT;
+const nodeEnv = env.NODE_ENV;
 ```
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
@@ -101,16 +104,13 @@ bun add arkenv arktype
 
 :rocket: **Let's get started!** Read the [2-minute setup guide](https://arkenv.js.org/docs/quickstart) or [start with an example](https://arkenv.js.org/docs/examples).
 
-
 > [!TIP]
-> Improve your DX with syntax highlighting in [VS Code & Cursor](https://arkenv.js.org/docs/integrations/vscode) or [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
-> 
-> ![ArkType syntax highlighting in VS Code](https://raw.githubusercontent.com/yamcodes/arkenv/main/assets/dx.png)
+> Improve your DX with *syntax highlighting* in [VS Code & Cursor](https://arkenv.js.org/docs/integrations/vscode) or [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
 
 ## Requirements
 
 - TypeScript >= 5.1 and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
--  [Node.js 22 LTS](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [Bun 1.2](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [Vite 7](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) are tested. Older versions may work but aren't officially supported
+-  Tested on [Node.js **LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [Bun 1.2](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts). Older versions may work but are not officially supported
 
 ## Plugins
 

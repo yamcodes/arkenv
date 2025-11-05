@@ -1,7 +1,6 @@
 ---
 title: Quickstart
-icon: Rocket
-description: Let's get you started with a few simple steps
+description: Let's get you started with a few simple steps.
 ---
 
 <Steps>
@@ -21,7 +20,7 @@ description: Let's get you started with a few simple steps
     // [!code word:config]
     {
       "compilerOptions": {
-        "strict": true // [!code highlight]
+        "strict": true // [!code focus]
       }
     }
     ```
@@ -35,12 +34,15 @@ description: Let's get you started with a few simple steps
     Add a schema to make your environment variables **validated** and **typesafe**:
 
     ```ts title="config/env.ts" twoslash
-    import arkenv from 'arkenv';
+    import arkenv, { type } from 'arkenv';
 
     export const env = arkenv({
       // Built-in validators
       DATABASE_HOST: "string.host",
       DATABASE_PORT: "number.port",
+      
+      // Boolean values (accepts "true"/"false" strings, converts to boolean)
+      DEBUG: "boolean",
       
       // Custom string literals
       NODE_ENV: "'development' | 'production' | 'test'",
@@ -48,13 +50,17 @@ description: Let's get you started with a few simple steps
       // Optional variables with defaults
       LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
       
+      // Array defaults using type function
+      ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
+      FEATURE_FLAGS: type("string[]").default(() => []),
+      
       // Optional environment variable
       "API_KEY?": 'string'
     });
     ```
 
     > [!TIP]
-    > **VS Code Users:** Want syntax highlighting for your ArkType schemas? Check out our [VS Code Integration guide](/docs/integrations/vscode) to learn about the ArkType extension and improve your DX!
+    > Improve your DX with *syntax highlighting* in [VS Code & Cursor](/docs/integrations/vscode) or [JetBrains IDEs](/docs/integrations/jetbrains).
   </Step>
 
   <Step>
@@ -65,6 +71,7 @@ description: Let's get you started with a few simple steps
     ```dotenv title=".env"
     DATABASE_HOST=localhost
     DATABASE_PORT=5432
+    DEBUG=true
     NODE_ENV=development
     API_KEY=your-secret-key
     ```
@@ -85,8 +92,8 @@ description: Let's get you started with a few simple steps
         - **Node.js**: [v20.6.0 built-in `.env` file support](https://nodejs.org/en/blog/release/v20.6.0#built-in-env-file-support) or [dotenv](https://github.com/motdotla/dotenv)
   
         <Card
-          title="Loading environment variables"
-          href="/docs/guides/environment-configuration"
+          title="Load environment variables"
+          href="/docs/how-to/load-environment-variables"
           description="Learn how to manage environment variables across different environments and deployment scenarios"
         />
       </Accordion>
@@ -96,7 +103,7 @@ description: Let's get you started with a few simple steps
   <Step>
     ## Use in your code
 
-    Import and use your **validated** and **typed** environment variables. For example, you might have a file like `database.ts`:
+    Import and use your **validated** and **typed** environment variables. Here is an example for a database configuration file:
 
     ```typescript title="database.ts" twoslash
     // @filename: config/env.ts
@@ -112,31 +119,38 @@ description: Let's get you started with a few simple steps
     // ---cut---
     import { env } from './config/env';
 
-    // TypeScript knows the ✨exact✨ types!
+    // Hover to see your validated config
     const dbConfig = {
-      host: env.DATABASE_HOST,  // string (valid host)
-      port: env.DATABASE_PORT,  // number (valid port)
+      host: env.DATABASE_HOST,
+      port: env.DATABASE_PORT,
     };
     ```
   </Step>
 </Steps>
 
+Now you might start to see the magic of ArkType and TypeScript working together to make your environment variables more reliable, more readable, and more typesafe.
+
 ## Next steps
 
 <Cards>
   <Card 
-    title="VS Code Integration" 
-    href="/docs/integrations/vscode" 
-    description="Get syntax highlighting and enhanced developer experience with the ArkType VS Code extension"
+    title="Integrate with VS Code & Cursor" 
+    href="/docs/integrations/vscode"
+    description="Get syntax highlighting, ErrorLens, and more"
   />
   <Card 
-    title="Loading environment variables" 
-    href="/docs/guides/environment-configuration" 
-    description="Learn how to manage environment variables across different environments and deployment scenarios"
+    title="Integrate with JetBrains IDEs" 
+    href="/docs/integrations/jetbrains"
+    description="Get syntax highlighting"
   />
   <Card 
     title="Examples" 
     href="/docs/examples#examples"
-    description="See examples of ArkEnv in action"
+    description="Dive into ArkEnv with our collection of examples"
+  />
+  <Card 
+    title="How to load environment variables" 
+    href="/docs/how-to/load-environment-variables"
+    description="Learn environment variables management in different environments and deployment scenarios"
   />
 </Cards>

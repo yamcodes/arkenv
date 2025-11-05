@@ -6,6 +6,7 @@ import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils/cn";
+import { breakDownGithubUrl } from "~/lib/utils/github";
 
 const starUsButtonVariants = cva("text-lg font-bold", {
 	variants: {
@@ -67,16 +68,19 @@ type StarUsProps = {
 export function StarUsButton({ className }: StarUsProps) {
 	const [starCount, setStarCount] = useState<number | null>(null);
 
-	// Fetch star count from GitHub API
+	// Compute githubUrl once and extract owner/repo
+	const githubUrl =
+		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
+	const { owner, repo } = breakDownGithubUrl(githubUrl);
+
+	// Fetch star count from our API route (server-side with caching)
 	useEffect(() => {
 		const fetchStarCount = async () => {
 			try {
-				const response = await fetch(
-					"https://api.github.com/repos/yamcodes/arkenv",
-				);
+				const response = await fetch("/api/github/stars");
 				if (response.ok) {
-					const data = await response.json();
-					setStarCount(data.stargazers_count);
+					const data = (await response.json()) as { stars: number };
+					setStarCount(data.stars);
 				}
 			} catch {
 				// Silently fail - we'll just not show the count
@@ -130,17 +134,15 @@ export function StarUsButton({ className }: StarUsProps) {
 					className={cn(starUsButtonVariants({ variant: "mobile" }), className)}
 				>
 					<a
-						href={
-							process.env.NEXT_PUBLIC_GITHUB_URL ??
-							"https://github.com/your-org/your-repo"
-						}
+						href={`https://github.com/${owner}/${repo}`}
 						target="_blank"
 						rel="noopener noreferrer"
 					>
 						<div className="flex items-center gap-2">
-							<SiGithub className="w-4 h-4" />
+							<SiGithub aria-hidden="true" className="w-4 h-4" />
 							<span className="font-semibold">Star us on GitHub!</span>
 							<Star
+								aria-hidden="true"
 								className="w-5 h-5 text-yellow-600 dark:text-yellow-400"
 								fill="currentColor"
 							/>
@@ -169,15 +171,15 @@ export function StarUsButton({ className }: StarUsProps) {
 					)}
 				>
 					<a
-						href={
-							process.env.NEXT_PUBLIC_GITHUB_URL ??
-							"https://github.com/your-org/your-repo"
-						}
+						href={`https://github.com/${owner}/${repo}`}
 						target="_blank"
 						rel="noopener noreferrer"
 					>
 						{/* Sparkle effects */}
-						<div className="absolute inset-0 pointer-events-none">
+						<div
+							className="absolute inset-0 pointer-events-none"
+							aria-hidden="true"
+						>
 							<div
 								className="absolute top-1 left-2 w-1 h-1 bg-yellow-400 rounded-full star-sparkle"
 								style={{ animationDelay: "0s" }}
@@ -198,9 +200,10 @@ export function StarUsButton({ className }: StarUsProps) {
 
 						{/* Main content */}
 						<div className="flex items-center gap-2 relative z-10">
-							<SiGithub className="w-4 h-4" />
+							<SiGithub aria-hidden="true" className="w-4 h-4" />
 							<span className="font-semibold">Star us on GitHub!</span>
 							<Star
+								aria-hidden="true"
 								className="w-5 h-5 transition-all duration-300 star-bounce text-yellow-600 dark:text-yellow-400"
 								fill="currentColor"
 							/>

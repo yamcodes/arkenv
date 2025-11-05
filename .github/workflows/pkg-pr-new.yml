@@ -1,0 +1,46 @@
+name: 'pkg.pr.new'
+on:
+  pull_request:
+    branches:
+      - main
+    paths: 
+      - 'packages/**'
+  push:
+    branches:
+      - main
+    paths: 
+      - 'packages/**'
+      - '.github/workflows/pkg-pr-new.yml'
+    tags:
+      - '!**'
+
+permissions: {}
+
+jobs:
+  pkg-pr-new:
+    if: github.repository == 'yamcodes/arkenv'
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install deps
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Release
+        run: pnpx pkg-pr-new publish --compact --pnpm './packages/*'

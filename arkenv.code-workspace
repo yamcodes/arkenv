@@ -5,6 +5,14 @@
 			"name": "~"
 		},
 		{
+			"path": "apps/www/content/docs",
+			"name": "docs"
+		},
+		{
+			"path": "apps/www/public/assets",
+			"name": "assets"
+		},
+		{
 			"path": "packages",
 			"name": "packages"
 		},
@@ -17,6 +25,14 @@
 			"name": "  @arkenv/vite-plugin"
 		},
 		{
+			"path": "tooling",
+			"name": "tooling"
+		},
+		{
+			"path": "tooling/playwright-www",
+			"name": "  playwright-www (arkenv.js.org)"
+		},
+		{
 			"path": "apps",
 			"name": "apps"
 		},
@@ -27,6 +43,10 @@
 		{
 			"path": "apps/playgrounds/vite",
 			"name": "  vite-playground"
+		},
+		{
+			"path": "apps/playgrounds/bun-react",
+			"name": "  bun-react-playground"
 		},
 		{
 			"path": "apps/www",
@@ -53,23 +73,8 @@
 			"name": "  with-vite-react-ts"
 		},
 		{
-			"path": "apps/www/content/docs",
-			"name": "docs"
+			"path": "examples/with-bun-react",
+			"name": "  with-bun-react"
 		}
-	],
-	"settings": {
-		"files.exclude": {
-			"**/.git": true,
-			"**/.svn": true,
-			"**/.hg": true,
-			"**/.DS_Store": true,
-			"**/Thumbs.db": false,
-			"**/.trunk/*actions/": true,
-			"**/.trunk/*logs/": true,
-			"**/.trunk/*notifications/": true,
-			"**/.trunk/*out/": true,
-			"**/.trunk/*plugins/": true
-		},
-		"explorerExclude.backup": {}
-	}
+	]
 }

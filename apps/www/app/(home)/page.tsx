@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
-import { SailButton, StackBlitzDemo, StarUsButton } from "~/components/page";
+import { SailButton, StarUsButton, VideoDemo } from "~/components/page";
 
 const bricolageGrotesque = Bricolage_Grotesque({
 	subsets: ["latin"],
@@ -8,9 +8,8 @@ const bricolageGrotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-	title: "ArkEnv: Typesafe environment variables powered by ArkType",
-	description:
-		"ArkEnv is a tool for managing environment variables in your project.",
+	title: "ArkEnv",
+	description: "Typesafe environment variables powered by ArkType ⛵️",
 };
 
 export default function HomePage() {
@@ -41,9 +40,8 @@ export default function HomePage() {
 				<SailButton />
 				<StarUsButton />
 			</div>
-			<div className="mt-6 sm:mt-12 sm:px-8 max-w-5xl mx-auto w-full">
-				<h2 className="text-xl font-semibold mb-4">See ArkEnv in action 👇</h2>
-				<StackBlitzDemo />
+			<div className="sm:mt-8 sm:px-2 max-w-6xl mx-auto w-full">
+				<VideoDemo />
 			</div>
 		</main>
 	);

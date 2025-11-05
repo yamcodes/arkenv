@@ -1,15 +1,26 @@
-import arkenv from "arkenv";
+import arkenv, { type } from "arkenv";
 
 const env = arkenv({
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	HOST: "string.host",
 	PORT: "number.port",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+	ALLOWED_ORIGINS: type("string[]").default(() => []),
+	DEBUG: "boolean = true",
 });
 
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
-console.log(env.HOST); // (property) HOST: string
-console.log(env.PORT); // (property) PORT: number
-console.log(env.NODE_ENV); // (property) NODE_ENV: "development" | "production" | "test"
+const host = env.HOST;
+const port = env.PORT;
+const nodeEnv = env.NODE_ENV;
+const allowedOrigins = env.ALLOWED_ORIGINS;
+const debug = env.DEBUG;
+console.log({
+	host,
+	port,
+	nodeEnv,
+	allowedOrigins,
+	debug,
+});
 
 export default env;

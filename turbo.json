@@ -1,24 +1,67 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"tasks": {
+		"clean": {
+			"cache": false
+		},
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.test.ts", "!**/*.test.tsx"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-			"env": ["SENTRY_*"]
+			"env": ["SENTRY_*"],
+			"passThroughEnv": ["SENTRY_AUTH_TOKEN"]
 		},
+		// Development task
+		// See:
+		// https://turborepo.com/docs/crafting-your-repository/developing-applications#configuring-development-tasks
 		"dev": {
 			"cache": false,
 			"persistent": true
 		},
-		"clean": {
-			"cache": false
+		// TypeScript
+		// See: https://turborepo.com/docs/guides/tools/typescript#linting-your-codebase
+		"typecheck": {
+			"dependsOn": ["transit", "^build"],
+			"inputs": ["*.ts", "*.tsx"]
 		},
+		// Biome
+		// See: https://turborepo.com/docs/guides/tools/biome
 		"//#fix": {
 			"cache": false
 		},
-		"typecheck": {
-			"inputs": ["*.ts", "*.tsx"]
-		}
+		"//#check": {},
+		"check:errors": {},
+		// Vitest
+		// See: https://turborepo.com/docs/guides/tools/vitest
+		"test": {
+			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
+			"dependsOn": ["transit"]
+		},
+		// Transit Nodes
+		// See:
+		// https://turborepo.com/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-run-in-parallel
+		// https://turborepo.com/docs/core-concepts/package-and-task-graph#transit-nodes
+		"transit": {
+			"dependsOn": ["^transit"]
+		},
+		// Playwright
+		// See: https://turborepo.com/docs/guides/tools/playwright
+		"test:e2e": {
+			"dependsOn": ["^transit", "arkenv#build"],
+			"passThroughEnv": ["PLAYWRIGHT_*"]
+		},
+		"test:a11y": {
+			"dependsOn": ["^transit", "arkenv#build"],
+			"passThroughEnv": ["PLAYWRIGHT_*"]
+		},
+		"test:e2e:report": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:e2e:ui": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:e2e:update": {}
 	}
 }

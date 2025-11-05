@@ -36,7 +36,11 @@
 				"noBannedTypes": "off"
 			},
 			"correctness": {
-				"noUnusedImports": "warn"
+				"noUnusedImports": "warn",
+				"useParseIntRadix": {
+					"fix": "safe",
+					"level": "warn"
+				}
 			},
 			"suspicious": {
 				"noConsole": "warn",
@@ -65,6 +69,11 @@
 			"quoteStyle": "double"
 		}
 	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
 	"overrides": [
 		{
 			"includes": ["**/examples/**/*", "**/playgrounds/**/*"],
@@ -72,6 +81,26 @@
 				"rules": {
 					"suspicious": {
 						"noConsole": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.test.tsx"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useUniqueElementIds": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/bin/**/*"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConsole": "off" // Not needed in scripts
 					}
 				}
 			}

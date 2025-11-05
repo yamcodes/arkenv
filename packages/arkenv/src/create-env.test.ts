@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
 import { styleText } from "./style";
+import { type } from "./type";
 import { indent } from "./utils";
 
 /**
@@ -168,5 +169,31 @@ describe("env", () => {
 				{ env, prefix: "BUN_PUBLIC_" },
 			),
 		).toThrow("PORT");
+	});
+
+	it("should support array types with default values", () => {
+		const env = createEnv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+				STRINGS: type("string[]").default(() => ["a", "b"]),
+			},
+			{},
+		);
+
+		expect(env.NUMBERS).toEqual([1, 2, 3]);
+		expect(env.STRINGS).toEqual(["a", "b"]);
+	});
+
+	it("should support array types with defaults when no environment value provided", () => {
+		// Test default value usage when environment variable is not set
+		const env = createEnv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+			},
+			{},
+		);
+
+		expect(env.NUMBERS).toEqual([1, 2, 3]);
+	});
 	});
 });
