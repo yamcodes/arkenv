@@ -4,9 +4,13 @@ header {
 
 /* Override fumadocs muted-foreground for WCAG AA compliance */
 :root {
-	--color-fd-muted-foreground: hsl(240 4% 40%); /* WCAG AA compliant: 7.8:1 contrast on white background */
+	--color-fd-muted-foreground: hsl(
+		240 4% 40%
+	); /* WCAG AA compliant: 7.8:1 contrast on white background */
 }
 
 .dark {
-	--color-fd-muted-foreground: hsl(240 5% 70%); /* WCAG AA compliant: 7.2:1 contrast on dark background */
+	--color-fd-muted-foreground: hsl(
+		240 5% 70%
+	); /* WCAG AA compliant: 7.2:1 contrast on dark background */
 }
