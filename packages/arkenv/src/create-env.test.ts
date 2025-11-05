@@ -195,5 +195,4 @@ describe("env", () => {
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
 	});
-	});
 });
