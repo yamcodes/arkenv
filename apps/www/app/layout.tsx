@@ -5,7 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { type ReactNode, useId } from "react";
+import type { ReactNode } from "react";
 import { Toaster } from "~/components/ui/toaster";
 
 const inter = Inter({
@@ -48,18 +48,18 @@ export default function Layout({ children }: { children: ReactNode }) {
 						enableSystem: true,
 					}}
 				>
-					<Banner variant="rainbow" id={useId()}>
-						🎉 We are now featured on&nbsp;
-						<a
-							href="https://arktype.io/docs/ecosystem#arkenv"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="underline underline-offset-2 hover:text-blue-500"
-						>
-							arktype.io
-						</a>
-						!
-					</Banner>
+				<Banner variant="rainbow" id="arktype-feature-banner">
+					🎉 We are now featured on&nbsp;
+					<a
+						href="https://arktype.io/docs/ecosystem#arkenv"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="underline underline-offset-2 hover:text-blue-500"
+					>
+						arktype.io
+					</a>
+					!
+				</Banner>
 					{children}
 					<SpeedInsights />
 					<Analytics />
