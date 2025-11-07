@@ -1,4 +1,4 @@
-import { styleText } from "node:util";
+import { styleText } from "./style-text";
 import { describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
 import { type } from "./type";
