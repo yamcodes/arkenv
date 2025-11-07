@@ -4,9 +4,11 @@ import { styleText } from "./style-text";
 describe("styleText", () => {
 	describe("in Node environment", () => {
 		beforeEach(() => {
-			// Ensure we're in a Node environment
+			// Ensure we're in a Node environment with TTY and no color-disabling env vars
 			vi.stubGlobal("process", {
 				versions: { node: "22.0.0" },
+				env: {},
+				stdout: { isTTY: true },
 			});
 		});
 
@@ -106,14 +108,67 @@ describe("styleText", () => {
 		});
 
 		it("should handle long text", () => {
+			vi.stubGlobal("process", {
+				versions: { node: "22.0.0" },
+				env: {},
+				stdout: { isTTY: true },
+			});
+
 			const longText = "a".repeat(10000);
 			const result = styleText("red", longText);
+			expect(result).toBe(`\x1b[31m${longText}\x1b[0m`);
 
-			if (typeof process !== "undefined" && process.versions?.node) {
-				expect(result).toBe(`\x1b[31m${longText}\x1b[0m`);
-			} else {
-				expect(result).toBe(longText);
-			}
+			vi.unstubAllGlobals();
+		});
+	});
+
+	describe("color disabling", () => {
+		afterEach(() => {
+			vi.unstubAllGlobals();
+		});
+
+		it("should disable colors when NO_COLOR is set", () => {
+			vi.stubGlobal("process", {
+				versions: { node: "22.0.0" },
+				env: { NO_COLOR: "1" },
+				stdout: { isTTY: true },
+			});
+
+			const result = styleText("red", "test");
+			expect(result).toBe("test");
+		});
+
+		it("should disable colors when CI is set", () => {
+			vi.stubGlobal("process", {
+				versions: { node: "22.0.0" },
+				env: { CI: "true" },
+				stdout: { isTTY: true },
+			});
+
+			const result = styleText("red", "test");
+			expect(result).toBe("test");
+		});
+
+		it("should disable colors when not writing to TTY", () => {
+			vi.stubGlobal("process", {
+				versions: { node: "22.0.0" },
+				env: {},
+				stdout: { isTTY: false },
+			});
+
+			const result = styleText("red", "test");
+			expect(result).toBe("test");
+		});
+
+		it("should enable colors when all conditions are met", () => {
+			vi.stubGlobal("process", {
+				versions: { node: "22.0.0" },
+				env: {},
+				stdout: { isTTY: true },
+			});
+
+			const result = styleText("red", "test");
+			expect(result).toBe("\x1b[31mtest\x1b[0m");
 		});
 	});
 });

@@ -10,6 +10,7 @@ Replace Node.js `util.styleText` with cross-platform ANSI color codes to fix the
 
 - Replaced `node:util.styleText` with custom ANSI implementation
 - Added environment detection (uses ANSI in Node, plain text in browsers)
+- Respects `NO_COLOR`, `CI` environment variables, and TTY detection
 - Organized utilities into `lib/` folder with comprehensive tests
 
 ```ts
