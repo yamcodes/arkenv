@@ -12,6 +12,21 @@ const config = {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
 	},
+	// PostHog rewrites to support analytics ingestion proxy
+	async rewrites() {
+		return [
+			{
+				source: "/ingest/static/:path*",
+				destination: "https://eu-assets.i.posthog.com/static/:path*",
+			},
+			{
+				source: "/ingest/:path*",
+				destination: "https://eu.i.posthog.com/:path*",
+			},
+		];
+	},
+	// This is required to support PostHog trailing slash API requests
+	skipTrailingSlashRedirect: true,
 } as const satisfies NextConfig;
 
 const sentryConfig = {

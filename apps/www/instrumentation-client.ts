@@ -1,5 +1,6 @@
 // instrumentation-client.ts
 import * as Sentry from "@sentry/nextjs";
+import posthog from "posthog-js";
 
 // Resolve environment consistently on the client
 const ENV =
@@ -104,3 +105,12 @@ Sentry.init({
 
 // Next.js router transition helper
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+
+// PostHog analytics initialization
+posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+	api_host: "/ingest",
+	ui_host: "https://eu.posthog.com",
+	defaults: '2025-05-24',
+	capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
+	debug: ENV === "development",
+});
