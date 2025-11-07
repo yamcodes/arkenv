@@ -3,8 +3,9 @@ import { createEnv } from "./create-env";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 
-// Helper to strip ANSI color codes
-const stripAnsi = (str: string) => str.replace(/\033\[[0-9;]*m/g, "");
+// Helper to strip ANSI color codes (ESC character code 27)
+const stripAnsi = (str: string) =>
+	str.replace(new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g"), "");
 
 describe("createEnv + type + errors + utils integration", () => {
 	afterEach(() => {
