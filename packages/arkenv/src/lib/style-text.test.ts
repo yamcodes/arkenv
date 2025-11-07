@@ -6,7 +6,7 @@ describe("styleText", () => {
 		beforeEach(() => {
 			// Ensure we're in a Node environment
 			vi.stubGlobal("process", {
-				versions: { node: "18.0.0" },
+				versions: { node: "22.0.0" },
 			});
 		});
 
