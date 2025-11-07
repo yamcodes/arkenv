@@ -1,5 +1,5 @@
 import type { ArkErrors } from "arktype";
-import { styleText } from "./style-text";
+import { styleText } from "./lib/style-text";
 import { indent } from "./utils";
 
 /**

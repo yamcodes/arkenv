@@ -13,8 +13,9 @@ const colors = {
 
 /**
  * Check if we're in a Node environment (not browser)
+ * Checked dynamically to allow for testing with mocked globals
  */
-const isNode =
+const isNode = (): boolean =>
 	typeof process !== "undefined" &&
 	process.versions != null &&
 	process.versions.node != null;
@@ -30,7 +31,7 @@ export const styleText = (
 	text: string,
 ): string => {
 	// Use ANSI colors in Node environments
-	if (isNode) {
+	if (isNode()) {
 		return `${colors[color]}${text}${colors.reset}`;
 	}
 	// Fall back to plain text in browsers
