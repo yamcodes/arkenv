@@ -36,4 +36,3 @@ export const styleText = (
 	// Fall back to plain text in browsers
 	return text;
 };
-
