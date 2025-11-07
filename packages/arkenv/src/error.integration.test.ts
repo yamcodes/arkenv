@@ -4,7 +4,7 @@ import { ArkEnvError } from "./errors";
 import { type } from "./type";
 
 // Helper to strip ANSI color codes
-const stripAnsi = (str: string) => str.replace(/\x1b\[[0-9;]*m/g, "");
+const stripAnsi = (str: string) => str.replace(/\033\[[0-9;]*m/g, "");
 
 describe("createEnv + type + errors + utils integration", () => {
 	afterEach(() => {
