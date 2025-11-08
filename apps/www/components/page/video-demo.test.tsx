@@ -238,7 +238,6 @@ describe("VideoDemo", () => {
 			"mb-4",
 			"w-full",
 			"mx-auto",
-			"sm:px-8",
 		);
 	});
 
