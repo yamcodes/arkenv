@@ -107,8 +107,13 @@ Sentry.init({
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 // PostHog analytics initialization
+// Disable PostHog in CI environments (tests, CI/CD)
+const isCI = Boolean(process.env.CI);
 const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-if (!posthogKey) {
+
+if (isCI) {
+	// Silently skip PostHog initialization in CI
+} else if (!posthogKey) {
 	// biome-ignore lint/suspicious/noConsole: Critical error logging for missing PostHog key
 	console.error(
 		"[PostHog] NEXT_PUBLIC_POSTHOG_KEY is not set. Analytics will not be initialized.",
