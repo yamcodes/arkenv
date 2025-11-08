@@ -40,8 +40,20 @@ function isHlsJsLibraryError(errorText: string): boolean {
 }
 
 /**
+ * Check if an error is a PostHog initialization warning.
+ * Filters PostHog warnings about missing API keys in non-CI environments.
+ */
+function isPostHogWarning(errorText: string): boolean {
+	return (
+		errorText.includes("[PostHog]") &&
+		errorText.includes("NEXT_PUBLIC_POSTHOG_KEY is not set")
+	);
+}
+
+/**
  * Assert that there are no console errors on the given page after navigating to the URL(s).
- * Filter out known non-critical errors (403, Failed to load resource) and HLS.js library errors.
+ * Filter out known non-critical errors (403, Failed to load resource), HLS.js library errors,
+ * and PostHog initialization warnings.
  *
  * @param page - The Playwright page instance
  * @param urls - URLs to navigate to - can be a single URL or array of URLs
@@ -70,6 +82,11 @@ export async function assertNoConsoleErrors(
 			// Filter out HLS.js library errors (but not generic media errors)
 			if (isHlsJsLibraryError(errorText)) {
 				return; // Skip HLS.js library errors
+			}
+
+			// Filter out PostHog initialization warnings
+			if (isPostHogWarning(errorText)) {
+				return; // Skip PostHog warnings
 			}
 
 			// All other errors should be reported

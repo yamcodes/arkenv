@@ -1,5 +1,7 @@
 // instrumentation-client.ts
 import * as Sentry from "@sentry/nextjs";
+import posthog from "posthog-js";
+import { POSTHOG_PROXY_PREFIX, POSTHOG_UI_HOST } from "~/lib/posthog/config";
 
 // Resolve environment consistently on the client
 const ENV =
@@ -104,3 +106,25 @@ Sentry.init({
 
 // Next.js router transition helper
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+
+// PostHog analytics initialization
+// Disable PostHog in CI environments (tests, CI/CD)
+const isCI = Boolean(process.env.CI);
+const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+
+if (isCI) {
+	// Silently skip PostHog initialization in CI
+} else if (!posthogKey) {
+	// biome-ignore lint/suspicious/noConsole: Critical error logging for missing PostHog key
+	console.error(
+		"[PostHog] NEXT_PUBLIC_POSTHOG_KEY is not set. Analytics will not be initialized.",
+	);
+} else {
+	posthog.init(posthogKey, {
+		api_host: POSTHOG_PROXY_PREFIX,
+		ui_host: POSTHOG_UI_HOST,
+		defaults: "2025-05-24",
+		capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
+		debug: ENV === "development",
+	});
+}

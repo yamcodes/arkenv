@@ -3,6 +3,11 @@ import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 import { withNextVideo } from "next-video/process";
+import {
+	POSTHOG_API_ENDPOINT,
+	POSTHOG_ASSETS_HOST,
+	POSTHOG_PROXY_PREFIX,
+} from "./lib/posthog";
 
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
@@ -12,6 +17,21 @@ const config = {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
 	},
+	// PostHog rewrites to support analytics ingestion proxy
+	async rewrites() {
+		return [
+			{
+				source: `${POSTHOG_PROXY_PREFIX}/static/:path*`,
+				destination: `${POSTHOG_ASSETS_HOST}/static/:path*`,
+			},
+			{
+				source: `${POSTHOG_PROXY_PREFIX}/:path*`,
+				destination: `${POSTHOG_API_ENDPOINT}/:path*`,
+			},
+		];
+	},
+	// This is required to support PostHog trailing slash API requests
+	skipTrailingSlashRedirect: true,
 } as const satisfies NextConfig;
 
 const sentryConfig = {
