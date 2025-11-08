@@ -233,12 +233,7 @@ describe("VideoDemo", () => {
 		render(<VideoDemo />);
 
 		const container = screen.getByRole("button").parentElement;
-		expect(container).toHaveClass(
-			"relative",
-			"mb-4",
-			"w-full",
-			"mx-auto",
-		);
+		expect(container).toHaveClass("relative", "mb-4", "w-full", "mx-auto");
 	});
 
 	it("video has correct dimensions and styling", () => {
