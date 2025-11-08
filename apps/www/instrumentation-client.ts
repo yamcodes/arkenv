@@ -107,10 +107,18 @@ Sentry.init({
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 // PostHog analytics initialization
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-	api_host: "/ph_a7k3nv",
-	ui_host: "https://eu.posthog.com",
-	defaults: "2025-05-24",
-	capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
-	debug: ENV === "development",
-});
+const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+if (!posthogKey) {
+	// biome-ignore lint/suspicious/noConsole: Critical error logging for missing PostHog key
+	console.error(
+		"[PostHog] NEXT_PUBLIC_POSTHOG_KEY is not set. Analytics will not be initialized.",
+	);
+} else {
+	posthog.init(posthogKey, {
+		api_host: "/ph_a7k3nv",
+		ui_host: "https://eu.posthog.com",
+		defaults: "2025-05-24",
+		capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
+		debug: ENV === "development",
+	});
+}

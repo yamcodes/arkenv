@@ -16,11 +16,11 @@ const config = {
 	async rewrites() {
 		return [
 			{
-				source: "/ingest/static/:path*",
+				source: "/ph_a7k3nv/static/:path*",
 				destination: "https://eu-assets.i.posthog.com/static/:path*",
 			},
 			{
-				source: "/ingest/:path*",
+				source: "/ph_a7k3nv/:path*",
 				destination: "https://eu.i.posthog.com/:path*",
 			},
 		];
