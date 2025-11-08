@@ -26,7 +26,7 @@ export function VideoDemo() {
 	};
 
 	return (
-		<div className="relative mb-4 w-full mx-auto sm:px-8">
+		<div className="relative mb-4 w-full mx-auto">
 			{/* Main video container with aspect ratio */}
 			<button
 				type="button"
