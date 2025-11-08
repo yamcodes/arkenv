@@ -1,6 +1,7 @@
 // instrumentation-client.ts
 import * as Sentry from "@sentry/nextjs";
 import posthog from "posthog-js";
+import { POSTHOG_PROXY_PREFIX, POSTHOG_UI_HOST } from "~/lib/posthog/config";
 
 // Resolve environment consistently on the client
 const ENV =
@@ -120,8 +121,8 @@ if (isCI) {
 	);
 } else {
 	posthog.init(posthogKey, {
-		api_host: "/ph_a7k3nv",
-		ui_host: "https://eu.posthog.com",
+		api_host: POSTHOG_PROXY_PREFIX,
+		ui_host: POSTHOG_UI_HOST,
 		defaults: "2025-05-24",
 		capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
 		debug: ENV === "development",

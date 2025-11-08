@@ -3,6 +3,11 @@ import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 import { withNextVideo } from "next-video/process";
+import {
+	POSTHOG_API_ENDPOINT,
+	POSTHOG_ASSETS_HOST,
+	POSTHOG_PROXY_PREFIX,
+} from "./lib/posthog";
 
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
@@ -16,12 +21,12 @@ const config = {
 	async rewrites() {
 		return [
 			{
-				source: "/ph_a7k3nv/static/:path*",
-				destination: "https://eu-assets.i.posthog.com/static/:path*",
+				source: `${POSTHOG_PROXY_PREFIX}/static/:path*`,
+				destination: `${POSTHOG_ASSETS_HOST}/static/:path*`,
 			},
 			{
-				source: "/ph_a7k3nv/:path*",
-				destination: "https://eu.i.posthog.com/:path*",
+				source: `${POSTHOG_PROXY_PREFIX}/:path*`,
+				destination: `${POSTHOG_API_ENDPOINT}/:path*`,
 			},
 		];
 	},
