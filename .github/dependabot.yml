@@ -7,7 +7,7 @@ version: 2
 updates:
   # pnpm updates
   - package-ecosystem: "npm"
-    directory: "/"
+    directories: ["/packages", "/apps", "/tooling", "/examples"]
     schedule:
       interval: "weekly"
     groups:
@@ -18,7 +18,7 @@ updates:
           - "minor"
           - "patch"
   # Bun action (uses plain package.json without lockfile)
-  - package-ecosystem: "npm"
+  - package-ecosystem: "bun"
     directory: "/.github/actions/size-limit"
     schedule:
       interval: "weekly"
@@ -31,7 +31,7 @@ updates:
           - "patch"
   # GitHub Actions updates
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directory: "/.github"
     schedule:
       interval: "weekly"
     groups:
