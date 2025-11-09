@@ -25,7 +25,7 @@
 		"size": "turbo run size"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.2",
+		"@biomejs/biome": "2.3.4",
 		"@changesets/cli": "^2.29.7",
 		"@manypkg/cli": "^0.25.1",
 		"@playwright/test": "^1.56.1",
