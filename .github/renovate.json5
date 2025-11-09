@@ -28,7 +28,7 @@
 		{
 			"groupName": "bun-action",
 			"matchManagers": ["bun"],
-			"matchPaths": [
+			"matchFileNames": [
 				".github/actions/size-limit/package.json", // Bun script
 				"apps/playgrounds/**/*bun*/**",
 				"examples/**/*bun*/**"
@@ -59,11 +59,11 @@
 			// Note: Do not include examples in this group,
 			// they are supposed to be able to run independently
 			// and its conventions.
-			"matchPaths": ["apps/**"],
+			"matchFileNames": ["apps/**"],
 			"extends": ["config:js-app"]
 		},
 		{
-			"matchPaths": ["packages/**", "tooling/**"],
+			"matchFileNames": ["packages/**", "tooling/**"],
 			"extends": ["config:js-lib"]
 		}
 	]
