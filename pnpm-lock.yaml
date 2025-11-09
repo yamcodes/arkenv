@@ -227,9 +227,6 @@ importers:
       '@types/react-dom':
         specifier: 19.2.2
         version: 19.2.2(@types/react@19.2.2)
-      '@types/styled-jsx':
-        specifier: 3.4.4
-        version: 3.4.4(react@19.2.0)
       '@vitejs/plugin-react-swc':
         specifier: 4.2.0
         version: 4.2.0(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.20.6))
@@ -3117,10 +3114,6 @@ packages:
 
   '@types/shimmer@1.2.0':
     resolution: {integrity: sha512-UE7oxhQLLd9gub6JKIAhDq06T0F6FnztwMNRvYgjeQSBeMc1ZG/tA47EwfduvkuQS8apbkM/lpLpWsaCeYsXVg==}
-
-  '@types/styled-jsx@3.4.4':
-    resolution: {integrity: sha512-PRRa7gU7ske4Vs7sKWrqfKnuIIS6E/Yj5oKyxuM11AwOKhH9HlbQ7cKGLluXkOXzpEoDJE+6kQMj3AE34/JooQ==}
-    deprecated: This is a stub types definition. styled-jsx provides its own type definitions, so you do not need this installed.
 
   '@types/tedious@4.0.14':
     resolution: {integrity: sha512-KHPsfX/FoVbUGbyYvk1q9MMQHLPeRZhRJZdO45Q4YjvFkv4hMNghCWTvy7rdKessBsmtz4euWCWAB6/tVpI1Iw==}
@@ -9497,14 +9490,6 @@ snapshots:
       csstype: 3.1.3
 
   '@types/shimmer@1.2.0': {}
-
-  '@types/styled-jsx@3.4.4(react@19.2.0)':
-    dependencies:
-      styled-jsx: 5.1.7(react@19.2.0)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - babel-plugin-macros
-      - react
 
   '@types/tedious@4.0.14':
     dependencies:
