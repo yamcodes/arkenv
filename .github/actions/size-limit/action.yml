@@ -58,11 +58,24 @@ runs:
               issue_number: context.issue.number,
             });
             
-            const botComment = comments.find(comment => 
-              comment.user?.type === 'Bot' &&
-              comment.user?.login === 'arkenv[bot]' &&
-              comment.body?.includes('Bundle Size Report')
-            );
+            // Debug: Check why find isn't matching
+            const botComments = comments.filter(c => c.user?.type === 'Bot');
+            if (botComments.length > 0) {
+              console.log(`🔍 Checking ${botComments.length} bot comment(s) for match:`);
+              botComments.forEach(c => {
+                const isTypeBot = c.user?.type === 'Bot';
+                const isLoginMatch = c.user?.login === 'arkenv[bot]';
+                const hasReport = c.body?.includes('Bundle Size Report');
+                console.log(`  Comment ID ${c.id}: type=${isTypeBot}, login=${isLoginMatch} (${c.user?.login}), hasReport=${hasReport}`);
+              });
+            }
+            
+            const botComment = comments.find(comment => {
+              const isTypeBot = comment.user?.type === 'Bot';
+              const isLoginMatch = comment.user?.login === 'arkenv[bot]';
+              const hasReport = comment.body?.includes('Bundle Size Report');
+              return isTypeBot && isLoginMatch && hasReport;
+            });
             
             if (botComment) {
               console.log(`📝 Updating existing comment (ID: ${botComment.id})`);
