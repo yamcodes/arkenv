@@ -33,6 +33,8 @@ runs:
         INPUT_TURBO_TOKEN: ${{ inputs.turbo_token }}
         INPUT_TURBO_TEAM: ${{ inputs.turbo_team }}
         INPUT_FILTER: ${{ inputs.filter }}
+        INPUT_BASE_BRANCH: ${{ github.event.pull_request.base.ref || github.base_ref || 'main' }}
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
       run: |
         bun ${{ github.action_path }}/run-size-check.ts
     - name: Comment PR
