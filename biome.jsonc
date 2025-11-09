@@ -104,6 +104,16 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": [".github/actions/**/*"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConsole": "off" // Console is needed in GitHub Action scripts
+					}
+				}
+			}
 		}
 	]
 }
