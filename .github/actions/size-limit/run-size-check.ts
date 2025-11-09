@@ -203,9 +203,7 @@ for (const line of lines) {
 	}
 
 	// If we detect a new package in script output, reset parsing mode
-	const scriptMatch = strippedLine.match(
-		/>\s*([@a-z0-9][@a-z0-9/_-]*)@[0-9.]+/i,
-	);
+	const scriptMatch = strippedLine.match(/>\s*([@a-z0-9][@a-z0-9/_-]*)@\S+/i);
 	if (scriptMatch?.[1]) {
 		const pkgName = normalizePackageName(scriptMatch[1]);
 		// Only start a new package if we're not already in one, or if it's different
