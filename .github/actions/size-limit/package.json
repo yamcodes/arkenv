@@ -12,5 +12,8 @@
 	"peerDependencies": {
 		"typescript": "^5"
 	},
-	"packageManager": "bun@1.2.2"
+	"packageManager": "bun@1.2.2",
+	"dependencies": {
+		"arkregex": "^0.0.2"
+	}
 }

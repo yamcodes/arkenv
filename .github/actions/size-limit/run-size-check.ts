@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { spawn } from "bun";
+import { regex } from "arkregex";
 
 interface SizeLimitResult {
 	package: string;
@@ -92,9 +93,13 @@ const normalizePackageName = (pkgName: string) => {
 	return pkgName;
 };
 
-// Define regexes via String.raw so we avoid embedding literal control characters.
-const stripAnsiRegex = /\x1B[[\](?;]{0,2}(;?\d)*[A-Za-z]/g;
-const controlCharsRegex = /[\u0000-\u0008\u000b-\u001f\u007f]/g;
+// Matches ESC [ ... <final byte in @-~>
+// Ref: ECMA-48
+// CSI only
+const stripAnsiRegex = regex("\x1B\\[[0-?]*[ -/]*[@-~]", "g");
+
+// Control chars
+const controlCharsRegex = regex("[\u0000-\u0008\u000B-\u001F\u007F]", "g");
 
 const stripAnsi = (text: string) => text.replace(stripAnsiRegex, "");
 const sanitizeLine = (text: string) =>
