@@ -65,6 +65,7 @@ runs:
             );
             
             if (botComment) {
+              console.log(`📝 Updating existing comment (ID: ${botComment.id})`);
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -72,6 +73,7 @@ runs:
                 body: comment,
               });
             } else {
+              console.log(`📝 Creating new comment`);
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
