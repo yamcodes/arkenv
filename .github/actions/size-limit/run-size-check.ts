@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
-import { spawn } from "bun";
 import { regex } from "arkregex";
+import { spawn } from "bun";
 
 interface SizeLimitResult {
 	package: string;
@@ -141,9 +141,9 @@ for (const line of lines) {
 	const colonMatch = strippedLine.match(
 		/^([@a-z0-9][@a-z0-9/_-]*):size:(.*)$/i,
 	);
-	if (colonMatch) {
+	if (colonMatch?.[1]) {
 		parsingMode = "colon";
-		const pkgName = normalizePackageName(colonMatch[1]!);
+		const pkgName = normalizePackageName(colonMatch[1]);
 		startPackage(pkgName);
 
 		const message = colonMatch[2]?.trim() ?? "";
@@ -152,7 +152,7 @@ for (const line of lines) {
 	}
 
 	const hashMatch = strippedLine.match(/^\s*([@a-z0-9][@a-z0-9/_-]*)#size/i);
-	if (hashMatch && hashMatch[1]) {
+	if (hashMatch?.[1]) {
 		parsingMode = "hash";
 		const pkgName = normalizePackageName(hashMatch[1]);
 		startPackage(pkgName);
