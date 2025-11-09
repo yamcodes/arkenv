@@ -93,14 +93,8 @@ const normalizePackageName = (pkgName: string) => {
 };
 
 // Define regexes via String.raw so we avoid embedding literal control characters.
-const stripAnsiRegex = new RegExp(
-	String.raw`\x1B[[\](?;]{0,2}(;?\d)*[A-Za-z]`,
-	"g",
-);
-const controlCharsRegex = new RegExp(
-	String.raw`[\u0000-\u0008\u000b-\u001f\u007f]`,
-	"g",
-);
+const stripAnsiRegex = /\x1B[[\](?;]{0,2}(;?\d)*[A-Za-z]/g;
+const controlCharsRegex = /[\u0000-\u0008\u000b-\u001f\u007f]/g;
 
 const stripAnsi = (text: string) => text.replace(stripAnsiRegex, "");
 const sanitizeLine = (text: string) =>
