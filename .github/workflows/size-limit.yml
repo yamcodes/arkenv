@@ -30,6 +30,12 @@ jobs:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
@@ -41,7 +47,7 @@ jobs:
       - name: Run size-limit checks
         uses: ./.github/actions/size-limit
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.generate-token.outputs.token }}
           turbo_token: ${{ secrets.TURBO_TOKEN }}
           turbo_team: ${{ vars.TURBO_TEAM }}
           filter: "./packages/*"
