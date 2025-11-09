@@ -43,10 +43,7 @@ runs:
         script: |
           const output = process.env.SIZE_LIMIT_RESULT ?? '';
           const hasErrors = (process.env.SIZE_LIMIT_HAS_ERRORS ?? 'false') === 'true';
-          const COMMENT_MARKER = '<!-- size-limit-report -->';
-          
-          const comment = `${COMMENT_MARKER}
-          ## 📦 Bundle Size Report
+          const comment = `## 📦 Bundle Size Report
           
           ${output}
           
@@ -63,8 +60,8 @@ runs:
             
             const botComment = comments.find(comment => 
               comment.user?.type === 'Bot' &&
-              comment.user?.login === 'github-actions[bot]' &&
-              comment.body?.includes(COMMENT_MARKER)
+              comment.user?.login === 'arkenv[bot]' &&
+              comment.body?.includes('Bundle Size Report')
             );
             
             if (botComment) {
