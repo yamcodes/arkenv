@@ -6,10 +6,44 @@ on:
     paths:
       - "packages/**"
 jobs:
-  size:
+  changes:
+    if: github.repository == 'yamcodes/arkenv'
     runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.packages }}
     steps:
       - uses: actions/checkout@v5
-      - uses: andresz1/size-limit-action@v1
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            packages:
+              - 'packages/**'
+
+  size-limit:
+    if: github.repository == 'yamcodes/arkenv' && needs.changes.outputs.packages == 'true'
+    needs: changes
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build packages
+        run: pnpm turbo run build --filter='./packages/*'
+      - name: Run size-limit checks
+        uses: ./.github/actions/size-limit
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          turbo_token: ${{ secrets.TURBO_TOKEN }}
+          turbo_team: ${{ vars.TURBO_TEAM }}
+          filter: "./packages/*"
