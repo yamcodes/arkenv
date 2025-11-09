@@ -50,7 +50,10 @@
 		},
 		// By Package Type (App or Package)
 		{
-			"matchPaths": ["apps/**", "examples/**"],
+			// Note: Do not include examples in this group,
+			// they are supposed to be able to run independently
+			// and its conventions.
+			"matchPaths": ["apps/**"],
 			"extends": ["config:js-app"]
 		},
 		{
