@@ -92,7 +92,8 @@ const normalizePackageName = (pkgName: string) => {
 	return pkgName;
 };
 
-const stripAnsi = (text: string) => text.replace(/\x1B[\[\](?;]{0,2}(;?\d)*[A-Za-z]/g, "");
+const stripAnsi = (text: string) =>
+	text.replace(/\x1B[[\](?;]{0,2}(;?\d)*[A-Za-z]/g, "");
 const sanitizeLine = (text: string) =>
 	stripAnsi(text).replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, "");
 
@@ -129,7 +130,9 @@ const parseMessageLine = (message: string) => {
 
 for (const line of lines) {
 	const strippedLine = sanitizeLine(line);
-	const colonMatch = strippedLine.match(/^([@a-z0-9][@a-z0-9/_-]*):size:(.*)$/i);
+	const colonMatch = strippedLine.match(
+		/^([@a-z0-9][@a-z0-9/_-]*):size:(.*)$/i,
+	);
 	if (colonMatch) {
 		parsingMode = "colon";
 		const pkgName = normalizePackageName(colonMatch[1]!);
