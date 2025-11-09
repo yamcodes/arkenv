@@ -116,7 +116,9 @@ const parseMessageLine = (message: string) => {
 	}
 
 	// Match "Size limit: X kB" or "Limit: X kB"
-	const limitMatch = message.match(/(?:Size\s+limit|Limit):\s+([0-9.]+\s*[kK]?[bB])/i);
+	const limitMatch = message.match(
+		/(?:Size\s+limit|Limit):\s+([0-9.]+\s*[kK]?[bB])/i,
+	);
 	if (limitMatch?.[1]) {
 		currentLimit = limitMatch[1];
 	}
@@ -128,7 +130,9 @@ const parseMessageLine = (message: string) => {
 	}
 
 	// Match table format: "package  size  limit" (space-separated)
-	const tableMatch = message.match(/^([@a-z0-9][@a-z0-9/_-]*)\s+([0-9.]+\s*[kK]?[bB])\s+([0-9.]+\s*[kK]?[bB])/i);
+	const tableMatch = message.match(
+		/^([@a-z0-9][@a-z0-9/_-]*)\s+([0-9.]+\s*[kK]?[bB])\s+([0-9.]+\s*[kK]?[bB])/i,
+	);
 	if (tableMatch?.[1] && tableMatch?.[2] && tableMatch?.[3]) {
 		const pkgName = normalizePackageName(tableMatch[1]);
 		startPackage(pkgName);
@@ -137,7 +141,9 @@ const parseMessageLine = (message: string) => {
 	}
 
 	// Match direct size-limit output format: "dist/index.js: 1.2 kB (limit: 2 kB)"
-	const directMatch = message.match(/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs)):\s+([0-9.]+\s*[kK]?[bB])\s*\(limit:\s*([0-9.]+\s*[kK]?[bB])\)/i);
+	const directMatch = message.match(
+		/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs)):\s+([0-9.]+\s*[kK]?[bB])\s*\(limit:\s*([0-9.]+\s*[kK]?[bB])\)/i,
+	);
 	if (directMatch?.[1] && directMatch?.[2] && directMatch?.[3]) {
 		currentFile = directMatch[1];
 		currentSize = directMatch[2];
@@ -145,7 +151,9 @@ const parseMessageLine = (message: string) => {
 	}
 
 	// Match format: "X kB of Y kB" or "X kB / Y kB"
-	const sizeLimitMatch = message.match(/([0-9.]+\s*[kK]?[bB])\s+(?:of|/)\s+([0-9.]+\s*[kK]?[bB])/i);
+	const sizeLimitMatch = message.match(
+		/([0-9.]+\s*[kK]?[bB])\s+(?:of|\/)\s+([0-9.]+\s*[kK]?[bB])/i,
+	);
 	if (sizeLimitMatch?.[1] && sizeLimitMatch?.[2]) {
 		currentSize = sizeLimitMatch[1];
 		currentLimit = sizeLimitMatch[2];
@@ -165,7 +173,7 @@ const parseMessageLine = (message: string) => {
 
 for (const line of lines) {
 	const strippedLine = sanitizeLine(line);
-	
+
 	// Skip empty lines
 	if (!strippedLine.trim()) {
 		continue;
@@ -195,7 +203,9 @@ for (const line of lines) {
 	}
 
 	// If we detect a new package in script output, reset parsing mode
-	const scriptMatch = strippedLine.match(/>\s*([@a-z0-9][@a-z0-9/_-]*)@[0-9.]+/i);
+	const scriptMatch = strippedLine.match(
+		/>\s*([@a-z0-9][@a-z0-9/_-]*)@[0-9.]+/i,
+	);
 	if (scriptMatch?.[1]) {
 		const pkgName = normalizePackageName(scriptMatch[1]);
 		// Only start a new package if we're not already in one, or if it's different
@@ -216,23 +226,26 @@ for (const line of lines) {
 	// Look for lines that contain size information even without Turbo prefix
 	if (strippedLine.match(/[0-9.]+\s*[kK]?[bB]/)) {
 		// Try to extract package name from context (e.g., "> arkenv@0.7.3 size")
-		const pkgContextMatch = strippedLine.match(/>\s*([@a-z0-9][@a-z0-9/_-]*)@/i);
+		const pkgContextMatch = strippedLine.match(
+			/>\s*([@a-z0-9][@a-z0-9/_-]*)@/i,
+		);
 		if (pkgContextMatch?.[1]) {
 			const pkgName = normalizePackageName(pkgContextMatch[1]);
 			startPackage(pkgName);
 		} else if (!currentPackage) {
 			// If we don't have a current package, try to infer from filter
 			// Extract package name from filter pattern like "./packages/arkenv" or "arkenv"
-			const filterMatch = filter.match(/(?:packages\/)?([@a-z0-9][@a-z0-9/_-]*)/i);
+			const filterMatch = filter.match(
+				/(?:packages\/)?([@a-z0-9][@a-z0-9/_-]*)/i,
+			);
 			if (filterMatch?.[1]) {
 				const pkgName = normalizePackageName(filterMatch[1]);
 				startPackage(pkgName);
 			}
 		}
-		
+
 		// Parse the line for size information
 		parseMessageLine(strippedLine);
-		continue;
 	}
 }
 
