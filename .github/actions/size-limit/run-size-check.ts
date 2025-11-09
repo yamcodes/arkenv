@@ -87,10 +87,18 @@ const startPackage = (pkgName: string) => {
 };
 
 const normalizePackageName = (pkgName: string) => {
-	if (pkgName.includes("/")) {
-		return pkgName.split("/")[1] ?? pkgName;
+	const cleaned = pkgName.replace(/^[./]+/, "");
+	if (cleaned.startsWith("@")) {
+		return cleaned;
 	}
-	return pkgName;
+	if (cleaned.includes("/")) {
+		const segments = cleaned.split("/");
+		const scopeIndex = segments.findIndex((part) => part.startsWith("@"));
+		return scopeIndex >= 0
+			? segments.slice(scopeIndex).join("/")
+			: (segments.at(-1) ?? cleaned);
+	}
+	return cleaned;
 };
 
 // Matches ESC [ ... <final byte in @-~>
