@@ -43,7 +43,6 @@ runs:
         script: |
           const output = process.env.SIZE_LIMIT_RESULT ?? '';
           const hasErrors = (process.env.SIZE_LIMIT_HAS_ERRORS ?? 'false') === 'true';
-          
           const comment = `## 📦 Bundle Size Report
           
           ${output}
@@ -60,7 +59,9 @@ runs:
             });
             
             const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && comment.body.includes('Bundle Size Report')
+              comment.user?.type === 'Bot' &&
+              comment.user?.login === 'arkenv[bot]' &&
+              comment.body?.includes('Bundle Size Report')
             );
             
             if (botComment) {
