@@ -1,103 +1,61 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "ignorePaths": [
-    "**/node_modules/**"
-  ],
-  "schedule": [
-    "every friday"
-  ],
-  "vulnerabilityAlerts": {
-    "enabled": true
-  },
-  "osvVulnerabilityAlerts": true,
-  "dependencyDashboard": true,
-  "updateInternalDeps": true,
-  "packageRules": [
-    // By Package Manager
-    {
-      // Group pnpm workspace updates (minor/patch) across selected dirs
-      "groupName": "pnpm",
-      "matchManagers": [
-        "pnpm"
-      ],
-      "matchPaths": [
-        "packages/**",
-        "apps/**",
-        "tooling/**",
-        "examples/**"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "matchCurrentVersion": ">=1.0.0"
-    },
-    {
-      "groupName": "bun-action",
-      "matchManagers": [
-        "bun"
-      ],
-      "matchPaths": [
-        ".github/actions/size-limit/**", // Bun script
-        "apps/playgrounds/**/*bun*/**",
-        "examples/**/*bun*/**"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "matchCurrentVersion": ">=1.0.0"
-    },
-    {
-      "groupName": "actions",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ]
-    },
-    // By SemVer
-    {
-      "matchUpdateTypes": [
-        "patch"
-      ],
-      "minimumReleaseAge": "2 days"
-    },
-    {
-      "matchUpdateTypes": [
-        "minor"
-      ],
-      "minimumReleaseAge": "7 days"
-    },
-    {
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "minimumReleaseAge": "14 days"
-    },
-    // By Package Type (App or Package)
-    {
-      "matchPaths": [
-        "apps/**",
-        "examples/**"
-      ],
-      "extends": [
-        "config:js-app"
-      ]
-    },
-    {
-      "matchPaths": [
-        "packages/**",
-        "tooling/**"
-      ],
-      "extends": [
-        "config:js-lib"
-      ]
-    }
-  ]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended"],
+	"ignorePaths": ["**/node_modules/**"],
+	"schedule": ["every friday"],
+	"vulnerabilityAlerts": {
+		"enabled": true
+	},
+	"osvVulnerabilityAlerts": true,
+	"dependencyDashboard": true,
+	"updateInternalDeps": true,
+	"packageRules": [
+		// By Package Manager
+		{
+			// Group pnpm workspace updates (minor/patch) across selected dirs
+			"groupName": "pnpm",
+			"matchManagers": ["pnpm"],
+			"matchPaths": ["packages/**", "apps/**", "tooling/**", "examples/**"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"matchCurrentVersion": ">=1.0.0"
+		},
+		{
+			"groupName": "bun-action",
+			"matchManagers": ["bun"],
+			"matchPaths": [
+				".github/actions/size-limit/**", // Bun script
+				"apps/playgrounds/**/*bun*/**",
+				"examples/**/*bun*/**"
+			],
+			"matchUpdateTypes": ["minor", "patch"],
+			"matchCurrentVersion": ">=1.0.0"
+		},
+		{
+			"groupName": "actions",
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch"]
+		},
+		// By SemVer
+		{
+			"matchUpdateTypes": ["patch"],
+			"minimumReleaseAge": "2 days"
+		},
+		{
+			"matchUpdateTypes": ["minor"],
+			"minimumReleaseAge": "7 days"
+		},
+		{
+			"matchUpdateTypes": ["major"],
+			"minimumReleaseAge": "14 days"
+		},
+		// By Package Type (App or Package)
+		{
+			"matchPaths": ["apps/**", "examples/**"],
+			"extends": ["config:js-app"]
+		},
+		{
+			"matchPaths": ["packages/**", "tooling/**"],
+			"extends": ["config:js-lib"]
+		}
+	]
 }
