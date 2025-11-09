@@ -58,27 +58,13 @@ runs:
               issue_number: context.issue.number,
             });
             
-            // Debug: Check why find isn't matching
-            const botComments = comments.filter(c => c.user?.type === 'Bot');
-            if (botComments.length > 0) {
-              console.log(`🔍 Checking ${botComments.length} bot comment(s) for match:`);
-              botComments.forEach(c => {
-                const isTypeBot = c.user?.type === 'Bot';
-                const isLoginMatch = c.user?.login === 'arkenv[bot]';
-                const hasReport = c.body?.includes('Bundle Size Report');
-                console.log(`  Comment ID ${c.id}: type=${isTypeBot}, login=${isLoginMatch} (${c.user?.login}), hasReport=${hasReport}`);
-              });
-            }
-            
-            const botComment = comments.find(comment => {
-              const isTypeBot = comment.user?.type === 'Bot';
-              const isLoginMatch = comment.user?.login === 'arkenv[bot]';
-              const hasReport = comment.body?.includes('Bundle Size Report');
-              return isTypeBot && isLoginMatch && hasReport;
-            });
+            const botComment = comments.find(comment => 
+              comment.user?.type === 'Bot' &&
+              comment.user?.login === 'arkenv-bot[bot]' &&
+              comment.body?.includes('Bundle Size Report')
+            );
             
             if (botComment) {
-              console.log(`📝 Updating existing comment (ID: ${botComment.id})`);
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -86,7 +72,6 @@ runs:
                 body: comment,
               });
             } else {
-              console.log(`📝 Creating new comment`);
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
