@@ -87,7 +87,7 @@ const startPackage = (pkgName: string) => {
 
 const normalizePackageName = (pkgName: string) => {
 	if (pkgName.includes("/")) {
-		return pkgName.split("/")[1]!;
+		return pkgName.split("/")[1] ?? pkgName;
 	}
 	return pkgName;
 };
@@ -106,17 +106,17 @@ const parseMessageLine = (message: string) => {
 	}
 
 	const fileMatch = message.match(/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs))/i);
-	if (fileMatch && fileMatch[1]) {
+	if (fileMatch?.[1]) {
 		currentFile = fileMatch[1];
 	}
 
 	const limitMatch = message.match(/Size\s+limit:\s+([0-9.]+\s*[kK]?[bB])/i);
-	if (limitMatch && limitMatch[1]) {
+	if (limitMatch?.[1]) {
 		currentLimit = limitMatch[1];
 	}
 
 	const sizeMatch = message.match(/Size:\s+([0-9.]+\s*[kK]?[bB])/i);
-	if (sizeMatch && sizeMatch[1]) {
+	if (sizeMatch?.[1]) {
 		currentSize = sizeMatch[1];
 	}
 
