@@ -9,12 +9,12 @@
 		"build": "tsc"
 	},
 	"dependencies": {
-		"arkenv": "^0.7.0",
-		"arktype": "^2.1.22"
+		"arkenv": "0.7.0",
+		"arktype": "2.1.22"
 	},
 	"devDependencies": {
-		"tsx": "^4.19.2",
-		"typescript": "^5.9.2"
+		"tsx": "4.19.3",
+		"typescript": "5.9.2"
 	},
 	"packageManager": "npm@10.9.2",
 	"engines": {
