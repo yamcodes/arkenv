@@ -17,6 +17,18 @@ updates:
         update-types:
           - "minor"
           - "patch"
+  # Bun action (uses plain package.json without lockfile)
+  - package-ecosystem: "npm"
+    directory: "/.github/actions/size-limit"
+    schedule:
+      interval: "weekly"
+    groups:
+      bun-action:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   # GitHub Actions updates
   - package-ecosystem: "github-actions"
     directory: "/"
