@@ -41,8 +41,8 @@ runs:
       with:
         github-token: ${{ inputs.github_token }}
         script: |
-          const output = `${{ steps.size-check.outputs.result }}`;
-          const hasErrors = `${{ steps.size-check.outputs.has_errors }}` === 'true';
+          const output = process.env.SIZE_LIMIT_RESULT ?? '';
+          const hasErrors = (process.env.SIZE_LIMIT_HAS_ERRORS ?? 'false') === 'true';
           
           const comment = `## 📦 Bundle Size Report
           
@@ -77,4 +77,6 @@ runs:
               body: comment,
             });
           }
-
+      env:
+        SIZE_LIMIT_RESULT: ${{ steps.size-check.outputs.result }}
+        SIZE_LIMIT_HAS_ERRORS: ${{ steps.size-check.outputs.has_errors }}

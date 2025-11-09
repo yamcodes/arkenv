@@ -38,8 +38,6 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Build packages
-        run: pnpm turbo run build --filter='./packages/*'
       - name: Run size-limit checks
         uses: ./.github/actions/size-limit
         with:
