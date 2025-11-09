@@ -31,7 +31,7 @@ let sizeOutput = "";
 let hasErrors = false;
 
 try {
-	const proc = spawn(["pnpm", "turbo", "run", "size", "--filter", filter], {
+	const proc = spawn(["pnpm", "run", "size", "--filter", filter], {
 		stdout: "pipe",
 		stderr: "pipe",
 	});
