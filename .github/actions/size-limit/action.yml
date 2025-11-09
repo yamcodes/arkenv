@@ -22,6 +22,7 @@ runs:
       with:
         bun-version: 1.2.22
     - name: Install dependencies
+      shell: bash
       run: bun install
       working-directory: ${{ github.action_path }}
     - name: Run size checks
