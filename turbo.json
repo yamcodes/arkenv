@@ -66,10 +66,6 @@
 			"cache": false,
 			"persistent": true
 		},
-		"test:e2e:update": {},
-		"size": {
-			"dependsOn": ["build"],
-			"cache": false
-		}
+		"test:e2e:update": {}
 	}
 }
