@@ -479,7 +479,7 @@ const getBaselineSizes = async (
 				baselineMap.set(key, sizeBytes);
 			}
 
-			// Only log if there's an issue (no baseline sizes found)
+			// Always log baseline status for debugging
 			if (baselineMap.size === 0) {
 				console.log(
 					"⚠️ No baseline sizes found. This might be the first run or baseline parsing failed.",
@@ -500,14 +500,24 @@ const getBaselineSizes = async (
 						const outputLines = baselineResult.rawOutput
 							.split("\n")
 							.filter((l) => l.trim());
-						const sampleLines = outputLines.slice(0, 10).join("\n");
+						const sampleLines = outputLines.slice(0, 20).join("\n");
 						console.log(
-							`📊 Sample of baseline output (first 10 non-empty lines):\n${sampleLines}`,
+							`📊 Sample of baseline output (first 20 non-empty lines):\n${sampleLines}`,
 						);
-						if (outputLines.length > 10) {
-							console.log(`... (${outputLines.length - 10} more lines)`);
+						if (outputLines.length > 20) {
+							console.log(`... (${outputLines.length - 20} more lines)`);
 						}
+						if (outputLines.length === 0) {
+							console.log("⚠️ Baseline output is completely empty!");
+						}
+					} else {
+						console.log("⚠️ Baseline rawOutput is undefined!");
 					}
+				}
+			} else {
+				console.log(`✅ Found ${baselineMap.size} baseline size(s)`);
+				for (const [key, size] of baselineMap.entries()) {
+					console.log(`  - ${key}: ${size} bytes`);
 				}
 			}
 		} finally {
@@ -604,14 +614,16 @@ for (const result of results) {
 		const currentSize = parseSizeToBytes(result.size);
 		result.diff = calculateDiff(currentSize, baselineSize);
 	} else {
-		// Only log if there's an issue (can't compute diff)
+		// Log when we can't compute diff (this is an issue)
 		if (baselineSizes.size > 0) {
 			const availableKeys = Array.from(baselineSizes.keys()).join(", ");
 			console.log(
 				`⚠️ No baseline found for ${key}. Available keys: ${availableKeys}`,
 			);
 		} else {
-			console.log(`⚠️ No baseline found for ${key}. Baseline map is empty.`);
+			console.log(
+				`⚠️ No baseline found for ${key}. Baseline map is empty (size: ${baselineSizes.size}).`,
+			);
 		}
 		result.diff = "—";
 	}
