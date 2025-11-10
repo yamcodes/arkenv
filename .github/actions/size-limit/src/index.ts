@@ -26,9 +26,19 @@ const config = getConfig();
 // Detect changed packages if in PR context
 let changedPackages: Set<string> | null = null;
 if (config.isPR && !config.isReleasePR) {
-	changedPackages = await getChangedPackages(config.baseBranch);
-	if (changedPackages.size === 0) {
-		await handleNoPackagesChanged();
+	const changeResult = await getChangedPackages(config.baseBranch);
+	if (changeResult.success) {
+		changedPackages = changeResult.packages;
+		// Only exit early if we successfully detected that no packages changed
+		if (changedPackages.size === 0) {
+			await handleNoPackagesChanged();
+		}
+	} else {
+		// Change detection failed - treat as "all packages changed" to ensure checks run
+		// Setting changedPackages to null causes filterChangedPackages to return all results
+		console.log(
+			"⚠️ Change detection failed. Will check all packages to ensure no regressions slip through.",
+		);
 	}
 }
 

@@ -66,11 +66,20 @@ export const calculateDiffs = (
 };
 
 // Filter results to only include changed packages
+// If changedPackages is null, it means we're not in PR context or change detection failed
+// In that case, return all results (don't filter)
 export const filterChangedPackages = (
 	results: SizeLimitResult[],
 	changedPackages: Set<string> | null,
 ): SizeLimitResult[] => {
-	if (!changedPackages || changedPackages.size === 0) {
+	// If change detection failed or we're not filtering, return all results
+	if (changedPackages === null) {
+		return results;
+	}
+
+	// If we have a set but it's empty, this shouldn't happen (we exit early)
+	// But if it does, return all results to be safe
+	if (changedPackages.size === 0) {
 		return results;
 	}
 

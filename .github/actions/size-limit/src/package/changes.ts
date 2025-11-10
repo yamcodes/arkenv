@@ -2,10 +2,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawn } from "bun";
 
+export type ChangedPackagesResult =
+	| { success: true; packages: Set<string> }
+	| { success: false };
+
 // Function to get changed packages based on git diff
 export const getChangedPackages = async (
 	baseBranch: string,
-): Promise<Set<string>> => {
+): Promise<ChangedPackagesResult> => {
 	const changedPackages = new Set<string>();
 
 	try {
@@ -37,7 +41,7 @@ export const getChangedPackages = async (
 			console.log(
 				`⚠️ Failed to get changed files: ${stderr || stdout}. Falling back to checking all packages.`,
 			);
-			return changedPackages;
+			return { success: false };
 		}
 
 		const changedFiles = stdout
@@ -87,11 +91,12 @@ export const getChangedPackages = async (
 		} else {
 			console.log("📦 No packages changed in this PR");
 		}
+
+		return { success: true, packages: changedPackages };
 	} catch (error) {
 		console.log(
 			`⚠️ Error detecting changed packages: ${error instanceof Error ? error.message : String(error)}. Falling back to checking all packages.`,
 		);
+		return { success: false };
 	}
-
-	return changedPackages;
 };
