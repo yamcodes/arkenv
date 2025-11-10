@@ -71,14 +71,20 @@ export const runSizeLimitOnPackage = async (
 		return [];
 	}
 
-	// Create a temporary package.json with just the size-limit config
+	// Create a temporary package.json with size-limit config and dependencies
 	// We need to preserve the package name and main/module fields for size-limit to work
+	// Also need to include the preset in dependencies so size-limit can find it
 	const tempPackageJson = {
 		name: packageJson.name,
 		version: packageJson.version,
 		main: packageJson.main,
 		module: packageJson.module,
 		"size-limit": sizeLimitConfig,
+		devDependencies: {
+			"size-limit": "11.2.0",
+			"@size-limit/preset-small-lib": "11.2.0",
+			"@size-limit/esbuild-why": "11.2.0",
+		},
 	};
 
 	// Write temp package.json
@@ -99,24 +105,13 @@ export const runSizeLimitOnPackage = async (
 	);
 
 	try {
-		// Install size-limit and required plugins in the package directory
-		// The preset-small-lib plugin is needed for accurate measurement
+		// Install dependencies from package.json (which now includes size-limit and preset)
 		console.log(`📦 Installing size-limit dependencies for ${packageName}...`);
-		const installProc = spawn(
-			[
-				"npm",
-				"install",
-				"--no-save",
-				"size-limit@11.2.0",
-				"@size-limit/preset-small-lib@11.2.0",
-				"@size-limit/esbuild-why@11.2.0",
-			],
-			{
-				cwd: packageDir,
-				stdout: "pipe",
-				stderr: "pipe",
-			},
-		);
+		const installProc = spawn(["npm", "install"], {
+			cwd: packageDir,
+			stdout: "pipe",
+			stderr: "pipe",
+		});
 
 		const installExitCode = await installProc.exited;
 		if (installExitCode !== 0) {

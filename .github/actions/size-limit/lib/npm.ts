@@ -56,18 +56,44 @@ export const downloadNpmPackage = async (
 			: `${packageName}-${version}.tgz`;
 		const tarballUrl = `https://registry.npmjs.org/${packageName}/-/${tarballName}`;
 
-		console.log(`📦 Downloading ${packageName}@${version}...`);
+		console.log(`📦 Downloading ${packageName}@${version} from ${tarballUrl}...`);
+		const tarballPath = join(targetDir, "package.tgz");
 		const downloadProc = spawn(
-			["curl", "-L", "-o", join(targetDir, "package.tgz"), tarballUrl],
+			["curl", "-L", "-f", "-o", tarballPath, tarballUrl],
 			{
 				stdout: "pipe",
 				stderr: "pipe",
 			},
 		);
 
+		const [downloadStdout, downloadStderr] = await Promise.all([
+			new Response(downloadProc.stdout).text(),
+			new Response(downloadProc.stderr).text(),
+		]);
+
 		const downloadExitCode = await downloadProc.exited;
 		if (downloadExitCode !== 0) {
-			console.log(`⚠️ Failed to download ${packageName}@${version}`);
+			console.log(
+				`⚠️ Failed to download ${packageName}@${version}: ${downloadStderr || downloadStdout}`,
+			);
+			return false;
+		}
+
+		// Verify the downloaded file exists and is not empty
+		if (!existsSync(tarballPath)) {
+			console.log(`⚠️ Downloaded file not found: ${tarballPath}`);
+			return false;
+		}
+
+		// Check if file is a valid gzip file (tarballs start with gzip magic bytes)
+		const fileContent = readFileSync(tarballPath);
+		const isGzip = fileContent[0] === 0x1f && fileContent[1] === 0x8b;
+		if (!isGzip) {
+			// If it's not gzip, it might be an error page (HTML)
+			const contentStr = fileContent.slice(0, 200).toString();
+			console.log(
+				`⚠️ Downloaded file is not a valid gzip archive. First 200 bytes: ${contentStr}`,
+			);
 			return false;
 		}
 
