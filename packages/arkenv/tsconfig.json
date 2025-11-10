@@ -8,11 +8,12 @@
 		"skipLibCheck": true,
 		"exactOptionalPropertyTypes": true,
 		"noImplicitAny": true,
-		"allowJs": true,
 		"noEmit": true,
 		"outDir": "dist",
 		"resolveJsonModule": true,
-		"rootDir": "src"
+		"rootDir": "src",
+		"declaration": true,
+		"declarationMap": true
 	},
 	"include": ["src"]
 }
