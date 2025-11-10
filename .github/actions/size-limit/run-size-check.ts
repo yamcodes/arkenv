@@ -118,7 +118,13 @@ const parseSizeLimitOutput = (
 
 	const flushCurrentPackage = () => {
 		if (currentPackage && currentSize && currentLimit) {
-			const filename = currentFile.split("/").pop() || "bundle";
+			// Extract filename: if currentFile has a path, use the last part; otherwise use "bundle"
+			// Handle both "dist/index.js" and "index.js" formats
+			const filename = currentFile
+				? (currentFile.includes("/")
+						? currentFile.split("/").pop()
+						: currentFile) || "bundle"
+				: "bundle";
 			results.push({
 				package: currentPackage,
 				file: filename,
@@ -428,6 +434,21 @@ const getBaselineSizes = async (
 				const sizeBytes = parseSizeToBytes(result.size);
 				baselineMap.set(key, sizeBytes);
 			}
+
+			// Only log if there's an issue (no baseline sizes found)
+			if (baselineMap.size === 0) {
+				console.log(
+					"⚠️ No baseline sizes found. This might be the first run or baseline parsing failed.",
+				);
+				console.log(
+					`📊 Baseline results array length: ${baselineResult.results.length}`,
+				);
+				if (baselineResult.results.length > 0) {
+					console.log(
+						`📊 First baseline result: ${JSON.stringify(baselineResult.results[0])}`,
+					);
+				}
+			}
 		} finally {
 			// Checkout back to current commit
 			const restoreProc = spawn(["git", "checkout", currentCommit], {
@@ -502,6 +523,15 @@ for (const result of results) {
 		const currentSize = parseSizeToBytes(result.size);
 		result.diff = calculateDiff(currentSize, baselineSize);
 	} else {
+		// Only log if there's an issue (can't compute diff)
+		if (baselineSizes.size > 0) {
+			const availableKeys = Array.from(baselineSizes.keys()).join(", ");
+			console.log(
+				`⚠️ No baseline found for ${key}. Available keys: ${availableKeys}`,
+			);
+		} else {
+			console.log(`⚠️ No baseline found for ${key}. Baseline map is empty.`);
+		}
 		result.diff = "—";
 	}
 }
