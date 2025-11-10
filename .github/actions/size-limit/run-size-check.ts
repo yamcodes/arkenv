@@ -346,6 +346,7 @@ const parseSizeLimitOutput = (
 const runSizeLimit = async (): Promise<{
 	results: SizeLimitResult[];
 	hasErrors: boolean;
+	rawOutput?: string;
 }> => {
 	let sizeOutput = "";
 	let hasErrors = false;
@@ -370,7 +371,7 @@ const runSizeLimit = async (): Promise<{
 	}
 
 	const results = parseSizeLimitOutput(sizeOutput, filter);
-	return { results, hasErrors };
+	return { results, hasErrors, rawOutput: sizeOutput };
 };
 
 // Function to get baseline sizes from base branch
@@ -490,6 +491,23 @@ const getBaselineSizes = async (
 					console.log(
 						`📊 First baseline result: ${JSON.stringify(baselineResult.results[0])}`,
 					);
+				} else {
+					// If no results parsed, log a sample of the raw output to help debug parsing issues
+					console.log(
+						"⚠️ Baseline run completed but no results were parsed. This suggests a parsing issue.",
+					);
+					if (baselineResult.rawOutput) {
+						const outputLines = baselineResult.rawOutput
+							.split("\n")
+							.filter((l) => l.trim());
+						const sampleLines = outputLines.slice(0, 10).join("\n");
+						console.log(
+							`📊 Sample of baseline output (first 10 non-empty lines):\n${sampleLines}`,
+						);
+						if (outputLines.length > 10) {
+							console.log(`... (${outputLines.length - 10} more lines)`);
+						}
+					}
 				}
 			}
 		} finally {
