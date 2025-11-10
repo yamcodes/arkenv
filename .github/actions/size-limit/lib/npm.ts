@@ -56,7 +56,9 @@ export const downloadNpmPackage = async (
 			: `${packageName}-${version}.tgz`;
 		const tarballUrl = `https://registry.npmjs.org/${packageName}/-/${tarballName}`;
 
-		console.log(`📦 Downloading ${packageName}@${version} from ${tarballUrl}...`);
+		console.log(
+			`📦 Downloading ${packageName}@${version} from ${tarballUrl}...`,
+		);
 		const tarballPath = join(targetDir, "package.tgz");
 		const downloadProc = spawn(
 			["curl", "-L", "-f", "-o", tarballPath, tarballUrl],
