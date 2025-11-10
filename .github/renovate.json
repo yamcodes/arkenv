@@ -40,29 +40,44 @@
 		},
 		// By Package Manager
 		{
-			// Group pnpm workspace updates (minor/patch) across selected dirs
-			"groupName": "pnpm",
-			"matchManagers": ["pnpm"],
+			// Group bun dependencies (minor/patch) in bun projects
+			// Note: Must come before npm group to avoid conflicts
+			"groupName": "bun",
+			"matchManagers": ["bun", "npm"],
 			"matchFileNames": [
-				"packages/**",
-				"apps/**",
-				"tooling/**",
-				"examples/**",
-				"package.json" // Root package.json
-			],
-			"matchUpdateTypes": ["minor", "patch"],
-			"matchCurrentVersion": ">=1.0.0"
-		},
-		{
-			"groupName": "bun-action",
-			"matchManagers": ["bun"],
-			"matchFileNames": [
-				".github/actions/size-limit/package.json", // Bun script
+				".github/actions/size-limit/package.json",
 				"apps/playgrounds/**/*bun*/**",
 				"examples/**/*bun*/**"
 			],
 			"matchUpdateTypes": ["minor", "patch"],
 			"matchCurrentVersion": ">=1.0.0"
+		},
+		{
+			// Group npm dependencies (minor/patch) across selected dirs
+			// Note: npm dependencies in pnpm workspaces use "npm" manager, not "pnpm"
+			// Excludes bun-specific files to avoid conflicts
+			"groupName": "npm",
+			"matchManagers": ["npm"],
+			"matchFileNames": [
+				"packages/**",
+				"apps/**",
+				"tooling/**",
+				"examples/**",
+				"package.json"
+			],
+			"excludeFileNames": [
+				".github/actions/size-limit/package.json",
+				"apps/playgrounds/**/*bun*/**",
+				"examples/**/*bun*/**"
+			],
+			"matchUpdateTypes": ["minor", "patch"],
+			"matchCurrentVersion": ">=1.0.0"
+		},
+		{
+			// Group pnpm package manager version updates
+			"groupName": "pnpm",
+			"matchManagers": ["pnpm"],
+			"matchUpdateTypes": ["minor", "patch"]
 		},
 		{
 			"groupName": "actions",
