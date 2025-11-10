@@ -39,7 +39,7 @@ runs:
       run: |
         bun ${{ github.action_path }}/run-size-check.ts
     - name: Comment PR
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && steps.size-check.outputs.packages_changed == 'true'
       uses: actions/github-script@v8
       with:
         github-token: ${{ inputs.github_token }}

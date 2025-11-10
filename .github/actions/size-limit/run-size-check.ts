@@ -6,6 +6,7 @@ import { getBaselineSizesFromNpm } from "./lib/npm.ts";
 import { runSizeLimit } from "./lib/size-limit.ts";
 import type { SizeInBytes } from "./types.ts";
 import { calculateDiff, parseSizeToBytes } from "./utils/size.ts";
+import { getChangedPackages } from "./utils/package.ts";
 
 // Get inputs from environment
 const turboToken = process.env.INPUT_TURBO_TOKEN;
@@ -26,6 +27,25 @@ if (turboTeam) {
 
 // Main execution
 console.log("🔍 Running size-limit checks for all packages...");
+
+// Detect changed packages if in PR context
+let changedPackages: Set<string> | null = null;
+if (isPR && !isReleasePR) {
+	changedPackages = await getChangedPackages(baseBranch);
+	if (changedPackages.size === 0) {
+		console.log(
+			"ℹ️ No packages changed in this PR. Skipping bundle size checks.",
+		);
+		// Set GitHub outputs to indicate no packages changed
+		const githubOutput = process.env.GITHUB_OUTPUT;
+		if (githubOutput) {
+			const fs = await import("node:fs/promises");
+			const output = `result<<EOF\nNo packages changed in this PR.\nEOF\nhas_errors=false\npackages_changed=false\n`;
+			await fs.appendFile(githubOutput, output);
+		}
+		process.exit(0);
+	}
+}
 
 // Get baseline sizes if in PR context
 // For release PRs (changeset-release/main), compare against npm instead of base branch
@@ -96,6 +116,17 @@ if (isPR) {
 // Run size-limit on current branch
 const { results, hasErrors } = await runSizeLimit(filter);
 
+// Filter results to only include changed packages (if in PR context)
+let filteredResults = results;
+if (isPR && !isReleasePR && changedPackages && changedPackages.size > 0) {
+	filteredResults = results.filter((result) =>
+		changedPackages!.has(result.package),
+	);
+	console.log(
+		`📊 Filtered results: ${filteredResults.length} of ${results.length} packages changed`,
+	);
+}
+
 // Log baseline and current sizes for debugging (especially for release PRs)
 if (isReleasePR && baselineSizes.size > 0) {
 	console.log("\n📊 Baseline sizes from npm:");
@@ -113,7 +144,7 @@ if (isReleasePR && baselineSizes.size > 0) {
 }
 
 // Calculate diffs and add to results
-for (const result of results) {
+for (const result of filteredResults) {
 	const key = `${result.package}:${result.file}`;
 	const currentSizeBytes = parseSizeToBytes(result.size);
 	let baselineSize = baselineSizes.get(key);
@@ -172,16 +203,16 @@ for (const result of results) {
 
 // Create the table
 let result: string;
-if (results.length === 0) {
+if (filteredResults.length === 0) {
 	result = "```\nNo results found\n```";
 	console.log("⚠️ Could not parse size-limit output");
 } else {
 	// Log file information to console (not included in GitHub comment)
-	for (const r of results) {
+	for (const r of filteredResults) {
 		console.log(`📦 ${r.package} → ${r.file}: ${r.size} (limit: ${r.limit})`);
 	}
 
-	const tableRows = results
+	const tableRows = filteredResults
 		.map(
 			(r) =>
 				`| \`${r.package}\` | ${r.size} | ${r.limit} | ${r.diff ?? "—"} | ${r.status} |`,
@@ -194,7 +225,9 @@ if (results.length === 0) {
 const githubOutput = process.env.GITHUB_OUTPUT;
 if (githubOutput) {
 	const fs = await import("node:fs/promises");
-	const output = `result<<EOF\n${result}\nEOF\nhas_errors=${hasErrors}\n`;
+	const packagesChanged =
+		changedPackages === null || changedPackages.size > 0;
+	const output = `result<<EOF\n${result}\nEOF\nhas_errors=${hasErrors}\npackages_changed=${packagesChanged}\n`;
 	await fs.appendFile(githubOutput, output);
 }
 
