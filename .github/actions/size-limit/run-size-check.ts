@@ -414,6 +414,14 @@ const getBaselineSizes = async (
 			// Run size-limit on base branch
 			const baselineResult = await runSizeLimit();
 
+			// Check if baseline run had errors before populating baseline map
+			if (baselineResult.hasErrors) {
+				console.log(
+					"⚠️ Baseline size-limit run failed, skipping baseline comparison. Diff values will not be available.",
+				);
+				return baselineMap;
+			}
+
 			// Create a map of package+file -> size in bytes
 			for (const result of baselineResult.results) {
 				const key = `${result.package}:${result.file}`;
@@ -426,7 +434,19 @@ const getBaselineSizes = async (
 				stdout: "pipe",
 				stderr: "pipe",
 			});
-			await restoreProc.exited;
+			const [restoreStdout, restoreStderr] = await Promise.all([
+				new Response(restoreProc.stdout).text(),
+				new Response(restoreProc.stderr).text(),
+			]);
+			const restoreExitCode = await restoreProc.exited;
+			if (restoreExitCode !== 0) {
+				console.error(
+					`❌ Failed to restore git commit ${currentCommit}. Repository may be in an incorrect state.`,
+				);
+				console.error("Git stdout:", restoreStdout);
+				console.error("Git stderr:", restoreStderr);
+				process.exit(1);
+			}
 		}
 	} catch (error) {
 		console.log(
