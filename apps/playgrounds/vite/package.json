@@ -8,7 +8,8 @@
 		"start": "vite",
 		"build": "tsc -b && vite build",
 		"preview": "vite preview",
-		"fix": "pnpm -w run fix"
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"@arkenv/vite-plugin": "workspace:*",

@@ -9,7 +9,8 @@
 		"test:e2e:headed": "playwright test --headed",
 		"test:e2e:debug": "playwright test --debug",
 		"test:e2e:report": "playwright show-report",
-		"test:e2e:update": "bin/update-playwright.sh"
+		"test:e2e:update": "bin/update-playwright.sh",
+		"clean": "rimraf dist node_modules test-results playwright-report"
 	},
 	"dependencies": {
 		"www": "workspace:*"
