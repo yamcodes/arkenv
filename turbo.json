@@ -4,6 +4,10 @@
 		"clean": {
 			"cache": false
 		},
+		"//#root:clean": {
+			"cache": false,
+			"dependsOn": ["^clean"]
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.test.ts", "!**/*.test.tsx"],

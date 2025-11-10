@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "tsx watch --env-file .env index.ts",
 		"start": "tsx --env-file .env index.ts",
-		"fix": "pnpm -w run fix"
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"arkenv": "workspace:*",

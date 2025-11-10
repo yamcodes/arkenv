@@ -7,7 +7,8 @@
 		"dev": "bun --bun --hot src/index.tsx",
 		"start": "NODE_ENV=production bun src/index.tsx",
 		"build": "bun run build.ts",
-		"fix": "pnpm -w run fix"
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"@radix-ui/react-label": "^2.1.7",

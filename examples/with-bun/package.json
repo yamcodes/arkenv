@@ -5,7 +5,8 @@
 	"scripts": {
 		"start": "bun run index.ts",
 		"dev": "bun --watch run index.ts",
-		"build": "bun build index.ts --outdir ./dist"
+		"build": "bun build index.ts --outdir ./dist",
+		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"arkenv": "^0.7.0",
