@@ -4,6 +4,10 @@
 		"clean": {
 			"cache": false
 		},
+		"//#root:clean": {
+			"cache": false,
+			"dependsOn": ["^clean"]
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.test.ts", "!**/*.test.tsx"],
@@ -62,6 +66,10 @@
 			"cache": false,
 			"persistent": true
 		},
-		"test:e2e:update": {}
+		"test:e2e:update": {},
+		"size": {
+			"dependsOn": ["build"],
+			"cache": false
+		}
 	}
 }

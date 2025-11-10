@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/vite-plugin",
-	"version": "0.0.14",
+	"version": "0.0.15",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -12,12 +12,12 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
-		"arktype": "^2.1.25",
-		"tsdown": "^0.15.12",
-		"typescript": "^5.9.3",
+		"arktype": "2.1.25",
+		"tsdown": "0.15.12",
+		"typescript": "5.9.3",
 		"vite": "7.1.12",
-		"vite-tsconfig-paths": "^5.1.4",
-		"vitest": "^3.2.4"
+		"vite-tsconfig-paths": "5.1.4",
+		"vitest": "4.0.8"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",

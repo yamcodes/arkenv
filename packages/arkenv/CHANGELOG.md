@@ -1,5 +1,34 @@
 # ArkEnv
 
+## 0.7.4
+
+### Patch Changes
+
+- #### Enable minification to reduce bundle size _[`#336`](https://github.com/yamcodes/arkenv/pull/336) [`7236cb2`](https://github.com/yamcodes/arkenv/commit/7236cb25de07f7afcc571dd3364b1507544de523) [@yamcodes](https://github.com/yamcodes)_
+
+  Enable minification in build output. Reduces bundle size from 711 B to 708 B. Comments are removed from the bundle but remain in source files.
+
+- #### Fix browser compatibility by replacing `util.styleText` with cross-platform ANSI codes _[`#290`](https://github.com/yamcodes/arkenv/pull/290) [`bf465de`](https://github.com/yamcodes/arkenv/commit/bf465dee26cd20619455bcc77f66424ca48da0fe) [@yamcodes](https://github.com/yamcodes)_
+
+  Replace Node.js `util.styleText` with cross-platform ANSI color codes to fix the "Module 'node:util' has been externalized for browser compatibility" error in browser environments. The library still maintains zero dependencies!
+
+  **Changes:**
+
+  - Replaced `node:util.styleText` with custom ANSI implementation
+  - Added environment detection (uses ANSI in Node, plain text in browsers)
+  - Respects `NO_COLOR`, `CI` environment variables, and TTY detection
+  - Organized utilities into `lib/` folder with comprehensive tests
+
+  ```ts
+  // No longer throws "node:util has been externalized" error
+  import { createEnv } from "arkenv";
+
+  const env = createEnv({
+    VITE_API_URL: "string",
+    VITE_PORT: "number.port",
+  });
+  ```
+
 ## 0.7.3
 
 ### Patch Changes

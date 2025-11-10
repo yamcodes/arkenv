@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "0.7.3",
+	"version": "0.7.4",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -13,6 +13,7 @@
 	},
 	"scripts": {
 		"build": "tsdown",
+		"size": "size-limit",
 		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
@@ -39,14 +40,24 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@ark/schema": "^0.53.0",
+		"@ark/schema": "0.53.0",
+		"@size-limit/esbuild-why": "11.2.0",
+		"@size-limit/preset-small-lib": "11.2.0",
 		"@types/node": "24.10.0",
-		"arktype": "^2.1.25",
-		"tsdown": "^0.15.12",
-		"typescript": "^5.9.3",
-		"vitest": "^3.2.4"
+		"arktype": "2.1.25",
+		"size-limit": "11.2.0",
+		"tsdown": "0.15.12",
+		"typescript": "5.9.3",
+		"vitest": "4.0.8"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"
-	}
+	},
+	"size-limit": [
+		{
+			"path": "dist/index.js",
+			"limit": "2 kB",
+			"import": "*"
+		}
+	]
 }

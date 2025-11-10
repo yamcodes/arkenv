@@ -1,4 +1,10 @@
 {
+	"settings": {
+		"files.associations": {
+			"turbo.json": "jsonc",
+			".github/renovate.json": "jsonc"
+		}
+	},
 	"folders": [
 		{
 			"path": ".",

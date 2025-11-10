@@ -7,7 +7,8 @@
 		"dev": "bun --bun --hot src/index.tsx",
 		"start": "NODE_ENV=production bun src/index.tsx",
 		"build": "bun run build.ts",
-		"fix": "pnpm -w run fix"
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"@radix-ui/react-label": "^2.1.7",
@@ -15,10 +16,10 @@
 		"@radix-ui/react-slot": "^1.2.3",
 		"arkenv": "^0.7.1",
 		"arktype": "^2.1.22",
-		"bun-plugin-tailwind": "^0.0.15",
+		"bun-plugin-tailwind": "^0.1.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"lucide-react": "^0.525.0",
+		"lucide-react": "^0.552.0",
 		"react": "^19",
 		"react-dom": "^19",
 		"tailwind-merge": "^3.3.1",

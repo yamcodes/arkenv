@@ -1,0 +1,53 @@
+name: "size-limit"
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/**"
+jobs:
+  changes:
+    if: github.repository == 'yamcodes/arkenv'
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            packages:
+              - 'packages/**'
+
+  size-limit:
+    if: github.repository == 'yamcodes/arkenv' && needs.changes.outputs.packages == 'true'
+    needs: changes
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run size-limit checks
+        uses: ./.github/actions/size-limit
+        with:
+          github_token: ${{ steps.generate-token.outputs.token }}
+          turbo_token: ${{ secrets.TURBO_TOKEN }}
+          turbo_team: ${{ vars.TURBO_TEAM }}
+          filter: "./packages/*"

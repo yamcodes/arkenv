@@ -5,14 +5,15 @@
 	"scripts": {
 		"dev": "tsx watch --env-file .env index.ts",
 		"start": "tsx --env-file .env index.ts",
-		"fix": "pnpm -w run fix"
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"arkenv": "workspace:*",
-		"arktype": "^2.1.25"
+		"arktype": "2.1.25"
 	},
 	"devDependencies": {
 		"@types/node": "24.10.0",
-		"tsx": "^4.20.6"
+		"tsx": "4.20.6"
 	}
 }

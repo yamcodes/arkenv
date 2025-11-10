@@ -3,6 +3,10 @@ import { createEnv } from "./create-env";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 
+// Helper to strip ANSI color codes (ESC character code 27)
+const stripAnsi = (str: string) =>
+	str.replace(new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g"), "");
+
 describe("createEnv + type + errors + utils integration", () => {
 	afterEach(() => {
 		vi.unstubAllEnvs();
@@ -127,12 +131,14 @@ describe("createEnv + type + errors + utils integration", () => {
 				expect(errorLine).toBeDefined();
 				// Indented lines should start with spaces (from indent function, default is 2 spaces)
 				if (errorLine) {
+					// Strip ANSI codes for testing
+					const strippedLine = stripAnsi(errorLine);
 					// Check that the line contains PORT
-					expect(errorLine).toContain("PORT");
+					expect(strippedLine).toContain("PORT");
 					// Check that the line starts with leading spaces (indentation)
-					expect(errorLine).toMatch(/^\s+PORT/);
+					expect(strippedLine).toMatch(/^\s+PORT/);
 					// Verify it has at least 2 spaces (default indent amount)
-					expect(errorLine.startsWith("  ")).toBe(true);
+					expect(strippedLine.startsWith("  ")).toBe(true);
 				}
 			}
 		});

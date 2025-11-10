@@ -13,7 +13,8 @@
 		"fix:unsafe": "biome check --write --unsafe . && manypkg fix",
 		"check": "biome check && manypkg check",
 		"check:errors": "biome check --diagnostic-level=error",
-		"clean": "rimraf dist node_modules",
+		"clean": "turbo run root:clean clean",
+		"root:clean": "rimraf dist node_modules",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:e2e": "turbo run test:e2e",
@@ -21,19 +22,20 @@
 		"test:e2e:report": "turbo run test:e2e:report",
 		"test:e2e:ui": "turbo run test:e2e:ui",
 		"test:e2e:update": "turbo run test:e2e:update",
-		"changeset": "changeset"
+		"changeset": "changeset",
+		"size": "turbo run size"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.2",
-		"@changesets/cli": "^2.29.7",
-		"@manypkg/cli": "^0.25.1",
-		"@playwright/test": "^1.56.1",
-		"@vitest/ui": "^3.2.4",
-		"changesets-changelog-clean": "^1.3.0",
-		"rimraf": "^6.1.0",
-		"turbo": "^2.6.0",
-		"typescript": "^5.9.3",
-		"vitest": "^3.2.4"
+		"@biomejs/biome": "2.3.4",
+		"@changesets/cli": "2.29.7",
+		"@manypkg/cli": "0.25.1",
+		"@playwright/test": "1.56.1",
+		"@vitest/ui": "4.0.8",
+		"changesets-changelog-clean": "1.3.0",
+		"rimraf": "6.1.0",
+		"turbo": "2.6.0",
+		"typescript": "5.9.3",
+		"vitest": "4.0.8"
 	},
 	"packageManager": "pnpm@10.20.0",
 	"pnpm": {

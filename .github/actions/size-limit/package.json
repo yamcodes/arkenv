@@ -1,0 +1,17 @@
+{
+	"name": "size-limit-action",
+	"version": "1.0.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"packageManager": "bun@1.2.22",
+	"dependencies": {
+		"arkregex": "0.0.2",
+		"typescript": "5.9.3"
+	}
+}
