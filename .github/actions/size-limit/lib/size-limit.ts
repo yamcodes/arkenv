@@ -71,31 +71,19 @@ export const runSizeLimitOnPackage = async (
 		return [];
 	}
 
-	// Create a temporary package.json with size-limit config and dependencies
-	// We need to preserve the package name, main/module fields, and dependencies for size-limit to work
-	// Also need to include the preset in devDependencies so size-limit can find it
-	// Include peerDependencies as regular dependencies since npm install won't install them automatically
-	// Mark Node.js built-ins as external to avoid bundling errors
-	// esbuild's external option accepts string patterns, so we use "node:*" to match all Node.js built-ins
+	// For Node.js built-ins (node:util, etc.), esbuild needs platform: 'node' to handle them
+	// The preset-small-lib uses esbuild, and we can try configuring it through the size-limit config
+	// by adding an 'esbuild' property, or by creating an esbuild.config.js file as fallback
 	const enhancedSizeLimitConfig = Array.isArray(sizeLimitConfig)
 		? sizeLimitConfig.map((config) => {
-				const existingExternal = Array.isArray(config.external)
-					? config.external
-					: config.external
-						? [config.external]
-						: [];
-				// Check if node:* is already in external list
-				const hasNodeExternal = existingExternal.some(
-					(ext: string | RegExp) =>
-						ext === "node:*" ||
-						(ext instanceof RegExp && ext.source === "^node:"),
-				);
+				// Try adding esbuild config to tell it to bundle for Node.js
+				// This makes Node.js built-ins like node:util available during bundling
 				return {
 					...config,
-					// Mark Node.js built-ins as external (they start with "node:")
-					external: hasNodeExternal
-						? existingExternal
-						: [...existingExternal, "node:*"],
+					esbuild: {
+						platform: "node",
+						external: [/^node:/],
+					},
 				};
 			})
 		: sizeLimitConfig;
@@ -134,6 +122,19 @@ export const runSizeLimitOnPackage = async (
 		fs.copyFile(tempPackageJsonPath, packageJsonPath),
 	);
 
+	// For Node.js built-ins (node:util, etc.), esbuild needs platform: 'node' to handle them
+	// We'll set this via environment variable and also create an esbuild.config.js file
+	// as a fallback in case the preset reads it
+	const esbuildConfigPath = join(packageDir, "esbuild.config.js");
+	const esbuildConfig = `module.exports = {
+  platform: 'node',
+  external: [/^node:/],
+};
+`;
+	await import("node:fs/promises").then((fs) =>
+		fs.writeFile(esbuildConfigPath, esbuildConfig),
+	);
+
 	try {
 		// Install all dependencies (production + dev) from package.json
 		// This includes both the package's dependencies (needed for bundling) and size-limit plugins
@@ -157,11 +158,17 @@ export const runSizeLimitOnPackage = async (
 		}
 
 		// Run size-limit on this package
+		// Set ESBUILD_PLATFORM=node environment variable to tell esbuild to bundle for Node.js
+		// This makes Node.js built-ins like node:util available during bundling
 		console.log(`🔍 Running size-limit on ${packageName}...`);
 		const proc = spawn(["npx", "--yes", "size-limit", "--json"], {
 			cwd: packageDir,
 			stdout: "pipe",
 			stderr: "pipe",
+			env: {
+				...process.env,
+				ESBUILD_PLATFORM: "node",
+			},
 		});
 
 		const [stdout, stderr] = await Promise.all([
@@ -176,11 +183,12 @@ export const runSizeLimitOnPackage = async (
 			fs.copyFile(originalPackageJsonPath, packageJsonPath),
 		);
 
-		// Clean up temp files
+		// Clean up temp files and esbuild config
 		await import("node:fs/promises").then((fs) =>
 			Promise.all([
 				fs.unlink(tempPackageJsonPath).catch(() => {}),
 				fs.unlink(originalPackageJsonPath).catch(() => {}),
+				fs.unlink(esbuildConfigPath).catch(() => {}),
 			]),
 		);
 
@@ -227,6 +235,16 @@ export const runSizeLimitOnPackage = async (
 			);
 		} catch {
 			// Ignore restore errors
+		}
+
+		// Clean up esbuild config on error
+		try {
+			const esbuildConfigPath = join(packageDir, "esbuild.config.js");
+			await import("node:fs/promises").then((fs) =>
+				fs.unlink(esbuildConfigPath).catch(() => {}),
+			);
+		} catch {
+			// Ignore cleanup errors
 		}
 
 		console.log(
