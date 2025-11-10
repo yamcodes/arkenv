@@ -5,7 +5,8 @@
 			"cache": false
 		},
 		"//#root:clean": {
-			"cache": false
+			"cache": false,
+			"dependsOn": ["^clean"]
 		},
 		"build": {
 			"dependsOn": ["^build"],
