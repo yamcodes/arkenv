@@ -156,7 +156,7 @@ const parseSizeLimitOutput = (
 
 		// Match "Size limit: X kB" or "Limit: X kB"
 		const limitMatch = message.match(
-			/(?:Size\s+limit|Limit):\s+([0-9.]+\s*[kK]?[bB])/i,
+			/(?:Size\s+limit|Limit):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (limitMatch?.[1]) {
 			currentLimit = limitMatch[1];
@@ -164,7 +164,7 @@ const parseSizeLimitOutput = (
 
 		// Match "Size: X kB" or just "X kB" when in context
 		const sizeMatch = message.match(
-			/(?:Size|Size is):\s+([0-9.]+\s*[kK]?[bB])/i,
+			/(?:Size|Size is):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (sizeMatch?.[1]) {
 			currentSize = sizeMatch[1];
@@ -172,7 +172,7 @@ const parseSizeLimitOutput = (
 
 		// Match table format: "package  size  limit" (space-separated)
 		const tableMatch = message.match(
-			/^([@a-z0-9][@a-z0-9/_-]*)\s+([0-9.]+\s*[kK]?[bB])\s+([0-9.]+\s*[kK]?[bB])/i,
+			/^([@a-z0-9][@a-z0-9/_-]*)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (tableMatch?.[1] && tableMatch?.[2] && tableMatch?.[3]) {
 			const pkgName = normalizePackageName(tableMatch[1]);
@@ -183,7 +183,7 @@ const parseSizeLimitOutput = (
 
 		// Match direct size-limit output format: "dist/index.js: 1.2 kB (limit: 2 kB)"
 		const directMatch = message.match(
-			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*[kK]?[bB])\s*\(limit:\s*([0-9.]+\s*[kK]?[bB])\)/i,
+			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
 		);
 		if (directMatch?.[1] && directMatch?.[2] && directMatch?.[3]) {
 			currentFile = directMatch[1];
@@ -193,7 +193,7 @@ const parseSizeLimitOutput = (
 
 		// Match format: "X kB of Y kB" or "X kB / Y kB"
 		const sizeLimitMatch = message.match(
-			/([0-9.]+\s*[kK]?[bB])\s+(?:of|\/)\s+([0-9.]+\s*[kK]?[bB])/i,
+			/([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+(?:of|\/)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (sizeLimitMatch?.[1] && sizeLimitMatch?.[2]) {
 			currentSize = sizeLimitMatch[1];
@@ -262,7 +262,7 @@ const parseSizeLimitOutput = (
 
 		// Try to parse direct size-limit output (not wrapped by Turbo)
 		// Look for lines that contain size information even without Turbo prefix
-		if (strippedLine.match(/[0-9.]+\s*[kK]?[bB]/)) {
+		if (strippedLine.match(/[0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB])/i)) {
 			// Try to extract package name from context (e.g., "> arkenv@0.7.3 size")
 			const pkgContextMatch = strippedLine.match(
 				/>\s*([@a-z0-9][@a-z0-9/_-]*)@/i,
