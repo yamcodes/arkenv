@@ -14,18 +14,41 @@ interface SizeLimitResult {
 
 type SizeInBytes = number;
 
-// Convert size string (e.g., "711 B", "1.2 kB") to bytes
+// Convert size string (e.g., "711 B", "1.2 kB", "5 MB", "2.5 GiB") to bytes
 const parseSizeToBytes = (sizeStr: string): SizeInBytes => {
-	const match = sizeStr.match(/^([0-9.]+)\s*([kK]?[bB])$/);
+	// Match number and optional unit (case-insensitive)
+	const match = sizeStr.match(/^([0-9.]+)\s*([a-z]*)$/i);
 	if (!match) {
 		return 0;
 	}
+
 	const value = Number.parseFloat(match[1]);
 	const unit = match[2].toLowerCase();
-	if (unit === "kb" || unit === "k") {
-		return value * 1024;
+
+	// Handle bytes (no unit or just 'b')
+	if (!unit || unit === "b") {
+		return value;
 	}
-	return value;
+
+	// Map units to multipliers (using 1024-based)
+	const multipliers: Record<string, number> = {
+		k: 1024 ** 1,
+		kb: 1024 ** 1,
+		kib: 1024 ** 1,
+		m: 1024 ** 2,
+		mb: 1024 ** 2,
+		mib: 1024 ** 2,
+		g: 1024 ** 3,
+		gb: 1024 ** 3,
+		gib: 1024 ** 3,
+	};
+
+	const multiplier = multipliers[unit];
+	if (multiplier === undefined) {
+		return 0;
+	}
+
+	return value * multiplier;
 };
 
 // Calculate percentage difference
