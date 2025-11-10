@@ -176,13 +176,18 @@ if (results.length === 0) {
 	result = "```\nNo results found\n```";
 	console.log("⚠️ Could not parse size-limit output");
 } else {
+	// Log file information to console (not included in GitHub comment)
+	for (const r of results) {
+		console.log(`📦 ${r.package} → ${r.file}: ${r.size} (limit: ${r.limit})`);
+	}
+
 	const tableRows = results
 		.map(
 			(r) =>
-				`| \`${r.package}\` | \`${r.file}\` | ${r.size} | ${r.limit} | ${r.diff ?? "—"} | ${r.status} |`,
+				`| \`${r.package}\` | ${r.size} | ${r.limit} | ${r.diff ?? "—"} | ${r.status} |`,
 		)
 		.join("\n");
-	result = `| Package | File | Size | Limit | Diff | Status |\n|---------|------|------|-------|------|--------|\n${tableRows}`;
+	result = `| Package | Size | Limit | Diff | Status |\n|---------|------|-------|------|--------|\n${tableRows}`;
 }
 
 // Set GitHub outputs
