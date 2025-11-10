@@ -75,6 +75,31 @@ export const runSizeLimitOnPackage = async (
 	// We need to preserve the package name, main/module fields, and dependencies for size-limit to work
 	// Also need to include the preset in devDependencies so size-limit can find it
 	// Include peerDependencies as regular dependencies since npm install won't install them automatically
+	// Mark Node.js built-ins as external to avoid bundling errors
+	// esbuild's external option accepts string patterns, so we use "node:*" to match all Node.js built-ins
+	const enhancedSizeLimitConfig = Array.isArray(sizeLimitConfig)
+		? sizeLimitConfig.map((config) => {
+				const existingExternal = Array.isArray(config.external)
+					? config.external
+					: config.external
+						? [config.external]
+						: [];
+				// Check if node:* is already in external list
+				const hasNodeExternal = existingExternal.some(
+					(ext: string | RegExp) =>
+						ext === "node:*" ||
+						(ext instanceof RegExp && ext.source === "^node:"),
+				);
+				return {
+					...config,
+					// Mark Node.js built-ins as external (they start with "node:")
+					external: hasNodeExternal
+						? existingExternal
+						: [...existingExternal, "node:*"],
+				};
+			})
+		: sizeLimitConfig;
+
 	const tempPackageJson = {
 		name: packageJson.name,
 		version: packageJson.version,
@@ -84,7 +109,7 @@ export const runSizeLimitOnPackage = async (
 			...(packageJson.dependencies || {}),
 			...(packageJson.peerDependencies || {}),
 		},
-		"size-limit": sizeLimitConfig,
+		"size-limit": enhancedSizeLimitConfig,
 		devDependencies: {
 			"size-limit": "11.2.0",
 			"@size-limit/preset-small-lib": "11.2.0",
