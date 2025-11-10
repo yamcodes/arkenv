@@ -294,9 +294,15 @@ importers:
         specifier: workspace:*
         version: link:../arkenv
     devDependencies:
+      '@size-limit/preset-small-lib':
+        specifier: 11.2.0
+        version: 11.2.0(size-limit@11.2.0)
       arktype:
         specifier: 2.1.25
         version: 2.1.25
+      size-limit:
+        specifier: 11.2.0
+        version: 11.2.0
       tsdown:
         specifier: 0.15.12
         version: 0.15.12(typescript@5.9.3)
