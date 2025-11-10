@@ -37,6 +37,75 @@ export const runSizeLimitOnPackage = async (
 		return [];
 	}
 
+	// Enhance size-limit config to mark Node.js built-in modules as external
+	// This prevents bundling errors when size-limit tries to bundle Node.js built-in modules
+	const enhancedSizeLimitConfig = sizeLimitConfig.map((config) => {
+		// If webpack is already configured, preserve it
+		if (config.webpack !== undefined) {
+			return config;
+		}
+
+		// For Node.js packages, configure esbuild to mark Node.js built-in modules as external
+		// This prevents esbuild from trying to bundle node:path, node:fs, etc.
+		// size-limit uses esbuild when webpack: false, and we can configure externals
+		const nodeBuiltinModules = [
+			"assert",
+			"async_hooks",
+			"buffer",
+			"child_process",
+			"cluster",
+			"console",
+			"constants",
+			"crypto",
+			"dgram",
+			"diagnostics_channel",
+			"dns",
+			"domain",
+			"events",
+			"fs",
+			"http",
+			"http2",
+			"https",
+			"inspector",
+			"module",
+			"net",
+			"os",
+			"path",
+			"perf_hooks",
+			"process",
+			"punycode",
+			"querystring",
+			"readline",
+			"repl",
+			"stream",
+			"string_decoder",
+			"sys",
+			"timers",
+			"tls",
+			"trace_events",
+			"tty",
+			"url",
+			"util",
+			"v8",
+			"vm",
+			"worker_threads",
+			"zlib",
+		];
+
+		return {
+			...config,
+			webpack: false, // Use esbuild instead of webpack
+			// Configure esbuild to mark Node.js built-in modules as external
+			// This tells esbuild not to try to bundle these modules
+			// size-limit passes this to esbuild's external option
+			ignore: [
+				...(Array.isArray(config.ignore) ? config.ignore : []),
+				...nodeBuiltinModules.map((m) => `node:${m}`),
+				...nodeBuiltinModules,
+			],
+		};
+	});
+
 	// Create a temporary package.json with size-limit config and dependencies
 	// We need to preserve the package name, main/module fields, and dependencies for size-limit to work
 	// Also need to include the preset in devDependencies so size-limit can find it
@@ -50,7 +119,7 @@ export const runSizeLimitOnPackage = async (
 			...(packageJson.dependencies || {}),
 			...(packageJson.peerDependencies || {}),
 		},
-		"size-limit": sizeLimitConfig,
+		"size-limit": enhancedSizeLimitConfig,
 		devDependencies: {
 			"size-limit": "11.2.0",
 			"@size-limit/preset-small-lib": "11.2.0",
@@ -125,18 +194,11 @@ export const runSizeLimitOnPackage = async (
 			]),
 		);
 
-		if (exitCode !== 0) {
-			console.log(
-				`⚠️ size-limit failed for ${packageName}: ${stderr || stdout}`,
-			);
-			return [];
-		}
-
-		// Parse JSON output from size-limit
+		// Try to parse JSON output even if exit code is non-zero
+		// size-limit can return valid JSON with passed: false when limits are exceeded
+		let results: SizeLimitResult[] = [];
 		try {
 			const sizeLimitOutput = JSON.parse(stdout);
-			const results: SizeLimitResult[] = [];
-
 			if (Array.isArray(sizeLimitOutput)) {
 				for (const item of sizeLimitOutput) {
 					if (item.name && item.size !== undefined) {
@@ -151,15 +213,39 @@ export const runSizeLimitOnPackage = async (
 					}
 				}
 			}
-
-			return results;
 		} catch (parseError) {
-			// Fallback to parsing text output if JSON fails
+			// If JSON parsing fails, try text parsing
 			console.log(
 				`⚠️ Failed to parse JSON output, trying text parsing: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
 			);
-			return parseSizeLimitOutput(stdout + stderr, packageName);
+			results = parseSizeLimitOutput(stdout + stderr, packageName);
 		}
+
+		// If we have results, return them even if exit code is non-zero
+		// This allows us to use size data from failed checks for baseline comparison
+		if (results.length > 0) {
+			if (exitCode !== 0) {
+				console.log(
+					`⚠️ size-limit failed for ${packageName} (exit code: ${exitCode}), but extracted ${results.length} result(s) for baseline comparison`,
+				);
+				// Log the results for debugging
+				for (const result of results) {
+					console.log(
+						`  - ${result.package}:${result.file}: ${result.size} (limit: ${result.limit}, status: ${result.status})`,
+					);
+				}
+			}
+			return results;
+		}
+
+		// If we have no results and exit code is non-zero, log the error
+		if (exitCode !== 0) {
+			console.log(
+				`⚠️ size-limit failed for ${packageName}: ${stderr || stdout}`,
+			);
+		}
+
+		return [];
 	} catch (error) {
 		// Restore original package.json on error
 		try {
