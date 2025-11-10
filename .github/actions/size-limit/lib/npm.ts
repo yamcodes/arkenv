@@ -172,7 +172,9 @@ export const getBaselineSizesFromNpm = async (
 				const key = `${result.package}:${result.file}`;
 				const sizeBytes = parseSizeToBytes(result.size);
 				baselineMap.set(key, sizeBytes);
-				console.log(`✅ Baseline for ${key}: ${sizeBytes} bytes`);
+				console.log(
+					`✅ Baseline for ${key}: ${sizeBytes} bytes (from size-limit output: ${result.size})`,
+				);
 			}
 		}
 
