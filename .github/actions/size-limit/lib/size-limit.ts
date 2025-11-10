@@ -72,13 +72,14 @@ export const runSizeLimitOnPackage = async (
 	}
 
 	// Create a temporary package.json with size-limit config and dependencies
-	// We need to preserve the package name and main/module fields for size-limit to work
-	// Also need to include the preset in dependencies so size-limit can find it
+	// We need to preserve the package name, main/module fields, and dependencies for size-limit to work
+	// Also need to include the preset in devDependencies so size-limit can find it
 	const tempPackageJson = {
 		name: packageJson.name,
 		version: packageJson.version,
 		main: packageJson.main,
 		module: packageJson.module,
+		dependencies: packageJson.dependencies || {},
 		"size-limit": sizeLimitConfig,
 		devDependencies: {
 			"size-limit": "11.2.0",
@@ -105,8 +106,9 @@ export const runSizeLimitOnPackage = async (
 	);
 
 	try {
-		// Install dependencies from package.json (which now includes size-limit and preset)
-		console.log(`📦 Installing size-limit dependencies for ${packageName}...`);
+		// Install all dependencies (production + dev) from package.json
+		// This includes both the package's dependencies (needed for bundling) and size-limit plugins
+		console.log(`📦 Installing dependencies for ${packageName}...`);
 		const installProc = spawn(["npm", "install"], {
 			cwd: packageDir,
 			stdout: "pipe",
@@ -120,7 +122,7 @@ export const runSizeLimitOnPackage = async (
 				new Response(installProc.stderr).text(),
 			]);
 			console.log(
-				`⚠️ Failed to install size-limit dependencies: ${installStderr || installStdout}`,
+				`⚠️ Failed to install dependencies: ${installStderr || installStdout}`,
 			);
 			// Continue anyway - npx might still work
 		}

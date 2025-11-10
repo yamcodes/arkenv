@@ -49,10 +49,10 @@ export const downloadNpmPackage = async (
 		}
 
 		// Construct tarball URL
-		// For scoped packages: @scope/name -> @scope/name/-/scope-name-version.tgz
-		// For unscoped packages: name -> name/-/name-version.tgz
+		// For scoped packages: @scope/name -> name-version.tgz (e.g., @arkenv/vite-plugin -> vite-plugin-0.0.14.tgz)
+		// For unscoped packages: name -> name-version.tgz
 		const tarballName = packageName.startsWith("@")
-			? `${packageName.slice(1).replace("/", "-")}-${version}.tgz`
+			? `${packageName.split("/")[1]}-${version}.tgz`
 			: `${packageName}-${version}.tgz`;
 		const tarballUrl = `https://registry.npmjs.org/${packageName}/-/${tarballName}`;
 
