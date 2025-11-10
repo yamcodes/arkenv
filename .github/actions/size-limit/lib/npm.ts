@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { spawn } from "bun";
 import type { SizeInBytes } from "../types.ts";
@@ -49,8 +49,8 @@ export const downloadNpmPackage = async (
 		}
 
 		// Construct tarball URL
-		// For scoped packages: @scope/name -> scope-name-version.tgz
-		// For unscoped packages: name -> name-version.tgz
+		// For scoped packages: @scope/name -> @scope/name/-/scope-name-version.tgz
+		// For unscoped packages: name -> name/-/name-version.tgz
 		const tarballName = packageName.startsWith("@")
 			? `${packageName.slice(1).replace("/", "-")}-${version}.tgz`
 			: `${packageName}-${version}.tgz`;
@@ -72,15 +72,12 @@ export const downloadNpmPackage = async (
 		}
 
 		// Extract tarball
+		// npm tarballs have a "package" directory inside, so we extract to temp first
+		const tempExtractDir = join(targetDir, "temp-extract");
+		mkdirSync(tempExtractDir, { recursive: true });
+
 		const extractProc = spawn(
-			[
-				"tar",
-				"-xzf",
-				join(targetDir, "package.tgz"),
-				"-C",
-				targetDir,
-				"--strip-components=1",
-			],
+			["tar", "-xzf", join(targetDir, "package.tgz"), "-C", tempExtractDir],
 			{
 				stdout: "pipe",
 				stderr: "pipe",
@@ -89,8 +86,41 @@ export const downloadNpmPackage = async (
 
 		const extractExitCode = await extractProc.exited;
 		if (extractExitCode !== 0) {
-			console.log(`⚠️ Failed to extract ${packageName}@${version}`);
+			const [extractStdout, extractStderr] = await Promise.all([
+				new Response(extractProc.stdout).text(),
+				new Response(extractProc.stderr).text(),
+			]);
+			console.log(
+				`⚠️ Failed to extract ${packageName}@${version}: ${extractStderr || extractStdout}`,
+			);
 			return false;
+		}
+
+		// Move contents from package/ subdirectory to targetDir
+		const packageSubdir = join(tempExtractDir, "package");
+		if (existsSync(packageSubdir)) {
+			// Use cp to copy all contents, then remove temp dir
+			const moveProc = spawn(
+				[
+					"sh",
+					"-c",
+					`cp -r ${packageSubdir}/* ${targetDir}/ && cp -r ${packageSubdir}/.[!.]* ${targetDir}/ 2>/dev/null || true`,
+				],
+				{
+					stdout: "pipe",
+					stderr: "pipe",
+				},
+			);
+			await moveProc.exited;
+		}
+
+		// Clean up temp extract dir and tarball
+		if (existsSync(tempExtractDir)) {
+			rmSync(tempExtractDir, { recursive: true, force: true });
+		}
+		const tarballPath = join(targetDir, "package.tgz");
+		if (existsSync(tarballPath)) {
+			rmSync(tarballPath, { force: true });
 		}
 
 		return true;
@@ -153,11 +183,34 @@ export const getBaselineSizesFromNpm = async (
 				continue;
 			}
 
+			// Get size-limit config from current workspace (npm packages don't include it)
+			let sizeLimitConfigFromWorkspace: unknown;
+			try {
+				// Try to find the package in the workspace
+				const workspacePackageJsonPath = join(
+					process.cwd(),
+					"packages",
+					packageName.replace("@arkenv/", ""),
+					"package.json",
+				);
+				if (existsSync(workspacePackageJsonPath)) {
+					const workspacePackageJson = JSON.parse(
+						readFileSync(workspacePackageJsonPath, "utf-8"),
+					);
+					sizeLimitConfigFromWorkspace = workspacePackageJson["size-limit"];
+				}
+			} catch (error) {
+				console.log(
+					`⚠️ Could not read workspace package.json for ${packageName}: ${error instanceof Error ? error.message : String(error)}`,
+				);
+			}
+
 			// Run size-limit on the downloaded package to get accurate baseline
 			console.log(`🔍 Running size-limit on ${packageName}@${version}...`);
 			const sizeLimitResults = await runSizeLimitOnPackage(
 				packageDir,
 				packageName,
+				sizeLimitConfigFromWorkspace,
 			);
 
 			if (sizeLimitResults.length === 0) {
