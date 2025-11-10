@@ -457,6 +457,18 @@ if (isPR) {
 			"⚠️ Failed to reinstall dependencies, size check may be inaccurate",
 		);
 	}
+
+	// Rebuild project to clear base branch artifacts before size check
+	console.log("🔨 Rebuilding project for current branch...");
+	const rebuildProc = spawn(["pnpm", "run", "build", "--filter", filter], {
+		stdout: "pipe",
+		stderr: "pipe",
+	});
+	const rebuildExitCode = await rebuildProc.exited;
+	if (rebuildExitCode !== 0) {
+		console.error("❌ Failed to rebuild project, size check may be inaccurate");
+		process.exit(1);
+	}
 }
 
 // Run size-limit on current branch
