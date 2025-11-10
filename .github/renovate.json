@@ -2,7 +2,7 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:recommended"],
 	"ignorePaths": ["**/node_modules/**"],
-	"schedule": ["every friday"],
+	"schedule": ["on friday"],
 	"vulnerabilityAlerts": {
 		"enabled": true
 	},
