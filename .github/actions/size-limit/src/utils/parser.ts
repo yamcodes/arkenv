@@ -1,6 +1,6 @@
 import { regex } from "arkregex";
+import { getFilenameFromConfig } from "../package/names.ts";
 import type { SizeLimitResult } from "../types.ts";
-import { getFilenameFromConfig } from "./package.ts";
 
 // Function to parse size-limit output
 export const parseSizeLimitOutput = (

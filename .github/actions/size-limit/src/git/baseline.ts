@@ -1,7 +1,7 @@
 import { spawn } from "bun";
+import { runSizeLimit } from "../size-limit/run.ts";
 import type { SizeInBytes } from "../types.ts";
 import { parseSizeToBytes } from "../utils/size.ts";
-import { runSizeLimit } from "./size-limit.ts";
 
 // Function to get baseline sizes from base branch
 export const getBaselineSizes = async (

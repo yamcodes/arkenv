@@ -37,7 +37,7 @@ runs:
         INPUT_HEAD_BRANCH: ${{ github.event.pull_request.head.ref || '' }}
         GITHUB_EVENT_NAME: ${{ github.event_name }}
       run: |
-        bun ${{ github.action_path }}/run-size-check.ts
+        bun ${{ github.action_path }}/src/index.ts
     - name: Comment PR
       if: github.event_name == 'pull_request' && steps.size-check.outputs.packages_changed == 'true'
       uses: actions/github-script@v8
