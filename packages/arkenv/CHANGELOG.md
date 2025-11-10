@@ -1,5 +1,13 @@
 # ArkEnv
 
+## 0.7.5
+
+### Patch Changes
+
+- #### Add declaration maps for better IDE experience _[`#360`](https://github.com/yamcodes/arkenv/pull/360) [`17c970f`](https://github.com/yamcodes/arkenv/commit/17c970fb6d8ac433669e9d42c21b5ce6002066dd) [@yamcodes](https://github.com/yamcodes)_
+
+  Enable TypeScript declaration maps so that when you use "Go to Definition" in your IDE, it navigates directly to the original source code instead of the generated type definition files. This makes it easier to explore and understand how the packages work.
+
 ## 0.7.4
 
 ### Patch Changes

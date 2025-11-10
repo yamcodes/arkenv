@@ -1,5 +1,29 @@
 # @arkenv/vite-plugin
 
+## 0.0.16
+
+### Patch Changes
+
+- #### Add declaration maps for better IDE experience _[`#360`](https://github.com/yamcodes/arkenv/pull/360) [`17c970f`](https://github.com/yamcodes/arkenv/commit/17c970fb6d8ac433669e9d42c21b5ce6002066dd) [@yamcodes](https://github.com/yamcodes)_
+
+  Enable TypeScript declaration maps so that when you use "Go to Definition" in your IDE, it navigates directly to the original source code instead of the generated type definition files. This makes it easier to explore and understand how the packages work.
+
+- #### Enable minification to reduce bundle size _[`#353`](https://github.com/yamcodes/arkenv/pull/353) [`67003ee`](https://github.com/yamcodes/arkenv/commit/67003ee4c3628024d92059df57882f556090c0ab) [@yamcodes](https://github.com/yamcodes)_
+
+  Enable minification in build output. Comments are removed from the bundle but remain in source files.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`17c970f`](https://github.com/yamcodes/arkenv/commit/17c970fb6d8ac433669e9d42c21b5ce6002066dd)
+
+</small>
+
+- `arkenv@0.7.5`
+
+</details>
+
 ## 0.0.15
 
 ### Patch Changes

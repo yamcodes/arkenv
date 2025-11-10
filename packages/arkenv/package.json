@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "0.7.4",
+	"version": "0.7.5",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
