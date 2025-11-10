@@ -18,12 +18,12 @@ type SizeInBytes = number;
 const parseSizeToBytes = (sizeStr: string): SizeInBytes => {
 	// Match number and optional unit (case-insensitive)
 	const match = sizeStr.match(/^([0-9.]+)\s*([a-z]*)$/i);
-	if (!match) {
+	if (!match || !match[1]) {
 		return 0;
 	}
 
 	const value = Number.parseFloat(match[1]);
-	const unit = match[2].toLowerCase();
+	const unit = match[2]?.toLowerCase() ?? "";
 
 	// Handle bytes (no unit or just 'b')
 	if (!unit || unit === "b") {
@@ -442,6 +442,22 @@ console.log("🔍 Running size-limit checks for all packages...");
 
 // Get baseline sizes if in PR context
 const baselineSizes = isPR ? await getBaselineSizes(baseBranch) : new Map();
+
+// Reinstall dependencies for current branch after baseline check
+// (getBaselineSizes checks out base branch and overwrites node_modules)
+if (isPR) {
+	console.log("📦 Reinstalling dependencies for current branch...");
+	const reinstallProc = spawn(["pnpm", "install"], {
+		stdout: "pipe",
+		stderr: "pipe",
+	});
+	const reinstallExitCode = await reinstallProc.exited;
+	if (reinstallExitCode !== 0) {
+		console.log(
+			"⚠️ Failed to reinstall dependencies, size check may be inaccurate",
+		);
+	}
+}
 
 // Run size-limit on current branch
 const { results, hasErrors } = await runSizeLimit();
