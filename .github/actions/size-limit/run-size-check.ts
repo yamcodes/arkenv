@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 
-import { regex } from "arkregex";
-import { spawn } from "bun";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { regex } from "arkregex";
+import { spawn } from "bun";
 
 interface SizeLimitResult {
 	package: string;
