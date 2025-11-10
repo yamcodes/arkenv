@@ -42,7 +42,7 @@
 		{
 			// Group pnpm workspace updates (minor/patch) across selected dirs
 			"groupName": "pnpm",
-			"matchManagers": ["pnpm"],
+			"matchManagers": ["npm"],
 			"matchFileNames": [
 				"packages/**",
 				"apps/**",
@@ -54,7 +54,7 @@
 			"matchCurrentVersion": ">=1.0.0"
 		},
 		{
-			"groupName": "bun-action",
+			"groupName": "bun",
 			"matchManagers": ["bun"],
 			"matchFileNames": [
 				".github/actions/size-limit/package.json", // Bun script
