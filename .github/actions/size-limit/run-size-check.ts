@@ -20,7 +20,7 @@ const parseSizeToBytes = (sizeStr: string): SizeInBytes => {
 	if (!match) {
 		return 0;
 	}
-	const value = parseFloat(match[1]);
+	const value = Number.parseFloat(match[1]);
 	const unit = match[2].toLowerCase();
 	if (unit === "kb" || unit === "k") {
 		return value * 1024;
@@ -124,7 +124,9 @@ const parseSizeLimitOutput = (
 			return;
 		}
 
-		const fileMatch = message.match(/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts))/i);
+		const fileMatch = message.match(
+			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts))/i,
+		);
 		if (fileMatch?.[1]) {
 			currentFile = fileMatch[1];
 		}
@@ -138,7 +140,9 @@ const parseSizeLimitOutput = (
 		}
 
 		// Match "Size: X kB" or just "X kB" when in context
-		const sizeMatch = message.match(/(?:Size|Size is):\s+([0-9.]+\s*[kK]?[bB])/i);
+		const sizeMatch = message.match(
+			/(?:Size|Size is):\s+([0-9.]+\s*[kK]?[bB])/i,
+		);
 		if (sizeMatch?.[1]) {
 			currentSize = sizeMatch[1];
 		}
@@ -312,7 +316,9 @@ const getBaselineSizes = async (
 		const currentBranchProc = spawn(["git", "rev-parse", "HEAD"], {
 			stdout: "pipe",
 		});
-		const currentCommit = (await new Response(currentBranchProc.stdout).text()).trim();
+		const currentCommit = (
+			await new Response(currentBranchProc.stdout).text()
+		).trim();
 
 		// Check if base branch exists
 		const checkBranchProc = spawn(
@@ -322,7 +328,9 @@ const getBaselineSizes = async (
 		const checkBranchOutput = await new Response(checkBranchProc.stdout).text();
 
 		if (!checkBranchOutput.trim()) {
-			console.log(`⚠️ Base branch ${baseBranch} not found, skipping baseline comparison`);
+			console.log(
+				`⚠️ Base branch ${baseBranch} not found, skipping baseline comparison`,
+			);
 			return baselineMap;
 		}
 
@@ -335,7 +343,9 @@ const getBaselineSizes = async (
 		});
 		const fetchExitCode = await fetchProc.exited;
 		if (fetchExitCode !== 0) {
-			console.log(`⚠️ Failed to fetch ${baseBranch}, skipping baseline comparison`);
+			console.log(
+				`⚠️ Failed to fetch ${baseBranch}, skipping baseline comparison`,
+			);
 			return baselineMap;
 		}
 
@@ -346,7 +356,9 @@ const getBaselineSizes = async (
 		});
 		const checkoutExitCode = await checkoutProc.exited;
 		if (checkoutExitCode !== 0) {
-			console.log(`⚠️ Failed to checkout ${baseBranch}, skipping baseline comparison`);
+			console.log(
+				`⚠️ Failed to checkout ${baseBranch}, skipping baseline comparison`,
+			);
 			return baselineMap;
 		}
 
@@ -358,7 +370,9 @@ const getBaselineSizes = async (
 			});
 			const installExitCode = await installProc.exited;
 			if (installExitCode !== 0) {
-				console.log(`⚠️ Failed to install dependencies on ${baseBranch}, skipping baseline comparison`);
+				console.log(
+					`⚠️ Failed to install dependencies on ${baseBranch}, skipping baseline comparison`,
+				);
 				return baselineMap;
 			}
 
@@ -368,7 +382,9 @@ const getBaselineSizes = async (
 			});
 			const buildExitCode = await buildProc.exited;
 			if (buildExitCode !== 0) {
-				console.log(`⚠️ Failed to build on ${baseBranch}, skipping baseline comparison`);
+				console.log(
+					`⚠️ Failed to build on ${baseBranch}, skipping baseline comparison`,
+				);
 				return baselineMap;
 			}
 
@@ -422,7 +438,7 @@ for (const result of results) {
 // Create the table
 let result: string;
 if (results.length === 0) {
-	result = `\`\`\`\nNo results found\n\`\`\``;
+	result = "```\nNo results found\n```";
 	console.log("⚠️ Could not parse size-limit output");
 } else {
 	const tableRows = results
