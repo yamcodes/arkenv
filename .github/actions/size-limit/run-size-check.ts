@@ -1,6 +1,12 @@
 #!/usr/bin/env bun
 
-import { readFileSync, mkdirSync, rmSync, existsSync, readdirSync } from "node:fs";
+import {
+	existsSync,
+	mkdirSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+} from "node:fs";
 import { join } from "node:path";
 import { regex } from "arkregex";
 import { spawn } from "bun";
@@ -380,7 +386,7 @@ const runSizeLimit = async (): Promise<{
 // Function to get package names from filter
 const getPackageNames = (filter: string): string[] => {
 	const packages: string[] = [];
-	
+
 	// If filter is a wildcard, discover packages from packages directory
 	if (filter.includes("*")) {
 		try {
@@ -439,29 +445,31 @@ const getPackageNames = (filter: string): string[] => {
 			}
 		}
 	}
-	
+
 	return packages.length > 0 ? packages : [];
 };
 
 // Function to get latest version of a package from npm
-const getLatestVersion = async (packageName: string): Promise<string | null> => {
+const getLatestVersion = async (
+	packageName: string,
+): Promise<string | null> => {
 	try {
 		const proc = spawn(["npm", "view", packageName, "version"], {
 			stdout: "pipe",
 			stderr: "pipe",
 		});
-		
+
 		const [stdout, stderr] = await Promise.all([
 			new Response(proc.stdout).text(),
 			new Response(proc.stderr).text(),
 		]);
-		
+
 		const exitCode = await proc.exited;
 		if (exitCode !== 0) {
 			console.log(`⚠️ Failed to get version for ${packageName}: ${stderr}`);
 			return null;
 		}
-		
+
 		return stdout.trim();
 	} catch (error) {
 		console.log(
@@ -482,7 +490,7 @@ const downloadNpmPackage = async (
 		if (!existsSync(targetDir)) {
 			mkdirSync(targetDir, { recursive: true });
 		}
-		
+
 		// Construct tarball URL
 		// For scoped packages: @scope/name -> scope-name-version.tgz
 		// For unscoped packages: name -> name-version.tgz
@@ -490,44 +498,44 @@ const downloadNpmPackage = async (
 			? `${packageName.slice(1).replace("/", "-")}-${version}.tgz`
 			: `${packageName}-${version}.tgz`;
 		const tarballUrl = `https://registry.npmjs.org/${packageName}/-/${tarballName}`;
-		
+
 		console.log(`📦 Downloading ${packageName}@${version}...`);
-		const downloadProc = spawn([
-			"curl",
-			"-L",
-			"-o",
-			join(targetDir, "package.tgz"),
-			tarballUrl,
-		], {
-			stdout: "pipe",
-			stderr: "pipe",
-		});
-		
+		const downloadProc = spawn(
+			["curl", "-L", "-o", join(targetDir, "package.tgz"), tarballUrl],
+			{
+				stdout: "pipe",
+				stderr: "pipe",
+			},
+		);
+
 		const downloadExitCode = await downloadProc.exited;
 		if (downloadExitCode !== 0) {
 			console.log(`⚠️ Failed to download ${packageName}@${version}`);
 			return false;
 		}
-		
+
 		// Extract tarball
-		const extractProc = spawn([
-			"tar",
-			"-xzf",
-			join(targetDir, "package.tgz"),
-			"-C",
-			targetDir,
-			"--strip-components=1",
-		], {
-			stdout: "pipe",
-			stderr: "pipe",
-		});
-		
+		const extractProc = spawn(
+			[
+				"tar",
+				"-xzf",
+				join(targetDir, "package.tgz"),
+				"-C",
+				targetDir,
+				"--strip-components=1",
+			],
+			{
+				stdout: "pipe",
+				stderr: "pipe",
+			},
+		);
+
 		const extractExitCode = await extractProc.exited;
 		if (extractExitCode !== 0) {
 			console.log(`⚠️ Failed to extract ${packageName}@${version}`);
 			return false;
 		}
-		
+
 		return true;
 	} catch (error) {
 		console.log(
@@ -542,22 +550,24 @@ const getBaselineSizesFromNpm = async (
 	filter: string,
 ): Promise<Map<string, SizeInBytes>> => {
 	const baselineMap = new Map<string, SizeInBytes>();
-	
+
 	if (!isPR || !isReleasePR) {
 		return baselineMap;
 	}
-	
-	console.log("📦 Fetching baseline sizes from npm (latest published versions)...");
-	
+
+	console.log(
+		"📦 Fetching baseline sizes from npm (latest published versions)...",
+	);
+
 	const packageNames = getPackageNames(filter);
 	const tempDir = join(process.cwd(), ".npm-baseline");
-	
+
 	// Clean up temp directory if it exists
 	if (existsSync(tempDir)) {
 		rmSync(tempDir, { recursive: true, force: true });
 	}
 	mkdirSync(tempDir, { recursive: true });
-	
+
 	try {
 		for (const packageName of packageNames) {
 			// Get latest version
@@ -568,9 +578,9 @@ const getBaselineSizesFromNpm = async (
 				);
 				continue;
 			}
-			
+
 			console.log(`📦 Found ${packageName}@${version} on npm`);
-			
+
 			// Download package
 			const packageDir = join(tempDir, packageName);
 			const downloaded = await downloadNpmPackage(
@@ -578,31 +588,29 @@ const getBaselineSizesFromNpm = async (
 				version,
 				packageDir,
 			);
-			
+
 			if (!downloaded) {
 				console.log(`⚠️ Failed to download ${packageName}, skipping`);
 				continue;
 			}
-			
+
 			// Read package.json to find size-limit config
 			const packageJsonPath = join(packageDir, "package.json");
 			if (!existsSync(packageJsonPath)) {
 				console.log(`⚠️ package.json not found for ${packageName}, skipping`);
 				continue;
 			}
-			
-			const packageJson = JSON.parse(
-				readFileSync(packageJsonPath, "utf-8"),
-			);
+
+			const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
 			const sizeLimitConfig = packageJson["size-limit"];
-			
+
 			if (!Array.isArray(sizeLimitConfig) || sizeLimitConfig.length === 0) {
 				console.log(
 					`⚠️ No size-limit config found for ${packageName}, skipping`,
 				);
 				continue;
 			}
-			
+
 			// Get dist file path from config
 			const firstConfig = sizeLimitConfig[0];
 			const distPath = firstConfig.path;
@@ -610,7 +618,7 @@ const getBaselineSizesFromNpm = async (
 				console.log(`⚠️ No dist path in size-limit config for ${packageName}`);
 				continue;
 			}
-			
+
 			// Calculate file size
 			const fullDistPath = join(packageDir, distPath);
 			if (!existsSync(fullDistPath)) {
@@ -619,20 +627,20 @@ const getBaselineSizesFromNpm = async (
 				);
 				continue;
 			}
-			
+
 			const stats = await import("node:fs/promises").then((fs) =>
 				fs.stat(fullDistPath),
 			);
 			const sizeBytes = stats.size;
-			
+
 			// Extract filename from path
 			const filename = distPath.split("/").pop() || "bundle";
 			const key = `${packageName}:${filename}`;
 			baselineMap.set(key, sizeBytes);
-			
+
 			console.log(`✅ Baseline for ${key}: ${sizeBytes} bytes`);
 		}
-		
+
 		if (baselineMap.size === 0) {
 			console.log(
 				"⚠️ No baseline sizes found from npm. This might be the first release.",
@@ -650,7 +658,7 @@ const getBaselineSizesFromNpm = async (
 			rmSync(tempDir, { recursive: true, force: true });
 		}
 	}
-	
+
 	return baselineMap;
 };
 
