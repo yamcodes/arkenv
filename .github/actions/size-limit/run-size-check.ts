@@ -2,6 +2,8 @@
 
 import { regex } from "arkregex";
 import { spawn } from "bun";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 interface SizeLimitResult {
 	package: string;
@@ -64,6 +66,37 @@ const calculateDiff = (current: SizeInBytes, baseline: SizeInBytes): string => {
 	return `${sign}${diff.toFixed(1)}%`;
 };
 
+// Helper function to get filename from size-limit config in package.json
+const getFilenameFromConfig = (packageName: string): string | null => {
+	try {
+		// Try to find package.json for this package
+		// Package name could be "arkenv" or "./packages/arkenv" or "packages/arkenv"
+		let packagePath = packageName;
+		if (packagePath.startsWith("./")) {
+			packagePath = packagePath.slice(2);
+		}
+		if (!packagePath.startsWith("packages/")) {
+			packagePath = `packages/${packagePath}`;
+		}
+
+		const packageJsonPath = join(process.cwd(), packagePath, "package.json");
+		const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+		const sizeLimitConfig = packageJson["size-limit"];
+
+		if (Array.isArray(sizeLimitConfig) && sizeLimitConfig.length > 0) {
+			const firstConfig = sizeLimitConfig[0];
+			if (firstConfig.path) {
+				// Extract filename from path (e.g., "dist/index.js" -> "index.js")
+				const pathParts = firstConfig.path.split("/");
+				return pathParts[pathParts.length - 1] || null;
+			}
+		}
+	} catch {
+		// If we can't read the config, return null
+	}
+	return null;
+};
+
 // Get inputs from environment
 const turboToken = process.env.INPUT_TURBO_TOKEN;
 const turboTeam = process.env.INPUT_TURBO_TEAM;
@@ -118,13 +151,23 @@ const parseSizeLimitOutput = (
 
 	const flushCurrentPackage = () => {
 		if (currentPackage && currentSize && currentLimit) {
-			// Extract filename: if currentFile has a path, use the last part; otherwise use "bundle"
+			// Extract filename: if currentFile has a path, use the last part
 			// Handle both "dist/index.js" and "index.js" formats
-			const filename = currentFile
+			// If no filename found in output, try to get it from package.json config
+			let filename = currentFile
 				? (currentFile.includes("/")
 						? currentFile.split("/").pop()
-						: currentFile) || "bundle"
-				: "bundle";
+						: currentFile) || null
+				: null;
+
+			// Fallback to reading from package.json size-limit config
+			if (!filename) {
+				filename = getFilenameFromConfig(currentPackage);
+			}
+
+			// Final fallback to "bundle" if we still can't determine the file
+			filename = filename || "bundle";
+
 			results.push({
 				package: currentPackage,
 				file: filename,
