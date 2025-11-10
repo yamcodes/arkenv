@@ -587,22 +587,35 @@ if (isPR) {
 const { results, hasErrors } = await runSizeLimit();
 
 // Calculate diffs and add to results
+console.log(`📊 Calculating diffs. Baseline map size: ${baselineSizes.size}`);
+if (baselineSizes.size > 0) {
+	console.log(
+		`📊 Baseline keys: ${Array.from(baselineSizes.keys()).join(", ")}`,
+	);
+}
+
 for (const result of results) {
 	const key = `${result.package}:${result.file}`;
+	console.log(`📊 Looking up baseline for key: ${key}`);
 	let baselineSize = baselineSizes.get(key);
 
 	// If not found, try alternative key formats (for backwards compatibility)
 	// e.g., if current has "index.js" but baseline has "bundle", or vice versa
 	if (baselineSize === undefined && baselineSizes.size > 0) {
+		console.log(`📊 Direct lookup failed, trying fallbacks for ${key}`);
 		// Try with "bundle" as fallback filename (for old baselines that used "bundle")
 		const bundleKey = `${result.package}:bundle`;
 		baselineSize = baselineSizes.get(bundleKey);
+		if (baselineSize !== undefined) {
+			console.log(`📊 Found baseline using bundle fallback: ${bundleKey}`);
+		}
 
 		// If still not found, try to find any file for this package
 		// This handles cases where filename format changed between baseline and current
 		if (baselineSize === undefined) {
 			for (const [baselineKey, size] of baselineSizes.entries()) {
 				if (baselineKey.startsWith(`${result.package}:`)) {
+					console.log(`📊 Found baseline using package match: ${baselineKey}`);
 					baselineSize = size;
 					break;
 				}
@@ -613,6 +626,9 @@ for (const result of results) {
 	if (baselineSize !== undefined) {
 		const currentSize = parseSizeToBytes(result.size);
 		result.diff = calculateDiff(currentSize, baselineSize);
+		console.log(
+			`✅ Diff calculated: ${result.diff} (current: ${currentSize} bytes, baseline: ${baselineSize} bytes)`,
+		);
 	} else {
 		// Log when we can't compute diff (this is an issue)
 		if (baselineSizes.size > 0) {
