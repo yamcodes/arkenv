@@ -74,12 +74,16 @@ export const runSizeLimitOnPackage = async (
 	// Create a temporary package.json with size-limit config and dependencies
 	// We need to preserve the package name, main/module fields, and dependencies for size-limit to work
 	// Also need to include the preset in devDependencies so size-limit can find it
+	// Include peerDependencies as regular dependencies since npm install won't install them automatically
 	const tempPackageJson = {
 		name: packageJson.name,
 		version: packageJson.version,
 		main: packageJson.main,
 		module: packageJson.module,
-		dependencies: packageJson.dependencies || {},
+		dependencies: {
+			...(packageJson.dependencies || {}),
+			...(packageJson.peerDependencies || {}),
+		},
 		"size-limit": sizeLimitConfig,
 		devDependencies: {
 			"size-limit": "11.2.0",

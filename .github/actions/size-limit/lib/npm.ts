@@ -215,10 +215,14 @@ export const getBaselineSizesFromNpm = async (
 			let sizeLimitConfigFromWorkspace: unknown;
 			try {
 				// Try to find the package in the workspace
+				// Handle both scoped (@arkenv/vite-plugin -> vite-plugin) and unscoped (arkenv -> arkenv) packages
+				const packageDirName = packageName.startsWith("@")
+					? packageName.split("/")[1]
+					: packageName;
 				const workspacePackageJsonPath = join(
 					process.cwd(),
 					"packages",
-					packageName.replace("@arkenv/", ""),
+					packageDirName,
 					"package.json",
 				);
 				if (existsSync(workspacePackageJsonPath)) {
@@ -226,6 +230,13 @@ export const getBaselineSizesFromNpm = async (
 						readFileSync(workspacePackageJsonPath, "utf-8"),
 					);
 					sizeLimitConfigFromWorkspace = workspacePackageJson["size-limit"];
+					console.log(
+						`ℹ️ Found workspace config for ${packageName} at ${workspacePackageJsonPath}`,
+					);
+				} else {
+					console.log(
+						`⚠️ Workspace package.json not found at ${workspacePackageJsonPath}`,
+					);
 				}
 			} catch (error) {
 				console.log(
