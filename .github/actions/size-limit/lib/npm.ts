@@ -146,7 +146,7 @@ export const downloadNpmPackage = async (
 		if (existsSync(tempExtractDir)) {
 			rmSync(tempExtractDir, { recursive: true, force: true });
 		}
-		const tarballPath = join(targetDir, "package.tgz");
+		// tarballPath is already declared above, just clean it up
 		if (existsSync(tarballPath)) {
 			rmSync(tarballPath, { force: true });
 		}
