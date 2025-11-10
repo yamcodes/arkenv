@@ -14,15 +14,25 @@ export const getChangedPackages = async (
 
 	try {
 		// First, ensure we have the base branch fetched
-		// Try to fetch it if it's not available
 		const fetchProc = spawn(["git", "fetch", "origin", baseBranch], {
 			stdout: "pipe",
 			stderr: "pipe",
 		});
-		await fetchProc.exited; // Don't fail if fetch fails, just continue
+		const fetchExitCode = await fetchProc.exited;
+		if (fetchExitCode !== 0) {
+			const [fetchStdout, fetchStderr] = await Promise.all([
+				new Response(fetchProc.stdout).text(),
+				new Response(fetchProc.stderr).text(),
+			]);
+			console.log(
+				`⚠️ Failed to fetch ${baseBranch}: ${fetchStderr || fetchStdout}. Falling back to checking all packages.`,
+			);
+			return { success: false };
+		}
 
 		// Get list of changed files between base and HEAD
 		// Use three-dot diff to get files changed in HEAD compared to base
+		// This shows files changed in HEAD that aren't in base
 		const diffProc = spawn(
 			["git", "diff", "--name-only", `origin/${baseBranch}...HEAD`],
 			{
