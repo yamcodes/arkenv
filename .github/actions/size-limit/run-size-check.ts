@@ -96,10 +96,28 @@ if (isPR) {
 // Run size-limit on current branch
 const { results, hasErrors } = await runSizeLimit(filter);
 
+// Log baseline and current sizes for debugging (especially for release PRs)
+if (isReleasePR && baselineSizes.size > 0) {
+	console.log("\n📊 Baseline sizes from npm:");
+	for (const [key, size] of baselineSizes.entries()) {
+		console.log(`  - ${key}: ${size} bytes`);
+	}
+	console.log("\n📊 Current sizes from size-limit:");
+	for (const result of results) {
+		const currentSizeBytes = parseSizeToBytes(result.size);
+		console.log(
+			`  - ${result.package}:${result.file}: ${currentSizeBytes} bytes (${result.size})`,
+		);
+	}
+	console.log("");
+}
+
 // Calculate diffs and add to results
 for (const result of results) {
 	const key = `${result.package}:${result.file}`;
+	const currentSizeBytes = parseSizeToBytes(result.size);
 	let baselineSize = baselineSizes.get(key);
+	let matchedKey = key;
 
 	// If not found, try alternative key formats (for backwards compatibility)
 	// e.g., if current has "index.js" but baseline has "bundle", or vice versa
@@ -107,6 +125,9 @@ for (const result of results) {
 		// Try with "bundle" as fallback filename (for old baselines that used "bundle")
 		const bundleKey = `${result.package}:bundle`;
 		baselineSize = baselineSizes.get(bundleKey);
+		if (baselineSize !== undefined) {
+			matchedKey = bundleKey;
+		}
 
 		// If still not found, try to find any file for this package
 		// This handles cases where filename format changed between baseline and current
@@ -114,6 +135,7 @@ for (const result of results) {
 			for (const [baselineKey, size] of baselineSizes.entries()) {
 				if (baselineKey.startsWith(`${result.package}:`)) {
 					baselineSize = size;
+					matchedKey = baselineKey;
 					break;
 				}
 			}
@@ -121,8 +143,17 @@ for (const result of results) {
 	}
 
 	if (baselineSize !== undefined) {
-		const currentSize = parseSizeToBytes(result.size);
-		result.diff = calculateDiff(currentSize, baselineSize);
+		const diff = calculateDiff(currentSizeBytes, baselineSize);
+		result.diff = diff;
+
+		// Log detailed diff calculation for release PRs
+		if (isReleasePR) {
+			console.log(`🔍 Diff calculation for ${key}:`);
+			console.log(`  - Baseline (${matchedKey}): ${baselineSize} bytes`);
+			console.log(`  - Current (${key}): ${currentSizeBytes} bytes`);
+			console.log(`  - Difference: ${currentSizeBytes - baselineSize} bytes`);
+			console.log(`  - Percentage: ${diff}`);
+		}
 	} else {
 		// Only log if there's an issue (can't compute diff)
 		if (baselineSizes.size > 0) {

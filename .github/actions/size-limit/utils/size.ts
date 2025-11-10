@@ -45,10 +45,17 @@ export const calculateDiff = (
 	if (baseline === 0) {
 		return current > 0 ? "+∞%" : "—";
 	}
+
+	// Check if sizes are equal (or very close due to floating point precision)
+	// If sizes are the same, show "0.0%" regardless of calculated diff
+	if (current === baseline || Math.abs(current - baseline) < 0.5) {
+		return "0.0%";
+	}
+
 	const diff = ((current - baseline) / baseline) * 100;
-	// Show "0.0%" when diff is exactly 0, otherwise show "—" for very small changes (< 0.1%)
+	// Show "—" for very small changes (< 0.1%) that aren't exactly equal
 	if (Math.abs(diff) < 0.1) {
-		return diff === 0 ? "0.0%" : "—";
+		return "—";
 	}
 	const sign = diff > 0 ? "+" : "";
 	return `${sign}${diff.toFixed(1)}%`;

@@ -42,6 +42,7 @@ export const runSizeLimit = async (
 export const runSizeLimitOnPackage = async (
 	packageDir: string,
 	packageName: string,
+	sizeLimitConfigFromWorkspace?: unknown,
 ): Promise<SizeLimitResult[]> => {
 	// Read package.json to get size-limit config
 	const packageJsonPath = join(packageDir, "package.json");
@@ -51,7 +52,19 @@ export const runSizeLimitOnPackage = async (
 	}
 
 	const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
-	const sizeLimitConfig = packageJson["size-limit"];
+	let sizeLimitConfig = packageJson["size-limit"];
+
+	// If npm package doesn't have size-limit config (common since it's in devDependencies),
+	// use the config from the current workspace
+	if (
+		(!Array.isArray(sizeLimitConfig) || sizeLimitConfig.length === 0) &&
+		sizeLimitConfigFromWorkspace
+	) {
+		console.log(
+			`ℹ️ npm package ${packageName} doesn't have size-limit config, using workspace config`,
+		);
+		sizeLimitConfig = sizeLimitConfigFromWorkspace;
+	}
 
 	if (!Array.isArray(sizeLimitConfig) || sizeLimitConfig.length === 0) {
 		console.log(`⚠️ No size-limit config found for ${packageName}`);
