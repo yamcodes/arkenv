@@ -40,8 +40,8 @@ export const runSizeLimitOnPackage = async (
 	// Enhance size-limit config to mark Node.js built-in modules as external
 	// This prevents bundling errors when size-limit tries to bundle Node.js built-in modules
 	const enhancedSizeLimitConfig = sizeLimitConfig.map((config) => {
-		// If webpack is already configured, preserve it
-		if (config.webpack !== undefined) {
+		// If webpack is explicitly enabled, preserve the webpack configuration
+		if (config.webpack === true) {
 			return config;
 		}
 
