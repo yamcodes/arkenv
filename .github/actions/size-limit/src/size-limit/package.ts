@@ -41,7 +41,7 @@ export const runSizeLimitOnPackage = async (
 	// This prevents bundling errors when size-limit tries to bundle Node.js built-in modules
 	const enhancedSizeLimitConfig = sizeLimitConfig.map((config) => {
 		// If webpack is explicitly enabled, preserve the webpack configuration
-		if (config.webpack === true) {
+		if (config.webpack !== undefined) {
 			return config;
 		}
 
@@ -99,7 +99,11 @@ export const runSizeLimitOnPackage = async (
 			// This tells esbuild not to try to bundle these modules
 			// size-limit passes this to esbuild's external option
 			ignore: [
-				...(Array.isArray(config.ignore) ? config.ignore : []),
+				...(config.ignore
+					? Array.isArray(config.ignore)
+						? config.ignore
+						: [config.ignore]
+					: []),
 				...nodeBuiltinModules.map((m) => `node:${m}`),
 				...nodeBuiltinModules,
 			],
