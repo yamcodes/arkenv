@@ -86,7 +86,6 @@ This ensures the library works in real scenarios while keeping examples clean an
 
 **Focus:**
 - Plugin integration with Vite
-- Real project builds using `with-vite-react-ts` as a fixture
 - Environment variable loading and injection
 - Build-time validation
 
@@ -185,7 +184,6 @@ pnpm run test:e2e:headed
 Examples are kept clean and focused on demonstrating usage:
 - `examples/basic` - Basic Node.js usage
 - `examples/with-bun` - Bun runtime usage  
-- `examples/with-vite-react-ts` - Vite plugin usage (also used as test fixture)
 
 ## CI Integration
 

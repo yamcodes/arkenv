@@ -25,7 +25,6 @@ arkenv/
 ├── examples/           # Usage examples
 │   ├── basic/          # Basic Node.js example
 │   ├── with-bun/       # Bun runtime example
-│   └── with-vite-react-ts/ # Vite + React + TypeScript example
 └── .github/            # GitHub workflows and configuration
 ```
 
@@ -270,7 +269,6 @@ The library provides clear error messages with:
 
 Check the `examples/` directory for practical usage patterns:
 - `basic/` - Simple Node.js application
-- `with-bun/` - Bun runtime integration  
-- `with-vite-react-ts/` - Frontend application with Vite
+- `with-bun/` - Bun runtime integration
 
 These examples demonstrate real-world usage and can serve as templates for new integrations.
