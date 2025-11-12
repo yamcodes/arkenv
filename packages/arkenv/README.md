@@ -60,7 +60,7 @@ ArkEnvError: Errors found while validating environment variables
 ## Features
 
 - Zero external dependencies
-- Works in Node.js, Bun, and Vite
+- Works in Node.js and Bun
 - Tiny: <1kB gzipped
 - Build-time and runtime validation
 - Single import, zero config for most projects
