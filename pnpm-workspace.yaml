@@ -6,3 +6,4 @@ packages:
   - 'tooling/*'
 overrides:
   "@playwright/test": "^1.56.0"
+  "glob": "^11.1.0"
