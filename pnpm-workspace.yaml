@@ -2,6 +2,7 @@ packages:
   - 'packages/*'
   - 'apps/*'
   - 'apps/playgrounds/*'
+  - '!apps/playgrounds/bun'
   - '!apps/playgrounds/bun-react'
   - 'tooling/*'
 overrides:
