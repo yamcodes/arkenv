@@ -1,3 +1,3 @@
 import { $ } from "./scope";
 
-export const type = $.type;
+export const type: typeof $.type = $.type;

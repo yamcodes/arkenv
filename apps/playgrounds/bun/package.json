@@ -1,0 +1,22 @@
+{
+  "name": "bun",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch index.ts",
+    "build": "bun build index.ts --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
+    "start": "NODE_ENV=production bun index.ts",
+    "clean": "rimraf dist node_modules"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "arkenv": "file:../../../packages/arkenv"
+  },
+  "packageManager": "bun@1.3.2"
+}

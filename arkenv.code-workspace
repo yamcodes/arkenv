@@ -47,6 +47,10 @@
 			"name": "  node-playground"
 		},
 		{
+			"path": "apps/playgrounds/bun",
+			"name": "  bun-playground"
+		},
+		{
 			"path": "apps/playgrounds/vite",
 			"name": "  vite-playground"
 		},
