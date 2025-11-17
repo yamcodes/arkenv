@@ -2,6 +2,7 @@
 	"settings": {
 		"files.associations": {
 			"turbo.json": "jsonc",
+			"tsconfig.json": "jsonc",
 			".github/renovate.json": "jsonc"
 		}
 	},
@@ -45,6 +46,10 @@
 		{
 			"path": "apps/playgrounds/node",
 			"name": "  node-playground"
+		},
+		{
+			"path": "apps/playgrounds/bun",
+			"name": "  bun-playground"
 		},
 		{
 			"path": "apps/playgrounds/vite",
