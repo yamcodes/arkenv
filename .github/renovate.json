@@ -9,6 +9,10 @@
 	"osvVulnerabilityAlerts": true,
 	"dependencyDashboard": true,
 	"updateInternalDeps": true,
+	"lockFileMaintenance": {
+		"enabled": true,
+		"schedule": ["on friday"]
+	},
 	"packageRules": [
 		// Note: Order by least important to most important,
 		// see note at the end of https://docs.renovatebot.com/configuration-options/#packagerules

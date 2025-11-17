@@ -3,7 +3,8 @@
 		"files.associations": {
 			"turbo.json": "jsonc",
 			"tsconfig.json": "jsonc",
-			".github/renovate.json": "jsonc"
+			".github/renovate.json": "jsonc",
+			"renovate.json": "jsonc"
 		}
 	},
 	"folders": [
