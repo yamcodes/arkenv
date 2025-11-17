@@ -1,11 +1,9 @@
-import arkenv, { type } from "arkenv";
+import arkenv from "arkenv";
 
 const env = arkenv({
-	HOST: "string.host",
-	PORT: "number.port",
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-	ALLOWED_ORIGINS: type("string[]").default(() => []),
-	DEBUG: "boolean = true",
+	TURSO_DATABASE_URL: "string.url", // ❌ TypeScript error in Bun
 });
 
-console.log("Hello via Bun!");
+console.log({
+	url: env.TURSO_DATABASE_URL,
+});
