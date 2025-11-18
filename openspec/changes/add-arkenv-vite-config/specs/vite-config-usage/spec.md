@@ -47,9 +47,25 @@ The project SHALL optionally provide a utility that wraps Vite's `loadEnv` funct
 - **AND** the wrapper handles loading env vars from `.env` files based on Vite's mode
 - **AND** the schema can be shared with the plugin for validating `VITE_*` variables
 
+### Requirement: Type Safety Constraint
+
+The environment object returned from `loadEnv` or any wrapper SHALL be type-safe. Unsafe patterns that bypass validation or type checking are FORBIDDEN.
+
+#### Constraint: Environment object must be wrapped or typed
+- **FORBIDDEN**: Directly using `loadEnv()` result without validation or proper typing
+- **REQUIRED**: The environment object MUST be either:
+  - Wrapped in a function (preferably) like `arkenv()`, `createEnv()`, or a new wrapper function if necessary
+  - OR (less preferably) typed using TypeScript's `satisfies` operator with a proper type
+
+#### Scenario: Unsafe usage is prevented
+- **WHEN** a user attempts to use `loadEnv()` directly without validation
+- **THEN** the pattern is documented as forbidden
+- **AND** examples demonstrate only type-safe patterns
+- **AND** documentation clearly explains why unsafe patterns are not allowed
+
 ### Requirement: Documentation for Vite Config Usage
 
-The project SHALL provide clear documentation and examples for using ArkEnv in vite.config.ts files, clearly distinguishing between server-only (config) and client-exposed (`VITE_*`) environment variable usage patterns.
+The project SHALL provide clear documentation and examples for using ArkEnv in vite.config.ts files, clearly distinguishing between server-only (config) and client-exposed (`VITE_*`) environment variable usage patterns. Documentation SHALL explicitly forbid unsafe usage patterns.
 
 #### Scenario: User finds documentation
 - **WHEN** a user wants to validate unprefixed environment variables in their vite.config.ts
