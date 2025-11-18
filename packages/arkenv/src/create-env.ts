@@ -42,6 +42,10 @@ export function createEnv<T extends type.Any>(
 ): InferType<T>;
 export function createEnv<const T extends Record<string, unknown>>(
 	def: EnvSchema<T> | type.Any,
+	env?: RuntimeEnvironment,
+): distill.Out<type.infer<T, (typeof $)["t"]>> | InferType<typeof def>;
+export function createEnv<const T extends Record<string, unknown>>(
+	def: EnvSchema<T> | type.Any,
 	env: RuntimeEnvironment = process.env,
 ): distill.Out<type.infer<T, (typeof $)["t"]>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
