@@ -33,7 +33,11 @@ const envSchema = type({
 
 // Use it in multiple places with full type inference
 const env1 = arkenv(envSchema, process.env);
-const env2 = arkenv(envSchema, customEnv);
+const env2 = arkenv(envSchema, {
+  HOST: "localhost",
+  PORT: "3000",
+  DEBUG: "true",
+});
 
 // TypeScript knows the exact types
 const host: string = env1.HOST; // ✅ Properly typed
@@ -111,6 +115,10 @@ const testEnv = arkenv(envSchema, {
   API_URL: "http://localhost:3000",
   API_KEY: "test-key",
 });
+
+// Both have the same type structure
+const url: string = productionEnv.API_URL;
+const testUrl: string = testEnv.API_URL;
 ```
 
 ### Schema composition
