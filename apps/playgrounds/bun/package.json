@@ -1,0 +1,25 @@
+{
+	"name": "bun-playground",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "bun --watch run index.ts",
+		"start": "bun run index.ts",
+		"build": "tsc -b && bun run index.ts",
+		"preview": "bun run index.ts",
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"arkenv": "file:../../../packages/arkenv",
+		"arktype": "2.1.26"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.3.2",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}

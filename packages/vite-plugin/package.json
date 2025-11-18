@@ -13,13 +13,13 @@
 	},
 	"devDependencies": {
 		"@size-limit/preset-small-lib": "11.2.0",
-		"arktype": "2.1.25",
+		"arktype": "2.1.26",
 		"size-limit": "11.2.0",
-		"tsdown": "0.15.12",
+		"tsdown": "0.16.1",
 		"typescript": "5.9.3",
-		"vite": "7.1.12",
+		"vite": "7.2.2",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.8"
+		"vitest": "4.0.9"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",

@@ -55,15 +55,42 @@ if (!Element.prototype.releasePointerCapture) {
 // Suppress JSDOM CSS parsing warnings for styled-jsx
 // JSDOM tries to parse styled-jsx CSS and warns about syntax it doesn't understand
 // This is harmless - the styles work fine in real browsers
-// biome-ignore lint/suspicious/noConsole: Mocking console.error for test setup
-const originalConsoleError = console.error;
-console.error = (...args: unknown[]) => {
-	const message = String(args[0]);
-	// Suppress "Could not parse CSS stylesheet" warnings from JSDOM
-	if (message.includes("Could not parse CSS stylesheet")) {
-		return;
+const SUPPRESSION_TOKEN = "Could not parse CSS stylesheet";
+const shouldSuppress = (value: unknown): boolean => {
+	return typeof value === "string" && value.includes(SUPPRESSION_TOKEN);
+};
+
+const interceptConsoleMethod = (method: "error" | "warn") => {
+	// biome-ignore lint/suspicious/noConsole: Mocking console methods for test setup
+	const original = console[method];
+	console[method] = (...args: unknown[]) => {
+		if (args.some(shouldSuppress)) {
+			return;
+		}
+		original.apply(console, args as Parameters<typeof original>);
+	};
+};
+
+interceptConsoleMethod("error");
+interceptConsoleMethod("warn");
+
+const originalStderrWrite = process.stderr.write;
+// JSDOM writes CSS parsing errors directly to stderr, so we need to intercept that too
+process.stderr.write = function processWriteInterceptor(
+	chunk: string | Uint8Array,
+	encodingOrCb?: BufferEncoding | ((err?: Error | null) => void),
+	cb?: (err?: Error | null) => void,
+) {
+	const message = typeof chunk === "string" ? chunk : chunk.toString();
+	if (shouldSuppress(message)) {
+		return true;
 	}
-	originalConsoleError.call(console, ...args);
+	return originalStderrWrite.call(
+		process.stderr,
+		chunk,
+		encodingOrCb as never,
+		cb as never,
+	);
 };
 
 afterEach(() => {

@@ -14,16 +14,20 @@ description: Let's get you started with a few simple steps.
   <Step>
     ## Configure your project
 
-    Enable strict mode for the best typesafety:
+    Enable strict mode for the best typesafety, and use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution):
 
     ```json title="tsconfig.json"
     // [!code word:config]
     {
       "compilerOptions": {
-        "strict": true // [!code focus]
+        "strict": true, // [!code focus]
+        "moduleResolution": "bundler" // [!code focus] or "node16" / "nodenext"
       }
     }
     ```
+
+    > [!TIP]
+    > You may omit `moduleResolution` if `module` is `"Preserve", "Node16", or "NodeNext"`. See [Requirements](https://github.com/yamcodes/arkenv?tab=readme-ov-file#requirements) for details.
     
     ArkEnv is built on top of [ArkType](https://arktype.io/). Follow the [ArkType setup instructions](https://arktype.io/docs/intro/setup) to configure your project.
   </Step>
