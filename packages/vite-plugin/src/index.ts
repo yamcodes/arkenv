@@ -1,5 +1,6 @@
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
+import { type } from "arktype";
 import { loadEnv, type Plugin } from "vite";
 
 /**
@@ -8,7 +9,7 @@ import { loadEnv, type Plugin } from "vite";
  */
 
 export default function arkenv<const T extends Record<string, unknown>>(
-	options: EnvSchema<T>,
+	options: EnvSchema<T> | type.Any,
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",
