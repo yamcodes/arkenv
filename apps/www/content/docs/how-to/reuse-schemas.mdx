@@ -1,0 +1,161 @@
+---
+title: Reuse schemas with type definitions
+description: Learn how to define your schema once and reuse it across your application.
+---
+
+ArkEnv supports two ways to define schemas: raw schema objects and type definitions created with ArkType's `type()` function. When you need to validate the same environment variables in multiple places, using type definitions allows you to define the schema once and reuse it.
+
+## When to use type definitions
+
+Use type definitions when:
+- You need to validate the same environment variables in multiple files
+- You want to share a schema between different parts of your application
+- You're working with complex configurations that benefit from schema reuse
+
+Use raw schema objects when:
+- You have a simple, one-off schema
+- The schema is only used in one place
+- You prefer the inline syntax for readability
+
+## Basic example
+
+Define your schema once using `type()` and reuse it wherever you need it:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+// Define the schema once
+const envSchema = type({
+  HOST: "string.host",
+  PORT: "number.port",
+  DEBUG: "boolean",
+});
+
+// Use it in multiple places with full type inference
+const env1 = arkenv(envSchema, process.env);
+const env2 = arkenv(envSchema, customEnv);
+
+// TypeScript knows the exact types
+const host: string = env1.HOST; // ✅ Properly typed
+const port: number = env1.PORT; // ✅ Properly typed
+```
+
+## Sharing schemas across modules
+
+You can export a type definition from one module and import it in others:
+
+```ts twoslash
+// @filename: config/env-schema.ts
+import { type } from 'arkenv';
+
+export const envSchema = type({
+  DATABASE_HOST: "string.host",
+  DATABASE_PORT: "number.port",
+  API_KEY: "string",
+  DEBUG: "boolean",
+});
+
+// @filename: config/database.ts
+import arkenv from 'arkenv';
+import { envSchema } from './env-schema';
+
+export const dbEnv = arkenv(envSchema, process.env);
+
+// @filename: config/api.ts
+import arkenv from 'arkenv';
+import { envSchema } from './env-schema';
+
+export const apiEnv = arkenv(envSchema, process.env);
+```
+
+## Type inference
+
+When you use type definitions, ArkEnv automatically infers the correct types. You get the same type safety as with raw schema objects:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+const envSchema = type({
+  PORT: "number.port",
+  HOST: "string.host",
+  TIMEOUT: "number >= 0",
+});
+
+const env = arkenv(envSchema, process.env);
+
+// All types are correctly inferred
+const port: number = env.PORT;        // ✅ number
+const host: string = env.HOST;         // ✅ string  
+const timeout: number = env.TIMEOUT;   // ✅ number
+```
+
+## Advanced patterns
+
+### Conditional validation
+
+You can use the same schema with different environment sources:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+const envSchema = type({
+  API_URL: "string",
+  API_KEY: "string",
+});
+
+// Validate against process.env
+const productionEnv = arkenv(envSchema, process.env);
+
+// Validate against test fixtures
+const testEnv = arkenv(envSchema, {
+  API_URL: "http://localhost:3000",
+  API_KEY: "test-key",
+});
+```
+
+### Schema composition
+
+You can combine multiple type definitions:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+const databaseSchema = type({
+  DATABASE_HOST: "string.host",
+  DATABASE_PORT: "number.port",
+});
+
+const apiSchema = type({
+  API_URL: "string",
+  API_KEY: "string",
+});
+
+// Use them separately or together
+const dbEnv = arkenv(databaseSchema, process.env);
+const apiEnv = arkenv(apiSchema, process.env);
+```
+
+## Backward compatibility
+
+Both approaches work seamlessly. You can mix raw schema objects and type definitions in the same codebase:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+// Raw schema object (simple, one-off)
+const simpleEnv = arkenv({
+  NODE_ENV: "'development' | 'production'",
+});
+
+// Type definition (reusable)
+const complexSchema = type({
+  DATABASE_HOST: "string.host",
+  DATABASE_PORT: "number.port",
+  DEBUG: "boolean",
+});
+
+const complexEnv = arkenv(complexSchema, process.env);
+```
+
+Both approaches provide the same validation and type safety. Choose the one that fits your use case best.
+
