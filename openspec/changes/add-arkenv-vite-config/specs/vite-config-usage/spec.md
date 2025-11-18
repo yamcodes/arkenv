@@ -30,22 +30,27 @@ The solution SHALL address the challenge of making the schema and typing availab
 1. The `plugins` section of `defineConfig` (for the `@arkenv/vite-plugin`)
 2. Around the `loadEnv` call (for validating unprefixed config variables)
 
+The schema SHALL be defined using ArkType's `type()` function (not as a raw object) and placed outside of `defineConfig` to enable reuse in both contexts.
+
 #### Scenario: Schema available in both plugin and loadEnv
 - **WHEN** a user wants to use ArkEnv for both config variables and client variables
+- **AND** they define the schema using `type()` outside of `defineConfig`
 - **THEN** the schema can be defined once and used in both places
 - **AND** TypeScript types are available in both contexts
 - **AND** the solution avoids code duplication and maintains type safety
+- **AND** `createEnv()` and the vite plugin accept the type definition directly
 
 ### Requirement: loadEnv Wrapper Utility
 
-The project SHALL optionally provide a utility that wraps Vite's `loadEnv` function with ArkEnv validation and typing, making it easier to use ArkEnv in vite.config.ts files. The utility SHALL address the schema/typing availability challenge.
+The project SHALL support using ArkEnv with Vite's `loadEnv` function. Since `createEnv()` accepts type definitions created with `type()`, no separate wrapper utility is required. Users can pass the result of `loadEnv()` directly to `createEnv()` along with a type definition.
 
-#### Scenario: Using loadEnv wrapper in vite.config.ts
-- **WHEN** a utility is provided that wraps Vite's `loadEnv` with ArkEnv
-- **THEN** users can call the wrapper with a schema and mode
-- **AND** the wrapper returns validated, type-safe environment variables
-- **AND** the wrapper handles loading env vars from `.env` files based on Vite's mode
-- **AND** the schema can be shared with the plugin for validating `VITE_*` variables
+#### Scenario: Using loadEnv with createEnv in vite.config.ts
+- **WHEN** a user defines a schema using `type()` outside of `defineConfig`
+- **AND** they call `loadEnv()` to load environment variables
+- **AND** they pass both the type definition and `loadEnv()` result to `createEnv()` or `arkenv()`
+- **THEN** the environment variables are validated and returned as type-safe
+- **AND** the same type definition can be passed to the vite plugin for validating `VITE_*` variables
+- **AND** no separate wrapper utility is needed
 
 ### Requirement: Type Safety Constraint
 
@@ -53,15 +58,17 @@ The environment object returned from `loadEnv` or any wrapper SHALL be type-safe
 
 #### Constraint: Environment object must be wrapped or typed
 - **FORBIDDEN**: Directly using `loadEnv()` result without validation or proper typing
-- **REQUIRED**: The environment object MUST be either:
-  - Wrapped in a function (preferably) like `arkenv()`, `createEnv()`, or a new wrapper function if necessary
-  - OR (less preferably) typed using TypeScript's `satisfies` operator with a proper type
+- **FORBIDDEN**: Using `as const` assertion on environment objects (not type-safe, bypasses validation)
+- **FORBIDDEN**: Defining schemas as raw objects instead of using `type()` function
+- **REQUIRED**: The schema MUST be defined using `type()` function from ArkType
+- **REQUIRED**: The environment object MUST be wrapped in a function like `arkenv()` or `createEnv()` with the type definition
 
 #### Scenario: Unsafe usage is prevented
 - **WHEN** a user attempts to use `loadEnv()` directly without validation
+- **OR** a user attempts to use `as const` assertion on an environment object
 - **THEN** the pattern is documented as forbidden
 - **AND** examples demonstrate only type-safe patterns
-- **AND** documentation clearly explains why unsafe patterns are not allowed
+- **AND** documentation clearly explains why unsafe patterns (including `as const`) are not allowed and do not provide type safety
 
 ### Requirement: Documentation for Vite Config Usage
 
