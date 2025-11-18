@@ -1,6 +1,6 @@
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
-import { type } from "arktype";
+import type { type } from "arktype";
 import { loadEnv, type Plugin } from "vite";
 
 /**
