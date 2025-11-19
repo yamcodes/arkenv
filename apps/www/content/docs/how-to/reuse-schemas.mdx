@@ -11,7 +11,6 @@ ArkEnv supports both raw schema objects and type definitions created with ArkTyp
 Recall that with ArkEnv, defining your schema is done at the same time as you parse the environment variables:
 
 ```ts twoslash
-import { type } from 'arktype';
 import arkenv from 'arkenv';
 
 const env = arkenv({
@@ -23,7 +22,7 @@ const env = arkenv({
 
 But what if you wanted to share this schema across your app and validate+parse it against different environments? 
 
-This might sound like a niche use-case, but it comes up more often than you'd think - especially with tools like Vite, Next.js, or Bun, where multiple runtimes might need access to the same environment variables. Even in something as simple as a Vite+React setup, you might want your `.env` schema available both [inside your `vite.config.ts` (Node.js)](https://vite.dev/config/#using-environment-variables-in-config) and [in client code (Vite dev server)](https://vite.dev/guide/env-and-mode).
+This might sound like a niche use-case, but it comes up more often than you'd think - especially with tools like [Vite](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite), [Next.js](https://nextjs.org/), or [Bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), where multiple runtimes might need access to the same environment variables. Even in something as simple as a Vite+React setup, you might want your `.env` schema available both [inside your `vite.config.ts` (Node.js)](https://vite.dev/config/#using-environment-variables-in-config) and [in client code (Vite dev server)](https://vite.dev/guide/env-and-mode). See the [Node.js example](https://github.com/yamcodes/arkenv/tree/main/examples/basic) for a basic setup, or the [Vite playground](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite) for a complete multi-runtime configuration.
 
 That's where type definitions start making sense: define your schema once with `type()`, and reuse it wherever you need.
 
