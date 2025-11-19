@@ -1,4 +1,4 @@
-import { Banner } from "fumadocs-ui/components/banner";
+// import { Banner } from "fumadocs-ui/components/banner";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -48,7 +48,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 						enableSystem: true,
 					}}
 				>
-					<Banner variant="rainbow" id="arktype-feature-banner">
+					{/* <Banner variant="rainbow" id="arktype-feature-banner">
 						🎉 We are now featured on&nbsp;
 						<a
 							href="https://arktype.io/docs/ecosystem#arkenv"
@@ -59,7 +59,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 							arktype.io
 						</a>
 						!
-					</Banner>
+					</Banner> */}
 					{children}
 					<SpeedInsights />
 					<Analytics />

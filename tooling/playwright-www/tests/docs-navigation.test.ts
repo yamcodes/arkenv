@@ -146,10 +146,9 @@ test.describe("Documentation Navigation", () => {
 		if (githubLinkCount > 0) {
 			const firstGithubLink = githubLinks.first();
 			await expect(firstGithubLink).toHaveAttribute("target", "_blank");
-			await expect(firstGithubLink).toHaveAttribute(
-				"rel",
-				"noreferrer noopener",
-			);
+			const rel = await firstGithubLink.getAttribute("rel");
+			expect(rel).toContain("noopener");
+			expect(rel).toContain("noreferrer");
 		}
 
 		// Check for ArkType links
@@ -159,10 +158,9 @@ test.describe("Documentation Navigation", () => {
 		if (arkTypeLinkCount > 0) {
 			const firstArkTypeLink = arkTypeLinks.first();
 			await expect(firstArkTypeLink).toHaveAttribute("target", "_blank");
-			await expect(firstArkTypeLink).toHaveAttribute(
-				"rel",
-				"noopener noreferrer",
-			);
+			const rel = await firstArkTypeLink.getAttribute("rel");
+			expect(rel).toContain("noopener");
+			expect(rel).toContain("noreferrer");
 		}
 	});
 

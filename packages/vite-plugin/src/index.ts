@@ -1,5 +1,6 @@
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
+import type { type } from "arktype";
 import { loadEnv, type Plugin } from "vite";
 
 /**
@@ -9,10 +10,16 @@ import { loadEnv, type Plugin } from "vite";
 
 export default function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T>,
+): Plugin;
+export default function arkenv(options: type.Any): Plugin;
+export default function arkenv<const T extends Record<string, unknown>>(
+	options: EnvSchema<T> | type.Any,
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",
 		config(_config, { mode }) {
+			// createEnv accepts both EnvSchema and type.Any at runtime
+			// We use overloads above to provide external type precision
 			const env = createEnv(options, loadEnv(mode, process.cwd(), ""));
 
 			// Expose transformed environment variables through Vite's define option
