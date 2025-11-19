@@ -1,0 +1,163 @@
+---
+title: How to reuse your schema
+description: Define your schema once and reuse it across your application.
+icon: New
+---
+
+ArkEnv supports both raw schema objects and type definitions created with ArkType's `type()` function. Use type definitions when you need to validate the same environment variables in multiple places.
+
+## Basic usage
+
+Recall that with ArkEnv, defining your schema is done at the same time as you parse the environment variables:
+
+```ts twoslash
+import arkenv from 'arkenv';
+
+const env = arkenv({
+  HOST: "string.host",
+  PORT: "number.port",
+  DEBUG: "boolean",
+});
+```
+
+But what if you wanted to share this schema across your app and validate+parse it against different environments? 
+
+This might sound like a niche use-case, but it comes up more often than you'd think - especially with tools like [Vite](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite), [Next.js](https://nextjs.org/), or [Bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), where multiple runtimes might need access to the same environment variables. Even in something as simple as a Vite+React setup, you might want your `.env` schema available both [inside your `vite.config.ts` (Node.js)](https://vite.dev/config/#using-environment-variables-in-config) and [in client code (Vite dev server)](https://vite.dev/guide/env-and-mode). See the [Node.js example](https://github.com/yamcodes/arkenv/tree/main/examples/basic) for a basic setup, or the [Vite playground](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite) for a complete multi-runtime configuration.
+
+That's where type definitions start making sense: define your schema once with `type()`, and reuse it wherever you need.
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+const envSchema = type({
+  HOST: "string.host",
+  PORT: "number.port",
+  DEBUG: "boolean",
+});
+
+// Use it in multiple places with full type inference
+const env1 = arkenv(envSchema, process.env);
+const env2 = arkenv(envSchema, { HOST: "localhost", PORT: "3000", DEBUG: "true" });
+
+// TypeScript knows the exact types
+const host: string = env1.HOST;
+const port: number = env1.PORT;
+```
+
+## Sharing across modules
+
+Export a type definition from one module and import it in others:
+
+<Tabs items={['config/env-schema.ts', 'config/database.ts', 'config/api.ts']}>
+  <Tab value="config/env-schema.ts">
+    ```ts twoslash
+    import { type } from 'arkenv';
+
+    export const envSchema = type({
+      DATABASE_HOST: "string.host",
+      DATABASE_PORT: "number.port",
+      API_KEY: "string",
+    });
+    ```
+  </Tab>
+  <Tab value="config/database.ts">
+    ```ts twoslash
+    // @filename: env-schema.ts
+    import { type } from 'arkenv';
+
+    export const envSchema = type({
+      DATABASE_HOST: "string.host",
+      DATABASE_PORT: "number.port",
+      API_KEY: "string",
+    });
+    // @filename: database.ts
+    // ---cut---
+    import arkenv from 'arkenv';
+    import { envSchema } from './env-schema';
+
+    export const dbEnv = arkenv(envSchema, process.env);
+    ```
+  </Tab>
+  <Tab value="config/api.ts">
+    ```ts twoslash
+    // @filename: env-schema.ts
+    import { type } from 'arkenv';
+
+    export const envSchema = type({
+      DATABASE_HOST: "string.host",
+      DATABASE_PORT: "number.port",
+      API_KEY: "string",
+    });
+    // @filename: api.ts
+    // ---cut---
+    import arkenv from 'arkenv';
+    import { envSchema } from './env-schema';
+
+    export const apiEnv = arkenv(envSchema, process.env);
+    ```
+  </Tab>
+</Tabs>
+
+## Type inference
+
+Type definitions provide the same type safety as raw schema objects:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+const envSchema = type({
+  PORT: "number.port",
+  HOST: "string.host",
+  TIMEOUT: "number >= 0",
+});
+
+const env = arkenv(envSchema, process.env);
+
+const port: number = env.PORT;
+const host: string = env.HOST;
+const timeout: number = env.TIMEOUT;
+```
+
+## Different environment sources
+
+Use the same schema with different environment sources:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+const envSchema = type({
+  API_URL: "string",
+  API_KEY: "string",
+});
+
+const productionEnv = arkenv(envSchema, process.env);
+const testEnv = arkenv(envSchema, {
+  API_URL: "http://localhost:3000",
+  API_KEY: "test-key",
+});
+```
+
+## Mixing approaches
+
+You can mix raw schema objects and type definitions in the same codebase:
+
+```ts twoslash
+import arkenv, { type } from 'arkenv';
+
+// Raw schema object (simple, one-off)
+const simpleEnv = arkenv({
+  NODE_ENV: "'development' | 'production'",
+});
+
+// Type definition (reusable)
+const complexSchema = type({
+  DATABASE_HOST: "string.host",
+  DATABASE_PORT: "number.port",
+  DEBUG: "boolean",
+});
+
+const complexEnv = arkenv(complexSchema, process.env);
+```
+
+Both approaches provide the same validation and type safety. Use raw objects for simple, one-off schemas, and type definitions when you need to reuse the schema.
+
