@@ -148,10 +148,15 @@ test.describe("Quickstart Page", () => {
 			await expect(envGuideLink).toBeVisible();
 			await envGuideLink.click();
 			// Wait for navigation to complete
-			await page.waitForURL("**/docs/arkenv/how-to/load-environment-variables", {
-				timeout: 10000,
-			});
-			await expect(page).toHaveURL("/docs/arkenv/how-to/load-environment-variables");
+			await page.waitForURL(
+				"**/docs/arkenv/how-to/load-environment-variables",
+				{
+					timeout: 10000,
+				},
+			);
+			await expect(page).toHaveURL(
+				"/docs/arkenv/how-to/load-environment-variables",
+			);
 		}
 	});
 
