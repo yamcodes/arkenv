@@ -53,7 +53,7 @@ for (const name of readdirSync(fixturesDir)) {
 				vite.build({
 					configFile: false,
 					root: config.root,
-					plugins: [arkenvPlugin(config.envSchema)],
+					plugins: [arkenvPlugin(config.Env)],
 					logLevel: "error",
 					build: {
 						lib: {
@@ -69,7 +69,7 @@ for (const name of readdirSync(fixturesDir)) {
 
 			// Verify that createEnv was called with the correct parameters
 			expect(mockCreateEnv).toHaveBeenCalledWith(
-				config.envSchema,
+				config.Env,
 				expect.objectContaining(config.envVars || {}),
 			);
 		});
@@ -340,11 +340,11 @@ describe("Plugin Unit Tests", () => {
 
 async function readTestConfig(fixtureDir: string) {
 	// Import the env schema from the TypeScript config file
-	let envSchema: Record<string, string> = {};
+	let Env: Record<string, string> = {};
 	try {
 		const configPath = join(fixtureDir, "config.ts");
 		const configModule = await import(configPath);
-		envSchema = configModule.envSchema;
+		Env = configModule.Env;
 	} catch {
 		// config.ts file doesn't exist, that's fine
 	}
@@ -368,7 +368,7 @@ async function readTestConfig(fixtureDir: string) {
 
 	return {
 		root: fixtureDir,
-		envSchema,
+		Env,
 		envVars,
 	};
 }

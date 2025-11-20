@@ -11,12 +11,12 @@
 import arkenv, { type } from 'arkenv';
 
 // Define schema once
-const envSchema = type({
+const Env = type({
   PORT: "number.port",
   HOST: "string.host",
 });
 
 // Reuse it in multiple places
-const configEnv = arkenv(envSchema, process.env);
-const testEnv = arkenv(envSchema, { PORT: "3000", HOST: "localhost" });
+const configEnv = arkenv(Env, process.env);
+const testEnv = arkenv(Env, { PORT: "3000", HOST: "localhost" });
 ```

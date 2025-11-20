@@ -29,15 +29,15 @@ That's where type definitions start making sense: define your schema once with `
 ```ts
 import arkenv, { type } from 'arkenv';
 
-const envSchema = type({
+const Env = type({
   HOST: "string.host",
   PORT: "number.port",
   DEBUG: "boolean",
 });
 
 // Use it in multiple places with full type inference
-const env1 = arkenv(envSchema, process.env);
-const env2 = arkenv(envSchema, { HOST: "localhost", PORT: "3000", DEBUG: "true" });
+const env1 = arkenv(Env, process.env);
+const env2 = arkenv(Env, { HOST: "localhost", PORT: "3000", DEBUG: "true" });
 
 // TypeScript knows the exact types
 const host: string = env1.HOST;
@@ -53,7 +53,7 @@ Export a type definition from one module and import it in others:
     ```ts
     import { type } from 'arkenv';
 
-    export const envSchema = type({
+    export const Env = type({
       DATABASE_HOST: "string.host",
       DATABASE_PORT: "number.port",
       API_KEY: "string",
@@ -63,17 +63,17 @@ Export a type definition from one module and import it in others:
   <Tab value="config/database.ts">
     ```ts
     import arkenv from 'arkenv';
-    import { envSchema } from './env-schema';
+    import { Env } from './env-schema';
 
-    export const dbEnv = arkenv(envSchema, process.env);
+    export const dbEnv = arkenv(Env, process.env);
     ```
   </Tab>
   <Tab value="config/api.ts">
     ```ts
     import arkenv from 'arkenv';
-    import { envSchema } from './env-schema';
+    import { Env } from './env-schema';
 
-    export const apiEnv = arkenv(envSchema, process.env);
+    export const apiEnv = arkenv(Env, process.env);
     ```
   </Tab>
 </Tabs>
@@ -85,13 +85,13 @@ Type definitions provide the same type safety as raw schema objects:
 ```ts
 import arkenv, { type } from 'arkenv';
 
-const envSchema = type({
+const Env = type({
   PORT: "number.port",
   HOST: "string.host",
   TIMEOUT: "number >= 0",
 });
 
-const env = arkenv(envSchema, process.env);
+const env = arkenv(Env, process.env);
 
 const port: number = env.PORT;
 const host: string = env.HOST;
@@ -105,13 +105,13 @@ Use the same schema with different environment sources:
 ```ts
 import arkenv, { type } from 'arkenv';
 
-const envSchema = type({
+const Env = type({
   API_URL: "string",
   API_KEY: "string",
 });
 
-const productionEnv = arkenv(envSchema, process.env);
-const testEnv = arkenv(envSchema, {
+const productionEnv = arkenv(Env, process.env);
+const testEnv = arkenv(Env, {
   API_URL: "http://localhost:3000",
   API_KEY: "test-key",
 });

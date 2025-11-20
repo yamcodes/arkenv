@@ -7,7 +7,7 @@ import { defineConfig, loadEnv } from "vite";
 // This schema is used for both:
 // 1. Validating unprefixed config variables (PORT) via loadEnv
 // 2. Validating VITE_* variables via the plugin
-const envSchema = type({
+const Env = type({
 	PORT: "number.port",
 	VITE_MY_VAR: "string",
 	VITE_MY_NUMBER: type("string").pipe((str) => Number.parseInt(str, 10)),
@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
 	// Validate unprefixed config variables (e.g., PORT) using loadEnv
 	// These are server-only and not exposed to client code
 	// The schema defined with type() can be passed directly to arkenv()
-	const env = arkenv(envSchema, loadEnv(mode, process.cwd(), ""));
+	const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
 
 	console.log(env.VITE_MY_NUMBER + " " + typeof env.VITE_MY_NUMBER);
 	return {
@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => {
 			reactPlugin(),
 			// The plugin validates VITE_* variables and exposes them to client code
 			// The same schema is reused here to avoid duplication
-			arkenvVitePlugin(envSchema),
+			arkenvVitePlugin(Env),
 		],
 		server: {
 			port: env.PORT,

@@ -111,25 +111,25 @@
 
 ### Minor Changes
 
-- #### `EnvSchema` type now always uses ArkEnv scope _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
+- #### `Env` type now always uses ArkEnv scope _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
 
-  The `EnvSchema` type has been simplified and fixed to include the ArkEnv scope.
+  The `Env` type has been simplified and fixed to include the ArkEnv scope.
 
   Before:
 
   ```
-  export type EnvSchema<def, $ = {}> = type.validate<def, $>;
+  export type Env<def, $ = {}> = type.validate<def, $>;
   ```
 
   After:
 
   ```
-  export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>; // (Whereas $ is the ArkEnv scope)
+  export type Env<def> = type.validate<def, (typeof $)["t"]>; // (Whereas $ is the ArkEnv scope)
   ```
 
   BREAKING CHANGE:
 
-  We no longer allow specifying a custom scope in the `EnvSchema` type.
+  We no longer allow specifying a custom scope in the `Env` type.
 
 - #### `createEnv` signature simplified _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
 
@@ -139,7 +139,7 @@
 
   BREAKING CHANGE:
 
-  You can no longer rely on `EnvSchema` to type `createEnv` with a custom scope. Only the ArkEnv scope is supported.
+  You can no longer rely on `Env` to type `createEnv` with a custom scope. Only the ArkEnv scope is supported.
 
 ### Patch Changes
 

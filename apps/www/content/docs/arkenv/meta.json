@@ -10,10 +10,10 @@
 		"---API---",
 		"morphs",
 		"---Integrations---",
-		"[VS Code & Cursor](/docs/integrations/vscode)",
-		"[JetBrains IDEs](/docs/integrations/jetbrains)",
+		"[VS Code & Cursor](/docs/arkenv/integrations/vscode)",
+		"[JetBrains IDEs](/docs/arkenv/integrations/jetbrains)",
 		"---How-to---",
-		"[Load environment variables](/docs/how-to/load-environment-variables)",
-		"[New][Reuse your schema](/docs/how-to/reuse-schemas)"
+		"[Load environment variables](/docs/arkenv/how-to/load-environment-variables)",
+		"[New][Reuse your schema](/docs/arkenv/how-to/reuse-schemas)"
 	]
 }

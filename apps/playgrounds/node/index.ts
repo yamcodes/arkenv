@@ -1,6 +1,6 @@
 import arkenv, { type } from "arkenv";
 
-const envSchema = type({
+const Env = type({
 	HOST: "string.host",
 	PORT: "number.port",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
@@ -8,7 +8,7 @@ const envSchema = type({
 	DEBUG: "boolean = true",
 });
 
-const env = arkenv(envSchema, process.env);
+const env = arkenv(Env, process.env);
 
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
