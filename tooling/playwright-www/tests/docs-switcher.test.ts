@@ -12,7 +12,9 @@ test.describe("Documentation Switcher", () => {
 		await expect(tablist).toBeVisible();
 	});
 
-	test("should display both arkenv and vite-plugin options", async ({ page }) => {
+	test("should display both arkenv and vite-plugin options", async ({
+		page,
+	}) => {
 		await page.goto("/docs");
 		await page.waitForLoadState("networkidle");
 
@@ -39,7 +41,9 @@ test.describe("Documentation Switcher", () => {
 		await expect(page.locator("h1")).toContainText("What is ArkEnv?");
 	});
 
-	test("should switch to vite-plugin section when clicked", async ({ page }) => {
+	test("should switch to vite-plugin section when clicked", async ({
+		page,
+	}) => {
 		await page.goto("/docs");
 		await page.waitForLoadState("networkidle");
 
@@ -63,7 +67,9 @@ test.describe("Documentation Switcher", () => {
 		await expect(page.locator("h1")).toContainText("What is the Vite plugin?");
 	});
 
-	test("should switch back to arkenv section when clicked", async ({ page }) => {
+	test("should switch back to arkenv section when clicked", async ({
+		page,
+	}) => {
 		await page.goto("/docs");
 		await page.waitForLoadState("networkidle");
 
@@ -115,15 +121,15 @@ test.describe("Documentation Switcher", () => {
 		await expect(page).toHaveURL("/docs/arkenv");
 	});
 
-	test("should display correct content for arkenv section", async ({ page }) => {
+	test("should display correct content for arkenv section", async ({
+		page,
+	}) => {
 		await page.goto("/docs/arkenv");
 		await page.waitForLoadState("networkidle");
 
 		// Check for arkenv-specific content
 		await expect(page.locator("h1")).toContainText("What is ArkEnv?");
-		await expect(
-			page.locator("text=The core library").first(),
-		).toBeVisible();
+		await expect(page.locator("text=The core library").first()).toBeVisible();
 	});
 
 	test("should display correct content for vite-plugin section", async ({
@@ -228,4 +234,3 @@ test.describe("Documentation Switcher", () => {
 		await assertNoConsoleErrors(page, "/docs");
 	});
 });
-

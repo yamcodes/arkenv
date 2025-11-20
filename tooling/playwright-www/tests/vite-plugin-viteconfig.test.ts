@@ -7,7 +7,9 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check page title
-		await expect(page.locator("h1")).toContainText("Using ArkEnv in Vite config");
+		await expect(page.locator("h1")).toContainText(
+			"Using ArkEnv in Vite config",
+		);
 	});
 
 	test("should display key content about loadEnv", async ({ page }) => {
@@ -31,11 +33,17 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		await expect(page.locator("text=vite.config.ts").first()).toBeVisible();
 
 		// Check for key code elements
-		await expect(page.locator("text=import arkenvVitePlugin").first()).toBeVisible();
+		await expect(
+			page.locator("text=import arkenvVitePlugin").first(),
+		).toBeVisible();
 		await expect(page.locator("text=import arkenv").first()).toBeVisible();
-		await expect(page.locator("text=import { defineConfig, loadEnv }").first()).toBeVisible();
+		await expect(
+			page.locator("text=import { defineConfig, loadEnv }").first(),
+		).toBeVisible();
 		await expect(page.locator("text=const Env = type").first()).toBeVisible();
-		await expect(page.locator("text=arkenv(Env, loadEnv").first()).toBeVisible();
+		await expect(
+			page.locator("text=arkenv(Env, loadEnv").first(),
+		).toBeVisible();
 	});
 
 	test("should display important callout about core package", async ({
@@ -59,7 +67,9 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 			page.locator("text=defining your schema *once*").first(),
 		).toBeVisible();
 		await expect(
-			page.locator("text=reusing it for both server-side config variables").first(),
+			page
+				.locator("text=reusing it for both server-side config variables")
+				.first(),
 		).toBeVisible();
 	});
 
@@ -89,8 +99,12 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check for environment variable examples
-		await expect(page.locator("text=PORT: \"number.port\"").first()).toBeVisible();
-		await expect(page.locator("text=VITE_API_URL: \"string\"").first()).toBeVisible();
+		await expect(
+			page.locator('text=PORT: "number.port"').first(),
+		).toBeVisible();
+		await expect(
+			page.locator('text=VITE_API_URL: "string"').first(),
+		).toBeVisible();
 		await expect(page.locator("text=port: env.PORT").first()).toBeVisible();
 	});
 
@@ -110,4 +124,3 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		await assertNoConsoleErrors(page, "/docs/vite-plugin/arkenv-in-viteconfig");
 	});
 });
-
