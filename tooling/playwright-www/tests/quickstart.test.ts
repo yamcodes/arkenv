@@ -3,7 +3,7 @@ import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Quickstart Page", () => {
 	test("should load quickstart page", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check page title
@@ -16,7 +16,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should display all installation steps", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for step headings (check if elements exist, not visibility)
@@ -34,7 +34,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should display installation command", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for package installation command
@@ -42,7 +42,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should display TypeScript configuration", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for tsconfig.json content
@@ -51,7 +51,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should display code examples", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for code blocks (check if elements exist, not visibility)
@@ -66,7 +66,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should display environment variable examples", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for .env file example
@@ -76,7 +76,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should display usage examples", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for database configuration example
@@ -86,7 +86,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should have working integration links", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for integration links
@@ -100,7 +100,7 @@ test.describe("Quickstart Page", () => {
 		}
 
 		// Navigate back to quickstart
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		const jetbrainsLink = page
@@ -114,7 +114,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should have working next steps cards", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Look for next steps section
@@ -137,7 +137,7 @@ test.describe("Quickstart Page", () => {
 	test("should have working environment variables guide link", async ({
 		page,
 	}) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Look for link to environment variables guide
@@ -161,7 +161,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should display tips and best practices", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check for tip about .env files
@@ -170,7 +170,7 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should have proper code syntax highlighting", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Check that code blocks are present and have proper styling
@@ -181,6 +181,6 @@ test.describe("Quickstart Page", () => {
 	});
 
 	test("should not have console errors", async ({ page }) => {
-		await assertNoConsoleErrors(page, "/docs/quickstart");
+		await assertNoConsoleErrors(page, "/docs/arkenv/quickstart");
 	});
 });

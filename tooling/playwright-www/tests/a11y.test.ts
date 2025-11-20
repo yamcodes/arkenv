@@ -8,13 +8,13 @@ test.describe("A11y Smoke Tests", () => {
 	// All top-level routes for smoke testing
 	const topRoutes = [
 		"/",
-		"/docs",
-		"/docs/quickstart",
-		"/docs/examples",
-		"/docs/morphs",
-		"/docs/integrations/vscode",
-		"/docs/integrations/jetbrains",
-		"/docs/how-to/load-environment-variables",
+		"/docs/arkenv",
+		"/docs/arkenv/quickstart",
+		"/docs/arkenv/examples",
+		"/docs/arkenv/morphs",
+		"/docs/arkenv/integrations/vscode",
+		"/docs/arkenv/integrations/jetbrains",
+		"/docs/arkenv/how-to/load-environment-variables",
 	];
 
 	test("should have proper landmarks on all top routes", async ({ page }) => {
@@ -55,8 +55,8 @@ test.describe("A11y Smoke Tests", () => {
 	test("should have proper page titles on all top routes", async ({ page }) => {
 		const expectedTitles: Record<string, string> = {
 			"/": "ArkEnv",
-			"/docs": "What is ArkEnv? · ArkEnv",
-			"/docs/quickstart": "Quickstart · ArkEnv",
+			"/docs/arkenv": "What is ArkEnv? · ArkEnv",
+			"/docs/arkenv/quickstart": "Quickstart · ArkEnv",
 		};
 
 		for (const url of topRoutes) {

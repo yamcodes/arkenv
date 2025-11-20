@@ -3,7 +3,7 @@ import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Morphs/API Page", () => {
 	test("should load morphs page", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check page title
@@ -14,7 +14,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should display boolean morph documentation", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for boolean section (check if element exists, not visibility)
@@ -28,7 +28,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should display code examples", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for code blocks (check if elements exist, not visibility)
@@ -43,7 +43,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should display boolean values explanation", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for boolean values explanation
@@ -52,7 +52,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should display default values example", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for default values example
@@ -61,7 +61,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should display custom morph example", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for custom morph example
@@ -72,7 +72,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should display command line examples", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for command line examples
@@ -83,7 +83,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should have proper code syntax highlighting", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check that code blocks are present and have proper styling
@@ -94,7 +94,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should display result examples", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for result examples
@@ -104,7 +104,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should have working external links", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for any external links
@@ -126,7 +126,7 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should have proper page structure", async ({ page }) => {
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 
 		// Check for main content area
@@ -144,6 +144,6 @@ test.describe("Morphs/API Page", () => {
 	});
 
 	test("should not have console errors", async ({ page }) => {
-		await assertNoConsoleErrors(page, "/docs/morphs");
+		await assertNoConsoleErrors(page, "/docs/arkenv/morphs");
 	});
 });

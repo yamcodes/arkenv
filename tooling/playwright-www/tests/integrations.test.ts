@@ -3,7 +3,7 @@ import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Integration Pages", () => {
 	test("should load VS Code integration page", async ({ page }) => {
-		await page.goto("/docs/integrations/vscode");
+		await page.goto("/docs/arkenv/integrations/vscode");
 		await page.waitForLoadState("networkidle");
 
 		// Check page title
@@ -16,7 +16,7 @@ test.describe("Integration Pages", () => {
 	});
 
 	test("should have VS Code marketplace links", async ({ page }) => {
-		await page.goto("/docs/integrations/vscode");
+		await page.goto("/docs/arkenv/integrations/vscode");
 		await page.waitForLoadState("networkidle");
 
 		// Check for marketplace links
@@ -41,7 +41,7 @@ test.describe("Integration Pages", () => {
 	});
 
 	test("should display VS Code extension descriptions", async ({ page }) => {
-		await page.goto("/docs/integrations/vscode");
+		await page.goto("/docs/arkenv/integrations/vscode");
 		await page.waitForLoadState("networkidle");
 
 		// Check for extension descriptions
@@ -53,7 +53,7 @@ test.describe("Integration Pages", () => {
 	});
 
 	test("should have working card links", async ({ page }) => {
-		await page.goto("/docs/integrations/vscode");
+		await page.goto("/docs/arkenv/integrations/vscode");
 		await page.waitForLoadState("networkidle");
 
 		// Check for card links
@@ -69,7 +69,7 @@ test.describe("Integration Pages", () => {
 	});
 
 	test("should load JetBrains integration page", async ({ page }) => {
-		await page.goto("/docs/integrations/jetbrains");
+		await page.goto("/docs/arkenv/integrations/jetbrains");
 		await page.waitForLoadState("networkidle");
 
 		// Check page title
@@ -80,7 +80,7 @@ test.describe("Integration Pages", () => {
 	});
 
 	test("should have JetBrains marketplace links", async ({ page }) => {
-		await page.goto("/docs/integrations/jetbrains");
+		await page.goto("/docs/arkenv/integrations/jetbrains");
 		await page.waitForLoadState("networkidle");
 
 		// Check for marketplace links (JetBrains might use different marketplace)
@@ -97,7 +97,7 @@ test.describe("Integration Pages", () => {
 	});
 
 	test("should display JetBrains extension descriptions", async ({ page }) => {
-		await page.goto("/docs/integrations/jetbrains");
+		await page.goto("/docs/arkenv/integrations/jetbrains");
 		await page.waitForLoadState("networkidle");
 
 		// Check for extension descriptions
@@ -110,7 +110,10 @@ test.describe("Integration Pages", () => {
 	test("should have proper page structure for both integration pages", async ({
 		page,
 	}) => {
-		const pages = ["/docs/integrations/vscode", "/docs/integrations/jetbrains"];
+		const pages = [
+			"/docs/arkenv/integrations/vscode",
+			"/docs/arkenv/integrations/jetbrains",
+		];
 
 		for (const url of pages) {
 			await page.goto(url);
@@ -126,7 +129,10 @@ test.describe("Integration Pages", () => {
 	});
 
 	test("should have working external links on both pages", async ({ page }) => {
-		const pages = ["/docs/integrations/vscode", "/docs/integrations/jetbrains"];
+		const pages = [
+			"/docs/arkenv/integrations/vscode",
+			"/docs/arkenv/integrations/jetbrains",
+		];
 
 		for (const url of pages) {
 			await page.goto(url);
@@ -151,7 +157,10 @@ test.describe("Integration Pages", () => {
 	test("should not have console errors on integration pages", async ({
 		page,
 	}) => {
-		const pages = ["/docs/integrations/vscode", "/docs/integrations/jetbrains"];
+		const pages = [
+			"/docs/arkenv/integrations/vscode",
+			"/docs/arkenv/integrations/jetbrains",
+		];
 		await assertNoConsoleErrors(page, pages);
 	});
 });
