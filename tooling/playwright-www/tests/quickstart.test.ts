@@ -91,12 +91,12 @@ test.describe("Quickstart Page", () => {
 
 		// Check for integration links
 		const vscodeLink = page
-			.locator("a[href='/docs/integrations/vscode']")
+			.locator("a[href='/docs/arkenv/integrations/vscode']")
 			.first();
 		if (await vscodeLink.isVisible()) {
 			await expect(vscodeLink).toBeVisible();
 			await vscodeLink.click();
-			await expect(page).toHaveURL("/docs/integrations/vscode");
+			await expect(page).toHaveURL("/docs/arkenv/integrations/vscode");
 		}
 
 		// Navigate back to quickstart
@@ -104,12 +104,12 @@ test.describe("Quickstart Page", () => {
 		await page.waitForLoadState("networkidle");
 
 		const jetbrainsLink = page
-			.locator("a[href='/docs/integrations/jetbrains']")
+			.locator("a[href='/docs/arkenv/integrations/jetbrains']")
 			.first();
 		if (await jetbrainsLink.isVisible()) {
 			await expect(jetbrainsLink).toBeVisible();
 			await jetbrainsLink.click();
-			await expect(page).toHaveURL("/docs/integrations/jetbrains");
+			await expect(page).toHaveURL("/docs/arkenv/integrations/jetbrains");
 		}
 	});
 
@@ -142,16 +142,16 @@ test.describe("Quickstart Page", () => {
 
 		// Look for link to environment variables guide
 		const envGuideLink = page
-			.locator("a[href='/docs/how-to/load-environment-variables']")
+			.locator("a[href='/docs/arkenv/how-to/load-environment-variables']")
 			.first();
 		if (await envGuideLink.isVisible()) {
 			await expect(envGuideLink).toBeVisible();
 			await envGuideLink.click();
 			// Wait for navigation to complete
-			await page.waitForURL("**/docs/how-to/load-environment-variables", {
+			await page.waitForURL("**/docs/arkenv/how-to/load-environment-variables", {
 				timeout: 10000,
 			});
-			await expect(page).toHaveURL("/docs/how-to/load-environment-variables");
+			await expect(page).toHaveURL("/docs/arkenv/how-to/load-environment-variables");
 		}
 	});
 
