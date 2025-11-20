@@ -4,7 +4,12 @@ title: Using ArkEnv in Vite config
 
 import { Globe } from "lucide-react";
 
+
 Vite doesn't automatically load `.env*` files when evaluating your `vite.config.ts` - those variables are only available later in your application code via `import.meta.env`. If you need environment variables in your config (like setting `server.port` or conditionally enabling plugins), you'll need to load them manually using Vite's `loadEnv` helper.
+
+> [!IMPORTANT]
+> You must have the core `arkenv` package installed in your project for this to work. See [arkenv](/docs/arkenv) for more information.
+
 
 Here's how to validate those variables with ArkEnv. The key is defining your schema *once* with ArkEnv's`type()` and reusing it for both server-side config variables and client-exposed `VITE_*` variables:
 
@@ -34,9 +39,6 @@ Note how the schema is defined once but used in two different places:
 
 1. Environment variables needed for the Vite config (`PORT`) are available via `loadEnv()` and validated by ArkEnv.
 2. Public `VITE_*` variables that should be available in your client code (like `VITE_API_URL`) are validated by the `@arkenv/vite-plugin`.
-
-> [!IMPORTANT]
-> You must have the core `arkenv` package installed in your project for this to work. See [arkenv](/docs/arkenv) for more information.
 
 <Cards>
 	<Card icon={<Globe aria-hidden="true" />} title="Using Environment Variables in Config (Vite docs)" href="https://vite.dev/config/#using-environment-variables-in-config" />
