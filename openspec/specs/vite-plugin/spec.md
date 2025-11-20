@@ -1,5 +1,8 @@
-## ADDED Requirements
+# vite-plugin Specification
 
+## Purpose
+TBD - created by archiving change fix-vite-plugin-env-filter. Update Purpose after archive.
+## Requirements
 ### Requirement: Vite Plugin Environment Variable Filtering
 
 The Vite plugin SHALL automatically filter environment variables to only expose those matching Vite's configured prefix (defaults to `VITE_`) to client code. Server-only environment variables without the prefix SHALL NOT be exposed to the client bundle.
