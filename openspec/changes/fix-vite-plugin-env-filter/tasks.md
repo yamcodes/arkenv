@@ -1,8 +1,8 @@
 ## 1. Implementation
 
 - [x] 1.1 Modify plugin to access Vite's `envPrefix` from config (default to `"VITE_"`)
-- [x] 1.2 Filter schema keys to only include those matching the prefix
-- [x] 1.3 Update plugin to validate and expose only filtered variables
+- [x] 1.2 Validate all environment variables against the schema
+- [x] 1.3 Filter validated results to expose only variables matching the configured prefix
 - [x] 1.4 Update plugin implementation in `packages/vite-plugin/src/index.ts`
 
 ## 2. Testing
