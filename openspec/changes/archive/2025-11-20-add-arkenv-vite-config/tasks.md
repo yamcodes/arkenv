@@ -54,8 +54,20 @@
 
 ## 5. Validation
 
-- [ ] 5.1 Run `openspec validate add-arkenv-vite-config --strict`
-- [ ] 5.2 Verify all examples work correctly
-- [ ] 5.3 Check that documentation is clear and complete
-- [ ] 5.4 Ensure examples demonstrate the distinction between config and client env vars
+- [x] 5.1 Run `openspec validate add-arkenv-vite-config --strict`
+  - Spec validation passed: `vite-config-usage` spec is valid
+- [x] 5.2 Verify all examples work correctly
+  - Vite playground builds successfully
+  - Type checking passes for both `arkenv` and `vite-plugin` packages
+  - Example demonstrates schema reuse pattern correctly
+- [x] 5.3 Check that documentation is clear and complete
+  - Documentation page created at `docs/vite-plugin/arkenv-in-viteconfig.mdx`
+  - Clearly explains Vite's env loading behavior
+  - Shows minimal, practical example
+  - Links to Vite's official documentation
+  - Distinguishes between config and client variables
+- [x] 5.4 Ensure examples demonstrate the distinction between config and client env vars
+  - Playground example: `PORT` (unprefixed, config-only) vs `VITE_*` (client-exposed)
+  - Documentation example: `PORT` (config) vs `VITE_API_URL` (client)
+  - Both examples clearly show schema defined once and reused for both purposes
 
