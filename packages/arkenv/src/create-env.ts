@@ -4,7 +4,7 @@ import { $ } from "./scope";
 
 type RuntimeEnvironment = Record<string, string | undefined>;
 
-export type Env<def> = type.validate<def, (typeof $)["t"]>;
+export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
 
 /**
  * Extract the inferred type from an ArkType type definition by checking its call signature
@@ -33,7 +33,7 @@ type InferType<T> = T extends (
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
 export function createEnv<const T extends Record<string, unknown>>(
-	def: Env<T>,
+	def: EnvSchema<T>,
 	env?: RuntimeEnvironment,
 ): distill.Out<type.infer<T, (typeof $)["t"]>>;
 export function createEnv<T extends type.Any>(
@@ -41,11 +41,11 @@ export function createEnv<T extends type.Any>(
 	env?: RuntimeEnvironment,
 ): InferType<T>;
 export function createEnv<const T extends Record<string, unknown>>(
-	def: Env<T> | type.Any,
+	def: EnvSchema<T> | type.Any,
 	env?: RuntimeEnvironment,
 ): distill.Out<type.infer<T, (typeof $)["t"]>> | InferType<typeof def>;
 export function createEnv<const T extends Record<string, unknown>>(
-	def: Env<T> | type.Any,
+	def: EnvSchema<T> | type.Any,
 	env: RuntimeEnvironment = process.env,
 ): distill.Out<type.infer<T, (typeof $)["t"]>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
@@ -53,7 +53,7 @@ export function createEnv<const T extends Record<string, unknown>>(
 	const schema =
 		typeof def === "function" && "assert" in def
 			? def
-			: $.type.raw(def as Env<T>);
+			: $.type.raw(def as EnvSchema<T>);
 
 	const validatedEnv = schema(env);
 
