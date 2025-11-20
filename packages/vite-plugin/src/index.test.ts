@@ -258,12 +258,12 @@ describe("Plugin Unit Tests", () => {
 		expect(result.define).toEqual({});
 	});
 
-	it("should preserve key names exactly as provided", () => {
+	it("should preserve key names exactly as provided for prefixed variables", () => {
 		const mockTransformedEnv = {
 			VITE_SPECIAL_CHARS: "test",
 			VITE_123_NUMERIC: "test",
 			VITE_UPPERCASE: "test",
-			vite_lowercase: "test",
+			vite_lowercase: "test", // This doesn't start with VITE_ so it will be filtered out
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
@@ -295,12 +295,14 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
+		// Only variables starting with VITE_ are exposed
 		expect(result.define).toEqual({
 			"import.meta.env.VITE_SPECIAL_CHARS": '"test"',
 			"import.meta.env.VITE_123_NUMERIC": '"test"',
 			"import.meta.env.VITE_UPPERCASE": '"test"',
-			"import.meta.env.vite_lowercase": '"test"',
 		});
+		// Variables not starting with VITE_ are filtered out
+		expect(result.define).not.toHaveProperty("import.meta.env.vite_lowercase");
 	});
 
 	it("should propagate errors from createEnv", () => {
@@ -335,6 +337,194 @@ describe("Plugin Unit Tests", () => {
 				);
 			}
 		}).toThrow("Environment validation failed");
+	});
+
+	it("should filter out server-only variables (default VITE_ prefix)", () => {
+		// Mock createEnv to return both server-only and client-safe variables
+		const mockTransformedEnv = {
+			PORT: 3000,
+			DATABASE_URL: "postgres://localhost:5432/db",
+			VITE_API_URL: "https://api.example.com",
+			VITE_DEBUG: true,
+		};
+		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+
+		const pluginInstance = arkenvPlugin({
+			PORT: "number.port",
+			DATABASE_URL: "string",
+			VITE_API_URL: "string",
+			VITE_DEBUG: "boolean",
+		});
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify only VITE_* variables are exposed
+		expect(result.define).toEqual({
+			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
+			"import.meta.env.VITE_DEBUG": "true",
+		});
+		// Verify server-only variables are NOT exposed
+		expect(result.define).not.toHaveProperty("import.meta.env.PORT");
+		expect(result.define).not.toHaveProperty("import.meta.env.DATABASE_URL");
+	});
+
+	it("should respect custom envPrefix configuration", () => {
+		// Mock createEnv to return variables with different prefixes
+		const mockTransformedEnv = {
+			PUBLIC_API_URL: "https://api.example.com",
+			PUBLIC_DEBUG: true,
+			VITE_OLD_VAR: "should not be exposed",
+			SECRET_KEY: "should not be exposed",
+		};
+		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+
+		const pluginInstance = arkenvPlugin({
+			PUBLIC_API_URL: "string",
+			PUBLIC_DEBUG: "boolean",
+			VITE_OLD_VAR: "string",
+			SECRET_KEY: "string",
+		});
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			// Pass custom envPrefix in config
+			result = pluginInstance.config.call(
+				mockContext,
+				{ envPrefix: "PUBLIC_" },
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify only PUBLIC_* variables are exposed
+		expect(result.define).toEqual({
+			"import.meta.env.PUBLIC_API_URL": '"https://api.example.com"',
+			"import.meta.env.PUBLIC_DEBUG": "true",
+		});
+		// Verify other variables are NOT exposed
+		expect(result.define).not.toHaveProperty("import.meta.env.VITE_OLD_VAR");
+		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
+	});
+
+	it("should default to VITE_ prefix when envPrefix is not configured", () => {
+		const mockTransformedEnv = {
+			VITE_API_URL: "https://api.example.com",
+			PUBLIC_DEBUG: true,
+		};
+		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+
+		const pluginInstance = arkenvPlugin({
+			VITE_API_URL: "string",
+			PUBLIC_DEBUG: "boolean",
+		});
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			// Pass config without envPrefix (should default to VITE_)
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify only VITE_* variables are exposed (default prefix)
+		expect(result.define).toEqual({
+			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
+		});
+		// Verify PUBLIC_* variable is NOT exposed (not matching default prefix)
+		expect(result.define).not.toHaveProperty("import.meta.env.PUBLIC_DEBUG");
+	});
+
+	it("should support array of prefixes in envPrefix configuration", () => {
+		// Mock createEnv to return variables with different prefixes
+		const mockTransformedEnv = {
+			VITE_API_URL: "https://api.example.com",
+			PUBLIC_DEBUG: true,
+			CUSTOM_PREFIX_VAR: "test",
+			SECRET_KEY: "should not be exposed",
+		};
+		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+
+		const pluginInstance = arkenvPlugin({
+			VITE_API_URL: "string",
+			PUBLIC_DEBUG: "boolean",
+			CUSTOM_PREFIX_VAR: "string",
+			SECRET_KEY: "string",
+		});
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			// Pass array of prefixes in config
+			result = pluginInstance.config.call(
+				mockContext,
+				{ envPrefix: ["VITE_", "PUBLIC_", "CUSTOM_PREFIX_"] },
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify variables matching any prefix in the array are exposed
+		expect(result.define).toEqual({
+			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
+			"import.meta.env.PUBLIC_DEBUG": "true",
+			"import.meta.env.CUSTOM_PREFIX_VAR": '"test"',
+		});
+		// Verify variables not matching any prefix are NOT exposed
+		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
 });
 

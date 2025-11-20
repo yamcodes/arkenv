@@ -37,8 +37,8 @@ export default defineConfig(({ mode }) => {
 
 Note how the schema is defined once but used in two different places: 
 
-1. Environment variables needed for the Vite config (`PORT`) are available via `loadEnv()` and validated by ArkEnv.
-2. Public `VITE_*` variables that should be available in your client code (like `VITE_API_URL`) are validated by the `@arkenv/vite-plugin`.
+1. Environment variables needed for the Vite config (`PORT`) are available via `loadEnv()` and validated by ArkEnv. These server-only variables are not exposed to client code.
+2. Public `VITE_*` variables that should be available in your client code (like `VITE_API_URL`) are validated by the `@arkenv/vite-plugin`. The plugin automatically filters the schema to only expose variables matching the Vite prefix (defaults to `VITE_`), preventing server-only variables from leaking into the client bundle.
 
 <Cards>
 	<Card icon={<Globe aria-hidden="true" />} title="Using Environment Variables in Config (Vite docs)" href="https://vite.dev/config/#using-environment-variables-in-config" />

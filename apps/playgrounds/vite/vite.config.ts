@@ -7,6 +7,7 @@ import { defineConfig, loadEnv } from "vite";
 // This schema is used for both:
 // 1. Validating unprefixed config variables (PORT) via loadEnv
 // 2. Validating VITE_* variables via the plugin
+// The plugin automatically filters to only expose variables matching the Vite prefix (defaults to VITE_)
 const Env = type({
 	PORT: "number.port",
 	VITE_MY_VAR: "string",
@@ -25,7 +26,9 @@ export default defineConfig(({ mode }) => {
 	return {
 		plugins: [
 			reactPlugin(),
-			// The plugin validates VITE_* variables and exposes them to client code
+			// The plugin validates VITE_* variables and automatically filters to only expose
+			// variables matching the Vite prefix (defaults to VITE_). Server-only variables
+			// like PORT are automatically excluded from the client bundle.
 			// The same schema is reused here to avoid duplication
 			arkenvVitePlugin(Env),
 		],
