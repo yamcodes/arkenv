@@ -58,15 +58,15 @@ test.describe("Documentation Navigation", () => {
 	test("should navigate from homepage to quickstart", async ({ page }) => {
 		await page.goto("/");
 		// Wait for the button to be visible instead of networkidle (more reliable, especially on webkit)
-		const sailButton = page.locator("a[href='/docs/quickstart']");
+		const sailButton = page.locator("a[href='/docs/arkenv/quickstart']");
 		await expect(sailButton).toBeVisible();
 
 		// Click the "Set sail" button
 		await sailButton.click();
 
 		// Wait for navigation to complete with timeout
-		await page.waitForURL("**/docs/quickstart", { timeout: 30000 });
-		await expect(page).toHaveURL("/docs/quickstart");
+		await page.waitForURL("**/docs/arkenv/quickstart", { timeout: 30000 });
+		await expect(page).toHaveURL("/docs/arkenv/quickstart");
 		await expect(page.locator("body")).toBeVisible();
 	});
 
