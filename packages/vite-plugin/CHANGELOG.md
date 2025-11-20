@@ -1,5 +1,43 @@
 # @arkenv/vite-plugin
 
+## 0.0.17
+
+### Patch Changes
+
+- #### Support type definitions for schema reuse _[`2424391`](https://github.com/yamcodes/arkenv/commit/24243912101b8a1ef944a3d4d15747196a1a2215) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv()` and `@arkenv/vite-plugin` now accept both raw schema objects and type definitions created with ArkType's `type()` function. This allows you to define your schema once and reuse it across your application, which is especially useful for multi-runtime setups like Vite where you need the same schema in both `vite.config.ts` and client code.
+
+  ```ts
+  import arkenv, { type } from "arkenv";
+
+  // Define schema once
+  const Env = type({
+    PORT: "number.port",
+    HOST: "string.host",
+  });
+
+  // Reuse it in multiple places
+  const configEnv = arkenv(Env, process.env);
+  const testEnv = arkenv(Env, { PORT: "3000", HOST: "localhost" });
+  ```
+
+- #### Fix security issue where server-only environment variables were exposed to client code _[`#386`](https://github.com/yamcodes/arkenv/pull/386) [`efc75c9`](https://github.com/yamcodes/arkenv/commit/efc75c91d3f6b01e541d946a55c196579f86556f) [@yamcodes](https://github.com/yamcodes)_
+
+  The plugin now automatically filters to only expose variables matching Vite's configured prefix (defaults to `VITE_`), preventing sensitive server-side configuration from leaking into the client bundle.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`2424391`](https://github.com/yamcodes/arkenv/commit/24243912101b8a1ef944a3d4d15747196a1a2215)
+
+</small>
+
+- `arkenv@0.7.6`
+
+</details>
+
 ## 0.0.16
 
 ### Patch Changes
