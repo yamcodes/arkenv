@@ -55,7 +55,7 @@ With the development server running (if it isn't - just run `bun dev`), let's se
     ArkEnvError: Errors found while validating environment variables
       MY_ENV_VAR must be a string (was missing)
     ```
-    This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.js.org/docs/how-to/load-environment-variables#using-env-files).
+    This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.js.org/docs/arkenv/how-to/load-environment-variables#using-env-files).
 
 3. #### Copy the `.env.example` file to `.env`
    
