@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { source } from "~/lib/source";
 
 export function middleware(request: NextRequest) {
@@ -23,10 +23,7 @@ export function middleware(request: NextRequest) {
 	// Extract the slug from the path
 	// e.g., /docs/quickstart -> ["quickstart"]
 	// e.g., /docs/how-to/load -> ["how-to", "load"]
-	const slug = pathname
-		.replace("/docs", "")
-		.split("/")
-		.filter(Boolean);
+	const slug = pathname.replace("/docs", "").split("/").filter(Boolean);
 
 	// Check if the page exists with the original slug
 	const page = source.getPage(slug);
@@ -52,4 +49,3 @@ export function middleware(request: NextRequest) {
 export const config = {
 	matcher: "/docs/:path*",
 };
-
