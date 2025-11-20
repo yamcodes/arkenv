@@ -55,6 +55,24 @@ test.describe("Documentation Navigation", () => {
 		}
 	});
 
+	test("should load vite-plugin pages", async ({ page }) => {
+		const vitePluginPages = [
+			"/docs/vite-plugin",
+			"/docs/vite-plugin/arkenv-in-viteconfig",
+		];
+
+		for (const url of vitePluginPages) {
+			await page.goto(url);
+			await page.waitForLoadState("networkidle");
+
+			// Check page loads without errors
+			await expect(page.locator("body")).toBeVisible();
+
+			// Check for basic content structure
+			await expect(page.locator("main").first()).toBeVisible();
+		}
+	});
+
 	test("should navigate from homepage to quickstart", async ({ page }) => {
 		await page.goto("/");
 		// Wait for the button to be visible instead of networkidle (more reliable, especially on webkit)
@@ -125,6 +143,11 @@ test.describe("Documentation Navigation", () => {
 			{ url: "/docs/arkenv/quickstart", expectedTitle: "Quickstart" },
 			{ url: "/docs/arkenv/examples", expectedTitle: "Start with an example" },
 			{ url: "/docs/arkenv/morphs", expectedTitle: "Morphs" },
+			{ url: "/docs/vite-plugin", expectedTitle: "What is the Vite plugin?" },
+			{
+				url: "/docs/vite-plugin/arkenv-in-viteconfig",
+				expectedTitle: "Using ArkEnv in Vite config",
+			},
 		];
 
 		for (const { url, expectedTitle } of pages) {
@@ -175,6 +198,8 @@ test.describe("Documentation Navigation", () => {
 			"/docs/arkenv/integrations/vscode",
 			"/docs/arkenv/integrations/jetbrains",
 			"/docs/arkenv/how-to/load-environment-variables",
+			"/docs/vite-plugin",
+			"/docs/vite-plugin/arkenv-in-viteconfig",
 		];
 
 		await assertNoConsoleErrors(page, docPages);
