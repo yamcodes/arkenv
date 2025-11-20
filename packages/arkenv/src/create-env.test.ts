@@ -109,4 +109,82 @@ describe("env", () => {
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
 	});
+
+	describe("type definitions", () => {
+		it("should accept type definitions created with type()", () => {
+			process.env.TEST_STRING = "hello";
+			process.env.TEST_PORT = "3000";
+
+			const envSchema = type({
+				TEST_STRING: "string",
+				TEST_PORT: "number.port",
+			});
+
+			const env = createEnv(envSchema);
+
+			expect(env.TEST_STRING).toBe("hello");
+			expect(env.TEST_PORT).toBe(3000);
+		});
+
+		it("should provide correct type inference with type definitions", () => {
+			process.env.TEST_STRING = "hello";
+			process.env.TEST_PORT = "3000";
+
+			const envSchema = type({
+				TEST_STRING: "string",
+				TEST_PORT: "number.port",
+			});
+
+			const env = createEnv(envSchema);
+
+			// TypeScript should infer these correctly
+			const str: string = env.TEST_STRING;
+			const port: number = env.TEST_PORT;
+
+			expect(str).toBe("hello");
+			expect(port).toBe(3000);
+		});
+
+		it("should allow reusing the same type definition multiple times", () => {
+			process.env.TEST_STRING = "hello";
+
+			const envSchema = type({
+				TEST_STRING: "string",
+			});
+
+			// Use the same schema multiple times
+			const env1 = createEnv(envSchema, { TEST_STRING: "first" });
+			const env2 = createEnv(envSchema, { TEST_STRING: "second" });
+
+			expect(env1.TEST_STRING).toBe("first");
+			expect(env2.TEST_STRING).toBe("second");
+		});
+
+		it("should throw when type definition validation fails", () => {
+			process.env.INVALID_PORT = "not-a-port";
+
+			const envSchema = type({
+				INVALID_PORT: "number.port",
+			});
+
+			expect(() => createEnv(envSchema)).toThrow(/INVALID_PORT/);
+		});
+
+		it("should work with custom environment and type definitions", () => {
+			const envSchema = type({
+				HOST: "string.host",
+				PORT: "number.port",
+			});
+
+			const customEnv = {
+				HOST: "localhost",
+				PORT: "8080",
+			};
+
+			const env = createEnv(envSchema, customEnv);
+
+			expect(env.HOST).toBe("localhost");
+			expect(env.PORT).toBe(8080);
+		});
+	});
 });

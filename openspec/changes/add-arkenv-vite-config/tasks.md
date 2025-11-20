@@ -15,15 +15,24 @@
   - Not needed - `createEnv` directly accepts type definitions, no wrapper required
 - [x] 1.4 Ensure the solution allows schema to be shared between `loadEnv` call and plugin definition
   - Schema defined with `type()` outside `defineConfig` can be reused in both places
-- [ ] 1.5 Add tests for the implemented solution
+- [x] 1.5 Add tests for the implemented solution
+  - [x] Added tests for `createEnv` accepting type definitions
+  - [x] Added tests for type inference with type definitions
+  - [x] Added tests for schema reuse pattern
+  - [x] Added tests for error handling with type definitions
 
 ## 2. Documentation
 
-- [ ] 2.1 Add section to `packages/arkenv/README.md` about using ArkEnv in vite.config.ts with unprefixed variables
-- [ ] 2.2 Create or update documentation page for Vite config usage
-- [ ] 2.3 Clearly document distinction between server-only (config) and client-exposed (`VITE_*`) env vars
-- [ ] 2.4 Add examples showing common patterns (server config, build settings, etc.)
-- [ ] 2.5 Document usage with Vite's `loadEnv` function
+- [x] 2.1 Add section to `packages/arkenv/README.md` about using ArkEnv in vite.config.ts with unprefixed variables
+  - Added link to formal docs instead of full section
+- [x] 2.2 Create or update documentation page for Vite config usage
+  - Created `docs/vite-plugin/arkenv-in-viteconfig.mdx`
+- [x] 2.3 Clearly document distinction between server-only (config) and client-exposed (`VITE_*`) env vars
+  - Documented in `arkenv-in-viteconfig.mdx`
+- [x] 2.4 Add examples showing common patterns (server config, build settings, etc.)
+  - Example shows server.port usage
+- [x] 2.5 Document usage with Vite's `loadEnv` function
+  - Documented in `arkenv-in-viteconfig.mdx`
 
 ## 3. Examples
 
@@ -34,10 +43,14 @@
 
 ## 4. Testing
 
-- [ ] 4.1 Add test case verifying ArkEnv works in vite.config.ts context with `loadEnv`
-- [ ] 4.2 Test error handling when config env vars are invalid
-- [ ] 4.3 Verify type safety in vite.config.ts examples
-- [ ] 4.4 Test the loadEnv wrapper utility (if implemented)
+- [x] 4.1 Add test case verifying ArkEnv works in vite.config.ts context with `loadEnv`
+  - Tests verify `createEnv` works with type definitions and custom environments (simulating loadEnv)
+- [x] 4.2 Test error handling when config env vars are invalid
+  - Tests verify error handling with type definitions
+- [x] 4.3 Verify type safety in vite.config.ts examples
+  - Type safety verified through TypeScript compilation and tests
+- [x] 4.4 Test the loadEnv wrapper utility (if implemented)
+  - Not needed - `createEnv` directly accepts type definitions
 
 ## 5. Validation
 

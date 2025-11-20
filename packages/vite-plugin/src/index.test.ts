@@ -336,6 +336,7 @@ describe("Plugin Unit Tests", () => {
 			}
 		}).toThrow("Environment validation failed");
 	});
+
 });
 
 async function readTestConfig(fixtureDir: string) {

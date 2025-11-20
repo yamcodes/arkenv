@@ -117,7 +117,7 @@ bun add arkenv arktype
 
 ## Plugins
 
-- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin) (currently under development) - Vite plugin to validate environment variables at build-time. Requires [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite).
+- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin) (currently under development) - Vite plugin to validate environment variables at build-time. Requires [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite). See the [Vite plugin documentation](https://arkenv.js.org/docs/vite-plugin) for usage in `vite.config.ts`.
 
 ## Supporting ArkEnv
 
