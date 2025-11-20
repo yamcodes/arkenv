@@ -46,20 +46,24 @@ Vite has a built-in convention where only environment variables prefixed with `V
 
 **Implementation approach**:
 - In the `config` hook, read `config.envPrefix` (or default to `"VITE_"`)
-- Filter the schema keys to only include those starting with the prefix
-- Only validate and expose the filtered subset to client code
+- Validate all variables in the schema using `createEnv`
+- Filter the validated results to only include those matching the prefix
+- Expose only the filtered subset to client code
 
-### Decision: Filter Schema Before Validation
+### Decision: Validate All, Then Filter Results
 
-**What**: Filter the schema keys to only include those matching the prefix, then validate only those keys.
+**What**: Validate all environment variables in the schema using `createEnv`, then filter the validated results to only include those matching the Vite prefix.
 
 **Why**:
-- More efficient - only validates what will be exposed
-- Clearer intent - the schema passed to `createEnv` only contains client-safe variables
-- Prevents validation errors for server-only variables that shouldn't be in the client schema
+- **Schema type compatibility**: Works seamlessly with both raw schema objects `{ PORT: "number.port" }` and `type()` definitions without requiring schema manipulation
+- **Security**: Validates all variables, catching missing or invalid server-only variables early, even if they won't be exposed to the client
+- **Consistency**: Uses the same schema for both server-side and client-side validation, ensuring consistent validation rules
+- **Simplicity**: No complex schema manipulation needed - just filter the validated results
+- **Better error messages**: Validation errors reference actual variable names from the original schema
+- **Performance**: Overhead is minimal for typical schemas (most schemas have < 20 variables)
 
 **Alternative considered**:
-- Validate all, then filter results - Less efficient and could cause validation errors for server-only variables that aren't meant for client
+- **Filter schema, then validate**: Would require complex schema manipulation to handle both raw schemas and `type()` definitions, potentially losing type information. Also provides less validation coverage since server-only variables wouldn't be validated in the plugin context. The complexity and type safety concerns outweigh the minor performance benefit.
 
 ## Risks / Trade-offs
 
