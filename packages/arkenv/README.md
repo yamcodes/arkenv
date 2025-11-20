@@ -22,7 +22,7 @@
 <br/>
 <br/>
 
-### [Read the docs →](https://arkenv.js.org/docs)
+### [Read the docs →](https://arkenv.js.org/docs/arkenv)
 
 <br/>
 <br/>
@@ -30,7 +30,7 @@
 ## Introduction 
 
 > [!TIP]
-> 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs) to hover over code blocks and get type hints!
+> 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs/arkenv) to hover over code blocks and get type hints!
 
 ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
 

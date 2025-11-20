@@ -21,7 +21,7 @@ describe("SailButton", () => {
 	it("renders as a link to docs/quickstart", () => {
 		render(<SailButton />);
 		const link = screen.getByRole("link");
-		expect(link).toHaveAttribute("href", "/docs/quickstart");
+		expect(link).toHaveAttribute("href", "/docs/arkenv/quickstart");
 	});
 
 	it("handles left click and triggers animation", async () => {

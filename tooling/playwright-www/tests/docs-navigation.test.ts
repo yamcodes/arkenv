@@ -4,10 +4,10 @@ import { assertNoConsoleErrors } from "./utils/console-errors";
 test.describe("Documentation Navigation", () => {
 	test("should load main documentation pages", async ({ page }) => {
 		const docPages = [
-			"/docs",
-			"/docs/quickstart",
-			"/docs/examples",
-			"/docs/morphs",
+			"/docs/arkenv",
+			"/docs/arkenv/quickstart",
+			"/docs/arkenv/examples",
+			"/docs/arkenv/morphs",
 		];
 
 		for (const url of docPages) {
@@ -24,8 +24,8 @@ test.describe("Documentation Navigation", () => {
 
 	test("should load integration pages", async ({ page }) => {
 		const integrationPages = [
-			"/docs/integrations/vscode",
-			"/docs/integrations/jetbrains",
+			"/docs/arkenv/integrations/vscode",
+			"/docs/arkenv/integrations/jetbrains",
 		];
 
 		for (const url of integrationPages) {
@@ -41,7 +41,7 @@ test.describe("Documentation Navigation", () => {
 	});
 
 	test("should load how-to pages", async ({ page }) => {
-		const howToPages = ["/docs/how-to/load-environment-variables"];
+		const howToPages = ["/docs/arkenv/how-to/load-environment-variables"];
 
 		for (const url of howToPages) {
 			await page.goto(url);
@@ -58,15 +58,15 @@ test.describe("Documentation Navigation", () => {
 	test("should navigate from homepage to quickstart", async ({ page }) => {
 		await page.goto("/");
 		// Wait for the button to be visible instead of networkidle (more reliable, especially on webkit)
-		const sailButton = page.locator("a[href='/docs/quickstart']");
+		const sailButton = page.locator("a[href='/docs/arkenv/quickstart']");
 		await expect(sailButton).toBeVisible();
 
 		// Click the "Set sail" button
 		await sailButton.click();
 
 		// Wait for navigation to complete with timeout
-		await page.waitForURL("**/docs/quickstart", { timeout: 30000 });
-		await expect(page).toHaveURL("/docs/quickstart");
+		await page.waitForURL("**/docs/arkenv/quickstart", { timeout: 30000 });
+		await expect(page).toHaveURL("/docs/arkenv/quickstart");
 		await expect(page.locator("body")).toBeVisible();
 	});
 
@@ -74,24 +74,26 @@ test.describe("Documentation Navigation", () => {
 		page,
 	}) => {
 		// Start at quickstart
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Look for navigation links to other docs pages
-		const examplesLink = page.locator("a[href='/docs/examples']").first();
+		const examplesLink = page
+			.locator("a[href='/docs/arkenv/examples']")
+			.first();
 		if (await examplesLink.isVisible()) {
 			await examplesLink.click();
-			await expect(page).toHaveURL("/docs/examples");
+			await expect(page).toHaveURL("/docs/arkenv/examples");
 		}
 
 		// Navigate to morphs page
-		await page.goto("/docs/morphs");
+		await page.goto("/docs/arkenv/morphs");
 		await page.waitForLoadState("networkidle");
 		await expect(page.locator("body")).toBeVisible();
 	});
 
 	test("should have functional sidebar navigation", async ({ page }) => {
-		await page.goto("/docs");
+		await page.goto("/docs/arkenv");
 		await page.waitForLoadState("networkidle");
 
 		// Look for navigation elements (these might be in a sidebar or nav)
@@ -103,7 +105,7 @@ test.describe("Documentation Navigation", () => {
 	});
 
 	test("should have working breadcrumbs", async ({ page }) => {
-		await page.goto("/docs/quickstart");
+		await page.goto("/docs/arkenv/quickstart");
 		await page.waitForLoadState("networkidle");
 
 		// Look for breadcrumb navigation
@@ -119,10 +121,10 @@ test.describe("Documentation Navigation", () => {
 		page,
 	}) => {
 		const pages = [
-			{ url: "/docs", expectedTitle: "What is ArkEnv?" },
-			{ url: "/docs/quickstart", expectedTitle: "Quickstart" },
-			{ url: "/docs/examples", expectedTitle: "Start with an example" },
-			{ url: "/docs/morphs", expectedTitle: "Morphs" },
+			{ url: "/docs/arkenv", expectedTitle: "What is ArkEnv?" },
+			{ url: "/docs/arkenv/quickstart", expectedTitle: "Quickstart" },
+			{ url: "/docs/arkenv/examples", expectedTitle: "Start with an example" },
+			{ url: "/docs/arkenv/morphs", expectedTitle: "Morphs" },
 		];
 
 		for (const { url, expectedTitle } of pages) {
@@ -136,7 +138,7 @@ test.describe("Documentation Navigation", () => {
 	});
 
 	test("should have working external links", async ({ page }) => {
-		await page.goto("/docs");
+		await page.goto("/docs/arkenv");
 		await page.waitForLoadState("networkidle");
 
 		// Check for GitHub links
@@ -166,13 +168,13 @@ test.describe("Documentation Navigation", () => {
 
 	test("should not have console errors on any docs page", async ({ page }) => {
 		const docPages = [
-			"/docs",
-			"/docs/quickstart",
-			"/docs/examples",
-			"/docs/morphs",
-			"/docs/integrations/vscode",
-			"/docs/integrations/jetbrains",
-			"/docs/how-to/load-environment-variables",
+			"/docs/arkenv",
+			"/docs/arkenv/quickstart",
+			"/docs/arkenv/examples",
+			"/docs/arkenv/morphs",
+			"/docs/arkenv/integrations/vscode",
+			"/docs/arkenv/integrations/jetbrains",
+			"/docs/arkenv/how-to/load-environment-variables",
 		];
 
 		await assertNoConsoleErrors(page, docPages);

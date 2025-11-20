@@ -1,0 +1,19 @@
+{
+	"title": "arkenv",
+	"description": "The core library",
+	"root": true,
+	"pages": [
+		"---Introduction---",
+		"index",
+		"quickstart",
+		"examples",
+		"---API---",
+		"morphs",
+		"---Integrations---",
+		"[VS Code & Cursor](/docs/arkenv/integrations/vscode)",
+		"[JetBrains IDEs](/docs/arkenv/integrations/jetbrains)",
+		"---How-to---",
+		"[Load environment variables](/docs/arkenv/how-to/load-environment-variables)",
+		"[New][Reuse your schema](/docs/arkenv/how-to/reuse-schemas)"
+	]
+}

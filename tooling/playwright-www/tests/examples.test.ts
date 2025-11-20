@@ -3,7 +3,7 @@ import { assertNoConsoleErrors } from "./utils/console-errors";
 
 test.describe("Examples Page", () => {
 	test("should load examples page", async ({ page }) => {
-		await page.goto("/docs/examples");
+		await page.goto("/docs/arkenv/examples");
 		await page.waitForLoadState("networkidle");
 
 		// Check page title
@@ -16,7 +16,7 @@ test.describe("Examples Page", () => {
 	});
 
 	test("should display examples list", async ({ page }) => {
-		await page.goto("/docs/examples");
+		await page.goto("/docs/arkenv/examples");
 		await page.waitForLoadState("networkidle");
 
 		// Check for examples content (this might be included from examples/README.md)
@@ -30,7 +30,7 @@ test.describe("Examples Page", () => {
 	});
 
 	test("should have GitHub contribution link", async ({ page }) => {
-		await page.goto("/docs/examples");
+		await page.goto("/docs/arkenv/examples");
 		await page.waitForLoadState("networkidle");
 
 		// Look for GitHub contribution link
@@ -45,7 +45,7 @@ test.describe("Examples Page", () => {
 	});
 
 	test("should have working external links", async ({ page }) => {
-		await page.goto("/docs/examples");
+		await page.goto("/docs/arkenv/examples");
 		await page.waitForLoadState("networkidle");
 
 		// Check for any external links
@@ -64,7 +64,7 @@ test.describe("Examples Page", () => {
 	});
 
 	test("should display example descriptions", async ({ page }) => {
-		await page.goto("/docs/examples");
+		await page.goto("/docs/arkenv/examples");
 		await page.waitForLoadState("networkidle");
 
 		// Look for example descriptions or cards
@@ -77,7 +77,7 @@ test.describe("Examples Page", () => {
 	});
 
 	test("should have proper page structure", async ({ page }) => {
-		await page.goto("/docs/examples");
+		await page.goto("/docs/arkenv/examples");
 		await page.waitForLoadState("networkidle");
 
 		// Check for main content area
@@ -89,6 +89,6 @@ test.describe("Examples Page", () => {
 	});
 
 	test("should not have console errors", async ({ page }) => {
-		await assertNoConsoleErrors(page, "/docs/examples");
+		await assertNoConsoleErrors(page, "/docs/arkenv/examples");
 	});
 });

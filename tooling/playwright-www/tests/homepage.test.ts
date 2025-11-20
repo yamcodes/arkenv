@@ -41,15 +41,15 @@ test.describe("Homepage", () => {
 		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
 		// Check button is visible
-		const sailButton = page.locator("a[href='/docs/quickstart']");
+		const sailButton = page.locator("a[href='/docs/arkenv/quickstart']");
 		await expect(sailButton).toBeVisible();
 		await expect(sailButton).toContainText("Set sail");
 
 		// Test navigation
 		await sailButton.click();
 		// Wait for navigation to complete with longer timeout
-		await page.waitForURL("**/docs/quickstart", { timeout: 30000 });
-		await expect(page).toHaveURL("/docs/quickstart");
+		await page.waitForURL("**/docs/arkenv/quickstart", { timeout: 30000 });
+		await expect(page).toHaveURL("/docs/arkenv/quickstart");
 	});
 
 	test("should have functional 'Star us on GitHub' button", async ({

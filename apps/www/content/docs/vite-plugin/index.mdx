@@ -1,0 +1,20 @@
+---
+title: What is the Vite plugin?
+---
+
+This is the Vite plugin for ArkEnv. It validates environment variables at build-time with ArkEnv.
+
+```ts title="vite.config.ts"
+import arkenv from "@arkenv/vite-plugin";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    arkenv({
+      VITE_API_URL: "string",
+      VITE_APP_NAME: "'MyApp' | 'TestApp'",
+      "VITE_DEBUG": 'boolean = false'
+    }),
+  ],
+});
+```

@@ -2,28 +2,14 @@
 
 [Vite](https://vite.dev/) plugin to validate environment variables at build-time with ArkEnv.
 
-## Installation
+<br/>
+<br/>
+<br/>
 
-```sh
-npm install @arkenv/vite-plugin arkenv arktype
-```
+## [Read the docs →](https://arkenv.js.org/docs/vite-plugin)
 
-## Quickstart
-
-```typescript title="vite.config.ts"
-import arkenv from "@arkenv/vite-plugin";
-import { defineConfig } from "vite";
-
-export default defineConfig({
-  plugins: [
-    arkenv({
-      VITE_API_URL: "string",
-      VITE_APP_NAME: "'MyApp' | 'TestApp'",
-      "VITE_DEBUG?": 'boolean = false'
-    }),
-  ],
-});
-```
+<br/>
+<br/>
 
 ## Features
 
@@ -31,37 +17,39 @@ export default defineConfig({
 - Typesafe environment variables backed by TypeScript
 - Access to ArkType's powerful type system
 
-## Usage
+## Installation
 
-Simply add the plugin to your Vite config and define your environment variables:
+<details open>
+<summary>npm</summary>
 
-```typescript
-// vite.config.ts
-import arkenv from "@arkenv/vite-plugin";
-import { defineConfig } from "vite";
-
-export default defineConfig({
-  plugins: [
-    arkenv({
-      VITE_API_URL: "string",
-      VITE_NODE_ENV: "'development' | 'production' | 'test'",
-      "VITE_DEBUG?": 'boolean = false',
-      "VITE_ALLOWED_ORIGINS?": 'string[] = []'
-    }),
-  ],
-});
+```sh
+npm install @arkenv/vite-plugin arktype
 ```
+</details>
 
-## Environment Variables
+<details>
+<summary>pnpm</summary>
 
-Create a `.env` file in your project root:
-
-```dotenv title=".env"
-VITE_API_URL=https://api.example.com
-VITE_NODE_ENV=development
-VITE_DEBUG=true
-VITE_ALLOWED_ORIGINS=http://localhost:3000,https://example.com
+```sh
+pnpm add @arkenv/vite-plugin arktype
 ```
+</details>
+
+<details>
+<summary>Yarn</summary>
+
+```sh
+yarn add @arkenv/vite-plugin arktype
+```
+</details>
+
+<details>
+<summary>Bun</summary>
+
+```sh
+bun add @arkenv/vite-plugin arktype
+```
+</details>
 
 ## FAQ
 
