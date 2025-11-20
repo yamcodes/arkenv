@@ -35,6 +35,9 @@ Note how the schema is defined once but used in two different places:
 1. Environment variables needed for the Vite config (`PORT`) are available via `loadEnv()` and validated by ArkEnv.
 2. Public `VITE_*` variables that should be available in your client code (like `VITE_API_URL`) are validated by the `@arkenv/vite-plugin`.
 
+> [!IMPORTANT]
+> You must have the core `arkenv` package installed in your project for this to work. See [arkenv](/docs/arkenv) for more information.
+
 <Cards>
 	<Card icon={<Globe aria-hidden="true" />} title="Using Environment Variables in Config (Vite docs)" href="https://vite.dev/config/#using-environment-variables-in-config" />
 </Cards>

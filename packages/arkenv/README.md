@@ -22,7 +22,7 @@
 <br/>
 <br/>
 
-### [Read the docs →](https://arkenv.js.org/docs)
+### [Read the docs →](https://arkenv.js.org/docs/arkenv)
 
 <br/>
 <br/>
@@ -30,7 +30,7 @@
 ## Introduction 
 
 > [!TIP]
-> 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs) to hover over code blocks and get type hints!
+> 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs/arkenv) to hover over code blocks and get type hints!
 
 ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
 
@@ -117,7 +117,7 @@ bun add arkenv arktype
 
 ## Plugins
 
-- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin) (currently under development) - Vite plugin to validate environment variables at build-time. Requires [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite). See the [Vite plugin documentation](https://arkenv.js.org/docs/vite-plugin) for usage in `vite.config.ts`.
+- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin) (currently under development) - Vite plugin to validate environment variables at build-time. Requires [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite).
 
 ## Supporting ArkEnv
 

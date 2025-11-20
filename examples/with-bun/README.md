@@ -88,6 +88,6 @@ With the development server running (if it isn't - just run `bun dev`), let's se
 
 ### Next steps
 
-- [ArkEnv docs](https://arkenv.js.org/docs)
+- [ArkEnv docs](https://arkenv.js.org/docs/arkenv)
 - [ArkType docs](https://arktype.io/)
 - [Bun docs](https://bun.com/docs)
