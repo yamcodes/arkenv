@@ -17,6 +17,16 @@ const config = {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
 	},
+	// Redirect /docs to /docs/arkenv
+	async redirects() {
+		return [
+			{
+				source: "/docs",
+				destination: "/docs/arkenv",
+				permanent: true,
+			},
+		];
+	},
 	// PostHog rewrites to support analytics ingestion proxy
 	async rewrites() {
 		return [

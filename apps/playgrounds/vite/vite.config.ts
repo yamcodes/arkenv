@@ -1,5 +1,5 @@
-import ArkEnv from "@arkenv/vite-plugin";
-import React from "@vitejs/plugin-react";
+import arkenvVitePlugin from "@arkenv/vite-plugin";
+import reactPlugin from "@vitejs/plugin-react";
 import arkenv, { type } from "arkenv";
 import { defineConfig, loadEnv } from "vite";
 
@@ -21,12 +21,13 @@ export default defineConfig(({ mode }) => {
 	// The schema defined with type() can be passed directly to arkenv()
 	const env = arkenv(envSchema, loadEnv(mode, process.cwd(), ""));
 
+	console.log(env.VITE_MY_NUMBER + " " + typeof env.VITE_MY_NUMBER);
 	return {
 		plugins: [
-			React(),
+			reactPlugin(),
 			// The plugin validates VITE_* variables and exposes them to client code
 			// The same schema is reused here to avoid duplication
-			ArkEnv(envSchema),
+			arkenvVitePlugin(envSchema),
 		],
 		server: {
 			port: env.PORT,

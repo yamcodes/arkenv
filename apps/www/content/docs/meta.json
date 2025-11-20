@@ -1,16 +1,3 @@
 {
-	"pages": [
-		"---Introduction---",
-		"index",
-		"quickstart",
-		"examples",
-		"---API---",
-		"morphs",
-		"---Integrations---",
-		"[VS Code & Cursor](/docs/integrations/vscode)",
-		"[JetBrains IDEs](/docs/integrations/jetbrains)",
-		"---How-to---",
-		"[Load environment variables](/docs/how-to/load-environment-variables)",
-		"[New][Reuse your schema](/docs/how-to/reuse-schemas)"
-	]
+	"pages": ["arkenv", "vite-plugin"]
 }
