@@ -1331,6 +1331,9 @@ packages:
   '@mux/playback-core@0.31.2':
     resolution: {integrity: sha512-bhOVTGAuKCQuDzNOc3XvDq7vsgqy2DAacLP0WdJciUKjfZhs3oA11NbKG7qAN6akPnZVfgn0Jn/sJN8TRjE30A==}
 
+  '@mux/playback-core@0.31.3':
+    resolution: {integrity: sha512-IiNnF6LeE8xB5lXzwCUmHUi40q/88ook/YYKTwDsIMG/0zY8b9Ypyzw9ghsELZH0mzuFmv+rvm3ufOIoaIi9eA==}
+
   '@napi-rs/wasm-runtime@1.0.7':
     resolution: {integrity: sha512-SeDnOO0Tk7Okiq6DbXmmBODgOAb9dp9gjlphokTUxmt8U3liIP1ZsozBahH69j/RJv+Rfs6IwUKHTgQYJ/HBAw==}
 
@@ -7420,6 +7423,11 @@ snapshots:
       hls.js: 1.6.15
       mux-embed: 5.14.0
 
+  '@mux/playback-core@0.31.3':
+    dependencies:
+      hls.js: 1.6.15
+      mux-embed: 5.14.0
+
   '@napi-rs/wasm-runtime@1.0.7':
     dependencies:
       '@emnapi/core': 1.7.1
@@ -11255,7 +11263,7 @@ snapshots:
       '@inquirer/prompts': 7.10.1(@types/node@24.10.1)
       '@mux/mux-node': 9.0.1
       '@mux/mux-video': 0.27.2
-      '@mux/playback-core': 0.31.2
+      '@mux/playback-core': 0.31.3
       '@next/env': 15.5.6
       '@paralleldrive/cuid2': 2.3.1
       '@vercel/blob': 0.27.3
