@@ -82,7 +82,7 @@ jobs:
       - name: Read @playwright/test version
         id: out
         run: |
-          VER=$(node -e "console.log(require(require.resolve('@playwright/test/package.json')).version)")
+          VER=$(grep -A 1 "catalog:" pnpm-workspace.yaml | grep "@playwright/test" | awk '{print $2}' | tr -d '"' | sed 's/\^//')
           echo "version=$VER" >> "$GITHUB_OUTPUT"
 
   test-e2e:
