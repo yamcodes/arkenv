@@ -11,7 +11,7 @@
 	},
 	"packageManager": "bun@1.2.22",
 	"dependencies": {
-		"arkregex": "0.0.2",
+		"arkregex": "0.0.3",
 		"typescript": "5.9.3"
 	}
 }
