@@ -11,7 +11,13 @@ import {
 
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
-	serverExternalPackages: ["typescript", "twoslash", "ts-morph"],
+	serverExternalPackages: [
+		"typescript",
+		"twoslash",
+		"ts-morph",
+		"import-in-the-middle",
+		"require-in-the-middle",
+	],
 	// cacheComponents: true, // TODO: Uncomment this once https://github.com/getsentry/sentry-javascript/issues/17895 is fixed
 	typescript: {
 		// We check typesafety on ci
