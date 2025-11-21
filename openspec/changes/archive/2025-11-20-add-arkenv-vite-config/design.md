@@ -38,7 +38,7 @@ Users need to validate unprefixed environment variables (e.g., `PORT`, database 
 
 ### Decision: Extend `createEnv` to Accept Type Definitions
 
-**What**: Modified `createEnv()` and the vite plugin to accept both:
+**What**: Modified `createEnv()` and the Vite plugin to accept both:
 - Raw schema objects (existing behavior)
 - Type definitions created with `type()` (new capability)
 

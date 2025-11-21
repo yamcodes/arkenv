@@ -8,7 +8,7 @@
 - [x] 1.2 Choose and implement the selected solution approach
   - [x] Modified `createEnv()` to accept both raw schema objects and type definitions created with `type()`
   - [x] Implemented proper type inference for type definitions using `InferType<T>` helper
-  - [x] Modified vite plugin to accept both raw schema objects and type definitions
+  - [x] Modified Vite plugin to accept both raw schema objects and type definitions
   - [x] Updated vite.config.ts example to use `type()` to define schema once, outside `defineConfig`
   - [x] Verified type inference works correctly - `env` is properly typed (not `unknown`)
 - [x] 1.3 If implementing a `loadEnv` wrapper, ensure it provides type-safe return values

@@ -38,7 +38,7 @@ The schema SHALL be defined using ArkType's `type()` function (not as a raw obje
 - **THEN** the schema can be defined once and used in both places
 - **AND** TypeScript types are available in both contexts
 - **AND** the solution avoids code duplication and maintains type safety
-- **AND** `createEnv()` and the vite plugin accept the type definition directly
+- **AND** `createEnv()` and the Vite plugin accept the type definition directly
 
 ### Requirement: loadEnv Wrapper Utility
 
@@ -49,7 +49,7 @@ The project SHALL support using ArkEnv with Vite's `loadEnv` function. Since `cr
 - **AND** they call `loadEnv()` to load environment variables
 - **AND** they pass both the type definition and `loadEnv()` result to `createEnv()` or `arkenv()`
 - **THEN** the environment variables are validated and returned as type-safe
-- **AND** the same type definition can be passed to the vite plugin for validating `VITE_*` variables
+- **AND** the same type definition can be passed to the Vite plugin for validating `VITE_*` variables
 - **AND** no separate wrapper utility is needed
 
 ### Requirement: Type Safety Constraint
@@ -82,7 +82,7 @@ The project SHALL provide clear documentation and examples for using ArkEnv in v
 - **AND** best practices are documented
 
 #### Scenario: Example demonstrates usage
-- **WHEN** a user looks at the vite playground example
+- **WHEN** a user looks at the Vite playground example
 - **THEN** they see an example of using ArkEnv with `loadEnv` in vite.config.ts
 - **AND** the example demonstrates validating unprefixed variables for config use
 - **AND** the example is clear and follows best practices

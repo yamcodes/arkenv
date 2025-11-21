@@ -125,7 +125,7 @@ pnpm test -- --run "integration"
 pnpm test --project arkenv -- --run "integration"
 pnpm test --project arkenv.js.org -- --run "integration"
 
-# Run only vite plugin tests
+# Run only Vite plugin tests
 pnpm test --project vite-plugin -- --run
 
 # Run end-to-end tests
@@ -189,7 +189,7 @@ Examples are kept clean and focused on demonstrating usage:
 
 The CI pipeline runs:
 - Unit tests for core functionality
-- Integration tests for the vite plugin using real examples
+- Integration tests for the Vite plugin using real examples
 - End-to-end tests for the www application across multiple browsers
 - Ensures no regressions in real-world usage scenarios
 - Validates complete user journeys in production-like environments
