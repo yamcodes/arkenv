@@ -1,11 +1,13 @@
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineProject } from "vitest/config";
 
 export default defineProject({
 	plugins: [
 		react({
-			plugins: [["@swc/plugin-styled-jsx", {}]],
+			babel: {
+				plugins: ["styled-jsx/babel"],
+			},
 		}),
 		tsconfigPaths(),
 	],
