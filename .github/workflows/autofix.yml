@@ -10,6 +10,15 @@ permissions:
 jobs:
   autofix:
     runs-on: ubuntu-latest
+    # Skip autofix for bot commits to avoid race conditions
+    # where manypkg fix updates to unpublished versions
+    if: |
+      github.event_name == 'pull_request' ||
+      (
+        github.event_name == 'push' &&
+        github.event.head_commit != null &&
+        github.event.sender.type != 'Bot'
+      )
     steps:
       - uses: actions/checkout@v5
 
