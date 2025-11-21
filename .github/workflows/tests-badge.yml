@@ -1,4 +1,10 @@
-name: tests # name is what appears in the badge
+# This workflow mirrors the result of the main "test" workflow for the README badge.
+# GitHub marks cancelled runs as "failed", which breaks the badge when we use concurrency.
+# This file filters out cancelled runs and only updates the badge on real successes or failures.
+# See relevant issue: https://github.com/actions/runner/issues/4047
+# For the real workflow, see test.yml
+
+name: tests # `name` is what appears in the badge
 
 on:
   workflow_run:
