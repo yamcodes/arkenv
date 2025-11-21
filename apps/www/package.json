@@ -49,7 +49,7 @@
 		"vite": "^7.2.4"
 	},
 	"devDependencies": {
-		"@swc/plugin-styled-jsx": "10.0.0",
+		"@swc/plugin-styled-jsx": "12.0.1",
 		"@tailwindcss/postcss": "4.1.17",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "6.9.1",
