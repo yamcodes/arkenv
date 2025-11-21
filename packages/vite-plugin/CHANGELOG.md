@@ -181,7 +181,7 @@
 
 - #### Fix types _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
 
-  Fix types in the vite plugin to correctly include all ArkType keywords as well as custom ArkEnv keywords like `string.host` and `number.port`.
+  Fix types in the Vite plugin to correctly include all ArkType keywords as well as custom ArkEnv keywords like `string.host` and `number.port`.
 
 - #### Fix default export autocomplete for better developer experience _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
 
@@ -338,7 +338,7 @@
 
   The plugin now supports Vite [Env Variables](https://vite.dev/guide/env-and-mode) out of the box.
 
-  This means that by providing a schema, vite will check that the environment variables are valid on build time (or dev time, if you're using `vite` or `vite dev`).
+  This means that by providing a schema, Vite will check that the environment variables are valid on build time (or dev time, if you're using `vite` or `vite dev`).
 
 ## 0.0.1
 

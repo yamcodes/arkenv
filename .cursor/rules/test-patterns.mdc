@@ -60,7 +60,7 @@ alwaysApply: true
 **Naming Convention:** Use `*.integration.test.ts` suffix to distinguish from unit tests.
 
 ### Vite Plugin Tests (`packages/vite-plugin/src/*.test.ts`)
-- Test the vite plugin using the `with-vite-react-ts` example as a fixture
+- Test the Vite plugin using the `with-vite-react-ts` example as a fixture
 - Validate that the plugin works with real Vite projects
 - Use fixture-based testing pattern (see `__fixtures__` directory)
 
