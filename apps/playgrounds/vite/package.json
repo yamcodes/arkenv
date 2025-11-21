@@ -14,13 +14,13 @@
 	"dependencies": {
 		"@arkenv/vite-plugin": "workspace:*",
 		"arkenv": "workspace:*",
-		"arktype": "2.1.26",
+		"arktype": "2.1.27",
 		"react": "19.2.0",
 		"react-dom": "19.2.0"
 	},
 	"devDependencies": {
 		"@julr/vite-plugin-validate-env": "2.2.0",
-		"@types/react": "19.2.5",
+		"@types/react": "19.2.6",
 		"@types/react-dom": "19.2.3",
 		"@vitejs/plugin-react": "5.1.1",
 		"globals": "16.5.0",
