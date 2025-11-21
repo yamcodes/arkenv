@@ -44,9 +44,9 @@ test.describe("Documentation Switcher", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check that arkenv is selected by default (may be tab or button)
-		const arkenvTab = page.locator(
-			'[role="tab"]:has-text("arkenv"), button:has-text("arkenv")',
-		).first();
+		const arkenvTab = page
+			.locator('[role="tab"]:has-text("arkenv"), button:has-text("arkenv")')
+			.first();
 
 		// Check if it's a tab with aria-selected, or verify by content
 		const isTab = (await arkenvTab.getAttribute("role")) === "tab";
@@ -65,9 +65,11 @@ test.describe("Documentation Switcher", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Click on vite-plugin (may be tab or button, "@arkenv/vite-plugin" or "vite-plugin")
-		const vitePluginTab = page.locator(
-			'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
-		).first();
+		const vitePluginTab = page
+			.locator(
+				'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
+			)
+			.first();
 		await vitePluginTab.click();
 
 		// Wait for content to update
@@ -80,9 +82,9 @@ test.describe("Documentation Switcher", () => {
 		}
 
 		// Check that arkenv is no longer selected (if it's a tab)
-		const arkenvTab = page.locator(
-			'[role="tab"]:has-text("arkenv"), button:has-text("arkenv")',
-		).first();
+		const arkenvTab = page
+			.locator('[role="tab"]:has-text("arkenv"), button:has-text("arkenv")')
+			.first();
 		if ((await arkenvTab.getAttribute("role")) === "tab") {
 			await expect(arkenvTab).toHaveAttribute("aria-selected", "false");
 		}
@@ -98,16 +100,18 @@ test.describe("Documentation Switcher", () => {
 		await page.waitForLoadState("networkidle");
 
 		// First switch to vite-plugin
-		const vitePluginTab = page.locator(
-			'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
-		).first();
+		const vitePluginTab = page
+			.locator(
+				'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
+			)
+			.first();
 		await vitePluginTab.click();
 		await page.waitForLoadState("networkidle");
 
 		// Then switch back to arkenv
-		const arkenvTab = page.locator(
-			'[role="tab"]:has-text("arkenv"), button:has-text("arkenv")',
-		).first();
+		const arkenvTab = page
+			.locator('[role="tab"]:has-text("arkenv"), button:has-text("arkenv")')
+			.first();
 		await arkenvTab.click();
 		await page.waitForLoadState("networkidle");
 
@@ -133,9 +137,11 @@ test.describe("Documentation Switcher", () => {
 		await expect(page).toHaveURL("/docs/arkenv");
 
 		// Switch to vite-plugin
-		const vitePluginTab = page.locator(
-			'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
-		).first();
+		const vitePluginTab = page
+			.locator(
+				'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
+			)
+			.first();
 		await vitePluginTab.click();
 		await page.waitForLoadState("networkidle");
 
@@ -143,9 +149,9 @@ test.describe("Documentation Switcher", () => {
 		await expect(page).toHaveURL("/docs/vite-plugin");
 
 		// Switch back to arkenv
-		const arkenvTab = page.locator(
-			'[role="tab"]:has-text("arkenv"), button:has-text("arkenv")',
-		).first();
+		const arkenvTab = page
+			.locator('[role="tab"]:has-text("arkenv"), button:has-text("arkenv")')
+			.first();
 		await arkenvTab.click();
 		await page.waitForLoadState("networkidle");
 
@@ -193,9 +199,11 @@ test.describe("Documentation Switcher", () => {
 			await page.waitForLoadState("networkidle");
 
 			// Check that vite-plugin is still selected (if it's a tab)
-			const vitePluginTab = page.locator(
-				'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
-			).first();
+			const vitePluginTab = page
+				.locator(
+					'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
+				)
+				.first();
 			if ((await vitePluginTab.getAttribute("role")) === "tab") {
 				await expect(vitePluginTab).toHaveAttribute("aria-selected", "true");
 			}
@@ -207,12 +215,14 @@ test.describe("Documentation Switcher", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check that switcher elements exist (may be tabs or buttons)
-		const arkenvTab = page.locator(
-			'[role="tab"]:has-text("arkenv"), button:has-text("arkenv")',
-		).first();
-		const vitePluginTab = page.locator(
-			'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
-		).first();
+		const arkenvTab = page
+			.locator('[role="tab"]:has-text("arkenv"), button:has-text("arkenv")')
+			.first();
+		const vitePluginTab = page
+			.locator(
+				'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
+			)
+			.first();
 
 		// Check aria-selected attribute if they're tabs
 		const arkenvRole = await arkenvTab.getAttribute("role");
@@ -246,9 +256,9 @@ test.describe("Documentation Switcher", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Focus on the first switcher element (arkenv) - may be tab or button
-		const arkenvTab = page.locator(
-			'[role="tab"]:has-text("arkenv"), button:has-text("arkenv")',
-		).first();
+		const arkenvTab = page
+			.locator('[role="tab"]:has-text("arkenv"), button:has-text("arkenv")')
+			.first();
 		await arkenvTab.focus();
 
 		// Use arrow key to navigate to next element (if tabs) or Tab (if buttons)
@@ -260,9 +270,11 @@ test.describe("Documentation Switcher", () => {
 		}
 
 		// Check that vite-plugin element is now focused
-		const vitePluginTab = page.locator(
-			'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
-		).first();
+		const vitePluginTab = page
+			.locator(
+				'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
+			)
+			.first();
 		await expect(vitePluginTab).toBeFocused();
 
 		// Press Enter to activate
@@ -280,16 +292,18 @@ test.describe("Documentation Switcher", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Switch to vite-plugin
-		const vitePluginTab = page.locator(
-			'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
-		).first();
+		const vitePluginTab = page
+			.locator(
+				'[role="tab"]:has-text("@arkenv/vite-plugin"), [role="tab"]:has-text("vite-plugin"), button:has-text("@arkenv/vite-plugin"), button:has-text("vite-plugin")',
+			)
+			.first();
 		await vitePluginTab.click();
 		await page.waitForLoadState("networkidle");
 
 		// Switch back to arkenv
-		const arkenvTab = page.locator(
-			'[role="tab"]:has-text("arkenv"), button:has-text("arkenv")',
-		).first();
+		const arkenvTab = page
+			.locator('[role="tab"]:has-text("arkenv"), button:has-text("arkenv")')
+			.first();
 		await arkenvTab.click();
 		await page.waitForLoadState("networkidle");
 
