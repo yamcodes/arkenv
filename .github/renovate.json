@@ -12,9 +12,9 @@
 	"lockFileMaintenance": {
 		"enabled": true,
 		"schedule": ["on friday"]
-	}, 
+	},
 	"automerge": false,
-  "automergeType": "pr",
+	"automergeType": "pr",
 	"packageRules": [
 		// Note: Order by least important to most important,
 		// see note at the end of https://docs.renovatebot.com/configuration-options/#packagerules
@@ -58,8 +58,8 @@
 			],
 			"matchUpdateTypes": ["minor", "patch"],
 			"matchCurrentVersion": ">=1.0.0",
-      "automerge": true,
-      "automergeType": "pr"
+			"automerge": true,
+			"automergeType": "pr"
 		},
 		{
 			"groupName": "the Bun group",
@@ -71,15 +71,15 @@
 			],
 			"matchUpdateTypes": ["minor", "patch"],
 			"matchCurrentVersion": ">=1.0.0",
-      "automerge": true,
-      "automergeType": "pr"
+			"automerge": true,
+			"automergeType": "pr"
 		},
 		{
 			"groupName": "the GitHub Actions group",
 			"matchManagers": ["github-actions"],
 			"matchUpdateTypes": ["minor", "patch"],
-      "automerge": true,
-      "automergeType": "pr"
+			"automerge": true,
+			"automergeType": "pr"
 		}
 	]
 }
