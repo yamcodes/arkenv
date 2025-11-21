@@ -82,9 +82,8 @@ jobs:
       - name: Read @playwright/test version
         id: out
         run: |
-          VER=$(grep -A 1 "catalog:" pnpm-workspace.yaml | grep "@playwright/test" | awk '{print $2}' | tr -d '"' | sed 's/\^//')
+          VER=$(awk '/^catalog:/{flag=1; next} flag && /@playwright\/test:/{print $2; exit}' pnpm-workspace.yaml | tr -d '"')
           echo "version=$VER" >> "$GITHUB_OUTPUT"
-
   test-e2e:
     needs: resolve-playwright-version
     runs-on: ubuntu-latest
