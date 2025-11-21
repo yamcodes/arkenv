@@ -15,6 +15,8 @@ test.describe("A11y Smoke Tests", () => {
 		"/docs/arkenv/integrations/vscode",
 		"/docs/arkenv/integrations/jetbrains",
 		"/docs/arkenv/how-to/load-environment-variables",
+		"/docs/vite-plugin",
+		"/docs/vite-plugin/arkenv-in-viteconfig",
 	];
 
 	test("should have proper landmarks on all top routes", async ({ page }) => {
