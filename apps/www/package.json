@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"@ark/util": "0.53.0",
-		"@arkenv/vite-plugin": "^0.0.17",
+		"@arkenv/vite-plugin": "0.0.17",
 		"@fumadocs/mdx-remote": "1.4.3",
 		"@icons-pack/react-simple-icons": "13.8.0",
 		"@radix-ui/react-separator": "1.1.8",
@@ -46,7 +46,7 @@
 		"tailwind-merge": "3.4.0",
 		"tailwindcss-animate": "1.0.7",
 		"twoslash": "0.3.4",
-		"vite": "^7.2.4"
+		"vite": "7.2.4"
 	},
 	"devDependencies": {
 		"@swc/plugin-styled-jsx": "10.0.0",
