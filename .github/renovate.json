@@ -9,9 +9,10 @@
 	"osvVulnerabilityAlerts": true,
 	"dependencyDashboard": true,
 	"updateInternalDeps": true,
+	"timezone": "Asia/Almaty",
 	"lockFileMaintenance": {
 		"enabled": true,
-		"schedule": ["on friday"],
+		"schedule": ["* 10 * * 5"], // Every Friday at 10:00 AM
 		"automerge": true,
 		"automergeType": "pr"
 	},
