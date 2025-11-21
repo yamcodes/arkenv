@@ -37,7 +37,7 @@
 		"typescript": "5.9.3",
 		"vitest": "4.0.9"
 	},
-	"packageManager": "pnpm@10.22.0",
+	"packageManager": "pnpm@10.23.0",
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
