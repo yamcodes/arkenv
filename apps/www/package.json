@@ -13,7 +13,7 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@ark/util": "0.53.0",
+		"@ark/util": "0.54.0",
 		"@arkenv/vite-plugin": "0.0.17",
 		"@fumadocs/mdx-remote": "1.4.3",
 		"@icons-pack/react-simple-icons": "13.8.0",

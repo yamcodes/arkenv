@@ -101,8 +101,8 @@ importers:
   apps/www:
     dependencies:
       '@ark/util':
-        specifier: 0.53.0
-        version: 0.53.0
+        specifier: 0.54.0
+        version: 0.54.0
       '@arkenv/vite-plugin':
         specifier: 0.0.17
         version: 0.0.17(arktype@2.1.26)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
