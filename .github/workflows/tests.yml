@@ -82,9 +82,8 @@ jobs:
       - name: Read @playwright/test version
         id: out
         run: |
-          VER=$(node -e "console.log(require(require.resolve('@playwright/test/package.json')).version)")
+          VER=$(awk '/overrides:/{flag=1; next} flag && /@playwright\/test/{print $2; exit}' pnpm-workspace.yaml | tr -d '",^')
           echo "version=$VER" >> "$GITHUB_OUTPUT"
-
   test-e2e:
     needs: resolve-playwright-version
     runs-on: ubuntu-latest
