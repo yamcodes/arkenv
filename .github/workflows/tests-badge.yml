@@ -1,0 +1,25 @@
+name: tests # name is what appears in the badge
+
+on:
+  workflow_run:
+    workflows: ["test"]
+    types: [completed]
+
+jobs:
+  mirror-status:
+    # Only care about push to main, and ignore cancelled runs
+    if: >
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror conclusion for badge
+        run: |
+          echo "Source conclusion: ${{ github.event.workflow_run.conclusion }}"
+          if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
+            echo "✅ Tests passed – keeping badge green"
+          else
+            echo "❌ Tests failed – making badge red"
+            exit 1
+          fi
