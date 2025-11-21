@@ -6,8 +6,8 @@ settings:
 
 overrides:
   '@playwright/test': ^1.56.0
-  import-in-the-middle: ^2.0.0
-  require-in-the-middle: ^8.0.1
+  import-in-the-middle: 2.0.0
+  require-in-the-middle: 8.0.1
 
 importers:
 
@@ -160,7 +160,7 @@ importers:
         specifier: 16.0.14
         version: 16.0.14(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(lucide-react@0.553.0(react@19.2.0))(next@16.0.3(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(tailwindcss@4.1.17)
       import-in-the-middle:
-        specifier: ^2.0.0
+        specifier: 2.0.0
         version: 2.0.0
       lucide-react:
         specifier: 0.553.0
@@ -187,7 +187,7 @@ importers:
         specifier: 8.0.0
         version: 8.0.0
       require-in-the-middle:
-        specifier: ^8.0.1
+        specifier: 8.0.1
         version: 8.0.1
       shiki:
         specifier: 3.15.0

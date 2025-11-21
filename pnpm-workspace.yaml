@@ -7,5 +7,5 @@ packages:
   - 'tooling/*'
 overrides:
   "@playwright/test": "^1.56.0"
-  "import-in-the-middle": "^2.0.0"
-  "require-in-the-middle": "^8.0.1"
+  "import-in-the-middle": "2.0.0"
+  "require-in-the-middle": "8.0.1"
