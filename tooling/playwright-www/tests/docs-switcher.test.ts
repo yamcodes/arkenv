@@ -5,11 +5,11 @@ import { assertNoConsoleErrors } from "./utils/console-errors";
 async function getSwitcherTabs(page: any) {
 	const tablist = page.locator('[role="tablist"]');
 	const tablistCount = await tablist.count();
-	
+
 	if (tablistCount === 0) {
 		return null;
 	}
-	
+
 	const tabs = page.locator('[role="tablist"] [role="tab"]');
 	const tabCount = await tabs.count();
 	return { tabs, tabCount };
@@ -37,8 +37,12 @@ test.describe("Documentation Switcher", () => {
 		// Fumadocs may render the switcher as a tablist or buttons
 		// Try to find either tablist or buttons/links with arkenv and vite-plugin text
 		const tablist = page.locator('[role="tablist"]');
-		const arkenvElements = page.locator('a[href*="arkenv"], button:has-text("arkenv"), [role="tab"]:has-text("arkenv")');
-		const vitePluginElements = page.locator('a[href*="vite-plugin"], button:has-text("vite"), [role="tab"]:has-text("vite")');
+		const arkenvElements = page.locator(
+			'a[href*="arkenv"], button:has-text("arkenv"), [role="tab"]:has-text("arkenv")',
+		);
+		const vitePluginElements = page.locator(
+			'a[href*="vite-plugin"], button:has-text("vite"), [role="tab"]:has-text("vite")',
+		);
 
 		// Check if tablist exists
 		const tablistCount = await tablist.count();
@@ -111,14 +115,14 @@ test.describe("Documentation Switcher", () => {
 			// Look for navigation elements that link to both sections
 			const arkenvLinks = page.locator('a[href*="/docs/arkenv"]');
 			const vitePluginLinks = page.locator('a[href*="/docs/vite-plugin"]');
-			
+
 			// Check if links exist in the DOM
-			const arkenvExists = await arkenvLinks.count() > 0;
-			const vitePluginExists = await vitePluginLinks.count() > 0;
-			
+			const arkenvExists = (await arkenvLinks.count()) > 0;
+			const vitePluginExists = (await vitePluginLinks.count()) > 0;
+
 			// At least arkenv should exist (we're on /docs/arkenv)
 			expect(arkenvExists).toBe(true);
-			
+
 			// If vite-plugin links don't exist, verify we can navigate directly
 			if (!vitePluginExists) {
 				await page.goto("/docs/vite-plugin");
@@ -143,12 +147,12 @@ test.describe("Documentation Switcher", () => {
 		// If switcher exists, check that arkenv is selected
 		const tablist = page.locator('[role="tablist"]');
 		const tablistCount = await tablist.count();
-		
+
 		if (tablistCount > 0) {
 			const tabs = page.locator('[role="tablist"] [role="tab"]');
 			const tabCount = await tabs.count();
 			let arkenvTab = null;
-			
+
 			for (let i = 0; i < tabCount; i++) {
 				const tab = tabs.nth(i);
 				const text = await tab.textContent();
@@ -177,9 +181,12 @@ test.describe("Documentation Switcher", () => {
 		if (!switcher) {
 			// No switcher exists - verify we can navigate directly to vite-plugin
 			await page.goto("/docs/vite-plugin");
-			await expect(page.locator("h1")).toContainText("What is the Vite plugin?", {
-				timeout: 10000,
-			});
+			await expect(page.locator("h1")).toContainText(
+				"What is the Vite plugin?",
+				{
+					timeout: 10000,
+				},
+			);
 			return;
 		}
 
@@ -217,7 +224,9 @@ test.describe("Documentation Switcher", () => {
 		if (!switcher) {
 			// No switcher - verify direct navigation works instead
 			await page.goto("/docs/vite-plugin");
-			await expect(page.locator("h1")).toContainText("What is the Vite plugin?");
+			await expect(page.locator("h1")).toContainText(
+				"What is the Vite plugin?",
+			);
 			await page.goto("/docs/arkenv");
 			await expect(page.locator("h1")).toContainText("What is ArkEnv?");
 			return;
