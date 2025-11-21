@@ -4,9 +4,7 @@ import { assertNoConsoleErrors } from "./utils/console-errors";
 test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 	test("should load arkenv-in-viteconfig page", async ({ page }) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
-
-		// Check page title
+		// Wait for content to load
 		await expect(page.locator("h1")).toContainText(
 			"Using ArkEnv in Vite config",
 		);
@@ -14,7 +12,8 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 
 	test("should display key content about loadEnv", async ({ page }) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
+		// Wait for content to load
+		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for key concepts
 		await expect(
@@ -27,7 +26,8 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		page,
 	}) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
+		// Wait for content to load
+		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for code block with vite.config.ts
 		await expect(page.locator("text=vite.config.ts").first()).toBeVisible();
@@ -50,7 +50,8 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		page,
 	}) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
+		// Wait for content to load
+		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for important callout
 		await expect(
@@ -60,11 +61,13 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 
 	test("should display explanation about schema reuse", async ({ page }) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
+		// Wait for content to load
+		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for explanation about defining schema once
+		// Note: *once* in markdown renders as italic, so match without asterisks
 		await expect(
-			page.locator("text=defining your schema *once*").first(),
+			page.locator("text=defining your schema").first(),
 		).toBeVisible();
 		await expect(
 			page
@@ -75,7 +78,8 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 
 	test("should have working external link to Vite docs", async ({ page }) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
+		// Wait for content to load
+		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for Vite docs link in Cards component
 		const viteDocsLink = page.locator(
@@ -96,21 +100,21 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		page,
 	}) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
+		// Wait for content to load
+		await expect(page.locator("h1")).toBeVisible();
 
-		// Check for environment variable examples
-		await expect(
-			page.locator('text=PORT: "number.port"').first(),
-		).toBeVisible();
-		await expect(
-			page.locator('text=VITE_API_URL: "string"').first(),
-		).toBeVisible();
-		await expect(page.locator("text=port: env.PORT").first()).toBeVisible();
+		// Check for environment variable examples in code blocks
+		// Code blocks may have syntax highlighting, so use more flexible selectors
+		await expect(page.locator("text=PORT").first()).toBeVisible();
+		await expect(page.locator("text=number.port").first()).toBeVisible();
+		await expect(page.locator("text=VITE_API_URL").first()).toBeVisible();
+		await expect(page.locator("text=env.PORT").first()).toBeVisible();
 	});
 
 	test("should have proper page structure", async ({ page }) => {
 		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
-		await page.waitForLoadState("networkidle");
+		// Wait for content to load
+		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for main content area
 		await expect(page.locator("main").first()).toBeVisible();
