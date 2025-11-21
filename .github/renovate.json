@@ -11,7 +11,9 @@
 	"updateInternalDeps": true,
 	"lockFileMaintenance": {
 		"enabled": true,
-		"schedule": ["on friday"]
+		"schedule": ["on friday"],
+		"automerge": true,
+		"automergeType": "pr"
 	},
 	"automerge": false,
 	"automergeType": "pr",
