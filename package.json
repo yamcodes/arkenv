@@ -31,7 +31,7 @@
 		"@manypkg/cli": "0.25.1",
 		"@vitest/ui": "4.0.10",
 		"changesets-changelog-clean": "1.3.0",
-		"rimraf": "6.1.0",
+		"rimraf": "6.1.2",
 		"turbo": "2.6.1",
 		"typescript": "5.9.3",
 		"vitest": "4.0.10"
