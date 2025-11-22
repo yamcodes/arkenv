@@ -2,6 +2,11 @@
 
 const { spawn, execSync } = require("node:child_process");
 
+// Skip postinstall during tests - types aren't needed for running tests
+if (process.env.SKIP_POSTINSTALL === "true") {
+	process.exit(0);
+}
+
 // Get Node.js major version
 const nodeVersion = process.version;
 const majorVersion = Number.parseInt(nodeVersion.slice(1).split(".")[0], 10);

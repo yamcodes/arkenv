@@ -31,7 +31,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
-      - run: pnpm install
+      - name: Install dependencies
+        env:
+          SKIP_POSTINSTALL: "true"
+        run: pnpm install
       - run: pnpm run test
 
   test-typesafety:
@@ -146,7 +149,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
-      - run: pnpm install
+      - name: Install dependencies
+        env:
+          SKIP_POSTINSTALL: "true"
+        run: pnpm install
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
@@ -192,7 +198,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
-      - run: pnpm install
+      - name: Install dependencies
+        env:
+          SKIP_POSTINSTALL: "true"
+        run: pnpm install
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
