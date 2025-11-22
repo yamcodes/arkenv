@@ -51,9 +51,21 @@ function isPostHogWarning(errorText: string): boolean {
 }
 
 /**
+ * Check if an error is a video playback compatibility error.
+ * Filters video errors that occur on Windows/WebKit due to codec compatibility issues.
+ * This is a known limitation where WebKit on Windows cannot play certain video formats.
+ */
+function isVideoPlaybackError(errorText: string): boolean {
+	return (
+		errorText.includes("video you're trying to play will not work") ||
+		errorText.includes("try upgrading to the newest versions of your browser")
+	);
+}
+
+/**
  * Assert that there are no console errors on the given page after navigating to the URL(s).
  * Filter out known non-critical errors (403, Failed to load resource), HLS.js library errors,
- * and PostHog initialization warnings.
+ * PostHog initialization warnings, and video playback compatibility errors (Windows/WebKit).
  *
  * @param page - The Playwright page instance
  * @param urls - URLs to navigate to - can be a single URL or array of URLs
@@ -87,6 +99,11 @@ export async function assertNoConsoleErrors(
 			// Filter out PostHog initialization warnings
 			if (isPostHogWarning(errorText)) {
 				return; // Skip PostHog warnings
+			}
+
+			// Filter out video playback compatibility errors (Windows/WebKit limitation)
+			if (isVideoPlaybackError(errorText)) {
+				return; // Skip video playback errors (will fall back to gif)
 			}
 
 			// All other errors should be reported
