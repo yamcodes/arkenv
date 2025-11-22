@@ -32,8 +32,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
       - name: Install dependencies
-        env:
-          SKIP_POSTINSTALL: "true"
         run: pnpm install
       - run: pnpm run test
 
