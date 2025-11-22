@@ -4,9 +4,6 @@ title: What is the Vite plugin?
 
 This is the Vite plugin for ArkEnv. It validates environment variables at build-time with ArkEnv.
 
-> [!IMPORTANT]
-> The plugin automatically filters environment variables to only expose those matching Vite's configured prefix (defaults to `VITE_`). Server-only variables without the prefix are automatically excluded from the client bundle, preventing accidental exposure of sensitive configuration.
-
 ```ts title="vite.config.ts"
 import arkenv from "@arkenv/vite-plugin";
 import { defineConfig } from "vite";
@@ -21,3 +18,10 @@ export default defineConfig({
   ],
 });
 ```
+
+> [!NOTE]
+> The plugin automatically filters environment variables to only expose those matching Vite's configured prefix (defaults to `VITE_`). Server-only variables without the prefix are automatically excluded from the client bundle. If you _do_ need to use non-prefixed variables, see [Using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).
+
+## Type-safe import.meta.env
+
+We strongly recommend making `import.meta.env` fully typesafe by augmenting it with your schema. See [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env) for quick, one-time setup.

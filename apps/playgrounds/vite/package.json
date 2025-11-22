@@ -25,6 +25,7 @@
 		"@vitejs/plugin-react": "5.1.1",
 		"globals": "16.5.0",
 		"typescript": "5.9.3",
-		"vite": "npm:rolldown-vite@latest"
+		"vite": "npm:rolldown-vite@latest",
+		"vite-tsconfig-paths": "5.1.4"
 	}
 }

@@ -11,7 +11,7 @@
   - [x] Modified Vite plugin to accept both raw schema objects and type definitions
   - [x] Updated vite.config.ts example to use `type()` to define schema once, outside `defineConfig`
   - [x] Verified type inference works correctly - `env` is properly typed (not `unknown`)
-- [x] 1.3 If implementing a `loadEnv` wrapper, ensure it provides type-safe return values
+- [x] 1.3 If implementing a `loadEnv` wrapper, ensure it provides typesafe return values
   - Not needed - `createEnv` directly accepts type definitions, no wrapper required
 - [x] 1.4 Ensure the solution allows schema to be shared between `loadEnv` call and plugin definition
   - Schema defined with `type()` outside `defineConfig` can be reused in both places
