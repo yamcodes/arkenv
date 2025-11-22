@@ -156,13 +156,18 @@ jobs:
             windows-latest-pw-
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
+      - name: Sanitize node version for artifact name
+        id: sanitize
+        run: |
+          SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
+          echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"
       - run: pnpm build
       - run: pnpm run test
       - run: pnpm run test:e2e
       - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows-${{ matrix.node-version }}
+          name: test-results-windows-${{ steps.sanitize.outputs.version }}
           path: "**/test-results/**"
           retention-days: 30
 
@@ -197,12 +202,17 @@ jobs:
             macos-latest-pw-
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
+      - name: Sanitize node version for artifact name
+        id: sanitize
+        run: |
+          SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
+          echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"
       - run: pnpm build
       - run: pnpm run test
       - run: pnpm run test:e2e
       - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos-${{ matrix.node-version }}
+          name: test-results-macos-${{ steps.sanitize.outputs.version }}
           path: "**/test-results/**"
           retention-days: 30
