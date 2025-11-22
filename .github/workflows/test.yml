@@ -162,6 +162,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
       - name: Sanitize node version for artifact name
         id: sanitize
+        shell: bash
         run: |
           SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
           echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"
@@ -211,6 +212,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
       - name: Sanitize node version for artifact name
         id: sanitize
+        shell: bash
         run: |
           SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
           echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"

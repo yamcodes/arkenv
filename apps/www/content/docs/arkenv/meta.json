@@ -2,6 +2,7 @@
 	"title": "arkenv",
 	"description": "The core library",
 	"root": true,
+	"icon": "Box",
 	"pages": [
 		"---Introduction---",
 		"index",
