@@ -63,6 +63,8 @@ type FilterByPrefix<
  *
  * interface ImportMetaEnv extends ImportMetaEnvAugmented<typeof Env> {}
  * ```
+ *
+ * @see {@link https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv | Original implementation by Julien-R44}
  */
 export type ImportMetaEnvAugmented<
 	TSchema extends type.Any,
