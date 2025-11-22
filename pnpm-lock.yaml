@@ -22,6 +22,9 @@ importers:
       '@manypkg/cli':
         specifier: 0.25.1
         version: 0.25.1
+      '@playwright/test':
+        specifier: 1.56.1
+        version: 1.56.1
       '@vitest/ui':
         specifier: 4.0.10
         version: 4.0.10(vitest@4.0.10)

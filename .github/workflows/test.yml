@@ -135,12 +135,13 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 2 # for checking against main and for following the PR history
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+      - name: Set Turbo base/head for PRs
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
@@ -175,12 +176,13 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 2 # for checking against main and for following the PR history
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+      - name: Set Turbo base/head for PRs
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
