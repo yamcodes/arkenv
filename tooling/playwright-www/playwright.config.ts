@@ -1,12 +1,14 @@
+import { platform } from "node:os";
 import { defineConfig, devices } from "@playwright/test";
 
 const isCi = Boolean(process.env.CI);
+const isMacOs = platform() === "darwin";
 
 // Worker configuration for parallel test execution
 //
 // Parallelization strategy:
 // - CI: Tests are split into parallel jobs (a11y vs functional) via GitHub Actions matrix
-// - Each job runs tests across 3 browsers (chromium, firefox, webkit) in parallel
+// - Each job runs tests across browsers (chromium, firefox, webkit on macOS only) in parallel
 // - Within each job, workers run multiple tests concurrently
 //
 // For CI, use 4 workers to allow parallel test execution across browsers
@@ -56,10 +58,16 @@ export default defineConfig({
 			name: "firefox",
 			use: { ...devices["Desktop Firefox"] },
 		},
-		{
-			name: "webkit",
-			use: { ...devices["Desktop Safari"] },
-		},
+		// Only enable webkit on macOS (Safari's native platform)
+		// WebKit on Windows/Linux has compatibility issues and is less commonly used
+		...(isMacOs
+			? [
+					{
+						name: "webkit",
+						use: { ...devices["Desktop Safari"] },
+					},
+				]
+			: []),
 	],
 
 	// Web server configuration
