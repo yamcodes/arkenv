@@ -8,7 +8,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // This schema is used for both:
 // 1. Validating unprefixed config variables (PORT) via loadEnv
 // 2. Validating VITE_* variables via the plugin
-const Env = type({
+export const Env = type({
 	PORT: "number.port",
 	VITE_MY_VAR: "string",
 	VITE_MY_NUMBER: type("string").pipe((str) => Number.parseInt(str, 10)),
