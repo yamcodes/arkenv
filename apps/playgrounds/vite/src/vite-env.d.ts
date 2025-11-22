@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 // Import the Env schema type from vite.config.ts
-// Note: In a real project, you'd typically export Env from a separate env.ts file
+// Note: In a real project, you might want to export Env from a separate env.ts file
 // and import it like: import type { Env } from "./env";
 type ImportMetaEnvAugmented =
 	import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
