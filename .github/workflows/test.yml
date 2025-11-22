@@ -126,34 +126,30 @@ jobs:
           retention-days: 30
   test-windows:
     if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'windows')
-    runs-on: windows-latest
+    needs: resolve-playwright-version
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
+      options: --user 1001
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 2 # for checking against main and for following the PR history
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+      - name: Set Turbo base/head for PRs
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
       - run: pnpm install
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
-          restore-keys: |
-            windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
-            windows-latest-pw-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
       - run: pnpm build
       - run: pnpm run test
       - run: pnpm run test:e2e
@@ -166,34 +162,30 @@ jobs:
 
   test-macos:
     if: github.event_name == 'schedule' || contains(join(github.event.pull_request.labels.*.name, ','), 'macos')
-    runs-on: macos-latest
+    needs: resolve-playwright-version
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
+      options: --user 1001
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 2 # for checking against main and for following the PR history
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+      - name: Set Turbo base/head for PRs
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
       - run: pnpm install
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
-          restore-keys: |
-            macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
-            macos-latest-pw-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
       - run: pnpm build
       - run: pnpm run test
       - run: pnpm run test:e2e
