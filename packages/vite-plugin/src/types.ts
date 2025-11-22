@@ -26,7 +26,7 @@ type FilterByPrefix<
 };
 
 /**
- * Augment the `import.meta.env` object with type-safe environment variables
+ * Augment the `import.meta.env` object with typesafe environment variables
  * based on the schema validator.
  *
  * This type extracts the inferred type from the schema (result of `type()` from arkenv),

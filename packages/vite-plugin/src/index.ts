@@ -18,7 +18,7 @@ export type { ImportMetaEnvAugmented } from "./types";
  * Only environment variables matching the prefix are exposed to client code via `import.meta.env.*`.
  *
  * @param options - The environment variable schema definition. Can be an `EnvSchema` object
- *   for type-safe validation or an ArkType `type.Any` for dynamic schemas.
+ *   for typesafe validation or an ArkType `type.Any` for dynamic schemas.
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
  *
  * @example

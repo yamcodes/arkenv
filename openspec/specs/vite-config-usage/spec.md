@@ -13,7 +13,7 @@ Users SHALL be able to use ArkEnv directly in `vite.config.ts` files to validate
 - **AND** they define a schema for unprefixed environment variables needed by the config (e.g., `PORT`, `DATABASE_URL`)
 - **THEN** the environment variables are validated at build-time
 - **AND** invalid or missing variables cause the build to fail with clear error messages
-- **AND** the validated variables are type-safe and can be used in the Vite config
+- **AND** the validated variables are typesafe and can be used in the Vite config
 
 #### Scenario: Type-safe Vite config with environment variables
 - **WHEN** a user uses ArkEnv to validate environment variables in vite.config.ts
@@ -51,17 +51,17 @@ The project SHALL support using ArkEnv with Vite's `loadEnv` function. Since `cr
 - **WHEN** a user defines a schema using `type()` outside of `defineConfig`
 - **AND** they call `loadEnv()` to load environment variables
 - **AND** they pass both the type definition and `loadEnv()` result to `createEnv()` or `arkenv()`
-- **THEN** the environment variables are validated and returned as type-safe
+- **THEN** the environment variables are validated and returned as typesafe
 - **AND** the same type definition can be passed to the Vite plugin for validating `VITE_*` variables
 - **AND** no separate wrapper utility is needed
 
 ### Requirement: Type Safety Constraint
 
-The environment object returned from `loadEnv` or any wrapper SHALL be type-safe. Unsafe patterns that bypass validation or type checking are FORBIDDEN.
+The environment object returned from `loadEnv` or any wrapper SHALL be typesafe. Unsafe patterns that bypass validation or type checking are FORBIDDEN.
 
 #### Constraint: Environment object must be wrapped or typed
 - **FORBIDDEN**: Directly using `loadEnv()` result without validation or proper typing
-- **FORBIDDEN**: Using `as const` assertion on environment objects (not type-safe, bypasses validation)
+- **FORBIDDEN**: Using `as const` assertion on environment objects (not typesafe, bypasses validation)
 - **FORBIDDEN**: Defining schemas as raw objects instead of using `type()` function
 - **REQUIRED**: The schema MUST be defined using `type()` function from ArkType
 - **REQUIRED**: The environment object MUST be wrapped in a function like `arkenv()` or `createEnv()` with the type definition
@@ -70,7 +70,7 @@ The environment object returned from `loadEnv` or any wrapper SHALL be type-safe
 - **WHEN** a user attempts to use `loadEnv()` directly without validation
 - **OR** a user attempts to use `as const` assertion on an environment object
 - **THEN** the pattern is documented as forbidden
-- **AND** examples demonstrate only type-safe patterns
+- **AND** examples demonstrate only typesafe patterns
 - **AND** documentation clearly explains why unsafe patterns (including `as const`) are not allowed and do not provide type safety
 
 ### Requirement: Documentation for Vite Config Usage
