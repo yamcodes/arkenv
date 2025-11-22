@@ -27,7 +27,7 @@ const [, , ...args] = process.argv;
 // Spawn the command with the appropriate NODE_OPTIONS
 const child = spawn("npx", args, {
 	stdio: "inherit",
-	shell: false,
+	shell: process.platform === "win32",
 });
 
 // Forward exit code

@@ -35,14 +35,11 @@ try {
 }
 
 // Spawn fumadocs-mdx with the appropriate NODE_OPTIONS
-const child = spawn(
-	"pnpm",
-	["exec", "fumadocs-mdx", ...process.argv.slice(2)],
-	{
-		stdio: "inherit",
-		shell: false,
-	},
-);
+// Use shell: true on Windows for command resolution, false on Unix for security
+const child = spawn("pnpm", ["exec", "fumadocs-mdx"], {
+	stdio: "inherit",
+	shell: process.platform === "win32",
+});
 
 // Forward exit code
 child.on("exit", (code) => {
