@@ -47,8 +47,8 @@ importers:
   apps/playgrounds/node:
     dependencies:
       arkenv:
-        specifier: 0.7.6
-        version: 0.7.6(arktype@2.1.27)
+        specifier: workspace:*
+        version: link:../../../packages/arkenv
       arktype:
         specifier: 2.1.27
         version: 2.1.27
