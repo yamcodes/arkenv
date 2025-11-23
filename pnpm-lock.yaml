@@ -109,8 +109,8 @@ importers:
         specifier: 0.54.0
         version: 0.54.0
       '@arkenv/vite-plugin':
-        specifier: 0.0.17
-        version: 0.0.17(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
+        specifier: 0.0.18
+        version: 0.0.18(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
       '@fumadocs/mdx-remote':
         specifier: 1.4.3
         version: 1.4.3(@types/react@19.2.6)(fumadocs-core@16.0.14(@types/react@19.2.6)(lucide-react@0.553.0(react@19.2.0))(next@16.0.3(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
@@ -391,8 +391,8 @@ packages:
   '@ark/util@0.55.0':
     resolution: {integrity: sha512-aWFNK7aqSvqFtVsl1xmbTjGbg91uqtJV7Za76YGNEwIO4qLjMfyY8flmmbhooYMuqPCO2jyxu8hve943D+w3bA==}
 
-  '@arkenv/vite-plugin@0.0.17':
-    resolution: {integrity: sha512-PKf/0oOw9Sj+iQttk+FAGViSayG0lNamPCVNhczDx6DFTHYw2Pj51ltYeuRXSx6u8gVxxQJW6mNLdJNpgjjICw==}
+  '@arkenv/vite-plugin@0.0.18':
+    resolution: {integrity: sha512-IjGvtCqK7FUdcYsFUn0GneyAulxN+dO1MP/rCsHi0FpEllIsSk5n7DwziuSRdZvAHYV8oPjIhipHW+PaV3Rk4Q==}
     peerDependencies:
       arktype: ^2.1.22
       vite: ^2.9.18 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
@@ -6104,7 +6104,7 @@ snapshots:
 
   '@ark/util@0.55.0': {}
 
-  '@arkenv/vite-plugin@0.0.17(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))':
+  '@arkenv/vite-plugin@0.0.18(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))':
     dependencies:
       arkenv: 0.7.6(arktype@2.1.27)
       arktype: 2.1.27
