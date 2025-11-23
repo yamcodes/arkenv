@@ -1,0 +1,26 @@
+# Internal Types Specification
+
+## ADDED Requirements
+
+### Requirement: Internal Types Package
+
+The project SHALL provide an internal types package (`@arkenv/internal-types`) that exports common TypeScript types shared across multiple packages. This package SHALL NOT be published to npm and is intended for internal use only within the monorepo.
+
+#### Scenario: InferType is exported from internal types package
+- **WHEN** a package needs to use the `InferType` type
+- **THEN** it can import `InferType` from `@arkenv/internal-types`
+- **AND** the type definition is consistent across all packages using it
+- **AND** there is a single source of truth for the type definition
+
+#### Scenario: Internal types package is not published
+- **WHEN** the internal types package is built
+- **THEN** it is not included in npm publishing
+- **AND** it is only available within the monorepo via workspace protocol
+- **AND** external users cannot depend on it
+
+#### Scenario: Types are properly exported
+- **WHEN** the internal types package is built
+- **THEN** all exported types are available via the package's main entry point
+- **AND** TypeScript can properly resolve and use the types
+- **AND** the types work correctly with workspace protocol dependencies
+
