@@ -267,6 +267,10 @@ importers:
         version: 4.0.10(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.10)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
 
   packages/arkenv:
+    dependencies:
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../internal/types
     devDependencies:
       '@ark/schema':
         specifier: 0.54.0
@@ -296,8 +300,20 @@ importers:
         specifier: 4.0.10
         version: 4.0.10(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.10)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
 
+  packages/internal/types:
+    devDependencies:
+      arktype:
+        specifier: 2.1.27
+        version: 2.1.27
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
   packages/vite-plugin:
     dependencies:
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../internal/types
       arkenv:
         specifier: workspace:*
         version: link:../arkenv

@@ -1,18 +1,5 @@
+import type { InferType } from "@repo/types";
 import type { type } from "arktype";
-
-/**
- * Extract the inferred type from an ArkType type definition.
- * When a type definition is called, it returns either the validated value or type.errors.
- */
-type InferType<T> = T extends (
-	value: Record<string, string | undefined>,
-) => infer R
-	? R extends type.errors
-		? never
-		: R
-	: T extends type.Any<infer U, infer _Scope>
-		? U
-		: never;
 
 /**
  * Filter environment variables to only include those that start with the given prefix.

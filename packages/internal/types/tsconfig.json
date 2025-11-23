@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "preserve",
+		"strict": true,
+		"esModuleInterop": true,
+		"moduleResolution": "bundler",
+		"skipLibCheck": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noEmit": true,
+		"resolveJsonModule": true
+	},
+	"include": ["*.ts"]
+}

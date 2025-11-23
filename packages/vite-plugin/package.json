@@ -9,6 +9,7 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
+		"@repo/types": "workspace:*",
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
