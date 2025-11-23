@@ -24,6 +24,19 @@ export function APITester() {
 			const method = formData.get("method") as string;
 			const res = await fetch(url, { method });
 
+			if (!res.ok) {
+				let body: string;
+				try {
+					const jsonData = await res.json();
+					body = JSON.stringify(jsonData, null, 2);
+				} catch {
+					body = await res.text();
+				}
+				// biome-ignore lint/style/noNonNullAssertion: From Bun template
+				responseInputRef.current!.value = `Error ${res.status}: ${res.statusText}\n\n${body}`;
+				return;
+			}
+
 			const data = await res.json();
 			// biome-ignore lint/style/noNonNullAssertion: From Bun template
 			responseInputRef.current!.value = JSON.stringify(data, null, 2);
