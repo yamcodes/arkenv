@@ -28,7 +28,7 @@ This example includes a section that displays the `BUN_PUBLIC_MY_VALUE` environm
    ```
 
 2. Edit `.env` and set your `BUN_PUBLIC_MY_VALUE`:
-   ```
+   ```env
    BUN_PUBLIC_MY_VALUE=Your custom value here
    ```
 
