@@ -1,0 +1,102 @@
+---
+title: Typing import.meta.env
+---
+
+For most use cases, you'll want to access your environment variables in your client code. [In a Vite project, this is done via `import.meta.env`](https://vite.dev/guide/env-and-mode).
+
+With ArkEnv, this can be typesafe with a one-time project setup: add a small file in your `src` directory and ensure your `Env` schema is defined in `vite.config.ts` (or exported from a separate file).
+
+> [!NOTE]
+> After you complete this setup, each time you add/remove environment variables from your schema, your `import.meta.env` will always be typesafe - no codegen needed.
+
+## Setup
+
+Add this to a `vite-env.d.ts` file in your `src` directory:
+
+```ts title="src/vite-env.d.ts"
+/// <reference types="vite/client" />
+
+type ImportMetaEnvAugmented =
+	import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+		typeof import("../vite.config").Env
+	>;
+
+interface ViteTypeOptions {
+	// By adding this line, you can make the type of ImportMetaEnv strict
+  // to disallow unknown keys.
+	// See: https://vite.dev/guide/env-and-mode#intellisense-for-typescript
+	// ⚠️ This option requires Vite 6.3.x or higher
+	strictImportMetaEnv: unknown;
+}
+
+// Augment import.meta.env with your schema
+// Only `VITE_*` prefixed variables will be included
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+```
+
+## Usage
+
+Once set up, `import.meta.env` is fully typesafe:
+
+```ts title="src/App.tsx"
+// TypeScript knows about your VITE_* variables
+const apiUrl = import.meta.env.VITE_API_URL; // ✅ Type-safe
+const port = import.meta.env.PORT; // ❌ Error: PORT is not in ImportMetaEnv
+
+// Autocomplete works too!
+import.meta.env.VITE_ // Shows all your VITE_* variables
+```
+
+## How it works
+
+The `ImportMetaEnvAugmented` type:
+
+1. Extracts the inferred type from your schema (the result of `type()` from arkenv)
+2. Filters to only include variables matching the Vite prefix (defaults to `"VITE_"`)
+3. Makes them available on `import.meta.env` with full type safety
+
+Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in `import.meta.env`.
+
+## Example with separate env file
+
+As your project grows, you might want to define your schema in a dedicated file for better organization:
+
+```ts title="src/env.ts"
+import { type } from "arkenv";
+
+export const Env = type({
+	PORT: "number.port",
+	VITE_API_URL: "string",
+	VITE_API_KEY: "string",
+	VITE_MY_NUMBER: type("string").pipe((str) => Number.parseInt(str, 10)),
+	VITE_MY_BOOLEAN: type("string").pipe((str) => str === "true"),
+});
+
+export type Env = typeof Env.infer;
+```
+
+```ts title="vite.config.ts"
+import arkenvVitePlugin from "@arkenv/vite-plugin";
+import { defineConfig } from "vite";
+import { Env } from "./src/env";
+
+export default defineConfig({
+	plugins: [arkenvVitePlugin(Env)],
+});
+```
+
+```ts title="src/vite-env.d.ts"
+/// <reference types="vite/client" />
+
+import type { ImportMetaEnvAugmented } from "@arkenv/vite-plugin";
+import type { Env } from "./env";
+
+interface ViteTypeOptions {
+	strictImportMetaEnv: unknown;
+}
+
+interface ImportMetaEnv extends ImportMetaEnvAugmented<typeof Env> {}
+```
+
+## Credit
+This implementation is inspired by [vite-plugin-validate-env by Julien-R44](https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv).

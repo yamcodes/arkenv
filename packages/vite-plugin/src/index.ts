@@ -3,11 +3,46 @@ import { createEnv } from "arkenv";
 import type { type } from "arktype";
 import { loadEnv, type Plugin } from "vite";
 
+export type { ImportMetaEnvAugmented } from "./types";
+
 /**
  * TODO: If possible, find a better type than "const T extends Record<string, unknown>",
  * and be as close as possible to the type accepted by ArkType's `type`.
  */
 
+/**
+ * Vite plugin to validate environment variables using ArkEnv and expose them to client code.
+ *
+ * The plugin validates environment variables using ArkEnv's schema validation and
+ * automatically filters them based on Vite's `envPrefix` configuration (defaults to `"VITE_"`).
+ * Only environment variables matching the prefix are exposed to client code via `import.meta.env.*`.
+ *
+ * @param options - The environment variable schema definition. Can be an `EnvSchema` object
+ *   for typesafe validation or an ArkType `type.Any` for dynamic schemas.
+ * @returns A Vite plugin that validates environment variables and exposes them to the client.
+ *
+ * @example
+ * ```ts
+ * // vite.config.ts
+ * import { defineConfig } from 'vite';
+ * import arkenv from '@arkenv/vite-plugin';
+ *
+ * export default defineConfig({
+ *   plugins: [
+ *     arkenv({
+ *       VITE_API_URL: 'string',
+ *       VITE_API_KEY: 'string',
+ *     }),
+ *   ],
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * // In your client code
+ * console.log(import.meta.env.VITE_API_URL); // Type-safe access
+ * ```
+ */
 export default function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T>,
 ): Plugin;
