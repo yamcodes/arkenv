@@ -57,6 +57,8 @@ The `ImportMetaEnvAugmented` type:
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in `import.meta.env`.
 
+Read more in [the Vite documentation](https://vite.dev/guide/env-and-mode#intellisense-for-typescript).
+
 ## As your project grows
 
 You might want to define your schema in a dedicated file for better organization:
@@ -88,14 +90,16 @@ export default defineConfig({
 ```ts title="src/vite-env.d.ts"
 /// <reference types="vite/client" />
 
-import type { ImportMetaEnvAugmented } from "@arkenv/vite-plugin";
-import type { Env } from "./env";
+type ImportMetaEnvAugmented =
+	import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+		typeof import("./env").Env
+	>;
 
 interface ViteTypeOptions {
 	strictImportMetaEnv: unknown;
 }
 
-interface ImportMetaEnv extends ImportMetaEnvAugmented<typeof Env> {}
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 ```
 
 > [!IMPORTANT]

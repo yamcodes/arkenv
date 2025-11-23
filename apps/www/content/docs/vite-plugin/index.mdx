@@ -13,15 +13,22 @@ export default defineConfig({
     arkenv({
       VITE_API_URL: "string",
       VITE_APP_NAME: "'MyApp' | 'TestApp'",
-      "VITE_DEBUG": 'boolean = false'
+      VITE_DEBUG: 'boolean = false'
     }),
   ],
 });
 ```
 
+With this setup, if any environment variable is missing or invalid, your dev server won't start and your production build will fail with an error:
+
+```bash title="Terminal"
+ArkEnvError: Errors found while validating environment variables
+  HOST must be a string or "localhost" (was missing)
+  PORT must be an integer between 0 and 65535 (was "hello")
+```
+
 > [!NOTE]
 > The plugin automatically filters environment variables to only expose those matching Vite's configured prefix (defaults to `VITE_`). Server-only variables without the prefix are automatically excluded from the client bundle. If you _do_ need to use non-prefixed variables, see [Using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).
 
-## Type-safe import.meta.env
-
-We strongly recommend making `import.meta.env` fully typesafe by augmenting it with your schema. See [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env) for quick, one-time setup.
+> [!TIP]
+> We strongly recommend making `import.meta.env` fully typesafe by augmenting it with your schema. See [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env) for quick, one-time setup.

@@ -51,7 +51,7 @@ const nodeEnv = env.NODE_ENV;
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
-```
+```bash title="Terminal"
 ArkEnvError: Errors found while validating environment variables
   HOST must be a string or "localhost" (was missing)
   PORT must be an integer between 0 and 65535 (was "hello")
