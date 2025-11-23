@@ -1,5 +1,6 @@
 {
 	"name": "arkenv-monorepo",
+	"type": "module",
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
@@ -9,8 +10,8 @@
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
 		"release": "pnpm run build:packages && changeset publish",
-		"fix": "biome check --write . && manypkg fix",
-		"fix:unsafe": "biome check --write --unsafe . && manypkg fix",
+		"fix": "node bin/fix.js",
+		"fix:unsafe": "node bin/fix.js --unsafe",
 		"check": "biome check && manypkg check",
 		"check:errors": "biome check --diagnostic-level=error",
 		"clean": "turbo run root:clean clean",
