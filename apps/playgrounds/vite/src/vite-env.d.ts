@@ -9,8 +9,9 @@ type ImportMetaEnvAugmented =
 	>;
 
 interface ViteTypeOptions {
-	// Avoid adding an index type to `ImportMetaDev` so
-	// there's an error when accessing unknown properties.
+	// By adding this line, you can make the type of ImportMetaEnv strict
+	// to disallow unknown keys.
+	// See: https://vite.dev/guide/env-and-mode#intellisense-for-typescript
 	// ⚠️ This option requires Vite 6.3.x or higher
 	strictImportMetaEnv: unknown;
 }

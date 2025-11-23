@@ -4,10 +4,10 @@ title: Typing import.meta.env
 
 For most use cases, you'll want to access your environment variables in your client code. [In a Vite project, this is done via `import.meta.env`](https://vite.dev/guide/env-and-mode).
 
-With ArkEnv, this can be typesafe - just by making a one-time addition to your `vite.config.ts` file.
+With ArkEnv, this can be typesafe with a one-time project setup: add a small file in your `src` directory and ensure your `Env` schema is defined in `vite.config.ts` (or exported from a separate file).
 
 > [!NOTE]
-> After you make this change, each time you add/remove environment variables from your schema, your `import.meta.env` will be always be typesafe - no codegen needed.
+> After you complete this setup, each time you add/remove environment variables from your schema, your `import.meta.env` will always be typesafe - no codegen needed.
 
 ## Setup
 
@@ -22,8 +22,9 @@ type ImportMetaEnvAugmented =
 	>;
 
 interface ViteTypeOptions {
-	// Avoid adding an index type to `ImportMetaDev` so
-	// there's an error when accessing unknown properties.
+	// By adding this line, you can make the type of ImportMetaEnv strict
+  // to disallow unknown keys.
+	// See: https://vite.dev/guide/env-and-mode#intellisense-for-typescript
 	// ⚠️ This option requires Vite 6.3.x or higher
 	strictImportMetaEnv: unknown;
 }
