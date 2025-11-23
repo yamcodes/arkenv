@@ -24,6 +24,6 @@ Extracts the inferred type from an ArkType type definition by checking its call 
 
 - **Not published**: This package is marked as `private: true` and will not be published to npm
 - **Internal use only**: Do not depend on this package from external projects
-- **No build step**: This is a types-only package with no runtime code, so no build is needed
+- **Build step required**: This package requires a build step (`tsc`) to generate declaration files (`.d.ts`) in the `dist/` directory. This is necessary for tsdown's `dts.resolve` configuration to bundle types correctly into consuming packages
 - **Workspace dependency**: Use `workspace:*` protocol when adding this as a dependency
-
+- **Build order**: The internal types package must be built before packages that depend on it (Turborepo handles this automatically via `^build` dependencies)

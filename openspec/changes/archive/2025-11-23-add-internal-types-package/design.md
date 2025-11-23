@@ -55,21 +55,23 @@ This creates maintenance burden and risk of divergence. We need a way to share c
 
 ### Decision: Package Structure
 
-**What:** The package will have a minimal structure (no build step needed):
+**What:** The package will have a minimal structure with a build step to generate declaration files:
 - `index.ts` - Main entry point exporting all types
 - `infer-type.ts` - `InferType` type definition
-- `tsconfig.json` - TypeScript configuration for type checking only
+- `tsconfig.json` - TypeScript configuration for generating declaration files
+- `dist/` - Generated declaration files (`.d.ts` files)
 
 **Why:**
-- Types-only package, no runtime code, so no build step needed
+- Types-only package, no runtime code, but declaration files are needed for tsdown's `dts.resolve` to bundle types correctly
+- The build step generates `.d.ts` files that consuming packages can bundle into their own declaration files
 - Simple structure is easier to maintain
-- No `src/` folder needed since we're not building anything
+- No `src/` folder needed since source files are at the root
 - Easy to extend with additional types in the future
 
 **Alternatives considered:**
 1. **Single file** - Rejected because it will be easier to maintain as the package grows
-2. **More granular structure with src/** - Rejected because we don't need a build step, so no src folder needed
-3. **Build configuration** - Rejected because types-only packages don't need to be built
+2. **More granular structure with src/** - Rejected because we don't need a separate src folder for a simple types package
+3. **No build step** - Rejected because tsdown's `dts.resolve` requires declaration files (`.d.ts`) to bundle types correctly. Without a build step, types cannot be bundled into consuming packages' declaration files.
 
 ## Risks / Trade-offs
 

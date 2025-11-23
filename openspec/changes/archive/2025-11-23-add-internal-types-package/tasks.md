@@ -2,7 +2,7 @@
 - [x] 1.1 Create `packages/internal/types/` directory
 - [x] 1.2 Create `package.json` with workspace configuration (not published)
 - [x] 1.3 Create `tsconfig.json` with appropriate TypeScript configuration for type checking only
-- [x] 1.4 Create `index.ts` as the main entry point (no build needed, types-only)
+- [x] 1.4 Create `index.ts` as the main entry point (build step needed to generate declaration files for tsdown's dts.resolve)
 
 ## 2. Extract and Export Common Types
 - [x] 2.1 Create `infer-type.ts` with `InferType` type definition
@@ -25,7 +25,7 @@
 - [x] 4.6 Add `packages/internal/*` to `pnpm-workspace.yaml`
 
 ## 5. Build and Test
-- [x] 5.1 Update Turborepo configuration if needed (no build task needed, types-only)
+- [x] 5.1 Update Turborepo configuration if needed (build task required to generate declaration files)
 - [x] 5.2 Run type checking to ensure imports work correctly
 - [x] 5.3 Run existing tests to ensure no regressions
 - [x] 5.4 Verify no bundle size impact (types-only, no runtime code)

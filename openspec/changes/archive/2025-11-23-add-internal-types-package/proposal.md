@@ -18,7 +18,7 @@ This duplication creates maintenance burden and risk of divergence. Creating an 
 - **ADDED**: Export `InferType` from the internal types package
 - **MODIFIED**: `packages/arkenv/src/create-env.ts` to import `InferType` from internal types package
 - **MODIFIED**: `packages/vite-plugin/src/types.ts` to import `InferType` from internal types package
-- **ADDED**: Package configuration for internal types package (package.json, tsconfig.json for type checking only, no build config needed)
+- **ADDED**: Package configuration for internal types package (package.json, tsconfig.json with build configuration to generate declaration files)
 
 ## Impact
 
