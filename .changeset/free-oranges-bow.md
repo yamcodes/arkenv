@@ -2,7 +2,7 @@
 "@arkenv/vite-plugin": patch
 ---
 
-#### Add `ImportMetaEnvAugmented` type helper for typesafe `import.meta.env`.
+#### `ImportMetaEnvAugmented` type helper for typesafe `import.meta.env`
 
 Add a new `ImportMetaEnvAugmented` type that augments `import.meta.env` with your environment variable schema. This provides full type safety and autocomplete for all your `VITE_*` environment variables in client code.
 
