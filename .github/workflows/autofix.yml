@@ -35,6 +35,13 @@ jobs:
         run: pnpm install
 
       - name: Fix linting issues
-        run: pnpm fix
+        # Skip manypkg fix for Version Packages PRs to avoid version adjustments
+        # on unpublished versions from changesets
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.event.pull_request.head.ref }}" == "changeset-release/main" ]; then
+            node bin/fix.js --skip-manypkg
+          else
+            node bin/fix.js
+          fi
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27
