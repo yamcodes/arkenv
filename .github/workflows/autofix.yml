@@ -34,13 +34,16 @@ jobs:
       # This avoids touching versions that haven't been published yet,
       # while still letting autofix handle normal PRs and pushes.
       - name: Decide if manypkg should be skipped
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           SKIP_MANYPKG=false
 
-          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.head.ref }}" = "changeset-release/main" ]; then
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "$HEAD_REF" = "changeset-release/main" ]; then
             SKIP_MANYPKG=true
           elif [ "${{ github.event_name }}" = "push" ]; then
-            if echo "${{ github.event.head_commit.message }}" | grep -qi "Version Packages"; then
+            if echo "$COMMIT_MESSAGE" | grep -qi "Version Packages"; then
               SKIP_MANYPKG=true
             fi
           fi
