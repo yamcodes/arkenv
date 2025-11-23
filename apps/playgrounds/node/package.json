@@ -9,7 +9,7 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "workspace:*",
+		"arkenv": "file:../../../packages/arkenv/arkenv-0.7.6.tgz",
 		"arktype": "2.1.27"
 	},
 	"devDependencies": {

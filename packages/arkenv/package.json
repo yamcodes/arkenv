@@ -39,9 +39,6 @@
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
-	"dependencies": {
-		"@repo/types": "workspace:*"
-	},
 	"devDependencies": {
 		"@ark/schema": "0.54.0",
 		"@size-limit/esbuild-why": "11.2.0",
@@ -51,7 +48,8 @@
 		"size-limit": "11.2.0",
 		"tsdown": "0.16.5",
 		"typescript": "5.9.3",
-		"vitest": "4.0.10"
+		"vitest": "4.0.10",
+		"@repo/types": "workspace:*"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"

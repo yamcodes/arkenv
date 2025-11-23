@@ -9,7 +9,6 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
-		"@repo/types": "workspace:*",
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
@@ -20,7 +19,8 @@
 		"typescript": "5.9.3",
 		"vite": "7.2.4",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.10"
+		"vitest": "4.0.10",
+		"@repo/types": "workspace:*"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",
