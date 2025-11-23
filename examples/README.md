@@ -22,7 +22,7 @@ New examples are welcome! If you'd like to contribute an example:
 
 Each example follows this basic structure:
 ```
-examples/<example-name>/
+examples/with-<tool-1>-...<tool-n>/
 ├── README.md         # Documentation specific to the example
 ├── package.json      # Dependencies and scripts
 └── src/             # Source code
