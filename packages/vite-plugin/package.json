@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/vite-plugin",
-	"version": "0.0.17",
+	"version": "0.0.18",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
