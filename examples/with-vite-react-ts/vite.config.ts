@@ -1,13 +1,20 @@
-import arkenv from "@arkenv/vite-plugin";
+import arkenvVitePlugin from "@arkenv/vite-plugin";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import arkenv, { type } from "arkenv";
+import { defineConfig, loadEnv } from "vite";
 
-// https://vite.dev/config/
-export default defineConfig({
-	plugins: [
-		react(),
-		arkenv({
-			VITE_TEST: "string",
-		}),
-	],
+export const Env = type({
+	PORT: "number.port",
+	VITE_TEST: "string",
+});
+
+export default defineConfig(({ mode }) => {
+	const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
+
+	return {
+		plugins: [react(), arkenvVitePlugin(Env)],
+		server: {
+			port: env.PORT,
+		},
+	};
 });
