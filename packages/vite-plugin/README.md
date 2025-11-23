@@ -57,9 +57,9 @@ bun add @arkenv/vite-plugin arktype
 
 This plugin uses [the Vite specific `config` hook](https://vite.dev/guide/api-plugin.html#config), which is not available in Rollup.
 
-## Playground
+## Examples
 
-* [vite-playground](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite)
+* [with-vite-react-ts](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts)
 
 ## Related
 
