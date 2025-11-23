@@ -1,0 +1,25 @@
+{
+	"name": "@repo/types",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"description": "Internal TypeScript types shared across ArkEnv packages",
+	"main": "./index.ts",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"scripts": {
+		"typecheck": "tsc --noEmit",
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"arktype": "2.1.27",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"arktype": "^2.1.22"
+	}
+}

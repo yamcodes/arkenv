@@ -12,6 +12,7 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
+		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "11.2.0",
 		"arktype": "2.1.27",
 		"size-limit": "11.2.0",
