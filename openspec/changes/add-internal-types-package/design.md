@@ -26,7 +26,7 @@ This creates maintenance burden and risk of divergence. We need a way to share c
 
 ### Decision: Create Internal Types Package
 
-**What:** Create `packages/internal-types/` as a new workspace package that exports common TypeScript types.
+**What:** Create `packages/internal/types/` as a new workspace package that exports common TypeScript types.
 
 **Why:**
 - Provides a single source of truth for shared types
@@ -51,22 +51,25 @@ This creates maintenance burden and risk of divergence. We need a way to share c
 **Alternatives considered:**
 1. **Publish as `@arkenv/internal-types`** - Rejected because it's not part of the public API and would add unnecessary complexity
 2. **Publish as `@arkenv/types`** - Rejected for same reasons, plus the name suggests it's a public API
+3. **Use `@repo/types`** - Chosen to follow the monorepo's naming convention for internal packages
 
 ### Decision: Package Structure
 
-**What:** The package will have a minimal structure:
-- `src/index.ts` - Main entry point exporting all types
-- `src/infer-type.ts` - `InferType` type definition
-- Standard build configuration (tsconfig.json, tsdown.config.ts)
+**What:** The package will have a minimal structure (no build step needed):
+- `index.ts` - Main entry point exporting all types
+- `infer-type.ts` - `InferType` type definition
+- `tsconfig.json` - TypeScript configuration for type checking only
 
 **Why:**
+- Types-only package, no runtime code, so no build step needed
 - Simple structure is easier to maintain
-- Follows existing package patterns in the monorepo
+- No `src/` folder needed since we're not building anything
 - Easy to extend with additional types in the future
 
 **Alternatives considered:**
 1. **Single file** - Rejected because it will be easier to maintain as the package grows
-2. **More granular structure** - Rejected because it's premature optimization for a small package
+2. **More granular structure with src/** - Rejected because we don't need a build step, so no src folder needed
+3. **Build configuration** - Rejected because types-only packages don't need to be built
 
 ## Risks / Trade-offs
 
