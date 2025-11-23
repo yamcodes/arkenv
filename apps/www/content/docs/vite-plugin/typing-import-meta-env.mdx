@@ -57,9 +57,9 @@ The `ImportMetaEnvAugmented` type:
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in `import.meta.env`.
 
-## Example with separate env file
+## As your project grows
 
-As your project grows, you might want to define your schema in a dedicated file for better organization:
+You might want to define your schema in a dedicated file for better organization:
 
 ```ts title="src/env.ts"
 import { type } from "arkenv";
@@ -98,5 +98,10 @@ interface ViteTypeOptions {
 interface ImportMetaEnv extends ImportMetaEnvAugmented<typeof Env> {}
 ```
 
+> [!IMPORTANT]
+> **Imports will break type augmentation**
+>
+> If the `ImportMetaEnv` augmentation does not work, make sure you do not have any `import` statements in `vite-env.d.ts`. See [the TypeScript documentation](https://www.typescriptlang.org/docs/handbook/2/modules.html#how-javascript-modules-are-defined) for more information.
+
 ## Credit
-This implementation is inspired by [vite-plugin-validate-env by Julien-R44](https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv).
+This implementation is inspired by [vite-plugin-validate-env](https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv) by [Julien-R44](https://github.com/Julien-R44).
