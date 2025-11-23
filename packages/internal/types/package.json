@@ -5,14 +5,15 @@
 	"private": true,
 	"description": "Internal TypeScript types shared across ArkEnv packages",
 	"main": "./index.ts",
-	"types": "./index.ts",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./index.ts"
+			"types": "./dist/index.d.ts"
 		}
 	},
 	"scripts": {
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"build": "tsc"
 	},
 	"devDependencies": {
 		"arktype": "2.1.27",

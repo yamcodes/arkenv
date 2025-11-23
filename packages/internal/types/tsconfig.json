@@ -8,7 +8,10 @@
 		"skipLibCheck": true,
 		"exactOptionalPropertyTypes": true,
 		"noImplicitAny": true,
-		"noEmit": true,
+		"declaration": true,
+		"declarationMap": true,
+		"emitDeclarationOnly": true,
+		"outDir": "./dist",
 		"resolveJsonModule": true
 	},
 	"include": ["*.ts"]

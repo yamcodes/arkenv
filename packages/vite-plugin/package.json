@@ -12,6 +12,7 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
+		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "11.2.0",
 		"arktype": "2.1.27",
 		"size-limit": "11.2.0",
@@ -19,8 +20,7 @@
 		"typescript": "5.9.3",
 		"vite": "7.2.4",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.10",
-		"@repo/types": "workspace:*"
+		"vitest": "4.0.10"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",

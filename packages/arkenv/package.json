@@ -41,6 +41,7 @@
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
 		"@ark/schema": "0.54.0",
+		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "11.2.0",
 		"@size-limit/preset-small-lib": "11.2.0",
 		"@types/node": "24.10.1",
@@ -48,8 +49,7 @@
 		"size-limit": "11.2.0",
 		"tsdown": "0.16.5",
 		"typescript": "5.9.3",
-		"vitest": "4.0.10",
-		"@repo/types": "workspace:*"
+		"vitest": "4.0.10"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"
