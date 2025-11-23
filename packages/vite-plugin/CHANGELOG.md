@@ -1,5 +1,15 @@
 # @arkenv/vite-plugin
 
+## 0.0.18
+
+### Patch Changes
+
+- #### `ImportMetaEnvAugmented` type helper for typesafe `import.meta.env` _[`#415`](https://github.com/yamcodes/arkenv/pull/415) [`79bef3c`](https://github.com/yamcodes/arkenv/commit/79bef3c26b87baf6bb3fe92da8bdfdb048a49e71) [@yamcodes](https://github.com/yamcodes)_
+
+  Add a new `ImportMetaEnvAugmented` type that augments `import.meta.env` with your environment variable schema. This provides full type safety and autocomplete for all your `VITE_*` environment variables in client code.
+
+  Implementation inspired by [Julien-R44](https://github.com/Julien-R44)'s [vite-plugin-validate-env](https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv).
+
 ## 0.0.17
 
 ### Patch Changes
