@@ -10,10 +10,15 @@
  */
 
 import { execSync } from "node:child_process";
-import { argv } from "node:process";
+import { argv, env } from "node:process";
 
 const args = argv.slice(2);
-const skipManypkg = args.includes("--skip-manypkg");
+
+const skipManypkgFlag = args.includes("--skip-manypkg");
+const skipManypkgEnv = env.SKIP_MANYPKG === "true" || env.SKIP_MANYPKG === "1";
+
+const skipManypkg = skipManypkgFlag || skipManypkgEnv;
+
 const unsafe = args.includes("--unsafe");
 
 // Always run biome formatting
@@ -26,5 +31,5 @@ if (!skipManypkg) {
 	console.log("Running manypkg fix...");
 	execSync("pnpm exec manypkg fix", { stdio: "inherit" });
 } else {
-	console.log("Skipping manypkg fix (--skip-manypkg flag provided)");
+	console.log("Skipping manypkg fix (SKIP_MANYPKG or --skip-manypkg)");
 }

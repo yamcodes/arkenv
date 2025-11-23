@@ -33,29 +33,21 @@ jobs:
       # Note: We only skip manypkg for Changesets-driven version bumps.
       # This avoids touching versions that haven't been published yet,
       # while still letting autofix handle normal PRs and pushes.
-      - name: Check if manypkg should be skipped
-        id: skip-manypkg
-        # Skip manypkg fix for Version Packages PRs and commits to avoid version adjustments
-        # on unpublished versions from changesets
+      - name: Decide if manypkg should be skipped
         run: |
-          SKIP_MANYPKG="false"
+          SKIP_MANYPKG=false
 
           if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.head.ref }}" = "changeset-release/main" ]; then
-            SKIP_MANYPKG="true"
+            SKIP_MANYPKG=true
           elif [ "${{ github.event_name }}" = "push" ]; then
             if echo "${{ github.event.head_commit.message }}" | grep -qi "Version Packages"; then
-              SKIP_MANYPKG="true"
+              SKIP_MANYPKG=true
             fi
           fi
 
-          echo "skip=SKIP_MANYPKG" >> "$GITHUB_OUTPUT"
+          echo "SKIP_MANYPKG=$SKIP_MANYPKG" >> "$GITHUB_ENV"
 
       - name: Fix linting issues
-        run: |
-          if [ "${{ steps.skip-manypkg.outputs.skip }}" == "true" ]; then
-            node bin/fix.js --skip-manypkg
-          else
-            node bin/fix.js
-          fi
+        run: node bin/fix.js
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27
