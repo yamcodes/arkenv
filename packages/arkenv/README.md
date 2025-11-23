@@ -60,7 +60,7 @@ ArkEnvError: Errors found while validating environment variables
 ## Features
 
 - Zero external dependencies
-- Works in Node.js and Bun
+- Works in Node.js, Bun, and Vite
 - Tiny: <1kB gzipped
 - Build-time and runtime validation
 - Single import, zero config for most projects
@@ -117,7 +117,7 @@ bun add arkenv arktype
 
 ## Plugins
 
-- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin) (currently under development) - Vite plugin to validate environment variables at build-time. Requires [Vite from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/vite).
+- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build time. See the [with-vite-react-ts example](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) for usage.
 
 ## Supporting ArkEnv
 
