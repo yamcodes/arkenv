@@ -4,10 +4,10 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "bun --watch run index.ts",
-		"start": "bun run index.ts",
-		"build": "tsc -b && bun run index.ts",
-		"preview": "bun run index.ts",
+		"dev": "bun --watch .",
+		"start": "bun .",
+		"build": "bun build . --outdir=dist",
+		"preview": "bun dist",
 		"fix": "pnpm -w run fix",
 		"clean": "rimraf dist node_modules"
 	},
