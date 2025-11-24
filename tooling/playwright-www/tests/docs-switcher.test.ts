@@ -317,7 +317,7 @@ test.describe("Documentation Switcher", () => {
 		// Check for vite-plugin-specific content
 		await expect(page.locator("h1")).toContainText("Introduction");
 		await expect(
-			page.locator("text=This is the Vite plugin for ArkEnv").first(),
+			page.getByText(/The Vite plugin for ArkEnv/i).first(),
 		).toBeVisible();
 	});
 
