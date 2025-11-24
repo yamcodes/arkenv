@@ -29,8 +29,9 @@ export default function App() {
 				<code>import.meta.env.VITE_TEST</code>: {import.meta.env.VITE_TEST} (of
 				type {typeof import.meta.env.VITE_TEST})
 				<br />
-				<code>import.meta.env.VITE_NUMERIC</code>: {import.meta.env.VITE_NUMBER}{" "}
-				(of type {typeof import.meta.env.VITE_NUMERIC})
+				<code>import.meta.env.VITE_NUMERIC</code>:{" "}
+				{import.meta.env.VITE_NUMERIC} (of type{" "}
+				{typeof import.meta.env.VITE_NUMERIC})
 				<br />
 				<code>import.meta.env.VITE_BOOLEAN</code>:{" "}
 				{import.meta.env.VITE_BOOLEAN} (of type{" "}
