@@ -47,7 +47,7 @@ importers:
   apps/playgrounds/bun:
     dependencies:
       arkenv:
-        specifier: file:../../../packages/arkenv
+        specifier: workspace:*
         version: link:../../../packages/arkenv
       arktype:
         specifier: 2.1.27
@@ -82,13 +82,13 @@ importers:
   apps/playgrounds/bun-solid-start:
     dependencies:
       '@arkenv/vite-plugin':
-        specifier: file:../../../packages/vite-plugin
-        version: file:packages/vite-plugin(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
+        specifier: workspace:*
+        version: link:../../../packages/vite-plugin
       '@solidjs/start':
         specifier: ^1.1.0
         version: 1.2.0(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vinxi@0.5.8(@types/node@24.10.1)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.8.2)(jiti@2.6.1)(lightningcss@1.30.2)(rolldown@1.0.0-beta.51)(terser@5.44.1)(tsx@4.20.6))(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
       arkenv:
-        specifier: file:../../../packages/arkenv
+        specifier: workspace:*
         version: link:../../../packages/arkenv
       arktype:
         specifier: 2.1.27
@@ -470,12 +470,6 @@ packages:
 
   '@arkenv/vite-plugin@0.0.18':
     resolution: {integrity: sha512-IjGvtCqK7FUdcYsFUn0GneyAulxN+dO1MP/rCsHi0FpEllIsSk5n7DwziuSRdZvAHYV8oPjIhipHW+PaV3Rk4Q==}
-    peerDependencies:
-      arktype: ^2.1.22
-      vite: ^2.9.18 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
-
-  '@arkenv/vite-plugin@file:packages/vite-plugin':
-    resolution: {directory: packages/vite-plugin, type: directory}
     peerDependencies:
       arktype: ^2.1.22
       vite: ^2.9.18 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
@@ -7493,12 +7487,6 @@ snapshots:
   '@arkenv/vite-plugin@0.0.18(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))':
     dependencies:
       arkenv: 0.7.6(arktype@2.1.27)
-      arktype: 2.1.27
-      vite: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
-
-  '@arkenv/vite-plugin@file:packages/vite-plugin(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))':
-    dependencies:
-      arkenv: link:packages/arkenv
       arktype: 2.1.27
       vite: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
 
