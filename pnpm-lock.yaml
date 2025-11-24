@@ -46,9 +46,18 @@ importers:
 
   apps/playgrounds/bun-solid-start:
     dependencies:
+      '@arkenv/vite-plugin':
+        specifier: ^0.0.18
+        version: 0.0.18(arktype@2.1.27)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
       '@solidjs/start':
         specifier: ^1.1.0
         version: 1.2.0(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vinxi@0.5.8(@types/node@24.10.1)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.8.2)(jiti@2.6.1)(lightningcss@1.30.2)(rolldown@1.0.0-beta.51)(terser@5.44.1)(tsx@4.20.6))(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
+      arkenv:
+        specifier: ^0.7.6
+        version: 0.7.6(arktype@2.1.27)
+      arktype:
+        specifier: 2.1.27
+        version: 2.1.27
       solid-js:
         specifier: ^1.9.5
         version: 1.9.10
