@@ -61,6 +61,10 @@
 			"name": "  bun-react-playground"
 		},
 		{
+			"path": "apps/playgrounds/solid-start",
+			"name": "  solid-start-playground"
+		},
+		{
 			"path": "apps/www",
 			"name": "  www (arkenv.js.org)"
 		},
