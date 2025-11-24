@@ -3,8 +3,6 @@ packages:
   - 'packages/internal/*'
   - 'apps/*'
   - 'apps/playgrounds/*'
-  - '!apps/playgrounds/bun'
-  - '!apps/playgrounds/bun-react'
   - 'tooling/*'
 overrides:
   "@playwright/test": "1.56.1"
