@@ -113,7 +113,7 @@ export const runSizeLimitOnPackage = async (
 	// Create a temporary package.json with size-limit config and dependencies
 	// We need to preserve the package name, main/module fields, and dependencies for size-limit to work
 	// Also need to include the preset in devDependencies so size-limit can find it
-	// Include peerDependencies as regular dependencies since npm install won't install them automatically
+	// Include peerDependencies as regular dependencies since bun install won't install them automatically
 	const tempPackageJson = {
 		name: packageJson.name,
 		version: packageJson.version,
@@ -152,7 +152,7 @@ export const runSizeLimitOnPackage = async (
 		// Install all dependencies (production + dev) from package.json
 		// This includes both the package's dependencies (needed for bundling) and size-limit plugins
 		console.log(`📦 Installing dependencies for ${packageName}...`);
-		const installProc = spawn(["npm", "install"], {
+		const installProc = spawn(["bun", "install"], {
 			cwd: packageDir,
 			stdout: "pipe",
 			stderr: "pipe",
@@ -167,12 +167,12 @@ export const runSizeLimitOnPackage = async (
 			console.log(
 				`⚠️ Failed to install dependencies: ${installStderr || installStdout}`,
 			);
-			// Continue anyway - npx might still work
+			// Continue anyway - bunx might still work
 		}
 
 		// Run size-limit on this package
 		console.log(`🔍 Running size-limit on ${packageName}...`);
-		const proc = spawn(["npx", "--yes", "size-limit", "--json"], {
+		const proc = spawn(["bunx", "size-limit", "--json"], {
 			cwd: packageDir,
 			stdout: "pipe",
 			stderr: "pipe",
