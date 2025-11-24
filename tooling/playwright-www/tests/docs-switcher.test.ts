@@ -142,7 +142,7 @@ test.describe("Documentation Switcher", () => {
 		await expect(page.locator("h1")).toBeVisible();
 
 		// Check that arkenv content is displayed (this is the main assertion)
-		await expect(page.locator("h1")).toContainText("What is ArkEnv?");
+		await expect(page.locator("h1")).toContainText("What is ArkEnv");
 
 		// If switcher exists, check that arkenv is selected
 		const tablist = page.locator('[role="tablist"]');
@@ -228,7 +228,7 @@ test.describe("Documentation Switcher", () => {
 				"What is the Vite plugin?",
 			);
 			await page.goto("/docs/arkenv");
-			await expect(page.locator("h1")).toContainText("What is ArkEnv?");
+			await expect(page.locator("h1")).toContainText("What is ArkEnv");
 			return;
 		}
 
@@ -247,7 +247,7 @@ test.describe("Documentation Switcher", () => {
 		// Then switch back to arkenv
 		expect(arkenvTab).not.toBeNull();
 		await arkenvTab!.click();
-		await expect(page.locator("h1")).toContainText("What is ArkEnv?", {
+		await expect(page.locator("h1")).toContainText("What is ArkEnv", {
 			timeout: 10000,
 		});
 
@@ -289,7 +289,7 @@ test.describe("Documentation Switcher", () => {
 		// Switch back to arkenv
 		expect(arkenvTab).not.toBeNull();
 		await arkenvTab!.click();
-		await expect(page.locator("h1")).toContainText("What is ArkEnv?", {
+		await expect(page.locator("h1")).toContainText("What is ArkEnv", {
 			timeout: 10000,
 		});
 
@@ -305,7 +305,7 @@ test.describe("Documentation Switcher", () => {
 		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for arkenv-specific content
-		await expect(page.locator("h1")).toContainText("What is ArkEnv?");
+		await expect(page.locator("h1")).toContainText("What is ArkEnv");
 		// "The core library" text exists but may be hidden on desktop (md:hidden class)
 		// Check that it exists in the DOM rather than checking visibility
 		const coreLibraryText = page.locator("text=The core library").first();
@@ -444,7 +444,7 @@ test.describe("Documentation Switcher", () => {
 		// Switch back to arkenv
 		expect(arkenvTab).not.toBeNull();
 		await arkenvTab!.click();
-		await expect(page.locator("h1")).toContainText("What is ArkEnv?", {
+		await expect(page.locator("h1")).toContainText("What is ArkEnv", {
 			timeout: 10000,
 		});
 

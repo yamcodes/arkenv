@@ -139,7 +139,7 @@ test.describe("Documentation Navigation", () => {
 		page,
 	}) => {
 		const pages = [
-			{ url: "/docs/arkenv", expectedTitle: "What is ArkEnv?" },
+			{ url: "/docs/arkenv", expectedTitle: "What is ArkEnv" },
 			{ url: "/docs/arkenv/quickstart", expectedTitle: "Quickstart" },
 			{ url: "/docs/arkenv/examples", expectedTitle: "Start with an example" },
 			{ url: "/docs/arkenv/morphs", expectedTitle: "Morphs" },
