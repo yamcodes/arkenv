@@ -40,7 +40,7 @@ Once set up, `import.meta.env` is fully typesafe:
 
 ```ts title="src/App.tsx"
 // TypeScript knows about your VITE_* variables
-const apiUrl = import.meta.env.VITE_API_URL; // ✅ Type-safe
+const apiUrl = import.meta.env.VITE_API_URL; // ✅ Typesafe
 const port = import.meta.env.PORT; // ❌ Error: PORT is not in ImportMetaEnv
 
 // Autocomplete works too!

@@ -12,7 +12,7 @@ Users SHALL be able to use ArkEnv directly in `vite.config.ts` files to validate
 - **AND** invalid or missing variables cause the build to fail with clear error messages
 - **AND** the validated variables are typesafe and can be used in the Vite config
 
-#### Scenario: Type-safe Vite config with environment variables
+#### Scenario: Typesafe Vite config with environment variables
 - **WHEN** a user uses ArkEnv to validate environment variables in vite.config.ts
 - **THEN** TypeScript provides full type inference for the validated variables
 - **AND** the variables can be used directly in Vite config options (server.port, build settings, etc.)

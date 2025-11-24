@@ -40,7 +40,7 @@ export type { ImportMetaEnvAugmented } from "./types";
  * @example
  * ```ts
  * // In your client code
- * console.log(import.meta.env.VITE_API_URL); // Type-safe access
+ * console.log(import.meta.env.VITE_API_URL); // Typesafe access
  * ```
  */
 export default function arkenv<const T extends Record<string, unknown>>(

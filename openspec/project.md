@@ -168,7 +168,7 @@ pnpm run test:e2e                     # E2E tests
 **Type System:**
 - Uses `const` type parameters for better type inference
 - Leverages ArkType's `type.infer` and `type.validate` utilities
-- Type-safe environment object returned from `createEnv`
+- Typesafe environment object returned from `createEnv`
 
 **Error Handling:**
 - `ArkEnvError` extends `Error` and formats ArkType validation errors

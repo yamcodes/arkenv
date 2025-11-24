@@ -52,7 +52,7 @@ The problem is that `loadEnv` is typically called before the plugin is defined, 
 - **ADDED**: Solution for sharing schema/typing between `loadEnv` call and plugin definition
 - **ADDED**: Potentially wrap Vite's `loadEnv` function with ArkEnv transformations and typing
 - **ADDED**: Clear distinction between server-only (config) and client-exposed (`VITE_*`) environment usage patterns
-- **ADDED**: Type-safe access to environment variables in Vite config files
+- **ADDED**: Typesafe access to environment variables in Vite config files
 - **ADDED**: Example usage demonstrating the pattern
 
 This change focuses on:
