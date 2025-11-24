@@ -57,7 +57,7 @@ test.describe("A11y Smoke Tests", () => {
 	test("should have proper page titles on all top routes", async ({ page }) => {
 		const expectedTitles: Record<string, string> = {
 			"/": "ArkEnv",
-			"/docs/arkenv": "What is ArkEnv? · ArkEnv",
+			"/docs/arkenv": "What is ArkEnv · ArkEnv",
 			"/docs/arkenv/quickstart": "Quickstart · ArkEnv",
 		};
 
