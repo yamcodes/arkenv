@@ -25,7 +25,7 @@ if (majorVersion >= 25) {
 const [, , ...args] = process.argv;
 
 // Spawn the command with the appropriate NODE_OPTIONS
-const child = spawn("npx", args, {
+const child = spawn("pnpm", ["exec", ...args], {
 	stdio: "inherit",
 	shell: process.platform === "win32",
 });
