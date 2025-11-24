@@ -62,7 +62,7 @@ test.describe("Documentation Switcher", () => {
 			// Just verify we can navigate to vite-plugin directly
 			if (vitePluginCount === 0) {
 				await page.goto("/docs/vite-plugin");
-				await expect(page.locator("h1")).toContainText("Vite plugin", {
+				await expect(page.locator("h1")).toContainText("Introduction", {
 					timeout: 10000,
 				});
 			} else {
@@ -126,7 +126,7 @@ test.describe("Documentation Switcher", () => {
 			// If vite-plugin links don't exist, verify we can navigate directly
 			if (!vitePluginExists) {
 				await page.goto("/docs/vite-plugin");
-				await expect(page.locator("h1")).toContainText("Vite plugin", {
+				await expect(page.locator("h1")).toContainText("Introduction", {
 					timeout: 10000,
 				});
 			} else {
@@ -181,12 +181,9 @@ test.describe("Documentation Switcher", () => {
 		if (!switcher) {
 			// No switcher exists - verify we can navigate directly to vite-plugin
 			await page.goto("/docs/vite-plugin");
-			await expect(page.locator("h1")).toContainText(
-				"What is the Vite plugin?",
-				{
-					timeout: 10000,
-				},
-			);
+			await expect(page.locator("h1")).toContainText("Introduction", {
+				timeout: 10000,
+			});
 			return;
 		}
 
@@ -198,7 +195,7 @@ test.describe("Documentation Switcher", () => {
 		await vitePluginTab!.click();
 
 		// Wait for content to update
-		await expect(page.locator("h1")).toContainText("What is the Vite plugin?", {
+		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
 
@@ -224,9 +221,7 @@ test.describe("Documentation Switcher", () => {
 		if (!switcher) {
 			// No switcher - verify direct navigation works instead
 			await page.goto("/docs/vite-plugin");
-			await expect(page.locator("h1")).toContainText(
-				"What is the Vite plugin?",
-			);
+			await expect(page.locator("h1")).toContainText("Introduction");
 			await page.goto("/docs/arkenv");
 			await expect(page.locator("h1")).toContainText("What is ArkEnv");
 			return;
@@ -240,7 +235,7 @@ test.describe("Documentation Switcher", () => {
 
 		expect(vitePluginTab).not.toBeNull();
 		await vitePluginTab!.click();
-		await expect(page.locator("h1")).toContainText("What is the Vite plugin?", {
+		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
 
@@ -279,7 +274,7 @@ test.describe("Documentation Switcher", () => {
 
 		expect(vitePluginTab).not.toBeNull();
 		await vitePluginTab!.click();
-		await expect(page.locator("h1")).toContainText("What is the Vite plugin?", {
+		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
 
@@ -320,9 +315,9 @@ test.describe("Documentation Switcher", () => {
 		await expect(page.locator("h1")).toBeVisible();
 
 		// Check for vite-plugin-specific content
-		await expect(page.locator("h1")).toContainText("What is the Vite plugin?");
+		await expect(page.locator("h1")).toContainText("Introduction");
 		await expect(
-			page.locator("text=This is the Vite plugin for ArkEnv").first(),
+			page.getByText(/The Vite plugin for ArkEnv/i).first(),
 		).toBeVisible();
 	});
 
@@ -409,7 +404,7 @@ test.describe("Documentation Switcher", () => {
 
 		// Press Enter to activate
 		await page.keyboard.press("Enter");
-		await expect(page.locator("h1")).toContainText("What is the Vite plugin?", {
+		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
 	});
@@ -437,7 +432,7 @@ test.describe("Documentation Switcher", () => {
 		// Switch to vite-plugin
 		expect(vitePluginTab).not.toBeNull();
 		await vitePluginTab!.click();
-		await expect(page.locator("h1")).toContainText("What is the Vite plugin?", {
+		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
 

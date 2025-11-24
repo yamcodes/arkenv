@@ -143,7 +143,7 @@ test.describe("Documentation Navigation", () => {
 			{ url: "/docs/arkenv/quickstart", expectedTitle: "Quickstart" },
 			{ url: "/docs/arkenv/examples", expectedTitle: "Start with an example" },
 			{ url: "/docs/arkenv/morphs", expectedTitle: "Morphs" },
-			{ url: "/docs/vite-plugin", expectedTitle: "What is the Vite plugin?" },
+			{ url: "/docs/vite-plugin", expectedTitle: "Introduction" },
 			{
 				url: "/docs/vite-plugin/arkenv-in-viteconfig",
 				expectedTitle: "Using ArkEnv in Vite config",

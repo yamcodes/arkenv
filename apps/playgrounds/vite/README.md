@@ -104,7 +104,7 @@ pnpm preview
 
 For more information, see the [@arkenv/vite-plugin documentation](https://arkenv.js.org/docs/vite-plugin):
 
-- [What is the Vite plugin?](https://arkenv.js.org/docs/vite-plugin)
+- [Introduction](https://arkenv.js.org/docs/vite-plugin)
 - [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
 - [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
 
