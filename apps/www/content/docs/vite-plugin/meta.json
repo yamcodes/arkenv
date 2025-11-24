@@ -3,5 +3,10 @@
 	"description": "The Vite plugin",
 	"root": true,
 	"icon": "Vite",
-	"pages": ["index", "arkenv-in-viteconfig", "typing-import-meta-env"]
+	"pages": [
+		"---Guide---",
+		"index",
+		"arkenv-in-viteconfig",
+		"typing-import-meta-env"
+	]
 }

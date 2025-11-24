@@ -1,15 +1,17 @@
 ---
 title: Typing import.meta.env
+icon: ShieldCheck
 ---
 
 For most use cases, you'll want to access your environment variables in your client code. [In a Vite project, this is done via `import.meta.env`](https://vite.dev/guide/env-and-mode).
 
-With ArkEnv, this can be typesafe with a one-time project setup: add a small file in your `src` directory and ensure your `Env` schema is defined in `vite.config.ts` (or exported from a separate file).
-
-> [!NOTE]
-> After you complete this setup, each time you add/remove environment variables from your schema, your `import.meta.env` will always be typesafe - no codegen needed.
+With ArkEnv, this can be typesafe with the one-time setup below. After this, each time you add/remove environment variables from your schema, your `import.meta.env` will always be typesafe - no codegen needed.
 
 ## Setup
+
+> [!IMPORTANT]
+> You must have the core `arkenv` package installed as a dependency in your project. See [ArkEnv quickstart](/docs/arkenv/quickstart) for instructions.
+
 
 Add this to a `vite-env.d.ts` file in your `src` directory:
 
@@ -38,7 +40,7 @@ interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 
 Once set up, `import.meta.env` is fully typesafe:
 
-```ts title="src/App.tsx"
+```ts title="src/app.tsx"
 // TypeScript knows about your VITE_* variables
 const apiUrl = import.meta.env.VITE_API_URL; // ✅ Typesafe
 const port = import.meta.env.PORT; // ❌ Error: PORT is not in ImportMetaEnv
