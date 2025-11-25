@@ -1,18 +1,18 @@
-name: 'pkg.pr.new'
+name: "pkg.pr.new"
 on:
   pull_request:
     branches:
       - main
-    paths: 
-      - 'packages/**'
+    paths:
+      - "packages/**"
   push:
     branches:
       - main
-    paths: 
-      - 'packages/**'
-      - '.github/workflows/pkg-pr-new.yml'
+    paths:
+      - "packages/**"
+      - ".github/workflows/pkg-pr-new.yml"
     tags:
-      - '!**'
+      - "!**"
 
 permissions: {}
 
@@ -34,13 +34,13 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install deps
         run: pnpm install
 
       - name: Build
-        run: pnpm build
+        run: pnpm build --filter="./packages/*"
 
       - name: Release
         run: pnpx pkg-pr-new publish --compact --pnpm './packages/*'
