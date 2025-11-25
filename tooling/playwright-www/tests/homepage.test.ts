@@ -45,10 +45,11 @@ test.describe("Homepage", () => {
 		await expect(sailButton).toBeVisible();
 		await expect(sailButton).toContainText("Set sail");
 
-		// Test navigation
-		await sailButton.click();
-		// Wait for navigation to complete with longer timeout
-		await page.waitForURL("**/docs/arkenv/quickstart", { timeout: 30000 });
+		// Test navigation - wait for navigation to complete
+		await Promise.all([
+			page.waitForURL("**/docs/arkenv/quickstart", { timeout: 30000 }),
+			sailButton.click(),
+		]);
 		await expect(page).toHaveURL("/docs/arkenv/quickstart");
 	});
 

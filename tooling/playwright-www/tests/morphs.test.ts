@@ -9,8 +9,8 @@ test.describe("Morphs/API Page", () => {
 		// Check page title
 		await expect(page.locator("h1")).toContainText("Morphs");
 
-		// Check for the "New" icon/badge
-		await expect(page.locator("text=New")).toBeVisible();
+		// Check for the "New" icon/badge (use first() to handle multiple matches)
+		await expect(page.locator("text=New").first()).toBeVisible();
 	});
 
 	test("should display boolean morph documentation", async ({ page }) => {
