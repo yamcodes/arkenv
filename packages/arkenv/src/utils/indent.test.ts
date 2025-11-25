@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { indent } from "./utils";
+import { indent } from "./indent";
 
 describe("indent", () => {
 	it("should indent a string by 2 spaces by default", () => {

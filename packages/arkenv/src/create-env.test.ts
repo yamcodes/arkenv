@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
-import { styleText } from "./lib/style-text";
 import { type } from "./type";
-import { indent } from "./utils";
+import { indent, styleText } from "./utils";
 
 /**
  * Format the errors returned by env for testing purposes

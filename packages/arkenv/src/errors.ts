@@ -1,6 +1,5 @@
 import type { ArkErrors } from "arktype";
-import { styleText } from "./lib/style-text";
-import { indent } from "./utils";
+import { indent, styleText } from "./utils";
 
 /**
  * Format the errors returned by ArkType to be more readable
