@@ -14,7 +14,9 @@ on:
     tags:
       - "!**"
 
-permissions: {}
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   pkg-pr-new:
