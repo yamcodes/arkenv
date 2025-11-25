@@ -1,5 +1,5 @@
-import type { Logger } from "vite";
 import type { LoggerStyle } from "arkenv";
+import type { Logger } from "vite";
 
 /**
  * Create a logger adapter that converts Vite's logger to ArkEnv's LoggerStyle interface
@@ -11,8 +11,9 @@ export function createViteLoggerAdapter(logger: Logger): LoggerStyle {
 	// Vite's logger has a colors property that contains picocolors functions
 	// The colors object has methods like red(), yellow(), cyan(), etc.
 	// We extract these to create our adapter
-	const colors = (logger as { colors?: Record<string, (text: string) => string> })
-		.colors;
+	const colors = (
+		logger as { colors?: Record<string, (text: string) => string> }
+	).colors;
 
 	// If colors are available, use them
 	if (colors) {
@@ -48,4 +49,3 @@ export function createViteLoggerAdapter(logger: Logger): LoggerStyle {
 		}
 	};
 }
-

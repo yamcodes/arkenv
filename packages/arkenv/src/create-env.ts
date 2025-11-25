@@ -1,8 +1,8 @@
 import type { InferType } from "@repo/types";
 import { type distill, type } from "arktype";
-import type { LoggerStyle } from "./utils";
 import { ArkEnvError } from "./errors";
 import { $ } from "./scope";
+import type { LoggerStyle } from "./utils";
 
 type RuntimeEnvironment = Record<string, string | undefined>;
 

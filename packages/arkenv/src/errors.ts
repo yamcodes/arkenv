@@ -8,10 +8,7 @@ import { indent, styleText } from "./utils";
  * @param logger - Optional logger function for styling
  * @returns A string of the formatted errors
  */
-export const formatErrors = (
-	errors: ArkErrors,
-	logger?: LoggerStyle,
-): string =>
+export const formatErrors = (errors: ArkErrors, logger?: LoggerStyle): string =>
 	Object.entries(errors.byPath)
 		.map(([path, error]) => {
 			const messageWithoutPath = error.message.startsWith(path)
