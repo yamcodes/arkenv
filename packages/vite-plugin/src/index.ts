@@ -1,7 +1,8 @@
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
 import type { type } from "arktype";
-import { loadEnv, type Plugin } from "vite";
+import { loadEnv, type Plugin, type ResolvedConfig } from "vite";
+import { createViteLoggerAdapter } from "./logger-adapter";
 
 export type { ImportMetaEnvAugmented } from "./types";
 
@@ -47,40 +48,94 @@ export default function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T>,
 ): Plugin;
 export default function arkenv(options: type.Any): Plugin;
+
 export default function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T> | type.Any,
 ): Plugin {
+	let resolvedConfig: ResolvedConfig | undefined;
+	let mode = "development";
+	let envPrefix: string | string[] = "VITE_";
+
 	return {
 		name: "@arkenv/vite-plugin",
-		config(config, { mode }) {
-			// Get the Vite prefix for client-exposed environment variables
-			// Defaults to "VITE_" if not specified
-			// Vite allows envPrefix to be a string or array of strings
-			const envPrefix = config.envPrefix ?? "VITE_";
+		config(config, { mode: configMode }) {
+			// Store mode and envPrefix for later use
+			mode = configMode;
+			envPrefix = config.envPrefix ?? "VITE_";
 			const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix];
 
-			// createEnv accepts both EnvSchema and type.Any at runtime
-			// We use overloads above to provide external type precision
-			const env = createEnv(options, loadEnv(mode, process.cwd(), ""));
+			// Validate environment variables (without logger for now, as config runs before configResolved)
+			// We'll re-validate with logger in buildStart to get properly formatted errors
+			try {
+				const env = createEnv(options, loadEnv(mode, process.cwd(), ""));
 
-			// Filter to only include environment variables matching the prefix
-			// This prevents server-only variables from being exposed to client code
-			const filteredEnv = Object.fromEntries(
-				Object.entries(<Record<string, unknown>>env).filter(([key]) =>
-					prefixes.some((prefix) => key.startsWith(prefix)),
-				),
-			);
+				// Filter to only include environment variables matching the prefix
+				// This prevents server-only variables from being exposed to client code
+				const filteredEnv = Object.fromEntries(
+					Object.entries(<Record<string, unknown>>env).filter(([key]) =>
+						prefixes.some((prefix) => key.startsWith(prefix)),
+					),
+				);
 
-			// Expose transformed environment variables through Vite's define option
-			// Only prefixed variables are exposed to client code
-			const define = Object.fromEntries(
-				Object.entries(filteredEnv).map(([key, value]) => [
-					`import.meta.env.${key}`,
-					JSON.stringify(value),
-				]),
-			);
+				// Expose transformed environment variables through Vite's define option
+				// Only prefixed variables are exposed to client code
+				const define = Object.fromEntries(
+					Object.entries(filteredEnv).map(([key, value]) => [
+						`import.meta.env.${key}`,
+						JSON.stringify(value),
+					]),
+				);
 
-			return { define };
+				return { define };
+			} catch {
+				// Error will be caught and displayed in buildStart with logger
+				// Return empty define to prevent further errors
+				return { define: {} };
+			}
+		},
+		configResolved(config) {
+			// Store resolved config to access logger
+			resolvedConfig = config;
+		},
+		buildStart() {
+			if (!resolvedConfig) return;
+
+			// Re-validate with logger to get properly formatted errors
+			const logger = createViteLoggerAdapter(resolvedConfig.logger);
+
+			try {
+				// Validate with logger (errors will be formatted using Vite's logger)
+				// Use type assertion to access the implementation signature
+				// The overloads should support logger, but TypeScript needs help here
+				(
+					createEnv as (
+						def: EnvSchema<Record<string, unknown>> | type.Any,
+						env?: Record<string, string | undefined>,
+						logger?: ReturnType<typeof createViteLoggerAdapter>,
+					) => unknown
+				)(options, loadEnv(mode, process.cwd(), ""), logger);
+			} catch (error) {
+				// Format and display errors using Vite's logger
+				const log = resolvedConfig.logger;
+				log.error("\nMissing or invalid environment variables:\n");
+
+				// Extract error message (already formatted by ArkEnvError with logger)
+				if (error instanceof Error) {
+					const errorMessage = error.message;
+					// Split by newlines to format each line
+					const lines = errorMessage.split("\n");
+					for (const line of lines) {
+						if (line.trim()) {
+							log.error(`  ${line}`);
+						}
+					}
+				}
+
+				log.error("\nFix your .env or system env and try again.\n");
+
+				// Fail the build with a Rollup-style error
+				this.error("Environment validation failed");
+			}
 		},
 	};
 }
