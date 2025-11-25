@@ -1,4 +1,4 @@
-// import { Banner } from "fumadocs-ui/components/banner";
+import { Banner } from "fumadocs-ui/components/banner";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -48,18 +48,18 @@ export default function Layout({ children }: { children: ReactNode }) {
 						enableSystem: true,
 					}}
 				>
-					{/* <Banner variant="rainbow" id="arktype-feature-banner">
-						🎉 We are now featured on&nbsp;
+					<Banner variant="rainbow" id="vite-support-banner">
+						🎉 Announcing Vite support: check out the&nbsp;
 						<a
-							href="https://arktype.io/docs/ecosystem#arkenv"
+							href="https://arkenv.js.org/docs/vite-plugin"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="underline underline-offset-2 hover:text-blue-500"
 						>
-							arktype.io
+							new docs
 						</a>
 						!
-					</Banner> */}
+					</Banner>
 					{children}
 					<SpeedInsights />
 					<Analytics />
