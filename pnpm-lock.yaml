@@ -363,9 +363,6 @@ importers:
       arkenv:
         specifier: workspace:*
         version: link:../arkenv
-      bun:
-        specifier: '>=1.0.0'
-        version: 1.3.3
     devDependencies:
       '@repo/types':
         specifier: workspace:*
@@ -376,6 +373,9 @@ importers:
       arktype:
         specifier: 2.1.27
         version: 2.1.27
+      bun:
+        specifier: '>=1.0.0'
+        version: 1.3.3
       size-limit:
         specifier: 11.2.0
         version: 11.2.0

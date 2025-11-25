@@ -15,7 +15,7 @@
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "11.2.0",
 		"arktype": "2.1.27",
-		"bun": ">=1.0.0",
+		"bun": "1.1.0",
 		"size-limit": "11.2.0",
 		"tsdown": "0.16.5",
 		"typescript": "5.9.3",
@@ -23,7 +23,7 @@
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",
-		"bun": ">=1.0.0"
+		"bun": "^1.0.0"
 	},
 	"exports": {
 		"types": "./dist/index.d.ts",
