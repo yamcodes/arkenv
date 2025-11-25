@@ -59,4 +59,3 @@ describe("Bun Plugin", () => {
 		delete process.env.DATABASE_URL;
 	});
 });
-

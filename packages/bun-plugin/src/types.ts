@@ -59,4 +59,3 @@ export type ProcessEnvAugmented<
 	TSchema extends type.Any,
 	Prefix extends string = "BUN_PUBLIC_",
 > = FilterByPrefix<InferType<TSchema>, Prefix>;
-

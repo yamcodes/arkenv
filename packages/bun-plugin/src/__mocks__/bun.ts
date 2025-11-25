@@ -4,10 +4,13 @@ export function plugin(pluginConfig: {
 	setup: (build: {
 		onLoad: (
 			args: { filter: RegExp },
-			callback: (args: { path: string }) => Promise<{
-				loader?: string;
-				contents?: string;
-			} | undefined>,
+			callback: (args: { path: string }) => Promise<
+				| {
+						loader?: string;
+						contents?: string;
+				  }
+				| undefined
+			>,
 		) => void;
 	}) => void;
 }) {
@@ -18,4 +21,3 @@ export function plugin(pluginConfig: {
 }
 
 export type BunPlugin = ReturnType<typeof plugin>;
-

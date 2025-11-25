@@ -8,4 +8,3 @@ export default defineConfig({
 		resolve: ["@repo/types"],
 	},
 });
-

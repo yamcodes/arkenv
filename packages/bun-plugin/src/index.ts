@@ -1,7 +1,7 @@
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
 import type { type } from "arktype";
-import { plugin, type BunPlugin } from "bun";
+import { type BunPlugin, plugin } from "bun";
 
 export type { ProcessEnvAugmented } from "./types";
 
@@ -119,11 +119,12 @@ export default function arkenv<const T extends Record<string, unknown>>(
 					}
 
 					// Determine loader based on file extension
-					const loader = args.path.endsWith(".tsx") || args.path.endsWith(".jsx")
-						? "tsx"
-						: args.path.endsWith(".ts") || args.path.endsWith(".mts")
-							? "ts"
-							: "js";
+					const loader =
+						args.path.endsWith(".tsx") || args.path.endsWith(".jsx")
+							? "tsx"
+							: args.path.endsWith(".ts") || args.path.endsWith(".mts")
+								? "ts"
+								: "js";
 
 					return {
 						loader,
