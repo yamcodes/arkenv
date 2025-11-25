@@ -8,7 +8,7 @@ Since environment variables are defined as strings, ArkEnv automatically transfo
 
 The `boolean` type automatically morphs (or coerces) string values from environment variables to boolean.
 
-```ts twoslash
+```ts twoslash title="index.ts"
 import arkenv from 'arkenv';
 
 const env = arkenv({ DEBUG: "boolean" });
@@ -38,7 +38,7 @@ const env = arkenv({
 
 If you wish to customize this behavior (and allow other string representations of boolean), you can define your own morph function:
 
-```ts
+```ts title="index.ts"
 import arkenv, { type } from 'arkenv';
 
 const env = arkenv({ 
@@ -48,6 +48,7 @@ const isDebug = env.DEBUG;
 
 console.log(isDebug);
 ```
+
 Result:
 ```sh
 ❯ DEBUG=false npx tsx index.ts
