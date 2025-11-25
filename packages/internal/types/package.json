@@ -4,7 +4,7 @@
 	"type": "module",
 	"private": true,
 	"description": "Internal TypeScript types shared across ArkEnv packages",
-	"main": "./index.ts",
+	"main": "./src/index.ts",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
