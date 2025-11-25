@@ -17,6 +17,10 @@ export function App() {
 				Edit <code>src/App.tsx</code> and save to test HMR
 			</p>
 			<APITester />
+			<p>
+				process.env.vars <br/>
+				{process.env.}
+			</p>
 		</div>
 	);
 }
