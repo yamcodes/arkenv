@@ -1,13 +1,66 @@
 {
 	"name": "@arkenv/bun-plugin",
 	"version": "0.0.1",
-	"module": "src/index.ts",
-	"type": "module",
-	"scripts": {
-		"build": "bun build src/index.ts --outdir=dist"
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"dependencies": {
+		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/bun": "1.3.2",
-		"typescript": "5.9.3"
-	}
+		"@repo/types": "workspace:*",
+		"@size-limit/preset-small-lib": "11.2.0",
+		"arktype": "2.1.27",
+		"size-limit": "11.2.0",
+		"tsdown": "0.16.5",
+		"typescript": "5.9.3",
+		"vitest": "4.0.10"
+	},
+	"peerDependencies": {
+		"arktype": "^2.1.22",
+		"bun": ">=1.0.0"
+	},
+	"exports": {
+		"types": "./dist/index.d.ts",
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fbun-plugin",
+	"description": "Bun plugin for ArkEnv",
+	"files": [
+		"dist"
+	],
+	"homepage": "https://arkenv.js.org",
+	"keywords": [
+		"arktype",
+		"arkenv",
+		"environment",
+		"variables",
+		"bun",
+		"plugin",
+		"bun-plugin"
+	],
+	"license": "MIT",
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"fix": "pnpm -w run fix",
+		"changeset": "pnpm -w run changeset",
+		"size": "size-limit"
+	},
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"size-limit": [
+		{
+			"path": "dist/index.js",
+			"limit": "2 kB",
+			"import": "*"
+		}
+	]
 }

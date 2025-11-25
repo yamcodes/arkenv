@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "//"
+  ],
+  "tasks": {
+    // Defined here and not in the root turbo.json to avoid building all packages when running `turbo run size`.
+    "size": {
+      "dependsOn": [
+        "build"
+      ],
+      "cache": false
+    }
+  }
+}
