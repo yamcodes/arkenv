@@ -2,6 +2,42 @@
 
 ## ADDED Requirements
 
+### Requirement: Bun Plugin Configuration Patterns
+
+The Bun plugin SHALL support two primary configuration patterns depending on the usage context:
+
+1. **Direct Reference (Bun.build)**: The plugin SHALL be configurable by passing a configured plugin instance directly in the `plugins` array when using `Bun.build()`.
+2. **Package Reference (Bun.serve)**: The plugin SHALL be configurable via a package name in `bunfig.toml` when using `Bun.serve()` for full-stack applications, with convention-based schema discovery.
+
+A future, more advanced configuration pattern using a custom static file MAY be supported, but is not required for the initial version.
+
+#### Scenario: Plugin configuration with Bun.build
+
+- **WHEN** a user wants to build an application using `Bun.build()`
+- **AND** they configure the plugin with an environment variable schema
+- **THEN** they can pass a configured plugin instance directly in the `plugins` array
+- **AND** the plugin validates and transforms environment variables during the build process
+
+#### Scenario: Plugin configuration with Bun.serve via package reference
+
+- **WHEN** a user wants to use `Bun.serve()` for a full-stack application
+- **AND** they configure `bunfig.toml` with:
+  - a `[serve.static]` section
+  - a `plugins` array that includes the package name `bun-plugin-arkenv`
+- **AND** their project contains an ArkEnv schema file in one of the supported default locations (for example, `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`)
+- **AND** that schema file exports a schema using `defineEnv` (via a default export or an `env` named export)
+- **THEN** the plugin SHALL locate the schema file via this convention-based search
+- **AND** it SHALL load the schema at startup
+- **AND** it SHALL use that schema to validate and transform environment variables during the bundling phase
+
+#### Scenario: Bun.serve configuration fails when no schema file is found
+
+- **WHEN** a user configures `bunfig.toml` with `[serve.static].plugins = ["bun-plugin-arkenv"]`
+- **AND** there is no schema file in any of the supported default locations
+- **THEN** the plugin SHALL fail fast with a clear, descriptive error message
+- **AND** the error message SHALL list the paths that were checked
+- **AND** the error message SHALL show an example of a minimal `env` schema file the user can create
+
 ### Requirement: Bun Plugin Environment Variable Validation and Transformation
 
 The Bun plugin SHALL validate environment variables at build-time using ArkEnv's schema validation and statically replace `process.env.VARIABLE` access with validated, transformed values during bundling. The plugin SHALL transform values according to the schema (e.g., string to boolean, apply default values).
@@ -65,4 +101,3 @@ The Bun plugin SHALL work correctly with Bun's `serve` function for full-stack R
 - **AND** the plugin transforms `process.env` access in both server and client code
 - **AND** only prefixed variables are exposed to client code
 - **AND** the server starts successfully with validated environment variables
-

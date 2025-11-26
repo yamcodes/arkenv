@@ -1,60 +1,145 @@
-## 1. Package Setup
+<file name=spec.md path=/Users/yamcodes/code/arkenv/openspec/changes/add-bun-plugin/specs/bun-plugin>
+### Requirement: Bun Plugin Configuration Patterns
 
-- [x] 1.1 Create `packages/bun-plugin/` directory structure
-- [x] 1.2 Initialize package.json with proper metadata and peer dependencies (bun, arkenv, arktype)
-- [x] 1.3 Set up TypeScript configuration (tsconfig.json)
-- [x] 1.4 Set up build configuration (tsdown.config.ts or similar)
-- [x] 1.5 Add package to pnpm workspace
-- [ ] 1.6 Configure changeset for the new package
+The Bun plugin SHALL support two primary configuration patterns depending on the usage context:
 
-## 2. Core Plugin Implementation
+1. **Direct Reference (Bun.build)**: The plugin SHALL be configurable by passing a configured plugin instance directly in the `plugins` array when using `Bun.build()`.
+2. **Package Reference (Bun.serve)**: The plugin SHALL be configurable via a package name in `bunfig.toml` when using `Bun.serve()` for full-stack applications, with convention-based schema discovery.
 
-- [x] 2.1 Implement main plugin function that accepts schema (similar to Vite plugin signature)
-- [x] 2.2 Implement `onLoad` hook to intercept module loading
-- [x] 2.3 Add logic to detect and transform `process.env.VARIABLE` patterns
-- [x] 2.4 Integrate ArkEnv's `createEnv` for validation and transformation
-- [x] 2.5 Implement filtering logic to only expose variables matching Bun's prefix (defaults to `BUN_PUBLIC_*`)
-- [x] 2.6 Handle static replacement of `process.env` variables with validated values
-- [x] 2.7 Add support for Bun's prefix configuration (read from bunfig.toml or use default)
+A future, more advanced configuration pattern using a custom static file MAY be supported, but is not required for the initial version.
 
-## 3. Type Augmentation
+#### Scenario: Plugin configuration with Bun.build
 
-- [x] 3.1 Create `ProcessEnvAugmented<TSchema, Prefix>` type utility
-- [x] 3.2 Implement filtering logic to only include prefixed variables in type
-- [x] 3.3 Export type from plugin package
-- [x] 3.4 Add JSDoc documentation with usage examples
+- **WHEN** a user wants to build an application using `Bun.build()`
+- **AND** they configure the plugin with an environment variable schema
+- **THEN** they can pass a configured plugin instance directly in the `plugins` array
+- **AND** the plugin validates and transforms environment variables during the build process
 
-## 4. Testing
+#### Scenario: Plugin configuration with Bun.serve via package reference
 
-- [x] 4.1 Add unit tests for plugin function
-- [ ] 4.2 Add integration tests using Bun React playground as fixture
-- [x] 4.3 Test environment variable validation and error handling
-- [x] 4.4 Test filtering behavior (only prefixed variables exposed)
-- [ ] 4.5 Test type augmentation (TypeScript compilation tests)
-- [ ] 4.6 Test various `process.env` access patterns (direct access, destructuring, optional chaining)
-- [ ] 4.7 Test with Bun's serve function in full-stack React app
+- **WHEN** a user wants to use `Bun.serve()` for a full-stack application
+- **AND** they configure `bunfig.toml` with:
+  - a `[serve.static]` section
+  - a `plugins` array that includes the package name `bun-plugin-arkenv`
+- **AND** their project contains an ArkEnv schema file in one of the supported default locations (for example, `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`)
+- **AND** that schema file exports a schema using `defineEnv` (via a default export or an `env` named export)
+- **THEN** the plugin SHALL locate the schema file via this convention-based search
+- **AND** it SHALL load the schema at startup
+- **AND** it SHALL use that schema to validate and transform environment variables during the bundling phase
 
-## 5. Documentation
+#### Scenario: Bun.serve configuration fails when no schema file is found
 
-- [x] 5.1 Create README.md for the package with installation and usage instructions
-- [ ] 5.2 Add documentation page to www app (docs/bun-plugin/)
-- [ ] 5.3 Document type augmentation pattern (similar to Vite plugin docs)
-- [x] 5.4 Add examples showing common usage patterns
-- [x] 5.5 Document Bun prefix configuration and filtering behavior
-- [ ] 5.6 Add troubleshooting section
+- **WHEN** a user configures `bunfig.toml` with `[serve.static].plugins = ["bun-plugin-arkenv"]`
+- **AND** there is no schema file in any of the supported default locations
+- **THEN** the plugin SHALL fail fast with a clear, descriptive error message
+- **AND** the error message SHALL list the paths that were checked
+- **AND** the error message SHALL show an example of a minimal `env` schema file the user can create
 
-## 6. Examples and Playgrounds
+### Requirement: Bun Plugin Environment Variable Validation and Transformation
+</file>
 
-- [ ] 6.1 Update Bun React playground to use the plugin
-- [ ] 6.2 Add example showing environment variable validation
-- [ ] 6.3 Add example showing type augmentation setup
-- [ ] 6.4 Verify playground builds and runs correctly with plugin
+<file name=design.md path=/Users/yamcodes/code/arkenv/openspec/changes/add-bun-plugin>
+### Decision: Configuration Modes and Schema Discovery
 
-## 7. Validation
+**What**: The plugin supports two core configuration modes:
 
-- [x] 7.1 Run `openspec validate add-bun-plugin --strict`
-- [x] 7.2 Verify all tests pass
-- [x] 7.3 Verify TypeScript compilation succeeds
-- [ ] 7.4 Verify playground examples work correctly
-- [x] 7.5 Check bundle size meets project constraints (<2kB goal)
+1. **Direct Reference (Bun.build)** – pass a configured plugin instance directly in the `plugins` array.
+2. **Package Reference with Convention (Bun.serve)** – declare `bun-plugin-arkenv` in `bunfig.toml` and let the plugin discover the ArkEnv schema file using a set of well-known paths.
 
+A third, more advanced mode using a custom static plugin file may be added later for projects with non-standard layouts, but is not required for the initial release.
+
+**Why**:
+
+- `Bun.build()` accepts plugins directly as JavaScript objects, which is ideal for explicit, programmatic configuration.
+- `Bun.serve()` uses `bunfig.toml` where `plugins` is a list of strings (module specifiers) and does not support passing options inline.
+- By using a package name (`"bun-plugin-arkenv"`) plus convention-based schema discovery, we avoid forcing users to create extra “config glue” files for the common case, while still keeping an escape hatch for advanced setups.
+
+**Implementation**:
+
+**Pattern 1: Bun.build (Direct Reference)**
+
+```ts
+// build.ts
+import { defineEnv } from "arkenv";
+import { createArkEnvBunPlugin } from "@arkenv/bun-plugin";
+
+const env = defineEnv({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean",
+});
+
+await Bun.build({
+  entrypoints: ["./app.tsx"],
+  outdir: "./dist",
+  plugins: [createArkEnvBunPlugin(env)],
+});
+```
+
+**Pattern 2: Bun.serve (Package Reference with Convention)**
+
+```toml
+# bunfig.toml
+[serve.static]
+env = "BUN_PUBLIC_*"
+plugins = ["bun-plugin-arkenv"]
+```
+
+With a schema file at a conventional path, for example:
+
+```ts
+// src/env.ts
+import { defineEnv } from "arkenv";
+
+const env = defineEnv({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean",
+});
+
+export default env;
+```
+
+At startup, `bun-plugin-arkenv`:
+
+- Searches for a schema file in a small set of well-known locations (for example: `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`).
+- Imports the first one it finds.
+- Reads the default export (or an `env` named export) as the ArkEnv schema.
+- Creates a Bun plugin via `createArkEnvBunPlugin(schema)` and registers it with `Bun.plugin(...)`.
+
+If no schema file is found, or the module does not export a usable schema, the plugin fails fast with a clear error message that lists the paths checked and shows a minimal example.
+
+**Future / Advanced Mode (Custom Static File)**
+
+In future iterations we MAY support a custom plugin entry file pattern for advanced layouts, for example:
+
+```toml
+[serve.static]
+plugins = ["./arkenv.bun-plugin.ts"]
+```
+
+```ts
+// arkenv.bun-plugin.ts
+import { Bun } from "bun";
+import { buildArkEnvBunPlugin } from "bun-plugin-arkenv";
+
+Bun.plugin(
+  await buildArkEnvBunPlugin({
+    schemaPath: "./config/env/app.env.ts",
+    // future options (prefix overrides, strictness, etc.)
+  }),
+);
+```
+
+This keeps the default experience zero-config for most users, while still allowing power users to override the schema location and other options when needed.
+
+**Alternatives considered**:
+
+- **Static file reference as the only pattern** (previous design): Forces every project to create a separate `bun-plugin-config.ts` file even in simple setups, increasing boilerplate.
+- **Schema definition via JSON/YAML or bunfig.toml**: Reduces type safety and breaks the “define once in TypeScript” story that ArkEnv aims for.
+- **Only programmatic configuration** (no bunfig path): Would make full-stack `Bun.serve()` setups awkward compared to other Bun plugins that integrate via `bunfig.toml`.
+</file>
+
+<file name=proposal.md path=/Users/yamcodes/code/arkenv/openspec/changes/add-bun-plugin>
+**Usage Patterns**:
+- **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [createArkEnvBunPlugin(env)]`.
+- **Bun.serve (default)**: Configure `bunfig.toml` with `[serve.static].plugins = ["bun-plugin-arkenv"]`. The plugin discovers the ArkEnv schema file from a small set of conventional locations (for example `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`) and uses it automatically.
+- **Bun.serve (advanced, future)**: Optionally support a custom plugin entry file referenced from `bunfig.toml` (for example `plugins = ["./arkenv.bun-plugin.ts"]`) for projects that need a non-standard schema location or additional configuration.
