@@ -78,60 +78,60 @@ export default function arkenv<const T extends Record<string, unknown>>(
 		envMap.set(key, JSON.stringify(value));
 	}
 
-		return {
-			name: "@arkenv/bun-plugin",
-			setup(build) {
-				// Only process JavaScript/TypeScript source files
-				build.onLoad({ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ }, async (args) => {
-					// Skip node_modules and other non-source files
-					if (args.path.includes("node_modules")) {
-						return undefined;
+	return {
+		name: "@arkenv/bun-plugin",
+		setup(build) {
+			// Only process JavaScript/TypeScript source files
+			build.onLoad({ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ }, async (args) => {
+				// Skip node_modules and other non-source files
+				if (args.path.includes("node_modules")) {
+					return undefined;
+				}
+
+				try {
+					// Read the file contents
+					const file = Bun.file(args.path);
+					const contents = await file.text();
+
+					// Replace process.env.VARIABLE patterns with validated values
+					let transformed = contents;
+
+					// Pattern 1: process.env.VARIABLE
+					// Pattern 2: process.env["VARIABLE"]
+					// Pattern 3: process.env['VARIABLE']
+					for (const [key, value] of envMap.entries()) {
+						// Replace process.env.KEY (word boundary to avoid partial matches)
+						const dotPattern = new RegExp(
+							`process\\.env\\.${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+							"g",
+						);
+						transformed = transformed.replace(dotPattern, value);
+
+						// Replace process.env["KEY"] and process.env['KEY']
+						const bracketPattern = new RegExp(
+							`process\\.env\\[(["'])${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\1\\]`,
+							"g",
+						);
+						transformed = transformed.replace(bracketPattern, value);
 					}
 
-					try {
-						// Read the file contents
-						const file = Bun.file(args.path);
-						const contents = await file.text();
+					// Determine loader based on file extension
+					const loader =
+						args.path.endsWith(".tsx") || args.path.endsWith(".jsx")
+							? "tsx"
+							: args.path.endsWith(".ts") || args.path.endsWith(".mts")
+								? "ts"
+								: "js";
 
-						// Replace process.env.VARIABLE patterns with validated values
-						let transformed = contents;
-
-						// Pattern 1: process.env.VARIABLE
-						// Pattern 2: process.env["VARIABLE"]
-						// Pattern 3: process.env['VARIABLE']
-						for (const [key, value] of envMap.entries()) {
-							// Replace process.env.KEY (word boundary to avoid partial matches)
-							const dotPattern = new RegExp(
-								`process\\.env\\.${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
-								"g",
-							);
-							transformed = transformed.replace(dotPattern, value);
-
-							// Replace process.env["KEY"] and process.env['KEY']
-							const bracketPattern = new RegExp(
-								`process\\.env\\[(["'])${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\1\\]`,
-								"g",
-							);
-							transformed = transformed.replace(bracketPattern, value);
-						}
-
-						// Determine loader based on file extension
-						const loader =
-							args.path.endsWith(".tsx") || args.path.endsWith(".jsx")
-								? "tsx"
-								: args.path.endsWith(".ts") || args.path.endsWith(".mts")
-									? "ts"
-									: "js";
-
-						return {
-							loader,
-							contents: transformed,
-						};
-					} catch (error) {
-						// If file can't be read, return undefined to let Bun handle it
-						return undefined;
-					}
-				});
-			},
-		} satisfies BunPlugin;
+					return {
+						loader,
+						contents: transformed,
+					};
+				} catch (error) {
+					// If file can't be read, return undefined to let Bun handle it
+					return undefined;
+				}
+			});
+		},
+	} satisfies BunPlugin;
 }
