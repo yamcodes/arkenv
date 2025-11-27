@@ -4,7 +4,7 @@
 // Note: In a real project, you might want to export Env from a separate env.ts file
 // and import it like: typeof import("./env").Env
 type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
-	typeof import("./bun-env").Env
+	typeof import("./src/env").default
 >;
 
 declare global {
@@ -12,6 +12,8 @@ declare global {
 		interface ProcessEnv extends ProcessEnvAugmented {}
 	}
 }
+
+export {};
 
 declare module "*.svg" {
 	/**

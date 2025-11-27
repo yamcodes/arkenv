@@ -18,8 +18,9 @@ export function App() {
 			</p>
 			<APITester />
 			<p>
-				process.env.vars <br/>
-				{process.env.}
+				process.env.vars <br />
+				BUN_PUBLIC_API_URL
+				{process.env.BUN_PUBLIC_API_URL}
 			</p>
 		</div>
 	);

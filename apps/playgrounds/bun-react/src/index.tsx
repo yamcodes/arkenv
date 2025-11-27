@@ -1,13 +1,5 @@
 import { serve } from "bun";
-import arkenv from "@arkenv/bun-plugin";
 import index from "./index.html";
-
-// Validate environment variables at server startup
-// This ensures the server won't start if required env vars are missing
-arkenv({
-	BUN_PUBLIC_API_URL: "string",
-	BUN_PUBLIC_DEBUG: "boolean",
-});
 
 // Note: Plugins are also configured in bunfig.toml under [serve.static]
 // for bundling client code. The validation above ensures env vars are present

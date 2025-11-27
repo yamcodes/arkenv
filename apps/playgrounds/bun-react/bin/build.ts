@@ -1,4 +1,5 @@
 import arkenv from "@arkenv/bun-plugin";
+import Env from "@/env";
 
 await Bun.build({
 	entrypoints: ["./src/index.html"],
@@ -9,10 +10,5 @@ await Bun.build({
 	define: {
 		"process.env.NODE_ENV": "production",
 	},
-	plugins: [
-		arkenv({
-			BUN_PUBLIC_API_URL: "string",
-			BUN_PUBLIC_DEBUG: "boolean",
-		}),
-	],
+	plugins: [arkenv(Env)],
 });
