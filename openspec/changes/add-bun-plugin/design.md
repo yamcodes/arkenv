@@ -54,14 +54,24 @@ A third, more advanced mode using a custom static plugin file may be added later
 
 **Implementation**:
 
-**Pattern 1: Bun.build (Direct Reference)**
+
+
+**Unified Hybrid Export**
+
+The plugin uses a "Hybrid Export" pattern. The default export is both:
+1. A **Plugin Factory Function**: `arkenv(schema)` for manual configuration.
+2. A **Plugin Object**: `{ name, setup }` for zero-config static analysis.
+
+This allows a single import to serve both use cases without friction.
+
+**Pattern 1: Bun.build (Manual Configuration)**
 
 ```ts
 // build.ts
-import { defineEnv } from "arkenv";
-import { createArkEnvBunPlugin } from "@arkenv/bun-plugin";
+import arkenv from "@arkenv/bun-plugin";
+import { type } from "arkenv";
 
-const env = defineEnv({
+const env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
 });
@@ -69,39 +79,42 @@ const env = defineEnv({
 await Bun.build({
   entrypoints: ["./app.tsx"],
   outdir: "./dist",
-  plugins: [createArkEnvBunPlugin(env)],
+  plugins: [arkenv(env)], // Call as function
 });
 ```
 
-**Pattern 2: Bun.serve (Package Reference with Convention)**
+**Pattern 2: Bun.serve / bunfig.toml (Zero-Config)**
 
 ```toml
 # bunfig.toml
 [serve.static]
-env = "BUN_PUBLIC_*"
-plugins = ["bun-plugin-arkenv"]
+plugins = ["@arkenv/bun-plugin"]
 ```
 
-With a schema file at a conventional path, for example:
+**Pattern 3: Bun.build (Zero-Config)**
+
+Because the default export is also a valid plugin object, it can be passed directly to `Bun.build` to trigger auto-discovery:
 
 ```ts
-// src/env.ts
-import { defineEnv } from "arkenv";
+import arkenv from "@arkenv/bun-plugin";
 
-const env = defineEnv({
-  BUN_PUBLIC_API_URL: "string",
-  BUN_PUBLIC_DEBUG: "boolean",
+await Bun.build({
+  // ...
+  plugins: [arkenv], // Pass as object
 });
-
-export default env;
 ```
 
-At startup, `bun-plugin-arkenv`:
+**Schema Discovery**
 
-- Searches for a schema file in a small set of well-known locations (for example: `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`).
-- Imports the first one it finds.
-- Reads the default export (or an `env` named export) as the ArkEnv schema.
-- Creates a Bun plugin via `createArkEnvBunPlugin(schema)` and registers it with `Bun.plugin(...)`.
+In zero-config mode, the plugin searches for:
+1. `./src/env.ts`
+2. `./env.ts`
+
+It expects a `default` export containing the ArkEnv schema.
+
+**Hot Reloading**
+
+The plugin uses the `onStart` hook to load/reload the schema at the beginning of every build/dev cycle. This ensures that changes to `env.ts` are picked up (provided the file watcher triggers a rebuild).
 
 If no schema file is found, or the module does not export a usable schema, the plugin fails fast with a clear error message that lists the paths checked and shows a minimal example.
 
