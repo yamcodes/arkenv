@@ -22,16 +22,19 @@ export function App() {
 					<tr>
 						<th>Variable</th>
 						<th>Value</th>
+						<th>Type</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>BUN_PUBLIC_API_URL</td>
 						<td>{process.env.BUN_PUBLIC_API_URL}</td>
+						<td>{typeof process.env.BUN_PUBLIC_API_URL}</td>
 					</tr>
 					<tr>
 						<td>BUN_PUBLIC_DEBUG</td>
 						<td>{String(process.env.BUN_PUBLIC_DEBUG)}</td>
+						<td>{typeof process.env.BUN_PUBLIC_DEBUG}</td>
 					</tr>
 				</tbody>
 			</table>
