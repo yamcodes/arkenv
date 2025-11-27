@@ -7,8 +7,5 @@ await Bun.build({
 	sourcemap: true,
 	target: "browser",
 	minify: true,
-	define: {
-		"process.env.NODE_ENV": "production",
-	},
 	plugins: [arkenv(Env)],
 });

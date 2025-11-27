@@ -38,6 +38,8 @@ export function App() {
 					</tr>
 				</tbody>
 			</table>
+			{/* Print whether we are in "build" or in the dev server */}
+			<p>Mode: {process.env.NODE_ENV}</p>
 		</div>
 	);
 }
