@@ -1,5 +1,4 @@
-import { arkenv } from "@arkenv/bun-plugin";
-import Env from "@/env";
+import arkenv from "@arkenv/bun-plugin";
 
 await Bun.build({
 	entrypoints: ["./src/index.html"],
@@ -7,5 +6,5 @@ await Bun.build({
 	sourcemap: true,
 	target: "browser",
 	minify: true,
-	plugins: [arkenv(Env)],
+	plugins: [arkenv],
 });

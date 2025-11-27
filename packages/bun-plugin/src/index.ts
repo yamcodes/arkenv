@@ -91,39 +91,23 @@ function processEnvSchema(options: EnvSchema<any> | type.Any) {
 /**
  * Bun plugin to validate environment variables using ArkEnv and expose them to client code.
  *
- * The plugin validates environment variables using ArkEnv's schema validation and
- * automatically filters them based on Bun's prefix configuration (defaults to `"BUN_PUBLIC_"`).
- * Only environment variables matching the prefix are exposed to client code via `process.env.*`.
+ * This is a hybrid export that can be used in two ways:
  *
- * The plugin uses Bun's `onLoad` hook to statically replace `process.env.VARIABLE` patterns
- * with validated, transformed values during bundling.
+ * 1. **Zero-config (Static Analysis)**:
+ *    Add it directly to `bunfig.toml`. It will automatically look for `./src/env.ts` or `./env.ts`.
+ *    ```toml
+ *    [serve.static]
+ *    plugins = ["@arkenv/bun-plugin"]
+ *    ```
  *
- * @param options - The environment variable schema definition. Can be an `EnvSchema` object
- *   for typesafe validation or an ArkType `type.Any` for dynamic schemas.
- * @returns A Bun plugin that validates environment variables and exposes them to the client.
- *
- * @example
- * ```ts
- * // bun.config.ts or in Bun.build()
- * import { arkenv } from '@arkenv/bun-plugin';
- *
- * await Bun.build({
- *   entrypoints: ['./app.tsx'],
- *   outdir: './dist',
- *   plugins: [
- *     arkenv({
- *       BUN_PUBLIC_API_URL: 'string',
- *       BUN_PUBLIC_DEBUG: 'boolean',
- *     }),
- *   ],
- * });
- * ```
- *
- * @example
- * ```ts
- * // In your client code
- * console.log(process.env.BUN_PUBLIC_API_URL); // Typesafe access
- * ```
+ * 2. **Manual Configuration**:
+ *    Call it as a function in `Bun.build` with your schema.
+ *    ```ts
+ *    import arkenv from "@arkenv/bun-plugin";
+ *    Bun.build({
+ *      plugins: [arkenv(MySchema)]
+ *    })
+ *    ```
  */
 export function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T>,
@@ -137,7 +121,6 @@ export function arkenv<const T extends Record<string, unknown>>(
 	return {
 		name: "@arkenv/bun-plugin",
 		setup(build) {
-			// Only process JavaScript/TypeScript source files
 			build.onLoad(
 				{ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ },
 				createOnLoadHandler(envMap),
@@ -146,47 +129,48 @@ export function arkenv<const T extends Record<string, unknown>>(
 	} satisfies BunPlugin;
 }
 
-/**
- * Static ArkEnv plugin that automatically finds and loads the environment schema
- * from `./src/env.ts` or `./env.ts`.
- */
-const staticArkEnv: BunPlugin = {
-	name: "@arkenv/bun-plugin",
-	async setup(build) {
-		const cwd = process.cwd();
-		let schema: any;
+// Attach static analysis properties to the function to make it a valid BunPlugin object
+// This allows it to be used in bunfig.toml as `plugins = ["@arkenv/bun-plugin"]`
+const hybrid = arkenv as typeof arkenv & BunPlugin;
 
-		const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
+Object.defineProperty(hybrid, "name", {
+	value: "@arkenv/bun-plugin",
+	writable: false,
+});
 
-		for (const p of possiblePaths) {
-			if (await Bun.file(p).exists()) {
-				try {
-					const mod = await import(p);
-					if (mod.default) {
-						schema = mod.default;
-						break;
-					}
-				} catch (e) {
-					console.error(`Failed to load env schema from ${p}:`, e);
+hybrid.setup = async (build) => {
+	const cwd = process.cwd();
+	let schema: any;
+
+	const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
+
+	for (const p of possiblePaths) {
+		if (await Bun.file(p).exists()) {
+			try {
+				const mod = await import(p);
+				if (mod.default) {
+					schema = mod.default;
+					break;
 				}
+			} catch (e) {
+				console.error(`Failed to load env schema from ${p}:`, e);
 			}
 		}
+	}
 
-		if (!schema) {
-			console.warn(
-				"No env schema found in src/env.ts or env.ts. Skipping @arkenv/bun-plugin validation.",
-			);
-			return;
-		}
-
-		const envMap = processEnvSchema(schema);
-
-		// Only process JavaScript/TypeScript source files
-		build.onLoad(
-			{ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ },
-			createOnLoadHandler(envMap),
+	if (!schema) {
+		console.warn(
+			"No env schema found in src/env.ts or env.ts. Skipping @arkenv/bun-plugin validation.",
 		);
-	},
-} satisfies BunPlugin;
+		return;
+	}
 
-export default staticArkEnv;
+	const envMap = processEnvSchema(schema);
+
+	build.onLoad(
+		{ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ },
+		createOnLoadHandler(envMap),
+	);
+};
+
+export default hybrid;
