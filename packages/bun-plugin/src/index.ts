@@ -82,17 +82,16 @@ export default function arkenv<const T extends Record<string, unknown>>(
 			name: "@arkenv/bun-plugin",
 			setup(build) {
 				// Only process JavaScript/TypeScript source files
-				build.onLoad({ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ }, (args) => {
+				build.onLoad({ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ }, async (args) => {
 					// Skip node_modules and other non-source files
 					if (args.path.includes("node_modules")) {
 						return undefined;
 					}
 
 					try {
-						// Read the file contents synchronously
+						// Read the file contents
 						const file = Bun.file(args.path);
-						const arrayBuffer = file.arrayBufferSync();
-						const contents = new TextDecoder().decode(arrayBuffer);
+						const contents = await file.text();
 
 						// Replace process.env.VARIABLE patterns with validated values
 						let transformed = contents;
