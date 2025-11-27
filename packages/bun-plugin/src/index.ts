@@ -1,8 +1,8 @@
+import { join } from "node:path";
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
 import type { type } from "arktype";
 import type { BunPlugin, Loader } from "bun";
-import { join } from "node:path";
 
 export type { ProcessEnvAugmented } from "./types";
 
