@@ -1,4 +1,4 @@
-import arkenv from "@arkenv/bun-plugin";
+import { arkenv } from "@arkenv/bun-plugin";
 import Env from "@/env";
 
 await Bun.build({

@@ -47,11 +47,11 @@ export type { ProcessEnvAugmented } from "./types";
  * console.log(process.env.BUN_PUBLIC_API_URL); // Typesafe access
  * ```
  */
-export default function arkenv<const T extends Record<string, unknown>>(
+export function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T>,
 ): BunPlugin;
-export default function arkenv(options: type.Any): BunPlugin;
-export default function arkenv<const T extends Record<string, unknown>>(
+export function arkenv(options: type.Any): BunPlugin;
+export function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T> | type.Any,
 ): BunPlugin {
 	// Validate environment variables at plugin initialization
@@ -135,3 +135,10 @@ export default function arkenv<const T extends Record<string, unknown>>(
 		},
 	} satisfies BunPlugin;
 }
+
+const staticArkEnv: BunPlugin = {
+	name: "@arkenv/bun-plugin",
+	setup(build) {
+		console.log("Hello wolrd " + build.config.plugins);
+	},
+} satisfies BunPlugin;
