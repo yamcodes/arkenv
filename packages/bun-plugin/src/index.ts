@@ -1,14 +1,92 @@
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
 import type { type } from "arktype";
-import type { BunPlugin } from "bun";
+import type { BunPlugin, Loader } from "bun";
+import { join } from "node:path";
 
 export type { ProcessEnvAugmented } from "./types";
 
 /**
- * TODO: If possible, find a better type than "const T extends Record<string, unknown>",
- * and be as close as possible to the type accepted by ArkType's `type`.
+ * Helper to create the onLoad handler
  */
+function createOnLoadHandler(envMap: Map<string, string>) {
+	return async (args: any) => {
+		// Skip node_modules and other non-source files
+		if (args.path.includes("node_modules")) {
+			return undefined;
+		}
+
+		try {
+			// Read the file contents
+			const file = Bun.file(args.path);
+			const contents = await file.text();
+
+			// Replace process.env.VARIABLE patterns with validated values
+			let transformed = contents;
+
+			// Pattern 1: process.env.VARIABLE
+			// Pattern 2: process.env["VARIABLE"]
+			// Pattern 3: process.env['VARIABLE']
+			for (const [key, value] of envMap.entries()) {
+				// Replace process.env.KEY (word boundary to avoid partial matches)
+				const dotPattern = new RegExp(
+					`process\\.env\\.${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+					"g",
+				);
+				transformed = transformed.replace(dotPattern, value);
+
+				// Replace process.env["KEY"] and process.env['KEY']
+				const bracketPattern = new RegExp(
+					`process\\.env\\[(["'])${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\1\\]`,
+					"g",
+				);
+				transformed = transformed.replace(bracketPattern, value);
+			}
+
+			// Determine loader based on file extension
+			const loader = (
+				args.path.endsWith(".tsx") || args.path.endsWith(".jsx")
+					? "tsx"
+					: args.path.endsWith(".ts") || args.path.endsWith(".mts")
+						? "ts"
+						: "js"
+			) as Loader;
+
+			return {
+				loader,
+				contents: transformed,
+			};
+		} catch (error) {
+			// If file can't be read, return undefined to let Bun handle it
+			return undefined;
+		}
+	};
+}
+
+/**
+ * Helper to process env schema and return envMap
+ */
+function processEnvSchema(options: EnvSchema<any> | type.Any) {
+	// Validate environment variables
+	const env = createEnv(options, process.env);
+
+	// Get Bun's prefix for client-exposed environment variables
+	const prefix = "BUN_PUBLIC_";
+
+	// Filter to only include environment variables matching the prefix
+	const filteredEnv = Object.fromEntries(
+		Object.entries(<Record<string, unknown>>env).filter(([key]) =>
+			key.startsWith(prefix),
+		),
+	);
+
+	// Create a map of variable names to their JSON-stringified values
+	const envMap = new Map<string, string>();
+	for (const [key, value] of Object.entries(filteredEnv)) {
+		envMap.set(key, JSON.stringify(value));
+	}
+	return envMap;
+}
 
 /**
  * Bun plugin to validate environment variables using ArkEnv and expose them to client code.
@@ -27,7 +105,7 @@ export type { ProcessEnvAugmented } from "./types";
  * @example
  * ```ts
  * // bun.config.ts or in Bun.build()
- * import arkenv from '@arkenv/bun-plugin';
+ * import { arkenv } from '@arkenv/bun-plugin';
  *
  * await Bun.build({
  *   entrypoints: ['./app.tsx'],
@@ -54,91 +132,61 @@ export function arkenv(options: type.Any): BunPlugin;
 export function arkenv<const T extends Record<string, unknown>>(
 	options: EnvSchema<T> | type.Any,
 ): BunPlugin {
-	// Validate environment variables at plugin initialization
-	// This will throw if validation fails, preventing the build from starting
-	const env = createEnv(options, process.env);
-
-	// Get Bun's prefix for client-exposed environment variables
-	// Defaults to "BUN_PUBLIC_" if not configured
-	// Users can configure this in bunfig.toml: [serve.static] env = "BUN_PUBLIC_*"
-	const prefix = "BUN_PUBLIC_";
-
-	// Filter to only include environment variables matching the prefix
-	// This prevents server-only variables from being exposed to client code
-	const filteredEnv = Object.fromEntries(
-		Object.entries(<Record<string, unknown>>env).filter(([key]) =>
-			key.startsWith(prefix),
-		),
-	);
-
-	// Create a map of variable names to their JSON-stringified values
-	// This will be used to replace process.env.VARIABLE patterns
-	const envMap = new Map<string, string>();
-	for (const [key, value] of Object.entries(filteredEnv)) {
-		envMap.set(key, JSON.stringify(value));
-	}
+	const envMap = processEnvSchema(options);
 
 	return {
 		name: "@arkenv/bun-plugin",
 		setup(build) {
 			// Only process JavaScript/TypeScript source files
-			build.onLoad({ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ }, async (args) => {
-				// Skip node_modules and other non-source files
-				if (args.path.includes("node_modules")) {
-					return undefined;
-				}
-
-				try {
-					// Read the file contents
-					const file = Bun.file(args.path);
-					const contents = await file.text();
-
-					// Replace process.env.VARIABLE patterns with validated values
-					let transformed = contents;
-
-					// Pattern 1: process.env.VARIABLE
-					// Pattern 2: process.env["VARIABLE"]
-					// Pattern 3: process.env['VARIABLE']
-					for (const [key, value] of envMap.entries()) {
-						// Replace process.env.KEY (word boundary to avoid partial matches)
-						const dotPattern = new RegExp(
-							`process\\.env\\.${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
-							"g",
-						);
-						transformed = transformed.replace(dotPattern, value);
-
-						// Replace process.env["KEY"] and process.env['KEY']
-						const bracketPattern = new RegExp(
-							`process\\.env\\[(["'])${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\1\\]`,
-							"g",
-						);
-						transformed = transformed.replace(bracketPattern, value);
-					}
-
-					// Determine loader based on file extension
-					const loader =
-						args.path.endsWith(".tsx") || args.path.endsWith(".jsx")
-							? "tsx"
-							: args.path.endsWith(".ts") || args.path.endsWith(".mts")
-								? "ts"
-								: "js";
-
-					return {
-						loader,
-						contents: transformed,
-					};
-				} catch (error) {
-					// If file can't be read, return undefined to let Bun handle it
-					return undefined;
-				}
-			});
+			build.onLoad(
+				{ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ },
+				createOnLoadHandler(envMap),
+			);
 		},
 	} satisfies BunPlugin;
 }
 
+/**
+ * Static ArkEnv plugin that automatically finds and loads the environment schema
+ * from `./src/env.ts` or `./env.ts`.
+ */
 const staticArkEnv: BunPlugin = {
 	name: "@arkenv/bun-plugin",
-	setup(build) {
-		console.log("Hello wolrd " + build.config.plugins);
+	async setup(build) {
+		const cwd = process.cwd();
+		let schema: any;
+
+		const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
+
+		for (const p of possiblePaths) {
+			if (await Bun.file(p).exists()) {
+				try {
+					const mod = await import(p);
+					if (mod.default) {
+						schema = mod.default;
+						break;
+					}
+				} catch (e) {
+					console.error(`Failed to load env schema from ${p}:`, e);
+				}
+			}
+		}
+
+		if (!schema) {
+			console.warn(
+				"No env schema found in src/env.ts or env.ts. Skipping @arkenv/bun-plugin validation.",
+			);
+			return;
+		}
+
+		const envMap = processEnvSchema(schema);
+
+		// Only process JavaScript/TypeScript source files
+		build.onLoad(
+			{ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ },
+			createOnLoadHandler(envMap),
+		);
 	},
 } satisfies BunPlugin;
+
+export default staticArkEnv;
