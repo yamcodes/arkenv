@@ -14,6 +14,7 @@
 	"devDependencies": {
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "11.2.0",
+		"@types/bun": "1.3.2",
 		"arktype": "2.1.27",
 		"bun": "1.1.0",
 		"size-limit": "11.2.0",
