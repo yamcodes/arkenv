@@ -17,11 +17,24 @@ export function App() {
 				Edit <code>src/App.tsx</code> and save to test HMR
 			</p>
 			<APITester />
-			<p>
-				process.env.vars <br />
-				BUN_PUBLIC_API_URL
-				{process.env.BUN_PUBLIC_API_URL}
-			</p>
+			<table className="env-table">
+				<thead>
+					<tr>
+						<th>Variable</th>
+						<th>Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>BUN_PUBLIC_API_URL</td>
+						<td>{process.env.BUN_PUBLIC_API_URL}</td>
+					</tr>
+					<tr>
+						<td>BUN_PUBLIC_DEBUG</td>
+						<td>{String(process.env.BUN_PUBLIC_DEBUG)}</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	);
 }
