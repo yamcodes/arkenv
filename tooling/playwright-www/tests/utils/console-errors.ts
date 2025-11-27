@@ -40,13 +40,25 @@ function isHlsJsLibraryError(errorText: string): boolean {
 }
 
 /**
- * Check if an error is a PostHog initialization warning.
- * Filters PostHog warnings about missing API keys in non-CI environments.
+ * Check if an error is a PostHog warning or non-critical error.
+ * Filters PostHog warnings about missing API keys, survey script errors,
+ * and other non-critical PostHog-related console errors.
  */
 function isPostHogWarning(errorText: string): boolean {
+	const isPostHogError =
+		errorText.includes("[PostHog]") || errorText.includes("[PostHog.js]");
+
+	if (!isPostHogError) {
+		return false;
+	}
+
+	// Filter out known non-critical PostHog errors:
+	// 1. Missing API key warnings (expected in test environments)
+	// 2. Survey script errors (non-critical analytics feature)
 	return (
-		errorText.includes("[PostHog]") &&
-		errorText.includes("NEXT_PUBLIC_POSTHOG_KEY is not set")
+		errorText.includes("NEXT_PUBLIC_POSTHOG_KEY is not set") ||
+		errorText.includes("[Surveys]") ||
+		errorText.includes("Could not load surveys")
 	);
 }
 
