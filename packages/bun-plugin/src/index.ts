@@ -2,15 +2,40 @@ import { join } from "node:path";
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
 import type { type } from "arktype";
-import type { BunPlugin, Loader } from "bun";
+import type { BunPlugin, Loader, PluginBuilder } from "bun";
 
 export type { ProcessEnvAugmented } from "./types";
 
 /**
- * Helper to create the onLoad handler
+ * Helper to process env schema and return envMap
  */
-function createOnLoadHandler(envMap: Map<string, string>) {
-	return async (args: any) => {
+function processEnvSchema(options: EnvSchema<any> | type.Any) {
+	// Validate environment variables
+	const env = createEnv(options, process.env);
+
+	// Get Bun's prefix for client-exposed environment variables
+	const prefix = "BUN_PUBLIC_";
+
+	// Filter to only include environment variables matching the prefix
+	const filteredEnv = Object.fromEntries(
+		Object.entries(<Record<string, unknown>>env).filter(([key]) =>
+			key.startsWith(prefix),
+		),
+	);
+
+	// Create a map of variable names to their JSON-stringified values
+	const envMap = new Map<string, string>();
+	for (const [key, value] of Object.entries(filteredEnv)) {
+		envMap.set(key, JSON.stringify(value));
+	}
+	return envMap;
+}
+
+/**
+ * Helper to register the onLoad handler
+ */
+function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
+	build.onLoad({ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ }, async (args) => {
 		// Skip node_modules and other non-source files
 		if (args.path.includes("node_modules")) {
 			return undefined;
@@ -60,52 +85,37 @@ function createOnLoadHandler(envMap: Map<string, string>) {
 			// If file can't be read, return undefined to let Bun handle it
 			return undefined;
 		}
-	};
+	});
 }
 
 /**
- * Helper to process env schema and return envMap
- */
-function processEnvSchema(options: EnvSchema<any> | type.Any) {
-	// Validate environment variables
-	const env = createEnv(options, process.env);
-
-	// Get Bun's prefix for client-exposed environment variables
-	const prefix = "BUN_PUBLIC_";
-
-	// Filter to only include environment variables matching the prefix
-	const filteredEnv = Object.fromEntries(
-		Object.entries(<Record<string, unknown>>env).filter(([key]) =>
-			key.startsWith(prefix),
-		),
-	);
-
-	// Create a map of variable names to their JSON-stringified values
-	const envMap = new Map<string, string>();
-	for (const [key, value] of Object.entries(filteredEnv)) {
-		envMap.set(key, JSON.stringify(value));
-	}
-	return envMap;
-}
-
-/**
- * Bun plugin to validate environment variables using ArkEnv and expose them to client code.
+ * Bun plugin to validate environment variables using ArkEnv and expose prefixed variables to client code.
  *
- * This is a hybrid export that can be used in two ways:
+ * You can use this in one of two ways:
  *
  * 1. **Zero-config (Static Analysis)**:
- *    Add it directly to `bunfig.toml`. It will automatically look for `./src/env.ts` or `./env.ts`.
+ *    Automatically looks for `./src/env.ts` or `./env.ts`.
+ *
+ *    In `bunfig.toml`:
  *    ```toml
  *    [serve.static]
  *    plugins = ["@arkenv/bun-plugin"]
+ *    ```
+ *    and in `Bun.build`:
+ *    ```ts
+ *    import arkenv from "@arkenv/bun-plugin";
+ *    Bun.build({
+ *      plugins: [arkenv]
+ *    })
  *    ```
  *
  * 2. **Manual Configuration**:
  *    Call it as a function in `Bun.build` with your schema.
  *    ```ts
  *    import arkenv from "@arkenv/bun-plugin";
+ *    import { Env } from "./src/env";
  *    Bun.build({
- *      plugins: [arkenv(MySchema)]
+ *      plugins: [arkenv(Env)]
  *    })
  *    ```
  */
@@ -121,16 +131,44 @@ export function arkenv<const T extends Record<string, unknown>>(
 	return {
 		name: "@arkenv/bun-plugin",
 		setup(build) {
-			build.onLoad(
-				{ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ },
-				createOnLoadHandler(envMap),
-			);
+			registerLoader(build, envMap);
 		},
 	} satisfies BunPlugin;
 }
 
 // Attach static analysis properties to the function to make it a valid BunPlugin object
 // This allows it to be used in bunfig.toml as `plugins = ["@arkenv/bun-plugin"]`
+/**
+ * Bun plugin to validate environment variables using ArkEnv and expose prefixed variables to client code.
+ *
+ * You can use this in one of two ways:
+ *
+ * 1. **Zero-config (Static Analysis)**:
+ *    Automatically looks for `./src/env.ts` or `./env.ts`.
+ *
+ *    In `bunfig.toml`:
+ *    ```toml
+ *    [serve.static]
+ *    plugins = ["@arkenv/bun-plugin"]
+ *    ```
+ *    and in `Bun.build`:
+ *    ```ts
+ *    import arkenv from "@arkenv/bun-plugin";
+ *    Bun.build({
+ *      plugins: [arkenv]
+ *    })
+ *    ```
+ *
+ * 2. **Manual Configuration**:
+ *    Call it as a function in `Bun.build` with your schema.
+ *    ```ts
+ *    import arkenv from "@arkenv/bun-plugin";
+ *    import { Env } from "./src/env";
+ *    Bun.build({
+ *      plugins: [arkenv(Env)]
+ *    })
+ *    ```
+ */
 const hybrid = arkenv as typeof arkenv & BunPlugin;
 
 Object.defineProperty(hybrid, "name", {
@@ -138,39 +176,51 @@ Object.defineProperty(hybrid, "name", {
 	writable: false,
 });
 
-hybrid.setup = async (build) => {
-	const cwd = process.cwd();
-	let schema: any;
+hybrid.setup = (build) => {
+	const envMap = new Map<string, string>();
 
-	const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
+	build.onStart(async () => {
+		const cwd = process.cwd();
+		let schema: any;
 
-	for (const p of possiblePaths) {
-		if (await Bun.file(p).exists()) {
-			try {
-				const mod = await import(p);
-				if (mod.default) {
-					schema = mod.default;
-					break;
+		const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
+
+		for (const p of possiblePaths) {
+			if (await Bun.file(p).exists()) {
+				try {
+					// Invalidate cache to support hot reloading of the schema file itself
+					// Note: Bun's require cache invalidation might be needed if using require
+					// For ESM import(), we might need a cache busting query param or similar if Bun caches it aggressively
+					// However, for now, we'll try standard import.
+					// To truly support hot reload of config, we might need to rely on Bun's watcher restarting the process
+					// when bunfig.toml or dependencies change.
+					const mod = await import(p);
+					if (mod.default) {
+						schema = mod.default;
+						break;
+					}
+				} catch (e) {
+					console.error(`Failed to load env schema from ${p}:`, e);
 				}
-			} catch (e) {
-				console.error(`Failed to load env schema from ${p}:`, e);
 			}
 		}
-	}
 
-	if (!schema) {
-		console.warn(
-			"No env schema found in src/env.ts or env.ts. Skipping @arkenv/bun-plugin validation.",
-		);
-		return;
-	}
+		if (!schema) {
+			console.warn(
+				"No env schema found in src/env.ts or env.ts. Skipping @arkenv/bun-plugin validation.",
+			);
+			return;
+		}
 
-	const envMap = processEnvSchema(schema);
+		// Update the shared envMap with new values
+		const newEnvMap = processEnvSchema(schema);
+		envMap.clear();
+		for (const [k, v] of newEnvMap) {
+			envMap.set(k, v);
+		}
+	});
 
-	build.onLoad(
-		{ filter: /\.(js|jsx|ts|tsx|mjs|cjs)$/ },
-		createOnLoadHandler(envMap),
-	);
+	registerLoader(build, envMap);
 };
 
 export default hybrid;

@@ -1,10 +1,6 @@
 import { serve } from "bun";
 import index from "./index.html";
 
-// Note: Plugins are also configured in bunfig.toml under [serve.static]
-// for bundling client code. The validation above ensures env vars are present
-// before the server starts.
-
 const server = serve({
 	routes: {
 		// Serve index.html for all unmatched routes.
