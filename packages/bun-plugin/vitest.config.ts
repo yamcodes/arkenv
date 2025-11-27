@@ -8,6 +8,7 @@ export default defineConfig({
 		alias: {
 			// Mock bun module for testing
 			bun: new URL("./src/__mocks__/bun.ts", import.meta.url).pathname,
+			arkenv: new URL("../arkenv/src/index.ts", import.meta.url).pathname,
 		},
 	},
 });
