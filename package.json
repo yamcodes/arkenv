@@ -45,6 +45,7 @@
 			"@sentry/cli",
 			"@tailwindcss/oxide",
 			"@vercel/speed-insights",
+			"bun",
 			"esbuild",
 			"sharp"
 		]
