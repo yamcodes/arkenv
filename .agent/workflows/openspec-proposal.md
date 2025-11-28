@@ -1,7 +1,4 @@
 ---
-name: /openspec-proposal
-id: openspec-proposal
-category: OpenSpec
 description: Scaffold a new OpenSpec change and validate strictly.
 ---
 <!-- OPENSPEC:START -->

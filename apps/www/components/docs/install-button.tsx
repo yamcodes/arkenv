@@ -8,18 +8,24 @@ import { Button } from "~/components/ui/button";
 export function InstallButton() {
 	const pathname = usePathname();
 	const isVitePluginPage = pathname?.includes("/docs/vite-plugin");
+	const isBunPluginPage = pathname?.includes("/docs/bun-plugin");
+
+	let href = "/docs/arkenv/quickstart#install";
+	let label = "Install ArkEnv";
+
+	if (isVitePluginPage) {
+		href = "/docs/vite-plugin#installation";
+		label = "Install ArkEnv Vite plugin";
+	} else if (isBunPluginPage) {
+		href = "/docs/bun-plugin#installation";
+		label = "Install ArkEnv Bun plugin";
+	}
 
 	return (
 		<Button asChild className="w-full cursor-pointer">
-			<Link
-				href={
-					isVitePluginPage
-						? "/docs/vite-plugin#installation"
-						: "/docs/arkenv/quickstart#install"
-				}
-			>
+			<Link href={href}>
 				<Download aria-hidden="true" />
-				{isVitePluginPage ? "Install ArkEnv Vite plugin" : "Install ArkEnv"}
+				{label}
 			</Link>
 		</Button>
 	);

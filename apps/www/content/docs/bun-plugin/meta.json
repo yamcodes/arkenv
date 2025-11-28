@@ -1,0 +1,7 @@
+{
+	"title": "@arkenv/bun-plugin",
+	"description": "The Bun plugin",
+	"root": true,
+	"icon": "Bun",
+	"pages": ["---Guide---", "index"]
+}
