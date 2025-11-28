@@ -1,4 +1,3 @@
-import { customComponents } from "~/mdx-components";
 import {
 	DocsBody,
 	DocsDescription,
@@ -9,6 +8,7 @@ import { notFound } from "next/navigation";
 import { EditOnGithub } from "~/components/page/edit-on-github";
 import { Separator } from "~/components/ui/separator";
 import { source } from "~/lib/source";
+import { customComponents } from "~/mdx-components";
 
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
