@@ -55,18 +55,18 @@
 		"@testing-library/react": "16.3.0",
 		"@testing-library/user-event": "14.6.1",
 		"@types/mdx": "2.0.13",
-		"@types/node": "24.10.1",
-		"@types/react": "19.2.7",
-		"@types/react-dom": "19.2.3",
-		"@vitejs/plugin-react": "5.1.1",
-		"concurrently": "9.2.1",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"concurrently": "catalog:",
 		"jsdom": "27.2.0",
 		"next-video": "2.5.1",
 		"postcss": "8.5.6",
 		"styled-jsx": "5.1.7",
 		"tailwindcss": "4.1.17",
-		"typescript": "5.9.3",
-		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.14"
+		"typescript": "catalog:",
+		"vite-tsconfig-paths": "catalog:",
+		"vitest": "catalog:"
 	}
 }

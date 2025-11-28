@@ -11,7 +11,7 @@
 		"@arkenv/vite-plugin": "workspace:*",
 		"@solidjs/start": "1.2.0",
 		"arkenv": "workspace:*",
-		"arktype": "2.1.27",
+		"arktype": "catalog:",
 		"solid-js": "1.9.10",
 		"vinxi": "0.5.8"
 	},

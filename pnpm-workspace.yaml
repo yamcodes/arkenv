@@ -1,10 +1,32 @@
 packages:
-  - 'packages/*'
-  - 'packages/internal/*'
-  - 'apps/*'
-  - 'apps/playgrounds/*'
-  - 'tooling/*'
+  - packages/*
+  - packages/internal/*
+  - apps/*
+  - apps/playgrounds/*
+  - tooling/*
 overrides:
-  "@playwright/test": "1.56.1"
-  "import-in-the-middle": "2.0.0"
-  "require-in-the-middle": "8.0.1"
+  "@playwright/test": 1.56.1
+  import-in-the-middle: 2.0.0
+  require-in-the-middle: 8.0.1
+catalog:
+  "@axe-core/playwright": 4.11.0
+  "@size-limit/esbuild-why": 11.2.0
+  "@size-limit/preset-small-lib": 11.2.0
+  "@types/bun": 1.3.3
+  "@types/node": 24.10.1
+  "@types/react": 19.2.7
+  "@types/react-dom": 19.2.3
+  "@vitejs/plugin-react": 5.1.1
+  "@vitest/ui": 4.0.14
+  arktype: 2.1.27
+  concurrently: 9.2.1
+  globals: 16.5.0
+  react: 19.2.0
+  react-dom: 19.2.0
+  rimraf: 6.1.2
+  size-limit: 11.2.0
+  tsdown: 0.16.7
+  tsx: 4.20.6
+  typescript: 5.9.3
+  vite-tsconfig-paths: 5.1.4
+  vitest: 4.0.14

@@ -4,6 +4,72 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@axe-core/playwright':
+      specifier: 4.11.0
+      version: 4.11.0
+    '@size-limit/esbuild-why':
+      specifier: 11.2.0
+      version: 11.2.0
+    '@size-limit/preset-small-lib':
+      specifier: 11.2.0
+      version: 11.2.0
+    '@types/bun':
+      specifier: 1.3.3
+      version: 1.3.3
+    '@types/node':
+      specifier: 24.10.1
+      version: 24.10.1
+    '@types/react':
+      specifier: 19.2.7
+      version: 19.2.7
+    '@types/react-dom':
+      specifier: 19.2.3
+      version: 19.2.3
+    '@vitejs/plugin-react':
+      specifier: 5.1.1
+      version: 5.1.1
+    '@vitest/ui':
+      specifier: 4.0.14
+      version: 4.0.14
+    arktype:
+      specifier: 2.1.27
+      version: 2.1.27
+    concurrently:
+      specifier: 9.2.1
+      version: 9.2.1
+    globals:
+      specifier: 16.5.0
+      version: 16.5.0
+    react:
+      specifier: 19.2.0
+      version: 19.2.0
+    react-dom:
+      specifier: 19.2.0
+      version: 19.2.0
+    rimraf:
+      specifier: 6.1.2
+      version: 6.1.2
+    size-limit:
+      specifier: 11.2.0
+      version: 11.2.0
+    tsdown:
+      specifier: 0.16.7
+      version: 0.16.7
+    tsx:
+      specifier: 4.20.6
+      version: 4.20.6
+    typescript:
+      specifier: 5.9.3
+      version: 5.9.3
+    vite-tsconfig-paths:
+      specifier: 5.1.4
+      version: 5.1.4
+    vitest:
+      specifier: 4.0.14
+      version: 4.0.14
+
 overrides:
   '@playwright/test': 1.56.1
   import-in-the-middle: 2.0.0
@@ -26,22 +92,22 @@ importers:
         specifier: 1.56.1
         version: 1.56.1
       '@vitest/ui':
-        specifier: 4.0.14
+        specifier: 'catalog:'
         version: 4.0.14(vitest@4.0.14)
       changesets-changelog-clean:
         specifier: 1.3.0
         version: 1.3.0
       rimraf:
-        specifier: 6.1.2
+        specifier: 'catalog:'
         version: 6.1.2
       turbo:
         specifier: 2.6.1
         version: 2.6.1
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vitest:
-        specifier: 4.0.14
+        specifier: 'catalog:'
         version: 4.0.14(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/ui@4.0.14)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
 
   apps/playgrounds/bun:
@@ -50,33 +116,33 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/arkenv
       arktype:
-        specifier: 2.1.27
+        specifier: 'catalog:'
         version: 2.1.27
     devDependencies:
       '@types/bun':
-        specifier: 1.3.3
+        specifier: 'catalog:'
         version: 1.3.3
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
 
   apps/playgrounds/bun-react:
     dependencies:
       react:
-        specifier: 19.2.0
+        specifier: 'catalog:'
         version: 19.2.0
       react-dom:
-        specifier: 19.2.0
+        specifier: 'catalog:'
         version: 19.2.0(react@19.2.0)
     devDependencies:
       '@types/bun':
-        specifier: 1.3.3
+        specifier: 'catalog:'
         version: 1.3.3
       '@types/react':
-        specifier: 19.2.7
+        specifier: 'catalog:'
         version: 19.2.7
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.7)
 
   apps/playgrounds/node:
@@ -85,14 +151,14 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/arkenv
       arktype:
-        specifier: 2.1.27
+        specifier: 'catalog:'
         version: 2.1.27
     devDependencies:
       '@types/node':
-        specifier: 24.10.1
+        specifier: 'catalog:'
         version: 24.10.1
       tsx:
-        specifier: 4.20.6
+        specifier: 'catalog:'
         version: 4.20.6
 
   apps/playgrounds/solid-start:
@@ -107,7 +173,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/arkenv
       arktype:
-        specifier: 2.1.27
+        specifier: 'catalog:'
         version: 2.1.27
       solid-js:
         specifier: 1.9.10
@@ -125,38 +191,38 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/arkenv
       arktype:
-        specifier: 2.1.27
+        specifier: 'catalog:'
         version: 2.1.27
       react:
-        specifier: 19.2.0
+        specifier: 'catalog:'
         version: 19.2.0
       react-dom:
-        specifier: 19.2.0
+        specifier: 'catalog:'
         version: 19.2.0(react@19.2.0)
     devDependencies:
       '@julr/vite-plugin-validate-env':
         specifier: 2.2.0
         version: 2.2.0(rolldown-vite@7.2.8(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)(terser@5.44.1)(tsx@4.20.6))
       '@types/react':
-        specifier: 19.2.7
+        specifier: 'catalog:'
         version: 19.2.7
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.7)
       '@vitejs/plugin-react':
-        specifier: 5.1.1
+        specifier: 'catalog:'
         version: 5.1.1(rolldown-vite@7.2.8(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)(terser@5.44.1)(tsx@4.20.6))
       globals:
-        specifier: 16.5.0
+        specifier: 'catalog:'
         version: 16.5.0
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vite:
         specifier: npm:rolldown-vite@latest
         version: rolldown-vite@7.2.8(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)(terser@5.44.1)(tsx@4.20.6)
       vite-tsconfig-paths:
-        specifier: 5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(rolldown-vite@7.2.8(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)(terser@5.44.1)(tsx@4.20.6))(typescript@5.9.3)
 
   apps/www:
@@ -283,19 +349,19 @@ importers:
         specifier: 2.0.13
         version: 2.0.13
       '@types/node':
-        specifier: 24.10.1
+        specifier: 'catalog:'
         version: 24.10.1
       '@types/react':
-        specifier: 19.2.7
+        specifier: 'catalog:'
         version: 19.2.7
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.7)
       '@vitejs/plugin-react':
-        specifier: 5.1.1
+        specifier: 'catalog:'
         version: 5.1.1(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
       concurrently:
-        specifier: 9.2.1
+        specifier: 'catalog:'
         version: 9.2.1
       jsdom:
         specifier: 27.2.0
@@ -313,55 +379,52 @@ importers:
         specifier: 4.1.17
         version: 4.1.17
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vite-tsconfig-paths:
-        specifier: 5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
       vitest:
-        specifier: 4.0.14
+        specifier: 'catalog:'
         version: 4.0.14(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/ui@4.0.14)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
 
   packages/arkenv:
     devDependencies:
-      '@ark/schema':
-        specifier: 0.54.0
-        version: 0.54.0
       '@repo/types':
         specifier: workspace:*
         version: link:../internal/types
       '@size-limit/esbuild-why':
-        specifier: 11.2.0
+        specifier: 'catalog:'
         version: 11.2.0(size-limit@11.2.0)
       '@size-limit/preset-small-lib':
-        specifier: 11.2.0
+        specifier: 'catalog:'
         version: 11.2.0(size-limit@11.2.0)
       '@types/node':
-        specifier: 24.10.1
+        specifier: 'catalog:'
         version: 24.10.1
       arktype:
-        specifier: 2.1.27
+        specifier: 'catalog:'
         version: 2.1.27
       size-limit:
-        specifier: 11.2.0
+        specifier: 'catalog:'
         version: 11.2.0
       tsdown:
-        specifier: 0.16.5
-        version: 0.16.5(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 0.16.7(typescript@5.9.3)
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vitest:
-        specifier: 4.0.14
+        specifier: 'catalog:'
         version: 4.0.14(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/ui@4.0.14)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
 
   packages/internal/types:
     devDependencies:
       arktype:
-        specifier: 2.1.27
+        specifier: 'catalog:'
         version: 2.1.27
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
 
   packages/vite-plugin:
@@ -374,28 +437,28 @@ importers:
         specifier: workspace:*
         version: link:../internal/types
       '@size-limit/preset-small-lib':
-        specifier: 11.2.0
+        specifier: 'catalog:'
         version: 11.2.0(size-limit@11.2.0)
       arktype:
-        specifier: 2.1.27
+        specifier: 'catalog:'
         version: 2.1.27
       size-limit:
-        specifier: 11.2.0
+        specifier: 'catalog:'
         version: 11.2.0
       tsdown:
-        specifier: 0.16.5
-        version: 0.16.5(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 0.16.7(typescript@5.9.3)
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vite:
         specifier: 7.2.4
         version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
       vite-tsconfig-paths:
-        specifier: 5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
       vitest:
-        specifier: 4.0.14
+        specifier: 'catalog:'
         version: 4.0.14(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/ui@4.0.14)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
 
   tooling/playwright-www:
@@ -405,16 +468,16 @@ importers:
         version: link:../../apps/www
     devDependencies:
       '@axe-core/playwright':
-        specifier: 4.11.0
+        specifier: 'catalog:'
         version: 4.11.0(playwright-core@1.56.1)
       '@playwright/test':
         specifier: 1.56.1
         version: 1.56.1
       '@types/node':
-        specifier: 24.10.1
+        specifier: 'catalog:'
         version: 24.10.1
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
 
 packages:
@@ -435,14 +498,8 @@ packages:
   '@apm-js-collab/tracing-hooks@0.3.1':
     resolution: {integrity: sha512-Vu1CbmPURlN5fTboVuKMoJjbO5qcq9fA5YXpskx3dXe/zTBvjODFoerw+69rVBlRLrJpwPqSDqEuJDEKIrTldw==}
 
-  '@ark/schema@0.54.0':
-    resolution: {integrity: sha512-QloFou+ODfb5qXgPxX1EbJyRqZEwoElzvJ6VuuFVvWJQGoigBEUW3L0HejXG/B9v8K3VvDikuULp5ELSwZn8hg==}
-
   '@ark/schema@0.55.0':
     resolution: {integrity: sha512-IlSIc0FmLKTDGr4I/FzNHauMn0MADA6bCjT1wauu4k6MyxhC1R9gz0olNpIRvK7lGGDwtc/VO0RUDNvVQW5WFg==}
-
-  '@ark/util@0.54.0':
-    resolution: {integrity: sha512-ugTfpEDGA6d2uU2/3M7uRiuPNYckQMhg2wfNMw8zZHXjPhuVCbXWZzIcBojuXuCN8j4MrNWNqQ9z7f8W/JiE8w==}
 
   '@ark/util@0.55.0':
     resolution: {integrity: sha512-aWFNK7aqSvqFtVsl1xmbTjGbg91uqtJV7Za76YGNEwIO4qLjMfyY8flmmbhooYMuqPCO2jyxu8hve943D+w3bA==}
@@ -1768,9 +1825,6 @@ packages:
     resolution: {integrity: sha512-8iE5/4OK0SLHqWzRxSvI1gjFPmIH6718s8iwkuco95rBZsCZIHq+5wy4lYsASxnH+8FOhbGndiUrcwsVG5i2zw==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  '@oxc-project/types@0.97.0':
-    resolution: {integrity: sha512-lxmZK4xFrdvU0yZiDwgVQTCvh2gHWBJCBk5ALsrtsBWhs0uDIi+FTOnXRQeQfs304imdvTdaakT/lqwQ8hkOXQ==}
-
   '@oxc-project/types@0.98.0':
     resolution: {integrity: sha512-Vzmd6FsqVuz5HQVcRC/hrx7Ujo3WEVeQP7C2UNP5uy1hUY4SQvMB+93jxkI1KRHz9a/6cni3glPOtvteN+zpsw==}
 
@@ -2331,12 +2385,6 @@ packages:
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
 
-  '@rolldown/binding-android-arm64@1.0.0-beta.50':
-    resolution: {integrity: sha512-XlEkrOIHLyGT3avOgzfTFSjG+f+dZMw+/qd+Y3HLN86wlndrB/gSimrJCk4gOhr1XtRtEKfszpadI3Md4Z4/Ag==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [android]
-
   '@rolldown/binding-android-arm64@1.0.0-beta.51':
     resolution: {integrity: sha512-Ctn8FUXKWWQI9pWC61P1yumS9WjQtelNS9riHwV7oCkknPGaAry4o7eFx2KgoLMnI2BgFJYpW7Im8/zX3BuONg==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2349,12 +2397,6 @@ packages:
     cpu: [arm64]
     os: [android]
 
-  '@rolldown/binding-darwin-arm64@1.0.0-beta.50':
-    resolution: {integrity: sha512-+JRqKJhoFlt5r9q+DecAGPLZ5PxeLva+wCMtAuoFMWPoZzgcYrr599KQ+Ix0jwll4B4HGP43avu9My8KtSOR+w==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [darwin]
-
   '@rolldown/binding-darwin-arm64@1.0.0-beta.51':
     resolution: {integrity: sha512-EL1aRW2Oq15ShUEkBPsDtLMO8GTqfb/ktM/dFaVzXKQiEE96Ss6nexMgfgQrg8dGnNpndFyffVDb5IdSibsu1g==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2365,12 +2407,6 @@ packages:
     resolution: {integrity: sha512-MmKeoLnKu1d9j6r19K8B+prJnIZ7u+zQ+zGQ3YHXGnr41rzE3eqQLovlkvoZnRoxDGPA4ps0pGiwXy6YE3lJyg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
-    os: [darwin]
-
-  '@rolldown/binding-darwin-x64@1.0.0-beta.50':
-    resolution: {integrity: sha512-fFXDjXnuX7/gQZQm/1FoivVtRcyAzdjSik7Eo+9iwPQ9EgtA5/nB2+jmbzaKtMGG3q+BnZbdKHCtOacmNrkIDA==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [x64]
     os: [darwin]
 
   '@rolldown/binding-darwin-x64@1.0.0-beta.51':
@@ -2385,12 +2421,6 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@rolldown/binding-freebsd-x64@1.0.0-beta.50':
-    resolution: {integrity: sha512-F1b6vARy49tjmT/hbloplzgJS7GIvwWZqt+tAHEstCh0JIh9sa8FAMVqEmYxDviqKBaAI8iVvUREm/Kh/PD26Q==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [x64]
-    os: [freebsd]
-
   '@rolldown/binding-freebsd-x64@1.0.0-beta.51':
     resolution: {integrity: sha512-JRoVTQtHYbZj1P07JLiuTuXjiBtIa7ag7/qgKA6CIIXnAcdl4LrOf7nfDuHPJcuRKaP5dzecMgY99itvWfmUFQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2402,12 +2432,6 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [freebsd]
-
-  '@rolldown/binding-linux-arm-gnueabihf@1.0.0-beta.50':
-    resolution: {integrity: sha512-U6cR76N8T8M6lHj7EZrQ3xunLPxSvYYxA8vJsBKZiFZkT8YV4kjgCO3KwMJL0NOjQCPGKyiXO07U+KmJzdPGRw==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm]
-    os: [linux]
 
   '@rolldown/binding-linux-arm-gnueabihf@1.0.0-beta.51':
     resolution: {integrity: sha512-BKATVnpPZ0TYBW9XfDwyd4kPGgvf964HiotIwUgpMrFOFYWqpZ+9ONNzMV4UFAYC7Hb5C2qgYQk/qj2OnAd4RQ==}
@@ -2421,12 +2445,6 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@rolldown/binding-linux-arm64-gnu@1.0.0-beta.50':
-    resolution: {integrity: sha512-ONgyjofCrrE3bnh5GZb8EINSFyR/hmwTzZ7oVuyUB170lboza1VMCnb8jgE6MsyyRgHYmN8Lb59i3NKGrxrYjw==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [linux]
-
   '@rolldown/binding-linux-arm64-gnu@1.0.0-beta.51':
     resolution: {integrity: sha512-xLd7da5jkfbVsBCm1buIRdWtuXY8+hU3+6ESXY/Tk5X5DPHaifrUblhYDgmA34dQt6WyNC2kfXGgrduPEvDI6Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2435,12 +2453,6 @@ packages:
 
   '@rolldown/binding-linux-arm64-gnu@1.0.0-beta.52':
     resolution: {integrity: sha512-V48oDR84feRU2KRuzpALp594Uqlx27+zFsT6+BgTcXOtu7dWy350J1G28ydoCwKB+oxwsRPx2e7aeQnmd3YJbQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [linux]
-
-  '@rolldown/binding-linux-arm64-musl@1.0.0-beta.50':
-    resolution: {integrity: sha512-L0zRdH2oDPkmB+wvuTl+dJbXCsx62SkqcEqdM+79LOcB+PxbAxxjzHU14BuZIQdXcAVDzfpMfaHWzZuwhhBTcw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
@@ -2457,12 +2469,6 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@rolldown/binding-linux-x64-gnu@1.0.0-beta.50':
-    resolution: {integrity: sha512-gyoI8o/TGpQd3OzkJnh1M2kxy1Bisg8qJ5Gci0sXm9yLFzEXIFdtc4EAzepxGvrT2ri99ar5rdsmNG0zP0SbIg==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [x64]
-    os: [linux]
-
   '@rolldown/binding-linux-x64-gnu@1.0.0-beta.51':
     resolution: {integrity: sha512-p5P6Xpa68w3yFaAdSzIZJbj+AfuDnMDqNSeglBXM7UlJT14Q4zwK+rV+8Mhp9MiUb4XFISZtbI/seBprhkQbiQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2471,12 +2477,6 @@ packages:
 
   '@rolldown/binding-linux-x64-gnu@1.0.0-beta.52':
     resolution: {integrity: sha512-klahlb2EIFltSUubn/VLjuc3qxp1E7th8ukayPfdkcKvvYcQ5rJztgx8JsJSuAKVzKtNTqUGOhy4On71BuyV8g==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [x64]
-    os: [linux]
-
-  '@rolldown/binding-linux-x64-musl@1.0.0-beta.50':
-    resolution: {integrity: sha512-zti8A7M+xFDpKlghpcCAzyOi+e5nfUl3QhU023ce5NCgUxRG5zGP2GR9LTydQ1rnIPwZUVBWd4o7NjZDaQxaXA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
@@ -2493,12 +2493,6 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@rolldown/binding-openharmony-arm64@1.0.0-beta.50':
-    resolution: {integrity: sha512-eZUssog7qljrrRU9Mi0eqYEPm3Ch0UwB+qlWPMKSUXHNqhm3TvDZarJQdTevGEfu3EHAXJvBIe0YFYr0TPVaMA==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [openharmony]
-
   '@rolldown/binding-openharmony-arm64@1.0.0-beta.51':
     resolution: {integrity: sha512-e/JMTz9Q8+T3g/deEi8DK44sFWZWGKr9AOCW5e8C8SCVWzAXqYXAG7FXBWBNzWEZK0Rcwo9TQHTQ9Q0gXgdCaA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2511,11 +2505,6 @@ packages:
     cpu: [arm64]
     os: [openharmony]
 
-  '@rolldown/binding-wasm32-wasi@1.0.0-beta.50':
-    resolution: {integrity: sha512-nmCN0nIdeUnmgeDXiQ+2HU6FT162o+rxnF7WMkBm4M5Ds8qTU7Dzv2Wrf22bo4ftnlrb2hKK6FSwAJSAe2FWLg==}
-    engines: {node: '>=14.0.0'}
-    cpu: [wasm32]
-
   '@rolldown/binding-wasm32-wasi@1.0.0-beta.51':
     resolution: {integrity: sha512-We3LWqSu6J9s5Y0MK+N7fUiiu37aBGPG3Pc347EoaROuAwkCS2u9xJ5dpIyLW4B49CIbS3KaPmn4kTgPb3EyPw==}
     engines: {node: '>=14.0.0'}
@@ -2525,12 +2514,6 @@ packages:
     resolution: {integrity: sha512-K/p7clhCqJOQpXGykrFaBX2Dp9AUVIDHGc+PtFGBwg7V+mvBTv/tsm3LC3aUmH02H2y3gz4y+nUTQ0MLpofEEg==}
     engines: {node: '>=14.0.0'}
     cpu: [wasm32]
-
-  '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.50':
-    resolution: {integrity: sha512-7kcNLi7Ua59JTTLvbe1dYb028QEPaJPJQHqkmSZ5q3tJueUeb6yjRtx8mw4uIqgWZcnQHAR3PrLN4XRJxvgIkA==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [win32]
 
   '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.51':
     resolution: {integrity: sha512-fj56buHRuMM+r/cb6ZYfNjNvO/0xeFybI6cTkTROJatdP4fvmQ1NS8D/Lm10FCSDEOkqIz8hK3TGpbAThbPHsA==}
@@ -2544,12 +2527,6 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@rolldown/binding-win32-ia32-msvc@1.0.0-beta.50':
-    resolution: {integrity: sha512-lL70VTNvSCdSZkDPPVMwWn/M2yQiYvSoXw9hTLgdIWdUfC3g72UaruezusR6ceRuwHCY1Ayu2LtKqXkBO5LIwg==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [ia32]
-    os: [win32]
-
   '@rolldown/binding-win32-ia32-msvc@1.0.0-beta.51':
     resolution: {integrity: sha512-fkqEqaeEx8AySXiDm54b/RdINb3C0VovzJA3osMhZsbn6FoD73H0AOIiaVAtGr6x63hefruVKTX8irAm4Jkt2w==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2560,12 +2537,6 @@ packages:
     resolution: {integrity: sha512-5ZXcYyd4GxPA6QfbGrNcQjmjbuLGvfz6728pZMsQvGHI+06LT06M6TPtXvFvLgXtexc+OqvFe1yAIXJU1gob/w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ia32]
-    os: [win32]
-
-  '@rolldown/binding-win32-x64-msvc@1.0.0-beta.50':
-    resolution: {integrity: sha512-4qU4x5DXWB4JPjyTne/wBNPqkbQU8J45bl21geERBKtEittleonioACBL1R0PsBu0Aq21SwMK5a9zdBkWSlQtQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [x64]
     os: [win32]
 
   '@rolldown/binding-win32-x64-msvc@1.0.0-beta.51':
@@ -2582,9 +2553,6 @@ packages:
 
   '@rolldown/pluginutils@1.0.0-beta.47':
     resolution: {integrity: sha512-8QagwMH3kNCuzD8EWL8R2YPW5e4OrHNSAHRFDdmFqEwEaD/KcNKjVoumo+gP2vW5eKB2UPbM6vTYiGZX0ixLnw==}
-
-  '@rolldown/pluginutils@1.0.0-beta.50':
-    resolution: {integrity: sha512-5e76wQiQVeL1ICOZVUg4LSOVYg9jyhGCin+icYozhsUzM+fHE7kddi1bdiE0jwVqTfkjba3jUFbEkoC9WkdvyA==}
 
   '@rolldown/pluginutils@1.0.0-beta.51':
     resolution: {integrity: sha512-51/8cNXMrqWqX3o8DZidhwz1uYq0BhHDDSfVygAND1Skx5s1TDw3APSSxCMcFFedwgqGcx34gRouwY+m404BBQ==}
@@ -5797,9 +5765,6 @@ packages:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
-  obug@2.1.0:
-    resolution: {integrity: sha512-uu/tgLPoa75CFA7UDkmqspKbefvZh1WMPwkU3bNr0PY746a/+xwXVgbw5co5C3GvJj3h5u8g/pbxXzI0gd1QFg==}
-
   obug@2.1.1:
     resolution: {integrity: sha512-uTqF9MuPraAQ+IsnPf366RG4cP9RtUi7MLO1N3KEc+wb0a6yKpeL0lmk2IB1jY5KHPAlTc6T/JRdC/YqxHNwkQ==}
 
@@ -6306,13 +6271,13 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rolldown-plugin-dts@0.17.8:
-    resolution: {integrity: sha512-76EEBlhF00yeY6M7VpMkWKI4r9WjuoMiOGey7j4D6zf3m0BR+ZrrY9hvSXdueJ3ljxSLq4DJBKFpX/X9+L7EKw==}
+  rolldown-plugin-dts@0.18.1:
+    resolution: {integrity: sha512-uIgNMix6OI+6bSkw0nw6O+G/ydPRCWKwvvcEyL6gWkVkSFVGWWO23DX4ZYVOqC7w5u2c8uPY9Q74U0QCKvegFA==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@ts-macro/tsc': ^0.3.6
       '@typescript/native-preview': '>=7.0.0-dev.20250601.1'
-      rolldown: ^1.0.0-beta.44
+      rolldown: ^1.0.0-beta.51
       typescript: ^5.0.0
       vue-tsc: ~3.1.0
     peerDependenciesMeta:
@@ -6364,11 +6329,6 @@ packages:
         optional: true
       yaml:
         optional: true
-
-  rolldown@1.0.0-beta.50:
-    resolution: {integrity: sha512-JFULvCNl/anKn99eKjOSEubi0lLmNqQDAjyEMME2T4CwezUDL0i6t1O9xZsu2OMehPnV2caNefWpGF+8TnzB6A==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    hasBin: true
 
   rolldown@1.0.0-beta.51:
     resolution: {integrity: sha512-ZRLgPlS91l4JztLYEZnmMcd3Umcla1hkXJgiEiR4HloRJBBoeaX8qogTu5Jfu36rRMVLndzqYv0h+M5gJAkUfg==}
@@ -6874,13 +6834,13 @@ packages:
       typescript:
         optional: true
 
-  tsdown@0.16.5:
-    resolution: {integrity: sha512-jo/2MmJI1uNJ+QvwEfF/2DcICd2Bc/Gc/XIVJS9Gvfns7ji5TgUeu3kYfG8nA/mGgWXU8REpTNweIcVJQoSLAQ==}
+  tsdown@0.16.7:
+    resolution: {integrity: sha512-3rGG74MGc16rJ70ID7WyKnJBM5TIqGX5uYbmUCdiFIc2c3+KXka4nCeji3RRxhBw/hL7Xbs8pCY8x2cn0J+O0w==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
-      '@vitejs/devtools': ^0.0.0-alpha.17
+      '@vitejs/devtools': ^0.0.0-alpha.18
       publint: ^0.3.0
       typescript: ^5.0.0
       unplugin-lightningcss: ^0.4.0
@@ -7524,15 +7484,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ark/schema@0.54.0':
-    dependencies:
-      '@ark/util': 0.54.0
-
   '@ark/schema@0.55.0':
     dependencies:
       '@ark/util': 0.55.0
-
-  '@ark/util@0.54.0': {}
 
   '@ark/util@0.55.0': {}
 
@@ -9291,8 +9245,6 @@ snapshots:
 
   '@oxc-project/runtime@0.99.0': {}
 
-  '@oxc-project/types@0.97.0': {}
-
   '@oxc-project/types@0.98.0': {}
 
   '@oxc-project/types@0.99.0': {}
@@ -9832,16 +9784,10 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
-  '@rolldown/binding-android-arm64@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-android-arm64@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-android-arm64@1.0.0-beta.52':
-    optional: true
-
-  '@rolldown/binding-darwin-arm64@1.0.0-beta.50':
     optional: true
 
   '@rolldown/binding-darwin-arm64@1.0.0-beta.51':
@@ -9850,16 +9796,10 @@ snapshots:
   '@rolldown/binding-darwin-arm64@1.0.0-beta.52':
     optional: true
 
-  '@rolldown/binding-darwin-x64@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-darwin-x64@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-darwin-x64@1.0.0-beta.52':
-    optional: true
-
-  '@rolldown/binding-freebsd-x64@1.0.0-beta.50':
     optional: true
 
   '@rolldown/binding-freebsd-x64@1.0.0-beta.51':
@@ -9868,16 +9808,10 @@ snapshots:
   '@rolldown/binding-freebsd-x64@1.0.0-beta.52':
     optional: true
 
-  '@rolldown/binding-linux-arm-gnueabihf@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-linux-arm-gnueabihf@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-linux-arm-gnueabihf@1.0.0-beta.52':
-    optional: true
-
-  '@rolldown/binding-linux-arm64-gnu@1.0.0-beta.50':
     optional: true
 
   '@rolldown/binding-linux-arm64-gnu@1.0.0-beta.51':
@@ -9886,16 +9820,10 @@ snapshots:
   '@rolldown/binding-linux-arm64-gnu@1.0.0-beta.52':
     optional: true
 
-  '@rolldown/binding-linux-arm64-musl@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-linux-arm64-musl@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-linux-arm64-musl@1.0.0-beta.52':
-    optional: true
-
-  '@rolldown/binding-linux-x64-gnu@1.0.0-beta.50':
     optional: true
 
   '@rolldown/binding-linux-x64-gnu@1.0.0-beta.51':
@@ -9904,27 +9832,16 @@ snapshots:
   '@rolldown/binding-linux-x64-gnu@1.0.0-beta.52':
     optional: true
 
-  '@rolldown/binding-linux-x64-musl@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-linux-x64-musl@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-linux-x64-musl@1.0.0-beta.52':
     optional: true
 
-  '@rolldown/binding-openharmony-arm64@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-openharmony-arm64@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-openharmony-arm64@1.0.0-beta.52':
-    optional: true
-
-  '@rolldown/binding-wasm32-wasi@1.0.0-beta.50':
-    dependencies:
-      '@napi-rs/wasm-runtime': 1.0.7
     optional: true
 
   '@rolldown/binding-wasm32-wasi@1.0.0-beta.51':
@@ -9937,25 +9854,16 @@ snapshots:
       '@napi-rs/wasm-runtime': 1.0.7
     optional: true
 
-  '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.52':
     optional: true
 
-  '@rolldown/binding-win32-ia32-msvc@1.0.0-beta.50':
-    optional: true
-
   '@rolldown/binding-win32-ia32-msvc@1.0.0-beta.51':
     optional: true
 
   '@rolldown/binding-win32-ia32-msvc@1.0.0-beta.52':
-    optional: true
-
-  '@rolldown/binding-win32-x64-msvc@1.0.0-beta.50':
     optional: true
 
   '@rolldown/binding-win32-x64-msvc@1.0.0-beta.51':
@@ -9965,8 +9873,6 @@ snapshots:
     optional: true
 
   '@rolldown/pluginutils@1.0.0-beta.47': {}
-
-  '@rolldown/pluginutils@1.0.0-beta.50': {}
 
   '@rolldown/pluginutils@1.0.0-beta.51': {}
 
@@ -13836,8 +13742,6 @@ snapshots:
 
   object-assign@4.1.1: {}
 
-  obug@2.1.0: {}
-
   obug@2.1.1: {}
 
   ofetch@1.5.1:
@@ -14397,7 +14301,7 @@ snapshots:
       glob: 13.0.0
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.17.8(rolldown@1.0.0-beta.50)(typescript@5.9.3):
+  rolldown-plugin-dts@0.18.1(rolldown@1.0.0-beta.51)(typescript@5.9.3):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -14407,8 +14311,8 @@ snapshots:
       dts-resolver: 2.1.3
       get-tsconfig: 4.13.0
       magic-string: 0.30.21
-      obug: 2.1.0
-      rolldown: 1.0.0-beta.50
+      obug: 2.1.1
+      rolldown: 1.0.0-beta.51
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -14430,26 +14334,6 @@ snapshots:
       jiti: 2.6.1
       terser: 5.44.1
       tsx: 4.20.6
-
-  rolldown@1.0.0-beta.50:
-    dependencies:
-      '@oxc-project/types': 0.97.0
-      '@rolldown/pluginutils': 1.0.0-beta.50
-    optionalDependencies:
-      '@rolldown/binding-android-arm64': 1.0.0-beta.50
-      '@rolldown/binding-darwin-arm64': 1.0.0-beta.50
-      '@rolldown/binding-darwin-x64': 1.0.0-beta.50
-      '@rolldown/binding-freebsd-x64': 1.0.0-beta.50
-      '@rolldown/binding-linux-arm-gnueabihf': 1.0.0-beta.50
-      '@rolldown/binding-linux-arm64-gnu': 1.0.0-beta.50
-      '@rolldown/binding-linux-arm64-musl': 1.0.0-beta.50
-      '@rolldown/binding-linux-x64-gnu': 1.0.0-beta.50
-      '@rolldown/binding-linux-x64-musl': 1.0.0-beta.50
-      '@rolldown/binding-openharmony-arm64': 1.0.0-beta.50
-      '@rolldown/binding-wasm32-wasi': 1.0.0-beta.50
-      '@rolldown/binding-win32-arm64-msvc': 1.0.0-beta.50
-      '@rolldown/binding-win32-ia32-msvc': 1.0.0-beta.50
-      '@rolldown/binding-win32-x64-msvc': 1.0.0-beta.50
 
   rolldown@1.0.0-beta.51:
     dependencies:
@@ -15026,7 +14910,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  tsdown@0.16.5(typescript@5.9.3):
+  tsdown@0.16.7(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -15034,9 +14918,9 @@ snapshots:
       diff: 8.0.2
       empathic: 2.0.0
       hookable: 5.5.3
-      obug: 2.1.0
-      rolldown: 1.0.0-beta.50
-      rolldown-plugin-dts: 0.17.8(rolldown@1.0.0-beta.50)(typescript@5.9.3)
+      obug: 2.1.1
+      rolldown: 1.0.0-beta.51
+      rolldown-plugin-dts: 0.18.1(rolldown@1.0.0-beta.51)(typescript@5.9.3)
       semver: 7.7.3
       tinyexec: 1.0.2
       tinyglobby: 0.2.15

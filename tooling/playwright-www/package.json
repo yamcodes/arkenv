@@ -16,9 +16,9 @@
 		"www": "workspace:*"
 	},
 	"devDependencies": {
-		"@axe-core/playwright": "4.11.0",
+		"@axe-core/playwright": "catalog:",
 		"@playwright/test": "",
-		"@types/node": "24.10.1",
-		"typescript": "5.9.3"
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
 	}
 }
