@@ -14,18 +14,18 @@
 	"dependencies": {
 		"@arkenv/vite-plugin": "workspace:*",
 		"arkenv": "workspace:*",
-		"arktype": "2.1.27",
-		"react": "19.2.0",
-		"react-dom": "19.2.0"
+		"arktype": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:"
 	},
 	"devDependencies": {
 		"@julr/vite-plugin-validate-env": "2.2.0",
-		"@types/react": "19.2.7",
-		"@types/react-dom": "19.2.3",
-		"@vitejs/plugin-react": "5.1.1",
-		"globals": "16.5.0",
-		"typescript": "5.9.3",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"globals": "catalog:",
+		"typescript": "catalog:",
 		"vite": "npm:rolldown-vite@latest",
-		"vite-tsconfig-paths": "5.1.4"
+		"vite-tsconfig-paths": "catalog:"
 	}
 }
