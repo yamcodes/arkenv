@@ -42,7 +42,7 @@ A future, more advanced configuration pattern using a custom static file MAY be 
 **What**: The plugin supports two core configuration modes:
 
 1. **Direct Reference (Bun.build)** – pass a configured plugin instance directly in the `plugins` array.
-2. **Package Reference with Convention (Bun.serve)** – declare `bun-plugin-arkenv` in `bunfig.toml` and let the plugin discover the ArkEnv schema file using a set of well-known paths.
+2. **Package Reference with Convention (Bun.serve)** – declare `@arkenv/bun-plugin` in `bunfig.toml` and let the plugin discover the ArkEnv schema file using a set of well-known paths.
 
 A third, more advanced mode using a custom static plugin file may be added later for projects with non-standard layouts, but is not required for the initial release.
 
@@ -50,26 +50,16 @@ A third, more advanced mode using a custom static plugin file may be added later
 
 - `Bun.build()` accepts plugins directly as JavaScript objects, which is ideal for explicit, programmatic configuration.
 - `Bun.serve()` uses `bunfig.toml` where `plugins` is a list of strings (module specifiers) and does not support passing options inline.
-- By using a package name (`"bun-plugin-arkenv"`) plus convention-based schema discovery, we avoid forcing users to create extra “config glue” files for the common case, while still keeping an escape hatch for advanced setups.
+- By using a package name (`"@arkenv/bun-plugin"`) plus convention-based schema discovery, we avoid forcing users to create extra “config glue” files for the common case, while still keeping an escape hatch for advanced setups.
 
 **Implementation**:
 
-
-
-**Unified Hybrid Export**
-
-The plugin uses a "Hybrid Export" pattern. The default export is both:
-1. A **Plugin Factory Function**: `arkenv(schema)` for manual configuration.
-2. A **Plugin Object**: `{ name, setup }` for zero-config static analysis.
-
-This allows a single import to serve both use cases without friction.
-
-**Pattern 1: Bun.build (Manual Configuration)**
+**Pattern 1: Bun.build (Direct Reference)**
 
 ```ts
 // build.ts
 import arkenv from "@arkenv/bun-plugin";
-import { type } from "arkenv";
+import { type } from "arktype";
 
 const env = type({
   BUN_PUBLIC_API_URL: "string",
@@ -79,42 +69,39 @@ const env = type({
 await Bun.build({
   entrypoints: ["./app.tsx"],
   outdir: "./dist",
-  plugins: [arkenv(env)], // Call as function
+  plugins: [arkenv(env)],
 });
 ```
 
-**Pattern 2: Bun.serve / bunfig.toml (Zero-Config)**
+**Pattern 2: Bun.serve (Package Reference with Convention)**
 
 ```toml
 # bunfig.toml
 [serve.static]
+env = "BUN_PUBLIC_*"
 plugins = ["@arkenv/bun-plugin"]
 ```
 
-**Pattern 3: Bun.build (Zero-Config)**
-
-Because the default export is also a valid plugin object, it can be passed directly to `Bun.build` to trigger auto-discovery:
+With a schema file at a conventional path, for example:
 
 ```ts
-import arkenv from "@arkenv/bun-plugin";
+// src/env.ts
+import { type } from "arktype";
 
-await Bun.build({
-  // ...
-  plugins: [arkenv], // Pass as object
+const env = type({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean",
 });
+
+export default env;
 ```
 
-**Schema Discovery**
+At startup, `@arkenv/bun-plugin`:
 
-In zero-config mode, the plugin searches for:
-1. `./src/env.ts`
-2. `./env.ts`
-
-It expects a `default` export containing the ArkEnv schema.
-
-**Hot Reloading**
-
-The plugin uses the `onStart` hook to load/reload the schema at the beginning of every build/dev cycle. This ensures that changes to `env.ts` are picked up (provided the file watcher triggers a rebuild).
+- Searches for a schema file in a small set of well-known locations (for example: `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`).
+- Imports the first one it finds.
+- Reads the default export (or an `env` named export) as the ArkEnv schema.
+- Creates a Bun plugin and registers it with `Bun.plugin(...)`.
 
 If no schema file is found, or the module does not export a usable schema, the plugin fails fast with a clear error message that lists the paths checked and shows a minimal example.
 
@@ -130,7 +117,7 @@ plugins = ["./arkenv.bun-plugin.ts"]
 ```ts
 // arkenv.bun-plugin.ts
 import { Bun } from "bun";
-import { buildArkEnvBunPlugin } from "bun-plugin-arkenv";
+import { buildArkEnvBunPlugin } from "@arkenv/bun-plugin";
 
 Bun.plugin(
   await buildArkEnvBunPlugin({
@@ -151,7 +138,7 @@ This keeps the default experience zero-config for most users, while still allowi
 
 <file name=proposal.md path=/Users/yamcodes/code/arkenv/openspec/changes/add-bun-plugin/proposal.md>
 **Usage Patterns**:
-- **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [createArkEnvBunPlugin(env)]`.
-- **Bun.serve (default)**: Configure `bunfig.toml` with `[serve.static].plugins = ["bun-plugin-arkenv"]`. The plugin discovers the ArkEnv schema file from a small set of conventional locations (for example `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`) and uses it automatically.
+- **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [arkenv(env)]`.
+- **Bun.serve (default)**: Configure `bunfig.toml` with `[serve.static].plugins = ["@arkenv/bun-plugin"]`. The plugin discovers the ArkEnv schema file from a small set of conventional locations (for example `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`) and uses it automatically.
 - **Bun.serve (advanced, future)**: Optionally support a custom plugin entry file referenced from `bunfig.toml` (for example `plugins = ["./arkenv.bun-plugin.ts"]`) for projects that need a non-standard schema location or additional configuration.
 </file>
