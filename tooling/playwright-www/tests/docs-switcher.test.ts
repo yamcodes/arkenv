@@ -301,9 +301,9 @@ test.describe("Documentation Switcher", () => {
 
 		// Check for arkenv-specific content
 		await expect(page.locator("h1")).toContainText("What is ArkEnv");
-		// "The core package" text exists but may be hidden on desktop (md:hidden class)
+		// "Agnostic core" text exists but may be hidden on desktop (md:hidden class)
 		// Check that it exists in the DOM rather than checking visibility
-		const coreLibraryText = page.locator("text=The core package").first();
+		const coreLibraryText = page.locator("text=Agnostic core").first();
 		await expect(coreLibraryText).toHaveCount(1);
 	});
 
