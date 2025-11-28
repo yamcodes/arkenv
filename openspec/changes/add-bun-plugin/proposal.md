@@ -172,4 +172,11 @@ The plugin will work very similarly to the Vite plugin:
 - **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [arkenv(env)]`.
 - **Bun.serve (default)**: Configure `bunfig.toml` with `[serve.static].plugins = ["@arkenv/bun-plugin"]`. The plugin discovers the ArkEnv schema file from a small set of conventional locations (for example `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`) and uses it automatically.
 - **Bun.serve (advanced, future)**: Optionally support a custom plugin entry file referenced from `bunfig.toml` (for example `plugins = ["./arkenv.bun-plugin.ts"]`) for projects that need a non-standard schema location or additional configuration.
+
+## Impact
+
+- **New opt-in feature**: The Bun plugin is an entirely new package (@arkenv/bun-plugin) and does not affect existing arkenv users or workflows.
+- **No breaking changes**: This is a pure addition and does not modify any public APIs or existing behavior.
+- **Backward compatible**: All existing code continues to work unchanged. Bun users simply gain access to new functionality.
+- **New dependency**: Projects using @arkenv/bun-plugin will add a new dev dependency to their package.json.
 </file>
