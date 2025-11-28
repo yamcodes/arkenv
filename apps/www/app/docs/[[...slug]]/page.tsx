@@ -1,10 +1,4 @@
-import * as Twoslash from "fumadocs-twoslash/ui";
-import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
-import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
-import { ImageZoom } from "fumadocs-ui/components/image-zoom";
-import { Step, Steps } from "fumadocs-ui/components/steps";
-import { Tab, Tabs } from "fumadocs-ui/components/tabs";
-import defaultMdxComponents from "fumadocs-ui/mdx";
+import { customComponents } from "~/mdx-components";
 import {
 	DocsBody,
 	DocsDescription,
@@ -13,9 +7,6 @@ import {
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
 import { EditOnGithub } from "~/components/page/edit-on-github";
-import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-import { Heading } from "~/components/ui/heading";
 import { Separator } from "~/components/ui/separator";
 import { source } from "~/lib/source";
 
@@ -31,37 +22,11 @@ export default async function Page(props: {
 	return (
 		<DocsPage toc={page.data.toc} full={page.data.full}>
 			<div className="flex flex-col h-full">
-				<div className="flex-grow">
+				<div className="grow">
 					<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 					<DocsDescription>{page.data.description}</DocsDescription>
 					<DocsBody>
-						<MDX
-							components={{
-								...defaultMdxComponents,
-								Tab,
-								Tabs,
-								Button,
-								Card,
-								Step,
-								Steps,
-								Accordion,
-								Accordions,
-								h1: (props) => <Heading {...props} as="h1" />,
-								h2: (props) => <Heading {...props} as="h2" />,
-								h3: (props) => <Heading {...props} as="h3" />,
-								h4: (props) => <Heading {...props} as="h4" />,
-								h5: (props) => <Heading {...props} as="h5" />,
-								h6: (props) => <Heading {...props} as="h6" />,
-								// biome-ignore lint/suspicious/noExplicitAny: See https://fumadocs.dev/docs/ui/components/image-zoom#usage
-								img: (props) => <ImageZoom {...(props as any)} quality={100} />,
-								pre: ({ ref: _ref, ...props }) => (
-									<CodeBlock {...props}>
-										<Pre>{props.children}</Pre>
-									</CodeBlock>
-								),
-								...Twoslash,
-							}}
-						/>
+						<MDX components={customComponents} />
 					</DocsBody>
 				</div>
 				<div className="flex flex-col items-start pt-16">
