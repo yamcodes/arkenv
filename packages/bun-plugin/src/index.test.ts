@@ -1,7 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import arkenvPlugin from "./index.js";
 
 describe("Bun Plugin", () => {
+	let originalEnv: NodeJS.ProcessEnv;
+
+	beforeEach(() => {
+		originalEnv = { ...process.env };
+	});
+
+	afterEach(() => {
+		process.env = originalEnv;
+	});
+
 	it("should create a plugin function", () => {
 		expect(typeof arkenvPlugin).toBe("function");
 	});
@@ -15,8 +25,6 @@ describe("Bun Plugin", () => {
 		expect(pluginInstance).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(pluginInstance).toHaveProperty("setup");
 		expect(typeof pluginInstance.setup).toBe("function");
-
-		delete process.env.BUN_PUBLIC_TEST;
 	});
 
 	it("should validate environment variables at plugin creation", () => {
@@ -26,8 +34,6 @@ describe("Bun Plugin", () => {
 		expect(() => {
 			arkenvPlugin({ BUN_PUBLIC_TEST: "string" });
 		}).not.toThrow();
-
-		delete process.env.BUN_PUBLIC_TEST;
 	});
 
 	it("should throw if environment variable validation fails", () => {
@@ -52,10 +58,5 @@ describe("Bun Plugin", () => {
 
 		// The plugin should be created successfully
 		expect(pluginInstance).toBeDefined();
-
-		// Clean up
-		delete process.env.BUN_PUBLIC_API_URL;
-		delete process.env.PORT;
-		delete process.env.DATABASE_URL;
 	});
 });
