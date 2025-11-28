@@ -2,6 +2,10 @@
 
 This example shows how to use ArkEnv in a Bun application.
 
+> [!IMPORTANT]
+> We provide a first-class ArkEnv plugin for Bun, which is recommended for use in most cases. The example below is a very simple use-case of a Node-like app (no fullstack web server) and only validates at dev time (not ideal).
+>
+> Until this example is updated, please check out [the plugin's docs](https://arkenv.js.org/docs/bun-plugin) to understand how to use the Bun plugin.
 
 ## What's inside?
 
