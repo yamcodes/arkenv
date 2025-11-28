@@ -198,7 +198,8 @@ hybrid.setup = (build) => {
 					if (mod.default) {
 						schema = mod.default;
 						break;
-					} else if (mod.env) {
+					}
+					if (mod.env) {
 						schema = mod.env;
 						break;
 					}
