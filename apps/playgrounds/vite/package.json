@@ -20,7 +20,7 @@
 	},
 	"devDependencies": {
 		"@julr/vite-plugin-validate-env": "2.2.0",
-		"@types/react": "19.2.6",
+		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
 		"@vitejs/plugin-react": "5.1.1",
 		"globals": "16.5.0",

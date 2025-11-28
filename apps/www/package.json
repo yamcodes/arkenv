@@ -28,15 +28,15 @@
 		"arktype": "2.1.27",
 		"class-variance-authority": "0.7.1",
 		"clsx": "2.1.1",
-		"fumadocs-core": "16.0.14",
+		"fumadocs-core": "16.0.15",
 		"fumadocs-mdx": "13.0.8",
 		"fumadocs-twoslash": "3.1.10",
-		"fumadocs-ui": "16.0.14",
+		"fumadocs-ui": "16.0.15",
 		"import-in-the-middle": "2.0.0",
 		"lucide-react": "0.553.0",
-		"next": "16.0.3",
-		"posthog-js": "1.292.0",
-		"posthog-node": "5.11.2",
+		"next": "16.0.4",
+		"posthog-js": "1.297.2",
+		"posthog-node": "5.13.2",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"rehype-github-alerts": "4.1.1",
@@ -56,7 +56,7 @@
 		"@testing-library/user-event": "14.6.1",
 		"@types/mdx": "2.0.13",
 		"@types/node": "24.10.1",
-		"@types/react": "19.2.6",
+		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
 		"@vitejs/plugin-react": "5.1.1",
 		"concurrently": "9.2.1",
@@ -67,6 +67,6 @@
 		"tailwindcss": "4.1.17",
 		"typescript": "5.9.3",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.10"
+		"vitest": "4.0.14"
 	}
 }
