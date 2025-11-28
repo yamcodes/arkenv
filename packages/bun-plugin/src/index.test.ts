@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import arkenvPlugin from "./index.js";
+import arkenvPlugin, { processEnvSchema } from "./index.js";
 
 describe("Bun Plugin", () => {
 	let originalEnv: NodeJS.ProcessEnv;
@@ -50,13 +50,20 @@ describe("Bun Plugin", () => {
 		process.env.PORT = "3000";
 		process.env.DATABASE_URL = "postgres://localhost/db";
 
-		const pluginInstance = arkenvPlugin({
+		const envMap = processEnvSchema({
 			BUN_PUBLIC_API_URL: "string",
 			PORT: "number.port",
 			DATABASE_URL: "string",
 		});
 
-		// The plugin should be created successfully
-		expect(pluginInstance).toBeDefined();
+		// Check that prefixed variables are present
+		expect(envMap.has("BUN_PUBLIC_API_URL")).toBe(true);
+		expect(envMap.get("BUN_PUBLIC_API_URL")).toBe(
+			JSON.stringify("https://api.example.com"),
+		);
+
+		// Check that non-prefixed variables are filtered out
+		expect(envMap.has("PORT")).toBe(false);
+		expect(envMap.has("DATABASE_URL")).toBe(false);
 	});
 });

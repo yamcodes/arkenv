@@ -9,7 +9,7 @@ export type { ProcessEnvAugmented } from "./types";
 /**
  * Helper to process env schema and return envMap
  */
-function processEnvSchema(options: EnvSchema<any> | type.Any) {
+export function processEnvSchema(options: EnvSchema<any> | type.Any) {
 	// Validate environment variables
 	const env = createEnv(options, process.env);
 

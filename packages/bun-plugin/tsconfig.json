@@ -8,7 +8,7 @@
 		"skipLibCheck": true,
 		"noUnusedLocals": true,
 		"noImplicitAny": true,
-		"noEmit": true,
+		"emitDeclarationOnly": true,
 		"outDir": "dist",
 		"resolveJsonModule": true,
 		"declaration": true,
