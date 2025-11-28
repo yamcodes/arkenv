@@ -69,7 +69,7 @@ await Bun.build({
 - **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
 - **Type Safety**: Ensures your code only accesses variables defined in your schema.
 - **Hot Reloading**: Automatically reloads your schema when `env.ts` changes (in `bun --hot` mode).
-- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle (configurable via Bun's standard behavior).
+- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration (e.g., `env: "MY_PUBLIC_*"` to use `MY_PUBLIC_` instead). See [Bun's bundler documentation](https://bun.sh/docs/bundler#env) for more details.
 
 ## Installation
 
