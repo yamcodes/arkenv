@@ -1,4 +1,4 @@
-import * as Twoslash from "fumadocs-twoslash/ui";
+import * as twoslashComponents from "fumadocs-twoslash/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import { Cards } from "fumadocs-ui/components/card";
 import { CodeBlock, CodeBlockTab, Pre } from "fumadocs-ui/components/codeblock";
@@ -11,7 +11,7 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Heading } from "~/components/ui/heading";
 
-export const customComponents = {
+const customComponents = {
 	Tab,
 	Tabs,
 	Button,
@@ -47,13 +47,13 @@ export const customComponents = {
 			<Pre>{props.children}</Pre>
 		</CodeBlock>
 	),
-	...Twoslash,
 };
 
-export function useMDXComponents(components: MDXComponents): MDXComponents {
+export function getMDXComponents(components: MDXComponents): MDXComponents {
 	return {
 		...defaultComponents,
 		...customComponents,
+		...twoslashComponents,
 		...components,
 	};
 }

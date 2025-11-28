@@ -1,3 +1,4 @@
+import { createRelativeLink } from "fumadocs-ui/mdx";
 import {
 	DocsBody,
 	DocsDescription,
@@ -8,7 +9,7 @@ import { notFound } from "next/navigation";
 import { EditOnGithub } from "~/components/page/edit-on-github";
 import { Separator } from "~/components/ui/separator";
 import { source } from "~/lib/source";
-import { customComponents } from "~/mdx-components";
+import { getMDXComponents } from "~/mdx-components";
 
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
@@ -26,7 +27,12 @@ export default async function Page(props: {
 					<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 					<DocsDescription>{page.data.description}</DocsDescription>
 					<DocsBody>
-						<MDX components={customComponents} />
+						<MDX
+							components={getMDXComponents({
+								// this allows you to link to other pages with relative file paths
+								a: createRelativeLink(source, page),
+							})}
+						/>
 					</DocsBody>
 				</div>
 				<div className="flex flex-col items-start pt-16">
