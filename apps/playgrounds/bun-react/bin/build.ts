@@ -7,9 +7,6 @@ const result = await Bun.build({
 	target: "browser",
 	minify: true,
 	plugins: [arkenv],
-	define: {
-		"process.env.NODE_ENV": '"production"',
-	},
 });
 
 if (!result.success) {

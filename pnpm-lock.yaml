@@ -131,6 +131,12 @@ importers:
       '@arkenv/bun-plugin':
         specifier: workspace:*
         version: link:../../../packages/bun-plugin
+      arkenv:
+        specifier: workspace:*
+        version: link:../../../packages/arkenv
+      arktype:
+        specifier: 'catalog:'
+        version: 2.1.27
       react:
         specifier: 'catalog:'
         version: 19.2.0

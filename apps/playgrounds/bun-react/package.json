@@ -5,13 +5,15 @@
 	"type": "module",
 	"scripts": {
 		"dev": "bun --hot src/index.tsx",
-		"build": "bun bin/build.ts",
+		"build": "NODE_ENV=production bun bin/build.ts",
 		"preview": "bun dist/index.html",
 		"start": "NODE_ENV=production bun src/index.tsx",
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"@arkenv/bun-plugin": "workspace:*",
+		"arkenv": "workspace:*",
+		"arktype": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:"
 	},
