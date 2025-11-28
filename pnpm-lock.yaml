@@ -101,7 +101,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/vite-plugin
       '@solidjs/start':
-        specifier: ^1.1.0
+        specifier: 1.2.0
         version: 1.2.0(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vinxi@0.5.8(@types/node@24.10.1)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.8.2)(jiti@2.6.1)(lightningcss@1.30.2)(rolldown@1.0.0-beta.52)(terser@5.44.1)(tsx@4.20.6))(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6))
       arkenv:
         specifier: workspace:*
@@ -110,10 +110,10 @@ importers:
         specifier: 2.1.27
         version: 2.1.27
       solid-js:
-        specifier: ^1.9.5
+        specifier: 1.9.10
         version: 1.9.10
       vinxi:
-        specifier: ^0.5.7
+        specifier: 0.5.8
         version: 0.5.8(@types/node@24.10.1)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.8.2)(jiti@2.6.1)(lightningcss@1.30.2)(rolldown@1.0.0-beta.52)(terser@5.44.1)(tsx@4.20.6)
 
   apps/playgrounds/vite:
@@ -11132,7 +11132,7 @@ snapshots:
       consola: 3.4.2
       defu: 6.1.4
       get-port-please: 3.2.0
-      h3: 1.15.3
+      h3: 1.15.4
       http-shutdown: 1.2.2
       jiti: 1.21.7
       mlly: 1.8.0
