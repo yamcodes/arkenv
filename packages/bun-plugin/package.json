@@ -24,7 +24,7 @@
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",
-		"bun": "^1.1.40"
+		"bun": "^1.0.0"
 	},
 	"exports": {
 		"types": "./dist/index.d.ts",
