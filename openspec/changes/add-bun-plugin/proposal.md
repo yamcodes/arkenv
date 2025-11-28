@@ -168,7 +168,7 @@ The plugin will work very similarly to the Vite plugin:
 - Replaces `process.env.VARIABLE` with validated, transformed values (e.g., string to boolean, default values)
 - Provides TypeScript type augmentation for type-safe access
 
-**Usage Patterns**:
+### Usage Patterns
 - **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [arkenv(env)]`.
 - **Bun.serve (default)**: Configure `bunfig.toml` with `[serve.static].plugins = ["@arkenv/bun-plugin"]`. The plugin discovers the ArkEnv schema file from a small set of conventional locations (for example `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`) and uses it automatically.
 - **Bun.serve (advanced, future)**: Optionally support a custom plugin entry file referenced from `bunfig.toml` (for example `plugins = ["./arkenv.bun-plugin.ts"]`) for projects that need a non-standard schema location or additional configuration.
