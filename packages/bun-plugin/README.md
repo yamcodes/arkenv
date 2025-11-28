@@ -79,11 +79,11 @@ await Bun.build({
 /// <reference types="bun-types" />
 
 import type { ProcessEnvAugmented } from '@arkenv/bun-plugin';
-import type { Env } from './env'; // or from bun.config.ts
 
 declare global {
   namespace NodeJS {
-    interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
+    // Note: This assumes your env schema is the default export from "./env"
+    interface ProcessEnv extends ProcessEnvAugmented<typeof import("./env").default> {}
   }
 }
 ```
