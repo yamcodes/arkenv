@@ -47,7 +47,7 @@
 		"@types/node": "24.10.1",
 		"arktype": "2.1.27",
 		"size-limit": "11.2.0",
-		"tsdown": "0.16.5",
+		"tsdown": "0.16.7",
 		"typescript": "5.9.3",
 		"vitest": "4.0.14"
 	},
