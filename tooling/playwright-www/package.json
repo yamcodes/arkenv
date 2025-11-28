@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "catalog:",
-		"@playwright/test": "catalog:",
+		"@playwright/test": "",
 		"@types/node": "catalog:",
 		"typescript": "catalog:"
 	}
