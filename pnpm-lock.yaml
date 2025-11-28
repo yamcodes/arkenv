@@ -228,11 +228,11 @@ importers:
         specifier: 16.0.4
         version: 16.0.4(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       posthog-js:
-        specifier: 1.297.2
-        version: 1.297.2
+        specifier: 1.297.4
+        version: 1.297.4
       posthog-node:
-        specifier: 5.13.2
-        version: 5.13.2
+        specifier: 5.13.4
+        version: 5.13.4
       react:
         specifier: 19.2.0
         version: 19.2.0
@@ -1913,8 +1913,8 @@ packages:
   '@poppinss/validator-lite@2.1.2':
     resolution: {integrity: sha512-UhSG1ouT6r67VbEFHK/8ax3EMZYHioew9PqGmEZjV41G15aPZi6cyhXtBVvF9xqkHMflA5V680k7bQzV0kfD5w==}
 
-  '@posthog/core@1.5.5':
-    resolution: {integrity: sha512-m7G1EQTgo9xrr3lZxCp9C2egP99MSRpIDD95wYzwUPxMesKxI0xEQ+TC5LS/XOXIdmsNvsx4UcxwmzhSwD2GWA==}
+  '@posthog/core@1.5.7':
+    resolution: {integrity: sha512-o9HkWB7p05IINSmEdOKNZeJo66HnsbqCzEmyL5tfg8PCBybl44BoR5lNG3YBYhataJUy0Nko6dP71ulpbx5r7w==}
 
   '@primer/octicons@19.21.0':
     resolution: {integrity: sha512-87buZ9aPlWbbHvTTzPAy9zqqGZpCc/VH+Q6q9OsZou6zCaExjmsINj6rWjP6FxNK5ZWHfF0UFNKQCai72lhaLA==}
@@ -6023,11 +6023,11 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  posthog-js@1.297.2:
-    resolution: {integrity: sha512-pDtCKHpKegV1D5Yk9PBmkFwI9FMnLJm0TsBO5c5/PhPq5Om4y/t+1qqbNcLCdLajkuYl2px9UlRTzycQ6W7Vmw==}
+  posthog-js@1.297.4:
+    resolution: {integrity: sha512-S3DCkxy79BmtEVOYlflF8aUU3WK5D+YJVE7sv5/dHGYIlZzvW/xGV3Ekvnwtj81B5Fc6/j39BKrS/CZHojxWnA==}
 
-  posthog-node@5.13.2:
-    resolution: {integrity: sha512-KfFsiL4v+d723fKYV9vT6lt4GYtryL8FOK7LjlDQ/lJai/EEULkmGvQaNUzBW+4lK9fUaz+AhCyipNDUaXkZqA==}
+  posthog-node@5.13.4:
+    resolution: {integrity: sha512-xltxkhollNnz+cGcEQoTh3LX4XHrkMZ/vi5WoNVYvdiA/PkePsOw5HbH+BHQI0H3Pp+0k7UWyPGBfn8oaVwOjA==}
     engines: {node: '>=20'}
 
   preact@10.27.2:
@@ -9419,7 +9419,7 @@ snapshots:
 
   '@poppinss/validator-lite@2.1.2': {}
 
-  '@posthog/core@1.5.5':
+  '@posthog/core@1.5.7':
     dependencies:
       cross-spawn: 7.0.6
 
@@ -14059,17 +14059,17 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  posthog-js@1.297.2:
+  posthog-js@1.297.4:
     dependencies:
-      '@posthog/core': 1.5.5
+      '@posthog/core': 1.5.7
       core-js: 3.47.0
       fflate: 0.4.8
       preact: 10.27.2
       web-vitals: 4.2.4
 
-  posthog-node@5.13.2:
+  posthog-node@5.13.4:
     dependencies:
-      '@posthog/core': 1.5.5
+      '@posthog/core': 1.5.7
 
   preact@10.27.2: {}
 
