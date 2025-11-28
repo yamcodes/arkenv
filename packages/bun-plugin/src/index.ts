@@ -210,10 +210,21 @@ hybrid.setup = (build) => {
 		}
 
 		if (!schema) {
-			console.warn(
-				"No env schema found in src/env.ts or env.ts. Skipping @arkenv/bun-plugin validation.",
+			const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
+			const example = `
+Example \`src/env.ts\`:
+\`\`\`ts
+import { type } from "arktype";
+
+export default type({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean"
+});
+\`\`\`
+`;
+			throw new Error(
+				`@arkenv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition.\n${example}`,
 			);
-			return;
 		}
 
 		// Update the shared envMap with new values

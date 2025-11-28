@@ -101,7 +101,7 @@ At startup, `@arkenv/bun-plugin`:
 - Searches for a schema file in a small set of well-known locations (for example: `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`).
 - Imports the first one it finds.
 - Reads the default export (or an `env` named export) as the ArkEnv schema.
-- Creates a Bun plugin via `createArkEnvBunPlugin(schema)` and registers it with `Bun.plugin(...)`.
+- Creates a Bun plugin and registers it with `Bun.plugin(...)`.
 
 If no schema file is found, or the module does not export a usable schema, the plugin fails fast with a clear error message that lists the paths checked and shows a minimal example.
 
@@ -169,7 +169,7 @@ The plugin will work very similarly to the Vite plugin:
 - Provides TypeScript type augmentation for type-safe access
 
 **Usage Patterns**:
-- **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [createArkEnvBunPlugin(env)]`.
+- **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [arkenv(env)]`.
 - **Bun.serve (default)**: Configure `bunfig.toml` with `[serve.static].plugins = ["@arkenv/bun-plugin"]`. The plugin discovers the ArkEnv schema file from a small set of conventional locations (for example `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`) and uses it automatically.
 - **Bun.serve (advanced, future)**: Optionally support a custom plugin entry file referenced from `bunfig.toml` (for example `plugins = ["./arkenv.bun-plugin.ts"]`) for projects that need a non-standard schema location or additional configuration.
 </file>
