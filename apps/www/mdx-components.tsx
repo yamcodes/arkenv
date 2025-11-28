@@ -12,6 +12,12 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Heading } from "~/components/ui/heading";
 
+const createHeadingComponent =
+	(level: "h1" | "h2" | "h3" | "h4" | "h5" | "h6") =>
+	(props: React.ComponentProps<typeof Heading>) => (
+		<Heading {...props} as={level} />
+	);
+
 const customComponents = {
 	Tab,
 	Tabs,
@@ -23,24 +29,12 @@ const customComponents = {
 	Steps,
 	Accordion,
 	Accordions,
-	h1: (props: React.ComponentProps<typeof Heading>) => (
-		<Heading {...props} as="h1" />
-	),
-	h2: (props: React.ComponentProps<typeof Heading>) => (
-		<Heading {...props} as="h2" />
-	),
-	h3: (props: React.ComponentProps<typeof Heading>) => (
-		<Heading {...props} as="h3" />
-	),
-	h4: (props: React.ComponentProps<typeof Heading>) => (
-		<Heading {...props} as="h4" />
-	),
-	h5: (props: React.ComponentProps<typeof Heading>) => (
-		<Heading {...props} as="h5" />
-	),
-	h6: (props: React.ComponentProps<typeof Heading>) => (
-		<Heading {...props} as="h6" />
-	),
+	h1: createHeadingComponent("h1"),
+	h2: createHeadingComponent("h2"),
+	h3: createHeadingComponent("h3"),
+	h4: createHeadingComponent("h4"),
+	h5: createHeadingComponent("h5"),
+	h6: createHeadingComponent("h6"),
 	// biome-ignore lint/suspicious/noExplicitAny: See https://fumadocs.dev/docs/ui/components/image-zoom#usage
 	img: (props: any) => <ImageZoom {...(props as any)} quality={100} />,
 	pre: (props: ComponentPropsWithoutRef<"pre">) => (
