@@ -40,16 +40,15 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@ark/schema": "0.54.0",
 		"@repo/types": "workspace:*",
-		"@size-limit/esbuild-why": "11.2.0",
-		"@size-limit/preset-small-lib": "11.2.0",
-		"@types/node": "24.10.1",
-		"arktype": "2.1.27",
-		"size-limit": "11.2.0",
-		"tsdown": "0.16.5",
-		"typescript": "5.9.3",
-		"vitest": "4.0.10"
+		"@size-limit/esbuild-why": "catalog:",
+		"@size-limit/preset-small-lib": "catalog:",
+		"@types/node": "catalog:",
+		"arktype": "catalog:",
+		"size-limit": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"

@@ -16,8 +16,8 @@
 		"build": "tsc"
 	},
 	"devDependencies": {
-		"arktype": "2.1.27",
-		"typescript": "5.9.3"
+		"arktype": "catalog:",
+		"typescript": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"

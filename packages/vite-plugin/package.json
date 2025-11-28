@@ -13,14 +13,14 @@
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
-		"@size-limit/preset-small-lib": "11.2.0",
-		"arktype": "2.1.27",
-		"size-limit": "11.2.0",
-		"tsdown": "0.16.5",
-		"typescript": "5.9.3",
+		"@size-limit/preset-small-lib": "catalog:",
+		"arktype": "catalog:",
+		"size-limit": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
 		"vite": "7.2.4",
-		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.10"
+		"vite-tsconfig-paths": "catalog:",
+		"vitest": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",
