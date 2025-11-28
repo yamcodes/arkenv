@@ -22,7 +22,7 @@ A future, more advanced configuration pattern using a custom static file MAY be 
   - a `[serve.static]` section
   - a `plugins` array that includes the package name `@arkenv/bun-plugin`
 - **AND** their project contains an ArkEnv schema file in one of the supported default locations (for example, `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`)
-- **AND** that schema file exports a schema using `defineEnv` (via a default export or an `env` named export)
+- **AND** that schema file exports a schema using `type` from arktype (via a default export or an `env` named export)
 - **THEN** the plugin SHALL locate the schema file via this convention-based search
 - **AND** it SHALL load the schema at startup
 - **AND** it SHALL use that schema to validate and transform environment variables during the bundling phase
@@ -86,9 +86,9 @@ With a schema file at a conventional path, for example:
 
 ```ts
 // src/env.ts
-import { defineEnv } from "arkenv";
+import { type } from "arktype";
 
-const env = defineEnv({
+const env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
 });

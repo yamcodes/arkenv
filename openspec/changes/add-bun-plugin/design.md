@@ -20,16 +20,16 @@ A future, more advanced configuration pattern using a custom static file MAY be 
 - **WHEN** a user wants to use `Bun.serve()` for a full-stack application
 - **AND** they configure `bunfig.toml` with:
   - a `[serve.static]` section
-  - a `plugins` array that includes the package name `bun-plugin-arkenv`
+  - a `plugins` array that includes the package name `@arkenv/bun-plugin`
 - **AND** their project contains an ArkEnv schema file in one of the supported default locations (for example, `./src/env.arkenv.ts`, `./src/env.ts`, `./env.arkenv.ts`, `./env.ts`)
-- **AND** that schema file exports a schema using `defineEnv` (via a default export or an `env` named export)
+- **AND** that schema file exports a schema using `type` from arktype (via a default export or an `env` named export)
 - **THEN** the plugin SHALL locate the schema file via this convention-based search
 - **AND** it SHALL load the schema at startup
 - **AND** it SHALL use that schema to validate and transform environment variables during the bundling phase
 
 #### Scenario: Bun.serve configuration fails when no schema file is found
 
-- **WHEN** a user configures `bunfig.toml` with `[serve.static].plugins = ["bun-plugin-arkenv"]`
+- **WHEN** a user configures `bunfig.toml` with `[serve.static].plugins = ["@arkenv/bun-plugin"]`
 - **AND** there is no schema file in any of the supported default locations
 - **THEN** the plugin SHALL fail fast with a clear, descriptive error message
 - **AND** the error message SHALL list the paths that were checked
