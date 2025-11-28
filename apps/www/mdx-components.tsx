@@ -7,6 +7,7 @@ import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
+import type { ComponentPropsWithoutRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Heading } from "~/components/ui/heading";
@@ -42,7 +43,7 @@ const customComponents = {
 	),
 	// biome-ignore lint/suspicious/noExplicitAny: See https://fumadocs.dev/docs/ui/components/image-zoom#usage
 	img: (props: any) => <ImageZoom {...(props as any)} quality={100} />,
-	pre: ({ ref: _ref, ...props }: any) => (
+	pre: (props: ComponentPropsWithoutRef<"pre">) => (
 		<CodeBlock {...props}>
 			<Pre>{props.children}</Pre>
 		</CodeBlock>
