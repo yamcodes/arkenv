@@ -137,7 +137,7 @@ This keeps the default experience zero-config for most users, while still allowi
 </file>
 
 <file name=proposal.md path=/Users/yamcodes/code/arkenv/openspec/changes/add-bun-plugin>
-# Change: Add Bun Plugin for ArkEnv
+# Change: Add ArkEnv plugin for Bun
 
 ## Why
 

@@ -117,7 +117,10 @@ bun add arkenv arktype
 
 ## Plugins
 
-- [@arkenv/vite-plugin](https://github.com/yamcodes/arkenv/tree/main/packages/vite-plugin): [Vite](https://vite.dev/) plugin to validate environment variables at build time. See the [with-vite-react-ts example](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) for usage.
+Beyond [the core package](https://arkenv.js.org/docs/arkenv), we also provide plugins for frameworks that require a specific implementation to adhere to best practices.
+
+- [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin)
+- [@arkenv/bun-plugin](https://arkenv.js.org/docs/bun-plugin)
 
 ## Supporting ArkEnv
 

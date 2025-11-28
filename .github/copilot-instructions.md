@@ -51,7 +51,7 @@ The project uses modern tooling:
 
 ### Main Package (`packages/arkenv`)
 
-The core library provides:
+The core package provides:
 
 1. **`createEnv(schema)`** - Main function to create validated environment objects. Also available as the default export, typically imported as `arkenv`.
 2. **Built-in validators** - Common validators like `host`, `port`, `url`, etc.

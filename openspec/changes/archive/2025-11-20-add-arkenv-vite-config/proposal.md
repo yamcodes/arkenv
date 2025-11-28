@@ -59,7 +59,7 @@ This change focuses on:
 1. Evaluating and implementing a solution for the schema/typing availability challenge
 2. Documenting the pattern of using `arkenv()` or `createEnv()` with Vite's `loadEnv()` in vite.config.ts
 3. Potentially providing a helper that wraps `loadEnv` with ArkEnv validation
-4. Ensuring the core library works seamlessly in Vite config context
+4. Ensuring The core package works seamlessly in Vite config context
 5. Providing examples and best practices that distinguish config vs client env vars
 
 ## Impact

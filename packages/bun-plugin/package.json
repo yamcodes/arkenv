@@ -33,7 +33,7 @@
 		"require": "./dist/index.cjs"
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fbun-plugin",
-	"description": "Bun plugin for ArkEnv",
+	"description": "ArkEnv plugin for Bun",
 	"files": [
 		"dist"
 	],

@@ -32,7 +32,7 @@
 		"require": "./dist/index.cjs"
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fvite-plugin",
-	"description": "Vite plugin for ArkEnv",
+	"description": "ArkEnv plugin for Vite",
 	"files": [
 		"dist"
 	],

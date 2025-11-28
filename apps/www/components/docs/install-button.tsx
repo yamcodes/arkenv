@@ -15,10 +15,10 @@ export function InstallButton() {
 
 	if (isVitePluginPage) {
 		href = "/docs/vite-plugin#installation";
-		label = "Install ArkEnv Vite plugin";
+		label = "Install ArkEnv for Vite";
 	} else if (isBunPluginPage) {
 		href = "/docs/bun-plugin#installation";
-		label = "Install ArkEnv Bun plugin";
+		label = "Install ArkEnv for Bun";
 	}
 
 	return (

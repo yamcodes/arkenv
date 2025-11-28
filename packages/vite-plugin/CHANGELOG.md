@@ -121,7 +121,7 @@
   ```
 
   > [!NOTE]
-  > This is the same fix as in [`arkenv@0.7.2` (the core library)](https://github.com/yamcodes/arkenv/releases/tag/arkenv%400.7.2), but for the Vite plugin.
+  > This is the same fix as in [`arkenv@0.7.2` (The core package)](https://github.com/yamcodes/arkenv/releases/tag/arkenv%400.7.2), but for the Vite plugin.
 
 - #### Fix `import.meta.env` not respecting morphed environment variables _[`#227`](https://github.com/yamcodes/arkenv/pull/227) [`d41878f`](https://github.com/yamcodes/arkenv/commit/d41878fe9cc2524f06ac2f0ef35f2f5ba58ee06b) [@yamcodes](https://github.com/yamcodes)_
 

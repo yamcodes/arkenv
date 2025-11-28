@@ -1,6 +1,6 @@
 {
 	"title": "arkenv",
-	"description": "The core library",
+	"description": "Agnostic core",
 	"root": true,
 	"icon": "Box",
 	"pages": [
