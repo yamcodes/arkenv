@@ -58,10 +58,10 @@ A third, more advanced mode using a custom static plugin file may be added later
 
 ```ts
 // build.ts
-import { defineEnv } from "arkenv";
-import { createArkEnvBunPlugin } from "@arkenv/bun-plugin";
+import arkenv from "@arkenv/bun-plugin";
+import { type } from "arktype";
 
-const env = defineEnv({
+const env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
 });
@@ -69,7 +69,7 @@ const env = defineEnv({
 await Bun.build({
   entrypoints: ["./app.tsx"],
   outdir: "./dist",
-  plugins: [createArkEnvBunPlugin(env)],
+  plugins: [arkenv(env)],
 });
 ```
 
