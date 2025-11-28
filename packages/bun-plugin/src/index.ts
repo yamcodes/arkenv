@@ -198,6 +198,9 @@ hybrid.setup = (build) => {
 					if (mod.default) {
 						schema = mod.default;
 						break;
+					} else if (mod.env) {
+						schema = mod.env;
+						break;
 					}
 				} catch (e) {
 					console.error(`Failed to load env schema from ${p}:`, e);
