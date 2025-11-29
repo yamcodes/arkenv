@@ -17,6 +17,8 @@ This monorepo uses **pnpm** as the package manager.
 - Never use `npm` or `yarn` commands
 - The project uses `pnpm@10.20.0` (specified in `packageManager` field)
 
+The only exception to this rule are the examples in the `examples/` folder ,which are supposed to be standalone and run on their own, regardless of monorepo setup.
+
 ## Common Commands
 
 ```bash

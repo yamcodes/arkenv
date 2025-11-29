@@ -1,4 +1,4 @@
-# ArkEnv + Vite + React + TypeScript Example
+# ArkEnv + Vite + React Example
 
 This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with Vite, React, and TypeScript. It showcases:
 

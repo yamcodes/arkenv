@@ -2,6 +2,10 @@
 
 This directory contains a collection of example projects that demonstrate various use cases and features of ArkEnv. Each example is a standalone project that can be run independently.
 
+> [!NOTE]
+> The examples listed below are written in TypeScript out of convention.
+> ArkEnv does _not_ require TypeScript. If you prefer plain JavaScript, see [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) for a basic example.
+
 ## Examples
 
 | Name                                                                                             | Description                                                                                              |
