@@ -4,16 +4,15 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { Toaster } from "~/components/ui/toaster";
 
 const geist = Geist({
-	variable: "--font-sans",
 	subsets: ["latin"],
 });
 
-const mono = Geist_Mono({
+const mono = JetBrains_Mono({
 	variable: "--font-mono",
 	subsets: ["latin"],
 });
@@ -33,7 +32,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<html
 			lang="en"
-			className={`${geist.variable} ${mono.variable}`}
+			className={`${geist.className} ${mono.variable}`}
 			suppressHydrationWarning
 			data-scroll-behavior="smooth"
 		>
