@@ -10,7 +10,7 @@ import { Logo } from "~/components/page/logo";
  */
 export const baseOptions: BaseLayoutProps = {
 	nav: {
-		title: <Logo className="text-xl mb-1" />,
+		title: <Logo className="mb-1" />,
 	},
 	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL,
 };

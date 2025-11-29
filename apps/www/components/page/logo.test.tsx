@@ -10,32 +10,37 @@ describe("Logo", () => {
 	it("renders the ArkEnv text", () => {
 		render(<Logo />);
 
-		const logo = screen.getByText("ArkEnv");
-		expect(logo).toBeInTheDocument();
+		const logoText = screen.getByText("ArkEnv");
+		expect(logoText).toBeInTheDocument();
+	});
+
+	it("renders the logo icon", () => {
+		render(<Logo />);
+		// Check for the SVG element
+		const svg = document.querySelector("svg");
+		expect(svg).toBeInTheDocument();
 	});
 
 	it("applies default styling classes", () => {
 		render(<Logo />);
 
-		const logo = screen.getByText("ArkEnv");
-		expect(logo).toHaveClass("font-bold");
-		expect(logo).toHaveClass("text-fd-foreground");
-		expect(logo).toHaveClass("decoration-wavy");
-		expect(logo).toHaveClass("underline");
+		const container = screen.getByText("ArkEnv").parentElement;
+		expect(container).toHaveClass("flex");
+		expect(container).toHaveClass("items-center");
+		expect(container).toHaveClass("gap-2");
+
+		const text = screen.getByText("ArkEnv");
+		expect(text).not.toHaveClass("font-bold");
+		expect(text).toHaveClass("text-fd-foreground");
+
+		const svg = document.querySelector("svg");
+		expect(svg).toHaveClass("text-blue-500");
 	});
 
 	it("accepts custom className", () => {
 		render(<Logo className="custom-class" />);
 
-		const logo = screen.getByText("ArkEnv");
-		expect(logo).toHaveClass("custom-class");
-		expect(logo).toHaveClass("font-bold"); // should still have default classes
-	});
-
-	it("renders as a code element", () => {
-		render(<Logo />);
-
-		const logo = screen.getByText("ArkEnv");
-		expect(logo.tagName).toBe("CODE");
+		const container = screen.getByText("ArkEnv").parentElement;
+		expect(container).toHaveClass("custom-class");
 	});
 });
