@@ -6,10 +6,7 @@ type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
 >;
 
 declare namespace NodeJS {
-	interface ProcessEnv extends ProcessEnvAugmented {
-		BUN_PUBLIC_API_URL: string;
-		BUN_PUBLIC_DEBUG: boolean;
-	}
+	interface ProcessEnv extends ProcessEnvAugmented {}
 }
 
 declare module "*.svg" {
