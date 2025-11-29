@@ -1,4 +1,3 @@
-
 export function coerce(
 	def: Record<string, unknown>,
 	env: Record<string, string | undefined>,
