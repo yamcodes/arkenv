@@ -34,7 +34,7 @@ describe("Logo", () => {
 		expect(container).toHaveClass("gap-2");
 
 		const text = screen.getByText("ArkEnv");
-		expect(text).not.toHaveClass("font-bold");
+		expect(text).toHaveClass("font-medium");
 		expect(text).toHaveClass("text-fd-foreground");
 
 		const img = document.querySelector("img");
