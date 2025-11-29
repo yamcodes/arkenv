@@ -70,7 +70,9 @@ function parseCatalog() {
 				break;
 			}
 
-			const match = line.match(/^\s+["']?([^"':]+)["']?:\s*["']?([^"'\s]+)["']?/);
+			const match = line.match(
+				/^\s+["']?([^"':]+)["']?:\s*["']?([^"'\s]+)["']?/,
+			);
 			if (match) {
 				catalog[match[1]] = match[2];
 			}
@@ -97,7 +99,9 @@ function getWorkspacePackageVersion(packageName) {
 		return null;
 	}
 
-	const pkg = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf-8"));
+	const pkg = JSON.parse(
+		readFileSync(join(packageDir, "package.json"), "utf-8"),
+	);
 	return pkg.version;
 }
 
@@ -147,8 +151,14 @@ function transformPackageJson(pkg, exampleConfig, catalog) {
 
 	// Transform dependencies
 	transformed.dependencies = transformDependencies(pkg.dependencies, catalog);
-	transformed.devDependencies = transformDependencies(pkg.devDependencies, catalog);
-	transformed.peerDependencies = transformDependencies(pkg.peerDependencies, catalog);
+	transformed.devDependencies = transformDependencies(
+		pkg.devDependencies,
+		catalog,
+	);
+	transformed.peerDependencies = transformDependencies(
+		pkg.peerDependencies,
+		catalog,
+	);
 
 	// Remove pnpm-specific fields that don't apply to standalone examples
 	// biome-ignore lint/performance/noDelete: we need to remove the key
@@ -162,7 +172,9 @@ function transformPackageJson(pkg, exampleConfig, catalog) {
 			bun: "bun@1.3.2",
 			pnpm: "pnpm@10.23.0",
 		};
-		transformed.packageManager = packageManagers[exampleConfig.packageManager] || exampleConfig.packageManager;
+		transformed.packageManager =
+			packageManagers[exampleConfig.packageManager] ||
+			exampleConfig.packageManager;
 	}
 
 	// Remove workspace-specific scripts (like pnpm -w run fix)
@@ -262,7 +274,12 @@ function filesAreIdentical(file1, file2) {
 /**
  * Sync a single playground to its example
  */
-function syncPlayground(playgroundPath, exampleConfig, catalog, checkOnly = false) {
+function syncPlayground(
+	playgroundPath,
+	exampleConfig,
+	catalog,
+	checkOnly = false,
+) {
 	const examplePath = join(EXAMPLES_DIR, exampleConfig.name);
 	const playgroundName = basename(playgroundPath);
 	const excludes = [...DEFAULT_EXCLUDES, ...(exampleConfig.exclude || [])];
@@ -275,7 +292,9 @@ function syncPlayground(playgroundPath, exampleConfig, catalog, checkOnly = fals
 	if (checkOnly) {
 		// Compare files
 		const playgroundFiles = getAllFiles(playgroundPath, excludes);
-		const exampleFiles = existsSync(examplePath) ? getAllFiles(examplePath, ["node_modules", "dist", ".turbo"]) : [];
+		const exampleFiles = existsSync(examplePath)
+			? getAllFiles(examplePath, ["node_modules", "dist", ".turbo"])
+			: [];
 
 		// Check for missing files in example
 		for (const file of playgroundFiles) {
@@ -285,7 +304,11 @@ function syncPlayground(playgroundPath, exampleConfig, catalog, checkOnly = fals
 			if (file === "package.json") {
 				// Special handling for package.json
 				const srcPkg = JSON.parse(readFileSync(srcFile, "utf-8"));
-				const transformedPkg = transformPackageJson(srcPkg, exampleConfig, catalog);
+				const transformedPkg = transformPackageJson(
+					srcPkg,
+					exampleConfig,
+					catalog,
+				);
 				const transformedContent = `${JSON.stringify(transformedPkg, null, "\t")}\n`;
 
 				if (!existsSync(destFile)) {
@@ -307,9 +330,16 @@ function syncPlayground(playgroundPath, exampleConfig, catalog, checkOnly = fals
 
 		// Check for extra files in example (that shouldn't be there)
 		for (const file of exampleFiles) {
-			if (!playgroundFiles.includes(file) && !shouldExclude(basename(file), excludes)) {
+			if (
+				!playgroundFiles.includes(file) &&
+				!shouldExclude(basename(file), excludes)
+			) {
 				// Check if this file is specific to the example (like .gitignore, lockfiles)
-				const exampleSpecificFiles = [".gitignore", "bun.lock", "package-lock.json"];
+				const exampleSpecificFiles = [
+					".gitignore",
+					"bun.lock",
+					"package-lock.json",
+				];
 				if (!exampleSpecificFiles.includes(file)) {
 					changes.push(`Extra: ${file}`);
 				}
@@ -324,11 +354,19 @@ function syncPlayground(playgroundPath, exampleConfig, catalog, checkOnly = fals
 	// Create or clean example directory
 	if (existsSync(examplePath)) {
 		// Remove existing files except for example-specific files
-		const exampleSpecificFiles = [".gitignore", "bun.lock", "package-lock.json", "README.md"];
+		const exampleSpecificFiles = [
+			".gitignore",
+			"bun.lock",
+			"package-lock.json",
+			"README.md",
+		];
 		const entries = readdirSync(examplePath, { withFileTypes: true });
 
 		for (const entry of entries) {
-			if (!exampleSpecificFiles.includes(entry.name) && entry.name !== "node_modules") {
+			if (
+				!exampleSpecificFiles.includes(entry.name) &&
+				entry.name !== "node_modules"
+			) {
 				const fullPath = join(examplePath, entry.name);
 				rmSync(fullPath, { recursive: true, force: true });
 			}
@@ -364,7 +402,11 @@ function main() {
 	const checkOnly = argv.includes("--check");
 	const catalog = parseCatalog();
 
-	console.log(checkOnly ? "Checking examples sync status..." : "Syncing examples from playgrounds...");
+	console.log(
+		checkOnly
+			? "Checking examples sync status..."
+			: "Syncing examples from playgrounds...",
+	);
 
 	// Find all playgrounds with arkenvExamples metadata
 	const playgroundDirs = readdirSync(PLAYGROUNDS_DIR, { withFileTypes: true })
@@ -388,11 +430,18 @@ function main() {
 
 		for (const exampleConfig of pkg.arkenvExamples) {
 			if (!exampleConfig.name) {
-				console.warn(`Warning: Example config missing 'name' in ${basename(playgroundPath)}`);
+				console.warn(
+					`Warning: Example config missing 'name' in ${basename(playgroundPath)}`,
+				);
 				continue;
 			}
 
-			const changes = syncPlayground(playgroundPath, exampleConfig, catalog, checkOnly);
+			const changes = syncPlayground(
+				playgroundPath,
+				exampleConfig,
+				catalog,
+				checkOnly,
+			);
 
 			if (checkOnly && changes.length > 0) {
 				hasChanges = true;
