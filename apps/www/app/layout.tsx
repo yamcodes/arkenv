@@ -3,11 +3,20 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { Toaster } from "~/components/ui/toaster";
+
+const geist = Geist({
+	variable: "--font-sans",
+	subsets: ["latin"],
+});
+
+const mono = Geist_Mono({
+	variable: "--font-mono",
+	subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
 	icons: {
@@ -24,7 +33,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<html
 			lang="en"
-			className={`${GeistSans.variable} ${GeistMono.variable}`}
+			className={`${geist.variable} ${mono.variable}`}
 			suppressHydrationWarning
 			data-scroll-behavior="smooth"
 		>
