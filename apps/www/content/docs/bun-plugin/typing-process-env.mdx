@@ -1,0 +1,83 @@
+---
+title: Typing process.env
+icon: ShieldCheck
+---
+
+For most use cases, you'll want to access your environment variables in your client code. In a Bun project, this is done via `process.env`.
+
+With ArkEnv, this can be typesafe with the one-time setup below. After this, each time you add/remove environment variables from your schema, your `process.env` will always be typesafe - no codegen needed.
+
+## Setup
+
+> [!IMPORTANT]
+> You must have the core `arkenv` package installed as a dependency in your project. See [ArkEnv quickstart](/docs/arkenv/quickstart) for instructions.
+
+Add this to a `bun-env.d.ts` file in your project root:
+
+```ts title="bun-env.d.ts"
+/// <reference types="bun-types" />
+
+type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+	typeof import("./src/env").default
+>;
+
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented {}
+}
+```
+
+## Usage
+
+Once set up, `process.env` is fully typesafe for your `BUN_PUBLIC_*` variables:
+
+```ts title="src/app.tsx"
+// TypeScript knows about your BUN_PUBLIC_* variables
+const apiUrl = process.env.BUN_PUBLIC_API_URL; // ✅ Typesafe
+const debug = process.env.BUN_PUBLIC_DEBUG; // ✅ Typesafe
+```
+
+## How it works
+
+The `ProcessEnvAugmented` type:
+
+1. Extracts the inferred type from your schema (the result of `type()` from arkenv)
+2. Filters to only include variables matching the Bun prefix (defaults to `"BUN_PUBLIC_"`)
+3. Makes them available on `process.env` with full type safety
+
+Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in the augmented `process.env` type.
+
+## As your project grows
+
+You might want to define your schema in a dedicated file for better organization:
+
+```ts title="src/env.ts"
+import { type } from "arkenv";
+
+export default type({
+	PORT: "number.port",
+	BUN_PUBLIC_API_URL: "string",
+	BUN_PUBLIC_DEBUG: "boolean",
+});
+```
+
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["@arkenv/bun-plugin"]
+```
+
+```ts title="bun-env.d.ts"
+/// <reference types="bun-types" />
+
+type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+	typeof import("./src/env").default
+>;
+
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented {}
+}
+```
+
+> [!IMPORTANT]
+> **Imports will break type augmentation**
+>
+> If the `ProcessEnv` augmentation does not work, make sure you do not have any `import` statements in `bun-env.d.ts`. See [the TypeScript documentation](https://www.typescriptlang.org/docs/handbook/2/modules.html#how-javascript-modules-are-defined) for more information.
