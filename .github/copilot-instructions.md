@@ -281,7 +281,7 @@ These examples demonstrate real-world usage and can serve as templates for new i
 - **Avoid breaking changes** to the public API without explicit approval and a major version changeset
 - **Don't modify generated files** like `pnpm-lock.yaml` directly - use `pnpm install` instead
 - **Don't skip changesets** for published packages - always run `pnpm changeset` for version bumps
-- **Avoid adding new dependencies** without considering bundle size impact (goal: < 1kB gzipped)
+- **Avoid adding new dependencies** without considering bundle size impact (aspirational goal: <1kB gzipped, enforced limit: 2kB gzipped)
 
 ### Security Considerations
 - Always validate user input in examples and documentation
