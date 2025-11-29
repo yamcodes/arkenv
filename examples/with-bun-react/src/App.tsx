@@ -1,4 +1,4 @@
-import { APITester } from "./APITester";
+import { APITester } from "./api-tester";
 import "./index.css";
 
 import logo from "./logo.svg";
@@ -28,8 +28,13 @@ export function App() {
 				<tbody>
 					<tr>
 						<td>BUN_PUBLIC_TEST</td>
-						<td>{process.env.BUN_PUBLIC_TEST}</td>
+						<td>{String(process.env.BUN_PUBLIC_TEST)}</td>
 						<td>{typeof process.env.BUN_PUBLIC_TEST}</td>
+					</tr>
+					<tr>
+						<td>BUN_PUBLIC_BOOLEAN</td>
+						<td>{String(process.env.BUN_PUBLIC_BOOLEAN)}</td>
+						<td>{typeof process.env.BUN_PUBLIC_BOOLEAN}</td>
 					</tr>
 				</tbody>
 			</table>
