@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/>
+  <a href="https://github.com/yamcodes/arkenv/blob/main/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">Typesafe environment variables <br/>
