@@ -1,0 +1,24 @@
+{
+	"name": "arkenv-example-with-bun-react",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "bun --hot src/index.ts",
+		"build": "bun build.ts",
+		"preview": "bun dist/index.html",
+		"start": "NODE_ENV=production bun src/index.ts"
+	},
+	"dependencies": {
+		"@arkenv/bun-plugin": "^0.0.1",
+		"arkenv": "^0.7.6",
+		"arktype": "^2.1.27",
+		"react": "^19",
+		"react-dom": "^19"
+	},
+	"devDependencies": {
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"@types/bun": "latest"
+	}
+}

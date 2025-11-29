@@ -1,5 +1,3 @@
-/// <reference types="bun-types" />
-
 // Import the Env schema type from env.ts
 type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
 	typeof import("./src/env").default
@@ -10,11 +8,17 @@ declare namespace NodeJS {
 }
 
 declare module "*.svg" {
-	const content: string;
-	export default content;
+	/**
+	 * A path to the SVG file
+	 */
+	const path: `${string}.svg`;
+	export = path;
 }
 
 declare module "*.module.css" {
+	/**
+	 * A record of class names to their corresponding CSS module classes
+	 */
 	const classes: { readonly [key: string]: string };
-	export default classes;
+	export = classes;
 }

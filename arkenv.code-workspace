@@ -93,6 +93,10 @@
 			"name": "  with-bun"
 		},
 		{
+			"path": "examples/with-bun-react",
+			"name": "  with-bun-react"
+		},
+		{
 			"path": "examples/with-vite-react",
 			"name": "  with-vite-react"
 		}
