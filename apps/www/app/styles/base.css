@@ -12,8 +12,8 @@
 	code,
 	pre {
 		font-family:
-			var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
-			Consolas, "Liberation Mono", "Courier New", monospace;
+			var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+			"Liberation Mono", "Courier New", monospace;
 	}
 }
 
