@@ -1,7 +1,9 @@
 <p align="center">
-  <img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/logo.svg" width="200px" align="center"/>
+  <img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/>
   <h1 align="center">ArkEnv</h1>
-  <br />
+  <div align="center">
+    <p align="center">Typesafe environment variables <br/>
+    Powered by <a href="https://github.com/arktypeio/arktype">ArkType</a></p>
   <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
   <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
   <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
@@ -10,6 +12,7 @@
   <a href="https://bun.com/"><img alt="Bun" src="https://img.shields.io/badge/Bun-14151a?logo=bun&logoColor=fbf0df"></a>
   <a href="https://vite.dev/"><img alt="Vite" src="https://custom-icon-badges.demolab.com/badge/Vite-2e2742?logo=vite2&logoColor=dfdfd6"></a>
   <a href="https://discord.com/channels/957797212103016458/1415373591394127894"><img alt="Chat on Discord" src="https://img.shields.io/discord/957797212103016458?label=Chat&color=5865f4&logo=discord&labelColor=121214"></a>
+    </div>
 </p>
 <h3 align="center">Proud member of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
 
