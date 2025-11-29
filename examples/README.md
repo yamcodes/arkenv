@@ -17,12 +17,47 @@ This directory contains a collection of example projects that demonstrate variou
 
 ## Contributing an example
 
-New examples are welcome! If you'd like to contribute an example:
+Some examples are **synced from playgrounds** in `apps/playgrounds/`. Playgrounds use workspace dependencies (`workspace:*`) for testing new features, while examples use published versions for standalone use.
 
-1. Create a new directory under `examples/`
-2. Include a comprehensive `README.md` explaining the example
-3. Ensure the example is self-contained and includes all necessary files
-4. Add the example to this README's list of examples
+### Synced examples
+
+The following examples are automatically synced from their corresponding playgrounds:
+
+| Example | Playground |
+|---------|------------|
+| `with-bun` | `apps/playgrounds/bun` |
+| `with-bun-react` | `apps/playgrounds/bun-react` |
+| `with-vite-react` | `apps/playgrounds/vite` |
+
+To modify a synced example:
+
+1. Make changes in the corresponding playground
+2. Run `pnpm sync:examples` to update the examples
+3. Commit both the playground and example changes
+
+### Adding a new synced example
+
+1. Create a new playground under `apps/playgrounds/`
+2. Add `arkenvExamples` metadata to the playground's `package.json`:
+   ```json
+   {
+     "arkenvExamples": [
+       {
+         "name": "with-my-tool",
+         "packageManager": "npm"
+       }
+     ]
+   }
+   ```
+3. Run `pnpm sync:examples` to generate the example
+4. Add the example to this README's list
+
+### Manually maintained examples
+
+The following examples are manually maintained (not synced from playgrounds):
+
+- `basic` - Beginner-friendly Node.js example
+- `basic-js` - JavaScript variant of the basic example
 
 Each example follows this basic structure:
 ```
