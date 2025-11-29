@@ -1,6 +1,5 @@
 import arkenv, { type } from "arkenv";
 
-
 const Env = type({
 	HOST: "string.host",
 	PORT: "number.port",
