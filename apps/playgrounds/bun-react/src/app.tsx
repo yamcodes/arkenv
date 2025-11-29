@@ -1,4 +1,4 @@
-import { APITester } from "./APITester";
+import { APITester } from "./api-tester";
 import "./index.css";
 
 import logo from "./logo.svg";

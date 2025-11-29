@@ -64,7 +64,7 @@
 				"useFilenamingConvention": {
 					"level": "error",
 					"options": {
-						"filenameCases": ["export", "kebab-case"]
+						"filenameCases": ["kebab-case"]
 					}
 				}
 			}
