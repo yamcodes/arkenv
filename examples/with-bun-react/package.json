@@ -9,6 +9,9 @@
 		"start": "NODE_ENV=production bun src/index.ts"
 	},
 	"dependencies": {
+		"@arkenv/bun-plugin": "^0.0.1",
+		"arkenv": "^0.7.6",
+		"arktype": "^2.1.27",
 		"react": "^19",
 		"react-dom": "^19"
 	},
