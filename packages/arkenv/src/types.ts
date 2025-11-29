@@ -3,8 +3,8 @@ import { type } from "arktype";
 /**
  * A `string` that can be parsed into a number between 0 and 65535
  */
-export const port = type("string", "=>", (data, ctx) => {
-	const asNumber = Number.parseInt(data, 10);
+export const port = type("string | number", "=>", (data, ctx) => {
+	const asNumber = typeof data === "string" ? Number.parseInt(data, 10) : data;
 	const isInteger = Number.isInteger(asNumber);
 	const isBetween = 0 <= asNumber && asNumber <= 65535;
 	if (!isInteger || !isBetween) {
