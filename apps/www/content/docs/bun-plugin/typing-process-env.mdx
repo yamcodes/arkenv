@@ -3,7 +3,7 @@ title: Typing process.env
 icon: ShieldCheck
 ---
 
-For most use cases, you'll want to access your environment variables in your client code. In a Bun project, this is done via `process.env`.
+For most use cases, you'll want to access your environment variables in your client code. [In a Bun project, this is done via `process.env`](https://bun.sh/docs/runtime/env).
 
 With ArkEnv, this can be typesafe with the one-time setup below. After this, each time you add/remove environment variables from your schema, your `process.env` will always be typesafe - no codegen needed.
 
