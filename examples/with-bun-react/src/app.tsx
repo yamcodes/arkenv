@@ -27,14 +27,14 @@ export function App() {
 				</thead>
 				<tbody>
 					<tr>
-						<td>BUN_PUBLIC_TEST</td>
-						<td>{String(process.env.BUN_PUBLIC_TEST)}</td>
-						<td>{typeof process.env.BUN_PUBLIC_TEST}</td>
+						<td>BUN_PUBLIC_API_URL</td>
+						<td>{process.env.BUN_PUBLIC_API_URL}</td>
+						<td>{typeof process.env.BUN_PUBLIC_API_URL}</td>
 					</tr>
 					<tr>
-						<td>BUN_PUBLIC_BOOLEAN</td>
-						<td>{String(process.env.BUN_PUBLIC_BOOLEAN)}</td>
-						<td>{typeof process.env.BUN_PUBLIC_BOOLEAN}</td>
+						<td>BUN_PUBLIC_DEBUG</td>
+						<td>{String(process.env.BUN_PUBLIC_DEBUG)}</td>
+						<td>{typeof process.env.BUN_PUBLIC_DEBUG}</td>
 					</tr>
 				</tbody>
 			</table>

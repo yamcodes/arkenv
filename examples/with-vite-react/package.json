@@ -12,20 +12,20 @@
 	},
 	"dependencies": {
 		"@arkenv/vite-plugin": "^0.0.18",
-		"arkenv": "^0.7.0",
-		"arktype": "^2.1.22",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"arkenv": "^0.7.6",
+		"arktype": "^2.1.27",
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0"
 	},
 	"devDependencies": {
-		"@types/react": "^19.1.12",
-		"@types/react-dom": "^19.1.9",
-		"@vitejs/plugin-react": "^5.0.4",
-		"globals": "^16.0.0",
-		"typescript": "~5.9.2",
-		"vite": "^7.1.11"
+		"@julr/vite-plugin-validate-env": "2.2.0",
+		"@types/react": "^19.2.7",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^5.1.1",
+		"globals": "^16.5.0",
+		"typescript": "^5.9.3",
+		"vite": "npm:rolldown-vite@latest",
+		"vite-tsconfig-paths": "^5.1.4"
 	},
-	"engines": {
-		"node": ">=22 <26"
-	}
+	"packageManager": "npm@11.6.4"
 }

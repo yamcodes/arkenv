@@ -24,7 +24,9 @@
 		"test:e2e:ui": "turbo run test:e2e:ui",
 		"test:e2e:update": "turbo run test:e2e:update",
 		"changeset": "changeset",
-		"size": "turbo run size"
+		"size": "turbo run size",
+		"sync:examples": "node bin/sync-examples.js",
+		"sync:examples:check": "node bin/sync-examples.js --check"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.7",
