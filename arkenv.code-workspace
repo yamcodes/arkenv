@@ -85,6 +85,10 @@
 			"name": "  basic"
 		},
 		{
+			"path": "examples/with-typescript",
+			"name": "  with-typescript"
+		},
+		{
 			"path": "examples/with-bun",
 			"name": "  with-bun"
 		},
