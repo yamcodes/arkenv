@@ -295,4 +295,4 @@ This repository uses OpenSpec for spec-driven development. When working on:
 - **Breaking changes** - Always create an OpenSpec proposal first
 - **Architecture changes** - Review `openspec/project.md` for conventions
 
-See `AGENTS.md` at the repository root for OpenSpec instructions.
+See `AGENTS.md` at the repository root for AI assistant instructions on when to use OpenSpec.
