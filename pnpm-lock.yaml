@@ -296,6 +296,9 @@ importers:
       fumadocs-ui:
         specifier: 16.1.0
         version: 16.1.0(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.554.0(react@19.2.0))(next@16.0.4(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(tailwindcss@4.1.17)
+      geist:
+        specifier: ^1.5.1
+        version: 1.5.1(next@16.0.4(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       import-in-the-middle:
         specifier: 2.0.0
         version: 2.0.0
@@ -4821,6 +4824,11 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  geist@1.5.1:
+    resolution: {integrity: sha512-mAHZxIsL2o3ZITFaBVFBnwyDOw+zNLYum6A6nIjpzCGIO8QtC3V76XF2RnZTyLx1wlDTmMDy8jg3Ib52MIjGvQ==}
+    peerDependencies:
+      next: '>=13.2.0'
 
   gemoji@8.1.0:
     resolution: {integrity: sha512-HA4Gx59dw2+tn+UAa7XEV4ufUKI4fH1KgcbenVA9YKSj1QJTT0xh5Mwv5HMFNN3l2OtUe3ZIfuRwSyZS5pLIWw==}
@@ -12439,6 +12447,10 @@ snapshots:
       - waku
 
   function-bind@1.1.2: {}
+
+  geist@1.5.1(next@16.0.4(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)):
+    dependencies:
+      next: 16.0.4(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   gemoji@8.1.0: {}
 

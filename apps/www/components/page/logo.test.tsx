@@ -16,9 +16,13 @@ describe("Logo", () => {
 
 	it("renders the logo icon", () => {
 		render(<Logo />);
-		// Check for the SVG element
-		const svg = document.querySelector("svg");
-		expect(svg).toBeInTheDocument();
+		// Check for the image element
+		const img = document.querySelector("img");
+		expect(img).toBeInTheDocument();
+		expect(img).toHaveAttribute(
+			"src",
+			expect.stringContaining("/assets/Japanese_Map_symbol_(Lighthouse).svg"),
+		);
 	});
 
 	it("applies default styling classes", () => {
@@ -33,8 +37,9 @@ describe("Logo", () => {
 		expect(text).not.toHaveClass("font-bold");
 		expect(text).toHaveClass("text-fd-foreground");
 
-		const svg = document.querySelector("svg");
-		expect(svg).toHaveClass("text-blue-500");
+		const img = document.querySelector("img");
+		// next/image might apply styles differently, but we passed className="size-6"
+		expect(img).toHaveClass("size-6");
 	});
 
 	it("accepts custom className", () => {
