@@ -97,7 +97,7 @@
 			"name": "  with-bun-react"
 		},
 		{
-			"path": "examples/with-vite-react-ts",
+			"path": "examples/with-vite-react",
 			"name": "  with-vite-react"
 		}
 	]
