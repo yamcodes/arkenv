@@ -3,5 +3,5 @@
 	"description": "Plugin for Bun",
 	"root": true,
 	"icon": "Bun",
-	"pages": ["---Guide---", "index"]
+	"pages": ["---Guide---", "index", "typing-process-env"]
 }
