@@ -60,6 +60,12 @@
 				"useNodejsImportProtocol": {
 					"level": "warn",
 					"fix": "safe"
+				},
+				"useFilenamingConvention": {
+					"level": "error",
+					"options": {
+						"filenameCases": ["kebab-case"]
+					}
 				}
 			}
 		}

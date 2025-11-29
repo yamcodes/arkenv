@@ -60,7 +60,7 @@ interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 
 This makes `import.meta.env` fully typesafe in your React components:
 
-```tsx title="src/App.tsx"
+```tsx title="src/app.tsx"
 // All of these are typesafe!
 const myVar = import.meta.env.VITE_MY_VAR;        // ✅ string
 const myNumber = import.meta.env.VITE_MY_NUMBER;  // ✅ number
