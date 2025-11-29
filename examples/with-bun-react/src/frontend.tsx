@@ -18,7 +18,10 @@ const app = (
 
 if (import.meta.hot) {
 	// With hot module reloading, `import.meta.hot.data` is persisted.
-	const root = (import.meta.hot.data.root ??= createRoot(elem));
+	if (!import.meta.hot.data.root) {
+		import.meta.hot.data.root = createRoot(elem);
+	}
+	const root = import.meta.hot.data.root;
 	root.render(app);
 } else {
 	// The hot module reloading API is not available in production.
