@@ -6,7 +6,7 @@ import { createElement } from "react";
 import { docs } from "~/.source";
 import { Badge } from "~/components/ui/badge";
 
-export type IconName = keyof typeof icons | "New";
+export type IconName = keyof typeof icons | "New" | "Updated";
 
 export const source = loader({
 	baseUrl: "/docs",
