@@ -1,0 +1,22 @@
+{
+	"name": "arkenv-example-basic-js",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "node --env-file .env index.js",
+		"dev": "node --watch --env-file .env index.js",
+		"dev:example": "node --watch --env-file .env.example index.js",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"arkenv": "^0.7.5",
+		"arktype": "^2.1.22"
+	},
+	"packageManager": "npm@11.6.4",
+	"engines": {
+		"node": "24"
+	},
+	"stackblitz": {
+		"startCommand": "npm install && npm run dev:example"
+	}
+}
