@@ -26,6 +26,9 @@ declare namespace NodeJS {
 }
 ```
 
+> [!NOTE]
+> Notice the line that references `"./src/env"` - if your `env.ts` file is somewhere else (say, `"./env"`), update it accordingly.
+
 ## Usage
 
 Once set up, `process.env` is fully typesafe for your `BUN_PUBLIC_*` variables:
@@ -45,37 +48,6 @@ The `ProcessEnvAugmented` type:
 3. Makes them available on `process.env` with full type safety
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in the augmented `process.env` type.
-
-## As your project grows
-
-You might want to define your schema in a dedicated file for better organization:
-
-```ts title="src/env.ts"
-import { type } from "arkenv";
-
-export default type({
-	PORT: "number.port",
-	BUN_PUBLIC_API_URL: "string",
-	BUN_PUBLIC_DEBUG: "boolean",
-});
-```
-
-```toml title="bunfig.toml"
-[serve.static]
-plugins = ["@arkenv/bun-plugin"]
-```
-
-```ts title="bun-env.d.ts"
-/// <reference types="bun-types" />
-
-type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
-	typeof import("./src/env").default
->;
-
-declare namespace NodeJS {
-	interface ProcessEnv extends ProcessEnvAugmented {}
-}
-```
 
 > [!IMPORTANT]
 > **Imports will break type augmentation**
