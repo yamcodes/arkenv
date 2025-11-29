@@ -11,7 +11,7 @@ export function Logo({ className }: { className?: string }) {
 	return (
 		<div className={cn("flex items-center gap-2", className)}>
 			<Image
-				src="/assets/Japanese_Map_symbol_(Lighthouse).svg"
+				src="/assets/icon.svg"
 				alt=""
 				aria-hidden="true"
 				width={24}

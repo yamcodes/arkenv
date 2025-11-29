@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 	icons: {
 		icon: [
 			{
-				url: "/assets/Japanese_Map_symbol_(Lighthouse).svg",
+				url: "/assets/icon.svg",
 				type: "image/svg+xml",
 			},
 		],

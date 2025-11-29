@@ -21,7 +21,7 @@ describe("Logo", () => {
 		expect(img).toBeInTheDocument();
 		expect(img).toHaveAttribute(
 			"src",
-			expect.stringContaining("/assets/Japanese_Map_symbol_(Lighthouse).svg"),
+			expect.stringContaining("/assets/icon.svg"),
 		);
 	});
 
