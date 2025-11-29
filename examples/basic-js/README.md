@@ -8,7 +8,7 @@ This example shows how to use ArkEnv in a basic Node.js application.
 The example demonstrates:
 - Setting up environment variables with ArkEnv
 - Using default values
-- Typesafe environment configuration
+- Runtime-validated environment configuration
 
 ## Getting started
 
