@@ -1,5 +1,6 @@
 import type { InferType } from "@repo/types";
 import { type distill, type } from "arktype";
+import { coerce } from "./coerce";
 import { ArkEnvError } from "./errors";
 import { $ } from "./scope";
 
@@ -37,12 +38,16 @@ export function createEnv<const T extends Record<string, unknown>>(
 ): distill.Out<type.infer<T, (typeof $)["t"]>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
-	const schema =
-		typeof def === "function" && "assert" in def
-			? def
-			: $.type.raw(def as EnvSchema<T>);
+	const isCompiledType = typeof def === "function" && "assert" in def;
+	const schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
 
-	const validatedEnv = schema(env);
+	// Coerce values if we have a raw definition
+	// We can't easily inspect compiled types to know which fields to coerce
+	const coercedEnv = !isCompiledType
+		? coerce(def as Record<string, unknown>, env)
+		: env;
+
+	const validatedEnv = schema(coercedEnv);
 
 	if (validatedEnv instanceof type.errors) {
 		throw new ArkEnvError(validatedEnv);
