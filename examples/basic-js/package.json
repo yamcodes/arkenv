@@ -1,21 +1,16 @@
 {
-	"name": "arkenv-example-with-typescript",
+	"name": "arkenv-example-basic",
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "tsx --env-file .env index.ts",
-		"dev": "tsx watch --env-file .env index.ts",
-		"dev:example": "tsx watch --env-file .env.example index.ts",
-		"build": "tsc",
+		"start": "node --env-file .env index.js",
+		"dev": "node --watch --env-file .env index.js",
+		"dev:example": "node --watch --env-file .env.example index.js",
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"arkenv": "^0.7.5",
 		"arktype": "^2.1.22"
-	},
-	"devDependencies": {
-		"tsx": "^4.19.2",
-		"typescript": "^5.9.2"
 	},
 	"packageManager": "npm@11.6.4",
 	"engines": {

@@ -2,15 +2,17 @@
 
 This directory contains a collection of example projects that demonstrate various use cases and features of ArkEnv. Each example is a standalone project that can be run independently.
 
+> [!NOTE]
+> The examples listed below are written in TypeScript out of convention.
+> ArkEnv does _not_ require TypeScript. If you prefer plain JavaScript, see [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) for a basic example.
+
 ## Examples
 
 | Name                                                                                             | Description                                                                                              |
 | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | [`basic`](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                           | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals. |
-| [`with-typescript`](https://github.com/yamcodes/arkenv/tree/main/examples/with-typescript)       | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) + [TypeScript](https://www.typescriptlang.org/) app* for learning the fundamentals. |
 | [`with-bun`](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun)                     | Minimal example of *using ArkEnv in a [Bun](https://bun.sh/) app*.                                       |
-| [`with-bun-ts`](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-ts)                     | Minimal example of *using ArkEnv in a [Bun](https://bun.sh/) + [TypeScript](https://www.typescriptlang.org/) app*.                                       |
-| [`with-vite-react-ts`](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts) | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/)+[React](https://react.dev/)+[TypeScript](https://www.typescriptlang.org/) app*.                                    |
+| [`with-vite-react`](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react) | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/)+[React](https://react.dev/) app*.
 
 ## Contributing an example
 

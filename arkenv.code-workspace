@@ -85,20 +85,16 @@
 			"name": "  basic"
 		},
 		{
-			"path": "examples/with-typescript",
-			"name": "  with-typescript"
+			"path": "examples/basic-js",
+			"name": "  basic-js"
 		},
 		{
 			"path": "examples/with-bun",
 			"name": "  with-bun"
 		},
 		{
-			"path": "examples/with-bun",
-			"name": "  with-bun-ts"
-		},
-		{
-			"path": "examples/with-vite-react-ts",
-			"name": "  with-vite-react-ts"
+			"path": "examples/with-vite-react",
+			"name": "  with-vite-react"
 		}
 	]
 }
