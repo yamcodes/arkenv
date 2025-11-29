@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-example-basic",
+	"name": "arkenv-example-basic-js",
 	"private": true,
 	"type": "module",
 	"scripts": {

@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-example-with-bun-ts",
+	"name": "arkenv-example-with-bun",
 	"private": true,
 	"type": "module",
 	"scripts": {

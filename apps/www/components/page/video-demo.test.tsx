@@ -194,7 +194,7 @@ describe("VideoDemo", () => {
 		fireEvent.click(button);
 
 		expect(mockWindowOpen).toHaveBeenCalledWith(
-			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/with-typescript?file=index.ts",
+			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts",
 			"_blank",
 			"noopener,noreferrer",
 		);
@@ -208,7 +208,7 @@ describe("VideoDemo", () => {
 		fireEvent.click(button);
 
 		const expectedUrl =
-			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/with-typescript?file=index.ts";
+			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts";
 		expect(mockWindowOpen).toHaveBeenCalledWith(
 			expectedUrl,
 			"_blank",
@@ -282,7 +282,7 @@ describe("VideoDemo", () => {
 		// Should not throw an error when clicking
 		expect(() => fireEvent.click(button)).not.toThrow();
 		expect(mockWindowOpen).toHaveBeenCalledWith(
-			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/with-typescript?file=index.ts",
+			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts",
 			"_blank",
 			"noopener,noreferrer",
 		);
@@ -327,7 +327,7 @@ describe("VideoDemo", () => {
 		fireEvent.click(button);
 
 		expect(mockWindowOpen).toHaveBeenCalledWith(
-			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/with-typescript?file=index.ts",
+			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts",
 			"_blank",
 			"noopener,noreferrer",
 		);
