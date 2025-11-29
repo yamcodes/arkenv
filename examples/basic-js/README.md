@@ -1,4 +1,4 @@
-# ArkEnv basic example
+# ArkEnv basic example (plain JavaScript)
 
 This example shows how to use ArkEnv in a basic Node.js application.
 
@@ -34,8 +34,8 @@ Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [
 With the development server running (if it isn't - just run `npm run dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
 
 1. #### Define the new environment variable in the schema as a _required_ string
-    ```typescript
-    // index.ts
+    ```javascript
+    // index.js
     const env = arkenv({
         // other definitions...
         MY_ENV_VAR: "string"
@@ -63,8 +63,8 @@ With the development server running (if it isn't - just run `npm run dev`), let'
     
     Notice the development server will once again print the existing environment variables.
 
-5. #### Add the following line to the `index.ts` file
-    ```typescript
+5. #### Add the following line to the `index.js` file
+    ```javascript
     console.log(env.MY_ENV_VAR);
     ```
     You will see the new environment variable printed in the console.
