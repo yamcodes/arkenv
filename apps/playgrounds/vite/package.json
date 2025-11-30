@@ -27,5 +27,11 @@
 		"typescript": "catalog:",
 		"vite": "npm:rolldown-vite@latest",
 		"vite-tsconfig-paths": "catalog:"
-	}
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-vite-react",
+			"packageManager": "npm"
+		}
+	]
 }

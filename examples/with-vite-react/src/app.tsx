@@ -9,10 +9,10 @@ function App() {
 	return (
 		<>
 			<div>
-				<a href="https://vite.dev" target="_blank" rel="noreferrer">
+				<a href="https://vite.dev" target="_blank" rel="noopener">
 					<img src={viteLogo} className="logo" alt="Vite logo" />
 				</a>
-				<a href="https://react.dev" target="_blank" rel="noreferrer">
+				<a href="https://react.dev" target="_blank" rel="noopener">
 					<img src={reactLogo} className="logo react" alt="React logo" />
 				</a>
 			</div>
@@ -28,7 +28,19 @@ function App() {
 			<p className="read-the-docs">
 				Click on the Vite and React logos to learn more
 			</p>
-			<p>Test: {import.meta.env.VITE_TEST}</p>
+			<h1>My env vars</h1>
+			<p>
+				My var: {String(import.meta.env.VITE_MY_VAR)} (of type{" "}
+				{typeof import.meta.env.VITE_MY_VAR})
+			</p>
+			<p>
+				My number: {String(import.meta.env.VITE_MY_NUMBER)} (of type{" "}
+				{typeof import.meta.env.VITE_MY_NUMBER})
+			</p>
+			<p>
+				My boolean: {String(import.meta.env.VITE_MY_BOOLEAN)} (of type{" "}
+				{typeof import.meta.env.VITE_MY_BOOLEAN})
+			</p>
 		</>
 	);
 }
