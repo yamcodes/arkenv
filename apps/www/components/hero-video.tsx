@@ -21,14 +21,15 @@ export function HeroVideo() {
 	return (
 		<div className="relative w-full max-w-[600px] mx-auto">
 			{/* Gradient overlay handling for dark mode */}
-			<div className="absolute inset-0 bg-linear-to-t from-background to-transparent pointer-events-none dark:opacity-100 opacity-0" />
+			<div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent pointer-events-none dark:opacity-100 opacity-0 z-10" />
+			<div className="absolute inset-0 bg-linear-to-r from-background via-transparent to-transparent pointer-events-none dark:opacity-100 opacity-0 z-10" />
 			<video
 				src={videoSrc}
 				autoPlay
 				loop
 				muted
 				playsInline
-				className="w-full h-full object-contain"
+				className="w-full h-full object-contain [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)] dark:[mask-image:radial-gradient(circle_at_center,black_50%,transparent_100%)]"
 			/>
 		</div>
 	);
