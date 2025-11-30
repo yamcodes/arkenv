@@ -36,6 +36,7 @@ describe("Logo", () => {
 		const text = screen.getByText("ArkEnv");
 		expect(text).toHaveClass("font-medium");
 		expect(text).toHaveClass("text-fd-foreground");
+		expect(text).toHaveClass("leading-none");
 
 		const img = document.querySelector("img");
 		// next/image might apply styles differently, but we passed className="size-6"
