@@ -16,7 +16,7 @@ export function HeroVideo() {
 	}
 
 	return (
-		<div className="relative w-full max-w-[600px] mx-auto lg:ml-auto lg:-mr-12 aspect-[4/3]">
+		<div className="relative w-full max-w-[500px] mx-auto lg:ml-auto lg:mr-8 lg:mt-8 aspect-4/3">
 			<video
 				src="/assets/3d-light.mp4"
 				autoPlay
