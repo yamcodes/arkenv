@@ -23,6 +23,8 @@ export function HeroVideo() {
 				loop
 				muted
 				playsInline
+				aria-hidden="true"
+				role="presentation"
 				className={`absolute inset-0 w-full h-full object-contain ${
 					resolvedTheme === "dark" ? "opacity-0" : "opacity-100"
 				}`}
@@ -33,6 +35,8 @@ export function HeroVideo() {
 				loop
 				muted
 				playsInline
+				aria-hidden="true"
+				role="presentation"
 				className={`absolute inset-0 w-full h-full object-contain ${
 					resolvedTheme === "dark" ? "opacity-100" : "opacity-0"
 				}`}
