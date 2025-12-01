@@ -58,7 +58,9 @@ test.describe("Responsive Design", () => {
 				await expect(videoButton).toBeVisible();
 
 				// Get the video or image element's bounding box
-				const videoElement = page.locator("video, img[alt*='Demo' i]").first();
+				const videoElement = videoButton
+					.locator("video, img[alt*='Demo' i]")
+					.first();
 				await expect(videoElement).toBeVisible();
 
 				const boundingBox = await videoElement.boundingBox();
@@ -162,7 +164,14 @@ test.describe("Responsive Design", () => {
 			await page.goto("/");
 			await page.waitForLoadState("networkidle");
 
-			const mediaElement = page.locator("video, img[alt*='Demo' i]").first();
+			const videoButton = page.getByRole("button", {
+				name: /open interactive demo/i,
+			});
+			await expect(videoButton).toBeVisible();
+
+			const mediaElement = videoButton
+				.locator("video, img[alt*='Demo' i]")
+				.first();
 			await expect(mediaElement).toBeVisible();
 
 			const boundingBox = await mediaElement.boundingBox();
