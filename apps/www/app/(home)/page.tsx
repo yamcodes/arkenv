@@ -17,7 +17,7 @@ export default function HomePage() {
 	return (
 		<main className="flex flex-1 flex-col items-center justify-center relative w-full overflow-hidden">
 			{/* Top gradient overlay for dark mode */}
-			<div className="absolute top-0 left-0 right-0 h-[500px] bg-linear-to-b from-[#071b3c] to-transparent pointer-events-none dark:opacity-100 opacity-0 z-10" />
+			<div className="absolute top-0 left-0 right-0 h-[500px] bg-linear-to-b from-[#071b3c] to-transparent pointer-events-none dark:opacity-80 opacity-0 z-10" />
 			
 			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-0 max-w-7xl mx-auto w-full gap-8 lg:gap-16">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 relative z-20">
@@ -39,7 +39,7 @@ export default function HomePage() {
 							>
 								ArkType
 							</a>{" "}
-							to your environment variables <br /> and ship with confidence.
+							to your environment variables and ship with confidence.
 						</div>
 					</h1>
 					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16">
