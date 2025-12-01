@@ -15,18 +15,27 @@ export function HeroVideo() {
 		return <div className="w-full aspect-4/3" />;
 	}
 
-	const videoSrc =
-		resolvedTheme === "dark" ? "/assets/3d-dark.mp4" : "/assets/3d-light.mp4";
-
 	return (
-		<div className="relative w-full max-w-[600px] mx-auto">
+		<div className="relative w-full max-w-[600px] mx-auto aspect-[4/3]">
 			<video
-				src={videoSrc}
+				src="/assets/3d-light.mp4"
 				autoPlay
 				loop
 				muted
 				playsInline
-				className="w-full h-full object-contain"
+				className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${
+					resolvedTheme === "dark" ? "opacity-0" : "opacity-100"
+				}`}
+			/>
+			<video
+				src="/assets/3d-dark.mp4"
+				autoPlay
+				loop
+				muted
+				playsInline
+				className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${
+					resolvedTheme === "dark" ? "opacity-100" : "opacity-0"
+				}`}
 			/>
 		</div>
 	);
