@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import { HeroVideo } from "~/components/hero-video";
-import { SailButton, StarUsButton } from "~/components/page";
+import { SailButton, StarUsButton, VideoDemo } from "~/components/page";
 
 const bricolageGrotesque = Bricolage_Grotesque({
 	subsets: ["latin"],
@@ -50,6 +50,10 @@ export default function HomePage() {
 				<div className="flex-1 w-full flex justify-center lg:justify-end">
 					<HeroVideo />
 				</div>
+			</div>
+			
+			<div className="sm:mt-8 max-w-[1024px] mx-auto w-full relative z-20 px-4">
+				<VideoDemo />
 			</div>
 		</main>
 	);
