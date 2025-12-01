@@ -18,7 +18,7 @@ export function Logo({ className }: { className?: string }) {
 				height={24}
 				className="size-6"
 			/>
-			<span className="text-fd-foreground font-medium">ArkEnv</span>
+			<span className="text-fd-foreground font-medium text-sm">ArkEnv</span>
 		</div>
 	);
 }

@@ -3,7 +3,7 @@
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">Typesafe environment variables <br/>
-    Powered by <a href="https://github.com/arktypeio/arktype">ArkType</a></p>
+    powered by <a href="https://github.com/arktypeio/arktype">ArkType</a></p>
   <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
   <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
   <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
