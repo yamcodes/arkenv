@@ -21,3 +21,9 @@ button[data-search-full] {
 	--color-fd-secondary: hsl(0, 0%, 0%);
 	--color-fd-accent: hsl(0, 0%, 0%);
 }
+
+.dark body,
+.dark html {
+	background-color: var(--background);
+	background-image: none !important;
+}
