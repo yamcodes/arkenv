@@ -42,7 +42,7 @@ export default function HomePage() {
 							to your environment variables and ship with confidence.
 						</div>
 					</h1>
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16">
+					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto">
 						<SailButton />
 						<StarUsButton />
 					</div>
