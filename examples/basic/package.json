@@ -10,18 +10,19 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "^0.7.5",
-		"arktype": "^2.1.22"
+		"arkenv": "^0.7.6",
+		"arktype": "^2.1.27"
 	},
 	"devDependencies": {
-		"tsx": "^4.19.2",
-		"typescript": "^5.9.2"
+		"@types/node": "^24.10.1",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.3"
 	},
-	"packageManager": "npm@11.6.4",
 	"engines": {
 		"node": "24"
 	},
 	"stackblitz": {
 		"startCommand": "npm install && npm run dev:example"
-	}
+	},
+	"packageManager": "npm@11.6.4"
 }

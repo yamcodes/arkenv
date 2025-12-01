@@ -42,7 +42,6 @@ const DEFAULT_EXCLUDES = [
 	".turbo",
 	".pnpm-debug.log",
 	"pnpm-lock.yaml", // Examples use npm/bun lockfiles instead
-	"README.md", // Preserve example READMEs (they have detailed documentation)
 	"eslint.config.js", // Monorepo uses biome, examples don't need eslint
 ];
 
@@ -358,7 +357,6 @@ function syncPlayground(
 			".gitignore",
 			"bun.lock",
 			"package-lock.json",
-			"README.md",
 		];
 		const entries = readdirSync(examplePath, { withFileTypes: true });
 
