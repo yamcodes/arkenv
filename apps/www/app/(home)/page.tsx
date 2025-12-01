@@ -18,7 +18,7 @@ export default function HomePage() {
 		<main className="flex flex-1 flex-col items-center justify-center relative w-full overflow-hidden">
 			{/* Top gradient overlay for dark mode */}
 			<div className="absolute top-0 left-0 right-0 h-[500px] bg-linear-to-b from-[#071b3c] to-transparent pointer-events-none dark:opacity-80 opacity-0 z-10" />
-			
+
 			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full gap-8 lg:gap-16">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 relative z-20">
 					<h1 className={`mb-4 ${bricolageGrotesque.className} mt-16 lg:mt-0`}>
@@ -51,7 +51,7 @@ export default function HomePage() {
 					<HeroVideo />
 				</div>
 			</div>
-			
+
 			<div className="sm:mt-8 max-w-[1024px] mx-auto w-full relative z-20 px-4">
 				<VideoDemo />
 			</div>
