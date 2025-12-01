@@ -47,7 +47,7 @@ export default function HomePage() {
 						<StarUsButton />
 					</div>
 				</div>
-				<div className="flex-1 w-full flex justify-center lg:justify-end">
+				<div className="hidden md:flex flex-1 w-full justify-center lg:justify-end">
 					<HeroVideo />
 				</div>
 			</div>
