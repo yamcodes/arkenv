@@ -37,7 +37,7 @@ test.describe("Theme Switching", () => {
 		// This verifies the library is active.
 
 		await page.evaluate(() => {
-			// @ts-ignore
+			// @ts-expect-error
 			window.__theme = "dark";
 			document.documentElement.classList.add("dark");
 			document.documentElement.style.colorScheme = "dark";
