@@ -24,6 +24,7 @@ export default function HomePage() {
 				className="pointer-events-none absolute w-full top-0 left-0 h-[160px] z-10 opacity-100 text-blue-50 dark:text-[#011537]"
 				preserveAspectRatio="none"
 			>
+				<title>Gradient Overlay</title>
 				<mask id="path-1-inside-1" fill="white">
 					<path d="M0 0H1440V181H0V0Z" />
 				</mask>
