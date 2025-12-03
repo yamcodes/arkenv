@@ -47,7 +47,7 @@ export function SailButton() {
 				<a
 					href="/docs/arkenv/quickstart"
 					onClick={handleSailClick}
-					className="inline-flex items-center justify-center gap-2 whitespace-nowrap"
+					className="inline-flex items-center justify-center gap-2 whitespace-nowrap pr-1"
 				>
 					<Sailboat
 						aria-hidden="true"
