@@ -13,14 +13,9 @@ It supports **zero-config** usage for most projects, automatically discovering y
 
 ### Zero-Config (Recommended)
 
-Add the plugin to your `bunfig.toml`. This works for both `bun run dev` and `bun run build`.
+The zero-config setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `bun serve`) and your build script (for `Bun.build`).
 
-```toml title="bunfig.toml"
-[serve.static]
-plugins = ["@arkenv/bun-plugin"]
-```
-
-Create your schema in `src/env.ts` (or `env.ts`):
+#### 1. Create your schema
 
 ```ts title="src/env.ts"
 import { type } from "arkenv";
@@ -31,9 +26,32 @@ export default type({
 });
 ```
 
+#### 2. Configure for bun serve (dev mode)
+
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["@arkenv/bun-plugin"]
+```
+
+#### 3. Configure for Bun.build (build mode)
+
+```ts title="build.ts"
+import arkenv from "@arkenv/bun-plugin";
+
+await Bun.build({
+  entrypoints: ["./app.tsx"],
+  outdir: "./dist",
+  plugins: [arkenv], // Auto-discovers src/env.ts
+});
+```
+
 ### Manual Configuration
 
-If you prefer explicit configuration or need to customize the schema location, you can use the plugin in your build script:
+If you need to customize the schema location or prefer explicit configuration:
+
+#### For Bun.build
+
+Pass your schema directly to the plugin function:
 
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
@@ -51,17 +69,25 @@ await Bun.build({
 });
 ```
 
-### Zero-Config in Build Scripts
+#### For bun serve
 
-You can also use the zero-config pattern in build scripts by passing the plugin object directly:
+Create a custom plugin file and reference it in `bunfig.toml`:
 
-```ts title="build.ts"
+```ts title="plugins/arkenv.ts"
 import arkenv from "@arkenv/bun-plugin";
+import { type } from "arkenv";
 
-await Bun.build({
-  // ...
-  plugins: [arkenv], // Auto-discovers src/env.ts
+const env = type({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean",
 });
+
+export default arkenv(env);
+```
+
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["./plugins/arkenv.ts"]
 ```
 
 ## Features
