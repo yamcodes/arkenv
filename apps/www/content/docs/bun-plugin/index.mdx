@@ -7,13 +7,13 @@ icon: Album
 
 The ArkEnv plugin for Bun lets you validate environment variables at build-time and runtime with ArkEnv.
 
-It supports **zero-config** usage for most projects, automatically discovering your schema from `./src/env.ts` or `./env.ts`.
+It supports a **simple setup** for most projects, automatically discovering your schema from `./src/env.ts` or `./env.ts`.
 
 ## Usage
 
-### Zero-Config (Recommended)
+### Simple Setup (Recommended)
 
-The zero-config setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `bun serve`) and your build script (for `Bun.build`).
+The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `bun serve`) and your build script (for `Bun.build`).
 
 #### 1. Create your schema
 
@@ -45,7 +45,7 @@ await Bun.build({
 });
 ```
 
-### Manual Configuration
+### Advanced Setup
 
 If you need to customize the schema location or prefer explicit configuration:
 
@@ -57,7 +57,7 @@ Pass your schema directly to the plugin function:
 import arkenv from "@arkenv/bun-plugin";
 import { type } from "arkenv";
 
-const env = type({
+const Env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
 });
@@ -65,7 +65,7 @@ const env = type({
 await Bun.build({
   entrypoints: ["./app.tsx"],
   outdir: "./dist",
-  plugins: [arkenv(env)],
+  plugins: [arkenv(Env)],
 });
 ```
 
@@ -77,12 +77,12 @@ Create a custom plugin file and reference it in `bunfig.toml`:
 import arkenv from "@arkenv/bun-plugin";
 import { type } from "arkenv";
 
-const env = type({
+const Env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
 });
 
-export default arkenv(env);
+export default arkenv(Env);
 ```
 
 ```toml title="bunfig.toml"
@@ -93,8 +93,7 @@ plugins = ["./plugins/arkenv.ts"]
 ## Features
 
 - **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
-- **Type Safety**: Ensures your code only accesses variables defined in your schema.
-- **Hot Reloading**: Automatically reloads your schema when `env.ts` changes (in `bun --hot` mode).
+- **Typesafety**: Ensures your code only accesses variables defined in your schema.
 - **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration (e.g., `env: "MY_PUBLIC_*"` to use `MY_PUBLIC_` instead). See [Bun's bundler documentation](https://bun.sh/docs/bundler#env) for more details.
 
 ## Installation

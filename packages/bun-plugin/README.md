@@ -54,7 +54,7 @@ bun add @arkenv/bun-plugin arktype
 
 ## Usage
 
-### Zero-Config (Auto-discover schema)
+### Simple Setup (Auto-discover schema)
 
 Create your schema in `src/env.ts`:
 
@@ -88,7 +88,7 @@ await Bun.build({
 });
 ```
 
-### Manual Configuration
+### Advanced Setup
 
 Pass your schema directly to the plugin:
 
