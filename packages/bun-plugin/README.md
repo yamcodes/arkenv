@@ -54,20 +54,57 @@ bun add @arkenv/bun-plugin arktype
 
 ## Usage
 
-### Basic Example
+### Simple Setup (Auto-discover schema)
+
+Create your schema in `src/env.ts`:
 
 ```ts
-// bun.config.ts or in Bun.build()
+// src/env.ts
+import { type } from 'arkenv';
+
+export default type({
+  BUN_PUBLIC_API_URL: 'string',
+  BUN_PUBLIC_DEBUG: 'boolean',
+});
+```
+
+Configure for `bun serve` in `bunfig.toml`:
+
+```toml
+[serve.static]
+plugins = ["@arkenv/bun-plugin"]
+```
+
+Configure for `Bun.build` in your build script:
+
+```ts
+// build.ts
 import arkenv from '@arkenv/bun-plugin';
 
 await Bun.build({
   entrypoints: ['./app.tsx'],
   outdir: './dist',
+  plugins: [arkenv], // Auto-discovers src/env.ts
+});
+```
+
+### Advanced Setup
+
+Pass your schema directly to the plugin:
+
+```ts
+// build.ts
+import arkenv from '@arkenv/bun-plugin';
+import { type } from 'arkenv';
+
+await Bun.build({
+  entrypoints: ['./app.tsx'],
+  outdir: './dist',
   plugins: [
-    arkenv({
+    arkenv(type({
       BUN_PUBLIC_API_URL: 'string',
       BUN_PUBLIC_DEBUG: 'boolean',
-    }),
+    })),
   ],
 });
 ```
