@@ -13,7 +13,7 @@ It supports a **simple setup** for most projects, automatically discovering your
 
 ### Simple Setup (Recommended)
 
-The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `bun serve`) and your build script (for `Bun.build`).
+The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `Bun.serve`) and your build script (for `Bun.build`).
 
 #### 1. Create your schema
 
@@ -26,7 +26,7 @@ export default type({
 });
 ```
 
-#### 2. Configure for bun serve (dev mode)
+#### 2. Configure for Bun.serve (dev mode)
 
 ```toml title="bunfig.toml"
 [serve.static]
@@ -69,7 +69,7 @@ await Bun.build({
 });
 ```
 
-#### For bun serve
+#### For Bun.serve
 
 Create a custom plugin file and reference it in `bunfig.toml`:
 
