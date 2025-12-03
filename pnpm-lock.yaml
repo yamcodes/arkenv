@@ -157,6 +157,15 @@ importers:
         specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.7)
 
+  apps/playgrounds/js:
+    dependencies:
+      arkenv:
+        specifier: workspace:*
+        version: link:../../../packages/arkenv
+      arktype:
+        specifier: 'catalog:'
+        version: 2.1.27
+
   apps/playgrounds/node:
     dependencies:
       arkenv:
@@ -172,6 +181,9 @@ importers:
       tsx:
         specifier: 'catalog:'
         version: 4.20.6
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   apps/playgrounds/solid-start:
     dependencies:
