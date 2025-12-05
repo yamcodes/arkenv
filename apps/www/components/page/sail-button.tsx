@@ -57,7 +57,7 @@ export function SailButton() {
 					<span className="font-semibold">
 						Set sail{" "}
 						<span
-							className={`inline-block ${!isSailing ? "nudge-animation" : ""} ml-1`}
+							className={`inline-block ${!isSailing ? "nudge-animation" : ""} ml-1 pr-1`}
 						>
 							-&gt;
 						</span>
