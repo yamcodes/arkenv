@@ -61,7 +61,7 @@ export default function arkenv<const T extends Record<string, unknown>>(
 
 			// createEnv accepts both EnvSchema and type.Any at runtime
 			// We use overloads above to provide external type precision
-			const env = createEnv(options, loadEnv(mode, process.cwd(), ""));
+			const env = createEnv(options as any, loadEnv(mode, process.cwd(), ""));
 
 			// Filter to only include environment variables matching the prefix
 			// This prevents server-only variables from being exposed to client code
