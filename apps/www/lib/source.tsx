@@ -1,9 +1,9 @@
+import { docs } from "fumadocs-mdx:collections/server";
 import type { autocomplete } from "@ark/util";
 import * as SimpleIcons from "@icons-pack/react-simple-icons";
 import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
-import { docs } from "~/.source";
 import { Badge } from "~/components/ui/badge";
 
 export type IconName = keyof typeof icons | "New" | "Updated";
