@@ -54,7 +54,7 @@ export function SailButton() {
 						className={`transition-transform duration-[700ms] ease-in ${isSailing ? "translate-x-[1000%]" : ""}`}
 						onTransitionEnd={() => router.push("/docs/arkenv/quickstart")}
 					/>
-					<span className="font-semibold">
+					<span className="font-semibold pr-2">
 						Set sail{" "}
 						<span
 							className={`inline-block ${!isSailing ? "nudge-animation" : ""} ml-1`}
