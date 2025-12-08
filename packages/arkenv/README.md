@@ -68,6 +68,7 @@ ArkEnvError: Errors found while validating environment variables
 - Single import, zero config for most projects
 - Validated, defaultable, typesafe environment variables
 - Powered by ArkType, TypeScript's 1:1 validator
+- Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 - Optimized from editor to runtime
 
 ## Installation

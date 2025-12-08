@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "preserve",
+		"strict": true,
+		"esModuleInterop": true,
+		"moduleResolution": "bundler",
+		"skipLibCheck": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noEmit": true,
+		"outDir": "dist",
+		"resolveJsonModule": true,
+		"rootDir": "src",
+		"declaration": true,
+		"declarationMap": true
+	},
+	"include": ["src"]
+}
