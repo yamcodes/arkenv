@@ -17,10 +17,12 @@
 		"fix": "pnpm -w run fix"
 	},
 	"devDependencies": {
+		"@repo/scope": "workspace:*",
 		"arktype": "catalog:",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
+		"@repo/scope": "workspace:*",
 		"arktype": "catalog:"
 	}
 }
