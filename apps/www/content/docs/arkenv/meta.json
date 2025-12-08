@@ -10,6 +10,7 @@
 		"examples",
 		"---API---",
 		"morphs",
+		"standard-schema",
 		"---Integrations---",
 		"[VS Code & Cursor](/docs/arkenv/integrations/vscode)",
 		"[JetBrains IDEs](/docs/arkenv/integrations/jetbrains)",
