@@ -8,7 +8,7 @@
 		},
 		// Vitest
 		// See: https://turborepo.com/docs/guides/tools/vitest
-		"arkenv#test": {
+		"test": {
 			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
 			"dependsOn": ["@repo/scope#build", "@repo/keywords#build", "transit"]
 		}
