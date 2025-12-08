@@ -35,7 +35,7 @@ arkenv arktype zod
 
 Then mix Zod validators with ArkType in your schema:
 
-```ts twoslash
+```ts
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
@@ -54,20 +54,11 @@ const env = arkenv({
 
 The validated environment will have full TypeScript inference:
 
-```ts twoslash
-import arkenv from 'arkenv';
-import { z } from 'zod';
-
-const env = arkenv({
-  HOST: "string.host",
-  DATABASE_URL: z.string().url(),
-  MAX_RETRIES: z.number().int().positive().default(3),
-});
-// ---cut---
+```ts
 // Hover to see the exact types!
-const host = env.HOST;
-const dbUrl = env.DATABASE_URL;
-const retries = env.MAX_RETRIES;
+const host = env.HOST;           // string
+const dbUrl = env.DATABASE_URL;  // string
+const retries = env.MAX_RETRIES; // number
 ```
 
 ## Usage with Valibot
@@ -80,7 +71,7 @@ arkenv arktype valibot
 
 Then use Valibot validators in your schema:
 
-```ts twoslash
+```ts
 import arkenv from 'arkenv';
 import * as v from 'valibot';
 
@@ -101,7 +92,7 @@ const env = arkenv({
 
 Different validation libraries excel at different things. Standard Schema support lets you choose the best tool for each field:
 
-```ts twoslash
+```ts
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
@@ -127,7 +118,7 @@ const env = arkenv({
 
 If you're migrating to ArkEnv from another environment validation library, you can do it incrementally:
 
-```ts twoslash
+```ts
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
@@ -146,7 +137,7 @@ const env = arkenv({
 
 If your team is already familiar with a specific validation library, you can continue using it:
 
-```ts twoslash
+```ts
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
@@ -174,7 +165,7 @@ Both ArkType and Standard Schema validators work seamlessly together, and the ty
 
 Error messages from Standard Schema validators are included in the ArkEnv error output:
 
-```ts twoslash
+```ts
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
@@ -203,7 +194,7 @@ ArkEnvError: Errors found while validating environment variables
 
 Full type inference works with Standard Schema validators:
 
-```ts twoslash
+```ts
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
