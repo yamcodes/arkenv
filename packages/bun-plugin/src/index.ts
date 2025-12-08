@@ -1,7 +1,7 @@
 import { join } from "node:path";
+import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
-import type { type } from "arktype";
 import type { BunPlugin, Loader, PluginBuilder } from "bun";
 
 export type { ProcessEnvAugmented } from "./types";
@@ -9,18 +9,23 @@ export type { ProcessEnvAugmented } from "./types";
 /**
  * Helper to process env schema and return envMap
  */
-export function processEnvSchema(options: EnvSchema<any> | type.Any) {
+export function processEnvSchema<T extends SchemaShape>(
+	options: EnvSchema<T> | EnvSchemaWithType,
+): Map<string, string> {
 	// Validate environment variables
-	const env = createEnv(options, process.env);
+
+	// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
+	// "Type instantiation is excessively deep and possibly infinite" errors.
+	// Ideally, we should find a way to avoid these assertions while maintaining type safety.
+
+	const env = createEnv<T>(options, process.env);
 
 	// Get Bun's prefix for client-exposed environment variables
 	const prefix = "BUN_PUBLIC_";
 
 	// Filter to only include environment variables matching the prefix
 	const filteredEnv = Object.fromEntries(
-		Object.entries(<Record<string, unknown>>env).filter(([key]) =>
-			key.startsWith(prefix),
-		),
+		Object.entries(<SchemaShape>env).filter(([key]) => key.startsWith(prefix)),
 	);
 
 	// Create a map of variable names to their JSON-stringified values
@@ -81,7 +86,7 @@ function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
 				loader,
 				contents: transformed,
 			};
-		} catch (error) {
+		} catch {
 			// If file can't be read, return undefined to let Bun handle it
 			return undefined;
 		}
@@ -119,14 +124,14 @@ function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
  *    })
  *    ```
  */
-export function arkenv<const T extends Record<string, unknown>>(
+export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
 ): BunPlugin;
-export function arkenv(options: type.Any): BunPlugin;
-export function arkenv<const T extends Record<string, unknown>>(
-	options: EnvSchema<T> | type.Any,
+export function arkenv(options: EnvSchemaWithType): BunPlugin;
+export function arkenv<const T extends SchemaShape>(
+	options: EnvSchema<T> | EnvSchemaWithType,
 ): BunPlugin {
-	const envMap = processEnvSchema(options);
+	const envMap = processEnvSchema<T>(options);
 
 	return {
 		name: "@arkenv/bun-plugin",

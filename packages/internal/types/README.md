@@ -1,10 +1,10 @@
 # @repo/types
 
-Internal TypeScript types shared across ArkEnv packages.
+Internal TypeScript/ArkType types shared across ArkEnv packages.
 
 ## Purpose
 
-This package provides common TypeScript types used internally by multiple packages in the ArkEnv monorepo. It eliminates code duplication and provides a single source of truth for shared type definitions.
+This package provides common TypeScript/ArkType types used internally by multiple packages in the ArkEnv monorepo. It eliminates code duplication and provides a single source of truth for shared type definitions.
 
 ## Usage
 

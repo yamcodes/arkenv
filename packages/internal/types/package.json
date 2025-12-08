@@ -13,13 +13,14 @@
 	},
 	"scripts": {
 		"typecheck": "tsc --noEmit",
-		"build": "tsc"
+		"build": "tsc",
+		"fix": "pnpm -w run fix"
 	},
 	"devDependencies": {
 		"arktype": "catalog:",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"arktype": "^2.1.22"
+		"arktype": "workspace:*"
 	}
 }

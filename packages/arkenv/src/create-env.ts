@@ -1,14 +1,15 @@
-import type { InferType } from "@repo/types";
-import { type distill, type } from "arktype";
+import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
+import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { $ } from "./scope";
+import { type } from "./type";
 
+export type EnvSchema<def> = at.validate<def, (typeof $)["t"]>;
 type RuntimeEnvironment = Record<string, string | undefined>;
 
-export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
-
 /**
- * TODO: If possible, find a better type than "const T extends Record<string, unknown>",
+ * TODO: `SchemaShape` is basically `Record<string, unknown>`.
+ * If possible, find a better type than "const T extends Record<string, unknown>",
  * and be as close as possible to the type accepted by ArkType's `type`.
  */
 
@@ -19,22 +20,22 @@ export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>;
  * @returns The validated environment variable schema
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
-export function createEnv<const T extends Record<string, unknown>>(
+export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
 	env?: RuntimeEnvironment,
-): distill.Out<type.infer<T, (typeof $)["t"]>>;
-export function createEnv<T extends type.Any>(
+): distill.Out<at.infer<T, (typeof $)["t"]>>;
+export function createEnv<T extends EnvSchemaWithType>(
 	def: T,
 	env?: RuntimeEnvironment,
 ): InferType<T>;
-export function createEnv<const T extends Record<string, unknown>>(
-	def: EnvSchema<T> | type.Any,
+export function createEnv<const T extends SchemaShape>(
+	def: EnvSchema<T> | EnvSchemaWithType,
 	env?: RuntimeEnvironment,
-): distill.Out<type.infer<T, (typeof $)["t"]>> | InferType<typeof def>;
-export function createEnv<const T extends Record<string, unknown>>(
-	def: EnvSchema<T> | type.Any,
+): distill.Out<at.infer<T, (typeof $)["t"]>> | InferType<typeof def>;
+export function createEnv<const T extends SchemaShape>(
+	def: EnvSchema<T> | EnvSchemaWithType,
 	env: RuntimeEnvironment = process.env,
-): distill.Out<type.infer<T, (typeof $)["t"]>> | InferType<typeof def> {
+): distill.Out<at.infer<T, (typeof $)["t"]>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const schema =

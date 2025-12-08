@@ -1,12 +1,9 @@
-import type { EnvSchema } from "arkenv";
-import { createEnv } from "arkenv";
-import type { type } from "arktype";
+import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
+import { createEnv, type EnvSchema } from "arkenv";
 import { loadEnv, type Plugin } from "vite";
 
-export type { ImportMetaEnvAugmented } from "./types";
-
 /**
- * TODO: If possible, find a better type than "const T extends Record<string, unknown>",
+ * TODO: If possible, find a better type than "const T extends SchemaShape",
  * and be as close as possible to the type accepted by ArkType's `type`.
  */
 
@@ -18,7 +15,7 @@ export type { ImportMetaEnvAugmented } from "./types";
  * Only environment variables matching the prefix are exposed to client code via `import.meta.env.*`.
  *
  * @param options - The environment variable schema definition. Can be an `EnvSchema` object
- *   for typesafe validation or an ArkType `type.Any` for dynamic schemas.
+ *   for typesafe validation or an ArkType `EnvSchemaWithType` for dynamic schemas.
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
  *
  * @example
@@ -43,12 +40,12 @@ export type { ImportMetaEnvAugmented } from "./types";
  * console.log(import.meta.env.VITE_API_URL); // Typesafe access
  * ```
  */
-export default function arkenv<const T extends Record<string, unknown>>(
+export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
 ): Plugin;
-export default function arkenv(options: type.Any): Plugin;
-export default function arkenv<const T extends Record<string, unknown>>(
-	options: EnvSchema<T> | type.Any,
+export default function arkenv(options: EnvSchemaWithType): Plugin;
+export default function arkenv<const T extends SchemaShape>(
+	options: EnvSchema<T> | EnvSchemaWithType,
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",
@@ -59,15 +56,15 @@ export default function arkenv<const T extends Record<string, unknown>>(
 			const envPrefix = config.envPrefix ?? "VITE_";
 			const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix];
 
-			// createEnv accepts both EnvSchema and type.Any at runtime
-			// We use overloads above to provide external type precision
-			// TODO: Improve the `EnvSchema<T>` type rather than using `as never`. See #501.
-			const env = createEnv(options as never, loadEnv(mode, process.cwd(), ""));
+			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
+			// "Type instantiation is excessively deep and possibly infinite" errors.
+			// Ideally, we should find a way to avoid these assertions while maintaining type safety.
+			const env = createEnv<T>(options, loadEnv(mode, process.cwd(), ""));
 
 			// Filter to only include environment variables matching the prefix
 			// This prevents server-only variables from being exposed to client code
 			const filteredEnv = Object.fromEntries(
-				Object.entries(<Record<string, unknown>>env).filter(([key]) =>
+				Object.entries(<SchemaShape>env).filter(([key]) =>
 					prefixes.some((prefix) => key.startsWith(prefix)),
 				),
 			);

@@ -119,7 +119,7 @@ describe("env", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(envSchema);
+			const env = createEnv(envSchema as never) as any;
 
 			expect(env.TEST_STRING).toBe("hello");
 			expect(env.TEST_PORT).toBe(3000);
@@ -134,7 +134,7 @@ describe("env", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(envSchema);
+			const env = createEnv(envSchema as never) as any;
 
 			// TypeScript should infer these correctly
 			const str: string = env.TEST_STRING;
@@ -152,8 +152,12 @@ describe("env", () => {
 			});
 
 			// Use the same schema multiple times
-			const env1 = createEnv(envSchema, { TEST_STRING: "first" });
-			const env2 = createEnv(envSchema, { TEST_STRING: "second" });
+			const env1 = createEnv(envSchema as never, {
+				TEST_STRING: "first",
+			}) as any;
+			const env2 = createEnv(envSchema as never, {
+				TEST_STRING: "second",
+			}) as any;
 
 			expect(env1.TEST_STRING).toBe("first");
 			expect(env2.TEST_STRING).toBe("second");
@@ -166,7 +170,7 @@ describe("env", () => {
 				INVALID_PORT: "number.port",
 			});
 
-			expect(() => createEnv(envSchema)).toThrow(/INVALID_PORT/);
+			expect(() => createEnv(envSchema as never)).toThrow(/INVALID_PORT/);
 		});
 
 		it("should work with custom environment and type definitions", () => {
@@ -180,7 +184,7 @@ describe("env", () => {
 				PORT: "8080",
 			};
 
-			const env = createEnv(envSchema, customEnv);
+			const env = createEnv(envSchema as never, customEnv) as any;
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
