@@ -1,10 +1,27 @@
 {
-	"extends": ["//"],
+	"extends": [
+		"//"
+	],
 	"tasks": {
 		// Defined here and not in the root turbo.json to avoid building all packages when running `turbo run size`.
 		"size": {
-			"dependsOn": ["build"],
+			"dependsOn": [
+				"build"
+			],
 			"cache": false
+		},
+		// Vitest
+		// See: https://turborepo.com/docs/guides/tools/vitest
+		"arkenv#test": {
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"$TURBO_ROOT$/vitest.config.ts"
+			],
+			"dependsOn": [
+				"@repo/scope#build",
+				"@repo/keywords#build",
+				"transit"
+			]
 		}
 	}
 }
