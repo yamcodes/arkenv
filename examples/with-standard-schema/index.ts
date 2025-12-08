@@ -10,7 +10,10 @@ const env = arkenv({
 
 	// Zod validators (great for complex validation and transformations)
 	DATABASE_URL: z.string().url(),
-	API_KEY: z.string().min(32).describe("API key must be at least 32 characters"),
+	API_KEY: z
+		.string()
+		.min(32)
+		.describe("API key must be at least 32 characters"),
 
 	// Mix them together based on your needs
 	MAX_RETRIES: z.number().int().positive().default(3),
@@ -44,7 +47,7 @@ console.log({
 	nodeEnv,
 	debug,
 	databaseUrl,
-	apiKey: apiKey.substring(0, 8) + "...", // Don't log full API key
+	apiKey: `${apiKey.substring(0, 8)}...`, // Don't log full API key
 	maxRetries,
 	timeoutMs,
 	allowedOrigins,
