@@ -170,7 +170,7 @@ describe("env", () => {
 				INVALID_PORT: "number.port",
 			});
 
-			expect(() => createEnv(Env as never)).toThrow(/INVALID_PORT/);
+			expect(() => createEnv(Env)).toThrow(/INVALID_PORT/);
 		});
 
 		it("should work with custom environment and type definitions", () => {
