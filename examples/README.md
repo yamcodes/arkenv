@@ -5,8 +5,8 @@ This directory contains a collection of example projects that demonstrate variou
 ## Examples
 
 > [!NOTE]
-> The examples listed below are written in TypeScript out of convention.
-> ArkEnv does _not_ require TypeScript. If you prefer plain JavaScript, see [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) for a basic example.
+> The examples listed below are written in TypeScript.
+> While ArkEnv works with plain JavaScript, TypeScript is recommended. See [Requirements](https://github.com/yamcodes/arkenv/blob/main/packages/arkenv/README.md#typescript-setup) for details. If you're still interested in working with ArkEnv in plain JavaScript, see the [`basic-js`](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example.
 
 | Name                                                                                             | Description                                                                                              |
 | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
