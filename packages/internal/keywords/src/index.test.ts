@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { host, port } from "./types";
+import { host, port } from "./index";
 
 describe("port", () => {
 	it("should validate a valid port number", () => {

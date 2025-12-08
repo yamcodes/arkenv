@@ -54,7 +54,7 @@ describe("Bun Plugin", () => {
 			BUN_PUBLIC_API_URL: "string",
 			PORT: "number.port",
 			DATABASE_URL: "string",
-		});
+		} as const);
 
 		// Check that prefixed variables are present
 		expect(envMap.has("BUN_PUBLIC_API_URL")).toBe(true);
