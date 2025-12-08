@@ -114,12 +114,12 @@ describe("env", () => {
 			process.env.TEST_STRING = "hello";
 			process.env.TEST_PORT = "3000";
 
-			const envSchema = type({
+			const Env = type({
 				TEST_STRING: "string",
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(envSchema);
+			const env = createEnv(Env);
 
 			expect(env.TEST_STRING).toBe("hello");
 			expect(env.TEST_PORT).toBe(3000);
@@ -129,16 +129,16 @@ describe("env", () => {
 			process.env.TEST_STRING = "hello";
 			process.env.TEST_PORT = "3000";
 
-			const envSchema = type({
+			const Env = type({
 				TEST_STRING: "string",
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(envSchema);
+			const env = createEnv(Env);
 
 			// TypeScript should infer these correctly
-			const str: string = env.TEST_STRING;
-			const port: number = env.TEST_PORT;
+			const str = env.TEST_STRING;
+			const port = env.TEST_PORT;
 
 			expect(str).toBe("hello");
 			expect(port).toBe(3000);
@@ -147,15 +147,15 @@ describe("env", () => {
 		it("should allow reusing the same type definition multiple times", () => {
 			process.env.TEST_STRING = "hello";
 
-			const envSchema = type({
+			const Env = type({
 				TEST_STRING: "string",
 			});
 
 			// Use the same schema multiple times
-			const env1 = createEnv(envSchema, {
+			const env1 = createEnv(Env, {
 				TEST_STRING: "first",
 			});
-			const env2 = createEnv(envSchema, {
+			const env2 = createEnv(Env, {
 				TEST_STRING: "second",
 			});
 
@@ -166,15 +166,15 @@ describe("env", () => {
 		it("should throw when type definition validation fails", () => {
 			process.env.INVALID_PORT = "not-a-port";
 
-			const envSchema = type({
+			const Env = type({
 				INVALID_PORT: "number.port",
 			});
 
-			expect(() => createEnv(envSchema as never)).toThrow(/INVALID_PORT/);
+			expect(() => createEnv(Env as never)).toThrow(/INVALID_PORT/);
 		});
 
 		it("should work with custom environment and type definitions", () => {
-			const envSchema = type({
+			const Env = type({
 				HOST: "string.host",
 				PORT: "number.port",
 			});
@@ -184,7 +184,7 @@ describe("env", () => {
 				PORT: "8080",
 			};
 
-			const env = createEnv(envSchema, customEnv);
+			const env = createEnv(Env, customEnv);
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
