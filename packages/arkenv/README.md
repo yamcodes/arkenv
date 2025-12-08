@@ -118,7 +118,7 @@ ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcode
 While ArkEnv works with plain JavaScript, *TypeScript is highly recommended* to get the full typesafety benefits. To get ArkEnv to work with TypeScript, we require:
 
 - [**Modern TypeScript module resolution**](https://www.typescriptlang.org/tsconfig/#moduleResolution). One of the following is required in your `tsconfig.json`:
-  - `"moduleResolution": "bundler"` - Recommended for modern bundlers (Vite, Next.js, etc.). Supplied by default when using `"module": "Preserve"`.
+  - `"moduleResolution": "bundler"` - Recommended for modern bundlers (Vite, Next.js, etc.). Supplied by default when using `"module": "Preserve"` (Introduced in TypeScript v5.4).
   - `"moduleResolution": "node16"` or `"nodenext"` - For Node.js projects. Supplied by default when using a matching `"module"` value.
 - **TypeScript >= 5.1** and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
 
