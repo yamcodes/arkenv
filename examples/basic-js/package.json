@@ -12,6 +12,9 @@
 		"arkenv": "^0.7.5",
 		"arktype": "^2.1.22"
 	},
+	"devDependencies": {
+		"rimraf": "^6.1.2"
+	},
 	"packageManager": "npm@11.6.4",
 	"engines": {
 		"node": "24"

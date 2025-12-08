@@ -125,6 +125,9 @@ importers:
       '@types/bun':
         specifier: 'catalog:'
         version: 1.3.3
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -156,6 +159,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.7)
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
 
   apps/playgrounds/node:
     dependencies:
@@ -172,6 +178,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.10.1
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       tsx:
         specifier: 'catalog:'
         version: 4.20.6
@@ -230,6 +239,9 @@ importers:
       globals:
         specifier: 'catalog:'
         version: 16.5.0
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -390,6 +402,9 @@ importers:
       postcss:
         specifier: 8.5.6
         version: 8.5.6
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       styled-jsx:
         specifier: 5.1.7
         version: 5.1.7(@babel/core@7.28.5)(react@19.2.1)
@@ -429,6 +444,9 @@ importers:
       arktype:
         specifier: 'catalog:'
         version: 2.1.28
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       size-limit:
         specifier: 'catalog:'
         version: 11.2.0
@@ -466,6 +484,9 @@ importers:
       bun:
         specifier: 'catalog:'
         version: 1.3.3
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       size-limit:
         specifier: 'catalog:'
         version: 11.2.0
@@ -534,6 +555,9 @@ importers:
       arktype:
         specifier: 'catalog:'
         version: 2.1.28
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       size-limit:
         specifier: 'catalog:'
         version: 11.2.0
@@ -568,6 +592,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.10.1
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
