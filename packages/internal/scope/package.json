@@ -1,0 +1,47 @@
+{
+	"name": "@repo/scope",
+	"private": true,
+	"type": "module",
+	"version": "0.0.0",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"description": "ArkEnv scope (internal usage)",
+	"exports": {
+		"types": "./dist/index.d.ts",
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
+	},
+	"scripts": {
+		"build": "tsdown",
+		"size": "size-limit",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"fix": "pnpm -w run fix"
+	},
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"scope"
+	],
+	"license": "MIT",
+	"homepage": "https://arkenv.js.org",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"dependencies": {
+		"@repo/keywords": "workspace:*"
+	},
+	"devDependencies": {
+		"arktype": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"arktype": "workspace:*"
+	}
+}

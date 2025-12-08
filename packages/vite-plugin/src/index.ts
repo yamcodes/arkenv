@@ -1,6 +1,23 @@
 import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
 import { createEnv, type EnvSchema } from "arkenv";
+import type { type } from "arktype";
 import { loadEnv, type Plugin } from "vite";
+
+/**
+ * Extract the inferred type from an ArkType type definition by checking its call signature.
+ * When a type definition is called, it returns either the validated value or type.errors.
+ */
+type InferType<T> = T extends (
+	value: Record<string, string | undefined>,
+) => infer R
+	? R extends type.errors
+		? never
+		: R
+	: T extends type.Any<infer U, infer _Scope>
+		? U
+		: never;
+
+export type ImportMetaEnvAugmented<T> = InferType<T>;
 
 /**
  * TODO: If possible, find a better type than "const T extends SchemaShape",
@@ -40,10 +57,10 @@ import { loadEnv, type Plugin } from "vite";
  * console.log(import.meta.env.VITE_API_URL); // Typesafe access
  * ```
  */
+export default function arkenv(options: EnvSchemaWithType): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
 ): Plugin;
-export default function arkenv(options: EnvSchemaWithType): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | EnvSchemaWithType,
 ): Plugin {

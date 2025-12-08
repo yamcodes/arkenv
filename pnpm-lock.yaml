@@ -408,6 +408,12 @@ importers:
 
   packages/arkenv:
     devDependencies:
+      '@repo/keywords':
+        specifier: workspace:*
+        version: link:../internal/keywords
+      '@repo/scope':
+        specifier: workspace:*
+        version: link:../internal/scope
       '@repo/types':
         specifier: workspace:*
         version: link:../internal/types
@@ -472,6 +478,34 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/ui@4.0.15)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.20.6)
+
+  packages/internal/keywords:
+    devDependencies:
+      arktype:
+        specifier: 'catalog:'
+        version: 2.1.28
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.16.8(typescript@5.9.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/internal/scope:
+    dependencies:
+      '@repo/keywords':
+        specifier: workspace:*
+        version: link:../keywords
+    devDependencies:
+      arktype:
+        specifier: 'catalog:'
+        version: 2.1.28
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.16.8(typescript@5.9.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   packages/internal/types:
     devDependencies:

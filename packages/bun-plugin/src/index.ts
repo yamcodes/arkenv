@@ -124,10 +124,10 @@ function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
  *    })
  *    ```
  */
+export function arkenv(options: EnvSchemaWithType): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
 ): BunPlugin;
-export function arkenv(options: EnvSchemaWithType): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | EnvSchemaWithType,
 ): BunPlugin {

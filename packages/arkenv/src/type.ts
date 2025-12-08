@@ -1,3 +1,3 @@
-import { $ } from "./scope";
+import { $ } from "@repo/scope";
 
 export const type = $.type;

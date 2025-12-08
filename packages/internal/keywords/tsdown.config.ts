@@ -7,5 +7,4 @@ export default defineConfig({
 	dts: {
 		resolve: ["@repo/types"],
 	},
-	sourcemap: false,
 });
