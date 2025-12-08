@@ -180,7 +180,7 @@ pnpm run test:e2e                     # E2E tests
 **Bundle Size:**
 - Core package must be <1kB gzipped (enforced via `size-limit`)
 - Vite plugin must be <2kB (enforced via `size-limit`)
-- Zero external dependencies (except peer dependencies)
+- Zero external dependencies (except peer dependencies). Internal workspace packages are permitted.
 
 **TypeScript Requirements:**
 - TypeScript >= 5.1 required
@@ -199,6 +199,7 @@ pnpm run test:e2e                     # E2E tests
 
 **Monorepo Constraints:**
 - All packages must use `workspace:*` protocol for internal dependencies
+- Internal workspace dependencies (e.g., `@repo/*`) are permitted in both `dependencies` and `devDependencies` if bundled
 - Only packages in `packages/` are published
 - Examples and tooling are not published
 - Changesets required for published packages only

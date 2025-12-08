@@ -57,7 +57,10 @@
 		{
 			"path": "dist/index.js",
 			"limit": "2 kB",
-			"import": "*"
+			"import": "*",
+			"ignore": [
+				"arktype"
+			]
 		}
 	]
 }
