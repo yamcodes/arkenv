@@ -1,7 +1,7 @@
 ---
 "arkenv": patch
-"arkenv/bun-plugin": patch
-"arkenv/vite-plugin": patch
+"@arkenv/bun-plugin": patch
+"@arkenv/vite-plugin": patch
 ---
 
 #### Fix "Type instantiation is excessively deep" error
