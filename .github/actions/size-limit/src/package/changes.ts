@@ -62,9 +62,7 @@ export const getChangedPackages = async (
 		// Map changed files to packages
 		for (const file of changedFiles) {
 			// Check if file is in packages directory
-			const packagesMatch = file.match(
-				/^packages\/([@a-z0-9][@a-z0-9/_-]*)\//i,
-			);
+			const packagesMatch = file.match(/^packages\/((?:@[^/]+\/)?[^/]+)\//i);
 			if (packagesMatch?.[1]) {
 				const packageDir = packagesMatch[1];
 
