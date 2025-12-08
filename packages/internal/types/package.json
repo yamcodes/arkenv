@@ -21,6 +21,6 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"arktype": "workspace:*"
+		"arktype": "catalog:"
 	}
 }
