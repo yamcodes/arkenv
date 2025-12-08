@@ -94,8 +94,7 @@ export const runSizeLimitOnPackage = async (
 
 		return {
 			...config,
-			webpack: false, // Use esbuild instead of webpack
-			// Configure esbuild to mark Node.js built-in modules as external
+			// Use esbuild (default in preset-small-lib) and configure it to mark Node.js built-in modules as external
 			// This tells esbuild not to try to bundle these modules
 			// size-limit passes this to esbuild's external option
 			ignore: [

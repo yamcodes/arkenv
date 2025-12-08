@@ -62,32 +62,51 @@ export const getChangedPackages = async (
 		// Map changed files to packages
 		for (const file of changedFiles) {
 			// Check if file is in packages directory
-			const packagesMatch = file.match(/^packages\/((?:@[^/]+\/)?[^/]+)\//i);
-			if (packagesMatch?.[1]) {
-				const packageDir = packagesMatch[1];
+			if (file.startsWith("packages/")) {
+				// Find the nearest package.json
+				const parts = file.split("/");
+				// Start from the directory containing the file, go up until we hit "packages"
+				// parts[0] is "packages"
+				let packageFound = false;
 
-				// Get actual package name from package.json
-				const packageJsonPath = join(
-					process.cwd(),
-					"packages",
-					packageDir,
-					"package.json",
-				);
-				if (existsSync(packageJsonPath)) {
-					try {
-						const packageJson = JSON.parse(
-							readFileSync(packageJsonPath, "utf-8"),
-						);
-						if (packageJson.name) {
-							changedPackages.add(packageJson.name);
-						} else {
-							changedPackages.add(packageDir);
+				// Iterate from deep to shallow, but stop before "packages" (index 0)
+				for (let i = parts.length - 1; i > 0; i--) {
+					const potentialPackageDir = parts.slice(1, i).join("/");
+					if (!potentialPackageDir) continue;
+
+					const packageJsonPath = join(
+						process.cwd(),
+						"packages",
+						potentialPackageDir,
+						"package.json",
+					);
+
+					if (existsSync(packageJsonPath)) {
+						try {
+							const packageJson = JSON.parse(
+								readFileSync(packageJsonPath, "utf-8"),
+							);
+							if (packageJson.name) {
+								changedPackages.add(packageJson.name);
+								packageFound = true;
+								break;
+							}
+						} catch {
+							// Ignore invalid package.json
 						}
-					} catch {
-						changedPackages.add(packageDir);
 					}
-				} else {
-					changedPackages.add(packageDir);
+				}
+
+				// Fallback: if we couldn't find a package.json, try to guess the package directory
+				// This handles cases where package.json might be deleted or we can't read it
+				if (!packageFound) {
+					// Regex that handles scoped and unscoped packages
+					const packagesMatch = file.match(
+						/^packages\/((?:@[^/]+\/)?[^/]+)\//i,
+					);
+					if (packagesMatch?.[1]) {
+						changedPackages.add(packagesMatch[1]);
+					}
 				}
 			}
 		}
