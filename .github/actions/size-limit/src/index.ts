@@ -71,6 +71,7 @@ calculateDiffs(filteredResults, baselineSizes, config.isReleasePR);
 
 // Create the table
 const result = createTable(filteredResults);
+console.log(result);
 if (filteredResults.length === 0 && results.length > 0) {
 	console.log("⚠️ Could not parse size-limit output");
 }

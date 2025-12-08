@@ -63,7 +63,14 @@
 		{
 			"path": "dist/index.js",
 			"limit": "2 kB",
-			"import": "*"
+			"import": "*",
+			"ignore": [
+				"bun",
+				"arktype",
+				"node:path",
+				"node:fs",
+				"node:process"
+			]
 		}
 	]
 }
