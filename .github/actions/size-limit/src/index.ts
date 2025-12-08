@@ -60,8 +60,16 @@ await installAndBuild(config, config.isReleasePR);
 // Run size-limit on current branch
 const { results, hasErrors } = await runSizeLimit(config.filter);
 
+// Debug: Log results before filtering
+console.log(`🔍 Found ${results.length} total results before filtering`);
+console.log(
+	`🔍 Changed packages: ${changedPackages ? Array.from(changedPackages).join(", ") || "(none)" : "(all)"}`,
+);
+
 // Filter results to only include changed packages (if in PR context)
 const filteredResults = filterChangedPackages(results, changedPackages);
+
+console.log(`🔍 ${filteredResults.length} results after filtering`);
 
 // Log baseline and current sizes for debugging (especially for release PRs)
 logDebugInfo(filteredResults, baselineSizes, config.isReleasePR);
@@ -71,6 +79,7 @@ calculateDiffs(filteredResults, baselineSizes, config.isReleasePR);
 
 // Create the table
 const result = createTable(filteredResults);
+console.log(result);
 if (filteredResults.length === 0 && results.length > 0) {
 	console.log("⚠️ Could not parse size-limit output");
 }
