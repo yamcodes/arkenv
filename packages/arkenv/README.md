@@ -111,11 +111,19 @@ bun add arkenv arktype
 
 ## Requirements
 
+- Tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.2**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts). Older versions may work but are not officially supported
+
+### TypeScript (Recommended)
+
+While ArkEnv works with plain JavaScript, **TypeScript is highly recommended** to get the full type safety benefits:
+
 - **TypeScript >= 5.1** and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
 - [**Modern TypeScript module resolution**](https://www.typescriptlang.org/tsconfig/#moduleResolution). One of the following is required in your `tsconfig.json`:
   - `"moduleResolution": "bundler"` - Recommended for modern bundlers (Vite, Next.js, etc.). Supplied by default when using `"module": "Preserve"`.
   - `"moduleResolution": "node16"` or `"nodenext"` - For Node.js projects. Supplied by default when using a matching `"module"` value.
-- Tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.2**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts). Older versions may work but are not officially supported
+
+> [!NOTE]
+> Without TypeScript, you lose compile-time type checking and editor autocomplete, but runtime validation still works. See the [basic-js example](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) for JavaScript usage.
 
 ## Plugins
 
