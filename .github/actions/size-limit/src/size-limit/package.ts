@@ -105,6 +105,12 @@ export const runSizeLimitOnPackage = async (
 					: []),
 				...nodeBuiltinModules.map((m) => `node:${m}`),
 				...nodeBuiltinModules,
+				// Automatically ignore peerDependencies
+				// This prevents bundling large peer dependencies like arktype or vite
+				// which should be external in the final bundle anyway
+				...(packageJson.peerDependencies
+					? Object.keys(packageJson.peerDependencies)
+					: []),
 			],
 		};
 	});
