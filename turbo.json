@@ -39,7 +39,7 @@
 		// See: https://turborepo.com/docs/guides/tools/vitest
 		"test": {
 			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
-			"dependsOn": ["transit", "@repo/scope#build", "@repo/keywords#build"]
+			"dependsOn": ["transit"]
 		},
 		// Transit Nodes
 		// See:
