@@ -5,12 +5,6 @@
 		"size": {
 			"dependsOn": ["build"],
 			"cache": false
-		},
-		// Vitest
-		// See: https://turborepo.com/docs/guides/tools/vitest
-		"test": {
-			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
-			"dependsOn": ["@repo/scope#build", "@repo/keywords#build", "transit"]
 		}
 	}
 }
