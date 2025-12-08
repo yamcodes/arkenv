@@ -15,6 +15,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
+		"rimraf": "catalog:",
 		"tsx": "catalog:"
 	}
 }

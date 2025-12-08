@@ -18,6 +18,7 @@
 		"@types/bun": "catalog:",
 		"arktype": "catalog:",
 		"bun": "catalog:",
+		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

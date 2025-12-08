@@ -19,6 +19,7 @@
 		"@axe-core/playwright": "catalog:",
 		"@playwright/test": "",
 		"@types/node": "catalog:",
+		"rimraf": "catalog:",
 		"typescript": "catalog:"
 	}
 }
