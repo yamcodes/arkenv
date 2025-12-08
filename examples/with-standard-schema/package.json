@@ -1,0 +1,28 @@
+{
+	"name": "arkenv-example-with-standard-schema",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "tsx --env-file .env index.ts",
+		"dev": "tsx watch --env-file .env index.ts",
+		"dev:example": "tsx watch --env-file .env.example index.ts",
+		"build": "tsc",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"arkenv": "^0.7.5",
+		"arktype": "^2.1.28",
+		"zod": "^4.1.13"
+	},
+	"devDependencies": {
+		"tsx": "^4.19.2",
+		"typescript": "^5.9.2"
+	},
+	"packageManager": "npm@11.6.4",
+	"engines": {
+		"node": "24"
+	},
+	"stackblitz": {
+		"startCommand": "npm install && npm run dev:example"
+	}
+}
