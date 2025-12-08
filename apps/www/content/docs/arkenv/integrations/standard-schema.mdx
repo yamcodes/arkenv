@@ -1,6 +1,7 @@
 ---
 title: Standard Schema validators
 description: You can use any Standard Schema validator with ArkEnv.
+icon: New
 ---
 
 Since [arktype@2.1.28](https://github.com/arktypeio/arktype/releases/tag/arktype%402.1.28), ArkType supports **any validator that implements the [Standard Schema](https://standardschema.dev/) specification**. 
@@ -21,7 +22,7 @@ This means that with ArkEnv, you can:
 - **Flexibility**: Mix validators based on your needs for each field
 - **Future-Proof**: Works with any library that implements Standard Schema
 
-## Supported Validators
+## Supported validators
 
 ArkEnv works with any validator that implements the Standard Schema interface, including:
 
@@ -90,9 +91,9 @@ const env = arkenv({
 });
 ```
 
-## Practical Use Cases
+## Practical use cases
 
-### Leveraging Library-Specific Features
+### Leveraging library-specific features
 
 Different validation libraries excel at different things. Standard Schema support lets you choose the best tool for each field:
 
@@ -118,7 +119,7 @@ const env = arkenv({
 });
 ```
 
-### Migrating from Other Libraries
+### Migrating from other libraries
 
 If you're migrating to ArkEnv from another environment validation library, you can do it incrementally:
 
@@ -137,7 +138,7 @@ const env = arkenv({
 });
 ```
 
-### Team Preferences
+### Team preferences
 
 If your team is already familiar with a specific validation library, you can continue using it:
 
@@ -159,14 +160,14 @@ const env = arkenv({
 });
 ```
 
-## Best Practices
+## Best practices
 
 1. **Use ArkType**: ArkEnv was designed around ArkType, and it's the simplest syntax for most usecases
 2. **Use Standard Schema validators for complex logic**: When needed, use library-specific features as an escape hatch
 3. **Be consistent**: Within a team, establish conventions for when to use each library
 4. **Keep it readable**: Don't over-complicate schemas - simpler is often better
 
-## TypeScript Support
+## TypeScript support
 
 Full type inference works with Standard Schema validators:
 
@@ -186,18 +187,10 @@ const port = env.PORT;        // number
 const apiKey = env.API_KEY;   // string
 ```
 
-## Need Help?
+## Need help?
 
 If you run into issues with Standard Schema validators:
 
 1. Check that you're using `arktype@>=2.1.28`
 2. Verify your validator library implements Standard Schema
 3. Join our [Discord community](https://discord.gg/zAmUyuxXH9) for help
-
-## Next Steps
-
-<Cards>
-  <Card title="Quickstart" href="/docs/quickstart" description="Get started with ArkEnv" />
-  <Card title="Examples" href="/docs/examples" description="Explore more examples" />
-  <Card title="Standard Schema" href="https://standardschema.dev/" description="Learn more about Standard Schema" />
-</Cards>
