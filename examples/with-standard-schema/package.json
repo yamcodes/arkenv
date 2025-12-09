@@ -15,9 +15,9 @@
 		"zod": "^4.1.13"
 	},
 	"devDependencies": {
+		"rimraf": "^6.1.2",
 		"tsx": "^4.20.6",
-		"typescript": "^5.9.3",
-		"rimraf": "^6.1.2"
+		"typescript": "^5.9.3"
 	},
 	"packageManager": "pnpm@10.23.0"
 }
