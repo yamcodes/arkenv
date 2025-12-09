@@ -224,6 +224,28 @@ importers:
         specifier: 0.5.8
         version: 0.5.8(@types/node@24.10.1)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.8.2)(jiti@2.6.1)(lightningcss@1.30.2)(rolldown@1.0.0-beta.53)(terser@5.44.1)(tsx@4.20.6)
 
+  apps/playgrounds/standard-schema:
+    dependencies:
+      arkenv:
+        specifier: workspace:*
+        version: link:../../../packages/arkenv
+      arktype:
+        specifier: 'catalog:'
+        version: 2.1.28
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.13
+    devDependencies:
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
+      tsx:
+        specifier: 'catalog:'
+        version: 4.20.6
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   apps/playgrounds/vite:
     dependencies:
       '@arkenv/vite-plugin':
