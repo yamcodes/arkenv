@@ -1,7 +1,19 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+	existsSync,
+	mkdirSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { basename, join } from "node:path";
 import { DEFAULT_EXCLUDES, EXAMPLES_DIR } from "./constants.js";
-import { copyDirectory, filesAreIdentical, getAllFiles, shouldExclude } from "./fs-utils.js";
+import {
+	copyDirectory,
+	filesAreIdentical,
+	getAllFiles,
+	shouldExclude,
+} from "./fs-utils.js";
 import { transformPackageJson } from "./transform.js";
 
 /**
