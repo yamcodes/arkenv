@@ -22,7 +22,7 @@ const env = arkenv({
 	// Complex transformations with Zod
 	ALLOWED_ORIGINS: z
 		.string()
-		.transform((str) => str.split(","))
+		.transform((str: string) => str.split(","))
 		.pipe(z.array(z.string().url())),
 
 	// Array defaults with ArkType
