@@ -10,8 +10,9 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "^0.7.6",
-		"arktype": "^2.1.27"
+		"arkenv": "^0.7.7",
+		"arktype": "^2.1.28",
+		"zod": "^4.1.13"
 	},
 	"devDependencies": {
 		"@types/node": "^24.10.1",

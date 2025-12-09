@@ -168,12 +168,16 @@ function transformPackageJson(pkg, exampleConfig, catalog) {
 		// Get latest stable version for each package manager
 		const packageManagers = {
 			npm: "npm@11.6.4",
-			bun: "bun@1.3.2",
 			pnpm: "pnpm@10.23.0",
 		};
-		transformed.packageManager =
-			packageManagers[exampleConfig.packageManager] ||
-			exampleConfig.packageManager;
+
+		if (catalog[exampleConfig.packageManager]) {
+			transformed.packageManager = `${exampleConfig.packageManager}@${catalog[exampleConfig.packageManager]}`;
+		} else {
+			transformed.packageManager =
+				packageManagers[exampleConfig.packageManager] ||
+				exampleConfig.packageManager;
+		}
 	}
 
 	// Remove workspace-specific scripts (like pnpm -w run fix)

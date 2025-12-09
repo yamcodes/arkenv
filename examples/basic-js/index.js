@@ -7,7 +7,7 @@ const env = arkenv({
 });
 
 // Automatically validate and parse process.env
-// Runtime validation still works without TypeScript!
+// TypeScript knows the ✨exact✨ types!
 const host = env.HOST;
 const port = env.PORT;
 const nodeEnv = env.NODE_ENV;
