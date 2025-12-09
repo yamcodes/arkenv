@@ -26,7 +26,7 @@ export function syncPlayground(
 		// Compare files
 		const playgroundFiles = getAllFiles(playgroundPath, excludes);
 		const exampleFiles = existsSync(examplePath)
-			? getAllFiles(examplePath, ["node_modules", "dist", ".turbo"])
+			? getAllFiles(examplePath, excludes)
 			: [];
 
 		// Check for missing files in example

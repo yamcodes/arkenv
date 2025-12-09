@@ -25,7 +25,7 @@
 		"globals": "^16.5.0",
 		"rimraf": "^6.1.2",
 		"typescript": "^5.9.3",
-		"vite": "npm:rolldown-vite@latest",
+		"vite": "npm:rolldown-vite@7.2.10",
 		"vite-tsconfig-paths": "^5.1.4"
 	},
 	"packageManager": "npm@11.6.4"
