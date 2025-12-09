@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-example-with-standard-schema",
+	"name": "standard-schema-playground",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -10,14 +10,19 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "^0.7.7",
-		"arktype": "^2.1.28",
-		"zod": "^4.1.13"
+		"arkenv": "workspace:*",
+		"arktype": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
-		"tsx": "^4.20.6",
-		"typescript": "^5.9.3",
-		"rimraf": "^6.1.2"
+		"tsx": "catalog:",
+		"typescript": "catalog:",
+		"rimraf": "catalog:"
 	},
-	"packageManager": "pnpm@10.23.0"
+	"arkenvExamples": [
+		{
+			"name": "with-standard-schema",
+			"packageManager": "pnpm"
+		}
+	]
 }
