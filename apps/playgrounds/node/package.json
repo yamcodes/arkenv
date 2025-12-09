@@ -17,9 +17,9 @@
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
+		"rimraf": "catalog:",
 		"tsx": "catalog:",
-		"typescript": "catalog:",
-		"rimraf": "catalog:"
+		"typescript": "catalog:"
 	},
 	"engines": {
 		"node": "24"
