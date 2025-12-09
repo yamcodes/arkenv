@@ -5,6 +5,8 @@ on:
       - main
     paths:
       - "packages/**"
+  workflow_dispatch:
+
 jobs:
   changes:
     if: github.repository == 'yamcodes/arkenv'
@@ -23,7 +25,7 @@ jobs:
               - 'packages/**'
 
   size-limit:
-    if: github.repository == 'yamcodes/arkenv' && needs.changes.outputs.packages == 'true'
+    if: github.repository == 'yamcodes/arkenv' && (needs.changes.outputs.packages == 'true' || github.event_name == 'workflow_dispatch')
     needs: changes
     runs-on: ubuntu-latest
     env:

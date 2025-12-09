@@ -24,6 +24,7 @@
 		"@types/react-dom": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
 		"globals": "catalog:",
+		"rimraf": "catalog:",
 		"typescript": "catalog:",
 		"vite": "npm:rolldown-vite@latest",
 		"vite-tsconfig-paths": "catalog:"

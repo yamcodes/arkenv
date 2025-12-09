@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "0.7.6",
+	"version": "0.7.7",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -40,11 +40,14 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
+		"@repo/keywords": "workspace:*",
+		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/node": "catalog:",
 		"arktype": "catalog:",
+		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
@@ -57,7 +60,10 @@
 		{
 			"path": "dist/index.js",
 			"limit": "2 kB",
-			"import": "*"
+			"import": "*",
+			"ignore": [
+				"arktype"
+			]
 		}
 	]
 }

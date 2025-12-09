@@ -1,0 +1,5 @@
+- [ ] Replace `VideoDemo` in hero section with `video` tags <!-- id: 0 -->
+- [ ] Implement theme-based video switching (dark/light) <!-- id: 1 -->
+- [ ] Fix dark mode gradient overlay issue <!-- id: 2 -->
+- [ ] Ensure video responsiveness and looping <!-- id: 3 -->
+- [ ] Verify changes in both light and dark modes <!-- id: 4 -->

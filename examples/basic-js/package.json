@@ -9,14 +9,18 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
+		
 		"arkenv": "^0.7.6",
 		"arktype": "^2.1.27"
 	},
+	"devDependencies": {
+		"rimraf": "^6.1.2"
+	},
+	"packageManager": "npm@11.6.4",
 	"engines": {
 		"node": "24"
 	},
 	"stackblitz": {
 		"startCommand": "npm install && npm run dev:example"
-	},
-	"packageManager": "npm@11.6.4"
+	}
 }

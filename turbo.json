@@ -2,16 +2,13 @@
 	"$schema": "https://turbo.build/schema.json",
 	"tasks": {
 		"clean": {
-			"cache": false
-		},
-		"//#root:clean": {
 			"cache": false,
 			"dependsOn": ["^clean"]
 		},
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.test.ts", "!**/*.test.tsx"],
-			"outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**", ".output/**"],
 			"env": ["SENTRY_*"],
 			"passThroughEnv": ["SENTRY_AUTH_TOKEN"]
 		},

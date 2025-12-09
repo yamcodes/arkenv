@@ -41,6 +41,14 @@
 			"name": "  @repo/types"
 		},
 		{
+			"path": "packages/internal/scope",
+			"name": "  @repo/scope"
+		},
+		{
+			"path": "packages/internal/keywords",
+			"name": "  @repo/keywords"
+		},
+		{
 			"path": "tooling",
 			"name": "tooling"
 		},

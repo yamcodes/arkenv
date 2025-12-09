@@ -41,3 +41,6 @@ pnpm-debug.log*
 
 # coverage
 coverage/
+
+# size-limit
+esbuild-why*.html

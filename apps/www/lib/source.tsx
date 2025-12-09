@@ -1,12 +1,12 @@
+import { docs } from "fumadocs-mdx:collections/server";
 import type { autocomplete } from "@ark/util";
 import * as SimpleIcons from "@icons-pack/react-simple-icons";
 import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
-import { docs } from "~/.source";
 import { Badge } from "~/components/ui/badge";
 
-export type IconName = keyof typeof icons | "New";
+export type IconName = keyof typeof icons | "New" | "Updated";
 
 export const source = loader({
 	baseUrl: "/docs",
@@ -20,6 +20,10 @@ export const source = loader({
 			return createElement(SimpleIcons[`Si${icon}` as never]);
 		if (icon === "New")
 			return <Badge className="h-4 text-[10px] px-[0.2rem] order-1">new</Badge>;
+		if (icon === "Updated")
+			return (
+				<Badge className="h-4 text-[10px] px-[0.2rem] order-1">updated</Badge>
+			);
 
 		throw new Error(`${icon} is not a valid icon`);
 	},

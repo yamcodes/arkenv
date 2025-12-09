@@ -7,20 +7,15 @@ icon: Album
 
 The ArkEnv plugin for Bun lets you validate environment variables at build-time and runtime with ArkEnv.
 
-It supports **zero-config** usage for most projects, automatically discovering your schema from `./src/env.ts` or `./env.ts`.
+It supports a **simple setup** for most projects, automatically discovering your schema from `./src/env.ts` or `./env.ts`.
 
 ## Usage
 
-### Zero-Config (Recommended)
+### Simple Setup (Recommended)
 
-Add the plugin to your `bunfig.toml`. This works for both `bun run dev` and `bun run build`.
+The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `Bun.serve`) and your build script (for `Bun.build`).
 
-```toml title="bunfig.toml"
-[serve.static]
-plugins = ["@arkenv/bun-plugin"]
-```
-
-Create your schema in `src/env.ts` (or `env.ts`):
+#### 1. Create your schema
 
 ```ts title="src/env.ts"
 import { type } from "arkenv";
@@ -31,15 +26,38 @@ export default type({
 });
 ```
 
-### Manual Configuration
+#### 2. Configure for Bun.serve (dev mode)
 
-If you prefer explicit configuration or need to customize the schema location, you can use the plugin in your build script:
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["@arkenv/bun-plugin"]
+```
+
+#### 3. Configure for Bun.build (build mode)
+
+```ts title="build.ts"
+import arkenv from "@arkenv/bun-plugin";
+
+await Bun.build({
+  entrypoints: ["./app.tsx"],
+  outdir: "./dist",
+  plugins: [arkenv], // Auto-discovers src/env.ts
+});
+```
+
+### Advanced Setup
+
+If you need to customize the schema location or prefer explicit configuration:
+
+#### For Bun.build
+
+Pass your schema directly to the plugin function:
 
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
 import { type } from "arkenv";
 
-const env = type({
+const Env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
 });
@@ -47,28 +65,35 @@ const env = type({
 await Bun.build({
   entrypoints: ["./app.tsx"],
   outdir: "./dist",
-  plugins: [arkenv(env)],
+  plugins: [arkenv(Env)],
 });
 ```
 
-### Zero-Config in Build Scripts
+#### For Bun.serve
 
-You can also use the zero-config pattern in build scripts by passing the plugin object directly:
+Create a custom plugin file and reference it in `bunfig.toml`:
 
-```ts title="build.ts"
+```ts title="plugins/arkenv.ts"
 import arkenv from "@arkenv/bun-plugin";
+import { type } from "arkenv";
 
-await Bun.build({
-  // ...
-  plugins: [arkenv], // Auto-discovers src/env.ts
+const Env = type({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean",
 });
+
+export default arkenv(Env);
+```
+
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["./plugins/arkenv.ts"]
 ```
 
 ## Features
 
 - **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
-- **Type Safety**: Ensures your code only accesses variables defined in your schema.
-- **Hot Reloading**: Automatically reloads your schema when `env.ts` changes (in `bun --hot` mode).
+- **Typesafety**: Ensures your code only accesses variables defined in your schema.
 - **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration (e.g., `env: "MY_PUBLIC_*"` to use `MY_PUBLIC_` instead). See [Bun's bundler documentation](https://bun.sh/docs/bundler#env) for more details.
 
 ## Installation
