@@ -1,11 +1,6 @@
-import arkenv, { type } from "arkenv";
+import { type } from "arkenv";
 
-const Env = type({
-	PORT: "number.port",
-	BUN_PUBLIC_TEST: "string",
-	BUN_PUBLIC_BOOLEAN: "boolean",
+export default type({
+	BUN_PUBLIC_API_URL: "string",
+	BUN_PUBLIC_DEBUG: "boolean",
 });
-
-export const env = arkenv(Env);
-
-export default Env;

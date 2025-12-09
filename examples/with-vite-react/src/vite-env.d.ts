@@ -1,5 +1,8 @@
 /// <reference types="vite/client" />
 
+// Import the Env schema type from vite.config.ts
+// Note: In a real project, you might want to export Env from a separate env.ts file
+// and import it like: import type { Env } from "./env";
 type ImportMetaEnvAugmented =
 	import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
 		typeof import("../vite.config").Env
@@ -13,6 +16,6 @@ interface ViteTypeOptions {
 	strictImportMetaEnv: unknown;
 }
 
-// Augment import.meta.env with your schema
-// Only `VITE_*` prefixed variables will be included
+// Now import.meta.env is totally typesafe and based on your `Env` schema definition
+// Only VITE_* prefixed variables will be included (PORT is excluded)
 interface ImportMetaEnv extends ImportMetaEnvAugmented {}

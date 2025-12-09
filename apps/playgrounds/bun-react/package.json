@@ -22,5 +22,11 @@
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"rimraf": "catalog:"
-	}
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-bun-react",
+			"packageManager": "bun"
+		}
+	]
 }

@@ -4,10 +4,9 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "bun --watch .",
-		"start": "bun .",
-		"build": "bun build . --outdir=dist",
-		"preview": "bun dist",
+		"dev": "bun --watch run index.ts",
+		"start": "bun run index.ts",
+		"build": "bun build index.ts --outdir ./dist",
 		"fix": "pnpm -w run fix",
 		"clean": "rimraf dist node_modules"
 	},
@@ -19,5 +18,11 @@
 		"@types/bun": "catalog:",
 		"rimraf": "catalog:",
 		"typescript": "catalog:"
-	}
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-bun",
+			"packageManager": "bun"
+		}
+	]
 }

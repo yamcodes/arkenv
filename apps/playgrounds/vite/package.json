@@ -26,7 +26,13 @@
 		"globals": "catalog:",
 		"rimraf": "catalog:",
 		"typescript": "catalog:",
-		"vite": "npm:rolldown-vite@latest",
+		"vite": "npm:rolldown-vite@7.2.10",
 		"vite-tsconfig-paths": "catalog:"
-	}
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-vite-react",
+			"packageManager": "npm"
+		}
+	]
 }
