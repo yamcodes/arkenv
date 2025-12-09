@@ -40,11 +40,11 @@ arkenv arktype zod
 
 Then mix Zod validators with ArkType in your schema:
 
-```ts
+```ts twoslash title="env.ts"
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
-const env = arkenv({
+export const env = arkenv({
   // ArkType validators
   HOST: "string.host",
   PORT: "number.port",
@@ -59,11 +59,28 @@ const env = arkenv({
 
 The validated environment will have full TypeScript inference:
 
-```ts
-// Hover to see the exact types!
-const host = env.HOST;           // string
-const dbUrl = env.DATABASE_URL;  // string
-const retries = env.MAX_RETRIES; // number
+```ts twoslash
+// @filename: env.ts
+import arkenv from 'arkenv';
+import { z } from 'zod';
+export const env = arkenv({
+  // ArkType validators
+  HOST: "string.host",
+  PORT: "number.port",
+  NODE_ENV: "'development' | 'production' | 'test'",
+  
+  // Zod validators
+  DATABASE_URL: z.string().url(),
+  API_KEY: z.string().min(32),
+  MAX_RETRIES: z.number().int().positive().default(3),
+});
+// @filename: database.ts
+import { env } from './env';
+// ---cut---
+// Hover to see the ✨exact✨ types!
+const host = env.HOST;
+const dbUrl = env.DATABASE_URL;
+const retries = env.MAX_RETRIES;
 ```
 
 ## Usage with Valibot
@@ -76,7 +93,7 @@ arkenv arktype valibot
 
 Then use Valibot validators in your schema:
 
-```ts
+```ts twoslash
 import arkenv from 'arkenv';
 import * as v from 'valibot';
 
@@ -97,7 +114,7 @@ const env = arkenv({
 
 Different validation libraries excel at different things. Standard Schema support lets you choose the best tool for each field:
 
-```ts
+```ts twoslash
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
@@ -123,14 +140,14 @@ const env = arkenv({
 
 If you're migrating to ArkEnv from another environment validation library, you can do it incrementally:
 
-```ts
+```ts twoslash
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
 const env = arkenv({
   // New fields using ArkType (cleaner syntax)
   NEW_FEATURE_FLAG: "boolean = false",
-  NEW_API_ENDPOINT: "string.url",
+  NEW_API_ENDPOINT: "string",
   
   // Existing fields using your old Zod schemas
   LEGACY_DATABASE_URL: z.string().url(),
@@ -171,7 +188,7 @@ const env = arkenv({
 
 Full type inference works with Standard Schema validators:
 
-```ts
+```ts twoslash
 import arkenv from 'arkenv';
 import { z } from 'zod';
 
@@ -181,10 +198,10 @@ const env = arkenv({
   API_KEY: z.string().min(32),
 });
 
-// TypeScript knows the exact types
-const host = env.HOST;        // string
-const port = env.PORT;        // number
-const apiKey = env.API_KEY;   // string
+// Hover to see the ✨exact✨ types
+const host = env.HOST;
+const port = env.PORT;
+const apiKey = env.API_KEY;
 ```
 
 ## Need help?

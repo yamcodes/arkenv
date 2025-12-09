@@ -26,8 +26,10 @@ catalog:
   tsdown: 0.16.8
   tsx: 4.20.6
   typescript: 5.9.3
+  valibot: 1.2.0
   vite-tsconfig-paths: 5.1.4
   vitest: 4.0.15
+  zod: 4.1.13
 
 overrides:
   '@playwright/test': 1.56.1
