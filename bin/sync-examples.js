@@ -61,6 +61,10 @@ function main() {
 				continue;
 			}
 
+			if (exampleConfig.skipSync) {
+				continue;
+			}
+
 			const changes = syncPlayground(
 				playgroundPath,
 				exampleConfig,
