@@ -15,9 +15,9 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
+		"rimraf": "catalog:",
 		"tsx": "catalog:",
-		"typescript": "catalog:",
-		"rimraf": "catalog:"
+		"typescript": "catalog:"
 	},
 	"arkenvExamples": [
 		{
