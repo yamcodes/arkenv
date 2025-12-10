@@ -13,8 +13,9 @@
 		"---Integrations---",
 		"[VS Code & Cursor](/docs/arkenv/integrations/vscode)",
 		"[JetBrains IDEs](/docs/arkenv/integrations/jetbrains)",
+		"[New][Standard Schema](/docs/arkenv/integrations/standard-schema)",
 		"---How-to---",
 		"[Load environment variables](/docs/arkenv/how-to/load-environment-variables)",
-		"[New][Reuse your schema](/docs/arkenv/how-to/reuse-schemas)"
+		"[Reuse your schema](/docs/arkenv/how-to/reuse-schemas)"
 	]
 }

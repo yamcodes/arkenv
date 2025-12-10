@@ -1,0 +1,28 @@
+{
+	"name": "standard-schema-playground",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "tsx --env-file .env index.ts",
+		"dev": "tsx watch --env-file .env index.ts",
+		"dev:example": "tsx watch --env-file .env.example index.ts",
+		"build": "tsc",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"arkenv": "workspace:*",
+		"arktype": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"rimraf": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:"
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-standard-schema",
+			"packageManager": "pnpm"
+		}
+	]
+}

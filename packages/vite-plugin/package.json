@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/vite-plugin",
-	"version": "0.0.18",
+	"version": "0.0.19",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -15,10 +15,11 @@
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
+		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vite": "7.2.4",
+		"vite": "7.2.6",
 		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	},
@@ -63,7 +64,11 @@
 		{
 			"path": "dist/index.js",
 			"limit": "2 kB",
-			"import": "*"
+			"import": "*",
+			"ignore": [
+				"vite",
+				"arktype"
+			]
 		}
 	]
 }

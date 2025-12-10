@@ -14,8 +14,7 @@
 		"fix:unsafe": "node bin/fix.js --unsafe",
 		"check": "biome check && manypkg check",
 		"check:errors": "biome check --diagnostic-level=error",
-		"clean": "turbo run root:clean clean",
-		"root:clean": "rimraf dist node_modules",
+		"clean": "turbo run clean && rimraf dist node_modules",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:e2e": "turbo run test:e2e",
@@ -24,21 +23,23 @@
 		"test:e2e:ui": "turbo run test:e2e:ui",
 		"test:e2e:update": "turbo run test:e2e:update",
 		"changeset": "changeset",
-		"size": "turbo run size"
+		"size": "turbo run size",
+		"sync:examples": "node bin/sync-examples.js",
+		"sync:examples:check": "node bin/sync-examples.js --check"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.7",
-		"@changesets/cli": "2.29.7",
+		"@biomejs/biome": "2.3.8",
+		"@changesets/cli": "2.29.8",
 		"@manypkg/cli": "0.25.1",
 		"@playwright/test": "",
 		"@vitest/ui": "catalog:",
 		"changesets-changelog-clean": "1.3.0",
 		"rimraf": "catalog:",
-		"turbo": "2.6.1",
+		"turbo": "2.6.3",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
-	"packageManager": "pnpm@10.23.0",
+	"packageManager": "pnpm@10.24.0",
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",

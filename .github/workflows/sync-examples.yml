@@ -1,0 +1,41 @@
+name: sync-examples
+
+on:
+  pull_request:
+    paths:
+      - "apps/playgrounds/**"
+      - "examples/**"
+      - "bin/sync-examples.js"
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/playgrounds/**"
+      - "examples/**"
+      - "bin/sync-examples.js"
+
+permissions:
+  contents: read
+
+jobs:
+  check-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Check examples sync
+        run: pnpm sync:examples:check

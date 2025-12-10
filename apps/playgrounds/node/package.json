@@ -3,17 +3,34 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch --env-file .env index.ts",
 		"start": "tsx --env-file .env index.ts",
+		"dev": "tsx watch --env-file .env index.ts",
+		"dev:example": "tsx watch --env-file .env.example index.ts",
+		"build": "tsc",
 		"fix": "pnpm -w run fix",
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"arkenv": "workspace:*",
-		"arktype": "catalog:"
+		"arktype": "catalog:",
+		"zod": "^4.1.13"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
-		"tsx": "catalog:"
-	}
+		"rimraf": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:"
+	},
+	"engines": {
+		"node": "24"
+	},
+	"stackblitz": {
+		"startCommand": "npm install && npm run dev:example"
+	},
+	"arkenvExamples": [
+		{
+			"name": "basic",
+			"packageManager": "npm"
+		}
+	]
 }

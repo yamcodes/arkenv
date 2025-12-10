@@ -1,6 +1,6 @@
 {
 	"name": "@repo/types",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"type": "module",
 	"private": true,
 	"description": "Internal TypeScript types shared across ArkEnv packages",
@@ -13,13 +13,16 @@
 	},
 	"scripts": {
 		"typecheck": "tsc --noEmit",
-		"build": "tsc"
+		"build": "tsc",
+		"fix": "pnpm -w run fix"
 	},
 	"devDependencies": {
+		"@repo/scope": "workspace:*",
 		"arktype": "catalog:",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"arktype": "^2.1.22"
+		"@repo/scope": "workspace:*",
+		"arktype": "catalog:"
 	}
 }

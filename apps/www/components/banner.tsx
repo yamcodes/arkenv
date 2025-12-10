@@ -8,12 +8,12 @@ export function Banner() {
 	return (
 		<FumadocsBanner
 			variant="rainbow"
-			id="bun-support-banner"
-			onClick={() => router.push("/docs/bun-plugin")}
+			id="standard-schema-support-banner"
+			onClick={() => router.push("/docs/integrations/standard-schema")}
 			className="cursor-pointer"
 		>
-			🎉 Official Bun support is here: ArkEnv at build time, fullstack dev
-			server
+			🎉 Standard Schema support is here: Use ArkEnv with Zod, Valibot, and
+			more!
 		</FumadocsBanner>
 	);
 }

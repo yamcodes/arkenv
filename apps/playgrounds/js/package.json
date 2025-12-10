@@ -1,0 +1,28 @@
+{
+	"name": "js-playground",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "node --env-file .env index.js",
+		"dev": "node --watch --env-file .env index.js",
+		"dev:example": "node --watch --env-file .env.example index.js",
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"arkenv": "workspace:*",
+		"arktype": "catalog:"
+	},
+	"engines": {
+		"node": "24"
+	},
+	"stackblitz": {
+		"startCommand": "npm install && npm run dev:example"
+	},
+	"arkenvExamples": [
+		{
+			"name": "basic-js",
+			"packageManager": "npm"
+		}
+	]
+}

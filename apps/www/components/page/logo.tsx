@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "~/lib/utils";
 
 /**
@@ -8,13 +9,16 @@ import { cn } from "~/lib/utils";
  */
 export function Logo({ className }: { className?: string }) {
 	return (
-		<code
-			className={cn(
-				"font-bold text-fd-foreground relative decoration-[rgb(180,215,255)] decoration-wavy decoration-1 underline underline-offset-4",
-				className,
-			)}
-		>
-			ArkEnv
-		</code>
+		<div className={cn("flex items-center gap-2", className)}>
+			<Image
+				src="/assets/icon.svg"
+				alt=""
+				aria-hidden="true"
+				width={24}
+				height={24}
+				className="size-6"
+			/>
+			<span className="text-fd-foreground font-medium text-sm">ArkEnv</span>
+		</div>
 	);
 }

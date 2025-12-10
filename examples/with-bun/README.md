@@ -1,96 +1,36 @@
-# ArkEnv Bun example
+# bun
 
-This example shows how to use ArkEnv in a Bun application.
+This playground uses `workspace:*` protocol for the `arkenv` dependency, which Bun doesn't understand. You must install dependencies using pnpm from the repository root first.
 
-> [!IMPORTANT]
-> We provide a first-class ArkEnv plugin for Bun, which is recommended for use in most cases. The example below is a very simple use-case of a Node-like app (no fullstack web server) and only validates at dev time (not ideal).
->
-> Until this example is updated, please check out [the plugin's docs](https://arkenv.js.org/docs/bun-plugin) to understand how to use the Bun plugin.
+## Installation
 
-## What's inside?
+**Important:** Run these commands in order:
 
-The example demonstrates:
-- Setting up environment variables with ArkEnv
-- Using default values
-- Typesafe environment configuration
-
-## Getting started
-
-### Prerequisites
-
-Make sure you have [Bun](https://bun.sh) installed:
-
+1. Install all workspace dependencies from the repository root:
 ```bash
-curl -fsSL https://bun.sh/install | bash
+cd <repo-root> && pnpm install
 ```
 
-### Quickstart
+2. Then install Bun-specific dependencies in this playground:
+```bash
+cd apps/playgrounds/bun && bun install
+```
 
-1. #### Install dependencies
-    ```bash
-    bun install
-    ```
+Alternatively, you can use `bun dev` directly after step 1 (Bun will install its dependencies automatically):
+```bash
+cd apps/playgrounds/bun && bun dev
+```
 
-2. #### Start the development server with hot reloading enabled
-    ```bash
-    bun dev
-    ```
-    :white_check_mark: You will see the following output:
-    ```bash
-    🚀 Server running at localhost:3000 in development mode
-    ```
+## Running
 
-### Adding environment variables
+```bash
+bun run index.ts
+```
 
-With the development server running (if it isn't - just run `bun dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
+Or in development mode with watch:
 
-1. #### Define the new environment variable in the schema as a _required_ string
-    ```typescript
-    // index.ts
-    const env = arkenv({
-        // other definitions...
-        MY_ENV_VAR: "string"
-    });
-    ```
+```bash
+bun dev
+```
 
-2. #### Notice the development server will show an error
-    ```bash
-    ArkEnvError: Errors found while validating environment variables
-      MY_ENV_VAR must be a string (was missing)
-    ```
-    This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.js.org/docs/arkenv/how-to/load-environment-variables#using-env-files).
-
-3. #### Copy the `.env.example` file to `.env`
-   
-    To keep the development server running, run this command in a new terminal window:
-    ```bash
-    cp .env.example .env
-    ```
-
-4. #### Add a new environment variable to the `.env` file
-    ```bash
-    echo "MY_ENV_VAR=new_value" >> .env
-    ```
-
-5. #### Notice the development server will once again show the success message
-    ```bash
-    🚀 Server running at localhost:3000 in development mode
-    ```
-    **Awesome!** Now you can print its value:
-
-6. #### Add the following line to the `index.ts` file
-    ```typescript
-    console.log(env.MY_ENV_VAR);
-    ```
-    You will see the following output:
-    ```bash
-    🚀 Server running at localhost:3000 in development mode
-    my_value
-    ```
-    **Congratulations!** :tada: You've just added a new environment variable and printed its value.
-
-### Next steps
-
-- [ArkEnv docs](https://arkenv.js.org/docs/arkenv)
-- [ArkType docs](https://arktype.io/)
-- [Bun docs](https://bun.com/docs)
+This project was created using `bun init` in bun v1.3.2. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
