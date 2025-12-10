@@ -3,6 +3,7 @@ import * as z from "zod";
 
 const env = arkenv({
 	HOST: "string.host",
+	MY_STRING_AS_NUMBER: type("string").pipe((value) => Number(value)),
 	PORT: "number.port",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	ALLOWED_ORIGINS: type("string[]").default(() => []),
@@ -24,6 +25,7 @@ console.log({
 	nodeEnv,
 	allowedOrigins,
 	debug,
+	myString: env.MY_STRING_AS_NUMBER,
 	zedEnv,
 });
 
