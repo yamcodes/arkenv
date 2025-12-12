@@ -311,7 +311,7 @@ importers:
         version: 19.2.1(react@19.2.1)
     devDependencies:
       '@types/node':
-        specifier: ^24.10.1
+        specifier: 24.10.2
         version: 24.10.2
       '@types/react':
         specifier: ^19.2.5
@@ -320,13 +320,13 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.7)
       '@vitejs/plugin-react':
-        specifier: ^5.1.1
+        specifier: 5.1.2
         version: 5.1.2(vite@7.2.7(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0))
       globals:
-        specifier: ^16.5.0
+        specifier: 16.5.0
         version: 16.5.0
       typescript:
-        specifier: ~5.9.3
+        specifier: 5.9.3
         version: 5.9.3
       vite:
         specifier: 7.2.7
