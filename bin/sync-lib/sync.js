@@ -82,7 +82,8 @@ function regenerateLockFile(examplePath, packageManager) {
 
 		console.log(`  ✓ Generated ${lockFile}`);
 	} catch (error) {
-		console.warn(`  ⚠ Failed to regenerate lock file: ${error.message}`);
+		const errorDetails = error.stderr?.toString() || error.message;
+		console.warn(`  ⚠ Failed to regenerate lock file: ${errorDetails}`);
 
 		// Restore backup if available and generation failed
 		if (backup) {
