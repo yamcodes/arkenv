@@ -1,6 +1,5 @@
 import type { $ } from "@repo/scope";
-import { type Type, type } from "arktype";
+import type { Type } from "arktype";
 
-export const SchemaShape = type({ "[string]": "unknown" });
-export type SchemaShape = typeof SchemaShape.infer;
+export type SchemaShape = Record<string, unknown>;
 export type EnvSchemaWithType = Type<SchemaShape, (typeof $)["t"]>;
