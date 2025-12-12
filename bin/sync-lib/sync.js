@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import {
 	existsSync,
 	mkdirSync,
@@ -28,20 +28,29 @@ function regenerateLockFile(examplePath, packageManager) {
 	console.log(`  ⟳ Regenerating lock file with ${packageManager}...`);
 
 	try {
-		let command;
+		let bin;
+		let args;
 		let lockFile;
 
 		if (packageManager === "npm" || packageManager.startsWith("npm@")) {
-			command = "npm install --package-lock-only";
+			bin = "npm";
+			args = ["install", "--package-lock-only", "--ignore-scripts"];
 			lockFile = "package-lock.json";
 		} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
-			command = "bun install";
+			bin = "bun";
+			args = ["install", "--ignore-scripts"];
 			lockFile = "bun.lock";
 		} else if (
 			packageManager === "pnpm" ||
 			packageManager.startsWith("pnpm@")
 		) {
-			command = "pnpm install --lockfile-only --ignore-workspace";
+			bin = "pnpm";
+			args = [
+				"install",
+				"--lockfile-only",
+				"--ignore-workspace",
+				"--ignore-scripts",
+			];
 			lockFile = "pnpm-lock.yaml";
 		} else {
 			console.warn(`  ⚠ Unknown package manager: ${packageManager}`);
@@ -49,7 +58,7 @@ function regenerateLockFile(examplePath, packageManager) {
 		}
 
 		// Run the lock file generation command
-		execSync(command, {
+		execFileSync(bin, args, {
 			cwd: examplePath,
 			stdio: "pipe",
 		});
@@ -127,6 +136,8 @@ export function syncPlayground(
 				const exampleSpecificFiles = [
 					".gitignore",
 					"bun.lock",
+					"bun.lockb",
+					"pnpm-lock.yaml",
 					"package-lock.json",
 				];
 				if (!exampleSpecificFiles.includes(file)) {
@@ -146,6 +157,8 @@ export function syncPlayground(
 		const exampleSpecificFiles = [
 			".gitignore",
 			"bun.lock",
+			"bun.lockb",
+			"pnpm-lock.yaml",
 			"package-lock.json",
 		];
 		const entries = readdirSync(examplePath, { withFileTypes: true });
