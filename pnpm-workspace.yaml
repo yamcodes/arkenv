@@ -23,7 +23,7 @@ catalog:
   react-dom: 19.2.1
   rimraf: 6.1.2
   size-limit: 11.2.0
-  tsdown: 0.17.0
+  tsdown: 0.17.2
   tsx: 4.21.0
   typescript: 5.9.3
   valibot: 1.2.0
