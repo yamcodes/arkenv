@@ -13,7 +13,7 @@ catalog:
   '@types/node': 24.10.2
   '@types/react': 19.2.7
   '@types/react-dom': 19.2.3
-  '@vitejs/plugin-react': 5.1.1
+  '@vitejs/plugin-react': 5.1.2
   '@vitest/ui': 4.0.15
   arktype: 2.1.28
   bun: 1.3.3
