@@ -37,9 +37,20 @@ function regenerateLockFile(examplePath, packageManager) {
 		lockFile = "package-lock.json";
 	} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
 		bin = "bun";
-		// Added --lockfile-only for bun
 		args = ["install", "--lockfile-only", "--ignore-scripts"];
-		lockFile = "bun.lock";
+
+		// Check which lockfile format exists (binary or text)
+		const binaryLock = join(examplePath, "bun.lockb");
+		const textLock = join(examplePath, "bun.lock");
+
+		if (existsSync(binaryLock)) {
+			lockFile = "bun.lockb";
+		} else if (existsSync(textLock)) {
+			lockFile = "bun.lock";
+		} else {
+			// Default to binary format for new lockfiles (Bun's current default)
+			lockFile = "bun.lockb";
+		}
 	} else if (packageManager === "pnpm" || packageManager.startsWith("pnpm@")) {
 		bin = "pnpm";
 		args = [
