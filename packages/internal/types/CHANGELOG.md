@@ -1,5 +1,13 @@
 # @repo/types
 
+## 0.0.3
+
+### Patch Changes
+
+- #### Export `FilterByPrefix` _[`#544`](https://github.com/yamcodes/arkenv/pull/544) [`d4800f9`](https://github.com/yamcodes/arkenv/commit/d4800f97d162dbeb9030576f1e97a1f50d876bad) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  This is a type that is reused by the Bun plugin and the Vite plugin.
+
 ## 0.0.2
 
 ### Patch Changes
