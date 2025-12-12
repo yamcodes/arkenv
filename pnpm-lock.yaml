@@ -187,7 +187,7 @@ importers:
         specifier: 'catalog:'
         version: 2.1.28
       zod:
-        specifier: ^4.1.13
+        specifier: 4.1.13
         version: 4.1.13
     devDependencies:
       '@types/node':
