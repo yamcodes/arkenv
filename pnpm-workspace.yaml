@@ -24,7 +24,7 @@ catalog:
   rimraf: 6.1.2
   size-limit: 11.2.0
   tsdown: 0.17.0
-  tsx: 4.20.6
+  tsx: 4.21.0
   typescript: 5.9.3
   valibot: 1.2.0
   vite-tsconfig-paths: 5.1.4
