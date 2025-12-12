@@ -6,6 +6,7 @@ import {
 	rmSync,
 	writeFileSync,
 } from "node:fs";
+import { execSync } from "node:child_process";
 import { basename, join } from "node:path";
 import { DEFAULT_EXCLUDES, EXAMPLES_DIR } from "./constants.js";
 import {
@@ -15,6 +16,51 @@ import {
 	shouldExclude,
 } from "./fs-utils.js";
 import { transformPackageJson } from "./transform.js";
+
+/**
+ * Regenerate lock file based on package manager
+ */
+function regenerateLockFile(examplePath, packageManager) {
+	if (!packageManager) {
+		return;
+	}
+
+	console.log(`  ⟳ Regenerating lock file with ${packageManager}...`);
+
+	try {
+		let command;
+		let lockFile;
+
+		if (packageManager === "npm" || packageManager.startsWith("npm@")) {
+			command = "npm install --package-lock-only";
+			lockFile = "package-lock.json";
+		} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
+			command = "bun install";
+			lockFile = "bun.lock";
+		} else if (
+			packageManager === "pnpm" ||
+			packageManager.startsWith("pnpm@")
+		) {
+			command = "pnpm install --lockfile-only --ignore-workspace";
+			lockFile = "pnpm-lock.yaml";
+		} else {
+			console.warn(`  ⚠ Unknown package manager: ${packageManager}`);
+			return;
+		}
+
+		// Run the lock file generation command
+		execSync(command, {
+			cwd: examplePath,
+			stdio: "pipe",
+		});
+
+		console.log(`  ✓ Generated ${lockFile}`);
+	} catch (error) {
+		console.warn(
+			`  ⚠ Failed to regenerate lock file: ${error.message}`,
+		);
+	}
+}
 
 /**
  * Sync a single playground to its example
@@ -127,6 +173,11 @@ export function syncPlayground(
 	const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
 	const transformedPkg = transformPackageJson(pkg, exampleConfig, catalog);
 	writeFileSync(pkgPath, `${JSON.stringify(transformedPkg, null, "\t")}\n`);
+
+	// Regenerate lock file if package manager is specified
+	if (exampleConfig.packageManager) {
+		regenerateLockFile(examplePath, transformedPkg.packageManager);
+	}
 
 	// Create .gitignore if it doesn't exist
 	const gitignorePath = join(examplePath, ".gitignore");
