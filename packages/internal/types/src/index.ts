@@ -5,6 +5,7 @@
  * within the monorepo.
  */
 
+export type * from "./filter-by-prefix";
 // Only TypeScript types
 export type * from "./infer-type";
 

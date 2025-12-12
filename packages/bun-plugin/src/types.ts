@@ -1,16 +1,5 @@
-import type { InferType } from "@repo/types";
+import type { FilterByPrefix, InferType } from "@repo/types";
 import type { type } from "arktype";
-
-/**
- * Filter environment variables to only include those that start with the given prefix.
- * This ensures only client-exposed variables (e.g., BUN_PUBLIC_*) are included in process.env.
- */
-type FilterByPrefix<
-	T extends Record<string, unknown>,
-	Prefix extends string = "BUN_PUBLIC_",
-> = {
-	[K in keyof T as K extends `${Prefix}${string}` ? K : never]: T[K];
-};
 
 /**
  * Augment the `process.env` object with typesafe environment variables

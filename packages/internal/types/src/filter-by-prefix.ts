@@ -1,0 +1,13 @@
+/**
+ * Filter environment variables to only include those that start with the given prefix.
+ * This ensures only client-exposed variables (e.g., VITE_*, BUN_PUBLIC_*) are included.
+ *
+ * @template T - The record of environment variables
+ * @template Prefix - The prefix to filter by
+ */
+export type FilterByPrefix<
+	T extends Record<string, unknown>,
+	Prefix extends string,
+> = {
+	[K in keyof T as K extends `${Prefix}${string}` ? K : never]: T[K];
+};
