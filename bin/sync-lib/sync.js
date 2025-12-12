@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import {
 	existsSync,
 	mkdirSync,
@@ -6,7 +7,6 @@ import {
 	rmSync,
 	writeFileSync,
 } from "node:fs";
-import { execSync } from "node:child_process";
 import { basename, join } from "node:path";
 import { DEFAULT_EXCLUDES, EXAMPLES_DIR } from "./constants.js";
 import {
@@ -56,9 +56,7 @@ function regenerateLockFile(examplePath, packageManager) {
 
 		console.log(`  ✓ Generated ${lockFile}`);
 	} catch (error) {
-		console.warn(
-			`  ⚠ Failed to regenerate lock file: ${error.message}`,
-		);
+		console.warn(`  ⚠ Failed to regenerate lock file: ${error.message}`);
 	}
 }
 
