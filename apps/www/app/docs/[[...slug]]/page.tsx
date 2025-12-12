@@ -22,7 +22,7 @@ export default async function Page(props: {
 
 	return (
 		<DocsPage toc={page.data.toc} full={page.data.full}>
-			<div className="flex flex-col h-full">
+			<main className="flex flex-col h-full">
 				<div className="grow">
 					<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 					<DocsDescription>{page.data.description}</DocsDescription>
@@ -41,7 +41,7 @@ export default async function Page(props: {
 						<Separator />
 					</div>
 				</div>
-			</div>
+			</main>
 		</DocsPage>
 	);
 }
