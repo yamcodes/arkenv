@@ -173,7 +173,7 @@ export function syncPlayground(
 	writeFileSync(pkgPath, `${JSON.stringify(transformedPkg, null, "\t")}\n`);
 
 	// Regenerate lock file if package manager is specified
-	if (exampleConfig.packageManager) {
+	if (transformedPkg.packageManager) {
 		regenerateLockFile(examplePath, transformedPkg.packageManager);
 	}
 
