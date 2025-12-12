@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/vite-plugin",
-	"version": "0.0.19",
+	"version": "0.0.21",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -19,7 +19,7 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vite": "7.2.6",
+		"vite": "7.2.7",
 		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	},

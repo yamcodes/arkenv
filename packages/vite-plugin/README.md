@@ -59,7 +59,7 @@ This plugin uses [the Vite specific `config` hook](https://vite.dev/guide/api-pl
 
 ## Examples
 
-* [with-vite-react-ts](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts)
+* [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)
 
 ## Related
 

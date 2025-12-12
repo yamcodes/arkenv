@@ -17,3 +17,5 @@ export const $ = scope({
 	}),
 	boolean,
 });
+
+export type $ = (typeof $)["t"];

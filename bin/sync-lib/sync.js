@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import {
 	existsSync,
 	mkdirSync,
@@ -15,6 +16,88 @@ import {
 	shouldExclude,
 } from "./fs-utils.js";
 import { transformPackageJson } from "./transform.js";
+
+/**
+ * Regenerate lock file based on package manager
+ */
+function regenerateLockFile(examplePath, packageManager) {
+	if (!packageManager) {
+		return;
+	}
+
+	console.log(`  ⟳ Regenerating lock file with ${packageManager}...`);
+
+	let bin;
+	let args;
+	let lockFile;
+
+	if (packageManager === "npm" || packageManager.startsWith("npm@")) {
+		bin = "npm";
+		args = ["install", "--package-lock-only", "--ignore-scripts"];
+		lockFile = "package-lock.json";
+	} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
+		bin = "bun";
+		args = ["install", "--lockfile-only", "--ignore-scripts"];
+
+		// Check which lockfile format exists (binary or text)
+		const binaryLock = join(examplePath, "bun.lockb");
+		const textLock = join(examplePath, "bun.lock");
+
+		if (existsSync(binaryLock)) {
+			lockFile = "bun.lockb";
+		} else if (existsSync(textLock)) {
+			lockFile = "bun.lock";
+		} else {
+			// Default to binary format for new lockfiles (Bun's current default)
+			lockFile = "bun.lockb";
+		}
+	} else if (packageManager === "pnpm" || packageManager.startsWith("pnpm@")) {
+		bin = "pnpm";
+		args = [
+			"install",
+			"--lockfile-only",
+			"--ignore-workspace",
+			"--ignore-scripts",
+		];
+		lockFile = "pnpm-lock.yaml";
+	} else {
+		console.warn(`  ⚠ Unknown package manager: ${packageManager}`);
+		return;
+	}
+
+	const lockFilePath = join(examplePath, lockFile);
+	let backup = null;
+
+	try {
+		// Backup existing lockfile if it exists
+		if (existsSync(lockFilePath)) {
+			backup = readFileSync(lockFilePath);
+		}
+
+		// Run the lock file generation command
+		execFileSync(bin, args, {
+			cwd: examplePath,
+			stdio: "pipe",
+		});
+
+		console.log(`  ✓ Generated ${lockFile}`);
+	} catch (error) {
+		const errorDetails = error.stderr?.toString() || error.message;
+		console.warn(`  ⚠ Failed to regenerate lock file: ${errorDetails}`);
+
+		// Restore backup if available and generation failed
+		if (backup) {
+			try {
+				writeFileSync(lockFilePath, backup);
+				console.log(`  ⟳ Restored backup of ${lockFile}`);
+			} catch (restoreError) {
+				console.warn(
+					`  ⚠ Failed to restore backup of ${lockFile}: ${restoreError.message}`,
+				);
+			}
+		}
+	}
+}
 
 /**
  * Sync a single playground to its example
@@ -83,6 +166,8 @@ export function syncPlayground(
 				const exampleSpecificFiles = [
 					".gitignore",
 					"bun.lock",
+					"bun.lockb",
+					"pnpm-lock.yaml",
 					"package-lock.json",
 				];
 				if (!exampleSpecificFiles.includes(file)) {
@@ -102,6 +187,8 @@ export function syncPlayground(
 		const exampleSpecificFiles = [
 			".gitignore",
 			"bun.lock",
+			"bun.lockb",
+			"pnpm-lock.yaml",
 			"package-lock.json",
 		];
 		const entries = readdirSync(examplePath, { withFileTypes: true });
@@ -127,6 +214,11 @@ export function syncPlayground(
 	const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
 	const transformedPkg = transformPackageJson(pkg, exampleConfig, catalog);
 	writeFileSync(pkgPath, `${JSON.stringify(transformedPkg, null, "\t")}\n`);
+
+	// Regenerate lock file if package manager is specified
+	if (transformedPkg.packageManager) {
+		regenerateLockFile(examplePath, transformedPkg.packageManager);
+	}
 
 	// Create .gitignore if it doesn't exist
 	const gitignorePath = join(examplePath, ".gitignore");

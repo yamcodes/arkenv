@@ -73,12 +73,20 @@
 			"name": "  vite-playground"
 		},
 		{
+			"path": "apps/playgrounds/vite-legacy",
+			"name": "  vite-legacy-playground"
+		},
+		{
 			"path": "apps/playgrounds/bun-react",
 			"name": "  bun-react-playground"
 		},
 		{
 			"path": "apps/playgrounds/solid-start",
 			"name": "  solid-start-playground"
+		},
+		{
+			"path": "apps/playgrounds/standard-schema",
+			"name": "  standard-schema-playground"
 		},
 		{
 			"path": "apps/www",
@@ -107,6 +115,10 @@
 		{
 			"path": "examples/with-vite-react",
 			"name": "  with-vite-react"
+		},
+		{
+			"path": "examples/with-standard-schema",
+			"name": "  with-standard-schema"
 		}
 	]
 }

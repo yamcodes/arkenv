@@ -14,9 +14,8 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [
     arkenv({
-      VITE_API_URL: "string",
-      VITE_APP_NAME: "'MyApp' | 'TestApp'",
-      VITE_DEBUG: 'boolean = false'
+      PORT: "number.port",
+      VITE_MY_VAR: "string",
     }),
   ],
 });
@@ -26,7 +25,7 @@ With this setup, if any environment variable is missing or invalid, your dev ser
 
 ```bash title="Terminal"
 ArkEnvError: Errors found while validating environment variables
-  HOST must be a string or "localhost" (was missing)
+  VITE_MY_VAR must be a string (was missing)
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 

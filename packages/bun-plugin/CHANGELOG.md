@@ -1,5 +1,41 @@
 # @arkenv/bun-plugin
 
+## 0.0.4
+
+### Patch Changes
+
+- #### Internal refactoring to reduce type duplication _[`#544`](https://github.com/yamcodes/arkenv/pull/544) [`d4800f9`](https://github.com/yamcodes/arkenv/commit/d4800f97d162dbeb9030576f1e97a1f50d876bad) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  Refactor the plugins to re-use internal types like `FilterByPrefix` and `InferType`, defined in the core internal types package.
+
+  This should have no effect for the end-user.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+</small>
+
+- `arkenv@0.7.8`
+
+</details>
+
+## 0.0.3
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e91a804`](https://github.com/yamcodes/arkenv/commit/e91a804dc6ec7d4a80d9bee94e87d3892f013729)
+
+</small>
+
+- `arkenv@0.7.8`
+
+</details>
+
 ## 0.0.2
 
 ### Patch Changes
