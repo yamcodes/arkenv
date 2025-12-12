@@ -55,8 +55,8 @@ catalogs:
       specifier: 6.1.2
       version: 6.1.2
     size-limit:
-      specifier: 11.2.0
-      version: 11.2.0
+      specifier: 12.0.0
+      version: 12.0.0
     tsdown:
       specifier: 0.17.2
       version: 0.17.2
@@ -523,10 +523,10 @@ importers:
         version: link:../internal/types
       '@size-limit/esbuild-why':
         specifier: 'catalog:'
-        version: 12.0.0(size-limit@11.2.0)
+        version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@11.2.0)
+        version: 11.2.0(size-limit@12.0.0(jiti@2.6.1))
       '@types/node':
         specifier: 'catalog:'
         version: 24.10.2
@@ -538,7 +538,7 @@ importers:
         version: 6.1.2
       size-limit:
         specifier: 'catalog:'
-        version: 11.2.0
+        version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
         version: 0.17.2(typescript@5.9.3)
@@ -560,10 +560,10 @@ importers:
         version: link:../internal/types
       '@size-limit/esbuild-why':
         specifier: 'catalog:'
-        version: 12.0.0(size-limit@11.2.0)
+        version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@11.2.0)
+        version: 11.2.0(size-limit@12.0.0(jiti@2.6.1))
       '@types/bun':
         specifier: 'catalog:'
         version: 1.3.4
@@ -578,7 +578,7 @@ importers:
         version: 6.1.2
       size-limit:
         specifier: 'catalog:'
-        version: 11.2.0
+        version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
         version: 0.17.2(typescript@5.9.3)
@@ -640,7 +640,7 @@ importers:
         version: link:../internal/types
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@11.2.0)
+        version: 11.2.0(size-limit@12.0.0(jiti@2.6.1))
       arktype:
         specifier: 'catalog:'
         version: 2.1.28
@@ -649,7 +649,7 @@ importers:
         version: 6.1.2
       size-limit:
         specifier: 'catalog:'
-        version: 11.2.0
+        version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
         version: 0.17.2(typescript@5.9.3)
@@ -6857,10 +6857,15 @@ packages:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
     engines: {node: '>=18'}
 
-  size-limit@11.2.0:
-    resolution: {integrity: sha512-2kpQq2DD/pRpx3Tal/qRW1SYwcIeQ0iq8li5CJHQgOC+FtPn2BVmuDtzUCgNnpCrbgtfEHqh+iWzxK+Tq6C+RQ==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  size-limit@12.0.0:
+    resolution: {integrity: sha512-JBG8dioIs0m2kHOhs9jD6E/tZKD08vmbf2bfqj/rJyNWqJxk/ZcakixjhYtsqdbi+AKVbfPkt3g2RRZiKaizYA==}
+    engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     hasBin: true
+    peerDependencies:
+      jiti: ^2.0.0
+    peerDependenciesMeta:
+      jiti:
+        optional: true
 
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
@@ -10780,27 +10785,27 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@size-limit/esbuild-why@12.0.0(size-limit@11.2.0)':
+  '@size-limit/esbuild-why@12.0.0(size-limit@12.0.0(jiti@2.6.1))':
     dependencies:
       esbuild-visualizer: 0.7.0
       open: 11.0.0
-      size-limit: 11.2.0
+      size-limit: 12.0.0(jiti@2.6.1)
 
-  '@size-limit/esbuild@11.2.0(size-limit@11.2.0)':
+  '@size-limit/esbuild@11.2.0(size-limit@12.0.0(jiti@2.6.1))':
     dependencies:
       esbuild: 0.25.12
       nanoid: 5.1.6
-      size-limit: 11.2.0
+      size-limit: 12.0.0(jiti@2.6.1)
 
-  '@size-limit/file@11.2.0(size-limit@11.2.0)':
+  '@size-limit/file@11.2.0(size-limit@12.0.0(jiti@2.6.1))':
     dependencies:
-      size-limit: 11.2.0
+      size-limit: 12.0.0(jiti@2.6.1)
 
-  '@size-limit/preset-small-lib@11.2.0(size-limit@11.2.0)':
+  '@size-limit/preset-small-lib@11.2.0(size-limit@12.0.0(jiti@2.6.1))':
     dependencies:
-      '@size-limit/esbuild': 11.2.0(size-limit@11.2.0)
-      '@size-limit/file': 11.2.0(size-limit@11.2.0)
-      size-limit: 11.2.0
+      '@size-limit/esbuild': 11.2.0(size-limit@12.0.0(jiti@2.6.1))
+      '@size-limit/file': 11.2.0(size-limit@12.0.0(jiti@2.6.1))
+      size-limit: 12.0.0(jiti@2.6.1)
 
   '@smithy/abort-controller@4.2.5':
     dependencies:
@@ -15122,15 +15127,15 @@ snapshots:
       mrmime: 2.0.1
       totalist: 3.0.1
 
-  size-limit@11.2.0:
+  size-limit@12.0.0(jiti@2.6.1):
     dependencies:
       bytes-iec: 3.1.1
-      chokidar: 4.0.3
-      jiti: 2.6.1
       lilconfig: 3.1.3
       nanospinner: 1.2.2
       picocolors: 1.1.1
       tinyglobby: 0.2.15
+    optionalDependencies:
+      jiti: 2.6.1
 
   slash@3.0.0: {}
 
