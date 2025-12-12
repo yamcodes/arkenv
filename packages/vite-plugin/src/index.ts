@@ -4,6 +4,7 @@ import { loadEnv, type Plugin } from "vite";
 
 export type { ImportMetaEnvAugmented } from "./types";
 
+
 /**
  * TODO: If possible, find a better type than "const T extends SchemaShape",
  * and be as close as possible to the type accepted by ArkType's `type`.

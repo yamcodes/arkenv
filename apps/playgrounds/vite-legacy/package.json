@@ -1,0 +1,28 @@
+{
+	"name": "vite-legacy-playground",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc -b && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@arkenv/vite-plugin": "workspace:*",
+		"arkenv": "workspace:*",
+		"arktype": "catalog:",
+		"react": "19.2.1",
+		"react-dom": "19.2.1"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.1",
+		"@types/react": "^19.2.5",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^5.1.1",
+		"globals": "^16.5.0",
+		"typescript": "~5.9.3",
+		"vite": "7.2.7",
+		"vite-tsconfig-paths": "catalog:"
+	}
+}
