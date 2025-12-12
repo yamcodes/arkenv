@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       arkenv:
-        specifier: ^0.7.7
-        version: 0.7.7(arktype@2.1.28)
+        specifier: ^0.7.8
+        version: 0.7.8(arktype@2.1.28)
       arktype:
         specifier: ^2.1.28
         version: 2.1.28
@@ -22,7 +22,7 @@ importers:
         specifier: ^6.1.2
         version: 6.1.2
       tsx:
-        specifier: ^4.20.6
+        specifier: ^4.21.0
         version: 4.21.0
       typescript:
         specifier: ^5.9.3
@@ -200,8 +200,8 @@ packages:
     resolution: {integrity: sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==}
     engines: {node: 20 || >=22}
 
-  arkenv@0.7.7:
-    resolution: {integrity: sha512-GtBOSCtTbq2dDNCjtv2GUcMQMWAyE1xN9CHN+PQQ5u96gytnA6Xj2DHnFnjWFd5jc9VFw050aE2sNERzr9UGzQ==}
+  arkenv@0.7.8:
+    resolution: {integrity: sha512-Scb3jaoUSUEcLYk3pR5Hy2G4fLXGzzTwCUPZcRbbGl5Yu60gDRRpOBPPPF+uG4WdeixTNUDIpxQp+QPpQdWuAQ==}
     peerDependencies:
       arktype: ^2.1.22
 
@@ -360,7 +360,7 @@ snapshots:
     dependencies:
       '@isaacs/balanced-match': 4.0.1
 
-  arkenv@0.7.7(arktype@2.1.28):
+  arkenv@0.7.8(arktype@2.1.28):
     dependencies:
       arktype: 2.1.28
 
