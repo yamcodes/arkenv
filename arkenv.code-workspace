@@ -85,6 +85,10 @@
 			"name": "  solid-start-playground"
 		},
 		{
+			"path": "apps/playgrounds/standard-schema",
+			"name": "  standard-schema-playground"
+		},
+		{
 			"path": "apps/www",
 			"name": "  www (arkenv.js.org)"
 		},
@@ -111,6 +115,10 @@
 		{
 			"path": "examples/with-vite-react",
 			"name": "  with-vite-react"
+		},
+		{
+			"path": "examples/with-standard-schema",
+			"name": "  with-standard-schema"
 		}
 	]
 }

@@ -112,7 +112,7 @@ bun add arkenv arktype
 
 ## Requirements
 
-ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.2**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react-ts). Older versions may work but are not officially supported.
+ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.2**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react). Older versions may work but are not officially supported.
 
 ### TypeScript setup
 

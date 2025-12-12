@@ -22,7 +22,7 @@
 	"arkenvExamples": [
 		{
 			"name": "with-standard-schema",
-			"packageManager": "pnpm"
+			"packageManager": "npm"
 		}
 	]
 }
