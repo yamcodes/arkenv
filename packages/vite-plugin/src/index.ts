@@ -3,6 +3,8 @@ import { createEnv, type EnvSchema } from "arkenv";
 import type { type } from "arktype";
 import { loadEnv, type Plugin } from "vite";
 
+// TODO: `InferType` should move to `@repo/types`
+
 /**
  * Extract the inferred type from an ArkType type definition by checking its call signature.
  * When a type definition is called, it returns either the validated value or type.errors.
