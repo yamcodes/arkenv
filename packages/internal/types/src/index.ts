@@ -6,6 +6,7 @@
  */
 
 // Only TypeScript types
+export type * from "./filter-by-prefix";
 export type * from "./infer-type";
 
 // Also includes ArkType types
