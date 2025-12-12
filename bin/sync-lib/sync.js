@@ -27,34 +27,40 @@ function regenerateLockFile(examplePath, packageManager) {
 
 	console.log(`  ⟳ Regenerating lock file with ${packageManager}...`);
 
-	try {
-		let bin;
-		let args;
-		let lockFile;
+	let bin;
+	let args;
+	let lockFile;
 
-		if (packageManager === "npm" || packageManager.startsWith("npm@")) {
-			bin = "npm";
-			args = ["install", "--package-lock-only", "--ignore-scripts"];
-			lockFile = "package-lock.json";
-		} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
-			bin = "bun";
-			args = ["install", "--ignore-scripts"];
-			lockFile = "bun.lock";
-		} else if (
-			packageManager === "pnpm" ||
-			packageManager.startsWith("pnpm@")
-		) {
-			bin = "pnpm";
-			args = [
-				"install",
-				"--lockfile-only",
-				"--ignore-workspace",
-				"--ignore-scripts",
-			];
-			lockFile = "pnpm-lock.yaml";
-		} else {
-			console.warn(`  ⚠ Unknown package manager: ${packageManager}`);
-			return;
+	if (packageManager === "npm" || packageManager.startsWith("npm@")) {
+		bin = "npm";
+		args = ["install", "--package-lock-only", "--ignore-scripts"];
+		lockFile = "package-lock.json";
+	} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
+		bin = "bun";
+		// Added --lockfile-only for bun
+		args = ["install", "--lockfile-only", "--ignore-scripts"];
+		lockFile = "bun.lock";
+	} else if (packageManager === "pnpm" || packageManager.startsWith("pnpm@")) {
+		bin = "pnpm";
+		args = [
+			"install",
+			"--lockfile-only",
+			"--ignore-workspace",
+			"--ignore-scripts",
+		];
+		lockFile = "pnpm-lock.yaml";
+	} else {
+		console.warn(`  ⚠ Unknown package manager: ${packageManager}`);
+		return;
+	}
+
+	const lockFilePath = join(examplePath, lockFile);
+	let backup = null;
+
+	try {
+		// Backup existing lockfile if it exists
+		if (existsSync(lockFilePath)) {
+			backup = readFileSync(lockFilePath);
 		}
 
 		// Run the lock file generation command
@@ -66,6 +72,18 @@ function regenerateLockFile(examplePath, packageManager) {
 		console.log(`  ✓ Generated ${lockFile}`);
 	} catch (error) {
 		console.warn(`  ⚠ Failed to regenerate lock file: ${error.message}`);
+
+		// Restore backup if available and generation failed
+		if (backup) {
+			try {
+				writeFileSync(lockFilePath, backup);
+				console.log(`  ⟳ Restored backup of ${lockFile}`);
+			} catch (restoreError) {
+				console.warn(
+					`  ⚠ Failed to restore backup of ${lockFile}: ${restoreError.message}`,
+				);
+			}
+		}
 	}
 }
 
