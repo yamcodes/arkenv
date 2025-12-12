@@ -294,6 +294,15 @@ importers:
 
   apps/playgrounds/vite-legacy:
     dependencies:
+      '@arkenv/vite-plugin':
+        specifier: workspace:*
+        version: link:../../../packages/vite-plugin
+      arkenv:
+        specifier: workspace:*
+        version: link:../../../packages/arkenv
+      arktype:
+        specifier: 'catalog:'
+        version: 2.1.28
       react:
         specifier: ^19.2.0
         version: 19.2.1
