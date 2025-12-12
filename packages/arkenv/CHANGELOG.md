@@ -1,5 +1,13 @@
 # ArkEnv
 
+## 0.7.8
+
+### Patch Changes
+
+- #### Fix editor autocomplete for `createEnv` (`arkenv`) function _[`#531`](https://github.com/yamcodes/arkenv/pull/531) [`e91a804`](https://github.com/yamcodes/arkenv/commit/e91a804dc6ec7d4a80d9bee94e87d3892f013729) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix a signature issue where editor autocomplete was not working for the `createEnv` function.
+
 ## 0.7.7
 
 ### Patch Changes
