@@ -1,6 +1,8 @@
-import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
+import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import { createEnv, type EnvSchema } from "arkenv";
 import { loadEnv, type Plugin } from "vite";
+
+export type ImportMetaEnvAugmented<T> = InferType<T>;
 
 /**
  * TODO: If possible, find a better type than "const T extends SchemaShape",
