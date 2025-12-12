@@ -73,6 +73,10 @@
 			"name": "  vite-playground"
 		},
 		{
+			"path": "apps/playgrounds/vite-legacy",
+			"name": "  vite-legacy-playground"
+		},
+		{
 			"path": "apps/playgrounds/bun-react",
 			"name": "  bun-react-playground"
 		},
