@@ -4,7 +4,7 @@ import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 
-export type EnvSchema<def> = at.validate<def, (typeof $)["t"]>;
+export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
 
 /**
@@ -20,22 +20,22 @@ type RuntimeEnvironment = Record<string, string | undefined>;
  * @returns The validated environment variable schema
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
+export function createEnv<const T extends SchemaShape>(
+	def: EnvSchema<T>,
+	env?: RuntimeEnvironment,
+): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends EnvSchemaWithType>(
 	def: T,
 	env?: RuntimeEnvironment,
 ): InferType<T>;
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	env?: RuntimeEnvironment,
-): distill.Out<at.infer<T, (typeof $)["t"]>>;
-export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
 	env?: RuntimeEnvironment,
-): distill.Out<at.infer<T, (typeof $)["t"]>> | InferType<typeof def>;
+): distill.Out<at.infer<T, $>> | InferType<typeof def>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
 	env: RuntimeEnvironment = process.env,
-): distill.Out<at.infer<T, (typeof $)["t"]>> | InferType<typeof def> {
+): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const schema =
