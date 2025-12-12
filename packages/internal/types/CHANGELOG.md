@@ -1,5 +1,21 @@
 # @repo/types
 
+## 0.0.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e91a804`](https://github.com/yamcodes/arkenv/commit/e91a804dc6ec7d4a80d9bee94e87d3892f013729)
+
+</small>
+
+- `@repo/scope@0.0.1`
+
+</details>
+
 ## 0.0.1
 
 ### Patch Changes
