@@ -3,7 +3,6 @@ import { type Type, type } from "arktype";
 
 export const SchemaShape = type({ "[string]": "unknown" });
 
-// Same thing as `typeof SchemaShape.infer` but more performant
-export type SchemaShape = Record<string, unknown>;
+export type SchemaShape = typeof SchemaShape.infer;
 
 export type EnvSchemaWithType = Type<SchemaShape, $>;
