@@ -10,8 +10,8 @@ catalogs:
       specifier: 4.11.0
       version: 4.11.0
     '@size-limit/esbuild-why':
-      specifier: 11.2.0
-      version: 11.2.0
+      specifier: 12.0.0
+      version: 12.0.0
     '@size-limit/preset-small-lib':
       specifier: 11.2.0
       version: 11.2.0
@@ -523,7 +523,7 @@ importers:
         version: link:../internal/types
       '@size-limit/esbuild-why':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@11.2.0)
+        version: 12.0.0(size-limit@11.2.0)
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
         version: 11.2.0(size-limit@11.2.0)
@@ -560,7 +560,7 @@ importers:
         version: link:../internal/types
       '@size-limit/esbuild-why':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@11.2.0)
+        version: 12.0.0(size-limit@11.2.0)
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
         version: 11.2.0(size-limit@11.2.0)
@@ -3276,11 +3276,11 @@ packages:
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
 
-  '@size-limit/esbuild-why@11.2.0':
-    resolution: {integrity: sha512-VtoQbbkvFbF314LWEaEp1+IjG0DH+9w6nP//D6Gd48SEAPLoBgqk287mjYTF9WYxg9N5lo8KjpXxEFk4gOXNpw==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  '@size-limit/esbuild-why@12.0.0':
+    resolution: {integrity: sha512-TZ7iF/9wOPQ5wjhU9DOGencgq5ea2K8V+rnL8c2PFTJJWgosXm20H153CeSE3QvtFqFkibEYLwGD0v+aUQtcOg==}
+    engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
-      size-limit: 11.2.0
+      size-limit: 12.0.0
 
   '@size-limit/esbuild@11.2.0':
     resolution: {integrity: sha512-vSg9H0WxGQPRzDnBzeDyD9XT0Zdq0L+AI3+77/JhxznbSCMJMMr8ndaWVQRhOsixl97N0oD4pRFw2+R1Lcvi6A==}
@@ -5385,6 +5385,10 @@ packages:
   is-hexadecimal@2.0.1:
     resolution: {integrity: sha512-DgZQp241c8oO6cA1SbTEWiXeoxV42vlcJxgH+B3hi1AiqqKruZR3ZGF8In3fj4+/y/7rHvlOZLZtgJ/4ttYGZg==}
 
+  is-in-ssh@1.0.0:
+    resolution: {integrity: sha512-jYa6Q9rH90kR1vKB6NM7qqd1mge3Fx4Dhw5TVlK1MUBqhEOuCagrEHMevNuCcbECmXZ0ThXkRm+Ymr51HwEPAw==}
+    engines: {node: '>=20'}
+
   is-inside-container@1.0.0:
     resolution: {integrity: sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA==}
     engines: {node: '>=14.16'}
@@ -6148,9 +6152,9 @@ packages:
   oniguruma-to-es@4.3.4:
     resolution: {integrity: sha512-3VhUGN3w2eYxnTzHn+ikMI+fp/96KoRSVK9/kMTcFqj1NRDh2IhQCKvYxDnWePKRXY/AqH+Fuiyb7VHSzBjHfA==}
 
-  open@10.2.0:
-    resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
-    engines: {node: '>=18'}
+  open@11.0.0:
+    resolution: {integrity: sha512-smsWv2LzFjP03xmvFoJ331ss6h+jixfA4UUV/Bsiyuu4YJPfN+FIQGOIiv4w9/+MoHkfkJ22UIaQWRVFRfH6Vw==}
+    engines: {node: '>=20'}
 
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
@@ -6346,6 +6350,10 @@ packages:
 
   posthog-node@5.17.2:
     resolution: {integrity: sha512-lz3YJOr0Nmiz0yHASaINEDHqoV+0bC3eD8aZAG+Ky292dAnVYul+ga/dMX8KCBXg8hHfKdxw0SztYD5j6dgUqQ==}
+    engines: {node: '>=20'}
+
+  powershell-utils@0.1.0:
+    resolution: {integrity: sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==}
     engines: {node: '>=20'}
 
   preact@10.27.2:
@@ -7767,9 +7775,9 @@ packages:
       utf-8-validate:
         optional: true
 
-  wsl-utils@0.1.0:
-    resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
-    engines: {node: '>=18'}
+  wsl-utils@0.3.0:
+    resolution: {integrity: sha512-3sFIGLiaDP7rTO4xh3g+b3AzhYDIUGGywE/WsmqzJWDxus5aJXVnPTNC/6L+r2WzrwXqVOdD262OaO+cEyPMSQ==}
+    engines: {node: '>=20'}
 
   xml-name-validator@5.0.0:
     resolution: {integrity: sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg==}
@@ -10772,10 +10780,10 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@size-limit/esbuild-why@11.2.0(size-limit@11.2.0)':
+  '@size-limit/esbuild-why@12.0.0(size-limit@11.2.0)':
     dependencies:
       esbuild-visualizer: 0.7.0
-      open: 10.2.0
+      open: 11.0.0
       size-limit: 11.2.0
 
   '@size-limit/esbuild@11.2.0(size-limit@11.2.0)':
@@ -13205,6 +13213,8 @@ snapshots:
 
   is-hexadecimal@2.0.1: {}
 
+  is-in-ssh@1.0.0: {}
+
   is-inside-container@1.0.0:
     dependencies:
       is-docker: 3.0.0
@@ -14283,12 +14293,14 @@ snapshots:
       regex: 6.0.1
       regex-recursion: 6.0.2
 
-  open@10.2.0:
+  open@11.0.0:
     dependencies:
       default-browser: 5.4.0
       define-lazy-prop: 3.0.0
+      is-in-ssh: 1.0.0
       is-inside-container: 1.0.0
-      wsl-utils: 0.1.0
+      powershell-utils: 0.1.0
+      wsl-utils: 0.3.0
 
   open@8.4.2:
     dependencies:
@@ -14479,6 +14491,8 @@ snapshots:
   posthog-node@5.17.2:
     dependencies:
       '@posthog/core': 1.7.1
+
+  powershell-utils@0.1.0: {}
 
   preact@10.27.2: {}
 
@@ -16027,9 +16041,10 @@ snapshots:
 
   ws@8.18.3: {}
 
-  wsl-utils@0.1.0:
+  wsl-utils@0.3.0:
     dependencies:
       is-wsl: 3.1.0
+      powershell-utils: 0.1.0
 
   xml-name-validator@5.0.0: {}
 
