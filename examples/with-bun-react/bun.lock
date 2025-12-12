@@ -5,7 +5,7 @@
     "": {
       "name": "bun-react-template",
       "dependencies": {
-        "@arkenv/bun-plugin": "^0.0.3",
+        "@arkenv/bun-plugin": "^0.0.4",
         "arkenv": "^0.7.8",
         "arktype": "^2.1.28",
         "react": "^19.2.1",
@@ -24,7 +24,7 @@
 
     "@ark/util": ["@ark/util@0.56.0", "", {}, "sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA=="],
 
-    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@0.0.3", "", { "dependencies": { "arkenv": "0.7.8" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-FtH2yHWjuFeNtknGsCIQUBKwX3jWdrvEvnBi80QMN6u9L/uyItUwGSlaPHUJXx8iDjEeB4WUZU1FlcUV0bpjMw=="],
+    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@0.0.4", "", { "dependencies": { "arkenv": "0.7.8" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-ZtDz8lMs+FLjQ6SPHA/eAYs/w0b88zwMAG7mMh0sEwgkCQjkpLC8pKTAVR42Wr1HlaFUN6EYZ51E4EOPwbxpQw=="],
 
     "@isaacs/balanced-match": ["@isaacs/balanced-match@4.0.1", "", {}, "sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ=="],
 
