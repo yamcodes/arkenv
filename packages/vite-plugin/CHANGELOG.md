@@ -1,5 +1,31 @@
 # @arkenv/vite-plugin
 
+## 0.0.21
+
+### Patch Changes
+
+- #### Internal refactoring to reduce type duplication _[`#544`](https://github.com/yamcodes/arkenv/pull/544) [`d4800f9`](https://github.com/yamcodes/arkenv/commit/d4800f97d162dbeb9030576f1e97a1f50d876bad) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  Refactor the plugins to re-use internal types like `FilterByPrefix` and `InferType`, defined in the core internal types package.
+
+  This should have no effect for the end-user.
+
+- #### Fix Vite types backwards compatibility _[`9da6939`](https://github.com/yamcodes/arkenv/commit/9da6939fff457727b13005371f0f6f06630570a9) [@yamcodes](https://github.com/yamcodes)_
+
+  Externalize `vite` to support all Vite versions by using the consumer's installed types - even versions prior to what the plugin was built on.
+
+  This includes support for Vite 6, 5, all the way back to Vite 2.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+</small>
+
+- `arkenv@0.7.8`
+
+</details>
+
 ## 0.0.20
 
 ### Patch Changes
