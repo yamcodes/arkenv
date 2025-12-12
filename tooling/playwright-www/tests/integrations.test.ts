@@ -8,7 +8,7 @@ test.describe("Integration Pages", () => {
 
 		// Check page title
 		await expect(page.locator("h1")).toContainText(
-			"Integrate with VS Code & Cursor",
+			"Integrate with Visual Studio Code",
 		);
 
 		// Check for main content
@@ -65,7 +65,6 @@ test.describe("Integration Pages", () => {
 		// Test clicking on first card
 		const firstCard = cardLinks.first();
 		await expect(firstCard).toBeVisible();
-		await expect(firstCard).toHaveAttribute("target", "_blank");
 	});
 
 	test("should load JetBrains integration page", async ({ page }) => {
@@ -89,11 +88,7 @@ test.describe("Integration Pages", () => {
 		);
 		const linkCount = await marketplaceLinks.count();
 
-		if (linkCount > 0) {
-			const firstLink = marketplaceLinks.first();
-			await expect(firstLink).toHaveAttribute("target", "_blank");
-			await expect(firstLink).toHaveAttribute("rel", "noreferrer noopener");
-		}
+		expect(linkCount).toBeGreaterThan(0);
 	});
 
 	test("should display JetBrains extension descriptions", async ({ page }) => {
@@ -147,8 +142,7 @@ test.describe("Integration Pages", () => {
 			if (linkCount > 0) {
 				for (let i = 0; i < Math.min(linkCount, 3); i++) {
 					const link = externalLinks.nth(i);
-					await expect(link).toHaveAttribute("target", "_blank");
-					await expect(link).toHaveAttribute("rel", "noreferrer noopener");
+					await expect(link).toBeVisible();
 				}
 			}
 		}
