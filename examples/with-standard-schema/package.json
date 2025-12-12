@@ -19,5 +19,5 @@
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3"
 	},
-	"packageManager": "pnpm@10.23.0"
+	"packageManager": "pnpm@10.24.0"
 }
