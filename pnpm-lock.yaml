@@ -13,8 +13,8 @@ catalogs:
       specifier: 12.0.0
       version: 12.0.0
     '@size-limit/preset-small-lib':
-      specifier: 11.2.0
-      version: 11.2.0
+      specifier: 12.0.0
+      version: 12.0.0
     '@types/bun':
       specifier: 1.3.4
       version: 1.3.4
@@ -526,7 +526,7 @@ importers:
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@12.0.0(jiti@2.6.1))
+        version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@types/node':
         specifier: 'catalog:'
         version: 24.10.2
@@ -563,7 +563,7 @@ importers:
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@12.0.0(jiti@2.6.1))
+        version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@types/bun':
         specifier: 'catalog:'
         version: 1.3.4
@@ -640,7 +640,7 @@ importers:
         version: link:../internal/types
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
-        version: 11.2.0(size-limit@12.0.0(jiti@2.6.1))
+        version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       arktype:
         specifier: 'catalog:'
         version: 2.1.28
@@ -3282,22 +3282,22 @@ packages:
     peerDependencies:
       size-limit: 12.0.0
 
-  '@size-limit/esbuild@11.2.0':
-    resolution: {integrity: sha512-vSg9H0WxGQPRzDnBzeDyD9XT0Zdq0L+AI3+77/JhxznbSCMJMMr8ndaWVQRhOsixl97N0oD4pRFw2+R1Lcvi6A==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  '@size-limit/esbuild@12.0.0':
+    resolution: {integrity: sha512-r9i+HrtunIu7wAPtqD3t4DqfYin3kxPoMAv8cidkzlCS69IYCe3EG2UbQa10AdvQyaHTEK+MPkr9ifUd3W29og==}
+    engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
-      size-limit: 11.2.0
+      size-limit: 12.0.0
 
-  '@size-limit/file@11.2.0':
-    resolution: {integrity: sha512-OZHE3putEkQ/fgzz3Tp/0hSmfVo3wyTpOJSRNm6AmcwX4Nm9YtTfbQQ/hZRwbBFR23S7x2Sd9EbqYzngKwbRoA==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  '@size-limit/file@12.0.0':
+    resolution: {integrity: sha512-OzKYpDzWJ2jo6cAIzVsaPuvzZTmMLDoVCViEvsctmImxpXzwJZcuBEpPohFKKdgVdZuNTU8WstmvywPq55Njdw==}
+    engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
-      size-limit: 11.2.0
+      size-limit: 12.0.0
 
-  '@size-limit/preset-small-lib@11.2.0':
-    resolution: {integrity: sha512-RFbbIVfv8/QDgTPyXzjo5NKO6CYyK5Uq5xtNLHLbw5RgSKrgo8WpiB/fNivZuNd/5Wk0s91PtaJ9ThNcnFuI3g==}
+  '@size-limit/preset-small-lib@12.0.0':
+    resolution: {integrity: sha512-HHHVQjZmj+8vg7qsHs1dd3Hmn8ygUsE5O2CfxnbCbHOGyUw7VodZGERh/+5ogVrF2DYza/DIo2PnCJZZETdTRA==}
     peerDependencies:
-      size-limit: 11.2.0
+      size-limit: 12.0.0
 
   '@smithy/abort-controller@4.2.5':
     resolution: {integrity: sha512-j7HwVkBw68YW8UmFRcjZOmssE77Rvk0GWAIN1oFBhsaovQmZWYCIcGa9/pwRB0ExI8Sk9MWNALTjftjHZea7VA==}
@@ -10790,20 +10790,20 @@ snapshots:
       open: 11.0.0
       size-limit: 12.0.0(jiti@2.6.1)
 
-  '@size-limit/esbuild@11.2.0(size-limit@12.0.0(jiti@2.6.1))':
+  '@size-limit/esbuild@12.0.0(size-limit@12.0.0(jiti@2.6.1))':
     dependencies:
-      esbuild: 0.25.12
+      esbuild: 0.27.1
       nanoid: 5.1.6
       size-limit: 12.0.0(jiti@2.6.1)
 
-  '@size-limit/file@11.2.0(size-limit@12.0.0(jiti@2.6.1))':
+  '@size-limit/file@12.0.0(size-limit@12.0.0(jiti@2.6.1))':
     dependencies:
       size-limit: 12.0.0(jiti@2.6.1)
 
-  '@size-limit/preset-small-lib@11.2.0(size-limit@12.0.0(jiti@2.6.1))':
+  '@size-limit/preset-small-lib@12.0.0(size-limit@12.0.0(jiti@2.6.1))':
     dependencies:
-      '@size-limit/esbuild': 11.2.0(size-limit@12.0.0(jiti@2.6.1))
-      '@size-limit/file': 11.2.0(size-limit@12.0.0(jiti@2.6.1))
+      '@size-limit/esbuild': 12.0.0(size-limit@12.0.0(jiti@2.6.1))
+      '@size-limit/file': 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       size-limit: 12.0.0(jiti@2.6.1)
 
   '@smithy/abort-controller@4.2.5':
