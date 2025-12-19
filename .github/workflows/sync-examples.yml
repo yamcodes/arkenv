@@ -46,7 +46,7 @@ jobs:
         run: pnpm sync:examples:check
 
   auto-sync:
-    if: github.actor == 'renovate[bot]'
+    if: github.actor == 'renovate[bot]' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: write
