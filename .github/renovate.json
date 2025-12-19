@@ -84,6 +84,13 @@
 			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
 			"automergeType": "pr"
+		},
+		{
+			"groupName": "workflow tool versions",
+			"matchFileNames": [".github/**/*.yml", ".github/**/*.yaml"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"automerge": true,
+			"automergeType": "pr"
 		}
 	]
 }
