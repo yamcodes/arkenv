@@ -34,8 +34,8 @@ catalogs:
       specifier: 4.0.15
       version: 4.0.15
     arktype:
-      specifier: 2.1.28
-      version: 2.1.28
+      specifier: 2.1.29
+      version: 2.1.29
     bun:
       specifier: 1.3.4
       version: 1.3.4
@@ -126,7 +126,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
     devDependencies:
       '@types/bun':
         specifier: 'catalog:'
@@ -148,7 +148,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       react:
         specifier: 'catalog:'
         version: 19.2.3
@@ -176,7 +176,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
 
   apps/playgrounds/node:
     dependencies:
@@ -185,7 +185,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       zod:
         specifier: 4.1.13
         version: 4.1.13
@@ -216,7 +216,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       solid-js:
         specifier: 1.9.10
         version: 1.9.10
@@ -231,7 +231,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       zod:
         specifier: 'catalog:'
         version: 4.1.13
@@ -256,7 +256,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       react:
         specifier: 'catalog:'
         version: 19.2.3
@@ -302,7 +302,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       react:
         specifier: 19.2.1
         version: 19.2.1
@@ -532,7 +532,7 @@ importers:
         version: 24.10.2
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       rimraf:
         specifier: 'catalog:'
         version: 6.1.2
@@ -569,7 +569,7 @@ importers:
         version: 1.3.4
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       bun:
         specifier: 'catalog:'
         version: 1.3.4
@@ -593,7 +593,7 @@ importers:
     devDependencies:
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       tsdown:
         specifier: 'catalog:'
         version: 0.17.2(typescript@5.9.3)
@@ -609,7 +609,7 @@ importers:
     devDependencies:
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       tsdown:
         specifier: 'catalog:'
         version: 0.17.2(typescript@5.9.3)
@@ -624,7 +624,7 @@ importers:
         version: link:../scope
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -643,7 +643,7 @@ importers:
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       arktype:
         specifier: 'catalog:'
-        version: 2.1.28
+        version: 2.1.29
       rimraf:
         specifier: 'catalog:'
         version: 6.1.2
@@ -4083,8 +4083,14 @@ packages:
   arkregex@0.0.4:
     resolution: {integrity: sha512-biS/FkvSwQq59TZ453piUp8bxMui11pgOMV9WHAnli1F8o0ayNCZzUwQadL/bGIUic5TkS/QlPcyMuI8ZIwedQ==}
 
+  arkregex@0.0.5:
+    resolution: {integrity: sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw==}
+
   arktype@2.1.28:
     resolution: {integrity: sha512-LVZqXl2zWRpNFnbITrtFmqeqNkPPo+KemuzbGSY6jvJwCb4v8NsDzrWOLHnQgWl26TkJeWWcUNUeBpq2Mst1/Q==}
+
+  arktype@2.1.29:
+    resolution: {integrity: sha512-jyfKk4xIOzvYNayqnD8ZJQqOwcrTOUbIU4293yrzAjA3O1dWh61j71ArMQ6tS/u4pD7vabSPe7nG3RCyoXW6RQ==}
 
   array-union@2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
@@ -11838,11 +11844,21 @@ snapshots:
     dependencies:
       '@ark/util': 0.56.0
 
+  arkregex@0.0.5:
+    dependencies:
+      '@ark/util': 0.56.0
+
   arktype@2.1.28:
     dependencies:
       '@ark/schema': 0.56.0
       '@ark/util': 0.56.0
       arkregex: 0.0.4
+
+  arktype@2.1.29:
+    dependencies:
+      '@ark/schema': 0.56.0
+      '@ark/util': 0.56.0
+      arkregex: 0.0.5
 
   array-union@2.1.0: {}
 
