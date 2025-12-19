@@ -78,5 +78,10 @@ jobs:
           if [ -n "$(git status --porcelain examples)" ]; then
             git add examples
             git commit -m "chore(examples): sync generated examples"
-            git push
+            git push || {
+              echo "❌ Failed to push example sync changes. Please re-run the workflow."
+              exit 1
+            }
+          else
+            echo "✓ No changes in examples to sync"
           fi
