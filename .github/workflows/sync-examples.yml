@@ -18,6 +18,7 @@ permissions:
 
 jobs:
   check-sync:
+    if: github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -39,3 +40,39 @@ jobs:
 
       - name: Check examples sync
         run: pnpm sync:examples:check
+
+  auto-sync:
+    if: github.actor == 'renovate[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+      - run: pnpm build:packages
+      - run: pnpm sync:examples
+
+      - name: Commit example updates
+        run: |
+          if [ -n "$(git status --porcelain examples)" ]; then
+            git add examples
+            git commit -m "chore(examples): sync generated examples"
+            git push
+          fi
