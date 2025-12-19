@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"arkenv": "^0.7.8",
-		"arktype": "^2.1.28"
+		"arktype": "^2.1.29"
 	},
 	"engines": {
 		"node": "24"

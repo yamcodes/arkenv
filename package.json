@@ -28,7 +28,7 @@
 		"sync:examples:check": "node bin/sync-examples.js --check"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
+		"@biomejs/biome": "2.3.10",
 		"@changesets/cli": "2.29.8",
 		"@manypkg/cli": "0.25.1",
 		"@playwright/test": "",
