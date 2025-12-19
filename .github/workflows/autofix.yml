@@ -16,7 +16,7 @@ jobs:
       github.event_name == 'pull_request' ||
       (github.event_name == 'push' && github.event.sender.type != 'Bot' && github.event.head_commit != null)
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
