@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"arkenv": "^0.7.8",
-		"arktype": "^2.1.28"
+		"arktype": "^2.1.29"
 	},
 	"engines": {
 		"node": "24"
@@ -18,5 +18,5 @@
 	"stackblitz": {
 		"startCommand": "npm install && npm run dev:example"
 	},
-	"packageManager": "npm@11.7.0"
+	"packageManager": "npm@11.6.4"
 }

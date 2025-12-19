@@ -13,9 +13,9 @@
 	"dependencies": {
 		"@arkenv/vite-plugin": "^0.0.21",
 		"arkenv": "^0.7.8",
-		"arktype": "^2.1.28",
-		"react": "^19.2.1",
-		"react-dom": "^19.2.1"
+		"arktype": "^2.1.29",
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3"
 	},
 	"devDependencies": {
 		"@julr/vite-plugin-validate-env": "2.2.0",
@@ -28,5 +28,5 @@
 		"vite": "npm:rolldown-vite@7.2.11",
 		"vite-tsconfig-paths": "^5.1.4"
 	},
-	"packageManager": "npm@11.7.0"
+	"packageManager": "npm@11.6.4"
 }
