@@ -1,11 +1,12 @@
-import { coercedBoolean, coercedNumber } from "@repo/scope";
+import { parsedBoolean, parsedNumber } from "@repo/keywords";
+import { $ } from "@repo/scope";
 
 /**
  * Traverse an ArkType schema and wrap numeric or boolean values in coercion morphs.
  */
 export function coerce(schema: any): any {
-	const numInternal = (coercedNumber as any).internal;
-	const boolInternal = (coercedBoolean as any).internal;
+	const numInternal = (parsedNumber as any).internal;
+	const boolInternal = (parsedBoolean as any).internal;
 
 	// 1. Transform internal properties
 	const transformed = schema.transform((kind: any, inner: any) => {
@@ -37,11 +38,11 @@ export function coerce(schema: any): any {
 			transformed.basis?.domain === "number");
 
 	if (isNumeric) {
-		return (coercedNumber as any).pipe(transformed);
+		return (parsedNumber as any).pipe(transformed);
 	}
 
 	if (transformed.expression === "boolean") {
-		return (coercedBoolean as any).pipe(transformed);
+		return (parsedBoolean as any).pipe(transformed);
 	}
 
 	return transformed;

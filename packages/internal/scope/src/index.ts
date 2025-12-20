@@ -1,30 +1,5 @@
-import { host } from "@repo/keywords";
+import { host, port } from "@repo/keywords";
 import { scope, type } from "arktype";
-
-/**
- * Coerces a string to a number.
- */
-export const coercedNumber = type("string | number")
-	.pipe((s) => {
-		if (typeof s === "number") return s;
-		const n = Number(s);
-		return Number.isNaN(n) ? s : n;
-	})
-	.narrow((data, ctx): data is number => {
-		if (typeof data !== "number") {
-			return ctx.mustBe("a number");
-		}
-		return true;
-	});
-
-/**
- * Coerce a string to a boolean.
- */
-export const coercedBoolean = type(
-	"'true' | 'false' | true | false",
-	"=>",
-	(data) => data === "true" || data === true,
-);
 
 /**
  * The root scope for the ArkEnv library.
@@ -36,7 +11,10 @@ export const $ = scope({
 		...type.keywords.string,
 		host,
 	}),
-	number: type.keywords.number,
+	number: type.module({
+		...type.keywords.number,
+		port,
+	}),
 	boolean: type.keywords.boolean,
 });
 
