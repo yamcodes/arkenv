@@ -1,7 +1,6 @@
 import { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { coerce } from "./coerce";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 
@@ -42,13 +41,8 @@ export function createEnv<const T extends SchemaShape>(
 	const isCompiledType = typeof def === "function" && "assert" in def;
 	const schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
 
-	// Coerce values if we have a raw definition
-	// We can't easily inspect compiled types to know which fields to coerce
-	const coercedEnv = !isCompiledType
-		? coerce(def as Record<string, unknown>, env)
-		: env;
-
-	const validatedEnv = schema(coercedEnv);
+	// Validate the environment variables
+	const validatedEnv = schema(env);
 
 	if (validatedEnv instanceof type.errors) {
 		throw new ArkEnvError(validatedEnv);
