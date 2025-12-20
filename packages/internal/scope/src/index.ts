@@ -22,23 +22,16 @@ const coercedNumber = type("string | number")
 	});
 
 /**
- * Coerces a string to a boolean.
+ * Coerce a string to a boolean.
  * "true" -> true
  * "false" -> false
+ * (if it was already a boolean, it stays as such)
  */
-const coercedBoolean = type("string | boolean")
-	.pipe((s) => {
-		if (typeof s === "boolean") return s;
-		if (s === "true") return true;
-		if (s === "false") return false;
-		return s;
-	})
-	.narrow((data, ctx): data is boolean => {
-		if (typeof data !== "boolean") {
-			return ctx.mustBe("a boolean");
-		}
-		return true;
-	});
+const coercedBoolean = type(
+	"'true' | 'false' | true | false",
+	"=>",
+	(str) => str === "true" || str === true,
+);
 
 /**
  * Wraps a module to apply coercion to its root and all sub-keywords.
