@@ -1,19 +1,18 @@
-import { $, coercedBoolean, coercedNumber } from "@repo/scope";
-import { type } from "arktype";
+import { coercedBoolean, coercedNumber } from "@repo/scope";
 
 /**
- * Traverses an ArkType schema and wraps numeric or boolean values in coercion morphs.
+ * Traverse an ArkType schema and wrap numeric or boolean values in coercion morphs.
  */
 export function coerce(schema: any): any {
 	const numInternal = (coercedNumber as any).internal;
 	const boolInternal = (coercedBoolean as any).internal;
 
-	return schema.transform((kind: any, inner: any, ctx: any) => {
-		// Target property values (required/optional)
+	// 1. Transform internal properties
+	const transformed = schema.transform((kind: any, inner: any) => {
 		if (kind === "required" || kind === "optional") {
 			const value = inner.value;
 
-			// Check if the value node is numeric (either a pure number domain or an intersection with a number basis)
+			// Check if the property value is numeric
 			const isNumeric =
 				value.domain === "number" ||
 				(value.hasKind("intersection") && value.basis?.domain === "number");
@@ -22,31 +21,28 @@ export function coerce(schema: any): any {
 				return { ...inner, value: numInternal.pipe(value) };
 			}
 
-			// Check if the value node is boolean (usually a union)
+			// Check if the property value is boolean
 			if (value.expression === "boolean") {
 				return { ...inner, value: boolInternal };
 			}
 		}
 
-		// Handle root-level primitives
-		if (
-			ctx.path.length === 0 &&
-			(kind === "intersection" || kind === "union" || kind === "domain")
-		) {
-			const node = $.node(kind, inner);
-			const isNumeric =
-				node.domain === "number" ||
-				(node.hasKind("intersection") && node.basis?.domain === "number");
-
-			if (isNumeric) {
-				return numInternal.pipe(node);
-			}
-
-			if (node.expression === "boolean") {
-				return boolInternal;
-			}
-		}
-
 		return inner;
 	});
+
+	// 2. Handle root-level primitives (if the schema itself is numeric or boolean)
+	const isNumeric =
+		transformed.domain === "number" ||
+		(transformed.hasKind("intersection") &&
+			transformed.basis?.domain === "number");
+
+	if (isNumeric) {
+		return (coercedNumber as any).pipe(transformed);
+	}
+
+	if (transformed.expression === "boolean") {
+		return (coercedBoolean as any).pipe(transformed);
+	}
+
+	return transformed;
 }
