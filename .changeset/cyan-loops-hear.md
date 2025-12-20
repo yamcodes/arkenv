@@ -12,7 +12,7 @@ Now, you can define a `number` directly:
 
 ```ts
 const env = arkenv({
-	PORT: "number",
+  PORT: "number",
   EPOCH: "number.epoch",
 });
 ```

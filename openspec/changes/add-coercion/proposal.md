@@ -23,7 +23,6 @@ const env = arkenv({
 ```
 
 ## Solution
-## Solution
 Configure the ArkEnv scope (`$`) to natively support coercion for `number` and `boolean` keywords. By overriding these keywords in the scope used by `arkenv`, we ensure that any usage of `"number"` or `"boolean"`—whether in a raw schema object or a pre-compiled `type()`—automatically accepts string values and coerces them to the correct primitive type.
 
 This approach ensures a consistent behavior where `arkenv({ PORT: "number" })` and `arkenv(type({ PORT: "number" }))` both work as expected.
