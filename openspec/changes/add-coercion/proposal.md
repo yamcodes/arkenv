@@ -23,6 +23,7 @@ const env = arkenv({
 ```
 
 ## Solution
-Implement an automatic coercion layer in `arkenv` that runs before ArkType validation. This layer will inspect the provided schema definition and, where possible, convert string environment variables into their target primitive types (number, boolean) so that ArkType can validate them as such.
+## Solution
+Configure the ArkEnv scope (`$`) to natively support coercion for `number` and `boolean` keywords. By overriding these keywords in the scope used by `arkenv`, we ensure that any usage of `"number"` or `"boolean"`—whether in a raw schema object or a pre-compiled `type()`—automatically accepts string values and coerces them to the correct primitive type.
 
-This approach allows `arkenv` to support "native" feeling environment variables while leveraging ArkType's powerful validation for the final values.
+This approach ensures a consistent behavior where `arkenv({ PORT: "number" })` and `arkenv(type({ PORT: "number" }))` both work as expected.

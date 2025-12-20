@@ -1,0 +1,27 @@
+
+--- Checking Sub-keyword Propagation ---
+Testing number.integer with string input '123'...
+Error constructing type: ParseError: 'number' must reference a module to be accessed using dot syntax
+    at throwError (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+util@0.56.0/node_modules/@ark/util/out/errors.js:5:11)
+    at throwParseError (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+util@0.56.0/node_modules/@ark/util/out/errors.js:10:43)
+    at maybeResolveSubalias (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:432:16)
+    at InternalScope.maybeResolveSubalias (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:257:17)
+    at InternalScope.maybeResolve (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:289:25)
+    at InternalScope.maybeResolveRoot (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:250:29)
+    at parseString (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/arktype@2.1.29/node_modules/arktype/out/parser/string.js:6:35)
+    at parseInnerDefinition (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/arktype@2.1.29/node_modules/arktype/out/parser/definition.js:16:37)
+    at InternalScope.parseOwnDefinitionFormat (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/arktype@2.1.29/node_modules/arktype/out/scope.js:74:24)
+    at InternalScope.parseDefinition (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:375:44)
+
+--- Testing Explicit Intersection ---
+Error constructing mixed type: ParseError: 'number' must reference a module to be accessed using dot syntax
+    at throwError (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+util@0.56.0/node_modules/@ark/util/out/errors.js:5:11)
+    at throwParseError (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+util@0.56.0/node_modules/@ark/util/out/errors.js:10:43)
+    at maybeResolveSubalias (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:432:16)
+    at InternalScope.maybeResolveSubalias (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:257:17)
+    at InternalScope.maybeResolve (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:289:25)
+    at InternalScope.maybeResolveRoot (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:250:29)
+    at parseString (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/arktype@2.1.29/node_modules/arktype/out/parser/string.js:6:35)
+    at parseInnerDefinition (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/arktype@2.1.29/node_modules/arktype/out/parser/definition.js:16:37)
+    at InternalScope.parseOwnDefinitionFormat (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/arktype@2.1.29/node_modules/arktype/out/scope.js:74:24)
+    at InternalScope.parseDefinition (file:///Users/yamcodes/code/arkenv/node_modules/.pnpm/@ark+schema@0.56.0/node_modules/@ark/schema/out/scope.js:375:44)

@@ -1,7 +1,8 @@
 # Tasks
 
-- [x] Implement `coerce` utility function in `src/utils.ts` or `src/coerce.ts`
-- [x] Integrate `coerce` into `createEnv` in `src/create-env.ts`
-- [x] Add unit tests for `coerce` logic
-- [x] Add integration tests in `tests/coercion.test.ts` verifying `number`, `boolean`, and sub-keywords
-- [x] Update documentation to explain coercion behavior and limitations
+- [ ] 1. Update `@repo/scope` to support coercion
+  - [ ] 1.1 Override `number` keyword in `$` to accept `string | number` and coerce
+  - [ ] 1.2 Override `boolean` keyword in `$` to accept `string | boolean` and coerce
+- [ ] 2. Verify implicit coercion
+  - [ ] 2.1 Test `arkenv({ PORT: "number" })` with string input
+  - [ ] 2.2 Test `arkenv(type({ PORT: "number" }))` with string input

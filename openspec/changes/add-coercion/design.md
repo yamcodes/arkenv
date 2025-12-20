@@ -1,66 +1,46 @@
 # Design: Coercion
 
 ## Architecture
-The coercion logic will be implemented as a preprocessing step within the `createEnv` function.
+
+Coercion will be implemented by enhancing the ArkType scope (`$`) used by `arkenv`.
 
 ### Flow
-1.  **Input**: `createEnv` receives a schema definition (`def`) and an environment object (`env`).
-2.  **Inspection**: We inspect `def` to identify keys that expect primitive types (number, boolean) but will receive strings from `env`.
-    *   This inspection primarily targets schema definitions provided as plain objects with string values (e.g., `{ PORT: "number" }`).
-    *   Complex ArkType definitions (already compiled types) may be skipped or require advanced introspection (out of scope for initial implementation).
-3.  **Coercion**:
-    *   For each identified key, we check the corresponding value in `env`.
-    *   If the target type is `number` (or subtypes like `number.port`, `number.epoch`), we attempt to convert the string to a number using `Number()` or `parseFloat()`.
-    *   If the target type is `boolean`, we convert "true" to `true` and "false" to `false`.
-4.  **Validation**: The modified `env` object (with coerced values) is passed to the ArkType schema for validation.
+1.  **Scope Definition**: We define custom `number` and `boolean` keywords in the `@repo/scope` package that accept `string` inputs and coerce them to their target types.
+2.  **Schema Definition**: When users define a schema using `arkenv({})` or `type({})`, they use these keywords (implicitly or explicitly).
+3.  **Validation**: ArkType natively handles the coercion during validation (parse phase), regardless of whether the schema was defined as a raw object or a pre-compiled type.
+
+This architecture ensures consistent behavior across all usage patterns.
 
 ## Decisions
 
-### Decision: Use Preprocessing for Coercion
-We decided to implement coercion as a preprocessing step that runs *before* ArkType validation, rather than using ArkType's native "morphs" or scope-level overrides.
+### Decision: Use Scope-based Coercion
+We decided to implement coercion by overriding the default `number` and `boolean` keywords in the `arkenv` scope (`$`).
 
 **Rationale:**
-1.  **Scope Limitations**: As confirmed by the ArkType creator, there is no mechanism to apply a morph to an entire scope (e.g., "all numbers"). We would have to manually override `number` and every subtype (`number.port`, `number.epoch`, etc.), which is brittle and unscalable.
-2.  **Separation of Concerns**: Coercion (parsing a string into a primitive) is distinct from Validation (checking if that primitive meets criteria). Keeping coercion separate allows `arkenv` to handle the "environment variable boundary" explicitly, ensuring that `number` in the schema always validates a real JavaScript number.
-3.  **Complexity**: Implementing type-level mapping for global coercion would introduce significant complexity to the types, whereas a runtime preprocessor is straightforward and easier to maintain.
+*   **Consistency**: Works identically for `arkenv({ P: "number" })` and `arkenv(type({ P: "number" }))`.
+*   **Simplicity**: Leverages ArkType's native morphing capabilities instead of maintaining a separate manual coercion layer.
+*   **Robustness**: Handles edge cases (like `NaN` or invalid booleans) using ArkType's existing validation logic.
 
-**Alternatives Considered:**
-*   **ArkType Morphs**: We considered using `type("string").pipe(...)` or overriding keywords in the scope. This was rejected because it requires manual per-type configuration or complex scope manipulation that doesn't propagate to sub-keywords.
-*   **Manual Parsing**: Continuing with the current state where users manually pipe string types. This was rejected as it degrades developer experience.
-
-## Risks / Trade-offs
-*   **String Definitions**: This approach relies on inspecting the schema definition. It works best when users provide string definitions (e.g., `{ PORT: "number" }`). If a user provides a pre-compiled `type("number")`, we cannot easily inspect it to apply coercion, meaning those values might remain strings and fail validation. We will document this limitation.
+**Alternatives considered:**
+*   **Preprocessing in `createEnv`**: This was the initial proposal. It was rejected because it couldn't handle pre-compiled `type()` definitions, creating an inconsistent user experience.
 
 ## Implementation Details
 
-### `coerce` Utility
-We will create a utility function `coerce(def: Record<string, unknown>, env: Record<string, string | undefined>)` that returns a new environment object.
+### `@repo/scope`
+We will modify `packages/internal/scope/src/index.ts` to override `number` and `boolean`.
 
 ```typescript
-function coerce(def: Record<string, unknown>, env: Record<string, string | undefined>) {
-  const coerced = { ...env };
-  for (const key in def) {
-    const typeDef = def[key];
-    if (typeof typeDef === "string") {
-      if (typeDef.startsWith("number")) {
-        // Coerce to number
-      } else if (typeDef === "boolean") {
-        // Coerce to boolean
-      }
-    }
-  }
-  return coerced;
-}
+// packages/internal/scope/src/index.ts
+export const $ = scope({
+    // Override number to accept string | number and coerce
+    number: type("string | number").pipe(/* coercion logic */),
+    
+    // Override boolean to accept string | boolean and coerce
+    boolean: type("string | boolean").pipe(/* coercion logic */),
+    
+    // ... other keywords
+});
 ```
 
-### Integration
-In `createEnv`:
-
-```typescript
-export function createEnv(def, env = process.env) {
-  // ...
-  const coercedEnv = isPlainObject(def) ? coerce(def, env) : env;
-  const validatedEnv = schema(coercedEnv);
-  // ...
-}
-```
+### `@repo/keywords`
+The actual coercion logic for `number` will be moved/reused from the existing `port` implementation (generalized). The `boolean` keyword already supports coercion but might need to be exposed as the default `boolean` in the scope.
