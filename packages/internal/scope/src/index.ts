@@ -43,12 +43,10 @@ const coercedBoolean = type("string | boolean")
 /**
  * Wraps a module to apply coercion to its root and all sub-keywords.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function wrapModule<T extends object>(
 	originalModule: T,
 	coercionType: typeof coercedNumber,
 ) {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const newModule: any = {
 		root: coercionType,
 	};
