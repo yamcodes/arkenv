@@ -14,6 +14,14 @@ const env = arkenv({
 	ZED_ENV: z.string(),
 });
 
+const MyNumber = type("number");
+const test = MyNumber(true);
+if (test instanceof type.errors) {
+	console.log(test.summary);
+} else {
+	console.log(test);
+}
+
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
 console.log({
