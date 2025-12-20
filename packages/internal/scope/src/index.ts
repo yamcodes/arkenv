@@ -26,12 +26,19 @@ const coercedNumber = type("string | number")
  * "true" -> true
  * "false" -> false
  */
-const coercedBoolean = type("string | boolean").pipe((s) => {
-	if (typeof s === "boolean") return s;
-	if (s === "true") return true;
-	if (s === "false") return false;
-	return s;
-});
+const coercedBoolean = type("string | boolean")
+	.pipe((s) => {
+		if (typeof s === "boolean") return s;
+		if (s === "true") return true;
+		if (s === "false") return false;
+		return s;
+	})
+	.narrow((data, ctx): data is boolean => {
+		if (typeof data !== "boolean") {
+			return ctx.mustBe("a boolean");
+		}
+		return true;
+	});
 
 /**
  * Wraps a module to apply coercion to its root and all sub-keywords.
