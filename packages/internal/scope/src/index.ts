@@ -1,5 +1,5 @@
 import { host, port } from "@repo/keywords";
-import { scope, type } from "arktype";
+import { Module, scope, type } from "arktype";
 
 // For an explanation of the `$` variable naming convention, see: https://discord.com/channels/957797212103016458/1414659167008063588/1414670282756587581
 
@@ -57,7 +57,7 @@ function wrapModule(originalModule: any, coercionType: typeof coercedNumber) {
 			newModule[key] = originalSub;
 		}
 	}
-	return newModule;
+	return newModule as Module<any>;
 }
 
 /**
