@@ -38,11 +38,10 @@ export function createEnv<const T extends SchemaShape>(
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
-	const schema =
-		typeof def === "function" && "assert" in def
-			? def
-			: $.type.raw(def as EnvSchema<T>);
+	const isCompiledType = typeof def === "function" && "assert" in def;
+	const schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
 
+	// Validate the environment variables
 	const validatedEnv = schema(env);
 
 	if (validatedEnv instanceof type.errors) {

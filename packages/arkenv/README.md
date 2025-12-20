@@ -59,6 +59,21 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
+## Coercion
+
+Environment variables are always strings, but ArkEnv automatically coerces them to their target types when possible:
+
+- `number` and subtypes (`number.port`, `number.epoch`) are parsed as numbers.
+- `boolean` strings ("true", "false") are parsed as booleans.
+
+```ts
+const env = arkenv({
+  PORT: "number",           // "3000" → 3000
+  DEBUG: "boolean",        // "true" → true
+  TIMESTAMP: "number.epoch" // "1640995200000" → 1640995200000
+});
+```
+
 ## Features
 
 - Zero external dependencies
