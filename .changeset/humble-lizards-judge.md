@@ -2,6 +2,8 @@
 "@repo/keywords": minor
 ---
 
-#### Removed `boolean` keyword
+#### Renamed `boolean` keyword to `parsedBoolean`
 
-**BREAKING**: The `boolean` keyword has been removed. Use the standard strict `boolean` keyword or the new scope-based coercion in `arkenv` instead.
+Rename our `boolean` keyword to `parsedBoolean` to better reflect its purpose. It is still a morph that keeps a boolean a boolean, and parses "true" and "false" to booleans.
+
+**BREAKING**: The `boolean` keyword has been renamed to `parsedBoolean`.
