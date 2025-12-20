@@ -36,26 +36,37 @@ const coercedBoolean = type(
 /**
  * Wraps a module to apply coercion to its root and all sub-keywords.
  */
-function wrapModule<T extends object>(
+function wrapModule<T extends object, C extends { pipe(sub: Type): unknown }>(
 	originalModule: T,
-	coercionType: typeof coercedNumber,
+	coercionType: C,
 ) {
 	const newModule: Record<string, unknown> = {
 		root: coercionType,
 	};
 
-	for (const key in originalModule) {
+	const originalRecord = originalModule as Record<string, unknown>;
+
+	for (const key in originalRecord) {
 		if (key === "root") continue;
-		const originalSub = originalModule[key];
-		if (typeof originalSub === "function") {
-			newModule[key] = coercionType.pipe(originalSub as unknown as Type);
+		const originalSub = originalRecord[key];
+
+		if (
+			typeof originalSub === "function" &&
+			"arkKind" in originalSub &&
+			originalSub.arkKind === "type"
+		) {
+			// ArkType's internal Module members are valid types at runtime, but their
+			// TS representation in the keyword modules doesn't always overlap cleanly
+			// with the public Type interface. We verify compatibility at runtime via arkKind.
+			// biome-ignore lint/suspicious/noExplicitAny: Avoid double-casting while maintaining runtime safety.
+			newModule[key] = coercionType.pipe(originalSub as any);
 		} else {
 			newModule[key] = originalSub;
 		}
 	}
 	return newModule as {
-		[K in keyof T]: K extends "root" ? typeof coercionType : T[K];
-	} & { root: typeof coercionType };
+		[K in keyof T]: K extends "root" ? C : T[K];
+	} & { root: C };
 }
 
 /**
