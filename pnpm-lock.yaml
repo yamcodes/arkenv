@@ -512,6 +512,12 @@ importers:
 
   packages/arkenv:
     devDependencies:
+      '@ark/schema':
+        specifier: 0.56.0
+        version: 0.56.0
+      '@ark/util':
+        specifier: 0.45.0
+        version: 0.45.0
       '@repo/keywords':
         specifier: workspace:*
         version: link:../internal/keywords
@@ -708,6 +714,9 @@ packages:
 
   '@ark/schema@0.56.0':
     resolution: {integrity: sha512-ECg3hox/6Z/nLajxXqNhgPtNdHWC9zNsDyskwO28WinoFEnWow4IsERNz9AnXRhTZJnYIlAJ4uGn3nlLk65vZA==}
+
+  '@ark/util@0.45.0':
+    resolution: {integrity: sha512-Z1gHEGbpPzLtPmYb932t2B++6YonlUi1Fa14IQ4vhsGMWhd81Mi1miUmdZXW4fNI/wg1saT7H2/5cAuONgTXhg==}
 
   '@ark/util@0.56.0':
     resolution: {integrity: sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA==}
@@ -7851,6 +7860,8 @@ snapshots:
   '@ark/schema@0.56.0':
     dependencies:
       '@ark/util': 0.56.0
+
+  '@ark/util@0.45.0': {}
 
   '@ark/util@0.56.0': {}
 

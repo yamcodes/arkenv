@@ -46,6 +46,8 @@
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/node": "catalog:",
+		"@ark/schema": "0.56.0",
+		"@ark/util": "0.45.0",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
