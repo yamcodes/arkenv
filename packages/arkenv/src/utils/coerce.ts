@@ -6,7 +6,7 @@ import type {
 	NormalizedSchema,
 } from "@ark/schema";
 import { parsedBoolean, parsedNumber } from "@repo/keywords";
-import { type BaseType, Type, type } from "arktype";
+import { type BaseType, type } from "arktype";
 
 const numberNode: BaseRoot = (type.number as BaseType).internal;
 const booleanNode: BaseRoot = (type.boolean as BaseType).internal;
@@ -60,15 +60,12 @@ export function coerce<t>(schema: BaseType<t>): BaseType<t> {
 	);
 
 	// Transform returns a BaseRoot (or null, but in practice it returns the node)
-	// We need to wrap it back into a Type (BaseType)
 	let finalNode = transformed ?? node;
 
 	// Handle root-level primitives (if the schema itself is numeric or boolean)
 	if (finalNode.extends(numberNode) && finalNode.kind !== "unit") {
 		if (finalNode.hasKind("union")) {
-			const isLiteralUnion = finalNode.branches.every((b) =>
-				b.hasKind("unit"),
-			);
+			const isLiteralUnion = finalNode.branches.every((b) => b.hasKind("unit"));
 			if (!isLiteralUnion) {
 				finalNode = numInternal.pipe(finalNode);
 			}
@@ -79,6 +76,6 @@ export function coerce<t>(schema: BaseType<t>): BaseType<t> {
 		finalNode = boolInternal.pipe(finalNode);
 	}
 
-	// Type constructor expects (node, scope)
-	return new Type(finalNode, schema.$) as BaseType<t>;
+	// Use the scope's schema method to properly wrap the BaseRoot back into a Type
+	return schema.$.schema(finalNode) as BaseType<t>;
 }
