@@ -1,5 +1,4 @@
 import { parsedBoolean, parsedNumber } from "@repo/keywords";
-import { $ } from "@repo/scope";
 
 /**
  * Traverse an ArkType schema and wrap numeric or boolean values in coercion morphs.

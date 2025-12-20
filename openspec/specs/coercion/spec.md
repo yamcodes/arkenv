@@ -1,7 +1,7 @@
 # coercion Specification
 
 ## Purpose
-TBD - created by archiving change add-coercion. Update Purpose after archive.
+Ensures that environment variables, which are natively strings, are automatically coerced into target types like `number` and `boolean` during validation. This coercion specifically preserves support for numeric refinements like ranges and divisors while maintaining strictness for numeric literals.
 ## Requirements
 ### Requirement: Coerce numeric strings to numbers
 The system MUST coerce environment variable strings to numbers when the schema definition specifies `number` or a `number.*` subtype.
