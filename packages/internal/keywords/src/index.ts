@@ -1,7 +1,7 @@
 import { type } from "arktype";
 
 /**
- * A `string` that can be parsed into a number between 0 and 65535
+ * A `number` (or a `string` that can be parsed into a `number`) between 0 and 65535
  */
 export const port = type("string | number", "=>", (data, ctx) => {
 	const asNumber = typeof data === "string" ? Number.parseInt(data, 10) : data;
