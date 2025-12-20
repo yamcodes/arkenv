@@ -12,6 +12,7 @@ const coercedNumber = type("string | number")
 	.pipe((s) => {
 		if (typeof s === "number") return s;
 		const n = Number(s);
+		// Return original string if conversion fails; narrow() will reject it
 		return Number.isNaN(n) ? s : n;
 	})
 	.narrow((data, ctx): data is number => {
@@ -30,7 +31,7 @@ const coercedNumber = type("string | number")
 const coercedBoolean = type(
 	"'true' | 'false' | true | false",
 	"=>",
-	(str) => str === "true" || str === true,
+	(data) => data === "true" || data === true,
 );
 
 /**
