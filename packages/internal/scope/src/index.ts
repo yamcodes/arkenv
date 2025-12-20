@@ -1,5 +1,5 @@
 import { host, port } from "@repo/keywords";
-import { scope, type } from "arktype";
+import { scope, type Type, type } from "arktype";
 
 // For an explanation of the `$` variable naming convention, see: https://discord.com/channels/957797212103016458/1414659167008063588/1414670282756587581
 
@@ -47,7 +47,7 @@ function wrapModule<T extends object>(
 	originalModule: T,
 	coercionType: typeof coercedNumber,
 ) {
-	const newModule: any = {
+	const newModule: Record<string, unknown> = {
 		root: coercionType,
 	};
 
@@ -55,7 +55,7 @@ function wrapModule<T extends object>(
 		if (key === "root") continue;
 		const originalSub = originalModule[key];
 		if (typeof originalSub === "function") {
-			newModule[key] = coercionType.pipe(originalSub as any);
+			newModule[key] = coercionType.pipe(originalSub as unknown as Type);
 		} else {
 			newModule[key] = originalSub;
 		}
