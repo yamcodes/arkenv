@@ -54,9 +54,31 @@ describe("coercion integration", () => {
 		expect(env.DEBUG).toBe(true);
 	});
 
-	it("should NOT coerce if using compiled types", () => {
-		// This documents the limitation
+	it("should coerce when using compiled type definitions", () => {
 		const schema = type({ PORT: "number" });
-		expect(() => createEnv(schema, { PORT: "3000" })).toThrow(); // "3000" is a string, schema expects number, no coercion happens
+		const env = createEnv(schema, { PORT: "3000" });
+		expect(env.PORT).toBe(3000);
+		expect(typeof env.PORT).toBe("number");
+	});
+
+	it("should coerce compiled number subtypes", () => {
+		const schema = type({
+			PORT: "number.port",
+			COUNT: "number.integer",
+		});
+		const env = createEnv(schema, { PORT: "8080", COUNT: "123" });
+		expect(env.PORT).toBe(8080);
+		expect(env.COUNT).toBe(123);
+	});
+
+	it("should fail compiled type validation if coercion fails", () => {
+		const schema = type({ PORT: "number" });
+		expect(() => createEnv(schema, { PORT: "abc" })).toThrow();
+	});
+
+	it("should work with other number sub-keywords like epoch", () => {
+		const ts = "1678886400000";
+		const env = createEnv({ TS: "number.epoch" }, { TS: ts });
+		expect(env.TS).toBe(1678886400000);
 	});
 });
