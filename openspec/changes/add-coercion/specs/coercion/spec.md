@@ -1,6 +1,6 @@
 # Spec: Coercion
 
-## Requirements
+## ADDED Requirements
 
 ### Requirement: Coerce numeric strings to numbers
 The system MUST coerce environment variable strings to numbers when the schema definition specifies `number` or a `number.*` subtype.
