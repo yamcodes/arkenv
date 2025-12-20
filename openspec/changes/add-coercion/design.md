@@ -2,45 +2,50 @@
 
 ## Architecture
 
-Coercion will be implemented by enhancing the ArkType scope (`$`) used by `arkenv`.
+Coercion is implemented via a post-parsing transformation of the ArkType schema.
 
 ### Flow
-1.  **Scope Definition**: We define custom `number` and `boolean` keywords in the `@repo/scope` package that accept `string` inputs and coerce them to their target types.
-2.  **Schema Definition**: When users define a schema using `arkenv({})` or `type({})`, they use these keywords (implicitly or explicitly).
-3.  **Validation**: ArkType natively handles the coercion during validation (parse phase), regardless of whether the schema was defined as a raw object or a pre-compiled type.
-
-This architecture ensures consistent behavior across all usage patterns.
+1.  **Scope Definition**: `@repo/scope` defines `number` and `boolean` as standard ArkType keywords. This allows the string parser to handle refinements like `0 < number < 100` normally.
+2.  **Schema Compilation**: `createEnv` parses the user's schema definition against the scope.
+3.  **Global Transformation**: `createEnv` calls a `coerce` utility which uses `schema.transform()` to walk the nodes.
+    - If a node is numeric (a `number` domain or an intersection with a `number` basis), it is piped into `parsedNumber`.
+    - If a node is boolean, it is piped into `parsedBoolean`.
+4.  **Validation**: The resulting transformed schema is used to validate the environment. Since the leaf nodes are now morphs, they automatically coerce strings to their target types before validating constraints.
 
 ## Decisions
 
-### Decision: Use Scope-based Coercion
-We decided to implement coercion by overriding the default `number` and `boolean` keywords in the `arkenv` scope (`$`).
+### Decision: Prefer Transformation over Scope Overrides
+We initially attempted to override `number` and `boolean` directly in the scope with morphs. We rejected this because it broke ArkType's ability to apply numeric constraints (ranges, divisors) to those types.
 
 **Rationale:**
-*   **Consistency**: Works identically for `arkenv({ P: "number" })` and `arkenv(type({ P: "number" }))`.
-*   **Simplicity**: Leverages ArkType's native morphing capabilities instead of maintaining a separate manual coercion layer.
-*   **Robustness**: Handles edge cases (like `NaN` or invalid booleans) using ArkType's existing validation logic.
+*   **Feature Completeness**: Supports ranges (`number >= 18`), divisors (`number % 2`), and unions seamlessly.
+*   **Parser Compatibility**: Keeps the scope primitives "clean," avoiding `ParseError` during schema definition.
+*   **Centralized Logic**: The conversion logic is isolated in a transformer, making it easier to debug and maintain.
 
-**Alternatives considered:**
-*   **Preprocessing in `createEnv`**: This was the initial proposal. It was rejected because it couldn't handle pre-compiled `type()` definitions, creating an inconsistent user experience.
+### Decision: Relocate Coercion Primitives to Keywords
+Conversion morphs like `parsedNumber` and `parsedBoolean` are kept in `@repo/keywords`.
+
+**Rationale:**
+*   **Building Blocks**: These can be reused to build other types (like `port`) that need string-to-number parsing.
+*   **Modularity**: Keeps the `arkenv` transformer decoupled from the specific implementation of the conversion logic.
 
 ## Implementation Details
 
-### `@repo/scope`
-We will modify `packages/internal/scope/src/index.ts` to override `number` and `boolean`.
+### `coerce` Utility (`packages/arkenv/src/utils/coerce.ts`)
+The transformer identifies property-level values or root-level primitives and wraps them in morphs.
 
 ```typescript
-// packages/internal/scope/src/index.ts
-export const $ = scope({
-    // Override number to accept string | number and coerce
-    number: type("string | number").pipe(/* coercion logic */),
-    
-    // Override boolean to accept string | boolean and coerce
-    boolean: type("string | boolean").pipe(/* coercion logic */),
-    
-    // ... other keywords
-});
+export function coerce(schema: any): any {
+    return schema.transform((kind, inner) => {
+        if (kind === "required" || kind === "optional") {
+            const value = inner.value;
+            if (isNumeric(value)) return { ...inner, value: parsedNumber.pipe(value) };
+            if (isBoolean(value)) return { ...inner, value: parsedBoolean };
+        }
+        return inner;
+    });
+}
 ```
 
 ### `@repo/keywords`
-The actual coercion logic for `number` will be moved/reused from the existing `port` implementation (generalized). The `boolean` keyword already supports coercion but might need to be exposed as the default `boolean` in the scope.
+Provides the `parsedNumber` and `parsedBoolean` types used as the targets for the transformer's `pipe` operations.

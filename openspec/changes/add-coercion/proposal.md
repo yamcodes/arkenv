@@ -1,28 +1,15 @@
 # Coercion
 
 ## Problem
-Environment variables are always strings at runtime, but users want to treat them as typed primitives without manual conversion.
+Environment variables are always strings at runtime, but users want to treat them as typed primitives (like `number` or `boolean`) without manual conversion.
 
-**Current state:**
-```typescript
-// Manual conversion required
-const env = arkenv({
-  PORT: type("string").pipe(str => Number.parseInt(str, 10)),
-  DEBUG: type("string").pipe(str => str === "true")
-});
-```
+While ArkType supports "morphs" for transformation, applying them directly to base keywords like `number` prevents the use of refinements (e.g., `number >= 18` or `number % 2`) because ArkType's parser cannot apply numeric constraints to non-numeric nodes (morphs).
 
-**Desired state:**
-```typescript
-// Coercion
-const env = arkenv({
-  PORT: "number",           // "3000" → 3000
-  DEBUG: "boolean",        // "true" → true  
-  TIMESTAMP: "number.epoch" // "1640995200000" → 1640995200000
-});
-```
+## Solution: Global Schema Transformation
+Instead of overriding primitives in the global scope with morphs, we keep the primitives clean and apply a **Global Schema Transformer** during environment parsing in `arkenv`.
 
-## Solution
-Configure the ArkEnv scope (`$`) to natively support coercion for `number` and `boolean` keywords. By overriding these keywords in the scope used by `arkenv`, we ensure that any usage of `"number"` or `"boolean"`—whether in a raw schema object or a pre-compiled `type()`—automatically accepts string values and coerces them to the correct primitive type.
+1.  **Keywords**: Define `parsedNumber` and `parsedBoolean` in `@repo/keywords` as reusable building blocks that handle string-to-primitive conversion.
+2.  **Scope**: Keep `number` and `boolean` as standard ArkType types in `@repo/scope` so they remain "constrainable" (supporting ranges, divisors, etc.).
+3.  **Transformation**: In `createEnv`, use ArkType's `schema.transform()` to walk the fully parsed schema. The transformer identifies numeric and boolean leaf nodes and automatically wraps them in the appropriate coercion morph.
 
-This approach ensures a consistent behavior where `arkenv({ PORT: "number" })` and `arkenv(type({ PORT: "number" }))` both work as expected.
+This approach provides full coercion support for environment variables while preserving ArkType's ability to validate ranges, divisors, and other numeric constraints.

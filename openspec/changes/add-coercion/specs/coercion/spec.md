@@ -1,6 +1,6 @@
 # Spec: Coercion
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Coerce numeric strings to numbers
 The system MUST coerce environment variable strings to numbers when the schema definition specifies `number` or a `number.*` subtype.
@@ -11,32 +11,41 @@ And an environment `{ PORT: "3000" }`
 When `arkenv` parses the environment
 Then the result should contain `PORT` as the number `3000`
 
-#### Scenario: Number subtype coercion
-Given a schema `{ TIMESTAMP: "number.epoch" }`
-And an environment `{ TIMESTAMP: "1640995200000" }`
+### Requirement: Support numeric refinements
+The system MUST support numeric refinements (ranges, divisors) on coerced environment variables.
+
+#### Scenario: Range coercion
+Given a schema `{ AGE: "number >= 18" }`
+And an environment `{ AGE: "21" }`
 When `arkenv` parses the environment
-Then the result should contain `TIMESTAMP` as the number `1640995200000`
+Then the result should contain `AGE` as the number `21`
+
+#### Scenario: Range failure
+Given a schema `{ AGE: "number >= 18" }`
+And an environment `{ AGE: "15" }`
+When `arkenv` parses the environment
+Then it should return a validation error indicating `AGE` must be at least 18
+
+#### Scenario: Divisor coercion
+Given a schema `{ EVEN: "number % 2" }`
+And an environment `{ EVEN: "4" }`
+When `arkenv` parses the environment
+Then the result should contain `EVEN` as the number `4`
 
 ### Requirement: Coerce boolean strings to booleans
 The system MUST coerce environment variable strings "true" and "false" to boolean values when the schema definition specifies `boolean`.
 
-#### Scenario: Boolean true coercion
+#### Scenario: Boolean coercion
 Given a schema `{ DEBUG: "boolean" }`
 And an environment `{ DEBUG: "true" }`
 When `arkenv` parses the environment
 Then the result should contain `DEBUG` as the boolean `true`
 
-#### Scenario: Boolean false coercion
-Given a schema `{ DEBUG: "boolean" }`
-And an environment `{ DEBUG: "false" }`
-When `arkenv` parses the environment
-Then the result should contain `DEBUG` as the boolean `false`
+### Requirement: Strictness by default for literals
+The system SHOULD NOT coerce strings to numbers for literal types unless explicitly specified, preserving standard ArkType strictness.
 
-### Requirement: Pass through non-coercible values
-The system MUST pass through values unchanged if they do not match a coercible type definition or if coercion fails (letting ArkType handle the validation error).
-
-#### Scenario: String pass-through
-Given a schema `{ API_KEY: "string" }`
-And an environment `{ API_KEY: "12345" }`
+#### Scenario: Literal strictness
+Given a schema `{ VERSION: "1 | 2" }`
+And an environment `{ VERSION: "1" }`
 When `arkenv` parses the environment
-Then the result should contain `API_KEY` as the string `"12345"`
+Then it should return a validation error (string "1" is not number 1)
