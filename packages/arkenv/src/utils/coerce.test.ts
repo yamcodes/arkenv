@@ -1,4 +1,4 @@
-import { type } from "arktype";
+import { ArkErrors, type } from "arktype";
 import { describe, expect, it } from "vitest";
 import { coerce } from "./coerce";
 
@@ -60,5 +60,16 @@ describe("coerce", () => {
 		expect(coercedSchema("20")).toBe(20);
 		const failure = coercedSchema("5");
 		expect(failure.toString()).toContain("must be at least 10 (was 5)");
+	});
+
+	it("should work with strict number literals (they are strict by default)", () => {
+		const schema = type("1 | 2");
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema("1");
+		expect(result instanceof ArkErrors).toBe(true);
+		expect(result.toString()).toContain('must be 1 or 2 (was "1")');
+
+		expect(coercedSchema(1)).toBe(1);
 	});
 });
