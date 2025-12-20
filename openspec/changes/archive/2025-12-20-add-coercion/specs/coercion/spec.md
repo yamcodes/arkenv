@@ -42,7 +42,7 @@ When `arkenv` parses the environment
 Then the result should contain `DEBUG` as the boolean `true`
 
 ### Requirement: Strictness by default for literals
-The system SHOULD NOT coerce strings to numbers for literal types unless explicitly specified, preserving standard ArkType strictness.
+The system MUST NOT coerce strings to numbers for literal types unless explicitly specified, preserving standard ArkType strictness.
 
 #### Scenario: Literal strictness
 Given a schema `{ VERSION: "1 | 2" }`
