@@ -81,4 +81,16 @@ describe("coercion integration", () => {
 		const env = createEnv({ TS: "number.epoch" }, { TS: ts });
 		expect(env.TS).toBe(1678886400000);
 	});
+
+	it("should accept natural number inputs without coercion", () => {
+		const t = type("number");
+		expect(t(123)).toBe(123);
+
+		const tInt = type("number.integer");
+		expect(tInt(456)).toBe(456);
+
+		const tBool = type("boolean");
+		expect(tBool(true)).toBe(true);
+		expect(tBool(false)).toBe(false);
+	});
 });

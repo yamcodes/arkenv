@@ -4,4 +4,4 @@
 
 #### Removed `boolean` keyword
 
-The `boolean` keyword has been removed. Use the standard strict `boolean` keyword or the new scope-based coercion in `arkenv` instead.
+**BREAKING**: The `boolean` keyword has been removed. Use the standard strict `boolean` keyword or the new scope-based coercion in `arkenv` instead.

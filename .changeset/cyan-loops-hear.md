@@ -1,10 +1,31 @@
 ---
-"arkenv": minor
+"arkenv": patch
 ---
 
 #### Native Coercion Support
 
-Added standard support for coercion using ArkType's scope mechanism.
-- `arkenv` now automatically coerces environment variables defined as `number` or `boolean`.
-- Use `arkenv({ PORT: "number" })` or `arkenv({ DEBUG: "boolean" })` directly.
-- **Breaking**: The `"number"` and `"boolean"` keywords in `arkenv` now perform automatic string coercion. If you require strict validation that *only* accepts number/boolean literals (rejecting strings), use `type` from `arktype` instead.
+Added native support for coercion in the `createEnv` (`arkenv`) and `type` functions. In practice, this adds automatic type conversions for the `number` keyword (and its sub-keywords).
+
+Now, you can define a `number` directly:
+
+```ts
+const env = arkenv({
+	PORT: "number",
+  EPOCH: "number.epoch",
+  BOOLEAN: "boolean",
+});
+```
+
+```dotenv
+PORT=3000
+EPOCH=1678886400000
+BOOLEAN=true
+```
+
+and it will be coerced to the desired types.
+
+```ts
+env.PORT // 3000
+env.EPOCH // 1678886400000
+env.BOOLEAN // true
+```
