@@ -16,11 +16,16 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   check-sync:
+    if: github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -39,3 +44,46 @@ jobs:
 
       - name: Check examples sync
         run: pnpm sync:examples:check
+
+  auto-sync:
+    if: github.actor == 'renovate[bot]' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          ref: ${{ github.head_ref }}
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+      - run: pnpm build:packages
+      - run: pnpm sync:examples
+
+      - name: Commit example updates
+        run: |
+          git config --global user.email "237618717+arkenv-bot[bot]@users.noreply.github.com"
+          git config --global user.name "arkenv-bot[bot]"
+          if [ -n "$(git status --porcelain examples)" ]; then
+            git add examples
+            git commit -m "chore(examples): sync generated examples"
+            git push origin HEAD || {
+              echo "❌ Failed to push example sync changes. Please re-run the workflow."
+              exit 1
+            }
+          else
+            echo "✓ No changes in examples to sync"
+          fi

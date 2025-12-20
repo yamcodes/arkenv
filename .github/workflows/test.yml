@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
@@ -40,7 +40,7 @@ jobs:
   test-typesafety:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
@@ -56,7 +56,7 @@ jobs:
         node-version: [lts/*, latest]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
@@ -64,7 +64,7 @@ jobs:
           cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.4
+          bun-version: 1.3.5
       - run: pnpm install
       - run: pnpm run build
 
@@ -73,7 +73,7 @@ jobs:
     outputs:
       version: ${{ steps.out.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
@@ -100,7 +100,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
       options: --user 1001
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 2
       - name: Set Turbo base/head for PRs
@@ -136,7 +136,7 @@ jobs:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 2 # for checking against main and for following the PR history
       - name: Set Turbo base/head for PRs
@@ -184,7 +184,7 @@ jobs:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 2 # for checking against main and for following the PR history
       - name: Set Turbo base/head for PRs
