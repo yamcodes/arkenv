@@ -94,4 +94,19 @@ describe("coerce", () => {
 		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("must be a number or boolean");
 	});
+
+	it("should coerce properties with mixed numeric and boolean unions", () => {
+		const schema = type({
+			VAL: "number | boolean",
+		});
+		const coercedSchema = coerce(schema);
+
+		expect(coercedSchema({ VAL: "123" })).toEqual({ VAL: 123 });
+		expect(coercedSchema({ VAL: "true" })).toEqual({ VAL: true });
+		expect(coercedSchema({ VAL: "false" })).toEqual({ VAL: false });
+
+		const failure = coercedSchema({ VAL: "other" });
+		expect(failure).toBeInstanceOf(ArkErrors);
+		expect(failure.toString()).toContain("VAL must be a number or boolean");
+	});
 });
