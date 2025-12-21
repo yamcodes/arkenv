@@ -29,16 +29,9 @@ export const parsedBoolean = type(
 );
 
 /**
- * A `number` (or a `string` to be parsed into a `number`) between 0 and 65535
+ * A `number` integer between 0 and 65535
  */
-export const port = parsedNumber.narrow((data, ctx): data is number => {
-	const isInteger = Number.isInteger(data);
-	const isBetween = 0 <= data && data <= 65535;
-	if (!isInteger || !isBetween) {
-		ctx.mustBe("an integer between 0 and 65535");
-	}
-	return true;
-});
+export const port = type("0 <= number.integer <= 65535");
 
 /**
  * An IP address or `"localhost"`

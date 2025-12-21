@@ -198,7 +198,7 @@ describe("createEnv + type + scope + types integration", () => {
 
 		it("should use default value for port when missing", () => {
 			const env = createEnv({
-				PORT: type("number.port").default(() => "3000"),
+				PORT: type("number.port").default(3000),
 			});
 
 			expect(env.PORT).toBe(3000);

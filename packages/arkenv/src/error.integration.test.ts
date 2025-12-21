@@ -144,7 +144,7 @@ describe("createEnv + type + errors + utils integration", () => {
 		});
 
 		it("should include value in error message when provided", () => {
-			const invalidValue = "abc";
+			const invalidValue = "99999";
 			vi.stubEnv("PORT", invalidValue);
 
 			try {

@@ -2,9 +2,9 @@ import { host, port } from "@repo/keywords";
 import { scope, type } from "arktype";
 
 /**
- * The root scope for the ArkEnv library.
- * keywords are kept as standard types to support parsing refinements like 'number >= 18'.
- * Coercion is applied globally in createEnv via a schema transformer.
+ * The root scope for the ArkEnv library,
+ * containing extensions to the ArkType scopes with ArkEnv-specific types
+ * like `string.host` and `number.port`.
  */
 export const $ = scope({
 	string: type.module({
@@ -15,7 +15,6 @@ export const $ = scope({
 		...type.keywords.number,
 		port,
 	}),
-	boolean: type.keywords.boolean,
 });
 
 export type $ = (typeof $)["t"];

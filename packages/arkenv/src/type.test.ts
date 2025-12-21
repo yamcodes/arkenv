@@ -16,14 +16,8 @@ describe("type", () => {
 
 	it("should create a type from a boolean schema", () => {
 		const envType = type({ DEBUG: "boolean" });
-		const result = envType.assert({ DEBUG: "true" });
+		const result = envType.assert({ DEBUG: true });
 		expect(result.DEBUG).toBe(true);
-	});
-
-	it("should convert 'false' string to false boolean", () => {
-		const envType = type({ DEBUG: "boolean" });
-		const result = envType.assert({ DEBUG: "false" });
-		expect(result.DEBUG).toBe(false);
 	});
 
 	it("should create a type with optional fields", () => {
@@ -67,20 +61,20 @@ describe("type", () => {
 	it("should create a type with arkenv-specific port validation", () => {
 		const envType = type({ PORT: "number.port" });
 
-		// Valid ports (as strings, like from environment variables)
-		const result1 = envType.assert({ PORT: "3000" });
+		// Valid ports
+		const result1 = envType.assert({ PORT: 3000 });
 		expect(result1.PORT).toBe(3000);
 
-		const result2 = envType.assert({ PORT: "8080" });
+		const result2 = envType.assert({ PORT: 8080 });
 		expect(result2.PORT).toBe(8080);
 
-		const result3 = envType.assert({ PORT: "65535" });
+		const result3 = envType.assert({ PORT: 65535 });
 		expect(result3.PORT).toBe(65535);
 
 		// Should throw for invalid ports
 		expect(() => envType.assert({ PORT: "invalid" })).toThrow();
-		expect(() => envType.assert({ PORT: "-1" })).toThrow();
-		expect(() => envType.assert({ PORT: "65536" })).toThrow();
+		expect(() => envType.assert({ PORT: -1 })).toThrow();
+		expect(() => envType.assert({ PORT: 65536 })).toThrow();
 	});
 
 	it("should create a complex type with multiple validations", () => {
@@ -95,8 +89,8 @@ describe("type", () => {
 		const result = envType.assert({
 			API_URL: "https://api.example.com",
 			HOST: "localhost",
-			PORT: "3000",
-			DEBUG: "true",
+			PORT: 3000,
+			DEBUG: true,
 			// API_KEY is optional, so we can omit it
 		});
 
@@ -141,7 +135,7 @@ describe("type", () => {
 		const result = envType.assert({
 			DATABASE: {
 				HOST: "localhost",
-				PORT: "5432",
+				PORT: 5432,
 				NAME: "myapp",
 			},
 		});
@@ -181,7 +175,7 @@ describe("type", () => {
 		const result = envType.assert({
 			STRING_VALUE: "hello",
 			NUMBER_VALUE: 42,
-			BOOLEAN_VALUE: "true",
+			BOOLEAN_VALUE: true,
 		});
 
 		expect(result.STRING_VALUE).toBe("hello");
@@ -211,7 +205,7 @@ describe("type", () => {
 		expect(result1.ENABLE_FEATURES).toBe(true);
 
 		// Test with environment variables (should override defaults)
-		const result2 = envType.assert({ DEBUG: "true", ENABLE_FEATURES: "false" });
+		const result2 = envType.assert({ DEBUG: true, ENABLE_FEATURES: false });
 		expect(result2.DEBUG).toBe(true);
 		expect(result2.ENABLE_FEATURES).toBe(false);
 	});
