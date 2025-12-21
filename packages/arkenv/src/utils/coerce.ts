@@ -37,6 +37,18 @@ const isBoolean = (node: ArkNode): boolean =>
  */
 // biome-ignore lint/suspicious/noExplicitAny: schema is an ArkType Type, but we use any to avoid importing internal types.
 export function coerce(schema: any): any {
+	// Validate internal API availability
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
+	if (!maybeParsedNumber || !(maybeParsedNumber as any).internal?.pipe) {
+		throw new Error(
+			`maybeParsedNumber internal API not found. Please ensure arkenv is being used with a compatible version of ArkType (currently requires .internal.pipe). Got: ${typeof maybeParsedNumber}`,
+		);
+	}
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
+	if (!maybeParsedBoolean || !(maybeParsedBoolean as any).internal?.pipe) {
+		throw new Error("maybeParsedBoolean internal API not available");
+	}
+
 	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
 	const numInternal = (maybeParsedNumber as any).internal;
 	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.

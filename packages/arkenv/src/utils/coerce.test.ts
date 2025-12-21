@@ -81,4 +81,17 @@ describe("coerce", () => {
 		expect(coercedSchema("1")).toBe(1);
 		expect(coercedSchema("a")).toBe("a");
 	});
+
+	it("should coerce mixed numeric and boolean unions", () => {
+		const schema = type("number | boolean");
+		const coercedSchema = coerce(schema);
+
+		expect(coercedSchema("123")).toBe(123);
+		expect(coercedSchema("true")).toBe(true);
+		expect(coercedSchema("false")).toBe(false);
+
+		const failure = coercedSchema("other");
+		expect(failure).toBeInstanceOf(ArkErrors);
+		expect(failure.toString()).toContain("must be a number or boolean");
+	});
 });
