@@ -13,18 +13,24 @@ interface ArkNode {
 	branches?: ArkNode[];
 	unit?: unknown;
 	expression?: string;
+	[key: string]: any;
 }
 
+/** Internal capability detection helpers */
+const getDomain = (node: ArkNode) => node.domain ?? node.basis?.domain;
+const hasKind = (node: ArkNode, kind: string) =>
+	node.kind === kind || node.hasKind?.(kind);
+const getBranches = (node: ArkNode) => node.branches ?? [];
+
 const isNumeric = (node: ArkNode): boolean =>
-	node.domain === "number" ||
-	(node.hasKind?.("intersection") && node.basis?.domain === "number") ||
-	(node.hasKind?.("union") && node.branches?.some(isNumeric)) ||
+	getDomain(node) === "number" ||
+	(hasKind(node, "union") && getBranches(node).some(isNumeric)) ||
 	(node.kind === "unit" && typeof node.unit === "number");
 
 const isBoolean = (node: ArkNode): boolean =>
-	node.domain === "boolean" ||
+	getDomain(node) === "boolean" ||
 	node.expression === "boolean" ||
-	(node.hasKind?.("union") && node.branches?.some(isBoolean)) ||
+	(hasKind(node, "union") && getBranches(node).some(isBoolean)) ||
 	(node.kind === "unit" && typeof node.unit === "boolean");
 
 /**
@@ -36,6 +42,14 @@ const isBoolean = (node: ArkNode): boolean =>
  * ArkType may break this implementation if these internal structures change.
  */
 export function coerce(schema: any): any {
+	// ArkType version safeguard
+	if (typeof schema.transform !== "function") {
+		throw new Error(
+			"ArkEnv: The provided ArkType schema does not support .transform(). " +
+				"Ensure you are using a compatible version of ArkType (^2.1.22).",
+		);
+	}
+
 	const numInternal = (maybeParsedNumber as any).internal;
 	const boolInternal = (maybeParsedBoolean as any).internal;
 
