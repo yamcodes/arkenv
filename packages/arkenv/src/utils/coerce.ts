@@ -67,12 +67,14 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 				const value = propInner.value;
 				let morphedValue: BaseRoot = value;
 
+				// Apply both morphs sequentially if the union contains both numeric and boolean branches
+				// The loose morphs will pass through values they can't parse, allowing the other branch to handle it
 				if (isNumeric(value)) {
-					morphedValue = numInternal.pipe(value);
+					morphedValue = numInternal.pipe(morphedValue);
 				}
 
 				if (isBoolean(value)) {
-					morphedValue = boolInternal.pipe(value);
+					morphedValue = boolInternal.pipe(morphedValue);
 				}
 
 				return {
@@ -89,6 +91,7 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 	let finalNode = transformed ?? node;
 
 	// Handle root-level primitives (if the schema itself is numeric or boolean)
+	// Apply both morphs sequentially if the union contains both numeric and boolean branches
 	if (isNumeric(finalNode)) {
 		finalNode = numInternal.pipe(finalNode);
 	}
