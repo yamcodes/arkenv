@@ -21,6 +21,12 @@
 	"packageRules": [
 		// Note: Order by least important to most important,
 		// see note at the end of https://docs.renovatebot.com/configuration-options/#packagerules
+		{
+			"groupName": "ArkType",
+			"matchPackageNames": ["arktype", "@ark/**"],
+			"automerge": true,
+			"automergeType": "pr"
+		},
 
 		// By SemVer
 		{

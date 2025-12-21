@@ -1,5 +1,6 @@
 import { type } from "arktype";
 import { describe, expect, it } from "vitest";
+import type { ArkNode } from "./coerce";
 
 /**
  * This test suite acts as a "Contract Test" for ArkType internals.
@@ -8,29 +9,29 @@ import { describe, expect, it } from "vitest";
  */
 describe("ArkType Internal Contract", () => {
 	it("should have expected internal properties for primitives", () => {
-		const node = type("number").internal as any;
+		const node = (type("number") as any).internal as ArkNode;
 		expect(node).toHaveProperty("kind");
 		expect(node).toHaveProperty("domain");
 		expect(node.domain).toBe("number");
 	});
 
 	it("should have expected internal properties for intersections (e.g. number.integer)", () => {
-		const node = type("number.integer").internal as any;
+		const node = (type("number.integer") as any).internal as ArkNode;
 		expect(node).toHaveProperty("kind");
 		expect(node.kind).toBe("intersection");
 		expect(node).toHaveProperty("basis");
-		expect(node.basis.domain).toBe("number");
+		expect(node.basis?.domain).toBe("number");
 	});
 
 	it("should have expected internal properties for unions", () => {
-		const node = type("number | boolean").internal as any;
+		const node = (type("number | boolean") as any).internal as ArkNode;
 		expect(node.kind).toBe("union");
 		expect(node).toHaveProperty("branches");
 		expect(Array.isArray(node.branches)).toBe(true);
 	});
 
 	it("should have expected internal properties for literals", () => {
-		const node = type("1").internal as any;
+		const node = (type("1") as any).internal as ArkNode;
 		expect(node.kind).toBe("unit");
 		expect(node).toHaveProperty("unit");
 		expect(node.unit).toBe(1);

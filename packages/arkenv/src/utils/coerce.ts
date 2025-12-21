@@ -1,3 +1,4 @@
+import { type } from "arktype";
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
 
 /**
@@ -5,7 +6,7 @@ import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
  * Minimal interface for ArkType internal node structure used for coercion.
  * These properties are not part of ArkType's public API.
  */
-interface ArkNode {
+export interface ArkNode {
 	kind: string;
 	domain?: string;
 	hasKind?: (kind: string) => boolean;
@@ -21,6 +22,44 @@ const getDomain = (node: ArkNode) => node.domain ?? node.basis?.domain;
 const hasKind = (node: ArkNode, kind: string) =>
 	node.kind === kind || node.hasKind?.(kind);
 const getBranches = (node: ArkNode) => node.branches ?? [];
+
+let compatibilityChecked = false;
+
+/**
+ * Verifies that the currently loaded version of ArkType matches our internal assumptions.
+ * This prevents silent failures if ArkType changes its internal node structure.
+ */
+function ensureCompatibility(schema: any) {
+	if (compatibilityChecked) return;
+
+	try {
+		const test = (maybeParsedNumber as any).internal;
+		if (!test || typeof test.kind !== "string") {
+			throw new Error("Missing .internal or .kind on ArkType nodes.");
+		}
+
+		// Check union structure
+		// Note: We use type("string | number") which are simple keywords.
+		// Using .or() with our keywords (which contain morphs) would cause
+		// an "indeterminate union" error during this test.
+		const union = (type("string | number") as any).internal;
+		if (union.kind === "union" && !Array.isArray(union.branches)) {
+			throw new Error("Union nodes no longer expose .branches as an array.");
+		}
+
+		if (typeof schema.transform !== "function") {
+			throw new Error("Type instances no longer expose .transform().");
+		}
+	} catch (e: any) {
+		throw new Error(
+			`ArkEnv Compatibility Error: ${e.message}\n` +
+				"The version of ArkType installed is incompatible with ArkEnv's magic coercion. " +
+				"Please check https://arkenv.js.org/compatibility for supported ranges.",
+		);
+	}
+
+	compatibilityChecked = true;
+}
 
 const isNumeric = (node: ArkNode): boolean =>
 	getDomain(node) === "number" ||
@@ -42,13 +81,7 @@ const isBoolean = (node: ArkNode): boolean =>
  * ArkType may break this implementation if these internal structures change.
  */
 export function coerce(schema: any): any {
-	// ArkType version safeguard
-	if (typeof schema.transform !== "function") {
-		throw new Error(
-			"ArkEnv: The provided ArkType schema does not support .transform(). " +
-				"Ensure you are using a compatible version of ArkType (^2.1.22).",
-		);
-	}
+	ensureCompatibility(schema);
 
 	const numInternal = (maybeParsedNumber as any).internal;
 	const boolInternal = (maybeParsedBoolean as any).internal;
