@@ -24,7 +24,56 @@ const expectedError = (
 	return formattedErrors.join("\n");
 };
 
-describe("env", () => {
+describe("createEnv", () => {
+	describe("coercion", () => {
+		it("should coerce number from string", () => {
+			const env = createEnv({ PORT: "number" }, { PORT: "3000" });
+			expect(env.PORT).toBe(3000);
+			expect(typeof env.PORT).toBe("number");
+		});
+
+		it("should coerce boolean from string", () => {
+			const env = createEnv(
+				{ DEBUG: "boolean", VERBOSE: "boolean" },
+				{ DEBUG: "true", VERBOSE: "false" },
+			);
+			expect(env.DEBUG).toBe(true);
+			expect(env.VERBOSE).toBe(false);
+		});
+
+		it("should coerce number.integer from string", () => {
+			const env = createEnv({ COUNT: "number.integer" }, { COUNT: "123" });
+			expect(env.COUNT).toBe(123);
+		});
+
+		it("should coerce numeric ranges from string", () => {
+			const env = createEnv({ AGE: "number >= 18" }, { AGE: "21" });
+			expect(env.AGE).toBe(21);
+		});
+
+		it("should coerce numeric divisors from string", () => {
+			const env = createEnv({ EVEN: "number % 2" }, { EVEN: "4" });
+			expect(env.EVEN).toBe(4);
+		});
+
+		it("should work with optional coerced properties", () => {
+			const schema = { "PORT?": "number" } as const;
+			expect(createEnv(schema, { PORT: "3000" }).PORT).toBe(3000);
+			expect(createEnv(schema, {}).PORT).toBeUndefined();
+		});
+
+		it("should work with root-level primitives", () => {
+			const schema = type("number >= 10");
+			expect(createEnv(schema as any, "20" as any)).toBe(20);
+		});
+
+		it("should NOT coerce strict number literals by default", () => {
+			const schema = { VAL: "1 | 2" } as const;
+			expect(() => createEnv(schema, { VAL: "1" })).toThrow();
+			expect(createEnv(schema, { VAL: 1 as any }).VAL).toBe(1);
+		});
+	});
+
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
