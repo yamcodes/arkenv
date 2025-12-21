@@ -62,7 +62,7 @@ describe("env", () => {
 			expectedError([
 				{
 					requiredType: "a number",
-					providedType: '"not a number"',
+					providedType: "a string",
 					name: "WRONG_TYPE",
 				},
 			]),
