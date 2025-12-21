@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
 import { type } from "./type";
 import { indent, styleText } from "./utils";
@@ -25,6 +25,15 @@ const expectedError = (
 };
 
 describe("createEnv", () => {
+	let originalEnv: NodeJS.ProcessEnv;
+
+	beforeEach(() => {
+		originalEnv = { ...process.env };
+	});
+
+	afterEach(() => {
+		process.env = originalEnv;
+	});
 	describe("coercion", () => {
 		it("should coerce number from string", () => {
 			const env = createEnv({ PORT: "number" }, { PORT: "3000" });
