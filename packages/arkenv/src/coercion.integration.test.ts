@@ -108,4 +108,9 @@ describe("coercion integration", () => {
 		expect(() => createEnv({ VAL: "number" }, { VAL: "" })).toThrow();
 		expect(() => createEnv({ VAL: "number" }, { VAL: "  " })).toThrow();
 	});
+
+	it("should fail validation if coercion fails (not a boolean)", () => {
+		expect(() => createEnv({ DEBUG: "boolean" }, { DEBUG: "yes" })).toThrow();
+		expect(() => createEnv({ DEBUG: "boolean" }, { DEBUG: "1" })).toThrow();
+	});
 });

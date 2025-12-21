@@ -78,6 +78,7 @@ In the current implementation, coercion applies to **object properties** but doe
 Discriminated unions are handled similarly to standard unions. As long as the property node itself can be identified as numeric or boolean (or a union containing them), the coercion will be applied. Narrowing logic within ArkType happens *after* the morph has attempted to produce a numeric value.
 
 ### Scope Limitations
-- **Internal API Reliance**: This implementation relies on undocumented ArkType internal structures.
+- **Internal API Reliance**: This implementation depends on **ArkType ^2.1.22** and relies on undocumented internal APIs for schema traversal and node identification. Specifically, it accesses internal node properties including `domain`, `hasKind`, `basis`, `branches`, `kind`, `unit`, and `expression`.
+- **Stability Note**: These internal APIs are not guaranteed to be semver-stable. It is critical to revisit and rigorously test this code path when upgrading ArkType beyond `^2.1.22` to prevent breaking changes in coercion logic.
 - **Literal Strictness**: Per requirements, numeric literals like `1 | 2` are specifically identified via unit checks to ensure they are coerced from `"1"`, aligned with standard environment variable behavior where all inputs start as strings.
 - **Whitespace**: Empty strings or whitespace are currently NOT coerced to `0` for numbers; they are preserved as strings, which will typically fail numeric validation as intended.
