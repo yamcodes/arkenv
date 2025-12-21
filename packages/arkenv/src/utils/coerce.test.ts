@@ -21,6 +21,7 @@ describe("coerce", () => {
 		expect(result).toEqual({ AGE: 21 });
 
 		const failure = coercedSchema({ AGE: "15" });
+		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("AGE must be at least 18 (was 15)");
 	});
 
@@ -33,6 +34,7 @@ describe("coerce", () => {
 		expect(result).toEqual({ EVEN: 4 });
 
 		const failure = coercedSchema({ EVEN: "3" });
+		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("EVEN must be even (was 3)");
 	});
 
@@ -59,17 +61,116 @@ describe("coerce", () => {
 		const coercedSchema = coerce(schema);
 		expect(coercedSchema("20")).toBe(20);
 		const failure = coercedSchema("5");
+		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("must be at least 10 (was 5)");
 	});
 
-	it("should work with strict number literals (they are strict by default)", () => {
+	it("should work with strict number literals", () => {
 		const schema = type("1 | 2");
 		const coercedSchema = coerce(schema);
 
-		const result = coercedSchema("1");
-		expect(result instanceof ArkErrors).toBe(true);
-		expect(result.toString()).toContain('must be 1 or 2 (was "1")');
-
+		expect(coercedSchema("1")).toBe(1);
+		expect(coercedSchema("2")).toBe(2);
 		expect(coercedSchema(1)).toBe(1);
+	});
+
+	it("should coerce numeric values in mixed unions", () => {
+		const schema = type("1 | 'a'");
+		const coercedSchema = coerce(schema);
+
+		expect(coercedSchema("1")).toBe(1);
+		expect(coercedSchema("a")).toBe("a");
+	});
+
+	it("should coerce mixed numeric and boolean unions", () => {
+		const schema = type("number | boolean");
+		const coercedSchema = coerce(schema);
+
+		expect(coercedSchema("123")).toBe(123);
+		expect(coercedSchema("true")).toBe(true);
+		expect(coercedSchema("false")).toBe(false);
+
+		const failure = coercedSchema("other");
+		expect(failure).toBeInstanceOf(ArkErrors);
+		expect(failure.toString()).toContain("must be a number or boolean");
+	});
+
+	it("should coerce properties with mixed numeric and boolean unions", () => {
+		const schema = type({
+			VAL: "number | boolean",
+		});
+		const coercedSchema = coerce(schema);
+
+		expect(coercedSchema({ VAL: "123" })).toEqual({ VAL: 123 });
+		expect(coercedSchema({ VAL: "true" })).toEqual({ VAL: true });
+		expect(coercedSchema({ VAL: "false" })).toEqual({ VAL: false });
+
+		const failure = coercedSchema({ VAL: "other" });
+		expect(failure).toBeInstanceOf(ArkErrors);
+		expect(failure.toString()).toContain("VAL must be a number or boolean");
+	});
+
+	it("should fail on empty or whitespace strings for numeric properties", () => {
+		const schema = type({
+			PORT: "number",
+		});
+		const coercedSchema = coerce(schema);
+
+		const emptyResult = coercedSchema({ PORT: "" });
+		expect(emptyResult).toBeInstanceOf(ArkErrors);
+		expect(emptyResult.toString()).toContain(
+			"PORT must be a number (was a string)",
+		);
+
+		const whitespaceResult = coercedSchema({ PORT: "   " });
+		expect(whitespaceResult).toBeInstanceOf(ArkErrors);
+		expect(whitespaceResult.toString()).toContain(
+			"PORT must be a number (was a string)",
+		);
+	});
+
+	it("should fail on non-numeric strings for numeric properties", () => {
+		const schema = type({
+			PORT: "number",
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({ PORT: "abc" });
+		expect(result).toBeInstanceOf(ArkErrors);
+		expect(result.toString()).toContain("PORT must be a number (was a string)");
+	});
+
+	it("should fail on invalid boolean strings", () => {
+		const schema = type({
+			DEBUG: "boolean",
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({ DEBUG: "yes" });
+		expect(result).toBeInstanceOf(ArkErrors);
+		expect(result.toString()).toContain('DEBUG must be boolean (was "yes")');
+	});
+
+	it("should coerce nested object structures", () => {
+		const schema = type({
+			DB: {
+				PORT: "number",
+				SSL: "boolean",
+			},
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({
+			DB: {
+				PORT: "5432",
+				SSL: "true",
+			},
+		});
+		expect(result).toEqual({
+			DB: {
+				PORT: 5432,
+				SSL: true,
+			},
+		});
 	});
 });

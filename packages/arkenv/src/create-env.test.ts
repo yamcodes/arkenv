@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
 import { type } from "./type";
 import { indent, styleText } from "./utils";
@@ -25,6 +25,15 @@ const expectedError = (
 };
 
 describe("createEnv", () => {
+	let originalEnv: NodeJS.ProcessEnv;
+
+	beforeEach(() => {
+		originalEnv = { ...process.env };
+	});
+
+	afterEach(() => {
+		process.env = originalEnv;
+	});
 	describe("coercion", () => {
 		it("should coerce number from string", () => {
 			const env = createEnv({ PORT: "number" }, { PORT: "3000" });
@@ -62,15 +71,9 @@ describe("createEnv", () => {
 			expect(createEnv(schema, {}).PORT).toBeUndefined();
 		});
 
-		it("should work with root-level primitives", () => {
-			const schema = type("number >= 10");
-			expect(createEnv(schema as any, "20" as any)).toBe(20);
-		});
-
-		it("should NOT coerce strict number literals by default", () => {
+		it("should coerce strict number literals", () => {
 			const schema = { VAL: "1 | 2" } as const;
-			expect(() => createEnv(schema, { VAL: "1" })).toThrow();
-			expect(createEnv(schema, { VAL: 1 as any }).VAL).toBe(1);
+			expect(createEnv(schema, { VAL: "1" }).VAL).toBe(1);
 		});
 	});
 

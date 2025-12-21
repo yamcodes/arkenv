@@ -35,7 +35,7 @@ export function coerce<t>(schema: BaseType<t>): BaseType<t> {
 				if (value.extends(numberNode) && value.kind !== "unit") {
 					// If it's a union, we only coerce if it's not a union of literals
 					if (value.hasKind("union")) {
-						const isLiteralUnion = value.branches.every((b) =>
+						const isLiteralUnion = value.branches.every((b: BaseRoot) =>
 							b.hasKind("unit"),
 						);
 						if (isLiteralUnion) return inner as NormalizedSchema<NodeKind>;
@@ -65,7 +65,9 @@ export function coerce<t>(schema: BaseType<t>): BaseType<t> {
 	// Handle root-level primitives (if the schema itself is numeric or boolean)
 	if (finalNode.extends(numberNode) && finalNode.kind !== "unit") {
 		if (finalNode.hasKind("union")) {
-			const isLiteralUnion = finalNode.branches.every((b) => b.hasKind("unit"));
+			const isLiteralUnion = finalNode.branches.every((b: BaseRoot) =>
+				b.hasKind("unit"),
+			);
 			if (!isLiteralUnion) {
 				finalNode = numInternal.pipe(finalNode);
 			}
