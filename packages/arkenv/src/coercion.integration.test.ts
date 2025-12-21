@@ -103,4 +103,9 @@ describe("coercion integration", () => {
 		const env = createEnv({ DEBUG: "true" }, { DEBUG: "true" });
 		expect(env.DEBUG).toBe(true);
 	});
+
+	it("should NOT coerce empty or whitespace strings to 0 for numbers", () => {
+		expect(() => createEnv({ VAL: "number" }, { VAL: "" })).toThrow();
+		expect(() => createEnv({ VAL: "number" }, { VAL: "  " })).toThrow();
+	});
 });
