@@ -22,7 +22,7 @@ export const formatErrors = (errors: ArkErrors): string =>
 					)
 				: messageWithoutPath;
 
-			return `${styleText("yellow", path)}${formattedMessage}`;
+			return `${styleText("yellow", path)} ${formattedMessage.trimStart()}`;
 		})
 		.join("\n");
 
@@ -35,3 +35,5 @@ export class ArkEnvError extends Error {
 		this.name = "ArkEnvError";
 	}
 }
+
+Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
