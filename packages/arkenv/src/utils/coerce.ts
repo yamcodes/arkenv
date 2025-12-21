@@ -49,6 +49,11 @@ const isBoolean = (node: BaseRoot): boolean => {
 
 /**
  * Traverse an ArkType schema and wrap numeric or boolean values in coercion morphs.
+ *
+ * @warning This function relies on undocumented ArkType internal APIs (including
+ * `.internal`, `.hasKind()`, `.domain`, `.branches`, and `.transform()`).
+ * It has been validated against ArkType version `^2.1.22`. Future updates to
+ * ArkType may break this implementation if these internal structures change.
  */
 export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 	const numInternal: BaseRoot = (maybeParsedNumber as BaseType).internal;
@@ -56,6 +61,7 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 
 	const node = schema.internal;
 
+	// 1. Transform internal properties
 	const transformed = node.transform(
 		(
 			kind: NodeKind,
@@ -67,18 +73,12 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 				const value = propInner.value;
 				let morphedValue: BaseRoot = value;
 
-				// Check if both conditions are true before applying morphs
-				const isNumericValue = isNumeric(value);
-				const isBooleanValue = isBoolean(value);
+				if (isNumeric(value)) {
+					morphedValue = numInternal.pipe(morphedValue);
+				}
 
-				if (isNumericValue && isBooleanValue) {
-					// For unions containing both numeric and boolean, compose the morphs
-					// Apply boolean morph first, then number morph (loose morphs will pass through unparseable values)
-					morphedValue = numInternal.pipe(boolInternal.pipe(value));
-				} else if (isNumericValue) {
-					morphedValue = numInternal.pipe(value);
-				} else if (isBooleanValue) {
-					morphedValue = boolInternal.pipe(value);
+				if (isBoolean(value)) {
+					morphedValue = boolInternal.pipe(morphedValue);
 				}
 
 				return {
@@ -91,23 +91,35 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 		},
 	);
 
-	// Transform returns a BaseRoot (or null, but in practice it returns the node)
-	let finalNode = transformed ?? node;
+	// 2. Handle root-level primitives (if the schema itself is numeric or boolean)
+	// Match original: check original transformed node, not the morphed result
+	const transformedNode = transformed ?? node;
+	let result: unknown = transformedNode;
 
-	// Handle root-level primitives (if the schema itself is numeric or boolean)
-	const isNumericNode = isNumeric(finalNode);
-	const isBooleanNode = isBoolean(finalNode);
-
-	if (isNumericNode && isBooleanNode) {
-		// For unions containing both numeric and boolean, compose the morphs
-		// Apply boolean morph first, then number morph (loose morphs will pass through unparseable values)
-		finalNode = numInternal.pipe(boolInternal.pipe(finalNode));
-	} else if (isNumericNode) {
-		finalNode = numInternal.pipe(finalNode);
-	} else if (isBooleanNode) {
-		finalNode = boolInternal.pipe(finalNode);
+	if (isNumeric(transformedNode)) {
+		// Match original: use public .pipe() API (works with BaseRoot internally)
+		// @ts-expect-error - Internal API: public .pipe() accepts BaseRoot internally
+		result = (maybeParsedNumber as BaseType<unknown>).pipe(result);
 	}
 
-	// Use the scope's schema method to properly wrap the BaseRoot back into a Type
-	return schema.$.schema(finalNode) as BaseType<t, $>;
+	if (isBoolean(transformedNode)) {
+		// Match original: use public .pipe() API (works with BaseRoot/BaseType internally)
+		// @ts-expect-error - Internal API: public .pipe() accepts BaseRoot/BaseType internally
+		result = (maybeParsedBoolean as BaseType<unknown>).pipe(result);
+	}
+
+	// Result may be BaseRoot or BaseType depending on whether morphs were applied
+	// Match original: return result directly (wrapped if needed for type safety)
+	if (
+		result &&
+		typeof result === "object" &&
+		"internal" in result &&
+		!("assert" in result)
+	) {
+		// Still a BaseRoot, wrap it using scope's schema method
+		return schema.$.schema(result as BaseRoot) as BaseType<t, $>;
+	}
+
+	// Already a BaseType from .pipe() calls, return directly
+	return result as BaseType<t, $>;
 }
