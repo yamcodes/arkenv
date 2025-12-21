@@ -35,14 +35,19 @@ const isBoolean = (node: ArkNode): boolean =>
  * It has been validated against ArkType version `^2.1.22`. Future updates to
  * ArkType may break this implementation if these internal structures change.
  */
+// biome-ignore lint/suspicious/noExplicitAny: schema is an ArkType Type, but we use any to avoid importing internal types.
 export function coerce(schema: any): any {
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
 	const numInternal = (maybeParsedNumber as any).internal;
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
 	const boolInternal = (maybeParsedBoolean as any).internal;
 
 	// 1. Transform internal properties
+	// biome-ignore lint/suspicious/noExplicitAny: inner represents internal node state.
 	const transformed = schema.transform((kind: string, inner: any) => {
 		if (kind === "required" || kind === "optional") {
 			const value = inner.value as ArkNode;
+			// biome-ignore lint/suspicious/noExplicitAny: morphedValue can be any transformed node.
 			let morphedValue: any = value;
 
 			if (isNumeric(value)) {
@@ -63,10 +68,12 @@ export function coerce(schema: any): any {
 	let result = transformed;
 
 	if (isNumeric(transformed as unknown as ArkNode)) {
+		// biome-ignore lint/suspicious/noExplicitAny: .pipe is part of internal traversal.
 		result = (maybeParsedNumber as any).pipe(result);
 	}
 
 	if (isBoolean(transformed as unknown as ArkNode)) {
+		// biome-ignore lint/suspicious/noExplicitAny: .pipe is part of internal traversal.
 		result = (maybeParsedBoolean as any).pipe(result);
 	}
 

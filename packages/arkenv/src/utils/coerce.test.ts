@@ -21,6 +21,7 @@ describe("coerce", () => {
 		expect(result).toEqual({ AGE: 21 });
 
 		const failure = coercedSchema({ AGE: "15" });
+		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("AGE must be at least 18 (was 15)");
 	});
 
@@ -33,6 +34,7 @@ describe("coerce", () => {
 		expect(result).toEqual({ EVEN: 4 });
 
 		const failure = coercedSchema({ EVEN: "3" });
+		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("EVEN must be even (was 3)");
 	});
 
@@ -59,6 +61,7 @@ describe("coerce", () => {
 		const coercedSchema = coerce(schema);
 		expect(coercedSchema("20")).toBe(20);
 		const failure = coercedSchema("5");
+		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("must be at least 10 (was 5)");
 	});
 
