@@ -6,7 +6,7 @@ import type {
 	NormalizedSchema,
 } from "@ark/schema";
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
-import { type BaseType } from "arktype";
+import type { BaseType } from "arktype";
 
 /**
  * @internal
