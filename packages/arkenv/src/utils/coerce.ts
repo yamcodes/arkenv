@@ -5,18 +5,54 @@ import type {
 	NodeKind,
 	NormalizedSchema,
 } from "@ark/schema";
-import { parsedBoolean, parsedNumber } from "@repo/keywords";
-import { type BaseType, type } from "arktype";
+import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
+import { type BaseType } from "arktype";
 
-const numberNode: BaseRoot = (type.number as BaseType).internal;
-const booleanNode: BaseRoot = (type.boolean as BaseType).internal;
+/**
+ * @internal
+ * Minimal interface for ArkType internal node structure used for coercion.
+ * These properties are not part of ArkType's public API but are needed for type checking.
+ */
+type ArkNodeLike = BaseRoot & {
+	domain?: string;
+	expression?: string;
+	basis?: { domain: string };
+	branches?: BaseRoot[];
+	unit?: unknown;
+};
+
+/**
+ * Check if a node represents a numeric type (including intersections, unions, etc.)
+ */
+const isNumeric = (node: BaseRoot): boolean => {
+	const n = node as ArkNodeLike;
+	return (
+		n.domain === "number" ||
+		(n.hasKind("intersection") && n.basis?.domain === "number") ||
+		(n.hasKind("union") && n.branches?.some(isNumeric)) ||
+		(n.kind === "unit" && typeof n.unit === "number")
+	);
+};
+
+/**
+ * Check if a node represents a boolean type (including unions, etc.)
+ */
+const isBoolean = (node: BaseRoot): boolean => {
+	const n = node as ArkNodeLike;
+	return (
+		n.domain === "boolean" ||
+		n.expression === "boolean" ||
+		(n.hasKind("union") && n.branches?.some(isBoolean)) ||
+		(n.kind === "unit" && typeof n.unit === "boolean")
+	);
+};
 
 /**
  * Traverse an ArkType schema and wrap numeric or boolean values in coercion morphs.
  */
-export function coerce<t>(schema: BaseType<t>): BaseType<t> {
-	const numInternal: BaseRoot = (parsedNumber as BaseType).internal;
-	const boolInternal: BaseRoot = (parsedBoolean as BaseType).internal;
+export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
+	const numInternal: BaseRoot = (maybeParsedNumber as BaseType).internal;
+	const boolInternal: BaseRoot = (maybeParsedBoolean as BaseType).internal;
 
 	const node = schema.internal;
 
@@ -29,30 +65,20 @@ export function coerce<t>(schema: BaseType<t>): BaseType<t> {
 			if (kind === "required" || kind === "optional") {
 				const propInner = inner as Inner<"required" | "optional">;
 				const value = propInner.value;
+				let morphedValue: BaseRoot = value;
 
-				// We use .extends() to catch refined numbers (e.g. number >= 18)
-				// but we skip units to preserve strictness for literals.
-				if (value.extends(numberNode) && value.kind !== "unit") {
-					// If it's a union, we only coerce if it's not a union of literals
-					if (value.hasKind("union")) {
-						const isLiteralUnion = value.branches.every((b: BaseRoot) =>
-							b.hasKind("unit"),
-						);
-						if (isLiteralUnion) return inner as NormalizedSchema<NodeKind>;
-					}
-
-					return {
-						...propInner,
-						value: numInternal.pipe(value),
-					} as NormalizedSchema<NodeKind>;
+				if (isNumeric(value)) {
+					morphedValue = numInternal.pipe(value);
 				}
 
-				if (value.extends(booleanNode) && value.kind !== "unit") {
-					return {
-						...propInner,
-						value: boolInternal.pipe(value),
-					} as NormalizedSchema<NodeKind>;
+				if (isBoolean(value)) {
+					morphedValue = boolInternal.pipe(value);
 				}
+
+				return {
+					...propInner,
+					value: morphedValue,
+				} as NormalizedSchema<NodeKind>;
 			}
 
 			return inner as NormalizedSchema<NodeKind>;
@@ -63,21 +89,14 @@ export function coerce<t>(schema: BaseType<t>): BaseType<t> {
 	let finalNode = transformed ?? node;
 
 	// Handle root-level primitives (if the schema itself is numeric or boolean)
-	if (finalNode.extends(numberNode) && finalNode.kind !== "unit") {
-		if (finalNode.hasKind("union")) {
-			const isLiteralUnion = finalNode.branches.every((b: BaseRoot) =>
-				b.hasKind("unit"),
-			);
-			if (!isLiteralUnion) {
-				finalNode = numInternal.pipe(finalNode);
-			}
-		} else {
-			finalNode = numInternal.pipe(finalNode);
-		}
-	} else if (finalNode.extends(booleanNode) && finalNode.kind !== "unit") {
+	if (isNumeric(finalNode)) {
+		finalNode = numInternal.pipe(finalNode);
+	}
+
+	if (isBoolean(finalNode)) {
 		finalNode = boolInternal.pipe(finalNode);
 	}
 
 	// Use the scope's schema method to properly wrap the BaseRoot back into a Type
-	return schema.$.schema(finalNode) as BaseType<t>;
+	return schema.$.schema(finalNode) as BaseType<t, $>;
 }
