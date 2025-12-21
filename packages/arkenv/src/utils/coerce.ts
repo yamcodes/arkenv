@@ -56,8 +56,22 @@ const isBoolean = (node: BaseRoot): boolean => {
  * ArkType may break this implementation if these internal structures change.
  */
 export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
-	const numInternal: BaseRoot = (maybeParsedNumber as BaseType).internal;
-	const boolInternal: BaseRoot = (maybeParsedBoolean as BaseType).internal;
+	// Validate internal API availability
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
+	if (!maybeParsedNumber || !(maybeParsedNumber as any).internal?.pipe) {
+		throw new Error(
+			`maybeParsedNumber internal API not found. Please ensure arkenv is being used with a compatible version of ArkType (currently requires .internal.pipe). Got: ${typeof maybeParsedNumber}`,
+		);
+	}
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
+	if (!maybeParsedBoolean || !(maybeParsedBoolean as any).internal?.pipe) {
+		throw new Error("maybeParsedBoolean internal API not available");
+	}
+
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
+	const numInternal = (maybeParsedNumber as any).internal;
+	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
+	const boolInternal = (maybeParsedBoolean as any).internal;
 
 	const node = schema.internal;
 
@@ -94,32 +108,29 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 	// 2. Handle root-level primitives (if the schema itself is numeric or boolean)
 	// Match original: check original transformed node, not the morphed result
 	const transformedNode = transformed ?? node;
-	let result: unknown = transformedNode;
+	let result: any = transformedNode;
 
 	if (isNumeric(transformedNode)) {
-		// Match original: use public .pipe() API (works with BaseRoot internally)
-		// @ts-expect-error - Internal API: public .pipe() accepts BaseRoot internally
-		result = (maybeParsedNumber as BaseType<unknown>).pipe(result);
+		// biome-ignore lint/suspicious/noExplicitAny: .pipe is part of internal traversal.
+		result = (maybeParsedNumber as any).pipe(result);
 	}
 
 	if (isBoolean(transformedNode)) {
-		// Match original: use public .pipe() API (works with BaseRoot/BaseType internally)
-		// @ts-expect-error - Internal API: public .pipe() accepts BaseRoot/BaseType internally
-		result = (maybeParsedBoolean as BaseType<unknown>).pipe(result);
+		// biome-ignore lint/suspicious/noExplicitAny: .pipe is part of internal traversal.
+		result = (maybeParsedBoolean as any).pipe(result);
 	}
 
 	// Result may be BaseRoot or BaseType depending on whether morphs were applied
-	// Match original: return result directly (wrapped if needed for type safety)
 	if (
 		result &&
 		typeof result === "object" &&
 		"internal" in result &&
 		!("assert" in result)
 	) {
-		// Still a BaseRoot, wrap it using scope's schema method
+		// Still a BaseRoot, wrap it using scope's schema method to keep good types
 		return schema.$.schema(result as BaseRoot) as BaseType<t, $>;
 	}
 
-	// Already a BaseType from .pipe() calls, return directly
+	// Already a BaseType (e.g. from .pipe() calls), return directly
 	return result as BaseType<t, $>;
 }
