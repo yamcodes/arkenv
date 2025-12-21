@@ -21,7 +21,7 @@ describe("scope", () => {
 
 	it("should validate number.port", () => {
 		const portType = $.type({ PORT: "number.port" });
-		const result = portType.assert({ PORT: "8080" });
+		const result = portType.assert({ PORT: 8080 });
 		expect(result.PORT).toBe(8080);
 	});
 
@@ -37,7 +37,7 @@ describe("scope", () => {
 		});
 		const result = envType.assert({
 			HOST: "localhost",
-			PORT: "3000",
+			PORT: 3000,
 		});
 		expect(result.HOST).toBe("localhost");
 		expect(result.PORT).toBe(3000);

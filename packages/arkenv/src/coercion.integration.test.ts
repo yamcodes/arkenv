@@ -93,4 +93,24 @@ describe("coercion integration", () => {
 		expect(tBool(true)).toBe(true);
 		expect(tBool(false)).toBe(false);
 	});
+
+	it("should coerce and validate strict number literals", () => {
+		const env = createEnv({ VAL: "1 | 2" }, { VAL: "1" });
+		expect(env.VAL).toBe(1);
+	});
+
+	it("should coerce and validate strict boolean literals", () => {
+		const env = createEnv({ DEBUG: "true" }, { DEBUG: "true" });
+		expect(env.DEBUG).toBe(true);
+	});
+
+	it("should NOT coerce empty or whitespace strings to 0 for numbers", () => {
+		expect(() => createEnv({ VAL: "number" }, { VAL: "" })).toThrow();
+		expect(() => createEnv({ VAL: "number" }, { VAL: "  " })).toThrow();
+	});
+
+	it("should fail validation if coercion fails (not a boolean)", () => {
+		expect(() => createEnv({ DEBUG: "boolean" }, { DEBUG: "yes" })).toThrow();
+		expect(() => createEnv({ DEBUG: "boolean" }, { DEBUG: "1" })).toThrow();
+	});
 });

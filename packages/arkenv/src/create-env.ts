@@ -3,6 +3,7 @@ import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
+import { coerce } from "./utils";
 
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
@@ -39,7 +40,10 @@ export function createEnv<const T extends SchemaShape>(
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
-	const schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
+	let schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
+
+	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
+	schema = coerce(schema);
 
 	// Validate the environment variables
 	const validatedEnv = schema(env);

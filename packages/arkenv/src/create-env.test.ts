@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
 import { type } from "./type";
 import { indent, styleText } from "./utils";
@@ -24,7 +24,59 @@ const expectedError = (
 	return formattedErrors.join("\n");
 };
 
-describe("env", () => {
+describe("createEnv", () => {
+	let originalEnv: NodeJS.ProcessEnv;
+
+	beforeEach(() => {
+		originalEnv = { ...process.env };
+	});
+
+	afterEach(() => {
+		process.env = originalEnv;
+	});
+	describe("coercion", () => {
+		it("should coerce number from string", () => {
+			const env = createEnv({ PORT: "number" }, { PORT: "3000" });
+			expect(env.PORT).toBe(3000);
+			expect(typeof env.PORT).toBe("number");
+		});
+
+		it("should coerce boolean from string", () => {
+			const env = createEnv(
+				{ DEBUG: "boolean", VERBOSE: "boolean" },
+				{ DEBUG: "true", VERBOSE: "false" },
+			);
+			expect(env.DEBUG).toBe(true);
+			expect(env.VERBOSE).toBe(false);
+		});
+
+		it("should coerce number.integer from string", () => {
+			const env = createEnv({ COUNT: "number.integer" }, { COUNT: "123" });
+			expect(env.COUNT).toBe(123);
+		});
+
+		it("should coerce numeric ranges from string", () => {
+			const env = createEnv({ AGE: "number >= 18" }, { AGE: "21" });
+			expect(env.AGE).toBe(21);
+		});
+
+		it("should coerce numeric divisors from string", () => {
+			const env = createEnv({ EVEN: "number % 2" }, { EVEN: "4" });
+			expect(env.EVEN).toBe(4);
+		});
+
+		it("should work with optional coerced properties", () => {
+			const schema = { "PORT?": "number" } as const;
+			expect(createEnv(schema, { PORT: "3000" }).PORT).toBe(3000);
+			expect(createEnv(schema, {}).PORT).toBeUndefined();
+		});
+
+		it("should coerce strict number literals", () => {
+			const schema = { VAL: "1 | 2" } as const;
+			expect(createEnv(schema, { VAL: "1" }).VAL).toBe(1);
+		});
+	});
+
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
@@ -62,7 +114,7 @@ describe("env", () => {
 			expectedError([
 				{
 					requiredType: "a number",
-					providedType: '"not a number"',
+					providedType: "a string",
 					name: "WRONG_TYPE",
 				},
 			]),
