@@ -109,4 +109,68 @@ describe("coerce", () => {
 		expect(failure).toBeInstanceOf(ArkErrors);
 		expect(failure.toString()).toContain("VAL must be a number or boolean");
 	});
+
+	it("should fail on empty or whitespace strings for numeric properties", () => {
+		const schema = type({
+			PORT: "number",
+		});
+		const coercedSchema = coerce(schema);
+
+		const emptyResult = coercedSchema({ PORT: "" });
+		expect(emptyResult).toBeInstanceOf(ArkErrors);
+		expect(emptyResult.toString()).toContain(
+			"PORT must be a number (was a string)",
+		);
+
+		const whitespaceResult = coercedSchema({ PORT: "   " });
+		expect(whitespaceResult).toBeInstanceOf(ArkErrors);
+		expect(whitespaceResult.toString()).toContain(
+			"PORT must be a number (was a string)",
+		);
+	});
+
+	it("should fail on non-numeric strings for numeric properties", () => {
+		const schema = type({
+			PORT: "number",
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({ PORT: "abc" });
+		expect(result).toBeInstanceOf(ArkErrors);
+		expect(result.toString()).toContain("PORT must be a number (was a string)");
+	});
+
+	it("should fail on invalid boolean strings", () => {
+		const schema = type({
+			DEBUG: "boolean",
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({ DEBUG: "yes" });
+		expect(result).toBeInstanceOf(ArkErrors);
+		expect(result.toString()).toContain('DEBUG must be boolean (was "yes")');
+	});
+
+	it("should coerce nested object structures", () => {
+		const schema = type({
+			DB: {
+				PORT: "number",
+				SSL: "boolean",
+			},
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({
+			DB: {
+				PORT: "5432",
+				SSL: "true",
+			},
+		});
+		expect(result).toEqual({
+			DB: {
+				PORT: 5432,
+				SSL: true,
+			},
+		});
+	});
 });
