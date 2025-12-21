@@ -1,5 +1,5 @@
-import { type } from "arktype";
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
+import { type } from "arktype";
 
 /**
  * @internal
