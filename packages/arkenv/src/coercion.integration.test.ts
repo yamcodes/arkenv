@@ -93,4 +93,14 @@ describe("coercion integration", () => {
 		expect(tBool(true)).toBe(true);
 		expect(tBool(false)).toBe(false);
 	});
+
+	it("should coerce and validate strict number literals", () => {
+		const env = createEnv({ VAL: "1 | 2" }, { VAL: "1" });
+		expect(env.VAL).toBe(1);
+	});
+
+	it("should coerce and validate strict boolean literals", () => {
+		const env = createEnv({ DEBUG: "true" }, { DEBUG: "true" });
+		expect(env.DEBUG).toBe(true);
+	});
 });

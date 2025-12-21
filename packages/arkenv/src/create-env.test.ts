@@ -62,15 +62,9 @@ describe("createEnv", () => {
 			expect(createEnv(schema, {}).PORT).toBeUndefined();
 		});
 
-		it("should work with root-level primitives", () => {
-			const schema = type("number >= 10");
-			expect(createEnv(schema as any, "20" as any)).toBe(20);
-		});
-
-		it("should NOT coerce strict number literals by default", () => {
+		it("should coerce strict number literals", () => {
 			const schema = { VAL: "1 | 2" } as const;
-			expect(() => createEnv(schema, { VAL: "1" })).toThrow();
-			expect(createEnv(schema, { VAL: 1 as any }).VAL).toBe(1);
+			expect(createEnv(schema, { VAL: "1" }).VAL).toBe(1);
 		});
 	});
 

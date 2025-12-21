@@ -62,14 +62,20 @@ describe("coerce", () => {
 		expect(failure.toString()).toContain("must be at least 10 (was 5)");
 	});
 
-	it("should work with strict number literals (they are strict by default)", () => {
+	it("should work with strict number literals", () => {
 		const schema = type("1 | 2");
 		const coercedSchema = coerce(schema);
 
-		const result = coercedSchema("1");
-		expect(result instanceof ArkErrors).toBe(true);
-		expect(result.toString()).toContain('must be 1 or 2 (was "1")');
-
+		expect(coercedSchema("1")).toBe(1);
+		expect(coercedSchema("2")).toBe(2);
 		expect(coercedSchema(1)).toBe(1);
+	});
+
+	it("should coerce numeric values in mixed unions", () => {
+		const schema = type("1 | 'a'");
+		const coercedSchema = coerce(schema);
+
+		expect(coercedSchema("1")).toBe(1);
+		expect(coercedSchema("a")).toBe("a");
 	});
 });
