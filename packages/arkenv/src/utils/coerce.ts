@@ -67,14 +67,18 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 				const value = propInner.value;
 				let morphedValue: BaseRoot = value;
 
-				// Apply both morphs sequentially if the union contains both numeric and boolean branches
-				// The loose morphs will pass through values they can't parse, allowing the other branch to handle it
-				if (isNumeric(value)) {
-					morphedValue = numInternal.pipe(morphedValue);
-				}
+				// Check if both conditions are true before applying morphs
+				const isNumericValue = isNumeric(value);
+				const isBooleanValue = isBoolean(value);
 
-				if (isBoolean(value)) {
-					morphedValue = boolInternal.pipe(morphedValue);
+				if (isNumericValue && isBooleanValue) {
+					// For unions containing both numeric and boolean, compose the morphs
+					// Apply boolean morph first, then number morph (loose morphs will pass through unparseable values)
+					morphedValue = numInternal.pipe(boolInternal.pipe(value));
+				} else if (isNumericValue) {
+					morphedValue = numInternal.pipe(value);
+				} else if (isBooleanValue) {
+					morphedValue = boolInternal.pipe(value);
 				}
 
 				return {
@@ -91,12 +95,16 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 	let finalNode = transformed ?? node;
 
 	// Handle root-level primitives (if the schema itself is numeric or boolean)
-	// Apply both morphs sequentially if the union contains both numeric and boolean branches
-	if (isNumeric(finalNode)) {
-		finalNode = numInternal.pipe(finalNode);
-	}
+	const isNumericNode = isNumeric(finalNode);
+	const isBooleanNode = isBoolean(finalNode);
 
-	if (isBoolean(finalNode)) {
+	if (isNumericNode && isBooleanNode) {
+		// For unions containing both numeric and boolean, compose the morphs
+		// Apply boolean morph first, then number morph (loose morphs will pass through unparseable values)
+		finalNode = numInternal.pipe(boolInternal.pipe(finalNode));
+	} else if (isNumericNode) {
+		finalNode = numInternal.pipe(finalNode);
+	} else if (isBooleanNode) {
 		finalNode = boolInternal.pipe(finalNode);
 	}
 
