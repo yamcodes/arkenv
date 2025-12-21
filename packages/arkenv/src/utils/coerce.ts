@@ -23,7 +23,7 @@ export function coerce<t>(schema: BaseType<t>): BaseType<t> {
 	const transformed = node.transform(
 		(
 			kind: NodeKind,
-			inner: Inner<NodeKind> & { meta: unknown },
+			inner,
 			_ctx: DeepNodeTransformContext,
 		): NormalizedSchema<NodeKind> | null => {
 			if (kind === "required" || kind === "optional") {
