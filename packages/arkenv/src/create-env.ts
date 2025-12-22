@@ -14,36 +14,65 @@ type RuntimeEnvironment = Record<string, string | undefined>;
  * and be as close as possible to the type accepted by ArkType's `type`.
  */
 
+export type ArkEnvOptions = {
+	coerce?: boolean;
+};
+
 /**
  * Create an environment variables object from a schema and an environment
  * @param def - The environment variable schema (raw object or type definition created with `type()`)
- * @param env - The environment variables to validate, defaults to `process.env`
+ * @param envOrRef - The environment variables to validate (defaults to `process.env`) or options
+ * @param opts - Options for the environment variables parser
  * @returns The validated environment variable schema
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	env?: RuntimeEnvironment,
+	options?: ArkEnvOptions,
+): distill.Out<at.infer<T, $>>;
+export function createEnv<const T extends SchemaShape>(
+	def: EnvSchema<T>,
+	env: RuntimeEnvironment,
+	options?: ArkEnvOptions,
 ): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends EnvSchemaWithType>(
 	def: T,
-	env?: RuntimeEnvironment,
+	options?: ArkEnvOptions,
+): InferType<T>;
+export function createEnv<T extends EnvSchemaWithType>(
+	def: T,
+	env: RuntimeEnvironment,
+	options?: ArkEnvOptions,
 ): InferType<T>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
-	env?: RuntimeEnvironment,
-): distill.Out<at.infer<T, $>> | InferType<typeof def>;
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
-	env: RuntimeEnvironment = process.env,
+	envOrOptions: RuntimeEnvironment | ArkEnvOptions = process.env,
+	options?: ArkEnvOptions,
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+	// Resolve overloaded arguments
+	let env: RuntimeEnvironment = process.env;
+	let opts: ArkEnvOptions = {};
+
+	if (options) {
+		env = envOrOptions as RuntimeEnvironment;
+		opts = options;
+	} else if (isOptions(envOrOptions)) {
+		opts = envOrOptions;
+	} else {
+		env = envOrOptions as RuntimeEnvironment;
+	}
+
+	const { coerce: shouldCoerce = true } = opts;
+
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
 	let schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
 
 	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
-	schema = coerce(schema);
+	if (shouldCoerce) {
+		schema = coerce(schema);
+	}
 
 	// Validate the environment variables
 	const validatedEnv = schema(env);
@@ -53,4 +82,15 @@ export function createEnv<const T extends SchemaShape>(
 	}
 
 	return validatedEnv;
+}
+
+function isOptions(
+	val: RuntimeEnvironment | ArkEnvOptions,
+): val is ArkEnvOptions {
+	return (
+		typeof val === "object" &&
+		val !== null &&
+		"coerce" in val &&
+		typeof (val as ArkEnvOptions).coerce === "boolean"
+	);
 }
