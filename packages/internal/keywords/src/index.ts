@@ -11,10 +11,12 @@ import { type } from "arktype";
  */
 export const maybeParsedNumber = type("unknown").pipe((s) => {
 	if (typeof s === "number") return s;
-	if (typeof s !== "string" || s.trim() === "") return s;
-	const n = Number(s);
-	if (Number.isNaN(n) && s !== "NaN") return s;
-	return n;
+	if (typeof s !== "string") return s;
+	const trimmed = s.trim();
+	if (trimmed === "") return s;
+	if (trimmed === "NaN") return Number.NaN;
+	const n = Number(trimmed);
+	return Number.isNaN(n) ? s : n;
 });
 
 /**
