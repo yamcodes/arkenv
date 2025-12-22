@@ -45,6 +45,11 @@ describe("coerce", () => {
 		const coercedSchema = coerce(schema);
 		expect(coercedSchema({ DEBUG: "true" })).toEqual({ DEBUG: true });
 		expect(coercedSchema({ DEBUG: "false" })).toEqual({ DEBUG: false });
+
+		// Verify case sensitivity - currently implementation expects lowercase "true"/"false"
+		const result = coercedSchema({ DEBUG: "TRUE" });
+		expect(result).toBeInstanceOf(ArkErrors);
+		expect(result.toString()).toContain('DEBUG must be boolean (was "TRUE")');
 	});
 
 	it("should work with optional properties", () => {
