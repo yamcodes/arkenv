@@ -71,6 +71,12 @@ const findCoercionPaths = (
 		}
 	}
 
+	if ("allOf" in node && node.allOf) {
+		for (const branch of node.allOf) {
+			results.push(...findCoercionPaths(branch as JsonSchema, path));
+		}
+	}
+
 	if ("oneOf" in node && node.oneOf) {
 		for (const branch of node.oneOf) {
 			results.push(...findCoercionPaths(branch as JsonSchema, path));
