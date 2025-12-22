@@ -26,10 +26,54 @@ This strategy ensures:
 - **Unions**: Handled via `anyOf`, `oneOf`, or `allOf`.
 
 ### 2. Path Mapping
-... (rest of section) ...
+
+We traverse the generated JSON Schema to identify all possible paths that terminate in a type requiring coercion (specifically `number`, `integer`, or `boolean`).
+
+**Mapping Rules:**
+1.  **Primitives**:
+    *   `type: "number"` or `type: "integer"` -> Mark path for numeric coercion.
+    *   `type: "boolean"` -> Mark path for boolean coercion.
+    *   `const` or `enum`: If the value(s) are numbers or booleans -> Mark path.
+2.  **Recursion**:
+    *   `properties`: Traverse into keys (e.g., `path: ["nested", "key"]`).
+    *   `items` (Arrays): 
+        *   If `items` is an array (tuples), traverse by index.
+        *   If `items` is a schema (lists), traverse with strict marker `*` (e.g., `path: ["list", "*"]`).
+3.  **Unions**: Recursively traverse all choices in `anyOf`, `oneOf`, and `allOf`.
+4.  **Deduplication**: Resulting paths are stringified and deduplicated to avoid redundant processing.
+
+**Example Path Map:**
+For a schema `{ PORT: "number", FLAGS: "boolean[]" }`, the inspection yields:
+```ts
+[
+  { path: ["PORT"] },       // Numeric target
+  { path: ["FLAGS", "*"] }  // Boolean target for all array elements
+]
+```
 
 ### 3. Execution Flow
-... (rest of section) ...
+
+The implementation wraps the original validation in a predictable 3-step pipeline:
+
+1.  **Introspection (Setup Phase)**:
+    *   Call `schema.in.toJsonSchema()` with fallback.
+    *   Run `findCoercionPaths()` to generate a `CoercionTarget[]` list.
+    *   If no targets are found, return the original schema immediately (zero runtime overhead).
+
+2.  **Pre-processing (Runtime Phase)**: 
+    *   If targets exist, wrapped schema executes `applyCoercion(data, targets)`.
+    *   **Traversal**: For each target path, we safely walk the input object.
+    *   **Handling Missing Keys**: If a key along the path is missing, traversal aborts early for that target (no error thrown).
+    *   **Handling Arrays**: When encountering the `*` marker, we iterate *all* elements of the current array.
+    *   **Mutation**: When a leaf node is reached, inputs are mutated *in place*:
+        *   Attempt `maybeParsedNumber`: parses strings like `"123"` to `123`.
+        *   If that fails (returns string), attempt `maybeParsedBoolean`: parses `"true"`/`"false"` to boolean.
+        *   Values that cannot be coerced (e.g. `"abc"` for a number field) are left as-is.
+
+3.  **Validation (Final Phase)**:
+    *   The potentially mutated `data` is passed to the original `schema`.
+    *   ArkType performs full validation. If a value wasn't coerced (e.g. `"abc"` remained `"abc"`), ArkType returns a standard validation error (e.g. "must be a number").
+    *   This pipeline is constructed via `type("unknown").pipe(transform).pipe(schema)`.
 
 ## Trade-offs and Considerations
 
