@@ -14,6 +14,8 @@ Instead of inspecting proprietary ArkType structures (`schema.in.json`) or mutat
 3.  Pre-process the input data (environment variables) to coerce values at those paths *before* passing the data to ArkType for final validation.
 4.  Wrap the original schema in a pipeline: `type("unknown").pipe(applyCoercion).pipe(schema)`.
 
+> **Note**: This refactor introduces **NO BREAKING CHANGES** to the public API. It maintains 100% backward compatibility with the existing `createEnv` function and coercion behavior.
+
 ## Impact
 
 - **Reliability**: Relies on a stable external standard (JSON Schema) rather than ArkType's fluctuating internal representation.
