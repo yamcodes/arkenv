@@ -1,5 +1,27 @@
 # Design: Public API Coercion
 
+## User-Facing Behavior
+
+The coercion system works seamlessly with the standard `createEnv` API. When enabled (default), string inputs in the environment are automatically converted to their target primitive types before validation.
+
+```ts
+// User creates an env schema and passes the environment (e.g. process.env)
+const env = createEnv(
+  type({
+    PORT: "number",
+    DEBUG: "boolean"
+  }),
+  {
+    env: process.env, // e.g. { PORT: "3000", DEBUG: "true" }
+    coerce: true      // Enabled by default
+  }
+);
+
+// Result is fully typed and coerced:
+// env.PORT  -> 3000 (number)
+// env.DEBUG -> true (boolean)
+```
+
 ## Architecture: Pipeline Wrapper Pattern
 
 The secondary `coerce` function will no longer attempt to reach into the `BaseRoot` instances or use `.transform()`. Instead, it will leverage ArkType's public `.pipe()` functionality to create a data transformation layer.
@@ -40,7 +62,10 @@ We traverse the generated JSON Schema to identify all possible paths that termin
         *   If `items` is an array (tuples), traverse by index.
         *   If `items` is a schema (lists), traverse with strict marker `*` (e.g., `path: ["list", "*"]`).
 3.  **Unions**: Recursively traverse all choices in `anyOf`, `oneOf`, and `allOf`.
-4.  **Deduplication**: Resulting paths are stringified and deduplicated to avoid redundant processing.
+4.  **Deduplication**: Resulting paths are stringified (e.g., `["PORT"]` becomes `"[\"PORT\"]"`) and stored in a `Set` to ensure uniqueness.
+    *   **Collision Handling**: Stringification is robust for standard JSON keys.
+    *   **Union Overlaps**: If a union has multiple branches pointing to the same key (e.g., `number | boolean`), the path is added once. Both coercion strategies (number then boolean) are applied to that single path during execution.
+    *   **Discriminated Unions**: Traversed recursively via `oneOf`/`anyOf`. If branches share keys (e.g. `{ kind: "A", val: "number" } | { kind: "B", val: "boolean" }`), the `val` path is correctly identified. Since coercion is applied loosely (try parse number, then try parse boolean), mixed targets at the same path are handled safely.
 
 **Example Path Map:**
 For a schema `{ PORT: "number", FLAGS: "boolean[]" }`, the inspection yields:
