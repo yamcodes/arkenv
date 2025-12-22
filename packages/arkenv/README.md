@@ -142,9 +142,7 @@ Beyond [the core package](https://arkenv.js.org/docs/arkenv), we also provide pl
 
 If you love ArkEnv, you can support the project by **starring it on GitHub**!
 
-You are also welcome to directly [contribute to the project's development](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md).
-
-## Contributors
+You are also welcome to [contribute to the project](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md) and join the wonderful people who have contributed:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
