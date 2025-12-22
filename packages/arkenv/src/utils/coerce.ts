@@ -1,10 +1,3 @@
-import type {
-	BaseRoot,
-	DeepNodeTransformContext,
-	Inner,
-	NodeKind,
-	NormalizedSchema,
-} from "@ark/schema";
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
@@ -158,5 +151,5 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 
 	return type("unknown")
 		.pipe((data) => applyCoercion(data, targets))
-		.pipe(schema) as BaseType<t, $>;
+		.pipe(schema);
 }
