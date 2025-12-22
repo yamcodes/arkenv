@@ -1,6 +1,8 @@
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
+const ARRAY_ITEM_MARKER = "*";
+
 /**
  * @internal
  * Information about a path in the schema that requires coercion.
@@ -46,12 +48,19 @@ const findCoercionPaths = (
 			if ("items" in node && node.items) {
 				if (Array.isArray(node.items)) {
 					// Tuple traversal
-					node.items.forEach((item) => {
-						results.push(...findCoercionPaths(item as JsonSchema, path));
+					node.items.forEach((item, index) => {
+						results.push(
+							...findCoercionPaths(item as JsonSchema, [...path, `${index}`]),
+						);
 					});
 				} else {
 					// List traversal
-					results.push(...findCoercionPaths(node.items as JsonSchema, path));
+					results.push(
+						...findCoercionPaths(node.items as JsonSchema, [
+							...path,
+							ARRAY_ITEM_MARKER,
+						]),
+					);
 				}
 			}
 		} else if (node.type === "object") {
@@ -109,6 +118,22 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 		// If we've reached the last key, apply coercion
 		if (targetPath.length === 1) {
 			const lastKey = targetPath[0];
+
+			if (lastKey === ARRAY_ITEM_MARKER) {
+				if (Array.isArray(current)) {
+					for (let i = 0; i < current.length; i++) {
+						const original = current[i];
+						const asNumber = maybeParsedNumber(original);
+						if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+							current[i] = asNumber;
+						} else {
+							current[i] = maybeParsedBoolean(original);
+						}
+					}
+				}
+				return;
+			}
+
 			// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
 			if (Object.prototype.hasOwnProperty.call(current, lastKey)) {
 				const original = current[lastKey];
@@ -125,16 +150,18 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 
 		// Recurse down
 		const [nextKey, ...rest] = targetPath;
-		const nextValue = current[nextKey];
 
-		if (Array.isArray(nextValue)) {
-			// If the next value is an array, we need to apply the *rest* of the path to *each* item
-			for (const item of nextValue) {
-				walk(item, rest);
+		if (nextKey === ARRAY_ITEM_MARKER) {
+			if (Array.isArray(current)) {
+				for (const item of current) {
+					walk(item, rest);
+				}
 			}
-		} else {
-			walk(nextValue, rest);
+			return;
 		}
+
+		const nextValue = current[nextKey];
+		walk(nextValue, rest);
 	};
 
 	for (const target of targets) {
