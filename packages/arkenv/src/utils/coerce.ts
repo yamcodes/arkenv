@@ -16,8 +16,11 @@ interface CoercionTarget {
 const isNumeric = (node: unknown): boolean => {
 	if (node === "number") return true;
 	if (typeof node === "object" && node !== null && !Array.isArray(node)) {
-		const n = node as Record<string, any>;
-		const domain = typeof n.domain === "object" ? n.domain?.domain : n.domain;
+		const n = node as Record<string, unknown>;
+		const domain =
+			typeof n.domain === "object" && n.domain !== null
+				? (n.domain as Record<string, unknown>).domain
+				: n.domain;
 		return (
 			domain === "number" ||
 			typeof n.unit === "number" ||
@@ -33,8 +36,11 @@ const isNumeric = (node: unknown): boolean => {
 const isBoolean = (node: unknown): boolean => {
 	if (node === "boolean") return true;
 	if (typeof node === "object" && node !== null && !Array.isArray(node)) {
-		const n = node as Record<string, any>;
-		const domain = typeof n.domain === "object" ? n.domain?.domain : n.domain;
+		const n = node as Record<string, unknown>;
+		const domain =
+			typeof n.domain === "object" && n.domain !== null
+				? (n.domain as Record<string, unknown>).domain
+				: n.domain;
 		if (domain === "boolean" || n.expression === "boolean") return true;
 		if (typeof n.unit === "boolean") return true;
 	}
@@ -61,24 +67,30 @@ const findCoercionPaths = (
 			results.push(...findCoercionPaths(branch, path));
 		}
 	} else if (typeof node === "object" && node !== null) {
-		const n = node as any;
+		const n = node as Record<string, unknown>;
 
 		// Handle explicit branches property if it exists (though in.json often uses raw arrays for unions)
-		if (n.branches && Array.isArray(n.branches)) {
+		if (Array.isArray(n.branches)) {
 			for (const branch of n.branches) {
 				results.push(...findCoercionPaths(branch, path));
 			}
 		}
 
 		// Handle properties
-		if (n.required && Array.isArray(n.required)) {
+		if (Array.isArray(n.required)) {
 			for (const p of n.required) {
-				results.push(...findCoercionPaths(p.value, [...path, p.key]));
+				const prop = p as Record<string, unknown>;
+				results.push(
+					...findCoercionPaths(prop.value, [...path, prop.key as string]),
+				);
 			}
 		}
-		if (n.optional && Array.isArray(n.optional)) {
+		if (Array.isArray(n.optional)) {
 			for (const p of n.optional) {
-				results.push(...findCoercionPaths(p.value, [...path, p.key]));
+				const prop = p as Record<string, unknown>;
+				results.push(
+					...findCoercionPaths(prop.value, [...path, prop.key as string]),
+				);
 			}
 		}
 
@@ -96,7 +108,7 @@ const findCoercionPaths = (
 /**
  * Apply coercion to a data object based on identified paths.
  */
-function applyCoercion(data: any, targets: CoercionTarget[]): any {
+function applyCoercion(data: unknown, targets: CoercionTarget[]): unknown {
 	if (!data || typeof data !== "object" || Array.isArray(data)) {
 		if (targets.some((t) => t.path.length === 0)) {
 			return maybeParsedNumber(maybeParsedBoolean(data));
@@ -104,7 +116,7 @@ function applyCoercion(data: any, targets: CoercionTarget[]): any {
 		return data;
 	}
 
-	const result = { ...data };
+	const result = { ...(data as Record<string, unknown>) };
 
 	for (const { path } of targets) {
 		if (path.length === 0) continue;
@@ -115,8 +127,8 @@ function applyCoercion(data: any, targets: CoercionTarget[]): any {
 			if (curr[key] && typeof curr[key] === "object") {
 				// Only clone if it's the original object from data (not already cloned in result)
 				// Since we shallow cloned 'data' into 'result', curr[key] is still pointing to the original nested object.
-				curr[key] = { ...curr[key] };
-				curr = curr[key];
+				curr[key] = { ...(curr[key] as Record<string, unknown>) };
+				curr = curr[key] as Record<string, unknown>;
 			} else {
 				// Path doesn't exist or is not an object, can't descend
 				break;
@@ -124,7 +136,8 @@ function applyCoercion(data: any, targets: CoercionTarget[]): any {
 		}
 
 		const lastKey = path[path.length - 1];
-		if (Object.hasOwn(curr, lastKey)) {
+		// biome-ignore lint/suspicious/noPrototypeBuiltins: Required for ES2020 compatibility (Object.hasOwn is ES2022)
+		if (Object.prototype.hasOwnProperty.call(curr, lastKey)) {
 			curr[lastKey] = maybeParsedNumber(maybeParsedBoolean(curr[lastKey]));
 		}
 	}
