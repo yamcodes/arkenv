@@ -208,7 +208,9 @@ hybrid.setup = (build) => {
 						schema = mod.env;
 						break;
 					}
-				} catch (_e) {}
+				} catch (e) {
+					console.error(`Failed to load env schema from ${p}:`, e);
+				}
 			}
 		}
 
