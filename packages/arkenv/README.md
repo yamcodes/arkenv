@@ -152,6 +152,7 @@ You are also welcome to directly [contribute to the project's development](https
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://yam.codes"><img src="https://avatars.githubusercontent.com/u/2014360?v=4?s=100" width="100px;" alt="Yam C Borodetsky"/><br /><sub><b>Yam C Borodetsky</b></sub></a><br /><a href="#code-yamcodes" title="Code">💻</a> <a href="#question-yamcodes" title="Answering Questions">💬</a> <a href="#doc-yamcodes" title="Documentation">📖</a> <a href="#bug-yamcodes" title="Bug reports">🐛</a> <a href="#example-yamcodes" title="Examples">💡</a> <a href="#infra-yamcodes" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#test-yamcodes" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/aruaycodes"><img src="https://avatars.githubusercontent.com/u/57131628?v=4?s=100" width="100px;" alt="Aruay Berdikulova"/><br /><sub><b>Aruay Berdikulova</b></sub></a><br /><a href="#code-aruaycodes" title="Code">💻</a></td>
     </tr>
   </tbody>
