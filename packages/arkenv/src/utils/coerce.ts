@@ -96,7 +96,14 @@ const findCoercionPaths = (
 		}
 	}
 
-	return results;
+	// Deduplicate by path
+	const seen = new Set<string>();
+	return results.filter((t) => {
+		const key = t.path.join(".");
+		if (seen.has(key)) return false;
+		seen.add(key);
+		return true;
+	});
 };
 
 /**
