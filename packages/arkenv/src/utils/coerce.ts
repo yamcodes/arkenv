@@ -173,7 +173,7 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 					}
 				} else {
 					const asNumber = maybeParsedNumber(original);
-					// If numeric parsing didn't change type (still string) or is NaN/invalid, try boolean
+					// If numeric parsing didn't produce a number, try boolean coercion
 					if (typeof asNumber === "number") {
 						record[lastKey] = asNumber;
 					} else {
