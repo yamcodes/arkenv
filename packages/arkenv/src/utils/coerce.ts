@@ -1,31 +1,51 @@
+import type {
+	BaseRoot,
+	DeepNodeTransformContext,
+	Inner,
+	NodeKind,
+	NormalizedSchema,
+} from "@ark/schema";
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
+import type { BaseType } from "arktype";
 
 /**
  * @internal
  * Minimal interface for ArkType internal node structure used for coercion.
- * These properties are not part of ArkType's public API.
+ * These properties are not part of ArkType's public API but are needed for type checking.
  */
-interface ArkNode {
-	kind: string;
+type ArkNodeLike = BaseRoot & {
 	domain?: string;
-	hasKind?: (kind: string) => boolean;
-	basis?: { domain: string };
-	branches?: ArkNode[];
-	unit?: unknown;
 	expression?: string;
-}
+	basis?: { domain: string };
+	branches?: BaseRoot[];
+	unit?: unknown;
+};
 
-const isNumeric = (node: ArkNode): boolean =>
-	node.domain === "number" ||
-	(node.hasKind?.("intersection") && node.basis?.domain === "number") ||
-	(node.hasKind?.("union") && node.branches?.some(isNumeric)) ||
-	(node.kind === "unit" && typeof node.unit === "number");
+/**
+ * Check if a node represents a numeric type (including intersections, unions, etc.)
+ */
+const isNumeric = (node: BaseRoot): boolean => {
+	const n = node as ArkNodeLike;
+	return (
+		n.domain === "number" ||
+		(n.hasKind("intersection") && n.basis?.domain === "number") ||
+		(n.hasKind("union") && n.branches?.some(isNumeric)) ||
+		(n.kind === "unit" && typeof n.unit === "number")
+	);
+};
 
-const isBoolean = (node: ArkNode): boolean =>
-	node.domain === "boolean" ||
-	node.expression === "boolean" ||
-	(node.hasKind?.("union") && node.branches?.some(isBoolean)) ||
-	(node.kind === "unit" && typeof node.unit === "boolean");
+/**
+ * Check if a node represents a boolean type (including unions, etc.)
+ */
+const isBoolean = (node: BaseRoot): boolean => {
+	const n = node as ArkNodeLike;
+	return (
+		n.domain === "boolean" ||
+		n.expression === "boolean" ||
+		(n.hasKind("union") && n.branches?.some(isBoolean)) ||
+		(n.kind === "unit" && typeof n.unit === "boolean")
+	);
+};
 
 /**
  * Traverse an ArkType schema and wrap numeric or boolean values in coercion morphs.
@@ -35,59 +55,98 @@ const isBoolean = (node: ArkNode): boolean =>
  * It has been validated against ArkType version `^2.1.22`. Future updates to
  * ArkType may break this implementation if these internal structures change.
  */
-// biome-ignore lint/suspicious/noExplicitAny: schema is an ArkType Type, but we use any to avoid importing internal types.
-export function coerce(schema: any): any {
+/**
+ * @internal
+ * Extension of BaseType to access internal properties needed for coercion.
+ */
+type BaseTypeWithInternal = BaseType & {
+	internal: BaseRoot & {
+		pipe: (node: BaseRoot) => BaseRoot;
+	};
+};
+
+export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
+	const numType = maybeParsedNumber as BaseTypeWithInternal;
+	const boolType = maybeParsedBoolean as BaseTypeWithInternal;
+
 	// Validate internal API availability
-	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
-	if (!maybeParsedNumber || !(maybeParsedNumber as any).internal?.pipe) {
+	if (!numType?.internal?.pipe) {
 		throw new Error(
 			`maybeParsedNumber internal API not found. Please ensure arkenv is being used with a compatible version of ArkType (currently requires .internal.pipe). Got: ${typeof maybeParsedNumber}`,
 		);
 	}
-	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
-	if (!maybeParsedBoolean || !(maybeParsedBoolean as any).internal?.pipe) {
+	if (!boolType?.internal?.pipe) {
 		throw new Error("maybeParsedBoolean internal API not available");
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
-	const numInternal = (maybeParsedNumber as any).internal;
-	// biome-ignore lint/suspicious/noExplicitAny: Internal ArkType properties are not typed in public API.
-	const boolInternal = (maybeParsedBoolean as any).internal;
+	const numInternal = numType.internal;
+	const boolInternal = boolType.internal;
+
+	const node = schema.internal;
 
 	// 1. Transform internal properties
-	// biome-ignore lint/suspicious/noExplicitAny: inner represents internal node state.
-	const transformed = schema.transform((kind: string, inner: any) => {
-		if (kind === "required" || kind === "optional") {
-			const value = inner.value as ArkNode;
-			// biome-ignore lint/suspicious/noExplicitAny: morphedValue can be any transformed node.
-			let morphedValue: any = value;
+	const transformed = node.transform(
+		(
+			kind: NodeKind,
+			inner,
+			_ctx: DeepNodeTransformContext,
+		): NormalizedSchema<NodeKind> | null => {
+			if (kind === "required" || kind === "optional") {
+				const propInner = inner as Inner<"required" | "optional">;
+				const value = propInner.value;
+				let morphedValue: BaseRoot = value;
 
-			if (isNumeric(value)) {
-				morphedValue = numInternal.pipe(morphedValue);
+				// Sequential application is intentional (both numInternal.pipe and boolInternal.pipe are run)
+				// to support mixed-type unions. The order of application matters; do not change to else-if
+				// without considering union coercion semantics.
+				if (isNumeric(value)) {
+					morphedValue = numInternal.pipe(morphedValue);
+				}
+
+				if (isBoolean(value)) {
+					morphedValue = boolInternal.pipe(morphedValue);
+				}
+
+				return {
+					...propInner,
+					value: morphedValue,
+				} as NormalizedSchema<NodeKind>;
 			}
 
-			if (isBoolean(value)) {
-				morphedValue = boolInternal.pipe(morphedValue);
-			}
-
-			return { ...inner, value: morphedValue };
-		}
-
-		return inner;
-	});
+			return inner as NormalizedSchema<NodeKind>;
+		},
+	);
 
 	// 2. Handle root-level primitives (if the schema itself is numeric or boolean)
-	let result = transformed;
+	// Match original: check original transformed node, not the morphed result
+	const transformedNode = transformed ?? node;
+	let result: BaseRoot | BaseType = transformedNode;
 
-	if (isNumeric(transformed as unknown as ArkNode)) {
-		// biome-ignore lint/suspicious/noExplicitAny: .pipe is part of internal traversal.
-		result = (maybeParsedNumber as any).pipe(result);
+	if (isNumeric(transformedNode)) {
+		// Pass internal node to public .pipe() by casting to Type<any> once
+		result = (maybeParsedNumber as BaseType<unknown>).pipe(result as never);
 	}
 
-	if (isBoolean(transformed as unknown as ArkNode)) {
-		// biome-ignore lint/suspicious/noExplicitAny: .pipe is part of internal traversal.
-		result = (maybeParsedBoolean as any).pipe(result);
+	if (isBoolean(transformedNode)) {
+		// Pass internal node to public .pipe() by casting to Type<any> once
+		result = (maybeParsedBoolean as BaseType<unknown>).pipe(result as never);
 	}
 
-	return result;
+	// Result may be BaseRoot (unwrapped internal node) or BaseType (public API wrapper).
+	// In ArkType 2.0, unwrapped nodes have an .internal getter returning themselves
+	// and a .kind property, while public Type wrappers have an .internal property
+	// pointing to the node and lack a .kind property on the wrapper itself.
+	if (
+		result &&
+		typeof result === "object" &&
+		"kind" in result &&
+		(result as Record<string, unknown>).internal === result &&
+		!("assert" in result)
+	) {
+		// Still a raw BaseRoot, wrap it using scope's schema method to attach Type methods
+		return schema.$.schema(result as BaseRoot) as unknown as BaseType<t, $>;
+	}
+
+	// Already a BaseType (e.g. from .pipe() calls), return directly
+	return result as unknown as BaseType<t, $>;
 }
