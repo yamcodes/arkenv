@@ -2,9 +2,9 @@
 "arkenv": patch
 ---
 
-### Selective Path Coercion
+### Schema-Directed Coercion
 
-Refactored the core coercion engine from a "Global schema transformer" to **Selective Path Coercion**.
+Refactored the core coercion engine from a "Global schema transformer" to **Schema-Directed Coercion**.
 
 This new implementation uses public ArkType introspection (`.in.json`) to surgically identify numeric and boolean targets and apply coercion via a standard `.pipe()`. This eliminates all dependencies on ArkType's internal APIs (`.internal`, `.transform`, etc.), ensuring long-term stability.
 
