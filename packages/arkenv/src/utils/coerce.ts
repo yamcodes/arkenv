@@ -1,6 +1,5 @@
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
-import type { BaseType } from "arktype";
-import { type } from "../type";
+import { type BaseType, type JsonSchema, type } from "arktype";
 
 /**
  * @internal
@@ -11,94 +10,70 @@ interface CoercionTarget {
 }
 
 /**
- * Identify if a JSON schema node represents a numeric type.
- */
-const isNumeric = (node: unknown): boolean => {
-	if (node === "number") return true;
-	if (typeof node === "object" && node !== null && !Array.isArray(node)) {
-		const n = node as Record<string, unknown>;
-		const domain =
-			typeof n.domain === "object" && n.domain !== null
-				? (n.domain as Record<string, unknown>).domain
-				: n.domain;
-		return (
-			domain === "number" ||
-			typeof n.unit === "number" ||
-			(n.kind === "intersection" && domain === "number")
-		);
-	}
-	return false;
-};
-
-/**
- * Identify if a JSON schema node represents a boolean type.
- */
-const isBoolean = (node: unknown): boolean => {
-	if (node === "boolean") return true;
-	if (typeof node === "object" && node !== null && !Array.isArray(node)) {
-		const n = node as Record<string, unknown>;
-		const domain =
-			typeof n.domain === "object" && n.domain !== null
-				? (n.domain as Record<string, unknown>).domain
-				: n.domain;
-		if (domain === "boolean" || n.expression === "boolean") return true;
-		if (typeof n.unit === "boolean") return true;
-	}
-	// Note: Union booleans like true | false are handled by recursing into the union array.
-	return false;
-};
-
-/**
- * Recursively find all paths in an ArkType JSON representation that require coercion.
+ * Recursively find all paths in a JSON Schema that require coercion.
+ * We prioritize "number", "integer", and "boolean" types.
  */
 const findCoercionPaths = (
-	node: unknown,
+	node: JsonSchema,
 	path: string[] = [],
 ): CoercionTarget[] => {
 	const results: CoercionTarget[] = [];
 
-	if (isNumeric(node) || isBoolean(node)) {
-		results.push({ path: [...path] });
+	if (typeof node === "boolean") {
+		return results;
 	}
 
-	if (Array.isArray(node)) {
-		// This is a union (branches)
-		for (const branch of node) {
-			results.push(...findCoercionPaths(branch, path));
+	if ("const" in node) {
+		if (typeof node.const === "number" || typeof node.const === "boolean") {
+			results.push({ path: [...path] });
 		}
-	} else if (typeof node === "object" && node !== null) {
-		const n = node as Record<string, unknown>;
+	}
 
-		// Handle explicit branches property if it exists (though in.json often uses raw arrays for unions)
-		if (Array.isArray(n.branches)) {
-			for (const branch of n.branches) {
-				results.push(...findCoercionPaths(branch, path));
+	if ("enum" in node && node.enum) {
+		if (
+			node.enum.some((v) => typeof v === "number" || typeof v === "boolean")
+		) {
+			results.push({ path: [...path] });
+		}
+	}
+
+	if ("type" in node) {
+		if (node.type === "number" || node.type === "integer") {
+			results.push({ path: [...path] });
+		} else if (node.type === "boolean") {
+			results.push({ path: [...path] });
+		} else if (node.type === "array") {
+			if ("items" in node && node.items) {
+				if (Array.isArray(node.items)) {
+					// Tuple traversal
+					node.items.forEach((item) => {
+						results.push(...findCoercionPaths(item as JsonSchema, path));
+					});
+				} else {
+					// List traversal
+					results.push(...findCoercionPaths(node.items as JsonSchema, path));
+				}
+			}
+		} else if (node.type === "object") {
+			if ("properties" in node && node.properties) {
+				for (const [key, prop] of Object.entries(node.properties)) {
+					results.push(
+						...findCoercionPaths(prop as JsonSchema, [...path, key]),
+					);
+				}
 			}
 		}
+	}
 
-		// Handle properties
-		if (Array.isArray(n.required)) {
-			for (const p of n.required) {
-				const prop = p as Record<string, unknown>;
-				results.push(
-					...findCoercionPaths(prop.value, [...path, prop.key as string]),
-				);
-			}
+	if ("anyOf" in node && node.anyOf) {
+		for (const branch of node.anyOf) {
+			results.push(...findCoercionPaths(branch as JsonSchema, path));
 		}
-		if (Array.isArray(n.optional)) {
-			for (const p of n.optional) {
-				const prop = p as Record<string, unknown>;
-				results.push(
-					...findCoercionPaths(prop.value, [...path, prop.key as string]),
-				);
-			}
-		}
+	}
 
-		// Handle sequences (arrays)
-		if (n.sequence) {
-			// Coerce the elements of the array. In arkenv's typical use case (env vars),
-			// this would be for things like COMMA_SEPARATED_LIST=1,2,3
-			results.push(...findCoercionPaths(n.sequence, path));
+	if ("oneOf" in node && node.oneOf) {
+		for (const branch of node.oneOf) {
+			results.push(...findCoercionPaths(branch as JsonSchema, path));
 		}
 	}
 
@@ -108,48 +83,67 @@ const findCoercionPaths = (
 /**
  * Apply coercion to a data object based on identified paths.
  */
-function applyCoercion(data: unknown, targets: CoercionTarget[]): unknown {
-	if (!data || typeof data !== "object" || Array.isArray(data)) {
+const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
+	if (typeof data !== "object" || data === null) {
+		// If root data needs coercion (e.g. single number env var), handle it
 		if (targets.some((t) => t.path.length === 0)) {
-			return maybeParsedNumber(maybeParsedBoolean(data));
+			const asNumber = maybeParsedNumber(data);
+			if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+				return asNumber;
+			}
+			return maybeParsedBoolean(data);
 		}
 		return data;
 	}
 
-	const result = { ...(data as Record<string, unknown>) };
+	// biome-ignore lint/suspicious/noExplicitAny: generic traversal requires any
+	const walk = (current: any, targetPath: string[]) => {
+		if (!current || typeof current !== "object") return;
 
-	for (const { path } of targets) {
-		if (path.length === 0) continue;
-
-		let curr = result;
-		for (let i = 0; i < path.length - 1; i++) {
-			const key = path[i];
-			if (curr[key] && typeof curr[key] === "object") {
-				// Only clone if it's the original object from data (not already cloned in result)
-				// Since we shallow cloned 'data' into 'result', curr[key] is still pointing to the original nested object.
-				curr[key] = { ...(curr[key] as Record<string, unknown>) };
-				curr = curr[key] as Record<string, unknown>;
-			} else {
-				// Path doesn't exist or is not an object, can't descend
-				break;
+		// If we've reached the last key, apply coercion
+		if (targetPath.length === 1) {
+			const lastKey = targetPath[0];
+			// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
+			if (Object.prototype.hasOwnProperty.call(current, lastKey)) {
+				const original = current[lastKey];
+				const asNumber = maybeParsedNumber(original);
+				// If numeric parsing didn't change type (still string) or is NaN/invalid, try boolean
+				if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+					current[lastKey] = asNumber;
+				} else {
+					current[lastKey] = maybeParsedBoolean(original);
+				}
 			}
+			return;
 		}
 
-		const lastKey = path[path.length - 1];
-		// biome-ignore lint/suspicious/noPrototypeBuiltins: Required for ES2020 compatibility (Object.hasOwn is ES2022)
-		if (Object.prototype.hasOwnProperty.call(curr, lastKey)) {
-			curr[lastKey] = maybeParsedNumber(maybeParsedBoolean(curr[lastKey]));
+		// Recurse down
+		const [nextKey, ...rest] = targetPath;
+		const nextValue = current[nextKey];
+
+		if (Array.isArray(nextValue)) {
+			// If the next value is an array, we need to apply the *rest* of the path to *each* item
+			for (const item of nextValue) {
+				walk(item, rest);
+			}
+		} else {
+			walk(nextValue, rest);
 		}
+	};
+
+	for (const target of targets) {
+		walk(data, target.path);
 	}
 
-	return result;
-}
+	return data;
+};
 
 /**
  * Traverses an ArkType schema and wraps numeric or boolean values in coercion morphs.
  */
 export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
-	const targets = findCoercionPaths(schema.in.json);
+	const json = schema.toJsonSchema();
+	const targets = findCoercionPaths(json);
 
 	if (targets.length === 0) {
 		return schema;
