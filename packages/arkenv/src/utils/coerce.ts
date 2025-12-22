@@ -6,12 +6,18 @@ import { type } from "../type";
  * @internal
  * Information about a path in the schema that requires coercion.
  */
-interface CoercionTarget {
+type CoercionTarget = {
 	path: string[];
-}
+};
 
 /**
  * Identify if a JSON schema node represents a numeric type.
+ *
+ * Pattern mapping to ArkType constructs:
+ * - `node === "number"` → simple "number" type
+ * - `domain === "number"` → constrained numbers like "number >= 18" or "number % 2"
+ * - `typeof n.unit === "number"` → numeric literals like 1, 2, or "1 | 2"
+ * - `n.kind === "intersection" && domain === "number"` → intersection constraints
  */
 const isNumeric = (node: unknown): boolean => {
 	if (node === "number") return true;
@@ -117,6 +123,8 @@ function applyCoercion(data: unknown, targets: CoercionTarget[]): unknown {
 	}
 
 	const result = { ...(data as Record<string, unknown>) };
+	// Track objects that have been cloned/created by us to avoid re-cloning.
+	const processedObjects = new Set<unknown>([result]);
 
 	for (const { path } of targets) {
 		if (path.length === 0) continue;
@@ -124,11 +132,24 @@ function applyCoercion(data: unknown, targets: CoercionTarget[]): unknown {
 		let curr = result;
 		for (let i = 0; i < path.length - 1; i++) {
 			const key = path[i];
-			if (curr[key] && typeof curr[key] === "object") {
-				// Only clone if it's the original object from data (not already cloned in result)
-				// Since we shallow cloned 'data' into 'result', curr[key] is still pointing to the original nested object.
-				curr[key] = { ...(curr[key] as Record<string, unknown>) };
-				curr = curr[key] as Record<string, unknown>;
+			if (
+				// biome-ignore lint/suspicious/noPrototypeBuiltins: Safe usage
+				Object.prototype.hasOwnProperty.call(curr, key) &&
+				curr[key] &&
+				typeof curr[key] === "object"
+			) {
+				const next = curr[key] as Record<string, unknown>;
+
+				if (!processedObjects.has(next)) {
+					// We haven't cloned this object yet, so clone it to ensure immutability of original data
+					const cloned = { ...next };
+					curr[key] = cloned;
+					processedObjects.add(cloned);
+					curr = cloned;
+				} else {
+					// We already cloned this object in a previous iteration/path, so we can use it directly
+					curr = next;
+				}
 			} else {
 				// Path doesn't exist or is not an object, can't descend
 				break;
@@ -136,7 +157,7 @@ function applyCoercion(data: unknown, targets: CoercionTarget[]): unknown {
 		}
 
 		const lastKey = path[path.length - 1];
-		// biome-ignore lint/suspicious/noPrototypeBuiltins: Required for ES2020 compatibility (Object.hasOwn is ES2022)
+		// biome-ignore lint/suspicious/noPrototypeBuiltins: Safe usage
 		if (Object.prototype.hasOwnProperty.call(curr, lastKey)) {
 			curr[lastKey] = maybeParsedNumber(maybeParsedBoolean(curr[lastKey]));
 		}
