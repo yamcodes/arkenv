@@ -9,7 +9,7 @@ const env = arkenv({
 	DEBUG: "boolean = false",
 
 	// Zod validators (great for complex validation and transformations)
-	DATABASE_URL: z.string().url(),
+	DATABASE_URL: z.url(),
 	API_KEY: z
 		.string()
 		.min(32)
@@ -23,35 +23,24 @@ const env = arkenv({
 	ALLOWED_ORIGINS: z
 		.string()
 		.transform((str: string) => str.split(","))
-		.pipe(z.array(z.string().url())),
+		.pipe(z.array(z.url())),
 
 	// Array defaults with ArkType
 	FEATURE_FLAGS: type("string[]").default(() => []),
 });
 
 // All validators work together seamlessly with full type inference
-const host: string = env.HOST;
-const port: number = env.PORT;
-const nodeEnv: "development" | "production" | "test" = env.NODE_ENV;
-const debug: boolean = env.DEBUG;
-const databaseUrl: string = env.DATABASE_URL;
-const apiKey: string = env.API_KEY;
-const maxRetries: number = env.MAX_RETRIES;
-const timeoutMs: number = env.TIMEOUT_MS;
-const allowedOrigins: string[] = env.ALLOWED_ORIGINS;
-const featureFlags: string[] = env.FEATURE_FLAGS;
-
 console.log({
-	host,
-	port,
-	nodeEnv,
-	debug,
-	databaseUrl,
-	apiKey: `${apiKey.substring(0, 8)}...`, // Don't log full API key
-	maxRetries,
-	timeoutMs,
-	allowedOrigins,
-	featureFlags,
+	host: env.HOST,
+	port: env.PORT,
+	nodeEnv: env.NODE_ENV,
+	debug: env.DEBUG,
+	databaseUrl: env.DATABASE_URL,
+	apiKey: `${env.API_KEY.substring(0, 8)}...`, // Don't log full API key
+	maxRetries: env.MAX_RETRIES,
+	timeoutMs: env.TIMEOUT_MS,
+	allowedOrigins: env.ALLOWED_ORIGINS,
+	featureFlags: env.FEATURE_FLAGS,
 });
 
 export default env;
