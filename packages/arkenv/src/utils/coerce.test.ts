@@ -213,4 +213,30 @@ describe("coerce", () => {
 		expect(result).toBeInstanceOf(ArkErrors);
 		expect(result.toString()).toContain("VAL must be a number (was NaN)");
 	});
+	it("should coerce array elements for numeric properties", () => {
+		const schema = type({
+			// Note: The schema expects a "number", but input might be "5" (coerced -> 5)
+			// If input is ["1", "2"], current logic iterates and coerces them to [1, 2]
+			// The validation step will then reject [1, 2] against "number", which is correct behavior.
+			// This test ensures the traversal logic doesn't crash or behave unexpectedly.
+			IDS: "number[]",
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({ IDS: ["1", "2", "3"] });
+		expect(result).toEqual({ IDS: [1, 2, 3] });
+	});
+
+	it("should fail validation if coercion produces array but schema expects string", () => {
+		const schema = type({
+			VAL: "number",
+		});
+		const coercedSchema = coerce(schema);
+
+		// Logic coerces ["1", "2"] -> [1, 2] in place
+		// Then validation sees [1, 2] against "number" and fails
+		const result = coercedSchema({ VAL: ["1", "2"] });
+		expect(result).toBeInstanceOf(ArkErrors);
+		expect(result.toString()).toContain("VAL must be a number (was an object)");
+	});
 });
