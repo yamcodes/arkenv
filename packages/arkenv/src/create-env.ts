@@ -40,10 +40,7 @@ export function createEnv<const T extends SchemaShape>(
 ): distill.Out<at.infer<T, $>> | InferType<typeof def>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
-	{
-		env = process.env,
-		coerce: shouldCoerce = true,
-	}: ArkEnvConfig = {} as ArkEnvConfig,
+	{ env = process.env, coerce: shouldCoerce = true }: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
