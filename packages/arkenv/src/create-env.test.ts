@@ -259,4 +259,45 @@ describe("createEnv", () => {
 			expect(env.PORT).toBe(8080);
 		});
 	});
+
+	describe("options", () => {
+		it("should disable coercion when coerce is set to false", () => {
+			expect(() =>
+				createEnv(
+					{
+						NUMBER: "number",
+					},
+					{
+						NUMBER: "123",
+					},
+					{ coerce: false },
+				),
+			).toThrow();
+		});
+
+		it("should allow disabling coercion when using process.env (2nd arg)", () => {
+			const originalEnv = process.env;
+			process.env = { ...originalEnv, TEST_NUM: "123" };
+			try {
+				expect(() =>
+					createEnv({ TEST_NUM: "number" }, { coerce: false }),
+				).toThrow();
+			} finally {
+				process.env = originalEnv;
+			}
+		});
+
+		it("should allow string values when coercion is disabled if schema expects strings", () => {
+			const env = createEnv(
+				{
+					VAL: "string",
+				},
+				{
+					VAL: "123",
+				},
+				{ coerce: false },
+			);
+			expect(env.VAL).toBe("123");
+		});
+	});
 });
