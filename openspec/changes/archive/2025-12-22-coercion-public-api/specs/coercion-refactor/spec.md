@@ -13,8 +13,6 @@ The coercion system MUST identify target fields using only public ArkType APIs (
 - **WHEN** building the coercion map
 - **THEN** it MUST identify `API.PORT` and `API.TIMEOUT` as numeric coercion targets via the `toJsonSchema` structure.
 
-## MODIFIED Requirements
-
 ### Requirement: Pipeline-based Coercion
 The coercion mechanism MUST be implemented as a data pre-processing morph using `type.pipe` instead of internal schema mutation.
 
