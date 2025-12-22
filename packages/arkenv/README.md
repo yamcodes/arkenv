@@ -41,38 +41,27 @@ ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io
 import arkenv from "arkenv";
 
 const env = arkenv({
-  HOST: "string.host", // valid IP address or localhost
-  PORT: "number.port", // valid port number (0-65535)
-  NODE_ENV: "'development' | 'production' | 'test'",
+  HOST: "string.ip | 'localhost'",
+  PORT: "0 <= number.integer <= 65535",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  DEBUGGING: "boolean = false",
 });
 
 // Hover to see ✨exact✨ types
 const host = env.HOST;
 const port = env.PORT;
 const nodeEnv = env.NODE_ENV;
+const debugging = env.DEBUGGING;
 ```
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
 ```bash title="Terminal"
+❯ PORT=hello npm start
+
 ArkEnvError: Errors found while validating environment variables
   HOST must be a string or "localhost" (was missing)
-  PORT must be an integer between 0 and 65535 (was "hello")
-```
-
-## Coercion
-
-Environment variables are always strings, but ArkEnv automatically coerces them to their target types when possible:
-
-- `number` and subtypes (`number.port`, `number.epoch`) are parsed as numbers.
-- `boolean` strings ("true", "false") are parsed as booleans.
-
-```ts
-const env = arkenv({
-  PORT: "number",           // "3000" → 3000
-  DEBUG: "boolean",        // "true" → true
-  TIMESTAMP: "number.epoch" // "1640995200000" → 1640995200000
-});
+  PORT must be a number (was a string)
 ```
 
 ## Features
@@ -82,7 +71,7 @@ const env = arkenv({
 - Tiny: <1kB gzipped
 - Build-time and runtime validation
 - Single import, zero config for most projects
-- Validated, defaultable, typesafe environment variables
+- Validated, defaultable, coerced, typesafe environment variables
 - Powered by ArkType, TypeScript's 1:1 validator
 - Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 - Optimized from editor to runtime
