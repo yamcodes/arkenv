@@ -1,41 +1,32 @@
 # ArkType Internal API Usage
 
 This document tracks the usage of undocumented or "stable-ish" ArkType internal APIs within `arkenv`.
-These APIs are primarily accessed via `.internal` and are subject to change, though they are currently validated against ArkType `^2.1.22`.
 
-## API Registry
+**UPDATE: As of the Public API Refactor, `arkenv` no longer uses `.internal`, `.transform()`, or direct internal node properties for coercion.**
 
-### Methods & Entry Points
+## Current Status
 
-| API            | Usage                                               | Status                                   |
-| :------------- | :-------------------------------------------------- | :--------------------------------------- |
-| `.internal`    | Gateway to the underlying ArkNode structure.        | **Stable-ish** (Documented as gateway)   |
-| `.transform()` | Deeply traverses and rewrites the schema structure. | **Internal** (Used for magic coercion)   |
-| `.pipe()`      | Manually applied to internal nodes to chain morphs. | **Internal**                             |
-| `.select()`    | Filters nodes based on kind/criteria.               | **Alpha** (Documented, not fully stable) |
+We have migrated to the **Pipeline Wrapper Pattern**. Instead of reaching into the schema's internals, we use public APIs:
 
-### Node Properties (Introspection)
+1.  **`.in.json`**: For stable, serializable introspection of input requirements.
+2.  **`.pipe()`**: For data transformation using standard ArkType pipelines.
 
-These properties are used to identify where coercion should be applied. Most are documented in ArkType's [Introspection docs](https://arktype.io/docs/introspection).
+## Historical Context (Removed APIs)
 
-| Property      | Node Kind      | Purpose                                                 |
-| :------------ | :------------- | :------------------------------------------------------ |
-| `.kind`       | All            | Discriminates the type of node (e.g., `union`, `unit`). |
-| `.domain`     | `domain`       | Identifies primitive types like `number`.               |
-| `.basis`      | `intersection` | Provides the underlying type of a refined node.         |
-| `.branches`   | `union`        | Allows recursion into union members.                    |
-| `.unit`       | `unit`         | Accesses the exact value of a literal (e.g., `1`).      |
-| `.expression` | Various        | Fallback representation used for some booleans.         |
+The following were previously used by `coerce.ts` and have been removed to improve stability:
 
-### Transform Context
+- `.internal.transform()`: Replaced by data-preprocessing via `.pipe()`.
+- `.internal.pipe()`: Replaced by public `.pipe()`.
+- Internal properties (`.domain`, `.branches`, `.unit`, `.basis`): Replaced by traversing the public JSON representation.
 
-The `.transform((kind, inner) => ...)` mapper relies on:
+## Remaining Internal Usage
 
-- **`kind`**: Determining if we are at a `required` or `optional` property.
-- **`inner.value`**: The actual schema node for that property, which we replace with a coerced version.
+| API            | Usage                                               | Status                |
+| :------------- | :-------------------------------------------------- | :-------------------- |
+| `$.type.raw()` | Used in `create-env.ts` to convert object literals. | **Stable / Standard** |
 
 ## Risk Mitigation
 
-- **Logic Isolation**: All internal access is abstracted through helpers in `coerce.ts`.
-- **Contract Tests**: `arktype-contract.test.ts` validates these properties exist at test-time.
-- **Compatibility CI**: A daily workflow tests against `latest` and `nightly` ArkType versions.
+- **No Internal Access**: All coercion logic is now implemented using public ArkType features.
+- **Serialization Contract**: We depend on the structure of ArkType's JSON representation (`.json`), which is a public interface maintained for serializability.
+- **Test Coverage**: Existing integration tests continue to verify that coercion behavior remains consistent across ArkType updates.
