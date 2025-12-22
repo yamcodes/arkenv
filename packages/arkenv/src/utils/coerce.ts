@@ -92,7 +92,7 @@ const findCoercionPaths = (
  */
 const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 	if (typeof data !== "object" || data === null) {
-		// If root data needs coercion (e.g. single number env var), handle it
+		// If root data needs coercion (e.g. root schema is number/boolean), handle it
 		if (targets.some((t) => t.path.length === 0)) {
 			const asNumber = maybeParsedNumber(data);
 			if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
