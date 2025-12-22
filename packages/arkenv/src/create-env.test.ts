@@ -75,6 +75,23 @@ describe("createEnv", () => {
 			const schema = { VAL: "1 | 2" } as const;
 			expect(createEnv(schema, { VAL: "1" }).VAL).toBe(1);
 		});
+
+		it("should work with schemas containing morphs", () => {
+			const Env = type({
+				PORT: "number.port",
+				VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+					Number.parseInt(str, 10),
+				),
+			});
+
+			const env = createEnv(Env, {
+				PORT: "3000",
+				VITE_MY_NUMBER_MANUAL: "456",
+			});
+
+			expect(env.PORT).toBe(3000);
+			expect(env.VITE_MY_NUMBER_MANUAL).toBe(456);
+		});
 	});
 
 	it("should validate string env variables", () => {

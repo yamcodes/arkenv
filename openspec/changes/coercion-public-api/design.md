@@ -4,9 +4,9 @@
 
 The secondary `coerce` function will no longer attempt to reach into the `BaseRoot` instances or use `.transform()`. Instead, it will leverage ArkType's public `.pipe()` functionality to create a data transformation layer.
 
-### 1. Introspection via `schema.in.json`
+### 1. Introspection via `schema.in.toJsonSchema()`
 
-We use `schema.in` to get a representation of the schema's input *without morphs*. We then access `.json` to get a serializable structure.
+We use `schema.in` to get a representation of the schema's input *without morphs* and then call `.toJsonSchema()` to get a standard JSON Schema representation for traversal. This ensures compatibility with schemas that use `.pipe()` or other morphs, which would otherwise cause `toJsonSchema()` to throw.
 
 **Key identification rules (mapped from current `isNumeric`/`isBoolean`):**
 - **Numeric**: `domain: "number"`, or `kind: "unit"` with a number value, or an `intersection` with a numeric basis.
@@ -38,9 +38,12 @@ type("unknown")
 
 ## Trade-offs and Considerations
 
-### Why `in.json` over `toJsonSchema()`?
-1. **Fidelity**: `in.json` is a 1:1 representation of ArkType's internal state but in a public, serializable format. `toJsonSchema` is lossy and handles things like `bigint` or customs constraints via fallbacks.
-2. **Complexity**: `toJsonSchema` introduces `$ref` and `$defs`, which would require a complex resolver to traverse. `in.json` keeps references local to the object or uses stable aliases.
+### Why `toJsonSchema()` over `in.json`?
+1. **Standardization**: `toJsonSchema()` returns a Draft 2020-12 compliant structure, making the introspection logic decoupled from ArkType's internal `JsonStructure`.
+2. **Type Safety**: The `JsonSchema` type provided by ArkType is exhaustive and strictly typed, whereas `in.json` returns a loose object.
+
+### Why `.in.toJsonSchema()`?
+ArkType's `toJsonSchema()` implementation throws a `ToJsonSchemaError` if the schema contains morphs. By accessing `.in` first, we resolve the input side of the root node (which is always morph-free) and generate a schema representing what the environment variables must look like before transformations.
 
 ### Performance
 Introspection is performed once per `coerce()` call. Since `createEnv` usually runs once at startup, this is negligible. The resulting morph is a simple iteration over known paths.

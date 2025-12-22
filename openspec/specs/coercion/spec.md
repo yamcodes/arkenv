@@ -51,3 +51,13 @@ And an environment `{ VERSION: "1" }`
 When `arkenv` parses the environment
 Then it should return a validation error (string "1" is not number 1)
 
+### Requirement: Support schemas with morphs (pipes)
+The system MUST support schemas that contain ArkType morphs (pipes). Coercion should logic should only inspect the input side of the schema to avoid errors.
+
+#### Scenario: Coercion with manual morph
+Given a schema `{ PORT: "number", MANUAL: type("string").pipe(Number) }`
+And an environment `{ PORT: "3000", MANUAL: "456" }`
+When `arkenv` parses the environment
+Then the result should contain `PORT` as number `3000`
+And `MANUAL` as number `456`
+

@@ -113,4 +113,21 @@ describe("coercion integration", () => {
 		expect(() => createEnv({ DEBUG: "boolean" }, { DEBUG: "yes" })).toThrow();
 		expect(() => createEnv({ DEBUG: "boolean" }, { DEBUG: "1" })).toThrow();
 	});
+
+	it("should work with schemas containing morphs", () => {
+		const Env = type({
+			PORT: "number.port",
+			VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+				Number.parseInt(str, 10),
+			),
+		});
+
+		const env = createEnv(Env, {
+			PORT: "3000",
+			VITE_MY_NUMBER_MANUAL: "456",
+		});
+
+		expect(env.PORT).toBe(3000);
+		expect(env.VITE_MY_NUMBER_MANUAL).toBe(456);
+	});
 });

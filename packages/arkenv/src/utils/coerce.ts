@@ -213,7 +213,7 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
  * before validation.
  */
 export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
-	const json = schema.toJsonSchema();
+	const json = schema.in.toJsonSchema();
 	const targets = findCoercionPaths(json);
 
 	if (targets.length === 0) {
