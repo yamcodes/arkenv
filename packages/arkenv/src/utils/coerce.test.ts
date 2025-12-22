@@ -191,4 +191,26 @@ describe("coerce", () => {
 			VITE_MY_NUMBER_MANUAL: 456,
 		});
 	});
+
+	it("should coerce 'NaN' string to NaN number", () => {
+		const schema = type({
+			VAL: "number.NaN",
+		});
+		const coercedSchema = coerce(schema);
+		const result = coercedSchema({ VAL: "NaN" });
+		expect(result).not.toBeInstanceOf(ArkErrors);
+		if (result instanceof ArkErrors) return;
+		expect(result.VAL).toBeNaN();
+	});
+
+	it("should fail to validate 'NaN' string with standard 'number' keyword", () => {
+		const schema = type({
+			VAL: "number",
+		});
+		// Coercion happens ("NaN" -> NaN), but "number" checks and rejects NaN
+		const coercedSchema = coerce(schema);
+		const result = coercedSchema({ VAL: "NaN" });
+		expect(result).toBeInstanceOf(ArkErrors);
+		expect(result.toString()).toContain("VAL must be a number (was NaN)");
+	});
 });

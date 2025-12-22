@@ -114,7 +114,7 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 		// If root data needs coercion (e.g. root schema is number/boolean), handle it
 		if (targets.some((t) => t.path.length === 0)) {
 			const asNumber = maybeParsedNumber(data);
-			if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+			if (typeof asNumber === "number") {
 				return asNumber;
 			}
 			return maybeParsedBoolean(data);
@@ -146,7 +146,7 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 					for (let i = 0; i < current.length; i++) {
 						const original = current[i];
 						const asNumber = maybeParsedNumber(original);
-						if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+						if (typeof asNumber === "number") {
 							current[i] = asNumber;
 						} else {
 							current[i] = maybeParsedBoolean(original);
@@ -165,7 +165,7 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 					for (let i = 0; i < original.length; i++) {
 						const item = original[i];
 						const asNumber = maybeParsedNumber(item);
-						if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+						if (typeof asNumber === "number") {
 							original[i] = asNumber;
 						} else {
 							original[i] = maybeParsedBoolean(item);
@@ -173,8 +173,8 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 					}
 				} else {
 					const asNumber = maybeParsedNumber(original);
-					// If numeric parsing didn't change type (still string) or is NaN/invalid, try boolean
-					if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+					// If numeric parsing didn't produce a number, try boolean coercion
+					if (typeof asNumber === "number") {
 						record[lastKey] = asNumber;
 					} else {
 						record[lastKey] = maybeParsedBoolean(original);
