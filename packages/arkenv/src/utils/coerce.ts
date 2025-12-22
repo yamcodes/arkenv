@@ -125,7 +125,9 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 	const walk = (current: unknown, targetPath: string[]) => {
 		if (!current || typeof current !== "object") return;
 
-		// Handle root-level array traversal where path is empty/exhausted but we have a collection
+		// Defensive: handle root-level or exhausted-path array traversal
+		// Currently, root arrays produce targets like [{ path: ["*"] }] so this is rarely reached,
+		// but guards against edge cases in schema introspection
 		if (targetPath.length === 0) {
 			if (Array.isArray(current)) {
 				for (const item of current) {
