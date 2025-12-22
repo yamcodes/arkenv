@@ -88,17 +88,22 @@ The implementation wraps the original validation in a predictable 3-step pipelin
 2.  **Pre-processing (Runtime Phase)**: 
     *   If targets exist, wrapped schema executes `applyCoercion(data, targets)`.
     *   **Traversal**: For each target path, we safely walk the input object.
-    *   **Handling Missing Keys**: If a key along the path is missing, traversal aborts early for that target (no error thrown).
+    *   **Handling Missing/Null Keys**: If a key is missing or `null` along the path, traversal aborts for that target. `undefined` values are treated as missing.
     *   **Handling Arrays**: When encountering the `*` marker, we iterate *all* elements of the current array.
-    *   **Mutation**: When a leaf node is reached, inputs are mutated *in place*:
-        *   Attempt `maybeParsedNumber`: parses strings like `"123"` to `123`.
-        *   If that fails (returns string), attempt `maybeParsedBoolean`: parses `"true"`/`"false"` to boolean.
-        *   Values that cannot be coerced (e.g. `"abc"` for a number field) are left as-is.
+    *   **Mutation**: Inputs are mutated **in-place**.
+        *   **Rationale**: Performance and simplicity. Typical environment objects (like `process.env`) are flat and effectively disposable in this context. Cloning deep objects for every validation would introduce unnecessary overhead.
+    *   **Coercion Logic**: When a leaf node is reached, we apply a sequential "best-effort" coercion:
+        1.  Attempt `maybeParsedNumber`: converts "123" -> 123.
+        2.  If result is still a string (e.g. "true"), attempt `maybeParsedBoolean`: converts "true" -> true.
+        *   **Unconvertible Values**: Values that fail both checks (e.g. "abc") are left **as-is**. This is intentional; let the subsequent validation phase report the specific type error (e.g. "expected number, got string 'abc'").
 
 3.  **Validation (Final Phase)**:
     *   The potentially mutated `data` is passed to the original `schema`.
-    *   ArkType performs full validation. If a value wasn't coerced (e.g. `"abc"` remained `"abc"`), ArkType returns a standard validation error (e.g. "must be a number").
-    *   This pipeline is constructed via `type("unknown").pipe(transform).pipe(schema)`.
+    *   ArkType performs full validation.
+    *   **Pipeline Syntax**: This is constructed via `type("unknown").pipe(transform).pipe(schema)`.
+        *   `type("unknown")`: Accepts any input.
+        *   `.pipe(transform)`: Runs our coercion logic (in-place mutation).
+        *   `.pipe(schema)`: Passes the coerced result to the user's strict schema for final validation.
 
 ## Trade-offs and Considerations
 
