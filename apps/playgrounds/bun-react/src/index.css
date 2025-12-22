@@ -182,7 +182,7 @@ code {
 	*,
 	::before,
 	::after {
-		animation: none;
+		animation: none !important;
 	}
 }
 

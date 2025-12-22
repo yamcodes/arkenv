@@ -134,6 +134,9 @@
 				"rules": {
 					"correctness": {
 						"noUnusedVariables": "off"
+					},
+					"style": {
+						"useConsistentTypeDefinitions": "off"
 					}
 				}
 			}
