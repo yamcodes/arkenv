@@ -8,8 +8,17 @@ import { coerce } from "./utils";
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
 
+/**
+ * Configuration options for `createEnv`
+ */
 export type ArkEnvConfig = {
+	/**
+	 * The environment variables to validate. Defaults to `process.env`
+	 */
 	env?: RuntimeEnvironment;
+	/**
+	 * Whether to coerce environment variables to their defined types. Defaults to `true`
+	 */
 	coerce?: boolean;
 };
 
@@ -22,7 +31,7 @@ export type ArkEnvConfig = {
 /**
  * Create an environment variables object from a schema and an environment
  * @param def - The environment variable schema (raw object or type definition created with `type()`)
- * @param config - Configuration options including environment variables and parser settings
+ * @param config - Configuration options, see {@link ArkEnvConfig}
  * @returns The validated environment variable schema
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
