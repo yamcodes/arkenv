@@ -198,7 +198,7 @@ describe("coerce", () => {
 		});
 		const coercedSchema = coerce(schema);
 		const result = coercedSchema({ VAL: "NaN" });
-		// @ts-ignore
+		// @ts-expect-error
 		expect(result.VAL).toBeNaN();
 	});
 
