@@ -2,11 +2,7 @@
 "@repo/scope": minor
 ---
 
-#### Simplify `number.port` and remove `boolean` from custom scope
+#### Simplify generic types for central coercion
 
-*   **BREAKING**: The `boolean` keyword has been removed from the root scope. ArkEnv now uses the standard ArkType `boolean` definition and applies coercion globally.
-*   The `number.port` keyword has been simplified to handle numbers only, since coercion is now handled at the global level:
-
-```ts
-type("0 <= number.integer <= 65535")
-```
+*   **BREAKING**: Removed the custom `boolean` keyword from the root scope. ArkEnv now leverages standard ArkType primitives combined with **Selective Path Coercion**.
+*   The `number.port` keyword has been simplified to a pure number refinement, delegating string-to-number conversion to the global coercion layer.

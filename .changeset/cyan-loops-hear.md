@@ -1,51 +1,14 @@
 ---
-"arkenv": minor
+"arkenv": patch
 ---
 
-#### Coercion
+### Selective Path Coercion
 
-Added coercion in the `createEnv` (`arkenv`) functions for `number` and `boolean` types. Since we had a custom `boolean` keyword prior to this change, in practice, **this adds automatic type conversions for the `number` keyword (and its sub-keywords).**
+Refactored the core coercion engine from a "Global schema transformer" to **Selective Path Coercion**.
 
-Now, you can define a `number` directly:
+This high-performance, non-destructive data pre-processor uses public ArkType introspection (`.in.json`) to selectively coerce environment variables without touching schema internals. It identifies numeric and boolean targets at boot time and applies transformation via a standard public `.pipe()` morph.
 
-```ts
-const env = arkenv({
-  PORT: "number",
-  BOOLEAN: "boolean",
-  RANGE: "0 <= number <= 18",
-  EPOCH: "number.epoch",
-});
-```
+This change eliminates all dependencies on undocumented ArkType internal APIs (`.internal`, `.transform`, etc.), significantly improving the stability and future-readiness of the library.
 
-```dotenv
-PORT=3000
-EPOCH=1678886400000
-BOOLEAN=true
-RANGE=18
-```
-
-and it will be coerced to the desired types.
-
-```ts
-env.PORT // 3000
-env.EPOCH // 1678886400000
-env.BOOLEAN // true
-env.RANGE // 18
-```
-
-* **BREAKING**: Our custom `boolean` keyword (which included parsing) has been removed, and ArkEnv now uses the standard ArkType `boolean` definition. For most use cases (through `createEnv` / `arkenv`), this should not make a difference, since string -> boolean coercion is still done (at the global level).
-
-* **BREAKING**: The `number.port` keyword has been simplified and no longer automatically parses strings to numbers. For most use cases (through `createEnv` / `arkenv`), this should not make a difference, since string -> number coercion is still done (at the global level).
-
-```ts
-const env = arkenv({
-  PORT: "number.port",
-});
-
-env.PORT // 3000 (number)
-```
-
-```dotenv
-PORT="3000"
-```
-
+* **Behavior**: Retains 100% compatibility with existing coercion logic for strings, numbers, booleans, and complex unions.
+* **Internal**: removed all usage of `.internal.transform()` and node-specific introspection properties.

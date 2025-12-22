@@ -2,8 +2,8 @@
 "@repo/keywords": minor
 ---
 
-#### Renamed `boolean` keyword to `parsedBoolean`
+#### Remove unused strict parsing keywords
 
-Rename our `boolean` keyword to `parsedBoolean` to better reflect its purpose. It is still a morph that keeps a boolean a boolean, and parses "true" and "false" to booleans.
+Removed `parsedNumber` and `parsedBoolean` strict morphs. These internal-only keywords are no longer necessary as ArkEnv now handles coercion centrally via the **Selective Path Coercion** mapper, allowing the use of standard ArkType base types.
 
-**BREAKING**: The `boolean` keyword has been renamed to `parsedBoolean`.
+**BREAKING**: `parsedNumber` and `parsedBoolean` have been removed from `@repo/keywords`.
