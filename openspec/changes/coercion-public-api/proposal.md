@@ -19,3 +19,14 @@ Instead of modifying the internal structure of the ArkType schema to accept stri
 - **Performance**: Introspection happens once; the pre-processing morph is a simple object traversal.
 - **Maintenance**: Uses well-documented ArkType concepts (`domain`, `unit`, `union`) via its public JSON representation.
 - **Consistency**: Retains 100% compatibility with existing coercion behavior (loose coercion for mixed-type unions).
+
+## Implementation Rules
+
+### Code Organization
+- **Limit**: Strictly enforce < 200 lines per file. Use `utils/coercion/` directory for modularization if required.
+- **Internal Sharing**: Any logic shared across packages must reside in `packages/internal/`.
+
+### Strict Type Safety
+- **Public API only**: No interaction with ArkType internals (`BaseRoot`, `_id`, etc.).
+- **Avoid Assertions**: Use `match` and `scope` for logic; if generics require casting, use overloading or `as never` (per ArkType's "Generics" documentation) rather than `any`.
+- **Inferred Types**: Maximize the use of `Type.infer<T>` and `Type.validate<T>` for all utility functions.
