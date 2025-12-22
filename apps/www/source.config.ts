@@ -45,6 +45,11 @@ const arktypeTwoslashOptions = {
 		compilerOptions: {
 			// avoid ... in certain longer types on hover
 			noErrorTruncation: true,
+			baseUrl: "../../",
+			paths: {
+				arkenv: ["packages/arkenv/src"],
+				"@repo/*": ["packages/internal/*/src"],
+			},
 		},
 		extraFiles: {
 			"global.d.ts": `import type * as a from "arktype"
