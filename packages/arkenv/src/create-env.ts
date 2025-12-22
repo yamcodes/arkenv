@@ -1,6 +1,6 @@
 import { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
-import { type type as at, type distill, scope } from "arktype";
+import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 import { coerce } from "./utils";
