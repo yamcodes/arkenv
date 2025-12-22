@@ -6,7 +6,7 @@ The original coercion implementation relied on undocumented ArkType internal API
 
 ## Solution
 
-Switch to a **Standard-Based Data Pre-processing** approach.
+Switch to a **Schema-Directed Coercion** approach.
 
 Instead of inspecting proprietary ArkType structures (`schema.in.json`) or mutating internals, we will:
 1.  Introspect the schema's input requirements using the **standard** `schema.toJsonSchema()` API. This provides a strictly typed, version-controlled JSON Schema (Draft 2020-12).
