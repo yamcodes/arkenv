@@ -43,3 +43,6 @@ coverage/
 
 # size-limit
 esbuild-why*.html
+
+# arktype clone
+arktype/
