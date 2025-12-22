@@ -1,12 +1,11 @@
 ---
-"arkenv": patch
+"arkenv": minor
 ---
 
 ### Schema-Directed Coercion
 
-Refactored the core coercion engine from a "Global schema transformer" to **Schema-Directed Coercion**.
+Introduced **Schema-Directed Coercion**, a robust new system for handling environment variable transformations.
 
-This new implementation uses public ArkType introspection (`.in.json`) to surgically identify numeric and boolean targets and apply coercion via a standard `.pipe()`. This eliminates all dependencies on ArkType's internal APIs (`.internal`, `.transform`, etc.), ensuring long-term stability.
-
-* **Performance**: Introspection happens once; data pre-processing is a highly optimized shallow traversal.
-* **Reliability**: No longer reaches into undocumented internal nodes.
+* **Automatic Coercion**: Environment variables defined as `number` or `boolean` in your schema are now automatically coerced from strings.
+* **Standard-Based**: Uses standard JSON Schema introspection (`.toJsonSchema()`) to identify coercion targets safely and reliably.
+* **Performance**: Optimized traversal ensures high-performance processing without internal mutations.
