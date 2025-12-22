@@ -56,7 +56,7 @@ export function createEnv<const T extends SchemaShape>(
 	if (options) {
 		env = envOrOptions as RuntimeEnvironment;
 		opts = options;
-	} else if (isOptions(envOrOptions)) {
+	} else if (Options.allows(envOrOptions)) {
 		opts = envOrOptions;
 	} else {
 		env = envOrOptions as RuntimeEnvironment;
@@ -84,13 +84,6 @@ export function createEnv<const T extends SchemaShape>(
 	return validatedEnv;
 }
 
-function isOptions(
-	val: RuntimeEnvironment | ArkEnvOptions,
-): val is ArkEnvOptions {
-	return (
-		typeof val === "object" &&
-		val !== null &&
-		"coerce" in val &&
-		typeof (val as ArkEnvOptions).coerce === "boolean"
-	);
-}
+const Options = type({
+	coerce: "boolean",
+});
