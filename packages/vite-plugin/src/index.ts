@@ -61,7 +61,9 @@ export default function arkenv<const T extends SchemaShape>(
 			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
 			// "Type instantiation is excessively deep and possibly infinite" errors.
 			// Ideally, we should find a way to avoid these assertions while maintaining type safety.
-			const env = createEnv<T>(options, loadEnv(mode, process.cwd(), ""));
+			const env = createEnv<T>(options, {
+				env: loadEnv(mode, process.cwd(), ""),
+			});
 
 			// Filter to only include environment variables matching the prefix
 			// This prevents server-only variables from being exposed to client code

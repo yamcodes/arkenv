@@ -1,6 +1,6 @@
 import { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
-import type { type as at, distill } from "arktype";
+import { type type as at, type distill, scope } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 import { coerce } from "./utils";
@@ -8,62 +8,43 @@ import { coerce } from "./utils";
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
 
+export type ArkEnvConfig = {
+	env?: RuntimeEnvironment;
+	coerce?: boolean;
+};
+
 /**
  * TODO: `SchemaShape` is basically `Record<string, unknown>`.
  * If possible, find a better type than "const T extends Record<string, unknown>",
  * and be as close as possible to the type accepted by ArkType's `type`.
  */
 
-export type ArkEnvOptions = {
-	coerce?: boolean;
-};
-
 /**
  * Create an environment variables object from a schema and an environment
  * @param def - The environment variable schema (raw object or type definition created with `type()`)
- * @param envOrRef - The environment variables to validate (defaults to `process.env`) or options
- * @param opts - Options for the environment variables parser
+ * @param config - Configuration options including environment variables and parser settings
  * @returns The validated environment variable schema
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	options?: ArkEnvOptions,
-): distill.Out<at.infer<T, $>>;
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	env: RuntimeEnvironment,
-	options?: ArkEnvOptions,
+	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends EnvSchemaWithType>(
 	def: T,
-	options?: ArkEnvOptions,
-): InferType<T>;
-export function createEnv<T extends EnvSchemaWithType>(
-	def: T,
-	env: RuntimeEnvironment,
-	options?: ArkEnvOptions,
+	config?: ArkEnvConfig,
 ): InferType<T>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
-	envOrOptions: RuntimeEnvironment | ArkEnvOptions = process.env,
-	options?: ArkEnvOptions,
+	config?: ArkEnvConfig,
+): distill.Out<at.infer<T, $>> | InferType<typeof def>;
+export function createEnv<const T extends SchemaShape>(
+	def: EnvSchema<T> | EnvSchemaWithType,
+	{
+		env = process.env,
+		coerce: shouldCoerce = true,
+	}: ArkEnvConfig = {} as ArkEnvConfig,
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	// Resolve overloaded arguments
-	let env: RuntimeEnvironment = process.env;
-	let opts: ArkEnvOptions = {};
-
-	if (options) {
-		env = envOrOptions as RuntimeEnvironment;
-		opts = options;
-	} else if (Options.allows(envOrOptions)) {
-		opts = envOrOptions;
-	} else {
-		env = envOrOptions as RuntimeEnvironment;
-	}
-
-	const { coerce: shouldCoerce = true } = opts;
-
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
@@ -83,7 +64,3 @@ export function createEnv<const T extends SchemaShape>(
 
 	return validatedEnv;
 }
-
-const Options = type({
-	coerce: "boolean",
-});

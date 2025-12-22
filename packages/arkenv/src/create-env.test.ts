@@ -36,7 +36,7 @@ describe("createEnv", () => {
 	});
 	describe("coercion", () => {
 		it("should coerce number from string", () => {
-			const env = createEnv({ PORT: "number" }, { PORT: "3000" });
+			const env = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
 			expect(env.PORT).toBe(3000);
 			expect(typeof env.PORT).toBe("number");
 		});
@@ -44,36 +44,39 @@ describe("createEnv", () => {
 		it("should coerce boolean from string", () => {
 			const env = createEnv(
 				{ DEBUG: "boolean", VERBOSE: "boolean" },
-				{ DEBUG: "true", VERBOSE: "false" },
+				{ env: { DEBUG: "true", VERBOSE: "false" } },
 			);
 			expect(env.DEBUG).toBe(true);
 			expect(env.VERBOSE).toBe(false);
 		});
 
 		it("should coerce number.integer from string", () => {
-			const env = createEnv({ COUNT: "number.integer" }, { COUNT: "123" });
+			const env = createEnv(
+				{ COUNT: "number.integer" },
+				{ env: { COUNT: "123" } },
+			);
 			expect(env.COUNT).toBe(123);
 		});
 
 		it("should coerce numeric ranges from string", () => {
-			const env = createEnv({ AGE: "number >= 18" }, { AGE: "21" });
+			const env = createEnv({ AGE: "number >= 18" }, { env: { AGE: "21" } });
 			expect(env.AGE).toBe(21);
 		});
 
 		it("should coerce numeric divisors from string", () => {
-			const env = createEnv({ EVEN: "number % 2" }, { EVEN: "4" });
+			const env = createEnv({ EVEN: "number % 2" }, { env: { EVEN: "4" } });
 			expect(env.EVEN).toBe(4);
 		});
 
 		it("should work with optional coerced properties", () => {
 			const schema = { "PORT?": "number" } as const;
-			expect(createEnv(schema, { PORT: "3000" }).PORT).toBe(3000);
-			expect(createEnv(schema, {}).PORT).toBeUndefined();
+			expect(createEnv(schema, { env: { PORT: "3000" } }).PORT).toBe(3000);
+			expect(createEnv(schema, { env: {} }).PORT).toBeUndefined();
 		});
 
 		it("should coerce strict number literals", () => {
 			const schema = { VAL: "1 | 2" } as const;
-			expect(createEnv(schema, { VAL: "1" }).VAL).toBe(1);
+			expect(createEnv(schema, { env: { VAL: "1" } }).VAL).toBe(1);
 		});
 
 		it("should work with schemas containing morphs", () => {
@@ -85,8 +88,10 @@ describe("createEnv", () => {
 			});
 
 			const env = createEnv(Env, {
-				PORT: "3000",
-				VITE_MY_NUMBER_MANUAL: "456",
+				env: {
+					PORT: "3000",
+					VITE_MY_NUMBER_MANUAL: "456",
+				},
 			});
 
 			expect(env.PORT).toBe(3000);
@@ -147,7 +152,7 @@ describe("createEnv", () => {
 			{
 				TEST_STRING: "string",
 			},
-			env,
+			{ env },
 		);
 
 		expect(TEST_STRING).toBe("hello");
@@ -159,7 +164,7 @@ describe("createEnv", () => {
 				NUMBERS: type("number[]").default(() => [1, 2, 3]),
 				STRINGS: type("string[]").default(() => ["a", "b"]),
 			},
-			{},
+			{ env: {} },
 		);
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
@@ -172,7 +177,7 @@ describe("createEnv", () => {
 			{
 				NUMBERS: type("number[]").default(() => [1, 2, 3]),
 			},
-			{},
+			{ env: {} },
 		);
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
@@ -222,10 +227,14 @@ describe("createEnv", () => {
 
 			// Use the same schema multiple times
 			const env1 = createEnv(Env, {
-				TEST_STRING: "first",
+				env: {
+					TEST_STRING: "first",
+				},
 			});
 			const env2 = createEnv(Env, {
-				TEST_STRING: "second",
+				env: {
+					TEST_STRING: "second",
+				},
 			});
 
 			expect(env1.TEST_STRING).toBe("first");
@@ -253,7 +262,7 @@ describe("createEnv", () => {
 				PORT: "8080",
 			};
 
-			const env = createEnv(Env, customEnv);
+			const env = createEnv(Env, { env: customEnv });
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
@@ -268,9 +277,11 @@ describe("createEnv", () => {
 						NUMBER: "number",
 					},
 					{
-						NUMBER: "123",
+						env: {
+							NUMBER: "123",
+						},
+						coerce: false,
 					},
-					{ coerce: false },
 				),
 			).toThrow();
 		});
@@ -293,9 +304,11 @@ describe("createEnv", () => {
 					VAL: "string",
 				},
 				{
-					VAL: "123",
+					env: {
+						VAL: "123",
+					},
+					coerce: false,
 				},
-				{ coerce: false },
 			);
 			expect(env.VAL).toBe("123");
 		});
