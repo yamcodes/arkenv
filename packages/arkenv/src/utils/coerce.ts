@@ -129,14 +129,18 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 		result = (maybeParsedBoolean as BaseType<unknown>).pipe(result as never);
 	}
 
-	// Result may be BaseRoot or BaseType depending on whether morphs were applied
+	// Result may be BaseRoot (unwrapped internal node) or BaseType (public API wrapper).
+	// In ArkType 2.0, unwrapped nodes have an .internal getter returning themselves
+	// and a .kind property, while public Type wrappers have an .internal property
+	// pointing to the node and lack a .kind property on the wrapper itself.
 	if (
 		result &&
 		typeof result === "object" &&
-		"internal" in result &&
+		"kind" in result &&
+		(result as Record<string, unknown>).internal === result &&
 		!("assert" in result)
 	) {
-		// Still a BaseRoot, wrap it using scope's schema method to keep good types
+		// Still a raw BaseRoot, wrap it using scope's schema method to attach Type methods
 		return schema.$.schema(result as BaseRoot) as unknown as BaseType<t, $>;
 	}
 
