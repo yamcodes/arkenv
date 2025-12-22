@@ -6,7 +6,7 @@ The secondary `coerce` function will no longer attempt to reach into the `BaseRo
 
 ### 1. Introspection via `schema.in.toJsonSchema()` with Fallback
 
-We use `schema.in` to get a representation of the schema's input *without morphs*. To ensure 100% stability even when encountereing types that are not representable in JSON Schema (like those with customized predicates or narrows), we call `.toJsonSchema()` with a base-preserving fallback:
+We use `schema.in` to get a representation of the schema's input *without morphs*. To ensure 100% stability even when encountering types that are not representable in JSON Schema (like those with customized predicates or narrows), we call `.toJsonSchema()` with a base-preserving fallback:
 
 ```ts
 const json = schema.in.toJsonSchema({
