@@ -198,7 +198,8 @@ describe("coerce", () => {
 		});
 		const coercedSchema = coerce(schema);
 		const result = coercedSchema({ VAL: "NaN" });
-		// @ts-expect-error
+		expect(result).not.toBeInstanceOf(ArkErrors);
+		if (result instanceof ArkErrors) return;
 		expect(result.VAL).toBeNaN();
 	});
 
