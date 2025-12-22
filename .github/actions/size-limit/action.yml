@@ -83,9 +83,12 @@ runs:
               });
             }
           } catch (error) {
-            core.setFailed(`Failed to post PR comment: ${error.message}`);
+            if (error?.status === 403) {
+              core.warning('Failed to post PR comment due to insufficient permissions. This is expected for forks.');
+            } else {
+              core.setFailed(`Failed to post PR comment: ${error?.message || error}`);
+            }
             console.error('Error details:', error);
-            throw error;
           }
       env:
         SIZE_LIMIT_RESULT: ${{ steps.size-check.outputs.result }}
