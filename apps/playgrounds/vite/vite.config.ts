@@ -10,7 +10,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // 2. Validating VITE_* variables via the plugin
 export const Env = type({
 	PORT: "number.port",
-	VITE_MY_VAR: "string",
+	VITE_MY_VAR: "unknown",
 	VITE_MY_NUMBER: "number",
 	VITE_MY_BOOLEAN: "boolean",
 });
