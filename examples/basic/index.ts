@@ -13,7 +13,7 @@ console.log({
 	host: env.HOST,
 	port: env.PORT,
 	nodeEnv: env.NODE_ENV,
-	debug: env.DEBUGGING,
+	debugging: env.DEBUGGING,
 });
 
 export default env;
