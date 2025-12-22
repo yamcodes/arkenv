@@ -45,4 +45,4 @@ coverage/
 esbuild-why*.html
 
 # arktype clone
-arktype
+arktype/
