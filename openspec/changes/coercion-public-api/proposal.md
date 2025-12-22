@@ -2,23 +2,24 @@
 
 ## Problem
 
-The current coercion implementation in `packages/arkenv/src/utils/coerce.ts` relies on undocumented ArkType internal APIs (`.internal`, `.transform`, `.pipe` on internal nodes). This makes the codebase fragile to ArkType updates and hard to maintain as it requires deep knowledge of ArkType's node architecture.
+The original coercion implementation relied on undocumented ArkType internal APIs (`.internal`, `.transform`, `.pipe` on internal nodes), making the codebase fragile. A proposed alternative was to use `schema.in.json`, but investigation revealed that while this property is public, it returns an untyped, proprietary internal representation that requires unsafe runtime probing.
 
 ## Solution
 
-Switch from a **Schema Mutation** approach to a **Data Pre-processing** approach.
-Instead of modifying the internal structure of the ArkType schema to accept strings, we will:
-1.  Introspect the schema's input requirements using the **public** `schema.in.json` API.
-2.  Identify paths that expect `number` or `boolean` types.
+Switch to a **Standard-Based Data Pre-processing** approach.
+
+Instead of inspecting proprietary ArkType structures (`schema.in.json`) or mutating internals, we will:
+1.  Introspect the schema's input requirements using the **standard** `schema.toJsonSchema()` API. This provides a strictly typed, version-controlled JSON Schema (Draft 2020-12).
+2.  Identify paths that expect `number` or `boolean` types by traversing standard JSON Schema fields (`type`, `anyOf`, `const`, `enum`).
 3.  Pre-process the input data (environment variables) to coerce values at those paths *before* passing the data to ArkType for final validation.
 4.  Wrap the original schema in a pipeline: `type("unknown").pipe(applyCoercion).pipe(schema)`.
 
 ## Impact
 
-- **Reliability**: Eliminates dependencies on experimental/internal ArkType APIs.
+- **Reliability**: Relies on a stable external standard (JSON Schema) rather than ArkType's fluctuating internal representation.
+- **Type Safety**: `toJsonSchema()` returns a strictly typed `JsonSchema` interface, whereas `in.json` returns loose `JsonStructure` types requiring unsafe assertions.
 - **Performance**: Introspection happens once; the pre-processing morph is a simple object traversal.
-- **Maintenance**: Uses well-documented ArkType concepts (`domain`, `unit`, `union`) via its public JSON representation.
-- **Consistency**: Retains 100% compatibility with existing coercion behavior (loose coercion for mixed-type unions).
+- **Consistency**: Retains 100% compatibility with existing coercion behavior.
 
 ## Implementation Rules
 
@@ -27,6 +28,6 @@ Instead of modifying the internal structure of the ArkType schema to accept stri
 - **Internal Sharing**: Any logic shared across packages must reside in `packages/internal/`.
 
 ### Strict Type Safety
-- **Public API only**: No interaction with ArkType internals (`BaseRoot`, `_id`, etc.).
-- **Avoid Assertions**: Use `match` and `scope` for logic; if generics require casting, use overloading or `as never` (per ArkType's "Generics" documentation) rather than `any`.
-- **Inferred Types**: Maximize the use of `Type.infer<T>` and `Type.validate<T>` for all utility functions.
+- **Standard API only**: Use `schema.toJsonSchema()` for all introspection.
+- **No Prop probing**: Do not probe for `domain`, `unit`, or `branches` on generic objects.
+- **Avoid Assertions**: Use discriminated unions provided by the `JsonSchema` type definition.
