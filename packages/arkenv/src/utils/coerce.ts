@@ -1,6 +1,10 @@
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
+/**
+ * A marker used in the coercion path to indicate that the target
+ * is the *elements* of an array, rather than the array property itself.
+ */
 const ARRAY_ITEM_MARKER = "*";
 
 /**
