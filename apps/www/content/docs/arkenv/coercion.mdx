@@ -69,6 +69,24 @@ Coercion is highly optimized: ArkEnv performs a one-time introspection of your s
 
 ## Disabling coercion
 
-At the moment, there is no way to disable coercion or get around it with `arkenv`.
+You can opt-out of this behavior by setting `coerce` to `false`.
 
-If this is something you're interested in, please open an issue on [GitHub](https://github.com/arkenv/arkenv/issues/new/choose) or send a [Discord message](https://discord.gg/zAmUyuxXH9).
+```ts title="index.ts"
+import arkenv from "arkenv";
+
+// ⚠️ This will throw an error!
+// "3000" (string) is not a number.
+const env = arkenv(
+  {
+    PORT: "number.port",
+  },
+  {
+    coerce: false, // < -- Disable coercion
+    env: {
+      PORT: "3000",
+    },
+  }
+);
+```
+
+When coercion is disabled, environment variables are validated **exactly as they are**. Since environment variables are strings, this usually means validation will fail for `number` or `boolean` fields unless you manually parse them first.

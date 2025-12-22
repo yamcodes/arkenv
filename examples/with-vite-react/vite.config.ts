@@ -11,13 +11,13 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export const Env = type({
 	PORT: "number.port",
 	VITE_MY_VAR: "string",
-	VITE_MY_NUMBER: type("string").pipe((str) => Number.parseInt(str, 10)),
-	VITE_MY_BOOLEAN: type("string").pipe((str) => str === "true"),
+	VITE_MY_NUMBER: "number",
+	VITE_MY_BOOLEAN: "boolean",
 });
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-	const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
+	const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
 
 	console.log(`${env.VITE_MY_NUMBER} ${typeof env.VITE_MY_NUMBER}`);
 	return {

@@ -25,7 +25,7 @@ const Env = type({
 });
 
 export default defineConfig(({ mode }) => {
-	const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
+	const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
 
 	return {
 		plugins: [arkenvVitePlugin(Env)],

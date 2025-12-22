@@ -68,10 +68,9 @@ for (const name of readdirSync(fixturesDir)) {
 			).resolves.not.toThrow();
 
 			// Verify that createEnv was called with the correct parameters
-			expect(mockCreateEnv).toHaveBeenCalledWith(
-				config.Env,
-				expect.objectContaining(config.envVars || {}),
-			);
+			expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+				env: expect.objectContaining(config.envVars || {}),
+			});
 		});
 	});
 }
@@ -128,7 +127,9 @@ describe("Plugin Unit Tests", () => {
 
 		expect(mockCreateEnv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
-			expect.any(Object),
+			{
+				env: expect.any(Object),
+			},
 		);
 	});
 
