@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import type { Page } from "@playwright/test";
 
-interface AxeScanOptions {
+type AxeScanOptions = {
 	/** Tags to include in the scan (default: ["wcag2a", "wcag2aa", "wcag21aa"]) */
 	tags?: string[];
 	/** Selectors to exclude from the scan */
@@ -10,7 +10,7 @@ interface AxeScanOptions {
 	disableRules?: string[];
 	/** List of violation IDs that are explicitly allowed (only applies to moderate/minor violations) */
 	allowedViolations?: string[];
-}
+};
 
 type ImpactLevel =
 	| "critical"

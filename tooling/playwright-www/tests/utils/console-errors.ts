@@ -1,13 +1,13 @@
 import { expect, type Page } from "@playwright/test";
 
-interface ConsoleErrorOptions {
+type ConsoleErrorOptions = {
 	/** Timeout for page navigation (default: 60000ms) */
 	navigationTimeout?: number;
 	/** Timeout for network idle state (default: 60000ms) */
 	networkIdleTimeout?: number;
 	/** Additional wait time after network idle (default: 1000ms for single URL, 500ms for multiple) */
 	waitTimeout?: number;
-}
+};
 
 /**
  * Check if an error is an HLS.js library error (not a generic media error).

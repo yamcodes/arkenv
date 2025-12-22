@@ -25,5 +25,5 @@ button[data-search-full] {
 .dark body,
 .dark html {
 	background-color: var(--background);
-	background-image: none !important;
+	background-image: none;
 }
