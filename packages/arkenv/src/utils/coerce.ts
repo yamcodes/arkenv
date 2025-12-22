@@ -1,3 +1,10 @@
+import type {
+	BaseRoot,
+	DeepNodeTransformContext,
+	Inner,
+	NodeKind,
+	NormalizedSchema,
+} from "@ark/schema";
 import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
