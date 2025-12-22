@@ -6,9 +6,7 @@
 
 Refactored the core coercion engine from a "Global schema transformer" to **Selective Path Coercion**.
 
-This high-performance, non-destructive data pre-processor uses public ArkType introspection (`.in.json`) to selectively coerce environment variables without touching schema internals. It identifies numeric and boolean targets at boot time and applies transformation via a standard public `.pipe()` morph.
+This new implementation uses public ArkType introspection (`.in.json`) to surgically identify numeric and boolean targets and apply coercion via a standard `.pipe()`. This eliminates all dependencies on ArkType's internal APIs (`.internal`, `.transform`, etc.), ensuring long-term stability.
 
-This change eliminates all dependencies on undocumented ArkType internal APIs (`.internal`, `.transform`, etc.), significantly improving the stability and future-readiness of the library.
-
-* **Behavior**: Retains 100% compatibility with existing coercion logic for strings, numbers, booleans, and complex unions.
-* **Internal**: removed all usage of `.internal.transform()` and node-specific introspection properties.
+* **Performance**: Introspection happens once; data pre-processing is a highly optimized shallow traversal.
+* **Reliability**: No longer reaches into undocumented internal nodes.

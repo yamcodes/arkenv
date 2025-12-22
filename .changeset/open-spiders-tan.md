@@ -2,7 +2,7 @@
 "@repo/scope": minor
 ---
 
-#### Simplify generic types for central coercion
+#### Align scope with central coercion
 
-*   **BREAKING**: Removed the custom `boolean` keyword from the root scope. ArkEnv now leverages standard ArkType primitives combined with **Selective Path Coercion**.
-*   The `number.port` keyword has been simplified to a pure number refinement, delegating string-to-number conversion to the global coercion layer.
+* **BREAKING**: Removed the custom `boolean` keyword from the root scope. ArkEnv now uses the standard ArkType `boolean` primitive combined with global coercion.
+* Updated `number.port` to use the new strict numeric refinement, as string parsing is now handled by the **Selective Path Coercion** layer.

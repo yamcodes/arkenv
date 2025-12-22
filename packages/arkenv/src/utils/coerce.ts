@@ -124,7 +124,7 @@ function applyCoercion(data: any, targets: CoercionTarget[]): any {
 		}
 
 		const lastKey = path[path.length - 1];
-		if (Object.prototype.hasOwnProperty.call(curr, lastKey)) {
+		if (Object.hasOwn(curr, lastKey)) {
 			curr[lastKey] = maybeParsedNumber(maybeParsedBoolean(curr[lastKey]));
 		}
 	}

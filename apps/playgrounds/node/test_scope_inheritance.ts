@@ -1,4 +1,4 @@
-import { scope, type, match } from "arktype";
+import { match, scope, type } from "arktype";
 
 const maybeParsedNumber = (s: any) => {
 	if (typeof s === "number") return s;

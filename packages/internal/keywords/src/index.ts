@@ -1,4 +1,5 @@
 import { type } from "arktype";
+
 /**
  * A loose numeric morph.
  *
@@ -16,7 +17,22 @@ export const maybeParsedNumber = type("unknown").pipe((s) => {
 });
 
 /**
- * A `number` integer between 0 and 65535
+ * A loose boolean morph.
+ *
+ * **In**: `unknown`
+ *
+ * **Out**: `true` for `"true"`, `false` for `"false"`; otherwise the original input.
+ *
+ * Useful for coercion in unions where failing on non-boolean strings would block other branches.
+ */
+export const maybeParsedBoolean = type("unknown").pipe((s) => {
+	if (s === "true") return true;
+	if (s === "false") return false;
+	return s;
+});
+
+/**
+ * A `number` integer between 0 and 65535.
  */
 export const port = type("0 <= number.integer <= 65535");
 

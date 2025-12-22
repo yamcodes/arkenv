@@ -1,4 +1,4 @@
-import { type, match } from "arktype";
+import { match, type } from "arktype";
 
 const maybeParsedNumber = (s: any) => {
 	const n = Number(s);
