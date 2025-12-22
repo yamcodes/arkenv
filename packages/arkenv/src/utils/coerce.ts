@@ -149,7 +149,13 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 		return schema;
 	}
 
+	/*
+	 * We use `type("unknown")` to start the pipeline, which initializes a default scope.
+	 * Integrating the original `schema` with its custom scope `$` into this pipeline
+	 * creates a scope mismatch in TypeScript ({} vs $).
+	 * We cast to `BaseType<t, $>` to assert the final contract is maintained.
+	 */
 	return type("unknown")
 		.pipe((data) => applyCoercion(data, targets))
-		.pipe(schema);
+		.pipe(schema) as BaseType<t, $>;
 }
