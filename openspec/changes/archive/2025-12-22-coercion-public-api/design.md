@@ -114,3 +114,16 @@ The implementation wraps the original validation in a predictable 3-step pipelin
 
 ### Handling Unions
 The strategy preserves "loose" coercion for mixed-type unions (e.g. `number | string`). If it *could* be a number, we try to parse it. If parsing fails, we leave it alone, and the subsequent `.pipe(schema)` handles the validation.
+
+### Performance and Mutation
+*   **Setup vs Runtime**: Introspection (`findCoercionPaths`) occurs once at setup time. The cost is amortized over all subsequent validations. If no coercion targets are found, the runtime overhead is effectively zero (direct pass-through).
+*   **In-Place Mutation**: We chose in-place mutation over cloning for performance. Environment objects are typically transient and used solely for configuration loading. Cloning large nested config objects recursively would be prohibitively expensive for this use case. Use cases requiring immutable inputs should clone data *before* passing it to `arkenv`.
+
+### Coercion Limitations
+*   **Custom Predicates**: Because we rely on the implementation-agnostic `toJsonSchema` output, custom predicates (e.g., `number.refine(n => isPrime(n))`) are not visible to the introspection layer. We only see "number". This is acceptable because we simply coerce to the primitive type; the predicate is still applied during the final validation step.
+*   **Loose Coercion**: We do not implement "strict" coercion (e.g. failing if a string should be a number but isn't). We leave invalid strings as strings. This simplifies the coercion logic and delegates error reporting to ArkType's robust validation engine.
+
+### Alternatives Considered
+*   **Recursive `.transform()`**: We initially considered attaching `.transform()` to every leaf node. This proved fragile as it required accessing internal APIs (`.internal`, `branches`) that may change between ArkType versions.
+*   **Global Schema Rewrite**: Deeply cloning and rewriting the schema definition to inject coercion nodes was deemed too complex and risky for maintenance.
+*   **Selected Approach**: The current "Introspection + Pipeline" approach offers the best balance of stability (public APIs only), performance (one-time setup), and maintainability (decoupled logic).
