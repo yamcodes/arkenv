@@ -18,24 +18,24 @@ import { defineConfig, loadEnv } from "vite";
 
 // Define the schema once
 export const Env = type({
-	PORT: "number.port",              // Server-only (used in vite.config)
-	VITE_MY_VAR: "string",            // Client-exposed
-	VITE_MY_NUMBER: type("string").pipe((str) => Number.parseInt(str, 10)),
-	VITE_MY_BOOLEAN: type("string").pipe((str) => str === "true"),
+  PORT: "number.port", // Server-only (used in vite.config)
+  VITE_MY_VAR: "string", // Client-exposed
+  VITE_MY_NUMBER: "number",
+  VITE_MY_BOOLEAN: "boolean",
 });
 
 export default defineConfig(({ mode }) => {
-	// Validate server-side variables (PORT) using loadEnv
-	const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
+  // Validate server-side variables (PORT) using loadEnv
+  const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
 
-	return {
-		plugins: [
-			arkenvVitePlugin(Env), // Validates VITE_* variables
-		],
-		server: {
-			port: env.PORT, // Use validated PORT
-		},
-	};
+  return {
+    plugins: [
+      arkenvVitePlugin(Env), // Validates VITE_* variables
+    ],
+    server: {
+      port: env.PORT, // Use validated PORT
+    },
+  };
 });
 ```
 
@@ -47,12 +47,12 @@ The playground includes type augmentation for `import.meta.env`:
 /// <reference types="vite/client" />
 
 type ImportMetaEnvAugmented =
-	import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
-		typeof import("../vite.config").Env
-	>;
+  import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+    typeof import("../vite.config").Env
+  >;
 
 interface ViteTypeOptions {
-	strictImportMetaEnv: unknown;
+  strictImportMetaEnv: unknown;
 }
 
 interface ImportMetaEnv extends ImportMetaEnvAugmented {}
@@ -62,10 +62,10 @@ This makes `import.meta.env` fully typesafe in your React components:
 
 ```tsx title="src/app.tsx"
 // All of these are typesafe!
-const myVar = import.meta.env.VITE_MY_VAR;        // ✅ string
-const myNumber = import.meta.env.VITE_MY_NUMBER;  // ✅ number
+const myVar = import.meta.env.VITE_MY_VAR; // ✅ string
+const myNumber = import.meta.env.VITE_MY_NUMBER; // ✅ number
 const myBoolean = import.meta.env.VITE_MY_BOOLEAN; // ✅ boolean
-const port = import.meta.env.PORT;                // ❌ Error: PORT is server-only
+const port = import.meta.env.PORT; // ❌ Error: PORT is server-only
 ```
 
 ## Environment Variables
@@ -80,6 +80,7 @@ VITE_MY_BOOLEAN=true
 ```
 
 The plugin automatically:
+
 - Validates all variables at build-time
 - Filters to only expose `VITE_*` variables to the client
 - Excludes server-only variables (like `PORT`) from the client bundle
