@@ -94,6 +94,50 @@ describe("createEnv", () => {
 		});
 	});
 
+	describe("numeric keywords", () => {
+		it("should coerce number", () => {
+			const env = createEnv({ VAL: "number" }, { VAL: "123.456" });
+			expect(env.VAL).toBe(123.456);
+		});
+
+		it("should coerce number.Infinity", () => {
+			const env = createEnv({ VAL: "number.Infinity" }, { VAL: "Infinity" });
+			expect(env.VAL).toBe(Number.POSITIVE_INFINITY);
+		});
+
+		// TODO: Support NaN coercion
+		// it("should coerce number.NaN", () => {
+		// 	const env = createEnv({ VAL: "number.NaN" }, { VAL: "NaN" });
+		// 	expect(env.VAL).toBeNaN();
+		// });
+
+		it("should coerce number.NegativeInfinity", () => {
+			const env = createEnv(
+				{ VAL: "number.NegativeInfinity" },
+				{ VAL: "-Infinity" },
+			);
+			expect(env.VAL).toBe(Number.NEGATIVE_INFINITY);
+		});
+
+		it("should coerce number.epoch", () => {
+			const env = createEnv({ VAL: "number.epoch" }, { VAL: "1640995200000" });
+			expect(env.VAL).toBe(1640995200000);
+		});
+
+		it("should coerce number.integer", () => {
+			const env = createEnv({ VAL: "number.integer" }, { VAL: "42" });
+			expect(env.VAL).toBe(42);
+		});
+
+		it("should coerce number.safe", () => {
+			const env = createEnv(
+				{ VAL: "number.safe" },
+				{ VAL: "9007199254740991" },
+			);
+			expect(env.VAL).toBe(Number.MAX_SAFE_INTEGER);
+		});
+	});
+
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
