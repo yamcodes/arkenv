@@ -26,7 +26,7 @@ export const Env = type({
 
 export default defineConfig(({ mode }) => {
   // Validate server-side variables (PORT) using loadEnv
-  const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
+  const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
 
   return {
     plugins: [
