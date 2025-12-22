@@ -36,7 +36,7 @@ jobs:
       - name: Generate GitHub App Token
         id: generate-token
         uses: actions/create-github-app-token@v2
-        if: github.repository == 'yamcodes/arkenv' && env.APP_PRIVATE_KEY != ''
+        if: env.APP_PRIVATE_KEY != ''
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
