@@ -213,7 +213,13 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
  * before validation.
  */
 export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
-	const json = schema.in.toJsonSchema();
+	// Use a fallback to handle unjsonifiable parts of the schema (like predicates)
+	// by preserving the base schema. This ensures that even if part of the schema
+	// cannot be fully represented in JSON Schema, we can still perform coercion
+	// for the parts that can.
+	const json = schema.in.toJsonSchema({
+		fallback: (ctx) => ctx.base,
+	});
 	const targets = findCoercionPaths(json);
 
 	if (targets.length === 0) {
