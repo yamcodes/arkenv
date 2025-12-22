@@ -4,7 +4,7 @@
 
 ### Coercion
 
-Introduced **Schema-Directed Coercion**, a new system for handling environment variable non-strings: now, environment variables defined as `number` or `boolean` in your schema are automatically coerced from strings.
+Introduced **Schema-Directed Coercion**: now, environment variables defined as `number` or `boolean` in your schema are automatically parsed to their correct types.
 
 To learn more about the new coercion system, read [the docs](https://arkenv.js.org/docs/arkenv/coercion).
 
