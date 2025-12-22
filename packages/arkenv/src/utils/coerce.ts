@@ -137,12 +137,25 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 			// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
 			if (Object.prototype.hasOwnProperty.call(current, lastKey)) {
 				const original = current[lastKey];
-				const asNumber = maybeParsedNumber(original);
-				// If numeric parsing didn't change type (still string) or is NaN/invalid, try boolean
-				if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
-					current[lastKey] = asNumber;
+
+				if (Array.isArray(original)) {
+					for (let i = 0; i < original.length; i++) {
+						const item = original[i];
+						const asNumber = maybeParsedNumber(item);
+						if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+							original[i] = asNumber;
+						} else {
+							original[i] = maybeParsedBoolean(item);
+						}
+					}
 				} else {
-					current[lastKey] = maybeParsedBoolean(original);
+					const asNumber = maybeParsedNumber(original);
+					// If numeric parsing didn't change type (still string) or is NaN/invalid, try boolean
+					if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
+						current[lastKey] = asNumber;
+					} else {
+						current[lastKey] = maybeParsedBoolean(original);
+					}
 				}
 			}
 			return;
