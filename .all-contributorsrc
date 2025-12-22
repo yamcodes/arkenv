@@ -1,34 +1,48 @@
 {
-	"projectName": "arkenv",
-	"projectOwner": "yamcodes",
-	"files": ["packages/arkenv/README.md"],
-	"commitType": "docs",
-	"commitConvention": "angular",
-	"contributorsPerLine": 7,
-	"contributors": [
-		{
-			"login": "yamcodes",
-			"name": "Yam C Borodetsky",
-			"avatar_url": "https://avatars.githubusercontent.com/u/2014360?v=4",
-			"profile": "https://yam.codes",
-			"contributions": [
-				"code",
-				"question",
-				"ideas",
-				"design",
-				"doc",
-				"bug",
-				"example",
-				"infra",
-				"test"
-			]
-		},
-		{
-			"login": "aruaycodes",
-			"name": "Aruay Berdikulova",
-			"avatar_url": "https://avatars.githubusercontent.com/u/57131628?v=4",
-			"profile": "https://github.com/aruaycodes",
-			"contributions": ["code"]
-		}
-	]
+  "projectName": "arkenv",
+  "projectOwner": "yamcodes",
+  "files": [
+    "packages/arkenv/README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "yamcodes",
+      "name": "Yam C Borodetsky",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2014360?v=4",
+      "profile": "https://yam.codes",
+      "contributions": [
+        "code",
+        "question",
+        "ideas",
+        "design",
+        "doc",
+        "bug",
+        "example",
+        "infra",
+        "test"
+      ]
+    },
+    {
+      "login": "aruaycodes",
+      "name": "Aruay Berdikulova",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57131628?v=4",
+      "profile": "https://github.com/aruaycodes",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ssalbdivad",
+      "name": "David Blass",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10645823?v=4",
+      "profile": "https://arktype.io",
+      "contributions": [
+        "ideas",
+        "mentoring"
+      ]
+    }
+  ]
 }
