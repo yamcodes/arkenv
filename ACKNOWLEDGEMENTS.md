@@ -1,4 +1,4 @@
-# Thanks / Inspiration
+# Acknowledgements
 
 I'd like to thank the following projects and people for their help and inspiration:
 

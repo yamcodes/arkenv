@@ -29,7 +29,7 @@
 <br/>
 <br/>
 
-## Introduction 
+## Introduction
 
 > [!TIP]
 > 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs/arkenv) to hover over code blocks and get type hints!
@@ -37,7 +37,7 @@
 ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready to use, typesafe environment variable object:
 
 ```ts twoslash
-import arkenv from 'arkenv';
+import arkenv from "arkenv";
 
 const env = arkenv({
   HOST: "string.host", // valid IP address or localhost
@@ -79,6 +79,7 @@ ArkEnvError: Errors found while validating environment variables
 ```sh
 npm install arkenv arktype
 ```
+
 </details>
 
 <details>
@@ -87,6 +88,7 @@ npm install arkenv arktype
 ```sh
 pnpm add arkenv arktype
 ```
+
 </details>
 
 <details>
@@ -95,6 +97,7 @@ pnpm add arkenv arktype
 ```sh
 yarn add arkenv arktype
 ```
+
 </details>
 
 <details>
@@ -103,12 +106,13 @@ yarn add arkenv arktype
 ```sh
 bun add arkenv arktype
 ```
+
 </details>
 
 :rocket: **Let's get started!** Read the [2-minute setup guide](https://arkenv.js.org/docs/quickstart) or [start with an example](https://arkenv.js.org/docs/examples).
 
 > [!TIP]
-> Improve your DX with *syntax highlighting* in [VS Code](https://arkenv.js.org/docs/integrations/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/integrations/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
+> Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/integrations/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/integrations/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
 
 ## Requirements
 
@@ -116,7 +120,7 @@ ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcode
 
 ### TypeScript setup
 
-While ArkEnv works with plain JavaScript, *TypeScript is highly recommended* to get the full typesafety benefits. To get ArkEnv to work with TypeScript, we require:
+While ArkEnv works with plain JavaScript, _TypeScript is highly recommended_ to get the full typesafety benefits. To get ArkEnv to work with TypeScript, we require:
 
 - [**Modern TypeScript module resolution**](https://www.typescriptlang.org/tsconfig/#moduleResolution). One of the following is required in your `tsconfig.json`:
   - `"moduleResolution": "bundler"` - Recommended for modern bundlers (Vite, Next.js, etc.). Supplied by default when using `"module": "Preserve"` (Introduced in TypeScript v5.4).
@@ -139,4 +143,15 @@ If you love ArkEnv, you can support the project by **starring it on GitHub**!
 
 You are also welcome to directly [contribute to the project's development](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md).
 
-## [Thanks / Inspiration](https://github.com/yamcodes/arkenv/blob/main/THANKS.md)
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## [Acknowledgements](https://github.com/yamcodes/arkenv/blob/main/ACKNOWLEDGEMENTS.md)
