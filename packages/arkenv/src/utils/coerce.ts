@@ -111,7 +111,8 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 		return data;
 	}
 
-	const walk = (current: unknown, targetPath: string[]) => {
+	// biome-ignore lint/suspicious/noExplicitAny: generic traversal requires any
+	const walk = (current: any, targetPath: string[]) => {
 		if (!current || typeof current !== "object") return;
 
 		// Handle root-level array traversal where path is empty/exhausted but we have a collection
