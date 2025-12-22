@@ -6,7 +6,7 @@ Transition the coercion mechanism from experimental internal schema transformati
 ## ADDED Requirements
 
 ### Requirement: Stable Introspection
-The coercion system MUST identify target fields using only public ArkType APIs (`schema.in.json`).
+The coercion system MUST identify target fields using only public ArkType APIs (`schema.in.toJsonSchema`).
 
 #### Scenario: Identify nested numeric paths
 - **GIVEN** a schema `{ API: { PORT: "number", TIMEOUT: "number?" } }`
