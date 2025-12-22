@@ -11,9 +11,9 @@ const ARRAY_ITEM_MARKER = "*";
  * @internal
  * Information about a path in the schema that requires coercion.
  */
-interface CoercionTarget {
+type CoercionTarget = {
 	path: string[];
-}
+};
 
 /**
  * Recursively find all paths in a JSON Schema that require coercion.
@@ -99,7 +99,7 @@ const findCoercionPaths = (
 	// Deduplicate by path
 	const seen = new Set<string>();
 	return results.filter((t) => {
-		const key = t.path.join(".");
+		const key = JSON.stringify(t.path);
 		if (seen.has(key)) return false;
 		seen.add(key);
 		return true;
@@ -208,7 +208,9 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 };
 
 /**
- * Traverses an ArkType schema and wraps numeric or boolean values in coercion morphs.
+ * Create a coercing wrapper around an ArkType schema using JSON Schema introspection.
+ * Pre-process input data to coerce string values to numbers/booleans at identified paths
+ * before validation.
  */
 export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 	const json = schema.toJsonSchema();
