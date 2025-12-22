@@ -173,4 +173,22 @@ describe("coerce", () => {
 			},
 		});
 	});
+
+	it("should work with schemas containing morphs", () => {
+		const schema = type({
+			PORT: "number",
+			VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+				Number.parseInt(str, 10),
+			),
+		});
+		const coercedSchema = coerce(schema);
+		const result = coercedSchema({
+			PORT: "3000",
+			VITE_MY_NUMBER_MANUAL: "456",
+		});
+		expect(result).toEqual({
+			PORT: 3000,
+			VITE_MY_NUMBER_MANUAL: 456,
+		});
+	});
 });
