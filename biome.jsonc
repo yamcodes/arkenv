@@ -66,6 +66,13 @@
 					"options": {
 						"filenameCases": ["kebab-case"]
 					}
+				},
+				"useConsistentTypeDefinitions": {
+					"level": "error",
+					"fix": "unsafe",
+					"options": {
+						"style": "type"
+					}
 				}
 			}
 		}
@@ -127,6 +134,9 @@
 				"rules": {
 					"correctness": {
 						"noUnusedVariables": "off"
+					},
+					"style": {
+						"useConsistentTypeDefinitions": "off"
 					}
 				}
 			}
