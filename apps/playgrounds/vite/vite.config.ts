@@ -17,7 +17,7 @@ export const Env = type({
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-	const env = arkenv(Env, loadEnv(mode, process.cwd(), ""));
+	const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
 
 	console.log(`${env.VITE_MY_NUMBER} ${typeof env.VITE_MY_NUMBER}`);
 	return {
