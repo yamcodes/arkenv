@@ -6,7 +6,7 @@ ArkEnv is a typesafe environment variable parser powered by [ArkType](https://ar
 
 - **Zero external dependencies** (except peer dependencies)
 - **Typesafe environment variables** with build-time and runtime validation
-- **Tiny bundle size** (<1kB gzipped goal)
+- **Tiny bundle size** (<2kB gzipped goal)
 - **Cross-platform support** for Node.js, Bun, and browser environments
 - **Vite plugin** for build-time validation
 - **Single import, zero config** for most projects
@@ -178,7 +178,7 @@ pnpm run test:e2e                     # E2E tests
 ## Important Constraints
 
 **Bundle Size:**
-- Core package must be <1kB gzipped (enforced via `size-limit`)
+- Core package must be <2kB gzipped (enforced via `size-limit`)
 - Vite plugin must be <2kB (enforced via `size-limit`)
 - Zero external dependencies (except peer dependencies). Internal workspace packages are permitted.
 
