@@ -9,7 +9,7 @@ The original coercion implementation relied on undocumented ArkType internal API
 Switch to a **Schema-Directed Coercion** approach.
 
 Instead of inspecting proprietary ArkType structures (`schema.in.json`) or mutating internals, we will:
-1.  Introspect the schema's input requirements using the **standard** `schema.in.toJsonSchema()` API. This provides a strictly typed, version-controlled JSON Schema (Draft 2020-12) of the schema's input side, ensuring compatibility even when the schema contains morphs.
+1.  Introspect the schema's input requirements using the **standard** `schema.in.toJsonSchema({ fallback: (ctx) => ctx.base })` API. This provides a strictly typed, version-controlled JSON Schema (Draft 2020-12) of the schema's input side. The fallback mechanism ensures resilience against unjsonifiable types (e.g., those with custom predicates like `string.url`) by preserving the base structural information.
 2.  Identify paths that expect `number` or `boolean` types by traversing standard JSON Schema fields (`type`, `anyOf`, `const`, `enum`).
 3.  Pre-process the input data (environment variables) to coerce values at those paths *before* passing the data to ArkType for final validation.
 4.  Wrap the original schema in a pipeline: `type("unknown").pipe(applyCoercion).pipe(schema)`.
