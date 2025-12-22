@@ -1,4 +1,5 @@
 {
-  "projectName": "arkenv",
-  "projectOwner": "yamcodes"
+	"projectName": "arkenv",
+	"projectOwner": "yamcodes",
+	"files": ["packages/arkenv/README.md"]
 }
