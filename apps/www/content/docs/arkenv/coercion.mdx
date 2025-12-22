@@ -1,0 +1,74 @@
+---
+title: Coercion
+description: Automatically transform environment variable strings into typesafe numbers, booleans, and more.
+icon: New
+---
+
+Environment variables are always strings by default. ArkEnv automatically **coerces** these strings into their target types based on your schema, so you only have to think about the types you want.
+
+## Numbers
+
+Any field defined as a `number` or a numeric subtype (like `number.integer` or `number.port`) will be automatically parsed.
+
+```ts title="index.ts"
+import arkenv from "arkenv";
+
+const env = arkenv({
+  PORT: "number.port",
+  RETRY_COUNT: "number.integer = 3",
+  AGE: "0 <= number.integer <= 120"
+});
+
+// All are numbers!
+console.log({
+  port: env.PORT,
+  retryCount: env.RETRY_COUNT,
+  age: env.AGE
+}); 
+```
+
+## Booleans
+
+The `boolean` type handles strings like `"true"` and `"false"`.
+
+```ts title="index.ts"
+import arkenv from "arkenv";
+
+const env = arkenv({
+  DEBUG: "boolean = false"
+});
+
+// DEBUG is true if process.env.DEBUG is "true"
+console.log({
+  debug: env.DEBUG
+});
+```
+
+## Advanced Coercion
+
+### Submodules and Refinements
+
+Coercion is smart enough to look through ArkType refinements and submodules. Even if you use complex types like `string.ip | 'localhost'`, ArkEnv ensures the base types are handled correctly.
+
+```ts title="index.ts"
+import arkenv from "arkenv";
+
+const env = arkenv({
+  HOST: "string.ip | 'localhost'",
+  MAX_CONNECTIONS: "number.integer > 0"
+});
+```
+
+## How it works
+
+ArkEnv introspects your schema to identify fields that should be numbers, booleans, and other non-string types you define. When you call `createEnv()` (or `arkenv()`), it pre-processes your environment variables to perform these conversions *before* validation.
+
+## Performance
+
+Coercion is highly optimized: ArkEnv performs a one-time introspection of your schema to map out exactly which paths need conversion. At runtime, it only touches the variables that actually need coercion, keeping your startup time virtually identical to manually parsing `process.env`.
+
+## Disabling coercion
+
+At the moment, there is no way to disable coercion or get around it with `arkenv`.
+
+If this is something you're interested in, please open an issue on [GitHub](https://github.com/arkenv/arkenv/issues/new/choose) or send a [Discord message](https://discord.gg/zAmUyuxXH9).

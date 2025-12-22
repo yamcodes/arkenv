@@ -8,12 +8,11 @@ export function Banner() {
 	return (
 		<FumadocsBanner
 			variant="rainbow"
-			id="standard-schema-support-banner"
-			onClick={() => router.push("/docs/integrations/standard-schema")}
+			id="coercion-banner"
+			onClick={() => router.push("/docs/arkenv/coercion")}
 			className="cursor-pointer"
 		>
-			🎉 Standard Schema support is here: Use ArkEnv with Zod, Valibot, and
-			more!
+			🎉 Coercion is here: Auto convert strings to numbers, booleans, etc.
 		</FumadocsBanner>
 	);
 }
