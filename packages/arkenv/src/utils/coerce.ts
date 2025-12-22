@@ -111,8 +111,7 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 		return data;
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: generic traversal requires any
-	const walk = (current: any, targetPath: string[]) => {
+	const walk = (current: unknown, targetPath: string[]) => {
 		if (!current || typeof current !== "object") return;
 
 		// Handle root-level array traversal where path is empty/exhausted but we have a collection
@@ -144,9 +143,10 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 				return;
 			}
 
+			const record = current as Record<string, unknown>;
 			// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
-			if (Object.prototype.hasOwnProperty.call(current, lastKey)) {
-				const original = current[lastKey];
+			if (Object.prototype.hasOwnProperty.call(record, lastKey)) {
+				const original = record[lastKey];
 
 				if (Array.isArray(original)) {
 					for (let i = 0; i < original.length; i++) {
@@ -162,9 +162,9 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 					const asNumber = maybeParsedNumber(original);
 					// If numeric parsing didn't change type (still string) or is NaN/invalid, try boolean
 					if (typeof asNumber === "number" && !Number.isNaN(asNumber)) {
-						current[lastKey] = asNumber;
+						record[lastKey] = asNumber;
 					} else {
-						current[lastKey] = maybeParsedBoolean(original);
+						record[lastKey] = maybeParsedBoolean(original);
 					}
 				}
 			}
@@ -183,8 +183,8 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 			return;
 		}
 
-		const nextValue = current[nextKey];
-		walk(nextValue, rest);
+		const record = current as Record<string, unknown>;
+		walk(record[nextKey], rest);
 	};
 
 	for (const target of targets) {
