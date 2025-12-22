@@ -512,9 +512,6 @@ importers:
 
   packages/arkenv:
     devDependencies:
-      '@ark/schema':
-        specifier: 0.56.0
-        version: 0.56.0
       '@repo/keywords':
         specifier: workspace:*
         version: link:../internal/keywords

@@ -1,4 +1,5 @@
 import { type } from "arktype";
+
 /**
  * A loose numeric morph.
  *
@@ -16,24 +17,6 @@ export const maybeParsedNumber = type("unknown").pipe((s) => {
 });
 
 /**
- * A strict numeric morph.
- *
- * **In**: `string | number`
- *
- * **Out**: A `number`
- *
- * @throws {ArkErrors} If the input cannot be parsed as a number.
- */
-export const parsedNumber = maybeParsedNumber.narrow(
-	(data, ctx): data is number => {
-		if (typeof data !== "number") {
-			return ctx.mustBe("a number");
-		}
-		return true;
-	},
-);
-
-/**
  * A loose boolean morph.
  *
  * **In**: `unknown`
@@ -49,22 +32,7 @@ export const maybeParsedBoolean = type("unknown").pipe((s) => {
 });
 
 /**
- * A strict boolean morph.
- *
- * **In**: `boolean | 'true' | 'false'`
- *
- * **Out**: `boolean`
- *
- * @throws {ArkErrors} If the input is not a boolean or the strings "true"/"false".
- */
-export const parsedBoolean = type(
-	"'true' | 'false' | true | false",
-	"=>",
-	(data) => data === "true" || data === true,
-);
-
-/**
- * A `number` integer between 0 and 65535
+ * A `number` integer between 0 and 65535.
  */
 export const port = type("0 <= number.integer <= 65535");
 

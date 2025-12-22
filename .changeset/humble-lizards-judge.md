@@ -2,8 +2,8 @@
 "@repo/keywords": minor
 ---
 
-#### Renamed `boolean` keyword to `parsedBoolean`
+#### Simplify keywords for central coercion
 
-Rename our `boolean` keyword to `parsedBoolean` to better reflect its purpose. It is still a morph that keeps a boolean a boolean, and parses "true" and "false" to booleans.
-
-**BREAKING**: The `boolean` keyword has been renamed to `parsedBoolean`.
+* **BREAKING**: The `boolean` keyword has been removed. Universal boolean coercion is now handled by the `arkenv` package.
+* **BREAKING**: The `port` keyword has been changed from a `string -> number` morph to a pure `number` refinement. Numeric coercion is now handled centrally.
+* Added `maybeParsedNumber` and `maybeParsedBoolean` internal morphs to support central coercion.
