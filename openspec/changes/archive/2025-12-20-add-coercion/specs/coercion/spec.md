@@ -31,9 +31,9 @@ The system MUST coerce environment variable strings "true" and "false" to boolea
 **WHEN** a schema `{ DEBUG: "boolean" }` is parsed with environment `{ DEBUG: "true" }`
 **THEN** the result should contain `DEBUG` as the boolean `true`
 
-### Requirement: Strictness by default for literals
-The system MUST NOT coerce strings to numbers for literal types unless explicitly specified, preserving standard ArkType strictness.
+### Requirement: Coercion for numeric literals
+The system MUST coerce environment variable strings to numbers when the schema definition specifies a numeric literal.
 
-#### Scenario: Literal strictness
+#### Scenario: Literal coercion
 **WHEN** a schema `{ VERSION: "1 | 2" }` is parsed with environment `{ VERSION: "1" }`
-**THEN** it should return a validation error (string "1" is not number 1)
+**THEN** the result should contain `VERSION` as the number `1`
