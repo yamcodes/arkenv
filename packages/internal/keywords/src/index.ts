@@ -13,7 +13,8 @@ export const maybeParsedNumber = type("unknown").pipe((s) => {
 	if (typeof s === "number") return s;
 	if (typeof s !== "string" || s.trim() === "") return s;
 	const n = Number(s);
-	return Number.isNaN(n) ? s : n;
+	if (Number.isNaN(n) && s !== "NaN") return s;
+	return n;
 });
 
 /**
