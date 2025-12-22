@@ -96,6 +96,9 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 				const value = propInner.value;
 				let morphedValue: BaseRoot = value;
 
+				// Sequential application is intentional (both numInternal.pipe and boolInternal.pipe are run)
+				// to support mixed-type unions. The order of application matters; do not change to else-if
+				// without considering union coercion semantics.
 				if (isNumeric(value)) {
 					morphedValue = numInternal.pipe(morphedValue);
 				}
