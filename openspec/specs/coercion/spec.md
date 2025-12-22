@@ -42,14 +42,14 @@ And an environment `{ DEBUG: "true" }`
 When `arkenv` parses the environment
 Then the result should contain `DEBUG` as the boolean `true`
 
-### Requirement: Strictness by default for literals
-The system MUST NOT coerce strings to numbers for literal types unless explicitly specified, preserving standard ArkType strictness.
+### Requirement: Coercion for numeric literals
+The system MUST coerce environment variable strings to numbers when the schema definition specifies a numeric literal.
 
-#### Scenario: Literal strictness
+#### Scenario: Literal coercion
 Given a schema `{ VERSION: "1 | 2" }`
 And an environment `{ VERSION: "1" }`
 When `arkenv` parses the environment
-Then it should return a validation error (string "1" is not number 1)
+Then the result should contain `VERSION` as the number `1`
 
 ### Requirement: Support schemas with morphs (pipes)
 The system MUST support schemas that contain ArkType morphs (pipes). Coercion should logic should only inspect the input side of the schema to avoid errors.
