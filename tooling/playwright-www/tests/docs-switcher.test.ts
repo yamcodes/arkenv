@@ -20,7 +20,7 @@ async function findTabByText(tabs: any, tabCount: number, searchText: string) {
 	for (let i = 0; i < tabCount; i++) {
 		const tab = tabs.nth(i);
 		const text = await tab.textContent();
-		if (text && text.toLowerCase().includes(searchText.toLowerCase())) {
+		if (text?.toLowerCase().includes(searchText.toLowerCase())) {
 			return tab;
 		}
 	}
@@ -156,7 +156,7 @@ test.describe("Documentation Switcher", () => {
 			for (let i = 0; i < tabCount; i++) {
 				const tab = tabs.nth(i);
 				const text = await tab.textContent();
-				if (text && text.toLowerCase().includes("arkenv")) {
+				if (text?.toLowerCase().includes("arkenv")) {
 					arkenvTab = tab;
 					break;
 				}
@@ -192,7 +192,7 @@ test.describe("Documentation Switcher", () => {
 		const arkenvTab = await findTabByText(tabs, tabCount, "arkenv");
 
 		expect(vitePluginTab).not.toBeNull();
-		await vitePluginTab!.click();
+		await vitePluginTab?.click();
 
 		// Wait for content to update
 		await expect(page.locator("h1")).toContainText("Introduction", {
@@ -234,14 +234,14 @@ test.describe("Documentation Switcher", () => {
 		const arkenvTab = await findTabByText(tabs, tabCount, "arkenv");
 
 		expect(vitePluginTab).not.toBeNull();
-		await vitePluginTab!.click();
+		await vitePluginTab?.click();
 		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
 
 		// Then switch back to arkenv
 		expect(arkenvTab).not.toBeNull();
-		await arkenvTab!.click();
+		await arkenvTab?.click();
 		await expect(page.locator("h1")).toContainText("What is ArkEnv", {
 			timeout: 10000,
 		});
@@ -273,7 +273,7 @@ test.describe("Documentation Switcher", () => {
 		const arkenvTab = await findTabByText(tabs, tabCount, "arkenv");
 
 		expect(vitePluginTab).not.toBeNull();
-		await vitePluginTab!.click();
+		await vitePluginTab?.click();
 		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
@@ -283,7 +283,7 @@ test.describe("Documentation Switcher", () => {
 
 		// Switch back to arkenv
 		expect(arkenvTab).not.toBeNull();
-		await arkenvTab!.click();
+		await arkenvTab?.click();
 		await expect(page.locator("h1")).toContainText("What is ArkEnv", {
 			timeout: 10000,
 		});
@@ -391,7 +391,7 @@ test.describe("Documentation Switcher", () => {
 		const arkenvTab = await findTabByText(tabs, tabCount, "arkenv");
 
 		expect(arkenvTab).not.toBeNull();
-		await arkenvTab!.focus();
+		await arkenvTab?.focus();
 
 		// Use arrow key to navigate to next element
 		await page.keyboard.press("ArrowRight");
@@ -431,14 +431,14 @@ test.describe("Documentation Switcher", () => {
 
 		// Switch to vite-plugin
 		expect(vitePluginTab).not.toBeNull();
-		await vitePluginTab!.click();
+		await vitePluginTab?.click();
 		await expect(page.locator("h1")).toContainText("Introduction", {
 			timeout: 10000,
 		});
 
 		// Switch back to arkenv
 		expect(arkenvTab).not.toBeNull();
-		await arkenvTab!.click();
+		await arkenvTab?.click();
 		await expect(page.locator("h1")).toContainText("What is ArkEnv", {
 			timeout: 10000,
 		});

@@ -1,5 +1,5 @@
 // Configuration extracted from environment variables
-export interface Config {
+export type Config = {
 	turboToken?: string;
 	turboTeam?: string;
 	filter: string;
@@ -7,7 +7,7 @@ export interface Config {
 	headBranch: string;
 	isPR: boolean;
 	isReleasePR: boolean;
-}
+};
 
 // Get configuration from environment variables
 export const getConfig = (): Config => {
