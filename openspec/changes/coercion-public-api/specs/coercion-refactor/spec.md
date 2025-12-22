@@ -9,9 +9,9 @@ Transition the coercion mechanism from experimental internal schema transformati
 The coercion system MUST identify target fields using only public ArkType APIs (`schema.in.json`).
 
 #### Scenario: Identify nested numeric paths
-Given a schema `{ API: { PORT: "number", TIMEOUT: "number?" } }`
-When building the coercion map
-Then it MUST identify `API.PORT` and `API.TIMEOUT` as numeric coercion targets via the `in.json` structure.
+- **GIVEN** a schema `{ API: { PORT: "number", TIMEOUT: "number?" } }`
+- **WHEN** building the coercion map
+- **THEN** it MUST identify `API.PORT` and `API.TIMEOUT` as numeric coercion targets via the `toJsonSchema` structure.
 
 ## MODIFIED Requirements
 
@@ -19,7 +19,7 @@ Then it MUST identify `API.PORT` and `API.TIMEOUT` as numeric coercion targets v
 The coercion mechanism MUST be implemented as a data pre-processing morph using `type.pipe` instead of internal schema mutation.
 
 #### Scenario: Coercion in pipeline
-Given a coerced schema `const Coerced = arkenv(type({ PORT: "number" }))`
-When validated with `{ PORT: "3000" }`
-Then it MUST apply the coercion within the ArkType pipeline and return `{ PORT: 3000 }`.
-And it MUST NOT rely on `.internal` or `.transform` methods during the process.
+- **GIVEN** a coerced schema `const Coerced = arkenv(type({ PORT: "number" }))`
+- **WHEN** validated with `{ PORT: "3000" }`
+- **THEN** it MUST apply the coercion within the ArkType pipeline and return `{ PORT: 3000 }`.
+- **AND** it MUST NOT rely on `.internal` or `.transform` methods during the process.
