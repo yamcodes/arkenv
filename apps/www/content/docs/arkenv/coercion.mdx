@@ -74,6 +74,8 @@ You can opt-out of this behavior by setting `coerce` to `false`.
 ```ts title="index.ts"
 import arkenv from "arkenv";
 
+// ⚠️ This will throw an error!
+// "3000" (string) is not a number.
 const env = arkenv(
   {
     PORT: "number.port",
@@ -86,3 +88,5 @@ const env = arkenv(
   }
 );
 ```
+
+When coercion is disabled, environment variables are validated **exactly as they are**. Since environment variables are strings, this usually means validation will fail for `number` or `boolean` fields unless you manually parse them first.
