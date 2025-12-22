@@ -53,6 +53,20 @@ To create a changeset:
 
 The changeset will be automatically used to bump versions and update the changelog when your PR is merged.
 
+## All Contributors
+
+We use the [All Contributors](https://allcontributors.org/) specification to recognize all contributions.
+
+If you've contributed to the project, please add yourself! We have a bot setup to make this easy. You can comment on your Pull Request or Issue with:
+
+`@all-contributors please add @<your-username> for <contributions>`
+
+For example:
+
+`@all-contributors please add @yamcodes for code, doc`
+
+For a full list of contribution types and more details on how to use the bot, please refer to the [bot usage documentation](https://allcontributors.org/bot/usage).
+
 ## License
 
 By contributing your code to the ArkEnv GitHub repository, you agree to license your contributions under the MIT License.
