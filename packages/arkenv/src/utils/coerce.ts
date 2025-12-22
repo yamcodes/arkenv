@@ -158,5 +158,5 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 
 	return type("unknown")
 		.pipe((data) => applyCoercion(data, targets))
-		.pipe(schema) as never;
+		.pipe(schema) as BaseType<t, $>;
 }
