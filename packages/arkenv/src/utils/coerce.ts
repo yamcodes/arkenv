@@ -76,7 +76,9 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 		);
 	}
 	if (!boolType?.internal?.pipe) {
-		throw new Error("maybeParsedBoolean internal API not available");
+		throw new Error(
+			`maybeParsedBoolean internal API not found. Please ensure arkenv is being used with a compatible version of ArkType (currently requires .internal.pipe). Got: ${typeof maybeParsedBoolean}`,
+		);
 	}
 
 	const numInternal = numType.internal;
