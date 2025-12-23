@@ -6,22 +6,23 @@ icon: Scale
 
 ## Comparison cheatsheet
 
-| Feature | **ArkEnv** | DIY | T3 Env | znv | vite-plugin-validate-env | envalid | dotenv-safe |
+| Feature | **ArkEnv** | DIY | T3 Env | vite-plugin-validate-env | znv | envalid | dotenv-safe |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Native ArkType support\*** | ✅ | 🛠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Standard Schema** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **TypeScript Support** | ✅ Full inference | 🛠️ | ✅ Full inference | ✅ Full inference | ✅ Full inference | ✅ Full inference | ❌ None |
-| **Runtime Validation** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ✅ Basic |
-| **Bundle Size (minzipped)** | &lt;2kB | 🛠️ | ~5kB | ~13kB | ~3kB | ~1kB | &lt;1kB |
-| **Coercion** | ✅ Smart | 🛠️ | ✅ Manual | ✅ Manual | ✅ Built-in | ✅ | ❌ |
+| **Standard Schema** | ✅ | 🛠️ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Typesafe** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Coercion** | ✅ | 🛠️ | 🛠️ | 🛠️ | ✅ | ✅ | ❌ |
 | **Default Values** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Client/Server Split** | ✅ Via plugins | 🛠️ | ✅ Built-in | ❌ | ❌ | ❌ | ❌ |
-| **Framework Integration** | Vite, Bun | 🛠️ | Next.js focus | Agnostic | Vite | Agnostic | Agnostic |
-| **Dependencies** (beyond the core validator) | 0 | 🛠️ | 0 | 0 | 4 | 1 | 0 |
+| **First-class Vite support** | ✅ | 🛠️ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Bun fullstack dev server** | ✅ | 🛠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Zero external dependencies** | ✅ | 🛠️ | ✅ | ❌ | ✅ | ❌ | ✅ |
   
-(*) ArkType is supported directly without the need to use ArkType's `type` for each key separately.
+\* ArkType is supported directly without the need to use ArkType's `type` for each key separately.
+
 ✅ Built-in / first-class support 
+
 🛠️ Requires manual implementation
+
 ❌ Not supported
 
 ## Detailed comparisons
@@ -112,30 +113,6 @@ const env = createEnv({
 });
 ```
 
-### znv
-
-**Best for:** Simple projects that need Zod-based validation without framework-specific features.
-
-**Strengths:**
-- **Simple API** - Straightforward validation without extra ceremony
-- **Zod integration** - Use any Zod schema directly
-- **Platform agnostic** - Works anywhere JavaScript runs
-
-**Trade-offs:**
-- Largest bundle size (~13kB including Zod)
-- No framework-specific integrations
-- Manual coercion required
-
-```ts
-import { parseEnv } from "znv";
-import { z } from "zod";
-
-const env = parseEnv(process.env, {
-  PORT: z.number().default(3000),
-  NODE_ENV: z.enum(["development", "production", "test"]),
-});
-```
-
 ### vite-plugin-validate-env
 
 **Best for:** Vite-based projects that want to validate environment variables during the development and build process.
@@ -163,6 +140,30 @@ export default defineConfig({
       },
     }),
   ],
+});
+```
+
+### znv
+
+**Best for:** Simple projects that need Zod-based validation without framework-specific features.
+
+**Strengths:**
+- **Simple API** - Straightforward validation without extra ceremony
+- **Zod integration** - Use any Zod schema directly
+- **Platform agnostic** - Works anywhere JavaScript runs
+
+**Trade-offs:**
+- Largest bundle size (~13kB including Zod)
+- No framework-specific integrations
+- Manual coercion required
+
+```ts
+import { parseEnv } from "znv";
+import { z } from "zod";
+
+const env = parseEnv(process.env, {
+  PORT: z.number().default(3000),
+  NODE_ENV: z.enum(["development", "production", "test"]),
 });
 ```
 
