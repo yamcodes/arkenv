@@ -1,27 +1,59 @@
 ---
 title: Comparison
-description: How ArkEnv compares to other environment variable validation libraries
+description: How ArkEnv compares to other environment variable validation libraries and techniques
 icon: Scale
 ---
 
-Choosing an environment variable validation library depends on your project's needs. Here's how ArkEnv compares to other popular solutions.
+## Comparison cheatsheet
 
-## Quick Comparison
+| Feature | **ArkEnv** | DIY | T3 Env | znv | vite-plugin-validate-env | envalid | dotenv-safe |
+|------------------------------|------------|-----|--------|-----|---------|-------------|
+| **Native ArkType support\*** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Standard Schema** (Zod, Valibot, ArkType, etc.) | ✅ | Custom | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **TypeScript Support** | ✅ Full inference | Custom | ✅ Full inference | ✅ Full inference | ✅ Full inference | ✅ Full inference | ❌ None |
+| **Runtime Validation** | ✅ | Custom | ✅ | ✅ | ✅ | ✅ | ✅ Basic |
+| **Bundle Size (minzipped)** | &lt;2kB | 0 | ~5kB | ~13kB | ~3kB | ~1kB |
+| **Auto Coercion** | ✅ Smart | Custom | ✅ Manual | ✅ Manual | ✅ Built-in | ❌ |
+| **Default Values** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Client/Server Split** | ✅ Via plugins  | Custom | ✅ Built-in | ❌ | ❌ | ❌ |
+| **Framework Integration** | Vite, Bun | Custom | Next.js focus | Agnostic | Agnostic | Agnostic |
+| **Dependencies** | 1 (ArkType) | 0 | 1 (Zod) | 1 (Zod) | 0 | 1 (dotenv) |
+| **Standard Schema** | ✅ | Custom | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 
-| Feature | ArkEnv | T3 Env | znv | envalid | dotenv-safe |
-|---------|--------|--------|-----|---------|-------------|
-| **Type System** | ArkType | Zod | Zod | Custom | None |
-| **TypeScript Support** | ✅ Full inference | ✅ Full inference | ✅ Full inference | ✅ Full inference | ❌ None |
-| **Runtime Validation** | ✅ | ✅ | ✅ | ✅ | ✅ Basic |
-| **Bundle Size (minzipped)** | &lt;2kB | ~5kB | ~13kB | ~3kB | ~1kB |
-| **Auto Coercion** | ✅ Smart | ✅ Manual | ✅ Manual | ✅ Built-in | ❌ |
-| **Default Values** | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Client/Server Split** | ✅ Via plugins | ✅ Built-in | ❌ | ❌ | ❌ |
-| **Framework Integration** | Vite, Bun | Next.js focus | Agnostic | Agnostic | Agnostic |
-| **Dependencies** | 1 (ArkType) | 1 (Zod) | 1 (Zod) | 0 | 1 (dotenv) |
-| **Standard Schema** | ✅ | ✅ | ❌ | ❌ | ❌ |
+(*) ArkType is supported directly without the need to use ArkType's `type` for each key separately.
 
-## Detailed Comparison
+## Detailed comparisons
+
+### DIY
+
+You'd be surprised how easy it is to write a simple environment variable validation flow with any of the popular validation libraries. To show this, we will naturally use ArkType, but you can use any of the popular alternatives.
+Just create a `env.ts` file that defines the schema, runs a simple check and returns the validated environment variables.
+
+```ts
+import { type } from "arktype";
+
+const Env = type({
+	PORT: type("string.integer.parse").to("0 <= number <= 65535").default("3000"),
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+export const env = Env.assert(process.env);
+```
+
+That's it. You're done.
+
+Who needs ArkEnv, right?
+
+On first glance, this gets you what you need: validation, typesafety, defaultability, and even type morphs!
+
+However, you will quickly realize that this starts looking messier when you start getting out of that "Hello world!" realm:
+
+* You have to write each morph manually. Since `process.env` is a record of strings, each non-string you'll want (number, boolean) requires you to parse it yourself. This can get tedious. ArkEnv includes [coercion](/docs/arkenv/coercion) out of the box.
+* With most validation libraries, the default error message is too verbose and clogs your terminal. ArkEnv provides a concise error flow that is tailored for the environment variables usecase.
+* Even though this code is simple, if you manage multiple projects, you'll find yourself writing a similar flow again and again. With ArkEnv, you'll likely get your needs met with a simple `arkenv()` call.
+* This code does not work well for frontend apps built with Vite and Bun, where environment variables are statically replaced and not available to view in a simple `process.env` object call. ArkEnv provides plugins for both of these frameworks with solutions for each.
+
+After working in enterprise for years, I found myself reaching for a simple, well tested, and complete solution that solves these issues. ArkEnv is that solution.
 
 ### ArkEnv
 
@@ -146,121 +178,3 @@ require("dotenv-safe").config();
 // All environment variables are strings - manual parsing required
 const PORT = parseInt(process.env.PORT || "3000");
 ```
-
-## Making Your Choice
-
-Choose **ArkEnv** if you want:
-- The smallest bundle size with full type safety
-- TypeScript-native syntax for schemas
-- Smart auto-coercion without manual setup
-- Framework plugins (Vite, Bun) for optimal DX
-
-Choose **T3 Env** if you want:
-- Explicit client/server environment separation (especially for Next.js)
-- Battle-tested solution in the React ecosystem
-- Familiar Zod syntax
-
-Choose **znv** if you want:
-- Simplest Zod-based solution
-- Platform-agnostic validation
-- Don't need framework integrations
-
-Choose **envalid** if you want:
-- Zero dependencies
-- Don't need Standard Schema compatibility
-- Proven, stable solution
-
-Choose **dotenv-safe** if you want:
-- Minimal validation (just existence checks)
-- No bundle size impact
-- Don't need type safety
-
-## Migration Guides
-
-### From T3 Env
-
-```ts
-// Before (T3 Env)
-import { createEnv } from "@t3-oss/env-core";
-import { z } from "zod";
-
-const env = createEnv({
-  server: {
-    DATABASE_URL: z.string().url(),
-    PORT: z.number().default(3000),
-  },
-  runtimeEnv: process.env,
-});
-
-// After (ArkEnv)
-import arkenv from "arkenv";
-
-const env = arkenv({
-  DATABASE_URL: "string.url",
-  PORT: "number.port = 3000",
-});
-```
-
-### From znv
-
-```ts
-// Before (znv)
-import { parseEnv } from "znv";
-import { z } from "zod";
-
-const env = parseEnv(process.env, {
-  PORT: z.number().default(3000),
-  DEBUG: z.boolean().default(false),
-});
-
-// After (ArkEnv)
-import arkenv from "arkenv";
-
-const env = arkenv({
-  PORT: "number.port = 3000",
-  DEBUG: "boolean = false",
-});
-```
-
-### From envalid
-
-```ts
-// Before (envalid)
-import { cleanEnv, port, bool, str } from "envalid";
-
-const env = cleanEnv(process.env, {
-  PORT: port({ default: 3000 }),
-  DEBUG: bool({ default: false }),
-  NODE_ENV: str({ choices: ["development", "production"] }),
-});
-
-// After (ArkEnv)
-import arkenv from "arkenv";
-
-const env = arkenv({
-  PORT: "number.port = 3000",
-  DEBUG: "boolean = false",
-  NODE_ENV: "'development' | 'production'",
-});
-```
-
-## Standard Schema Compatibility
-
-Both ArkEnv and T3 Env support the [Standard Schema](https://standardschema.dev/) specification, which means you can use validators from Zod, Valibot, or any other compatible library:
-
-```ts
-import arkenv from "arkenv";
-import { z } from "zod";
-
-const env = arkenv({
-  // Use ArkType syntax
-  PORT: "number.port",
-  // Or use Zod (via Standard Schema)
-  DATABASE_URL: z.string().url(),
-  // Or mix them!
-  API_KEY: "string",
-  MAX_RETRIES: z.number().min(1).max(10),
-});
-```
-
-This gives you the flexibility to gradually migrate schemas or use the best tool for each validation need.
