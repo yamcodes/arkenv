@@ -220,10 +220,7 @@ describe("coerce", () => {
 	});
 	it("should coerce array elements for numeric properties", () => {
 		const schema = type({
-			// Note: The schema expects a "number", but input might be "5" (coerced -> 5)
-			// If input is ["1", "2"], current logic iterates and coerces them to [1, 2]
-			// The validation step will then reject [1, 2] against "number", which is correct behavior.
-			// This test ensures the traversal logic doesn't crash or behave unexpectedly.
+			// Coerces array elements ["1", "2", "3"] to [1, 2, 3]
 			IDS: "number[]",
 		});
 		const coercedSchema = coerce(schema);

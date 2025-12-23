@@ -1,7 +1,8 @@
 # coercion Specification
 
 ## Purpose
-Define the stable coercion mechanism using public ArkType APIs for environment variable type transformation, documenting goals, scope, and migration guidance following the archive of coercion-public-api. This coercion specifically preserves support for numeric refinements like ranges and divisors while maintaining strictness for numeric literals.
+Define the stable coercion mechanism using public ArkType APIs for environment variable type transformation. This specification documents goals, scope, and migration guidance following the archive of coercion-public-api. The coercion mechanism preserves support for numeric refinements (ranges and divisors) while maintaining strictness for numeric literals.
+
 ## Requirements
 ### Requirement: Coerce numeric strings to numbers
 The system MUST coerce environment variable strings to numbers when the schema definition specifies `number` or a `number.*` subtype.
