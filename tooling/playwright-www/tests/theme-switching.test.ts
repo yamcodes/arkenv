@@ -25,8 +25,6 @@ test.describe("Theme Switching", () => {
 			}
 		});
 
-		const html = page.locator("html");
-
 		// Find and click the theme toggle button
 		const themeButton = page.getByRole("button", { name: "Toggle Theme" });
 		await expect(themeButton).toBeVisible();
