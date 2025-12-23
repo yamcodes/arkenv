@@ -32,6 +32,6 @@ catalog:
   zod: 4.1.13
 
 overrides:
-  '@playwright/test': 1.56.1
+  '@playwright/test': 1.57.0
   import-in-the-middle: 2.0.0
   require-in-the-middle: 8.0.1
