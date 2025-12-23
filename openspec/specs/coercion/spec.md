@@ -52,7 +52,7 @@ When `arkenv` parses the environment
 Then the result should contain `VERSION` as the number `1`
 
 ### Requirement: Support schemas with morphs (pipes)
-The system MUST support schemas that contain ArkType morphs (pipes). Coercion logic should only inspect the input side of the schema to avoid errors.
+The system MUST support schemas that contain ArkType morphs (pipes). Coercion logic MUST only inspect the input side of the schema to avoid errors.
 
 #### Scenario: Coercion with manual morph
 Given a schema `{ PORT: "number", MANUAL: type("string").pipe(Number) }`
