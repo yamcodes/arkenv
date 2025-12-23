@@ -7,19 +7,18 @@ icon: Scale
 ## Comparison cheatsheet
 
 | Feature | **ArkEnv** | DIY | T3 Env | znv | vite-plugin-validate-env | envalid | dotenv-safe |
-|------------------------------|------------|-----|--------|-----|---------|-------------|
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Native ArkType support\*** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Standard Schema** (Zod, Valibot, ArkType, etc.) | ✅ | Custom | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Standard Schema** | ✅ | Custom | ✅ | ✅ | ✅ | ❌ | ❌ |
 | **TypeScript Support** | ✅ Full inference | Custom | ✅ Full inference | ✅ Full inference | ✅ Full inference | ✅ Full inference | ❌ None |
 | **Runtime Validation** | ✅ | Custom | ✅ | ✅ | ✅ | ✅ | ✅ Basic |
-| **Bundle Size (minzipped)** | &lt;2kB | 0 | ~5kB | ~13kB | ~3kB | ~1kB |
-| **Auto Coercion** | ✅ Smart | Custom | ✅ Manual | ✅ Manual | ✅ Built-in | ❌ |
-| **Default Values** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Client/Server Split** | ✅ Via plugins  | Custom | ✅ Built-in | ❌ | ❌ | ❌ |
-| **Framework Integration** | Vite, Bun | Custom | Next.js focus | Agnostic | Agnostic | Agnostic |
-| **Dependencies** | 1 (ArkType) | 0 | 1 (Zod) | 1 (Zod) | 0 | 1 (dotenv) |
-| **Standard Schema** | ✅ | Custom | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-
+| **Bundle Size (minzipped)** | &lt;2kB | 0 | ~5kB | ~13kB | ~3kB | ~1kB | &lt;1kB |
+| **Auto Coercion** | ✅ Smart | Custom | ✅ Manual | ✅ Manual | ✅ Built-in | ✅ | ❌ |
+| **Default Values** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Client/Server Split** | ✅ Via plugins | Custom | ✅ Built-in | ❌ | ❌ | ❌ | ❌ |
+| **Framework Integration** | Vite, Bun | Custom | Next.js focus | Agnostic | Vite | Agnostic | Agnostic |
+| **Dependencies** | 1 (ArkType) | 0 | 1 (Zod) | 1 (Zod) | 0 | 0 | 1 (dotenv) |
+  
 (*) ArkType is supported directly without the need to use ArkType's `type` for each key separately.
 
 ## Detailed comparisons
@@ -131,6 +130,36 @@ import { z } from "zod";
 const env = parseEnv(process.env, {
   PORT: z.number().default(3000),
   NODE_ENV: z.enum(["development", "production", "test"]),
+});
+```
+
+### vite-plugin-validate-env
+
+**Best for:** Vite-based projects that want to validate environment variables during the development and build process.
+
+**Strengths:**
+- **Build-time validation** - Catches missing variables before your app even starts
+- **Zero runtime overhead** - Validation happens during the Vite build/dev process
+- **Standard Schema support** - Use Zod, Valibot, etc. for validation
+
+**Trade-offs:**
+- **Vite exclusive** - Only works within the Vite ecosystem
+- **Static only** - Doesn't handle dynamic runtime environment changes
+
+```ts
+import { defineConfig } from "vite";
+import { ValidateEnv } from "@julien-r44/vite-plugin-validate-env";
+import { z } from "zod";
+
+export default defineConfig({
+  plugins: [
+    ValidateEnv({
+      validator: "zod",
+      schema: {
+        PORT: z.string().transform(Number).default("3000"),
+      },
+    }),
+  ],
 });
 ```
 
