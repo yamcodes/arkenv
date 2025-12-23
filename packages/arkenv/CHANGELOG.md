@@ -1,5 +1,88 @@
 # ArkEnv
 
+## 0.8.0
+
+### Minor Changes
+
+- ### Coercion _[`#569`](https://github.com/yamcodes/arkenv/pull/569) [`adaada4`](https://github.com/yamcodes/arkenv/commit/adaada4d214c152e8d23c983aea1747d81a0e539) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduced **Schema-Directed Coercion**: now, environment variables defined as `number` or `boolean` in your schema are automatically parsed to their correct types.
+
+  If you want to opt-out of this feature, pass `config.coerce: false` to `createEnv()` (`arkenv()`). Example:
+
+  ```ts
+  arkenv(schema, { coerce: false });
+  ```
+
+  To learn more about the new coercion system, read [the docs](https://arkenv.js.org/docs/arkenv/coercion).
+
+  - **BREAKING**: The `createEnv()` function signature has changed to support a configuration object.
+    Instead of `createEnv(schema, env)`, use `createEnv(schema, config)` where `config` includes `env` (`process.env` by default, like before) and the newly added `coerce` option (`true` by default).
+    For example, Vite users might need to update their `vite.config.ts`:
+    ```ts
+    const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
+    ```
+  - **BREAKING**: The custom `boolean` morph has been removed. We now use `arktype`'s standard `boolean` instead, which is coerced when used within `createEnv` / `arkenv`. This is only breaking if you specifically use `boolean` unrelated to `createEnv` / `arkenv` / our plugins and expect it to be coerced.
+  - **BREAKING**: `number.port` is now a strict numeric refinement (0-65535). It no longer parses strings automatically outside of `createEnv` / `arkenv`. This is only breaking if you specifically use `port` unrelated to `createEnv` / `arkenv` / our plugins and expect it to be parsed as a number.
+
+### Patch Changes
+
+- #### Fix error formatting _[`#582`](https://github.com/yamcodes/arkenv/pull/582) [`674a2ad`](https://github.com/yamcodes/arkenv/commit/674a2adfe8ffbb9bc3235f76c5d9d00e55ee37a4) [@aruaycodes](https://github.com/aruaycodes)_
+
+  The ArkEnv error message is now formatted better, using correct spacing and removing the `f` prefix.
+
+  Before:
+
+  ```
+  apps/playgrounds/node on  main [$] via 🤖 v24.11.1
+  ❯ ns
+
+  > node-playground@ start /Users/yamcodes/code/arkenv/apps/playgrounds/node
+  > tsx --env-file .env index.ts
+
+  /Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49
+                  throw new ArkEnvError(validatedEnv);
+                        ^
+
+  f [ArkEnvError]: Errors found while validating environment variables
+    ZED_ENV must be present (was missing)
+
+      at m (/Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49:9)
+      at <anonymous> (/Users/yamcodes/code/arkenv/apps/playgrounds/node/index.ts:4:13)
+      at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+  Node.js v24.11.1
+   ELIFECYCLE  Command failed with exit code 1.
+  ```
+
+  After:
+
+  ```
+  apps/playgrounds/node on  improve-error-formatting [$?] via 🤖 v24.11.1
+  ❯ ns
+
+  > node-playground@ start /Users/yamcodes/code/arkenv/apps/playgrounds/node
+  > tsx --env-file .env index.ts
+
+  /Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49
+                  throw new ArkEnvError(validatedEnv);
+                        ^
+
+  ArkEnvError: Errors found while validating environment variables
+    ZED_ENV must be present (was missing)
+
+      at m (/Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49:9)
+      at <anonymous> (/Users/yamcodes/code/arkenv/apps/playgrounds/node/index.ts:4:13)
+      at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+  Node.js v24.11.1
+   ELIFECYCLE  Command failed with exit code 1.
+  ```
+
 ## 0.7.8
 
 ### Patch Changes
