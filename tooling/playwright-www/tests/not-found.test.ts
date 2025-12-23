@@ -14,7 +14,7 @@ test.describe("Not Found (404) Page", () => {
 		await expect(page.locator("h1")).toContainText(/not found/i);
 
 		// 3. Verify standard links are present (at least the Home link)
-		const homeLink = page.locator("a[href='/']").first();
+		const homeLink = page.locator("main a[href='/']").first();
 		await expect(homeLink).toBeVisible();
 		await expect(homeLink).toHaveText(/Home/i);
 	});
@@ -22,7 +22,7 @@ test.describe("Not Found (404) Page", () => {
 	test("should allow navigating back Home from 404 page", async ({ page }) => {
 		await page.goto("/404-test-random-route");
 
-		const homeLink = page.locator("a[href='/']").first();
+		const homeLink = page.locator("main a[href='/']").first();
 		await homeLink.click();
 
 		await expect(page).toHaveURL("/");
