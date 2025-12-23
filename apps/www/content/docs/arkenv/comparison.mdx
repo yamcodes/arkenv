@@ -8,18 +8,21 @@ icon: Scale
 
 | Feature | **ArkEnv** | DIY | T3 Env | znv | vite-plugin-validate-env | envalid | dotenv-safe |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Native ArkType support\*** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Standard Schema** | ✅ | Custom | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **TypeScript Support** | ✅ Full inference | Custom | ✅ Full inference | ✅ Full inference | ✅ Full inference | ✅ Full inference | ❌ None |
-| **Runtime Validation** | ✅ | Custom | ✅ | ✅ | ✅ | ✅ | ✅ Basic |
-| **Bundle Size (minzipped)** | &lt;2kB | 0 | ~5kB | ~13kB | ~3kB | ~1kB | &lt;1kB |
-| **Auto Coercion** | ✅ Smart | Custom | ✅ Manual | ✅ Manual | ✅ Built-in | ✅ | ❌ |
-| **Default Values** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Client/Server Split** | ✅ Via plugins | Custom | ✅ Built-in | ❌ | ❌ | ❌ | ❌ |
-| **Framework Integration** | Vite, Bun | Custom | Next.js focus | Agnostic | Vite | Agnostic | Agnostic |
-| **Dependencies** | 1 (ArkType) | 0 | 1 (Zod) | 1 (Zod) | 0 | 0 | 1 (dotenv) |
+| **Native ArkType support\*** | ✅ | 🛠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Standard Schema** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **TypeScript Support** | ✅ Full inference | 🛠️ | ✅ Full inference | ✅ Full inference | ✅ Full inference | ✅ Full inference | ❌ None |
+| **Runtime Validation** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ✅ Basic |
+| **Bundle Size (minzipped)** | &lt;2kB | 🛠️ | ~5kB | ~13kB | ~3kB | ~1kB | &lt;1kB |
+| **Coercion** | ✅ Smart | 🛠️ | ✅ Manual | ✅ Manual | ✅ Built-in | ✅ | ❌ |
+| **Default Values** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Client/Server Split** | ✅ Via plugins | 🛠️ | ✅ Built-in | ❌ | ❌ | ❌ | ❌ |
+| **Framework Integration** | Vite, Bun | 🛠️ | Next.js focus | Agnostic | Vite | Agnostic | Agnostic |
+| **Dependencies** (beyond the core validator) | 0 | 🛠️ | 0 | 0 | 4 | 1 | 0 |
   
 (*) ArkType is supported directly without the need to use ArkType's `type` for each key separately.
+✅ Built-in / first-class support 
+🛠️ Requires manual implementation
+❌ Not supported
 
 ## Detailed comparisons
 
