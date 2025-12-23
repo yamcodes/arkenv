@@ -72,8 +72,8 @@ export const Env = type({
 	PORT: "number.port",
 	VITE_API_URL: "string",
 	VITE_API_KEY: "string",
-	VITE_MY_NUMBER: type("string").pipe((str) => Number.parseInt(str, 10)),
-	VITE_MY_BOOLEAN: type("string").pipe((str) => str === "true"),
+	VITE_MY_NUMBER: "number",
+	VITE_MY_BOOLEAN: "boolean",
 });
 
 export type Env = typeof Env.infer;

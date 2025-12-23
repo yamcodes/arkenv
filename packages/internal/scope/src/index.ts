@@ -1,10 +1,10 @@
-import { boolean, host, port } from "@repo/keywords";
+import { host, port } from "@repo/keywords";
 import { scope, type } from "arktype";
 
-// For an explanation of the `$` variable naming convention, see: https://discord.com/channels/957797212103016458/1414659167008063588/1414670282756587581
-
 /**
- * The root scope for the ArkEnv library, containing extensions to the ArkType scopes with ArkEnv-specific types like `string.host` and `number.port`.
+ * The root scope for the ArkEnv library,
+ * containing extensions to the ArkType scopes with ArkEnv-specific types
+ * like `string.host` and `number.port`.
  */
 export const $ = scope({
 	string: type.module({
@@ -15,7 +15,6 @@ export const $ = scope({
 		...type.keywords.number,
 		port,
 	}),
-	boolean,
 });
 
 export type $ = (typeof $)["t"];

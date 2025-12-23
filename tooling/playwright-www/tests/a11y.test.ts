@@ -11,7 +11,7 @@ test.describe("A11y Smoke Tests", () => {
 		"/docs/arkenv",
 		"/docs/arkenv/quickstart",
 		"/docs/arkenv/examples",
-		"/docs/arkenv/morphs",
+		"/docs/arkenv/coercion",
 		"/docs/arkenv/integrations/vscode",
 		"/docs/arkenv/integrations/jetbrains",
 		"/docs/arkenv/how-to/load-environment-variables",

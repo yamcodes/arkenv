@@ -8,10 +8,6 @@ const env = arkenv({
 
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
-const host = env.HOST;
-const port = env.PORT;
-const nodeEnv = env.NODE_ENV;
-
-console.log({ host, port, nodeEnv });
+console.log({ host: env.HOST, port: env.PORT, nodeEnv: env.NODE_ENV });
 
 export default env;

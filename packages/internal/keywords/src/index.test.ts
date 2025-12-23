@@ -3,7 +3,7 @@ import { host, port } from "./index";
 
 describe("port", () => {
 	it("should validate a valid port number", () => {
-		const result = port.assert("8080");
+		const result = port.assert(8080);
 		expect(result).toBe(8080);
 	});
 

@@ -42,7 +42,7 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 		).toBeVisible();
 		await expect(page.locator("text=const Env = type").first()).toBeVisible();
 		await expect(
-			page.locator("text=arkenv(Env, loadEnv").first(),
+			page.locator("text=arkenv(Env, { env: loadEnv").first(),
 		).toBeVisible();
 	});
 

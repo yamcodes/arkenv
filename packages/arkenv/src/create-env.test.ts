@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createEnv } from "./create-env";
 import { type } from "./type";
 import { indent, styleText } from "./utils";
@@ -24,7 +24,131 @@ const expectedError = (
 	return formattedErrors.join("\n");
 };
 
-describe("env", () => {
+describe("createEnv", () => {
+	let originalEnv: NodeJS.ProcessEnv;
+
+	beforeEach(() => {
+		originalEnv = { ...process.env };
+	});
+
+	afterEach(() => {
+		process.env = originalEnv;
+	});
+	describe("coercion", () => {
+		it("should coerce number from string", () => {
+			const env = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
+			expect(env.PORT).toBe(3000);
+			expect(typeof env.PORT).toBe("number");
+		});
+
+		it("should coerce boolean from string", () => {
+			const env = createEnv(
+				{ DEBUG: "boolean", VERBOSE: "boolean" },
+				{ env: { DEBUG: "true", VERBOSE: "false" } },
+			);
+			expect(env.DEBUG).toBe(true);
+			expect(env.VERBOSE).toBe(false);
+		});
+
+		it("should coerce number.integer from string", () => {
+			const env = createEnv(
+				{ COUNT: "number.integer" },
+				{ env: { COUNT: "123" } },
+			);
+			expect(env.COUNT).toBe(123);
+		});
+
+		it("should coerce numeric ranges from string", () => {
+			const env = createEnv({ AGE: "number >= 18" }, { env: { AGE: "21" } });
+			expect(env.AGE).toBe(21);
+		});
+
+		it("should coerce numeric divisors from string", () => {
+			const env = createEnv({ EVEN: "number % 2" }, { env: { EVEN: "4" } });
+			expect(env.EVEN).toBe(4);
+		});
+
+		it("should work with optional coerced properties", () => {
+			const schema = { "PORT?": "number" } as const;
+			expect(createEnv(schema, { env: { PORT: "3000" } }).PORT).toBe(3000);
+			expect(createEnv(schema, { env: {} }).PORT).toBeUndefined();
+		});
+
+		it("should coerce strict number literals", () => {
+			const schema = { VAL: "1 | 2" } as const;
+			expect(createEnv(schema, { env: { VAL: "1" } }).VAL).toBe(1);
+		});
+
+		it("should work with schemas containing morphs", () => {
+			const Env = type({
+				PORT: "number.port",
+				VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+					Number.parseInt(str, 10),
+				),
+			});
+
+			const env = createEnv(Env, {
+				env: {
+					PORT: "3000",
+					VITE_MY_NUMBER_MANUAL: "456",
+				},
+			});
+
+			expect(env.PORT).toBe(3000);
+			expect(env.VITE_MY_NUMBER_MANUAL).toBe(456);
+		});
+	});
+
+	describe("numeric keywords", () => {
+		it("should coerce number", () => {
+			const env = createEnv({ VAL: "number" }, { env: { VAL: "123.456" } });
+			expect(env.VAL).toBe(123.456);
+		});
+
+		it("should coerce number.Infinity", () => {
+			const env = createEnv(
+				{ VAL: "number.Infinity" },
+				{ env: { VAL: "Infinity" } },
+			);
+			expect(env.VAL).toBe(Number.POSITIVE_INFINITY);
+		});
+
+		// TODO: Support NaN coercion
+		// it("should coerce number.NaN", () => {
+		// 	const env = createEnv({ VAL: "number.NaN" }, { VAL: "NaN" });
+		// 	expect(env.VAL).toBeNaN();
+		// });
+
+		it("should coerce number.NegativeInfinity", () => {
+			const env = createEnv(
+				{ VAL: "number.NegativeInfinity" },
+				{ env: { VAL: "-Infinity" } },
+			);
+			expect(env.VAL).toBe(Number.NEGATIVE_INFINITY);
+		});
+
+		it("should coerce number.epoch", () => {
+			const env = createEnv(
+				{ VAL: "number.epoch" },
+				{ env: { VAL: "1640995200000" } },
+			);
+			expect(env.VAL).toBe(1640995200000);
+		});
+
+		it("should coerce number.integer", () => {
+			const env = createEnv({ VAL: "number.integer" }, { env: { VAL: "42" } });
+			expect(env.VAL).toBe(42);
+		});
+
+		it("should coerce number.safe", () => {
+			const env = createEnv(
+				{ VAL: "number.safe" },
+				{ env: { VAL: "9007199254740991" } },
+			);
+			expect(env.VAL).toBe(Number.MAX_SAFE_INTEGER);
+		});
+	});
+
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
@@ -78,7 +202,7 @@ describe("env", () => {
 			{
 				TEST_STRING: "string",
 			},
-			env,
+			{ env },
 		);
 
 		expect(TEST_STRING).toBe("hello");
@@ -90,7 +214,7 @@ describe("env", () => {
 				NUMBERS: type("number[]").default(() => [1, 2, 3]),
 				STRINGS: type("string[]").default(() => ["a", "b"]),
 			},
-			{},
+			{ env: {} },
 		);
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
@@ -103,7 +227,7 @@ describe("env", () => {
 			{
 				NUMBERS: type("number[]").default(() => [1, 2, 3]),
 			},
-			{},
+			{ env: {} },
 		);
 
 		expect(env.NUMBERS).toEqual([1, 2, 3]);
@@ -153,10 +277,14 @@ describe("env", () => {
 
 			// Use the same schema multiple times
 			const env1 = createEnv(Env, {
-				TEST_STRING: "first",
+				env: {
+					TEST_STRING: "first",
+				},
 			});
 			const env2 = createEnv(Env, {
-				TEST_STRING: "second",
+				env: {
+					TEST_STRING: "second",
+				},
 			});
 
 			expect(env1.TEST_STRING).toBe("first");
@@ -184,10 +312,55 @@ describe("env", () => {
 				PORT: "8080",
 			};
 
-			const env = createEnv(Env, customEnv);
+			const env = createEnv(Env, { env: customEnv });
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
+		});
+	});
+
+	describe("options", () => {
+		it("should disable coercion when coerce is set to false", () => {
+			expect(() =>
+				createEnv(
+					{
+						NUMBER: "number",
+					},
+					{
+						env: {
+							NUMBER: "123",
+						},
+						coerce: false,
+					},
+				),
+			).toThrow();
+		});
+
+		it("should allow disabling coercion when using process.env (2nd arg)", () => {
+			const originalEnv = process.env;
+			process.env = { ...originalEnv, TEST_NUM: "123" };
+			try {
+				expect(() =>
+					createEnv({ TEST_NUM: "number" }, { coerce: false }),
+				).toThrow();
+			} finally {
+				process.env = originalEnv;
+			}
+		});
+
+		it("should allow string values when coercion is disabled if schema expects strings", () => {
+			const env = createEnv(
+				{
+					VAL: "string",
+				},
+				{
+					env: {
+						VAL: "123",
+					},
+					coerce: false,
+				},
+			);
+			expect(env.VAL).toBe("123");
 		});
 	});
 });

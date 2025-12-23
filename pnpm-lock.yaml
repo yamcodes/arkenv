@@ -677,7 +677,7 @@ importers:
     devDependencies:
       '@axe-core/playwright':
         specifier: 'catalog:'
-        version: 4.11.0(playwright-core@1.56.1)
+        version: 4.11.0(playwright-core@1.57.0)
       '@playwright/test':
         specifier: 1.56.1
         version: 1.56.1
@@ -6385,6 +6385,11 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.57.0:
+    resolution: {integrity: sha512-agTcKlMw/mjBWOnD6kFZttAAGHgi/Nw0CZ2o6JqWSbMlI219lAFLZZCyqByTsvVAJq5XA5H8cA6PrvBRpBWEuQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.56.1:
     resolution: {integrity: sha512-aFi5B0WovBHTEvpM3DzXTUaeN6eN0qWnTkKx4NQaH4Wvcmc153PdaY2UBdSYKaGYw+UyWXSVyxDUg5DoPEttjw==}
     engines: {node: '>=18'}
@@ -8485,10 +8490,10 @@ snapshots:
 
   '@aws/lambda-invoke-store@0.2.1': {}
 
-  '@axe-core/playwright@4.11.0(playwright-core@1.56.1)':
+  '@axe-core/playwright@4.11.0(playwright-core@1.57.0)':
     dependencies:
       axe-core: 4.11.0
-      playwright-core: 1.56.1
+      playwright-core: 1.57.0
 
   '@babel/code-frame@7.26.2':
     dependencies:
@@ -14638,6 +14643,8 @@ snapshots:
       - react
 
   playwright-core@1.56.1: {}
+
+  playwright-core@1.57.0: {}
 
   playwright@1.56.1:
     dependencies:

@@ -1,29 +1,45 @@
 import { type } from "arktype";
 
 /**
- * A `string` that can be parsed into a number between 0 and 65535
+ * A loose numeric morph.
+ *
+ * **In**: `unknown`
+ *
+ * **Out**: A `number` if the input is a numeric string; otherwise the original input.
+ *
+ * Useful for coercion in unions where failing on non-numeric strings would block other branches.
  */
-export const port = type("string", "=>", (data, ctx) => {
-	const asNumber = Number.parseInt(data, 10);
-	const isInteger = Number.isInteger(asNumber);
-	const isBetween = 0 <= asNumber && asNumber <= 65535;
-	if (!isInteger || !isBetween) {
-		ctx.mustBe("an integer between 0 and 65535");
-	}
-	return asNumber;
+export const maybeParsedNumber = type("unknown").pipe((s) => {
+	if (typeof s === "number") return s;
+	if (typeof s !== "string") return s;
+	const trimmed = s.trim();
+	if (trimmed === "") return s;
+	if (trimmed === "NaN") return Number.NaN;
+	const n = Number(trimmed);
+	return Number.isNaN(n) ? s : n;
 });
+
+/**
+ * A loose boolean morph.
+ *
+ * **In**: `unknown`
+ *
+ * **Out**: `true` for `"true"`, `false` for `"false"`; otherwise the original input.
+ *
+ * Useful for coercion in unions where failing on non-boolean strings would block other branches.
+ */
+export const maybeParsedBoolean = type("unknown").pipe((s) => {
+	if (s === "true") return true;
+	if (s === "false") return false;
+	return s;
+});
+
+/**
+ * A `number` integer between 0 and 65535.
+ */
+export const port = type("0 <= number.integer <= 65535");
 
 /**
  * An IP address or `"localhost"`
  */
 export const host = type("string.ip | 'localhost'");
-
-/**
- * A boolean that accepts string values and converts them to boolean
- * Accepts "true" or "false" strings and converts them to actual boolean values
- */
-export const boolean = type(
-	"'true' | 'false' | true | false",
-	"=>",
-	(str) => str === "true" || str === true,
-);

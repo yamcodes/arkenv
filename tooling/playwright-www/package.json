@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "catalog:",
-		"@playwright/test": "",
+		"@playwright/test": "1.57.0",
 		"@types/node": "catalog:",
 		"rimraf": "catalog:",
 		"typescript": "catalog:"
