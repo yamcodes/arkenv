@@ -31,7 +31,14 @@ test.describe("Theme Switching", () => {
 
 		// Click to toggle theme
 		await themeButton.click();
-		await page.waitForTimeout(300);
+
+		// Wait for theme class to be applied
+		await page.waitForFunction(() => {
+			return (
+				document.documentElement.classList.contains("dark") ||
+				document.documentElement.classList.contains("light")
+			);
+		});
 
 		// Verify theme changed (either light or dark class should be present)
 		const hasThemeClass = await page.evaluate(() => {
