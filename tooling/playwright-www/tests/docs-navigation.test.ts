@@ -7,7 +7,7 @@ test.describe("Documentation Navigation", () => {
 			"/docs/arkenv",
 			"/docs/arkenv/quickstart",
 			"/docs/arkenv/examples",
-			"/docs/arkenv/morphs",
+			"/docs/arkenv/coercion",
 		];
 
 		for (const url of docPages) {
@@ -104,8 +104,8 @@ test.describe("Documentation Navigation", () => {
 			await expect(page).toHaveURL("/docs/arkenv/examples");
 		}
 
-		// Navigate to morphs page
-		await page.goto("/docs/arkenv/morphs");
+		// Navigate to coercion page
+		await page.goto("/docs/arkenv/coercion");
 		await page.waitForLoadState("networkidle");
 		await expect(page.locator("body")).toBeVisible();
 	});
@@ -142,7 +142,7 @@ test.describe("Documentation Navigation", () => {
 			{ url: "/docs/arkenv", expectedTitle: "What is ArkEnv" },
 			{ url: "/docs/arkenv/quickstart", expectedTitle: "Quickstart" },
 			{ url: "/docs/arkenv/examples", expectedTitle: "Start with an example" },
-			{ url: "/docs/arkenv/morphs", expectedTitle: "Morphs" },
+			{ url: "/docs/arkenv/coercion", expectedTitle: "Coercion" },
 			{ url: "/docs/vite-plugin", expectedTitle: "Introduction" },
 			{
 				url: "/docs/vite-plugin/arkenv-in-viteconfig",
@@ -194,7 +194,7 @@ test.describe("Documentation Navigation", () => {
 			"/docs/arkenv",
 			"/docs/arkenv/quickstart",
 			"/docs/arkenv/examples",
-			"/docs/arkenv/morphs",
+			"/docs/arkenv/coercion",
 			"/docs/arkenv/integrations/vscode",
 			"/docs/arkenv/integrations/jetbrains",
 			"/docs/arkenv/how-to/load-environment-variables",
