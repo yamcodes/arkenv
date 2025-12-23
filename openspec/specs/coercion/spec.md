@@ -59,7 +59,7 @@ The system MUST support schemas that contain ArkType morphs (pipes). Coercion lo
 - **GIVEN** a schema `{ PORT: "number", MANUAL: type("string").pipe(Number) }`
 - **AND** an environment `{ PORT: "3000", MANUAL: "456" }`
 - **WHEN** `arkenv` parses the environment
-- **THEN** the result should contain `PORT` as number `3000`
+- **THEN** the result should contain `PORT` as number `3000`.
 - **AND** `MANUAL` as number `456`.
 
 
