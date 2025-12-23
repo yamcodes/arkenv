@@ -46,6 +46,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 					theme={{
 						enableColorScheme: true,
 						enableSystem: true,
+						defaultTheme: "system",
 					}}
 				>
 					<Banner />

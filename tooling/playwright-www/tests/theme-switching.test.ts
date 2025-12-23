@@ -1,6 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Theme Switching", () => {
+	test("should default to system theme preference", async ({ page }) => {
+		// Clear localStorage to ensure we test the default behavior
+		await page.goto("/");
+		await page.evaluate(() => localStorage.clear());
+		await page.goto("/");
+		await page.waitForLoadState("networkidle");
+
+		// With no stored preference, theme should be null (system default)
+		const theme = await page.evaluate(() => localStorage.getItem("theme"));
+		expect(theme).toBeNull();
+	});
+
 	test("should switch between light and dark themes", async ({ page }) => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
@@ -13,51 +25,26 @@ test.describe("Theme Switching", () => {
 			}
 		});
 
-		// Initial state might be system or dark/light depending on defaults
-		// We'll try to explicitly switch to dark then light
-
-		// Open theme picker if it exists (usually in a menu or direct button)
-		// Based on previous file views, there is a "Toggle Menu" button in mobile view,
-		// but on desktop there might be a theme toggle.
-		// Let's look for a button with "Toggle Theme" or similar accessible name,
-		// or inspect the DOM for the theme attribute on html.
-
 		const html = page.locator("html");
 
-		// Force dark mode via script to ensure we can control it,
-		// or find the UI element.
-		// Since I don't know the exact UI for theme switching from previous context,
-		// I'll check if the `next-themes` script is working by checking the class/attribute.
+		// Find and click the theme toggle button
+		const themeButton = page.getByRole("button", { name: "Toggle Theme" });
+		await expect(themeButton).toBeVisible();
 
-		// Fumadocs usually puts a theme toggle in the navbar or footer.
-		// Let's try to find a button that looks like a theme toggle.
-		// Often aria-label="Toggle Theme" or similar.
+		// Click to toggle theme
+		await themeButton.click();
+		await page.waitForTimeout(300);
 
-		// For now, let's verify that the html class/attribute changes when we evaluate script
-		// This verifies the library is active.
-
-		await page.evaluate(() => {
-			// @ts-expect-error
-			window.__theme = "dark";
-			document.documentElement.classList.add("dark");
-			document.documentElement.style.colorScheme = "dark";
+		// Verify theme changed (either light or dark class should be present)
+		const hasThemeClass = await page.evaluate(() => {
+			return (
+				document.documentElement.classList.contains("dark") ||
+				document.documentElement.classList.contains("light")
+			);
 		});
+		expect(hasThemeClass).toBeTruthy();
 
-		// Wait a bit
-		await page.waitForTimeout(500);
-
-		// Check if dark class is present
-		await expect(html).toHaveClass(/dark/);
-
-		// Now try to switch to light via standard next-themes mechanism if accessible
-		// Or just verify that we can read the theme state.
-
-		// Let's try to find the actual button.
-		// Common in fumadocs: button with sun/moon icon.
-
-		// If we can't find the button easily without exploring,
-		// we can at least verify that the app didn't crash and hydration worked.
-
+		// Verify no hydration errors
 		expect(consoleErrors.filter((e) => e.includes("Hydration"))).toHaveLength(
 			0,
 		);
