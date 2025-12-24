@@ -1,0 +1,108 @@
+---
+title: Comparison
+description: See how ArkEnv compares to other environment variable validation libraries and techniques.
+icon: Scale
+---
+
+## Comparison cheatsheet
+
+| Feature | **ArkEnv** | DIY | T3 Env | vite-plugin-validate-env | znv | envalid | dotenv-safe |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Native ArkType support\*** | ✅ | 🛠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Standard Schema** | ✅ | 🛠️ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Typesafe** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Coercion** | ✅ | 🛠️ | 🛠️ | 🛠️ | ✅ | ✅ | ❌ |
+| **Default values** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **First-class Vite support** | ✅ | 🛠️ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Bun fullstack dev server** | ✅ | 🛠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Zero external dependencies** | ✅ | 🛠️ | ✅ | ❌ | ✅ | ❌ | ✅ |
+
+\* ArkType is supported directly without the need to use ArkType's `type` for each key separately.
+
+✅ Built-in / first-class support 
+
+🛠️ Requires manual implementation
+
+❌ Not supported
+
+## Detailed comparisons
+
+### DIY
+
+You'd be surprised how simple it is to build your own environment validation flow with any modern validation library. To demonstrate, we'll naturally use ArkType, though the same logic applies to most popular alternatives.
+Just create an `env.ts` file that defines a schema, performs a check, and returns the validated results.
+
+```ts
+import { type } from "arktype";
+
+const Env = type({
+	PORT: type("string.integer.parse").to("0 <= number <= 65535").default("3000"),
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+export const env = Env.assert(process.env);
+```
+
+That's it. You're done. Who needs a library for this, right?
+
+At first glance, this approach delivers exactly what you need: validation, typesafety, defaults, and even type morphs.
+
+However, once you move beyond "hello world" territory, the DIY path starts to feel a bit more tedious:
+
+* **Manual parsing** - Since `process.env` consists entirely of strings, every number or boolean requires manual parsing. ArkEnv handles this automatically with built-in [coercion](/docs/arkenv/coercion).
+* **Verbose errors** - Most validation libraries produce logs designed for complex API payloads. ArkEnv provides a concise error flow tailored specifically for environment variables, highlighting issues without the noise.
+* **Boilerplate fatigue** - While the DIY setup is simple, repeating it across multiple projects becomes, well, repetitive. ArkEnv consolidates these patterns into a single, declarative call.
+* **Framework nuances** - Passing the `process.env` object fails within toolchains like Vite or Bun, where variables are statically replaced. ArkEnv provides dedicated plugins that handle these complexities for you.
+
+After years of building enterprise-scale applications, I realized that while DIY is possible, a battle-tested, unified solution is almost always better. ArkEnv is that solution.
+
+### T3 Env
+
+[T3 Env](https://env.t3.gg) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ.
+
+T3 Env follows a "Next.js-first" philosophy. It's designed around a distinct client/server split - even if you write a simple Node server, it requires you to categorize variables under a `server` or `client` keys.
+It also has a Nuxt plugin.
+
+#### For Next.js or Nuxt
+
+If you're building with Next.js or Nuxt, you should likely stick with T3 Env. It's battle-tested, widely adopted, and specifically optimized for those ecosystems. ArkEnv doesn't currently focus on these frameworks.
+
+#### For everything else
+
+If you're building a Vite app, a Node/Bun backend, a CLI tool, or even a Solid Start project, ArkEnv can cover your needs, including [official examples](/docs/arkenv/examples).
+
+Even if you aren't ready to commit fully to ArkType, ArkEnv's support for [Standard Schema](https://standardschema.dev/) means you can keep using Zod, Valibot, or other compliant validators while benefiting from our specific framework features.
+
+By choosing ArkEnv, you gain access to features like automatic coercion and native ArkType synergy that are missing from T3 Env.
+
+### vite-plugin-validate-env
+
+[@julr/vite-plugin-validate-env](https://github.com/julien-r44/vite-plugin-validate-env) is a specialized plugin for validating variables at build time. It's a great tool for focused Vite projects and supports any Standard Schema validator.
+
+I really like this plugin and even use it in some of my production code. However, ArkEnv provides a more holistic solution. Our [first-class Vite plugin](/docs/vite-plugin) offers equivalent functionality but extends it with features like global coercion and native ArkType support.
+
+Notably, while `@julr/vite-plugin-validate-env` focuses primarily on build-time checks, ArkEnv makes it easy to [use typesafe environment variables in your Vite config](/docs/vite-plugin/arkenv-in-viteconfig) itself - a pain point we've addressed specifically.
+
+### znv
+
+[znv](https://github.com/lostfictions/znv) is a lean, zero-dependency validator for Zod. Its elegant approach to coercion was a significant influence on ArkEnv's own design.
+
+ArkEnv captures the spirit of znv but expands its utility. Where znv is tied to Zod, ArkEnv supports any validator via Standard Schema - including ArkType, Valibot, and Zod itself.
+
+Unlike znv, we maintain first-class integrations for popular frameworks.
+
+### envalid
+
+[envalid](https://github.com/af/envalid) is the "Cadillac" of environment validators - legendary, robust, and widely adopted.
+
+However, it was designed for a slightly different era of the web. It lacks native support for modern validation libraries like Zod, ArkType, or Valibot (without manual wrappers) and doesn't provide first-class hooks into modern toolchains like Vite or Bun.
+
+Unless you are maintaining a legacy codebase where `envalid` is already deeply entrenched, ArkEnv offers a modern, typesafe alternative that fits perfectly into today's ecosystem.
+
+### dotenv-safe
+
+While not a type validator, [dotenv-safe](https://github.com/rolodato/dotenv-safe) is worth mentioning for its simplicity. It ensures your `.env` file matches the structure of your `.env.example`. (It essentially uses your `.env.example` file as a type-less schema.)
+
+If your only requirement is a basic presence check, `dotenv-safe` is a solid utility. But if you need typesafety, runtime coercion, default values, or framework integrations, ArkEnv provides those features in a similarly lightweight package with a much higher ceiling.
+
+If you're done with `any`, try ArkEnv.

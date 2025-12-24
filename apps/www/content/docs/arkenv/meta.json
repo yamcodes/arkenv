@@ -6,6 +6,7 @@
 	"pages": [
 		"---Introduction---",
 		"index",
+		"comparison",
 		"quickstart",
 		"examples",
 		"---API---",
