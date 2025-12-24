@@ -58,156 +58,63 @@ However, you will quickly realize that this starts looking messier when you star
 
 After working in enterprise for years, I found myself reaching for a simple, well tested, and complete solution that solves these issues. ArkEnv is that solution.
 
-### ArkEnv
-
-**Best for:** Projects that want maximum type safety with minimal bundle size, or are already using ArkType.
-
-**Strengths:**
-- **Smallest bundle with full features** - Under 2kB for complete validation
-- **TypeScript-native syntax** - Define schemas using familiar TypeScript syntax
-- **Smart auto-coercion** - Automatically detects which fields need conversion
-- **ArkType integration** - Leverage the fastest runtime validator with 1:1 TypeScript mapping
-- **Framework plugins** - First-class Vite and Bun support
-
-**Trade-offs:**
-- Newer ecosystem compared to Zod-based solutions
-- Requires learning ArkType syntax (though it mirrors TypeScript)
-
-```ts
-import arkenv from "arkenv";
-
-const env = arkenv({
-  PORT: "number.port",
-  NODE_ENV: "'development' | 'production' | 'test'",
-  API_KEY: "string"
-});
-```
-
 ### T3 Env
 
-**Best for:** Next.js projects and teams that want explicit client/server environment separation.
+[T3 Env](https://env.t3.gg) is a wonderful library actively maintained by the T3 team. In many ways it's an inspiration to ArkEnv, although our codebases are different and the mental model is different.
 
-**Strengths:**
-- **Battle-tested** - Widely used in the Next.js ecosystem
-- **Explicit client/server split** - Prevents accidental client-side leaks
-- **Great documentation** - Comprehensive guides and examples
-- **Zod ecosystem** - Familiar to many TypeScript developers
+T3 Env is built for Next.js first: environment variables are split into client and server (even in the agnostic core, you'll still put your variables in a `server` key), and it has many settings for that purpose.
+It also has a Nuxt plugin.
 
-**Trade-offs:**
-- Larger bundle size (~5kB)
-- More verbose API requiring separate server/client definitions
-- Manual coercion setup
+#### If you're writing a Next.js or Nuxt app
 
-```ts
-import { createEnv } from "@t3-oss/env-core";
-import { z } from "zod";
+You should use T3 Env. ArkEnv does not have integrations for either of those frameworks. 
 
-const env = createEnv({
-  server: {
-    DATABASE_URL: z.string().url(),
-  },
-  client: {
-    NEXT_PUBLIC_API_URL: z.string().url(),
-  },
-  runtimeEnv: process.env,
-});
-```
+There are other options for these frameworks too, but T3 Env is battle tested, has a large community, and well documented.
+
+#### If you're not wrting a Next.js or a Nuxt app
+
+If you're writing a Vite app, a standard Bun or Node.js (backend) app, a CLI, a Bun fullstack app, or even a Solid Start app, you should probably use ArkEnv.
+
+Even if you don't use ArkType, or not completely at least (like a phased in migration), you should still probably use ArkEnv, since we support Standard Schema. That means you can use ArkEnv even if you're used to Zod, Valibot, and other Standard Schema-supported validators.
+
+If you do switch to ArkEnv, you'll enjoy features like coercion and first class ArkType support (for when you finally make the switch) that are missing from T3 Env.
 
 ### vite-plugin-validate-env
 
-**Best for:** Vite-based projects that want to validate environment variables during the development and build process.
+[@julr/vite-plugin-validate-env](https://github.com/julien-r44/vite-plugin-validate-env) is a Vite plugin that validates environment variables at build time. It uses a built-in validator or any Standard Schema validator (Zod, Valibot, etc.).
 
-**Strengths:**
-- **Build-time validation** - Catches missing variables before your app even starts
-- **Zero runtime overhead** - Validation happens during the Vite build/dev process
-- **Standard Schema support** - Use Zod, Valibot, etc. for validation
+I really like this plugin and use it in production code. It's a solid tool for simple usecases that specifically include Vite.
 
-**Trade-offs:**
-- **Vite exclusive** - Only works within the Vite ecosystem
-- **Static only** - Doesn't handle dynamic runtime environment changes
+However, whether you're writing a Vite app or not, you should strongly consider switching to ArkEnv. We offer a [first class Vite plugin](/docs/arkenv/vite-plugin) that provides the same functionality as this plugin, but with additional features like coercion and first class ArkType support.
 
-```ts
-import { defineConfig } from "vite";
-import { ValidateEnv } from "@julien-r44/vite-plugin-validate-env";
-import { z } from "zod";
-
-export default defineConfig({
-  plugins: [
-    ValidateEnv({
-      validator: "zod",
-      schema: {
-        PORT: z.string().transform(Number).default("3000"),
-      },
-    }),
-  ],
-});
-```
+Also, at the time of this writing, `@julr/vite-plugin-validate-env` does not offer a documented way to typesafe environment variables in your Vite config. ArkEnv's Vite plugin has [a clear guide](/docs/vite-plugin/arkenv-in-viteconfig) written exactly for this usecase. 
 
 ### znv
 
-**Best for:** Simple projects that need Zod-based validation without framework-specific features.
+[znv](https://github.com/lostfictions/znv) is a simple, zero dependency environment variable validator that uses Zod under the hood.
 
-**Strengths:**
-- **Simple API** - Straightforward validation without extra ceremony
-- **Zod integration** - Use any Zod schema directly
-- **Platform agnostic** - Works anywhere JavaScript runs
+I myself have used it for years and I really like its coercion feature, which inspired ArkEnv's coercion.
 
-**Trade-offs:**
-- Largest bundle size (~13kB including Zod)
-- No framework-specific integrations
-- Manual coercion required
+ArkEnv includes all of znv's features out of the box, and supports other validators than Zod thanks to Standard Schema support. This incldues ArkType (naturally), but also Valibot and others.
 
-```ts
-import { parseEnv } from "znv";
-import { z } from "zod";
-
-const env = parseEnv(process.env, {
-  PORT: z.number().default(3000),
-  NODE_ENV: z.enum(["development", "production", "test"]),
-});
-```
+Also, znv does not offer a Vite or a Bun plugin, so if you're on those frameworks, you should use ArkEnv instead of wiring things up manually or using 2 different libraries.
 
 ### envalid
 
-**Best for:** Projects that want zero dependencies or are already using envalid's custom validators.
+[envalid](https://github.com/af/envalid) is the cadillac of environment variable validators.
 
-**Strengths:**
-- **Zero dependencies** - No external validation library required
-- **Built-in validators** - Ready-to-use validators for common types
-- **Mature** - Long-standing project with proven stability
+It's the most popular of the alternatives listed here, it's battle tested, and has a large community.
 
-**Trade-offs:**
-- Custom API - Can't reuse validators from other projects
-- Less flexible type system compared to ArkType/Zod
-- No Standard Schema support
+On the other hand, it does not support modern validation libraries (without manual wiring), and does not support most modern frameworks out of the box.
 
-```ts
-import { cleanEnv, port, str } from "envalid";
-
-const env = cleanEnv(process.env, {
-  PORT: port({ default: 3000 }),
-  NODE_ENV: str({ choices: ["development", "production", "test"] }),
-});
-```
+Unless you're maintaining legacy code, you should strongly consider switching to ArkEnv.
 
 ### dotenv-safe
 
-**Best for:** Projects with minimal validation needs that primarily need to ensure all required variables are present.
+Although not type validator, I'm including [dotenv-safe](https://github.com/rolodato/dotenv-safe) here for completeness. 
 
-**Strengths:**
-- **Minimal** - Very small footprint
-- **Simple** - Just checks if variables exist
-- **dotenv integration** - Extends the popular dotenv library
+All it does is take your `.env.example` file and check if all values listed there are found in your `.env` file.
 
-**Trade-offs:**
-- No type safety
-- No runtime validation beyond existence checks
-- No TypeScript type inference
-- Manual type conversion required
+If all you're looking for is a yes/no answer to "are all my environment variables set?", this is the tool for you.
 
-```js
-require("dotenv-safe").config();
-
-// All environment variables are strings - manual parsing required
-const PORT = parseInt(process.env.PORT || "3000");
-```
+If you need more than that (typesafety features, default values, framework integrations), you should probably consider ArkEnv.
