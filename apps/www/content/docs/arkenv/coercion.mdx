@@ -1,10 +1,10 @@
 ---
 title: Coercion
-description: Automatically transform environment variable strings into typesafe numbers, booleans, and more.
+description: Environment variables are auto-morphed into typesafe numbers, booleans, and more.
 icon: New
 ---
 
-Environment variables are always strings by default. ArkEnv automatically **coerces** these strings into their target types based on your schema, so you only have to think about the types you want.
+Traditionally, environment variables are always strings by default. ArkEnv **coerces** these strings into their target types based on your schema, so you only have to think about the types you want.
 
 ## Numbers
 
@@ -44,21 +44,6 @@ console.log({
 });
 ```
 
-## Advanced coercion
-
-### Submodules and refinements
-
-Coercion is smart enough to look through ArkType refinements and submodules. Even if you use complex types like `string.ip | 'localhost'`, ArkEnv ensures the base types are handled correctly.
-
-```ts title="index.ts"
-import arkenv from "arkenv";
-
-const env = arkenv({
-  HOST: "string.ip | 'localhost'",
-  MAX_CONNECTIONS: "number.integer > 0"
-});
-```
-
 ## How it works
 
 ArkEnv introspects your schema to identify fields that should be numbers, booleans, and other non-string types you define. When you call `createEnv()` (or `arkenv()`), it pre-processes your environment variables to perform these conversions *before* validation.
@@ -89,4 +74,4 @@ const env = arkenv(
 );
 ```
 
-When coercion is disabled, environment variables are validated **exactly as they are**. Since environment variables are strings, this usually means validation will fail for `number` or `boolean` fields unless you manually parse them first.
+When coercion is disabled, environment variables are validated **exactly as they are**. Since environment variables are strings, this means validation will fail for `number` or `boolean` fields unless you morph them yourself.
