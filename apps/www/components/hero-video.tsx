@@ -28,6 +28,12 @@ export function HeroVideo() {
 				className={`absolute inset-0 w-full h-full object-contain ${
 					resolvedTheme === "dark" ? "opacity-0" : "opacity-100"
 				}`}
+				style={{
+					maskImage:
+						"radial-gradient(circle at center, black 40%, transparent 75%)",
+					WebkitMaskImage:
+						"radial-gradient(circle at center, black 40%, transparent 75%)",
+				}}
 			/>
 			<video
 				src="/assets/3d-dark.mp4"
@@ -40,6 +46,12 @@ export function HeroVideo() {
 				className={`absolute inset-0 w-full h-full object-contain ${
 					resolvedTheme === "dark" ? "opacity-100" : "opacity-0"
 				}`}
+				style={{
+					maskImage:
+						"radial-gradient(circle at center, black 40%, transparent 75%)",
+					WebkitMaskImage:
+						"radial-gradient(circle at center, black 40%, transparent 75%)",
+				}}
 			/>
 		</div>
 	);
