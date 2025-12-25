@@ -34,7 +34,9 @@ export function HeroVisual() {
 			ref={containerRef}
 			onMouseMove={handleMouseMove}
 			onMouseLeave={handleMouseLeave}
-			className="relative w-full max-w-[500px] mx-auto lg:ml-auto lg:mt-8 aspect-square flex items-center justify-center perspective-[1000px] group select-none"
+			role="img"
+			aria-label="Interactive 2.5D visual representing ArkEnv's typesafe environment variables"
+			className="relative w-full max-w-125 mx-auto lg:ml-auto lg:mt-8 aspect-square flex items-center justify-center perspective-[1000px] group select-none"
 		>
 			{/* Ambient Glow Background */}
 			<div
@@ -46,7 +48,7 @@ export function HeroVisual() {
 
 			{/* The 2.5D Platform / Card */}
 			<div
-				className="relative w-[300px] h-[300px] transition-transform duration-300 ease-out transform-gpu"
+				className="relative w-75 h-75 transition-transform duration-300 ease-out transform-gpu"
 				style={{
 					transformStyle: "preserve-3d",
 					transform: `rotateY(${mousePos.x * 20}deg) rotateX(${-mousePos.y * 20}deg)`,
@@ -69,7 +71,10 @@ export function HeroVisual() {
 						viewBox="0 0 12 12"
 						className="drop-shadow-[0_20px_40px_rgba(59,130,246,0.3)] filter brightness-110 animate-spin-slow origin-center"
 						xmlns="http://www.w3.org/2000/svg"
+						role="img"
+						aria-labelledby="hero-icon-title"
 					>
+						<title id="hero-icon-title">ArkEnv Gear Logo</title>
 						<path
 							className="stroke-blue-500 dark:stroke-blue-400"
 							style={{
@@ -143,48 +148,44 @@ export function HeroVisual() {
 					>
 						<div className="flex flex-col gap-0.5 whitespace-nowrap">
 							<div className="text-[10px] font-mono leading-none">
-								<div className="text-[10px] font-mono leading-none">
-									<span
-										className={
-											resolvedTheme === "dark" ? "text-white" : "text-blue-950"
-										}
-									>
-										{resolvedTheme === "dark" ? "(" : "("}
-										<span
-											className={
-												resolvedTheme === "dark"
-													? "text-white"
-													: "text-blue-800"
-											}
-										>
-											property
-										</span>
-										{resolvedTheme === "dark" ? ")" : ")"}
-									</span>{" "}
-									<span
-										className={
-											resolvedTheme === "dark" ? "text-white" : "text-blue-950"
-										}
-									>
-										PORT
-									</span>
-									<span
-										className={
-											resolvedTheme === "dark"
-												? "text-yellow-600"
-												: "text-yellow-600"
-										}
-									>
-										:
-									</span>{" "}
+								<span
+									className={
+										resolvedTheme === "dark" ? "text-white" : "text-blue-950"
+									}
+								>
+									{resolvedTheme === "dark" ? "(" : "("}
 									<span
 										className={
 											resolvedTheme === "dark" ? "text-white" : "text-blue-800"
 										}
 									>
-										number
+										property
 									</span>
-								</div>
+									{resolvedTheme === "dark" ? ")" : ")"}
+								</span>{" "}
+								<span
+									className={
+										resolvedTheme === "dark" ? "text-white" : "text-blue-950"
+									}
+								>
+									PORT
+								</span>
+								<span
+									className={
+										resolvedTheme === "dark"
+											? "text-yellow-600"
+											: "text-yellow-600"
+									}
+								>
+									:
+								</span>{" "}
+								<span
+									className={
+										resolvedTheme === "dark" ? "text-white" : "text-blue-800"
+									}
+								>
+									number
+								</span>
 							</div>
 						</div>
 						{/* Small arrow */}
