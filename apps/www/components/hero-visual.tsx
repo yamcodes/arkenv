@@ -107,7 +107,7 @@ export function HeroVisual() {
 
 				{/* Floating Accents (Code Samples / Particles) */}
 				<div
-					className="absolute -top-4 -right-4 bg-white/10 border border-white/20 rounded-lg p-3 backdrop-blur-xl shadow-xl transform-gpu transition-all duration-300 group-hover:translate-x-4 opacity-80 group-hover:opacity-100"
+					className="absolute -top-4 -right-4 bg-white/20 dark:bg-black/40 border border-white/20 dark:border-white/10 rounded-lg p-3 backdrop-blur-xl shadow-xl transform-gpu transition-all duration-300 group-hover:translate-x-4 opacity-80 group-hover:opacity-100"
 					style={{
 						transform: "translateZ(90px) rotate(-5deg)",
 					}}
@@ -138,7 +138,7 @@ export function HeroVisual() {
 					style={{ transform: "translateZ(40px) rotate(4deg)" }}
 				>
 					{/* The 'Code' line */}
-					<div className="bg-white/10 border border-white/20 rounded-md px-3 py-1.5 backdrop-blur-xl shadow-xl font-mono text-[11px]">
+					<div className="bg-white/20 dark:bg-black/40 border border-white/20 dark:border-white/10 rounded-md px-3 py-1.5 backdrop-blur-xl shadow-xl font-mono text-[11px]">
 						<span className="text-blue-950 dark:text-white">env</span>
 						<span className="text-yellow-600 dark:text-yellow-600">.</span>
 						<span className="text-yellow-600 dark:text-yellow-300">PORT</span>
