@@ -33,6 +33,12 @@ export function HeroVisual() {
 		return <div className="w-full aspect-square" />;
 	}
 
+	const syntaxColors = {
+		primary: resolvedTheme === "dark" ? "text-white" : "text-blue-950",
+		secondary: resolvedTheme === "dark" ? "text-white" : "text-blue-800",
+		punctuation: "text-yellow-600",
+	};
+
 	return (
 		<div
 			ref={containerRef}
@@ -152,44 +158,12 @@ export function HeroVisual() {
 					>
 						<div className="flex flex-col gap-0.5 whitespace-nowrap">
 							<div className="text-[10px] font-mono leading-none">
-								<span
-									className={
-										resolvedTheme === "dark" ? "text-white" : "text-blue-950"
-									}
-								>
-									{resolvedTheme === "dark" ? "(" : "("}
-									<span
-										className={
-											resolvedTheme === "dark" ? "text-white" : "text-blue-800"
-										}
-									>
-										property
-									</span>
-									{resolvedTheme === "dark" ? ")" : ")"}
+								<span className={syntaxColors.primary}>
+									(<span className={syntaxColors.secondary}>property</span>)
 								</span>{" "}
-								<span
-									className={
-										resolvedTheme === "dark" ? "text-white" : "text-blue-950"
-									}
-								>
-									PORT
-								</span>
-								<span
-									className={
-										resolvedTheme === "dark"
-											? "text-yellow-600"
-											: "text-yellow-600"
-									}
-								>
-									:
-								</span>{" "}
-								<span
-									className={
-										resolvedTheme === "dark" ? "text-white" : "text-blue-800"
-									}
-								>
-									number
-								</span>
+								<span className={syntaxColors.primary}>PORT</span>
+								<span className={syntaxColors.punctuation}>:</span>{" "}
+								<span className={syntaxColors.secondary}>number</span>
 							</div>
 						</div>
 						{/* Small arrow */}
