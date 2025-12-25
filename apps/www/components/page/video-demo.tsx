@@ -54,7 +54,7 @@ export function VideoDemo() {
 							src="/assets/demo.gif"
 							alt="ArkEnv Demo"
 							fill
-							className="object-contain"
+							className="absolute inset-0 w-full h-full object-cover"
 							sizes="100vw"
 							unoptimized
 						/>
