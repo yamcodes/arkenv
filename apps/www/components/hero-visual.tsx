@@ -136,7 +136,7 @@ export function HeroVisual() {
 
 					{/* The Tooltip popover */}
 					<div
-						className="absolute bottom-full left-4 mb-2 border border-white/10 rounded-sm p-2 shadow-2xl transition-all duration-500 transform-gpu group-hover:scale-110 group-hover:-translate-y-1 bg-[#1e1e1e] dark:bg-[#1e1e1e] light:bg-[#f3f3f3]"
+						className="absolute bottom-full left-4 mb-2 border rounded-sm p-2 shadow-2xl transition-all duration-500 transform-gpu group-hover:scale-110 group-hover:-translate-y-1"
 						style={{
 							transform: "translateZ(30px)",
 							backgroundColor: resolvedTheme === "dark" ? "#1e1e1e" : "#ffffff",
