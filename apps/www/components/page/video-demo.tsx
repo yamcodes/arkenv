@@ -34,9 +34,10 @@ export function VideoDemo() {
 		<div className="relative mb-4 w-full mx-auto max-w-4xl pt-8">
 			<button
 				type="button"
-				className="relative rounded-xl overflow-hidden border border-fd-border/50 bg-black/10 dark:bg-black/40 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] group w-full text-left outline-none cursor-pointer"
+				className="relative rounded-xl overflow-hidden border border-fd-border/50 bg-black/10 dark:bg-black/40 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] group w-full text-left outline-none cursor-pointer flex flex-col"
 				onClick={handleVideoClick}
 				aria-label="Open interactive demo in a new tab"
+				style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT + 88) }} // +88 to account for header height approx
 			>
 				{/* Header / Title Bar */}
 				<div className="flex items-center px-4 py-2 bg-white/5 border-b border-fd-border/50">
@@ -51,16 +52,13 @@ export function VideoDemo() {
 				</div>
 
 				{/* Video Container */}
-				<div
-					className="relative w-full block"
-					style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
-				>
+				<div className="relative w-full flex-1">
 					{videoError ? (
 						<Image
 							src="/assets/demo.gif"
 							alt="ArkEnv Demo"
 							fill
-							className="absolute inset-0 w-full h-full object-cover"
+							className="absolute inset-0 w-full h-full object-contain"
 							sizes="100vw"
 							unoptimized
 						/>
@@ -73,7 +71,7 @@ export function VideoDemo() {
 							loop
 							muted
 							playsInline
-							className="absolute inset-0 w-full h-full object-cover"
+							className="absolute inset-0 w-full h-full object-contain"
 						/>
 					)}
 					{/* Interactive Overlay Hint */}
