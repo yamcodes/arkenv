@@ -22,7 +22,7 @@
 		"typescript": "catalog:"
 	},
 	"engines": {
-		"node": "24"
+		"node": ">=20.6.0"
 	},
 	"stackblitz": {
 		"startCommand": "npm install && npm run dev:example"
