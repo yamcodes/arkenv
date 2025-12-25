@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import BackgroundVideo from "next-video/background-video";
 import { useState } from "react";
@@ -77,8 +78,9 @@ export function VideoDemo() {
 					)}
 					{/* Interactive Overlay Hint */}
 					<div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/5 transition-colors duration-300 flex items-center justify-center">
-						<div className="bg-white/90 dark:bg-black/90 text-black dark:text-white px-4 py-2 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
-							Open Interactive Playground
+						<div className="bg-white/90 dark:bg-black/90 text-black dark:text-white px-4 py-2 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg flex items-center gap-2">
+							<span>Open Interactive Playground</span>
+							<ArrowUpRight className="w-4 h-4 opacity-70" />
 						</div>
 					</div>
 				</div>
