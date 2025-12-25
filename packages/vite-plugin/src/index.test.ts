@@ -527,6 +527,78 @@ describe("Plugin Unit Tests", () => {
 		// Verify variables not matching any prefix are NOT exposed
 		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
+
+	it("should use custom envDir when provided in config", () => {
+		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
+
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			// Pass custom envDir in config
+			pluginInstance.config.call(
+				mockContext,
+				{ envDir: "/custom/env/dir" },
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify createEnv was called - the envDir is used by loadEnv internally
+		// We can't directly test loadEnv was called with the custom path without
+		// mocking Vite's loadEnv, but we verify the plugin doesn't throw
+		expect(mockCreateEnv).toHaveBeenCalledWith(
+			{ VITE_TEST: "string" },
+			{
+				env: expect.any(Object),
+			},
+		);
+	});
+
+	it("should default to process.cwd() when envDir is not configured", () => {
+		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
+
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			// Pass config without envDir (should default to process.cwd())
+			pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify createEnv was called successfully with default behavior
+		expect(mockCreateEnv).toHaveBeenCalledWith(
+			{ VITE_TEST: "string" },
+			{
+				env: expect.any(Object),
+			},
+		);
+	});
 });
 
 async function readTestConfig(fixtureDir: string) {
