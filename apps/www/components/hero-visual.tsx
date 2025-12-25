@@ -143,28 +143,48 @@ export function HeroVisual() {
 					>
 						<div className="flex flex-col gap-0.5 whitespace-nowrap">
 							<div className="text-[10px] font-mono leading-none">
-								<span
-									className={
-										resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
-									}
-								>
-									(property)
-								</span>{" "}
-								<span
-									className={
-										resolvedTheme === "dark" ? "text-white" : "text-gray-900"
-									}
-								>
-									PORT
-								</span>
-								:{" "}
-								<span
-									className={
-										resolvedTheme === "dark" ? "text-blue-300" : "text-blue-500"
-									}
-								>
-									number
-								</span>
+								<div className="text-[10px] font-mono leading-none">
+									<span
+										className={
+											resolvedTheme === "dark" ? "text-white" : "text-blue-950"
+										}
+									>
+										{resolvedTheme === "dark" ? "(" : "("}
+										<span
+											className={
+												resolvedTheme === "dark"
+													? "text-white"
+													: "text-blue-800"
+											}
+										>
+											property
+										</span>
+										{resolvedTheme === "dark" ? ")" : ")"}
+									</span>{" "}
+									<span
+										className={
+											resolvedTheme === "dark" ? "text-white" : "text-blue-950"
+										}
+									>
+										PORT
+									</span>
+									<span
+										className={
+											resolvedTheme === "dark"
+												? "text-yellow-600"
+												: "text-yellow-300"
+										}
+									>
+										:
+									</span>{" "}
+									<span
+										className={
+											resolvedTheme === "dark" ? "text-white" : "text-blue-800"
+										}
+									>
+										number
+									</span>
+								</div>
 							</div>
 						</div>
 						{/* Small arrow */}
