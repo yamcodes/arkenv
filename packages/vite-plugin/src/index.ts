@@ -58,7 +58,6 @@ export default function arkenv<const T extends SchemaShape>(
 			const envPrefix = config.envPrefix ?? "VITE_";
 			const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix];
 
-
 			// Load environment based on the custom config
 			const envDir = config.envDir ?? process.cwd();
 			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
