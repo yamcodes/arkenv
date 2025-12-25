@@ -22,24 +22,22 @@ export default async function Page(props: {
 
 	return (
 		<DocsPage toc={page.data.toc} full={page.data.full}>
-			<div className="flex flex-col h-full">
-				<div className="grow">
-					<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
-					<DocsDescription>{page.data.description}</DocsDescription>
-					<DocsBody>
-						<MDX
-							components={getMDXComponents({
-								// this allows you to link to other pages with relative file paths
-								a: createRelativeLink(source, page),
-							})}
-						/>
-					</DocsBody>
-				</div>
-				<div className="flex flex-col items-start pt-16">
-					<EditOnGithub path={page.path} />
-					<div className="mt-8 w-full">
-						<Separator />
-					</div>
+			<div className="grow">
+				<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
+				<DocsDescription>{page.data.description}</DocsDescription>
+				<DocsBody>
+					<MDX
+						components={getMDXComponents({
+							// this allows you to link to other pages with relative file paths
+							a: createRelativeLink(source, page),
+						})}
+					/>
+				</DocsBody>
+			</div>
+			<div className="flex flex-col items-start pt-16">
+				<EditOnGithub path={page.path} />
+				<div className="mt-8 w-full">
+					<Separator />
 				</div>
 			</div>
 		</DocsPage>
