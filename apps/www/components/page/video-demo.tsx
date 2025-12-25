@@ -12,6 +12,10 @@ const HEIGHT = 1672;
 const getAspectRatio = (width: number, height: number) =>
 	`${width} / ${height}`;
 
+/**
+ * VideoDemo component displays an interactive video demonstration with a browser-style frame.
+ * Clicking the video opens the demo in StackBlitz. Falls back to a GIF if video fails to load.
+ */
 export function VideoDemo() {
 	const [videoError, setVideoError] = useState(false);
 

@@ -3,6 +3,10 @@
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * HeroVisual component creates an interactive 2.5D visual using CSS transforms.
+ * It features a mouse-following tilt effect and theme-aware code highlights.
+ */
 export function HeroVisual() {
 	const { resolvedTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
