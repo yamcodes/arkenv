@@ -12,7 +12,7 @@ const env = arkenv({
 // TypeScript knows the ✨exact✨ types!
 console.log({
 	host: env.HOST,
-	port: env.PORT,
+	port: env.PORT,i
 	nodeEnv: env.NODE_ENV,
 	debugging: env.DEBUGGING,
 });

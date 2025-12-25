@@ -30,14 +30,14 @@ export function VideoDemo() {
 			{/* Browser Frame */}
 			<div className="relative rounded-xl overflow-hidden border border-fd-border/50 bg-black/10 dark:bg-black/40 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] group">
 				{/* Header / Title Bar */}
-				<div className="flex items-center px-4 py-3 bg-white/5 border-b border-fd-border/50">
+				<div className="flex items-center px-4 py-2 bg-white/5 border-b border-fd-border/50">
 					<div className="flex gap-1.5">
 						<div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
 						<div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
 						<div className="w-3 h-3 rounded-full bg-[#27c93f]" />
 					</div>
 					<div className="mx-auto text-xs font-mono text-gray-500 dark:text-gray-400 select-none">
-						arkenv.test
+						basic — index.ts
 					</div>
 				</div>
 

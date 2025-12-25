@@ -93,14 +93,23 @@ export function HeroVisual() {
 				{/* Floating Accents (Code Samples / Particles) */}
 				<div
 					className="absolute -top-4 -right-4 bg-white/10 border border-white/20 rounded-lg p-3 backdrop-blur-xl shadow-xl transform-gpu transition-all duration-300 group-hover:translate-x-4 opacity-80 group-hover:opacity-100"
-					style={{ transform: "translateZ(90px) rotate(-5deg)" }}
+					style={{
+						transform: "translateZ(90px) rotate(-5deg)",
+					}}
 				>
-					<div className="text-[10px] font-mono text-blue-500 dark:text-blue-300 leading-tight">
-						arkenv(<span className="text-gray-400">{"{"}</span>
+					<div className="text-[10px] font-mono leading-tight">
+						<span className="text-blue-500 dark:text-blue-300">arkenv</span>
+						<span className="text-yellow-600 dark:text-yellow-300">(</span>
+						<span className="text-yellow-600 dark:text-yellow-600">{"{"}</span>
 						<br />
-						&nbsp;&nbsp;PORT: <span className="text-blue-400">"number"</span>
+						&nbsp;&nbsp;
+						<span className="text-blue-950 dark:text-white">PORT:</span>{" "}
+						<span className="text-yellow-600 dark:text-yellow-600">"</span>
+						<span className="text-blue-800 dark:text-blue-400">number</span>
+						<span className="text-yellow-600 dark:text-yellow-600">"</span>
 						<br />
-						<span className="text-gray-400">{"}"}</span>)
+						<span className="text-yellow-600 dark:text-yellow-600">{"}"}</span>
+						<span className="text-yellow-600 dark:text-yellow-300">)</span>
 					</div>
 				</div>
 
@@ -109,8 +118,10 @@ export function HeroVisual() {
 					style={{ transform: "translateZ(40px) rotate(4deg)" }}
 				>
 					{/* The 'Code' line */}
-					<div className="bg-white/10 border border-white/20 rounded-md px-3 py-1.5 backdrop-blur-xl shadow-xl font-mono text-[11px] text-blue-400">
-						env.<span className="text-blue-300">PORT</span>
+					<div className="bg-white/10 border border-white/20 rounded-md px-3 py-1.5 backdrop-blur-xl shadow-xl font-mono text-[11px]">
+						<span className="text-blue-950 dark:text-white">env</span>
+						<span className="text-yellow-500 dark:text-yellow-600">.</span>
+						<span className="text-yellow-600 dark:text-yellow-300">PORT</span>
 					</div>
 
 					{/* The Tooltip popover */}
