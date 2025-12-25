@@ -36,7 +36,8 @@ export function HeroVisual() {
 	const syntaxColors = {
 		primary: resolvedTheme === "dark" ? "text-white" : "text-blue-950",
 		secondary: resolvedTheme === "dark" ? "text-white" : "text-blue-800",
-		punctuation: "text-yellow-600",
+		punctuation:
+			resolvedTheme === "dark" ? "text-yellow-400" : "text-yellow-700",
 	};
 
 	return (
@@ -113,22 +114,22 @@ export function HeroVisual() {
 					}}
 				>
 					<div className="text-[10px] font-mono leading-tight">
-						<span className="text-yellow-600 dark:text-yellow-600">const</span>{" "}
+						<span className="text-yellow-700 dark:text-yellow-400">const</span>{" "}
 						<span className="text-blue-800 dark:text-white">env</span>{" "}
-						<span className="text-yellow-600 dark:text-yellow-600">=</span>{" "}
-						<span className="text-blue-500 dark:text-blue-300 italic">
+						<span className="text-yellow-700 dark:text-yellow-400">=</span>{" "}
+						<span className="text-blue-600 dark:text-blue-300 italic">
 							arkenv
 						</span>
 						<span className="text-yellow-700 dark:text-yellow-300">(</span>
-						<span className="text-yellow-600 dark:text-yellow-600">{"{"}</span>
+						<span className="text-yellow-700 dark:text-yellow-400">{"{"}</span>
 						<br />
 						&nbsp;&nbsp;
 						<span className="text-blue-950 dark:text-white">PORT:</span>{" "}
-						<span className="text-yellow-600 dark:text-yellow-600">"</span>
+						<span className="text-yellow-700 dark:text-yellow-400">"</span>
 						<span className="text-blue-800 dark:text-blue-400">number</span>
-						<span className="text-yellow-600 dark:text-yellow-600">"</span>
+						<span className="text-yellow-700 dark:text-yellow-400">"</span>
 						<br />
-						<span className="text-yellow-600 dark:text-yellow-600">{"}"}</span>
+						<span className="text-yellow-700 dark:text-yellow-400">{"}"}</span>
 						<span className="text-yellow-700 dark:text-yellow-300">)</span>
 					</div>
 				</div>
@@ -140,8 +141,8 @@ export function HeroVisual() {
 					{/* The 'Code' line */}
 					<div className="bg-white/20 dark:bg-black/40 border border-white/20 dark:border-white/10 rounded-md px-3 py-1.5 backdrop-blur-xl shadow-xl font-mono text-[11px]">
 						<span className="text-blue-950 dark:text-white">env</span>
-						<span className="text-yellow-600 dark:text-yellow-600">.</span>
-						<span className="text-yellow-600 dark:text-yellow-300">PORT</span>
+						<span className="text-yellow-700 dark:text-yellow-400">.</span>
+						<span className="text-yellow-700 dark:text-yellow-300">PORT</span>
 					</div>
 
 					{/* The Tooltip popover */}

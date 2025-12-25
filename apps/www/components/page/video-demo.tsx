@@ -45,7 +45,7 @@ export function VideoDemo() {
 						<div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
 						<div className="w-3 h-3 rounded-full bg-[#27c93f]" />
 					</div>
-					<div className="mx-auto text-xs font-mono text-gray-500 dark:text-gray-400 select-none">
+					<div className="mx-auto text-xs font-mono text-gray-600 dark:text-gray-300 select-none">
 						basic — index.ts
 					</div>
 				</div>
