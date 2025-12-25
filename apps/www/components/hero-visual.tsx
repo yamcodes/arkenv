@@ -104,7 +104,7 @@ export function HeroVisual() {
 						<span className="text-blue-500 dark:text-blue-300 italic">
 							arkenv
 						</span>
-						<span className="text-yellow-600 dark:text-yellow-300">(</span>
+						<span className="text-yellow-700 dark:text-yellow-300">(</span>
 						<span className="text-yellow-600 dark:text-yellow-600">{"{"}</span>
 						<br />
 						&nbsp;&nbsp;
@@ -114,7 +114,7 @@ export function HeroVisual() {
 						<span className="text-yellow-600 dark:text-yellow-600">"</span>
 						<br />
 						<span className="text-yellow-600 dark:text-yellow-600">{"}"}</span>
-						<span className="text-yellow-600 dark:text-yellow-300">)</span>
+						<span className="text-yellow-700 dark:text-yellow-300">)</span>
 					</div>
 				</div>
 
@@ -125,7 +125,7 @@ export function HeroVisual() {
 					{/* The 'Code' line */}
 					<div className="bg-white/10 border border-white/20 rounded-md px-3 py-1.5 backdrop-blur-xl shadow-xl font-mono text-[11px]">
 						<span className="text-blue-950 dark:text-white">env</span>
-						<span className="text-yellow-500 dark:text-yellow-600">.</span>
+						<span className="text-yellow-600 dark:text-yellow-600">.</span>
 						<span className="text-yellow-600 dark:text-yellow-300">PORT</span>
 					</div>
 
@@ -172,7 +172,7 @@ export function HeroVisual() {
 										className={
 											resolvedTheme === "dark"
 												? "text-yellow-600"
-												: "text-yellow-300"
+												: "text-yellow-600"
 										}
 									>
 										:
