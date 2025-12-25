@@ -74,7 +74,7 @@ export function HeroVisual() {
 						role="img"
 						aria-labelledby="hero-icon-title"
 					>
-						<title id="hero-icon-title">ArkEnv Gear Logo</title>
+						<title id="hero-icon-title">ArkEnv Icon</title>
 						<path
 							className="stroke-blue-500 dark:stroke-blue-400"
 							style={{
