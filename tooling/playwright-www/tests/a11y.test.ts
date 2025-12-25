@@ -43,7 +43,7 @@ test.describe("A11y Smoke Tests", () => {
 			await page.goto(url);
 			await page.waitForLoadState("networkidle");
 
-			// Check that there is exactly one <main> element
+			// HTML living standard requires exactly one <main> element per page
 			const mainElements = page.locator("main");
 			const mainCount = await mainElements.count();
 			expect(mainCount).toBe(1);
