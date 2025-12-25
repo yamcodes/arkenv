@@ -31,8 +31,12 @@ export function VideoDemo() {
 
 	return (
 		<div className="relative mb-4 w-full mx-auto max-w-4xl pt-8">
-			{/* Browser Frame */}
-			<div className="relative rounded-xl overflow-hidden border border-fd-border/50 bg-black/10 dark:bg-black/40 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] group">
+			<button
+				type="button"
+				className="relative rounded-xl overflow-hidden border border-fd-border/50 bg-black/10 dark:bg-black/40 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] group w-full text-left outline-none cursor-pointer"
+				onClick={handleVideoClick}
+				aria-label="Open interactive demo in a new tab"
+			>
 				{/* Header / Title Bar */}
 				<div className="flex items-center px-4 py-2 bg-white/5 border-b border-fd-border/50">
 					<div className="flex gap-1.5">
@@ -46,11 +50,8 @@ export function VideoDemo() {
 				</div>
 
 				{/* Video Container */}
-				<button
-					type="button"
-					className="relative cursor-pointer m-0 p-0 w-full block outline-none"
-					onClick={handleVideoClick}
-					aria-label="Open interactive demo in a new tab"
+				<div
+					className="relative w-full block"
 					style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
 				>
 					{videoError ? (
@@ -80,8 +81,8 @@ export function VideoDemo() {
 							Open Interactive Playground
 						</div>
 					</div>
-				</button>
-			</div>
+				</div>
+			</button>
 		</div>
 	);
 }
