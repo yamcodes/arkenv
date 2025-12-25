@@ -5,6 +5,7 @@ const env = arkenv({
 	PORT: "0 <= number.integer <= 65535",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	DEBUGGING: "boolean = false",
+	PORT: "number",
 });
 
 // Automatically validate and parse process.env

@@ -115,18 +115,54 @@ export function HeroVisual() {
 
 					{/* The Tooltip popover */}
 					<div
-						className="absolute bottom-full left-4 mb-2 bg-[#1e1e1e] border border-white/10 rounded-sm p-2 shadow-2xl transition-transform duration-500 transform-gpu group-hover:scale-110 group-hover:-translate-y-1"
-						style={{ transform: "translateZ(30px)" }}
+						className="absolute bottom-full left-4 mb-2 border border-white/10 rounded-sm p-2 shadow-2xl transition-all duration-500 transform-gpu group-hover:scale-110 group-hover:-translate-y-1 bg-[#1e1e1e] dark:bg-[#1e1e1e] light:bg-[#f3f3f3]"
+						style={{
+							transform: "translateZ(30px)",
+							backgroundColor: resolvedTheme === "dark" ? "#1e1e1e" : "#ffffff",
+							borderColor:
+								resolvedTheme === "dark"
+									? "rgba(255,255,255,0.1)"
+									: "rgba(0,0,0,0.1)",
+						}}
 					>
 						<div className="flex flex-col gap-0.5 whitespace-nowrap">
 							<div className="text-[10px] font-mono leading-none">
-								<span className="text-blue-400">(property)</span>{" "}
-								<span className="text-white">PORT</span>:{" "}
-								<span className="text-blue-300">number</span>
+								<span
+									className={
+										resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+									}
+								>
+									(property)
+								</span>{" "}
+								<span
+									className={
+										resolvedTheme === "dark" ? "text-white" : "text-gray-900"
+									}
+								>
+									PORT
+								</span>
+								:{" "}
+								<span
+									className={
+										resolvedTheme === "dark" ? "text-blue-300" : "text-blue-500"
+									}
+								>
+									number
+								</span>
 							</div>
 						</div>
 						{/* Small arrow */}
-						<div className="absolute top-full left-4 w-2 h-2 bg-[#1e1e1e] rotate-45 -translate-y-1 border-r border-b border-white/10" />
+						<div
+							className="absolute top-full left-4 w-2 h-2 rotate-45 -translate-y-1 border-r border-b"
+							style={{
+								backgroundColor:
+									resolvedTheme === "dark" ? "#1e1e1e" : "#ffffff",
+								borderColor:
+									resolvedTheme === "dark"
+										? "rgba(255,255,255,0.1)"
+										: "rgba(0,0,0,0.1)",
+							}}
+						/>
 					</div>
 				</div>
 			</div>
