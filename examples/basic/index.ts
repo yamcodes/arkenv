@@ -16,6 +16,4 @@ console.log({
 	debugging: env.DEBUGGING,
 });
 
-console.log(env.PORT);
-
 export default env;
