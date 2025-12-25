@@ -75,6 +75,9 @@ ArkEnvError: Errors found while validating environment variables
 - Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 - Optimized from editor to runtime
 
+> [!TIP]
+> See ArkEnv vs. alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
+
 ## Installation
 
 <details open>
