@@ -129,7 +129,7 @@ export function HeroVisual() {
 						<span className="text-blue-900 dark:text-blue-300">number</span>
 						<span className="text-yellow-900 dark:text-yellow-200">"</span>
 						<br />
-						<span className="text-yellow-900 dark:text-yellow-200">{"{"}</span>
+						<span className="text-yellow-900 dark:text-yellow-200">{"}"}</span>
 						<span className="text-yellow-900 dark:text-yellow-100">)</span>
 					</div>
 				</div>
