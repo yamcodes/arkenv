@@ -2,8 +2,7 @@
   <a href="https://github.com/yamcodes/arkenv/blob/main/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
-    <p align="center">Typesafe environment variables <br/>
-    powered by <a href="https://github.com/arktypeio/arktype">ArkType</a></p>
+    <p align="center">Typesafe environment variables from editor to runtime</p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
     <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
@@ -34,7 +33,8 @@
 > [!TIP]
 > 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs/arkenv) to hover over code blocks and get type hints!
 
-ArkEnv is an environment variable parser powered by [ArkType](https://arktype.io/), TypeScript's 1:1 validator. ArkEnv lets you use familiar TypeScript-like syntax to create a ready-to-use, typesafe environment variable object:
+ArkEnv is an environment variable validator for modern JavaScript runtimes. 
+It lets you create a ready-to-use, typesafe environment variable object:
 
 ```ts twoslash
 import arkenv from "arkenv";
@@ -52,6 +52,8 @@ const port = env.PORT;
 const nodeEnv = env.NODE_ENV;
 const debugging = env.DEBUGGING;
 ```
+
+_(Notice the [ArkType](https://arktype.io/) notation in the example. ArkEnv supports it natively, and also works with any other [Standard Schema](https://standardschema.dev/schema) validator such as Zod, Valibot, Typia, Joi, Yup, etc.)_
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
