@@ -146,7 +146,7 @@ export function HeroVisual() {
 
 					{/* The Tooltip popover */}
 					<div
-						className="absolute bottom-full left-4 mb-2 border rounded-sm p-2 shadow-2xl transition-all duration-500 transform-gpu group-hover:scale-110 group-hover:-translate-y-1 bg-white dark:bg-[#1e1e1e] border-black/10 dark:border-white/10"
+						className="absolute bottom-full left-4 mb-2 border rounded-sm p-2 shadow-2xl transition-all duration-500 transform-gpu group-hover:scale-110 group-hover:-translate-y-1 bg-white dark:bg-[#0b1120] border-black/10 dark:border-white/10"
 						style={{
 							transform: "translateZ(30px)",
 						}}
@@ -162,7 +162,7 @@ export function HeroVisual() {
 							</div>
 						</div>
 						{/* Small arrow */}
-						<div className="absolute top-full left-4 w-2 h-2 rotate-45 -translate-y-1 border-r border-b bg-white dark:bg-[#1e1e1e] border-black/10 dark:border-white/10" />
+						<div className="absolute top-full left-4 w-2 h-2 rotate-45 -translate-y-1 border-r border-b bg-white dark:bg-[#0b1120] border-black/10 dark:border-white/10" />
 					</div>
 				</div>
 			</div>
