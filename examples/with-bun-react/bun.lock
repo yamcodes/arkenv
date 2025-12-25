@@ -93,5 +93,7 @@
     "scheduler": ["scheduler@0.27.0", "", {}, "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q=="],
 
     "undici-types": ["undici-types@7.16.0", "", {}, "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw=="],
+
+    "@arkenv/bun-plugin/arkenv": ["arkenv@0.8.0", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-bfbM0euGgoJW4SbuzfB3wCHZr6tsZXl89tECwlEk9S7qyniob6xr/Eic8PGgsT/RqWuXCmpZI6Z+iNqOhNM7RQ=="],
   }
 }
