@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
 	return (
-		<main className="flex flex-1 flex-col items-center justify-center relative w-full overflow-hidden">
+		<div className="flex flex-1 flex-col items-center justify-center relative w-full overflow-hidden">
 			{/* Top gradient overlay for dark mode - SVG version */}
 			<svg
 				viewBox="0 0 1440 181"
@@ -103,6 +103,6 @@ export default function HomePage() {
 			<div className="sm:mt-8 max-w-[1024px] mx-auto w-full relative z-20 px-4">
 				<VideoDemo />
 			</div>
-		</main>
+		</div>
 	);
 }

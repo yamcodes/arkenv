@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 			}}
 			{...baseOptions}
 		>
-			{children}
+			<main className="[grid-area:main] flex flex-col">{children}</main>
 		</DocsLayout>
 	);
 }

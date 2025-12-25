@@ -36,6 +36,20 @@ test.describe("A11y Smoke Tests", () => {
 		}
 	});
 
+	test("should have exactly one <main> tag on all top routes", async ({
+		page,
+	}) => {
+		for (const url of topRoutes) {
+			await page.goto(url);
+			await page.waitForLoadState("networkidle");
+
+			// HTML living standard requires exactly one <main> element per page
+			const mainElements = page.locator("main");
+			const mainCount = await mainElements.count();
+			expect(mainCount).toBe(1);
+		}
+	});
+
 	test("should have proper heading hierarchy on all top routes", async ({
 		page,
 	}) => {
