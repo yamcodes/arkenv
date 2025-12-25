@@ -98,7 +98,12 @@ export function HeroVisual() {
 					}}
 				>
 					<div className="text-[10px] font-mono leading-tight">
-						<span className="text-blue-500 dark:text-blue-300">arkenv</span>
+						<span className="text-yellow-600 dark:text-yellow-600">const</span>{" "}
+						<span className="text-blue-800 dark:text-white">env</span>{" "}
+						<span className="text-yellow-600 dark:text-yellow-600">=</span>{" "}
+						<span className="text-blue-500 dark:text-blue-300 italic">
+							arkenv
+						</span>
 						<span className="text-yellow-600 dark:text-yellow-300">(</span>
 						<span className="text-yellow-600 dark:text-yellow-600">{"{"}</span>
 						<br />
