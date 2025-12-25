@@ -12,5 +12,4 @@ export const baseOptions: BaseLayoutProps = {
 	nav: {
 		title: <Logo />,
 	},
-	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL,
 };

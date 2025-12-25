@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
-import { HeroVideo } from "~/components/hero-video";
+import { HeroVisual } from "~/components/hero-visual";
 import { SailButton, StarUsButton, VideoDemo } from "~/components/page";
 
 const bricolageGrotesque = Bricolage_Grotesque({
@@ -21,7 +21,7 @@ export default function HomePage() {
 				viewBox="0 0 1440 181"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
-				className="pointer-events-none absolute w-full top-0 left-0 h-[160px] z-10 opacity-100 text-blue-50 dark:text-[#011537]"
+				className="pointer-events-none absolute w-full top-0 left-0 h-40 z-10 opacity-100 text-blue-50 dark:text-[#011537]"
 				preserveAspectRatio="none"
 				aria-hidden="true"
 				role="presentation"
@@ -96,11 +96,11 @@ export default function HomePage() {
 					</div>
 				</div>
 				<div className="hidden md:flex flex-1 w-full justify-center lg:justify-end">
-					<HeroVideo />
+					<HeroVisual />
 				</div>
 			</div>
 
-			<div className="sm:mt-8 max-w-[1024px] mx-auto w-full relative z-20 px-4">
+			<div className="sm:mt-8 max-w-5xl mx-auto w-full relative z-20 px-4">
 				<VideoDemo />
 			</div>
 		</div>
