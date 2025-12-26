@@ -7,9 +7,10 @@ import {
 	SiVite,
 	SiZod,
 } from "@icons-pack/react-simple-icons";
-import { Boxes, Shield } from "lucide-react";
+import { Boxes } from "lucide-react";
 import type { JSX } from "react";
 import { ArkTypeIcon } from "../icons/arktype-icon";
+import { JoiIcon } from "../icons/joi-icon";
 import { TypiaIcon } from "../icons/typia-icon";
 import { ValibotIcon } from "../icons/valibot-icon";
 
@@ -50,7 +51,7 @@ const validators: RailItem[] = [
 	{
 		name: "Joi",
 		url: "https://joi.dev",
-		icon: ({ className }) => <Shield className={className} />,
+		icon: ({ className }) => <JoiIcon className={className} />,
 	},
 ];
 
