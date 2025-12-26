@@ -1,5 +1,5 @@
 {
-	"name": "solid-start-playground",
+	"name": "arkenv-example-with-solid-start",
 	"type": "module",
 	"private": true,
 	"scripts": {
@@ -8,20 +8,15 @@
 		"start": "vinxi start"
 	},
 	"dependencies": {
-		"@arkenv/vite-plugin": "workspace:*",
+		"@arkenv/vite-plugin": "^0.0.22",
 		"@solidjs/start": "1.2.1",
-		"arkenv": "workspace:*",
-		"arktype": "catalog:",
+		"arkenv": "^0.8.0",
+		"arktype": "^2.1.29",
 		"solid-js": "1.9.10",
 		"vinxi": "0.5.10"
 	},
 	"engines": {
 		"node": ">=22"
 	},
-	"arkenvExamples": [
-		{
-			"name": "with-solid-start",
-			"packageManager": "pnpm"
-		}
-	]
+	"packageManager": "pnpm@10.23.0"
 }
