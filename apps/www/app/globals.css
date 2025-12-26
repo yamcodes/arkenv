@@ -68,15 +68,11 @@ button[data-search-full] {
 }
 
 .animate-marquee {
-	animation-name: marquee;
-	animation-timing-function: linear;
-	animation-iteration-count: infinite;
+	animation: marquee var(--marquee-duration, 30s) linear infinite;
 }
 
 .animate-marquee-reverse {
-	animation-name: marquee-reverse;
-	animation-timing-function: linear;
-	animation-iteration-count: infinite;
+	animation: marquee-reverse var(--marquee-duration, 30s) linear infinite;
 }
 
 .pause-on-hover:hover .animate-marquee,
