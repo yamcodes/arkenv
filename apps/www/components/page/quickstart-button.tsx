@@ -7,7 +7,7 @@ export function QuickstartButton() {
 		<Button
 			asChild
 			size="lg"
-			className="w-full sm:w-auto text-md font-semibold text-white relative overflow-hidden rounded-xl transition-all duration-300 ease-in-out bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 hover:scale-105 hover:shadow-[0_8px_30px_rgba(59,130,246,0.5)] active:scale-[0.98] border-t border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.1)] group"
+			className="w-full sm:w-auto text-md font-semibold text-white relative overflow-hidden rounded-xl transition-all duration-300 ease-in-out bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 hover:scale-[1.02] hover:shadow-[0_8px_30px_rgba(59,130,246,0.5)] active:scale-[0.98] border-t border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.1)] group"
 		>
 			<a
 				href="/docs/arkenv/quickstart"

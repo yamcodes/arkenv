@@ -61,10 +61,10 @@ export default function HomePage() {
 				</defs>
 			</svg>
 
-			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full gap-8 lg:gap-16 lg:mt-20">
+			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:pl-12 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-8 lg:gap-20 lg:mt-20">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 relative z-20 lg:mt-12">
 					<h1 className="mb-4 mt-16 lg:mt-0">
-						<div className="text-6xl font-semibold tracking-tighter">
+						<div className="text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
 							Better{" "}
 							<span className="decoration-[rgb(180,215,255)] decoration-wavy decoration-1 underline underline-offset-4">
 								typesafe
