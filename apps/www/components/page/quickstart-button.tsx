@@ -18,9 +18,6 @@ export function QuickstartButton() {
 
 				<span className="relative z-10 flex items-center gap-2">
 					Quickstart
-					<span className="text-white/70 group-hover:text-white transition-colors duration-300">
-						-&gt;
-					</span>
 				</span>
 			</a>
 		</Button>
