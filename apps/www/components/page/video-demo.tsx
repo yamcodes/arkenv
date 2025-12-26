@@ -35,6 +35,7 @@ export function VideoDemo() {
 			<button
 				type="button"
 				className="relative rounded-xl overflow-hidden border border-fd-border/50 bg-black/10 dark:bg-black/40 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] group w-full text-left outline-none cursor-pointer flex flex-col"
+				style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
 				onClick={handleVideoClick}
 				aria-label="Open interactive demo in a new tab"
 			>
@@ -51,10 +52,7 @@ export function VideoDemo() {
 				</div>
 
 				{/* Video Container */}
-				<div
-					className="relative w-full"
-					style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
-				>
+				<div className="relative w-full flex-1">
 					{videoError ? (
 						<Image
 							src="/assets/demo.gif"

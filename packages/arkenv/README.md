@@ -53,7 +53,7 @@ const nodeEnv = env.NODE_ENV;
 const debugging = env.DEBUGGING;
 ```
 
-_ArkEnv supports native [ArkType](https://arktype.io/) notation and any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc._
+> _ArkEnv supports native [ArkType](https://arktype.io/) notation and any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc._
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
@@ -67,18 +67,25 @@ ArkEnvError: Errors found while validating environment variables
 
 ## Features
 
-- Zero external dependencies
-- Works in Node.js, Bun, and Vite
-- Tiny: <2kB gzipped
-- Build-time / runtime validation with editor autocomplete & type hints
-- Single import, zero config for most projects
-- Optional variables and default values
-- Intuitive automatic coercion
-- Compatible with any Standard Schema validator (Zod, Valibot, etc.)
-- Native support for ArkType, TypeScript’s 1:1 validator
+ ⛯ Zero external dependencies
+ 
+ ⛯ Works in Node.js, Bun, and Vite
+ 
+ ⛯ Tiny: <2kB gzipped
 
-> [!NOTE]
-> See ArkEnv vs. alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
+ ⛯ Build-time / runtime validation with editor autocomplete & type hints
+
+ ⛯ Single import, zero config for most projects
+
+ ⛯ Optional variables and default values
+
+ ⛯ Intuitive automatic coercion
+
+ ⛯ Compatible with any Standard Schema validator (Zod, Valibot, etc.)
+
+ ⛯ Native support for ArkType, TypeScript’s 1:1 validator
+
+> _See how ArkEnv compares to alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet)._
 
 ## Installation
 
@@ -120,8 +127,7 @@ bun add arkenv arktype
 
 :rocket: **Let's get started!** Read the [2-minute setup guide](https://arkenv.js.org/docs/quickstart) or [start with an example](https://arkenv.js.org/docs/examples).
 
-> [!TIP]
-> Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/integrations/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/integrations/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
+> _Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/integrations/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/integrations/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains)._
 
 ## Requirements
 
@@ -136,8 +142,7 @@ While ArkEnv works with plain JavaScript, _TypeScript is highly recommended_ to 
   - `"moduleResolution": "node16"` or `"nodenext"` - For Node.js projects. Supplied by default when using a matching `"module"` value.
 - **TypeScript >= 5.1** and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
 
-> [!NOTE]
-> Without TypeScript, runtime validation still works, but you lose build-time type checking and, in some cases, editor autocomplete. Try our [examples](https://arkenv.js.org/docs/examples) to see this in action!
+> _Without TypeScript, runtime validation still works, but you lose build-time type checking and, in some cases, editor autocomplete. Our [examples](https://arkenv.js.org/docs/examples) show this in action!_
 
 ## Plugins
 
