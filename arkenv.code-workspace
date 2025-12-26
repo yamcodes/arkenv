@@ -119,6 +119,10 @@
 		{
 			"path": "examples/with-standard-schema",
 			"name": "  with-standard-schema"
+		},
+		{
+			"path": "examples/stackblitz",
+			"name": "  stackblitz"
 		}
 	]
 }

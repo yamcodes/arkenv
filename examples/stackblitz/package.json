@@ -1,0 +1,24 @@
+{
+	"name": "arkenv-example-basic",
+	"private": true,
+	"scripts": {
+		"start": "ts-node-dev --cls --quiet -r dotenv/config index.ts",
+		"dev": "ts-node-dev --respawn --cls --quiet --watch .env -r dotenv/config index.ts",
+		"build": "tsc",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"arkenv": "^0.8.0",
+		"arktype": "^2.1.29"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.4",
+		"dotenv": "^17.2.3",
+		"rimraf": "^6.1.2",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.9.3"
+	},
+	"stackblitz": {
+		"startCommand": "npm install && npm run dev"
+	}
+}
