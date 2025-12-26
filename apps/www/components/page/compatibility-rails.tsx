@@ -107,7 +107,7 @@ function MarqueeRow({
 			</span>
 			<div className="relative flex overflow-hidden flex-1 select-none mask-[linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
 				<div
-					className={`flex shrink-0 items-center justify-around gap-6 min-w-full ${RailIcon} animation-duration-[28800s]`}
+					className={`flex shrink-0 items-center justify-around gap-6 min-w-full ${RailIcon} animation-duration-[100000s]`}
 				>
 					{[...items, ...items, ...items].map((item, i) => (
 						<a

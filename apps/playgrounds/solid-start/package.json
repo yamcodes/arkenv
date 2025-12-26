@@ -21,7 +21,7 @@
 	"arkenvExamples": [
 		{
 			"name": "with-solid-start",
-			"packageManager": "pnpm"
+			"packageManager": "npm"
 		}
 	]
 }
