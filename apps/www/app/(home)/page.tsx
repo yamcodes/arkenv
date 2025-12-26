@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { HeroVisual } from "~/components/hero-visual";
-import { ArkTypeIcon } from "~/components/icons/arktype-icon";
-import { QuickstartButton, StarUsButton, VideoDemo } from "~/components/page";
+import {
+	CompatibilityRails,
+	QuickstartButton,
+	StarUsButton,
+	VideoDemo,
+} from "~/components/page";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
@@ -76,24 +80,7 @@ export default function HomePage() {
 							Typesafe environment variables from editor to runtime
 						</div>
 					</h1>
-					<div className="flex items-center gap-2 mb-8">
-						<a
-							href="https://arktype.io"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="group relative flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-blue-500/5 dark:bg-blue-400/5 border border-blue-500/10 dark:border-blue-400/10 text-sm font-medium transition-all hover:bg-blue-500/10 dark:hover:bg-blue-400/10 hover:border-blue-500/20 dark:hover:border-blue-400/20 hover:scale-[1.02] active:scale-[0.98]"
-						>
-							<ArkTypeIcon className="rounded-md shadow-sm" />
-							<span className="flex items-center gap-1.5 grayscale group-hover:grayscale-0 transition-all opacity-70 group-hover:opacity-100">
-								<span className="text-blue-900/70 dark:text-blue-100/70 font-normal">
-									Powered by
-								</span>
-								<span className="text-blue-600 dark:text-blue-400 font-bold">
-									ArkType
-								</span>
-							</span>
-						</a>
-					</div>
+					<CompatibilityRails />
 					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto">
 						<QuickstartButton />
 						<StarUsButton />
