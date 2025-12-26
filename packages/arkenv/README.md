@@ -67,23 +67,23 @@ ArkEnvError: Errors found while validating environment variables
 
 ## Features
 
-⛯ Zero external dependencies
+ ⛯ Zero external dependencies
+ 
+ ⛯ Works in Node.js, Bun, and Vite
+ 
+ ⛯ Tiny: <2kB gzipped
 
-⛯ Works in Node.js, Bun, and Vite
+ ⛯ Build-time / runtime validation with editor autocomplete & type hints
 
-⛯ Tiny: <2kB gzipped
+ ⛯ Single import, zero config for most projects
 
-⛯ Build-time / runtime validation with editor autocomplete & type hints
+ ⛯ Optional variables and default values
 
-⛯ Single import, zero config for most projects
+ ⛯ Intuitive automatic coercion
 
-⛯ Optional variables and default values
+ ⛯ Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 
-⛯ Intuitive automatic coercion
-
-⛯ Compatible with any Standard Schema validator (Zod, Valibot, etc.)
-
-⛯ Native support for ArkType, TypeScript’s 1:1 validator
+ ⛯ Native support for ArkType, TypeScript’s 1:1 validator
 
 > [!NOTE]
 > See ArkEnv vs. alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
