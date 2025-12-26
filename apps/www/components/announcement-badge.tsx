@@ -11,7 +11,7 @@ export function AnnouncementBadge() {
 			<NewBadge className="h-5 font-semibold bg-blue-500/10 text-blue-700 border-blue-500/10 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/20 shadow-none hover:bg-blue-500/20 transition-colors" />
 			<span className="flex items-center gap-1">
 				Type coercion support
-				<ArrowUpRight className="h-4.5 w-4.5 text-blue-500 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+				<ArrowUpRight className="h-4 w-4 opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
 			</span>
 
 			{/* Decorative background glow on hover */}
