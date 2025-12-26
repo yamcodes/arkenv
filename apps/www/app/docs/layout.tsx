@@ -7,23 +7,25 @@ import { source } from "~/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
-		<DocsLayout
-			tree={source.pageTree}
-			sidebar={{
-				banner: <InstallButton />,
-			}}
-			{...baseOptions}
-			links={[
-				{
-					text: "GitHub",
-					url: "https://github.com/yamcodes/arkenv",
-					active: "none",
-					type: "icon",
-					icon: <SiGithub aria-label="GitHub" />,
-				},
-			]}
-		>
-			<main className="[grid-area:main] flex flex-col">{children}</main>
-		</DocsLayout>
+		<main>
+			<DocsLayout
+				tree={source.pageTree}
+				sidebar={{
+					banner: <InstallButton />,
+				}}
+				{...baseOptions}
+				links={[
+					{
+						text: "GitHub",
+						url: "https://github.com/yamcodes/arkenv",
+						active: "none",
+						type: "icon",
+						icon: <SiGithub aria-label="GitHub" />,
+					},
+				]}
+			>
+				{children}
+			</DocsLayout>
+		</main>
 	);
 }
