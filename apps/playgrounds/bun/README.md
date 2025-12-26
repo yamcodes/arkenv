@@ -1,22 +1,25 @@
-# bun
+# ArkEnv with Bun example
 
-This playground uses `workspace:*` protocol for the `arkenv` dependency, which Bun doesn't understand. You must install dependencies using pnpm from the repository root first.
+This example uses `workspace:*` protocol for the `arkenv` dependency, which Bun doesn't understand. You must install dependencies using pnpm from the repository root first.
 
 ## Installation
 
 **Important:** Run these commands in order:
 
 1. Install all workspace dependencies from the repository root:
+
 ```bash
 cd <repo-root> && pnpm install
 ```
 
-2. Then install Bun-specific dependencies in this playground:
+2. Then install Bun-specific dependencies in this example:
+
 ```bash
 cd apps/playgrounds/bun && bun install
 ```
 
 Alternatively, you can use `bun dev` directly after step 1 (Bun will install its dependencies automatically):
+
 ```bash
 cd apps/playgrounds/bun && bun dev
 ```

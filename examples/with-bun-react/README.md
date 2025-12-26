@@ -1,4 +1,4 @@
-# bun-react-template
+# ArkEnv Bun + React example
 
 To install dependencies:
 

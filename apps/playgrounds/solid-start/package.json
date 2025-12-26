@@ -9,13 +9,19 @@
 	},
 	"dependencies": {
 		"@arkenv/vite-plugin": "workspace:*",
-		"@solidjs/start": "1.2.0",
+		"@solidjs/start": "1.2.1",
 		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"solid-js": "1.9.10",
-		"vinxi": "0.5.9"
+		"vinxi": "0.5.10"
 	},
 	"engines": {
 		"node": ">=22"
-	}
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-solid-start",
+			"packageManager": "npm"
+		}
+	]
 }

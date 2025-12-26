@@ -26,15 +26,16 @@ export default function App() {
 				to learn how to build SolidStart apps.
 				<br />
 				<br />
-				<code>import.meta.env.VITE_TEST</code>: {import.meta.env.VITE_TEST} (of
-				type {typeof import.meta.env.VITE_TEST})
+				<code>import.meta.env.VITE_TEST</code>:{" "}
+				{String(import.meta.env.VITE_TEST)} (of type{" "}
+				{typeof import.meta.env.VITE_TEST})
 				<br />
 				<code>import.meta.env.VITE_NUMERIC</code>:{" "}
-				{import.meta.env.VITE_NUMERIC} (of type{" "}
+				{String(import.meta.env.VITE_NUMERIC)} (of type{" "}
 				{typeof import.meta.env.VITE_NUMERIC})
 				<br />
 				<code>import.meta.env.VITE_BOOLEAN</code>:{" "}
-				{import.meta.env.VITE_BOOLEAN} (of type{" "}
+				{String(import.meta.env.VITE_BOOLEAN)} (of type{" "}
 				{typeof import.meta.env.VITE_BOOLEAN})
 			</p>
 		</main>

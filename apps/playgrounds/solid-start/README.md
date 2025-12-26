@@ -1,32 +1,98 @@
-# SolidStart
+# ArkEnv + SolidStart Example
 
-Everything you need to build a Solid project, powered by [`solid-start`](https://start.solidjs.com);
+This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with [SolidStart](https://start.solidjs.com). It showcases:
 
-## Creating a project
+- **Environment variable validation** at build-time with ArkEnv
+- **Typesafe `import.meta.env`** with full TypeScript support
+- **Client-side environment variables** with automatic filtering of `VITE_*` prefixed variables
 
-```bash
-# create a new project in the current directory
-npm init solid@latest
+## Setup
 
-# create a new project in my-app
-npm init solid@latest my-app
+The example uses a single schema definition in `app.config.ts` that defines the shape of your environment variables:
+
+```ts title="app.config.ts"
+import arkenvVitePlugin from "@arkenv/vite-plugin";
+import { defineConfig } from "@solidjs/start/config";
+import { type } from "arkenv";
+
+// Define the schema
+export const Env = type({
+  VITE_TEST: "string",
+  VITE_NUMERIC: "string.numeric",
+  VITE_BOOLEAN: "boolean",
+});
+
+export default defineConfig({
+  vite: {
+    // Pass the schema to the plugin
+    plugins: [arkenvVitePlugin(Env)],
+  },
+});
 ```
 
-## Developing
+## Typesafe `import.meta.env`
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+The example includes type augmentation for `import.meta.env` in `src/global.d.ts`. This ensures correct TypeScript inference for all variables defined in your schema.
 
-```bash
-npm run dev
+```ts title="src/global.d.ts"
+/// <reference types="@solidjs/start/env" />
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+type ImportMetaEnvAugmented =
+  import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+    typeof import("../app.config").Env
+  >;
+
+// Augment import.meta.env with your schema
+// Only `VITE_*` prefixed variables will be included
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 ```
 
-## Building
+This makes usage in your Solid components fully typesafe:
 
-Solid apps are built with _presets_, which optimise your project for deployment to different environments.
+```tsx
+const test = import.meta.env.VITE_TEST; // ✅ string
+const num = import.meta.env.VITE_NUMERIC; // ✅ number
+const bool = import.meta.env.VITE_BOOLEAN; // ✅ boolean
+```
 
-By default, `npm run build` will generate a Node app that you can run with `npm start`. To use a different preset, add it to the `devDependencies` in `package.json` and specify in your `app.config.js`.
+## Environment Variables
 
-## This project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)
+You can verify the validation by looking at the `.env.production` file (or creating a `.env` file):
+
+```env title=".env.production"
+VITE_TEST=Hello from SolidStart (Production)
+VITE_NUMERIC=3
+VITE_BOOLEAN=false
+```
+
+The plugin automatically:
+
+- Validates all variables at build-time
+- Filters to only expose `VITE_*` variables to the client
+- Ensures `import.meta.env` matches your schema
+
+## Running the Example
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start dev server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
+```
+
+## Documentation
+
+For more information, see the [@arkenv/vite-plugin documentation](https://arkenv.js.org/docs/vite-plugin):
+
+- [Introduction](https://arkenv.js.org/docs/vite-plugin)
+- [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
+- [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
+
+## this project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)

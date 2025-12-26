@@ -5,14 +5,13 @@
 	"scripts": {
 		"start": "tsx --env-file .env index.ts",
 		"dev": "tsx watch --env-file .env index.ts",
-		"dev:example": "tsx watch --env-file .env.example index.ts",
 		"build": "tsc",
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "^0.7.8",
+		"arkenv": "^0.8.0",
 		"arktype": "^2.1.29",
-		"zod": "4.1.13"
+		"zod": "4.2.1"
 	},
 	"devDependencies": {
 		"@types/node": "^24.10.4",
@@ -22,9 +21,6 @@
 	},
 	"engines": {
 		"node": "24"
-	},
-	"stackblitz": {
-		"startCommand": "npm install && npm run dev:example"
 	},
 	"packageManager": "npm@11.6.4"
 }

@@ -11,7 +11,7 @@ icon: Scale
 | **Native ArkType support\*** | ✅ | 🛠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Standard Schema** | ✅ | 🛠️ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | **Typesafe** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Coercion** | ✅ | 🛠️ | 🛠️ | 🛠️ | ✅ | ✅ | ❌ |
+| **Automatic coercion** | ✅ | 🛠️ | ❌ | ❌ | ✅ | ✅ | ❌ |
 | **Default values** | ✅ | 🛠️ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | **First-class Vite support** | ✅ | 🛠️ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | **Bun fullstack dev server** | ✅ | 🛠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -29,7 +29,7 @@ icon: Scale
 
 ### DIY
 
-You'd be surprised how simple it is to build your own environment validation flow with any modern validation library. To demonstrate, we'll naturally use ArkType, though the same logic applies to most popular alternatives.
+You'd be surprised how simple it is to build your own environment validation flow with any modern validation library. To demonstrate, we'll naturally use ArkType, though the same logic applies to alternatives like Zod, Valibot, Typia, etc.
 Just create an `env.ts` file that defines a schema, performs a check, and returns the validated results.
 
 ```ts
@@ -43,7 +43,7 @@ const Env = type({
 export const env = Env.assert(process.env);
 ```
 
-That's it. You're done. Who needs a library for this, right?
+That's it. You're done. Who needs another library for this, right?
 
 At first glance, this approach delivers exactly what you need: validation, typesafety, defaults, and even type morphs.
 

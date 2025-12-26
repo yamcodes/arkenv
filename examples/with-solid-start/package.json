@@ -1,0 +1,22 @@
+{
+	"name": "arkenv-example-with-solid-start",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vinxi dev",
+		"build": "vinxi build",
+		"start": "vinxi start"
+	},
+	"dependencies": {
+		"@arkenv/vite-plugin": "^0.0.22",
+		"@solidjs/start": "1.2.1",
+		"arkenv": "^0.8.0",
+		"arktype": "^2.1.29",
+		"solid-js": "1.9.10",
+		"vinxi": "0.5.10"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"packageManager": "npm@11.6.4"
+}

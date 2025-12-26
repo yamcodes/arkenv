@@ -27,3 +27,63 @@ button[data-search-full] {
 	background-color: var(--background);
 	background-image: none !important;
 }
+
+@theme {
+	@keyframes spin-slow {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes shimmer {
+		100% {
+			transform: translateX(100%);
+		}
+	}
+
+	@keyframes marquee {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@keyframes marquee-reverse {
+		from {
+			transform: translateX(-50%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+}
+
+.animate-spin-slow {
+	animation: spin-slow 60s linear infinite;
+}
+
+.animate-marquee {
+	animation: marquee var(--marquee-duration, 30s) linear infinite;
+}
+
+.animate-marquee-reverse {
+	animation: marquee-reverse var(--marquee-duration, 30s) linear infinite;
+}
+
+.pause-on-hover:hover .animate-marquee,
+.pause-on-hover:hover .animate-marquee-reverse {
+	animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.animate-marquee,
+	.animate-marquee-reverse {
+		animation: none !important;
+		transform: none !important;
+	}
+}

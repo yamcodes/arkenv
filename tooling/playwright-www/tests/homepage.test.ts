@@ -29,21 +29,21 @@ test.describe("Homepage", () => {
 		await expect(heading).toContainText("Better typesafe than sorry");
 
 		// Check description text
-		await expect(page.locator("text=Bring the power of")).toBeVisible();
-		await expect(page.locator("text=ArkType").first()).toBeVisible();
 		await expect(
-			page.locator("text=to your environment variables"),
+			page.locator(
+				"text=Typesafe environment variables from editor to runtime",
+			),
 		).toBeVisible();
 	});
 
-	test("should have functional 'Set sail' button", async ({ page }) => {
+	test("should have functional 'Quickstart' button", async ({ page }) => {
 		await page.goto("/", { timeout: 60000 });
 		await page.waitForLoadState("networkidle", { timeout: 60000 });
 
 		// Check button is visible
 		const sailButton = page.locator("a[href='/docs/arkenv/quickstart']");
 		await expect(sailButton).toBeVisible();
-		await expect(sailButton).toContainText("Set sail");
+		await expect(sailButton).toContainText("Quickstart");
 
 		// Test navigation - wait for navigation to complete
 		await Promise.all([

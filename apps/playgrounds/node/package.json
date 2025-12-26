@@ -5,7 +5,6 @@
 	"scripts": {
 		"start": "tsx --env-file .env index.ts",
 		"dev": "tsx watch --env-file .env index.ts",
-		"dev:example": "tsx watch --env-file .env.example index.ts",
 		"build": "tsc",
 		"fix": "pnpm -w run fix",
 		"clean": "rimraf dist node_modules"
@@ -13,7 +12,7 @@
 	"dependencies": {
 		"arkenv": "workspace:*",
 		"arktype": "catalog:",
-		"zod": "4.1.13"
+		"zod": "4.2.1"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
@@ -23,9 +22,6 @@
 	},
 	"engines": {
 		"node": "24"
-	},
-	"stackblitz": {
-		"startCommand": "npm install && npm run dev:example"
 	},
 	"arkenvExamples": [
 		{

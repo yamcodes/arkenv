@@ -8,7 +8,7 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils/cn";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
-const starUsButtonVariants = cva("text-lg font-bold", {
+const starUsButtonVariants = cva("text-md font-bold", {
 	variants: {
 		variant: {
 			mobile: [
@@ -20,6 +20,7 @@ const starUsButtonVariants = cva("text-lg font-bold", {
 				"border-2 border-yellow-200 dark:border-yellow-700",
 				"text-yellow-800 dark:text-yellow-200",
 				"hover:text-yellow-800 dark:hover:text-yellow-200",
+				"rounded-xl",
 				"transition-colors duration-200",
 			],
 			desktop: [
@@ -29,9 +30,11 @@ const starUsButtonVariants = cva("text-lg font-bold", {
 				"border-2 border-yellow-200 dark:border-yellow-700",
 				"text-yellow-800 dark:text-yellow-200",
 				"hover:text-yellow-800 dark:hover:text-yellow-200",
+				"rounded-xl",
 				"transition-all duration-200 ease-in-out scale-100",
 				"focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0",
-				"hover:scale-105",
+				"hover:scale-[1.05]",
+				"active:scale-[0.98]",
 			],
 		},
 	},
@@ -41,7 +44,7 @@ const starUsButtonVariants = cva("text-lg font-bold", {
 });
 
 const starUsShadowVariants = cva(
-	"absolute inset-0 rounded-lg pointer-events-none",
+	"absolute inset-0 rounded-xl pointer-events-none",
 	{
 		variants: {
 			variant: {
@@ -140,14 +143,14 @@ export function StarUsButton({ className }: StarUsProps) {
 					>
 						<div className="flex items-center gap-2">
 							<SiGithub aria-hidden="true" className="w-4 h-4" />
-							<span className="font-semibold">Star us on GitHub!</span>
+							<span className="font-medium">Star us on GitHub!</span>
 							<Star
 								aria-hidden="true"
 								className="w-5 h-5 text-yellow-600 dark:text-yellow-400"
 								fill="currentColor"
 							/>
 							{starCount !== null && (
-								<span className="font-semibold text-yellow-700 dark:text-yellow-300">
+								<span className="font-medium text-yellow-700 dark:text-yellow-300">
 									{starCount.toLocaleString()}
 								</span>
 							)}
@@ -201,14 +204,14 @@ export function StarUsButton({ className }: StarUsProps) {
 						{/* Main content */}
 						<div className="flex items-center gap-2 relative z-10">
 							<SiGithub aria-hidden="true" className="w-4 h-4" />
-							<span className="font-semibold">Star us on GitHub!</span>
+							<span className="font-medium">Star us on GitHub!</span>
 							<Star
 								aria-hidden="true"
 								className="w-5 h-5 transition-all duration-300 star-bounce text-yellow-600 dark:text-yellow-400"
 								fill="currentColor"
 							/>
 							{starCount !== null && (
-								<span className="font-semibold text-yellow-700 dark:text-yellow-300">
+								<span className="font-medium text-yellow-700 dark:text-yellow-300">
 									{starCount.toLocaleString()}
 								</span>
 							)}

@@ -14,7 +14,7 @@ export default function NotFound() {
 				},
 			]}
 		>
-			<main className="flex flex-1 flex-col items-center justify-center text-center px-4 py-24 sm:py-32">
+			<div className="flex flex-1 flex-col items-center justify-center text-center px-4 py-24 sm:py-32">
 				<p className="text-sm font-semibold text-blue-500 dark:text-blue-400">
 					404
 				</p>
@@ -62,7 +62,7 @@ export default function NotFound() {
 						</li>
 					</ul>
 				</div>
-			</main>
+			</div>
 		</HomeLayout>
 	);
 }
