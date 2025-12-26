@@ -7,10 +7,11 @@ import {
 	SiVite,
 	SiZod,
 } from "@icons-pack/react-simple-icons";
-import { Boxes, Layers, Shield } from "lucide-react";
+import { Boxes, Shield } from "lucide-react";
 import type { JSX } from "react";
 import { ArkTypeIcon } from "../icons/arktype-icon";
 import { TypiaIcon } from "../icons/typia-icon";
+import { ValibotIcon } from "../icons/valibot-icon";
 
 type RailItem = {
 	name: string;
@@ -34,7 +35,7 @@ const validators: RailItem[] = [
 	{
 		name: "Valibot",
 		url: "https://valibot.dev",
-		icon: ({ className }) => <Layers className={className} />,
+		icon: ({ className }) => <ValibotIcon className={className} />,
 	},
 	{
 		name: "Typia",
