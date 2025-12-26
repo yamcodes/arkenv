@@ -66,7 +66,7 @@ export default function HomePage() {
 					<h1 className="mb-4 mt-16 lg:mt-0">
 						<div className="text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
 							Better{" "}
-							<span className="decoration-[rgb(180,215,255)] decoration-wavy decoration-1 underline underline-offset-4">
+							<span className="bg-linear-to-br from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent inline-block">
 								typesafe
 							</span>{" "}
 							than sorry
