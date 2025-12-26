@@ -53,7 +53,7 @@ const nodeEnv = env.NODE_ENV;
 const debugging = env.DEBUGGING;
 ```
 
-_ArkEnv supports [ArkType](https://arktype.io/) notation natively and works with any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc._
+_ArkEnv supports native [ArkType](https://arktype.io/) notation and any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc._
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
