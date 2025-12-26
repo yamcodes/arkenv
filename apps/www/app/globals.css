@@ -28,15 +28,23 @@ button[data-search-full] {
 	background-image: none !important;
 }
 
-@keyframes spin-slow {
-	from {
-		transform: rotate(0deg);
+@theme {
+	@keyframes spin-slow {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
 	}
-	to {
-		transform: rotate(360deg);
-	}
-}
 
-.animate-spin-slow {
-	animation: spin-slow 60s linear infinite;
+	@keyframes shimmer {
+		100% {
+			transform: translateX(100%);
+		}
+	}
+
+	.animate-spin-slow {
+		animation: spin-slow 60s linear infinite;
+	}
 }

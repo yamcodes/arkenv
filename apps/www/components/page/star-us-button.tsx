@@ -20,6 +20,7 @@ const starUsButtonVariants = cva("text-md font-bold", {
 				"border-2 border-yellow-200 dark:border-yellow-700",
 				"text-yellow-800 dark:text-yellow-200",
 				"hover:text-yellow-800 dark:hover:text-yellow-200",
+				"rounded-xl",
 				"transition-colors duration-200",
 			],
 			desktop: [
@@ -29,9 +30,11 @@ const starUsButtonVariants = cva("text-md font-bold", {
 				"border-2 border-yellow-200 dark:border-yellow-700",
 				"text-yellow-800 dark:text-yellow-200",
 				"hover:text-yellow-800 dark:hover:text-yellow-200",
-				"transition-all duration-200 ease-in-out scale-100",
+				"rounded-xl",
+				"transition-all duration-300 ease-in-out scale-100",
 				"focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0",
 				"hover:scale-105",
+				"active:scale-[0.98]",
 			],
 		},
 	},
@@ -41,7 +44,7 @@ const starUsButtonVariants = cva("text-md font-bold", {
 });
 
 const starUsShadowVariants = cva(
-	"absolute inset-0 rounded-lg pointer-events-none",
+	"absolute inset-0 rounded-xl pointer-events-none",
 	{
 		variants: {
 			variant: {
