@@ -22,7 +22,7 @@ export function VideoDemo() {
 
 	const handleVideoClick = () => {
 		const stackblitzUrl =
-			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/basic?file=index.ts";
+			"https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts";
 		window.open(stackblitzUrl, "_blank", "noopener,noreferrer");
 	};
 
