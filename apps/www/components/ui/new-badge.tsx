@@ -5,11 +5,11 @@ export function NewBadge({ className }: { className?: string }) {
 	return (
 		<Badge
 			className={cn(
-				"h-4 text-[10px] px-[0.2rem] font-bold uppercase tracking-wider",
+				"h-4.5 text-[10px] px-1.5 font-bold rounded-full",
 				className,
 			)}
 		>
-			new
+			New
 		</Badge>
 	);
 }
@@ -18,11 +18,11 @@ export function UpdatedBadge({ className }: { className?: string }) {
 	return (
 		<Badge
 			className={cn(
-				"h-4 text-[10px] px-[0.2rem] font-bold uppercase tracking-wider",
+				"h-4.5 text-[10px] px-1.5 font-bold rounded-full",
 				className,
 			)}
 		>
-			updated
+			Updated
 		</Badge>
 	);
 }
