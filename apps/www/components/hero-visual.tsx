@@ -47,7 +47,7 @@ export function HeroVisual() {
 			onMouseLeave={handleMouseLeave}
 			role="img"
 			aria-label="Interactive 2.5D visual representing ArkEnv's typesafe environment variables"
-			className="relative w-full max-w-125 mx-auto lg:ml-auto lg:mt-8 aspect-square flex items-center justify-center perspective-[1000px] group select-none"
+			className="relative w-full max-w-125 lg:mt-8 aspect-square flex items-center justify-center perspective-[1000px] group select-none"
 		>
 			{/* Ambient Glow Background */}
 			<div
