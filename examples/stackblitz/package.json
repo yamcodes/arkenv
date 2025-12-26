@@ -19,6 +19,6 @@
 		"typescript": "^5.9.3"
 	},
 	"stackblitz": {
-		"startCommand": "npm install && npm run dev"
+		"startCommand": "cp .env.example .env && npm install && npm run dev"
 	}
 }
