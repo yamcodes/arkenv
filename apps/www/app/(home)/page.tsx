@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { HeroVisual } from "~/components/hero-visual";
-import { QuickstartButton, StarUsButton, VideoDemo } from "~/components/page";
 import { ArkTypeIcon } from "~/components/icons/arktype-icon";
+import { QuickstartButton, StarUsButton, VideoDemo } from "~/components/page";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
