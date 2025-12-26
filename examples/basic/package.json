@@ -26,5 +26,5 @@
 	"stackblitz": {
 		"startCommand": "npm install && npm run dev:example"
 	},
-	"packageManager": "npm@11.7.0"
+	"packageManager": "npm@11.6.4"
 }
