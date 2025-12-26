@@ -2,7 +2,7 @@
 
 import { Button } from "~/components/ui/button";
 
-export function SailButton() {
+export function QuickstartButton() {
 	return (
 		<Button
 			asChild
