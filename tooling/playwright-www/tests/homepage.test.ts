@@ -162,7 +162,7 @@ test.describe("Homepage", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check ArkType link
-		const arkTypeLink = page.locator("a[href='https://arktype.io']");
+		const arkTypeLink = page.locator("a[href='https://arktype.io']").first();
 		await expect(arkTypeLink).toBeVisible();
 		await expect(arkTypeLink).toContainText("ArkType");
 		await expect(arkTypeLink).toHaveAttribute("target", "_blank");
