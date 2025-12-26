@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HeroVisual } from "~/components/hero-visual";
 import { QuickstartButton, StarUsButton, VideoDemo } from "~/components/page";
+import { ArkTypeIcon } from "~/components/icons/arktype-icon";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
@@ -82,21 +83,7 @@ export default function HomePage() {
 							rel="noopener noreferrer"
 							className="group relative flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-blue-500/5 dark:bg-blue-400/5 border border-blue-500/10 dark:border-blue-400/10 text-sm font-medium transition-all hover:bg-blue-500/10 dark:hover:bg-blue-400/10 hover:border-blue-500/20 dark:hover:border-blue-400/20 hover:scale-[1.02] active:scale-[0.98]"
 						>
-							<svg
-								viewBox="0 0 100 100"
-								version="1.1"
-								xmlns="http://www.w3.org/2000/svg"
-								height="20"
-								width="20"
-								className="rounded-md shadow-sm"
-								aria-hidden="true"
-							>
-								<rect fill="#085b92" width="100" height="100" rx="10" />
-								<g fill="#f5cf8f">
-									<path d="M 53.315857,82.644683 H 39.977324 L 36.75999,93.838326 H 28.582598 L 42.85952,46.918864 h 7.507114 l 14.343949,46.919462 h -8.177392 z m -2.14489,-7.507114 -4.55789,-15.885589 -4.490863,15.885589 z" />
-									<path d="M 73.35719,54.425978 H 62.096519 v -7.507114 h 30.698733 v 7.507114 H 81.534582 V 93.838326 H 73.35719 Z" />
-								</g>
-							</svg>
+							<ArkTypeIcon className="rounded-md shadow-sm" />
 							<span className="flex items-center gap-1.5 grayscale group-hover:grayscale-0 transition-all opacity-70 group-hover:opacity-100">
 								<span className="text-blue-900/70 dark:text-blue-100/70 font-normal">
 									Powered by
