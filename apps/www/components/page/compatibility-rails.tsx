@@ -134,7 +134,7 @@ function MarqueeRow({
 
 export function CompatibilityRails() {
 	return (
-		<div className="flex flex-col gap-3 w-full max-w-full sm:max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-4 sm:px-1 overflow-hidden">
+		<div className="flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
 			<MarqueeRow label="Works with" items={validators} />
 			<MarqueeRow label="Built for" items={platforms} reverse />
 		</div>
