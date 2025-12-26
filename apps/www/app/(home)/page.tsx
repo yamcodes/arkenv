@@ -22,19 +22,19 @@ export default function HomePage() {
 			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:pl-12 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-8 lg:gap-20 lg:mt-20">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 relative z-20 lg:mt-12">
 					<h1 className="mb-4 mt-16 lg:mt-0">
-						<div className="text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
+						<div className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter lg:whitespace-nowrap text-balance">
 							Better{" "}
 							<span className="bg-linear-to-br from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent inline-block pr-1 -mr-1">
 								typesafe
 							</span>{" "}
 							than sorry
 						</div>
-						<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400">
+						<div className="text-xl sm:text-2xl mt-4 text-gray-600 dark:text-gray-400 text-balance px-4 sm:px-0">
 							Typesafe environment variables from editor to runtime
 						</div>
 					</h1>
 					<CompatibilityRails />
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto">
+					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto px-4 sm:px-0">
 						<QuickstartButton />
 						<StarUsButton />
 					</div>

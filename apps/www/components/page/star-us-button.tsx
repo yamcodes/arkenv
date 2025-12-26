@@ -8,11 +8,11 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils/cn";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
-const starUsButtonVariants = cva("text-md font-bold", {
+const starUsButtonVariants = cva("text-sm sm:text-base font-bold", {
 	variants: {
 		variant: {
 			mobile: [
-				"w-full",
+				"w-full px-4",
 				"bg-gradient-to-r from-yellow-50 to-orange-50",
 				"hover:bg-gradient-to-r hover:from-yellow-100 hover:to-orange-100",
 				"dark:from-yellow-900/20 dark:to-orange-900/20",
@@ -143,7 +143,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					>
 						<div className="flex items-center gap-2">
 							<SiGithub aria-hidden="true" className="w-4 h-4" />
-							<span className="font-medium">Star us on GitHub!</span>
+							<span className="font-medium">Star on GitHub</span>
 							<Star
 								aria-hidden="true"
 								className="w-5 h-5 text-yellow-600 dark:text-yellow-400"
