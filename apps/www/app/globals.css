@@ -43,8 +43,8 @@ button[data-search-full] {
 			transform: translateX(100%);
 		}
 	}
+}
 
-	.animate-spin-slow {
-		animation: spin-slow 60s linear infinite;
-	}
+.animate-spin-slow {
+	animation: spin-slow 60s linear infinite;
 }

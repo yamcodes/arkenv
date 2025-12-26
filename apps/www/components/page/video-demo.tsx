@@ -37,10 +37,9 @@ export function VideoDemo() {
 				className="relative rounded-xl overflow-hidden border border-fd-border/50 bg-black/10 dark:bg-black/40 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] group w-full text-left outline-none cursor-pointer flex flex-col"
 				onClick={handleVideoClick}
 				aria-label="Open interactive demo in a new tab"
-				style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT + 88) }} // +88 to account for header height approx
 			>
 				{/* Header / Title Bar */}
-				<div className="flex items-center px-4 py-2 bg-white/5 border-b border-fd-border/50">
+				<div className="hidden lg:flex items-center px-4 py-2 bg-white/5 border-b border-fd-border/50">
 					<div className="flex gap-1.5">
 						<div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
 						<div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
@@ -52,7 +51,10 @@ export function VideoDemo() {
 				</div>
 
 				{/* Video Container */}
-				<div className="relative w-full flex-1">
+				<div
+					className="relative w-full"
+					style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
+				>
 					{videoError ? (
 						<Image
 							src="/assets/demo.gif"
