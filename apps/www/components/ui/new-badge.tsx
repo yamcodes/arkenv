@@ -1,5 +1,5 @@
-import { Badge } from "./badge";
 import { cn } from "~/lib/utils";
+import { Badge } from "./badge";
 
 export function NewBadge({ className }: { className?: string }) {
 	return (

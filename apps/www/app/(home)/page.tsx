@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AnnouncementBadge } from "~/components/announcement-badge";
 import { HeroGradientOverlay } from "~/components/hero-gradient-overlay";
 import { HeroVisual } from "~/components/hero-visual";
 import {
@@ -7,7 +8,6 @@ import {
 	StarUsButton,
 	VideoDemo,
 } from "~/components/page";
-import { AnnouncementBadge } from "~/components/announcement-badge";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
