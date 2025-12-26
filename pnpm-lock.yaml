@@ -58,8 +58,8 @@ catalogs:
       specifier: 12.0.0
       version: 12.0.0
     tsdown:
-      specifier: 0.18.1
-      version: 0.18.1
+      specifier: 0.18.2
+      version: 0.18.2
     tsx:
       specifier: 4.21.0
       version: 4.21.0
@@ -544,7 +544,7 @@ importers:
         version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.1(typescript@5.9.3)
+        version: 0.18.2(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -584,7 +584,7 @@ importers:
         version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.1(typescript@5.9.3)
+        version: 0.18.2(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -599,7 +599,7 @@ importers:
         version: 2.1.29
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.1(typescript@5.9.3)
+        version: 0.18.2(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -615,7 +615,7 @@ importers:
         version: 2.1.29
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.1(typescript@5.9.3)
+        version: 0.18.2(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -655,7 +655,7 @@ importers:
         version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.1(typescript@5.9.3)
+        version: 0.18.2(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -5413,6 +5413,9 @@ packages:
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
 
+  hookable@6.0.1:
+    resolution: {integrity: sha512-uKGyY8BuzN/a5gvzvA+3FVWo0+wUjgtfSdnmjtrOVwQCZPHpHDH2WRO3VZSOeluYrHoDCiXFffZXs8Dj1ULWtw==}
+
   html-encoding-sniffer@4.0.0:
     resolution: {integrity: sha512-Y22oTqIU4uuPgEemfz7NDJz6OeKf12Lsu+QC+s3BVpda64lTiMYCyGwg5ki4vFxkMwQdeZDl2adZoqUgdFuTgQ==}
     engines: {node: '>=18'}
@@ -7473,8 +7476,8 @@ packages:
       typescript:
         optional: true
 
-  tsdown@0.18.1:
-    resolution: {integrity: sha512-na4MdVA8QS9Zw++0KovGpjvw1BY5WvoCWcE4Aw0dyfff9nWK8BPzniQEVs+apGUg3DHaYMDfs+XiFaDDgqDDzQ==}
+  tsdown@0.18.2:
+    resolution: {integrity: sha512-2o6p/9WjcQrgKnz5/VppOstsqXdTER6G6gPe5yhuP57AueIr2y/NQFKdFPHuqMqZpxRLVjm7MP/dXWG7EJpehg==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -13458,6 +13461,8 @@ snapshots:
 
   hookable@5.5.3: {}
 
+  hookable@6.0.1: {}
+
   html-encoding-sniffer@4.0.0:
     dependencies:
       whatwg-encoding: 3.1.1
@@ -15920,13 +15925,13 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  tsdown@0.18.1(typescript@5.9.3):
+  tsdown@0.18.2(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
       defu: 6.1.4
       empathic: 2.0.0
-      hookable: 5.5.3
+      hookable: 6.0.1
       import-without-cache: 0.2.5
       obug: 2.1.1
       picomatch: 4.0.3
