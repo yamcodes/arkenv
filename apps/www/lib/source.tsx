@@ -4,7 +4,7 @@ import * as SimpleIcons from "@icons-pack/react-simple-icons";
 import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
-import { Badge } from "~/components/ui/badge";
+import { NewBadge, UpdatedBadge } from "~/components/ui/new-badge";
 
 export type IconName = keyof typeof icons | "New" | "Updated";
 
@@ -18,12 +18,8 @@ export const source = loader({
 		if (`Si${icon}` in SimpleIcons)
 			// biome-ignore lint/performance/noDynamicNamespaceImportAccess: I don't care about bundle size
 			return createElement(SimpleIcons[`Si${icon}` as never]);
-		if (icon === "New")
-			return <Badge className="h-4 text-[10px] px-[0.2rem] order-1">new</Badge>;
-		if (icon === "Updated")
-			return (
-				<Badge className="h-4 text-[10px] px-[0.2rem] order-1">updated</Badge>
-			);
+		if (icon === "New") return <NewBadge className="order-1" />;
+		if (icon === "Updated") return <UpdatedBadge className="order-1" />;
 
 		throw new Error(`${icon} is not a valid icon`);
 	},
