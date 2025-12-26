@@ -7,7 +7,7 @@ import {
 	SiVite,
 	SiZod,
 } from "@icons-pack/react-simple-icons";
-import { Boxes } from "lucide-react";
+import { Square } from "lucide-react";
 import type { JSX } from "react";
 import { ArkTypeIcon } from "../icons/arktype-icon";
 import { JoiIcon } from "../icons/joi-icon";
@@ -46,7 +46,7 @@ const validators: RailItem[] = [
 	{
 		name: "Yup",
 		url: "https://github.com/jquense/yup",
-		icon: ({ className }) => <Boxes className={className} />,
+		icon: ({ className }) => <Square className={className} />,
 	},
 	{
 		name: "Joi",
