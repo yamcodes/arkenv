@@ -70,26 +70,49 @@ export default function HomePage() {
 			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full gap-8 lg:gap-16 lg:mt-20">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 relative z-20 lg:mt-12">
 					<h1 className={`mb-4 ${bricolageGrotesque.className} mt-16 lg:mt-0`}>
-						<div className="text-6xl font-extrabold">
+						<div className="text-6xl font-extrabold lg:leading-tight">
 							Better{" "}
 							<span className="decoration-[rgb(180,215,255)] decoration-wavy decoration-1 underline underline-offset-4">
 								typesafe
 							</span>{" "}
 							than sorry
 						</div>
-						<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400">
-							Bring the power of{" "}
-							<a
-								href="https://arktype.io"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="underline underline-offset-6 decoration-[1.5px] transition-underline duration-200 hover:decoration-[3px] focus:decoration-[3px] active:text-blue-400"
-							>
-								ArkType
-							</a>{" "}
-							to your environment variables and ship with confidence.
+						<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400 font-medium">
+							Typesafe environment variables from editor to runtime
 						</div>
 					</h1>
+					<div className="flex items-center gap-2 mb-8">
+						<a
+							href="https://arktype.io"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="group relative flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-blue-500/5 dark:bg-blue-400/5 border border-blue-500/10 dark:border-blue-400/10 text-sm font-medium transition-all hover:bg-blue-500/10 dark:hover:bg-blue-400/10 hover:border-blue-500/20 dark:hover:border-blue-400/20 hover:scale-[1.02] active:scale-[0.98]"
+						>
+							<svg
+								viewBox="0 0 100 100"
+								version="1.1"
+								xmlns="http://www.w3.org/2000/svg"
+								height="20"
+								width="20"
+								className="rounded-md shadow-sm"
+								aria-hidden="true"
+							>
+								<rect fill="#085b92" width="100" height="100" rx="10" />
+								<g fill="#f5cf8f">
+									<path d="M 53.315857,82.644683 H 39.977324 L 36.75999,93.838326 H 28.582598 L 42.85952,46.918864 h 7.507114 l 14.343949,46.919462 h -8.177392 z m -2.14489,-7.507114 -4.55789,-15.885589 -4.490863,15.885589 z" />
+									<path d="M 73.35719,54.425978 H 62.096519 v -7.507114 h 30.698733 v 7.507114 H 81.534582 V 93.838326 H 73.35719 Z" />
+								</g>
+							</svg>
+							<span className="flex items-center gap-1.5 grayscale group-hover:grayscale-0 transition-all opacity-70 group-hover:opacity-100">
+								<span className="text-blue-900/70 dark:text-blue-100/70 font-normal">
+									Powered by
+								</span>
+								<span className="text-blue-600 dark:text-blue-400 font-bold">
+									ArkType
+								</span>
+							</span>
+						</a>
+					</div>
 					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto">
 						<SailButton />
 						<StarUsButton />
