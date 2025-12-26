@@ -34,12 +34,12 @@ export default function HomePage() {
 						</div>
 					</h1>
 					<CompatibilityRails />
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto max-w-md sm:max-w-none">
+					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto sm:max-w-none">
 						<QuickstartButton />
 						<StarUsButton />
 					</div>
 				</div>
-				<div className="hidden md:flex lg:flex-[1] w-full justify-center lg:justify-end relative z-0">
+				<div className="hidden md:flex lg:flex-1 w-full justify-center lg:justify-end relative z-0">
 					<HeroVisual />
 				</div>
 			</div>

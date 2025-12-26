@@ -104,7 +104,7 @@ function MarqueeRow({
 
 	return (
 		<div className="flex items-center gap-4 w-full group/rail">
-			<span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 whitespace-nowrap min-w-[80px]">
+			<span className="hidden sm:block text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 whitespace-nowrap min-w-[80px]">
 				{label}
 			</span>
 			<div className="relative flex overflow-hidden flex-1 select-none mask-[linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
@@ -134,7 +134,7 @@ function MarqueeRow({
 
 export function CompatibilityRails() {
 	return (
-		<div className="flex flex-col gap-3 w-full max-w-md sm:max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
+		<div className="flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
 			<MarqueeRow label="Works with" items={validators} />
 			<MarqueeRow label="Built for" items={platforms} reverse />
 		</div>
