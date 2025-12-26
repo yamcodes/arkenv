@@ -59,7 +59,7 @@ function MarqueeRow({
 				<div
 					className={`flex shrink-0 items-center justify-around gap-12 min-w-full ${RailIcon} animation-duration-[100s]`}
 				>
-					{[...items, ...items].map((item, i) => (
+					{[...items, ...items, ...items].map((item, i) => (
 						<div
 							key={`${item.name}-${i}`}
 							className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-500/5 dark:bg-gray-400/5 border border-gray-500/10 dark:border-gray-400/10 text-xs text-gray-500 dark:text-gray-400 transition-colors"
@@ -78,7 +78,7 @@ function MarqueeRow({
 
 export function CompatibilityRails() {
 	return (
-		<div className="flex flex-col gap-3 w-full max-w-xl mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
+		<div className="flex flex-col gap-3 w-full max-w-md mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
 			<MarqueeRow label="Works with" items={validators} />
 			<MarqueeRow label="Built for" items={platforms} reverse />
 		</div>
