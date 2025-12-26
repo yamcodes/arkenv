@@ -7,9 +7,10 @@ import {
 	SiVite,
 	SiZod,
 } from "@icons-pack/react-simple-icons";
-import { Boxes, Hexagon, Layers, Shield } from "lucide-react";
+import { Boxes, Layers, Shield } from "lucide-react";
 import type { JSX } from "react";
 import { ArkTypeIcon } from "../icons/arktype-icon";
+import { TypiaIcon } from "../icons/typia-icon";
 
 type RailItem = {
 	name: string;
@@ -38,7 +39,7 @@ const validators: RailItem[] = [
 	{
 		name: "Typia",
 		url: "https://typia.io",
-		icon: ({ className }) => <Hexagon className={className} />,
+		icon: ({ className }) => <TypiaIcon className={className} />,
 	},
 	{
 		name: "Yup",
