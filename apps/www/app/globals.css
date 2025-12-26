@@ -39,8 +39,11 @@ button[data-search-full] {
 	}
 
 	@keyframes shimmer {
-		100% {
-			transform: translateX(100%);
+		from {
+			transform: translateX(-200%);
+		}
+		to {
+			transform: translateX(200%);
 		}
 	}
 
