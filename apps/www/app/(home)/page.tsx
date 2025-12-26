@@ -19,17 +19,17 @@ export default function HomePage() {
 			{/* Top gradient overlay for dark mode - SVG version */}
 			<HeroGradientOverlay />
 
-			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:pl-12 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-8 lg:gap-20 lg:mt-20">
+			<div className="flex flex-col lg:flex-row items-center justify-center px-6 sm:px-8 lg:pl-12 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-8 lg:gap-20 lg:mt-20">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 relative z-20 lg:mt-12">
-					<h1 className="mb-4 mt-16 lg:mt-0">
-						<div className="text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
+					<h1 className="mb-4 mt-16 lg:mt-0 w-full">
+						<div className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
 							Better{" "}
 							<span className="bg-linear-to-br from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent inline-block pr-1 -mr-1">
 								typesafe
 							</span>{" "}
 							than sorry
 						</div>
-						<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400">
+						<div className="text-lg sm:text-xl md:text-2xl mt-4 text-gray-600 dark:text-gray-400">
 							Typesafe environment variables from editor to runtime
 						</div>
 					</h1>
@@ -44,7 +44,7 @@ export default function HomePage() {
 				</div>
 			</div>
 
-			<div className="sm:mt-8 max-w-5xl mx-auto w-full relative z-20 px-4">
+			<div className="sm:mt-8 max-w-5xl mx-auto w-full relative z-20 px-6 sm:px-8">
 				<VideoDemo />
 			</div>
 		</div>

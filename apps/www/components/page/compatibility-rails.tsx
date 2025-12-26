@@ -103,11 +103,11 @@ function MarqueeRow({
 		: "animate-marquee";
 
 	return (
-		<div className="flex items-center gap-4 w-full group/rail">
-			<span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 whitespace-nowrap min-w-[80px]">
+		<div className="flex items-center gap-2 sm:gap-4 w-full group/rail">
+			<span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 whitespace-nowrap min-w-[70px] sm:min-w-[80px] flex-shrink-0">
 				{label}
 			</span>
-			<div className="relative flex overflow-hidden flex-1 select-none mask-[linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+			<div className="relative flex overflow-hidden flex-1 select-none mask-[linear-gradient(to_right,transparent,white_5%,white_95%,transparent)]">
 				<div
 					className={`flex shrink-0 items-center justify-around gap-6 min-w-full ${animationClass}`}
 					style={{ "--marquee-duration": "75s" } as React.CSSProperties}
@@ -134,7 +134,7 @@ function MarqueeRow({
 
 export function CompatibilityRails() {
 	return (
-		<div className="flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
+		<div className="flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover overflow-hidden">
 			<MarqueeRow label="Works with" items={validators} />
 			<MarqueeRow label="Built for" items={platforms} reverse />
 		</div>
