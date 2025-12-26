@@ -1,17 +1,29 @@
+/**
+ * ArkType logo icon component.
+ *
+ * @param props.className - Additional CSS classes.
+ * @param props.variant - Visual variant of the icon: "color" (default) or "monotone".
+ * @param props.width - Width of the icon (default: 20).
+ * @param props.height - Height of the icon (default: 20).
+ */
 export function ArkTypeIcon({
 	className,
 	variant = "color",
+	width = 20,
+	height = 20,
 }: {
 	className?: string;
 	variant?: "color" | "monotone";
+	width?: number | string;
+	height?: number | string;
 }) {
 	return (
 		<svg
 			viewBox="0 0 100 100"
 			version="1.1"
 			xmlns="http://www.w3.org/2000/svg"
-			height="20"
-			width="20"
+			height={height}
+			width={width}
 			className={className}
 			aria-hidden="true"
 		>

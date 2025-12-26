@@ -98,7 +98,9 @@ function MarqueeRow({
 	reverse?: boolean;
 	label: string;
 }) {
-	const RailIcon = reverse ? "animate-marquee-reverse" : "animate-marquee";
+	const animationClass = reverse
+		? "animate-marquee-reverse"
+		: "animate-marquee";
 
 	return (
 		<div className="flex items-center gap-4 w-full group/rail">
@@ -107,7 +109,7 @@ function MarqueeRow({
 			</span>
 			<div className="relative flex overflow-hidden flex-1 select-none mask-[linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
 				<div
-					className={`flex shrink-0 items-center justify-around gap-6 min-w-full ${RailIcon}`}
+					className={`flex shrink-0 items-center justify-around gap-6 min-w-full ${animationClass}`}
 					style={{ "--marquee-duration": "75s" } as React.CSSProperties}
 				>
 					{[...items, ...items, ...items].map((item, i) => (
