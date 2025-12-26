@@ -33,7 +33,7 @@
 > [!TIP]
 > 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs/arkenv) to hover over code blocks and get type hints!
 
-ArkEnv is an environment variable validator for modern JavaScript runtimes. 
+ArkEnv is an environment variable validator for modern JavaScript runtimes.
 It lets you create a ready-to-use, typesafe environment variable object:
 
 ```ts twoslash
@@ -53,7 +53,7 @@ const nodeEnv = env.NODE_ENV;
 const debugging = env.DEBUGGING;
 ```
 
-<sup>Notice the [ArkType](https://arktype.io/) notation in the example above - ArkEnv supports it natively. It also works with any other [Standard Schema](https://standardschema.dev/schema) validator such as Zod, Valibot, Typia, etc.</sup>
+_ArkEnv supports native [ArkType](https://arktype.io/) notation and any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc._
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
@@ -77,7 +77,7 @@ ArkEnvError: Errors found while validating environment variables
 - Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 - Native support for ArkType, TypeScript’s 1:1 validator
 
-> [!TIP]
+> [!NOTE]
 > See ArkEnv vs. alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
 
 ## Installation

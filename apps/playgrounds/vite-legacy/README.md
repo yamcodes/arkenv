@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+# ArkEnv Vite (Legacy) example
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -34,4 +34,3 @@ pnpm check
 # Fix auto-fixable lint errors and format code
 pnpm fix
 ```
-

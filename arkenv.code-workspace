@@ -117,6 +117,10 @@
 			"name": "  with-vite-react"
 		},
 		{
+			"path": "examples/with-solid-start",
+			"name": "  with-solid-start"
+		},
+		{
 			"path": "examples/with-standard-schema",
 			"name": "  with-standard-schema"
 		},

@@ -1,6 +1,6 @@
-# ArkEnv + Vite Playground
+# ArkEnv + Vite Example
 
-This playground demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with Vite and React. It showcases:
+This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with Vite and React. It showcases:
 
 - **Environment variable validation** at build-time with ArkEnv
 - **Typesafe `import.meta.env`** with full TypeScript support
@@ -9,7 +9,7 @@ This playground demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.
 
 ## Setup
 
-The playground uses a single schema definition that's reused for both server-side config variables and client-exposed variables:
+The example uses a single schema definition that's reused for both server-side config variables and client-exposed variables:
 
 ```ts title="vite.config.ts"
 import arkenvVitePlugin from "@arkenv/vite-plugin";
@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => {
 
 ## Typesafe `import.meta.env`
 
-The playground includes type augmentation for `import.meta.env`:
+The example includes type augmentation for `import.meta.env`:
 
 ```ts title="src/vite-env.d.ts"
 /// <reference types="vite/client" />
@@ -85,7 +85,7 @@ The plugin automatically:
 - Filters to only expose `VITE_*` variables to the client
 - Excludes server-only variables (like `PORT`) from the client bundle
 
-## Running the Playground
+## Running the Example
 
 ```bash
 # Install dependencies
