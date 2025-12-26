@@ -5,7 +5,7 @@ import {
 	SiZod,
 } from "@icons-pack/react-simple-icons";
 import { ArkTypeIcon } from "../icons/arktype-icon";
-import { Boxes, Hexagon, Layers, Shield, Zap } from "lucide-react";
+import { Boxes, Hexagon, Layers, Shield } from "lucide-react";
 import type { JSX } from "react";
 
 type RailItem = {
@@ -37,7 +37,6 @@ const platforms: RailItem[] = [
 	},
 	{ name: "Bun", icon: ({ className }) => <SiBun className={className} /> },
 	{ name: "Vite", icon: ({ className }) => <SiVite className={className} /> },
-	{ name: "Next.js", icon: ({ className }) => <Zap className={className} /> },
 ];
 
 function MarqueeRow({
@@ -81,7 +80,7 @@ export function CompatibilityRails() {
 	return (
 		<div className="flex flex-col gap-3 w-full max-w-xl mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
 			<MarqueeRow label="Works with" items={validators} />
-			<MarqueeRow label="Runs on" items={platforms} reverse />
+			<MarqueeRow label="Built for" items={platforms} reverse />
 		</div>
 	);
 }
