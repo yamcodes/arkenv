@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { SailButton } from "./sail-button";
 
@@ -12,10 +11,9 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("SailButton", () => {
-	it("renders sail button with correct text", () => {
+	it("renders quickstart button with correct text", () => {
 		render(<SailButton />);
-		expect(screen.getByText("Set sail")).toBeInTheDocument();
-		expect(screen.getByText("->")).toBeInTheDocument();
+		expect(screen.getByText("Quickstart")).toBeInTheDocument();
 	});
 
 	it("renders as a link to docs/quickstart", () => {
@@ -24,68 +22,8 @@ describe("SailButton", () => {
 		expect(link).toHaveAttribute("href", "/docs/arkenv/quickstart");
 	});
 
-	it("handles left click and triggers animation", async () => {
-		const user = userEvent.setup();
-		render(<SailButton />);
-		const link = screen.getByRole("link");
-
-		await user.click(link);
-
-		// The button should still be rendered (animation state change)
-		expect(link).toBeInTheDocument();
-	});
-
-	it("allows middle click to work normally", async () => {
-		const user = userEvent.setup();
-		render(<SailButton />);
-		const link = screen.getByRole("link");
-
-		// Simulate middle click
-		await user.pointer({ keys: "[MouseMiddle]", target: link });
-
-		// Should not prevent default behavior
-		expect(link).toBeInTheDocument();
-	});
-
-	it("allows ctrl+click to work normally", async () => {
-		const user = userEvent.setup();
-		render(<SailButton />);
-		const link = screen.getByRole("link");
-
-		// Simulate ctrl+click
-		await user.pointer({
-			keys: "[ControlLeft>][MouseLeft][/ControlLeft]",
-			target: link,
-		});
-
-		// Should not prevent default behavior
-		expect(link).toBeInTheDocument();
-	});
-
-	it("allows meta+click to work normally", async () => {
-		const user = userEvent.setup();
-		render(<SailButton />);
-		const link = screen.getByRole("link");
-
-		// Simulate meta+click (Cmd on Mac)
-		await user.pointer({
-			keys: "[MetaLeft>][MouseLeft][/MetaLeft]",
-			target: link,
-		});
-
-		// Should not prevent default behavior
-		expect(link).toBeInTheDocument();
-	});
-
-	it("renders sailboat icon", () => {
-		render(<SailButton />);
-		// The Sailboat icon should be present (we can't easily test the icon component directly)
-		expect(screen.getByText("Set sail")).toBeInTheDocument();
-	});
-
 	it("has accessible button text", () => {
 		render(<SailButton />);
-		expect(screen.getByText("Set sail")).toBeInTheDocument();
-		expect(screen.getByText("->")).toBeInTheDocument();
+		expect(screen.getByText("Quickstart")).toBeInTheDocument();
 	});
 });

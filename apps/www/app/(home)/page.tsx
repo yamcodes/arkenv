@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque } from "next/font/google";
 import { HeroVisual } from "~/components/hero-visual";
 import { SailButton, StarUsButton, VideoDemo } from "~/components/page";
-
-const bricolageGrotesque = Bricolage_Grotesque({
-	subsets: ["latin"],
-	display: "swap",
-});
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
@@ -69,15 +63,15 @@ export default function HomePage() {
 
 			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full gap-8 lg:gap-16 lg:mt-20">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 relative z-20 lg:mt-12">
-					<h1 className={`mb-4 ${bricolageGrotesque.className} mt-16 lg:mt-0`}>
-						<div className="text-6xl font-extrabold lg:leading-tight">
+					<h1 className="mb-4 mt-16 lg:mt-0">
+						<div className="text-6xl font-semibold tracking-tighter">
 							Better{" "}
 							<span className="decoration-[rgb(180,215,255)] decoration-wavy decoration-1 underline underline-offset-4">
 								typesafe
 							</span>{" "}
 							than sorry
 						</div>
-						<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400 font-medium">
+						<div className="text-2xl mt-4 text-gray-600 dark:text-gray-400">
 							Typesafe environment variables from editor to runtime
 						</div>
 					</h1>
