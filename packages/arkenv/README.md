@@ -2,7 +2,7 @@
   <a href="https://github.com/yamcodes/arkenv/blob/main/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
-    <p align="center">Typesafe environment variables from editor to runtime</p>
+    <p align="center">Environment variable validation from editor to runtime</p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
     <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
@@ -162,7 +162,7 @@ You are also welcome to [contribute to the project](https://github.com/yamcodes/
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://yam.codes"><img src="https://avatars.githubusercontent.com/u/2014360?v=4?s=100" width="100px;" alt="Yam C Borodetsky"/><br /><sub><b>Yam C Borodetsky</b></sub></a><br /><a href="https://github.com/yamcodes/arkenv/commits?author=yamcodes" title="Code">💻</a> <a href="#question-yamcodes" title="Answering Questions">💬</a> <a href="#ideas-yamcodes" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-yamcodes" title="Design">🎨</a> <a href="https://github.com/yamcodes/arkenv/commits?author=yamcodes" title="Documentation">📖</a> <a href="https://github.com/yamcodes/arkenv/issues?q=author%3Ayamcodes" title="Bug reports">🐛</a> <a href="#example-yamcodes" title="Examples">💡</a> <a href="#infra-yamcodes" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/yamcodes/arkenv/commits?author=yamcodes" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/aruaycodes"><img src="https://avatars.githubusercontent.com/u/57131628?v=4?s=100" width="100px;" alt="Aruay Berdikulova"/><br /><sub><b>Aruay Berdikulova</b></sub></a><br /><a href="https://github.com/yamcodes/arkenv/commits?author=aruaycodes" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/aruaycodes"><img src="https://avatars.githubusercontent.com/u/57131628?v=4?s=100" width="100px;" alt="Aruay Berdikulova"/><br /><sub><b>Aruay Berdikulova</b></sub></a><br /><a href="https://github.com/yamcodes/arkenv/commits?author=aruaycodes" title="Code">💻</a> <a href="#ideas-aruaycodes" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://arktype.io"><img src="https://avatars.githubusercontent.com/u/10645823?v=4?s=100" width="100px;" alt="David Blass"/><br /><sub><b>David Blass</b></sub></a><br /><a href="#ideas-ssalbdivad" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-ssalbdivad" title="Mentoring">🧑‍🏫</a> <a href="#question-ssalbdivad" title="Answering Questions">💬</a></td>
     </tr>
   </tbody>
