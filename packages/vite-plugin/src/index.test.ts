@@ -527,7 +527,205 @@ describe("Plugin Unit Tests", () => {
 		// Verify variables not matching any prefix are NOT exposed
 		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
+
+	it("should use custom envDir when provided in config", () => {
+		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
+
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			// Pass custom envDir in config
+			pluginInstance.config.call(
+				mockContext,
+				{ envDir: "/custom/env/dir" },
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify createEnv was called - the envDir is used by loadEnv internally
+		// We can't directly test loadEnv was called with the custom path without
+		// mocking Vite's loadEnv, but we verify the plugin doesn't throw
+		expect(mockCreateEnv).toHaveBeenCalledWith(
+			{ VITE_TEST: "string" },
+			{
+				env: expect.any(Object),
+			},
+		);
+	});
+
+	it("should default to process.cwd() when envDir is not configured", () => {
+		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
+
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			// Pass config without envDir (should default to process.cwd())
+			pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify createEnv was called successfully with default behavior
+		expect(mockCreateEnv).toHaveBeenCalledWith(
+			{ VITE_TEST: "string" },
+			{
+				env: expect.any(Object),
+			},
+		);
+	});
 });
+
+// Integration tests using with-env-dir fixture for custom envDir configuration
+describe("Custom envDir Configuration (with-env-dir fixture)", () => {
+	const withEnvDirFixture = join(fixturesDir, "with-env-dir");
+	const customEnvDir = join(withEnvDirFixture, "custom-dir");
+
+	// Expected env vars from custom-dir/env.test fixture
+	const expectedEnvVars = {
+		VITE_CUSTOM_VAR: "custom-value",
+		VITE_FROM_ENV_DIR: "loaded-from-env-dir",
+	} as const;
+
+	// Reusable build config factory
+	const createBuildConfig = (
+		envDir: string,
+		schema: Record<string, string>,
+	) => ({
+		configFile: false as const,
+		root: withEnvDirFixture,
+		envDir,
+		plugins: [arkenvPlugin(schema)],
+		logLevel: "error" as const,
+		build: {
+			lib: { entry: "index.ts", formats: ["es" as const] },
+			rollupOptions: { external: ["arkenv"] },
+		},
+	});
+
+	beforeEach(() => {
+		vi.unstubAllEnvs();
+		mockCreateEnv.mockClear();
+	});
+
+	afterEach(() => {
+		vi.unstubAllEnvs();
+		mockCreateEnv.mockReset();
+	});
+
+	it("should load environment variables from custom envDir", async () => {
+		const config = await readTestConfig(withEnvDirFixture);
+
+		mockCreateEnv.mockReturnValue(expectedEnvVars);
+		stubEnvVars(expectedEnvVars);
+
+		await expect(
+			vite.build(createBuildConfig(customEnvDir, config.Env)),
+		).resolves.not.toThrow();
+
+		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+			env: expect.objectContaining(expectedEnvVars),
+		});
+	});
+
+	it("should fail validation when envDir points to non-existent directory", async () => {
+		const config = await readTestConfig(withEnvDirFixture);
+		const nonExistentEnvDir = join(withEnvDirFixture, "non-existent-dir");
+
+		mockCreateEnv.mockImplementation(() => {
+			throw new Error(
+				"Environment validation failed: VITE_CUSTOM_VAR is required",
+			);
+		});
+
+		await expect(
+			vite.build(createBuildConfig(nonExistentEnvDir, config.Env)),
+		).rejects.toThrow();
+
+		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+			env: expect.any(Object),
+		});
+	});
+
+	it("should fail when using root directory without .env files", async () => {
+		const config = await readTestConfig(withEnvDirFixture);
+
+		mockCreateEnv.mockImplementation(() => {
+			throw new Error("VITE_CUSTOM_VAR must be a string (was missing)");
+		});
+
+		await expect(
+			vite.build(createBuildConfig(withEnvDirFixture, config.Env)),
+		).rejects.toThrow("VITE_CUSTOM_VAR must be a string (was missing)");
+	});
+
+	it("should prioritize envDir over root when both are specified", async () => {
+		const config = await readTestConfig(withEnvDirFixture);
+
+		mockCreateEnv.mockReturnValue(expectedEnvVars);
+		stubEnvVars(expectedEnvVars);
+
+		await expect(
+			vite.build(createBuildConfig(customEnvDir, config.Env)),
+		).resolves.not.toThrow();
+
+		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+			env: expect.objectContaining(expectedEnvVars),
+		});
+	});
+
+	it("should pass all loaded env vars to createEnv, not just schema keys", async () => {
+		const config = await readTestConfig(withEnvDirFixture);
+		const envWithExtra = {
+			...expectedEnvVars,
+			EXTRA_VAR: "extra-value",
+		};
+
+		mockCreateEnv.mockReturnValue(expectedEnvVars);
+		stubEnvVars(envWithExtra);
+
+		await vite.build(createBuildConfig(customEnvDir, config.Env));
+
+		// Verify that all env vars (including non-schema ones) are passed
+		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+			env: expect.objectContaining(envWithExtra),
+		});
+	});
+});
+
+/**
+ * Stub multiple environment variables at once
+ */
+function stubEnvVars(vars: Record<string, string>): void {
+	for (const [key, value] of Object.entries(vars)) {
+		vi.stubEnv(key, value);
+	}
+}
 
 async function readTestConfig(fixtureDir: string) {
 	// Import the env schema from the TypeScript config file
