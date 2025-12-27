@@ -1,5 +1,5 @@
-import type { ComponentPropsWithoutRef } from "react";
 import { render, screen } from "@testing-library/react";
+import type { ComponentPropsWithoutRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { ExternalLink } from "./external-link";
 
