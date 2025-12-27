@@ -55,21 +55,27 @@ export default function HomePage() {
 			</div>
 
 			{/* Homepage Footer */}
-			<footer className="mt-24 mb-12 flex flex-col items-center text-center gap-2 relative z-20 px-4">
-				<div className="text-sm text-gray-600 dark:text-gray-400">
-					❤️ Proud member of the{" "}
-					<a
-						href="https://arktype.io/docs/ecosystem#arkenv"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
-					>
-						ArkType ecosystem
-					</a>
-				</div>
-				<div className="text-[11px] text-gray-500 dark:text-gray-500 flex flex-col gap-0.5">
-					<div>Released under the MIT License.</div>
-					<div>Copyright © 2025 Yam Borodetsky</div>
+			<footer className="mt-32 w-full border-t border-gray-500/10 bg-gray-500/5 dark:bg-black/20 backdrop-blur-[2px] relative z-20">
+				<div className="max-w-screen-2xl mx-auto py-16 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
+					<div className="text-sm text-gray-600 dark:text-gray-400 font-medium tracking-tight">
+						❤️ Proud member of the{" "}
+						<a
+							href="https://arktype.io/docs/ecosystem#arkenv"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+						>
+							ArkType ecosystem
+						</a>
+					</div>
+					<div className="flex flex-col gap-1 items-center">
+						<div className="text-[11px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-semibold">
+							Released under the MIT License
+						</div>
+						<div className="text-[11px] text-gray-400 dark:text-gray-500">
+							Copyright © 2025 Yam Borodetsky
+						</div>
+					</div>
 				</div>
 			</footer>
 		</div>
