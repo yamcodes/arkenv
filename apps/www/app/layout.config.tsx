@@ -1,5 +1,6 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { Logo } from "~/components/page/logo";
+import { ThemeToggle } from "~/components/ui/theme-toggle";
 
 /**
  * Shared layout configurations
@@ -11,5 +12,8 @@ import { Logo } from "~/components/page/logo";
 export const baseOptions: BaseLayoutProps = {
 	nav: {
 		title: <Logo />,
+	},
+	themeSwitch: {
+		component: <ThemeToggle />,
 	},
 };
