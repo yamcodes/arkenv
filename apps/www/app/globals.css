@@ -29,7 +29,10 @@ article a:not(:has(img)):not(.fd-card):not([data-card]):hover {
 	border-bottom-width: 2.5px;
 }
 
-article a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not([data-external-link]):not(.fd-card):not([data-card])::after {
+article
+	a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not(
+		[data-external-link]
+	):not(.fd-card):not([data-card])::after {
 	content: "";
 	display: inline-block;
 	width: 0.9em;
