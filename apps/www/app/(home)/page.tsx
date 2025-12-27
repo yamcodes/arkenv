@@ -39,8 +39,8 @@ export default function HomePage() {
 							Environment variable validation from editor to runtime
 						</div>
 					</h1>
-					<CompatibilityRails />
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto sm:max-w-none">
+					<CompatibilityRails className="order-2 md:order-1" />
+					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-16 w-full sm:w-auto sm:max-w-none order-1 md:order-2">
 						<QuickstartButton />
 						<StarUsButton />
 					</div>
