@@ -18,21 +18,29 @@
 }
 
 /* Link underlines in documentation */
-article a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) {
+article
+a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+	[data-no-underline]
+) {
 	text-decoration: none;
 	border-bottom: 1.5px solid currentColor;
 	padding-bottom: 1px;
 	transition: border-bottom-width 0.1s ease;
 }
 
-article a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover {
+article
+	a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+		[data-no-underline]
+	):hover {
 	border-bottom-width: 2.5px;
 }
 
 article
 	a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not(
 		[data-external-link]
-	):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-arrow])::after {
+	):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+		[data-no-arrow]
+	)::after {
 	content: "";
 	display: inline-block;
 	width: 0.9em;
