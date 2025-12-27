@@ -14,7 +14,7 @@ The example demonstrates:
 
 ArkEnv works in plain JavaScript, as shown in this example, but the _developer experience_ may vary. This includes things like type hints or autocomplete, which, without explicit TypeScript setup, depend entirely on your editor and tooling.
 
-Modern IDEs may still infer types from ArkEnv’s `.d.ts` files, but this is not something we explicitly guarantee or test for. If it works well for you, great. For a fully supported and predictable experience, we recommend using TypeScript.
+Modern IDEs may still infer types from ArkEnv’s `.d.ts` files, but this is not something we explicitly guarantee or test for. If it works well for you, great. For a more predictable experience, we recommend [using TypeScript](../../packages/arkenv/README.md#typescript-requirements).
 
 ### Quickstart
 
