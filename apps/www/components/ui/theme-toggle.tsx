@@ -32,7 +32,7 @@ export function ThemeToggle({ className }: { className?: string }) {
 	return (
 		<fieldset
 			className={cn(
-				"inline-flex items-center rounded-full border bg-fd-background p-1 shadow-sm",
+				"inline-flex h-9 items-center rounded-full border bg-fd-background p-1",
 				className,
 			)}
 			aria-label="Toggle Theme"
@@ -47,9 +47,9 @@ export function ThemeToggle({ className }: { className?: string }) {
 						type="button"
 						onClick={() => setTheme(option.value)}
 						className={cn(
-							"flex h-7 w-7 items-center justify-center rounded-full",
+							"flex h-7 w-7 items-center justify-center rounded-full transition-colors",
 							isActive
-								? "bg-fd-accent text-fd-accent-foreground shadow-sm"
+								? "bg-fd-accent text-fd-accent-foreground"
 								: "text-fd-muted-foreground hover:bg-fd-accent/40 hover:text-fd-accent-foreground",
 						)}
 						aria-pressed={isActive}
