@@ -29,7 +29,12 @@ function isExternalUrl(href: string | undefined): boolean {
 
 	// Check if it's an absolute URL
 	try {
-		const url = new URL(href, window.location.origin);
+		// Use a dummy origin for SSR compatibility
+		const base =
+			typeof window !== "undefined"
+				? window.location.origin
+				: "https://arkenv.js.org";
+		const url = new URL(href, base);
 
 		// Check against internal domains list
 		const hostname = url.hostname.toLowerCase();
@@ -41,8 +46,13 @@ function isExternalUrl(href: string | undefined): boolean {
 			return false;
 		}
 
-		// External if different origin
-		return url.origin !== window.location.origin;
+		// External if different origin (only check when window is available)
+		if (typeof window !== "undefined") {
+			return url.origin !== window.location.origin;
+		}
+
+		// During SSR, check if it's an absolute URL with http/https
+		return url.protocol === "http:" || url.protocol === "https:";
 	} catch {
 		// If URL parsing fails, treat as internal
 		return false;
