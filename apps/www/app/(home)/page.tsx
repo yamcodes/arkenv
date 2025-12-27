@@ -101,7 +101,7 @@ export default function HomePage() {
 						</div>
 						<div className="flex flex-col gap-1.5 items-center text-gray-500 dark:text-gray-500 text-sm">
 							<div>Released under the MIT License</div>
-							<div>Copyright © 2025 Yam Borodetsky</div>
+							<div>Copyright © 2025-present Yam Borodetsky</div>
 						</div>
 					</div>
 				</footer>
