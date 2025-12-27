@@ -36,7 +36,7 @@ export default function HomePage() {
 							than sorry
 						</div>
 						<div className="text-xl md:text-2xl mt-4 text-gray-600 dark:text-gray-400">
-							Typesafe environment variables from editor to runtime
+							Environment variable validation from editor to runtime
 						</div>
 					</h1>
 					<CompatibilityRails />
