@@ -63,5 +63,5 @@
 .dark {
 	--color-fd-muted-foreground: hsl(
 		240 5% 70%
-	); /* WCAG AA compliant: 8.88:1 contrast on dark background */
+	); /* WCAG AA compliant: 8.61:1 contrast on dark background */
 }
