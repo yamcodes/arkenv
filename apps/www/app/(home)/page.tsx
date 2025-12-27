@@ -58,13 +58,16 @@ export default function HomePage() {
 			{/* Homepage Footer with Fade Gradient and Stylized Separator */}
 			<div className="w-full relative mt-32">
 				{/* Background fade gradient */}
-				<div className="absolute inset-0 bg-linear-to-b from-transparent to-gray-200/90 dark:to-black/80 -z-10" />
+				<div
+					className="absolute inset-0 bg-linear-to-b from-transparent to-gray-200/90 dark:to-black/80 -z-10"
+					aria-hidden="true"
+				/>
 
 				{/* Stylized Divider: ----------(space)(icon)(space)---------- */}
 				<div className="flex items-center w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
 					<div className="h-px flex-1 bg-linear-to-r from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
 					<div className="px-6 flex items-center justify-center">
-						<div className="relative group">
+						<div className="relative group" aria-hidden="true">
 							<Image
 								src="/assets/icon.svg"
 								alt=""
@@ -73,7 +76,10 @@ export default function HomePage() {
 								height={22}
 								className="opacity-80 grayscale brightness-0 dark:brightness-0 dark:invert group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:invert-0 transition-all duration-500"
 							/>
-							<div className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+							<div
+								className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+								aria-hidden="true"
+							/>
 						</div>
 					</div>
 					<div className="h-px flex-1 bg-linear-to-l from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
