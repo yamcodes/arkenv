@@ -12,6 +12,21 @@
 @plugin "tailwindcss-animate";
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 
+/* External link arrows - add arrow icon to external links */
+article
+a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"])::after {
+	content: "";
+	display: inline-block;
+	width: 0.9em;
+	height: 0.9em;
+	margin-left: 0.15em;
+	background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>');
+	background-size: contain;
+	background-repeat: no-repeat;
+	opacity: 0.7;
+	vertical-align: text-top;
+}
+
 button[data-search-full] {
 	--color-fd-secondary: hsl(0, 0%, 100%);
 	--color-fd-accent: hsl(0, 0%, 100%);

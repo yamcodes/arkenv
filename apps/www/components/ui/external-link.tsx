@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
 import FumadocsLink from "fumadocs-core/link";
+import { ArrowUpRight } from "lucide-react";
 import type { ComponentProps, FC } from "react";
 
 export interface ExternalLinkProps extends ComponentProps<typeof FumadocsLink> {
@@ -30,13 +30,17 @@ function isExternalUrl(href: string | undefined): boolean {
 	// Check if it's an absolute URL
 	try {
 		const url = new URL(href, window.location.origin);
-		
+
 		// Check against internal domains list
 		const hostname = url.hostname.toLowerCase();
-		if (INTERNAL_DOMAINS.some(domain => hostname === domain || hostname.endsWith(`.${domain}`))) {
+		if (
+			INTERNAL_DOMAINS.some(
+				(domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+			)
+		) {
 			return false;
 		}
-		
+
 		// External if different origin
 		return url.origin !== window.location.origin;
 	} catch {

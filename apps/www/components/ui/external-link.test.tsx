@@ -34,7 +34,9 @@ describe("ExternalLink", () => {
 		});
 
 		it("should NOT render arrow icon for internal relative links", () => {
-			render(<ExternalLink href="/docs/quickstart">Internal Link</ExternalLink>);
+			render(
+				<ExternalLink href="/docs/quickstart">Internal Link</ExternalLink>,
+			);
 			const link = screen.getByText("Internal Link");
 			const svg = link.closest("a")?.querySelector("svg");
 			expect(svg).not.toBeInTheDocument();
