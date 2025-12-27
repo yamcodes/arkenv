@@ -203,6 +203,35 @@ test.describe("Homepage", () => {
 		await expect(mobileStarButton).not.toBeVisible();
 	});
 
+	test("should display footer with ecosystem link and license info", async ({
+		page,
+	}) => {
+		await page.goto("/");
+		await page.waitForLoadState("networkidle");
+
+		const footer = page.locator("footer");
+		await expect(footer).toBeVisible();
+
+		// Check ecosystem link
+		const ecosystemLink = footer.locator(
+			"a[href*='arktype.io/docs/ecosystem']",
+		);
+		await expect(ecosystemLink).toBeVisible();
+		await expect(ecosystemLink).toContainText("ArkType ecosystem");
+		await expect(ecosystemLink).toHaveAttribute("target", "_blank");
+		await expect(ecosystemLink).toHaveAttribute("rel", "noopener noreferrer");
+
+		// Check license and copyright info
+		await expect(footer).toContainText("Released under the MIT License");
+		await expect(footer).toContainText("Copyright © 2025 Yam Borodetsky");
+
+		// Check decorative icon in divider (accessibility)
+		const footerSection = page.locator("div.w-full.relative.mt-32");
+		const separatorIcon = footerSection.locator("img");
+		await expect(separatorIcon).toHaveAttribute("alt", "");
+		await expect(separatorIcon).toHaveAttribute("aria-hidden", "true");
+	});
+
 	test("should not have console errors", async ({ page }) => {
 		await assertNoConsoleErrors(page, "/");
 	});
