@@ -4,15 +4,15 @@ This directory contains a collection of example projects that demonstrate variou
 
 ## Examples
 
-| Name                                                                                                 | Description                                                                                                              |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [`basic`](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                               | Minimal example of _using ArkEnv in a [Node.js](https://nodejs.org/) app_ for learning the fundamentals.                 |
-| [`with-standard-schema`](https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema) | Example of _mixing ArkType with [Standard Schema](https://standardschema.dev/) validators like [Zod](https://zod.dev/)_. |
-| [`with-bun`](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun)                         | Minimal example of _using ArkEnv in a [Bun](https://bun.sh/) app_.                                                       |
-| [`with-bun-react`](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react)             | Minimal example of _using ArkEnv in a [Bun+React](https://bun.com/docs/guides/ecosystem/react) full-stack app_.          |
-| [`with-vite-react`](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)           | Minimal example of _using ArkEnv in a [Vite](https://vite.dev/)+[React](https://react.dev/) app_.                        |
+| Name                                                                                               | Description                                                                                                              |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [basic](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                               | Minimal example of _using ArkEnv in a [Node.js](https://nodejs.org/) app_ for learning the fundamentals.                 |
+| [with-standard-schema](https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema) | Example of _mixing ArkType with [Standard Schema](https://standardschema.dev/) validators like [Zod](https://zod.dev/)_. |
+| [with-bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun)                         | Minimal example of _using ArkEnv in a [Bun](https://bun.sh/) app_.                                                       |
+| [with-bun-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react)             | Minimal example of _using ArkEnv in a [Bun + React](https://bun.com/docs/guides/ecosystem/react) full-stack app_.        |
+| [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)           | Minimal example of _using ArkEnv in a [Vite](https://vite.dev/) + [React](https://react.dev/) app_.                      |
 
-> These examples are written in TypeScript, [the recommended way to work with ArkEnv](https://github.com/yamcodes/arkenv/blob/main/packages/arkenv/README.md#typescript-setup). That being said, ArkEnv works with plain JavaScript, with tradeoffs. See the [`basic-js`] (https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details.
+> These examples are written in TypeScript, [the recommended way to work with ArkEnv](https://github.com/yamcodes/arkenv/blob/main/packages/arkenv/README.md#typescript-setup). That being said, ArkEnv works with plain JavaScript, with tradeoffs. See the [basic-js`](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details.
 
 ## Contributing an example
 

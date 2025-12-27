@@ -28,6 +28,8 @@ export const EditOnGithub = ({ path }: EditOnGithubProps) => {
 					)}
 					target="_blank"
 					rel="noopener noreferrer"
+					data-no-underline
+					data-no-arrow
 				>
 					<SquarePen
 						aria-hidden="true"
