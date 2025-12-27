@@ -11,7 +11,7 @@ import {
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
-	description: "Typesafe environment variables powered by ArkType ⛵️",
+	description: "Environment variable validation from editor to runtime",
 };
 
 export default function HomePage() {
