@@ -140,7 +140,7 @@ export function CompatibilityRails({ className }: { className?: string }) {
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden",
+				"flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-2 md:py-6 pause-on-hover px-1 overflow-hidden",
 				className,
 			)}
 		>
