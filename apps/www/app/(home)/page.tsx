@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { AnnouncementBadge } from "~/components/announcement-badge";
 import { HeroGradientOverlay } from "~/components/hero-gradient-overlay";
 import { HeroVisual } from "~/components/hero-visual";
@@ -54,30 +55,53 @@ export default function HomePage() {
 				<VideoDemo />
 			</div>
 
-			{/* Homepage Footer */}
-			<footer className="mt-32 w-full border-t border-gray-500/10 bg-gray-500/5 dark:bg-black/20 backdrop-blur-[2px] relative z-20">
-				<div className="max-w-screen-2xl mx-auto py-16 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
-					<div className="text-sm text-gray-600 dark:text-gray-400 font-medium tracking-tight">
-						❤️ Proud member of the{" "}
-						<a
-							href="https://arktype.io/docs/ecosystem#arkenv"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-						>
-							ArkType ecosystem
-						</a>
-					</div>
-					<div className="flex flex-col gap-1 items-center">
-						<div className="text-[11px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-semibold">
-							Released under the MIT License
-						</div>
-						<div className="text-[11px] text-gray-400 dark:text-gray-500">
-							Copyright © 2025 Yam Borodetsky
+			{/* Homepage Footer with Fade Gradient and Stylized Separator */}
+			<div className="w-full relative mt-32">
+				{/* Background fade gradient */}
+				<div className="absolute inset-0 bg-linear-to-b from-transparent to-gray-200/50 dark:to-black/80 -z-10" />
+
+				{/* Stylized Divider: ----------(space)(icon)(space)---------- */}
+				<div className="flex items-center w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
+					<div className="h-px flex-1 bg-linear-to-r from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
+					<div className="px-6 flex items-center justify-center">
+						<div className="relative group">
+							<Image
+								src="/assets/icon.svg"
+								alt="ArkEnv"
+								width={22}
+								height={22}
+								className="opacity-40 grayscale brightness-0 dark:brightness-200 group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-500"
+							/>
+							<div className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 						</div>
 					</div>
+					<div className="h-px flex-1 bg-linear-to-l from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
 				</div>
-			</footer>
+
+				<footer className="relative z-20">
+					<div className="max-w-screen-2xl mx-auto py-14 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
+						<div className="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
+							❤️ Proud member of the{" "}
+							<a
+								href="https://arktype.io/docs/ecosystem#arkenv"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+							>
+								ArkType ecosystem
+							</a>
+						</div>
+						<div className="flex flex-col gap-1.5 items-center">
+							<div className="text-xs uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500 font-bold">
+								Released under the MIT License
+							</div>
+							<div className="text-xs text-gray-400 sm:text-gray-400/80 dark:text-gray-500/80">
+								Copyright © 2025 Yam Borodetsky
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
 		</div>
 	);
 }
