@@ -14,6 +14,7 @@ import { ArkTypeIcon } from "../icons/arktype-icon";
 import { JoiIcon } from "../icons/joi-icon";
 import { TypiaIcon } from "../icons/typia-icon";
 import { ValibotIcon } from "../icons/valibot-icon";
+import { VinxiIcon } from "../icons/vinxi-icon";
 
 type RailItem = {
 	name: string;
@@ -75,16 +76,7 @@ const platforms: RailItem[] = [
 	{
 		name: "Vinxi",
 		url: "https://vinxi.vercel.app",
-		icon: ({ className }) => (
-			<svg
-				viewBox="0 0 24 24"
-				fill="currentColor"
-				className={className}
-				aria-hidden="true"
-			>
-				<path d="M16 2L5 15h6l-1 7 11-13h-6l1-7z" />
-			</svg>
-		),
+		icon: ({ className }) => <VinxiIcon className={className} />,
 	},
 	{
 		name: "SolidStart",
