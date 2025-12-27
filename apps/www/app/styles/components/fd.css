@@ -1,5 +1,5 @@
 header {
-	background-color: var(--secondary);
+	backdrop-filter: blur(8px);
 }
 
 /* Override fumadocs muted-foreground for WCAG AA compliance */
