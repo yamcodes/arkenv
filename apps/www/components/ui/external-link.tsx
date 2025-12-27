@@ -72,11 +72,7 @@ export const ExternalLink: FC<ExternalLinkProps> = ({
 	const isExternal = isExternalUrl(href);
 
 	return (
-		<FumadocsLink
-			href={href}
-			data-external-link={isExternal || undefined}
-			{...props}
-		>
+		<FumadocsLink href={href} data-external-link {...props}>
 			{children}
 			{isExternal && (
 				<ArrowUpRight
