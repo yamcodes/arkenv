@@ -53,6 +53,25 @@ export default function HomePage() {
 			<div className="sm:mt-8 max-w-5xl mx-auto w-full relative z-20 px-4">
 				<VideoDemo />
 			</div>
+
+			{/* Homepage Footer */}
+			<footer className="mt-24 mb-12 flex flex-col items-center text-center gap-2 relative z-20 px-4">
+				<div className="text-sm text-gray-600 dark:text-gray-400">
+					❤️ Proud member of the{" "}
+					<a
+						href="https://arktype.io/docs/ecosystem#arkenv"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+					>
+						ArkType ecosystem
+					</a>
+				</div>
+				<div className="text-[11px] text-gray-500 dark:text-gray-500 flex flex-col gap-0.5">
+					<div>Released under the MIT License.</div>
+					<div>Copyright © 2025 Yam Borodetsky</div>
+				</div>
+			</footer>
 		</div>
 	);
 }
