@@ -20,7 +20,7 @@ export function ThemeToggle({ className }: { className?: string }) {
 	}, []);
 
 	if (!mounted) {
-		return <div className={cn("h-9 w-26 rounded-full border", className)} />;
+		return <div className={cn("h-9 w-24 rounded-full border", className)} />;
 	}
 
 	const options = [
