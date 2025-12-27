@@ -1,5 +1,10 @@
 header {
+	background-color: rgba(255, 255, 255, 0.6);
 	backdrop-filter: blur(8px);
+}
+
+.dark header {
+	background-color: rgba(0, 0, 0, 0.4);
 }
 
 /* Override fumadocs muted-foreground for WCAG AA compliance */
