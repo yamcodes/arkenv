@@ -23,7 +23,9 @@ export default function HomePage() {
 			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:pl-12 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-8 lg:gap-12 lg:mt-20">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:flex-[1.4] relative z-20 mt-12 w-full max-w-full">
 					<div className="lg:mb-6 mb-0">
-						<AnnouncementBadge />
+						<AnnouncementBadge new href="/docs/arkenv/coercion">
+							Automatic type coercion
+						</AnnouncementBadge>
 					</div>
 					<h1 className="mb-4 mt-6 lg:mt-0 w-full max-w-2xl">
 						<div className="text-5xl md:text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
