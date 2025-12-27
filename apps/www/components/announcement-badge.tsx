@@ -1,10 +1,7 @@
-import type { UrlObject } from "node:url";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
 import { NewBadge } from "./ui/new-badge";
-
-type Url = string | UrlObject;
 
 export function AnnouncementBadge({
 	arrow = false,
@@ -23,7 +20,7 @@ export function AnnouncementBadge({
 	/**
 	 * The link to navigate to when clicking the badge.
 	 */
-	href: Url;
+	href: Parameters<typeof Link>[0]["href"];
 }>) {
 	return (
 		<Link
@@ -38,7 +35,7 @@ export function AnnouncementBadge({
 				{arrow ? (
 					<ArrowUpRight className="h-4 w-4 opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
 				) : (
-					<span className="w-2" />
+					<span className="w-1.5" />
 				)}
 			</span>
 
