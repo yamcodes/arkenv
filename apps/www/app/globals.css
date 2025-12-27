@@ -21,7 +21,10 @@
 article
 a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 	[data-no-underline]
-) {
+),
+a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+		[class*="fd-"]
+	):not([data-no-underline]) {
 	text-decoration: none;
 	border-bottom: 1.5px solid currentColor;
 	padding-bottom: 1px;
@@ -31,7 +34,10 @@ a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 article
 	a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-underline]
-	):hover {
+	):hover,
+a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+		[class*="fd-"]
+	):not([data-no-underline]):hover {
 	border-bottom-width: 2.5px;
 }
 

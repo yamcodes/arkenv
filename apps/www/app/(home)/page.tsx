@@ -9,6 +9,7 @@ import {
 	StarUsButton,
 	VideoDemo,
 } from "~/components/page";
+import { ExternalLink } from "~/components/ui/external-link";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
@@ -89,14 +90,14 @@ export default function HomePage() {
 					<div className="max-w-screen-2xl mx-auto py-8 md:py-14 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
 						<div className="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
 							Proud part of the{" "}
-							<a
+							<ExternalLink
 								href="https://arktype.io/docs/ecosystem#arkenv"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+								className="text-gray-900 dark:text-gray-100 transition-colors"
 							>
 								ArkType ecosystem
-							</a>
+							</ExternalLink>
 						</div>
 						<div className="flex flex-col gap-1.5 items-center text-gray-500 dark:text-gray-500 text-sm">
 							<div>Released under the MIT License</div>
