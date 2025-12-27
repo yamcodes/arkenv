@@ -21,15 +21,15 @@ export type ArkEnvConfig = {
 	 */
 	coerce?: boolean;
 	/**
-	 * By default, ArkEnv will delete undeclared keys from the environment variables object.
-	 * This means that variables that are present in the environment but not present in the schema cannot make their way to your code.
+	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
-	 * Traditionally, however, ArkType mirrors TypeScript and defaults to deleting undeclared keys during validation.
+	 * Defaults to `'delete'` to ensure your output object only contains
+	 * keys you've explicitly declared. This differs from ArkType's standard behavior, which
+	 * mirrors TypeScript by defaulting to `'ignore'`.
 	 *
-	 * You can opt-in to this behavior and more by setting the `onUndeclaredKey` option to one of:
-	 * - "ignore": Allow undeclared keys on input, preserve them on output (ArkType default)
-	 * - "delete": Allow undeclared keys on input, delete them before returning output (ArkEnv default)
-	 * - "reject": Reject input with undeclared keys
+	 * - `delete` (ArkEnv default): Undeclared keys are allowed on input but stripped from the output.
+	 * - `ignore` (ArkType default): Undeclared keys are allowed and preserved in the output.
+	 * - `reject`: Undeclared keys will cause validation to fail.
 	 *
 	 * @default "delete"
 	 * @see https://arktype.io/docs/configuration#onundeclaredkey
