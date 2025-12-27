@@ -1,5 +1,56 @@
-header {
-	background-color: var(--secondary);
+#nd-nav {
+	background-color: transparent !important;
+	backdrop-filter: none !important;
+}
+
+/* Target the container that actually expands and holds the backdrop classes */
+#nd-nav > div,
+#nd-nav > nav {
+	background-color: rgba(
+		255,
+		255,
+		255,
+		0.95
+	) !important; /* High-contrast fallback */
+}
+
+.dark #nd-nav > div,
+.dark #nd-nav > nav {
+	background-color: rgba(
+		8,
+		16,
+		33,
+		0.95
+	) !important; /* High-contrast fallback */
+}
+
+@supports (backdrop-filter: blur(8px)) {
+	#nd-nav > div,
+	#nd-nav > nav {
+		backdrop-filter: blur(8px) !important;
+		background-color: rgba(
+			255,
+			255,
+			255,
+			0.8
+		) !important; /* Subtle blurred background */
+	}
+
+	.dark #nd-nav > div,
+	.dark #nd-nav > nav {
+		background-color: rgba(
+			8,
+			16,
+			33,
+			0.8
+		) !important; /* Subtle blurred background */
+	}
+}
+
+/* Ensure children (like the sticky bar) don't apply an additional blur or background */
+#nd-nav nav {
+	backdrop-filter: none !important;
+	background-color: transparent !important;
 }
 
 /* Override fumadocs muted-foreground for WCAG AA compliance */
@@ -12,5 +63,5 @@ header {
 .dark {
 	--color-fd-muted-foreground: hsl(
 		240 5% 70%
-	); /* WCAG AA compliant: 8.88:1 contrast on dark background */
+	); /* WCAG AA compliant: 8.61:1 contrast on dark background */
 }
