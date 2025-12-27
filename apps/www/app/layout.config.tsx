@@ -14,6 +14,6 @@ export const baseOptions: BaseLayoutProps = {
 		title: <Logo />,
 	},
 	themeSwitch: {
-		component: <ThemeToggle />,
+		component: <ThemeToggle key="theme-toggle" />,
 	},
 };
