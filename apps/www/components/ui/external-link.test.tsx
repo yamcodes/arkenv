@@ -101,14 +101,14 @@ describe("ExternalLink", () => {
 		});
 	});
 
-	describe("styling", () => {
-		it("should render arrow with proper size and opacity classes", () => {
+	describe("accessibility", () => {
+		it("should render arrow icon that is hidden from screen readers", () => {
 			render(
 				<ExternalLink href="https://example.com">External Link</ExternalLink>,
 			);
 			const link = screen.getByText("External Link").closest("a");
 			const svg = link?.querySelector("svg");
-			expect(svg).toHaveClass("inline", "opacity-70");
+			expect(svg).toHaveAttribute("aria-hidden", "true");
 		});
 	});
 });

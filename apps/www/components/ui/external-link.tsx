@@ -40,6 +40,7 @@ function isExternalUrl(href: string | undefined): boolean {
 		const hostname = url.hostname.toLowerCase();
 		if (
 			INTERNAL_DOMAINS.some(
+				// hostname matches exactly or is a subdomain (leading dot prevents matches like "evilarkenv.js.org")
 				(domain) => hostname === domain || hostname.endsWith(`.${domain}`),
 			)
 		) {
