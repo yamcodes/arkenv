@@ -362,5 +362,63 @@ describe("createEnv", () => {
 			);
 			expect(env.VAL).toBe("123");
 		});
+
+		it("should strip extra keys that are not defined in the schema by default", () => {
+			const env = createEnv(
+				{ HOST: "string" },
+				{
+					env: {
+						HOST: "localhost",
+						EXTRA: "should-be-deleted",
+					} as any,
+				},
+			);
+			expect(env).toEqual({ HOST: "localhost" });
+			expect(Object.keys(env)).not.toContain("EXTRA");
+		});
+
+		it("should preserve extra keys when onUndeclaredKey is set to 'ignore'", () => {
+			const env = createEnv(
+				{ HOST: "string" },
+				{
+					env: {
+						HOST: "localhost",
+						EXTRA: "should-be-preserved",
+					} as any,
+					onUndeclaredKey: "ignore",
+				},
+			);
+			expect(env).toEqual({ HOST: "localhost", EXTRA: "should-be-preserved" });
+		});
+
+		it("should throw when onUndeclaredKey is set to 'reject' and extra keys are present", () => {
+			expect(() =>
+				createEnv(
+					{ HOST: "string" },
+					{
+						env: {
+							HOST: "localhost",
+							EXTRA: "should-cause-fail",
+						} as any,
+						onUndeclaredKey: "reject",
+					},
+				),
+			).toThrow();
+		});
+
+		it("should explicitly delete extra keys when onUndeclaredKey is set to 'delete'", () => {
+			const env = createEnv(
+				{ HOST: "string" },
+				{
+					env: {
+						HOST: "localhost",
+						EXTRA: "should-be-deleted",
+					} as any,
+					onUndeclaredKey: "delete",
+				},
+			);
+			expect(env).toEqual({ HOST: "localhost" });
+			expect(Object.keys(env)).not.toContain("EXTRA");
+		});
 	});
 });

@@ -39,8 +39,7 @@ export function ThemeToggle({ className }: { className?: string }) {
 		>
 			{options.map((option) => {
 				const Icon = option.icon;
-				const isActive =
-					(theme === "system" ? "system" : theme) === option.value;
+				const isActive = theme === option.value;
 				return (
 					<button
 						key={option.value}
