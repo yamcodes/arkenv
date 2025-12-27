@@ -63,29 +63,29 @@ export default function HomePage() {
 					aria-hidden="true"
 				/>
 
-				{/* Stylized Divider: ----------(space)(icon)(space)---------- */}
-				<div className="flex items-center w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
-					<div className="h-px flex-1 bg-linear-to-r from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
-					<div className="px-6 flex items-center justify-center">
-						<div className="relative group" aria-hidden="true">
-							<Image
-								src="/assets/icon.svg"
-								alt=""
-								aria-hidden="true"
-								width={22}
-								height={22}
-								className="opacity-80 grayscale brightness-0 dark:brightness-0 dark:invert group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:invert-0 transition-all duration-500"
-							/>
-							<div
-								className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-								aria-hidden="true"
-							/>
-						</div>
-					</div>
-					<div className="h-px flex-1 bg-linear-to-l from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
-				</div>
-
 				<footer className="relative z-20">
+					{/* Stylized Divider: ----------(space)(icon)(space)---------- */}
+					<div className="flex items-center w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
+						<div className="h-px flex-1 bg-linear-to-r from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
+						<div className="px-6 flex items-center justify-center">
+							<div className="relative group" aria-hidden="true">
+								<Image
+									src="/assets/icon.svg"
+									alt=""
+									aria-hidden="true"
+									width={22}
+									height={22}
+									className="opacity-80 grayscale brightness-0 dark:brightness-0 dark:invert group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:invert-0 transition-all duration-500"
+								/>
+								<div
+									className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+									aria-hidden="true"
+								/>
+							</div>
+						</div>
+						<div className="h-px flex-1 bg-linear-to-l from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
+					</div>
+
 					<div className="max-w-screen-2xl mx-auto py-14 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
 						<div className="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
 							Proud part of the{" "}

@@ -225,9 +225,8 @@ test.describe("Homepage", () => {
 		await expect(footer).toContainText("Released under the MIT License");
 		await expect(footer).toContainText("Copyright © 2025 Yam Borodetsky");
 
-		// Check decorative icon in divider (accessibility)
-		const footerSection = page.locator("div.w-full.relative.mt-32");
-		const separatorIcon = footerSection.locator("img");
+		// Check decorative icon has proper accessibility attributes
+		const separatorIcon = footer.locator("img[aria-hidden='true']");
 		await expect(separatorIcon).toHaveAttribute("alt", "");
 		await expect(separatorIcon).toHaveAttribute("aria-hidden", "true");
 	});
