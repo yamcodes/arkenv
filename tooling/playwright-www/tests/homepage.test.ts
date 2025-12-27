@@ -15,7 +15,7 @@ test.describe("Homepage", () => {
 		const metaDescription = page.locator('meta[name="description"]');
 		await expect(metaDescription).toHaveAttribute(
 			"content",
-			"Typesafe environment variables powered by ArkType ⛵️",
+			"Environment variable validation from editor to runtime",
 		);
 	});
 
@@ -31,7 +31,7 @@ test.describe("Homepage", () => {
 		// Check description text
 		await expect(
 			page.locator(
-				"text=Typesafe environment variables from editor to runtime",
+				"text=Environment variable validation from editor to runtime",
 			),
 		).toBeVisible();
 	});
@@ -201,6 +201,34 @@ test.describe("Homepage", () => {
 		// Check that mobile-specific elements are hidden
 		const mobileStarButton = page.locator(".sm\\:hidden a[href*='github.com']");
 		await expect(mobileStarButton).not.toBeVisible();
+	});
+
+	test("should display footer with ecosystem link and license info", async ({
+		page,
+	}) => {
+		await page.goto("/");
+		await page.waitForLoadState("networkidle");
+
+		const footer = page.locator("footer");
+		await expect(footer).toBeVisible();
+
+		// Check ecosystem link
+		const ecosystemLink = footer.locator(
+			"a[href*='arktype.io/docs/ecosystem']",
+		);
+		await expect(ecosystemLink).toBeVisible();
+		await expect(ecosystemLink).toContainText("ArkType ecosystem");
+		await expect(ecosystemLink).toHaveAttribute("target", "_blank");
+		await expect(ecosystemLink).toHaveAttribute("rel", "noopener noreferrer");
+
+		// Check license and copyright info
+		await expect(footer).toContainText("Released under the MIT License");
+		await expect(footer).toContainText("Copyright © 2025 Yam Borodetsky");
+
+		// Check decorative icon has proper accessibility attributes
+		const separatorIcon = footer.locator("img[aria-hidden='true']");
+		await expect(separatorIcon).toHaveAttribute("alt", "");
+		await expect(separatorIcon).toHaveAttribute("aria-hidden", "true");
 	});
 
 	test("should not have console errors", async ({ page }) => {

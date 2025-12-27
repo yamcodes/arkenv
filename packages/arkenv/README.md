@@ -13,7 +13,7 @@
     <a href="https://discord.gg/zAmUyuxXH9"><img alt="Chat on Discord" src="https://img.shields.io/discord/957797212103016458?label=Chat&color=5865f4&logo=discord&labelColor=121214"></a>
   </div>
 </p>
-<h3 align="center">Proud member of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
+<h3 align="center">Proud part of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
 
 <p align="center">
   <img alt="ArkEnv Demo" src="https://arkenv.js.org/assets/demo.gif" />
