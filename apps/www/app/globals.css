@@ -14,16 +14,19 @@
 
 /* External link arrow icon as CSS custom property */
 @theme {
-	--external-link-arrow: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>');
+	--external-link-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E");
 }
 
 /* External link arrows - add arrow icon to external links */
-article a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not([data-external-link])::after {
+article
+a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not(
+	[data-external-link]
+)::after {
 	content: "";
 	display: inline-block;
 	width: 0.9em;
 	height: 0.9em;
-	margin-left: 0.15em;
+	margin-left: 0.125rem;
 	background-image: var(--external-link-arrow);
 	background-size: contain;
 	background-repeat: no-repeat;
