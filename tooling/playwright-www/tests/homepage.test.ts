@@ -223,7 +223,7 @@ test.describe("Homepage", () => {
 
 		// Check license and copyright info
 		await expect(footer).toContainText("Released under the MIT License");
-		await expect(footer).toContainText("Copyright © 2025 Yam Borodetsky");
+		await expect(footer).toContainText("Copyright © 2025-present Yam Borodetsky");
 
 		// Check decorative icon has proper accessibility attributes
 		const separatorIcon = footer.locator("img[aria-hidden='true']");
