@@ -5,7 +5,6 @@
 	"scripts": {
 		"start": "node --env-file .env index.js",
 		"dev": "node --watch --env-file .env index.js",
-		"dev:example": "node --watch --env-file .env.example index.js",
 		"fix": "pnpm -w run fix",
 		"clean": "rimraf dist node_modules"
 	},
@@ -15,9 +14,6 @@
 	},
 	"engines": {
 		"node": "24"
-	},
-	"stackblitz": {
-		"startCommand": "npm install && npm run dev:example"
 	},
 	"arkenvExamples": [
 		{
