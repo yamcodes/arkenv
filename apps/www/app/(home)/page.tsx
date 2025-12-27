@@ -67,7 +67,8 @@ export default function HomePage() {
 						<div className="relative group">
 							<Image
 								src="/assets/icon.svg"
-								alt="ArkEnv"
+								alt=""
+								aria-hidden="true"
 								width={22}
 								height={22}
 								className="opacity-80 grayscale brightness-0 dark:brightness-0 dark:invert group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:invert-0 transition-all duration-500"
