@@ -22,7 +22,7 @@ export function Card({ title, ...props }: CardProps) {
 			{...props}
 			title={augmentedTitle}
 			data-card
-			data-external-link
+			data-external-link={isExternal || undefined}
 			className="[&>p:last-child]:mb-0"
 		/>
 	);
