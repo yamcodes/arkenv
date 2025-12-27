@@ -15,7 +15,7 @@ test.describe("Homepage", () => {
 		const metaDescription = page.locator('meta[name="description"]');
 		await expect(metaDescription).toHaveAttribute(
 			"content",
-			"Typesafe environment variables powered by ArkType ⛵️",
+			"Environment variable validation from editor to runtime",
 		);
 	});
 
@@ -31,7 +31,7 @@ test.describe("Homepage", () => {
 		// Check description text
 		await expect(
 			page.locator(
-				"text=Typesafe environment variables from editor to runtime",
+				"text=Environment variable validation from editor to runtime",
 			),
 		).toBeVisible();
 	});

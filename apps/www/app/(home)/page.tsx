@@ -12,7 +12,7 @@ import {
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
-	description: "Typesafe environment variables powered by ArkType ⛵️",
+	description: "Environment variable validation from editor to runtime",
 };
 
 export default function HomePage() {
@@ -37,7 +37,7 @@ export default function HomePage() {
 							than sorry
 						</div>
 						<div className="text-xl md:text-2xl mt-4 text-gray-600 dark:text-gray-400">
-							Typesafe environment variables from editor to runtime
+							Environment variable validation from editor to runtime
 						</div>
 					</h1>
 					<CompatibilityRails />
@@ -58,7 +58,7 @@ export default function HomePage() {
 			{/* Homepage Footer with Fade Gradient and Stylized Separator */}
 			<div className="w-full relative mt-32">
 				{/* Background fade gradient */}
-				<div className="absolute inset-0 bg-linear-to-b from-transparent to-gray-200/50 dark:to-black/80 -z-10" />
+				<div className="absolute inset-0 bg-linear-to-b from-transparent to-gray-200/90 dark:to-black/80 -z-10" />
 
 				{/* Stylized Divider: ----------(space)(icon)(space)---------- */}
 				<div className="flex items-center w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
@@ -70,7 +70,7 @@ export default function HomePage() {
 								alt="ArkEnv"
 								width={22}
 								height={22}
-								className="opacity-40 grayscale brightness-0 dark:brightness-200 group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-500"
+								className="opacity-80 grayscale brightness-0 dark:brightness-0 dark:invert group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:invert-0 transition-all duration-500"
 							/>
 							<div className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 						</div>
@@ -81,7 +81,7 @@ export default function HomePage() {
 				<footer className="relative z-20">
 					<div className="max-w-screen-2xl mx-auto py-14 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
 						<div className="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
-							❤️ Proud member of the{" "}
+							Proud part of the{" "}
 							<a
 								href="https://arktype.io/docs/ecosystem#arkenv"
 								target="_blank"
@@ -91,13 +91,9 @@ export default function HomePage() {
 								ArkType ecosystem
 							</a>
 						</div>
-						<div className="flex flex-col gap-1.5 items-center">
-							<div className="text-xs uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500 font-bold">
-								Released under the MIT License
-							</div>
-							<div className="text-xs text-gray-400 sm:text-gray-400/80 dark:text-gray-500/80">
-								Copyright © 2025 Yam Borodetsky
-							</div>
+						<div className="flex flex-col gap-1.5 items-center text-gray-500 dark:text-gray-500 text-sm">
+							<div>Released under the MIT License</div>
+							<div>Copyright © 2025 Yam Borodetsky</div>
 						</div>
 					</div>
 				</footer>
