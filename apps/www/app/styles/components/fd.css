@@ -1,10 +1,22 @@
 header {
-	background-color: rgba(255, 255, 255, 0.6);
+	background-color: rgba(255, 255, 255, 0.9);
 	backdrop-filter: blur(8px);
 }
 
+@supports (backdrop-filter: blur(8px)) {
+	header {
+		background-color: transparent;
+	}
+}
+
 .dark header {
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+@supports (backdrop-filter: blur(8px)) {
+	.dark header {
+		background-color: transparent;
+	}
 }
 
 /* Override fumadocs muted-foreground for WCAG AA compliance */
