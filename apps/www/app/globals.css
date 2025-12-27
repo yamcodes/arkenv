@@ -19,7 +19,7 @@
 
 /* External link arrows - add arrow icon to external links */
 article
-a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"])::after {
+a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not([data-external-link])::after {
 	content: "";
 	display: inline-block;
 	width: 0.9em;

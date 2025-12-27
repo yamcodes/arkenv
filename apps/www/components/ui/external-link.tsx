@@ -71,11 +71,15 @@ export const ExternalLink: FC<ExternalLinkProps> = ({
 	const isExternal = isExternalUrl(href);
 
 	return (
-		<FumadocsLink href={href} {...props}>
+		<FumadocsLink
+			href={href}
+			data-external-link={isExternal || undefined}
+			{...props}
+		>
 			{children}
 			{isExternal && (
 				<ArrowUpRight
-					className="inline h-[0.9em] w-[0.9em] opacity-70 ml-0.5"
+					className="inline h-[0.9em] w-[0.9em] opacity-70 ml-[0.15em]"
 					aria-hidden="true"
 				/>
 			)}
