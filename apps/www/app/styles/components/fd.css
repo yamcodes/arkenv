@@ -1,20 +1,25 @@
-header {
-	background-color: rgba(255, 255, 255, 0.9);
+#nd-nav {
+	background-color: transparent;
+	backdrop-filter: none;
+}
+
+#nd-nav nav {
 	backdrop-filter: blur(8px);
+	background-color: rgba(255, 255, 255, 0.9);
 }
 
 @supports (backdrop-filter: blur(8px)) {
-	header {
+	#nd-nav nav {
 		background-color: transparent;
 	}
 }
 
-.dark header {
+.dark #nd-nav nav {
 	background-color: rgba(0, 0, 0, 0.8);
 }
 
 @supports (backdrop-filter: blur(8px)) {
-	.dark header {
+	.dark #nd-nav nav {
 		background-color: transparent;
 	}
 }
