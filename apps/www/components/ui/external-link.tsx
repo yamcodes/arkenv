@@ -76,7 +76,8 @@ export const ExternalLink: FC<ExternalLinkProps> = ({
 			{children}
 			{isExternal && (
 				<ArrowUpRight
-					className="inline h-[0.9em] w-[0.9em] opacity-70 ml-0.5"
+					className="inline align-middle h-[0.9em] w-[0.9em] opacity-70 ml-0.5"
+					stroke="currentColor"
 					aria-hidden="true"
 				/>
 			)}
