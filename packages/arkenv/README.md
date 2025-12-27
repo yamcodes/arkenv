@@ -140,7 +140,7 @@ ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcode
   - `"moduleResolution": "node16"` or `"nodenext"` - For Node.js projects. Supplied by default when using a matching `"module"` value.
 - **TypeScript >= 5.1** and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
 
-> While TypeScript is the recommend setup, ArkEnv works with plain JavaScript - with tradeoffs. See the [`basic-js`] (https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details.
+> While TypeScript is the recommended setup, ArkEnv works with plain JavaScript. See the [`basic-js`](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details and tradeoffs.
 
 ## Plugins
 
