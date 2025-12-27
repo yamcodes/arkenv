@@ -362,5 +362,21 @@ describe("createEnv", () => {
 			);
 			expect(env.VAL).toBe("123");
 		});
+
+		it("should strip extra keys that are not defined in the schema", () => {
+			const env = createEnv(
+				{
+					HOST: "string",
+				},
+				{
+					env: {
+						HOST: "localhost",
+						EXTRA: "should-not-be-here",
+					} as any,
+				},
+			);
+			expect(env).toEqual({ HOST: "localhost" });
+			expect(Object.keys(env)).not.toContain("EXTRA");
+		});
 	});
 });

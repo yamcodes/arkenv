@@ -20,6 +20,21 @@ export type ArkEnvConfig = {
 	 * Whether to coerce environment variables to their defined types. Defaults to `true`
 	 */
 	coerce?: boolean;
+	/**
+	 * By default, ArkEnv will delete undeclared keys from the environment variables object.
+	 * This means that variables that are present in the environment but not present in the schema cannot make their way to your code.
+	 *
+	 * Traditionally, however, ArkType mirrors TypeScript and defaults to deleting undeclared keys during validation.
+	 *
+	 * You can opt-in to this behavior and more by setting the `onUndeclaredKey` option to one of:
+	 * - "ignore": Allow undeclared keys on input, preserve them on output (ArkType default)
+	 * - "delete": Allow undeclared keys on input, delete them before returning output (ArkEnv default)
+	 * - "reject": Reject input with undeclared keys
+	 *
+	 * @default "delete"
+	 * @see https://arktype.io/docs/configuration#onundeclaredkey
+	 */
+	onUndeclaredKey?: "ignore" | "delete" | "reject";
 };
 
 /**
@@ -49,12 +64,19 @@ export function createEnv<const T extends SchemaShape>(
 ): distill.Out<at.infer<T, $>> | InferType<typeof def>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
-	{ env = process.env, coerce: shouldCoerce = true }: ArkEnvConfig = {},
+	{
+		env = process.env,
+		coerce: shouldCoerce = true,
+		onUndeclaredKey = "delete",
+	}: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
 	let schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
+
+	// Apply the `onUndeclaredKey` option
+	schema = schema.onUndeclaredKey(onUndeclaredKey);
 
 	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
 	if (shouldCoerce) {
