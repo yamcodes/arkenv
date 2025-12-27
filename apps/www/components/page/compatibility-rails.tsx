@@ -9,6 +9,7 @@ import {
 } from "@icons-pack/react-simple-icons";
 import { Square } from "lucide-react";
 import type { JSX } from "react";
+import { cn } from "~/lib/utils";
 import { ArkTypeIcon } from "../icons/arktype-icon";
 import { JoiIcon } from "../icons/joi-icon";
 import { TypiaIcon } from "../icons/typia-icon";
@@ -135,9 +136,14 @@ function MarqueeRow({
 	);
 }
 
-export function CompatibilityRails() {
+export function CompatibilityRails({ className }: { className?: string }) {
 	return (
-		<div className="flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
+		<div
+			className={cn(
+				"flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-2 md:py-6 pause-on-hover px-1 overflow-hidden",
+				className,
+			)}
+		>
 			<MarqueeRow label="Works with" items={validators} />
 			<MarqueeRow label="Built for" items={platforms} reverse />
 		</div>
