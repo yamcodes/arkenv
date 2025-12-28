@@ -91,20 +91,16 @@ declare global {
 			switch (node.type) {
 				case "hover": {
 					if (typeof node.text !== "string") return true;
+
 					if (node.text.endsWith(", {}>"))
 						// omit default scope param from type display
 						node.text = `${node.text.slice(0, -5)}>`;
 
-					const text = node.text.toLowerCase();
-					const isWhiteListed =
-						text.includes("ark") ||
-						text.includes("env") ||
-						text.includes("type") ||
-						text.includes("distill");
-
-					if (!isWhiteListed) return false;
-
-					if (node.text.startsWith("const") || node.text.startsWith("import")) {
+					if (
+						node.text.startsWith("const") ||
+						node.text.startsWith("import") ||
+						node.text.startsWith("let")
+					) {
 						// show type with completions populated for known examples
 						node.text = node.text.replace(
 							"version?: undefined",
@@ -120,12 +116,20 @@ declare global {
 						return !node.text.includes("(data: unknown)");
 					}
 
+					const text = node.text.toLowerCase();
+					const isWhiteListed =
+						text.includes("ark") ||
+						text.includes("env") ||
+						text.includes("type") ||
+						text.includes("distill");
+
 					if (node.text.startsWith("(property) ")) {
 						// Only show properties that have informative documentation
-						return !!node.docs;
+						// or belong to our core libraries
+						return isWhiteListed || !!node.docs;
 					}
 
-					return true;
+					return isWhiteListed;
 				}
 				case "error":
 					for (const transformation of arkTypePackageJson.contributes
