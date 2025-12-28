@@ -1,5 +1,49 @@
 # ArkEnv
 
+## 0.8.1
+
+### Patch Changes
+
+- #### Strip undeclared keys from output by default _[`#662`](https://github.com/yamcodes/arkenv/pull/662) [`d83d746`](https://github.com/yamcodes/arkenv/commit/d83d746e5f3672b97dea1d3eff0515a04af1d0e2) [@yamcodes](https://github.com/yamcodes)_
+
+  Environment variables not defined in your schema are now stripped from the output object by default.
+
+  You can customize this behavior using the new `onUndeclaredKey` option.
+
+  For example, assuming this is your `.env` file:
+
+  ```env
+  MY_VAR=hello
+  UNDECLARED_VAR=world
+  ```
+
+  And this is your schema:
+
+  ```ts
+  const env = arkenv({
+    MY_VAR: type.string(),
+  });
+
+  console.log(env);
+  ```
+
+  Current output:
+
+  ```ts
+  {
+    MY_VAR: "hello";
+  }
+  ```
+
+  Previous output:
+
+  ```ts
+  {
+  	MY_VAR: "hello",
+  	UNDECLARED_VAR: "world"
+  }
+  ```
+
 ## 0.8.0
 
 ### Minor Changes
