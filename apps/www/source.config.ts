@@ -172,6 +172,7 @@ declare global {
 								groupIndex < matchResult.length;
 								groupIndex++
 							) {
+								if (matchResult[groupIndex] === undefined) continue;
 								node.text = node.text.replaceAll(
 									new RegExp(`\\$${groupIndex}`, "gu"),
 									matchResult[groupIndex],
