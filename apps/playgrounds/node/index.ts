@@ -1,10 +1,8 @@
 import arkenv from "arkenv";
 
-const env = arkenv({
-	HOST: "string.ip | 'localhost'",
-	PORT: "0 <= number.integer <= 65535",
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-	DEBUGGING: "boolean = false",
+export const env = arkenv({
+	// Custom string literals
+	NODE_ENV: "string",
 });
 
 // Automatically validate and parse process.env

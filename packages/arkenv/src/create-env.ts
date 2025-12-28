@@ -1,5 +1,10 @@
 import { $ } from "@repo/scope";
-import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
+import type {
+	EnvSchemaWithType,
+	InferType,
+	Prettify,
+	SchemaShape,
+} from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
@@ -51,25 +56,27 @@ export type ArkEnvConfig = {
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
+	def: at.validate<T, $>,
 	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>>;
+): Prettify<distill.Out<at.infer<T, $>>>;
 export function createEnv<T extends EnvSchemaWithType>(
 	def: T,
 	config?: ArkEnvConfig,
-): InferType<T>;
+): Prettify<InferType<T>>;
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
+	def: at.validate<T, $> | EnvSchemaWithType,
 	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>> | InferType<typeof def>;
+): Prettify<distill.Out<at.infer<T, $>>> | Prettify<InferType<typeof def>>;
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
+	def: at.validate<T, $> | EnvSchemaWithType,
 	{
 		env = process.env,
 		coerce: shouldCoerce = true,
 		onUndeclaredKey = "delete",
 	}: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+):
+	| { [K in keyof distill.Out<at.infer<T, $>>]: distill.Out<at.infer<T, $>>[K] }
+	| { [K in keyof InferType<typeof def>]: InferType<typeof def>[K] } {
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;

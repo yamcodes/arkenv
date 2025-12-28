@@ -11,3 +11,10 @@ export type * from "./infer-type";
 
 // Also includes ArkType types
 export * from "./schema";
+
+/**
+ * Prettify a type by mapping over its keys to force TypeScript to expand it in tooltips.
+ */
+export type Prettify<T> = {
+	[K in keyof T]: T[K];
+} & {};
