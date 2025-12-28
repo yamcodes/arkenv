@@ -1,10 +1,5 @@
 import { $ } from "@repo/scope";
-import type {
-	EnvSchemaWithType,
-	InferType,
-	Prettify,
-	SchemaShape,
-} from "@repo/types";
+import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
@@ -58,29 +53,25 @@ export type ArkEnvConfig = {
 export function createEnv<const T extends SchemaShape>(
 	def: at.validate<T, $>,
 	config?: ArkEnvConfig,
-): Prettify<distill.Out<at.infer<T, $>>>;
+): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends EnvSchemaWithType>(
 	def: T,
 	config?: ArkEnvConfig,
-): Prettify<InferType<T>>;
+): InferType<T>;
 export function createEnv<const T extends SchemaShape>(
 	def: at.validate<T, $> | EnvSchemaWithType,
-	config?: ArkEnvConfig,
-): Prettify<distill.Out<at.infer<T, $>>> | Prettify<InferType<typeof def>>;
-export function createEnv<const T extends SchemaShape>(
-	def: at.validate<T, $> | EnvSchemaWithType,
-	{
+	config: ArkEnvConfig = {},
+): any {
+	const {
 		env = process.env,
 		coerce: shouldCoerce = true,
 		onUndeclaredKey = "delete",
-	}: ArkEnvConfig = {},
-):
-	| { [K in keyof distill.Out<at.infer<T, $>>]: distill.Out<at.infer<T, $>>[K] }
-	| { [K in keyof InferType<typeof def>]: InferType<typeof def>[K] } {
+	} = config;
+
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
-	let schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
+	let schema = isCompiledType ? (def as any) : $.type.raw(def as any);
 
 	// Apply the `onUndeclaredKey` option
 	schema = schema.onUndeclaredKey(onUndeclaredKey);
