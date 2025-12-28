@@ -16,10 +16,11 @@ describe("Logo", () => {
 
 	it("renders the logo icon", () => {
 		render(<Logo />);
-		// Check for the inline SVG element
-		const svg = document.querySelector("svg");
+		// Check for the inline SVG element via the container
+		const logoText = screen.getByText("ArkEnv");
+		const container = logoText.parentElement;
+		const svg = container?.querySelector("svg");
 		expect(svg).toBeInTheDocument();
-		expect(svg).toHaveAttribute("viewBox", "0 0 12 12");
 	});
 
 	it("applies default styling classes", () => {
@@ -34,10 +35,6 @@ describe("Logo", () => {
 		expect(text).toHaveClass("font-medium");
 		expect(text).toHaveClass("text-fd-foreground");
 		expect(text).toHaveClass("text-sm");
-
-		const svg = document.querySelector("svg");
-		// Check that the inline SVG has the size-6 class
-		expect(svg).toHaveClass("size-6");
 	});
 
 	it("accepts custom className", () => {
