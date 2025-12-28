@@ -71,9 +71,7 @@ export function createEnv<const T extends SchemaShape>(
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
-	let schema = (
-		isCompiledType ? (def as unknown) : $.type.raw(def as EnvSchema<T>)
-	) as at<unknown, $>;
+	let schema = (isCompiledType ? def : $.type.raw(def)) as at<unknown, $>;
 
 	// Apply the `onUndeclaredKey` option
 	schema = schema.onUndeclaredKey(onUndeclaredKey);
