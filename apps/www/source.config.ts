@@ -26,7 +26,6 @@ const arktypeTwoslashOptions: TransformerTwoslashOptions = {
 	langs: ["ts", "js"],
 	twoslashOptions: {
 		compilerOptions: {
-			noErrorTruncation: true,
 			baseUrl: root,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
@@ -124,6 +123,21 @@ declare global {
 						text.includes("distill");
 
 					if (node.text.startsWith("(property) ")) {
+						// ErrorLens summary formatting from main
+						if (node.text.includes("RuntimeErrors.summary") && node.docs) {
+							node.docs = node.docs.replaceAll("•", "    •");
+							return true;
+						}
+
+						// Key narrowing demonstration from main
+						if (
+							node.text.includes('platform: "android" | "ios"') ||
+							node.text.includes('platform: "android"') ||
+							node.text.includes('platform: "ios"')
+						) {
+							return true;
+						}
+
 						const isAllCaps = /^\(property\) [A-Z0-9_]+:/.test(node.text);
 						const isNoise = [
 							"log",
@@ -181,8 +195,8 @@ export default defineConfig({
 		rehypeCodeOptions: {
 			langs: ["ts", "js", "json", "bash", "dotenv"],
 			themes: {
-				light: "github-light",
-				dark: "github-dark",
+				light: "github-light-high-contrast",
+				dark: "github-dark-high-contrast",
 			},
 			transformers: [
 				transformerTwoslash(arktypeTwoslashOptions),
