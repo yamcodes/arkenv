@@ -95,6 +95,15 @@ declare global {
 						// omit default scope param from type display
 						node.text = `${node.text.slice(0, -5)}>`;
 
+					const text = node.text.toLowerCase();
+					const isWhiteListed =
+						text.includes("ark") ||
+						text.includes("env") ||
+						text.includes("type") ||
+						text.includes("distill");
+
+					if (!isWhiteListed) return false;
+
 					if (node.text.startsWith("const") || node.text.startsWith("import")) {
 						// show type with completions populated for known examples
 						node.text = node.text.replace(
