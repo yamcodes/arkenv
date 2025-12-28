@@ -1,13 +1,11 @@
-import arkenv, { type } from "arkenv";
+import arkenv from "arkenv";
 
-export const env = arkenv(
-	type({
-		HOST: "string",
-		PORT: "number.port",
-		NODE_ENV: "string",
-		DEBUGGING: "boolean",
-	}),
-);
+const env = arkenv({
+	HOST: "string.ip | 'localhost'",
+	PORT: "0 <= number.integer <= 65535",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+	DEBUGGING: "boolean = false",
+});
 
 // Automatically validate and parse process.env
 // TypeScript knows the ✨exact✨ types!
