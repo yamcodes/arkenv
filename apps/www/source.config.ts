@@ -195,8 +195,8 @@ export default defineConfig({
 		rehypeCodeOptions: {
 			langs: ["ts", "js", "json", "bash", "dotenv"],
 			themes: {
-				light: "github-light",
-				dark: "github-dark",
+				light: "github-light-high-contrast",
+				dark: "github-dark-high-contrast",
 			},
 			transformers: [
 				transformerTwoslash(arktypeTwoslashOptions),
