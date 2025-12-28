@@ -14,7 +14,7 @@ Vite doesn't automatically load `.env*` files when evaluating your `vite.config.
 
 Here's how to validate those variables with ArkEnv. The key is defining your schema *once* with ArkEnv's`type()` and reusing it for both server-side config variables and client-exposed `VITE_*` variables:
 
-```ts title="vite.config.ts"
+```ts title="vite.config.ts" twoslash
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import arkenv, { type } from "arkenv";
 import { defineConfig, loadEnv } from "vite";
