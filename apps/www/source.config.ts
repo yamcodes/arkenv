@@ -91,18 +91,34 @@ declare global {
 				case "hover": {
 					if (typeof node.text !== "string") return true;
 
-					const text = node.text.toLowerCase();
-					// Filter out "z" (Zod) and "v" (Valibot) from hover hints
-					if (
-						text === "z" ||
-						text === "v" ||
-						text === "import z" ||
-						text === "import v"
-					)
-						return false;
+					if (node.text.endsWith(", {}>"))
+						// omit default scope param from type display
+						node.text = `${node.text.slice(0, -5)}>`;
 
+					if (
+						node.text.startsWith("const") ||
+						node.text.startsWith("import") ||
+						node.text.startsWith("let")
+					) {
+						// show type with completions populated for known examples
+						node.text = node.text.replace(
+							"version?: undefined",
+							"version?: number | string",
+						);
+						node.text = node.text.replace(
+							"versions?: undefined",
+							"versions?: (number | string)[]",
+						);
+
+						// filter out the type of Type's invocation
+						// as opposed to the Type itself
+						return !node.text.includes("(data: unknown)");
+					}
+
+					const text = node.text.toLowerCase();
 					const isWhiteListed =
 						text.includes("ark") ||
+						text.includes("env") ||
 						text.includes("type") ||
 						text.includes("distill");
 
