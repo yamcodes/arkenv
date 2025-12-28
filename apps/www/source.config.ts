@@ -110,6 +110,12 @@ declare global {
 						// as opposed to the Type itself
 						return !node.text.includes("(data: unknown)");
 					}
+
+					if (node.text.startsWith("(property) ")) {
+						// Only show properties that have informative documentation
+						return !!node.docs;
+					}
+
 					return true;
 				}
 				case "error":
@@ -146,6 +152,7 @@ export default defineConfig({
 		rehypePlugins: [rehypeGithubAlerts],
 		remarkPlugins: [remarkGemoji, remarkNpm],
 		rehypeCodeOptions: {
+			langs: ["ts", "js", "json", "bash", "dotenv"],
 			themes: {
 				light: "github-light",
 				dark: "github-dark",
