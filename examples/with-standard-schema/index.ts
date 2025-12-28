@@ -1,5 +1,5 @@
 import arkenv, { type } from "arkenv";
-import { z } from "zod";
+import * as z from "zod";
 
 const env = arkenv({
 	// ArkType validators (concise TypeScript-like syntax)
