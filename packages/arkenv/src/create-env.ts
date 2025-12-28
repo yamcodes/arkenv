@@ -61,7 +61,7 @@ export function createEnv<T extends EnvSchemaWithType>(
 export function createEnv<const T extends SchemaShape>(
 	def: at.validate<T, $> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
-): any {
+): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	const {
 		env = process.env,
 		coerce: shouldCoerce = true,
@@ -71,7 +71,9 @@ export function createEnv<const T extends SchemaShape>(
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
-	let schema = isCompiledType ? (def as any) : $.type.raw(def as any);
+	let schema = (
+		isCompiledType ? (def as unknown) : $.type.raw(def as EnvSchema<T>)
+	) as at<unknown, $>;
 
 	// Apply the `onUndeclaredKey` option
 	schema = schema.onUndeclaredKey(onUndeclaredKey);
@@ -88,5 +90,5 @@ export function createEnv<const T extends SchemaShape>(
 		throw new ArkEnvError(validatedEnv);
 	}
 
-	return validatedEnv;
+	return validatedEnv as distill.Out<at.infer<T, $>> | InferType<typeof def>;
 }
