@@ -137,3 +137,8 @@ button[data-search-full] {
 		transform: none !important;
 	}
 }
+
+/* Right align theme toggle in sidebar only */
+aside .theme-toggle {
+	margin-left: auto;
+}

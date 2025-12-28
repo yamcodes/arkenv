@@ -20,7 +20,11 @@ export function ThemeToggle({ className }: { className?: string }) {
 	}, []);
 
 	if (!mounted) {
-		return <div className={cn("h-9 w-24 rounded-full border", className)} />;
+		return (
+			<div
+				className={cn("theme-toggle h-9 w-24 rounded-full border", className)}
+			/>
+		);
 	}
 
 	const options = [
@@ -32,7 +36,7 @@ export function ThemeToggle({ className }: { className?: string }) {
 	return (
 		<fieldset
 			className={cn(
-				"inline-flex h-9 items-center rounded-full border bg-fd-background p-1",
+				"theme-toggle inline-flex h-9 items-center rounded-full border bg-fd-background p-1",
 				className,
 			)}
 			aria-label="Toggle Theme"
