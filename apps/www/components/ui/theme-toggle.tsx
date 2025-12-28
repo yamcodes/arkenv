@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
 	Tooltip,
 	TooltipContent,
+	TooltipProvider,
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
@@ -39,38 +40,40 @@ export function ThemeToggle({ className }: { className?: string }) {
 	] as const satisfies Option[];
 
 	return (
-		<fieldset
-			className={cn(
-				"theme-toggle inline-flex h-9 items-center rounded-full border bg-fd-background p-1",
-				className,
-			)}
-			aria-label="Toggle Theme"
-		>
-			{options.map((option) => {
-				const Icon = option.icon;
-				const isActive = theme === option.value;
-				return (
-					<Tooltip key={option.value}>
-						<TooltipTrigger asChild>
-							<button
-								type="button"
-								onClick={() => setTheme(option.value)}
-								className={cn(
-									"flex h-7 w-7 items-center justify-center rounded-full transition-colors",
-									isActive
-										? "bg-fd-accent text-fd-accent-foreground"
-										: "text-fd-muted-foreground hover:bg-fd-accent/40 hover:text-fd-accent-foreground",
-								)}
-								aria-pressed={isActive}
-								aria-label={option.label}
-							>
-								<Icon className="h-4 w-4" />
-							</button>
-						</TooltipTrigger>
-						<TooltipContent>{option.label}</TooltipContent>
-					</Tooltip>
-				);
-			})}
-		</fieldset>
+		<TooltipProvider>
+			<fieldset
+				className={cn(
+					"theme-toggle inline-flex h-9 items-center rounded-full border bg-fd-background p-1",
+					className,
+				)}
+				aria-label="Toggle Theme"
+			>
+				{options.map((option) => {
+					const Icon = option.icon;
+					const isActive = theme === option.value;
+					return (
+						<Tooltip key={option.value}>
+							<TooltipTrigger asChild>
+								<button
+									type="button"
+									onClick={() => setTheme(option.value)}
+									className={cn(
+										"flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+										isActive
+											? "bg-fd-accent text-fd-accent-foreground"
+											: "text-fd-muted-foreground hover:bg-fd-accent/40 hover:text-fd-accent-foreground",
+									)}
+									aria-pressed={isActive}
+									aria-label={option.label}
+								>
+									<Icon className="h-4 w-4" />
+								</button>
+							</TooltipTrigger>
+							<TooltipContent>{option.label}</TooltipContent>
+						</Tooltip>
+					);
+				})}
+			</fieldset>
+		</TooltipProvider>
 	);
 }
