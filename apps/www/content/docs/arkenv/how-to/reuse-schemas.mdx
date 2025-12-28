@@ -33,8 +33,10 @@ const Env = type({
 });
 
 // Use it in multiple places with full type inference
-const env1 = arkenv(Env, process.env);
-const env2 = arkenv(Env, { HOST: "localhost", PORT: "3000", DEBUG: "true" });
+const env1 = arkenv(Env, { env: process.env });
+const env2 = arkenv(Env, {
+	env: { HOST: "localhost", PORT: "3000", DEBUG: "true" },
+});
 
 // TypeScript knows the exact types
 const host: string = env1.HOST;
