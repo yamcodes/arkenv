@@ -19,29 +19,19 @@ export const docs = defineDocs({
 });
 
 const arktypeTwoslashOptions: TransformerTwoslashOptions = {
-	explicitTrigger: true,
+	explicitTrigger: false,
 	langs: ["ts", "js"],
 	twoslashOptions: {
 		compilerOptions: {
 			noErrorTruncation: true,
-			baseUrl: ".",
+			baseUrl: "../../",
 			paths: {
-				arkenv: ["/Users/yamcodes/code/arkenv/packages/arkenv/src/index.ts"],
-				"@arkenv/vite-plugin": [
-					"/Users/yamcodes/code/arkenv/packages/vite-plugin/src/index.ts",
-				],
-				"@arkenv/bun-plugin": [
-					"/Users/yamcodes/code/arkenv/packages/bun-plugin/src/index.ts",
-				],
-				"@repo/types": [
-					"/Users/yamcodes/code/arkenv/packages/internal/types/src/index.ts",
-				],
-				"@repo/scope": [
-					"/Users/yamcodes/code/arkenv/packages/internal/scope/src/index.ts",
-				],
-				"@repo/keywords": [
-					"/Users/yamcodes/code/arkenv/packages/internal/keywords/src/index.ts",
-				],
+				arkenv: ["packages/arkenv/src/index.ts"],
+				"@arkenv/vite-plugin": ["packages/vite-plugin/src/index.ts"],
+				"@arkenv/bun-plugin": ["packages/bun-plugin/src/index.ts"],
+				"@repo/types": ["packages/internal/types/src/index.ts"],
+				"@repo/scope": ["packages/internal/scope/src/index.ts"],
+				"@repo/keywords": ["packages/internal/keywords/src/index.ts"],
 			},
 		},
 		extraFiles: {
@@ -80,17 +70,24 @@ declare global {
 	type type<t = unknown, $ = {}> = a.Type<t, $>
 	const scope: typeof a.scope
 	const match: typeof a.match
-
-	type Prettify<t> = t extends infer o ? { [k in keyof o]: o[k] } : never
 }`,
 		},
 		filterNode: (node) => {
 			if (node.type === "hover") {
 				if (typeof node.text !== "string") return true;
 				if (node.text.endsWith(", {}>"))
+					// omit default scope param from type display
 					node.text = node.text.slice(0, -5) + ">";
 
+				if (node.text.startsWith("type")) return true;
+
+				// when `noErrorTruncation` is enabled, TS displays the type
+				// of an anonymous cyclic type as `any` instead of using
+				// `...`, so replace it to clarify the type is accurately inferred
+				node.text = node.text.replace(/ any/g, " ...");
+
 				if (node.text.startsWith("const")) {
+					// show type with completions populated for known examples
 					node.text = node.text.replace(
 						"version?: undefined",
 						"version?: number | string",
@@ -99,8 +96,22 @@ declare global {
 						"versions?: undefined",
 						"versions?: (number | string)[]",
 					);
+					// filter out the type of Type's invocation
+					// as opposed to the Type itself
+					return !node.text.includes("(data: unknown)");
 				}
-				return true;
+
+				if (node.text.startsWith("(property) ")) {
+					const expression = node.text.slice(11); // "(property) ".length
+					if (expression.startsWith("RuntimeErrors.summary") && node.docs) {
+						node.docs = node.docs.replace(/•/g, "    •");
+						return true;
+					}
+					// Only show hovers for specific variables or if they are simple enough
+					// This prevents too much noise in larger schemas
+					return true;
+				}
+				return false;
 			}
 			if (node.type === "error") {
 				for (const transformation of arkTypePackageJson.contributes
