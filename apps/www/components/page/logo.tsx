@@ -18,9 +18,9 @@ export function Logo({ className }: { className?: string }) {
 				className="size-6"
 			>
 				<path
+					className="stroke-blue-500 dark:stroke-blue-400"
 					style={{
 						fill: "none",
-						stroke: "#3b82f6",
 						strokeWidth: 0.99975,
 						strokeLinecap: "round",
 						strokeLinejoin: "round",
@@ -31,8 +31,8 @@ export function Logo({ className }: { className?: string }) {
 					d="M8.5 6c0-1.379-1.121-2.5-2.5-2.5A2.502 2.502 0 0 0 3.5 6c0 1.379 1.121 2.5 2.5 2.5S8.5 7.379 8.5 6ZM6 11V8.5M1 6h2.5m5 0H11M6 3.5V1M2.464 2.464l1.768 1.768m3.536 3.536 1.768 1.768m-7.072 0 1.768-1.768m3.536-3.536 1.768-1.768"
 				/>
 				<path
+					className="fill-blue-500 dark:fill-blue-400"
 					style={{
-						fill: "#3b82f6",
 						fillOpacity: 1,
 						fillRule: "nonzero",
 						stroke: "none",
