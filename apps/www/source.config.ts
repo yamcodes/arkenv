@@ -1,27 +1,13 @@
-import { createRequire } from "node:module";
+import fs from "node:fs";
+import path from "node:path";
 import { rehypeCodeDefaultOptions, remarkNpm } from "fumadocs-core/mdx-plugins";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import {
 	type TransformerTwoslashOptions,
 	transformerTwoslash,
 } from "fumadocs-twoslash";
-import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import { rehypeGithubAlerts } from "rehype-github-alerts";
 import remarkGemoji from "remark-gemoji";
-
-const require = createRequire(import.meta.url);
-
-/**
- * Next.js apparently strips away the "with { type: 'json' }" option, so we need to use the `require` function to import the package.json file.
- *
- *
- * If it weren't for this issue, we'd be able to use:
- *
- * ```ts
- * import arkTypePackageJson from "arkdark/package.json" with { type: "json" };
- * ```
- */
-const arkTypePackageJson = require("arkdark/package.json");
 
 export const docs = defineDocs({
 	dir: "content/docs",
@@ -30,25 +16,34 @@ export const docs = defineDocs({
 	},
 });
 
-/** biome-ignore-start lint/style/useTemplate: Copied from ArkType */
-/**
- * Twoslash property prefix {@link https://github.com/arktypeio/arktype/blob/ff7db8b61004f8de82089a22f4cb4ab5938c2a97/ark/docs/lib/shiki.ts#L37 | ripped from ArkType}
- */
-const twoslashPropertyPrefix = "(property) ";
-/**
- * Twoslash options {@link https://github.com/arktypeio/arktype/blob/ff7db8b61004f8de82089a22f4cb4ab5938c2a97/ark/docs/lib/shiki.ts#L38 | ripped from ArkType}
- */
-const arktypeTwoslashOptions = {
-	explicitTrigger: false,
+const root = path.resolve(process.cwd(), "../../");
+const arkTypePackageJson = JSON.parse(
+	fs.readFileSync(new URL(import.meta.resolve("arkdark/package.json")), "utf8"),
+);
+
+const arktypeTwoslashOptions: TransformerTwoslashOptions = {
+	explicitTrigger: true,
 	langs: ["ts", "js"],
 	twoslashOptions: {
 		compilerOptions: {
-			// avoid ... in certain longer types on hover
-			noErrorTruncation: true,
-			baseUrl: "../../",
+			baseUrl: root,
 			paths: {
-				arkenv: ["packages/arkenv/src"],
-				"@repo/*": ["packages/internal/*/src"],
+				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
+				"@arkenv/vite-plugin": [
+					path.join(root, "packages/vite-plugin/src/index.ts"),
+				],
+				"@arkenv/bun-plugin": [
+					path.join(root, "packages/bun-plugin/src/index.ts"),
+				],
+				"@repo/types": [
+					path.join(root, "packages/internal/types/src/index.ts"),
+				],
+				"@repo/scope": [
+					path.join(root, "packages/internal/scope/src/index.ts"),
+				],
+				"@repo/keywords": [
+					path.join(root, "packages/internal/keywords/src/index.ts"),
+				],
 			},
 		},
 		extraFiles: {
@@ -87,21 +82,24 @@ declare global {
 	type type<t = unknown, $ = {}> = a.Type<t, $>
 	const scope: typeof a.scope
 	const match: typeof a.match
+
+	type Prettify<t> = t extends infer o ? { [K in keyof o]: o[K] } & {} : never
 }`,
 		},
 		filterNode: (node) => {
 			switch (node.type) {
-				case "hover":
+				case "hover": {
+					if (typeof node.text !== "string") return true;
+
 					if (node.text.endsWith(", {}>"))
 						// omit default scope param from type display
-						node.text = node.text.slice(0, -5) + ">";
-					if (node.text.startsWith("type")) return true;
+						node.text = `${node.text.slice(0, -5)}>`;
 
-					// when `noErrorTruncation` is enabled, TS displays the type
-					// of an anonymous cyclic type as `any` instead of using
-					// `...`, so replace it to clarify the type is accurately inferred
-					node.text = node.text.replaceAll(" any", " ...");
-					if (node.text.startsWith("const")) {
+					if (
+						node.text.startsWith("const") ||
+						node.text.startsWith("import") ||
+						node.text.startsWith("let")
+					) {
 						// show type with completions populated for known examples
 						node.text = node.text.replace(
 							"version?: undefined",
@@ -111,28 +109,57 @@ declare global {
 							"versions?: undefined",
 							"versions?: (number | string)[]",
 						);
+
 						// filter out the type of Type's invocation
 						// as opposed to the Type itself
 						return !node.text.includes("(data: unknown)");
 					}
-					if (node.text.startsWith(twoslashPropertyPrefix)) {
-						const expression = node.text.slice(twoslashPropertyPrefix.length);
-						if (expression.startsWith("RuntimeErrors.summary") && node.docs) {
-							// this shows error summary in JSDoc
-							// re-add spaces stripped out during processing
+
+					const text = node.text.toLowerCase();
+					const isWhiteListed =
+						text.includes("ark") ||
+						text.includes("env") ||
+						text.includes("type") ||
+						text.includes("distill");
+
+					if (node.text.startsWith("(property) ")) {
+						// ErrorLens summary formatting from main
+						if (node.text.includes("RuntimeErrors.summary") && node.docs) {
 							node.docs = node.docs.replaceAll("•", "    •");
 							return true;
 						}
-						if (expression === `platform: "android" | "ios"`) {
-							// this helps demonstrate narrowing on discrimination
+
+						// Key narrowing demonstration from main
+						if (
+							node.text.includes('platform: "android" | "ios"') ||
+							node.text.includes('platform: "android"') ||
+							node.text.includes('platform: "ios"')
+						) {
 							return true;
 						}
-						return false;
+
+						const isAllCaps = /^\(property\) [A-Z0-9_]+:/.test(node.text);
+						const isNoise = [
+							"log",
+							"warn",
+							"error",
+							"info",
+							"dir",
+							"group",
+							"Console",
+						].some((n) => text.includes(n.toLowerCase()));
+
+						if (isNoise) return false;
+						// Hide CAPS keys (likely schema definitions) unless they have documentation
+						if (isAllCaps) return !!node.docs;
+
+						// Show lowercase results (host, nodeEnv, debugging, etc.)
+						return true;
 					}
-					return false;
+
+					return isWhiteListed;
+				}
 				case "error":
-					// adapted from my ErrorLens implementation at
-					// https://github.com/usernamehw/vscode-error-lens/blob/d1786ddeedee23d70f5f75b16415a6579b554b59/src/utils/extUtils.ts#L127
 					for (const transformation of arkTypePackageJson.contributes
 						.configurationDefaults["errorLens.replace"]) {
 						const regex = new RegExp(transformation.matcher);
@@ -145,9 +172,10 @@ declare global {
 								groupIndex < matchResult.length;
 								groupIndex++
 							) {
+								if (matchResult[groupIndex] === undefined) continue;
 								node.text = node.text.replaceAll(
 									new RegExp(`\\$${groupIndex}`, "gu"),
-									matchResult[Number(groupIndex)],
+									matchResult[groupIndex],
 								);
 							}
 							node.text = `TypeScript: ${node.text}`;
@@ -159,26 +187,21 @@ declare global {
 			}
 		},
 	},
-} satisfies TransformerTwoslashOptions;
-/** biome-ignore-end lint/style/useTemplate: Copied from ArkType */
+};
 
 export default defineConfig({
 	mdxOptions: {
 		rehypePlugins: [rehypeGithubAlerts],
 		remarkPlugins: [remarkGemoji, remarkNpm],
 		rehypeCodeOptions: {
+			langs: ["ts", "js", "json", "bash", "dotenv"],
 			themes: {
-				// High-contrast themes for WCAG AA compliance
 				light: "github-light-high-contrast",
 				dark: "github-dark-high-contrast",
 			},
 			transformers: [
+				transformerTwoslash(arktypeTwoslashOptions),
 				...(rehypeCodeDefaultOptions.transformers ?? []),
-				transformerTwoslash({
-					...arktypeTwoslashOptions,
-					typesCache: createFileSystemTypesCache(),
-					explicitTrigger: true,
-				}),
 			],
 		},
 	},

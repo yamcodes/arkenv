@@ -32,7 +32,7 @@ icon: Scale
 You'd be surprised how simple it is to build your own environment validation flow with any modern validation library. To demonstrate, we'll naturally use ArkType, though the same logic applies to alternatives like Zod, Valibot, Typia, etc.
 Just defines a schema, perform a check, and return the validated results:
 
-```ts title="env.ts"
+```ts title="env.ts" twoslash
 import { type } from "arktype";
 
 const Env = type({

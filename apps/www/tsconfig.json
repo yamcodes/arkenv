@@ -16,6 +16,7 @@
 		"jsx": "react-jsx",
 		"incremental": true,
 		"types": ["@testing-library/jest-dom"],
+		"noErrorTruncation": true,
 		"paths": {
 			"~/*": ["./*"],
 			"fumadocs-mdx:collections/*": [".source/*"]
