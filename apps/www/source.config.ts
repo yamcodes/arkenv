@@ -124,9 +124,23 @@ declare global {
 						text.includes("distill");
 
 					if (node.text.startsWith("(property) ")) {
-						// Only show properties that have informative documentation
-						// or belong to our core libraries
-						return isWhiteListed || !!node.docs;
+						const isAllCaps = /^\(property\) [A-Z0-9_]+:/.test(node.text);
+						const isNoise = [
+							"log",
+							"warn",
+							"error",
+							"info",
+							"dir",
+							"group",
+							"Console",
+						].some((n) => text.includes(n.toLowerCase()));
+
+						if (isNoise) return false;
+						// Hide CAPS keys (likely schema definitions) unless they have documentation
+						if (isAllCaps) return !!node.docs;
+
+						// Show lowercase results (host, nodeEnv, debugging, etc.)
+						return true;
 					}
 
 					return isWhiteListed;
