@@ -16,13 +16,10 @@ describe("Logo", () => {
 
 	it("renders the logo icon", () => {
 		render(<Logo />);
-		// Check for the image element
-		const img = document.querySelector("img");
-		expect(img).toBeInTheDocument();
-		expect(img).toHaveAttribute(
-			"src",
-			expect.stringContaining("/assets/icon.svg"),
-		);
+		// Check for the inline SVG element
+		const svg = document.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("viewBox", "0 0 12 12");
 	});
 
 	it("applies default styling classes", () => {
@@ -38,9 +35,9 @@ describe("Logo", () => {
 		expect(text).toHaveClass("text-fd-foreground");
 		expect(text).toHaveClass("text-sm");
 
-		const img = document.querySelector("img");
-		// next/image might apply styles differently, but we passed className="size-6"
-		expect(img).toHaveClass("size-6");
+		const svg = document.querySelector("svg");
+		// Check that the inline SVG has the size-6 class
+		expect(svg).toHaveClass("size-6");
 	});
 
 	it("accepts custom className", () => {
