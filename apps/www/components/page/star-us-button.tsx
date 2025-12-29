@@ -33,7 +33,7 @@ const starUsButtonVariants = cva("text-md font-bold", {
 				"rounded-xl",
 				"transition-all duration-200 ease-in-out scale-100",
 				"focus-visible:ring-2 focus-visible:ring-[rgba(255,150,0,0.7)] focus-visible:ring-offset-0",
-				"hover:scale-[1.05]",
+				"hover:-translate-y-0.5",
 				"active:scale-[0.98]",
 			],
 		},
