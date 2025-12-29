@@ -20,20 +20,25 @@ export const ExternalLink: FC<ExternalLinkProps> = ({
 }) => {
 	const isExternal = isExternalUrl(href);
 
+	if (!isExternal) {
+		return (
+			<FumadocsLink href={href} {...props}>
+				{children}
+			</FumadocsLink>
+		);
+	}
+
 	return (
-		<FumadocsLink
-			href={href}
-			data-external-link={isExternal || undefined}
-			{...props}
-		>
+		<FumadocsLink href={href} data-external-link {...props}>
 			{children}
-			{isExternal && (
+			<span className="inline-block whitespace-nowrap">
+				{"\u00A0"}
 				<ArrowUpRight
-					className="inline align-middle h-[0.9em] w-[0.9em] opacity-70 ml-0.5"
+					className="inline align-middle h-[0.9em] w-[0.9em] opacity-70"
 					stroke="currentColor"
 					aria-hidden="true"
 				/>
-			)}
+			</span>
 		</FumadocsLink>
 	);
 };
