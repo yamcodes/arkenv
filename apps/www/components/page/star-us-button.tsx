@@ -43,27 +43,6 @@ const starUsButtonVariants = cva("text-md font-bold", {
 	},
 });
 
-const starUsShadowVariants = cva(
-	"absolute inset-0 rounded-xl pointer-events-none",
-	{
-		variants: {
-			variant: {
-				mobile: [
-					"shadow-[0_8px_16px_rgba(255,150,0,0.1)]",
-					"dark:shadow-[0_8px_16px_rgba(255,150,0,0.15)]",
-				],
-				desktop: [
-					"shadow-[0_16px_20px_rgba(255,150,0,0.1)]",
-					"dark:shadow-[0_16px_20px_rgba(255,150,0,0.15)]",
-				],
-			},
-		},
-		defaultVariants: {
-			variant: "desktop",
-		},
-	},
-);
-
 type StarUsProps = {
 	className?: string;
 } & VariantProps<typeof starUsButtonVariants>;
@@ -128,7 +107,6 @@ export function StarUsButton({ className }: StarUsProps) {
 			{/* Mobile: Simple button with glow */}
 			<div className="sm:hidden w-full relative">
 				{/* Shadow element for mobile */}
-				<div className={starUsShadowVariants({ variant: "mobile" })} />
 
 				<Button
 					asChild
@@ -143,7 +121,7 @@ export function StarUsButton({ className }: StarUsProps) {
 					>
 						<div className="flex items-center gap-2">
 							<SiGithub aria-hidden="true" className="w-4 h-4" />
-							<span className="font-medium">Star us on GitHub!</span>
+							<span className="font-medium">Star us on GitHub</span>
 							<Star
 								aria-hidden="true"
 								className="w-5 h-5 text-yellow-600 dark:text-yellow-400"
@@ -162,7 +140,6 @@ export function StarUsButton({ className }: StarUsProps) {
 			{/* Desktop: Complex button with animations and effects */}
 			<div className="hidden sm:block relative">
 				{/* Shadow element that doesn't scale */}
-				<div className={starUsShadowVariants({ variant: "desktop" })} />
 
 				<Button
 					asChild
@@ -204,7 +181,7 @@ export function StarUsButton({ className }: StarUsProps) {
 						{/* Main content */}
 						<div className="flex items-center gap-2 relative z-10">
 							<SiGithub aria-hidden="true" className="w-4 h-4" />
-							<span className="font-medium">Star us on GitHub!</span>
+							<span className="font-medium">Star us on GitHub</span>
 							<Star
 								aria-hidden="true"
 								className="w-5 h-5 transition-all duration-300 star-bounce text-yellow-600 dark:text-yellow-400"
