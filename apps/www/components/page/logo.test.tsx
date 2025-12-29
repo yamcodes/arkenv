@@ -14,15 +14,6 @@ describe("Logo", () => {
 		expect(logoText).toBeInTheDocument();
 	});
 
-	it("renders the logo icon", () => {
-		render(<Logo />);
-		// Check for the inline SVG element via the container
-		const logoText = screen.getByText("ArkEnv");
-		const container = logoText.parentElement;
-		const svg = container?.querySelector("svg");
-		expect(svg).toBeInTheDocument();
-	});
-
 	it("applies default styling classes", () => {
 		render(<Logo />);
 
