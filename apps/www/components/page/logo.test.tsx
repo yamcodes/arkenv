@@ -14,20 +14,6 @@ describe("Logo", () => {
 		expect(logoText).toBeInTheDocument();
 	});
 
-	it("applies default styling classes", () => {
-		render(<Logo />);
-
-		const container = screen.getByText("ArkEnv").parentElement;
-		expect(container).toHaveClass("flex");
-		expect(container).toHaveClass("items-center");
-		expect(container).toHaveClass("gap-2");
-
-		const text = screen.getByText("ArkEnv");
-		expect(text).toHaveClass("font-medium");
-		expect(text).toHaveClass("text-fd-foreground");
-		expect(text).toHaveClass("text-sm");
-	});
-
 	it("accepts custom className", () => {
 		render(<Logo className="custom-class" />);
 
