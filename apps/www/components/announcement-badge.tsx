@@ -38,9 +38,6 @@ export function AnnouncementBadge({
 					<ArrowRight className="h-4 w-4 opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
 				)}
 			</span>
-
-			{/* Decorative background glow on hover */}
-			<div className="absolute inset-0 -z-10 rounded-full bg-blue-400/0 blur-xl transition-all group-hover:bg-blue-400/10" />
 		</Link>
 	);
 }

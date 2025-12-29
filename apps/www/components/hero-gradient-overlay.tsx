@@ -6,7 +6,7 @@ export const HeroGradientOverlay: FC = () => {
 			viewBox="0 0 1440 181"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className="pointer-events-none absolute w-full top-0 left-0 h-40 z-10 opacity-100 text-blue-50 dark:text-[#011537]"
+			className="pointer-events-none absolute w-full top-0 left-0 h-40 z-10 opacity-100 text-blue-200/60 dark:text-blue-600/20"
 			preserveAspectRatio="none"
 			aria-hidden="true"
 			role="presentation"
