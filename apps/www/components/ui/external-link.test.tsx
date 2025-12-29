@@ -20,9 +20,9 @@ describe("ExternalLink", () => {
 			);
 			const link = screen.getByText("External Link");
 			expect(link).toBeInTheDocument();
-			// Check for arrow icon by checking SVG is present
-			const svg = link.closest("a")?.querySelector("svg");
-			expect(svg).toBeInTheDocument();
+			// Check for arrow icon by checking data-external-link attribute is present
+			const a = link.closest("a");
+			expect(a).toHaveAttribute("data-external-link", "true");
 		});
 
 		it("should render arrow icon for external HTTPS links", () => {
@@ -30,8 +30,8 @@ describe("ExternalLink", () => {
 				<ExternalLink href="https://arktype.io">ArkType Docs</ExternalLink>,
 			);
 			const link = screen.getByText("ArkType Docs");
-			const svg = link.closest("a")?.querySelector("svg");
-			expect(svg).toBeInTheDocument();
+			const a = link.closest("a");
+			expect(a).toHaveAttribute("data-external-link", "true");
 		});
 
 		it("should NOT render arrow icon for internal relative links", () => {
@@ -39,22 +39,22 @@ describe("ExternalLink", () => {
 				<ExternalLink href="/docs/quickstart">Internal Link</ExternalLink>,
 			);
 			const link = screen.getByText("Internal Link");
-			const svg = link.closest("a")?.querySelector("svg");
-			expect(svg).not.toBeInTheDocument();
+			const a = link.closest("a");
+			expect(a).not.toHaveAttribute("data-external-link");
 		});
 
 		it("should NOT render arrow icon for hash links", () => {
 			render(<ExternalLink href="#section">Hash Link</ExternalLink>);
 			const link = screen.getByText("Hash Link");
-			const svg = link.closest("a")?.querySelector("svg");
-			expect(svg).not.toBeInTheDocument();
+			const a = link.closest("a");
+			expect(a).not.toHaveAttribute("data-external-link");
 		});
 
 		it("should NOT render arrow icon when href is undefined", () => {
 			render(<ExternalLink>No Href Link</ExternalLink>);
 			const link = screen.getByText("No Href Link");
-			const svg = link.closest("a")?.querySelector("svg");
-			expect(svg).not.toBeInTheDocument();
+			const a = link.closest("a");
+			expect(a).not.toHaveAttribute("data-external-link");
 		});
 
 		it("should NOT render arrow icon for arkenv.js.org links (same domain)", () => {
@@ -64,8 +64,8 @@ describe("ExternalLink", () => {
 				</ExternalLink>,
 			);
 			const link = screen.getByText("Same Domain Link");
-			const svg = link.closest("a")?.querySelector("svg");
-			expect(svg).not.toBeInTheDocument();
+			const a = link.closest("a");
+			expect(a).not.toHaveAttribute("data-external-link");
 		});
 
 		it("should NOT render arrow icon for localhost links", () => {
@@ -75,8 +75,8 @@ describe("ExternalLink", () => {
 				</ExternalLink>,
 			);
 			const link = screen.getByText("Localhost Link");
-			const svg = link.closest("a")?.querySelector("svg");
-			expect(svg).not.toBeInTheDocument();
+			const a = link.closest("a");
+			expect(a).not.toHaveAttribute("data-external-link");
 		});
 	});
 
@@ -102,13 +102,13 @@ describe("ExternalLink", () => {
 	});
 
 	describe("accessibility", () => {
-		it("should render arrow icon that is hidden from screen readers", () => {
+		it("should NOT render an SVG icon (it is decorative CSS background)", () => {
 			render(
 				<ExternalLink href="https://example.com">External Link</ExternalLink>,
 			);
 			const link = screen.getByText("External Link").closest("a");
 			const svg = link?.querySelector("svg");
-			expect(svg).toHaveAttribute("aria-hidden", "true");
+			expect(svg).not.toBeInTheDocument();
 		});
 	});
 });
