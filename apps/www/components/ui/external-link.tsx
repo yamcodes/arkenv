@@ -1,7 +1,6 @@
 "use client";
 
 import FumadocsLink from "fumadocs-core/link";
-import { ArrowUpRight } from "lucide-react";
 import type { ComponentProps, FC } from "react";
 import { isExternalUrl } from "~/lib/utils/url";
 
@@ -27,13 +26,6 @@ export const ExternalLink: FC<ExternalLinkProps> = ({
 			{...props}
 		>
 			{children}
-			{isExternal && (
-				<ArrowUpRight
-					className="inline align-middle h-[0.9em] w-[0.9em] opacity-70 ml-0.5"
-					stroke="currentColor"
-					aria-hidden="true"
-				/>
-			)}
 		</FumadocsLink>
 	);
 };
