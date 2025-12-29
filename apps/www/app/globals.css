@@ -43,11 +43,9 @@ a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
 
 /* External links in documentation */
 article
-	a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not(
-		[data-external-link]
-	):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
-		[data-no-arrow]
-	) {
+a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not(
+	[data-external-link]
+):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-arrow]) {
 	display: inline;
 	white-space: normal;
 	padding-right: 1.1em;
@@ -57,12 +55,11 @@ article
 	background-position: center right;
 }
 
-.dark article
+.dark
+	article
 	a[href^="http"]:not([href*="arkenv.js.org"]):not([href*="localhost"]):not(
 		[data-external-link]
-	):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
-		[data-no-arrow]
-	) {
+	):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-arrow]) {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E");
 }
 
