@@ -628,6 +628,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		envDir: string,
 		schema: Record<string, string>,
 	) => ({
+		mode: "test" as const,
 		configFile: false as const,
 		root: withEnvDirFixture,
 		envDir,
