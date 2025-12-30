@@ -1,5 +1,13 @@
 # @arkenv/vite-plugin
 
+## 0.0.24
+
+### Patch Changes
+
+- #### Support Vite's `envDir` for custom env directories _[`#614`](https://github.com/yamcodes/arkenv/pull/614) [`b5f2781`](https://github.com/yamcodes/arkenv/commit/b5f278153daa7e1a7fb70aa2a7405e14f92c9a01) [@danciudev](https://github.com/danciudev)_
+
+  The plugin now internally passes along [Vite's `envDir` config option](https://vite.dev/config/shared-options.html#envdir), allowing users to specify a custom directory for environment files.
+
 ## 0.0.23
 
 ### Patch Changes
