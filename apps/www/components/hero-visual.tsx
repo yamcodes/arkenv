@@ -49,14 +49,6 @@ export function HeroVisual() {
 			aria-label="Interactive 2.5D visual representing ArkEnv's typesafe environment variables"
 			className="relative w-full max-w-125 lg:mt-8 aspect-square flex items-center justify-center perspective-[1000px] group select-none"
 		>
-			{/* Ambient Glow Background */}
-			<div
-				className="absolute inset-0 bg-blue-500/10 dark:bg-blue-400/5 rounded-full blur-[80px] transform-gpu transition-transform duration-500"
-				style={{
-					transform: `translate3d(${mousePos.x * 40}px, ${mousePos.y * 40}px, 0)`,
-				}}
-			/>
-
 			{/* The 2.5D Platform / Card */}
 			<div
 				className="relative w-75 h-75 transition-transform duration-300 ease-out transform-gpu"
@@ -80,7 +72,7 @@ export function HeroVisual() {
 						width="160"
 						height="160"
 						viewBox="0 0 12 12"
-						className="drop-shadow-[0_20px_40px_rgba(59,130,246,0.3)] filter brightness-110 animate-spin-slow origin-center"
+						className="animate-spin-slow origin-center"
 						xmlns="http://www.w3.org/2000/svg"
 						role="img"
 						aria-labelledby="hero-icon-title"

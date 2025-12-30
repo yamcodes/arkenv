@@ -9,7 +9,7 @@ describe("StarUsButton", () => {
 	it("renders star button with correct text", () => {
 		render(<StarUsButton />);
 
-		const buttons = screen.getAllByText("Star us on GitHub!");
+		const buttons = screen.getAllByText("Star us on GitHub");
 		expect(buttons).toHaveLength(2); // One for mobile, one for desktop
 	});
 
@@ -35,7 +35,7 @@ describe("StarUsButton", () => {
 		render(<StarUsButton />);
 
 		// Should have two buttons with the same text (mobile and desktop versions)
-		const buttons = screen.getAllByText("Star us on GitHub!");
+		const buttons = screen.getAllByText("Star us on GitHub");
 		expect(buttons).toHaveLength(2);
 	});
 
