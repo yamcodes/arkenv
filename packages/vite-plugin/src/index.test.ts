@@ -4,11 +4,15 @@ import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module to capture calls
-vi.mock("arkenv", () => ({
-	__esModule: true,
-	default: vi.fn(),
-	createEnv: vi.fn(),
-}));
+// Mock the arkenv module with a spy that calls the real implementation by default
+vi.mock("arkenv", async (importActual) => {
+	const actual = await importActual<typeof import("arkenv")>();
+	return {
+		...actual,
+		default: vi.fn(actual.default),
+		createEnv: vi.fn(actual.createEnv),
+	};
+});
 
 // Mock the vite module to capture loadEnv calls
 vi.mock("vite", async (importActual) => {
@@ -28,8 +32,11 @@ const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
 
 const mockLoadEnv = vi.mocked(vite.loadEnv);
 
-// Run fixture-based tests
-for (const name of readdirSync(fixturesDir)) {
+// Run fixture-based tests for standard fixtures
+// (Specialized fixtures like 'with-env-dir' are handled by dedicated integration tests below)
+for (const name of readdirSync(fixturesDir).filter(
+	(n) => n !== "with-env-dir",
+)) {
 	const fixtureDir = join(fixturesDir, name);
 
 	describe(`Fixture: ${name}`, () => {
@@ -50,8 +57,8 @@ for (const name of readdirSync(fixturesDir)) {
 		it("should build successfully with the plugin", async () => {
 			const config = await readTestConfig(fixtureDir);
 
-			// Mock createEnv to return a valid object
-			mockCreateEnv.mockReturnValue(config.envVars || {});
+			// We no longer mock createEnv return value here,
+			// letting it run with real implementations.
 
 			await expect(
 				vite.build({
@@ -656,8 +663,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 	it("should load environment variables from custom envDir", async () => {
 		const config = await readTestConfig(withEnvDirFixture);
 
-		mockCreateEnv.mockReturnValue(expectedEnvVars);
-
 		await expect(
 			vite.build(createBuildConfig(customEnvDir, config.Env)),
 		).resolves.not.toThrow();
@@ -671,12 +676,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		const config = await readTestConfig(withEnvDirFixture);
 		const nonExistentEnvDir = join(withEnvDirFixture, "non-existent-dir");
 
-		mockCreateEnv.mockImplementation(() => {
-			throw new Error(
-				"Environment validation failed: VITE_CUSTOM_VAR is required",
-			);
-		});
-
 		await expect(
 			vite.build(createBuildConfig(nonExistentEnvDir, config.Env)),
 		).rejects.toThrow();
@@ -688,20 +687,15 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 	it("should fail when using root directory without .env files", async () => {
 		const config = await readTestConfig(withEnvDirFixture);
-
-		mockCreateEnv.mockImplementation(() => {
-			throw new Error("VITE_CUSTOM_VAR must be a string (was missing)");
-		});
+		const emptyEnvDir = join(withEnvDirFixture, "empty-dir");
 
 		await expect(
-			vite.build(createBuildConfig(withEnvDirFixture, config.Env)),
-		).rejects.toThrow("VITE_CUSTOM_VAR must be a string (was missing)");
+			vite.build(createBuildConfig(emptyEnvDir, config.Env)),
+		).rejects.toThrow();
 	});
 
 	it("should prioritize envDir over root when both are specified", async () => {
 		const config = await readTestConfig(withEnvDirFixture);
-
-		mockCreateEnv.mockReturnValue(expectedEnvVars);
 
 		await expect(
 			vite.build(createBuildConfig(customEnvDir, config.Env)),
@@ -718,8 +712,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 			...expectedEnvVars,
 			EXTRA_VAR: "extra-value",
 		};
-
-		mockCreateEnv.mockReturnValue(expectedEnvVars);
 
 		await vite.build(createBuildConfig(customEnvDir, config.Env));
 
