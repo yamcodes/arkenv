@@ -12,6 +12,55 @@
 @plugin "tailwindcss-animate";
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 
+/* External link arrow icon as CSS custom property */
+@theme {
+	--external-link-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E");
+}
+
+/* Link underlines in documentation */
+article
+a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+	[data-no-underline]
+),
+a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+		[class*="fd-"]
+	):not([data-no-underline]) {
+	text-decoration: none;
+	border-bottom: 1.5px solid currentColor;
+	padding-bottom: 1px;
+	transition: border-bottom-width 0.1s ease;
+}
+
+article
+	a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+		[data-no-underline]
+	):hover,
+a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+		[class*="fd-"]
+	):not([data-no-underline]):hover {
+	border-bottom-width: 2.5px;
+}
+
+/* External links in documentation */
+article
+a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+	[data-no-arrow]
+) {
+	padding-right: 1.1em;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-size: 0.9em;
+	background-position: center right;
+}
+
+.dark
+	article
+	a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+		[data-no-arrow]
+	) {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+}
+
 button[data-search-full] {
 	--color-fd-secondary: hsl(0, 0%, 100%);
 	--color-fd-accent: hsl(0, 0%, 100%);
@@ -39,8 +88,11 @@ button[data-search-full] {
 	}
 
 	@keyframes shimmer {
-		100% {
-			transform: translateX(100%);
+		from {
+			transform: translateX(-200%);
+		}
+		to {
+			transform: translateX(200%);
 		}
 	}
 
@@ -86,4 +138,9 @@ button[data-search-full] {
 		animation: none !important;
 		transform: none !important;
 	}
+}
+
+/* Right align theme toggle in sidebar only */
+aside .theme-toggle {
+	margin-left: auto;
 }

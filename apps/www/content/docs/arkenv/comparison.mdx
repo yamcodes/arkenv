@@ -30,9 +30,9 @@ icon: Scale
 ### DIY
 
 You'd be surprised how simple it is to build your own environment validation flow with any modern validation library. To demonstrate, we'll naturally use ArkType, though the same logic applies to alternatives like Zod, Valibot, Typia, etc.
-Just create an `env.ts` file that defines a schema, performs a check, and returns the validated results.
+Just defines a schema, perform a check, and return the validated results:
 
-```ts
+```ts title="env.ts" twoslash
 import { type } from "arktype";
 
 const Env = type({
@@ -60,20 +60,20 @@ After years of building enterprise-scale applications, I realized that while DIY
 
 [T3 Env](https://env.t3.gg) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ.
 
-T3 Env follows a "Next.js-first" philosophy. It's designed around a distinct client/server split - even if you write a simple Node server, it requires you to categorize variables under a `server` or `client` keys.
-It also has a Nuxt plugin.
+T3 Env follows a "Next.js-first" philosophy, including an explicit client/server split in the "agnostic core". This means that even if you're building a simple Node server and never have to deal with leaking sensitive variables to the client, you'll still have the cognitive overhead of bucketing variables into `server` or `client` keys.
+It also offers a Nuxt plugin.
 
 #### For Next.js or Nuxt
 
-If you're building with Next.js or Nuxt, you should likely stick with T3 Env. It's battle-tested, widely adopted, and specifically optimized for those ecosystems. ArkEnv doesn't currently focus on these frameworks.
+If you're building with Next.js or Nuxt, you should probably stick with T3 Env. It's battle-tested, widely adopted, and specifically optimized for those ecosystems. ArkEnv doesn't currently focus on these frameworks.
 
 #### For everything else
 
-If you're building a Vite app, a Node/Bun backend, a CLI tool, or even a Solid Start project, ArkEnv can cover your needs, including [official examples](/docs/arkenv/examples).
+If you're building a Vite app, a Node server, a [Bun fullstack app](https://bun.com/docs/guides/ecosystem/react), a CLI tool, or even a Solid Start project, ArkEnv can cover your needs. We provide [official examples](/docs/arkenv/examples) for these use cases.
 
 Even if you aren't ready to commit fully to ArkType, ArkEnv's support for [Standard Schema](https://standardschema.dev/) means you can keep using Zod, Valibot, or other compliant validators while benefiting from our specific framework features.
 
-By choosing ArkEnv, you gain access to features like automatic coercion and native ArkType synergy that are missing from T3 Env.
+By choosing ArkEnv, you gain access to features like [automatic coercion](/docs/arkenv/coercion), [native ArkType synergy](https://github.com/yamcodes/arkenv/tree/main/examples/basic), and [first-class Vite support](/docs/vite-plugin) that are missing from T3 Env.
 
 ### vite-plugin-validate-env
 

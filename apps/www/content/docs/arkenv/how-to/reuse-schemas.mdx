@@ -23,7 +23,7 @@ This might sound like a niche use-case, but it comes up more often than you'd th
 
 That's where type definitions start making sense: define your schema once with `type()`, and reuse it wherever you need.
 
-```ts
+```ts twoslash
 import arkenv, { type } from 'arkenv';
 
 const Env = type({
@@ -33,10 +33,12 @@ const Env = type({
 });
 
 // Use it in multiple places with full type inference
-const env1 = arkenv(Env, process.env);
-const env2 = arkenv(Env, { HOST: "localhost", PORT: "3000", DEBUG: "true" });
+const env1 = arkenv(Env, { env: process.env });
+const env2 = arkenv(Env, {
+	env: { HOST: "localhost", PORT: "3000", DEBUG: "true" },
+});
 
 // TypeScript knows the exact types
-const host: string = env1.HOST;
-const port: number = env1.PORT;
+const host = env1.HOST;
+const port = env1.PORT;
 ```

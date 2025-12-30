@@ -110,6 +110,7 @@ export function Heading({
 		>
 			<a
 				href={`#${id}`}
+				data-no-underline
 				className={`select-none text-primary no-underline absolute -left-5 transition-opacity duration-200 ${
 					isMobile && isActive
 						? "opacity-100"

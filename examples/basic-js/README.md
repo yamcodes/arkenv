@@ -2,74 +2,82 @@
 
 This example shows how to use ArkEnv in a basic Node.js application.
 
-
 ## What's inside?
 
 The example demonstrates:
+
 - Setting up environment variables with ArkEnv
 - Using default values
 - Runtime-validated environment configuration
 
-## Getting started
+## Tradeoffs
 
-### Prerequisites
+ArkEnv works in plain JavaScript, as shown in this example, but the _developer experience_ may vary. This includes things like type hints or autocomplete, which, without explicit TypeScript setup, depend entirely on your editor and tooling.
 
-Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [nvm](https://github.com/nvm-sh/nvm) to install it.
+Modern IDEs may still infer types from ArkEnv’s `.d.ts` files, but this is not something we explicitly guarantee or test for. If it works well for you, great. For a more predictable, complete experience we recommend [using TypeScript](../../packages/arkenv/README.md#typescript-requirements).
 
 ### Quickstart
 
 1. #### Install dependencies
-    ```bash
-    npm install
-    ```
+
+   ```bash
+   npm install
+   ```
 
 2. #### Start the development server with hot reloading enabled
-    ```bash
-    npm run dev
-    ```
-    :white_check_mark: You will see the environment variables printed in the console.
+   ```bash
+   npm run dev
+   ```
+   :white_check_mark: You will see the environment variables printed in the console.
 
 ### Adding environment variables
 
 With the development server running (if it isn't - just run `npm run dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
 
 1. #### Define the new environment variable in the schema as a _required_ string
-    ```javascript
-    // index.js
-    const env = arkenv({
-        // other definitions...
-        MY_ENV_VAR: "string"
-    });
-    ```
+
+   ```javascript
+   // index.js
+   const env = arkenv({
+     // other definitions...
+     MY_ENV_VAR: "string",
+   });
+   ```
 
 2. #### Notice the development server will show an error
-    ```bash
-    ArkEnvError: Errors found while validating environment variables
-      MY_ENV_VAR must be a string (was missing)
-    ```
-    This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.js.org/docs/arkenv/how-to/load-environment-variables#using-env-files).
+
+   ```bash
+   ArkEnvError: Errors found while validating environment variables
+     MY_ENV_VAR must be a string (was missing)
+   ```
+
+   This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.js.org/docs/arkenv/how-to/load-environment-variables#using-env-files).
 
 3. #### Copy the `.env.example` file to `.env`
-   
-    To keep the development server running, run this command in a new terminal window:
-    ```bash
-    cp .env.example .env
-    ```
+
+   To keep the development server running, run this command in a new terminal window:
+
+   ```bash
+   cp .env.example .env
+   ```
 
 4. #### Add a new environment variable to the `.env` file
-    ```bash
-    echo "MY_ENV_VAR=new_value" >> .env
-    ```
-    
-    Notice the development server will once again print the existing environment variables.
+
+   ```bash
+   echo "MY_ENV_VAR=new_value" >> .env
+   ```
+
+   Notice the development server will once again print the existing environment variables.
 
 5. #### Add the following line to the `index.js` file
-    ```javascript
-    console.log(env.MY_ENV_VAR);
-    ```
-    You will see the new environment variable printed in the console.
-    
-    **Congratulations!** :tada: You've just added a new environment variable and printed its value.
+
+   ```javascript
+   console.log(env.MY_ENV_VAR);
+   ```
+
+   You will see the new environment variable printed in the console.
+
+   **Congratulations!** :tada: You've just added a new environment variable and printed its value.
 
 ### Next steps
 

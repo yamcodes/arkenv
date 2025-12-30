@@ -10,6 +10,7 @@ import type { MDXComponents } from "mdx/types";
 import type { ComponentPropsWithoutRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { ExternalLink } from "~/components/ui/external-link";
 import { Heading } from "~/components/ui/heading";
 
 const createHeadingComponent =
@@ -29,6 +30,7 @@ const customComponents = {
 	Steps,
 	Accordion,
 	Accordions,
+	a: ExternalLink,
 	h1: createHeadingComponent("h1"),
 	h2: createHeadingComponent("h2"),
 	h3: createHeadingComponent("h3"),
@@ -47,8 +49,8 @@ const customComponents = {
 export function getMDXComponents(components: MDXComponents): MDXComponents {
 	return {
 		...defaultComponents,
-		...customComponents,
 		...twoslashComponents,
+		...customComponents,
 		...components,
 	};
 }

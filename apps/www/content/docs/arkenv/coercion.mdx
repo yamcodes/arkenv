@@ -10,7 +10,7 @@ Traditionally, environment variables are always strings by default. ArkEnv **coe
 
 Any field defined as a `number` or a numeric subtype (like `number.integer` or `number.port`) will be automatically parsed.
 
-```ts title="index.ts"
+```ts title="index.ts" twoslash
 import arkenv from "arkenv";
 
 const env = arkenv({
@@ -31,7 +31,7 @@ console.log({
 
 The `boolean` type handles strings like `"true"` and `"false"`.
 
-```ts title="index.ts"
+```ts title="index.ts" twoslash
 import arkenv from "arkenv";
 
 const env = arkenv({
@@ -56,7 +56,7 @@ Coercion is highly optimized: ArkEnv performs a one-time introspection of your s
 
 You can opt-out of this behavior by setting `coerce` to `false`.
 
-```ts title="index.ts"
+```ts title="index.ts" twoslash
 import arkenv from "arkenv";
 
 // ⚠️ This will throw an error!

@@ -31,6 +31,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.5
       - name: Install dependencies
         run: pnpm install
       - name: Build packages
@@ -149,9 +152,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.5
       - name: Install dependencies
         run: pnpm install
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
@@ -197,9 +203,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.5
       - name: Install dependencies
         run: pnpm install
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}

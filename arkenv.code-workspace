@@ -4,7 +4,8 @@
 			"turbo.json": "jsonc",
 			"tsconfig*.json": "jsonc",
 			".github/renovate.json": "jsonc",
-			"renovate.json": "jsonc"
+			"renovate.json": "jsonc",
+			"*.css": "tailwindcss"
 		}
 	},
 	"folders": [
@@ -61,6 +62,10 @@
 			"name": "apps"
 		},
 		{
+			"path": "apps/www",
+			"name": "  www (arkenv.js.org)"
+		},
+		{
 			"path": "apps/playgrounds/node",
 			"name": "  node-playground"
 		},
@@ -89,8 +94,8 @@
 			"name": "  standard-schema-playground"
 		},
 		{
-			"path": "apps/www",
-			"name": "  www (arkenv.js.org)"
+			"path": "apps/playgrounds/js",
+			"name": "  js-playground"
 		},
 		{
 			"path": "examples",

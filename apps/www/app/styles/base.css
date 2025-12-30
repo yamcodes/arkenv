@@ -15,6 +15,10 @@
 			var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
 			"Liberation Mono", "Courier New", monospace;
 	}
+
+	button:not(:disabled) {
+		@apply cursor-pointer;
+	}
 }
 
 @layer utilities {

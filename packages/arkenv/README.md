@@ -2,7 +2,7 @@
   <a href="https://github.com/yamcodes/arkenv/blob/main/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
-    <p align="center">Typesafe environment variables from editor to runtime</p>
+    <p align="center">Environment variable validation from editor to runtime</p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
     <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
@@ -13,7 +13,7 @@
     <a href="https://discord.gg/zAmUyuxXH9"><img alt="Chat on Discord" src="https://img.shields.io/discord/957797212103016458?label=Chat&color=5865f4&logo=discord&labelColor=121214"></a>
   </div>
 </p>
-<h3 align="center">Proud member of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
+<h3 align="center">Proud part of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
 
 <p align="center">
   <img alt="ArkEnv Demo" src="https://arkenv.js.org/assets/demo.gif" />
@@ -53,7 +53,7 @@ const nodeEnv = env.NODE_ENV;
 const debugging = env.DEBUGGING;
 ```
 
-> _ArkEnv supports native [ArkType](https://arktype.io/) notation and any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc._
+> ArkEnv supports native [ArkType](https://arktype.io/) notation and any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc.
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
@@ -67,25 +67,17 @@ ArkEnvError: Errors found while validating environment variables
 
 ## Features
 
- ⛯ Zero external dependencies
- 
- ⛯ Works in Node.js, Bun, and Vite
- 
- ⛯ Tiny: <2kB gzipped
+* Zero external dependencies
+* Works in Node.js, Bun, and Vite
+* Tiny: <2kB gzipped 
+* Build-time / runtime validation with editor autocomplete & type hints
+* Single import, zero config for most projects
+* Optional variables and default values
+* Intuitive automatic coercion
+* Compatible with any Standard Schema validator (Zod, Valibot, etc.)
+* Native support for ArkType, TypeScript’s 1:1 validator
 
- ⛯ Build-time / runtime validation with editor autocomplete & type hints
-
- ⛯ Single import, zero config for most projects
-
- ⛯ Optional variables and default values
-
- ⛯ Intuitive automatic coercion
-
- ⛯ Compatible with any Standard Schema validator (Zod, Valibot, etc.)
-
- ⛯ Native support for ArkType, TypeScript’s 1:1 validator
-
-> _See how ArkEnv compares to alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet)._
+> See how ArkEnv compares to alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
 
 ## Installation
 
@@ -127,22 +119,20 @@ bun add arkenv arktype
 
 :rocket: **Let's get started!** Read the [2-minute setup guide](https://arkenv.js.org/docs/quickstart) or [start with an example](https://arkenv.js.org/docs/examples).
 
-> _Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/integrations/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/integrations/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains)._
+> Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/integrations/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/integrations/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
 
 ## Requirements
 
 ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.2**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react). Older versions may work but are not officially supported.
 
-### TypeScript setup
-
-While ArkEnv works with plain JavaScript, _TypeScript is highly recommended_ to get the full typesafety benefits. To get ArkEnv to work with TypeScript, we require:
+### TypeScript requirements
 
 - [**Modern TypeScript module resolution**](https://www.typescriptlang.org/tsconfig/#moduleResolution). One of the following is required in your `tsconfig.json`:
   - `"moduleResolution": "bundler"` - Recommended for modern bundlers (Vite, Next.js, etc.). Supplied by default when using `"module": "Preserve"` (Introduced in TypeScript v5.4).
   - `"moduleResolution": "node16"` or `"nodenext"` - For Node.js projects. Supplied by default when using a matching `"module"` value.
 - **TypeScript >= 5.1** and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
 
-> _Without TypeScript, runtime validation still works, but you lose build-time type checking and, in some cases, editor autocomplete. Our [examples](https://arkenv.js.org/docs/examples) show this in action!_
+> While TypeScript is the recommended setup, ArkEnv works with plain JavaScript. See the [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details and tradeoffs.
 
 ## Plugins
 
@@ -164,7 +154,7 @@ You are also welcome to [contribute to the project](https://github.com/yamcodes/
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://yam.codes"><img src="https://avatars.githubusercontent.com/u/2014360?v=4?s=100" width="100px;" alt="Yam C Borodetsky"/><br /><sub><b>Yam C Borodetsky</b></sub></a><br /><a href="https://github.com/yamcodes/arkenv/commits?author=yamcodes" title="Code">💻</a> <a href="#question-yamcodes" title="Answering Questions">💬</a> <a href="#ideas-yamcodes" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-yamcodes" title="Design">🎨</a> <a href="https://github.com/yamcodes/arkenv/commits?author=yamcodes" title="Documentation">📖</a> <a href="https://github.com/yamcodes/arkenv/issues?q=author%3Ayamcodes" title="Bug reports">🐛</a> <a href="#example-yamcodes" title="Examples">💡</a> <a href="#infra-yamcodes" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/yamcodes/arkenv/commits?author=yamcodes" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/aruaycodes"><img src="https://avatars.githubusercontent.com/u/57131628?v=4?s=100" width="100px;" alt="Aruay Berdikulova"/><br /><sub><b>Aruay Berdikulova</b></sub></a><br /><a href="https://github.com/yamcodes/arkenv/commits?author=aruaycodes" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/aruaycodes"><img src="https://avatars.githubusercontent.com/u/57131628?v=4?s=100" width="100px;" alt="Aruay Berdikulova"/><br /><sub><b>Aruay Berdikulova</b></sub></a><br /><a href="https://github.com/yamcodes/arkenv/commits?author=aruaycodes" title="Code">💻</a> <a href="#ideas-aruaycodes" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://arktype.io"><img src="https://avatars.githubusercontent.com/u/10645823?v=4?s=100" width="100px;" alt="David Blass"/><br /><sub><b>David Blass</b></sub></a><br /><a href="#ideas-ssalbdivad" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-ssalbdivad" title="Mentoring">🧑‍🏫</a> <a href="#question-ssalbdivad" title="Answering Questions">💬</a></td>
     </tr>
   </tbody>

@@ -3,13 +3,18 @@
 import {
 	SiBun,
 	SiNodedotjs,
-	SiSolid,
 	SiVite,
 	SiZod,
 } from "@icons-pack/react-simple-icons";
-import { Boxes, Hexagon, Layers, Shield } from "lucide-react";
+import { Square } from "lucide-react";
 import type { JSX } from "react";
+import { cn } from "~/lib/utils";
 import { ArkTypeIcon } from "../icons/arktype-icon";
+import { JoiIcon } from "../icons/joi-icon";
+import { SolidStartIcon } from "../icons/solid-start-icon";
+import { TypiaIcon } from "../icons/typia-icon";
+import { ValibotIcon } from "../icons/valibot-icon";
+import { VinxiIcon } from "../icons/vinxi-icon";
 
 type RailItem = {
 	name: string;
@@ -33,22 +38,22 @@ const validators: RailItem[] = [
 	{
 		name: "Valibot",
 		url: "https://valibot.dev",
-		icon: ({ className }) => <Layers className={className} />,
+		icon: ({ className }) => <ValibotIcon className={className} />,
 	},
 	{
 		name: "Typia",
 		url: "https://typia.io",
-		icon: ({ className }) => <Hexagon className={className} />,
+		icon: ({ className }) => <TypiaIcon className={className} />,
 	},
 	{
 		name: "Yup",
 		url: "https://github.com/jquense/yup",
-		icon: ({ className }) => <Boxes className={className} />,
+		icon: ({ className }) => <Square className={className} />,
 	},
 	{
 		name: "Joi",
 		url: "https://joi.dev",
-		icon: ({ className }) => <Shield className={className} />,
+		icon: ({ className }) => <JoiIcon className={className} />,
 	},
 ];
 
@@ -71,21 +76,12 @@ const platforms: RailItem[] = [
 	{
 		name: "Vinxi",
 		url: "https://vinxi.vercel.app",
-		icon: ({ className }) => (
-			<svg
-				viewBox="0 0 24 24"
-				fill="currentColor"
-				className={className}
-				aria-hidden="true"
-			>
-				<path d="M16 2L5 15h6l-1 7 11-13h-6l1-7z" />
-			</svg>
-		),
+		icon: ({ className }) => <VinxiIcon className={className} />,
 	},
 	{
 		name: "SolidStart",
 		url: "https://start.solidjs.com",
-		icon: ({ className }) => <SiSolid className={className} />,
+		icon: ({ className }) => <SolidStartIcon className={className} />,
 	},
 ];
 
@@ -132,9 +128,14 @@ function MarqueeRow({
 	);
 }
 
-export function CompatibilityRails() {
+export function CompatibilityRails({ className }: { className?: string }) {
 	return (
-		<div className="flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-6 pause-on-hover px-1 overflow-hidden">
+		<div
+			className={cn(
+				"flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-2 md:py-6 pause-on-hover px-1 overflow-hidden",
+				className,
+			)}
+		>
 			<MarqueeRow label="Works with" items={validators} />
 			<MarqueeRow label="Built for" items={platforms} reverse />
 		</div>

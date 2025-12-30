@@ -46,3 +46,6 @@ esbuild-why*.html
 
 # arktype clone
 arktype/
+
+# explicitly ignored folder
+ignore-me/
