@@ -662,7 +662,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		const config = await readTestConfig(withEnvDirFixture);
 
 		mockCreateEnv.mockReturnValue(expectedEnvVars);
-		stubEnvVars(expectedEnvVars);
 
 		await expect(
 			vite.build(createBuildConfig(customEnvDir, config.Env)),
@@ -708,7 +707,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		const config = await readTestConfig(withEnvDirFixture);
 
 		mockCreateEnv.mockReturnValue(expectedEnvVars);
-		stubEnvVars(expectedEnvVars);
 
 		await expect(
 			vite.build(createBuildConfig(customEnvDir, config.Env)),
@@ -727,7 +725,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		};
 
 		mockCreateEnv.mockReturnValue(expectedEnvVars);
-		stubEnvVars(envWithExtra);
 
 		await vite.build(createBuildConfig(customEnvDir, config.Env));
 
@@ -737,15 +734,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		});
 	});
 });
-
-/**
- * Stub multiple environment variables at once
- */
-function stubEnvVars(vars: Record<string, string>): void {
-	for (const [key, value] of Object.entries(vars)) {
-		vi.stubEnv(key, value);
-	}
-}
 
 async function readTestConfig(fixtureDir: string) {
 	// Import the env schema from the TypeScript config file
