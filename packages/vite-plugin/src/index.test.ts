@@ -53,13 +53,6 @@ for (const name of readdirSync(fixturesDir)) {
 			// Mock createEnv to return a valid object
 			mockCreateEnv.mockReturnValue(config.envVars || {});
 
-			// Set up environment variables from the fixture
-			if (config.envVars) {
-				for (const [key, value] of Object.entries(config.envVars)) {
-					vi.stubEnv(key, value);
-				}
-			}
-
 			await expect(
 				vite.build({
 					configFile: false,
@@ -746,10 +739,10 @@ async function readTestConfig(fixtureDir: string) {
 		// config.ts file doesn't exist, that's fine
 	}
 
-	// Read environment variables from env.test file if it exists
+	// Read environment variables from .env file if it exists
 	let envVars: Record<string, string> = {};
 	try {
-		const envContent = readFileSync(join(fixtureDir, "env.test"), "utf-8");
+		const envContent = readFileSync(join(fixtureDir, ".env"), "utf-8");
 		envVars = Object.fromEntries(
 			envContent
 				.split("\n")
@@ -760,7 +753,7 @@ async function readTestConfig(fixtureDir: string) {
 				}),
 		);
 	} catch {
-		// env.test file doesn't exist, that's fine
+		// .env file doesn't exist, that's fine
 	}
 
 	return {

@@ -59,7 +59,7 @@ export default function arkenv<const T extends SchemaShape>(
 			const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix];
 
 			// Load environment based on the custom config
-			const envDir = config.envDir ?? process.cwd();
+			const envDir = config.envDir ?? config.root ?? process.cwd();
 			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
 			// "Type instantiation is excessively deep and possibly infinite" errors.
 			// Ideally, we should find a way to avoid these assertions while maintaining type safety.
