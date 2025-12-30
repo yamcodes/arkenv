@@ -55,6 +55,7 @@ for (const name of readdirSync(fixturesDir)) {
 
 			await expect(
 				vite.build({
+					mode: "test",
 					configFile: false,
 					root: config.root,
 					plugins: [arkenvPlugin(config.Env)],
@@ -740,21 +741,26 @@ async function readTestConfig(fixtureDir: string) {
 		// config.ts file doesn't exist, that's fine
 	}
 
-	// Read environment variables from .env file if it exists
+	// Read environment variables from .env files (try mode-specific first)
 	let envVars: Record<string, string> = {};
-	try {
-		const envContent = readFileSync(join(fixtureDir, ".env"), "utf-8");
-		envVars = Object.fromEntries(
-			envContent
-				.split("\n")
-				.filter((line) => line.trim() && !line.startsWith("#"))
-				.map((line) => {
-					const [key, ...valueParts] = line.split("=");
-					return [key.trim(), valueParts.join("=").trim()];
-				}),
-		);
-	} catch {
-		// .env file doesn't exist, that's fine
+	const envFiles = [".env.test", ".env.local", ".env"];
+
+	for (const envFile of envFiles) {
+		try {
+			const envContent = readFileSync(join(fixtureDir, envFile), "utf-8");
+			envVars = Object.fromEntries(
+				envContent
+					.split("\n")
+					.filter((line) => line.trim() && !line.startsWith("#"))
+					.map((line) => {
+						const [key, ...valueParts] = line.split("=");
+						return [key.trim(), valueParts.join("=").trim()];
+					}),
+			);
+			break; // Stop after first successful read
+		} catch {
+			// Try next file
+		}
 	}
 
 	return {
