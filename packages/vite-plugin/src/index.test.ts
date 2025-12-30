@@ -543,7 +543,6 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should use custom envDir when provided in config", async () => {
-		const mockLoadEnv = vi.mocked(vite.loadEnv);
 		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
