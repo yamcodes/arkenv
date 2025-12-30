@@ -35,7 +35,7 @@ export default function HomePage() {
 							<span className="bg-linear-to-br from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent inline-block pr-1 -mr-1">
 								typesafe
 							</span>{" "}
-							than sorry
+							than sorry.
 						</div>
 						<div className="text-xl md:text-2xl mt-4 text-gray-600 dark:text-gray-400">
 							Environment variable validation from editor to runtime
