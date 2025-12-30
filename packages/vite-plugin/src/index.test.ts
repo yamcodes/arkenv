@@ -655,8 +655,8 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
-		mockCreateEnv.mockReset();
-		mockLoadEnv.mockReset();
+		mockCreateEnv.mockClear();
+		mockLoadEnv.mockClear();
 	});
 
 	it("should load environment variables from custom envDir", async () => {
