@@ -10,14 +10,23 @@ vi.mock("arkenv", () => ({
 	createEnv: vi.fn(),
 }));
 
+// Mock the vite module to capture loadEnv calls
+vi.mock("vite", async (importActual) => {
+	const actual = await importActual<typeof import("vite")>();
+	return {
+		...actual,
+		loadEnv: vi.fn(actual.loadEnv),
+	};
+});
+
 import arkenvPlugin from "./index.js";
 
 const fixturesDir = join(__dirname, "__fixtures__");
 
 // Get the mocked functions
-const { createEnv: mockCreateEnv } = (await vi.importMock("arkenv")) as {
-	createEnv: ReturnType<typeof vi.fn>;
-};
+const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
+
+const mockLoadEnv = vi.mocked(vite.loadEnv);
 
 // Run fixture-based tests
 for (const name of readdirSync(fixturesDir)) {
@@ -28,12 +37,14 @@ for (const name of readdirSync(fixturesDir)) {
 			// Clear environment variables and mock cleanup
 			vi.unstubAllEnvs();
 			mockCreateEnv.mockClear();
+			mockLoadEnv.mockClear();
 		});
 
 		afterEach(() => {
 			// Complete cleanup: restore environment and reset mocks
 			vi.unstubAllEnvs();
 			mockCreateEnv.mockReset();
+			mockLoadEnv.mockReset();
 		});
 
 		it("should build successfully with the plugin", async () => {
@@ -80,11 +91,13 @@ describe("Plugin Unit Tests", () => {
 	beforeEach(() => {
 		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
+		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
 		mockCreateEnv.mockReset();
+		mockLoadEnv.mockReset();
 	});
 
 	it("should create a plugin function", () => {
@@ -528,7 +541,8 @@ describe("Plugin Unit Tests", () => {
 		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
 
-	it("should use custom envDir when provided in config", () => {
+	it("should use custom envDir when provided in config", async () => {
+		const mockLoadEnv = vi.mocked(vite.loadEnv);
 		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
@@ -554,9 +568,10 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
+		// Assert that loadEnv was called with the mode ("test"), the custom envDir ("/custom/env/dir"), and the expected prefix ("")
+		expect(mockLoadEnv).toHaveBeenCalledWith("test", "/custom/env/dir", "");
+
 		// Verify createEnv was called - the envDir is used by loadEnv internally
-		// We can't directly test loadEnv was called with the custom path without
-		// mocking Vite's loadEnv, but we verify the plugin doesn't throw
 		expect(mockCreateEnv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
@@ -631,11 +646,13 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 	beforeEach(() => {
 		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
+		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
 		mockCreateEnv.mockReset();
+		mockLoadEnv.mockReset();
 	});
 
 	it("should load environment variables from custom envDir", async () => {
