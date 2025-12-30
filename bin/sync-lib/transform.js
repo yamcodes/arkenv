@@ -56,7 +56,6 @@ export function transformPackageJson(pkg, exampleConfig, catalog) {
 	);
 
 	// Remove pnpm-specific fields that don't apply to standalone examples
-	// biome-ignore lint/performance/noDelete: we need to remove the key
 	delete transformed.arkenvExamples;
 
 	// Update package manager if specified
