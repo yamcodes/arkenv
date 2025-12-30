@@ -5,6 +5,7 @@ env:
   APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TZ: ${{ vars.TIMEZONE || 'Asia/Almaty' }}
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review]
@@ -55,6 +56,9 @@ jobs:
           github-token: ${{ steps.generate-token.outputs.token || secrets.GITHUB_TOKEN }}
           script: |
             const previewUrl = '${{ steps.deploy.outputs.DEPLOYMENT_URL }}';
+            const url = new URL(previewUrl);
+            const feedbackUrl = 'https://vercel.live/open-feedback/' + url.hostname + '?via=pr-comment-feedback-link';
+
             const now = new Date();
             const dateStr = now.toLocaleString('en-US', { 
               month: 'short', 
@@ -62,17 +66,17 @@ jobs:
               year: 'numeric', 
               hour: 'numeric', 
               minute: '2-digit', 
-              hour12: true,
-              timeZone: 'UTC'
-            }).replace(',', '') + ' (UTC)';
+              hour12: true
+            }).replace(',', '') + ' (' + process.env.TZ + ')';
 
-            const comment = `[vc]: #DZOavKtcupv5eYfsJ0J5gTvtYR/BkSkF1UhfIwiSRtA=:eyJpc01vbm9yZXBvIjp0cnVlLCJ0eXBlIjoiZ2l0aHViIiwicHJvamVjdHMiOlt7Im5hbWUiOiJhcmtlbnYiLCJyb290RGlyZWN0b3J5IjoiYXBwcy93d3ciLCJsaXZlRmVlZGJhY2siOnsicmVzb2x2ZWQiOjAsInVucmVzb2x2ZWQiOjAsInRvdGFsIjowLCJsaW5rIjoiYXJrZW52LWdpdC1jb3BpbG90LXVwZGF0ZS1mb290ZXItY29weXJpZ2h0LXlhbWNvZGVzLnZlcmNlbC5hcHAifSwiaW5zcGVjdG9yVXJsIjoiaHR0cHM6Ly92ZXJjZWwuY29tL3lhbWNvZGVzL2Fya2Vudi8yN3dwSnY5RHBoQjZEQlNLOWVwc2NVQUh5Umd1IiwicHJldmlld1VybCI6ImFya2Vudi1naXQtY29waWxvdC11cGRhdGUtZm9vdGVyLWNvcHlyaWdodC15YW1jb2Rlcy12ZXJjZWwuYXBwIiwibmV4dENvbW1pdFN0YXR1cyI6IkRFUExPWUVEIn1dfQ==
-            The latest updates on your projects. Learn more about [Vercel for GitHub](https://vercel.link/github-learn-more).
-
-            | Project | Deployment | Review | Updated (UTC) |
-            | :--- | :----- | :------ | :------ |
-            | [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](${previewUrl}) | [Preview](${previewUrl}), [Comment](${previewUrl}) | ${dateStr} |
-            `;
+            const comment = [
+              '[vc]: #DZOavKtcupv5eYfsJ0J5gTvtYR/BkSkF1UhfIwiSRtA=:eyJpc01vbm9yZXBvIjp0cnVlLCJ0eXBlIjoiZ2l0aHViIiwicHJvamVjdHMiOlt7Im5hbWUiOiJhcmtlbnYiLCJyb290RGlyZWN0b3J5IjoiYXBwcy93d3ciLCJsaXZlRmVlZGJhY2siOnsicmVzb2x2ZWQiOjAsInVucmVzb2x2ZWQiOjAsInRvdGFsIjowLCJsaW5rIjoiYXJrZW52LWdpdC1jb3BpbG90LXVwZGF0ZS1mb290ZXItY29weXJpZ2h0LXlhbWNvZGVzLnZlcmNlbC5hcHAifSwiaW5zcGVjdG9yVXJsIjoiaHR0cHM6Ly92ZXJjZWwuY29tL3lhbWNvZGVzL2Fya2Vudi8yN3dwSnY5RHBoQjZEQlNLOWVwc2NVQUh5Umd1IiwicHJldmlld1VybCI6ImFya2Vudi1naXQtY29waWxvdC11cGRhdGUtZm9vdGVyLWNvcHlyaWdodC15YW1jb2Rlcy12ZXJjZWwuYXBwIiwibmV4dENvbW1pdFN0YXR1cyI6IkRFUExPWUVEIn1dfQ==',
+              'The latest updates on your projects. Learn more about [Vercel for GitHub](https://vercel.link/github-learn-more).',
+              '',
+              '| Project | Deployment | Review | Updated (' + process.env.TZ + ') |',
+              '| :--- | :----- | :------ | :------ |',
+              '| [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](' + previewUrl + ') | [Preview](' + previewUrl + '), [Comment](' + feedbackUrl + ') | ' + dateStr + ' |'
+            ].join('\n');
 
             try {
               const { data: comments } = await github.rest.issues.listComments({
