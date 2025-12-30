@@ -732,14 +732,14 @@ async function readTestConfig(fixtureDir: string) {
 		// config.ts file doesn't exist, that's fine
 	}
 
-	// Read environment variables from .env files (try mode-specific first)
+	// Read and merge environment variables from .env files (matching Vite's loadEnv behavior)
 	let envVars: Record<string, string> = {};
-	const envFiles = [".env.test", ".env.local", ".env"];
+	const envFiles = [".env", ".env.local", ".env.test"];
 
 	for (const envFile of envFiles) {
 		try {
 			const envContent = readFileSync(join(fixtureDir, envFile), "utf-8");
-			envVars = Object.fromEntries(
+			const fileVars = Object.fromEntries(
 				envContent
 					.split("\n")
 					.filter((line) => line.trim() && !line.startsWith("#"))
@@ -748,7 +748,8 @@ async function readTestConfig(fixtureDir: string) {
 						return [key.trim(), valueParts.join("=").trim()];
 					}),
 			);
-			break; // Stop after first successful read
+			// Merge with precedence: later files override earlier ones
+			envVars = { ...envVars, ...fileVars };
 		} catch {
 			// Try next file
 		}
