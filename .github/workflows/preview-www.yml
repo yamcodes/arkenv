@@ -56,6 +56,9 @@ jobs:
           github-token: ${{ steps.generate-token.outputs.token || secrets.GITHUB_TOKEN }}
           script: |
             const previewUrl = '${{ steps.deploy.outputs.DEPLOYMENT_URL }}';
+            const url = new URL(previewUrl);
+            const feedbackUrl = 'https://vercel.live/open-feedback/' + url.hostname + '?via=pr-comment-feedback-link';
+
             const now = new Date();
             const dateStr = now.toLocaleString('en-US', { 
               month: 'short', 
@@ -72,7 +75,7 @@ jobs:
               '',
               '| Project | Deployment | Review | Updated (' + process.env.TZ + ') |',
               '| :--- | :----- | :------ | :------ |',
-              '| [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](' + previewUrl + ') | [Preview](' + previewUrl + '), [Comment](' + previewUrl + ') | ' + dateStr + ' |'
+              '| [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](' + previewUrl + ') | [Preview](' + previewUrl + '), [Comment](' + feedbackUrl + ') | ' + dateStr + ' |'
             ].join('\n');
 
             try {
