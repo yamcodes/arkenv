@@ -606,6 +606,9 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
+		// Assert that loadEnv was called with the mode ("test"), the default envDir (process.cwd()), and the expected prefix ("")
+		expect(mockLoadEnv).toHaveBeenCalledWith("test", process.cwd(), "");
+
 		// Verify createEnv was called successfully with default behavior
 		expect(mockCreateEnv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
