@@ -3,7 +3,6 @@
 import {
 	SiBun,
 	SiNodedotjs,
-	SiSolid,
 	SiVite,
 	SiZod,
 } from "@icons-pack/react-simple-icons";
@@ -12,6 +11,7 @@ import type { JSX } from "react";
 import { cn } from "~/lib/utils";
 import { ArkTypeIcon } from "../icons/arktype-icon";
 import { JoiIcon } from "../icons/joi-icon";
+import { SolidStartIcon } from "../icons/solid-start-icon";
 import { TypiaIcon } from "../icons/typia-icon";
 import { ValibotIcon } from "../icons/valibot-icon";
 import { VinxiIcon } from "../icons/vinxi-icon";
@@ -81,7 +81,7 @@ const platforms: RailItem[] = [
 	{
 		name: "SolidStart",
 		url: "https://start.solidjs.com",
-		icon: ({ className }) => <SiSolid className={className} />,
+		icon: ({ className }) => <SolidStartIcon className={className} />,
 	},
 ];
 
