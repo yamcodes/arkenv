@@ -42,6 +42,7 @@
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"rehype-github-alerts": "4.2.0",
+		"remark-directive": "^4.0.0",
 		"remark-gemoji": "8.0.0",
 		"require-in-the-middle": "8.0.1",
 		"shiki": "3.20.0",
