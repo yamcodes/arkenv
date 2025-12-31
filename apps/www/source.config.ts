@@ -7,7 +7,9 @@ import {
 	transformerTwoslash,
 } from "fumadocs-twoslash";
 import { rehypeGithubAlerts } from "rehype-github-alerts";
+import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
+import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
 
 export const docs = defineDocs({
 	dir: "content/docs",
@@ -191,8 +193,8 @@ declare global {
 
 export default defineConfig({
 	mdxOptions: {
-		rehypePlugins: [rehypeGithubAlerts],
-		remarkPlugins: [remarkGemoji, remarkNpm],
+		rehypePlugins: [rehypeGithubAlerts, rehypeOptimizeInternalLinks],
+		remarkPlugins: [remarkGemoji, remarkNpm, remarkDirective],
 		rehypeCodeOptions: {
 			langs: ["ts", "js", "json", "bash", "dotenv"],
 			themes: {
