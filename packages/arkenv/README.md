@@ -46,7 +46,7 @@ const env = arkenv({
 });
 ```
 
-> ArkEnv defaults to [ArkType](https://arktype.io/) notation, the closest match to TypeScript syntax for editor to runtime typesafety. You can also use any [Standard Schema](https://standardschema.dev/schema) validator, including Zod, Valibot, and Typia.
+> ArkEnv defaults to [ArkType](https://arktype.io/) notation, the closest match to TypeScript syntax for editor-to-runtime typesafety. You can also use any [Standard Schema](https://standardschema.dev/schema) validator, including Zod, Valibot, and Typia.
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
