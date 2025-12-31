@@ -5,7 +5,7 @@
 	"icon": "Box",
 	"pages": [
 		"---Introduction---",
-		"index",
+		"[CircleQuestionMark][What is ArkEnv](/docs/arkenv)",
 		"comparison",
 		"quickstart",
 		"examples",

@@ -1,24 +1,51 @@
 ---
-title: What is ArkEnv
-icon: CircleQuestionMark
+title: What is ArkEnv?
+description: Introducing ArkEnv, an environment variable validator that stays out of your way.
 ---
 
 import { BookOpen, Rocket, Globe } from "lucide-react";
 import { SiGithub as GitHub } from "@icons-pack/react-simple-icons";
 
-<include cwd>../../packages/arkenv/README.md#introduction</include>
+<include cwd>../../packages/arkenv/README.md#what-is-arkenv-introduction</include>
 <include cwd>../../packages/arkenv/README.md#features</include>
 
-## The ArkEnv icon 
+## Philosophy
 
 <img src="/assets/icon.svg" alt="ArkEnv icon" width="128" height="128"/>
 
-The ArkEnv icon tells the story of what we're building. It weaves together three distinct symbols:
+The ArkEnv symbol tells the story of what we're building. It symbolizes the three core principles of ArkEnv:
 
-- **A gear**: At first glance, it's a settings gear, representing the core mechanical purpose of the library: precise environment configuration.
-- **A ship's wheel**: Look closer, and it's a ship's wheel. This honors the Ark motif, symbolizing the freedom to explore and build, steered by reliable technology.
-- **A lighthouse**: It is also the Japanese map symbol for a lighthouse. Just as a lighthouse warns sailors of danger, ArkEnv's typesafety guides your apps away from the rocky shores of runtime errors.
+### Build from the core up
 
+> The **gear** symbolizes the core of ArkEnv: precise environment validation
+
+With most validators, it's clear that they were designed for a specific framework, the one favored by the maintainer. ArkEnv was designed to "just work" even within a simple Node.js server, no configuration needed. This is the core we started designing the library and what we test for to this day. Any additional configuration is optional.
+
+We layer integrations as optional modules (which we call "plugins") on top of this core to provide a smooth experience for common use cases. Using these integrations in modern JavaScript toolkits should feel just as simple as using the core library within a simple Node.js server.
+
+### Fail fast
+
+> The **ship's wheel** allows you to get where you need to go as fast as possible
+
+ArkEnv is built to protect your app from runtime errors as early as possible. This means that as soon as we know what the actual values are, we'll fail your app if they don't match your schema. When environment variables eventually reach runtime, you can be sure they'll be valid.
+
+### Sane defaults
+
+> The Japanese symbol for a lighthouse, symbolizing our commitment to sane defaults
+
+As engineers in the modern JS space, we take the liberty to make assumptions on your behalf, like:
+
+* You're validating against `process.env` (unless you're working in Vite, where we work with `import.meta.env`)
+* If you define a `number` in the schema, you'll want to take a `string` environment variable (like all `process.env` variables are by default) and get a `number` back.
+* Your framework provides the tools to read from a `.env` file. We don't provide `dotenv` or similar functionality.
+* You're using ArkType, Zod, Typia, or a Standard Schema compatible validator.
+
+This allows us to create a well-tested tool that is dead simple to use, but at the same time configurable to your needs. For example:
+
+* If you need to validate against something different than `process.env`, you can manually set the `env` option.
+* If you need to work with a pure schema (defining a `number` expects a `number` input), you can opt out of coercion.
+* If your framework lacks the tools to read from a `.env` file, you can simply use `dotenv`.
+* If you're using a validator that is not Standard Schema compliant... Sorry. That's the one thing we don't support. We recommend switching to a compliant validator or supporting the compliance to Standard Schema of your validator.
 
 ## Next steps
 
