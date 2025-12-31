@@ -23,15 +23,12 @@
 <br/>
 <br/>
 
-### [Read the docs →](https://arkenv.js.org/docs/arkenv)
-
-<br/>
-<br/>
-
 ## Introduction
 
 > [!TIP]
-> 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs/arkenv) to hover over code blocks and get type hints!
+> 📖 **For the best experience with interactive type hints, [read the docs →](https://arkenv.js.org/docs/arkenv)**
+>
+> Hover over code in the docs to see exact types and get full editor-like feedback. GitHub's markdown viewer doesn't support this feature.
 
 ArkEnv is an environment variable validator for modern JavaScript runtimes.
 It lets you create a ready-to-use, typesafe environment variable object:
