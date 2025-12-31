@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { host, port } from "./index";
+import {
+	booleanArray,
+	host,
+	jsonArray,
+	numberArray,
+	port,
+	stringArray,
+} from "./index";
 
 describe("port", () => {
 	it("should validate a valid port number", () => {
@@ -33,5 +40,75 @@ describe("host", () => {
 
 	it("should throw when the host is invalid", () => {
 		expect(() => host.assert("invalid")).toThrow();
+	});
+});
+
+describe("stringArray", () => {
+	it("should parse comma-separated strings", () => {
+		expect(stringArray.assert("a,b,c")).toEqual(["a", "b", "c"]);
+	});
+
+	it("should trim whitespace", () => {
+		expect(stringArray.assert(" a , b , c ")).toEqual(["a", "b", "c"]);
+	});
+
+	it("should handle empty string", () => {
+		expect(stringArray.assert("")).toEqual([]);
+		expect(stringArray.assert("   ")).toEqual([]);
+	});
+
+	it("should pass through existing string arrays", () => {
+		expect(stringArray.assert(["a", "b"])).toEqual(["a", "b"]);
+	});
+});
+
+describe("numberArray", () => {
+	it("should parse comma-separated numbers", () => {
+		expect(numberArray.assert("1,2,3")).toEqual([1, 2, 3]);
+		expect(numberArray.assert("1.5, 2.5")).toEqual([1.5, 2.5]);
+	});
+
+	it("should throw on invalid numbers", () => {
+		expect(() => numberArray.assert("1,foo,3")).toThrow("Expected a number");
+	});
+
+	it("should handle empty string", () => {
+		expect(numberArray.assert("")).toEqual([]);
+	});
+
+	it("should pass through existing number arrays", () => {
+		expect(numberArray.assert([1, 2])).toEqual([1, 2]);
+	});
+});
+
+describe("booleanArray", () => {
+	it("should parse comma-separated booleans", () => {
+		expect(booleanArray.assert("true,false,true")).toEqual([true, false, true]);
+	});
+
+	it("should throw on invalid booleans", () => {
+		expect(() => booleanArray.assert("true,foo")).toThrow("Expected a boolean");
+	});
+
+	it("should handle empty string", () => {
+		expect(booleanArray.assert("")).toEqual([]);
+	});
+
+	it("should pass through existing boolean arrays", () => {
+		expect(booleanArray.assert([true, false])).toEqual([true, false]);
+	});
+});
+
+describe("jsonArray", () => {
+	it("should parse JSON array", () => {
+		expect(jsonArray.assert('["a","b"]')).toEqual(["a", "b"]);
+	});
+
+	it("should throw if not an array", () => {
+		expect(() => jsonArray.assert('{"a":1}')).toThrow("Expected a JSON array");
+	});
+
+	it("should throw on invalid json", () => {
+		expect(() => jsonArray.assert("invalid")).toThrow();
 	});
 });

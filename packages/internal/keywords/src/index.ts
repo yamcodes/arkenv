@@ -43,3 +43,73 @@ export const port = type("0 <= number.integer <= 65535");
  * An IP address or `"localhost"`
  */
 export const host = type("string.ip | 'localhost'");
+
+/**
+ * A comma-separated list of strings.
+ *
+ * **In**: `string | string[]`
+ *
+ * **Out**: `string[]`
+ */
+export const stringArray = type("string | string[]").pipe((s) => {
+	if (typeof s !== "string") return s;
+	if (!s.trim()) return [];
+	return s.split(",").map((part) => part.trim());
+});
+
+/**
+ * A comma-separated list of numbers.
+ *
+ * **In**: `string | number[]`
+ *
+ * **Out**: `number[]`
+ */
+export const numberArray = type("string | number[]").pipe((s) => {
+	if (typeof s !== "string") return s;
+	if (!s.trim()) return [];
+	return s.split(",").map((part) => {
+		const trimmed = part.trim();
+		const n = Number(trimmed);
+		if (trimmed === "" || Number.isNaN(n)) {
+			throw new Error(`Expected a number but got '${part}'`);
+		}
+		return n;
+	});
+});
+
+/**
+ * A comma-separated list of booleans.
+ *
+ * **In**: `string | boolean[]`
+ *
+ * **Out**: `boolean[]`
+ */
+export const booleanArray = type("string | boolean[]").pipe((s) => {
+	if (typeof s !== "string") return s;
+	if (!s.trim()) return [];
+	return s.split(",").map((part) => {
+		const trimmed = part.trim();
+		if (trimmed === "true") return true;
+		if (trimmed === "false") return false;
+		throw new Error(`Expected a boolean but got '${part}'`);
+	});
+});
+
+/**
+ * A JSON string representing an array.
+ *
+ * **In**: `string`
+ *
+ * **Out**: `unknown[]`
+ */
+export const jsonArray = type("string").pipe((s) => {
+	try {
+		const result = JSON.parse(s);
+		if (!Array.isArray(result)) {
+			throw new Error("Expected a JSON array");
+		}
+		return result;
+	} catch (e) {
+		throw new Error(e instanceof Error ? e.message : String(e));
+	}
+});
