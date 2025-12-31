@@ -51,20 +51,19 @@ export default function arkenv<const T extends SchemaShape>(
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",
-		config(config, { mode }) {
+		configResolved(config) {
 			// Get the Vite prefix for client-exposed environment variables
-			// Defaults to "VITE_" if not specified
-			// Vite allows envPrefix to be a string or array of strings
+			// defaults to "VITE_" if not specified
 			const envPrefix = config.envPrefix ?? "VITE_";
 			const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix];
 
-			// Load environment based on the custom config
+			// Load environment based on the resolved config
 			const envDir = config.envDir ?? config.root ?? process.cwd();
 			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
 			// "Type instantiation is excessively deep and possibly infinite" errors.
 			// Ideally, we should find a way to avoid these assertions while maintaining type safety.
 			const env = createEnv<T>(options, {
-				env: loadEnv(mode, envDir, ""),
+				env: loadEnv(config.mode, envDir, ""),
 			});
 
 			// Filter to only include environment variables matching the prefix
@@ -84,7 +83,11 @@ export default function arkenv<const T extends SchemaShape>(
 				]),
 			);
 
-			return { define };
+			// @ts-expect-error - config.define is readonly in types but mutable in practice
+			config.define = {
+				...config.define,
+				...define,
+			};
 		},
 	};
 }
