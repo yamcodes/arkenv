@@ -25,15 +25,15 @@
 
 ### [Read the docs →](https://arkenv.js.org/docs/arkenv)
 
+<sup>The best way to learn ArkEnv, with interactive code blocks and type hints.</sup>
+
 <br/>
 <br/>
+
 
 ## Introduction
 
-> [!TIP]
-> 📖 **Reading this on GitHub?** Check out [this page in our docs](https://arkenv.js.org/docs/arkenv) to hover over code blocks and get type hints!
-
-ArkEnv is an environment variable validator for modern JavaScript runtimes.
+ArkEnv is an environment variable validator for modern JavaScript runtimes. 
 It lets you create a ready-to-use, typesafe environment variable object:
 
 ```ts twoslash
@@ -76,6 +76,7 @@ ArkEnvError: Errors found while validating environment variables
 * Intuitive automatic coercion
 * Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 * Native support for ArkType, TypeScript’s 1:1 validator
+
 
 > See how ArkEnv compares to alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
 

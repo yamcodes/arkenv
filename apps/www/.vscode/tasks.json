@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev",
+			"problemMatcher": ["$tsc-watch"],
+			"label": "dev",
+			"detail": "conc -n Next.js,next-video 'next dev' 'pnpm exec next-video sync -w'",
+			"isBackground": true
+		}
+	]
+}
