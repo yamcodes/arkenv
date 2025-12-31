@@ -56,7 +56,7 @@ const nodeEnv = env.NODE_ENV;
 const debugging = env.DEBUGGING;
 ```
 
-> ArkEnv defaults to [ArkType](https://arktype.io/) notation, which we believe is the closest you can get to actual TypeScript syntax with "editor to runtime typesafety", but you can use any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc. [Here's](http://localhost:3000/docs/arkenv/integrations/standard-schema#usage-with-zod) a simple example of using ArkEnv with Zod.
+> ArkEnv defaults to [ArkType](https://arktype.io/) notation, the closest match to TypeScript syntax for editor to runtime typesafety. You can also use any [Standard Schema](https://standardschema.dev/schema) validator, including Zod, Valibot, and Typia.
 
 We consider the resulting `env` object "typesafe from editor to runtime": at every step in the app's lifecycle, you are getting a guarantee about your environment variables.
 
@@ -66,7 +66,7 @@ ArkEnv tells TypeScript about the shape of your environment variables, so you ca
 
 ### Build time
 
-Wherever possible, we recommend integrating ArkEnv into your build process. We provide a toolkit for doing so with [Bun's bundler](http://arkenv.js.org/docs/bun-plugin) and [Vite](http://arkenv.js.org/docs/vite-plugin). This way, your app will fail fast if any environment variables are incorrect or missing.
+Wherever possible, ArkEnv is designed to run during your build process. We provide a toolkit for doing so with [Bun's bundler](http://arkenv.js.org/docs/bun-plugin) and [Vite](http://arkenv.js.org/docs/vite-plugin). This way, your app will fail fast if any environment variables are incorrect or missing.
 
 ### Runtime
 
