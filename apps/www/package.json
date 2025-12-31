@@ -49,6 +49,7 @@
 		"tailwind-merge": "3.4.0",
 		"tailwindcss-animate": "1.0.7",
 		"twoslash": "0.3.6",
+		"unist-util-visit": "^5.0.0",
 		"valibot": "catalog:",
 		"vite": "7.3.0",
 		"zod": "catalog:"
