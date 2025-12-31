@@ -33,13 +33,9 @@
 
 ## Introduction
 
-ArkEnv is an environment variable validator for modern JavaScript runtimes. 
+ArkEnv is an environment variable validator for modern JavaScript runtimes. It creates a ready-to-use, typesafe environment variable object:
 
-:::section{#what-is-arkenv-introduction}
-
-At its core, ArkEnv is a single export that creates a ready-to-use, typesafe environment variable object:
-
-```ts twoslash
+```ts
 import arkenv from "arkenv";
 
 const env = arkenv({
@@ -48,29 +44,11 @@ const env = arkenv({
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
   DEBUGGING: "boolean = false",
 });
-
-// Hover to see ✨exact✨ types
-const host = env.HOST;
-const port = env.PORT;
-const nodeEnv = env.NODE_ENV;
-const debugging = env.DEBUGGING;
 ```
 
 > ArkEnv defaults to [ArkType](https://arktype.io/) notation, the closest match to TypeScript syntax for editor to runtime typesafety. You can also use any [Standard Schema](https://standardschema.dev/schema) validator, including Zod, Valibot, and Typia.
 
-We consider the resulting `env` object "typesafe from editor to runtime": at every step in the app's lifecycle, you are getting a guarantee about your environment variables.
-
-### Editor
-
-ArkEnv tells TypeScript about the shape of your environment variables, so you can use the types your schema defines without additional checks or manual type-casts. Your editor will also autocomplete your schema and provide type hints, whether you're using [ArkType](https://arktype.io/), Zod, Valibot, or any other Standard Schema validator. If you're using [ArkType](https://arktype.io/), you can take this a step further with [syntax highlighting and inline errors](docs/arkenv/integrations/vscode). This way, writing your schema feels like writing TypeScript.
-
-### Build time
-
-Wherever possible, ArkEnv is designed to run during your build process. We provide a toolkit for doing so with [Bun's bundler](http://arkenv.js.org/docs/bun-plugin) and [Vite](http://arkenv.js.org/docs/vite-plugin). This way, your app will fail fast if any environment variables are incorrect or missing.
-
-### Runtime
-
-With ArkEnv, your environment variables are **guaranteed to match your schema** at runtime. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
+With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
 ```bash title="Terminal"
 ❯ PORT=hello npm start
@@ -79,8 +57,6 @@ ArkEnvError: Errors found while validating environment variables
   HOST must be a string or "localhost" (was missing)
   PORT must be a number (was a string)
 ```
-
-:::
 
 ## Features
 
@@ -93,7 +69,6 @@ ArkEnvError: Errors found while validating environment variables
 * Intuitive automatic coercion
 * Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 * Native support for ArkType, TypeScript’s 1:1 validator
-
 
 > See how ArkEnv compares to alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
 
