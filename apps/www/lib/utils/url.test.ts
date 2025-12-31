@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { optimizeInternalLink, isExternalUrl } from "./url";
+import { describe, expect, it } from "vitest";
+import { isExternalUrl, optimizeInternalLink } from "./url";
 
 describe("URL Utilities", () => {
 	describe("isExternalUrl", () => {
