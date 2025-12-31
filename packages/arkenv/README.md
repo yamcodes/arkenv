@@ -33,10 +33,9 @@
 
 ## Introduction
 
-ArkEnv is an environment variable validator for modern JavaScript runtimes. 
-It lets you create a ready-to-use, typesafe environment variable object:
+ArkEnv is an environment variable validator for modern JavaScript runtimes. It creates a ready-to-use, typesafe environment variable object:
 
-```ts twoslash
+```ts
 import arkenv from "arkenv";
 
 const env = arkenv({
@@ -45,15 +44,9 @@ const env = arkenv({
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
   DEBUGGING: "boolean = false",
 });
-
-// Hover to see ✨exact✨ types
-const host = env.HOST;
-const port = env.PORT;
-const nodeEnv = env.NODE_ENV;
-const debugging = env.DEBUGGING;
 ```
 
-> ArkEnv supports native [ArkType](https://arktype.io/) notation and any [Standard Schema](https://standardschema.dev/schema) validator: Zod, Valibot, Typia, etc.
+> ArkEnv defaults to [ArkType](https://arktype.io/) notation, the closest match to TypeScript syntax for editor-to-runtime typesafety. You can also use any [Standard Schema](https://standardschema.dev/schema) validator, including Zod, Valibot, and Typia.
 
 With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
 
@@ -76,7 +69,6 @@ ArkEnvError: Errors found while validating environment variables
 * Intuitive automatic coercion
 * Compatible with any Standard Schema validator (Zod, Valibot, etc.)
 * Native support for ArkType, TypeScript’s 1:1 validator
-
 
 > See how ArkEnv compares to alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
 
