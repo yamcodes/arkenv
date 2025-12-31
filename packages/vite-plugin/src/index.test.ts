@@ -109,34 +109,25 @@ describe("Plugin Unit Tests", () => {
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		expect(pluginInstance).toHaveProperty("name", "@arkenv/vite-plugin");
-		expect(pluginInstance).toHaveProperty("config");
+		expect(pluginInstance).toHaveProperty("configResolved");
 	});
 
-	it("should call createEnv during config hook", () => {
+	it("should call createEnv during configResolved hook", () => {
 		// Mock createEnv to return a valid object
 		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
-		// Mock the config hook with proper context
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
+		// Mock the configResolved hook with proper context
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			const mockConfig = {
+				mode: "test",
+				define: {},
 			} as any;
-			pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		expect(mockCreateEnv).toHaveBeenCalledWith(
@@ -147,7 +138,7 @@ describe("Plugin Unit Tests", () => {
 		);
 	});
 
-	it("should return define object with transformed environment variables", () => {
+	it("should update define object with transformed environment variables", () => {
 		// Mock createEnv to return transformed values
 		const mockTransformedEnv = {
 			VITE_STRING: "hello",
@@ -162,34 +153,20 @@ describe("Plugin Unit Tests", () => {
 			VITE_BOOLEAN: "boolean",
 		});
 
-		// Call the config hook
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			result = pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+		// Call the configResolved hook
+		const mockConfig = {
+			mode: "test",
+			define: {},
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
-		// Verify the define object is returned
-		expect(result).toHaveProperty("define");
-		expect(result.define).toBeDefined();
-
-		// Verify all transformed values are properly serialized
-		expect(result.define).toEqual({
+		// Verify the define object is updated
+		expect(mockConfig.define).toEqual({
 			"import.meta.env.VITE_STRING": '"hello"',
 			"import.meta.env.VITE_NUMBER": "42",
 			"import.meta.env.VITE_BOOLEAN": "true",
@@ -214,28 +191,18 @@ describe("Plugin Unit Tests", () => {
 			VITE_FALSE: "boolean",
 		});
 
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			result = pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+		const mockConfig = {
+			mode: "test",
+			define: {},
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
-		expect(result.define).toEqual({
+		expect(mockConfig.define).toEqual({
 			"import.meta.env.VITE_NULL": "null",
 			"import.meta.env.VITE_UNDEFINED": undefined, // JSON.stringify(undefined) returns undefined
 			"import.meta.env.VITE_EMPTY_STRING": '""',
@@ -249,28 +216,18 @@ describe("Plugin Unit Tests", () => {
 
 		const pluginInstance = arkenvPlugin({});
 
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			result = pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+		const mockConfig = {
+			mode: "test",
+			define: {},
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
-		expect(result.define).toEqual({});
+		expect(mockConfig.define).toEqual({});
 	});
 
 	it("should preserve key names exactly as provided for prefixed variables", () => {
@@ -289,35 +246,27 @@ describe("Plugin Unit Tests", () => {
 			vite_lowercase: "string",
 		});
 
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			result = pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+		const mockConfig = {
+			mode: "test",
+			define: {},
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		// Only variables starting with VITE_ are exposed
-		expect(result.define).toEqual({
+		expect(mockConfig.define).toEqual({
 			"import.meta.env.VITE_SPECIAL_CHARS": '"test"',
 			"import.meta.env.VITE_123_NUMERIC": '"test"',
 			"import.meta.env.VITE_UPPERCASE": '"test"',
 		});
 		// Variables not starting with VITE_ are filtered out
-		expect(result.define).not.toHaveProperty("import.meta.env.vite_lowercase");
+		expect(mockConfig.define).not.toHaveProperty(
+			"import.meta.env.vite_lowercase",
+		);
 	});
 
 	it("should propagate errors from createEnv", () => {
@@ -330,26 +279,14 @@ describe("Plugin Unit Tests", () => {
 
 		expect(() => {
 			if (
-				pluginInstance.config &&
-				typeof pluginInstance.config === "function"
+				pluginInstance.configResolved &&
+				typeof pluginInstance.configResolved === "function"
 			) {
-				const mockContext = {
-					meta: {
-						framework: "vite",
-						version: "1.0.0",
-						rollupVersion: "4.0.0",
-						viteVersion: "5.0.0",
-					},
-					error: vi.fn(),
-					warn: vi.fn(),
-					info: vi.fn(),
-					debug: vi.fn(),
+				const mockConfig = {
+					mode: "test",
+					define: {},
 				} as any;
-				pluginInstance.config.call(
-					mockContext,
-					{},
-					{ mode: "test", command: "build" },
-				);
+				pluginInstance.configResolved.call({} as any, mockConfig);
 			}
 		}).toThrow("Environment validation failed");
 	});
@@ -371,35 +308,27 @@ describe("Plugin Unit Tests", () => {
 			VITE_DEBUG: "boolean",
 		});
 
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			result = pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+		const mockConfig = {
+			mode: "test",
+			define: {},
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		// Verify only VITE_* variables are exposed
-		expect(result.define).toEqual({
+		expect(mockConfig.define).toEqual({
 			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
 			"import.meta.env.VITE_DEBUG": "true",
 		});
 		// Verify server-only variables are NOT exposed
-		expect(result.define).not.toHaveProperty("import.meta.env.PORT");
-		expect(result.define).not.toHaveProperty("import.meta.env.DATABASE_URL");
+		expect(mockConfig.define).not.toHaveProperty("import.meta.env.PORT");
+		expect(mockConfig.define).not.toHaveProperty(
+			"import.meta.env.DATABASE_URL",
+		);
 	});
 
 	it("should respect custom envPrefix configuration", () => {
@@ -419,36 +348,28 @@ describe("Plugin Unit Tests", () => {
 			SECRET_KEY: "string",
 		});
 
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			// Pass custom envPrefix in config
-			result = pluginInstance.config.call(
-				mockContext,
-				{ envPrefix: "PUBLIC_" },
-				{ mode: "test", command: "build" },
-			);
+		const mockConfig = {
+			mode: "test",
+			define: {},
+			envPrefix: "PUBLIC_",
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		// Verify only PUBLIC_* variables are exposed
-		expect(result.define).toEqual({
+		expect(mockConfig.define).toEqual({
 			"import.meta.env.PUBLIC_API_URL": '"https://api.example.com"',
 			"import.meta.env.PUBLIC_DEBUG": "true",
 		});
 		// Verify other variables are NOT exposed
-		expect(result.define).not.toHaveProperty("import.meta.env.VITE_OLD_VAR");
-		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
+		expect(mockConfig.define).not.toHaveProperty(
+			"import.meta.env.VITE_OLD_VAR",
+		);
+		expect(mockConfig.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
 
 	it("should default to VITE_ prefix when envPrefix is not configured", () => {
@@ -463,34 +384,25 @@ describe("Plugin Unit Tests", () => {
 			PUBLIC_DEBUG: "boolean",
 		});
 
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			// Pass config without envPrefix (should default to VITE_)
-			result = pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+		const mockConfig = {
+			mode: "test",
+			define: {},
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		// Verify only VITE_* variables are exposed (default prefix)
-		expect(result.define).toEqual({
+		expect(mockConfig.define).toEqual({
 			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
 		});
 		// Verify PUBLIC_* variable is NOT exposed (not matching default prefix)
-		expect(result.define).not.toHaveProperty("import.meta.env.PUBLIC_DEBUG");
+		expect(mockConfig.define).not.toHaveProperty(
+			"import.meta.env.PUBLIC_DEBUG",
+		);
 	});
 
 	it("should support array of prefixes in envPrefix configuration", () => {
@@ -510,62 +422,43 @@ describe("Plugin Unit Tests", () => {
 			SECRET_KEY: "string",
 		});
 
-		let result: any = {};
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
-			// Pass array of prefixes in config
-			result = pluginInstance.config.call(
-				mockContext,
-				{ envPrefix: ["VITE_", "PUBLIC_", "CUSTOM_PREFIX_"] },
-				{ mode: "test", command: "build" },
-			);
+		const mockConfig = {
+			mode: "test",
+			define: {},
+			envPrefix: ["VITE_", "PUBLIC_", "CUSTOM_PREFIX_"],
+		} as any;
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		// Verify variables matching any prefix in the array are exposed
-		expect(result.define).toEqual({
+		expect(mockConfig.define).toEqual({
 			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
 			"import.meta.env.PUBLIC_DEBUG": "true",
 			"import.meta.env.CUSTOM_PREFIX_VAR": '"test"',
 		});
 		// Verify variables not matching any prefix are NOT exposed
-		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
+		expect(mockConfig.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
 
-	it("should use custom envDir when provided in config", async () => {
+	it("should use custom envDir when provided in resolved config", async () => {
 		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			const mockConfig = {
+				mode: "test",
+				define: {},
+				envDir: "/custom/env/dir",
 			} as any;
-			// Pass custom envDir in config
-			pluginInstance.config.call(
-				mockContext,
-				{ envDir: "/custom/env/dir" },
-				{ mode: "test", command: "build" },
-			);
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		// Assert that loadEnv was called with the mode ("test"), the custom envDir ("/custom/env/dir"), and the expected prefix ("")
@@ -585,25 +478,15 @@ describe("Plugin Unit Tests", () => {
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
-		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
+		if (
+			pluginInstance.configResolved &&
+			typeof pluginInstance.configResolved === "function"
+		) {
+			const mockConfig = {
+				mode: "test",
+				define: {},
 			} as any;
-			// Pass config without envDir (should default to process.cwd())
-			pluginInstance.config.call(
-				mockContext,
-				{},
-				{ mode: "test", command: "build" },
-			);
+			pluginInstance.configResolved.call({} as any, mockConfig);
 		}
 
 		// Assert that loadEnv was called with the mode ("test"), the default envDir (process.cwd()), and the expected prefix ("")
