@@ -3,10 +3,11 @@ import {
 	type CardProps,
 } from "fumadocs-ui/components/card";
 import { ArrowUpRight } from "lucide-react";
-import { isExternalUrl } from "~/lib/utils/url";
+import { isExternalUrl, optimizeInternalLink } from "~/lib/utils/url";
 
 export function Card({ title, ...props }: CardProps) {
-	const isExternal = isExternalUrl(props.href);
+	const finalHref = optimizeInternalLink(props.href);
+	const isExternal = isExternalUrl(finalHref);
 
 	const augmentedTitle = isExternal ? (
 		<span className="flex items-center gap-0.5">
@@ -20,6 +21,7 @@ export function Card({ title, ...props }: CardProps) {
 	return (
 		<CardComponent
 			{...props}
+			href={finalHref}
 			title={augmentedTitle}
 			data-card
 			data-external-link={isExternal || undefined}

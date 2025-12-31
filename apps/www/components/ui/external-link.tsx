@@ -2,7 +2,7 @@
 
 import FumadocsLink from "fumadocs-core/link";
 import type { ComponentProps, FC } from "react";
-import { isExternalUrl } from "~/lib/utils/url";
+import { isExternalUrl, optimizeInternalLink } from "~/lib/utils/url";
 
 export interface ExternalLinkProps extends ComponentProps<typeof FumadocsLink> {
 	href?: string;
@@ -17,11 +17,12 @@ export const ExternalLink: FC<ExternalLinkProps> = ({
 	children,
 	...props
 }) => {
-	const isExternal = isExternalUrl(href);
+	const finalHref = optimizeInternalLink(href);
+	const isExternal = isExternalUrl(finalHref);
 
 	return (
 		<FumadocsLink
-			href={href}
+			href={finalHref}
 			data-external-link={isExternal || undefined}
 			{...props}
 		>

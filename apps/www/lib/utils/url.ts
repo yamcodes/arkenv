@@ -50,3 +50,36 @@ export function isExternalUrl(href: string | undefined): boolean {
 		return false;
 	}
 }
+
+/**
+ * Converts an absolute internal URL to a relative path
+ * e.g. https://arkenv.js.org/docs/quickstart -> /docs/quickstart
+ */
+export function optimizeInternalLink(
+	href: string | undefined,
+): string | undefined {
+	if (!href) return href;
+
+	// Already relative
+	if (href.startsWith("/") || href.startsWith("#")) return href;
+
+	try {
+		const url = new URL(href);
+		const hostname = url.hostname.toLowerCase();
+
+		// Don't optimize localhost/IPs to preserve links to local apps (e.g. in tutorials)
+		if (hostname === "localhost" || hostname === "127.0.0.1") return href;
+
+		if (
+			INTERNAL_DOMAINS.some(
+				(domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+			)
+		) {
+			return `${url.pathname}${url.search}${url.hash}`;
+		}
+
+		return href;
+	} catch {
+		return href;
+	}
+}
