@@ -42,7 +42,6 @@ a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
 }
 
 /* External links in documentation */
-/* External links in documentation */
 a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-arrow]
 	):not(:has(img)),
