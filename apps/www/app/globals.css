@@ -45,7 +45,7 @@ a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
 a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-arrow]
 	),
-a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
+article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 		[class*="fd-"]
 	):not([data-no-arrow]):not(:has(img)) {
 	padding-right: 1.1em;
@@ -60,7 +60,7 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 		[data-no-arrow]
 	),
 .dark
-	a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
+	article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 		[class*="fd-"]
 	):not([data-no-arrow]):not(:has(img)) {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
