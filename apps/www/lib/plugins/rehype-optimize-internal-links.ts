@@ -20,12 +20,14 @@ export function rehypeOptimizeInternalLinks() {
 		});
 
 		// handle mdx jsx element
-		visit(
-			tree,
-			(node): node is MdxJsxElement =>
-				node.type === "mdxJsxFlowElement" || node.type === "mdxJsxTextElement",
-			(node) => {
-				const hrefAttr = node.attributes.find(
+		// biome-ignore lint/suspicious/noExplicitAny: generic tree traversal
+		visit(tree as any, (node: any) => {
+			if (
+				node.type === "mdxJsxFlowElement" ||
+				node.type === "mdxJsxTextElement"
+			) {
+				const mdxNode = node as MdxJsxElement;
+				const hrefAttr = mdxNode.attributes.find(
 					(attr) =>
 						attr.type === "mdxJsxAttribute" &&
 						(attr.name === "href" || attr.name === "url") &&
@@ -44,7 +46,7 @@ export function rehypeOptimizeInternalLinks() {
 						hrefAttr.value = optimized;
 					}
 				}
-			},
-		);
+			}
+		});
 	};
 }
