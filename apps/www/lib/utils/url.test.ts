@@ -34,6 +34,14 @@ describe("URL Utilities", () => {
 			).toBe("/login?foo=bar");
 		});
 
+		it("preserves hash fragments", () => {
+			expect(
+				optimizeInternalLink(
+					"https://arkenv.js.org/docs/quickstart#installation",
+				),
+			).toBe("/docs/quickstart#installation");
+		});
+
 		it("preserves external links", () => {
 			expect(optimizeInternalLink("https://google.com")).toBe(
 				"https://google.com",

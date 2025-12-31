@@ -13,7 +13,7 @@ export function rehypeOptimizeInternalLinks() {
 				const href = node.properties.href;
 				const optimized = optimizeInternalLink(href);
 
-				if (optimized && optimized !== href) {
+				if (optimized !== href) {
 					node.properties.href = optimized;
 				}
 			}
@@ -42,7 +42,7 @@ export function rehypeOptimizeInternalLinks() {
 					const href = hrefAttr.value;
 					const optimized = optimizeInternalLink(href);
 
-					if (optimized && optimized !== href) {
+					if (optimized !== href) {
 						hrefAttr.value = optimized;
 					}
 				}

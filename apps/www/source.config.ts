@@ -196,8 +196,6 @@ export default defineConfig({
 		rehypePlugins: [rehypeGithubAlerts, rehypeOptimizeInternalLinks],
 		remarkPlugins: [remarkGemoji, remarkNpm, remarkDirective],
 		rehypeCodeOptions: {
-			// ...
-
 			langs: ["ts", "js", "json", "bash", "dotenv"],
 			themes: {
 				light: "github-light-high-contrast",
