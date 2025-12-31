@@ -42,9 +42,10 @@ a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
 }
 
 /* External links in documentation */
-a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+article
+	a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-arrow]
-	),
+	):not(:has(img)),
 article
 	a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 		[class*="fd-"]
@@ -57,9 +58,10 @@ article
 }
 
 .dark
+	article
 	a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-arrow]
-	),
+	):not(:has(img)),
 .dark
 	article
 	a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
