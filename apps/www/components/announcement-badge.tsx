@@ -37,7 +37,7 @@ export function AnnouncementBadge({
 				{children}
 				{arrow &&
 					href &&
-					(isExternalUrl(href.toString()) ? (
+					(isExternalUrl(href) ? (
 						<ArrowUpRight className="h-4 w-4 opacity-40 transition-all group-hover:opacity-100" />
 					) : (
 						<ArrowRight className="h-4 w-4 mr-0.5 opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />

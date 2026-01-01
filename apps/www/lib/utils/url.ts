@@ -24,8 +24,9 @@ function isInternalDomain(hostname: string): boolean {
  *
  * This utility is safe to call from both Client and Server components.
  */
-export function isExternalUrl(href: string | undefined): boolean {
-	if (!href) return false;
+export function isExternalUrl(url: Url | undefined): boolean {
+	if (!url) return false;
+	const href = typeof url === "string" ? url : url.toString();
 
 	// Internal relative paths
 	if (href.startsWith("/") || href.startsWith("#")) return false;
