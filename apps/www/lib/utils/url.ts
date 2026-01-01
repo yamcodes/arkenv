@@ -1,3 +1,7 @@
+import type Link from "next/link";
+
+export type Url = Parameters<typeof Link>[0]["href"];
+
 /**
  * List of domains that should be treated as "our" application.
  * Note: Localhost is intentionally excluded here to prevent "Open localhost:3000" tutorial links
