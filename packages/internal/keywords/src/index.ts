@@ -113,3 +113,29 @@ export const jsonArray = type("string").pipe((s) => {
 		throw new Error(e instanceof Error ? e.message : String(e));
 	}
 });
+
+/**
+ * A comma-separated list of mixed values (boolean, number, string).
+ *
+ * **In**: `string | (string | number | boolean)[]`
+ *
+ * **Out**: `(string | number | boolean)[]`
+ */
+export const mixedArray = type("string | (string | number | boolean)[]").pipe(
+	(s) => {
+		if (Array.isArray(s)) return s;
+		if (typeof s !== "string") return [s] as (string | number | boolean)[];
+		if (!s.trim()) return [];
+		return s.split(",").map((part) => {
+			const trimmed = part.trim();
+			if (trimmed === "true") return true;
+			if (trimmed === "false") return false;
+
+			const n = Number(trimmed);
+			if (trimmed !== "" && !Number.isNaN(n)) {
+				return n;
+			}
+			return trimmed;
+		});
+	},
+);

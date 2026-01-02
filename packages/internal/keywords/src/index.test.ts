@@ -3,6 +3,7 @@ import {
 	booleanArray,
 	host,
 	jsonArray,
+	mixedArray,
 	numberArray,
 	port,
 	stringArray,
@@ -110,5 +111,31 @@ describe("jsonArray", () => {
 
 	it("should throw on invalid json", () => {
 		expect(() => jsonArray.assert("invalid")).toThrow();
+	});
+});
+
+describe("mixedArray", () => {
+	it("should parse mixed values", () => {
+		expect(mixedArray.assert("1,true,foo")).toEqual([1, true, "foo"]);
+	});
+
+	it("should parse number-like strings as numbers", () => {
+		expect(mixedArray.assert("1.5, -10")).toEqual([1.5, -10]);
+	});
+
+	it("should parse boolean-like strings as booleans bit not loose values", () => {
+		expect(mixedArray.assert("true, FALSE")).toEqual([true, "FALSE"]);
+	});
+
+	it("should parse quoted strings as strings if they don't match other types", () => {
+		expect(mixedArray.assert("'true', \"1\"")).toEqual(["'true'", '"1"']);
+	});
+
+	it("should handle empty string", () => {
+		expect(mixedArray.assert("")).toEqual([]);
+	});
+
+	it("should pass through existing arrays", () => {
+		expect(mixedArray.assert([1, "a", true])).toEqual([1, "a", true]);
 	});
 });
