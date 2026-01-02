@@ -44,6 +44,12 @@ export const port = type("0 <= number.integer <= 65535");
  */
 export const host = type("string.ip | 'localhost'");
 
+const arrayParser = <T>(s: string | T[], transform: (s: string) => T): T[] => {
+	if (typeof s !== "string") return s;
+	if (!s.trim()) return [];
+	return s.split(",").map((part) => transform(part.trim()));
+};
+
 /**
  * A comma-separated list of strings.
  *
@@ -51,11 +57,9 @@ export const host = type("string.ip | 'localhost'");
  *
  * **Out**: `string[]`
  */
-export const stringArray = type("string | string[]").pipe((s) => {
-	if (typeof s !== "string") return s;
-	if (!s.trim()) return [];
-	return s.split(",").map((part) => part.trim());
-});
+export const stringArray = type("string | string[]").pipe((s) =>
+	arrayParser(s, (s) => s),
+);
 
 /**
  * A comma-separated list of numbers.
@@ -64,18 +68,15 @@ export const stringArray = type("string | string[]").pipe((s) => {
  *
  * **Out**: `number[]`
  */
-export const numberArray = type("string | number[]").pipe((s) => {
-	if (typeof s !== "string") return s;
-	if (!s.trim()) return [];
-	return s.split(",").map((part) => {
-		const trimmed = part.trim();
-		const n = Number(trimmed);
-		if (trimmed === "" || Number.isNaN(n)) {
+export const numberArray = type("string | number[]").pipe((s) =>
+	arrayParser(s, (part) => {
+		const n = Number(part);
+		if (part === "" || Number.isNaN(n)) {
 			throw new Error(`Expected a number but got '${part}'`);
 		}
 		return n;
-	});
-});
+	}),
+);
 
 /**
  * A comma-separated list of booleans.
@@ -84,16 +85,13 @@ export const numberArray = type("string | number[]").pipe((s) => {
  *
  * **Out**: `boolean[]`
  */
-export const booleanArray = type("string | boolean[]").pipe((s) => {
-	if (typeof s !== "string") return s;
-	if (!s.trim()) return [];
-	return s.split(",").map((part) => {
-		const trimmed = part.trim();
-		if (trimmed === "true") return true;
-		if (trimmed === "false") return false;
+export const booleanArray = type("string | boolean[]").pipe((s) =>
+	arrayParser(s, (part) => {
+		if (part === "true") return true;
+		if (part === "false") return false;
 		throw new Error(`Expected a boolean but got '${part}'`);
-	});
-});
+	}),
+);
 
 /**
  * A JSON string representing an array.
@@ -122,20 +120,15 @@ export const jsonArray = type("string").pipe((s) => {
  * **Out**: `(string | number | boolean)[]`
  */
 export const mixedArray = type("string | (string | number | boolean)[]").pipe(
-	(s) => {
-		if (Array.isArray(s)) return s;
-		if (typeof s !== "string") return [s] as (string | number | boolean)[];
-		if (!s.trim()) return [];
-		return s.split(",").map((part) => {
-			const trimmed = part.trim();
-			if (trimmed === "true") return true;
-			if (trimmed === "false") return false;
+	(s) =>
+		arrayParser(s, (part) => {
+			if (part === "true") return true;
+			if (part === "false") return false;
 
-			const n = Number(trimmed);
-			if (trimmed !== "" && !Number.isNaN(n)) {
+			const n = Number(part);
+			if (part !== "" && !Number.isNaN(n)) {
 				return n;
 			}
-			return trimmed;
-		});
-	},
+			return part;
+		}),
 );
