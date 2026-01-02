@@ -58,8 +58,8 @@ catalogs:
       specifier: 12.0.0
       version: 12.0.0
     tsdown:
-      specifier: 0.18.3
-      version: 0.18.3
+      specifier: 0.18.4
+      version: 0.18.4
     tsx:
       specifier: 4.21.0
       version: 4.21.0
@@ -562,7 +562,7 @@ importers:
         version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.3(typescript@5.9.3)
+        version: 0.18.4(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -602,7 +602,7 @@ importers:
         version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.3(typescript@5.9.3)
+        version: 0.18.4(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -617,7 +617,7 @@ importers:
         version: 2.1.29
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.3(typescript@5.9.3)
+        version: 0.18.4(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -633,7 +633,7 @@ importers:
         version: 2.1.29
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.3(typescript@5.9.3)
+        version: 0.18.4(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -673,7 +673,7 @@ importers:
         version: 12.0.0(jiti@2.6.1)
       tsdown:
         specifier: 'catalog:'
-        version: 0.18.3(typescript@5.9.3)
+        version: 0.18.4(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -7439,8 +7439,8 @@ packages:
       typescript:
         optional: true
 
-  tsdown@0.18.3:
-    resolution: {integrity: sha512-OVFzktKDTglFAUh/WO8WamBUbZoBlJ9m7NgZZrVyIKe32BfXBeRZ+soFFpuOGVP8g8OU4tOLOpTyPTELWvcTFw==}
+  tsdown@0.18.4:
+    resolution: {integrity: sha512-J/tRS6hsZTkvqmt4+xdELUCkQYDuUCXgBv0fw3ImV09WPGbEKfsPD65E+WUjSu3E7Z6tji9XZ1iWs8rbGqB/ZA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -15860,7 +15860,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  tsdown@0.18.3(typescript@5.9.3):
+  tsdown@0.18.4(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
