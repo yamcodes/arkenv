@@ -125,7 +125,7 @@ jobs:
       - name: Run ${{ matrix.suite }} tests (main/workflow_dispatch)
         if: ${{ github.event_name != 'pull_request' }}
         run: pnpm run test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: test-results-${{ matrix.suite }}
@@ -175,7 +175,7 @@ jobs:
       - run: pnpm build
       - run: pnpm run test
       - run: pnpm run test:e2e
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: test-results-windows-${{ steps.sanitize.outputs.version }}
@@ -226,7 +226,7 @@ jobs:
       - run: pnpm build
       - run: pnpm run test
       - run: pnpm run test:e2e
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: test-results-macos-${{ steps.sanitize.outputs.version }}
