@@ -191,6 +191,56 @@ describe("createEnv", () => {
 		});
 	});
 
+	describe("standard array syntax", () => {
+		it("should parse string[] from comma-separated string", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{ env: { TAGS: "foo,bar,baz" } },
+			);
+			expect(env.TAGS).toEqual(["foo", "bar", "baz"]);
+		});
+
+		it("should parse number[] from comma-separated string", () => {
+			const env = createEnv(
+				{ PORTS: "number[]" },
+				{ env: { PORTS: "3000, 8080" } },
+			);
+			expect(env.PORTS).toEqual([3000, 8080]);
+		});
+
+		it("should parse boolean[] from comma-separated string", () => {
+			const env = createEnv(
+				{ FLAGS: "boolean[]" },
+				{ env: { FLAGS: "true, false" } },
+			);
+			expect(env.FLAGS).toEqual([true, false]);
+		});
+
+		it("should parse (string|number)[] from mixed string", () => {
+			const env = createEnv(
+				{ MIXED: "(string|number)[]" },
+				{ env: { MIXED: "foo, 123, bar" } },
+			);
+			expect(env.MIXED).toEqual(["foo", 123, "bar"]);
+		});
+
+		it("should parse (string|number)[] with only numbers", () => {
+			const env = createEnv(
+				{ MIXED: "(string|number)[]" },
+				{ env: { MIXED: "1, 2, 3" } },
+			);
+			expect(env.MIXED).toEqual([1, 2, 3]);
+		});
+
+		it("should parse (string|boolean)[] with mixed values", () => {
+			const env = createEnv(
+				{ MIXED: "(string|boolean)[]" },
+				{ env: { MIXED: "true, foo, false" } },
+			);
+			expect(env.MIXED).toEqual([true, "foo", false]);
+		});
+	});
+
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
