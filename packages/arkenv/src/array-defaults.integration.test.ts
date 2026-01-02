@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 import arkenv, { type } from "./index";
 
 describe("arkenv array defaults", () => {
-	it("should work with the exact syntax from the GitHub issue", () => {
-		// This is the exact code from the GitHub issue that should now work
+	it("should work with arrow function array defaults", () => {
 		const Thing = arkenv({
 			array: type("number.integer[]").default(() => []),
 		});

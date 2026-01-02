@@ -149,6 +149,48 @@ describe("createEnv", () => {
 		});
 	});
 
+	describe("array keywords", () => {
+		it("should parse string arrays using string.array", () => {
+			const env = createEnv(
+				{ TAGS: "string.array" },
+				{ env: { TAGS: "foo,bar" } },
+			);
+			expect(env.TAGS).toEqual(["foo", "bar"]);
+		});
+
+		it("should parse number arrays using number.array", () => {
+			const env = createEnv(
+				{ PORTS: "number.array" },
+				{ env: { PORTS: "8080,3000" } },
+			);
+			expect(env.PORTS).toEqual([8080, 3000]);
+		});
+
+		it("should parse boolean arrays using boolean.array", () => {
+			const env = createEnv(
+				{ FLAGS: "boolean.array" },
+				{ env: { FLAGS: "true,false,true" } },
+			);
+			expect(env.FLAGS).toEqual([true, false, true]);
+		});
+
+		it("should parse mixed arrays using mixedArray", () => {
+			const env = createEnv(
+				{ MIXED: "mixedArray" },
+				{ env: { MIXED: "1,true,foo" } },
+			);
+			expect(env.MIXED).toEqual([1, true, "foo"]);
+		});
+
+		it("should parse json arrays using string.array.json", () => {
+			const env = createEnv(
+				{ DATA: "string.array.json" },
+				{ env: { DATA: '["foo", "bar"]' } },
+			);
+			expect(env.DATA).toEqual(["foo", "bar"]);
+		});
+	});
+
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
