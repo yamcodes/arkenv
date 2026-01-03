@@ -1,3 +1,7 @@
+import type Link from "next/link";
+
+export type Url = Parameters<typeof Link>[0]["href"];
+
 /**
  * List of domains that should be treated as "our" application.
  * Note: Localhost is intentionally excluded here to prevent "Open localhost:3000" tutorial links
@@ -20,8 +24,9 @@ function isInternalDomain(hostname: string): boolean {
  *
  * This utility is safe to call from both Client and Server components.
  */
-export function isExternalUrl(href: string | undefined): boolean {
-	if (!href) return false;
+export function isExternalUrl(url: Url | undefined): boolean {
+	if (!url) return false;
+	const href = typeof url === "string" ? url : url.toString();
 
 	// Internal relative paths
 	if (href.startsWith("/") || href.startsWith("#")) return false;

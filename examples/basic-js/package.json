@@ -8,7 +8,7 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "^0.8.0",
+		"arkenv": "^0.8.1",
 		"arktype": "^2.1.29"
 	},
 	"engines": {

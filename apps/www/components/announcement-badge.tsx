@@ -1,6 +1,7 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
+import { isExternalUrl, type Url } from "~/lib/utils/url";
 import { NewBadge } from "./ui/new-badge";
 
 export function AnnouncementBadge({
@@ -11,7 +12,7 @@ export function AnnouncementBadge({
 }: PropsWithChildren<{
 	// TODO: we can detect the arrow kind (right facing, or top right facing) based on whether `href` is internal or external
 	/**
-	 * Show the right facing arrow next to the badge
+	 * Show an arrow next to the badge
 	 */
 	arrow?: boolean;
 	/**
@@ -21,7 +22,7 @@ export function AnnouncementBadge({
 	/**
 	 * The link to navigate to when clicking the badge.
 	 */
-	href: Parameters<typeof Link>[0]["href"];
+	href: Url;
 }>) {
 	return (
 		<Link
@@ -32,11 +33,15 @@ export function AnnouncementBadge({
 			{newBadge && (
 				<NewBadge className="h-5 font-semibold bg-blue-500/10 text-blue-700 border-blue-500/10 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/20 shadow-none hover:bg-blue-500/20 transition-colors" />
 			)}
-			<span className="flex items-center gap-1 mr-1.5">
+			<span className="flex items-center gap-1 mr-1">
 				{children}
-				{arrow && (
-					<ArrowRight className="h-4 w-4 opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
-				)}
+				{arrow &&
+					href &&
+					(isExternalUrl(href) ? (
+						<ArrowUpRight className="h-4 w-4 opacity-40 transition-all group-hover:opacity-100" />
+					) : (
+						<ArrowRight className="h-4 w-4 mr-0.5 opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
+					))}
 			</span>
 		</Link>
 	);
