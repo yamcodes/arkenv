@@ -9,7 +9,7 @@ import { type } from "arktype";
  *
  * Useful for coercion in unions where failing on non-numeric strings would block other branches.
  */
-export const maybeParsedNumber = type("unknown").pipe((s) => {
+export const maybeNumber = type("unknown").pipe((s) => {
 	if (typeof s === "number") return s;
 	if (typeof s !== "string") return s;
 	const trimmed = s.trim();
@@ -28,7 +28,7 @@ export const maybeParsedNumber = type("unknown").pipe((s) => {
  *
  * Useful for coercion in unions where failing on non-boolean strings would block other branches.
  */
-export const maybeParsedBoolean = type("unknown").pipe((s) => {
+export const maybeBoolean = type("unknown").pipe((s) => {
 	if (s === "true") return true;
 	if (s === "false") return false;
 	return s;
