@@ -1,10 +1,6 @@
-import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
+import { maybeBoolean, maybeNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
-/**
- * A marker used in the coercion path to indicate that the target
- * is the *elements* of an array, rather than the array property itself.
- */
 /**
  * A marker used in the coercion path to indicate that the target
  * is the *elements* of an array, rather than the array property itself.
@@ -138,11 +134,11 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 				return splitString(data);
 			}
 
-			const asNumber = maybeParsedNumber(data);
+			const asNumber = maybeNumber(data);
 			if (typeof asNumber === "number") {
 				return asNumber;
 			}
-			return maybeParsedBoolean(data);
+			return maybeBoolean(data);
 		}
 		return data;
 	}
@@ -169,11 +165,11 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 					for (let i = 0; i < current.length; i++) {
 						const original = current[i];
 						if (type === "primitive") {
-							const asNumber = maybeParsedNumber(original);
+							const asNumber = maybeNumber(original);
 							if (typeof asNumber === "number") {
 								current[i] = asNumber;
 							} else {
-								current[i] = maybeParsedBoolean(original);
+								current[i] = maybeBoolean(original);
 							}
 						}
 					}
@@ -202,22 +198,22 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 					if (type === "primitive") {
 						for (let i = 0; i < original.length; i++) {
 							const item = original[i];
-							const asNumber = maybeParsedNumber(item);
+							const asNumber = maybeNumber(item);
 							if (typeof asNumber === "number") {
 								original[i] = asNumber;
 							} else {
-								original[i] = maybeParsedBoolean(item);
+								original[i] = maybeBoolean(item);
 							}
 						}
 					}
 				} else {
 					if (type === "primitive") {
-						const asNumber = maybeParsedNumber(original);
+						const asNumber = maybeNumber(original);
 						// If numeric parsing didn't produce a number, try boolean coercion
 						if (typeof asNumber === "number") {
 							record[lastKey] = asNumber;
 						} else {
-							record[lastKey] = maybeParsedBoolean(original);
+							record[lastKey] = maybeBoolean(original);
 						}
 					}
 				}
