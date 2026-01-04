@@ -222,4 +222,14 @@ describe("createEnv + type + scope + types integration", () => {
 			expect(env.HOST).toBe("127.0.0.1");
 		});
 	});
+
+	describe("custom types in arrays", () => {
+		it("should handle custom types in arrays through createEnv", () => {
+			vi.stubEnv("EMAILS", "test@example.com, admin@example.com");
+
+			const Email = type("string.email");
+			const env = createEnv({ EMAILS: Email.array() }, { env: process.env });
+			expect(env.EMAILS).toEqual(["test@example.com", "admin@example.com"]);
+		});
+	});
 });
