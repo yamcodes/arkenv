@@ -8,7 +8,7 @@ ArkEnv now coerces arrays when the `coerce` option is enabled (true by default).
 Arrays are parsed using trimmed, comma-separated values by default.
 
 You can customize this behavior with the `arrayFormat` option:
-- `comma` (default): Strings are split by comma-separated valuesand trimmed.
+- `comma` (default): Strings are split by comma-separated values and trimmed.
 - `json`: Strings are parsed as JSON.
 
 Example:
