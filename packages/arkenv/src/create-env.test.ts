@@ -517,5 +517,29 @@ describe("createEnv", () => {
 			);
 			expect(env.NUMBERS).toEqual([1, 2, 3]);
 		});
+
+		it("should handle empty comma-separated string", () => {
+			const env = createEnv({ TAGS: "string[]" }, { env: { TAGS: "" } });
+			expect(env.TAGS).toEqual([]);
+		});
+
+		it("should handle single-element array", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{ env: { TAGS: "only-one" } },
+			);
+			expect(env.TAGS).toEqual(["only-one"]);
+		});
+
+		it("should handle empty JSON array", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{
+					env: { TAGS: "[]" },
+					arrayFormat: "json",
+				},
+			);
+			expect(env.TAGS).toEqual([]);
+		});
 	});
 });
