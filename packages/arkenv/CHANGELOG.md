@@ -1,5 +1,52 @@
 # ArkEnv
 
+## 0.8.2
+
+### Patch Changes
+
+- #### Array coercion _[`#693`](https://github.com/yamcodes/arkenv/pull/693) [`7919b6d`](https://github.com/yamcodes/arkenv/commit/7919b6dcd171553d0e6e6e819a862408284e1f71) [@yamcodes](https://github.com/yamcodes)_
+
+  ArkEnv now coerces arrays when the `coerce` option is enabled (true by default).
+  Arrays are parsed using trimmed, comma-separated values by default.
+
+  You can customize this behavior with the `arrayFormat` option:
+
+  - `comma` (default): Strings are split by comma-separated values and trimmed.
+  - `json`: Strings are parsed as JSON.
+
+  Example:
+
+  ```dotenv
+  MY_ARRAY=one,two,three
+  MY_JSON_ARRAY=["a", "b"]
+  ```
+
+  ```ts
+  const env = arkenv(
+    {
+      MY_ARRAY: "string[]",
+    },
+    {
+      // optional, 'comma' is default
+      arrayFormat: "comma",
+    }
+  );
+
+  console.log(env.MY_ARRAY); // ["one", "two", "three"]
+
+  // Using JSON format
+  const jsonEnv = arkenv(
+    {
+      MY_JSON_ARRAY: "string[]",
+    },
+    {
+      arrayFormat: "json",
+    }
+  );
+
+  console.log(jsonEnv.MY_JSON_ARRAY); // ["a", "b"]
+  ```
+
 ## 0.8.1
 
 ### Patch Changes
