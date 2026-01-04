@@ -7,6 +7,14 @@
 			"problemMatcher": ["$tsc"],
 			"label": "fix",
 			"detail": "node bin/fix.js"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"group": "build",
+			"problemMatcher": ["$tsc"],
+			"label": "build",
+			"detail": "turbo run build"
 		}
 	]
 }
