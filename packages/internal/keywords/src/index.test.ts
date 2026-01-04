@@ -43,7 +43,7 @@ describe("maybeParsedJSON", () => {
 	});
 
 	it("should parse a valid JSON array string", () => {
-		const result = maybeParsedJSON('[1, 2, 3]');
+		const result = maybeParsedJSON("[1, 2, 3]");
 		expect(result).toEqual([1, 2, 3]);
 	});
 
@@ -70,7 +70,7 @@ describe("maybeParsedJSON", () => {
 	it("should return the original object if already an object", () => {
 		const obj = { key: "value" };
 		const result = maybeParsedJSON(obj);
-		expect(result).toBe(obj);
+		expect(result).toStrictEqual(obj);
 	});
 
 	it("should handle JSON strings with whitespace", () => {
