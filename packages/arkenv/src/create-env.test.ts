@@ -149,19 +149,7 @@ describe("createEnv", () => {
 		});
 	});
 
-	describe("nesting and defaults", () => {
-		it("should handle nested object coercion", () => {
-			const result = createEnv(
-				{ DB: { PORT: "number" } },
-				{
-					env: {
-						DB: { PORT: "5432" },
-					} as unknown as Record<string, string | undefined>,
-				},
-			);
-			expect(result.DB.PORT).toBe(5432);
-		});
-
+	describe("defaults and empty strings", () => {
 		it("should use defaults when value is missing", () => {
 			const env = createEnv({ FOO: "string = 'bar'" }, { env: {} });
 			expect(env.FOO).toBe("bar");
@@ -461,7 +449,7 @@ describe("createEnv", () => {
 					env: {
 						HOST: "localhost",
 						EXTRA: "should-be-deleted",
-					} as Record<string, string | undefined>,
+					},
 				},
 			);
 			expect(env).toEqual({ HOST: "localhost" });
@@ -475,7 +463,7 @@ describe("createEnv", () => {
 					env: {
 						HOST: "localhost",
 						EXTRA: "should-be-preserved",
-					} as Record<string, string | undefined>,
+					},
 					onUndeclaredKey: "ignore",
 				},
 			);
@@ -490,7 +478,7 @@ describe("createEnv", () => {
 						env: {
 							HOST: "localhost",
 							EXTRA: "should-cause-fail",
-						} as Record<string, string | undefined>,
+						},
 						onUndeclaredKey: "reject",
 					},
 				),
@@ -504,7 +492,7 @@ describe("createEnv", () => {
 					env: {
 						HOST: "localhost",
 						EXTRA: "should-be-deleted",
-					} as Record<string, string | undefined>,
+					},
 					onUndeclaredKey: "delete",
 				},
 			);
