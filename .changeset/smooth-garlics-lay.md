@@ -20,19 +20,19 @@ MY_JSON_ARRAY=["a", "b"]
 
 ```ts
 const env = arkenv({
-	MY_ARRAY: "string[]",
+  MY_ARRAY: "string[]"
 }, {
-    // optional, 'comma' is default
-    arrayFormat: 'comma'
+  // optional, 'comma' is default
+  arrayFormat: 'comma'
 });
 
 console.log(env.MY_ARRAY); // ["one", "two", "three"]
 
 // Using JSON format
 const jsonEnv = arkenv({
-    MY_JSON_ARRAY: "string[]"
+  MY_JSON_ARRAY: "string[]"
 }, {
-    arrayFormat: 'json'
+  arrayFormat: 'json'
 });
 
 console.log(jsonEnv.MY_JSON_ARRAY); // ["a", "b"]

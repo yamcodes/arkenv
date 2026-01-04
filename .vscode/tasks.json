@@ -5,12 +5,16 @@
 			"type": "npm",
 			"script": "fix",
 			"label": "fix",
-			"detail": "node bin/fix.js"
+			"detail": "node bin/fix.js",
+			"problemMatcher": []
 		},
 		{
 			"type": "npm",
 			"script": "build",
-			"group": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
 			"label": "build",
 			"detail": "turbo run build"
 		}
