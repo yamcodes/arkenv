@@ -17,6 +17,17 @@ type CoercionTarget = {
 };
 
 /**
+ * Options for coercion behavior.
+ */
+export type CoerceOptions = {
+	/**
+	 * format to use for array parsing
+	 * @default "comma"
+	 */
+	arrayFormat?: "comma" | "json";
+};
+
+/**
  * Recursively find all paths in a JSON Schema that require coercion.
  * We prioritize "number", "integer", "boolean", and "array" types.
  */
@@ -119,9 +130,23 @@ const findCoercionPaths = (
 /**
  * Apply coercion to a data object based on identified paths.
  */
-const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
+const applyCoercion = (
+	data: unknown,
+	targets: CoercionTarget[],
+	options: CoerceOptions = {},
+) => {
+	const { arrayFormat = "comma" } = options;
+
 	// Helper to split string to array
 	const splitString = (val: string) => {
+		if (arrayFormat === "json") {
+			try {
+				return JSON.parse(val);
+			} catch {
+				return val;
+			}
+		}
+
 		if (!val.trim()) return [];
 		return val.split(",").map((s) => s.trim());
 	};
@@ -249,7 +274,10 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
  * Pre-process input data to coerce string values to numbers/booleans at identified paths
  * before validation.
  */
-export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
+export function coerce<t, $ = {}>(
+	schema: BaseType<t, $>,
+	options?: CoerceOptions,
+): BaseType<t, $> {
 	// Use a fallback to handle unjsonifiable parts of the schema (like predicates)
 	// by preserving the base schema. This ensures that even if part of the schema
 	// cannot be fully represented in JSON Schema, we can still perform coercion
@@ -270,6 +298,6 @@ export function coerce<t, $ = {}>(schema: BaseType<t, $>): BaseType<t, $> {
 	 * We cast to `BaseType<t, $>` to assert the final contract is maintained.
 	 */
 	return type("unknown")
-		.pipe((data) => applyCoercion(data, targets))
+		.pipe((data) => applyCoercion(data, targets, options))
 		.pipe(schema) as BaseType<t, $>;
 }

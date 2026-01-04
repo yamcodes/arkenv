@@ -471,4 +471,51 @@ describe("createEnv", () => {
 			expect(Object.keys(env)).not.toContain("EXTRA");
 		});
 	});
+
+	describe("array format configuration", () => {
+		it("should parse arrays as JSON when arrayFormat is 'json'", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{
+					env: { TAGS: '["foo", "bar"]' },
+					arrayFormat: "json",
+				},
+			);
+			expect(env.TAGS).toEqual(["foo", "bar"]);
+		});
+
+		it("should fail validation if arrayFormat is 'json' but value is not valid JSON array", () => {
+			expect(() => {
+				createEnv(
+					{ TAGS: "string[]" },
+					{
+						env: { TAGS: "foo,bar" }, // Comma separated, not JSON
+						arrayFormat: "json",
+					},
+				);
+			}).toThrow("must be an array");
+		});
+
+		it("should default to comma separation", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{
+					env: { TAGS: "foo,bar" },
+					// arrayFormat not specified
+				},
+			);
+			expect(env.TAGS).toEqual(["foo", "bar"]);
+		});
+
+		it("should parse numeric arrays as JSON", () => {
+			const env = createEnv(
+				{ NUMBERS: "number[]" },
+				{
+					env: { NUMBERS: "[1, 2, 3]" },
+					arrayFormat: "json",
+				},
+			);
+			expect(env.NUMBERS).toEqual([1, 2, 3]);
+		});
+	});
 });
