@@ -3,7 +3,7 @@ import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
-import { coerce, type CoerceOptions } from "./utils";
+import { type CoerceOptions, coerce } from "./utils";
 
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
