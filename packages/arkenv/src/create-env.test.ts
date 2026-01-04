@@ -166,6 +166,28 @@ describe("createEnv", () => {
 			const env = createEnv({ FOO: "string = 'bar'" }, { env: {} });
 			expect(env.FOO).toBe("bar");
 		});
+
+		it("should treat empty string as empty string for string types", () => {
+			const env = createEnv({ VAL: "string" }, { env: { VAL: "" } });
+			expect(env.VAL).toBe("");
+		});
+
+		it("should throw for empty string when number is expected", () => {
+			expect(() =>
+				createEnv({ VAL: "number" }, { env: { VAL: "" } }),
+			).toThrow();
+		});
+
+		it("should throw for empty string when boolean is expected", () => {
+			expect(() =>
+				createEnv({ VAL: "boolean" }, { env: { VAL: "" } }),
+			).toThrow();
+		});
+
+		it("should allow empty strings when the schema is unknown", () => {
+			const env = createEnv({ VAL: "unknown" }, { env: { VAL: "" } });
+			expect(env.VAL).toBe("");
+		});
 	});
 
 	describe("standard array syntax", () => {
