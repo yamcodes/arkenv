@@ -1,4 +1,4 @@
-import { maybeParsedBoolean, maybeParsedNumber } from "@repo/keywords";
+import { maybeParsedBoolean, maybeParsedJSON, maybeParsedNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
 /**
@@ -13,11 +13,12 @@ const ARRAY_ITEM_MARKER = "*";
  */
 type CoercionTarget = {
 	path: string[];
+	type: "number" | "boolean" | "object";
 };
 
 /**
  * Recursively find all paths in a JSON Schema that require coercion.
- * We prioritize "number", "integer", and "boolean" types.
+ * We prioritize "number", "integer", "boolean", and "object" types.
  */
 const findCoercionPaths = (
 	node: JsonSchema,
@@ -31,7 +32,7 @@ const findCoercionPaths = (
 
 	if ("const" in node) {
 		if (typeof node.const === "number" || typeof node.const === "boolean") {
-			results.push({ path: [...path] });
+			results.push({ path: [...path], type: typeof node.const as "number" | "boolean" });
 		}
 	}
 
@@ -39,15 +40,37 @@ const findCoercionPaths = (
 		if (
 			node.enum.some((v) => typeof v === "number" || typeof v === "boolean")
 		) {
-			results.push({ path: [...path] });
+			// Determine if it's primarily numbers or booleans
+			const hasNumber = node.enum.some((v) => typeof v === "number");
+			const hasBoolean = node.enum.some((v) => typeof v === "boolean");
+			results.push({ path: [...path], type: hasNumber ? "number" : "boolean" });
 		}
 	}
 
 	if ("type" in node) {
 		if (node.type === "number" || node.type === "integer") {
-			results.push({ path: [...path] });
+			results.push({ path: [...path], type: "number" });
 		} else if (node.type === "boolean") {
-			results.push({ path: [...path] });
+			results.push({ path: [...path], type: "boolean" });
+		} else if (node.type === "object") {
+			// Check if this object has properties defined
+			// If it does, we want to coerce the whole object from a JSON string
+			// But we also want to recursively check nested properties
+			const hasProperties = "properties" in node && node.properties && Object.keys(node.properties).length > 0;
+			
+			if (hasProperties) {
+				// Mark this path as needing object coercion (JSON parsing)
+				results.push({ path: [...path], type: "object" });
+			}
+			
+			// Also recursively check nested properties for their own coercions
+			if ("properties" in node && node.properties) {
+				for (const [key, prop] of Object.entries(node.properties)) {
+					results.push(
+						...findCoercionPaths(prop as JsonSchema, [...path, key]),
+					);
+				}
+			}
 		} else if (node.type === "array") {
 			if ("items" in node && node.items) {
 				if (Array.isArray(node.items)) {
@@ -64,14 +87,6 @@ const findCoercionPaths = (
 							...path,
 							ARRAY_ITEM_MARKER,
 						]),
-					);
-				}
-			}
-		} else if (node.type === "object") {
-			if ("properties" in node && node.properties) {
-				for (const [key, prop] of Object.entries(node.properties)) {
-					results.push(
-						...findCoercionPaths(prop as JsonSchema, [...path, key]),
 					);
 				}
 			}
@@ -96,10 +111,10 @@ const findCoercionPaths = (
 		}
 	}
 
-	// Deduplicate by path
+	// Deduplicate by path and type combination
 	const seen = new Set<string>();
 	return results.filter((t) => {
-		const key = JSON.stringify(t.path);
+		const key = JSON.stringify({ path: t.path, type: t.type });
 		if (seen.has(key)) return false;
 		seen.add(key);
 		return true;
@@ -113,6 +128,10 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 	if (typeof data !== "object" || data === null) {
 		// If root data needs coercion (e.g. root schema is number/boolean), handle it
 		if (targets.some((t) => t.path.length === 0)) {
+			const rootTarget = targets.find((t) => t.path.length === 0);
+			if (rootTarget?.type === "object") {
+				return maybeParsedJSON(data);
+			}
 			const asNumber = maybeParsedNumber(data);
 			if (typeof asNumber === "number") {
 				return asNumber;
@@ -122,7 +141,33 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 		return data;
 	}
 
-	const walk = (current: unknown, targetPath: string[]) => {
+	// First pass: Parse JSON strings into objects
+	// This must happen before we recurse into nested properties
+	const objectTargets = targets.filter((t) => t.type === "object");
+	for (const target of objectTargets) {
+		const walk = (current: unknown, remainingPath: string[]) => {
+			if (!current || typeof current !== "object") return;
+			if (remainingPath.length === 0) return;
+
+			if (remainingPath.length === 1) {
+				const key = remainingPath[0];
+				const record = current as Record<string, unknown>;
+				// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
+				if (Object.prototype.hasOwnProperty.call(record, key)) {
+					record[key] = maybeParsedJSON(record[key]);
+				}
+				return;
+			}
+
+			const [nextKey, ...rest] = remainingPath;
+			const record = current as Record<string, unknown>;
+			walk(record[nextKey], rest);
+		};
+		walk(data, target.path);
+	}
+
+	// Second pass: Coerce numbers and booleans (including nested ones)
+	const walk = (current: unknown, targetPath: string[], targetType?: "number" | "boolean") => {
 		if (!current || typeof current !== "object") return;
 
 		// Defensive: handle root-level or exhausted-path array traversal
@@ -131,7 +176,7 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 		if (targetPath.length === 0) {
 			if (Array.isArray(current)) {
 				for (const item of current) {
-					walk(item, []);
+					walk(item, [], targetType);
 				}
 			}
 			return;
@@ -190,18 +235,19 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 		if (nextKey === ARRAY_ITEM_MARKER) {
 			if (Array.isArray(current)) {
 				for (const item of current) {
-					walk(item, rest);
+					walk(item, rest, targetType);
 				}
 			}
 			return;
 		}
 
 		const record = current as Record<string, unknown>;
-		walk(record[nextKey], rest);
+		walk(record[nextKey], rest, targetType);
 	};
 
-	for (const target of targets) {
-		walk(data, target.path);
+	const nonObjectTargets = targets.filter((t) => t.type !== "object");
+	for (const target of nonObjectTargets) {
+		walk(data, target.path, target.type);
 	}
 
 	return data;
