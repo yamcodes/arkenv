@@ -228,7 +228,7 @@ describe("createEnv + type + scope + types integration", () => {
 			vi.stubEnv("EMAILS", "test@example.com, admin@example.com");
 
 			const Email = type("string.email");
-			const env = createEnv({ EMAILS: Email.array() }, { env: process.env });
+			const env = createEnv({ EMAILS: Email.array() });
 			expect(env.EMAILS).toEqual(["test@example.com", "admin@example.com"]);
 		});
 	});
