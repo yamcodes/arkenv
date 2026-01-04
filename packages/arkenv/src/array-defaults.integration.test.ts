@@ -28,17 +28,18 @@ describe("arkenv array defaults", () => {
 		expect(env.PORTS).toEqual([3000, 8080]);
 	});
 
-	// TODO: Add this test once we implement proper string->array parsing
-	// it("should support arrays with defaults and environment overrides", () => {
-	// 	const env = arkenv(
-	// 		{
-	// 			NUMBERS: type("number[]").default(() => [1, 2, 3]),
-	// 		},
-	// 		{
-	// 			NUMBERS: "4,5,6",
-	// 		},
-	// 	);
+	it("should support arrays with defaults and environment overrides", () => {
+		const env = arkenv(
+			{
+				NUMBERS: type("number[]").default(() => [1, 2, 3]),
+			},
+			{
+				env: {
+					NUMBERS: "4,5,6",
+				},
+			},
+		);
 
-	// 	expect(env.NUMBERS).toEqual([4, 5, 6]);
-	// });
+		expect(env.NUMBERS).toEqual([4, 5, 6]);
+	});
 });
