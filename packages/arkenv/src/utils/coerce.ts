@@ -1,4 +1,8 @@
-import { maybeParsedBoolean, maybeParsedJSON, maybeParsedNumber } from "@repo/keywords";
+import {
+	maybeParsedBoolean,
+	maybeParsedJSON,
+	maybeParsedNumber,
+} from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
 /**
@@ -32,7 +36,10 @@ const findCoercionPaths = (
 
 	if ("const" in node) {
 		if (typeof node.const === "number" || typeof node.const === "boolean") {
-			results.push({ path: [...path], type: typeof node.const as "number" | "boolean" });
+			results.push({
+				path: [...path],
+				type: typeof node.const as "number" | "boolean",
+			});
 		}
 	}
 
@@ -41,8 +48,11 @@ const findCoercionPaths = (
 			node.enum.some((v) => typeof v === "number" || typeof v === "boolean")
 		) {
 			// Determine if it's primarily numbers or booleans
+			// Note: We prioritize 'number' over 'boolean' but this is just a hint -
+			// the actual coercion always tries both number and boolean, so the order
+			// doesn't affect correctness for mixed enums like [1, 2, true]
 			const hasNumber = node.enum.some((v) => typeof v === "number");
-			const hasBoolean = node.enum.some((v) => typeof v === "boolean");
+			const _hasBoolean = node.enum.some((v) => typeof v === "boolean");
 			results.push({ path: [...path], type: hasNumber ? "number" : "boolean" });
 		}
 	}
@@ -56,13 +66,16 @@ const findCoercionPaths = (
 			// Check if this object has properties defined
 			// If it does, we want to coerce the whole object from a JSON string
 			// But we also want to recursively check nested properties
-			const hasProperties = "properties" in node && node.properties && Object.keys(node.properties).length > 0;
-			
+			const hasProperties =
+				"properties" in node &&
+				node.properties &&
+				Object.keys(node.properties).length > 0;
+
 			if (hasProperties) {
 				// Mark this path as needing object coercion (JSON parsing)
 				results.push({ path: [...path], type: "object" });
 			}
-			
+
 			// Also recursively check nested properties for their own coercions
 			if ("properties" in node && node.properties) {
 				for (const [key, prop] of Object.entries(node.properties)) {
@@ -167,7 +180,14 @@ const applyCoercion = (data: unknown, targets: CoercionTarget[]) => {
 	}
 
 	// Second pass: Coerce numbers and booleans (including nested ones)
-	const walk = (current: unknown, targetPath: string[], targetType?: "number" | "boolean") => {
+	// Note: We always try both number and boolean coercion regardless of targetType
+	// because maybeParsedNumber/maybeParsedBoolean return original values on failure,
+	// which is essential for union types (e.g., "number | boolean" or "1 | 2 | true")
+	const walk = (
+		current: unknown,
+		targetPath: string[],
+		targetType?: "number" | "boolean",
+	) => {
 		if (!current || typeof current !== "object") return;
 
 		// Defensive: handle root-level or exhausted-path array traversal
