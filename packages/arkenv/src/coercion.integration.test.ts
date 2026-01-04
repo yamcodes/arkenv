@@ -142,4 +142,47 @@ describe("coercion integration", () => {
 		expect(env.PORT).toBe(3000);
 		expect(env.VITE_MY_NUMBER_MANUAL).toBe(456);
 	});
+
+	it("should handle mixed features: defaults, coercion, array format, and stripping", () => {
+		const env = createEnv(
+			{
+				// Default used if missing
+				DEFAULT_ARR: type("string[]").default(() => ["default"]),
+				// Array with JSON format
+				JSON_NUMS: "number[]",
+				// Simple coercion
+				PORT: "number",
+				// Custom regex type
+				VERSION: type("string").matching(/^\d+\.\d+\.\d+$/),
+			},
+			{
+				env: {
+					JSON_NUMS: "[10, 20]",
+					PORT: "8080",
+					VERSION: "1.0.0",
+					EXTRA: "unused",
+				} as Record<string, string | undefined>,
+				arrayFormat: "json",
+				onUndeclaredKey: "delete",
+			},
+		);
+
+		expect(env.DEFAULT_ARR).toEqual(["default"]); // Default applied
+		expect(env.JSON_NUMS).toEqual([10, 20]); // JSON parsing & Numeric coercion
+		expect(env.PORT).toBe(8080); // Number coercion
+		expect(env.VERSION).toBe("1.0.0"); // Regex validation
+		expect(Object.keys(env)).not.toContain("EXTRA"); // Stripping
+	});
+
+	it("should provide actionable error message for array parsing failure", () => {
+		expect(() => {
+			createEnv(
+				{ TAGS: "string[]" },
+				{
+					env: { TAGS: '["invalid-json' },
+					arrayFormat: "json",
+				},
+			);
+		}).toThrow("must be an array");
+	});
 });

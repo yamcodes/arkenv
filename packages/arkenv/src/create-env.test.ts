@@ -149,6 +149,85 @@ describe("createEnv", () => {
 		});
 	});
 
+	describe("defaults and empty strings", () => {
+		it("should use defaults when value is missing", () => {
+			const env = createEnv({ FOO: "string = 'bar'" }, { env: {} });
+			expect(env.FOO).toBe("bar");
+		});
+
+		it("should treat empty string as empty string for string types", () => {
+			const env = createEnv({ VAL: "string" }, { env: { VAL: "" } });
+			expect(env.VAL).toBe("");
+		});
+
+		it("should throw for empty string when number is expected", () => {
+			expect(() =>
+				createEnv({ VAL: "number" }, { env: { VAL: "" } }),
+			).toThrow();
+		});
+
+		it("should throw for empty string when boolean is expected", () => {
+			expect(() =>
+				createEnv({ VAL: "boolean" }, { env: { VAL: "" } }),
+			).toThrow();
+		});
+
+		it("should allow empty strings when the schema is unknown", () => {
+			const env = createEnv({ VAL: "unknown" }, { env: { VAL: "" } });
+			expect(env.VAL).toBe("");
+		});
+	});
+
+	describe("standard array syntax", () => {
+		it("should parse string[] from comma-separated string", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{ env: { TAGS: "foo,bar,baz" } },
+			);
+			expect(env.TAGS).toEqual(["foo", "bar", "baz"]);
+		});
+
+		it("should parse number[] from comma-separated string", () => {
+			const env = createEnv(
+				{ PORTS: "number[]" },
+				{ env: { PORTS: "3000, 8080" } },
+			);
+			expect(env.PORTS).toEqual([3000, 8080]);
+		});
+
+		it("should parse boolean[] from comma-separated string", () => {
+			const env = createEnv(
+				{ FLAGS: "boolean[]" },
+				{ env: { FLAGS: "true, false" } },
+			);
+			expect(env.FLAGS).toEqual([true, false]);
+		});
+
+		it("should parse (string|number)[] from mixed string", () => {
+			const env = createEnv(
+				{ MIXED: "(string|number)[]" },
+				{ env: { MIXED: "foo, 123, bar" } },
+			);
+			expect(env.MIXED).toEqual(["foo", 123, "bar"]);
+		});
+
+		it("should parse (string|number)[] with only numbers", () => {
+			const env = createEnv(
+				{ MIXED: "(string|number)[]" },
+				{ env: { MIXED: "1, 2, 3" } },
+			);
+			expect(env.MIXED).toEqual([1, 2, 3]);
+		});
+
+		it("should parse (string|boolean)[] with mixed values", () => {
+			const env = createEnv(
+				{ MIXED: "(string|boolean)[]" },
+				{ env: { MIXED: "true, foo, false" } },
+			);
+			expect(env.MIXED).toEqual([true, "foo", false]);
+		});
+	});
+
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
@@ -370,7 +449,7 @@ describe("createEnv", () => {
 					env: {
 						HOST: "localhost",
 						EXTRA: "should-be-deleted",
-					} as any,
+					},
 				},
 			);
 			expect(env).toEqual({ HOST: "localhost" });
@@ -384,7 +463,7 @@ describe("createEnv", () => {
 					env: {
 						HOST: "localhost",
 						EXTRA: "should-be-preserved",
-					} as any,
+					},
 					onUndeclaredKey: "ignore",
 				},
 			);
@@ -399,7 +478,7 @@ describe("createEnv", () => {
 						env: {
 							HOST: "localhost",
 							EXTRA: "should-cause-fail",
-						} as any,
+						},
 						onUndeclaredKey: "reject",
 					},
 				),
@@ -413,12 +492,83 @@ describe("createEnv", () => {
 					env: {
 						HOST: "localhost",
 						EXTRA: "should-be-deleted",
-					} as any,
+					},
 					onUndeclaredKey: "delete",
 				},
 			);
 			expect(env).toEqual({ HOST: "localhost" });
 			expect(Object.keys(env)).not.toContain("EXTRA");
+		});
+	});
+
+	describe("array format configuration", () => {
+		it("should parse arrays as JSON when arrayFormat is 'json'", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{
+					env: { TAGS: '["foo", "bar"]' },
+					arrayFormat: "json",
+				},
+			);
+			expect(env.TAGS).toEqual(["foo", "bar"]);
+		});
+
+		it("should fail validation if arrayFormat is 'json' but value is not valid JSON array", () => {
+			expect(() => {
+				createEnv(
+					{ TAGS: "string[]" },
+					{
+						env: { TAGS: "foo,bar" }, // Comma separated, not JSON
+						arrayFormat: "json",
+					},
+				);
+			}).toThrow("must be an array");
+		});
+
+		it("should default to comma separation", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{
+					env: { TAGS: "foo,bar" },
+					// arrayFormat not specified
+				},
+			);
+			expect(env.TAGS).toEqual(["foo", "bar"]);
+		});
+
+		it("should parse numeric arrays as JSON", () => {
+			const env = createEnv(
+				{ NUMBERS: "number[]" },
+				{
+					env: { NUMBERS: "[1, 2, 3]" },
+					arrayFormat: "json",
+				},
+			);
+			expect(env.NUMBERS).toEqual([1, 2, 3]);
+		});
+
+		it("should handle empty comma-separated string", () => {
+			const env = createEnv({ TAGS: "string[]" }, { env: { TAGS: "" } });
+			expect(env.TAGS).toEqual([]);
+		});
+
+		it("should handle single-element array", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{ env: { TAGS: "only-one" } },
+			);
+			expect(env.TAGS).toEqual(["only-one"]);
+		});
+
+		it("should handle empty JSON array", () => {
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{
+					env: { TAGS: "[]" },
+					arrayFormat: "json",
+				},
+			);
+			expect(env.TAGS).toEqual([]);
 		});
 	});
 });
