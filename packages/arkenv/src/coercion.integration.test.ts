@@ -161,7 +161,7 @@ describe("coercion integration", () => {
 					PORT: "8080",
 					VERSION: "1.0.0",
 					EXTRA: "unused",
-				} as any,
+				} as Record<string, string | undefined>,
 				arrayFormat: "json",
 				onUndeclaredKey: "delete",
 			},
