@@ -4,7 +4,6 @@
 		{
 			"type": "npm",
 			"script": "fix",
-			"problemMatcher": ["$tsc"],
 			"label": "fix",
 			"detail": "node bin/fix.js"
 		},
