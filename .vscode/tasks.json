@@ -17,6 +17,13 @@
 			},
 			"label": "build",
 			"detail": "turbo run build"
+		},
+		{
+			"type": "npm",
+			"script": "changeset",
+			"problemMatcher": [],
+			"label": "changeset",
+			"detail": "changeset"
 		}
 	]
 }

@@ -1,4 +1,4 @@
-import { maybeBoolean, maybeNumber } from "@repo/keywords";
+import { maybeBoolean, maybeJson, maybeNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
 /**
@@ -13,7 +13,7 @@ const ARRAY_ITEM_MARKER = "*";
  */
 type CoercionTarget = {
 	path: string[];
-	type: "primitive" | "array";
+	type: "primitive" | "array" | "object";
 };
 
 /**
@@ -29,7 +29,7 @@ export type CoerceOptions = {
 
 /**
  * Recursively find all paths in a JSON Schema that require coercion.
- * We prioritize "number", "integer", "boolean", and "array" types.
+ * We prioritize "number", "integer", "boolean", "array", and "object" types.
  */
 const findCoercionPaths = (
 	node: JsonSchema,
@@ -60,6 +60,28 @@ const findCoercionPaths = (
 			results.push({ path: [...path], type: "primitive" });
 		} else if (node.type === "boolean") {
 			results.push({ path: [...path], type: "primitive" });
+		} else if (node.type === "object") {
+			// Check if this object has properties defined
+			// If it does, we want to coerce the whole object from a JSON string
+			// But we also want to recursively check nested properties
+			const hasProperties =
+				"properties" in node &&
+				node.properties &&
+				Object.keys(node.properties).length > 0;
+
+			if (hasProperties) {
+				// Mark this path as needing object coercion (JSON parsing)
+				results.push({ path: [...path], type: "object" });
+			}
+
+			// Also recursively check nested properties for their own coercions
+			if ("properties" in node && node.properties) {
+				for (const [key, prop] of Object.entries(node.properties)) {
+					results.push(
+						...findCoercionPaths(prop as JsonSchema, [...path, key]),
+					);
+				}
+			}
 		} else if (node.type === "array") {
 			// Mark the array itself as a target for splitting strings
 			results.push({ path: [...path], type: "array" });
@@ -79,14 +101,6 @@ const findCoercionPaths = (
 							...path,
 							ARRAY_ITEM_MARKER,
 						]),
-					);
-				}
-			}
-		} else if (node.type === "object") {
-			if ("properties" in node && node.properties) {
-				for (const [key, prop] of Object.entries(node.properties)) {
-					results.push(
-						...findCoercionPaths(prop as JsonSchema, [...path, key]),
 					);
 				}
 			}
@@ -111,18 +125,12 @@ const findCoercionPaths = (
 		}
 	}
 
-	// Deduplicate by path
+	// Deduplicate by path and type combination
 	const seen = new Set<string>();
 	return results.filter((t) => {
-		const key = JSON.stringify(t.path);
-		// Prioritize array type over primitive if duplicate path exists?
-		// Actually duplicates shouldn't happen for same path with conflicting types in valid schemas usually,
-		// but let's allow "array" to exist.
-		// If a path is both array and primitive (e.g. union), we might want both.
-		// But for now, let's just use the key including type.
-		const uniqueKey = key + t.type;
-		if (seen.has(uniqueKey)) return false;
-		seen.add(uniqueKey);
+		const key = JSON.stringify(t.path) + t.type;
+		if (seen.has(key)) return false;
+		seen.add(key);
 		return true;
 	});
 };
@@ -155,6 +163,11 @@ const applyCoercion = (
 		// If root data needs coercion
 		if (targets.some((t) => t.path.length === 0)) {
 			const rootTarget = targets.find((t) => t.path.length === 0);
+
+			if (rootTarget?.type === "object" && typeof data === "string") {
+				return maybeJson(data);
+			}
+
 			if (rootTarget?.type === "array" && typeof data === "string") {
 				return splitString(data);
 			}
@@ -168,16 +181,19 @@ const applyCoercion = (
 		return data;
 	}
 
+	// Sort targets by path length to ensure parent objects/arrays are coerced before their children
+	const sortedTargets = [...targets].sort(
+		(a, b) => a.path.length - b.path.length,
+	);
+
 	const walk = (
 		current: unknown,
 		targetPath: string[],
-		type: "primitive" | "array",
+		type: "primitive" | "array" | "object",
 	) => {
 		if (!current || typeof current !== "object") return;
 
 		if (targetPath.length === 0) {
-			// Already matched path (should rely on caller)
-			// But strict recursion logic stops at length 1 usually.
 			return;
 		}
 
@@ -196,6 +212,8 @@ const applyCoercion = (
 							} else {
 								current[i] = maybeBoolean(original);
 							}
+						} else if (type === "object") {
+							current[i] = maybeJson(original);
 						}
 					}
 				}
@@ -212,14 +230,12 @@ const applyCoercion = (
 					return;
 				}
 
-				if (Array.isArray(original)) {
-					// It's already an array, maybe coerce items if we are targeting primitive items?
-					// But if we are here, targetPath len is 1, so we are targeting `record[lastKey]`.
-					// If target type is "primitive", but it's an array, we iterating?
-					// No, ARRAY_ITEM_MARKER handles iteration.
-					// If we are here, we are targeting the value itself.
-					// If it is an array and we expect primitive... do nothing?
+				if (type === "object" && typeof original === "string") {
+					record[lastKey] = maybeJson(original);
+					return;
+				}
 
+				if (Array.isArray(original)) {
 					if (type === "primitive") {
 						for (let i = 0; i < original.length; i++) {
 							const item = original[i];
@@ -262,7 +278,7 @@ const applyCoercion = (
 		walk(record[nextKey], rest, type);
 	};
 
-	for (const target of targets) {
+	for (const target of sortedTargets) {
 		walk(data, target.path, target.type);
 	}
 

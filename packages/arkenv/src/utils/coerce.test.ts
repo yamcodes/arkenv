@@ -156,6 +156,103 @@ describe("coerce", () => {
 		expect(result.toString()).toContain('DEBUG must be boolean (was "yes")');
 	});
 
+	it("should parse JSON string into object", () => {
+		const schema = type({
+			CONFIG: {
+				host: "string",
+				port: "number",
+			},
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({
+			CONFIG: '{"host": "localhost", "port": "3000"}',
+		});
+		expect(result).toEqual({
+			CONFIG: {
+				host: "localhost",
+				port: 3000,
+			},
+		});
+	});
+
+	it("should parse nested JSON objects", () => {
+		const schema = type({
+			CONFIG: {
+				database: {
+					host: "string",
+					port: "number",
+				},
+			},
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({
+			CONFIG: '{"database": {"host": "localhost", "port": "5432"}}',
+		});
+		expect(result).toEqual({
+			CONFIG: {
+				database: {
+					host: "localhost",
+					port: 5432,
+				},
+			},
+		});
+	});
+
+	it("should handle object with boolean properties", () => {
+		const schema = type({
+			SETTINGS: {
+				enabled: "boolean",
+				debug: "boolean",
+			},
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({
+			SETTINGS: '{"enabled": "true", "debug": "false"}',
+		});
+		expect(result).toEqual({
+			SETTINGS: {
+				enabled: true,
+				debug: false,
+			},
+		});
+	});
+
+	it("should fail when JSON string is invalid", () => {
+		const schema = type({
+			CONFIG: {
+				host: "string",
+			},
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({ CONFIG: "not valid json" });
+		expect(result).toBeInstanceOf(ArkErrors);
+	});
+
+	it("should handle mixed object and primitive coercion", () => {
+		const schema = type({
+			PORT: "number",
+			CONFIG: {
+				host: "string",
+			},
+		});
+		const coercedSchema = coerce(schema);
+
+		const result = coercedSchema({
+			PORT: "3000",
+			CONFIG: '{"host": "localhost"}',
+		});
+		expect(result).toEqual({
+			PORT: 3000,
+			CONFIG: {
+				host: "localhost",
+			},
+		});
+	});
+
 	it("should coerce nested object structures", () => {
 		const schema = type({
 			DB: {
