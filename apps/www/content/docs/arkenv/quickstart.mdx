@@ -55,7 +55,7 @@ icon: Rocket
       // Optional variables with defaults
       LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
       
-      // Array defaults using type function
+      // Arrays (comma-separated by default)
       ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
       FEATURE_FLAGS: type("string[]").default(() => []),
       
@@ -82,6 +82,7 @@ icon: Rocket
     DEBUG=true
     NODE_ENV=development
     API_KEY=your-secret-key
+    ALLOWED_ORIGINS=http://localhost:3000, https://example.com
     ```
 
     > [!TIP]
