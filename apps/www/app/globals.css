@@ -73,6 +73,7 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	padding-right: 0 !important;
 	display: flex;
 	align-items: center;
+	gap: 0 !important;
 }
 
 #nd-nav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)),
@@ -81,6 +82,7 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	padding-right: 0 !important;
 	display: inline-flex;
 	align-items: center;
+	gap: 0 !important;
 }
 
 [data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
