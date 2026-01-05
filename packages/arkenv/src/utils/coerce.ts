@@ -186,28 +186,6 @@ const applyCoercion = (
 		(a, b) => a.path.length - b.path.length,
 	);
 
-	if (typeof data !== "object" || data === null) {
-		// If root data needs coercion
-		if (targets.some((t) => t.path.length === 0)) {
-			const rootTarget = targets.find((t) => t.path.length === 0);
-
-			if (rootTarget?.type === "object" && typeof data === "string") {
-				return maybeParsedJSON(data);
-			}
-
-			if (rootTarget?.type === "array" && typeof data === "string") {
-				return splitString(data);
-			}
-
-			const asNumber = maybeNumber(data);
-			if (typeof asNumber === "number") {
-				return asNumber;
-			}
-			return maybeBoolean(data);
-		}
-		return data;
-	}
-
 	const walk = (
 		current: unknown,
 		targetPath: string[],
