@@ -1,4 +1,4 @@
-import { maybeBoolean, maybeNumber, maybeJson } from "@repo/keywords";
+import { maybeBoolean, maybeJson, maybeNumber } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
 /**
