@@ -14,6 +14,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 					active: "none",
 				},
 				{
+					text: "Roadmap",
+					url: "https://github.com/yamcodes/arkenv/issues/683",
+					active: "none",
+				},
+				{
 					text: "GitHub",
 					url: "https://github.com/yamcodes/arkenv",
 					active: "none",

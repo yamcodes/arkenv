@@ -99,6 +99,16 @@ export default function HomePage() {
 								ArkType ecosystem
 							</ExternalLink>
 						</div>
+						<div className="flex gap-4 text-sm text-gray-500 dark:text-gray-400">
+							<ExternalLink
+								href="https://github.com/yamcodes/arkenv/issues/683"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+							>
+								Roadmap
+							</ExternalLink>
+						</div>
 						<div className="flex flex-col gap-1.5 items-center text-gray-500 dark:text-gray-500 text-sm">
 							<div>Released under the MIT License</div>
 							<div>Copyright © 2025-present Yam Borodetsky</div>
