@@ -1,5 +1,31 @@
 # ArkEnv
 
+## 0.8.3
+
+### Patch Changes
+
+- #### Object coercion _[`#694`](https://github.com/yamcodes/arkenv/pull/694) [`01c1704`](https://github.com/yamcodes/arkenv/commit/01c17041029a41f2dfcacd7dd7ed2d1cd5a8c058) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  ArkEnv now coerces objects when the `coerce` option is enabled (true by default).
+  Objects are parsed from JSON strings, allowing for nested typesafe configuration.
+
+  Example:
+
+  ```dotenv
+  DATABASE={"HOST": "localhost", "PORT": "5432"}
+  ```
+
+  ```ts
+  const env = arkenv({
+    DATABASE: {
+      HOST: "string",
+      PORT: "number",
+    },
+  });
+
+  console.log(env.DATABASE.PORT); // 5432 (number)
+  ```
+
 ## 0.8.2
 
 ### Patch Changes

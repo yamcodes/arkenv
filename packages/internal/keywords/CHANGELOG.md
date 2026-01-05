@@ -1,5 +1,25 @@
 # @repo/keywords
 
+## 0.2.1
+
+### Patch Changes
+
+- #### Add `maybeJson` keyword _[`#694`](https://github.com/yamcodes/arkenv/pull/694) [`01c1704`](https://github.com/yamcodes/arkenv/commit/01c17041029a41f2dfcacd7dd7ed2d1cd5a8c058) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  JSDoc:
+
+  ```ts
+  /**
+   * A loose JSON morph.
+   *
+   * **In**: `unknown`
+   *
+   * **Out**: A parsed JSON object if the input is a valid JSON string; otherwise the original input.
+   *
+   * Useful for coercion in unions where failing on non-JSON strings would block other branches.
+   */
+  ```
+
 ## 0.2.0
 
 ### Minor Changes
