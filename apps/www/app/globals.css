@@ -42,9 +42,10 @@ article
 }
 
 /* External links in documentation */
-article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
-		[data-no-arrow]
-	):not(:has(img)),
+article
+a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
+	[data-no-arrow]
+):not(:has(img)),
 [data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(
 		:has(img)
 	) {
@@ -68,7 +69,10 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 }
 
 /* Sidebar & Nav: Automagic icons next to text for flex containers */
-[data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)) {
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
 	background-image: none !important;
 	padding-right: 0 !important;
 	display: flex;
@@ -76,8 +80,14 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	gap: 0 !important;
 }
 
-#nd-nav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)),
-#nd-subnav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)) {
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	),
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
 	background-image: none !important;
 	padding-right: 0 !important;
 	display: inline-flex;
@@ -85,9 +95,18 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	gap: 0 !important;
 }
 
-[data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-#nd-nav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-#nd-subnav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after {
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
 	content: "";
 	width: 0.9em;
 	height: 0.9em;
@@ -100,9 +119,21 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	opacity: 0.5;
 }
 
-.dark [data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-.dark #nd-nav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-.dark #nd-subnav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after {
+.dark
+	[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
 }
 
