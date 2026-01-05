@@ -1,5 +1,21 @@
 # @repo/scope
 
+## 0.1.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`01c1704`](https://github.com/yamcodes/arkenv/commit/01c17041029a41f2dfcacd7dd7ed2d1cd5a8c058)
+
+</small>
+
+- `@repo/keywords@0.2.1`
+
+</details>
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @repo/types
 
+## 0.0.6
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+</small>
+
+- `@repo/scope@0.1.2`
+
+</details>
+
 ## 0.0.5
 
 ### Patch Changes

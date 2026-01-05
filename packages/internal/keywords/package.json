@@ -2,7 +2,7 @@
 	"name": "@repo/keywords",
 	"private": true,
 	"type": "module",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
