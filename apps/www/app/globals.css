@@ -12,9 +12,10 @@
 @plugin "tailwindcss-animate";
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 
-/* External link arrow icon as CSS custom property */
+/* External link icon variables */
 @theme {
-	--external-link-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E");
+	--icon-external: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+	--icon-external-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
 }
 
 /* Link underlines in documentation */
@@ -50,7 +51,7 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 		:has(img)
 	) {
 	padding-right: 1.1em;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+	background-image: var(--icon-external);
 	background-repeat: no-repeat;
 	background-size: 0.9em;
 	background-position: center right;
@@ -65,21 +66,14 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	[data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(
 		:has(img)
 	) {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+	background-image: var(--icon-external-dark);
 }
 
 /* Sidebar & Nav: Automagic icons next to text for flex containers */
 [data-radix-scroll-area-viewport]
 	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
 		:has(> svg:only-child)
-	) {
-	background-image: none !important;
-	padding-right: 0 !important;
-	display: flex;
-	align-items: center;
-	gap: 0 !important;
-}
-
+	),
 #nd-nav
 	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
 		:has(> svg:only-child)
@@ -93,6 +87,14 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	display: inline-flex;
 	align-items: center;
 	gap: 0 !important;
+}
+
+/* Sidebar specifically needs full flex for better link hit-areas */
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
+	display: flex;
 }
 
 [data-radix-scroll-area-viewport]
@@ -111,7 +113,7 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	width: 0.9em;
 	height: 0.9em;
 	margin-left: 0.1em;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+	background-image: var(--icon-external);
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -134,7 +136,7 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
 		:has(> svg:only-child)
 	)::after {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+	background-image: var(--icon-external-dark);
 }
 
 button[data-search-full] {
