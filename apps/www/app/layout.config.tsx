@@ -1,3 +1,4 @@
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { Logo } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
@@ -16,4 +17,13 @@ export const baseOptions: BaseLayoutProps = {
 	themeSwitch: {
 		component: <ThemeToggle key="theme-toggle" />,
 	},
+	links: [
+		{
+			text: "GitHub",
+			url: "https://github.com/yamcodes/arkenv",
+			active: "none",
+			type: "icon",
+			icon: <SiGithub aria-label="GitHub" />,
+		},
+	],
 };
