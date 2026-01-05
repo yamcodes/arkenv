@@ -68,6 +68,30 @@ const env = arkenv(
 );
 ```
 
+## Objects
+
+ArkEnv can parse JSON strings into objects. This is useful for grouping related configuration into a single environment variable.
+
+```ts title="index.ts" twoslash
+import arkenv from "arkenv";
+
+const env = arkenv({
+  DATABASE: {
+    HOST: "string",
+    PORT: "number"
+  }
+}, {
+  env: {
+    DATABASE: '{"HOST": "localhost", "PORT": "5432"}'
+  }
+});
+
+// env.DATABASE.HOST is "localhost"
+// env.DATABASE.PORT is 5432 (number!)
+```
+
+Coercion works recursively: even variables inside a JSON object are coerced to their correct types (like `PORT` becoming a `number` above).
+
 ## How it works
 
 ArkEnv introspects your schema to identify fields that should be numbers, booleans, and other non-string types you define. When you call `createEnv()` (or `arkenv()`), it pre-processes your environment variables to perform these conversions *before* validation.
