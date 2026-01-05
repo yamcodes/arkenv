@@ -185,4 +185,23 @@ describe("coercion integration", () => {
 			);
 		}).toThrow("must be an array");
 	});
+
+	it("should parse and validate objects from JSON environment variables", () => {
+		const env = createEnv(
+			{
+				DB: {
+					HOST: "string.host",
+					PORT: "number.port",
+				},
+			},
+			{
+				env: {
+					DB: '{"HOST": "localhost", "PORT": "5432"}',
+				},
+			},
+		);
+
+		expect(env.DB.HOST).toBe("localhost");
+		expect(env.DB.PORT).toBe(5432);
+	});
 });

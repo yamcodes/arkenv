@@ -181,46 +181,31 @@ const applyCoercion = (
 		return data;
 	}
 
-	// First pass: Parse JSON strings into objects
-	// This must happen before we recurse into nested properties
-	const objectTargets = targets.filter((t) => t.type === "object");
-	for (const target of objectTargets) {
-		const walkObject = (current: unknown, remainingPath: string[]) => {
-			if (!current || typeof current !== "object") return;
-			if (remainingPath.length === 0) return;
+	// Sort targets by path length to ensure parent objects/arrays are coerced before their children
+	const sortedTargets = [...targets].sort(
+		(a, b) => a.path.length - b.path.length,
+	);
 
-			if (remainingPath.length === 1) {
-				const key = remainingPath[0];
-				if (key === ARRAY_ITEM_MARKER) {
-					if (Array.isArray(current)) {
-						for (let i = 0; i < current.length; i++) {
-							current[i] = maybeParsedJSON(current[i]);
-						}
-					}
-					return;
-				}
+	if (typeof data !== "object" || data === null) {
+		// If root data needs coercion
+		if (targets.some((t) => t.path.length === 0)) {
+			const rootTarget = targets.find((t) => t.path.length === 0);
 
-				const record = current as Record<string, unknown>;
-				// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
-				if (Object.prototype.hasOwnProperty.call(record, key)) {
-					record[key] = maybeParsedJSON(record[key]);
-				}
-				return;
+			if (rootTarget?.type === "object" && typeof data === "string") {
+				return maybeParsedJSON(data);
 			}
 
-			const [nextKey, ...rest] = remainingPath;
-			if (nextKey === ARRAY_ITEM_MARKER) {
-				if (Array.isArray(current)) {
-					for (const item of current) {
-						walkObject(item, rest);
-					}
-				}
-			} else {
-				const record = current as Record<string, unknown>;
-				walkObject(record[nextKey], rest);
+			if (rootTarget?.type === "array" && typeof data === "string") {
+				return splitString(data);
 			}
-		};
-		walkObject(data, target.path);
+
+			const asNumber = maybeNumber(data);
+			if (typeof asNumber === "number") {
+				return asNumber;
+			}
+			return maybeBoolean(data);
+		}
+		return data;
 	}
 
 	const walk = (
@@ -315,15 +300,8 @@ const applyCoercion = (
 		walk(record[nextKey], rest, type);
 	};
 
-	// Second pass: Coerce primitives (including nested ones)
-	// We skip "object" in this pass because they were handled in the first pass
-	// OR we can just run everything together if we are careful.
-	// Actually, if we've already parsed JSON objects, we WANT to walk into them for primitives.
-	// So we should run "primitive" targets AFTER "object" targets.
-	for (const target of targets) {
-		if (target.type !== "object") {
-			walk(data, target.path, target.type);
-		}
+	for (const target of sortedTargets) {
+		walk(data, target.path, target.type);
 	}
 
 	return data;

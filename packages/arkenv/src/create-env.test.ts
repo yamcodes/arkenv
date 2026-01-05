@@ -571,4 +571,61 @@ describe("createEnv", () => {
 			expect(env.TAGS).toEqual([]);
 		});
 	});
+
+	describe("object coercion", () => {
+		it("should parse an object from a JSON string", () => {
+			const env = createEnv(
+				{ DATABASE: { HOST: "string", PORT: "number" } },
+				{
+					env: {
+						DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
+					},
+				},
+			);
+			expect(env.DATABASE).toEqual({ HOST: "localhost", PORT: 5432 });
+			expect(env.DATABASE.HOST).toBe("localhost");
+			expect(env.DATABASE.PORT).toBe(5432);
+		});
+
+		it("should handle nested object coercion", () => {
+			const env = createEnv(
+				{ CONFIG: { DB: { PORT: "number" }, APP: { NAME: "string" } } },
+				{
+					env: {
+						CONFIG: '{"DB": {"PORT": "8080"}, "APP": {"NAME": "myapp"}}',
+					},
+				},
+			);
+			expect(env.CONFIG).toEqual({
+				DB: { PORT: 8080 },
+				APP: { NAME: "myapp" },
+			});
+		});
+
+		it("should fail validation if object is not valid JSON", () => {
+			expect(() => {
+				createEnv(
+					{ DATABASE: { HOST: "string" } },
+					{ env: { DATABASE: '{"HOST": "localhost"' } }, // Missing closing brace
+				);
+			}).toThrow("must be an object");
+		});
+
+		it("should parse objects within arrays", () => {
+			const env = createEnv(
+				{ SERVICES: type({ NAME: "string", PORT: "number" }).array() },
+				{
+					env: {
+						SERVICES:
+							'[{"NAME": "web", "PORT": "80"}, {"NAME": "api", "PORT": "3000"}]',
+					},
+					arrayFormat: "json",
+				},
+			);
+			expect(env.SERVICES).toEqual([
+				{ NAME: "web", PORT: 80 },
+				{ NAME: "api", PORT: 3000 },
+			]);
+		});
+	});
 });
