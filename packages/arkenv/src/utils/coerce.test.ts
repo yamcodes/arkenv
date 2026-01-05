@@ -165,7 +165,9 @@ describe("coerce", () => {
 		});
 		const coercedSchema = coerce(schema);
 
-		const result = coercedSchema({ CONFIG: '{"host": "localhost", "port": "3000"}' });
+		const result = coercedSchema({
+			CONFIG: '{"host": "localhost", "port": "3000"}',
+		});
 		expect(result).toEqual({
 			CONFIG: {
 				host: "localhost",
