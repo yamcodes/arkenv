@@ -3,7 +3,7 @@ import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
-import { coerce } from "./utils";
+import { type CoerceOptions, coerce } from "./utils";
 
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
@@ -35,6 +35,16 @@ export type ArkEnvConfig = {
 	 * @see https://arktype.io/docs/configuration#onundeclaredkey
 	 */
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
+
+	/**
+	 * The format to use for array parsing when coercion is enabled.
+	 *
+	 * - `comma` (default): Strings are split by comma and trimmed.
+	 * - `json`: Strings are parsed as JSON.
+	 *
+	 * @default "comma"
+	 */
+	arrayFormat?: CoerceOptions["arrayFormat"];
 };
 
 /**
@@ -68,6 +78,7 @@ export function createEnv<const T extends SchemaShape>(
 		env = process.env,
 		coerce: shouldCoerce = true,
 		onUndeclaredKey = "delete",
+		arrayFormat = "comma",
 	}: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	// If def is a type definition (has assert method), use it directly
@@ -80,7 +91,7 @@ export function createEnv<const T extends SchemaShape>(
 
 	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
 	if (shouldCoerce) {
-		schema = coerce(schema);
+		schema = coerce(schema, { arrayFormat });
 	}
 
 	// Validate the environment variables

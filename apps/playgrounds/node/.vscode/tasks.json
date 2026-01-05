@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "start",
+			"problemMatcher": ["$tsc"],
+			"label": "start",
+			"detail": "tsx --env-file .env index.ts"
+		},
+		{
+			"type": "npm",
+			"script": "dev",
+			"problemMatcher": ["$tsc-watch"],
+			"label": "dev",
+			"detail": "tsx watch --env-file .env index.ts"
+		}
+	]
+}
