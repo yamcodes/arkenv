@@ -18,6 +18,8 @@
 		"[Standard Schema](/docs/arkenv/integrations/standard-schema)",
 		"---How-to---",
 		"[Load environment variables](/docs/arkenv/how-to/load-environment-variables)",
-		"[Reuse your schema](/docs/arkenv/how-to/reuse-schemas)"
+		"[Reuse your schema](/docs/arkenv/how-to/reuse-schemas)",
+		"---",
+		"[Roadmap](https://github.com/yamcodes/arkenv/issues/683)"
 	]
 }
