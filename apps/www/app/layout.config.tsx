@@ -25,11 +25,5 @@ export const baseOptions: BaseLayoutProps = {
 			type: "icon",
 			icon: <SiGithub aria-label="GitHub" />,
 		},
-		{
-			text: "Roadmap",
-			url: "https://github.com/yamcodes/arkenv/issues/683",
-			active: "none",
-			external: true,
-		},
 	],
 };

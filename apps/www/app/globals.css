@@ -22,7 +22,7 @@ article
 a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 	[data-no-underline]
 ),
-a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
 		[class*="fd-"]
 	):not([data-no-underline]) {
 	text-decoration: none;
@@ -35,14 +35,14 @@ article
 	a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-underline]
 	):hover,
-a[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
 		[class*="fd-"]
 	):not([data-no-underline]):hover {
 	border-bottom-width: 2.5px;
 }
 
 /* External links in documentation */
-a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-arrow]
 	):not(:has(img)),
 article
@@ -57,7 +57,7 @@ article
 }
 
 .dark
-	a[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+	[data-external-link]:not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 		[data-no-arrow]
 	):not(:has(img)),
 .dark

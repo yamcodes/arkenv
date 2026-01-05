@@ -1,7 +1,8 @@
-import { SiGithub } from "@icons-pack/react-simple-icons";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
+import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { baseOptions } from "~/app/layout.config";
+import { ExternalLink } from "~/components/ui/external-link";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
@@ -14,18 +15,15 @@ export default function Layout({ children }: { children: ReactNode }) {
 					active: "none",
 				},
 				{
-					text: "Roadmap",
+					text: (
+						<span data-no-underline data-external-link>
+							Roadmap
+						</span>
+					),
 					url: "https://github.com/yamcodes/arkenv/issues/683",
-					active: "none",
 					external: true,
 				},
-				{
-					text: "GitHub",
-					url: "https://github.com/yamcodes/arkenv",
-					active: "none",
-					type: "icon",
-					icon: <SiGithub aria-label="GitHub" />,
-				},
+				...(baseOptions.links ?? []),
 			]}
 		>
 			{children}
