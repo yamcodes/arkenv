@@ -53,7 +53,7 @@ export const host = type("string.ip | 'localhost'");
  *
  * Useful for coercion in unions where failing on non-JSON strings would block other branches.
  */
-export const maybeParsedJSON = type("unknown").pipe((s) => {
+export const maybeJson = type("unknown").pipe((s) => {
 	if (typeof s !== "string") return s;
 	const trimmed = s.trim();
 	// Only attempt to parse if it looks like JSON (starts with { or [)

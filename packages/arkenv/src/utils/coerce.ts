@@ -1,4 +1,4 @@
-import { maybeBoolean, maybeNumber, maybeParsedJSON } from "@repo/keywords";
+import { maybeBoolean, maybeNumber, maybeJson } from "@repo/keywords";
 import { type BaseType, type JsonSchema, type } from "arktype";
 
 /**
@@ -165,7 +165,7 @@ const applyCoercion = (
 			const rootTarget = targets.find((t) => t.path.length === 0);
 
 			if (rootTarget?.type === "object" && typeof data === "string") {
-				return maybeParsedJSON(data);
+				return maybeJson(data);
 			}
 
 			if (rootTarget?.type === "array" && typeof data === "string") {
@@ -213,7 +213,7 @@ const applyCoercion = (
 								current[i] = maybeBoolean(original);
 							}
 						} else if (type === "object") {
-							current[i] = maybeParsedJSON(original);
+							current[i] = maybeJson(original);
 						}
 					}
 				}
@@ -231,7 +231,7 @@ const applyCoercion = (
 				}
 
 				if (type === "object" && typeof original === "string") {
-					record[lastKey] = maybeParsedJSON(original);
+					record[lastKey] = maybeJson(original);
 					return;
 				}
 
