@@ -1,4 +1,4 @@
-import { createEnv } from "./create-env";
+import { arkenv, createEnv } from "./create-env";
 
 export type { EnvSchema } from "./create-env";
 
