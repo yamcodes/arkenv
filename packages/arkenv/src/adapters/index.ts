@@ -19,7 +19,7 @@ export type EnvIssue = {
 	validator: "arktype" | "standard";
 };
 
-export interface SchemaAdapter {
+export type SchemaAdapter = {
 	/**
 	 * The internal identity of the adapter.
 	 */
@@ -37,4 +37,4 @@ export interface SchemaAdapter {
 				success: false;
 				issues: EnvIssue[];
 		  };
-}
+};
