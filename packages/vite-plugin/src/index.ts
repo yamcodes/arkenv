@@ -1,5 +1,5 @@
 import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
-import { defineEnv, type EnvSchema } from "arkenv";
+import { arkenv as validateEnv, type EnvSchema } from "arkenv";
 import { loadEnv, type Plugin } from "vite";
 
 export type { ImportMetaEnvAugmented } from "./types";
@@ -63,7 +63,7 @@ export default function arkenv<const T extends SchemaShape>(
 			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
 			// "Type instantiation is excessively deep and possibly infinite" errors.
 			// Ideally, we should find a way to avoid these assertions while maintaining type safety.
-			const env = defineEnv(options as any, {
+			const env = validateEnv(options as any, {
 				env: loadEnv(mode, envDir, ""),
 			});
 

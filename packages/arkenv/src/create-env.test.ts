@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
-import { arkenv, createEnv, defineEnv } from "./create-env";
+import { arkenv, createEnv } from "./create-env";
 import { type } from "./type";
 import { indent, styleText } from "./utils";
 
@@ -88,7 +88,7 @@ describe("createEnv", () => {
 				),
 			});
 
-			const env = defineEnv(Env, {
+			const env = arkenv(Env, {
 				env: {
 					PORT: "3000",
 					VITE_MY_NUMBER_MANUAL: "456",
@@ -356,12 +356,12 @@ describe("createEnv", () => {
 			});
 
 			// Use the same schema multiple times
-			const env1 = defineEnv(Env, {
+			const env1 = arkenv(Env, {
 				env: {
 					TEST_STRING: "first",
 				},
 			});
-			const env2 = defineEnv(Env, {
+			const env2 = arkenv(Env, {
 				env: {
 					TEST_STRING: "second",
 				},
@@ -378,7 +378,7 @@ describe("createEnv", () => {
 				INVALID_PORT: "number.port",
 			});
 
-			expect(() => defineEnv(Env)).toThrow(/INVALID_PORT/);
+			expect(() => arkenv(Env)).toThrow(/INVALID_PORT/);
 		});
 
 		it("should work with custom environment and type definitions", () => {
@@ -392,7 +392,7 @@ describe("createEnv", () => {
 				PORT: "8080",
 			};
 
-			const env = defineEnv(Env, { env: customEnv });
+			const env = arkenv(Env, { env: customEnv });
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
@@ -652,7 +652,7 @@ describe("createEnv", () => {
 		});
 
 		it("should work with top-level Standard Schema via defineEnv", () => {
-			const env = defineEnv(z.object({ PORT: z.coerce.number() }), {
+			const env = arkenv(z.object({ PORT: z.coerce.number() }), {
 				env: { PORT: "8080" },
 			});
 			expect(env.PORT).toBe(8080);

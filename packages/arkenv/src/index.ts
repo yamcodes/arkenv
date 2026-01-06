@@ -8,6 +8,6 @@ import { arkenv } from "./create-env";
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  */
 export default arkenv;
-export { arkenv, createEnv, defineEnv } from "./create-env";
+export { arkenv, createEnv } from "./create-env";
 export { ArkEnvError } from "./errors";
 export { type } from "./type";

@@ -37,37 +37,7 @@ export type ArkEnvConfig = {
 };
 
 /**
- * Strict Standard Schema entry point.
- * Use this when you have a pre-defined validator (e.g. `z.object({ ... })`)
- * and want zero ArkType DSL behavior.
- *
- * Zero implicit coercion, zero ArkType dependency (unless passed an ArkType schema).
- */
-export function defineEnv<T extends EnvSchemaWithType>(
-	schema: T,
-	config: ArkEnvConfig = {},
-): InferType<T> {
-	const env = config.env ?? process.env;
-	const isStandard = !!(schema as any)?.["~standard"];
-	const isArkCompiled =
-		typeof schema === "function" && "assert" in (schema as any);
-
-	const adapter =
-		isStandard && !isArkCompiled
-			? new StandardSchemaAdapter(schema as any)
-			: new ArkTypeAdapter(schema, config as any);
-
-	const result = adapter.validate(env);
-
-	if (!result.success) {
-		throw new ArkEnvError(result.issues);
-	}
-
-	return result.value as InferType<T>;
-}
-
-/**
- * Ergonomic, hybrid entry point (migration-friendly).
+ * The primary entry point for ArkEnv.
  * Supports ArkType DSL, Standard Schema validators, or a mix of both.
  *
  * arkenv({
@@ -75,9 +45,8 @@ export function defineEnv<T extends EnvSchemaWithType>(
  *   HOST: z.string().min(1)    // Standard Schema (Zod)
  * })
  *
- * IMPORTANT: arkenv() expects an object mapping environment keys to validators.
- * Do not pass a wrapped schema like arkenv(z.object({ ... })).
- * Use defineEnv() for strict Standard Schema paths.
+ * Or pass a pre-defined validator:
+ * arkenv(z.object({ PORT: z.coerce.number() }))
  *
  * Type inference quality depends on the validator used.
  * ArkType provides the richest inference.
@@ -98,21 +67,28 @@ export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	// Guardrail: Ensure arkenv() only accepts an object map.
-	// We check for "~standard" (Standard Schema) or "assert" (compiled ArkType)
-	// which indicate the user passed a wrapped schema instead of an object map.
-	if (
-		typeof def === "function" ||
-		(def !== null && typeof def === "object" && "~standard" in def)
-	) {
-		throw new Error(
-			"ArkEnv: arkenv() expects a mapping of { KEY: validator }, not a wrapped schema. " +
-				"If you want to pass a top-level validator like z.object(), use defineEnv() instead.",
-		);
+	const env = config.env ?? process.env;
+	const isStandard = !!(def as any)?.["~standard"];
+	const isArkCompiled = typeof def === "function" && "assert" in (def as any);
+
+	const adapter =
+		isStandard && !isArkCompiled
+			? new StandardSchemaAdapter(def as any)
+			: new ArkTypeAdapter(def, config as any);
+
+	const result = adapter.validate(env);
+
+	if (!result.success) {
+		throw new ArkEnvError(result.issues);
 	}
 
-	return defineEnv(def as any, config) as any;
+	return result.value as any;
 }
+
+/**
+ * @private - Internal helper to maintain compatibility while refactoring.
+ */
+export const defineEnv = arkenv;
 
 /**
  * @deprecated Use `arkenv` or `defineEnv` instead.
