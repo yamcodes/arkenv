@@ -1,5 +1,38 @@
-import { maybeBoolean, maybeJson, maybeNumber } from "@repo/keywords";
-import { type BaseType, type JsonSchema, type } from "arktype";
+/**
+ * A loose numeric morph.
+ */
+const maybeNumber = (s: unknown) => {
+	if (typeof s === "number") return s;
+	if (typeof s !== "string") return s;
+	const trimmed = s.trim();
+	if (trimmed === "") return s;
+	if (trimmed === "NaN") return Number.NaN;
+	const n = Number(trimmed);
+	return Number.isNaN(n) ? s : n;
+};
+
+/**
+ * A loose boolean morph.
+ */
+const maybeBoolean = (s: unknown) => {
+	if (s === "true") return true;
+	if (s === "false") return false;
+	return s;
+};
+
+/**
+ * A loose JSON morph.
+ */
+const maybeJson = (s: unknown) => {
+	if (typeof s !== "string") return s;
+	const trimmed = s.trim();
+	if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return s;
+	try {
+		return JSON.parse(trimmed);
+	} catch {
+		return s;
+	}
+};
 
 /**
  * A marker used in the coercion path to indicate that the target
@@ -17,29 +50,14 @@ type CoercionTarget = {
 };
 
 /**
- * Options for coercion behavior.
- */
-export type CoerceOptions = {
-	/**
-	 * format to use for array parsing
-	 * @default "comma"
-	 */
-	arrayFormat?: "comma" | "json";
-};
-
-/**
  * Recursively find all paths in a JSON Schema that require coercion.
- * We prioritize "number", "integer", "boolean", "array", and "object" types.
  */
 const findCoercionPaths = (
-	node: JsonSchema,
+	node: any, // JsonSchema
 	path: string[] = [],
 ): CoercionTarget[] => {
 	const results: CoercionTarget[] = [];
-
-	if (typeof node === "boolean") {
-		return results;
-	}
+	if (typeof node === "boolean") return results;
 
 	if ("const" in node) {
 		if (typeof node.const === "number" || typeof node.const === "boolean") {
@@ -49,7 +67,9 @@ const findCoercionPaths = (
 
 	if ("enum" in node && node.enum) {
 		if (
-			node.enum.some((v) => typeof v === "number" || typeof v === "boolean")
+			node.enum.some(
+				(v: any) => typeof v === "number" || typeof v === "boolean",
+			)
 		) {
 			results.push({ path: [...path], type: "primitive" });
 		}
@@ -61,43 +81,28 @@ const findCoercionPaths = (
 		} else if (node.type === "boolean") {
 			results.push({ path: [...path], type: "primitive" });
 		} else if (node.type === "object") {
-			// Check if this object has properties defined
-			// If it does, we want to coerce the whole object from a JSON string
-			// But we also want to recursively check nested properties
 			const hasProperties =
 				"properties" in node &&
 				node.properties &&
 				Object.keys(node.properties).length > 0;
-
-			if (hasProperties) {
-				// Mark this path as needing object coercion (JSON parsing)
-				results.push({ path: [...path], type: "object" });
-			}
-
-			// Also recursively check nested properties for their own coercions
+			if (hasProperties) results.push({ path: [...path], type: "object" });
 			if ("properties" in node && node.properties) {
 				for (const [key, prop] of Object.entries(node.properties)) {
-					results.push(
-						...findCoercionPaths(prop as JsonSchema, [...path, key]),
-					);
+					results.push(...findCoercionPaths(prop as any, [...path, key]));
 				}
 			}
 		} else if (node.type === "array") {
-			// Mark the array itself as a target for splitting strings
 			results.push({ path: [...path], type: "array" });
-
 			if ("items" in node && node.items) {
 				if (Array.isArray(node.items)) {
-					// Tuple traversal
-					node.items.forEach((item, index) => {
+					node.items.forEach((item: any, index: number) => {
 						results.push(
-							...findCoercionPaths(item as JsonSchema, [...path, `${index}`]),
+							...findCoercionPaths(item as any, [...path, `${index}`]),
 						);
 					});
 				} else {
-					// List traversal
 					results.push(
-						...findCoercionPaths(node.items as JsonSchema, [
+						...findCoercionPaths(node.items as any, [
 							...path,
 							ARRAY_ITEM_MARKER,
 						]),
@@ -108,24 +113,18 @@ const findCoercionPaths = (
 	}
 
 	if ("anyOf" in node && node.anyOf) {
-		for (const branch of node.anyOf) {
-			results.push(...findCoercionPaths(branch as JsonSchema, path));
-		}
+		for (const branch of node.anyOf)
+			results.push(...findCoercionPaths(branch as any, path));
 	}
-
 	if ("allOf" in node && node.allOf) {
-		for (const branch of node.allOf) {
-			results.push(...findCoercionPaths(branch as JsonSchema, path));
-		}
+		for (const branch of node.allOf)
+			results.push(...findCoercionPaths(branch as any, path));
 	}
-
 	if ("oneOf" in node && node.oneOf) {
-		for (const branch of node.oneOf) {
-			results.push(...findCoercionPaths(branch as JsonSchema, path));
-		}
+		for (const branch of node.oneOf)
+			results.push(...findCoercionPaths(branch as any, path));
 	}
 
-	// Deduplicate by path and type combination
 	const seen = new Set<string>();
 	return results.filter((t) => {
 		const key = JSON.stringify(t.path) + t.type;
@@ -133,6 +132,17 @@ const findCoercionPaths = (
 		seen.add(key);
 		return true;
 	});
+};
+
+/**
+ * Options for coercion behavior.
+ */
+export type CoerceOptions = {
+	/**
+	 * format to use for array parsing
+	 * @default "comma"
+	 */
+	arrayFormat?: "comma" | "json";
 };
 
 /**
@@ -144,8 +154,6 @@ const applyCoercion = (
 	options: CoerceOptions = {},
 ) => {
 	const { arrayFormat = "comma" } = options;
-
-	// Helper to split string to array
 	const splitString = (val: string) => {
 		if (arrayFormat === "json") {
 			try {
@@ -154,34 +162,24 @@ const applyCoercion = (
 				return val;
 			}
 		}
-
 		if (!val.trim()) return [];
 		return val.split(",").map((s) => s.trim());
 	};
 
 	if (typeof data !== "object" || data === null) {
-		// If root data needs coercion
 		if (targets.some((t) => t.path.length === 0)) {
 			const rootTarget = targets.find((t) => t.path.length === 0);
-
-			if (rootTarget?.type === "object" && typeof data === "string") {
+			if (rootTarget?.type === "object" && typeof data === "string")
 				return maybeJson(data);
-			}
-
-			if (rootTarget?.type === "array" && typeof data === "string") {
+			if (rootTarget?.type === "array" && typeof data === "string")
 				return splitString(data);
-			}
-
 			const asNumber = maybeNumber(data);
-			if (typeof asNumber === "number") {
-				return asNumber;
-			}
+			if (typeof asNumber === "number") return asNumber;
 			return maybeBoolean(data);
 		}
 		return data;
 	}
 
-	// Sort targets by path length to ensure parent objects/arrays are coerced before their children
 	const sortedTargets = [...targets].sort(
 		(a, b) => a.path.length - b.path.length,
 	);
@@ -192,26 +190,20 @@ const applyCoercion = (
 		type: "primitive" | "array" | "object",
 	) => {
 		if (!current || typeof current !== "object") return;
+		if (targetPath.length === 0) return;
 
-		if (targetPath.length === 0) {
-			return;
-		}
-
-		// If we've reached the last key, apply coercion
 		if (targetPath.length === 1) {
 			const lastKey = targetPath[0];
-
 			if (lastKey === ARRAY_ITEM_MARKER) {
 				if (Array.isArray(current)) {
 					for (let i = 0; i < current.length; i++) {
 						const original = current[i];
 						if (type === "primitive") {
 							const asNumber = maybeNumber(original);
-							if (typeof asNumber === "number") {
-								current[i] = asNumber;
-							} else {
-								current[i] = maybeBoolean(original);
-							}
+							current[i] =
+								typeof asNumber === "number"
+									? asNumber
+									: maybeBoolean(original);
 						} else if (type === "object") {
 							current[i] = maybeJson(original);
 						}
@@ -221,99 +213,59 @@ const applyCoercion = (
 			}
 
 			const record = current as Record<string, unknown>;
-			// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
+			// biome-ignore lint/suspicious/noPrototypeBuiltins: preserve existing logic
 			if (Object.prototype.hasOwnProperty.call(record, lastKey)) {
 				const original = record[lastKey];
-
 				if (type === "array" && typeof original === "string") {
 					record[lastKey] = splitString(original);
-					return;
-				}
-
-				if (type === "object" && typeof original === "string") {
+				} else if (type === "object" && typeof original === "string") {
 					record[lastKey] = maybeJson(original);
-					return;
-				}
-
-				if (Array.isArray(original)) {
+				} else if (Array.isArray(original)) {
 					if (type === "primitive") {
 						for (let i = 0; i < original.length; i++) {
-							const item = original[i];
-							const asNumber = maybeNumber(item);
-							if (typeof asNumber === "number") {
-								original[i] = asNumber;
-							} else {
-								original[i] = maybeBoolean(item);
-							}
+							const asNumber = maybeNumber(original[i]);
+							original[i] =
+								typeof asNumber === "number"
+									? asNumber
+									: maybeBoolean(original[i]);
 						}
 					}
-				} else {
-					if (type === "primitive") {
-						const asNumber = maybeNumber(original);
-						// If numeric parsing didn't produce a number, try boolean coercion
-						if (typeof asNumber === "number") {
-							record[lastKey] = asNumber;
-						} else {
-							record[lastKey] = maybeBoolean(original);
-						}
-					}
+				} else if (type === "primitive") {
+					const asNumber = maybeNumber(original);
+					record[lastKey] =
+						typeof asNumber === "number" ? asNumber : maybeBoolean(original);
 				}
 			}
 			return;
 		}
 
-		// Recurse down
 		const [nextKey, ...rest] = targetPath;
-
 		if (nextKey === ARRAY_ITEM_MARKER) {
 			if (Array.isArray(current)) {
-				for (const item of current) {
-					walk(item, rest, type);
-				}
+				for (const item of current) walk(item, rest, type);
 			}
-			return;
+		} else {
+			walk((current as Record<string, any>)[nextKey], rest, type);
 		}
-
-		const record = current as Record<string, unknown>;
-		walk(record[nextKey], rest, type);
 	};
 
-	for (const target of sortedTargets) {
-		walk(data, target.path, target.type);
-	}
-
+	for (const target of sortedTargets) walk(data, target.path, target.type);
 	return data;
 };
 
 /**
  * Create a coercing wrapper around an ArkType schema using JSON Schema introspection.
- * Pre-process input data to coerce string values to numbers/booleans at identified paths
- * before validation.
  */
-export function coerce<t, $ = {}>(
-	schema: BaseType<t, $>,
+export function coerce(
+	type: any, // Use any for type utility to avoid top-level import
+	schema: any, // Use any for BaseType to avoid top-level import
 	options?: CoerceOptions,
-): BaseType<t, $> {
-	// Use a fallback to handle unjsonifiable parts of the schema (like predicates)
-	// by preserving the base schema. This ensures that even if part of the schema
-	// cannot be fully represented in JSON Schema, we can still perform coercion
-	// for the parts that can.
-	const json = schema.in.toJsonSchema({
-		fallback: (ctx) => ctx.base,
-	});
+): any {
+	const json = schema.in.toJsonSchema({ fallback: (ctx: any) => ctx.base });
 	const targets = findCoercionPaths(json);
+	if (targets.length === 0) return schema;
 
-	if (targets.length === 0) {
-		return schema;
-	}
-
-	/*
-	 * We use `type("unknown")` to start the pipeline, which initializes a default scope.
-	 * Integrating the original `schema` with its custom scope `$` into this pipeline
-	 * creates a scope mismatch in TypeScript ({} vs $).
-	 * We cast to `BaseType<t, $>` to assert the final contract is maintained.
-	 */
 	return type("unknown")
-		.pipe((data) => applyCoercion(data, targets, options))
-		.pipe(schema) as BaseType<t, $>;
+		.pipe((data: unknown) => applyCoercion(data, targets, options))
+		.pipe(schema);
 }

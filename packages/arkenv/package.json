@@ -45,16 +45,23 @@
 		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
+		"@standard-schema/spec": "^1.1.0",
 		"@types/node": "catalog:",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"
+	},
+	"peerDependenciesMeta": {
+		"arktype": {
+			"optional": true
+		}
 	},
 	"size-limit": [
 		{
@@ -62,7 +69,8 @@
 			"limit": "2 kB",
 			"import": "*",
 			"ignore": [
-				"arktype"
+				"arktype",
+				"@repo/scope"
 			]
 		}
 	]

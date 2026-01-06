@@ -100,6 +100,9 @@ importers:
       '@playwright/test':
         specifier: 1.57.0
         version: 1.57.0
+      '@standard-schema/spec':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@vitest/ui':
         specifier: 'catalog:'
         version: 4.0.16(vitest@4.0.16)
@@ -121,6 +124,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.10.4)(@vitest/ui@4.0.16)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)
+      zod:
+        specifier: 'catalog:'
+        version: 4.2.1
 
   apps/playgrounds/bun:
     dependencies:
@@ -548,6 +554,9 @@ importers:
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
+      '@standard-schema/spec':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@types/node':
         specifier: 'catalog:'
         version: 24.10.4
@@ -569,6 +578,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.10.4)(@vitest/ui@4.0.16)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)
+      zod:
+        specifier: 'catalog:'
+        version: 4.2.1
 
   packages/bun-plugin:
     dependencies:
@@ -643,6 +655,9 @@ importers:
       '@repo/scope':
         specifier: workspace:*
         version: link:../scope
+      '@standard-schema/spec':
+        specifier: ^1.1.0
+        version: 1.1.0
       arktype:
         specifier: 'catalog:'
         version: 2.1.29

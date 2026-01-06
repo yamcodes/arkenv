@@ -7,7 +7,7 @@ describe("coerce", () => {
 		const schema = type({
 			PORT: "number",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		const result = coercedSchema({ PORT: "3000" });
 		expect(result).toEqual({ PORT: 3000 });
 	});
@@ -16,7 +16,7 @@ describe("coerce", () => {
 		const schema = type({
 			AGE: "number >= 18",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		const result = coercedSchema({ AGE: "21" });
 		expect(result).toEqual({ AGE: 21 });
 
@@ -29,7 +29,7 @@ describe("coerce", () => {
 		const schema = type({
 			EVEN: "number % 2",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		const result = coercedSchema({ EVEN: "4" });
 		expect(result).toEqual({ EVEN: 4 });
 
@@ -42,7 +42,7 @@ describe("coerce", () => {
 		const schema = type({
 			DEBUG: "boolean",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		expect(coercedSchema({ DEBUG: "true" })).toEqual({ DEBUG: true });
 		expect(coercedSchema({ DEBUG: "false" })).toEqual({ DEBUG: false });
 
@@ -56,14 +56,14 @@ describe("coerce", () => {
 		const schema = type({
 			"PORT?": "number",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		expect(coercedSchema({ PORT: "3000" })).toEqual({ PORT: 3000 });
 		expect(coercedSchema({})).toEqual({});
 	});
 
 	it("should work with root-level primitives", () => {
 		const schema = type("number >= 10");
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		expect(coercedSchema("20")).toBe(20);
 		const failure = coercedSchema("5");
 		expect(failure).toBeInstanceOf(ArkErrors);
@@ -72,7 +72,7 @@ describe("coerce", () => {
 
 	it("should work with strict number literals", () => {
 		const schema = type("1 | 2");
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		expect(coercedSchema("1")).toBe(1);
 		expect(coercedSchema("2")).toBe(2);
@@ -81,7 +81,7 @@ describe("coerce", () => {
 
 	it("should coerce numeric values in mixed unions", () => {
 		const schema = type("1 | 'a'");
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		expect(coercedSchema("1")).toBe(1);
 		expect(coercedSchema("a")).toBe("a");
@@ -89,7 +89,7 @@ describe("coerce", () => {
 
 	it("should coerce mixed numeric and boolean unions", () => {
 		const schema = type("number | boolean");
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		expect(coercedSchema("123")).toBe(123);
 		expect(coercedSchema("true")).toBe(true);
@@ -104,7 +104,7 @@ describe("coerce", () => {
 		const schema = type({
 			VAL: "number | boolean",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		expect(coercedSchema({ VAL: "123" })).toEqual({ VAL: 123 });
 		expect(coercedSchema({ VAL: "true" })).toEqual({ VAL: true });
@@ -119,7 +119,7 @@ describe("coerce", () => {
 		const schema = type({
 			PORT: "number",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const emptyResult = coercedSchema({ PORT: "" });
 		expect(emptyResult).toBeInstanceOf(ArkErrors);
@@ -138,7 +138,7 @@ describe("coerce", () => {
 		const schema = type({
 			PORT: "number",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({ PORT: "abc" });
 		expect(result).toBeInstanceOf(ArkErrors);
@@ -149,7 +149,7 @@ describe("coerce", () => {
 		const schema = type({
 			DEBUG: "boolean",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({ DEBUG: "yes" });
 		expect(result).toBeInstanceOf(ArkErrors);
@@ -163,7 +163,7 @@ describe("coerce", () => {
 				port: "number",
 			},
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({
 			CONFIG: '{"host": "localhost", "port": "3000"}',
@@ -185,7 +185,7 @@ describe("coerce", () => {
 				},
 			},
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({
 			CONFIG: '{"database": {"host": "localhost", "port": "5432"}}',
@@ -207,7 +207,7 @@ describe("coerce", () => {
 				debug: "boolean",
 			},
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({
 			SETTINGS: '{"enabled": "true", "debug": "false"}',
@@ -226,7 +226,7 @@ describe("coerce", () => {
 				host: "string",
 			},
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({ CONFIG: "not valid json" });
 		expect(result).toBeInstanceOf(ArkErrors);
@@ -239,7 +239,7 @@ describe("coerce", () => {
 				host: "string",
 			},
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({
 			PORT: "3000",
@@ -260,7 +260,7 @@ describe("coerce", () => {
 				SSL: "boolean",
 			},
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({
 			DB: {
@@ -283,7 +283,7 @@ describe("coerce", () => {
 				Number.parseInt(str, 10),
 			),
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		const result = coercedSchema({
 			PORT: "3000",
 			VITE_MY_NUMBER_MANUAL: "456",
@@ -298,7 +298,7 @@ describe("coerce", () => {
 		const schema = type({
 			VAL: "number.NaN",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		const result = coercedSchema({ VAL: "NaN" });
 		expect(result).not.toBeInstanceOf(ArkErrors);
 		if (result instanceof ArkErrors) return;
@@ -310,7 +310,7 @@ describe("coerce", () => {
 			VAL: "number",
 		});
 		// Coercion happens ("NaN" -> NaN), but "number" checks and rejects NaN
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 		const result = coercedSchema({ VAL: "NaN" });
 		expect(result).toBeInstanceOf(ArkErrors);
 		expect(result.toString()).toContain("VAL must be a number (was NaN)");
@@ -320,7 +320,7 @@ describe("coerce", () => {
 			// Coerces array elements ["1", "2", "3"] to [1, 2, 3]
 			IDS: "number[]",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		const result = coercedSchema({ IDS: ["1", "2", "3"] });
 		expect(result).toEqual({ IDS: [1, 2, 3] });
@@ -330,7 +330,7 @@ describe("coerce", () => {
 		const schema = type({
 			VAL: "number",
 		});
-		const coercedSchema = coerce(schema);
+		const coercedSchema = coerce(type, schema);
 
 		// Logic coerces ["1", "2"] -> [1, 2] in place
 		// Then validation sees [1, 2] against "number" and fails
