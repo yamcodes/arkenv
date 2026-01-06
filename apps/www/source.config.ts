@@ -117,6 +117,23 @@ declare global {
 						return !node.text.includes("(data: unknown)");
 					}
 
+					if (node.docs) {
+						node.docs = node.docs
+							.replace(/{@link\s+([\s\S]*?)}/g, (_, content) => {
+								const cleaned = content.replace(/\s+/g, " ").trim();
+								const parts = cleaned.split(/\s*(?:\||\s)\s*/);
+								const target = parts[0];
+								const text = parts.slice(1).join(" ") || target;
+
+								return target.startsWith("http")
+									? `[${text}](${target})`
+									: `\`${text}\``;
+							})
+							.replace(/(?<!\n)\n(?!\n)/g, " ")
+							.replace(/\n{2,}/g, "\n\n")
+							.trim();
+					}
+
 					const text = node.text.toLowerCase();
 					const isWhiteListed =
 						text.includes("ark") ||
