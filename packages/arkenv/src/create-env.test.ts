@@ -323,7 +323,7 @@ describe("createEnv", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = defineEnv(Env);
+			const env = arkenv(Env);
 
 			expect(env.TEST_STRING).toBe("hello");
 			expect(env.TEST_PORT).toBe(3000);
@@ -338,7 +338,7 @@ describe("createEnv", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = defineEnv(Env);
+			const env = arkenv(Env);
 
 			// TypeScript should infer these correctly
 			const str = env.TEST_STRING;
@@ -645,13 +645,7 @@ describe("createEnv", () => {
 			expect(env).toEqual({ PORT: 3000, HOST: "localhost" });
 		});
 
-		it("should throw a clear error if arkenv() is passed a wrapped schema", () => {
-			expect(() => {
-				arkenv(z.object({ PORT: z.number() }) as any);
-			}).toThrow(/arkenv\(\) expects a mapping of { KEY: validator }/);
-		});
-
-		it("should work with top-level Standard Schema via defineEnv", () => {
+		it("should work with top-level Standard Schema", () => {
 			const env = arkenv(z.object({ PORT: z.coerce.number() }), {
 				env: { PORT: "8080" },
 			});
