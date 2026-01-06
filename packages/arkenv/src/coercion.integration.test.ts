@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEnv, defineEnv } from "./create-env";
+import { arkenv, createEnv } from "./create-env";
 import { type } from "./index";
 
 describe("coercion integration", () => {
@@ -60,7 +60,7 @@ describe("coercion integration", () => {
 
 	it("should coerce when using compiled type definitions", () => {
 		const schema = type({ PORT: "number" });
-		const env = defineEnv(schema, { env: { PORT: "3000" } });
+		const env = arkenv(schema, { env: { PORT: "3000" } });
 		expect(env.PORT).toBe(3000);
 		expect(typeof env.PORT).toBe("number");
 	});
@@ -70,14 +70,14 @@ describe("coercion integration", () => {
 			PORT: "number.port",
 			COUNT: "number.integer",
 		});
-		const env = defineEnv(schema, { env: { PORT: "8080", COUNT: "123" } });
+		const env = arkenv(schema, { env: { PORT: "8080", COUNT: "123" } });
 		expect(env.PORT).toBe(8080);
 		expect(env.COUNT).toBe(123);
 	});
 
 	it("should fail compiled type validation if coercion fails", () => {
 		const schema = type({ PORT: "number" });
-		expect(() => defineEnv(schema, { env: { PORT: "abc" } })).toThrow();
+		expect(() => arkenv(schema, { env: { PORT: "abc" } })).toThrow();
 	});
 
 	it("should work with other number sub-keywords like epoch", () => {
@@ -132,7 +132,7 @@ describe("coercion integration", () => {
 			),
 		});
 
-		const env = defineEnv(Env, {
+		const env = arkenv(Env, {
 			env: {
 				PORT: "3000",
 				VITE_MY_NUMBER_MANUAL: "456",

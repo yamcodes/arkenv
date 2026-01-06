@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { arkenv, defineEnv } from "./index";
+import { arkenv } from "./index";
 
 describe("Standard Schema integration", () => {
-	it("should work with top-level zod schemas via defineEnv", () => {
+	it("should work with top-level zod schemas", () => {
 		const schema = z.object({
 			PORT: z.coerce.number(),
 			HOST: z.string().default("localhost"),
 		});
 
-		const env = defineEnv(schema, {
+		const env = arkenv(schema, {
 			env: { PORT: "3000" },
 		});
 
