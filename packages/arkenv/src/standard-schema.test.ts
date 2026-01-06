@@ -36,7 +36,6 @@ describe("Standard Schema integration", () => {
 		});
 	});
 
-
 	it("should verify arkenv accepts a Standard Schema when ArkType is present (via mapping)", () => {
 		const env = arkenv(
 			{
