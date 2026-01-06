@@ -1,6 +1,6 @@
-export type { ArkEnvConfig, EnvSchema } from "./create-env";
+import { createEnv } from "./create-env";
 
-import { arkenv } from "./create-env";
+export type { EnvSchema } from "./create-env";
 
 /**
  * `arkenv`'s main export, an alias for {@link createEnv}
