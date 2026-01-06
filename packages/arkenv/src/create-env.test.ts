@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createEnv } from "./create-env";
+import { arkenv, createEnv, defineEnv } from "./create-env";
+import { z } from "zod";
 import { type } from "./type";
 import { indent, styleText } from "./utils";
 
@@ -322,7 +323,7 @@ describe("createEnv", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(Env);
+			const env = defineEnv(Env);
 
 			expect(env.TEST_STRING).toBe("hello");
 			expect(env.TEST_PORT).toBe(3000);
@@ -337,7 +338,7 @@ describe("createEnv", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(Env);
+			const env = defineEnv(Env);
 
 			// TypeScript should infer these correctly
 			const str = env.TEST_STRING;
@@ -355,12 +356,12 @@ describe("createEnv", () => {
 			});
 
 			// Use the same schema multiple times
-			const env1 = createEnv(Env, {
+			const env1 = defineEnv(Env, {
 				env: {
 					TEST_STRING: "first",
 				},
 			});
-			const env2 = createEnv(Env, {
+			const env2 = defineEnv(Env, {
 				env: {
 					TEST_STRING: "second",
 				},
@@ -377,7 +378,7 @@ describe("createEnv", () => {
 				INVALID_PORT: "number.port",
 			});
 
-			expect(() => createEnv(Env)).toThrow(/INVALID_PORT/);
+			expect(() => defineEnv(Env)).toThrow(/INVALID_PORT/);
 		});
 
 		it("should work with custom environment and type definitions", () => {
@@ -391,7 +392,7 @@ describe("createEnv", () => {
 				PORT: "8080",
 			};
 
-			const env = createEnv(Env, { env: customEnv });
+			const env = defineEnv(Env, { env: customEnv });
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
@@ -626,6 +627,35 @@ describe("createEnv", () => {
 				{ NAME: "web", PORT: 80 },
 				{ NAME: "api", PORT: 3000 },
 			]);
+		});
+	});
+
+	describe("migration & hybrid support", () => {
+		it("should support mixed ArkType DSL and Standard Schema validators", () => {
+			const env = arkenv(
+				{
+					PORT: "number.port",
+					HOST: z.string().min(1),
+				},
+				{
+					env: { PORT: "3000", HOST: "localhost" },
+				},
+			);
+
+			expect(env).toEqual({ PORT: 3000, HOST: "localhost" });
+		});
+
+		it("should throw a clear error if arkenv() is passed a wrapped schema", () => {
+			expect(() => {
+				arkenv(z.object({ PORT: z.number() }) as any);
+			}).toThrow(/arkenv\(\) expects a mapping of { KEY: validator }/);
+		});
+
+		it("should work with top-level Standard Schema via defineEnv", () => {
+			const env = defineEnv(z.object({ PORT: z.coerce.number() }), {
+				env: { PORT: "8080" },
+			});
+			expect(env.PORT).toBe(8080);
 		});
 	});
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./create-env";
+import { createEnv, defineEnv } from "./create-env";
 import { type } from "./index";
 
 describe("object parsing integration", () => {
@@ -229,7 +229,7 @@ describe("object parsing integration", () => {
 			},
 		});
 
-		const env = createEnv(schema, {
+		const env = defineEnv(schema, {
 			env: {
 				CONFIG: '{"host": "localhost", "port": "3000"}',
 			},
