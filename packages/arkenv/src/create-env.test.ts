@@ -88,7 +88,7 @@ describe("createEnv", () => {
 				),
 			});
 
-			const env = createEnv(Env, {
+			const env = defineEnv(Env, {
 				env: {
 					PORT: "3000",
 					VITE_MY_NUMBER_MANUAL: "456",
