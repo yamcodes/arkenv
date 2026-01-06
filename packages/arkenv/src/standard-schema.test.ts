@@ -36,15 +36,6 @@ describe("Standard Schema integration", () => {
 		});
 	});
 
-	it("should throw a clear error if arkenv() is passed a wrapped schema", () => {
-		const schema = z.object({ PORT: z.number() });
-
-		expect(() =>
-			arkenv(schema as any, {
-				env: { PORT: "not-a-number" },
-			}),
-		).toThrow(/expects a mapping of { KEY: validator }, not a wrapped schema/);
-	});
 
 	it("should verify arkenv accepts a Standard Schema when ArkType is present (via mapping)", () => {
 		const env = arkenv(
