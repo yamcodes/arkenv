@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
-import type { EnvIssue, SchemaAdapter } from "./index";
 import { coerce } from "../utils/coerce";
+import type { EnvIssue, SchemaAdapter } from "./index";
 
 const require = createRequire(import.meta.url);
 

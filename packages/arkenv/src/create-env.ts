@@ -1,6 +1,6 @@
+import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import type { $ } from "@repo/scope";
 import { ArkTypeAdapter } from "./adapters/arktype";
 import { StandardSchemaAdapter } from "./adapters/standard";
 import { ArkEnvError } from "./errors";
