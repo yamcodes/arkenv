@@ -619,6 +619,42 @@ describe("Plugin Unit Tests", () => {
 			},
 		);
 	});
+
+	it("should work with a real Standard Schema validator (e.g. Zod)", async () => {
+		vi.stubEnv("VITE_ZOD_VAR", "valid-value");
+		const schema = {
+			VITE_ZOD_VAR: z.string().min(5),
+		};
+
+		// Note: We use the real implementation for this test
+		const actual = await vi.importActual<any>("arkenv");
+		mockArkenv.mockImplementation(actual.arkenv);
+
+		const pluginInstance = arkenvPlugin(schema);
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		expect(result.define).toHaveProperty("import.meta.env.VITE_ZOD_VAR");
+	});
 });
 
 // Integration tests using with-env-dir fixture for custom envDir configuration

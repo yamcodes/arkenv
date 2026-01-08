@@ -101,8 +101,8 @@ importers:
         specifier: 1.57.0
         version: 1.57.0
       '@standard-schema/spec':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: 1.0.0
+        version: 1.0.0
       '@vitest/ui':
         specifier: 'catalog:'
         version: 4.0.16(vitest@4.0.16)
@@ -555,8 +555,8 @@ importers:
         specifier: 'catalog:'
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@standard-schema/spec':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: 1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: 'catalog:'
         version: 24.10.4
@@ -656,8 +656,8 @@ importers:
         specifier: workspace:*
         version: link:../scope
       '@standard-schema/spec':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: 1.0.0
+        version: 1.0.0
       arktype:
         specifier: 'catalog:'
         version: 2.1.29
@@ -3613,6 +3613,9 @@ packages:
 
   '@speed-highlight/core@1.2.12':
     resolution: {integrity: sha512-uilwrK0Ygyri5dToHYdZSjcvpS2ZwX0w5aSt3GCEN9hrjxWCoeV4Z2DTXuxjwbntaLQIEEAlCeNQss5SoHvAEA==}
+
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -11418,6 +11421,8 @@ snapshots:
 
   '@speed-highlight/core@1.2.12': {}
 
+  '@standard-schema/spec@1.0.0': {}
+
   '@standard-schema/spec@1.1.0': {}
 
   '@svta/cml-608@1.0.1': {}
@@ -11856,7 +11861,7 @@ snapshots:
 
   '@vitest/expect@4.0.16':
     dependencies:
-      '@standard-schema/spec': 1.1.0
+      '@standard-schema/spec': 1.0.0
       '@types/chai': 5.2.3
       '@vitest/spy': 4.0.16
       '@vitest/utils': 4.0.16
