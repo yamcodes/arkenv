@@ -63,7 +63,7 @@ function validateArkType(
 		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
 		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
 
-		// Apply coercion transformation
+		// Apply coercion transformation (Lazy Loaded)
 		if (config.coerce !== false) {
 			schema = coerce(type, schema, {
 				...(config.arrayFormat ? { arrayFormat: config.arrayFormat } : {}),

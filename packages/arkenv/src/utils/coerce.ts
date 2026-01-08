@@ -254,11 +254,21 @@ const applyCoercion = (
 };
 
 /**
+ * COERCION SYSTEM (Lazy Loading Support)
+ *
+ * This implementation uses JSON Schema introspection to identify paths requiring coercion.
+ * It is designed to be called after ArkType is lazily loaded.
+ *
+ * NOTE: Internal types are stripped of explicit ArkType imports to prevent
+ * accidental top-level dependency loading.
+ */
+
+/**
  * Create a coercing wrapper around an ArkType schema using JSON Schema introspection.
  */
 export function coerce(
-	type: any, // Use any for type utility to avoid top-level import
-	schema: any, // Use any for BaseType to avoid top-level import
+	type: any, // Injected dependency to avoid top-level import
+	schema: any, // Injected dependency to avoid top-level import
 	options?: CoerceOptions,
 ): any {
 	const json = schema.in.toJsonSchema({ fallback: (ctx: any) => ctx.base });
