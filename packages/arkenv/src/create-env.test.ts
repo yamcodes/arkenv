@@ -620,13 +620,19 @@ describe("createEnv", () => {
 	});
 
 	describe("migration & hybrid support", () => {
-		it("should throw if top-level compiled ArkType schema is passed directly", () => {
+		it("should work with top-level compiled ArkType schema", () => {
 			const schema = type({ PORT: "number" });
-			expect(() =>
-				arkenv(schema as any, {
-					env: { PORT: "3000" },
-				}),
-			).toThrow(/arkenv\(\) expects a mapping/);
+			const env = arkenv(schema, {
+				env: { PORT: "3000" },
+			});
+			expect(env.PORT).toBe(3000);
+		});
+
+		it("should work with top-level Standard Schema", () => {
+			const env = arkenv(z.object({ PORT: z.coerce.number() }), {
+				env: { PORT: "8080" },
+			});
+			expect(env.PORT).toBe(8080);
 		});
 
 		it("should support mixed ArkType DSL and Standard Schema validators", () => {
@@ -641,14 +647,6 @@ describe("createEnv", () => {
 			);
 
 			expect(env).toEqual({ PORT: 3000, HOST: "localhost" });
-		});
-
-		it("should throw if top-level Standard Schema is passed directly", () => {
-			expect(() =>
-				arkenv(z.object({ PORT: z.coerce.number() }) as any, {
-					env: { PORT: "8080" },
-				}),
-			).toThrow(/arkenv\(\) expects a mapping/);
 		});
 	});
 });

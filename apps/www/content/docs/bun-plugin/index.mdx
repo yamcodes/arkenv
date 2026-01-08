@@ -17,11 +17,13 @@ The simple setup automatically discovers your schema from `src/env.ts` or `env.t
 
 #### 1. Create your schema
 
-```ts title="src/env.ts"
-export default {
+```ts title="src/env.ts" twoslash
+import { type } from "arkenv";
+
+export default type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
-};
+});
 ```
 
 #### 2. Configure for Bun.serve (dev mode)
@@ -53,10 +55,12 @@ Pass your schema directly to the plugin function:
 
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
-const Env = {
+import { type } from "arkenv";
+
+const Env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
-} as const;
+});
 
 await Bun.build({
   entrypoints: ["./app.tsx"],
@@ -71,10 +75,12 @@ Create a custom plugin file and reference it in `bunfig.toml`:
 
 ```ts title="plugins/arkenv.ts"
 import arkenv from "@arkenv/bun-plugin";
-const Env = {
+import { type } from "arkenv";
+
+const Env = type({
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean",
-} as const;
+});
 
 export default arkenv(Env);
 ```

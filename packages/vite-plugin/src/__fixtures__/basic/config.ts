@@ -1,6 +1,4 @@
-import { type } from "arkenv";
-
-export const Env = type({
+export const Env = {
 	VITE_API_URL: "string",
 	VITE_DEBUG: "boolean",
-});
+};

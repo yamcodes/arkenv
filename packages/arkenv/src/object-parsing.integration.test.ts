@@ -221,24 +221,23 @@ describe("object parsing integration", () => {
 		});
 	});
 
-	it("should work with objects in mapping", () => {
-		const env = arkenv(
-			{
-				CONFIG: {
-					host: "string",
-					port: "number",
-				},
-			},
-			{
-				env: {
-					CONFIG: '{"host": "localhost", "port": "3000"}',
-				},
-			},
-		);
+	it("should parse an object when using a compiled ArkType schema", () => {
+		const schema = type({
+			MY_OBJ: type({
+				foo: "string",
+				bar: "number",
+			}),
+		});
 
-		expect(env.CONFIG).toEqual({
-			host: "localhost",
-			port: 3000,
+		const env = arkenv(schema, {
+			env: {
+				MY_OBJ: '{"foo": "baz", "bar": 123}',
+			},
+		});
+
+		expect(env.MY_OBJ).toEqual({
+			foo: "baz",
+			bar: 123,
 		});
 	});
 

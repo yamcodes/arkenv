@@ -58,8 +58,9 @@ describe("coercion integration", () => {
 		expect(env.DEBUG).toBe(true);
 	});
 
-	it("should coerce when using ArkType inside mapping", () => {
-		const env = arkenv({ PORT: type("number") }, { env: { PORT: "3000" } });
+	it("should coerce when using compiled type definitions", () => {
+		const schema = type({ PORT: "number" });
+		const env = arkenv(schema, { env: { PORT: "3000" } });
 		expect(env.PORT).toBe(3000);
 		expect(typeof env.PORT).toBe("number");
 	});
@@ -76,10 +77,9 @@ describe("coercion integration", () => {
 		expect(env.COUNT).toBe(123);
 	});
 
-	it("should fail validation if coercion fails in mapping", () => {
-		expect(() =>
-			arkenv({ PORT: "number" }, { env: { PORT: "abc" } }),
-		).toThrow();
+	it("should fail compiled type validation if coercion fails", () => {
+		const schema = type({ PORT: "number" });
+		expect(() => arkenv(schema, { env: { PORT: "abc" } })).toThrow();
 	});
 
 	it("should work with other number sub-keywords like epoch", () => {
@@ -126,21 +126,20 @@ describe("coercion integration", () => {
 		).toThrow();
 	});
 
-	it("should work with schemas containing morphs in mapping", () => {
-		const env = arkenv(
-			{
-				PORT: "number.port",
-				VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
-					Number.parseInt(str, 10),
-				),
+	it("should work with schemas containing morphs", () => {
+		const Env = type({
+			PORT: "number.port",
+			VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+				Number.parseInt(str, 10),
+			),
+		});
+
+		const env = arkenv(Env, {
+			env: {
+				PORT: "3000",
+				VITE_MY_NUMBER_MANUAL: "456",
 			},
-			{
-				env: {
-					PORT: "3000",
-					VITE_MY_NUMBER_MANUAL: "456",
-				},
-			},
-		);
+		});
 
 		expect(env.PORT).toBe(3000);
 		expect(env.VITE_MY_NUMBER_MANUAL).toBe(456);

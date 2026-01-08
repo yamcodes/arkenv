@@ -79,22 +79,17 @@ export function defineEnv<T extends EnvSchemaWithType>(
  */
 export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
+	config?: ArkEnvConfig,
+): distill.Out<at.infer<T, $>>;
+export function arkenv<T extends EnvSchemaWithType>(
+	def: T,
+	config?: ArkEnvConfig,
+): InferType<T>;
+export function arkenv<const T extends SchemaShape>(
+	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> {
-	// Guardrail: Ensure arkenv() only accepts an object map.
-	// We check for "~standard" (Standard Schema) or "assert" (compiled ArkType)
-	// which indicate the user passed a wrapped schema instead of an object map.
-	if (
-		typeof def === "function" ||
-		(def !== null && typeof def === "object" && "~standard" in def)
-	) {
-		throw new Error(
-			"ArkEnv: arkenv() expects a mapping of { KEY: validator }, not a wrapped schema. " +
-				"Standard Schema validators are supported inside the mapping for migration, but not as the top-level argument.",
-		);
-	}
-
-	return defineEnv(def as any, config);
+): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+	return defineEnv(def as any, config) as any;
 }
 
 /**

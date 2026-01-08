@@ -1,6 +1,4 @@
-import { type } from "arkenv";
-
-export const Env = type({
+export const Env = {
 	VITE_CUSTOM_VAR: "string",
 	VITE_FROM_ENV_DIR: "string",
-});
+};

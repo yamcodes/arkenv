@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import type { SchemaShape } from "@repo/types";
+import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import { arkenv as validateEnv } from "arkenv";
 import type { BunPlugin, Loader, PluginBuilder } from "bun";
@@ -10,7 +10,7 @@ export type { ProcessEnvAugmented } from "./types";
  * Helper to process env schema and return envMap
  */
 export function processEnvSchema<T extends SchemaShape>(
-	options: EnvSchema<T>,
+	options: EnvSchema<T> | EnvSchemaWithType,
 ): Map<string, string> {
 	// Validate environment variables
 
@@ -124,8 +124,12 @@ function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
  *    })
  *    ```
  */
+export function arkenv(options: EnvSchemaWithType): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
+): BunPlugin;
+export function arkenv<const T extends SchemaShape>(
+	options: EnvSchema<T> | EnvSchemaWithType,
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options);
 
