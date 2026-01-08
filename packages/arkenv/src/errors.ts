@@ -27,6 +27,8 @@ export class ArkEnvError extends Error {
 	}
 }
 
+Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
+
 /**
  * @deprecated Use ArkEnvError.issues or normalized format.
  * Maintained for backward compatibility with existing tests and users.
