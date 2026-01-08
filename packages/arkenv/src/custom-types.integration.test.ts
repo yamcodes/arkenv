@@ -1,38 +1,38 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createEnv } from "./create-env";
+import { arkenv } from "./create-env";
 import { type } from "./type";
 
-describe("createEnv + type + scope + types integration", () => {
+describe("arkenv + type + scope + types integration", () => {
 	afterEach(() => {
 		vi.unstubAllEnvs();
 	});
 
 	describe("string.host integration", () => {
-		it("should validate localhost through createEnv", () => {
+		it("should validate localhost through arkenv", () => {
 			vi.stubEnv("HOST", "localhost");
 
-			const env = createEnv({
+			const env = arkenv({
 				HOST: type("string.host"),
 			});
 
 			expect(env.HOST).toBe("localhost");
 		});
 
-		it("should validate IP address through createEnv", () => {
+		it("should validate IP address through arkenv", () => {
 			vi.stubEnv("HOST", "127.0.0.1");
 
-			const env = createEnv({
+			const env = arkenv({
 				HOST: type("string.host"),
 			});
 
 			expect(env.HOST).toBe("127.0.0.1");
 		});
 
-		it("should throw ArkEnvError for invalid host through createEnv", () => {
+		it("should throw ArkEnvError for invalid host through arkenv", () => {
 			vi.stubEnv("HOST", "invalid-host");
 
 			expect(() =>
-				createEnv({
+				arkenv({
 					HOST: type("string.host"),
 				}),
 			).toThrow(/HOST/);
@@ -40,10 +40,10 @@ describe("createEnv + type + scope + types integration", () => {
 	});
 
 	describe("number.port integration", () => {
-		it("should validate valid port through createEnv", () => {
+		it("should validate valid port through arkenv", () => {
 			vi.stubEnv("PORT", "8080");
 
-			const env = createEnv({
+			const env = arkenv({
 				PORT: type("number.port"),
 			});
 
@@ -51,41 +51,41 @@ describe("createEnv + type + scope + types integration", () => {
 			expect(typeof env.PORT).toBe("number");
 		});
 
-		it("should validate port at boundary (0) through createEnv", () => {
+		it("should validate port at boundary (0) through arkenv", () => {
 			vi.stubEnv("PORT", "0");
 
-			const env = createEnv({
+			const env = arkenv({
 				PORT: type("number.port"),
 			});
 
 			expect(env.PORT).toBe(0);
 		});
 
-		it("should validate port at boundary (65535) through createEnv", () => {
+		it("should validate port at boundary (65535) through arkenv", () => {
 			vi.stubEnv("PORT", "65535");
 
-			const env = createEnv({
+			const env = arkenv({
 				PORT: type("number.port"),
 			});
 
 			expect(env.PORT).toBe(65535);
 		});
 
-		it("should throw ArkEnvError for invalid port through createEnv", () => {
+		it("should throw ArkEnvError for invalid port through arkenv", () => {
 			vi.stubEnv("PORT", "99999");
 
 			expect(() =>
-				createEnv({
+				arkenv({
 					PORT: type("number.port"),
 				}),
 			).toThrow(/PORT/);
 		});
 
-		it("should throw ArkEnvError for non-numeric port through createEnv", () => {
+		it("should throw ArkEnvError for non-numeric port through arkenv", () => {
 			vi.stubEnv("PORT", "not-a-number");
 
 			expect(() =>
-				createEnv({
+				arkenv({
 					PORT: type("number.port"),
 				}),
 			).toThrow(/PORT/);
@@ -93,10 +93,10 @@ describe("createEnv + type + scope + types integration", () => {
 	});
 
 	describe("boolean integration", () => {
-		it("should validate 'true' string through createEnv", () => {
+		it("should validate 'true' string through arkenv", () => {
 			vi.stubEnv("DEBUG", "true");
 
-			const env = createEnv({
+			const env = arkenv({
 				DEBUG: type("boolean"),
 			});
 
@@ -104,21 +104,21 @@ describe("createEnv + type + scope + types integration", () => {
 			expect(typeof env.DEBUG).toBe("boolean");
 		});
 
-		it("should validate 'false' string through createEnv", () => {
+		it("should validate 'false' string through arkenv", () => {
 			vi.stubEnv("DEBUG", "false");
 
-			const env = createEnv({
+			const env = arkenv({
 				DEBUG: type("boolean"),
 			});
 
 			expect(env.DEBUG).toBe(false);
 		});
 
-		it("should throw ArkEnvError for invalid boolean through createEnv", () => {
+		it("should throw ArkEnvError for invalid boolean through arkenv", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			expect(() =>
-				createEnv({
+				arkenv({
 					DEBUG: type("boolean"),
 				}),
 			).toThrow(/DEBUG/);
@@ -131,7 +131,7 @@ describe("createEnv + type + scope + types integration", () => {
 			vi.stubEnv("PORT", "3000");
 			vi.stubEnv("DEBUG", "true");
 
-			const env = createEnv({
+			const env = arkenv({
 				HOST: type("string.host"),
 				PORT: type("number.port"),
 				DEBUG: type("boolean"),
@@ -147,7 +147,7 @@ describe("createEnv + type + scope + types integration", () => {
 			vi.stubEnv("PORT", "8080");
 			vi.stubEnv("DEBUG", "false");
 
-			const env = createEnv({
+			const env = arkenv({
 				HOST: type("string.host"),
 				PORT: type("number.port"),
 				DEBUG: type("boolean"),
@@ -164,7 +164,7 @@ describe("createEnv + type + scope + types integration", () => {
 			vi.stubEnv("DEBUG", "true");
 
 			expect(() =>
-				createEnv({
+				arkenv({
 					HOST: type("string.host"),
 					PORT: type("number.port"),
 					DEBUG: type("boolean"),
@@ -178,7 +178,7 @@ describe("createEnv + type + scope + types integration", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			expect(() =>
-				createEnv({
+				arkenv({
 					HOST: type("string.host"),
 					PORT: type("number.port"),
 					DEBUG: type("boolean"),
@@ -189,7 +189,7 @@ describe("createEnv + type + scope + types integration", () => {
 
 	describe("custom types with defaults", () => {
 		it("should use default value for host when missing", () => {
-			const env = createEnv({
+			const env = arkenv({
 				HOST: type("string.host").default(() => "localhost"),
 			});
 
@@ -197,7 +197,7 @@ describe("createEnv + type + scope + types integration", () => {
 		});
 
 		it("should use default value for port when missing", () => {
-			const env = createEnv({
+			const env = arkenv({
 				PORT: type("number.port").default(3000),
 			});
 
@@ -205,7 +205,7 @@ describe("createEnv + type + scope + types integration", () => {
 		});
 
 		it("should use default value for boolean when missing", () => {
-			const env = createEnv({
+			const env = arkenv({
 				DEBUG: type("boolean").default(() => false),
 			});
 
@@ -215,7 +215,7 @@ describe("createEnv + type + scope + types integration", () => {
 		it("should validate custom type when provided instead of using default", () => {
 			vi.stubEnv("HOST", "127.0.0.1");
 
-			const env = createEnv({
+			const env = arkenv({
 				HOST: type("string.host").default(() => "localhost"),
 			});
 
@@ -224,11 +224,11 @@ describe("createEnv + type + scope + types integration", () => {
 	});
 
 	describe("custom types in arrays", () => {
-		it("should handle custom types in arrays through createEnv", () => {
+		it("should handle custom types in arrays through arkenv", () => {
 			vi.stubEnv("EMAILS", "test@example.com, admin@example.com");
 
 			const Email = type("string.email");
-			const env = createEnv({ EMAILS: Email.array() });
+			const env = arkenv({ EMAILS: Email.array() });
 			expect(env.EMAILS).toEqual(["test@example.com", "admin@example.com"]);
 		});
 	});

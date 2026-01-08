@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import arkenv, { createEnv } from "./index";
+import arkenv, { arkenv } from "./index";
 
 describe("index.ts exports", () => {
 	afterEach(() => {
@@ -8,18 +8,18 @@ describe("index.ts exports", () => {
 		vi.unstubAllEnvs();
 	});
 
-	it("should export createEnv as default export", () => {
-		expect(arkenv).toBe(createEnv);
+	it("should export arkenv as default export", () => {
+		expect(arkenv).toBe(arkenv);
 		expect(typeof arkenv).toBe("function");
 	});
 
 	it("should have correct types for exported functions", () => {
 		// Type assertion to verify exported function types
 		expectTypeOf(arkenv).toBeFunction();
-		expectTypeOf(createEnv).toBeFunction();
+		expectTypeOf(arkenv).toBeFunction();
 
 		// Verify they have the same type signature
-		expectTypeOf(arkenv).toEqualTypeOf(createEnv);
+		expectTypeOf(arkenv).toEqualTypeOf(arkenv);
 	});
 
 	it("should work with default import", () => {
@@ -38,7 +38,7 @@ describe("index.ts exports", () => {
 		// Set test environment variable
 		vi.stubEnv("TEST_NAMED_IMPORT", "test-value");
 
-		const env = createEnv({
+		const env = arkenv({
 			TEST_NAMED_IMPORT: "string",
 		});
 
@@ -56,7 +56,7 @@ describe("index.ts exports", () => {
 
 	it("should throw error with named import when validation fails", () => {
 		expect(() =>
-			createEnv({
+			arkenv({
 				MISSING_NAMED_VAR: "string",
 			}),
 		).toThrow();
@@ -70,7 +70,7 @@ describe("index.ts exports", () => {
 			COMPARISON_TEST: "string",
 		});
 
-		const envFromNamed = createEnv({
+		const envFromNamed = arkenv({
 			COMPARISON_TEST: "string",
 		});
 

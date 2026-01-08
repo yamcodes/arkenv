@@ -94,7 +94,7 @@ Coercion works recursively: even variables inside a JSON object are coerced to t
 
 ## How it works
 
-ArkEnv introspects your schema to identify fields that should be numbers, booleans, and other non-string types you define. When you call `createEnv()` (or `arkenv()`), it pre-processes your environment variables to perform these conversions *before* validation.
+ArkEnv introspects your schema to identify fields that should be numbers, booleans, and other non-string types you define. When you call `arkenv()`, it pre-processes your environment variables to perform these conversions *before* validation.
 
 ## Performance
 
