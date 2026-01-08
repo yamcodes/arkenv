@@ -1,11 +1,11 @@
-import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { createRequire } from "node:module";
 import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { type as at, distill } from "arktype";
-import { ArkEnvError } from "./errors";
-import { coerce } from "./utils/coerce";
+import { ArkEnvError, type EnvIssue } from "./errors";
 import type { CoerceOptions } from "./utils";
+import { coerce } from "./utils/coerce";
 
 const require = createRequire(import.meta.url);
 
@@ -46,7 +46,7 @@ function validateArkType(
 	def: unknown,
 	config: ArkEnvConfig,
 	env: Record<string, string | undefined>,
-): { success: true; value: unknown } | { success: false; issues: any[] } {
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	try {
 		const { $ } = require("@repo/scope");
 		const { type } = require("arktype");
@@ -103,7 +103,7 @@ function validateArkType(
 function validateStandard(
 	def: StandardSchemaV1,
 	env: Record<string, string | undefined>,
-): { success: true; value: unknown } | { success: false; issues: any[] } {
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	const result = def["~standard"].validate(env);
 
 	if (result instanceof Promise) {
