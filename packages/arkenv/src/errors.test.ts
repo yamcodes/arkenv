@@ -1,6 +1,6 @@
 import type { ArkErrors } from "arktype";
 import { describe, expect, it } from "vitest";
-import { ArkEnvError, formatErrors } from "./errors";
+import { ArkEnvError, formatIssues } from "./errors";
 
 /**
  * Define ArkErrorsForTest as a subset of ArkErrors
@@ -15,7 +15,14 @@ type ArkErrorsForTest = {
  * @returns A string of the formatted errors
  */
 const formatErrorsForTest = (errors: ArkErrorsForTest) => {
-	return formatErrors(errors as ArkErrors);
+	const issues = Object.entries(errors.byPath || {}).map(
+		([path, error]: [string, any]) => ({
+			path: path ? path.split(".") : [],
+			message: error.message,
+			validator: "arktype" as const,
+		}),
+	);
+	return formatIssues(issues);
 };
 
 /**

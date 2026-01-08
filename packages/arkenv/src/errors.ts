@@ -29,21 +29,6 @@ export class ArkEnvError extends Error {
 
 Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
 
-/**
- * @deprecated Use ArkEnvError.issues or normalized format.
- * Maintained for backward compatibility with existing tests and users.
- */
-export function formatErrors(errors: any): string {
-	const issues = Object.entries(errors.byPath || {}).map(
-		([path, error]: [string, any]) => ({
-			path: path ? path.split(".") : [],
-			message: error.message,
-			validator: "arktype" as const,
-		}),
-	);
-	return formatIssues(issues);
-}
-
 function formatIssues(issues: EnvIssue[]): string {
 	return issues
 		.map((issue) => {
