@@ -221,19 +221,20 @@ describe("object parsing integration", () => {
 		});
 	});
 
-	it("should work with type() compiled schemas", () => {
-		const schema = type({
-			CONFIG: {
-				host: "string",
-				port: "number",
+	it("should work with objects in mapping", () => {
+		const env = arkenv(
+			{
+				CONFIG: {
+					host: "string",
+					port: "number",
+				},
 			},
-		});
-
-		const env = arkenv(schema, {
-			env: {
-				CONFIG: '{"host": "localhost", "port": "3000"}',
+			{
+				env: {
+					CONFIG: '{"host": "localhost", "port": "3000"}',
+				},
 			},
-		});
+		);
 
 		expect(env.CONFIG).toEqual({
 			host: "localhost",

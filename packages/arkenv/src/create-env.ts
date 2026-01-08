@@ -37,36 +37,13 @@ export type ArkEnvConfig = {
 };
 
 /**
- * The primary entry point for ArkEnv.
- * Supports ArkType DSL, Standard Schema validators, or a mix of both.
- *
- * arkenv({
- *   PORT: "number.port",       // ArkType DSL
- *   HOST: z.string().min(1)    // Standard Schema (Zod)
- * })
- *
- * Or pass a pre-defined validator:
- * arkenv(z.object({ PORT: z.coerce.number() }))
- *
- * Type inference quality depends on the validator used.
- * ArkType provides the richest inference.
+ * Strict Standard Schema entry point.
+ * @private - Supporting internal modules and plugins that import pre-defined validators.
  */
-export function arkenv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>>;
-export function arkenv<T extends EnvSchemaWithType>(
+export function defineEnv<T extends EnvSchemaWithType>(
 	def: T,
-	config?: ArkEnvConfig,
-): InferType<T>;
-export function arkenv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>> | InferType<typeof def>;
-export function arkenv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+): InferType<T> {
 	const env = config.env ?? process.env;
 	const isStandard = !!(def as any)?.["~standard"];
 	const isArkCompiled = typeof def === "function" && "assert" in (def as any);
@@ -86,11 +63,41 @@ export function arkenv<const T extends SchemaShape>(
 }
 
 /**
- * @private - Internal helper to maintain compatibility while refactoring.
+ * The primary entry point for ArkEnv.
+ *
+ * arkenv({
+ *   PORT: "number.port",       // ArkType DSL
+ *   HOST: z.string().min(1)    // Standard Schema (Zod)
+ * })
+ *
+ * IMPORTANT: arkenv() expects an object mapping environment keys to validators.
+ * Standard Schema validators are supported inside the mapping for migration,
+ * but top-level wrapped schemas (like z.object()) are not supported at this entry point.
+ *
+ * Type inference quality depends on the validator used.
+ * ArkType provides the richest inference.
  */
-export const defineEnv = arkenv;
+export function arkenv<const T extends SchemaShape>(
+	def: EnvSchema<T>,
+	config: ArkEnvConfig = {},
+): distill.Out<at.infer<T, $>> {
+	// Guardrail: Ensure arkenv() only accepts an object map.
+	// We check for "~standard" (Standard Schema) or "assert" (compiled ArkType)
+	// which indicate the user passed a wrapped schema instead of an object map.
+	if (
+		typeof def === "function" ||
+		(def !== null && typeof def === "object" && "~standard" in def)
+	) {
+		throw new Error(
+			"ArkEnv: arkenv() expects a mapping of { KEY: validator }, not a wrapped schema. " +
+				"Standard Schema validators are supported inside the mapping for migration, but not as the top-level argument.",
+		);
+	}
+
+	return defineEnv(def as any, config);
+}
 
 /**
- * @deprecated Use `arkenv` or `defineEnv` instead.
+ * @deprecated Use `arkenv` instead.
  */
 export const createEnv = arkenv;

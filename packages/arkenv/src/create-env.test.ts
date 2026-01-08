@@ -75,25 +75,30 @@ describe("createEnv", () => {
 			expect(createEnv(schema, { env: {} }).PORT).toBeUndefined();
 		});
 
-		it("should coerce strict number literals", () => {
-			const schema = { VAL: "1 | 2" } as const;
-			expect(createEnv(schema, { env: { VAL: "1" } }).VAL).toBe(1);
+		it("should handle validation errors from mapping", () => {
+			expect(() => {
+				arkenv(
+					{ INVALID_PORT: "number" },
+					{ env: { INVALID_PORT: "not-a-number" } },
+				);
+			}).toThrow();
 		});
 
-		it("should work with schemas containing morphs", () => {
-			const Env = type({
-				PORT: "number.port",
-				VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
-					Number.parseInt(str, 10),
-				),
-			});
-
-			const env = arkenv(Env, {
-				env: {
-					PORT: "3000",
-					VITE_MY_NUMBER_MANUAL: "456",
+		it("should work with schemas containing morphs in mapping", () => {
+			const env = arkenv(
+				{
+					PORT: "number.port",
+					VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+						Number.parseInt(str, 10),
+					),
 				},
-			});
+				{
+					env: {
+						PORT: "3000",
+						VITE_MY_NUMBER_MANUAL: "456",
+					},
+				},
+			);
 
 			expect(env.PORT).toBe(3000);
 			expect(env.VITE_MY_NUMBER_MANUAL).toBe(456);
@@ -314,31 +319,31 @@ describe("createEnv", () => {
 	});
 
 	describe("type definitions", () => {
-		it("should accept type definitions created with type()", () => {
-			process.env.TEST_STRING = "hello";
-			process.env.TEST_PORT = "3000";
+		it("should infer types from a mapping", () => {
+			const env = arkenv(
+				{
+					TEST_STRING: "string",
+					TEST_PORT: "number",
+				},
+				{
+					env: { TEST_STRING: "test", TEST_PORT: "3000" },
+				},
+			);
 
-			const Env = type({
-				TEST_STRING: "string",
-				TEST_PORT: "number.port",
-			});
-
-			const env = arkenv(Env);
-
-			expect(env.TEST_STRING).toBe("hello");
+			expect(env.TEST_STRING).toBe("test");
 			expect(env.TEST_PORT).toBe(3000);
 		});
 
 		it("should provide correct type inference with type definitions", () => {
-			process.env.TEST_STRING = "hello";
-			process.env.TEST_PORT = "3000";
-
-			const Env = type({
-				TEST_STRING: "string",
-				TEST_PORT: "number.port",
-			});
-
-			const env = arkenv(Env);
+			const env = arkenv(
+				{
+					TEST_STRING: "string",
+					TEST_PORT: "number.port",
+				},
+				{
+					env: { TEST_STRING: "hello", TEST_PORT: "3000" },
+				},
+			);
 
 			// TypeScript should infer these correctly
 			const str = env.TEST_STRING;
@@ -348,51 +353,35 @@ describe("createEnv", () => {
 			expect(port).toBe(3000);
 		});
 
-		it("should allow reusing the same type definition multiple times", () => {
-			process.env.TEST_STRING = "hello";
+		it("should allow extending mappings", () => {
+			const base = { TEST_STRING: "string" } as const;
+			const extended = { ...base, TEST_PORT: "number" } as const;
 
-			const Env = type({
-				TEST_STRING: "string",
+			const env1 = arkenv(base, { env: { TEST_STRING: "test" } });
+			const env2 = arkenv(extended, {
+				env: { TEST_STRING: "test", TEST_PORT: "3000" },
 			});
 
-			// Use the same schema multiple times
-			const env1 = arkenv(Env, {
-				env: {
-					TEST_STRING: "first",
-				},
-			});
-			const env2 = arkenv(Env, {
-				env: {
-					TEST_STRING: "second",
-				},
-			});
-
-			expect(env1.TEST_STRING).toBe("first");
-			expect(env2.TEST_STRING).toBe("second");
+			expect(env1.TEST_STRING).toBe("test");
+			expect(env2.TEST_PORT).toBe(3000);
 		});
 
-		it("should throw when type definition validation fails", () => {
+		it("should throw when mapping validation fails", () => {
 			process.env.INVALID_PORT = "not-a-port";
 
-			const Env = type({
-				INVALID_PORT: "number.port",
-			});
-
-			expect(() => arkenv(Env)).toThrow(/INVALID_PORT/);
+			expect(() =>
+				arkenv({
+					INVALID_PORT: "number.port",
+				}),
+			).toThrow(/INVALID_PORT/);
 		});
 
-		it("should work with custom environment and type definitions", () => {
-			const Env = type({
-				HOST: "string.host",
-				PORT: "number.port",
-			});
-
-			const customEnv = {
-				HOST: "localhost",
-				PORT: "8080",
-			};
-
-			const env = arkenv(Env, { env: customEnv });
+		it("should support custom environment and mapping", () => {
+			const customEnv = { HOST: "localhost", PORT: "8080" };
+			const env = arkenv(
+				{ HOST: "string", PORT: "number" },
+				{ env: customEnv },
+			);
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
@@ -631,6 +620,15 @@ describe("createEnv", () => {
 	});
 
 	describe("migration & hybrid support", () => {
+		it("should throw if top-level compiled ArkType schema is passed directly", () => {
+			const schema = type({ PORT: "number" });
+			expect(() =>
+				arkenv(schema as any, {
+					env: { PORT: "3000" },
+				}),
+			).toThrow(/arkenv\(\) expects a mapping/);
+		});
+
 		it("should support mixed ArkType DSL and Standard Schema validators", () => {
 			const env = arkenv(
 				{
@@ -645,11 +643,12 @@ describe("createEnv", () => {
 			expect(env).toEqual({ PORT: 3000, HOST: "localhost" });
 		});
 
-		it("should work with top-level Standard Schema", () => {
-			const env = arkenv(z.object({ PORT: z.coerce.number() }), {
-				env: { PORT: "8080" },
-			});
-			expect(env.PORT).toBe(8080);
+		it("should throw if top-level Standard Schema is passed directly", () => {
+			expect(() =>
+				arkenv(z.object({ PORT: z.coerce.number() }) as any, {
+					env: { PORT: "8080" },
+				}),
+			).toThrow(/arkenv\(\) expects a mapping/);
 		});
 	});
 });

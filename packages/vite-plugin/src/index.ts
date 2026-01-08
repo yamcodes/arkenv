@@ -1,4 +1,4 @@
-import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
+import type { SchemaShape } from "@repo/types";
 import { type EnvSchema, arkenv as validateEnv } from "arkenv";
 import { loadEnv, type Plugin } from "vite";
 
@@ -16,8 +16,7 @@ export type { ImportMetaEnvAugmented } from "./types";
  * automatically filters them based on Vite's `envPrefix` configuration (defaults to `"VITE_"`).
  * Only environment variables matching the prefix are exposed to client code via `import.meta.env.*`.
  *
- * @param options - The environment variable schema definition. Can be an `EnvSchema` object
- *   for typesafe validation or an ArkType `EnvSchemaWithType` for dynamic schemas.
+ * @param options - The environment variable schema definition as an object mapping environment keys to validators.
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
  *
  * @example
@@ -42,12 +41,8 @@ export type { ImportMetaEnvAugmented } from "./types";
  * console.log(import.meta.env.VITE_API_URL); // Typesafe access
  * ```
  */
-export default function arkenv(options: EnvSchemaWithType): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-): Plugin;
-export default function arkenv<const T extends SchemaShape>(
-	options: EnvSchema<T> | EnvSchemaWithType,
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",

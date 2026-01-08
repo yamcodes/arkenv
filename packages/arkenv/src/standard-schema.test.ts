@@ -3,20 +3,17 @@ import { z } from "zod";
 import { arkenv } from "./index";
 
 describe("Standard Schema integration", () => {
-	it("should work with top-level zod schemas", () => {
+	it("should throw if a top-level zod schema is passed directly", () => {
 		const schema = z.object({
 			PORT: z.coerce.number(),
 			HOST: z.string().default("localhost"),
 		});
 
-		const env = arkenv(schema, {
-			env: { PORT: "3000" },
-		});
-
-		expect(env).toEqual({
-			PORT: 3000,
-			HOST: "localhost",
-		});
+		expect(() =>
+			arkenv(schema as any, {
+				env: { PORT: "3000" },
+			}),
+		).toThrow(/arkenv\(\) expects a mapping/);
 	});
 
 	it("should support mixed validators in arkenv() mapping", () => {

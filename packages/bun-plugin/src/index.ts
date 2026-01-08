@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
+import type { SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import { arkenv as validateEnv } from "arkenv";
 import type { BunPlugin, Loader, PluginBuilder } from "bun";
@@ -10,7 +10,7 @@ export type { ProcessEnvAugmented } from "./types";
  * Helper to process env schema and return envMap
  */
 export function processEnvSchema<T extends SchemaShape>(
-	options: EnvSchema<T> | EnvSchemaWithType,
+	options: EnvSchema<T>,
 ): Map<string, string> {
 	// Validate environment variables
 
@@ -124,12 +124,8 @@ function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
  *    })
  *    ```
  */
-export function arkenv(options: EnvSchemaWithType): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-): BunPlugin;
-export function arkenv<const T extends SchemaShape>(
-	options: EnvSchema<T> | EnvSchemaWithType,
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options);
 
@@ -219,12 +215,10 @@ hybrid.setup = (build) => {
 			const example = `
 Example \`src/env.ts\`:
 \`\`\`ts
-import { type } from "arktype";
-
-export default type({
+export default {
   BUN_PUBLIC_API_URL: "string",
   BUN_PUBLIC_DEBUG: "boolean"
-});
+};
 \`\`\`
 `;
 			throw new Error(
