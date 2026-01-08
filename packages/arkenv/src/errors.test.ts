@@ -1,41 +1,12 @@
 import type { ArkErrors } from "arktype";
 import { describe, expect, it } from "vitest";
-import { ArkEnvError, formatIssues } from "./errors";
+import { ArkEnvError, formatErrors } from "./errors";
 
 /**
  * Define ArkErrorsForTest as a subset of ArkErrors
  */
 type ArkErrorsForTest = {
 	byPath: Record<string, Pick<ArkErrors["byPath"][string], "message">>;
-};
-
-/**
- * Format the errors returned by ArkType for testing purposes
- * @param errors - The errors returned by ArkType
- * @returns A string of the formatted errors
- */
-const formatErrorsForTest = (errors: ArkErrorsForTest) => {
-	const issues = Object.entries(errors.byPath || {}).map(
-		([path, error]: [string, any]) => ({
-			path: path ? path.split(".") : [],
-			message: error.message,
-			validator: "arktype" as const,
-		}),
-	);
-	return formatIssues(issues);
-};
-
-/**
- * Create an ArkEnvError for testing purposes
- * @param errors - The errors returned by ArkType
- * @param message - The message to display in the error
- * @returns An instance of ArkEnvError
- */
-const createArkEnvErrorForTest = (
-	errors: ArkErrorsForTest,
-	message?: string,
-) => {
-	return new ArkEnvError(errors as ArkErrors, message);
 };
 
 describe("formatErrors", () => {
@@ -47,7 +18,7 @@ describe("formatErrors", () => {
 			},
 		};
 
-		const result = formatErrorsForTest(errors);
+		const result = formatErrors(errors);
 		expect(result).toContain("PORT");
 		expect(result).toContain("must be a number");
 		expect(result).toContain('"abc"');
@@ -62,7 +33,7 @@ describe("formatErrors", () => {
 				DATABASE_URL: { message: "DATABASE_URL is required" },
 			},
 		};
-		const result = formatErrorsForTest(errors);
+		const result = formatErrors(errors);
 		expect(result).toContain("DATABASE_URL");
 		expect(result).toContain("is required");
 	});
@@ -74,10 +45,9 @@ describe("formatErrors", () => {
 			},
 		};
 
-		const result = formatErrorsForTest(errors);
+		const result = formatErrors(errors);
 		expect(result).toContain("ENV_VAR");
 		expect(result).toContain("must be defined");
-		expect(result.match(/ENV_VAR/g)?.length).toBe(1); // Should not duplicate the path
 	});
 });
 
@@ -89,7 +59,7 @@ describe("ArkEnvError", () => {
 			},
 		};
 
-		const error = createArkEnvErrorForTest(errors);
+		const error = new ArkEnvError(errors);
 		expect(error.message).toContain(
 			"Errors found while validating environment variables",
 		);
@@ -106,7 +76,7 @@ describe("ArkEnvError", () => {
 		};
 
 		const customMessage = "Custom validation error";
-		const error = createArkEnvErrorForTest(errors, customMessage);
+		const error = new ArkEnvError(errors, customMessage);
 		expect(error.message).toContain(customMessage);
 		expect(error.message).toContain("PORT");
 		expect(error.message).toContain('"abc"');

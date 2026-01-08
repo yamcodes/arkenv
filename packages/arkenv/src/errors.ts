@@ -1,60 +1,44 @@
-/**
- * Normalized issue format for ArkEnv.
- * @internal
- */
-export type EnvIssue = {
-	path: string[];
-	message: string;
-	validator: "arktype" | "standard";
-};
-
 import { indent } from "./utils/indent";
 import { styleText } from "./utils/style-text";
 
 export class ArkEnvError extends Error {
-	public issues: EnvIssue[];
-
 	constructor(
-		issues: EnvIssue[] | any,
+		errors: any,
 		message = "Errors found while validating environment variables",
 	) {
-		const normalizedIssues = Array.isArray(issues)
-			? issues
-			: Object.entries((issues as any).byPath || {}).map(
-					([path, error]: [string, any]) => ({
-						path: path ? path.split(".") : [],
-						message: error.message,
-						validator: "arktype" as const,
-					}),
-				);
-
-		super(
-			`${styleText("red", message)}\n${indent(formatIssues(normalizedIssues))}\n`,
-		);
+		super(`${styleText("red", message)}\n${indent(formatErrors(errors))}\n`);
 		this.name = "ArkEnvError";
-		this.issues = normalizedIssues;
 	}
 }
 
 Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
 
 /**
- * Format the issues for display
- * @param issues - The issues found during validation
- * @returns A string of the formatted issues
+ * Format the errors for display
+ * @param errors - The errors found during validation
+ * @returns A string of the formatted errors
  */
-export function formatIssues(issues: EnvIssue[]): string {
-	return issues
-		.map((issue) => {
-			const path = issue.path.length > 0 ? issue.path.join(".") : "root";
-			let message = issue.message;
-			// ArkType's error messages often already include the path.
-			// Example: "PORT must be a number".
-			// We want to avoid "PORT: PORT must be a number".
-			if (message.startsWith(`${path} `)) {
-				message = message.slice(path.length + 1);
-			}
-			return `${styleText("yellow", path)} ${message}`;
+export function formatErrors(errors: any): string {
+	if (Array.isArray(errors)) {
+		return errors
+			.map((err) => {
+				const path = err.path?.length > 0 ? err.path.join(".") : "root";
+				let message = err.message;
+				if (message.startsWith(`${path} `)) {
+					message = message.slice(path.length + 1);
+				}
+				return `${styleText("yellow", path)} ${message}`;
+			})
+			.join("\n");
+	}
+
+	return Object.entries(errors.byPath || {})
+		.map(([path, error]: [string, any]) => {
+			const messageWithoutPath = error.message.startsWith(path)
+				? error.message.slice(path.length)
+				: error.message;
+
+			return `${styleText("yellow", path)} ${messageWithoutPath.trimStart()}`;
 		})
 		.join("\n");
 }
