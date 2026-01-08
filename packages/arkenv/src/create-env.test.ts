@@ -167,15 +167,11 @@ describe("arkenv", () => {
 		});
 
 		it("should throw for empty string when number is expected", () => {
-			expect(() =>
-				arkenv({ VAL: "number" }, { env: { VAL: "" } }),
-			).toThrow();
+			expect(() => arkenv({ VAL: "number" }, { env: { VAL: "" } })).toThrow();
 		});
 
 		it("should throw for empty string when boolean is expected", () => {
-			expect(() =>
-				arkenv({ VAL: "boolean" }, { env: { VAL: "" } }),
-			).toThrow();
+			expect(() => arkenv({ VAL: "boolean" }, { env: { VAL: "" } })).toThrow();
 		});
 
 		it("should allow empty strings when the schema is unknown", () => {
@@ -543,10 +539,7 @@ describe("arkenv", () => {
 		});
 
 		it("should handle single-element array", () => {
-			const env = arkenv(
-				{ TAGS: "string[]" },
-				{ env: { TAGS: "only-one" } },
-			);
+			const env = arkenv({ TAGS: "string[]" }, { env: { TAGS: "only-one" } });
 			expect(env.TAGS).toEqual(["only-one"]);
 		});
 

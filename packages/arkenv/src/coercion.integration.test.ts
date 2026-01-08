@@ -112,9 +112,7 @@ describe("coercion integration", () => {
 
 	it("should NOT coerce empty or whitespace strings to 0 for numbers", () => {
 		expect(() => arkenv({ VAL: "number" }, { env: { VAL: "" } })).toThrow();
-		expect(() =>
-			arkenv({ VAL: "number" }, { env: { VAL: "  " } }),
-		).toThrow();
+		expect(() => arkenv({ VAL: "number" }, { env: { VAL: "  " } })).toThrow();
 	});
 
 	it("should fail validation if coercion fails (not a boolean)", () => {
