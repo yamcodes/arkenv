@@ -1,4 +1,13 @@
-import type { EnvIssue } from "./adapters";
+/**
+ * Normalized issue format for ArkEnv.
+ * @internal
+ */
+export type EnvIssue = {
+	path: string[];
+	message: string;
+	validator: "arktype" | "standard";
+};
+
 import { indent } from "./utils/indent";
 import { styleText } from "./utils/style-text";
 
@@ -30,8 +39,8 @@ export class ArkEnvError extends Error {
 Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
 
 /**
- * Format the issues returned by ArkType for display
- * @param issues - The issues returned by ArkType
+ * Format the issues for display
+ * @param issues - The issues found during validation
  * @returns A string of the formatted issues
  */
 export function formatIssues(issues: EnvIssue[]): string {

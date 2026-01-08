@@ -1,10 +1,13 @@
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+import { createRequire } from "node:module";
 import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { ArkTypeAdapter } from "./adapters/arktype";
-import { StandardSchemaAdapter } from "./adapters/standard";
-import { ArkEnvError } from "./errors";
+import { type EnvIssue, ArkEnvError } from "./errors";
+import { coerce } from "./utils/coerce";
 import type { CoerceOptions } from "./utils";
+
+const require = createRequire(import.meta.url);
 
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
@@ -37,7 +40,95 @@ export type ArkEnvConfig = {
 };
 
 /**
- * Internal Standard Schema entry point.
+ * Internal validation logic for ArkType schemas.
+ */
+function validateArkType(
+	def: unknown,
+	config: ArkEnvConfig,
+	env: Record<string, string | undefined>,
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
+	try {
+		const { $ } = require("@repo/scope");
+		const { type } = require("arktype");
+
+		const schemaDef = def as any;
+		const isCompiledType =
+			(typeof schemaDef === "function" && "assert" in schemaDef) ||
+			(typeof schemaDef === "object" &&
+				schemaDef !== null &&
+				"invoke" in schemaDef);
+
+		let schema = isCompiledType ? schemaDef : $.type(schemaDef);
+
+		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
+		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
+
+		// Apply coercion transformation
+		if (config.coerce !== false) {
+			schema = coerce(type, schema, {
+				...(config.arrayFormat ? { arrayFormat: config.arrayFormat } : {}),
+			});
+		}
+
+		const result = schema(env);
+
+		if (result instanceof type.errors) {
+			return {
+				success: false,
+				issues: Object.entries(result.byPath).map(([path, error]) => ({
+					path: path ? path.split(".") : [],
+					message: (error as { message: string }).message,
+					validator: "arktype" as const,
+				})),
+			};
+		}
+
+		return {
+			success: true,
+			value: result,
+		};
+	} catch (e: any) {
+		if (e.code === "MODULE_NOT_FOUND") {
+			throw new Error(
+				"ArkType is required for this schema type. Please install 'arktype' or use a Standard Schema validator like Zod.",
+			);
+		}
+		throw e;
+	}
+}
+
+/**
+ * Internal validation logic for Standard Schema validators.
+ */
+function validateStandard(
+	def: StandardSchemaV1,
+	env: Record<string, string | undefined>,
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
+	const result = def["~standard"].validate(env);
+
+	if (result instanceof Promise) {
+		throw new Error("ArkEnv does not support asynchronous validation.");
+	}
+
+	if (result.issues) {
+		return {
+			success: false,
+			issues: result.issues.map((issue) => ({
+				path: (issue.path as string[]) ?? [],
+				message: issue.message,
+				validator: "standard" as const,
+			})),
+		};
+	}
+
+	return {
+		success: true,
+		value: result.value,
+	};
+}
+
+/**
+ * Internal entry point for validation.
  * @internal
  */
 function defineEnv<T extends EnvSchemaWithType>(
@@ -46,14 +137,14 @@ function defineEnv<T extends EnvSchemaWithType>(
 ): InferType<T> {
 	const env = config.env ?? process.env;
 	const isStandard = !!(def as any)?.["~standard"];
-	const isArkCompiled = typeof def === "function" && "assert" in (def as any);
+	const isArkCompiled =
+		(typeof def === "function" && "assert" in (def as any)) ||
+		(typeof def === "object" && def !== null && "invoke" in (def as any));
 
-	const adapter =
+	const result =
 		isStandard && !isArkCompiled
-			? new StandardSchemaAdapter(def as any)
-			: new ArkTypeAdapter(def, config as any);
-
-	const result = adapter.validate(env);
+			? validateStandard(def, env)
+			: validateArkType(def, config, env);
 
 	if (!result.success) {
 		throw new ArkEnvError(result.issues);
