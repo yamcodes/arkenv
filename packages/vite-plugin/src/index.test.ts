@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 
 // Mock the arkenv module to capture calls
 // Mock the arkenv module with a spy that calls the real implementation by default

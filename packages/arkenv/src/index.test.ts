@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import arkenv from "./index";
+import arkenvDefault, { arkenv as arkenvNamed } from "./index";
 
 describe("index.ts exports", () => {
 	afterEach(() => {
@@ -9,24 +9,24 @@ describe("index.ts exports", () => {
 	});
 
 	it("should export arkenv as default export", () => {
-		expect(arkenv).toBe(arkenv);
-		expect(typeof arkenv).toBe("function");
+		expect(arkenvDefault).toBe(arkenvNamed);
+		expect(typeof arkenvDefault).toBe("function");
 	});
 
 	it("should have correct types for exported functions", () => {
 		// Type assertion to verify exported function types
-		expectTypeOf(arkenv).toBeFunction();
-		expectTypeOf(arkenv).toBeFunction();
+		expectTypeOf(arkenvDefault).toBeFunction();
+		expectTypeOf(arkenvNamed).toBeFunction();
 
 		// Verify they have the same type signature
-		expectTypeOf(arkenv).toEqualTypeOf(arkenv);
+		expectTypeOf(arkenvDefault).toEqualTypeOf(arkenvNamed);
 	});
 
 	it("should work with default import", () => {
 		// Set test environment variable
 		vi.stubEnv("TEST_DEFAULT_IMPORT", "test-value");
 
-		const env = arkenv({
+		const env = arkenvDefault({
 			TEST_DEFAULT_IMPORT: "string",
 		});
 
@@ -38,7 +38,7 @@ describe("index.ts exports", () => {
 		// Set test environment variable
 		vi.stubEnv("TEST_NAMED_IMPORT", "test-value");
 
-		const env = arkenv({
+		const env = arkenvNamed({
 			TEST_NAMED_IMPORT: "string",
 		});
 
@@ -48,7 +48,7 @@ describe("index.ts exports", () => {
 
 	it("should throw error with default import when validation fails", () => {
 		expect(() =>
-			arkenv({
+			arkenvDefault({
 				MISSING_DEFAULT_VAR: "string",
 			}),
 		).toThrow();
@@ -56,7 +56,7 @@ describe("index.ts exports", () => {
 
 	it("should throw error with named import when validation fails", () => {
 		expect(() =>
-			arkenv({
+			arkenvNamed({
 				MISSING_NAMED_VAR: "string",
 			}),
 		).toThrow();
@@ -66,11 +66,11 @@ describe("index.ts exports", () => {
 		// Set test environment variable
 		vi.stubEnv("COMPARISON_TEST", "same-value");
 
-		const envFromDefault = arkenv({
+		const envFromDefault = arkenvDefault({
 			COMPARISON_TEST: "string",
 		});
 
-		const envFromNamed = arkenv({
+		const envFromNamed = arkenvNamed({
 			COMPARISON_TEST: "string",
 		});
 

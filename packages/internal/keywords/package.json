@@ -8,9 +8,16 @@
 	"types": "./dist/index.d.ts",
 	"description": "ArkEnv keywords (internal usage)",
 	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./functions": {
+			"types": "./dist/functions.d.ts",
+			"import": "./dist/functions.js",
+			"require": "./dist/functions.cjs"
+		}
 	},
 	"scripts": {
 		"build": "tsdown",

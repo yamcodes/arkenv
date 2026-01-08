@@ -1,38 +1,8 @@
-/**
- * A loose numeric morph.
- */
-const maybeNumber = (s: unknown) => {
-	if (typeof s === "number") return s;
-	if (typeof s !== "string") return s;
-	const trimmed = s.trim();
-	if (trimmed === "") return s;
-	if (trimmed === "NaN") return Number.NaN;
-	const n = Number(trimmed);
-	return Number.isNaN(n) ? s : n;
-};
-
-/**
- * A loose boolean morph.
- */
-const maybeBoolean = (s: unknown) => {
-	if (s === "true") return true;
-	if (s === "false") return false;
-	return s;
-};
-
-/**
- * A loose JSON morph.
- */
-const maybeJson = (s: unknown) => {
-	if (typeof s !== "string") return s;
-	const trimmed = s.trim();
-	if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return s;
-	try {
-		return JSON.parse(trimmed);
-	} catch {
-		return s;
-	}
-};
+import {
+	maybeBooleanFunction as maybeBoolean,
+	maybeJsonFunction as maybeJson,
+	maybeNumberFunction as maybeNumber,
+} from "@repo/keywords/functions";
 
 /**
  * A marker used in the coercion path to indicate that the target

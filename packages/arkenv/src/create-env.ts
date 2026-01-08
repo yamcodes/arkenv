@@ -114,7 +114,20 @@ function validateStandard(
 		return {
 			success: false,
 			issues: result.issues.map((issue) => ({
-				path: (issue.path as string[]) ?? [],
+				path:
+					issue.path?.map((segment: unknown) => {
+						if (typeof segment === "string") return segment;
+						if (typeof segment === "number") return String(segment);
+						if (typeof segment === "symbol") return segment.toString();
+						if (
+							typeof segment === "object" &&
+							segment !== null &&
+							"key" in segment
+						) {
+							return String((segment as { key: unknown }).key);
+						}
+						return String(segment);
+					}) ?? [],
 				message: issue.message,
 				validator: "standard" as const,
 			})),
