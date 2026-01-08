@@ -29,7 +29,12 @@ export class ArkEnvError extends Error {
 
 Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
 
-function formatIssues(issues: EnvIssue[]): string {
+/**
+ * Format the issues returned by ArkType for display
+ * @param issues - The issues returned by ArkType
+ * @returns A string of the formatted issues
+ */
+export function formatIssues(issues: EnvIssue[]): string {
 	return issues
 		.map((issue) => {
 			const path = issue.path.length > 0 ? issue.path.join(".") : "root";
