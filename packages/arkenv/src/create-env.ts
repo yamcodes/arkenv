@@ -59,45 +59,6 @@ function detectValidatorType(def: unknown) {
 	return { isStandard, isArkCompiled };
 }
 
-function validateStandard(
-	def: StandardSchemaV1,
-	env: Record<string, string | undefined>,
-): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
-	const result = def["~standard"].validate(env);
-
-	if (result instanceof Promise) {
-		throw new Error("ArkEnv does not support asynchronous validation.");
-	}
-
-	if (result.issues) {
-		return {
-			success: false,
-			issues: result.issues.map((issue) => ({
-				path:
-					issue.path?.map((segment: unknown) => {
-						if (typeof segment === "string") return segment;
-						if (typeof segment === "number") return String(segment);
-						if (typeof segment === "symbol") return segment.toString();
-						if (
-							typeof segment === "object" &&
-							segment !== null &&
-							"key" in segment
-						) {
-							return String((segment as { key: unknown }).key);
-						}
-						return String(segment);
-					}) ?? [],
-				message: issue.message,
-			})),
-		};
-	}
-
-	return {
-		success: true,
-		value: result.value,
-	};
-}
-
 function validateArkType(
 	def: unknown,
 	config: ArkEnvConfig,
@@ -187,10 +148,7 @@ export function createEnv<T extends SchemaShape | EnvSchemaWithType>(
 		);
 	}
 
-	const result =
-		isStandard && !isArkCompiled
-			? validateStandard(def as any, env)
-			: validateArkType(def, config, env);
+	const result = validateArkType(def, config, env);
 
 	if (!result.success) {
 		throw new ArkEnvError(result.issues);
