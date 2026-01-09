@@ -58,7 +58,7 @@ const baselineSizes: Map<string, SizeInBytes> = config.isPR
 await installAndBuild(config, config.isReleasePR);
 
 // Run size-limit on current branch
-const { results, hasErrors } = await runSizeLimit(config.filter);
+const { results, hasErrors, rawOutput } = await runSizeLimit(config.filter);
 
 // Debug: Log results before filtering
 console.log(`🔍 Found ${results.length} total results before filtering`);
@@ -105,6 +105,10 @@ if (filteredResults.length === 0) {
 			console.log(
 				"⚠️ Size limit failed with exit code 1 but no package failed its limit. This indicates a configuration or execution error.",
 			);
+			if (rawOutput) {
+				console.log("📝 Raw output:");
+				console.log(rawOutput);
+			}
 			hasRelevantErrors = true;
 			shouldFail = true;
 		} else {
@@ -120,6 +124,10 @@ if (filteredResults.length === 0) {
 	} else if (hasErrors) {
 		// No results at all AND size-limit failed - this is a real failure
 		console.log("⚠️ Could not parse size-limit output or size-limit failed");
+		if (rawOutput) {
+			console.log("📝 Raw output:");
+			console.log(rawOutput);
+		}
 		hasRelevantErrors = true;
 		shouldFail = true;
 	} else {
@@ -140,6 +148,10 @@ if (filteredResults.length === 0) {
 	const allResultsPassed = results.every((r) => r.status !== "❌");
 	if (!hasRelevantErrors && hasErrors && allResultsPassed) {
 		console.log("⚠️ Size limit had a configuration or execution error.");
+		if (rawOutput) {
+			console.log("📝 Raw output:");
+			console.log(rawOutput);
+		}
 		hasRelevantErrors = true;
 	}
 
