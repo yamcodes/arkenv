@@ -41,9 +41,21 @@ export type ArkEnvConfig = {
 
 function detectValidatorType(def: unknown) {
 	const isStandard = !!(def as StandardSchemaV1)?.["~standard"];
+	const isObjectLike =
+		typeof def === "function" || (typeof def === "object" && def !== null);
+
+	if (!isObjectLike) {
+		return { isStandard, isArkCompiled: false };
+	}
+
+	const d = def as Record<string, unknown>;
 	const isArkCompiled =
-		(typeof def === "function" && "assert" in (def as object)) ||
-		(typeof def === "object" && def !== null && "invoke" in (def as object));
+		("t" in d || "allows" in d) &&
+		("infer" in d ||
+			"toJsonSchema" in d ||
+			"expression" in d ||
+			("array" in d && "or" in d && "pipe" in d));
+
 	return { isStandard, isArkCompiled };
 }
 
