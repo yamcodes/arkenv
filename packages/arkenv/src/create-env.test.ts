@@ -167,11 +167,15 @@ describe("createEnv", () => {
 		});
 
 		it("should throw for empty string when number is expected", () => {
-			expect(() => createEnv({ VAL: "number" }, { env: { VAL: "" } })).toThrow();
+			expect(() =>
+				createEnv({ VAL: "number" }, { env: { VAL: "" } }),
+			).toThrow();
 		});
 
 		it("should throw for empty string when boolean is expected", () => {
-			expect(() => createEnv({ VAL: "boolean" }, { env: { VAL: "" } })).toThrow();
+			expect(() =>
+				createEnv({ VAL: "boolean" }, { env: { VAL: "" } }),
+			).toThrow();
 		});
 
 		it("should allow empty strings when the schema is unknown", () => {
@@ -539,7 +543,10 @@ describe("createEnv", () => {
 		});
 
 		it("should handle single-element array", () => {
-			const env = createEnv({ TAGS: "string[]" }, { env: { TAGS: "only-one" } });
+			const env = createEnv(
+				{ TAGS: "string[]" },
+				{ env: { TAGS: "only-one" } },
+			);
 			expect(env.TAGS).toEqual(["only-one"]);
 		});
 

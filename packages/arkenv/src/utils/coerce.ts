@@ -206,7 +206,7 @@ const applyCoercion = (
 			}
 
 			const record = current as Record<string, unknown>;
-			if (Object.prototype.hasOwnProperty.call(record, lastKey)) {
+			if (Object.hasOwn(record, lastKey)) {
 				const original = record[lastKey];
 
 				if (type === "array" && typeof original === "string") {
