@@ -113,15 +113,17 @@ if (filteredResults.length === 0) {
 	} else {
 		// No results but size-limit succeeded - this could mean no packages have size-limit configs
 		// This is OK - just a warning
-		console.log("ℹ️ No size-limit results found. Packages may not have size-limit configured.");
+		console.log(
+			"ℹ️ No size-limit results found. Packages may not have size-limit configured.",
+		);
 		hasRelevantErrors = false;
 		shouldFail = false;
 	}
 } else {
 	// We have filtered results - check if any failed
 	// Errors are relevant since they apply to the filtered results we're checking
-	hasRelevantErrors = hasErrors;
-	shouldFail = hasErrors;
+	hasRelevantErrors = filteredResults.some((r) => r.status === "❌");
+	shouldFail = hasRelevantErrors;
 }
 
 // Set GitHub outputs
