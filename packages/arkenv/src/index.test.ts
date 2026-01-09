@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import arkenvDefault, { arkenv as arkenvNamed, ArkEnvError } from "./index";
+import arkenvDefault, { ArkEnvError, arkenv as arkenvNamed } from "./index";
 
 describe("index.ts exports", () => {
 	afterEach(() => {
