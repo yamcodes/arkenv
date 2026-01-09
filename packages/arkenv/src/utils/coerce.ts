@@ -296,14 +296,29 @@ const applyCoercion = (
 export function coerce(schema: any, options?: CoerceOptions): any {
 	if (
 		schema === null ||
-		!schema.in ||
-		typeof schema.in.toJsonSchema !== "function"
+		(typeof schema !== "object" && typeof schema !== "function")
 	) {
-		throw new TypeError(
+		throw new Error("coerce: invalid schema - expected an object or function");
+	}
+	if (!schema.in || typeof schema.in.toJsonSchema !== "function") {
+		throw new Error(
 			"coerce: invalid schema - missing in.toJsonSchema function",
 		);
 	}
-	const { type } = require("arktype");
+	if (typeof schema.pipe !== "function") {
+		throw new Error("coerce: invalid schema - missing pipe function");
+	}
+
+	let at: any;
+	try {
+		at = require("arktype");
+	} catch (e: any) {
+		throw new Error(
+			"coerce: ArkType is required for coercion. Please ensure 'arktype' is installed.",
+		);
+	}
+	const { type } = at;
+
 	// Use a fallback to handle unjsonifiable parts of the schema (like predicates)
 	// by preserving the base schema. This ensures that even if part of the schema
 	// cannot be fully represented in JSON Schema, we can still perform coercion
