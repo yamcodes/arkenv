@@ -155,7 +155,10 @@ export function createEnv<const T extends EnvSchemaWithType>(
 	def: T,
 	config?: ArkEnvConfig,
 ): InferType<T>;
-export function createEnv(def: unknown, config: ArkEnvConfig = {}): any {
+export function createEnv<T extends SchemaShape | EnvSchemaWithType>(
+	def: T,
+	config: ArkEnvConfig = {},
+): InferType<T> {
 	const { env = process.env } = config;
 
 	const { isStandard, isArkCompiled } = detectValidatorType(def);
