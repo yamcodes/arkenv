@@ -2,6 +2,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
+import arkenvPlugin from "./index";
 
 // Mock the arkenv module to capture calls
 // Mock the arkenv module with a spy that calls the real implementation by default
@@ -22,8 +24,6 @@ vi.mock("vite", async (importActual) => {
 		loadEnv: vi.fn(actual.loadEnv),
 	};
 });
-
-import arkenvPlugin from "./index.js";
 
 const fixturesDir = join(__dirname, "__fixtures__");
 
@@ -618,16 +618,10 @@ describe("Plugin Unit Tests", () => {
 		);
 	});
 
-	it("should work with a Standard Schema validator", async () => {
+	it("should work with a Zod Standard Schema validator", async () => {
 		vi.stubEnv("VITE_SS_VAR", "valid-value");
-		const mockValidator = {
-			"~standard": {
-				version: 1,
-				validate: (val: any) => ({ value: val }),
-			},
-		};
-		const schema: any = {
-			VITE_SS_VAR: mockValidator,
+		const schema = {
+			VITE_SS_VAR: z.string().min(5),
 		};
 
 		// Note: We use the real implementation for this test

@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
-import type { type as at } from "arktype";
+import type { type as at, Type } from "arktype";
 import { ArkEnvError, type EnvIssue } from "./errors";
 import { coerce } from "./utils/coerce";
 
@@ -70,7 +70,7 @@ function validateArkType(
 
 		const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
-		let schema = isCompiledType ? (def as any) : ($.type(def) as any);
+		let schema = isCompiledType ? (def as Type) : ($.type(def) as Type);
 
 		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
 		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
@@ -87,11 +87,13 @@ function validateArkType(
 		if (result instanceof type.errors) {
 			return {
 				success: false,
-				issues: Object.entries(result.byPath).map(([path, error]) => ({
+				issues: Object.entries(
+					(result as { byPath: Record<string, { message?: string }> }).byPath,
+				).map(([path, error]) => ({
 					path: path ? path.split(".") : [],
 					message:
 						typeof error === "object" && error !== null && "message" in error
-							? String((error as any).message)
+							? String((error as { message?: string }).message)
 							: "Validation failed",
 				})),
 			};
@@ -101,8 +103,13 @@ function validateArkType(
 			success: true,
 			value: result,
 		};
-	} catch (e: any) {
-		if (e.code === "MODULE_NOT_FOUND" && e.message.includes("'arktype'")) {
+	} catch (e: unknown) {
+		if (
+			e instanceof Error &&
+			"code" in e &&
+			e.code === "MODULE_NOT_FOUND" &&
+			e.message.includes("'arktype'")
+		) {
 			throw new Error(
 				"ArkType is required for this schema type. Please install 'arktype' or use a Standard Schema validator like Zod.",
 			);
@@ -151,5 +158,5 @@ export function createEnv<T extends SchemaShape | EnvSchemaWithType>(
 		throw new ArkEnvError(result.issues);
 	}
 
-	return result.value as any;
+	return result.value as InferType<T>;
 }

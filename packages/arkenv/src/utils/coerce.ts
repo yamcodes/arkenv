@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
 import { maybeBoolean, maybeJson, maybeNumber } from "@repo/keywords";
-import type { JsonSchema } from "arktype";
+import type { JsonSchema, Type } from "arktype";
 
 const require = createRequire(import.meta.url);
 
@@ -293,7 +293,7 @@ const applyCoercion = (
  * Pre-process input data to coerce string values to numbers/booleans at identified paths
  * before validation.
  */
-export function coerce(schema: any, options?: CoerceOptions): any {
+export function coerce<T extends Type>(schema: T, options?: CoerceOptions): T {
 	if (
 		schema === null ||
 		(typeof schema !== "object" && typeof schema !== "function")
@@ -309,7 +309,7 @@ export function coerce(schema: any, options?: CoerceOptions): any {
 		throw new Error("coerce: invalid schema - missing pipe function");
 	}
 
-	let at: any;
+	let at: typeof import("arktype");
 	try {
 		at = require("arktype");
 	} catch {
@@ -324,7 +324,7 @@ export function coerce(schema: any, options?: CoerceOptions): any {
 	// cannot be fully represented in JSON Schema, we can still perform coercion
 	// for the parts that can.
 	const json = schema.in.toJsonSchema({
-		fallback: (ctx: any) => ctx.base,
+		fallback: (ctx: { base: unknown }) => ctx.base as any,
 	});
 	const targets = findCoercionPaths(json);
 
@@ -339,6 +339,6 @@ export function coerce(schema: any, options?: CoerceOptions): any {
 	 * We cast to `BaseType<t, $>` to assert the final contract is maintained.
 	 */
 	return type("unknown")
-		.pipe((data: any) => applyCoercion(data, targets, options))
-		.pipe(schema);
+		.pipe((data: unknown) => applyCoercion(data, targets, options))
+		.pipe(schema) as unknown as T;
 }

@@ -1,0 +1,33 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import * as vite from "vite";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
+import arkenvPlugin from "./index";
+
+// Mock the arkenv module to capture calls
+// Mock the arkenv module with a spy that calls the real implementation by default
+vi.mock("arkenv", async (importActual) => {
+	const actual = await importActual<typeof import("arkenv")>();
+	return {
+		...actual,
+		default: vi.fn(actual.default),
+		createEnv: vi.fn(actual.createEnv),
+	};
+});
+
+// Mock the vite module to capture loadEnv calls
+vi.mock("vite", async (importActual) => {
+	const actual = await importActual<typeof import("vite")>();
+	return {
+		...actual,
+		loadEnv: vi.fn(actual.loadEnv),
+	};
+});
+
+const fixturesDir = join(__dirname, "__fixtures__");
+
+// Get the mocked functions
+const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
+
+const mockLoadEnv = vi.mocked(vite.loadEnv);
