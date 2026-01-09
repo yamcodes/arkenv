@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { type as at, distill } from "arktype";
@@ -8,7 +9,7 @@ import { coerce } from "./utils/coerce";
 
 const require = createRequire(import.meta.url);
 
-export type EnvSchema<def> = at.validate<def, at.infer<def, at.infer.In<def>>>;
+export type EnvSchema<def> = at.validate<def, $>;
 
 /**
  * Configuration options for `createEnv`
@@ -148,9 +149,14 @@ function validateArkType(
  * @throws {ArkEnvError} If validation fails.
  */
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
-	config: ArkEnvConfig = {},
-): distill.Out<at.infer<T>> | InferType<typeof def> {
+	def: at.validate<T, $>,
+	config?: ArkEnvConfig,
+): InferType<T>;
+export function createEnv<const T extends EnvSchemaWithType>(
+	def: T,
+	config?: ArkEnvConfig,
+): InferType<T>;
+export function createEnv(def: any, config: ArkEnvConfig = {}): any {
 	const { env = process.env } = config;
 
 	const { isStandard, isArkCompiled } = detectValidatorType(def);

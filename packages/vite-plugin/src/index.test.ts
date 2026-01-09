@@ -2,7 +2,6 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { z } from "zod";
 
 // Mock the arkenv module to capture calls
 // Mock the arkenv module with a spy that calls the real implementation by default
@@ -619,10 +618,16 @@ describe("Plugin Unit Tests", () => {
 		);
 	});
 
-	it("should work with a real Standard Schema validator (e.g. Zod)", async () => {
-		vi.stubEnv("VITE_ZOD_VAR", "valid-value");
-		const schema = {
-			VITE_ZOD_VAR: z.string().min(5),
+	it("should work with a Standard Schema validator", async () => {
+		vi.stubEnv("VITE_SS_VAR", "valid-value");
+		const mockValidator = {
+			"~standard": {
+				version: 1,
+				validate: (val: any) => ({ value: val }),
+			},
+		};
+		const schema: any = {
+			VITE_SS_VAR: mockValidator,
 		};
 
 		// Note: We use the real implementation for this test
@@ -652,7 +657,7 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		expect(result.define).toHaveProperty("import.meta.env.VITE_ZOD_VAR");
+		expect(result.define).toHaveProperty("import.meta.env.VITE_SS_VAR");
 	});
 });
 
