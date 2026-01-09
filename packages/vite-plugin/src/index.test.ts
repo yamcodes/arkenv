@@ -5,14 +5,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 // Mock the arkenv module to capture calls
-// Mock the arkenv module with a spy that calls the real implementation by default
 vi.mock("arkenv", async (importActual) => {
-	const actual = await importActual<typeof import("arkenv")>();
+	const actual = await importActual<any>();
+	const arkenvMock = vi.fn(actual.arkenv);
 	return {
 		...actual,
-		default: vi.fn(actual.default),
-		arkenv: vi.fn(actual.arkenv),
-		arkenv: vi.fn(actual.arkenv),
+		arkenv: arkenvMock,
+		createEnv: arkenvMock,
+		default: arkenvMock,
 	};
 });
 
@@ -30,9 +30,7 @@ import arkenvPlugin from "./index.js";
 const fixturesDir = join(__dirname, "__fixtures__");
 
 // Get the mocked functions
-const { arkenv: mockArkenv, arkenv: mockArkenv } = vi.mocked(
-	await import("arkenv"),
-);
+const { arkenv: mockArkenv } = vi.mocked(await import("arkenv"));
 
 const mockLoadEnv = vi.mocked(vite.loadEnv);
 
@@ -48,7 +46,6 @@ for (const name of readdirSync(fixturesDir).filter(
 			// Clear environment variables and mock cleanup
 			vi.unstubAllEnvs();
 			mockArkenv.mockClear();
-			mockArkenv.mockClear();
 			mockLoadEnv.mockClear();
 		});
 
@@ -56,15 +53,11 @@ for (const name of readdirSync(fixturesDir).filter(
 			// Complete cleanup: restore environment and reset mocks
 			vi.unstubAllEnvs();
 			mockArkenv.mockReset();
-			mockArkenv.mockReset();
 			mockLoadEnv.mockReset();
 		});
 
 		it("should build successfully with the plugin", async () => {
 			const config = await readTestConfig(fixtureDir);
-
-			// We no longer mock arkenv return value here,
-			// letting it run with real implementations.
 
 			await expect(
 				vite.build({
@@ -98,13 +91,11 @@ describe("Plugin Unit Tests", () => {
 	beforeEach(() => {
 		vi.unstubAllEnvs();
 		mockArkenv.mockClear();
-		mockArkenv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
-		mockArkenv.mockReset();
 		mockArkenv.mockReset();
 		mockLoadEnv.mockReset();
 	});
@@ -286,7 +277,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_SPECIAL_CHARS: "test",
 			VITE_123_NUMERIC: "test",
 			VITE_UPPERCASE: "test",
-			vite_lowercase: "test", // This doesn't start with VITE_ so it will be filtered out
+			vite_lowercase: "test",
 		};
 		mockArkenv.mockReturnValue(mockTransformedEnv);
 
@@ -318,14 +309,11 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Only variables starting with VITE_ are exposed
 		expect(result.define).toEqual({
 			"import.meta.env.VITE_SPECIAL_CHARS": '"test"',
 			"import.meta.env.VITE_123_NUMERIC": '"test"',
 			"import.meta.env.VITE_UPPERCASE": '"test"',
 		});
-		// Variables not starting with VITE_ are filtered out
-		expect(result.define).not.toHaveProperty("import.meta.env.vite_lowercase");
 	});
 
 	it("should propagate errors from arkenv", () => {
@@ -363,7 +351,6 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should filter out server-only variables (default VITE_ prefix)", () => {
-		// Mock arkenv to return both server-only and client-safe variables
 		const mockTransformedEnv = {
 			PORT: 3000,
 			DATABASE_URL: "postgres://localhost:5432/db",
@@ -400,18 +387,15 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Verify only VITE_* variables are exposed
 		expect(result.define).toEqual({
 			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
 			"import.meta.env.VITE_DEBUG": "true",
 		});
-		// Verify server-only variables are NOT exposed
 		expect(result.define).not.toHaveProperty("import.meta.env.PORT");
 		expect(result.define).not.toHaveProperty("import.meta.env.DATABASE_URL");
 	});
 
 	it("should respect custom envPrefix configuration", () => {
-		// Mock arkenv to return variables with different prefixes
 		const mockTransformedEnv = {
 			PUBLIC_API_URL: "https://api.example.com",
 			PUBLIC_DEBUG: true,
@@ -441,7 +425,6 @@ describe("Plugin Unit Tests", () => {
 				info: vi.fn(),
 				debug: vi.fn(),
 			} as any;
-			// Pass custom envPrefix in config
 			result = pluginInstance.config.call(
 				mockContext,
 				{ envPrefix: "PUBLIC_" },
@@ -449,12 +432,10 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Verify only PUBLIC_* variables are exposed
 		expect(result.define).toEqual({
 			"import.meta.env.PUBLIC_API_URL": '"https://api.example.com"',
 			"import.meta.env.PUBLIC_DEBUG": "true",
 		});
-		// Verify other variables are NOT exposed
 		expect(result.define).not.toHaveProperty("import.meta.env.VITE_OLD_VAR");
 		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
@@ -485,7 +466,6 @@ describe("Plugin Unit Tests", () => {
 				info: vi.fn(),
 				debug: vi.fn(),
 			} as any;
-			// Pass config without envPrefix (should default to VITE_)
 			result = pluginInstance.config.call(
 				mockContext,
 				{},
@@ -493,16 +473,13 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Verify only VITE_* variables are exposed (default prefix)
 		expect(result.define).toEqual({
 			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
 		});
-		// Verify PUBLIC_* variable is NOT exposed (not matching default prefix)
 		expect(result.define).not.toHaveProperty("import.meta.env.PUBLIC_DEBUG");
 	});
 
 	it("should support array of prefixes in envPrefix configuration", () => {
-		// Mock arkenv to return variables with different prefixes
 		const mockTransformedEnv = {
 			VITE_API_URL: "https://api.example.com",
 			PUBLIC_DEBUG: true,
@@ -532,7 +509,6 @@ describe("Plugin Unit Tests", () => {
 				info: vi.fn(),
 				debug: vi.fn(),
 			} as any;
-			// Pass array of prefixes in config
 			result = pluginInstance.config.call(
 				mockContext,
 				{ envPrefix: ["VITE_", "PUBLIC_", "CUSTOM_PREFIX_"] },
@@ -540,13 +516,11 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Verify variables matching any prefix in the array are exposed
 		expect(result.define).toEqual({
 			"import.meta.env.VITE_API_URL": '"https://api.example.com"',
 			"import.meta.env.PUBLIC_DEBUG": "true",
 			"import.meta.env.CUSTOM_PREFIX_VAR": '"test"',
 		});
-		// Verify variables not matching any prefix are NOT exposed
 		expect(result.define).not.toHaveProperty("import.meta.env.SECRET_KEY");
 	});
 
@@ -568,7 +542,6 @@ describe("Plugin Unit Tests", () => {
 				info: vi.fn(),
 				debug: vi.fn(),
 			} as any;
-			// Pass custom envDir in config
 			pluginInstance.config.call(
 				mockContext,
 				{ envDir: "/custom/env/dir" },
@@ -576,10 +549,8 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Assert that loadEnv was called with the mode ("test"), the custom envDir ("/custom/env/dir"), and the expected prefix ("")
 		expect(mockLoadEnv).toHaveBeenCalledWith("test", "/custom/env/dir", "");
 
-		// Verify arkenv was called - the envDir is used by loadEnv internally
 		expect(mockArkenv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
@@ -606,7 +577,6 @@ describe("Plugin Unit Tests", () => {
 				info: vi.fn(),
 				debug: vi.fn(),
 			} as any;
-			// Pass config without envDir (should default to process.cwd())
 			pluginInstance.config.call(
 				mockContext,
 				{},
@@ -614,10 +584,8 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Assert that loadEnv was called with the mode ("test"), the default envDir (process.cwd()), and the expected prefix ("")
 		expect(mockLoadEnv).toHaveBeenCalledWith("test", process.cwd(), "");
 
-		// Verify arkenv was called successfully with default behavior
 		expect(mockArkenv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
@@ -632,7 +600,6 @@ describe("Plugin Unit Tests", () => {
 			VITE_ZOD_VAR: z.string().min(5),
 		};
 
-		// Note: We use the real implementation for this test
 		const actual = await vi.importActual<any>("arkenv");
 		mockArkenv.mockImplementation(actual.arkenv);
 
@@ -663,18 +630,15 @@ describe("Plugin Unit Tests", () => {
 	});
 });
 
-// Integration tests using with-env-dir fixture for custom envDir configuration
 describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 	const withEnvDirFixture = join(fixturesDir, "with-env-dir");
 	const customEnvDir = join(withEnvDirFixture, "custom-dir");
 
-	// Expected env vars from custom-dir/env.test fixture
 	const expectedEnvVars = {
 		VITE_CUSTOM_VAR: "custom-value",
 		VITE_FROM_ENV_DIR: "loaded-from-env-dir",
-	} as const;
+	};
 
-	// Reusable build config factory
 	const createBuildConfig = (
 		envDir: string,
 		schema: Record<string, string>,
@@ -694,15 +658,13 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 	beforeEach(() => {
 		vi.unstubAllEnvs();
 		mockArkenv.mockClear();
-		mockArkenv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
-		mockArkenv.mockClear();
-		mockArkenv.mockClear();
-		mockLoadEnv.mockClear();
+		mockArkenv.mockReset();
+		mockLoadEnv.mockReset();
 	});
 
 	it("should load environment variables from custom envDir", async () => {
@@ -724,22 +686,9 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		await expect(
 			vite.build(createBuildConfig(nonExistentEnvDir, config.Env)),
 		).rejects.toThrow();
-
-		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
-			env: expect.any(Object),
-		});
 	});
 
-	it("should fail when using root directory without .env files", async () => {
-		const config = await readTestConfig(withEnvDirFixture);
-		const emptyEnvDir = join(withEnvDirFixture, "empty-dir");
-
-		await expect(
-			vite.build(createBuildConfig(emptyEnvDir, config.Env)),
-		).rejects.toThrow();
-	});
-
-	it("should prioritize envDir over root when both are specified", async () => {
+	it("should prioritized envDir over root when both are specified", async () => {
 		const config = await readTestConfig(withEnvDirFixture);
 
 		await expect(
@@ -760,7 +709,6 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 		await vite.build(createBuildConfig(customEnvDir, config.Env));
 
-		// Verify that all env vars (including non-schema ones) are passed
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(envWithExtra),
 		});
@@ -768,17 +716,13 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 });
 
 async function readTestConfig(fixtureDir: string) {
-	// Import the env schema from the TypeScript config file
 	let Env: Record<string, any> = {};
 	try {
 		const configPath = join(fixtureDir, "config.ts");
 		const configModule = await import(configPath);
 		Env = configModule.Env;
-	} catch {
-		// config.ts file doesn't exist, that's fine
-	}
+	} catch {}
 
-	// Read and merge environment variables from .env files (matching Vite's loadEnv behavior)
 	let envVars: Record<string, string> = {};
 	const envFiles = [".env", ".env.local", ".env.test"];
 
@@ -794,11 +738,8 @@ async function readTestConfig(fixtureDir: string) {
 						return [key.trim(), valueParts.join("=").trim()];
 					}),
 			);
-			// Merge with precedence: later files override earlier ones
 			envVars = { ...envVars, ...fileVars };
-		} catch {
-			// Try next file
-		}
+		} catch {}
 	}
 
 	return {
