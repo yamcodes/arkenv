@@ -294,6 +294,15 @@ const applyCoercion = (
  * before validation.
  */
 export function coerce(schema: any, options?: CoerceOptions): any {
+	if (
+		schema === null ||
+		!schema.in ||
+		typeof schema.in.toJsonSchema !== "function"
+	) {
+		throw new TypeError(
+			"coerce: invalid schema - missing in.toJsonSchema function",
+		);
+	}
 	const { type } = require("arktype");
 	// Use a fallback to handle unjsonifiable parts of the schema (like predicates)
 	// by preserving the base schema. This ensures that even if part of the schema
