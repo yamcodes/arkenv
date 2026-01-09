@@ -135,6 +135,14 @@ if (filteredResults.length === 0) {
 	// We have filtered results - check if any failed
 	// Errors are relevant since they apply to the filtered results we're checking
 	hasRelevantErrors = filteredResults.some((r) => r.status === "❌");
+
+	// Also detect config errors: hasErrors is true but no limits breached
+	const allResultsPassed = results.every((r) => r.status !== "❌");
+	if (!hasRelevantErrors && hasErrors && allResultsPassed) {
+		console.log("⚠️ Size limit had a configuration or execution error.");
+		hasRelevantErrors = true;
+	}
+
 	shouldFail = hasRelevantErrors;
 }
 
