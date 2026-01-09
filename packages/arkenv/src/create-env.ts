@@ -159,7 +159,7 @@ export function createEnv<const T extends SchemaShape>(
 	// Reusable type() schemas (ArkType) are allowed.
 	if (isStandard && !isArkCompiled) {
 		throw new Error(
-			"ArkEnv: createEnv() expects a mapping of { KEY: validator }, not a top-level Standard Schema (e.g. z.object()). " +
+			"ArkEnv: arkenv() expects a mapping of { KEY: validator }, not a top-level Standard Schema (e.g. z.object()). " +
 				"Standard Schema validators are supported inside the mapping, or you can use ArkType's type() for top-level schemas.",
 		);
 	}
