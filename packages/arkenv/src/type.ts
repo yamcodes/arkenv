@@ -1,8 +1,4 @@
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-
-import type { $ } from "@repo/scope";
+import { $ } from "@repo/scope";
 
 /**
  * `type` is a typesafe environment variable validator, an alias for `arktype`'s `type`.
@@ -10,11 +6,9 @@ import type { $ } from "@repo/scope";
  */
 export const type: typeof $.type = new Proxy((() => {}) as any, {
 	get(_, prop) {
-		const { $ } = require("@repo/scope");
 		return Reflect.get($.type, prop);
 	},
 	apply(_, thisArg, args) {
-		const { $ } = require("@repo/scope");
 		return Reflect.apply($.type, thisArg === type ? $.type : thisArg, args);
 	},
 });

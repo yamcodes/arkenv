@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import type { $ } from "@repo/scope";
+import { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { type as at, Type } from "arktype";
@@ -71,12 +71,13 @@ function validateArkType(
 	env: Record<string, string | undefined>,
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	try {
-		const { $ } = require("@repo/scope");
 		const { type } = require("arktype");
 
 		const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
-		let schema = isCompiledType ? (def as Type) : ($.type(def) as Type);
+		let schema = isCompiledType
+			? (def as Type)
+			: ($.type(def as any) as unknown as Type);
 
 		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
 		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");

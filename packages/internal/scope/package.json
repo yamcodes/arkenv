@@ -37,6 +37,7 @@
 		"@repo/keywords": "workspace:*"
 	},
 	"devDependencies": {
+		"@types/node": "catalog:",
 		"arktype": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:"
