@@ -12,7 +12,7 @@
 	"dependencies": {
 		"arkenv": "workspace:*",
 		"arktype": "catalog:",
-		"zod": "4.2.1"
+		"zod": "4.3.4"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",

@@ -29,7 +29,7 @@ catalog:
   valibot: 1.2.0
   vite-tsconfig-paths: 6.0.3
   vitest: 4.0.16
-  zod: 4.2.1
+  zod: 4.3.4
 
 overrides:
   '@playwright/test': 1.57.0
