@@ -71,7 +71,7 @@ function validateArkType(
 
 		// Apply coercion transformation (Lazy Loaded)
 		if (config.coerce !== false) {
-			schema = coerce(type, schema, {
+			schema = coerce(schema, {
 				...(config.arrayFormat ? { arrayFormat: config.arrayFormat } : {}),
 			});
 		}
@@ -87,7 +87,6 @@ function validateArkType(
 						typeof error === "object" && error !== null && "message" in error
 							? String((error as any).message)
 							: "Validation failed",
-					validator: "arktype" as const,
 				})),
 			};
 		}
@@ -138,7 +137,6 @@ function validateStandard(
 						return String(segment);
 					}) ?? [],
 				message: issue.message,
-				validator: "standard" as const,
 			})),
 		};
 	}

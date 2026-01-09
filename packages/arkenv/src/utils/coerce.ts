@@ -1,4 +1,7 @@
+import { createRequire } from "node:module";
 import { maybeBoolean, maybeJson, maybeNumber } from "@repo/keywords";
+
+const require = createRequire(import.meta.url);
 
 /**
  * A marker used in the coercion path to indicate that the target
@@ -206,7 +209,7 @@ const applyCoercion = (
 			}
 
 			const record = current as Record<string, unknown>;
-			if (Object.hasOwn(record, lastKey)) {
+			if (Object.prototype.hasOwnProperty.call(record, lastKey)) {
 				const original = record[lastKey];
 
 				if (type === "array" && typeof original === "string") {
@@ -270,11 +273,9 @@ const applyCoercion = (
 /**
  * Create a coercing wrapper around an ArkType schema using JSON Schema introspection.
  */
-export function coerce(
-	type: any, // Injected to avoid top-level import
-	schema: any, // Injected to avoid top-level import
-	options?: CoerceOptions,
-): any {
+export function coerce(schema: any, options?: CoerceOptions): any {
+	const { type } = require("arktype");
+
 	const json = schema.in.toJsonSchema({
 		fallback: (ctx: any) => ctx.base,
 	});

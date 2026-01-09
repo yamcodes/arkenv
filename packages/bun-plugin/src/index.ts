@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
-import type { EnvSchema } from "arkenv";
-import { createEnv } from "arkenv";
+import type { EnvSchema } from "createEnv";
+import { createEnv } from "createEnv";
 import type { BunPlugin, Loader, PluginBuilder } from "bun";
 
 export type { ProcessEnvAugmented } from "./types";
@@ -104,37 +104,37 @@ function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
  *    In `bunfig.toml`:
  *    ```toml
  *    [serve.static]
- *    plugins = ["@arkenv/bun-plugin"]
+ *    plugins = ["@createEnv/bun-plugin"]
  *    ```
  *    and in `Bun.build`:
  *    ```ts
- *    import arkenv from "@arkenv/bun-plugin";
+ *    import createEnv from "@createEnv/bun-plugin";
  *    Bun.build({
- *      plugins: [arkenv]
+ *      plugins: [createEnv]
  *    })
  *    ```
  *
  * 2. **Manual Configuration**:
  *    Call it as a function in `Bun.build` with your schema.
  *    ```ts
- *    import arkenv from "@arkenv/bun-plugin";
+ *    import createEnv from "@createEnv/bun-plugin";
  *    import { Env } from "./src/env";
  *    Bun.build({
- *      plugins: [arkenv(Env)]
+ *      plugins: [createEnv(Env)]
  *    })
  *    ```
  */
-export function arkenv(options: EnvSchemaWithType): BunPlugin;
-export function arkenv<const T extends SchemaShape>(
+export function createEnv(options: EnvSchemaWithType): BunPlugin;
+export function createEnv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
 ): BunPlugin;
-export function arkenv<const T extends SchemaShape>(
+export function createEnv<const T extends SchemaShape>(
 	options: EnvSchema<T> | EnvSchemaWithType,
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options);
 
 	return {
-		name: "@arkenv/bun-plugin",
+		name: "@createEnv/bun-plugin",
 		setup(build) {
 			registerLoader(build, envMap);
 		},
@@ -142,7 +142,7 @@ export function arkenv<const T extends SchemaShape>(
 }
 
 // Attach static analysis properties to the function to make it a valid BunPlugin object
-// This allows it to be used in bunfig.toml as `plugins = ["@arkenv/bun-plugin"]`
+// This allows it to be used in bunfig.toml as `plugins = ["@createEnv/bun-plugin"]`
 /**
  * Bun plugin to validate environment variables using ArkEnv and expose prefixed variables to client code.
  *
@@ -154,30 +154,30 @@ export function arkenv<const T extends SchemaShape>(
  *    In `bunfig.toml`:
  *    ```toml
  *    [serve.static]
- *    plugins = ["@arkenv/bun-plugin"]
+ *    plugins = ["@createEnv/bun-plugin"]
  *    ```
  *    and in `Bun.build`:
  *    ```ts
- *    import arkenv from "@arkenv/bun-plugin";
+ *    import createEnv from "@createEnv/bun-plugin";
  *    Bun.build({
- *      plugins: [arkenv]
+ *      plugins: [createEnv]
  *    })
  *    ```
  *
  * 2. **Manual Configuration**:
  *    Call it as a function in `Bun.build` with your schema.
  *    ```ts
- *    import arkenv from "@arkenv/bun-plugin";
+ *    import createEnv from "@createEnv/bun-plugin";
  *    import { Env } from "./src/env";
  *    Bun.build({
- *      plugins: [arkenv(Env)]
+ *      plugins: [createEnv(Env)]
  *    })
  *    ```
  */
-const hybrid = arkenv as typeof arkenv & BunPlugin;
+const hybrid = createEnv as typeof createEnv & BunPlugin;
 
 Object.defineProperty(hybrid, "name", {
-	value: "@arkenv/bun-plugin",
+	value: "@createEnv/bun-plugin",
 	writable: false,
 });
 
@@ -226,7 +226,7 @@ export default {
 \`\`\`
 `;
 			throw new Error(
-				`@arkenv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition.\n${example}`,
+				`@createEnv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition.\n${example}`,
 			);
 		}
 
