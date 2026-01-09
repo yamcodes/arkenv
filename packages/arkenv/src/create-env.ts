@@ -49,12 +49,18 @@ function detectValidatorType(def: unknown) {
 	}
 
 	const d = def as Record<string, unknown>;
+	// Check for ArkType's brand/symbol if available, fall back to duck typing
+	const hasArktypeBrand =
+		typeof d.infer === "function" ||
+		(typeof d.t === "object" && d.t !== null && "infer" in d.t);
+
 	const isArkCompiled =
-		("t" in d || "allows" in d) &&
-		("infer" in d ||
-			"toJsonSchema" in d ||
-			"expression" in d ||
-			("array" in d && "or" in d && "pipe" in d));
+		hasArktypeBrand ||
+		(("t" in d || "allows" in d) &&
+			("infer" in d ||
+				"toJsonSchema" in d ||
+				"expression" in d ||
+				("array" in d && "or" in d && "pipe" in d)));
 
 	return { isStandard, isArkCompiled };
 }
