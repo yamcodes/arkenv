@@ -51,7 +51,7 @@
 		"twoslash": "0.3.6",
 		"unist-util-visit": "5.0.0",
 		"valibot": "catalog:",
-		"vite": "7.3.0",
+		"vite": "7.3.1",
 		"zod": "catalog:"
 	},
 	"devDependencies": {
