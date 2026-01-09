@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import createEnvPlugin, { processEnvSchema } from "./index.js";
+import arkenvPlugin, { processEnvSchema } from "./index.js";
 
 describe("Bun Plugin", () => {
 	let originalEnv: NodeJS.ProcessEnv;
@@ -13,16 +13,16 @@ describe("Bun Plugin", () => {
 	});
 
 	it("should create a plugin function", () => {
-		expect(typeof createEnvPlugin).toBe("function");
+		expect(typeof arkenvPlugin).toBe("function");
 	});
 
 	it("should return a Bun plugin object", () => {
 		// Set up a valid environment variable
 		process.env.BUN_PUBLIC_TEST = "test-value";
 
-		const pluginInstance = createEnvPlugin({ BUN_PUBLIC_TEST: "string" });
+		const pluginInstance = arkenvPlugin({ BUN_PUBLIC_TEST: "string" });
 
-		expect(pluginInstance).toHaveProperty("name", "@createEnv/bun-plugin");
+		expect(pluginInstance).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(pluginInstance).toHaveProperty("setup");
 		expect(typeof pluginInstance.setup).toBe("function");
 	});
@@ -32,7 +32,7 @@ describe("Bun Plugin", () => {
 		process.env.BUN_PUBLIC_TEST = "test-value";
 
 		expect(() => {
-			createEnvPlugin({ BUN_PUBLIC_TEST: "string" });
+			arkenvPlugin({ BUN_PUBLIC_TEST: "string" });
 		}).not.toThrow();
 	});
 
@@ -41,7 +41,7 @@ describe("Bun Plugin", () => {
 		delete process.env.BUN_PUBLIC_REQUIRED;
 
 		expect(() => {
-			createEnvPlugin({ BUN_PUBLIC_REQUIRED: "string" });
+			arkenvPlugin({ BUN_PUBLIC_REQUIRED: "string" });
 		}).toThrow();
 	});
 

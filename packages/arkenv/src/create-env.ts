@@ -1,5 +1,4 @@
 import { createRequire } from "node:module";
-import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { type as at, distill } from "arktype";
@@ -9,39 +8,37 @@ import { coerce } from "./utils/coerce";
 
 const require = createRequire(import.meta.url);
 
-export type EnvSchema<def> = at.validate<def, $>;
-type RuntimeEnvironment = Record<string, string | undefined>;
+export type EnvSchema<def> = at.validate<def, at.infer<def, at.infer.In<def>>>;
 
 /**
- * Configuration options for ArkEnv
+ * Configuration options for `createEnv`
  */
 export type ArkEnvConfig = {
 	/**
 	 * The environment variables to validate. Defaults to `process.env`
 	 */
-	env?: RuntimeEnvironment;
+	env?: Record<string, string | undefined>;
 	/**
-	 * Whether to coerce environment variables to their defined types.
-	 * Only supported for ArkType schemas.
-	 * @default true
+	 * Whether to coerce environment variables to their defined types. Defaults to `true`
 	 */
 	coerce?: boolean;
 	/**
-	 * Control how ArkEnv handles undeclared keys.
-	 * Only supported for ArkType schemas.
+	 * How to handle undeclared keys in the schema.
+	 * - `delete`: Remove undeclared keys.
+	 * - `ignore`: Leave undeclared keys as they are.
+	 * - `reject`: Throw an error if undeclared keys are present.
 	 * @default "delete"
 	 */
-	onUndeclaredKey?: "ignore" | "delete" | "reject";
+	onUndeclaredKey?: "delete" | "ignore" | "reject";
 	/**
-	 * Options for array parsing.
+	 * For arrays, specifies how to parse the string value.
+	 * - `comma`: Split by commas and trim whitespace.
+	 * - `json`: Strings are parsed as JSON.
 	 * @default "comma"
 	 */
 	arrayFormat?: CoerceOptions["arrayFormat"];
 };
 
-/**
- * Detects the type of validator being used.
- */
 function detectValidatorType(def: unknown) {
 	const isStandard = !!(def as any)?.["~standard"];
 	const isArkCompiled =
@@ -50,9 +47,45 @@ function detectValidatorType(def: unknown) {
 	return { isStandard, isArkCompiled };
 }
 
-/**
- * Internal validation logic for ArkType schemas.
- */
+function validateStandard(
+	def: StandardSchemaV1,
+	env: Record<string, string | undefined>,
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
+	const result = def["~standard"].validate(env);
+
+	if (result instanceof Promise) {
+		throw new Error("ArkEnv does not support asynchronous validation.");
+	}
+
+	if (result.issues) {
+		return {
+			success: false,
+			issues: result.issues.map((issue) => ({
+				path:
+					issue.path?.map((segment: unknown) => {
+						if (typeof segment === "string") return segment;
+						if (typeof segment === "number") return String(segment);
+						if (typeof segment === "symbol") return segment.toString();
+						if (
+							typeof segment === "object" &&
+							segment !== null &&
+							"key" in segment
+						) {
+							return String((segment as { key: unknown }).key);
+						}
+						return String(segment);
+					}) ?? [],
+				message: issue.message,
+			})),
+		};
+	}
+
+	return {
+		success: true,
+		value: result.value,
+	};
+}
+
 function validateArkType(
 	def: unknown,
 	config: ArkEnvConfig,
@@ -106,66 +139,18 @@ function validateArkType(
 }
 
 /**
- * Internal validation logic for Standard Schema validators.
+ * Validate and distill environment variables based on a schema.
+ *
+ * @param def - The environment variable schema definition. Can be a mapping of keys to validators,
+ * or a compiled ArkType schema.
+ * @param config - Optional configuration for validation and coercion.
+ * @returns The validated and distilled environment variables.
+ * @throws {ArkEnvError} If validation fails.
  */
-function validateStandard(
-	def: StandardSchemaV1,
-	env: Record<string, string | undefined>,
-): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
-	const result = def["~standard"].validate(env);
-
-	if (result instanceof Promise) {
-		throw new Error("ArkEnv does not support asynchronous validation.");
-	}
-
-	if (result.issues) {
-		return {
-			success: false,
-			issues: result.issues.map((issue) => ({
-				path:
-					issue.path?.map((segment: unknown) => {
-						if (typeof segment === "string") return segment;
-						if (typeof segment === "number") return String(segment);
-						if (typeof segment === "symbol") return segment.toString();
-						if (
-							typeof segment === "object" &&
-							segment !== null &&
-							"key" in segment
-						) {
-							return String((segment as { key: unknown }).key);
-						}
-						return String(segment);
-					}) ?? [],
-				message: issue.message,
-			})),
-		};
-	}
-
-	return {
-		success: true,
-		value: result.value,
-	};
-}
-
-/**
- * Create an environment variables object from a schema and an environment
- * @param def - The environment variable schema (raw object or type definition created with `type()`)
- * @param config - Configuration options, see {@link ArkEnvConfig}
- * @returns The validated environment variable schema
- * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
- */
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>>;
-export function createEnv<T extends EnvSchemaWithType>(
-	def: T,
-	config?: ArkEnvConfig,
-): InferType<T>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+): distill.Out<at.infer<T>> | InferType<typeof def> {
 	const { env = process.env } = config;
 
 	const { isStandard, isArkCompiled } = detectValidatorType(def);
