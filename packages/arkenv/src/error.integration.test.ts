@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { arkenv } from "./create-env";
+import { createEnv } from "./create-env";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 
@@ -7,7 +7,7 @@ import { type } from "./type";
 const stripAnsi = (str: string) =>
 	str.replace(new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g"), "");
 
-describe("arkenv + type + errors + utils integration", () => {
+describe("createEnv + type + errors + utils integration", () => {
 	afterEach(() => {
 		vi.unstubAllEnvs();
 	});
@@ -17,7 +17,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			vi.stubEnv("PORT", "not-a-number");
 
 			try {
-				arkenv({
+				createEnv({
 					PORT: type("number.port"),
 				});
 				expect.fail("Should have thrown");
@@ -38,7 +38,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			vi.stubEnv("HOST", "invalid-host");
 
 			try {
-				arkenv({
+				createEnv({
 					HOST: type("string.host"),
 				});
 				expect.fail("Should have thrown");
@@ -56,7 +56,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			try {
-				arkenv({
+				createEnv({
 					DEBUG: type("boolean"),
 				});
 				expect.fail("Should have thrown");
@@ -73,7 +73,7 @@ describe("arkenv + type + errors + utils integration", () => {
 
 		it("should throw ArkEnvError with formatted message for missing required variable", () => {
 			try {
-				arkenv({
+				createEnv({
 					REQUIRED_VAR: "string",
 				});
 				expect.fail("Should have thrown");
@@ -94,7 +94,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			try {
-				arkenv({
+				createEnv({
 					HOST: type("string.host"),
 					PORT: type("number.port"),
 					DEBUG: type("boolean"),
@@ -117,7 +117,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			vi.stubEnv("PORT", "not-a-number");
 
 			try {
-				arkenv({
+				createEnv({
 					PORT: type("number.port"),
 				});
 				expect.fail("Should have thrown");
@@ -148,7 +148,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			vi.stubEnv("PORT", invalidValue);
 
 			try {
-				arkenv({
+				createEnv({
 					PORT: type("number.port"),
 				});
 				expect.fail("Should have thrown");
@@ -167,7 +167,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			vi.stubEnv("PORT", "99999");
 
 			try {
-				arkenv({
+				createEnv({
 					HOST: type("string.host"),
 					PORT: type("number.port"),
 				});

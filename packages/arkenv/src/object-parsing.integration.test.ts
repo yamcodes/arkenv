@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { arkenv } from "./create-env";
+import { createEnv } from "./create-env";
 import { type } from "./index";
 
 describe("object parsing integration", () => {
 	it("should parse JSON string into object with string properties", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				CONFIG: {
 					host: "string",
@@ -25,7 +25,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should parse JSON string and coerce nested number properties", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				DATABASE: {
 					host: "string",
@@ -47,7 +47,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should parse JSON string and coerce nested boolean properties", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				SETTINGS: {
 					enabled: "boolean",
@@ -70,7 +70,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should parse nested JSON objects", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				APP: {
 					database: {
@@ -101,7 +101,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should handle object with mixed types", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				CONFIG: {
 					host: "string",
@@ -127,7 +127,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should work with both JSON strings and separate environment variables", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				PORT: "number",
 				DEBUG: "boolean",
@@ -155,7 +155,7 @@ describe("object parsing integration", () => {
 
 	it("should fail when JSON string is invalid", () => {
 		expect(() =>
-			arkenv(
+			createEnv(
 				{
 					CONFIG: {
 						host: "string",
@@ -172,7 +172,7 @@ describe("object parsing integration", () => {
 
 	it("should fail when parsed object doesn't match schema", () => {
 		expect(() =>
-			arkenv(
+			createEnv(
 				{
 					CONFIG: {
 						port: "number",
@@ -188,7 +188,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should work with optional object properties", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				"CONFIG?": {
 					host: "string",
@@ -203,7 +203,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should parse optional object when provided", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				"CONFIG?": {
 					host: "string",
@@ -229,7 +229,7 @@ describe("object parsing integration", () => {
 			}),
 		});
 
-		const env = arkenv(schema, {
+		const env = createEnv(schema, {
 			env: {
 				MY_OBJ: '{"foo": "baz", "bar": 123}',
 			},
@@ -242,7 +242,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should handle arrays within JSON objects", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				CONFIG: {
 					hosts: "string[]",
@@ -264,7 +264,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should parse JSON with whitespace", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				CONFIG: {
 					host: "string",
@@ -283,7 +283,7 @@ describe("object parsing integration", () => {
 	});
 
 	it("should handle object with default values", () => {
-		const env = arkenv(
+		const env = createEnv(
 			{
 				CONFIG: type({
 					host: "string",

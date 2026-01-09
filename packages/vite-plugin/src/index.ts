@@ -1,5 +1,5 @@
 import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
-import { type EnvSchema, arkenv as validateEnv } from "arkenv";
+import { type EnvSchema, createEnv } from "arkenv";
 import { loadEnv, type Plugin } from "vite";
 
 export type { ImportMetaEnvAugmented } from "./types";
@@ -62,7 +62,7 @@ export default function arkenv<const T extends SchemaShape>(
 			// NOTE: We use 'options as any' here strictly to bypass TypeScript's "Type instantiation is excessively deep" errors.
 			// This assertion ONLY affects compile-time checking; runtime validation (including Standard Schema via def["~standard"])
 			// remains fully intact and functional.
-			const env = validateEnv(options as any, {
+			const env = createEnv(options as any, {
 				env: loadEnv(mode, envDir, ""),
 			});
 
