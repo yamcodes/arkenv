@@ -44,4 +44,17 @@ describe("Standard Schema integration", () => {
 		);
 		expect(env.ZOD_VAL).toBe("test@example.com");
 	});
+
+	it("should throw when Standard Schema mapping fails validation", () => {
+		expect(() =>
+			createEnv(
+				{
+					ZOD_VAL: z.string().email(),
+				},
+				{
+					env: { ZOD_VAL: "not-an-email" },
+				},
+			),
+		).toThrow();
+	});
 });
