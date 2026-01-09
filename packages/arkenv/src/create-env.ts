@@ -141,7 +141,10 @@ function validateArkType(
 			value: result,
 		};
 	} catch (e: any) {
-		if (e.code === "MODULE_NOT_FOUND") {
+		if (
+			e.code === "MODULE_NOT_FOUND" &&
+			(e.message.includes("'arktype'") || e.message.includes("'@repo/scope'"))
+		) {
 			throw new Error(
 				"ArkType is required for this schema type. Please install 'arktype' or use a Standard Schema validator like Zod.",
 			);
