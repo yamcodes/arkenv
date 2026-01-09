@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import createEnv from "./index";
+import arkenv from "./index";
 
 describe("Standard Schema integration", () => {
 	it("should throw if a top-level zod schema is passed directly", () => {
@@ -10,14 +10,14 @@ describe("Standard Schema integration", () => {
 		});
 
 		expect(() =>
-			createEnv(schema as any, {
+			arkenv(schema as any, {
 				env: { PORT: "3000" },
 			}),
 		).toThrow(/expects a mapping.*not a top-level Standard Schema/);
 	});
 
-	it("should support mixed validators in createEnv() mapping", () => {
-		const env = createEnv(
+	it("should support mixed validators in arkenv() mapping", () => {
+		const env = arkenv(
 			{
 				PORT: "number.port", // ArkType DSL
 				HOST: z.string().min(1), // Zod
@@ -33,8 +33,8 @@ describe("Standard Schema integration", () => {
 		});
 	});
 
-	it("should verify createEnv accepts a Standard Schema when ArkType is present (via mapping)", () => {
-		const env = createEnv(
+	it("should verify arkenv accepts a Standard Schema when ArkType is present (via mapping)", () => {
+		const env = arkenv(
 			{
 				ZOD_VAL: z.string().email(),
 			},

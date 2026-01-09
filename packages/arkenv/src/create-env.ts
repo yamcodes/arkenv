@@ -150,32 +150,15 @@ function validateStandard(
 }
 
 /**
- * Create an environment variables object from a schema and an environment.
- * Now supports both ArkType and Standard Schema validators.
+ * Internal validation entry point.
+ * @internal
  */
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>>;
-export function createEnv<T extends EnvSchemaWithType>(
+function defineEnv<T extends EnvSchemaWithType>(
 	def: T,
-	config?: ArkEnvConfig,
-): InferType<T>;
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+): InferType<T> {
 	const env = config.env ?? process.env;
 	const { isStandard, isArkCompiled } = detectValidatorType(def);
-
-	// Guardrail: Block top-level Standard Schema (Zod, Valibot, etc.)
-	// Reusable type() schemas (ArkType) are allowed.
-	if (isStandard && !isArkCompiled) {
-		throw new Error(
-			"ArkEnv: createEnv() expects a mapping of { KEY: validator }, not a top-level Standard Schema (e.g. z.object()). " +
-				"Standard Schema validators are supported inside the mapping, or you can use ArkType's type() for top-level schemas.",
-		);
-	}
 
 	const result =
 		isStandard && !isArkCompiled
@@ -190,6 +173,33 @@ export function createEnv<const T extends SchemaShape>(
 }
 
 /**
- * @alias createEnv
+ * The primary entry point for ArkEnv.
  */
-export const arkenv = createEnv;
+export function arkenv<const T extends SchemaShape>(
+	def: EnvSchema<T>,
+	config?: ArkEnvConfig,
+): distill.Out<at.infer<T, $>>;
+export function arkenv<T extends EnvSchemaWithType>(
+	def: T,
+	config?: ArkEnvConfig,
+): InferType<T>;
+export function arkenv<const T extends SchemaShape>(
+	def: EnvSchema<T> | EnvSchemaWithType,
+	config: ArkEnvConfig = {},
+): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+	const { isStandard, isArkCompiled } = detectValidatorType(def);
+
+	if (isStandard && !isArkCompiled) {
+		throw new Error(
+			"ArkEnv: arkenv() expects a mapping of { KEY: validator }, not a top-level Standard Schema (e.g. z.object()). " +
+				"Standard Schema validators are supported inside the mapping, or you can use ArkType's type() for top-level schemas.",
+		);
+	}
+
+	return defineEnv(def as any, config) as any;
+}
+
+/**
+ * @deprecated Use `arkenv` instead.
+ */
+export const createEnv = arkenv;
