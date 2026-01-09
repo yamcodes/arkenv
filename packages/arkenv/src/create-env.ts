@@ -51,8 +51,7 @@ function detectValidatorType(def: unknown) {
 	const d = def as Record<string, unknown>;
 	// Check for ArkType's brand/symbol if available, fall back to duck typing
 	const hasArktypeBrand =
-		typeof d.infer === "function" ||
-		(typeof d.t === "object" && d.t !== null && "infer" in d.t);
+		"infer" in d || (typeof d.t === "object" && d.t !== null && "infer" in d.t);
 
 	const isArkCompiled =
 		hasArktypeBrand ||
