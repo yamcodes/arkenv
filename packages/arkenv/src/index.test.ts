@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import arkenvDefault, { arkenv as arkenvNamed } from "./index";
+import arkenvDefault, { arkenv as arkenvNamed, ArkEnvError } from "./index";
 
 describe("index.ts exports", () => {
 	afterEach(() => {
@@ -51,7 +51,17 @@ describe("index.ts exports", () => {
 			arkenvDefault({
 				MISSING_DEFAULT_VAR: "string",
 			}),
-		).toThrow();
+		).toThrowError(ArkEnvError);
+
+		try {
+			arkenvDefault({
+				MISSING_DEFAULT_VAR: "string",
+			});
+		} catch (error: any) {
+			expect(error).toBeInstanceOf(ArkEnvError);
+			expect(error.message).toContain("MISSING_DEFAULT_VAR");
+			expect(error.message).toContain("string");
+		}
 	});
 
 	it("should throw error with named import when validation fails", () => {
@@ -59,7 +69,17 @@ describe("index.ts exports", () => {
 			arkenvNamed({
 				MISSING_NAMED_VAR: "string",
 			}),
-		).toThrow();
+		).toThrowError(ArkEnvError);
+
+		try {
+			arkenvNamed({
+				MISSING_NAMED_VAR: "string",
+			});
+		} catch (error: any) {
+			expect(error).toBeInstanceOf(ArkEnvError);
+			expect(error.message).toContain("MISSING_NAMED_VAR");
+			expect(error.message).toContain("string");
+		}
 	});
 
 	it("should have same behavior for both default and named imports", () => {
