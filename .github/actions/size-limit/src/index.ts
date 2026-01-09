@@ -80,16 +80,49 @@ calculateDiffs(filteredResults, baselineSizes, config.isReleasePR);
 // Create the table
 const result = createTable(filteredResults);
 console.log(result);
-if (filteredResults.length === 0 && results.length > 0) {
-	console.log("⚠️ Could not parse size-limit output");
+
+// Determine if we should fail
+// Only fail if:
+// 1. We have filtered results AND they contain errors (hasErrors=true)
+// 2. We have NO results at all AND size-limit failed (hasErrors=true AND results.length=0)
+// 
+// Do NOT fail if:
+// - Results were successfully parsed but filtered out (results.length > 0 but filteredResults.length = 0)
+// - No packages changed (already handled by early exit)
+let shouldFail = false;
+let finalHasErrors = hasErrors;
+
+if (filteredResults.length === 0) {
+	if (results.length > 0) {
+		// Results were filtered out - this means size-limit ran on packages,
+		// but those packages were not in the changed packages set.
+		// This is OK - don't fail the check.
+		console.log(
+			"ℹ️ Size checks ran but no results matched changed packages. This is expected when unchanged packages have size-limit configs.",
+		);
+		finalHasErrors = false;
+		shouldFail = false;
+	} else if (hasErrors) {
+		// No results at all AND size-limit failed - this is a real failure
+		console.log("⚠️ Could not parse size-limit output or size-limit failed");
+		shouldFail = true;
+	} else {
+		// No results but size-limit succeeded - this could mean no packages have size-limit configs
+		// This is OK - just a warning
+		console.log("ℹ️ No size-limit results found. Packages may not have size-limit configured.");
+		shouldFail = false;
+	}
+} else {
+	// We have filtered results - check if any failed
+	shouldFail = hasErrors;
 }
 
 // Set GitHub outputs
 const packagesChanged = changedPackages === null || changedPackages.size > 0;
-await setGitHubOutputs(result, hasErrors, packagesChanged);
+await setGitHubOutputs(result, finalHasErrors, packagesChanged);
 
 // Print summary
-if (hasErrors) {
+if (shouldFail) {
 	console.log("❌ Size limit checks failed");
 	process.exit(1);
 } else {
