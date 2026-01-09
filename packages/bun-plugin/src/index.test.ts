@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { z } from "zod";
 import arkenvPlugin, { processEnvSchema } from "./index.js";
 
 describe("Bun Plugin", () => {
@@ -62,8 +63,17 @@ describe("Bun Plugin", () => {
 			JSON.stringify("https://api.example.com"),
 		);
 
-		// Check that non-prefixed variables are filtered out
 		expect(envMap.has("PORT")).toBe(false);
 		expect(envMap.has("DATABASE_URL")).toBe(false);
+	});
+
+	it("should work with a real Standard Schema validator (e.g. Zod)", () => {
+		process.env.BUN_PUBLIC_ZOD = "zod-value";
+		const envMap = processEnvSchema({
+			BUN_PUBLIC_ZOD: z.string().min(5),
+		});
+
+		expect(envMap.has("BUN_PUBLIC_ZOD")).toBe(true);
+		expect(envMap.get("BUN_PUBLIC_ZOD")).toBe(JSON.stringify("zod-value"));
 	});
 });

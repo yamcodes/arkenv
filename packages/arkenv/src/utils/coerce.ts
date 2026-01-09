@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
 import { maybeBoolean, maybeJson, maybeNumber } from "@repo/keywords";
-import { type JsonSchema } from "arktype";
+import type { JsonSchema } from "arktype";
 
 const require = createRequire(import.meta.url);
 
