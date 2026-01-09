@@ -40,6 +40,17 @@ export type ArkEnvConfig = {
 };
 
 /**
+ * Detects the type of validator being used.
+ */
+function detectValidatorType(def: unknown) {
+	const isStandard = !!(def as any)?.["~standard"];
+	const isArkCompiled =
+		(typeof def === "function" && "assert" in (def as any)) ||
+		(typeof def === "object" && def !== null && "invoke" in (def as any));
+	return { isStandard, isArkCompiled };
+}
+
+/**
  * Internal validation logic for ArkType schemas.
  */
 function validateArkType(
@@ -51,14 +62,9 @@ function validateArkType(
 		const { $ } = require("@repo/scope");
 		const { type } = require("arktype");
 
-		const schemaDef = def as any;
-		const isCompiledType =
-			(typeof schemaDef === "function" && "assert" in schemaDef) ||
-			(typeof schemaDef === "object" &&
-				schemaDef !== null &&
-				"invoke" in schemaDef);
+		const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
-		let schema = isCompiledType ? schemaDef : $.type(schemaDef);
+		let schema = isCompiledType ? (def as any) : ($.type(def) as any);
 
 		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
 		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
@@ -149,10 +155,7 @@ function defineEnv<T extends EnvSchemaWithType>(
 	config: ArkEnvConfig = {},
 ): InferType<T> {
 	const env = config.env ?? process.env;
-	const isStandard = !!(def as any)?.["~standard"];
-	const isArkCompiled =
-		(typeof def === "function" && "assert" in (def as any)) ||
-		(typeof def === "object" && def !== null && "invoke" in (def as any));
+	const { isStandard, isArkCompiled } = detectValidatorType(def);
 
 	const result =
 		isStandard && !isArkCompiled
@@ -193,10 +196,7 @@ export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	const isStandard = !!(def as any)?.["~standard"];
-	const isArkCompiled =
-		(typeof def === "function" && "assert" in (def as any)) ||
-		(typeof def === "object" && def !== null && "invoke" in (def as any));
+	const { isStandard, isArkCompiled } = detectValidatorType(def);
 
 	// Guardrail: Block top-level Standard Schema (Zod, Valibot, etc.)
 	// Reusable type() schemas (ArkType) are allowed.
