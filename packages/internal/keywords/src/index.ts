@@ -1,9 +1,4 @@
 import { type } from "arktype";
-import {
-	maybeBooleanFunction,
-	maybeJsonFunction,
-	maybeNumberFunction,
-} from "./functions";
 
 /**
  * A loose numeric morph.
@@ -14,7 +9,15 @@ import {
  *
  * Useful for coercion in unions where failing on non-numeric strings would block other branches.
  */
-export const maybeNumber = type("unknown").pipe(maybeNumberFunction);
+export const maybeNumber = type("unknown").pipe((s) => {
+	if (typeof s === "number") return s;
+	if (typeof s !== "string") return s;
+	const trimmed = s.trim();
+	if (trimmed === "") return s;
+	if (trimmed === "NaN") return Number.NaN;
+	const n = Number(trimmed);
+	return Number.isNaN(n) ? s : n;
+});
 
 /**
  * A loose boolean morph.
@@ -25,7 +28,11 @@ export const maybeNumber = type("unknown").pipe(maybeNumberFunction);
  *
  * Useful for coercion in unions where failing on non-boolean strings would block other branches.
  */
-export const maybeBoolean = type("unknown").pipe(maybeBooleanFunction);
+export const maybeBoolean = type("unknown").pipe((s) => {
+	if (s === "true") return true;
+	if (s === "false") return false;
+	return s;
+});
 
 /**
  * A `number` integer between 0 and 65535.
@@ -46,4 +53,14 @@ export const host = type("string.ip | 'localhost'");
  *
  * Useful for coercion in unions where failing on non-JSON strings would block other branches.
  */
-export const maybeJson = type("unknown").pipe(maybeJsonFunction);
+export const maybeJson = type("unknown").pipe((s) => {
+	if (typeof s !== "string") return s;
+	const trimmed = s.trim();
+	// Only attempt to parse if it looks like JSON (starts with { or [)
+	if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return s;
+	try {
+		return JSON.parse(trimmed);
+	} catch {
+		return s;
+	}
+});
