@@ -12,12 +12,12 @@
 	"dependencies": {
 		"arkenv": "^0.8.3",
 		"arktype": "^2.1.29",
-		"zod": "^4.3.4"
+		"zod": "^4.3.5"
 	},
 	"devDependencies": {
 		"rimraf": "^6.1.2",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"
 	},
-	"packageManager": "npm@11.7.0"
+	"packageManager": "npm@11.6.4"
 }
