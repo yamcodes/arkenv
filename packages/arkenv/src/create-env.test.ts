@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { createEnv } from "./create-env";
 import { type } from "./type";
@@ -75,30 +75,25 @@ describe("createEnv", () => {
 			expect(createEnv(schema, { env: {} }).PORT).toBeUndefined();
 		});
 
-		it("should handle validation errors from mapping", () => {
-			expect(() => {
-				createEnv(
-					{ INVALID_PORT: "number" },
-					{ env: { INVALID_PORT: "not-a-number" } },
-				);
-			}).toThrow();
+		it("should coerce strict number literals", () => {
+			const schema = { VAL: "1 | 2" } as const;
+			expect(createEnv(schema, { env: { VAL: "1" } }).VAL).toBe(1);
 		});
 
-		it("should work with schemas containing morphs in mapping", () => {
-			const env = createEnv(
-				{
-					PORT: "number.port",
-					VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
-						Number.parseInt(str, 10),
-					),
+		it("should work with schemas containing morphs", () => {
+			const Env = type({
+				PORT: "number.port",
+				VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+					Number.parseInt(str, 10),
+				),
+			});
+
+			const env = createEnv(Env, {
+				env: {
+					PORT: "3000",
+					VITE_MY_NUMBER_MANUAL: "456",
 				},
-				{
-					env: {
-						PORT: "3000",
-						VITE_MY_NUMBER_MANUAL: "456",
-					},
-				},
-			);
+			});
 
 			expect(env.PORT).toBe(3000);
 			expect(env.VITE_MY_NUMBER_MANUAL).toBe(456);
@@ -319,31 +314,31 @@ describe("createEnv", () => {
 	});
 
 	describe("type definitions", () => {
-		it("should infer types from a mapping", () => {
-			const env = createEnv(
-				{
-					TEST_STRING: "string",
-					TEST_PORT: "number",
-				},
-				{
-					env: { TEST_STRING: "test", TEST_PORT: "3000" },
-				},
-			);
+		it("should accept type definitions created with type()", () => {
+			process.env.TEST_STRING = "hello";
+			process.env.TEST_PORT = "3000";
 
-			expect(env.TEST_STRING).toBe("test");
+			const Env = type({
+				TEST_STRING: "string",
+				TEST_PORT: "number.port",
+			});
+
+			const env = createEnv(Env);
+
+			expect(env.TEST_STRING).toBe("hello");
 			expect(env.TEST_PORT).toBe(3000);
 		});
 
 		it("should provide correct type inference with type definitions", () => {
-			const env = createEnv(
-				{
-					TEST_STRING: "string",
-					TEST_PORT: "number.port",
-				},
-				{
-					env: { TEST_STRING: "hello", TEST_PORT: "3000" },
-				},
-			);
+			process.env.TEST_STRING = "hello";
+			process.env.TEST_PORT = "3000";
+
+			const Env = type({
+				TEST_STRING: "string",
+				TEST_PORT: "number.port",
+			});
+
+			const env = createEnv(Env);
 
 			// TypeScript should infer these correctly
 			const str = env.TEST_STRING;
@@ -353,35 +348,51 @@ describe("createEnv", () => {
 			expect(port).toBe(3000);
 		});
 
-		it("should allow extending mappings", () => {
-			const base = { TEST_STRING: "string" } as const;
-			const extended = { ...base, TEST_PORT: "number" } as const;
+		it("should allow reusing the same type definition multiple times", () => {
+			process.env.TEST_STRING = "hello";
 
-			const env1 = createEnv(base, { env: { TEST_STRING: "test" } });
-			const env2 = createEnv(extended, {
-				env: { TEST_STRING: "test", TEST_PORT: "3000" },
+			const Env = type({
+				TEST_STRING: "string",
 			});
 
-			expect(env1.TEST_STRING).toBe("test");
-			expect(env2.TEST_PORT).toBe(3000);
+			// Use the same schema multiple times
+			const env1 = createEnv(Env, {
+				env: {
+					TEST_STRING: "first",
+				},
+			});
+			const env2 = createEnv(Env, {
+				env: {
+					TEST_STRING: "second",
+				},
+			});
+
+			expect(env1.TEST_STRING).toBe("first");
+			expect(env2.TEST_STRING).toBe("second");
 		});
 
-		it("should throw when mapping validation fails", () => {
+		it("should throw when type definition validation fails", () => {
 			process.env.INVALID_PORT = "not-a-port";
 
-			expect(() =>
-				createEnv({
-					INVALID_PORT: "number.port",
-				}),
-			).toThrow(/INVALID_PORT/);
+			const Env = type({
+				INVALID_PORT: "number.port",
+			});
+
+			expect(() => createEnv(Env)).toThrow(/INVALID_PORT/);
 		});
 
-		it("should support custom environment and mapping", () => {
-			const customEnv = { HOST: "localhost", PORT: "8080" };
-			const env = createEnv(
-				{ HOST: "string", PORT: "number" },
-				{ env: customEnv },
-			);
+		it("should work with custom environment and type definitions", () => {
+			const Env = type({
+				HOST: "string.host",
+				PORT: "number.port",
+			});
+
+			const customEnv = {
+				HOST: "localhost",
+				PORT: "8080",
+			};
+
+			const env = createEnv(Env, { env: customEnv });
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);

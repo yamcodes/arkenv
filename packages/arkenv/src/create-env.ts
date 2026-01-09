@@ -33,7 +33,7 @@ export type ArkEnvConfig = {
 	 */
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
 	/**
-	 * The format to use for array parsing in ArkType schemas.
+	 * Options for array parsing.
 	 * @default "comma"
 	 */
 	arrayFormat?: CoerceOptions["arrayFormat"];
@@ -148,8 +148,11 @@ function validateStandard(
 }
 
 /**
- * Create an environment variables object from a schema and an environment.
- * Now supports both ArkType and Standard Schema validators.
+ * Create an environment variables object from a schema and an environment
+ * @param def - The environment variable schema (raw object or type definition created with `type()`)
+ * @param config - Configuration options, see {@link ArkEnvConfig}
+ * @returns The validated environment variable schema
+ * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
@@ -163,7 +166,8 @@ export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	const env = config.env ?? process.env;
+	const { env = process.env } = config;
+
 	const { isStandard, isArkCompiled } = detectValidatorType(def);
 
 	// Guardrail: Block top-level Standard Schema (Zod, Valibot, etc.)
@@ -186,8 +190,3 @@ export function createEnv<const T extends SchemaShape>(
 
 	return result.value as any;
 }
-
-/**
- * @alias createEnv
- */
-export const arkenv = createEnv;

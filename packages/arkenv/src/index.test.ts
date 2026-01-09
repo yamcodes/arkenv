@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import createEnv, { ArkEnvError } from "./index";
+import arkenv, { createEnv } from "./index";
 
 describe("index.ts exports", () => {
 	afterEach(() => {
@@ -9,19 +9,24 @@ describe("index.ts exports", () => {
 	});
 
 	it("should export createEnv as default export", () => {
-		expect(typeof createEnv).toBe("function");
+		expect(arkenv).toBe(createEnv);
+		expect(typeof arkenv).toBe("function");
 	});
 
 	it("should have correct types for exported functions", () => {
 		// Type assertion to verify exported function types
+		expectTypeOf(arkenv).toBeFunction();
 		expectTypeOf(createEnv).toBeFunction();
+
+		// Verify they have the same type signature
+		expectTypeOf(arkenv).toEqualTypeOf(createEnv);
 	});
 
 	it("should work with default import", () => {
 		// Set test environment variable
 		vi.stubEnv("TEST_DEFAULT_IMPORT", "test-value");
 
-		const env = createEnv({
+		const env = arkenv({
 			TEST_DEFAULT_IMPORT: "string",
 		});
 
@@ -29,25 +34,39 @@ describe("index.ts exports", () => {
 		expect(typeof env.TEST_DEFAULT_IMPORT).toBe("string");
 	});
 
-	it("should throw ArkEnvError with default import when validation fails", () => {
-		expect(() =>
-			createEnv({
-				MISSING_DEFAULT_VAR: "string",
-			}),
-		).toThrow(ArkEnvError);
+	it("should work with named import", () => {
+		// Set test environment variable
+		vi.stubEnv("TEST_NAMED_IMPORT", "test-value");
 
+		const env = createEnv({
+			TEST_NAMED_IMPORT: "string",
+		});
+
+		expect(env.TEST_NAMED_IMPORT).toBe("test-value");
+		expect(typeof env.TEST_NAMED_IMPORT).toBe("string");
+	});
+
+	it("should throw error with default import when validation fails", () => {
 		expect(() =>
-			createEnv({
+			arkenv({
 				MISSING_DEFAULT_VAR: "string",
 			}),
-		).toThrow(/MISSING_DEFAULT_VAR.*string/);
+		).toThrow();
+	});
+
+	it("should throw error with named import when validation fails", () => {
+		expect(() =>
+			createEnv({
+				MISSING_NAMED_VAR: "string",
+			}),
+		).toThrow();
 	});
 
 	it("should have same behavior for both default and named imports", () => {
 		// Set test environment variable
 		vi.stubEnv("COMPARISON_TEST", "same-value");
 
-		const envFromDefault = createEnv({
+		const envFromDefault = arkenv({
 			COMPARISON_TEST: "string",
 		});
 

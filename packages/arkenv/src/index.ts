@@ -3,11 +3,12 @@ import { createEnv } from "./create-env";
 export type { EnvSchema } from "./create-env";
 
 /**
- * `arkenv`'s primary entry point.
+ * `arkenv`'s main export, an alias for {@link createEnv}
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  */
-export default createEnv;
+const arkenv = createEnv;
+export default arkenv;
+export { type } from "./type";
 export { createEnv };
 export { ArkEnvError } from "./errors";
-export { type } from "./type";

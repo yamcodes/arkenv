@@ -16,7 +16,8 @@ export type { ImportMetaEnvAugmented } from "./types";
  * automatically filters them based on Vite's `envPrefix` configuration (defaults to `"VITE_"`).
  * Only environment variables matching the prefix are exposed to client code via `import.meta.env.*`.
  *
- * @param options - The environment variable schema definition as an object mapping environment keys to validators.
+ * @param options - The environment variable schema definition. Can be an `EnvSchema` object
+ *   for typesafe validation or an ArkType `EnvSchemaWithType` for dynamic schemas.
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
  *
  * @example
@@ -59,9 +60,9 @@ export default function arkenv<const T extends SchemaShape>(
 
 			// Load environment based on the custom config
 			const envDir = config.envDir ?? config.root ?? process.cwd();
-			// NOTE: We use 'options as any' here strictly to bypass TypeScript's "Type instantiation is excessively deep" errors.
-			// This assertion ONLY affects compile-time checking; runtime validation (including Standard Schema via def["~standard"])
-			// remains fully intact and functional.
+			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
+			// "Type instantiation is excessively deep and possibly infinite" errors.
+			// Ideally, we should find a way to avoid these assertions while maintaining type safety.
 			const env = createEnv(options as any, {
 				env: loadEnv(mode, envDir, ""),
 			});

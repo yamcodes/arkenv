@@ -24,7 +24,7 @@ vi.mock("vite", async (importActual) => {
 	};
 });
 
-import createEnvPlugin from "./index.js";
+import arkenvPlugin from "./index.js";
 
 const fixturesDir = join(__dirname, "__fixtures__");
 
@@ -66,7 +66,7 @@ for (const name of readdirSync(fixturesDir).filter(
 					mode: "test",
 					configFile: false,
 					root: config.root,
-					plugins: [createEnvPlugin(config.Env)],
+					plugins: [arkenvPlugin(config.Env)],
 					logLevel: "error",
 					build: {
 						lib: {
@@ -103,11 +103,11 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should create a plugin function", () => {
-		expect(typeof createEnvPlugin).toBe("function");
+		expect(typeof arkenvPlugin).toBe("function");
 	});
 
 	it("should return a Vite plugin object", () => {
-		const pluginInstance = createEnvPlugin({ VITE_TEST: "string" });
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		expect(pluginInstance).toHaveProperty("name", "@arkenv/vite-plugin");
 		expect(pluginInstance).toHaveProperty("config");
@@ -117,7 +117,7 @@ describe("Plugin Unit Tests", () => {
 		// Mock createEnv to return a valid object
 		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
 
-		const pluginInstance = createEnvPlugin({ VITE_TEST: "string" });
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		// Mock the config hook with proper context
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
@@ -157,7 +157,7 @@ describe("Plugin Unit Tests", () => {
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
-		const pluginInstance = createEnvPlugin({
+		const pluginInstance = arkenvPlugin({
 			VITE_STRING: "string",
 			VITE_NUMBER: "number",
 			VITE_BOOLEAN: "boolean",
@@ -207,7 +207,7 @@ describe("Plugin Unit Tests", () => {
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
-		const pluginInstance = createEnvPlugin({
+		const pluginInstance = arkenvPlugin({
 			VITE_NULL: "string",
 			VITE_UNDEFINED: "string",
 			VITE_EMPTY_STRING: "string",
@@ -248,7 +248,7 @@ describe("Plugin Unit Tests", () => {
 	it("should handle empty environment object", () => {
 		mockCreateEnv.mockReturnValue({});
 
-		const pluginInstance = createEnvPlugin({});
+		const pluginInstance = arkenvPlugin({});
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
@@ -283,7 +283,7 @@ describe("Plugin Unit Tests", () => {
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
-		const pluginInstance = createEnvPlugin({
+		const pluginInstance = arkenvPlugin({
 			VITE_SPECIAL_CHARS: "string",
 			VITE_123_NUMERIC: "string",
 			VITE_UPPERCASE: "string",
@@ -327,7 +327,7 @@ describe("Plugin Unit Tests", () => {
 			throw error;
 		});
 
-		const pluginInstance = createEnvPlugin({ VITE_TEST: "string" });
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		expect(() => {
 			if (
@@ -365,7 +365,7 @@ describe("Plugin Unit Tests", () => {
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
-		const pluginInstance = createEnvPlugin({
+		const pluginInstance = arkenvPlugin({
 			PORT: "number.port",
 			DATABASE_URL: "string",
 			VITE_API_URL: "string",
@@ -413,7 +413,7 @@ describe("Plugin Unit Tests", () => {
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
-		const pluginInstance = createEnvPlugin({
+		const pluginInstance = arkenvPlugin({
 			PUBLIC_API_URL: "string",
 			PUBLIC_DEBUG: "boolean",
 			VITE_OLD_VAR: "string",
@@ -459,7 +459,7 @@ describe("Plugin Unit Tests", () => {
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
-		const pluginInstance = createEnvPlugin({
+		const pluginInstance = arkenvPlugin({
 			VITE_API_URL: "string",
 			PUBLIC_DEBUG: "boolean",
 		});
@@ -504,7 +504,7 @@ describe("Plugin Unit Tests", () => {
 		};
 		mockCreateEnv.mockReturnValue(mockTransformedEnv);
 
-		const pluginInstance = createEnvPlugin({
+		const pluginInstance = arkenvPlugin({
 			VITE_API_URL: "string",
 			PUBLIC_DEBUG: "boolean",
 			CUSTOM_PREFIX_VAR: "string",
@@ -546,7 +546,7 @@ describe("Plugin Unit Tests", () => {
 	it("should use custom envDir when provided in config", async () => {
 		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
 
-		const pluginInstance = createEnvPlugin({ VITE_TEST: "string" });
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
 			const mockContext = {
@@ -584,7 +584,7 @@ describe("Plugin Unit Tests", () => {
 	it("should default to process.cwd() when envDir is not configured", () => {
 		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
 
-		const pluginInstance = createEnvPlugin({ VITE_TEST: "string" });
+		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
 			const mockContext = {
@@ -629,7 +629,7 @@ describe("Plugin Unit Tests", () => {
 		const actual = await vi.importActual<any>("arkenv");
 		mockCreateEnv.mockImplementation(actual.createEnv);
 
-		const pluginInstance = createEnvPlugin(schema);
+		const pluginInstance = arkenvPlugin(schema);
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
@@ -676,7 +676,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		configFile: false as const,
 		root: withEnvDirFixture,
 		envDir,
-		plugins: [createEnvPlugin(schema)],
+		plugins: [arkenvPlugin(schema)],
 		logLevel: "error" as const,
 		build: {
 			lib: { entry: "index.ts", formats: ["es" as const] },
@@ -692,8 +692,8 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
-		mockCreateEnv.mockReset();
-		mockLoadEnv.mockReset();
+		mockCreateEnv.mockClear();
+		mockLoadEnv.mockClear();
 	});
 
 	it("should load environment variables from custom envDir", async () => {
@@ -760,7 +760,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 async function readTestConfig(fixtureDir: string) {
 	// Import the env schema from the TypeScript config file
-	let Env: Record<string, any> = {};
+	let Env: Record<string, string> = {};
 	try {
 		const configPath = join(fixtureDir, "config.ts");
 		const configModule = await import(configPath);
