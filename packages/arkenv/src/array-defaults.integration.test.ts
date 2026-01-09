@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import createEnv, { type } from "./index";
+import arkenv, { type } from "./index";
 
-describe("createEnv array defaults", () => {
+describe("arkenv array defaults", () => {
 	it("should work with arrow function array defaults", () => {
-		const Thing = createEnv({
+		const Thing = arkenv({
 			array: type("number.integer[]").default(() => []),
 		});
 
@@ -11,7 +11,7 @@ describe("createEnv array defaults", () => {
 	});
 
 	it("should work with complex array defaults", () => {
-		const env = createEnv(
+		const env = arkenv(
 			{
 				ALLOWED_HOSTS: type("string[]").default(() => [
 					"localhost",
@@ -29,7 +29,7 @@ describe("createEnv array defaults", () => {
 	});
 
 	it("should support arrays with defaults and environment overrides", () => {
-		const env = createEnv(
+		const env = arkenv(
 			{
 				NUMBERS: type("number[]").default(() => [1, 2, 3]),
 			},

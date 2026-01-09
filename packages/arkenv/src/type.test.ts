@@ -40,7 +40,7 @@ describe("type", () => {
 		expect(result2.OPTIONAL).toBeUndefined();
 	});
 
-	it("should create a type with createEnv-specific host validation", () => {
+	it("should create a type with arkenv-specific host validation", () => {
 		const envType = type({ HOST: "string.host" });
 
 		// Valid IP addresses
@@ -58,7 +58,7 @@ describe("type", () => {
 		expect(() => envType.assert({ HOST: "invalid-host" })).toThrow();
 	});
 
-	it("should create a type with createEnv-specific port validation", () => {
+	it("should create a type with arkenv-specific port validation", () => {
 		const envType = type({ PORT: "number.port" });
 
 		// Valid ports

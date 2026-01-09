@@ -66,10 +66,8 @@ function validateArkType(
 
 		let schema = isCompiledType ? (def as any) : ($.type(def) as any);
 
-		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
 		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
 
-		// Apply coercion transformation (Lazy Loaded)
 		if (config.coerce !== false) {
 			schema = coerce(type, schema, {
 				...(config.arrayFormat ? { arrayFormat: config.arrayFormat } : {}),
@@ -92,10 +90,7 @@ function validateArkType(
 			};
 		}
 
-		return {
-			success: true,
-			value: result,
-		};
+		return { success: true, value: result };
 	} catch (e: any) {
 		if (e.code === "MODULE_NOT_FOUND") {
 			throw new Error(
@@ -115,9 +110,8 @@ function validateStandard(
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	const result = def["~standard"].validate(env);
 
-	if (result instanceof Promise) {
+	if (result instanceof Promise)
 		throw new Error("ArkEnv does not support asynchronous validation.");
-	}
 
 	if (result.issues) {
 		return {
@@ -143,53 +137,57 @@ function validateStandard(
 		};
 	}
 
-	return {
-		success: true,
-		value: result.value,
-	};
+	return { success: true, value: result.value };
 }
 
 /**
- * Create an environment variables object from a schema and an environment.
- * Now supports both ArkType and Standard Schema validators.
+ * Internal entry point for validation.
+ * @internal
  */
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>>;
-export function createEnv<T extends EnvSchemaWithType>(
+function defineEnv<T extends EnvSchemaWithType>(
 	def: T,
-	config?: ArkEnvConfig,
-): InferType<T>;
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
 	config: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+): InferType<T> {
 	const env = config.env ?? process.env;
 	const { isStandard, isArkCompiled } = detectValidatorType(def);
-
-	// Guardrail: Block top-level Standard Schema (Zod, Valibot, etc.)
-	// Reusable type() schemas (ArkType) are allowed.
-	if (isStandard && !isArkCompiled) {
-		throw new Error(
-			"ArkEnv: createEnv() expects a mapping of { KEY: validator }, not a top-level Standard Schema (e.g. z.object()). " +
-				"Standard Schema validators are supported inside the mapping, or you can use ArkType's type() for top-level schemas.",
-		);
-	}
 
 	const result =
 		isStandard && !isArkCompiled
 			? validateStandard(def as any, env)
 			: validateArkType(def, config, env);
 
-	if (!result.success) {
-		throw new ArkEnvError(result.issues);
-	}
-
+	if (!result.success) throw new ArkEnvError(result.issues);
 	return result.value as any;
 }
 
 /**
- * @alias createEnv
+ * The primary entry point for ArkEnv.
  */
-export const arkenv = createEnv;
+export function arkenv<const T extends SchemaShape>(
+	def: EnvSchema<T>,
+	config?: ArkEnvConfig,
+): distill.Out<at.infer<T, $>>;
+export function arkenv<T extends EnvSchemaWithType>(
+	def: T,
+	config?: ArkEnvConfig,
+): InferType<T>;
+export function arkenv<const T extends SchemaShape>(
+	def: EnvSchema<T> | EnvSchemaWithType,
+	config: ArkEnvConfig = {},
+): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+	const { isStandard, isArkCompiled } = detectValidatorType(def);
+
+	if (isStandard && !isArkCompiled) {
+		throw new Error(
+			"ArkEnv: arkenv() expects a mapping of { KEY: validator }, not a top-level Standard Schema (e.g. z.object()). " +
+				"Standard Schema validators are supported inside the mapping, or you can use ArkType's type() for top-level schemas.",
+		);
+	}
+
+	return defineEnv(def as any, config) as any;
+}
+
+/**
+ * @deprecated Use `arkenv` instead.
+ */
+export const createEnv = arkenv;
