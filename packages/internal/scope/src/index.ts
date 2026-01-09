@@ -13,7 +13,11 @@ let _$: any;
  *
  * This is a lazy-loaded proxy to allow ArkType to be an optional dependency.
  */
-export const $: ReturnType<typeof ArkScope> = new Proxy(
+import type { ArkEnvScope } from "./scope-def";
+
+export type { ArkEnvScope } from "./scope-def";
+
+export const $: ArkEnvScope = new Proxy(
 	{},
 	{
 		get(_, prop) {
@@ -44,4 +48,4 @@ export const $: ReturnType<typeof ArkScope> = new Proxy(
 	},
 ) as any;
 
-export type $ = (typeof $)["t"];
+export type $ = ArkEnvScope["t"];
