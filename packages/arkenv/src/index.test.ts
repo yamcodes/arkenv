@@ -47,29 +47,31 @@ describe("index.ts exports", () => {
 	});
 
 	it("should throw ArkEnvError with default import when validation fails", () => {
-		try {
+		expect(() =>
 			arkenvDefault({
 				MISSING_DEFAULT_VAR: "string",
-			});
-			expect.fail("Should have thrown an error");
-		} catch (error: any) {
-			expect(error).toBeInstanceOf(ArkEnvError);
-			expect(error.message).toContain("MISSING_DEFAULT_VAR");
-			expect(error.message).toContain("string");
-		}
+			}),
+		).toThrow(ArkEnvError);
+
+		expect(() =>
+			arkenvDefault({
+				MISSING_DEFAULT_VAR: "string",
+			}),
+		).toThrow(/MISSING_DEFAULT_VAR.*string/);
 	});
 
 	it("should throw ArkEnvError with named import when validation fails", () => {
-		try {
+		expect(() =>
 			arkenvNamed({
 				MISSING_NAMED_VAR: "string",
-			});
-			expect.fail("Should have thrown an error");
-		} catch (error: any) {
-			expect(error).toBeInstanceOf(ArkEnvError);
-			expect(error.message).toContain("MISSING_NAMED_VAR");
-			expect(error.message).toContain("string");
-		}
+			}),
+		).toThrow(ArkEnvError);
+
+		expect(() =>
+			arkenvNamed({
+				MISSING_NAMED_VAR: "string",
+			}),
+		).toThrow(/MISSING_NAMED_VAR.*string/);
 	});
 
 	it("should have same behavior for both default and named imports", () => {
