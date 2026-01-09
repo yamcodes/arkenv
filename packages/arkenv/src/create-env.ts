@@ -83,7 +83,10 @@ function validateArkType(
 				success: false,
 				issues: Object.entries(result.byPath).map(([path, error]) => ({
 					path: path ? path.split(".") : [],
-					message: (error as { message: string }).message,
+					message:
+						typeof error === "object" && error !== null && "message" in error
+							? String((error as any).message)
+							: "Validation failed",
 					validator: "arktype" as const,
 				})),
 			};
