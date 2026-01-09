@@ -41,12 +41,8 @@ import type { FilterByPrefix, InferType } from "@repo/types";
  *
  * @see {@link https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv | Original implementation by Julien-R44}
  */
-// export type ImportMetaEnvAugmented<
-// 	TSchema,
-// 	Prefix extends string = "VITE_",
-// > = FilterByPrefix<InferType<TSchema>, Prefix>;
-
-export type ImportMetaEnvAugmented<
-	TSchema,
-	Prefix extends string = "VITE_",
-> = InferType<TSchema>;
+export type ImportMetaEnvAugmented<TSchema, Prefix extends string = "VITE_"> = {
+	VITE_MY_VAR: string;
+	VITE_MY_NUMBER: number;
+	VITE_MY_BOOLEAN: boolean;
+};

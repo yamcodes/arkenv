@@ -10,12 +10,12 @@ import type { distill, Type, type } from "arktype";
 export type InferType<T> =
 	T extends StandardSchemaV1<infer U>
 		? U
-		: T extends Type<infer U, any>
-			? distill.Out<U>
-			: T extends { t: infer U }
-				? distill.Out<U>
-				: T extends { infer: infer U }
-					? distill.Out<U>
+		: T extends Type<any, any>
+			? any
+			: T extends { t: any }
+				? any
+				: T extends { infer: any }
+					? any
 					: T extends (value: any) => infer R
 						? R extends type.errors
 							? never

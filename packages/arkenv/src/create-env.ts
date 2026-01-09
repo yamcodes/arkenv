@@ -2,9 +2,8 @@ import { createRequire } from "node:module";
 import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
-import type { type as at, distill } from "arktype";
+import type { type as at } from "arktype";
 import { ArkEnvError, type EnvIssue } from "./errors";
-import type { CoerceOptions } from "./utils";
 import { coerce } from "./utils/coerce";
 
 const require = createRequire(import.meta.url);
@@ -37,7 +36,7 @@ export type ArkEnvConfig = {
 	 * - `json`: Strings are parsed as JSON.
 	 * @default "comma"
 	 */
-	arrayFormat?: CoerceOptions["arrayFormat"];
+	arrayFormat?: "comma" | "json";
 };
 
 function detectValidatorType(def: unknown) {

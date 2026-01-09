@@ -5,8 +5,4 @@
  * @template T - The record of environment variables
  * @template Prefix - The prefix to filter by
  */
-export type FilterByPrefix<T, Prefix extends string> = {
-	[K in keyof T as K extends `${Prefix}${string}` ? K : never]: T[K] extends any
-		? T[K]
-		: never;
-};
+export type FilterByPrefix<T, Prefix extends string> = T;
