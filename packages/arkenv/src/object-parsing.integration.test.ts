@@ -221,23 +221,23 @@ describe("object parsing integration", () => {
 		});
 	});
 
-	it("should parse an object when using a compiled ArkType schema", () => {
+	it("should work with type() compiled schemas", () => {
 		const schema = type({
-			MY_OBJ: type({
-				foo: "string",
-				bar: "number",
-			}),
+			CONFIG: {
+				host: "string",
+				port: "number",
+			},
 		});
 
 		const env = createEnv(schema, {
 			env: {
-				MY_OBJ: '{"foo": "baz", "bar": 123}',
+				CONFIG: '{"host": "localhost", "port": "3000"}',
 			},
 		});
 
-		expect(env.MY_OBJ).toEqual({
-			foo: "baz",
-			bar: 123,
+		expect(env.CONFIG).toEqual({
+			host: "localhost",
+			port: 3000,
 		});
 	});
 

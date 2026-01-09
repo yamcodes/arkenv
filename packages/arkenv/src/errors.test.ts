@@ -9,6 +9,28 @@ type ArkErrorsForTest = {
 	byPath: Record<string, Pick<ArkErrors["byPath"][string], "message">>;
 };
 
+/**
+ * Format the errors returned by ArkType for testing purposes
+ * @param errors - The errors returned by ArkType
+ * @returns A string of the formatted errors
+ */
+const formatErrorsForTest = (errors: ArkErrorsForTest) => {
+	return formatErrors(errors as ArkErrors);
+};
+
+/**
+ * Create an ArkEnvError for testing purposes
+ * @param errors - The errors returned by ArkType
+ * @param message - The message to display in the error
+ * @returns An instance of ArkEnvError
+ */
+const createArkEnvErrorForTest = (
+	errors: ArkErrorsForTest,
+	message?: string,
+) => {
+	return new ArkEnvError(errors as ArkErrors, message);
+};
+
 describe("formatErrors", () => {
 	it("should format errors with values correctly", () => {
 		const errors: ArkErrorsForTest = {
@@ -18,7 +40,7 @@ describe("formatErrors", () => {
 			},
 		};
 
-		const result = formatErrors(errors);
+		const result = formatErrorsForTest(errors);
 		expect(result).toContain("PORT");
 		expect(result).toContain("must be a number");
 		expect(result).toContain('"abc"');
@@ -33,7 +55,7 @@ describe("formatErrors", () => {
 				DATABASE_URL: { message: "DATABASE_URL is required" },
 			},
 		};
-		const result = formatErrors(errors);
+		const result = formatErrorsForTest(errors);
 		expect(result).toContain("DATABASE_URL");
 		expect(result).toContain("is required");
 	});
@@ -45,9 +67,10 @@ describe("formatErrors", () => {
 			},
 		};
 
-		const result = formatErrors(errors);
+		const result = formatErrorsForTest(errors);
 		expect(result).toContain("ENV_VAR");
 		expect(result).toContain("must be defined");
+		expect(result.match(/ENV_VAR/g)?.length).toBe(1); // Should not duplicate the path
 	});
 });
 
@@ -59,7 +82,7 @@ describe("ArkEnvError", () => {
 			},
 		};
 
-		const error = new ArkEnvError(errors);
+		const error = createArkEnvErrorForTest(errors);
 		expect(error.message).toContain(
 			"Errors found while validating environment variables",
 		);
@@ -76,7 +99,7 @@ describe("ArkEnvError", () => {
 		};
 
 		const customMessage = "Custom validation error";
-		const error = new ArkEnvError(errors, customMessage);
+		const error = createArkEnvErrorForTest(errors, customMessage);
 		expect(error.message).toContain(customMessage);
 		expect(error.message).toContain("PORT");
 		expect(error.message).toContain('"abc"');

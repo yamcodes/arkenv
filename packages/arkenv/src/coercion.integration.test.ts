@@ -65,14 +65,12 @@ describe("coercion integration", () => {
 		expect(typeof env.PORT).toBe("number");
 	});
 
-	it("should coerce number subtypes in mapping", () => {
-		const env = createEnv(
-			{
-				PORT: "number.port",
-				COUNT: "number.integer",
-			},
-			{ env: { PORT: "8080", COUNT: "123" } },
-		);
+	it("should coerce compiled number subtypes", () => {
+		const schema = type({
+			PORT: "number.port",
+			COUNT: "number.integer",
+		});
+		const env = createEnv(schema, { env: { PORT: "8080", COUNT: "123" } });
 		expect(env.PORT).toBe(8080);
 		expect(env.COUNT).toBe(123);
 	});
