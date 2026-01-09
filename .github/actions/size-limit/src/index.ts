@@ -80,16 +80,78 @@ calculateDiffs(filteredResults, baselineSizes, config.isReleasePR);
 // Create the table
 const result = createTable(filteredResults);
 console.log(result);
-if (filteredResults.length === 0 && results.length > 0) {
-	console.log("⚠️ Could not parse size-limit output");
+
+// Determine if we should fail and what errors to report
+// The hasErrors flag from size-limit tells us if the command failed or limits were exceeded.
+// But we need to decide:
+// 1. Should we fail this workflow?
+// 2. What error state should we report to GitHub (for PR comments, etc.)?
+//
+// Logic:
+// - If we have filtered results AND size-limit reported errors, those errors are relevant (fail + report)
+// - If results were filtered out, errors aren't relevant to this PR (pass + don't report)
+// - If no results AND size-limit failed, this is a real failure (fail + report)
+// - If no results AND size-limit succeeded, this is just a warning (pass + don't report)
+let shouldFail = false;
+let hasRelevantErrors = false;
+
+if (filteredResults.length === 0) {
+	if (results.length > 0) {
+		// If we have an execution error (hasErrors) but ALL results passed,
+		// it means the error wasn't due to a limit breach (which we might filter out),
+		// but due to a system/config error. We should report this.
+		const allResultsPassed = results.every((r) => r.status !== "❌");
+		if (hasErrors && allResultsPassed) {
+			console.log(
+				"⚠️ Size limit failed with exit code 1 but no package failed its limit. This indicates a configuration or execution error.",
+			);
+			hasRelevantErrors = true;
+			shouldFail = true;
+		} else {
+			// Results were filtered out - this means size-limit ran on packages,
+			// but those packages were not in the changed packages set.
+			// This is OK - don't fail the check, and don't report errors since they're not relevant.
+			console.log(
+				"ℹ️ Size checks ran but no results matched changed packages. This is expected when unchanged packages have size-limit configs.",
+			);
+			hasRelevantErrors = false;
+			shouldFail = false;
+		}
+	} else if (hasErrors) {
+		// No results at all AND size-limit failed - this is a real failure
+		console.log("⚠️ Could not parse size-limit output or size-limit failed");
+		hasRelevantErrors = true;
+		shouldFail = true;
+	} else {
+		// No results but size-limit succeeded - this could mean no packages have size-limit configs
+		// This is OK - just a warning
+		console.log(
+			"ℹ️ No size-limit results found. Packages may not have size-limit configured.",
+		);
+		hasRelevantErrors = false;
+		shouldFail = false;
+	}
+} else {
+	// We have filtered results - check if any failed
+	// Errors are relevant since they apply to the filtered results we're checking
+	hasRelevantErrors = filteredResults.some((r) => r.status === "❌");
+
+	// Also detect config errors: hasErrors is true but no limits breached
+	const allResultsPassed = results.every((r) => r.status !== "❌");
+	if (!hasRelevantErrors && hasErrors && allResultsPassed) {
+		console.log("⚠️ Size limit had a configuration or execution error.");
+		hasRelevantErrors = true;
+	}
+
+	shouldFail = hasRelevantErrors;
 }
 
 // Set GitHub outputs
 const packagesChanged = changedPackages === null || changedPackages.size > 0;
-await setGitHubOutputs(result, hasErrors, packagesChanged);
+await setGitHubOutputs(result, hasRelevantErrors, packagesChanged);
 
 // Print summary
-if (hasErrors) {
+if (shouldFail) {
 	console.log("❌ Size limit checks failed");
 	process.exit(1);
 } else {
