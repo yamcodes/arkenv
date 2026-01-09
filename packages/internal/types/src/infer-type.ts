@@ -1,6 +1,6 @@
 import type { $ } from "@repo/scope";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
-import type { distill, type } from "arktype";
+import type { distill, Type, type } from "arktype";
 
 /**
  * Extract the inferred type from an ArkType type definition or a Standard Schema validator.
@@ -10,14 +10,18 @@ import type { distill, type } from "arktype";
 export type InferType<T> =
 	T extends StandardSchemaV1<infer U>
 		? U
-		: T extends type.Any<infer U, any>
+		: T extends Type<infer U, any>
 			? distill.Out<U>
-			: T extends (value: any) => infer R
-				? R extends type.errors
-					? never
-					: distill.Out<R>
-				: T extends string
-					? distill.Out<type.infer<T, $>>
-					: T extends object
-						? { [K in keyof T]: InferType<T[K]> }
-						: T;
+			: T extends { t: infer U }
+				? distill.Out<U>
+				: T extends { infer: infer U }
+					? distill.Out<U>
+					: T extends (value: any) => infer R
+						? R extends type.errors
+							? never
+							: distill.Out<R>
+						: T extends string
+							? distill.Out<type.infer<T, $>>
+							: T extends object
+								? { [K in keyof T]: InferType<T[K]> }
+								: T;

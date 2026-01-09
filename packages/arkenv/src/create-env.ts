@@ -149,7 +149,7 @@ function validateArkType(
  * @throws {ArkEnvError} If validation fails.
  */
 export function createEnv<const T extends SchemaShape>(
-	def: at.validate<T, $>,
+	def: T,
 	config?: ArkEnvConfig,
 ): InferType<T>;
 export function createEnv<const T extends EnvSchemaWithType>(
