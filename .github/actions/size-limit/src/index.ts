@@ -97,14 +97,26 @@ let hasRelevantErrors = false;
 
 if (filteredResults.length === 0) {
 	if (results.length > 0) {
-		// Results were filtered out - this means size-limit ran on packages,
-		// but those packages were not in the changed packages set.
-		// This is OK - don't fail the check, and don't report errors since they're not relevant.
-		console.log(
-			"ℹ️ Size checks ran but no results matched changed packages. This is expected when unchanged packages have size-limit configs.",
-		);
-		hasRelevantErrors = false;
-		shouldFail = false;
+		// If we have an execution error (hasErrors) but ALL results passed,
+		// it means the error wasn't due to a limit breach (which we might filter out),
+		// but due to a system/config error. We should report this.
+		const allResultsPassed = results.every((r) => r.status !== "❌");
+		if (hasErrors && allResultsPassed) {
+			console.log(
+				"⚠️ Size limit failed with exit code 1 but no package failed its limit. This indicates a configuration or execution error.",
+			);
+			hasRelevantErrors = true;
+			shouldFail = true;
+		} else {
+			// Results were filtered out - this means size-limit ran on packages,
+			// but those packages were not in the changed packages set.
+			// This is OK - don't fail the check, and don't report errors since they're not relevant.
+			console.log(
+				"ℹ️ Size checks ran but no results matched changed packages. This is expected when unchanged packages have size-limit configs.",
+			);
+			hasRelevantErrors = false;
+			shouldFail = false;
+		}
 	} else if (hasErrors) {
 		// No results at all AND size-limit failed - this is a real failure
 		console.log("⚠️ Could not parse size-limit output or size-limit failed");
