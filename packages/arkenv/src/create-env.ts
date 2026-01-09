@@ -40,10 +40,10 @@ export type ArkEnvConfig = {
 };
 
 function detectValidatorType(def: unknown) {
-	const isStandard = !!(def as any)?.["~standard"];
+	const isStandard = !!(def as StandardSchemaV1)?.["~standard"];
 	const isArkCompiled =
-		(typeof def === "function" && "assert" in (def as any)) ||
-		(typeof def === "object" && def !== null && "invoke" in (def as any));
+		(typeof def === "function" && "assert" in (def as object)) ||
+		(typeof def === "object" && def !== null && "invoke" in (def as object));
 	return { isStandard, isArkCompiled };
 }
 
@@ -155,7 +155,7 @@ export function createEnv<const T extends EnvSchemaWithType>(
 	def: T,
 	config?: ArkEnvConfig,
 ): InferType<T>;
-export function createEnv(def: any, config: ArkEnvConfig = {}): any {
+export function createEnv(def: unknown, config: ArkEnvConfig = {}): any {
 	const { env = process.env } = config;
 
 	const { isStandard, isArkCompiled } = detectValidatorType(def);
