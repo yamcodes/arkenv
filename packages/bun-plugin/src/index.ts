@@ -18,7 +18,7 @@ export function processEnvSchema<T extends SchemaShape>(
 	// "Type instantiation is excessively deep and possibly infinite" errors.
 	// Ideally, we should find a way to avoid these assertions while maintaining type safety.
 
-	const env = createEnv<T>(options, { env: process.env });
+	const env = createEnv(options as any, { env: process.env });
 
 	// Get Bun's prefix for client-exposed environment variables
 	const prefix = "BUN_PUBLIC_";
