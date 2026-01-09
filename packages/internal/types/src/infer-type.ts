@@ -23,5 +23,5 @@ export type InferType<T> =
 						: T extends string
 							? distill.Out<type.infer<T, $>>
 							: T extends object
-								? { [K in keyof T]: InferType<T[K]> }
+								? distill.Out<type.infer<T, $>>
 								: T;

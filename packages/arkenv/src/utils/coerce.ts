@@ -312,7 +312,7 @@ export function coerce(schema: any, options?: CoerceOptions): any {
 	let at: any;
 	try {
 		at = require("arktype");
-	} catch (e: any) {
+	} catch {
 		throw new Error(
 			"coerce: ArkType is required for coercion. Please ensure 'arktype' is installed.",
 		);
