@@ -4,14 +4,13 @@ import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
-// Mock the createEnv module to capture calls
-// Mock the createEnv module with a spy that calls the real implementation by default
-vi.mock("createEnv", async (importActual) => {
-	const actual = await importActual<typeof import("createEnv")>();
+// Mock the arkenv module to capture calls
+// Mock the arkenv module with a spy that calls the real implementation by default
+vi.mock("arkenv", async (importActual) => {
+	const actual = await importActual<typeof import("arkenv")>();
 	return {
 		...actual,
 		default: vi.fn(actual.default),
-		createEnv: vi.fn(actual.createEnv),
 		createEnv: vi.fn(actual.createEnv),
 	};
 });
@@ -30,9 +29,7 @@ import createEnvPlugin from "./index.js";
 const fixturesDir = join(__dirname, "__fixtures__");
 
 // Get the mocked functions
-const { createEnv: mockCreateEnv, createEnv: mockCreateEnv } = vi.mocked(
-	await import("createEnv"),
-);
+const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
 
 const mockLoadEnv = vi.mocked(vite.loadEnv);
 
@@ -48,14 +45,12 @@ for (const name of readdirSync(fixturesDir).filter(
 			// Clear environment variables and mock cleanup
 			vi.unstubAllEnvs();
 			mockCreateEnv.mockClear();
-			mockCreateEnv.mockClear();
 			mockLoadEnv.mockClear();
 		});
 
 		afterEach(() => {
 			// Complete cleanup: restore environment and reset mocks
 			vi.unstubAllEnvs();
-			mockCreateEnv.mockReset();
 			mockCreateEnv.mockReset();
 			mockLoadEnv.mockReset();
 		});
@@ -79,7 +74,7 @@ for (const name of readdirSync(fixturesDir).filter(
 							formats: ["es"],
 						},
 						rollupOptions: {
-							external: ["createEnv"],
+							external: ["arkenv"],
 						},
 					},
 				}),
@@ -98,13 +93,11 @@ describe("Plugin Unit Tests", () => {
 	beforeEach(() => {
 		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
-		mockCreateEnv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
-		mockCreateEnv.mockReset();
 		mockCreateEnv.mockReset();
 		mockLoadEnv.mockReset();
 	});
@@ -116,7 +109,7 @@ describe("Plugin Unit Tests", () => {
 	it("should return a Vite plugin object", () => {
 		const pluginInstance = createEnvPlugin({ VITE_TEST: "string" });
 
-		expect(pluginInstance).toHaveProperty("name", "@createEnv/vite-plugin");
+		expect(pluginInstance).toHaveProperty("name", "@arkenv/vite-plugin");
 		expect(pluginInstance).toHaveProperty("config");
 	});
 
@@ -633,7 +626,7 @@ describe("Plugin Unit Tests", () => {
 		};
 
 		// Note: We use the real implementation for this test
-		const actual = await vi.importActual<any>("createEnv");
+		const actual = await vi.importActual<any>("arkenv");
 		mockCreateEnv.mockImplementation(actual.createEnv);
 
 		const pluginInstance = createEnvPlugin(schema);
@@ -687,22 +680,20 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		logLevel: "error" as const,
 		build: {
 			lib: { entry: "index.ts", formats: ["es" as const] },
-			rollupOptions: { external: ["createEnv"] },
+			rollupOptions: { external: ["arkenv"] },
 		},
 	});
 
 	beforeEach(() => {
 		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
-		mockCreateEnv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
-		mockCreateEnv.mockClear();
-		mockCreateEnv.mockClear();
-		mockLoadEnv.mockClear();
+		mockCreateEnv.mockReset();
+		mockLoadEnv.mockReset();
 	});
 
 	it("should load environment variables from custom envDir", async () => {
