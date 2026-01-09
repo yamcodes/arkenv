@@ -11,8 +11,8 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"@arkenv/bun-plugin": "^0.0.6",
-		"arkenv": "^0.8.1",
+		"@arkenv/bun-plugin": "^0.0.8",
+		"arkenv": "^0.8.3",
 		"arktype": "^2.1.29",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3"
