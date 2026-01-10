@@ -39,19 +39,24 @@ runs:
       run: |
         bun ${{ github.action_path }}/src/index.ts
     - name: Comment PR
-      if: github.event_name == 'pull_request' && steps.size-check.outputs.packages_changed == 'true'
+      if: github.event_name == 'pull_request' && (success() || failure()) && steps.size-check.outputs.packages_changed == 'true'
       uses: actions/github-script@v8
       with:
         github-token: ${{ inputs.github_token }}
         script: |
           const output = process.env.SIZE_LIMIT_RESULT ?? '';
           const hasErrors = (process.env.SIZE_LIMIT_HAS_ERRORS ?? 'false') === 'true';
-          const comment = `## 📦 Bundle Size Report
+          const marker = '<!-- arkenv-size-limit-report -->';
           
-          ${output}
-          
-          ${hasErrors ? '❌ **Size limits exceeded!** Please review the changes above.' : '✅ **All size limits passed!**'}
-          `;
+          const comment = [
+            '## 📦 Bundle Size Report',
+            '',
+            output,
+            '',
+            hasErrors ? '❌ **Size limits exceeded!** Please review the changes above.' : '✅ **All size limits passed!**',
+            '',
+            marker
+          ].join('\n');
           
           try {
             // Find existing comment
@@ -62,9 +67,7 @@ runs:
             });
             
             const botComment = comments.find(comment => 
-              comment.user?.type === 'Bot' &&
-              comment.user?.login === 'arkenv-bot[bot]' &&
-              comment.body?.includes('Bundle Size Report')
+              comment.body?.includes(marker)
             );
             
             if (botComment) {
