@@ -1,33 +1,70 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { glob } from "glob";
 import type { SizeLimitResult, SizeLimitState } from "../types.ts";
+import { formatBytes } from "./size.ts";
+
+/**
+ * Reads and parses .size-limit.json files from all packages.
+ */
+export async function parseJsonFiles(): Promise<SizeLimitResult[]> {
+	const results: SizeLimitResult[] = [];
+	const files = glob.sync("packages/**/.size-limit.json");
+
+	for (const file of files) {
+		try {
+			const content = fs.readFileSync(file, "utf-8");
+			const data = JSON.parse(content);
+
+			const dir = path.dirname(file);
+			let pkgName = path.basename(dir);
+			try {
+				const pkgJsonPath = path.join(dir, "package.json");
+				const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
+				pkgName = pkgJson.name || pkgName;
+			} catch {
+				// Fallback to folder name
+			}
+
+			if (Array.isArray(data)) {
+				for (const item of data) {
+					results.push({
+						package: pkgName,
+						file: item.name || "index.js",
+						size: formatBytes(item.size),
+						limit: formatBytes(item.limit),
+						status: item.passed ? "✅" : "❌",
+					});
+				}
+			}
+		} catch (error) {
+			process.stdout.write(`DEBUG: Failed to parse ${file}: ${error}\n`);
+		}
+	}
+
+	return results;
+}
 
 /**
  * Normalizes package names from Turbo/GHA output.
  */
 export const normalizePackageName = (name: string): string => {
-	// Remove GHA timestamps if they exist
 	let normalized = name.replace(
 		/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z\s*/,
 		"",
 	);
-
-	// Remove Turbo status characters from the start
 	normalized = normalized.replace(/^[○●•✔✖ℹ⚠»>\s]+/, "");
 
-	// Remove Turbo prefixes like "packages/arkenv (arkenv)" -> "arkenv"
 	const parenMatch = normalized.match(/\(([^)]+)\)$/);
 	if (parenMatch) {
 		normalized = parenMatch[1] ?? normalized;
 	}
 
-	// Handle "package@version task"
 	const taskMatch = normalized.match(/^([^@\s]+)@\d+\.\d+\.\d+\s+([^:]+)/);
 	if (taskMatch) {
 		normalized = taskMatch[1] ?? normalized;
 	}
 
-	// Handle "package:size" or "package#size"
 	if (normalized.includes(":") || normalized.includes("#")) {
 		const parts = normalized.split(/[:#]/);
 		normalized = (parts[0] ?? normalized).trim();
@@ -37,7 +74,7 @@ export const normalizePackageName = (name: string): string => {
 };
 
 /**
- * Gets all package names in the monorepo to help with attribution.
+ * Gets all package names in the monorepo.
  */
 export function getPackageNames(): string[] {
 	const results: string[] = [];
@@ -52,34 +89,17 @@ export function getPackageNames(): string[] {
 				if (fs.existsSync(pkgPath)) {
 					const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
 					if (pkg.name) results.push(pkg.name);
-				} else {
-					// Handle scoped packages in subdirectories
-					const subDir = path.join(packagesDir, dirent.name);
-					const subDirents = fs.readdirSync(subDir, { withFileTypes: true });
-					for (const subDirent of subDirents) {
-						if (subDirent.isDirectory()) {
-							const subPkgPath = path.join(
-								subDir,
-								subDirent.name,
-								"package.json",
-							);
-							if (fs.existsSync(subPkgPath)) {
-								const subPkg = JSON.parse(fs.readFileSync(subPkgPath, "utf-8"));
-								if (subPkg.name) results.push(subPkg.name);
-							}
-						}
-					}
 				}
 			}
 		}
-	} catch (error) {
+	} catch {
 		// Silent fail
 	}
 	return results;
 }
 
 /**
- * Parses the raw output of size-limit.
+ * Parses raw output string for fallback support.
  */
 export function parseSizeLimitOutput(
 	output: string,
@@ -171,7 +191,6 @@ export function parseSizeLimitOutput(
 		const strippedLine = lineNoTimestamp.replace(/^[\s|>○●•✔✖ℹ⚠]+/, "").trim();
 		if (!strippedLine) continue;
 
-		// 1. Group Detection (Context is "sticky")
 		if (strippedLine.includes("##[group]")) {
 			const groupContent = strippedLine.split("##[group]")[1]?.trim();
 			if (groupContent) {
@@ -188,7 +207,6 @@ export function parseSizeLimitOutput(
 			}
 		}
 
-		// 2. Header Detection
 		const headerMatch = strippedLine.match(
 			/([@a-z0-9/._-]+)\s*[:#]\s*size(?:\s*[:#]\s*(.*))?/i,
 		);
@@ -209,7 +227,6 @@ export function parseSizeLimitOutput(
 			continue;
 		}
 
-		// 3. Attribution fallback for replayed logs
 		const lineAttributed = (() => {
 			for (const pkg of relevantPackages) {
 				const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
@@ -232,7 +249,6 @@ export function parseSizeLimitOutput(
 		})();
 		if (lineAttributed) continue;
 
-		// 4. Final fallback for guessing context
 		if (!lastPackage && strippedLine.match(/size:|size\s*limit/i)) {
 			for (const pkg of relevantPackages) {
 				const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
@@ -246,7 +262,6 @@ export function parseSizeLimitOutput(
 			}
 		}
 
-		// 5. Apply context
 		if (lastPackage) {
 			parseMessageLine(lastPackage, strippedLine);
 		}

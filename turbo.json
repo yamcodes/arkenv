@@ -63,6 +63,10 @@
 			"cache": false,
 			"persistent": true
 		},
-		"test:e2e:update": {}
+		"test:e2e:update": {},
+		"size": {
+			"dependsOn": ["^build"],
+			"outputs": [".size-limit.json"]
+		}
 	}
 }
