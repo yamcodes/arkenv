@@ -73,8 +73,9 @@ export const parseSizeLimitOutput = (
 		}
 
 		// Match table format: "package  size  limit" (space-separated)
+		// Updated to handle scopes and dots in names
 		const tableMatch = message.match(
-			/^([@a-z0-9][@a-z0-9/_-]*)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (tableMatch?.[1] && tableMatch?.[2] && tableMatch?.[3]) {
 			const matchedPkg = normalizePackageName(tableMatch[1]);
@@ -93,13 +94,17 @@ export const parseSizeLimitOutput = (
 			state.limit = directMatch[3];
 		}
 
-		// Match format: "X kB of Y kB" or "X kB / Y kB"
-		const sizeLimitMatch = message.match(
-			/([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+(?:of|\/)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
-		);
-		if (sizeLimitMatch?.[1] && sizeLimitMatch?.[2]) {
-			state.size = sizeLimitMatch[1];
-			state.limit = sizeLimitMatch[2];
+		// Fallback: match just package name followed by size/limit if found together
+		if (!state.size || !state.limit) {
+			const fallbackMatch = message.match(
+				/^([@a-z0-9/._-]+)\s+.*?\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
+			);
+			if (fallbackMatch?.[1] && fallbackMatch?.[2] && fallbackMatch?.[3]) {
+				const pkg = normalizePackageName(fallbackMatch[1]);
+				const pkgState = getOrCreateState(pkg);
+				pkgState.size = fallbackMatch[2];
+				pkgState.limit = fallbackMatch[3];
+			}
 		}
 
 		if (
@@ -184,6 +189,13 @@ export const parseSizeLimitOutput = (
 			if (pkgName) {
 				parseMessageLine(pkgName, strippedLine);
 			}
+		}
+
+		// Debug: log if we see something that LOOKS like it should be parsed but isn't
+		if (strippedLine.includes("Size:") || strippedLine.includes("Limit:")) {
+			console.log(
+				`DEBUG: Found size-related line: "${strippedLine}" (lastPackage: ${lastPackage})`,
+			);
 		}
 	}
 
