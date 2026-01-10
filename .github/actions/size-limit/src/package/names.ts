@@ -23,9 +23,7 @@ export const getFilenameFromConfig = (packageName: string): string | null => {
 						packagePath = `packages/${folder}`;
 						break;
 					}
-				} catch {
-					continue;
-				}
+				} catch {}
 			}
 		}
 
