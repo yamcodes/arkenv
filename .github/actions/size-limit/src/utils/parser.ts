@@ -30,14 +30,18 @@ export async function parseJsonFiles(): Promise<SizeLimitResult[]> {
 
 			if (Array.isArray(data)) {
 				for (const item of data) {
+					// size-limit --json uses 'size' and 'sizeLimit' as numbers
+					const rawSize = item.size;
+					const rawLimit = item.sizeLimit ?? item.limit;
+
 					const size =
-						typeof item.size === "number"
-							? formatBytes(item.size)
-							: item.size || "0 B";
+						typeof rawSize === "number"
+							? formatBytes(rawSize)
+							: rawSize || "0 B";
 					const limit =
-						typeof item.limit === "number"
-							? formatBytes(item.limit)
-							: item.limit || "—";
+						typeof rawLimit === "number"
+							? formatBytes(rawLimit)
+							: rawLimit || "—";
 
 					results.push({
 						package: pkgName,

@@ -42,6 +42,7 @@ pnpm-debug.log*
 coverage/
 
 # size-limit
+.size-limit.json
 esbuild-why*.html
 
 # arktype clone
