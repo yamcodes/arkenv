@@ -14,10 +14,10 @@ export const createTable = (results: SizeLimitResult[]): string => {
 	const tableRows = results
 		.map(
 			(r) =>
-				`| \`${r.package}\` | ${r.size} | ${r.limit} | ${r.diff ?? "—"} | ${r.status} |`,
+				`| \`${r.package}\` | \`${r.size}\` | \`${r.limit}\` | \`${r.diff ?? "—"}\` | ${r.status} |`,
 		)
 		.join("\n");
-	return `| Package | Size | Limit | Diff | Status |\n|:---|---:|---:|---:|:---:|\n${tableRows}`;
+	return `| Package | Size | Limit | Diff | Status |\n|:--- | :---:| :---:| :---:| :---:|\n${tableRows}`;
 };
 
 // Set GitHub outputs

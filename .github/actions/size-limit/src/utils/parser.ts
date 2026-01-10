@@ -1,79 +1,59 @@
-import { regex } from "arkregex";
-import { getFilenameFromConfig } from "../package/names.ts";
-import type { SizeLimitResult } from "../types.ts";
+import { getFilenameFromConfig, getPackageNames } from "../package/names.ts";
+import type { SizeLimitResult, SizeLimitState } from "../types.ts";
 
-// Function to parse size-limit output
+/**
+ * Normalizes a package name for comparison.
+ */
+const normalizePackageName = (name: string): string => {
+	let normalized = name.trim().replace(/^[./]+/, "");
+
+	// Remove Turbo parenthetical paths if present: "packages/arkenv (arkenv)" -> "arkenv"
+	const parenMatch = normalized.match(/\(([^)]+)\)$/);
+	if (parenMatch) {
+		normalized = parenMatch[1] as string;
+	}
+
+	// If it's a path like "packages/arkenv", get the folder name
+	// (unless it's a scoped package which starts with @)
+	if (normalized.includes("/") && !normalized.startsWith("@")) {
+		const parts = normalized.split("/");
+		normalized = parts[parts.length - 1] as string;
+	}
+
+	return normalized;
+};
+
 export const parseSizeLimitOutput = (
 	sizeOutput: string,
 	filter: string,
 ): SizeLimitResult[] => {
+	const relevantPackages = getPackageNames(filter);
+	console.log(
+		`🔍 Relevant packages for filter "${filter}": ${relevantPackages.join(", ")}`,
+	);
+
 	const results: SizeLimitResult[] = [];
 	const lines = sizeOutput.split("\n");
 
-	const packageStates = new Map<
-		string,
-		{
-			file: string;
-			size: string;
-			limit: string;
-			status: "✅" | "❌";
-		}
-	>();
+	// Map to track the current state of each package's parsing
+	const packageStates = new Map<string, SizeLimitState>();
 
-	const getOrCreateState = (pkgName: string) => {
-		let state = packageStates.get(pkgName);
-		if (!state) {
-			state = {
-				file: "",
-				size: "",
-				limit: "",
+	const getOrCreateState = (pkgName: string): SizeLimitState => {
+		if (!packageStates.has(pkgName)) {
+			packageStates.set(pkgName, {
+				package: pkgName,
 				status: "✅",
-			};
-			packageStates.set(pkgName, state);
+			});
 		}
-		return state;
+		return packageStates.get(pkgName)!;
 	};
 
-	const stripAnsiRegex = regex("\x1B\\[[0-?]*[ -/]*[@-~]", "g");
-	const controlCharsRegex = regex("[\u0000-\u0008\u000B-\u001F\u007F]", "g");
-
-	const stripAnsi = (text: string) => text.replace(stripAnsiRegex, "");
-	const sanitizeLine = (text: string) =>
-		stripAnsi(text).replace(controlCharsRegex, "");
+	let lastPackage: string | null = null;
 
 	const parseMessageLine = (pkgName: string, message: string) => {
-		if (!message) {
-			return;
-		}
-
 		const state = getOrCreateState(pkgName);
 
-		const fileMatch = message.match(
-			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts))/i,
-		);
-		if (fileMatch?.[1]) {
-			state.file = fileMatch[1];
-		}
-
-		// Match "Size limit: X kB" or "Limit: X kB"
-		// also support "size-limit" appearing as the key
-		const limitMatch = message.match(
-			/(?:Size(?:\s+|-)?limit|Limit)\s*:\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
-		);
-		if (limitMatch?.[1]) {
-			state.limit = limitMatch[1];
-		}
-
-		// Match "Size: X kB" or just "X kB" when in context
-		const sizeMatch = message.match(
-			/(?:Size|Size\s+is)\s*:\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
-		);
-		if (sizeMatch?.[1]) {
-			state.size = sizeMatch[1];
-		}
-
 		// Match table format: "package  size  limit" (space-separated)
-		// Updated to handle scopes and dots in names
 		const tableMatch = message.match(
 			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
@@ -84,7 +64,7 @@ export const parseSizeLimitOutput = (
 			matchedState.limit = tableMatch[3];
 		}
 
-		// Match direct size-limit output format: "dist/index.js: 1.2 kB (limit: 2 kB)"
+		// Match direct output format: "dist/index.js: 1.2 kB (limit: 2 kB)"
 		const directMatch = message.match(
 			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
 		);
@@ -94,7 +74,7 @@ export const parseSizeLimitOutput = (
 			state.limit = directMatch[3];
 		}
 
-		// Fallback: match just package name followed by size/limit if found together
+		// Fallback for interleaved logs
 		if (!state.size || !state.limit) {
 			const fallbackMatch = message.match(
 				/^([@a-z0-9/._-]+)\s+.*?\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
@@ -118,17 +98,11 @@ export const parseSizeLimitOutput = (
 		}
 	};
 
-	let lastPackage = "";
-
 	for (const line of lines) {
-		const strippedLine = sanitizeLine(line);
+		const strippedLine = line.replace(/^\s*[|>]\s*/, "").trim();
+		if (!strippedLine) continue;
 
-		// Skip empty lines
-		if (!strippedLine.trim()) {
-			continue;
-		}
-
-		// Match Turbo colon format: "package:size:message" or "path (package): size: message"
+		// Match Turbo colon format: "package:size:message"
 		const simpleColonMatch = strippedLine.match(
 			/^([@a-z0-9/._-]+)\s*:\s*size\s*:\s*(.*)$/i,
 		);
@@ -154,44 +128,12 @@ export const parseSizeLimitOutput = (
 			continue;
 		}
 
-		// If we detect a new package in script output, set as last package
-		const scriptMatch = strippedLine.match(/>\s*([@a-z0-9][@a-z0-9/_-]*)@\S+/i);
-		if (scriptMatch?.[1]) {
-			const pkgName = normalizePackageName(scriptMatch[1]);
-			getOrCreateState(pkgName);
-			lastPackage = pkgName;
-			continue;
+		// Fallback to last seen package if the line is indented or looks like size output
+		if (lastPackage) {
+			parseMessageLine(lastPackage, strippedLine);
 		}
 
-		// Handle indented lines (often related to the last mentioned package)
-		if (lastPackage && /^\s+/.test(strippedLine)) {
-			parseMessageLine(lastPackage, strippedLine.trim());
-			continue;
-		}
-
-		// Try to parse direct size-limit output without Turbo prefix
-		if (strippedLine.match(/[0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB])/i)) {
-			const pkgContextMatch = strippedLine.match(
-				/>\s*([@a-z0-9][@a-z0-9/_-]*)@/i,
-			);
-			const filterMatch = filter.match(
-				/(?:packages\/)?([@a-z0-9][@a-z0-9/_-]*)/i,
-			);
-			const pkgNameInFilter = filterMatch?.[1]
-				? normalizePackageName(filterMatch[1])
-				: "";
-
-			const pkgName =
-				pkgContextMatch && pkgContextMatch[1]
-					? normalizePackageName(pkgContextMatch[1])
-					: lastPackage || pkgNameInFilter;
-
-			if (pkgName) {
-				parseMessageLine(pkgName, strippedLine);
-			}
-		}
-
-		// Debug: log if we see something that LOOKS like it should be parsed but isn't
+		// Debug: log if we see something that looks like it should be parsed
 		if (strippedLine.includes("Size:") || strippedLine.includes("Limit:")) {
 			console.log(
 				`DEBUG: Found size-related line: "${strippedLine}" (lastPackage: ${lastPackage})`,
@@ -199,43 +141,30 @@ export const parseSizeLimitOutput = (
 		}
 	}
 
-	// Finalize results from all tracked package states
 	for (const [pkgName, state] of packageStates.entries()) {
 		if (state.size && state.limit) {
-			let filename = state.file
-				? (state.file.includes("/")
-						? state.file.split("/").pop()
-						: state.file) || null
-				: null;
+			// Only include if it matches our filter
+			if (relevantPackages.some((p) => p === pkgName || pkgName.includes(p))) {
+				let filename = state.file
+					? (state.file.includes("/")
+							? state.file.split("/").pop()
+							: state.file) || null
+					: null;
 
-			if (!filename) {
-				filename = getFilenameFromConfig(pkgName);
+				if (!filename) {
+					filename = getFilenameFromConfig(pkgName);
+				}
+
+				results.push({
+					package: pkgName,
+					file: filename || "bundle",
+					size: state.size,
+					limit: state.limit,
+					status: state.status,
+				});
 			}
-
-			results.push({
-				package: pkgName,
-				file: filename || "bundle",
-				size: state.size,
-				limit: state.limit,
-				status: state.status,
-			});
 		}
 	}
 
 	return results;
-};
-
-const normalizePackageName = (pkgName: string) => {
-	const cleaned = pkgName.replace(/^[./]+/, "");
-	if (cleaned.startsWith("@")) {
-		return cleaned;
-	}
-	if (cleaned.includes("/")) {
-		const segments = cleaned.split("/");
-		const scopeIndex = segments.findIndex((part) => part.startsWith("@"));
-		return scopeIndex >= 0
-			? segments.slice(scopeIndex).join("/")
-			: (segments.at(-1) ?? cleaned);
-	}
-	return cleaned;
 };
