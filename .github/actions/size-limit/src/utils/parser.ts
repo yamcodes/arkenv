@@ -55,8 +55,25 @@ export const parseSizeLimitOutput = (
 	const parseMessageLine = (pkgName: string, message: string) => {
 		const state = getOrCreateState(pkgName);
 
+		// Handle individual Size/Limit lines (multi-line output)
+		const cleanMessage = message.trim();
+
+		const sizeMatch = cleanMessage.match(
+			/^size:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+		);
+		if (sizeMatch?.[1]) {
+			state.size = sizeMatch[1];
+		}
+
+		const limitMatch = cleanMessage.match(
+			/size\s*limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+		);
+		if (limitMatch?.[1]) {
+			state.limit = limitMatch[1];
+		}
+
 		// Match table format: "package  size  limit" (space-separated)
-		const tableMatch = message.match(
+		const tableMatch = cleanMessage.match(
 			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (tableMatch?.[1] && tableMatch?.[2] && tableMatch?.[3]) {
@@ -67,7 +84,7 @@ export const parseSizeLimitOutput = (
 		}
 
 		// Match direct output format: "dist/index.js: 1.2 kB (limit: 2 kB)"
-		const directMatch = message.match(
+		const directMatch = cleanMessage.match(
 			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
 		);
 		if (directMatch?.[1] && directMatch?.[2] && directMatch?.[3]) {
@@ -76,25 +93,12 @@ export const parseSizeLimitOutput = (
 			state.limit = directMatch[3];
 		}
 
-		// Fallback for interleaved logs
-		if (!state.size || !state.limit) {
-			const fallbackMatch = message.match(
-				/^([@a-z0-9/._-]+)\s+.*?\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
-			);
-			if (fallbackMatch?.[1] && fallbackMatch?.[2] && fallbackMatch?.[3]) {
-				const pkg = normalizePackageName(fallbackMatch[1]);
-				const pkgState = getOrCreateState(pkg);
-				pkgState.size = fallbackMatch[2];
-				pkgState.limit = fallbackMatch[3];
-			}
-		}
-
 		if (
-			message.includes("✖") ||
-			message.includes("ERROR") ||
-			message.includes("FAIL") ||
-			message.toLowerCase().includes("exceeded") ||
-			message.includes("❌")
+			cleanMessage.includes("✖") ||
+			cleanMessage.includes("ERROR") ||
+			cleanMessage.includes("FAIL") ||
+			cleanMessage.toLowerCase().includes("exceeded") ||
+			cleanMessage.includes("❌")
 		) {
 			state.status = "❌";
 		}
@@ -102,7 +106,6 @@ export const parseSizeLimitOutput = (
 
 	for (const line of lines) {
 		// Strip ANSI escape codes first to handle colorized output
-		// uses a safer constructor to avoid lint errors with control characters
 		const ansiRegex = new RegExp(
 			"[\\u001b\\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]",
 			"g",
@@ -112,8 +115,9 @@ export const parseSizeLimitOutput = (
 		if (!strippedLine) continue;
 
 		// Match GitHub Actions grouping (Turbo uses this in CI when it detects GHA)
+		// e.g. "##[group]arkenv:size" or "##[group]@repo/types:build"
 		if (cleanLine.includes("##[group]")) {
-			const groupMatch = cleanLine.match(/##\[group\]([^:]+):/i);
+			const groupMatch = cleanLine.match(/##\[group\]([^:]+)/i);
 			if (groupMatch?.[1]) {
 				const pkgName = normalizePackageName(groupMatch[1]);
 				getOrCreateState(pkgName);
@@ -126,39 +130,28 @@ export const parseSizeLimitOutput = (
 			continue;
 		}
 
-		// Match Turbo colon format: "package:size:message"
-		const simpleColonMatch = strippedLine.match(
-			/^([@a-z0-9/._-]+)\s*:\s*size\s*:\s*(.*)$/i,
+		// Match Turbo header formats: "package:size" or "package#size"
+		const colonHeaderMatch = strippedLine.match(
+			/^([@a-z0-9/._-]+)\s*:\s*size(?:\s*:\s*(.*))?$/i,
 		);
-		const parenMatch = strippedLine.match(
-			/^[.a-z/-]+\s*\(([@a-z0-9/._-]+)\)\s*:\s*size\s*:\s*(.*)$/i,
-		);
-		const colonMatch = simpleColonMatch || parenMatch;
+		const hashHeaderMatch = strippedLine.match(/^([@a-z0-9/._-]+)\s*#\s*size/i);
+		const headerMatch = colonHeaderMatch || hashHeaderMatch;
 
-		if (colonMatch) {
-			const pkgName = normalizePackageName(colonMatch[1] as string);
-			const message = (colonMatch[2] || "").trim();
-			parseMessageLine(pkgName, message);
+		if (headerMatch) {
+			const pkgName = normalizePackageName(headerMatch[1] as string);
 			lastPackage = pkgName;
+			if (headerMatch[2]) {
+				parseMessageLine(pkgName, headerMatch[2]);
+			}
 			continue;
 		}
 
-		// Match Turbo hash format: "package#size"
-		const hashMatch = strippedLine.match(/^\s*([@a-z0-9][@a-z0-9/_-]*)#size/i);
-		if (hashMatch?.[1]) {
-			const pkgName = normalizePackageName(hashMatch[1]);
-			getOrCreateState(pkgName);
-			lastPackage = pkgName;
-			continue;
-		}
-
-		// Fallback to last seen package if the line looks like size output
+		// Fallback to last seen package
 		if (lastPackage) {
 			parseMessageLine(lastPackage, strippedLine);
 		}
 
-		// Debug: log if we see something that looks like it should be parsed
-		// Use strippedLine (without colors) for matching
+		// Debug: log if we see something size-related to verify attribution
 		if (strippedLine.includes("Size:") || strippedLine.includes("Limit:")) {
 			// biome-ignore lint/suspicious/noConsole: Debug info for CI
 			console.log(
