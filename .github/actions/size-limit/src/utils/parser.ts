@@ -39,13 +39,15 @@ export const parseSizeLimitOutput = (
 	const packageStates = new Map<string, SizeLimitState>();
 
 	const getOrCreateState = (pkgName: string): SizeLimitState => {
-		if (!packageStates.has(pkgName)) {
-			packageStates.set(pkgName, {
-				package: pkgName,
-				status: "✅",
-			});
-		}
-		return packageStates.get(pkgName)!;
+		const existing = packageStates.get(pkgName);
+		if (existing) return existing;
+
+		const newState: SizeLimitState = {
+			package: pkgName,
+			status: "✅",
+		};
+		packageStates.set(pkgName, newState);
+		return newState;
 	};
 
 	let lastPackage: string | null = null;
@@ -99,8 +101,30 @@ export const parseSizeLimitOutput = (
 	};
 
 	for (const line of lines) {
-		const strippedLine = line.replace(/^\s*[|>]\s*/, "").trim();
+		// Strip ANSI escape codes first to handle colorized output
+		// uses a safer constructor to avoid lint errors with control characters
+		const ansiRegex = new RegExp(
+			"[\\u001b\\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]",
+			"g",
+		);
+		const cleanLine = line.replace(ansiRegex, "");
+		const strippedLine = cleanLine.replace(/^\s*[|>]\s*/, "").trim();
 		if (!strippedLine) continue;
+
+		// Match GitHub Actions grouping (Turbo uses this in CI when it detects GHA)
+		if (cleanLine.includes("##[group]")) {
+			const groupMatch = cleanLine.match(/##\[group\]([^:]+):/i);
+			if (groupMatch?.[1]) {
+				const pkgName = normalizePackageName(groupMatch[1]);
+				getOrCreateState(pkgName);
+				lastPackage = pkgName;
+				continue;
+			}
+		}
+		if (cleanLine.includes("##[endgroup]")) {
+			lastPackage = null;
+			continue;
+		}
 
 		// Match Turbo colon format: "package:size:message"
 		const simpleColonMatch = strippedLine.match(
@@ -128,13 +152,15 @@ export const parseSizeLimitOutput = (
 			continue;
 		}
 
-		// Fallback to last seen package if the line is indented or looks like size output
+		// Fallback to last seen package if the line looks like size output
 		if (lastPackage) {
 			parseMessageLine(lastPackage, strippedLine);
 		}
 
 		// Debug: log if we see something that looks like it should be parsed
+		// Use strippedLine (without colors) for matching
 		if (strippedLine.includes("Size:") || strippedLine.includes("Limit:")) {
+			// biome-ignore lint/suspicious/noConsole: Debug info for CI
 			console.log(
 				`DEBUG: Found size-related line: "${strippedLine}" (lastPackage: ${lastPackage})`,
 			);
