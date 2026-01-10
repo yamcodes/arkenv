@@ -62,7 +62,8 @@
 			"limit": "2 kB",
 			"import": "*",
 			"ignore": [
-				"arktype"
+				"arktype",
+				"node:module"
 			]
 		}
 	]

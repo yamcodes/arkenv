@@ -67,7 +67,8 @@
 			"import": "*",
 			"ignore": [
 				"vite",
-				"arktype"
+				"arktype",
+				"node:module"
 			]
 		}
 	]
