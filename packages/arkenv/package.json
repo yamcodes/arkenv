@@ -70,7 +70,8 @@
 			"import": "*",
 			"ignore": [
 				"arktype",
-				"@repo/scope"
+        "@repo/scope",
+				"node:module"
 			]
 		}
 	]
