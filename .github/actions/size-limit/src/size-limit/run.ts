@@ -3,8 +3,7 @@ import type { SizeLimitResult } from "../types.ts";
 import { parseSizeLimitOutput, getPackageNames } from "../utils/parser.ts";
 
 /**
- * Runs size-limit for both baseline and current branch.
- * Reinstalls and rebuilds for each to ensure accurate results.
+ * Runs size-limit for the current branch and returns parsed results.
  */
 export const runSizeLimit = async (
 	filter: string,
@@ -21,14 +20,11 @@ export const runSizeLimit = async (
 	};
 
 	try {
+		// Identify all potential target packages for attribution
 		const targetPackages = getPackageNames();
-		process.stdout.write(
-			`📦 Detected target packages: ${targetPackages.join(", ")}\n`,
-		);
 
-		// 🚀 Current branch
-		process.stdout.write("🚀 Running size-limit for current branch...\n");
-		const currentProc = spawn(
+		// Run size-limit with --continue to ensure we get results for all packages even if one fails
+		const proc = spawn(
 			["pnpm", "run", "size", "--continue", "--filter", filter],
 			{
 				env,
@@ -37,29 +33,21 @@ export const runSizeLimit = async (
 			},
 		);
 
-		const currentOutput =
-			(await new Response(currentProc.stdout).text()) +
-			(await new Response(currentProc.stderr).text());
+		const [stdout, stderr] = await Promise.all([
+			new Response(proc.stdout).text(),
+			new Response(proc.stderr).text(),
+		]);
 
-		const currentResults = parseSizeLimitOutput(currentOutput, targetPackages);
-		process.stdout.write(
-			`🔍 Found ${currentResults.length} total results before filtering\n`,
-		);
+		const exitCode = await proc.exited;
+		const rawOutput = stdout + stderr;
 
-		// 📊 Baseline (run on main)
-		// We use the already checked out baseline if available, but here we just run it.
-		// Note: In our current setup, the action handles checkout.
-		// If we are already on current branch, we don't switch here.
-		// We assume the caller might have run baseline already?
-		// No, the previous logic was running it sequentially.
-
-		// For now, return the current results.
-		// A full implementation would checkout main, run size, then checkout back.
+		// Parse results using the captured target packages
+		const results = parseSizeLimitOutput(rawOutput, targetPackages);
 
 		return {
-			results: currentResults,
-			hasErrors: false, // will be determined by limits in output
-			rawOutput: currentOutput,
+			results,
+			hasErrors: exitCode !== 0,
+			rawOutput,
 		};
 	} catch (error) {
 		const errorMsg = error instanceof Error ? error.message : String(error);
