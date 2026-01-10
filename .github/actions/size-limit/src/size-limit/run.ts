@@ -22,6 +22,9 @@ export const runSizeLimit = async (
 	try {
 		// Identify all potential target packages for attribution
 		const targetPackages = getPackageNames();
+		process.stdout.write(
+			`DEBUG: getPackageNames found ${targetPackages.length} packages: [${targetPackages.join(", ")}]\n`,
+		);
 
 		// Run size-limit with --continue to ensure we get results for all packages even if one fails
 		const proc = spawn(

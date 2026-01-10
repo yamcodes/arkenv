@@ -12,6 +12,9 @@ export const normalizePackageName = (name: string): string => {
 		"",
 	);
 
+	// Remove Turbo status characters from the start
+	normalized = normalized.replace(/^[○●•✔✖ℹ⚠»>\s]+/, "");
+
 	// Remove Turbo prefixes like "packages/arkenv (arkenv)" -> "arkenv"
 	const parenMatch = normalized.match(/\(([^)]+)\)$/);
 	if (parenMatch) {
@@ -19,7 +22,7 @@ export const normalizePackageName = (name: string): string => {
 	}
 
 	// Handle "package@version task"
-	const taskMatch = normalized.match(/^([^@]+)@\d+\.\d+\.\d+\s+([^:]+)/);
+	const taskMatch = normalized.match(/^([^@\s]+)@\d+\.\d+\.\d+\s+([^:]+)/);
 	if (taskMatch) {
 		normalized = taskMatch[1] ?? normalized;
 	}
@@ -27,7 +30,7 @@ export const normalizePackageName = (name: string): string => {
 	// Handle "package:size" or "package#size"
 	if (normalized.includes(":") || normalized.includes("#")) {
 		const parts = normalized.split(/[:#]/);
-		normalized = parts[0] ?? normalized;
+		normalized = (parts[0] ?? normalized).trim();
 	}
 
 	return normalized.trim();
@@ -40,7 +43,10 @@ export function getPackageNames(): string[] {
 	const results: string[] = [];
 	try {
 		const packagesDir = path.join(process.cwd(), "packages");
-		if (!fs.existsSync(packagesDir)) return [];
+		if (!fs.existsSync(packagesDir)) {
+			process.stdout.write(`DEBUG: packages Dir not found at ${packagesDir}\n`);
+			return [];
+		}
 
 		const dirents = fs.readdirSync(packagesDir, { withFileTypes: true });
 		for (const dirent of dirents) {
@@ -49,11 +55,28 @@ export function getPackageNames(): string[] {
 				if (fs.existsSync(pkgPath)) {
 					const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
 					if (pkg.name) results.push(pkg.name);
+				} else {
+					// Handle scoped packages in subdirectories
+					const subDir = path.join(packagesDir, dirent.name);
+					const subDirents = fs.readdirSync(subDir, { withFileTypes: true });
+					for (const subDirent of subDirents) {
+						if (subDirent.isDirectory()) {
+							const subPkgPath = path.join(
+								subDir,
+								subDirent.name,
+								"package.json",
+							);
+							if (fs.existsSync(subPkgPath)) {
+								const subPkg = JSON.parse(fs.readFileSync(subPkgPath, "utf-8"));
+								if (subPkg.name) results.push(subPkg.name);
+							}
+						}
+					}
 				}
 			}
 		}
 	} catch (error) {
-		// Silent fail
+		process.stdout.write(`DEBUG: getPackageNames error: ${error}\n`);
 	}
 	return results;
 }
@@ -68,36 +91,28 @@ export function parseSizeLimitOutput(
 	const lines = output.split("\n");
 	const packageStates = new Map<string, SizeLimitState>();
 
+	process.stdout.write(
+		`DEBUG: Starting parse. Relevant packages: [${relevantPackages.join(", ")}]\n`,
+	);
+
 	const getOrCreateState = (pkgName: string): SizeLimitState => {
-		const name = normalizePackageName(pkgName);
-		const existing = packageStates.get(name);
+		const existing = packageStates.get(pkgName);
 		if (existing) return existing;
 
 		const newState: SizeLimitState = {
-			package: name,
+			package: pkgName,
 			status: "✅",
 		};
-		packageStates.set(name, newState);
+		packageStates.set(pkgName, newState);
 		return newState;
 	};
 
 	let lastPackage: string | null = null;
 
 	const parseMessageLine = (pkgName: string, message: string) => {
-		const name = normalizePackageName(pkgName);
-		// If we know which package this belongs to, map it back to full scoped name if possible
-		let finalPkgName = name;
-		for (const rp of relevantPackages) {
-			if (rp === name || rp.endsWith(`/${name}`)) {
-				finalPkgName = rp;
-				break;
-			}
-		}
-
-		const state = getOrCreateState(finalPkgName);
+		const state = getOrCreateState(pkgName);
 		const cleanMessage = message.trim();
 
-		// Look for Size: 2.44 kB
 		const sizeMatch = cleanMessage.match(
 			/size:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
@@ -105,7 +120,6 @@ export function parseSizeLimitOutput(
 			state.size = sizeMatch[1];
 		}
 
-		// Look for Size limit: 2 kB
 		const limitMatch = cleanMessage.match(
 			/size\s*limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
@@ -113,18 +127,24 @@ export function parseSizeLimitOutput(
 			state.limit = limitMatch[1];
 		}
 
-		// Table format
 		const tableMatch = cleanMessage.match(
 			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (tableMatch?.[1] && tableMatch?.[2] && tableMatch?.[3]) {
-			const matchedPkg = normalizePackageName(tableMatch[1]);
-			const matchedState = getOrCreateState(matchedPkg);
+			const matchedPkgName = tableMatch[1] as string;
+			// Find actual package name from relevant set
+			let actualPkg = normalizePackageName(matchedPkgName);
+			for (const rp of relevantPackages) {
+				if (rp === actualPkg || rp.endsWith(`/${actualPkg}`)) {
+					actualPkg = rp;
+					break;
+				}
+			}
+			const matchedState = getOrCreateState(actualPkg);
 			matchedState.size = tableMatch[2];
 			matchedState.limit = tableMatch[3];
 		}
 
-		// Direct match
 		const directMatch = cleanMessage.match(
 			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
 		);
@@ -145,6 +165,7 @@ export function parseSizeLimitOutput(
 		}
 	};
 
+	// Use constructor with double backslash to satisfy Biome
 	const ansiRegex = new RegExp(
 		"[\\u001b\\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]",
 		"g",
@@ -156,32 +177,82 @@ export function parseSizeLimitOutput(
 			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z\s*/,
 			"",
 		);
-		const strippedLine = lineNoTimestamp.replace(/^\s*[|>]\s*/, "").trim();
+		// Remove pipes and status markers more carefully
+		const strippedLine = lineNoTimestamp.replace(/^[\s|>○●•✔✖ℹ⚠]+/, "").trim();
 		if (!strippedLine) continue;
 
-		// 1. Group Detection (Context is "sticky" - don't clear on endgroup)
+		// 1. Group Detection (Context is "sticky")
 		if (strippedLine.includes("##[group]")) {
-			const groupMatch = strippedLine.match(/##\[group\]([^:]+)/i);
-			if (groupMatch?.[1]) {
-				lastPackage = normalizePackageName(groupMatch[1]);
+			const groupContent = strippedLine.split("##[group]")[1]?.trim();
+			if (groupContent) {
+				const pkgName = normalizePackageName(groupContent);
+				// Map to full name
+				let fullPkg = pkgName;
+				for (const rp of relevantPackages) {
+					if (rp === pkgName || rp.endsWith(`/${pkgName}`)) {
+						fullPkg = rp;
+						break;
+					}
+				}
+				lastPackage = fullPkg;
+				process.stdout.write(
+					`DEBUG: Group switch to ${lastPackage} from line "${strippedLine}"\n`,
+				);
 				continue;
 			}
 		}
 
-		// 2. Header Detection (e.g. arkenv:size: cache hit)
+		// 2. Header Detection - Relaxed regex (no ^ anchor)
 		const headerMatch = strippedLine.match(
-			/^([@a-z0-9/._-]+)\s*[:#]\s*size(?:\s*[:#]\s*(.*))?$/i,
+			/([@a-z0-9/._-]+)\s*[:#]\s*size(?:\s*[:#]\s*(.*))?/i,
 		);
 		if (headerMatch) {
-			const pkgName = normalizePackageName(headerMatch[1] as string);
-			lastPackage = pkgName;
-			if (headerMatch[2]) {
-				parseMessageLine(pkgName, headerMatch[2]);
+			const pkgPart = headerMatch[1] as string;
+			const pkgName = normalizePackageName(pkgPart);
+			let fullPkg = pkgName;
+			for (const rp of relevantPackages) {
+				if (rp === pkgName || rp.endsWith(`/${pkgName}`)) {
+					fullPkg = rp;
+					break;
+				}
 			}
+			lastPackage = fullPkg;
+			if (headerMatch[2]) {
+				parseMessageLine(fullPkg, headerMatch[2]);
+			}
+			process.stdout.write(
+				`DEBUG: Header match ${lastPackage} from line "${strippedLine}"\n`,
+			);
 			continue;
 		}
 
-		// 3. Auto-attribution for lines with data but no context
+		// 3. Attribution fallback for replayed logs (checks if line starts with pkg: )
+		const lineAttributed = (() => {
+			for (const pkg of relevantPackages) {
+				const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
+				const prefixes = [pkg, unscoped];
+				for (const prefix of prefixes) {
+					if (
+						strippedLine.toLowerCase().startsWith(`${prefix.toLowerCase()}:`) ||
+						strippedLine.toLowerCase().startsWith(`${prefix.toLowerCase()}#`)
+					) {
+						const message = strippedLine
+							.substring(prefix.length + 1)
+							.replace(/^[:#\s]*/, "");
+						lastPackage = pkg;
+						parseMessageLine(pkg, message);
+						process.stdout.write(
+							`DEBUG: Inline attribution to ${lastPackage} from line "${strippedLine}"\n`,
+						);
+						return true;
+					}
+				}
+			}
+			return false;
+		})();
+		if (lineAttributed) continue;
+
+		// 4. Final fallback: If we see data but context is null, try to guess from line content
 		if (!lastPackage && strippedLine.match(/size:|size\s*limit/i)) {
 			for (const pkg of relevantPackages) {
 				const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
@@ -190,40 +261,20 @@ export function parseSizeLimitOutput(
 					strippedLine.toLowerCase().includes(unscoped.toLowerCase())
 				) {
 					lastPackage = pkg;
+					process.stdout.write(
+						`DEBUG: Guessed context ${lastPackage} from line "${strippedLine}"\n`,
+					);
 					break;
 				}
 			}
 		}
 
-		// 4. Attribution fallback
-		let lineAttributed = false;
-		for (const pkg of relevantPackages) {
-			const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
-			const prefixes = [pkg, unscoped];
-			for (const prefix of prefixes) {
-				if (
-					strippedLine.toLowerCase().startsWith(`${prefix.toLowerCase()}:`) ||
-					strippedLine.toLowerCase().startsWith(`${prefix.toLowerCase()}#`)
-				) {
-					const message = strippedLine
-						.substring(prefix.length + 1)
-						.replace(/^[:#\s]*/, "");
-					lastPackage = pkg;
-					parseMessageLine(pkg, message);
-					lineAttributed = true;
-					break;
-				}
-			}
-			if (lineAttributed) break;
-		}
-		if (lineAttributed) continue;
-
-		// 5. Normal line parsing within context
+		// 5. Apply context
 		if (lastPackage) {
 			parseMessageLine(lastPackage, strippedLine);
 		}
 
-		// Log for debugging
+		// Log data lines for debugging
 		if (strippedLine.match(/size:|size\s*limit/i)) {
 			process.stdout.write(
 				`DEBUG: Parsed size data. Context: ${lastPackage}. Line: "${strippedLine}"\n`,
@@ -244,5 +295,8 @@ export function parseSizeLimitOutput(
 		}
 	}
 
+	process.stdout.write(
+		`DEBUG: Parse complete. Total results: ${results.length}\n`,
+	);
 	return results;
 }
