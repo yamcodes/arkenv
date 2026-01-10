@@ -94,8 +94,9 @@ export const parseSizeLimitOutput = (
 		}
 
 		// Match "Size limit: X kB" or "Limit: X kB"
+		// also support "size-limit" appearing as the key
 		const limitMatch = message.match(
-			/(?:Size\s+limit|Limit):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+			/(?:Size(?:\s+|-)?limit|Limit)\s*:\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (limitMatch?.[1]) {
 			currentLimit = limitMatch[1];
@@ -103,7 +104,7 @@ export const parseSizeLimitOutput = (
 
 		// Match "Size: X kB" or just "X kB" when in context
 		const sizeMatch = message.match(
-			/(?:Size|Size is):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+			/(?:Size|Size\s+is)\s*:\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (sizeMatch?.[1]) {
 			currentSize = sizeMatch[1];
