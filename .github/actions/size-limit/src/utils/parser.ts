@@ -10,26 +10,28 @@ export const parseSizeLimitOutput = (
 	const results: SizeLimitResult[] = [];
 	const lines = sizeOutput.split("\n");
 
-	let currentPackage = "";
-	let currentFile = "";
-	let currentSize = "";
-	let currentLimit = "";
-	let currentStatus: "✅" | "❌" = "✅";
-	let parsingMode: "colon" | "hash" | null = null;
+	const packageStates = new Map<
+		string,
+		{
+			file: string;
+			size: string;
+			limit: string;
+			status: "✅" | "❌";
+		}
+	>();
 
-	const normalizePackageName = (pkgName: string) => {
-		const cleaned = pkgName.replace(/^[./]+/, "");
-		if (cleaned.startsWith("@")) {
-			return cleaned;
+	const getOrCreateState = (pkgName: string) => {
+		let state = packageStates.get(pkgName);
+		if (!state) {
+			state = {
+				file: "",
+				size: "",
+				limit: "",
+				status: "✅",
+			};
+			packageStates.set(pkgName, state);
 		}
-		if (cleaned.includes("/")) {
-			const segments = cleaned.split("/");
-			const scopeIndex = segments.findIndex((part) => part.startsWith("@"));
-			return scopeIndex >= 0
-				? segments.slice(scopeIndex).join("/")
-				: (segments.at(-1) ?? cleaned);
-		}
-		return cleaned;
+		return state;
 	};
 
 	const stripAnsiRegex = regex("\x1B\\[[0-?]*[ -/]*[@-~]", "g");
@@ -39,58 +41,18 @@ export const parseSizeLimitOutput = (
 	const sanitizeLine = (text: string) =>
 		stripAnsi(text).replace(controlCharsRegex, "");
 
-	const flushCurrentPackage = () => {
-		if (currentPackage && currentSize && currentLimit) {
-			// Extract filename: if currentFile has a path, use the last part
-			// Handle both "dist/index.js" and "index.js" formats
-			// If no filename found in output, try to get it from package.json config
-			let filename = currentFile
-				? (currentFile.includes("/")
-						? currentFile.split("/").pop()
-						: currentFile) || null
-				: null;
-
-			// Fallback to reading from package.json size-limit config
-			if (!filename) {
-				filename = getFilenameFromConfig(currentPackage);
-			}
-
-			// Final fallback to "bundle" if we still can't determine the file
-			filename = filename || "bundle";
-
-			results.push({
-				package: currentPackage,
-				file: filename,
-				size: currentSize,
-				limit: currentLimit,
-				status: currentStatus,
-			});
-		}
-	};
-
-	const startPackage = (pkgName: string) => {
-		if (currentPackage === pkgName) {
-			return;
-		}
-
-		flushCurrentPackage();
-		currentPackage = pkgName;
-		currentFile = "";
-		currentSize = "";
-		currentLimit = "";
-		currentStatus = "✅";
-	};
-
-	const parseMessageLine = (message: string) => {
+	const parseMessageLine = (pkgName: string, message: string) => {
 		if (!message) {
 			return;
 		}
+
+		const state = getOrCreateState(pkgName);
 
 		const fileMatch = message.match(
 			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts))/i,
 		);
 		if (fileMatch?.[1]) {
-			currentFile = fileMatch[1];
+			state.file = fileMatch[1];
 		}
 
 		// Match "Size limit: X kB" or "Limit: X kB"
@@ -99,7 +61,7 @@ export const parseSizeLimitOutput = (
 			/(?:Size(?:\s+|-)?limit|Limit)\s*:\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (limitMatch?.[1]) {
-			currentLimit = limitMatch[1];
+			state.limit = limitMatch[1];
 		}
 
 		// Match "Size: X kB" or just "X kB" when in context
@@ -107,7 +69,7 @@ export const parseSizeLimitOutput = (
 			/(?:Size|Size\s+is)\s*:\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (sizeMatch?.[1]) {
-			currentSize = sizeMatch[1];
+			state.size = sizeMatch[1];
 		}
 
 		// Match table format: "package  size  limit" (space-separated)
@@ -115,10 +77,10 @@ export const parseSizeLimitOutput = (
 			/^([@a-z0-9][@a-z0-9/_-]*)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (tableMatch?.[1] && tableMatch?.[2] && tableMatch?.[3]) {
-			const pkgName = normalizePackageName(tableMatch[1]);
-			startPackage(pkgName);
-			currentSize = tableMatch[2];
-			currentLimit = tableMatch[3];
+			const matchedPkg = normalizePackageName(tableMatch[1]);
+			const matchedState = getOrCreateState(matchedPkg);
+			matchedState.size = tableMatch[2];
+			matchedState.limit = tableMatch[3];
 		}
 
 		// Match direct size-limit output format: "dist/index.js: 1.2 kB (limit: 2 kB)"
@@ -126,9 +88,9 @@ export const parseSizeLimitOutput = (
 			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
 		);
 		if (directMatch?.[1] && directMatch?.[2] && directMatch?.[3]) {
-			currentFile = directMatch[1];
-			currentSize = directMatch[2];
-			currentLimit = directMatch[3];
+			state.file = directMatch[1];
+			state.size = directMatch[2];
+			state.limit = directMatch[3];
 		}
 
 		// Match format: "X kB of Y kB" or "X kB / Y kB"
@@ -136,8 +98,8 @@ export const parseSizeLimitOutput = (
 			/([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+(?:of|\/)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (sizeLimitMatch?.[1] && sizeLimitMatch?.[2]) {
-			currentSize = sizeLimitMatch[1];
-			currentLimit = sizeLimitMatch[2];
+			state.size = sizeLimitMatch[1];
+			state.limit = sizeLimitMatch[2];
 		}
 
 		if (
@@ -147,9 +109,11 @@ export const parseSizeLimitOutput = (
 			message.toLowerCase().includes("exceeded") ||
 			message.includes("❌")
 		) {
-			currentStatus = "❌";
+			state.status = "❌";
 		}
 	};
+
+	let lastPackage = "";
 
 	for (const line of lines) {
 		const strippedLine = sanitizeLine(line);
@@ -164,71 +128,97 @@ export const parseSizeLimitOutput = (
 			/^([@a-z0-9][@a-z0-9/_-]*):size:(.*)$/i,
 		);
 		if (colonMatch?.[1]) {
-			parsingMode = "colon";
 			const pkgName = normalizePackageName(colonMatch[1]);
-			startPackage(pkgName);
-
 			const message = colonMatch[2]?.trim() ?? "";
-			parseMessageLine(message);
+			parseMessageLine(pkgName, message);
+			lastPackage = pkgName;
 			continue;
 		}
 
 		// Match Turbo hash format: "package#size"
 		const hashMatch = strippedLine.match(/^\s*([@a-z0-9][@a-z0-9/_-]*)#size/i);
 		if (hashMatch?.[1]) {
-			parsingMode = "hash";
 			const pkgName = normalizePackageName(hashMatch[1]);
-			startPackage(pkgName);
+			getOrCreateState(pkgName);
+			lastPackage = pkgName;
 			continue;
 		}
 
-		// If we detect a new package in script output, reset parsing mode
+		// If we detect a new package in script output, set as last package
 		const scriptMatch = strippedLine.match(/>\s*([@a-z0-9][@a-z0-9/_-]*)@\S+/i);
 		if (scriptMatch?.[1]) {
 			const pkgName = normalizePackageName(scriptMatch[1]);
-			// Only start a new package if we're not already in one, or if it's different
-			if (!currentPackage || currentPackage !== pkgName) {
-				parsingMode = null; // Reset parsing mode for direct output
-				startPackage(pkgName);
-			}
+			getOrCreateState(pkgName);
+			lastPackage = pkgName;
 			continue;
 		}
 
-		// Handle indented lines after hash format
-		if (parsingMode === "hash" && /^\s+/.test(strippedLine)) {
-			parseMessageLine(strippedLine.trim());
+		// Handle indented lines (often related to the last mentioned package)
+		if (lastPackage && /^\s+/.test(strippedLine)) {
+			parseMessageLine(lastPackage, strippedLine.trim());
 			continue;
 		}
 
-		// Try to parse direct size-limit output (not wrapped by Turbo)
-		// Look for lines that contain size information even without Turbo prefix
+		// Try to parse direct size-limit output without Turbo prefix
 		if (strippedLine.match(/[0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB])/i)) {
-			// Try to extract package name from context (e.g., "> arkenv@0.7.3 size")
 			const pkgContextMatch = strippedLine.match(
 				/>\s*([@a-z0-9][@a-z0-9/_-]*)@/i,
 			);
-			if (pkgContextMatch?.[1]) {
-				const pkgName = normalizePackageName(pkgContextMatch[1]);
-				startPackage(pkgName);
-			} else if (!currentPackage) {
-				// If we don't have a current package, try to infer from filter
-				// Extract package name from filter pattern like "./packages/arkenv" or "arkenv"
-				const filterMatch = filter.match(
-					/(?:packages\/)?([@a-z0-9][@a-z0-9/_-]*)/i,
-				);
-				if (filterMatch?.[1]) {
-					const pkgName = normalizePackageName(filterMatch[1]);
-					startPackage(pkgName);
-				}
-			}
+			const filterMatch = filter.match(
+				/(?:packages\/)?([@a-z0-9][@a-z0-9/_-]*)/i,
+			);
+			const pkgNameInFilter = filterMatch?.[1]
+				? normalizePackageName(filterMatch[1])
+				: "";
 
-			// Parse the line for size information
-			parseMessageLine(strippedLine);
+			const pkgName =
+				pkgContextMatch && pkgContextMatch[1]
+					? normalizePackageName(pkgContextMatch[1])
+					: lastPackage || pkgNameInFilter;
+
+			if (pkgName) {
+				parseMessageLine(pkgName, strippedLine);
+			}
 		}
 	}
 
-	// Add last package if we have data
-	flushCurrentPackage();
+	// Finalize results from all tracked package states
+	for (const [pkgName, state] of packageStates.entries()) {
+		if (state.size && state.limit) {
+			let filename = state.file
+				? (state.file.includes("/")
+						? state.file.split("/").pop()
+						: state.file) || null
+				: null;
+
+			if (!filename) {
+				filename = getFilenameFromConfig(pkgName);
+			}
+
+			results.push({
+				package: pkgName,
+				file: filename || "bundle",
+				size: state.size,
+				limit: state.limit,
+				status: state.status,
+			});
+		}
+	}
 
 	return results;
+};
+
+const normalizePackageName = (pkgName: string) => {
+	const cleaned = pkgName.replace(/^[./]+/, "");
+	if (cleaned.startsWith("@")) {
+		return cleaned;
+	}
+	if (cleaned.includes("/")) {
+		const segments = cleaned.split("/");
+		const scopeIndex = segments.findIndex((part) => part.startsWith("@"));
+		return scopeIndex >= 0
+			? segments.slice(scopeIndex).join("/")
+			: (segments.at(-1) ?? cleaned);
+	}
+	return cleaned;
 };
