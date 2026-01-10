@@ -1,52 +1,79 @@
-import { getFilenameFromConfig, getPackageNames } from "../package/names.ts";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import type { SizeLimitResult, SizeLimitState } from "../types.ts";
 
 /**
- * Normalizes a package name for comparison.
+ * Normalizes package names from Turbo/GHA output.
  */
-const normalizePackageName = (name: string): string => {
-	let normalized = name.trim().replace(/^[./]+/, "");
-
-	// Remove Turbo parenthetical paths if present: "packages/arkenv (arkenv)" -> "arkenv"
-	const parenMatch = normalized.match(/\(([^)]+)\)$/);
-	if (parenMatch) {
-		normalized = parenMatch[1] as string;
-	}
-
-	// If it's a path like "packages/arkenv", get the folder name
-	// (unless it's a scoped package which starts with @)
-	if (normalized.includes("/") && !normalized.startsWith("@")) {
-		const parts = normalized.split("/");
-		normalized = parts[parts.length - 1] as string;
-	}
-
-	return normalized;
-};
-
-export const parseSizeLimitOutput = (
-	sizeOutput: string,
-	filter: string,
-): SizeLimitResult[] => {
-	const relevantPackages = getPackageNames(filter);
-	console.log(
-		`🔍 Relevant packages for filter "${filter}": ${relevantPackages.join(", ")}`,
+export const normalizePackageName = (name: string): string => {
+	// Remove timestamps if they exist
+	let normalized = name.replace(
+		/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z\s*/,
+		"",
 	);
 
-	const results: SizeLimitResult[] = [];
-	const lines = sizeOutput.split("\n");
+	// Remove Turbo prefixes like "packages/arkenv (arkenv)" -> "arkenv"
+	const parenMatch = normalized.match(/\(([^)]+)\)$/);
+	if (parenMatch) {
+		normalized = parenMatch[1] ?? normalized;
+	}
 
-	// Map to track the current state of each package's parsing
+	// Handle "package@version task"
+	const taskMatch = normalized.match(/^([^@]+)@\d+\.\d+\.\d+\s+([^:]+)/);
+	if (taskMatch) {
+		normalized = taskMatch[1] ?? normalized;
+	}
+
+	// Handle "package:size"
+	if (normalized.includes(":")) {
+		const parts = normalized.split(":");
+		normalized = parts[0] ?? normalized;
+	}
+
+	return normalized.trim();
+};
+
+/**
+ * Gets all package names in the packages directory.
+ */
+export function getPackageNames(_filter?: string): string[] {
+	const packagesDir = path.join(process.cwd(), "packages");
+	if (!fs.existsSync(packagesDir)) return [];
+
+	return fs
+		.readdirSync(packagesDir, { withFileTypes: true })
+		.filter((dirent) => dirent.isDirectory())
+		.map((dirent) => {
+			const pkgPath = path.join(packagesDir, dirent.name, "package.json");
+			if (fs.existsSync(pkgPath)) {
+				const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
+				return pkg.name;
+			}
+			return null;
+		})
+		.filter((name): name is string => name !== null);
+}
+
+/**
+ * Parses the raw output of size-limit.
+ */
+export function parseSizeLimitOutput(
+	output: string,
+	relevantPackages: string[] = [],
+): SizeLimitResult[] {
+	const lines = output.split("\n");
 	const packageStates = new Map<string, SizeLimitState>();
 
 	const getOrCreateState = (pkgName: string): SizeLimitState => {
-		const existing = packageStates.get(pkgName);
+		const name = normalizePackageName(pkgName);
+		const existing = packageStates.get(name);
 		if (existing) return existing;
 
 		const newState: SizeLimitState = {
-			package: pkgName,
+			package: name,
 			status: "✅",
 		};
-		packageStates.set(pkgName, newState);
+		packageStates.set(name, newState);
 		return newState;
 	};
 
@@ -54,8 +81,6 @@ export const parseSizeLimitOutput = (
 
 	const parseMessageLine = (pkgName: string, message: string) => {
 		const state = getOrCreateState(pkgName);
-
-		// Handle individual Size/Limit lines (multi-line output)
 		const cleanMessage = message.trim();
 
 		const sizeMatch = cleanMessage.match(
@@ -72,7 +97,7 @@ export const parseSizeLimitOutput = (
 			state.limit = limitMatch[1];
 		}
 
-		// Match table format: "package  size  limit" (space-separated)
+		// Table format
 		const tableMatch = cleanMessage.match(
 			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
@@ -83,7 +108,7 @@ export const parseSizeLimitOutput = (
 			matchedState.limit = tableMatch[3];
 		}
 
-		// Match direct output format: "dist/index.js: 1.2 kB (limit: 2 kB)"
+		// Direct match
 		const directMatch = cleanMessage.match(
 			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
 		);
@@ -104,18 +129,16 @@ export const parseSizeLimitOutput = (
 		}
 	};
 
+	const ansiRegex = new RegExp(
+		"[\\u001b\\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]",
+		"g",
+	);
+
 	for (const line of lines) {
-		// Strip ANSI escape codes first to handle colorized output
-		const ansiRegex = new RegExp(
-			"[\\u001b\\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]",
-			"g",
-		);
 		const cleanLine = line.replace(ansiRegex, "");
 		const strippedLine = cleanLine.replace(/^\s*[|>]\s*/, "").trim();
 		if (!strippedLine) continue;
 
-		// Match GitHub Actions grouping (Turbo uses this in CI when it detects GHA)
-		// e.g. "##[group]arkenv:size" or "##[group]@repo/types:build"
 		if (cleanLine.includes("##[group]")) {
 			const groupMatch = cleanLine.match(/##\[group\]([^:]+)/i);
 			if (groupMatch?.[1]) {
@@ -130,7 +153,6 @@ export const parseSizeLimitOutput = (
 			continue;
 		}
 
-		// Match Turbo header formats: "package:size" or "package#size"
 		const colonHeaderMatch = strippedLine.match(
 			/^([@a-z0-9/._-]+)\s*:\s*size(?:\s*:\s*(.*))?$/i,
 		);
@@ -146,44 +168,35 @@ export const parseSizeLimitOutput = (
 			continue;
 		}
 
-		// Fallback to last seen package
 		if (lastPackage) {
 			parseMessageLine(lastPackage, strippedLine);
 		}
 
-		// Debug: log if we see something size-related to verify attribution
 		if (strippedLine.includes("Size:") || strippedLine.includes("Limit:")) {
-			// biome-ignore lint/suspicious/noConsole: Debug info for CI
-			console.log(
-				`DEBUG: Found size-related line: "${strippedLine}" (lastPackage: ${lastPackage})`,
+			process.stdout.write(
+				`DEBUG: Found size-related line: "${strippedLine}" (lastPackage: ${lastPackage})\n`,
 			);
 		}
 	}
 
-	for (const [pkgName, state] of packageStates.entries()) {
+	const results: SizeLimitResult[] = [];
+	for (const [pkgName, state] of packageStates) {
 		if (state.size && state.limit) {
-			// Only include if it matches our filter
-			if (relevantPackages.some((p) => p === pkgName || pkgName.includes(p))) {
-				let filename = state.file
-					? (state.file.includes("/")
-							? state.file.split("/").pop()
-							: state.file) || null
-					: null;
-
-				if (!filename) {
-					filename = getFilenameFromConfig(pkgName);
-				}
-
-				results.push({
-					package: pkgName,
-					file: filename || "bundle",
-					size: state.size,
-					limit: state.limit,
-					status: state.status,
-				});
+			if (
+				relevantPackages.length > 0 &&
+				!relevantPackages.some((p) => p === pkgName || pkgName.includes(p))
+			) {
+				continue;
 			}
+			results.push({
+				package: pkgName,
+				file: state.file || "index.js",
+				size: state.size,
+				limit: state.limit,
+				status: state.status,
+			});
 		}
 	}
 
 	return results;
-};
+}
