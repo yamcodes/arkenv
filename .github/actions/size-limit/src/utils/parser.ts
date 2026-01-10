@@ -85,7 +85,16 @@ export function parseSizeLimitOutput(
 
 	const parseMessageLine = (pkgName: string, message: string) => {
 		const name = normalizePackageName(pkgName);
-		const state = getOrCreateState(name);
+		// If we know which package this belongs to, map it back to full scoped name if possible
+		let finalPkgName = name;
+		for (const rp of relevantPackages) {
+			if (rp === name || rp.endsWith(`/${name}`)) {
+				finalPkgName = rp;
+				break;
+			}
+		}
+
+		const state = getOrCreateState(finalPkgName);
 		const cleanMessage = message.trim();
 
 		// Look for Size: 2.44 kB
@@ -143,7 +152,6 @@ export function parseSizeLimitOutput(
 
 	for (const line of lines) {
 		const cleanLine = line.replace(ansiRegex, "");
-		// Aggressively strip timestamps (some logs have them, some don't)
 		const lineNoTimestamp = cleanLine.replace(
 			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z\s*/,
 			"",
@@ -151,53 +159,16 @@ export function parseSizeLimitOutput(
 		const strippedLine = lineNoTimestamp.replace(/^\s*[|>]\s*/, "").trim();
 		if (!strippedLine) continue;
 
-		// 1. Check for Package Header on the line itself (e.g., "arkenv:size: Size: 1.7 kB")
-		let lineAttributed = false;
-		for (const pkg of relevantPackages) {
-			const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
-
-			// Match "pkg:size:" or "pkg#size" or "@scope/pkg:size:"
-			const prefixes = [pkg, unscoped];
-			for (const prefix of prefixes) {
-				if (
-					strippedLine
-						.toLowerCase()
-						.startsWith(`${prefix.toLowerCase()}:size`) ||
-					strippedLine.toLowerCase().startsWith(`${prefix.toLowerCase()}#size`)
-				) {
-					const separator = strippedLine.includes(`${prefix}:size`)
-						? `${prefix}:size`
-						: strippedLine.includes(`${prefix}#size`)
-							? `${prefix}#size`
-							: strippedLine
-										.toLowerCase()
-										.includes(`${prefix.toLowerCase()}:size`)
-								? strippedLine.substring(0, prefix.length + 5)
-								: strippedLine.substring(0, prefix.length + 5);
-
-					const message = strippedLine
-						.substring(separator.length)
-						.replace(/^[:#\s]*/, "");
-					lastPackage = pkg;
-					parseMessageLine(pkg, message);
-					lineAttributed = true;
-					break;
-				}
-			}
-			if (lineAttributed) break;
-		}
-		if (lineAttributed) continue;
-
-		// 2. Group/Header Detection (sticks until next group or header)
+		// 1. Group Detection (Context is "sticky" - don't clear on endgroup)
 		if (strippedLine.includes("##[group]")) {
 			const groupMatch = strippedLine.match(/##\[group\]([^:]+)/i);
 			if (groupMatch?.[1]) {
-				const pkgName = normalizePackageName(groupMatch[1]);
-				lastPackage = pkgName;
+				lastPackage = normalizePackageName(groupMatch[1]);
 				continue;
 			}
 		}
 
+		// 2. Header Detection (e.g. arkenv:size: cache hit)
 		const headerMatch = strippedLine.match(
 			/^([@a-z0-9/._-]+)\s*[:#]\s*size(?:\s*[:#]\s*(.*))?$/i,
 		);
@@ -210,15 +181,52 @@ export function parseSizeLimitOutput(
 			continue;
 		}
 
-		// 3. Fallback to lastPackage context
+		// 3. Auto-attribution for lines with data but no context
+		if (!lastPackage && strippedLine.match(/size:|size\s*limit/i)) {
+			for (const pkg of relevantPackages) {
+				const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
+				if (
+					strippedLine.toLowerCase().includes(pkg.toLowerCase()) ||
+					strippedLine.toLowerCase().includes(unscoped.toLowerCase())
+				) {
+					lastPackage = pkg;
+					break;
+				}
+			}
+		}
+
+		// 4. Attribution fallback
+		let lineAttributed = false;
+		for (const pkg of relevantPackages) {
+			const unscoped = pkg.startsWith("@") ? (pkg.split("/")[1] ?? pkg) : pkg;
+			const prefixes = [pkg, unscoped];
+			for (const prefix of prefixes) {
+				if (
+					strippedLine.toLowerCase().startsWith(`${prefix.toLowerCase()}:`) ||
+					strippedLine.toLowerCase().startsWith(`${prefix.toLowerCase()}#`)
+				) {
+					const message = strippedLine
+						.substring(prefix.length + 1)
+						.replace(/^[:#\s]*/, "");
+					lastPackage = pkg;
+					parseMessageLine(pkg, message);
+					lineAttributed = true;
+					break;
+				}
+			}
+			if (lineAttributed) break;
+		}
+		if (lineAttributed) continue;
+
+		// 5. Normal line parsing within context
 		if (lastPackage) {
 			parseMessageLine(lastPackage, strippedLine);
 		}
 
-		// Log for debugging (but only if it looks like data)
+		// Log for debugging
 		if (strippedLine.match(/size:|size\s*limit/i)) {
 			process.stdout.write(
-				`DEBUG: Attributed size data to ${lastPackage}: "${strippedLine}"\n`,
+				`DEBUG: Parsed size data. Context: ${lastPackage}. Line: "${strippedLine}"\n`,
 			);
 		}
 	}
@@ -226,22 +234,13 @@ export function parseSizeLimitOutput(
 	const results: SizeLimitResult[] = [];
 	for (const [pkgName, state] of packageStates) {
 		if (state.size && state.limit) {
-			// Ensure we only return packages that are actually relevant (exists in our monorepo)
-			const isActuallyRelevant =
-				relevantPackages.length === 0 ||
-				relevantPackages.some(
-					(p) => p === pkgName || pkgName.includes(p.replace(/^@arkenv\//, "")),
-				);
-
-			if (isActuallyRelevant) {
-				results.push({
-					package: pkgName,
-					file: state.file || "index.js",
-					size: state.size,
-					limit: state.limit,
-					status: state.status,
-				});
-			}
+			results.push({
+				package: pkgName,
+				file: state.file || "index.js",
+				size: state.size,
+				limit: state.limit,
+				status: state.status,
+			});
 		}
 	}
 
