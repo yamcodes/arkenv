@@ -9,7 +9,9 @@ import { formatBytes } from "./size.ts";
  */
 export async function parseJsonFiles(): Promise<SizeLimitResult[]> {
 	const results: SizeLimitResult[] = [];
-	const files = glob.sync("packages/**/.size-limit.json");
+	const files = glob.sync("packages/**/.size-limit.json", {
+		ignore: ["**/node_modules/**", "**/.turbo/**"],
+	});
 
 	for (const file of files) {
 		try {
@@ -28,12 +30,21 @@ export async function parseJsonFiles(): Promise<SizeLimitResult[]> {
 
 			if (Array.isArray(data)) {
 				for (const item of data) {
+					const size =
+						typeof item.size === "number"
+							? formatBytes(item.size)
+							: item.size || "0 B";
+					const limit =
+						typeof item.limit === "number"
+							? formatBytes(item.limit)
+							: item.limit || "—";
+
 					results.push({
 						package: pkgName,
-						file: item.name || "index.js",
-						size: formatBytes(item.size),
-						limit: formatBytes(item.limit),
-						status: item.passed ? "✅" : "❌",
+						file: item.name || item.path || "index.js",
+						size,
+						limit,
+						status: item.passed !== false ? "✅" : "❌",
 					});
 				}
 			}
