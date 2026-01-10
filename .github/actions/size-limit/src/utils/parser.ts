@@ -123,13 +123,18 @@ export const parseSizeLimitOutput = (
 			continue;
 		}
 
-		// Match Turbo colon format: "package:size:message"
-		const colonMatch = strippedLine.match(
-			/^([@a-z0-9][@a-z0-9/_-]*):size:(.*)$/i,
+		// Match Turbo colon format: "package:size:message" or "path (package): size: message"
+		const simpleColonMatch = strippedLine.match(
+			/^([@a-z0-9/._-]+)\s*:\s*size\s*:\s*(.*)$/i,
 		);
-		if (colonMatch?.[1]) {
-			const pkgName = normalizePackageName(colonMatch[1]);
-			const message = colonMatch[2]?.trim() ?? "";
+		const parenMatch = strippedLine.match(
+			/^[.a-z/-]+\s*\(([@a-z0-9/._-]+)\)\s*:\s*size\s*:\s*(.*)$/i,
+		);
+		const colonMatch = simpleColonMatch || parenMatch;
+
+		if (colonMatch) {
+			const pkgName = normalizePackageName(colonMatch[1] as string);
+			const message = (colonMatch[2] || "").trim();
 			parseMessageLine(pkgName, message);
 			lastPackage = pkgName;
 			continue;
