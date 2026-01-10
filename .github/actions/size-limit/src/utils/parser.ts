@@ -6,7 +6,7 @@ import type { SizeLimitResult, SizeLimitState } from "../types.ts";
  * Normalizes package names from Turbo/GHA output.
  */
 export const normalizePackageName = (name: string): string => {
-	// Remove timestamps if they exist
+	// Remove GHA timestamps if they exist
 	let normalized = name.replace(
 		/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z\s*/,
 		"",
@@ -24,9 +24,10 @@ export const normalizePackageName = (name: string): string => {
 		normalized = taskMatch[1] ?? normalized;
 	}
 
-	// Handle "package:size"
-	if (normalized.includes(":")) {
-		const parts = normalized.split(":");
+	// Handle "package:size" or "package#size"
+	if (normalized.includes(":") || normalized.includes("#")) {
+		const parts = normalized.split(/[:#]/);
+		// If it's a scoped package like @arkenv/bun-plugin, parts[0] is @arkenv/bun-plugin
 		normalized = parts[0] ?? normalized;
 	}
 
@@ -34,24 +35,28 @@ export const normalizePackageName = (name: string): string => {
 };
 
 /**
- * Gets all package names in the packages directory.
+ * Gets all package names in the monorepo to help with attribution.
  */
-export function getPackageNames(_filter?: string): string[] {
+export function getPackageNames(): string[] {
 	const packagesDir = path.join(process.cwd(), "packages");
 	if (!fs.existsSync(packagesDir)) return [];
 
-	return fs
-		.readdirSync(packagesDir, { withFileTypes: true })
-		.filter((dirent) => dirent.isDirectory())
-		.map((dirent) => {
-			const pkgPath = path.join(packagesDir, dirent.name, "package.json");
-			if (fs.existsSync(pkgPath)) {
-				const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
-				return pkg.name;
+	const results: string[] = [];
+	try {
+		const dirents = fs.readdirSync(packagesDir, { withFileTypes: true });
+		for (const dirent of dirents) {
+			if (dirent.isDirectory()) {
+				const pkgPath = path.join(packagesDir, dirent.name, "package.json");
+				if (fs.existsSync(pkgPath)) {
+					const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
+					if (pkg.name) results.push(pkg.name);
+				}
 			}
-			return null;
-		})
-		.filter((name): name is string => name !== null);
+		}
+	} catch {
+		// Silent fail
+	}
+	return results;
 }
 
 /**
@@ -83,13 +88,15 @@ export function parseSizeLimitOutput(
 		const state = getOrCreateState(pkgName);
 		const cleanMessage = message.trim();
 
+		// Look for Size: 2.44 kB
 		const sizeMatch = cleanMessage.match(
-			/^size:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+			/size:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
 		if (sizeMatch?.[1]) {
 			state.size = sizeMatch[1];
 		}
 
+		// Look for Size limit: 2 kB
 		const limitMatch = cleanMessage.match(
 			/size\s*limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
@@ -97,7 +104,7 @@ export function parseSizeLimitOutput(
 			state.limit = limitMatch[1];
 		}
 
-		// Table format
+		// Table format column match
 		const tableMatch = cleanMessage.match(
 			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
 		);
@@ -108,7 +115,7 @@ export function parseSizeLimitOutput(
 			matchedState.limit = tableMatch[3];
 		}
 
-		// Direct match
+		// Direct match: "index.js: 2.44 kB (limit: 2 kB)"
 		const directMatch = cleanMessage.match(
 			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
 		);
@@ -118,6 +125,7 @@ export function parseSizeLimitOutput(
 			state.limit = directMatch[3];
 		}
 
+		// Status detection
 		if (
 			cleanMessage.includes("✖") ||
 			cleanMessage.includes("ERROR") ||
@@ -139,11 +147,11 @@ export function parseSizeLimitOutput(
 		const strippedLine = cleanLine.replace(/^\s*[|>]\s*/, "").trim();
 		if (!strippedLine) continue;
 
+		// 1. GHA Group detection
 		if (cleanLine.includes("##[group]")) {
 			const groupMatch = cleanLine.match(/##\[group\]([^:]+)/i);
 			if (groupMatch?.[1]) {
 				const pkgName = normalizePackageName(groupMatch[1]);
-				getOrCreateState(pkgName);
 				lastPackage = pkgName;
 				continue;
 			}
@@ -153,12 +161,10 @@ export function parseSizeLimitOutput(
 			continue;
 		}
 
-		const colonHeaderMatch = strippedLine.match(
-			/^([@a-z0-9/._-]+)\s*:\s*size(?:\s*:\s*(.*))?$/i,
+		// 2. Header detection: "arkenv:size:" or "arkenv#size"
+		const headerMatch = strippedLine.match(
+			/^([@a-z0-9/._-]+)\s*[:#]\s*size(?:\s*[:#]\s*(.*))?$/i,
 		);
-		const hashHeaderMatch = strippedLine.match(/^([@a-z0-9/._-]+)\s*#\s*size/i);
-		const headerMatch = colonHeaderMatch || hashHeaderMatch;
-
 		if (headerMatch) {
 			const pkgName = normalizePackageName(headerMatch[1] as string);
 			lastPackage = pkgName;
@@ -168,11 +174,31 @@ export function parseSizeLimitOutput(
 			continue;
 		}
 
+		// 3. Fallback attribution: Check if line starts with any relevant package name
+		let attributed = false;
+		for (const pkg of relevantPackages) {
+			if (
+				strippedLine.startsWith(`${pkg}:`) ||
+				strippedLine.startsWith(`${pkg}#`)
+			) {
+				const message = strippedLine
+					.substring(pkg.length + 1)
+					.replace(/^[:#\s]*/, "");
+				lastPackage = pkg;
+				parseMessageLine(pkg, message);
+				attributed = true;
+				break;
+			}
+		}
+		if (attributed) continue;
+
+		// 4. In-context message parsing
 		if (lastPackage) {
 			parseMessageLine(lastPackage, strippedLine);
 		}
 
-		if (strippedLine.includes("Size:") || strippedLine.includes("Limit:")) {
+		// Debugging (only for size/limit lines to avoid spam)
+		if (strippedLine.match(/size\s*limit|size:/i)) {
 			process.stdout.write(
 				`DEBUG: Found size-related line: "${strippedLine}" (lastPackage: ${lastPackage})\n`,
 			);
@@ -181,13 +207,18 @@ export function parseSizeLimitOutput(
 
 	const results: SizeLimitResult[] = [];
 	for (const [pkgName, state] of packageStates) {
+		// Only return results that have both size and limit
 		if (state.size && state.limit) {
-			if (
-				relevantPackages.length > 0 &&
-				!relevantPackages.some((p) => p === pkgName || pkgName.includes(p))
-			) {
-				continue;
+			// Filter by relevantPackages if provided
+			if (relevantPackages.length > 0) {
+				const isRelevant = relevantPackages.some(
+					(p) =>
+						pkgName === p ||
+						pkgName.replace(/^@arkenv\//, "") === p.replace(/^@arkenv\//, ""),
+				);
+				if (!isRelevant) continue;
 			}
+
 			results.push({
 				package: pkgName,
 				file: state.file || "index.js",
