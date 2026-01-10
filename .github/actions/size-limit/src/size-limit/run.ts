@@ -1,9 +1,9 @@
 import { spawn } from "bun";
 import type { SizeLimitResult } from "../types.ts";
 import {
-	parseSizeLimitOutput,
 	getPackageNames,
 	parseJsonFiles,
+	parseSizeLimitOutput,
 } from "../utils/parser.ts";
 
 /**

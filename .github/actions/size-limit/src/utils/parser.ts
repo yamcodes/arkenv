@@ -192,10 +192,8 @@ export function parseSizeLimitOutput(
 		}
 	};
 
-	const ansiRegex = new RegExp(
-		"[\\u001b\\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]",
-		"g",
-	);
+	const ansiRegex =
+		/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 
 	for (const line of lines) {
 		const cleanLine = line.replace(ansiRegex, "");
