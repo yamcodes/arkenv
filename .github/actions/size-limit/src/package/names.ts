@@ -6,13 +6,30 @@ export const getFilenameFromConfig = (packageName: string): string | null => {
 	try {
 		// Try to find package.json for this package
 		// Package name could be "arkenv" or "./packages/arkenv" or "packages/arkenv"
-		let packagePath = packageName;
-		if (packagePath.startsWith("./")) {
-			packagePath = packagePath.slice(2);
+		// Package name could be "@arkenv/bun-plugin" or "arkenv"
+		// We need to find which folder in /packages contains this package name
+		const packagesDir = join(process.cwd(), "packages");
+		let packagePath = "";
+
+		if (!existsSync(packagesDir)) return null;
+
+		const folders = readdirSync(packagesDir);
+		for (const folder of folders) {
+			const pjPath = join(packagesDir, folder, "package.json");
+			if (existsSync(pjPath)) {
+				try {
+					const pj = JSON.parse(readFileSync(pjPath, "utf-8"));
+					if (pj.name === packageName) {
+						packagePath = `packages/${folder}`;
+						break;
+					}
+				} catch {
+					continue;
+				}
+			}
 		}
-		if (!packagePath.startsWith("packages/")) {
-			packagePath = `packages/${packagePath}`;
-		}
+
+		if (!packagePath) return null;
 
 		const packageJsonPath = join(process.cwd(), packagePath, "package.json");
 		const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
