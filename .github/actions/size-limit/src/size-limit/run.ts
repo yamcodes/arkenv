@@ -1,6 +1,10 @@
 import { spawn } from "bun";
 import type { SizeLimitResult } from "../types.ts";
-import { parseSizeLimitOutput, getPackageNames } from "../utils/parser.ts";
+import {
+	getPackageNames,
+	parseJsonFiles,
+	parseSizeLimitOutput,
+} from "../utils/parser.ts";
 
 /**
  * Runs size-limit for the current branch and returns parsed results.
@@ -41,8 +45,17 @@ export const runSizeLimit = async (
 		const exitCode = await proc.exited;
 		const rawOutput = stdout + stderr;
 
-		// Parse results using the captured target packages
-		const results = parseSizeLimitOutput(rawOutput, targetPackages);
+		// 1. Try to parse JSON files first
+		let results = await parseJsonFiles();
+
+		// 2. Fallback to stdout parsing if no JSON results were found
+		// This happens when checking out main where size-limit --json hasn't been added yet
+		if (results.length === 0) {
+			process.stdout.write(
+				"ℹ️ No JSON results found. Falling back to stdout parsing...\n",
+			);
+			results = parseSizeLimitOutput(rawOutput, targetPackages);
+		}
 
 		return {
 			results,

@@ -57,7 +57,7 @@
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
 		"changeset": "pnpm -w run changeset",
-		"size": "size-limit"
+		"size": "size-limit --json > .size-limit.json"
 	},
 	"type": "module",
 	"types": "./dist/index.d.ts",
