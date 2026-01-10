@@ -17,6 +17,7 @@ export const runSizeLimit = async (
 		const proc = spawn(["pnpm", "run", "size", "--filter", filter], {
 			stdout: "pipe",
 			stderr: "pipe",
+			env: process.env,
 		});
 
 		const [stdout, stderr] = await Promise.all([
