@@ -85,9 +85,6 @@ const env = arkenv({
     DATABASE: '{"HOST": "localhost", "PORT": "5432"}'
   }
 });
-
-// env.DATABASE.HOST is "localhost"
-// env.DATABASE.PORT is 5432 (number!)
 ```
 
 Coercion works recursively: even variables inside a JSON object are coerced to their correct types (like `PORT` becoming a `number` above).
