@@ -1,3 +1,7 @@
+/**
+ * @see https://github.com/standard-schema/standard-schema/tree/3130ce43fdd848d9ab49dbb0458d04f18459961c/packages/spec
+ */
+
 // #########################
 // ###   Standard Typed  ###
 // #########################
