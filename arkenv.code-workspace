@@ -94,6 +94,10 @@
 			"name": "  standard-schema-playground"
 		},
 		{
+			"path": "apps/playgrounds/no-arktype",
+			"name": "  no-arktype-playground"
+		},
+		{
 			"path": "apps/playgrounds/js",
 			"name": "  js-playground"
 		},

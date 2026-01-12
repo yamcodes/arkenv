@@ -23,7 +23,10 @@ export type ArkEnvConfig = {
 	 */
 	env?: Record<string, string | undefined>;
 	/**
-	 * Whether to coerce environment variables to their defined types. Defaults to `true`
+	 * Whether to coerce environment variables to their defined types.
+	 *
+	 * @default true
+	 * Note: Only takes effect when using ArkType.
 	 */
 	coerce?: boolean;
 	/**
@@ -35,9 +38,11 @@ export type ArkEnvConfig = {
 	 */
 	onUndeclaredKey?: "delete" | "ignore" | "reject";
 	/**
-	 * For arrays, specifies how to parse the string value.
+	 * For arrays, specify how to coerce the string value.
 	 * - `comma`: Split by commas and trim whitespace.
-	 * - `json`: Strings are parsed as JSON.
+	 * - `json`: Strings are coerced as JSON.
+	 *
+	 * Note: only takes effect when `coerce` is enabled.
 	 * @default "comma"
 	 */
 	arrayFormat?: "comma" | "json";
