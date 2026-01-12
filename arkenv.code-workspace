@@ -94,10 +94,6 @@
 			"name": "  standard-schema-playground"
 		},
 		{
-			"path": "apps/playgrounds/no-arktype",
-			"name": "  no-arktype-playground"
-		},
-		{
 			"path": "apps/playgrounds/js",
 			"name": "  js-playground"
 		},
@@ -132,6 +128,10 @@
 		{
 			"path": "examples/with-standard-schema",
 			"name": "  with-standard-schema"
+		},
+		{
+			"path": "examples/without-arktype",
+			"name": "  without-arktype"
 		},
 		{
 			"path": "examples/stackblitz",

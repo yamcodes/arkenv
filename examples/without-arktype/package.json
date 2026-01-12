@@ -13,12 +13,15 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"packageManager": "pnpm@10.27.0",
+	"engines": {
+		"node": "24"
+	},
+	"packageManager": "npm@11.6.4",
 	"devDependencies": {
-		"tsx": "catalog:"
+		"tsx": "^4.21.0"
 	},
 	"dependencies": {
-		"zod": "catalog:",
-		"arkenv": "workspace:*"
+		"arkenv": "https://pkg.pr.new/arkenv@704",
+		"zod": "^4.3.5"
 	}
 }
