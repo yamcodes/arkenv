@@ -7,4 +7,5 @@ export default defineConfig({
 	dts: {
 		resolve: ["@repo/types"],
 	},
+	external: ["arktype"],
 });
