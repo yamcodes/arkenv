@@ -45,7 +45,6 @@
 		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
-		"@standard-schema/spec": "1.0.0",
 		"@types/node": "catalog:",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",

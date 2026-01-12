@@ -1,7 +1,11 @@
 import { createRequire } from "node:module";
 import { $ } from "@repo/scope";
-import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
-import type { StandardSchemaV1 } from "@standard-schema/spec";
+import type {
+	EnvSchemaWithType,
+	InferType,
+	SchemaShape,
+	StandardSchemaV1,
+} from "@repo/types";
 import type { type as at, Type } from "arktype";
 import { ArkEnvError, type EnvIssue } from "./errors";
 import { coerce } from "./utils/coerce";

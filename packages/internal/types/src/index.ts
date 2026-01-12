@@ -11,3 +11,4 @@ export type * from "./infer-type";
 
 // Also includes ArkType types
 export * from "./schema";
+export * from "./standard-schema";

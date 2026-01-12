@@ -18,7 +18,6 @@
 	},
 	"devDependencies": {
 		"@repo/scope": "workspace:*",
-		"@standard-schema/spec": "1.0.0",
 		"arktype": "catalog:",
 		"typescript": "catalog:"
 	},

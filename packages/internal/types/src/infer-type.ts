@@ -1,6 +1,6 @@
 import type { $ } from "@repo/scope";
-import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { distill, Type, type } from "arktype";
+import type { StandardSchemaV1 } from "./standard-schema";
 
 /**
  * Extract the inferred type from an ArkType type definition or a Standard Schema validator.
