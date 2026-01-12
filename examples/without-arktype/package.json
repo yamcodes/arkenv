@@ -13,15 +13,16 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"engines": {
-		"node": "24"
-	},
-	"packageManager": "npm@11.6.4",
 	"devDependencies": {
 		"tsx": "^4.21.0"
 	},
 	"dependencies": {
-		"arkenv": "https://pkg.pr.new/arkenv@704",
+		"arkenv": "file:../../packages/arkenv/arkenv-0.8.3.tgz",
+		"arktype": "^2.1.29",
 		"zod": "^4.3.5"
-	}
+	},
+	"engines": {
+		"node": "24"
+	},
+	"packageManager": "npm@11.6.4"
 }

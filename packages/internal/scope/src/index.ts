@@ -1,6 +1,7 @@
 import { createRequire } from "node:module";
-import { host, port } from "@repo/keywords";
 import type { scope as ArkScope, type as ArkType } from "arktype";
+
+export { lazyType } from "./lazy-type";
 
 const require = createRequire(import.meta.url);
 
@@ -27,6 +28,10 @@ export const $: ArkEnvScope = new Proxy(
 						scope: typeof ArkScope;
 						type: typeof ArkType;
 					};
+
+					// Lazy load keywords to avoid circular dependency
+					const { host, port } = require("@repo/keywords");
+
 					_$ = scope({
 						string: type.module({
 							...type.keywords.string,

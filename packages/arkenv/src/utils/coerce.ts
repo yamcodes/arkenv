@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { maybeBoolean, maybeJson, maybeNumber } from "@repo/keywords";
+import { maybeBooleanFn, maybeJsonFn, maybeNumberFn } from "@repo/keywords";
 import type { JsonSchema, Type } from "arktype";
 
 const require = createRequire(import.meta.url);
@@ -168,18 +168,18 @@ const applyCoercion = (
 			const rootTarget = targets.find((t) => t.path.length === 0);
 
 			if (rootTarget?.type === "object" && typeof data === "string") {
-				return maybeJson(data);
+				return maybeJsonFn(data);
 			}
 
 			if (rootTarget?.type === "array" && typeof data === "string") {
 				return splitString(data);
 			}
 
-			const asNumber = maybeNumber(data);
+			const asNumber = maybeNumberFn(data);
 			if (typeof asNumber === "number") {
 				return asNumber;
 			}
-			return maybeBoolean(data);
+			return maybeBooleanFn(data);
 		}
 		return data;
 	}
@@ -209,14 +209,14 @@ const applyCoercion = (
 					for (let i = 0; i < current.length; i++) {
 						const original = current[i];
 						if (type === "primitive") {
-							const asNumber = maybeNumber(original);
+							const asNumber = maybeNumberFn(original);
 							if (typeof asNumber === "number") {
 								current[i] = asNumber;
 							} else {
-								current[i] = maybeBoolean(original);
+								current[i] = maybeBooleanFn(original);
 							}
 						} else if (type === "object") {
-							current[i] = maybeJson(original);
+							current[i] = maybeJsonFn(original);
 						}
 					}
 				}
@@ -234,7 +234,7 @@ const applyCoercion = (
 				}
 
 				if (type === "object" && typeof original === "string") {
-					record[lastKey] = maybeJson(original);
+					record[lastKey] = maybeJsonFn(original);
 					return;
 				}
 
@@ -242,22 +242,22 @@ const applyCoercion = (
 					if (type === "primitive") {
 						for (let i = 0; i < original.length; i++) {
 							const item = original[i];
-							const asNumber = maybeNumber(item);
+							const asNumber = maybeNumberFn(item);
 							if (typeof asNumber === "number") {
 								original[i] = asNumber;
 							} else {
-								original[i] = maybeBoolean(item);
+								original[i] = maybeBooleanFn(item);
 							}
 						}
 					}
 				} else {
 					if (type === "primitive") {
-						const asNumber = maybeNumber(original);
+						const asNumber = maybeNumberFn(original);
 						// If numeric parsing didn't produce a number, try boolean coercion
 						if (typeof asNumber === "number") {
 							record[lastKey] = asNumber;
 						} else {
-							record[lastKey] = maybeBoolean(original);
+							record[lastKey] = maybeBooleanFn(original);
 						}
 					}
 				}

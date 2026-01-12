@@ -8,4 +8,5 @@ export default defineConfig({
 		resolve: ["@repo/types"],
 	},
 	external: ["arktype"],
+	// Don't externalize @repo/scope - bundle it
 });

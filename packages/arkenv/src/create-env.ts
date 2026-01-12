@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { $ } from "@repo/scope";
+import type { $ } from "@repo/scope";
 import type {
 	EnvSchemaWithType,
 	InferType,
@@ -85,7 +85,7 @@ function validateArkType(
 
 		let schema = isCompiledType
 			? (def as Type)
-			: ($.type(def as any) as unknown as Type);
+			: (type(def as any) as unknown as Type);
 
 		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
 		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
@@ -134,6 +134,86 @@ function validateArkType(
 }
 
 /**
+ * Validate a mapping of Standard Schema validators (e.g., Zod)
+ * without requiring ArkType.
+ */
+function validateStandardSchemaMapping(
+	def: SchemaShape,
+	env: Record<string, string | undefined>,
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
+	const result: Record<string, unknown> = {};
+	const issues: EnvIssue[] = [];
+
+	for (const [key, validator] of Object.entries(def)) {
+		const value = env[key];
+		const standardSchema = (validator as StandardSchemaV1)?.["~standard"];
+
+		if (!standardSchema) {
+			issues.push({
+				path: [key],
+				message: `Validator for ${key} is not a Standard Schema validator`,
+			});
+			continue;
+		}
+
+		const validationResult = standardSchema.validate(value);
+
+		// Standard Schema can return Promise or sync result
+		// For now, we only support sync validation
+		if (validationResult instanceof Promise) {
+			issues.push({
+				path: [key],
+				message: `Async validation is not supported for ${key}`,
+			});
+			continue;
+		}
+
+		if (validationResult.issues) {
+			for (const issue of validationResult.issues) {
+				issues.push({
+					path: [key, ...(issue.path || []).map(String)],
+					message: issue.message || "Validation failed",
+				});
+			}
+		} else {
+			result[key] = validationResult.value;
+		}
+	}
+
+	if (issues.length > 0) {
+		return { success: false, issues };
+	}
+
+	return { success: true, value: result };
+}
+
+/**
+ * Detect what type of mapping we have
+ */
+function detectMappingType(
+	def: SchemaShape,
+): { type: "standard-schema" } | { type: "arktype" } {
+	let hasStandardSchema = false;
+	let hasNonStandardSchema = false;
+
+	for (const validator of Object.values(def)) {
+		if ((validator as StandardSchemaV1)?.["~standard"]) {
+			hasStandardSchema = true;
+		} else {
+			hasNonStandardSchema = true;
+		}
+	}
+
+	// If all validators are Standard Schema, use Standard Schema validation
+	if (hasStandardSchema && !hasNonStandardSchema) {
+		return { type: "standard-schema" };
+	}
+
+	// Otherwise, use ArkType validation (handles strings, mixed, etc.)
+	return { type: "arktype" };
+}
+
+/**
  * Validate and distill environment variables based on a schema.
  *
  * @param def - The environment variable schema definition. Can be a mapping of keys to validators,
@@ -167,7 +247,13 @@ export function createEnv<T extends SchemaShape | EnvSchemaWithType>(
 		);
 	}
 
-	const result = validateArkType(def, config, env);
+	// Detect what type of mapping we have and route to the appropriate validator
+	const mappingType = detectMappingType(def as SchemaShape);
+
+	const result =
+		mappingType.type === "standard-schema"
+			? validateStandardSchemaMapping(def as SchemaShape, env)
+			: validateArkType(def, config, env);
 
 	if (!result.success) {
 		throw new ArkEnvError(result.issues);
