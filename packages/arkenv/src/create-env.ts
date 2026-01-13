@@ -8,15 +8,44 @@ import { coerce } from "./utils/coerce";
  * The configuration for the ArkEnv library.
  */
 export type ArkEnvConfig = {
+	/**
+	 * The environment variables to validate. Defaults to `process.env`.
+	 */
 	env?: Record<string, string | undefined>;
+	/**
+	 * Whether to coerce environment variables to their expected types.
+	 * Defaults to `true`.
+	 */
 	coerce?:
 		| boolean
 		| {
+				/**
+				 * Whether to coerce environment variables to numbers.
+				 * Defaults to `true`.
+				 */
 				numbers?: boolean;
+				/**
+				 * Whether to coerce environment variables to booleans.
+				 * Defaults to `true`.
+				 */
 				booleans?: boolean;
+				/**
+				 * Whether to coerce environment variables to objects.
+				 * Defaults to `true`.
+				 */
 				objects?: boolean;
 		  };
+	/**
+	 * The policy for undeclared environment variables.
+	 *
+	 * @default "delete"
+	 */
 	onUndeclaredKey?: "ignore" | "reject" | "delete";
+	/**
+	 * The format for array environment variables.
+	 *
+	 * @default "comma"
+	 */
 	arrayFormat?: "comma" | "json";
 };
 
@@ -204,13 +233,13 @@ function detectMappingType(mapping: SchemaShape): {
 }
 
 /**
- * Validates environment variables against a schema and returns the parsed result.
+ * Validate environment variables against a schema and return the parsed result.
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  *
  * @param def - The environment variable schema definition. Can be a mapping of keys to validators, or a compiled ArkType schema.
- * @param config - Optional configuration for validation and coercion
- * @returns The validated and parsed environment variables
+ * @param config - Optional {@link ArkEnvConfig | configuration} for validation and coercion.
+ * @returns The validated and parsed environment variables.
  * @throws An {@link ArkEnvError | error} If validation fails.
  */
 export function createEnv<const T extends SchemaShape>(
