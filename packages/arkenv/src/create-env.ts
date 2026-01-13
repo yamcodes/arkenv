@@ -152,7 +152,9 @@ function validateArkType(
 		if (errors.byPath) {
 			for (const [path, error] of Object.entries(errors.byPath)) {
 				issues.push({
-					path: path.split("."),
+					// Preserve the path as-is since it's an environment variable name
+					// which may legitimately contain dots (e.g., "DATABASE.HOST")
+					path: [path],
 					message: (error as any).message,
 				});
 			}
