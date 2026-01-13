@@ -208,10 +208,10 @@ function detectMappingType(mapping: SchemaShape): {
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  *
- * @param def - The schema definition (ArkType mapping, compiled ArkType, or Standard Schema mapping)
+ * @param def - The environment variable schema definition. Can be a mapping of keys to validators, or a compiled ArkType schema.
  * @param config - Optional configuration for validation and coercion
  * @returns The validated and parsed environment variables
- * @throws {ArkEnvError} If validation fails
+ * @throws An {@link ArkEnvError | error} If validation fails.
  */
 export function createEnv<const T extends SchemaShape>(
 	def: T,

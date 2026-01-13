@@ -55,7 +55,7 @@
 		"zod": "catalog:"
 	},
 	"peerDependencies": {
-		"arktype": "^2.1.22"
+		"arktype": "^2.1.28"
 	},
 	"peerDependenciesMeta": {
 		"arktype": {
