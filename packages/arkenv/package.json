@@ -40,7 +40,6 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@repo/keywords": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
