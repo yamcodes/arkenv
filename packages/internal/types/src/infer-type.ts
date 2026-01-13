@@ -8,8 +8,8 @@ import type { StandardSchemaV1 } from "./standard-schema";
  * @template T - The schema definition to infer from
  */
 export type InferType<T> =
-	T extends StandardSchemaV1<infer U>
-		? U
+	T extends StandardSchemaV1<infer _I, infer O>
+		? O
 		: T extends Type<infer U, unknown>
 			? distill.Out<U>
 			: T extends { t: infer U }
