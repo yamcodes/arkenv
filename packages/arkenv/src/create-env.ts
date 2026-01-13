@@ -208,13 +208,21 @@ function detectMappingType(mapping: SchemaShape): {
 } {
 	let hasStandard = false;
 	let hasArktype = false;
+	let hasKeys = false;
 
 	for (const value of Object.values(mapping)) {
+		hasKeys = true;
 		if (typeof value === "string" || isArktype(value)) {
 			hasArktype = true;
 		} else if ((value as any)?.["~standard"]) {
 			hasStandard = true;
 		}
+	}
+
+	if (!hasKeys) {
+		throw new Error(
+			"ArkEnv expects a mapping of environment variables to validators. Please provide at least one key (e.g., createEnv({ PORT: 'number' })) or pass a compiled ArkType schema directly.",
+		);
 	}
 
 	// Prioritize ArkType detection: if anything identifies as ArkType,

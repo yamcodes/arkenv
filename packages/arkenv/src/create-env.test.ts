@@ -273,6 +273,12 @@ describe("createEnv", () => {
 		);
 	});
 
+	it("should throw a clear error when an empty schema object is provided", () => {
+		expect(() => createEnv({})).toThrow(
+			"ArkEnv expects a mapping of environment variables to validators. Please provide at least one key (e.g., createEnv({ PORT: 'number' })) or pass a compiled ArkType schema directly.",
+		);
+	});
+
 	it("should validate against a custom environment", () => {
 		const env = {
 			TEST_STRING: "hello",
