@@ -1,8 +1,32 @@
 import { $ } from "@repo/scope";
 
 /**
- * `type` is a typesafe environment variable validator, an alias for `arktype`'s `type`.
- * It includes arkenv-specific keywords like `string.host` and `number.port`.
+ * Create type-safe environment variable validators using ArkType's syntax.
+ *
+ * This is a re-export of ArkType's `type` function with arkenv-specific keywords added:
+ * - `string.host` - Validates hostnames and IP addresses
+ * - `number.port` - Validates port numbers (0-65535)
+ *
+ * The proxy wrapper ensures that created types are properly marked as ArkType instances
+ * for internal detection and handling.
+ *
+ * @example
+ * ```ts
+ * // Create a simple type
+ * const Port = type("number.port");
+ *
+ * // Create an object schema
+ * const Config = type({
+ *   HOST: "string.host",
+ *   PORT: "number.port",
+ *   DEBUG: "boolean"
+ * });
+ *
+ * // Use with createEnv
+ * const env = createEnv(Config);
+ * ```
+ *
+ * @see {@link https://arktype.io/docs | ArkType Documentation}
  */
 export const type: typeof $.type = new Proxy((() => {}) as any, {
 	get(_, prop) {
