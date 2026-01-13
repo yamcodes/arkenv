@@ -155,6 +155,9 @@ function coerceInternal(
 						typeof current[part] !== "object" ||
 						current[part] === null
 					) {
+						// Note: This overwrites any existing non-object value.
+						// If both "FOO" and "FOO.BAR" are defined, "FOO.BAR" takes precedence
+						// and "FOO" becomes an object container.
 						current[part] = {};
 					}
 					current = current[part] as Record<string, unknown>;
