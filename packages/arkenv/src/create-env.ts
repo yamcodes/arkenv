@@ -245,7 +245,7 @@ export function createEnv<const T extends SchemaShape>(
 	if (isArkCompiled) {
 		const result = validateArkType(def, config, env);
 		if (!result.success) {
-			throw new ArkEnvError(result.issues as any);
+			throw new ArkEnvError(result.issues);
 		}
 		return result.value as InferType<T>;
 	}
@@ -265,7 +265,7 @@ export function createEnv<const T extends SchemaShape>(
 
 	if (!result.success) {
 		// Use result.issues which is mapped from ArkErrors if needed
-		throw new ArkEnvError(result.issues as any);
+		throw new ArkEnvError(result.issues);
 	}
 
 	return result.value as InferType<T>;
