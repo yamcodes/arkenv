@@ -1,6 +1,6 @@
-import { maybeBooleanFn, maybeJsonFn, maybeNumberFn } from "@repo/keywords";
 import { arktypeLoader } from "@repo/scope";
 import type { Type } from "arktype";
+import { maybeBooleanFn, maybeJsonFn, maybeNumberFn } from "@/morphs";
 
 export type CoerceConfig = {
 	numbers: boolean;
