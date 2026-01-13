@@ -1,5 +1,5 @@
-import { host, port } from "./keywords";
 import { scope, type } from "arktype";
+import { host, port } from "./keywords";
 
 /**
  * Definition of the scope for type inference purposes only.

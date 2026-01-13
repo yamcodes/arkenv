@@ -1,5 +1,5 @@
 import { $ } from "@repo/scope";
-import type { StandardSchemaV1 } from "@repo/types";
+import type { InferType, StandardSchemaV1 } from "@repo/types";
 import type { Type } from "arktype";
 import { ArkEnvError, type EnvIssue } from "./errors";
 import { coerce } from "./utils/coerce";
@@ -20,7 +20,11 @@ export type ArkEnvConfig = {
 	arrayFormat?: "comma" | "json";
 };
 
-type SchemaShape = Record<string, unknown>;
+/**
+ * A flexible schema definition that can be a raw object, compiled ArkType,
+ * or a Standard Schema validator.
+ */
+type SchemaShape = any;
 
 function detectValidatorType(def: unknown): {
 	isArkCompiled: boolean;
@@ -139,78 +143,80 @@ function validateArkType(
 		return { success: false, issues };
 	}
 
-	return { success: true, value: result };
+	return { success: true, value: result as any };
 }
 
 function validateStandardSchemaMapping(
-	def: SchemaShape,
+	mapping: Record<string, StandardSchemaV1>,
 	env: Record<string, string | undefined>,
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
-	const value: Record<string, unknown> = {};
-	const issues: EnvIssue[] = [];
+	const result: Record<string, unknown> = {};
+	const allIssues: EnvIssue[] = [];
 
-	for (const [key, validator] of Object.entries(def)) {
-		const result = (validator as StandardSchemaV1)["~standard"].validate(
-			env[key],
-		);
+	for (const [key, validator] of Object.entries(mapping)) {
+		const value = env[key];
+		const validationResult = validator["~standard"].validate(value);
 
-		if (result instanceof Promise) {
-			throw new Error("ArkEnv does not support asynchronous validators");
+		if (validationResult instanceof Promise) {
+			throw new Error("Async validation is not supported in createEnv.");
 		}
 
-		if (result.issues) {
-			for (const issue of result.issues) {
-				issues.push({
-					path: [key],
-					message: issue.message,
+		if (validationResult.issues) {
+			for (const stdIssue of validationResult.issues) {
+				allIssues.push({
+					path: [key, ...(stdIssue.path || [])].map(String),
+					message: stdIssue.message,
 				});
 			}
 		} else {
-			value[key] = result.value;
+			result[key] = validationResult.value;
 		}
 	}
 
-	if (issues.length > 0) {
-		return { success: false, issues };
+	if (allIssues.length > 0) {
+		return { success: false, issues: allIssues };
 	}
 
-	return { success: true, value };
+	return { success: true, value: result };
 }
 
-function detectMappingType(def: SchemaShape): {
-	type: "standard-schema" | "arktype";
+function detectMappingType(mapping: SchemaShape): {
+	type: "arktype" | "standard-schema";
 } {
-	let hasStandardSchema = false;
+	let hasStandard = false;
 	let hasArktype = false;
 
-	for (const validator of Object.values(def)) {
-		if (isArktype(validator)) {
+	for (const value of Object.values(mapping)) {
+		if (typeof value === "string" || isArktype(value)) {
 			hasArktype = true;
-			break;
-		}
-		if ((validator as StandardSchemaV1)?.["~standard"]) {
-			hasStandardSchema = true;
-		} else {
-			hasArktype = true;
-			break;
+		} else if ((value as any)?.["~standard"]) {
+			hasStandard = true;
 		}
 	}
 
-	if (hasArktype) {
-		return { type: "arktype" };
-	}
-
-	if (hasStandardSchema) {
-		return { type: "standard-schema" };
-	}
+	// Prioritize ArkType detection: if anything identifies as ArkType,
+	// we use the ArkType path which handles both ArkType and Standard Schema
+	// (via $.type wrapping).
+	if (hasArktype) return { type: "arktype" };
+	if (hasStandard) return { type: "standard-schema" };
 
 	return { type: "arktype" };
 }
 
+/**
+ * Validates environment variables against a schema and returns the parsed result.
+ *
+ * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
+ *
+ * @param def - The schema definition (ArkType mapping, compiled ArkType, or Standard Schema mapping)
+ * @param config - Optional configuration for validation and coercion
+ * @returns The validated and parsed environment variables
+ * @throws {ArkEnvError} If validation fails
+ */
 export function createEnv<const T extends SchemaShape>(
 	def: T,
 	config: ArkEnvConfig = {},
-): any {
+): InferType<T> {
 	const env = config.env ?? process.env;
 
 	const { isArkCompiled, isStandard } = detectValidatorType(def);
@@ -220,7 +226,7 @@ export function createEnv<const T extends SchemaShape>(
 		if (!result.success) {
 			throw new ArkEnvError(result.issues as any);
 		}
-		return result.value;
+		return result.value as InferType<T>;
 	}
 
 	if (isStandard) {
@@ -241,7 +247,7 @@ export function createEnv<const T extends SchemaShape>(
 		throw new ArkEnvError(result.issues as any);
 	}
 
-	return result.value;
+	return result.value as InferType<T>;
 }
 
 export default createEnv;
