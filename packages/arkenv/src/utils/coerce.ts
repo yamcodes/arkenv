@@ -1,4 +1,5 @@
 import { arktypeLoader } from "@repo/scope";
+import type { Dict } from "@repo/types";
 import type { Type } from "arktype";
 import { maybeBooleanFn, maybeJsonFn, maybeNumberFn } from "@/morphs";
 
@@ -27,7 +28,7 @@ const DEFAULT_CONFIG: CoerceConfig = {
  */
 export function coerce(
 	schema: Type,
-	env?: Record<string, string | undefined> | string,
+	env?: Dict<string> | string,
 	config: CoerceConfig = DEFAULT_CONFIG,
 ): any {
 	// If env is not provided, return a wrapper function (compat with older tests)

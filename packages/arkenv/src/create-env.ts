@@ -1,5 +1,5 @@
 import { $ } from "@repo/scope";
-import type { InferType, StandardSchemaV1 } from "@repo/types";
+import type { Dict, InferType, StandardSchemaV1 } from "@repo/types";
 import type { Type } from "arktype";
 import { ArkEnvError, type EnvIssue } from "./errors";
 import { coerce } from "./utils/coerce";
@@ -11,7 +11,7 @@ export type ArkEnvConfig = {
 	/**
 	 * The environment variables to validate. Defaults to `process.env`.
 	 */
-	env?: Record<string, string | undefined>;
+	env?: Dict<string>;
 	/**
 	 * Whether to coerce environment variables to their expected types.
 	 * Defaults to `true`.
@@ -112,7 +112,7 @@ function isArkErrors(result: unknown): boolean {
 function validateArkType(
 	def: unknown,
 	config: ArkEnvConfig,
-	env: Record<string, string | undefined>,
+	env: Dict<string>,
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
@@ -177,7 +177,7 @@ function validateArkType(
 
 function validateStandardSchemaMapping(
 	mapping: Record<string, StandardSchemaV1>,
-	env: Record<string, string | undefined>,
+	env: Dict<string>,
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	const result: Record<string, unknown> = {};
 	const allIssues: EnvIssue[] = [];
