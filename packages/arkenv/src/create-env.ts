@@ -16,6 +16,8 @@ export type ArkEnvConfig = {
 				booleans?: boolean;
 				objects?: boolean;
 		  };
+	onUndeclaredKey?: "ignore" | "reject" | "delete";
+	arrayFormat?: "comma" | "json";
 };
 
 type SchemaShape = Record<string, unknown>;
@@ -36,18 +38,23 @@ function isArktype(def: unknown): boolean {
 		return false;
 	}
 
+	const defAny = def as any;
+
 	// ArkType 2.0 markers or our own lazy proxy
-	if ((def as any).isArktype === true) return true;
+	if (
+		defAny.isArktype === true ||
+		defAny.arkKind === "type" ||
+		defAny.arkKind === "generic" ||
+		defAny.arkKind === "module"
+	) {
+		return true;
+	}
 
-	const arkKind = (def as any).arkKind;
-
-	// Narrow detection: focus on ArkType-specific metadata
+	// ArkType 2.0 often has these internal ones
 	return (
-		arkKind === "type" ||
-		arkKind === "generic" ||
-		arkKind === "module" ||
-		(typeof (def as any).assert === "function" &&
-			(def as any).infer !== undefined)
+		typeof defAny.traverseApply === "function" &&
+		typeof defAny.traverseAllows === "function" &&
+		defAny.json !== undefined
 	);
 }
 
@@ -68,41 +75,58 @@ function validateArkType(
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
-	const schema = isCompiledType
+	let schema = isCompiledType
 		? (def as Type)
 		: ($.type(def as any) as unknown as Type);
 
-	const coercionConfig =
-		config.coerce === false
-			? { numbers: false, booleans: false, objects: false }
-			: {
-					numbers:
-						typeof config.coerce === "object"
-							? (config.coerce.numbers ?? true)
-							: true,
-					booleans:
-						typeof config.coerce === "object"
-							? (config.coerce.booleans ?? true)
-							: true,
-					objects:
-						typeof config.coerce === "object"
-							? (config.coerce.objects ?? true)
-							: true,
-				};
+	// Apply undeclared key policy if specified or needed
+	if (config.onUndeclaredKey) {
+		schema = (schema as any).onUndeclaredKey(config.onUndeclaredKey);
+	} else if (!isCompiledType) {
+		// Default behavior for mappings: strip extra keys unless explicitly ignored
+		schema = (schema as any).onUndeclaredKey("delete");
+	}
 
-	const coercedEnv = coerce(schema, env, coercionConfig);
+	const coercionConfig = {
+		numbers:
+			config.coerce === false
+				? false
+				: typeof config.coerce === "object"
+					? (config.coerce.numbers ?? true)
+					: true,
+		booleans:
+			config.coerce === false
+				? false
+				: typeof config.coerce === "object"
+					? (config.coerce.booleans ?? true)
+					: true,
+		objects:
+			config.coerce === false
+				? false
+				: typeof config.coerce === "object"
+					? (config.coerce.objects ?? true)
+					: true,
+		arrayFormat: config.arrayFormat ?? "comma",
+	};
+
+	const coercedEnv = coerce(schema, env, coercionConfig as any);
 
 	const result = schema(coercedEnv);
 
 	if (isArkErrors(result)) {
-		const issues: EnvIssue[] = (result as any).map((error: any) => {
-			return {
-				path: Array.isArray(error.path)
-					? error.path
-					: [String(error.path || "root")],
-				message: error.message,
-			};
-		});
+		const issues: EnvIssue[] = [];
+		const errors = result as any;
+		if (errors.byPath) {
+			for (const [path, error] of Object.entries(errors.byPath)) {
+				issues.push({
+					path: path.split("."),
+					message: (error as any).message,
+				});
+			}
+		} else {
+			// Fallback
+			issues.push({ path: ["root"], message: String(result) });
+		}
 
 		return { success: false, issues };
 	}
@@ -181,12 +205,20 @@ export function createEnv<const T extends SchemaShape>(
 ): any {
 	const env = config.env ?? process.env;
 
-	if (isArktype(def)) {
+	const { isArkCompiled, isStandard } = detectValidatorType(def);
+
+	if (isArkCompiled) {
 		const result = validateArkType(def, config, env);
 		if (!result.success) {
-			throw new ArkEnvError(result.issues);
+			throw new ArkEnvError(result.issues as any);
 		}
 		return result.value;
+	}
+
+	if (isStandard) {
+		throw new Error(
+			"ArkEnv expects a mapping of environment variables to validators, not a top-level Standard Schema (like a Zod object). Please pass an object instead, e.g. createEnv({ PORT: z.string() }).",
+		);
 	}
 
 	const mappingType = detectMappingType(def as SchemaShape);
@@ -197,7 +229,8 @@ export function createEnv<const T extends SchemaShape>(
 			: validateArkType(def, config, env);
 
 	if (!result.success) {
-		throw new ArkEnvError(result.issues);
+		// Use result.issues which is mapped from ArkErrors if needed
+		throw new ArkEnvError(result.issues as any);
 	}
 
 	return result.value;
