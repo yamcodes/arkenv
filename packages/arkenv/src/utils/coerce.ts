@@ -225,9 +225,15 @@ function applyCoercion(
 
 function coerceSimpleValue(value: any, config: CoerceConfig): any {
 	let coerced = value;
-	if (config.numbers) coerced = maybeNumberFn(coerced);
-	if (config.booleans) coerced = maybeBooleanFn(coerced);
+	// Priority: object (JSON Parsing) > number > boolean
+	// (arrays are not handled here since we don't have type information)
 	if (config.objects) coerced = maybeJsonFn(coerced);
+	if (typeof coerced === "string" && config.numbers) {
+		coerced = maybeNumberFn(coerced);
+	}
+	if (typeof coerced === "string" && config.booleans) {
+		coerced = maybeBooleanFn(coerced);
+	}
 	return coerced;
 }
 
