@@ -1,10 +1,23 @@
-import type { scope as ArkScope, type as ArkType } from "arktype";
 import { host, port } from "./keywords";
+import { arktypeLoader } from "./lazy-type";
 
 export * from "./keywords";
-export { lazyType } from "./lazy-type";
+export { lazyType, arktypeLoader } from "./lazy-type";
 
-let _$: any;
+/**
+ * Global cache for the realized scope using Symbol.for for cross-module coordination.
+ */
+const SCOPE_CACHE_SYMBOL = Symbol.for("__ARKENV_SCOPE_CACHE__");
+const G = globalThis as any;
+G[SCOPE_CACHE_SYMBOL] ??= { scope: undefined };
+
+/**
+ * Reset the realized scope and loader (for tests).
+ */
+export function resetScope() {
+	G[SCOPE_CACHE_SYMBOL].scope = undefined;
+	arktypeLoader.reset();
+}
 
 /**
  * The root scope for the ArkEnv library,
@@ -21,31 +34,21 @@ export const $: ArkEnvScope = new Proxy(
 	{},
 	{
 		get(_, prop) {
-			if (!_$) {
-				// We don't use require("arktype") statically to avoid load-time errors
-				try {
-					const { scope, type } = require("arktype") as {
-						scope: typeof ArkScope;
-						type: typeof ArkType;
-					};
+			if (!G[SCOPE_CACHE_SYMBOL].scope) {
+				const { scope, type } = arktypeLoader.load();
 
-					_$ = scope({
-						string: type.module({
-							...type.keywords.string,
-							host,
-						}),
-						number: type.module({
-							...type.keywords.number,
-							port,
-						}),
-					});
-				} catch {
-					throw new Error(
-						"ArkType is required when using `type()` or ArkType-specific schemas. Please install `arktype`.",
-					);
-				}
+				G[SCOPE_CACHE_SYMBOL].scope = scope({
+					string: type.module({
+						...type.keywords.string,
+						host,
+					}),
+					number: type.module({
+						...type.keywords.number,
+						port,
+					}),
+				});
 			}
-			return (_$ as any)[prop];
+			return (G[SCOPE_CACHE_SYMBOL].scope as any)[prop];
 		},
 	},
 ) as any;

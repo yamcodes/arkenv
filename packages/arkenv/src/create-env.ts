@@ -1,77 +1,64 @@
-import { createRequire } from "node:module";
 import { $ } from "@repo/scope";
-import type {
-	EnvSchemaWithType,
-	InferType,
-	SchemaShape,
-	StandardSchemaV1,
-} from "@repo/types";
-import type { type as at, Type } from "arktype";
+import type { StandardSchemaV1 } from "@repo/types";
+import type { Type } from "arktype";
 import { ArkEnvError, type EnvIssue } from "./errors";
 import { coerce } from "./utils/coerce";
 
-const require = createRequire(import.meta.url);
-
-export type EnvSchema<def> = at.validate<def, $>;
-
 /**
- * Configuration options for `createEnv`
+ * The configuration for the ArkEnv library.
  */
-export type ArkEnvConfig = {
-	/**
-	 * The environment variables to validate. Defaults to `process.env`
-	 */
+export interface ArkEnvConfig {
 	env?: Record<string, string | undefined>;
-	/**
-	 * Whether to coerce environment variables to their defined types.
-	 *
-	 * @default true
-	 * Note: Only takes effect when using ArkType.
-	 */
-	coerce?: boolean;
-	/**
-	 * How to handle undeclared keys in the schema.
-	 * - `delete`: Remove undeclared keys.
-	 * - `ignore`: Leave undeclared keys as they are.
-	 * - `reject`: Throw an error if undeclared keys are present.
-	 * @default "delete"
-	 */
-	onUndeclaredKey?: "delete" | "ignore" | "reject";
-	/**
-	 * For arrays, specify how to coerce the string value.
-	 * - `comma`: Split by commas and trim whitespace.
-	 * - `json`: Strings are coerced as JSON.
-	 *
-	 * Note: only takes effect when `coerce` is enabled.
-	 * @default "comma"
-	 */
-	arrayFormat?: "comma" | "json";
-};
+	coerce?:
+		| boolean
+		| {
+				numbers?: boolean;
+				booleans?: boolean;
+				objects?: boolean;
+		  };
+}
 
-/**
- * Helper to identify if a value is an ArkType-compiled type or a lazy proxy.
- * We want these to go through the validateArkType path for coercion.
- */
+type SchemaShape = Record<string, unknown>;
+
+function detectValidatorType(def: unknown): {
+	isArkCompiled: boolean;
+	isStandard: boolean;
+} {
+	const isArkCompiled = isArktype(def);
+	const isStandard =
+		!isArkCompiled && (def as StandardSchemaV1)?.["~standard"] !== undefined;
+
+	return { isArkCompiled, isStandard };
+}
+
 function isArktype(def: unknown): boolean {
 	if (typeof def !== "function" && (typeof def !== "object" || def === null)) {
 		return false;
 	}
 
-	const d = def as Record<string, unknown>;
+	// ArkType 2.0 markers or our own lazy proxy
+	if ((def as any).isArktype === true) return true;
 
-	// Check for ArkType's brand or our lazy proxy state
+	const arkKind = (def as any).arkKind;
+
+	// Narrow detection: focus on ArkType-specific metadata
 	return (
-		"infer" in d ||
-		(typeof d.t === "object" && d.t !== null && "infer" in d.t) ||
-		(typeof d.allows === "function" && "pipe" in d)
+		arkKind === "type" ||
+		arkKind === "generic" ||
+		arkKind === "module" ||
+		(typeof (def as any).assert === "function" &&
+			(def as any).infer !== undefined)
 	);
 }
 
-function detectValidatorType(def: unknown) {
-	const isStandard = !!(def as StandardSchemaV1)?.["~standard"];
-	const isArkCompiled = isArktype(def);
+function isArkErrors(result: unknown): boolean {
+	if (!result || typeof result !== "object") return false;
 
-	return { isStandard, isArkCompiled };
+	const arkKind = (result as any).arkKind;
+	return (
+		arkKind === "errors" ||
+		("byPath" in (result as any) && "count" in (result as any))
+	);
 }
 
 function validateArkType(
@@ -79,103 +66,75 @@ function validateArkType(
 	config: ArkEnvConfig,
 	env: Record<string, string | undefined>,
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
-	try {
-		const { isArkCompiled: isCompiledType } = detectValidatorType(def);
+	const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
-		let schema = isCompiledType
-			? (def as Type)
-			: ($.type(def as any) as unknown as Type);
+	let schema = isCompiledType
+		? (def as Type)
+		: ($.type(def as any) as unknown as Type);
 
-		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
-		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
+	const coercionConfig =
+		config.coerce === false
+			? { numbers: false, booleans: false, objects: false }
+			: {
+					numbers:
+						typeof config.coerce === "object"
+							? (config.coerce.numbers ?? true)
+							: true,
+					booleans:
+						typeof config.coerce === "object"
+							? (config.coerce.booleans ?? true)
+							: true,
+					objects:
+						typeof config.coerce === "object"
+							? (config.coerce.objects ?? true)
+							: true,
+				};
 
-		// Apply coercion transformation (Lazy Loaded)
-		if (config.coerce !== false) {
-			schema = coerce(schema, {
-				arrayFormat: config.arrayFormat,
-			});
-		}
+	const coercedEnv = coerce(schema, env, coercionConfig);
 
-		const result = schema(env);
+	const result = schema(coercedEnv);
 
-		if (result instanceof ($.type as any).errors) {
+	if (isArkErrors(result)) {
+		const issues: EnvIssue[] = (result as any).map((error: any) => {
 			return {
-				success: false,
-				issues: Object.entries(
-					(result as { byPath: Record<string, { message?: string }> }).byPath,
-				).map(([path, error]) => ({
-					path: path ? path.split(".") : [],
-					message:
-						typeof error === "object" && error !== null && "message" in error
-							? String((error as { message?: string }).message)
-							: "Validation failed",
-				})),
+				path: Array.isArray(error.path)
+					? error.path
+					: [String(error.path || "root")],
+				message: error.message,
 			};
-		}
+		});
 
-		return {
-			success: true,
-			value: result,
-		};
-	} catch (e: unknown) {
-		if (
-			e instanceof Error &&
-			"code" in e &&
-			e.code === "MODULE_NOT_FOUND" &&
-			e.message.includes("'arktype'")
-		) {
-			throw new Error(
-				"ArkType is required for this schema type. Please install 'arktype' or use a Standard Schema validator like Zod.",
-			);
-		}
-		throw e;
+		return { success: false, issues };
 	}
+
+	return { success: true, value: result };
 }
 
-/**
- * Validate a mapping of Standard Schema validators (e.g., Zod)
- * without requiring ArkType.
- */
 function validateStandardSchemaMapping(
 	def: SchemaShape,
 	env: Record<string, string | undefined>,
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
-	const result: Record<string, unknown> = {};
+	const value: Record<string, unknown> = {};
 	const issues: EnvIssue[] = [];
 
 	for (const [key, validator] of Object.entries(def)) {
-		const value = env[key];
-		const standardSchema = (validator as StandardSchemaV1)?.["~standard"];
+		const result = (validator as StandardSchemaV1)["~standard"].validate(
+			env[key],
+		);
 
-		if (!standardSchema) {
-			issues.push({
-				path: [key],
-				message: `Validator for ${key} is not a Standard Schema validator`,
-			});
-			continue;
+		if (result instanceof Promise) {
+			throw new Error("ArkEnv does not support asynchronous validators");
 		}
 
-		const validationResult = standardSchema.validate(value);
-
-		// Standard Schema can return Promise or sync result
-		// For now, we only support sync validation
-		if (validationResult instanceof Promise) {
-			issues.push({
-				path: [key],
-				message: `Async validation is not supported for ${key}`,
-			});
-			continue;
-		}
-
-		if (validationResult.issues) {
-			for (const issue of validationResult.issues) {
+		if (result.issues) {
+			for (const issue of result.issues) {
 				issues.push({
-					path: [key, ...(issue.path || []).map(String)],
-					message: issue.message || "Validation failed",
+					path: [key],
+					message: issue.message,
 				});
 			}
 		} else {
-			result[key] = validationResult.value;
+			value[key] = result.value;
 		}
 	}
 
@@ -183,74 +142,52 @@ function validateStandardSchemaMapping(
 		return { success: false, issues };
 	}
 
-	return { success: true, value: result };
+	return { success: true, value };
 }
 
-/**
- * Detect what type of mapping we have
- */
-function detectMappingType(
-	def: SchemaShape,
-): { type: "standard-schema" } | { type: "arktype" } {
+function detectMappingType(def: SchemaShape): {
+	type: "standard-schema" | "arktype";
+} {
 	let hasStandardSchema = false;
 	let hasArktype = false;
 
 	for (const validator of Object.values(def)) {
 		if (isArktype(validator)) {
 			hasArktype = true;
+			break;
 		} else if ((validator as StandardSchemaV1)?.["~standard"]) {
 			hasStandardSchema = true;
 		} else {
-			// If it's a string definition or something else, it's ArkType-path
 			hasArktype = true;
+			break;
 		}
 	}
 
-	// If all validators are ONLY Standard Schema (and NOT ArkType), use Standard Schema path
-	// This ensures that ArkType types (which implement Standard Schema) still go through validateArkType
-	if (hasStandardSchema && !hasArktype) {
+	if (hasArktype) {
+		return { type: "arktype" };
+	}
+
+	if (hasStandardSchema) {
 		return { type: "standard-schema" };
 	}
 
-	// Otherwise, fallback to ArkType path
 	return { type: "arktype" };
 }
 
-/**
- * Validate and distill environment variables based on a schema.
- *
- * @param def - The environment variable schema definition. Can be a mapping of keys to validators,
- * or a compiled ArkType schema.
- * @param config - Optional configuration for validation and coercion.
- * @returns The validated and distilled environment variables.
- * @throws {ArkEnvError} If validation fails.
- */
 export function createEnv<const T extends SchemaShape>(
 	def: T,
-	config?: ArkEnvConfig,
-): InferType<T>;
-export function createEnv<const T extends EnvSchemaWithType>(
-	def: T,
-	config?: ArkEnvConfig,
-): InferType<T>;
-export function createEnv<T extends SchemaShape | EnvSchemaWithType>(
-	def: T,
 	config: ArkEnvConfig = {},
-): InferType<T> {
-	const { env = process.env } = config;
+): any {
+	const env = config.env ?? process.env;
 
-	const { isStandard, isArkCompiled } = detectValidatorType(def);
-
-	// Guardrail: Block top-level Standard Schema (Zod, Valibot, etc.)
-	// Reusable type() schemas (ArkType) are allowed.
-	if (isStandard && !isArkCompiled) {
-		throw new Error(
-			"ArkEnv: arkenv() expects a mapping of { KEY: validator }, not a top-level Standard Schema (e.g. z.object()). " +
-				"Standard Schema validators are supported inside the mapping, or you can use ArkType's type() for top-level schemas.",
-		);
+	if (isArktype(def)) {
+		const result = validateArkType(def, config, env);
+		if (!result.success) {
+			throw new ArkEnvError(result.issues);
+		}
+		return result.value;
 	}
 
-	// Detect what type of mapping we have and route to the appropriate validator
 	const mappingType = detectMappingType(def as SchemaShape);
 
 	const result =
@@ -262,5 +199,7 @@ export function createEnv<T extends SchemaShape | EnvSchemaWithType>(
 		throw new ArkEnvError(result.issues);
 	}
 
-	return result.value as InferType<T>;
+	return result.value;
 }
+
+export default createEnv;
