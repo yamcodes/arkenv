@@ -104,6 +104,12 @@ function realizeType(state: LazyTypeProxy): any {
 
 /**
  * The lazy type function that mimics ArkType's `type()` API.
+ * This is typed as ArkType's type function for full DX compatibility,
+ * but returns a lazy proxy that defers loading ArkType until needed.
+ *
+ * MAINTAINER NOTE: This is a best-effort internal proxy.
+ * If you use this in tests, you MUST call resetScope() in beforeEach/afterEach
+ * to avoid leaking state between test cases.
  */
 import type { type as ArkType } from "arktype";
 export const lazyType = new Proxy(() => {}, {
@@ -115,4 +121,4 @@ export const lazyType = new Proxy(() => {}, {
 		const at = arktypeLoader.load();
 		return (at.type as any)[prop];
 	},
-}) as typeof ArkType;
+}) as unknown as typeof ArkType;

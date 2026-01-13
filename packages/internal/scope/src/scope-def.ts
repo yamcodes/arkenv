@@ -1,4 +1,4 @@
-import { host, port } from "@repo/keywords";
+import { host, port } from "./keywords";
 import { scope, type } from "arktype";
 
 /**

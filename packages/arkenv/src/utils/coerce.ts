@@ -18,6 +18,12 @@ const DEFAULT_CONFIG: CoerceConfig = {
 
 /**
  * Coerce values in a record based on an ArkType schema's JSON representation.
+ *
+ * MAINTAINER NOTE: This is a mini-coercion engine.
+ * 1. Keep it isolated to arkenv's internal needs.
+ * 2. Resist feature creep (do not add specialized rules for every possible type).
+ * 3. Standard Schema validators (Zod, etc.) OWN their own coercion; arkenv only
+ *    applies this engine to ArkType or raw object mappings.
  */
 export function coerce(
 	schema: Type,

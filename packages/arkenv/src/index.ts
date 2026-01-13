@@ -1,7 +1,5 @@
 import { createEnv } from "./create-env";
 
-export type { EnvSchema } from "./create-env";
-
 /**
  * `arkenv`'s main export, an alias for {@link createEnv}
  *

@@ -33,6 +33,14 @@ function detectValidatorType(def: unknown): {
 	return { isArkCompiled, isStandard };
 }
 
+/**
+ * Detects if a definition is an ArkType validator.
+ *
+ * MAINTAINER NOTE: This is best-effort detection for ArkType 2.0.
+ * Future ArkType internals could shift; fallback behavior should ensure
+ * we error cleanly if detection fails but a validator is actually required.
+ * Do not promise this logic as public contract.
+ */
 function isArktype(def: unknown): boolean {
 	if (typeof def !== "function" && (typeof def !== "object" || def === null)) {
 		return false;
