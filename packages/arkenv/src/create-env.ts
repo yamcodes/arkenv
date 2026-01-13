@@ -117,7 +117,7 @@ function validateArkType(
 	}
 
 	// TODO: This can be simplified
-	const coercionConfig = {
+	const coercionConfig: CoerceConfig = {
 		numbers:
 			config.coerce === false
 				? false
@@ -137,14 +137,12 @@ function validateArkType(
 					? (config.coerce.objects ?? true)
 					: true,
 		arrayFormat:
-			config.coerce === false
-				? false
-				: typeof config.coerce === "object"
-					? (config.coerce.arrayFormat ?? "comma")
-					: "comma",
+			typeof config.coerce === "object"
+				? (config.coerce.arrayFormat ?? "comma")
+				: "comma",
 	};
 
-	const coercedEnv = coerce(schema, env, coercionConfig as any);
+	const coercedEnv = coerce(schema, env, coercionConfig);
 
 	const result = schema(coercedEnv);
 
