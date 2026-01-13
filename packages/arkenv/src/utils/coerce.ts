@@ -1,7 +1,7 @@
 import { arktypeLoader } from "@repo/scope";
 import type { Dict } from "@repo/types";
 import type { Type } from "arktype";
-import { maybeBooleanFn, maybeJsonFn, maybeNumberFn } from "@/morphs";
+import { coerceBoolean, coerceJson, coerceNumber } from "@/morphs";
 
 /**
  * Configuration for the coercion engine.
@@ -184,7 +184,7 @@ function applyCoercion(
 
 	// Priority: object (JSON Parsing) > array (Splitting) > number > boolean
 	if (types.includes("object") && config.objects) {
-		coerced = maybeJsonFn(coerced);
+		coerced = coerceJson(coerced);
 	}
 
 	if (typeof coerced === "string") {
@@ -194,7 +194,7 @@ function applyCoercion(
 				coerced.startsWith("[") ||
 				coerced.startsWith("{")
 			) {
-				const parsed = maybeJsonFn(coerced);
+				const parsed = coerceJson(coerced);
 				if (Array.isArray(parsed)) return parsed;
 			}
 
@@ -209,14 +209,14 @@ function applyCoercion(
 		}
 
 		if (types.includes("number") && config.numbers) {
-			coerced = maybeNumberFn(coerced);
+			coerced = coerceNumber(coerced);
 		}
 		if (
 			typeof coerced === "string" &&
 			types.includes("boolean") &&
 			config.booleans
 		) {
-			coerced = maybeBooleanFn(coerced);
+			coerced = coerceBoolean(coerced);
 		}
 	}
 
@@ -227,12 +227,12 @@ function coerceSimpleValue(value: any, config: CoerceConfig): any {
 	let coerced = value;
 	// Priority: object (JSON Parsing) > number > boolean
 	// (arrays are not handled here since we don't have type information)
-	if (config.objects) coerced = maybeJsonFn(coerced);
+	if (config.objects) coerced = coerceJson(coerced);
 	if (typeof coerced === "string" && config.numbers) {
-		coerced = maybeNumberFn(coerced);
+		coerced = coerceNumber(coerced);
 	}
 	if (typeof coerced === "string" && config.booleans) {
-		coerced = maybeBooleanFn(coerced);
+		coerced = coerceBoolean(coerced);
 	}
 	return coerced;
 }
