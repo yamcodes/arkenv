@@ -12,11 +12,11 @@ describe("port", () => {
 	});
 
 	it("should throw when the port is negative", () => {
-		expect(() => port.assert("-2")).toThrow();
+		expect(() => port.assert(-2)).toThrow();
 	});
 
 	it("should throw when the port is too large", () => {
-		expect(() => port.assert("65536")).toThrow();
+		expect(() => port.assert(65536)).toThrow();
 	});
 });
 
