@@ -17,7 +17,7 @@
 		"tsx": "^4.21.0"
 	},
 	"dependencies": {
-		"arkenv": "file:../../packages/arkenv/arkenv-0.8.3.tgz",
+		"arkenv": "https://pkg.pr.new/arkenv@721",
 		"zod": "^4.3.5"
 	},
 	"engines": {
