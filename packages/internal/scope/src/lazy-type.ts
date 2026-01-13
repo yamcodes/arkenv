@@ -21,28 +21,25 @@ type LazyTypeProxy = {
  * ArkType when the validator is actually used or inspected.
  */
 function createLazyProxy(state: LazyTypeProxy): any {
-	return new Proxy(
-		{},
-		{
-			get(_, prop) {
-				// Handle .pipe() - chain morphs without realizing the type yet
-				if (prop === "pipe") {
-					return (morph: (value: unknown) => unknown) => {
-						state.morphs.push(morph);
-						return createLazyProxy(state);
-					};
-				}
+	return new Proxy(() => {}, {
+		get(_, prop) {
+			// Handle .pipe() - chain morphs without realizing the type yet
+			if (prop === "pipe") {
+				return (morph: (value: unknown) => unknown) => {
+					state.morphs.push(morph);
+					return createLazyProxy(state);
+				};
+			}
 
-				// For any other property access, we need to realize the type
-				return realizeType(state)[prop];
-			},
-			apply(_, __, args) {
-				// If the proxy itself is called as a validator
-				const realized = realizeType(state);
-				return realized(...args);
-			},
+			// For any other property access, we need to realize the type
+			return realizeType(state)[prop];
 		},
-	);
+		apply(_, __, args) {
+			// If the proxy itself is called as a validator
+			const realized = realizeType(state);
+			return realized(...args);
+		},
+	});
 }
 
 /**

@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import type { $ } from "@repo/scope";
+import { $ } from "@repo/scope";
 import type {
 	EnvSchemaWithType,
 	InferType,
@@ -48,27 +48,28 @@ export type ArkEnvConfig = {
 	arrayFormat?: "comma" | "json";
 };
 
-function detectValidatorType(def: unknown) {
-	const isStandard = !!(def as StandardSchemaV1)?.["~standard"];
-	const isObjectLike =
-		typeof def === "function" || (typeof def === "object" && def !== null);
-
-	if (!isObjectLike) {
-		return { isStandard, isArkCompiled: false };
+/**
+ * Helper to identify if a value is an ArkType-compiled type or a lazy proxy.
+ * We want these to go through the validateArkType path for coercion.
+ */
+function isArktype(def: unknown): boolean {
+	if (typeof def !== "function" && (typeof def !== "object" || def === null)) {
+		return false;
 	}
 
 	const d = def as Record<string, unknown>;
-	// Check for ArkType's brand/symbol if available, fall back to duck typing
-	const hasArktypeBrand =
-		"infer" in d || (typeof d.t === "object" && d.t !== null && "infer" in d.t);
 
-	const isArkCompiled =
-		hasArktypeBrand ||
-		(("t" in d || "allows" in d) &&
-			("infer" in d ||
-				"toJsonSchema" in d ||
-				"expression" in d ||
-				("array" in d && "or" in d && "pipe" in d)));
+	// Check for ArkType's brand or our lazy proxy state
+	return (
+		"infer" in d ||
+		(typeof d.t === "object" && d.t !== null && "infer" in d.t) ||
+		(typeof d.allows === "function" && "pipe" in d)
+	);
+}
+
+function detectValidatorType(def: unknown) {
+	const isStandard = !!(def as StandardSchemaV1)?.["~standard"];
+	const isArkCompiled = isArktype(def);
 
 	return { isStandard, isArkCompiled };
 }
@@ -79,13 +80,11 @@ function validateArkType(
 	env: Record<string, string | undefined>,
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	try {
-		const { type } = require("arktype");
-
 		const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
 		let schema = isCompiledType
 			? (def as Type)
-			: (type(def as any) as unknown as Type);
+			: ($.type(def as any) as unknown as Type);
 
 		// Apply the `onUndeclaredKey` option, defaulting to "delete" for arkenv compatibility
 		schema = schema.onUndeclaredKey(config.onUndeclaredKey ?? "delete");
@@ -93,13 +92,13 @@ function validateArkType(
 		// Apply coercion transformation (Lazy Loaded)
 		if (config.coerce !== false) {
 			schema = coerce(schema, {
-				...(config.arrayFormat ? { arrayFormat: config.arrayFormat } : {}),
+				arrayFormat: config.arrayFormat,
 			});
 		}
 
 		const result = schema(env);
 
-		if (result instanceof type.errors) {
+		if (result instanceof ($.type as any).errors) {
 			return {
 				success: false,
 				issues: Object.entries(
@@ -194,22 +193,26 @@ function detectMappingType(
 	def: SchemaShape,
 ): { type: "standard-schema" } | { type: "arktype" } {
 	let hasStandardSchema = false;
-	let hasNonStandardSchema = false;
+	let hasArktype = false;
 
 	for (const validator of Object.values(def)) {
-		if ((validator as StandardSchemaV1)?.["~standard"]) {
+		if (isArktype(validator)) {
+			hasArktype = true;
+		} else if ((validator as StandardSchemaV1)?.["~standard"]) {
 			hasStandardSchema = true;
 		} else {
-			hasNonStandardSchema = true;
+			// If it's a string definition or something else, it's ArkType-path
+			hasArktype = true;
 		}
 	}
 
-	// If all validators are Standard Schema, use Standard Schema validation
-	if (hasStandardSchema && !hasNonStandardSchema) {
+	// If all validators are ONLY Standard Schema (and NOT ArkType), use Standard Schema path
+	// This ensures that ArkType types (which implement Standard Schema) still go through validateArkType
+	if (hasStandardSchema && !hasArktype) {
 		return { type: "standard-schema" };
 	}
 
-	// Otherwise, use ArkType validation (handles strings, mixed, etc.)
+	// Otherwise, fallback to ArkType path
 	return { type: "arktype" };
 }
 
