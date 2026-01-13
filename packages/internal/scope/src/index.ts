@@ -1,8 +1,8 @@
 import type { scope as ArkScope, type as ArkType } from "arktype";
 import { host, port } from "./keywords";
 
-export { lazyType } from "./lazy-type";
 export * from "./keywords";
+export { lazyType } from "./lazy-type";
 
 let _$: any;
 

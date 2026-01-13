@@ -3,6 +3,32 @@ import type { type as ArkType } from "arktype";
 
 const require = createRequire(import.meta.url);
 
+let _at: typeof import("arktype") | undefined;
+
+/**
+ * Load ArkType lazily and cache the result.
+ */
+function loadArkType(): typeof import("arktype") {
+	if (_at) return _at;
+	try {
+		_at = require("arktype");
+		return _at!;
+	} catch (e: unknown) {
+		if (
+			e instanceof Error &&
+			"code" in e &&
+			e.code === "MODULE_NOT_FOUND" &&
+			e.message.includes("'arktype'")
+		) {
+			throw new Error(
+				"ArkType is required when using ArkType-specific schemas (string definitions or type() calls). " +
+					"Please install 'arktype' as a dependency, or use Standard Schema validators like Zod instead.",
+			);
+		}
+		throw e;
+	}
+}
+
 /**
  * A lazy proxy that defers loading ArkType until it is actually needed.
  * This allows internal packages to use ArkType syntax without creating
@@ -51,24 +77,7 @@ function realizeType(state: LazyTypeProxy): any {
 		return state._realized;
 	}
 
-	let at: typeof import("arktype");
-	try {
-		at = require("arktype");
-	} catch (e: unknown) {
-		if (
-			e instanceof Error &&
-			"code" in e &&
-			e.code === "MODULE_NOT_FOUND" &&
-			e.message.includes("'arktype'")
-		) {
-			throw new Error(
-				"ArkType is required when using ArkType-specific schemas (string definitions or type() calls). " +
-					"Please install 'arktype' as a dependency, or use Standard Schema validators like Zod instead.",
-			);
-		}
-		throw e;
-	}
-
+	const at = loadArkType();
 	const { type } = at;
 
 	// Build the type from the definition
@@ -95,7 +104,7 @@ export const lazyType = new Proxy(() => {}, {
 	get(_, prop) {
 		// Forward static properties from the real type function
 		// This ensures things like type.keywords work correctly
-		const at = require("arktype");
-		return at.type[prop];
+		const at = loadArkType();
+		return (at.type as any)[prop];
 	},
 }) as typeof ArkType;
