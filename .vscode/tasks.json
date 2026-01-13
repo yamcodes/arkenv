@@ -24,6 +24,13 @@
 			"problemMatcher": [],
 			"label": "changeset",
 			"detail": "changeset"
+		},
+		{
+			"type": "npm",
+			"script": "test",
+			"problemMatcher": [],
+			"label": "test",
+			"detail": "vitest"
 		}
 	]
 }

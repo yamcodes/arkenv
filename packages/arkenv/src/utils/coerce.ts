@@ -150,7 +150,13 @@ function coerceInternal(
 				let current = result;
 				for (let i = 0; i < parts.length - 1; i++) {
 					const part = parts[i];
-					if (!(part in current)) current[part] = {};
+					if (
+						!(part in current) ||
+						typeof current[part] !== "object" ||
+						current[part] === null
+					) {
+						current[part] = {};
+					}
 					current = current[part] as Record<string, unknown>;
 				}
 				const lastPart = parts[parts.length - 1];
