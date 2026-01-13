@@ -2,7 +2,7 @@ import { $ } from "@repo/scope";
 import type { Dict, InferType, StandardSchemaV1 } from "@repo/types";
 import type { Type } from "arktype";
 import { ArkEnvError, type EnvIssue } from "./errors";
-import { coerce } from "./utils/coerce";
+import { type CoerceConfig, coerce } from "./utils/coerce";
 
 /**
  * The configuration for the ArkEnv library.
@@ -19,28 +19,7 @@ export type ArkEnvConfig = {
 	 *
 	 * @default `true`
 	 */
-	coerce?:
-		| boolean
-		| {
-				/**
-				 * Whether to coerce environment variables to numbers.
-				 *
-				 * @default `true`
-				 */
-				numbers?: boolean;
-				/**
-				 * Whether to coerce environment variables to booleans.
-				 *
-				 * @default `true`
-				 */
-				booleans?: boolean;
-				/**
-				 * Whether to coerce environment variables to objects.
-				 *
-				 * @default `true`
-				 */
-				objects?: boolean;
-		  };
+	coerce?: boolean | Partial<CoerceConfig>;
 	/**
 	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
@@ -56,15 +35,6 @@ export type ArkEnvConfig = {
 	 * @see https://arktype.io/docs/configuration#onundeclaredkey
 	 */
 	onUndeclaredKey?: "ignore" | "reject" | "delete";
-	/**
-	 * The format to use for array coercion (when `coerce` is enabled).
-	 *
-	 * - `comma` (default): Strings are split by comma and trimmed.
-	 * - `json`: Strings are parsed as JSON.
-	 *
-	 * @default "comma"
-	 */
-	arrayFormat?: "comma" | "json";
 };
 
 /**

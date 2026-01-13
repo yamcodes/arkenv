@@ -3,10 +3,36 @@ import type { Dict } from "@repo/types";
 import type { Type } from "arktype";
 import { maybeBooleanFn, maybeJsonFn, maybeNumberFn } from "@/morphs";
 
+/**
+ * Configuration for the coercion engine.
+ */
 export type CoerceConfig = {
+	/**
+	 * Whether to coerce environment variables to numbers.
+	 *
+	 * @default `true`
+	 */
 	numbers: boolean;
+	/**
+	 * Whether to coerce environment variables to booleans.
+	 *
+	 * @default `true`
+	 */
 	booleans: boolean;
+	/**
+	 * Whether to coerce environment variables to objects.
+	 *
+	 * @default `true`
+	 */
 	objects: boolean;
+	/**
+	 * The format to use for array coercion (when `coerce` is enabled).
+	 *
+	 * - `comma` (default): Strings are split by comma and trimmed.
+	 * - `json`: Strings are parsed as JSON.
+	 *
+	 * @default "comma"
+	 */
 	arrayFormat: "comma" | "json";
 };
 
