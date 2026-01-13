@@ -508,7 +508,9 @@ describe("createEnv", () => {
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: '["foo", "bar"]' },
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.TAGS).toEqual(["foo", "bar"]);
@@ -520,7 +522,9 @@ describe("createEnv", () => {
 					{ TAGS: "string[]" },
 					{
 						env: { TAGS: "foo,bar" }, // Comma separated, not JSON
-						arrayFormat: "json",
+						coerce: {
+							arrayFormat: "json",
+						},
 					},
 				);
 			}).toThrow("must be an array");
@@ -542,7 +546,9 @@ describe("createEnv", () => {
 				{ NUMBERS: "number[]" },
 				{
 					env: { NUMBERS: "[1, 2, 3]" },
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.NUMBERS).toEqual([1, 2, 3]);
@@ -566,7 +572,9 @@ describe("createEnv", () => {
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: "[]" },
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.TAGS).toEqual([]);
@@ -620,7 +628,9 @@ describe("createEnv", () => {
 						SERVICES:
 							'[{"NAME": "web", "PORT": "80"}, {"NAME": "api", "PORT": "3000"}]',
 					},
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.SERVICES).toEqual([

@@ -116,6 +116,7 @@ function validateArkType(
 		schema = (schema as any).onUndeclaredKey("delete");
 	}
 
+	// TODO: This can be simplified
 	const coercionConfig = {
 		numbers:
 			config.coerce === false
@@ -135,7 +136,9 @@ function validateArkType(
 				: typeof config.coerce === "object"
 					? (config.coerce.objects ?? true)
 					: true,
-		arrayFormat: config.arrayFormat ?? "comma",
+		arrayFormat:
+			(typeof config?.coerce === "object" && config.coerce.arrayFormat) ??
+			"comma",
 	};
 
 	const coercedEnv = coerce(schema, env, coercionConfig as any);

@@ -6,7 +6,7 @@ import { maybeBooleanFn, maybeJsonFn, maybeNumberFn } from "@/morphs";
 /**
  * Configuration for the coercion engine.
  */
-export type CoerceConfig = {
+export type CoerceConfig = Readonly<{
 	/**
 	 * Whether to coerce environment variables to numbers.
 	 *
@@ -34,7 +34,7 @@ export type CoerceConfig = {
 	 * @default "comma"
 	 */
 	arrayFormat: "comma" | "json";
-};
+}>;
 
 const DEFAULT_CONFIG: CoerceConfig = {
 	numbers: true,
