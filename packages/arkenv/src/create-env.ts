@@ -9,29 +9,35 @@ import { coerce } from "./utils/coerce";
  */
 export type ArkEnvConfig = {
 	/**
-	 * The environment variables to validate. Defaults to `process.env`.
+	 * The environment variables to validate.
+	 *
+	 * @default `process.env`
 	 */
 	env?: Dict<string>;
 	/**
 	 * Whether to coerce environment variables to their expected types.
-	 * Defaults to `true`.
+	 *
+	 * @default `true`
 	 */
 	coerce?:
 		| boolean
 		| {
 				/**
 				 * Whether to coerce environment variables to numbers.
-				 * Defaults to `true`.
+				 *
+				 * @default `true`
 				 */
 				numbers?: boolean;
 				/**
 				 * Whether to coerce environment variables to booleans.
-				 * Defaults to `true`.
+				 *
+				 * @default `true`
 				 */
 				booleans?: boolean;
 				/**
 				 * Whether to coerce environment variables to objects.
-				 * Defaults to `true`.
+				 *
+				 * @default `true`
 				 */
 				objects?: boolean;
 		  };
