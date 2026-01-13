@@ -162,7 +162,9 @@ describe("coercion integration", () => {
 					VERSION: "1.0.0",
 					EXTRA: "unused",
 				} as Record<string, string | undefined>,
-				arrayFormat: "json",
+				coerce: {
+					arrayFormat: "json",
+				},
 				onUndeclaredKey: "delete",
 			},
 		);
@@ -180,7 +182,9 @@ describe("coercion integration", () => {
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: '["invalid-json' },
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 		}).toThrow("must be an array");

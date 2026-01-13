@@ -62,7 +62,9 @@ import arkenv from "arkenv";
 const env = arkenv(
   { TAGS: "string[]" },
   {
-    arrayFormat: "json",
+    coerce: {
+      arrayFormat: "json",
+    },
     env: { TAGS: '["web", "app"]' }
   }
 );

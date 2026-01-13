@@ -2,6 +2,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as vite from "vite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
+import arkenvPlugin from "./index";
 
 // Mock the arkenv module to capture calls
 // Mock the arkenv module with a spy that calls the real implementation by default
@@ -22,8 +24,6 @@ vi.mock("vite", async (importActual) => {
 		loadEnv: vi.fn(actual.loadEnv),
 	};
 });
-
-import arkenvPlugin from "./index.js";
 
 const fixturesDir = join(__dirname, "__fixtures__");
 
@@ -616,6 +616,42 @@ describe("Plugin Unit Tests", () => {
 				env: expect.any(Object),
 			},
 		);
+	});
+
+	it("should work with a Zod Standard Schema validator", async () => {
+		vi.stubEnv("VITE_SS_VAR", "valid-value");
+		const schema = {
+			VITE_SS_VAR: z.string().min(5),
+		};
+
+		// Note: We use the real implementation for this test
+		const actual = await vi.importActual<any>("arkenv");
+		mockCreateEnv.mockImplementation(actual.createEnv);
+
+		const pluginInstance = arkenvPlugin(schema);
+
+		let result: any = {};
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			result = pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		expect(result.define).toHaveProperty("import.meta.env.VITE_SS_VAR");
 	});
 });
 

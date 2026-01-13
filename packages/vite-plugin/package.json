@@ -21,7 +21,8 @@
 		"typescript": "catalog:",
 		"vite": "7.3.1",
 		"vite-tsconfig-paths": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",
@@ -40,7 +41,6 @@
 	"homepage": "https://arkenv.js.org",
 	"keywords": [
 		"arktype",
-		"arkenv",
 		"arkenv",
 		"environment",
 		"variables",

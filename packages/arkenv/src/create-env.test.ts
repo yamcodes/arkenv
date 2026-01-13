@@ -1,4 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 import { createEnv } from "./create-env";
 import { type } from "./type";
 import { indent, styleText } from "./utils";
@@ -272,6 +273,12 @@ describe("createEnv", () => {
 		);
 	});
 
+	it("should throw a clear error when an empty schema object is provided", () => {
+		expect(() => createEnv({})).toThrow(
+			"ArkEnv expects a mapping of environment variables to validators. Please provide at least one key (e.g., createEnv({ PORT: 'number' })) or pass a compiled ArkType schema directly.",
+		);
+	});
+
 	it("should validate against a custom environment", () => {
 		const env = {
 			TEST_STRING: "hello",
@@ -507,7 +514,9 @@ describe("createEnv", () => {
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: '["foo", "bar"]' },
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.TAGS).toEqual(["foo", "bar"]);
@@ -519,7 +528,9 @@ describe("createEnv", () => {
 					{ TAGS: "string[]" },
 					{
 						env: { TAGS: "foo,bar" }, // Comma separated, not JSON
-						arrayFormat: "json",
+						coerce: {
+							arrayFormat: "json",
+						},
 					},
 				);
 			}).toThrow("must be an array");
@@ -541,7 +552,9 @@ describe("createEnv", () => {
 				{ NUMBERS: "number[]" },
 				{
 					env: { NUMBERS: "[1, 2, 3]" },
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.NUMBERS).toEqual([1, 2, 3]);
@@ -565,7 +578,9 @@ describe("createEnv", () => {
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: "[]" },
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.TAGS).toEqual([]);
@@ -619,13 +634,47 @@ describe("createEnv", () => {
 						SERVICES:
 							'[{"NAME": "web", "PORT": "80"}, {"NAME": "api", "PORT": "3000"}]',
 					},
-					arrayFormat: "json",
+					coerce: {
+						arrayFormat: "json",
+					},
 				},
 			);
 			expect(env.SERVICES).toEqual([
 				{ NAME: "web", PORT: 80 },
 				{ NAME: "api", PORT: 3000 },
 			]);
+		});
+	});
+
+	describe("migration & hybrid support", () => {
+		it("should work with top-level compiled ArkType schema", () => {
+			const schema = type({ PORT: "number" });
+			const env = createEnv(schema, {
+				env: { PORT: "3000" },
+			});
+			expect(env.PORT).toBe(3000);
+		});
+
+		it("should throw if top-level Standard Schema is passed directly", () => {
+			expect(() =>
+				createEnv(z.object({ PORT: z.coerce.number() }) as any, {
+					env: { PORT: "8080" },
+				}),
+			).toThrow(/expects a mapping.*not a top-level Standard Schema/);
+		});
+
+		it("should support mixed ArkType DSL and Standard Schema validators", () => {
+			const env = createEnv(
+				{
+					PORT: "number.port",
+					HOST: z.string().min(1),
+				},
+				{
+					env: { PORT: "3000", HOST: "localhost" },
+				},
+			);
+
+			expect(env).toEqual({ PORT: 3000, HOST: "localhost" });
 		});
 	});
 });

@@ -46,10 +46,6 @@
 			"name": "  @repo/scope"
 		},
 		{
-			"path": "packages/internal/keywords",
-			"name": "  @repo/keywords"
-		},
-		{
 			"path": "tooling",
 			"name": "tooling"
 		},
@@ -128,6 +124,10 @@
 		{
 			"path": "examples/with-standard-schema",
 			"name": "  with-standard-schema"
+		},
+		{
+			"path": "examples/without-arktype",
+			"name": "  without-arktype"
 		},
 		{
 			"path": "examples/stackblitz",

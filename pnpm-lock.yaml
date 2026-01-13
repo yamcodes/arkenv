@@ -533,9 +533,6 @@ importers:
 
   packages/arkenv:
     devDependencies:
-      '@repo/keywords':
-        specifier: workspace:*
-        version: link:../internal/keywords
       '@repo/scope':
         specifier: workspace:*
         version: link:../internal/scope
@@ -566,9 +563,15 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      vite-tsconfig-paths:
+        specifier: 'catalog:'
+        version: 6.0.3(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0))
       vitest:
         specifier: 'catalog:'
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.10.4)(@vitest/ui@4.0.16)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.5
 
   packages/bun-plugin:
     dependencies:
@@ -606,28 +609,18 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      vite-tsconfig-paths:
+        specifier: 'catalog:'
+        version: 6.0.3(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0))
       vitest:
         specifier: 'catalog:'
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.10.4)(@vitest/ui@4.0.16)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)
 
-  packages/internal/keywords:
-    devDependencies:
-      arktype:
-        specifier: 'catalog:'
-        version: 2.1.29
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.18.4(typescript@5.9.3)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-
   packages/internal/scope:
-    dependencies:
-      '@repo/keywords':
-        specifier: workspace:*
-        version: link:../keywords
     devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.4
       arktype:
         specifier: 'catalog:'
         version: 2.1.29
@@ -686,6 +679,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.10.4)(@vitest/ui@4.0.16)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.5
 
   tooling/playwright-www:
     dependencies:

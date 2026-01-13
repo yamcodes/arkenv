@@ -40,7 +40,6 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@repo/keywords": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
@@ -51,10 +50,17 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vite-tsconfig-paths": "catalog:",
+		"vitest": "catalog:",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
-		"arktype": "^2.1.22"
+		"arktype": "^2.1.28"
+	},
+	"peerDependenciesMeta": {
+		"arktype": {
+			"optional": true
+		}
 	},
 	"size-limit": [
 		{
@@ -63,6 +69,7 @@
 			"import": "*",
 			"ignore": [
 				"arktype",
+				"@repo/scope",
 				"node:module"
 			]
 		}

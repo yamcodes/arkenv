@@ -66,4 +66,20 @@ describe("Bun Plugin", () => {
 		expect(envMap.has("PORT")).toBe(false);
 		expect(envMap.has("DATABASE_URL")).toBe(false);
 	});
+
+	it("should work with a Standard Schema validator", () => {
+		process.env.BUN_PUBLIC_SS = "ss-value";
+		const mockValidator = {
+			"~standard": {
+				version: 1,
+				validate: (val: any) => ({ value: val }),
+			},
+		};
+		const envMap = processEnvSchema({
+			BUN_PUBLIC_SS: mockValidator,
+		} as any);
+
+		expect(envMap.has("BUN_PUBLIC_SS")).toBe(true);
+		expect(envMap.get("BUN_PUBLIC_SS")).toBe(JSON.stringify("ss-value"));
+	});
 });

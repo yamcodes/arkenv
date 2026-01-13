@@ -1,5 +1,4 @@
 import type { FilterByPrefix, InferType } from "@repo/types";
-import type { type } from "arktype";
 
 /**
  * Augment the `import.meta.env` object with typesafe environment variables
@@ -43,6 +42,6 @@ import type { type } from "arktype";
  * @see {@link https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv | Original implementation by Julien-R44}
  */
 export type ImportMetaEnvAugmented<
-	TSchema extends type.Any,
+	TSchema,
 	Prefix extends string = "VITE_",
 > = FilterByPrefix<InferType<TSchema>, Prefix>;

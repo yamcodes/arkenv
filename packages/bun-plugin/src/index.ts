@@ -1,6 +1,5 @@
 import { join } from "node:path";
 import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
-import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
 import type { BunPlugin, Loader, PluginBuilder } from "bun";
 
@@ -10,7 +9,7 @@ export type { ProcessEnvAugmented } from "./types";
  * Helper to process env schema and return envMap
  */
 export function processEnvSchema<T extends SchemaShape>(
-	options: EnvSchema<T> | EnvSchemaWithType,
+	options: T | EnvSchemaWithType,
 ): Map<string, string> {
 	// Validate environment variables
 
@@ -18,7 +17,7 @@ export function processEnvSchema<T extends SchemaShape>(
 	// "Type instantiation is excessively deep and possibly infinite" errors.
 	// Ideally, we should find a way to avoid these assertions while maintaining type safety.
 
-	const env = createEnv<T>(options, { env: process.env });
+	const env = createEnv(options as any, { env: process.env });
 
 	// Get Bun's prefix for client-exposed environment variables
 	const prefix = "BUN_PUBLIC_";
@@ -125,11 +124,9 @@ function registerLoader(build: PluginBuilder, envMap: Map<string, string>) {
  *    ```
  */
 export function arkenv(options: EnvSchemaWithType): BunPlugin;
+export function arkenv<const T extends SchemaShape>(options: T): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
-	options: EnvSchema<T>,
-): BunPlugin;
-export function arkenv<const T extends SchemaShape>(
-	options: EnvSchema<T> | EnvSchemaWithType,
+	options: T | EnvSchemaWithType,
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options);
 

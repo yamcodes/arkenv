@@ -13,7 +13,8 @@
 		"resolveJsonModule": true,
 		"rootDir": "src",
 		"declaration": true,
-		"declarationMap": true
+		"declarationMap": true,
+		"types": ["node"]
 	},
 	"include": ["src"]
 }

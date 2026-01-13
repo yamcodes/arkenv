@@ -1,25 +1,25 @@
 import { $ } from "@repo/scope";
-import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
-import type { type as at, distill } from "arktype";
-import { ArkEnvError } from "./errors";
-import { type } from "./type";
-import { type CoerceOptions, coerce } from "./utils";
-
-export type EnvSchema<def> = at.validate<def, $>;
-type RuntimeEnvironment = Record<string, string | undefined>;
+import type { Dict, InferType, StandardSchemaV1 } from "@repo/types";
+import type { Type } from "arktype";
+import { ArkEnvError, type EnvIssue } from "./errors";
+import { type CoerceConfig, coerce } from "./utils/coerce";
 
 /**
- * Configuration options for `createEnv`
+ * The configuration for the ArkEnv library.
  */
 export type ArkEnvConfig = {
 	/**
-	 * The environment variables to validate. Defaults to `process.env`
+	 * The environment variables to validate.
+	 *
+	 * @default `process.env`
 	 */
-	env?: RuntimeEnvironment;
+	env?: Dict<string>;
 	/**
-	 * Whether to coerce environment variables to their defined types. Defaults to `true`
+	 * Whether to coerce environment variables to their expected types.
+	 *
+	 * @default `true`
 	 */
-	coerce?: boolean;
+	coerce?: boolean | Partial<CoerceConfig>;
 	/**
 	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
@@ -34,72 +34,251 @@ export type ArkEnvConfig = {
 	 * @default "delete"
 	 * @see https://arktype.io/docs/configuration#onundeclaredkey
 	 */
-	onUndeclaredKey?: "ignore" | "delete" | "reject";
-
-	/**
-	 * The format to use for array parsing when coercion is enabled.
-	 *
-	 * - `comma` (default): Strings are split by comma and trimmed.
-	 * - `json`: Strings are parsed as JSON.
-	 *
-	 * @default "comma"
-	 */
-	arrayFormat?: CoerceOptions["arrayFormat"];
+	onUndeclaredKey?: "ignore" | "reject" | "delete";
 };
 
 /**
- * TODO: `SchemaShape` is basically `Record<string, unknown>`.
- * If possible, find a better type than "const T extends Record<string, unknown>",
- * and be as close as possible to the type accepted by ArkType's `type`.
+ * A flexible schema definition that can be a raw object, compiled ArkType,
+ * or a Standard Schema validator.
  */
+type SchemaShape = any;
+
+function detectValidatorType(def: unknown): {
+	isArkCompiled: boolean;
+	isStandard: boolean;
+} {
+	const isArkCompiled = isArktype(def);
+	const isStandard =
+		!isArkCompiled && (def as StandardSchemaV1)?.["~standard"] !== undefined;
+
+	return { isArkCompiled, isStandard };
+}
 
 /**
- * Create an environment variables object from a schema and an environment
- * @param def - The environment variable schema (raw object or type definition created with `type()`)
- * @param config - Configuration options, see {@link ArkEnvConfig}
- * @returns The validated environment variable schema
- * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
+ * Detects if a definition is an ArkType validator.
+ *
+ * MAINTAINER NOTE: This is best-effort detection for ArkType 2.0.
+ * Future ArkType internals could shift; fallback behavior should ensure
+ * we error cleanly if detection fails but a validator is actually required.
+ * Do not promise this logic as public contract.
+ */
+function isArktype(def: unknown): boolean {
+	if (typeof def !== "function" && (typeof def !== "object" || def === null)) {
+		return false;
+	}
+
+	const defAny = def as any;
+
+	// ArkType 2.0 markers or our own lazy proxy
+	if (
+		defAny.isArktype === true ||
+		defAny.arkKind === "type" ||
+		defAny.arkKind === "generic" ||
+		defAny.arkKind === "module"
+	) {
+		return true;
+	}
+
+	// ArkType 2.0 often has these internal ones
+	return (
+		typeof defAny.traverseApply === "function" &&
+		typeof defAny.traverseAllows === "function" &&
+		defAny.json !== undefined
+	);
+}
+
+function isArkErrors(result: unknown): boolean {
+	if (!result || typeof result !== "object") return false;
+
+	const arkKind = (result as any).arkKind;
+	return (
+		arkKind === "errors" ||
+		("byPath" in (result as any) && "count" in (result as any))
+	);
+}
+
+function validateArkType(
+	def: unknown,
+	config: ArkEnvConfig,
+	env: Dict<string>,
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
+	const { isArkCompiled: isCompiledType } = detectValidatorType(def);
+
+	let schema = isCompiledType
+		? (def as Type)
+		: ($.type(def as any) as unknown as Type);
+
+	// Apply undeclared key policy if specified or needed
+	if (config.onUndeclaredKey) {
+		schema = (schema as any).onUndeclaredKey(config.onUndeclaredKey);
+	} else if (!isCompiledType) {
+		// Default behavior for mappings: strip extra keys unless explicitly ignored
+		schema = (schema as any).onUndeclaredKey("delete");
+	}
+
+	// TODO: This can be simplified
+	const coercionConfig: CoerceConfig = {
+		numbers:
+			config.coerce === false
+				? false
+				: typeof config.coerce === "object"
+					? (config.coerce.numbers ?? true)
+					: true,
+		booleans:
+			config.coerce === false
+				? false
+				: typeof config.coerce === "object"
+					? (config.coerce.booleans ?? true)
+					: true,
+		objects:
+			config.coerce === false
+				? false
+				: typeof config.coerce === "object"
+					? (config.coerce.objects ?? true)
+					: true,
+		arrayFormat:
+			typeof config.coerce === "object"
+				? (config.coerce.arrayFormat ?? "comma")
+				: "comma",
+	};
+
+	const coercedEnv = coerce(schema, env, coercionConfig);
+
+	const result = schema(coercedEnv);
+
+	if (isArkErrors(result)) {
+		const issues: EnvIssue[] = [];
+		const errors = result as any;
+		if (errors.byPath) {
+			for (const [path, error] of Object.entries(errors.byPath)) {
+				issues.push({
+					// Preserve the path as-is since it's an environment variable name
+					// which may legitimately contain dots (e.g., "DATABASE.HOST")
+					path: [path],
+					message: (error as any).message,
+				});
+			}
+		} else {
+			// Fallback
+			issues.push({ path: ["root"], message: String(result) });
+		}
+
+		return { success: false, issues };
+	}
+
+	return { success: true, value: result as any };
+}
+
+function validateStandardSchemaMapping(
+	mapping: Record<string, StandardSchemaV1>,
+	env: Dict<string>,
+): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
+	const result: Record<string, unknown> = {};
+	const allIssues: EnvIssue[] = [];
+
+	for (const [key, validator] of Object.entries(mapping)) {
+		const value = env[key];
+		const validationResult = validator["~standard"].validate(value);
+
+		if (validationResult instanceof Promise) {
+			throw new Error("Async validation is not supported in createEnv.");
+		}
+
+		if (validationResult.issues) {
+			for (const stdIssue of validationResult.issues) {
+				allIssues.push({
+					path: [key, ...(stdIssue.path || [])].map(String),
+					message: stdIssue.message,
+				});
+			}
+		} else {
+			result[key] = validationResult.value;
+		}
+	}
+
+	if (allIssues.length > 0) {
+		return { success: false, issues: allIssues };
+	}
+
+	return { success: true, value: result };
+}
+
+function detectMappingType(mapping: SchemaShape): {
+	type: "arktype" | "standard-schema";
+} {
+	let hasStandard = false;
+	let hasArktype = false;
+	let hasKeys = false;
+
+	for (const value of Object.values(mapping)) {
+		hasKeys = true;
+		if (typeof value === "string" || isArktype(value)) {
+			hasArktype = true;
+		} else if ((value as any)?.["~standard"]) {
+			hasStandard = true;
+		}
+	}
+
+	if (!hasKeys) {
+		throw new Error(
+			"ArkEnv expects a mapping of environment variables to validators. Please provide at least one key (e.g., createEnv({ PORT: 'number' })) or pass a compiled ArkType schema directly.",
+		);
+	}
+
+	// Prioritize ArkType detection: if anything identifies as ArkType,
+	// we use the ArkType path which handles both ArkType and Standard Schema
+	// (via $.type wrapping).
+	if (hasArktype) return { type: "arktype" };
+	if (hasStandard) return { type: "standard-schema" };
+
+	return { type: "arktype" };
+}
+
+/**
+ * Validate environment variables against a schema and return the parsed result.
+ *
+ * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
+ *
+ * @param def - The environment variable schema definition. Can be a mapping of keys to validators, or a compiled ArkType schema.
+ * @param config - Optional {@link ArkEnvConfig | configuration} for validation and coercion.
+ * @returns The validated and parsed environment variables.
+ * @throws An {@link ArkEnvError | error} If validation fails.
  */
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>>;
-export function createEnv<T extends EnvSchemaWithType>(
 	def: T,
-	config?: ArkEnvConfig,
-): InferType<T>;
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>> | InferType<typeof def>;
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
-	{
-		env = process.env,
-		coerce: shouldCoerce = true,
-		onUndeclaredKey = "delete",
-		arrayFormat = "comma",
-	}: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	// If def is a type definition (has assert method), use it directly
-	// Otherwise, use raw() to convert the schema definition
-	const isCompiledType = typeof def === "function" && "assert" in def;
-	let schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
+	config: ArkEnvConfig = {},
+): InferType<T> {
+	const env = config.env ?? process.env;
 
-	// Apply the `onUndeclaredKey` option
-	schema = schema.onUndeclaredKey(onUndeclaredKey);
+	const { isArkCompiled, isStandard } = detectValidatorType(def);
 
-	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
-	if (shouldCoerce) {
-		schema = coerce(schema, { arrayFormat });
+	if (isArkCompiled) {
+		const result = validateArkType(def, config, env);
+		if (!result.success) {
+			throw new ArkEnvError(result.issues);
+		}
+		return result.value as InferType<T>;
 	}
 
-	// Validate the environment variables
-	const validatedEnv = schema(env);
-
-	if (validatedEnv instanceof type.errors) {
-		throw new ArkEnvError(validatedEnv);
+	if (isStandard) {
+		throw new Error(
+			"ArkEnv expects a mapping of environment variables to validators, not a top-level Standard Schema (like a Zod object). Please pass an object instead, e.g. createEnv({ PORT: z.string() }).",
+		);
 	}
 
-	return validatedEnv;
+	const mappingType = detectMappingType(def as SchemaShape);
+
+	const result =
+		mappingType.type === "standard-schema"
+			? validateStandardSchemaMapping(def as SchemaShape, env)
+			: validateArkType(def, config, env);
+
+	if (!result.success) {
+		// Use result.issues which is mapped from ArkErrors if needed
+		throw new ArkEnvError(result.issues);
+	}
+
+	return result.value as InferType<T>;
 }
+
+export default createEnv;
