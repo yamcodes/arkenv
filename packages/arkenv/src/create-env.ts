@@ -42,13 +42,25 @@ export type ArkEnvConfig = {
 				objects?: boolean;
 		  };
 	/**
-	 * The policy for undeclared environment variables.
+	 * Control how ArkEnv handles environment variables that are not defined in your schema.
+	 *
+	 * Defaults to `'delete'` to ensure your output object only contains
+	 * keys you've explicitly declared. This differs from ArkType's standard behavior, which
+	 * mirrors TypeScript by defaulting to `'ignore'`.
+	 *
+	 * - `delete` (ArkEnv default): Undeclared keys are allowed on input but stripped from the output.
+	 * - `ignore` (ArkType default): Undeclared keys are allowed and preserved in the output.
+	 * - `reject`: Undeclared keys will cause validation to fail.
 	 *
 	 * @default "delete"
+	 * @see https://arktype.io/docs/configuration#onundeclaredkey
 	 */
 	onUndeclaredKey?: "ignore" | "reject" | "delete";
 	/**
-	 * The format for array environment variables.
+	 * The format to use for array coercion (when `coerce` is enabled).
+	 *
+	 * - `comma` (default): Strings are split by comma and trimmed.
+	 * - `json`: Strings are parsed as JSON.
 	 *
 	 * @default "comma"
 	 */
