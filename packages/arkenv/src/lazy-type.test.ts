@@ -1,5 +1,5 @@
-import { describe, expect, it, afterEach } from "vitest";
 import { lazyType, resetScope } from "@repo/scope";
+import { afterEach, describe, expect, it } from "vitest";
 
 describe("LazyType Proxy", () => {
 	afterEach(() => {
