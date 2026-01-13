@@ -68,6 +68,11 @@ function createLazyProxy(state: LazyTypeProxy): any {
 			if (prop === "isArktype") return true;
 			if (prop === "pipe") {
 				return (morph: (value: unknown) => unknown) => {
+					if (state._realized) {
+						throw new Error(
+							"Cannot pipe after the lazy type has been realized",
+						);
+					}
 					state.morphs.push(morph);
 					return createLazyProxy(state);
 				};
