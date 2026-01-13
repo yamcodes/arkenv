@@ -7,7 +7,7 @@ import { coerce } from "./utils/coerce";
 /**
  * The configuration for the ArkEnv library.
  */
-export interface ArkEnvConfig {
+export type ArkEnvConfig = {
 	env?: Record<string, string | undefined>;
 	coerce?:
 		| boolean
@@ -16,7 +16,7 @@ export interface ArkEnvConfig {
 				booleans?: boolean;
 				objects?: boolean;
 		  };
-}
+};
 
 type SchemaShape = Record<string, unknown>;
 
@@ -68,7 +68,7 @@ function validateArkType(
 ): { success: true; value: unknown } | { success: false; issues: EnvIssue[] } {
 	const { isArkCompiled: isCompiledType } = detectValidatorType(def);
 
-	let schema = isCompiledType
+	const schema = isCompiledType
 		? (def as Type)
 		: ($.type(def as any) as unknown as Type);
 
@@ -155,7 +155,8 @@ function detectMappingType(def: SchemaShape): {
 		if (isArktype(validator)) {
 			hasArktype = true;
 			break;
-		} else if ((validator as StandardSchemaV1)?.["~standard"]) {
+		}
+		if ((validator as StandardSchemaV1)?.["~standard"]) {
 			hasStandardSchema = true;
 		} else {
 			hasArktype = true;

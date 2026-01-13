@@ -2,7 +2,7 @@ import { host, port } from "./keywords";
 import { arktypeLoader } from "./lazy-type";
 
 export * from "./keywords";
-export { lazyType, arktypeLoader } from "./lazy-type";
+export { arktypeLoader, lazyType } from "./lazy-type";
 
 /**
  * Global cache for the realized scope using Symbol.for for cross-module coordination.
