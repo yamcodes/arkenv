@@ -1,57 +1,114 @@
 # Design: Explicit Validator Mode
 
 ## Context
-ArkEnv currently relies heavily on ArkType's native support for Standard Schemas and its internal branching logic. To make ArkType an optional dependency and simplify the architecture, we need an explicit way to choose the validation engine.
+
+In `main`, ArkEnv is ArkType-first and ArkType-required:
+- All validation flows through ArkType.
+- Standard Schema validators are supported only because ArkType supports them.
+- There is no supported way to use ArkEnv without ArkType installed.
+
+To support a zero-ArkType runtime path while preserving ArkType as the default and primary engine, ArkEnv needs an explicit execution mode, not additional inference or heuristics.
 
 ## Goals
-- Decouple `standard` mode from ArkType completely.
-- Gracefully handle the absence of ArkType when `arktype` mode is requested.
-- Maintain backward compatibility (default to `arktype`).
-- Minimal bundle size impact.
+- Allow ArkEnv to run without ArkType installed when explicitly requested.
+- Preserve ArkType as the default and first-class engine.
+- Make runtime behavior predictable and debuggable.
+- Minimize bundle size and architectural complexity.
 
 ## Non-Goals
-- Improve or tighten type inference for `standard` or `arktype` modes.
-- Implement a full-blown validation library (Standard Schema mode relies on external validators).
+- Tightening or redesigning type inference.
+- Replacing ArkType’s validation semantics.
+- Implementing a new validation system.
+- Supporting hybrid or auto-detected modes.
 
 ## Decisions
 
-### 1. Centralized ArkType Loading
-We will implement `loadArkTypeOrThrow()` as the single, authoritative crossing point into ArkType-land. 
-- If `validator === "standard"`, ArkType must be completely unreachable by the module graph.
-- If `validator === "arktype"`, this helper handles the peer-dependency check and returns the lazily-loaded ArkType instance.
-- This creates a clear boundary for bundling, testing (mocking), and error reporting.
+### 1. Explicit Mode Selection (No Auto-Detection)
 
-### 2. Branching in `createEnv`
-All runtime branching happens exactly once at the top of `createEnv`. 
-```typescript
+ArkEnv introduces an explicit `validator` option:
+
+`validator?: "arktype" | "standard"`
+
+- **Default**: `"arktype"`
+- **No runtime schema detection**.
+- **No hybrid execution paths**.
+
+This turns ArkEnv from a heuristic-based system into an explicit dispatcher.
+
+### 2. Centralized ArkType Boundary
+
+A single helper, `loadArkTypeOrThrow()`, acts as the only entry point into ArkType.
+- Called only when `validator === "arktype"`.
+- Throws a clear, actionable error if ArkType is missing.
+- Guarantees that standard mode never touches ArkType (directly or indirectly).
+
+This creates a hard boundary for bundling, testing, mocking, and error handling.
+
+### 3. Single Dispatch Point in `createEnv`
+
+All branching happens exactly once:
+
+```ts
 export function createEnv(def, config) {
-  const validator = config.validator ?? "arktype"
-  if (validator === "standard") {
+  const mode = config.validator ?? "arktype"
+
+  if (mode === "standard") {
     return validateStandard(def, config)
   }
+
   return validateArkType(def, config)
 }
 ```
-This turns `createEnv` from a "detective" (using heuristics) into a "dispatcher" (following an explicit contract). It allows for the removal of all fuzzy runtime heuristics like `detectMappingType`.
 
-### 3. standard mode Implementation
+`createEnv` becomes a dispatcher, not a detector.
+
+### 4. Standard Mode Semantics
+
 In `standard` mode:
-- We iterate over the keys in `def`.
-- Each value must be a Standard Schema (has `~standard` property).
-- **Coercion**: ArkEnv will perform only *mechanical* coercion (e.g., `"3000"` -> `3000`, `"true"` -> `true`, `"a,b"` -> `["a", "b"]`). It will NOT attempt semantic coercion or refinements that compete with the Standard Schema validator itself.
-- Results are normalized into a shared internal error shape for `ArkEnvError`.
+- Schema must be an object mapping.
+- Each value must implement Standard Schema (`~standard`).
+- ArkType DSL strings are rejected.
+- Compiled ArkType schemas are rejected.
 
-### 4. internal-only Proxies
-Proxies are used exclusively as an internal containment mechanism within the `@repo/scope` and `arkenv` packages. 
+**Coercion**:
+- ArkEnv performs only **mechanical coercion**:
+  - `string` → `number`
+  - `string` → `boolean`
+  - `string` → `array` (comma / json)
+- No semantic coercion or refinements.
+- The Standard Schema validator remains authoritative.
+
+This mode is intentionally minimal and predictable.
+
+### 5. ArkType Mode Semantics
+
+In `arktype` mode (default):
+- Behavior is identical to `main`.
+- Supports:
+  - ArkType DSL.
+  - `type()` schemas.
+  - Standard Schema validators via ArkType.
+  - Existing coercion and `onUndeclaredKey`.
+
+ArkType remains the primary engine.
+
+### 6. Internal Proxies (Implementation Detail)
+
+Proxies may be used internally to support ArkType ergonomics, but:
 - They are not part of the public API.
-- They are only reachable if the user has selected (or defaulted to) `arktype` mode.
-- In `standard` mode, the module paths containing these proxies are never traversed or initialized.
+- They are only reachable in `arktype` mode.
+- They are never initialized in `standard` mode.
+
+They are a containment mechanism, not a design primitive.
 
 ## Risks / Trade-offs
-- **Redundancy**: `standard` mode duplicates primitive coercion logic to maintain independence from ArkType.
-- **Type Inference**: Type-level refinements are deferred to a follow-up PR; current inference remains "best-effort" for the new `validator` choice.
-- **Config Divergence**: Certain options (like `onUndeclaredKey`) have specific meanings in ArkType that might slightly differ or require manual implementation in `standard` mode.
+- **Duplication**: Standard mode reimplements minimal coercion logic.
+- **Config divergence**: Some ArkType-specific options may behave differently.
+- **Inference limits**: Type refinement is deferred.
+
+All are intentional trade-offs for clarity and simplicity.
 
 ## Migration Plan
-- No breaking changes for existing users (default is `arktype`).
-- New `validator` option allows opting into the zero-ArkType path.
+- No breaking changes.
+- Existing users remain on ArkType mode.
+- Standard mode is opt-in and explicit.
