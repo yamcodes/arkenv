@@ -9,6 +9,10 @@ ArkEnv currently relies heavily on ArkType's native support for Standard Schemas
 - Maintain backward compatibility (default to `arktype`).
 - Minimal bundle size impact.
 
+## Non-Goals
+- Improve or tighten type inference for `standard` or `arktype` modes.
+- Implement a full-blown validation library (Standard Schema mode relies on external validators).
+
 ## Decisions
 
 ### 1. Centralized ArkType Loading
