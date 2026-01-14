@@ -39,6 +39,9 @@ In `standard` mode, ArkEnv MUST only accept object mappings of Standard Schema v
 ### Requirement: Coercion in Standard Mode
 Standard mode MUST still support environment variable coercion if enabled.
 
+- ArkEnv MUST NOT apply validator-specific or semantic coercion in `standard` mode.
+- Any transformation beyond primitive coercion is the responsibility of the Standard Schema validator itself.
+
 #### Scenario: Coercion works in standard mode
 - **WHEN** `createEnv` is called with `validator: "standard"` and `coerce: true`
 - **AND** a key is defined with a validator that expects a number
