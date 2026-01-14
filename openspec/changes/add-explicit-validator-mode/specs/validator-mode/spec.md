@@ -1,4 +1,4 @@
-# Capability: core
+# Capability: validator-mode
 
 The core capability of ArkEnv provides environment variable validation and parsing.
 
