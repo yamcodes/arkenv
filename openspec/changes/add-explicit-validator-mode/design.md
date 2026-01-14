@@ -16,13 +16,13 @@ ArkEnv currently relies heavily on ArkType's native support for Standard Schemas
 ## Decisions
 
 ### 1. Centralized ArkType Loading
-We will implement `loadArkTypeOrThrow()` in a new utility file (or within `@repo/scope` if we refactor it). This helper will use `require` or dynamic `import` (if targeting ESM) to load ArkType lazily.
-Given we are in a monorepo and `arkenv` is bundled, we need to be careful with how we handle the optional dependency.
-Since `arkenv` has `arktype` as a peer dependency, we can try to `import("arktype")` or use a global Proxy as previously attempted but making it internal only.
-
-Actually, the user suggested: "Load ArkType once via a centralized `loadArkTypeOrThrow()` helper."
+We will implement `loadArkTypeOrThrow()` as the single, authoritative crossing point into ArkType-land. 
+- If `validator === "standard"`, ArkType must be completely unreachable by the module graph.
+- If `validator === "arktype"`, this helper handles the peer-dependency check and returns the lazily-loaded ArkType instance.
+- This creates a clear boundary for bundling, testing (mocking), and error reporting.
 
 ### 2. Branching in `createEnv`
+All runtime branching happens exactly once at the top of `createEnv`. 
 ```typescript
 export function createEnv(def, config) {
   const validator = config.validator ?? "arktype"
@@ -32,20 +32,25 @@ export function createEnv(def, config) {
   return validateArkType(def, config)
 }
 ```
+This turns `createEnv` from a "detective" (using heuristics) into a "dispatcher" (following an explicit contract). It allows for the removal of all fuzzy runtime heuristics like `detectMappingType`.
 
 ### 3. standard mode Implementation
 In `standard` mode:
 - We iterate over the keys in `def`.
 - Each value must be a Standard Schema (has `~standard` property).
-- Coercion will be performed manually before passing to the validator if `coerce` is true.
-- We will collect errors and throw an `ArkEnvError` (refactored to accept a generic error format).
+- **Coercion**: ArkEnv will perform only *mechanical* coercion (e.g., `"3000"` -> `3000`, `"true"` -> `true`, `"a,b"` -> `["a", "b"]`). It will NOT attempt semantic coercion or refinements that compete with the Standard Schema validator itself.
+- Results are normalized into a shared internal error shape for `ArkEnvError`.
 
 ### 4. internal-only Proxies
-The `@repo/scope` package will be refactored to provide a lazy-loaded ArkType instance. This instance should only be used internally by `arkenv`.
+Proxies are used exclusively as an internal containment mechanism within the `@repo/scope` and `arkenv` packages. 
+- They are not part of the public API.
+- They are only reachable if the user has selected (or defaulted to) `arktype` mode.
+- In `standard` mode, the module paths containing these proxies are never traversed or initialized.
 
 ## Risks / Trade-offs
-- **Redundancy**: `standard` mode might duplicate some logic that ArkType already does (like coercion), but this is necessary to avoid the ArkType dependency.
-- **Type Inference**: Ensuring `standard` mode has good type inference without ArkType's complex types might be tricky, but the user said "No type-system tightening or inference refactors", so we should try to keep it simple.
+- **Redundancy**: `standard` mode duplicates primitive coercion logic to maintain independence from ArkType.
+- **Type Inference**: Type-level refinements are deferred to a follow-up PR; current inference remains "best-effort" for the new `validator` choice.
+- **Config Divergence**: Certain options (like `onUndeclaredKey`) have specific meanings in ArkType that might slightly differ or require manual implementation in `standard` mode.
 
 ## Migration Plan
 - No breaking changes for existing users (default is `arktype`).
