@@ -5,7 +5,7 @@ The core capability of ArkEnv provides environment variable validation and parsi
 ## ADDED Requirements
 
 ### Requirement: Explicit Validator Mode
-ArkEnv MUST support an explicit `validator` configuration option to choose between ArkType and Standard Schema validation.
+ArkEnv MUST support an explicit `validator` configuration option to choose between ArkType and Standard Schema validators.
 
 #### Scenario: Default mode is ArkType
 - **WHEN** `createEnv` is called without a `validator` option
@@ -15,7 +15,7 @@ ArkEnv MUST support an explicit `validator` configuration option to choose betwe
 #### Scenario: Standard mode validates without ArkType
 - **WHEN** `createEnv` is called with `validator: "standard"`
 - **THEN** it MUST NOT attempt to load or use ArkType
-- **AND** it MUST successfully validate using Standard Schema validators (e.g., Zod)
+- **AND** it MUST successfully validate using Standard Schema validators
 - **AND** it MUST work even if ArkType is not installed
 
 #### Scenario: Missing ArkType throws error
@@ -29,7 +29,12 @@ In `standard` mode, ArkEnv MUST only accept object mappings of Standard Schema v
 #### Scenario: Rejecting ArkType strings in standard mode
 - **WHEN** `createEnv` is called with `validator: "standard"`
 - **AND** the schema contains a string (ArkType DSL)
-- **THEN** it SHOULD fail or ignore it (if not a valid validator)
+- **THEN** it MUST fail with a clear error indicating that ArkType DSL strings are not supported in standard mode
+
+#### Scenario: Reject non-standard validators in standard mode
+- **WHEN** `validator: "standard"`
+- **AND** a schema value does not expose `~standard`
+- **THEN** it MUST fail with an error indicating an invalid Standard Schema validator
 
 ### Requirement: Coercion in Standard Mode
 Standard mode MUST still support environment variable coercion if enabled.
@@ -38,4 +43,4 @@ Standard mode MUST still support environment variable coercion if enabled.
 - **WHEN** `createEnv` is called with `validator: "standard"` and `coerce: true`
 - **AND** a key is defined with a validator that expects a number
 - **AND** the environment variable is a string "123"
-- **THEN** it SHOULD be coerced to 123 before validation if the internal coercion logic is compatible
+- **THEN** it SHOULD be coerced to 123 using ArkEnv’s built-in primitive coercion (number, boolean, array) before validation
