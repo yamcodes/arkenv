@@ -4,8 +4,8 @@ import { $ } from "./root";
 describe("scope", () => {
 	it("should validate string.host", () => {
 		const hostType = $.type({ HOST: "string.host" });
-		const result = hostType.assert({ HOST: "[IP_ADDRESS]" });
-		expect(result.HOST).toBe("[IP_ADDRESS]");
+		const result = hostType.assert({ HOST: "127.0.0.1" });
+		expect(result.HOST).toBe("127.0.0.1");
 	});
 
 	it("should validate localhost as string.host", () => {
