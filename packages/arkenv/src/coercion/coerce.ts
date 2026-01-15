@@ -1,5 +1,5 @@
-import { loadArkTypeOrThrow } from "../utils/arktype";
 import type { BaseType, JsonSchema } from "arktype";
+import { loadArkTypeOrThrow } from "../utils/arktype";
 import { coerceBoolean, coerceJson, coerceNumber } from "./morphs";
 
 /**

@@ -1,5 +1,5 @@
-import { ArkEnvError, type InternalValidationError } from "./errors";
 import type { ArkEnvConfig } from "./create-env";
+import { ArkEnvError, type InternalValidationError } from "./errors";
 
 /**
  * Standard Schema 1.0 parser dispatcher.
