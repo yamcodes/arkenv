@@ -1,5 +1,5 @@
 /**
- * Attempts to coerce a value to a number.
+ * Attempt to coerce a value to a number.
  *
  * If the input is already a number, returns it unchanged.
  * If the input is a string that can be parsed as a number, returns the parsed number.
@@ -20,9 +20,9 @@ export const coerceNumber = (s: unknown) => {
 };
 
 /**
- * Attempts to coerce a value to a boolean.
+ * Attempt to coerce a value to a boolean.
  *
- * Converts the strings "true" and "false" to their boolean equivalents.
+ * Convert the strings "true" and "false" to their boolean equivalents.
  * All other values are returned unchanged.
  *
  * @internal
@@ -36,7 +36,7 @@ export const coerceBoolean = (s: unknown) => {
 };
 
 /**
- * Attempts to parse a value as JSON.
+ * Attempt to parse a value as JSON.
  *
  * If the input is a string that starts with `{` or `[` and can be parsed as JSON,
  * returns the parsed object or array. Otherwise, returns the original value unchanged.
