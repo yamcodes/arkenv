@@ -2,27 +2,24 @@ import type { Type } from "arktype";
 import { loadArkType } from "./loader";
 
 /**
- * Creates a lazy-loading proxy for an ArkType keyword.
+ * Creates a lazy-loading ArkType keyword.
  * The keyword definition is only evaluated when first accessed or called.
  *
  * @example
  * ```ts
- * export const port = lazyKeyword(() =>
+ * export const port = keyword(({ type }) =>
  *   type("0 <= number.integer <= 65535")
  * );
  *
- * // Or with direct access to the loaded type function:
- * export const email = lazyKeyword(({ type }) =>
+ * export const email = keyword(({ type }) =>
  *   type("string.email")
  * );
  * ```
  */
-export function lazyKeyword<T = any>(
-	factory: (context: {
-		type: ReturnType<typeof loadArkType>["type"];
-	}) => Type<T, any>,
-): Type<T, any> {
-	let _keyword: Type<T, any> | undefined;
+export function keyword<const TDef extends Type<any, any>>(
+	factory: (context: { type: ReturnType<typeof loadArkType>["type"] }) => TDef,
+): TDef {
+	let _keyword: TDef | undefined;
 
 	const getKeyword = () => {
 		if (!_keyword) {
@@ -34,10 +31,10 @@ export function lazyKeyword<T = any>(
 
 	return new Proxy(() => {}, {
 		get(_, prop) {
-			return getKeyword()[prop as keyof Type<T, any>];
+			return getKeyword()[prop as keyof TDef];
 		},
-		apply(_, thisArg, args) {
+		apply(_, _thisArg, args) {
 			return (getKeyword() as any)(...args);
 		},
-	}) as unknown as Type<T, any>;
+	}) as unknown as TDef;
 }
