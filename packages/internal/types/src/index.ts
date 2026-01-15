@@ -8,6 +8,8 @@
 // Only TypeScript types
 export type * from "./filter-by-prefix";
 export type * from "./infer-type";
+export type * from "./helpers";
+export type * from "./standard-schema";
 
 // Also includes ArkType types
 export * from "./schema";
