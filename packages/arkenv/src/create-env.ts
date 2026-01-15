@@ -12,7 +12,7 @@ type RuntimeEnvironment = Record<string, string | undefined>;
  */
 export type ArkEnvConfig = {
 	/**
-	 * The environment variables to validate. Defaults to `process.env`
+	 * The environment variables to parse. Defaults to `process.env`
 	 */
 	env?: RuntimeEnvironment;
 	/**
@@ -62,10 +62,10 @@ export type ArkEnvConfig = {
  */
 
 /**
- * Create an environment variables object from a schema and an environment
- * @param def - The environment variable schema (raw object or type definition created with `type()`)
- * @param config - Configuration options, see {@link ArkEnvConfig}
- * @returns The validated environment variable schema
+ * Utility to parse environment variables using ArkType or Standard Schema
+ * @param def - The schema definition
+ * @param config - The evaluation configuration
+ * @returns The parsed environment variables
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
 export function createEnv<const T extends SchemaShape>(
@@ -87,8 +87,8 @@ export function createEnv<const T extends SchemaShape>(
 	const mode = config.validator ?? "arktype";
 
 	if (mode === "standard") {
-		return parseStandard(def, config) as any;
+		return parseStandard(def as Record<string, any>, config) as any;
 	}
 
-	return parseArkType(def, config);
+	return parseArkType(def as any, config) as any;
 }

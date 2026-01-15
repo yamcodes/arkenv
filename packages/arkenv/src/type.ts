@@ -1,3 +1,4 @@
+import type { type as at } from "arktype";
 import { loadArkTypeOrThrow } from "./utils/arktype";
 
 /**
@@ -8,10 +9,10 @@ import { loadArkTypeOrThrow } from "./utils/arktype";
 export const type = new Proxy(() => {}, {
 	get(_target, prop) {
 		const { $ } = loadArkTypeOrThrow();
-		return ($.type as any)[prop];
+		return ($ as any).type[prop];
 	},
 	apply(_target, _thisArg, argArray) {
 		const { $ } = loadArkTypeOrThrow();
-		return ($.type as any)(...argArray);
+		return ($ as any).type(...argArray);
 	},
-}) as any;
+}) as unknown as typeof at;

@@ -10,8 +10,12 @@ export type InternalValidationError = {
 /**
  * Check if the provided object is ArkType errors
  */
-const isArkErrors = (errors: any): errors is ArkErrors => {
-	return errors && typeof errors === "object" && "byPath" in errors;
+const isArkErrors = (errors: unknown): errors is ArkErrors => {
+	return (
+		errors !== null &&
+		typeof errors === "object" &&
+		"byPath" in (errors as Record<string, unknown>)
+	);
 };
 
 /**
@@ -42,7 +46,7 @@ export const formatArkErrors = (errors: ArkErrors): string => {
 
 			// Style (was ...)
 			const valueMatch = message.match(/\(was (.*)\)/);
-			if (valueMatch && valueMatch[1]) {
+			if (valueMatch?.[1]) {
 				const value = valueMatch[1];
 				if (!value.includes("\x1b[")) {
 					const styledValue = styleText("cyan", value);

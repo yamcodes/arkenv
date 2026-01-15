@@ -99,7 +99,7 @@ Proxies may be used internally to support ArkType ergonomics, but:
 They are a containment mechanism, not a design primitive.
 
 ## Risks / Trade-offs
-- **Duplication**: Standard mode reimplements minimal coercion logic.
+- **Delegated Coercion**: Standard mode delegates all transformation/coercion logic to the underlying validator.
 - **Config divergence**: Some ArkType-specific options may behave differently.
 - **Inference limits**: Type refinement is deferred.
 
