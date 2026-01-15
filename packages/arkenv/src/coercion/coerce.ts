@@ -1,5 +1,5 @@
 import { type BaseType, type JsonSchema, type } from "arktype";
-import { coerceBoolean, coerceJson, coerceNumber } from "../morphs";
+import { coerceBoolean, coerceJson, coerceNumber } from "./morphs";
 
 /**
  * A marker used in the coercion path to indicate that the target

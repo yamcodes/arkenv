@@ -1,6 +1,6 @@
 import { ArkErrors, type } from "arktype";
 import { describe, expect, it } from "vitest";
-import { coerce } from "./coerce";
+import { coerce } from "../coercion/coerce";
 
 describe("coerce", () => {
 	it("should coerce numeric properties", () => {
