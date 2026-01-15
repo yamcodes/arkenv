@@ -1,18 +1,6 @@
+import type { StandardSchemaV1 } from "@repo/types";
 import type { ArkEnvConfig } from "./create-env";
 import { ArkEnvError, type InternalValidationError } from "./errors";
-
-/**
- * Minimal Standard Schema 1.0 interface for internal usage.
- */
-type StandardValidator = {
-	"~standard": {
-		validate: (
-			value: unknown,
-		) =>
-			| { value: unknown; issues?: readonly { message: string }[] }
-			| Promise<unknown>;
-	};
-};
 
 /**
  * Standard Schema 1.0 parser dispatcher.
@@ -43,9 +31,7 @@ export function parseStandard(
 			);
 		}
 
-		const result = (validator as StandardValidator)["~standard"].validate(
-			value,
-		);
+		const result = (validator as StandardSchemaV1)["~standard"].validate(value);
 
 		if (result instanceof Promise) {
 			throw new Error(
@@ -57,7 +43,7 @@ export function parseStandard(
 			for (const issue of result.issues) {
 				errors.push({
 					path: key,
-					message: (issue as { message: string }).message,
+					message: issue.message,
 				});
 			}
 		} else {
