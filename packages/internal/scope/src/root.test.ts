@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { $ } from "./index";
+import { $ } from "./root";
 
 describe("scope", () => {
 	it("should validate string.host", () => {
@@ -27,7 +27,7 @@ describe("scope", () => {
 
 	it("should throw for invalid port", () => {
 		const portType = $.type({ PORT: "number.port" });
-		expect(() => portType.assert({ PORT: "99999" })).toThrow();
+		expect(() => portType.assert({ PORT: 99999 })).toThrow();
 	});
 
 	it("should validate combined host and port", () => {
