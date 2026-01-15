@@ -11,8 +11,8 @@ const env = arkenv(
 			.describe("API key must be at least 32 characters"),
 
 		// Standard Schema compatible validators
-		MAX_RETRIES: z.number().int().positive().default(3),
-		TIMEOUT_MS: z.number().int().min(0).max(30000).default(5000),
+		MAX_RETRIES: z.coerce.number().int().positive().default(3),
+		TIMEOUT_MS: z.coerce.number().int().min(0).max(30000).default(5000),
 
 		// Complex transformations with Zod
 		ALLOWED_ORIGINS: z
@@ -23,7 +23,10 @@ const env = arkenv(
 		NODE_ENV: z
 			.enum(["development", "production", "test"])
 			.default("development"),
-		DEBUG: z.boolean().default(false),
+		DEBUG: z
+			.union([z.boolean(), z.enum(["true", "false", "1", "0"])])
+			.transform((v) => v === true || v === "true" || v === "1")
+			.default(false),
 	},
 	{ validator: "standard" },
 );
