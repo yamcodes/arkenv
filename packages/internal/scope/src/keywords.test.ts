@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { host, maybeJson, port } from "./keywords";
+import { host, port } from "./keywords";
 
 describe("port", () => {
 	it("should validate a valid port number", () => {
