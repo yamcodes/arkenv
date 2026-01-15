@@ -19,13 +19,21 @@ export function loadArkTypeOrThrow() {
 			arktype = arktype.default;
 		}
 
-		// Also load the @repo/scope module which depends on arktype
-		const scopeModule = require("@repo/scope");
-		const $ = scopeModule.$ || scopeModule.default?.$;
+		// Create the scope inline here (not at top level)
+		// This way arktype is only imported when this function is called
+		const port = arktype.type("0 <= number.integer <= 65535");
+		const host = arktype.type("string.ip | 'localhost'");
 
-		if (!$) {
-			throw new Error("Failed to load @repo/scope");
-		}
+		const $ = arktype.scope({
+			string: arktype.type.module({
+				...arktype.type.keywords.string,
+				host,
+			}),
+			number: arktype.type.module({
+				...arktype.type.keywords.number,
+				port,
+			}),
+		});
 
 		_loaded = {
 			type: arktype.type,

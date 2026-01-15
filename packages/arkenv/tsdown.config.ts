@@ -5,6 +5,9 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: false,
 	dts: {
-		resolve: ["@repo/types"],
+		resolve: ["@repo/types", "@repo/scope"],
 	},
+	external: ["arktype"],
+	// Force bundling of workspace packages
+	noExternal: ["@repo/scope"],
 });

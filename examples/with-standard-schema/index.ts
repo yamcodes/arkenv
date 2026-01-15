@@ -1,19 +1,34 @@
 import arkenv from "arkenv";
-import { type } from "arktype";
-import * as z from "zod";
+import { z } from "zod";
 
-const env = arkenv({
-	TEST: type("string"),
-});
+const env = arkenv(
+	{
+		// Using custom keywords from the bundled scope
+		HOST: "string.host",
+		PORT: "0 <= number.integer <= 65535",
+		NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+		DEBUG: "boolean = false",
+	},
+	{
+		validator: "standard",
+	},
+);
 
-// // All validators work together seamlessly with full type inference
-// console.log({
-// 	host: env.HOST,
-// 	port: env.PORT,
-// 	nodeEnv: env.NODE_ENV,
-// 	debug: env.DEBUG,
-// 	databaseUrl: env.DATABASE_URL,
-// 	apiKey: `${env.API_KEY.substring(0, 8)}...`, // Don't log full API key
+// const env = arkenv({
+// 	// Using custom keywords from the bundled scope
+// 	HOST: z.union([z.url(), z.literal("localhost")]),
+// 	PORT: z.coerce.number().int().min(0).max(65535),
+// 	NODE_ENV: z
+// 		.enum(["development", "production", "test"])
+// 		.default("development"),
+// 	DEBUG: z.coerce.boolean().default(false),
 // });
+
+console.log({
+	host: env.HOST,
+	port: env.PORT,
+	nodeEnv: env.NODE_ENV,
+	debug: env.DEBUG,
+});
 
 export default env;
