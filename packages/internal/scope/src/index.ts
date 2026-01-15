@@ -14,43 +14,49 @@ export const getScope = (arktype: {
 
 	const { type: at, scope } = arktype;
 
-	// Note: We use string aliases for port and host so they resolve correctly
-	// within the scope when used in the modules.
+	const maybeNumber = at("unknown").pipe((s: any) => {
+		if (typeof s === "number") return s;
+		if (typeof s !== "string") return s;
+		const trimmed = s.trim();
+		if (trimmed === "") return s;
+		if (trimmed === "NaN") return Number.NaN;
+		const n = Number(trimmed);
+		return Number.isNaN(n) ? s : n;
+	});
+
+	const maybeBoolean = at("unknown").pipe((s: any) => {
+		if (s === "true") return true;
+		if (s === "false") return false;
+		return s;
+	});
+
+	const maybeJson = at("unknown").pipe((s: any) => {
+		if (typeof s !== "string") return s;
+		const trimmed = s.trim();
+		if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return s;
+		try {
+			return JSON.parse(trimmed);
+		} catch {
+			return s;
+		}
+	});
+
+	const port = at("0 <= number.integer <= 65535");
+	const host = at("string.ip | 'localhost'");
 
 	_scope = scope({
-		maybeNumber: at("unknown").pipe((s: any) => {
-			if (typeof s === "number") return s;
-			if (typeof s !== "string") return s;
-			const trimmed = s.trim();
-			if (trimmed === "") return s;
-			if (trimmed === "NaN") return Number.NaN;
-			const n = Number(trimmed);
-			return Number.isNaN(n) ? s : n;
-		}),
-		maybeBoolean: at("unknown").pipe((s: any) => {
-			if (s === "true") return true;
-			if (s === "false") return false;
-			return s;
-		}),
-		maybeJson: at("unknown").pipe((s: any) => {
-			if (typeof s !== "string") return s;
-			const trimmed = s.trim();
-			if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return s;
-			try {
-				return JSON.parse(trimmed);
-			} catch {
-				return s;
-			}
-		}),
-		port: "0 <= number.integer <= 65535",
-		host: "string.ip | 'localhost'",
+		maybeNumber,
+		maybeBoolean,
+		maybeJson,
+		port,
+		host,
 		string: at.module({
 			...at.keywords.string,
-			host: "host",
+			host,
 		}),
 		number: at.module({
 			...at.keywords.number,
-			port: "port",
+			port,
 		}),
 	});
 

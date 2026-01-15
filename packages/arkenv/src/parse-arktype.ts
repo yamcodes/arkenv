@@ -1,6 +1,5 @@
 import type { SchemaShape } from "@repo/types";
-import { coercion } from ".";
-import { coerce } from "./coercion/coerce";
+import { coerce } from "./coercion";
 import type { ArkEnvConfig, EnvSchema } from "./create-env";
 import { ArkEnvError } from "./errors";
 import { loadArkTypeOrThrow } from "./utils/arktype";
