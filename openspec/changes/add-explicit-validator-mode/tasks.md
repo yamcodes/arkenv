@@ -28,12 +28,7 @@
       - Reject strings, `type()`, and compiled ArkType schemas
 - [ ] 4.2 Implement `validateStandard()` helper.
 - [ ] 4.3 Implement explicit key-by-key validation loop.
-- [ ] 4.4 Apply only mechanical coercion:
-      - string → number
-      - string → boolean
-      - string → array (comma / json)
-      - No semantic coercion or refinement
-- [ ] 4.5 Ensure no ArkType import, require, or proxy is reachable.
+- [ ] 4.4 Ensure no ArkType import, require, or proxy is reachable.
 
 ## 5. Error Handling
 - [ ] 5.1 Normalize Standard Schema errors into a shared internal format.

@@ -11,8 +11,6 @@ Today, ArkEnv is **ArkType-first and ArkType-required**.
 
 > ArkEnv supports Standard Schema *via ArkType*, not *instead of ArkType*.
 
-This change introduces an **alternative execution path**, not a refinement of the existing one.
-
 ## Why
 
 There is a legitimate use case for:
@@ -21,12 +19,14 @@ There is a legitimate use case for:
 - Validating environment variables using **Standard Schema validators directly**.
 - Avoiding ArkType entirely at runtime when it is not needed.
 
-The current architecture cannot support this without:
-- Complex auto-detection.
-- Lazy loading.
-- Proxy-based indirection.
+Some common use cases:
 
-Instead of making ArkType “optionally implicit”, this proposal introduces an **explicit choice**.
+- Migration towards ArkType through ArkEnv before ArkType is installed.
+- Non-ArkType users who just like the simplicity and mental model of ArkEnv.
+
+It's also more honest when the library is currently advertised as 'works with any validator'.
+
+This proposal introduces an **explicit choice**.
 
 ## High-Level Idea
 
@@ -54,7 +54,7 @@ ADDED to `ArkEnvConfig`:
 `validator?: "arktype" | "standard"`
 
 - **Default**: `"arktype"` (backward compatible).
-- **Opt-in** required to avoid ArkType.
+- **Opt-out** required to avoid ArkType.
 
 ### 2. Explicit Branching in `createEnv`
 
@@ -125,25 +125,11 @@ In `standard` mode:
 - Errors are collected and reported via `ArkEnvError`.
 - Async validators are rejected (same as today).
 
-### 6. Coercion in Standard Mode
-
-Standard mode still supports ArkEnv-level coercion, when enabled:
-- Primitive coercion only:
-  - `number`
-  - `boolean`
-  - `array` (comma / json)
-- No schema-level transforms or refinements.
-- Standard Schema validators remain authoritative.
-
-This ensures parity with existing ArkEnv ergonomics without recreating a validator engine.
-
 ## Explicit Non-Goals
-- No type-system tightening in this change.
 - No attempt to infer output types differently per mode.
 - No auto-detection or hybrid behavior.
 - No proxy-based lazy loading exposed to users.
-
-Type refinements may come later, once runtime behavior is stable.
+- No coercion in standard mode. Coercion is ArkType-specific (for now).
 
 ## Behavioral Summary
 
@@ -166,6 +152,7 @@ Type refinements may come later, once runtime behavior is stable.
 ### Docs
 - Add `validator` option to config docs.
 - Add “Standard Mode” section under Standard Schema integration.
+- Add "ArkEnv-only" to coercion-specific docs.
 
 ## Migration Plan
 - No breaking changes.

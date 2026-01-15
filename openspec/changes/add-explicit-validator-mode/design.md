@@ -70,13 +70,7 @@ In `standard` mode:
 - ArkType DSL strings are rejected.
 - Compiled ArkType schemas are rejected.
 
-**Coercion**:
-- ArkEnv performs only **mechanical coercion**:
-  - `string` → `number`
-  - `string` → `boolean`
-  - `string` → `array` (comma / json)
-- No semantic coercion or refinements.
-- The Standard Schema validator remains authoritative.
+**Coercion**: not supported.
 
 This mode is intentionally minimal and predictable.
 
@@ -88,7 +82,7 @@ In `arktype` mode (default):
   - ArkType DSL.
   - `type()` schemas.
   - Standard Schema validators via ArkType.
-  - Existing coercion and `onUndeclaredKey`.
+  - Coercion and `onUndeclaredKey`.
 
 ArkType remains the primary engine.
 
@@ -112,3 +106,4 @@ All are intentional trade-offs for clarity and simplicity.
 - No breaking changes.
 - Existing users remain on ArkType mode.
 - Standard mode is opt-in and explicit.
+- Clearly document the trade-offs of using standard mode.
