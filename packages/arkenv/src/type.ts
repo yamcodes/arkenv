@@ -1,4 +1,4 @@
-import type { type as at } from "arktype";
+import type { $ } from "@repo/scope";
 import { loadArkTypeOrThrow } from "./utils/arktype";
 
 /**
@@ -19,4 +19,4 @@ export const type = new Proxy(() => {}, {
 		const { $ } = loadArkTypeOrThrow();
 		return ($.type as any)(...argArray);
 	},
-}) as unknown as typeof at;
+}) as unknown as typeof $.type;
