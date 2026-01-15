@@ -1,5 +1,6 @@
 import type { ArkErrors } from "arktype";
-import { indent, styleText } from "./utils";
+import { indent } from "./utils/indent";
+import { styleText } from "./utils/style-text";
 
 export type InternalValidationError = {
 	path: string;
