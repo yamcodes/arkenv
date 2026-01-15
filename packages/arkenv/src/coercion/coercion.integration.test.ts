@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./create-env";
-import { type } from "./index";
+import { createEnv } from "../create-env";
+import { type } from "../type";
 
 describe("coercion integration", () => {
 	it("should coerce and validate numbers", () => {
