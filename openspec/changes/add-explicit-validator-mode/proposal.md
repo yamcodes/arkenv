@@ -126,10 +126,10 @@ In `standard` mode:
 - Async validators are rejected (same as today).
 
 ## Explicit Non-Goals
-- No attempt to infer output types differently per mode.
-- No auto-detection or hybrid behavior.
-- No proxy-based lazy loading exposed to users.
-- No coercion in standard mode. Coercion is ArkType-specific (for now).
+- Do not attempt to infer output types differently per mode.
+- Avoid auto-detection or hybrid behavior.
+- Ensure no proxy usage in standard mode.
+- Restrict coercion logic to ArkType mode (for now).
 
 ## Behavioral Summary
 
