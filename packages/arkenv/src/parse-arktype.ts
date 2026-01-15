@@ -19,13 +19,11 @@ export function parseArkType<const T extends SchemaShape>(
 		arrayFormat = "comma",
 	} = config;
 
-	const { $, type: at } = loadArkTypeOrThrow();
+	const { $ } = loadArkTypeOrThrow();
 
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
-
-	// Use an internal cast to handle both raw and compiled type definitions
 	const schema = (isCompiledType ? def : $.type.raw(def)) as any;
 
 	// Apply the `onUndeclaredKey` option
@@ -40,7 +38,8 @@ export function parseArkType<const T extends SchemaShape>(
 	// Validate the environment variables
 	const validatedEnv = finalSchema(env);
 
-	if (validatedEnv instanceof at.errors) {
+	const { ArkErrors } = loadArkTypeOrThrow();
+	if (validatedEnv instanceof ArkErrors) {
 		throw new ArkEnvError(validatedEnv);
 	}
 

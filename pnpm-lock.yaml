@@ -609,6 +609,9 @@ importers:
 
   packages/internal/scope:
     devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.8
       arktype:
         specifier: 'catalog:'
         version: 2.1.29

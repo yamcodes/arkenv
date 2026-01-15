@@ -55,6 +55,11 @@
 	"peerDependencies": {
 		"arktype": "^2.1.22"
 	},
+	"peerDependenciesMeta": {
+		"arktype": {
+			"optional": true
+		}
+	},
 	"size-limit": [
 		{
 			"path": "dist/index.js",

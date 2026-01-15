@@ -1,7 +1,7 @@
 import arkenv from "arkenv";
 
 const env = arkenv({
-	HOST: "string.ip | 'localhost'",
+	HOST: "string.host",
 	PORT: "0 <= number.integer <= 65535",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	DEBUGGING: "boolean = false",

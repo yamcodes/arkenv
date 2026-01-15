@@ -82,7 +82,7 @@ describe("createEnv", () => {
 		it("should work with schemas containing morphs", () => {
 			const Env = type({
 				PORT: "number.port",
-				VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+				VITE_MY_NUMBER_MANUAL: type("string").pipe((str: string) =>
 					Number.parseInt(str, 10),
 				),
 			});

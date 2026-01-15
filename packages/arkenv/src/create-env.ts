@@ -104,8 +104,5 @@ export function createEnv<const T extends SchemaShape>(
 		) as unknown as distill.Out<at.infer<T, $>>;
 	}
 
-	return parseArkType(
-		def as unknown as EnvSchema<T>,
-		config,
-	) as unknown as distill.Out<at.infer<T, $>>;
+	return parseArkType(def as any, config) as any;
 }
