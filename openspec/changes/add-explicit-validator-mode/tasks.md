@@ -1,19 +1,18 @@
 ## 1. API & Dispatch Setup
-- [ ] 1.1 Add `validator?: "arktype" | "standard"` to `ArkEnvConfig`
-      (default: `"arktype"`).
-- [ ] 1.2 Refactor `createEnv` to act as a strict dispatcher:
-      - Branch immediately on `config.validator`
-      - No schema inspection or heuristics before branching
+## 1. API Changes
+- [x] 1.1 Add `validator` option to `ArkEnvConfig`.
+- [x] 1.2 Add `arrayFormat` simplification.
 
-## 2. ArkType Loading Boundary
-- [ ] 2.1 Implement `loadArkTypeOrThrow()` as the sole ArkType entry point.
-- [ ] 2.2 Refactor `@repo/scope` to:
+## 2. Dynamic Dispatcher
+- [x] 2.1 Refactor `createEnv` into a dispatcher.
+- [x] 2.2 Implement `loadArkTypeOrThrow` in `src/utils/arktype.ts`.
+- [ ] 2.3 Refactor `@repo/scope` to:
       - Be lazily initialized
       - Be accessed only inside ArkType-mode code paths
-- [ ] 2.3 Ensure `standard` mode cannot reach `@repo/scope` (directly or indirectly).
+- [ ] 2.4 Ensure `standard` mode cannot reach `@repo/scope` (directly or indirectly).
 
 ## 3. ArkType Mode Preservation
-- [ ] 3.1 Route ArkType mode through existing parsing logic.
+- [x] 3.1 Route ArkType mode through existing parsing logic.
 - [ ] 3.2 Preserve all current behavior:
       - string DSL
       - `type()`
@@ -22,17 +21,14 @@
 - [ ] 3.3 Ensure behavior is byte-for-byte compatible with `main`.
 
 ## 4. Standard Mode Implementation
-- [ ] 4.1 Define a strict Standard-mode schema contract:
-      - Must be an object mapping
-      - Each value must implement Standard Schema (`~standard`)
-      - Reject strings, `type()`, and compiled ArkType schemas
-- [ ] 4.2 Implement `parseStandard()` helper.
-- [ ] 4.3 Implement explicit key-by-key parsing loop.
+- [x] 4.1 Implement strict schema contracts for `standard` mode.
+- [x] 4.2 Implement `parseStandard()` helper.
+- [x] 4.3 Implement explicit key-by-key parsing loop.
 - [ ] 4.4 Ensure no ArkType import, require, or proxy is reachable.
 
 ## 5. Error Handling
-- [ ] 5.1 Normalize Standard Schema errors into a shared internal format.
-- [ ] 5.2 Update `ArkEnvError` to accept this generic error shape.
+- [x] 5.1 Normalize Standard Schema errors into a shared internal format.
+- [x] 5.2 Update `ArkEnvError` to accept this generic error shape.
 - [ ] 5.3 Provide clear error when:
       - `validator === "arktype"` and ArkType is missing
       - `validator === "standard"` and schema is invalid

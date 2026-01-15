@@ -28,11 +28,13 @@ export function loadArkTypeOrThrow() {
 			arktype = arktype.default;
 		}
 
+		const $ = getScope(arktype);
+
 		_arktype = {
 			type: arktype.type,
 			scope: arktype.scope,
 			ArkErrors: arktype.ArkErrors,
-			$: getScope(arktype),
+			$: Object.assign($, $.export()),
 		};
 
 		return _arktype as any;
