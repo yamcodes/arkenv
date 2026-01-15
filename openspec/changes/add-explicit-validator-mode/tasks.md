@@ -13,7 +13,7 @@
 - [ ] 2.3 Ensure `standard` mode cannot reach `@repo/scope` (directly or indirectly).
 
 ## 3. ArkType Mode Preservation
-- [ ] 3.1 Route ArkType mode through existing validation logic.
+- [ ] 3.1 Route ArkType mode through existing parsing logic.
 - [ ] 3.2 Preserve all current behavior:
       - string DSL
       - `type()`
@@ -26,8 +26,8 @@
       - Must be an object mapping
       - Each value must implement Standard Schema (`~standard`)
       - Reject strings, `type()`, and compiled ArkType schemas
-- [ ] 4.2 Implement `validateStandard()` helper.
-- [ ] 4.3 Implement explicit key-by-key validation loop.
+- [ ] 4.2 Implement `parseStandard()` helper.
+- [ ] 4.3 Implement explicit key-by-key parsing loop.
 - [ ] 4.4 Ensure no ArkType import, require, or proxy is reachable.
 
 ## 5. Error Handling

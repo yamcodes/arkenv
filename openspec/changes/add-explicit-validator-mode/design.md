@@ -53,10 +53,10 @@ export function createEnv(def, config) {
   const mode = config.validator ?? "arktype"
 
   if (mode === "standard") {
-    return validateStandard(def, config)
+    return parseStandard(def, config)
   }
 
-  return validateArkType(def, config)
+  return parseArkType(def, config)
 }
 ```
 
@@ -79,10 +79,13 @@ This mode is intentionally minimal and predictable.
 In `arktype` mode (default):
 - Behavior is identical to `main`.
 - Supports:
-  - ArkType DSL.
-  - `type()` schemas.
-  - Standard Schema validators via ArkType.
-  - Coercion and `onUndeclaredKey`.
+  - Route ArkType mode through existing parsing logic.
+- Preserve all current behavior:
+  - string DSL
+  - `type()`
+  - coercion
+  - `onUndeclaredKey`
+.
 
 ArkType remains the primary engine.
 

@@ -1,12 +1,17 @@
 import type { ArkErrors } from "arktype";
 import { indent, styleText } from "./utils";
 
+export type InternalValidationError = {
+	path: string;
+	message: string;
+};
+
 /**
  * Format the errors returned by ArkType to be more readable
  * @param errors - The errors returned by ArkType
  * @returns A string of the formatted errors
  */
-export const formatErrors = (errors: ArkErrors): string =>
+export const formatArkErrors = (errors: ArkErrors): string =>
 	Object.entries(errors.byPath)
 		.map(([path, error]) => {
 			const messageWithoutPath = error.message.startsWith(path)
@@ -26,12 +31,26 @@ export const formatErrors = (errors: ArkErrors): string =>
 		})
 		.join("\n");
 
+export const formatInternalErrors = (
+	errors: InternalValidationError[],
+): string =>
+	errors
+		.map(
+			(error) =>
+				`${styleText("yellow", error.path)} ${error.message.trimStart()}`,
+		)
+		.join("\n");
+
 export class ArkEnvError extends Error {
 	constructor(
-		errors: ArkErrors,
+		errors: ArkErrors | InternalValidationError[],
 		message = "Errors found while validating environment variables",
 	) {
-		super(`${styleText("red", message)}\n${indent(formatErrors(errors))}\n`);
+		const formattedErrors = Array.isArray(errors)
+			? formatInternalErrors(errors)
+			: formatArkErrors(errors);
+
+		super(`${styleText("red", message)}\n${indent(formattedErrors)}\n`);
 		this.name = "ArkEnvError";
 	}
 }

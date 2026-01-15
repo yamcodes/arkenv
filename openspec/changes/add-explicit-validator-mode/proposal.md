@@ -16,7 +16,7 @@ Today, ArkEnv is **ArkType-first and ArkType-required**.
 There is a legitimate use case for:
 
 - Using ArkEnv **without ArkType installed**.
-- Validating environment variables using **Standard Schema validators directly**.
+- Parsing environment variables using **Standard Schema validators directly**.
 - Avoiding ArkType entirely at runtime when it is not needed.
 
 Some common use cases:
@@ -65,10 +65,10 @@ export function createEnv(def, config = {}) {
   const mode = config.validator ?? "arktype"
 
   if (mode === "standard") {
-    return validateStandard(def, config)
+    return parseStandard(def, config)
   }
 
-  return validateArkType(def, config)
+  return parseArkType(def, config)
 }
 ```
 
@@ -116,10 +116,10 @@ arkenv(
 
 Violations must fail fast with clear errors.
 
-### 5. Standard Mode Validation
+## Standard Mode Parsing
 
 In `standard` mode:
-- Validation is performed by:
+- Parsing is performed by:
   - Iterating keys.
   - Calling `validator["~standard"].validate(value)`.
 - Errors are collected and reported via `ArkEnvError`.
@@ -145,7 +145,7 @@ In `standard` mode:
 
 ### Code
 - `packages/arkenv/src/create-env.ts`
-- New `validateStandard` helper.
+- New `parseStandard` helper.
 - New `loadArkTypeOrThrow` utility.
 - Minor refactor in `@repo/scope` to support centralized loading.
 

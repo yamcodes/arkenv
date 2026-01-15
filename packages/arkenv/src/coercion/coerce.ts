@@ -1,4 +1,5 @@
-import { type BaseType, type JsonSchema, type } from "arktype";
+import { loadArkTypeOrThrow } from "../utils/arktype";
+import type { BaseType, JsonSchema } from "arktype";
 import { coerceBoolean, coerceJson, coerceNumber } from "./morphs";
 
 /**
@@ -313,7 +314,8 @@ export function coerce<t, $ = {}>(
 	 * creates a scope mismatch in TypeScript ({} vs $).
 	 * We cast to `BaseType<t, $>` to assert the final contract is maintained.
 	 */
-	return type("unknown")
-		.pipe((data) => applyCoercion(data, targets, options))
+	const { type: at } = loadArkTypeOrThrow();
+	return at("unknown")
+		.pipe((data: any) => applyCoercion(data, targets, options))
 		.pipe(schema) as BaseType<t, $>;
 }

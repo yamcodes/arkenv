@@ -1,9 +1,8 @@
-import { $ } from "@repo/scope";
+import type { $ } from "@repo/scope";
 import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { type CoerceOptions, coerce } from "./coercion";
-import { ArkEnvError } from "./errors";
-import { type } from "./type";
+import { parseArkType } from "./parse-arktype";
+import { parseStandard } from "./parse-standard";
 
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
@@ -44,7 +43,16 @@ export type ArkEnvConfig = {
 	 *
 	 * @default "comma"
 	 */
-	arrayFormat?: CoerceOptions["arrayFormat"];
+	arrayFormat?: "comma" | "json";
+	/**
+	 * Choose the validator engine to use.
+	 *
+	 * - `arktype` (default): Uses ArkType for all validation and coercion.
+	 * - `standard`: Uses Standard Schema 1.0 directly for validation. Coercion is not supported in this mode.
+	 *
+	 * @default "arktype"
+	 */
+	validator?: "arktype" | "standard";
 };
 
 /**
@@ -74,32 +82,13 @@ export function createEnv<const T extends SchemaShape>(
 ): distill.Out<at.infer<T, $>> | InferType<typeof def>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | EnvSchemaWithType,
-	{
-		env = process.env,
-		coerce: shouldCoerce = true,
-		onUndeclaredKey = "delete",
-		arrayFormat = "comma",
-	}: ArkEnvConfig = {},
+	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	// If def is a type definition (has assert method), use it directly
-	// Otherwise, use raw() to convert the schema definition
-	const isCompiledType = typeof def === "function" && "assert" in def;
-	let schema = isCompiledType ? def : $.type.raw(def as EnvSchema<T>);
+	const mode = config.validator ?? "arktype";
 
-	// Apply the `onUndeclaredKey` option
-	schema = schema.onUndeclaredKey(onUndeclaredKey);
-
-	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
-	if (shouldCoerce) {
-		schema = coerce(schema, { arrayFormat });
+	if (mode === "standard") {
+		return parseStandard(def, config) as any;
 	}
 
-	// Validate the environment variables
-	const validatedEnv = schema(env);
-
-	if (validatedEnv instanceof type.errors) {
-		throw new ArkEnvError(validatedEnv);
-	}
-
-	return validatedEnv;
+	return parseArkType(def, config);
 }
