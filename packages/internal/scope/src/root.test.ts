@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { $ } from "./index";
+import { $ } from "./root";
 
 describe("scope", () => {
 	it("should validate string.host", () => {
