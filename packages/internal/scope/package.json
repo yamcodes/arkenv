@@ -33,9 +33,6 @@
 		"url": "git+https://github.com/yamcodes/arkenv.git"
 	},
 	"author": "Yam Borodetsky <yam@yam.codes>",
-	"dependencies": {
-		"@repo/keywords": "workspace:*"
-	},
 	"devDependencies": {
 		"arktype": "catalog:",
 		"tsdown": "catalog:",
