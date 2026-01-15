@@ -316,6 +316,6 @@ export function coerce<t, $ = {}>(
 	 */
 	const { type: at } = loadArkTypeOrThrow();
 	return at("unknown")
-		.pipe((data: any) => applyCoercion(data, targets, options))
+		.pipe((data: unknown) => applyCoercion(data, targets, options))
 		.pipe(schema) as BaseType<t, $>;
 }

@@ -24,18 +24,21 @@ export function parseArkType<const T extends SchemaShape>(
 	// If def is a type definition (has assert method), use it directly
 	// Otherwise, use raw() to convert the schema definition
 	const isCompiledType = typeof def === "function" && "assert" in def;
-	let schema = isCompiledType ? (def as any) : $.type.raw(def);
+
+	// Use an internal cast to handle both raw and compiled type definitions
+	const schema = (isCompiledType ? def : $.type.raw(def)) as any;
 
 	// Apply the `onUndeclaredKey` option
-	schema = schema.onUndeclaredKey(onUndeclaredKey);
+	const schemaWithKeys = schema.onUndeclaredKey(onUndeclaredKey);
 
 	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
+	let finalSchema = schemaWithKeys;
 	if (shouldCoerce) {
-		schema = coerce(schema, { arrayFormat });
+		finalSchema = coerce(schemaWithKeys, { arrayFormat });
 	}
 
 	// Validate the environment variables
-	const validatedEnv = schema(env);
+	const validatedEnv = finalSchema(env);
 
 	if (validatedEnv instanceof at.errors) {
 		throw new ArkEnvError(validatedEnv);

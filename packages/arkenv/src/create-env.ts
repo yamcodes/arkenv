@@ -54,7 +54,18 @@ export type ArkEnvConfig = {
 	 */
 	validator?: "arktype" | "standard";
 };
-
+/**
+ * Minimal Standard Schema 1.0 interface for internal usage.
+ */
+type StandardValidator = {
+	"~standard": {
+		validate: (
+			value: unknown,
+		) =>
+			| { value: unknown; issues?: readonly { message: string }[] }
+			| Promise<unknown>;
+	};
+};
 /**
  * TODO: `SchemaShape` is basically `Record<string, unknown>`.
  * If possible, find a better type than "const T extends Record<string, unknown>",
@@ -87,8 +98,14 @@ export function createEnv<const T extends SchemaShape>(
 	const mode = config.validator ?? "arktype";
 
 	if (mode === "standard") {
-		return parseStandard(def as Record<string, any>, config) as any;
+		return parseStandard(
+			def as StandardValidator,
+			config,
+		) as unknown as distill.Out<at.infer<T, $>>;
 	}
 
-	return parseArkType(def as any, config) as any;
+	return parseArkType(
+		def as unknown as EnvSchema<T>,
+		config,
+	) as unknown as distill.Out<at.infer<T, $>>;
 }
