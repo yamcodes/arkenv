@@ -1,0 +1,27 @@
+{
+	"name": "no-arktype-playground",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch --env-file .env src/index.ts",
+		"start": "tsx --env-file .env src",
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"tsx": "^4.21.0"
+	},
+	"dependencies": {
+		"arkenv": "https://pkg.pr.new/arkenv@721",
+		"zod": "^4.3.5"
+	},
+	"engines": {
+		"node": "24"
+	},
+	"packageManager": "npm@11.6.4"
+}

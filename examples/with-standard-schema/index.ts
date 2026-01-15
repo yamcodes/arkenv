@@ -1,34 +1,46 @@
-import arkenv from "arkenv";
-import { z } from "zod";
+import arkenv, { type } from "arkenv";
+import * as z from "zod";
 
-const env = arkenv(
-	{
-		// Using custom keywords from the bundled scope
-		HOST: "string.host",
-		PORT: "0 <= number.integer <= 65535",
-		NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-		DEBUG: "boolean = false",
-	},
-	{
-		validator: "standard",
-	},
-);
+const env = arkenv({
+	// ArkType validators (concise TypeScript-like syntax)
+	HOST: "string.host",
+	PORT: "number.port",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+	DEBUG: "boolean = false",
 
-// const env = arkenv({
-// 	// Using custom keywords from the bundled scope
-// 	HOST: z.union([z.url(), z.literal("localhost")]),
-// 	PORT: z.coerce.number().int().min(0).max(65535),
-// 	NODE_ENV: z
-// 		.enum(["development", "production", "test"])
-// 		.default("development"),
-// 	DEBUG: z.coerce.boolean().default(false),
-// });
+	// Zod validators (great for complex validation and transformations)
+	DATABASE_URL: z.url(),
+	API_KEY: z
+		.string()
+		.min(32)
+		.describe("API key must be at least 32 characters"),
 
+	// Mix them together based on your needs
+	MAX_RETRIES: z.number().int().positive().default(3),
+	TIMEOUT_MS: z.number().int().min(0).max(30000).default(5000),
+
+	// Complex transformations with Zod
+	ALLOWED_ORIGINS: z
+		.string()
+		.transform((str: string) => str.split(","))
+		.pipe(z.array(z.url())),
+
+	// Array defaults with ArkType
+	FEATURE_FLAGS: type("string[]").default(() => []),
+});
+
+// All validators work together seamlessly with full type inference
 console.log({
 	host: env.HOST,
 	port: env.PORT,
 	nodeEnv: env.NODE_ENV,
 	debug: env.DEBUG,
+	databaseUrl: env.DATABASE_URL,
+	apiKey: `${env.API_KEY.substring(0, 8)}...`, // Don't log full API key
+	maxRetries: env.MAX_RETRIES,
+	timeoutMs: env.TIMEOUT_MS,
+	allowedOrigins: env.ALLOWED_ORIGINS,
+	featureFlags: env.FEATURE_FLAGS,
 });
 
 export default env;
