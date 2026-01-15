@@ -8,29 +8,52 @@ export type InternalValidationError = {
 };
 
 /**
+ * Check if the provided object is ArkType errors
+ */
+const isArkErrors = (errors: any): errors is ArkErrors => {
+	return errors && typeof errors === "object" && "byPath" in errors;
+};
+
+/**
  * Format the errors returned by ArkType to be more readable
  * @param errors - The errors returned by ArkType
  * @returns A string of the formatted errors
  */
-export const formatArkErrors = (errors: ArkErrors): string =>
-	Object.entries(errors.byPath)
+export const formatArkErrors = (errors: ArkErrors): string => {
+	return Object.entries(errors.byPath)
 		.map(([path, error]) => {
-			const messageWithoutPath = error.message.startsWith(path)
-				? error.message.slice(path.length)
-				: error.message;
+			let message = error.message;
 
-			// Extract the value in parentheses if it exists
-			const valueMatch = messageWithoutPath.match(/\(was "([^"]+)"\)/);
-			const formattedMessage = valueMatch
-				? messageWithoutPath.replace(
-						`(was "${valueMatch[1]}")`,
-						`(was ${styleText("cyan", `"${valueMatch[1]}"`)})`,
-					)
-				: messageWithoutPath;
+			const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+			const pathRegex = new RegExp(
+				`^\\s*[:.-]?\\s*${escapedPath}\\s*[:.-]?\\s*`,
+				"i",
+			);
 
-			return `${styleText("yellow", path)} ${formattedMessage.trimStart()}`;
+			if (pathRegex.test(message)) {
+				// Style the existing path prefix
+				message = message.replace(pathRegex, (match) => {
+					return `${styleText("yellow", path)}${match.toLowerCase().replace(path.toLowerCase(), "")}`;
+				});
+			} else {
+				// Prepend styled path
+				message = `${styleText("yellow", path)} ${message}`;
+			}
+
+			// Style (was ...)
+			const valueMatch = message.match(/\(was (.*)\)/);
+			if (valueMatch && valueMatch[1]) {
+				const value = valueMatch[1];
+				if (!value.includes("\x1b[")) {
+					const styledValue = styleText("cyan", value);
+					message = message.replace(`(was ${value})`, `(was ${styledValue})`);
+				}
+			}
+
+			return message;
 		})
 		.join("\n");
+};
 
 export const formatInternalErrors = (
 	errors: InternalValidationError[],
@@ -47,9 +70,10 @@ export class ArkEnvError extends Error {
 		errors: ArkErrors | InternalValidationError[],
 		message = "Errors found while validating environment variables",
 	) {
-		const formattedErrors = Array.isArray(errors)
-			? formatInternalErrors(errors)
-			: formatArkErrors(errors);
+		// ArkType errors subclass Array, so we must check for ArkErrors specifically first
+		const formattedErrors = isArkErrors(errors)
+			? formatArkErrors(errors)
+			: formatInternalErrors(errors as InternalValidationError[]);
 
 		super(`${styleText("red", message)}\n${indent(formattedErrors)}\n`);
 		this.name = "ArkEnvError";
