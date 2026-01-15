@@ -4,8 +4,8 @@ import { $ } from "./root";
 describe("scope", () => {
 	it("should validate string.host", () => {
 		const hostType = $.type({ HOST: "string.host" });
-		const result = hostType.assert({ HOST: "127.0.0.1" });
-		expect(result.HOST).toBe("127.0.0.1");
+		const result = hostType.assert({ HOST: "[IP_ADDRESS]" });
+		expect(result.HOST).toBe("[IP_ADDRESS]");
 	});
 
 	it("should validate localhost as string.host", () => {
@@ -27,7 +27,7 @@ describe("scope", () => {
 
 	it("should throw for invalid port", () => {
 		const portType = $.type({ PORT: "number.port" });
-		expect(() => portType.assert({ PORT: "99999" })).toThrow();
+		expect(() => portType.assert({ PORT: 99999 })).toThrow();
 	});
 
 	it("should validate combined host and port", () => {
