@@ -1,11 +1,16 @@
 import type { $ } from "@repo/scope";
-import type { EnvSchemaWithType, InferType, SchemaShape } from "@repo/types";
+import type {
+	Dict,
+	EnvSchemaWithType,
+	InferType,
+	SchemaShape,
+} from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parseArkType } from "./parse-arktype";
 import { parseStandard } from "./parse-standard";
 
 export type EnvSchema<def> = at.validate<def, $>;
-type RuntimeEnvironment = Record<string, string | undefined>;
+type RuntimeEnvironment = Dict<string>;
 
 /**
  * Configuration options for `createEnv`
