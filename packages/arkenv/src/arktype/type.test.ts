@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type } from "./type";
+import { type } from "./index.ts";
 
 describe("type", () => {
 	it("should create a type from a simple string schema", () => {

@@ -12,6 +12,8 @@ export type InferType<T> = T extends (
 	? R extends type.errors
 		? never
 		: R
-	: T extends type.Any<infer U, infer _Scope>
+	: T extends { t: infer U }
 		? U
-		: never;
+		: T extends type.Any<infer U, infer _Scope>
+			? U
+			: never;

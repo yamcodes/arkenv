@@ -13,7 +13,7 @@ The example uses a single schema definition in `app.config.ts` that defines the 
 ```ts title="app.config.ts"
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import { defineConfig } from "@solidjs/start/config";
-import { type } from "arkenv";
+import { type } from "arkenv/arktype";
 
 // Define the schema
 export const Env = type({

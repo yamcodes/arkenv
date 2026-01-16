@@ -1,5 +1,15 @@
 # @repo/scope
 
+## 0.1.3
+
+### Patch Changes
+
+- #### Remove internal `@repo/keywords` package _[`#726`](https://github.com/yamcodes/arkenv/pull/726) [`926ef9b`](https://github.com/yamcodes/arkenv/commit/926ef9b5a322187feef7fce3a842b04d5ec197fa) [@yamcodes](https://github.com/yamcodes)_
+
+  The internal `@repo/keywords` package, which was compiled into the `arkenv` package, has been removed. The keywords are now either defined directly in the `arkenv` package or changed to pure functions.
+
+  This change was made to simplify the package structure for the validator mode.
+
 ## 0.1.2
 
 ### Patch Changes

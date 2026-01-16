@@ -1,5 +1,38 @@
 # ArkEnv
 
+## 0.9.0
+
+### Minor Changes
+
+- #### ArkType is now an optional peer dependency _[`#723`](https://github.com/yamcodes/arkenv/pull/723) [`6bd0741`](https://github.com/yamcodes/arkenv/commit/6bd07410f97a8756366b9432be8504a8507d0876) [@yamcodes](https://github.com/yamcodes)_
+
+  To achieve a true zero-dependency core, ArkType is now an optional peer dependency.
+
+  - **Breaking Change**: The `type` export has been moved from the main `arkenv` entry point to `arkenv/arktype`.
+
+  ```ts
+  // ❌ Before
+  import { type } from "arkenv";
+
+  // ✅ After
+  import { type } from "arkenv/arktype";
+  ```
+
+  - **Explicit Validator Modes**: ArkEnv now supports an explicit `validator` option.
+
+    - **`validator: "arktype"` (default)**: Uses ArkType for validation and coercion. Requires `arktype` to be installed.
+    - **`validator: "standard"`**: Uses Standard Schema validators directly (e.g., Zod, Valibot). Works without ArkType.
+
+  Existing usage of `arkenv()` remains unchanged when ArkType is installed. Projects using ArkType features must now explicitly install `arktype` and import ArkType-land helpers from `arkenv/arktype`.
+
+### Patch Changes
+
+- #### Remove internal `@repo/keywords` package _[`#726`](https://github.com/yamcodes/arkenv/pull/726) [`926ef9b`](https://github.com/yamcodes/arkenv/commit/926ef9b5a322187feef7fce3a842b04d5ec197fa) [@yamcodes](https://github.com/yamcodes)_
+
+  The internal `@repo/keywords` package, which was compiled into the `arkenv` package, has been removed. The keywords are now either defined directly in the `arkenv` package or changed to pure functions.
+
+  This change was made to simplify the package structure for the validator mode.
+
 ## 0.8.3
 
 ### Patch Changes

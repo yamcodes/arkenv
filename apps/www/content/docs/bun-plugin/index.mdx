@@ -18,7 +18,7 @@ The simple setup automatically discovers your schema from `src/env.ts` or `env.t
 #### 1. Create your schema
 
 ```ts title="src/env.ts" twoslash
-import { type } from "arkenv";
+import { type } from "arkenv/arktype";
 
 export default type({
   BUN_PUBLIC_API_URL: "string",
@@ -55,7 +55,7 @@ Pass your schema directly to the plugin function:
 
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
-import { type } from "arkenv";
+import { type } from "arkenv/arktype";
 
 const Env = type({
   BUN_PUBLIC_API_URL: "string",
@@ -75,7 +75,7 @@ Create a custom plugin file and reference it in `bunfig.toml`:
 
 ```ts title="plugins/arkenv.ts"
 import arkenv from "@arkenv/bun-plugin";
-import { type } from "arkenv";
+import { type } from "arkenv/arktype";
 
 const Env = type({
   BUN_PUBLIC_API_URL: "string",

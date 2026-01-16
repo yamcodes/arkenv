@@ -16,7 +16,8 @@ Here's how to validate those variables with ArkEnv. The key is defining your sch
 
 ```ts title="vite.config.ts" twoslash
 import arkenvVitePlugin from "@arkenv/vite-plugin";
-import arkenv, { type } from "arkenv";
+import arkenv from "arkenv";
+import { type } from "arkenv/arktype";
 import { defineConfig, loadEnv } from "vite";
 
 const Env = type({
