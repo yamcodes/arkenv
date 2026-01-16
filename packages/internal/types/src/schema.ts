@@ -7,6 +7,7 @@ export type SchemaShape = Record<string, unknown>;
  * @internal
  *
  * Compiled ArkType schema accepted by ArkEnv.
+ * Produced by `arktype.type(...)` or `scope(...)`.
  *
  * Represents an already-constructed ArkType `Type` instance that
  * defines the full environment schema.

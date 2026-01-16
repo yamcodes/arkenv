@@ -13,8 +13,9 @@ import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 /**
  * Declarative environment schema definition accepted by ArkEnv.
  *
- * Represents a plain object mapping environment variable names to
- * schema definitions (e.g. ArkType DSL strings or Standard Schema validators).
+ * Represents a declarative schema object mapping environment
+ * variable names to schema definitions (e.g. ArkType DSL strings
+ * or Standard Schema validators).
  *
  * This type is used to validate that a schema object is compatible with
  * ArkEnv’s validator scope before being compiled or parsed.
