@@ -17,7 +17,8 @@
 		// https://turborepo.com/docs/crafting-your-repository/developing-applications#configuring-development-tasks
 		"dev": {
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"dependsOn": ["^build"]
 		},
 		// TypeScript
 		// See: https://turborepo.com/docs/guides/tools/typescript#linting-your-codebase
