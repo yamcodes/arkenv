@@ -46,7 +46,7 @@ coverage/
 esbuild-why*.html
 
 # arktype clone
-arktype/
+/arktype/
 
 # explicitly ignored folder
 ignore-me/

@@ -7,9 +7,16 @@
 	"types": "./dist/index.d.ts",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
 	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./arktype": {
+			"types": "./dist/arktype/index.d.ts",
+			"import": "./dist/arktype/index.js",
+			"require": "./dist/arktype/index.cjs"
+		}
 	},
 	"scripts": {
 		"build": "tsdown",
@@ -55,10 +62,15 @@
 	"peerDependencies": {
 		"arktype": "^2.1.22"
 	},
+	"peerDependenciesMeta": {
+		"arktype": {
+			"optional": true
+		}
+	},
 	"size-limit": [
 		{
 			"path": "dist/index.js",
-			"limit": "2 kB",
+			"limit": "3 kB",
 			"import": "*",
 			"ignore": [
 				"arktype",

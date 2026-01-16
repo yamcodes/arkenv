@@ -461,6 +461,12 @@ importers:
         specifier: 'catalog:'
         version: 4.3.5
     devDependencies:
+      '@repo/scope':
+        specifier: workspace:*
+        version: link:../../packages/internal/scope
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/internal/types
       '@tailwindcss/postcss':
         specifier: 4.1.18
         version: 4.1.18
@@ -637,6 +643,9 @@ importers:
         specifier: workspace:*
         version: link:../arkenv
     devDependencies:
+      '@repo/scope':
+        specifier: workspace:*
+        version: link:../internal/scope
       '@repo/types':
         specifier: workspace:*
         version: link:../internal/types
