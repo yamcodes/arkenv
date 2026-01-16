@@ -1,27 +1,24 @@
 ---
-"arkenv": patch
+"arkenv": minor
 ---
 
-#### ArkType is now optional
+#### ArkType is now an optional peer dependency
 
+To achieve a true zero-dependency core, ArkType is now an optional peer dependency.
 
-ArkEnv now supports an explicit `validator` option.
-
-- **`validator: "arktype"` (default)**
-
-  Uses ArkType for validation and coercion. Requires `arktype` to be installed.  
-  This is the **full ArkEnv feature set** and the recommended mode.
-
-- **`validator: "standard"`**
-
-  Uses Standard Schema validators directly (e.g. Zod, Valibot).  
-  Works **without ArkType installed** and provides a minimal runtime path.
+- **Breaking Change**: The `type` export has been moved from the main `arkenv` entry point to `arkenv/arktype`.
 
 ```ts
-arkenv(schema, { validator: "arktype" | "standard" })
+// ❌ Before
+import { type } from "arkenv";
+
+// ✅ After
+import { type } from "arkenv/arktype";
 ```
 
-This change is fully backward compatible.
-Existing code continues to use ArkType by default.
+- **Explicit Validator Modes**: ArkEnv now supports an explicit `validator` option.
 
-📖 See the docs for detailed behavior and examples!
+  - **`validator: "arktype"` (default)**: Uses ArkType for validation and coercion. Requires `arktype` to be installed.
+  - **`validator: "standard"`**: Uses Standard Schema validators directly (e.g., Zod, Valibot). Works without ArkType.
+
+Existing usage of `arkenv()` remains unchanged when ArkType is installed. Projects using ArkType features must now explicitly install `arktype` and import helpers from `arkenv/arktype`.
