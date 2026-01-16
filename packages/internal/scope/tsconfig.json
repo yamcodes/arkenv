@@ -13,9 +13,7 @@
 		"resolveJsonModule": true,
 		"rootDir": "src",
 		"declaration": true,
-		"declarationMap": true,
-		"lib": ["ES2020"],
-		"types": ["node"]
+		"declarationMap": true
 	},
 	"include": ["src"]
 }

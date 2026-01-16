@@ -34,17 +34,11 @@
 	},
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@types/node": "catalog:",
 		"arktype": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "catalog:"
-	},
-	"peerDependenciesMeta": {
-		"arktype": {
-			"optional": true
-		}
 	}
 }
