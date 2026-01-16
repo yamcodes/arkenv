@@ -11,9 +11,8 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"@arkenv/vite-plugin": "^0.0.27",
-		"arkenv": "^0.9.0",
-		"arktype": "^2.1.29",
+		"@arkenv/vite-plugin": "file:../../packages/vite-plugin/arkenv-vite-plugin-0.0.27.tgz",
+		"arkenv": "file:../../packages/arkenv/arkenv-0.9.0.tgz",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3"
 	},
