@@ -17,6 +17,9 @@
 - Typesafe environment variables backed by TypeScript
 - Access to ArkType's powerful type system
 
+> [!IMPORTANT]
+> This plugin **requires ArkType** and only works with ArkType-based schemas. It does not support ArkEnv's Standard Schema mode (`validator: "standard"`). If you need to use Standard Schema validators (Zod, Valibot, etc.), use the [core arkenv package](https://arkenv.js.org) directly without this plugin.
+
 ## Installation
 
 <details open>
