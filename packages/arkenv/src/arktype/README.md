@@ -13,6 +13,6 @@ This directory contains the ArkType-specific validator logic for `arkenv`.
 
 ## How it works
 
-When `createEnv` is called in ArkType mode (the default), `arkenv` dynamically loads this module. This ensures that:
+When `createEnv` is called in ArkType-mode (the default), `arkenv` dynamically loads this module. This ensures that:
 1. `arkenv` can be used without `arktype` (e.g., for Standard Schema only projects).
 2. `arktype` is only loaded if and when environment validation is actually performed.
