@@ -12,8 +12,8 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
-		"@repo/types": "workspace:*",
 		"@repo/scope": "workspace:*",
+		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",
