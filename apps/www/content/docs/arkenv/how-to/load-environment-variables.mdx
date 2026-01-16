@@ -216,7 +216,7 @@ const env1 = arkenv({
 // Standard mode - works without ArkType
 const env2 = arkenv(
   {
-    PORT: z.number().int().min(0).max(65535),
+    PORT: z.coerce.number().int().min(0).max(65535),
     DATABASE_URL: z.string().url(),
   },
   { validator: "standard" }
