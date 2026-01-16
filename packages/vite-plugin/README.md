@@ -18,7 +18,12 @@
 - Access to ArkType's powerful type system
 
 > [!IMPORTANT]
-> This plugin **requires ArkType** and only works with ArkType-based schemas. It does not support ArkEnv's Standard Schema mode (`validator: "standard"`). If you need to use Standard Schema validators (Zod, Valibot, etc.), use the [core arkenv package](https://arkenv.js.org) directly without this plugin.
+> This plugin requires `arktype` to be installed in your project.
+>
+> It does not support `validator: "standard"`.
+> You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
+>
+> See the [docs](https://arkenv.js.org/docs/arkenv/integrations/standard-schema) for details.
 
 ## Installation
 
