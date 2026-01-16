@@ -6,17 +6,20 @@ icon: Rocket
 
 <Steps>
   <Step>
-    ## Install
-    ```package-install
-    arkenv
-    ```
-
+    ## Install ArkEnv
     <Accordions>
-      <Accordion title="Install alongside ArkType (recommended)">
-        ArkEnv works best with **ArkType**, which provides the string DSL and built-in coercion.
-        
+      <Accordion title="Install ArkEnv + ArkType (recommended)">
+        ArkEnv works best when [paired with ArkType](/docs/arkenv/validator-mode):
+
         ```package-install
-        arktype
+        arkenv arktype
+        ```
+      </Accordion>
+      <Accordion title="Install ArkEnv only">
+        Use this if you already rely on a [Standard Schema](https://standardschema.dev) validator like Zod or Valibot.
+
+        ```package-install
+        arkenv
         ```
       </Accordion>
     </Accordions>
@@ -47,11 +50,11 @@ icon: Rocket
 
     Add a schema to make your environment variables **validated** and **typesafe**.
 
-    For this example, we'll use ArkType, but you can [use any other Standard Schema validator](/docs/arkenv/integrations/standard-schema) like Zod, Valibot, and Typia.
+    We're using ArkType for this example, but you can mix and match [any Standard Schema validator](docs/arkenv/integrations/standard-schema).
     
     ```ts title="config/env.ts" twoslash
     import arkenv from 'arkenv';
-import { type } from 'arkenv/arktype';
+    import { type } from 'arkenv/arktype';
 
     export const env = arkenv({
       // Optional variables with defaults
