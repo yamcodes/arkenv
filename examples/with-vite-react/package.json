@@ -11,13 +11,14 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"@arkenv/vite-plugin": "file:../../packages/vite-plugin/arkenv-vite-plugin-0.0.27.tgz",
-		"arkenv": "file:../../packages/arkenv/arkenv-0.9.0.tgz",
+		"@arkenv/vite-plugin": "^0.0.27",
+		"arkenv": "^0.9.0",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3"
 	},
 	"devDependencies": {
 		"@julr/vite-plugin-validate-env": "2.2.0",
+		"@types/node": "^catalog:",
 		"@types/react": "^19.2.8",
 		"@types/react-dom": "^19.2.3",
 		"@vitejs/plugin-react": "^5.1.2",
