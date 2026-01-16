@@ -19,12 +19,10 @@ test.describe("Homepage Interactivity", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// Verify GitHub star link exists with correct attributes (may be hidden on some viewports)
-		const githubLink = page
-			.locator("a[href*='github.com']")
-			.filter({ hasText: "Star" })
-			.first();
+		// Use role-based selector to target the visible desktop link
+		const githubLink = page.getByRole("link", { name: /Star us on GitHub/i });
 
+		await expect(githubLink).toBeVisible();
 		await expect(githubLink).toHaveAttribute("target", "_blank");
 		const rel = await githubLink.getAttribute("rel");
 		expect(rel).toContain("noopener");
