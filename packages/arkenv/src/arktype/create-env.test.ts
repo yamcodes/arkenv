@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createEnv } from "../create-env.ts";
-import { type } from "./index.ts";
 import { indent, styleText } from "../utils/index.ts";
+import { type } from "./index.ts";
 
 /**
  * Format the errors returned by env for testing purposes

@@ -1,6 +1,6 @@
 import type { BaseType, JsonSchema } from "arktype";
-import { coerceBoolean, coerceJson, coerceNumber } from "./morphs.ts";
 import { ArkEnvError } from "../../errors.ts";
+import { coerceBoolean, coerceJson, coerceNumber } from "./morphs.ts";
 
 /**
  * A marker used in the coercion path to indicate that the target
