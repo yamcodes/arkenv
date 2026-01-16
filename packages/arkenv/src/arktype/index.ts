@@ -6,13 +6,44 @@ import type { ArkEnvConfig, EnvSchema } from "../create-env.ts";
 import { ArkEnvError } from "../errors.ts";
 import { coerce } from "./coercion/coerce.ts";
 
+/**
+ * Re-export of ArkType’s `distill` utilities.
+ *
+ * Exposed for internal use cases and type-level integrations.
+ * ArkEnv does not add behavior or guarantees beyond what ArkType provides.
+ *
+ * @internal
+ * @see https://github.com/arktypeio/arktype
+ */
 export type { distill };
 
 /**
- * Re-export the ArkType `type` function from the scoped root.
+ * Like ArkType’s `type`, but with ArkEnv’s extra keywords, such as:
+ *
+ * - `string.host` – a hostname (e.g. `"localhost"`, `"127.0.0.1"`)
+ * - `number.port` – a port number (e.g. `8080`)
+ *
+ * See ArkType’s docs for the full API:
+ * https://arktype.io/docs/type-api
  */
 export const type = $.type;
 
+/**
+ * Parse and validate environment variables using ArkEnv’s schema rules.
+ *
+ * This applies:
+ * - schema validation
+ * - optional coercion (strings → numbers, booleans, arrays)
+ * - undeclared key handling
+ *
+ * On success, returns the validated environment object.
+ * On failure, throws an {@link ArkEnvError}.
+ *
+ * This is a low-level utility used internally by ArkEnv.
+ * Most users should prefer the default `arkenv()` export.
+ *
+ * @internal
+ */
 export function parse<const T extends SchemaShape>(
 	def: EnvSchema<T>,
 	config: ArkEnvConfig,
