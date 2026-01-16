@@ -13,6 +13,7 @@
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
+		"@repo/scope": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",
