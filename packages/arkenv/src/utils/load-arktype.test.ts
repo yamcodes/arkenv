@@ -1,6 +1,6 @@
+import { createRequire } from "node:module";
 import { describe, expect, it, vi } from "vitest";
 import { loadArkTypeValidator } from "./load-arktype.ts";
-import { createRequire } from "node:module";
 
 vi.mock("node:module", async (importOriginal) => {
 	const original = await importOriginal<typeof import("node:module")>();

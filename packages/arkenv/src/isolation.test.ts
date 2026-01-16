@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createEnv } from "./create-env.ts";
 import * as loader from "./utils/load-arktype.ts";
 

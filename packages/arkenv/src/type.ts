@@ -1,5 +1,5 @@
-import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 import type { $ } from "@repo/scope";
+import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 
 /**
  * Lazy proxy for ArkType's `type` function, bound to ArkEnv's custom scope.
