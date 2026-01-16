@@ -1,6 +1,10 @@
 {
-	"title": "IDE Integrations",
-	"icon": "Code",
+	"title": "IDE Extensions",
 	"defaultOpen": false,
-	"pages": ["vscode", "open-vsx", "jetbrains"]
+	"collapsible": true,
+	"pages": [
+		"[Visual Studio Code](/docs/arkenv/integrations/ide/vscode)",
+		"[Cursor, Antigravity, and other VSCodium IDEs](/docs/arkenv/integrations/ide/open-vsx)",
+		"[JetBrains IDEs](/docs/arkenv/integrations/ide/jetbrains)"
+	]
 }
