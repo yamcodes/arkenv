@@ -51,10 +51,6 @@
 			"dependsOn": ["^transit", "arkenv#build"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
-		"test:a11y": {
-			"dependsOn": ["^transit", "arkenv#build"],
-			"passThroughEnv": ["PLAYWRIGHT_*"]
-		},
 		"test:e2e:report": {
 			"cache": false,
 			"persistent": true
