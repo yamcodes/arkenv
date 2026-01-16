@@ -12,34 +12,7 @@ import type { type } from "arktype";
  * @template TSchema - The environment variable schema (result of `type()` from arkenv)
  * @template Prefix - The prefix to filter by (defaults to "VITE_")
  *
- * @example
- * ```ts
- * // vite.config.ts
- * import arkenv from '@arkenv/vite-plugin';
- * import { type } from 'arkenv';
- *
- * export const Env = type({
- *   VITE_API_URL: 'string',
- *   VITE_API_KEY: 'string',
- *   PORT: 'number.port', // Server-only, won't be in ImportMetaEnvAugmented
- * });
- *
- * export default defineConfig({
- *   plugins: [arkenv(Env)],
- * });
- * ```
- *
- * @example
- * ```ts
- * // src/vite-env.d.ts
- * /// <reference types="vite/client" />
- *
- * import type { ImportMetaEnvAugmented } from '@arkenv/vite-plugin';
- * import type { Env } from './env'; // or from vite.config.ts
- *
- * interface ImportMetaEnv extends ImportMetaEnvAugmented<typeof Env> {}
- * ```
- *
+ * @see {@link https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env | Documentation: Typing import.meta.env}
  * @see {@link https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv | Original implementation by Julien-R44}
  */
 export type ImportMetaEnvAugmented<
