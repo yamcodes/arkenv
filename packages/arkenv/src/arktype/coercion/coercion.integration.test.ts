@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createEnv } from "../create-env";
-import { type } from "../type";
+import { createEnv } from "../../create-env.ts";
+import { type } from "../index.ts";
 
 describe("coercion integration", () => {
 	it("should coerce and validate numbers", () => {
@@ -127,7 +127,7 @@ describe("coercion integration", () => {
 	it("should work with schemas containing morphs", () => {
 		const Env = type({
 			PORT: "number.port",
-			VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+			VITE_MY_NUMBER_MANUAL: type("string").pipe((str: string) =>
 				Number.parseInt(str, 10),
 			),
 		});

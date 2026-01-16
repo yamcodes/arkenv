@@ -55,6 +55,8 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
+		"@repo/scope": "workspace:*",
+		"@repo/types": "workspace:*",
 		"@tailwindcss/postcss": "4.1.18",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "6.9.1",

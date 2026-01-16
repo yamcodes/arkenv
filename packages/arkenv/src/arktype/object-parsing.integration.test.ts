@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./create-env";
-import { type } from "./index";
+import { createEnv } from "../create-env.ts";
+import { type } from "./index.ts";
 
 describe("object parsing integration", () => {
 	it("should parse JSON string into object with string properties", () => {

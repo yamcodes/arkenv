@@ -1,5 +1,6 @@
-import { type BaseType, type JsonSchema, type } from "arktype";
-import { coerceBoolean, coerceJson, coerceNumber } from "./morphs";
+import type { BaseType, JsonSchema } from "arktype";
+import { ArkEnvError } from "../../errors.ts";
+import { coerceBoolean, coerceJson, coerceNumber } from "./morphs.ts";
 
 /**
  * A marker used in the coercion path to indicate that the target
@@ -291,6 +292,7 @@ const applyCoercion = (
  * before validation.
  */
 export function coerce<t, $ = {}>(
+	at: any,
 	schema: BaseType<t, $>,
 	options?: CoerceOptions,
 ): BaseType<t, $> {
@@ -299,9 +301,9 @@ export function coerce<t, $ = {}>(
 	// cannot be fully represented in JSON Schema, we can still perform coercion
 	// for the parts that can.
 	const json = schema.in.toJsonSchema({
-		fallback: (ctx) => ctx.base,
+		fallback: (ctx) => (ctx as any).base,
 	});
-	const targets = findCoercionPaths(json);
+	const targets = findCoercionPaths(json as any);
 
 	if (targets.length === 0) {
 		return schema;
@@ -313,7 +315,7 @@ export function coerce<t, $ = {}>(
 	 * creates a scope mismatch in TypeScript ({} vs $).
 	 * We cast to `BaseType<t, $>` to assert the final contract is maintained.
 	 */
-	return type("unknown")
-		.pipe((data) => applyCoercion(data, targets, options))
+	return at("unknown")
+		.pipe((data: unknown) => applyCoercion(data, targets, options))
 		.pipe(schema) as BaseType<t, $>;
 }

@@ -24,7 +24,8 @@ This might sound like a niche use-case, but it comes up more often than you'd th
 That's where type definitions start making sense: define your schema once with `type()`, and reuse it wherever you need.
 
 ```ts twoslash
-import arkenv, { type } from 'arkenv';
+import arkenv from 'arkenv';
+import { type } from 'arkenv/arktype';
 
 const Env = type({
   HOST: "string.host",

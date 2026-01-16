@@ -6,8 +6,15 @@ export default defineProject({
 		name: "@arkenv/vite-plugin",
 	},
 	resolve: {
-		alias: {
-			arkenv: path.resolve(__dirname, "../arkenv/src/index.ts"),
-		},
+		alias: [
+			{
+				find: /^arkenv\/arktype$/,
+				replacement: path.resolve(__dirname, "../arkenv/src/arktype/index.ts"),
+			},
+			{
+				find: /^arkenv$/,
+				replacement: path.resolve(__dirname, "../arkenv/src/index.ts"),
+			},
+		],
 	},
 });

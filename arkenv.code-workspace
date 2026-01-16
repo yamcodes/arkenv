@@ -126,6 +126,10 @@
 			"name": "  with-standard-schema"
 		},
 		{
+			"path": "examples/without-arktype",
+			"name": "  without-arktype"
+		},
+		{
 			"path": "examples/stackblitz",
 			"name": "  stackblitz"
 		}

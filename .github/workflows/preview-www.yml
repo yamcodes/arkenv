@@ -8,13 +8,21 @@ env:
   TZ: ${{ vars.TIMEZONE || 'Asia/Almaty' }}
 on:
   pull_request:
-    types: [opened, synchronize, ready_for_review]
+    types: [opened, synchronize, ready_for_review, labeled]
+    paths:
+      - "apps/www/**"
+      - "packages/**"
+      - ".github/workflows/preview-www.yml"
+      - "pnpm-lock.yaml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   Deploy-Preview:
+    if: |
+      (github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'preview')) &&
+      (github.event_name != 'pull_request' || github.event.action != 'labeled' || github.event.label.name == 'preview')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

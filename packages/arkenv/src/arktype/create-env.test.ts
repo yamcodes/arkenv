@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createEnv } from "./create-env";
-import { type } from "./type";
-import { indent, styleText } from "./utils";
+import { createEnv } from "../create-env.ts";
+import { indent, styleText } from "../utils/index.ts";
+import { type } from "./index.ts";
 
 /**
  * Format the errors returned by env for testing purposes
@@ -82,7 +82,7 @@ describe("createEnv", () => {
 		it("should work with schemas containing morphs", () => {
 			const Env = type({
 				PORT: "number.port",
-				VITE_MY_NUMBER_MANUAL: type("string").pipe((str) =>
+				VITE_MY_NUMBER_MANUAL: type("string").pipe((str: string) =>
 					Number.parseInt(str, 10),
 				),
 			});
