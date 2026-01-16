@@ -1,5 +1,29 @@
 # @arkenv/bun-plugin
 
+## 0.1.0
+
+### Minor Changes
+
+- #### Refactoring + remove `processEnvSchema` export _[`#739`](https://github.com/yamcodes/arkenv/pull/739) [`16c6047`](https://github.com/yamcodes/arkenv/commit/16c6047dad8d797b6e87d77ca413ba6582a16916) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  **Breaking change:** We've removed the `processEnvSchema` export from this library as it's an internal utility.
+
+### Patch Changes
+
+- #### Support for `.mts` and `.cts` extensions _[`#739`](https://github.com/yamcodes/arkenv/pull/739) [`16c6047`](https://github.com/yamcodes/arkenv/commit/16c6047dad8d797b6e87d77ca413ba6582a16916) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  Updated the Bun plugin to correctly process and load `.mts` and `.cts` files. This ensures environment variables are properly injected when using these TypeScript file extensions.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+</small>
+
+- `arkenv@0.9.0`
+
+</details>
+
 ## 0.0.9
 
 ### Patch Changes
