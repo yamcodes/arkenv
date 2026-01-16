@@ -2,10 +2,5 @@
 	"title": "IDE Integrations",
 	"icon": "Code",
 	"defaultOpen": false,
-	"pages": [
-		"vscode",
-		"open-vsx",
-		"jetbrains",
-		"standard-schema"
-	]
+	"pages": ["vscode", "open-vsx", "jetbrains", "standard-schema"]
 }
