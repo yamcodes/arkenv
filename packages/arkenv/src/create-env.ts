@@ -1,7 +1,7 @@
 import type { $ } from "@repo/scope";
 import type {
-	Dict,
 	CompiledEnvSchema,
+	Dict,
 	InferType,
 	SchemaShape,
 } from "@repo/types";
