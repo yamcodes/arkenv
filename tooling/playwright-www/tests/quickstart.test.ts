@@ -38,6 +38,7 @@ test.describe("Quickstart Page", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Check for package installation command
+		await page.click("text=Install ArkEnv + ArkType (recommended)");
 		await expect(page.locator("text=arkenv arktype")).toBeVisible();
 	});
 
@@ -71,8 +72,8 @@ test.describe("Quickstart Page", () => {
 
 		// Check for .env file example
 		await expect(page.locator("text=.env").first()).toBeVisible();
-		await expect(page.locator("text=DATABASE_HOST=localhost")).toBeVisible();
-		await expect(page.locator("text=DATABASE_PORT=5432")).toBeVisible();
+		await expect(page.locator("text=LOG_LEVEL=info")).toBeVisible();
+		await expect(page.locator("text=API_KEY=secret")).toBeVisible();
 	});
 
 	test("should display usage examples", async ({ page }) => {
@@ -166,7 +167,9 @@ test.describe("Quickstart Page", () => {
 
 		// Check for tip about .env files
 		await expect(page.locator("text=.env").first()).toBeVisible();
-		await expect(page.locator("text=.gitignore")).toBeVisible();
+		await expect(
+			page.locator("text=not committing the .env file to version control"),
+		).toBeVisible();
 	});
 
 	test("should have proper code syntax highlighting", async ({ page }) => {
