@@ -5,6 +5,28 @@ import { type CoerceOptions, coerce } from "./coercion";
 import { ArkEnvError } from "./errors";
 import { type } from "./type";
 
+/**
+ * Type representing a valid environment variable schema definition.
+ *
+ * This type validates that your schema definition is compatible with ArkEnv's environment variable parsing.
+ * Schemas can be plain objects with string definitions or compiled ArkType types.
+ *
+ * @template def - The schema definition object
+ *
+ * @example
+ * ```ts
+ * import { type EnvSchema } from 'arkenv';
+ *
+ * // Using plain object schema
+ * const schema: EnvSchema<{
+ *   PORT: 'number.port',
+ *   HOST: 'string.host',
+ * }> = {
+ *   PORT: 'number.port',
+ *   HOST: 'string.host',
+ * };
+ * ```
+ */
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Record<string, string | undefined>;
 

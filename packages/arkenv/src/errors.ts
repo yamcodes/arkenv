@@ -26,6 +26,28 @@ export const formatErrors = (errors: ArkErrors): string =>
 		})
 		.join("\n");
 
+/**
+ * Error thrown when environment variable validation fails.
+ *
+ * This error extends the native `Error` class and provides formatted error messages
+ * that clearly indicate which environment variables are invalid and why.
+ *
+ * @example
+ * ```ts
+ * import { createEnv, ArkEnvError } from 'arkenv';
+ *
+ * try {
+ *   const env = createEnv({
+ *     PORT: 'number.port',
+ *     HOST: 'string.host',
+ *   });
+ * } catch (error) {
+ *   if (error instanceof ArkEnvError) {
+ *     console.error('Environment validation failed:', error.message);
+ *   }
+ * }
+ * ```
+ */
 export class ArkEnvError extends Error {
 	constructor(
 		errors: ArkErrors,

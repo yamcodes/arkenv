@@ -2,6 +2,15 @@ import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
 import { createEnv, type EnvSchema } from "arkenv";
 import { loadEnv, type Plugin } from "vite";
 
+/**
+ * Type helper for augmenting `import.meta.env` with typesafe environment variables.
+ *
+ * Use this type to add TypeScript autocomplete and type-safety for your validated
+ * environment variables in Vite projects. It automatically filters variables based
+ * on the configured prefix (defaults to `VITE_`).
+ *
+ * @see {@link https://arkenv.js.org/integrations/vite | Vite Plugin Documentation}
+ */
 export type { ImportMetaEnvAugmented } from "./types";
 
 /**

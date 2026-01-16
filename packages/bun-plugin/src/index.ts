@@ -4,10 +4,39 @@ import type { EnvSchema } from "arkenv";
 import { createEnv } from "arkenv";
 import type { BunPlugin, Loader, PluginBuilder } from "bun";
 
+/**
+ * Type helper for augmenting `process.env` with typesafe environment variables.
+ *
+ * Use this type to add TypeScript autocomplete and type-safety for your validated
+ * environment variables in Bun projects. It automatically filters variables based
+ * on the configured prefix (defaults to `BUN_PUBLIC_`).
+ *
+ * @see {@link https://arkenv.js.org/integrations/bun | Bun Plugin Documentation}
+ */
 export type { ProcessEnvAugmented } from "./types";
 
 /**
- * Helper to process env schema and return envMap
+ * Processes an environment variable schema and returns a map of validated, filtered values.
+ *
+ * This helper function validates environment variables against the provided schema using ArkEnv,
+ * filters them to only include variables with the `BUN_PUBLIC_` prefix, and returns a map
+ * of variable names to their JSON-stringified values for use in the Bun build process.
+ *
+ * @template T - The schema shape type
+ * @param options - The environment variable schema definition (raw object or type definition)
+ * @returns A `Map` of environment variable names to their JSON-stringified values
+ * @throws {ArkEnvError} If environment variable validation fails
+ *
+ * @example
+ * ```ts
+ * import { processEnvSchema } from '@arkenv/bun-plugin';
+ *
+ * const envMap = processEnvSchema({
+ *   BUN_PUBLIC_API_URL: 'string',
+ *   BUN_PUBLIC_DEBUG: 'boolean',
+ *   PRIVATE_KEY: 'string', // Won't be included in the map
+ * });
+ * ```
  */
 export function processEnvSchema<T extends SchemaShape>(
 	options: EnvSchema<T> | EnvSchemaWithType,
