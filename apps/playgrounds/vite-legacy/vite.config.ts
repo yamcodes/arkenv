@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
 	console.log(`${env.VITE_MY_NUMBER} ${typeof env.VITE_MY_NUMBER}`);
 	return {
 		plugins: [
-			tsconfigPaths(),
+			tsconfigPaths({ projects: ["./tsconfig.json"] }),
 			reactPlugin(),
 			// The plugin validates VITE_* variables and automatically filters to only expose
 			// variables matching the Vite prefix (defaults to VITE_). Server-only variables

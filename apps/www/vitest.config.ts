@@ -9,7 +9,7 @@ export default defineProject({
 				plugins: ["styled-jsx/babel"],
 			},
 		}),
-		tsconfigPaths(),
+		tsconfigPaths({ projects: ["./tsconfig.json"] }),
 	],
 	test: {
 		name: "arkenv.js.org",
