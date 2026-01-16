@@ -28,11 +28,6 @@
 		"arktype": "^2.1.22",
 		"bun": "^1.0.0"
 	},
-	"peerDependenciesMeta": {
-		"arktype": {
-			"optional": true
-		}
-	},
 	"exports": {
 		"types": "./dist/index.d.ts",
 		"import": "./dist/index.js",
