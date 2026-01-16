@@ -10,7 +10,7 @@
 		"quickstart",
 		"examples",
 		"---API---",
-		"validator-mode",
+		"[New][Validator mode](/docs/arkenv/validator-mode)",
 		"coercion",
 		"---Integrations---",
 		"[VS Code](/docs/arkenv/integrations/vscode)",
