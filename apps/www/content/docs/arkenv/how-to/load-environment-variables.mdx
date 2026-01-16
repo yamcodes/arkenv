@@ -240,8 +240,12 @@ const env2 = arkenv(
   {
     PORT: "number.port",
   },
-  { coerce: false } // Must be a number string, not parsed
+  { coerce: false } // Must be a number; strings (like those from process.env) will fail
 );
+```
+
+> [!NOTE]
+> Since `process.env` values are always strings, using `coerce: false` with numeric or boolean schemas will cause validation to fail unless you provide a custom `env` source containing the expected literal types.
 ```
 
 ### Custom environment source
