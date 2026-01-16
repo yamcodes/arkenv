@@ -34,19 +34,16 @@ test.describe("Smoke Tests", () => {
 
 	for (const url of topRoutes) {
 		test(`Route Smoke Test: ${url}`, async ({ page }) => {
-			await page.goto(url);
-			await page.waitForLoadState("networkidle");
+			// 1. Navigate and check for console errors
+			await assertNoConsoleErrors(page, url);
 
-			// 1. Basic Structure
+			// 2. Basic Structure (on the same loaded page)
 			const main = page.locator("main").first();
 			await expect(main).toBeVisible();
 			const h1 = page.locator("h1").first();
 			await expect(h1).toBeVisible();
 
-			// 2. No Console Errors
-			await assertNoConsoleErrors(page, url);
-
-			// 3. A11y
+			// 3. A11y (on the same loaded page)
 			await assertNoA11yViolations(page);
 		});
 	}
