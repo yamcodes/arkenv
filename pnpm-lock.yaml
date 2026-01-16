@@ -257,6 +257,9 @@ importers:
       arkenv:
         specifier: workspace:*
         version: link:../../../packages/arkenv
+      arktype:
+        specifier: 'catalog:'
+        version: 2.1.29
       react:
         specifier: 'catalog:'
         version: 19.2.3
