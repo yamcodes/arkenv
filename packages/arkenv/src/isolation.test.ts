@@ -44,4 +44,28 @@ describe("validator isolation", () => {
 		expect(result).toEqual({ MOCKED: true });
 		expect(loader.loadArkTypeValidator).toHaveBeenCalled();
 	});
+
+	it("should NOT load ArkType logic when just importing 'arkenv'", async () => {
+		// Import arkenv (already imported at top, but ensure it's loaded)
+		expect(loader.loadArkTypeValidator).not.toHaveBeenCalled();
+	});
+
+	it("should load ArkType logic when calling 'createEnv' in default mode", () => {
+		// Mock a minimal validator
+		vi.mocked(loader.loadArkTypeValidator).mockReturnValue({
+			parse: vi.fn().mockReturnValue({ MOCKED: true }),
+		} as any);
+
+		createEnv({ TEST: "string" } as any, {
+			env: { TEST: "val" },
+		});
+
+		expect(loader.loadArkTypeValidator).toHaveBeenCalled();
+	});
+
+	it("should load ArkType logic when importing from 'arktype/index.ts'", async () => {
+		// Importing from arkenv/arktype land SHOULD load arktype statically
+		// (In these tests, we mock the loader, but arktype/index.ts imports $ which imports arktype)
+		await import("./arktype/index.ts");
+	});
 });

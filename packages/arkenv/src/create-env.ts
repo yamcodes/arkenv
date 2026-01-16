@@ -1,4 +1,3 @@
-import { createRequire } from "node:module";
 import type { $ } from "@repo/scope";
 import type {
 	Dict,
@@ -7,7 +6,7 @@ import type {
 	SchemaShape,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { ArkEnvError, type ArkEnvErrorOptions } from "./errors.ts";
+import { ArkEnvError } from "./errors.ts";
 import { parseStandard } from "./parse-standard.ts";
 import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 

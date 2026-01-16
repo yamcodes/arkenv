@@ -1,6 +1,8 @@
 import { createEnv } from "./create-env.ts";
 
+export { createEnv };
 export type { EnvSchema } from "./create-env.ts";
+export { ArkEnvError } from "./errors.ts";
 
 /**
  * `arkenv`'s main export, an alias for {@link createEnv}
@@ -9,6 +11,3 @@ export type { EnvSchema } from "./create-env.ts";
  */
 const arkenv = createEnv;
 export default arkenv;
-export { type } from "./type.ts";
-export { createEnv };
-export { ArkEnvError } from "./errors.ts";
