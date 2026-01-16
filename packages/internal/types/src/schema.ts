@@ -3,4 +3,15 @@ import type { Type } from "arktype";
 
 export type SchemaShape = Record<string, unknown>;
 
-export type EnvSchemaWithType = Type<SchemaShape, $>;
+/**
+ * @internal
+ *
+ * Compiled ArkType schema accepted by ArkEnv.
+ *
+ * Represents an already-constructed ArkType `Type` instance that
+ * defines the full environment schema.
+ *
+ * This form bypasses schema validation and is intended for advanced
+ * or programmatic use cases where schemas are constructed dynamically.
+ */
+export type CompiledEnvSchema = Type<SchemaShape, $>;

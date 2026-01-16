@@ -1,4 +1,4 @@
-import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
+import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import { createEnv, type EnvSchema } from "arkenv";
 import type { Loader, PluginBuilder } from "bun";
 
@@ -7,7 +7,7 @@ import type { Loader, PluginBuilder } from "bun";
  * Processes an environment variable schema and returns a map of validated, filtered values.
  */
 export function processEnvSchema<T extends SchemaShape>(
-	options: EnvSchema<T> | EnvSchemaWithType,
+	options: EnvSchema<T> | CompiledEnvSchema,
 ): Map<string, string> {
 	const env = createEnv<T>(options, { env: process.env });
 	const prefix = "BUN_PUBLIC_";

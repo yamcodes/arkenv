@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import type { EnvSchemaWithType, SchemaShape } from "@repo/types";
+import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import type { BunPlugin } from "bun";
 import { processEnvSchema, registerLoader } from "./utils";
@@ -35,12 +35,12 @@ import { processEnvSchema, registerLoader } from "./utils";
  *    })
  *    ```
  */
-export function arkenv(options: EnvSchemaWithType): BunPlugin;
+export function arkenv(options: CompiledEnvSchema): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
-	options: EnvSchema<T> | EnvSchemaWithType,
+	options: EnvSchema<T> | CompiledEnvSchema,
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options);
 

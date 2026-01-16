@@ -1,7 +1,7 @@
 import type { $ } from "@repo/scope";
 import type {
 	Dict,
-	EnvSchemaWithType,
+	CompiledEnvSchema,
 	InferType,
 	SchemaShape,
 } from "@repo/types";
@@ -11,26 +11,17 @@ import { parseStandard } from "./parse-standard.ts";
 import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 
 /**
- * Type representing a valid environment variable schema definition.
+ * Declarative environment schema definition accepted by ArkEnv.
  *
- * This type validates that your schema definition is compatible with ArkEnv's environment variable parsing.
- * Schemas can be plain objects with string definitions or compiled ArkType types.
+ * Represents a plain object mapping environment variable names to
+ * schema definitions (e.g. ArkType DSL strings or Standard Schema validators).
  *
- * @template def - The schema definition object
+ * This type is used to validate that a schema object is compatible with
+ * ArkEnv’s validator scope before being compiled or parsed.
  *
- * @example
- * ```ts
- * import { type EnvSchema } from 'arkenv';
+ * Most users will provide schemas in this form.
  *
- * // Using plain object schema
- * const schema: EnvSchema<{
- *   PORT: 'number.port',
- *   HOST: 'string.host',
- * }> = {
- *   PORT: 'number.port',
- *   HOST: 'string.host',
- * };
- * ```
+ * @template def - The schema shape object
  */
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Dict<string>;
@@ -100,16 +91,16 @@ export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
 	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
-export function createEnv<T extends EnvSchemaWithType>(
+export function createEnv<T extends CompiledEnvSchema>(
 	def: T,
 	config?: ArkEnvConfig,
 ): InferType<T>;
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
+	def: EnvSchema<T> | CompiledEnvSchema,
 	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>> | InferType<typeof def>;
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
+	def: EnvSchema<T> | CompiledEnvSchema,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	const mode = config.validator ?? "arktype";
