@@ -13,16 +13,22 @@ test.describe("Homepage Interactivity", () => {
 		await expect(page).toHaveURL("/docs/arkenv/quickstart");
 	});
 
-	test("should have functional 'Star us on GitHub' button", async ({
+	test("should have GitHub star link with correct security attributes", async ({
 		page,
 	}) => {
 		await page.goto("/");
+		await page.waitForLoadState("networkidle");
+
+		// Verify GitHub star link exists with correct attributes (may be hidden on some viewports)
 		const githubLink = page
 			.locator("a[href*='github.com']")
 			.filter({ hasText: "Star" })
 			.first();
-		await expect(githubLink).toBeVisible();
+
 		await expect(githubLink).toHaveAttribute("target", "_blank");
+		const rel = await githubLink.getAttribute("rel");
+		expect(rel).toContain("noopener");
+		expect(rel).toContain("noreferrer");
 	});
 
 	test("should have clickable video demo that opens StackBlitz", async ({
