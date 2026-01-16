@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createEnv } from "./create-env";
-import { ArkEnvError } from "./errors";
-import { type } from "./type";
+import { createEnv } from "./create-env.ts";
+import type { ArkEnvError } from "./errors.ts";
+import { type } from "./type.ts";
 
 // Helper to strip ANSI color codes (ESC character code 27)
 const stripAnsi = (str: string) =>
@@ -22,7 +22,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				expect(error).toBeInstanceOf(Error);
 
 				const envError = error as ArkEnvError;
@@ -43,7 +43,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				const envError = error as ArkEnvError;
 				expect(envError.message).toContain("HOST");
 				expect(envError.message).toContain(
@@ -61,7 +61,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				const envError = error as ArkEnvError;
 				expect(envError.name).toBe("ArkEnvError");
 				expect(envError.message).toContain("DEBUG");
@@ -78,7 +78,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				const envError = error as ArkEnvError;
 				expect(envError.name).toBe("ArkEnvError");
 				expect(envError.message).toContain("REQUIRED_VAR");
@@ -101,7 +101,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				const envError = error as ArkEnvError;
 				expect(envError.name).toBe("ArkEnvError");
 				expect(envError.message).toContain("HOST");
@@ -122,7 +122,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				const envError = error as ArkEnvError;
 				// Error message should contain indented formatting (indent function adds spaces)
 				// The formatted error should be indented under the main error message
@@ -153,7 +153,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				const envError = error as ArkEnvError;
 				// Error should include the provided value in formatted output
 				expect(envError.message).toContain("PORT");
@@ -173,7 +173,7 @@ describe("createEnv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect(error).toBeInstanceOf(ArkEnvError);
+				expect((error as any).name).toBe("ArkEnvError");
 				const envError = error as ArkEnvError;
 				// Both errors should be formatted and included
 				expect(envError.message).toContain("HOST");

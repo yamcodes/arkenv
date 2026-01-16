@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import type { ArkEnvConfig } from "./create-env";
-import { ArkEnvError, type InternalValidationError } from "./errors";
+import type { ArkEnvConfig } from "./create-env.ts";
+import { ArkEnvError, type InternalValidationError } from "./errors.ts";
 
 /**
  * Standard Schema 1.0 parser dispatcher.

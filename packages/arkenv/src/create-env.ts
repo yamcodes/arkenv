@@ -1,3 +1,4 @@
+import { createRequire } from "node:module";
 import type { $ } from "@repo/scope";
 import type {
 	Dict,
@@ -6,8 +7,9 @@ import type {
 	SchemaShape,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { parseArkType } from "./parse-arktype";
-import { parseStandard } from "./parse-standard";
+import { ArkEnvError, type ArkEnvErrorOptions } from "./errors.ts";
+import { parseStandard } from "./parse-standard.ts";
+import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Dict<string>;
@@ -98,5 +100,8 @@ export function createEnv<const T extends SchemaShape>(
 		) as unknown as distill.Out<at.infer<T, $>>;
 	}
 
-	return parseArkType(def as any, config) as any;
+	const validator = loadArkTypeValidator();
+	const { parse } = validator;
+
+	return parse(def as any, config) as any;
 }

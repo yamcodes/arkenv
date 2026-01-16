@@ -1,5 +1,5 @@
+import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 import type { $ } from "@repo/scope";
-import { loadArkTypeOrThrow } from "./utils/arktype";
 
 /**
  * Lazy proxy for ArkType's `type` function, bound to ArkEnv's custom scope.
@@ -12,11 +12,11 @@ import { loadArkTypeOrThrow } from "./utils/arktype";
  */
 export const type = new Proxy(() => {}, {
 	get(_target, prop) {
-		const { $ } = loadArkTypeOrThrow();
-		return ($.type as any)[prop];
+		const validator = loadArkTypeValidator();
+		return validator.type[prop];
 	},
 	apply(_target, _thisArg, argArray) {
-		const { $ } = loadArkTypeOrThrow();
-		return ($.type as any)(...argArray);
+		const validator = loadArkTypeValidator();
+		return validator.type(...argArray);
 	},
 }) as unknown as typeof $.type;

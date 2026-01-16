@@ -1,6 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
+	entry: ["src/index.ts", "src/arktype/index.ts"],
 	format: ["esm", "cjs"],
 	minify: true,
 	fixedExtension: false,
@@ -8,6 +9,5 @@ export default defineConfig({
 		resolve: ["@repo/types", "@repo/scope"],
 	},
 	external: ["arktype"],
-	// Force bundling of workspace packages
 	noExternal: ["@repo/scope"],
 });
