@@ -195,6 +195,107 @@ export const env = arkenv({
 });
 ```
 
+## Configuration options
+
+ArkEnv supports several configuration options to customize its behavior:
+
+### Validator mode
+
+Choose between ArkType (default) or Standard Schema validators:
+
+```typescript title="src/config/env.ts" twoslash
+import arkenv from 'arkenv';
+import { z } from 'zod';
+
+// ArkType mode (default) - requires ArkType to be installed
+const env1 = arkenv({
+  PORT: "number.port",
+  HOST: "string.host",
+});
+
+// Standard mode - works without ArkType
+const env2 = arkenv(
+  {
+    PORT: z.number().int().min(0).max(65535),
+    DATABASE_URL: z.string().url(),
+  },
+  { validator: "standard" }
+);
+```
+
+### Coercion
+
+Control automatic type conversion (only available in ArkType mode):
+
+```typescript title="src/config/env.ts" twoslash
+import arkenv from 'arkenv';
+
+// Coercion enabled (default)
+const env1 = arkenv({
+  PORT: "number.port", // "3000" becomes 3000
+});
+
+// Coercion disabled
+const env2 = arkenv(
+  {
+    PORT: "number.port",
+  },
+  { coerce: false } // Must be a number string, not parsed
+);
+```
+
+### Custom environment source
+
+Provide a custom environment object:
+
+```typescript title="src/config/env.ts" twoslash
+import arkenv from 'arkenv';
+
+const env = arkenv(
+  {
+    PORT: "number.port",
+  },
+  {
+    env: {
+      PORT: "3000",
+      // ... other variables
+    },
+  }
+);
+```
+
+### Array format
+
+Control how arrays are parsed (only available in ArkType mode):
+
+```typescript title="src/config/env.ts" twoslash
+import arkenv from 'arkenv';
+
+// Comma-separated (default)
+const env1 = arkenv(
+  {
+    TAGS: "string[]",
+  },
+  {
+    env: { TAGS: "web, app, api" },
+    arrayFormat: "comma",
+  }
+);
+
+// JSON format
+const env2 = arkenv(
+  {
+    TAGS: "string[]",
+  },
+  {
+    env: { TAGS: '["web", "app"]' },
+    arrayFormat: "json",
+  }
+);
+```
+
+For more details on configuration options, see the [coercion documentation](/docs/arkenv/coercion) and [Standard Schema integration guide](/docs/arkenv/integrations/standard-schema).
+
 ## Common patterns
 
 ### Configuration factory

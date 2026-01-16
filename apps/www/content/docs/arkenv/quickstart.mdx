@@ -8,8 +8,18 @@ icon: Rocket
   <Step>
     ## Install
     ```package-install
-    arkenv arktype
+    arkenv
     ```
+
+    <Accordions>
+      <Accordion title="Install alongside ArkType (recommended)">
+        ArkEnv works best with **ArkType**, which provides the string DSL and built-in coercion.
+        
+        ```package-install
+        arktype
+        ```
+      </Accordion>
+    </Accordions>
   </Step>
 
   <Step>
@@ -27,31 +37,22 @@ icon: Rocket
     }
     ```
 
-    > [!TIP]
     > You may omit `moduleResolution` if `module` is `"Preserve"`, `"Node16"`, or `"NodeNext"`. See [Requirements](https://github.com/yamcodes/arkenv?tab=readme-ov-file#requirements) for details.
     
-    ArkEnv is built on top of [ArkType](https://arktype.io/). Follow the [ArkType setup](https://arktype.io/docs/intro/setup) to complete your configuration.
+    ArkType users: follow the [ArkType setup](https://arktype.io/docs/intro/setup) to complete your configuration.
   </Step>
 
   <Step>
     ## Define the schema
 
-    Add a schema to make your environment variables **validated** and **typesafe**:
+    Add a schema to make your environment variables **validated** and **typesafe**.
 
+    For this example, we'll use ArkType, but you can [use any other Standard Schema validator](/docs/arkenv/integrations/standard-schema) like Zod, Valibot, and Typia.
+    
     ```ts title="config/env.ts" twoslash
     import arkenv, { type } from 'arkenv';
 
     export const env = arkenv({
-      // Built-in validators
-      DATABASE_HOST: "string.host",
-      DATABASE_PORT: "number.port",
-      
-      // Boolean values (accepts "true"/"false" strings, converts to boolean)
-      DEBUG: "boolean",
-      
-      // Custom string literals
-      NODE_ENV: "'development' | 'production' | 'test'",
-      
       // Optional variables with defaults
       LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
       
@@ -64,55 +65,26 @@ icon: Rocket
     });
     ```
 
-    > [!TIP]
-    > Improve your DX with *syntax highlighting* in [VS Code](/docs/arkenv/integrations/vscode), [Cursor](/docs/arkenv/integrations/open-vsx), or [JetBrains IDEs](/docs/arkenv/integrations/jetbrains).
-    
-    > [!NOTE]
-    > **Need complex validation?** ArkEnv also works with [any Standard Schema validator](/docs/arkenv/integrations/standard-schema) like Zod or Valibot alongside ArkType!
   </Step>
 
   <Step>
     ## Define environment variables
 
-    Create a `.env` file in your project root with some environment variables:
+    Define some environment variables in a `.env` file in your project root:
 
     ```dotenv title=".env"
-    DATABASE_HOST=localhost
-    DATABASE_PORT=5432
-    DEBUG=true
-    NODE_ENV=development
-    API_KEY=your-secret-key
-    ALLOWED_ORIGINS=http://localhost:3000, https://example.com
+    LOG_LEVEL=info
+    API_KEY=secret
+    ALLOWED_ORIGINS=http://localhost:3000,https://example.com
     ```
 
-    > [!TIP]
-    > Avoid [committing your `.env` file to version control](https://12factor.net/config):
-    >
-    > ```bash
-    > echo ".env" >> .gitignore
-    > ```
-
-    <Accordions>
-      <Accordion title="How to load environment variables from .env files?">
-      Each framework has its own best practices. Common ones include:
-        - **Next.js**: [Environment Variables](https://nextjs.org/docs/basic-features/environment-variables)
-        - **Vite**: [Env Variables and Modes ](https://vitejs.dev/guide/env-and-mode.html)
-        - **Nest.js**: [Configuration](https://docs.nestjs.com/techniques/configuration)
-        - **Node.js**: [v20.6.0 built-in `.env` file support](https://nodejs.org/en/blog/release/v20.6.0#built-in-env-file-support) or [dotenv](https://github.com/motdotla/dotenv)
-  
-        <Card
-          title="Load environment variables"
-          href="/docs/arkenv/how-to/load-environment-variables"
-          description="Learn how to manage environment variables across different environments and deployment scenarios"
-        />
-      </Accordion>
-    </Accordions>
+    > We recommend [not committing the `.env` file to version control](https://12factor.net/config).
   </Step>
 
   <Step>
     ## Use in your code
 
-    Import and use your **validated** and **typed** environment variables. Here is an example for a database configuration file:
+    Import and use your **validated** and **typed** environment variables!
 
     ```typescript title="database.ts" twoslash
     // @filename: config/env.ts
@@ -137,8 +109,6 @@ icon: Rocket
   </Step>
 </Steps>
 
-Now you might start to see the magic of ArkType and TypeScript working together to make your environment variables more reliable, more readable, and more typesafe.
-
 ## Next steps
 
 <Cards>
@@ -148,19 +118,9 @@ Now you might start to see the magic of ArkType and TypeScript working together 
     description="Use Zod, Valibot, or any Standard Schema validator with ArkEnv"
   />
   <Card 
-    title="Integrate with VS Code" 
+    title="IDE Integrations" 
     href="/docs/arkenv/integrations/vscode"
-    description="Get syntax highlighting, ErrorLens, and more"
-  />
-  <Card 
-    title="Integrate with Cursor" 
-    href="/docs/arkenv/integrations/open-vsx"
-    description="Get syntax highlighting, ErrorLens, and more"
-  />
-  <Card 
-    title="Integrate with JetBrains IDEs" 
-    href="/docs/arkenv/integrations/jetbrains"
-    description="Get syntax highlighting"
+    description="Get syntax highlighting, ErrorLens, and more for VS Code, Cursor, and JetBrains IDEs"
   />
   <Card 
     title="Examples" 
