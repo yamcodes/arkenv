@@ -24,8 +24,8 @@ test.describe("Documentation Navigation", () => {
 
 	test("should load integration pages", async ({ page }) => {
 		const integrationPages = [
-			"/docs/arkenv/integrations/vscode",
-			"/docs/arkenv/integrations/jetbrains",
+			"/docs/arkenv/integrations/ide/vscode",
+			"/docs/arkenv/integrations/ide/jetbrains",
 		];
 
 		for (const url of integrationPages) {
@@ -195,8 +195,8 @@ test.describe("Documentation Navigation", () => {
 			"/docs/arkenv/quickstart",
 			"/docs/arkenv/examples",
 			"/docs/arkenv/coercion",
-			"/docs/arkenv/integrations/vscode",
-			"/docs/arkenv/integrations/jetbrains",
+			"/docs/arkenv/integrations/ide/vscode",
+			"/docs/arkenv/integrations/ide/jetbrains",
 			"/docs/arkenv/how-to/load-environment-variables",
 			"/docs/vite-plugin",
 			"/docs/vite-plugin/arkenv-in-viteconfig",

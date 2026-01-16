@@ -8,26 +8,25 @@ You select the mode via the `validator` option in the `arkenv` configuration.
 
 ## Cheatsheet - when to use which?
 
-> If you're starting a new project, use the default `arktype` mode. 
-> `standard` exists for migrations and ArkType-free setups.
-
 | Feature | `arktype` (default) | `standard` |
 | :--- | :--- | :--- |
-| **ArkType DSL** | ✅ Native | ❌ Not supported |
+| **ArkType DSL** | ✅ Native | ⚠️ Via `type(...)` |
 | **Standard Schema** (Zod, Valibot, Typia) | ✅ Yes | ✅ Yes |
 | **Automatic coercion** | ✅ Yes | ❌ Validator-defined |
 | **Requires `arktype`** | ✅ Yes | ❌ No |
-| **Best for** | New projects, maximal DX | Migrations, zero-dep setups |
+| **Best for** | New projects, maximal DX | Migrations, ArkType-free setups |
+
+> In a new project, prefer the default `arktype` mode. `standard` exists for migrations and ArkType-free setups.
 
 ---
 
 ## `validator: "arktype"` (default)
 
-This is the default mode. ArkEnv runs validation through [ArkType](https://arktype.io) and expects it to be installed.
+ArkEnv runs validation through [ArkType](https://arktype.io) and expects it to be installed.
 
 ### What you get
 
-- ArkType’s string-based DSL (`"string.url"`, `"number > 0"`, etc.)
+- Native support for ArkType's string-based DSL (`"string.url"`, `"number > 0"`, etc.)
 - Built-in, intuitive coercion from strings
 - Full Standard Schema support (Zod, Valibot, etc.)
 
@@ -59,7 +58,7 @@ In Standard mode, ArkEnv works directly with any validator that implements the [
 
 ### Tradeoffs
 
-- No ArkType DSL strings (`"number.port"`, `"string.host"`)
+- No native ArkType DSL strings (`"number.port"`, `"string.host"`)
 - No ArkType coercion - use your validator's native coercion instead
 
 ```ts twoslash

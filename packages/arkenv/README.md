@@ -109,7 +109,7 @@ bun add arkenv arktype
 
 :rocket: **Let's get started!** Read the [2-minute setup guide](https://arkenv.js.org/docs/quickstart) or [start with an example](https://arkenv.js.org/docs/examples).
 
-> Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/integrations/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/integrations/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/integrations/jetbrains).
+> Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/arkenv/integrations/api/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/arkenv/integrations/api/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/arkenv/integrations/api/jetbrains).
 
 ## Requirements
 

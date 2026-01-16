@@ -91,12 +91,12 @@ test.describe("Quickstart Page", () => {
 
 		// Check for integration links
 		const vscodeLink = page
-			.locator("a[href='/docs/arkenv/integrations/vscode']")
+			.locator("a[href='/docs/arkenv/integrations/ide/vscode']")
 			.first();
 		if (await vscodeLink.isVisible()) {
 			await expect(vscodeLink).toBeVisible();
 			await vscodeLink.click();
-			await expect(page).toHaveURL("/docs/arkenv/integrations/vscode");
+			await expect(page).toHaveURL("/docs/arkenv/integrations/ide/vscode");
 		}
 
 		// Navigate back to quickstart
@@ -104,12 +104,12 @@ test.describe("Quickstart Page", () => {
 		await page.waitForLoadState("networkidle");
 
 		const jetbrainsLink = page
-			.locator("a[href='/docs/arkenv/integrations/jetbrains']")
+			.locator("a[href='/docs/arkenv/integrations/ide/jetbrains']")
 			.first();
 		if (await jetbrainsLink.isVisible()) {
 			await expect(jetbrainsLink).toBeVisible();
 			await jetbrainsLink.click();
-			await expect(page).toHaveURL("/docs/arkenv/integrations/jetbrains");
+			await expect(page).toHaveURL("/docs/arkenv/integrations/ide/jetbrains");
 		}
 	});
 
