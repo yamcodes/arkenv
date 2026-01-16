@@ -98,16 +98,22 @@ This ensures the library works in real scenarios while keeping examples clean an
 **What:** Test complete user workflows in the www application using real browsers.
 
 **Focus:**
-- Complete user journeys in production-like environments
-- Real browser behavior across Chromium, Firefox, and WebKit
-- Visual rendering and interactions
-- Network requests and loading states
+- **Interactive Behaviors**: Testing actual user interactions (clicks, navigation, form submission)
+- **Security Invariants**: Verifying external links have correct `target` and `rel` attributes
+- **System Behaviors**: No hydration errors, no console errors, no horizontal overflow on mobile
+- **API Contracts**: Search endpoints respond correctly, 404 pages render
+- **Accessibility**: ARIA attributes, keyboard navigation, semantic HTML structure
+
+**What We Don't Test:**
+- Specific documentation content (changes frequently, covered by review)
+- CSS class names or styling details (implementation details)
+- Exact wording of headings or descriptions (brittle, low value)
 
 **Key Characteristics:**
 - Slowest tests (multiple seconds per test)
 - No mocking - tests real application
 - Cross-browser compatibility testing
-- Catches issues that unit and integration tests might miss
+- Focused on user journeys and behavioral invariants
 
 ## Running Tests
 
@@ -173,10 +179,14 @@ pnpm run test:e2e:headed
 - ✅ useToast + Toaster state synchronization (`toaster.integration.test.tsx`)
 
 **End-to-End Tests:**
-- ✅ Application loads correctly across all browsers
-- ✅ Basic HTML structure validation
-- ✅ Console error monitoring and reporting
-- ✅ Screenshot capture for visual verification
+- ✅ All critical routes load successfully
+- ✅ No console errors across top routes
+- ✅ Accessibility compliance (a11y scans)
+- ✅ Interactive components (homepage CTAs, video demo, search, docs switcher)
+- ✅ Security attributes on external links
+- ✅ Responsive design (no horizontal overflow on mobile)
+- ✅ Theme switching (no hydration errors)
+- ✅ 404 page navigation
 - ✅ Cross-browser compatibility (Chromium, Firefox, WebKit)
 
 ## Examples

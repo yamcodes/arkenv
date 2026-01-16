@@ -1,7 +1,7 @@
 import type { $ } from "@repo/scope";
 import type {
+	CompiledEnvSchema,
 	Dict,
-	EnvSchemaWithType,
 	InferType,
 	SchemaShape,
 } from "@repo/types";
@@ -10,6 +10,20 @@ import { ArkEnvError } from "./errors.ts";
 import { parseStandard } from "./parse-standard.ts";
 import { loadArkTypeValidator } from "./utils/load-arktype.ts";
 
+/**
+ * Declarative environment schema definition accepted by ArkEnv.
+ *
+ * Represents a declarative schema object mapping environment
+ * variable names to schema definitions (e.g. ArkType DSL strings
+ * or Standard Schema validators).
+ *
+ * This type is used to validate that a schema object is compatible with
+ * ArkEnv’s validator scope before being compiled or parsed.
+ *
+ * Most users will provide schemas in this form.
+ *
+ * @template def - The schema shape object
+ */
 export type EnvSchema<def> = at.validate<def, $>;
 type RuntimeEnvironment = Dict<string>;
 
@@ -78,16 +92,16 @@ export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
 	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
-export function createEnv<T extends EnvSchemaWithType>(
+export function createEnv<T extends CompiledEnvSchema>(
 	def: T,
 	config?: ArkEnvConfig,
 ): InferType<T>;
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
+	def: EnvSchema<T> | CompiledEnvSchema,
 	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>> | InferType<typeof def>;
 export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | EnvSchemaWithType,
+	def: EnvSchema<T> | CompiledEnvSchema,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
 	const mode = config.validator ?? "arktype";

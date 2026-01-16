@@ -5,7 +5,7 @@ export type { EnvSchema } from "./create-env.ts";
 export { ArkEnvError } from "./errors.ts";
 
 /**
- * `arkenv`'s main export, an alias for {@link createEnv}
+ * ArkEnv's main export, an alias for {@link createEnv}
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  */

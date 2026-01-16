@@ -97,7 +97,7 @@ jobs:
     timeout-minutes: 16
     strategy:
       matrix:
-        suite: [a11y, e2e]
+        suite: [e2e]
       fail-fast: false
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble

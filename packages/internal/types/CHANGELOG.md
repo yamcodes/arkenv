@@ -1,5 +1,13 @@
 # @repo/types
 
+## 0.1.0
+
+### Minor Changes
+
+- #### Renamed type: `CompiledEnvSchema` (was `EnvSchemaWithType`) _[`#739`](https://github.com/yamcodes/arkenv/pull/739) [`16c6047`](https://github.com/yamcodes/arkenv/commit/16c6047dad8d797b6e87d77ca413ba6582a16916) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+
+  **Breaking change:** The type `EnvSchemaWithType` has been renamed to `CompiledEnvSchema`.
+
 ## 0.0.7
 
 ### Patch Changes
