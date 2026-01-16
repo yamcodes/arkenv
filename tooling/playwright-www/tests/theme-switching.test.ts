@@ -22,20 +22,4 @@ test.describe("Theme Switching", () => {
 
 		expect(hydrationErrors).toHaveLength(0);
 	});
-
-	test("should apply dark mode class", async ({ page }) => {
-		await page.goto("/");
-		await page.waitForLoadState("networkidle");
-
-		const html = page.locator("html");
-
-		// Force dark mode to verify theming mechanism works
-		await page.evaluate(() => {
-			document.documentElement.classList.add("dark");
-			document.documentElement.style.colorScheme = "dark";
-		});
-
-		await page.waitForTimeout(200);
-		await expect(html).toHaveClass(/dark/);
-	});
 });
