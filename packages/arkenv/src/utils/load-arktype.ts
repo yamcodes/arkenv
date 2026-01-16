@@ -10,6 +10,10 @@ export function loadArkTypeValidator() {
 	// We try multiple paths to support both source execution (src/utils/load-arktype.ts)
 	// and bundled execution (dist/index.js or dist/index.cjs where this is inlined).
 	const searchPaths = [
+		"./arktype.cjs",
+		"../arktype.cjs",
+		"./arktype/index.cjs",
+		"../arktype/index.cjs",
 		"./arktype",
 		"../arktype",
 		"./arktype/index.ts",
