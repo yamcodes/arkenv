@@ -31,7 +31,14 @@ export default async function Page(props: {
 						markdownUrl={`${page.url}.mdx`}
 						githubUrl={
 							getLinkTitleAndHref(
-								`${process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ?? "apps/www/content/docs/"}${page.path}`,
+								(() => {
+									const basePath = (
+										process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ??
+										"apps/www/content/docs/"
+									).replace(/\/$/, ""); // Remove trailing slash if present
+									const pagePath = page.path.replace(/^\//, ""); // Remove leading slash if present
+									return `${basePath}/${pagePath}`;
+								})(),
 							).href
 						}
 					/>

@@ -56,6 +56,7 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
+		"@fumadocs/cli": "^1.1.9",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@tailwindcss/postcss": "4.1.18",
