@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { cn } from "../lib/cn";
-import { buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 const cache = new Map<string, string>();
@@ -47,21 +47,17 @@ export function LLMCopyButton({
 	});
 
 	return (
-		<button
+		<Button
 			type="button"
 			disabled={isLoading}
-			className={cn(
-				buttonVariants({
-					variant: "secondary",
-					size: "sm",
-					className: "gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground",
-				}),
-			)}
+			variant="secondary"
+			size="sm"
+			className="gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground"
 			onClick={onClick}
 		>
 			{checked ? <Check /> : <Copy />}
 			Copy Markdown
-		</button>
+		</Button>
 	);
 }
 
@@ -212,17 +208,11 @@ export function ViewOptions({
 
 	return (
 		<Popover>
-			<PopoverTrigger
-				className={cn(
-					buttonVariants({
-						variant: "secondary",
-						size: "sm",
-						className: "gap-2",
-					}),
-				)}
-			>
-				Open
-				<ChevronDown className="size-3.5 text-fd-muted-foreground" />
+			<PopoverTrigger asChild>
+				<Button variant="secondary" size="sm" className="gap-2">
+					Open
+					<ChevronDown className="size-3.5 text-fd-muted-foreground" />
+				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="flex flex-col">
 				{items.map((item) => (
