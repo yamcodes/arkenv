@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
-		"lib": ["ESNext"],
-		"target": "ESNext",
-		"module": "Preserve",
+		"lib": ["ES2023"],
+		"target": "ES2023",
+		"module": "ESNext",
 		"moduleDetection": "force",
 		"allowJs": true,
 		"moduleResolution": "bundler",

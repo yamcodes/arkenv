@@ -29,6 +29,14 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
+> [!IMPORTANT]
+> This plugin requires `arktype` to be installed in your project.
+>
+> It does not support `validator: "standard"`.
+> You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
+>
+> See [Standard Schema integration](/docs/arkenv/integrations/standard-schema) for details.
+
 ## Installation
 
 ```package-install

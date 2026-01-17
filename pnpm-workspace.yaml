@@ -10,7 +10,7 @@ catalog:
   '@size-limit/esbuild-why': 12.0.0
   '@size-limit/preset-small-lib': 12.0.0
   '@types/bun': 1.3.6
-  '@types/node': 24.10.8
+  '@types/node': 24.10.9
   '@types/react': 19.2.8
   '@types/react-dom': 19.2.3
   '@vitejs/plugin-react': 5.1.2

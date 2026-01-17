@@ -11,10 +11,10 @@
 	"dependencies": {
 		"arkenv": "^0.9.0",
 		"arktype": "^2.1.29",
-		"zod": "4.3.5"
+		"zod": "^4.3.5"
 	},
 	"devDependencies": {
-		"@types/node": "^24.10.8",
+		"@types/node": "^24.10.9",
 		"rimraf": "^6.1.2",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"

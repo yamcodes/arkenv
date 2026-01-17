@@ -90,6 +90,14 @@ export default arkenv(Env);
 plugins = ["./plugins/arkenv.ts"]
 ```
 
+> [!IMPORTANT]
+> This plugin requires `arktype` to be installed in your project.
+>
+> It does not support `validator: "standard"`.
+> You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
+>
+> See [Standard Schema integration](/docs/arkenv/integrations/standard-schema) for details.
+
 ## Features
 
 - **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
