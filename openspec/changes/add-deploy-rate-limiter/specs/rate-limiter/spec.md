@@ -37,9 +37,9 @@ The `preview-www.yml` and `deploy-www.yml` workflows MUST integrate the budget c
 - The workflow fails if the production threshold is exceeded.
 
 ### Requirement: [rate-limiter.3] Persistence via Cache
-The deployment metrics MUST be persisted across runs using GitHub Actions cache.
+The deployment metrics MUST be persisted across runs using a single rolling GitHub Actions cache key.
 #### Scenario: Cache restore
-- The workflow restores `.github/deploy-metrics.json` using prefix `deploy-metrics-`.
+- The workflow restores `.github/deploy-metrics.json` using the rolling key `deploy-metrics-v1`.
 
 #### Scenario: Cache save
-- The workflow saves the updated `.github/deploy-metrics.json` using a unique run ID key.
+- The workflow saves the updated `.github/deploy-metrics.json` using the rolling key `deploy-metrics-v1`, overwriting previous state.
