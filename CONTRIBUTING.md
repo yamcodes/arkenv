@@ -42,6 +42,14 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 6. Commit the generated changeset file along with your changes
 7. Issue that pull request!
 
+## Deployment Rate Limiter
+
+To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
+- **Daily Limit**: 72 preview deployments per 24 hours.
+- **Cooldown**: 20 minutes between deployments on the same PR.
+
+If the limit or cooldown is reached, the deployment step in the GitHub Action will be skipped. This is a "soft" limit—it doesn't fail the build, it just pauses deployments. Production deployments are not gated but will trigger an alert if frequency exceeds 24/day.
+
 ## Changesets
 
 [Changesets](https://github.com/changesets/changesets) is used to manage versions and changelogs. Each PR that makes changes to the functionality of the package should include a changeset.

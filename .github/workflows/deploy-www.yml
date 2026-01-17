@@ -29,6 +29,11 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
+      - name: Restore deploy metrics
+        uses: actions/cache@v4
+        with:
+          path: .github/deploy-metrics.json
+          key: deploy-metrics-v1
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
@@ -37,3 +42,12 @@ jobs:
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Check prod deploy budget (alert only)
+        continue-on-error: true
+        run: node .github/scripts/check-deploy-budget.cjs prod
+      - name: Save deploy metrics
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .github/deploy-metrics.json
+          key: deploy-metrics-v1
