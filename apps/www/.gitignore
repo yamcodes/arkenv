@@ -12,7 +12,6 @@
 /out/
 /build
 *.tsbuildinfo
-.open-next/
 
 # misc
 .DS_Store
@@ -36,3 +35,7 @@ videos/*
 !videos/*.js
 !videos/*.ts
 public/_next-video
+
+# OpenNext / Cloudflare
+.wrangler
+.open-next/
