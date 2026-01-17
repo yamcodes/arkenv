@@ -11,15 +11,15 @@ capability: rate-limiter
 The system MUST include a Node.js script that evaluates deployment budgets.
 #### Scenario: Preview budget within limits
 - PR pushes occur within 20m interval and under 76/day.
-- SCRIPT outputs `should_deploy=true`.
+- SCRIPT outputs `should_deploy=true` and `reason=ok`.
 
 #### Scenario: Preview budget exceeded (daily)
 - 76 preview deploys have occurred in the last 24h.
-- SCRIPT outputs `should_deploy=false` and logs remaining time.
+- SCRIPT outputs `should_deploy=false`, `reason=limit`, and logs remaining time.
 
 #### Scenario: Preview budget exceeded (cooldown)
 - A deploy occurred 5 minutes ago.
-- SCRIPT outputs `should_deploy=false` and logs remaining time.
+- SCRIPT outputs `should_deploy=false`, `reason=cooldown`, and logs remaining time.
 
 #### Scenario: Production alert threshold reached
 - 24 production deploys have occurred in the last 24h.

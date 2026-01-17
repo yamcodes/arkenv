@@ -10,3 +10,4 @@ change-id: add-deploy-rate-limiter
 - [ ] Add rate limiter section to `CONTRIBUTING.md` <!-- id: 3 -->
 - [ ] Add `.github/deploy-metrics.json` to `.gitignore` <!-- id: 4 -->
 - [ ] Verify script logic with local unit tests (mocked dates) <!-- id: 5 -->
+- [ ] Verify GitHub Action logs to ensure `deploy-metrics.json` is updated and cached <!-- id: 6 -->

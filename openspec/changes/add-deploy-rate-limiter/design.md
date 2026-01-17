@@ -24,18 +24,18 @@ The script `check-deploy-budget.js` will:
 3. For `preview` type:
    - Check if total timestamps in 24h >= 76.
    - Check if the latest timestamp is < 20 minutes ago.
-   - Output `should_deploy` flag for subsequent steps.
+   - Output `should_deploy` flag (true/false) and `reason` (limit|cooldown|ok).
 4. For `prod` type:
    - Always allow.
    - Count timestamps in 24h.
    - If count >= 24, exit 1 *after* deployment to trigger a workflow failure (alert).
 
 ### Persistence Strategy
-We use `actions/cache` with:
+We use `actions/cache` with a "last writer wins" strategy:
 - Key: `deploy-metrics-${{ github.run_id }}`
 - Restore-keys: `deploy-metrics-`
 
-This ensures we always get the most recent state and creates a new cache entry for every run, which is effectively "committing" the updated state.
+This ensures we always restore the most recent successful state and save a new entry. While concurrent runs may lead to a "last writer wins" scenario where one deploy timestamp is temporarily "lost", it is an acceptable approximation for a soft rate limiter.
 
 ## Trade-offs
 - **Soft Limit**: It's a "soft" limit because GitHub Cache is eventually consistent and scoped to branches/refs. However, for a single PR or `main` branch, it should be sufficiently accurate.

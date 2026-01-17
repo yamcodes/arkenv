@@ -15,16 +15,16 @@ Implement a soft rate limiter using a JSON state file (`.github/deploy-metrics.j
 - **Preview Deploys**: 
   - Limit: 76 deploys per 24 hours.
   - Cooldown: 20 minutes between deploys.
-  - Action: Skip deployment (exit 0, emit `should_deploy=false`).
+  - Action: Skip deployment (exit 0, emit `should_deploy=false` and `reason`).
 - **Production Deploys**:
   - Limit: Alert if >= 24 deploys per 24 hours.
-  - Action: Always deploy, but fail the post-deploy check to alert if limit is exceeded.
+  - Action: Always deploy, but fail the post-deploy check to alert if limit is exceeded (exit 1).
 
 ## Scope
 - New script: `.github/scripts/check-deploy-budget.js`
 - Modified workflows: `preview-www.yml`, `deploy-www.yml`
 - Documentation: `CONTRIBUTING.md`
-- State file: `.github/deploy-metrics.json` (gitignored, managed via cache)
+- State file: `.github/deploy-metrics.json` (gitignored, managed via GHA cache)
 
 ## Benefits
 - Prevents quota exhaustion on Vercel.
