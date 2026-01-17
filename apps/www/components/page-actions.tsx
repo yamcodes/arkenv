@@ -52,7 +52,7 @@ export function LLMCopyButton({
 			disabled={isLoading}
 			className={cn(
 				buttonVariants({
-					color: "secondary",
+					variant: "secondary",
 					size: "sm",
 					className: "gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground",
 				}),
@@ -215,7 +215,7 @@ export function ViewOptions({
 			<PopoverTrigger
 				className={cn(
 					buttonVariants({
-						color: "secondary",
+						variant: "secondary",
 						size: "sm",
 						className: "gap-2",
 					}),
