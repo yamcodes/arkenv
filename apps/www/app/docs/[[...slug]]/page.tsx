@@ -25,17 +25,7 @@ export default async function Page(props: {
 			<div className="grow">
 				<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 				<DocsDescription>{page.data.description}</DocsDescription>
-				<DocsBody>
-					<MDX
-						components={getMDXComponents({
-							// this allows you to link to other pages with relative file paths
-							a: createRelativeLink(source, page),
-						})}
-					/>
-				</DocsBody>
-			</div>
-			<div className="flex flex-col items-start pt-16 gap-4">
-				<div className="flex flex-row gap-2 items-center pb-8">
+				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6 mb-8 mt-4">
 					<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
 					<ViewOptions
 						markdownUrl={`${page.url}.mdx`}
@@ -46,6 +36,14 @@ export default async function Page(props: {
 						}
 					/>
 				</div>
+				<DocsBody>
+					<MDX
+						components={getMDXComponents({
+							// this allows you to link to other pages with relative file paths
+							a: createRelativeLink(source, page),
+						})}
+					/>
+				</DocsBody>
 			</div>
 		</DocsPage>
 	);
