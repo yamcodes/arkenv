@@ -39,13 +39,24 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
+      - name: Restore deploy metrics
+        uses: actions/cache@v4
+        with:
+          path: .github/deploy-metrics.json
+          key: deploy-metrics-v1
+      - name: Check preview deploy budget
+        id: budget
+        run: node .github/scripts/check-deploy-budget.cjs preview
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
+        if: steps.budget.outputs.should_deploy == 'true'
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
+        if: steps.budget.outputs.should_deploy == 'true'
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
+        if: steps.budget.outputs.should_deploy == 'true'
         id: deploy
         run: |
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }} | tail -n 1)
@@ -58,7 +69,7 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Comment PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.budget.outputs.should_deploy == 'true'
         uses: actions/github-script@v8
         with:
           github-token: ${{ steps.generate-token.outputs.token || secrets.GITHUB_TOKEN }}

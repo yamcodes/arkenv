@@ -1,7 +1,7 @@
 ---
 change-id: add-deploy-rate-limiter
 title: Deployment Rate Limiter Implementation Plan
-status: proposal
+status: complete
 ---
 
 # Proposal: Deployment Rate Limiter
