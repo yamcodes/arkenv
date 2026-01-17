@@ -31,12 +31,14 @@ The script `check-deploy-budget.js` will:
    - If count >= 24, exit 1 *after* deployment to trigger a workflow failure (alert).
 
 ### Persistence Strategy
-We use `actions/cache` with a "last writer wins" strategy:
-- Key: `deploy-metrics-${{ github.run_id }}`
-- Restore-keys: `deploy-metrics-`
+We use `actions/cache` with a single rolling key for deterministic restore/overwrite:
+- Key: `deploy-metrics-v1`
 
-This ensures we always restore the most recent successful state and save a new entry. While concurrent runs may lead to a "last writer wins" scenario where one deploy timestamp is temporarily "lost", it is an acceptable approximation for a soft rate limiter.
+This ensures we always restore a predictable state. While concurrent runs may still lead to a "last writer wins" scenario, it is much more deterministic than prefix-based restoration and aligns with our "soft limiter" philosophy.
+
+### Scoping
+Cache is scoped to the workflow and branch. PRs targeting the same branch share the same cache entry, which allows the rate limiter to track deployments across multiple contributors to the same context.
 
 ## Trade-offs
-- **Soft Limit**: It's a "soft" limit because GitHub Cache is eventually consistent and scoped to branches/refs. However, for a single PR or `main` branch, it should be sufficiently accurate.
-- **Race coached**: Concurrent runs might overwrite each other's state if they finish at exactly the same time, but given the 20m cooldown and PR concurrency limits already in place, this is negligible.
+- **Soft Limit**: It's a "soft" limit because GitHub Cache is eventually consistent. However, for a single PR or `main` branch, it should be sufficiently accurate.
+- **Race conditions**: Concurrent runs might overwrite each other's state if they finish at exactly the same time, but given the 20m cooldown and PR concurrency limits already in place, this is negligible.

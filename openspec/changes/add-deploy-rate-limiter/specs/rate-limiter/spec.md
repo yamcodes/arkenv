@@ -15,15 +15,16 @@ The system MUST include a Node.js script that evaluates deployment budgets.
 
 #### Scenario: Preview budget exceeded (daily)
 - 76 preview deploys have occurred in the last 24h.
-- SCRIPT outputs `should_deploy=false`, `reason=limit`, and logs remaining time.
+- SCRIPT outputs `should_deploy=false`, `reason=limit`, and logs remaining time (format: `1h 23m`).
 
 #### Scenario: Preview budget exceeded (cooldown)
 - A deploy occurred 5 minutes ago.
-- SCRIPT outputs `should_deploy=false`, `reason=cooldown`, and logs remaining time.
+- SCRIPT outputs `should_deploy=false`, `reason=cooldown`, and logs remaining time (format: `15m`).
 
 #### Scenario: Production alert threshold reached
 - 24 production deploys have occurred in the last 24h.
 - SCRIPT exit 1 when called with `prod` type after deployment.
+- NOTE: The script MUST NOT block the actual deployment; it only alerts via exit code after the fact.
 
 ### Requirement: [rate-limiter.2] Workflow Integration
 The `preview-www.yml` and `deploy-www.yml` workflows MUST integrate the budget check.
