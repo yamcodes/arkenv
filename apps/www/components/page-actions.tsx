@@ -50,7 +50,7 @@ export function LLMCopyButton({
 		<Button
 			type="button"
 			disabled={isLoading}
-			variant="secondary"
+			variant="outline"
 			size="sm"
 			className="gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground"
 			onClick={onClick}
@@ -209,7 +209,7 @@ export function ViewOptions({
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
-				<Button variant="secondary" size="sm" className="gap-2">
+				<Button variant="outline" size="sm" className="gap-2">
 					Open
 					<ChevronDown className="size-3.5 text-fd-muted-foreground" />
 				</Button>
