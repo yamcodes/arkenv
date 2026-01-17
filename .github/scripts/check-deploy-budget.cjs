@@ -62,8 +62,12 @@ async function run() {
 	}
 
 	const metrics = loadMetrics();
-	metrics.preview = prune(metrics.preview || []);
-	metrics.prod = prune(metrics.prod || []);
+	metrics.preview = prune(metrics.preview || []).sort(
+		(a, b) => new Date(a) - new Date(b),
+	);
+	metrics.prod = prune(metrics.prod || []).sort(
+		(a, b) => new Date(a) - new Date(b),
+	);
 
 	const now = Date.now();
 

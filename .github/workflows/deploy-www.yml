@@ -45,3 +45,9 @@ jobs:
       - name: Check prod deploy budget (alert only)
         continue-on-error: true
         run: node .github/scripts/check-deploy-budget.cjs prod
+      - name: Save deploy metrics
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .github/deploy-metrics.json
+          key: deploy-metrics-v1

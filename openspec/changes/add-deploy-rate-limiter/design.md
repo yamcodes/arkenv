@@ -18,7 +18,7 @@ State is stored in `.github/deploy-metrics.json`:
 ```
 
 ### Rate Limiting Logic
-The script `check-deploy-budget.js` will:
+The script `check-deploy-budget.cjs` will:
 1. Load state from `.github/deploy-metrics.json` if it exists.
 2. Prune timestamps older than 24 hours.
 3. For `preview` type:

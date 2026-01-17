@@ -21,7 +21,7 @@ Implement a soft rate limiter using a JSON state file (`.github/deploy-metrics.j
   - Action: Always deploy, but fail the post-deploy check to alert if limit is exceeded (exit 1).
 
 ## Scope
-- New script: `.github/scripts/check-deploy-budget.js`
+- New script: `.github/scripts/check-deploy-budget.cjs`
 - Modified workflows: `preview-www.yml`, `deploy-www.yml`
 - Documentation: `CONTRIBUTING.md`
 - State file: `.github/deploy-metrics.json` (gitignored, managed via GHA cache)

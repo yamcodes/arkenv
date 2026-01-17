@@ -128,3 +128,9 @@ jobs:
             } catch (error) {
               console.error('Failed to post PR comment:', error);
             }
+      - name: Save deploy metrics
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .github/deploy-metrics.json
+          key: deploy-metrics-v1
