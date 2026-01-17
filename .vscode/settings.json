@@ -3,6 +3,10 @@
 	"editor.quickSuggestions": {
 		"strings": "on"
 	},
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
+	},
 	// prioritize ArkType's "type" for autoimports
 	"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
 	"editor.tabSize": 2,
