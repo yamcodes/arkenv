@@ -6,10 +6,10 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { EditOnGithub } from "~/components/page/edit-on-github";
-import { Separator } from "~/components/ui/separator";
+import { LLMCopyButton, ViewOptions } from "~/components/page-actions";
 import { source } from "~/lib/source";
 import { getMDXComponents } from "~/mdx-components";
+import { getLinkTitleAndHref } from "~/lib/utils";
 
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
@@ -34,10 +34,17 @@ export default async function Page(props: {
 					/>
 				</DocsBody>
 			</div>
-			<div className="flex flex-col items-start pt-16">
-				<EditOnGithub path={page.path} />
-				<div className="mt-8 w-full">
-					<Separator />
+			<div className="flex flex-col items-start pt-16 gap-4">
+				<div className="flex flex-row gap-2 items-center pb-8">
+					<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
+					<ViewOptions
+						markdownUrl={`${page.url}.mdx`}
+						githubUrl={
+							getLinkTitleAndHref(
+								`${process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ?? "apps/www/content/docs/"}${page.path}`,
+							).href
+						}
+					/>
 				</div>
 			</div>
 		</DocsPage>
