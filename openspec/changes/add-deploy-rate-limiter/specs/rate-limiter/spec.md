@@ -14,7 +14,7 @@ The system MUST include a Node.js script that evaluates deployment budgets.
 - SCRIPT outputs `should_deploy=true` and `reason=ok`.
 
 #### Scenario: Preview budget exceeded (daily)
-- 76 preview deploys have occurred in the last 24h.
+- 72 preview deploys have occurred in the last 24h.
 - SCRIPT outputs `should_deploy=false`, `reason=limit`, and logs remaining time (format: `1h 23m`).
 
 #### Scenario: Preview budget exceeded (cooldown)

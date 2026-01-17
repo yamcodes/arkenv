@@ -45,7 +45,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 ## Deployment Rate Limiter
 
 To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
-- **Daily Limit**: 76 preview deployments per 24 hours.
+- **Daily Limit**: 72 preview deployments per 24 hours.
 - **Cooldown**: 20 minutes between deployments on the same PR.
 
 If the limit or cooldown is reached, the deployment step in the GitHub Action will be skipped. This is a "soft" limit—it doesn't fail the build, it just pauses deployments. Production deployments are not gated but will trigger an alert if frequency exceeds 24/day.

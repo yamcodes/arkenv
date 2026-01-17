@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const METRICS_FILE = path.join(process.cwd(), ".github/deploy-metrics.json");
-const LIMIT_24H_PREVIEW = 76;
+const LIMIT_24H_PREVIEW = 72;
 const LIMIT_24H_PROD = 24;
 const COOLDOWN_20M = 20 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;

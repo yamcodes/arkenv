@@ -13,7 +13,7 @@ Vercel deployments, especially preview ones, can consume significant quota and r
 Implement a soft rate limiter using a JSON state file (`.github/deploy-metrics.json`) persisted via GitHub Actions cache.
 
 - **Preview Deploys**: 
-  - Limit: 76 deploys per 24 hours.
+  - Limit: 72 deploys per 24 hours.
   - Cooldown: 20 minutes between deploys.
   - Action: Skip deployment (exit 0, emit `should_deploy=false` and `reason`).
 - **Production Deploys**:
