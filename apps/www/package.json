@@ -5,6 +5,9 @@
 	"scripts": {
 		"build": "node ./bin/build next build",
 		"dev": "conc -n Next.js,next-video 'next dev' 'pnpm exec next-video sync -w'",
+		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
 		"start": "next start",
 		"postinstall": "node ./bin/postinstall",
 		"clean": "rimraf node_modules .next .source",
@@ -17,6 +20,7 @@
 		"@arkenv/vite-plugin": "workspace:*",
 		"@fumadocs/mdx-remote": "1.4.4",
 		"@icons-pack/react-simple-icons": "13.8.0",
+		"@opennextjs/cloudflare": "^1.14.9",
 		"@radix-ui/react-separator": "1.1.8",
 		"@radix-ui/react-slot": "1.2.4",
 		"@radix-ui/react-toast": "1.2.15",
@@ -79,6 +83,7 @@
 		"tailwindcss": "4.1.18",
 		"typescript": "catalog:",
 		"vite-tsconfig-paths": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"wrangler": "^4.59.2"
 	}
 }

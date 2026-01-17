@@ -12,6 +12,7 @@
 /out/
 /build
 *.tsbuildinfo
+.open-next/
 
 # misc
 .DS_Store

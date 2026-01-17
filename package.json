@@ -50,7 +50,8 @@
 			"@vercel/speed-insights",
 			"bun",
 			"esbuild",
-			"sharp"
+			"sharp",
+			"workerd"
 		]
 	}
 }
