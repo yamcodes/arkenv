@@ -8,7 +8,7 @@ import {
 import { notFound } from "next/navigation";
 import { EditOnGithub } from "~/components/page/edit-on-github";
 import { Separator } from "~/components/ui/separator";
-import { source } from "~/lib/source";
+import { source } from "~/lib/source-ui";
 import { getMDXComponents } from "~/mdx-components";
 
 export default async function Page(props: {
