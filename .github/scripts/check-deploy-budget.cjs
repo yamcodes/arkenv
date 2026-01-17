@@ -101,7 +101,7 @@ async function run() {
 			saveMetrics(metrics);
 		} else {
 			console.log(
-				`Preview deployment skipped. Reason: ${reason}. Remaining cooldown: ${remainingTime}`,
+				`Preview deployment skipped. Reason: ${reason}. Remaining time: ${remainingTime}`,
 			);
 		}
 

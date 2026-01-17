@@ -10,7 +10,7 @@ capability: rate-limiter
 ### Requirement: [rate-limiter.1] Budget Checking Script
 The system MUST include a Node.js script that evaluates deployment budgets.
 #### Scenario: Preview budget within limits
-- PR pushes occur within 20m interval and under 76/day.
+- PR pushes occur within 20m interval and under 72/day.
 - SCRIPT outputs `should_deploy=true` and `reason=ok`.
 
 #### Scenario: Preview budget exceeded (daily)
