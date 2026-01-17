@@ -6,9 +6,9 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { EditOnGithub } from "~/components/page/edit-on-github";
-import { Separator } from "~/components/ui/separator";
+import { LLMCopyButton, ViewOptions } from "~/components/page-actions";
 import { source } from "~/lib/source";
+import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
 
 export default async function Page(props: {
@@ -25,6 +25,24 @@ export default async function Page(props: {
 			<div className="grow">
 				<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 				<DocsDescription>{page.data.description}</DocsDescription>
+				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6 mb-8 mt-4">
+					<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
+					<ViewOptions
+						markdownUrl={`${page.url}.mdx`}
+						githubUrl={
+							getLinkTitleAndHref(
+								(() => {
+									const basePath = (
+										process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ??
+										"apps/www/content/docs/"
+									).replace(/\/$/, ""); // Remove trailing slash if present
+									const pagePath = page.path.replace(/^\//, ""); // Remove leading slash if present
+									return `${basePath}/${pagePath}`;
+								})(),
+							).href
+						}
+					/>
+				</div>
 				<DocsBody>
 					<MDX
 						components={getMDXComponents({
@@ -33,12 +51,6 @@ export default async function Page(props: {
 						})}
 					/>
 				</DocsBody>
-			</div>
-			<div className="flex flex-col items-start pt-16">
-				<EditOnGithub path={page.path} />
-				<div className="mt-8 w-full">
-					<Separator />
-				</div>
 			</div>
 		</DocsPage>
 	);

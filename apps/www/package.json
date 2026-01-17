@@ -17,6 +17,7 @@
 		"@arkenv/vite-plugin": "workspace:*",
 		"@fumadocs/mdx-remote": "1.4.4",
 		"@icons-pack/react-simple-icons": "13.8.0",
+		"@radix-ui/react-popover": "^1.1.15",
 		"@radix-ui/react-separator": "1.1.8",
 		"@radix-ui/react-slot": "1.2.4",
 		"@radix-ui/react-toast": "1.2.15",
@@ -55,6 +56,7 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
+		"@fumadocs/cli": "^1.1.9",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@tailwindcss/postcss": "4.1.18",

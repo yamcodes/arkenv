@@ -15,6 +15,9 @@ export const docs = defineDocs({
 	dir: "content/docs",
 	docs: {
 		files: ["**/*", "!**/README.md"],
+		postprocess: {
+			includeProcessedMarkdown: true,
+		},
 	},
 });
 
