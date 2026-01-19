@@ -5,8 +5,11 @@
  * @throws {Error} If URL is not configured or has invalid format
  */
 export const breakDownGithubUrl = (githubUrl?: string) => {
-	const url = githubUrl ?? process.env.NEXT_PUBLIC_GITHUB_URL;
-	if (!url) throw new Error("NEXT_PUBLIC_GITHUB_URL is not configured");
+	const url =
+		githubUrl ??
+		process.env.NEXT_PUBLIC_GITHUB_URL ??
+		"https://github.com/yamcodes/arkenv";
+
 	const defaultBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "main";
 	const cleanUrl = url.replace(/\/$/, "");
 	const urlObj = new URL(cleanUrl);
@@ -23,8 +26,11 @@ export const breakDownGithubUrl = (githubUrl?: string) => {
  * @throws {Error} If URL is not configured or has invalid format
  */
 export const getLinkTitleAndHref = (path: string, githubUrl?: string) => {
-	const url = githubUrl ?? process.env.NEXT_PUBLIC_GITHUB_URL;
-	if (!url) throw new Error("NEXT_PUBLIC_GITHUB_URL is not configured");
+	const url =
+		githubUrl ??
+		process.env.NEXT_PUBLIC_GITHUB_URL ??
+		"https://github.com/yamcodes/arkenv";
+
 	const { owner, repo, defaultBranch } = breakDownGithubUrl(url);
 	const title = `Editing ${repo}/${path} at ${defaultBranch} · ${owner}/${repo}`;
 	const href = `${url}/edit/${defaultBranch}/${path}`;
