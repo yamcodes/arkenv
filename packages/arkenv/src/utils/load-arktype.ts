@@ -5,7 +5,23 @@ import { createRequire } from "node:module";
  * Provides a clear error message if the 'arktype' peer dependency is missing.
  */
 export function loadArkTypeValidator() {
-	const require = createRequire(import.meta.url);
+	const _require = (() => {
+		try {
+			if (typeof import.meta !== "undefined" && import.meta.url) {
+				return createRequire(import.meta.url);
+			}
+		} catch {
+			// ignore
+		}
+		return typeof require === "function" ? require : undefined;
+	})();
+
+	if (!_require) {
+		throw new Error(
+			"ArkEnv was unable to load the ArkType validator because neither 'createRequire' " +
+				"nor 'require' are available in this environment.",
+		);
+	}
 
 	// We try multiple paths to support both source execution (src/utils/load-arktype.ts)
 	// and bundled execution (dist/index.js or dist/index.cjs where this is inlined).
@@ -24,7 +40,7 @@ export function loadArkTypeValidator() {
 
 	for (const path of searchPaths) {
 		try {
-			return require(path);
+			return _require(path);
 		} catch (e: any) {
 			lastError = e;
 
