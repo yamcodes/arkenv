@@ -1,14 +1,15 @@
 import { execSync } from "node:child_process";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { randomUUID } from "node:crypto";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 describe("load-arktype bundling compatibility", () => {
 	it("should work when bundled as CommonJS with esbuild", () => {
-		const tempDir = join(process.cwd(), "temp-bundle-test");
-		if (!existsSync(tempDir)) {
-			mkdirSync(tempDir);
-		}
+		const tempDir = mkdtempSync(
+			join(tmpdir(), `arkenv-bundle-test-${randomUUID()}`),
+		);
 
 		const testFile = join(tempDir, "test.ts");
 		const outFile = join(tempDir, "test.cjs");
@@ -51,7 +52,6 @@ try {
 		} finally {
 			// Cleanup
 			if (existsSync(tempDir)) {
-				const { rmSync } = require("node:fs");
 				rmSync(tempDir, { recursive: true, force: true });
 			}
 		}
