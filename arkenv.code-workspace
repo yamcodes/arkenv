@@ -90,6 +90,10 @@
 			"name": "  standard-schema-playground"
 		},
 		{
+			"path": "apps/playgrounds/esbuild-cjs",
+			"name": "  esbuild-cjs-playground"
+		},
+		{
 			"path": "apps/playgrounds/js",
 			"name": "  js-playground"
 		},
