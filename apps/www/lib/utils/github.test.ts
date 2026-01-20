@@ -55,12 +55,16 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should throw error when no URL is configured", () => {
+		it("should use fallback URL when no URL is configured", () => {
 			vi.unstubAllEnvs();
 
-			expect(() => breakDownGithubUrl()).toThrow(
-				"NEXT_PUBLIC_GITHUB_URL is not configured",
-			);
+			const result = breakDownGithubUrl();
+
+			expect(result).toEqual({
+				owner: "yamcodes",
+				repo: "arkenv",
+				defaultBranch: "main",
+			});
 		});
 
 		it("should throw error for invalid GitHub URL format", () => {
@@ -142,12 +146,15 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should throw error when no URL is configured", () => {
+		it("should use fallback URL when no URL is configured", () => {
 			vi.unstubAllEnvs();
 
-			expect(() => getLinkTitleAndHref("test.md")).toThrow(
-				"NEXT_PUBLIC_GITHUB_URL is not configured",
-			);
+			const result = getLinkTitleAndHref("test.md");
+
+			expect(result).toEqual({
+				title: "Editing arkenv/test.md at main · yamcodes/arkenv",
+				href: "https://github.com/yamcodes/arkenv/edit/main/test.md",
+			});
 		});
 
 		it("should handle URLs with trailing slash", () => {
