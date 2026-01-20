@@ -1,6 +1,20 @@
 import { createRequire } from "node:module";
 
 /**
+ * Node-like error object with an optional 'code' property.
+ */
+interface NodeError extends Error {
+	code?: string;
+}
+
+function isNodeError(error: unknown): error is NodeError {
+	return (
+		error instanceof Error ||
+		(typeof error === "object" && error !== null && "message" in error)
+	);
+}
+
+/**
  * Dynamically loads the ArkType validator module.
  * Provides a clear error message if the 'arktype' peer dependency is missing.
  */
@@ -61,13 +75,8 @@ export function loadArkTypeValidator() {
 		} catch (e) {
 			lastError = e;
 
-			// Check if this error is specifically about the 'arktype' package being missing.
-			// If require(path) failed because of a missing 'arktype' dependency INSIDE the path,
-			// the error code will be MODULE_NOT_FOUND, but the message will not mention our path.
-			// biome-ignore lint/suspicious/noExplicitAny: error object properties are unknown
-			if ((e as any).code === "MODULE_NOT_FOUND") {
-				// biome-ignore lint/suspicious/noExplicitAny: error object properties are unknown
-				const msg = (e as any).message || "";
+			if (isNodeError(e) && e.code === "MODULE_NOT_FOUND") {
+				const msg = e.message || "";
 				// Nested failure: The error is about 'arktype' (the package) but we were trying to load a relative path.
 				const isNestedArkTypeFailure =
 					(msg.includes("'arktype'") ||
@@ -84,13 +93,12 @@ export function loadArkTypeValidator() {
 
 	// If we reach here, either we searched all paths and none worked,
 	// or we broke early because of a missing peer dependency.
-	// biome-ignore lint/suspicious/noExplicitAny: error object properties are unknown
-	const msg = (lastError as any)?.message || "";
+	const msg = isNodeError(lastError) ? lastError.message : "";
 	// Simpler heuristic: if the code is MODULE_NOT_FOUND and the message contains 'arktype'
 	// but doesn't look like a relative path error for the current try.
 	const isMissingArkType =
-		// biome-ignore lint/suspicious/noExplicitAny: error object properties are unknown
-		(lastError as any)?.code === "MODULE_NOT_FOUND" &&
+		isNodeError(lastError) &&
+		lastError.code === "MODULE_NOT_FOUND" &&
 		(msg.includes("'arktype'") ||
 			msg.includes('"arktype"') ||
 			msg.includes("Cannot find module 'arktype'")) &&

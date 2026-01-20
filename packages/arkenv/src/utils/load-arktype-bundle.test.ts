@@ -36,8 +36,8 @@ try {
 
 		// Bundle it with esbuild as CJS
 		execSync(
-			`./node_modules/.bin/esbuild ${testFile} --bundle --format=cjs --platform=node --outfile=${outFile}`,
-			{ cwd: process.cwd() },
+			`pnpm exec esbuild ${testFile} --bundle --format=cjs --platform=node --outfile=${outFile}`,
+			{ cwd: process.cwd(), stdio: "ignore" },
 		);
 
 		// Run the bundled output
@@ -45,8 +45,7 @@ try {
 			const output = execSync(`node ${outFile}`, { encoding: "utf8" });
 			expect(output.trim()).toBe("SUCCESS");
 		} catch (e) {
-			// biome-ignore lint/suspicious/noExplicitAny: error object properties are unknown
-			const error = e as any;
+			const error = e as { stdout?: string; stderr?: string; message: string };
 			const message = error.stdout || error.stderr || error.message;
 			throw new Error(`Bundle test failed: ${message}`);
 		} finally {
