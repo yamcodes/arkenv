@@ -1,7 +1,7 @@
 import { createEnv } from "./create-env.ts";
 
 export { createEnv };
-export type { EnvSchema } from "./create-env.ts";
+export type { ArkEnvConfig, EnvSchema } from "./create-env.ts";
 export { ArkEnvError } from "./errors.ts";
 
 /**
