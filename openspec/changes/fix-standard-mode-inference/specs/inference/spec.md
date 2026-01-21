@@ -8,7 +8,7 @@ When `createEnv` is used with `validator: "standard"`, the returned object MUST 
 #### Scenario: Zod inference in Standard Mode
 - **GIVEN** a schema object containing Zod validators (which implement Standard Schema)
 - **WHEN** `createEnv` is called with `validator: "standard"`
-- **THEN** the returned object MUST Have types exactly matching the Zod output types
+- **THEN** the returned object MUST have types exactly matching the Zod output types
 - **AND** it MUST NOT be wrapped in ArkType-specific inference types like `distill.Out`
 
 #### Scenario: Inferred types are usable without ArkType
