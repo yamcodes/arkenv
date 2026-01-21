@@ -5,8 +5,8 @@
     "": {
       "name": "arkenv-example-with-bun-react",
       "dependencies": {
-        "@arkenv/bun-plugin": "^0.1.0",
-        "arkenv": "^0.9.0",
+        "@arkenv/bun-plugin": "^0.1.1",
+        "arkenv": "^0.9.1",
         "arktype": "^2.1.29",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
@@ -24,7 +24,7 @@
 
     "@ark/util": ["@ark/util@0.56.0", "", {}, "sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA=="],
 
-    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@0.1.0", "", { "dependencies": { "arkenv": "0.9.0" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-l8cAReVnF/hLUzziLOnHGZNMrwZY2bcqt5SGQEuDKPEC+xAHbd3WI1Ys31a5Da8saJMs1i3ozKi3tJGP8brr7w=="],
+    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@0.1.1", "", { "dependencies": { "arkenv": "0.9.1" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-VTNq6Fyz5vBMsNleldh+SMR6y4kEbgwIk5cIo7U9UgFtHwGLWgejmOGouewRBeqxNV4NUBVkWK0tliBsueDsaw=="],
 
     "@isaacs/balanced-match": ["@isaacs/balanced-match@4.0.1", "", {}, "sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ=="],
 
@@ -60,7 +60,7 @@
 
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
-    "arkenv": ["arkenv@0.9.0", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-yW0pHHQN2k3O6BhYjl4ntQlFwLf4XPOY2QZH2SqIOtaxSaUly5VP7yCAEo+DNz943YG8tB/1cTcLkegfmR2KKA=="],
+    "arkenv": ["arkenv@0.9.1", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-phzLiGmjyfk18aGTZFO6mZZSwz9PkkICoERHGKbN9XKfAfB68ZorpBdCuAudHHDjDUa+xsvlF96u+iovjoaWfg=="],
 
     "arkregex": ["arkregex@0.0.5", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw=="],
 
