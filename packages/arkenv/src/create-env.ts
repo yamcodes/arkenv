@@ -4,6 +4,7 @@ import type {
 	Dict,
 	InferType,
 	SchemaShape,
+	StandardSchemaV1,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors.ts";
@@ -88,18 +89,18 @@ export type ArkEnvConfig = {
  * @returns The parsed environment variables
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
+export function createEnv<const T extends Record<string, StandardSchemaV1>>(
+	def: T,
+	config: ArkEnvConfig & { validator: "standard" },
+): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> };
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
+	config?: ArkEnvConfig & { validator?: "arktype" },
 ): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends CompiledEnvSchema>(
 	def: T,
 	config?: ArkEnvConfig,
 ): InferType<T>;
-export function createEnv<const T extends SchemaShape>(
-	def: EnvSchema<T> | CompiledEnvSchema,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>> | InferType<typeof def>;
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config: ArkEnvConfig = {},
