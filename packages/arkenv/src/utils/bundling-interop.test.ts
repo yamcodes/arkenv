@@ -40,6 +40,12 @@ describe("arkenv bundling interop", () => {
 			recursive: true,
 		});
 
+		// Create a package.json in the temp dir to force ESM mode (like the real project)
+		writeFileSync(
+			join(tempDir, "package.json"),
+			JSON.stringify({ name: "test-project", type: "module" }),
+		);
+
 		// Create a test script
 		writeFileSync(
 			testFile,
@@ -92,6 +98,12 @@ console.log('SUCCESS');
 		cpSync(join(projectRoot, "dist"), join(arkenvNodeModules, "dist"), {
 			recursive: true,
 		});
+
+		// Create a package.json in the temp dir
+		writeFileSync(
+			join(tempDir, "package.json"),
+			JSON.stringify({ name: "test-project", type: "module" }),
+		);
 
 		// Create a test script
 		writeFileSync(
