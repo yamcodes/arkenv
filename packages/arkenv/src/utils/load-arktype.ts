@@ -8,24 +8,13 @@ type ErrorLike = {
 	code?: string;
 };
 
-/**
- * Node-like error object with an optional 'code' property.
- */
-type NodeError = Error & {
-	code?: string;
-};
-
 function isErrorLike(error: unknown): error is ErrorLike {
 	return (
 		typeof error === "object" &&
 		error !== null &&
 		"message" in error &&
-		typeof (error as any).message === "string"
+		typeof (error as Record<string, unknown>).message === "string"
 	);
-}
-
-function isNodeError(error: unknown): error is NodeError {
-	return error instanceof Error;
 }
 
 /**
