@@ -13,6 +13,13 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 describe("arkenv bundling interop", () => {
+	// Find the package root (arkenv/packages/arkenv)
+	const projectRoot = process.cwd().includes("packages/arkenv")
+		? process.cwd()
+		: join(process.cwd(), "packages/arkenv");
+
+	const esbuildPath = join(projectRoot, "../../node_modules/.bin/esbuild");
+
 	it("should work when arkenv is external in a CJS bundle", () => {
 		const tempDir = mkdtempSync(
 			join(tmpdir(), `arkenv-interop-test-${randomUUID()}`),
@@ -26,14 +33,12 @@ describe("arkenv bundling interop", () => {
 		mkdirSync(arkenvNodeModules, { recursive: true });
 		// Copy package.json and dist
 		cpSync(
-			join(process.cwd(), "packages/arkenv/package.json"),
+			join(projectRoot, "package.json"),
 			join(arkenvNodeModules, "package.json"),
 		);
-		cpSync(
-			join(process.cwd(), "packages/arkenv/dist"),
-			join(arkenvNodeModules, "dist"),
-			{ recursive: true },
-		);
+		cpSync(join(projectRoot, "dist"), join(arkenvNodeModules, "dist"), {
+			recursive: true,
+		});
 
 		// Create a test script
 		writeFileSync(
@@ -46,7 +51,7 @@ console.log('SUCCESS');
 
 		// Bundle it with esbuild as CJS, marking arkenv as external
 		execSync(
-			`pnpm exec esbuild ${testFile} --bundle --format=cjs --platform=node --external:arkenv --outfile=${outFile}`,
+			`${esbuildPath} ${testFile} --bundle --format=cjs --platform=node --external:arkenv --outfile=${outFile}`,
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
@@ -81,14 +86,12 @@ console.log('SUCCESS');
 		// Setup arkenv in node_modules
 		mkdirSync(arkenvNodeModules, { recursive: true });
 		cpSync(
-			join(process.cwd(), "packages/arkenv/package.json"),
+			join(projectRoot, "package.json"),
 			join(arkenvNodeModules, "package.json"),
 		);
-		cpSync(
-			join(process.cwd(), "packages/arkenv/dist"),
-			join(arkenvNodeModules, "dist"),
-			{ recursive: true },
-		);
+		cpSync(join(projectRoot, "dist"), join(arkenvNodeModules, "dist"), {
+			recursive: true,
+		});
 
 		// Create a test script
 		writeFileSync(
@@ -101,7 +104,7 @@ console.log('SUCCESS');
 
 		// Bundle it with esbuild as ESM, marking arkenv as external
 		execSync(
-			`pnpm exec esbuild ${testFile} --bundle --format=esm --platform=node --external:arkenv --outfile=${outFile}`,
+			`${esbuildPath} ${testFile} --bundle --format=esm --platform=node --external:arkenv --outfile=${outFile}`,
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
