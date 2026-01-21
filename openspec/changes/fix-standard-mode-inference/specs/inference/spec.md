@@ -1,6 +1,6 @@
 # Standard Mode Inference Specification
 
-## Requirements
+## ADDED Requirements
 
 ### Requirement: Standard Mode Type Inference
 When `createEnv` is used with `validator: "standard"`, the returned object MUST have types inferred from the Standard Schema validators.
