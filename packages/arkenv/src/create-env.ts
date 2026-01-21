@@ -150,10 +150,7 @@ export function createEnv<const T extends SchemaShape>(
 			}
 		}
 
-		return parseStandard(
-			def as Record<string, unknown>,
-			config,
-		) as unknown as distill.Out<at.infer<T, $>>;
+		return parseStandard(def as Record<string, unknown>, config) as any;
 	}
 
 	const validator = loadArkTypeValidator();
