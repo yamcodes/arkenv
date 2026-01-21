@@ -1,4 +1,4 @@
-import arkenv, { createEnv, ArkEnvError } from "./index.ts";
+import arkenv, { ArkEnvError, createEnv } from "./index.ts";
 
 Object.assign(arkenv, {
 	default: arkenv,
