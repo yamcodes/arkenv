@@ -1,0 +1,126 @@
+import { execSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import {
+	cpSync,
+	existsSync,
+	mkdirSync,
+	mkdtempSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+
+describe("arkenv bundling interop", () => {
+	it("should work when arkenv is external in a CJS bundle", () => {
+		const tempDir = mkdtempSync(
+			join(tmpdir(), `arkenv-interop-test-${randomUUID()}`),
+		);
+
+		const testFile = join(tempDir, "test.ts");
+		const outFile = join(tempDir, "test.cjs");
+		const arkenvNodeModules = join(tempDir, "node_modules", "arkenv");
+
+		// Setup arkenv in node_modules
+		mkdirSync(arkenvNodeModules, { recursive: true });
+		// Copy package.json and dist
+		cpSync(
+			join(process.cwd(), "packages/arkenv/package.json"),
+			join(arkenvNodeModules, "package.json"),
+		);
+		cpSync(
+			join(process.cwd(), "packages/arkenv/dist"),
+			join(arkenvNodeModules, "dist"),
+			{ recursive: true },
+		);
+
+		// Create a test script
+		writeFileSync(
+			testFile,
+			`import arkenv from "arkenv";
+const env = arkenv({});
+console.log('SUCCESS');
+`,
+		);
+
+		// Bundle it with esbuild as CJS, marking arkenv as external
+		execSync(
+			`pnpm exec esbuild ${testFile} --bundle --format=cjs --platform=node --external:arkenv --outfile=${outFile}`,
+			{ cwd: tempDir, stdio: "ignore" },
+		);
+
+		// Run the bundled output
+		try {
+			const output = execSync(`node ${outFile}`, {
+				encoding: "utf8",
+				cwd: tempDir,
+			});
+			expect(output.trim()).toBe("SUCCESS");
+		} catch (e) {
+			const error = e as { stdout?: string; stderr?: string; message: string };
+			const message = error.stdout || error.stderr || error.message;
+			throw new Error(`External bundle test failed: ${message}`);
+		} finally {
+			// Cleanup
+			if (existsSync(tempDir)) {
+				rmSync(tempDir, { recursive: true, force: true });
+			}
+		}
+	});
+
+	it("should work when arkenv is external in an ESM bundle", () => {
+		const tempDir = mkdtempSync(
+			join(tmpdir(), `arkenv-esm-interop-test-${randomUUID()}`),
+		);
+
+		const testFile = join(tempDir, "test.ts");
+		const outFile = join(tempDir, "test.mjs");
+		const arkenvNodeModules = join(tempDir, "node_modules", "arkenv");
+
+		// Setup arkenv in node_modules
+		mkdirSync(arkenvNodeModules, { recursive: true });
+		cpSync(
+			join(process.cwd(), "packages/arkenv/package.json"),
+			join(arkenvNodeModules, "package.json"),
+		);
+		cpSync(
+			join(process.cwd(), "packages/arkenv/dist"),
+			join(arkenvNodeModules, "dist"),
+			{ recursive: true },
+		);
+
+		// Create a test script
+		writeFileSync(
+			testFile,
+			`import arkenv from "arkenv";
+const env = arkenv({});
+console.log('SUCCESS');
+`,
+		);
+
+		// Bundle it with esbuild as ESM, marking arkenv as external
+		execSync(
+			`pnpm exec esbuild ${testFile} --bundle --format=esm --platform=node --external:arkenv --outfile=${outFile}`,
+			{ cwd: tempDir, stdio: "ignore" },
+		);
+
+		// Run the bundled output
+		try {
+			const output = execSync(`node ${outFile}`, {
+				encoding: "utf8",
+				cwd: tempDir,
+			});
+			expect(output.trim()).toBe("SUCCESS");
+		} catch (e) {
+			const error = e as { stdout?: string; stderr?: string; message: string };
+			const message = error.stdout || error.stderr || error.message;
+			throw new Error(`External ESM bundle test failed: ${message}`);
+		} finally {
+			// Cleanup
+			if (existsSync(tempDir)) {
+				rmSync(tempDir, { recursive: true, force: true });
+			}
+		}
+	});
+});

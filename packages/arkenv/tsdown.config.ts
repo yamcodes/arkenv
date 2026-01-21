@@ -12,6 +12,7 @@ export default defineConfig({
 	external: ["arktype"],
 	noExternal: ["@repo/scope"],
 	footer: ({ format }) => {
+		// TODO: Avoid this, this is a hack
 		if (format === "cjs") {
 			return `
 // CJS Interop Shim
