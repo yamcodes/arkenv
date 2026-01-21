@@ -1,5 +1,39 @@
 # @arkenv/bun-plugin
 
+## 0.1.1
+
+### Patch Changes
+
+- #### Support configuration _[`#763`](https://github.com/yamcodes/arkenv/pull/763) [`06de0ef`](https://github.com/yamcodes/arkenv/commit/06de0ef3febbfc685213043ad5454f6b9e8ab564) [@yamcodes](https://github.com/yamcodes)_
+
+  Add support for an optional configuration object as the second argument. This allows you to set the `validator` mode to `"standard"`, enabling support for libraries like Zod or Valibot without an ArkType dependency.
+
+  ```ts
+  import { z } from "zod";
+  import arkenv from "@arkenv/bun-plugin";
+
+  arkenv(
+    {
+      BUN_PUBLIC_API_URL: z.string().url(),
+    },
+    {
+      validator: "standard",
+    }
+  );
+  ```
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3b747b0`](https://github.com/yamcodes/arkenv/commit/3b747b07660e035fda4a40ca90c630e283d6ba1c)
+
+</small>
+
+- `arkenv@0.9.1`
+
+</details>
+
 ## 0.1.0
 
 ### Minor Changes
