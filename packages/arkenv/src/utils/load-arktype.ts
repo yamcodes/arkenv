@@ -55,8 +55,7 @@ export function loadArkTypeValidator() {
 			// Try to get the local require safely (CommonJS)
 			// We use direct eval to access the module-level require that Node.js injects.
 			// Note: (0, eval) is indirect and fails in Node.js CJS because require is not global.
-			// biome-ignore lint: necessary to access module-local require when bundled
-			const req = eval("require");
+			const req = new Function("require");
 			if (typeof req === "function") {
 				return req;
 			}
