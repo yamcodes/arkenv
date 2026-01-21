@@ -1,7 +1,8 @@
 # validator-mode Specification
 
 ## Purpose
-TBD - created by archiving change add-explicit-validator-mode. Update Purpose after archive.
+The validator-mode allows ArkEnv to operate in two distinct modes: `arktype` (default) and `standard`. Providing an explicit validator mode allows ArkEnv to be used without ArkType at runtime, reducing bundle size and removing the requirement for ArkType when it is not needed, while still providing full type safety via the Standard Schema specification.
+
 ## Requirements
 ### Requirement: Explicit Validator Mode
 ArkEnv MUST support an explicit `validator` configuration option to choose between ArkType and Standard Schema validators.
