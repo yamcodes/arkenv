@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
-import type { EnvSchema } from "arkenv";
+import type { ArkEnvConfig, EnvSchema } from "arkenv";
 import type { BunPlugin } from "bun";
 import { processEnvSchema, registerLoader } from "./utils";
 
@@ -34,15 +34,42 @@ import { processEnvSchema, registerLoader } from "./utils";
  *      plugins: [arkenv(Env)]
  *    })
  *    ```
+ *
+ * @param options - The environment variable schema definition.
+ * @param arkenvConfig - Optional configuration for ArkEnv, including validator mode selection.
+ *   Use `{ validator: "standard" }` to use Standard Schema validators (e.g., Zod, Valibot) without ArkType.
+ * @returns A Bun plugin that validates environment variables and exposes prefixed variables to client code.
+ *
+ * @example
+ * ```ts
+ * // Using Zod with Standard Schema validator
+ * import { z } from 'zod';
+ * import arkenv from '@arkenv/bun-plugin';
+ *
+ * Bun.build({
+ *   plugins: [
+ *     arkenv({
+ *       BUN_PUBLIC_API_URL: z.string().url(),
+ *     }, {
+ *       validator: 'standard'
+ *     }),
+ *   ],
+ * });
+ * ```
  */
-export function arkenv(options: CompiledEnvSchema): BunPlugin;
+export function arkenv(
+	options: CompiledEnvSchema,
+	arkenvConfig?: ArkEnvConfig,
+): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
+	arkenvConfig?: ArkEnvConfig,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
+	arkenvConfig?: ArkEnvConfig,
 ): BunPlugin {
-	const envMap = processEnvSchema<T>(options);
+	const envMap = processEnvSchema<T>(options, arkenvConfig);
 
 	return {
 		name: "@arkenv/bun-plugin",

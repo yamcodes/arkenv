@@ -90,13 +90,35 @@ export default arkenv(Env);
 plugins = ["./plugins/arkenv.ts"]
 ```
 
+### Validator Mode
+
+By default, ArkEnv uses ArkType for validation. However, you can use any Standard Schema compatible library (like Zod or Valibot) by setting the `validator` option to `"standard"`.
+
+In this mode, you don't need to install `arktype`.
+
+```ts title="build.ts"
+import arkenv from "@arkenv/bun-plugin";
+import { z } from "zod";
+
+await Bun.build({
+  entrypoints: ["./app.tsx"],
+  outdir: "./dist",
+  plugins: [
+    arkenv({
+      BUN_PUBLIC_API_URL: z.string().url(),
+    }, {
+      validator: "standard"
+    })
+  ],
+});
+```
+
 > [!IMPORTANT]
-> This plugin requires `arktype` to be installed in your project.
+> By default, this plugin uses [ArkType](https://arktype.io) for validation.
 >
-> It does not support `validator: "standard"`.
-> You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
+> You can also use `validator: "standard"` if you prefer using Zod or Valibot directly without an ArkType dependency.
 >
-> See [Standard Schema integration](/docs/arkenv/integrations/standard-schema) for details.
+> See [Validator mode](/docs/arkenv/validator-mode) for details.
 
 ## Features
 
@@ -107,5 +129,11 @@ plugins = ["./plugins/arkenv.ts"]
 ## Installation
 
 ```package-install
-@arkenv/bun-plugin arkenv arktype
+@arkenv/bun-plugin arkenv
+```
+
+If you intend to use the default validator mode, you should also install `arktype`:
+
+```package-install
+arktype
 ```

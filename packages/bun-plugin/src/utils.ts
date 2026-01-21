@@ -1,5 +1,5 @@
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
-import { createEnv, type EnvSchema } from "arkenv";
+import { createEnv, type ArkEnvConfig, type EnvSchema } from "arkenv";
 import type { Loader, PluginBuilder } from "bun";
 
 /**
@@ -8,10 +8,14 @@ import type { Loader, PluginBuilder } from "bun";
  */
 export function processEnvSchema<T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
+	config?: ArkEnvConfig,
 ): Map<string, string> {
 	// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
 	// The union type can't match the overloads directly
-	const env: SchemaShape = createEnv(options as any, { env: process.env });
+	const env: SchemaShape = createEnv(options as any, {
+		...config,
+		env: process.env,
+	});
 	const prefix = "BUN_PUBLIC_";
 	const filteredEnv = Object.fromEntries(
 		Object.entries(env).filter(([key]) => key.startsWith(prefix)),
