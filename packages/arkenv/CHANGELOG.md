@@ -1,5 +1,17 @@
 # ArkEnv
 
+## 0.9.2
+
+### Patch Changes
+
+- #### Fix CommonJS bundling compatibility _[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)_
+
+  Fixed a crash when ArkEnv is bundled into a CommonJS format using tools like esbuild. This improves compatibility with environments like AWS Lambda and ensures correct interoperability when ArkEnv is used as an external dependency in CommonJS bundles.
+
+- #### Improve internal error handling types _[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)_
+
+  Refined internal error handling logic with better TypeScript typesafety and guards.
+
 ## 0.9.1
 
 ### Patch Changes
