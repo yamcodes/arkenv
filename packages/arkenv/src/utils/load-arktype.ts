@@ -21,9 +21,8 @@ function isNodeError(error: unknown): error is NodeError {
 export function loadArkTypeValidator() {
 	const _require = (() => {
 		try {
-			// In ESM environment, try to use createRequire
-			// (We do this first so that it's easy to mock in Vitest)
-			// biome-ignore lint/suspicious/noExplicitAny: import.meta is not fully typed in all environments
+			// 1. ESM: Try to use import.meta.url
+			// biome-ignore lint/suspicious/noExplicitAny: import.meta is not fully typed
 			const meta = import.meta as any;
 			if (meta?.url) {
 				return createRequire(meta.url);
@@ -33,16 +32,9 @@ export function loadArkTypeValidator() {
 		}
 
 		try {
-			// Try to use node:module's createRequire with the current directory
-			// This is safer than eval and works in both ESM and CJS if node:module is available.
-			return createRequire(`${process.cwd()}/index.js`);
-		} catch {
-			// ignore
-		}
-
-		try {
-			// Try to use module.require (CommonJS)
-			// biome-ignore lint/suspicious/noExplicitAny: module is a global in CJS but may not be present in ESM
+			// 2. CommonJS: Use module.require if available
+			// This is safer than eval and respects the local module scope.
+			// biome-ignore lint/suspicious/noExplicitAny: module is a global in CJS
 			const m = typeof module !== "undefined" ? (module as any) : undefined;
 			if (m?.require) {
 				return m.require.bind(m);
@@ -52,13 +44,9 @@ export function loadArkTypeValidator() {
 		}
 
 		try {
-			// Try to get the local require safely (CommonJS)
-			// We use direct eval to access the module-level require that Node.js injects.
-			// Note: (0, eval) is indirect and fails in Node.js CJS because require is not global.
-			const req = new Function("require");
-			if (typeof req === "function") {
-				return req;
-			}
+			// 3. Generic Node: Try to use createRequire with the current directory
+			// This works in both ESM and CJS if node:module is available.
+			return createRequire(`${process.cwd()}/index.js`);
 		} catch {
 			// ignore
 		}
