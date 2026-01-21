@@ -13,7 +13,14 @@ describe("load-arktype bundling compatibility", () => {
 
 		const testFile = join(tempDir, "test.ts");
 		const outFile = join(tempDir, "test.cjs");
-		const arkenvDistPath = join(process.cwd(), "packages/arkenv/dist/index.js");
+
+		// Find the package root (arkenv/packages/arkenv)
+		const projectRoot = process.cwd().includes("packages/arkenv")
+			? process.cwd()
+			: join(process.cwd(), "packages/arkenv");
+
+		const arkenvDistPath = join(projectRoot, "dist/index.mjs");
+		const esbuildPath = join(projectRoot, "../../node_modules/.bin/esbuild");
 
 		// Create a small script that uses the ESM version of arkenv
 		writeFileSync(
@@ -37,8 +44,8 @@ try {
 
 		// Bundle it with esbuild as CJS
 		execSync(
-			`pnpm exec esbuild ${testFile} --bundle --format=cjs --platform=node --outfile=${outFile}`,
-			{ cwd: process.cwd(), stdio: "ignore" },
+			`${esbuildPath} ${testFile} --bundle --format=cjs --platform=node --outfile=${outFile}`,
+			{ cwd: projectRoot, stdio: "ignore" },
 		);
 
 		// Run the bundled output
