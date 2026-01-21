@@ -11,4 +11,15 @@ export default defineConfig({
 	},
 	external: ["arktype"],
 	noExternal: ["@repo/scope"],
+	footer: ({ format }) => {
+		if (format === "cjs") {
+			return `
+// CJS Interop Shim
+if (module.exports && module.exports.default) {
+    Object.assign(module.exports.default, module.exports);
+    module.exports = module.exports.default;
+}
+      `;
+		}
+	},
 });
