@@ -33,8 +33,29 @@ export function loadArkTypeValidator() {
 		}
 
 		try {
-			// Try to get the global require safely (CommonJS)
-			// biome-ignore lint: needed to avoid bundler hoisting and ReferenceErrors
+			// Try to use node:module's createRequire with the current directory
+			// This is safer than eval and works in both ESM and CJS if node:module is available.
+			return createRequire(`${process.cwd()}/index.js`);
+		} catch {
+			// ignore
+		}
+
+		try {
+			// Try to use module.require (CommonJS)
+			// biome-ignore lint/suspicious/noExplicitAny: module is a global in CJS but may not be present in ESM
+			const m = typeof module !== "undefined" ? (module as any) : undefined;
+			if (m?.require) {
+				return m.require.bind(m);
+			}
+		} catch {
+			// ignore
+		}
+
+		try {
+			// Try to get the local require safely (CommonJS)
+			// We use direct eval to access the module-level require that Node.js injects.
+			// Note: (0, eval) is indirect and fails in Node.js CJS because require is not global.
+			// biome-ignore lint: necessary to access module-local require when bundled
 			const req = eval("require");
 			if (typeof req === "function") {
 				return req;
