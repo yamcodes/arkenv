@@ -1,5 +1,39 @@
 # @arkenv/vite-plugin
 
+## 0.0.28
+
+### Patch Changes
+
+- #### Support configuration _[`bb832b1`](https://github.com/yamcodes/arkenv/commit/bb832b11a0d4d627cd7b04c7e7007c0a8e96ce30) [@yamcodes](https://github.com/yamcodes)_
+
+  Add support for an optional configuration object as the second argument. This allows you to set the `validator` mode to `"standard"`, enabling support for libraries like Zod or Valibot without an ArkType dependency.
+
+  ```ts
+  import { z } from "zod";
+  import arkenvVitePlugin from "@arkenv/vite-plugin";
+
+  arkenvVitePlugin(
+    {
+      VITE_API_URL: z.string().url(),
+    },
+    {
+      validator: "standard",
+    }
+  );
+  ```
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3b747b0`](https://github.com/yamcodes/arkenv/commit/3b747b07660e035fda4a40ca90c630e283d6ba1c)
+
+</small>
+
+- `arkenv@0.9.1`
+
+</details>
+
 ## 0.0.27
 
 ### Patch Changes

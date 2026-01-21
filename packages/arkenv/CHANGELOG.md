@@ -1,5 +1,13 @@
 # ArkEnv
 
+## 0.9.1
+
+### Patch Changes
+
+- #### Fix Standard Schema type inference _[`#758`](https://github.com/yamcodes/arkenv/pull/758) [`3b747b0`](https://github.com/yamcodes/arkenv/commit/3b747b07660e035fda4a40ca90c630e283d6ba1c) [@yamcodes](https://github.com/yamcodes)_
+
+  Fixed type inference when using `validator: "standard"` mode. The `env` object now correctly infers types from Standard Schema validators like Zod or Valibot.
+
 ## 0.9.0
 
 ### Minor Changes
