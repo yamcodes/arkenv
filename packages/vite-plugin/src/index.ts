@@ -90,7 +90,7 @@ export default function arkenv<const T extends SchemaShape>(
 			// The union type can't match the overloads directly
 			const env: SchemaShape = createEnv(options as any, {
 				...arkenvConfig,
-				env: loadEnv(mode, envDir, ""),
+				env: arkenvConfig?.env ?? loadEnv(mode, envDir, ""),
 			});
 
 			// Filter to only include environment variables matching the prefix

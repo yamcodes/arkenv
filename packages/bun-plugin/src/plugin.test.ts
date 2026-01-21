@@ -1,15 +1,29 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+// Mock the arkenv module with a spy that calls the real implementation by default
+vi.mock("arkenv", async (importActual) => {
+	const actual = await importActual<typeof import("arkenv")>();
+	return {
+		...actual,
+		createEnv: vi.fn(actual.createEnv),
+	};
+});
+
 import { arkenv } from "./plugin";
+
+const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
 
 describe("Bun Plugin", () => {
 	let originalEnv: NodeJS.ProcessEnv;
 
 	beforeEach(() => {
 		originalEnv = { ...process.env };
+		mockCreateEnv.mockClear();
 	});
 
 	afterEach(() => {
 		process.env = originalEnv;
+		mockCreateEnv.mockReset();
 	});
 
 	it("should create a plugin function", () => {
@@ -43,5 +57,30 @@ describe("Bun Plugin", () => {
 		expect(() => {
 			arkenv({ BUN_PUBLIC_REQUIRED: "string" });
 		}).toThrow();
+	});
+
+	it("should pass arkenvConfig to createEnv", () => {
+		process.env.BUN_PUBLIC_TEST = "test-value";
+
+		const standardSchema = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "test",
+				validate: (val: unknown) => ({ value: val }),
+			},
+		};
+
+		arkenv(
+			{ BUN_PUBLIC_TEST: standardSchema as any },
+			{ validator: "standard" },
+		);
+
+		expect(mockCreateEnv).toHaveBeenCalledWith(
+			{ BUN_PUBLIC_TEST: standardSchema },
+			expect.objectContaining({
+				validator: "standard",
+				env: expect.any(Object),
+			}),
+		);
 	});
 });
