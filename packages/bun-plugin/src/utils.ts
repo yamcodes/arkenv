@@ -14,7 +14,7 @@ export function processEnvSchema<T extends SchemaShape>(
 	// The union type can't match the overloads directly
 	const env: SchemaShape = createEnv(options as any, {
 		...config,
-		env: process.env,
+		env: config?.env ?? process.env,
 	});
 	const prefix = "BUN_PUBLIC_";
 	const filteredEnv = Object.fromEntries(
