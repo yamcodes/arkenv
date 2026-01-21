@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "0.9.0",
+	"version": "0.9.1",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
