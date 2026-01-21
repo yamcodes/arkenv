@@ -1,0 +1,19 @@
+{
+	"name": "test-arkenv-dependency",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"prebuild": "rm -rf dist",
+		"build-cjs": "esbuild --bundle --format=cjs --outfile=dist/index.cjs --platform=node --target=es2020 --keep-names --sourcemap src/index.ts",
+		"build-cjs-ext": "esbuild --bundle --external:arktype --external:arkenv --format=cjs --outfile=dist/index.cjs --platform=node --target=es2020 --keep-names --sourcemap src/index.ts",
+		"build-esm": "esbuild --bundle --format=esm --outfile=dist/index.mjs --platform=node --target=es2020 --keep-names --sourcemap src/index.ts",
+		"build-esm-ext": "esbuild --bundle --external:arktype --external:arkenv --format=esm --outfile=dist/index.mjs --platform=node --target=es2020 --keep-names --sourcemap src/index.ts"
+	},
+	"dependencies": {
+		"arkenv": "file:../packages/arkenv",
+		"arktype": "^2.1.29"
+	},
+	"devDependencies": {
+		"esbuild": "^0.27.2"
+	}
+}
