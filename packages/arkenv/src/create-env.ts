@@ -150,11 +150,11 @@ export function createEnv<const T extends SchemaShape>(
 			}
 		}
 
-		return parseStandard(def as Record<string, unknown>, config) as any;
+		return parseStandard(def as Record<string, unknown>, config);
 	}
 
 	const validator = loadArkTypeValidator();
 	const { parse } = validator;
 
-	return parse(def as any, config) as any;
+	return parse(def, config);
 }
