@@ -33,9 +33,15 @@ const config = {
 			},
 		];
 	},
-	// PostHog rewrites to support analytics ingestion proxy
 	async rewrites() {
 		return [
+			{
+				source: "/docs/:path*.mdx",
+				destination: "/llms.mdx/docs/:path*",
+			},
+			/**
+			 * PostHog rewrites to support analytics ingestion proxy
+			 */
 			{
 				source: `${POSTHOG_PROXY_PREFIX}/static/:path*`,
 				destination: `${POSTHOG_ASSETS_HOST}/static/:path*`,
