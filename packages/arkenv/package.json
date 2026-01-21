@@ -2,19 +2,25 @@
 	"name": "arkenv",
 	"type": "module",
 	"version": "0.9.1",
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
+			"types": {
+				"import": "./dist/index.d.mts",
+				"require": "./dist/index.d.cts"
+			},
+			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs"
 		},
 		"./arktype": {
-			"types": "./dist/arktype/index.d.ts",
-			"import": "./dist/arktype/index.js",
+			"types": {
+				"import": "./dist/arktype/index.d.mts",
+				"require": "./dist/arktype/index.d.cts"
+			},
+			"import": "./dist/arktype/index.mjs",
 			"require": "./dist/arktype/index.cjs"
 		}
 	},
@@ -69,7 +75,7 @@
 	},
 	"size-limit": [
 		{
-			"path": "dist/index.js",
+			"path": "dist/index.mjs",
 			"limit": "3 kB",
 			"import": "*",
 			"ignore": [

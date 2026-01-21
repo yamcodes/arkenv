@@ -49,4 +49,20 @@ describe("load-arktype utility", () => {
 			"Syntax Error: unexpected token",
 		);
 	});
+
+	it("should fall back to global require if createRequire throws", () => {
+		vi.mocked(createRequire).mockImplementation(() => {
+			throw new Error("createRequire failed");
+		});
+
+		// In Vitest/Node, global.require should be available.
+		// If it falls back correctly, it will try to use the real require,
+		// which will likely fail with MODULE_NOT_FOUND for our relative paths
+		// in the test environment, but shouldn't throw the "createRequire failed" error.
+		try {
+			loadArkTypeValidator();
+		} catch (e: any) {
+			expect(e.message).not.toBe("createRequire failed");
+		}
+	});
 });
