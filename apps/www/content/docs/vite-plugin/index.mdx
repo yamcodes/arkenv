@@ -29,18 +29,46 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
+## Validator Mode
+
+By default, ArkEnv uses ArkType for validation. However, you can use any Standard Schema compatible library (like Zod or Valibot) by setting the `validator` option to `"standard"`.
+
+In this mode, you don't need to install `arktype`.
+
+```ts title="vite.config.ts"
+import { defineConfig } from "vite";
+import arkenv from "@arkenv/vite-plugin";
+import { z } from "zod";
+
+export default defineConfig({
+  plugins: [
+    arkenv({
+      VITE_API_URL: z.string().url(),
+      VITE_API_KEY: z.string().min(1),
+    }, {
+      validator: "standard"
+    }),
+  ],
+});
+```
+
 > [!IMPORTANT]
-> This plugin requires `arktype` to be installed in your project.
+> By default, this plugin uses [ArkType](https://arktype.io) for validation.
 >
-> It does not support `validator: "standard"`.
-> You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
+> You can also use `validator: "standard"` if you prefer using Zod or Valibot directly without an ArkType dependency.
 >
-> See [Standard Schema integration](/docs/arkenv/integrations/standard-schema) for details.
+> See [Validator mode](/docs/arkenv/validator-mode) for details.
 
 ## Installation
 
 ```package-install
-@arkenv/vite-plugin arktype
+@arkenv/vite-plugin
+```
+
+If you intend to use the default validator mode, you should also install `arktype`:
+
+```package-install
+arktype
 ```
 
 For some workflows (including [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig) and [typing import.meta.env](/docs/vite-plugin/typing-import-meta-env)), a dedicated `arkenv` installation is needed. See [ArkEnv quickstart](/docs/arkenv/quickstart) for more instructions.
