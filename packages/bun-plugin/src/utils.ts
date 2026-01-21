@@ -9,7 +9,9 @@ import type { Loader, PluginBuilder } from "bun";
 export function processEnvSchema<T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
 ): Map<string, string> {
-	const env = createEnv<T>(options, { env: process.env });
+	// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
+	// The union type can't match the overloads directly
+	const env = createEnv(options as any, { env: process.env });
 	const prefix = "BUN_PUBLIC_";
 	const filteredEnv = Object.fromEntries(
 		Object.entries(<SchemaShape>env).filter(([key]) => key.startsWith(prefix)),

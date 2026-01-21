@@ -95,7 +95,7 @@ export function createEnv<const T extends Record<string, StandardSchemaV1>>(
 ): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> };
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	config?: ArkEnvConfig & { validator?: "arktype" },
+	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends CompiledEnvSchema>(
 	def: T,

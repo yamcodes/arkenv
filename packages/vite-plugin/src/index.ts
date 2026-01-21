@@ -60,10 +60,9 @@ export default function arkenv<const T extends SchemaShape>(
 
 			// Load environment based on the custom config
 			const envDir = config.envDir ?? config.root ?? process.cwd();
-			// TODO: We're using type assertions and explicitly pass in the type arguments here to avoid
-			// "Type instantiation is excessively deep and possibly infinite" errors.
-			// Ideally, we should find a way to avoid these assertions while maintaining type safety.
-			const env = createEnv<T>(options, {
+			// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
+			// The union type can't match the overloads directly
+			const env = createEnv(options as any, {
 				env: loadEnv(mode, envDir, ""),
 			});
 
