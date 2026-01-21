@@ -617,6 +617,44 @@ describe("Plugin Unit Tests", () => {
 			},
 		);
 	});
+
+	it("should pass arkenvConfig to createEnv when provided", () => {
+		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+
+		const pluginInstance = arkenvPlugin(
+			{ VITE_TEST: "string" },
+			{ validator: "standard" },
+		);
+
+		if (pluginInstance.config && typeof pluginInstance.config === "function") {
+			const mockContext = {
+				meta: {
+					framework: "vite",
+					version: "1.0.0",
+					rollupVersion: "4.0.0",
+					viteVersion: "5.0.0",
+				},
+				error: vi.fn(),
+				warn: vi.fn(),
+				info: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+			pluginInstance.config.call(
+				mockContext,
+				{},
+				{ mode: "test", command: "build" },
+			);
+		}
+
+		// Verify createEnv was called with the arkenvConfig merged with env
+		expect(mockCreateEnv).toHaveBeenCalledWith(
+			{ VITE_TEST: "string" },
+			{
+				validator: "standard",
+				env: expect.any(Object),
+			},
+		);
+	});
 });
 
 // Integration tests using with-env-dir fixture for custom envDir configuration

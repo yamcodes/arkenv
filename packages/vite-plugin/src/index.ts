@@ -1,5 +1,5 @@
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
-import { createEnv, type EnvSchema } from "arkenv";
+import { type ArkEnvConfig, createEnv, type EnvSchema } from "arkenv";
 import { loadEnv, type Plugin } from "vite";
 
 export type { ImportMetaEnvAugmented } from "./types";
@@ -18,6 +18,8 @@ export type { ImportMetaEnvAugmented } from "./types";
  *
  * @param options - The environment variable schema definition. Can be an `EnvSchema` object
  *   for typesafe validation or an ArkType `CompiledEnvSchema` for dynamic schemas.
+ * @param arkenvConfig - Optional configuration for ArkEnv, including validator mode selection.
+ *   Use `{ validator: "standard" }` to use Standard Schema validators (e.g., Zod, Valibot) instead of ArkType.
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
  *
  * @example
@@ -41,13 +43,37 @@ export type { ImportMetaEnvAugmented } from "./types";
  * // In your client code
  * console.log(import.meta.env.VITE_API_URL); // Typesafe access
  * ```
+ *
+ * @example
+ * ```ts
+ * // Using Standard Schema validators (e.g., Zod)
+ * import { defineConfig } from 'vite';
+ * import { z } from 'zod';
+ * import arkenv from '@arkenv/vite-plugin';
+ *
+ * export default defineConfig({
+ *   plugins: [
+ *     arkenv({
+ *       VITE_API_URL: z.string().url(),
+ *       VITE_API_KEY: z.string().min(1),
+ *     }, {
+ *       validator: 'standard'
+ *     }),
+ *   ],
+ * });
+ * ```
  */
-export default function arkenv(options: CompiledEnvSchema): Plugin;
+export default function arkenv(
+	options: CompiledEnvSchema,
+	arkenvConfig?: ArkEnvConfig,
+): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
+	arkenvConfig?: ArkEnvConfig,
 ): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
+	arkenvConfig?: ArkEnvConfig,
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",
@@ -63,6 +89,7 @@ export default function arkenv<const T extends SchemaShape>(
 			// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
 			// The union type can't match the overloads directly
 			const env: SchemaShape = createEnv(options as any, {
+				...arkenvConfig,
 				env: loadEnv(mode, envDir, ""),
 			});
 
