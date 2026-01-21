@@ -2,7 +2,14 @@ import { defineConfig } from "tsdown";
 
 export default defineConfig({
 	entry: ["src/index.ts", "src/arktype/index.ts"],
-	format: ["esm", "cjs"],
+	format: {
+		esm: {},
+		cjs: {
+			define: {
+				"import.meta": "{}",
+			},
+		},
+	},
 	platform: "node",
 	minify: true,
 	fixedExtension: true,
@@ -11,6 +18,9 @@ export default defineConfig({
 	},
 	external: ["arktype"],
 	noExternal: ["@repo/scope"],
+	outputOptions: {
+		exports: "named",
+	},
 	footer: ({ format }) => {
 		// TODO: Avoid this, this is a hack
 		if (format === "cjs") {
