@@ -9,7 +9,7 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "^0.9.0",
+		"arkenv": "^0.9.1",
 		"arktype": "^2.1.29",
 		"zod": "^4.3.5"
 	},
