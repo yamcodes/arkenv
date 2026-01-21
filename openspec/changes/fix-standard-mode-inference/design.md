@@ -109,6 +109,3 @@ type InferredStandard<T extends StandardSchemaShape> = {
     [K in keyof T]: StandardSchemaV1.InferOutput<T[K]>
 };
 ```
-
-## addressing the archived TBD
-The purpose of `validator-mode` is to enable using ArkEnv in environments where ArkType is either not desired or not available, allowing users to leverage the Standard Schema specification for validation while benefiting from ArkEnv's developer experience.

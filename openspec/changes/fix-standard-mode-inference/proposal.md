@@ -24,9 +24,6 @@ We will update `createEnv` to correctly dispatch to the appropriate inference en
 ### 2. Centralized Standard Schema Types
 We already have `packages/internal/types/src/standard-schema.ts`. We will use the `InferOutput` utility from this file.
 
-### 3. Purpose Update
-We will also address the "TBD" in `openspec/specs/validator-mode/spec.md` by providing a proper purpose statement.
-
 ## Explicit Non-Goals
 - Changing the runtime validation logic (already implemented).
 - Introducing complex auto-detection of schemas (we stick to the explicit `validator` flag).

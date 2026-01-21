@@ -1,6 +1,5 @@
 ## 1. Spec & Docs
-- [ ] 1.1 Update purpose in `openspec/specs/validator-mode/spec.md`.
-- [ ] 1.2 Add requirement for correct type inference in `openspec/changes/fix-standard-mode-inference/specs/inference/spec.md`.
+- [ ] 1.1 Add requirement for correct type inference in `openspec/changes/fix-standard-mode-inference/specs/inference/spec.md`.
 
 ## 2. Type Implementation
 - [ ] 2.1 Update `ArkEnvConfig` to be more precise about `validator` types (literals).
