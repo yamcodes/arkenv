@@ -1,5 +1,5 @@
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
-import { createEnv, type ArkEnvConfig, type EnvSchema } from "arkenv";
+import { type ArkEnvConfig, createEnv, type EnvSchema } from "arkenv";
 import type { Loader, PluginBuilder } from "bun";
 
 /**
