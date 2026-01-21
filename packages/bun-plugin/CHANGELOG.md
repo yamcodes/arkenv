@@ -1,5 +1,21 @@
 # @arkenv/bun-plugin
 
+## 0.1.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf)
+
+</small>
+
+- `arkenv@0.9.2`
+
+</details>
+
 ## 0.1.1
 
 ### Patch Changes
