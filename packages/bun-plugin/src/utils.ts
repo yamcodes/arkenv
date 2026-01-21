@@ -11,10 +11,10 @@ export function processEnvSchema<T extends SchemaShape>(
 ): Map<string, string> {
 	// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
 	// The union type can't match the overloads directly
-	const env = createEnv(options as any, { env: process.env });
+	const env: SchemaShape = createEnv(options as any, { env: process.env });
 	const prefix = "BUN_PUBLIC_";
 	const filteredEnv = Object.fromEntries(
-		Object.entries(<SchemaShape>env).filter(([key]) => key.startsWith(prefix)),
+		Object.entries(env).filter(([key]) => key.startsWith(prefix)),
 	);
 	const envMap = new Map<string, string>();
 	for (const [key, value] of Object.entries(filteredEnv)) {

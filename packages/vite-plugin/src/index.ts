@@ -62,14 +62,14 @@ export default function arkenv<const T extends SchemaShape>(
 			const envDir = config.envDir ?? config.root ?? process.cwd();
 			// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
 			// The union type can't match the overloads directly
-			const env = createEnv(options as any, {
+			const env: SchemaShape = createEnv(options as any, {
 				env: loadEnv(mode, envDir, ""),
 			});
 
 			// Filter to only include environment variables matching the prefix
 			// This prevents server-only variables from being exposed to client code
 			const filteredEnv = Object.fromEntries(
-				Object.entries(<SchemaShape>env).filter(([key]) =>
+				Object.entries(env).filter(([key]) =>
 					prefixes.some((prefix) => key.startsWith(prefix)),
 				),
 			);
