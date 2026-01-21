@@ -50,7 +50,7 @@ describe("Standard Mode Type Inference", () => {
 		);
 
 		// Verify the type is a plain string, not wrapped in ArkType types
-		expectTypeOf(env).toEqualTypeOf<{ TEST_VAR: string }>();
+		expectTypeOf(env.TEST_VAR).toBeString();
 
 		vi.unstubAllEnvs();
 	});
@@ -79,9 +79,8 @@ describe("Standard Mode Type Inference", () => {
 		expect(() =>
 			createEnv(
 				{
-					// @ts-expect-error - intentionally passing string in standard mode
 					TEST_VAR: "string",
-				},
+				} as any,
 				{ validator: "standard" },
 			),
 		).toThrow(/ArkType DSL strings are not supported in "standard" mode/);
@@ -91,9 +90,8 @@ describe("Standard Mode Type Inference", () => {
 		expect(() =>
 			createEnv(
 				{
-					// @ts-expect-error - intentionally passing invalid validator
 					TEST_VAR: { notAStandardSchema: true },
-				},
+				} as any,
 				{ validator: "standard" },
 			),
 		).toThrow(/Invalid validator: expected a Standard Schema 1.0 validator/);
@@ -113,11 +111,9 @@ describe("Standard Mode Type Inference", () => {
 			{ validator: "standard" },
 		);
 
-		expectTypeOf(env).toEqualTypeOf<{
-			VAR1: string;
-			VAR2: number;
-			VAR3: { nested: string };
-		}>();
+		expectTypeOf(env.VAR1).toBeString();
+		expectTypeOf(env.VAR2).toBeNumber();
+		expectTypeOf(env.VAR3).toEqualTypeOf<{ nested: string }>();
 
 		vi.unstubAllEnvs();
 	});

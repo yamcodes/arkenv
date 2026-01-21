@@ -7,6 +7,6 @@
 - [x] 2.3 Fix the return cast in the implementation of `createEnv` for `standard` mode.
 
 ## 3. Validation
-- [ ] 3.1 Verify that `examples/without-arktype/src/index.ts` now has correct type inference (can be checked by hovering or running typecheck).
+- [x] 3.1 Verify that `examples/without-arktype/src/index.ts` now has correct type inference (can be checked by hovering or running typecheck).
 - [x] 3.2 Add a new test case in `packages/arkenv` specifically for type-level inference of standard mode.
-- [ ] 3.3 Run `openspec validate fix-standard-mode-inference --strict`.
+- [x] 3.3 Run `openspec validate fix-standard-mode-inference --strict`.
