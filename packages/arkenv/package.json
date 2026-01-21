@@ -75,7 +75,7 @@
 	},
 	"size-limit": [
 		{
-			"path": "dist/index.js",
+			"path": "dist/index.mjs",
 			"limit": "3 kB",
 			"import": "*",
 			"ignore": [

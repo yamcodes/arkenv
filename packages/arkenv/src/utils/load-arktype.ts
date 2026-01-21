@@ -1,17 +1,31 @@
 import { createRequire } from "node:module";
 
 /**
+ * An object that looks like an Error, containing at least a message and optionally a code.
+ */
+type ErrorLike = {
+	message: string;
+	code?: string;
+};
+
+/**
  * Node-like error object with an optional 'code' property.
  */
-interface NodeError extends Error {
+type NodeError = Error & {
 	code?: string;
+};
+
+function isErrorLike(error: unknown): error is ErrorLike {
+	return (
+		typeof error === "object" &&
+		error !== null &&
+		"message" in error &&
+		typeof (error as any).message === "string"
+	);
 }
 
 function isNodeError(error: unknown): error is NodeError {
-	return (
-		error instanceof Error ||
-		(typeof error === "object" && error !== null && "message" in error)
-	);
+	return error instanceof Error;
 }
 
 /**
@@ -83,7 +97,7 @@ export function loadArkTypeValidator() {
 		} catch (e) {
 			lastError = e;
 
-			if (isNodeError(e) && e.code === "MODULE_NOT_FOUND") {
+			if (isErrorLike(e) && e.code === "MODULE_NOT_FOUND") {
 				const msg = e.message || "";
 				// Nested failure: The error is about 'arktype' (the package) but we were trying to load a relative path.
 				const isNestedArkTypeFailure =
@@ -101,11 +115,11 @@ export function loadArkTypeValidator() {
 
 	// If we reach here, either we searched all paths and none worked,
 	// or we broke early because of a missing peer dependency.
-	const msg = isNodeError(lastError) ? lastError.message : "";
+	const msg = isErrorLike(lastError) ? lastError.message : "";
 	// Simpler heuristic: if the code is MODULE_NOT_FOUND and the message contains 'arktype'
 	// but doesn't look like a relative path error for the current try.
 	const isMissingArkType =
-		isNodeError(lastError) &&
+		isErrorLike(lastError) &&
 		lastError.code === "MODULE_NOT_FOUND" &&
 		(msg.includes("'arktype'") ||
 			msg.includes('"arktype"') ||
