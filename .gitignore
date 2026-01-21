@@ -2,6 +2,9 @@
 dist/
 dist-test/
 
+# project
+.project/
+
 # dependencies
 node_modules/
 
