@@ -18,7 +18,8 @@ const codeBlockRegex = /```ts twoslash(?:.*)\n([\s\S]*?)\n```/g;
 let blockIndex = 1;
 
 for (const match of content.matchAll(codeBlockRegex)) {
-	const code = match[1]!;
+	const code = match[1];
+	if (code === undefined) continue;
 	console.log(`\n--- Block ${blockIndex++} ---`);
 	try {
 		const result = twoslasher(code, "ts", options);
