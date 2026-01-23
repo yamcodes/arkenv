@@ -28,6 +28,9 @@ while ((match = codeBlockRegex.exec(content)) !== null) {
 		result.hovers.forEach((h: any) => {
 			if ((arktypeTwoslashOptions as any).filterNode?.(h) !== false) {
 				console.log(`  [${h.line}:${h.character}] ${h.text}`);
+				if (h.docs) {
+					console.log(`      Docs: ${h.docs}`);
+				}
 			}
 		});
 
