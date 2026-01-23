@@ -9,7 +9,7 @@ import {
 	StarUsButton,
 	VideoDemo,
 } from "~/components/page";
-import { ExternalLink } from "~/components/ui/external-link";
+import { ExternalLink } from "@arkenv/fumadocs-ui-theme";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
