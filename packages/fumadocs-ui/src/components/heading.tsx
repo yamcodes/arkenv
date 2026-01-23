@@ -35,7 +35,7 @@ export function Heading<T extends Types = "h1">({
 			{...props}
 		>
 			<div
-				className="absolute -left-7 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-end pr-2 opacity-0 group-hover:opacity-100 w-8"
+				className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-end pr-2 opacity-0 group-hover:opacity-100 w-7"
 				data-arkenv-heading-icon
 			>
 				<a

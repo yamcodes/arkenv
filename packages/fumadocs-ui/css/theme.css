@@ -62,14 +62,10 @@ kbd {
 	border-bottom: 0 !important;
 }
 
-@media (min-width: 768px) {
-	[data-arkenv-heading] {
-		padding-left: 1.75rem;
-	}
-
-	[data-arkenv-heading-icon] {
-		left: 0;
-	}
+/* Icon floats to the left of the heading without taking space */
+[data-arkenv-heading-icon] {
+	position: absolute;
+	left: -1.75rem;
 }
 
 /* Link underlines in documentation */
