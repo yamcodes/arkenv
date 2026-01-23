@@ -3,10 +3,12 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
+		"mdx": "node ./bin/mdx",
+		"prebuild": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx",
+		"predev": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx",
 		"build": "node ./bin/build next build",
 		"dev": "conc -n Next.js,next-video 'next dev' 'pnpm exec next-video sync -w'",
 		"start": "next start",
-		"postinstall": "node ./bin/postinstall",
 		"clean": "rimraf node_modules .next .source",
 		"clear-cache": "rimraf .next .source",
 		"test": "vitest",

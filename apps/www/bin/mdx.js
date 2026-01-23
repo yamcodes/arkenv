@@ -2,8 +2,8 @@
 
 const { spawn, execSync } = require("node:child_process");
 
-// Skip postinstall during tests - types aren't needed for running tests
-if (process.env.SKIP_POSTINSTALL === "true") {
+// Skip mdx types generation during tests - types aren't needed for running tests
+if (process.env.SKIP_MDX === "true") {
 	process.exit(0);
 }
 
