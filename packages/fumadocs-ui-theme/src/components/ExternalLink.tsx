@@ -2,7 +2,7 @@
 
 import FumadocsLink from "fumadocs-core/link";
 import type { ComponentProps, FC } from "react";
-import { isExternalUrl } from "../utils/url";
+import { isExternalUrl } from "@/utils/url";
 
 export interface ExternalLinkProps extends ComponentProps<typeof FumadocsLink> {
 	href?: string;

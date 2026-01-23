@@ -5,9 +5,9 @@ import { Step, Steps } from "fumadocs-ui/components/steps";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
-import { CodeBlock, Pre } from "./components/CodeBlock";
-import { Heading } from "./components/Heading";
-import { ExternalLink } from "./components/ExternalLink";
+import { CodeBlock, Pre } from "@/components/CodeBlock";
+import { Heading } from "@/components/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
 
 export const arkenvComponents: MDXComponents = {
 	...defaultComponents,
