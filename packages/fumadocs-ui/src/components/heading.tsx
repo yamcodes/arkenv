@@ -31,14 +31,19 @@ export function Heading<T extends Types = "h1">({
 				"group relative scroll-m-32 font-bold tracking-tight", // increased scroll-m to account for taller header
 				className,
 			)}
+			data-arkenv-heading
 			{...props}
 		>
-			<div className="absolute -left-7 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-end pr-2 opacity-0 group-hover:opacity-100 w-8">
+			<div
+				className="absolute -left-7 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-end pr-2 opacity-0 group-hover:opacity-100 w-8"
+				data-arkenv-heading-icon
+			>
 				<a
 					href={`#${props.id}`}
 					className="p-1 rounded-md text-fd-primary focus:outline-none opacity-100 hover:opacity-100 hover:text-fd-primary active:ring-2 active:ring-fd-primary"
 					aria-label="Link to section"
 					data-no-underline
+					data-arkenv-heading-link
 				>
 					<LinkIcon className="size-4" />
 				</a>
@@ -47,6 +52,7 @@ export function Heading<T extends Types = "h1">({
 				href={`#${props.id}`}
 				className="inline font-inherit text-inherit no-underline opacity-100 hover:opacity-100 hover:text-inherit"
 				data-no-underline
+				data-arkenv-heading-link
 			>
 				{children}
 			</a>

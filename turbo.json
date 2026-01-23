@@ -6,7 +6,7 @@
 			"dependsOn": ["^clean"]
 		},
 		"build": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["^build", "mdx"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.test.ts", "!**/*.test.tsx"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**", ".output/**"],
 			"env": ["SENTRY_*"],
@@ -23,7 +23,7 @@
 		// TypeScript
 		// See: https://turborepo.com/docs/guides/tools/typescript#linting-your-codebase
 		"typecheck": {
-			"dependsOn": ["transit", "^build"],
+			"dependsOn": ["transit", "^build", "mdx"],
 			"inputs": ["*.ts", "*.tsx"]
 		},
 		// Biome
@@ -64,6 +64,10 @@
 		"size": {
 			"dependsOn": ["^build"],
 			"outputs": [".size-limit.json"]
-		}
+		},
+    "mdx": {
+      "dependsOn": ["^build"],
+      "outputs": [".source/**"]
+    }
 	}
 }

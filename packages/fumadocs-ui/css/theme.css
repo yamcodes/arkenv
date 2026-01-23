@@ -48,6 +48,30 @@ kbd {
 	height: var(--fd-nav-height) !important;
 }
 
+/* Heading anchors: avoid underlines and keep icons aligned */
+[data-arkenv-heading] {
+	overflow: visible;
+}
+
+[data-arkenv-heading-link] {
+	text-decoration: none;
+	border-bottom: 0 !important;
+}
+
+[data-arkenv-heading-link]:hover {
+	border-bottom: 0 !important;
+}
+
+@media (min-width: 768px) {
+	[data-arkenv-heading] {
+		padding-left: 1.75rem;
+	}
+
+	[data-arkenv-heading-icon] {
+		left: 0;
+	}
+}
+
 /* Link underlines in documentation */
 article
 a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
