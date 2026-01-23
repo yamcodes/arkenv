@@ -1,6 +1,6 @@
 "use client";
 import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
-import { mergeRefs } from "fumadocs-ui/utils/merge-refs";
+import { mergeRefs } from "@fumadocs/ui/merge-refs";
 import {
 	Tabs,
 	TabsContent,

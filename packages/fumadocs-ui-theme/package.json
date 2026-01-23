@@ -17,6 +17,7 @@
 	"peerDependencies": {
 		"fumadocs-ui": "16.4.7",
 		"fumadocs-core": "16.4.7",
+		"@fumadocs/ui": "16.4.7",
 		"lucide-react": "0.562.0",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",

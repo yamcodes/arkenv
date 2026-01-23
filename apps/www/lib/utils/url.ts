@@ -1,5 +1,3 @@
-export type Url = string | undefined;
-
 export function isExternalUrl(url: string | undefined): boolean {
 	if (!url) return false;
 
@@ -10,7 +8,7 @@ export function isExternalUrl(url: string | undefined): boolean {
 		const urlObj = new URL(url, "http://localhost");
 		const hostname = urlObj.hostname.toLowerCase();
 
-		// Explicitly internal domains for Arkenv
+		// Explicitly internal domains
 		if (
 			hostname === "arkenv.js.org" ||
 			hostname === "www.arkenv.js.org" ||
@@ -26,7 +24,9 @@ export function isExternalUrl(url: string | undefined): boolean {
 	}
 }
 
-export function optimizeInternalLink(url: string | undefined): string | undefined {
+export function optimizeInternalLink(
+	url: string | undefined,
+): string | undefined {
 	if (!url) return url;
 
 	try {
