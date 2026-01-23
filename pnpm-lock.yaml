@@ -683,6 +683,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.9)
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.2
       tsdown:
         specifier: 'catalog:'
         version: 0.19.0(oxc-resolver@11.16.3)(typescript@5.9.3)
@@ -12699,6 +12702,14 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
+  '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))':
+    dependencies:
+      '@vitest/spy': 4.0.17
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0)
+
   '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))':
     dependencies:
       '@vitest/spy': 4.0.17
@@ -17325,7 +17336,7 @@ snapshots:
   vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@24.10.9)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@27.4.0(@noble/hashes@1.8.0))(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0):
     dependencies:
       '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
+      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
       '@vitest/pretty-format': 4.0.17
       '@vitest/runner': 4.0.17
       '@vitest/snapshot': 4.0.17

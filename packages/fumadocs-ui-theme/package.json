@@ -16,6 +16,11 @@
 			"import": "./dist/mdx.mjs",
 			"require": "./dist/mdx.cjs"
 		},
+		"./utils": {
+			"types": "./dist/utils/index.d.mts",
+			"import": "./dist/utils/index.mjs",
+			"require": "./dist/utils/index.cjs"
+		},
 		"./css": "./src/styles/theme.css"
 	},
 	"files": [
@@ -45,6 +50,7 @@
 		"typescript": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
-		"@types/mdx": "2.0.13"
+		"@types/mdx": "2.0.13",
+		"rimraf": "catalog:"
 	}
 }
