@@ -1,7 +1,7 @@
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
-import { isExternalUrl, type ArkenvUrl } from "@arkenv/fumadocs-ui-theme";
+import { isExternalUrl, type ArkenvUrl } from "@arkenv/fumadocs-ui-theme/utils";
 import { NewBadge } from "./ui/new-badge";
 
 export function AnnouncementBadge({

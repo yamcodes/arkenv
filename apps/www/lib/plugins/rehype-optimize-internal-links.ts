@@ -1,7 +1,7 @@
 import type { Root } from "hast";
 import type { MdxJsxFlowElement, MdxJsxTextElement } from "mdast-util-mdx-jsx";
 import { visit } from "unist-util-visit";
-import { optimizeInternalLink } from "@arkenv/fumadocs-ui-theme";
+import { optimizeInternalLink } from "@arkenv/fumadocs-ui-theme/utils";
 
 type MdxJsxElement = MdxJsxFlowElement | MdxJsxTextElement;
 

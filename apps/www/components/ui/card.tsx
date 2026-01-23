@@ -3,7 +3,7 @@ import {
 	type CardProps,
 } from "fumadocs-ui/components/card";
 import { ArrowUpRight } from "lucide-react";
-import { isExternalUrl } from "@arkenv/fumadocs-ui-theme";
+import { isExternalUrl } from "@arkenv/fumadocs-ui-theme/utils";
 
 export function Card({ title, ...props }: CardProps) {
 	const isExternal = isExternalUrl(props.href);
