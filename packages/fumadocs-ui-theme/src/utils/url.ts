@@ -1,4 +1,4 @@
-export type Url = string | undefined;
+export type ArkenvUrl = string;
 
 export function isExternalUrl(url: string | undefined): boolean {
 	if (!url) return false;
@@ -26,6 +26,9 @@ export function isExternalUrl(url: string | undefined): boolean {
 	}
 }
 
+export function optimizeInternalLink(url: string): string;
+export function optimizeInternalLink(url: undefined): undefined;
+export function optimizeInternalLink(url: string | undefined): string | undefined;
 export function optimizeInternalLink(url: string | undefined): string | undefined {
 	if (!url) return url;
 

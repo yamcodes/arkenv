@@ -19,7 +19,7 @@ import {
 	useMemo,
 	useRef,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "../utils/cn.ts";
 
 export interface CodeBlockProps extends ComponentProps<"figure"> {
 	/**
