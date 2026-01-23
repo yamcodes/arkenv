@@ -4,9 +4,21 @@
 	"type": "module",
 	"exports": {
     "./css/*": "./css/*",
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "import": "./dist/*.js"
+    "./mdx": {
+			"types": {
+				"import": "./dist/components/index.d.mts",
+				"require": "./dist/components/index.d.cts"
+			},
+      "import": "./dist/components/index.mjs",
+			"require": "./dist/components/index.cjs"
+    },
+    "./utils": {
+			"types": {
+				"import": "./dist/utils/index.d.mts",
+				"require": "./dist/utils/index.d.cts"
+			},
+      "import": "./dist/utils/index.mjs",
+			"require": "./dist/utils/index.cjs"
     }
 	},
   "files": [
