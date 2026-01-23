@@ -8,6 +8,7 @@
 		"start": "next start",
 		"postinstall": "node ./bin/postinstall",
 		"clean": "rimraf node_modules .next .source",
+		"clear-cache": "rimraf .next .source",
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
 		"typecheck": "tsc --noEmit",

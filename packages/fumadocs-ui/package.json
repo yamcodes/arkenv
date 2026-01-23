@@ -63,6 +63,7 @@
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"rimraf": "catalog:",
+		"rollup-plugin-preserve-use-client": "^3.0.1",
 		"tailwindcss": "4.1.18",
 		"tsdown": "catalog:",
 		"typescript": "catalog:"
