@@ -1,4 +1,4 @@
-import { arkenvComponents } from "@arkenv/fumadocs-ui/mdx";
+import { arkenvComponents } from "@arkenv/fumadocs-ui/components";
 import * as twoslashComponents from "fumadocs-twoslash/ui";
 import { Cards } from "fumadocs-ui/components/card";
 import type { MDXComponents } from "mdx/types";

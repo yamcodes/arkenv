@@ -1,12 +1,12 @@
 # Design: publish-fumadocs-ui-theme
 
 ## Architecture
-The `@arkenv/fumadocs-ui-theme` package will be a React component library optimized for [Fumadocs](https://fumadocs.dev).
+The `@arkenv/fumadocs-ui` package will be a React component library optimized for [Fumadocs](https://fumadocs.dev).
 
 ### Package Exports
-- `@arkenv/fumadocs-ui-theme`: Component entry point.
-- `@arkenv/fumadocs-ui-theme/mdx`: MDX component mapping.
-- `@arkenv/fumadocs-ui-theme/css`: Tailwind v4 stylesheet.
+- `@arkenv/fumadocs-ui`: Component entry point.
+- `@arkenv/fumadocs-ui/mdx`: MDX component mapping.
+- `@arkenv/fumadocs-ui/css`: Tailwind v4 stylesheet.
 
 ### Key Components
 1. **Styles**:

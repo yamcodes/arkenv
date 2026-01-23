@@ -1,7 +1,7 @@
 # Fumadocs UI Theme Specification
 
 ## Purpose
-The `@arkenv/fumadocs-ui-theme` package provides a standardized design system and a set of enhanced MDX components for ArkEnv-related documentation sites.
+The `@arkenv/fumadocs-ui` package provides a standardized design system and a set of enhanced MDX components for ArkEnv-related documentation sites.
 
 ## ADDED Requirements
 

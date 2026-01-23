@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-	entry: ["src/index.ts", "src/mdx.tsx", "src/utils/index"],
+	entry: ["src/components/index.ts", "src/utils/index.ts"],
 	format: ["esm", "cjs"],
 	minify: true,
 });

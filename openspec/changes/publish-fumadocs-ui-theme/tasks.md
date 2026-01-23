@@ -20,7 +20,7 @@
 - [ ] Create `src/index.ts` to export all components.
 
 ## 5. Migration
-- [ ] Install `@arkenv/fumadocs-ui-theme` in `apps/www`.
+- [ ] Install `@arkenv/fumadocs-ui` in `apps/www`.
 - [ ] Repoint `apps/www/mdx-components.tsx` to use `arkenvComponents`.
 - [ ] Import theme CSS in `apps/www/app/globals.css`.
 - [ ] Clean up redundant components/utils in `apps/www`.

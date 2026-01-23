@@ -365,7 +365,7 @@ importers:
       '@ark/util':
         specifier: 0.56.0
         version: 0.56.0
-      '@arkenv/fumadocs-ui-theme':
+      '@arkenv/fumadocs-ui':
         specifier: workspace:*
         version: link:../../packages/fumadocs-ui-theme
       '@arkenv/vite-plugin':
