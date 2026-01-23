@@ -132,7 +132,9 @@ declare global {
 					text.includes("ark") ||
 					text.includes("env") ||
 					text.includes("type") ||
-					text.includes("distill");
+					text.includes("distill") ||
+					text.includes("valibot") ||
+					text.includes("zod");
 
 				if (node.text.startsWith("(property) ")) {
 					// ErrorLens summary formatting from main
@@ -163,7 +165,7 @@ declare global {
 
 					if (isNoise) return false;
 					// Hide CAPS keys (likely schema definitions) unless they have documentation
-					if (isAllCaps) return !!node.docs;
+					if (isAllCaps) return !!node.docs || isWhiteListed;
 
 					// Show lowercase results (host, nodeEnv, debugging, etc.)
 					return true;
