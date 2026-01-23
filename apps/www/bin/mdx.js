@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const { spawn, execSync } = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
 
 // Skip mdx types generation during tests - types aren't needed for running tests
 if (process.env.SKIP_MDX === "true") {
@@ -34,13 +36,9 @@ try {
 	process.exit(1);
 }
 
-// Avoid running when @arkenv/fumadocs-ui is not built yet (e.g. fresh CI install)
-try {
-	require.resolve("@arkenv/fumadocs-ui/dist/utils/index.mjs");
-} catch {
-	console.warn(
-		"Skipping fumadocs-mdx: @arkenv/fumadocs-ui is not built (dist missing).",
-	);
+// Skip if our MDX output already exists
+const sourceConfigPath = path.join(process.cwd(), ".source", "source.config.mjs");
+if (fs.existsSync(sourceConfigPath)) {
 	process.exit(0);
 }
 
