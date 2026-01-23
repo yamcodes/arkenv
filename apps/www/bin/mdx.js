@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
 const { spawn, execSync } = require("node:child_process");
-const fs = require("node:fs");
-const path = require("node:path");
 
 // Skip mdx types generation during tests - types aren't needed for running tests
 if (process.env.SKIP_MDX === "true") {
@@ -34,13 +32,6 @@ try {
 } catch {
 	console.error("Error: pnpm is required but not found in PATH");
 	process.exit(1);
-}
-
-// Skip if our MDX output already exists
-const sourceDir = path.join(process.cwd(), ".source");
-if (fs.existsSync(sourceDir)) {
-	console.log("[mdx] .source exists, skipping generation");
-	process.exit(0);
 }
 
 // Spawn fumadocs-mdx with the appropriate NODE_OPTIONS
