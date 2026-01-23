@@ -6,5 +6,5 @@ export default defineConfig({
 	format: ["esm", "cjs"],
 	minify: true,
 	dts: true,
-		plugins: [preserveUseClient()],
+	plugins: [preserveUseClient()],
 });

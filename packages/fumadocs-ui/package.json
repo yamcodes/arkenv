@@ -3,36 +3,36 @@
 	"version": "0.0.1",
 	"type": "module",
 	"exports": {
-    "./css/*": "./css/*",
-    "./mdx": {
+		"./css/*": "./css/*",
+		"./mdx": {
 			"types": {
 				"import": "./dist/mdx/index.d.mts",
 				"require": "./dist/mdx/index.d.cts"
 			},
-      "import": "./dist/mdx/index.mjs",
+			"import": "./dist/mdx/index.mjs",
 			"require": "./dist/mdx/index.cjs"
-    },
-    "./components": {
+		},
+		"./components": {
 			"types": {
 				"import": "./dist/components/index.d.mts",
 				"require": "./dist/components/index.d.cts"
 			},
-      "import": "./dist/components/index.mjs",
+			"import": "./dist/components/index.mjs",
 			"require": "./dist/components/index.cjs"
-    },
-    "./utils": {
+		},
+		"./utils": {
 			"types": {
 				"import": "./dist/utils/index.d.mts",
 				"require": "./dist/utils/index.d.cts"
 			},
-      "import": "./dist/utils/index.mjs",
+			"import": "./dist/utils/index.mjs",
 			"require": "./dist/utils/index.cjs"
-    }
+		}
 	},
-  "files": [
-    "css/*",
-    "dist/*"
-  ],
+	"files": [
+		"css/*",
+		"dist/*"
+	],
 	"scripts": {
 		"build": "tsdown",
 		"clean": "rimraf dist",
