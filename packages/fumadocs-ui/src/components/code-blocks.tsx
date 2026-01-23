@@ -117,8 +117,8 @@ export function CodeBlock({
 			tabIndex={-1}
 			className={cn(
 				inTab
-					? "bg-fd-secondary -mx-px -mb-px last:rounded-b-xl"
-					: "my-4 bg-fd-card rounded-xl",
+					? "bg-fd-secondary -mx-px -mb-px last:rounded-b-sm"
+					: "my-4 bg-fd-card rounded-sm",
 				keepBackground && "bg-(--shiki-light-bg) dark:bg-(--shiki-dark-bg)",
 
 				"shiki relative border shadow-sm not-prose overflow-hidden text-sm",
@@ -224,7 +224,7 @@ export function CodeBlockTabs({ ref, ...props }: ComponentProps<typeof Tabs>) {
 			ref={mergeRefs(containerRef, ref)}
 			{...props}
 			className={cn(
-				"bg-fd-card rounded-xl border",
+				"bg-fd-card rounded-sm border",
 				!nested && "my-4",
 				props.className,
 			)}
@@ -266,11 +266,10 @@ export function CodeBlockTabsTrigger({
 		<TabsTrigger
 			{...props}
 			className={cn(
-				"relative group inline-flex text-sm font-medium text-nowrap items-center transition-colors gap-2 px-2 py-1.5 hover:text-fd-accent-foreground data-[state=active]:text-fd-primary [&_svg]:size-3.5",
+				"inline-flex text-sm font-medium text-nowrap items-center transition-colors gap-2 px-2 py-1.5 hover:text-fd-accent-foreground data-[state=active]:text-fd-primary [&_svg]:size-3.5",
 				props.className,
 			)}
 		>
-			<div className="absolute inset-x-2 bottom-0 h-px group-data-[state=active]:bg-fd-primary" />
 			{children}
 		</TabsTrigger>
 	);
