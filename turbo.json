@@ -71,7 +71,7 @@
 				"app/docs/**",
 				"source.config.ts",
 				"source.config.*",
-  			"lib/**",
+				"lib/**",
 				"$TURBO_DEFAULT$"
 			],
 			"outputs": [".source/**"]
