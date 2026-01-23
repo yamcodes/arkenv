@@ -1,4 +1,4 @@
-import { ExternalLink } from "@arkenv/fumadocs-ui";
+import { ExternalLink } from "@arkenv/fumadocs-ui/components";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { AnnouncementBadge } from "~/components/announcement-badge";
