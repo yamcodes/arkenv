@@ -1,8 +1,7 @@
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
-
-import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 
