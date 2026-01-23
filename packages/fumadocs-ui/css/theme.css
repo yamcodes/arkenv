@@ -65,7 +65,7 @@ kbd {
 /* Icon floats to the left of the heading without taking space */
 [data-arkenv-heading-icon] {
 	position: absolute;
-	left: -1.75rem;
+	left: -1.5rem;
 }
 
 /* Link underlines in documentation */

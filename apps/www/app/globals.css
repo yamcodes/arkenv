@@ -12,6 +12,7 @@
 
 @plugin "tailwindcss-animate";
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
+@source "../node_modules/@arkenv/fumadocs-ui/dist/**/*.mjs";
 
 button[data-search-full] {
 	--color-fd-secondary: hsl(0, 0%, 100%);
