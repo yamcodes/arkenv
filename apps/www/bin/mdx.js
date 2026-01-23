@@ -37,8 +37,9 @@ try {
 }
 
 // Skip if our MDX output already exists
-const sourceConfigPath = path.join(process.cwd(), ".source", "source.config.mjs");
-if (fs.existsSync(sourceConfigPath)) {
+const sourceDir = path.join(process.cwd(), ".source");
+if (fs.existsSync(sourceDir)) {
+	console.log("[mdx] .source exists, skipping generation");
 	process.exit(0);
 }
 
