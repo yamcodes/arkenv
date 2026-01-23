@@ -1,3 +1,4 @@
+import { ExternalLink } from "@arkenv/fumadocs-ui-theme";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { AnnouncementBadge } from "~/components/announcement-badge";
@@ -9,7 +10,6 @@ import {
 	StarUsButton,
 	VideoDemo,
 } from "~/components/page";
-import { ExternalLink } from "@arkenv/fumadocs-ui-theme";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",

@@ -35,20 +35,27 @@
 		"tailwind-merge": "3.4.0"
 	},
 	"peerDependencies": {
-		"fumadocs-ui": "16.4.7",
-		"fumadocs-core": "16.4.7",
 		"@fumadocs/ui": "16.4.7",
+		"fumadocs-core": "16.4.7",
+		"fumadocs-ui": "16.4.7",
 		"lucide-react": "0.562.0",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"tailwindcss": "4.1.18"
 	},
 	"devDependencies": {
-		"typescript": "catalog:",
+		"@fumadocs/ui": "16.4.7",
+		"@types/mdx": "2.0.13",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
-		"@types/mdx": "2.0.13",
+		"fumadocs-core": "16.4.7",
+		"fumadocs-ui": "16.4.7",
+		"lucide-react": "0.562.0",
+		"react": "19.2.3",
+		"react-dom": "19.2.3",
 		"rimraf": "catalog:",
-		"tsc-alias": "^1.8.16"
+		"tailwindcss": "4.1.18",
+		"tsc-alias": "^1.8.16",
+		"typescript": "catalog:"
 	}
 }

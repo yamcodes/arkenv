@@ -1,5 +1,4 @@
 "use client";
-import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
 import { mergeRefs } from "@fumadocs/ui/merge-refs";
 import {
 	Tabs,
@@ -8,6 +7,7 @@ import {
 	TabsTrigger,
 } from "fumadocs-ui/components/tabs";
 import { buttonVariants } from "fumadocs-ui/components/ui/button";
+import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
 import { Check, Copy } from "lucide-react";
 import {
 	type ComponentProps,

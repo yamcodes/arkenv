@@ -1,9 +1,9 @@
+import { isExternalUrl } from "@arkenv/fumadocs-ui-theme/utils";
 import {
 	Card as CardComponent,
 	type CardProps,
 } from "fumadocs-ui/components/card";
 import { ArrowUpRight } from "lucide-react";
-import { isExternalUrl } from "@arkenv/fumadocs-ui-theme/utils";
 
 export function Card({ title, ...props }: CardProps) {
 	const isExternal = isExternalUrl(props.href);
