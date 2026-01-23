@@ -1,4 +1,4 @@
-import { isExternalUrl } from "@arkenv/fumadocs-ui-theme/utils";
+import { isExternalUrl } from "@arkenv/fumadocs-ui/utils";
 import {
 	Card as CardComponent,
 	type CardProps,

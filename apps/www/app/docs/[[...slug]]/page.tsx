@@ -1,4 +1,4 @@
-import { AIActions } from "@arkenv/fumadocs-ui-theme";
+import { AIActions } from "@arkenv/fumadocs-ui";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import {
 	DocsBody,

@@ -1,4 +1,4 @@
-import { optimizeInternalLink } from "@arkenv/fumadocs-ui-theme/utils";
+import { optimizeInternalLink } from "@arkenv/fumadocs-ui/utils";
 import type { Root } from "hast";
 import type { MdxJsxFlowElement, MdxJsxTextElement } from "mdast-util-mdx-jsx";
 import { visit } from "unist-util-visit";

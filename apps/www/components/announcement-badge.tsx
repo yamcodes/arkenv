@@ -1,4 +1,4 @@
-import { type ArkenvUrl, isExternalUrl } from "@arkenv/fumadocs-ui-theme/utils";
+import { type ArkenvUrl, isExternalUrl } from "@arkenv/fumadocs-ui/utils";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
