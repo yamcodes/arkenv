@@ -11,7 +11,11 @@ export const arkTypePackageJson = JSON.parse(
 	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
 );
 
-export const arktypeTwoslashOptions: TransformerTwoslashOptions = {
+export interface ArkTypeTwoslashOptions extends TransformerTwoslashOptions {
+	filterNode?: (node: any) => boolean;
+}
+
+export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
 	langs: ["ts", "js"],
 	twoslashOptions: {
@@ -111,16 +115,19 @@ declare global {
 
 				if (node.docs) {
 					node.docs = node.docs
-						.replace(/{@link\s+([\s\S]*?)}/g, (raw, content: string) => {
-							const cleaned = content.replace(/\s+/g, " ").trim();
-							const parts = cleaned.split(/\s*(?:\||\s)\s*/);
-							const target = parts[0];
-							const text = parts.slice(1).join(" ") || target;
+						.replace(
+							/{@link\s+([\s\S]*?)}/g,
+							(raw: string, content: string) => {
+								const cleaned = content.replace(/\s+/g, " ").trim();
+								const parts = cleaned.split(/\s*(?:\||\s)\s*/);
+								const target = parts[0];
+								const text = parts.slice(1).join(" ") || target;
 
-							return target.startsWith("http")
-								? `[${text}](${target})`
-								: `\`${text}\``;
-						})
+								return target.startsWith("http")
+									? `[${text}](${target})`
+									: `\`${text}\``;
+							},
+						)
 						.replace(/(?<!\n)\n(?!\n)/g, " ")
 						.replace(/\n{2,}/g, "\n\n")
 						.trim();

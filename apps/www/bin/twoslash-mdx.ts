@@ -26,7 +26,7 @@ for (const match of content.matchAll(codeBlockRegex)) {
 
 		console.log("Hovers:");
 		for (const h of result.hovers) {
-			if ((arktypeTwoslashOptions as any).filterNode?.(h) !== false) {
+			if (arktypeTwoslashOptions.filterNode?.(h) !== false) {
 				console.log(`  [${h.line}:${h.character}] ${h.text}`);
 				if (h.docs) {
 					console.log(`      Docs: ${h.docs}`);
@@ -37,7 +37,7 @@ for (const match of content.matchAll(codeBlockRegex)) {
 		if (result.errors.length > 0) {
 			console.log("Errors:");
 			for (const e of result.errors) {
-				if ((arktypeTwoslashOptions as any).filterNode?.(e) !== false) {
+				if (arktypeTwoslashOptions.filterNode?.(e) !== false) {
 					console.log(`  [${e.line}:${e.character}] ${e.text}`);
 				}
 			}
