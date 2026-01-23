@@ -1,4 +1,4 @@
-# Design: publish-fumadocs-ui-theme
+# Design: publish-fumadocs-ui
 
 ## Architecture
 The `@arkenv/fumadocs-ui` package will be a React component library optimized for [Fumadocs](https://fumadocs.dev).
@@ -30,7 +30,7 @@ The `@arkenv/fumadocs-ui` package will be a React component library optimized fo
 
 ### Directory Structure
 ```
-packages/fumadocs-ui-theme/
+packages/fumadocs-ui/
 ├── src/
 │   ├── components/       # Heading, ExternalLink, CodeBlock, etc.
 │   ├── styles/           # theme.css

@@ -1,8 +1,8 @@
-# Tasks: publish-fumadocs-ui-theme
+# Tasks: publish-fumadocs-ui
 
 ## 1. Scaffold Package
-- [ ] Create `packages/fumadocs-ui-theme/package.json` with appropriate peer dependencies.
-- [ ] Create `packages/fumadocs-ui-theme/tsconfig.json`.
+- [ ] Create `packages/fumadocs-ui/package.json` with appropriate peer dependencies.
+- [ ] Create `packages/fumadocs-ui/tsconfig.json`.
 
 ## 2. Infrastructure & Utilities
 - [ ] Implement `src/utils/url.ts` (external link detection).
@@ -26,4 +26,4 @@
 - [ ] Clean up redundant components/utils in `apps/www`.
 
 ## 6. Validation
-- [ ] Run `openspec validate publish-fumadocs-ui-theme --strict`.
+- [ ] Run `openspec validate publish-fumadocs-ui --strict`.
