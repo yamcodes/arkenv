@@ -10,7 +10,8 @@
 		"clean": "rimraf node_modules .next .source",
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"twoslash": "tsx bin/twoslash-mdx.ts"
 	},
 	"dependencies": {
 		"@ark/util": "0.56.0",
