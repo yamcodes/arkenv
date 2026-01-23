@@ -2,14 +2,31 @@
 	"name": "@arkenv/fumadocs-ui-theme",
 	"version": "0.0.1",
 	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
 	"exports": {
-		".": "./src/index.ts",
-		"./mdx": "./src/mdx.tsx",
+		".": {
+			"types": "./dist/index.d.mts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		},
+		"./mdx": {
+			"types": "./dist/mdx.d.mts",
+			"import": "./dist/mdx.mjs",
+			"require": "./dist/mdx.cjs"
+		},
 		"./css": "./src/styles/theme.css"
 	},
 	"files": [
-		"src"
+		"dist",
+		"src/styles/theme.css"
 	],
+	"scripts": {
+		"build": "tsdown",
+		"clean": "rimraf dist",
+		"typecheck": "tsc --noEmit"
+	},
 	"dependencies": {
 		"clsx": "2.1.1",
 		"tailwind-merge": "3.4.0"
@@ -24,6 +41,7 @@
 		"tailwindcss": "4.1.18"
 	},
 	"devDependencies": {
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",

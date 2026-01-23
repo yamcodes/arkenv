@@ -14,7 +14,7 @@ import {
 	MessageCircleIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "../utils/cn.ts";
+import { cn } from "../utils/cn";
 
 const cache = new Map<string, string>();
 
