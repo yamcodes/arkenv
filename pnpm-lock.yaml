@@ -438,8 +438,8 @@ importers:
         specifier: 0.4.6
         version: 0.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       posthog-js:
-        specifier: 1.324.1
-        version: 1.324.1
+        specifier: 1.325.0
+        version: 1.325.0
       posthog-node:
         specifier: 5.21.2
         version: 5.21.2
@@ -2689,8 +2689,8 @@ packages:
   '@posthog/core@1.9.1':
     resolution: {integrity: sha512-kRb1ch2dhQjsAapZmu6V66551IF2LnCbc1rnrQqnR7ArooVyJN9KOPXre16AJ3ObJz2eTfuP7x25BMyS2Y5Exw==}
 
-  '@posthog/types@1.324.1':
-    resolution: {integrity: sha512-OV1DWoLFwYVMiIz6dTkzxOp502brOb8XGh6YHUJ3411Qi8gHyWY1lEGTcWnPFkTKE2KW+6alHlj7g3MMSCZ1kw==}
+  '@posthog/types@1.325.0':
+    resolution: {integrity: sha512-cBOZvVwpL8VHnNmkOVNxVsbwuf0/Fbxl32SjveQGapvkDojzFbpuj9wQPzrzF/wtCukkPjlPEDKAG/f1c8oPVQ==}
 
   '@primer/octicons@19.21.2':
     resolution: {integrity: sha512-SRTcpAZtKYh2266VQpAqNkXAQpPvYWk6dxggkHDzwI95NrE5mEzJ7cfFt/bSVbqDffKQ+tm7TEdLHoSjEcggfQ==}
@@ -7050,8 +7050,8 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  posthog-js@1.324.1:
-    resolution: {integrity: sha512-V9mum4EK9BrN6KzVLnamdTcjLBP80mY7q8f+Y3VIvVexUtU6egUwniFeq2efrTFG3sWnU78DERhByePx86nbeQ==}
+  posthog-js@1.325.0:
+    resolution: {integrity: sha512-u4A/QPtI742X4lnXmdr9fl00jwg22mUIs3SrbHg7i8Ju5uBa4CThV/2n+4XSXyre3LygOASshFxhzT3UMpcQPQ==}
 
   posthog-node@5.21.2:
     resolution: {integrity: sha512-Jehlu0KguL1LLyUczCt86OtA5INmeStK3zcgbv1BSyMcNxs0HP3GQogBrYhwhqHsk6JopiFFVpJyZEoXOUMhGw==}
@@ -10773,7 +10773,7 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
 
-  '@posthog/types@1.324.1': {}
+  '@posthog/types@1.325.0': {}
 
   '@primer/octicons@19.21.2':
     dependencies:
@@ -15734,7 +15734,7 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  posthog-js@1.324.1:
+  posthog-js@1.325.0:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.208.0
@@ -15742,7 +15742,7 @@ snapshots:
       '@opentelemetry/resources': 2.5.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.0)
       '@posthog/core': 1.9.1
-      '@posthog/types': 1.324.1
+      '@posthog/types': 1.325.0
       core-js: 3.48.0
       dompurify: 3.3.1
       fflate: 0.4.8
