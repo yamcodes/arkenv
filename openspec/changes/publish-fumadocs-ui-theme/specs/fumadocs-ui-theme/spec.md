@@ -1,12 +1,12 @@
 # Fumadocs UI Theme Specification
 
 ## Purpose
-The `@arkenv/fumadocs-ui-theme` package provides a standardized design system and a set of enhanced MDX components for Arkenv-related documentation sites.
+The `@arkenv/fumadocs-ui-theme` package provides a standardized design system and a set of enhanced MDX components for ArkEnv-related documentation sites.
 
 ## ADDED Requirements
 
 ### Requirement: Design System Styles
-The theme MUST provide a CSS entry point that implements the Arkenv design system.
+The theme MUST provide a CSS entry point that implements the ArkEnv design system.
 
 #### Scenario: Sharpened corners
 - **WHEN** the theme CSS is imported
@@ -47,7 +47,7 @@ The theme MUST provide headings with anchor support and proper scrolling.
 - **WHEN** a heading component is rendered
 - **THEN** it MUST have a `scroll-m-32` class to prevent it from being hidden under the 80px fixed header.
 
-### Requirement: Arkenv MDX Components
+### Requirement: ArkEnv MDX Components
 The theme MUST provide a pre-configured mapping of MDX components.
 
 #### Scenario: Component Registration

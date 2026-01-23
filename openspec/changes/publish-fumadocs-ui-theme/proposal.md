@@ -1,10 +1,10 @@
 # Proposal: publish-fumadocs-ui-theme
 
-This proposal outlines the externalization of Bedstack's Fumadocs UI refinements into a standalone package `@arkenv/fumadocs-ui-theme`.
+This proposal outlines the publishing of a Fumadocs UI theme and components into a standalone package `@arkenv/fumadocs-ui-theme`.
 
 ## Motivation
-The custom styling, external link handling, and MDX enhancements developed for Bedstack are highly reusable. Centralizing them into a theme package allows for:
-- Consistent branding across all Arkenv-related documentation.
+The custom styling, external link handling, and MDX enhancements developed for Bedstack (a different repository) are highly reusable. Centralizing them into a theme package, but exporting them as an ArkEnv theme allows for:
+- Consistent branding across all ArkEnv-related documentation.
 - Simplified maintenance of visual standards (e.g., sharpened corners, header offsets).
 - Easier adoption of these refinements in other apps.
 
