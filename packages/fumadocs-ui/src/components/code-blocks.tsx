@@ -25,7 +25,8 @@ export interface CodeBlockProps extends ComponentProps<"figure"> {
 	/**
 	 * Icon of code block
 	 *
-	 * When passed as a string, it assumes the value is the HTML of icon
+	 * When passed as a string, it assumes the value is SVG markup.
+	 * The string will be sanitized at runtime and should be trusted SVG only.
 	 */
 	icon?: ReactNode;
 
@@ -64,6 +65,22 @@ const TabsContext = createContext<{
 	containerRef: RefObject<HTMLDivElement | null>;
 	nested: boolean;
 } | null>(null);
+
+function sanitizeSvgMarkup(value: string) {
+	const trimmed = value.trim();
+	if (!/^<svg[\s\S]*<\/svg>$/.test(trimmed)) return "";
+
+	const sanitized = trimmed
+		.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+		.replace(/<foreignObject[\s\S]*?>[\s\S]*?<\/foreignObject>/gi, "")
+		.replace(/\son\w+\s*=\s*"[^"]*"/gi, "")
+		.replace(/\son\w+\s*=\s*'[^']*'/gi, "")
+		.replace(/\son\w+\s*=\s*[^\s>]+/gi, "")
+		.replace(/\s(xlink:href|href)\s*=\s*"\s*javascript:[^"]*"/gi, "")
+		.replace(/\s(xlink:href|href)\s*=\s*'\s*javascript:[^']*'/gi, "");
+
+	return sanitized;
+}
 
 export function Pre(props: ComponentProps<"pre">) {
 	return (
@@ -113,9 +130,9 @@ export function CodeBlock({
 					{typeof icon === "string" ? (
 						<div
 							className="[&_svg]:size-3.5"
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: icon is svg
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized SVG only
 							dangerouslySetInnerHTML={{
-								__html: icon,
+								__html: sanitizeSvgMarkup(icon),
 							}}
 						/>
 					) : (
