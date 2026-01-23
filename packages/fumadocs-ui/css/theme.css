@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+:root {
+	--radius: 0.125rem;
+	--fd-nav-height: 80px !important;
+	--fd-header-height: 80px !important;
+}
+
+@theme inline {
+	--radius-sm: var(--radius);
+	--radius-md: var(--radius);
+	--radius-lg: var(--radius);
+	--radius-xl: var(--radius);
+
+	--icon-external: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+	--icon-external-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
+}
+
+/* Override Fumadocs :has() selector that sets header height to 64px */
+#nd-notebook-layout,
+#nd-home-layout,
+#nd-docs-layout {
+	--fd-header-height: 80px !important;
+}
+
+/* Override search bar and keyboard shortcuts to use minimal radius */
+button[data-search-full],
+button[data-search],
+[data-search-full],
+[data-search],
+[data-card],
+.prose .rounded-xl,
+[data-radix-popper-content-wrapper] [role="dialog"],
+kbd {
+	border-radius: 0.125rem !important;
+}
+
+#nd-nav,
+#nd-subnav {
+	height: var(--fd-nav-height) !important;
+	z-index: 50;
+}
+
+#nd-nav nav,
+#nd-subnav nav,
+#nd-nav > div,
+#nd-subnav > div {
+	height: var(--fd-nav-height) !important;
+}
+
+/* Heading anchors: avoid underlines and keep icons aligned */
+[data-arkenv-heading] {
+	overflow: visible;
+}
+
+[data-arkenv-heading-link] {
+	text-decoration: none;
+	border-bottom: 0 !important;
+}
+
+[data-arkenv-heading-link]:hover {
+	border-bottom: 0 !important;
+}
+
+/* Icon floats to the left of the heading without taking space */
+[data-arkenv-heading-icon] {
+	position: absolute;
+	left: -1.5rem;
+}
+
+/* Link underlines in documentation */
+article
+a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+	[data-no-underline]
+),
+[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+		[class*="fd-"]
+	):not([data-no-underline]) {
+	text-decoration: none;
+	border-bottom: 2px solid currentColor;
+	padding-bottom: 1px;
+	transition: border-bottom-width 0.1s ease;
+}
+
+article
+	a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+		[data-no-underline]
+	):hover,
+[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+		[class*="fd-"]
+	):not([data-no-underline]):hover {
+	border-bottom-width: 3px;
+}
+
+/* External links in documentation */
+article
+a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
+	[data-no-arrow]
+):not(:has(img)),
+[data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(
+		:has(img)
+	) {
+	padding-right: 1.1em;
+	background-image: var(--icon-external);
+	background-repeat: no-repeat;
+	background-size: 0.9em;
+	background-position: center right;
+}
+
+.dark
+	article
+	a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
+		[data-no-arrow]
+	):not(:has(img)),
+.dark
+	[data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(
+		:has(img)
+	) {
+	background-image: var(--icon-external-dark);
+}
+
+/* Sidebar & Nav: External link icons using ::after for flex containers */
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	),
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	),
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
+	background-image: none !important;
+	padding-right: 0 !important;
+	display: inline-flex;
+	align-items: center;
+	gap: 0 !important;
+}
+
+/* Sidebar specifically needs full flex for better link hit-areas */
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
+	display: flex;
+}
+
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
+	content: "";
+	width: 0.9em;
+	height: 0.9em;
+	margin-left: 0.1em;
+	background-image: var(--icon-external);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	flex-shrink: 0;
+	opacity: 0.5;
+}
+
+.dark
+	[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
+	background-image: var(--icon-external-dark);
+}

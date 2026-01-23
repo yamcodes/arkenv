@@ -2,8 +2,8 @@
 
 const { spawn, execSync } = require("node:child_process");
 
-// Skip postinstall during tests - types aren't needed for running tests
-if (process.env.SKIP_POSTINSTALL === "true") {
+// Skip mdx types generation during tests - types aren't needed for running tests
+if (process.env.SKIP_MDX === "true") {
 	process.exit(0);
 }
 
@@ -32,16 +32,6 @@ try {
 } catch {
 	console.error("Error: pnpm is required but not found in PATH");
 	process.exit(1);
-}
-
-// Avoid running when @arkenv/fumadocs-ui is not built yet (e.g. fresh CI install)
-try {
-	require.resolve("@arkenv/fumadocs-ui/dist/utils/index.mjs");
-} catch {
-	console.warn(
-		"Skipping fumadocs-mdx: @arkenv/fumadocs-ui is not built (dist missing).",
-	);
-	process.exit(0);
 }
 
 // Spawn fumadocs-mdx with the appropriate NODE_OPTIONS

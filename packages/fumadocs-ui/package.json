@@ -1,0 +1,71 @@
+{
+	"name": "@arkenv/fumadocs-ui",
+	"version": "0.0.1",
+	"type": "module",
+	"exports": {
+		"./css/*": "./css/*",
+		"./mdx": {
+			"types": {
+				"import": "./dist/mdx/index.d.mts",
+				"require": "./dist/mdx/index.d.cts"
+			},
+			"import": "./dist/mdx/index.mjs",
+			"require": "./dist/mdx/index.cjs"
+		},
+		"./components": {
+			"types": {
+				"import": "./dist/components/index.d.mts",
+				"require": "./dist/components/index.d.cts"
+			},
+			"import": "./dist/components/index.mjs",
+			"require": "./dist/components/index.cjs"
+		},
+		"./utils": {
+			"types": {
+				"import": "./dist/utils/index.d.mts",
+				"require": "./dist/utils/index.d.cts"
+			},
+			"import": "./dist/utils/index.mjs",
+			"require": "./dist/utils/index.cjs"
+		}
+	},
+	"files": [
+		"css/*",
+		"dist/*"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"clean": "rimraf dist",
+		"typecheck": "tsc --noEmit",
+		"fix": "pnpm -w run fix"
+	},
+	"dependencies": {
+		"clsx": "2.1.1",
+		"tailwind-merge": "3.4.0"
+	},
+	"peerDependencies": {
+		"@fumadocs/ui": "16.4.7",
+		"fumadocs-core": "16.4.7",
+		"fumadocs-ui": "16.4.7",
+		"lucide-react": "0.562.0",
+		"react": "19.2.3",
+		"react-dom": "19.2.3",
+		"tailwindcss": "4.1.18"
+	},
+	"devDependencies": {
+		"@fumadocs/ui": "16.4.7",
+		"@types/mdx": "2.0.13",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"fumadocs-core": "16.4.7",
+		"fumadocs-ui": "16.4.7",
+		"lucide-react": "0.562.0",
+		"react": "19.2.3",
+		"react-dom": "19.2.3",
+		"rimraf": "catalog:",
+		"rollup-plugin-preserve-use-client": "^3.0.1",
+		"tailwindcss": "4.1.18",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	}
+}

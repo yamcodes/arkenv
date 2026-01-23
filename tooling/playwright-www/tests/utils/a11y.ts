@@ -58,18 +58,25 @@ export async function assertNoA11yViolations(
 ): Promise<void> {
 	const {
 		tags = ["wcag2a", "wcag2aa", "wcag21aa"],
-		exclude,
-		disableRules,
+		exclude = [],
+		disableRules = [],
 		allowedViolations = [],
 	} = options;
 
+	// Common selectors that cause known a11y issues but are out of our direct control
+	const defaultExclusions = [
+		"[data-rmiz]", // react-medium-image-zoom (Fumadocs) - aria-owns issues
+	];
+
+	const mergedExclusions = [...new Set([...exclude, ...defaultExclusions])];
+
 	let builder = new AxeBuilder({ page }).withTags(tags);
 
-	if (exclude && exclude.length > 0) {
-		builder = builder.exclude(exclude);
+	if (mergedExclusions.length > 0) {
+		builder = builder.exclude(mergedExclusions);
 	}
 
-	if (disableRules && disableRules.length > 0) {
+	if (disableRules.length > 0) {
 		builder = builder.disableRules(disableRules);
 	}
 
