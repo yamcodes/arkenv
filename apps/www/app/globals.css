@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@arkenv/fumadocs-ui/css";
+@import "@arkenv/fumadocs-ui/css/theme.css";
 @import "fumadocs-ui/css/ocean.css";
 @import "fumadocs-ui/css/preset.css";
 @import "./styles/theme/light.css";

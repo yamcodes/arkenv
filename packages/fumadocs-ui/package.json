@@ -6,6 +6,14 @@
     "./css/*": "./css/*",
     "./mdx": {
 			"types": {
+				"import": "./dist/mdx/index.d.mts",
+				"require": "./dist/mdx/index.d.cts"
+			},
+      "import": "./dist/mdx/index.mjs",
+			"require": "./dist/mdx/index.cjs"
+    },
+    "./components": {
+			"types": {
 				"import": "./dist/components/index.d.mts",
 				"require": "./dist/components/index.d.cts"
 			},
