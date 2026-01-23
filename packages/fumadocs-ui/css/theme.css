@@ -118,3 +118,73 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	) {
 	background-image: var(--icon-external-dark);
 }
+
+/* Sidebar & Nav: External link icons using ::after for flex containers */
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	),
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	),
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
+	background-image: none !important;
+	padding-right: 0 !important;
+	display: inline-flex;
+	align-items: center;
+	gap: 0 !important;
+}
+
+/* Sidebar specifically needs full flex for better link hit-areas */
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
+	display: flex;
+}
+
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
+	content: "";
+	width: 0.9em;
+	height: 0.9em;
+	margin-left: 0.1em;
+	background-image: var(--icon-external);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	flex-shrink: 0;
+	opacity: 0.5;
+}
+
+.dark
+	[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
+	background-image: var(--icon-external-dark);
+}
