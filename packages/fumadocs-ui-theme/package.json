@@ -1,0 +1,31 @@
+{
+	"name": "@arkenv/fumadocs-ui-theme",
+	"version": "0.0.1",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./mdx": "./src/mdx.tsx",
+		"./css": "./src/styles/theme.css"
+	},
+	"files": [
+		"src"
+	],
+	"dependencies": {
+		"clsx": "2.1.1",
+		"tailwind-merge": "3.4.0"
+	},
+	"peerDependencies": {
+		"fumadocs-ui": "16.4.7",
+		"fumadocs-core": "16.4.7",
+		"lucide-react": "0.562.0",
+		"react": "19.2.3",
+		"react-dom": "19.2.3",
+		"tailwindcss": "4.1.18"
+	},
+	"devDependencies": {
+		"typescript": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@types/mdx": "2.0.13"
+	}
+}

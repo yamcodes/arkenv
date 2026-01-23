@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "preserve",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"strict": true,
+		"esModuleInterop": true,
+		"moduleResolution": "bundler",
+		"skipLibCheck": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noEmit": true,
+		"resolveJsonModule": true,
+		"rootDir": "src",
+		"jsx": "react-jsx",
+		"allowImportingTsExtensions": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	},
+	"include": ["src"]
+}

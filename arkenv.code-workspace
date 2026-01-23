@@ -38,6 +38,10 @@
 			"name": "  @arkenv/bun-plugin"
 		},
 		{
+			"path": "packages/fumadocs-ui-theme",
+			"name": "  @arkenv/fumadocs-ui-theme"
+		},
+		{
 			"path": "packages/internal/types",
 			"name": "  @repo/types"
 		},

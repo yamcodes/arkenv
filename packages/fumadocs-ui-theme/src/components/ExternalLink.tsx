@@ -2,7 +2,7 @@
 
 import FumadocsLink from "fumadocs-core/link";
 import type { ComponentProps, FC } from "react";
-import { isExternalUrl } from "~/lib/utils/url";
+import { isExternalUrl } from "../utils/url";
 
 export interface ExternalLinkProps extends ComponentProps<typeof FumadocsLink> {
 	href?: string;
@@ -10,7 +10,7 @@ export interface ExternalLinkProps extends ComponentProps<typeof FumadocsLink> {
 
 /**
  * ExternalLink component that automatically adds an arrow icon to external links.
- * Wraps fumadocs Link component and adds arrow icon for external URLs.
+ * Wraps fumadocs Link component and adds data attributes for styling.
  */
 export const ExternalLink: FC<ExternalLinkProps> = ({
 	href,

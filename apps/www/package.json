@@ -14,6 +14,7 @@
 	},
 	"dependencies": {
 		"@ark/util": "0.56.0",
+		"@arkenv/fumadocs-ui-theme": "workspace:*",
 		"@arkenv/vite-plugin": "workspace:*",
 		"@fumadocs/mdx-remote": "1.4.4",
 		"@icons-pack/react-simple-icons": "13.8.0",
