@@ -14,15 +14,16 @@ const content = fs.readFileSync(mdxPath, "utf8");
 // which contains compilerOptions, extraFiles, etc.
 const options = arktypeTwoslashOptions.twoslashOptions;
 
-const codeBlockRegex = /```ts twoslash(?:.*)\n([\s\S]*?)\n```/g;
+const codeBlockRegex = /```(ts|js) twoslash(?:.*)\r?\n([\s\S]*?)\r?\n```/g;
 let blockIndex = 1;
 
 for (const match of content.matchAll(codeBlockRegex)) {
-	const code = match[1];
+	const lang = match[1] ?? "ts";
+	const code = match[2];
 	if (code === undefined) continue;
 	console.log(`\n--- Block ${blockIndex++} ---`);
 	try {
-		const result = twoslasher(code, "ts", options);
+		const result = twoslasher(code, lang, options);
 
 		console.log("Hovers:");
 		for (const h of result.hovers) {
