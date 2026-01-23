@@ -1,4 +1,4 @@
-# Proposal: externalize-fumadocs-theme
+# Proposal: publish-fumadocs-ui-theme
 
 This proposal outlines the externalization of Bedstack's Fumadocs UI refinements into a standalone package `@arkenv/fumadocs-ui-theme`.
 

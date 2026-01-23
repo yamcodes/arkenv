@@ -1,4 +1,4 @@
-# Tasks: externalize-fumadocs-theme
+# Tasks: publish-fumadocs-ui-theme
 
 ## 1. Scaffold Package
 - [ ] Create `packages/fumadocs-ui-theme/package.json` with appropriate peer dependencies.
@@ -26,4 +26,4 @@
 - [ ] Clean up redundant components/utils in `apps/www`.
 
 ## 6. Validation
-- [ ] Run `openspec validate externalize-fumadocs-theme --strict`.
+- [ ] Run `openspec validate publish-fumadocs-ui-theme --strict`.

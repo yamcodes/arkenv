@@ -1,4 +1,4 @@
-# Design: externalize-fumadocs-theme
+# Design: publish-fumadocs-ui-theme
 
 ## Architecture
 The `@arkenv/fumadocs-ui-theme` package will be a React component library optimized for [Fumadocs](https://fumadocs.dev).
