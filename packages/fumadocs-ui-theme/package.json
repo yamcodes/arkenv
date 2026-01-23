@@ -11,6 +11,10 @@
 			"types": "./dist/mdx.d.ts",
 			"import": "./dist/mdx.js"
 		},
+		"./utils": {
+			"types": "./dist/utils/index.d.ts",
+			"import": "./dist/utils/index.js"
+		},
 		"./utils/*": {
 			"types": "./dist/utils/*.d.ts",
 			"import": "./dist/utils/*.js"
@@ -22,7 +26,7 @@
 		"src/styles/theme.css"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+		"build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json -f",
 		"clean": "rimraf dist",
 		"typecheck": "tsc --noEmit"
 	},
