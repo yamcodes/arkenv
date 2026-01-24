@@ -59,6 +59,7 @@ jobs:
         if: steps.budget.outputs.should_deploy == 'true'
         id: deploy
         run: |
+          set -o pipefail
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }} | tail -n 1)
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
       - name: Generate GitHub App Token
