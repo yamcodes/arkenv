@@ -67,5 +67,8 @@
 		"tailwindcss": "4.1.18",
 		"tsdown": "catalog:",
 		"typescript": "catalog:"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
