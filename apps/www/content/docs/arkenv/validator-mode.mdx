@@ -32,12 +32,11 @@ ArkEnv runs validation through [ArkType](https://arktype.io) and expects it to b
 
 ```ts twoslash
 import arkenv from 'arkenv';
-import { type } from 'arkenv/arktype';
 import { z } from 'zod';
 
 const env = arkenv({
   PORT: "number.port",
-  NODE_ENV: type("'development' | 'production'"),
+  NODE_ENV: "'development' | 'production'",
   DATABASE_URL: z.string().url(),
 });
 ```
