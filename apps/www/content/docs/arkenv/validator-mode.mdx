@@ -37,7 +37,7 @@ import { z } from 'zod';
 const env = arkenv({
   PORT: "number.port",
   NODE_ENV: "'development' | 'production'",
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.url(),
 });
 ```
 
@@ -67,7 +67,7 @@ import { z } from 'zod';
 const env = arkenv(
   {
     PORT: z.coerce.number().int().min(0).max(65535),
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
   },
   { validator: "standard" }
 );

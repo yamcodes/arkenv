@@ -102,7 +102,7 @@ In `validator: "standard"` mode:
 arkenv(
   {
     PORT: z.number(),
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
   },
   { validator: "standard" }
 )

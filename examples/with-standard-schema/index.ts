@@ -4,7 +4,7 @@ import * as z from "zod";
 const env = arkenv(
 	{
 		// Zod validators (great for complex validation and transformations)
-		DATABASE_URL: z.string().url(),
+		DATABASE_URL: z.url(),
 		API_KEY: z
 			.string()
 			.min(32)
@@ -18,7 +18,7 @@ const env = arkenv(
 		ALLOWED_ORIGINS: z
 			.string()
 			.transform((str: string) => str.split(","))
-			.pipe(z.array(z.string().url())),
+			.pipe(z.array(z.url())),
 
 		NODE_ENV: z
 			.enum(["development", "production", "test"])
