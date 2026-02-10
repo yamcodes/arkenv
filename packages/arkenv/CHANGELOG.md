@@ -1,5 +1,13 @@
 # ArkEnv
 
+## 0.9.3
+
+### Patch Changes
+
+- #### Fix inline schema autocompletion _[`#797`](https://github.com/yamcodes/arkenv/pull/797) [`8f1b0dd`](https://github.com/yamcodes/arkenv/commit/8f1b0dd1c10773da60ea12362f162136c23ddac0) [@yamcodes](https://github.com/yamcodes)_
+
+  Fixed a regression where editor autocompletion for ArkType DSL strings (e.g. `"string"`, `"number.port"`) stopped working when using `arkenv()` with an inline schema object. The `createEnv` overloads are now narrowed by `validator` config type, making them mutually exclusive and order-independent.
+
 ## 0.9.2
 
 ### Patch Changes

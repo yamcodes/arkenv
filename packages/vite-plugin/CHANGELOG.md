@@ -1,5 +1,21 @@
 # @arkenv/vite-plugin
 
+## 0.0.30
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`8f1b0dd`](https://github.com/yamcodes/arkenv/commit/8f1b0dd1c10773da60ea12362f162136c23ddac0)
+
+</small>
+
+- `arkenv@0.9.3`
+
+</details>
+
 ## 0.0.29
 
 ### Patch Changes
