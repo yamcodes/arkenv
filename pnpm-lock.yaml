@@ -235,7 +235,7 @@ importers:
         version: link:../../../packages/vite-plugin
       '@solidjs/start':
         specifier: 1.2.1
-        version: 1.2.1(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vinxi@0.5.11(@types/node@25.0.10)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.31.1)(rolldown@1.0.0-rc.1)(terser@5.46.0)(tsx@4.21.0))(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
+        version: 1.2.1(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vinxi@0.5.11(@types/node@25.0.10)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.31.1)(rolldown@1.0.0-rc.1)(terser@5.46.0)(tsx@4.21.0))(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
       arkenv:
         specifier: workspace:*
         version: link:../../../packages/arkenv
@@ -243,8 +243,8 @@ importers:
         specifier: 'catalog:'
         version: 2.1.29
       solid-js:
-        specifier: 1.9.10
-        version: 1.9.10
+        specifier: 1.9.11
+        version: 1.9.11
       vinxi:
         specifier: 0.5.11
         version: 0.5.11(@types/node@25.0.10)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.31.1)(rolldown@1.0.0-rc.1)(terser@5.46.0)(tsx@4.21.0)
@@ -7653,24 +7653,24 @@ packages:
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
-  seroval-plugins@1.3.3:
-    resolution: {integrity: sha512-16OL3NnUBw8JG1jBLUoZJsLnQq0n5Ua6aHalhJK4fMQkz1lqR7Osz1sA30trBtd9VUDc2NgkuRCn8+/pBwqZ+w==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      seroval: ^1.0
-
   seroval-plugins@1.4.2:
     resolution: {integrity: sha512-X7p4MEDTi+60o2sXZ4bnDBhgsUYDSkQEvzYZuJyFqWg9jcoPsHts5nrg5O956py2wyt28lUrBxk0M0/wU8URpA==}
     engines: {node: '>=10'}
     peerDependencies:
       seroval: ^1.0
 
-  seroval@1.3.2:
-    resolution: {integrity: sha512-RbcPH1n5cfwKrru7v7+zrZvjLurgHhGyso3HTyGtRivGWgYjbOmGuivCQaORNELjNONoK35nj28EoWul9sb1zQ==}
+  seroval-plugins@1.5.0:
+    resolution: {integrity: sha512-EAHqADIQondwRZIdeW2I636zgsODzoBDwb3PT/+7TLDWyw1Dy/Xv7iGUIEXXav7usHDE9HVhOU61irI3EnyyHA==}
     engines: {node: '>=10'}
+    peerDependencies:
+      seroval: ^1.0
 
   seroval@1.4.2:
     resolution: {integrity: sha512-N3HEHRCZYn3cQbsC4B5ldj9j+tHdf4JZoYPlcI4rRYu0Xy4qN8MQf1Z08EibzB0WpgRG5BGK08FTrmM66eSzKQ==}
+    engines: {node: '>=10'}
+
+  seroval@1.5.0:
+    resolution: {integrity: sha512-OE4cvmJ1uSPrKorFIH9/w/Qwuvi/IMcGbv5RKgcJ/zjA/IohDLU6SVaxFN9FwajbP7nsX0dQqMDes1whk3y+yw==}
     engines: {node: '>=10'}
 
   serve-placeholder@2.0.2:
@@ -7750,8 +7750,8 @@ packages:
   smob@1.5.0:
     resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
 
-  solid-js@1.9.10:
-    resolution: {integrity: sha512-Coz956cos/EPDlhs6+jsdTxKuJDPT7B5SVIWgABwROyxjY7Xbr8wkzD68Et+NxnV7DLJ3nJdAC2r9InuV/4Jew==}
+  solid-js@1.9.11:
+    resolution: {integrity: sha512-WEJtcc5mkh/BnHA6Yrg4whlF8g6QwpmXXRg4P2ztPmcKeHHlH4+djYecBLhSpecZY2RRECXYUwIc/C2r3yzQ4Q==}
 
   solid-refresh@0.6.3:
     resolution: {integrity: sha512-F3aPsX6hVw9ttm5LYlth8Q15x6MlI/J3Dn+o3EQyRTtTxidepSTwAYdozt01/YA+7ObcciagGEyXIopGZzQtbA==}
@@ -12310,7 +12310,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@solidjs/start@1.2.1(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vinxi@0.5.11(@types/node@25.0.10)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.31.1)(rolldown@1.0.0-rc.1)(terser@5.46.0)(tsx@4.21.0))(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))':
+  '@solidjs/start@1.2.1(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vinxi@0.5.11(@types/node@25.0.10)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.31.1)(rolldown@1.0.0-rc.1)(terser@5.46.0)(tsx@4.21.0))(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))':
     dependencies:
       '@tanstack/server-functions-plugin': 1.121.21(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
       '@vinxi/plugin-directives': 0.5.1(vinxi@0.5.11(@types/node@25.0.10)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.31.1)(rolldown@1.0.0-rc.1)(terser@5.46.0)(tsx@4.21.0))
@@ -12324,10 +12324,10 @@ snapshots:
       seroval-plugins: 1.4.2(seroval@1.4.2)
       shiki: 1.29.2
       source-map-js: 1.2.1
-      terracotta: 1.1.0(solid-js@1.9.10)
+      terracotta: 1.1.0(solid-js@1.9.11)
       tinyglobby: 0.2.15
       vinxi: 0.5.11(@types/node@25.0.10)(@vercel/blob@0.27.3)(db0@0.3.4)(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.31.1)(rolldown@1.0.0-rc.1)(terser@5.46.0)(tsx@4.21.0)
-      vite-plugin-solid: 2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
+      vite-plugin-solid: 2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
     transitivePeerDependencies:
       - '@testing-library/jest-dom'
       - solid-js
@@ -12788,6 +12788,14 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
+  '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))':
+    dependencies:
+      '@vitest/spy': 4.0.17
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0)
+
   '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))':
     dependencies:
       '@vitest/spy': 4.0.17
@@ -13111,12 +13119,12 @@ snapshots:
       html-entities: 2.3.3
       parse5: 7.3.0
 
-  babel-preset-solid@1.9.10(@babel/core@7.28.6)(solid-js@1.9.10):
+  babel-preset-solid@1.9.10(@babel/core@7.28.6)(solid-js@1.9.11):
     dependencies:
       '@babel/core': 7.28.6
       babel-plugin-jsx-dom-expressions: 0.40.3(@babel/core@7.28.6)
     optionalDependencies:
-      solid-js: 1.9.10
+      solid-js: 1.9.11
 
   bail@2.0.2: {}
 
@@ -16535,17 +16543,17 @@ snapshots:
     dependencies:
       randombytes: 2.1.0
 
-  seroval-plugins@1.3.3(seroval@1.3.2):
-    dependencies:
-      seroval: 1.3.2
-
   seroval-plugins@1.4.2(seroval@1.4.2):
     dependencies:
       seroval: 1.4.2
 
-  seroval@1.3.2: {}
+  seroval-plugins@1.5.0(seroval@1.5.0):
+    dependencies:
+      seroval: 1.5.0
 
   seroval@1.4.2: {}
+
+  seroval@1.5.0: {}
 
   serve-placeholder@2.0.2:
     dependencies:
@@ -16665,24 +16673,24 @@ snapshots:
 
   smob@1.5.0: {}
 
-  solid-js@1.9.10:
+  solid-js@1.9.11:
     dependencies:
       csstype: 3.2.3
-      seroval: 1.3.2
-      seroval-plugins: 1.3.3(seroval@1.3.2)
+      seroval: 1.5.0
+      seroval-plugins: 1.5.0(seroval@1.5.0)
 
-  solid-refresh@0.6.3(solid-js@1.9.10):
+  solid-refresh@0.6.3(solid-js@1.9.11):
     dependencies:
       '@babel/generator': 7.28.6
       '@babel/helper-module-imports': 7.28.6
       '@babel/types': 7.28.6
-      solid-js: 1.9.10
+      solid-js: 1.9.11
     transitivePeerDependencies:
       - supports-color
 
-  solid-use@0.9.1(solid-js@1.9.10):
+  solid-use@0.9.1(solid-js@1.9.11):
     dependencies:
-      solid-js: 1.9.10
+      solid-js: 1.9.11
 
   source-map-js@1.2.1: {}
 
@@ -16858,10 +16866,10 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terracotta@1.1.0(solid-js@1.9.10):
+  terracotta@1.1.0(solid-js@1.9.11):
     dependencies:
-      solid-js: 1.9.10
-      solid-use: 0.9.1(solid-js@1.9.10)
+      solid-js: 1.9.11
+      solid-use: 0.9.1(solid-js@1.9.11)
 
   terser-webpack-plugin@5.3.16(esbuild@0.27.2)(webpack@5.104.1(esbuild@0.27.2)):
     dependencies:
@@ -17326,14 +17334,14 @@ snapshots:
       - xml2js
       - yaml
 
-  vite-plugin-solid@2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0)):
+  vite-plugin-solid@2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0)):
     dependencies:
       '@babel/core': 7.28.6
       '@types/babel__core': 7.20.5
-      babel-preset-solid: 1.9.10(@babel/core@7.28.6)(solid-js@1.9.10)
+      babel-preset-solid: 1.9.10(@babel/core@7.28.6)(solid-js@1.9.11)
       merge-anything: 5.1.7
-      solid-js: 1.9.10
-      solid-refresh: 0.6.3(solid-js@1.9.10)
+      solid-js: 1.9.11
+      solid-refresh: 0.6.3(solid-js@1.9.11)
       vite: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0)
       vitefu: 1.1.1(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
     optionalDependencies:
@@ -17418,7 +17426,7 @@ snapshots:
   vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@24.10.9)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@27.4.0(@noble/hashes@1.8.0))(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0):
     dependencies:
       '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
+      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0))
       '@vitest/pretty-format': 4.0.17
       '@vitest/runner': 4.0.17
       '@vitest/snapshot': 4.0.17
