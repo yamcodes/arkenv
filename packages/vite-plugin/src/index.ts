@@ -86,8 +86,8 @@ export default function arkenv<const T extends SchemaShape>(
 
 			// Load environment based on the custom config
 			const envDir = config.envDir ?? config.root ?? process.cwd();
-			// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
-			// The union type can't match the overloads directly
+			// Type assertion needed on `options` to avoid TS2589 (excessively deep type instantiation)
+			// from ArkType's generic inference on the union type
 			const env: SchemaShape = createEnv(options as any, {
 				...arkenvConfig,
 				env: arkenvConfig?.env ?? loadEnv(mode, envDir, ""),
