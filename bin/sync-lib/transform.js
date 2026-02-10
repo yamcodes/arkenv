@@ -62,7 +62,7 @@ export function transformPackageJson(pkg, exampleConfig, catalog) {
 	if (exampleConfig.packageManager) {
 		// Get latest stable version for each package manager
 		const packageManagers = {
-			npm: "npm@11.6.4",
+			npm: "npm@11.9.0",
 			pnpm: "pnpm@10.23.0",
 		};
 
