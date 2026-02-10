@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="IssueNavigationConfiguration">
+    <option name="links">
+      <list>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/yamcodes/arkenv/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/yamcodes/arkenv/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/yamcodes/arkenv/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/danciudev/arkenv/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/danciudev/arkenv/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/danciudev/arkenv/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/arktypeio/arktype/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/arktypeio/arktype/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/arktypeio/arktype/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="([^/\n\s]+/[^#\n\s]+)#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/$1/issues/$2" />
+        </IssueNavigationLink>
+      </list>
+    </option>
+  </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/arktype" vcs="Git" />
