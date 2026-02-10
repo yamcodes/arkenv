@@ -37,7 +37,7 @@ import arkenv from '@arkenv/vite-plugin'
 export default defineConfig({
   plugins: [
     arkenv({
-      VITE_API_URL: z.string().url()
+      VITE_API_URL: z.url()
     }, {
       validator: 'standard'
     })

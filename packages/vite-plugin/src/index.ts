@@ -54,7 +54,7 @@ export type { ImportMetaEnvAugmented } from "./types";
  * export default defineConfig({
  *   plugins: [
  *     arkenv({
- *       VITE_API_URL: z.string().url(),
+ *       VITE_API_URL: z.url(),
  *       VITE_API_KEY: z.string().min(1),
  *     }, {
  *       validator: 'standard'

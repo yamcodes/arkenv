@@ -38,7 +38,7 @@ export const env = arkenv({
   NODE_ENV: "'development' | 'production' | 'test'",
   
   // Standard Schema (Zod)
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.url(),
   API_KEY: z.string().min(32),
 });
 ```
@@ -63,7 +63,7 @@ import { z } from 'zod';
 export const env = arkenv(
   {
     PORT: z.coerce.number().int().min(0).max(65535),
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
     DEBUG: z.coerce.boolean().default(false),
   },
   { validator: "standard" }

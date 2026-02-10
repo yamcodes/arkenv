@@ -22,7 +22,7 @@ import arkenv from '@arkenv/bun-plugin'
 Bun.build({
   plugins: [
     arkenv({
-      BUN_PUBLIC_API_URL: z.string().url(),
+      BUN_PUBLIC_API_URL: z.url(),
       BUN_PUBLIC_DEBUG: z.boolean()
     }, {
       validator: 'standard'

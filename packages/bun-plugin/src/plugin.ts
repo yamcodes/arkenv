@@ -49,7 +49,7 @@ import { processEnvSchema, registerLoader } from "./utils";
  * Bun.build({
  *   plugins: [
  *     arkenv({
- *       BUN_PUBLIC_API_URL: z.string().url(),
+ *       BUN_PUBLIC_API_URL: z.url(),
  *     }, {
  *       validator: 'standard'
  *     }),

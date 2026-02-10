@@ -30,7 +30,7 @@
 
   arkenv(
     {
-      BUN_PUBLIC_API_URL: z.string().url(),
+      BUN_PUBLIC_API_URL: z.url(),
     },
     {
       validator: "standard",
