@@ -10,8 +10,8 @@ export function processEnvSchema<T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
 	config?: ArkEnvConfig,
 ): Map<string, string> {
-	// Use type assertion because options could be either EnvSchema<T> or CompiledEnvSchema
-	// The union type can't match the overloads directly
+	// Type assertion needed on `options` to avoid TS2589 (excessively deep type instantiation)
+	// from ArkType's generic inference on the union type
 	const env: SchemaShape = createEnv(options as any, {
 		...config,
 		env: config?.env ?? process.env,
