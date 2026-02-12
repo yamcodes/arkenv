@@ -96,9 +96,7 @@ console.log(typeof arkenv);`,
 		} catch (e) {
 			const error = e as { stdout?: string; stderr?: string; message: string };
 			const message = error.stderr || error.stdout || error.message;
-			throw new Error(
-				`Browser bundle failed (issue #791): ${message}`,
-			);
+			throw new Error(`Browser bundle failed (issue #791): ${message}`);
 		} finally {
 			// Cleanup
 			if (existsSync(tempDir)) {
