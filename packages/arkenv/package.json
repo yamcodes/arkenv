@@ -3,6 +3,9 @@
 	"type": "module",
 	"version": "0.9.3",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
+	"browser": {
+		"node:module": false
+	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
