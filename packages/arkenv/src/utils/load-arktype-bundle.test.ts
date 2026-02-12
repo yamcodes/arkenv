@@ -63,4 +63,47 @@ try {
 			}
 		}
 	});
+
+	it("should bundle for browser without resolving node:module (issue #791)", () => {
+		const tempDir = mkdtempSync(
+			join(tmpdir(), `arkenv-bundle-test-${randomUUID()}`),
+		);
+
+		const testFile = join(tempDir, "test.ts");
+		const outFile = join(tempDir, "test.js");
+
+		// Find the package root (arkenv/packages/arkenv)
+		const projectRoot = process.cwd().includes("packages/arkenv")
+			? process.cwd()
+			: join(process.cwd(), "packages/arkenv");
+
+		const arkenvDistPath = join(projectRoot, "dist/index.mjs");
+		const esbuildPath = join(projectRoot, "../../node_modules/.bin/esbuild");
+
+		// Create a small script that imports arkenv
+		writeFileSync(
+			testFile,
+			`import arkenv from ${JSON.stringify(arkenvDistPath)};
+console.log(typeof arkenv);`,
+		);
+
+		try {
+			// Bundle with esbuild targeting browser platform
+			execSync(
+				`${esbuildPath} ${testFile} --bundle --format=esm --platform=browser --outfile=${outFile}`,
+				{ cwd: projectRoot, stdio: "pipe", encoding: "utf8" },
+			);
+		} catch (e) {
+			const error = e as { stdout?: string; stderr?: string; message: string };
+			const message = error.stderr || error.stdout || error.message;
+			throw new Error(
+				`Browser bundle failed (issue #791): ${message}`,
+			);
+		} finally {
+			// Cleanup
+			if (existsSync(tempDir)) {
+				rmSync(tempDir, { recursive: true, force: true });
+			}
+		}
+	});
 });
