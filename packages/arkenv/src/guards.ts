@@ -48,7 +48,9 @@ export function assertStandardSchema(key: string, value: unknown): void {
  * Throws if `def` is not a plain object (i.e. not a valid schema map).
  * @internal
  */
-export function assertStandardSchemaMap(def: unknown): asserts def is Record<string, unknown> {
+export function assertStandardSchemaMap(
+	def: unknown,
+): asserts def is Record<string, unknown> {
 	if (!def || typeof def !== "object" || Array.isArray(def)) {
 		throw new ArkEnvError([
 			{

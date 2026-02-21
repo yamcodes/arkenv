@@ -59,9 +59,7 @@ export const formatArkErrors = (errors: ArkErrors): string => {
 		.join("\n");
 };
 
-export const formatInternalErrors = (
-	errors: ValidationIssue[],
-): string =>
+export const formatInternalErrors = (errors: ValidationIssue[]): string =>
 	errors
 		.map(
 			(error) =>

@@ -90,6 +90,24 @@
 				"arktype",
 				"node:module"
 			]
+		},
+		{
+			"path": "dist/standard.mjs",
+			"limit": "3 kB",
+			"import": "*",
+			"ignore": [
+				"arktype",
+				"node:module"
+			]
+		},
+		{
+			"path": "dist/core.mjs",
+			"limit": "3 kB",
+			"import": "*",
+			"ignore": [
+				"arktype",
+				"node:module"
+			]
 		}
 	]
 }

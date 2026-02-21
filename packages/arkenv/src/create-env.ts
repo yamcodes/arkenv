@@ -9,7 +9,11 @@ import type {
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 import { ArkEnvError } from "./errors";
-import { assertNotArkTypeDsl, assertStandardSchema, assertStandardSchemaMap } from "./guards";
+import {
+	assertNotArkTypeDsl,
+	assertStandardSchema,
+	assertStandardSchemaMap,
+} from "./guards";
 import { parseStandard } from "./parse-standard";
 
 /**
