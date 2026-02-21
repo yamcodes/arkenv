@@ -28,10 +28,12 @@ The current main entry (`src/index.ts`) does not statically import ArkType; it u
 
 ### Decision 2: `arkenv/standard` gets its own `createEnv`, not a re-export from `create-env.ts`
 
-`create-env.ts` contains ArkType dispatch logic and imports `loadArkTypeValidator`. Even though the standard-mode branch never calls the loader, bundlers following the module graph may include it. A dedicated `src/standard.ts` gives an unambiguous, clean module root.
+`create-env.ts` contains ArkType dispatch logic and, after Decision 5's cleanup, will statically import from `./arktype/index.ts`. A dedicated `src/standard.ts` gives `arkenv/standard` an unambiguous, ArkType-free module root with no dependency on `create-env.ts` whatsoever.
 
-- **Rationale:** Guaranteed disjoint module graph without relying on tree-shaking behavior of individual bundlers.
-- **Trade-off:** The standard-mode runtime guards (string-DSL check, `~standard` check) must live in `src/standard.ts`. This is reorganization, not duplication of validation logic; the behavior is identical.
+The runtime guards (string-DSL check, `~standard` check) that currently live in `create-env.ts`'s standard branch are extracted into a new internal-only module, `src/guards.ts`. Both `src/standard.ts` and `create-env.ts` import from it. There is no duplication.
+
+- **Rationale:** Guaranteed disjoint module graph without relying on tree-shaking behavior of individual bundlers. Single source of truth for the guard logic.
+- `src/guards.ts` is internal and not exposed as a public entry point.
 
 ### Decision 3: `arkenv/core` is a thin re-export barrel
 
@@ -46,14 +48,26 @@ The `./arktype` entry was the only place `type` and `parse` were exposed. `type`
 
 - **Migration:** Only `type` is relevant to end users. `parse` was always `@internal` (see JSDoc). No public API surface is lost beyond the sub-path rename.
 
-### Decision 5: `loadArkTypeValidator` lazy loader is kept unchanged
+### Decision 5: `loadArkTypeValidator` lazy loader is removed in this PR
 
-Even though the main entry now statically imports ArkType, `create-env.ts` still uses `loadArkTypeValidator()` internally. This is fine: the task does not require changing validation logic. The lazy loader will still run and will succeed because ArkType is statically available. A future cleanup can remove it.
+The lazy loader (`src/utils/load-arktype.ts`) was necessary when the main entry needed to avoid a static ArkType import. Decision 1 makes the main entry explicitly ArkType-dependent, so the loader serves no isolation purpose. Keeping it means `create-env.ts` pays a dynamic-require cost and a fallback-path search at every call, for zero benefit.
+
+`create-env.ts` is updated to import `parse` directly from `./arktype/index.ts` (static). `load-arktype.ts` is deleted. Tests that mock the loader (`isolation.test.ts`) are updated accordingly as part of task 4.
+
+- **Rationale:** Dead code should not be committed. The loader was tied to the old architecture; removing it closes that chapter cleanly rather than leaving the next contributor to wonder why it exists.
+
+### Decision 6: Single validation implementation — ArkType entry is a thin transformation layer
+
+The main entry's `createEnv` MUST NOT contain ArkType-specific validation logic. Its only ArkType-specific step is calling `type()` (via `$.type.raw()`) on the user's definition to produce a compiled schema. All subsequent validation — `onUndeclaredKey`, coercion, error collection — is handled by `parse` in `src/arktype/index.ts`. `create-env.ts` delegates unconditionally; it has no inline ArkType logic of its own.
+
+This mirrors the standard path: `create-env.ts` (via `src/standard.ts`) delegates to `parseStandard`. There is exactly one validation implementation per mode, and neither lives in the entry-point file.
+
+This invariant is stated explicitly to prevent future "helpful" additions of ArkType-specific logic directly into `createEnv`. If ArkType-specific behavior is needed, it belongs in `src/arktype/index.ts#parse`, not in `create-env.ts`. The invariant is also surfaced in `ARCHITECTURE.md`.
 
 ## Risks / Trade-offs
 
 - **Breaking change** — removing `./arktype`. Mitigated by clear migration path (`type` → `arkenv` main).
-- **Guard duplication** — `src/standard.ts` repeats guards from `create-env.ts`. Acceptable: it is a reorganization, and the guards are the authority for the standard-mode `createEnv` surface. If guards need changing later, they change in `src/standard.ts` (authoritative for the standard entry) and in `create-env.ts` (authoritative for the main entry's standard branch). They can be deduplicated in a future refactor.
+- **Isolation test churn** — `isolation.test.ts` mocks `load-arktype.ts` which is deleted. Those tests are updated in task 4; the underlying isolation guarantee is now structural (the standard entry has no loader reference) rather than mock-dependent.
 - **Size limit** — the main entry will now include ArkType statically. ArkType is already declared as `external` in `tsdown.config.ts`, so it is excluded from the size measurement. No size-limit impact.
 
 ## Open Questions
