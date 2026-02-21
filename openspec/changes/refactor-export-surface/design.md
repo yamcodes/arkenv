@@ -71,5 +71,3 @@ This invariant is stated explicitly to prevent future "helpful" additions of Ark
 - **Size limit** — the main entry will now include ArkType statically. ArkType is already declared as `external` in `tsdown.config.ts`, so it is excluded from the size measurement. No size-limit impact.
 
 ## Open Questions
-
-- Should the `size-limit` config be updated to also measure `dist/standard.mjs` and `dist/core.mjs`? This is worth doing but is out of scope for this reorganization.
