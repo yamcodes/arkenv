@@ -53,9 +53,9 @@ export const calculateDiff = (
 	}
 
 	const diff = ((current - baseline) / baseline) * 100;
-	// Show " - " for very small changes (< 0.1%) that aren't exactly equal
+	// Show "<0.1%" for measurable but sub-0.1% changes (distinct from the "no data" sentinel)
 	if (Math.abs(diff) < 0.1) {
-		return " - ";
+		return "<0.1%";
 	}
 	const sign = diff > 0 ? "+" : "";
 	return `${sign}${diff.toFixed(1)}%`;

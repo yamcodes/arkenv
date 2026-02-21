@@ -2,7 +2,22 @@ import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError, type ValidationIssue } from "./errors";
 
 export type ParseStandardConfig = {
+	/**
+	 * The environment variables to parse. Defaults to `process.env`
+	 */
 	env?: Record<string, string | undefined>;
+	/**
+	 * Control how ArkEnv handles environment variables that are not defined in your schema.
+	 *
+	 * Defaults to `'delete'` to ensure your output object only contains
+	 * keys you've explicitly declared.
+	 *
+	 * - `delete` (ArkEnv default): Undeclared keys are allowed on input but stripped from the output.
+	 * - `ignore`: Undeclared keys are allowed and preserved in the output.
+	 * - `reject`: Undeclared keys will cause validation to fail.
+	 *
+	 * @default "delete"
+	 */
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
 };
 
@@ -55,7 +70,9 @@ export function parseStandard(
 					issue.path && issue.path.length > 0
 						? `${key}.${issue.path
 								.map((segment) =>
-									typeof segment === "object" && "key" in segment
+									segment !== null &&
+									typeof segment === "object" &&
+									"key" in segment
 										? String(segment.key)
 										: String(segment),
 								)

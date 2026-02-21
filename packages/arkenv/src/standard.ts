@@ -4,30 +4,12 @@ import {
 	assertStandardSchema,
 	assertStandardSchemaMap,
 } from "./guards";
-import { parseStandard } from "./parse-standard";
+import { type ParseStandardConfig, parseStandard } from "./parse-standard";
 
 /**
  * Configuration options for the `arkenv/standard` entry's `createEnv`.
  */
-export type StandardEnvConfig = {
-	/**
-	 * The environment variables to parse. Defaults to `process.env`
-	 */
-	env?: Record<string, string | undefined>;
-	/**
-	 * Control how ArkEnv handles environment variables that are not defined in your schema.
-	 *
-	 * Defaults to `'delete'` to ensure your output object only contains
-	 * keys you've explicitly declared.
-	 *
-	 * - `delete` (ArkEnv default): Undeclared keys are allowed on input but stripped from the output.
-	 * - `ignore`: Undeclared keys are allowed and preserved in the output.
-	 * - `reject`: Undeclared keys will cause validation to fail.
-	 *
-	 * @default "delete"
-	 */
-	onUndeclaredKey?: "ignore" | "delete" | "reject";
-};
+export type StandardEnvConfig = ParseStandardConfig;
 
 /**
  * Parse and validate environment variables using Standard Schema 1.0 validators (e.g. Zod, Valibot).

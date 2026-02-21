@@ -70,4 +70,3 @@ This invariant is stated explicitly to prevent future "helpful" additions of Ark
 - **Isolation test churn** - `isolation.test.ts` mocks `load-arktype.ts` which is deleted. Those tests are updated in task 4; the underlying isolation guarantee is now structural (the standard entry has no loader reference) rather than mock-dependent.
 - **Size limit** - the main entry will now include ArkType statically. ArkType is already declared as `external` in `tsdown.config.ts`, so it is excluded from the size measurement. No size-limit impact.
 
-## Open Questions
