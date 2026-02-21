@@ -129,5 +129,6 @@ export function createEnv<const T extends SchemaShape>(
 		return parseStandard(def as Record<string, unknown>, config);
 	}
 
-	return parse(def, config);
+	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
+	return parse(def as any, config);
 }
