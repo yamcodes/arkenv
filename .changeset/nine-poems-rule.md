@@ -3,15 +3,34 @@
 "@arkenv/vite-plugin": patch
 ---
 
-#### Refactor export surface into three tiers
+#### Use Zod or Valibot without ArkType
 
 `arkenv` now ships three dedicated entry points:
 
 - **`arkenv`** (main): ArkType-first. Includes `createEnv`, `type`, and `ArkEnvError`. The `type` helper, previously at `arkenv/arktype`, has moved here.
 - **`arkenv/standard`**: ArkType-free. A standalone `createEnv` for Standard Schema validators (Zod, Valibot, etc.) with zero ArkType in the bundle.
-- **`arkenv/core`**: Mode-agnostic primitives - `ArkEnvError` and `ValidationIssue`.
+- **`arkenv/core`**: Mode-agnostic primitives — `ArkEnvError` and `ValidationIssue`.
 
-The `arkenv/arktype` sub-path has been removed. Update imports:
+**For Standard Schema users** (Zod, Valibot, etc.), import from the dedicated entry instead of passing `validator: "standard"`:
+
+```ts
+// ❌ Before
+import { createEnv } from "arkenv";
+import { z } from "zod";
+
+const env = createEnv(
+  { PORT: z.coerce.number() },
+  { validator: "standard" },
+);
+
+// ✅ After
+import { createEnv } from "arkenv/standard";
+import { z } from "zod";
+
+const env = createEnv({ PORT: z.coerce.number() });
+```
+
+**For `arkenv/arktype` users**, the `type` helper has moved to the main entry:
 
 ```ts
 // ❌ Before
