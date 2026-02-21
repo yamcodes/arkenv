@@ -3,7 +3,7 @@
 "@arkenv/vite-plugin": patch
 ---
 
-#### Use Zod or Valibot without ArkType
+#### Add `arkenv/standard` import for non-ArkType consumers
 
 `arkenv` now ships three dedicated entry points:
 
