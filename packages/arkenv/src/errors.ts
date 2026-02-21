@@ -2,7 +2,7 @@ import type { ArkErrors } from "arktype";
 import { indent } from "./utils/indent.ts";
 import { styleText } from "./utils/style-text.ts";
 
-export type InternalValidationError = {
+export type ValidationIssue = {
 	path: string;
 	message: string;
 };
@@ -60,7 +60,7 @@ export const formatArkErrors = (errors: ArkErrors): string => {
 };
 
 export const formatInternalErrors = (
-	errors: InternalValidationError[],
+	errors: ValidationIssue[],
 ): string =>
 	errors
 		.map(
@@ -93,13 +93,13 @@ export const formatInternalErrors = (
  */
 export class ArkEnvError extends Error {
 	constructor(
-		errors: ArkErrors | InternalValidationError[],
+		errors: ArkErrors | ValidationIssue[],
 		message = "Errors found while validating environment variables",
 	) {
 		// ArkType errors subclass Array, so we must check for ArkErrors specifically first
 		const formattedErrors = isArkErrors(errors)
 			? formatArkErrors(errors)
-			: formatInternalErrors(errors as InternalValidationError[]);
+			: formatInternalErrors(errors as ValidationIssue[]);
 
 		super(`${styleText("red", message)}\n${indent(formattedErrors)}\n`);
 		this.name = "ArkEnvError";

@@ -17,16 +17,44 @@ export function assertNotArkTypeDsl(key: string, value: unknown): void {
 }
 
 /**
- * Throws if the given value does not have a `~standard` property (i.e. is not a Standard Schema validator).
+ * Throws if the given value is not a well-formed Standard Schema validator
+ * (must have a `~standard` property whose `validate` field is a function).
  * @internal
  */
 export function assertStandardSchema(key: string, value: unknown): void {
-	if (!value || typeof value !== "object" || !("~standard" in value)) {
+	const std =
+		value &&
+		typeof value === "object" &&
+		"~standard" in value &&
+		(value as Record<string, unknown>)["~standard"];
+
+	if (
+		!std ||
+		typeof std !== "object" ||
+		!("validate" in std) ||
+		typeof (std as Record<string, unknown>).validate !== "function"
+	) {
 		throw new ArkEnvError([
 			{
 				path: key,
 				message:
 					'Invalid validator: expected a Standard Schema 1.0 validator (must have "~standard" property). ArkType validators are not supported in "standard" mode. Use validator: "arktype" for ArkType schemas.',
+			},
+		]);
+	}
+}
+
+/**
+ * Throws if `def` is not a plain object (i.e. not a valid schema map).
+ * @internal
+ */
+export function assertStandardSchemaMap(def: unknown): asserts def is Record<string, unknown> {
+	if (!def || typeof def !== "object" || Array.isArray(def)) {
+		throw new ArkEnvError([
+			{
+				path: "",
+				message:
+					'Invalid schema: expected an object mapping in "standard" mode.',
 			},
 		]);
 	}

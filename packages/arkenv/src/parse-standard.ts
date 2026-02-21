@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvError, type InternalValidationError } from "./errors";
+import { ArkEnvError, type ValidationIssue } from "./errors";
 
 type ParseStandardConfig = {
 	env?: Record<string, string | undefined>;
@@ -16,7 +16,7 @@ export function parseStandard(
 ) {
 	const { env = process.env, onUndeclaredKey = "delete" } = config;
 	const output: Record<string, unknown> = {};
-	const errors: InternalValidationError[] = [];
+	const errors: ValidationIssue[] = [];
 	const envKeys = new Set(Object.keys(env));
 
 	// 1. Validate declared keys

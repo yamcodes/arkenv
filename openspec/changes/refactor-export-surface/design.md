@@ -60,7 +60,7 @@ The lazy loader (`src/utils/load-arktype.ts`) was necessary when the main entry 
 
 The main entry's `createEnv` MUST NOT contain ArkType-specific validation logic. Its only ArkType-specific step is calling `type()` (via `$.type.raw()`) on the user's definition to produce a compiled schema. All subsequent validation — `onUndeclaredKey`, coercion, error collection — is handled by `parse` in `src/arktype/index.ts`. `create-env.ts` delegates unconditionally; it has no inline ArkType logic of its own.
 
-This mirrors the standard path: `create-env.ts` (via `src/standard.ts`) delegates to `parseStandard`. There is exactly one validation implementation per mode, and neither lives in the entry-point file.
+This mirrors the standard path: both `create-env.ts` and `src/standard.ts` independently delegate to `parseStandard` (there is no `create-env.ts` → `src/standard.ts` dependency). There is exactly one validation implementation per mode, and neither lives in the entry-point file.
 
 This invariant is stated explicitly to prevent future "helpful" additions of ArkType-specific logic directly into `createEnv`. If ArkType-specific behavior is needed, it belongs in `src/arktype/index.ts#parse`, not in `create-env.ts`. The invariant is also surfaced in `ARCHITECTURE.md`.
 

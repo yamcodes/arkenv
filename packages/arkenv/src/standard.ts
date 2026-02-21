@@ -1,6 +1,5 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvError } from "./errors";
-import { assertNotArkTypeDsl, assertStandardSchema } from "./guards";
+import { assertNotArkTypeDsl, assertStandardSchema, assertStandardSchemaMap } from "./guards";
 import { parseStandard } from "./parse-standard";
 
 /**
@@ -52,15 +51,7 @@ export function createEnv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,
 	config?: StandardEnvConfig,
 ): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> } {
-	if (!def || typeof def !== "object" || Array.isArray(def)) {
-		throw new ArkEnvError([
-			{
-				path: "",
-				message:
-					'Invalid schema: expected an object mapping in "standard" mode.',
-			},
-		]);
-	}
+	assertStandardSchemaMap(def);
 
 	for (const key in def) {
 		const validator = (def as Record<string, unknown>)[key];

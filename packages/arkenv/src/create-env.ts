@@ -9,7 +9,7 @@ import type {
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 import { ArkEnvError } from "./errors";
-import { assertNotArkTypeDsl, assertStandardSchema } from "./guards";
+import { assertNotArkTypeDsl, assertStandardSchema, assertStandardSchemaMap } from "./guards";
 import { parseStandard } from "./parse-standard";
 
 /**
@@ -113,16 +113,7 @@ export function createEnv<const T extends SchemaShape>(
 	const mode = config.validator ?? "arktype";
 
 	if (mode === "standard") {
-		// Runtime guard: reject ArkType values in standard mode
-		if (!def || typeof def !== "object" || Array.isArray(def)) {
-			throw new ArkEnvError([
-				{
-					path: "",
-					message:
-						'Invalid schema: expected an object mapping in "standard" mode.',
-				},
-			]);
-		}
+		assertStandardSchemaMap(def);
 
 		// Check each entry to ensure it's a Standard Schema validator
 		for (const key in def) {

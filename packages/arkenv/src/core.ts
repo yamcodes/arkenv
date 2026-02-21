@@ -1,2 +1,2 @@
-export type { InternalValidationError } from "./errors";
+export type { ValidationIssue } from "./errors";
 export { ArkEnvError } from "./errors";

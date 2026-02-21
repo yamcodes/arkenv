@@ -18,3 +18,9 @@ In addition to the `validator: "standard"` option on the main `arkenv` entry's `
 - **WHEN** `createEnv` is imported from `arkenv/standard`
 - **AND** called with a schema containing a string value (ArkType DSL)
 - **THEN** it MUST throw an `ArkEnvError` indicating that ArkType DSL strings are not supported
+
+#### Scenario: arkenv/standard works at runtime without ArkType installed
+- **WHEN** `createEnv` is imported from `arkenv/standard`
+- **AND** the runtime or bundle does not have ArkType present (ArkType is not installed)
+- **THEN** it MUST successfully validate the environment variables using the provided Standard Schema validators and return the typed output without throwing any errors
+- **NOTE** validated by `bundling-interop.test.ts`: the ESM bundle generated from `arkenv/standard` must contain no `"arktype"` string references and must run successfully in an environment where `arktype` is absent
