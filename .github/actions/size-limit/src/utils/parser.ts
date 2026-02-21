@@ -42,7 +42,7 @@ export async function parseJsonFiles(): Promise<SizeLimitResult[]> {
 					const limit =
 						typeof rawLimit === "number"
 							? formatBytes(rawLimit)
-							: rawLimit || "—";
+							: rawLimit || " - ";
 
 					results.push({
 						package: pkgName,

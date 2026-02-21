@@ -1,6 +1,6 @@
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import { defineConfig } from "@solidjs/start/config";
-import { type } from "arkenv/arktype";
+import { type } from "arkenv";
 
 export const Env = type({
 	VITE_TEST: "string",

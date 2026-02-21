@@ -13,7 +13,7 @@ The example uses a single schema definition that's reused for both server-side c
 
 ```ts title="vite.config.ts"
 import arkenvVitePlugin from "@arkenv/vite-plugin";
-import arkenv from "arkenv"; import { type } from "arkenv/arktype";
+import arkenv, { type } from "arkenv";
 import { defineConfig, loadEnv } from "vite";
 
 // Define the schema once

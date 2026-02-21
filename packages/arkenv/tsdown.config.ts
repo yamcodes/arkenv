@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-	entry: ["src/index.ts", "src/arktype/index.ts"],
+	entry: ["src/index.ts", "src/standard.ts", "src/core.ts"],
 	format: {
 		esm: {},
 		cjs: {

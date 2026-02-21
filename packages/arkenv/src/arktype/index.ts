@@ -2,9 +2,9 @@ import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
-import type { ArkEnvConfig, EnvSchema } from "../create-env.ts";
-import { ArkEnvError } from "../errors.ts";
-import { coerce } from "./coercion/coerce.ts";
+import type { ArkEnvConfig, EnvSchema } from "../create-env";
+import { ArkEnvError } from "../errors";
+import { coerce } from "./coercion/coerce";
 
 /**
  * Re-export of ArkType’s `distill` utilities.
