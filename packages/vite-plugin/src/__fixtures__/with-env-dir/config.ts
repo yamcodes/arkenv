@@ -1,4 +1,4 @@
-import { type } from "arkenv/arktype";
+import { type } from "arkenv";
 
 export const Env = type({
 	VITE_CUSTOM_VAR: "string",
