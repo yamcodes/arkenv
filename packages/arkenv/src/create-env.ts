@@ -8,7 +8,7 @@ import type {
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
-import { ArkEnvError } from "./errors";
+import type { ArkEnvError } from "./errors";
 import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,

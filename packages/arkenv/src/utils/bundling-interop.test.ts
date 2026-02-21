@@ -122,12 +122,13 @@ console.log('SUCCESS');
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
-		// Assert the bundle contains no arktype references (isolation invariant)
-		const bundleContents = readFileSync(outFile, "utf8");
-		expect(bundleContents).not.toContain("arktype");
-
 		// Run the bundled output — arktype must NOT be required for this to work
 		try {
+			// Assert the actual dist artifact contains no arktype references (isolation invariant)
+			const distPath = join(projectRoot, "dist", "standard.mjs");
+			const distContents = readFileSync(distPath, "utf8");
+			expect(distContents).not.toContain("arktype");
+
 			const output = execSync(`node ${outFile}`, {
 				encoding: "utf8",
 				cwd: tempDir,

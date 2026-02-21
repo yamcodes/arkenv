@@ -31,7 +31,9 @@ describe("validator isolation (standard entry)", () => {
 			}),
 		).toThrow('"~standard" property');
 	});
+});
 
+describe("ArkType loading", () => {
 	it("loads ArkType statically when importing from arktype/index.ts", async () => {
 		// Importing from arktype/index.ts SHOULD load arktype statically
 		// (arktype/index.ts imports $ which imports arktype)

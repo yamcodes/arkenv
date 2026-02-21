@@ -1,7 +1,7 @@
 import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError, type ValidationIssue } from "./errors";
 
-type ParseStandardConfig = {
+export type ParseStandardConfig = {
 	env?: Record<string, string | undefined>;
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
 };
@@ -30,23 +30,39 @@ export function parseStandard(
 			typeof validator !== "object" ||
 			!("~standard" in validator)
 		) {
-			throw new Error(
-				`Invalid schema for key "${key}": expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in "standard" mode.`,
-			);
+			throw new ArkEnvError([
+				{
+					path: key,
+					message: `Invalid schema for key "${key}": expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in "standard" mode.`,
+				},
+			]);
 		}
 
 		const result = (validator as StandardSchemaV1)["~standard"].validate(value);
 
 		if (result instanceof Promise) {
-			throw new Error(
-				`Async validation is not supported for key "${key}". ArkEnv is synchronous.`,
-			);
+			throw new ArkEnvError([
+				{
+					path: key,
+					message: `Async validation is not supported for key "${key}". ArkEnv is synchronous.`,
+				},
+			]);
 		}
 
 		if (result.issues) {
 			for (const issue of result.issues) {
+				const issuePath =
+					issue.path && issue.path.length > 0
+						? `${key}.${issue.path
+								.map((segment) =>
+									typeof segment === "object" && "key" in segment
+										? String(segment.key)
+										: String(segment),
+								)
+								.join(".")}`
+						: key;
 				errors.push({
-					path: key,
+					path: issuePath,
 					message: issue.message,
 				});
 			}
