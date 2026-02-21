@@ -1,6 +1,10 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import type { ArkEnvConfig } from "./create-env.ts";
 import { ArkEnvError, type InternalValidationError } from "./errors.ts";
+
+type ParseStandardConfig = {
+	env?: Record<string, string | undefined>;
+	onUndeclaredKey?: "ignore" | "delete" | "reject";
+};
 
 /**
  * Standard Schema 1.0 parser dispatcher.
@@ -8,7 +12,7 @@ import { ArkEnvError, type InternalValidationError } from "./errors.ts";
  */
 export function parseStandard(
 	def: Record<string, unknown>,
-	config: ArkEnvConfig,
+	config: ParseStandardConfig,
 ) {
 	const { env = process.env, onUndeclaredKey = "delete" } = config;
 	const output: Record<string, unknown> = {};

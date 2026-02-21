@@ -80,7 +80,7 @@ console.log('SUCCESS');
 		}
 	});
 
-	it("should work when arkenv is external in an ESM bundle", () => {
+	it("should work when arkenv/standard is external in an ESM bundle (no ArkType needed)", () => {
 		const tempDir = mkdtempSync(
 			join(tmpdir(), `arkenv-esm-interop-test-${randomUUID()}`),
 		);
@@ -105,11 +105,15 @@ console.log('SUCCESS');
 			JSON.stringify({ name: "test-project", type: "module" }),
 		);
 
-		// Create a test script
+		// Create a test script using the standard entry (ArkType-free)
+		const mockSchema = JSON.stringify({
+			"~standard": { version: 1, validate: "(v) => ({ value: v })" },
+		});
 		writeFileSync(
 			testFile,
-			`import arkenv from "arkenv";
-const env = arkenv({});
+			`import { createEnv } from "arkenv/standard";
+const schema = { PORT: { "~standard": { version: 1, validate: (v) => ({ value: v }) } } };
+const env = createEnv(schema, { env: { PORT: "3000" } });
 console.log('SUCCESS');
 `,
 		);
@@ -120,7 +124,7 @@ console.log('SUCCESS');
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
-		// Run the bundled output
+		// Run the bundled output — arktype must NOT be required for this to work
 		try {
 			const output = execSync(`node ${outFile}`, {
 				encoding: "utf8",

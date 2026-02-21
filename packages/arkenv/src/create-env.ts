@@ -8,8 +8,9 @@ import type {
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { ArkEnvError } from "./errors.ts";
+import { assertNotArkTypeDsl, assertStandardSchema } from "./guards.ts";
 import { parseStandard } from "./parse-standard.ts";
-import { loadArkTypeValidator } from "./utils/load-arktype.ts";
+import { parse } from "./arktype/index.ts";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -126,39 +127,12 @@ export function createEnv<const T extends SchemaShape>(
 		// Check each entry to ensure it's a Standard Schema validator
 		for (const key in def) {
 			const validator = (def as Record<string, unknown>)[key];
-
-			// Reject strings (ArkType DSL)
-			if (typeof validator === "string") {
-				throw new ArkEnvError([
-					{
-						path: key,
-						message:
-							'ArkType DSL strings are not supported in "standard" mode. Use a Standard Schema validator (e.g., Zod, Valibot) or set validator: "arktype".',
-					},
-				]);
-			}
-
-			// Reject non-objects or objects without ~standard property (likely ArkType)
-			if (
-				!validator ||
-				typeof validator !== "object" ||
-				!("~standard" in validator)
-			) {
-				throw new ArkEnvError([
-					{
-						path: key,
-						message:
-							'Invalid validator: expected a Standard Schema 1.0 validator (must have "~standard" property). ArkType validators are not supported in "standard" mode. Use validator: "arktype" for ArkType schemas.',
-					},
-				]);
-			}
+			assertNotArkTypeDsl(key, validator);
+			assertStandardSchema(key, validator);
 		}
 
 		return parseStandard(def as Record<string, unknown>, config);
 	}
-
-	const validator = loadArkTypeValidator();
-	const { parse } = validator;
 
 	return parse(def, config);
 }
