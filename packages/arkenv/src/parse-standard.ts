@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvError, type InternalValidationError } from "./errors.ts";
+import { ArkEnvError, type InternalValidationError } from "./errors";
 
 type ParseStandardConfig = {
 	env?: Record<string, string | undefined>;

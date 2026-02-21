@@ -1,7 +1,7 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvError } from "./errors.ts";
-import { assertNotArkTypeDsl, assertStandardSchema } from "./guards.ts";
-import { parseStandard } from "./parse-standard.ts";
+import { ArkEnvError } from "./errors";
+import { assertNotArkTypeDsl, assertStandardSchema } from "./guards";
+import { parseStandard } from "./parse-standard";
 
 /**
  * Configuration options for the `arkenv/standard` entry's `createEnv`.
