@@ -5,6 +5,7 @@ import {
 	existsSync,
 	mkdirSync,
 	mkdtempSync,
+	readFileSync,
 	rmSync,
 	writeFileSync,
 } from "node:fs";
@@ -120,6 +121,10 @@ console.log('SUCCESS');
 			`${esbuildPath} ${testFile} --bundle --format=esm --platform=node --external:arkenv --outfile=${outFile}`,
 			{ cwd: tempDir, stdio: "ignore" },
 		);
+
+		// Assert the bundle contains no arktype references (isolation invariant)
+		const bundleContents = readFileSync(outFile, "utf8");
+		expect(bundleContents).not.toContain("arktype");
 
 		// Run the bundled output — arktype must NOT be required for this to work
 		try {
