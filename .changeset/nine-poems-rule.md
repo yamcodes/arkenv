@@ -37,5 +37,5 @@ const env = createEnv({ PORT: z.coerce.number() });
 import { type } from "arkenv/arktype";
 
 // ✅ After
-import { type } from "arkenv";
+import { type } from "arkenv"; // 'type' is the ArkEnv helper, not a TS type modifier
 ```

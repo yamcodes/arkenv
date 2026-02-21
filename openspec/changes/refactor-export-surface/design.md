@@ -46,7 +46,7 @@ The runtime guards (string-DSL check, `~standard` check) that currently live in 
 
 The `./arktype` entry was the only place `type` and `parse` were exposed. `type` moves to the main entry. `parse` becomes internal. Users who imported `{ type } from "arkenv/arktype"` update to `{ type } from "arkenv"`.
 
-- **Migration:** Only `type` is relevant to end users. `parse` was always `@internal` (see JSDoc). No public API surface is lost beyond the sub-path rename.
+- **Migration:** Only `type` is relevant to end users. `parse` was always `@internal` (see JSDoc). No public API surface is lost beyond the sub-path removal: `./arktype` is deleted and `type` is promoted to the root entry.
 
 ### Decision 5: `loadArkTypeValidator` lazy loader is removed in this PR
 
@@ -67,6 +67,7 @@ This invariant is stated explicitly to prevent future "helpful" additions of Ark
 ## Risks / Trade-offs
 
 - **Breaking change** - removing `./arktype`. Mitigated by clear migration path (`type` → `arkenv` main).
+- **Hard ArkType dependency on main entry** - Decision 1 makes the `arkenv` main entry statically require ArkType at import time. Previously the lazy loader (`load-arktype.ts`) meant that importing `arkenv` did not require ArkType to be installed. After this change, any user who imports from `arkenv` (main) without ArkType installed will get a hard module-resolution failure at startup, even if they only use Standard Schema validators. **Migration:** users who import from `arkenv` and run in Standard Schema mode must either switch to `arkenv/standard` (no ArkType required) or add ArkType as an explicit dependency.
 - **Isolation test churn** - `isolation.test.ts` mocks `load-arktype.ts` which is deleted. Those tests are updated in task 4; the underlying isolation guarantee is now structural (the standard entry has no loader reference) rather than mock-dependent.
 - **Size limit** - the main entry will now include ArkType statically. ArkType is already declared as `external` in `tsdown.config.ts`, so it is excluded from the size measurement. No size-limit impact.
 
