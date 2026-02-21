@@ -39,3 +39,16 @@ The `arkenv/arktype` sub-path MUST NOT exist as a public entry point. Its former
 #### Scenario: type helper available from main entry
 - **WHEN** a consumer imports `{ type } from "arkenv"`
 - **THEN** ArkEnv's extended ArkType scope (including `string.host`, `number.port`, etc.) MUST be available
+
+### Requirement: Single Validation Implementation per Mode
+The main `arkenv` entry's `createEnv` MUST delegate all ArkType validation to `src/arktype/index.ts#parse`. The `arkenv/standard` entry's `createEnv` MUST delegate all Standard Schema validation to `parseStandard`. Neither entry-point file MAY contain inline validation logic of its own.
+
+#### Scenario: ArkType and standard entries produce identical output for equivalent schemas
+- **WHEN** `createEnv` is called from `arkenv` with a definition where each field is wrapped via `type()` producing a compiled schema
+- **AND** `createEnv` is called from `arkenv/standard` with the equivalent compiled schema (which implements `~standard`) against the same environment
+- **THEN** both MUST produce output objects with identical values
+
+#### Scenario: ArkType and standard entries produce equivalent errors for the same invalid input
+- **WHEN** `createEnv` is called from `arkenv` with a schema that rejects a given environment value
+- **AND** `createEnv` is called from `arkenv/standard` with the equivalent compiled schema against the same invalid environment
+- **THEN** both MUST throw an `ArkEnvError`
