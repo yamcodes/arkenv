@@ -18,7 +18,7 @@ catalog:
   arktype: 2.1.29
   bun: 1.3.6
   concurrently: 9.2.1
-  esbuild: 0.27.2
+  esbuild: 0.27.3
   globals: 17.0.0
   react: 19.2.3
   react-dom: 19.2.3
