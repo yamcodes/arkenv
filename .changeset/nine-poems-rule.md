@@ -5,13 +5,13 @@
 
 #### Add `arkenv/standard` import for non-ArkType consumers
 
-`arkenv` now ships three dedicated entry points:
+`arkenv` now ships three separate imports:
 
 - **`arkenv`** (main): ArkType-first. Includes `createEnv`, `type`, and `ArkEnvError`. The `type` helper, previously at `arkenv/arktype`, has moved here.
 - **`arkenv/standard`**: ArkType-free. A standalone `createEnv` for Standard Schema validators (Zod, Valibot, etc.) with zero ArkType in the bundle.
 - **`arkenv/core`**: Mode-agnostic primitives - `ArkEnvError` and `ValidationIssue`.
 
-**For Standard Schema users** (Zod, Valibot, etc.), import from the dedicated entry instead of passing `validator: "standard"`:
+**For Standard Schema users** (Zod, Valibot, etc.), import from `arkenv/standard` directly, without passing `{ validator: "standard" }` on every call:
 
 ```ts
 // ❌ Before
