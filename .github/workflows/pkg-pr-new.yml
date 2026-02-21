@@ -43,8 +43,6 @@ jobs:
 
       - name: Build
         run: pnpm build --filter="./packages/*"
-        env:
-          TURBO_FORCE: "true"
 
       - name: Release
         run: pnpx pkg-pr-new publish --compact --pnpm './packages/*'
