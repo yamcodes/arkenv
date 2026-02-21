@@ -122,7 +122,7 @@ console.log('SUCCESS');
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
-		// Run the bundled output — arktype must NOT be required for this to work
+		// Run the bundled output - arktype must NOT be required for this to work
 		try {
 			// Assert the actual dist artifact contains no arktype references (isolation invariant)
 			const distPath = join(projectRoot, "dist", "standard.mjs");

@@ -43,7 +43,7 @@ export const calculateDiff = (
 	baseline: SizeInBytes,
 ): string => {
 	if (baseline === 0) {
-		return current > 0 ? "+∞%" : "—";
+		return current > 0 ? "+∞%" : " - ";
 	}
 
 	// Check if sizes are equal (or very close due to floating point precision)
@@ -53,9 +53,9 @@ export const calculateDiff = (
 	}
 
 	const diff = ((current - baseline) / baseline) * 100;
-	// Show "—" for very small changes (< 0.1%) that aren't exactly equal
+	// Show " - " for very small changes (< 0.1%) that aren't exactly equal
 	if (Math.abs(diff) < 0.1) {
-		return "—";
+		return " - ";
 	}
 	const sign = diff > 0 ? "+" : "";
 	return `${sign}${diff.toFixed(1)}%`;

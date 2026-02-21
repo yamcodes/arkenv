@@ -2,10 +2,10 @@
 
 ## Why
 
-The current package exposes two entry points: `.` (main — contains `createEnv`, `ArkEnvError`) and `./arktype` (ArkType-specific — contains `type`, `parse`). This is an ad-hoc split that does not communicate intent. Notably:
+The current package exposes two entry points: `.` (main - contains `createEnv`, `ArkEnvError`) and `./arktype` (ArkType-specific - contains `type`, `parse`). This is an ad-hoc split that does not communicate intent. Notably:
 
 - The `type` helper (which requires ArkType) lives in a sub-path instead of the main entry, even though ArkEnv is ArkType-first.
-- Standard Schema users must opt in via a `validator: "standard"` flag on a `createEnv` that still bundles ArkType dispatch code — there is no dedicated, provably arktype-free entry.
+- Standard Schema users must opt in via a `validator: "standard"` flag on a `createEnv` that still bundles ArkType dispatch code - there is no dedicated, provably arktype-free entry.
 - `ArkEnvError` has no stable `core` home; users who want it in both modes must import from the main ArkType-dependent entry.
 
 ## What Changes

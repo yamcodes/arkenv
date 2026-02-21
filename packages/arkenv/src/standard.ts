@@ -32,7 +32,7 @@ export type StandardEnvConfig = {
 /**
  * Parse and validate environment variables using Standard Schema 1.0 validators (e.g. Zod, Valibot).
  *
- * This entry is ArkType-free — ArkType is never imported, even transitively.
+ * This entry is ArkType-free - ArkType is never imported, even transitively.
  * Use this when your project must not depend on ArkType.
  *
  * @param def - An object mapping variable names to Standard Schema validators

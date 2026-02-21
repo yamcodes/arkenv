@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Three-Tier Export Architecture
-ArkEnv MUST expose exactly three public entry points — `arkenv`, `arkenv/standard`, and `arkenv/core` — each with a clearly defined contract.
+ArkEnv MUST expose exactly three public entry points - `arkenv`, `arkenv/standard`, and `arkenv/core` - each with a clearly defined contract.
 
 #### Scenario: Main entry exports createEnv, EnvSchema, and type
 - **WHEN** a user imports from `arkenv`
@@ -11,12 +11,12 @@ ArkEnv MUST expose exactly three public entry points — `arkenv`, `arkenv/stand
 #### Scenario: Standard entry exports createEnv without requiring ArkType
 - **WHEN** a user imports from `arkenv/standard`
 - **THEN** `createEnv` MUST be available as a named export
-- **AND** ArkType MUST NOT be required — the import MUST succeed even when ArkType is not installed
+- **AND** ArkType MUST NOT be required - the import MUST succeed even when ArkType is not installed
 
 #### Scenario: Core entry exports ArkEnvError without requiring ArkType
 - **WHEN** a user imports from `arkenv/core`
 - **THEN** `ArkEnvError` MUST be available as a named export
-- **AND** ArkType MUST NOT be required — the import MUST succeed even when ArkType is not installed
+- **AND** ArkType MUST NOT be required - the import MUST succeed even when ArkType is not installed
 
 ### Requirement: Disjoint Module Graphs for standard and core
 The `arkenv/standard` and `arkenv/core` entries MUST have module graphs that contain no runtime imports of ArkType, directly or transitively.

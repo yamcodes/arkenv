@@ -20,7 +20,7 @@ The main entry re-exports `type` from `src/arktype/index.ts`, which statically i
 
 ## Single-Implementation Invariant
 
-The ArkType entry's `createEnv` MUST NOT contain ArkType-specific validation logic. Its only ArkType-specific step is calling `$.type.raw()` on the user's definition to produce a compiled schema. All subsequent validation — `onUndeclaredKey`, coercion, error collection — is handled by `parse` in `src/arktype/index.ts`.
+The ArkType entry's `createEnv` MUST NOT contain ArkType-specific validation logic. Its only ArkType-specific step is calling `$.type.raw()` on the user's definition to produce a compiled schema. All subsequent validation - `onUndeclaredKey`, coercion, error collection - is handled by `parse` in `src/arktype/index.ts`.
 
 Similarly, the standard entry delegates to `parseStandard` in `src/parse-standard.ts`. There is exactly one validation implementation per mode, and neither lives in an entry-point file itself.
 
@@ -33,4 +33,4 @@ Splitting `arkenv/standard` into a separate npm package (`arkenv-standard`) woul
 - Duplicate shared code (`ArkEnvError`, `parseStandard`, `guards.ts`)
 - Fragment the documentation surface
 
-The sub-path export approach (`arkenv/standard`) provides the same module isolation guarantee (disjoint module graph) at the bundler level, without the operational overhead of a separate package. Tree-shaking is NOT relied upon — the isolation is structural: `src/standard.ts` has no imports of `src/create-env.ts` or any ArkType module.
+The sub-path export approach (`arkenv/standard`) provides the same module isolation guarantee (disjoint module graph) at the bundler level, without the operational overhead of a separate package. Tree-shaking is NOT relied upon - the isolation is structural: `src/standard.ts` has no imports of `src/create-env.ts` or any ArkType module.

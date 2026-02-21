@@ -1,10 +1,10 @@
 ## 1. New source files
 
-- [x] 1.1 Create `packages/arkenv/src/guards.ts` (internal, not a public entry) — extracts the two standard-mode runtime guards from `create-env.ts`:
-  - `assertNotArkTypeDsl(key, value)` — throws `ArkEnvError` if value is a string (ArkType DSL)
-  - `assertStandardSchema(key, value)` — throws `ArkEnvError` if value lacks `~standard`
-- [x] 1.2 Create `packages/arkenv/src/core.ts` — re-exports `ArkEnvError` (and `ValidationIssue` if needed) from `./errors.ts`
-- [x] 1.3 Create `packages/arkenv/src/standard.ts` — a standalone `createEnv` for Standard Schema mode only
+- [x] 1.1 Create `packages/arkenv/src/guards.ts` (internal, not a public entry) - extracts the two standard-mode runtime guards from `create-env.ts`:
+  - `assertNotArkTypeDsl(key, value)` - throws `ArkEnvError` if value is a string (ArkType DSL)
+  - `assertStandardSchema(key, value)` - throws `ArkEnvError` if value lacks `~standard`
+- [x] 1.2 Create `packages/arkenv/src/core.ts` - re-exports `ArkEnvError` (and `ValidationIssue` if needed) from `./errors.ts`
+- [x] 1.3 Create `packages/arkenv/src/standard.ts` - a standalone `createEnv` for Standard Schema mode only
   - Imports guard functions from `./guards.ts` and `parseStandard` from `./parse-standard.ts`
   - No imports of `load-arktype.ts`, `create-env.ts`, or `arktype`
 
@@ -14,7 +14,7 @@
   - Replace the `loadArkTypeValidator()` dynamic-require call with a direct static import of `parse` from `./arktype/index.ts`
   - Replace the inline standard-mode guards with calls to the shared guard functions from `./guards.ts`
 - [x] 2.2 Delete `packages/arkenv/src/utils/load-arktype.ts` (no longer used after 2.1)
-- [x] 2.3 Update `packages/arkenv/src/index.ts` — add `export { type } from "./arktype/index.ts"` so the main entry exposes `type`
+- [x] 2.3 Update `packages/arkenv/src/index.ts` - add `export { type } from "./arktype/index.ts"` so the main entry exposes `type`
 
 ## 3. Build configuration
 
@@ -29,7 +29,7 @@
 ## 4. Tests
 
 - [x] 4.1 Run the full test suite (`pnpm test --project arkenv -- --run`) and identify any tests that break due to the reorganization
-- [x] 4.2 Update only the broken tests — do not refactor passing tests
+- [x] 4.2 Update only the broken tests - do not refactor passing tests
   - `isolation.test.ts` mocks `load-arktype.ts` which is deleted; updated to assert against the `standard` entry directly
   - `load-arktype.test.ts` deleted (module no longer exists)
   - `bundling-interop.test.ts` ESM test updated to use `arkenv/standard` (ArkType-free entry)
