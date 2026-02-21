@@ -106,9 +106,6 @@ console.log('SUCCESS');
 		);
 
 		// Create a test script using the standard entry (ArkType-free)
-		const mockSchema = JSON.stringify({
-			"~standard": { version: 1, validate: "(v) => ({ value: v })" },
-		});
 		writeFileSync(
 			testFile,
 			`import { createEnv } from "arkenv/standard";

@@ -7,10 +7,10 @@ import type {
 	StandardSchemaV1,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
+import { parse } from "./arktype/index.ts";
 import { ArkEnvError } from "./errors.ts";
 import { assertNotArkTypeDsl, assertStandardSchema } from "./guards.ts";
 import { parseStandard } from "./parse-standard.ts";
-import { parse } from "./arktype/index.ts";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
