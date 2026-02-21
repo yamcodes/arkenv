@@ -1,5 +1,13 @@
 # @arkenv/fumadocs-ui
 
+## 0.0.3
+
+### Patch Changes
+
+- #### Fix misconfigured package.json _[`a23997c`](https://github.com/yamcodes/arkenv/commit/a23997cb01b86a1e6ffd29df8279e22601864ced) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix misconfigured package.json by adding the `repository.url` field. This fixes an issue with pkg-pr-new and adheres to best practices.
+
 ## 0.0.2
 
 ### Patch Changes
