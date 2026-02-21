@@ -39,7 +39,7 @@ The runtime guards (string-DSL check, `~standard` check) that currently live in 
 
 `src/core.ts` re-exports only from `src/errors.ts`. `errors.ts` has `import type { ArkErrors } from "arktype"` — a type-only import that is erased by TypeScript and does not appear in the emitted bundle. At runtime, `errors.ts` duck-types ArkErrors via `byPath` property access; no ArkType module is required.
 
-- **Rationale:** `ArkEnvError` is mode-agnostic — it is thrown in both ArkType mode (`ArkErrors` branch) and Standard mode (`InternalValidationError[]` branch). It belongs in core.
+- **Rationale:** `ArkEnvError` is mode-agnostic — it is thrown in both ArkType mode (`ArkErrors` branch) and Standard mode (`ValidationIssue[]` branch). It belongs in core.
 - **Risk:** A future refactor could introduce a runtime ArkType import in `errors.ts`, silently breaking the `core` isolation invariant. Mitigation: the `isolation.test.ts` file (or a new dedicated test) should import from the `core` entry and assert that ArkType is not required.
 
 ### Decision 4: `./arktype` sub-path is removed (breaking)

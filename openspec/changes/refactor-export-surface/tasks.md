@@ -3,7 +3,7 @@
 - [x] 1.1 Create `packages/arkenv/src/guards.ts` (internal, not a public entry) — extracts the two standard-mode runtime guards from `create-env.ts`:
   - `assertNotArkTypeDsl(key, value)` — throws `ArkEnvError` if value is a string (ArkType DSL)
   - `assertStandardSchema(key, value)` — throws `ArkEnvError` if value lacks `~standard`
-- [x] 1.2 Create `packages/arkenv/src/core.ts` — re-exports `ArkEnvError` (and `InternalValidationError` if needed) from `./errors.ts`
+- [x] 1.2 Create `packages/arkenv/src/core.ts` — re-exports `ArkEnvError` (and `ValidationIssue` if needed) from `./errors.ts`
 - [x] 1.3 Create `packages/arkenv/src/standard.ts` — a standalone `createEnv` for Standard Schema mode only
   - Imports guard functions from `./guards.ts` and `parseStandard` from `./parse-standard.ts`
   - No imports of `load-arktype.ts`, `create-env.ts`, or `arktype`
