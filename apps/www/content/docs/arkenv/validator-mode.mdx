@@ -3,12 +3,12 @@ title: Validator mode
 description: Configure how ArkEnv validates and coerces your environment variables.
 ---
 
-ArkEnv supports two validator modes that control how environment variables are parsed and validated.  
-You select the mode via the `validator` option in the `arkenv` configuration.
+ArkEnv supports two validator modes that control how environment variables are parsed and validated.
+You select the mode by choosing which entry point you import from.
 
 ## Cheatsheet - when to use which?
 
-| Feature | `arktype` (default) | `standard` |
+| Feature | `arkenv` (default) | `arkenv/standard` |
 | :--- | :--- | :--- |
 | **ArkType DSL** | ✅ Native | ⚠️ Via `type(...)` |
 | **Standard Schema** (Zod, Valibot, Typia) | ✅ Yes | ✅ Yes |
@@ -16,11 +16,11 @@ You select the mode via the `validator` option in the `arkenv` configuration.
 | **Requires `arktype`** | ✅ Yes | ❌ No |
 | **Best for** | New projects, maximal DX | Migrations, ArkType-free setups |
 
-> In a new project, prefer the default `arktype` mode. `standard` exists for migrations and ArkType-free setups.
+> In a new project, prefer `arkenv`. `arkenv/standard` exists for migrations and ArkType-free setups.
 
 ---
 
-## `validator: "arktype"` (default)
+## `arkenv` (default)
 
 ArkEnv runs validation through [ArkType](https://arktype.io) and expects it to be installed.
 
@@ -46,11 +46,11 @@ You must install `arktype` alongside `arkenv`.
 
 ---
 
-## `validator: "standard"`
+## `arkenv/standard`
 
 In Standard mode, ArkEnv works directly with any validator that implements the [Standard Schema](https://standardschema.dev) interface, even without ArkType.
 
-### When this makes sense 
+### When this makes sense
 - You already use Zod or Valibot everywhere
 - You want a zero-ArkType runtime
 - You care more about minimal dependencies than DSL ergonomics

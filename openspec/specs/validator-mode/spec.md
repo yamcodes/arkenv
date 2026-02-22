@@ -1,38 +1,37 @@
 # validator-mode Specification
 
 ## Purpose
-The validator-mode allows ArkEnv to operate in two distinct modes: `arktype` (default) and `standard`. Providing an explicit validator mode allows ArkEnv to be used without ArkType at runtime, reducing bundle size and removing the requirement for ArkType when it is not needed, while still providing full type safety via the Standard Schema specification.
+ArkEnv provides two entry points for different validation needs. The default `arkenv` entry runs validation through ArkType, while `arkenv/standard` provides an ArkType-free path for projects that prefer Standard Schema validators exclusively.
 
 ## Requirements
-### Requirement: Explicit Validator Mode
-ArkEnv MUST support an explicit `validator` configuration option to choose between ArkType and Standard Schema validators.
+### Requirement: Dedicated Entry Points
+ArkEnv MUST provide separate entry points to choose between ArkType and Standard Schema validators.
 
-#### Scenario: Default mode is ArkType
-- **WHEN** `createEnv` is called without a `validator` option
+#### Scenario: Default entry uses ArkType
+- **WHEN** importing from `arkenv`
 - **THEN** it SHOULD use ArkType for validation
 - **AND** it SHOULD support ArkType-specific features like string DSL and `type()`
 
-#### Scenario: Standard mode validates without ArkType
-- **WHEN** `createEnv` is called with `validator: "standard"`
+#### Scenario: Standard entry validates without ArkType
+- **WHEN** importing from `arkenv/standard`
 - **THEN** it MUST NOT attempt to load or use ArkType
 - **AND** it MUST successfully validate using Standard Schema validators
 - **AND** it MUST work even if ArkType is not installed
 
 #### Scenario: Missing ArkType throws error
-- **WHEN** `createEnv` is called with `validator: "arktype"` (or default)
+- **WHEN** importing from `arkenv`
 - **AND** ArkType is not installed
-- **THEN** it MUST throw a clear, actionable error message explaining that ArkType is required for this mode
+- **THEN** it MUST throw a clear, actionable error message explaining that ArkType is required
 
-### Requirement: Standard Mode Restrictions
-In `standard` mode, ArkEnv MUST only accept object mappings of Standard Schema validators.
+### Requirement: Standard Entry Restrictions
+In `arkenv/standard`, ArkEnv MUST only accept object mappings of Standard Schema validators.
 
-#### Scenario: Rejecting ArkType strings in standard mode
-- **WHEN** `createEnv` is called with `validator: "standard"`
+#### Scenario: Rejecting ArkType strings in standard entry
+- **WHEN** `createEnv` from `arkenv/standard` is called
 - **AND** the schema contains a string (ArkType DSL)
-- **THEN** it MUST fail with a clear error indicating that ArkType DSL strings are not supported in standard mode
+- **THEN** it MUST fail with a clear error indicating that ArkType DSL strings are not supported
 
-#### Scenario: Reject non-standard validators in standard mode
-- **WHEN** `validator: "standard"`
+#### Scenario: Reject non-standard validators in standard entry
+- **WHEN** `createEnv` from `arkenv/standard` is called
 - **AND** a schema value does not expose `~standard`
 - **THEN** it MUST fail with an error indicating an invalid Standard Schema validator
-

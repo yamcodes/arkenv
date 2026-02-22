@@ -26,7 +26,7 @@ export type ParseStandardConfig = {
 
 /**
  * Standard Schema 1.0 parser dispatcher.
- * This helper implements parsing for the 'validator: "standard"' mode.
+ * This helper implements parsing for the `arkenv/standard` entry point.
  *
  * @param def - An object mapping environment variable keys to Standard Schema 1.0 validators.
  * @param config - Parsing options (env source, undeclared key handling).

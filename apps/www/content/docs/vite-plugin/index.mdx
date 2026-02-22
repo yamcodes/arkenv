@@ -29,11 +29,9 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
-## Validator Mode
+## Using Standard Schema validators (Zod, Valibot)
 
-By default, ArkEnv uses ArkType for validation. However, you can use any Standard Schema compatible library (like Zod or Valibot) by setting the `validator` option to `"standard"`.
-
-In this mode, you don't need to install `arktype`.
+This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema — no extra configuration needed.
 
 ```ts title="vite.config.ts"
 import { defineConfig } from "vite";
@@ -45,19 +43,18 @@ export default defineConfig({
     arkenv({
       VITE_API_URL: z.url(),
       VITE_API_KEY: z.string().min(1),
-    }, {
-      validator: "standard"
+      VITE_DEBUG: "boolean",
     }),
   ],
 });
 ```
 
 > [!IMPORTANT]
-> By default, this plugin uses [ArkType](https://arktype.io) for validation.
+> This plugin requires [ArkType](https://arktype.io) to be installed.
 >
-> You can also use `validator: "standard"` if you prefer using Zod or Valibot directly without an ArkType dependency.
+> For a zero-ArkType setup, use [arkenv/standard](/docs/arkenv/validator-mode) directly in your app code instead.
 >
-> See [Validator mode](/docs/arkenv/validator-mode) for details.
+> See [Standard Schema validators](/docs/arkenv/integrations/standard-schema) for details.
 
 ## Installation
 
