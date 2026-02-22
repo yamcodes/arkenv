@@ -34,10 +34,10 @@ describe("validator isolation (standard entry)", () => {
 });
 
 describe("ArkType loading", () => {
-	it("loads ArkType statically when importing from arktype/index.ts", async () => {
-		// Importing from arktype/index.ts SHOULD load arktype statically
-		// (arktype/index.ts imports $ which imports arktype)
-		const mod = await import("./arktype/index.ts");
+	it("loads ArkType statically when importing from index.ts", async () => {
+		// Importing from index.ts SHOULD load arktype statically
+		// (index.ts imports $ which imports arktype)
+		const mod = await import("./index.ts");
 		expect(mod.type).toBeDefined();
 		expect(typeof mod.type).toBe("function");
 	});

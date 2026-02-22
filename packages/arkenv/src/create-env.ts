@@ -4,17 +4,10 @@ import type {
 	Dict,
 	InferType,
 	SchemaShape,
-	StandardSchemaV1,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 import type { ArkEnvError } from "./errors";
-import {
-	assertNotArkTypeDsl,
-	assertStandardSchema,
-	assertStandardSchemaMap,
-} from "./guards";
-import { parseStandard } from "./parse-standard";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -70,15 +63,6 @@ export type ArkEnvConfig = {
 	 * @default "comma"
 	 */
 	arrayFormat?: "comma" | "json";
-	/**
-	 * Choose the validator engine to use.
-	 *
-	 * - `arktype` (default): Uses ArkType for all validation and coercion.
-	 * - `standard`: Uses Standard Schema 1.0 directly for validation. Coercion is not supported in this mode.
-	 *
-	 * @default "arktype"
-	 */
-	validator?: "arktype" | "standard";
 };
 
 /**
@@ -96,16 +80,12 @@ export type ArkEnvConfig = {
  */
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	config?: Omit<ArkEnvConfig, "validator"> & { validator?: "arktype" },
+	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends CompiledEnvSchema>(
 	def: T,
-	config?: Omit<ArkEnvConfig, "validator"> & { validator?: "arktype" },
+	config?: ArkEnvConfig,
 ): InferType<T>;
-export function createEnv<const T extends Record<string, StandardSchemaV1>>(
-	def: T,
-	config: ArkEnvConfig & { validator: "standard" },
-): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> };
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config?: ArkEnvConfig,
@@ -114,21 +94,6 @@ export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	const mode = config.validator ?? "arktype";
-
-	if (mode === "standard") {
-		assertStandardSchemaMap(def);
-
-		// Check each entry to ensure it's a Standard Schema validator
-		for (const key in def) {
-			const validator = (def as Record<string, unknown>)[key];
-			assertNotArkTypeDsl(key, validator);
-			assertStandardSchema(key, validator);
-		}
-
-		return parseStandard(def as Record<string, unknown>, config);
-	}
-
 	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
 	return parse(def as any, config);
 }
