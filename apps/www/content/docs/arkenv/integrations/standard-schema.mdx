@@ -57,17 +57,14 @@ This is useful when:
 If you don't want ArkType installed, you can run ArkEnv in Standard-only mode by setting `validator: "standard"`:
 
 ```ts twoslash title="env.ts"
-import arkenv from 'arkenv';
+import { createEnv } from 'arkenv/standard';
 import { z } from 'zod';
 
-export const env = arkenv(
-  {
-    PORT: z.coerce.number().int().min(0).max(65535),
-    DATABASE_URL: z.url(),
-    DEBUG: z.coerce.boolean().default(false),
-  },
-  { validator: "standard" }
-);
+export const env = createEnv({
+  PORT: z.coerce.number().int().min(0).max(65535),
+  DATABASE_URL: z.url(),
+  DEBUG: z.coerce.boolean().default(false),
+});
 ```
 
 ### When to use Standard-only mode

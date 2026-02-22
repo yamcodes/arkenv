@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createEnv } from "../../create-env.ts";
-import { type } from "../index.ts";
+import { type } from "../../index.ts";
 
 describe("coercion integration", () => {
 	it("should coerce and validate numbers", () => {
