@@ -23,7 +23,7 @@ describe("Bun Plugin", () => {
 
 	afterEach(() => {
 		process.env = originalEnv;
-		mockCreateEnv.mockReset();
+		mockCreateEnv.mockClear();
 	});
 
 	it("should create a plugin function", () => {

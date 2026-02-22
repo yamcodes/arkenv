@@ -9,8 +9,8 @@ ArkEnv MUST provide separate entry points to choose between ArkType and Standard
 
 #### Scenario: Default entry uses ArkType
 - **WHEN** importing from `arkenv`
-- **THEN** it SHOULD use ArkType for validation
-- **AND** it SHOULD support ArkType-specific features like string DSL and `type()`
+- **THEN** it MUST use ArkType for validation
+- **AND** it MUST support ArkType-specific features like string DSL and `type()`
 
 #### Scenario: Standard entry validates without ArkType
 - **WHEN** importing from `arkenv/standard`

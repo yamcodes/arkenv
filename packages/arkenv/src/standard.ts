@@ -24,10 +24,10 @@ export type StandardEnvConfig = ParseStandardConfig;
  *
  * @example
  * ```ts
- * import { createEnv } from "arkenv/standard";
+ * import arkenv from "arkenv/standard";
  * import { z } from "zod";
  *
- * const env = createEnv({
+ * const env = arkenv({
  *   PORT: z.coerce.number(),
  *   HOST: z.string(),
  * });
@@ -49,3 +49,11 @@ export function createEnv<const T extends Record<string, StandardSchemaV1>>(
 		[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
 	};
 }
+
+/**
+ * ArkEnv's Standard Schema export, an alias for {@link createEnv}
+ *
+ * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
+ */
+const arkenv = createEnv;
+export default arkenv;

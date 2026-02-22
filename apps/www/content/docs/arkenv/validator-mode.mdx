@@ -37,7 +37,7 @@ import { z } from 'zod';
 const env = arkenv({
   PORT: "number.port",
   NODE_ENV: "'development' | 'production'",
-  DATABASE_URL: z.url(),
+  DATABASE_URL: z.string().url(),
 });
 ```
 
@@ -61,12 +61,12 @@ In Standard mode, ArkEnv works directly with any validator that implements the [
 - No ArkType coercion - use your validator's native coercion instead
 
 ```ts twoslash
-import { createEnv } from 'arkenv/standard';
+import arkenv from 'arkenv/standard';
 import { z } from 'zod';
 
-const env = createEnv({
+const env = arkenv({
   PORT: z.coerce.number().int().min(0).max(65535),
-  DATABASE_URL: z.url(),
+  DATABASE_URL: z.string().url(),
 });
 ```
 

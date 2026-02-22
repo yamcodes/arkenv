@@ -54,7 +54,7 @@ export function parseStandard(
 			throw new ArkEnvError([
 				{
 					path: key,
-					message: `Invalid schema for key "${key}": expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in "standard" mode.`,
+					message: `Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
 				},
 			]);
 		}
@@ -65,7 +65,7 @@ export function parseStandard(
 			throw new ArkEnvError([
 				{
 					path: key,
-					message: `Async validation is not supported for key "${key}". ArkEnv is synchronous.`,
+					message: "Async validation is not supported. ArkEnv is synchronous.",
 				},
 			]);
 		}

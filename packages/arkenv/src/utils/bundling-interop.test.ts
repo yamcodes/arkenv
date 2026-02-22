@@ -109,9 +109,9 @@ console.log('SUCCESS');
 		// Create a test script using the standard entry (ArkType-free)
 		writeFileSync(
 			testFile,
-			`import { createEnv } from "arkenv/standard";
+			`import arkenv from "arkenv/standard";
 const schema = { PORT: { "~standard": { version: 1, validate: (v) => ({ value: v }) } } };
-const env = createEnv(schema, { env: { PORT: "3000" } });
+const env = arkenv(schema, { env: { PORT: "3000" } });
 console.log('SUCCESS');
 `,
 		);

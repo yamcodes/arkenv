@@ -7,7 +7,7 @@ ArkEnv ships three public entry points from a single npm package:
 | Entry | Import | ArkType required? | Purpose |
 |-------|--------|-------------------|---------|
 | Main | `import { createEnv } from "arkenv"` | Yes (static) | ArkType-first `createEnv` + `type` helper |
-| Standard | `import { createEnv } from "arkenv/standard"` | No | ArkType-free `createEnv` for Standard Schema users |
+| Standard | `import arkenv from "arkenv/standard"` | No | ArkType-free `createEnv` for Standard Schema users |
 | Core | `import { ArkEnvError } from "arkenv/core"` | No | Mode-agnostic primitives (errors, types) |
 
 The main entry re-exports `type` from `src/arktype/index.ts`, which statically imports ArkType. This is intentional: the main entry is the ArkType-first surface and its dependency on ArkType is explicit. Users who need an ArkType-free import use `arkenv/standard` or `arkenv/core`.

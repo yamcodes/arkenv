@@ -32,6 +32,20 @@ const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
 
 const mockLoadEnv = vi.mocked(vite.loadEnv);
 
+const createMockContext = () =>
+	({
+		meta: {
+			framework: "vite",
+			version: "1.0.0",
+			rollupVersion: "4.0.0",
+			viteVersion: "5.0.0",
+		},
+		error: vi.fn(),
+		warn: vi.fn(),
+		info: vi.fn(),
+		debug: vi.fn(),
+	}) as any;
+
 // Run fixture-based tests for standard fixtures
 // (Specialized fixtures like 'with-env-dir' are handled by dedicated integration tests below)
 for (const name of readdirSync(fixturesDir).filter(
@@ -120,18 +134,7 @@ describe("Plugin Unit Tests", () => {
 
 		// Mock the config hook with proper context
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			pluginInstance.config.call(
 				mockContext,
 				{},
@@ -165,18 +168,7 @@ describe("Plugin Unit Tests", () => {
 		// Call the config hook
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			result = pluginInstance.config.call(
 				mockContext,
 				{},
@@ -216,18 +208,7 @@ describe("Plugin Unit Tests", () => {
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			result = pluginInstance.config.call(
 				mockContext,
 				{},
@@ -251,18 +232,7 @@ describe("Plugin Unit Tests", () => {
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			result = pluginInstance.config.call(
 				mockContext,
 				{},
@@ -291,18 +261,7 @@ describe("Plugin Unit Tests", () => {
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			result = pluginInstance.config.call(
 				mockContext,
 				{},
@@ -333,18 +292,7 @@ describe("Plugin Unit Tests", () => {
 				pluginInstance.config &&
 				typeof pluginInstance.config === "function"
 			) {
-				const mockContext = {
-					meta: {
-						framework: "vite",
-						version: "1.0.0",
-						rollupVersion: "4.0.0",
-						viteVersion: "5.0.0",
-					},
-					error: vi.fn(),
-					warn: vi.fn(),
-					info: vi.fn(),
-					debug: vi.fn(),
-				} as any;
+				const mockContext = createMockContext();
 				pluginInstance.config.call(
 					mockContext,
 					{},
@@ -373,18 +321,7 @@ describe("Plugin Unit Tests", () => {
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			result = pluginInstance.config.call(
 				mockContext,
 				{},
@@ -421,18 +358,7 @@ describe("Plugin Unit Tests", () => {
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			// Pass custom envPrefix in config
 			result = pluginInstance.config.call(
 				mockContext,
@@ -465,18 +391,7 @@ describe("Plugin Unit Tests", () => {
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			// Pass config without envPrefix (should default to VITE_)
 			result = pluginInstance.config.call(
 				mockContext,
@@ -512,18 +427,7 @@ describe("Plugin Unit Tests", () => {
 
 		let result: any = {};
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			// Pass array of prefixes in config
 			result = pluginInstance.config.call(
 				mockContext,
@@ -548,18 +452,7 @@ describe("Plugin Unit Tests", () => {
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			// Pass custom envDir in config
 			pluginInstance.config.call(
 				mockContext,
@@ -586,18 +479,7 @@ describe("Plugin Unit Tests", () => {
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			// Pass config without envDir (should default to process.cwd())
 			pluginInstance.config.call(
 				mockContext,
@@ -627,18 +509,7 @@ describe("Plugin Unit Tests", () => {
 		);
 
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
-			const mockContext = {
-				meta: {
-					framework: "vite",
-					version: "1.0.0",
-					rollupVersion: "4.0.0",
-					viteVersion: "5.0.0",
-				},
-				error: vi.fn(),
-				warn: vi.fn(),
-				info: vi.fn(),
-				debug: vi.fn(),
-			} as any;
+			const mockContext = createMockContext();
 			pluginInstance.config.call(
 				mockContext,
 				{},

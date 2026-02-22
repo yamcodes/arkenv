@@ -57,10 +57,10 @@ This is useful when:
 If you don't want ArkType installed, you can run ArkEnv in Standard-only mode using the `arkenv/standard` entry point:
 
 ```ts twoslash title="env.ts"
-import { createEnv } from 'arkenv/standard';
+import arkenv from 'arkenv/standard';
 import { z } from 'zod';
 
-export const env = createEnv({
+export const env = arkenv({
   PORT: z.coerce.number().int().min(0).max(65535),
   DATABASE_URL: z.url(),
   DEBUG: z.coerce.boolean().default(false),
