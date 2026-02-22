@@ -4,12 +4,10 @@ import type {
 	Dict,
 	InferType,
 	SchemaShape,
-	StandardSchemaV1,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { ArkEnvError } from "./errors.ts";
-import { parseStandard } from "./parse-standard.ts";
-import { loadArkTypeValidator } from "./utils/load-arktype.ts";
+import { parse } from "./arktype";
+import type { ArkEnvError } from "./core";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -65,15 +63,6 @@ export type ArkEnvConfig = {
 	 * @default "comma"
 	 */
 	arrayFormat?: "comma" | "json";
-	/**
-	 * Choose the validator engine to use.
-	 *
-	 * - `arktype` (default): Uses ArkType for all validation and coercion.
-	 * - `standard`: Uses Standard Schema 1.0 directly for validation. Coercion is not supported in this mode.
-	 *
-	 * @default "arktype"
-	 */
-	validator?: "arktype" | "standard";
 };
 
 /**
@@ -91,16 +80,12 @@ export type ArkEnvConfig = {
  */
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	config?: Omit<ArkEnvConfig, "validator"> & { validator?: "arktype" },
+	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
 export function createEnv<T extends CompiledEnvSchema>(
 	def: T,
-	config?: Omit<ArkEnvConfig, "validator"> & { validator?: "arktype" },
+	config?: ArkEnvConfig,
 ): InferType<T>;
-export function createEnv<const T extends Record<string, StandardSchemaV1>>(
-	def: T,
-	config: ArkEnvConfig & { validator: "standard" },
-): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> };
 export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config?: ArkEnvConfig,
@@ -109,56 +94,6 @@ export function createEnv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {
-	const mode = config.validator ?? "arktype";
-
-	if (mode === "standard") {
-		// Runtime guard: reject ArkType values in standard mode
-		if (!def || typeof def !== "object" || Array.isArray(def)) {
-			throw new ArkEnvError([
-				{
-					path: "",
-					message:
-						'Invalid schema: expected an object mapping in "standard" mode.',
-				},
-			]);
-		}
-
-		// Check each entry to ensure it's a Standard Schema validator
-		for (const key in def) {
-			const validator = (def as Record<string, unknown>)[key];
-
-			// Reject strings (ArkType DSL)
-			if (typeof validator === "string") {
-				throw new ArkEnvError([
-					{
-						path: key,
-						message:
-							'ArkType DSL strings are not supported in "standard" mode. Use a Standard Schema validator (e.g., Zod, Valibot) or set validator: "arktype".',
-					},
-				]);
-			}
-
-			// Reject non-objects or objects without ~standard property (likely ArkType)
-			if (
-				!validator ||
-				typeof validator !== "object" ||
-				!("~standard" in validator)
-			) {
-				throw new ArkEnvError([
-					{
-						path: key,
-						message:
-							'Invalid validator: expected a Standard Schema 1.0 validator (must have "~standard" property). ArkType validators are not supported in "standard" mode. Use validator: "arktype" for ArkType schemas.',
-					},
-				]);
-			}
-		}
-
-		return parseStandard(def as Record<string, unknown>, config);
-	}
-
-	const validator = loadArkTypeValidator();
-	const { parse } = validator;
-
-	return parse(def, config);
+	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
+	return parse(def as any, config);
 }

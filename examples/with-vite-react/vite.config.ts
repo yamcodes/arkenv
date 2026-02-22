@@ -1,7 +1,6 @@
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import reactPlugin from "@vitejs/plugin-react";
-import arkenv from "arkenv";
-import { type } from "arkenv/arktype";
+import arkenv, { type } from "arkenv";
 import { defineConfig, loadEnv } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 

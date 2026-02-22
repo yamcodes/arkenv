@@ -15,13 +15,21 @@
 			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs"
 		},
-		"./arktype": {
+		"./standard": {
 			"types": {
-				"import": "./dist/arktype/index.d.mts",
-				"require": "./dist/arktype/index.d.cts"
+				"import": "./dist/standard.d.mts",
+				"require": "./dist/standard.d.cts"
 			},
-			"import": "./dist/arktype/index.mjs",
-			"require": "./dist/arktype/index.cjs"
+			"import": "./dist/standard.mjs",
+			"require": "./dist/standard.cjs"
+		},
+		"./core": {
+			"types": {
+				"import": "./dist/core.d.mts",
+				"require": "./dist/core.d.cts"
+			},
+			"import": "./dist/core.mjs",
+			"require": "./dist/core.cjs"
 		}
 	},
 	"scripts": {
@@ -75,7 +83,11 @@
 	},
 	"size-limit": [
 		{
-			"path": "dist/index.mjs",
+			"path": [
+				"dist/index.mjs",
+				"dist/standard.mjs",
+				"dist/core.mjs"
+			],
 			"limit": "3 kB",
 			"import": "*",
 			"ignore": [

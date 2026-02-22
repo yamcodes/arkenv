@@ -60,7 +60,7 @@ export const calculateDiffs = (
 					`⚠️ No baseline found for ${key}. Baseline map is empty (size: ${baselineSizes.size}).`,
 				);
 			}
-			result.diff = "—";
+			result.diff = " - ";
 		}
 	}
 };

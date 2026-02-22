@@ -21,7 +21,7 @@ To read more about Standard Schema, see the [Standard Schema documentation](http
 
 ## Using Standard Schema with ArkType (default)
 
-Since ArkType natively supports Standard Schema, you can freely mix ArkType DSL strings with Standard Schema validators in the same schema—no configuration needed.
+Since ArkType natively supports Standard Schema, you can freely mix ArkType DSL strings with Standard Schema validators in the same schema - no configuration needed.
 
 ```package-install
 arkenv arktype zod
@@ -54,20 +54,17 @@ This is useful when:
 
 ## Using Standard Schema without ArkType
 
-If you don't want ArkType installed, you can run ArkEnv in Standard-only mode by setting `validator: "standard"`:
+If you don't want ArkType installed, you can run ArkEnv in Standard-only mode using the `arkenv/standard` entry point:
 
 ```ts twoslash title="env.ts"
-import arkenv from 'arkenv';
+import arkenv from 'arkenv/standard';
 import { z } from 'zod';
 
-export const env = arkenv(
-  {
-    PORT: z.coerce.number().int().min(0).max(65535),
-    DATABASE_URL: z.url(),
-    DEBUG: z.coerce.boolean().default(false),
-  },
-  { validator: "standard" }
-);
+export const env = arkenv({
+  PORT: z.coerce.number().int().min(0).max(65535),
+  DATABASE_URL: z.url(),
+  DEBUG: z.coerce.boolean().default(false),
+});
 ```
 
 ### When to use Standard-only mode

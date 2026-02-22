@@ -193,7 +193,7 @@ The system SHALL provide...
 **Reason**: [Why removing]
 **Migration**: [How to handle]
 ```
-If multiple capabilities are affected, create multiple delta files under `changes/[change-id]/specs/<capability>/spec.md`—one per capability.
+If multiple capabilities are affected, create multiple delta files under `changes/[change-id]/specs/<capability>/spec.md` - one per capability.
 
 4. **Create tasks.md:**
 ```markdown

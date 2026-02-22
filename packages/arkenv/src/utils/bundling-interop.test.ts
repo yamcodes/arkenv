@@ -5,6 +5,7 @@ import {
 	existsSync,
 	mkdirSync,
 	mkdtempSync,
+	readFileSync,
 	rmSync,
 	writeFileSync,
 } from "node:fs";
@@ -80,7 +81,7 @@ console.log('SUCCESS');
 		}
 	});
 
-	it("should work when arkenv is external in an ESM bundle", () => {
+	it("should work when arkenv/standard is external in an ESM bundle (no ArkType needed)", () => {
 		const tempDir = mkdtempSync(
 			join(tmpdir(), `arkenv-esm-interop-test-${randomUUID()}`),
 		);
@@ -105,11 +106,12 @@ console.log('SUCCESS');
 			JSON.stringify({ name: "test-project", type: "module" }),
 		);
 
-		// Create a test script
+		// Create a test script using the standard entry (ArkType-free)
 		writeFileSync(
 			testFile,
-			`import arkenv from "arkenv";
-const env = arkenv({});
+			`import arkenv from "arkenv/standard";
+const schema = { PORT: { "~standard": { version: 1, validate: (v) => ({ value: v }) } } };
+const env = arkenv(schema, { env: { PORT: "3000" } });
 console.log('SUCCESS');
 `,
 		);
@@ -120,8 +122,13 @@ console.log('SUCCESS');
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
-		// Run the bundled output
+		// Run the bundled output - arktype must NOT be required for this to work
 		try {
+			// Assert the actual dist artifact contains no arktype references (isolation invariant)
+			const distPath = join(projectRoot, "dist", "standard.mjs");
+			const distContents = readFileSync(distPath, "utf8");
+			expect(distContents).not.toContain("arktype");
+
 			const output = execSync(`node ${outFile}`, {
 				encoding: "utf8",
 				cwd: tempDir,

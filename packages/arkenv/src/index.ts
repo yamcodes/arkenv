@@ -1,8 +1,19 @@
-import { createEnv } from "./create-env.ts";
+import { $ } from "@repo/scope";
+import { createEnv } from "./create-env";
 
 export { createEnv };
-export type { ArkEnvConfig, EnvSchema } from "./create-env.ts";
-export { ArkEnvError } from "./errors.ts";
+/**
+ * Like ArkType's `type`, but with ArkEnv's extra keywords, such as:
+ *
+ * - `string.host` – a hostname (e.g. `"localhost"`, `"127.0.0.1"`)
+ * - `number.port` – a port number (e.g. `8080`)
+ *
+ * See ArkType's docs for the full API:
+ * https://arktype.io/docs/type-api
+ */
+export const type = $.type;
+export { ArkEnvError } from "./core";
+export type { ArkEnvConfig, EnvSchema } from "./create-env";
 
 /**
  * ArkEnv's main export, an alias for {@link createEnv}

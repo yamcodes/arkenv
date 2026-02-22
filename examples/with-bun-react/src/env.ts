@@ -1,4 +1,4 @@
-import { type } from "arkenv/arktype";
+import { type } from "arkenv";
 
 export default type({
 	BUN_PUBLIC_API_URL: "string.url",

@@ -22,6 +22,10 @@ icon: Rocket
 
         Use this if you already rely on a [Standard Schema](https://standardschema.dev) validator like Zod or Valibot.
 
+        ```ts
+        import arkenv from 'arkenv/standard';
+        ```
+
         > The examples in this guide use ArkType. See the [Standard Schema guide](/docs/arkenv/integrations/standard-schema) for alternative setups.
 
       </Accordion>
@@ -56,8 +60,7 @@ icon: Rocket
     We're using ArkType for this example, but you can mix and match [any Standard Schema validator](/docs/arkenv/integrations/standard-schema).
     
     ```ts title="config/env.ts" twoslash
-    import arkenv from 'arkenv';
-    import { type } from 'arkenv/arktype';
+    import arkenv, { type } from 'arkenv';
 
     export const env = arkenv({
       // Optional variables with defaults

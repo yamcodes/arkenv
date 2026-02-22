@@ -36,26 +36,8 @@ import { processEnvSchema, registerLoader } from "./utils";
  *    ```
  *
  * @param options - The environment variable schema definition.
- * @param arkenvConfig - Optional configuration for ArkEnv, including validator mode selection.
- *   Use `{ validator: "standard" }` to use Standard Schema validators (e.g., Zod, Valibot) without ArkType.
+ * @param arkenvConfig - Optional ArkEnv configuration (e.g. `coerce`, `onUndeclaredKey`).
  * @returns A Bun plugin that validates environment variables and exposes prefixed variables to client code.
- *
- * @example
- * ```ts
- * // Using Zod with Standard Schema validator
- * import { z } from 'zod';
- * import arkenv from '@arkenv/bun-plugin';
- *
- * Bun.build({
- *   plugins: [
- *     arkenv({
- *       BUN_PUBLIC_API_URL: z.url(),
- *     }, {
- *       validator: 'standard'
- *     }),
- *   ],
- * });
- * ```
  */
 export function arkenv(
 	options: CompiledEnvSchema,

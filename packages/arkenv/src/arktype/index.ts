@@ -2,12 +2,13 @@ import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
-import type { ArkEnvConfig, EnvSchema } from "../create-env.ts";
-import { ArkEnvError } from "../errors.ts";
-import { coerce } from "./coercion/coerce.ts";
+import { ArkEnvError, type ValidationIssue } from "../core";
+import type { ArkEnvConfig, EnvSchema } from "../create-env";
+import { styleText } from "../utils/style-text.ts";
+import { coerce } from "./coercion/coerce";
 
 /**
- * Re-export of ArkType’s `distill` utilities.
+ * Re-export of ArkType's `distill` utilities.
  *
  * Exposed for internal use cases and type-level integrations.
  * ArkEnv does not add behavior or guarantees beyond what ArkType provides.
@@ -18,18 +19,48 @@ import { coerce } from "./coercion/coerce.ts";
 export type { distill };
 
 /**
- * Like ArkType’s `type`, but with ArkEnv’s extra keywords, such as:
+ * Converts ArkType's `ArkErrors` (keyed by path) into a flat `ValidationIssue[]`
+ * suitable for `ArkEnvError`. Strips leading path references from messages to
+ * avoid duplication when `formatInternalErrors` prepends the styled path, and
+ * applies cyan styling to inline "(was …)" values.
  *
- * - `string.host` – a hostname (e.g. `"localhost"`, `"127.0.0.1"`)
- * - `number.port` – a port number (e.g. `8080`)
- *
- * See ArkType’s docs for the full API:
- * https://arktype.io/docs/type-api
+ * @internal
  */
-export const type = $.type;
+function arkErrorsToIssues(errors: ArkErrors): ValidationIssue[] {
+	return Object.entries(errors.byPath).map(([path, error]) => {
+		let message = error.message;
+
+		// Strip leading path reference if ArkType included it in the message
+		let trimmed = message.trimStart();
+		if (trimmed.length > 0 && ":.-".includes(trimmed[0])) {
+			trimmed = trimmed.slice(1).trimStart();
+		}
+		if (trimmed.toLowerCase().startsWith(path.toLowerCase())) {
+			let rest = trimmed.slice(path.length).trimStart();
+			if (rest.length > 0 && ":.-".includes(rest[0])) {
+				rest = rest.slice(1);
+			}
+			message = rest.trimStart();
+		}
+
+		// Style (was ...) inline values
+		const valueMatch = message.match(/\(was (.*)\)/);
+		if (valueMatch?.[1]) {
+			const value = valueMatch[1];
+			if (!value.includes("\x1b[")) {
+				message = message.replace(
+					`(was ${value})`,
+					`(was ${styleText("cyan", value)})`,
+				);
+			}
+		}
+
+		return { path, message };
+	});
+}
 
 /**
- * Parse and validate environment variables using ArkEnv’s schema rules.
+ * Parse and validate environment variables using ArkEnv's schema rules.
  *
  * This applies:
  * - schema validation
@@ -74,7 +105,7 @@ export function parse<const T extends SchemaShape>(
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors
 	if (validatedEnv instanceof ArkErrors) {
-		throw new ArkEnvError(validatedEnv);
+		throw new ArkEnvError(arkErrorsToIssues(validatedEnv));
 	}
 
 	return validatedEnv;

@@ -205,6 +205,7 @@ Choose between ArkType (default) or Standard Schema validators:
 
 ```typescript title="src/config/env.ts" twoslash
 import arkenv from 'arkenv';
+import arkenvStandard from 'arkenv/standard';
 import { z } from 'zod';
 
 // ArkType mode (default) - requires ArkType to be installed
@@ -214,13 +215,10 @@ const env1 = arkenv({
 });
 
 // Standard mode - works without ArkType
-const env2 = arkenv(
-  {
-    PORT: z.coerce.number().int().min(0).max(65535),
-    DATABASE_URL: z.url(),
-  },
-  { validator: "standard" }
-);
+const env2 = arkenvStandard({
+  PORT: z.coerce.number().int().min(0).max(65535),
+  DATABASE_URL: z.url(),
+});
 ```
 
 ### Coercion

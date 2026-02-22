@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createEnv } from "./create-env.ts";
-import * as loader from "./utils/load-arktype.ts";
+import { describe, expect, it } from "vitest";
+import { createEnv } from "./standard.ts";
 
 const mockStandardSchema = {
 	"~standard": {
@@ -9,63 +8,37 @@ const mockStandardSchema = {
 	},
 } as any;
 
-vi.mock("./utils/load-arktype.ts", () => ({
-	loadArkTypeValidator: vi.fn(),
-}));
-
-describe("validator isolation", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
-	it("should NOT load ArkType logic when using 'standard' mode", () => {
+describe("validator isolation (standard entry)", () => {
+	it("parses standard schemas without ArkType", () => {
 		const result = createEnv(
 			{ PORT: mockStandardSchema },
-			{
-				env: { PORT: "3000" },
-				validator: "standard",
-			},
+			{ env: { PORT: "3000" } },
 		);
 
 		expect(result.PORT).toBe(3000);
-		expect(loader.loadArkTypeValidator).not.toHaveBeenCalled();
 	});
 
-	it("should load ArkType logic when using default mode", () => {
-		// Mock a minimal validator
-		vi.mocked(loader.loadArkTypeValidator).mockReturnValue({
-			parse: vi.fn().mockReturnValue({ MOCKED: true }),
-		} as any);
-
-		const result = createEnv({ TEST: "string" } as any, {
-			env: { TEST: "val" },
-		});
-
-		expect(result).toEqual({ MOCKED: true });
-		expect(loader.loadArkTypeValidator).toHaveBeenCalled();
+	it("throws on ArkType DSL strings", () => {
+		expect(() =>
+			createEnv({ PORT: "number.port" } as any, { env: { PORT: "3000" } }),
+		).toThrow('ArkType DSL strings are not supported in "standard" mode');
 	});
 
-	it("should NOT load ArkType logic when just importing 'arkenv'", async () => {
-		// Import arkenv (already imported at top, but ensure it's loaded)
-		expect(loader.loadArkTypeValidator).not.toHaveBeenCalled();
+	it("throws on validators without ~standard property", () => {
+		expect(() =>
+			createEnv({ PORT: { someArktypeThing: true } } as any, {
+				env: { PORT: "3000" },
+			}),
+		).toThrow('"~standard" property');
 	});
+});
 
-	it("should load ArkType logic when calling 'createEnv' in default mode", () => {
-		// Mock a minimal validator
-		vi.mocked(loader.loadArkTypeValidator).mockReturnValue({
-			parse: vi.fn().mockReturnValue({ MOCKED: true }),
-		} as any);
-
-		createEnv({ TEST: "string" } as any, {
-			env: { TEST: "val" },
-		});
-
-		expect(loader.loadArkTypeValidator).toHaveBeenCalled();
-	});
-
-	it("should load ArkType logic when importing from 'arktype/index.ts'", async () => {
-		// Importing from arkenv/arktype land SHOULD load arktype statically
-		// (In these tests, we mock the loader, but arktype/index.ts imports $ which imports arktype)
-		await import("./arktype/index.ts");
+describe("ArkType loading", () => {
+	it("loads ArkType statically when importing from index.ts", async () => {
+		// Importing from index.ts SHOULD load arktype statically
+		// (index.ts imports $ which imports arktype)
+		const mod = await import("./index.ts");
+		expect(mod.type).toBeDefined();
+		expect(typeof mod.type).toBe("function");
 	});
 });
