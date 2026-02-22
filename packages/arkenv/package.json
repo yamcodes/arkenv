@@ -83,7 +83,11 @@
 	},
 	"size-limit": [
 		{
-			"path": ["dist/index.mjs", "dist/standard.mjs", "dist/core.mjs"],
+			"path": [
+				"dist/index.mjs",
+				"dist/standard.mjs",
+				"dist/core.mjs"
+			],
 			"limit": "3 kB",
 			"import": "*",
 			"ignore": [

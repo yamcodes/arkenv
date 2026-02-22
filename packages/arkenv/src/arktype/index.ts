@@ -18,17 +18,6 @@ import { coerce } from "./coercion/coerce";
 export type { distill };
 
 /**
- * Like ArkType’s `type`, but with ArkEnv’s extra keywords, such as:
- *
- * - `string.host` – a hostname (e.g. `"localhost"`, `"127.0.0.1"`)
- * - `number.port` – a port number (e.g. `8080`)
- *
- * See ArkType’s docs for the full API:
- * https://arktype.io/docs/type-api
- */
-export const type = $.type;
-
-/**
  * Parse and validate environment variables using ArkEnv’s schema rules.
  *
  * This applies:
