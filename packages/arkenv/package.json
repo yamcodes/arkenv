@@ -83,16 +83,22 @@
 	},
 	"size-limit": [
 		{
-			"path": [
-				"dist/index.mjs",
-				"dist/standard.mjs",
-				"dist/core.mjs"
-			],
-			"limit": "3 kB",
+			"path": "dist/index.mjs",
+			"limit": "2 kB",
 			"import": "*",
 			"ignore": [
 				"arktype"
 			]
+		},
+		{
+			"path": "dist/standard.mjs",
+			"limit": "1.1 kB",
+			"import": "*"
+		},
+		{
+			"path": "dist/core.mjs",
+			"limit": "500 B",
+			"import": "*"
 		}
 	]
 }
