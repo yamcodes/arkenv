@@ -31,13 +31,16 @@ function arkErrorsToIssues(errors: ArkErrors): ValidationIssue[] {
 		let message = error.message;
 
 		// Strip leading path reference if ArkType included it in the message
-		const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-		const pathRegex = new RegExp(
-			`^\\s*[:.-]?\\s*${escapedPath}\\s*[:.-]?\\s*`,
-			"i",
-		);
-		if (pathRegex.test(message)) {
-			message = message.replace(pathRegex, "").trimStart();
+		let trimmed = message.trimStart();
+		if (trimmed.length > 0 && ":.-".includes(trimmed[0])) {
+			trimmed = trimmed.slice(1).trimStart();
+		}
+		if (trimmed.toLowerCase().startsWith(path.toLowerCase())) {
+			let rest = trimmed.slice(path.length).trimStart();
+			if (rest.length > 0 && ":.-".includes(rest[0])) {
+				rest = rest.slice(1);
+			}
+			message = rest.trimStart();
 		}
 
 		// Style (was ...) inline values
