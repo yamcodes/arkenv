@@ -7,27 +7,27 @@
 
 `arkenv` now ships three separate imports:
 
-- **`arkenv`** (main): ArkType-first. Includes `createEnv`, `type`, and `ArkEnvError`. The `type` helper, previously at `arkenv/arktype`, has moved here.
-- **`arkenv/standard`**: ArkType-free. A standalone `createEnv` for Standard Schema validators (Zod, Valibot, etc.) with zero ArkType in the bundle.
+- **`arkenv`** (main): ArkType-first. Includes `createEnv` (aliased to `arkenv` default import), `type`, and `ArkEnvError`. The `type` helper, previously at `arkenv/arktype`, has moved here.
+- **`arkenv/standard`**: ArkType-free. A standalone `createEnv` (aliased to `arkenv` default import) for Standard Schema validators (Zod, Valibot, etc.) with zero ArkType in the bundle.
 - **`arkenv/core`**: Mode-agnostic primitives - `ArkEnvError` and `ValidationIssue`.
 
 **For Standard Schema users** (Zod, Valibot, etc.), import from `arkenv/standard` directly, without passing `{ validator: "standard" }` on every call:
 
 ```ts
 // ❌ Before
-import { createEnv } from "arkenv";
+import arkenv from "arkenv";
 import { z } from "zod";
 
-const env = createEnv(
+const env = arkenv(
   { PORT: z.coerce.number() },
   { validator: "standard" },
 );
 
 // ✅ After
-import { createEnv } from "arkenv/standard";
+import arkenv from "arkenv/standard";
 import { z } from "zod";
 
-const env = createEnv({ PORT: z.coerce.number() });
+const env = arkenv({ PORT: z.coerce.number() });
 ```
 
 **For `arkenv/arktype` users**, the `type` helper has moved to the main entry:

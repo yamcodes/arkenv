@@ -26,10 +26,10 @@ export const formatInternalErrors = (errors: ValidationIssue[]): string =>
  *
  * @example
  * ```ts
- * import { createEnv, ArkEnvError } from 'arkenv';
+ * import arkenv, { ArkEnvError } from 'arkenv';
  *
  * try {
- *   const env = createEnv({
+ *   const env = arkenv({
  *     PORT: 'number.port',
  *     HOST: 'string.host',
  *   });
