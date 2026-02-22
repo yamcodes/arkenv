@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Dedicated Standard Entry Point
-In addition to the `validator: "standard"` option on the main `arkenv` entry's `createEnv`, ArkEnv MUST provide a dedicated `arkenv/standard` entry whose `createEnv` operates exclusively in Standard Schema mode without requiring ArkType.
+ArkEnv MUST provide a dedicated `arkenv/standard` entry whose `createEnv` operates exclusively in Standard Schema mode without requiring ArkType. The `validator: "standard"` option on the main `arkenv` entry's `createEnv` MUST be removed in favor of this dedicated entry point.
 
 #### Scenario: arkenv/standard createEnv validates using Standard Schema
 - **WHEN** `createEnv` is imported from `arkenv/standard`

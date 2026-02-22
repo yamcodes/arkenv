@@ -35,12 +35,12 @@ The runtime guards (string-DSL check, `~standard` check) that currently live in 
 - **Rationale:** Guaranteed disjoint module graph without relying on tree-shaking behavior of individual bundlers. Single source of truth for the guard logic.
 - `src/guards.ts` is internal and not exposed as a public entry point.
 
-### Decision 3: `arkenv/core` is a thin re-export barrel
+### Decision 3: `arkenv/core` is a thin re-export barrel with zero ArkType references
 
-`src/core.ts` re-exports only from `src/errors.ts`. `errors.ts` has `import type { ArkErrors } from "arktype"` - a type-only import that is erased by TypeScript and does not appear in the emitted bundle. At runtime, `errors.ts` duck-types ArkErrors via `byPath` property access; no ArkType module is required.
+`src/core.ts` re-exports only from `src/errors.ts`. `errors.ts` MUST have no ArkType references — not even `import type`. `ArkErrors`-specific logic (`isArkErrors`, `formatArkErrors`) is moved to `src/arktype/` where it belongs. `ArkEnvError` accepts only `ValidationIssue[]`; the ArkType caller site in `src/arktype/index.ts` is responsible for converting `ArkErrors` to `ValidationIssue[]` before throwing.
 
-- **Rationale:** `ArkEnvError` is mode-agnostic - it is thrown in both ArkType mode (`ArkErrors` branch) and Standard mode (`ValidationIssue[]` branch). It belongs in core.
-- **Risk:** A future refactor could introduce a runtime ArkType import in `errors.ts`, silently breaking the `core` isolation invariant. Mitigation: the `isolation.test.ts` file (or a new dedicated test) should import from the `core` entry and assert that ArkType is not required.
+- **Rationale:** A type-only import still establishes a conceptual dependency and makes it impossible to guarantee by inspection that `core` is ArkType-free. Moving ArkType-specific formatting to `src/arktype/` keeps the module boundary unambiguous and enforced structurally.
+- **Risk:** A future refactor could introduce an ArkType import in `errors.ts`, silently breaking the `core` isolation invariant. Mitigation: `isolation.test.ts` imports from the `core` entry and asserts that ArkType is not required.
 
 ### Decision 4: `./arktype` sub-path is removed (breaking)
 

@@ -2,6 +2,10 @@ import type { ArkErrors } from "arktype";
 import { indent } from "./utils/indent.ts";
 import { styleText } from "./utils/style-text.ts";
 
+/**
+ * A single validation issue produced during environment variable parsing.
+ * Used by {@link ArkEnvError} to report which key failed and why.
+ */
 export type ValidationIssue = {
 	path: string;
 	message: string;

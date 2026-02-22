@@ -1,6 +1,9 @@
 import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError, type ValidationIssue } from "./errors";
 
+/**
+ * Configuration options for {@link parseStandard}.
+ */
 export type ParseStandardConfig = {
 	/**
 	 * The environment variables to parse. Defaults to `process.env`
@@ -24,6 +27,9 @@ export type ParseStandardConfig = {
 /**
  * Standard Schema 1.0 parser dispatcher.
  * This helper implements parsing for the 'validator: "standard"' mode.
+ *
+ * @param def - An object mapping environment variable keys to Standard Schema 1.0 validators.
+ * @param config - Parsing options (env source, undeclared key handling).
  */
 export function parseStandard(
 	def: Record<string, unknown>,

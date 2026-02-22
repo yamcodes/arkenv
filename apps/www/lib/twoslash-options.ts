@@ -31,6 +31,12 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 			baseUrl: root,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
+					"arkenv/standard": [
+						path.join(root, "packages/arkenv/src/standard.ts"),
+					],
+					"arkenv/core": [
+						path.join(root, "packages/arkenv/src/core.ts"),
+					],
 				"@arkenv/vite-plugin": [
 					path.join(root, "packages/vite-plugin/src/index.ts"),
 				],

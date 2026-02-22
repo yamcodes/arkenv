@@ -11,9 +11,9 @@ The current package exposes two entry points: `.` (main - contains `createEnv`, 
 ## What Changes
 
 - **REMOVED** `./arktype` sub-path export (breaking). Consumers of `type` should import from `arkenv` (main); `parse` becomes internal-only.
-- **MODIFIED** main `arkenv` entry (`src/index.ts`): adds `type` (re-exported from the existing `src/arktype/index.ts`). The entry becomes explicitly ArkType-dependent.
+- **MODIFIED** main `arkenv` entry (`src/index.ts`): adds `type` as its own export (source of truth). `src/arktype/index.ts` becomes a purely internal module. The entry becomes explicitly ArkType-dependent.
 - **ADDED** `arkenv/standard` entry (`src/standard.ts`): a clean, ArkType-free `createEnv` for Standard Schema users. No ArkType import exists anywhere in its module graph.
-- **ADDED** `arkenv/core` entry (`src/core.ts`): re-exports `ArkEnvError` and other mode-agnostic primitives that are identical across both modes.
+- **ADDED** `arkenv/core` entry (`src/core.ts`): source of truth for `ArkEnvError`, `ValidationIssue`, and other mode-agnostic primitives. These are defined here, not re-exported from an internal file.
 - **ADDED** `src/guards.ts` (internal): extracts the standard-mode runtime guards (string-DSL check, `~standard` check) into a shared module imported by both `src/standard.ts` and `src/create-env.ts`. Single source of truth; no duplication.
 - **REMOVED** `src/utils/load-arktype.ts`: the lazy ArkType loader is deleted. `create-env.ts` is updated to import `parse` directly from `./arktype/index.ts` (static). Now that the main entry is explicitly ArkType-dependent, the loader serves no purpose.
 - **UPDATED** `package.json` `exports` map: adds `./standard` and `./core`, removes `./arktype`.
@@ -25,3 +25,4 @@ The current package exposes two entry points: `.` (main - contains `createEnv`, 
 - Affected specs: new `export-surface` capability; modified `validator-mode`
 - Affected code: `packages/arkenv/src/index.ts`, `packages/arkenv/src/create-env.ts`, `packages/arkenv/package.json`, `packages/arkenv/tsdown.config.ts`, new `src/guards.ts`, new `src/standard.ts`, new `src/core.ts`, deleted `src/utils/load-arktype.ts`
 - **BREAKING**: `arkenv/arktype` sub-path removed; consumers of `type` update to `import { type } from "arkenv"`
+- **BREAKING**: main `arkenv` entry now statically requires ArkType. Previously, importing `arkenv` without ArkType installed was possible (lazy loader). After this change it produces a hard module-resolution failure at startup. **Migration:** Standard Schema users who import from `arkenv` must switch to `arkenv/standard` (no ArkType required) or add ArkType as an explicit dependency.
