@@ -34,7 +34,7 @@
 	},
 	"scripts": {
 		"build": "tsdown",
-		"size": "size-limit --json > .size-limit.json",
+		"size": "size-limit",
 		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
@@ -83,19 +83,20 @@
 	},
 	"size-limit": [
 		{
+			"name": "arkenv",
 			"path": "dist/index.mjs",
 			"limit": "2 kB",
 			"import": "*",
-			"ignore": [
-				"arktype"
-			]
+			"ignore": ["arktype"]
 		},
 		{
+			"name": "arkenv/standard",
 			"path": "dist/standard.mjs",
 			"limit": "1.1 kB",
 			"import": "*"
 		},
 		{
+			"name": "arkenv/core",
 			"path": "dist/core.mjs",
 			"limit": "500 B",
 			"import": "*"
