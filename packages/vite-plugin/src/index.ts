@@ -18,8 +18,7 @@ export type { ImportMetaEnvAugmented } from "./types";
  *
  * @param options - The environment variable schema definition. Can be an `EnvSchema` object
  *   for typesafe validation or an ArkType `CompiledEnvSchema` for dynamic schemas.
- * @param arkenvConfig - Optional configuration for ArkEnv, including validator mode selection.
- *   Use `{ validator: "standard" }` to use Standard Schema validators (e.g., Zod, Valibot) instead of ArkType.
+ * @param arkenvConfig - Optional ArkEnv configuration (e.g. `coerce`, `onUndeclaredKey`).
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
  *
  * @example
@@ -44,24 +43,6 @@ export type { ImportMetaEnvAugmented } from "./types";
  * console.log(import.meta.env.VITE_API_URL); // Typesafe access
  * ```
  *
- * @example
- * ```ts
- * // Using Standard Schema validators (e.g., Zod)
- * import { defineConfig } from 'vite';
- * import { z } from 'zod';
- * import arkenv from '@arkenv/vite-plugin';
- *
- * export default defineConfig({
- *   plugins: [
- *     arkenv({
- *       VITE_API_URL: z.url(),
- *       VITE_API_KEY: z.string().min(1),
- *     }, {
- *       validator: 'standard'
- *     }),
- *   ],
- * });
- * ```
  */
 export default function arkenv(
 	options: CompiledEnvSchema,

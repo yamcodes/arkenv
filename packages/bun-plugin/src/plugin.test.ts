@@ -62,23 +62,15 @@ describe("Bun Plugin", () => {
 	it("should pass arkenvConfig to createEnv", () => {
 		process.env.BUN_PUBLIC_TEST = "test-value";
 
-		const standardSchema = {
-			"~standard": {
-				version: 1 as const,
-				vendor: "test",
-				validate: (val: unknown) => ({ value: val }),
-			},
-		};
-
 		arkenv(
-			{ BUN_PUBLIC_TEST: standardSchema as any },
-			{ validator: "standard" },
+			{ BUN_PUBLIC_TEST: "string" },
+			{ coerce: false },
 		);
 
 		expect(mockCreateEnv).toHaveBeenCalledWith(
-			{ BUN_PUBLIC_TEST: standardSchema },
+			{ BUN_PUBLIC_TEST: "string" },
 			expect.objectContaining({
-				validator: "standard",
+				coerce: false,
 				env: expect.any(Object),
 			}),
 		);

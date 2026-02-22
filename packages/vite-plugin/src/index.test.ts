@@ -623,7 +623,7 @@ describe("Plugin Unit Tests", () => {
 
 		const pluginInstance = arkenvPlugin(
 			{ VITE_TEST: "string" },
-			{ validator: "standard" },
+			{ coerce: false },
 		);
 
 		if (pluginInstance.config && typeof pluginInstance.config === "function") {
@@ -650,7 +650,7 @@ describe("Plugin Unit Tests", () => {
 		expect(mockCreateEnv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
-				validator: "standard",
+				coerce: false,
 				env: expect.any(Object),
 			},
 		);
