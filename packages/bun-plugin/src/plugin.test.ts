@@ -62,10 +62,7 @@ describe("Bun Plugin", () => {
 	it("should pass arkenvConfig to createEnv", () => {
 		process.env.BUN_PUBLIC_TEST = "test-value";
 
-		arkenv(
-			{ BUN_PUBLIC_TEST: "string" },
-			{ coerce: false },
-		);
+		arkenv({ BUN_PUBLIC_TEST: "string" }, { coerce: false });
 
 		expect(mockCreateEnv).toHaveBeenCalledWith(
 			{ BUN_PUBLIC_TEST: "string" },
