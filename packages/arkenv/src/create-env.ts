@@ -7,7 +7,7 @@ import type {
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
-import type { ArkEnvError } from "./errors";
+import type { ArkEnvError } from "./core";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.

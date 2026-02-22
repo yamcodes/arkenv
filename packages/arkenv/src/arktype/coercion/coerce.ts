@@ -1,5 +1,4 @@
 import type { BaseType, JsonSchema } from "arktype";
-import { ArkEnvError } from "../../errors.ts";
 import { coerceBoolean, coerceJson, coerceNumber } from "./morphs.ts";
 
 /**

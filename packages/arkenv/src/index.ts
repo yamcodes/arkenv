@@ -12,8 +12,8 @@ export { createEnv };
  * https://arktype.io/docs/type-api
  */
 export const type = $.type;
+export { ArkEnvError } from "./core";
 export type { ArkEnvConfig, EnvSchema } from "./create-env";
-export { ArkEnvError } from "./errors";
 
 /**
  * ArkEnv's main export, an alias for {@link createEnv}
