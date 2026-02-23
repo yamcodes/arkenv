@@ -1,5 +1,28 @@
 # @arkenv/bun-plugin
 
+## 0.1.5
+
+### Patch Changes
+
+- #### Support `NODE_ENV` in schema _[`#804`](https://github.com/yamcodes/arkenv/pull/804) [`6f8b4f0`](https://github.com/yamcodes/arkenv/commit/6f8b4f032d085c5079cf63abe17dce5e73d61f07) [@joakimbeng](https://github.com/joakimbeng)_
+
+  When `NODE_ENV` is included in your schema, it is now validated at startup and correctly typed.
+
+  ```ts
+  // src/env.ts
+  import { type } from "arkenv";
+
+  export default type({
+    BUN_PUBLIC_API_URL: "string.url",
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  ```tsx
+  // process.env.NODE_ENV is now typed as "development" | "production" | "test"
+  <p>Mode: {process.env.NODE_ENV}</p>
+  ```
+
 ## 0.1.4
 
 ### Patch Changes
