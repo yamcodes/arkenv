@@ -6,11 +6,12 @@ import type { type } from "arktype";
  * based on the schema validator.
  *
  * This type extracts the inferred type from the schema (result of `type()` from arkenv),
- * filters it to only include variables matching the Bun prefix (defaults to "BUN_PUBLIC_"),
+ * filters by the Bun prefix (defaults to "BUN_PUBLIC_") and always includes `NODE_ENV`,
  * and makes them available on `process.env`.
  *
  * @template TSchema - The environment variable schema (result of `type()` from arkenv)
  * @template Prefix - The prefix to filter by (defaults to "BUN_PUBLIC_")
+ * @template AllowedKeys - Additional keys to include regardless of prefix (defaults to "NODE_ENV")
  *
  * @example
  * ```ts
@@ -21,6 +22,7 @@ import type { type } from "arktype";
  * export const Env = type({
  *   BUN_PUBLIC_API_URL: 'string',
  *   BUN_PUBLIC_DEBUG: 'boolean',
+ *   NODE_ENV: "'development' | 'production' | 'test'", // Included via AllowedKeys
  *   PORT: 'number.port', // Server-only, won't be in ProcessEnvAugmented
  * });
  *
@@ -39,6 +41,7 @@ import type { type } from "arktype";
  *
  * declare global {
  *   namespace NodeJS {
+ *     // process.env.BUN_PUBLIC_* and NODE_ENV are now typesafe
  *     interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
  *   }
  * }
@@ -47,4 +50,5 @@ import type { type } from "arktype";
 export type ProcessEnvAugmented<
 	TSchema extends type.Any,
 	Prefix extends string = "BUN_PUBLIC_",
-> = FilterByPrefix<InferType<TSchema>, Prefix, "NODE_ENV">;
+	AllowedKeys extends string = "NODE_ENV",
+> = FilterByPrefix<InferType<TSchema>, Prefix, AllowedKeys>;
