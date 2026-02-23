@@ -47,4 +47,4 @@ import type { type } from "arktype";
 export type ProcessEnvAugmented<
 	TSchema extends type.Any,
 	Prefix extends string = "BUN_PUBLIC_",
-> = FilterByPrefix<InferType<TSchema>, Prefix>;
+> = FilterByPrefix<InferType<TSchema>, Prefix, "NODE_ENV">;
