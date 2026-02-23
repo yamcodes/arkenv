@@ -1,5 +1,22 @@
 ---
-"@arkenv/bun-plugin": minor
+"@arkenv/bun-plugin": patch
 ---
 
-Include the `NODE_ENV` environment variable as one of the publicly exposed environment variables so it's possible to type it. Bun already exposes `process.env.NODE_ENV` to the frontend and now it's possible to get it correctly typed.
+#### Support `NODE_ENV` in schema
+
+When `NODE_ENV` is included in your schema, it is now validated at startup and correctly typed.
+
+```ts
+// src/env.ts
+import { type } from "arkenv";
+
+export default type({
+  BUN_PUBLIC_API_URL: "string.url",
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+```tsx
+// process.env.NODE_ENV is now typed as "development" | "production" | "test"
+<p>Mode: {process.env.NODE_ENV}</p>
+```
