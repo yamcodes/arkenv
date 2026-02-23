@@ -43,8 +43,6 @@ describe("Bun Plugin Utils", () => {
 
 		// Check that NODE_ENV is present
 		expect(envMap.has("NODE_ENV")).toBe(true);
-		expect(envMap.get("NODE_ENV")).toBe(
-			JSON.stringify("development"),
-		);
+		expect(envMap.get("NODE_ENV")).toBe(JSON.stringify("development"));
 	});
 });
