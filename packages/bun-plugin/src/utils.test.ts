@@ -33,4 +33,16 @@ describe("Bun Plugin Utils", () => {
 		expect(envMap.has("PORT")).toBe(false);
 		expect(envMap.has("DATABASE_URL")).toBe(false);
 	});
+
+	it("should not filter out NODE_ENV", () => {
+		process.env.NODE_ENV = "development";
+
+		const envMap = processEnvSchema({
+			NODE_ENV: "'development' | 'test' | 'production'",
+		} as const);
+
+		// Check that NODE_ENV is present
+		expect(envMap.has("NODE_ENV")).toBe(true);
+		expect(envMap.get("NODE_ENV")).toBe(JSON.stringify("development"));
+	});
 });

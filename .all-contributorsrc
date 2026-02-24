@@ -54,6 +54,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "joakimbeng",
+      "name": "Joakim Carlstein",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1427383?v=4",
+      "profile": "https://joakim.beng.se",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ]
 }

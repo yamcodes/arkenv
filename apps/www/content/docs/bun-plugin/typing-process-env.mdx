@@ -39,12 +39,27 @@ const apiUrl = process.env.BUN_PUBLIC_API_URL; // ✅ Typesafe
 const debug = process.env.BUN_PUBLIC_DEBUG; // ✅ Typesafe
 ```
 
+`NODE_ENV` is also supported — when defined in your schema, it is validated and correctly typed:
+
+```ts title="src/env.ts"
+import { type } from "arkenv";
+
+export default type({
+  BUN_PUBLIC_API_URL: "string.url",
+  NODE_ENV: "'development' | 'production' | 'test'",
+});
+```
+
+```ts title="src/app.tsx"
+process.env.NODE_ENV; // ✅ "development" | "production" | "test"
+```
+
 ## How it works
 
 The `ProcessEnvAugmented` type:
 
 1. Extracts the inferred type from your schema (the result of `type()` from arkenv)
-2. Filters to only include variables matching the Bun prefix (defaults to `"BUN_PUBLIC_"`)
+2. Filters to only include variables matching the Bun prefix (defaults to `"BUN_PUBLIC_"`) and `NODE_ENV`
 3. Makes them available on `process.env` with full type safety
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in the augmented `process.env` type.
