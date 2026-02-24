@@ -24,7 +24,7 @@ test.describe("Smoke Tests", () => {
 		"/docs/arkenv/quickstart",
 		"/docs/arkenv/examples",
 		"/docs/arkenv/coercion",
-		"/docs/arkenv/validator-mode",
+		"/docs/arkenv/standard",
 		"/docs/arkenv/integrations/ide/vscode",
 		"/docs/arkenv/integrations/ide/jetbrains",
 		"/docs/arkenv/how-to/load-environment-variables",
