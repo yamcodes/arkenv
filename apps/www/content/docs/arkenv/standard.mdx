@@ -1,0 +1,37 @@
+---
+title: arkenv/standard
+description: The ArkType-free entry point for Standard Schema validators.
+---
+
+`arkenv/standard` is the ArkType-free entry point. Use it when you want Standard Schema validators (Zod, Valibot, etc.) without pulling in ArkType as a dependency.
+
+> [!TIP]
+> Already using ArkType? You can still use Zod, Valibot, and other Standard Schema validators alongside it. See [Standard Schema validators](/docs/arkenv/integrations/standard-schema).
+
+## When to use it
+
+| Feature | `arkenv` | `arkenv/standard` |
+| :--- | :--- | :--- |
+| **ArkType DSL** | ✅ Native | ⚠️ Via `type(...)` |
+| **ArkEnv keywords** (`"number.port"`, `"string.host"`) | ✅ Yes | ❌ No |
+| **Standard Schema** (Zod, Valibot, Typia) | ✅ Yes | ✅ Yes |
+| **Automatic coercion** | ✅ Yes | ❌ Validator-defined |
+| **Works without ArkType** | ❌ No | ✅ Yes |
+
+> In a new project, prefer `arkenv`. `arkenv/standard` exists for migrations and ArkType-free setups.
+
+## Usage
+
+```ts twoslash
+import arkenv from 'arkenv/standard';
+import { z } from 'zod';
+
+const env = arkenv({
+  PORT: z.coerce.number().int().min(0).max(65535),
+  DATABASE_URL: z.string().url(),
+});
+```
+
+## Requirements
+
+A validator that implements Standard Schema (e.g. `zod@^3.24.0`, `valibot@^1.0.0`).
