@@ -1,5 +1,17 @@
 # ArkEnv
 
+## 0.11.0
+
+### Minor Changes
+
+- #### Remove `ArkEnvError` import from "arkenv" _[`#815`](https://github.com/yamcodes/arkenv/pull/815) [`5e8025f`](https://github.com/yamcodes/arkenv/commit/5e8025fd53e5637cd326848f6e0e0d3a20fc1a8b) [@yamcodes](https://github.com/yamcodes)_
+
+  The `ArkEnvError` class is now only available via:
+
+  ```ts
+  import { ArkEnvError } from "arkenv/core";
+  ```
+
 ## 0.10.0
 
 ### Minor Changes
