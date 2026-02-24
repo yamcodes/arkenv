@@ -34,7 +34,7 @@
 	},
 	"scripts": {
 		"build": "tsdown",
-		"size": "size-limit",
+		"size": "size-limit --json > .size-limit.json",
 		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
