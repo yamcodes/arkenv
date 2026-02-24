@@ -3,25 +3,16 @@ title: Standard Schema validators
 description: You can use any Standard Schema validator with ArkEnv.
 ---
 
-ArkEnv supports any validator that implements the [Standard Schema](https://standardschema.dev/) specification.
-
-By default, ArkEnv runs validation through **ArkType**, which natively supports Standard Schema validators like Zod and Valibot. This lets you freely mix ArkType's string DSL with other validation libraries in the same schema.
-
-If you prefer not to install ArkType, ArkEnv also provides a **Standard-only mode** that works with Standard Schema validators directly.
-
-## Supported validators
-
-ArkEnv works with any validator that implements the Standard Schema interface, including:
+Any validator that implements the [Standard Schema](https://standardschema.dev/) specification is supported. For example:
 
 - **[Zod](https://zod.dev/)** - TypeScript-first schema validation
 - **[Valibot](https://valibot.dev/)** - Modular schema validation
 - **[ArkType](https://arktype.io/)** (native) - TypeScript's 1\:1 validator
 
-To read more about Standard Schema, see the [Standard Schema documentation](https://standardschema.dev/).
+ArkType works both as a validator and as a wrapper for other validators - all via Standard Schema. This means you can freely mix ArkType, Zod, Valibot, and any other Standard Schema validator in the same schema.
 
-## Using Standard Schema with ArkType (default)
-
-Since ArkType natively supports Standard Schema, you can freely mix ArkType DSL strings with Standard Schema validators in the same schema - no configuration needed.
+> [!TIP]
+> Want to avoid ArkType as a dependency altogether? Use [`arkenv/standard`](/docs/arkenv/standard) instead.
 
 ```package-install
 arkenv arktype zod
@@ -43,46 +34,8 @@ export const env = arkenv({
 });
 ```
 
-This is useful when:
-
-- You want ArkType's concise DSL for simple fields
-- You need library-specific features (transforms, refinements) for complex fields
-- You're migrating gradually from another validation library
-
-> [!TIP]
-> This works with any Standard Schema validator, including Valibot. Just install your preferred validator and use it alongside ArkType DSL strings.
-
-## Using Standard Schema without ArkType
-
-If you don't want ArkType installed, you can run ArkEnv in Standard-only mode using the `arkenv/standard` entry point:
-
-```ts twoslash title="env.ts"
-import arkenv from 'arkenv/standard';
-import { z } from 'zod';
-
-export const env = arkenv({
-  PORT: z.coerce.number().int().min(0).max(65535),
-  DATABASE_URL: z.url(),
-  DEBUG: z.coerce.boolean().default(false),
-});
-```
-
-### When to use Standard-only mode
-
-- You want a zero-ArkType runtime path
-- You're migrating from another validation library
-- You prefer Standard Schema validators exclusively
-- You want to minimize bundle size
-
-### Limitations
-
-- **ArkType DSL strings are not supported** (e.g., `"number.port"`, `"string.host"`)
-- **ArkType coercion is not available** - validators handle their own parsing
-
 ## Need help?
 
-If you run into issues:
-
-1. **In default mode**: Ensure you're using `arktype@>=2.1.28`
+1. Use `arktype@>=2.1.28` — or switch to `arkenv/standard` to drop the ArkType dependency entirely
 2. Verify your validator library implements Standard Schema 1.0
 3. Join our [Discord community](https://discord.gg/zAmUyuxXH9) for help

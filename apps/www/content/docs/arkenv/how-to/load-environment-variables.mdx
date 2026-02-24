@@ -199,22 +199,22 @@ export const env = arkenv({
 
 ArkEnv supports several configuration options to customize its behavior:
 
-### Validator mode
+### Entry point
 
-Choose between ArkType (default) or Standard Schema validators:
+Choose between `arkenv` (requires ArkType) or `arkenv/standard` (ArkType-free):
 
 ```typescript title="src/config/env.ts" twoslash
 import arkenv from 'arkenv';
 import arkenvStandard from 'arkenv/standard';
 import { z } from 'zod';
 
-// ArkType mode (default) - requires ArkType to be installed
+// arkenv - requires ArkType to be installed
 const env1 = arkenv({
   PORT: "number.port",
   HOST: "string.host",
 });
 
-// Standard mode - works without ArkType
+// arkenv/standard - works without ArkType
 const env2 = arkenvStandard({
   PORT: z.coerce.number().int().min(0).max(65535),
   DATABASE_URL: z.url(),
@@ -223,7 +223,7 @@ const env2 = arkenvStandard({
 
 ### Coercion
 
-Control automatic type conversion (only available in ArkType mode):
+Control automatic type conversion (not available in `arkenv/standard`):
 
 ```typescript title="src/config/env.ts" twoslash
 import arkenv from 'arkenv';
@@ -268,7 +268,7 @@ const env = arkenv(
 
 ### Array format
 
-Control how arrays are parsed (only available in ArkType mode):
+Control how arrays are parsed (not available in `arkenv/standard`):
 
 ```typescript title="src/config/env.ts" twoslash
 import arkenv from 'arkenv';
