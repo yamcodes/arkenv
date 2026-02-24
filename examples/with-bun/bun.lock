@@ -5,7 +5,7 @@
     "": {
       "name": "arkenv-example-with-bun",
       "dependencies": {
-        "arkenv": "^0.9.3",
+        "arkenv": "^0.10.0",
         "arktype": "^2.1.29",
       },
       "devDependencies": {
@@ -28,7 +28,7 @@
 
     "@types/node": ["@types/node@25.0.10", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg=="],
 
-    "arkenv": ["arkenv@0.9.3", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-DFZy3a1F0ZcaL+A0ugJB8m7IN/uCSDmvCY/kUJK53Oau3EJqf0DizUgSjEYZzv1CR3b3FWXml/sk3mDqWg5+2Q=="],
+    "arkenv": ["arkenv@0.10.0", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-81IlOJ6PErSMQtuJ5c18gBl1EmgIngBzYdTbIihdPLUZaNHpFOZqdVNiRE8zxruxL0USEfrMKUXhuaanhGc+rQ=="],
 
     "arkregex": ["arkregex@0.0.5", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw=="],
 

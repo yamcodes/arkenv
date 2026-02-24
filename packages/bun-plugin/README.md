@@ -16,7 +16,7 @@
 - Build-time validation - app won't start if environment variables are invalid
 - Typesafe environment variables backed by TypeScript
 - Access to ArkType's powerful type system
-- Automatic filtering of client-exposed variables (defaults to `BUN_PUBLIC_*`)
+- Automatic filtering of client-exposed variables (defaults to `BUN_PUBLIC_*` and `NODE_ENV`)
 
 > [!IMPORTANT]
 > This plugin requires `arktype` to be installed in your project.
@@ -72,6 +72,7 @@ import { type } from 'arkenv';
 export default type({
   BUN_PUBLIC_API_URL: 'string',
   BUN_PUBLIC_DEBUG: 'boolean',
+  NODE_ENV: '"development" | "test" | "production" = "development"',
 });
 ```
 
@@ -111,6 +112,7 @@ await Bun.build({
     arkenv(type({
       BUN_PUBLIC_API_URL: 'string',
       BUN_PUBLIC_DEBUG: 'boolean',
+      NODE_ENV: '"development" | "test" | "production" = "development"',
     })),
   ],
 });

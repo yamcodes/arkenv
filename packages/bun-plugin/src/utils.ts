@@ -17,8 +17,11 @@ export function processEnvSchema<T extends SchemaShape>(
 		env: config?.env ?? process.env,
 	});
 	const prefix = "BUN_PUBLIC_";
+	const allowed = new Set(["NODE_ENV"]);
 	const filteredEnv = Object.fromEntries(
-		Object.entries(env).filter(([key]) => key.startsWith(prefix)),
+		Object.entries(env).filter(
+			([key]) => allowed.has(key) || key.startsWith(prefix),
+		),
 	);
 	const envMap = new Map<string, string>();
 	for (const [key, value] of Object.entries(filteredEnv)) {
