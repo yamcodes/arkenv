@@ -26,7 +26,8 @@ export const formatInternalErrors = (errors: ValidationIssue[]): string =>
  *
  * @example
  * ```ts
- * import arkenv, { ArkEnvError } from 'arkenv';
+ * import arkenv from 'arkenv';
+ * import { ArkEnvError } from 'arkenv/core';
  *
  * try {
  *   const env = arkenv({
