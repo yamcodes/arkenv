@@ -12,10 +12,10 @@ export const createTable = (results: SizeLimitResult[]): string => {
 	}
 
 	const tableRows = results
-		.map(
-			(r) =>
-				`| \`${r.package}\` | \`${r.size}\` | \`${r.limit}\` | \`${r.diff ?? " - "}\` | ${r.status} |`,
-		)
+		.map((r) => {
+			const label = r.file.startsWith(r.package) ? r.file : r.package;
+			return `| \`${label}\` | \`${r.size}\` | \`${r.limit}\` | \`${r.diff ?? " - "}\` | ${r.status} |`;
+		})
 		.join("\n");
 	return `| Package | Size | Limit | Diff | Status |\n|:--- | :---:| :---:| :---:| :---:|\n${tableRows}`;
 };
