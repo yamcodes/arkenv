@@ -47,6 +47,26 @@
 	}
 }
 
+/* Mobile nav dropdown viewport - needs its own background since it overflows the header div */
+#nd-nav > div > div:last-child {
+	background-color: rgba(255, 255, 255, 0.95);
+}
+
+.dark #nd-nav > div > div:last-child {
+	background-color: rgba(8, 16, 33, 0.95);
+}
+
+@supports (backdrop-filter: blur(8px)) {
+	#nd-nav > div > div:last-child {
+		backdrop-filter: blur(8px);
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+
+	.dark #nd-nav > div > div:last-child {
+		background-color: rgba(8, 16, 33, 0.8);
+	}
+}
+
 /* Ensure children (like the sticky bar) don't apply an additional blur or background */
 #nd-nav nav {
 	backdrop-filter: none !important;
