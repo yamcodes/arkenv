@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-example-without-arktype",
+	"name": "arkenv-example-with-zod",
 	"version": "0.0.0",
 	"description": "",
 	"main": "index.js",
