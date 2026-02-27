@@ -6,7 +6,7 @@ import { NewBadge } from "./ui/new-badge";
 
 export function AnnouncementBadge({
 	arrow = true,
-	new: newBadge = true,
+	new: newBadge = false,
 	href,
 	children,
 }: PropsWithChildren<{
@@ -33,7 +33,9 @@ export function AnnouncementBadge({
 			{newBadge && (
 				<NewBadge className="h-5 font-semibold bg-blue-500/10 text-blue-700 border-blue-500/10 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/20 shadow-none hover:bg-blue-500/20 transition-colors" />
 			)}
-			<span className="flex items-center gap-1 mr-1">
+			<span
+				className={`flex items-center gap-1 mr-1${!newBadge ? " ml-2" : ""}`}
+			>
 				{children}
 				{arrow &&
 					href &&
