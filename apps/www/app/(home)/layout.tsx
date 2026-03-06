@@ -37,8 +37,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 								<SiGithub className="size-5" />
 							</a>,
 						]}
-						menuActions={[
-							<ThemeToggle key="theme-toggle" />,
+						menuActions={[<ThemeToggle key="theme-toggle" />]}
+						menuSocialActions={[
 							<a
 								key="github"
 								href="https://github.com/yamcodes/arkenv"
@@ -47,7 +47,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 								aria-label="GitHub"
 								className="flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
 							>
-								<SiGithub className="size-5" />
+								<SiGithub className="size-6" />
 							</a>,
 						]}
 					/>

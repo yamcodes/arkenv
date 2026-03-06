@@ -23,8 +23,10 @@ export type HeaderProps = {
 	logoHref?: string;
 	links?: HeaderLink[];
 	actions?: ReactNode[];
-	/** Actions rendered inside the mobile menu (e.g., ThemeToggle). */
+	/** Rendered in the mobile menu "Appearance" row (label left, content right). */
 	menuActions?: ReactNode[];
+	/** Rendered centered at the very bottom of the mobile menu (e.g. social icons). */
+	menuSocialActions?: ReactNode[];
 	/** Optional trigger rendered left of the logo on mobile (e.g. sidebar toggle). */
 	sidebarTrigger?: ReactNode;
 };
@@ -35,6 +37,7 @@ export function Header({
 	links,
 	actions,
 	menuActions,
+	menuSocialActions,
 	sidebarTrigger,
 }: HeaderProps) {
 	const [scrolled, setScrolled] = useState(false);
@@ -55,7 +58,8 @@ export function Header({
 
 	const hasLinks = links && links.length > 0;
 	const hasMenuActions = menuActions && menuActions.length > 0;
-	const hasMobileMenu = hasLinks || hasMenuActions;
+	const hasSocialActions = menuSocialActions && menuSocialActions.length > 0;
+	const hasMobileMenu = hasLinks || hasMenuActions || hasSocialActions;
 	const hasRightContent = (actions && actions.length > 0) || hasMobileMenu;
 
 	return (
@@ -160,8 +164,19 @@ export function Header({
 							})}
 					</div>
 					{hasMenuActions && (
-						<div className="pt-4 border-t border-fd-border flex items-center gap-2">
-							{menuActions.map((action, i) => (
+						<div className="flex items-center justify-between py-4 border-t border-fd-border">
+							<span className="text-sm font-medium text-fd-foreground">Appearance</span>
+							<div className="flex items-center gap-2">
+								{menuActions.map((action, i) => (
+									// biome-ignore lint/suspicious/noArrayIndexKey: static action list
+									<div key={i}>{action}</div>
+								))}
+							</div>
+						</div>
+					)}
+					{hasSocialActions && (
+						<div className="py-4 flex items-center justify-center gap-4">
+							{menuSocialActions.map((action, i) => (
 								// biome-ignore lint/suspicious/noArrayIndexKey: static action list
 								<div key={i}>{action}</div>
 							))}
