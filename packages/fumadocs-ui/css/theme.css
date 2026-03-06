@@ -196,6 +196,22 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	background-image: var(--icon-external-dark);
 }
 
+/* Search bar background: solid white/black so it reads cleanly against page content */
+button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 100%);
+	--color-fd-accent: hsl(0, 0%, 100%);
+}
+
+.dark button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 0%);
+	--color-fd-accent: hsl(0, 0%, 0%);
+}
+
+/* Right-align the theme toggle when rendered inside the sidebar */
+aside .theme-toggle {
+	margin-left: auto;
+}
+
 /* Fumadocs built-in nav backdrop (fallback, overridden by custom Header) */
 #nd-nav {
 	background-color: transparent !important;
