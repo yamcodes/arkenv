@@ -1,6 +1,7 @@
 import { Header } from "@arkenv/fumadocs-ui/components";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
+import { SearchToggle } from "~/components/ui/search-toggle";
 import type { CSSProperties, ReactNode } from "react";
 import { InstallButton } from "~/components/docs/install-button";
 import { Logo } from "~/components/page/logo";
@@ -24,6 +25,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 					collapsible: false,
 				}}
 				themeSwitch={{ enabled: false }}
+				searchToggle={{ enabled: false }}
 				nav={{
 					component: (
 						<>
@@ -43,6 +45,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 									},
 								]}
 								actions={[
+									<SearchToggle key="search" />,
 									<ThemeToggle key="theme-toggle" />,
 									<a
 										key="github"
