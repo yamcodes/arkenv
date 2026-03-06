@@ -39,11 +39,11 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 		<header
 			className={cn(
 				"fixed top-0 left-0 right-0 z-50",
-				"h-[var(--fd-nav-height,80px)]",
+				"h-(--fd-nav-height,80px)",
 				"border-b transition-[background-color,border-color,backdrop-filter] duration-300",
 				scrolled
-					? "border-fd-border/60 bg-[color:var(--background)]/85 backdrop-blur-xl"
-					: "border-transparent bg-[color:var(--background)]",
+					? "border-fd-border/60 bg-(--background)/85 backdrop-blur-xl"
+					: "border-fd-border/60 bg-background",
 			)}
 		>
 			<div className="flex items-center h-full px-4 max-w-(--fd-layout-width) mx-auto w-full">

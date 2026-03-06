@@ -53,9 +53,24 @@
 	background-color: transparent !important;
 }
 
-/* Sidebar link font weight */
-#nd-sidebar a {
+/* Sidebar item base styles */
+#nd-sidebar a,
+#nd-sidebar button {
 	@apply font-medium;
+	transition: color 150ms;
+}
+
+/* Remove rectangular hover background — use text color transition instead */
+/* .wrap-anywhere targets fumadocs nav items specifically, excluding styled buttons like install */
+#nd-sidebar a.wrap-anywhere:hover,
+#nd-sidebar button.wrap-anywhere:hover {
+	background-color: transparent;
+	color: var(--color-fd-primary);
+}
+
+/* Remove rectangular active background */
+#nd-sidebar a.wrap-anywhere[data-active="true"] {
+	background-color: transparent;
 }
 
 /* Sidebar section header font weight */
