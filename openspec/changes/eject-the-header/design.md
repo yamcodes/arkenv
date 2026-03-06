@@ -49,14 +49,14 @@ The `Header` component accepts `links` (array of `{ text, url }`) and `actions` 
 **Alternatives considered:**
 - Hardcode ArkEnv-specific links inside the component — makes the component non-reusable
 
-### Decision: Keep `layout.config.tsx` but simplify it
+### Decision: Delete `layout.config.tsx`
 
-`layout.config.tsx` continues to define shared options. Nav-specific options (links array) move to the Header instantiation in each layout file. The `themeSwitch` config can be removed since the Header owns the theme toggle.
+Once all nav-specific options (logo, links, actions/theme toggle) moved into the Header instantiation inside each layout file, `layout.config.tsx` became an empty shell with no remaining consumers. Rather than keeping a meaningless file, it was deleted. Each layout file now directly instantiates `Header` with its own props.
 
 ## Risks / Trade-offs
 
-- **Mobile nav not included in scope** → The built-in fumadocs mobile menu is replaced along with the desktop nav. We must ensure a minimal mobile fallback (hamburger menu or reuse fumadocs-ui's mobile drawer) is included to avoid breaking mobile UX.
-  - Mitigation: Keep the fumadocs-ui mobile nav by using the `nav.children` slot or render a simple mobile menu within the Header component.
+- **Mobile nav not included in scope** → The built-in fumadocs mobile menu is replaced along with the desktop nav. A full mobile drawer/hamburger is deferred to a future iteration.
+  - Mitigation chosen: Nav links are hidden on mobile via responsive CSS (`hidden md:flex`). The logo and actions remain visible on all screen sizes. No `nav.children` wiring or custom mobile drawer is included in this change — mobile navigation is a known gap and should be addressed in a follow-up.
 
 - **Upstream fumadocs-ui nav API changes** → If fumadocs-ui changes how `nav.component` works, we'd need to update the wiring.
   - Mitigation: Low probability at this version (16.4.7). The slot has been stable across recent versions.

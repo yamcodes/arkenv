@@ -23,7 +23,7 @@ The `@arkenv/fumadocs-ui` package MUST export a `Header` React component that re
 The `Header` component MUST adapt its visual appearance based on the page scroll position.
 
 #### Scenario: Transparent at top
-- **WHEN** the page scroll position is at the top (scrollY === 0)
+- **WHEN** the viewport is at the very top of the document (no vertical scroll offset)
 - **THEN** the header background MUST be transparent (no visible background fill)
 
 #### Scenario: Blurred on scroll
@@ -35,7 +35,7 @@ The `Header` component MUST be positioned fixed at the top of the viewport.
 
 #### Scenario: Fixed layout
 - **WHEN** `Header` is rendered
-- **THEN** it MUST have `position: fixed` (or equivalent Tailwind class) so it stays visible as the user scrolls
+- **THEN** it MUST remain visible at the top of the viewport as the user scrolls
 
 #### Scenario: Z-index
 - **WHEN** `Header` is rendered
