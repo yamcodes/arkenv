@@ -68,6 +68,7 @@ export function Header({
 				"fixed top-0 left-0 right-0 z-50",
 				"h-(--fd-nav-height,80px)",
 				"border-b transition-[background-color,border-color,backdrop-filter] duration-300",
+				mobileOpen && "max-md:border-b-transparent",
 				scrolled
 					? "border-fd-border/60 bg-(--background)/85 backdrop-blur-xl"
 					: "border-fd-border/60 bg-background",
@@ -126,7 +127,11 @@ export function Header({
 								aria-label="Toggle menu"
 								aria-expanded={mobileOpen}
 							>
-								{mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+								{mobileOpen ? (
+									<X className="h-5 w-5" />
+								) : (
+									<Menu className="h-5 w-5" />
+								)}
 							</button>
 						)}
 					</div>
@@ -165,7 +170,9 @@ export function Header({
 					</div>
 					{hasMenuActions && (
 						<div className="flex items-center justify-between py-4 border-t border-fd-border">
-							<span className="text-sm font-medium text-fd-foreground">Appearance</span>
+							<span className="text-sm font-medium text-fd-foreground">
+								Appearance
+							</span>
 							<div className="flex items-center gap-2">
 								{menuActions.map((action, i) => (
 									// biome-ignore lint/suspicious/noArrayIndexKey: static action list
