@@ -3,17 +3,18 @@
 import { useEffect, useState } from "react";
 
 /**
- * Returns true only on the user's first docs session (null while determining).
- * Increments a localStorage counter on each mount.
+ * Returns true only on the user's first session for a given key (null while determining).
+ * Increments a localStorage counter on each mount, scoped to the provided key.
  */
-export function useIsFirstSession(): boolean | null {
+export function useIsFirstSession(key: string): boolean | null {
 	const [firstSession, setFirstSession] = useState<boolean | null>(null);
 
 	useEffect(() => {
-		const sessions = Number(localStorage.getItem("arkenv-doc-sessions") ?? 0);
-		localStorage.setItem("arkenv-doc-sessions", String(sessions + 1));
+		const storageKey = `arkenv-doc-sessions:${key}`;
+		const sessions = Number(localStorage.getItem(storageKey) ?? 0);
+		localStorage.setItem(storageKey, String(sessions + 1));
 		setFirstSession(sessions === 0);
-	}, []);
+	}, [key]);
 
 	return firstSession;
 }
