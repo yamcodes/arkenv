@@ -38,6 +38,7 @@
 		"dist/*"
 	],
 	"scripts": {
+		"dev": "tsdown --watch",
 		"build": "tsdown",
 		"clean": "rimraf dist",
 		"typecheck": "tsc --noEmit",
