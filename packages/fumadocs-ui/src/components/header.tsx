@@ -122,7 +122,7 @@ export function Header({
 						{hasMobileMenu && (
 							<button
 								type="button"
-								className="md:hidden flex items-center justify-center h-8 w-8 rounded-md text-fd-muted-foreground hover:text-fd-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
+								className="md:hidden flex items-center justify-center h-8 w-8 rounded-md text-fd-foreground hover:text-fd-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
 								onClick={() => setMobileOpen((open) => !open)}
 								aria-label="Toggle menu"
 								aria-expanded={mobileOpen}

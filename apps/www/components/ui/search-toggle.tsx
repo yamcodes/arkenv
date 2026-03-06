@@ -20,7 +20,7 @@ export function SearchToggle() {
 				aria-label="Open Search"
 				data-search=""
 				onClick={() => setOpenSearch(true)}
-				className="md:hidden inline-flex items-center justify-center size-8 rounded-md text-fd-muted-foreground hover:text-fd-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
+				className="md:hidden inline-flex items-center justify-center size-8 rounded-md text-fd-foreground hover:text-fd-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
 			>
 				<Search className="size-4" />
 			</button>
