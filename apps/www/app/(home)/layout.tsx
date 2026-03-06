@@ -1,13 +1,16 @@
 import { Header } from "@arkenv/fumadocs-ui/components";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Logo } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<HomeLayout
+			style={
+				{ paddingTop: "var(--fd-nav-height, 80px)" } as CSSProperties
+			}
 			nav={{
 				component: (
 					<Header

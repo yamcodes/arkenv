@@ -46,7 +46,7 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 					: "border-transparent bg-[color:var(--background)]",
 			)}
 		>
-			<div className="flex items-center h-full px-4 sm:px-6 lg:px-12 max-w-(--fd-layout-width) mx-auto w-full">
+			<div className="flex items-center h-full px-4 max-w-(--fd-layout-width) mx-auto w-full">
 				{/* Left: logo + nav links */}
 				<div className="flex items-center gap-6">
 					<FumadocsLink
