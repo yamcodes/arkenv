@@ -26,7 +26,9 @@ export function ThemeToggle({ className }: { className?: string }) {
 	const [mounted, setMounted] = useState(hydrated);
 
 	// Keep the cache up to date whenever the theme resolves.
-	if (theme !== undefined) cachedTheme = theme;
+	useEffect(() => {
+		if (theme !== undefined) cachedTheme = theme;
+	}, [theme]);
 
 	useEffect(() => {
 		hydrated = true;
