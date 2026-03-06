@@ -287,3 +287,15 @@ div:has(+ #nd-sidebar-mobile) {
 [data-radix-popper-content-wrapper] {
 	z-index: 70 !important;
 }
+
+/* Search dialog: raise above header (z-50) and mobile sidebar (z-60) */
+[role="dialog"][data-state] {
+	z-index: 65 !important;
+}
+
+/* On mobile: push the search input box below the fixed header */
+@media (max-width: 767px) {
+	[role="dialog"][data-state] {
+		top: calc(var(--fd-nav-height, 80px) + 0.5rem) !important;
+	}
+}
