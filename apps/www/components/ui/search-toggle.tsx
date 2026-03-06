@@ -31,7 +31,7 @@ export function SearchToggle() {
 				aria-label="Open Search"
 				data-search-full=""
 				onClick={() => setOpenSearch(true)}
-				className="hidden md:inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 px-3 py-2 text-base text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground min-w-40"
+				className="hidden md:inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 px-3.5 py-2 text-base text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground min-w-44"
 			>
 				<Search className="size-4 shrink-0" />
 				<span className="flex-1 text-start">Search</span>
