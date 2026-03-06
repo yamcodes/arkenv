@@ -53,6 +53,11 @@
 	background-color: transparent !important;
 }
 
+/* Sidebar link font weight */
+#nd-sidebar a {
+	font-weight: 500;
+}
+
 /* Remove fumadocs' xl:pt-14 on the docs article — our header spacer already handles the top offset */
 @media (min-width: 80rem) {
 	#nd-page {

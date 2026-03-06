@@ -85,7 +85,7 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 
 				{/* Right: actions */}
 				{actions && actions.length > 0 && (
-					<div className="flex-1 flex items-center justify-end gap-1">
+					<div className="flex-1 flex items-center justify-end gap-4">
 						{actions.map((action, i) => (
 							// biome-ignore lint/suspicious/noArrayIndexKey: static action list
 							<div key={i}>{action}</div>
