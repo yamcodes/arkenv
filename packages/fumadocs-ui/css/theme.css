@@ -275,3 +275,15 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	--fd-sidebar-drawer-offset: -100%;
 	z-index: 60;
 }
+
+/* Backdrop overlay: raise above the header (z-50) so tapping the header area
+   also dismisses the drawer, and the blur covers the full viewport */
+div:has(+ #nd-sidebar-mobile) {
+	z-index: 55;
+}
+
+/* Radix popper portals (workspace switcher dropdown, etc.) render at the body
+   level — they must be above the sidebar drawer to stay visible */
+[data-radix-popper-content-wrapper] {
+	z-index: 70 !important;
+}
