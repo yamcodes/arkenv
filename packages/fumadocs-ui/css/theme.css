@@ -309,9 +309,14 @@ div:has(+ #nd-sidebar-mobile) {
 	z-index: 65 !important;
 }
 
-/* On mobile: push the search input box below the fixed header */
+/* On mobile: push the search input box below the fixed header,
+   and hide the ESC close hint (no keyboard on mobile) */
 @media (max-width: 767px) {
 	[role="dialog"][data-state] {
 		top: calc(var(--fd-nav-height, 80px) + 0.5rem) !important;
+	}
+
+	[role="dialog"][data-state] button.font-mono {
+		display: none;
 	}
 }
