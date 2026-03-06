@@ -71,3 +71,9 @@ The theme MUST provide enhanced code blocks with sharpened corners.
 - **THEN** it MUST wrap the content in a custom `CodeBlock` component
 - **AND** it MUST apply sharpened corners via CSS.
 
+### Requirement: Header Export
+The `@arkenv/fumadocs-ui` package MUST export the `Header` component from its `components` entry point alongside existing component exports.
+
+#### Scenario: Named export
+- **WHEN** a consumer does `import { Header } from "@arkenv/fumadocs-ui/components"`
+- **THEN** `Header` MUST be the React component defined in `src/components/header.tsx`
