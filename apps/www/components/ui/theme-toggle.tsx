@@ -2,6 +2,7 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import {
 	Tooltip,
 	TooltipContent,
@@ -16,8 +17,17 @@ type Option = {
 	label: string;
 };
 
+// Persists across component remounts so navigation doesn't reset the mounted state.
+let hydrated = false;
+
 export function ThemeToggle({ className }: { className?: string }) {
 	const { theme, setTheme } = useTheme();
+	const [mounted, setMounted] = useState(hydrated);
+
+	useEffect(() => {
+		hydrated = true;
+		setMounted(true);
+	}, []);
 
 	const options = [
 		{ value: "light", icon: Sun, label: "Light" },
@@ -33,11 +43,10 @@ export function ThemeToggle({ className }: { className?: string }) {
 					className,
 				)}
 				aria-label="Toggle Theme"
-				suppressHydrationWarning
 			>
 				{options.map((option) => {
 					const Icon = option.icon;
-					const isActive = theme === option.value;
+					const isActive = mounted && theme === option.value;
 					return (
 						<Tooltip key={option.value}>
 							<TooltipTrigger asChild>
@@ -52,7 +61,6 @@ export function ThemeToggle({ className }: { className?: string }) {
 									)}
 									aria-pressed={isActive}
 									aria-label={option.label}
-									suppressHydrationWarning
 								>
 									<Icon className="h-4 w-4" />
 								</button>
