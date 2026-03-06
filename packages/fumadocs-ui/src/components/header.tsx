@@ -93,7 +93,8 @@ export function Header({
 								const isInternal = link.url.startsWith("/");
 								const canonicalMatch = link.activeMatch ?? link.url;
 								const isActive = isInternal
-									? pathname === canonicalMatch || pathname.startsWith(canonicalMatch + "/")
+									? pathname === canonicalMatch ||
+										pathname.startsWith(`${canonicalMatch}/`)
 									: false;
 								return (
 									<ExternalLink
@@ -153,7 +154,8 @@ export function Header({
 								const isInternal = link.url.startsWith("/");
 								const canonicalMatch = link.activeMatch ?? link.url;
 								const isActive = isInternal
-									? pathname === canonicalMatch || pathname.startsWith(canonicalMatch + "/")
+									? pathname === canonicalMatch ||
+										pathname.startsWith(canonicalMatch + "/")
 									: false;
 								return (
 									<ExternalLink
