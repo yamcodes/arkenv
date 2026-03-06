@@ -1,5 +1,11 @@
 # @arkenv/fumadocs-ui
 
+## 0.0.5
+
+### Patch Changes
+
+- #### Hide esc button hint for search on mobile _[`34cf4fb`](https://github.com/yamcodes/arkenv/commit/34cf4fb9d8d97383661f85d255e4ee233d7dff96) [@yamcodes](https://github.com/yamcodes)_
+
 ## 0.0.4
 
 ### Patch Changes
