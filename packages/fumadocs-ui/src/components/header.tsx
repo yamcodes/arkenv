@@ -91,8 +91,9 @@ export function Header({
 						<nav className="hidden md:flex items-center gap-0.5">
 							{links.map((link) => {
 								const isInternal = link.url.startsWith("/");
+								const canonicalMatch = link.activeMatch ?? link.url;
 								const isActive = isInternal
-									? pathname.startsWith(link.activeMatch ?? link.url)
+									? pathname === canonicalMatch || pathname.startsWith(canonicalMatch + "/")
 									: false;
 								return (
 									<ExternalLink
@@ -150,8 +151,9 @@ export function Header({
 						{hasLinks &&
 							links.map((link) => {
 								const isInternal = link.url.startsWith("/");
+								const canonicalMatch = link.activeMatch ?? link.url;
 								const isActive = isInternal
-									? pathname.startsWith(link.activeMatch ?? link.url)
+									? pathname === canonicalMatch || pathname.startsWith(canonicalMatch + "/")
 									: false;
 								return (
 									<ExternalLink
