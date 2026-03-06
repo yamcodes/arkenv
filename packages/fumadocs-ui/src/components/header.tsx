@@ -139,7 +139,7 @@ export function Header({
 					className="md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6"
 					style={{ top: "var(--fd-nav-height, 80px)" }}
 				>
-					<div className="flex-1">
+					<div className="flex-1 flex flex-col">
 						{hasLinks &&
 							links.map((link) => {
 								const isInternal = link.url.startsWith("/");
@@ -151,7 +151,7 @@ export function Header({
 										key={link.url}
 										href={link.url}
 										className={cn(
-											"px-3 py-3 text-[1rem] font-medium rounded-md transition-colors duration-150 w-full",
+											"px-3 py-3 text-[1.125rem] font-medium rounded-md transition-colors duration-150 w-full",
 											"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
 											isActive
 												? "text-fd-primary"
