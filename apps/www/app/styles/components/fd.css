@@ -85,6 +85,11 @@
 	}
 }
 
+/* Hide the built-in close-button row at the top of the mobile sidebar drawer */
+#nd-sidebar-mobile > div:first-child > div:first-child {
+	display: none;
+}
+
 /* Move the mobile sidebar drawer to the left instead of the default right */
 #nd-sidebar-mobile {
 	inset-inline-end: auto;
