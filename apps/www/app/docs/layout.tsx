@@ -27,6 +27,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 				themeSwitch={{ enabled: false }}
 				searchToggle={{ enabled: false }}
 				nav={{
+					title: "ArkEnv",
 					component: (
 						<>
 							{/* Spacer in the docs grid "header" area so content starts below our fixed header */}
