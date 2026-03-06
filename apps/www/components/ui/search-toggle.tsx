@@ -1,12 +1,23 @@
 "use client";
 
-import { useI18n } from "fumadocs-ui/contexts/i18n";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+
+function useModifierKey() {
+	const [modifier, setModifier] = useState<string | null>(null);
+
+	useEffect(() => {
+		const ua = window.navigator.userAgent;
+		setModifier(ua.includes("Mac") ? "⌘" : "Ctrl");
+	}, []);
+
+	return modifier;
+}
 
 export function SearchToggle() {
-	const { setOpenSearch, hotKey } = useSearchContext();
-	const { text } = useI18n();
+	const { setOpenSearch } = useSearchContext();
+	const modifier = useModifierKey();
 
 	return (
 		<button
@@ -14,21 +25,20 @@ export function SearchToggle() {
 			aria-label="Open Search"
 			data-search-full=""
 			onClick={() => setOpenSearch(true)}
-			className="hidden md:inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 px-3 py-1.5 text-sm text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground h-9 min-w-40"
+			className="hidden md:inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 px-3 py-2 text-base text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground min-w-40"
 		>
 			<Search className="size-4 shrink-0" />
-			<span className="flex-1 text-start">{text.search}</span>
-			<span className="inline-flex gap-0.5">
-				{hotKey.map((k, i) => (
-					// biome-ignore lint/suspicious/noArrayIndexKey: static hotkey list
-					<kbd
-						key={i}
-						className="rounded border bg-fd-background px-1.5 font-sans text-xs"
-					>
-						{k.display}
+			<span className="flex-1 text-start">Search</span>
+			{modifier && (
+				<span className="inline-flex gap-0.5">
+					<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
+						{modifier}
 					</kbd>
-				))}
-			</span>
+					<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
+						K
+					</kbd>
+				</span>
+			)}
 		</button>
 	);
 }
