@@ -78,12 +78,14 @@ export function Header({
 				{/* Left: sidebar trigger (mobile) + logo + nav links */}
 				<div className="flex items-center gap-2 md:gap-6">
 					{sidebarTrigger && <div className="md:hidden">{sidebarTrigger}</div>}
-					<FumadocsLink
-						href={logoHref}
-						className="flex items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
-					>
-						{logo}
-					</FumadocsLink>
+					{logo && (
+						<FumadocsLink
+							href={logoHref}
+							className="flex items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
+						>
+							{logo}
+						</FumadocsLink>
+					)}
 
 					{hasLinks && (
 						<nav className="hidden md:flex items-center gap-0.5">
