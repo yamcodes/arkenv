@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.claude/worktrees" />
+      <excludeFolder url="file://$MODULE_DIR$/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/bun-react/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/bun/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/esbuild-cjs/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/node/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/solid-start/.output" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/solid-start/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/solid-start/.vinxi" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/standard-schema/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/vite-legacy/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/playgrounds/vite/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/www/.source" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/www/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/with-solid-start/.output" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/with-solid-start/.vinxi" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/arkenv/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/bun-plugin/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/fumadocs-ui/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/internal/scope/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/internal/types/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/vite-plugin/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/vite-plugin/src/__fixtures__/basic/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/vite-plugin/src/__fixtures__/with-env-dir/dist" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
