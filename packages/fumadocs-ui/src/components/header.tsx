@@ -56,6 +56,13 @@ export function Header({
 		setMobileOpen(false);
 	}, [pathname]);
 
+	useEffect(() => {
+		document.body.style.overflow = mobileOpen ? "hidden" : "";
+		return () => {
+			document.body.style.overflow = "";
+		};
+	}, [mobileOpen]);
+
 	const hasLinks = links && links.length > 0;
 	const hasMenuActions = menuActions && menuActions.length > 0;
 	const hasSocialActions = menuSocialActions && menuSocialActions.length > 0;
@@ -69,7 +76,7 @@ export function Header({
 				"h-(--fd-nav-height,80px)",
 				"border-b transition-[background-color,border-color,backdrop-filter] duration-300",
 				mobileOpen && "max-md:border-b-transparent",
-				scrolled
+				scrolled && !mobileOpen
 					? "border-fd-border/60 bg-(--background)/85 backdrop-blur-xl"
 					: "border-fd-border/60 bg-background",
 			)}
@@ -101,7 +108,7 @@ export function Header({
 										key={link.url}
 										href={link.url}
 										className={cn(
-											"px-3 py-1.5 text-[1rem] font-medium rounded-md transition-colors duration-150",
+											"px-3 py-1.5 text-[1rem] font-normal rounded-md transition-colors duration-150",
 											"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
 											isActive
 												? "text-fd-primary"
@@ -162,7 +169,7 @@ export function Header({
 										key={link.url}
 										href={link.url}
 										className={cn(
-											"px-3 py-3 text-[1.125rem] font-medium rounded-md transition-colors duration-150 w-full",
+											"px-3 py-3 text-[1.125rem] font-normal rounded-md transition-colors duration-150 w-full",
 											"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
 											isActive
 												? "text-fd-primary"

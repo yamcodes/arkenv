@@ -6,9 +6,7 @@
 	--rehype-github-alerts-warning-color: rgb(154, 103, 0);
 	--rehype-github-alerts-caution-color: rgb(209, 36, 47);
 	--rehype-github-alerts-default-space: 1rem;
-	--rehype-github-alerts-default-fontFamily:
-		-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
-		Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+	--rehype-github-alerts-default-fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 	--rehype-github-alerts-default-fontWeight: 500;
 }
 
@@ -25,12 +23,10 @@
 
 /* Alert container styles */
 .markdown-alert {
-	padding: calc(var(--rehype-github-alerts-default-space) / 2)
-		var(--rehype-github-alerts-default-space);
+	padding: calc(var(--rehype-github-alerts-default-space) / 2) var(--rehype-github-alerts-default-space);
 	margin-bottom: var(--rehype-github-alerts-default-space);
-	border-left: calc(var(--rehype-github-alerts-default-space) / 4) solid
-		var(--rehype-github-alerts-default-color);
-	font-family: var(--rehype-github-alerts-default-fontFamily);
+	border-left: calc(var(--rehype-github-alerts-default-space) / 4) solid var(--rehype-github-alerts-default-color);
+	font-family: var(--rehype-github-alerts-default-fontFamily), sans-serif;
 }
 
 .markdown-alert > * {
@@ -93,7 +89,6 @@
 .octicon {
 	margin-right: calc(var(--rehype-github-alerts-default-space) / 2);
 	display: inline-block;
-	/* biome-ignore lint/complexity/noImportantStyles: it just works */
 	overflow: visible !important;
 	vertical-align: text-bottom;
 }
