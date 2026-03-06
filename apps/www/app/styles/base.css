@@ -26,6 +26,11 @@
 		padding-left: 2.3rem;
 	}
 
+	/* Opt out of fumadocs sticky TOC row-2 positioning so it renders correctly with our custom header */
+	.top-\(--fd-docs-row-2\) {
+		top: 0;
+	}
+
 	/* Twoslash code block max height */
 	.fd-twoslash-popover .fd-scroll-container {
 		max-height: 160px !important;

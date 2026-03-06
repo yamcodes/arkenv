@@ -53,6 +53,13 @@
 	background-color: transparent !important;
 }
 
+/* Remove fumadocs' xl:pt-14 on the docs article — our header spacer already handles the top offset */
+@media (min-width: 80rem) {
+	#nd-page {
+		padding-top: 1.5rem;
+	}
+}
+
 /* Override fumadocs muted-foreground for WCAG AA compliance */
 :root {
 	--color-fd-muted-foreground: hsl(
