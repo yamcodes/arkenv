@@ -21,32 +21,42 @@ export default function Layout({ children }: { children: ReactNode }) {
 				tree={source.pageTree}
 				sidebar={{
 					banner: <InstallButton />,
+					collapsible: false,
 				}}
+				themeSwitch={{ enabled: false }}
 				nav={{
 					component: (
-						<Header
-							logo={<Logo />}
-							links={[
-								{ text: "Documentation", url: "/docs/arkenv" },
-								{
-									text: "Roadmap",
-									url: "https://github.com/yamcodes/arkenv/issues/683",
-								},
-							]}
-							actions={[
-								<ThemeToggle key="theme-toggle" />,
-								<a
-									key="github"
-									href="https://github.com/yamcodes/arkenv"
-									target="_blank"
-									rel="noopener noreferrer"
-									aria-label="GitHub"
-									className="flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
-								>
-									<SiGithub className="size-4" />
-								</a>,
-							]}
-						/>
+						<>
+							{/* Spacer in the docs grid "header" area so content starts below our fixed header */}
+							<div
+								className="[grid-area:header]"
+								style={{ height: "var(--fd-nav-height, 80px)" }}
+								aria-hidden="true"
+							/>
+							<Header
+								logo={<Logo />}
+								links={[
+									{ text: "Documentation", url: "/docs/arkenv" },
+									{
+										text: "Roadmap",
+										url: "https://github.com/yamcodes/arkenv/issues/683",
+									},
+								]}
+								actions={[
+									<ThemeToggle key="theme-toggle" />,
+									<a
+										key="github"
+										href="https://github.com/yamcodes/arkenv"
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="GitHub"
+										className="flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
+									>
+										<SiGithub className="size-5" />
+									</a>,
+								]}
+							/>
+						</>
 					),
 				}}
 			>

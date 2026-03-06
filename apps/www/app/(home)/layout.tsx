@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 								aria-label="GitHub"
 								className="flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
 							>
-								<SiGithub className="size-4" />
+								<SiGithub className="size-5" />
 							</a>,
 						]}
 					/>
