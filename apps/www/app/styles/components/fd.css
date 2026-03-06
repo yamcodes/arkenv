@@ -55,7 +55,12 @@
 
 /* Sidebar link font weight */
 #nd-sidebar a {
-	font-weight: 500;
+	@apply font-medium;
+}
+
+/* Sidebar section header font weight */
+#nd-sidebar p {
+	@apply font-bold;
 }
 
 /* Remove fumadocs' xl:pt-14 on the docs article — our header spacer already handles the top offset */
