@@ -1,8 +1,8 @@
 ## 1. Header Component
 
 - [ ] 1.1 Create `packages/fumadocs-ui/src/components/header.tsx` with `Header` component accepting `logo`, `links`, and `actions` props
-- [ ] 1.2 Implement scroll-aware styling: transparent background at top, `backdrop-blur` + semi-transparent background when scrolled
-- [ ] 1.3 Apply fixed positioning and appropriate z-index to the `Header`
+- [ ] 1.2 Implement scroll-aware styling via `useEffect` + `scrollY` listener: transparent background at top, `backdrop-blur` + semi-transparent background when scrolled (note: fumadocs `transparentMode` does not apply to custom `nav.component`)
+- [ ] 1.3 Apply fixed positioning and appropriate z-index to the `Header`; ensure rendered height equals `80px` to match the `--fd-nav-height` CSS variable already set in the fumadocs-ui CSS
 - [ ] 1.4 Style the layout: logo on the left, nav links in the center, actions on the right — matching the vite.dev aesthetic
 
 ## 2. Package Export

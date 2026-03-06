@@ -31,10 +31,16 @@ Fumadocs-ui exposes `nav: { component: ReactNode }` on both `HomeLayout` and `Do
 
 ### Decision: Implement scroll-aware transparency in the Header itself
 
-The Header component tracks `scrollY` via a `useEffect` listener and applies a CSS class (e.g. `scrolled`) when the page has scrolled past a threshold. This drives the `backdrop-blur` and background transition.
+Fumadocs exposes `transparentMode: 'top'` as a built-in option on the navbar — but this **only applies when using the built-in navbar**. Once `nav.component` is set, fumadocs hands off the entire navbar slot to our component and the `transparentMode` option has no effect. Therefore, the Header component must own its own transparency logic.
+
+The Header tracks `scrollY` via a `useEffect` listener and applies a CSS class (e.g. `scrolled`) when the page has scrolled past a threshold. This drives the `backdrop-blur` and background transition.
 
 **Alternatives considered:**
-- Use the fumadocs-ui `transparentMode: 'top'` option — only works with the built-in navbar, not a custom component
+- Use the fumadocs-ui `transparentMode: 'top'` option with the built-in navbar — would work for transparency but gives no control over markup structure, preventing the vite.dev-style layout
+
+### Decision: `--fd-nav-height` is already set; no extra work needed
+
+When replacing the navbar via `nav.component`, fumadocs still uses the `--fd-nav-height` CSS variable to position layout elements (sidebar, content area) correctly beneath the custom navbar. The existing fumadocs-ui CSS spec already sets `--fd-nav-height: 80px !important`, so no additional wiring is needed here — the Header just needs to be built to that height.
 
 ### Decision: Props-driven nav links, not hardcoded
 
