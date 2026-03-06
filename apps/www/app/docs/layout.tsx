@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 			<DocsLayout
 				tree={source.pageTree}
 				sidebar={{
-					banner: <InstallButton />,
+					banner: <div className="hidden md:block"><InstallButton /></div>,
 					collapsible: false,
 				}}
 				themeSwitch={{ enabled: false }}
