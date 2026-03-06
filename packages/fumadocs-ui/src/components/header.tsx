@@ -1,7 +1,7 @@
 "use client";
 
 import FumadocsLink from "fumadocs-core/link";
-import { CircleUser } from "lucide-react";
+import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { ExternalLink } from "@/components/external-link";
@@ -122,7 +122,7 @@ export function Header({
 								aria-label="Toggle menu"
 								aria-expanded={mobileOpen}
 							>
-								<CircleUser className="h-5 w-5" />
+								<Menu className="h-5 w-5" />
 							</button>
 						)}
 					</div>
