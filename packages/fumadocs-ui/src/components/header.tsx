@@ -72,7 +72,7 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 											"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
 											isActive
 												? "text-fd-primary"
-												: "text-fd-muted-foreground hover:text-fd-foreground",
+												: "text-fd-foreground hover:text-fd-primary",
 										)}
 									>
 										{link.text}

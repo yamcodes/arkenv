@@ -41,7 +41,7 @@ export function Logo({ className }: { className?: string }) {
 					d="M6 5.102a.899.899 0 1 0 0 1.797.899.899 0 0 0 0-1.797Z"
 				/>
 			</svg>
-			<span className="text-fd-foreground font-medium text-base">ArkEnv</span>
+			<span className="text-fd-foreground font-semibold text-lg">ArkEnv</span>
 		</div>
 	);
 }
