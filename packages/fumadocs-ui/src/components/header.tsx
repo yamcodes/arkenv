@@ -1,7 +1,7 @@
 "use client";
 
 import FumadocsLink from "fumadocs-core/link";
-import { Menu, X } from "lucide-react";
+import { CircleUser } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { ExternalLink } from "@/components/external-link";
@@ -25,9 +25,18 @@ export type HeaderProps = {
 	actions?: ReactNode[];
 	/** Actions rendered inside the mobile menu (e.g., ThemeToggle). */
 	menuActions?: ReactNode[];
+	/** Optional trigger rendered left of the logo on mobile (e.g. sidebar toggle). */
+	sidebarTrigger?: ReactNode;
 };
 
-export function Header({ logo, logoHref = "/", links, actions, menuActions }: HeaderProps) {
+export function Header({
+	logo,
+	logoHref = "/",
+	links,
+	actions,
+	menuActions,
+	sidebarTrigger,
+}: HeaderProps) {
 	const [scrolled, setScrolled] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const pathname = usePathname();
@@ -61,8 +70,9 @@ export function Header({ logo, logoHref = "/", links, actions, menuActions }: He
 			)}
 		>
 			<div className="flex items-center h-full px-4 max-w-(--fd-layout-width) mx-auto w-full">
-				{/* Left: logo + nav links */}
-				<div className="flex items-center gap-6">
+				{/* Left: sidebar trigger (mobile) + logo + nav links */}
+				<div className="flex items-center gap-2 md:gap-6">
+					{sidebarTrigger && <div className="md:hidden">{sidebarTrigger}</div>}
 					<FumadocsLink
 						href={logoHref}
 						className="flex items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
@@ -109,10 +119,10 @@ export function Header({ logo, logoHref = "/", links, actions, menuActions }: He
 								type="button"
 								className="md:hidden flex items-center justify-center h-8 w-8 rounded-md text-fd-muted-foreground hover:text-fd-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
 								onClick={() => setMobileOpen((open) => !open)}
-								aria-label={mobileOpen ? "Close menu" : "Open menu"}
+								aria-label="Toggle menu"
 								aria-expanded={mobileOpen}
 							>
-								{mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+								<CircleUser className="h-5 w-5" />
 							</button>
 						)}
 					</div>
@@ -121,7 +131,10 @@ export function Header({ logo, logoHref = "/", links, actions, menuActions }: He
 
 			{/* Mobile dropdown menu */}
 			{mobileOpen && (
-				<div className="md:hidden absolute top-full left-0 right-0 border-b border-fd-border bg-fd-background px-4 py-3 flex flex-col gap-1">
+				<div
+					className="md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6"
+					style={{ top: "var(--fd-nav-height, 80px)" }}
+				>
 					{hasLinks &&
 						links.map((link) => {
 							const isInternal = link.url.startsWith("/");
@@ -133,7 +146,7 @@ export function Header({ logo, logoHref = "/", links, actions, menuActions }: He
 									key={link.url}
 									href={link.url}
 									className={cn(
-										"px-3 py-2 text-[1rem] font-medium rounded-md transition-colors duration-150",
+										"px-3 py-3 text-[1rem] font-medium rounded-md transition-colors duration-150 w-full",
 										"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
 										isActive
 											? "text-fd-primary"

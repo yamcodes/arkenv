@@ -3,6 +3,7 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { CSSProperties, ReactNode } from "react";
 import { InstallButton } from "~/components/docs/install-button";
+import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
 import { Logo } from "~/components/page/logo";
 import { SearchToggle } from "~/components/ui/search-toggle";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
@@ -38,6 +39,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 							/>
 							<Header
 								logo={<Logo />}
+								sidebarTrigger={<DocsSidebarTrigger />}
 								links={[
 									{ text: "Documentation", url: "/docs/arkenv" },
 									{
@@ -47,7 +49,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 								]}
 								actions={[
 									<SearchToggle key="search" />,
-									<div key="theme-desktop" className="hidden md:block"><ThemeToggle /></div>,
+									<div key="theme-desktop" className="hidden md:block">
+										<ThemeToggle />
+									</div>,
 									<a
 										key="github"
 										href="https://github.com/yamcodes/arkenv"
