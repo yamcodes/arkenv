@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 				themeSwitch={{ enabled: false }}
 				searchToggle={{ enabled: false }}
 				nav={{
-					title: "ArkEnv",
+					title: <span className="sr-only">ArkEnv</span>,
 					component: (
 						<>
 							{/* Spacer in the docs grid "header" area so content starts below our fixed header */}
@@ -47,6 +47,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 								]}
 								actions={[
 									<SearchToggle key="search" />,
+									<div key="theme-desktop" className="hidden md:block"><ThemeToggle /></div>,
 									<a
 										key="github"
 										href="https://github.com/yamcodes/arkenv"

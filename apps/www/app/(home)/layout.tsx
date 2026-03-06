@@ -23,6 +23,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 						]}
 						actions={[
 							<SearchToggle key="search" />,
+							<div key="theme-desktop" className="hidden md:block"><ThemeToggle /></div>,
 							<a
 								key="github"
 								href="https://github.com/yamcodes/arkenv"

@@ -2,22 +2,15 @@
 
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
 
-function useModifierKey() {
-	const [modifier, setModifier] = useState<string | null>(null);
-
-	useEffect(() => {
-		const ua = window.navigator.userAgent;
-		setModifier(ua.includes("Mac") ? "⌘" : "Ctrl");
-	}, []);
-
-	return modifier;
+function getModifierKey() {
+	if (typeof window === "undefined") return "Ctrl";
+	return window.navigator.userAgent.includes("Mac") ? "⌘" : "Ctrl";
 }
 
 export function SearchToggle() {
 	const { setOpenSearch } = useSearchContext();
-	const modifier = useModifierKey();
+	const modifier = getModifierKey();
 
 	return (
 		<button
@@ -29,16 +22,14 @@ export function SearchToggle() {
 		>
 			<Search className="size-4 shrink-0" />
 			<span className="flex-1 text-start">Search</span>
-			{modifier && (
-				<span className="inline-flex gap-0.5">
-					<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
-						{modifier}
-					</kbd>
-					<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
-						K
-					</kbd>
-				</span>
-			)}
+			<span className="inline-flex gap-0.5" suppressHydrationWarning>
+				<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
+					{modifier}
+				</kbd>
+				<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
+					K
+				</kbd>
+			</span>
 		</button>
 	);
 }
