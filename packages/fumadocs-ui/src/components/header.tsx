@@ -1,6 +1,7 @@
 "use client";
 
 import FumadocsLink from "fumadocs-core/link";
+import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
 import { ExternalLink } from "@/components/external-link";
@@ -22,10 +23,13 @@ export type HeaderProps = {
 	logoHref?: string;
 	links?: HeaderLink[];
 	actions?: ReactNode[];
+	/** Actions rendered inside the mobile menu (e.g., ThemeToggle). */
+	menuActions?: ReactNode[];
 };
 
-export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
+export function Header({ logo, logoHref = "/", links, actions, menuActions }: HeaderProps) {
 	const [scrolled, setScrolled] = useState(false);
+	const [mobileOpen, setMobileOpen] = useState(false);
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -34,6 +38,16 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 		onScroll();
 		return () => window.removeEventListener("scroll", onScroll);
 	}, []);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: pathname triggers close but is not referenced in the effect body
+	useEffect(() => {
+		setMobileOpen(false);
+	}, [pathname]);
+
+	const hasLinks = links && links.length > 0;
+	const hasMenuActions = menuActions && menuActions.length > 0;
+	const hasMobileMenu = hasLinks || hasMenuActions;
+	const hasRightContent = (actions && actions.length > 0) || hasMobileMenu;
 
 	return (
 		<header
@@ -56,7 +70,7 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 						{logo}
 					</FumadocsLink>
 
-					{links && links.length > 0 && (
+					{hasLinks && (
 						<nav className="hidden md:flex items-center gap-0.5">
 							{links.map((link) => {
 								const isInternal = link.url.startsWith("/");
@@ -83,16 +97,63 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 					)}
 				</div>
 
-				{/* Right: actions */}
-				{actions && actions.length > 0 && (
+				{/* Right: actions + hamburger */}
+				{hasRightContent && (
 					<div className="flex-1 flex items-center justify-end gap-4">
-						{actions.map((action, i) => (
+						{actions?.map((action, i) => (
 							// biome-ignore lint/suspicious/noArrayIndexKey: static action list
 							<div key={i}>{action}</div>
 						))}
+						{hasMobileMenu && (
+							<button
+								type="button"
+								className="md:hidden flex items-center justify-center h-8 w-8 rounded-md text-fd-muted-foreground hover:text-fd-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
+								onClick={() => setMobileOpen((open) => !open)}
+								aria-label={mobileOpen ? "Close menu" : "Open menu"}
+								aria-expanded={mobileOpen}
+							>
+								{mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+							</button>
+						)}
 					</div>
 				)}
 			</div>
+
+			{/* Mobile dropdown menu */}
+			{mobileOpen && (
+				<div className="md:hidden absolute top-full left-0 right-0 border-b border-fd-border bg-fd-background px-4 py-3 flex flex-col gap-1">
+					{hasLinks &&
+						links.map((link) => {
+							const isInternal = link.url.startsWith("/");
+							const isActive = isInternal
+								? pathname.startsWith(link.activeMatch ?? link.url)
+								: false;
+							return (
+								<ExternalLink
+									key={link.url}
+									href={link.url}
+									className={cn(
+										"px-3 py-2 text-[1rem] font-medium rounded-md transition-colors duration-150",
+										"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
+										isActive
+											? "text-fd-primary"
+											: "text-fd-foreground hover:text-fd-primary",
+									)}
+								>
+									{link.text}
+								</ExternalLink>
+							);
+						})}
+					{hasMenuActions && (
+						<div className="mt-2 pt-2 border-t border-fd-border flex items-center gap-2">
+							{menuActions.map((action, i) => (
+								// biome-ignore lint/suspicious/noArrayIndexKey: static action list
+								<div key={i}>{action}</div>
+							))}
+						</div>
+					)}
+				</div>
+			)}
 		</header>
 	);
 }
