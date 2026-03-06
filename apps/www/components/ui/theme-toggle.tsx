@@ -17,27 +17,32 @@ type Option = {
 	label: string;
 };
 
+// Persists across remounts so navigation never resets the mounted/theme state.
+let hydrated = false;
+let cachedTheme: string | undefined;
+
 export function ThemeToggle({ className }: { className?: string }) {
 	const { theme, setTheme } = useTheme();
-	const [mounted, setMounted] = useState(false);
+	const [mounted, setMounted] = useState(hydrated);
+
+	// Keep the cache up to date whenever the theme resolves.
+	useEffect(() => {
+		if (theme !== undefined) cachedTheme = theme;
+	}, [theme]);
 
 	useEffect(() => {
+		hydrated = true;
 		setMounted(true);
 	}, []);
-
-	if (!mounted) {
-		return (
-			<div
-				className={cn("theme-toggle h-9 w-24 rounded-full border", className)}
-			/>
-		);
-	}
 
 	const options = [
 		{ value: "light", icon: Sun, label: "Light" },
 		{ value: "system", icon: Monitor, label: "System" },
 		{ value: "dark", icon: Moon, label: "Dark" },
 	] as const satisfies Option[];
+
+	// Use the cached theme when the theme is transiently undefined (e.g., right after a remount).
+	const effectiveTheme = theme ?? cachedTheme;
 
 	return (
 		<TooltipProvider>
@@ -50,7 +55,7 @@ export function ThemeToggle({ className }: { className?: string }) {
 			>
 				{options.map((option) => {
 					const Icon = option.icon;
-					const isActive = theme === option.value;
+					const isActive = mounted && effectiveTheme === option.value;
 					return (
 						<Tooltip key={option.value}>
 							<TooltipTrigger asChild>

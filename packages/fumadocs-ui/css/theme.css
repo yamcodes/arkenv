@@ -4,6 +4,13 @@
 	--radius: 0.125rem;
 	--fd-nav-height: 80px !important;
 	--fd-header-height: 80px !important;
+	/* WCAG AA compliant: 6.13:1 contrast on white background */
+	--color-fd-muted-foreground: hsl(240 4% 40%);
+}
+
+.dark {
+	/* WCAG AA compliant: 8.61:1 contrast on dark background */
+	--color-fd-muted-foreground: hsl(240 5% 70%);
 }
 
 @theme inline {
@@ -187,4 +194,124 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 		:has(> svg:only-child)
 	)::after {
 	background-image: var(--icon-external-dark);
+}
+
+/* Search bar background: solid white/black so it reads cleanly against page content */
+button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 100%);
+	--color-fd-accent: hsl(0, 0%, 100%);
+}
+
+.dark button[data-search-full] {
+	--color-fd-secondary: hsl(0, 0%, 0%);
+	--color-fd-accent: hsl(0, 0%, 0%);
+}
+
+/* Right-align the theme toggle when rendered inside the sidebar */
+aside .theme-toggle {
+	margin-left: auto;
+}
+
+/* Fumadocs built-in nav backdrop (fallback, overridden by custom Header) */
+#nd-nav {
+	background-color: transparent !important;
+	backdrop-filter: none !important;
+}
+
+#nd-nav > div,
+#nd-nav > nav {
+	background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.dark #nd-nav > div,
+.dark #nd-nav > nav {
+	background-color: rgba(8, 16, 33, 0.95) !important;
+}
+
+@supports (backdrop-filter: blur(8px)) {
+	#nd-nav > div,
+	#nd-nav > nav {
+		backdrop-filter: blur(8px) !important;
+		background-color: rgba(255, 255, 255, 0.8) !important;
+	}
+
+	.dark #nd-nav > div,
+	.dark #nd-nav > nav {
+		background-color: rgba(8, 16, 33, 0.8) !important;
+	}
+}
+
+#nd-nav nav {
+	backdrop-filter: none !important;
+	background-color: transparent !important;
+}
+
+/* Sidebar item base styles */
+#nd-sidebar a,
+#nd-sidebar button {
+	@apply font-medium;
+	transition: color 150ms;
+}
+
+/* Remove rectangular hover background — use text color transition instead */
+#nd-sidebar a.wrap-anywhere:hover,
+#nd-sidebar button.wrap-anywhere:hover {
+	background-color: transparent;
+	color: var(--color-fd-primary);
+}
+
+/* Remove rectangular active background */
+#nd-sidebar a.wrap-anywhere[data-active="true"] {
+	background-color: transparent;
+}
+
+/* Sidebar section header font weight */
+#nd-sidebar p {
+	@apply font-medium;
+}
+
+/* Remove fumadocs' xl:pt-14 on the docs article — our header spacer handles the top offset */
+@media (min-width: 80rem) {
+	#nd-page {
+		padding-top: 1.5rem;
+	}
+}
+
+/* Hide the built-in close-button row at the top of the mobile sidebar drawer */
+#nd-sidebar-mobile > div:first-child > div:first-child {
+	display: none;
+}
+
+/* Mobile sidebar drawer: position left, slide from left, above header */
+#nd-sidebar-mobile {
+	inset-inline-end: auto;
+	inset-inline-start: 0;
+	border-inline-start: none;
+	border-inline-end: 1px solid var(--color-fd-border);
+	--fd-sidebar-drawer-offset: -100%;
+	z-index: 60;
+}
+
+/* Backdrop overlay: raise above the header (z-50) so tapping the header area
+   also dismisses the drawer, and the blur covers the full viewport */
+div:has(+ #nd-sidebar-mobile) {
+	z-index: 55;
+}
+
+/* Radix popper portals (workspace switcher dropdown, etc.) render at the body
+   level — they must be above the sidebar drawer to stay visible */
+[data-radix-popper-content-wrapper] {
+	z-index: 70 !important;
+}
+
+/* Search dialog: raise above header (z-50) and mobile sidebar (z-60) */
+[role="dialog"][data-state] {
+	z-index: 65 !important;
+}
+
+/* On mobile: push the search input box below the fixed header */
+@media (max-width: 767px) {
+	[role="dialog"][data-state] {
+		top: calc(var(--fd-nav-height, 80px) + 0.5rem) !important;
+	}
 }

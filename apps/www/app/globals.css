@@ -6,23 +6,12 @@
 @import "./styles/theme/dark.css";
 @import "./styles/theme/inline.css";
 @import "./styles/components/github-alerts.css";
-@import "./styles/components/fd.css";
 @import "./styles/base.css";
 @import "fumadocs-twoslash/twoslash.css";
 
 @plugin "tailwindcss-animate";
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 @source "../node_modules/@arkenv/fumadocs-ui/dist/**/*.mjs";
-
-button[data-search-full] {
-	--color-fd-secondary: hsl(0, 0%, 100%);
-	--color-fd-accent: hsl(0, 0%, 100%);
-}
-
-.dark button[data-search-full] {
-	--color-fd-secondary: hsl(0, 0%, 0%);
-	--color-fd-accent: hsl(0, 0%, 0%);
-}
 
 .dark body,
 .dark html {
@@ -91,9 +80,4 @@ button[data-search-full] {
 		animation: none !important;
 		transform: none !important;
 	}
-}
-
-/* Right align theme toggle in sidebar only */
-aside .theme-toggle {
-	margin-left: auto;
 }
