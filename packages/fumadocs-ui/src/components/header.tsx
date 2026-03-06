@@ -1,7 +1,7 @@
 "use client";
 
 import FumadocsLink from "fumadocs-core/link";
-import {Ellipsis, EllipsisVertical, Menu} from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { ExternalLink } from "@/components/external-link";
@@ -122,7 +122,7 @@ export function Header({
 								aria-label="Toggle menu"
 								aria-expanded={mobileOpen}
 							>
-								<Ellipsis className="h-5 w-5" />
+								{mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
 							</button>
 						)}
 					</div>
@@ -135,30 +135,32 @@ export function Header({
 					className="md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6"
 					style={{ top: "var(--fd-nav-height, 80px)" }}
 				>
-					{hasLinks &&
-						links.map((link) => {
-							const isInternal = link.url.startsWith("/");
-							const isActive = isInternal
-								? pathname.startsWith(link.activeMatch ?? link.url)
-								: false;
-							return (
-								<ExternalLink
-									key={link.url}
-									href={link.url}
-									className={cn(
-										"px-3 py-3 text-[1rem] font-medium rounded-md transition-colors duration-150 w-full",
-										"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
-										isActive
-											? "text-fd-primary"
-											: "text-fd-foreground hover:text-fd-primary",
-									)}
-								>
-									{link.text}
-								</ExternalLink>
-							);
-						})}
+					<div className="flex-1">
+						{hasLinks &&
+							links.map((link) => {
+								const isInternal = link.url.startsWith("/");
+								const isActive = isInternal
+									? pathname.startsWith(link.activeMatch ?? link.url)
+									: false;
+								return (
+									<ExternalLink
+										key={link.url}
+										href={link.url}
+										className={cn(
+											"px-3 py-3 text-[1rem] font-medium rounded-md transition-colors duration-150 w-full",
+											"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
+											isActive
+												? "text-fd-primary"
+												: "text-fd-foreground hover:text-fd-primary",
+										)}
+									>
+										{link.text}
+									</ExternalLink>
+								);
+							})}
+					</div>
 					{hasMenuActions && (
-						<div className="mt-2 pt-2 border-t border-fd-border flex items-center gap-2">
+						<div className="pt-4 border-t border-fd-border flex items-center gap-2">
 							{menuActions.map((action, i) => (
 								// biome-ignore lint/suspicious/noArrayIndexKey: static action list
 								<div key={i}>{action}</div>

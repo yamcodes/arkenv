@@ -85,6 +85,16 @@
 	}
 }
 
+/* Move the mobile sidebar drawer to the left instead of the default right */
+#nd-sidebar-mobile {
+	inset-inline-end: auto;
+	inset-inline-start: 0;
+	border-inline-start: none;
+	border-inline-end: 1px solid var(--color-fd-border);
+	--fd-sidebar-drawer-offset: -100%;
+	z-index: 60;
+}
+
 /* Override fumadocs muted-foreground for WCAG AA compliance */
 :root {
 	--color-fd-muted-foreground: hsl(
