@@ -47,42 +47,41 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 			)}
 		>
 			<div className="flex items-center h-full px-4 sm:px-6 lg:px-12 max-w-(--fd-layout-width) mx-auto w-full">
-				{/* Left: logo */}
-				<div className="flex-1 flex items-center">
+				{/* Left: logo + nav links */}
+				<div className="flex items-center gap-6">
 					<FumadocsLink
 						href={logoHref}
 						className="flex items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
 					>
 						{logo}
 					</FumadocsLink>
-				</div>
 
-				{/* Center: nav links (hidden on mobile) */}
-				{links && links.length > 0 && (
-					<nav className="hidden md:flex items-center gap-0.5">
-						{links.map((link) => {
-							const isInternal = link.url.startsWith("/");
-							const isActive = isInternal
-								? pathname.startsWith(link.activeMatch ?? link.url)
-								: false;
-							return (
-								<ExternalLink
-									key={link.url}
-									href={link.url}
-									className={cn(
-										"px-3 py-1.5 text-[1rem] font-medium rounded-md transition-colors duration-150",
-										"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
-										isActive
-											? "text-fd-primary"
-											: "text-fd-muted-foreground hover:text-fd-foreground",
-									)}
-								>
-									{link.text}
-								</ExternalLink>
-							);
-						})}
-					</nav>
-				)}
+					{links && links.length > 0 && (
+						<nav className="hidden md:flex items-center gap-0.5">
+							{links.map((link) => {
+								const isInternal = link.url.startsWith("/");
+								const isActive = isInternal
+									? pathname.startsWith(link.activeMatch ?? link.url)
+									: false;
+								return (
+									<ExternalLink
+										key={link.url}
+										href={link.url}
+										className={cn(
+											"px-3 py-1.5 text-[1rem] font-medium rounded-md transition-colors duration-150",
+											"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
+											isActive
+												? "text-fd-primary"
+												: "text-fd-muted-foreground hover:text-fd-foreground",
+										)}
+									>
+										{link.text}
+									</ExternalLink>
+								);
+							})}
+						</nav>
+					)}
+				</div>
 
 				{/* Right: actions */}
 				{actions && actions.length > 0 && (

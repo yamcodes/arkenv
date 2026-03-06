@@ -10,12 +10,12 @@ export function Logo({ className }: { className?: string }) {
 	return (
 		<div className={cn("flex items-center gap-2", className)}>
 			<svg
-				width="24"
-				height="24"
+				width="28"
+				height="28"
 				viewBox="0 0 12 12"
 				xmlns="http://www.w3.org/2000/svg"
 				aria-hidden="true"
-				className="size-6"
+				className="size-7"
 			>
 				<path
 					className="stroke-blue-500 dark:stroke-blue-400"
@@ -41,7 +41,7 @@ export function Logo({ className }: { className?: string }) {
 					d="M6 5.102a.899.899 0 1 0 0 1.797.899.899 0 0 0 0-1.797Z"
 				/>
 			</svg>
-			<span className="text-fd-foreground font-medium text-sm">ArkEnv</span>
+			<span className="text-fd-foreground font-medium text-base">ArkEnv</span>
 		</div>
 	);
 }

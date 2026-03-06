@@ -20,6 +20,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 							},
 						]}
 						actions={[
+							<ThemeToggle key="theme-toggle" />,
 							<a
 								key="github"
 								href="https://github.com/yamcodes/arkenv"
@@ -30,7 +31,6 @@ export default function Layout({ children }: { children: ReactNode }) {
 							>
 								<SiGithub className="size-4" />
 							</a>,
-							<ThemeToggle key="theme-toggle" />,
 						]}
 					/>
 				),
