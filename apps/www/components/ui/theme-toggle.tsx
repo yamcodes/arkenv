@@ -25,14 +25,6 @@ export function ThemeToggle({ className }: { className?: string }) {
 		setMounted(true);
 	}, []);
 
-	if (!mounted) {
-		return (
-			<div
-				className={cn("theme-toggle h-9 w-24 rounded-full border", className)}
-			/>
-		);
-	}
-
 	const options = [
 		{ value: "light", icon: Sun, label: "Light" },
 		{ value: "system", icon: Monitor, label: "System" },
@@ -47,10 +39,11 @@ export function ThemeToggle({ className }: { className?: string }) {
 					className,
 				)}
 				aria-label="Toggle Theme"
+				style={mounted ? undefined : { visibility: "hidden" }}
 			>
 				{options.map((option) => {
 					const Icon = option.icon;
-					const isActive = theme === option.value;
+					const isActive = mounted && theme === option.value;
 					return (
 						<Tooltip key={option.value}>
 							<TooltipTrigger asChild>
