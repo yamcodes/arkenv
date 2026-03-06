@@ -2,6 +2,7 @@
 
 import FumadocsLink from "fumadocs-core/link";
 import { type ReactNode, useEffect, useState } from "react";
+import { ExternalLink } from "@/components/external-link";
 import { cn } from "@/utils/cn";
 
 export type HeaderLink = {
@@ -11,11 +12,12 @@ export type HeaderLink = {
 
 export type HeaderProps = {
 	logo?: ReactNode;
+	logoHref?: string;
 	links?: HeaderLink[];
 	actions?: ReactNode[];
 };
 
-export function Header({ logo, links, actions }: HeaderProps) {
+export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 	const [scrolled, setScrolled] = useState(false);
 
 	useEffect(() => {
@@ -36,21 +38,25 @@ export function Header({ logo, links, actions }: HeaderProps) {
 					: "bg-transparent",
 			)}
 		>
-			<div className="flex items-center h-full px-6 max-w-screen-xl mx-auto w-full">
+			<div className="flex items-center h-full px-4 sm:px-6 lg:px-12 max-w-screen-2xl mx-auto w-full">
 				{/* Left: logo */}
-				<div className="flex-1 flex items-center">{logo}</div>
+				<div className="flex-1 flex items-center">
+					<FumadocsLink href={logoHref} className="flex items-center">
+						{logo}
+					</FumadocsLink>
+				</div>
 
 				{/* Center: nav links (hidden on mobile) */}
 				{links && links.length > 0 && (
 					<nav className="hidden md:flex items-center">
 						{links.map((link) => (
-							<FumadocsLink
+							<ExternalLink
 								key={link.url}
 								href={link.url}
 								className="px-3 py-1.5 text-sm text-fd-muted-foreground hover:text-fd-foreground transition-colors"
 							>
 								{link.text}
-							</FumadocsLink>
+							</ExternalLink>
 						))}
 					</nav>
 				)}
