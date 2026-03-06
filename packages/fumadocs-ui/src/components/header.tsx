@@ -3,7 +3,7 @@
 import FumadocsLink from "fumadocs-core/link";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { ExternalLink } from "@/components/external-link";
 import { cn } from "@/utils/cn";
 
@@ -99,10 +99,10 @@ export function Header({ logo, logoHref = "/", links, actions, menuActions }: He
 
 				{/* Right: actions + hamburger */}
 				{hasRightContent && (
-					<div className="flex-1 flex items-center justify-end gap-4">
+					<div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
 						{actions?.map((action, i) => (
 							// biome-ignore lint/suspicious/noArrayIndexKey: static action list
-							<div key={i}>{action}</div>
+							<Fragment key={i}>{action}</Fragment>
 						))}
 						{hasMobileMenu && (
 							<button

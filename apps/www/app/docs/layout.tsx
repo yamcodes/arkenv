@@ -54,12 +54,24 @@ export default function Layout({ children }: { children: ReactNode }) {
 										target="_blank"
 										rel="noopener noreferrer"
 										aria-label="GitHub"
+										className="hidden md:flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
+									>
+										<SiGithub className="size-5" />
+									</a>,
+								]}
+								menuActions={[
+									<ThemeToggle key="theme-toggle" />,
+									<a
+										key="github"
+										href="https://github.com/yamcodes/arkenv"
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="GitHub"
 										className="flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
 									>
 										<SiGithub className="size-5" />
 									</a>,
 								]}
-								menuActions={[<ThemeToggle key="theme-toggle" />]}
 							/>
 						</>
 					),
