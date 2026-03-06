@@ -1,5 +1,11 @@
 # @arkenv/fumadocs-ui
 
+## 0.0.6
+
+### Patch Changes
+
+- #### Fix transparent hamburger menu background issue on mobile _[`9237bf5`](https://github.com/yamcodes/arkenv/commit/9237bf5bc4ded6020078ffa9e231af8be9581fba) [@yamcodes](https://github.com/yamcodes)_
+
 ## 0.0.5
 
 ### Patch Changes
