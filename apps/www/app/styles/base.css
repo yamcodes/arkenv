@@ -26,9 +26,9 @@
 		padding-left: 2.3rem;
 	}
 
-	/* Opt out of fumadocs sticky TOC row-2 positioning so it renders correctly with our custom header */
+	/* Pin the sticky TOC popover just below our fixed header instead of using fumadocs' row-2 offset */
 	.top-\(--fd-docs-row-2\) {
-		top: 0;
+		top: var(--fd-nav-height, 80px);
 	}
 
 	/* Twoslash code block max height */
