@@ -70,10 +70,10 @@ export function Header({ logo, logoHref = "/", links, actions }: HeaderProps) {
 									key={link.url}
 									href={link.url}
 									className={cn(
-										"px-3 py-1.5 text-sm rounded-md transition-colors duration-150",
+										"px-3 py-1.5 text-[1rem] font-medium rounded-md transition-colors duration-150",
 										"outline-none focus-visible:ring-2 focus-visible:ring-fd-ring",
 										isActive
-											? "text-fd-foreground font-medium"
+											? "text-fd-primary"
 											: "text-fd-muted-foreground hover:text-fd-foreground",
 									)}
 								>
