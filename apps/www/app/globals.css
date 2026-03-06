@@ -13,16 +13,6 @@
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 @source "../node_modules/@arkenv/fumadocs-ui/dist/**/*.mjs";
 
-button[data-search-full] {
-	--color-fd-secondary: hsl(0, 0%, 100%);
-	--color-fd-accent: hsl(0, 0%, 100%);
-}
-
-.dark button[data-search-full] {
-	--color-fd-secondary: hsl(0, 0%, 0%);
-	--color-fd-accent: hsl(0, 0%, 0%);
-}
-
 .dark body,
 .dark html {
 	background-color: var(--background);
@@ -90,9 +80,4 @@ button[data-search-full] {
 		animation: none !important;
 		transform: none !important;
 	}
-}
-
-/* Right align theme toggle in sidebar only */
-aside .theme-toggle {
-	margin-left: auto;
 }
