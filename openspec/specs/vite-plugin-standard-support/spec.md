@@ -1,7 +1,7 @@
 # vite-plugin-standard-support Specification
 
 ## Purpose
-TBD - created by archiving change vite-plugin-validator-mode. Update Purpose after archive.
+Defines Standard Schema validator support in the ArkEnv Vite plugin, enabling Vite projects to use validators like Zod or Valibot without requiring ArkType. The plugin accepts an optional config object (second argument) and passes validator options through to `createEnv`, with types correctly inferred from the Standard Schema output.
 ## Requirements
 ### Requirement: Vite Plugin Validator Support
 

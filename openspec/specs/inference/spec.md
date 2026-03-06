@@ -1,7 +1,7 @@
 # inference Specification
 
 ## Purpose
-TBD - created by archiving change fix-standard-mode-inference. Update Purpose after archive.
+Defines correct TypeScript type inference for ArkEnv's Standard Schema mode. When `createEnv` is called from `arkenv/standard`, the returned object's types must be inferred directly from the Standard Schema validators' output types (e.g., Zod output), with no dependency on ArkType-specific inference types like `distill.Out`.
 ## Requirements
 ### Requirement: Standard Mode Type Inference
 When `createEnv` is used with `validator: "standard"`, the returned object MUST have types inferred from the Standard Schema validators.

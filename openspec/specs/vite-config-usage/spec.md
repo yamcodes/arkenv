@@ -1,7 +1,7 @@
 # vite-config-usage Specification
 
 ## Purpose
-TBD - created by archiving change add-arkenv-vite-config. Update Purpose after archive.
+Defines how ArkEnv can be used directly inside `vite.config.ts` to validate non-prefixed, server-side environment variables (e.g., `PORT`, `DATABASE_URL`) that are consumed by the Vite configuration itself—separate from the `VITE_`-prefixed variables exposed to client code. The schema is defined once with ArkType's `type()` and reused for both the Vite plugin and the `loadEnv` call, without any wrapper utility.
 ## Requirements
 ### Requirement: ArkEnv in Vite Config Files
 

@@ -1,7 +1,7 @@
 # bun-plugin Specification
 
 ## Purpose
-TBD - created by archiving change add-bun-plugin. Update Purpose after archive.
+Defines the ArkEnv Bun plugin: its two configuration patterns (direct instance for `Bun.build`, package reference for `Bun.serve`), build-time environment variable validation and static replacement, client-only filtering by prefix (default: `BUN_PUBLIC_`), TypeScript type augmentation via `ProcessEnvAugmented`, and support for configurable validator engines (ArkType by default, or Standard Schema).
 ## Requirements
 ### Requirement: Bun Plugin Configuration Patterns
 

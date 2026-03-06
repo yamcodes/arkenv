@@ -1,7 +1,7 @@
 # rate-limiter Specification
 
 ## Purpose
-TBD - created by archiving change add-deploy-rate-limiter. Update Purpose after archive.
+Defines the CI/CD deployment rate limiting system for the ArkEnv documentation site. A Node.js budget-check script gates preview deploys via a 20-minute cooldown and a 72-per-day limit, and alerts on production deploy thresholds. Deployment metrics are persisted across GitHub Actions runs using a rolling cache key.
 ## Requirements
 ### Requirement: [rate-limiter.1] Budget Checking Script
 The system MUST include a Node.js script that evaluates deployment budgets.

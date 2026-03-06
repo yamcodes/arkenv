@@ -1,7 +1,7 @@
 # fumadocs-ui Specification
 
 ## Purpose
-TBD - created by archiving change publish-fumadocs-ui. Update Purpose after archive.
+Defines the ArkEnv documentation site's Fumadocs UI theme package, which implements the ArkEnv design system. Covers CSS design tokens (sharpened corners, header height), external link detection and visual indicators, enhanced headings with anchor links, pre-configured MDX component overrides, AI action components (LLMCopyButton, ViewOptions), and enhanced code blocks.
 ## Requirements
 ### Requirement: Design System Styles
 The theme MUST provide a CSS entry point that implements the ArkEnv design system.

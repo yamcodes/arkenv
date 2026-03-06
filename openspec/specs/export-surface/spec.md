@@ -1,7 +1,7 @@
 # export-surface Specification
 
 ## Purpose
-TBD - created by archiving change refactor-export-surface. Update Purpose after archive.
+Defines ArkEnv's three-tier public entry point architecture: `arkenv` (ArkType required, exports `createEnv`, `EnvSchema`, and `type`), `arkenv/standard` (ArkType-free, exports `createEnv` for Standard Schema use), and `arkenv/core` (ArkType-free, exports `ArkEnvError`). The `arkenv/standard` and `arkenv/core` entries must have module graphs with no runtime ArkType imports. The deprecated `arkenv/arktype` sub-path is removed.
 ## Requirements
 ### Requirement: Three-Tier Export Architecture
 ArkEnv MUST expose exactly three public entry points - `arkenv`, `arkenv/standard`, and `arkenv/core` - each with a clearly defined contract.

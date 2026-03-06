@@ -1,7 +1,7 @@
 # hero-video Specification
 
 ## Purpose
-TBD - created by archiving change update-hero-videos. Update Purpose after archive.
+Defines the hero section video display for the ArkEnv homepage: a theme-aware (light/dark), looping, autoplay video that is responsive across device sizes and blends seamlessly with the page background.
 ## Requirements
 ### Requirement: Hero Video Display and Behavior
 The hero section MUST display a looping, autoplaying video that showcases the product. This video MUST be theme-aware and responsive.
