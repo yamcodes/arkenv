@@ -9,10 +9,10 @@
 	},
 	"dependencies": {
 		"arkenv": "^0.11.0",
-		"arktype": "^2.1.29"
+		"arktype": "^2.2.0"
 	},
 	"engines": {
 		"node": "24"
 	},
-	"packageManager": "npm@11.11.1"
+	"packageManager": "npm@11.9.0"
 }
