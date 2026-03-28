@@ -5,7 +5,7 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: false,
 	sourcemap: true,
-	dts: {
-		resolve: ["@repo/types"],
+	deps: {
+		alwaysBundle: ["@repo/types"],
 	},
 });

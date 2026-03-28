@@ -13,11 +13,10 @@ export default defineConfig({
 	platform: "node",
 	minify: true,
 	fixedExtension: true,
-	dts: {
-		resolve: ["@repo/types", "@repo/scope"],
+	deps: {
+		alwaysBundle: ["@repo/scope", "@repo/types"],
+		neverBundle: ["arktype"],
 	},
-	external: ["arktype"],
-	noExternal: ["@repo/scope"],
 	outputOptions: {
 		exports: "named",
 	},
