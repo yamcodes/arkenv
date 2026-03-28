@@ -16,7 +16,7 @@ import {
 import { ExternalLink } from "@/components/external-link";
 import { Heading } from "@/components/heading";
 
-export const arkenvComponents: MDXComponents = {
+export const arkenvComponents = {
 	...defaultComponents,
 	a: ExternalLink as any,
 	img: (props) => (
@@ -46,4 +46,4 @@ export const arkenvComponents: MDXComponents = {
 	h4: (props: any) => <Heading as="h4" {...props} />,
 	h5: (props: any) => <Heading as="h5" {...props} />,
 	h6: (props: any) => <Heading as="h6" {...props} />,
-};
+} satisfies MDXComponents;

@@ -6,32 +6,32 @@ packages:
   - tooling/*
 
 catalog:
-  '@axe-core/playwright': 4.11.0
-  '@size-limit/esbuild-why': 12.0.0
-  '@size-limit/preset-small-lib': 12.0.0
-  '@types/bun': 1.3.6
-  '@types/node': 24.10.9
-  '@types/react': 19.2.9
+  '@axe-core/playwright': 4.11.1
+  '@size-limit/esbuild-why': 12.0.1
+  '@size-limit/preset-small-lib': 12.0.1
+  '@types/bun': 1.3.11
+  '@types/node': 24.12.0
+  '@types/react': 19.2.14
   '@types/react-dom': 19.2.3
-  '@vitejs/plugin-react': 5.1.2
-  '@vitest/ui': 4.0.17
-  arktype: 2.1.29
-  bun: 1.3.6
+  '@vitejs/plugin-react': 5.2.0
+  '@vitest/ui': 4.1.0
+  arktype: 2.2.0
+  bun: 1.3.11
   concurrently: 9.2.1
   esbuild: 0.27.4
-  globals: 17.0.0
-  next: 16.1.7
-  react: 19.2.3
-  react-dom: 19.2.3
-  rimraf: 6.1.2
-  size-limit: 12.0.0
+  globals: 17.4.0
+  next: 16.2.1
+  react: 19.2.4
+  react-dom: 19.2.4
+  rimraf: 6.1.3
+  size-limit: 12.0.1
   tsdown: 0.21.4
   tsx: 4.21.0
   typescript: 5.9.3
-  valibot: 1.2.0
-  vite-tsconfig-paths: 6.0.4
-  vitest: 4.0.17
-  zod: 4.3.5
+  valibot: 1.3.1
+  vite-tsconfig-paths: 6.1.1
+  vitest: 4.1.0
+  zod: 4.3.6
 
 overrides:
   '@playwright/test': 1.57.0
