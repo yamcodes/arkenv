@@ -100,7 +100,7 @@ function MarqueeRow({
 
 	return (
 		<div className="flex items-center gap-4 w-full group/rail">
-			<span className="hidden sm:block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 whitespace-nowrap w-[85px] text-left">
+			<span className="hidden sm:block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 whitespace-nowrap w-21.25 text-left">
 				{label}
 			</span>
 			<div className="relative flex overflow-hidden flex-1 select-none mask-[linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
@@ -110,6 +110,7 @@ function MarqueeRow({
 				>
 					{[...items, ...items, ...items].map((item, i) => (
 						<a
+							/* biome-ignore lint/suspicious/noArrayIndexKey: items are triplicated for marquee animation, index is required to avoid duplicate keys */
 							key={`${item.name}-${i}`}
 							href={item.url}
 							target="_blank"
