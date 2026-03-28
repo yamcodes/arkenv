@@ -7,5 +7,5 @@ export default defineConfig({
 	sourcemap: true,
 	deps: {
 		alwaysBundle: ["@repo/types"],
-	}
+	},
 });

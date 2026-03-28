@@ -6,5 +6,5 @@ export default defineConfig({
 	fixedExtension: false,
 	deps: {
 		alwaysBundle: ["@repo/types"],
-	}
+	},
 });

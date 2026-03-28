@@ -15,7 +15,7 @@ export default defineConfig({
 	fixedExtension: true,
 	deps: {
 		alwaysBundle: ["@repo/scope", "@repo/types"],
-		neverBundle: ["arktype"]
+		neverBundle: ["arktype"],
 	},
 	outputOptions: {
 		exports: "named",
