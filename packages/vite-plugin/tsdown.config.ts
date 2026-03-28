@@ -4,8 +4,8 @@ export default defineConfig({
 	format: ["esm", "cjs"],
 	minify: true,
 	fixedExtension: false,
-	dts: {
-		resolve: ["@repo/types"],
-	},
-	external: ["vite"],
+	deps: {
+		alwaysBundle: ["@repo/types"],
+		neverBundle: ["vite"]
+	}
 });
