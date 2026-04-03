@@ -64,7 +64,7 @@ jobs:
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
       - name: Generate GitHub App Token
         id: generate-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         if: env.APP_PRIVATE_KEY != ''
         with:
           app-id: ${{ vars.APP_ID }}
