@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
       - uses: actions/setup-node@v6
         with:
           node-version: lts/*
