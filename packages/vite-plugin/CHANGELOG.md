@@ -1,5 +1,11 @@
 # @arkenv/vite-plugin
 
+## 0.0.33
+
+### Patch Changes
+
+- Support Vite 8 _[`#863`](https://github.com/yamcodes/arkenv/pull/863) [`226d2c5`](https://github.com/yamcodes/arkenv/commit/226d2c53dae62b79ba419f7c3d158ab695a41b70) [@yamcodes](https://github.com/yamcodes)_
+
 ## 0.0.32
 
 ### Patch Changes

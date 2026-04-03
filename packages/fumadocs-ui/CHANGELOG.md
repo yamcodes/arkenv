@@ -1,5 +1,11 @@
 # @arkenv/fumadocs-ui
 
+## 0.0.7
+
+### Patch Changes
+
+- Fix `arkenvComponents` typesafety issue when used in getMDXComponents _[`#835`](https://github.com/yamcodes/arkenv/pull/835) [`2b41340`](https://github.com/yamcodes/arkenv/commit/2b41340990cee90e7cc4a81b189d0be71706c847) [@renovate](https://github.com/apps/renovate)_
+
 ## 0.0.6
 
 ### Patch Changes
