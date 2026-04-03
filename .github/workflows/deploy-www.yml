@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Restore deploy metrics
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .github/deploy-metrics.json
           key: deploy-metrics-v1
@@ -47,7 +47,7 @@ jobs:
         run: node .github/scripts/check-deploy-budget.cjs prod
       - name: Save deploy metrics
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .github/deploy-metrics.json
           key: deploy-metrics-v1
