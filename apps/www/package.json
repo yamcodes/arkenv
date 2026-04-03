@@ -28,7 +28,7 @@
 		"@radix-ui/react-toast": "1.2.15",
 		"@radix-ui/react-tooltip": "1.2.8",
 		"@sentry/nextjs": "10.46.0",
-		"@vercel/analytics": "1.6.1",
+		"@vercel/analytics": "2.0.1",
 		"@vercel/speed-insights": "2.0.0",
 		"arkdark": "5.4.2",
 		"arkenv": "workspace:*",
