@@ -354,7 +354,7 @@ importers:
         specifier: 17.4.0
         version: 17.4.0
       typescript:
-        specifier: 6.0.2
+        specifier: 'catalog:'
         version: 6.0.2
       vite:
         specifier: 8.0.3
