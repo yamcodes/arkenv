@@ -13,7 +13,6 @@
 		"resolveJsonModule": true,
 		"jsx": "react-jsx",
 		"allowImportingTsExtensions": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
 		}

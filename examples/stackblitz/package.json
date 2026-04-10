@@ -16,7 +16,7 @@
 		"dotenv": "^17.2.3",
 		"rimraf": "^6.1.2",
 		"ts-node-dev": "^2.0.0",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.0"
 	},
 	"stackblitz": {
 		"startCommand": "cp .env.example .env && npm install && npm run dev"
