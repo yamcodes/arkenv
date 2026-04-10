@@ -28,7 +28,6 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	langs: ["ts", "js"],
 	twoslashOptions: {
 		compilerOptions: {
-			baseUrl: root,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
@@ -49,6 +48,7 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 					path.join(root, "packages/internal/keywords/src/index.ts"),
 				],
 			},
+			types: ["node"],
 		},
 		extraFiles: {
 			"global.d.ts": `import type * as a from "arktype"
