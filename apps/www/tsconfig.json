@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
 		"target": "ES2023",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
