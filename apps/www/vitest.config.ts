@@ -1,13 +1,13 @@
+import babel from "@rolldown/plugin-babel";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineProject } from "vitest/config";
 
 export default defineProject({
 	plugins: [
-		react({
-			babel: {
-				plugins: ["styled-jsx/babel"],
-			},
+		react(),
+		babel({
+			plugins: ["styled-jsx/babel"],
 		}),
 		tsconfigPaths({ projects: ["./tsconfig.json"] }),
 	],
