@@ -22,6 +22,12 @@
 		// Note: Order by least important to most important,
 		// see note at the end of https://docs.renovatebot.com/configuration-options/#packagerules
 
+		// Do not edit peer dependency ranges in package manifests.
+		{
+			"matchDepTypes": ["peerDependencies"],
+			"enabled": false
+		},
+
 		// By SemVer
 		{
 			"matchUpdateTypes": ["patch"],
