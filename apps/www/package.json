@@ -54,7 +54,7 @@
 		"shiki": "4.0.2",
 		"tailwind-merge": "3.5.0",
 		"tailwindcss-animate": "1.0.7",
-		"twoslash": "0.3.6",
+		"twoslash": "0.3.8",
 		"unist-util-visit": "5.1.0",
 		"valibot": "catalog:",
 		"vite": "8.0.7",
