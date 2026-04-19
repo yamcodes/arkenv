@@ -477,8 +477,8 @@ importers:
         specifier: 1.0.7
         version: 1.0.7(tailwindcss@4.2.2)
       twoslash:
-        specifier: 0.3.6
-        version: 0.3.6(typescript@6.0.2)
+        specifier: 0.3.8
+        version: 0.3.8(typescript@6.0.2)
       unist-util-visit:
         specifier: 5.1.0
         version: 5.1.0
@@ -8335,13 +8335,13 @@ packages:
     resolution: {integrity: sha512-JXNkRe6H6MjSlk5UQRTjyoKX5YN2zlc2632xcSlSFBao5yvbMWTpv9SNolOZlZmUlcDOHuszPLItbKrvcXnnZA==}
     hasBin: true
 
-  twoslash-protocol@0.3.6:
-    resolution: {integrity: sha512-FHGsJ9Q+EsNr5bEbgG3hnbkvEBdW5STgPU824AHUjB4kw0Dn4p8tABT7Ncg1Ie6V0+mDg3Qpy41VafZXcQhWMA==}
+  twoslash-protocol@0.3.8:
+    resolution: {integrity: sha512-HmvAHoiEviK8LqvAQyc9/irkdvwTUiR1fHmNwH/0gq8EHxyBt4PWVPixjEXg6wJu1u6yBrILEWXGK9Kw58/8yQ==}
 
-  twoslash@0.3.6:
-    resolution: {integrity: sha512-VuI5OKl+MaUO9UIW3rXKoPgHI3X40ZgB/j12VY6h98Ae1mCBihjPvhOPeJWlxCYcmSbmeZt5ZKkK0dsVtp+6pA==}
+  twoslash@0.3.8:
+    resolution: {integrity: sha512-OeDz0kDl8sqPUN3nr7gqcvOs70f5lZsdhKYTX3/SgB9OvdadzzoYJI/4SBXhXV1HG8E9fLc+e17itoRYTxmoig==}
     peerDependencies:
-      typescript: ^5.5.0
+      typescript: ^5.5.0 || ^6.0.0
 
   type-fest@0.21.3:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
@@ -12177,7 +12177,7 @@ snapshots:
     dependencies:
       '@shikijs/core': 4.0.2
       '@shikijs/types': 4.0.2
-      twoslash: 0.3.6(typescript@6.0.2)
+      twoslash: 0.3.8(typescript@6.0.2)
       typescript: 6.0.2
     transitivePeerDependencies:
       - supports-color
@@ -14391,7 +14391,7 @@ snapshots:
       react: 19.2.4
       shiki: 4.0.2
       tailwind-merge: 3.5.0
-      twoslash: 0.3.6(typescript@6.0.2)
+      twoslash: 0.3.8(typescript@6.0.2)
     optionalDependencies:
       '@types/react': 19.2.14
     transitivePeerDependencies:
@@ -17262,12 +17262,12 @@ snapshots:
       '@turbo/windows-64': 2.9.5
       '@turbo/windows-arm64': 2.9.5
 
-  twoslash-protocol@0.3.6: {}
+  twoslash-protocol@0.3.8: {}
 
-  twoslash@0.3.6(typescript@6.0.2):
+  twoslash@0.3.8(typescript@6.0.2):
     dependencies:
       '@typescript/vfs': 1.6.4(typescript@6.0.2)
-      twoslash-protocol: 0.3.6
+      twoslash-protocol: 0.3.8
       typescript: 6.0.2
     transitivePeerDependencies:
       - supports-color
