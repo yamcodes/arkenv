@@ -20,7 +20,7 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vite": "8.0.7",
+		"vite": "8.0.8",
 		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	},
