@@ -71,7 +71,7 @@
 		"react-dom": "19.2.5",
 		"rimraf": "catalog:",
 		"rollup-plugin-preserve-use-client": "3.0.1",
-		"tailwindcss": "4.2.2",
+		"tailwindcss": "4.2.4",
 		"tsdown": "catalog:",
 		"typescript": "catalog:"
 	},
