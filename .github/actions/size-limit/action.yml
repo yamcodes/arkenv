@@ -40,7 +40,7 @@ runs:
         bun ${{ github.action_path }}/src/index.ts
     - name: Comment PR
       if: github.event_name == 'pull_request' && (success() || failure()) && steps.size-check.outputs.packages_changed == 'true'
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         github-token: ${{ inputs.github_token }}
         script: |
