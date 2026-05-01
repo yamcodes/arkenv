@@ -28,5 +28,5 @@
 		"vite": "8.0.10",
 		"vite-tsconfig-paths": "^6.1.1"
 	},
-	"packageManager": "npm@11.13.0"
+	"packageManager": "npm@11.9.0"
 }
