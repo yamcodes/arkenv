@@ -5,39 +5,15 @@
       <list>
         <IssueNavigationLink>
           <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/yamcodes/arkenv/issues/$1" />
+          <option name="linkRegexp" value="https://github.com/aruaycodes/arkenv/issues/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
           <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/yamcodes/arkenv/issues/$1" />
+          <option name="linkRegexp" value="https://github.com/aruaycodes/arkenv/issues/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
           <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/yamcodes/arkenv/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/danciudev/arkenv/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/danciudev/arkenv/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/danciudev/arkenv/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/arktypeio/arktype/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/arktypeio/arktype/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/arktypeio/arktype/issues/$1" />
+          <option name="linkRegexp" value="https://github.com/aruaycodes/arkenv/issues/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
           <option name="issueRegexp" value="([^/\n\s]+/[^#\n\s]+)#(\d+)" />
