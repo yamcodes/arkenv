@@ -14,7 +14,8 @@ const content = fs.readFileSync(mdxPath, "utf8");
 // which contains compilerOptions, extraFiles, etc.
 const options = arktypeTwoslashOptions.twoslashOptions;
 
-const codeBlockRegex = /```(ts|tsx|js|jsx) twoslash(?:.*)\r?\n([\s\S]*?)\r?\n```/g;
+const codeBlockRegex =
+	/```(ts|tsx|js|jsx) twoslash(?:.*)\r?\n([\s\S]*?)\r?\n```/g;
 let blockIndex = 1;
 
 for (const match of content.matchAll(codeBlockRegex)) {
