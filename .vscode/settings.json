@@ -22,5 +22,6 @@
 	},
 	"files.associations": {
 		"*.css": "tailwindcss"
-	}
+	},
+	"biome.enabled": false
 }
