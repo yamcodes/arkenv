@@ -14,15 +14,8 @@
 			"name": "⛯  arkenv"
 		},
 		{
-			"path": "apps/www/content/docs",
-			"name": "📑 docs"
-		},
-		{
-			"path": "apps/www/public/assets",
-			"name": "🖼️ assets"
-		},
-		{
 			"path": "packages/arkenv",
+
 			"name": "🎁 arkenv"
 		},
 		{
