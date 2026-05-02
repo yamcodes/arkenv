@@ -11,135 +11,120 @@
 	"folders": [
 		{
 			"path": ".",
-			"name": "~"
+			"name": "⛯  arkenv"
 		},
 		{
 			"path": "apps/www/content/docs",
-			"name": "docs"
+			"name": "📑 docs"
 		},
 		{
 			"path": "apps/www/public/assets",
-			"name": "assets"
-		},
-		{
-			"path": "packages",
-			"name": "packages"
+			"name": "🖼️ assets"
 		},
 		{
 			"path": "packages/arkenv",
-			"name": "  arkenv"
+			"name": "🎁 arkenv"
 		},
 		{
 			"path": "packages/vite-plugin",
-			"name": "  @arkenv/vite-plugin"
+			"name": "🎁 vite-plugin"
 		},
 		{
 			"path": "packages/bun-plugin",
-			"name": "  @arkenv/bun-plugin"
+			"name": "🎁 bun-plugin"
 		},
 		{
 			"path": "packages/fumadocs-ui",
-			"name": "  @arkenv/fumadocs-ui"
+			"name": "🎁 fumadocs-ui"
 		},
 		{
 			"path": "packages/internal/types",
-			"name": "  @repo/types"
+			"name": "📦 types"
 		},
 		{
 			"path": "packages/internal/scope",
-			"name": "  @repo/scope"
+			"name": "📦 scope"
 		},
-		{
-			"path": "tooling",
-			"name": "tooling"
-		},
+
 		{
 			"path": "tooling/playwright-www",
-			"name": "  playwright-www (arkenv.js.org)"
-		},
-		{
-			"path": "apps",
-			"name": "apps"
+			"name": "🛠️ playwright"
 		},
 		{
 			"path": "apps/www",
-			"name": "  www (arkenv.js.org)"
+			"name": "🚀 www"
 		},
 		{
 			"path": "apps/playgrounds/node",
-			"name": "  node-playground"
+			"name": "🛝 node"
 		},
 		{
 			"path": "apps/playgrounds/bun",
-			"name": "  bun-playground"
+			"name": "🛝 bun"
 		},
 		{
 			"path": "apps/playgrounds/vite",
-			"name": "  vite-playground"
+			"name": "🛝 vite"
 		},
 		{
 			"path": "apps/playgrounds/vite-legacy",
-			"name": "  vite-legacy-playground"
+			"name": "🛝 vite-legacy"
 		},
 		{
 			"path": "apps/playgrounds/bun-react",
-			"name": "  bun-react-playground"
+			"name": "🛝 bun-react"
 		},
 		{
 			"path": "apps/playgrounds/solid-start",
-			"name": "  solid-start-playground"
+			"name": "🛝 solid-start"
 		},
 		{
 			"path": "apps/playgrounds/standard-schema",
-			"name": "  standard-schema-playground"
+			"name": "🛝 standard-schema"
 		},
 		{
 			"path": "apps/playgrounds/esbuild-cjs",
-			"name": "  esbuild-cjs-playground"
+			"name": "🛝 esbuild-cjs"
 		},
 		{
 			"path": "apps/playgrounds/js",
-			"name": "  js-playground"
-		},
-		{
-			"path": "examples",
-			"name": "examples"
+			"name": "🛝 js"
 		},
 		{
 			"path": "examples/basic",
-			"name": "  basic"
+			"name": "💡 basic"
 		},
 		{
 			"path": "examples/basic-js",
-			"name": "  basic-js"
+			"name": "💡 basic-js"
 		},
 		{
 			"path": "examples/with-bun",
-			"name": "  with-bun"
+			"name": "💡 with-bun"
 		},
 		{
 			"path": "examples/with-bun-react",
-			"name": "  with-bun-react"
+			"name": "💡 with-bun-react"
 		},
 		{
 			"path": "examples/with-vite-react",
-			"name": "  with-vite-react"
+			"name": "💡 with-vite-react"
 		},
 		{
 			"path": "examples/with-solid-start",
-			"name": "  with-solid-start"
+			"name": "💡 with-solid-start"
 		},
 		{
 			"path": "examples/with-standard-schema",
-			"name": "  with-standard-schema"
+			"name": "💡 with-standard-schema"
 		},
 		{
 			"path": "examples/without-arktype",
-			"name": "  without-arktype"
+			"name": "💡 without-arktype"
 		},
 		{
 			"path": "examples/stackblitz",
-			"name": "  stackblitz"
+			"name": "💡 stackblitz"
 		}
 	]
 }
