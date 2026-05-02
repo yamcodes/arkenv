@@ -1,24 +1,76 @@
 ---
 title: Introduction
 icon: Album
+description: The ArkEnv plugin for Vite lets you validate environment variables at build-time with ArkEnv.
 ---
 
-## What is this?
+> [!IMPORTANT]
+> This plugin requires [ArkType](https://arktype.io) to be installed.
 
-The ArkEnv plugin for Vite lets you validate environment variables at build-time with ArkEnv.
+## Quick Start
+
+### 1. Install
+
+```package-install
+@arkenv/vite-plugin arkenv
+```
+
+### 2. Configure Plugin
+
+Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for type safety in other files.
 
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
+import { type } from "arkenv";
 import { defineConfig } from "vite";
 
-export default defineConfig({
-  plugins: [
-    arkenv({
-      PORT: "number.port",
-      VITE_MY_VAR: "string",
-    }),
-  ],
+export const Env = type({
+	PORT: "number.port",
+	VITE_MY_VAR: "string"
 });
+
+export default defineConfig({
+	plugins: [arkenv(Env)]
+});
+```
+
+### 3. Add Type Safety
+
+To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
+
+```ts title="src/vite-env.d.ts"
+/// <reference types="vite/client" />
+
+type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+	typeof import("../vite.config").Env
+>;
+
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+
+interface ImportMeta {
+	readonly env: ImportMetaEnv;
+}
+```
+
+### 4. Use in your code
+
+You can now use `import.meta.env` with full type safety and autocompletion throughout your application.
+
+```tsx title="src/App.tsx" twoslash
+// @filename: vite-env.d.ts
+/// <reference types="vite/client" />
+type ImportMetaEnvAugmented = {
+	VITE_MY_VAR: string
+}
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+interface ImportMeta {
+	readonly env: ImportMetaEnv
+}
+
+// @filename: App.tsx
+// ---cut---
+const apiUrl = import.meta.env.VITE_MY_VAR;
+//      ^?
 ```
 
 With this setup, if any environment variable is missing or invalid, your dev server won't start and your production build will fail with an error:
@@ -29,43 +81,35 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
+> [!TIP]
+> For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
+
 ## Using Standard Schema validators (Zod, Valibot)
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
-```ts title="vite.config.ts"
-import { defineConfig } from "vite";
+```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
+import { defineConfig } from "vite";
 import { z } from "zod";
 
+export const Env = {
+	VITE_API_URL: z.string().url(),
+	VITE_API_KEY: z.string().min(1),
+	VITE_DEBUG: "boolean"
+} as const;
+
 export default defineConfig({
-  plugins: [
-    arkenv({
-      VITE_API_URL: z.url(),
-      VITE_API_KEY: z.string().min(1),
-      VITE_DEBUG: "boolean",
-    }),
-  ],
+	plugins: [arkenv(Env)]
 });
+
+// @noErrors
+// ---cut---
+import { Env } from "./vite.config";
+import type { ImportMetaEnvAugmented } from "@arkenv/vite-plugin";
+
+type Formatted = ImportMetaEnvAugmented<typeof Env>;
+//    ^?
 ```
 
-> [!IMPORTANT]
-> This plugin requires [ArkType](https://arktype.io) to be installed.
->
-> For a zero-ArkType setup, use [arkenv/standard](/docs/arkenv/standard) directly in your app code instead.
->
-> See [Standard Schema validators](/docs/arkenv/integrations/standard-schema) for details.
-
-## Installation
-
-```package-install
-@arkenv/vite-plugin
-```
-
-If you intend to use `arkenv` (requires ArkType), also install `arktype`:
-
-```package-install
-arktype
-```
-
-For some workflows (including [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig) and [typing import.meta.env](/docs/vite-plugin/typing-import-meta-env)), a dedicated `arkenv` installation is needed. See [ArkEnv quickstart](/docs/arkenv/quickstart) for more instructions.
+For advanced workflows, see [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).
