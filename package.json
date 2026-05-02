@@ -42,16 +42,5 @@
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
-	"packageManager": "pnpm@10.33.2",
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@biomejs/biome",
-			"@sentry/cli",
-			"@tailwindcss/oxide",
-			"@vercel/speed-insights",
-			"bun",
-			"esbuild",
-			"sharp"
-		]
-	}
+	"packageManager": "pnpm@11.0.3"
 }
