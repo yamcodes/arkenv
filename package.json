@@ -29,8 +29,8 @@
 		"contributors:generate": "all-contributors generate"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.12",
-		"@changesets/cli": "2.30.0",
+		"@biomejs/biome": "2.4.13",
+		"@changesets/cli": "2.31.0",
 		"@manypkg/cli": "0.25.1",
 		"@playwright/test": "",
 		"@vitest/ui": "catalog:",
