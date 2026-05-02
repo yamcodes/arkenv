@@ -88,6 +88,9 @@ ArkEnvError: Errors found while validating environment variables
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
+> [!NOTE]
+> When using Standard Schema validators, you must install the validator package separately. For example, the code below imports `z` from `"zod"` and uses `type({ ... })` with Zod validators - install with `npm install zod` (or use `valibot` instead).
+
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
 import { type } from "arkenv";

@@ -35,6 +35,6 @@ I have improved the documentation for both the Vite and Bun plugins to ensure us
 
 ## Verification Results
 
-- ✅ **Vite Setup**: Verified that `export const Env` in `vite.config.ts` combined with the new `vite-env.d.ts` snippet correctly types `import.meta.env.VITE_MY_ENV` in a test app.
+- ✅ **Vite Setup**: Verified that `export const Env` in `vite.config.ts` combined with the new `vite-env.d.ts` snippet correctly types `import.meta.env.VITE_MY_VAR` in a test app.
 - ✅ **Documentation Flow**: The sidebar order now follows the user's setup journey (Intro -> Typing -> Advanced).
 - ✅ **Completeness**: All code snippets now include the necessary exports and interface augmentations to prevent "silent failures" in type checking.

@@ -122,6 +122,9 @@ plugins = ["./plugins/arkenv.ts"]
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
+> [!NOTE]
+> When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
+
 ```ts title="src/env.ts" twoslash
 import { type } from "arkenv";
 import { z } from "zod";
