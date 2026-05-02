@@ -9,6 +9,9 @@ With ArkEnv, this can be typesafe with the one-time setup below. After this, eac
 
 ## Setup
 
+> [!TIP]
+> This guide is the final step to complete the [Simple setup](/docs/bun-plugin) from the introduction page.
+
 > [!IMPORTANT]
 > You must have the core `arkenv` package installed as a dependency in your project. See [ArkEnv quickstart](/docs/arkenv/quickstart) for instructions.
 
@@ -60,7 +63,7 @@ The `ProcessEnvAugmented` type:
 
 1. Extracts the inferred type from your schema (the result of `type()` from arkenv)
 2. Filters to only include variables matching the Bun prefix (defaults to `"BUN_PUBLIC_"`) and `NODE_ENV`
-3. Makes them available on `process.env` with full type safety
+3. Makes them available on `process.env` with full typesafety
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in the augmented `process.env` type.
 

@@ -1,21 +1,25 @@
 ---
 title: Introduction
 icon: Album
+description: The ArkEnv plugin for Bun lets you validate environment variables at build-time and runtime with ArkEnv.
 ---
 
-## What is this?
+> [!IMPORTANT]
+> This plugin requires [ArkType](https://arktype.io) to be installed.
 
-The ArkEnv plugin for Bun lets you validate environment variables at build-time and runtime with ArkEnv.
+## Quickstart
 
-It supports a **simple setup** for most projects, automatically discovering your schema from `./src/env.ts` or `./env.ts`.
+### 1. Installation
 
-## Usage
+```package-install
+@arkenv/bun-plugin arkenv
+```
 
-### Simple setup (recommended)
+### 2. Configure Plugin
 
 The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `Bun.serve`) and your build script (for `Bun.build`).
 
-#### 1. Create your schema
+#### Create your schema
 
 ```ts title="src/env.ts" twoslash
 import { type } from "arkenv";
@@ -26,14 +30,14 @@ export default type({
 });
 ```
 
-#### 2. Configure for Bun.serve (dev mode)
+#### Configure for Bun.serve (dev mode)
 
 ```toml title="bunfig.toml"
 [serve.static]
 plugins = ["@arkenv/bun-plugin"]
 ```
 
-#### 3. Configure for Bun.build (build mode)
+#### Configure for Bun.build (build mode)
 
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
@@ -45,11 +49,35 @@ await Bun.build({
 });
 ```
 
-### Advanced setup
+### 3. Add Typesafety
+
+To make `process.env` fully typesafe, see the [Typing process.env](/docs/bun-plugin/typing-process-env) guide to complete your setup.
+
+### 4. Use in your code
+
+You can now use `process.env` with full typesafety and autocompletion throughout your application.
+
+```tsx title="src/App.tsx" twoslash
+// @filename: bun-env.d.ts
+/// <reference types="bun-types" />
+type ProcessEnvAugmented = {
+	BUN_PUBLIC_API_URL: string
+}
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented {}
+}
+
+// @filename: App.tsx
+// ---cut---
+const apiUrl = process.env.BUN_PUBLIC_API_URL;
+//      ^?
+```
+
+## Custom schema location
 
 If you need to customize the schema location or prefer explicit configuration:
 
-#### For Bun.build
+### For Bun.build
 
 Pass your schema directly to the plugin function:
 
@@ -69,7 +97,7 @@ await Bun.build({
 });
 ```
 
-#### For Bun.serve
+### For Bun.serve
 
 Create a custom plugin file and reference it in `bunfig.toml`:
 
@@ -90,48 +118,42 @@ export default arkenv(Env);
 plugins = ["./plugins/arkenv.ts"]
 ```
 
-### Using Standard Schema validators (Zod, Valibot)
+## Using Standard Schema validators (Zod, Valibot)
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
-```ts title="build.ts"
-import arkenv from "@arkenv/bun-plugin";
+> [!NOTE]
+> When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
+
+```ts title="src/env.ts" twoslash
 import { type } from "arkenv";
 import { z } from "zod";
 
-await Bun.build({
-  entrypoints: ["./app.tsx"],
-  outdir: "./dist",
-  plugins: [
-    arkenv(type({
-      BUN_PUBLIC_API_URL: z.url(),
-      BUN_PUBLIC_DEBUG: "boolean",
-    }))
-  ],
+export default type({
+  BUN_PUBLIC_API_URL: z.string().url(),
+  BUN_PUBLIC_DEBUG: "boolean",
 });
 ```
 
-> [!IMPORTANT]
-> This plugin requires [ArkType](https://arktype.io) to be installed.
->
-> For a zero-ArkType setup, use [arkenv/standard](/docs/arkenv/standard) directly in your app code instead.
->
-> See [Standard Schema validators](/docs/arkenv/integrations/standard-schema) for details.
+```tsx title="src/App.tsx" twoslash
+// @filename: bun-env.d.ts
+/// <reference types="bun-types" />
+type ProcessEnvAugmented = {
+	BUN_PUBLIC_API_URL: string
+	BUN_PUBLIC_DEBUG: boolean
+}
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented {}
+}
+
+// @filename: App.tsx
+// ---cut---
+const apiUrl = process.env.BUN_PUBLIC_API_URL;
+//      ^?
+```
 
 ## Features
 
 - **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
 - **Typesafety**: Ensures your code only accesses variables defined in your schema.
-- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration (e.g., `env: "MY_PUBLIC_*"` to use `MY_PUBLIC_` instead). See [Bun's bundler documentation](https://bun.sh/docs/bundler#env) for more details.
-
-## Installation
-
-```package-install
-@arkenv/bun-plugin arkenv
-```
-
-If you intend to use the default validator, you should also install `arktype`:
-
-```package-install
-arktype
-```
+- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration.

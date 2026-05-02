@@ -426,7 +426,7 @@
 
 - #### Support array defaults using type().default() syntax _[`#199`](https://github.com/yamcodes/arkenv/pull/199) [`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
 
-  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by `createEnv` due to overly restrictive type constraints. The function now accepts any string-keyed record while still maintaining type safety through ArkType's validation system.
+  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by `createEnv` due to overly restrictive type constraints. The function now accepts any string-keyed record while still maintaining typesafety through ArkType's validation system.
 
   ##### New Features
 

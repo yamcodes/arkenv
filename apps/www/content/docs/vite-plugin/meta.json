@@ -6,7 +6,7 @@
 	"pages": [
 		"---Guide---",
 		"index",
-		"arkenv-in-viteconfig",
-		"typing-import-meta-env"
+		"typing-import-meta-env",
+		"arkenv-in-viteconfig"
 	]
 }

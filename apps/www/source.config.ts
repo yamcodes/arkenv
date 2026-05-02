@@ -22,7 +22,7 @@ export default defineConfig({
 		rehypePlugins: [rehypeGithubAlerts, rehypeOptimizeInternalLinks],
 		remarkPlugins: [remarkGemoji, remarkNpm, remarkDirective],
 		rehypeCodeOptions: {
-			langs: ["ts", "js", "json", "bash", "dotenv"],
+			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv"],
 			themes: {
 				light: "github-light-high-contrast",
 				dark: "github-dark-high-contrast",

@@ -29,4 +29,4 @@ We already have `packages/internal/types/src/standard-schema.ts`. We will use th
 - Introducing complex auto-detection of schemas (we stick to the explicit `validator` flag).
 
 ## Design Principle
-**Type Safety without Vendor Lock-in.** ArkEnv should provide first-class type safety for both ArkType and Standard Schema users, respecting the inference rules of each.
+**Typesafety without Vendor Lock-in.** ArkEnv should provide first-class typesafety for both ArkType and Standard Schema users, respecting the inference rules of each.

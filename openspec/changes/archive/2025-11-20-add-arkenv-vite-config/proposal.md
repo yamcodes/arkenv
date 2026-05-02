@@ -7,7 +7,7 @@ There's no clear documentation on how to use ArkEnv for non-prefixed environment
 This creates a gap where:
 - Users might manually access `process.env` in vite.config.ts without validation
 - Configuration errors are discovered late (at runtime) rather than at build-time
-- No type safety for environment variables used in Vite config
+- No typesafety for environment variables used in Vite config
 - Confusion between server-only (config) and client-exposed (`VITE_*`) environment usage
 
 **Related Issue**: [#365](https://github.com/yamcodes/arkenv/issues/365)
@@ -69,7 +69,7 @@ This change focuses on:
   - Documentation files (README, docs)
   - Example vite.config.ts files
   - Potentially `@arkenv/vite-plugin` if we add a `loadEnv` wrapper utility
-- **User-facing**: Users can now validate unprefixed environment variables in vite.config.ts with full type safety
+- **User-facing**: Users can now validate unprefixed environment variables in vite.config.ts with full typesafety
 
 ## References
 

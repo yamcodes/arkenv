@@ -63,7 +63,7 @@ Vite has a built-in convention where only environment variables prefixed with `V
 - **Performance**: Overhead is minimal for typical schemas (most schemas have < 20 variables)
 
 **Alternative considered**:
-- **Filter schema, then validate**: Would require complex schema manipulation to handle both raw schemas and `type()` definitions, potentially losing type information. Also provides less validation coverage since server-only variables wouldn't be validated in the plugin context. The complexity and type safety concerns outweigh the minor performance benefit.
+- **Filter schema, then validate**: Would require complex schema manipulation to handle both raw schemas and `type()` definitions, potentially losing type information. Also provides less validation coverage since server-only variables wouldn't be validated in the plugin context. The complexity and typesafety concerns outweigh the minor performance benefit.
 
 ## Risks / Trade-offs
 
