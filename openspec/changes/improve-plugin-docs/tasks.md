@@ -3,7 +3,7 @@
 - [x] 1.1 Replace the inline plugin call with `export const Env = type({...})` exported constant pattern
 - [x] 1.2 Add "Step 2" section inline on the intro page showing the complete `src/vite-env.d.ts` snippet (including `interface ImportMeta`)
 - [x] 1.3 Keep error output block and Standard Schema section
-- [x] 1.4 Move Installation section to the top of Quick Start
+- [x] 1.4 Move Installation section to the top of Quickstart
 
 ## 2. Vite Plugin — Typing Page (`typing-import-meta-env.mdx`)
 

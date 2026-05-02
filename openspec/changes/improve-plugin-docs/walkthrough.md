@@ -1,11 +1,11 @@
 # Walkthrough: Improved Plugin Documentation
 
-I have improved the documentation for both the Vite and Bun plugins to ensure users can easily set up validation and type safety.
+I have improved the documentation for both the Vite and Bun plugins to ensure users can easily set up validation and typesafety.
 
 ## Vite Plugin Improvements
 
 ### 1. Introduction Page (`index.mdx`)
-- **Best Practice Pattern**: The "Quick Start" now shows the recommended pattern of exporting the schema as a named `Env` constant in `vite.config.ts`. This fixes the "anonymous schema" issue that broke type augmentation.
+- **Best Practice Pattern**: The "Quickstart" now shows the recommended pattern of exporting the schema as a named `Env` constant in `vite.config.ts`. This fixes the "anonymous schema" issue that broke type augmentation.
 - **2-Step Setup**: Added a clear "Step 2" section that shows the complete `src/vite-env.d.ts` snippet directly on the intro page.
 - **Simplified Installation**: Merged `arkenv` and `arktype` installation instructions into a single block.
 

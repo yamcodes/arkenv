@@ -60,7 +60,7 @@ The `ImportMetaEnvAugmented` type:
 
 1. Extracts the inferred type from your schema (the result of `type()` from arkenv)
 2. Filters to only include variables matching the Vite prefix (defaults to `"VITE_"`)
-3. Makes them available on `import.meta.env` with full type safety
+3. Makes them available on `import.meta.env` with full typesafety
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in `import.meta.env`.
 

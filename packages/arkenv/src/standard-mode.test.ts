@@ -82,7 +82,7 @@ describe("Standard Mode Type Inference", () => {
 		).toThrow(/Invalid validator: expected a Standard Schema 1.0 validator/);
 	});
 
-	it("should maintain type safety with multiple validators", () => {
+	it("should maintain typesafety with multiple validators", () => {
 		vi.stubEnv("VAR1", "a");
 		vi.stubEnv("VAR2", "b");
 		vi.stubEnv("VAR3", "c");

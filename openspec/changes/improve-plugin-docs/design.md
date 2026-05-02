@@ -40,7 +40,7 @@ The standard setup will be **a single, linear progression**:
 
 #### `content/docs/vite-plugin/index.mdx`
 
-- Lead with a concrete "Quick Start" that covers both validation AND typing in one place
+- Lead with a concrete "Quickstart" that covers both validation AND typing in one place
 - First code block: show `vite.config.ts` with `export const Env = type({...})` and `arkenvVitePlugin(Env)`
 - Second code block: show the complete `src/vite-env.d.ts` snippet right on the intro page as "Step 2"
 - Keep the error output block to show the fail-fast benefit

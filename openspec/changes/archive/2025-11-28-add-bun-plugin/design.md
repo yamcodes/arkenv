@@ -132,7 +132,7 @@ This keeps the default experience zero-config for most users, while still allowi
 #### Alternatives considered
 
 - **Static file reference as the only pattern** (previous design): Forces every project to create a separate `bun-plugin-config.ts` file even in simple setups, increasing boilerplate.
-- **Schema definition via JSON/YAML or bunfig.toml**: Reduces type safety and breaks the “define once in TypeScript” story that ArkEnv aims for.
+- **Schema definition via JSON/YAML or bunfig.toml**: Reduces typesafety and breaks the “define once in TypeScript” story that ArkEnv aims for.
 - **Only programmatic configuration** (no bunfig path): Would make full-stack `Bun.serve()` setups awkward compared to other Bun plugins that integrate via `bunfig.toml`.
 </file>
 

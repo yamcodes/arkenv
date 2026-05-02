@@ -7,9 +7,9 @@ description: The ArkEnv plugin for Vite lets you validate environment variables 
 > [!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
-## Quick Start
+## Quickstart
 
-### 1. Install
+### 1. Installation
 
 ```package-install
 @arkenv/vite-plugin arkenv
@@ -17,7 +17,7 @@ description: The ArkEnv plugin for Vite lets you validate environment variables 
 
 ### 2. Configure Plugin
 
-Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for type safety in other files.
+Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
 
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
@@ -34,7 +34,7 @@ export default defineConfig({
 });
 ```
 
-### 3. Add Type Safety
+### 3. Add Typesafety
 
 To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
 
@@ -54,7 +54,7 @@ interface ImportMeta {
 
 ### 4. Use in your code
 
-You can now use `import.meta.env` with full type safety and autocompletion throughout your application.
+You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
 
 ```tsx title="src/App.tsx" twoslash
 // @filename: vite-env.d.ts
@@ -113,3 +113,9 @@ type Formatted = ImportMetaEnvAugmented<typeof Env>;
 ```
 
 For advanced workflows, see [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).
+
+## Features
+
+- **Static Analysis**: Automatically replaces `import.meta.env.VARIABLE` with validated values during the build.
+- **Typesafety**: Ensures your code only accesses variables defined in your schema.
+- **Secure Defaults**: Only exposes variables prefixed with `VITE_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema.
