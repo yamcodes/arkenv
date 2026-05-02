@@ -90,26 +90,38 @@ This plugin uses ArkType for validation, which natively supports Standard Schema
 
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
+import { type } from "arkenv";
 import { defineConfig } from "vite";
 import { z } from "zod";
 
-export const Env = {
+export const Env = type({
 	VITE_API_URL: z.string().url(),
 	VITE_API_KEY: z.string().min(1),
 	VITE_DEBUG: "boolean"
-} as const;
+});
 
 export default defineConfig({
 	plugins: [arkenv(Env)]
 });
+```
 
-// @noErrors
+```tsx title="src/App.tsx" twoslash
+// @filename: vite-env.d.ts
+/// <reference types="vite/client" />
+type ImportMetaEnvAugmented = {
+	VITE_API_URL: string
+	VITE_API_KEY: string
+	VITE_DEBUG: boolean
+}
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+interface ImportMeta {
+	readonly env: ImportMetaEnv
+}
+
+// @filename: App.tsx
 // ---cut---
-import { Env } from "./vite.config";
-import type { ImportMetaEnvAugmented } from "@arkenv/vite-plugin";
-
-type Formatted = ImportMetaEnvAugmented<typeof Env>;
-//    ^?
+const apiUrl = import.meta.env.VITE_API_URL;
+//      ^?
 ```
 
 For advanced workflows, see [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).

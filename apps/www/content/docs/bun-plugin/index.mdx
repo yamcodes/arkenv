@@ -122,21 +122,31 @@ plugins = ["./plugins/arkenv.ts"]
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
-```ts title="build.ts"
-import arkenv from "@arkenv/bun-plugin";
+```ts title="src/env.ts" twoslash
 import { type } from "arkenv";
 import { z } from "zod";
 
-await Bun.build({
-  entrypoints: ["./app.tsx"],
-  outdir: "./dist",
-  plugins: [
-    arkenv(type({
-      BUN_PUBLIC_API_URL: z.url(),
-      BUN_PUBLIC_DEBUG: "boolean",
-    }))
-  ],
+export default type({
+  BUN_PUBLIC_API_URL: z.string().url(),
+  BUN_PUBLIC_DEBUG: "boolean",
 });
+```
+
+```tsx title="src/App.tsx" twoslash
+// @filename: bun-env.d.ts
+/// <reference types="bun-types" />
+type ProcessEnvAugmented = {
+	BUN_PUBLIC_API_URL: string
+	BUN_PUBLIC_DEBUG: boolean
+}
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented {}
+}
+
+// @filename: App.tsx
+// ---cut---
+const apiUrl = process.env.BUN_PUBLIC_API_URL;
+//      ^?
 ```
 
 ## Features
