@@ -4,6 +4,17 @@ packages:
   - apps/*
   - apps/playgrounds/*
   - tooling/*
+allowBuilds:
+  '@biomejs/biome': true
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  '@tailwindcss/oxide': true
+  '@vercel/speed-insights': true
+  bun: true
+  core-js: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
 
 catalog:
   '@axe-core/playwright': 4.11.2
@@ -37,3 +48,6 @@ overrides:
   '@playwright/test': 1.59.1
   import-in-the-middle: 2.0.6
   require-in-the-middle: 8.0.1
+publicHoistPattern:
+  - '*import-in-the-middle*'
+  - '*require-in-the-middle*'
