@@ -7,12 +7,12 @@
 	--popover-foreground: hsl(240 10% 3.9%);
 	--primary: #1e40af;
 	--primary-foreground: hsl(0 0% 98%);
-	--fd-primary: #1e40af;
-	--color-fd-primary: #1e40af;
+	--fd-primary: var(--primary);
+	--color-fd-primary: var(--primary);
 	--secondary: rgb(247, 249, 252);
 	--secondary-foreground: hsl(240 5.9% 10%);
 	--muted: hsl(240 4.8% 95.9%);
-	--muted-foreground: hsl(240 4% 55%);
+	--muted-foreground: hsl(240 4% 45%);
 	--accent: rgb(244, 244, 245);
 	--accent-foreground: hsl(240 5.9% 10%);
 	--destructive: hsl(0 84.2% 60.2%);
