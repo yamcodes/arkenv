@@ -11,7 +11,7 @@
 	"dependencies": {
 		"arkenv": "^0.11.0",
 		"arktype": "^2.2.0",
-		"zod": "^4.3.6"
+		"zod": "^4.4.1"
 	},
 	"devDependencies": {
 		"@types/node": "^24.12.2",
@@ -22,5 +22,5 @@
 	"engines": {
 		"node": "24"
 	},
-	"packageManager": "npm@11.13.0"
+	"packageManager": "npm@11.9.0"
 }
