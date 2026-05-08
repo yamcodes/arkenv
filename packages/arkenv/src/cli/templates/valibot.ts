@@ -1,4 +1,6 @@
-export const valibotTemplate = (frameworkNote: string) => `import arkenv from "arkenv/standard";
+export const valibotTemplate = (
+	frameworkNote: string,
+) => `import arkenv from "arkenv/standard";
 import * as v from "valibot";
 
 const Env = v.object({

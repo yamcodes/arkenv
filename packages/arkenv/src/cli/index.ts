@@ -5,6 +5,18 @@ import { runPromptWizard } from "./prompts";
 import { scaffold } from "./scaffold";
 
 async function main() {
+	const args = process.argv.slice(2);
+	const command = args[0];
+
+	if (command && command !== "init") {
+		console.log(pc.cyan("ArkEnv CLI"));
+		console.log("\nUsage:");
+		console.log("  arkenv init    Set up ArkEnv in your project");
+		console.log("\nOptions:");
+		console.log("  --help, -h     Show this help message");
+		process.exit(0);
+	}
+
 	const options = await runPromptWizard();
 
 	if (!options) {

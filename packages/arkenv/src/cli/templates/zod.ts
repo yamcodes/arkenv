@@ -1,4 +1,6 @@
-export const zodTemplate = (frameworkNote: string) => `import arkenv from "arkenv/standard";
+export const zodTemplate = (
+	frameworkNote: string,
+) => `import arkenv from "arkenv/standard";
 import { z } from "zod";
 
 const Env = z.object({

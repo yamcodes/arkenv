@@ -24,3 +24,11 @@
 
 - [x] 4.1 Perform a manual smoke test by running the built CLI in a temporary directory
 - [x] 4.2 Verify generated `env.ts` files compile without errors
+
+## Phase 4: Migration to `arkenv` Package 🏗️
+- [x] Move CLI source code to `packages/arkenv/src/cli` <!-- id: 16 -->
+- [x] Add CLI dependencies to `packages/arkenv` <!-- id: 17 -->
+- [x] Update `arkenv/tsdown.config.ts` to bundle the CLI entry point <!-- id: 18 -->
+- [x] Add `bin` field to `packages/arkenv/package.json` <!-- id: 19 -->
+- [x] Implement `init` command handling in `src/cli/index.ts` <!-- id: 20 -->
+- [x] Remove `packages/create-arkenv` after successful migration <!-- id: 21 -->

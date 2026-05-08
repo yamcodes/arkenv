@@ -1,4 +1,6 @@
-export const arktypeTemplate = (frameworkNote: string) => `import arkenv, { type } from "arkenv";
+export const arktypeTemplate = (
+	frameworkNote: string,
+) => `import arkenv, { type } from "arkenv";
 
 const Env = type({
 	NODE_ENV: "'development' | 'production' | 'test'",

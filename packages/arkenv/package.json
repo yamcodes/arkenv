@@ -6,6 +6,9 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
+	"bin": {
+		"arkenv": "./dist/cli.cjs"
+	},
 	"exports": {
 		".": {
 			"types": {
@@ -105,5 +108,9 @@
 			"limit": "500 B",
 			"import": "*"
 		}
-	]
+	],
+	"dependencies": {
+		"@clack/prompts": "^0.9.1",
+		"picocolors": "^1.1.1"
+	}
 }
