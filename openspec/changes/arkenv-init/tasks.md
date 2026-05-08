@@ -14,14 +14,14 @@
 
 ## Phase 3: Standalone CLI Package Migration 🏗️
 
-- [ ] 3.1 Create `packages/arkenv-cli` package skeleton with `package.json` (`name: "@arkenv/cli"`) <!-- id: 30 -->
-- [ ] 3.2 Move CLI source from `packages/arkenv/src/cli/` → `packages/arkenv-cli/src/` <!-- id: 31 -->
-- [ ] 3.3 Move CLI dependencies (`@clack/prompts`, `picocolors`) from `arkenv` → `@arkenv/cli` <!-- id: 32 -->
-- [ ] 3.4 Add `tsdown` build config for `@arkenv/cli` (platform: node, format: cjs, bundle all deps) <!-- id: 33 -->
-- [ ] 3.5 Configure `bin` field in `@arkenv/cli/package.json` <!-- id: 35 -->
-- [ ] 3.6 Remove `@clack/prompts` and `picocolors` from `arkenv` dependencies <!-- id: 36 -->
-- [ ] 3.7 Remove `bin` field and CLI entry from `arkenv/package.json` and `tsdown.config.ts` <!-- id: 37 -->
-- [ ] 3.8 Verify `arkenv` has `"dependencies": {}` <!-- id: 38 -->
+- [x] 3.1 Create `packages/arkenv-cli` package skeleton with `package.json` (`name: "@arkenv/cli"`) <!-- id: 30 -->
+- [x] 3.2 Move CLI source from `packages/arkenv/src/cli/` → `packages/arkenv-cli/src/` <!-- id: 31 -->
+- [x] 3.3 Move CLI dependencies (`@clack/prompts`, `picocolors`) from `arkenv` → `@arkenv/cli` <!-- id: 32 -->
+- [x] 3.4 Add `tsdown` build config for `@arkenv/cli` (platform: node, format: cjs, bundle all deps) <!-- id: 33 -->
+- [x] 3.5 Configure `bin` field in `@arkenv/cli/package.json` <!-- id: 35 -->
+- [x] 3.6 Remove `@clack/prompts` and `picocolors` from `arkenv` dependencies <!-- id: 36 -->
+- [x] 3.7 Remove `bin` field and CLI entry from `arkenv/package.json` and `tsdown.config.ts` <!-- id: 37 -->
+- [x] 3.8 Verify `arkenv` has `"dependencies": {}` <!-- id: 38 -->
 
 ## Phase 4: Integration Testing
 

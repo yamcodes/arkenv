@@ -5,7 +5,6 @@ export default defineConfig({
 		index: "src/index.ts",
 		standard: "src/standard.ts",
 		core: "src/core.ts",
-		cli: "src/cli/index.ts",
 	},
 	format: {
 		esm: {},

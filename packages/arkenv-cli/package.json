@@ -1,0 +1,41 @@
+{
+	"name": "@arkenv/cli",
+	"type": "module",
+	"version": "0.1.0",
+	"description": "Interactive CLI for scaffolding ArkEnv projects",
+	"bin": {
+		"arkenv": "./dist/index.cjs"
+	},
+	"main": "./dist/index.cjs",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"start": "node ./dist/index.cjs init",
+		"dev": "tsdown --watch"
+	},
+	"keywords": [
+		"arkenv",
+		"cli",
+		"scaffold",
+		"init"
+	],
+	"license": "MIT",
+	"homepage": "https://arkenv.js.org",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv-cli",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"dependencies": {
+		"@clack/prompts": "^0.9.1",
+		"picocolors": "^1.1.1"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	}
+}

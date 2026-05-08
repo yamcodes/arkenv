@@ -20,23 +20,27 @@
 		},
 		{
 			"path": "packages/vite-plugin",
-			"name": "🎁 vite-plugin"
+			"name": "🎁 @arkenv/vite-plugin"
 		},
 		{
 			"path": "packages/bun-plugin",
-			"name": "🎁 bun-plugin"
+			"name": "🎁 @arkenv/bun-plugin"
+		},
+		{
+			"path": "packages/arkenv-cli",
+			"name": "🎁 @arkenv/cli"
 		},
 		{
 			"path": "packages/fumadocs-ui",
-			"name": "🎁 fumadocs-ui"
+			"name": "🎁 @arkenv/fumadocs-ui"
 		},
 		{
 			"path": "packages/internal/types",
-			"name": "📦 types"
+			"name": "📦 @repo/types"
 		},
 		{
 			"path": "packages/internal/scope",
-			"name": "📦 scope"
+			"name": "📦 @repo/scope"
 		},
 
 		{
