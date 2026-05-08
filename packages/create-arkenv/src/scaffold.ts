@@ -36,23 +36,29 @@ export async function scaffold(options: ProjectOptions) {
 async function detectPackageManager(): Promise<
 	"pnpm" | "yarn" | "npm" | "bun"
 > {
-	try {
-		const pkgJsonPath = path.join(process.cwd(), "package.json");
-		const pkgJsonContent = await fs.readFile(pkgJsonPath, "utf-8");
-		const pkgJson = JSON.parse(pkgJsonContent);
+	let currentDir = process.cwd();
 
-		if (pkgJson.packageManager) {
-			if (pkgJson.packageManager.startsWith("pnpm")) return "pnpm";
-			if (pkgJson.packageManager.startsWith("yarn")) return "yarn";
-			if (pkgJson.packageManager.startsWith("bun")) return "bun";
-		}
-	} catch {}
+	while (currentDir !== path.parse(currentDir).root) {
+		try {
+			const pkgJsonPath = path.join(currentDir, "package.json");
+			const pkgJsonContent = await fs.readFile(pkgJsonPath, "utf-8");
+			const pkgJson = JSON.parse(pkgJsonContent);
 
-	const files = await fs.readdir(process.cwd());
-	if (files.includes("pnpm-lock.yaml")) return "pnpm";
-	if (files.includes("yarn.lock")) return "yarn";
-	if (files.includes("bun.lockb")) return "bun";
-	if (files.includes("package-lock.json")) return "npm";
+			if (pkgJson.packageManager) {
+				if (pkgJson.packageManager.startsWith("pnpm")) return "pnpm";
+				if (pkgJson.packageManager.startsWith("yarn")) return "yarn";
+				if (pkgJson.packageManager.startsWith("bun")) return "bun";
+			}
+		} catch {}
+
+		const files = await fs.readdir(currentDir);
+		if (files.includes("pnpm-lock.yaml")) return "pnpm";
+		if (files.includes("yarn.lock")) return "yarn";
+		if (files.includes("bun.lockb")) return "bun";
+		if (files.includes("package-lock.json")) return "npm";
+
+		currentDir = path.dirname(currentDir);
+	}
 
 	return "npm";
 }
