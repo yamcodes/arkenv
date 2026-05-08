@@ -1,47 +1,22 @@
 import type { ProjectOptions } from "./prompts";
+import { arktypeTemplate } from "./templates/arktype";
+import { valibotTemplate } from "./templates/valibot";
+import { zodTemplate } from "./templates/zod";
 
 export function getEnvTemplate(options: ProjectOptions): string {
 	const { validator, framework } = options;
-
-	let imports = "";
-	let Env = "";
+	const frameworkNote = getFrameworkNote(framework);
 
 	switch (validator) {
 		case "arktype":
-			imports = `import { type } from "arktype";\nimport { arkenv } from "arkenv/arktype";`;
-			Env = `const Env = type({
-	NODE_ENV: "'development' | 'production' | 'test'",
-	PORT: "number > 0",
-});`;
-			break;
+			return arktypeTemplate(frameworkNote);
 		case "zod":
-			imports = `import { z } from "zod";\nimport { arkenv } from "arkenv/zod";`;
-			Env = `const Env = z.object({
-	NODE_ENV: z.enum(["development", "production", "test"]),
-	PORT: z.coerce.number().positive(),
-});`;
-			break;
+			return zodTemplate(frameworkNote);
 		case "valibot":
-			imports = `import * as v from "valibot";\nimport { arkenv } from "arkenv/valibot";`;
-			Env = `const Env = v.object({
-	NODE_ENV: v.picklist(["development", "production", "test"]),
-	PORT: v.pipe(v.string(), v.transform(Number), v.number(), v.minValue(1)),
-});`;
-			break;
+			return valibotTemplate(frameworkNote);
+		default:
+			throw new Error(`Unsupported validator: ${validator}`);
 	}
-
-	const frameworkNote = getFrameworkNote(framework);
-
-	return `${imports}
-
-${Env}
-
-/**
- * ArkEnv handles environment variable validation and typesafety.
- * ${frameworkNote}
- */
-export const env = arkenv(Env);
-`;
 }
 
 function getFrameworkNote(framework: string): string {
