@@ -2,8 +2,8 @@ import { exec as execCallback } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
-import type { ProjectOptions } from "./prompts";
 import { getEnvTemplate } from "./env-template";
+import type { ProjectOptions } from "./prompts";
 
 const exec = promisify(execCallback);
 
