@@ -7,7 +7,7 @@ describe("Type Regression (Issue #796)", () => {
 		const explicit = createEnv(type({ PORT: "number" }), {
 			env: { PORT: "3000" },
 		});
-		
+
 		expectTypeOf(inline).toEqualTypeOf(explicit);
 	});
 
@@ -16,7 +16,7 @@ describe("Type Regression (Issue #796)", () => {
 			{ STR: "string", NUM: "number", BOOL: "boolean" },
 			{ env: { STR: "hi", NUM: "1", BOOL: "true" } },
 		);
-		
+
 		expectTypeOf(env.STR).toBeString();
 		expectTypeOf(env.NUM).toBeNumber();
 		expectTypeOf(env.BOOL).toBeBoolean();
