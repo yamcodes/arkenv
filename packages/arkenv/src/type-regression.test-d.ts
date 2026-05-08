@@ -52,11 +52,12 @@ describe("Type Regression (Issue #796)", () => {
 	});
 
 	/* 
-	   NOTE: The following features (completions and exact type error snapshots) 
-	   require @ark/attest, which currently has a version conflict with arktype@2.2.0.
+	   TODO: Re-enable completion snapshots once @ark/attest supports arktype@2.2.0.
+	   Currently deferred due to a version conflict (Scope already named Array).
 	   
-	   Tracked as follow-up: "Re-enable completion snapshots once @ark/attest supports arktype@2.2.0"
-	   
+	   Local Issue: https://github.com/yamcodes/arkenv/issues/895
+	   Upstream Issue: https://github.com/arktypeio/arktype/issues/1617
+
 	   it("snapshots DSL completions for inline values", () => {
 	       attest(() => createEnv({ PORT: "n" })).completions({ n: ["never", "null", "number"] });
 	   });
