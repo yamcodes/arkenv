@@ -27,9 +27,7 @@ catalog:
   '@types/react-dom': 19.2.3
   '@vitejs/plugin-react': 6.0.1
   '@vitest/ui': 4.1.5
-  # arktype is pinned to 2.1.22 for compatibility with @ark/attest@0.56.0
-  # upgrading to 2.2.0 causes "Scope already named Array already exists" errors in type tests
-  arktype: 2.1.22
+  arktype: 2.2.0
   bun: 1.3.13
   concurrently: 9.2.1
   esbuild: 0.28.0

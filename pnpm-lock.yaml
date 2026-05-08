@@ -37,8 +37,8 @@ catalogs:
       specifier: 4.1.5
       version: 4.1.5
     arktype:
-      specifier: 2.1.22
-      version: 2.1.22
+      specifier: 2.2.0
+      version: 2.2.0
     bun:
       specifier: 1.3.13
       version: 1.3.13
@@ -141,7 +141,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
     devDependencies:
       '@types/bun':
         specifier: 'catalog:'
@@ -163,7 +163,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -191,7 +191,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
     devDependencies:
       esbuild:
         specifier: 'catalog:'
@@ -207,7 +207,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
 
   apps/playgrounds/node:
     dependencies:
@@ -216,7 +216,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       zod:
         specifier: 'catalog:'
         version: 4.4.1
@@ -247,7 +247,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       solid-js:
         specifier: 1.9.12
         version: 1.9.12
@@ -262,7 +262,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       zod:
         specifier: 'catalog:'
         version: 4.4.1
@@ -287,7 +287,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -333,7 +333,7 @@ importers:
         version: link:../../../packages/arkenv
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       react:
         specifier: 19.2.5
         version: 19.2.5
@@ -605,7 +605,7 @@ importers:
         version: 24.12.2
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
@@ -642,7 +642,7 @@ importers:
         version: 1.3.13
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       bun:
         specifier: 'catalog:'
         version: 1.3.13
@@ -721,7 +721,7 @@ importers:
     devDependencies:
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       tsdown:
         specifier: 'catalog:'
         version: 0.21.10(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(typescript@6.0.3)
@@ -736,7 +736,7 @@ importers:
         version: link:../scope
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -758,7 +758,7 @@ importers:
         version: 12.1.0(size-limit@12.1.0(jiti@2.6.1))
       arktype:
         specifier: 'catalog:'
-        version: 2.1.22
+        version: 2.2.0
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
@@ -821,14 +821,8 @@ packages:
   '@ark/fs@0.56.0':
     resolution: {integrity: sha512-zY/wDDhcvmt6/upQwZM766PAnvIzdEMcgydUGd9pqY9FMGNo9I9uE4RYAfms9AeUUtbZJu2h2Ua0tvFsO5XF4Q==}
 
-  '@ark/schema@0.49.0':
-    resolution: {integrity: sha512-GphZBLpW72iS0v4YkeUtV3YIno35Gimd7+ezbPO9GwEi9kzdUrPVjvf6aXSBAfHikaFc/9pqZOpv3pOXnC71tw==}
-
   '@ark/schema@0.56.0':
     resolution: {integrity: sha512-ECg3hox/6Z/nLajxXqNhgPtNdHWC9zNsDyskwO28WinoFEnWow4IsERNz9AnXRhTZJnYIlAJ4uGn3nlLk65vZA==}
-
-  '@ark/util@0.49.0':
-    resolution: {integrity: sha512-/BtnX7oCjNkxi2vi6y1399b+9xd1jnCrDYhZ61f0a+3X8x8DxlK52VgEEzyuC2UQMPACIfYrmHkhD3lGt2GaMA==}
 
   '@ark/util@0.56.0':
     resolution: {integrity: sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA==}
@@ -4943,9 +4937,6 @@ packages:
   arkregex@0.0.5:
     resolution: {integrity: sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw==}
 
-  arktype@2.1.22:
-    resolution: {integrity: sha512-xdzl6WcAhrdahvRRnXaNwsipCgHuNoLobRqhiP8RjnfL9Gp947abGlo68GAIyLtxbD+MLzNyH2YR4kEqioMmYQ==}
-
   arktype@2.1.28:
     resolution: {integrity: sha512-LVZqXl2zWRpNFnbITrtFmqeqNkPPo+KemuzbGSY6jvJwCb4v8NsDzrWOLHnQgWl26TkJeWWcUNUeBpq2Mst1/Q==}
 
@@ -8861,15 +8852,9 @@ snapshots:
 
   '@ark/fs@0.56.0': {}
 
-  '@ark/schema@0.49.0':
-    dependencies:
-      '@ark/util': 0.49.0
-
   '@ark/schema@0.56.0':
     dependencies:
       '@ark/util': 0.56.0
-
-  '@ark/util@0.49.0': {}
 
   '@ark/util@0.56.0': {}
 
@@ -13189,11 +13174,6 @@ snapshots:
   arkregex@0.0.5:
     dependencies:
       '@ark/util': 0.56.0
-
-  arktype@2.1.22:
-    dependencies:
-      '@ark/schema': 0.49.0
-      '@ark/util': 0.49.0
 
   arktype@2.1.28:
     dependencies:

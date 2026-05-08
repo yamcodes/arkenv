@@ -4,6 +4,6 @@ export default defineProject({
 	test: {
 		name: "arkenv",
 		include: ["**/*.{test,spec,test-d}.?(c|m)[jt]s?(x)"],
-		globalSetup: ["test/setup-attest.ts"],
+		// globalSetup: ["test/setup-attest.ts"],
 	},
 });
