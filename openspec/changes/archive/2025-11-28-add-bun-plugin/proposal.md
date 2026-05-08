@@ -141,12 +141,12 @@ This keeps the default experience zero-config for most users, while still allowi
 
 ## Why
 
-ArkEnv currently provides a Vite plugin for build-time environment variable validation and type-safe access in client code. However, Bun users (especially those building full-stack React applications with Bun's `serve` function) need similar functionality.
+ArkEnv currently provides a Vite plugin for build-time environment variable validation and typesafe access in client code. However, Bun users (especially those building full-stack React applications with Bun's `serve` function) need similar functionality.
 
 Bun's bundler statically replaces `process.env` variables during build, which means:
 - Environment variables must be validated and transformed at build-time
 - Only variables matching Bun's prefix (defaults to `BUN_PUBLIC_*`) should be exposed to client code
-- Type augmentation is needed for type-safe access to `process.env` in client code
+- Type augmentation is needed for typesafe access to `process.env` in client code
 - The plugin must work within Bun's serve function for full-stack React apps
 
 Without a Bun plugin, users must manually validate environment variables or risk runtime errors, and they lose the typesafety and build-time validation benefits that ArkEnv provides.
@@ -166,7 +166,7 @@ The plugin will work very similarly to the Vite plugin:
 - Validates environment variables using ArkEnv's schema validation
 - Filters variables to only expose those matching the configured prefix
 - Replaces `process.env.VARIABLE` with validated, transformed values (e.g., string to boolean, default values)
-- Provides TypeScript type augmentation for type-safe access
+- Provides TypeScript type augmentation for typesafe access
 
 ### Usage Patterns
 - **Bun.build**: Pass a configured plugin instance directly in the `plugins` array (standard Bun plugin API), for example `plugins: [arkenv(env)]`.

@@ -12,7 +12,7 @@ export async function runPromptWizard(): Promise<ProjectOptions | null> {
 		{
 			framework: () =>
 				select({
-					message: "Select your target runtime or framework:",
+					message: "Select your framework or runtime:",
 					options: [
 						{ value: "vite", label: "Vite", hint: "Browser-based projects" },
 						{ value: "bun", label: "Bun", hint: "Fast JS runtime" },

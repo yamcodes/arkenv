@@ -4,26 +4,26 @@ export function getEnvTemplate(options: ProjectOptions): string {
 	const { validator, framework } = options;
 
 	let imports = "";
-	let schema = "";
+	let Env = "";
 
 	switch (validator) {
 		case "arktype":
 			imports = `import { type } from "arktype";\nimport { arkenv } from "arkenv/arktype";`;
-			schema = `const schema = type({
+			Env = `const Env = type({
 	NODE_ENV: "'development' | 'production' | 'test'",
 	PORT: "number > 0",
 });`;
 			break;
 		case "zod":
 			imports = `import { z } from "zod";\nimport { arkenv } from "arkenv/zod";`;
-			schema = `const schema = z.object({
+			Env = `const Env = z.object({
 	NODE_ENV: z.enum(["development", "production", "test"]),
 	PORT: z.coerce.number().positive(),
 });`;
 			break;
 		case "valibot":
 			imports = `import * as v from "valibot";\nimport { arkenv } from "arkenv/valibot";`;
-			schema = `const schema = v.object({
+			Env = `const Env = v.object({
 	NODE_ENV: v.picklist(["development", "production", "test"]),
 	PORT: v.pipe(v.string(), v.transform(Number), v.number(), v.minValue(1)),
 });`;
@@ -34,13 +34,13 @@ export function getEnvTemplate(options: ProjectOptions): string {
 
 	return `${imports}
 
-${schema}
+${Env}
 
 /**
- * ArkEnv handles environment variable validation and type-safety.
+ * ArkEnv handles environment variable validation and typesafety.
  * ${frameworkNote}
  */
-export const env = arkenv(schema);
+export const env = arkenv(Env);
 `;
 }
 

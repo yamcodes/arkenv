@@ -75,9 +75,9 @@ The Bun plugin SHALL automatically filter environment variables to only expose t
 
 ### Requirement: Bun Plugin Type Augmentation
 
-The Bun plugin SHALL provide TypeScript type augmentation for `process.env` similar to the Vite plugin's `ImportMetaEnvAugmented`, enabling type-safe access to environment variables in client code.
+The Bun plugin SHALL provide TypeScript type augmentation for `process.env` similar to the Vite plugin's `ImportMetaEnvAugmented`, enabling typesafe access to environment variables in client code.
 
-#### Scenario: Type augmentation enables type-safe access
+#### Scenario: Type augmentation enables typesafe access
 - **WHEN** a user configures the Bun plugin with a schema
 - **AND** they augment `process.env` types using `ProcessEnvAugmented<TSchema>`
 - **THEN** TypeScript provides type checking and autocomplete for environment variables

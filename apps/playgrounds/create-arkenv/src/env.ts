@@ -7,7 +7,7 @@ const schema = z.object({
 });
 
 /**
- * ArkEnv handles environment variable validation and type-safety.
+ * ArkEnv handles environment variable validation and typesafety.
  * For Vite, ensure you add the @arkenv/vite-plugin to your vite.config.ts.
  */
 export const env = arkenv(schema);
