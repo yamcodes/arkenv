@@ -19,10 +19,14 @@ async function main() {
 		await scaffold(options);
 		s.stop("Scaffolding complete!");
 
-		const relPath = options.path.startsWith("./") ? options.path : `./${options.path}`;
+		const relPath = options.path.startsWith("./")
+			? options.path
+			: `./${options.path}`;
 		outro(pc.green("Next steps:"));
 		log.step(`1. Check ${pc.cyan(relPath)} and adapt it to your needs.`);
-		log.step(`2. Import ${pc.cyan("env")} from ${pc.cyan(relPath)} in your main entry file (e.g. index.ts or main.ts) to ensure environment variables are validated at startup.`);
+		log.step(
+			`2. Import ${pc.cyan("env")} from ${pc.cyan(relPath)} in your main entry file (e.g. index.ts or main.ts) to ensure environment variables are validated at startup.`,
+		);
 		log.info(pc.dim("Happy coding!"));
 	} catch (error) {
 		s.stop("Scaffolding failed.", 1);
