@@ -62,18 +62,21 @@ async function findTsConfig(): Promise<string | null> {
 	return null;
 }
 
-export async function checkTsConfig(): Promise<
-	"strict" | "not_strict" | "not_found"
-> {
+export async function checkTsConfig(): Promise<{
+	status: "strict" | "not_strict" | "not_found";
+	file?: string;
+}> {
 	const tsConfigPath = await findTsConfig();
-	if (!tsConfigPath) return "not_found";
+	if (!tsConfigPath) return { status: "not_found" };
+	const fileName = path.basename(tsConfigPath);
 
 	try {
 		const content = await fs.readFile(tsConfigPath, "utf-8");
-		if (/"strict"\s*:\s*true/.test(content)) return "strict";
-		return "not_strict";
+		if (/"strict"\s*:\s*true/.test(content))
+			return { status: "strict", file: fileName };
+		return { status: "not_strict", file: fileName };
 	} catch (e: any) {
-		return "not_found";
+		return { status: "not_found" };
 	}
 }
 

@@ -28,15 +28,17 @@ async function main() {
 	intro(pc.cyan("ArkEnv Scaffolding"));
 
 	let shouldUpdateTsConfig = false;
-	const tsConfigStatus = await checkTsConfig();
+	const tsConfigResult = await checkTsConfig();
 
-	if (tsConfigStatus === "not_strict") {
+	if (tsConfigResult.status === "not_strict") {
 		log.warn(
-			pc.yellow("⚠ TypeScript strict mode is not enabled in your project."),
+			pc.yellow(
+				`⚠ TypeScript strict mode is not enabled in your ${pc.cyan(tsConfigResult.file)}.`,
+			),
 		);
 
 		const confirmStrict = await confirm({
-			message: `ArkEnv requires ${pc.dim("strict")} mode in your ${pc.dim("tsconfig.json")}. Would you like to enable strict mode now?`,
+			message: `ArkEnv requires ${pc.dim("strict")} mode in your ${pc.cyan(tsConfigResult.file)}. Would you like to enable it now?`,
 			initialValue: true,
 		});
 
