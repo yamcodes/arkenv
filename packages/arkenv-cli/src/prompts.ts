@@ -1,4 +1,4 @@
-import { cancel, group, isCancel, select, text } from "@clack/prompts";
+import { cancel, confirm, group, isCancel, select, text } from "@clack/prompts";
 
 export type ProjectOptions = {
 	path: string;
@@ -51,13 +51,22 @@ export async function runPromptWizard(defaults?: {
 						},
 					],
 				}),
-			path: () =>
-				text({
-					message:
-						"Where should we create the ArkEnv config? (Recommended: ./src/env.ts)",
-					placeholder: "./src/env.ts",
-					initialValue: "./src/env.ts",
+			customizePath: () =>
+				confirm({
+					message: "Customize ArkEnv config path?",
+					initialValue: false,
+					active: "Yes",
+					inactive: "No (Recommended)",
 				}),
+			path: ({ results }) => {
+				if (results.customizePath) {
+					return text({
+						message: "Where should we create the ArkEnv config?",
+						placeholder: "./src/env.ts",
+						initialValue: "./src/env.ts",
+					});
+				}
+			},
 		},
 		{
 			onCancel: () => {
@@ -70,7 +79,9 @@ export async function runPromptWizard(defaults?: {
 	if (isCancel(result)) return null;
 
 	return {
-		...result,
+		path: result.path || "./src/env.ts",
+		validator: result.validator,
+		framework: result.framework,
 		language: "ts",
 	} as ProjectOptions;
 }
