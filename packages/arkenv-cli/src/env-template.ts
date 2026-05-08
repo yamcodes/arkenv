@@ -1,7 +1,5 @@
 import type { ProjectOptions } from "./prompts";
-import { arktypeTemplate } from "./templates/arktype";
-import { valibotTemplate } from "./templates/valibot";
-import { zodTemplate } from "./templates/zod";
+import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
 
 export function getEnvTemplate(options: ProjectOptions): string {
 	const { validator, framework } = options;

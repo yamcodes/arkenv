@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import type { ProjectOptions } from "./prompts";
-import { getEnvTemplate } from "./templates";
+import { getEnvTemplate } from "./env-template";
 
 const exec = promisify(execCallback);
 
