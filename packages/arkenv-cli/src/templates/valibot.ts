@@ -11,7 +11,7 @@ export const valibotTemplate = (frameworkNote: string) => dedent /* ts */`
 
 	/**
 	 * ArkEnv handles environment variable validation and type-safety.
-	 * \${frameworkNote}
+	 * ${frameworkNote}
 	 */
 	export const env = arkenv(Env);
 `;
