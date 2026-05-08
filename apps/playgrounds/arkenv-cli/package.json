@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@arkenv/vite-plugin": "^0.0.33",
 		"arkenv": "^0.11.0",
+		"arktype": "catalog:",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
 		"zod": "catalog:"

@@ -142,6 +142,9 @@ importers:
       arkenv:
         specifier: ^0.11.0
         version: 0.11.0(arktype@2.2.0)
+      arktype:
+        specifier: 'catalog:'
+        version: 2.2.0
       react:
         specifier: 19.2.5
         version: 19.2.5

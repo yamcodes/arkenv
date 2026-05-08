@@ -1,13 +1,12 @@
-import arkenv from "arkenv/standard";
-import { z } from "zod";
+import arkenv, { type } from "arkenv";
 
-const Env = z.object({
-	NODE_ENV: z.enum(["development", "production", "test"]),
-	PORT: z.coerce.number().positive(),
+const Env = type({
+	NODE_ENV: "'development' | 'production' | 'test'",
+	PORT: "number.port",
 });
 
 /**
  * ArkEnv handles environment variable validation and type-safety.
- * ${frameworkNote}
+ * For Vite, ensure you add the @arkenv/vite-plugin to your vite.config.ts.
  */
 export const env = arkenv(Env);
