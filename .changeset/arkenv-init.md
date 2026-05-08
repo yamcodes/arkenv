@@ -1,5 +1,7 @@
 ---
-"arkenv": patch
+"@arkenv/cli": patch
 ---
 
-Add new interactive scaffolding CLI tool (`arkenv init`).
+#### Initial release
+
+Add new interactive scaffolding CLI tool (`@arkenv/cli init`).

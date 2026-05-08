@@ -105,6 +105,5 @@
 			"limit": "500 B",
 			"import": "*"
 		}
-	],
-	"dependencies": {}
+	]
 }
