@@ -38,7 +38,8 @@ export async function runPromptWizard(): Promise<ProjectOptions | null> {
 				}),
 			path: () =>
 				text({
-					message: "Where should we create the ArkEnv config? (Recommended: ./src/env.ts)",
+					message:
+						"Where should we create the ArkEnv config? (Recommended: ./src/env.ts)",
 					placeholder: "./src/env.ts",
 					initialValue: "./src/env.ts",
 				}),

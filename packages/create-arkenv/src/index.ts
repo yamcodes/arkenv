@@ -5,7 +5,6 @@ import { runPromptWizard } from "./prompts";
 import { scaffold } from "./scaffold";
 
 async function main() {
-
 	const options = await runPromptWizard();
 
 	if (!options) {
