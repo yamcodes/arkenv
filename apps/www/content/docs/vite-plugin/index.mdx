@@ -7,12 +7,18 @@ description: The ArkEnv plugin for Vite lets you validate environment variables 
 > [!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
+## Features
+
+- **Static Analysis**: Automatically replaces `import.meta.env.VARIABLE` with validated values during the build.
+- **Typesafety**: Ensures your code only accesses variables defined in your schema.
+- **Secure Defaults**: Only exposes variables prefixed with `VITE_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema.
+
 ## Quickstart
 
 ### 1. Installation
 
 ```package-install
-@arkenv/vite-plugin arkenv
+@arkenv/vite-plugin arkenv arktype
 ```
 
 ### 2. Configure Plugin
@@ -52,6 +58,9 @@ interface ImportMeta {
 }
 ```
 
+> [!TIP]
+> For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
+
 ### 4. Use in your code
 
 You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
@@ -81,15 +90,9 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
-> [!TIP]
-> For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
-
 ## Using Standard Schema validators (Zod, Valibot)
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
-
-> [!NOTE]
-> When using Standard Schema validators, you must install the validator package separately. For example, the code below imports `z` from `"zod"` and uses `type({ ... })` with Zod validators - install with `npm install zod` (or use `valibot` instead).
 
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
@@ -128,9 +131,3 @@ const apiUrl = import.meta.env.VITE_API_URL;
 ```
 
 For advanced workflows, see [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).
-
-## Features
-
-- **Static Analysis**: Automatically replaces `import.meta.env.VARIABLE` with validated values during the build.
-- **Typesafety**: Ensures your code only accesses variables defined in your schema.
-- **Secure Defaults**: Only exposes variables prefixed with `VITE_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema.

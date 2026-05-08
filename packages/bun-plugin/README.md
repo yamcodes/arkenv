@@ -92,7 +92,7 @@ import arkenv from '@arkenv/bun-plugin';
 await Bun.build({
   entrypoints: ['./app.tsx'],
   outdir: './dist',
-  plugins: [arkenv], // Auto-discovers src/env.ts
+  plugins: [arkenv],
 });
 ```
 

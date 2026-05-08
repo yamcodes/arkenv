@@ -7,12 +7,18 @@ description: The ArkEnv plugin for Bun lets you validate environment variables a
 > [!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
+## Features
+
+- **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
+- **Typesafety**: Ensures your code only accesses variables defined in your schema.
+- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration.
+
 ## Quickstart
 
 ### 1. Installation
 
 ```package-install
-@arkenv/bun-plugin arkenv
+@arkenv/bun-plugin arkenv arktype
 ```
 
 ### 2. Configure Plugin
@@ -45,7 +51,7 @@ import arkenv from "@arkenv/bun-plugin";
 await Bun.build({
   entrypoints: ["./app.tsx"],
   outdir: "./dist",
-  plugins: [arkenv], // Auto-discovers src/env.ts
+  plugins: [arkenv],
 });
 ```
 
@@ -151,9 +157,3 @@ declare namespace NodeJS {
 const apiUrl = process.env.BUN_PUBLIC_API_URL;
 //      ^?
 ```
-
-## Features
-
-- **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
-- **Typesafety**: Ensures your code only accesses variables defined in your schema.
-- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration.

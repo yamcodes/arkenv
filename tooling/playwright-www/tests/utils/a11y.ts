@@ -66,6 +66,7 @@ export async function assertNoA11yViolations(
 	// Common selectors that cause known a11y issues but are out of our direct control
 	const defaultExclusions = [
 		"[data-rmiz]", // react-medium-image-zoom (Fumadocs) - aria-owns issues
+		".fd-scroll-container", // Fumadocs scrollable code blocks - missing tabindex (scrollable-region-focusable)
 	];
 
 	const mergedExclusions = [...new Set([...exclude, ...defaultExclusions])];
