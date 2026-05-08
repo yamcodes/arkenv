@@ -1,15 +1,16 @@
-export const arktypeTemplate = (
-	frameworkNote: string,
-) => `import arkenv, { type } from "arkenv";
+import dedent from "dedent";
 
-const Env = type({
-	NODE_ENV: "'development' | 'production' | 'test'",
-	PORT: "number.port",
-});
+export const arktypeTemplate = (frameworkNote: string) => dedent /* ts */`
+	import arkenv, { type } from "arkenv";
 
-/**
- * ArkEnv handles environment variable validation and type-safety.
- * \${frameworkNote}
- */
-export const env = arkenv(Env);
+	const Env = type({
+		NODE_ENV: "'development' | 'production' | 'test'",
+		PORT: "number.port",
+	});
+
+	/**
+	 * ArkEnv handles environment variable validation and type-safety.
+	 * \${frameworkNote}
+	 */
+	export const env = arkenv(Env);
 `;
