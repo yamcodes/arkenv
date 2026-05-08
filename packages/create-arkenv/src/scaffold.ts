@@ -1,8 +1,11 @@
-import { execSync } from "node:child_process";
+import { exec as execCallback } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { promisify } from "node:util";
 import type { ProjectOptions } from "./prompts";
 import { getEnvTemplate } from "./templates";
+
+const exec = promisify(execCallback);
 
 export async function scaffold(options: ProjectOptions) {
 	const targetPath = path.resolve(process.cwd(), options.path);
@@ -25,7 +28,7 @@ export async function scaffold(options: ProjectOptions) {
 	const installCmd = getInstallCommand(packageManager, deps);
 
 	try {
-		execSync(installCmd, { stdio: "ignore" });
+		await exec(installCmd);
 	} catch (error) {
 		// If install fails, we don't want to crash the whole thing, but maybe log it?
 		// For now, we'll just let the user know they might need to run it manually.

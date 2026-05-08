@@ -15,7 +15,7 @@ async function main() {
 	}
 
 	const s = spinner();
-	s.start("Scaffolding your ArkEnv setup...");
+	s.start("Scaffolding ArkEnv and installing dependencies...");
 
 	try {
 		await scaffold(options);
