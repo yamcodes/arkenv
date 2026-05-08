@@ -1,6 +1,6 @@
+import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { execSync } from "node:child_process";
 import type { ProjectOptions } from "./prompts";
 import { getEnvTemplate } from "./templates";
 
@@ -18,12 +18,12 @@ export async function scaffold(options: ProjectOptions) {
 	// 3. Detect package manager and install dependencies
 	const packageManager = await detectPackageManager();
 	const deps = ["arkenv", options.validator];
-	
+
 	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
 	if (options.framework === "bun") deps.push("@arkenv/bun-plugin");
 
 	const installCmd = getInstallCommand(packageManager, deps);
-	
+
 	try {
 		execSync(installCmd, { stdio: "ignore" });
 	} catch (error) {
@@ -33,7 +33,9 @@ export async function scaffold(options: ProjectOptions) {
 	}
 }
 
-async function detectPackageManager(): Promise<"pnpm" | "yarn" | "npm" | "bun"> {
+async function detectPackageManager(): Promise<
+	"pnpm" | "yarn" | "npm" | "bun"
+> {
 	try {
 		const pkgJsonPath = path.join(process.cwd(), "package.json");
 		const pkgJsonContent = await fs.readFile(pkgJsonPath, "utf-8");

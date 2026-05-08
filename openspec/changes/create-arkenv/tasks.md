@@ -22,5 +22,5 @@
 
 ## 4. Verification
 
-- [ ] 4.1 Perform a manual smoke test by running the built CLI in a temporary directory
-- [ ] 4.2 Verify generated `env.ts` files compile without errors
+- [x] 4.1 Perform a manual smoke test by running the built CLI in a temporary directory
+- [x] 4.2 Verify generated `env.ts` files compile without errors

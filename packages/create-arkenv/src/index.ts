@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { intro, outro, log, spinner } from "@clack/prompts";
+import { intro, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
 import { runPromptWizard } from "./prompts";
 import { scaffold } from "./scaffold";
@@ -20,7 +20,7 @@ async function main() {
 	try {
 		await scaffold(options);
 		s.stop("Scaffolding complete!");
-		
+
 		outro(pc.green("Next steps:"));
 		log.step(`1. Check ${pc.cyan("env.ts")} and adapt it to your needs.`);
 		log.step(`2. Import ${pc.cyan("env")} in your entry point.`);

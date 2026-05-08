@@ -1,4 +1,4 @@
-import { group, select, text, isCancel, cancel } from "@clack/prompts";
+import { cancel, group, isCancel, select, text } from "@clack/prompts";
 
 export type ProjectOptions = {
 	path: string;
@@ -20,9 +20,17 @@ export async function runPromptWizard(): Promise<ProjectOptions | null> {
 				select({
 					message: "Select your preferred validator library:",
 					options: [
-						{ value: "arktype", label: "ArkType (Recommended)", hint: "Fastest runtime validation" },
+						{
+							value: "arktype",
+							label: "ArkType (Recommended)",
+							hint: "Fastest runtime validation",
+						},
 						{ value: "zod", label: "Zod", hint: "Most popular" },
-						{ value: "valibot", label: "Valibot", hint: "Smallest bundle size" },
+						{
+							value: "valibot",
+							label: "Valibot",
+							hint: "Smallest bundle size",
+						},
 					],
 				}),
 			framework: () =>
