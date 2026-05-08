@@ -22,15 +22,10 @@ describe("Type Regression (Issue #796)", () => {
 	});
 
 	it("should fail for invalid DSL strings", () => {
-		// NOTE: This snapshot is fragile as it includes internal ArkType generic names.
-		// If it breaks after an ArkType update, run:
-		// pnpm test:types -- --updateSnapshot
 		attest(() =>
 			// @ts-expect-error
 			createEnv({ KEY: "invalid" }, { env: { KEY: "val" } }),
-		).type.errors.snap(`No overload matches this call.Overload 1 of 3, '(def: validateObjectLiteral<{ readonly KEY: "invalid"; }, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }, bindThis<...>>, config?: ArkEnvConfig | undefined): { ...; }', gave the following error.Type '"invalid"' is not assignable to type '"'invalid' is unresolvable "'.
-Overload 2 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }>, config?: ArkEnvConfig | undefined): SchemaShape', gave the following error.Object literal may only specify known properties, and 'KEY' does not exist in type 'Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }>'.
-Overload 3 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }> | validateObjectLiteral<...>, config?: ArkEnvConfig | undefined): SchemaShape | { ...; }', gave the following error.Type '"invalid"' is not assignable to type '"'invalid' is unresolvable "'.`);
+		).throwsAndHasTypeError("'invalid' is unresolvable");
 	});
 
 	it("snapshots DSL completions for inline values (autocompletion regression)", () => {
