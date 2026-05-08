@@ -14,6 +14,7 @@
 		"react-dom": "19.2.5"
 	},
 	"devDependencies": {
+		"@arkenv/cli": "workspace:*",
 		"@babel/core": "^7.29.0",
 		"@eslint/js": "^10.0.1",
 		"@rolldown/plugin-babel": "^0.2.3",
