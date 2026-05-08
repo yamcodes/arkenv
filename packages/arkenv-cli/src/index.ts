@@ -10,7 +10,7 @@ import {
 } from "@clack/prompts";
 import pc from "picocolors";
 import { runPromptWizard } from "./prompts";
-import { checkTsConfig, scaffold } from "./scaffold";
+import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
 
 async function main() {
 	const args = process.argv.slice(2);
@@ -24,6 +24,8 @@ async function main() {
 		console.log("  --help, -h     Show this help message");
 		process.exit(0);
 	}
+
+	intro(pc.cyan("ArkEnv Scaffolding"));
 
 	let shouldUpdateTsConfig = false;
 	const tsConfigResult = await checkTsConfig();
@@ -48,7 +50,8 @@ async function main() {
 		shouldUpdateTsConfig = true;
 	}
 
-	const options = await runPromptWizard();
+	const detectedFramework = await detectFramework();
+	const options = await runPromptWizard({ framework: detectedFramework });
 
 	if (!options) {
 		outro(pc.yellow("Operation cancelled."));

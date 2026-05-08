@@ -129,6 +129,33 @@ async function updateTsConfigToStrict(): Promise<{
 	}
 }
 
+export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
+	try {
+		const pkgJsonPath = path.join(process.cwd(), "package.json");
+		const content = await fs.readFile(pkgJsonPath, "utf-8");
+		const pkg = JSON.parse(content);
+		const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+
+		if (allDeps.vite) return "vite";
+		if (allDeps["@types/bun"] || allDeps.bun) return "bun";
+	} catch {}
+
+	// Check for config files
+	try {
+		await fs.access(path.join(process.cwd(), "vite.config.ts"));
+		return "vite";
+	} catch {}
+	try {
+		await fs.access(path.join(process.cwd(), "vite.config.js"));
+		return "vite";
+	} catch {}
+
+	// Check for bun runtime
+	if ((process.versions as any).bun) return "bun";
+
+	return "node";
+}
+
 async function detectPackageManager(): Promise<
 	"pnpm" | "yarn" | "npm" | "bun"
 > {

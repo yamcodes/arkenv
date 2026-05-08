@@ -7,16 +7,31 @@ export type ProjectOptions = {
 	language: "ts"; // Initially focusing on TS
 };
 
-export async function runPromptWizard(): Promise<ProjectOptions | null> {
+export async function runPromptWizard(defaults?: {
+	framework?: "vite" | "bun" | "node";
+}): Promise<ProjectOptions | null> {
 	const result = await group(
 		{
 			framework: () =>
 				select({
 					message: "Select your framework or runtime:",
+					initialValue: defaults?.framework,
 					options: [
-						{ value: "vite", label: "Vite", hint: "Browser-based projects" },
-						{ value: "bun", label: "Bun", hint: "Fast JS runtime" },
-						{ value: "node", label: "Node.js", hint: "Standard backend" },
+						{
+							value: "vite",
+							label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
+							hint: "Browser-based projects",
+						},
+						{
+							value: "bun",
+							label: `Bun${defaults?.framework === "bun" ? " (Detected)" : ""}`,
+							hint: "Fast JS runtime",
+						},
+						{
+							value: "node",
+							label: `Node.js${defaults?.framework === "node" ? " (Detected)" : ""}`,
+							hint: "Standard backend",
+						},
 					],
 				}),
 			validator: () =>
