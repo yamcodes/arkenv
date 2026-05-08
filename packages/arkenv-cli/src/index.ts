@@ -1,8 +1,16 @@
 #!/usr/bin/env node
-import { intro, log, outro, spinner } from "@clack/prompts";
+import {
+	cancel,
+	confirm,
+	intro,
+	isCancel,
+	log,
+	outro,
+	spinner,
+} from "@clack/prompts";
 import pc from "picocolors";
 import { runPromptWizard } from "./prompts";
-import { scaffold } from "./scaffold";
+import { checkTsConfig, scaffold } from "./scaffold";
 
 async function main() {
 	const args = process.argv.slice(2);
@@ -17,6 +25,29 @@ async function main() {
 		process.exit(0);
 	}
 
+	intro(pc.cyan("ArkEnv Scaffolding"));
+
+	let shouldUpdateTsConfig = false;
+	const tsConfigStatus = await checkTsConfig();
+
+	if (tsConfigStatus === "not_strict") {
+		log.warn(
+			pc.yellow("⚠ TypeScript strict mode is not enabled in your project."),
+		);
+
+		const confirmStrict = await confirm({
+			message: `ArkEnv requires ${pc.dim("strict")} mode in your ${pc.dim("tsconfig.json")}. Would you like to enable strict mode now?`,
+			initialValue: true,
+		});
+
+		if (isCancel(confirmStrict) || !confirmStrict) {
+			cancel("Strict mode rejected. ArkEnv setup cancelled.");
+			process.exit(0);
+		}
+
+		shouldUpdateTsConfig = true;
+	}
+
 	const options = await runPromptWizard();
 
 	if (!options) {
@@ -28,7 +59,10 @@ async function main() {
 	s.start("Scaffolding ArkEnv and installing dependencies...");
 
 	try {
-		const { tsConfigResult } = await scaffold(options);
+		const { tsConfigResult } = await scaffold({
+			...options,
+			shouldUpdateTsConfig,
+		});
 		s.stop("Scaffolding complete!");
 
 		if (tsConfigResult === "updated") {

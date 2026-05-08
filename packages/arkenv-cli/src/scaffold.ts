@@ -7,7 +7,9 @@ import { getEnvTemplate } from "./templates";
 
 const exec = promisify(execCallback);
 
-export async function scaffold(options: ProjectOptions) {
+export async function scaffold(
+	options: ProjectOptions & { shouldUpdateTsConfig?: boolean },
+) {
 	const targetPath = path.resolve(process.cwd(), options.path);
 	const targetDir = path.dirname(targetPath);
 
@@ -18,8 +20,12 @@ export async function scaffold(options: ProjectOptions) {
 	const content = getEnvTemplate(options);
 	await fs.writeFile(targetPath, content, "utf-8");
 
-	// 3. Enforce strict in tsconfig.json
-	const tsConfigResult = await enforceStrictTsConfig();
+	// 3. Enforce strict in tsconfig.json if requested
+	let tsConfigResult: "updated" | "already_strict" | "not_found" | "error" =
+		"already_strict";
+	if (options.shouldUpdateTsConfig) {
+		tsConfigResult = await updateTsConfigToStrict();
+	}
 
 	// 4. Detect package manager and install dependencies
 	const packageManager = await detectPackageManager();
@@ -41,7 +47,21 @@ export async function scaffold(options: ProjectOptions) {
 	return { tsConfigResult };
 }
 
-async function enforceStrictTsConfig(): Promise<
+export async function checkTsConfig(): Promise<
+	"strict" | "not_strict" | "not_found"
+> {
+	const tsConfigPath = path.join(process.cwd(), "tsconfig.json");
+	try {
+		const content = await fs.readFile(tsConfigPath, "utf-8");
+		if (/"strict"\s*:\s*true/.test(content)) return "strict";
+		return "not_strict";
+	} catch (e: any) {
+		if (e.code === "ENOENT") return "not_found";
+		throw e;
+	}
+}
+
+async function updateTsConfigToStrict(): Promise<
 	"updated" | "already_strict" | "not_found" | "error"
 > {
 	const tsConfigPath = path.join(process.cwd(), "tsconfig.json");
