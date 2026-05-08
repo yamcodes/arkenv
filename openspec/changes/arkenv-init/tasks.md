@@ -12,37 +12,27 @@
 - [x] ~~2.4 Create `src/scaffold.ts` for file system operations~~
 - [x] ~~2.5 Implement package manager detection logic~~
 
-## Phase 3: Bootstrapper Migration 🏗️
+## Phase 3: Standalone CLI Package Migration 🏗️
 
 - [ ] 3.1 Create `packages/arkenv-cli` package skeleton with `package.json` (`name: "@arkenv/cli"`) <!-- id: 30 -->
 - [ ] 3.2 Move CLI source from `packages/arkenv/src/cli/` → `packages/arkenv-cli/src/` <!-- id: 31 -->
 - [ ] 3.3 Move CLI dependencies (`@clack/prompts`, `picocolors`) from `arkenv` → `@arkenv/cli` <!-- id: 32 -->
 - [ ] 3.4 Add `tsdown` build config for `@arkenv/cli` (platform: node, format: cjs, bundle all deps) <!-- id: 33 -->
-- [ ] 3.5 Verify `@arkenv/cli` builds and runs standalone <!-- id: 34 -->
+- [ ] 3.5 Configure `bin` field in `@arkenv/cli/package.json` <!-- id: 35 -->
+- [ ] 3.6 Remove `@clack/prompts` and `picocolors` from `arkenv` dependencies <!-- id: 36 -->
+- [ ] 3.7 Remove `bin` field and CLI entry from `arkenv/package.json` and `tsdown.config.ts` <!-- id: 37 -->
+- [ ] 3.8 Verify `arkenv` has `"dependencies": {}` <!-- id: 38 -->
 
-## Phase 4: Zero-Dep Proxy in `arkenv`
+## Phase 4: Integration Testing
 
-- [ ] 4.1 Create `packages/arkenv/bin/cli.cjs` — vanilla Node.js proxy script <!-- id: 40 -->
-  - Reads own `package.json` version for version-locked spawning
-  - Detects package runner via `npm_config_user_agent` (pnpm/npm/bun)
-  - Spawns `@arkenv/cli@<version>` with `stdio: 'inherit'`
-  - Forwards signals (`SIGINT`, `SIGTERM`) to child process
-  - Exits with child's exit code
-- [ ] 4.2 Update `arkenv/package.json` bin field to point to `bin/cli.cjs` <!-- id: 41 -->
-- [ ] 4.3 Remove `@clack/prompts` and `picocolors` from `arkenv` dependencies <!-- id: 42 -->
-- [ ] 4.4 Remove CLI entry from `arkenv/tsdown.config.ts` <!-- id: 43 -->
-- [ ] 4.5 Verify `arkenv` has `"dependencies": {}` <!-- id: 44 -->
+- [ ] 4.1 Run `pnpm install` to update workspace lockfile <!-- id: 50 -->
+- [ ] 4.2 Verify `pnpm build --filter arkenv` produces no CLI bundle <!-- id: 51 -->
+- [ ] 4.3 Verify `pnpm build --filter @arkenv/cli` builds successfully <!-- id: 52 -->
+- [ ] 4.4 Smoke test: `pnpm --filter @arkenv/cli run start` correctly runs the interactive wizard <!-- id: 53 -->
+- [ ] 4.5 Add changesets for both `arkenv` (minor: remove CLI deps) and `@arkenv/cli` (minor: initial release) <!-- id: 54 -->
 
-## Phase 5: Integration Testing
+## Phase 5: Verification
 
-- [ ] 5.1 Run `pnpm install` to update workspace lockfile <!-- id: 50 -->
-- [ ] 5.2 Verify `pnpm build --filter arkenv` produces no CLI bundle <!-- id: 51 -->
-- [ ] 5.3 Verify `pnpm build --filter @arkenv/cli` builds successfully <!-- id: 52 -->
-- [ ] 5.4 Smoke test: `node packages/arkenv/bin/cli.cjs init` correctly delegates to `@arkenv/cli` <!-- id: 53 -->
-- [ ] 5.5 Add changesets for both `arkenv` (minor: remove CLI deps) and `@arkenv/cli` (minor: initial release) <!-- id: 54 -->
-
-## Phase 6: Verification
-
-- [ ] 6.1 Manual smoke test of the full flow in a temporary directory <!-- id: 60 -->
-- [ ] 6.2 Verify generated `env.ts` files compile without errors <!-- id: 61 -->
-- [ ] 6.3 Verify `arkenv` package size is reduced (no CLI deps in tarball) <!-- id: 62 -->
+- [ ] 5.1 Manual smoke test of the full flow in a temporary directory <!-- id: 60 -->
+- [ ] 5.2 Verify generated `env.ts` files compile without errors <!-- id: 61 -->
+- [ ] 5.3 Verify `arkenv` package size is reduced (no CLI deps in tarball) <!-- id: 62 -->
