@@ -38,14 +38,18 @@ async function main() {
 		const confirmStrict = await confirm({
 			message: `ArkEnv requires ${pc.dim("strict")} mode in your ${pc.cyan(tsConfigResult.file)}. Would you like to enable it now?`,
 			initialValue: true,
+			active: "Yes (Recommended)",
+			inactive: "No",
 		});
 
-		if (isCancel(confirmStrict) || !confirmStrict) {
-			cancel("Strict mode rejected. ArkEnv setup cancelled.");
+		if (isCancel(confirmStrict)) {
+			cancel("Operation cancelled.");
 			process.exit(0);
 		}
 
-		shouldUpdateTsConfig = true;
+		if (confirmStrict) {
+			shouldUpdateTsConfig = true;
+		}
 	}
 
 	const detectedFramework = await detectFramework();
