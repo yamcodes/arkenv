@@ -39,7 +39,7 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "ATTEST_skipTypes=1 vitest",
-		"test:types": "vitest run src/type-regression.test.ts",
+		"test:types": "vitest run .test-d.ts",
 		"fix": "pnpm -w run fix"
 	},
 	"files": [
