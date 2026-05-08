@@ -5,7 +5,9 @@ import { createEnv, type } from "./index";
 describe("Type Regression (Issue #796)", () => {
 	it("inline and explicit schemas infer the same type", () => {
 		const inline = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
-		const explicit = createEnv(type({ PORT: "number" }), { env: { PORT: "3000" } });
+		const explicit = createEnv(type({ PORT: "number" }), {
+			env: { PORT: "3000" },
+		});
 		attest<typeof explicit>(inline);
 	});
 
@@ -56,10 +58,7 @@ Overload 3 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<
 	});
 
 	it("infers unions correctly", () => {
-		const env = createEnv(
-			{ VAL: "string | number" },
-			{ env: { VAL: "123" } },
-		);
+		const env = createEnv({ VAL: "string | number" }, { env: { VAL: "123" } });
 		attest<string | number>(env.VAL);
 	});
 
