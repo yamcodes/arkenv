@@ -10,11 +10,14 @@ export type ProjectOptions = {
 export async function runPromptWizard(): Promise<ProjectOptions | null> {
 	const result = await group(
 		{
-			path: () =>
-				text({
-					message: "Where should we create the ArkEnv config?",
-					placeholder: "./src/env.ts",
-					initialValue: "./src/env.ts",
+			framework: () =>
+				select({
+					message: "Select your target runtime or framework:",
+					options: [
+						{ value: "vite", label: "Vite", hint: "Browser-based projects" },
+						{ value: "bun", label: "Bun", hint: "Fast JS runtime" },
+						{ value: "node", label: "Node.js", hint: "Standard backend" },
+					],
 				}),
 			validator: () =>
 				select({
@@ -33,14 +36,11 @@ export async function runPromptWizard(): Promise<ProjectOptions | null> {
 						},
 					],
 				}),
-			framework: () =>
-				select({
-					message: "Select your target runtime or framework:",
-					options: [
-						{ value: "vite", label: "Vite", hint: "Browser-based projects" },
-						{ value: "bun", label: "Bun", hint: "Fast JS runtime" },
-						{ value: "node", label: "Node.js", hint: "Standard backend" },
-					],
+			path: () =>
+				text({
+					message: "Where should we create the ArkEnv config? (Recommended: ./src/env.ts)",
+					placeholder: "./src/env.ts",
+					initialValue: "./src/env.ts",
 				}),
 		},
 		{

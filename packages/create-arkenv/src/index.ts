@@ -5,7 +5,6 @@ import { runPromptWizard } from "./prompts";
 import { scaffold } from "./scaffold";
 
 async function main() {
-	intro(pc.bgCyan(pc.black(" ArkEnv Scaffolder ")));
 
 	const options = await runPromptWizard();
 
