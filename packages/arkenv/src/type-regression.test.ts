@@ -1,84 +1,78 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
+import { attest } from "@ark/attest";
+import { describe, expect, it } from "vitest";
 import { createEnv, type } from "./index";
 
 describe("Type Regression (Issue #796)", () => {
-	it("should infer the same type for inline and explicit schemas", () => {
-		const envInline = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
-		const envExplicit = createEnv(type({ PORT: "number" }), {
+	it("inline and explicit schemas infer the same type", () => {
+		const inline = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
+		const explicit = createEnv(type({ PORT: "number" }), {
 			env: { PORT: "3000" },
 		});
-
-		expectTypeOf(envInline).toEqualTypeOf(envExplicit);
-		expectTypeOf(envInline.PORT).toEqualTypeOf<number>();
+		attest<typeof explicit>(inline);
 	});
 
-	it("should narrow inline schema types correctly", () => {
+	it("narrows basic types correctly", () => {
 		const env = createEnv(
-			{
-				STR: "string",
-				NUM: "number",
-				BOOL: "boolean",
-			},
+			{ STR: "string", NUM: "number", BOOL: "boolean" },
 			{ env: { STR: "hi", NUM: "1", BOOL: "true" } },
 		);
-
-		expectTypeOf(env.STR).toEqualTypeOf<string>();
-		expectTypeOf(env.NUM).toEqualTypeOf<number>();
-		expectTypeOf(env.BOOL).toEqualTypeOf<boolean>();
+		attest<string>(env.STR);
+		attest<number>(env.NUM);
+		attest<boolean>(env.BOOL);
 	});
 
 	it("should fail for invalid DSL strings", () => {
-		// @ts-expect-error - "invalid" is not a valid ArkType DSL
-		expect(() =>
+		// @ts-expect-error
+		attest(() =>
 			createEnv({ KEY: "invalid" }, { env: { KEY: "val" } }),
-		).toThrow();
+		).type.errors.snap(`No overload matches this call.Overload 1 of 3, '(def: validateObjectLiteral<{ readonly KEY: "invalid"; }, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }, bindThis<...>>, config?: ArkEnvConfig | undefined): { ...; }', gave the following error.Type '"invalid"' is not assignable to type '"'invalid' is unresolvable "'.
+Overload 2 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }>, config?: ArkEnvConfig | undefined): SchemaShape', gave the following error.Object literal may only specify known properties, and 'KEY' does not exist in type 'Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }>'.
+Overload 3 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }> | validateObjectLiteral<...>, config?: ArkEnvConfig | undefined): SchemaShape | { ...; }', gave the following error.Type '"invalid"' is not assignable to type '"'invalid' is unresolvable "'.`);
 	});
 
-	it("should infer custom keywords correctly", () => {
+	it("snapshots DSL completions for inline values (autocompletion regression)", () => {
+		// @ts-expect-error
+		attest(() => createEnv({ PORT: "n" })).completions({
+			n: ["never", "null", "number"],
+		});
+	});
+
+	it("snapshots sub-keyword completions", () => {
+		// @ts-expect-error
+		attest(() => createEnv({ PORT: "number." })).completions({
+			"number.": [
+				"number.Infinity",
+				"number.NaN",
+				"number.NegativeInfinity",
+				"number.epoch",
+				"number.integer",
+				"number.port",
+				"number.safe",
+			],
+		});
+	});
+
+	it("infers custom keywords correctly", () => {
 		const env = createEnv(
-			{
-				PORT: "number.port",
-				HOST: "string.host",
-			},
+			{ PORT: "number.port", HOST: "string.host" },
 			{ env: { PORT: "8080", HOST: "localhost" } },
 		);
-
-		expectTypeOf(env.PORT).toEqualTypeOf<number>();
-		expectTypeOf(env.HOST).toEqualTypeOf<string>();
+		attest<number>(env.PORT);
+		attest<string>(env.HOST);
 	});
 
-	it("should infer arrays correctly", () => {
-		const env = createEnv(
-			{
-				TAGS: "string[]",
-			},
-			{ env: { TAGS: "a,b,c" } },
-		);
-
-		expectTypeOf(env.TAGS).toEqualTypeOf<string[]>();
+	it("infers arrays correctly", () => {
+		const env = createEnv({ TAGS: "string[]" }, { env: { TAGS: "a,b,c" } });
+		attest<string[]>(env.TAGS);
 	});
 
-	it("should handle optional variables correctly", () => {
-		const env = createEnv(
-			{
-				"OPTIONAL?": "string",
-			},
-			{ env: {} },
-		);
-
-		expectTypeOf(env.OPTIONAL).toEqualTypeOf<string | undefined>();
+	it("infers optional variables correctly", () => {
+		const env = createEnv({ "OPTIONAL?": "string" }, { env: {} });
+		attest<string | undefined>(env.OPTIONAL);
 	});
 
-	it("should handle default values correctly", () => {
-		// In ArkType, default values are part of the DSL or handled via .default()
-		// For inline schemas, we usually use the DSL: "string = 'default'"
-		const env = createEnv(
-			{
-				WITH_DEFAULT: "string = 'default'",
-			},
-			{ env: {} },
-		);
-
-		expectTypeOf(env.WITH_DEFAULT).toEqualTypeOf<string>();
+	it("infers default values correctly", () => {
+		const env = createEnv({ WITH_DEFAULT: "string = 'default'" }, { env: {} });
+		attest<string>(env.WITH_DEFAULT);
 	});
 });

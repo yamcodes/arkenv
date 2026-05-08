@@ -38,7 +38,8 @@
 		"test:once": "pnpm test",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
-		"test": "vitest",
+		"test": "ATTEST_skipTypes=1 vitest",
+		"test:types": "vitest run",
 		"fix": "pnpm -w run fix"
 	},
 	"files": [
@@ -61,6 +62,7 @@
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
+		"@ark/attest": "catalog:",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
