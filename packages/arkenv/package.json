@@ -35,8 +35,10 @@
 	"scripts": {
 		"build": "tsdown",
 		"size": "size-limit --json > .size-limit.json",
-		"test": "vitest",
 		"test:once": "vitest run",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
 		"test:types": "vitest run --typecheck",
 		"fix": "pnpm -w run fix"
 	},
