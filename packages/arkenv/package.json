@@ -39,7 +39,7 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
-		"test:types": "vitest run --typecheck",
+		"test:types": "vitest run --typecheck.only",
 		"fix": "pnpm -w run fix"
 	},
 	"files": [
