@@ -65,12 +65,16 @@ async function main() {
 		});
 		s.stop("Scaffolding complete!");
 
-		if (tsConfigResult === "updated") {
-			log.info(pc.blue("ℹ Enforced strict: true in your tsconfig.json"));
-		} else if (tsConfigResult === "error") {
+		if (tsConfigResult.status === "updated") {
+			log.info(
+				pc.blue(
+					`ℹ Enforced strict: true in your ${pc.cyan(tsConfigResult.file)}`,
+				),
+			);
+		} else if (tsConfigResult.status === "error") {
 			log.warn(
 				pc.yellow(
-					"⚠ Could not automatically update tsconfig.json. Please ensure 'strict: true' is set manually for the best experience.",
+					`⚠ Could not automatically update ${pc.cyan(tsConfigResult.file || "tsconfig.json")}. Please ensure 'strict: true' is set manually.`,
 				),
 			);
 		}

@@ -20,9 +20,12 @@ export async function scaffold(
 	const content = getEnvTemplate(options);
 	await fs.writeFile(targetPath, content, "utf-8");
 
-	// 3. Enforce strict in tsconfig.json if requested
-	let tsConfigResult: "updated" | "already_strict" | "not_found" | "error" =
-		"already_strict";
+	// 3. Enforce strict in tsconfig if requested
+	let tsConfigResult: {
+		status: "updated" | "already_strict" | "not_found" | "error";
+		file?: string;
+	} = { status: "already_strict" };
+
 	if (options.shouldUpdateTsConfig) {
 		tsConfigResult = await updateTsConfigToStrict();
 	}
@@ -47,37 +50,54 @@ export async function scaffold(
 	return { tsConfigResult };
 }
 
+async function findTsConfig(): Promise<string | null> {
+	const files = ["tsconfig.app.json", "tsconfig.json"];
+	for (const file of files) {
+		const fullPath = path.join(process.cwd(), file);
+		try {
+			await fs.access(fullPath);
+			return fullPath;
+		} catch {}
+	}
+	return null;
+}
+
 export async function checkTsConfig(): Promise<
 	"strict" | "not_strict" | "not_found"
 > {
-	const tsConfigPath = path.join(process.cwd(), "tsconfig.json");
+	const tsConfigPath = await findTsConfig();
+	if (!tsConfigPath) return "not_found";
+
 	try {
 		const content = await fs.readFile(tsConfigPath, "utf-8");
 		if (/"strict"\s*:\s*true/.test(content)) return "strict";
 		return "not_strict";
 	} catch (e: any) {
-		if (e.code === "ENOENT") return "not_found";
-		throw e;
+		return "not_found";
 	}
 }
 
-async function updateTsConfigToStrict(): Promise<
-	"updated" | "already_strict" | "not_found" | "error"
-> {
-	const tsConfigPath = path.join(process.cwd(), "tsconfig.json");
+async function updateTsConfigToStrict(): Promise<{
+	status: "updated" | "already_strict" | "not_found" | "error";
+	file?: string;
+}> {
+	const tsConfigPath = await findTsConfig();
+	if (!tsConfigPath) return { status: "not_found" };
+	const fileName = path.basename(tsConfigPath);
+
 	try {
 		const content = await fs.readFile(tsConfigPath, "utf-8");
 
 		// Check if strict is already true
 		if (/"strict"\s*:\s*true/.test(content)) {
-			return "already_strict";
+			return { status: "already_strict", file: fileName };
 		}
 
 		// If strict is false, replace it
 		if (/"strict"\s*:\s*false/.test(content)) {
 			const updated = content.replace(/"strict"\s*:\s*false/, '"strict": true');
 			await fs.writeFile(tsConfigPath, updated, "utf-8");
-			return "updated";
+			return { status: "updated", file: fileName };
 		}
 
 		// If strict doesn't exist, try to add it to compilerOptions
@@ -87,7 +107,7 @@ async function updateTsConfigToStrict(): Promise<
 				'$1\n    "strict": true,',
 			);
 			await fs.writeFile(tsConfigPath, updated, "utf-8");
-			return "updated";
+			return { status: "updated", file: fileName };
 		}
 
 		// If no compilerOptions, add it
@@ -97,13 +117,12 @@ async function updateTsConfigToStrict(): Promise<
 				'{\n  "compilerOptions": {\n    "strict": true\n  },',
 			);
 			await fs.writeFile(tsConfigPath, updated, "utf-8");
-			return "updated";
+			return { status: "updated", file: fileName };
 		}
 
-		return "error";
+		return { status: "error", file: fileName };
 	} catch (e: any) {
-		if (e.code === "ENOENT") return "not_found";
-		return "error";
+		return { status: "error", file: fileName };
 	}
 }
 
