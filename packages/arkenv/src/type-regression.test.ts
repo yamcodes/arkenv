@@ -1,13 +1,11 @@
 import { attest } from "@ark/attest";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 import { createEnv, type } from "./index";
 
 describe("Type Regression (Issue #796)", () => {
 	it("inline and explicit schemas infer the same type", () => {
 		const inline = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
-		const explicit = createEnv(type({ PORT: "number" }), {
-			env: { PORT: "3000" },
-		});
+		const explicit = createEnv(type({ PORT: "number" }), { env: { PORT: "3000" } });
 		attest<typeof explicit>(inline);
 	});
 
@@ -22,8 +20,11 @@ describe("Type Regression (Issue #796)", () => {
 	});
 
 	it("should fail for invalid DSL strings", () => {
-		// @ts-expect-error
+		// NOTE: This snapshot is fragile as it includes internal ArkType generic names.
+		// If it breaks after an ArkType update, run:
+		// pnpm test:types -- --updateSnapshot
 		attest(() =>
+			// @ts-expect-error
 			createEnv({ KEY: "invalid" }, { env: { KEY: "val" } }),
 		).type.errors.snap(`No overload matches this call.Overload 1 of 3, '(def: validateObjectLiteral<{ readonly KEY: "invalid"; }, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }, bindThis<...>>, config?: ArkEnvConfig | undefined): { ...; }', gave the following error.Type '"invalid"' is not assignable to type '"'invalid' is unresolvable "'.
 Overload 2 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }>, config?: ArkEnvConfig | undefined): SchemaShape', gave the following error.Object literal may only specify known properties, and 'KEY' does not exist in type 'Type<SchemaShape, { string: Submodule<{ trim: Submodule<$ & { " arkInferred": (In: string) => To<string>; }>; normalize: Submodule<$ & { " arkInferred": (In: string) => To<...>; }>; ... 21 more ...; host: string; }>; number: Submodule<...>; }>'.
@@ -31,15 +32,17 @@ Overload 3 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<
 	});
 
 	it("snapshots DSL completions for inline values (autocompletion regression)", () => {
-		// @ts-expect-error
-		attest(() => createEnv({ PORT: "n" })).completions({
-			n: ["never", "null", "number"],
-		});
+		attest(() =>
+			// @ts-expect-error
+			createEnv({ PORT: "n" }),
+		).completions({ n: ["never", "null", "number"] });
 	});
 
 	it("snapshots sub-keyword completions", () => {
-		// @ts-expect-error
-		attest(() => createEnv({ PORT: "number." })).completions({
+		attest(() =>
+			// @ts-expect-error
+			createEnv({ PORT: "number." }),
+		).completions({
 			"number.": [
 				"number.Infinity",
 				"number.NaN",
@@ -50,6 +53,14 @@ Overload 3 of 3, '(def: Type<SchemaShape, { string: Submodule<{ trim: Submodule<
 				"number.safe",
 			],
 		});
+	});
+
+	it("infers unions correctly", () => {
+		const env = createEnv(
+			{ VAL: "string | number" },
+			{ env: { VAL: "123" } },
+		);
+		attest<string | number>(env.VAL);
 	});
 
 	it("infers custom keywords correctly", () => {

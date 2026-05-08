@@ -35,11 +35,11 @@
 	"scripts": {
 		"build": "tsdown",
 		"size": "size-limit --json > .size-limit.json",
-		"test:once": "pnpm test",
+		"test:once": "vitest run",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "ATTEST_skipTypes=1 vitest",
-		"test:types": "vitest run",
+		"test:types": "vitest run src/type-regression.test.ts",
 		"fix": "pnpm -w run fix"
 	},
 	"files": [
