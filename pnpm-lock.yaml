@@ -134,7 +134,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@opentelemetry/api@1.9.1)(@types/node@25.6.0)(@vitest/ui@4.1.5)(jsdom@29.1.1(@noble/hashes@1.8.0))(vite@8.0.10(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(terser@5.46.2)(tsx@4.21.0))
 
-  apps/playgrounds/arkenv-init:
+  apps/playgrounds/arkenv-cli:
     dependencies:
       react:
         specifier: 19.2.5

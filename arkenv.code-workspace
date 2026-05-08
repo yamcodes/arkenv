@@ -64,6 +64,10 @@
 			"name": "🛝 vite"
 		},
 		{
+			"path": "apps/playgrounds/arkenv-cli",
+			"name": "🛝 arkenv-cli"
+		},
+		{
 			"path": "apps/playgrounds/vite-legacy",
 			"name": "🛝 vite-legacy"
 		},
