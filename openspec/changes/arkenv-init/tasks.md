@@ -1,10 +1,8 @@
 ## 1. Package Skeleton
 
-- [x] 1.1 Create `packages/create-arkenv/` directory
-- [x] 1.2 Create `package.json` with `@clack/prompts`, `tsdown`, and standard scripts
-- [x] 1.3 Copy and adapt `tsconfig.json` from `packages/vite-plugin`
-- [x] 1.4 Create `tsdown.config.ts` with `platform: \"node\"` and dual format output
-- [x] 1.5 Create `vitest.config.ts` by copying from existing packages
+- [x] 1.1 Create CLI directory in `packages/arkenv/src/cli`
+- [x] 1.2 Add CLI dependencies to `arkenv/package.json`
+- [x] 1.3 Configure CLI build in `arkenv/tsdown.config.ts`
 
 ## 2. Core Implementation: ArkEnv Init CLI
 
@@ -17,8 +15,8 @@
 ## 3. Integration and Polishing
 
 - [x] 3.1 Run `pnpm install` to update workspace lockfile
-- [x] 3.2 Verify `pnpm build --filter create-arkenv` works correctly
-- [x] 3.3 Add a changeset for the new `create-arkenv` package
+- [x] 3.2 Verify `pnpm build --filter arkenv` works correctly
+- [x] 3.3 Add a changeset for the new `arkenv-init` CLI
 
 ## 4. Verification
 

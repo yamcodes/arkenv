@@ -4,7 +4,7 @@
 The CLI SHALL provide an interactive experience to guide the user through setting up ArkEnv.
 
 #### Scenario: Running the CLI
-- **WHEN** the user runs `pnpm create arkenv@latest`
+- **WHEN** the user runs `pnpm dlx arkenv@latest init`
 - **THEN** the system SHALL display a welcome message and start the prompt sequence
 
 ### Requirement: Validator Selection
@@ -43,5 +43,5 @@ The system SHALL detect the local package manager and install the required depen
 - **THEN** the system SHALL use `pnpm add` to install dependencies
 
 #### Scenario: Detecting via lockfile
-- **WHEN** a `pnpm-lock.yaml` is present or the user is running via `pnpm create arkenv@latest`
+- **WHEN** a `pnpm-lock.yaml` is present or the user is running via `pnpm dlx arkenv@latest init`
 - **THEN** the system SHALL use `pnpm add` to install dependencies
