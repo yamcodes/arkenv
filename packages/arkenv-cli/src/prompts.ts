@@ -4,7 +4,7 @@ export type ProjectOptions = {
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun" | "node";
-	language: "ts"; // Initially focusing on TS
+	language: "ts"; // TODO: Support JS
 };
 
 export async function runPromptWizard(defaults?: {
