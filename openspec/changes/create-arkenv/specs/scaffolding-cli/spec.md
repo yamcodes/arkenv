@@ -38,6 +38,10 @@ The system SHALL generate the necessary configuration files for ArkEnv based on 
 ### Requirement: Dependency Installation
 The system SHALL detect the local package manager and install the required dependencies (Arkenv + selected validator).
 
-#### Scenario: Detecting pnpm
+#### Scenario: Detecting via packageManager field
+- **WHEN** the `packageManager` field in `package.json` is set to "pnpm@9.0.0"
+- **THEN** the system SHALL use `pnpm add` to install dependencies
+
+#### Scenario: Detecting via lockfile
 - **WHEN** a `pnpm-lock.yaml` is present or the user is running via `pnpm create`
 - **THEN** the system SHALL use `pnpm add` to install dependencies

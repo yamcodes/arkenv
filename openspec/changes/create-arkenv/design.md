@@ -33,7 +33,10 @@ We will use the existing `tsdown` based build system used in other packages (e.g
 - **Config**: `platform: "node"`, `format: ["esm", "cjs"]`.
 
 ### 5. Package Manager Detection
-The scaffolder will look for `pnpm-lock.yaml`, `yarn.lock`, `bun.lockb`, or `package-lock.json` to determine the correct installation command. If none are found, it defaults to `npm`.
+The scaffolder will determine the correct installation command by checking:
+1. The `packageManager` field in the target project's `package.json` (Corepack standard).
+2. The presence of lockfiles: `pnpm-lock.yaml`, `yarn.lock`, `bun.lockb`, or `package-lock.json`.
+3. Defaulting to `npm` if no other signals are found.
 
 ## Risks / Trade-offs
 
