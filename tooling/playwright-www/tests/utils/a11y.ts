@@ -73,8 +73,8 @@ export async function assertNoA11yViolations(
 
 	let builder = new AxeBuilder({ page }).withTags(tags);
 
-	if (mergedExclusions.length > 0) {
-		builder = builder.exclude(mergedExclusions);
+	for (const selector of mergedExclusions) {
+		builder = builder.exclude(selector);
 	}
 
 	if (disableRules.length > 0) {
