@@ -1,7 +1,7 @@
 # bun-plugin Specification
 
 ## Purpose
-Defines the ArkEnv Bun plugin: its two configuration patterns (direct instance for `Bun.build`, package reference for `Bun.serve`), build-time environment variable validation and static replacement, client-only filtering by prefix (default: `BUN_PUBLIC_`), TypeScript type augmentation via `ProcessEnvAugmented`, and support for configurable validator engines (ArkType by default, or Standard Schema).
+Defines the ArkEnv Bun plugin: its two configuration patterns (direct instance for `Bun.build`, package reference for `Bun.serve`), build-time environment variable validation and exposure via Bun's `define` behavior, client-only filtering by prefix (default: `BUN_PUBLIC_`), TypeScript type augmentation via `ProcessEnvAugmented`, and support for configurable validator engines (ArkType by default, or Standard Schema).
 ## Requirements
 ### Requirement: Bun Plugin Configuration Patterns
 
@@ -41,7 +41,7 @@ A future, more advanced configuration pattern using a custom static file MAY be 
 
 ### Requirement: Bun Plugin Environment Variable Validation and Transformation
 
-The Bun plugin SHALL validate environment variables at build-time using ArkEnv's schema validation **with configurable validator engine** and statically replace `process.env.VARIABLE` access with validated, transformed values during bundling. The plugin SHALL transform values according to the schema (e.g., string to boolean, apply default values).
+The Bun plugin SHALL validate environment variables at build-time using ArkEnv's schema validation **with configurable validator engine** and configure Bun's `define` behavior to expose `process.env.VARIABLE` access with validated, transformed values during bundling. The plugin SHALL transform values according to the schema (e.g., string to boolean, apply default values).
 
 **Changes:**
 - Added support for configurable validator engine via `ArkEnvConfig` parameter
@@ -53,7 +53,7 @@ The Bun plugin SHALL validate environment variables at build-time using ArkEnv's
 - **AND** the schema includes variables with various types
 - **THEN** the plugin validates all variables using the Standard Schema validator
 - **AND** the plugin transforms values according to the schema
-- **AND** the plugin statically replaces `process.env.VARIABLE` with the validated value
+- **AND** the plugin configures Bun's `define` behavior to expose the validated value via `process.env.VARIABLE`
 - **AND** validation errors from the Standard Schema library are properly reported
 
 ### Requirement: Bun Plugin Environment Variable Filtering
@@ -98,7 +98,7 @@ The Bun plugin SHALL work correctly with Bun's `serve` function for full-stack R
 - **WHEN** a user uses Bun's `serve` function with a full-stack React application
 - **AND** they configure the Bun plugin with a schema
 - **THEN** the plugin validates environment variables during bundling
-- **AND** the plugin transforms `process.env` access in both server and client code
+- **AND** the plugin configures `process.env` access in both server and client code via Bun's `define` behavior
 - **AND** only prefixed variables are exposed to client code
 - **AND** the server starts successfully with validated environment variables
 
@@ -113,7 +113,7 @@ The Bun plugin SHALL accept an optional `ArkEnvConfig` parameter to configure th
 - **THEN** the plugin SHALL use Standard Schema validation instead of ArkType
 - **AND** the plugin SHALL NOT require `arktype` as a dependency
 - **AND** environment variables SHALL be validated using the Standard Schema validator
-- **AND** the validated values SHALL be statically replaced in the bundle
+- **AND** the validated values SHALL be exposed in the bundle via Bun's `define` behavior
 
 ```typescript
 import { z } from 'zod'

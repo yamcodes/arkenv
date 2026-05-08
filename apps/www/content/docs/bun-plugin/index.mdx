@@ -9,7 +9,7 @@ description: The ArkEnv plugin for Bun lets you validate environment variables a
 
 ## Features
 
-- **Static Analysis**: Automatically replaces `process.env.VARIABLE` with validated values during the build.
+- **Static Analysis**: Validates environment variables against your schema and configures Bun's `define` behavior to expose them via `process.env.VARIABLE`, leaving the actual inlining to Bun.
 - **Typesafety**: Ensures your code only accesses variables defined in your schema.
 - **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration.
 
