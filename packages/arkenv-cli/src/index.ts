@@ -28,8 +28,18 @@ async function main() {
 	s.start("Scaffolding ArkEnv and installing dependencies...");
 
 	try {
-		await scaffold(options);
+		const { tsConfigResult } = await scaffold(options);
 		s.stop("Scaffolding complete!");
+
+		if (tsConfigResult === "updated") {
+			log.info(pc.blue("ℹ Enforced strict: true in your tsconfig.json"));
+		} else if (tsConfigResult === "error") {
+			log.warn(
+				pc.yellow(
+					"⚠ Could not automatically update tsconfig.json. Please ensure 'strict: true' is set manually for the best experience.",
+				),
+			);
+		}
 
 		const relPath = options.path.startsWith("./")
 			? options.path

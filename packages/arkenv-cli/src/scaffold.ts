@@ -18,7 +18,10 @@ export async function scaffold(options: ProjectOptions) {
 	const content = getEnvTemplate(options);
 	await fs.writeFile(targetPath, content, "utf-8");
 
-	// 3. Detect package manager and install dependencies
+	// 3. Enforce strict in tsconfig.json
+	const tsConfigResult = await enforceStrictTsConfig();
+
+	// 4. Detect package manager and install dependencies
 	const packageManager = await detectPackageManager();
 	const deps = ["arkenv", options.validator];
 
@@ -33,6 +36,54 @@ export async function scaffold(options: ProjectOptions) {
 		// If install fails, we don't want to crash the whole thing, but maybe log it?
 		// For now, we'll just let the user know they might need to run it manually.
 		throw new Error(`Failed to install dependencies: ${installCmd}`);
+	}
+
+	return { tsConfigResult };
+}
+
+async function enforceStrictTsConfig(): Promise<
+	"updated" | "already_strict" | "not_found" | "error"
+> {
+	const tsConfigPath = path.join(process.cwd(), "tsconfig.json");
+	try {
+		const content = await fs.readFile(tsConfigPath, "utf-8");
+
+		// Check if strict is already true
+		if (/"strict"\s*:\s*true/.test(content)) {
+			return "already_strict";
+		}
+
+		// If strict is false, replace it
+		if (/"strict"\s*:\s*false/.test(content)) {
+			const updated = content.replace(/"strict"\s*:\s*false/, '"strict": true');
+			await fs.writeFile(tsConfigPath, updated, "utf-8");
+			return "updated";
+		}
+
+		// If strict doesn't exist, try to add it to compilerOptions
+		if (/"compilerOptions"\s*:\s*\{/.test(content)) {
+			const updated = content.replace(
+				/("compilerOptions"\s*:\s*\{)/,
+				'$1\n    "strict": true,',
+			);
+			await fs.writeFile(tsConfigPath, updated, "utf-8");
+			return "updated";
+		}
+
+		// If no compilerOptions, add it
+		if (/\{/.test(content)) {
+			const updated = content.replace(
+				/\{/,
+				'{\n  "compilerOptions": {\n    "strict": true\n  },',
+			);
+			await fs.writeFile(tsConfigPath, updated, "utf-8");
+			return "updated";
+		}
+
+		return "error";
+	} catch (e: any) {
+		if (e.code === "ENOENT") return "not_found";
+		return "error";
 	}
 }
 
