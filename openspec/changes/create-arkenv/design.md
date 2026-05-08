@@ -18,7 +18,7 @@ The ArkEnv monorepo currently lacks a first-party scaffolding tool. Users must m
 ## Decisions
 
 ### 1. Package Naming and Bin
-The package will be named `create-arkenv`. This allows users to run `pnpm create arkenv` which resolves to this package. The binary will be output as CJS to ensure compatibility across different Node versions and shebang environments.
+The package will be named `create-arkenv`. This allows users to run `pnpm create arkenv@latest` which resolves to this package. The binary will be output as CJS to ensure compatibility across different Node versions and shebang environments.
 
 ### 2. Interactive Prompts with `@clack/prompts`
 We will use `@clack/prompts` for the interactive wizard. It provides a modern, "clack-y" UI (similar to Astro or T3-App) that feels premium and responsive.
