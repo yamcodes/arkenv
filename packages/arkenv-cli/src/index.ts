@@ -25,8 +25,6 @@ async function main() {
 		process.exit(0);
 	}
 
-	intro(pc.cyan("ArkEnv Scaffolding"));
-
 	let shouldUpdateTsConfig = false;
 	const tsConfigResult = await checkTsConfig();
 
