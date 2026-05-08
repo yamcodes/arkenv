@@ -5,7 +5,9 @@ export default defineConfig({
 	format: "cjs",
 	platform: "node",
 	minify: true,
-	unbundle: false,
 	fixedExtension: true,
 	shims: true,
+	deps: {
+		alwaysBundle: ["@clack/prompts", "picocolors"],
+	},
 });

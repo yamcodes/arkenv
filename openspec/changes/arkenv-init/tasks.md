@@ -25,14 +25,14 @@
 
 ## Phase 4: Integration Testing
 
-- [ ] 4.1 Run `pnpm install` to update workspace lockfile <!-- id: 50 -->
-- [ ] 4.2 Verify `pnpm build --filter arkenv` produces no CLI bundle <!-- id: 51 -->
-- [ ] 4.3 Verify `pnpm build --filter @arkenv/cli` builds successfully <!-- id: 52 -->
-- [ ] 4.4 Smoke test: `pnpm --filter @arkenv/cli run start` correctly runs the interactive wizard <!-- id: 53 -->
-- [ ] 4.5 Add changesets for both `arkenv` (minor: remove CLI deps) and `@arkenv/cli` (minor: initial release) <!-- id: 54 -->
+- [x] 4.1 Run `pnpm install` to update workspace lockfile <!-- id: 50 -->
+- [x] 4.2 Verify `pnpm build --filter arkenv` produces no CLI bundle <!-- id: 51 -->
+- [x] 4.3 Verify `pnpm build --filter @arkenv/cli` builds successfully <!-- id: 52 -->
+- [x] 4.4 Smoke test: `pnpm --filter @arkenv/cli run start` correctly runs the interactive wizard <!-- id: 53 -->
+- [x] 4.5 Add changesets for both `arkenv` (minor: remove CLI deps) and `@arkenv/cli` (minor: initial release) <!-- id: 54 -->
 
 ## Phase 5: Verification
 
-- [ ] 5.1 Manual smoke test of the full flow in a temporary directory <!-- id: 60 -->
-- [ ] 5.2 Verify generated `env.ts` files compile without errors <!-- id: 61 -->
-- [ ] 5.3 Verify `arkenv` package size is reduced (no CLI deps in tarball) <!-- id: 62 -->
+- [x] 5.1 Manual smoke test of the full flow in a temporary directory <!-- id: 60 -->
+- [x] 5.2 Verify generated `env.ts` files compile without errors <!-- id: 61 -->
+- [x] 5.3 Verify `arkenv` package size is reduced (no CLI deps in tarball) <!-- id: 62 -->
