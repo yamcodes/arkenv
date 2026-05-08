@@ -1,10 +1,10 @@
 ## Why
 
-Currently, setting up ArkEnv requires manual configuration and copying patterns from examples. As the project expands to support multiple validators (ArkType, Zod, Valibot) and runtimes (Vite, Bun, Node), a standardized scaffolding tool is needed to ensure users can get started with a "best practices" setup in under a minute via `pnpm create arkenv@latest`.
+Currently, setting up ArkEnv requires manual configuration and copying patterns from examples. As the project expands to support multiple validators (ArkType, Zod, Valibot) and runtimes (Vite, Bun, Node), a standardized scaffolding tool is needed to ensure users can get started with a "best practices" setup in under a minute via `arkenv init`.
 
 ## What Changes
 
-- Create a new package `packages/create-arkenv` that acts as an interactive CLI wizard.
+- Create a new package `packages/arkenv-init` that acts as an interactive CLI wizard.
 - Implementation of a template-driven scaffolding engine.
 - Support for selecting validator, framework/runtime, and language.
 

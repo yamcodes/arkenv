@@ -1,6 +1,6 @@
-## Context
+# Design: ArkEnv Init CLI
 
-The ArkEnv monorepo currently lacks a first-party scaffolding tool. Users must manually configure their environment schemas and validator integrations. This design outlines a new `create-arkenv` package that provides a "one-shot" interactive setup experience.
+The `arkenv init` CLI is designed as a minimalist, interactive wizard that guides users through setting up ArkEnv in an existing project.
 
 ## Goals / Non-Goals
 

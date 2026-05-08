@@ -6,7 +6,7 @@
 - [x] 1.4 Create `tsdown.config.ts` with `platform: \"node\"` and dual format output
 - [x] 1.5 Create `vitest.config.ts` by copying from existing packages
 
-## 2. Core Implementation
+## 2. Core Implementation: ArkEnv Init CLI
 
 - [x] 2.1 Create `src/index.ts` with shebang and main orchestration logic
 - [x] 2.2 Create `src/prompts.ts` using `@clack/prompts` for the interactive wizard
