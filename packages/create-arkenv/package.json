@@ -1,0 +1,35 @@
+{
+	"name": "create-arkenv",
+	"version": "0.0.1",
+	"description": "Scaffold a new ArkEnv project",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"license": "MIT",
+	"type": "module",
+	"bin": {
+		"create-arkenv": "./dist/index.cjs"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"fix": "pnpm -w run fix"
+	},
+	"dependencies": {
+		"@clack/prompts": "^0.9.1",
+		"picocolors": "^1.1.1"
+	},
+	"devDependencies": {
+		"@repo/types": "workspace:*",
+		"rimraf": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	}
+}
