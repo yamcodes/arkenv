@@ -19,6 +19,11 @@
 			"name": "🎁 arkenv"
 		},
 		{
+			"path": "packages/create-arkenv",
+
+			"name": "🎁 create-arkenv"
+		},
+		{
 			"path": "packages/vite-plugin",
 			"name": "🎁 vite-plugin"
 		},
