@@ -37,7 +37,7 @@ The schema SHALL be defined using ArkType's `type()` function (not as a raw obje
 - **AND** they define the schema using `type()` outside of `defineConfig`
 - **THEN** the schema can be defined once and used in both places
 - **AND** TypeScript types are available in both contexts
-- **AND** the solution avoids code duplication and maintains type safety
+- **AND** the solution avoids code duplication and maintains typesafety
 - **AND** `createEnv()` and the Vite plugin accept the type definition directly
 
 ### Requirement: loadEnv Wrapper Utility
@@ -52,7 +52,7 @@ The project SHALL support using ArkEnv with Vite's `loadEnv` function. Since `cr
 - **AND** the same type definition can be passed to the Vite plugin for validating `VITE_*` variables
 - **AND** no separate wrapper utility is needed
 
-### Requirement: Type Safety Constraint
+### Requirement: Typesafety Constraint
 
 The environment object returned from `loadEnv` or any wrapper SHALL be typesafe. Unsafe patterns that bypass validation or type checking are FORBIDDEN.
 
@@ -68,7 +68,7 @@ The environment object returned from `loadEnv` or any wrapper SHALL be typesafe.
 - **OR** a user attempts to use `as const` assertion on an environment object
 - **THEN** the pattern is documented as forbidden
 - **AND** examples demonstrate only typesafe patterns
-- **AND** documentation clearly explains why unsafe patterns (including `as const`) are not allowed and do not provide type safety
+- **AND** documentation clearly explains why unsafe patterns (including `as const`) are not allowed and do not provide typesafety
 
 ### Requirement: Documentation for Vite Config Usage
 
@@ -86,5 +86,5 @@ The project SHALL provide clear documentation and examples for using ArkEnv in v
 - **THEN** they see an example of using ArkEnv with `loadEnv` in vite.config.ts
 - **AND** the example demonstrates validating unprefixed variables for config use
 - **AND** the example is clear and follows best practices
-- **AND** the example demonstrates both validation and type safety
+- **AND** the example demonstrates both validation and typesafety
 

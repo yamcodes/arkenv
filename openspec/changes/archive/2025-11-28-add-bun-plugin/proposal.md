@@ -132,7 +132,7 @@ This keeps the default experience zero-config for most users, while still allowi
 **Alternatives considered**:
 
 - **Static file reference as the only pattern** (previous design): Forces every project to create a separate `bun-plugin-config.ts` file even in simple setups, increasing boilerplate.
-- **Schema definition via JSON/YAML or bunfig.toml**: Reduces type safety and breaks the “define once in TypeScript” story that ArkEnv aims for.
+- **Schema definition via JSON/YAML or bunfig.toml**: Reduces typesafety and breaks the “define once in TypeScript” story that ArkEnv aims for.
 - **Only programmatic configuration** (no bunfig path): Would make full-stack `Bun.serve()` setups awkward compared to other Bun plugins that integrate via `bunfig.toml`.
 </file>
 
@@ -149,7 +149,7 @@ Bun's bundler statically replaces `process.env` variables during build, which me
 - Type augmentation is needed for type-safe access to `process.env` in client code
 - The plugin must work within Bun's serve function for full-stack React apps
 
-Without a Bun plugin, users must manually validate environment variables or risk runtime errors, and they lose the type safety and build-time validation benefits that ArkEnv provides.
+Without a Bun plugin, users must manually validate environment variables or risk runtime errors, and they lose the typesafety and build-time validation benefits that ArkEnv provides.
 
 ## What Changes
 

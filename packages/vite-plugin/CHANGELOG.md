@@ -298,7 +298,7 @@
 
 - #### `ImportMetaEnvAugmented` type helper for typesafe `import.meta.env` _[`#415`](https://github.com/yamcodes/arkenv/pull/415) [`79bef3c`](https://github.com/yamcodes/arkenv/commit/79bef3c26b87baf6bb3fe92da8bdfdb048a49e71) [@yamcodes](https://github.com/yamcodes)_
 
-  Add a new `ImportMetaEnvAugmented` type that augments `import.meta.env` with your environment variable schema. This provides full type safety and autocomplete for all your `VITE_*` environment variables in client code.
+  Add a new `ImportMetaEnvAugmented` type that augments `import.meta.env` with your environment variable schema. This provides full typesafety and autocomplete for all your `VITE_*` environment variables in client code.
 
   Implementation inspired by [Julien-R44](https://github.com/Julien-R44)'s [vite-plugin-validate-env](https://github.com/Julien-R44/vite-plugin-validate-env#typing-importmetaenv).
 
@@ -386,7 +386,7 @@
 
 - #### Support array defaults using `type().default()` syntax _[`#224`](https://github.com/yamcodes/arkenv/pull/224) [`ecf9b64`](https://github.com/yamcodes/arkenv/commit/ecf9b64a680d3af5c5786b288fda35608590f7a9) [@yamcodes](https://github.com/yamcodes)_
 
-  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by the plugin due to overly restrictive type constraints. The plugin now accepts any string-keyed record while still maintaining type safety through ArkType's validation system.
+  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by the plugin due to overly restrictive type constraints. The plugin now accepts any string-keyed record while still maintaining typesafety through ArkType's validation system.
 
   ##### New Features
 

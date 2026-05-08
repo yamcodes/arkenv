@@ -25,7 +25,7 @@ export type ArkTypeTwoslashOptions = TransformerTwoslashOptions & {
 
 export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
-	langs: ["ts", "js"],
+	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
 		compilerOptions: {
 			paths: {

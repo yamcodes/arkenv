@@ -19,3 +19,7 @@ interface ViteTypeOptions {
 // Now import.meta.env is totally typesafe and based on your `Env` schema definition
 // Only VITE_* prefixed variables will be included (PORT is excluded)
 interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+
+interface ImportMeta {
+	readonly env: ImportMetaEnv;
+}

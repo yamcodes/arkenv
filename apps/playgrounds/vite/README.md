@@ -115,6 +115,6 @@ For more information, see the [@arkenv/vite-plugin documentation](https://arkenv
 
 2. **Automatic Filtering**: The plugin automatically filters the schema to only expose `VITE_*` prefixed variables to the client, preventing server-only variables from leaking into the bundle.
 
-3. **Type Safety**: With the `vite-env.d.ts` setup, `import.meta.env` is fully typesafe with autocomplete and type checking.
+3. **Typesafety**: With the `vite-env.d.ts` setup, `import.meta.env` is fully typesafe with autocomplete and type checking.
 
 4. **Build-Time Validation**: Missing or invalid environment variables will cause the dev server to fail to start and production builds to fail with clear error messages.

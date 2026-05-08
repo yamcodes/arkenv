@@ -19,7 +19,7 @@ Instead of inspecting proprietary ArkType structures (`schema.in.json`) or mutat
 ## Impact
 
 - **Reliability**: Relies on a stable external standard (JSON Schema) rather than ArkType's fluctuating internal representation.
-- **Type Safety**: `toJsonSchema()` returns a strictly typed `JsonSchema` interface, whereas `in.json` returns loose `JsonStructure` types requiring unsafe assertions.
+- **Typesafety**: `toJsonSchema()` returns a strictly typed `JsonSchema` interface, whereas `in.json` returns loose `JsonStructure` types requiring unsafe assertions.
 - **Performance**: Introspection happens once; the pre-processing morph is a simple object traversal.
 - **Consistency**: Retains 100% compatibility with existing coercion behavior.
 
@@ -29,7 +29,7 @@ Instead of inspecting proprietary ArkType structures (`schema.in.json`) or mutat
 - **Limit**: Strictly enforce < 200 lines per file. Use `utils/coercion/` directory for modularization if required.
 - **Internal Sharing**: Any logic shared across packages must reside in `packages/internal/`.
 
-### Strict Type Safety
+### Strict Typesafety
 - **Standard API only**: Use `schema.in.toJsonSchema()` for all introspection.
 - **No Prop probing**: Do not probe for `domain`, `unit`, or `branches` on generic objects.
 - **Avoid Assertions**: Use discriminated unions provided by the `JsonSchema` type definition.

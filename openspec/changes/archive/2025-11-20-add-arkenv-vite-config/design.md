@@ -8,7 +8,7 @@ Users need to validate unprefixed environment variables (e.g., `PORT`, database 
 
 ### Goals
 - Allow schema to be defined once and reused in both contexts
-- Maintain type safety in both contexts
+- Maintain typesafety in both contexts
 - Follow the spec requirement that schemas must be defined using `type()` function
 - Avoid code duplication
 
@@ -27,7 +27,7 @@ Users need to validate unprefixed environment variables (e.g., `PORT`, database 
 - Simplest solution that meets all requirements
 - Follows the spec requirement that schemas must be defined using `type()`
 - Avoids code duplication
-- Maintains type safety in both contexts
+- Maintains typesafety in both contexts
 - No need for additional wrapper utilities
 
 **Alternatives considered**:
