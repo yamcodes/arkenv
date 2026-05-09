@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import path from "node:path";
 import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
 import { runPromptWizard } from "./prompts";

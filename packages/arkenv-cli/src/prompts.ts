@@ -9,7 +9,7 @@ export type ProjectOptions = {
 
 export async function runPromptWizard(
 	defaults?: {
-		framework?: "vite" | "bun" | "node";
+		framework?: ProjectOptions["framework"];
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {

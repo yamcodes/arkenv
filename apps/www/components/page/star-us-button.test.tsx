@@ -10,7 +10,7 @@ describe("StarUsButton", () => {
 		render(<StarUsButton />);
 
 		const buttons = screen.getAllByText("Star us on GitHub");
-		expect(buttons).toHaveLength(2); // One for mobile, one for desktop
+		expect(buttons).toHaveLength(1); // Mobile only (desktop is in header)
 	});
 
 	it("renders GitHub link with correct href", () => {
@@ -31,19 +31,19 @@ describe("StarUsButton", () => {
 		expect(customElements.length).toBeGreaterThan(0);
 	});
 
-	it("renders both mobile and desktop versions", () => {
+	it("renders mobile version only", () => {
 		render(<StarUsButton />);
 
-		// Should have two buttons with the same text (mobile and desktop versions)
+		// Should have one button with the same text (mobile version)
 		const buttons = screen.getAllByText("Star us on GitHub");
-		expect(buttons).toHaveLength(2);
+		expect(buttons).toHaveLength(1);
 	});
 
 	it("provides accessible links", () => {
 		render(<StarUsButton />);
 
 		const links = screen.getAllByRole("link");
-		expect(links).toHaveLength(2);
+		expect(links).toHaveLength(1);
 
 		links.forEach((link) => {
 			expect(link).toHaveAttribute("target", "_blank");

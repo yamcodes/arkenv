@@ -1,14 +1,11 @@
-import { exec as execCallback } from "node:child_process";
+import { spawn } from "node:child_process";
 import fs, { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { promisify } from "node:util";
 import { confirm } from "@clack/prompts";
 import { applyEdits, modify, parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
 import type { ProjectOptions } from "./prompts";
-
-const exec = promisify(execCallback);
 
 export async function scaffold(
 	options: ProjectOptions & { shouldUpdateTsConfig?: boolean },
@@ -27,9 +24,10 @@ export async function scaffold(
 			initialValue: false,
 		});
 
-		if (confirmOverwrite === true) {
-			await fsp.writeFile(targetPath, content, "utf-8");
+		if (!confirmOverwrite) {
+			return { tsConfigResult: { status: "already_strict" } as const };
 		}
+		await fsp.writeFile(targetPath, content, "utf-8");
 	} else {
 		await fsp.writeFile(targetPath, content, "utf-8");
 	}
@@ -51,16 +49,23 @@ export async function scaffold(
 	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
 	if (options.framework === "bun") deps.push("@arkenv/bun-plugin");
 
-	const installCmd = getInstallCommand(packageManager, deps);
+	const [cmd, ...args] = getInstallCommand(packageManager, deps).split(" ");
 
-	try {
-		await exec(installCmd);
-	} catch (error: unknown) {
-		const message = error instanceof Error ? error.message : String(error);
-		throw new Error(
-			`Failed to install dependencies (${installCmd}): ${message}`,
-		);
-	}
+	await new Promise<void>((resolve, reject) => {
+		const child = spawn(cmd, args, { stdio: "inherit", shell: true });
+		child.on("close", (code) => {
+			if (code === 0) {
+				resolve();
+			} else {
+				reject(
+					new Error(
+						`Failed to install dependencies (${cmd} ${args.join(" ")}): Exit code ${code}`,
+					),
+				);
+			}
+		});
+		child.on("error", reject);
+	});
 
 	return { tsConfigResult };
 }
@@ -173,6 +178,12 @@ export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
 async function detectPackageManager(): Promise<
 	"pnpm" | "yarn" | "npm" | "bun"
 > {
+	const userAgent = process.env.npm_config_user_agent?.toString() || "";
+	if (userAgent.includes("pnpm")) return "pnpm";
+	if (userAgent.includes("yarn")) return "yarn";
+	if (userAgent.includes("bun")) return "bun";
+	if (userAgent.includes("npm")) return "npm";
+
 	let currentDir = process.cwd();
 
 	while (currentDir !== path.parse(currentDir).root) {

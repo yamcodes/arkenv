@@ -37,7 +37,7 @@ describe("CopyButton", () => {
 		render(<CopyButton command="npm install arkenv" />);
 		const button = screen.getByRole("button");
 		expect(button).toHaveAttribute("aria-label", "Copy command");
-		expect(button).toHaveClass("hover:bg-slate-800");
+		expect(button).toHaveClass("hover:bg-transparent");
 	});
 
 	it("forwards additional props", () => {

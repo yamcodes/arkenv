@@ -1,4 +1,4 @@
-import { exec as execCallback } from "node:child_process";
+import { spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -10,9 +10,19 @@ vi.mock("@clack/prompts", () => ({
 	confirm: vi.fn(),
 }));
 
-vi.mock("node:child_process", () => ({
-	exec: vi.fn((cmd, cb) => cb(null, { stdout: "", stderr: "" })),
-}));
+vi.mock("node:child_process", () => {
+	const spawnMock = vi.fn().mockReturnValue({
+		on: vi.fn((event, cb) => {
+			if (event === "close") {
+				setTimeout(() => cb(0), 0);
+			}
+			return this;
+		}),
+	});
+	return {
+		spawn: spawnMock,
+	};
+});
 
 describe("scaffold", () => {
 	let tempDir: string;
@@ -118,31 +128,36 @@ describe("scaffold", () => {
 		it("installs correct dependencies for vite", async () => {
 			await scaffold({ ...defaultOptions, framework: "vite" });
 
-			expect(execCallback).toHaveBeenCalledWith(
-				expect.stringContaining("arkenv arktype @arkenv/vite-plugin"),
-				expect.any(Function),
+			expect(spawn).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.arrayContaining(["arkenv", "arktype", "@arkenv/vite-plugin"]),
+				expect.any(Object),
 			);
 		});
 
 		it("installs correct dependencies for bun", async () => {
 			await scaffold({ ...defaultOptions, framework: "bun" });
 
-			expect(execCallback).toHaveBeenCalledWith(
-				expect.stringContaining("arkenv arktype @arkenv/bun-plugin"),
-				expect.any(Function),
+			expect(spawn).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.arrayContaining(["arkenv", "arktype", "@arkenv/bun-plugin"]),
+				expect.any(Object),
 			);
 		});
 
 		it("propagates install failure", async () => {
-			vi.mocked(execCallback).mockImplementation((cmd, cb) => {
-				(cb as any)(new Error("Install failed"), {
-					stdout: "",
-					stderr: "error",
-				});
-				return {} as any;
-			});
+			vi.mocked(spawn).mockReturnValueOnce({
+				on: vi.fn((event, cb) => {
+					if (event === "close") {
+						setTimeout(() => cb(1), 0);
+					}
+					return this;
+				}),
+			} as any);
 
-			await expect(scaffold(defaultOptions)).rejects.toThrow("Install failed");
+			await expect(scaffold(defaultOptions)).rejects.toThrow(
+				"Failed to install dependencies",
+			);
 		});
 	});
 });
