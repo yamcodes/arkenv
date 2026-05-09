@@ -185,5 +185,10 @@ fabric.properties
 # pnpm store
 .pnpm-store
 
-.gemini/
+
+#.gemini/
+# These docs: https://github.com/google-github-actions/run-gemini-cli/blob/v0.1.22/README.md#3-update-your-gitignore
+# Say to ignore it, but it contains useful OpenSpec commands
+# So (say it with me) I'm going to ignore that for now
+
 gha-creds-*.json
