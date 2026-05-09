@@ -1,3 +1,4 @@
+export * from "./cli-command";
 export * from "./compatibility-rails";
 export * from "./copy-button";
 export * from "./logo";

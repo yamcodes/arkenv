@@ -5,6 +5,7 @@ import { AnnouncementBadge } from "~/components/announcement-badge";
 import { HeroGradientOverlay } from "~/components/hero-gradient-overlay";
 import { HeroVisual } from "~/components/hero-visual";
 import {
+	CLICommand,
 	CompatibilityRails,
 	QuickstartButton,
 	StarUsButton,
@@ -42,8 +43,9 @@ export default function HomePage() {
 						</div>
 					</h1>
 					<CompatibilityRails className="order-2 md:order-1" />
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-6 w-full sm:w-auto sm:max-w-none order-1 md:order-2">
+					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-6 w-full sm:w-auto sm:max-w-none order-1 md:order-2 items-center">
 						<QuickstartButton />
+						<CLICommand />
 						<StarUsButton />
 					</div>
 				</div>
