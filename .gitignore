@@ -184,3 +184,6 @@ fabric.properties
 
 # pnpm store
 .pnpm-store
+
+.gemini/
+gha-creds-*.json
