@@ -9,6 +9,18 @@ arkenv:
   - changed-files:
     - any-glob-to-any-file: 'packages/vite-plugin/**/*'
 
+"@arkenv/bun-plugin":
+  - changed-files:
+    - any-glob-to-any-file: 'packages/bun-plugin/**/*'
+
+"@arkenv/cli":
+  - changed-files:
+    - any-glob-to-any-file: 'packages/cli/**/*'
+
+"@arkenv/fumadocs-ui":
+  - changed-files:
+    - any-glob-to-any-file: 'packages/fumadocs-ui/**/*'
+
 www:
   - changed-files:
     - any-glob-to-any-file: 'apps/www/**/*'
@@ -20,6 +32,10 @@ docs:
 example:
   - changed-files:
     - any-glob-to-any-file: 'examples/**/*'
+    
+playground:
+  - changed-files:
+    - any-glob-to-any-file: 'apps/playgrounds/**/*'
 
 tests:
   - changed-files:
