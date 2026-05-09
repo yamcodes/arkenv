@@ -1,10 +1,10 @@
-import { confirm } from "@clack/prompts";
-import { applyEdits, modify, parse } from "jsonc-parser";
 import { exec as execCallback } from "node:child_process";
 import fs, { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
+import { confirm } from "@clack/prompts";
+import { applyEdits, modify, parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
 import type { ProjectOptions } from "./prompts";
 
@@ -58,7 +58,9 @@ export async function scaffold(
 		await exec(installCmd);
 	} catch (error: unknown) {
 		const message = error instanceof Error ? error.message : String(error);
-		throw new Error(`Failed to install dependencies (${installCmd}): ${message}`);
+		throw new Error(
+			`Failed to install dependencies (${installCmd}): ${message}`,
+		);
 	}
 
 	return { tsConfigResult };
