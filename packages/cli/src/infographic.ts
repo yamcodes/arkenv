@@ -11,10 +11,16 @@ export function printInfographic() {
 	// Raw strings for length calculation
 	const titleRaw = `⛯ ArkEnv CLI (v${version})`;
 	const line1Raw = `runtime:   ${process.release?.name || "node"} ${process.version}`;
-	const line2Raw = `directory: ${dir}`;
-
+	
 	const width = 60;
 	const contentWidth = width - 4; // 2 for border, 2 for padding
+
+	// Handle directory truncation
+	let displayDir = dir;
+	if (displayDir.length > contentWidth - 11) { // 11 is "directory: " length
+		displayDir = `...${displayDir.slice(-(contentWidth - 14))}`;
+	}
+	const line2Raw = `directory: ${displayDir}`;
 
 	const pad = (str: string, raw: string) => {
 		const padding = contentWidth - raw.length;
@@ -23,7 +29,7 @@ export function printInfographic() {
 
 	const title = `${pc.blue("⛯")} ${pc.bold("ArkEnv CLI")} ${pc.dim(`(v${version})`)}`;
 	const line1 = `${pc.dim("runtime:")}   ${pc.cyan(process.release?.name || "node")} ${pc.dim(process.version)}`;
-	const line2 = `${pc.dim("directory:")} ${pc.cyan(dir)}`;
+	const line2 = `${pc.dim("directory:")} ${pc.cyan(displayDir)}`;
 
 	const box = [
 		pc.blue(`╭${"─".repeat(width - 2)}╮`),
