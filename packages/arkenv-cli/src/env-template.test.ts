@@ -12,7 +12,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain("import arkenv, { type } from \"arkenv\"");
+			expect(template).toContain('import arkenv, { type } from "arkenv"');
 			expect(template).toContain("For Node.js");
 		});
 
@@ -25,7 +25,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain("import { z } from \"zod\"");
+			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("For Node.js");
 		});
 
@@ -38,7 +38,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain("import * as v from \"valibot\"");
+			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("For Node.js");
 		});
 
@@ -50,7 +50,9 @@ describe("env-template", () => {
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			expect(() => getEnvTemplate(options)).toThrow("Unsupported validator: unknown");
+			expect(() => getEnvTemplate(options)).toThrow(
+				"Unsupported validator: unknown",
+			);
 		});
 
 		it("includes framework note for vite", () => {

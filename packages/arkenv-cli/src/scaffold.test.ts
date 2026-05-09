@@ -1,9 +1,9 @@
-import fsp from "node:fs/promises";
-import path from "node:path";
-import os from "node:os";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import * as prompts from "@clack/prompts";
 import { exec as execCallback } from "node:child_process";
+import fsp from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import * as prompts from "@clack/prompts";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
 
 vi.mock("@clack/prompts", () => ({
@@ -75,7 +75,7 @@ describe("scaffold", () => {
 				.catch(() => false);
 			expect(exists).toBe(true);
 			const content = await fsp.readFile(path.join(tempDir, "env.ts"), "utf-8");
-			expect(content).toContain("import arkenv, { type } from \"arkenv\"");
+			expect(content).toContain('import arkenv, { type } from "arkenv"');
 		});
 
 		it("does not overwrite existing file when declined", async () => {
@@ -135,7 +135,10 @@ describe("scaffold", () => {
 
 		it("propagates install failure", async () => {
 			vi.mocked(execCallback).mockImplementation((cmd, cb) => {
-				(cb as any)(new Error("Install failed"), { stdout: "", stderr: "error" });
+				(cb as any)(new Error("Install failed"), {
+					stdout: "",
+					stderr: "error",
+				});
 				return {} as any;
 			});
 
