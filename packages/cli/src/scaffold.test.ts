@@ -144,38 +144,25 @@ describe("scaffold", () => {
 		});
 
 		it("installs correct dependencies for vite", async () => {
-			await scaffold({ ...defaultOptions, framework: "vite" });
+			const result = await scaffold({ ...defaultOptions, framework: "vite" });
 
-			expect(spawnMock).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.arrayContaining(["arkenv", "arktype", "@arkenv/vite-plugin"]),
-				expect.any(Object),
-			);
+			expect(result.installCmd).toContain("@arkenv/vite-plugin");
+			expect(result.packageManager).toBeDefined();
 		});
 
 		it("installs correct dependencies for bun", async () => {
-			await scaffold({ ...defaultOptions, framework: "bun" });
+			const result = await scaffold({ ...defaultOptions, framework: "bun" });
 
-			expect(spawnMock).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.arrayContaining(["arkenv", "arktype", "@arkenv/bun-plugin"]),
-				expect.any(Object),
-			);
+			expect(result.installCmd).toContain("@arkenv/bun-plugin");
+			expect(result.packageManager).toBeDefined();
 		});
 
-		it("propagates install failure", async () => {
-			spawnMock.mockReturnValueOnce({
-				on: vi.fn((event, cb) => {
-					if (event === "close") {
-						setTimeout(() => cb(1), 0);
-					}
-					return this;
-				}),
-			} as any);
+		it("returns correct install info in result", async () => {
+			const result = await scaffold(defaultOptions);
 
-			await expect(scaffold(defaultOptions)).rejects.toThrow(
-				"Failed to install dependencies",
-			);
+			expect(result.installCmd).toContain("arkenv");
+			expect(result.installCmd).toContain("arktype");
+			expect(result.packageManager).toBeDefined();
 		});
 	});
 });

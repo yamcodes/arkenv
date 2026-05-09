@@ -3,7 +3,6 @@ import path from "node:path";
 import {
 	cancel,
 	confirm,
-	intro,
 	isCancel,
 	log,
 	outro,
@@ -45,8 +44,6 @@ async function main() {
 		printHelp();
 		process.exit(1);
 	}
-
-	intro(`${symbol} ${pc.cyan(`ArkEnv v${version}`)}`);
 
 	let shouldUpdateTsConfig = false;
 	const tsConfigResult = await checkTsConfig();
@@ -91,14 +88,26 @@ async function main() {
 	}
 
 	const s = spinner();
-	s.start("Scaffolding ArkEnv and installing dependencies...");
+	s.start("Scaffolding ArkEnv configuration...");
 
 	try {
-		const { tsConfigResult } = await scaffold({
+		const { tsConfigResult, installCmd, packageManager } = await scaffold({
 			...options,
 			shouldUpdateTsConfig,
 		});
-		s.stop("Scaffolding complete!");
+		s.stop("Configuration scaffolded!");
+
+		if (installCmd) {
+			log.step(`Installing dependencies with ${pc.cyan(packageManager)}...`);
+			await new Promise<void>((resolve, reject) => {
+				const child = spawn(installCmd, { stdio: "inherit", shell: true });
+				child.on("close", (code) => {
+					if (code === 0) resolve();
+					else reject(new Error(`Installation failed with code ${code}`));
+				});
+				child.on("error", reject);
+			});
+		}
 
 		if (tsConfigResult.status === "updated") {
 			log.info(
@@ -127,7 +136,7 @@ async function main() {
 
 		outro(`${symbol} ${pc.dim("Happy coding!")}`);
 	} catch (error) {
-		s.stop("Scaffolding failed.", 1);
+		s.stop("Scaffolding failed.");
 		log.error(String(error));
 		process.exit(1);
 	}

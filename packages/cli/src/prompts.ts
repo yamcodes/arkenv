@@ -102,6 +102,7 @@ export async function runPromptWizard(
 				if (detectedKeys) {
 					return confirm({
 						message: `Detected ${pc.cyan(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`,
+						active: "Yes (Recommended)",
 						initialValue: true,
 					});
 				}

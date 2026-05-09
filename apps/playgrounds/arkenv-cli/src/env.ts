@@ -1,8 +1,11 @@
 import arkenv, { type } from "arkenv";
 
 const Env = type({
-	NODE_ENV: "'development' | 'production' | 'test'",
-	PORT: "number.port",
+	VITE_ONE: "string",
+	VITE_TWO: "string",
+	VITE_THREE: "string",
+	VITE_HELLO: "string",
+	VITE_TRUE: "string",
 });
 
 export const env = arkenv(Env);

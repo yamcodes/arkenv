@@ -52,7 +52,7 @@ export async function scaffold(
 		tsConfigResult = await updateTsConfigToStrict();
 	}
 
-	// 4. Detect package manager and install dependencies
+	// 4. Detect package manager and prepare installation info
 	const packageManager = await detectPackageManager();
 	const deps = ["arkenv", options.validator];
 
@@ -61,31 +61,7 @@ export async function scaffold(
 
 	const installCmd = getInstallCommand(packageManager, deps);
 
-	await new Promise<void>((resolve, reject) => {
-		const child = spawn(installCmd, { stdio: "pipe", shell: true });
-		let output = "";
-		child.stdout?.on("data", (data) => {
-			output += data.toString();
-		});
-		child.stderr?.on("data", (data) => {
-			output += data.toString();
-		});
-
-		child.on("close", (code) => {
-			if (code === 0) {
-				resolve();
-			} else {
-				reject(
-					new Error(
-						`Failed to install dependencies (${installCmd}):\n${output}`,
-					),
-				);
-			}
-		});
-		child.on("error", reject);
-	});
-
-	return { tsConfigResult };
+	return { tsConfigResult, installCmd, packageManager };
 }
 
 async function findTsConfig(): Promise<string | null> {
