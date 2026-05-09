@@ -1,7 +1,10 @@
 import { exec as execCallback } from "node:child_process";
-import fs from "node:fs/promises";
+import fs, { existsSync } from "node:fs";
+import fsp from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
+import { confirm } from "@clack/prompts";
+import { applyEdits, modify, parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
 import type { ProjectOptions } from "./prompts";
 
@@ -14,11 +17,22 @@ export async function scaffold(
 	const targetDir = path.dirname(targetPath);
 
 	// 1. Create directory if it doesn't exist
-	await fs.mkdir(targetDir, { recursive: true });
+	await fsp.mkdir(targetDir, { recursive: true });
 
 	// 2. Generate and write env.ts
 	const content = getEnvTemplate(options);
-	await fs.writeFile(targetPath, content, "utf-8");
+	if (existsSync(targetPath)) {
+		const confirmOverwrite = await confirm({
+			message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
+			initialValue: false,
+		});
+
+		if (confirmOverwrite === true) {
+			await fsp.writeFile(targetPath, content, "utf-8");
+		}
+	} else {
+		await fsp.writeFile(targetPath, content, "utf-8");
+	}
 
 	// 3. Enforce strict in tsconfig if requested
 	let tsConfigResult: {
@@ -41,23 +55,36 @@ export async function scaffold(
 
 	try {
 		await exec(installCmd);
-	} catch (error) {
-		// If install fails, we don't want to crash the whole thing, but maybe log it?
-		// For now, we'll just let the user know they might need to run it manually.
-		throw new Error(`Failed to install dependencies: ${installCmd}`);
+	} catch (error: unknown) {
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(
+			`Failed to install dependencies (${installCmd}): ${message}`,
+		);
 	}
 
 	return { tsConfigResult };
 }
 
 async function findTsConfig(): Promise<string | null> {
-	const files = ["tsconfig.app.json", "tsconfig.json"];
-	for (const file of files) {
-		const fullPath = path.join(process.cwd(), file);
-		try {
-			await fs.access(fullPath);
-			return fullPath;
-		} catch {}
+	const filenames = [
+		"tsconfig.app.json",
+		"tsconfig.json",
+		"tsconfig.base.json",
+		"tsconfig.node.json",
+	];
+	let currentDir = process.cwd();
+
+	while (currentDir !== path.parse(currentDir).root) {
+		for (const file of filenames) {
+			const fullPath = path.join(currentDir, file);
+			try {
+				await fsp.access(fullPath);
+				return fullPath;
+			} catch {
+				// intentionally ignore missing file
+			}
+		}
+		currentDir = path.dirname(currentDir);
 	}
 	return null;
 }
@@ -71,11 +98,13 @@ export async function checkTsConfig(): Promise<{
 	const fileName = path.basename(tsConfigPath);
 
 	try {
-		const content = await fs.readFile(tsConfigPath, "utf-8");
-		if (/"strict"\s*:\s*true/.test(content))
+		const content = await fsp.readFile(tsConfigPath, "utf-8");
+		const parsed = parse(content);
+		if (parsed?.compilerOptions?.strict === true) {
 			return { status: "strict", file: fileName };
+		}
 		return { status: "not_strict", file: fileName };
-	} catch (e: any) {
+	} catch (e: unknown) {
 		return { status: "not_found" };
 	}
 }
@@ -89,42 +118,21 @@ async function updateTsConfigToStrict(): Promise<{
 	const fileName = path.basename(tsConfigPath);
 
 	try {
-		const content = await fs.readFile(tsConfigPath, "utf-8");
+		const content = await fsp.readFile(tsConfigPath, "utf-8");
+		const parsed = parse(content);
 
-		// Check if strict is already true
-		if (/"strict"\s*:\s*true/.test(content)) {
+		if (parsed?.compilerOptions?.strict === true) {
 			return { status: "already_strict", file: fileName };
 		}
 
-		// If strict is false, replace it
-		if (/"strict"\s*:\s*false/.test(content)) {
-			const updated = content.replace(/"strict"\s*:\s*false/, '"strict": true');
-			await fs.writeFile(tsConfigPath, updated, "utf-8");
-			return { status: "updated", file: fileName };
-		}
+		const edits = modify(content, ["compilerOptions", "strict"], true, {
+			formattingOptions: { insertSpaces: true, tabSize: 2 },
+		});
+		const updated = applyEdits(content, edits);
 
-		// If strict doesn't exist, try to add it to compilerOptions
-		if (/"compilerOptions"\s*:\s*\{/.test(content)) {
-			const updated = content.replace(
-				/("compilerOptions"\s*:\s*\{)/,
-				'$1\n    "strict": true,',
-			);
-			await fs.writeFile(tsConfigPath, updated, "utf-8");
-			return { status: "updated", file: fileName };
-		}
-
-		// If no compilerOptions, add it
-		if (/\{/.test(content)) {
-			const updated = content.replace(
-				/\{/,
-				'{\n  "compilerOptions": {\n    "strict": true\n  },',
-			);
-			await fs.writeFile(tsConfigPath, updated, "utf-8");
-			return { status: "updated", file: fileName };
-		}
-
-		return { status: "error", file: fileName };
-	} catch (e: any) {
+		await fsp.writeFile(tsConfigPath, updated, "utf-8");
+		return { status: "updated", file: fileName };
+	} catch (e: unknown) {
 		return { status: "error", file: fileName };
 	}
 }
@@ -132,26 +140,32 @@ async function updateTsConfigToStrict(): Promise<{
 export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
 	try {
 		const pkgJsonPath = path.join(process.cwd(), "package.json");
-		const content = await fs.readFile(pkgJsonPath, "utf-8");
+		const content = await fsp.readFile(pkgJsonPath, "utf-8");
 		const pkg = JSON.parse(content);
 		const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
 		if (allDeps.vite) return "vite";
 		if (allDeps["@types/bun"] || allDeps.bun) return "bun";
-	} catch {}
+	} catch {
+		// ignore missing or invalid package.json
+	}
 
 	// Check for config files
 	try {
-		await fs.access(path.join(process.cwd(), "vite.config.ts"));
+		await fsp.access(path.join(process.cwd(), "vite.config.ts"));
 		return "vite";
-	} catch {}
+	} catch {
+		// vite.config.ts not found
+	}
 	try {
-		await fs.access(path.join(process.cwd(), "vite.config.js"));
+		await fsp.access(path.join(process.cwd(), "vite.config.js"));
 		return "vite";
-	} catch {}
+	} catch {
+		// vite.config.js not found
+	}
 
 	// Check for bun runtime
-	if ((process.versions as any).bun) return "bun";
+	if ("bun" in process.versions) return "bun";
 
 	return "node";
 }
@@ -164,7 +178,7 @@ async function detectPackageManager(): Promise<
 	while (currentDir !== path.parse(currentDir).root) {
 		try {
 			const pkgJsonPath = path.join(currentDir, "package.json");
-			const pkgJsonContent = await fs.readFile(pkgJsonPath, "utf-8");
+			const pkgJsonContent = await fsp.readFile(pkgJsonPath, "utf-8");
 			const pkgJson = JSON.parse(pkgJsonContent);
 
 			if (pkgJson.packageManager) {
@@ -172,9 +186,11 @@ async function detectPackageManager(): Promise<
 				if (pkgJson.packageManager.startsWith("yarn")) return "yarn";
 				if (pkgJson.packageManager.startsWith("bun")) return "bun";
 			}
-		} catch {}
+		} catch {
+			// ignore missing or invalid package.json in parent directories
+		}
 
-		const files = await fs.readdir(currentDir);
+		const files = await fsp.readdir(currentDir);
 		if (files.includes("pnpm-lock.yaml")) return "pnpm";
 		if (files.includes("yarn.lock")) return "yarn";
 		if (files.includes("bun.lockb")) return "bun";

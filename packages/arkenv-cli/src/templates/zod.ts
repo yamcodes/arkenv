@@ -1,5 +1,11 @@
 import dedent from "dedent";
 
+/**
+ * Generates a TypeScript template string for a Zod environment configuration.
+ *
+ * @param frameworkNote - Framework-specific notes or comments to include in the template.
+ * @returns The generated TypeScript template string.
+ */
 export const zodTemplate = (frameworkNote: string) => dedent /* ts */`
 	import arkenv from "arkenv/standard";
 	import { z } from "zod";
