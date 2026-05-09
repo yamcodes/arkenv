@@ -7,11 +7,11 @@ export function getEnvTemplate(options: ProjectOptions): string {
 
 	switch (validator) {
 		case "arktype":
-			return arktypeTemplate(frameworkNote);
+			return arktypeTemplate(frameworkNote) + "\n";
 		case "zod":
-			return zodTemplate(frameworkNote);
+			return zodTemplate(frameworkNote) + "\n";
 		case "valibot":
-			return valibotTemplate(frameworkNote);
+			return valibotTemplate(frameworkNote) + "\n";
 		default:
 			throw new Error(`Unsupported validator: ${validator}`);
 	}
