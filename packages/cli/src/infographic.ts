@@ -1,5 +1,5 @@
-import pc from "picocolors";
 import { createRequire } from "node:module";
+import pc from "picocolors";
 
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
