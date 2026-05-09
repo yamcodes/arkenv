@@ -19,8 +19,8 @@ test.describe("Homepage Interactivity", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// Use role-based selector to target the visible desktop link
-		const githubLink = page.getByRole("link", { name: /Star us on GitHub/i });
+		// On desktop, the header GitHub action is visible; mobile CTA is hidden (`sm:hidden`).
+		const githubLink = page.getByRole("link", { name: /^GitHub$/i });
 
 		await expect(githubLink).toBeVisible();
 		await expect(githubLink).toHaveAttribute("target", "_blank");
