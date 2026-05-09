@@ -1,4 +1,4 @@
-export type ArkEnvUrl = string;
+export type ArkenvUrl = string;
 
 export function isExternalUrl(url: string | undefined): boolean {
 	if (!url) return false;
