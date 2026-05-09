@@ -47,7 +47,7 @@ bunx @arkenv/cli@latest init
 - **Interactive Scaffolding**: A guided setup process using `@clack/prompts`.
 - **Zero Dependencies**: Lightweight and fast, perfect for one-off project initialization.
 - **Multiple Validation Libraries**: Support for [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
-- **Framework Detection**: Automatically detects your runtime (Node, Bun) and framework (Vite, Solid-Start).
+- **Framework Detection**: Automatically detects your frameowkr and runtime (Node, Bun, Vite).
 
 ## Usage
 
