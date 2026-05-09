@@ -61,17 +61,14 @@ export async function runPromptWizard(
 						{
 							value: "vite",
 							label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
-							hint: "Browser-based projects",
 						},
 						{
 							value: "bun",
 							label: `Bun${defaults?.framework === "bun" ? " (Detected)" : ""}`,
-							hint: "Fast JS runtime",
 						},
 						{
 							value: "node",
 							label: `Node.js${defaults?.framework === "node" ? " (Detected)" : ""}`,
-							hint: "Standard backend",
 						},
 					],
 				}),
@@ -82,13 +79,13 @@ export async function runPromptWizard(
 						{
 							value: "arktype",
 							label: "ArkType (Recommended)",
-							hint: "Fastest runtime validation",
+							hint: "TypeScript's 1:1 validator, optimized from editor to runtime",
 						},
-						{ value: "zod", label: "Zod", hint: "Most popular" },
+						{ value: "zod", label: "Zod", hint: "TypeScript-first schema validation with static type inference" },
 						{
 							value: "valibot",
 							label: "Valibot",
-							hint: "Smallest bundle size",
+							hint: "The modular and type safe schema library",
 						},
 					],
 				}),
