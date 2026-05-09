@@ -5,6 +5,17 @@ import * as prompts from "@clack/prompts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
 
+const { spawnMock } = vi.hoisted(() => ({
+	spawnMock: vi.fn().mockReturnValue({
+		on: vi.fn((event, cb) => {
+			if (event === "close") {
+				setTimeout(() => cb(0), 0);
+			}
+			return this;
+		}),
+	}),
+}));
+
 vi.mock("@clack/prompts", async (importOriginal) => {
 	const actual = await importOriginal<typeof import("@clack/prompts")>();
 	return {
@@ -14,14 +25,6 @@ vi.mock("@clack/prompts", async (importOriginal) => {
 });
 
 vi.mock("node:child_process", () => {
-	const spawnMock = vi.fn().mockReturnValue({
-		on: vi.fn((event, cb) => {
-			if (event === "close") {
-				setTimeout(() => cb(0), 0);
-			}
-			return this;
-		}),
-	});
 	return {
 		spawn: spawnMock,
 	};
@@ -132,7 +135,7 @@ describe("scaffold", () => {
 		it("installs correct dependencies for vite", async () => {
 			await scaffold({ ...defaultOptions, framework: "vite" });
 
-			expect(spawn).toHaveBeenCalledWith(
+			expect(spawnMock).toHaveBeenCalledWith(
 				expect.any(String),
 				expect.arrayContaining(["arkenv", "arktype", "@arkenv/vite-plugin"]),
 				expect.any(Object),
@@ -142,7 +145,7 @@ describe("scaffold", () => {
 		it("installs correct dependencies for bun", async () => {
 			await scaffold({ ...defaultOptions, framework: "bun" });
 
-			expect(spawn).toHaveBeenCalledWith(
+			expect(spawnMock).toHaveBeenCalledWith(
 				expect.any(String),
 				expect.arrayContaining(["arkenv", "arktype", "@arkenv/bun-plugin"]),
 				expect.any(Object),
@@ -150,7 +153,7 @@ describe("scaffold", () => {
 		});
 
 		it("propagates install failure", async () => {
-			vi.mocked(spawn).mockReturnValueOnce({
+			spawnMock.mockReturnValueOnce({
 				on: vi.fn((event, cb) => {
 					if (event === "close") {
 						setTimeout(() => cb(1), 0);
