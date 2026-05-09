@@ -17,7 +17,6 @@ export async function scaffold(
 	const targetDir = path.dirname(targetPath);
 
 	// 1. Create directory if it doesn't exist
-	// 1. Create directory if it doesn't exist
 	await fsp.mkdir(targetDir, { recursive: true });
 
 	// 2. Generate and write env.ts
