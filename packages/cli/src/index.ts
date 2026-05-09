@@ -2,6 +2,7 @@
 import path from "node:path";
 import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
+import { printInfographic } from "./infographic";
 import { runPromptWizard } from "./prompts";
 import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
 import { code } from "./visuals";
@@ -12,6 +13,11 @@ async function main() {
 	const helpRequested = args.includes("--help") || args.includes("-h");
 
 	const isYes = args.includes("--yes") || args.includes("-y");
+	const isPlain = args.includes("--plain");
+
+	if (!isPlain) {
+		printInfographic();
+	}
 
 	const printHelp = () => {
 		console.log(pc.cyan("ArkEnv CLI"));
@@ -19,6 +25,7 @@ async function main() {
 		console.log("  arkenv init    Set up ArkEnv in your project");
 		console.log("\nOptions:");
 		console.log("  --yes, -y      Skip prompts and use recommended defaults");
+		console.log("  --plain        Run without the colorful infographic");
 		console.log("  --help, -h     Show this help message");
 	};
 
