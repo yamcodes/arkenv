@@ -6,15 +6,41 @@ The interactive, zero-dependency scaffolding experience for the [ArkEnv](https:/
 
 Run the initialization command to quickly scaffold your project with ArkEnv:
 
-```bash
+<details open>
+<summary>npm</summary>
+
+```sh
+npx @arkenv/cli@latest init
+```
+
+</details>
+
+<details>
+<summary>pnpm</summary>
+
+```sh
 pnpm dlx @arkenv/cli@latest init
 ```
 
-*Or using `npx`:*
+</details>
 
-```bash
-npx @arkenv/cli@latest init
+<details>
+<summary>Yarn</summary>
+
+```sh
+yarn dlx @arkenv/cli@latest init
 ```
+
+</details>
+
+<details>
+<summary>Bun</summary>
+
+```sh
+bunx @arkenv/cli@latest init
+```
+
+</details>
 
 ## Features
 
