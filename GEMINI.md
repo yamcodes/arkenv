@@ -56,5 +56,5 @@ This is a **pnpm monorepo** managed with **Turbo**.
 ## Maintenance
 
 - **Adding Contributors**: Use `pnpm contributors:add <username> <contribution-type>`.
-- **Changesets**: Every PR that changes functionality must include a changeset via `pnpm changeset`.
+- **Changesets**: Every PR that changes functionality must include a changeset via `pnpm changeset`. For v0 versions: use `patch` for non-breaking changes, `minor` for breaking changes, and avoid `major` unless explicitly instructed.
 - **Syncing Examples**: Use `pnpm sync:examples` to keep example projects in sync with the core library structure.
