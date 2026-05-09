@@ -2,9 +2,10 @@
 import path from "node:path";
 import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
+import { version } from "../package.json";
 import { runPromptWizard } from "./prompts";
 import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
-import { code } from "./visuals";
+import { code, symbol } from "./visuals";
 
 async function main() {
 	const args = process.argv.slice(2);
@@ -14,7 +15,7 @@ async function main() {
 	const isYes = args.includes("--yes") || args.includes("-y");
 
 	const printHelp = () => {
-		console.log(pc.cyan("ArkEnv CLI"));
+		console.log(`ArkEnv CLI v${version}`);
 		console.log("\nUsage:");
 		console.log("  arkenv init    Set up ArkEnv in your project");
 		console.log("\nOptions:");
@@ -75,7 +76,7 @@ async function main() {
 	);
 
 	if (!options) {
-		outro(pc.yellow("Operation cancelled."));
+		cancel("Operation cancelled.");
 		process.exit(0);
 	}
 
@@ -107,12 +108,12 @@ async function main() {
 		const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
 		const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
 
-		outro(pc.green("Next steps:"));
 		log.step(`1. Check ${code(displayPath)} and adapt it to your needs.`);
 		log.step(
 			`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
 		);
-		log.info(pc.dim("Happy coding!"));
+
+		outro(`${symbol} ${pc.dim("Happy coding!")}`);
 	} catch (error) {
 		s.stop("Scaffolding failed.", 1);
 		log.error(String(error));

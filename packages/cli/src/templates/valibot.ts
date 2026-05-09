@@ -3,11 +3,10 @@ import dedent from "dedent";
 /**
  * Generates a TypeScript template string for a Valibot environment configuration.
  *
- * @param frameworkNote - Framework-specific notes or comments to include in the template.
  * @param envKeys - Optional array of environment variable keys to include in the schema.
  * @returns The generated TypeScript template string.
  */
-export const valibotTemplate = (frameworkNote: string, envKeys?: string[]) => {
+export const valibotTemplate = (envKeys?: string[]) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: v.string(),`).join("\n")
 		: `\t\tNODE_ENV: v.picklist(["development", "production", "test"]),
@@ -21,10 +20,6 @@ export const valibotTemplate = (frameworkNote: string, envKeys?: string[]) => {
 ${schemaFields}
 	});
 
-	/**
-	 * ArkEnv handles environment variable validation and type-safety.
-	 * ${frameworkNote}
-	 */
 	export const env = arkenv(Env);
 `;
 };

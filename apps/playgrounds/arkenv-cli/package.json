@@ -18,7 +18,7 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
-		"@arkenv/cli": "0.0.2",
+		"@arkenv/cli": "workspace:*",
 		"@babel/core": "^7.29.0",
 		"@eslint/js": "^10.0.1",
 		"@rolldown/plugin-babel": "^0.2.3",
