@@ -39,7 +39,7 @@ export function CopyButton({ command }: CopyButtonProps) {
 			variant="ghost"
 			size="icon"
 			onClick={handleClick}
-			className="hover:bg-slate-800 text-slate-400 hover:text-slate-100"
+			className="hover:bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
 			aria-label={copied ? "Copied" : "Copy command"}
 		>
 			{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
