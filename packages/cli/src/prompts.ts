@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { cancel, confirm, group, isCancel, select, text } from "@clack/prompts";
 import pc from "picocolors";
+import { getEnvExampleKeys } from "./env-parser.ts";
 import { code } from "./visuals.ts";
 
 export type ProjectOptions = {
@@ -10,6 +11,7 @@ export type ProjectOptions = {
 	framework: "vite" | "bun" | "node";
 	language: "ts"; // TODO: Support JS
 	overwrite?: boolean;
+	envKeys?: string[];
 };
 
 export async function runPromptWizard(
@@ -18,6 +20,8 @@ export async function runPromptWizard(
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
+	const detectedKeys = await getEnvExampleKeys();
+
 	if (isYes) {
 		return {
 			path: "./src/env.ts",
@@ -25,6 +29,7 @@ export async function runPromptWizard(
 			framework: defaults?.framework || "node",
 			language: "ts",
 			overwrite: true,
+			envKeys: detectedKeys || undefined,
 		} as ProjectOptions;
 	}
 
@@ -93,6 +98,15 @@ export async function runPromptWizard(
 						},
 					],
 				}),
+			useEnvExample: async () => {
+				if (detectedKeys) {
+					return confirm({
+						message: `Detected ${pc.cyan(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`,
+						initialValue: true,
+					});
+				}
+				return false;
+			},
 			useDefaultPath: () =>
 				confirm({
 					message: "Use default config path (./src/env.ts)?",
@@ -129,5 +143,6 @@ export async function runPromptWizard(
 		framework: result.framework as ProjectOptions["framework"],
 		language: "ts",
 		overwrite: result.overwrite as boolean,
+		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
 	};
 }

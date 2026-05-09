@@ -95,6 +95,17 @@ describe("scaffold", () => {
 			expect(content).toContain('import arkenv, { type } from "arkenv"');
 		});
 
+		it("uses envKeys when provided in options", async () => {
+			await scaffold({
+				...defaultOptions,
+				envKeys: ["API_KEY", "DB_URL"],
+			});
+			const content = await fsp.readFile(path.join(tempDir, "env.ts"), "utf-8");
+			expect(content).toContain('API_KEY: "string"');
+			expect(content).toContain('DB_URL: "string"');
+			expect(content).not.toContain("NODE_ENV");
+		});
+
 		it("does not overwrite existing file when declined", async () => {
 			const existingContent = "existing";
 			await fsp.writeFile(path.join(tempDir, "env.ts"), existingContent);

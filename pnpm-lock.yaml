@@ -156,8 +156,8 @@ importers:
         version: 4.4.1
     devDependencies:
       '@arkenv/cli':
-        specifier: workspace:*
-        version: link:../../../packages/cli
+        specifier: 0.0.2
+        version: 0.0.2
       '@babel/core':
         specifier: ^7.29.0
         version: 7.29.0
@@ -924,6 +924,10 @@ packages:
 
   '@ark/util@0.56.0':
     resolution: {integrity: sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA==}
+
+  '@arkenv/cli@0.0.2':
+    resolution: {integrity: sha512-ik5+dSYgfK7oSXFxP13DSi/6X7mUJm/SggnlpB0GITRsiUZEg0304duEi6rO6dmcfrgHtM5jdYI0renw90nk+w==}
+    hasBin: true
 
   '@asamuzakjp/css-color@5.1.11':
     resolution: {integrity: sha512-KVw6qIiCTUQhByfTd78h2yD1/00waTmm9uy/R7Ck/ctUyAPj+AEDLkQIdJW0T8+qGgj3j5bpNKK7Q3G+LedJWg==}
@@ -9233,6 +9237,15 @@ snapshots:
       '@ark/util': 0.56.0
 
   '@ark/util@0.56.0': {}
+
+  '@arkenv/cli@0.0.2':
+    dependencies:
+      '@clack/prompts': 0.9.1
+      dedent: 1.7.2
+      jsonc-parser: 3.3.1
+      picocolors: 1.1.1
+    transitivePeerDependencies:
+      - babel-plugin-macros
 
   '@asamuzakjp/css-color@5.1.11':
     dependencies:

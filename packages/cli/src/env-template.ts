@@ -2,16 +2,16 @@ import type { ProjectOptions } from "./prompts";
 import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
 
 export function getEnvTemplate(options: ProjectOptions): string {
-	const { validator, framework } = options;
+	const { validator, framework, envKeys } = options;
 	const frameworkNote = getFrameworkNote(framework);
 
 	switch (validator) {
 		case "arktype":
-			return arktypeTemplate(frameworkNote) + "\n";
+			return arktypeTemplate(frameworkNote, envKeys) + "\n";
 		case "zod":
-			return zodTemplate(frameworkNote) + "\n";
+			return zodTemplate(frameworkNote, envKeys) + "\n";
 		case "valibot":
-			return valibotTemplate(frameworkNote) + "\n";
+			return valibotTemplate(frameworkNote, envKeys) + "\n";
 		default:
 			throw new Error(`Unsupported validator: ${validator}`);
 	}
