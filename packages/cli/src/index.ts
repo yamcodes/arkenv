@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 import path from "node:path";
-import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
+import {
+	cancel,
+	confirm,
+	intro,
+	isCancel,
+	log,
+	outro,
+	spinner,
+} from "@clack/prompts";
 import pc from "picocolors";
 import { version } from "../package.json";
 import { runPromptWizard } from "./prompts";
@@ -15,7 +23,7 @@ async function main() {
 	const isYes = args.includes("--yes") || args.includes("-y");
 
 	const printHelp = () => {
-		console.log(`ArkEnv CLI v${version}`);
+		console.log(`${symbol} ${pc.cyan(`ArkEnv CLI v${version}`)}`);
 		console.log("\nUsage:");
 		console.log("  arkenv init    Set up ArkEnv in your project");
 		console.log("\nOptions:");
@@ -37,6 +45,8 @@ async function main() {
 		printHelp();
 		process.exit(1);
 	}
+
+	intro(`${symbol} ${pc.cyan(`ArkEnv v${version}`)}`);
 
 	let shouldUpdateTsConfig = false;
 	const tsConfigResult = await checkTsConfig();
@@ -108,7 +118,9 @@ async function main() {
 		const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
 		const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
 
-		log.step(`1. Check ${code(displayPath)} and adapt it to your needs.`);
+		log.step(
+			`1. Check ${code(displayPath)} and adapt it to your needs. Review your schema to refine types (e.g., ${code("number")}, ${code("boolean")}, etc.).`,
+		);
 		log.step(
 			`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
 		);
