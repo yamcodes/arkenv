@@ -1,10 +1,10 @@
 # @arkenv/cli
 
-The interactive, zero-dependency scaffolding experience for the [Arkenv](https://arkenv.com) ecosystem.
+The interactive, zero-dependency scaffolding experience for the [ArkEnv](https://arkenv.com) ecosystem.
 
 ## Quickstart
 
-Run the initialization command to quickly scaffold your project with Arkenv:
+Run the initialization command to quickly scaffold your project with ArkEnv:
 
 ```bash
 pnpm dlx @arkenv/cli@latest init

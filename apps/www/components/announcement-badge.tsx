@@ -1,4 +1,4 @@
-import { type ArkenvUrl, isExternalUrl } from "@arkenv/fumadocs-ui/utils";
+import { type ArkEnvUrl, isExternalUrl } from "@arkenv/fumadocs-ui/utils";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
@@ -22,7 +22,7 @@ export function AnnouncementBadge({
 	/**
 	 * The link to navigate to when clicking the badge.
 	 */
-	href: ArkenvUrl;
+	href: ArkEnvUrl;
 }>) {
 	return (
 		<Link

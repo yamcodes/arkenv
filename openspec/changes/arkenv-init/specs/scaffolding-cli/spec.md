@@ -45,7 +45,7 @@ The system SHALL generate the necessary configuration files for ArkEnv based on 
 - **THEN** the system SHALL write a valid `env.ts` file to the target directory
 
 ### Requirement: Dependency Installation
-The system SHALL detect the local package manager and install the required dependencies (Arkenv + selected validator).
+The system SHALL detect the local package manager and install the required dependencies (ArkEnv + selected validator).
 
 #### Scenario: Detecting via npm_config_user_agent
 - **WHEN** `npm_config_user_agent` contains "pnpm"

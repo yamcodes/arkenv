@@ -1,6 +1,6 @@
 ## Context
 
-The `@arkenv/cli` is a new package designed to quickly scaffold Arkenv projects with various validation schemas (ArkType, Zod, Valibot). It utilizes an interactive CLI prompt to guide users through the setup process. We need to document its capabilities so that developers can easily adopt it in their own projects. The documentation will reside in two places:
+The `@arkenv/cli` is a new package designed to quickly scaffold ArkEnv projects with various validation schemas (ArkType, Zod, Valibot). It utilizes an interactive CLI prompt to guide users through the setup process. We need to document its capabilities so that developers can easily adopt it in their own projects. The documentation will reside in two places:
 1. `packages/arkenv-cli/README.md` for npm registry and GitHub context.
 2. `apps/www/content/docs/cli` for the official documentation site.
 

@@ -1,6 +1,6 @@
 ## Why
 
-The `@arkenv/cli` was recently introduced to provide an interactive, zero-dependency scaffolding experience for the Arkenv ecosystem. Currently, there is no official documentation guiding users on how to install, use, and benefit from this CLI tool. Adding clear documentation is necessary to ensure developers can seamlessly adopt the CLI for generating validation schemas and type-safe environment configurations.
+The `@arkenv/cli` was recently introduced to provide an interactive, zero-dependency scaffolding experience for the ArkEnv ecosystem. Currently, there is no official documentation guiding users on how to install, use, and benefit from this CLI tool. Adding clear documentation is necessary to ensure developers can seamlessly adopt the CLI for generating validation schemas and type-safe environment configurations.
 
 ## What Changes
 

@@ -1,9 +1,10 @@
 ---
-title: CLI
-description: Quickly scaffold Arkenv projects with an interactive, zero-dependency CLI.
+title: Introduction
+icon: Album
+description: Quickly scaffold ArkEnv projects with an interactive CLI.
 ---
 
-The `@arkenv/cli` is the fastest way to get started with Arkenv. It provides an interactive walkthrough to help you choose a validation library, configure your environment schema, and set up your project structure.
+The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an interactive walkthrough to help you choose a validation library, configure your environment schema, and set up your project structure.
 
 ## Quickstart
 
@@ -35,7 +36,7 @@ The `init` command is the primary entry point for the CLI. It will:
 1. **Detect Environment**: Check for existing `.env` files and package manager configurations.
 2. **Select Schema Provider**: Ask you which validation library you'd like to use.
 3. **Configure Options**: Ask if you'd like to enforce strict mode, where to put your configuration file, and more.
-4. **Generate Code**: Create a `env.ts` (or `env.js`) file with a working schema and Arkenv setup.
+4. **Generate Code**: Create a `env.ts` (or `env.js`) file with a working schema and ArkEnv setup.
 
 ## Options
 
@@ -47,12 +48,3 @@ The CLI supports several flags to skip prompts or customize the behavior:
 | `--strict` | Force strict mode on the generated schema. |
 | `--path <path>` | Specify the output path for the generated configuration. |
 | `--yes`, `-y` | Skip all prompts and use defaults. |
-
-## Why use the CLI?
-
-While you can always set up Arkenv manually, the CLI ensures that you:
-- Use the correct import paths for your chosen validation library.
-- Follow best practices for project structure.
-- Have a working, typesafe environment configuration in seconds.
-
-Next, you might want to learn about [how to use Arkenv](/docs/arkenv) or check out our [Vite Plugin](/docs/vite-plugin) and [Bun Plugin](/docs/bun-plugin) for build-time validation.
