@@ -81,7 +81,11 @@ export async function runPromptWizard(
 							label: "ArkType (Recommended)",
 							hint: "TypeScript's 1:1 validator, optimized from editor to runtime",
 						},
-						{ value: "zod", label: "Zod", hint: "TypeScript-first schema validation with static type inference" },
+						{
+							value: "zod",
+							label: "Zod",
+							hint: "TypeScript-first schema validation with static type inference",
+						},
 						{
 							value: "valibot",
 							label: "Valibot",
