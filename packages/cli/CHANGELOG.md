@@ -1,5 +1,14 @@
 # @arkenv/cli
 
+## 0.0.2
+
+### Patch Changes
+
+- #### Ctrl+C now quits the CLI _[`0781031`](https://github.com/yamcodes/arkenv/commit/07810318a75f74d9c57b90f665ef1e5b2117b5fc) [@yamcodes](https://github.com/yamcodes)_
+- #### Detect existing setups _[`0781031`](https://github.com/yamcodes/arkenv/commit/07810318a75f74d9c57b90f665ef1e5b2117b5fc) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now checks for an existing ArkEnv setup and offers to abort or override accordingly.
+
 ## 0.0.1
 
 ### Patch Changes
