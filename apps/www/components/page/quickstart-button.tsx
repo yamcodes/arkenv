@@ -14,7 +14,7 @@ export function QuickstartButton() {
 				className="inline-flex items-center justify-center gap-2 whitespace-nowrap px-8"
 			>
 				<span className="relative z-10 flex items-center gap-2">
-					Quickstart
+					Get Started
 				</span>
 			</a>
 		</Button>
