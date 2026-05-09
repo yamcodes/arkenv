@@ -19,13 +19,18 @@ describe("cli smoke tests", () => {
 		expect(stdout).toContain("Usage:");
 	});
 
-	it("unknown command prints usage and exits 0", async () => {
-		const { stdout } = await exec(`node ${cliPath} unknown`);
-		expect(stdout).toContain("Usage:");
+	it("unknown command prints usage and exits 1", async () => {
+		// Do not 'await' the exec call directly here, pass the promise to expect
+		await expect(exec(`node ${cliPath} unknown`)).rejects.toMatchObject({
+			code: 1,
+			stdout: expect.stringContaining("Usage:"),
+		});
 	});
 
-	it("running without arguments prints usage and exits 0", async () => {
-		const { stdout } = await exec(`node ${cliPath}`);
-		expect(stdout).toContain("Usage:");
+	it("running without arguments prints usage and exits 1", async () => {
+		await expect(exec(`node ${cliPath}`)).rejects.toMatchObject({
+			code: 1,
+			stdout: expect.stringContaining("Usage:"),
+		});
 	});
 });
