@@ -61,7 +61,10 @@ async function main() {
 	}
 
 	const detectedFramework = await detectFramework();
-	const options = await runPromptWizard({ framework: detectedFramework }, isYes);
+	const options = await runPromptWizard(
+		{ framework: detectedFramework },
+		isYes,
+	);
 
 	if (!options) {
 		outro(pc.yellow("Operation cancelled."));

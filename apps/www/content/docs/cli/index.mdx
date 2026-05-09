@@ -45,18 +45,16 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
 
 The `init` command is the primary entry point for the CLI. It will:
 
-1. **Detect Environment**: Check for existing `.env` files and package manager configurations.
-2. **Select Schema Provider**: Ask you which validation library you'd like to use.
-3. **Configure Options**: Ask if you'd like to enforce strict mode, where to put your configuration file, and more.
-4. **Generate Code**: Create a `env.ts` (or `env.js`) file with a working schema and ArkEnv setup.
+1. **Detect Environment**: Check your package manager and project framework (Vite, Bun, Node.js).
+2. **Enforce Best Practices**: Detect if `tsconfig.json` has `strict` mode enabled, and prompt to enable it if not.
+3. **Select Validator**: Ask you which validation library you'd prefer to use.
+4. **Generate Code**: Scaffold an `env.ts` file with a working schema and automatically install the required dependencies.
 
 ## Options
 
-The CLI supports several flags to skip prompts or customize the behavior:
+The CLI supports the following flags to customize the behavior:
 
 | Flag | Description |
 | --- | --- |
-| `--provider <name>` | Pre-select the validation provider (`arktype`, `zod`, `valibot`). |
-| `--strict` | Force strict mode on the generated schema. |
-| `--path <path>` | Specify the output path for the generated configuration. |
-| `--yes`, `-y` | Skip all prompts and use defaults. |
+| `--yes`, `-y` | Skip all prompts and automatically use the recommended defaults. |
+| `--help`, `-h` | Show the help message. |
