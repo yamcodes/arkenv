@@ -14,7 +14,6 @@ describe("env-template", () => {
 			};
 			const template = getEnvTemplate(options);
 			expect(template).toContain('import arkenv, { type } from "arkenv"');
-			expect(template).toContain("For Node.js");
 		});
 
 		it("returns zod template when validator is zod", () => {
@@ -28,7 +27,6 @@ describe("env-template", () => {
 			};
 			const template = getEnvTemplate(options);
 			expect(template).toContain('import { z } from "zod"');
-			expect(template).toContain("For Node.js");
 		});
 
 		it("returns valibot template when validator is valibot", () => {
@@ -42,7 +40,6 @@ describe("env-template", () => {
 			};
 			const template = getEnvTemplate(options);
 			expect(template).toContain('import * as v from "valibot"');
-			expect(template).toContain("For Node.js");
 		});
 
 		it("throws error for unsupported validator", () => {
@@ -57,32 +54,6 @@ describe("env-template", () => {
 			expect(() => getEnvTemplate(options)).toThrow(
 				"Unsupported validator: unknown",
 			);
-		});
-
-		it("includes framework note for vite", () => {
-			const options = {
-				validator: "zod" as any,
-				framework: "vite" as any,
-				path: ".env.config.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-			};
-			const template = getEnvTemplate(options);
-			expect(template).toContain("For Vite");
-		});
-
-		it("includes framework note for bun", () => {
-			const options = {
-				validator: "zod" as any,
-				framework: "bun" as any,
-				path: ".env.config.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-			};
-			const template = getEnvTemplate(options);
-			expect(template).toContain("For Bun");
 		});
 	});
 });

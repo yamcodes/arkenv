@@ -1,12 +1,11 @@
 import arkenv, { type } from "arkenv";
 
 const Env = type({
-	NODE_ENV: "'development' | 'production' | 'test'",
-	PORT: "number.port",
+	VITE_ONE: "string",
+	VITE_TWO: "string",
+	VITE_THREE: "string",
+	VITE_HELLO: "string",
+	VITE_TRUE: "string",
 });
 
-/**
- * ArkEnv handles environment variable validation and type-safety.
- * For Vite, ensure you add the @arkenv/vite-plugin to your vite.config.ts.
- */
 export const env = arkenv(Env);

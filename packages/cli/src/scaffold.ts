@@ -1,4 +1,3 @@
-import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
@@ -52,32 +51,16 @@ export async function scaffold(
 		tsConfigResult = await updateTsConfigToStrict();
 	}
 
-	// 4. Detect package manager and install dependencies
+	// 4. Detect package manager and prepare installation info
 	const packageManager = await detectPackageManager();
 	const deps = ["arkenv", options.validator];
 
 	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
 	if (options.framework === "bun") deps.push("@arkenv/bun-plugin");
 
-	const [cmd, ...args] = getInstallCommand(packageManager, deps).split(" ");
+	const installCmd = getInstallCommand(packageManager, deps);
 
-	await new Promise<void>((resolve, reject) => {
-		const child = spawn(cmd, args, { stdio: "inherit", shell: true });
-		child.on("close", (code) => {
-			if (code === 0) {
-				resolve();
-			} else {
-				reject(
-					new Error(
-						`Failed to install dependencies (${cmd} ${args.join(" ")}): Exit code ${code}`,
-					),
-				);
-			}
-		});
-		child.on("error", reject);
-	});
-
-	return { tsConfigResult };
+	return { tsConfigResult, installCmd, packageManager };
 }
 
 async function findTsConfig(): Promise<string | null> {
