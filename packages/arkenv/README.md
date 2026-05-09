@@ -71,6 +71,48 @@ ArkEnvError: Errors found while validating environment variables
 
 ## Installation
 
+The easiest way to get started is with the [ArkEnv CLI](https://arkenv.js.org/docs/cli). It interactively configures your project, installs dependencies, and creates a ready-to-use schema.
+
+<details open>
+<summary>npm</summary>
+
+```sh
+npx @arkenv/cli@latest init
+```
+
+</details>
+
+<details>
+<summary>pnpm</summary>
+
+```sh
+pnpm dlx @arkenv/cli@latest init
+```
+
+</details>
+
+<details>
+<summary>Yarn</summary>
+
+```sh
+yarn dlx @arkenv/cli@latest init
+```
+
+</details>
+
+<details>
+<summary>Bun</summary>
+
+```sh
+bunx @arkenv/cli@latest init
+```
+
+</details>
+
+### Manual Installation
+
+If you prefer to install ArkEnv yourself without the interactive CLI:
+
 <details open>
 <summary>npm</summary>
 

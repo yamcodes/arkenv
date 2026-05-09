@@ -17,17 +17,20 @@ async function main() {
 	const args = process.argv.slice(2);
 	const command = args[0];
 
+	const isYes = args.includes("--yes") || args.includes("-y");
+
 	if (
 		command === "--help" ||
 		command === "-h" ||
 		args.includes("--help") ||
 		args.includes("-h") ||
-		(command && command !== "init")
+		(command && command !== "init" && !isYes)
 	) {
 		console.log(pc.cyan("ArkEnv CLI"));
 		console.log("\nUsage:");
 		console.log("  arkenv init    Set up ArkEnv in your project");
 		console.log("\nOptions:");
+		console.log("  --yes, -y      Skip prompts and use recommended defaults");
 		console.log("  --help, -h     Show this help message");
 		process.exit(0);
 	}
@@ -36,31 +39,38 @@ async function main() {
 	const tsConfigResult = await checkTsConfig();
 
 	if (tsConfigResult.status === "not_strict") {
-		log.warn(
-			pc.yellow(
-				`⚠ TypeScript strict mode is not enabled in your ${code(tsConfigResult.file!)}.`,
-			),
-		);
-
-		const confirmStrict = await confirm({
-			message: `ArkEnv requires ${pc.dim("strict")} mode in your ${code(tsConfigResult.file!)}. Would you like to enable it now?`,
-			initialValue: true,
-			active: "Yes (Recommended)",
-			inactive: "No",
-		});
-
-		if (isCancel(confirmStrict)) {
-			cancel("Operation cancelled.");
-			process.exit(0);
-		}
-
-		if (confirmStrict) {
+		if (isYes) {
 			shouldUpdateTsConfig = true;
+		} else {
+			log.warn(
+				pc.yellow(
+					`⚠ TypeScript strict mode is not enabled in your ${code(tsConfigResult.file!)}.`,
+				),
+			);
+
+			const confirmStrict = await confirm({
+				message: `ArkEnv requires ${pc.dim("strict")} mode in your ${code(tsConfigResult.file!)}. Would you like to enable it now?`,
+				initialValue: true,
+				active: "Yes (Recommended)",
+				inactive: "No",
+			});
+
+			if (isCancel(confirmStrict)) {
+				cancel("Operation cancelled.");
+				process.exit(0);
+			}
+
+			if (confirmStrict) {
+				shouldUpdateTsConfig = true;
+			}
 		}
 	}
 
 	const detectedFramework = await detectFramework();
-	const options = await runPromptWizard({ framework: detectedFramework });
+	const options = await runPromptWizard(
+		{ framework: detectedFramework },
+		isYes,
+	);
 
 	if (!options) {
 		outro(pc.yellow("Operation cancelled."));

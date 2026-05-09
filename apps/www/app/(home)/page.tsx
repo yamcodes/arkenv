@@ -5,6 +5,7 @@ import { AnnouncementBadge } from "~/components/announcement-badge";
 import { HeroGradientOverlay } from "~/components/hero-gradient-overlay";
 import { HeroVisual } from "~/components/hero-visual";
 import {
+	CLICommand,
 	CompatibilityRails,
 	QuickstartButton,
 	StarUsButton,
@@ -25,8 +26,8 @@ export default function HomePage() {
 			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:pl-20 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-4 md:gap-8 lg:gap-12 lg:mt-20">
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:flex-[1.4] relative z-20 mt-12 w-full max-w-full">
 					<div className="lg:mb-6 mb-0">
-						<AnnouncementBadge href="docs/arkenv/integrations/standard-schema">
-							Standard Schema support
+						<AnnouncementBadge href="docs/cli" new>
+							ArkEnv CLI is here!
 						</AnnouncementBadge>
 					</div>
 					<h1 className="mb-4 mt-6 lg:mt-0 w-full max-w-2xl">
@@ -42,8 +43,9 @@ export default function HomePage() {
 						</div>
 					</h1>
 					<CompatibilityRails className="order-2 md:order-1" />
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-6 w-full sm:w-auto sm:max-w-none order-1 md:order-2">
+					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-6 w-full sm:w-auto sm:max-w-none order-1 md:order-2 items-center">
 						<QuickstartButton />
+						<CLICommand />
 						<StarUsButton />
 					</div>
 				</div>

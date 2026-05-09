@@ -1,0 +1,60 @@
+---
+title: Introduction
+icon: Album
+description: Quickly scaffold ArkEnv projects with an interactive CLI.
+---
+
+The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an interactive walkthrough to help you choose a validation library, configure your environment schema, and set up your project structure.
+
+## Quickstart
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx @arkenv/cli@latest init
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```bash
+    pnpm dlx @arkenv/cli@latest init
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn dlx @arkenv/cli@latest init
+    ```
+  </Tab>
+  <Tab value="bun">
+    ```bash
+    bunx @arkenv/cli@latest init
+    ```
+  </Tab>
+</Tabs>
+
+
+## Features
+
+- **Interactive Prompts**: A guided experience powered by `@clack/prompts`.
+- **Zero Dependencies**: Lightweight and fast, it won't clutter your `node_modules` after use.
+- **Validation Library Support**: Choose between [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
+- **Automatic Detection**: Smartly detects your runtime (Node, Bun) and framework (Vite, Solid-Start) to pre-select the best defaults.
+
+## Commands
+
+### `init`
+
+The `init` command is the primary entry point for the CLI. It will:
+
+1. **Detect Environment**: Check your package manager and project framework (Vite, Bun, Node.js).
+2. **Enforce Best Practices**: Detect if `tsconfig.json` has `strict` mode enabled, and prompt to enable it if not.
+3. **Select Validator**: Ask you which validation library you'd prefer to use.
+4. **Generate Code**: Scaffold an `env.ts` file with a working schema and automatically install the required dependencies.
+
+## Options
+
+The CLI supports the following flags to customize the behavior:
+
+| Flag | Description |
+| --- | --- |
+| `--yes`, `-y` | Skip all prompts and automatically use the recommended defaults. |
+| `--help`, `-h` | Show the help message. |
