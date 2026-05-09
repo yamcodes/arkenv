@@ -11,13 +11,14 @@ export function printInfographic() {
 	// Raw strings for length calculation
 	const titleRaw = `⛯ ArkEnv CLI (v${version})`;
 	const line1Raw = `runtime:   ${process.release?.name || "node"} ${process.version}`;
-	
+
 	const width = 60;
 	const contentWidth = width - 4; // 2 for border, 2 for padding
 
 	// Handle directory truncation
 	let displayDir = dir;
-	if (displayDir.length > contentWidth - 11) { // 11 is "directory: " length
+	if (displayDir.length > contentWidth - 11) {
+		// 11 is "directory: " length
 		displayDir = `...${displayDir.slice(-(contentWidth - 14))}`;
 	}
 	const line2Raw = `directory: ${displayDir}`;
