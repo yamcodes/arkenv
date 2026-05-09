@@ -38,7 +38,7 @@ export function HeaderGithubLink({ className, iconClassName }: { className?: str
 		>
 			<SiGithub className={iconClassName || "size-5"} />
 			{starCount !== null && (
-				<div className="flex items-center gap-1 rounded-md border border-fd-border/60 bg-fd-secondary/30 px-1.5 py-0.5 text-xs font-medium text-fd-secondary-foreground transition-colors group-hover:bg-fd-secondary">
+				<div className="hidden md:flex items-center gap-1 rounded-md border bg-fd-secondary/50 px-1.5 py-0.5 text-xs font-medium text-fd-secondary-foreground transition-colors group-hover:bg-fd-secondary/80">
 					<Star className="size-3" />
 					<span>{starCount.toLocaleString()}</span>
 				</div>
