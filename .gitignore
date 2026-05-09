@@ -21,7 +21,6 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.local
-.env*.local
 
 # macOS-specific files
 .DS_Store
@@ -182,3 +181,6 @@ fabric.properties
 
 # @ark/attest type cache
 .attest/
+
+# pnpm store
+.pnpm-store
