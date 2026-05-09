@@ -1,13 +1,7 @@
 #!/usr/bin/env node
+import { spawn } from "node:child_process";
 import path from "node:path";
-import {
-	cancel,
-	confirm,
-	isCancel,
-	log,
-	outro,
-	spinner,
-} from "@clack/prompts";
+import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
 import { version } from "../package.json";
 import { runPromptWizard } from "./prompts";
@@ -98,7 +92,7 @@ async function main() {
 		s.stop("Configuration scaffolded!");
 
 		if (installCmd) {
-			log.step(`Installing dependencies with ${pc.cyan(packageManager)}...`);
+			log.step(`Installing dependencies with ${packageManager}...`);
 			await new Promise<void>((resolve, reject) => {
 				const child = spawn(installCmd, { stdio: "inherit", shell: true });
 				child.on("close", (code) => {
