@@ -135,7 +135,7 @@ pnpm test --project arkenv.js.org -- --run "integration"
 pnpm test --project vite-plugin -- --run
 
 # Run only CLI tests
-pnpm test --project arkenv-cli -- --run
+pnpm test --project cli -- --run
 
 # Run end-to-end tests
 pnpm run test:e2e

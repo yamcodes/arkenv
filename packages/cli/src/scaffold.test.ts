@@ -28,7 +28,7 @@ describe("scaffold", () => {
 	let tempDir: string;
 
 	beforeEach(async () => {
-		tempDir = await fsp.mkdtemp(path.join(os.tmpdir(), "arkenv-cli-test-"));
+		tempDir = await fsp.mkdtemp(path.join(os.tmpdir(), "cli-test-"));
 		vi.spyOn(process, "cwd").mockReturnValue(tempDir);
 	});
 
