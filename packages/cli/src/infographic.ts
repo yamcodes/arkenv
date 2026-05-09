@@ -1,36 +1,31 @@
-import { createRequire } from "node:module";
 import pc from "picocolors";
+import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
 
 export function printInfographic() {
 	const version = pkg.version;
-	const dir = process.cwd().replace(process.env.HOME || "", "~");
+	const libraryVersion = "0.11.0"; // Current monorepo version
 
 	// Raw strings for length calculation
-	const titleRaw = `⛯ ArkEnv CLI (v${version})`;
-	const line1Raw = `runtime:   ${process.release?.name || "node"} ${process.version}`;
+	const titleRaw = "⛯ ArkEnv CLI";
+	const line1Raw = `cli:     v${version}`;
+	const line2Raw = `library: v${libraryVersion} (latest)`;
+	const line3Raw = "docs:    arkenv.js.org";
 
-	const width = 60;
+	const width = 50;
 	const contentWidth = width - 4; // 2 for border, 2 for padding
-
-	// Handle directory truncation
-	let displayDir = dir;
-	if (displayDir.length > contentWidth - 11) {
-		// 11 is "directory: " length
-		displayDir = `...${displayDir.slice(-(contentWidth - 14))}`;
-	}
-	const line2Raw = `directory: ${displayDir}`;
 
 	const pad = (str: string, raw: string) => {
 		const padding = contentWidth - raw.length;
 		return str + " ".repeat(Math.max(0, padding));
 	};
 
-	const title = `${pc.blue("⛯")} ${pc.bold("ArkEnv CLI")} ${pc.dim(`(v${version})`)}`;
-	const line1 = `${pc.dim("runtime:")}   ${pc.cyan(process.release?.name || "node")} ${pc.dim(process.version)}`;
-	const line2 = `${pc.dim("directory:")} ${pc.cyan(displayDir)}`;
+	const title = `${pc.blue("⛯")} ${pc.bold("ArkEnv CLI")}`;
+	const line1 = `${pc.dim("cli:")}     ${pc.cyan(`v${version}`)}`;
+	const line2 = `${pc.dim("library:")} ${pc.cyan(`v${libraryVersion}`)} ${pc.dim("(latest)")}`;
+	const line3 = `${pc.dim("docs:")}    ${pc.blue("arkenv.js.org")}`;
 
 	const box = [
 		pc.blue(`╭${"─".repeat(width - 2)}╮`),
@@ -38,6 +33,7 @@ export function printInfographic() {
 		`${pc.blue("│")} ${" ".repeat(contentWidth)} ${pc.blue("│")}`,
 		`${pc.blue("│")} ${pad(line1, line1Raw)} ${pc.blue("│")}`,
 		`${pc.blue("│")} ${pad(line2, line2Raw)} ${pc.blue("│")}`,
+		`${pc.blue("│")} ${pad(line3, line3Raw)} ${pc.blue("│")}`,
 		pc.blue(`╰${"─".repeat(width - 2)}╯`),
 	].join("\n");
 
