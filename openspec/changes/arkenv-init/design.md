@@ -23,7 +23,7 @@ We adopt a strict separation of concerns to preserve `arkenv`'s zero-dependency 
 1. **`arkenv`** (main package) — Contains only the runtime parsing and validation code. It has zero dependencies, no CLI dependencies, and no `bin` scripts.
 2. **`@arkenv/cli`** (new package) — Contains the full interactive CLI with `@clack/prompts`, `picocolors`, templates, and scaffolding logic. This package is **never installed** in the user's project — it is fetched on-demand via `npx`/`pnpm dlx`/`bunx`.
 
-```
+```text
 User runs: pnpm dlx @arkenv/cli@latest init
                 │
                 ▼

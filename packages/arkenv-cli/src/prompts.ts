@@ -71,7 +71,7 @@ export async function runPromptWizard(defaults?: {
 		{
 			onCancel: () => {
 				cancel("Operation cancelled.");
-				process.exit(0);
+				return null;
 			},
 		},
 	);
@@ -83,5 +83,5 @@ export async function runPromptWizard(defaults?: {
 		validator: result.validator,
 		framework: result.framework,
 		language: "ts",
-	} as ProjectOptions;
+	};
 }
