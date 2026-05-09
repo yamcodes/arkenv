@@ -1,13 +1,5 @@
 #!/usr/bin/env node
-import {
-	cancel,
-	confirm,
-	intro,
-	isCancel,
-	log,
-	outro,
-	spinner,
-} from "@clack/prompts";
+import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
 import { runPromptWizard } from "./prompts";
 import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
@@ -16,24 +8,32 @@ import { code } from "./visuals";
 async function main() {
 	const args = process.argv.slice(2);
 	const command = args[0];
+	const helpRequested = args.includes("--help") || args.includes("-h");
 
 	const isYes = args.includes("--yes") || args.includes("-y");
 
-	if (
-		!command ||
-		command === "--help" ||
-		command === "-h" ||
-		args.includes("--help") ||
-		args.includes("-h") ||
-		command !== "init"
-	) {
+	const printHelp = () => {
 		console.log(pc.cyan("ArkEnv CLI"));
 		console.log("\nUsage:");
 		console.log("  arkenv init    Set up ArkEnv in your project");
 		console.log("\nOptions:");
 		console.log("  --yes, -y      Skip prompts and use recommended defaults");
 		console.log("  --help, -h     Show this help message");
+	};
+
+	if (helpRequested) {
+		printHelp();
 		process.exit(0);
+	}
+
+	if (command !== "init") {
+		if (command) {
+			console.error(pc.red(`Unknown command: ${command}`));
+		} else {
+			console.error(pc.red("Missing command."));
+		}
+		printHelp();
+		process.exit(1);
 	}
 
 	let shouldUpdateTsConfig = false;
