@@ -134,6 +134,9 @@ pnpm test --project arkenv.js.org -- --run "integration"
 # Run only Vite plugin tests
 pnpm test --project vite-plugin -- --run
 
+# Run only CLI tests
+pnpm test --project arkenv-cli -- --run
+
 # Run end-to-end tests
 pnpm run test:e2e
 
@@ -165,6 +168,14 @@ pnpm run test:e2e:headed
 - ✅ Environment variable loading and injection
 - ✅ Real project build testing using the example as a fixture
 - ✅ Error handling for missing environment variables
+
+### CLI Package (`@arkenv/cli`)
+- ✅ Environment template selection by validator (`arktype`, `zod`, `valibot`)
+- ✅ Framework and package manager detection heuristics
+- ✅ Scaffolding file generation and overwrite handling via temp fixtures
+- ✅ tsconfig strict-mode status detection and automatic updates
+- ✅ Dependency installation command composition and failure handling
+- ✅ Process-level smoke tests for `--help` and invalid command behavior
 
 ### WWW Application (`apps/www`)
 

@@ -22,7 +22,9 @@
 	"scripts": {
 		"build": "tsdown",
 		"start": "node ./dist/index.cjs init",
-		"dev": "tsdown --watch"
+		"dev": "tsdown --watch",
+		"test": "vitest",
+		"test:run": "vitest run"
 	},
 	"keywords": [
 		"arkenv",

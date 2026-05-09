@@ -18,11 +18,12 @@ async function main() {
 	const command = args[0];
 
 	if (
+		!command ||
 		command === "--help" ||
 		command === "-h" ||
 		args.includes("--help") ||
 		args.includes("-h") ||
-		(command && command !== "init")
+		command !== "init"
 	) {
 		console.log(pc.cyan("ArkEnv CLI"));
 		console.log("\nUsage:");
