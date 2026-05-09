@@ -4,111 +4,139 @@ description: Let's get you started with a few simple steps.
 icon: Rocket
 ---
 
-<Steps>
-  <Step>
-    ## Install ArkEnv
-    <Accordions defaultValue="Install ArkEnv + ArkType (recommended)">
-      <Accordion title="Install ArkEnv + ArkType (recommended)">
-        ```package-install
-        arkenv arktype
+The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It interactively configures your project, installs dependencies, and creates a ready-to-use schema.
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx @arkenv/cli@latest init
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```bash
+    pnpm dlx @arkenv/cli@latest init
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn dlx @arkenv/cli@latest init
+    ```
+  </Tab>
+  <Tab value="bun">
+    ```bash
+    bunx @arkenv/cli@latest init
+    ```
+  </Tab>
+</Tabs>
+
+If you prefer to install ArkEnv yourself without the interactive CLI, check out the manual installation steps:
+
+<Accordions>
+  <Accordion title="Manual Installation">
+    <Steps>
+      <Step>
+        ### Install ArkEnv
+        <Accordions defaultValue="Install ArkEnv + ArkType (recommended)">
+          <Accordion title="Install ArkEnv + ArkType (recommended)">
+            ```package-install
+            arkenv arktype
+            ```
+            ArkEnv works best when paired with [ArkType](https://arktype.io).
+          </Accordion>
+          <Accordion title="Install ArkEnv only">
+            ```package-install
+            arkenv
+            ```
+            Import from [arkenv/standard](/docs/arkenv/standard) to use ArkEnv without ArkType.
+          </Accordion>
+        </Accordions>
+      </Step>
+
+      <Step>
+        ### Configure your project
+
+        Enable strict mode for the best typesafety, and use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution):
+
+        ```json title="tsconfig.json"
+        // [!code word:config]
+        {
+          "compilerOptions": {
+            "strict": true, // [!code focus]
+            "moduleResolution": "bundler" // [!code focus] or "node16" / "nodenext"
+          }
+        }
         ```
-        ArkEnv works best when paired with [ArkType](https://arktype.io).
-      </Accordion>
-      <Accordion title="Install ArkEnv only">
-        ```package-install
-        arkenv
+
+        > You may omit `moduleResolution` if `module` is `"Preserve"`, `"Node16"`, or `"NodeNext"`. See [Requirements](https://github.com/yamcodes/arkenv?tab=readme-ov-file#requirements) for details.
+        
+        ArkType users: follow the [ArkType setup](https://arktype.io/docs/intro/setup) to complete your configuration.
+      </Step>
+
+      <Step>
+        ### Define the schema
+
+        Add a schema to make your environment variables **validated** and **typesafe**.
+
+        We're using ArkType for this example, but you can mix and match [any Standard Schema validator](/docs/arkenv/integrations/standard-schema).
+        
+        ```ts title="env.ts" twoslash
+        import arkenv, { type } from 'arkenv';
+
+        export const env = arkenv({
+          // Optional variables with defaults
+          LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+          
+          // Arrays (comma-separated by default)
+          ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
+          FEATURE_FLAGS: type("string[]").default(() => []),
+          
+          // Optional environment variable
+          "API_KEY?": 'string'
+        });
         ```
-        Import from [arkenv/standard](/docs/arkenv/standard) to use ArkEnv without ArkType.
-      </Accordion>
-    </Accordions>
-  </Step>
 
-  <Step>
-    ## Configure your project
+      </Step>
+    </Steps>
+  </Accordion>
+</Accordions>
 
-    Enable strict mode for the best typesafety, and use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution):
+## Usage
 
-    ```json title="tsconfig.json"
-    // [!code word:config]
-    {
-      "compilerOptions": {
-        "strict": true, // [!code focus]
-        "moduleResolution": "bundler" // [!code focus] or "node16" / "nodenext"
-      }
-    }
-    ```
+Once your project is configured and your `env.ts` schema is created, you can start using your environment variables!
 
-    > You may omit `moduleResolution` if `module` is `"Preserve"`, `"Node16"`, or `"NodeNext"`. See [Requirements](https://github.com/yamcodes/arkenv?tab=readme-ov-file#requirements) for details.
-    
-    ArkType users: follow the [ArkType setup](https://arktype.io/docs/intro/setup) to complete your configuration.
-  </Step>
+Just define some environment variables in a `.env` file in your project root:
 
-  <Step>
-    ## Define the schema
+```dotenv title=".env"
+  LOG_LEVEL=info
+  API_KEY=secret
+  ALLOWED_ORIGINS=http://localhost:3000,https://example.com
+```
 
-    Add a schema to make your environment variables **validated** and **typesafe**.
+> We recommend [not committing the `.env` file to version control](https://12factor.net/config).
 
-    We're using ArkType for this example, but you can mix and match [any Standard Schema validator](/docs/arkenv/integrations/standard-schema).
-    
-    ```ts title="config/env.ts" twoslash
-    import arkenv, { type } from 'arkenv';
+Now you can import and use your **validated** and **typed** environment variables!
 
-    export const env = arkenv({
-      // Optional variables with defaults
-      LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
-      
-      // Arrays (comma-separated by default)
-      ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
-      FEATURE_FLAGS: type("string[]").default(() => []),
-      
-      // Optional environment variable
-      "API_KEY?": 'string'
-    });
-    ```
+```typescript title="database.ts" twoslash
+  // @filename: env.ts
+  import arkenv from 'arkenv';
+  export const env = arkenv({
+    DATABASE_HOST: "string.host",
+    DATABASE_PORT: "number.port",
+    NODE_ENV: "'development' | 'production' | 'test'",
+    LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+    "API_KEY?": 'string'
+  });
+  // @filename: database.ts
+  // ---cut---
+  import { env } from './env';
 
-  </Step>
+  const dbConfig = {
+  //    ^?
+    host: env.DATABASE_HOST,
+    port: env.DATABASE_PORT,
+  };
+```
 
-  <Step>
-    ## Define environment variables
-
-    Define some environment variables in a `.env` file in your project root:
-
-    ```dotenv title=".env"
-    LOG_LEVEL=info
-    API_KEY=secret
-    ALLOWED_ORIGINS=http://localhost:3000,https://example.com
-    ```
-
-    > We recommend [not committing the `.env` file to version control](https://12factor.net/config).
-  </Step>
-
-  <Step>
-    ## Use in your code
-
-    Import and use your **validated** and **typed** environment variables!
-
-    ```typescript title="database.ts" twoslash
-    // @filename: config/env.ts
-    import arkenv from 'arkenv';
-    export const env = arkenv({
-      DATABASE_HOST: "string.host",
-      DATABASE_PORT: "number.port",
-      NODE_ENV: "'development' | 'production' | 'test'",
-      LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
-      "API_KEY?": 'string'
-    });
-    // @filename: database.ts
-    // ---cut---
-    import { env } from './config/env';
-
-    // Hover to see your validated config
-    const dbConfig = {
-      host: env.DATABASE_HOST,
-      port: env.DATABASE_PORT,
-    };
-    ```
-  </Step>
-</Steps>
 
 ## Next steps
 

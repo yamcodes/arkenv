@@ -176,7 +176,7 @@ spec:
 
 ArkEnv helps ensure your environment variables are valid:
 
-```typescript title="src/config/env.ts" twoslash
+```typescript title="src/env.ts" twoslash
 import arkenv from 'arkenv';
 
 export const env = arkenv({
@@ -203,7 +203,7 @@ ArkEnv supports several configuration options to customize its behavior:
 
 Choose between `arkenv` (requires ArkType) or `arkenv/standard` (ArkType-free):
 
-```typescript title="src/config/env.ts" twoslash
+```typescript title="src/env.ts" twoslash
 import arkenv from 'arkenv';
 import arkenvStandard from 'arkenv/standard';
 import { z } from 'zod';
@@ -225,7 +225,7 @@ const env2 = arkenvStandard({
 
 Control automatic type conversion (not available in `arkenv/standard`):
 
-```typescript title="src/config/env.ts" twoslash
+```typescript title="src/env.ts" twoslash
 import arkenv from 'arkenv';
 
 // Coercion enabled (default)
@@ -250,7 +250,7 @@ const env2 = arkenv(
 
 Provide a custom environment object:
 
-```typescript title="src/config/env.ts" twoslash
+```typescript title="src/env.ts" twoslash
 import arkenv from 'arkenv';
 
 const env = arkenv(
@@ -270,7 +270,7 @@ const env = arkenv(
 
 Control how arrays are parsed (not available in `arkenv/standard`):
 
-```typescript title="src/config/env.ts" twoslash
+```typescript title="src/env.ts" twoslash
 import arkenv from 'arkenv';
 
 // Comma-separated (default)

@@ -1,0 +1,7 @@
+{
+	"title": "@arkenv/cli",
+	"description": "CLI tools for ArkEnv",
+	"root": true,
+	"icon": "Terminal",
+	"pages": ["---Guide---", "index", "faq"]
+}

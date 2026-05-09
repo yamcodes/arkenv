@@ -7,9 +7,21 @@ export type ProjectOptions = {
 	language: "ts"; // TODO: Support JS
 };
 
-export async function runPromptWizard(defaults?: {
-	framework?: "vite" | "bun" | "node";
-}): Promise<ProjectOptions | null> {
+export async function runPromptWizard(
+	defaults?: {
+		framework?: "vite" | "bun" | "node";
+	},
+	isYes = false,
+): Promise<ProjectOptions | null> {
+	if (isYes) {
+		return {
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: defaults?.framework || "node",
+			language: "ts",
+		} as ProjectOptions;
+	}
+
 	const result = await group(
 		{
 			framework: () =>
@@ -51,15 +63,15 @@ export async function runPromptWizard(defaults?: {
 						},
 					],
 				}),
-			customizePath: () =>
+			useDefaultPath: () =>
 				confirm({
-					message: "Customize ArkEnv config path?",
-					initialValue: false,
-					active: "Yes",
-					inactive: "No (Recommended)",
+					message: "Use default config path (./src/env.ts)?",
+					initialValue: true,
+					active: "Yes (Recommended)",
+					inactive: "No, let me customize it",
 				}),
 			path: ({ results }) => {
-				if (results.customizePath) {
+				if (!results.useDefaultPath) {
 					return text({
 						message: "Where should we create the ArkEnv config?",
 						placeholder: "./src/env.ts",

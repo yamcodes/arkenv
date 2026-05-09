@@ -20,7 +20,7 @@
 	color: var(--text);
 	background: var(--bg);
 	font-synthesis: none;
-	text-rendering: optimizeLegibility;
+	text-rendering: optimizelegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 
