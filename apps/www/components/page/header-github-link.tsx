@@ -5,7 +5,13 @@ import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
-export function HeaderGithubLink({ className, iconClassName }: { className?: string; iconClassName?: string }) {
+export function HeaderGithubLink({
+	className,
+	iconClassName,
+}: {
+	className?: string;
+	iconClassName?: string;
+}) {
 	const [starCount, setStarCount] = useState<number | null>(null);
 
 	const githubUrl =

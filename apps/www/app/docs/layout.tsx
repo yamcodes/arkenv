@@ -4,9 +4,9 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { CSSProperties, ReactNode } from "react";
 import { InstallButton } from "~/components/docs/install-button";
 import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
+import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
 import { SearchToggle } from "~/components/ui/search-toggle";
-import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { source } from "~/lib/source";
 

@@ -36,7 +36,10 @@ export function SearchToggle() {
 				<Search className="size-4 shrink-0" />
 				<span className="flex-1 text-start">Search</span>
 				<span className="inline-flex gap-0.5">
-					<kbd suppressHydrationWarning className="rounded border bg-fd-background px-1.5 font-sans text-xs">
+					<kbd
+						suppressHydrationWarning
+						className="rounded border bg-fd-background px-1.5 font-sans text-xs"
+					>
 						{modifier}
 					</kbd>
 					<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
