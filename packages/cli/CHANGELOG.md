@@ -1,5 +1,23 @@
 # @arkenv/cli
 
+## 0.0.3
+
+### Patch Changes
+
+- #### Improve CLI UI and fix installation output _[`#904`](https://github.com/yamcodes/arkenv/pull/904) [`ef17a38`](https://github.com/yamcodes/arkenv/commit/ef17a38983aac4a167883f6855e22fecfc797ee2) [@yamcodes](https://github.com/yamcodes)_
+
+  - Display CLI version on the help page and at startup
+  - Fix "doubling up" of terminal output during dependency installation by piping process output
+  - Resolve Node.js DEP0190 deprecation warning in scaffolding logic
+
+- #### Auto-detect `.env.example` keys during init and suggest schema _[`#904`](https://github.com/yamcodes/arkenv/pull/904) [`ef17a38`](https://github.com/yamcodes/arkenv/commit/ef17a38983aac4a167883f6855e22fecfc797ee2) [@yamcodes](https://github.com/yamcodes)_
+
+  - Robust parsing of `.env.example` to extract variable keys
+  - Integration with the `init` wizard to suggest keys for scaffolding
+  - Minimal scaffolding templates without introductory comments or platform notes
+  - Simplified CLI output with live dependency installation progress
+  - Updated CLI documentation and added post-scaffold guidance to refine types
+
 ## 0.0.2
 
 ### Patch Changes
