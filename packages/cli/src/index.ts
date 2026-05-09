@@ -105,10 +105,12 @@ async function main() {
 
 		const relPath = path.relative(process.cwd(), path.resolve(options.path));
 		const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
+		const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
+
 		outro(pc.green("Next steps:"));
 		log.step(`1. Check ${code(displayPath)} and adapt it to your needs.`);
 		log.step(
-			`2. Import ${code("env")} from ${code(displayPath)} in your main entry file (e.g. index.ts or main.ts) to ensure environment variables are validated at startup.`,
+			`2. Add ${code(`import { env } from "${importPath}";`)} to your main entry file (e.g. index.ts or main.ts) to ensure environment variables are validated at startup.`,
 		);
 		log.info(pc.dim("Happy coding!"));
 	} catch (error) {
