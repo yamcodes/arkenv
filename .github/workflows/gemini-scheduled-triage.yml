@@ -151,6 +151,7 @@ jobs:
     steps:
       - name: 'Mint identity token'
         id: 'mint_identity_token'
+        continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
         uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2

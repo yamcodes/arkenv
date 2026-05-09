@@ -10,6 +10,8 @@ on:
   pull_request:
     types:
       - 'opened'
+      - 'reopened'
+      - 'ready_for_review'
   issues:
     types:
       - 'opened'
@@ -49,7 +51,8 @@ jobs:
     if: |-
       (
         github.event_name == 'pull_request' &&
-        github.event.pull_request.head.repo.fork == false
+        github.event.pull_request.head.repo.fork == false &&
+        github.event.pull_request.draft == false
       ) || (
         github.event_name == 'issues' &&
         contains(fromJSON('["opened", "reopened"]'), github.event.action)
@@ -71,6 +74,7 @@ jobs:
     steps:
       - name: 'Mint identity token'
         id: 'mint_identity_token'
+        continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
         uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2
@@ -93,7 +97,7 @@ jobs:
             const request = process.env.REQUEST;
             core.setOutput('request', request);
 
-            if (eventType === 'pull_request.opened') {
+            if (['pull_request.opened', 'pull_request.reopened', 'pull_request.ready_for_review'].includes(eventType)) {
               core.setOutput('command', 'review');
             } else if (['issues.opened', 'issues.reopened'].includes(eventType)) {
               core.setOutput('command', 'triage');
@@ -198,6 +202,7 @@ jobs:
     steps:
       - name: 'Mint identity token'
         id: 'mint_identity_token'
+        continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
         uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2
