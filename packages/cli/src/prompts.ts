@@ -1,10 +1,15 @@
+import fs from "node:fs";
+import path from "node:path";
 import { cancel, confirm, group, isCancel, select, text } from "@clack/prompts";
+import pc from "picocolors";
+import { code } from "./visuals.ts";
 
 export type ProjectOptions = {
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun" | "node";
 	language: "ts"; // TODO: Support JS
+	overwrite?: boolean;
 };
 
 export async function runPromptWizard(
@@ -19,11 +24,35 @@ export async function runPromptWizard(
 			validator: "arktype",
 			framework: defaults?.framework || "node",
 			language: "ts",
+			overwrite: true,
 		} as ProjectOptions;
 	}
 
 	const result = await group(
 		{
+			overwrite: async () => {
+				const defaultPath = "./src/env.ts";
+				if (fs.existsSync(path.resolve(process.cwd(), defaultPath))) {
+					const answer = await confirm({
+						message: pc.yellow(
+							`An existing ArkEnv configuration was found at ${code(defaultPath)}. Do you want to overwrite it?`,
+						),
+						initialValue: false,
+						active: "Yes (override my configuration)",
+						inactive: "No (abort)",
+					});
+					if (isCancel(answer)) {
+						cancel("Operation cancelled.");
+						process.exit(0);
+					}
+					if (!answer) {
+						cancel("Operation cancelled.");
+						process.exit(0);
+					}
+					return answer;
+				}
+				return true;
+			},
 			framework: () =>
 				select({
 					message: "Select your framework or runtime:",
@@ -83,17 +112,21 @@ export async function runPromptWizard(
 		{
 			onCancel: () => {
 				cancel("Operation cancelled.");
-				return null;
+				process.exit(0);
 			},
 		},
 	);
 
-	if (isCancel(result)) return null;
+	if (isCancel(result)) {
+		cancel("Operation cancelled.");
+		process.exit(0);
+	}
 
 	return {
-		path: result.path || "./src/env.ts",
-		validator: result.validator,
-		framework: result.framework,
+		path: (result.path as string) || "./src/env.ts",
+		validator: result.validator as ProjectOptions["validator"],
+		framework: result.framework as ProjectOptions["framework"],
 		language: "ts",
+		overwrite: result.overwrite as boolean,
 	};
 }

@@ -1,4 +1,3 @@
-import { spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -6,9 +5,13 @@ import * as prompts from "@clack/prompts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
 
-vi.mock("@clack/prompts", () => ({
-	confirm: vi.fn(),
-}));
+vi.mock("@clack/prompts", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@clack/prompts")>();
+	return {
+		...actual,
+		confirm: vi.fn(),
+	};
+});
 
 vi.mock("node:child_process", () => {
 	const spawnMock = vi.fn().mockReturnValue({
@@ -73,6 +76,7 @@ describe("scaffold", () => {
 			validator: "arktype" as const,
 			framework: "node" as const,
 			path: "env.ts",
+			language: "ts" as const,
 			shouldUpdateTsConfig: false,
 			shouldInstall: true,
 		};

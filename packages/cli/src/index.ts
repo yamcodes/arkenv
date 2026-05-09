@@ -110,7 +110,7 @@ async function main() {
 		outro(pc.green("Next steps:"));
 		log.step(`1. Check ${code(displayPath)} and adapt it to your needs.`);
 		log.step(
-			`2. Add ${code(`import { env } from "${importPath}";`)} to your main entry file (e.g. index.ts or main.ts) to ensure environment variables are validated at startup.`,
+			`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
 		);
 		log.info(pc.dim("Happy coding!"));
 	} catch (error) {

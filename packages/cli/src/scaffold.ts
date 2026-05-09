@@ -1,8 +1,8 @@
 import { spawn } from "node:child_process";
-import fs, { existsSync } from "node:fs";
+import { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { confirm } from "@clack/prompts";
+import { cancel, confirm, isCancel } from "@clack/prompts";
 import { applyEdits, modify, parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
 import type { ProjectOptions } from "./prompts";
@@ -19,13 +19,23 @@ export async function scaffold(
 	// 2. Generate and write env.ts
 	const content = getEnvTemplate(options);
 	if (existsSync(targetPath)) {
-		const confirmOverwrite = await confirm({
-			message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
-			initialValue: false,
-		});
-
-		if (!confirmOverwrite) {
+		if (options.overwrite === false) {
 			return { tsConfigResult: { status: "already_strict" } as const };
+		}
+		if (options.overwrite === undefined) {
+			const confirmOverwrite = await confirm({
+				message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
+				initialValue: false,
+			});
+
+			if (isCancel(confirmOverwrite)) {
+				cancel("Operation cancelled.");
+				process.exit(0);
+			}
+
+			if (!confirmOverwrite) {
+				return { tsConfigResult: { status: "already_strict" } as const };
+			}
 		}
 		await fsp.writeFile(targetPath, content, "utf-8");
 	} else {

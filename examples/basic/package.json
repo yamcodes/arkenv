@@ -3,8 +3,8 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "tsx --env-file .env index.ts",
-		"dev": "tsx watch --env-file .env index.ts",
+		"start": "tsx --env-file .env src/index.ts",
+		"dev": "tsx watch --env-file .env src/index.ts",
 		"build": "tsc",
 		"clean": "rimraf dist node_modules"
 	},

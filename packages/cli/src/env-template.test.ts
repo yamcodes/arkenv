@@ -8,6 +8,7 @@ describe("env-template", () => {
 				validator: "arktype" as any,
 				framework: "node" as any,
 				path: ".env.config.ts",
+				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
@@ -21,6 +22,7 @@ describe("env-template", () => {
 				validator: "zod" as any,
 				framework: "node" as any,
 				path: ".env.config.ts",
+				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
@@ -34,6 +36,7 @@ describe("env-template", () => {
 				validator: "valibot" as any,
 				framework: "node" as any,
 				path: ".env.config.ts",
+				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
@@ -47,6 +50,7 @@ describe("env-template", () => {
 				validator: "unknown" as any,
 				framework: "node" as any,
 				path: ".env.config.ts",
+				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
@@ -60,6 +64,7 @@ describe("env-template", () => {
 				validator: "zod" as any,
 				framework: "vite" as any,
 				path: ".env.config.ts",
+				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
@@ -72,6 +77,7 @@ describe("env-template", () => {
 				validator: "zod" as any,
 				framework: "bun" as any,
 				path: ".env.config.ts",
+				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
