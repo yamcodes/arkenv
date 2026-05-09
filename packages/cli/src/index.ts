@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createRequire } from "node:module";
 import path from "node:path";
 import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
@@ -6,6 +7,9 @@ import { printInfographic } from "./infographic";
 import { runPromptWizard } from "./prompts";
 import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
 import { code } from "./visuals";
+
+const require = createRequire(import.meta.url);
+const pkg = require("../package.json");
 
 async function main() {
 	const args = process.argv.slice(2);
@@ -20,7 +24,7 @@ async function main() {
 	}
 
 	const printHelp = () => {
-		console.log(pc.cyan("ArkEnv CLI"));
+		console.log(`${pc.cyan("ArkEnv CLI")} ${pc.dim(`v${pkg.version}`)}`);
 		console.log("\nUsage:");
 		console.log("  arkenv init    Set up ArkEnv in your project");
 		console.log("\nOptions:");
