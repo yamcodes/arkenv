@@ -5,7 +5,7 @@ import { QuickstartButton } from "./quickstart-button";
 describe("QuickstartButton", () => {
 	it("renders quickstart button with correct text", () => {
 		render(<QuickstartButton />);
-		expect(screen.getByText("Quickstart")).toBeInTheDocument();
+		expect(screen.getByText("Get Started")).toBeInTheDocument();
 	});
 
 	it("renders as a link to docs/quickstart", () => {
