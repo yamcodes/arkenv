@@ -34,7 +34,7 @@ KEY2=VAL2
 		expect(keys).toEqual(["KEY1", "KEY2"]);
 	});
 
-	it("should handle lowercase keys (case-insensitive)", () => {
+	it("should preserve lowercase keys", () => {
 		const content = `
 port=3000
 database_url=foo

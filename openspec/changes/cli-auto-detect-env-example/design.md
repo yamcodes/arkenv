@@ -27,8 +27,8 @@ The ArkEnv CLI (`@arkenv/cli`) facilitates the scaffolding of type-safe environm
 **Rationale:** This keeps the scaffolding logic in `scaffold.ts` clean and allows the wizard to pass the extracted keys as part of the `ProjectOptions`.
 
 ### 3. Template Modification
-**Decision:** Update template functions to accept an optional `keys: string[]` array.
-**Rationale:** If keys are provided, the template will iterate over them to generate the schema. If not, it will fall back to the default `NODE_ENV` and `PORT`.
+**Decision:** Update template functions to accept an optional `envKeys: string[]` array.
+**Rationale:** If `envKeys` are provided, the template will iterate over them to generate the schema. If not, it will fall back to the default `NODE_ENV` and `PORT`.
 
 ## Risks / Trade-offs
 

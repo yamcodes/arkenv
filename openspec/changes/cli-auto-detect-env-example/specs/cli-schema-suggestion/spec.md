@@ -18,4 +18,4 @@ The CLI templates SHALL be capable of generating a valid ArkEnv configuration us
 
 #### Scenario: Generate schema from extracted keys
 - **WHEN** the user accepts the suggestion for keys `PORT` and `DATABASE_URL`
-- **THEN** the generated file SHALL contain a schema definition including `PORT: "string"` and `DATABASE_URL: "string"` (or appropriate default validators)
+- **THEN** the generated file SHALL contain a schema definition including `PORT: a.string()` and `DATABASE_URL: a.string()` (using the default `a.string()` validator for all extracted keys)

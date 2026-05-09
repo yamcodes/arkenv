@@ -7,7 +7,7 @@ The ArkEnv CLI currently allows users to scaffold a schema, but it requires them
 - **Auto-detection**: The CLI will check for the existence of a `.env.example` file in the current working directory.
 - **Prompted Scaffolding**: If `.env.example` is found, the CLI will ask the user if they want to scaffold their ArkEnv schema based on the keys found in that file.
 - **Key Extraction**: A robust extractor will parse the `.env.example` file to identify variable names, ignoring values and comments.
-- **Schema Generation**: The CLI will generate a starter `arkenv.ts` (or equivalent) with the detected keys mapped to a default validator (e.g., `a.string()`).
+- **Schema Generation**: The CLI will generate a starter `env.ts` (or equivalent) with the detected keys mapped to a default validator (e.g., `a.string()`).
 
 ## Capabilities
 
