@@ -6,6 +6,7 @@ import { InstallButton } from "~/components/docs/install-button";
 import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
 import { Logo } from "~/components/page/logo";
 import { SearchToggle } from "~/components/ui/search-toggle";
+import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { source } from "~/lib/source";
 
@@ -56,29 +57,18 @@ export default function Layout({ children }: { children: ReactNode }) {
 									<div key="theme-desktop" className="hidden md:block">
 										<ThemeToggle />
 									</div>,
-									<a
+									<HeaderGithubLink
 										key="github"
-										href="https://github.com/yamcodes/arkenv"
-										target="_blank"
-										rel="noopener noreferrer"
-										aria-label="GitHub"
-										className="hidden md:flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
-									>
-										<SiGithub className="size-5" />
-									</a>,
+										className="hidden md:flex h-8 text-fd-muted-foreground hover:text-fd-foreground"
+									/>,
 								]}
 								menuActions={[<ThemeToggle key="theme-toggle" />]}
 								menuSocialActions={[
-									<a
+									<HeaderGithubLink
 										key="github"
-										href="https://github.com/yamcodes/arkenv"
-										target="_blank"
-										rel="noopener noreferrer"
-										aria-label="GitHub"
-										className="flex items-center justify-center h-8 w-8 text-fd-muted-foreground hover:text-fd-foreground transition-colors"
-									>
-										<SiGithub className="size-6" />
-									</a>,
+										className="h-8 text-fd-muted-foreground hover:text-fd-foreground"
+										iconClassName="size-6"
+									/>,
 								]}
 							/>
 						</>
