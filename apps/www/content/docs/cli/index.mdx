@@ -37,6 +37,7 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
 - **Interactive Prompts**: A guided experience powered by `@clack/prompts`.
 - **Zero Dependencies**: Lightweight and fast, it won't clutter your `node_modules` after use.
 - **Validation Library Support**: Choose between [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
+- **.env.example Detection**: Automatically parses your `.env.example` to suggest a starting schema based on your existing keys.
 - **Automatic Detection**: Smartly detects your runtime (Node, Bun) and framework (Vite, Solid-Start) to pre-select the best defaults.
 
 ## Commands
@@ -46,9 +47,10 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
 The `init` command is the primary entry point for the CLI. It will:
 
 1. **Detect Environment**: Check your package manager and project framework (Vite, Bun, Node.js).
-2. **Enforce Best Practices**: Detect if `tsconfig.json` has `strict` mode enabled, and prompt to enable it if not.
-3. **Select Validator**: Ask you which validation library you'd prefer to use.
-4. **Generate Code**: Scaffold an `env.ts` file with a working schema and automatically install the required dependencies.
+2. **Scan for Keys**: Detect if a `.env.example` exists and extract its keys to pre-populate your schema.
+3. **Enforce Best Practices**: Detect if `tsconfig.json` has `strict` mode enabled, and prompt to enable it if not.
+4. **Select Validator**: Ask you which validation library you'd prefer to use.
+5. **Generate Code**: Scaffold an `env.ts` file with a working schema and automatically install the required dependencies.
 
 ## Options
 
