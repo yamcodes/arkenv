@@ -19,10 +19,6 @@ async function main() {
 	const isYes = args.includes("--yes") || args.includes("-y");
 	const isPlain = args.includes("--plain");
 
-	if (!isPlain) {
-		printInfographic();
-	}
-
 	const printHelp = () => {
 		console.log(`${pc.cyan("ArkEnv CLI")} ${pc.dim(`v${pkg.version}`)}`);
 		console.log("\nUsage:");
@@ -36,6 +32,10 @@ async function main() {
 	if (helpRequested) {
 		printHelp();
 		process.exit(0);
+	}
+
+	if (!isPlain) {
+		printInfographic();
 	}
 
 	if (command !== "init") {
