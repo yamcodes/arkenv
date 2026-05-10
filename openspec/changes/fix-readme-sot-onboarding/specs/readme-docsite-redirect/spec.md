@@ -1,23 +1,27 @@
 ## ADDED Requirements
 
-### Requirement: Root README serves as GitHub landing page only
-The root `README.md` SHALL contain only: project logo, badges, a one-sentence tagline, the demo GIF, and a prominent link to the documentation site. It SHALL NOT contain a QuickStart, full feature list, installation instructions, requirements section, or any other content that duplicates the docsite.
+### Requirement: Package READMEs are minimal npm landing pages
+Each package README (`packages/arkenv/README.md`, `packages/vite-plugin/README.md`, `packages/bun-plugin/README.md`, `packages/cli/README.md`) SHALL contain only: package name heading, one-sentence description, a "Read the docs" link to the corresponding docsite page, a minimal install snippet, and a "Related" section. They SHALL NOT contain standalone Quickstart walkthroughs, feature lists, or usage examples that duplicate docsite content.
 
-#### Scenario: Visitor opens the GitHub repository
-- **WHEN** a user navigates to `github.com/yamcodes/arkenv`
-- **THEN** they see branding, badges, the demo GIF, and a clear call-to-action link to `arkenv.js.org`
+#### Scenario: Developer views the arkenv package on npm
+- **WHEN** a developer visits the `arkenv` package on `npmjs.com`
+- **THEN** they see a one-liner description, the install command, and a link to `arkenv.js.org/docs/arkenv`
 
-#### Scenario: Root README is compared to docsite content
-- **WHEN** the root README and the docsite onboarding pages are compared side by side
-- **THEN** there SHALL be no duplicated prose sections (no shared QuickStart, Features, or Installation content)
+#### Scenario: Developer views the vite-plugin package on npm
+- **WHEN** a developer visits `@arkenv/vite-plugin` on `npmjs.com`
+- **THEN** they see a one-liner description, the install command, and a link to `arkenv.js.org/docs/vite-plugin`
 
-### Requirement: Package README serves as npm landing page only
-`packages/arkenv/README.md` SHALL follow the same concise pattern as the plugin READMEs: package name, one-sentence description, a "Read the docs" link, a minimal installation snippet, and related links. It SHALL NOT duplicate the root README or the docsite.
+#### Scenario: Developer views the bun-plugin package on npm
+- **WHEN** a developer visits `@arkenv/bun-plugin` on `npmjs.com`
+- **THEN** they see a one-liner description, the install command, and a link to `arkenv.js.org/docs/bun-plugin`
 
-#### Scenario: npm user views the arkenv package page
-- **WHEN** a user visits `npmjs.com/package/arkenv`
-- **THEN** they see a one-liner description, install command for the default package manager, and a link to the full docs
+#### Scenario: Developer views the cli package on npm
+- **WHEN** a developer visits `@arkenv/cli` on `npmjs.com`
+- **THEN** they see a one-liner description, the run command, and a link to `arkenv.js.org/docs/cli`
 
-#### Scenario: Package README is compared to root README
-- **WHEN** the two README files are compared
-- **THEN** the non-boilerplate prose sections SHALL NOT overlap
+### Requirement: No onboarding content is duplicated between READMEs and docsite
+For each package, the README and the corresponding docsite page SHALL NOT contain the same prose sections (Quickstart steps, feature bullets, usage code blocks that exist verbatim in both places).
+
+#### Scenario: README is compared to its docsite counterpart
+- **WHEN** `packages/arkenv/README.md` is compared to `apps/www/content/docs/arkenv/quickstart.mdx`
+- **THEN** there SHALL be no shared prose sections or duplicate code examples

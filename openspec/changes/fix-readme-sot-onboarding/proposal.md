@@ -1,27 +1,39 @@
 ## Why
 
-The root `README.md` is a symlink to `packages/arkenv/README.md`, so there is technically one source of truth — but it's a single file trying to serve two very different surfaces: the GitHub repository landing page and the npm package page. The current content (full QuickStart, feature list, manual installation steps, requirements, etc.) is optimized for neither. The docsite at `arkenv.js.org` already owns full onboarding documentation, making the README content largely redundant and adding maintenance weight any time the docs change.
+Every package in the repo has a README with Quickstart, Features, and Usage content — and the docsite has separate MDX pages covering the exact same ground for each package. This creates multiple independent sources of truth that drift apart over time:
+
+- `packages/arkenv/README.md` ↔ `apps/www/content/docs/arkenv/quickstart.mdx`
+- `packages/vite-plugin/README.md` ↔ `apps/www/content/docs/vite-plugin/index.mdx`
+- `packages/bun-plugin/README.md` ↔ `apps/www/content/docs/bun-plugin/index.mdx`
+- `packages/cli/README.md` ↔ `apps/www/content/docs/cli/index.mdx`
+
+The docsite already holds richer, more current content (twoslash examples, MDX components, more complete usage). The READMEs are a maintenance burden: any docsite improvement must be manually back-ported to the README, and vice versa — and often isn't.
 
 ## What Changes
 
-- The **symlink is removed**: root `README.md` and `packages/arkenv/README.md` become two separate files with distinct purposes.
-- The **root `README.md`** becomes the GitHub landing page: branding, badges, demo GIF, and a prominent link to the docsite — no full onboarding content.
-- The **`packages/arkenv/README.md`** becomes the npm package page: one-sentence description, install command, and a link to full docs — matching the pattern already established by the plugin READMEs.
-- Plugin READMEs (`packages/vite-plugin/README.md`, `packages/bun-plugin/README.md`) are already well-scoped and remain unchanged.
+Each package README is repurposed from a "mini-docsite" to a **thin npm landing page**: one-sentence description, install command, and a link to the docsite. The docsite remains unchanged and becomes the undisputed SoT for all onboarding content.
+
+Affected READMEs:
+- `packages/arkenv/README.md` (currently a symlink to root — symlink is preserved, content of the target is trimmed)
+- `packages/vite-plugin/README.md`
+- `packages/bun-plugin/README.md`
+- `packages/cli/README.md`
 
 ## Capabilities
 
 ### New Capabilities
 
-- `readme-docsite-redirect`: Streamlined root and package READMEs that serve as landing/redirect pages pointing users to `arkenv.js.org` for full documentation, following the pattern used by projects like ElysiaJS and Hono.
+- `readme-npm-landing`: All package READMEs follow a minimal, consistent npm-landing-page pattern — name, one-liner, install snippet, "Read the docs" link — with no onboarding content that could drift from the docsite.
 
 ### Modified Capabilities
 
-_(none — no spec-level behavior changes; this is documentation restructuring only)_
+_(none — no spec-level behavior changes; docsite content is unchanged)_
 
 ## Impact
 
-- `README.md` (root) — symlink replaced with a standalone file
-- `packages/arkenv/README.md` — rewritten to be npm-focused
+- `packages/arkenv/README.md` — trimmed (symlink target)
+- `packages/vite-plugin/README.md` — trimmed
+- `packages/bun-plugin/README.md` — trimmed
+- `packages/cli/README.md` — trimmed
+- No docsite changes
 - No code, API, or dependency changes
-- No docsite content changes (docsite is already the SoT for full docs)

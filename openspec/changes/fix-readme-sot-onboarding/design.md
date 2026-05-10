@@ -1,59 +1,53 @@
 ## Context
 
-The root `README.md` is currently a symlink to `packages/arkenv/README.md`. This means there is technically one file — but it serves two surfaces simultaneously: the GitHub repository landing page and the npm package page. The content inside (full QuickStart, feature list, installation blocks for four package managers, requirements, plugins section) is a compromise optimized for neither audience. The docsite at `arkenv.js.org` already serves as the canonical onboarding SoT. Plugin READMEs (`@arkenv/vite-plugin`, `@arkenv/bun-plugin`) already follow the right pattern: concise description, "Read the docs" link, minimal usage, and related links.
+Each ArkEnv package (core, vite-plugin, bun-plugin, cli) has a README with Quickstart/Features/Usage content. The docsite at `arkenv.js.org` has corresponding MDX pages covering the same ground — with richer content (twoslash type hints, interactive tabs, more complete usage examples). Both are maintained independently, so they drift. The docsite is consistently more up to date.
+
+The root `README.md` is a symlink to `packages/arkenv/README.md` — this is intentional and stays.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Break the symlink: give root `README.md` and `packages/arkenv/README.md` separate, distinct content
-- Root `README.md`: GitHub landing page — branding, badges, demo GIF, link to docs
-- `packages/arkenv/README.md`: npm page — install command, one-liner, link to docs (modeled after plugin READMEs)
-- Each file is optimized for its specific surface with no overlapping prose
+- Make the docsite the unambiguous SoT for all onboarding and usage content
+- Trim all four package READMEs to a minimal npm-landing-page format: name, description, install, "Read the docs" link
+- Establish a consistent pattern across all READMEs that's easy to maintain
 
 **Non-Goals:**
 - Changing any docsite content
-- Restructuring plugin READMEs (already good)
-- Changing any package APIs or code
-- Full QuickStart content in any README (that stays on the docsite)
+- Removing the symlink between root `README.md` and `packages/arkenv/README.md`
+- Changing any package code or APIs
+- Adding new docsite pages
 
 ## Decisions
 
-### Decision 1: Replace the symlink with two purpose-specific files
+### Decision 1: Docsite wins; READMEs become thin landing pages
 
-**Choice**: Remove the symlink and create two distinct files — one for GitHub, one for npm.
+**Choice**: Trim READMEs to the minimum useful for an npm package page. The docsite holds all real content.
 
-**Rationale**: The symlink is a reasonable mechanism for keeping content in sync, but it forces both surfaces to share one file. GitHub landing pages and npm package pages have different jobs: the former is a marketing surface that should impress and direct; the latter should tell a developer "what is this and how do I install it." A symlink can't serve both optimally.
+**Rationale**: The docsite already has better content — interactive tabs, twoslash examples, cross-links. There's no benefit to keeping a lower-fidelity copy in each README. npm users just need to know what the package does and where to go next.
 
-**Alternative considered**: Keep the symlink but trim the shared content to something minimal that works on both surfaces. Rejected because even minimal content would be a compromise, and breaking the symlink gives flexibility to tailor each surface independently.
+**Alternative considered**: Make READMEs the SoT and sync docsite from them. Rejected: docsite MDX uses rich components (Tabs, Steps, twoslash) that can't be generated from plain Markdown.
 
-### Decision 2: Docsite as single onboarding SoT
+### Decision 2: Consistent README format across all packages
 
-**Choice**: Remove full onboarding content from both READMEs and point users to `arkenv.js.org`.
+**Choice**: Every package README follows the same template: `# Package name`, one-sentence description, `## [Read the docs →](url)`, install snippet, `## Related` links.
 
-**Rationale**: The docsite already exists and is already maintained. Duplicating it in READMEs created two sources of truth with no mechanism to keep them in sync. Projects like ElysiaJS, Hono, and Fumadocs follow this pattern successfully.
+**Rationale**: This is already the de facto pattern for `@arkenv/vite-plugin` and `@arkenv/bun-plugin` (somewhat). Making it explicit and consistent across all packages makes the expectation clear for future contributors.
 
-**Alternative considered**: Making the package README the npm SoT and auto-syncing the root README from it (e.g., via a script or CI step). Rejected because it adds CI complexity and the docsite is already the right level of detail for onboarding.
+### Decision 3: Preserve the root README symlink
 
-### Decision 2: Root README keeps branding and demo
+**Choice**: Keep `README.md → packages/arkenv/README.md` symlink intact.
 
-**Choice**: The root `README.md` retains the logo, badges, demo GIF, and a prominent "Read the docs" CTA — but nothing else from the current duplicated sections.
-
-**Rationale**: The GitHub landing page is a marketing surface; it should create a great first impression and direct users to the full docs. It need not duplicate what the docsite already explains well.
-
-### Decision 3: Package README mirrors plugin READMEs
-
-**Choice**: `packages/arkenv/README.md` is trimmed to match the pattern already established by `@arkenv/vite-plugin` and `@arkenv/bun-plugin`: package name, one-liner, "Read the docs" link, install command, and related links.
-
-**Rationale**: Consistency across all package READMEs. npm users want to know: what is this, how do I install it, where do I learn more. Full feature lists and QuickStarts belong in the docsite.
+**Rationale**: A trimmed `packages/arkenv/README.md` will work fine as both the npm page and the GitHub landing page. Breaking the symlink adds complexity without benefit once the README content is minimal. The GitHub landing page can link to the docsite just as well as a separate file could.
 
 ## Risks / Trade-offs
 
-- **Loss of offline discoverability** → Mitigation: The install command and link to docs remain; users who clone the repo without internet access are a minor edge case.
-- **npm page feels sparse** → Mitigation: This matches the established convention for modern JS packages and is a deliberate trade-off for lower maintenance burden.
+- **GitHub landing page feels sparse** → Mitigation: The current branding (logo, badges, demo GIF) at the top of the package README is still there; only the duplicated prose sections are removed.
+- **npm users lose inline docs** → Mitigation: This matches the convention for modern JS packages and is a deliberate trade-off for a single SoT.
 
 ## Migration Plan
 
-1. Rewrite `README.md` (root) — keep branding/badges/demo, remove duplicated sections
-2. Rewrite `packages/arkenv/README.md` — trim to plugin-style format
-3. Verify both files render correctly on GitHub and npm (manual spot check)
-4. No rollback needed — changes are documentation only with no code impact
+1. Trim `packages/arkenv/README.md` (root symlink updates automatically)
+2. Trim `packages/vite-plugin/README.md`
+3. Trim `packages/bun-plugin/README.md`
+4. Trim `packages/cli/README.md`
+5. Spot-check all four on GitHub and npm previews

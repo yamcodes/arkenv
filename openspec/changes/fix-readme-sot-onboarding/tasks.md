@@ -1,16 +1,29 @@
-## 1. Break the Symlink and Rewrite Root README
+## 1. Trim arkenv Package README
 
-- [ ] 1.1 Remove the symlink: `rm README.md` and create a new standalone `README.md` at the root
-- [ ] 1.2 Populate the new root `README.md` with: logo, badges, tagline, demo GIF, and a prominent "Read the docs →" CTA link — nothing else
-- [ ] 1.3 Verify the root README renders correctly on GitHub (preview locally or via a markdown renderer)
+- [ ] 1.1 Remove the Quickstart/Installation sections, Features list, Requirements, Plugins section, and Supporting/Acknowledgements sections from `packages/arkenv/README.md`
+- [ ] 1.2 Keep: logo, badges, demo GIF, tagline, and "Read the docs →" link
+- [ ] 1.3 Add a minimal install snippet (`npm install arkenv`) below the docs link
+- [ ] 1.4 Verify the root `README.md` symlink still resolves correctly and both GitHub and npm previews look good
 
-## 2. Rewrite Package README
+## 2. Trim vite-plugin README
 
-- [ ] 2.1 Rewrite `packages/arkenv/README.md` to match the plugin README pattern: package name heading, one-sentence description, "Read the docs →" link, npm install snippet, and a "Related" section
-- [ ] 2.2 Confirm the package README no longer duplicates any prose from the root README
-- [ ] 2.3 Verify the package README renders correctly on npm (check markdown preview)
+- [ ] 2.1 Remove the Features list, Quickstart steps, FAQ, and Examples sections from `packages/vite-plugin/README.md`
+- [ ] 2.2 Keep: package name heading, one-sentence description, "Read the docs →" link, install snippet, and Related section
+- [ ] 2.3 Verify the npm preview looks correct
 
-## 3. Verify
+## 3. Trim bun-plugin README
 
-- [ ] 3.1 Diff both rewritten READMEs against each other — confirm there are no shared prose sections
-- [ ] 3.2 Spot-check that all links in both READMEs resolve (docsite link, badges, etc.)
+- [ ] 3.1 Remove the Features list, Usage sections (Simple Setup, Advanced Setup, Type Augmentation), and Examples section from `packages/bun-plugin/README.md`
+- [ ] 3.2 Keep: package name heading, one-sentence description, "Read the docs →" link, install snippet, and Related section
+- [ ] 3.3 Verify the npm preview looks correct
+
+## 4. Trim CLI README
+
+- [ ] 4.1 Remove the Quickstart, Features, and Usage sections from `packages/cli/README.md`
+- [ ] 4.2 Keep: package name heading, one-sentence description, "Read the docs →" link, run command snippet, and license
+- [ ] 4.3 Verify the npm preview looks correct
+
+## 5. Verify
+
+- [ ] 5.1 Confirm no README contains prose sections that duplicate its corresponding docsite page
+- [ ] 5.2 Spot-check all links in all four READMEs resolve correctly (docsite links, badge URLs, etc.)
