@@ -9,64 +9,10 @@
 ## [Read the docs →](https://arkenv.js.org/docs/vite-plugin)
 
 <br/>
-<br/>
-
-## Features
-
-- Build-time validation - app won't start if environment variables are invalid
-- Typesafe environment variables backed by TypeScript
-- Access to ArkType's powerful type system
-
-> [!IMPORTANT]
-> This plugin requires `arktype` to be installed in your project.
->
-> You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
->
-> See the [docs](https://arkenv.js.org/docs/arkenv/integrations/standard-schema) for details.
-
-## Installation
-
-<details open>
-<summary>npm</summary>
 
 ```sh
 npm install @arkenv/vite-plugin arktype
 ```
-</details>
-
-<details>
-<summary>pnpm</summary>
-
-```sh
-pnpm add @arkenv/vite-plugin arktype
-```
-</details>
-
-<details>
-<summary>Yarn</summary>
-
-```sh
-yarn add @arkenv/vite-plugin arktype
-```
-</details>
-
-<details>
-<summary>Bun</summary>
-
-```sh
-bun add @arkenv/vite-plugin arktype
-```
-</details>
-
-## FAQ
-
-### Why is this a Vite only plugin? (And not a Rollup plugin?)
-
-This plugin uses [the Vite specific `config` hook](https://vite.dev/guide/api-plugin.html#config), which is not available in Rollup.
-
-## Examples
-
-* [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)
 
 ## Related
 
