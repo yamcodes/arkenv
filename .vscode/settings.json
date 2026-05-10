@@ -23,5 +23,8 @@
 	"files.associations": {
 		"*.css": "tailwindcss"
 	},
-	"biome.enabled": false
+	"biome.enabled": false,
+	"[mdx]": {
+		"editor.defaultFormatter": "unifiedjs.vscode-mdx"
+	}
 }
