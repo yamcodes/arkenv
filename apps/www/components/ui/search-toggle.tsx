@@ -2,15 +2,16 @@
 
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { Search } from "lucide-react";
-
-function getModifierKey() {
-	if (typeof window === "undefined") return "Ctrl";
-	return window.navigator.userAgent.includes("Mac") ? "⌘" : "Ctrl";
-}
+import { useEffect, useState } from "react";
 
 export function SearchToggle() {
 	const { setOpenSearch } = useSearchContext();
-	const modifier = getModifierKey();
+	const [modifier, setModifier] = useState("Ctrl");
+
+	useEffect(() => {
+		const isMac = /Mac|iPhone|iPod|iPad/i.test(navigator.userAgent);
+		setModifier(isMac ? "⌘" : "Ctrl");
+	}, []);
 
 	return (
 		<>
@@ -36,10 +37,7 @@ export function SearchToggle() {
 				<Search className="size-4 shrink-0" />
 				<span className="flex-1 text-start">Search</span>
 				<span className="inline-flex gap-0.5">
-					<kbd
-						suppressHydrationWarning
-						className="rounded border bg-fd-background px-1.5 font-sans text-xs"
-					>
+					<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
 						{modifier}
 					</kbd>
 					<kbd className="rounded border bg-fd-background px-1.5 font-sans text-xs">
