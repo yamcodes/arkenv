@@ -49,7 +49,30 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be a number (was a string)
 ```
 
-<include cwd>../../packages/arkenv/README.md#features</include>
+## Features
+
+- Zero external dependencies
+- Works in Node.js, Bun, and Vite
+- Tiny: 2kB gzipped
+- Build-time / runtime validation with editor autocomplete & type hints
+- Single import, zero config for most projects
+- Optional variables and default values
+- Intuitive automatic coercion
+- Compatible with any Standard Schema validator (Zod, Valibot, etc.)
+- Native support for ArkType, TypeScript's 1:1 validator
+
+
+## Requirements
+
+ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react). Older versions may work but are not officially supported.
+
+### TypeScript
+
+- [**Modern TypeScript module resolution**](https://www.typescriptlang.org/tsconfig/#moduleResolution). One of the following is required in your `tsconfig.json`:
+  - `"moduleResolution": "bundler"` - Recommended for modern bundlers (Vite, Next.js, etc.). Supplied by default when using `"module": "Preserve"` (Introduced in TypeScript v5.4).
+  - `"moduleResolution": "node16"` or `"nodenext"` - For Node.js projects. Supplied by default when using a matching `"module"` value.
+- **TypeScript >= 5.1** and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
+
 
 ## Philosophy
 

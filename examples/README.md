@@ -14,7 +14,7 @@ This directory contains a collection of example projects that demonstrate variou
 | [with-solid-start](https://github.com/yamcodes/arkenv/tree/main/examples/with-solid-start)         | Minimal example of _using ArkEnv in a [SolidStart](https://start.solidjs.com) app_.                                      |
 | [with-standard-schema](https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema) | Example of _mixing ArkType with [Standard Schema](https://standardschema.dev/) validators like [Zod](https://zod.dev/)_. |
 
-> These examples are written in TypeScript, [the recommended way to work with ArkEnv](https://github.com/yamcodes/arkenv/blob/main/packages/arkenv/README.md#typescript-requirements). That said, ArkEnv works with plain JavaScript. See the [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details and tradeoffs.
+> These examples are written in TypeScript, [the recommended way to work with ArkEnv](https://arkenv.js.org/docs/arkenv#typescript). That said, ArkEnv works with plain JavaScript. See the [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details and tradeoffs.
 
 ## Contributing an example
 
