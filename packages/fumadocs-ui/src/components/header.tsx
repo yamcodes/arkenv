@@ -150,9 +150,14 @@ export function Header({
 			</div>
 
 			{/* Mobile dropdown menu */}
-			{mobileOpen && (
+			{hasMobileMenu && (
 				<div
-					className="md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6"
+					className={cn(
+						"md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6 transition-[opacity,transform] duration-200 ease-out",
+						mobileOpen
+							? "opacity-100 visible translate-y-0"
+							: "opacity-0 invisible pointer-events-none -translate-y-2",
+					)}
 					style={{ top: "var(--fd-nav-height, 80px)" }}
 				>
 					<div className="flex-1 flex flex-col">

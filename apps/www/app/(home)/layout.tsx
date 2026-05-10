@@ -1,5 +1,4 @@
 import { Header } from "@arkenv/fumadocs-ui/components";
-import { SiGithub } from "@icons-pack/react-simple-icons";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import type { CSSProperties, ReactNode } from "react";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
