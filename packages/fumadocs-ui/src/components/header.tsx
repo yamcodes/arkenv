@@ -153,7 +153,7 @@ export function Header({
 			{hasMobileMenu && (
 				<div
 					className={cn(
-						"md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6 transition-all duration-200 ease-out",
+						"md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6 transition-[opacity,transform] duration-200 ease-out",
 						mobileOpen
 							? "opacity-100 visible translate-y-0"
 							: "opacity-0 invisible pointer-events-none -translate-y-2",
