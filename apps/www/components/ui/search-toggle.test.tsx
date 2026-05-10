@@ -12,6 +12,7 @@ describe("SearchToggle", () => {
 	afterEach(() => {
 		cleanup();
 		vi.restoreAllMocks();
+		vi.unstubAllGlobals();
 	});
 
 	it("shows Ctrl on non-Mac platforms", () => {
