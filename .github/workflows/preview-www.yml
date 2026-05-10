@@ -20,7 +20,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   Deploy-Preview:
-    if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'preview')
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'preview') ||
+      (github.event.action != 'labeled' && (github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'preview')))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
