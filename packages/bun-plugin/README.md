@@ -16,12 +16,12 @@
 
 ## Features
 
-* Build-time validation - app won't start if environment variables are invalid
-* Typesafe environment variables backed by TypeScript
-* Access to ArkType's powerful type system
-* Automatic filtering of client-exposed variables (defaults to `BUN_PUBLIC_*` and `NODE_ENV`)
+- Build-time validation - app won't start if environment variables are invalid
+- Typesafe environment variables backed by TypeScript
+- Access to ArkType's powerful type system
+- Automatic filtering of client-exposed variables (defaults to `BUN_PUBLIC_*` and `NODE_ENV`)
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > This plugin requires `arktype` to be installed in your project.
 >
 > You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
@@ -139,9 +139,9 @@ declare global {
 
 ## Examples
 
-* [bun-react](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/bun-react)
+- [bun-react](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/bun-react)
 
 ## Related
 
-* [ArkEnv](https://arkenv.js.org) - Core library and docs
-* [ArkType](https://arktype.io/) - Underlying validator / type system
+- [ArkEnv](https://arkenv.js.org) - Core library and docs
+- [ArkType](https://arktype.io/) - Underlying validator / type system

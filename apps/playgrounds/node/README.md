@@ -6,9 +6,9 @@ This example shows how to use ArkEnv in a basic Node.js application.
 
 The example demonstrates:
 
-* Setting up environment variables with ArkEnv
-* Using default values
-* Typesafe environment configuration
+- Setting up environment variables with ArkEnv
+- Using default values
+- Typesafe environment configuration
 
 ## Getting started
 
@@ -27,7 +27,7 @@ Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [
    ```bash
    npm run dev
    ```
-   :white\_check\_mark: You will see the environment variables printed in the console.
+   :white_check_mark: You will see the environment variables printed in the console.
 
 ### Adding environment variables
 
@@ -77,5 +77,5 @@ With the development server running (if it isn't - just run `npm run dev`), let'
 
 ### Next steps
 
-* [ArkEnv docs](https://arkenv.js.org/docs/arkenv)
-* [ArkType docs](https://arktype.io/)
+- [ArkEnv docs](https://arkenv.js.org/docs/arkenv)
+- [ArkType docs](https://arktype.io/)

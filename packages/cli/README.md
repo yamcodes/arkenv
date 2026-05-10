@@ -40,10 +40,10 @@ Run the initialization command to quickly scaffold your project with ArkEnv:
 
 ## Features
 
-* **Interactive Scaffolding**: A guided setup process using `@clack/prompts`.
-* **Zero Dependencies**: Lightweight and fast, perfect for one-off project initialization.
-* **Multiple Validation Libraries**: Support for [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
-* **Framework Detection**: Automatically detects your framework and runtime (Node, Bun, Vite).
+- **Interactive Scaffolding**: A guided setup process using `@clack/prompts`.
+- **Zero Dependencies**: Lightweight and fast, perfect for one-off project initialization.
+- **Multiple Validation Libraries**: Support for [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
+- **Framework Detection**: Automatically detects your framework and runtime (Node, Bun, Vite).
 
 ## Usage
 

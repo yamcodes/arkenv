@@ -20,26 +20,26 @@ pnpm twoslash content/docs/arkenv/index.mdx
 
 **Features:**
 
-* **Shared Configuration**: Uses the exact same Twoslash options as the documentation site.
-* **JSDoc Support**: Prints documentation strings and hover types exactly as they appear on the site.
-* **Whitelist Aware**: Respects whitelisted symbols (like `zod`, `arktype`, `arkenv`) to show relevant type information.
-* **Content Verification**: Ideal for checking if your code snippets are correctly typed before deploying.
+- **Shared Configuration**: Uses the same Twoslash options as the documentation site.
+- **JSDoc Support**: Prints documentation strings and hover types exactly as they appear on the site.
+- **Whitelist Aware**: Respects whitelisted symbols (like `zod`, `arktype`, `arkenv`) to show relevant type information.
+- **Content Verification**: Ideal for checking if your code snippets are correctly typed before deploying.
 
-***
+---
 
 ### `build.js`
 
 A compatibility wrapper for running build commands.
 
-* **Node 25+ Support**: Automatically disables Web Storage (`--no-webstorage`) to avoid conflicts during the Next.js build process.
-* **Usage**: Called internally by `pnpm build` (e.g., `node ./bin/build next build`).
+- **Node 25+ Support**: Automatically disables Web Storage (`--no-webstorage`) to avoid conflicts during the Next.js build process.
+- **Usage**: Called internally by `pnpm build` (e.g., `node ./bin/build next build`).
 
-***
+---
 
 ### `postinstall.js`
 
 Handles post-installation tasks for the documentation workspace.
 
-* **MDX Generation**: Runs `fumadocs-mdx` to generate the necessary content collections.
-* **Environment Compatibility**: Includes the same Node 25+ Web Storage fixes as the build script.
-* **Usage**: Automatically triggered after `pnpm install`, or manual run via `pnpm postinstall`.
+- **MDX Generation**: Runs `fumadocs-mdx` to generate the necessary content collections.
+- **Environment Compatibility**: Includes the same Node 25+ Web Storage fixes as the build script.
+- **Usage**: Automatically triggered after `pnpm install`, or manual run via `pnpm postinstall`.

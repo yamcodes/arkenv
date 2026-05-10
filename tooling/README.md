@@ -6,20 +6,20 @@ This directory contains development and testing tools that are separate from the
 
 The `tooling/` directory is designed for:
 
-* **Development tools** that support the project but aren't published packages
-* **Testing infrastructure** like Playwright test suites
-* **Build tools** and utilities that don't belong in `packages/`
-* **CI/CD helpers** and automation scripts
+- **Development tools** that support the project but aren't published packages
+- **Testing infrastructure** like Playwright test suites
+- **Build tools** and utilities that don't belong in `packages/`
+- **CI/CD helpers** and automation scripts
 
 ## Key Differences from `packages/`
 
-| Aspect | `packages/` | `tooling/` |
-|--------|-------------|------------|
-| **Purpose** | Published npm packages | Development/testing tools |
-| **Changesets** | ✅ Included in releases | ❌ Ignored in releases |
-| **Publishing** | ✅ Published to npm | ❌ Not published |
-| **Dependencies** | Production dependencies | Development dependencies |
-| **Examples** | `arkenv`, `@arkenv/vite-plugin` | `playwright-www` |
+| Aspect           | `packages/`                     | `tooling/`                |
+| ---------------- | ------------------------------- | ------------------------- |
+| **Purpose**      | Published npm packages          | Development/testing tools |
+| **Changesets**   | ✅ Included in releases          | ❌ Ignored in releases     |
+| **Publishing**   | ✅ Published to npm              | ❌ Not published           |
+| **Dependencies** | Production dependencies         | Development dependencies  |
+| **Examples**     | `arkenv`, `@arkenv/vite-plugin` | `playwright-www`          |
 
 ## Structure
 
@@ -51,7 +51,7 @@ When adding new tooling packages:
 
 ## Examples
 
-* **`playwright-www/`**: End-to-end testing for the www application
-* **Future tools**: Linting configs, build scripts, deployment helpers, etc.
+- **`playwright-www/`**: End-to-end testing for the www application
+- **Future tools**: Linting configs, build scripts, deployment helpers, etc.
 
 This separation keeps the project organized and ensures that only actual packages get versioned and published.

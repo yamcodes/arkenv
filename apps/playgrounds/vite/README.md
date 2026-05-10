@@ -2,10 +2,10 @@
 
 This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with Vite and React. It showcases:
 
-* **Environment variable validation** at build-time with ArkEnv
-* **Typesafe `import.meta.env`** with full TypeScript support
-* **Using environment variables in Vite config** (like `server.port`)
-* **Client-side environment variables** with automatic filtering of `VITE_*` prefixed variables
+- **Environment variable validation** at build-time with ArkEnv
+- **Typesafe `import.meta.env`** with full TypeScript support
+- **Using environment variables in Vite config** (like `server.port`)
+- **Client-side environment variables** with automatic filtering of `VITE_*` prefixed variables
 
 ## Setup
 
@@ -81,9 +81,9 @@ VITE_MY_BOOLEAN=true
 
 The plugin automatically:
 
-* Validates all variables at build-time
-* Filters to only expose `VITE_*` variables to the client
-* Excludes server-only variables (like `PORT`) from the client bundle
+- Validates all variables at build-time
+- Filters to only expose `VITE_*` variables to the client
+- Excludes server-only variables (like `PORT`) from the client bundle
 
 ## Running the Example
 
@@ -105,9 +105,9 @@ pnpm preview
 
 For more information, see the [@arkenv/vite-plugin documentation](https://arkenv.js.org/docs/vite-plugin):
 
-* [Introduction](https://arkenv.js.org/docs/vite-plugin)
-* [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
-* [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
+- [Introduction](https://arkenv.js.org/docs/vite-plugin)
+- [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
+- [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
 
 ## Key Features Demonstrated
 

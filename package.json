@@ -40,6 +40,8 @@
 		"changesets-changelog-clean": "1.3.0",
 		"esbuild": "catalog:",
 		"mdxlint": "^1.0.0",
+		"remark-frontmatter": "^5.0.0",
+		"remark-gfm": "^4.0.1",
 		"rimraf": "catalog:",
 		"turbo": "2.9.12",
 		"typescript": "catalog:",

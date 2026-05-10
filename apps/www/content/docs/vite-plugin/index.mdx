@@ -1,18 +1,18 @@
-***
+---
 
 title: Introduction
 icon: Album
 description: The ArkEnv plugin for Vite lets you validate environment variables at build-time with ArkType.
------------------------------------------------------------------------------------------------------------
+---
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
 ## Features
 
-* **Static Analysis**: Validates environment variables against your schema and configures Vite's `define` behavior to expose them via `import.meta.env.VARIABLE`, leaving the actual inlining to Vite.
-* **Typesafety**: Ensures your code only accesses variables defined in your schema.
-* **Secure Defaults**: Only exposes variables prefixed with `VITE_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema.
+- **Static Analysis**: Validates environment variables against your schema and configures Vite's `define` behavior to expose them via `import.meta.env.VARIABLE`, leaving the actual inlining to Vite.
+- **Typesafety**: Ensures your code only accesses variables defined in your schema.
+- **Secure Defaults**: Only exposes variables prefixed with `VITE_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema.
 
 ## Quickstart
 
@@ -59,7 +59,7 @@ interface ImportMeta {
 }
 ```
 
-> \[!TIP]
+> [!TIP]
 > For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
 
 ### 4. Use in your code

@@ -16,11 +16,11 @@
 
 ## Features
 
-* Build-time validation - app won't start if environment variables are invalid
-* Typesafe environment variables backed by TypeScript
-* Access to ArkType's powerful type system
+- Build-time validation - app won't start if environment variables are invalid
+- Typesafe environment variables backed by TypeScript
+- Access to ArkType's powerful type system
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > This plugin requires `arktype` to be installed in your project.
 >
 > You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
@@ -69,9 +69,9 @@ This plugin uses [the Vite specific `config` hook](https://vite.dev/guide/api-pl
 
 ## Examples
 
-* [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)
+- [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)
 
 ## Related
 
-* [ArkEnv](https://arkenv.js.org) - Core library and docs
-* [ArkType](https://arktype.io/) - Underlying validator / type system
+- [ArkEnv](https://arkenv.js.org) - Core library and docs
+- [ArkType](https://arktype.io/) - Underlying validator / type system

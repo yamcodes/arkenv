@@ -4,11 +4,11 @@ A Fumadocs-ready component and theme package for ArkEnv documentation. It ships 
 
 ## Highlights
 
-* Design system CSS with 0.125rem radius and 80px header/nav height overrides
-* External link detection with safe targets and visual indicators
-* Anchorable headings with scroll margin for tall headers
-* Enhanced code blocks and AI actions (copy markdown, open in AI assistants)
-* Preconfigured `arkenvComponents` MDX map that layers our overrides onto `fumadocs-ui` defaults
+- Design system CSS with 0.125rem radius and 80px header/nav height overrides
+- External link detection with safe targets and visual indicators
+- Anchorable headings with scroll margin for tall headers
+- Enhanced code blocks and AI actions (copy markdown, open in AI assistants)
+- Preconfigured `arkenvComponents` MDX map that layers our overrides onto `fumadocs-ui` defaults
 
 ## Install
 
@@ -59,5 +59,5 @@ import { isExternalUrl, cn } from "@arkenv/fumadocs-ui/utils";
 
 ## Notes
 
-* Components are client-side and include the required `"use client"` directives in the published bundle.
-* CSS overrides Fumadocs defaults; no additional config is needed beyond importing `theme.css`.
+- Components are client-side and include the required `"use client"` directives in the published bundle.
+- CSS overrides Fumadocs defaults; no additional config is needed beyond importing `theme.css`.
