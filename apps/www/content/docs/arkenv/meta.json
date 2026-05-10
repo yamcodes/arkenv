@@ -12,7 +12,7 @@
 		"---Integrations---",
 		"...integrations",
 		"---API---",
-		"[New][arkenv/standard](/docs/arkenv/standard)",
+		"[arkenv/standard](/docs/arkenv/standard)",
 		"coercion",
 		"---How-to---",
 		"[Load environment variables](/docs/arkenv/how-to/load-environment-variables)",
