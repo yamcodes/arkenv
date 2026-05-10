@@ -2,22 +2,25 @@
 
 [Vite](https://vite.dev/) plugin to validate environment variables at build-time with ArkEnv.
 
-<br/>
-<br/>
-<br/>
+<br />
+
+<br />
+
+<br />
 
 ## [Read the docs →](https://arkenv.js.org/docs/vite-plugin)
 
-<br/>
-<br/>
+<br />
+
+<br />
 
 ## Features
 
-- Build-time validation - app won't start if environment variables are invalid
-- Typesafe environment variables backed by TypeScript
-- Access to ArkType's powerful type system
+* Build-time validation - app won't start if environment variables are invalid
+* Typesafe environment variables backed by TypeScript
+* Access to ArkType's powerful type system
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > This plugin requires `arktype` to be installed in your project.
 >
 > You can still use Zod or Valibot schemas alongside ArkType's DSL, since ArkType natively supports Standard Schema.
@@ -27,35 +30,35 @@
 ## Installation
 
 <details open>
-<summary>npm</summary>
+  <summary>npm</summary>
 
-```sh
-npm install @arkenv/vite-plugin arktype
-```
+  ```sh
+  npm install @arkenv/vite-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>pnpm</summary>
+  <summary>pnpm</summary>
 
-```sh
-pnpm add @arkenv/vite-plugin arktype
-```
+  ```sh
+  pnpm add @arkenv/vite-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>Yarn</summary>
+  <summary>Yarn</summary>
 
-```sh
-yarn add @arkenv/vite-plugin arktype
-```
+  ```sh
+  yarn add @arkenv/vite-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>Bun</summary>
+  <summary>Bun</summary>
 
-```sh
-bun add @arkenv/vite-plugin arktype
-```
+  ```sh
+  bun add @arkenv/vite-plugin arktype
+  ```
 </details>
 
 ## FAQ
@@ -70,5 +73,5 @@ This plugin uses [the Vite specific `config` hook](https://vite.dev/guide/api-pl
 
 ## Related
 
-- [ArkEnv](https://arkenv.js.org) - Core library and docs
-- [ArkType](https://arktype.io/) - Underlying validator / type system
+* [ArkEnv](https://arkenv.js.org) - Core library and docs
+* [ArkType](https://arktype.io/) - Underlying validator / type system

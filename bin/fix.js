@@ -26,6 +26,10 @@ const biomeArgs = unsafe ? ["--write", "--unsafe", "."] : ["--write", "."];
 console.log("Running biome check...");
 execSync(`pnpm exec biome check ${biomeArgs.join(" ")}`, { stdio: "inherit" });
 
+// Run mdxlint formatting
+console.log("Running mdxlint fix...");
+execSync("pnpm run fix:mdx", { stdio: "inherit" });
+
 // Conditionally run manypkg fix
 if (!skipManypkg) {
 	console.log("Running manypkg fix...");

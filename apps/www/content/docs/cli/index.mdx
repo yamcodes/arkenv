@@ -1,8 +1,9 @@
----
+***
+
 title: Introduction
 icon: Album
 description: Quickly scaffold ArkEnv projects with an interactive CLI.
----
+----------------------------------------------------------------------
 
 The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an interactive walkthrough to help you choose a validation library, configure your environment schema, and set up your project structure.
 
@@ -14,16 +15,19 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
     npx @arkenv/cli@latest init
     ```
   </Tab>
+
   <Tab value="pnpm">
     ```bash
     pnpm dlx @arkenv/cli@latest init
     ```
   </Tab>
+
   <Tab value="yarn">
     ```bash
     yarn dlx @arkenv/cli@latest init
     ```
   </Tab>
+
   <Tab value="bun">
     ```bash
     bunx @arkenv/cli@latest init
@@ -31,14 +35,13 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
   </Tab>
 </Tabs>
 
-
 ## Features
 
-- **Interactive Prompts**: A guided experience powered by `@clack/prompts`.
-- **Zero Dependencies**: Lightweight and fast, it won't clutter your `node_modules` after use.
-- **Validation Library Support**: Choose between [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
-- **.env.example Detection**: Automatically parses your `.env.example` to suggest a starting schema based on your existing keys.
-- **Automatic Detection**: Cleverly detects your framework and runtime (Node, Bun, Vite) to pre-select the best defaults.
+* **Interactive Prompts**: A guided experience powered by `@clack/prompts`.
+* **Zero Dependencies**: Lightweight and fast, it won't clutter your `node_modules` after use.
+* **Validation Library Support**: Choose between [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
+* **.env.example Detection**: Automatically parses your `.env.example` to suggest a starting schema based on your existing keys.
+* **Automatic Detection**: Cleverly detects your framework and runtime (Node, Bun, Vite) to pre-select the best defaults.
 
 ## Commands
 

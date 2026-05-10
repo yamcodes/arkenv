@@ -8,8 +8,8 @@ The logic here is specific to ArkType and will not work without it.
 
 This directory contains the ArkType-specific validator logic for `arkenv`.
 
-- `index.ts`: The main entry point for the ArkType validator, which integrates with `@repo/scope`.
-- `coercion/`: Logic for introspecting ArkType schemas and applying automatic type coercion (e.g., parsing "3000" as a number).
+* `index.ts`: The main entry point for the ArkType validator, which integrates with `@repo/scope`.
+* `coercion/`: Logic for introspecting ArkType schemas and applying automatic type coercion (e.g., parsing "3000" as a number).
 
 ## How it works
 

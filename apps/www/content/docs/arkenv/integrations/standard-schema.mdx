@@ -1,17 +1,18 @@
----
+***
+
 title: Standard Schema validators
 description: You can use any Standard Schema validator with ArkEnv.
----
+-------------------------------------------------------------------
 
 Any validator that implements the [Standard Schema](https://standardschema.dev/) specification is supported. For example:
 
-- **[Zod](https://zod.dev/)** - TypeScript-first schema validation
-- **[Valibot](https://valibot.dev/)** - Modular schema validation
-- **[ArkType](https://arktype.io/)** (native) - TypeScript's 1\:1 validator
+* **[Zod](https://zod.dev/)** - TypeScript-first schema validation
+* **[Valibot](https://valibot.dev/)** - Modular schema validation
+* **[ArkType](https://arktype.io/)** (native) - TypeScript's 1:1 validator
 
 ArkType works both as a validator and as a wrapper for other validators - all via Standard Schema. This means you can freely mix ArkType, Zod, Valibot, and any other Standard Schema validator in the same schema.
 
-> [!TIP]
+> \[!TIP]
 > Want to avoid ArkType as a dependency altogether? Use [arkenv/standard](/docs/arkenv/standard) instead.
 
 ```package-install

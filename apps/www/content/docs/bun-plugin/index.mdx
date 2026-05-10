@@ -1,17 +1,18 @@
----
+***
+
 title: Introduction
 icon: Album
 description: The ArkEnv plugin for Bun lets you validate environment variables at build-time and runtime with ArkEnv.
----
+---------------------------------------------------------------------------------------------------------------------
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
 ## Features
 
-- **Static Analysis**: Validates environment variables against your schema and configures Bun's `define` behavior to expose them via `process.env.VARIABLE`, leaving the actual inlining to Bun.
-- **Typesafety**: Ensures your code only accesses variables defined in your schema.
-- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration.
+* **Static Analysis**: Validates environment variables against your schema and configures Bun's `define` behavior to expose them via `process.env.VARIABLE`, leaving the actual inlining to Bun.
+* **Typesafety**: Ensures your code only accesses variables defined in your schema.
+* **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration.
 
 ## Quickstart
 
@@ -128,7 +129,7 @@ plugins = ["./plugins/arkenv.ts"]
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
-> [!NOTE]
+> \[!NOTE]
 > When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
 
 ```ts title="src/env.ts" twoslash

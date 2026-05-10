@@ -2,9 +2,9 @@
 
 This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with [SolidStart](https://start.solidjs.com). It showcases:
 
-- **Environment variable validation** at build-time with ArkEnv
-- **Typesafe `import.meta.env`** with full TypeScript support
-- **Client-side environment variables** with automatic filtering of `VITE_*` prefixed variables
+* **Environment variable validation** at build-time with ArkEnv
+* **Typesafe `import.meta.env`** with full TypeScript support
+* **Client-side environment variables** with automatic filtering of `VITE_*` prefixed variables
 
 ## Setup
 
@@ -67,9 +67,9 @@ VITE_BOOLEAN=false
 
 The plugin automatically:
 
-- Validates all variables at build-time
-- Filters to only expose `VITE_*` variables to the client
-- Ensures `import.meta.env` matches your schema
+* Validates all variables at build-time
+* Filters to only expose `VITE_*` variables to the client
+* Ensures `import.meta.env` matches your schema
 
 ## Running the Example
 
@@ -91,8 +91,8 @@ pnpm start
 
 For more information, see the [@arkenv/vite-plugin documentation](https://arkenv.js.org/docs/vite-plugin):
 
-- [Introduction](https://arkenv.js.org/docs/vite-plugin)
-- [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
-- [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
+* [Introduction](https://arkenv.js.org/docs/vite-plugin)
+* [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
+* [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
 
 ## this project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)

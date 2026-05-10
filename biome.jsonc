@@ -10,6 +10,8 @@
 		"ignoreUnknown": false,
 		"includes": [
 			"**",
+			"!**/*.md",
+			"!**/*.mdx",
 			"!**/node_modules",
 			"!**/dist",
 			"!**/dist-test",
