@@ -1,4 +1,4 @@
-  <p align="center">
+<p align="center">
   <a href="https://github.com/yamcodes/arkenv/blob/main/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
@@ -177,7 +177,7 @@ Beyond [the core package](https://arkenv.js.org/docs/arkenv), we also provide pl
 
 If you love ArkEnv, you can support the project by **starring it on GitHub**!
 
-You are also welcome to [contribute to the project](https://github.com/yamcodes/arkenv/blob/main/CONTRIBUTING.md) and join the wonderful people who have contributed:
+You are also welcome to [contribute to the project](https://github.com/yamcodes/arkenv/blob/main/.github/CONTRIBUTING.md) and join the wonderful people who have contributed:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -200,4 +200,4 @@ You are also welcome to [contribute to the project](https://github.com/yamcodes/
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## [Acknowledgements](https://github.com/yamcodes/arkenv/blob/main/ACKNOWLEDGEMENTS.md)
+## [Acknowledgements](https://github.com/yamcodes/arkenv/blob/main/.github/ACKNOWLEDGEMENTS.md)
