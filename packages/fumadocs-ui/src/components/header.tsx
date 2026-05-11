@@ -80,7 +80,7 @@ export function Header({
 				className={cn(
 					"absolute inset-0 border-b transition-[background-color,border-color] duration-300",
 					mobileOpen
-						? "border-b-transparent bg-fd-background"
+						? "border-b-transparent bg-fd-background backdrop-blur-xl duration-150"
 						: scrolled
 							? "border-fd-border/60 bg-(--background)/85 backdrop-blur-xl"
 							: "border-fd-border/60 bg-background",
