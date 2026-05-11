@@ -1,9 +1,7 @@
 ---
-
 title: Typing import.meta.env
 icon: ShieldCheck
 ---
-
 For most use cases, you'll want to access your environment variables in your client code. [In a Vite project, this is done via `import.meta.env`](https://vite.dev/guide/env-and-mode).
 
 With ArkEnv, this can be typesafe with the one-time setup below. After this, each time you add/remove environment variables from your schema, your `import.meta.env` will always be typesafe - no codegen needed.
