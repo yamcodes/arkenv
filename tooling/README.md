@@ -13,13 +13,13 @@ The `tooling/` directory is designed for:
 
 ## Key Differences from `packages/`
 
-| Aspect | `packages/` | `tooling/` |
-|--------|-------------|------------|
-| **Purpose** | Published npm packages | Development/testing tools |
-| **Changesets** | ✅ Included in releases | ❌ Ignored in releases |
-| **Publishing** | ✅ Published to npm | ❌ Not published |
-| **Dependencies** | Production dependencies | Development dependencies |
-| **Examples** | `arkenv`, `@arkenv/vite-plugin` | `playwright-www` |
+| Aspect           | `packages/`                     | `tooling/`                |
+| ---------------- | ------------------------------- | ------------------------- |
+| **Purpose**      | Published npm packages          | Development/testing tools |
+| **Changesets**   | ✅ Included in releases          | ❌ Ignored in releases     |
+| **Publishing**   | ✅ Published to npm              | ❌ Not published           |
+| **Dependencies** | Production dependencies         | Development dependencies  |
+| **Examples**     | `arkenv`, `@arkenv/vite-plugin` | `playwright-www`          |
 
 ## Structure
 

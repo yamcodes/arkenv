@@ -3,6 +3,7 @@
 A Fumadocs-ready component and theme package for ArkEnv documentation. It ships sharpened Tailwind v4 styling, external link handling, enhanced headings/code blocks, AI actions, and a ready-to-use MDX component map.
 
 ## Highlights
+
 - Design system CSS with 0.125rem radius and 80px header/nav height overrides
 - External link detection with safe targets and visual indicators
 - Anchorable headings with scroll margin for tall headers
@@ -10,6 +11,7 @@ A Fumadocs-ready component and theme package for ArkEnv documentation. It ships 
 - Preconfigured `arkenvComponents` MDX map that layers our overrides onto `fumadocs-ui` defaults
 
 ## Install
+
 Ensure peer dependencies from `fumadocs-ui` are available, then install:
 
 ```bash
@@ -17,6 +19,7 @@ pnpm add @arkenv/fumadocs-ui
 ```
 
 ## Style entry
+
 Import the theme CSS once (Tailwind v4 style):
 
 ```css
@@ -25,6 +28,7 @@ Import the theme CSS once (Tailwind v4 style):
 ```
 
 ## MDX components
+
 Use the prebuilt mapping in your MDX provider:
 
 ```ts
@@ -36,6 +40,7 @@ export const mdxComponents = {
 ```
 
 ## Components
+
 Client components suitable for Next.js App Router:
 
 ```tsx
@@ -53,5 +58,6 @@ import { isExternalUrl, cn } from "@arkenv/fumadocs-ui/utils";
 ```
 
 ## Notes
+
 - Components are client-side and include the required `"use client"` directives in the published bundle.
 - CSS overrides Fumadocs defaults; no additional config is needed beyond importing `theme.css`.

@@ -13,65 +13,26 @@
     <a href="https://discord.gg/zAmUyuxXH9"><img alt="Chat on Discord" src="https://img.shields.io/discord/957797212103016458?label=Chat&color=5865f4&logo=discord&labelColor=121214"></a>
   </div>
 </p>
-<h3 align="center">Proud part of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h3>
+
+<div align="center">
+  <a href="https://arkenv.js.org/docs/arkenv">Docs</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Playground</a>
+  <br />
+</div>
+
+<br />
+<br />
 
 <p align="center">
   <img alt="ArkEnv Demo" src="https://arkenv.js.org/assets/demo.gif" />
 </p>
 
-<br/>
-<br/>
-<br/>
+<br />
 
-### [Read the docs →](https://arkenv.js.org/docs/arkenv)
 
-<br/>
-<br/>
-
-## What is ArkEnv?
-
-ArkEnv is an environment variable validator for modern JavaScript runtimes. It creates a ready-to-use, typesafe environment variable object:
-
-```ts
-import arkenv from "arkenv";
-
-const env = arkenv({
-  HOST: "string.ip | 'localhost'",
-  PORT: "0 <= number.integer <= 65535",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-  DEBUGGING: "boolean = false",
-});
-```
-
-> ArkEnv defaults to [ArkType](https://arktype.io/) notation, the closest match to TypeScript syntax for editor-to-runtime typesafety. You can also use any [Standard Schema](https://standardschema.dev/schema) validator, including Zod, Valibot, and Typia.
-
-With ArkEnv, your environment variables are **guaranteed to match your schema**. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
-
-```bash title="Terminal"
-❯ PORT=hello npm start
-
-ArkEnvError: Errors found while validating environment variables
-  HOST must be a string or "localhost" (was missing)
-  PORT must be a number (was a string)
-```
-
-## Features
-
-* Zero external dependencies
-* Works in Node.js, Bun, and Vite
-* Tiny: 2kB gzipped 
-* Build-time / runtime validation with editor autocomplete & type hints
-* Single import, zero config for most projects
-* Optional variables and default values
-* Intuitive automatic coercion
-* Compatible with any Standard Schema validator (Zod, Valibot, etc.)
-* Native support for ArkType, TypeScript's 1\:1 validator
-
-> See how ArkEnv compares to alternatives like T3 Env, znv, and envalid in the [comparison cheatsheet](https://arkenv.js.org/docs/arkenv/comparison#comparison-cheatsheet).
-
-## Installation
-
-The easiest way to get started is with the [ArkEnv CLI](https://arkenv.js.org/docs/cli). It interactively configures your project, installs dependencies, and creates a ready-to-use schema.
 
 <details open>
 <summary>npm</summary>
@@ -109,69 +70,11 @@ bunx @arkenv/cli@latest init
 
 </details>
 
-### Manual Installation
+<br />
 
-If you prefer to install ArkEnv yourself without the interactive CLI:
+### [Read the docs →](https://arkenv.js.org/docs/arkenv/quickstart)
 
-<details open>
-<summary>npm</summary>
-
-```sh
-npm install arkenv arktype
-```
-
-</details>
-
-<details>
-<summary>pnpm</summary>
-
-```sh
-pnpm add arkenv arktype
-```
-
-</details>
-
-<details>
-<summary>Yarn</summary>
-
-```sh
-yarn add arkenv arktype
-```
-
-</details>
-
-<details>
-<summary>Bun</summary>
-
-```sh
-bun add arkenv arktype
-```
-
-</details>
-
-:rocket: **Let's get started!** Read the [2-minute setup guide](https://arkenv.js.org/docs/quickstart) or [start with an example](https://arkenv.js.org/docs/examples).
-
-> Improve your DX with _syntax highlighting_ in [VS Code](https://arkenv.js.org/docs/arkenv/integrations/api/vscode), [Cursor, Antigravity](https://arkenv.js.org/docs/arkenv/integrations/api/open-vsx), and [JetBrains IDEs](https://arkenv.js.org/docs/arkenv/integrations/api/jetbrains).
-
-## Requirements
-
-ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react). Older versions may work but are not officially supported.
-
-### TypeScript requirements
-
-- [**Modern TypeScript module resolution**](https://www.typescriptlang.org/tsconfig/#moduleResolution). One of the following is required in your `tsconfig.json`:
-  - `"moduleResolution": "bundler"` - Recommended for modern bundlers (Vite, Next.js, etc.). Supplied by default when using `"module": "Preserve"` (Introduced in TypeScript v5.4).
-  - `"moduleResolution": "node16"` or `"nodenext"` - For Node.js projects. Supplied by default when using a matching `"module"` value.
-- **TypeScript >= 5.1** and [anything else required by ArkType](https://arktype.io/docs/intro/setup#installation)
-
-> While TypeScript is the recommended setup, ArkEnv works with plain JavaScript. See the [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details and tradeoffs.
-
-## Plugins
-
-Beyond [the core package](https://arkenv.js.org/docs/arkenv), we also provide plugins for frameworks that require a specific implementation to adhere to best practices.
-
-- [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin)
-- [@arkenv/bun-plugin](https://arkenv.js.org/docs/bun-plugin)
+<br />
 
 ## Supporting ArkEnv
 
@@ -200,4 +103,4 @@ You are also welcome to [contribute to the project](https://github.com/yamcodes/
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## [Acknowledgements](https://github.com/yamcodes/arkenv/blob/main/.github/ACKNOWLEDGEMENTS.md)
+We [acknowledge](https://github.com/yamcodes/arkenv/blob/main/.github/ACKNOWLEDGEMENTS.md) the various projects and people that inspired ArkEnv.

@@ -78,7 +78,7 @@ jobs:
         continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
-        uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2
+        uses: 'actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3' # ratchet:actions/create-github-app-token@v3
         with:
           app-id: '${{ vars.APP_ID }}'
           private-key: '${{ secrets.APP_PRIVATE_KEY }}'
@@ -88,7 +88,7 @@ jobs:
 
       - name: 'Extract command'
         id: 'extract_command'
-        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea' # ratchet:actions/github-script@v7
+        uses: 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3' # ratchet:actions/github-script@v9
         env:
           EVENT_TYPE: '${{ github.event_name }}.${{ github.event.action }}'
           REQUEST: '${{ github.event.comment.body || github.event.review.body || github.event.issue.body }}'
@@ -206,7 +206,7 @@ jobs:
         continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
-        uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2
+        uses: 'actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3' # ratchet:actions/create-github-app-token@v3
         with:
           app-id: '${{ vars.APP_ID }}'
           private-key: '${{ secrets.APP_PRIVATE_KEY }}'
