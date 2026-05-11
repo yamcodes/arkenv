@@ -55,6 +55,23 @@ jobs:
             core.info(`Found ${labelNames.length} labels: ${labelNames.join(', ')}`);
             return labelNames;
 
+      - name: 'Prepare triage context'
+        if: |-
+          ${{ steps.get_labels.outputs.available_labels != '' }}
+        shell: 'bash'
+        run: |-
+          mkdir -p .gemini
+          jq -n \
+            --arg available_labels "${AVAILABLE_LABELS}" \
+            --arg issue_title "${ISSUE_TITLE}" \
+            --arg issue_body "${ISSUE_BODY}" \
+            --arg github_env "${GITHUB_ENV}" \
+            '{available_labels: $available_labels, issue_title: $issue_title, issue_body: $issue_body, github_env: $github_env}' > .gemini/context.json
+        env:
+          ISSUE_TITLE: '${{ github.event.issue.title }}'
+          ISSUE_BODY: '${{ github.event.issue.body }}'
+          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
+
       - name: 'Run Gemini issue analysis'
         id: 'gemini_analysis'
         if: |-
@@ -63,9 +80,6 @@ jobs:
         env:
           GEMINI_CLI_TRUST_WORKSPACE: 'true'
           GITHUB_TOKEN: '' # Do NOT pass any auth tokens here since this runs on untrusted inputs
-          ISSUE_TITLE: '${{ github.event.issue.title }}'
-          ISSUE_BODY: '${{ github.event.issue.body }}'
-          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
         with:
           gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
           gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'

@@ -88,6 +88,23 @@ jobs:
           ISSUE_COUNT="$(echo "${ISSUES}" | jq 'length')"
           echo "✅ Found ${ISSUE_COUNT} issue(s) to triage! 🎯"
 
+      - name: 'Prepare scheduled triage context'
+        if: |-
+          ${{ steps.find_issues.outputs.issues_to_triage != '[]' }}
+        shell: 'bash'
+        run: |-
+          mkdir -p .gemini
+          jq -n \
+            --arg repository "${REPOSITORY}" \
+            --arg available_labels "${AVAILABLE_LABELS}" \
+            --argjson issues_to_triage "${ISSUES_TO_TRIAGE}" \
+            --arg github_env "${GITHUB_ENV}" \
+            '{repository: $repository, available_labels: $available_labels, issues_to_triage: $issues_to_triage, github_env: $github_env}' > .gemini/context.json
+        env:
+          ISSUES_TO_TRIAGE: '${{ steps.find_issues.outputs.issues_to_triage }}'
+          REPOSITORY: '${{ github.repository }}'
+          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
+
       - name: 'Run Gemini Issue Analysis'
         id: 'gemini_issue_analysis'
         if: |-
@@ -96,9 +113,6 @@ jobs:
         env:
           GEMINI_CLI_TRUST_WORKSPACE: 'true'
           GITHUB_TOKEN: '' # Do not pass any auth token here since this runs on untrusted inputs
-          ISSUES_TO_TRIAGE: '${{ steps.find_issues.outputs.issues_to_triage }}'
-          REPOSITORY: '${{ github.repository }}'
-          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
         with:
           gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
           gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
