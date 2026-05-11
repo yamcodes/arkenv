@@ -74,14 +74,19 @@ export function Header({
 			className={cn(
 				"fixed top-0 left-0 right-0 z-50",
 				"h-(--fd-nav-height,80px)",
-				"border-b transition-[background-color,border-color,backdrop-filter] duration-300",
-				mobileOpen && "max-md:border-b-transparent",
-				scrolled && !mobileOpen
-					? "border-fd-border/60 bg-(--background)/85 backdrop-blur-xl"
-					: "border-fd-border/60 bg-background",
 			)}
 		>
-			<div className="flex items-center h-full px-4 max-w-(--fd-layout-width) mx-auto w-full">
+			<div
+				className={cn(
+					"absolute inset-0 border-b transition-[background-color,border-color] duration-300",
+					mobileOpen
+						? "border-b-transparent bg-fd-background backdrop-blur-xl duration-150"
+						: scrolled
+							? "border-fd-border/60 bg-(--background)/85 backdrop-blur-xl"
+							: "border-fd-border/60 bg-background",
+				)}
+			/>
+			<div className="relative flex items-center h-full px-4 max-w-(--fd-layout-width) mx-auto w-full">
 				{/* Left: sidebar trigger (mobile) + logo + nav links */}
 				<div className="flex items-center gap-2 md:gap-6">
 					{sidebarTrigger && <div className="md:hidden">{sidebarTrigger}</div>}
@@ -153,7 +158,7 @@ export function Header({
 			{hasMobileMenu && (
 				<div
 					className={cn(
-						"md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6 transition-[opacity,transform] duration-200 ease-out",
+						"md:hidden fixed inset-0 z-40 bg-fd-background flex flex-col px-4 py-6 transition-[opacity,transform] duration-150 ease-out",
 						mobileOpen
 							? "opacity-100 visible translate-y-0"
 							: "opacity-0 invisible pointer-events-none -translate-y-2",
