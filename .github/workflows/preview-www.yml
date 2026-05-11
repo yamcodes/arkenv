@@ -70,15 +70,19 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Comment PR
-        if: github.event_name == 'pull_request' && steps.budget.outputs.should_deploy == 'true'
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v9
         with:
           github-token: ${{ steps.generate-token.outputs.token || secrets.GITHUB_TOKEN }}
           script: |
+            const shouldDeploy = '${{ steps.budget.outputs.should_deploy }}' === 'true';
+            const reason = '${{ steps.budget.outputs.reason }}';
+            const remainingTime = '${{ steps.budget.outputs.remaining_time }}';
             const previewUrl = '${{ steps.deploy.outputs.DEPLOYMENT_URL }}';
-            const url = new URL(previewUrl);
-            const feedbackUrl = 'https://vercel.live/open-feedback/' + url.hostname + '?via=pr-comment-feedback-link';
-
+            
+            const metadataMarker = '[vc]: #DZOavKtcupv5eYfsJ0J5gTvtYR/BkSkF1UhfIwiSRtA=:eyJpc01vbm9yZXBvIjp0cnVlLCJ0eXBlIjoiZ2l0aHViIiwicHJvamVjdHMiOlt7Im5hbWUiOiJhcmtlbnYiLCJyb290RGlyZWN0b3J5IjoiYXBwcy93d3ciLCJsaXZlRmVlZGJhY2siOnsicmVzb2x2ZWQiOjAsInVucmVzb2x2ZWQiOjAsInRvdGFsIjowLCJsaW5rIjoiYXJrZW52LWdpdC1jb3BpbG90LXVwZGF0ZS1mb290ZXItY29weXJpZ2h0LXlhbWNvZGVzLnZlcmNlbC5hcHAifSwiaW5zcGVjdG9yVXJsIjoiaHR0cHM6Ly92ZXJjZWwuY29tL3lhbWNvZGVzL2Fya2Vudi8yN3dwSnY5RHBoQjZEQlNLOWVwc2NVQUh5Umd1IiwicHJldmlld1VybCI6ImFya2Vudi1naXQtY29waWxvdC11cGRhdGUtZm9vdGVyLWNvcHlyaWdodC15YW1jb2Rlcy12ZXJjZWwuYXBwIiwibmV4dENvbW1pdFN0YXR1cyI6IkRFUExPWUVEIn1dfQ==';
+            const introText = 'The latest updates on your projects. Learn more about [Vercel for GitHub](https://vercel.link/github-learn-more).';
+            
             const now = new Date();
             const dateStr = now.toLocaleString('en-US', { 
               month: 'short', 
@@ -89,41 +93,86 @@ jobs:
               hour12: true
             }).replace(',', '') + ' (' + process.env.TZ + ')';
 
-            const comment = [
-              '[vc]: #DZOavKtcupv5eYfsJ0J5gTvtYR/BkSkF1UhfIwiSRtA=:eyJpc01vbm9yZXBvIjp0cnVlLCJ0eXBlIjoiZ2l0aHViIiwicHJvamVjdHMiOlt7Im5hbWUiOiJhcmtlbnYiLCJyb290RGlyZWN0b3J5IjoiYXBwcy93d3ciLCJsaXZlRmVlZGJhY2siOnsicmVzb2x2ZWQiOjAsInVucmVzb2x2ZWQiOjAsInRvdGFsIjowLCJsaW5rIjoiYXJrZW52LWdpdC1jb3BpbG90LXVwZGF0ZS1mb290ZXItY29weXJpZ2h0LXlhbWNvZGVzLnZlcmNlbC5hcHAifSwiaW5zcGVjdG9yVXJsIjoiaHR0cHM6Ly92ZXJjZWwuY29tL3lhbWNvZGVzL2Fya2Vudi8yN3dwSnY5RHBoQjZEQlNLOWVwc2NVQUh5Umd1IiwicHJldmlld1VybCI6ImFya2Vudi1naXQtY29waWxvdC11cGRhdGUtZm9vdGVyLWNvcHlyaWdodC15YW1jb2Rlcy12ZXJjZWwuYXBwIiwibmV4dENvbW1pdFN0YXR1cyI6IkRFUExPWUVEIn1dfQ==',
-              'The latest updates on your projects. Learn more about [Vercel for GitHub](https://vercel.link/github-learn-more).',
-              '',
-              '| Project | Deployment | Review | Updated (' + process.env.TZ + ') |',
-              '| :--- | :----- | :------ | :------ |',
-              '| [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](' + previewUrl + ') | [Preview](' + previewUrl + '), [Comment](' + feedbackUrl + ') | ' + dateStr + ' |'
-            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(c => 
+              c.user?.type === 'Bot' &&
+              (c.user?.login === 'arkenv-bot[bot]' || c.user?.login === 'github-actions[bot]') &&
+              c.body?.includes(introText)
+            );
+
+            let table = '';
+            if (shouldDeploy) {
+              const feedbackUrl = 'https://vercel.live/open-feedback/' + new URL(previewUrl).hostname + '?via=pr-comment-feedback-link';
+              table = [
+                '| Project | Deployment | Review | Updated (' + process.env.TZ + ') |',
+                '| :--- | :----- | :------ | :------ |',
+                '| [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](' + previewUrl + ') | [Preview](' + previewUrl + '), [Comment](' + feedbackUrl + ') | ' + dateStr + ' |'
+              ].join('\n');
+            } else if (botComment) {
+              const tableMatch = botComment.body.match(/\| Project \| Deployment \| Review \| Updated .*\n\| :--- \| :----- \| :------ \| :------ \|\n\| .*/);
+              if (tableMatch) {
+                table = tableMatch[0];
+              }
+            }
+
+            let warningBlock = '';
+            if (!shouldDeploy) {
+              const warningTitle = reason === 'limit' ? 'Daily deployment limit reached' : 'Rate limit exceeded';
+              const warningDesc = reason === 'limit' 
+                ? `@${context.actor} has reached the daily limit for preview deployments. Please wait **${remainingTime}** before the quota resets.`
+                : `@${context.actor} has exceeded the limit for the number of commits that can be reviewed per hour. Please wait **${remainingTime}** before requesting another review.`;
+
+              warningBlock = [
+                '> [!WARNING]',
+                `> ## ${warningTitle}`,
+                '>',
+                `> ${warningDesc}`,
+                '>',
+                '> <details>',
+                '> <summary>⌛ How to resolve this issue?</summary>',
+                '>',
+                '> After the wait time has elapsed, a review can be triggered by pushing new commits to this PR or by re-running the workflow.',
+                '>',
+                '> We recommend that you space out your commits to avoid hitting the rate limit.',
+                '>',
+                '> </details>',
+                '>',
+                '> <details>',
+                '> <summary>🚦 How do rate limits work?</summary>',
+                '>',
+                '> We enforce hourly and daily rate limits to ensure stability and fair usage of resources.',
+                '>',
+                '> Please see our [FAQ](https://docs.arkenv.dev/faq) for further information.',
+                '>',
+                '> </details>',
+                ''
+              ].join('\n');
+            }
+
+            const bodyParts = [metadataMarker, introText, ''];
+            if (warningBlock) bodyParts.push(warningBlock);
+            if (table) bodyParts.push(table);
+            const body = bodyParts.join('\n');
 
             try {
-              const { data: comments } = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-              });
-              
-              const botComment = comments.find(c => 
-                c.user?.type === 'Bot' &&
-                (c.user?.login === 'arkenv-bot[bot]' || c.user?.login === 'github-actions[bot]') &&
-                c.body?.includes('The latest updates on your projects')
-              );
-              
               if (botComment) {
                 await github.rest.issues.updateComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   comment_id: botComment.id,
-                  body: comment,
+                  body,
                 });
               } else {
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.issue.number,
-                  body: comment,
+                  body,
                 });
               }
             } catch (error) {
