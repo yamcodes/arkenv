@@ -35,5 +35,5 @@ _(none — no spec-level behavior changes; docsite content is unchanged)_
 - `packages/vite-plugin/README.md` — trimmed
 - `packages/bun-plugin/README.md` — trimmed
 - `packages/cli/README.md` — trimmed
-- No docsite changes
-- No code, API, or dependency changes
+- Docsite changes: updated onboarding/readme content and links
+- No code, API, or dependency changes (content only)

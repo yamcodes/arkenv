@@ -16,6 +16,11 @@ The interactive, zero-dependency scaffolding experience for the [ArkEnv](https:/
 npx @arkenv/cli@latest init
 ```
 
+## Related
+
+- [ArkEnv](https://arkenv.js.org) - Core library and docs
+- [ArkType](https://arktype.io/) - Underlying validator / type system
+
 ## License
 
 MIT

@@ -29,7 +29,7 @@ The root `README.md` is a symlink to `packages/arkenv/README.md` — this is int
 
 ### Decision 2: Consistent README format across all packages
 
-**Choice**: Every package README follows the same template: `# Package name`, one-sentence description, `## [Read the docs →](url)`, install snippet, `## Related` links.
+**Choice**: Every package README follows the same template: `# Package name`, one-sentence description, `## [Read the docs →](url)`, install snippet (or run command for CLI), `## Related` links.
 
 **Rationale**: This is already the de facto pattern for `@arkenv/vite-plugin` and `@arkenv/bun-plugin` (somewhat). Making it explicit and consistent across all packages makes the expectation clear for future contributors.
 
