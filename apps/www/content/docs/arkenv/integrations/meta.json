@@ -1,6 +1,7 @@
 {
 	"pages": [
 		"ide",
+		"ai",
 		"[Zod, Valibot, and other Standard Schema validators](/docs/arkenv/integrations/standard-schema)"
 	]
 }
