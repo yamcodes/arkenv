@@ -7,7 +7,7 @@ The `@arkenv/cli` is a new package designed to quickly scaffold ArkEnv projects 
 ## Goals / Non-Goals
 
 **Goals:**
-- Provide clear instructions on how to use `pnpm dlx @arkenv/cli@latest init`.
+- Provide clear instructions on how to use `pnx @arkenv/cli@latest init`.
 - Add the `npx @arkenv/cli@latest init` command to the landing page for immediate visibility.
 - Explain the interactive prompts and supported validation libraries.
 - Integrate the CLI docs seamlessly into the existing Fumadocs documentation site in `apps/www`, placing it alongside other core packages in the sidebar.

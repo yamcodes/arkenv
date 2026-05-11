@@ -21,16 +21,16 @@ The `@arkenv/cli` init command is designed as a minimalist, interactive wizard t
 We adopt a strict separation of concerns to preserve `arkenv`'s zero-dependency status:
 
 1. **`arkenv`** (main package) — Contains only the runtime parsing and validation code. It has zero dependencies, no CLI dependencies, and no `bin` scripts.
-2. **`@arkenv/cli`** (new package) — Contains the full interactive CLI with `@clack/prompts`, `picocolors`, templates, and scaffolding logic. This package is **never installed** in the user's project — it is fetched on-demand via `npx`/`pnpm dlx`/`bunx`.
+2. **`@arkenv/cli`** (new package) — Contains the full interactive CLI with `@clack/prompts`, `picocolors`, templates, and scaffolding logic. This package is **never installed** in the user's project — it is fetched on-demand via `npx`/`pnx`/`bunx`.
 
 ```text
-User runs: pnpm dlx @arkenv/cli@latest init
+User runs: pnx @arkenv/cli@latest init
                 │
                 ▼
         ┌───────────────┐
         │ @arkenv/cli   │  ← Heavy CLI (clack, picocolors, templates)
         │ (fetched via  │
-        │  pnpm dlx)    │
+        │  pnx)    │
         └───────────────┘
 ```
 
@@ -75,5 +75,5 @@ The scaffolder determines the correct installation command by checking:
 
 ## Risks / Trade-offs
 
-- **[Trade-off]** Users must type `pnpm dlx @arkenv/cli@latest init` which is slightly longer. → **[Mitigation]** Document the command clearly. It is a standard pattern for CLI tools that are separated from their main libraries.
+- **[Trade-off]** Users must type `pnx @arkenv/cli@latest init` which is slightly longer. → **[Mitigation]** Document the command clearly. It is a standard pattern for CLI tools that are separated from their main libraries.
 - **[Trade-off]** Template functions can become verbose. → **[Mitigation]** Keep templates focused and use standard helper functions for common snippets (e.g., imports).

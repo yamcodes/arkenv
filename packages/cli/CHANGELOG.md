@@ -48,7 +48,7 @@
   Run the CLI in your project root using your preferred package manager:
 
   ```bash
-  pnpm dlx @arkenv/cli init
+  pnx @arkenv/cli init
   # or
   npx @arkenv/cli init
   # or
