@@ -76,6 +76,16 @@ bunx @arkenv/cli@latest init
 
 <br />
 
+## AI Skills
+
+ArkEnv provides official [Agent Skills](https://skills.sh) to help AI coding agents (like Cursor, Claude Code, Windsurf, and Gemini) understand and use ArkEnv more effectively.
+
+```bash
+npx skills add yamcodes/arkenv --all
+```
+
+<br />
+
 ## Supporting ArkEnv
 
 If you love ArkEnv, you can support the project by **starring it on GitHub**!
