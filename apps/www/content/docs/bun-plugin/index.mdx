@@ -3,7 +3,8 @@ title: Introduction
 icon: Album
 description: The ArkEnv plugin for Bun lets you validate environment variables at build-time and runtime with ArkEnv.
 ---
-> \[!IMPORTANT]
+
+> [!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
 ## Features
@@ -127,7 +128,7 @@ plugins = ["./plugins/arkenv.ts"]
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
-> \[!NOTE]
+> [!NOTE]
 > When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
 
 ```ts title="src/env.ts" twoslash
