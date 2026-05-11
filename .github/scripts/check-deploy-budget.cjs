@@ -38,13 +38,21 @@ function prune(timestamps) {
 }
 
 function formatDuration(ms) {
-	const minutes = Math.ceil(ms / 60000);
+	const durationMs = Math.max(0, ms);
+	const totalSeconds = Math.floor(durationMs / 1000);
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = totalSeconds % 60;
+
 	if (minutes >= 60) {
 		const h = Math.floor(minutes / 60);
 		const m = minutes % 60;
 		return m > 0 ? `${h}h ${m}m` : `${h}h`;
 	}
-	return `${minutes}m`;
+
+	if (minutes > 0) {
+		return `${minutes} minute${minutes !== 1 ? "s" : ""} and ${seconds} second${seconds !== 1 ? "s" : ""}`;
+	}
+	return `${seconds} second${seconds !== 1 ? "s" : ""}`;
 }
 
 function emitOutput(key, value) {
