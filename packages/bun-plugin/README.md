@@ -2,14 +2,17 @@
 
 [Bun](https://bun.sh/) plugin to validate environment variables at build-time with ArkEnv.
 
-<br/>
-<br/>
-<br/>
+<br />
+
+<br />
+
+<br />
 
 ## [Read the docs →](https://arkenv.js.org/docs/bun-plugin)
 
-<br/>
-<br/>
+<br />
+
+<br />
 
 ## Features
 
@@ -28,35 +31,35 @@
 ## Installation
 
 <details open>
-<summary>pnpm</summary>
+  <summary>pnpm</summary>
 
-```sh
-pnpm add @arkenv/bun-plugin arktype
-```
+  ```sh
+  pnpm add @arkenv/bun-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>npm</summary>
+  <summary>npm</summary>
 
-```sh
-npm install @arkenv/bun-plugin arktype
-```
+  ```sh
+  npm install @arkenv/bun-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>Yarn</summary>
+  <summary>Yarn</summary>
 
-```sh
-yarn add @arkenv/bun-plugin arktype
-```
+  ```sh
+  yarn add @arkenv/bun-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>Bun</summary>
+  <summary>Bun</summary>
 
-```sh
-bun add @arkenv/bun-plugin arktype
-```
+  ```sh
+  bun add @arkenv/bun-plugin arktype
+  ```
 </details>
 
 ## Usage
@@ -136,7 +139,7 @@ declare global {
 
 ## Examples
 
-* [bun-react](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/bun-react)
+- [bun-react](https://github.com/yamcodes/arkenv/tree/main/apps/playgrounds/bun-react)
 
 ## Related
 

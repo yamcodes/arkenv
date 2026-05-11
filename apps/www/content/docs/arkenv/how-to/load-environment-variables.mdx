@@ -61,16 +61,19 @@ dotenv.config();
 Many frameworks have built-in support for environment variables:
 
 #### Next.js
+
 - Automatically loads `.env*` files
 - Supports environment-specific files (`.env.development`, `.env.production`)
 - [Next.js Environment Variables Documentation](https://nextjs.org/docs/basic-features/environment-variables)
 
 #### Vite
+
 - Automatically loads `.env` files
 - Supports mode-specific files (`.env.development`, `.env.production`)
 - [Vite Env Variables Documentation](https://vitejs.dev/guide/env-and-mode.html)
 
 #### Express
+
 ```typescript title="src/app.ts"
 import express from 'express';
 import dotenv from 'dotenv';
@@ -80,6 +83,7 @@ const app = express();
 ```
 
 #### Nest.js
+
 ```typescript title="src/app.module.ts"
 import { ConfigModule } from '@nestjs/config';
 
@@ -105,15 +109,18 @@ DATABASE_HOST=localhost DATABASE_PORT=5432 npm start
 ### Cloud platforms
 
 #### AWS
+
 - Use AWS Systems Manager Parameter Store for non-sensitive values
 - Use AWS Secrets Manager for sensitive values
 - Set environment variables in ECS Task Definitions or Lambda configurations
 
 #### Google Cloud Platform
+
 - Use Cloud Secret Manager for sensitive values
 - Set environment variables in Cloud Run or App Engine configurations
 
 #### Azure
+
 - Use Azure Key Vault for sensitive values
 - Configure App Settings in Azure App Service
 
@@ -134,6 +141,7 @@ services:
 ```
 
 #### Kubernetes
+
 ```yaml title="deployment.yaml"
 spec:
   containers:
@@ -244,7 +252,6 @@ const env2 = arkenv(
 
 > [!NOTE]
 > Since `process.env` values are always strings, using `coerce: false` with numeric or boolean schemas will cause validation to fail unless you provide a custom `env` source containing the expected literal types.
-```
 
 ### Custom environment source
 

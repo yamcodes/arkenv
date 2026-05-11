@@ -12,7 +12,7 @@ The example demonstrates:
 
 ## Tradeoffs
 
-ArkEnv works in plain JavaScript, as shown in this example, but the _developer experience_ may vary. This includes things like type hints or autocomplete, which, without explicit TypeScript setup, depend entirely on your editor and tooling.
+ArkEnv works in plain JavaScript, as shown in this example, but the *developer experience* may vary. This includes things like type hints or autocomplete, which, without explicit TypeScript setup, depend entirely on your editor and tooling.
 
 Modern IDEs may still infer types from ArkEnv’s `.d.ts` files, but this is not something we explicitly guarantee or test for. If it works well for you, great. For a more predictable experience, we recommend [using TypeScript](../../packages/arkenv/README.md#typescript-requirements).
 
@@ -34,7 +34,7 @@ Modern IDEs may still infer types from ArkEnv’s `.d.ts` files, but this is not
 
 With the development server running (if it isn't - just run `npm run dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
 
-1. #### Define the new environment variable in the schema as a _required_ string
+1. #### Define the new environment variable in the schema as a *required* string
 
    ```javascript
    // index.js

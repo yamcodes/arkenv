@@ -2,14 +2,17 @@
 
 [Vite](https://vite.dev/) plugin to validate environment variables at build-time with ArkEnv.
 
-<br/>
-<br/>
-<br/>
+<br />
+
+<br />
+
+<br />
 
 ## [Read the docs →](https://arkenv.js.org/docs/vite-plugin)
 
-<br/>
-<br/>
+<br />
+
+<br />
 
 ## Features
 
@@ -27,35 +30,35 @@
 ## Installation
 
 <details open>
-<summary>npm</summary>
+  <summary>npm</summary>
 
-```sh
-npm install @arkenv/vite-plugin arktype
-```
+  ```sh
+  npm install @arkenv/vite-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>pnpm</summary>
+  <summary>pnpm</summary>
 
-```sh
-pnpm add @arkenv/vite-plugin arktype
-```
+  ```sh
+  pnpm add @arkenv/vite-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>Yarn</summary>
+  <summary>Yarn</summary>
 
-```sh
-yarn add @arkenv/vite-plugin arktype
-```
+  ```sh
+  yarn add @arkenv/vite-plugin arktype
+  ```
 </details>
 
 <details>
-<summary>Bun</summary>
+  <summary>Bun</summary>
 
-```sh
-bun add @arkenv/vite-plugin arktype
-```
+  ```sh
+  bun add @arkenv/vite-plugin arktype
+  ```
 </details>
 
 ## FAQ
@@ -66,7 +69,7 @@ This plugin uses [the Vite specific `config` hook](https://vite.dev/guide/api-pl
 
 ## Examples
 
-* [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)
+- [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)
 
 ## Related
 
