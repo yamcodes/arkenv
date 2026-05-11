@@ -1,6 +1,6 @@
 # Acknowledgements
 
-I'd like to thank the following projects and people for their help and inspiration:
+We'd like to thank the following projects and people for their help and inspiration:
 
 - [ArkType](https://arktype.dev/) - ArkEnv is here thanks to the brilliance of ArkType. If you somehow haven't already, please check it out. Seriously, it's amazing! Also, [David Blass](https://github.com/ssalbdivad) (the creator of ArkType) is a legend.
 - [znv](https://github.com/lostfictions/znv) - Basically ArkEnv but for [Zod](https://zod.dev/). The initial inspiration for this project.
