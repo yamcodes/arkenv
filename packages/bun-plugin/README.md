@@ -10,7 +10,7 @@
 
 ## [Read the docs →](https://arkenv.js.org/docs/bun-plugin)
 
-<br/>
+<br />
 
 ```sh
 bun add @arkenv/bun-plugin arktype

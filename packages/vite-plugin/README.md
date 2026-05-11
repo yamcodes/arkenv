@@ -10,7 +10,7 @@
 
 ## [Read the docs →](https://arkenv.js.org/docs/vite-plugin)
 
-<br/>
+<br />
 
 ```sh
 npm install @arkenv/vite-plugin arktype
