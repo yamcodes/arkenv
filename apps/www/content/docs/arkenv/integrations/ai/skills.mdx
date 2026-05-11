@@ -3,43 +3,80 @@ title: Agent Skills
 description: Give your AI assistant procedural knowledge of ArkEnv usage, patterns, and best practices.
 ---
 
-ArkEnv provides official **Agent Skills** to help AI coding agents (like Cursor, Claude Code, Windsurf, and Gemini) understand and use the library more effectively.
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 
-Skills provide agents with on-demand procedural knowledge, allowing them to write schemas, handle complex types, and configure integrations with high precision.
+Skills give AI assistants like Claude Code on-demand procedural knowledge about ArkEnv. When installed, your AI assistant understands how to write correct schemas, handle complex types, and follow ArkEnv's recommended patterns.
 
 ## Installation
 
-You can add ArkEnv skills to your project using the [Agent Skills CLI](https://skills.sh):
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx skills add yamcodes/arkenv
+    ```
+  </Tab>
 
-```bash
-npx skills add yamcodes/arkenv --all
-```
+  <Tab value="pnpm">
+    ```bash
+    pnx skills add yamcodes/arkenv
+    ```
+  </Tab>
 
-## Available Skills
+  <Tab value="yarn">
+    ```bash
+    yarn dlx skills add yamcodes/arkenv
+    ```
+  </Tab>
 
-### `arkenv`
+  <Tab value="bun">
+    ```bash
+    bunx skills add yamcodes/arkenv
+    ```
+  </Tab>
+</Tabs>
 
-The core skill for library usage. It helps agents:
+This installs the ArkEnv skill into your project. Once installed, your AI assistant automatically loads it when working with ArkEnv schemas.
 
-- Define typesafe schemas using ArkType notation.
-- Implement complex types and arrays.
-- Configure automatic coercion and default values.
-- Follow best practices for schema organization.
+Learn more about skills at [skills.sh](https://skills.sh).
 
-### `arkenv-cli`
+## What's Included
 
-The setup and DevOps skill. It helps agents:
+The `arkenv` skill consolidates both library usage and CLI operations into a single procedural guide for your AI assistant:
 
-- Initialize ArkEnv in new or existing projects.
-- Scaffold schema files.
-- Automatically configure `tsconfig.json` for optimal typesafety.
+- **Schema Definition**: Define typesafe schemas using ArkType notation or Standard Schema validators.
+- **Complex Types**: Implement arrays, unions, and custom validation logic.
+- **CLI Integration**: Initialize projects, scaffold schemas, and configure TypeScript settings.
+- **Framework Support**: Configure Vite and Bun integrations seamlessly.
 
-## When to use
+## How it Works
 
-These skills are particularly useful when:
+The skill operates through a set of lifecycle stages to ensure the AI assistant provides accurate and idiomatic assistance.
 
-- You are using **Cursor** or **Windsurf** as your primary IDE.
-- You want **Claude Code** to help you refactor or set up your environment variables.
-- You want to ensure AI-generated schemas strictly follow ArkEnv's recommended patterns.
+### 1. Detection
 
-For more information about the skills ecosystem, visit [skills.sh](https://skills.sh).
+The assistant is instructed to look for `env.ts` or ArkEnv imports to understand your current schema and setup. If ArkEnv is not yet installed, it will recommend using the CLI.
+
+### 2. Context Injection
+
+The skill provides the assistant with a deep understanding of ArkEnv's API, including:
+
+- The `arkenv` and `createEnv` functions.
+- ArkType's string-based schema syntax.
+- Framework-specific loading patterns (`process.env` vs `import.meta.env`).
+
+### 3. Pattern Enforcement
+
+The skill enforces ArkEnv's recommended patterns to ensure your codebase remains clean and typesafe:
+
+- **Centralized Schema**: Always export the `env` object from a central file (e.g., `src/env.ts`).
+- **Concise Definitions**: Prefer ArkType strings over verbose manual validation where possible.
+- **Environment Safety**: Use `.env` files locally and ensure they are excluded from source control.
+- **Strict Typing**: Enforce `strict: true` in `tsconfig.json`.
+
+## Next steps
+
+<Cards>
+  <Card title="ArkEnv CLI" href="/docs/cli" description="Quickly scaffold ArkEnv projects with an interactive CLI" />
+
+  <Card title="skills.sh" href="https://skills.sh" description="Learn more about AI skills" />
+</Cards>

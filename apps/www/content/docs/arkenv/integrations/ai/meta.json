@@ -1,8 +1,6 @@
 {
 	"title": "AI",
-	"defaultOpen": true,
+	"defaultOpen": false,
 	"collapsible": true,
-	"pages": [
-		"[Skills](/docs/arkenv/integrations/ai/skills)"
-	]
+	"pages": ["[New][Skills](/docs/arkenv/integrations/ai/skills)"]
 }

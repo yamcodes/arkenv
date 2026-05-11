@@ -7,14 +7,30 @@ description: Environment variable validation from editor to runtime.
 
 ArkEnv is a typesafe environment variable validator for modern JavaScript runtimes. It uses ArkType by default for schema definition but supports any Standard Schema validator (like Zod or Valibot).
 
-## When to use
+## Capabilities
 
-Use this skill when:
+### Core Usage
 
-- You need to define a schema for environment variables.
-- You need to validate and parse environment variables.
-- You want to ensure environment variables are typesafe throughout the codebase.
-- You are setting up ArkEnv in a new project.
+- Define typesafe schemas using ArkType notation or any Standard Schema validator.
+- Implement complex types, arrays, and unions.
+- Configure automatic coercion and default values.
+- Follow best practices for schema organization.
+
+### CLI (Setup & DevOps)
+
+- Initialize ArkEnv in new or existing projects using `pnpm dlx @arkenv/cli@latest init`.
+- Scaffold schema files and detect framework-specific configurations (Vite, Bun, etc.).
+- Automatically configure `tsconfig.json` for optimal typesafety.
+
+## Operational Logic
+
+1. **Detection**: Look for `env.ts` or ArkEnv imports to understand existing schema.
+2. **Setup**: If ArkEnv is not present, recommend using the CLI: `pnpm dlx @arkenv/cli@latest init`.
+3. **Pattern Enforcement**:
+   - Always export the `env` object from a central file (usually `env.ts`).
+   - Prefer ArkType strings for concise definitions.
+   - Use `.env` files for local development but never commit them.
+   - Ensure `strict` mode is enabled in `tsconfig.json`.
 
 ## Core Concepts
 
@@ -43,7 +59,7 @@ export const env = arkenv({
 
 ### Loading environment variables
 
-ArkEnv automatically loads environment variables from `process.env` (Node.js) or `import.meta.env` (Vite) depending on the environment. You can also manually provide an object to validate against.
+ArkEnv automatically loads environment variables from `process.env` (Node.js) or `import.meta.env` (Vite) depending on the environment.
 
 ### Using environment variables
 
@@ -55,19 +71,24 @@ import { env } from './env';
 const port = env.DATABASE_PORT; // typed as number
 ```
 
+## CLI Commands
+
+### `init`
+
+Set up ArkEnv in your project.
+
+```bash
+pnpm dlx @arkenv/cli@latest init
+```
+
+#### Options
+
+- `--yes`, `-y`: Skip prompts and use recommended defaults.
+- `--help`, `-h`: Show help message.
+
 ## Best Practices
 
 1. **Keep schema in one file**: Usually `env.ts` or `src/env.ts`.
 2. **Export the `env` object**: Don't call `arkenv` multiple times; export the validated object.
-3. **Use .env files**: For local development, but don't commit them.
-4. **Use CLI for setup**: `pnpm dlx @arkenv/cli@latest init` is the recommended way to start.
-
-## Integration
-
-### Vite
-
-Use `@arkenv/vite-plugin` to ensure environment variables are validated during build and available in the client.
-
-### Bun
-
-Use `@arkenv/bun-plugin` for seamless integration with Bun's runtime.
+3. **Use the CLI for setup**: It ensures all necessary dependencies and configurations are in place.
+4. **Integration**: Use `@arkenv/vite-plugin` for Vite or `@arkenv/bun-plugin` for Bun.
