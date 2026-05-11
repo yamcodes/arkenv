@@ -13,21 +13,23 @@
     <a href="https://discord.gg/zAmUyuxXH9"><img alt="Chat on Discord" src="https://img.shields.io/discord/957797212103016458?label=Chat&color=5865f4&logo=discord&labelColor=121214"></a>
   </div>
 </p>
-<h4 align="center">Proud part of the <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a></h4>
+
+<div align="center">
+  <a href="https://arkenv.js.org/docs/arkenv">Docs</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://discord.gg/zAmUyuxXH9">Discord</a>
+  <br />
+</div>
 
 <p align="center">
   <img alt="ArkEnv Demo" src="https://arkenv.js.org/assets/demo.gif" />
 </p>
 
-<br/>
-<br/>
-<br/>
+<br />
 
-### [Read the docs →](https://arkenv.js.org/docs/arkenv)
 
-<br/>
-
-### Installation
 
 <details open>
 <summary>npm</summary>
@@ -65,7 +67,11 @@ bunx @arkenv/cli@latest init
 
 </details>
 
-<br/>
+<br />
+
+### [Read the docs →](https://arkenv.js.org/docs/arkenv/quickstart)
+
+<br />
 
 ## Supporting ArkEnv
 
