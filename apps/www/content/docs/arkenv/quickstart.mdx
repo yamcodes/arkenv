@@ -3,6 +3,10 @@ title: Getting Started
 icon: Rocket
 ---
 
+## Compatibility
+
+ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react). Older versions may work but are not officially supported.
+
 ## Installation
 
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures ArkEnv for your project, installs dependencies, and scaffolds your initial schema.
@@ -58,8 +62,9 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
       <Step>
         ### Configure TypeScript
 
-        Enable `strict` mode for optimal typesafety, and use a [modern TypeScript module
-        resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution):
+        ArkEnv requires **TypeScript >= 5.1** and `strict` mode in your `tsconfig.json`.
+
+        You're also required to use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution).
 
         ```json title="tsconfig.json"
         // [!code word:config]
@@ -70,9 +75,6 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
           }
         }
         ```
-
-        > You may omit `moduleResolution` if `module` is `"Preserve"`, `"Node16"`, or `"NodeNext"`. See
-        [Requirements](/docs/arkenv#requirements) for details.
       </Step>
 
       <Step>
