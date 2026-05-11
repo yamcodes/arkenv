@@ -9,7 +9,7 @@ The `packages/arkenv-cli` package MUST contain a `README.md` file that provides 
 
 #### Scenario: User visits npm registry or GitHub
 - **WHEN** user views the `@arkenv/cli` package page
-- **THEN** they see documentation explaining how to run `pnpm dlx @arkenv/cli@latest init` and basic scaffolding capabilities
+- **THEN** they see documentation explaining how to run `pnx @arkenv/cli@latest init` and basic scaffolding capabilities
 
 ### Requirement: CLI Website Documentation
 

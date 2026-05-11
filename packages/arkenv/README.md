@@ -47,7 +47,7 @@ npx @arkenv/cli@latest init
 <summary>pnpm</summary>
 
 ```sh
-pnpm dlx @arkenv/cli@latest init
+pnx @arkenv/cli@latest init
 ```
 
 </details>

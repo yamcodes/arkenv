@@ -4,7 +4,7 @@
 The CLI SHALL provide an interactive experience to guide the user through setting up ArkEnv.
 
 #### Scenario: Running the CLI
-- **WHEN** the user runs `pnpm dlx @arkenv/cli@latest init`
+- **WHEN** the user runs `pnx @arkenv/cli@latest init`
 - **THEN** the system SHALL display a welcome message and start the prompt sequence
 
 ### Requirement: Zero-Dependency Core Library

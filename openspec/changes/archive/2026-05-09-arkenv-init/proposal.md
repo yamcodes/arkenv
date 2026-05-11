@@ -16,7 +16,7 @@ We adopt a strict separation of packages:
 1. `arkenv` — the core library, remains untouched with zero dependencies.
 2. `@arkenv/cli` — the full interactive CLI with all UI tooling.
 
-Users will run the CLI via: `pnpm dlx @arkenv/cli@latest init`
+Users will run the CLI via: `pnx @arkenv/cli@latest init`
 
 ## Capabilities
 
@@ -32,4 +32,4 @@ Users will run the CLI via: `pnpm dlx @arkenv/cli@latest init`
 - **Modified Package**: `arkenv` loses its CLI dependencies and `bin` entry.
 - **CLI Ecosystem**: Establishes the pattern for future ArkEnv CLI subcommands (e.g., `check`, `lint`) via `@arkenv/cli`.
 - **Dependencies**: `@clack/prompts` and `picocolors` move from `arkenv` → `@arkenv/cli`.
-- **DX**: Users invoke the CLI via `pnpm dlx @arkenv/cli@latest init`.
+- **DX**: Users invoke the CLI via `pnx @arkenv/cli@latest init`.
