@@ -18,7 +18,6 @@ allowBuilds:
 
 catalog:
   '@ark/attest': 0.56.0
-  '@arkenv/cli': ^0.0.2
   '@axe-core/playwright': 4.11.3
   '@size-limit/esbuild-why': 12.1.0
   '@size-limit/preset-small-lib': 12.1.0
@@ -27,6 +26,7 @@ catalog:
   '@types/react': 19.2.14
   '@types/react-dom': 19.2.3
   '@vitejs/plugin-react': 6.0.1
+  '@vitest/coverage-v8': ^4.1.5
   '@vitest/ui': 4.1.5
   arktype: 2.2.0
   bun: 1.3.13
