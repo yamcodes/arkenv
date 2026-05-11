@@ -1,0 +1,82 @@
+---
+title: Agent Skills
+description: Give your AI assistant procedural knowledge of ArkEnv usage, patterns, and best practices.
+---
+
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+
+Skills give AI assistants like Claude Code on-demand procedural knowledge about ArkEnv. When installed, your AI assistant understands how to write correct schemas, handle complex types, and follow ArkEnv's recommended patterns.
+
+## Installation
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx skills add yamcodes/arkenv
+    ```
+  </Tab>
+
+  <Tab value="pnpm">
+    ```bash
+    pnx skills add yamcodes/arkenv
+    ```
+  </Tab>
+
+  <Tab value="yarn">
+    ```bash
+    yarn dlx skills add yamcodes/arkenv
+    ```
+  </Tab>
+
+  <Tab value="bun">
+    ```bash
+    bunx skills add yamcodes/arkenv
+    ```
+  </Tab>
+</Tabs>
+
+This installs the ArkEnv skill into your project. Once installed, your AI assistant automatically loads it when working with ArkEnv schemas.
+
+Learn more about skills at [skills.sh](https://skills.sh).
+
+## What's Included
+
+The `arkenv` skill consolidates both library usage and CLI operations into a single procedural guide for your AI assistant:
+
+- **Schema Definition**: Define typesafe schemas using ArkType notation or Standard Schema validators.
+- **Complex Types**: Implement arrays, unions, and custom validation logic.
+- **CLI Integration**: Initialize projects, scaffold schemas, and configure TypeScript settings.
+- **Framework Support**: Configure Vite and Bun integrations seamlessly.
+
+## How it Works
+
+The skill operates through a set of lifecycle stages to ensure the AI assistant provides accurate and idiomatic assistance.
+
+### 1. Detection
+
+The assistant is instructed to look for `env.ts` or ArkEnv imports to understand your current schema and setup. If ArkEnv is not yet installed, it will recommend using the CLI.
+
+### 2. Context Injection
+
+The skill provides the assistant with a deep understanding of ArkEnv's API, including:
+
+- The `arkenv` and `createEnv` functions.
+- ArkType's string-based schema syntax.
+- Framework-specific loading patterns (`process.env` vs `import.meta.env`).
+
+### 3. Pattern Enforcement
+
+The skill enforces ArkEnv's recommended patterns to ensure your codebase remains clean and typesafe:
+
+- **Centralized Schema**: Always export the `env` object from a central file (e.g., `src/env.ts`).
+- **Concise Definitions**: Prefer ArkType strings over verbose manual validation where possible.
+- **Environment Safety**: Use `.env` files locally and ensure they are excluded from source control.
+- **Strict Typing**: Enforce `strict: true` in `tsconfig.json`.
+
+## Next steps
+
+<Cards>
+  <Card title="ArkEnv CLI" href="/docs/cli" description="Quickly scaffold ArkEnv projects with an interactive CLI" />
+
+  <Card title="skills.sh" href="https://skills.sh" description="Learn more about AI skills" />
+</Cards>
