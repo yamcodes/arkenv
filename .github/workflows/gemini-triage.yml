@@ -94,6 +94,10 @@ jobs:
               },
               "tools": {
                 "core": [
+                  "read_file",
+                  "list_directory",
+                  "glob",
+                  "grep_search",
                   "run_shell_command(echo)"
                 ]
               }
