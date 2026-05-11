@@ -13,7 +13,7 @@ To add these skills to your AI agent (like Cursor, Claude Code, etc.), run:
 
 ```bash
 # Add both skills
-npx skills add yamcodes/arkenv --skill='*'
+npx skills add yamcodes/arkenv --all
 
 # Add only core arkenv skill
 npx skills add yamcodes/arkenv --skill=arkenv
