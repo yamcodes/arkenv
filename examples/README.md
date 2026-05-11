@@ -6,13 +6,13 @@ This directory contains a collection of example projects that demonstrate variou
 
 | Name                                                                                               | Description                                                                                                              |
 | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [basic](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                               | Minimal example of _using ArkEnv in a [Node.js](https://nodejs.org/) app_ for learning the fundamentals.                 |
-| [with-zod](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod)                         | Example of _using ArkEnv with [Zod](https://zod.dev/)_ for validation (without ArkType).                                 |
-| [with-bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun)                         | Minimal example of _using ArkEnv in a [Bun](https://bun.sh/) app_.                                                       |
-| [with-bun-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react)             | Minimal example of _using ArkEnv in a [Bun + React](https://bun.com/docs/guides/ecosystem/react) full-stack app_.        |
-| [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)           | Minimal example of _using ArkEnv in a [Vite](https://vite.dev/) + [React](https://react.dev/) app_.                      |
-| [with-solid-start](https://github.com/yamcodes/arkenv/tree/main/examples/with-solid-start)         | Minimal example of _using ArkEnv in a [SolidStart](https://start.solidjs.com) app_.                                      |
-| [with-standard-schema](https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema) | Example of _mixing ArkType with [Standard Schema](https://standardschema.dev/) validators like [Zod](https://zod.dev/)_. |
+| [basic](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                               | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals.                 |
+| [with-zod](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod)                         | Example of *using ArkEnv with [Zod](https://zod.dev/)* for validation (without ArkType).                                 |
+| [with-bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun)                         | Minimal example of *using ArkEnv in a [Bun](https://bun.sh/) app*.                                                       |
+| [with-bun-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react)             | Minimal example of *using ArkEnv in a [Bun + React](https://bun.com/docs/guides/ecosystem/react) full-stack app*.        |
+| [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)           | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/) + [React](https://react.dev/) app*.                      |
+| [with-solid-start](https://github.com/yamcodes/arkenv/tree/main/examples/with-solid-start)         | Minimal example of *using ArkEnv in a [SolidStart](https://start.solidjs.com) app*.                                      |
+| [with-standard-schema](https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema) | Example of *mixing ArkType with [Standard Schema](https://standardschema.dev/) validators like [Zod](https://zod.dev/)*. |
 
 > These examples are written in TypeScript, [the recommended way to work with ArkEnv](https://arkenv.js.org/docs/arkenv/quickstart#configure-typescript). That said, ArkEnv works with plain JavaScript. See the [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details and tradeoffs.
 

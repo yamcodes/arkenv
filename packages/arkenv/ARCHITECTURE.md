@@ -4,11 +4,11 @@
 
 ArkEnv ships three public entry points from a single npm package:
 
-| Entry | Import | ArkType required? | Purpose |
-|-------|--------|-------------------|---------|
-| Main | `import { createEnv } from "arkenv"` | Yes (static) | ArkType-first `createEnv` + `type` helper |
-| Standard | `import arkenv from "arkenv/standard"` | No | ArkType-free `createEnv` for Standard Schema users |
-| Core | `import { ArkEnvError } from "arkenv/core"` | No | Entry-agnostic primitives (errors, types) |
+| Entry    | Import                                      | ArkType required? | Purpose                                            |
+| -------- | ------------------------------------------- | ----------------- | -------------------------------------------------- |
+| Main     | `import { createEnv } from "arkenv"`        | Yes (static)      | ArkType-first `createEnv` + `type` helper          |
+| Standard | `import arkenv from "arkenv/standard"`      | No                | ArkType-free `createEnv` for Standard Schema users |
+| Core     | `import { ArkEnvError } from "arkenv/core"` | No                | Entry-agnostic primitives (errors, types)          |
 
 The main entry re-exports `type` from `src/arktype/index.ts`, which statically imports ArkType. This is intentional: the main entry is the ArkType-first surface and its dependency on ArkType is explicit. Users who need an ArkType-free import use `arkenv/standard` or `arkenv/core`.
 
@@ -29,6 +29,7 @@ If ArkType-specific behavior is needed, it belongs in `src/arktype/index.ts#pars
 ## Why One Package, Not Two
 
 Splitting `arkenv/standard` into a separate npm package (`arkenv-standard`) would:
+
 - Require separate versioning and release coordination
 - Duplicate shared code (`ArkEnvError`, `parseStandard`, `guards.ts`)
 - Fragment the documentation surface

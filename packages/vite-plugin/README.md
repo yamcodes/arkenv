@@ -2,9 +2,11 @@
 
 [Vite](https://vite.dev/) plugin to validate environment variables at build-time with ArkEnv.
 
-<br/>
-<br/>
-<br/>
+<br />
+
+<br />
+
+<br />
 
 ## [Read the docs →](https://arkenv.js.org/docs/vite-plugin)
 

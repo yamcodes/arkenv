@@ -1,0 +1,11 @@
+{
+	"plugins": ["remark-frontmatter", "remark-gfm"],
+	"settings": {
+		"bullet": "-",
+		"rule": "-",
+		"ruleSpaces": false,
+		"ruleRepetition": 3,
+		"fences": true,
+		"fence": "`"
+	}
+}
