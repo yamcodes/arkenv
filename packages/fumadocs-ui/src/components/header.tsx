@@ -78,7 +78,7 @@ export function Header({
 		>
 			<div
 				className={cn(
-					"absolute inset-0 border-b transition-[background-color,border-color,backdrop-filter] duration-300",
+					"absolute inset-0 border-b transition-[background-color,border-color] duration-300",
 					mobileOpen
 						? "border-b-transparent bg-fd-background"
 						: scrolled
