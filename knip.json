@@ -1,9 +1,55 @@
 {
-  "$schema": "https://unpkg.com/knip@6/schema.json",
-  "tags": [
-    "-lintignore"
-  ],
-  "workspaces": {
-    ".": {}
-  }
+	"$schema": "https://unpkg.com/knip@6/schema.json",
+	"tags": ["-lintignore"],
+	"ignore": [
+		".github/**",
+		"bin/**",
+		"examples/**",
+		"apps/playgrounds/**",
+		"tooling/playwright-www/**",
+		"packages/vite-plugin/src/__fixtures__/**",
+		"packages/arkenv/test/setup-attest.ts",
+		"packages/arkenv/src/arktype/coercion/index.ts"
+	],
+	"ignoreDependencies": ["esbuild", "bun", "vite-tsconfig-paths"],
+	"ignoreBinaries": ["tsx", "size-limit"],
+	"ignoreIssues": {
+		"packages/bun-plugin/src/index.ts": ["duplicates"],
+		"packages/arkenv/src/arktype/index.ts": ["types"],
+		"packages/arkenv/package.json": ["devDependencies"]
+	},
+	"workspaces": {
+		".": {},
+		"apps/www": {
+			"ignore": [
+				"components/ui/**",
+				"lib/cn.ts",
+				"lib/plugins/**",
+				"lib/twoslash-options.ts",
+				"source.config.ts",
+				"bin/postinstall.js"
+			],
+			"ignoreDependencies": [
+				"@arkenv/vite-plugin",
+				"@fumadocs/mdx-remote",
+				"@fumadocs/cli",
+				"@radix-ui/react-popover",
+				"@radix-ui/react-separator",
+				"@repo/scope",
+				"@repo/types",
+				"arkenv",
+				"arktype",
+				"import-in-the-middle",
+				"mdast-util-mdx-jsx",
+				"posthog-node",
+				"rehype-github-alerts",
+				"remark-directive",
+				"remark-gemoji",
+				"require-in-the-middle",
+				"styled-jsx",
+				"unist-util-visit",
+				"valibot"
+			]
+		}
+	}
 }
