@@ -19,7 +19,7 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://discord.gg/zAmUyuxXH9">Discord</a>
+  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Playground</a>
   <br />
 </div>
 
