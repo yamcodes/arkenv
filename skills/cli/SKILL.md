@@ -10,6 +10,7 @@ The ArkEnv CLI helps you set up and manage ArkEnv in your project.
 ## When to use
 
 Use this skill when:
+
 - You want to initialize ArkEnv in a new or existing project.
 - You need to scaffold a schema file.
 - You want to automatically configure TypeScript for ArkEnv.
@@ -19,6 +20,7 @@ Use this skill when:
 ### `init`
 
 Set up ArkEnv in your project. It will:
+
 1. Detect your framework (Vite, Bun, etc.).
 2. Ask for the path to your schema file.
 3. Install necessary dependencies.
