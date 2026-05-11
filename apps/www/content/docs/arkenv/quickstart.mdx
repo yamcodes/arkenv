@@ -3,6 +3,10 @@ title: Getting Started
 icon: Rocket
 ---
 
+## Compatibility
+
+ArkEnv is tested on [**Node.js LTS** and **Current**](https://github.com/yamcodes/arkenv/tree/main/examples/basic), [**Bun 1.3.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun), and [**Vite** from **2.9.18** to **7.x**](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react). Older versions may work but are not officially supported.
+
 ## Installation
 
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures ArkEnv for your project, installs dependencies, and scaffolds your initial schema.
@@ -13,16 +17,19 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
     npx @arkenv/cli@latest init
     ```
   </Tab>
+
   <Tab value="pnpm">
     ```bash
     pnpm dlx @arkenv/cli@latest init
     ```
   </Tab>
+
   <Tab value="yarn">
     ```bash
     yarn dlx @arkenv/cli@latest init
     ```
   </Tab>
+
   <Tab value="bun">
     ```bash
     bunx @arkenv/cli@latest init
@@ -35,9 +42,11 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
     <Steps>
       <Step>
         ### Install ArkEnv
+
         <Accordions defaultValue="Install ArkEnv + ArkType (recommended) + Plugins (optional)">
           <Accordion title="Install ArkEnv + ArkType (recommended) + Plugins (optional)">
             ArkEnv works best when paired with [ArkType](https://arktype.io):
+
             ```package-install
             arkenv arktype
             ```
@@ -46,10 +55,12 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
 
             If you're using Bun, see [ArkEnv for Bun](/docs/bun-plugin).
           </Accordion>
+
           <Accordion title="Install ArkEnv only">
             ```package-install
             arkenv
             ```
+
             Import from [arkenv/standard](/docs/arkenv/standard) to use ArkEnv without ArkType.
           </Accordion>
         </Accordions>
@@ -58,8 +69,9 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
       <Step>
         ### Configure TypeScript
 
-        Enable `strict` mode for optimal typesafety, and use a [modern TypeScript module
-        resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution):
+        ArkEnv requires **TypeScript >= 5.1** and `strict` mode in your `tsconfig.json`.
+
+        You're also required to use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution).
 
         ```json title="tsconfig.json"
         // [!code word:config]
@@ -70,9 +82,6 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
           }
         }
         ```
-
-        > You may omit `moduleResolution` if `module` is `"Preserve"`, `"Node16"`, or `"NodeNext"`. See
-        [Requirements](https://github.com/yamcodes/arkenv?tab=readme-ov-file#requirements) for details.
       </Step>
 
       <Step>
@@ -154,24 +163,11 @@ console.log(`Connecting to ${dbConfig.host}:${dbConfig.port}...`);
 ## Next steps
 
 <Cards>
-  <Card
-    title="Standard Schema Validators"
-    href="/docs/arkenv/integrations/standard-schema"
-    description="Use Zod, Valibot, or any Standard Schema validator with ArkEnv"
-  />
-  <Card
-    title="IDE Integrations"
-    href="/docs/arkenv/integrations/ide/vscode"
-    description="Get syntax highlighting, ErrorLens, and more for VS Code"
-  />
-  <Card
-    title="Examples"
-    href="/docs/arkenv/examples#examples"
-    description="Dive into ArkEnv with our collection of examples"
-  />
-  <Card
-    title="How to load environment variables"
-    href="/docs/arkenv/how-to/load-environment-variables"
-    description="Learn environment variables management in different environments and deployment scenarios"
-  />
+  <Card title="Standard Schema Validators" href="/docs/arkenv/integrations/standard-schema" description="Use Zod, Valibot, or any Standard Schema validator with ArkEnv" />
+
+  <Card title="IDE Integrations" href="/docs/arkenv/integrations/ide/vscode" description="Get syntax highlighting, ErrorLens, and more for VS Code" />
+
+  <Card title="Examples" href="/docs/arkenv/examples#examples" description="Dive into ArkEnv with our collection of examples" />
+
+  <Card title="How to load environment variables" href="/docs/arkenv/how-to/load-environment-variables" description="Learn environment variables management in different environments and deployment scenarios" />
 </Cards>

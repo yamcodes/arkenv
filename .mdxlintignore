@@ -1,0 +1,12 @@
+.agent/
+.changeset/
+.gemini/
+.github/
+openspec/
+**/CHANGELOG.md
+/README.md
+/packages/arkenv/README.md
+node_modules/
+dist/
+.next/
+.source/

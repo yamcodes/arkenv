@@ -7,20 +7,20 @@ icon: Scale
 ## Comparison cheatsheet
 
 | Feature                        | **ArkEnv** | T3 Env | vite-plugin-validate-env | znv | envalid | dotenv-safe |
-|:-------------------------------|:----------:|:------:|:------------------------:|:---:|:-------:|:-----------:|
-| **Native ArkType support\***   |     ✅      |   ❌    |            ❌             |  ❌  |    ❌    |      ❌      |
-| **Standard Schema**            |     ✅      |   ✅    |            ✅             |  ❌  |    ❌    |      ❌      |
-| **Typesafe**                   |     ✅      |   ✅    |            ✅             |  ✅  |    ✅    |      ❌      |
-| **Automatic coercion**         |     ✅      |   ❌    |            ❌             |  ✅  |    ✅    |      ❌      |
-| **Default values**             |     ✅      |   ✅    |            ✅             |  ✅  |    ✅    |      ❌      |
-| **First-class Vite support**   |     ✅      |   ❌    |            ✅             |  ❌  |    ❌    |      ❌      |
-| **Bun fullstack dev server**   |     ✅      |   ❌    |            ❌             |  ❌  |    ❌    |      ❌      |
-| **Zero external dependencies** |     ✅      |   ✅    |            ❌             |  ✅  |    ❌    |      ✅      |
-| **Command Line Interface**     |     ✅      |   ❌    |            ❌             |  ❌  |    ❌    |      ❌      |
+| :----------------------------- | :--------: | :----: | :----------------------: | :-: | :-----: | :---------: |
+| **Native ArkType support\***   |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **Standard Schema**            |      ✅     |    ✅   |             ✅            |  ❌  |    ❌    |      ❌      |
+| **Typesafe**                   |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
+| **Automatic coercion**         |      ✅     |    ❌   |             ❌            |  ✅  |    ✅    |      ❌      |
+| **Default values**             |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
+| **First-class Vite support**   |      ✅     |    ❌   |             ✅            |  ❌  |    ❌    |      ❌      |
+| **Bun fullstack dev server**   |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **Zero external dependencies** |      ✅     |    ✅   |             ❌            |  ✅  |    ❌    |      ✅      |
+| **Command Line Interface**     |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
 
 \* ArkType is supported directly without the need to use ArkType's `type` for each key separately.
 
-✅ Built-in / first-class support 
+✅ Built-in / first-class support
 
 🛠️ Requires manual implementation
 
@@ -50,10 +50,10 @@ At first glance, this approach delivers exactly what you need: validation, types
 
 However, once you move beyond "hello world" territory, the DIY path starts to feel a bit more tedious:
 
-* **Manual parsing** - Since `process.env` consists entirely of strings, every number or boolean requires manual parsing. ArkEnv handles this automatically with built-in [coercion](/docs/arkenv/coercion).
-* **Verbose errors** - Most validation libraries produce logs designed for complex API payloads. ArkEnv provides a concise error flow tailored specifically for environment variables, highlighting issues without the noise.
-* **Boilerplate fatigue** - While the DIY setup is simple, repeating it across multiple projects becomes, well, repetitive. ArkEnv consolidates these patterns into a single, declarative call.
-* **Framework nuances** - Passing the `process.env` object fails within toolchains like Vite or Bun, where variables are statically replaced. ArkEnv provides dedicated plugins that handle these complexities for you.
+- **Manual parsing** - Since `process.env` consists entirely of strings, every number or boolean requires manual parsing. ArkEnv handles this automatically with built-in [coercion](/docs/arkenv/coercion).
+- **Verbose errors** - Most validation libraries produce logs designed for complex API payloads. ArkEnv provides a concise error flow tailored specifically for environment variables, highlighting issues without the noise.
+- **Boilerplate fatigue** - While the DIY setup is simple, repeating it across multiple projects becomes, well, repetitive. ArkEnv consolidates these patterns into a single, declarative call.
+- **Framework nuances** - Passing the `process.env` object fails within toolchains like Vite or Bun, where variables are statically replaced. ArkEnv provides dedicated plugins that handle these complexities for you.
 
 After years of building enterprise-scale applications, I realized that while DIY is possible, a battle-tested, unified solution is almost always better. ArkEnv is that solution.
 

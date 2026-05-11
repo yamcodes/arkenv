@@ -30,7 +30,11 @@
 		"//#fix": {
 			"cache": false
 		},
+		"//#fix:mdx": {
+			"cache": false
+		},
 		"//#check": {},
+		"//#check:mdx": {},
 		"check:errors": {},
 		// Vitest
 		// See: https://turborepo.com/docs/guides/tools/vitest
