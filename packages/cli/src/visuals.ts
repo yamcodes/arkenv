@@ -1,4 +1,4 @@
-import { spinner as clackSpinner } from "@clack/prompts";
+import { cancel, outro, spinner as clackSpinner } from "@clack/prompts";
 import pc from "picocolors";
 
 /**
@@ -14,9 +14,12 @@ export const symbol = pc.blue("⛯");
 export type LoggerOptions = {
 	isQuiet: boolean;
 	isJson: boolean;
+	isYes?: boolean;
 };
 
 export class Logger {
+	private originalStdoutWrite = process.stdout.write;
+
 	constructor(private options: LoggerOptions) {}
 
 	private format(message: string): string {
@@ -78,5 +81,61 @@ export class Logger {
 	json(data: unknown) {
 		// JSON ALWAYS goes to stdout
 		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
+	}
+
+	get stdio() {
+		return this.options.isJson
+			? ([process.stdin, process.stderr, process.stderr] as const)
+			: ("inherit" as const);
+	}
+
+	interactiveStdout(enable: boolean) {
+		if (!this.options.isJson || this.options.isYes) return;
+
+		if (enable) {
+			process.stdout.write = process.stderr.write.bind(process.stderr);
+		} else {
+			process.stdout.write = this.originalStdoutWrite;
+		}
+	}
+
+	cancel(message: string) {
+		if (this.options.isJson) {
+			this.json({
+				status: "error",
+				message,
+			});
+		} else {
+			cancel(message);
+		}
+		process.exit(0);
+	}
+
+	fatal(message: string, error?: unknown) {
+		if (this.options.isJson) {
+			this.json({
+				status: "error",
+				message,
+				error: error instanceof Error ? error.message : String(error),
+			});
+		} else {
+			this.error(message);
+			if (error) {
+				this.log(pc.red(error instanceof Error ? error.stack! : String(error)));
+			}
+		}
+		process.exit(1);
+	}
+
+	finish(message: string, details?: Record<string, any>) {
+		if (this.options.isJson) {
+			this.json({
+				status: "success",
+				message,
+				details,
+			});
+		} else {
+			outro(message);
+		}
 	}
 }
