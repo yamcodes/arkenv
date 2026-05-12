@@ -131,16 +131,19 @@ export class InitCommand {
 				});
 			}
 
-			logger.step(
-				`1. Check ${code(displayPath)} and adapt it to your needs. Review your schema to refine types (e.g., ${code("number")}, ${code("boolean")}, etc.).`,
-			);
-			logger.step(
-				`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
-			);
-
-			if (!skillInstalled) {
+			if (skillInstalled) {
 				logger.step(
-					`3. Install the ArkEnv Agent Skill for AI assistance: ${code(`${dlx} skills add yamcodes/arkenv`)}`,
+					`${pc.cyan("/arkenv")} - complete the setup with your AI assistant. Automatically refine your schema and configure framework integrations.`,
+				);
+			} else {
+				logger.step(
+					`1. Check ${code(displayPath)} and adapt it to your needs. Review your schema to refine types (e.g., ${code("number")}, ${code("boolean")}, etc.).`,
+				);
+				logger.step(
+					`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
+				);
+				logger.step(
+					`3. (Recommended) Install the ArkEnv Agent Skill for AI assistance: ${code(`${dlx} skills add yamcodes/arkenv`)}`,
 				);
 			}
 
