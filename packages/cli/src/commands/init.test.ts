@@ -25,6 +25,7 @@ vi.mock("@clack/prompts", () => ({
 	}),
 	cancel: vi.fn(),
 	outro: vi.fn(),
+	note: vi.fn(),
 }));
 
 describe("InitCommand", () => {
