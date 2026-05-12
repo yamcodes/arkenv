@@ -33,16 +33,29 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 1. **Detection**:
    - Look for `env.ts` or `arkenv` imports to understand existing schema.
    - Check for framework config files (`vite.config.ts`, `bunfig.toml`, `package.json` scripts) to recommend appropriate plugins.
-2. **Setup**: If ArkEnv is not present, recommend using the CLI: `pnpm dlx @arkenv/cli@latest init`.
-3. **Pattern Enforcement**:
-   - **Centralize Schema**: Always define the schema in a central file (e.g., `env.ts`).
-   - **Frontend (Vite/Bun)**:
-     - Use the appropriate plugin for build-time validation.
-     - Access variables via native primitives (`import.meta.env` for Vite, `process.env` for Bun).
-     - Use **Type Augmentation** to make native primitives typesafe.
-   - **Backend (Node.js)**:
-     - Export a validated `env` object using `arkenv(schema)`.
-   - **Type Safety**: Ensure `strict` mode is enabled in `tsconfig.json`.
+2. **Setup**:
+   - If ArkEnv is not present or a fresh setup is requested, trigger the **Setup Workflow**.
+   - Prefer using the CLI for initialization: `pnpm dlx @arkenv/cli@latest init`.
+   - If the CLI cannot be used or fails, fall back to manual configuration.
+
+## Setup Workflow
+
+When setting up ArkEnv, follow these steps:
+
+1. **Initialize**: Run `pnpm dlx @arkenv/cli@latest init --yes`. This will attempt to detect the environment, install dependencies, and scaffold a base `env.ts`.
+2. **Review & Refine `env.ts`**:
+   - Inspect the generated `env.ts`. Ensure it captures the required environment variables.
+   - Refine types (e.g., change `string` to `number.port` or specific union types).
+3. **Manual Plugin Configuration**:
+   - The CLI installs plugins but might not update config files.
+   - **Vite**: Update `vite.config.ts` to import and include the `arkenv` plugin.
+   - **Bun**: Configure `bunfig.toml` or add the plugin to the runtime if necessary.
+4. **Typesafety & Augmentation**:
+   - **Vite**: Add type augmentation to `src/vite-env.d.ts` or a new `env.d.ts`.
+   - **Bun**: Add global type augmentation for `process.env`.
+   - Ensure `tsconfig.json` has `strict: true` (the CLI tries to do this, but verify).
+5. **Usage Update**: Scan the codebase for existing environment variable usage (`process.env` or `import.meta.env`) and ensure they are now typesafe via the augmentations.
+6. **Validation**: Run `pnpm check` (or equivalent) or a build to confirm everything is typesafe and valid.
 
 ## Core Concepts
 
