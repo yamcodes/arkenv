@@ -82,6 +82,7 @@ describe("env-template", () => {
 			};
 			const template = getEnvTemplate(options);
 			expect(template).toContain('import * as v from "valibot"');
+			expect(template).toContain("v.integer()");
 		});
 
 		it("throws error for unsupported validator", () => {

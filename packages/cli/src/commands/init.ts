@@ -4,6 +4,12 @@ import { confirm, isCancel } from "@clack/prompts";
 import dedent from "dedent";
 import pc from "picocolors";
 import type { CLI } from "../cli";
+import {
+	bootstrapBunConfig,
+	bootstrapViteConfig,
+	findBunConfig,
+	findViteConfig,
+} from "../lib/config-mutation";
 import type { ProjectOptions } from "../prompts";
 import { runPromptWizard } from "../prompts";
 import {
@@ -100,6 +106,35 @@ export class InitCommand {
 			const relPath = path.relative(process.cwd(), path.resolve(options.path));
 			const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
 			const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
+
+			// Framework-specific bootstrapping
+			if (options.framework === "vite") {
+				const viteConfigPath = await findViteConfig();
+				if (viteConfigPath) {
+					logger.step("Bootstrapping Vite plugin...");
+					const result = await bootstrapViteConfig(viteConfigPath, importPath);
+					if (result.success) {
+						logger.info(`Updated ${code(path.basename(viteConfigPath))}`);
+					} else {
+						logger.warn(
+							`Could not automatically update ${code(path.basename(viteConfigPath))}: ${result.error}`,
+						);
+						logger.info("Please add '@arkenv/vite-plugin' manually.");
+					}
+				} else {
+					logger.info(
+						"No Vite config found — please add '@arkenv/vite-plugin' to your Vite config manually.",
+					);
+				}
+			} else if (options.framework === "bun") {
+				const bunConfigPath = await findBunConfig();
+				const result = await bootstrapBunConfig(bunConfigPath);
+				if (result.success && result.instructions) {
+					logger.info(result.instructions);
+				} else if (!result.success) {
+					logger.error(result.error || "Bun bootstrap failed");
+				}
+			}
 
 			const dlx = getDlxCommand(packageManager);
 			const yesFlag = this.cli.isYes ? " --yes" : "";
