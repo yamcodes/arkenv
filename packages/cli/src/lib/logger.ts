@@ -105,7 +105,12 @@ export class Logger {
 				status: "error",
 				details: {
 					message,
-					error: error instanceof Error ? error.message : error ? String(error) : undefined,
+					error:
+						error instanceof Error
+							? error.message
+							: error
+								? String(error)
+								: undefined,
 				},
 			});
 		} else {

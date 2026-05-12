@@ -3,6 +3,7 @@ import path from "node:path";
 import { confirm, isCancel } from "@clack/prompts";
 import pc from "picocolors";
 import type { CLI } from "../cli";
+import type { ProjectOptions } from "../prompts";
 import { runPromptWizard } from "../prompts";
 import {
 	checkTsConfig,
@@ -22,8 +23,8 @@ export class InitCommand {
 		logger.interactiveStdout(true);
 
 		let shouldUpdateTsConfig = false;
-		let options;
-		
+		let options: ProjectOptions | null = null;
+
 		try {
 			const tsConfigResult = await checkTsConfig();
 
@@ -136,8 +137,9 @@ export class InitCommand {
 			}
 
 			if (skillInstalled) {
+				logger.step("complete the setup with your AI assistant. Use:");
 				logger.step(
-					`${pc.cyan("/arkenv")} - complete the setup with your AI assistant. Automatically refine your schema and configure framework integrations.`,
+					`${pc.cyan("/arkenv")} - automatically refine your schema and configure framework integrations.`,
 				);
 			} else {
 				logger.step(
