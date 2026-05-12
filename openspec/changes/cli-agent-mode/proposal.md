@@ -1,6 +1,6 @@
 ## Why
 
-AI-native developers increasingly onboard tools by instructing an agent (e.g., "set up ArkEnv for me"), but `@arkenv/cli` today outputs interactive prompts, spinners, and rich ANSI sequences that cause agents to misread terminal output, hallucinate success/failure, and burn unnecessary tokens. Adding a non-interactive, machine-readable mode makes the CLI usable as the execution engine in both Flow 1 (CLI-first) and Flow 2 (skill-first) onboarding, while also cementing the `--yes` flag as the canonical instruction in the `yamcodes/arkenv` skill so agents always delegate to the CLI rather than attempting to scaffold files manually.
+AI-native developers increasingly onboard tools by instructing an agent (e.g., "set up ArkEnv for me"), but `@arkenv/cli` today outputs interactive prompts, spinners, and rich ANSI sequences that cause agents to misread terminal output, hallucinate success/failure, and burn unnecessary tokens. Adding a non-interactive, machine-readable mode makes the CLI usable as the execution engine in both Flow 1 (CLI-first) and Flow 2 (skill-first) onboarding, while also cementing the `--agent` flag as the canonical instruction in the `yamcodes/arkenv` skill so agents always delegate to the CLI rather than attempting to scaffold files manually.
 
 ## What Changes
 

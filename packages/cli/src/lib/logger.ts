@@ -103,8 +103,10 @@ export class Logger {
 		if (this.options.isJson) {
 			this.json({
 				status: "error",
-				message,
-				error: error instanceof Error ? error.message : String(error),
+				details: {
+					message,
+					error: error instanceof Error ? error.message : error ? String(error) : undefined,
+				},
 			});
 		} else {
 			this.error(message);

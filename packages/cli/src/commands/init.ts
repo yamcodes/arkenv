@@ -22,42 +22,46 @@ export class InitCommand {
 		logger.interactiveStdout(true);
 
 		let shouldUpdateTsConfig = false;
-		const tsConfigResult = await checkTsConfig();
+		let options;
+		
+		try {
+			const tsConfigResult = await checkTsConfig();
 
-		if (tsConfigResult.status === "not_strict") {
-			if (isYes) {
-				shouldUpdateTsConfig = true;
-			} else {
-				logger.warn(
-					`TypeScript strict mode is not enabled in your ${code(tsConfigResult.file!)}.`,
-				);
-
-				const confirmStrict = await confirm({
-					message: `ArkEnv requires ${pc.dim("strict")} mode in your ${code(tsConfigResult.file!)}. Would you like to enable it now?`,
-					initialValue: true,
-					active: "Yes (Recommended)",
-					inactive: "No",
-				});
-
-				if (isCancel(confirmStrict)) {
-					logger.cancel("Operation cancelled.");
-				}
-
-				if (confirmStrict) {
+			if (tsConfigResult.status === "not_strict") {
+				if (isYes) {
 					shouldUpdateTsConfig = true;
+				} else {
+					logger.warn(
+						`TypeScript strict mode is not enabled in your ${code(tsConfigResult.file!)}.`,
+					);
+
+					const confirmStrict = await confirm({
+						message: `ArkEnv requires ${pc.dim("strict")} mode in your ${code(tsConfigResult.file!)}. Would you like to enable it now?`,
+						initialValue: true,
+						active: "Yes (Recommended)",
+						inactive: "No",
+					});
+
+					if (isCancel(confirmStrict)) {
+						logger.cancel("Operation cancelled.");
+					}
+
+					if (confirmStrict) {
+						shouldUpdateTsConfig = true;
+					}
 				}
 			}
+
+			const detectedFramework = await detectFramework();
+			options = await runPromptWizard(
+				{ framework: detectedFramework },
+				isYes,
+				this.cli.isAgent,
+			);
+		} finally {
+			// Restore stdout
+			logger.interactiveStdout(false);
 		}
-
-		const detectedFramework = await detectFramework();
-		const options = await runPromptWizard(
-			{ framework: detectedFramework },
-			isYes,
-			this.cli.isAgent,
-		);
-
-		// Restore stdout
-		logger.interactiveStdout(false);
 
 		if (!options) {
 			logger.cancel("Operation cancelled.");

@@ -65,7 +65,6 @@ The CLI entrypoint SHALL be process-tested for stable command behavior.
 #### Scenario: Help flag behavior
 - **WHEN** the CLI is run with `--help` or `-h`
 - **THEN** usage text SHALL be printed
-- **AND** the usage text SHALL include descriptions for `--yes`, `--quiet`, and `--json`
+- **AND** the usage text SHALL include descriptions for `--yes`, `--quiet`, `--json`, and `--agent`
 - **AND** the process SHALL exit with code `0`
-ND** the process SHALL exit with code `0`
 
