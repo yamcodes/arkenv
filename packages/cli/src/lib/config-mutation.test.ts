@@ -50,8 +50,28 @@ export default defineConfig({
 			expect(result.success, result.error).toBe(true);
 
 			const updatedContent = await fsp.readFile(configPath, "utf-8");
-			expect(updatedContent).toContain("arkenvPlugin");
+			expect(updatedContent).toContain("arkenvVitePlugin");
 			expect(updatedContent).toContain("@arkenv/vite-plugin");
+		});
+
+		it("injects plugin with Env when envImportPath is provided", async () => {
+			const configPath = path.join(tempDir, "vite.config.ts");
+			const initialContent = `
+import { defineConfig } from 'vite'
+export default defineConfig({
+  plugins: []
+})
+`.trim();
+			await fsp.writeFile(configPath, initialContent);
+
+			const result = await bootstrapViteConfig(configPath, "./env");
+			expect(result.success, result.error).toBe(true);
+
+			const updatedContent = await fsp.readFile(configPath, "utf-8");
+			expect(updatedContent).toContain("arkenvVitePlugin");
+			expect(updatedContent).toContain("@arkenv/vite-plugin");
+			expect(updatedContent).toContain("Env");
+			expect(updatedContent).toContain("arkenvVitePlugin(Env)");
 		});
 
 		it("injects plugin into a simple object export", async () => {
@@ -67,7 +87,7 @@ export default {
 			expect(result.success, result.error).toBe(true);
 
 			const updatedContent = await fsp.readFile(configPath, "utf-8");
-			expect(updatedContent).toContain("arkenvPlugin");
+			expect(updatedContent).toContain("arkenvVitePlugin");
 		});
 
 		it("handles missing plugins array", async () => {
@@ -83,15 +103,15 @@ export default {
 
 			const updatedContent = await fsp.readFile(configPath, "utf-8");
 			expect(updatedContent).toContain("plugins");
-			expect(updatedContent).toContain("arkenvPlugin");
+			expect(updatedContent).toContain("arkenvVitePlugin");
 		});
 
 		it("does not duplicate plugin if already exists", async () => {
 			const configPath = path.join(tempDir, "vite.config.ts");
 			const initialContent = `
-import { arkenvPlugin } from "@arkenv/vite-plugin"
+import arkenvVitePlugin from "@arkenv/vite-plugin"
 export default {
-  plugins: [arkenvPlugin()]
+  plugins: [arkenvVitePlugin()]
 }
 `.trim();
 			await fsp.writeFile(configPath, initialContent);
@@ -100,8 +120,9 @@ export default {
 			expect(result.success, result.error).toBe(true);
 
 			const updatedContent = await fsp.readFile(configPath, "utf-8");
-			const matches = updatedContent.match(/arkenvPlugin\(\)/g);
-			expect(matches?.length).toBe(1);
+			const matches = updatedContent.match(/arkenvVitePlugin/g);
+			// One in import, one in plugins
+			expect(matches?.length).toBe(2);
 		});
 
 		it("returns failure for invalid/too complex config", async () => {

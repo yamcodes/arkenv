@@ -1,7 +1,7 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
-import { generateCode, loadFile } from "magicast";
+import { detectCodeFormat, generateCode, loadFile } from "magicast";
 import pc from "picocolors";
 
 export async function findViteConfig(): Promise<string | null> {
@@ -43,17 +43,13 @@ export async function findBunConfig(): Promise<string | null> {
 
 export async function bootstrapViteConfig(
 	configPath: string,
+	envImportPath?: string,
 ): Promise<{ success: boolean; error?: string }> {
 	try {
 		const mod = await loadFile(configPath);
+		const initialCode = generateCode(mod).code;
 
-		// 1. Add import
-		mod.imports.$add({
-			from: "@arkenv/vite-plugin",
-			imported: "arkenvPlugin",
-		});
-
-		// 2. Find the plugins array
+		// 1. Find the plugins array
 		let config = mod.exports.default;
 
 		// Handle defineConfig({...}) wrapper
@@ -83,10 +79,29 @@ export async function bootstrapViteConfig(
 
 		if (Array.isArray(config.plugins)) {
 			// Check if already exists using the generated code
-			const hasPlugin = generateCode(mod).code.includes("arkenvPlugin");
+			const hasPlugin =
+				initialCode.includes("arkenvVitePlugin") ||
+				initialCode.includes("arkenvPlugin");
 
 			if (!hasPlugin) {
+				// Add imports
+				mod.imports.$add({
+					from: "@arkenv/vite-plugin",
+					local: "arkenvVitePlugin",
+					imported: "default",
+				});
+
+				if (envImportPath) {
+					mod.imports.$add({
+						from: envImportPath,
+						imported: "Env",
+					});
+				}
+
 				config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
+			} else {
+				// Already has plugin, nothing to do
+				return { success: true };
 			}
 		} else {
 			return {
@@ -95,18 +110,19 @@ export async function bootstrapViteConfig(
 			};
 		}
 
-		let code = generateCode(mod).code;
-		code = code.replace(
-			/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g,
-			"arkenvPlugin()",
-		);
+		let code = generateCode(mod, { format: detectCodeFormat(initialCode) }).code;
+		const pluginCall = envImportPath
+			? "arkenvVitePlugin(Env)"
+			: "arkenvVitePlugin()";
+		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
 
 		await fsp.writeFile(configPath, code, "utf-8");
 		return { success: true };
-	} catch {
+	} catch (e: unknown) {
+		const error = e instanceof Error ? e.message : String(e);
 		return {
 			success: false,
-			error: `Failed to parse ${path.basename(configPath)}. It might be too complex for automatic mutation.`,
+			error: `Failed to parse ${path.basename(configPath)}: ${error}`,
 		};
 	}
 }
@@ -124,11 +140,11 @@ export async function bootstrapBunConfig(_configPath?: string | null): Promise<{
 		const instructions = dedent`
 			To complete Bun integration, add the following to your setup/preload file:
 			
-			${pc.cyan('import { arkenv } from "@arkenv/bun-plugin";')}
+			${pc.cyan('import arkenv from "@arkenv/bun-plugin";')}
 			
 			${pc.cyan("Bun.build({")}
 			${pc.cyan("  // ... other config")}
-			${pc.cyan("  plugins: [arkenv()],")}
+			${pc.cyan("  plugins: [arkenv],")}
 			${pc.cyan("});")}
 			
 			If you don't have a setup file, create one (e.g., ${pc.dim("bun.setup.ts")}) and add it to your ${pc.dim("bunfig.toml")}:

@@ -109,12 +109,24 @@ export class InitCommand {
 				});
 			}
 
+			if (tsResult.status === "updated") {
+				logger.info(`Enforced strict: true in your ${code(tsResult.file!)}`);
+			} else if (tsResult.status === "error") {
+				logger.warn(
+					`Could not automatically update ${code(tsResult.file || "tsconfig.json")}. Please ensure 'strict: true' is set manually.`,
+				);
+			}
+
+			const relPath = path.relative(process.cwd(), path.resolve(options.path));
+			const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
+			const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
+
 			// Framework-specific bootstrapping
 			if (options.framework === "vite") {
 				const viteConfigPath = await findViteConfig();
 				if (viteConfigPath) {
 					logger.step("Bootstrapping Vite plugin...");
-					const result = await bootstrapViteConfig(viteConfigPath);
+					const result = await bootstrapViteConfig(viteConfigPath, importPath);
 					if (result.success) {
 						logger.info(`Updated ${code(path.basename(viteConfigPath))}`);
 					} else {
@@ -137,18 +149,6 @@ export class InitCommand {
 					logger.error(result.error || "Bun bootstrap failed");
 				}
 			}
-
-			if (tsResult.status === "updated") {
-				logger.info(`Enforced strict: true in your ${code(tsResult.file!)}`);
-			} else if (tsResult.status === "error") {
-				logger.warn(
-					`Could not automatically update ${code(tsResult.file || "tsconfig.json")}. Please ensure 'strict: true' is set manually.`,
-				);
-			}
-
-			const relPath = path.relative(process.cwd(), path.resolve(options.path));
-			const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
-			const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
 
 			const dlx = getDlxCommand(packageManager);
 			let skillInstalled = false;
