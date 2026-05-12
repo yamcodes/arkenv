@@ -52,7 +52,17 @@ When setting up ArkEnv, follow these steps:
    - **Bun**: Configure `bunfig.toml` or add the plugin to the runtime if necessary.
 4. **Typesafety & Augmentation**:
    - **Vite**: Add type augmentation to `src/vite-env.d.ts` or a new `env.d.ts`.
-   - **Bun**: Add global type augmentation for `process.env`.
+     ```ts
+     interface ImportMetaEnv extends import("@arkenv/vite-plugin").ImportMetaEnvAugmented<typeof import("./env").Env> {}
+     ```
+   - **Bun**: Create a `bun-env.d.ts` file (or update an existing one) with the following pattern:
+     ```ts
+     /// <reference types="bun-types" />
+     type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<typeof import("./src/env").default>;
+     declare namespace NodeJS {
+       interface ProcessEnv extends ProcessEnvAugmented {}
+     }
+     ```
    - Ensure `tsconfig.json` has `strict: true` (the CLI tries to do this, but verify).
 5. **Usage Update**: Scan the codebase for existing environment variable usage (`process.env` or `import.meta.env`) and ensure they are now typesafe via the augmentations.
 6. **Validation**: Run `pnpm check` (or equivalent) or a build to confirm everything is typesafe and valid.
