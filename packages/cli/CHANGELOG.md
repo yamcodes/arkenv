@@ -1,5 +1,59 @@
 # @arkenv/cli
 
+## 0.0.5
+
+### Patch Changes
+
+- #### Add agent skill support _[`#945`](https://github.com/yamcodes/arkenv/pull/945) [`63d6237`](https://github.com/yamcodes/arkenv/commit/63d6237d5d928e965aca64e473e7940eedc019cf) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now has a new `--agent` flag that lets the ArkEnv agent skill interact with it in a token-sensitive way. The skill has been updated to support this new mode.
+
+  Also, the CLI will now suggest to install the agent skill for you when in non-`--agent` mode.
+
+  Read more in the [ArkEnv CLI docs](https://arkenv.js.org/docs/cli).
+
+- #### Improve "done" message text _[`#954`](https://github.com/yamcodes/arkenv/pull/954) [`fe10ef4`](https://github.com/yamcodes/arkenv/commit/fe10ef416d4605a3f0486d2dd32a68c7a6521d95) [@yamcodes](https://github.com/yamcodes)_
+
+  The output now clearly distinguishes between the local scaffolding and the AI-powered refinement:
+
+  ```
+      1 │
+      2 ◇  Next steps ─────────────────────────────────────────────────────────────────╮
+      3 │                                                                              │
+      4 │  1. Check ./src/env.ts and refine your environment schema.                   │
+      5 │  2. Import and use: import { env } from "./src/env"                          │
+      6 │  3. (Recommended) Install the AI skill: pnpm dlx skills add yamcodes/arkenv  │
+      7 │     Then run /arkenv inside your AI assistant to finish.                     │
+      8 │                                                                              │
+      9 ├──────────────────────────────────────────────────────────────────────────────╯
+     10 │
+     11 └  ⛯ ArkEnv scaffolding complete. Happy coding!
+  ```
+
+- #### Install framework plugins _[`#948`](https://github.com/yamcodes/arkenv/pull/948) [`1dca74c`](https://github.com/yamcodes/arkenv/commit/1dca74c26a00681794943526ada6923a5aee6330) [@yamcodes](https://github.com/yamcodes)_
+
+  The ArkEnv CLI now installs framework plugins as part of the scaffolding process if a relevant runtime/framework is selected.
+
+- #### Passthrough `--yes` and `--quiet` to underlying process _[`#952`](https://github.com/yamcodes/arkenv/pull/952) [`10cbb7d`](https://github.com/yamcodes/arkenv/commit/10cbb7d4061ad868f313660709db39e35260c94e) [@yamcodes](https://github.com/yamcodes)_
+
+  The ArkEnv CLI will now pass the flags `--yes` and `--quiet` to underlying processes.
+
+  This means that if you run:
+
+  ```sh
+  pnx @arkenv/cli init --yes
+  ```
+
+  It would now use the recommended settings and avoid prompts even in sub-processes like the Vercel Skills process to add the ArkEnv skill.
+
+  Similarly, if you run:
+
+  ```sh
+  pnx @arkenv/cli init --quiet
+  ```
+
+  You will not be exposed to the underlying Vercel Skills output, except for errors which are buffered in memory. (Resolves on exit code 0, discarding buffered output on success)
+
 ## 0.0.4
 
 ### Patch Changes
