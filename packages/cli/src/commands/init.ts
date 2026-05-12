@@ -53,6 +53,7 @@ export class InitCommand {
 		const options = await runPromptWizard(
 			{ framework: detectedFramework },
 			isYes,
+			this.cli.isAgent,
 		);
 
 		// Restore stdout
@@ -107,7 +108,7 @@ export class InitCommand {
 			const dlx = getDlxCommand(packageManager);
 			let skillInstalled = false;
 			if (options.installSkill && process.env.SKIP_INSTALL !== "true") {
-				logger.step("Installing ArkEnv AI skill...");
+				logger.step("Installing ArkEnv agent skill...");
 				await new Promise<void>((resolve) => {
 					const child = spawn(`${dlx} skills add yamcodes/arkenv`, [], {
 						stdio: logger.stdio as any,

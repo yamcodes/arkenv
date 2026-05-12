@@ -20,6 +20,7 @@ export async function runPromptWizard(
 		framework?: ProjectOptions["framework"];
 	},
 	isYes = false,
+	isAgent = false,
 ): Promise<ProjectOptions | null> {
 	const detectedKeys = await getEnvExampleKeys();
 
@@ -126,13 +127,16 @@ export async function runPromptWizard(
 					});
 				}
 			},
-			installSkill: () =>
-				confirm({
-					message: "Would you like to install the ArkEnv agent skill?",
-					initialValue: true,
-					active: "Yes (Recommended)",
-					inactive: "No",
-				}),
+			installSkill: () => {
+				if (!isAgent) {
+					return confirm({
+						message: "Would you like to install the ArkEnv agent skill?",
+						initialValue: true,
+						active: "Yes (Recommended)",
+						inactive: "No",
+					});
+				}
+			},
 		},
 		{
 			onCancel: () => {
