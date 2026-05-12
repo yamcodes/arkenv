@@ -20,7 +20,6 @@ describe("cli smoke tests", () => {
 	});
 
 	it("unknown command prints usage and exits 1", async () => {
-		// Do not 'await' the exec call directly here, pass the promise to expect
 		await expect(exec(`node ${cliPath} unknown`)).rejects.toMatchObject({
 			code: 1,
 			stdout: expect.stringContaining("Usage:"),
@@ -32,5 +31,25 @@ describe("cli smoke tests", () => {
 			code: 1,
 			stdout: expect.stringContaining("Usage:"),
 		});
+	});
+
+	it("--yes works with --help", async () => {
+		const { stdout, stderr } = await exec(`node ${cliPath} --help --yes`);
+		expect(stdout + stderr).toContain("Usage:");
+	});
+
+	it("--json works with --help", async () => {
+		const { stdout, stderr } = await exec(`node ${cliPath} --help --json`);
+		expect(stdout + stderr).toContain("Usage:");
+	});
+
+	it("--quiet works with --help", async () => {
+		const { stdout, stderr } = await exec(`node ${cliPath} --help --quiet`);
+		expect(stdout + stderr).toContain("Usage:");
+	});
+
+	it("--agent works with --help", async () => {
+		const { stdout, stderr } = await exec(`node ${cliPath} --help --agent`);
+		expect(stdout + stderr).toContain("Usage:");
 	});
 });
