@@ -13,6 +13,11 @@
 
 ## 3. Testing and Validation
 
-- [ ] 3.1 Write tests to verify that `--yes` is passed to skill processes ONLY when the CLI receives `--yes` or `-y`.
-- [ ] 3.2 Add a test case for successful quiet execution, ensuring no output is produced.
-- [ ] 3.3 Add a test case for failed quiet execution, ensuring the captured error log is included in the output.
+- [ ] 3.1 Write unit tests to verify that `--yes` is passed to skill processes ONLY when the CLI receives `--yes` or `-y`.
+- [ ] 3.2 Add integration tests for successful quiet execution, ensuring no output is produced when `--quiet` or `-q` is provided.
+- [ ] 3.3 Add integration tests for failed quiet execution, ensuring the captured error log is included in the output.
+
+## 4. Documentation
+
+- [ ] 4.1 Update the CLI usage documentation (e.g., in README, docs site, or CLI help output) to describe the behavior of the `--yes` (`-y`) and `--quiet` (`-q`) flags.
+- [ ] 4.2 Document the error handling behavior (capturing and displaying logs on failure) when running skill processes in quiet mode.
