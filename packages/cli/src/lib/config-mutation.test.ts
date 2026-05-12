@@ -125,6 +125,36 @@ export default {
 			expect(matches?.length).toBe(2);
 		});
 
+		it("preserves original indentation", async () => {
+			const configPath = path.join(tempDir, "vite.config.ts");
+			const initialContent = `export default {
+    plugins: []
+}
+`; // 4-space indentation
+			await fsp.writeFile(configPath, initialContent);
+
+			const result = await bootstrapViteConfig(configPath);
+			expect(result.success, result.error).toBe(true);
+
+			const updatedContent = await fsp.readFile(configPath, "utf-8");
+			// If detected correctly, the indentation should be consistent.
+			// Magicast might still use its default for new blocks if not fully compatible,
+			// but we want to avoid the "excessive" indentation reported by the user.
+			expect(updatedContent).toMatch(/ {4}plugins: \[/);
+		});
+
+		it("preserves tab indentation", async () => {
+			const configPath = path.join(tempDir, "vite.config.ts");
+			const initialContent = "export default {\n\tplugins: []\n}\n";
+			await fsp.writeFile(configPath, initialContent);
+
+			const result = await bootstrapViteConfig(configPath);
+			expect(result.success, result.error).toBe(true);
+
+			const updatedContent = await fsp.readFile(configPath, "utf-8");
+			expect(updatedContent).toContain("\tplugins: [");
+		});
+
 		it("returns failure for invalid/too complex config", async () => {
 			const configPath = path.join(tempDir, "vite.config.ts");
 			const initialContent = `

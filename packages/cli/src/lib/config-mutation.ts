@@ -110,7 +110,9 @@ export async function bootstrapViteConfig(
 			};
 		}
 
-		let code = generateCode(mod, { format: detectCodeFormat(initialCode) }).code;
+		let code = generateCode(mod, {
+			format: detectCodeFormat(initialCode),
+		}).code;
 		const pluginCall = envImportPath
 			? "arkenvVitePlugin(Env)"
 			: "arkenvVitePlugin()";
