@@ -45,6 +45,7 @@ This is a **pnpm monorepo** managed with **Turbo**.
 - **Types**: Prefer `type` over `interface` for consistency.
 - **Formatting**: Handled by Biome. Run `pnpm run fix` before committing.
 - **Imports**: Use Node.js `import` protocol (e.g., `import fs from "node:fs"`).
+- **Markdown**: Use backticks for placeholders (e.g., `<name>`) to prevent them from being parsed as JSX tags by `mdxlint`.
 
 ### Testing Strategy
 
