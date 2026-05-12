@@ -18,7 +18,8 @@ export class CLI {
 		this.isQuiet = this.args.includes("--quiet") || this.args.includes("-q");
 		this.isJson = this.args.includes("--json") || this.args.includes("-j");
 		this.isAgent = this.args.includes("--agent") || this.args.includes("-a");
-		this.helpRequested = this.args.includes("--help") || this.args.includes("-h");
+		this.helpRequested =
+			this.args.includes("--help") || this.args.includes("-h");
 
 		if (this.isAgent) {
 			this.isYes = true;
@@ -38,7 +39,9 @@ export class CLI {
 		this.logger.log("\nUsage:");
 		this.logger.log("  arkenv init    Set up ArkEnv in your project");
 		this.logger.log("\nOptions:");
-		this.logger.log("  --yes, -y      Skip prompts and use recommended defaults");
+		this.logger.log(
+			"  --yes, -y      Skip prompts and use recommended defaults",
+		);
 		this.logger.log("  --agent, -a    Agent mode: --yes --quiet --json");
 		this.logger.log("  --quiet, -q    Suppress spinners and ANSI colors");
 		this.logger.log("  --json, -j     Output structured JSON to stdout");

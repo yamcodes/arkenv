@@ -1,4 +1,4 @@
-import { cancel, outro, spinner as clackSpinner } from "@clack/prompts";
+import { cancel, spinner as clackSpinner, outro } from "@clack/prompts";
 import pc from "picocolors";
 
 /**
