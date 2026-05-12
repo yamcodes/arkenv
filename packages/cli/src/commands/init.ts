@@ -158,13 +158,14 @@ export class InitCommand {
 
 			let stdout = "";
 			let stderr = "";
+			const MAX_BUFFER = 10_000;
 
 			if (isQuiet) {
 				child.stdout?.on("data", (data) => {
-					stdout += data.toString();
+					stdout = (stdout + data.toString()).slice(-MAX_BUFFER);
 				});
 				child.stderr?.on("data", (data) => {
-					stderr += data.toString();
+					stderr = (stderr + data.toString()).slice(-MAX_BUFFER);
 				});
 			}
 

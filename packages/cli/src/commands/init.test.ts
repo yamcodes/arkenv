@@ -193,6 +193,69 @@ describe("InitCommand", () => {
 		);
 	});
 
+	it("caps the output buffers in quiet mode", async () => {
+		const cli = new CLI(["node", "bin", "init", "--quiet"]);
+		const command = new InitCommand(cli);
+
+		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
+		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
+			validator: "arktype",
+			framework: "node",
+			path: "env.ts",
+			language: "ts",
+			installSkill: true,
+		});
+		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
+			tsConfigResult: { status: "already_strict" },
+			installCmd: "npm install",
+			packageManager: "npm",
+		});
+
+		const stdout = new Readable({ read() {} });
+		const stderr = new Readable({ read() {} });
+
+		spawnMock.mockReturnValueOnce({
+			stdout,
+			stderr,
+			on: (event: string, cb: any) => {
+				if (event === "close") {
+					setTimeout(() => cb(1), 0);
+				}
+			},
+		});
+
+		const fatalSpy = vi.spyOn(cli.logger, "fatal").mockImplementation(() => {
+			throw new Error("fatal called");
+		});
+
+		// Trigger large data on streams
+		const largeData = "A".repeat(11_000);
+		const expectedData = "A".repeat(10_000);
+
+		setTimeout(() => {
+			stdout.push(largeData);
+			stdout.push(null);
+			stderr.push("error");
+			stderr.push(null);
+		}, 0);
+
+		await expect(command.run()).rejects.toThrow("fatal called");
+
+		expect(fatalSpy).toHaveBeenCalledWith(
+			expect.anything(),
+			expect.objectContaining({
+				message: expect.not.stringContaining(largeData),
+			}),
+		);
+		expect(fatalSpy).toHaveBeenCalledWith(
+			expect.anything(),
+			expect.objectContaining({
+				message: expect.stringContaining(expectedData),
+			}),
+		);
+	});
+
 	it("includes signal in error message when process is terminated by signal (code is null)", async () => {
 		const cli = new CLI(["node", "bin", "init", "--quiet"]);
 		const command = new InitCommand(cli);
