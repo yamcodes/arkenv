@@ -127,6 +127,9 @@ async function main() {
 		log.step(
 			`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
 		);
+		log.step(
+			`3. Install the ArkEnv Agent Skill for AI assistance: ${code("npx skills add yamcodes/arkenv")}`,
+		);
 
 		outro(`${symbol} ${pc.dim("Happy coding!")}`);
 	} catch (error) {
