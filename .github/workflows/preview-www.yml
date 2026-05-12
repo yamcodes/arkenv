@@ -147,8 +147,6 @@ jobs:
                 '>',
                 '> We enforce hourly and daily rate limits to ensure stability and fair usage of resources.',
                 '>',
-                '> Please see our [FAQ](https://docs.arkenv.dev/faq) for further information.',
-                '>',
                 '> </details>',
                 ''
               ].join('\n');
