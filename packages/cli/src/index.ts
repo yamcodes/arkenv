@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import { CLI } from "./cli";
+import { HelpCommand } from "./commands/help";
 import { InitCommand } from "./commands/init";
 
 async function main() {
 	const cli = new CLI(process.argv);
 
 	if (cli.helpRequested) {
-		cli.printHelp();
+		await new HelpCommand(cli).run();
 		process.exit(0);
 	}
 
@@ -16,7 +17,7 @@ async function main() {
 		} else {
 			cli.logger.error("Missing command.");
 		}
-		cli.printHelp();
+		await new HelpCommand(cli).run();
 		process.exit(1);
 	}
 

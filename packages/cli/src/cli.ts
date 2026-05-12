@@ -1,4 +1,3 @@
-import { version } from "../package.json";
 import { Logger } from "./lib/logger";
 
 export class CLI {
@@ -32,19 +31,5 @@ export class CLI {
 			isJson: this.isJson,
 			isYes: this.isYes,
 		});
-	}
-
-	printHelp() {
-		this.logger.log(`ArkEnv CLI v${version}`);
-		this.logger.log("\nUsage:");
-		this.logger.log("  arkenv init    Set up ArkEnv in your project");
-		this.logger.log("\nOptions:");
-		this.logger.log(
-			"  --yes, -y      Skip prompts and use recommended defaults",
-		);
-		this.logger.log("  --agent, -a    Agent mode: --yes --quiet --json");
-		this.logger.log("  --quiet, -q    Suppress spinners and ANSI colors");
-		this.logger.log("  --json, -j     Output structured JSON to stdout");
-		this.logger.log("  --help, -h     Show this help message");
 	}
 }
