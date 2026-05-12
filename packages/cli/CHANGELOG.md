@@ -1,5 +1,12 @@
 # @arkenv/cli
 
+## 0.0.4
+
+### Patch Changes
+
+- #### Add ArkEnv Agent Skill as recommended next step _[`#944`](https://github.com/yamcodes/arkenv/pull/944) [`718fb4b`](https://github.com/yamcodes/arkenv/commit/718fb4bdfbefca9cbf4da32abf252642f5f19377) [@yamcodes](https://github.com/yamcodes)_
+- #### Adapt CLI templates for framework plugins (Vite/Bun) _[`#943`](https://github.com/yamcodes/arkenv/pull/943) [`eba2f83`](https://github.com/yamcodes/arkenv/commit/eba2f83090bec585961da834473af2647837d5e1) [@yamcodes](https://github.com/yamcodes)_
+
 ## 0.0.3
 
 ### Patch Changes
