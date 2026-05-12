@@ -5,13 +5,13 @@ description: "Answer questions about ArkEnv and help implement environment varia
 
 # ArkEnv
 
-ArkEnv is a typesafe environment variable validator for modern JavaScript runtimes. It uses ArkType by default for schema definition but supports any Standard Schema validator (like Zod or Valibot).
+ArkEnv is a typesafe environment variable validator for modern JavaScript runtimes. It uses `ArkType` by default for schema definition but supports any `Standard Schema` validator (like `Zod` or `Valibot`).
 
 ## Capabilities
 
 ### Core Usage
 
-- Define typesafe schemas using ArkType notation or any Standard Schema validator.
+- Define typesafe schemas using `ArkType` notation or any `Standard Schema` validator.
 - Implement complex types, arrays, and unions.
 - Configure automatic coercion and default values.
 - Follow best practices for schema organization.
@@ -25,13 +25,13 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 ### CLI (Setup & DevOps)
 
 - Initialize ArkEnv in new or existing projects using `pnpm dlx @arkenv/cli@latest init`.
-- Scaffold schema files and detect framework-specific configurations (Vite, Bun, etc.).
+- Scaffold schema files and detect framework-specific configurations (`Vite`, `Bun`, etc.).
 - Automatically configure `tsconfig.json` and environment types for optimal typesafety.
 
 ## Operational Logic
 
 1. **Detection**:
-   - Look for `env.ts` or ArkEnv imports to understand existing schema.
+   - Look for `env.ts` or `arkenv` imports to understand existing schema.
    - Check for framework config files (`vite.config.ts`, `bunfig.toml`, `package.json` scripts) to recommend appropriate plugins.
 2. **Setup**: If ArkEnv is not present, recommend using the CLI: `pnpm dlx @arkenv/cli@latest init`.
 3. **Pattern Enforcement**:

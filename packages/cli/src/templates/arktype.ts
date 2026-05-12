@@ -19,8 +19,8 @@ export const arktypeTemplate = (envKeys?: string[], framework?: string) => {
 
 		/**
 		 * Environment variable schema.
-		 * In Vite, use @arkenv/vite-plugin to validate these at build-time
-		 * and provide typesafety for import.meta.env.
+		 * In Vite, use \`@arkenv/vite-plugin\` to validate these at build-time
+		 * and provide typesafety for \`import.meta.env\`.
 		 */
 		export const Env = type({
 ${schemaFields}
@@ -34,8 +34,8 @@ ${schemaFields}
 
 		/**
 		 * Environment variable schema.
-		 * In Bun, use @arkenv/bun-plugin to validate these at build-time
-		 * and provide typesafety for process.env.
+		 * In Bun, use \`@arkenv/bun-plugin\` to validate these at build-time
+		 * and provide typesafety for \`process.env\`.
 		 */
 		export const Env = type({
 ${schemaFields}

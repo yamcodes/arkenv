@@ -30,6 +30,8 @@ describe("env-template", () => {
 			expect(template).toContain('import { type } from "arkenv"');
 			expect(template).not.toContain("export const env = arkenv(Env)");
 			expect(template).toContain("export const Env = type({");
+			expect(template).toContain("use `@arkenv/vite-plugin` to validate these");
+			expect(template).toContain("typesafety for `@import.meta.env`".replace("@", ""));
 		});
 
 		it("returns arktype template for bun when validator is arktype", () => {
@@ -45,8 +47,9 @@ describe("env-template", () => {
 			expect(template).toContain('import { type } from "arkenv"');
 			expect(template).not.toContain("export const env = arkenv(Env)");
 			expect(template).toContain("export const Env = type({");
-			expect(template).toContain("In Bun, use @arkenv/bun-plugin");
+			expect(template).toContain("In Bun, use \\`@arkenv/bun-plugin\\`".replace(/\\/g, ""));
 			expect(template).toContain("validate these at build-time");
+			expect(template).toContain("typesafety for \\`process.env\\`".replace(/\\/g, ""));
 		});
 
 		it("returns zod template when validator is zod", () => {
