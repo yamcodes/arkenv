@@ -1,13 +1,8 @@
 ---
 name: openspec-apply-change
-description: Implement tasks from an OpenSpec change. Use when the user wants to start implementing, continue implementation, or work through tasks.
-license: MIT
-compatibility: Requires openspec CLI.
+description: "Implement tasks from an OpenSpec change. Use when the user wants to start implementing, continue implementation, or work through tasks within an active OpenSpec change. Triggers on: 'apply change', 'implement tasks', '/opsx:apply'."
 metadata:
   internal: true
-  author: openspec
-  version: "1.0"
-  generatedBy: "1.3.1"
 ---
 
 Implement tasks from an OpenSpec change.
