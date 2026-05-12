@@ -63,6 +63,19 @@ export async function scaffold(
 	return { tsConfigResult, installCmd, packageManager };
 }
 
+export function getDlxCommand(pm: string): string {
+	switch (pm) {
+		case "pnpm":
+			return "pnpm dlx";
+		case "yarn":
+			return "yarn dlx";
+		case "bun":
+			return "bunx";
+		default:
+			return "npx";
+	}
+}
+
 async function findTsConfig(): Promise<string | null> {
 	const filenames = [
 		"tsconfig.app.json",

@@ -5,7 +5,12 @@ import { cancel, confirm, isCancel, log, outro, spinner } from "@clack/prompts";
 import pc from "picocolors";
 import { version } from "../package.json";
 import { runPromptWizard } from "./prompts";
-import { checkTsConfig, detectFramework, scaffold } from "./scaffold";
+import {
+	checkTsConfig,
+	detectFramework,
+	getDlxCommand,
+	scaffold,
+} from "./scaffold";
 import { code, symbol } from "./visuals";
 
 async function main() {
@@ -126,6 +131,11 @@ async function main() {
 		);
 		log.step(
 			`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
+		);
+
+		const dlx = getDlxCommand(packageManager);
+		log.step(
+			`3. Install the ArkEnv Agent Skill for AI assistance: ${code(`${dlx} skills add yamcodes/arkenv`)}`,
 		);
 
 		outro(`${symbol} ${pc.dim("Happy coding!")}`);
