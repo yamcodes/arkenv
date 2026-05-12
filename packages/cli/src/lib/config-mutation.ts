@@ -117,7 +117,11 @@ export async function bootstrapViteConfig(
 	}
 }
 
-export async function bootstrapBunConfig(): Promise<{ success: boolean; error?: string; instructions?: string }> {
+export async function bootstrapBunConfig(): Promise<{
+	success: boolean;
+	error?: string;
+	instructions?: string;
+}> {
 	try {
 		// For Bun, we currently prioritize providing clear instructions
 		// as there isn't a single standard config file like Vite.

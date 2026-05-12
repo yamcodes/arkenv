@@ -2,10 +2,7 @@ import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	bootstrapViteConfig,
-	findViteConfig,
-} from "./config-mutation";
+import { bootstrapViteConfig, findViteConfig } from "./config-mutation";
 
 describe("config-mutation", () => {
 	let tempDir: string;
