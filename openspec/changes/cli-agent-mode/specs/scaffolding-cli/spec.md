@@ -20,11 +20,18 @@ The CLI SHALL support a `--quiet` flag to suppress spinners, ANSI colors, and ve
 ### Requirement: JSON Output Mode
 The CLI SHALL support a `--json` flag that outputs a structured JSON summary of the operation results.
 
-#### Scenario: Running init with --json
-- **WHEN** the user runs `arkenv init --json`
-- **THEN** the system SHALL suppress all standard console output (or redirect to stderr)
-- **AND** it SHALL print a single valid JSON object to stdout upon completion
-- **AND** the JSON SHALL contain details of files created and dependencies installed
+#### Scenario: Running init with --json (Success)
+- **WHEN** the user runs `arkenv init --json` and the operation succeeds
+- **THEN** the system SHALL suppress all standard console output from `stdout`
+- **AND** it SHALL print a single valid JSON object to `stdout` upon completion
+- **AND** the JSON SHALL follow the schema: `{ "status": "success", "message": string, "details": { ... } }`
+- **AND** all progress messages or warnings SHALL be sent to `stderr`
+
+#### Scenario: Running init with --json (Failure)
+- **WHEN** the user runs `arkenv init --json` and the operation fails
+- **THEN** the system SHALL print a single valid JSON object to `stdout`
+- **AND** the JSON SHALL follow the schema: `{ "status": "error", "message": string, "details": { ... } }`
+- **AND** the process SHALL exit with a non-zero code
 
 ### Requirement: Agent Mode Alias
 The CLI SHALL support an `--agent` flag as a shorthand for `--yes` and `--quiet`.

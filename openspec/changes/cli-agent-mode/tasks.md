@@ -14,8 +14,10 @@
 ## 3. Output Formatting
 
 - [ ] 3.1 Implement `--quiet` mode by suppressing spinners and stripping ANSI colors from the new `Logger`.
-- [ ] 3.2 Implement `--json` mode by collecting all operation results and printing a single JSON object to `stdout`.
-- [ ] 3.3 Ensure all non-essential output is redirected to `stderr` when `--json` is active.
+- [ ] 3.2 Implement `--json` mode with a structured schema `{ "status": "success" | "error", "message": string, "details": { ... } }`.
+- [ ] 3.3 Implement `--agent` as an alias for `--yes --quiet`.
+- [ ] 3.4 Enforce "ruthless" redirection of all non-JSON output (logs, status, warnings) to `stderr` when `--json` is active.
+- [ ] 3.5 Ensure failure states are captured and emitted as a structured JSON object to `stdout` before process exit.
 
 ## 4. AI Skill Update
 
@@ -26,7 +28,6 @@
 
 - [ ] 5.1 Add smoke tests for `arkenv init --yes`.
 - [ ] 5.2 Add smoke tests for `arkenv init --quiet`.
-- [ ] 5.3 Add smoke tests for `arkenv init --json` and verify JSON structure.
-- [ ] 5.4 Verify the AI skill installation prompt works correctly in interactive mode.
-rrectly in interactive mode.
-ive mode.
+- [ ] 5.3 Add smoke tests for `arkenv init --agent`.
+- [ ] 5.4 Add smoke tests for `arkenv init --json` and verify JSON structure.
+- [ ] 5.5 Verify the AI skill installation prompt works correctly in interactive mode.
