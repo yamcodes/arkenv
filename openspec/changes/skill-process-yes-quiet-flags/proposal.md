@@ -4,8 +4,8 @@ The underlying skill process needs to be executed silently to satisfy a quiet ex
 
 ## What Changes
 
-- Pass `--yes` to the underlying skill process (to prevent interactive prompts, e.g., in Vercel CLI).
-- Execute the skill process with `stdio: 'pipe'` instead of streaming directly to the terminal when quiet mode is active.
+- Pass `--yes` to the underlying skill process ONLY when `--yes` (or `-y`) is provided in the input (to prevent interactive prompts, e.g., in Vercel CLI).
+- Execute the skill process with `stdio: 'pipe'` instead of streaming directly to the terminal when quiet mode is active (triggered by passing `--quiet` or `-q`).
 - Capture the output and error logs in the background.
 - If the child process exits with a non-zero code, attach the captured error log to the final CLI output or JSON payload.
 

@@ -5,8 +5,8 @@ The CLI executes external skill processes. When the CLI needs to be quiet, the u
 ## Goals / Non-Goals
 
 **Goals:**
-- Allow quiet execution of skill processes.
-- Prevent interactive prompts in skill processes by automatically confirming them.
+- Allow quiet execution of skill processes when triggered by the `--quiet` or `-q` flag.
+- Prevent interactive prompts in skill processes by confirming them ONLY when the `--yes` or `-y` flag is provided.
 - Preserve and expose error logs when a skill process fails during quiet execution.
 
 **Non-Goals:**
@@ -22,3 +22,4 @@ The CLI executes external skill processes. When the CLI needs to be quiet, the u
 ## Risks / Trade-offs
 
 - **Memory consumption:** Piping output instead of streaming or ignoring it means the output is buffered in memory. If a skill process generates a massive amount of output, it could cause memory issues. Mitigation: Typical skill processes do not produce gigabytes of output, so this risk is acceptable for now.
+produce gigabytes of output, so this risk is acceptable for now.

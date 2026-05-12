@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Quiet Execution with Error Capture
-The CLI SHALL execute skill processes quietly when the quiet mode is active, capturing stdout and stderr in memory instead of piping them to the terminal.
+The CLI SHALL execute skill processes quietly when the quiet mode is active (triggered by `--quiet` or `-q`), capturing stdout and stderr in memory instead of piping them to the terminal.
 
 #### Scenario: Successful quiet execution
 - **WHEN** quiet mode is active and the skill process succeeds (exit code 0)
@@ -11,9 +11,9 @@ The CLI SHALL execute skill processes quietly when the quiet mode is active, cap
 - **WHEN** quiet mode is active and the skill process fails (non-zero exit code)
 - **THEN** the CLI attaches the captured error logs to its final output or JSON payload.
 
-### Requirement: Auto-confirmation for skill processes
-The CLI SHALL automatically pass the `--yes` flag to skill processes to prevent interactive prompts.
+### Requirement: Explicit auto-confirmation for skill processes
+The CLI SHALL pass the `--yes` flag to skill processes ONLY when `--yes` or `-y` is provided in the user input.
 
-#### Scenario: Preventing interactive prompts
-- **WHEN** invoking a skill process
+#### Scenario: Passing the --yes flag
+- **WHEN** invoking a skill process AND the user provided the `--yes` or `-y` flag
 - **THEN** the CLI includes the `--yes` flag in the command execution.
