@@ -16,21 +16,21 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 ## Tech Stack
 
 ### Core Technologies
-- **TypeScript 5.9.3** - Primary language with strict type checking
-- **ArkType 2.1.26** - Type validation library (peer dependency)
-- **pnpm 10.22.0** - Package manager for monorepo
-- **Turborepo 2.6.1** - Monorepo build system and task orchestration
+- **TypeScript 6** - Primary language with strict type checking
+- **ArkType 2** - Type validation library (peer dependency)
+- **pnpm 11** - Package manager for monorepo
+- **Turborepo 2** - Monorepo build system and task orchestration
 
 ### Build & Development Tools
-- **tsdown 0.16.1** - TypeScript bundler for packages
-- **Biome 2.3.5** - Linting and formatting (replaces ESLint/Prettier)
-- **Vitest 4.0.9** - Unit and integration testing framework
-- **Playwright 1.56.1** - End-to-end testing for www application
+- **tsdown 0.16** - TypeScript bundler for packages
+- **Biome 2** - Linting and formatting (replaces ESLint/Prettier)
+- **Vitest 4** - Unit and integration testing framework
+- **Playwright 1.56** - End-to-end testing for www application
 
 ### Applications
-- **Next.js 16.0.3** - Documentation site (www app)
-- **React 19.2.0** - UI framework for documentation
-- **Vite 7.2.2** - Build tool for vite-plugin package and playgrounds
+- **Next.js 16** - Documentation site (www app)
+- **React 19** - UI framework for documentation
+- **Vite 8** - Build tool for vite-plugin package and playgrounds
 - **Bun** - Alternative runtime (supported via examples and playgrounds)
 
 ### Infrastructure & Services
