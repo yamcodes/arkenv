@@ -4,9 +4,21 @@ description: Frequently asked questions about ArkEnv.
 icon: MessageCircleQuestionMark
 ---
 
+## Why do I need ArkEnv?
+
+We've seen teams struggle with environment variables in JavaScript projects. Your environment is such a core part of your application and yet we often avoid validating it because we don't have time for it or we think it's too much work.
+
+We built ArkEnv to solve this problem for you. With a simple `npx @arkenv/cli@latest init` command, your project will become **bulletproof** against environment variable misconfigurations.
+
+Read our full pitch in the [intro](/docs/arkenv) section.
+
+P.S.
+
+You can also [build your own environment variable validator in about 3 lines of code](/docs/arkenv/comparison#diy), but ArkEnv provides a lot more out-of-the-box, including framework integrations, automatic coercion, and LLM integration. All in a 2kb core package.
+
 ## Is ArkEnv only for Vite and Bun?
 
-No! ArkEnv is designed to be **completely agnostic**. We officially support and provide first-class toolkits for:
+ArkEnv is designed to be **completely agnostic**. We officially support and provide first-class toolkits for:
 
 - **Node.js** (Servers, CLIs, Scripts)
 - **Bun**
@@ -50,13 +62,17 @@ Most modern frameworks (Vite, Bun, Next.js, Remix) already have built-in support
 
 ArkEnv takes whatever is in `process.env` (or your chosen source), ensures it matches your schema, and applies transformations like [automatic coercion](/docs/arkenv/coercion).
 
-## Can I use ArkEnv with Next.js or Nuxt?
+## Can I use ArkEnv with Next.js?
 
-Yes! You can use the core `arkenv` package in Next.js and Nuxt today.
+No. Well, technically yes, but not officially...
 
-However, these frameworks have complex build pipelines and specific patterns for client/server separation. If you are looking for a highly specialized solution for those ecosystems, we recommend checking out [T3 Env](https://env.t3.gg).
+We've seen some users who've had success using the core `arkenv` package in Next.js. However, this is **not** an official solution and support is not guaranteed. If you are looking for a Next.js-specific solution with built-in client/server separation, we recommend checking out [T3 Env](https://env.t3.gg).
 
-ArkEnv is a great choice if you want a lightweight, agnostic validator or if you're already using ArkType in your project. We're looking into providing more official integrations for these frameworks in the future.
+We're looking into providing more official integrations for more frameworks in the future—keep an eye on our [roadmap](https://github.com/yamcodes/arkenv/issues/683)!
+
+## Can I use ArkEnv with Nuxt?
+
+Same answer as Next.js above.
 
 ## Why use ArkEnv instead of just Zod?
 
@@ -67,6 +83,6 @@ Using "raw" Zod for environment variables often leads to a lot of boilerplate:
 
 ## Is it safe to use in production?
 
-Yes. ArkEnv is extremely lightweight (2kB gzipped) and has **zero external dependencies**. It's designed to be fast and reliable, failing your application immediately if your environment is misconfigured—preventing cryptic runtime errors later.
+Yes. ArkEnv is a very simple library (2kB gzipped) and has **zero external dependencies**. It's designed to defer most of the work to your existing validator and standardize environment variables specific flows. This is why it's fast and reliable - your application will fail fast if your environment is misconfigured. Install ArkEnv if you wish to prevent cryptic runtime errors.
 
-While the API is still in v0 (see [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683)), the core functionality is place, fully tested, and is already being used in production. It is not expected to meaningfully change.
+While the API is still in v0 (see [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683)), the core functionality is in place, fully tested, and is already being used in production. It is not expected to meaningfully change.
