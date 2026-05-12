@@ -32,6 +32,22 @@ describe("env-template", () => {
 			expect(template).toContain("export const Env = type({");
 		});
 
+		it("returns arktype template for bun when validator is arktype", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "bun" as any,
+				path: ".env.config.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import { type } from "arkenv"');
+			expect(template).not.toContain("export const env = arkenv(Env)");
+			expect(template).toContain("export const Env = type({");
+			expect(template).toContain("In Bun, use @arkenv/bun-plugin");
+		});
+
 		it("returns zod template when validator is zod", () => {
 			const options = {
 				validator: "zod" as any,

@@ -28,6 +28,21 @@ ${schemaFields}
 		`;
 	}
 
+	if (framework === "bun") {
+		return dedent /* ts */`
+		import { type } from "arkenv";
+
+		/**
+		 * Environment variable schema.
+		 * In Bun, use @arkenv/bun-plugin to validate these at runtime
+		 * and provide typesafety for process.env.
+		 */
+		export const Env = type({
+${schemaFields}
+		});
+		`;
+	}
+
 	return dedent /* ts */`
 	import arkenv, { type } from "arkenv";
 

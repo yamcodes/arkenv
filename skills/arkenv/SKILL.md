@@ -124,7 +124,11 @@ pnpm dlx @arkenv/cli@latest init
 
 ## Best Practices
 
-1. **Avoid `import { env }` in Frontend**: In Vite, `import.meta.env` should be used because variables are statically replaced. Importing a runtime-validated `env` object can lead to issues with static analysis and bundle size.
-2. **Use Type Augmentation**: This is the "cleanest" way to get typesafety for `import.meta.env` or `process.env`.
-3. **Re-use Schema**: Define your schema once and use it for both the plugin (build-time) and runtime validation if needed.
-4. **Coercion**: ArkEnv automatically coerces strings from `.env` files (e.g., `"3000"` becomes `3000`).
+1. **Prefer Native Primitives**: To leverage the full power of ArkEnv plugins, you should access environment variables through the runtime's native primitives.
+   - **Vite**: Use `import.meta.env`.
+   - **Bun**: Use `process.env`.
+   - This ensures that build-time validation, static replacement (Vite), and runtime optimizations (Bun) work as intended while remaining fully typesafe via type augmentation.
+2. **Avoid `import { env }` in Plugin-managed Projects**: In projects using `@arkenv/vite-plugin` or `@arkenv/bun-plugin`, you should generally avoid importing a runtime-validated `env` object. Using native primitives is the "cleanest" way to get typesafety and ensures consistency with framework-specific behavior.
+3. **Use Type Augmentation**: This is the recommended way to make `import.meta.env` or `process.env` typesafe. It connects your schema definition to the native primitives without adding runtime overhead to your application logic.
+4. **Re-use Schema**: Define your schema once and use it for both the plugin (build-time/config) and runtime validation if needed.
+5. **Coercion**: ArkEnv automatically coerces strings from `.env` files (e.g., `"3000"` becomes `3000`).

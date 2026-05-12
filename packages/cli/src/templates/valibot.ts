@@ -28,6 +28,21 @@ ${schemaFields}
 		`;
 	}
 
+	if (framework === "bun") {
+		return dedent /* ts */`
+		import * as v from "valibot";
+
+		/**
+		 * Environment variable schema.
+		 * In Bun, use @arkenv/bun-plugin to validate these at runtime
+		 * and provide typesafety for process.env.
+		 */
+		export const Env = v.object({
+${schemaFields}
+		});
+		`;
+	}
+
 	return dedent /* ts */`
 	import arkenv from "arkenv/standard";
 	import * as v from "valibot";
