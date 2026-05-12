@@ -168,11 +168,14 @@ export class InitCommand {
 				});
 			}
 
-			child.on("close", (code: number | null) => {
+			child.on("close", (code, signal) => {
 				if (code === 0) {
 					resolve();
 				} else {
-					let message = `Command failed with code ${code}`;
+					let message =
+						code === null
+							? `Command terminated by signal ${signal}`
+							: `Command failed with code ${code}`;
 					if (isQuiet) {
 						if (stdout) message += `\n${pc.dim("STDOUT:")}\n${stdout}`;
 						if (stderr) message += `\n${pc.red("STDERR:")}\n${stderr}`;

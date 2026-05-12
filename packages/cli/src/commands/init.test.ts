@@ -192,4 +192,49 @@ describe("InitCommand", () => {
 			}),
 		);
 	});
+
+	it("includes signal in error message when process is terminated by signal (code is null)", async () => {
+		const cli = new CLI(["node", "bin", "init", "--quiet"]);
+		const command = new InitCommand(cli);
+
+		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
+		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
+			validator: "arktype",
+			framework: "node",
+			path: "env.ts",
+			language: "ts",
+			installSkill: true,
+		});
+		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
+			tsConfigResult: { status: "already_strict" },
+			installCmd: "npm install",
+			packageManager: "npm",
+		});
+
+		spawnMock.mockReturnValueOnce({
+			stdout: new Readable({ read() {} }),
+			stderr: new Readable({ read() {} }),
+			on: (event: string, cb: any) => {
+				if (event === "close") {
+					setTimeout(() => cb(null, "SIGTERM"), 0);
+				}
+			},
+		});
+
+		const fatalSpy = vi.spyOn(cli.logger, "fatal").mockImplementation(() => {
+			throw new Error("fatal called");
+		});
+
+		await expect(command.run()).rejects.toThrow("fatal called");
+
+		expect(fatalSpy).toHaveBeenCalledWith(
+			expect.stringContaining("Scaffolding failed"),
+			expect.objectContaining({
+				message: expect.stringContaining(
+					"Command terminated by signal SIGTERM",
+				),
+			}),
+		);
+	});
 });

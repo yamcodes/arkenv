@@ -22,4 +22,3 @@ The CLI executes external skill processes. When the CLI needs to be quiet, the u
 ## Risks / Trade-offs
 
 - **Memory consumption:** Piping output instead of streaming or ignoring it means the output is buffered in memory. If a skill process generates a massive amount of output, it could cause memory issues. Mitigation: Typical skill processes do not produce gigabytes of output, so this risk is acceptable for now.
-produce gigabytes of output, so this risk is acceptable for now.
