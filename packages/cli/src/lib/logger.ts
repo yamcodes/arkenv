@@ -48,7 +48,7 @@ export class Logger {
 	}
 
 	step(message: string) {
-		this.write(pc.dim(`○ ${message}`));
+		this.write(`○ ${message}`);
 	}
 
 	log(message: string) {

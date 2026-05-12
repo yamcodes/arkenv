@@ -107,34 +107,34 @@ export class InitCommand {
 					});
 					child.on("error", reject);
 				});
+			}
 
-				// Framework-specific bootstrapping
-				if (options.framework === "vite") {
-					const viteConfigPath = await findViteConfig();
-					if (viteConfigPath) {
-						logger.step("Bootstrapping Vite plugin...");
-						const result = await bootstrapViteConfig(viteConfigPath);
-						if (result.success) {
-							logger.info(`Updated ${code(path.basename(viteConfigPath))}`);
-						} else {
-							logger.warn(
-								`Could not automatically update ${code(path.basename(viteConfigPath))}: ${result.error}`,
-							);
-							logger.info("Please add '@arkenv/vite-plugin' manually.");
-						}
+			// Framework-specific bootstrapping
+			if (options.framework === "vite") {
+				const viteConfigPath = await findViteConfig();
+				if (viteConfigPath) {
+					logger.step("Bootstrapping Vite plugin...");
+					const result = await bootstrapViteConfig(viteConfigPath);
+					if (result.success) {
+						logger.info(`Updated ${code(path.basename(viteConfigPath))}`);
 					} else {
-						logger.info(
-							"No Vite config found — please add '@arkenv/vite-plugin' to your Vite config manually.",
+						logger.warn(
+							`Could not automatically update ${code(path.basename(viteConfigPath))}: ${result.error}`,
 						);
+						logger.info("Please add '@arkenv/vite-plugin' manually.");
 					}
-				} else if (options.framework === "bun") {
-					const bunConfigPath = await findBunConfig();
-					const result = await bootstrapBunConfig(bunConfigPath);
-					if (result.success && result.instructions) {
-						logger.info(result.instructions);
-					} else if (!result.success) {
-						logger.error(result.error || "Bun bootstrap failed");
-					}
+				} else {
+					logger.info(
+						"No Vite config found — please add '@arkenv/vite-plugin' to your Vite config manually.",
+					);
+				}
+			} else if (options.framework === "bun") {
+				const bunConfigPath = await findBunConfig();
+				const result = await bootstrapBunConfig(bunConfigPath);
+				if (result.success && result.instructions) {
+					logger.info(result.instructions);
+				} else if (!result.success) {
+					logger.error(result.error || "Bun bootstrap failed");
 				}
 			}
 
@@ -177,7 +177,7 @@ export class InitCommand {
 			}
 
 			if (skillInstalled) {
-				logger.step("complete the setup with your AI assistant. Use:");
+				logger.step("Complete the setup with your AI assistant. Use:");
 				logger.step(
 					`${pc.cyan("/arkenv")} - automatically refine your schema and configure framework integrations.`,
 				);
