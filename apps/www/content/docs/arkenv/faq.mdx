@@ -1,0 +1,71 @@
+---
+title: FAQ
+description: Frequently asked questions about ArkEnv.
+icon: MessageCircleQuestionMark
+---
+
+## Is ArkEnv only for Vite and Bun?
+
+No! ArkEnv is designed to be **completely agnostic**. While we provide first-class plugins for Vite and Bun to make your life easier, the core `arkenv` library is built on standard JavaScript APIs and *should* work anywhere JavaScript runs:
+
+- **Node.js** (Servers, CLIs, Scripts)
+- **Bun**
+- **Vite**
+- **Deno**
+- **Edge Functions** (Cloudflare Workers, Vercel Edge)
+- **Browsers** (though we recommend build-time validation for security)
+
+**Note:** ArkEnv is tested on Bun, Vite, and Node.js. If you're using it in Deno or on the Edge and run into issues, please [let us know on GitHub](https://github.com/yamcodes/arkenv/issues)!
+
+## Do I have to use ArkType?
+
+Not at all. While ArkEnv has native, zero-config support for [ArkType](https://arktype.io/) (and we think it's the best way to use it!), we are fully compatible with any **Standard Schema** validator.
+
+This means you can use:
+- **Zod**
+- **Valibot**
+- **Typia**
+- ...and any other library that implements the [Standard Schema](https://standardschema.dev) specification.
+
+See [arkenv/standard](/docs/arkenv/standard) for more details.
+
+## Does ArkEnv work with Zod?
+
+Yes! ArkEnv works seamlessly with Zod.
+
+See our [Zod example](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod) or use the [ArkEnv CLI](/docs/cli) which can set up ArkEnv + Zod for you automatically.
+
+## Does ArkEnv work with Valibot?
+
+Yes! ArkEnv works with any Standard Schema validator, including Valibot. The [ArkEnv CLI](/docs/cli) can set up ArkEnv + Valibot for you.
+
+## Does ArkEnv work with Typia?
+
+Yes! ArkEnv works with any Standard Schema validator, including Typia. Read our [Standard Schema guide](/docs/arkenv/integrations/standard-schema) for more details.
+
+## Does ArkEnv load my `.env` files?
+
+**No.** ArkEnv is a **validator**, not a **loader**.
+
+Most modern frameworks (Vite, Bun, Next.js, Remix) already have built-in support for loading `.env` files. If you are using plain Node.js, we recommend using a dedicated loader like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
+
+ArkEnv takes whatever is in `process.env` (or your chosen source), ensures it matches your schema, and applies transformations like [automatic coercion](/docs/arkenv/coercion).
+
+## Can I use ArkEnv with Next.js or Nuxt?
+
+Yes! You can use the core `arkenv` package in Next.js and Nuxt today.
+
+However, these frameworks have complex build pipelines and specific patterns for client/server separation. If you are looking for a highly specialized solution for those ecosystems, we recommend checking out [T3 Env](https://env.t3.gg).
+
+ArkEnv is a great choice if you want a lightweight, agnostic validator or if you're already using ArkType in your project. We're looking into providing more official integrations for these frameworks in the future.
+
+## Why use ArkEnv instead of just Zod?
+
+Using "raw" Zod for environment variables often leads to a lot of boilerplate:
+1. **Manual Coercion:** Environment variables are always strings, so you have to manually `z.coerce.number()` every time. ArkEnv does this automatically.
+2. **Verbose Errors:** Zod errors are designed for complex APIs. ArkEnv's errors are formatted specifically for terminal output.
+3. **Framework Nuances:** In tools like Vite, variables are statically replaced at build time. ArkEnv's plugins handle this "magic" for you so you don't have to think about it.
+
+## Is it safe to use in production?
+
+Yes. ArkEnv is extremely lightweight (2kB gzipped) and has **zero external dependencies**. It's designed to be fast and reliable, failing your application immediately if your environment is misconfigured—preventing cryptic runtime errors later.

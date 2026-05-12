@@ -17,6 +17,8 @@
 <div align="center">
   <a href="https://arkenv.js.org/docs/arkenv">Docs</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://arkenv.js.org/docs/arkenv/faq">FAQ</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Playground</a>
