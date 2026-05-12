@@ -104,7 +104,7 @@ export class InitCommand {
 			} else if (tsResult.status === "error") {
 				logger.warn(
 					`Could not automatically update ${code(tsResult.file || "tsconfig.json")}. Please ensure 'strict: true' is set manually.`,
-				);
+					);
 			}
 
 			const relPath = path.relative(process.cwd(), path.resolve(options.path));
@@ -140,8 +140,8 @@ export class InitCommand {
 			if (skillInstalled) {
 				logger.note(
 					dedent`
-						Run ${pc.cyan("/arkenv")} to complete the setup with your AI assistant.
-						Automatically refine your schema and configure framework integrations.
+						Inside your AI assistant (e.g. Claude Code), use:
+						${pc.cyan("/arkenv")} - automatically refine your schema and configure integrations.
 					`,
 					"Next steps",
 				);
@@ -150,24 +150,21 @@ export class InitCommand {
 					dedent`
 						1. Check ${code(displayPath)} and refine your environment schema.
 						2. Import and use: ${code(`import { env } from "${importPath}"`)}
-						3. Install the AI skill: ${code(`${dlx} skills add yamcodes/arkenv`)}
-						   Then run ${pc.cyan("/arkenv")} to finish the configuration.
+						3. (Recommended) Install the AI skill: ${code(`${dlx} skills add yamcodes/arkenv`)}
+						   Then run ${pc.cyan("/arkenv")} inside your AI assistant to finish.
 					`,
 					"Next steps",
 				);
 			}
 
-			logger.finish(
-				`${symbol} ArkEnv setup complete. ${pc.dim("Happy coding!")}`,
-				{
-					path: displayPath,
-					framework: options.framework,
-					validator: options.validator,
-					packageManager,
-					tsConfigUpdated: tsResult.status === "updated",
-					skillInstalled,
-				},
-			);
+			logger.finish(`${symbol} ArkEnv scaffolding complete. ${pc.dim("Happy coding!")}`, {
+				path: displayPath,
+				framework: options.framework,
+				validator: options.validator,
+				packageManager,
+				tsConfigUpdated: tsResult.status === "updated",
+				skillInstalled,
+			});
 		} catch (error) {
 			s.stop("Scaffolding failed.");
 			logger.fatal("Scaffolding failed.", error);
