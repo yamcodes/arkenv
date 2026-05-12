@@ -5,90 +5,130 @@ description: "Answer questions about ArkEnv and help implement environment varia
 
 # ArkEnv
 
-ArkEnv is a typesafe environment variable validator for modern JavaScript runtimes. It uses ArkType by default for schema definition but supports any Standard Schema validator (like Zod or Valibot).
+ArkEnv is a typesafe environment variable validator for modern JavaScript runtimes. It uses `ArkType` by default for schema definition but supports any `Standard Schema` validator (like `Zod` or `Valibot`).
 
 ## Capabilities
 
 ### Core Usage
 
-- Define typesafe schemas using ArkType notation or any Standard Schema validator.
+- Define typesafe schemas using `ArkType` notation or any `Standard Schema` validator.
 - Implement complex types, arrays, and unions.
 - Configure automatic coercion and default values.
 - Follow best practices for schema organization.
 
+### Framework Integration
+
+- **Vite**: Build-time validation and `import.meta.env` type augmentation via `@arkenv/vite-plugin`.
+- **Bun**: Build-time/Runtime validation and `process.env` type augmentation via `@arkenv/bun-plugin`.
+- **Node.js**: Standard `process.env` validation and coercion.
+
 ### CLI (Setup & DevOps)
 
 - Initialize ArkEnv in new or existing projects using `pnpm dlx @arkenv/cli@latest init`.
-- Scaffold schema files and detect framework-specific configurations (Vite, Bun, etc.).
-- Automatically configure `tsconfig.json` for optimal typesafety.
+- Scaffold schema files and detect framework-specific configurations (`Vite`, `Bun`, etc.).
+- Automatically configure `tsconfig.json` and environment types for optimal typesafety.
 
 ## Operational Logic
 
-1. **Detection**: Look for `env.ts` or ArkEnv imports to understand existing schema.
+1. **Detection**:
+   - Look for `env.ts` or `arkenv` imports to understand existing schema.
+   - Check for framework config files (`vite.config.ts`, `bunfig.toml`, `package.json` scripts) to recommend appropriate plugins.
 2. **Setup**: If ArkEnv is not present, recommend using the CLI: `pnpm dlx @arkenv/cli@latest init`.
 3. **Pattern Enforcement**:
-   - Always export the `env` object from a central file (usually `env.ts`).
-   - Prefer ArkType strings for concise definitions.
-   - Use `.env` files for local development but never commit them.
-   - Ensure `strict` mode is enabled in `tsconfig.json`.
+   - **Centralize Schema**: Always define the schema in a central file (e.g., `env.ts`).
+   - **Frontend (Vite/Bun)**:
+     - Use the appropriate plugin for build-time validation.
+     - Access variables via native primitives (`import.meta.env` for Vite, `process.env` for Bun).
+     - Use **Type Augmentation** to make native primitives typesafe.
+   - **Backend (Node.js)**:
+     - Export a validated `env` object using `arkenv(schema)`.
+   - **Type Safety**: Ensure `strict` mode is enabled in `tsconfig.json`.
 
 ## Core Concepts
 
 ### Defining a Schema
 
-The main entry point is the `arkenv` function (or `createEnv`).
+The best practice is to export a schema definition using `type`.
 
 ```ts
-import arkenv, { type } from 'arkenv';
+import { type } from 'arkenv';
 
-export const env = arkenv({
-  // Automatic inference for simple literals
+export const Env = type({
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-
-  // Database configuration
-  DATABASE_HOST: "string.host",
-  DATABASE_PORT: "number.port = 5432",
-
-  // Complex types and arrays via ArkType
-  ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
-
-  // Optional environment variable
-  "API_KEY?": 'string'
+  VITE_API_URL: "string",
+  PORT: "number.port = 3000"
 });
 ```
 
-### Loading environment variables
+### Usage: Node.js (Standard)
 
-ArkEnv automatically loads environment variables from `process.env` (Node.js) or `import.meta.env` (Vite) depending on the environment.
-
-### Using environment variables
-
-The returned `env` object is fully typed based on your schema.
+In Node.js, you validate the environment at runtime and export the result.
 
 ```ts
-import { env } from './env';
+import arkenv from 'arkenv';
+import { Env } from './env';
 
-const port = env.DATABASE_PORT; // typed as number
+export const env = arkenv(Env);
+
+// Usage
+const port = env.PORT; // typed as number
+```
+
+### Usage: Vite (Frontend)
+
+Vite requires build-time injection. Use the plugin in `vite.config.ts` and augment `ImportMetaEnv`.
+
+```ts
+// vite.config.ts
+import arkenv from '@arkenv/vite-plugin';
+import { Env } from './env';
+
+export default defineConfig({
+  plugins: [arkenv(Env)]
+});
+```
+
+```ts
+// src/vite-env.d.ts
+import type { ImportMetaEnvAugmented } from "@arkenv/vite-plugin";
+import type { Env } from "../env";
+
+interface ImportMetaEnv extends ImportMetaEnvAugmented<typeof Env> {}
+```
+
+### Usage: Bun
+
+Bun can use either runtime validation or a plugin for type augmentation.
+
+```ts
+// src/env.d.ts
+import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
+import type { Env } from "./env";
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
+  }
+}
 ```
 
 ## CLI Commands
 
 ### `init`
 
-Set up ArkEnv in your project.
+Set up ArkEnv in your project. It detects your framework and configures the appropriate plugin and type augmentations.
 
 ```bash
 pnpm dlx @arkenv/cli@latest init
 ```
 
-#### Options
-
-- `--yes`, `-y`: Skip prompts and use recommended defaults.
-- `--help`, `-h`: Show help message.
-
 ## Best Practices
 
-1. **Keep schema in one file**: Usually `env.ts` or `src/env.ts`.
-2. **Export the `env` object**: Don't call `arkenv` multiple times; export the validated object.
-3. **Use the CLI for setup**: It ensures all necessary dependencies and configurations are in place.
-4. **Integration**: Use `@arkenv/vite-plugin` for Vite or `@arkenv/bun-plugin` for Bun.
+1. **Prefer Native Primitives**: To leverage the full power of ArkEnv plugins, you should access environment variables through the runtime's native primitives.
+   - **Vite**: Use `import.meta.env`.
+   - **Bun**: Use `process.env`.
+   - This ensures that build-time validation, static replacement (Vite), and runtime optimizations (Bun) work as intended while remaining fully typesafe via type augmentation.
+2. **Avoid `import { env }` in Plugin-managed Projects**: In projects using `@arkenv/vite-plugin` or `@arkenv/bun-plugin`, you should generally avoid importing a runtime-validated `env` object. Using native primitives is the "cleanest" way to get typesafety and ensures consistency with framework-specific behavior.
+3. **Use Type Augmentation**: This is the recommended way to make `import.meta.env` or `process.env` typesafe. It connects your schema definition to the native primitives without adding runtime overhead to your application logic.
+4. **Re-use Schema**: Define your schema once and use it for both the plugin (build-time/config) and runtime validation if needed.
+5. **Coercion**: ArkEnv automatically coerces strings from `.env` files (e.g., `"3000"` becomes `3000`).
