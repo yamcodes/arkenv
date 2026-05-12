@@ -1,7 +1,7 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
-import { loadFile } from "magicast";
+import { generateCode, loadFile } from "magicast";
 import pc from "picocolors";
 
 export async function findViteConfig(): Promise<string | null> {
@@ -61,10 +61,13 @@ export async function bootstrapViteConfig(
 			config &&
 			typeof config === "object" &&
 			"$type" in config &&
-			config.$type === "function-call" &&
-			config.$callee === "defineConfig"
+			config.$type === "function-call"
 		) {
-			config = config.$args[0];
+			const callee =
+				config.$callee || (config as any).$name || JSON.stringify(config);
+			if (callee === "defineConfig") {
+				config = config.$args[0];
+			}
 		}
 
 		if (!config || typeof config !== "object") {
@@ -79,17 +82,8 @@ export async function bootstrapViteConfig(
 		}
 
 		if (Array.isArray(config.plugins)) {
-			// Check if already exists
-			const hasPlugin =
-				config.plugins.some((p: any) => {
-					const s =
-						typeof p === "string"
-							? p
-							: p && typeof p === "object" && ("$callee" in p || "$name" in p)
-								? p.$callee || p.$name
-								: JSON.stringify(p);
-					return s?.includes("arkenvPlugin");
-				}) || mod.generate().code.includes("arkenvPlugin");
+			// Check if already exists using the generated code
+			const hasPlugin = generateCode(mod).code.includes("arkenvPlugin");
 
 			if (!hasPlugin) {
 				config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
@@ -101,7 +95,7 @@ export async function bootstrapViteConfig(
 			};
 		}
 
-		let code = mod.generate().code;
+		let code = generateCode(mod).code;
 		code = code.replace(
 			/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g,
 			"arkenvPlugin()",
@@ -117,7 +111,7 @@ export async function bootstrapViteConfig(
 	}
 }
 
-export async function bootstrapBunConfig(): Promise<{
+export async function bootstrapBunConfig(_configPath?: string | null): Promise<{
 	success: boolean;
 	error?: string;
 	instructions?: string;
@@ -130,10 +124,12 @@ export async function bootstrapBunConfig(): Promise<{
 		const instructions = dedent`
 			To complete Bun integration, add the following to your setup/preload file:
 			
-			${pc.cyan('import { Bun } from "bun";')}
 			${pc.cyan('import { arkenv } from "@arkenv/bun-plugin";')}
 			
-			${pc.cyan("Bun.plugin(arkenv());")}
+			${pc.cyan("Bun.build({")}
+			${pc.cyan("  // ... other config")}
+			${pc.cyan("  plugins: [arkenv()],")}
+			${pc.cyan("});")}
 			
 			If you don't have a setup file, create one (e.g., ${pc.dim("bun.setup.ts")}) and add it to your ${pc.dim("bunfig.toml")}:
 			
@@ -142,7 +138,8 @@ export async function bootstrapBunConfig(): Promise<{
 		`;
 
 		return { success: true, instructions };
-	} catch (e: any) {
-		return { success: false, error: e.message };
+	} catch (e: unknown) {
+		const error = e instanceof Error ? e.message : String(e);
+		return { success: false, error };
 	}
 }

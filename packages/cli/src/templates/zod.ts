@@ -11,7 +11,7 @@ export const zodTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: z.string(),`).join("\n")
 		: `\t\tNODE_ENV: z.enum(["development", "production", "test"]),
-\t\tPORT: z.coerce.number().positive(),`;
+\t\tPORT: z.coerce.number().int().min(1).max(65535),`;
 
 	if (framework === "vite") {
 		return dedent /* ts */`

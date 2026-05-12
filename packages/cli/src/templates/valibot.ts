@@ -11,7 +11,7 @@ export const valibotTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: v.string(),`).join("\n")
 		: `\t\tNODE_ENV: v.picklist(["development", "production", "test"]),
-\t\tPORT: v.pipe(v.string(), v.transform(Number), v.number(), v.minValue(1)),`;
+\t\tPORT: v.pipe(v.string(), v.transform(Number), v.number(), v.minValue(1), v.maxValue(65535)),`;
 
 	if (framework === "vite") {
 		return dedent /* ts */`

@@ -98,7 +98,12 @@ export class InitCommand {
 					});
 					child.on("close", (code: number | null) => {
 						if (code === 0) resolve();
-						else reject(new Error(`Installation failed with code ${code}`));
+						else
+							reject(
+								new Error(
+									`Installation of ${installCmd} failed with code ${code}`,
+								),
+							);
 					});
 					child.on("error", reject);
 				});
@@ -117,12 +122,18 @@ export class InitCommand {
 							);
 							logger.info("Please add '@arkenv/vite-plugin' manually.");
 						}
+					} else {
+						logger.info(
+							"No Vite config found — please add '@arkenv/vite-plugin' to your Vite config manually.",
+						);
 					}
 				} else if (options.framework === "bun") {
 					const bunConfigPath = await findBunConfig();
 					const result = await bootstrapBunConfig(bunConfigPath);
-					if (result.instructions) {
+					if (result.success && result.instructions) {
 						logger.info(result.instructions);
+					} else if (!result.success) {
+						logger.error(result.error || "Bun bootstrap failed");
 					}
 				}
 			}

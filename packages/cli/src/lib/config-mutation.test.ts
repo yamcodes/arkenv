@@ -117,11 +117,8 @@ export default config;
 			await fsp.writeFile(configPath, initialContent);
 
 			const result = await bootstrapViteConfig(configPath);
-			// Depending on magicast, this might still work or fail.
-			// If it fails to find the default export or plugins array, it should return success: false.
-			if (!result.success) {
-				expect(result.error).toBeDefined();
-			}
+			expect(result.success).toBe(false);
+			expect(result.error).toBeDefined();
 		});
 	});
 });

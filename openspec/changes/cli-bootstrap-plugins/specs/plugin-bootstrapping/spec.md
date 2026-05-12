@@ -12,7 +12,7 @@ The system SHALL attempt to mutate the target framework's configuration file to 
 #### Scenario: Bun Configuration Update
 - **WHEN** the framework selected is Bun
 - **AND** a Bun preload/setup file is being used (or `bunfig.toml`)
-- **THEN** the CLI SHALL inject the required setup code or instructions
+- **THEN** the CLI SHALL provide or output the required setup code or user-facing instructions (but SHALL NOT modify files automatically)
 
 #### Scenario: Graceful Fallback
 - **WHEN** the configuration file exists but cannot be safely parsed or mutated
