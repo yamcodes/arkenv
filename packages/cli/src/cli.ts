@@ -1,5 +1,5 @@
 import { version } from "../package.json";
-import { Logger } from "./visuals";
+import { Logger } from "./lib/logger";
 
 export class CLI {
 	public args: string[];
