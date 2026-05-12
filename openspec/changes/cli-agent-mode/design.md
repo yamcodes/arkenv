@@ -19,13 +19,14 @@ AI-native developers and platform engineers have different onboarding preference
 ## Decisions
 
 ### 1. Global Flag Parsing in `index.ts`
-We will parse `--yes`/`-y`, `--quiet`, and `--json` at the entry point. 
+We will parse `--yes`/`-y`, `--agent`, `--quiet`, and `--json` at the entry point. 
 - **Rationale**: These flags affect the entire execution flow (prompting, logging, and final output).
 - **Alternatives**: Parsing in `runPromptWizard` or `scaffold`. Rejected because `index.ts` already handles `--help` and basic flag detection.
 
 ### 2. Composable Output Modes
 - `--quiet`: Disables spinners (`ora`/`clack`), suppresses `picocolors` ANSI sequences, and limits output to high-level status messages.
 - `--json`: Implies `--quiet` and `--yes`. It will print a single JSON object to stdout at the end of execution.
+- `--agent`: A shorthand for `--yes --quiet`. It can be combined with `--json`.
 - **Rationale**: Allows users/agents to choose the level of verbosity and structure they need.
 
 ### 3. "Agent Mode" for `@clack/prompts`
@@ -45,3 +46,4 @@ In interactive mode, a new prompt will ask if the user wants to install the AI s
 - **[Risk]** Spinner suppression might make the CLI feel "stuck" to a human user if they accidentally pass `--quiet`. → **Mitigation**: Ensure `--quiet` still prints high-level milestones (e.g., "Starting...", "Done.").
 - **[Risk]** JSON output might be polluted by other logs. → **Mitigation**: Ensure all non-JSON output goes to `stderr` or is completely suppressed when `--json` is active.
 - **[Risk]** Maintaining two output paths (CLI vs JSON) adds complexity. → **Mitigation**: Use a centralized result object that is either formatted for the console or serialized to JSON.
+o JSON.

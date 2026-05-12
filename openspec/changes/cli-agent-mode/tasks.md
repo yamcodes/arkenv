@@ -1,7 +1,7 @@
 ## 1. CLI Core Enhancement
 
-- [ ] 1.1 Update `packages/cli/src/index.ts` to parse `--quiet` and `--json` flags.
-- [ ] 1.2 Implement a `Logger` utility in `packages/cli/src/visuals.ts` or a new file that respects `--quiet` and `--json`.
+- [ ] 1.1 Update `packages/cli/src/index.ts` to parse `--quiet`, `--json`, and `--agent` flags.
+- [ ] 1.2 Implement a `Logger` utility in `packages/cli/src/visuals.ts` or a new file that respects `--quiet`, `--json`, and `--agent`.
 - [ ] 1.3 Refactor `packages/cli/src/index.ts` to use the new `Logger` instead of direct `console.log` or `@clack/prompts` logging.
 - [ ] 1.4 Update `help` text in `packages/cli/src/index.ts` to include the new flags.
 
@@ -28,3 +28,5 @@
 - [ ] 5.2 Add smoke tests for `arkenv init --quiet`.
 - [ ] 5.3 Add smoke tests for `arkenv init --json` and verify JSON structure.
 - [ ] 5.4 Verify the AI skill installation prompt works correctly in interactive mode.
+rrectly in interactive mode.
+ive mode.

@@ -26,6 +26,15 @@ The CLI SHALL support a `--json` flag that outputs a structured JSON summary of 
 - **AND** it SHALL print a single valid JSON object to stdout upon completion
 - **AND** the JSON SHALL contain details of files created and dependencies installed
 
+### Requirement: Agent Mode Alias
+The CLI SHALL support an `--agent` flag as a shorthand for `--yes` and `--quiet`.
+
+#### Scenario: Running init with --agent
+- **WHEN** the user runs `arkenv init --agent`
+- **THEN** the system SHALL behave as if both `--yes` and `--quiet` were passed
+- **AND** it SHALL NOT display prompts or spinners
+- **AND** output SHALL be plain-text
+
 ### Requirement: AI Skill Installation Prompt
 In interactive mode, the CLI SHALL ask the user if they want to install the ArkEnv AI skill for their local coding agent.
 

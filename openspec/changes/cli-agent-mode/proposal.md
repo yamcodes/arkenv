@@ -5,16 +5,17 @@ AI-native developers increasingly onboard tools by instructing an agent (e.g., "
 ## What Changes
 
 - Add a `--yes` / `-y` flag to `@arkenv/cli init` that bypasses all interactive prompts and accepts safe defaults.
+- Add an `--agent` flag as a shorthand for `--yes --quiet` (and optionally `--json`), providing a single canonical flag for machine-readable execution.
 - Add a `--quiet` flag (composable with `--yes`) that suppresses spinners and ANSI formatting, emitting plain-text status lines suitable for agent stdout ingestion.
 - Add a `--json` output mode that emits a structured JSON summary of every file written, package installed, and configuration change made — giving agents a definitive, parseable success signal.
-- Update the `yamcodes/arkenv` skill instructions to include an explicit "Agent Setup" section instructing the LLM to run `pnpm dlx @arkenv/cli@latest init --yes` rather than writing configuration files manually.
+- Update the `yamcodes/arkenv` skill instructions to include an explicit "Agent Setup" section instructing the LLM to run `pnpm dlx @arkenv/cli@latest init --agent` rather than writing configuration files manually.
 - Optionally prompt during interactive `init` whether to install the ArkEnv AI skill for the local coding agent (`? Would you like to install the ArkEnv AI skill? (Y/n)`) — wiring `pnx skills add yamcodes/arkenv` automatically.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `cli-agent-mode`: Non-interactive `--yes` / `--quiet` / `--json` flags on `@arkenv/cli init` that make the CLI fully machine-readable and safe to invoke from an AI agent context.
+- `cli-agent-mode`: Non-interactive `--yes` / `--quiet` / `--json` / `--agent` flags on `@arkenv/cli init` that make the CLI fully machine-readable and safe to invoke from an AI agent context.
 
 ### Modified Capabilities
 
