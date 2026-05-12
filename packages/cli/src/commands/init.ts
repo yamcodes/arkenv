@@ -86,17 +86,7 @@ export class InitCommand {
 
 			if (installCmd && process.env.SKIP_INSTALL !== "true") {
 				logger.step(`Installing dependencies with ${packageManager}...`);
-				await new Promise<void>((resolve, reject) => {
-					const child = spawn(installCmd, [], {
-						stdio: logger.stdio as any,
-						shell: true,
-					});
-					child.on("close", (code: number | null) => {
-						if (code === 0) resolve();
-						else reject(new Error(`Installation failed with code ${code}`));
-					});
-					child.on("error", reject);
-				});
+				await this.execute(installCmd);
 			}
 
 			if (tsResult.status === "updated") {
@@ -112,29 +102,18 @@ export class InitCommand {
 			const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
 
 			const dlx = getDlxCommand(packageManager);
+			const yesFlag = this.cli.isYes ? " --yes" : "";
 			let skillInstalled = false;
 			if (options.installSkill && process.env.SKIP_INSTALL !== "true") {
 				logger.step("Installing ArkEnv agent skill...");
-				await new Promise<void>((resolve) => {
-					const child = spawn(`${dlx} skills add yamcodes/arkenv`, [], {
-						stdio: logger.stdio as any,
-						shell: true,
-					});
-					child.on("close", (code: number | null) => {
-						if (code === 0) {
-							skillInstalled = true;
-							resolve();
-						} else {
-							// Don't fail the whole process if skill install fails, but log it
-							logger.warn("Failed to install ArkEnv AI skill.");
-							resolve();
-						}
-					});
-					child.on("error", (err: Error) => {
-						logger.warn(`Failed to install ArkEnv AI skill: ${err.message}`);
-						resolve();
-					});
-				});
+				try {
+					await this.execute(`${dlx} skills add yamcodes/arkenv${yesFlag}`);
+					skillInstalled = true;
+				} catch (err: any) {
+					// Don't fail the whole process if skill install fails, but log it
+					// If quiet, the error message already contains the buffered logs
+					logger.warn(`Failed to install ArkEnv AI skill: ${err.message}`);
+				}
 			}
 
 			if (skillInstalled) {
@@ -172,5 +151,48 @@ export class InitCommand {
 			s.stop("Scaffolding failed.");
 			logger.fatal("Scaffolding failed.", error);
 		}
+	}
+
+	private async execute(command: string) {
+		const { logger, isQuiet } = this.cli;
+		const stdio = isQuiet ? "pipe" : (logger.stdio as any);
+
+		return new Promise<void>((resolve, reject) => {
+			const child = spawn(command, [], {
+				stdio,
+				shell: true,
+			});
+
+			let stdout = "";
+			let stderr = "";
+			const MAX_BUFFER = 10_000;
+
+			if (isQuiet) {
+				child.stdout?.on("data", (data) => {
+					stdout = (stdout + data.toString()).slice(-MAX_BUFFER);
+				});
+				child.stderr?.on("data", (data) => {
+					stderr = (stderr + data.toString()).slice(-MAX_BUFFER);
+				});
+			}
+
+			child.on("close", (code, signal) => {
+				if (code === 0) {
+					resolve();
+				} else {
+					let message =
+						code === null
+							? `Command terminated by signal ${signal}`
+							: `Command failed with code ${code}`;
+					if (isQuiet) {
+						if (stdout) message += `\n${pc.dim("STDOUT:")}\n${stdout}`;
+						if (stderr) message += `\n${pc.red("STDERR:")}\n${stderr}`;
+					}
+					reject(new Error(message));
+				}
+			});
+
+			child.on("error", reject);
+		});
 	}
 }
