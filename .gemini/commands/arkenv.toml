@@ -20,10 +20,12 @@ This command will:
    - Run the initialization command: `pnpm dlx @arkenv/cli@latest init --yes`.
    - Follow the **Setup Workflow** defined in the `arkenv` skill.
 4. **Refinement**:
-   - Ensure `env.ts` is correctly scaffolded.
-   - Update configuration files (like `vite.config.ts`) if the CLI didn't do it perfectly.
-   - Set up type augmentation for the detected runtime.
-5. **Validation**: Confirm the setup is working by checking types or running a build check.
+   - Ensure `env.ts` is correctly scaffolded and matches the project's needs.
+   - **Manual Plugin Update**: Update `vite.config.ts` or `bunfig.toml` to include the ArkEnv plugin.
+   - **Type Augmentation**: This is a CRITICAL step. Create or update the necessary `.d.ts` file:
+     - **Vite**: Add augmentation to `src/vite-env.d.ts`.
+     - **Bun**: Create/update `bun-env.d.ts` in the project root with the correct `ProcessEnvAugmented` pattern.
+5. **Validation**: Confirm the setup is working by checking types (e.g., hovering over `process.env.VAR`) or running a build check.
 
 If you encounter any issues during setup, report them and suggest manual fixes.
 """
