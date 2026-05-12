@@ -128,7 +128,7 @@ export async function runPromptWizard(
 			},
 			installSkill: () =>
 				confirm({
-					message: "Would you like to install the ArkEnv AI skill?",
+					message: "Would you like to install the ArkEnv agent skill?",
 					initialValue: true,
 					active: "Yes (Recommended)",
 					inactive: "No",
