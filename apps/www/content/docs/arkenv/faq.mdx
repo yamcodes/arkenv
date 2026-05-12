@@ -1,0 +1,116 @@
+---
+title: FAQ
+description: Frequently asked questions about ArkEnv.
+icon: MessageCircleQuestionMark
+---
+
+[//]: # "1. The Core Pitch & Proof"
+
+## Why do I need ArkEnv?
+
+We've seen teams struggle with environment variables in JavaScript projects. The environment our project runs on is such a core part of software development, and yet we often avoid validating it because it feels like boilerplate. We'd rather assert with a simple `process.env.MY_VAR as string` and hope for the best.
+
+But then the variable goes mysteriously missing in production. Or it's the string `"false"` when you actually needed a boolean. Or someone from the team added a new variable and forgot to tell anyone, and now we have type errors and have to chase them on Slack...
+
+We built ArkEnv to solve this problem. With a simple `npx @arkenv/cli@latest init` command, your project becomes **bulletproof** against environment variable misconfigurations.
+
+ArkEnv gives you framework integrations, automatic coercion, and LLM support out-of-the-box. Read our full pitch in the [intro](/docs/arkenv) section.
+
+## What does a failed validation look like?
+
+With ArkEnv, your environment variables are **guaranteed to match your schema** at runtime. If any variable is incorrect or missing, the app won't start and a clear error will be thrown:
+
+```bash title="Terminal"
+❯ PORT=hello npm start
+
+ArkEnvError: Errors found while validating environment variables
+  HOST must be a string or "localhost" (was missing)
+  PORT must be a number (was a string)
+```
+
+## Does ArkEnv load my `.env` files?
+
+**No.** ArkEnv is a **validator**, not a **loader**.
+
+Most modern frameworks (Vite, Bun, Next.js, Remix) already have built-in support for loading `.env` files. If you are using plain Node.js, we recommend using a dedicated loader like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
+
+ArkEnv takes whatever is in `process.env` (or your chosen source), ensures it matches your schema, and applies transformations like [automatic coercion](/docs/arkenv/coercion).
+
+[//]: # "2. The Validator Story"
+
+## Do I have to use ArkType?
+
+Not at all. While ArkEnv has native, zero-config support for [ArkType](https://arktype.io/) (and we think it's the best way to use it!), we are fully compatible with any **Standard Schema** validator.
+
+This means you can use:
+
+- **Zod**
+- **Valibot**
+- **Typia**
+- ...and any other library that implements the [Standard Schema](https://standardschema.dev) specification.
+
+See [arkenv/standard](/docs/arkenv/standard) for more details.
+
+## Does ArkEnv work with Zod?
+
+Yes! ArkEnv works seamlessly with Zod.
+
+See our [Zod example](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod) or use the [ArkEnv CLI](/docs/cli) which can set up ArkEnv + Zod for you automatically.
+
+## Why use ArkEnv instead of just Zod?
+
+Using "raw" Zod for environment variables often leads to a lot of boilerplate:
+
+1. **Manual Coercion:** Environment variables are always strings, so you have to manually `z.coerce.number()` every time. ArkEnv does this automatically.
+2. **Verbose Errors:** Zod errors are designed for complex APIs. ArkEnv's errors are formatted specifically for terminal output.
+3. **Framework Nuances:** In tools like Vite, variables are statically replaced at build time. ArkEnv's plugins handle this "magic" for you so you don't have to think about it.
+
+[//]: # "3. Frameworks & Comparisons"
+
+## Is ArkEnv only for Vite and Bun?
+
+No! ArkEnv is designed to be **completely agnostic**. We officially support and provide first-class toolkits for:
+
+- **Node.js** (Servers, CLIs, Scripts)
+- **Bun**
+- **Vite**
+
+Because it is built on standard JavaScript APIs, ArkEnv *should* work anywhere JavaScript runs, including Deno or Edge Functions (like Cloudflare Workers). However, these environments are not yet part of our official test suite.
+
+If you're using ArkEnv on a platform not listed above and run into issues, please [let us know on GitHub](https://github.com/yamcodes/arkenv/issues)!
+
+## Can I use ArkEnv with Next.js or Nuxt?
+
+Not officially.
+
+We've seen users have success using the core `arkenv` package in these environments. However, meta-frameworks have specific client/server separation nuances that we don't officially abstract away yet. If you need a Next.js-specific solution right now, we recommend [T3 Env](https://env.t3.gg).
+
+We're exploring official integrations for more frameworks—keep an eye on our [roadmap](https://github.com/yamcodes/arkenv/issues/683)!
+
+## How is ArkEnv different from T3 Env, or other similar tools?
+
+[T3 Env](https://env.t3.gg/) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ.
+
+If you're using Next.js or Nuxt, we recommend T3 Env.
+
+If you're building a Vite app, a Node server, a [Bun fullstack app](https://bun.com/docs/guides/ecosystem/react), a CLI tool, or even a Solid Start project, ArkEnv can cover your needs. We provide [official examples](/docs/arkenv/examples) for these use cases.
+
+Read more in the [comparison](/docs/arkenv/comparison) section.
+
+[//]: # "4. Tooling, Extras & Trust"
+
+## What does the ArkEnv CLI do?
+
+The ArkEnv CLI is a command-line tool that helps you set up ArkEnv in your project. It provides an interactive walkthrough to help you choose a validation library, configure your environment schema, and set up your project structure.
+
+Read more in the [CLI docs](/docs/cli).
+
+## Does ArkEnv support my AI assistant like Claude Code?
+
+Yes! ArkEnv includes an [agent skill](/docs/arkenv/integrations/ai/skills) designed to support most modern AI tools, including Cursor, Claude Code, and Codex. We highly recommend setting it up to let your agent automatically write and tighten your environment schemas.
+
+## Is it safe to use in production?
+
+Yes. ArkEnv is a very simple library (2kB gzipped) and has **zero external dependencies**. It's designed to defer most of the work to your existing validator, ensuring your app fails fast and loudly if the environment is misconfigured.
+
+While the API is still in v0 (see [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683)), the core functionality is in place, fully tested, and is already being used in production. It is not expected to meaningfully change.
