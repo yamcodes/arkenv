@@ -28,21 +28,55 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 - Scaffold schema files and detect framework-specific configurations (`Vite`, `Bun`, etc.).
 - Automatically configure `tsconfig.json` and environment types for optimal typesafety.
 
+### Agent Setup (Machine-Readable)
+
+AI agents SHOULD always use the CLI for project initialization to ensure consistency and reliability. Use the `--agent` flag for a fully automated, machine-readable experience.
+
+- **Command**: `pnpm dlx @arkenv/cli@latest init --agent`
+- **Behavior**: The `--agent` flag automatically enables the following behaviors:
+  - **`--yes`**: Bypasses all interactive prompts and uses recommended defaults.
+  - **`--quiet`**: Suppresses spinners and ANSI formatting for cleaner terminal logs.
+  - **`--json`**: Emits a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).
+- **Success Verification**: Parse the JSON output to verify `status: "success"` and retrieve details like the scaffolded file path.
+
 ## Operational Logic
 
 1. **Detection**:
    - Look for `env.ts` or `arkenv` imports to understand existing schema.
    - Check for framework config files (`vite.config.ts`, `bunfig.toml`, `package.json` scripts) to recommend appropriate plugins.
-2. **Setup**: If ArkEnv is not present, recommend using the CLI: `pnpm dlx @arkenv/cli@latest init`.
-3. **Pattern Enforcement**:
-   - **Centralize Schema**: Always define the schema in a central file (e.g., `env.ts`).
-   - **Frontend (Vite/Bun)**:
-     - Use the appropriate plugin for build-time validation.
-     - Access variables via native primitives (`import.meta.env` for Vite, `process.env` for Bun).
-     - Use **Type Augmentation** to make native primitives typesafe.
-   - **Backend (Node.js)**:
-     - Export a validated `env` object using `arkenv(schema)`.
-   - **Type Safety**: Ensure `strict` mode is enabled in `tsconfig.json`.
+2. **Setup**:
+   - If ArkEnv is not present or a fresh setup is requested, trigger the **Setup Workflow**.
+   - Prefer using the CLI for initialization: `pnpm dlx @arkenv/cli@latest init`.
+   - If the CLI cannot be used or fails, fall back to manual configuration.
+
+## Setup Workflow
+
+When setting up ArkEnv, follow these steps:
+
+1. **Initialize**: Run `pnpm dlx @arkenv/cli@latest init --agent`. This will attempt to detect the environment, install dependencies, and scaffold a base `env.ts`.
+2. **Review & Refine `env.ts`**:
+   - Inspect the generated `env.ts`. Ensure it captures the required environment variables.
+   - Refine types (e.g., change `string` to `number.port` or specific union types).
+3. **Manual Plugin Configuration**:
+   - The CLI installs plugins but might not update config files.
+   - **Vite**: Update `vite.config.ts` to import and include the `arkenv` plugin.
+   - **Bun**: Configure `bunfig.toml` or add the plugin to the runtime if necessary.
+4. **Typesafety & Augmentation**:
+   - **Vite**: Add type augmentation to `src/vite-env.d.ts` or a new `env.d.ts`.
+     ```ts
+     interface ImportMetaEnv extends import("@arkenv/vite-plugin").ImportMetaEnvAugmented<typeof import("./env").Env> {}
+     ```
+   - **Bun**: Create a `bun-env.d.ts` file (or update an existing one) with the following pattern:
+     ```ts
+     /// <reference types="bun-types" />
+     type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<typeof import("./src/env").default>;
+     declare namespace NodeJS {
+       interface ProcessEnv extends ProcessEnvAugmented {}
+     }
+     ```
+   - Ensure `tsconfig.json` has `strict: true` (the CLI tries to do this, but verify).
+5. **Usage Update**: Scan the codebase for existing environment variable usage (`process.env` or `import.meta.env`) and ensure they are now typesafe via the augmentations.
+6. **Validation**: Run `pnpm check` (or equivalent) or a build to confirm everything is typesafe and valid.
 
 ## Core Concepts
 

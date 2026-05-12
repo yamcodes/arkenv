@@ -24,7 +24,8 @@
 		"start": "node ./dist/index.cjs init",
 		"dev": "tsdown --watch",
 		"test": "vitest",
-		"test:run": "vitest run"
+		"test:run": "vitest run",
+		"typecheck": "tsc --noEmit"
 	},
 	"keywords": [
 		"arkenv",
