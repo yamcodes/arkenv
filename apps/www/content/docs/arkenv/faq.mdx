@@ -6,16 +6,15 @@ icon: MessageCircleQuestionMark
 
 ## Is ArkEnv only for Vite and Bun?
 
-No! ArkEnv is designed to be **completely agnostic**. While we provide first-class plugins for Vite and Bun to make your life easier, the core `arkenv` library is built on standard JavaScript APIs and *should* work anywhere JavaScript runs:
+No! ArkEnv is designed to be **completely agnostic**. We officially support and provide first-class toolkits for:
 
 - **Node.js** (Servers, CLIs, Scripts)
 - **Bun**
 - **Vite**
-- **Deno**
-- **Edge Functions** (Cloudflare Workers, Vercel Edge)
-- **Browsers** (though we recommend build-time validation for security)
 
-**Note:** ArkEnv is tested on Bun, Vite, and Node.js. If you're using it in Deno or on the Edge and run into issues, please [let us know on GitHub](https://github.com/yamcodes/arkenv/issues)!
+Because it is built on standard JavaScript APIs, ArkEnv *should* work anywhere JavaScript runs, including Deno or Edge Functions (like Cloudflare Workers). However, these environments are not yet part of our official test suite.
+
+If you're using ArkEnv on a platform not listed above and run into issues, please [let us know on GitHub](https://github.com/yamcodes/arkenv/issues)!
 
 ## Do I have to use ArkType?
 
@@ -69,3 +68,5 @@ Using "raw" Zod for environment variables often leads to a lot of boilerplate:
 ## Is it safe to use in production?
 
 Yes. ArkEnv is extremely lightweight (2kB gzipped) and has **zero external dependencies**. It's designed to be fast and reliable, failing your application immediately if your environment is misconfigured—preventing cryptic runtime errors later.
+
+While the API is still in v0 (see [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683)), the core functionality is place, fully tested, and is already being used in production. It is not expected to meaningfully change.
