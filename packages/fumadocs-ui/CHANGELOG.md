@@ -1,5 +1,11 @@
 # @arkenv/fumadocs-ui
 
+## 0.0.8
+
+### Patch Changes
+
+- #### Fix hamburger menu fade-in behavior on mobile _[`#935`](https://github.com/yamcodes/arkenv/pull/935) [`f1ee3de`](https://github.com/yamcodes/arkenv/commit/f1ee3de8c9cece2669ab4091aa992b25579a6b4e) [@yamcodes](https://github.com/yamcodes)_
+
 ## 0.0.7
 
 ### Patch Changes
