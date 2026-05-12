@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { confirm, isCancel } from "@clack/prompts";
+import dedent from "dedent";
 import pc from "picocolors";
 import type { CLI } from "../cli";
 import {
@@ -91,22 +92,7 @@ export class InitCommand {
 
 			if (installCmd && process.env.SKIP_INSTALL !== "true") {
 				logger.step(`Installing dependencies with ${packageManager}...`);
-				await new Promise<void>((resolve, reject) => {
-					const child = spawn(installCmd, [], {
-						stdio: logger.stdio as any,
-						shell: true,
-					});
-					child.on("close", (code: number | null) => {
-						if (code === 0) resolve();
-						else
-							reject(
-								new Error(
-									`Installation of ${installCmd} failed with code ${code}`,
-								),
-							);
-					});
-					child.on("error", reject);
-				});
+				await this.execute(installCmd);
 			}
 
 			if (tsResult.status === "updated") {
@@ -151,59 +137,97 @@ export class InitCommand {
 			}
 
 			const dlx = getDlxCommand(packageManager);
+			const yesFlag = this.cli.isYes ? " --yes" : "";
 			let skillInstalled = false;
 			if (options.installSkill && process.env.SKIP_INSTALL !== "true") {
 				logger.step("Installing ArkEnv agent skill...");
-				await new Promise<void>((resolve) => {
-					const child = spawn(`${dlx} skills add yamcodes/arkenv`, [], {
-						stdio: logger.stdio as any,
-						shell: true,
-					});
-					child.on("close", (code: number | null) => {
-						if (code === 0) {
-							skillInstalled = true;
-							resolve();
-						} else {
-							// Don't fail the whole process if skill install fails, but log it
-							logger.warn("Failed to install ArkEnv AI skill.");
-							resolve();
-						}
-					});
-					child.on("error", (err: Error) => {
-						logger.warn(`Failed to install ArkEnv AI skill: ${err.message}`);
-						resolve();
-					});
-				});
+				try {
+					await this.execute(`${dlx} skills add yamcodes/arkenv${yesFlag}`);
+					skillInstalled = true;
+				} catch (err: any) {
+					// Don't fail the whole process if skill install fails, but log it
+					// If quiet, the error message already contains the buffered logs
+					logger.warn(`Failed to install ArkEnv AI skill: ${err.message}`);
+				}
 			}
 
 			if (skillInstalled) {
-				logger.step("Complete the setup with your AI assistant. Use:");
-				logger.step(
-					`${pc.cyan("/arkenv")} - automatically refine your schema and configure framework integrations.`,
+				logger.note(
+					dedent`
+						Inside your AI assistant (e.g. Claude Code), use:
+						${pc.cyan("/arkenv")} - automatically refine your schema and configure integrations.
+					`,
+					"Next steps",
 				);
 			} else {
-				logger.step(
-					`1. Check ${code(displayPath)} and adapt it to your needs. Review your schema to refine types (e.g., ${code("number")}, ${code("boolean")}, etc.).`,
-				);
-				logger.step(
-					`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
-				);
-				logger.step(
-					`3. (Recommended) Install the ArkEnv Agent Skill for AI assistance: ${code(`${dlx} skills add yamcodes/arkenv`)}`,
+				logger.note(
+					dedent`
+						1. Check ${code(displayPath)} and refine your environment schema.
+						2. Import and use: ${code(`import { env } from "${importPath}"`)}
+						3. (Recommended) Install the AI skill: ${code(`${dlx} skills add yamcodes/arkenv`)}
+						   Then run ${pc.cyan("/arkenv")} inside your AI assistant to finish.
+					`,
+					"Next steps",
 				);
 			}
 
-			logger.finish(`${symbol} ${pc.dim("Happy coding!")}`, {
-				path: displayPath,
-				framework: options.framework,
-				validator: options.validator,
-				packageManager,
-				tsConfigUpdated: tsResult.status === "updated",
-				skillInstalled,
-			});
+			logger.finish(
+				`${symbol} ArkEnv scaffolding complete. ${pc.dim("Happy coding!")}`,
+				{
+					path: displayPath,
+					framework: options.framework,
+					validator: options.validator,
+					packageManager,
+					tsConfigUpdated: tsResult.status === "updated",
+					skillInstalled,
+				},
+			);
 		} catch (error) {
 			s.stop("Scaffolding failed.");
 			logger.fatal("Scaffolding failed.", error);
 		}
+	}
+
+	private async execute(command: string) {
+		const { logger, isQuiet } = this.cli;
+		const stdio = isQuiet ? "pipe" : (logger.stdio as any);
+
+		return new Promise<void>((resolve, reject) => {
+			const child = spawn(command, [], {
+				stdio,
+				shell: true,
+			});
+
+			let stdout = "";
+			let stderr = "";
+			const MAX_BUFFER = 10_000;
+
+			if (isQuiet) {
+				child.stdout?.on("data", (data) => {
+					stdout = (stdout + data.toString()).slice(-MAX_BUFFER);
+				});
+				child.stderr?.on("data", (data) => {
+					stderr = (stderr + data.toString()).slice(-MAX_BUFFER);
+				});
+			}
+
+			child.on("close", (code, signal) => {
+				if (code === 0) {
+					resolve();
+				} else {
+					let message =
+						code === null
+							? `Command terminated by signal ${signal}`
+							: `Command failed with code ${code}`;
+					if (isQuiet) {
+						if (stdout) message += `\n${pc.dim("STDOUT:")}\n${stdout}`;
+						if (stderr) message += `\n${pc.red("STDERR:")}\n${stderr}`;
+					}
+					reject(new Error(message));
+				}
+			});
+
+			child.on("error", reject);
+		});
 	}
 }

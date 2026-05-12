@@ -1,4 +1,4 @@
-import { cancel, spinner as clackSpinner, outro } from "@clack/prompts";
+import { cancel, spinner as clackSpinner, note, outro } from "@clack/prompts";
 import pc from "picocolors";
 
 export type LoggerOptions = {
@@ -49,6 +49,14 @@ export class Logger {
 
 	step(message: string) {
 		this.write(`○ ${message}`);
+	}
+
+	note(message: string, title?: string) {
+		if (this.options.isQuiet || this.options.isJson) {
+			this.write(pc.dim(`○ ${title ? `${title}: ` : ""}${message}`));
+		} else {
+			note(message, title);
+		}
 	}
 
 	log(message: string) {
