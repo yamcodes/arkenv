@@ -15,11 +15,24 @@ export async function scaffold(
 	// 1. Create directory if it doesn't exist
 	await fsp.mkdir(targetDir, { recursive: true });
 
+	// 4. Detect package manager and prepare installation info
+	const packageManager = await detectPackageManager();
+	const deps = ["arkenv", options.validator];
+
+	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
+	if (options.framework === "bun") deps.push("@arkenv/bun-plugin");
+
+	const installCmd = getInstallCommand(packageManager, deps);
+
 	// 2. Generate and write env.ts
 	const content = getEnvTemplate(options);
 	if (existsSync(targetPath)) {
 		if (options.overwrite === false) {
-			return { tsConfigResult: { status: "already_strict" } as const };
+			return {
+				tsConfigResult: { status: "already_strict" } as const,
+				packageManager,
+				installCmd: undefined,
+			};
 		}
 		if (options.overwrite === undefined) {
 			const confirmOverwrite = await confirm({
@@ -33,7 +46,11 @@ export async function scaffold(
 			}
 
 			if (!confirmOverwrite) {
-				return { tsConfigResult: { status: "already_strict" } as const };
+				return {
+					tsConfigResult: { status: "already_strict" } as const,
+					packageManager,
+					installCmd: undefined,
+				};
 			}
 		}
 		await fsp.writeFile(targetPath, content, "utf-8");
@@ -50,15 +67,6 @@ export async function scaffold(
 	if (options.shouldUpdateTsConfig) {
 		tsConfigResult = await updateTsConfigToStrict();
 	}
-
-	// 4. Detect package manager and prepare installation info
-	const packageManager = await detectPackageManager();
-	const deps = ["arkenv", options.validator];
-
-	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
-	if (options.framework === "bun") deps.push("@arkenv/bun-plugin");
-
-	const installCmd = getInstallCommand(packageManager, deps);
 
 	return { tsConfigResult, installCmd, packageManager };
 }

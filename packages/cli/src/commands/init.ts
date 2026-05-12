@@ -60,6 +60,7 @@ export class InitCommand {
 
 		if (!options) {
 			logger.cancel("Operation cancelled.");
+			return;
 		}
 
 		const s = logger.spinner();
@@ -79,11 +80,11 @@ export class InitCommand {
 			if (installCmd && process.env.SKIP_INSTALL !== "true") {
 				logger.step(`Installing dependencies with ${packageManager}...`);
 				await new Promise<void>((resolve, reject) => {
-					const child = spawn(installCmd, {
-						stdio: logger.stdio,
+					const child = spawn(installCmd, [], {
+						stdio: logger.stdio as any,
 						shell: true,
 					});
-					child.on("close", (code) => {
+					child.on("close", (code: number | null) => {
 						if (code === 0) resolve();
 						else reject(new Error(`Installation failed with code ${code}`));
 					});
@@ -108,11 +109,11 @@ export class InitCommand {
 			if (options.installSkill && process.env.SKIP_INSTALL !== "true") {
 				logger.step("Installing ArkEnv AI skill...");
 				await new Promise<void>((resolve) => {
-					const child = spawn(`${dlx} skills add yamcodes/arkenv`, {
-						stdio: logger.stdio,
+					const child = spawn(`${dlx} skills add yamcodes/arkenv`, [], {
+						stdio: logger.stdio as any,
 						shell: true,
 					});
-					child.on("close", (code) => {
+					child.on("close", (code: number | null) => {
 						if (code === 0) {
 							skillInstalled = true;
 							resolve();
@@ -122,7 +123,7 @@ export class InitCommand {
 							resolve();
 						}
 					});
-					child.on("error", (err) => {
+					child.on("error", (err: Error) => {
 						logger.warn(`Failed to install ArkEnv AI skill: ${err.message}`);
 						resolve();
 					});

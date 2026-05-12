@@ -10,9 +10,9 @@ export type ProjectOptions = {
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun" | "node";
 	language: "ts"; // TODO: Support JS
-	overwrite?: boolean;
-	envKeys?: string[];
-	installSkill?: boolean;
+	overwrite?: boolean | undefined;
+	envKeys?: string[] | undefined;
+	installSkill?: boolean | undefined;
 };
 
 export async function runPromptWizard(
