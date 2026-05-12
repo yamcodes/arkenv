@@ -104,7 +104,7 @@ export class InitCommand {
 			} else if (tsResult.status === "error") {
 				logger.warn(
 					`Could not automatically update ${code(tsResult.file || "tsconfig.json")}. Please ensure 'strict: true' is set manually.`,
-					);
+				);
 			}
 
 			const relPath = path.relative(process.cwd(), path.resolve(options.path));
@@ -157,14 +157,17 @@ export class InitCommand {
 				);
 			}
 
-			logger.finish(`${symbol} ArkEnv scaffolding complete. ${pc.dim("Happy coding!")}`, {
-				path: displayPath,
-				framework: options.framework,
-				validator: options.validator,
-				packageManager,
-				tsConfigUpdated: tsResult.status === "updated",
-				skillInstalled,
-			});
+			logger.finish(
+				`${symbol} ArkEnv scaffolding complete. ${pc.dim("Happy coding!")}`,
+				{
+					path: displayPath,
+					framework: options.framework,
+					validator: options.validator,
+					packageManager,
+					tsConfigUpdated: tsResult.status === "updated",
+					skillInstalled,
+				},
+			);
 		} catch (error) {
 			s.stop("Scaffolding failed.");
 			logger.fatal("Scaffolding failed.", error);
