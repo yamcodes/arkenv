@@ -1,8 +1,14 @@
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import dedent from "dedent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { bootstrapViteConfig, findViteConfig } from "./config-mutation";
+import {
+	bootstrapBunConfig,
+	bootstrapViteConfig,
+	findBunConfig,
+	findViteConfig,
+} from "./config-mutation";
 
 describe("config-mutation", () => {
 	let tempDir: string;
@@ -29,6 +35,27 @@ describe("config-mutation", () => {
 
 		it("returns null if no config exists", async () => {
 			const result = await findViteConfig();
+			expect(result).toBeNull();
+		});
+	});
+
+	describe("findBunConfig", () => {
+		it("finds bunfig.toml", async () => {
+			const configPath = path.join(tempDir, "bunfig.toml");
+			await fsp.writeFile(configPath, "");
+			const result = await findBunConfig();
+			expect(result).toBe(configPath);
+		});
+
+		it("finds bun.setup.ts", async () => {
+			const configPath = path.join(tempDir, "bun.setup.ts");
+			await fsp.writeFile(configPath, "");
+			const result = await findBunConfig();
+			expect(result).toBe(configPath);
+		});
+
+		it("returns null if no config exists", async () => {
+			const result = await findBunConfig();
 			expect(result).toBeNull();
 		});
 	});
@@ -170,6 +197,34 @@ export default config;
 			const result = await bootstrapViteConfig(configPath);
 			expect(result.success).toBe(false);
 			expect(result.error).toBeDefined();
+		});
+	});
+
+	describe("bootstrapBunConfig", () => {
+		it("returns bunfig.toml specific instructions", async () => {
+			const result = await bootstrapBunConfig("bunfig.toml");
+			expect(result.success).toBe(true);
+			expect(result.instructions).toBe(dedent`
+				[preload]
+				preload = ["./bun.setup.ts"]
+			`);
+		});
+
+		it("returns bun.setup.ts specific instructions", async () => {
+			const result = await bootstrapBunConfig("bun.setup.ts");
+			expect(result.success).toBe(true);
+			expect(result.instructions).toContain("import arkenv");
+			expect(result.instructions).toContain("Bun.build");
+			expect(result.instructions).toContain("plugins: [arkenv]");
+			expect(result.instructions).not.toContain("add the following to your");
+		});
+
+		it("returns combined instructions when no config path is provided", async () => {
+			const result = await bootstrapBunConfig(null);
+			expect(result.success).toBe(true);
+			expect(result.instructions).toContain("Bun.build");
+			expect(result.instructions).toContain("[preload]");
+			expect(result.instructions).toContain("add the following to your");
 		});
 	});
 });
