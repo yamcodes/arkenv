@@ -12,6 +12,7 @@ export type ProjectOptions = {
 	language: "ts"; // TODO: Support JS
 	overwrite?: boolean;
 	envKeys?: string[];
+	installSkill?: boolean;
 };
 
 export async function runPromptWizard(
@@ -30,6 +31,7 @@ export async function runPromptWizard(
 			language: "ts",
 			overwrite: true,
 			envKeys: detectedKeys || undefined,
+			installSkill: false,
 		} as ProjectOptions;
 	}
 
@@ -124,6 +126,13 @@ export async function runPromptWizard(
 					});
 				}
 			},
+			installSkill: () =>
+				confirm({
+					message: "Would you like to install the ArkEnv AI skill?",
+					initialValue: true,
+					active: "Yes (Recommended)",
+					inactive: "No",
+				}),
 		},
 		{
 			onCancel: () => {
@@ -145,5 +154,6 @@ export async function runPromptWizard(
 		language: "ts",
 		overwrite: result.overwrite as boolean,
 		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
+		installSkill: result.installSkill as boolean,
 	};
 }

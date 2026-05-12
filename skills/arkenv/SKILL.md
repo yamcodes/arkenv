@@ -28,6 +28,17 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 - Scaffold schema files and detect framework-specific configurations (`Vite`, `Bun`, etc.).
 - Automatically configure `tsconfig.json` and environment types for optimal typesafety.
 
+### Agent Setup (Machine-Readable)
+
+AI agents SHOULD always use the CLI for project initialization to ensure consistency and reliability. Use the `--agent` macro for a fully automated, machine-readable experience.
+
+- **Command**: `pnpm dlx @arkenv/cli@latest init --agent`
+- **Behavior**:
+  - **`--yes`**: Bypasses all interactive prompts and uses recommended defaults.
+  - **`--quiet`**: Suppresses spinners and ANSI formatting for cleaner terminal logs.
+  - **`--json`**: Emits a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).
+- **Success Verification**: Parse the JSON output to verify `status: "success"` and retrieve details like the scaffolded file path.
+
 ## Operational Logic
 
 1. **Detection**:
