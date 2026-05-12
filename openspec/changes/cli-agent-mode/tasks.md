@@ -15,9 +15,11 @@
 
 - [ ] 3.1 Implement `--quiet` mode by suppressing spinners and stripping ANSI colors from the new `Logger`.
 - [ ] 3.2 Implement `--json` mode with a structured schema `{ "status": "success" | "error", "message": string, "details": { ... } }`.
-- [ ] 3.3 Implement `--agent` as a macro for `--yes --quiet --json`.
-- [ ] 3.4 Enforce "ruthless" redirection of all non-JSON output (logs, status, warnings) to `stderr` when `--json` (or `--agent`) is active.
-- [ ] 3.5 Ensure failure states are captured and emitted as a structured JSON object to `stdout` before process exit.
+- [ ] 3.3 Implement `--agent` as a macro that enables `--yes`, `--quiet`, and `--json`.
+- [ ] 3.4 Ensure flags are independent: `--json` can be used interactively (UI redirected to `stderr`).
+- [ ] 3.5 Enforce "ruthless" redirection of all non-JSON output (logs, status, warnings, prompts) to `stderr` when `--json` is active.
+- [ ] 3.6 Ensure failure states are captured and emitted as a structured JSON object to `stdout` before process exit.
+
 
 ## 4. AI Skill Update
 

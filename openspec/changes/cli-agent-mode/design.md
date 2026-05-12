@@ -25,12 +25,14 @@ We will parse `--yes`/`-y`, `--agent`/`-a`, `--quiet`/`-q`, and `--json`/`-j` at
 - **Alternatives**: Parsing in `runPromptWizard` or `scaffold`. Rejected because `index.ts` already handles `--help` and basic flag detection.
 
 ### 2. Composable Output Modes
+- `--yes`, `-y`: Bypasses all interactive prompts and accepts recommended defaults.
 - `--quiet`, `-q`: Disables spinners (`ora`/`clack`), suppresses `picocolors` ANSI sequences, and limits output to high-level status messages sent to `stderr`.
-- `--json`, `-j`: Implies `--quiet` and `--yes`. 
-    - **Ruthless Redirection**: To ensure the JSON is parseable by agents, ALL non-essential logs, status updates, and errors SHALL be redirected to `stderr`. Only the final JSON payload goes to `stdout`.
+- `--json`, `-j`: Changes the final output to a structured JSON object.
+    - **Isolation**: When `--json` is active, ALL other output (prompts, logs, status updates, errors) MUST be redirected to `stderr`. `stdout` is reserved exclusively for the JSON payload.
     - **Structured Schema**: The JSON output will follow a consistent schema for both success and failure: `{ "status": "success" | "error", "message": "string", "details": { ... } }`.
-- `--agent`, `-a`: A macro for `--yes --quiet --json`.
-- **Rationale**: Allows users/agents to choose the level of verbosity and structure they need.
+    - **Independence**: `--json` does NOT imply `--yes` or `--quiet`. A user can run an interactive session that outputs JSON at the end (`arkenv init --json`).
+- `--agent`, `-a`: A macro for `--yes --quiet --json`. Provides the "one-shot" machine-readable experience.
+- **Rationale**: Decoupling flags allows for maximum flexibility (e.g., interactive JSON mode) while the `--agent` macro maintains the optimized default for AI agents.
 
 ### 3. "Agent Mode" for `@clack/prompts`
 We will create a lightweight logger wrapper or utility that checks the `--quiet` and `--json` flags.
