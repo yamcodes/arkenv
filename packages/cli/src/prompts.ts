@@ -10,8 +10,9 @@ export type ProjectOptions = {
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun" | "node";
 	language: "ts"; // TODO: Support JS
-	overwrite?: boolean;
-	envKeys?: string[];
+	overwrite?: boolean | undefined;
+	envKeys?: string[] | undefined;
+	installSkill?: boolean | undefined;
 };
 
 export async function runPromptWizard(
@@ -19,6 +20,7 @@ export async function runPromptWizard(
 		framework?: ProjectOptions["framework"];
 	},
 	isYes = false,
+	isAgent = false,
 ): Promise<ProjectOptions | null> {
 	const detectedKeys = await getEnvExampleKeys();
 
@@ -30,6 +32,7 @@ export async function runPromptWizard(
 			language: "ts",
 			overwrite: true,
 			envKeys: detectedKeys || undefined,
+			installSkill: false,
 		} as ProjectOptions;
 	}
 
@@ -124,6 +127,16 @@ export async function runPromptWizard(
 					});
 				}
 			},
+			installSkill: () => {
+				if (!isAgent) {
+					return confirm({
+						message: "Would you like to install the ArkEnv agent skill?",
+						initialValue: true,
+						active: "Yes (Recommended)",
+						inactive: "No",
+					});
+				}
+			},
 		},
 		{
 			onCancel: () => {
@@ -145,5 +158,6 @@ export async function runPromptWizard(
 		language: "ts",
 		overwrite: result.overwrite as boolean,
 		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
+		installSkill: result.installSkill as boolean,
 	};
 }

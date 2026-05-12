@@ -28,6 +28,17 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 - Scaffold schema files and detect framework-specific configurations (`Vite`, `Bun`, etc.).
 - Automatically configure `tsconfig.json` and environment types for optimal typesafety.
 
+### Agent Setup (Machine-Readable)
+
+AI agents SHOULD always use the CLI for project initialization to ensure consistency and reliability. Use the `--agent` flag for a fully automated, machine-readable experience.
+
+- **Command**: `pnpm dlx @arkenv/cli@latest init --agent`
+- **Behavior**: The `--agent` flag automatically enables the following behaviors:
+  - **`--yes`**: Bypasses all interactive prompts and uses recommended defaults.
+  - **`--quiet`**: Suppresses spinners and ANSI formatting for cleaner terminal logs.
+  - **`--json`**: Emits a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).
+- **Success Verification**: Parse the JSON output to verify `status: "success"` and retrieve details like the scaffolded file path.
+
 ## Operational Logic
 
 1. **Detection**:
@@ -42,7 +53,7 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 
 When setting up ArkEnv, follow these steps:
 
-1. **Initialize**: Run `pnpm dlx @arkenv/cli@latest init --yes`. This will attempt to detect the environment, install dependencies, and scaffold a base `env.ts`.
+1. **Initialize**: Run `pnpm dlx @arkenv/cli@latest init --agent`. This will attempt to detect the environment, install dependencies, and scaffold a base `env.ts`.
 2. **Review & Refine `env.ts`**:
    - Inspect the generated `env.ts`. Ensure it captures the required environment variables.
    - Refine types (e.g., change `string` to `number.port` or specific union types).
