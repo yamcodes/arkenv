@@ -3,6 +3,12 @@ import path from "node:path";
 import { confirm, isCancel } from "@clack/prompts";
 import pc from "picocolors";
 import type { CLI } from "../cli";
+import {
+	bootstrapBunConfig,
+	bootstrapViteConfig,
+	findBunConfig,
+	findViteConfig,
+} from "../lib/config-mutation";
 import type { ProjectOptions } from "../prompts";
 import { runPromptWizard } from "../prompts";
 import {
@@ -96,6 +102,29 @@ export class InitCommand {
 					});
 					child.on("error", reject);
 				});
+
+				// Framework-specific bootstrapping
+				if (options.framework === "vite") {
+					const viteConfigPath = await findViteConfig();
+					if (viteConfigPath) {
+						logger.step("Bootstrapping Vite plugin...");
+						const result = await bootstrapViteConfig(viteConfigPath);
+						if (result.success) {
+							logger.info(`Updated ${code(path.basename(viteConfigPath))}`);
+						} else {
+							logger.warn(
+								`Could not automatically update ${code(path.basename(viteConfigPath))}: ${result.error}`,
+							);
+							logger.info("Please add '@arkenv/vite-plugin' manually.");
+						}
+					}
+				} else if (options.framework === "bun") {
+					const bunConfigPath = await findBunConfig();
+					const result = await bootstrapBunConfig(bunConfigPath);
+					if (result.instructions) {
+						logger.info(result.instructions);
+					}
+				}
 			}
 
 			if (tsResult.status === "updated") {
