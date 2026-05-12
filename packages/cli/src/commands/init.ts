@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { confirm, isCancel } from "@clack/prompts";
+import dedent from "dedent";
 import pc from "picocolors";
 import type { CLI } from "../cli";
 import type { ProjectOptions } from "../prompts";
@@ -137,30 +138,36 @@ export class InitCommand {
 			}
 
 			if (skillInstalled) {
-				logger.step("complete the setup with your AI assistant. Use:");
-				logger.step(
-					`${pc.cyan("/arkenv")} - automatically refine your schema and configure framework integrations.`,
+				logger.note(
+					dedent`
+						Run ${pc.cyan("/arkenv")} to complete the setup with your AI assistant.
+						Automatically refine your schema and configure framework integrations.
+					`,
+					"Next steps",
 				);
 			} else {
-				logger.step(
-					`1. Check ${code(displayPath)} and adapt it to your needs. Review your schema to refine types (e.g., ${code("number")}, ${code("boolean")}, etc.).`,
-				);
-				logger.step(
-					`2. Import and use your environment variables: ${code(`import { env } from "${importPath}"`)} → ${code("env.VAR_NAME")}`,
-				);
-				logger.step(
-					`3. (Recommended) Install the ArkEnv Agent Skill for AI assistance: ${code(`${dlx} skills add yamcodes/arkenv`)}`,
+				logger.note(
+					dedent`
+						1. Check ${code(displayPath)} and refine your environment schema.
+						2. Import and use: ${code(`import { env } from "${importPath}"`)}
+						3. Install the AI skill: ${code(`${dlx} skills add yamcodes/arkenv`)}
+						   Then run ${pc.cyan("/arkenv")} to finish the configuration.
+					`,
+					"Next steps",
 				);
 			}
 
-			logger.finish(`${symbol} ${pc.dim("Happy coding!")}`, {
-				path: displayPath,
-				framework: options.framework,
-				validator: options.validator,
-				packageManager,
-				tsConfigUpdated: tsResult.status === "updated",
-				skillInstalled,
-			});
+			logger.finish(
+				`${symbol} ArkEnv setup complete. ${pc.dim("Happy coding!")}`,
+				{
+					path: displayPath,
+					framework: options.framework,
+					validator: options.validator,
+					packageManager,
+					tsConfigUpdated: tsResult.status === "updated",
+					skillInstalled,
+				},
+			);
 		} catch (error) {
 			s.stop("Scaffolding failed.");
 			logger.fatal("Scaffolding failed.", error);
