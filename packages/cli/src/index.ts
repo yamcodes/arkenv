@@ -32,7 +32,7 @@ async function main() {
 	const logger = new Logger({ isQuiet, isJson });
 
 	const printHelp = () => {
-		logger.log(`${symbol} ${pc.cyan(`ArkEnv CLI v${version}`)}`);
+		logger.log(`ArkEnv CLI v${version}`);
 		logger.log("\nUsage:");
 		logger.log("  arkenv init    Set up ArkEnv in your project");
 		logger.log("\nOptions:");
@@ -61,7 +61,6 @@ async function main() {
 	// Redirect stdout to stderr for interactive prompts if JSON mode is active
 	const originalStdoutWrite = process.stdout.write;
 	if (isJson && !isYes) {
-		// @ts-expect-error - Overriding stdout for clack redirection
 		process.stdout.write = process.stderr.write.bind(process.stderr);
 	}
 
