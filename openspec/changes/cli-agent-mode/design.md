@@ -5,10 +5,10 @@ AI-native developers and platform engineers have different onboarding preference
 ## Goals / Non-Goals
 
 **Goals:**
-- Make `@arkenv/cli init` fully automatable via a `--yes` flag.
-- Provide an `--agent` flag as a high-level alias for non-interactive, machine-readable execution.
-- Provide a plain-text output mode via `--quiet` to reduce token consumption and improve agent reliability.
-- Provide a structured JSON output mode via `--json` for definitive success verification.
+- Make `@arkenv/cli init` fully automatable via a `--yes` / `-y` flag.
+- Provide an `--agent` / `-a` flag as a high-level macro for non-interactive, machine-readable execution (implies `--yes --quiet --json`).
+- Provide a plain-text output mode via `--quiet` / `-q` to reduce token consumption and improve agent reliability.
+- Provide a structured JSON output mode via `--json` / `-j` for definitive success verification.
 - Update the ArkEnv AI skill to prefer CLI-based initialization over manual file scaffolding.
 - Integrate the AI skill installation into the CLI flow.
 
@@ -20,16 +20,16 @@ AI-native developers and platform engineers have different onboarding preference
 ## Decisions
 
 ### 1. Global Flag Parsing in `index.ts`
-We will parse `--yes`/`-y`, `--agent`, `--quiet`, and `--json` at the entry point. 
+We will parse `--yes`/`-y`, `--agent`/`-a`, `--quiet`/`-q`, and `--json`/`-j` at the entry point. 
 - **Rationale**: These flags affect the entire execution flow (prompting, logging, and final output).
 - **Alternatives**: Parsing in `runPromptWizard` or `scaffold`. Rejected because `index.ts` already handles `--help` and basic flag detection.
 
 ### 2. Composable Output Modes
-- `--quiet`: Disables spinners (`ora`/`clack`), suppresses `picocolors` ANSI sequences, and limits output to high-level status messages.
-- `--json`: Implies `--quiet` and `--yes`. 
+- `--quiet`, `-q`: Disables spinners (`ora`/`clack`), suppresses `picocolors` ANSI sequences, and limits output to high-level status messages sent to `stderr`.
+- `--json`, `-j`: Implies `--quiet` and `--yes`. 
     - **Ruthless Redirection**: To ensure the JSON is parseable by agents, ALL non-essential logs, status updates, and errors SHALL be redirected to `stderr`. Only the final JSON payload goes to `stdout`.
     - **Structured Schema**: The JSON output will follow a consistent schema for both success and failure: `{ "status": "success" | "error", "message": "string", "details": { ... } }`.
-- `--agent`: A shorthand for `--yes --quiet`. It can be combined with `--json`.
+- `--agent`, `-a`: A macro for `--yes --quiet --json`.
 - **Rationale**: Allows users/agents to choose the level of verbosity and structure they need.
 
 ### 3. "Agent Mode" for `@clack/prompts`

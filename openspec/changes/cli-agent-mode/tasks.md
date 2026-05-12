@@ -1,9 +1,9 @@
 ## 1. CLI Core Enhancement
 
-- [ ] 1.1 Update `packages/cli/src/index.ts` to parse `--quiet`, `--json`, and `--agent` flags.
-- [ ] 1.2 Implement a `Logger` utility in `packages/cli/src/visuals.ts` or a new file that respects `--quiet`, `--json`, and `--agent`.
+- [ ] 1.1 Update `packages/cli/src/index.ts` to parse `--quiet` (`-q`), `--json` (`-j`), and `--agent` (`-a`) flags.
+- [ ] 1.2 Implement a `Logger` utility in `packages/cli/src/visuals.ts` or a new file that respects the new flags and aliases.
 - [ ] 1.3 Refactor `packages/cli/src/index.ts` to use the new `Logger` instead of direct `console.log` or `@clack/prompts` logging.
-- [ ] 1.4 Update `help` text in `packages/cli/src/index.ts` to include the new flags.
+- [ ] 1.4 Update `help` text in `packages/cli/src/index.ts` to include the new flags and their aliases (`-y`, `-a`, `-q`, `-j`).
 
 ## 2. Non-Interactive Logic
 
@@ -15,8 +15,8 @@
 
 - [ ] 3.1 Implement `--quiet` mode by suppressing spinners and stripping ANSI colors from the new `Logger`.
 - [ ] 3.2 Implement `--json` mode with a structured schema `{ "status": "success" | "error", "message": string, "details": { ... } }`.
-- [ ] 3.3 Implement `--agent` as an alias for `--yes --quiet`.
-- [ ] 3.4 Enforce "ruthless" redirection of all non-JSON output (logs, status, warnings) to `stderr` when `--json` is active.
+- [ ] 3.3 Implement `--agent` as a macro for `--yes --quiet --json`.
+- [ ] 3.4 Enforce "ruthless" redirection of all non-JSON output (logs, status, warnings) to `stderr` when `--json` (or `--agent`) is active.
 - [ ] 3.5 Ensure failure states are captured and emitted as a structured JSON object to `stdout` before process exit.
 
 ## 4. AI Skill Update

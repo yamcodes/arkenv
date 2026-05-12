@@ -33,14 +33,15 @@ The CLI SHALL support a `--json` flag that outputs a structured JSON summary of 
 - **AND** the JSON SHALL follow the schema: `{ "status": "error", "message": string, "details": { ... } }`
 - **AND** the process SHALL exit with a non-zero code
 
-### Requirement: Agent Mode Alias
-The CLI SHALL support an `--agent` flag as a shorthand for `--yes` and `--quiet`.
+### Requirement: Agent Mode Macro
+The CLI SHALL support an `--agent` / `-a` flag as a macro for `--yes`, `--quiet`, and `--json`.
 
 #### Scenario: Running init with --agent
 - **WHEN** the user runs `arkenv init --agent`
-- **THEN** the system SHALL behave as if both `--yes` and `--quiet` were passed
+- **THEN** the system SHALL behave as if `--yes`, `--quiet`, and `--json` were all passed
 - **AND** it SHALL NOT display prompts or spinners
-- **AND** output SHALL be plain-text
+- **AND** ALL progress/error output SHALL be sent to `stderr`
+- **AND** the final operation result SHALL be printed as JSON to `stdout`
 
 ### Requirement: AI Skill Installation Prompt
 In interactive mode, the CLI SHALL ask the user if they want to install the ArkEnv AI skill for their local coding agent.
@@ -60,3 +61,5 @@ The CLI entrypoint SHALL be process-tested for stable command behavior.
 - **THEN** usage text SHALL be printed
 - **AND** the usage text SHALL include descriptions for `--yes`, `--quiet`, and `--json`
 - **AND** the process SHALL exit with code `0`
+ND** the process SHALL exit with code `0`
+
