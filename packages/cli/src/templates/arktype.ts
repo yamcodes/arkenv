@@ -34,7 +34,7 @@ ${schemaFields}
 
 		/**
 		 * Environment variable schema.
-		 * In Bun, use @arkenv/bun-plugin to validate these at runtime
+		 * In Bun, use @arkenv/bun-plugin to validate these at build-time
 		 * and provide typesafety for process.env.
 		 */
 		export const Env = type({

@@ -46,6 +46,7 @@ describe("env-template", () => {
 			expect(template).not.toContain("export const env = arkenv(Env)");
 			expect(template).toContain("export const Env = type({");
 			expect(template).toContain("In Bun, use @arkenv/bun-plugin");
+			expect(template).toContain("validate these at build-time");
 		});
 
 		it("returns zod template when validator is zod", () => {

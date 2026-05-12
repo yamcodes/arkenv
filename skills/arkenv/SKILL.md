@@ -19,7 +19,7 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 ### Framework Integration
 
 - **Vite**: Build-time validation and `import.meta.env` type augmentation via `@arkenv/vite-plugin`.
-- **Bun**: Runtime validation and `process.env` type augmentation via `@arkenv/bun-plugin`.
+- **Bun**: Build-time/Runtime validation and `process.env` type augmentation via `@arkenv/bun-plugin`.
 - **Node.js**: Standard `process.env` validation and coercion.
 
 ### CLI (Setup & DevOps)
