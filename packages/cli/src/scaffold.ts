@@ -6,7 +6,6 @@ import { applyEdits, modify, parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
 import type { ProjectOptions } from "./prompts";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
-import { code } from "./visuals";
 
 export async function scaffold(
 	options: ProjectOptions & { shouldUpdateTsConfig?: boolean },
@@ -74,7 +73,7 @@ export async function scaffold(
 
 	// 5. Establish type definitions for Vite/Bun
 	let typeDefinitionResult: {
-		status: "created" | "overwritten" | "skipped" | "none";
+		status: "created" | "overwritten" | "appended" | "skipped" | "none";
 		file?: string;
 	} = { status: "none" };
 
@@ -92,42 +91,39 @@ async function establishTypeDefinitions(
 	options: ProjectOptions,
 	targetDir: string,
 ): Promise<{
-	status: "created" | "overwritten" | "skipped";
+	status: "created" | "overwritten" | "appended" | "skipped";
 	file: string;
 }> {
 	const typeFileName =
 		options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 	const typeFilePath = path.join(targetDir, typeFileName);
+	const schemaPath = path.resolve(process.cwd(), options.path);
+
+	if (options.envDtsHandling === "skip") {
+		return { status: "skipped", file: typeFileName };
+	}
+
+	if (options.envDtsHandling === "append" && existsSync(typeFilePath)) {
+		const { safeAppend } = await import("./utils/injection");
+		const result = await safeAppend(
+			typeFilePath,
+			schemaPath,
+			options.framework as "vite" | "bun",
+		);
+		return { status: result ? "appended" : "skipped", file: typeFileName };
+	}
+
 	const content =
 		options.framework === "vite"
 			? viteTypesTemplate(options.path)
 			: bunTypesTemplate(options.path);
 
-	if (existsSync(typeFilePath)) {
-		let shouldOverwrite = options.overwriteEnvDtsFile;
-
-		if (shouldOverwrite === undefined) {
-			const confirmOverwrite = await confirm({
-				message: `Type definition file ${code(typeFileName)} already exists. Overwrite?`,
-				initialValue: true,
-			});
-
-			if (isCancel(confirmOverwrite)) {
-				cancel("Operation cancelled.");
-				process.exit(0);
-			}
-			shouldOverwrite = confirmOverwrite;
-		}
-
-		if (shouldOverwrite) {
-			await fsp.writeFile(typeFilePath, content, "utf-8");
-			return { status: "overwritten", file: typeFileName };
-		}
-		return { status: "skipped", file: typeFileName };
-	}
-
+	const isOverwrite = existsSync(typeFilePath);
 	await fsp.writeFile(typeFilePath, content, "utf-8");
-	return { status: "created", file: typeFileName };
+	return {
+		status: isOverwrite ? "overwritten" : "created",
+		file: typeFileName,
+	};
 }
 
 export function getDlxCommand(pm: string): string {
@@ -182,7 +178,7 @@ export async function checkTsConfig(): Promise<{
 			return { status: "strict", file: fileName };
 		}
 		return { status: "not_strict", file: fileName };
-	} catch (e: unknown) {
+	} catch {
 		return { status: "not_found" };
 	}
 }
@@ -210,7 +206,7 @@ async function updateTsConfigToStrict(): Promise<{
 
 		await fsp.writeFile(tsConfigPath, updated, "utf-8");
 		return { status: "updated", file: fileName };
-	} catch (e: unknown) {
+	} catch {
 		return { status: "error", file: fileName };
 	}
 }
