@@ -277,6 +277,29 @@ describe("scaffold", () => {
 			expect(result.typeDefinitionResult.status).toBe("skipped");
 		});
 
+		it("respects non-default options.path when appending vite-env.d.ts", async () => {
+			// Setup: Create a subdirectory "config" and put env.ts and vite-env.d.ts there
+			const configDir = path.join(tempDir, "config");
+			await fsp.mkdir(configDir, { recursive: true });
+			const typeFilePath = path.join(configDir, "vite-env.d.ts");
+			const existingContent = '/// <reference types="vite/client" />';
+			await fsp.writeFile(typeFilePath, existingContent);
+
+			const result = await scaffold({
+				...defaultOptions,
+				path: "config/env.ts",
+				framework: "vite",
+				envDtsHandling: "append",
+			});
+
+			const content = await fsp.readFile(typeFilePath, "utf-8");
+			expect(content).toContain(existingContent);
+			expect(content).toContain("@arkenv-types");
+			// The relative path should be ./env since they are in the same dir
+			expect(content).toContain('import("./env")');
+			expect(result.typeDefinitionResult.status).toBe("appended");
+		});
+
 		it("skips type definition installation if installTypeDefinitions is false", async () => {
 			const result = await scaffold({
 				...defaultOptions,

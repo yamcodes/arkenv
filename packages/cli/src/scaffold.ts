@@ -103,7 +103,10 @@ async function establishTypeDefinitions(
 		return { status: "skipped", file: typeFileName };
 	}
 
-	if (options.envDtsHandling === "append" && existsSync(typeFilePath)) {
+	if (
+		options.envDtsHandling === "append" ||
+		(!options.envDtsHandling && existsSync(typeFilePath))
+	) {
 		const { safeAppend } = await import("./utils/injection");
 		const result = await safeAppend(
 			typeFilePath,

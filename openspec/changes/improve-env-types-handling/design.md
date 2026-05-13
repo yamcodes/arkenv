@@ -19,7 +19,7 @@ The `@arkenv/cli` currently uses a simple overwrite confirmation for `vite-env.d
 Modify `ProjectOptions` to support a more granular handling of type files.
 - **Current**: `overwriteEnvDtsFile?: boolean`
 - **New**: `envDtsHandling?: 'overwrite' | 'append' | 'skip'`
-- **Headless Default**: When `isYes` or `isAgent` is true, `envDtsHandling` will default to `append` if the file exists, and `overwrite` (effectively create) if it doesn't. This ensures non-destructive behavior for AI assistants.
+- **Headless Default**: When `isYes` or `isAgent` is true, `envDtsHandling` will default to `append` if the file exists, and will create the file (setting `envDtsHandling` to `overwrite`) if it doesn't. This ensures non-destructive behavior for AI assistants.
 
 ### 2. Smart Prompting Logic
 Refactor `runPromptWizard` to perform a filesystem check before the `installTypeDefinitions` and `overwriteEnvDtsFile` steps.
@@ -49,5 +49,5 @@ Update the scaffolding logic to honor the `envDtsHandling` option.
 
 ## Risks / Trade-offs
 
-- **[Risk] Type Merging Conflicts** → Mitigation: `ImportMetaEnv` in TypeScript is an interface and can be declared multiple times (declaration merging). Appending should be safe as long as we don't redefine `ImportMetaEnvAugmented`.
+- **[Risk] Type Merging Conflicts** → Mitigation: `ImportMetaEnv` in TypeScript is an interface and can be declared multiple times (declaration merging). The injector will only append declarations for `ImportMetaEnv` (using declaration merging) and will NOT define or overwrite a user-defined `ImportMetaEnvAugmented`. If it needs to create `ImportMetaEnvAugmented`, it will use that specific name and rely on the user to resolve any pre-existing conflicts, but the safe injection marker ensures we don't double-inject. The tool specifically adds `ImportMetaEnv`, `ProcessEnvAugmented`, and any `Env*` names required by the schema.
 - **[Risk] Path Sensitivity** → Mitigation: Ensure the relative path to `env.ts` in the template is correctly calculated relative to the `vite-env.d.ts` location.

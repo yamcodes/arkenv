@@ -96,12 +96,32 @@ export async function runPromptWizard(
 						},
 					],
 				}),
+			useDefaultPath: () =>
+				confirm({
+					message: "Use default config path (./src/env.ts)?",
+					initialValue: true,
+					active: "Yes (Recommended)",
+					inactive: "No, let me customize it",
+				}),
+			path: async ({ results }) => {
+				if (!results.useDefaultPath) {
+					return text({
+						message: "Where should we create the ArkEnv config?",
+						placeholder: "./src/env.ts",
+						initialValue: "./src/env.ts",
+					});
+				}
+				return "./src/env.ts";
+			},
 			installTypeDefinitions: async ({ results }) => {
 				if (results.framework === "vite" || results.framework === "bun") {
 					const typeFile =
 						results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 					const targetDir = path.dirname(
-						path.resolve(process.cwd(), "./src/env.ts"),
+						path.resolve(
+							process.cwd(),
+							(results.path as string) || "./src/env.ts",
+						),
 					);
 					const typeFilePath = path.join(targetDir, typeFile);
 
@@ -126,7 +146,10 @@ export async function runPromptWizard(
 				const typeFile =
 					results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 				const targetDir = path.dirname(
-					path.resolve(process.cwd(), "./src/env.ts"),
+					path.resolve(
+						process.cwd(),
+						(results.path as string) || "./src/env.ts",
+					),
 				);
 				const typeFilePath = path.join(targetDir, typeFile);
 
@@ -185,22 +208,6 @@ export async function runPromptWizard(
 					});
 				}
 				return false;
-			},
-			useDefaultPath: () =>
-				confirm({
-					message: "Use default config path (./src/env.ts)?",
-					initialValue: true,
-					active: "Yes (Recommended)",
-					inactive: "No, let me customize it",
-				}),
-			path: ({ results }) => {
-				if (!results.useDefaultPath) {
-					return text({
-						message: "Where should we create the ArkEnv config?",
-						placeholder: "./src/env.ts",
-						initialValue: "./src/env.ts",
-					});
-				}
 			},
 			installSkill: () => {
 				if (!isAgent) {

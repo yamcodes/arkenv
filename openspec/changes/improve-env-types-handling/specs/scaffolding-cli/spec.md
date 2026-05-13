@@ -52,6 +52,7 @@ The CLI SHALL provide an interactive experience to guide the user through settin
 - **WHEN** the wizard reaches the `vite-env.d.ts` step
 - **AND** `vite-env.d.ts` does NOT exist in the filesystem
 - **THEN** it SHALL ask "Establish vite-env.d.ts for typesafe environment variables?"
+- **AND** it SHALL set `envDtsHandling = "overwrite"` when the user answers "Yes" to indicate creating the new file.
 
 #### Scenario: Prompting for vite-env.d.ts when file exists
 - **WHEN** the wizard reaches the `vite-env.d.ts` step
@@ -63,6 +64,7 @@ The CLI SHALL provide an interactive experience to guide the user through settin
 - **WHEN** the wizard reaches the `bun-env.d.ts` step
 - **AND** `bun-env.d.ts` does NOT exist in the filesystem
 - **THEN** it SHALL ask "Establish bun-env.d.ts for typesafe environment variables?"
+- **AND** it SHALL set `envDtsHandling = "overwrite"` when the user answers "Yes" to indicate creating the new file (mirroring the vite-env.d.ts behavior).
 
 #### Scenario: Prompting for bun-env.d.ts when file exists
 - **WHEN** the wizard reaches the `bun-env.d.ts` step

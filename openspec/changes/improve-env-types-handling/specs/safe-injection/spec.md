@@ -15,9 +15,9 @@ The system SHALL support injecting Triple-Slash Directives or type declarations 
 #### Scenario: Injecting ArkEnv reference into vite-env.d.ts
 - **WHEN** the user selects the "Append types safely" option for Vite
 - **THEN** the system SHALL add `/// <reference types="@arkenv/vite-plugin/client" />` (and associated interfaces) to the `vite-env.d.ts` file
-- **AND** it SHALL ensure the reference is not duplicated if already present
+- **AND** it SHALL ensure the reference is not duplicated if already present (the system SHALL detect prior injection by looking for the comment marker `// @arkenv-types` and, if present, SHALL skip injection)
 
 #### Scenario: Injecting ArkEnv reference into bun-env.d.ts
 - **WHEN** the user selects the "Append types safely" option for Bun
 - **THEN** the system SHALL add `/// <reference types="bun-types" />` (if missing) and the ArkEnv `ProcessEnvAugmented` types to the `bun-env.d.ts` file
-- **AND** it SHALL ensure the reference is not duplicated if already present
+- **AND** the system MUST detect existing injections by searching for the design's marker-based tokens (e.g., `// @arkenv-types`) and treat matches as already-present (after normalizing whitespace and line endings); if the marker is found, the injector MUST skip inserting the reference, otherwise it MUST insert the reference wrapped with the same marker.
