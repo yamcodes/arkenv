@@ -19,6 +19,7 @@ The `@arkenv/cli` currently uses a simple overwrite confirmation for `vite-env.d
 Modify `ProjectOptions` to support a more granular handling of type files.
 - **Current**: `overwriteEnvDtsFile?: boolean`
 - **New**: `envDtsHandling?: 'overwrite' | 'append' | 'skip'`
+- **Headless Default**: When `isYes` or `isAgent` is true, `envDtsHandling` will default to `append` if the file exists, and `overwrite` (effectively create) if it doesn't. This ensures non-destructive behavior for AI assistants.
 
 ### 2. Smart Prompting Logic
 Refactor `runPromptWizard` to perform a filesystem check before the `installTypeDefinitions` and `overwriteEnvDtsFile` steps.
@@ -27,14 +28,17 @@ Refactor `runPromptWizard` to perform a filesystem check before the `installType
 - Supports both `vite-env.d.ts` and `bun-env.d.ts` based on detected framework.
 
 ### 3. Safe Injection Utility
-Integrate a new `safeAppend` utility into `packages/cli/src/lib/config-mutation.ts`.
-- **Approach**: Targeted String Injection. While `magicast` is used for object-based configs like `vite.config.ts`, `.d.ts` files (which rely on triple-slash references and ambient declarations) are better served by a controlled string-based approach to avoid AST-related formatting or reference-stripping issues.
+Create a new utility at `packages/cli/src/utils/injection.ts`.
+- **Robust Duplication Check**: Use a comment marker `// @arkenv-types` injected at the top of the appended block. Checking for this specific marker avoids fragility related to user formatting (spaces/tabs/line-endings).
+- **Dynamic Path Calculation**: Use `path.relative` from the `.d.ts` file's directory to the schema file's directory. 
+  - Example: `path.relative(path.dirname(dtsPath), schemaPath)`.
+  - Ensure the resulting path starts with `./` and strip the `.ts` extension for a valid TypeScript import.
 - **Logic**:
   - Read the file content using `fsp.readFile`.
-  - Check for framework-specific signatures (e.g., `ImportMetaEnvAugmented` for Vite, `ProcessEnvAugmented` for Bun).
-  - If the signature exists, skip injection to avoid duplicates.
-  - If missing, append the template content to the end of the file, ensuring it starts on a new line.
-  - Write the result using `fsp.writeFile`.
+  - Check for the `// @arkenv-types` marker.
+  - If the marker exists, skip injection.
+  - If missing, calculate the relative import path, generate the template, and append it to the end of the file.
+  - Ensure the injection starts on a new line and follows existing line-ending conventions if possible (or default to `\n`).
 
 ### 4. Refactor `establishTypeDefinitions`
 Update the scaffolding logic to honor the `envDtsHandling` option.

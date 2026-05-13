@@ -1,7 +1,7 @@
 ## 1. Preparation and Schema Updates
 
 - [ ] 1.1 Update `ProjectOptions` type in `packages/cli/src/prompts.ts` to replace `overwriteEnvDtsFile` with `envDtsHandling: 'overwrite' | 'append' | 'skip'`.
-- [ ] 1.2 Implement the `safeAppend` utility in `packages/cli/src/lib/config-mutation.ts` with duplication checks for Vite and Bun signatures.
+- [ ] 1.2 Create `packages/cli/src/utils/injection.ts` and implement the `safeAppend` utility with marker-based duplication check and dynamic path calculation.
 
 ## 2. Refactor Prompt Wizard
 
@@ -19,5 +19,5 @@
 
 - [ ] 4.1 Update `packages/cli/src/scaffold.test.ts` to include test cases for "file missing" (creation) scenario for both Vite and Bun.
 - [ ] 4.2 Add test cases to `packages/cli/src/scaffold.test.ts` for "file exists" scenarios (append, overwrite, skip) for both frameworks.
-- [ ] 4.3 Add unit tests for `safeAppend` utility in `packages/cli/src/lib/config-mutation.test.ts`, covering both Vite and Bun signatures.
-- [ ] 4.4 Perform a manual smoke test using the `arkenv-cli` and `bun` playgrounds to verify the interactive flow.
+- [ ] 4.3 Add unit tests for `safeAppend` utility in `packages/cli/src/utils/injection.test.ts`, covering marker detection, path calculation, and framework templates.
+- [ ] 4.4 Perform a manual smoke test using the `arkenv-cli` and `bun` playgrounds to verify the interactive flow and headless (agent) mode.
