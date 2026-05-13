@@ -159,7 +159,6 @@ export async function runPromptWizard(
 		framework: result.framework as ProjectOptions["framework"],
 		language: "ts",
 		overwriteEnvSchemaFile: result.overwriteEnvSchemaFile as boolean,
-		overwriteEnvDtsFile: result.overwriteEnvDtsFile as boolean,
 		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
 		installSkill: result.installSkill as boolean,
 	};

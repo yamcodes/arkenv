@@ -174,7 +174,7 @@ describe("scaffold", () => {
 				.catch(() => false);
 			expect(exists).toBe(true);
 			expect(result.typeDefinitionResult.status).toBe("created");
-			expect(result.typeDefinitionResult.file).toBe("vite-env.d.ts");
+			expect((result.typeDefinitionResult as any).file).toBe("vite-env.d.ts");
 
 			const content = await fsp.readFile(
 				path.join(tempDir, "vite-env.d.ts"),
@@ -193,7 +193,7 @@ describe("scaffold", () => {
 				.catch(() => false);
 			expect(exists).toBe(true);
 			expect(result.typeDefinitionResult.status).toBe("created");
-			expect(result.typeDefinitionResult.file).toBe("bun-env.d.ts");
+			expect((result.typeDefinitionResult as any).file).toBe("bun-env.d.ts");
 
 			const content = await fsp.readFile(
 				path.join(tempDir, "bun-env.d.ts"),

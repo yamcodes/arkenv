@@ -73,7 +73,7 @@ describe("InitCommand", () => {
 			installCmd: "npm install",
 			packageManager: "npm",
 			typeDefinitionResult: { status: "none" },
-		});
+		} as any);
 
 		await command.run();
 
@@ -102,7 +102,7 @@ describe("InitCommand", () => {
 			installCmd: "npm install",
 			packageManager: "npm",
 			typeDefinitionResult: { status: "none" },
-		});
+		} as any);
 
 		await command.run();
 
@@ -131,7 +131,7 @@ describe("InitCommand", () => {
 			installCmd: "npm install",
 			packageManager: "npm",
 			typeDefinitionResult: { status: "none" },
-		});
+		} as any);
 
 		await command.run();
 
@@ -161,7 +161,7 @@ describe("InitCommand", () => {
 			installCmd: "npm install",
 			packageManager: "npm",
 			typeDefinitionResult: { status: "none" },
-		});
+		} as any);
 
 		const stdout = new Readable({ read() {} });
 		const stderr = new Readable({ read() {} });
@@ -216,7 +216,7 @@ describe("InitCommand", () => {
 			installCmd: "npm install",
 			packageManager: "npm",
 			typeDefinitionResult: { status: "none" },
-		});
+		} as any);
 
 		const stdout = new Readable({ read() {} });
 		const stderr = new Readable({ read() {} });
@@ -280,7 +280,7 @@ describe("InitCommand", () => {
 			installCmd: "npm install",
 			packageManager: "npm",
 			typeDefinitionResult: { status: "none" },
-		});
+		} as any);
 
 		spawnMock.mockReturnValueOnce({
 			stdout: new Readable({ read() {} }),
@@ -326,7 +326,7 @@ describe("InitCommand", () => {
 			installCmd: undefined,
 			packageManager: "npm",
 			typeDefinitionResult: { status: "created", file: "vite-env.d.ts" },
-		});
+		} as any);
 
 		const infoSpy = vi.spyOn(cli.logger, "info");
 		await command.run();

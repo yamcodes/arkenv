@@ -104,15 +104,16 @@ async function establishTypeDefinitions(
 		let shouldOverwrite = options.overwriteEnvDtsFile;
 
 		if (shouldOverwrite === undefined) {
-			shouldOverwrite = await confirm({
+			const confirmOverwrite = await confirm({
 				message: `Type definition file ${code(typeFileName)} already exists. Overwrite?`,
 				initialValue: false,
 			});
 
-			if (isCancel(shouldOverwrite)) {
+			if (isCancel(confirmOverwrite)) {
 				cancel("Operation cancelled.");
 				process.exit(0);
 			}
+			shouldOverwrite = confirmOverwrite;
 		}
 
 		if (shouldOverwrite) {
