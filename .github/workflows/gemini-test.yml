@@ -1,0 +1,42 @@
+name: 'Test Gemini MCP'
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      issues: 'write'
+      pull-requests: 'write'
+    steps:
+      - name: 'Mint identity token'
+        id: 'mint_identity_token'
+        uses: 'actions/create-github-app-token@v3'
+        with:
+          app-id: '${{ vars.APP_ID }}'
+          private-key: '${{ secrets.APP_PRIVATE_KEY }}'
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@v4'
+      - name: 'Run Gemini'
+        uses: 'google-github-actions/run-gemini-cli@v0'
+        with:
+          gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
+          gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
+          gcp_service_account: '${{ vars.SERVICE_ACCOUNT_EMAIL }}'
+          gcp_workload_identity_provider: '${{ vars.GCP_WIF_PROVIDER }}'
+          gemini_api_key: '${{ secrets.GEMINI_API_KEY }}'
+          gemini_model: '${{ vars.GEMINI_MODEL }}'
+          gemini_debug: 'true'
+          settings: |-
+            {
+              "mcpServers": {
+                "github": {
+                  "command": "docker",
+                  "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server:v0.27.0"],
+                  "includeTools": ["add_issue_comment"],
+                  "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ steps.mint_identity_token.outputs.token }}"}
+                }
+              }
+            }
+          prompt: 'Use the tool github_add_issue_comment to leave a comment on issue #970 in yamcodes/arkenv saying "This is a test comment from the MCP server!"'
