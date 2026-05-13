@@ -78,7 +78,10 @@ export async function scaffold(
 		file?: string;
 	} = { status: "none" };
 
-	if (options.framework === "vite" || options.framework === "bun") {
+	if (
+		(options.framework === "vite" || options.framework === "bun") &&
+		options.installTypeDefinitions !== false
+	) {
 		typeDefinitionResult = await establishTypeDefinitions(options, targetDir);
 	}
 
@@ -106,7 +109,7 @@ async function establishTypeDefinitions(
 		if (shouldOverwrite === undefined) {
 			const confirmOverwrite = await confirm({
 				message: `Type definition file ${code(typeFileName)} already exists. Overwrite?`,
-				initialValue: false,
+				initialValue: true,
 			});
 
 			if (isCancel(confirmOverwrite)) {

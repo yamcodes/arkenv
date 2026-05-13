@@ -82,6 +82,7 @@ describe("scaffold", () => {
 			language: "ts" as const,
 			shouldUpdateTsConfig: false,
 			shouldInstall: true,
+			installTypeDefinitions: true,
 		};
 
 		it("creates a new env file in an empty path", async () => {
@@ -253,6 +254,21 @@ describe("scaffold", () => {
 				}),
 			);
 			expect(result.typeDefinitionResult.status).toBe("overwritten");
+		});
+
+		it("skips type definition installation if installTypeDefinitions is false", async () => {
+			const result = await scaffold({
+				...defaultOptions,
+				framework: "vite",
+				installTypeDefinitions: false,
+			});
+
+			const exists = await fsp
+				.access(path.join(tempDir, "vite-env.d.ts"))
+				.then(() => true)
+				.catch(() => false);
+			expect(exists).toBe(false);
+			expect(result.typeDefinitionResult.status).toBe("none");
 		});
 	});
 });

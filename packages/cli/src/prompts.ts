@@ -12,6 +12,7 @@ export type ProjectOptions = {
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean | undefined;
 	overwriteEnvDtsFile?: boolean | undefined;
+	installTypeDefinitions?: boolean | undefined;
 	envKeys?: string[] | undefined;
 	installSkill?: boolean | undefined;
 };
@@ -33,6 +34,7 @@ export async function runPromptWizard(
 			language: "ts",
 			overwriteEnvSchemaFile: true,
 			overwriteEnvDtsFile: true,
+			installTypeDefinitions: true,
 			envKeys: detectedKeys || undefined,
 			installSkill: false,
 		} as ProjectOptions;
@@ -82,6 +84,22 @@ export async function runPromptWizard(
 						},
 					],
 				}),
+			installTypeDefinitions: async ({ results }) => {
+				if (results.framework === "vite" || results.framework === "bun") {
+					const typeFile =
+						results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+					return confirm({
+						message: `Establish ${code(typeFile)} for typesafe environment variables?`,
+						initialValue: true,
+						active: "Yes (Recommended)",
+						inactive: "No",
+					});
+				}
+				return true;
+			},
+			overwriteEnvDtsFile: async () => {
+				return undefined as boolean | undefined;
+			},
 			validator: () =>
 				select({
 					message: "Select your preferred validator library:",
@@ -159,6 +177,8 @@ export async function runPromptWizard(
 		framework: result.framework as ProjectOptions["framework"],
 		language: "ts",
 		overwriteEnvSchemaFile: result.overwriteEnvSchemaFile as boolean,
+		overwriteEnvDtsFile: result.overwriteEnvDtsFile as boolean,
+		installTypeDefinitions: result.installTypeDefinitions as boolean,
 		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
 		installSkill: result.installSkill as boolean,
 	};
