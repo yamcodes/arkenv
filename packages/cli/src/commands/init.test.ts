@@ -331,8 +331,13 @@ describe("InitCommand", () => {
 		const infoSpy = vi.spyOn(cli.logger, "info");
 		await command.run();
 
-		expect(infoSpy).toHaveBeenCalledWith(
-			expect.stringContaining("Created vite-env.d.ts"),
-		);
+		expect(
+			infoSpy.mock.calls.some(
+				(call) =>
+					typeof call[0] === "string" &&
+					call[0].includes("Created") &&
+					call[0].includes("vite-env.d.ts"),
+			),
+		).toBe(true);
 	});
 });

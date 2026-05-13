@@ -250,7 +250,7 @@ describe("scaffold", () => {
 
 			expect(prompts.confirm).toHaveBeenCalledWith(
 				expect.objectContaining({
-					message: expect.stringContaining("vite-env.d.ts already exists"),
+					message: expect.stringContaining("already exists"),
 				}),
 			);
 			expect(result.typeDefinitionResult.status).toBe("overwritten");

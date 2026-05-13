@@ -105,7 +105,9 @@ export async function runPromptWizard(
 				const typeFile =
 					results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 				// Use the same directory as the environment config
-				const targetDir = path.dirname(path.resolve(process.cwd(), "./src/env.ts"));
+				const targetDir = path.dirname(
+					path.resolve(process.cwd(), "./src/env.ts"),
+				);
 				const typeFilePath = path.join(targetDir, typeFile);
 
 				if (fs.existsSync(typeFilePath)) {
