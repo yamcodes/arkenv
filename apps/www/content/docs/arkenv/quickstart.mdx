@@ -67,11 +67,11 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
       </Step>
 
       <Step>
-        ### Configure TypeScript
+        ### Configure TypeScript (Recommended)
 
-        ArkEnv requires **TypeScript >= 5.1** and `strict` mode in your `tsconfig.json`.
+        ArkEnv expects **TypeScript >= 5.1** and `strict` mode in your `tsconfig.json`.
 
-        You're also required to use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution).
+        You're also expected to use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution).
 
         ```json title="tsconfig.json"
         // [!code word:config]
@@ -82,6 +82,9 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
           }
         }
         ```
+
+        > [!NOTE]
+        > While ArkEnv [can](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) work with plain JavaScript, TypeScript is strongly recommended for the best experience.
       </Step>
 
       <Step>
