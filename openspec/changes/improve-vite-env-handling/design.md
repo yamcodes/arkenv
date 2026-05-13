@@ -24,11 +24,12 @@ Modify `ProjectOptions` to support a more granular handling of type files.
 Refactor `runPromptWizard` to perform a filesystem check before the `installTypeDefinitions` and `overwriteEnvDtsFile` steps.
 - If file doesn't exist: Prompt with "Establish <file>?" (Yes/No).
 - If file exists: Prompt with "Found existing <file>. How should we handle ArkEnv types?" (Append/Overwrite/Skip).
+- Supports both `vite-env.d.ts` and `bun-env.d.ts` based on detected framework.
 
 ### 3. Safe Injection Utility
 Implement a `safeAppend` utility in `packages/cli/src/lib/fs-utils.ts`.
 - It will read the file content.
-- Check if the signature (e.g., `ImportMetaEnvAugmented`) already exists to prevent duplication.
+- Check if the signature (e.g., `ImportMetaEnvAugmented` for Vite, `ProcessEnvAugmented` for Bun) already exists to prevent duplication.
 - Append the template content at the end of the file, ensuring proper newline spacing.
 
 ### 4. Refactor `establishTypeDefinitions`

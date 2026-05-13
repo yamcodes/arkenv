@@ -58,3 +58,14 @@ The CLI SHALL provide an interactive experience to guide the user through settin
 - **AND** `vite-env.d.ts` ALREADY exists in the filesystem
 - **THEN** it SHALL ask "Found existing vite-env.d.ts. How should we handle ArkEnv types?"
 - **AND** it SHALL provide "Append types safely", "Overwrite entirely", and "Skip" options
+
+#### Scenario: Prompting for bun-env.d.ts when file is missing
+- **WHEN** the wizard reaches the `bun-env.d.ts` step
+- **AND** `bun-env.d.ts` does NOT exist in the filesystem
+- **THEN** it SHALL ask "Establish bun-env.d.ts for typesafe environment variables?"
+
+#### Scenario: Prompting for bun-env.d.ts when file exists
+- **WHEN** the wizard reaches the `bun-env.d.ts` step
+- **AND** `bun-env.d.ts` ALREADY exists in the filesystem
+- **THEN** it SHALL ask "Found existing bun-env.d.ts. How should we handle ArkEnv types?"
+- **AND** it SHALL provide "Append types safely", "Overwrite entirely", and "Skip" options
