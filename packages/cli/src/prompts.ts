@@ -11,7 +11,7 @@ export type ProjectOptions = {
 	framework: "vite" | "bun" | "node";
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean | undefined;
-	overwriteEnvDtsFile?: boolean | undefined;
+	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
 	installTypeDefinitions?: boolean | undefined;
 	envKeys?: string[] | undefined;
 	installSkill?: boolean | undefined;
@@ -27,14 +27,26 @@ export async function runPromptWizard(
 	const detectedKeys = await getEnvExampleKeys();
 
 	if (isYes) {
+		const framework = defaults?.framework || "node";
+		let envDtsHandling: ProjectOptions["envDtsHandling"];
+
+		if (framework === "vite" || framework === "bun") {
+			const typeFile = framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+			const targetDir = path.dirname(
+				path.resolve(process.cwd(), "./src/env.ts"),
+			);
+			const typeFilePath = path.join(targetDir, typeFile);
+			envDtsHandling = fs.existsSync(typeFilePath) ? "append" : "overwrite";
+		}
+
 		return {
 			path: "./src/env.ts",
 			validator: "arktype",
-			framework: defaults?.framework || "node",
+			framework,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
-			overwriteEnvDtsFile: true,
-			installTypeDefinitions: true,
+			envDtsHandling,
+			installTypeDefinitions: framework !== "node",
 			envKeys: detectedKeys || undefined,
 			installSkill: false,
 		} as ProjectOptions;
@@ -84,10 +96,39 @@ export async function runPromptWizard(
 						},
 					],
 				}),
+			useDefaultPath: () =>
+				confirm({
+					message: "Use default config path (./src/env.ts)?",
+					initialValue: true,
+					active: "Yes (Recommended)",
+					inactive: "No, let me customize it",
+				}),
+			path: async ({ results }) => {
+				if (!results.useDefaultPath) {
+					return text({
+						message: "Where should we create the ArkEnv config?",
+						placeholder: "./src/env.ts",
+						initialValue: "./src/env.ts",
+					});
+				}
+				return "./src/env.ts";
+			},
 			installTypeDefinitions: async ({ results }) => {
 				if (results.framework === "vite" || results.framework === "bun") {
 					const typeFile =
 						results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+					const targetDir = path.dirname(
+						path.resolve(
+							process.cwd(),
+							(results.path as string) || "./src/env.ts",
+						),
+					);
+					const typeFilePath = path.join(targetDir, typeFile);
+
+					if (fs.existsSync(typeFilePath)) {
+						return true;
+					}
+
 					return confirm({
 						message: `Establish ${code(typeFile)} for typesafe environment variables?`,
 						initialValue: true,
@@ -97,35 +138,45 @@ export async function runPromptWizard(
 				}
 				return true;
 			},
-			overwriteEnvDtsFile: async ({ results }) => {
-				if (!results.installTypeDefinitions) return false;
+			envDtsHandling: async ({ results }) => {
+				if (!results.installTypeDefinitions) return "skip";
 				if (results.framework !== "vite" && results.framework !== "bun")
-					return false;
+					return "skip";
 
 				const typeFile =
 					results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-				// Use the same directory as the environment config
 				const targetDir = path.dirname(
-					path.resolve(process.cwd(), "./src/env.ts"),
+					path.resolve(
+						process.cwd(),
+						(results.path as string) || "./src/env.ts",
+					),
 				);
 				const typeFilePath = path.join(targetDir, typeFile);
 
 				if (fs.existsSync(typeFilePath)) {
-					const answer = await confirm({
-						message: pc.yellow(
-							`Type definition file ${code(typeFile)} already exists. Overwrite?`,
-						),
-						initialValue: true,
-						active: "Yes (Recommended)",
-						inactive: "No",
+					const answer = await select({
+						message: `Found existing ${code(typeFile)}. How should we handle ArkEnv types?`,
+						options: [
+							{
+								value: "append",
+								label: "Append types safely",
+								hint: "Recommended",
+							},
+							{
+								value: "overwrite",
+								label: "Overwrite entirely",
+								hint: "Destructive",
+							},
+							{ value: "skip", label: "Skip" },
+						],
 					});
 					if (isCancel(answer)) {
 						cancel("Operation cancelled.");
 						process.exit(0);
 					}
-					return answer;
+					return answer as ProjectOptions["envDtsHandling"];
 				}
-				return true;
+				return "overwrite";
 			},
 			validator: () =>
 				select({
@@ -158,22 +209,6 @@ export async function runPromptWizard(
 				}
 				return false;
 			},
-			useDefaultPath: () =>
-				confirm({
-					message: "Use default config path (./src/env.ts)?",
-					initialValue: true,
-					active: "Yes (Recommended)",
-					inactive: "No, let me customize it",
-				}),
-			path: ({ results }) => {
-				if (!results.useDefaultPath) {
-					return text({
-						message: "Where should we create the ArkEnv config?",
-						placeholder: "./src/env.ts",
-						initialValue: "./src/env.ts",
-					});
-				}
-			},
 			installSkill: () => {
 				if (!isAgent) {
 					return confirm({
@@ -204,7 +239,7 @@ export async function runPromptWizard(
 		framework: result.framework as ProjectOptions["framework"],
 		language: "ts",
 		overwriteEnvSchemaFile: result.overwriteEnvSchemaFile as boolean,
-		overwriteEnvDtsFile: result.overwriteEnvDtsFile as boolean,
+		envDtsHandling: result.envDtsHandling as ProjectOptions["envDtsHandling"],
 		installTypeDefinitions: result.installTypeDefinitions as boolean,
 		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
 		installSkill: result.installSkill as boolean,
