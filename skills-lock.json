@@ -43,6 +43,12 @@
 			"skillPath": "skills/engineering/to-prd/SKILL.md",
 			"computedHash": "6d741474efd4bc3db55fabc2722ed78ca9c374cabcb6212936d79d4fd4a30fcb"
 		},
+		"triage": {
+			"source": "mattpocock/skills",
+			"sourceType": "github",
+			"skillPath": "skills/engineering/triage/SKILL.md",
+			"computedHash": "2b6efb6da12d92551772fcc04acf331f4e0e6f7bd9d4cb23ce0b301e0b128feb"
+		},
 		"zoom-out": {
 			"source": "mattpocock/skills",
 			"sourceType": "github",
