@@ -33,7 +33,11 @@ Five **state** roles:
 - `ready-for-human` — needs human implementation
 - `wontfix` — will not be actioned
 
-Every triaged issue should carry exactly one category role and one state role. If state roles conflict, flag it and ask the maintainer before doing anything else.
+One **exempt** role:
+
+- `meta` — living documents (dashboards, roadmaps) that do not require triage state labels.
+
+Every triaged issue should carry exactly one category role and one state role, unless it is a `meta` issue. If state roles conflict, flag it and ask the maintainer before doing anything else.
 
 These are canonical role names — the actual label strings used in the issue tracker may differ. The mapping should have been provided to you - run `/setup-matt-pocock-skills` if not.
 
@@ -50,11 +54,11 @@ The maintainer invokes `/triage` and describes what they want in natural languag
 
 ## Show what needs attention
 
-Query the issue tracker and present three buckets, oldest first:
+Query the issue tracker and present three buckets, oldest first, **excluding any issues with the `meta` role**:
 
-1. **Unlabeled** — never triaged.
+1. **Unlabeled** — never triaged (and not `meta`).
 2. **`needs-triage`** — evaluation in progress.
-3. **`needs-info` with reporter activity since the last triage notes** — needs re-evaluation.
+3. **`needs-info`** — re-evaluation needed if reporter activity has occurred since the last triage.
 
 Show counts and a one-line summary per issue. Let the maintainer pick.
 
