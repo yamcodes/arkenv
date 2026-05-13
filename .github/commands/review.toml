@@ -27,12 +27,12 @@ Parse `repository` into `owner` and `repo`, and parse `pull_request_number` into
 
 Use these exact tools and patterns:
 
-- Read PR metadata: call `mcp__github__pull_request_read` with `method: "get"`, `owner`, `repo`, and `pullNumber`.
-- Read changed files: call `mcp__github__pull_request_read` with `method: "get_files"`, `owner`, `repo`, and `pullNumber`.
-- Read the numbered diff: call `mcp__github__pull_request_read` with `method: "get_diff"`, `owner`, `repo`, and `pullNumber`.
-- Create a pending review: call `mcp__github__pull_request_review_write` with `method: "create"`, `owner`, `repo`, and `pullNumber`.
-- Add an inline comment to the pending review: call `mcp__github__add_comment_to_pending_review` with the required review comment fields.
-- Submit the pending review: call `mcp__github__pull_request_review_write` with `method: "submit"`, `owner`, `repo`, `pullNumber`, `event: "COMMENT"`, and `body`.
+- Read PR metadata: call `github_pull_request_read` with `method: "get"`, `owner`, `repo`, and `pullNumber`.
+- Read changed files: call `github_pull_request_read` with `method: "get_files"`, `owner`, `repo`, and `pullNumber`.
+- Read the numbered diff: call `github_pull_request_read` with `method: "get_diff"`, `owner`, `repo`, and `pullNumber`.
+- Create a pending review: call `github_pull_request_review_write` with `method: "create"`, `owner`, `repo`, and `pullNumber`.
+- Add an inline comment to the pending review: call `github_add_comment_to_pending_review` with the required review comment fields.
+- Submit the pending review: call `github_pull_request_review_write` with `method: "submit"`, `owner`, `repo`, `pullNumber`, `event: "COMMENT"`, and `body`.
 
 ## Review Process
 
