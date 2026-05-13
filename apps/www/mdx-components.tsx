@@ -4,8 +4,10 @@ import { Cards } from "fumadocs-ui/components/card";
 import type { MDXComponents } from "mdx/types";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { cn } from "~/lib/cn";
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
+	const Table = (arkenvComponents as any).table ?? "table";
 	return {
 		...arkenvComponents,
 		...twoslashComponents,
@@ -13,5 +15,14 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		Card,
 		Cards,
 		...components,
+		table: (props) => (
+			<Table
+				{...props}
+				className={cn(
+					"[&_td_code]:whitespace-nowrap [&_td:first-child]:w-max",
+					props.className,
+				)}
+			/>
+		),
 	};
 }
