@@ -9,9 +9,9 @@ import dedent from "dedent";
  */
 export const zodTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: z.string(),`).join("\n")
-		: `\t\tNODE_ENV: z.enum(["development", "production", "test"]),
-\t\tPORT: z.coerce.number().int().min(1).max(65535),`;
+		? envKeys.map((key) => `\t\t${key}: z.string().default(""),`).join("\n")
+		: `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+\t\tPORT: z.coerce.number().int().min(1).max(65535).default(3000),`;
 
 	if (framework === "vite") {
 		return dedent /* ts */`

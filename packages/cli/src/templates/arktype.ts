@@ -9,9 +9,9 @@ import dedent from "dedent";
  */
 export const arktypeTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: "string",`).join("\n")
-		: `\t\tNODE_ENV: "'development' | 'production' | 'test'",
-\t\tPORT: "number.port",`;
+		? envKeys.map((key) => `\t\t${key}: "string = ''",`).join("\n")
+		: `\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",
+\t\tPORT: "number.port = 3000",`;
 
 	if (framework === "vite") {
 		return dedent /* ts */`

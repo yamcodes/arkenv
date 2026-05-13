@@ -102,8 +102,8 @@ describe("scaffold", () => {
 				envKeys: ["API_KEY", "DB_URL"],
 			});
 			const content = await fsp.readFile(path.join(tempDir, "env.ts"), "utf-8");
-			expect(content).toContain('API_KEY: "string"');
-			expect(content).toContain('DB_URL: "string"');
+			expect(content).toContain("API_KEY: \"string = ''\"");
+			expect(content).toContain("DB_URL: \"string = ''\"");
 			expect(content).not.toContain("NODE_ENV");
 		});
 

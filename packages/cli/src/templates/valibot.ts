@@ -9,9 +9,9 @@ import dedent from "dedent";
  */
 export const valibotTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: v.string(),`).join("\n")
-		: `\t\tNODE_ENV: v.picklist(["development", "production", "test"]),
-PORT: v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),`;
+		? envKeys.map((key) => `\t\t${key}: v.optional(v.string(), ""),`).join("\n")
+		: `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+\t\tPORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`;
 
 	if (framework === "vite") {
 		return dedent /* ts */`
