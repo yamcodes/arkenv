@@ -27,10 +27,14 @@ Refactor `runPromptWizard` to perform a filesystem check before the `installType
 - Supports both `vite-env.d.ts` and `bun-env.d.ts` based on detected framework.
 
 ### 3. Safe Injection Utility
-Implement a `safeAppend` utility in `packages/cli/src/lib/fs-utils.ts`.
-- It will read the file content.
-- Check if the signature (e.g., `ImportMetaEnvAugmented` for Vite, `ProcessEnvAugmented` for Bun) already exists to prevent duplication.
-- Append the template content at the end of the file, ensuring proper newline spacing.
+Integrate a new `safeAppend` utility into `packages/cli/src/lib/config-mutation.ts`.
+- **Approach**: Targeted String Injection. While `magicast` is used for object-based configs like `vite.config.ts`, `.d.ts` files (which rely on triple-slash references and ambient declarations) are better served by a controlled string-based approach to avoid AST-related formatting or reference-stripping issues.
+- **Logic**:
+  - Read the file content using `fsp.readFile`.
+  - Check for framework-specific signatures (e.g., `ImportMetaEnvAugmented` for Vite, `ProcessEnvAugmented` for Bun).
+  - If the signature exists, skip injection to avoid duplicates.
+  - If missing, append the template content to the end of the file, ensuring it starts on a new line.
+  - Write the result using `fsp.writeFile`.
 
 ### 4. Refactor `establishTypeDefinitions`
 Update the scaffolding logic to honor the `envDtsHandling` option.
