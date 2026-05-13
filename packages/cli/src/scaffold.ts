@@ -6,6 +6,7 @@ import { applyEdits, modify, parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
 import type { ProjectOptions } from "./prompts";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
+import { code } from "./visuals";
 
 export async function scaffold(
 	options: ProjectOptions & { shouldUpdateTsConfig?: boolean },
@@ -28,7 +29,7 @@ export async function scaffold(
 	// 2. Generate and write env.ts
 	const content = getEnvTemplate(options);
 	if (existsSync(targetPath)) {
-		if (options.overwrite === false) {
+		if (options.overwriteEnvSchemaFile === false) {
 			return {
 				tsConfigResult: { status: "already_strict" } as const,
 				packageManager,
@@ -36,7 +37,7 @@ export async function scaffold(
 				typeDefinitionResult: { status: "none" } as const,
 			};
 		}
-		if (options.overwrite === undefined) {
+		if (options.overwriteEnvSchemaFile === undefined) {
 			const confirmOverwrite = await confirm({
 				message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
 				initialValue: false,
@@ -100,7 +101,21 @@ async function establishTypeDefinitions(
 			: bunTypesTemplate(options.path);
 
 	if (existsSync(typeFilePath)) {
-		if (options.overwrite) {
+		let shouldOverwrite = options.overwriteEnvDtsFile;
+
+		if (shouldOverwrite === undefined) {
+			shouldOverwrite = await confirm({
+				message: `Type definition file ${code(typeFileName)} already exists. Overwrite?`,
+				initialValue: false,
+			});
+
+			if (isCancel(shouldOverwrite)) {
+				cancel("Operation cancelled.");
+				process.exit(0);
+			}
+		}
+
+		if (shouldOverwrite) {
 			await fsp.writeFile(typeFilePath, content, "utf-8");
 			return { status: "overwritten", file: typeFileName };
 		}

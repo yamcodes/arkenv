@@ -111,7 +111,7 @@ describe("scaffold", () => {
 			await fsp.writeFile(path.join(tempDir, "env.ts"), existingContent);
 			vi.mocked(prompts.confirm).mockResolvedValue(false);
 
-			await scaffold(defaultOptions);
+			await scaffold({ ...defaultOptions, overwriteEnvSchemaFile: false });
 
 			const content = await fsp.readFile(path.join(tempDir, "env.ts"), "utf-8");
 			expect(content).toBe(existingContent);
@@ -122,7 +122,7 @@ describe("scaffold", () => {
 			await fsp.writeFile(path.join(tempDir, "env.ts"), existingContent);
 			vi.mocked(prompts.confirm).mockResolvedValue(true);
 
-			await scaffold(defaultOptions);
+			await scaffold({ ...defaultOptions, overwriteEnvSchemaFile: true });
 
 			const content = await fsp.readFile(path.join(tempDir, "env.ts"), "utf-8");
 			expect(content).not.toBe(existingContent);
@@ -203,13 +203,13 @@ describe("scaffold", () => {
 			expect(content).toContain('import("./env")');
 		});
 
-		it("skips type definition if file exists and overwrite is false", async () => {
+		it("skips type definition if file exists and overwriteEnvDtsFile is false", async () => {
 			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), "existing");
 
 			const result = await scaffold({
 				...defaultOptions,
 				framework: "vite",
-				overwrite: false,
+				overwriteEnvDtsFile: false,
 			});
 
 			const content = await fsp.readFile(
@@ -220,13 +220,13 @@ describe("scaffold", () => {
 			expect(result.typeDefinitionResult.status).toBe("skipped");
 		});
 
-		it("overwrites type definition if file exists and overwrite is true", async () => {
+		it("overwrites type definition if file exists and overwriteEnvDtsFile is true", async () => {
 			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), "existing");
 
 			const result = await scaffold({
 				...defaultOptions,
 				framework: "vite",
-				overwrite: true,
+				overwriteEnvDtsFile: true,
 			});
 
 			const content = await fsp.readFile(
@@ -234,6 +234,24 @@ describe("scaffold", () => {
 				"utf-8",
 			);
 			expect(content).not.toBe("existing");
+			expect(result.typeDefinitionResult.status).toBe("overwritten");
+		});
+
+		it("prompts for type definition overwrite if overwriteEnvDtsFile is undefined", async () => {
+			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), "existing");
+			vi.mocked(prompts.confirm).mockResolvedValue(true);
+
+			const result = await scaffold({
+				...defaultOptions,
+				framework: "vite",
+				overwriteEnvDtsFile: undefined,
+			});
+
+			expect(prompts.confirm).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: expect.stringContaining("vite-env.d.ts already exists"),
+				}),
+			);
 			expect(result.typeDefinitionResult.status).toBe("overwritten");
 		});
 	});

@@ -10,7 +10,8 @@ export type ProjectOptions = {
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun" | "node";
 	language: "ts"; // TODO: Support JS
-	overwrite?: boolean | undefined;
+	overwriteEnvSchemaFile?: boolean | undefined;
+	overwriteEnvDtsFile?: boolean | undefined;
 	envKeys?: string[] | undefined;
 	installSkill?: boolean | undefined;
 };
@@ -30,7 +31,8 @@ export async function runPromptWizard(
 			validator: "arktype",
 			framework: defaults?.framework || "node",
 			language: "ts",
-			overwrite: true,
+			overwriteEnvSchemaFile: true,
+			overwriteEnvDtsFile: true,
 			envKeys: detectedKeys || undefined,
 			installSkill: false,
 		} as ProjectOptions;
@@ -38,7 +40,7 @@ export async function runPromptWizard(
 
 	const result = await group(
 		{
-			overwrite: async () => {
+			overwriteEnvSchemaFile: async () => {
 				const defaultPath = "./src/env.ts";
 				if (fs.existsSync(path.resolve(process.cwd(), defaultPath))) {
 					const answer = await confirm({
@@ -156,7 +158,8 @@ export async function runPromptWizard(
 		validator: result.validator as ProjectOptions["validator"],
 		framework: result.framework as ProjectOptions["framework"],
 		language: "ts",
-		overwrite: result.overwrite as boolean,
+		overwriteEnvSchemaFile: result.overwriteEnvSchemaFile as boolean,
+		overwriteEnvDtsFile: result.overwriteEnvDtsFile as boolean,
 		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
 		installSkill: result.installSkill as boolean,
 	};
