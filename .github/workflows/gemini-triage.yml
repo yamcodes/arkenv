@@ -60,7 +60,8 @@ jobs:
           ${{ steps.get_labels.outputs.available_labels != '' }}
         shell: 'bash'
         run: |-
-          mkdir -p .gemini
+          mkdir -p .gemini/commands
+          cp -r .github/commands/* .gemini/commands/
           jq -n \
             --arg available_labels "${AVAILABLE_LABELS}" \
             --arg issue_title "${ISSUE_TITLE}" \
@@ -116,7 +117,7 @@ jobs:
                 ]
               }
             }
-          prompt: '/gemini-triage'
+          prompt: '/triage'
 
   label:
     runs-on: 'ubuntu-latest'

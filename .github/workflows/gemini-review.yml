@@ -47,7 +47,8 @@ jobs:
       - name: 'Prepare prompt context'
         shell: 'bash'
         run: |-
-          mkdir -p .gemini
+          mkdir -p .gemini/commands
+          cp -r .github/commands/* .gemini/commands/
           jq -n \
             --arg repo "${REPOSITORY}" \
             --arg pr "${PULL_REQUEST_NUMBER}" \
@@ -116,4 +117,4 @@ jobs:
                 "core": []
               }
             }
-          prompt: '/gemini-review'
+          prompt: '/review'

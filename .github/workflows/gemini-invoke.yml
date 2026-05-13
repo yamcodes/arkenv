@@ -44,7 +44,8 @@ jobs:
       - name: 'Prepare prompt context'
         shell: 'bash'
         run: |-
-          mkdir -p .gemini
+          mkdir -p .gemini/commands
+          cp -r .github/commands/* .gemini/commands/
           jq -n \
             --arg title "${TITLE}" \
             --arg description "${DESCRIPTION}" \
@@ -141,4 +142,4 @@ jobs:
                 ]
               }
             }
-          prompt: '/gemini-invoke'
+          prompt: '/invoke'

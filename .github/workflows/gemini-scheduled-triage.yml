@@ -93,7 +93,8 @@ jobs:
           ${{ steps.find_issues.outputs.issues_to_triage != '[]' }}
         shell: 'bash'
         run: |-
-          mkdir -p .gemini
+          mkdir -p .gemini/commands
+          cp -r .github/commands/* .gemini/commands/
           jq -n \
             --arg repository "${REPOSITORY}" \
             --arg available_labels "${AVAILABLE_LABELS}" \
@@ -152,7 +153,7 @@ jobs:
                 ]
               }
             }
-          prompt: '/gemini-scheduled-triage'
+          prompt: '/scheduled-triage'
 
   label:
     runs-on: 'ubuntu-latest'
