@@ -32,7 +32,8 @@ Create a new utility at `packages/cli/src/utils/injection.ts`.
 - **Robust Duplication Check**: Use a comment marker `// @arkenv-types` injected at the top of the appended block. Checking for this specific marker avoids fragility related to user formatting (spaces/tabs/line-endings).
 - **Dynamic Path Calculation**: Use `path.relative` from the `.d.ts` file's directory to the schema file's directory. 
   - Example: `path.relative(path.dirname(dtsPath), schemaPath)`.
-  - Ensure the resulting path starts with `./` and strip the `.ts` extension for a valid TypeScript import.
+  - **Windows Normalization**: Always convert backslashes to forward slashes for TypeScript imports: `relativePath.split(path.sep).join('/')`.
+  - Ensure the resulting path starts with `./` (or `../`) and strip the `.ts` extension for a valid TypeScript import.
 - **Logic**:
   - Read the file content using `fsp.readFile`.
   - Check for the `// @arkenv-types` marker.
