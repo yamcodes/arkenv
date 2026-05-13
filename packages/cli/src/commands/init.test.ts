@@ -72,7 +72,8 @@ describe("InitCommand", () => {
 			tsConfigResult: { status: "already_strict" },
 			installCmd: "npm install",
 			packageManager: "npm",
-		});
+			typeDefinitionResult: { status: "none" },
+		} as any);
 
 		await command.run();
 
@@ -100,7 +101,8 @@ describe("InitCommand", () => {
 			tsConfigResult: { status: "already_strict" },
 			installCmd: "npm install",
 			packageManager: "npm",
-		});
+			typeDefinitionResult: { status: "none" },
+		} as any);
 
 		await command.run();
 
@@ -128,7 +130,8 @@ describe("InitCommand", () => {
 			tsConfigResult: { status: "already_strict" },
 			installCmd: "npm install",
 			packageManager: "npm",
-		});
+			typeDefinitionResult: { status: "none" },
+		} as any);
 
 		await command.run();
 
@@ -157,7 +160,8 @@ describe("InitCommand", () => {
 			tsConfigResult: { status: "already_strict" },
 			installCmd: "npm install",
 			packageManager: "npm",
-		});
+			typeDefinitionResult: { status: "none" },
+		} as any);
 
 		const stdout = new Readable({ read() {} });
 		const stderr = new Readable({ read() {} });
@@ -211,7 +215,8 @@ describe("InitCommand", () => {
 			tsConfigResult: { status: "already_strict" },
 			installCmd: "npm install",
 			packageManager: "npm",
-		});
+			typeDefinitionResult: { status: "none" },
+		} as any);
 
 		const stdout = new Readable({ read() {} });
 		const stderr = new Readable({ read() {} });
@@ -274,7 +279,8 @@ describe("InitCommand", () => {
 			tsConfigResult: { status: "already_strict" },
 			installCmd: "npm install",
 			packageManager: "npm",
-		});
+			typeDefinitionResult: { status: "none" },
+		} as any);
 
 		spawnMock.mockReturnValueOnce({
 			stdout: new Readable({ read() {} }),
@@ -300,5 +306,38 @@ describe("InitCommand", () => {
 				),
 			}),
 		);
+	});
+
+	it("logs type definition creation results", async () => {
+		const cli = new CLI(["node", "bin", "init"]);
+		const command = new InitCommand(cli);
+
+		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
+		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("vite");
+		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
+			validator: "arktype",
+			framework: "vite",
+			path: "env.ts",
+			language: "ts",
+			installSkill: false,
+		});
+		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
+			tsConfigResult: { status: "already_strict" },
+			installCmd: undefined,
+			packageManager: "npm",
+			typeDefinitionResult: { status: "created", file: "vite-env.d.ts" },
+		} as any);
+
+		const infoSpy = vi.spyOn(cli.logger, "info");
+		await command.run();
+
+		expect(
+			infoSpy.mock.calls.some(
+				(call) =>
+					typeof call[0] === "string" &&
+					call[0].includes("Created") &&
+					call[0].includes("vite-env.d.ts"),
+			),
+		).toBe(true);
 	});
 });

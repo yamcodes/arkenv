@@ -5,6 +5,8 @@ import { cancel, confirm, isCancel } from "@clack/prompts";
 import { applyEdits, modify, parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
 import type { ProjectOptions } from "./prompts";
+import { bunTypesTemplate, viteTypesTemplate } from "./templates";
+import { code } from "./visuals";
 
 export async function scaffold(
 	options: ProjectOptions & { shouldUpdateTsConfig?: boolean },
@@ -27,14 +29,15 @@ export async function scaffold(
 	// 2. Generate and write env.ts
 	const content = getEnvTemplate(options);
 	if (existsSync(targetPath)) {
-		if (options.overwrite === false) {
+		if (options.overwriteEnvSchemaFile === false) {
 			return {
 				tsConfigResult: { status: "already_strict" } as const,
 				packageManager,
 				installCmd: undefined,
+				typeDefinitionResult: { status: "none" } as const,
 			};
 		}
-		if (options.overwrite === undefined) {
+		if (options.overwriteEnvSchemaFile === undefined) {
 			const confirmOverwrite = await confirm({
 				message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
 				initialValue: false,
@@ -50,6 +53,7 @@ export async function scaffold(
 					tsConfigResult: { status: "already_strict" } as const,
 					packageManager,
 					installCmd: undefined,
+					typeDefinitionResult: { status: "none" } as const,
 				};
 			}
 		}
@@ -68,7 +72,62 @@ export async function scaffold(
 		tsConfigResult = await updateTsConfigToStrict();
 	}
 
-	return { tsConfigResult, installCmd, packageManager };
+	// 5. Establish type definitions for Vite/Bun
+	let typeDefinitionResult: {
+		status: "created" | "overwritten" | "skipped" | "none";
+		file?: string;
+	} = { status: "none" };
+
+	if (
+		(options.framework === "vite" || options.framework === "bun") &&
+		options.installTypeDefinitions !== false
+	) {
+		typeDefinitionResult = await establishTypeDefinitions(options, targetDir);
+	}
+
+	return { tsConfigResult, installCmd, packageManager, typeDefinitionResult };
+}
+
+async function establishTypeDefinitions(
+	options: ProjectOptions,
+	targetDir: string,
+): Promise<{
+	status: "created" | "overwritten" | "skipped";
+	file: string;
+}> {
+	const typeFileName =
+		options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+	const typeFilePath = path.join(targetDir, typeFileName);
+	const content =
+		options.framework === "vite"
+			? viteTypesTemplate(options.path)
+			: bunTypesTemplate(options.path);
+
+	if (existsSync(typeFilePath)) {
+		let shouldOverwrite = options.overwriteEnvDtsFile;
+
+		if (shouldOverwrite === undefined) {
+			const confirmOverwrite = await confirm({
+				message: `Type definition file ${code(typeFileName)} already exists. Overwrite?`,
+				initialValue: true,
+			});
+
+			if (isCancel(confirmOverwrite)) {
+				cancel("Operation cancelled.");
+				process.exit(0);
+			}
+			shouldOverwrite = confirmOverwrite;
+		}
+
+		if (shouldOverwrite) {
+			await fsp.writeFile(typeFilePath, content, "utf-8");
+			return { status: "overwritten", file: typeFileName };
+		}
+		return { status: "skipped", file: typeFileName };
+	}
+
+	await fsp.writeFile(typeFilePath, content, "utf-8");
+	return { status: "created", file: typeFileName };
 }
 
 export function getDlxCommand(pm: string): string {

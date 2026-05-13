@@ -84,6 +84,7 @@ export class InitCommand {
 				tsConfigResult: tsResult,
 				installCmd,
 				packageManager,
+				typeDefinitionResult: typeResult,
 			} = await scaffold({
 				...options,
 				shouldUpdateTsConfig,
@@ -100,6 +101,16 @@ export class InitCommand {
 			} else if (tsResult.status === "error") {
 				logger.warn(
 					`Could not automatically update ${code(tsResult.file || "tsconfig.json")}. Please ensure 'strict: true' is set manually.`,
+				);
+			}
+
+			if (typeResult.status === "created") {
+				logger.info(
+					`Created ${code(typeResult.file!)} for typesafe environment variables.`,
+				);
+			} else if (typeResult.status === "overwritten") {
+				logger.info(
+					`Updated ${code(typeResult.file!)} for typesafe environment variables.`,
 				);
 			}
 
@@ -151,6 +162,13 @@ export class InitCommand {
 				}
 			}
 
+			let usageInstructions = `2. Import and use: ${code(`import { env } from "${importPath}"`)}`;
+			if (options.framework === "vite") {
+				usageInstructions = `2. Access via ${code("import.meta.env.YOUR_VAR")}`;
+			} else if (options.framework === "bun") {
+				usageInstructions = `2. Access via ${code("process.env.YOUR_VAR")}`;
+			}
+
 			if (skillInstalled) {
 				logger.note(
 					dedent`
@@ -163,7 +181,7 @@ export class InitCommand {
 				logger.note(
 					dedent`
 						1. Check ${code(displayPath)} and refine your environment schema.
-						2. Import and use: ${code(`import { env } from "${importPath}"`)}
+						${usageInstructions}
 						3. (Recommended) Install the AI skill: ${code(`${dlx} skills add yamcodes/arkenv`)}
 						   Then run ${pc.cyan("/arkenv")} inside your AI assistant to finish.
 					`,
