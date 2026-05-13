@@ -97,8 +97,33 @@ export async function runPromptWizard(
 				}
 				return true;
 			},
-			overwriteEnvDtsFile: async () => {
-				return undefined as boolean | undefined;
+			overwriteEnvDtsFile: async ({ results }) => {
+				if (!results.installTypeDefinitions) return false;
+				if (results.framework !== "vite" && results.framework !== "bun")
+					return false;
+
+				const typeFile =
+					results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+				// Use the same directory as the environment config
+				const targetDir = path.dirname(path.resolve(process.cwd(), "./src/env.ts"));
+				const typeFilePath = path.join(targetDir, typeFile);
+
+				if (fs.existsSync(typeFilePath)) {
+					const answer = await confirm({
+						message: pc.yellow(
+							`Type definition file ${code(typeFile)} already exists. Overwrite?`,
+						),
+						initialValue: true,
+						active: "Yes (Recommended)",
+						inactive: "No",
+					});
+					if (isCancel(answer)) {
+						cancel("Operation cancelled.");
+						process.exit(0);
+					}
+					return answer;
+				}
+				return true;
 			},
 			validator: () =>
 				select({
