@@ -29,10 +29,9 @@ jobs:
     steps:
       - name: 'Mint identity token'
         id: 'mint_identity_token'
-        continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
-        uses: 'actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3' # ratchet:actions/create-github-app-token@v3
+        uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2
         with:
           app-id: '${{ vars.APP_ID }}'
           private-key: '${{ secrets.APP_PRIVATE_KEY }}'
@@ -41,36 +40,20 @@ jobs:
           permission-pull-requests: 'write'
 
       - name: 'Checkout Code'
-        uses: 'actions/checkout@v6' # ratchet:exclude
-
-      - name: 'Prepare prompt context'
-        shell: 'bash'
-        run: |-
-          mkdir -p .gemini
-          jq -n \
-            --arg title "${TITLE}" \
-            --arg description "${DESCRIPTION}" \
-            --arg event_name "${EVENT_NAME}" \
-            --arg is_pull_request "${IS_PULL_REQUEST}" \
-            --arg issue_number "${ISSUE_NUMBER}" \
-            --arg repository "${REPOSITORY}" \
-            --arg additional_context "${ADDITIONAL_CONTEXT}" \
-            '{title: $title, description: $description, event_name: $event_name, is_pull_request: $is_pull_request, issue_number: $issue_number, repository: $repository, additional_context: $additional_context}' > .gemini/context.json
-        env:
-          TITLE: '${{ github.event.pull_request.title || github.event.issue.title }}'
-          DESCRIPTION: '${{ github.event.pull_request.body || github.event.issue.body }}'
-          EVENT_NAME: '${{ github.event_name }}'
-          IS_PULL_REQUEST: '${{ !!github.event.pull_request }}'
-          ISSUE_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
-          REPOSITORY: '${{ github.repository }}'
-          ADDITIONAL_CONTEXT: '${{ inputs.additional_context }}'
+        uses: 'actions/checkout@v4' # ratchet:exclude
 
       - name: 'Run Gemini CLI'
         id: 'run_gemini'
         uses: 'google-github-actions/run-gemini-cli@v0' # ratchet:exclude
         env:
-          GEMINI_CLI_TRUST_WORKSPACE: 'true'
+          TITLE: '${{ github.event.pull_request.title || github.event.issue.title }}'
+          DESCRIPTION: '${{ github.event.pull_request.body || github.event.issue.body }}'
+          EVENT_NAME: '${{ github.event_name }}'
           GITHUB_TOKEN: '${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
+          IS_PULL_REQUEST: '${{ !!github.event.pull_request }}'
+          ISSUE_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
+          REPOSITORY: '${{ github.repository }}'
+          ADDITIONAL_CONTEXT: '${{ inputs.additional_context }}'
         with:
           gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
           gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
@@ -136,15 +119,8 @@ jobs:
               },
               "tools": {
                 "core": [
-                  "read_file",
-                  "list_directory",
-                  "glob",
-                  "grep_search",
-                  "replace",
-                  "write_file",
                   "run_shell_command(cat)",
                   "run_shell_command(echo)",
-                  "run_shell_command(git)",
                   "run_shell_command(grep)",
                   "run_shell_command(head)",
                   "run_shell_command(tail)"
