@@ -164,5 +164,77 @@ describe("scaffold", () => {
 			expect(result.installCmd).toContain("arktype");
 			expect(result.packageManager).toBeDefined();
 		});
+
+		it("establishes vite-env.d.ts for vite framework", async () => {
+			const result = await scaffold({ ...defaultOptions, framework: "vite" });
+
+			const exists = await fsp
+				.access(path.join(tempDir, "vite-env.d.ts"))
+				.then(() => true)
+				.catch(() => false);
+			expect(exists).toBe(true);
+			expect(result.typeDefinitionResult.status).toBe("created");
+			expect(result.typeDefinitionResult.file).toBe("vite-env.d.ts");
+
+			const content = await fsp.readFile(
+				path.join(tempDir, "vite-env.d.ts"),
+				"utf-8",
+			);
+			expect(content).toContain("ImportMetaEnvAugmented");
+			expect(content).toContain('import("./env")');
+		});
+
+		it("establishes bun-env.d.ts for bun framework", async () => {
+			const result = await scaffold({ ...defaultOptions, framework: "bun" });
+
+			const exists = await fsp
+				.access(path.join(tempDir, "bun-env.d.ts"))
+				.then(() => true)
+				.catch(() => false);
+			expect(exists).toBe(true);
+			expect(result.typeDefinitionResult.status).toBe("created");
+			expect(result.typeDefinitionResult.file).toBe("bun-env.d.ts");
+
+			const content = await fsp.readFile(
+				path.join(tempDir, "bun-env.d.ts"),
+				"utf-8",
+			);
+			expect(content).toContain("ProcessEnvAugmented");
+			expect(content).toContain('import("./env")');
+		});
+
+		it("skips type definition if file exists and overwrite is false", async () => {
+			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), "existing");
+
+			const result = await scaffold({
+				...defaultOptions,
+				framework: "vite",
+				overwrite: false,
+			});
+
+			const content = await fsp.readFile(
+				path.join(tempDir, "vite-env.d.ts"),
+				"utf-8",
+			);
+			expect(content).toBe("existing");
+			expect(result.typeDefinitionResult.status).toBe("skipped");
+		});
+
+		it("overwrites type definition if file exists and overwrite is true", async () => {
+			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), "existing");
+
+			const result = await scaffold({
+				...defaultOptions,
+				framework: "vite",
+				overwrite: true,
+			});
+
+			const content = await fsp.readFile(
+				path.join(tempDir, "vite-env.d.ts"),
+				"utf-8",
+			);
+			expect(content).not.toBe("existing");
+			expect(result.typeDefinitionResult.status).toBe("overwritten");
+		});
 	});
 });
