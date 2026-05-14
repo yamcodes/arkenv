@@ -552,8 +552,8 @@
 
     <!-- View tabs (only shown when benchmark data exists) -->
     <div class="view-tabs" id="view-tabs" style="display:none;">
-      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
-      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+      <button type="button" class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button type="button" class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
     </div>
 
     <!-- Outputs panel (qualitative review) -->
@@ -616,9 +616,9 @@
     </div>
 
     <div class="nav" id="outputs-nav">
-      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
-      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
-      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+      <button type="button" class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button type="button" class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button type="button" class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
     </div>
     </div><!-- end panel-outputs -->
 
@@ -636,7 +636,7 @@
       <h2>Review Complete</h2>
       <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
       <div class="btn-row">
-        <button onclick="closeDoneDialog()">OK</button>
+        <button type="button" onclick="closeDoneDialog()">OK</button>
       </div>
     </div>
   </div>
@@ -1104,8 +1104,8 @@
 
     // ---- View switching ----
     function switchView(view) {
-      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
-      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".view-tab").forEach(t => { t.classList.remove("active"); });
+      document.querySelectorAll(".view-panel").forEach(p => { p.classList.remove("active"); });
       document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
       document.getElementById("panel-" + view).classList.add("active");
     }

@@ -42,8 +42,8 @@
   <p class="description">Current description: <span id="skill-desc">__SKILL_DESCRIPTION_PLACEHOLDER__</span></p>
 
   <div class="controls">
-    <button class="btn btn-add" onclick="addRow()">+ Add Query</button>
-    <button class="btn btn-export" onclick="exportEvalSet()">Export Eval Set</button>
+    <button type="button" class="btn btn-add" onclick="addRow()">+ Add Query</button>
+    <button type="button" class="btn btn-export" onclick="exportEvalSet()">Export Eval Set</button>
   </div>
 
   <table>
@@ -95,7 +95,7 @@
             </label>
             <span style="margin-left:8px;font-size:0.8rem;color:#b0aea5">${item.should_trigger ? 'Yes' : 'No'}</span>
           </td>
-          <td><button class="btn-delete" onclick="deleteRow(${idx})">Delete</button></td>
+          <td><button type="button" class="btn-delete" onclick="deleteRow(${idx})">Delete</button></td>
         `;
         tbody.appendChild(tr);
       });
