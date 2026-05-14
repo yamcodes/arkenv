@@ -238,7 +238,12 @@ jobs:
 
             Assemble the results into a single JSON array, formatted as a string, according to the **Output Specification** below. Finally, execute the command to write this string to the output file, ensuring the JSON is enclosed in single quotes to prevent shell interpretation.
 
-                - Use the shell command to write: `echo 'TRIAGED_ISSUES=...' > "$GITHUB_ENV"` (Replace `...` with the final, minified JSON array string).
+                - Use the shell command to write the minified JSON to the environment:
+                  ```bash
+                  echo "TRIAGED_ISSUES<<EOF" >> "$GITHUB_ENV"
+                  echo '...' >> "$GITHUB_ENV"
+                  echo "EOF" >> "$GITHUB_ENV"
+                  ```
 
             ## Output Specification
 
