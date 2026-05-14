@@ -169,7 +169,9 @@ export class SilentReporter implements Reporter {
 	success(_message: string) {}
 	step(_message: string) {}
 	note(_message: string, _title?: string) {}
-	log(_message: string) {}
+	log(message: string) {
+		process.stdout.write(`${this.stripAnsi(message)}\n`);
+	}
 
 	spinner(): Spinner {
 		return {

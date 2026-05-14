@@ -130,11 +130,14 @@ describe("Reporters", () => {
 			expect(stderrSpy).not.toHaveBeenCalled();
 		});
 
+		it("logs essential info with log()", () => {
+			reporter.log("essential");
+			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining("essential"));
+		});
+
 		it("still logs json to stdout", () => {
 			reporter.json({ foo: "bar" });
-			expect(stdoutSpy).toHaveBeenCalledWith(
-				expect.stringContaining('"foo": "bar"'),
-			);
+			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"foo": "bar"'));
 		});
 	});
 
