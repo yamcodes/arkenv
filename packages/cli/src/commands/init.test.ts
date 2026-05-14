@@ -61,6 +61,7 @@ describe("InitCommand", () => {
 
 		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
 		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(scaffold, "detectPackageManager").mockResolvedValue("npm");
 		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
 			validator: "arktype",
 			framework: "node",
@@ -68,20 +69,10 @@ describe("InitCommand", () => {
 			language: "ts",
 			installSkill: true,
 		});
-		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
-			tsConfigResult: { status: "already_strict" },
-			installCmd: "npm install",
-			packageManager: "npm",
-			typeDefinitionResult: { status: "none" },
-		} as any);
 
 		await command.run();
 
-		expect(spawnMock).toHaveBeenCalledWith(
-			expect.stringContaining("skills add yamcodes/arkenv --yes"),
-			expect.anything(),
-			expect.anything(),
-		);
+		expect(spawnMock.mock.calls.some(call => call[0].includes("skills add yamcodes/arkenv --yes"))).toBe(true);
 	});
 
 	it("does NOT pass --yes to skill installation when isYes is false", async () => {
@@ -90,6 +81,7 @@ describe("InitCommand", () => {
 
 		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
 		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(scaffold, "detectPackageManager").mockResolvedValue("npm");
 		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
 			validator: "arktype",
 			framework: "node",
@@ -97,20 +89,10 @@ describe("InitCommand", () => {
 			language: "ts",
 			installSkill: true,
 		});
-		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
-			tsConfigResult: { status: "already_strict" },
-			installCmd: "npm install",
-			packageManager: "npm",
-			typeDefinitionResult: { status: "none" },
-		} as any);
 
 		await command.run();
 
-		expect(spawnMock).toHaveBeenCalledWith(
-			expect.stringMatching(/skills add yamcodes\/arkenv(?!.*--yes)/),
-			expect.anything(),
-			expect.anything(),
-		);
+		expect(spawnMock.mock.calls.some(call => call[0].includes("skills add yamcodes/arkenv") && !call[0].includes("--yes"))).toBe(true);
 	});
 
 	it("uses stdio: 'pipe' for skill installation when isQuiet is true", async () => {
@@ -119,6 +101,7 @@ describe("InitCommand", () => {
 
 		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
 		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(scaffold, "detectPackageManager").mockResolvedValue("npm");
 		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
 			validator: "arktype",
 			framework: "node",
@@ -126,21 +109,11 @@ describe("InitCommand", () => {
 			language: "ts",
 			installSkill: true,
 		});
-		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
-			tsConfigResult: { status: "already_strict" },
-			installCmd: "npm install",
-			packageManager: "npm",
-			typeDefinitionResult: { status: "none" },
-		} as any);
 
 		await command.run();
 
 		// Skill installation should use pipe
-		expect(spawnMock).toHaveBeenCalledWith(
-			expect.stringContaining("skills add yamcodes/arkenv"),
-			expect.anything(),
-			expect.objectContaining({ stdio: "pipe" }),
-		);
+		expect(spawnMock.mock.calls.some(call => call[0].includes("skills add yamcodes/arkenv") && call[2].stdio === "pipe")).toBe(true);
 	});
 
 	it("includes error logs in fatal message when quiet installation fails", async () => {
@@ -149,6 +122,7 @@ describe("InitCommand", () => {
 
 		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
 		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(scaffold, "detectPackageManager").mockResolvedValue("npm");
 		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
 			validator: "arktype",
 			framework: "node",
@@ -156,16 +130,11 @@ describe("InitCommand", () => {
 			language: "ts",
 			installSkill: true,
 		});
-		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
-			tsConfigResult: { status: "already_strict" },
-			installCmd: "npm install",
-			packageManager: "npm",
-			typeDefinitionResult: { status: "none" },
-		} as any);
 
 		const stdout = new Readable({ read() {} });
 		const stderr = new Readable({ read() {} });
 
+		// Mock spawn for npm install (to FAIL)
 		spawnMock.mockReturnValueOnce({
 			stdout,
 			stderr,
@@ -204,6 +173,7 @@ describe("InitCommand", () => {
 
 		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
 		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(scaffold, "detectPackageManager").mockResolvedValue("npm");
 		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
 			validator: "arktype",
 			framework: "node",
@@ -211,16 +181,11 @@ describe("InitCommand", () => {
 			language: "ts",
 			installSkill: true,
 		});
-		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
-			tsConfigResult: { status: "already_strict" },
-			installCmd: "npm install",
-			packageManager: "npm",
-			typeDefinitionResult: { status: "none" },
-		} as any);
 
 		const stdout = new Readable({ read() {} });
 		const stderr = new Readable({ read() {} });
 
+		// Mock spawn for npm install (to FAIL)
 		spawnMock.mockReturnValueOnce({
 			stdout,
 			stderr,
@@ -268,6 +233,7 @@ describe("InitCommand", () => {
 
 		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
 		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("node");
+		vi.spyOn(scaffold, "detectPackageManager").mockResolvedValue("npm");
 		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
 			validator: "arktype",
 			framework: "node",
@@ -275,13 +241,8 @@ describe("InitCommand", () => {
 			language: "ts",
 			installSkill: true,
 		});
-		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
-			tsConfigResult: { status: "already_strict" },
-			installCmd: "npm install",
-			packageManager: "npm",
-			typeDefinitionResult: { status: "none" },
-		} as any);
 
+		// Mock spawn for npm install (to FAIL with signal)
 		spawnMock.mockReturnValueOnce({
 			stdout: new Readable({ read() {} }),
 			stderr: new Readable({ read() {} }),
@@ -314,6 +275,7 @@ describe("InitCommand", () => {
 
 		vi.spyOn(scaffold, "checkTsConfig").mockResolvedValue({ status: "strict" });
 		vi.spyOn(scaffold, "detectFramework").mockResolvedValue("vite");
+		vi.spyOn(scaffold, "detectPackageManager").mockResolvedValue("npm");
 		vi.spyOn(prompts, "runPromptWizard").mockResolvedValue({
 			validator: "arktype",
 			framework: "vite",
@@ -321,12 +283,6 @@ describe("InitCommand", () => {
 			language: "ts",
 			installSkill: false,
 		});
-		vi.spyOn(scaffold, "scaffold").mockResolvedValue({
-			tsConfigResult: { status: "already_strict" },
-			installCmd: undefined,
-			packageManager: "npm",
-			typeDefinitionResult: { status: "created", file: "vite-env.d.ts" },
-		} as any);
 
 		const infoSpy = vi.spyOn(cli.logger, "info");
 		await command.run();

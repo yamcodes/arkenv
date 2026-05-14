@@ -1,133 +1,7 @@
 import { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { cancel, confirm, isCancel } from "@clack/prompts";
 import { applyEdits, modify, parse } from "jsonc-parser";
-import { getEnvTemplate } from "./env-template";
-import type { ProjectOptions } from "./prompts";
-import { bunTypesTemplate, viteTypesTemplate } from "./templates";
-
-export async function scaffold(
-	options: ProjectOptions & { shouldUpdateTsConfig?: boolean },
-) {
-	const targetPath = path.resolve(process.cwd(), options.path);
-	const targetDir = path.dirname(targetPath);
-
-	// 1. Create directory if it doesn't exist
-	await fsp.mkdir(targetDir, { recursive: true });
-
-	// 4. Detect package manager and prepare installation info
-	const packageManager = await detectPackageManager();
-	const deps = ["arkenv", options.validator];
-
-	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
-	if (options.framework === "bun") deps.push("@arkenv/bun-plugin");
-
-	const installCmd = getInstallCommand(packageManager, deps);
-
-	// 2. Generate and write env.ts
-	const content = getEnvTemplate(options);
-	if (existsSync(targetPath)) {
-		if (options.overwriteEnvSchemaFile === false) {
-			return {
-				tsConfigResult: { status: "already_strict" } as const,
-				packageManager,
-				installCmd: undefined,
-				typeDefinitionResult: { status: "none" } as const,
-			};
-		}
-		if (options.overwriteEnvSchemaFile === undefined) {
-			const confirmOverwrite = await confirm({
-				message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
-				initialValue: false,
-			});
-
-			if (isCancel(confirmOverwrite)) {
-				cancel("Operation cancelled.");
-				process.exit(0);
-			}
-
-			if (!confirmOverwrite) {
-				return {
-					tsConfigResult: { status: "already_strict" } as const,
-					packageManager,
-					installCmd: undefined,
-					typeDefinitionResult: { status: "none" } as const,
-				};
-			}
-		}
-		await fsp.writeFile(targetPath, content, "utf-8");
-	} else {
-		await fsp.writeFile(targetPath, content, "utf-8");
-	}
-
-	// 3. Enforce strict in tsconfig if requested
-	let tsConfigResult: {
-		status: "updated" | "already_strict" | "not_found" | "error";
-		file?: string;
-	} = { status: "already_strict" };
-
-	if (options.shouldUpdateTsConfig) {
-		tsConfigResult = await updateTsConfigToStrict();
-	}
-
-	// 5. Establish type definitions for Vite/Bun
-	let typeDefinitionResult: {
-		status: "created" | "overwritten" | "appended" | "skipped" | "none";
-		file?: string;
-	} = { status: "none" };
-
-	if (
-		(options.framework === "vite" || options.framework === "bun") &&
-		options.installTypeDefinitions !== false
-	) {
-		typeDefinitionResult = await establishTypeDefinitions(options, targetDir);
-	}
-
-	return { tsConfigResult, installCmd, packageManager, typeDefinitionResult };
-}
-
-async function establishTypeDefinitions(
-	options: ProjectOptions,
-	targetDir: string,
-): Promise<{
-	status: "created" | "overwritten" | "appended" | "skipped";
-	file: string;
-}> {
-	const typeFileName =
-		options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-	const typeFilePath = path.join(targetDir, typeFileName);
-	const schemaPath = path.resolve(process.cwd(), options.path);
-
-	if (options.envDtsHandling === "skip") {
-		return { status: "skipped", file: typeFileName };
-	}
-
-	if (
-		options.envDtsHandling === "append" ||
-		(!options.envDtsHandling && existsSync(typeFilePath))
-	) {
-		const { safeAppend } = await import("./utils/injection");
-		const result = await safeAppend(
-			typeFilePath,
-			schemaPath,
-			options.framework as "vite" | "bun",
-		);
-		return { status: result ? "appended" : "skipped", file: typeFileName };
-	}
-
-	const content =
-		options.framework === "vite"
-			? viteTypesTemplate(options.path)
-			: bunTypesTemplate(options.path);
-
-	const isOverwrite = existsSync(typeFilePath);
-	await fsp.writeFile(typeFilePath, content, "utf-8");
-	return {
-		status: isOverwrite ? "overwritten" : "created",
-		file: typeFileName,
-	};
-}
 
 export function getDlxCommand(pm: string): string {
 	switch (pm) {
@@ -186,7 +60,7 @@ export async function checkTsConfig(): Promise<{
 	}
 }
 
-async function updateTsConfigToStrict(): Promise<{
+export async function updateTsConfigToStrict(): Promise<{
 	status: "updated" | "already_strict" | "not_found" | "error";
 	file?: string;
 }> {
@@ -247,7 +121,7 @@ export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
 	return "node";
 }
 
-async function detectPackageManager(): Promise<
+export async function detectPackageManager(): Promise<
 	"pnpm" | "yarn" | "npm" | "bun"
 > {
 	const userAgent = process.env.npm_config_user_agent?.toString() || "";
@@ -283,17 +157,4 @@ async function detectPackageManager(): Promise<
 	}
 
 	return "npm";
-}
-
-function getInstallCommand(pm: string, deps: string[]): string {
-	switch (pm) {
-		case "pnpm":
-			return `pnpm add ${deps.join(" ")}`;
-		case "yarn":
-			return `yarn add ${deps.join(" ")}`;
-		case "bun":
-			return `bun add ${deps.join(" ")}`;
-		default:
-			return `npm install ${deps.join(" ")}`;
-	}
 }
