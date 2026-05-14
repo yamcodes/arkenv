@@ -1,6 +1,12 @@
 {
 	"version": 1,
 	"skills": {
+		"creating-changesets": {
+			"source": "saleor/configurator",
+			"sourceType": "github",
+			"skillPath": ".claude/skills/creating-changesets/SKILL.md",
+			"computedHash": "1c42991a47eb5faf803be1e3e2ae6f3b95ec2931baeb3137a4a1aa02f4036f2b"
+		},
 		"diagnose": {
 			"source": "mattpocock/skills",
 			"sourceType": "github",

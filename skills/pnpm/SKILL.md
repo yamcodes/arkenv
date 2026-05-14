@@ -5,6 +5,7 @@ metadata:
   author: Anthony Fu
   version: "2026.1.28"
   source: Generated from https://github.com/pnpm/pnpm, scripts located at https://github.com/antfu/skills
+  internal: true
 ---
 
 pnpm is a fast, disk space efficient package manager. It uses a content-addressable store to deduplicate packages across all projects on a machine, saving significant disk space. pnpm enforces strict dependency resolution by default, preventing phantom dependencies. Configuration should preferably be placed in `pnpm-workspace.yaml` for pnpm-specific settings.
