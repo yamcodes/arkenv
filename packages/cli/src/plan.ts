@@ -1,4 +1,5 @@
-import type { Reporter } from "./lib/reporter";
+export type { Reporter } from "./lib/reporter";
+
 import type { ProjectOptions } from "./prompts";
 
 export type ScaffoldingPlan = {

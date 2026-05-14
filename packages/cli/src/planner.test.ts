@@ -11,8 +11,6 @@ describe("Planner", () => {
 			framework: "node",
 			path: "env.ts",
 			language: "ts",
-			shouldUpdateTsConfig: false,
-			shouldInstall: true,
 			installTypeDefinitions: true,
 		},
 		detectedFramework: "node",
@@ -20,6 +18,7 @@ describe("Planner", () => {
 		tsConfig: { status: "strict", file: "tsconfig.json" },
 		shouldUpdateTsConfig: false,
 		existingFiles: [],
+		isYes: false,
 	};
 
 	it("creates a basic plan", () => {

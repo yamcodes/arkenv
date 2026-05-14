@@ -27,7 +27,12 @@ describe("Executor", () => {
 		info: vi.fn(),
 		warn: vi.fn(),
 		error: vi.fn(),
+		success: vi.fn(),
+		log: vi.fn(),
 		note: vi.fn(),
+		json: vi.fn(),
+		cancel: vi.fn(),
+		fatal: vi.fn(),
 		finish: vi.fn(),
 	};
 

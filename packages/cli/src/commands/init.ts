@@ -1,3 +1,4 @@
+import type { StdioOptions } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { confirm, isCancel } from "@clack/prompts";
@@ -26,7 +27,7 @@ export class InitCommand {
 
 		const workspace = new NodeWorkspace(
 			this.cli.isQuiet,
-			this.cli.logger.stdio,
+			this.cli.logger.stdio as StdioOptions,
 		);
 		const reporter = this.cli.logger;
 		const executor = new Executor(workspace, reporter);
