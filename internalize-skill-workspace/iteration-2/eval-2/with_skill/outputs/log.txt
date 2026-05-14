@@ -1,0 +1,5 @@
+Identified multiple skills in .agents/skills/: skill-a, skill-b.
+Asked user for clarification.
+User instructed to internalize "Both".
+Moved skill-a and skill-b to /skills/.
+Updated metadata in SKILL.md for both skills to include 'internal: true'.

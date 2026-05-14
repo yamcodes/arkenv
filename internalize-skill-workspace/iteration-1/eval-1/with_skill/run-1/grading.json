@@ -1,0 +1,25 @@
+{
+	"expectations": [
+		{
+			"text": "The directory 'skills/dummy-skill' exists",
+			"passed": true,
+			"evidence": "Found at /Users/yamcodes/code/arkenv-main-for-real/internalize-skill-workspace/iteration-1/eval-1/with_skill/outputs/skills/dummy-skill/SKILL.md"
+		},
+		{
+			"text": "SKILL.md contains 'metadata:'",
+			"passed": true,
+			"evidence": "Found 'metadata:' in SKILL.md"
+		},
+		{
+			"text": "SKILL.md contains 'internal: true'",
+			"passed": true,
+			"evidence": "Found 'internal: true' in SKILL.md"
+		}
+	],
+	"summary": {
+		"passed": 3,
+		"failed": 0,
+		"total": 3,
+		"pass_rate": 1.0
+	}
+}
