@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { applyEdits, modify } from "jsonc-parser";
@@ -22,7 +21,12 @@ export class Workspace {
 	}
 
 	async exists(filePath: string) {
-		return existsSync(this.resolve(filePath));
+		try {
+			await fsp.access(this.resolve(filePath));
+			return true;
+		} catch {
+			return false;
+		}
 	}
 
 	async readFile(filePath: string) {
@@ -37,8 +41,7 @@ export class Workspace {
 
 	async detectFramework(): Promise<Framework> {
 		try {
-			const pkgJsonPath = this.resolve("package.json");
-			const content = await fsp.readFile(pkgJsonPath, "utf-8");
+			const content = await this.readFile("package.json");
 			const pkg = JSON.parse(content);
 			const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
@@ -69,13 +72,13 @@ export class Workspace {
 		if (!tsConfigPath) return { status: "not_found" };
 
 		try {
-			const content = await fsp.readFile(tsConfigPath, "utf-8");
+			const content = await this.readFile(tsConfigPath);
 			const edits = modify(content, propertyPath, value, {
 				formattingOptions: { insertSpaces: true, tabSize: 2 },
 			});
 			const updated = applyEdits(content, edits);
 
-			await fsp.writeFile(tsConfigPath, updated, "utf-8");
+			await this.writeFile(tsConfigPath, updated);
 			return { status: "updated", file: path.basename(tsConfigPath) };
 		} catch {
 			return { status: "error", file: path.basename(tsConfigPath) };
@@ -90,8 +93,10 @@ export class Workspace {
 			"tsconfig.node.json",
 		];
 		let currentDir = this.cwd;
+		let isRoot = false;
 
-		while (currentDir !== path.parse(currentDir).root) {
+		do {
+			isRoot = currentDir === path.parse(currentDir).root;
 			for (const file of filenames) {
 				const fullPath = path.join(currentDir, file);
 				try {
@@ -102,7 +107,8 @@ export class Workspace {
 				}
 			}
 			currentDir = path.dirname(currentDir);
-		}
+		} while (!isRoot);
+
 		return null;
 	}
 
@@ -189,7 +195,10 @@ export class Workspace {
 			const pluginCall = options.envImportPath
 				? `${pluginName}(Env)`
 				: `${pluginName}()`;
-			code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
+			code = code.replace(
+				/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g,
+				() => pluginCall,
+			);
 
 			await fsp.writeFile(configPath, code, "utf-8");
 			return { success: true, updated: true };
@@ -211,8 +220,7 @@ export class Workspace {
 			"vite.config.mjs",
 		];
 		for (const file of filenames) {
-			const fullPath = this.resolve(file);
-			if (existsSync(fullPath)) return fullPath;
+			if (await this.exists(file)) return this.resolve(file);
 		}
 		return null;
 	}
