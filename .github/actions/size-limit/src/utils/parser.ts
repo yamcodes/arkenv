@@ -263,7 +263,7 @@ export function parseSizeLimitOutput(
 		if (headerMatch) {
 			const pkgPart = headerMatch[1] as string;
 			const pkgName = normalizePackageName(pkgPart);
-			let fullPkg = pkgName;
+			let fullPkg: string | null = null;
 			let entryName: string | null = null;
 
 			for (const rp of relevantPackages) {
@@ -277,15 +277,22 @@ export function parseSizeLimitOutput(
 					break;
 				}
 			}
-			if (lastPackage !== fullPkg) {
-				lastPackage = fullPkg;
-				lastEntryName = entryName;
-			} else if (entryName !== null) {
-				lastEntryName = entryName;
-			}
 
-			if (headerMatch[2]) {
-				parseMessageLine(fullPkg, headerMatch[2]);
+			if (fullPkg) {
+				if (lastPackage !== fullPkg) {
+					lastPackage = fullPkg;
+					lastEntryName = entryName;
+				} else if (entryName !== null) {
+					lastEntryName = entryName;
+				}
+
+				if (headerMatch[2]) {
+					parseMessageLine(fullPkg, headerMatch[2]);
+				}
+			} else {
+				// Not a relevant package, reset state
+				lastPackage = null;
+				lastEntryName = null;
 			}
 			continue;
 		}

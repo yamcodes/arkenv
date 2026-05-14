@@ -47,7 +47,7 @@ arkenv:size:   Size:       441 B with all dependencies, minified and brotlied
 		});
 	});
 
-	it("should handle mixed output from different packages", () => {
+	it("should handle mixed output and filter irrelevant packages", () => {
 		const sampleOutput = `
 arkenv:size: arkenv
 arkenv:size: Size limit: 2 kB
@@ -56,11 +56,12 @@ other-pkg:size: other-pkg
 other-pkg:size: Size limit: 5 kB
 other-pkg:size: Size: 2 kB
 `;
-		const relevantPackages = ["arkenv", "other-pkg"];
+		const relevantPackages = ["arkenv"];
 		const results = parseSizeLimitOutput(sampleOutput, relevantPackages);
 
-		expect(results).toHaveLength(2);
-		expect(results.find((r) => r.package === "arkenv")?.size).toBe("1 kB");
-		expect(results.find((r) => r.package === "other-pkg")?.size).toBe("2 kB");
+		expect(results).toHaveLength(1);
+		expect(results[0].package).toBe("arkenv");
+		expect(results[0].size).toBe("1 kB");
+		expect(results.find((r) => r.package === "other-pkg")).toBeUndefined();
 	});
 });
