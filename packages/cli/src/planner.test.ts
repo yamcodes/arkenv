@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { createPlan } from "./planner";
 import type { CollectedState } from "./plan";
+import { createPlan } from "./planner";
 
 describe("Planner", () => {
 	const defaultState: CollectedState = {
@@ -39,7 +39,7 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/vite-plugin");
-		expect(plan.files.some(f => f.path.endsWith("vite-env.d.ts"))).toBe(true);
+		expect(plan.files.some((f) => f.path.endsWith("vite-env.d.ts"))).toBe(true);
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
@@ -51,7 +51,7 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/bun-plugin");
-		expect(plan.files.some(f => f.path.endsWith("bun-env.d.ts"))).toBe(true);
+		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(true);
 		expect(plan.bootstrap?.framework).toBe("bun");
 	});
 
@@ -81,11 +81,15 @@ describe("Planner", () => {
 		const typePath = path.resolve("/test", "vite-env.d.ts");
 		const state: CollectedState = {
 			...defaultState,
-			options: { ...defaultState.options, framework: "vite", envDtsHandling: "append" },
+			options: {
+				...defaultState.options,
+				framework: "vite",
+				envDtsHandling: "append",
+			},
 			existingFiles: [typePath],
 		};
 		const plan = createPlan(state);
-		const typeFile = plan.files.find(f => f.path === typePath);
+		const typeFile = plan.files.find((f) => f.path === typePath);
 		expect(typeFile?.action).toBe("append");
 	});
 

@@ -26,7 +26,10 @@ export class InitCommand {
 
 		const plan = createPlan(state);
 
-		const workspace = new NodeWorkspace(this.cli.isQuiet, this.cli.logger.stdio);
+		const workspace = new NodeWorkspace(
+			this.cli.isQuiet,
+			this.cli.logger.stdio,
+		);
 		const reporter = new CliReporter(this.cli.logger);
 		const executor = new Executor(workspace, reporter);
 
@@ -87,7 +90,10 @@ export class InitCommand {
 
 			// Handle existing env file prompt
 			const targetPath = path.resolve(process.cwd(), options.path);
-			if (existsSync(targetPath) && options.overwriteEnvSchemaFile === undefined) {
+			if (
+				existsSync(targetPath) &&
+				options.overwriteEnvSchemaFile === undefined
+			) {
 				const confirmOverwrite = await confirm({
 					message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
 					initialValue: false,

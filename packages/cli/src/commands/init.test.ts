@@ -72,7 +72,11 @@ describe("InitCommand", () => {
 
 		await command.run();
 
-		expect(spawnMock.mock.calls.some(call => call[0].includes("skills add yamcodes/arkenv --yes"))).toBe(true);
+		expect(
+			spawnMock.mock.calls.some((call) =>
+				call[0].includes("skills add yamcodes/arkenv --yes"),
+			),
+		).toBe(true);
 	});
 
 	it("does NOT pass --yes to skill installation when isYes is false", async () => {
@@ -92,7 +96,13 @@ describe("InitCommand", () => {
 
 		await command.run();
 
-		expect(spawnMock.mock.calls.some(call => call[0].includes("skills add yamcodes/arkenv") && !call[0].includes("--yes"))).toBe(true);
+		expect(
+			spawnMock.mock.calls.some(
+				(call) =>
+					call[0].includes("skills add yamcodes/arkenv") &&
+					!call[0].includes("--yes"),
+			),
+		).toBe(true);
 	});
 
 	it("uses stdio: 'pipe' for skill installation when isQuiet is true", async () => {
@@ -113,7 +123,13 @@ describe("InitCommand", () => {
 		await command.run();
 
 		// Skill installation should use pipe
-		expect(spawnMock.mock.calls.some(call => call[0].includes("skills add yamcodes/arkenv") && call[2].stdio === "pipe")).toBe(true);
+		expect(
+			spawnMock.mock.calls.some(
+				(call) =>
+					call[0].includes("skills add yamcodes/arkenv") &&
+					call[2].stdio === "pipe",
+			),
+		).toBe(true);
 	});
 
 	it("includes error logs in fatal message when quiet installation fails", async () => {

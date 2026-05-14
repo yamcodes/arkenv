@@ -24,9 +24,13 @@ export class Executor {
 						plan.bootstrap?.framework as "vite" | "bun",
 					);
 					if (success) {
-						this.reporter.info(`Appended ArkEnv types to ${code(path.basename(file.path))}.`);
+						this.reporter.info(
+							`Appended ArkEnv types to ${code(path.basename(file.path))}.`,
+						);
 					} else {
-						this.reporter.info(`${code(path.basename(file.path))} already contains ArkEnv types.`);
+						this.reporter.info(
+							`${code(path.basename(file.path))} already contains ArkEnv types.`,
+						);
 					}
 					continue;
 				}
@@ -37,8 +41,11 @@ export class Executor {
 				if (file.label === "environment schema") {
 					// We'll report this at the end or as we go
 				} else if (file.label?.includes("types")) {
-					const actionLabel = file.action === "overwrite" ? "Updated" : "Created";
-					this.reporter.info(`${actionLabel} ${code(path.basename(file.path))} for typesafe environment variables.`);
+					const actionLabel =
+						file.action === "overwrite" ? "Updated" : "Created";
+					this.reporter.info(
+						`${actionLabel} ${code(path.basename(file.path))} for typesafe environment variables.`,
+					);
 				}
 			}
 
@@ -46,8 +53,13 @@ export class Executor {
 
 			// 2. Install dependencies
 			if (plan.install && process.env.SKIP_INSTALL !== "true") {
-				this.reporter.step(`Installing dependencies with ${plan.install.packageManager}...`);
-				const installCmd = this.getInstallCommand(plan.install.packageManager, plan.install.dependencies);
+				this.reporter.step(
+					`Installing dependencies with ${plan.install.packageManager}...`,
+				);
+				const installCmd = this.getInstallCommand(
+					plan.install.packageManager,
+					plan.install.dependencies,
+				);
 				await this.workspace.execute(installCmd);
 			}
 
@@ -56,7 +68,9 @@ export class Executor {
 			if (plan.tsConfig) {
 				const tsResult = await this.workspace.updateTsConfigToStrict();
 				if (tsResult.status === "updated") {
-					this.reporter.info(`Enforced strict: true in your ${code(tsResult.file!)}`);
+					this.reporter.info(
+						`Enforced strict: true in your ${code(tsResult.file!)}`,
+					);
 					tsConfigUpdated = true;
 				} else if (tsResult.status === "error") {
 					this.reporter.warn(
@@ -71,10 +85,15 @@ export class Executor {
 					const viteConfigPath = await this.workspace.findViteConfig();
 					if (viteConfigPath) {
 						this.reporter.step("Bootstrapping Vite plugin...");
-						const result = await this.workspace.bootstrapViteConfig(viteConfigPath, plan.bootstrap.importPath!);
+						const result = await this.workspace.bootstrapViteConfig(
+							viteConfigPath,
+							plan.bootstrap.importPath!,
+						);
 						if (result.success) {
 							if (result.updated) {
-								this.reporter.info(`Updated ${code(path.basename(viteConfigPath))}`);
+								this.reporter.info(
+									`Updated ${code(path.basename(viteConfigPath))}`,
+								);
 							}
 						} else {
 							this.reporter.warn(
@@ -90,7 +109,8 @@ export class Executor {
 				} else if (plan.bootstrap.framework === "bun") {
 					const bunConfigPath = await this.workspace.findBunConfig();
 					if (bunConfigPath) {
-						const result = await this.workspace.bootstrapBunConfig(bunConfigPath);
+						const result =
+							await this.workspace.bootstrapBunConfig(bunConfigPath);
 						if (result.success && result.instructions) {
 							this.reporter.info(result.instructions);
 						} else if (!result.success) {
@@ -106,10 +126,14 @@ export class Executor {
 				this.reporter.step("Installing ArkEnv agent skill...");
 				try {
 					const yesFlag = plan.skill.isYes ? " --yes" : "";
-					await this.workspace.execute(`${plan.skill.dlxCommand} skills add ${plan.skill.packageName}${yesFlag}`);
+					await this.workspace.execute(
+						`${plan.skill.dlxCommand} skills add ${plan.skill.packageName}${yesFlag}`,
+					);
 					skillInstalled = true;
 				} catch (err: any) {
-					this.reporter.warn(`Failed to install ArkEnv AI skill: ${err.message}`);
+					this.reporter.warn(
+						`Failed to install ArkEnv AI skill: ${err.message}`,
+					);
 				}
 			}
 

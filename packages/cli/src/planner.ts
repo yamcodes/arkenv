@@ -5,7 +5,15 @@ import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
 
 export function createPlan(state: CollectedState): ScaffoldingPlan {
-	const { options, detectedFramework, packageManager, tsConfig, shouldUpdateTsConfig, cwd, existingFiles } = state;
+	const {
+		options,
+		detectedFramework,
+		packageManager,
+		tsConfig,
+		shouldUpdateTsConfig,
+		cwd,
+		existingFiles,
+	} = state;
 	const targetPath = path.resolve(cwd, options.path);
 	const targetDir = path.dirname(targetPath);
 
@@ -56,12 +64,16 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		(options.framework === "vite" || options.framework === "bun") &&
 		options.installTypeDefinitions !== false
 	) {
-		const typeFileName = options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+		const typeFileName =
+			options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 		const typeFilePath = path.join(targetDir, typeFileName);
 		const typeFileExists = existingFiles.includes(typeFilePath);
 
 		if (options.envDtsHandling !== "skip") {
-			if (options.envDtsHandling === "append" || (!options.envDtsHandling && typeFileExists)) {
+			if (
+				options.envDtsHandling === "append" ||
+				(!options.envDtsHandling && typeFileExists)
+			) {
 				plan.files.push({
 					path: typeFilePath,
 					content: targetPath, // We pass the schema path to append logic

@@ -1,5 +1,5 @@
-import type { Logger } from "./logger";
 import type { Reporter } from "../plan";
+import type { Logger } from "./logger";
 
 export class CliReporter implements Reporter {
 	constructor(private logger: Logger) {}

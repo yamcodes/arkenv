@@ -1,17 +1,20 @@
 import { spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import pc from "picocolors";
+import type { Workspace } from "../plan";
+import { updateTsConfigToStrict } from "../scaffold";
 import {
 	bootstrapBunConfig,
 	bootstrapViteConfig,
 	findBunConfig,
 	findViteConfig,
 } from "./config-mutation";
-import type { Workspace } from "../plan";
-import { updateTsConfigToStrict } from "../scaffold";
 
 export class NodeWorkspace implements Workspace {
-	constructor(private isQuiet: boolean, private stdio: any) {}
+	constructor(
+		private isQuiet: boolean,
+		private stdio: any,
+	) {}
 
 	async writeFile(path: string, content: string): Promise<void> {
 		await fsp.writeFile(path, content, "utf-8");
@@ -81,7 +84,11 @@ export class NodeWorkspace implements Workspace {
 		return bootstrapBunConfig(path);
 	}
 
-	async safeAppend(path: string, schemaPath: string, framework: "vite" | "bun") {
+	async safeAppend(
+		path: string,
+		schemaPath: string,
+		framework: "vite" | "bun",
+	) {
 		const { safeAppend } = await import("../utils/injection");
 		return safeAppend(path, schemaPath, framework);
 	}

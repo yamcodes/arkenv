@@ -7,11 +7,17 @@ describe("Executor", () => {
 		writeFile: vi.fn(),
 		mkdir: vi.fn(),
 		execute: vi.fn(),
-		updateTsConfigToStrict: vi.fn().mockResolvedValue({ status: "updated", file: "tsconfig.json" }),
+		updateTsConfigToStrict: vi
+			.fn()
+			.mockResolvedValue({ status: "updated", file: "tsconfig.json" }),
 		findViteConfig: vi.fn().mockResolvedValue("vite.config.ts"),
 		findBunConfig: vi.fn().mockResolvedValue("bunfig.toml"),
-		bootstrapViteConfig: vi.fn().mockResolvedValue({ success: true, updated: true }),
-		bootstrapBunConfig: vi.fn().mockResolvedValue({ success: true, instructions: "done" }),
+		bootstrapViteConfig: vi
+			.fn()
+			.mockResolvedValue({ success: true, updated: true }),
+		bootstrapBunConfig: vi
+			.fn()
+			.mockResolvedValue({ success: true, instructions: "done" }),
 		safeAppend: vi.fn().mockResolvedValue(true),
 	};
 
@@ -28,7 +34,14 @@ describe("Executor", () => {
 	const executor = new Executor(mockWorkspace, mockReporter);
 
 	const defaultPlan: ScaffoldingPlan = {
-		files: [{ path: "env.ts", content: "env", action: "create", label: "environment schema" }],
+		files: [
+			{
+				path: "env.ts",
+				content: "env",
+				action: "create",
+				label: "environment schema",
+			},
+		],
 		install: { packageManager: "pnpm", dependencies: ["arkenv"] },
 		metadata: {
 			displayPath: "env.ts",
@@ -65,16 +78,25 @@ describe("Executor", () => {
 		};
 		await executor.execute(plan);
 		expect(mockWorkspace.findViteConfig).toHaveBeenCalled();
-		expect(mockWorkspace.bootstrapViteConfig).toHaveBeenCalledWith("vite.config.ts", "./env");
+		expect(mockWorkspace.bootstrapViteConfig).toHaveBeenCalledWith(
+			"vite.config.ts",
+			"./env",
+		);
 	});
 
 	it("appends to files when planned", async () => {
 		const plan: ScaffoldingPlan = {
 			...defaultPlan,
-			files: [{ path: "vite-env.d.ts", content: "schema-path", action: "append" }],
+			files: [
+				{ path: "vite-env.d.ts", content: "schema-path", action: "append" },
+			],
 			bootstrap: { framework: "vite" },
 		};
 		await executor.execute(plan);
-		expect(mockWorkspace.safeAppend).toHaveBeenCalledWith("vite-env.d.ts", "schema-path", "vite");
+		expect(mockWorkspace.safeAppend).toHaveBeenCalledWith(
+			"vite-env.d.ts",
+			"schema-path",
+			"vite",
+		);
 	});
 });
