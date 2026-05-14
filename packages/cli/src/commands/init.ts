@@ -8,7 +8,6 @@ import { CliReporter } from "../lib/reporter";
 import { NodeWorkspace } from "../lib/workspace";
 import type { CollectedState } from "../plan";
 import { createPlan } from "../planner";
-import type { ProjectOptions } from "../prompts";
 import { runPromptWizard } from "../prompts";
 import {
 	checkTsConfig,

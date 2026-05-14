@@ -7,7 +7,6 @@ import { bunTypesTemplate, viteTypesTemplate } from "./templates";
 export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const {
 		options,
-		detectedFramework,
 		packageManager,
 		tsConfig,
 		shouldUpdateTsConfig,
