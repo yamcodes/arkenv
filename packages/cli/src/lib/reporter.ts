@@ -112,7 +112,8 @@ export class JsonReporter implements Reporter {
 
 	spinner(): Spinner {
 		return {
-			start: (msg: string) => process.stderr.write(`${pc.dim(`○ ${msg}...`)}\n`),
+			start: (msg: string) =>
+				process.stderr.write(`${pc.dim(`○ ${msg}...`)}\n`),
 			stop: (msg: string) => process.stderr.write(`${pc.green(`✔ ${msg}`)}\n`),
 			message: (msg: string) =>
 				process.stderr.write(`${pc.dim(`○ ${msg}...`)}\n`),
@@ -212,7 +213,10 @@ export class MemoryReporter implements Reporter {
 		this.logs.push({ type: "step", message });
 	}
 	note(message: string, title?: string) {
-		this.logs.push({ type: "note", message: title ? `${title}: ${message}` : message });
+		this.logs.push({
+			type: "note",
+			message: title ? `${title}: ${message}` : message,
+		});
 	}
 	log(message: string) {
 		this.logs.push({ type: "log", message });
@@ -220,8 +224,10 @@ export class MemoryReporter implements Reporter {
 
 	spinner(): Spinner {
 		return {
-			start: (msg: string) => this.logs.push({ type: "spinner:start", message: msg }),
-			stop: (msg: string) => this.logs.push({ type: "spinner:stop", message: msg }),
+			start: (msg: string) =>
+				this.logs.push({ type: "spinner:start", message: msg }),
+			stop: (msg: string) =>
+				this.logs.push({ type: "spinner:stop", message: msg }),
 			message: (msg: string) =>
 				this.logs.push({ type: "spinner:message", message: msg }),
 		};

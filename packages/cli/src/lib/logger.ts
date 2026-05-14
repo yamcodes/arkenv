@@ -1,8 +1,8 @@
 import {
-	type Reporter,
-	type Spinner,
 	JsonReporter,
+	type Reporter,
 	SilentReporter,
+	type Spinner,
 	TextReporter,
 } from "./reporter";
 

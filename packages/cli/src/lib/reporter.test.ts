@@ -1,6 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { TextReporter, JsonReporter, SilentReporter, MemoryReporter } from "./reporter";
 import pc from "picocolors";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+	JsonReporter,
+	MemoryReporter,
+	SilentReporter,
+	TextReporter,
+} from "./reporter";
 
 // Force colors for testing consistent output
 process.env.FORCE_COLOR = "1";
@@ -11,9 +16,15 @@ describe("Reporters", () => {
 	let exitSpy: any;
 
 	beforeEach(() => {
-		stdoutSpy = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
-		stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
-		exitSpy = vi.spyOn(process, "exit").mockImplementation(() => undefined as never);
+		stdoutSpy = vi
+			.spyOn(process.stdout, "write")
+			.mockImplementation(() => true);
+		stderrSpy = vi
+			.spyOn(process.stderr, "write")
+			.mockImplementation(() => true);
+		exitSpy = vi
+			.spyOn(process, "exit")
+			.mockImplementation(() => undefined as never);
 	});
 
 	afterEach(() => {
@@ -25,17 +36,23 @@ describe("Reporters", () => {
 
 		it("logs info to stdout", () => {
 			reporter.info("hello");
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining("ℹ hello"));
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining("ℹ hello"),
+			);
 		});
 
 		it("logs warn to stderr", () => {
 			reporter.warn("watch out");
-			expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("⚠ watch out"));
+			expect(stderrSpy).toHaveBeenCalledWith(
+				expect.stringContaining("⚠ watch out"),
+			);
 		});
 
 		it("logs error to stderr", () => {
 			reporter.error("oh no");
-			expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("✘ oh no"));
+			expect(stderrSpy).toHaveBeenCalledWith(
+				expect.stringContaining("✘ oh no"),
+			);
 		});
 
 		it("logs success to stdout", () => {
@@ -45,12 +62,16 @@ describe("Reporters", () => {
 
 		it("logs json to stdout", () => {
 			reporter.json({ foo: "bar" });
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"foo": "bar"'));
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"foo": "bar"'),
+			);
 		});
 
 		it("fatal logs to stderr and exits", () => {
 			reporter.fatal("fatal error");
-			expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("✘ fatal error"));
+			expect(stderrSpy).toHaveBeenCalledWith(
+				expect.stringContaining("✘ fatal error"),
+			);
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 	});
@@ -60,7 +81,9 @@ describe("Reporters", () => {
 
 		it("logs info to stderr", () => {
 			reporter.info("hello");
-			expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("ℹ hello"));
+			expect(stderrSpy).toHaveBeenCalledWith(
+				expect.stringContaining("ℹ hello"),
+			);
 		});
 
 		it("logs success to stderr", () => {
@@ -70,20 +93,30 @@ describe("Reporters", () => {
 
 		it("logs json to stdout", () => {
 			reporter.json({ foo: "bar" });
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"foo": "bar"'));
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"foo": "bar"'),
+			);
 		});
 
 		it("fatal logs json to stdout and exits", () => {
 			reporter.fatal("fatal error");
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"status": "error"'));
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"message": "fatal error"'));
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"status": "error"'),
+			);
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"message": "fatal error"'),
+			);
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
 		it("cancel logs json to stdout and exits", () => {
 			reporter.cancel("cancelled");
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"status": "error"'));
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"message": "cancelled"'));
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"status": "error"'),
+			);
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"message": "cancelled"'),
+			);
 			expect(exitSpy).toHaveBeenCalledWith(0);
 		});
 	});
@@ -99,7 +132,9 @@ describe("Reporters", () => {
 
 		it("still logs json to stdout", () => {
 			reporter.json({ foo: "bar" });
-			expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('"foo": "bar"'));
+			expect(stdoutSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"foo": "bar"'),
+			);
 		});
 	});
 
@@ -116,7 +151,11 @@ describe("Reporters", () => {
 			expect(reporter.logs[0]).toEqual({ type: "info", message: "hello" });
 			expect(reporter.logs[1]).toEqual({ type: "warn", message: "watch out" });
 			expect(reporter.logs[2]).toEqual({ type: "success", message: "yay" });
-			expect(reporter.logs[3]).toEqual({ type: "json", message: JSON.stringify({ foo: "bar" }), data: { foo: "bar" } });
+			expect(reporter.logs[3]).toEqual({
+				type: "json",
+				message: JSON.stringify({ foo: "bar" }),
+				data: { foo: "bar" },
+			});
 		});
 	});
 });
