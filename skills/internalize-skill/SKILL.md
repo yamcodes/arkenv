@@ -11,14 +11,14 @@ This skill automates the process of moving externally installed skills to the pr
 
 ## Workflow
 
-1.  **Identify Target Skills:**
-    - Check the `.agents/skills/` directory for subdirectories.
-    - If the user explicitly named a skill (e.g., "internalize the research skill"), focus only on that one.
-    - If the user was vague (e.g., "internalize the new skills"):
-        - If there is **only one** skill in `.agents/skills/`, proceed with that one.
-        - If there are **multiple** skills, you **MUST** ask the user for clarification (e.g., "I found multiple skills: X, Y, and Z. Which ones should I internalize?"). Do not make assumptions.
-2.  **Move to Internal:** Move each identified and confirmed skill directory to the root `skills/` directory.
-3.  **Update Metadata:** For each moved skill, update its `SKILL.md` file to include `internal: true` under a `metadata` key in the YAML frontmatter.
+1. **Identify Target Skills:**
+   - Check the `.agents/skills/` directory for subdirectories.
+   - If the user explicitly named a skill (e.g., "internalize the research skill"), focus only on that one.
+   - If the user was vague (e.g., "internalize the new skills"):
+     - If there is **only one** skill in `.agents/skills/`, proceed with that one.
+     - If there are **multiple** skills, you **MUST** ask the user for clarification (e.g., "I found multiple skills: X, Y, and Z. Which ones should I internalize?"). Do not make assumptions.
+2. **Move to Internal:** Move each identified and confirmed skill directory to the root `skills/` directory.
+3. **Update Metadata:** For each moved skill, update its `SKILL.md` file to include `internal: true` under a `metadata` key in the YAML frontmatter.
 
 ## Implementation Details
 
@@ -33,6 +33,7 @@ mv .agents/skills/<skill-name> skills/
 ### Updating Metadata
 
 Use `awk` to surgically insert the metadata if it doesn't exist. The logic should:
+
 - Find the second `---` (end of frontmatter).
 - Check if `metadata:` already exists within the frontmatter.
 - If not, insert `metadata:` and `  internal: true` before the second `---`.
