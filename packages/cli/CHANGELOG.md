@@ -1,5 +1,18 @@
 # @arkenv/cli
 
+## 0.0.7
+
+### Patch Changes
+
+- #### Prevent duplicate ArkEnv type injections in `env.d.ts` _[`#987`](https://github.com/yamcodes/arkenv/pull/987) [`6403a08`](https://github.com/yamcodes/arkenv/commit/6403a080178f1ccd58519e65ed4e6f69b9af0aff) [@yamcodes](https://github.com/yamcodes)_
+
+  Fixed an issue where the CLI would append ArkEnv type definitions multiple times if the `// @arkenv-types` marker was missing but the types were already present. The CLI now detects existing `ImportMetaEnvAugmented` (Vite) and `ProcessEnvAugmented` (Bun) definitions to avoid duplication.
+
+- #### Improve CLI feedback for Vite config and type definitions _[`#992`](https://github.com/yamcodes/arkenv/pull/992) [`b89a7e8`](https://github.com/yamcodes/arkenv/commit/b89a7e88effa6705c6de41a6238342140ac30692) [@yamcodes](https://github.com/yamcodes)_
+
+  - Only log "Updated vite.config.ts" if the file was actually modified.
+  - Clarify the type definition append step and provide feedback if the update was skipped.
+
 ## 0.0.6
 
 ### Patch Changes
