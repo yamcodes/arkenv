@@ -25,13 +25,14 @@ export const calculateDiffs = (
 
 			// If still not found, try to find any file for this package
 			// This handles cases where filename format changed between baseline and current
+			// We only do this if there is exactly one baseline entry for this package to avoid ambiguity
 			if (baselineSize === undefined) {
-				for (const [baselineKey, size] of baselineSizes.entries()) {
-					if (baselineKey.startsWith(`${result.package}:`)) {
-						baselineSize = size;
-						matchedKey = baselineKey;
-						break;
-					}
+				const matches = Array.from(baselineSizes.keys()).filter((k) =>
+					k.startsWith(`${result.package}:`),
+				);
+				if (matches.length === 1) {
+					matchedKey = matches[0]!;
+					baselineSize = baselineSizes.get(matchedKey);
 				}
 			}
 		}

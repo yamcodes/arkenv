@@ -124,57 +124,90 @@ export function parseSizeLimitOutput(
 	const lines = output.split("\n");
 	const packageStates = new Map<string, SizeLimitState>();
 
-	const getOrCreateState = (pkgName: string): SizeLimitState => {
-		const existing = packageStates.get(pkgName);
+	const getOrCreateState = (
+		pkgName: string,
+		entryName: string | null,
+	): SizeLimitState => {
+		const key = entryName ? `${pkgName}:${entryName}` : pkgName;
+		const existing = packageStates.get(key);
 		if (existing) return existing;
 
 		const newState: SizeLimitState = {
 			package: pkgName,
+			file: entryName || undefined,
 			status: "✅",
 		};
-		packageStates.set(pkgName, newState);
+		packageStates.set(key, newState);
 		return newState;
 	};
 
 	let lastPackage: string | null = null;
+	let lastEntryName: string | null = null;
 
 	const parseMessageLine = (pkgName: string, message: string) => {
-		const state = getOrCreateState(pkgName);
 		const cleanMessage = message.trim();
+		if (!cleanMessage) return;
+
+		// Detect sub-package name/entry name
+		const entryNameMatch = cleanMessage.match(
+			/^(?:[a-z]+[:#]\s*)?([@a-z0-9/._-]+)$/i,
+		);
+		if (entryNameMatch) {
+			const entryName = entryNameMatch[1];
+			if (
+				entryName &&
+				!entryName.toLowerCase().includes("size") &&
+				!entryName.toLowerCase().includes("limit") &&
+				!entryName.toLowerCase().includes("exceeded") &&
+				!entryName.toLowerCase().includes("failed")
+			) {
+				lastEntryName = entryName;
+				return;
+			}
+		}
+
+		const state = getOrCreateState(pkgName, lastEntryName);
 
 		const sizeMatch = cleanMessage.match(
-			/size:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+			/size:\s*([0-9.]+\s*(?:[kKmMgG]i?[bB]|[bB]))/i,
 		);
 		if (sizeMatch?.[1]) {
 			state.size = sizeMatch[1];
 		}
 
 		const limitMatch = cleanMessage.match(
-			/size\s*limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+			/size\s*limit:\s*([0-9.]+\s*(?:[kKmMgG]i?[bB]|[bB]))/i,
 		);
 		if (limitMatch?.[1]) {
 			state.limit = limitMatch[1];
 		}
 
 		const tableMatch = cleanMessage.match(
-			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))/i,
+			/^([@a-z0-9/._-]+)\s+([0-9.]+\s*(?:[kKmMgG]i?[bB]|[bB]))\s+([0-9.]+\s*(?:[kKmMgG]i?[bB]|[bB]))/i,
 		);
 		if (tableMatch?.[1] && tableMatch?.[2] && tableMatch?.[3]) {
 			const matchedPkgName = tableMatch[1] as string;
 			let actualPkg = normalizePackageName(matchedPkgName);
+			let tableEntryName: string | null = null;
+
 			for (const rp of relevantPackages) {
 				if (rp === actualPkg || rp.endsWith(`/${actualPkg}`)) {
 					actualPkg = rp;
 					break;
 				}
+				if (actualPkg.startsWith(`${rp}/`)) {
+					tableEntryName = actualPkg;
+					actualPkg = rp;
+					break;
+				}
 			}
-			const matchedState = getOrCreateState(actualPkg);
+			const matchedState = getOrCreateState(actualPkg, tableEntryName);
 			matchedState.size = tableMatch[2];
 			matchedState.limit = tableMatch[3];
 		}
 
 		const directMatch = cleanMessage.match(
-			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG](?:i)?[bB]|[bB]))\)/i,
+			/([^\s]+\.(?:js|ts|jsx|tsx|cjs|mjs|d\.ts)):\s+([0-9.]+\s*(?:[kKmMgG]i?[bB]|[bB]))\s*\(limit:\s*([0-9.]+\s*(?:[kKmMgG]i?[bB]|[bB]))/i,
 		);
 		if (directMatch?.[1] && directMatch?.[2] && directMatch?.[3]) {
 			state.file = directMatch[1];
@@ -219,6 +252,7 @@ export function parseSizeLimitOutput(
 					}
 				}
 				lastPackage = fullPkg;
+				lastEntryName = null;
 				continue;
 			}
 		}
@@ -230,13 +264,26 @@ export function parseSizeLimitOutput(
 			const pkgPart = headerMatch[1] as string;
 			const pkgName = normalizePackageName(pkgPart);
 			let fullPkg = pkgName;
+			let entryName: string | null = null;
+
 			for (const rp of relevantPackages) {
 				if (rp === pkgName || rp.endsWith(`/${pkgName}`)) {
 					fullPkg = rp;
 					break;
 				}
+				if (pkgName.startsWith(`${rp}/`)) {
+					entryName = pkgName;
+					fullPkg = rp;
+					break;
+				}
 			}
-			lastPackage = fullPkg;
+			if (lastPackage !== fullPkg) {
+				lastPackage = fullPkg;
+				lastEntryName = entryName;
+			} else if (entryName !== null) {
+				lastEntryName = entryName;
+			}
+
 			if (headerMatch[2]) {
 				parseMessageLine(fullPkg, headerMatch[2]);
 			}
@@ -255,7 +302,10 @@ export function parseSizeLimitOutput(
 						const message = strippedLine
 							.substring(prefix.length + 1)
 							.replace(/^[:#\s]*/, "");
-						lastPackage = pkg;
+						if (lastPackage !== pkg) {
+							lastPackage = pkg;
+							lastEntryName = null;
+						}
 						parseMessageLine(pkg, message);
 						return true;
 					}
@@ -273,6 +323,7 @@ export function parseSizeLimitOutput(
 					strippedLine.toLowerCase().includes(unscoped.toLowerCase())
 				) {
 					lastPackage = pkg;
+					lastEntryName = null;
 					break;
 				}
 			}
@@ -284,10 +335,10 @@ export function parseSizeLimitOutput(
 	}
 
 	const results: SizeLimitResult[] = [];
-	for (const [pkgName, state] of packageStates) {
+	for (const state of packageStates.values()) {
 		if (state.size && state.limit) {
 			results.push({
-				package: pkgName,
+				package: state.package,
 				file: state.file || "index.js",
 				size: state.size,
 				limit: state.limit,
