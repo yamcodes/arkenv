@@ -10,8 +10,6 @@ on:
   pull_request:
     types:
       - 'opened'
-      - 'reopened'
-      - 'ready_for_review'
   issues:
     types:
       - 'opened'
@@ -49,18 +47,16 @@ jobs:
     # For issues: only on open/reopen
     # For comments: only if user types @gemini-cli and is OWNER/MEMBER/COLLABORATOR
     if: |-
-      github.event.sender.type == 'User' && (
-        (
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.fork == false &&
-          github.event.pull_request.draft == false
-        ) || (
-          github.event_name == 'issues' &&
-          contains(fromJSON('["opened", "reopened"]'), github.event.action)
-        ) || (
-          startsWith(github.event.comment.body || github.event.review.body || github.event.issue.body, '@gemini-cli') &&
-          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association || github.event.review.author_association || github.event.issue.author_association)
-        )
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.fork == false
+      ) || (
+        github.event_name == 'issues' &&
+        contains(fromJSON('["opened", "reopened"]'), github.event.action)
+      ) || (
+        github.event.sender.type == 'User' &&
+        startsWith(github.event.comment.body || github.event.review.body || github.event.issue.body, '@gemini-cli') &&
+        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association || github.event.review.author_association || github.event.issue.author_association)
       )
     runs-on: 'ubuntu-latest'
     permissions:
@@ -75,10 +71,9 @@ jobs:
     steps:
       - name: 'Mint identity token'
         id: 'mint_identity_token'
-        continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
-        uses: 'actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3' # ratchet:actions/create-github-app-token@v3
+        uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2
         with:
           app-id: '${{ vars.APP_ID }}'
           private-key: '${{ secrets.APP_PRIVATE_KEY }}'
@@ -88,7 +83,7 @@ jobs:
 
       - name: 'Extract command'
         id: 'extract_command'
-        uses: 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3' # ratchet:actions/github-script@v9
+        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea' # ratchet:actions/github-script@v7
         env:
           EVENT_TYPE: '${{ github.event_name }}.${{ github.event.action }}'
           REQUEST: '${{ github.event.comment.body || github.event.review.body || github.event.issue.body }}'
@@ -98,7 +93,7 @@ jobs:
             const request = process.env.REQUEST;
             core.setOutput('request', request);
 
-            if (['pull_request.opened', 'pull_request.reopened', 'pull_request.ready_for_review'].includes(eventType)) {
+            if (eventType === 'pull_request.opened') {
               core.setOutput('command', 'review');
             } else if (['issues.opened', 'issues.reopened'].includes(eventType)) {
               core.setOutput('command', 'triage');
@@ -203,10 +198,9 @@ jobs:
     steps:
       - name: 'Mint identity token'
         id: 'mint_identity_token'
-        continue-on-error: true
         if: |-
           ${{ vars.APP_ID }}
-        uses: 'actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3' # ratchet:actions/create-github-app-token@v3
+        uses: 'actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf' # ratchet:actions/create-github-app-token@v2
         with:
           app-id: '${{ vars.APP_ID }}'
           private-key: '${{ secrets.APP_PRIVATE_KEY }}'

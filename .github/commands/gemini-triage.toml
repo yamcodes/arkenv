@@ -12,21 +12,35 @@ You are an issue triage assistant. Analyze the current GitHub issue and identify
 
 ## Input Data
 
-Read the following JSON file for input data:
+**Available Labels** (comma-separated):
+```
+!{echo $AVAILABLE_LABELS}
+```
 
-```json
-@{.gemini/context.json}
+**Issue Title**:
+```
+!{echo $ISSUE_TITLE}
+```
+
+**Issue Body**:
+```
+!{echo $ISSUE_BODY}
+```
+
+**Output File Path**:
+```
+!{echo $GITHUB_ENV}
 ```
 
 ## Steps
 
-1. Review the issue title, issue body, and available labels from the context JSON.
+1. Review the issue title, issue body, and available labels provided above.
 
 2. Based on the issue title and issue body, classify the issue and choose all appropriate labels from the list of available labels.
 
 3. Convert the list of appropriate labels into a comma-separated list (CSV). If there are no appropriate labels, use the empty string.
 
-4. Use the "echo" shell command to append the CSV labels to the `github_env` file path from the context JSON:
+4. Use the "echo" shell command to append the CSV labels to the output file path provided above:
 
     ```
     echo "SELECTED_LABELS=[APPROPRIATE_LABELS_AS_CSV]" >> "[filepath_for_env]"
