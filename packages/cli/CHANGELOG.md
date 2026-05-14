@@ -1,5 +1,21 @@
 # @arkenv/cli
 
+## 0.0.6
+
+### Patch Changes
+
+- #### Generate `env.d.ts` file for plugins _[`#969`](https://github.com/yamcodes/arkenv/pull/969) [`93389bd`](https://github.com/yamcodes/arkenv/commit/93389bd185e47c1bc62383f666e14afd244128a8) [@yamcodes](https://github.com/yamcodes)_
+
+  When installing the Vite plugin or the Bun plugin, a matching `env.d.ts` will be generated if one is not present.
+
+  If one _is_ present, the CLI will offer to append the necessary types to it.
+
+  This allows for typesafety when calling via `process.env` or `import.meta.env`, see: https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env
+
+- #### Add default values to the initial env keys _[`07eed0f`](https://github.com/yamcodes/arkenv/commit/07eed0f8a7288f8e31f5e2e22a6d37648e82b84e) [@yamcodes](https://github.com/yamcodes)_
+
+  The initial env keys (`NODE_ENV`, `PORT`) now recieve default values so the code runs even if the user didn't set them up in their `.env` file.
+
 ## 0.0.5
 
 ### Patch Changes
