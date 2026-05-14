@@ -73,8 +73,13 @@ describe("InitCommand", () => {
 		await command.run();
 
 		expect(
-			spawnMock.mock.calls.some((call) =>
-				call[0].includes("skills add yamcodes/arkenv --yes"),
+			spawnMock.mock.calls.some(
+				(call) =>
+					call[0] === "npx" &&
+					call[1].includes("skills") &&
+					call[1].includes("add") &&
+					call[1].includes("yamcodes/arkenv") &&
+					call[1].includes("--yes"),
 			),
 		).toBe(true);
 	});
@@ -99,8 +104,11 @@ describe("InitCommand", () => {
 		expect(
 			spawnMock.mock.calls.some(
 				(call) =>
-					call[0].includes("skills add yamcodes/arkenv") &&
-					!call[0].includes("--yes"),
+					call[0] === "npx" &&
+					call[1].includes("skills") &&
+					call[1].includes("add") &&
+					call[1].includes("yamcodes/arkenv") &&
+					!call[1].includes("--yes"),
 			),
 		).toBe(true);
 	});
@@ -126,7 +134,8 @@ describe("InitCommand", () => {
 		expect(
 			spawnMock.mock.calls.some(
 				(call) =>
-					call[0].includes("skills add yamcodes/arkenv") &&
+					call[0] === "npx" &&
+					call[1].includes("skills") &&
 					call[2].stdio === "pipe",
 			),
 		).toBe(true);

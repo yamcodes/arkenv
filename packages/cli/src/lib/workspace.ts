@@ -24,11 +24,11 @@ export class NodeWorkspace implements Workspace {
 		await fsp.mkdir(path, { recursive });
 	}
 
-	async execute(command: string): Promise<void> {
+	async execute(command: string, args: string[] = []): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			const child = spawn(command, [], {
+			const child = spawn(command, args, {
 				stdio: this.isQuiet ? "pipe" : this.stdio,
-				shell: true,
+				shell: false,
 			});
 
 			let stdout = "";

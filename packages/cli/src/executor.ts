@@ -56,11 +56,11 @@ export class Executor {
 				this.reporter.step(
 					`Installing dependencies with ${plan.install.packageManager}...`,
 				);
-				const installCmd = this.getInstallCommand(
+				const [cmd, args] = this.getInstallCommand(
 					plan.install.packageManager,
 					plan.install.dependencies,
 				);
-				await this.workspace.execute(installCmd);
+				await this.workspace.execute(cmd, args);
 			}
 
 			// 3. TS Config
@@ -131,10 +131,11 @@ export class Executor {
 			if (plan.skill && process.env.SKIP_INSTALL !== "true") {
 				this.reporter.step("Installing ArkEnv agent skill...");
 				try {
-					const yesFlag = plan.skill.isYes ? " --yes" : "";
-					await this.workspace.execute(
-						`${plan.skill.dlxCommand} skills add ${plan.skill.packageName}${yesFlag}`,
-					);
+					const args = ["skills", "add", plan.skill.packageName];
+					if (plan.skill.isYes) {
+						args.push("--yes");
+					}
+					await this.workspace.execute(plan.skill.dlxCommand, args);
 					skillInstalled = true;
 				} catch (err: any) {
 					this.reporter.warn(
@@ -163,16 +164,16 @@ export class Executor {
 		}
 	}
 
-	private getInstallCommand(pm: string, deps: string[]): string {
+	private getInstallCommand(pm: string, deps: string[]): [string, string[]] {
 		switch (pm) {
 			case "pnpm":
-				return `pnpm add ${deps.join(" ")}`;
+				return ["pnpm", ["add", ...deps]];
 			case "yarn":
-				return `yarn add ${deps.join(" ")}`;
+				return ["yarn", ["add", ...deps]];
 			case "bun":
-				return `bun add ${deps.join(" ")}`;
+				return ["bun", ["add", ...deps]];
 			default:
-				return `npm install ${deps.join(" ")}`;
+				return ["npm", ["install", ...deps]];
 		}
 	}
 

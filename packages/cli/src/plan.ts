@@ -64,7 +64,7 @@ export type BootstrapResult = {
 export type Workspace = {
 	writeFile(path: string, content: string): Promise<void>;
 	mkdir(path: string, recursive?: boolean): Promise<void>;
-	execute(command: string): Promise<void>;
+	execute(command: string, args?: string[]): Promise<void>;
 	updateTsConfigToStrict(path?: string): Promise<{
 		status: "updated" | "already_strict" | "not_found" | "error";
 		file?: string;

@@ -63,7 +63,10 @@ describe("Executor", () => {
 
 		expect(mockWorkspace.mkdir).toHaveBeenCalled();
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith("env.ts", "env");
-		expect(mockWorkspace.execute).toHaveBeenCalledWith("pnpm add arkenv");
+		expect(mockWorkspace.execute).toHaveBeenCalledWith("pnpm", [
+			"add",
+			"arkenv",
+		]);
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
