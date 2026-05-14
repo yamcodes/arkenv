@@ -26,6 +26,7 @@ These skills are intended for users of ArkEnv to improve their development exper
   - [**openspec-explore**](./openspec-explore/SKILL.md): Deep-thinking and codebase investigation mode.
   - [**openspec-apply-change**](./openspec-apply-change/SKILL.md): Structured implementation of OpenSpec tasks.
   - [**openspec-archive-change**](./openspec-archive-change/SKILL.md): Finalizing and archiving completed changes.
+  - [**internalize-skill**](./internalize-skill/SKILL.md): Promoting externally installed skills to project-internal skills.
 </details>
 
 ## Installation
