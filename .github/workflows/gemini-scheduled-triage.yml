@@ -90,7 +90,7 @@ jobs:
           )"
 
           # Combine and deduplicate
-          ISSUES="$(jq -n \
+          ISSUES="$(jq -c -n \
             --argjson unlabeled "$UNLABELED_ISSUES" \
             --argjson needs_triage "$NEEDS_TRIAGE_ISSUES" \
             '$unlabeled + $needs_triage | unique_by(.number)')"
