@@ -4,6 +4,7 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CLI } from "../cli";
+import { Logger } from "../lib/logger";
 import * as prompts from "../prompts";
 import * as scaffold from "../scaffold";
 import { InitCommand } from "./init";
@@ -37,6 +38,24 @@ describe("InitCommand", () => {
 		vi.spyOn(process, "exit").mockImplementation(() => {
 			throw new Error("process.exit called");
 		});
+
+		// Silence logger in tests
+		vi.spyOn(Logger.prototype, "info").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "warn").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "error").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "success").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "step").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "log").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "note").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "finish").mockImplementation(() => {});
+		vi.spyOn(Logger.prototype, "fatal").mockImplementation(() => {
+			throw new Error("fatal called");
+		});
+		vi.spyOn(Logger.prototype, "spinner").mockReturnValue({
+			start: vi.fn(),
+			stop: vi.fn(),
+			message: vi.fn(),
+		} as any);
 
 		spawnMock.mockReset();
 		spawnMock.mockReturnValue({

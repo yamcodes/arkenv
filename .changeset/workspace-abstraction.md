@@ -8,3 +8,4 @@
 - Improved robustness of Vite plugin injection using `magicast`.
 - Enhanced `tsconfig.json` updates using `jsonc-parser`.
 - Added comprehensive unit tests for the `Workspace` abstraction.
+- Silenced test output in `@arkenv/cli` by mocking the logger in tests.
