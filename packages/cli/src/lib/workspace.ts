@@ -68,7 +68,6 @@ export class NodeWorkspace implements Workspace {
 		return updateTsConfigToStrict(path);
 	}
 
-
 	async findViteConfig() {
 		return findViteConfig();
 	}

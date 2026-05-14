@@ -59,9 +59,7 @@ export async function checkTsConfig(): Promise<{
 	}
 }
 
-export async function updateTsConfigToStrict(
-	pathOverride?: string,
-): Promise<{
+export async function updateTsConfigToStrict(pathOverride?: string): Promise<{
 	status: "updated" | "already_strict" | "not_found" | "error";
 	file?: string;
 }> {
