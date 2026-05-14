@@ -1,15 +1,16 @@
-import { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { cancel, confirm, isCancel } from "@clack/prompts";
-import { applyEdits, modify, parse } from "jsonc-parser";
+import { parse } from "jsonc-parser";
 import { getEnvTemplate } from "./env-template";
+import { Workspace } from "./lib/workspace";
 import type { ProjectOptions } from "./prompts";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
 
 export async function scaffold(
 	options: ProjectOptions & { shouldUpdateTsConfig?: boolean },
 ) {
+	const workspace = new Workspace();
 	const targetPath = path.resolve(process.cwd(), options.path);
 	const targetDir = path.dirname(targetPath);
 
@@ -27,7 +28,7 @@ export async function scaffold(
 
 	// 2. Generate and write env.ts
 	const content = getEnvTemplate(options);
-	if (existsSync(targetPath)) {
+	if (await workspace.exists(options.path)) {
 		if (options.overwriteEnvSchemaFile === false) {
 			return {
 				tsConfigResult: { status: "already_strict" } as const,
@@ -56,9 +57,9 @@ export async function scaffold(
 				};
 			}
 		}
-		await fsp.writeFile(targetPath, content, "utf-8");
+		await workspace.writeFile(options.path, content);
 	} else {
-		await fsp.writeFile(targetPath, content, "utf-8");
+		await workspace.writeFile(options.path, content);
 	}
 
 	// 3. Enforce strict in tsconfig if requested
@@ -68,7 +69,11 @@ export async function scaffold(
 	} = { status: "already_strict" };
 
 	if (options.shouldUpdateTsConfig) {
-		tsConfigResult = await updateTsConfigToStrict();
+		const result = await workspace.setTsConfigProperty(
+			["compilerOptions", "strict"],
+			true,
+		);
+		tsConfigResult = result as any;
 	}
 
 	// 5. Establish type definitions for Vite/Bun
@@ -81,13 +86,18 @@ export async function scaffold(
 		(options.framework === "vite" || options.framework === "bun") &&
 		options.installTypeDefinitions !== false
 	) {
-		typeDefinitionResult = await establishTypeDefinitions(options, targetDir);
+		typeDefinitionResult = await establishTypeDefinitions(
+			workspace,
+			options,
+			targetDir,
+		);
 	}
 
 	return { tsConfigResult, installCmd, packageManager, typeDefinitionResult };
 }
 
 async function establishTypeDefinitions(
+	workspace: Workspace,
 	options: ProjectOptions,
 	targetDir: string,
 ): Promise<{
@@ -105,7 +115,7 @@ async function establishTypeDefinitions(
 
 	if (
 		options.envDtsHandling === "append" ||
-		(!options.envDtsHandling && existsSync(typeFilePath))
+		(!options.envDtsHandling && (await workspace.exists(typeFilePath)))
 	) {
 		const { safeAppend } = await import("./utils/injection");
 		const result = await safeAppend(
@@ -116,13 +126,12 @@ async function establishTypeDefinitions(
 		return { status: result ? "appended" : "skipped", file: typeFileName };
 	}
 
-	const content =
-		options.framework === "vite"
-			? viteTypesTemplate(options.path)
-			: bunTypesTemplate(options.path);
+	const template =
+		options.framework === "vite" ? viteTypesTemplate : bunTypesTemplate;
 
-	const isOverwrite = existsSync(typeFilePath);
-	await fsp.writeFile(typeFilePath, content, "utf-8");
+	const isOverwrite = await workspace.exists(typeFilePath);
+	await workspace.writeTemplate(typeFilePath, template, options.path);
+
 	return {
 		status: isOverwrite ? "overwritten" : "created",
 		file: typeFileName,
@@ -142,40 +151,21 @@ export function getDlxCommand(pm: string): string {
 	}
 }
 
-async function findTsConfig(): Promise<string | null> {
-	const filenames = [
-		"tsconfig.app.json",
-		"tsconfig.json",
-		"tsconfig.base.json",
-		"tsconfig.node.json",
-	];
-	let currentDir = process.cwd();
-
-	while (currentDir !== path.parse(currentDir).root) {
-		for (const file of filenames) {
-			const fullPath = path.join(currentDir, file);
-			try {
-				await fsp.access(fullPath);
-				return fullPath;
-			} catch {
-				// intentionally ignore missing file
-			}
-		}
-		currentDir = path.dirname(currentDir);
-	}
-	return null;
+export async function detectFramework() {
+	return new Workspace().detectFramework();
 }
 
 export async function checkTsConfig(): Promise<{
 	status: "strict" | "not_strict" | "not_found";
 	file?: string;
 }> {
-	const tsConfigPath = await findTsConfig();
+	const workspace = new Workspace();
+	const tsConfigPath = await workspace.findTsConfig();
 	if (!tsConfigPath) return { status: "not_found" };
 	const fileName = path.basename(tsConfigPath);
 
 	try {
-		const content = await fsp.readFile(tsConfigPath, "utf-8");
+		const content = await workspace.readFile(tsConfigPath);
 		const parsed = parse(content);
 		if (parsed?.compilerOptions?.strict === true) {
 			return { status: "strict", file: fileName };
@@ -184,67 +174,6 @@ export async function checkTsConfig(): Promise<{
 	} catch {
 		return { status: "not_found" };
 	}
-}
-
-async function updateTsConfigToStrict(): Promise<{
-	status: "updated" | "already_strict" | "not_found" | "error";
-	file?: string;
-}> {
-	const tsConfigPath = await findTsConfig();
-	if (!tsConfigPath) return { status: "not_found" };
-	const fileName = path.basename(tsConfigPath);
-
-	try {
-		const content = await fsp.readFile(tsConfigPath, "utf-8");
-		const parsed = parse(content);
-
-		if (parsed?.compilerOptions?.strict === true) {
-			return { status: "already_strict", file: fileName };
-		}
-
-		const edits = modify(content, ["compilerOptions", "strict"], true, {
-			formattingOptions: { insertSpaces: true, tabSize: 2 },
-		});
-		const updated = applyEdits(content, edits);
-
-		await fsp.writeFile(tsConfigPath, updated, "utf-8");
-		return { status: "updated", file: fileName };
-	} catch {
-		return { status: "error", file: fileName };
-	}
-}
-
-export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
-	try {
-		const pkgJsonPath = path.join(process.cwd(), "package.json");
-		const content = await fsp.readFile(pkgJsonPath, "utf-8");
-		const pkg = JSON.parse(content);
-		const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
-
-		if (allDeps.vite) return "vite";
-		if (allDeps["@types/bun"] || allDeps.bun) return "bun";
-	} catch {
-		// ignore missing or invalid package.json
-	}
-
-	// Check for config files
-	try {
-		await fsp.access(path.join(process.cwd(), "vite.config.ts"));
-		return "vite";
-	} catch {
-		// vite.config.ts not found
-	}
-	try {
-		await fsp.access(path.join(process.cwd(), "vite.config.js"));
-		return "vite";
-	} catch {
-		// vite.config.js not found
-	}
-
-	// Check for bun runtime
-	if ("bun" in process.versions) return "bun";
-
-	return "node";
 }
 
 async function detectPackageManager(): Promise<
