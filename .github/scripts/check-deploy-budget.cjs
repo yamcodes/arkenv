@@ -14,7 +14,7 @@ function loadMetrics() {
 	if (fs.existsSync(METRICS_FILE)) {
 		try {
 			return JSON.parse(fs.readFileSync(METRICS_FILE, "utf8"));
-		} catch (e) {
+		} catch (_e) {
 			console.warn("Failed to parse metrics file, resetting.");
 		}
 	}

@@ -7,6 +7,7 @@ import { Card } from "~/components/ui/card";
 import { cn } from "~/lib/cn";
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
+	// biome-ignore lint/suspicious/noExplicitAny: arkenvComponents type is complex but we know it might have table
 	const Table = (arkenvComponents as any).table ?? "table";
 	return {
 		...arkenvComponents,

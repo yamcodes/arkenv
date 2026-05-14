@@ -79,7 +79,6 @@ export function transformPackageJson(pkg, exampleConfig, catalog) {
 	if (transformed.scripts) {
 		for (const [scriptName, scriptCmd] of Object.entries(transformed.scripts)) {
 			if (typeof scriptCmd === "string" && scriptCmd.includes("pnpm -w")) {
-				// biome-ignore lint/performance/noDelete: we need to remove the key
 				delete transformed.scripts[scriptName];
 			}
 		}
