@@ -36,13 +36,12 @@ const env = createEnv({
 })
 
 console.log(env.PORT) // number
-````
-
+```
 ````
 
 ## Breaking Change (v0)
 
-```markdown
+````markdown
 ---
 "arkenv": minor
 ---
@@ -54,16 +53,14 @@ console.log(env.PORT) // number
 Before:
 ```ts
 createEnv({ schema, strict: true })
-````
+```
 
 After:
-
 ```ts
 createEnv({ schema }, { strict: true })
 ```
 
 Migration: Update your `createEnv` calls to separate the options from the schema configuration.
-
 ````
 
 ## Multiple Related Changes
@@ -79,7 +76,7 @@ Migration: Update your `createEnv` calls to separate the options from the schema
 - Display progress bar during bulk operations
 - Report partial failures at the end
 - Add `--continue-on-error` flag to proceed despite failures
-````
+```
 
 ## Documentation Update
 

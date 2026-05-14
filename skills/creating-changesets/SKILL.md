@@ -110,8 +110,7 @@ export const env = createEnv({
     PORT: type.number.parseable()
   }
 })
-````
-
+```
 ````
 
 ### File Format
@@ -129,7 +128,7 @@ Include:
 - **Usage examples** (code blocks)
 - Bullet points for details
 - Migration instructions for breaking changes (using `minor` bump)
-````
+```
 
 ## Release Workflow
 
