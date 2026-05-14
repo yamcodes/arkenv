@@ -51,16 +51,16 @@ jobs:
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
         if: steps.budget.outputs.should_deploy == 'true'
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        run: node .github/scripts/vercel-wrapper.cjs pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
         if: steps.budget.outputs.should_deploy == 'true'
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: node .github/scripts/vercel-wrapper.cjs build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
         if: steps.budget.outputs.should_deploy == 'true'
         id: deploy
         run: |
           set -o pipefail
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }} | tail -n 1)
+          DEPLOYMENT_URL=$(node .github/scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }} | tail -n 1)
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
       - name: Generate GitHub App Token
         id: generate-token
@@ -122,10 +122,10 @@ jobs:
 
             let warningBlock = '';
             if (!shouldDeploy) {
-              const warningTitle = reason === 'limit' ? 'Daily deployment limit reached' : 'Rate limit exceeded';
+              const warningTitle = reason === 'limit' ? 'Daily deployment limit reached' : 'Deployment cooldown active';
               const warningDesc = reason === 'limit' 
                 ? `@${context.actor} has reached the daily limit for preview deployments. Please wait **${remainingTime}** before the quota resets.`
-                : `@${context.actor} has exceeded the limit for the number of commits that can be reviewed per hour. Please wait **${remainingTime}** before requesting another review.`;
+                : `@${context.actor} has triggered deployments too frequently. Please wait **${remainingTime}** before the next automated deployment.`;
 
               warningBlock = [
                 '> [!WARNING]',
@@ -136,7 +136,7 @@ jobs:
                 '> <details>',
                 '> <summary>⌛ How to resolve this issue?</summary>',
                 '>',
-                '> After the wait time has elapsed, a review can be triggered by pushing new commits to this PR or by re-running the workflow.',
+                '> After the wait time has elapsed, a deployment can be triggered by pushing new commits to this PR or by re-running the workflow.',
                 '>',
                 '> We recommend that you space out your commits to avoid hitting the rate limit.',
                 '>',
@@ -145,7 +145,7 @@ jobs:
                 '> <details>',
                 '> <summary>🚦 How do rate limits work?</summary>',
                 '>',
-                '> We enforce hourly and daily rate limits to ensure stability and fair usage of resources.',
+                '> We enforce rate limits to ensure stability and fair usage of resources for all contributors.',
                 '>',
                 '> </details>',
                 ''
