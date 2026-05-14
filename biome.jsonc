@@ -100,6 +100,9 @@
 				"rules": {
 					"suspicious": {
 						"noConsole": "off"
+					},
+					"style": {
+						"noNonNullAssertion": "off"
 					}
 				}
 			}
@@ -115,21 +118,28 @@
 			}
 		},
 		{
-			"includes": ["**/bin/**/*"],
+			"includes": [
+				"**/bin/**/*",
+				".github/scripts/**/*",
+				".github/actions/**/*",
+				"packages/cli/**/*",
+				"packages/bun-plugin/**/*",
+				"packages/vite-plugin/**/*"
+			],
 			"linter": {
 				"rules": {
 					"suspicious": {
-						"noConsole": "off" // Not needed in scripts
+						"noConsole": "off"
 					}
 				}
 			}
 		},
 		{
-			"includes": [".github/actions/**/*"],
+			"includes": ["**/*.test.ts", "**/*.test.tsx", "**/tests/**/*"],
 			"linter": {
 				"rules": {
 					"suspicious": {
-						"noConsole": "off" // Console is needed in GitHub Action scripts
+						"noExplicitAny": "off"
 					}
 				}
 			}

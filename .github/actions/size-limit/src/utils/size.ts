@@ -4,7 +4,7 @@ import type { SizeInBytes } from "../types.ts";
 export const parseSizeToBytes = (sizeStr: string): SizeInBytes => {
 	// Match number and optional unit (case-insensitive)
 	const match = sizeStr.match(/^([0-9.]+)\s*([a-z]*)$/i);
-	if (!match || !match[1]) {
+	if (!match?.[1]) {
 		return 0;
 	}
 
