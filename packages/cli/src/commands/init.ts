@@ -112,6 +112,8 @@ export class InitCommand {
 				logger.info(
 					`Updated ${code(typeResult.file!)} for typesafe environment variables.`,
 				);
+			} else if (typeResult.status === "appended") {
+				logger.info(`Appended ArkEnv types to ${code(typeResult.file!)}.`);
 			}
 
 			const relPath = path.relative(process.cwd(), path.resolve(options.path));

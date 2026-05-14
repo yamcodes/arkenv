@@ -6,4 +6,6 @@
 
 When installing the Vite plugin or the Bun plugin, a matching `env.d.ts` will be generated if one is not present.
 
+If one _is_ present, the CLI will offer to append the necessary types to it.
+
 This allows for typesafety when calling via `process.env` or `import.meta.env`, see: https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env

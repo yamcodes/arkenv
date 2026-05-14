@@ -210,7 +210,7 @@ describe("scaffold", () => {
 			const result = await scaffold({
 				...defaultOptions,
 				framework: "vite",
-				overwriteEnvDtsFile: false,
+				envDtsHandling: "skip",
 			});
 
 			const content = await fsp.readFile(
@@ -227,7 +227,7 @@ describe("scaffold", () => {
 			const result = await scaffold({
 				...defaultOptions,
 				framework: "vite",
-				overwriteEnvDtsFile: true,
+				envDtsHandling: "overwrite",
 			});
 
 			const content = await fsp.readFile(
@@ -238,22 +238,66 @@ describe("scaffold", () => {
 			expect(result.typeDefinitionResult.status).toBe("overwritten");
 		});
 
-		it("prompts for type definition overwrite if overwriteEnvDtsFile is undefined", async () => {
-			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), "existing");
-			vi.mocked(prompts.confirm).mockResolvedValue(true);
+		it("appends to type definition if file exists and envDtsHandling is append", async () => {
+			const existingContent = '/// <reference types="vite/client" />';
+			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), existingContent);
 
 			const result = await scaffold({
 				...defaultOptions,
 				framework: "vite",
-				overwriteEnvDtsFile: undefined,
+				envDtsHandling: "append",
 			});
 
-			expect(prompts.confirm).toHaveBeenCalledWith(
-				expect.objectContaining({
-					message: expect.stringContaining("already exists"),
-				}),
+			const content = await fsp.readFile(
+				path.join(tempDir, "vite-env.d.ts"),
+				"utf-8",
 			);
-			expect(result.typeDefinitionResult.status).toBe("overwritten");
+			expect(content).toContain(existingContent);
+			expect(content).toContain("@arkenv-types");
+			expect(content).toContain("ImportMetaEnvAugmented");
+			expect(result.typeDefinitionResult.status).toBe("appended");
+		});
+
+		it("skips appending if marker is already present", async () => {
+			const existingContent =
+				'/// <reference types="vite/client" />\n// @arkenv-types\nexisting';
+			await fsp.writeFile(path.join(tempDir, "vite-env.d.ts"), existingContent);
+
+			const result = await scaffold({
+				...defaultOptions,
+				framework: "vite",
+				envDtsHandling: "append",
+			});
+
+			const content = await fsp.readFile(
+				path.join(tempDir, "vite-env.d.ts"),
+				"utf-8",
+			);
+			expect(content).toBe(existingContent);
+			expect(result.typeDefinitionResult.status).toBe("skipped");
+		});
+
+		it("respects non-default options.path when appending vite-env.d.ts", async () => {
+			// Setup: Create a subdirectory "config" and put env.ts and vite-env.d.ts there
+			const configDir = path.join(tempDir, "config");
+			await fsp.mkdir(configDir, { recursive: true });
+			const typeFilePath = path.join(configDir, "vite-env.d.ts");
+			const existingContent = '/// <reference types="vite/client" />';
+			await fsp.writeFile(typeFilePath, existingContent);
+
+			const result = await scaffold({
+				...defaultOptions,
+				path: "config/env.ts",
+				framework: "vite",
+				envDtsHandling: "append",
+			});
+
+			const content = await fsp.readFile(typeFilePath, "utf-8");
+			expect(content).toContain(existingContent);
+			expect(content).toContain("@arkenv-types");
+			// The relative path should be ./env since they are in the same dir
+			expect(content).toContain('import("./env")');
+			expect(result.typeDefinitionResult.status).toBe("appended");
 		});
 
 		it("skips type definition installation if installTypeDefinitions is false", async () => {
