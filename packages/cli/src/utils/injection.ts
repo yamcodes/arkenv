@@ -11,7 +11,10 @@ export async function safeAppend(
 ): Promise<boolean> {
 	try {
 		const content = await fsp.readFile(dtsPath, "utf-8");
-		if (content.includes(MARKER)) {
+		const existingType =
+			framework === "vite" ? "ImportMetaEnvAugmented" : "ProcessEnvAugmented";
+
+		if (content.includes(MARKER) || content.includes(existingType)) {
 			return false;
 		}
 
