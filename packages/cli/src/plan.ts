@@ -54,11 +54,18 @@ export type CollectedState = {
 	isYes: boolean;
 };
 
+export type BootstrapResult = {
+	success: boolean;
+	updated?: boolean;
+	instructions?: string;
+	error?: string;
+};
+
 export type Workspace = {
 	writeFile(path: string, content: string): Promise<void>;
 	mkdir(path: string, recursive?: boolean): Promise<void>;
 	execute(command: string): Promise<void>;
-	updateTsConfigToStrict(): Promise<{
+	updateTsConfigToStrict(path?: string): Promise<{
 		status: "updated" | "already_strict" | "not_found" | "error";
 		file?: string;
 	}>;
@@ -67,10 +74,8 @@ export type Workspace = {
 	bootstrapViteConfig(
 		path: string,
 		importPath: string,
-	): Promise<{ success: boolean; updated: boolean; error?: string }>;
-	bootstrapBunConfig(
-		path: string,
-	): Promise<{ success: boolean; instructions?: string; error?: string }>;
+	): Promise<BootstrapResult>;
+	bootstrapBunConfig(path: string): Promise<BootstrapResult>;
 	safeAppend(
 		path: string,
 		schemaPath: string,

@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import pc from "picocolors";
 import type { Workspace } from "../plan";
@@ -13,7 +13,7 @@ import {
 export class NodeWorkspace implements Workspace {
 	constructor(
 		private isQuiet: boolean,
-		private stdio: any,
+		private stdio: StdioOptions,
 	) {}
 
 	async writeFile(path: string, content: string): Promise<void> {
@@ -64,9 +64,10 @@ export class NodeWorkspace implements Workspace {
 		});
 	}
 
-	async updateTsConfigToStrict() {
-		return updateTsConfigToStrict();
+	async updateTsConfigToStrict(path?: string) {
+		return updateTsConfigToStrict(path);
 	}
+
 
 	async findViteConfig() {
 		return findViteConfig();

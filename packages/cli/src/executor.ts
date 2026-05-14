@@ -66,7 +66,9 @@ export class Executor {
 			// 3. TS Config
 			let tsConfigUpdated = false;
 			if (plan.tsConfig) {
-				const tsResult = await this.workspace.updateTsConfigToStrict();
+				const tsResult = await this.workspace.updateTsConfigToStrict(
+					plan.tsConfig.path,
+				);
 				if (tsResult.status === "updated") {
 					this.reporter.info(
 						`Enforced strict: true in your ${code(tsResult.file!)}`,
@@ -116,6 +118,10 @@ export class Executor {
 						} else if (!result.success) {
 							this.reporter.error(result.error || "Bun bootstrap failed");
 						}
+					} else {
+						this.reporter.info(
+							"No Bun config found — create a bun.config.ts or run `bun init` to bootstrap manually.",
+						);
 					}
 				}
 			}

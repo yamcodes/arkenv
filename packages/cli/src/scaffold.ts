@@ -60,11 +60,13 @@ export async function checkTsConfig(): Promise<{
 	}
 }
 
-export async function updateTsConfigToStrict(): Promise<{
+export async function updateTsConfigToStrict(
+	pathOverride?: string,
+): Promise<{
 	status: "updated" | "already_strict" | "not_found" | "error";
 	file?: string;
 }> {
-	const tsConfigPath = await findTsConfig();
+	const tsConfigPath = pathOverride || (await findTsConfig());
 	if (!tsConfigPath) return { status: "not_found" };
 	const fileName = path.basename(tsConfigPath);
 

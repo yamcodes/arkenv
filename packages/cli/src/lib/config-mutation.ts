@@ -2,6 +2,7 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
 import { detectCodeFormat, generateCode, loadFile } from "magicast";
+import type { BootstrapResult } from "../plan";
 
 async function findFirstAccessibleFile(
 	filenames: string[],
@@ -38,7 +39,7 @@ export async function findBunConfig(): Promise<string | null> {
 export async function bootstrapViteConfig(
 	configPath: string,
 	envImportPath?: string,
-): Promise<{ success: boolean; updated: boolean; error?: string }> {
+): Promise<BootstrapResult> {
 	try {
 		const mod = await loadFile(configPath);
 		const initialCode = generateCode(mod).code;
@@ -126,11 +127,9 @@ export async function bootstrapViteConfig(
 	}
 }
 
-export async function bootstrapBunConfig(_configPath?: string | null): Promise<{
-	success: boolean;
-	error?: string;
-	instructions?: string;
-}> {
+export async function bootstrapBunConfig(
+	_configPath?: string | null,
+): Promise<BootstrapResult> {
 	if (_configPath?.endsWith("bunfig.toml")) {
 		return {
 			success: true,

@@ -111,11 +111,13 @@ export class InitCommand {
 			const existingFiles: string[] = [];
 			if (existsSync(targetPath)) existingFiles.push(targetPath);
 
-			const targetDir = path.dirname(targetPath);
-			const typeFileName =
-				options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-			const typeFilePath = path.join(targetDir, typeFileName);
-			if (existsSync(typeFilePath)) existingFiles.push(typeFilePath);
+			if (options.framework === "vite" || options.framework === "bun") {
+				const targetDir = path.dirname(targetPath);
+				const typeFileName =
+					options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+				const typeFilePath = path.join(targetDir, typeFileName);
+				if (existsSync(typeFilePath)) existingFiles.push(typeFilePath);
+			}
 
 			return {
 				cwd: process.cwd(),

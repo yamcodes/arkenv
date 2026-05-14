@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Executor } from "./executor";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 
@@ -31,7 +31,13 @@ describe("Executor", () => {
 		finish: vi.fn(),
 	};
 
-	const executor = new Executor(mockWorkspace, mockReporter);
+	let executor: Executor;
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+		delete process.env.SKIP_INSTALL;
+		executor = new Executor(mockWorkspace, mockReporter);
+	});
 
 	const defaultPlan: ScaffoldingPlan = {
 		files: [
