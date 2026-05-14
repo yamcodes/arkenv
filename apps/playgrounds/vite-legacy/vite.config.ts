@@ -2,7 +2,6 @@ import arkenvVitePlugin from "@arkenv/vite-plugin";
 import reactPlugin from "@vitejs/plugin-react";
 import arkenv, { type } from "arkenv";
 import { defineConfig, loadEnv } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 // Define the schema once, outside of defineConfig using type()
 // This schema is used for both:
@@ -22,7 +21,6 @@ export default defineConfig(({ mode }) => {
 	console.log(`${env.VITE_MY_NUMBER} ${typeof env.VITE_MY_NUMBER}`);
 	return {
 		plugins: [
-			tsconfigPaths({ projects: ["./tsconfig.json"] }),
 			reactPlugin(),
 			// The plugin validates VITE_* variables and automatically filters to only expose
 			// variables matching the Vite prefix (defaults to VITE_). Server-only variables
@@ -30,6 +28,9 @@ export default defineConfig(({ mode }) => {
 			// The same schema is reused here to avoid duplication
 			arkenvVitePlugin(Env),
 		],
+		resolve: {
+			tsconfigPaths: true,
+		},
 		server: {
 			port: env.PORT,
 		},
