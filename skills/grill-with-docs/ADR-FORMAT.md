@@ -2,6 +2,8 @@
 
 ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc.
 
+**Note**: For feature requirements and specifications, this project primarily uses **OpenSpec specs** in `openspec/specs/`. Use ADRs for cross-cutting architectural decisions or recording rejected alternatives that don't fit into a specific feature spec.
+
 Create the `docs/adr/` directory lazily — only when the first ADR is needed.
 
 ## Template

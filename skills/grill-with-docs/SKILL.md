@@ -1,6 +1,6 @@
 ---
 name: grill-with-docs
-description: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, ADRs) inline as decisions crystallise. Use when user wants to stress-test a plan against their project's language and documented decisions.
+description: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, OpenSpec specs, ADRs) inline as decisions crystallise. Use when user wants to stress-test a plan against their project's language and documented decisions.
 metadata:
   internal: true
 ---
@@ -48,7 +48,7 @@ metadata:
   │       └── docs/adr/
   ```
 
-  Create files lazily — only when you have something to write. If no `CONTEXT.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
+  Create files lazily — only when you have something to write. If no `CONTEXT.md` exists, create one when the first term is resolved. If no `openspec/specs/` or `docs/adr/` exists, create it when the first spec or ADR is needed.
 
   ## During the session
 
