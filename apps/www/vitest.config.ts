@@ -1,6 +1,5 @@
 import babel from "@rolldown/plugin-babel";
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { defineProject } from "vitest/config";
 
 export default defineProject({
@@ -9,8 +8,10 @@ export default defineProject({
 		babel({
 			plugins: ["styled-jsx/babel"],
 		}),
-		tsconfigPaths({ projects: ["./tsconfig.json"] }),
 	],
+	resolve: {
+		tsconfigPaths: true,
+	},
 	test: {
 		name: "arkenv.js.org",
 		environment: "jsdom",

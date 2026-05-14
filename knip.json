@@ -11,7 +11,7 @@
 		"packages/arkenv/test/setup-attest.ts",
 		"packages/arkenv/src/arktype/coercion/index.ts"
 	],
-	"ignoreDependencies": ["esbuild", "bun", "vite-tsconfig-paths"],
+	"ignoreDependencies": ["esbuild", "bun"],
 	"ignoreBinaries": ["tsx", "size-limit"],
 	"ignoreIssues": {
 		"packages/bun-plugin/src/index.ts": ["duplicates"],

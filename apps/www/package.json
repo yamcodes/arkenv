@@ -88,7 +88,6 @@
 		"styled-jsx": "5.1.7",
 		"tailwindcss": "4.2.4",
 		"typescript": "catalog:",
-		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	}
 }

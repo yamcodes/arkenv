@@ -21,7 +21,6 @@
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vite": "8.0.10",
-		"vite-tsconfig-paths": "catalog:",
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
