@@ -1,6 +1,6 @@
 import type { ProjectOptions } from "./prompts";
 
-export interface ScaffoldingPlan {
+export type ScaffoldingPlan = {
 	/** Files to be created or modified */
 	files: {
 		path: string;
@@ -38,9 +38,9 @@ export interface ScaffoldingPlan {
 		packageManager: string;
 		importPath: string;
 	};
-}
+};
 
-export interface CollectedState {
+export type CollectedState = {
 	cwd: string;
 	options: ProjectOptions;
 	detectedFramework: "vite" | "bun" | "node";
@@ -52,9 +52,9 @@ export interface CollectedState {
 	shouldUpdateTsConfig: boolean;
 	existingFiles: string[];
 	isYes: boolean;
-}
+};
 
-export interface Workspace {
+export type Workspace = {
 	writeFile(path: string, content: string): Promise<void>;
 	mkdir(path: string, recursive?: boolean): Promise<void>;
 	execute(command: string): Promise<void>;
@@ -76,9 +76,9 @@ export interface Workspace {
 		schemaPath: string,
 		framework: "vite" | "bun",
 	): Promise<boolean>;
-}
+};
 
-export interface Reporter {
+export type Reporter = {
 	spinner(): { start(msg: string): void; stop(msg: string): void };
 	step(msg: string): void;
 	info(msg: string): void;
@@ -86,4 +86,4 @@ export interface Reporter {
 	error(msg: string): void;
 	note(msg: string, title?: string): void;
 	finish(msg: string, meta: any): void;
-}
+};
