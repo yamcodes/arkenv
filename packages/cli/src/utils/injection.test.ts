@@ -68,6 +68,42 @@ describe("safeAppend", () => {
 		expect(content).toBe(initialContent);
 	});
 
+	it("skips if Vite types are already present without marker", async () => {
+		const dtsPath = path.join(tempDir, "vite-env.d.ts");
+		const schemaPath = path.join(tempDir, "env.ts");
+
+		const initialContent = `
+type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+	typeof import("./env").Env
+>;
+`;
+		await fsp.writeFile(dtsPath, initialContent);
+
+		const result = await safeAppend(dtsPath, schemaPath, "vite");
+
+		expect(result).toBe(false);
+		const content = await fsp.readFile(dtsPath, "utf-8");
+		expect(content).toBe(initialContent);
+	});
+
+	it("skips if Bun types are already present without marker", async () => {
+		const dtsPath = path.join(tempDir, "bun-env.d.ts");
+		const schemaPath = path.join(tempDir, "env.ts");
+
+		const initialContent = `
+type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+	typeof import("./env").Env
+>;
+`;
+		await fsp.writeFile(dtsPath, initialContent);
+
+		const result = await safeAppend(dtsPath, schemaPath, "bun");
+
+		expect(result).toBe(false);
+		const content = await fsp.readFile(dtsPath, "utf-8");
+		expect(content).toBe(initialContent);
+	});
+
 	it("correctly calculates complex relative paths", async () => {
 		const dtsPath = path.join(tempDir, "deep", "nested", "vite-env.d.ts");
 		const schemaPath = path.join(tempDir, "src", "config", "env.ts");
