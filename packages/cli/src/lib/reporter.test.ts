@@ -1,4 +1,3 @@
-import pc from "picocolors";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	JsonReporter,
@@ -120,7 +119,7 @@ describe("Reporters", () => {
 		it("cancel logs json to stdout and exits", () => {
 			reporter.cancel("cancelled");
 			expect(stdoutSpy).toHaveBeenCalledWith(
-				expect.stringContaining('"status": "error"'),
+				expect.stringContaining('"status": "cancelled"'),
 			);
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "cancelled"'),

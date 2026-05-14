@@ -1,4 +1,4 @@
-import { cancel, spinner as clackSpinner, note, outro } from "@clack/prompts";
+import { spinner as clackSpinner, note, outro } from "@clack/prompts";
 import pc from "picocolors";
 
 export type Spinner = {
@@ -126,7 +126,7 @@ export class JsonReporter implements Reporter {
 
 	cancel(message: string) {
 		this.json({
-			status: "error",
+			status: "cancelled",
 			message,
 		});
 		process.exit(1);
@@ -185,15 +185,15 @@ export class SilentReporter implements Reporter {
 		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
 	}
 
-	cancel(message: string) {
+	cancel(_message: string) {
 		process.exit(1);
 	}
 
-	fatal(message: string, error?: unknown) {
+	fatal(_message: string, _error?: unknown) {
 		process.exit(1);
 	}
 
-	finish(message: string, details?: Record<string, any>) {}
+	finish(_message: string, _details?: Record<string, any>) {}
 }
 
 export class MemoryReporter implements Reporter {
