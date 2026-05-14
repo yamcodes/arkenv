@@ -133,7 +133,7 @@ export default {
 			expect(updatedContent).toContain("arkenvVitePlugin");
 		});
 
-		it("does not duplicate plugin if already exists", async () => {
+		it("does not duplicate plugin if already exists and returns updated: false", async () => {
 			const configPath = path.join(tempDir, "vite.config.ts");
 			const initialContent = `
 import arkenvVitePlugin from "@arkenv/vite-plugin"
@@ -145,11 +145,27 @@ export default {
 
 			const result = await bootstrapViteConfig(configPath);
 			expect(result.success, result.error).toBe(true);
+			expect(result.updated).toBe(false);
 
 			const updatedContent = await fsp.readFile(configPath, "utf-8");
 			const matches = updatedContent.match(/arkenvVitePlugin/g);
 			// One in import, one in plugins
 			expect(matches?.length).toBe(2);
+		});
+
+		it("returns updated: true when plugin is injected", async () => {
+			const configPath = path.join(tempDir, "vite.config.ts");
+			const initialContent = `
+import { defineConfig } from 'vite'
+export default defineConfig({
+  plugins: []
+})
+`.trim();
+			await fsp.writeFile(configPath, initialContent);
+
+			const result = await bootstrapViteConfig(configPath);
+			expect(result.success, result.error).toBe(true);
+			expect(result.updated).toBe(true);
 		});
 
 		it("preserves original indentation", async () => {

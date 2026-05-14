@@ -114,6 +114,11 @@ export class InitCommand {
 				);
 			} else if (typeResult.status === "appended") {
 				logger.info(`Appended ArkEnv types to ${code(typeResult.file!)}.`);
+			} else if (
+				typeResult.status === "skipped" &&
+				options.envDtsHandling === "append"
+			) {
+				logger.info(`${code(typeResult.file!)} already contains ArkEnv types.`);
 			}
 
 			const relPath = path.relative(process.cwd(), path.resolve(options.path));
@@ -127,7 +132,9 @@ export class InitCommand {
 					logger.step("Bootstrapping Vite plugin...");
 					const result = await bootstrapViteConfig(viteConfigPath, importPath);
 					if (result.success) {
-						logger.info(`Updated ${code(path.basename(viteConfigPath))}`);
+						if (result.updated) {
+							logger.info(`Updated ${code(path.basename(viteConfigPath))}`);
+						}
 					} else {
 						logger.warn(
 							`Could not automatically update ${code(path.basename(viteConfigPath))}: ${result.error}`,
