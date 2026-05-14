@@ -10,7 +10,7 @@ export class CLI {
 	public helpRequested: boolean;
 	public logger: Logger;
 
-	constructor(argv: string[]) {
+	constructor(argv: string[], options: { logger?: Logger } = {}) {
 		this.args = argv.slice(2);
 		this.command = this.args[0];
 		this.isYes = this.args.includes("--yes") || this.args.includes("-y");
@@ -26,10 +26,12 @@ export class CLI {
 			this.isJson = true;
 		}
 
-		this.logger = new Logger({
-			isQuiet: this.isQuiet,
-			isJson: this.isJson,
-			isYes: this.isYes,
-		});
+		this.logger =
+			options.logger ||
+			new Logger({
+				isQuiet: this.isQuiet,
+				isJson: this.isJson,
+				isYes: this.isYes,
+			});
 	}
 }

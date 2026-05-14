@@ -4,7 +4,6 @@ import { confirm, isCancel } from "@clack/prompts";
 import pc from "picocolors";
 import type { CLI } from "../cli";
 import { Executor } from "../executor";
-import { CliReporter } from "../lib/reporter";
 import { NodeWorkspace } from "../lib/workspace";
 import type { CollectedState } from "../plan";
 import { createPlan } from "../planner";
@@ -29,7 +28,7 @@ export class InitCommand {
 			this.cli.isQuiet,
 			this.cli.logger.stdio,
 		);
-		const reporter = new CliReporter(this.cli.logger);
+		const reporter = this.cli.logger;
 		const executor = new Executor(workspace, reporter);
 
 		try {

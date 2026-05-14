@@ -1,5 +1,10 @@
-import { cancel, spinner as clackSpinner, note, outro } from "@clack/prompts";
-import pc from "picocolors";
+import {
+	JsonReporter,
+	type Reporter,
+	SilentReporter,
+	type Spinner,
+	TextReporter,
+} from "./reporter";
 
 export type LoggerOptions = {
 	isQuiet: boolean;
@@ -7,76 +12,54 @@ export type LoggerOptions = {
 	isYes?: boolean;
 };
 
-export class Logger {
+export class Logger implements Reporter {
 	private originalStdoutWrite = process.stdout.write;
+	private reporter: Reporter;
 
-	constructor(private options: LoggerOptions) {}
-
-	private format(message: string): string {
-		if (this.options.isQuiet) {
-			// Strip ANSI codes if we want truly clean output
-			// biome-ignore lint/suspicious/noControlCharactersInRegex: Standard ANSI escape code stripping
-			return message.replace(/\x1B\[[0-9;]*[JKmsu]/g, "");
-		}
-
-		return message;
-	}
-
-	private write(message: string, type: "stdout" | "stderr" = "stdout") {
-		const formatted = this.format(message);
-		if (this.options.isJson || type === "stderr") {
-			process.stderr.write(`${formatted}\n`);
+	constructor(private options: LoggerOptions) {
+		if (options.isJson) {
+			this.reporter = new JsonReporter();
+		} else if (options.isQuiet) {
+			this.reporter = new SilentReporter();
 		} else {
-			process.stdout.write(`${formatted}\n`);
+			this.reporter = new TextReporter();
 		}
 	}
 
 	info(message: string) {
-		this.write(pc.blue(`ℹ ${message}`));
+		this.reporter.info(message);
 	}
 
 	warn(message: string) {
-		this.write(pc.yellow(`⚠ ${message}`), "stderr");
+		this.reporter.warn(message);
 	}
 
 	error(message: string) {
-		this.write(pc.red(`✘ ${message}`), "stderr");
+		this.reporter.error(message);
 	}
 
 	success(message: string) {
-		this.write(pc.green(`✔ ${message}`));
+		this.reporter.success(message);
 	}
 
 	step(message: string) {
-		this.write(`○ ${message}`);
+		this.reporter.step(message);
 	}
 
 	note(message: string, title?: string) {
-		if (this.options.isQuiet || this.options.isJson) {
-			this.write(pc.dim(`○ ${title ? `${title}: ` : ""}${message}`));
-		} else {
-			note(message, title);
-		}
+		this.reporter.note(message, title);
 	}
 
 	log(message: string) {
-		this.write(message);
+		this.reporter.log(message);
 	}
 
-	spinner() {
-		if (this.options.isQuiet || this.options.isJson) {
-			return {
-				start: (msg: string) => this.write(pc.dim(`○ ${msg}...`)),
-				stop: (msg: string) => this.write(pc.green(`✔ ${msg}`)),
-				message: (msg: string) => this.write(pc.dim(`○ ${msg}...`)),
-			};
-		}
-		return clackSpinner();
+	spinner(): Spinner {
+		return this.reporter.spinner();
 	}
 
 	json(data: unknown) {
-		// JSON ALWAYS goes to stdout
-		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
+		this.reporter.json(data);
 	}
 
 	get stdio() {
@@ -96,49 +79,14 @@ export class Logger {
 	}
 
 	cancel(message: string) {
-		if (this.options.isJson) {
-			this.json({
-				status: "error",
-				message,
-			});
-		} else {
-			cancel(message);
-		}
-		process.exit(0);
+		this.reporter.cancel(message);
 	}
 
 	fatal(message: string, error?: unknown) {
-		if (this.options.isJson) {
-			this.json({
-				status: "error",
-				details: {
-					message,
-					error:
-						error instanceof Error
-							? error.message
-							: error
-								? String(error)
-								: undefined,
-				},
-			});
-		} else {
-			this.error(message);
-			if (error) {
-				this.log(pc.red(error instanceof Error ? error.stack! : String(error)));
-			}
-		}
-		process.exit(1);
+		this.reporter.fatal(message, error);
 	}
 
 	finish(message: string, details?: Record<string, any>) {
-		if (this.options.isJson) {
-			this.json({
-				status: "success",
-				message,
-				details,
-			});
-		} else {
-			outro(message);
-		}
+		this.reporter.finish(message, details);
 	}
 }

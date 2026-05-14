@@ -1,4 +1,5 @@
 import type { ProjectOptions } from "./prompts";
+import type { Reporter } from "./lib/reporter";
 
 export type ScaffoldingPlan = {
 	/** Files to be created or modified */
@@ -81,14 +82,4 @@ export type Workspace = {
 		schemaPath: string,
 		framework: "vite" | "bun",
 	): Promise<boolean>;
-};
-
-export type Reporter = {
-	spinner(): { start(msg: string): void; stop(msg: string): void };
-	step(msg: string): void;
-	info(msg: string): void;
-	warn(msg: string): void;
-	error(msg: string): void;
-	note(msg: string, title?: string): void;
-	finish(msg: string, meta: any): void;
 };
