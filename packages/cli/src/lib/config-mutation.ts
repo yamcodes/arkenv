@@ -38,7 +38,7 @@ export async function findBunConfig(): Promise<string | null> {
 export async function bootstrapViteConfig(
 	configPath: string,
 	envImportPath?: string,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; updated: boolean; error?: string }> {
 	try {
 		const mod = await loadFile(configPath);
 		const initialCode = generateCode(mod).code;
@@ -63,6 +63,7 @@ export async function bootstrapViteConfig(
 		if (!config || typeof config !== "object") {
 			return {
 				success: false,
+				updated: false,
 				error: "Could not find default export in Vite config",
 			};
 		}
@@ -95,11 +96,12 @@ export async function bootstrapViteConfig(
 				config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
 			} else {
 				// Already has plugin, nothing to do
-				return { success: true };
+				return { success: true, updated: false };
 			}
 		} else {
 			return {
 				success: false,
+				updated: false,
 				error: `The 'plugins' property in ${path.basename(configPath)} is not an array.`,
 			};
 		}
@@ -113,11 +115,12 @@ export async function bootstrapViteConfig(
 		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
 
 		await fsp.writeFile(configPath, code, "utf-8");
-		return { success: true };
+		return { success: true, updated: true };
 	} catch (e: unknown) {
 		const error = e instanceof Error ? e.message : String(e);
 		return {
 			success: false,
+			updated: false,
 			error: `Failed to parse ${path.basename(configPath)}: ${error}`,
 		};
 	}

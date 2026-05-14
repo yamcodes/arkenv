@@ -127,6 +127,8 @@ Include:
 - **Usage examples** (code blocks)
 - Bullet points for details
 - Migration instructions for breaking changes (using `minor` bump and `**BREAKING CHANGE**:` prefix)
+
+**Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
 ```
 
 ## Release Workflow
@@ -166,12 +168,13 @@ npx changeset version --dry-run
 
 ## Common Mistakes
 
-| Mistake               | Issue              | Fix                           |
-| --------------------- | ------------------ | ----------------------------- |
-| Wrong bump type       | Unexpected version | Review decision guide above   |
-| Vague description     | Poor CHANGELOG     | Be specific about changes     |
-| Missing changeset     | No release notes   | Always add before PR          |
-| Not including context | Hard to understand | Explain *why* not just *what* |
+| Mistake               | Issue              | Fix                                              |
+| --------------------- | ------------------ | ------------------------------------------------ |
+| Wrong bump type       | Unexpected version | Review decision guide above                      |
+| Vague description     | Poor CHANGELOG     | Be specific about changes                        |
+| Missing changeset     | No release notes   | Always add before PR                             |
+| Not including context | Hard to understand | Explain *why* not just *what*                    |
+| Including issue links | Redundant data     | Remove # references; PR links them automatically |
 
 ## Common Scenarios
 

@@ -159,7 +159,7 @@ export async function runPromptWizard(
 						options: [
 							{
 								value: "append",
-								label: "Append types safely",
+								label: "Append types safely (if needed)",
 								hint: "Recommended",
 							},
 							{
