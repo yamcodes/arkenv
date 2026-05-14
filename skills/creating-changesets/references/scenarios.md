@@ -4,63 +4,65 @@
 
 ```markdown
 ---
-"@saleor/configurator": patch
+"arkenv": patch
 ---
 
-Fix category parent reference not being set during deployment
+#### Fix category parent reference not being set during deployment
 
-Categories with parent slugs now correctly link to their parent
-categories during the deploy operation.
+Categories with parent slugs now correctly link to their parent categories during the deploy operation.
 ```
 
 ## New Feature
 
-```markdown
----
-"@saleor/configurator": minor
----
-
-Add diff command for previewing configuration changes
-
-New `diff` command shows what would change before deploying:
-- Displays creates, updates, and deletes
-- Color-coded output for easy reading
-- Supports `--json` flag for programmatic use
-```
-
-## Breaking Change
-
 ````markdown
 ---
-"@saleor/configurator": major
+"arkenv": minor
 ---
 
-Change attribute configuration format
+#### Add `createEnv` for type-safe environment variables
 
-**BREAKING**: Attribute values are now defined inline instead of by reference.
+The new `createEnv` function allows you to define your environment schema using ArkType.
+
+Usage:
+
+```ts
+import { createEnv } from "arkenv"
+import { type } from "arktype"
+
+const env = createEnv({
+  schema: {
+    PORT: type.number.parseable()
+  }
+})
+
+console.log(env.PORT) // number
+````
+
+````
+
+## Breaking Change (v0)
+
+```markdown
+---
+"arkenv": minor
+---
+
+#### Change configuration format for validators
+
+**BREAKING**: Validator options are now passed as a second argument to `createEnv`.
 
 Before:
-```yaml
-attributes:
-  - name: Color
-    values:
-      - red
-      - blue
+```ts
+createEnv({ schema, strict: true })
 ````
 
 After:
 
-```yaml
-attributes:
-  - name: Color
-    values:
-      - name: Red
-        slug: red
-      - name: Blue
-        slug: blue
+```ts
+createEnv({ schema }, { strict: true })
 ```
 
-Migration: Update your config.yml to use the new format.
+Migration: Update your `createEnv` calls to separate the options from the schema configuration.
 
 ````
 
@@ -68,83 +70,28 @@ Migration: Update your config.yml to use the new format.
 
 ```markdown
 ---
-"@saleor/configurator": minor
+"arkenv": minor
 ---
 
-Improve deployment reliability and progress reporting
+#### Improve deployment reliability and progress reporting
 
-- Add retry logic for failed GraphQL operations
-- Display progress bar during bulk deployments
-- Report partial failures at the end of deployment
+- Add retry logic for failed operations
+- Display progress bar during bulk operations
+- Report partial failures at the end
 - Add `--continue-on-error` flag to proceed despite failures
 ````
 
-## Reference Attributes Support
+## Documentation Update
 
 ```markdown
 ---
-"@saleor/configurator": minor
+"arkenv": patch
 ---
 
-Add support for reference attributes with entityType field
+#### Update README with new installation instructions
 
-- Attributes of type REFERENCE now require an entityType field
-- Introspection properly captures entity type references
-- Deploy correctly handles reference attribute creation
+Added documentation for Bun and Vite plugins, including setup examples and best practices.
 ```
-
-## Consolidated Changeset Example
-
-When multiple changesets should be combined before release:
-
-```markdown
----
-"@saleor/configurator": minor
----
-
-Multiple improvements to bulk operations
-
-This release includes several related improvements:
-
-- Add retry logic for failed GraphQL operations (#123)
-- Display progress bar during bulk deployments (#124)
-- Report partial failures at the end of deployment (#125)
-- Add `--continue-on-error` flag (#126)
-```
-
-## Writing Good Descriptions
-
-### Do's
-
-```markdown
----
-"@saleor/configurator": minor
----
-
-Add bulk product import command
-
-New `import` command allows importing products from CSV files:
-- Supports mapping CSV columns to product fields
-- Validates data before import
-- Reports import progress and errors
-```
-
-### Don'ts
-
-```markdown
----
-"@saleor/configurator": patch
----
-
-fix bug
-```
-
-### Best Practices
-
-1. **Start with a verb**: Add, Fix, Update, Remove, Improve
-2. **Be specific**: What changed and why
-3. **Include context**: Reference issue numbers if applicable
-4. **Document migration**: For breaking changes
 
 ## Analyzing Changes for Bump Type
 
@@ -158,16 +105,15 @@ git log --oneline main..HEAD
 git diff main..HEAD -- src/
 ```
 
-### Key Questions
+### Key Questions (v0 Context)
 
 1. **Did the public API change?**
-   - CLI commands modified → minor/major
-   - Configuration schema changed → patch/minor/major
+   - CLI commands modified → minor
+   - Configuration schema changed → patch/minor
    - New features added → minor
 
 2. **Could this break existing users?**
-   - Yes, requires code changes → major
-   - Yes, but has fallback → minor
+   - Yes → minor (Breaking changes in v0 are minor bumps)
    - No → patch
 
 3. **Is this user-facing?**

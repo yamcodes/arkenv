@@ -32,13 +32,15 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset Types
 
-| Type    | When to Use                                               | Version Change |
-| ------- | --------------------------------------------------------- | -------------- |
-| `patch` | Bug fixes, documentation, refactoring, dependency updates | 1.0.0 → 1.0.1  |
-| `minor` | New features, non-breaking enhancements                   | 1.0.0 → 1.1.0  |
-| `major` | Breaking changes, API modifications                       | 1.0.0 → 2.0.0  |
+| Type    | When to Use                                               | v0 Version Change (Current) | v1+ Version Change |
+| ------- | --------------------------------------------------------- | --------------------------- | ------------------ |
+| `patch` | Bug fixes, documentation, refactoring, dependency updates | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
+| `minor` | New features, **Breaking changes** (in v0)                | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
+| `major` | **Avoid in v0** (unless going to v1.0.0)                  | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
 
-## Decision Guide
+## Decision Guide (v0 Rules)
+
+Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
 ### Use `patch` for:
 
@@ -51,6 +53,7 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ### Use `minor` for:
 
+- **Breaking changes** (Required in v0 for any breaking modification)
 - New features
 - New CLI commands
 - New configuration options
@@ -58,15 +61,19 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 - New entity types support
 - Non-breaking API additions
 
-### Use `major` for:
+### Use `major` ONLY for:
 
-- Breaking configuration changes
-- Removed features or commands
-- Changed CLI interface
-- Required migration steps
-- Node.js version requirement changes
+- Explicitly transitioning the project from v0.x.y to v1.0.0. **Do not use major for breaking changes in v0.**
 
 ## Creating a Changeset
+
+### Title Convention
+
+**IMPORTANT**: All changeset descriptions MUST start with a `####` header.
+
+### Usage Examples
+
+Always include usage examples or code snippets when adding new features or fixing bugs that affect how the library is used.
 
 ### Interactive Method
 
@@ -78,38 +85,51 @@ Follow the prompts:
 
 1. Select affected packages (space to select)
 2. Choose bump type for each package
-3. Write a summary of changes
+3. Write a summary of changes (remember to start with `####`)
 
 ### Manual Method
 
 Create a file in `.changeset/` with a random name:
 
-```markdown
+````markdown
 ---
-"@saleor/configurator": minor
+"arkenv": minor
 ---
 
-Add support for reference attributes with entityType field
+#### Add `createEnv` helper for improved type inference
 
-- Attributes of type REFERENCE now require an entityType field
-- Introspection properly captures entity type references
-- Deploy correctly handles reference attribute creation
-```
+Usage:
+
+```ts
+import { createEnv } from "arkenv"
+import { type } from "arktype"
+
+export const env = createEnv({
+  schema: {
+    NODE_ENV: type("'development' | 'production' | 'test'"),
+    PORT: type.number.parseable()
+  }
+})
+````
+
+````
 
 ### File Format
 
 ```markdown
 ---
-"package-name": patch|minor|major
+"package-name": patch|minor
 ---
 
-Short description of the change (shown in CHANGELOG)
+#### Short title of the change
 
-Optional longer description with:
+Detailed description of the change.
+
+Include:
+- **Usage examples** (code blocks)
 - Bullet points for details
-- Code examples if needed
-- Migration instructions for breaking changes
-```
+- Migration instructions for breaking changes (using `minor` bump)
+````
 
 ## Release Workflow
 
