@@ -67,6 +67,14 @@ describe("Reporters", () => {
 			);
 		});
 
+		it("cancel logs to stderr and exits", () => {
+			reporter.cancel("canceled");
+			expect(stderrSpy).toHaveBeenCalledWith(
+				expect.stringContaining("✘ canceled"),
+			);
+			expect(exitSpy).toHaveBeenCalledWith(1);
+		});
+
 		it("fatal logs to stderr and exits", () => {
 			reporter.fatal("fatal error");
 			expect(stderrSpy).toHaveBeenCalledWith(
@@ -117,7 +125,7 @@ describe("Reporters", () => {
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "cancelled"'),
 			);
-			expect(exitSpy).toHaveBeenCalledWith(0);
+			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 	});
 
@@ -146,7 +154,11 @@ describe("Reporters", () => {
 	});
 
 	describe("MemoryReporter", () => {
-		const reporter = new MemoryReporter();
+		let reporter: MemoryReporter;
+
+		beforeEach(() => {
+			reporter = new MemoryReporter();
+		});
 
 		it("stores logs in memory", () => {
 			reporter.info("hello");

@@ -60,15 +60,15 @@ export class TextReporter implements Reporter {
 	}
 
 	cancel(message: string) {
-		cancel(message);
-		process.exit(0);
+		process.stderr.write(`${pc.red(`✘ ${message}`)}\n`);
+		process.exit(1);
 	}
 
 	fatal(message: string, error?: unknown) {
 		process.stderr.write(`${pc.red(`✘ ${message}`)}\n`);
 		if (error) {
 			process.stderr.write(
-				`${pc.red(error instanceof Error ? error.stack! : String(error))}\n`,
+				`${pc.red(error instanceof Error ? (error.stack ?? String(error)) : String(error))}\n`,
 			);
 		}
 		process.exit(1);
@@ -129,7 +129,7 @@ export class JsonReporter implements Reporter {
 			status: "error",
 			message,
 		});
-		process.exit(0);
+		process.exit(1);
 	}
 
 	fatal(message: string, error?: unknown) {
@@ -186,7 +186,7 @@ export class SilentReporter implements Reporter {
 	}
 
 	cancel(message: string) {
-		process.exit(0);
+		process.exit(1);
 	}
 
 	fatal(message: string, error?: unknown) {
