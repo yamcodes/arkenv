@@ -32,11 +32,11 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset Types
 
-| Type    | When to Use                                               | v0 Version Change (Current) | v1+ Version Change |
-| ------- | --------------------------------------------------------- | --------------------------- | ------------------ |
-| `patch` | Bug fixes, documentation, refactoring, dependency updates | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
-| `minor` | New features, **Breaking changes** (in v0)                | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
-| `major` | **Avoid in v0** (unless going to v1.0.0)                  | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
+| Type    | When to Use                                | v0 Version Change (Current) | v1+ Version Change |
+| ------- | ------------------------------------------ | --------------------------- | ------------------ |
+| `patch` | Bug fixes, refactoring, dependency updates | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
+| `minor` | New features, **Breaking changes** (in v0) | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
+| `major` | **Avoid in v0** (unless going to v1.0.0)   | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
 
 ## Decision Guide (v0 Rules)
 
@@ -45,7 +45,6 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 ### Use `patch` for:
 
 - Bug fixes that don't change behavior
-- Documentation updates
 - Internal refactoring (no API changes)
 - Dependency updates (non-breaking)
 - Performance improvements
@@ -127,7 +126,7 @@ Detailed description of the change.
 Include:
 - **Usage examples** (code blocks)
 - Bullet points for details
-- Migration instructions for breaking changes (using `minor` bump)
+- Migration instructions for breaking changes (using `minor` bump and `**BREAKING CHANGE**:` prefix)
 ```
 
 ## Release Workflow
@@ -172,7 +171,6 @@ npx changeset version --dry-run
 | Wrong bump type       | Unexpected version | Review decision guide above   |
 | Vague description     | Poor CHANGELOG     | Be specific about changes     |
 | Missing changeset     | No release notes   | Always add before PR          |
-| Multiple changesets   | Fragmented notes   | Combine related changes       |
 | Not including context | Hard to understand | Explain *why* not just *what* |
 
 ## Common Scenarios
@@ -181,7 +179,6 @@ For detailed examples of common scenarios including:
 
 - Bug fixes, new features, breaking changes
 - Multiple related changes
-- Consolidated changesets
 - Pre-release versions
 - Best practices for descriptions
 

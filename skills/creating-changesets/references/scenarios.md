@@ -48,7 +48,7 @@ console.log(env.PORT) // number
 
 #### Change configuration format for validators
 
-**BREAKING**: Validator options are now passed as a second argument to `createEnv`.
+**BREAKING CHANGE**: Validator options are now passed as a second argument to `createEnv`.
 
 Before:
 ```ts
@@ -78,18 +78,6 @@ Migration: Update your `createEnv` calls to separate the options from the schema
 - Add `--continue-on-error` flag to proceed despite failures
 ```
 
-## Documentation Update
-
-```markdown
----
-"arkenv": patch
----
-
-#### Update README with new installation instructions
-
-Added documentation for Bun and Vite plugins, including setup examples and best practices.
-```
-
 ## Analyzing Changes for Bump Type
 
 ### Check git diff
@@ -117,18 +105,6 @@ git diff main..HEAD -- src/
    - Yes, new capability → minor
    - Yes, improved existing → patch
    - No, internal only → patch
-
-## Consolidating Changesets
-
-```bash
-# View pending changesets
-ls .changeset/
-
-# Manually consolidate by:
-# 1. Reading all changeset files
-# 2. Creating a single comprehensive changeset
-# 3. Deleting the individual files
-```
 
 ## Pre-Release Versions
 
