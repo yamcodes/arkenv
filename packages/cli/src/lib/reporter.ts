@@ -1,13 +1,13 @@
 import { cancel, spinner as clackSpinner, note, outro } from "@clack/prompts";
 import pc from "picocolors";
 
-export interface Spinner {
+export type Spinner = {
 	start(message: string): void;
 	stop(message: string): void;
 	message(message: string): void;
-}
+};
 
-export interface Reporter {
+export type Reporter = {
 	info(message: string): void;
 	warn(message: string): void;
 	error(message: string): void;
@@ -20,7 +20,7 @@ export interface Reporter {
 	cancel(message: string): void;
 	fatal(message: string, error?: unknown): void;
 	finish(message: string, details?: Record<string, any>): void;
-}
+};
 
 export class TextReporter implements Reporter {
 	info(message: string) {
