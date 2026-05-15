@@ -1,0 +1,53 @@
+/**
+ * Represents the result of a configuration bootstrap operation.
+ */
+export type BootstrapResult =
+	| {
+			success: true;
+			updated?: boolean;
+			instructions?: string;
+	  }
+	| {
+			success: false;
+			updated?: boolean;
+			error: string;
+	  };
+
+/**
+ * Port interface for basic file system operations.
+ */
+export type FileSystemPort = {
+	exists(path: string): Promise<boolean>;
+	readFile(path: string): Promise<string>;
+	writeFile(path: string, content: string): Promise<void>;
+	mkdir(path: string, recursive?: boolean): Promise<void>;
+	execute(command: string, args?: string[]): Promise<void>;
+};
+
+/**
+ * Port interface for workspace configuration and framework-specific operations.
+ */
+export type ConfigPort = {
+	updateTsConfigToStrict(path?: string): Promise<{
+		status: "updated" | "already_strict" | "not_found" | "error";
+		file?: string;
+	}>;
+	findViteConfig(): Promise<string | null>;
+	findBunConfig(): Promise<string | null>;
+	bootstrapViteConfig(
+		path: string,
+		importPath: string,
+	): Promise<BootstrapResult>;
+	bootstrapBunConfig(path: string | null | undefined): Promise<BootstrapResult>;
+	safeAppend(
+		path: string,
+		schemaPath: string,
+		framework: "vite" | "bun",
+	): Promise<boolean>;
+};
+
+/**
+ * Combined port interface for interacting with the user's workspace.
+ * @deprecated Use FileSystemPort or ConfigPort directly where possible.
+ */
+export type WorkspacePort = FileSystemPort & ConfigPort;

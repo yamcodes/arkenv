@@ -1,0 +1,60 @@
+import type { Reporter, Spinner } from "./types";
+
+/**
+ * Reporter implementation that suppresses most output.
+ * Useful for quiet/background execution modes.
+ */
+export class SilentReporter implements Reporter {
+	private stripAnsi(message: string): string {
+		// biome-ignore lint/suspicious/noControlCharactersInRegex: Standard ANSI escape code stripping
+		return message.replace(/\x1B\[[0-9;]*[JKmsu]/g, "");
+	}
+
+	info(_message: string) {}
+	warn(_message: string) {}
+	error(_message: string) {}
+	success(_message: string) {}
+	step(_message: string) {}
+	note(_message: string, _title?: string) {}
+	log(message: string) {
+		process.stdout.write(`${this.stripAnsi(message)}\n`);
+	}
+
+	spinner(): Spinner {
+		return {
+			start: (_msg: string) => {},
+			stop: (_msg: string) => {},
+			message: (_msg: string) => {},
+		};
+	}
+
+	json(data: unknown) {
+		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
+	}
+
+	cancel(message: string) {
+		process.stderr.write(`✘ Cancelled: ${message}\n`, () => {
+			process.exit(1);
+		});
+	}
+
+	fatal(message: string, error?: unknown) {
+		process.stderr.write(`✘ Fatal: ${message}\n`);
+		if (error) {
+			process.stderr.write(
+				`${error instanceof Error ? (error.stack ?? error.message) : String(error)}\n`,
+			);
+		}
+		process.stderr.write("", () => {
+			process.exit(1);
+		});
+	}
+
+	finish(_message: string, _details?: Record<string, unknown>) {}
+
+	async flush(): Promise<void> {
+		return new Promise((resolve) => {
+			process.stderr.write("", () => resolve());
+		});
+	}
+}

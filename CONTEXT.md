@@ -85,6 +85,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 - **Packages** (`packages/`) - Published npm packages
   - `arkenv` - Core library package
   - `@arkenv/vite-plugin` - Vite plugin package
+  - `@arkenv/cli` - Interactive CLI for scaffolding and project mutation
 - **Apps** (`apps/`) - Applications (not published)
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes
