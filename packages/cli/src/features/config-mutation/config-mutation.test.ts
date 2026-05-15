@@ -116,10 +116,11 @@ describe("config-mutation", () => {
 			const initialContent = "export default someFunction()";
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success).toBe(false);
-			if (!result.success) {
-				expect(result.error).toBeDefined();
+			if (result.success) {
+				throw new Error("Expected transformation to fail");
 			}
+			expect(result.success).toBe(false);
+			expect(result.error).toContain("Could not find default export object");
 		});
 	});
 });

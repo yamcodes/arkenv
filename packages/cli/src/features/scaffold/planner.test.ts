@@ -26,6 +26,8 @@ describe("Planner", () => {
 		expect(plan.files).toHaveLength(1);
 		expect(plan.files[0].path).toBe(path.resolve("/test", "env.ts"));
 		expect(plan.files[0].action).toBe("create");
+		expect(plan.files[0].content).toContain("export");
+		expect(plan.files[0].content).toContain("type");
 		expect(plan.install?.dependencies).toContain("arkenv");
 		expect(plan.install?.dependencies).toContain("arktype");
 	});

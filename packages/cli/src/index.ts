@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 import { compose } from "./cli/composition";
 
+let globalLogger: any;
+
 async function main() {
 	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
+	globalLogger = logger;
 
 	if (cli.helpRequested) {
 		await helpUseCase.execute();
@@ -27,6 +30,7 @@ async function main() {
 		});
 	} catch (error) {
 		logger.fatal("An unexpected error occurred", error);
+		process.exit(1);
 	}
 }
 
@@ -34,6 +38,19 @@ main();
 
 // Defense-in-depth for unforeseen async rejections
 process.on("unhandledRejection", (err) => {
-	const { logger } = compose(process.argv);
-	logger.fatal("Unhandled rejection", err);
+	if (globalLogger) {
+		globalLogger.fatal("Unhandled rejection", err);
+	} else {
+		console.error("Unhandled rejection", err);
+	}
+	process.exit(1);
+});
+
+process.on("uncaughtException", (err) => {
+	if (globalLogger) {
+		globalLogger.fatal("Uncaught exception", err);
+	} else {
+		console.error("Uncaught exception", err);
+	}
+	process.exit(1);
 });

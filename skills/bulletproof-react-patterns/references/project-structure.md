@@ -2,7 +2,7 @@
 
 Organize by feature, not by file type. Most code lives in `src/`:
 
-```
+```text
 src/
 ├── app/                # Application shell
 │   ├── routes/         # Route definitions and page components
@@ -27,7 +27,7 @@ src/
 
 Each feature is self-contained with only the folders it needs:
 
-```
+```text
 src/features/awesome-feature/
 ├── api/            # API request declarations and query hooks
 ├── assets/         # Static files for this feature

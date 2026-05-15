@@ -27,7 +27,7 @@ Architecture patterns for building scalable, maintainable React applications. Ba
 
 Organize by feature, not by file type:
 
-```
+```text
 src/
 ├── app/                # Application shell (routes, providers, router)
 ├── assets/             # Static files (images, fonts)
@@ -44,7 +44,7 @@ src/
 
 ### Feature Modules
 
-```
+```text
 features/users/
 ├── api/            # API functions and query hooks
 ├── components/     # Feature-specific components
@@ -62,7 +62,7 @@ features/users/
 
 ## Component Hierarchy
 
-```
+```text
 Page Components          → route-level, compose features, handle layout
   └── Feature Components → feature-specific, business logic
         └── UI Components      → shared primitives, no business logic
@@ -99,7 +99,7 @@ function useUsers(params?: GetUsersParams) {
 
 ## Error Hierarchy
 
-```
+```text
 App Error Boundary          → catches unrecoverable crashes
   └── Route Error Boundary     → catches route-level failures, shows retry
         └── Feature Error Boundary   → catches feature-specific errors

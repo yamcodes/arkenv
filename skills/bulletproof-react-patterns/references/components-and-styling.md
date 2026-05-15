@@ -59,7 +59,7 @@ Build abstractions around shared components for consistency and maintainability.
 
 ## Component Hierarchy
 
-```
+```text
 Page Components          → route-level, compose features, handle layout
   └── Feature Components → feature-specific, business logic
         └── UI Components      → shared primitives, no business logic

@@ -55,11 +55,15 @@ export function transformViteConfig(
 			}
 		}
 
-		if (!config || typeof config !== "object") {
+		if (
+			!config ||
+			typeof config !== "object" ||
+			(typeof config === "object" && "$type" in config)
+		) {
 			return {
 				success: false,
 				updated: false,
-				error: "Could not find default export in Vite config",
+				error: "Could not find default export object in Vite config",
 			};
 		}
 

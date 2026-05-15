@@ -101,7 +101,7 @@ export function useCreateDiscussion() {
 
 ## File Organization
 
-```
+```text
 features/users/api/
 ├── get-users.ts       # useUsers query hook + API function
 ├── get-user.ts        # useUser query hook + API function

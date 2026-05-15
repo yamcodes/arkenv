@@ -11,7 +11,7 @@ Detailed reference documentation for the bulletproof-react-patterns skill. Based
 
 ### Components
 
-- `components-and-styling.md` — Component best practices, hierarchy, wrapping 3rd party libs, libraries, styling solutions
+- `components-and-styling.md` — Component best practices, hierarchy, wrapping third-party libs, libraries, styling solutions
 
 ### State & Data
 

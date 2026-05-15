@@ -34,7 +34,7 @@ Use multiple error boundaries placed at different levels rather than a single on
 
 ### Error Hierarchy
 
-```
+```text
 App Error Boundary          → catches unrecoverable crashes
   └── Route Error Boundary     → catches route-level failures, shows retry
         └── Feature Error Boundary   → catches feature-specific errors

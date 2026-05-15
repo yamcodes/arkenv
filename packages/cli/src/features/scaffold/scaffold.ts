@@ -174,7 +174,13 @@ export async function detectPackageManager(): Promise<
 			// ignore missing or invalid package.json in parent directories
 		}
 
-		const files = await fsp.readdir(currentDir);
+		let files: string[] = [];
+		try {
+			files = await fsp.readdir(currentDir);
+		} catch {
+			// ignore inaccessible directories
+		}
+
 		if (files.includes("pnpm-lock.yaml")) return "pnpm";
 		if (files.includes("yarn.lock")) return "yarn";
 		if (files.includes("bun.lockb")) return "bun";
