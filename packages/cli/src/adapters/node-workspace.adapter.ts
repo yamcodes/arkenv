@@ -1,3 +1,4 @@
+import { spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
@@ -169,15 +170,15 @@ export class NodeWorkspace implements WorkspacePort {
 			const MAX_BUFFER = 10_000;
 
 			if (this.isQuiet) {
-				child.stdout?.on("data", (data) => {
+				child.stdout?.on("data", (data: Buffer) => {
 					stdout = (stdout + data.toString()).slice(-MAX_BUFFER);
 				});
-				child.stderr?.on("data", (data) => {
+				child.stderr?.on("data", (data: Buffer) => {
 					stderr = (stderr + data.toString()).slice(-MAX_BUFFER);
 				});
 			}
 
-			child.on("close", (code, signal) => {
+			child.on("close", (code: number | null, signal: string | null) => {
 				if (code === 0) {
 					resolve();
 				} else {
