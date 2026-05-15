@@ -2,11 +2,10 @@
 "@arkenv/cli": patch
 ---
 
-#### Decouple scaffolding logic with a Planner pattern
+#### Improve reliability and transparency of initialization process
 
-Refactored the `init` command architecture to follow a declarative "Planner" pattern:
-- **Collector**: Gathers environment state and user input.
-- **Planner**: A pure function that produces a `ScaffoldingPlan` based on collected data.
-- **Executor**: Applies the plan using `Workspace` and `Reporter` abstractions.
-
-This separation of concerns makes the initialization logic pure, easily testable, and isolates side effects.
+Improved the `init` command to be more robust and informative:
+- **Resilient Scaffolding**: The initialization process is now more atomic, validating the plan before applying changes to minimize partial configurations on failure.
+- **Enhanced Debugging in Quiet Mode**: When running with `--quiet` (common in CI), output from dependency installation is now buffered and only displayed if the installation fails, providing critical context without cluttering successful runs.
+- **Improved Framework Detection**: Auto-detection of Bun environments is now more reliable, correctly identifying the runtime even when dependencies are not yet installed.
+- **Clearer Error Reporting**: Provides more specific error messages and instructions when individual scaffolding steps fail.
