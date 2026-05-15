@@ -21,6 +21,11 @@ export type FileSystemPort = {
 	readFile(path: string): Promise<string>;
 	writeFile(path: string, content: string): Promise<void>;
 	mkdir(path: string, recursive?: boolean): Promise<void>;
+	/**
+	 * Executes a command without a shell (`shell: false`).
+	 * For this reason, `command` MUST be strictly the executable name (e.g., "pnpm", not "pnpm dlx")
+	 * and any subsequent arguments must be passed in the `args` array.
+	 */
 	execute(command: string, args?: string[]): Promise<void>;
 };
 
