@@ -1,6 +1,6 @@
 import path from "node:path";
 import dedent from "dedent";
-import { code, symbol } from "@/cli/ui";
+import { code, symbol } from "@/cli/ui/visuals";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 
 /**
