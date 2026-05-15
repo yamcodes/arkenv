@@ -1,17 +1,17 @@
 import path from "node:path";
 import pc from "picocolors";
-import { Executor } from "../../features/scaffold/executor";
-import type { CollectedState } from "../../features/scaffold/plan";
-import { createPlan } from "../../features/scaffold/planner";
+import { code } from "@/cli/ui/visuals";
+import { Executor } from "@/features/scaffold/executor";
+import type { CollectedState } from "@/features/scaffold/plan";
+import { createPlan } from "@/features/scaffold/planner";
 import {
 	checkTsConfig,
 	detectFramework,
 	detectPackageManager,
-} from "../../features/scaffold/scaffold";
-import type { LoggerPort } from "../../shared/ports/logger.port";
-import type { PromptPort } from "../../shared/ports/prompt.port";
-import type { WorkspacePort } from "../../shared/ports/workspace.port";
-import { code } from "../ui/visuals";
+} from "@/features/scaffold/scaffold";
+import type { LoggerPort } from "@/shared/ports/logger.port";
+import type { PromptPort } from "@/shared/ports/prompt.port";
+import type { WorkspacePort } from "@/shared/ports/workspace.port";
 
 export type InitInput = {
 	isYes: boolean;

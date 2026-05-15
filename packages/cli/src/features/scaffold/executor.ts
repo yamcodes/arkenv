@@ -1,7 +1,11 @@
 import path from "node:path";
 import dedent from "dedent";
 import pc from "picocolors";
-import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
+import type {
+	Reporter,
+	ScaffoldingPlan,
+	Workspace,
+} from "@/features/scaffold/plan";
 
 export class Executor {
 	constructor(

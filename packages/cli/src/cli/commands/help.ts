@@ -1,6 +1,6 @@
 import pc from "picocolors";
+import type { LoggerPort } from "@/shared/ports/logger.port";
 import { version } from "../../../package.json";
-import type { LoggerPort } from "../../shared/ports/logger.port";
 
 export class HelpUseCase {
 	constructor(private readonly logger: LoggerPort) {}

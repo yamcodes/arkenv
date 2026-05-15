@@ -1,4 +1,4 @@
-import type { ProjectOptions } from "../../features/scaffold/plan";
+import type { ProjectOptions } from "@/features/scaffold/plan";
 
 export type PromptPort = {
 	confirm(message: string, initialValue?: boolean): Promise<boolean>;

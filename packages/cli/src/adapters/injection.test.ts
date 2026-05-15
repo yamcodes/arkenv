@@ -2,7 +2,7 @@ import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { safeAppend } from "./injection";
+import { safeAppend } from "@/adapters/injection";
 
 describe("safeAppend", () => {
 	let tempDir: string;

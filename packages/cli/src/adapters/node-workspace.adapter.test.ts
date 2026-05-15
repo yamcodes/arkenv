@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import dedent from "dedent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NodeWorkspace, Workspace } from "./node-workspace.adapter";
+import { NodeWorkspace, Workspace } from "@/adapters/node-workspace.adapter";
 
 describe("Workspace", () => {
 	let tempDir: string;

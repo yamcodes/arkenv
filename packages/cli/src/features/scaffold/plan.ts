@@ -1,5 +1,5 @@
-import type { LoggerPort as Reporter } from "../../shared/ports/logger.port";
-import type { WorkspacePort as Workspace } from "../../shared/ports/workspace.port";
+import type { LoggerPort as Reporter } from "@/shared/ports/logger.port";
+import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
 
 export type { Reporter, Workspace };
 

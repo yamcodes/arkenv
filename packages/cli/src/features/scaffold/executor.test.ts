@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { Executor } from "./executor";
-import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
+import { Executor } from "@/features/scaffold/executor";
+import type {
+	Reporter,
+	ScaffoldingPlan,
+	Workspace,
+} from "@/features/scaffold/plan";
 
 describe("Executor", () => {
 	const mockWorkspace: Workspace = {

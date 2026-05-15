@@ -1,7 +1,7 @@
 import { confirm as clackConfirm, isCancel } from "@clack/prompts";
-import { runPromptWizard } from "../cli/ui/prompts";
-import type { ProjectOptions } from "../features/scaffold/plan";
-import type { PromptPort } from "../shared/ports/prompt.port";
+import { runPromptWizard } from "@/cli/ui/prompts";
+import type { ProjectOptions } from "@/features/scaffold/plan";
+import type { PromptPort } from "@/shared/ports/prompt.port";
 
 export class ClackPromptAdapter implements PromptPort {
 	async confirm(message: string, initialValue = true): Promise<boolean> {

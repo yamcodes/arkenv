@@ -4,9 +4,9 @@ import path from "node:path";
 import dedent from "dedent";
 import { applyEdits, modify } from "jsonc-parser";
 import pc from "picocolors";
-import { transformViteConfig } from "../features/config-mutation/config-mutation";
-import { updateTsConfigToStrict } from "../features/scaffold/scaffold";
-import type { WorkspacePort } from "../shared/ports/workspace.port";
+import { transformViteConfig } from "@/features/config-mutation/config-mutation";
+import { updateTsConfigToStrict } from "@/features/scaffold/scaffold";
+import type { WorkspacePort } from "@/shared/ports/workspace.port";
 
 export type Framework = "vite" | "bun" | "node";
 

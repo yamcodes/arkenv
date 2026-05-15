@@ -2,7 +2,7 @@ import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { checkTsConfig, detectFramework } from "./scaffold";
+import { checkTsConfig, detectFramework } from "@/features/scaffold/scaffold";
 
 describe("scaffold", () => {
 	let tempDir: string;
