@@ -1,15 +1,10 @@
 import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
+import dedent from "dedent";
 import { applyEdits, modify } from "jsonc-parser";
-import { detectCodeFormat, generateCode, loadFile } from "magicast";
 import pc from "picocolors";
-import {
-	bootstrapBunConfig,
-	bootstrapViteConfig,
-	findBunConfig,
-	findViteConfig,
-} from "../features/config-mutation/config-mutation";
+import { transformViteConfig } from "../features/config-mutation/config-mutation";
 import { updateTsConfigToStrict } from "../features/scaffold/scaffold";
 import type { WorkspacePort } from "../shared/ports/workspace.port";
 
@@ -122,106 +117,6 @@ export class Workspace {
 		return null;
 	}
 
-	async ensureVitePlugin(
-		pluginName: string,
-		options: {
-			importFrom: string;
-			imported?: string;
-			envImportPath?: string | undefined;
-			verify?: (code: string) => boolean;
-		},
-	): Promise<{ success: boolean; updated?: boolean; error?: string }> {
-		const configPath = await this.findViteConfig();
-		if (!configPath) return { success: false, error: "Vite config not found" };
-
-		try {
-			const mod = await loadFile(configPath);
-			const initialCode = generateCode(mod).code;
-
-			// 1. Find the plugins array
-			let config = mod.exports.default;
-
-			// Handle defineConfig({...}) wrapper
-			if (
-				config &&
-				typeof config === "object" &&
-				"$type" in config &&
-				config.$type === "function-call"
-			) {
-				const callee =
-					config.$callee || (config as any).$name || JSON.stringify(config);
-				if (callee === "defineConfig") {
-					config = config.$args[0];
-				}
-			}
-
-			if (!config || typeof config !== "object") {
-				return {
-					success: false,
-					updated: false,
-					error: "Could not find default export in Vite config",
-				};
-			}
-
-			if (!config.plugins) {
-				config.plugins = [];
-			}
-
-			if (Array.isArray(config.plugins)) {
-				const hasPlugin = options.verify
-					? options.verify(initialCode)
-					: initialCode.includes(pluginName);
-
-				if (!hasPlugin) {
-					// Add imports
-					mod.imports.$add({
-						from: options.importFrom,
-						local: pluginName,
-						imported: options.imported || "default",
-					});
-
-					if (options.envImportPath) {
-						mod.imports.$add({
-							from: options.envImportPath,
-							imported: "Env",
-						});
-					}
-
-					config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
-				} else {
-					return { success: true, updated: false };
-				}
-			} else {
-				return {
-					success: false,
-					updated: false,
-					error: `The 'plugins' property in ${path.basename(configPath)} is not an array.`,
-				};
-			}
-
-			let code = generateCode(mod, {
-				format: detectCodeFormat(initialCode),
-			}).code;
-			const pluginCall = options.envImportPath
-				? `${pluginName}(Env)`
-				: `${pluginName}()`;
-			code = code.replace(
-				/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g,
-				() => pluginCall,
-			);
-
-			await fsp.writeFile(configPath, code, "utf-8");
-			return { success: true, updated: true };
-		} catch (e: unknown) {
-			const error = e instanceof Error ? e.message : String(e);
-			return {
-				success: false,
-				updated: false,
-				error: `Failed to parse ${path.basename(configPath)}: ${error}`,
-			};
-		}
-	}
-
 	async findViteConfig(): Promise<string | null> {
 		const filenames = [
 			"vite.config.ts",
@@ -234,15 +129,6 @@ export class Workspace {
 		}
 		return null;
 	}
-
-	async writeTemplate(
-		targetPath: string,
-		template: (data?: any) => string,
-		data?: any,
-	) {
-		const content = template(data);
-		await this.writeFile(targetPath, content);
-	}
 }
 
 export class NodeWorkspace implements WorkspacePort {
@@ -250,6 +136,19 @@ export class NodeWorkspace implements WorkspacePort {
 		private isQuiet: boolean,
 		private stdio: StdioOptions,
 	) {}
+
+	async exists(path: string): Promise<boolean> {
+		try {
+			await fsp.access(path);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	async readFile(path: string): Promise<string> {
+		return fsp.readFile(path, "utf-8");
+	}
 
 	async writeFile(path: string, content: string): Promise<void> {
 		await fsp.writeFile(path, content, "utf-8");
@@ -303,20 +202,99 @@ export class NodeWorkspace implements WorkspacePort {
 		return updateTsConfigToStrict(path);
 	}
 
-	async findViteConfig() {
-		return findViteConfig();
+	async findViteConfig(): Promise<string | null> {
+		const filenames = [
+			"vite.config.ts",
+			"vite.config.js",
+			"vite.config.mts",
+			"vite.config.mjs",
+		];
+		for (const file of filenames) {
+			const fullPath = path.resolve(process.cwd(), file);
+			try {
+				await fsp.access(fullPath);
+				return fullPath;
+			} catch {
+				// ignore missing file
+			}
+		}
+		return null;
 	}
 
-	async findBunConfig() {
-		return findBunConfig();
+	async findBunConfig(): Promise<string | null> {
+		const filenames = ["bunfig.toml", "bun.setup.ts", "bun.setup.js"];
+		for (const file of filenames) {
+			const fullPath = path.resolve(process.cwd(), file);
+			try {
+				await fsp.access(fullPath);
+				return fullPath;
+			} catch {
+				// ignore missing file
+			}
+		}
+		return null;
 	}
 
 	async bootstrapViteConfig(path: string, importPath: string) {
-		return bootstrapViteConfig(path, importPath);
+		const code = await this.readFile(path);
+		const result = transformViteConfig({ code, envImportPath: importPath });
+
+		if (result.success && result.updated && result.code) {
+			await this.writeFile(path, result.code);
+		}
+
+		return {
+			success: result.success,
+			updated: result.updated,
+			error: result.error,
+		};
 	}
 
-	async bootstrapBunConfig(path: string) {
-		return bootstrapBunConfig(path);
+	async bootstrapBunConfig(configPath?: string | null) {
+		if (configPath?.endsWith("bunfig.toml")) {
+			return {
+				success: true,
+				instructions: dedent`
+					[preload]
+					preload = ["./bun.setup.ts"]
+				`,
+			};
+		}
+
+		if (
+			configPath?.endsWith("bun.setup.ts") ||
+			configPath?.endsWith("bun.setup.js")
+		) {
+			return {
+				success: true,
+				instructions: dedent`
+					import arkenv from "@arkenv/bun-plugin";
+
+					Bun.build({
+					  // ... other config
+					  plugins: [arkenv],
+					});
+				`,
+			};
+		}
+
+		const instructions = dedent`
+			To complete Bun integration, add the following to your setup/preload file:
+			
+			import arkenv from "@arkenv/bun-plugin";
+			
+			Bun.build({
+			  // ... other config
+			  plugins: [arkenv],
+			});
+			
+			If you don't have a setup file, create one (e.g., bun.setup.ts) and add it to your bunfig.toml:
+			
+			[preload]
+			preload = ["./bun.setup.ts"]
+		`;
+
+		return { success: true, instructions };
 	}
 
 	async safeAppend(

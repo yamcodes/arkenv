@@ -2,6 +2,7 @@ import type { BootstrapResult } from "../../features/scaffold/plan";
 
 export type WorkspacePort = {
 	exists(path: string): Promise<boolean>;
+	readFile(path: string): Promise<string>;
 	writeFile(path: string, content: string): Promise<void>;
 	mkdir(path: string, recursive?: boolean): Promise<void>;
 	execute(command: string, args?: string[]): Promise<void>;

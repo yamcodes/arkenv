@@ -1,21 +1,26 @@
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { Workspace } from "./node-workspace.adapter";
+import dedent from "dedent";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NodeWorkspace, Workspace } from "./node-workspace.adapter";
 
 describe("Workspace", () => {
 	let tempDir: string;
 	let workspace: Workspace;
+	let nodeWorkspace: NodeWorkspace;
 
 	beforeEach(async () => {
 		tempDir = await fsp.mkdtemp(
 			path.join(os.tmpdir(), "arkenv-workspace-test-"),
 		);
 		workspace = new Workspace({ cwd: tempDir });
+		nodeWorkspace = new NodeWorkspace(true, "ignore");
+		vi.spyOn(process, "cwd").mockReturnValue(tempDir);
 	});
 
 	afterEach(async () => {
+		vi.restoreAllMocks();
 		await fsp.rm(tempDir, { recursive: true, force: true });
 	});
 
@@ -76,41 +81,37 @@ describe("Workspace", () => {
 	});
 
 	it("ensures vite plugin injection", async () => {
-		const viteConfig = `
-			import { defineConfig } from 'vite'
+		const viteConfig = dedent`
+			import { defineConfig } from "vite"
 			export default defineConfig({
 				plugins: []
 			})
 		`;
-		await workspace.writeFile("vite.config.ts", viteConfig);
+		const configPath = path.join(tempDir, "vite.config.ts");
+		await fsp.writeFile(configPath, viteConfig);
 
-		const result = await workspace.ensureVitePlugin("myPlugin", {
-			importFrom: "my-plugin-pkg",
-		});
-
+		const result = await nodeWorkspace.bootstrapViteConfig(configPath, "./env");
 		expect(result.success).toBe(true);
 		expect(result.updated).toBe(true);
 
-		const code = await workspace.readFile("vite.config.ts");
-		expect(code).toContain("myPlugin");
-		expect(code).toContain("my-plugin-pkg");
-		expect(code).toContain("myPlugin()");
+		const updated = await fsp.readFile(configPath, "utf-8");
+		expect(updated).toContain(
+			'import arkenvVitePlugin from "@arkenv/vite-plugin"',
+		);
+		expect(updated).toContain("arkenvVitePlugin(Env)");
 	});
 
 	it("is idempotent when ensuring vite plugin", async () => {
-		const viteConfig = `
-			import { defineConfig } from 'vite'
-			import myPlugin from "my-plugin-pkg"
-			export default defineConfig({
-				plugins: [myPlugin()]
-			})
+		const viteConfig = dedent`
+			import arkenvVitePlugin from "@arkenv/vite-plugin"
+			export default {
+				plugins: [arkenvVitePlugin()]
+			}
 		`;
-		await workspace.writeFile("vite.config.ts", viteConfig);
+		const configPath = path.join(tempDir, "vite.config.ts");
+		await fsp.writeFile(configPath, viteConfig);
 
-		const result = await workspace.ensureVitePlugin("myPlugin", {
-			importFrom: "my-plugin-pkg",
-		});
-
+		const result = await nodeWorkspace.bootstrapViteConfig(configPath, "./env");
 		expect(result.success).toBe(true);
 		expect(result.updated).toBe(false);
 	});
