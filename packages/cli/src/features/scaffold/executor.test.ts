@@ -4,6 +4,8 @@ import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 
 describe("Executor", () => {
 	const mockWorkspace: Workspace = {
+		exists: vi.fn().mockResolvedValue(true),
+		readFile: vi.fn().mockResolvedValue(""),
 		writeFile: vi.fn(),
 		mkdir: vi.fn(),
 		execute: vi.fn(),
@@ -22,6 +24,8 @@ describe("Executor", () => {
 	};
 
 	const mockReporter: Reporter = {
+		interactiveStdout: vi.fn(),
+		stdio: "inherit",
 		spinner: vi.fn().mockReturnValue({ start: vi.fn(), stop: vi.fn() }),
 		step: vi.fn(),
 		info: vi.fn(),

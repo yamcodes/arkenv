@@ -71,7 +71,7 @@ export type CollectedState = {
 
 export type BootstrapResult = {
 	success: boolean;
-	updated?: boolean;
-	instructions?: string;
-	error?: string;
+	updated?: boolean | undefined;
+	instructions?: string | undefined;
+	error?: string | undefined;
 };

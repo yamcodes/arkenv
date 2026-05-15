@@ -1,4 +1,3 @@
-import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
@@ -134,7 +133,7 @@ export class Workspace {
 export class NodeWorkspace implements WorkspacePort {
 	constructor(
 		private isQuiet: boolean,
-		private stdio: StdioOptions,
+		private stdio: any,
 	) {}
 
 	async exists(path: string): Promise<boolean> {

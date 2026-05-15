@@ -1,4 +1,4 @@
-import type { ProjectOptions } from "./prompts";
+import type { ProjectOptions } from "./plan";
 import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
 
 export function getEnvTemplate(options: ProjectOptions): string {
