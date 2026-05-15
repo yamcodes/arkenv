@@ -1,10 +1,11 @@
+import type { LoggerPort } from "../shared/ports/logger.port";
 import {
 	JsonReporter,
 	type Reporter,
 	SilentReporter,
 	type Spinner,
 	TextReporter,
-} from "./reporter";
+} from "./reporters";
 
 export type LoggerOptions = {
 	isQuiet: boolean;
@@ -12,7 +13,7 @@ export type LoggerOptions = {
 	isYes?: boolean;
 };
 
-export class Logger implements Reporter {
+export class Logger implements LoggerPort {
 	private originalStdoutWrite = process.stdout.write;
 	private reporter: Reporter;
 

@@ -4,7 +4,7 @@ import {
 	MemoryReporter,
 	SilentReporter,
 	TextReporter,
-} from "./reporter";
+} from "./reporters";
 
 // Force colors for testing consistent output
 process.env.FORCE_COLOR = "1";

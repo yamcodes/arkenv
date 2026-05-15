@@ -1,49 +1,50 @@
-import type { StdioOptions } from "node:child_process";
-import { existsSync } from "node:fs";
 import path from "node:path";
 import { confirm, isCancel } from "@clack/prompts";
 import pc from "picocolors";
-import type { CLI } from "../cli";
-import { Executor } from "../executor";
-import { NodeWorkspace } from "../lib/workspace";
-import type { CollectedState } from "../plan";
-import { createPlan } from "../planner";
-import { runPromptWizard } from "../prompts";
+import { Executor } from "../../features/scaffold/executor";
+import type { CollectedState } from "../../features/scaffold/plan";
+import { createPlan } from "../../features/scaffold/planner";
 import {
 	checkTsConfig,
 	detectFramework,
 	detectPackageManager,
-} from "../scaffold";
-import { code } from "../visuals";
+} from "../../features/scaffold/scaffold";
+import type { LoggerPort } from "../../shared/ports/logger.port";
+import type { WorkspacePort } from "../../shared/ports/workspace.port";
+import { runPromptWizard } from "../ui/prompts";
+import { code } from "../ui/visuals";
 
-export class InitCommand {
-	constructor(private cli: CLI) {}
+export type InitInput = {
+	isYes: boolean;
+	isQuiet: boolean;
+	isAgent: boolean;
+};
 
-	async run() {
-		const state = await this.collect();
+export class InitUseCase {
+	constructor(
+		private readonly logger: LoggerPort,
+		private readonly workspace: WorkspacePort,
+	) {}
+
+	async execute(input: InitInput) {
+		const state = await this.collect(input);
 		if (!state) return;
 
 		const plan = createPlan(state);
-
-		const workspace = new NodeWorkspace(
-			this.cli.isQuiet,
-			this.cli.logger.stdio as StdioOptions,
-		);
-		const reporter = this.cli.logger;
-		const executor = new Executor(workspace, reporter);
+		const executor = new Executor(this.workspace, this.logger);
 
 		try {
 			await executor.execute(plan);
 		} catch (error) {
-			this.cli.logger.fatal("Scaffolding failed.", error);
+			this.logger.fatal("Scaffolding failed.", error);
 		}
 	}
 
-	private async collect(): Promise<CollectedState | null> {
-		const { logger, isYes } = this.cli;
+	private async collect(input: InitInput): Promise<CollectedState | null> {
+		const { isYes, isAgent } = input;
 
 		// Redirect stdout to stderr for interactive prompts if JSON mode is active
-		logger.interactiveStdout(true);
+		this.logger.interactiveStdout(true);
 
 		try {
 			let shouldUpdateTsConfig = false;
@@ -53,7 +54,7 @@ export class InitCommand {
 				if (isYes) {
 					shouldUpdateTsConfig = true;
 				} else {
-					logger.warn(
+					this.logger.warn(
 						`TypeScript strict mode is not enabled in your ${code(tsConfig.file!)}.`,
 					);
 
@@ -65,7 +66,7 @@ export class InitCommand {
 					});
 
 					if (isCancel(confirmStrict)) {
-						logger.cancel("Operation cancelled.");
+						this.logger.cancel("Operation cancelled.");
 						return null;
 					}
 
@@ -79,18 +80,23 @@ export class InitCommand {
 			const options = await runPromptWizard(
 				{ framework: detectedFramework },
 				isYes,
-				this.cli.isAgent,
+				isAgent,
 			);
 
 			if (!options) {
-				logger.cancel("Operation cancelled.");
+				this.logger.cancel("Operation cancelled.");
 				return null;
 			}
 
 			// Handle existing env file prompt
+			// Note: In a strict hexagonal architecture, we'd move this FS check to a port
 			const targetPath = path.resolve(process.cwd(), options.path);
+
+			// For now, keeping some FS calls here for simplicity as it was in the original code,
+			// but normally we should use this.workspace.exists(targetPath)
+
 			if (
-				existsSync(targetPath) &&
+				(await this.workspace.exists(targetPath)) &&
 				options.overwriteEnvSchemaFile === undefined
 			) {
 				const confirmOverwrite = await confirm({
@@ -99,7 +105,7 @@ export class InitCommand {
 				});
 
 				if (isCancel(confirmOverwrite)) {
-					logger.cancel("Operation cancelled.");
+					this.logger.cancel("Operation cancelled.");
 					return null;
 				}
 
@@ -109,7 +115,8 @@ export class InitCommand {
 			const packageManager = await detectPackageManager();
 
 			const existingFiles: string[] = [];
-			if (existsSync(targetPath)) existingFiles.push(targetPath);
+			if (await this.workspace.exists(targetPath))
+				existingFiles.push(targetPath);
 
 			let typeFileName: string | undefined;
 			if (options.framework === "vite") {
@@ -121,7 +128,8 @@ export class InitCommand {
 			if (typeFileName) {
 				const targetDir = path.dirname(targetPath);
 				const typeFilePath = path.join(targetDir, typeFileName);
-				if (existsSync(typeFilePath)) existingFiles.push(typeFilePath);
+				if (await this.workspace.exists(typeFilePath))
+					existingFiles.push(typeFilePath);
 			}
 
 			return {
@@ -136,7 +144,7 @@ export class InitCommand {
 			};
 		} finally {
 			// Restore stdout
-			logger.interactiveStdout(false);
+			this.logger.interactiveStdout(false);
 		}
 	}
 }

@@ -1,31 +1,32 @@
 #!/usr/bin/env node
-import { CLI } from "./cli";
-import { HelpCommand } from "./commands/help";
-import { InitCommand } from "./commands/init";
+import { compose } from "./cli/composition";
 
 async function main() {
-	const cli = new CLI(process.argv);
+	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
 
 	if (cli.helpRequested) {
-		await new HelpCommand(cli).run();
+		await helpUseCase.execute();
 		process.exit(0);
 	}
 
 	if (cli.command !== "init") {
 		if (cli.command) {
-			cli.logger.error(`Unknown command: ${cli.command}`);
+			logger.error(`Unknown command: ${cli.command}`);
 		} else {
-			cli.logger.error("Missing command.");
+			logger.error("Missing command.");
 		}
-		await new HelpCommand(cli).run();
+		await helpUseCase.execute();
 		process.exit(1);
 	}
 
 	try {
-		const command = new InitCommand(cli);
-		await command.run();
+		await initUseCase.execute({
+			isYes: cli.isYes,
+			isQuiet: cli.isQuiet,
+			isAgent: cli.isAgent,
+		});
 	} catch (error) {
-		cli.logger.fatal("An unexpected error occurred", error);
+		logger.fatal("An unexpected error occurred", error);
 	}
 }
 
@@ -33,6 +34,6 @@ main();
 
 // Defense-in-depth for unforeseen async rejections
 process.on("unhandledRejection", (err) => {
-	const cli = new CLI(process.argv);
-	cli.logger.fatal("Unhandled rejection", err);
+	const { logger } = compose(process.argv);
+	logger.fatal("Unhandled rejection", err);
 });

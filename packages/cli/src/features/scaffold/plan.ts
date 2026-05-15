@@ -1,6 +1,19 @@
-export type { Reporter } from "./lib/reporter";
+import type { LoggerPort as Reporter } from "../../shared/ports/logger.port";
+import type { WorkspacePort as Workspace } from "../../shared/ports/workspace.port";
 
-import type { ProjectOptions } from "./prompts";
+export type { Reporter, Workspace };
+
+export type ProjectOptions = {
+	path: string;
+	validator: "arktype" | "zod" | "valibot";
+	framework: "vite" | "bun" | "node";
+	language: "ts"; // TODO: Support JS
+	overwriteEnvSchemaFile?: boolean | undefined;
+	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
+	installTypeDefinitions?: boolean | undefined;
+	envKeys?: string[] | undefined;
+	installSkill?: boolean | undefined;
+};
 
 export type ScaffoldingPlan = {
 	/** Files to be created or modified */
@@ -61,26 +74,4 @@ export type BootstrapResult = {
 	updated?: boolean;
 	instructions?: string;
 	error?: string;
-};
-
-export type Workspace = {
-	writeFile(path: string, content: string): Promise<void>;
-	mkdir(path: string, recursive?: boolean): Promise<void>;
-	execute(command: string, args?: string[]): Promise<void>;
-	updateTsConfigToStrict(path?: string): Promise<{
-		status: "updated" | "already_strict" | "not_found" | "error";
-		file?: string;
-	}>;
-	findViteConfig(): Promise<string | null>;
-	findBunConfig(): Promise<string | null>;
-	bootstrapViteConfig(
-		path: string,
-		importPath: string,
-	): Promise<BootstrapResult>;
-	bootstrapBunConfig(path: string): Promise<BootstrapResult>;
-	safeAppend(
-		path: string,
-		schemaPath: string,
-		framework: "vite" | "bun",
-	): Promise<boolean>;
 };

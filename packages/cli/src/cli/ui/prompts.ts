@@ -2,20 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { cancel, confirm, group, isCancel, select, text } from "@clack/prompts";
 import pc from "picocolors";
-import { getEnvExampleKeys } from "./env-parser.ts";
-import { code } from "./visuals.ts";
-
-export type ProjectOptions = {
-	path: string;
-	validator: "arktype" | "zod" | "valibot";
-	framework: "vite" | "bun" | "node";
-	language: "ts"; // TODO: Support JS
-	overwriteEnvSchemaFile?: boolean | undefined;
-	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
-	installTypeDefinitions?: boolean | undefined;
-	envKeys?: string[] | undefined;
-	installSkill?: boolean | undefined;
-};
+import { getEnvExampleKeys } from "../../features/scaffold/env-parser";
+import type { ProjectOptions } from "../../features/scaffold/plan";
+import { code } from "./visuals";
 
 export async function runPromptWizard(
 	defaults?: {

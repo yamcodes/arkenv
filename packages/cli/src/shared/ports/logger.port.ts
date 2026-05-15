@@ -1,0 +1,22 @@
+export type Spinner = {
+	start(message: string): void;
+	stop(message: string): void;
+	message(message: string): void;
+};
+
+export type LoggerPort = {
+	info(message: string): void;
+	warn(message: string): void;
+	error(message: string): void;
+	success(message: string): void;
+	step(message: string): void;
+	note(message: string, title?: string): void;
+	log(message: string): void;
+	spinner(): Spinner;
+	json(data: unknown): void;
+	cancel(message: string): void;
+	fatal(message: string, error?: unknown): void;
+	finish(message: string, details?: Record<string, any>): void;
+	interactiveStdout(enable: boolean): void;
+	readonly stdio: any;
+};

@@ -4,14 +4,14 @@ import path from "node:path";
 import { applyEdits, modify } from "jsonc-parser";
 import { detectCodeFormat, generateCode, loadFile } from "magicast";
 import pc from "picocolors";
-import type { Workspace as IWorkspace } from "../plan";
-import { updateTsConfigToStrict } from "../scaffold";
 import {
 	bootstrapBunConfig,
 	bootstrapViteConfig,
 	findBunConfig,
 	findViteConfig,
-} from "./config-mutation";
+} from "../features/config-mutation/config-mutation";
+import { updateTsConfigToStrict } from "../features/scaffold/scaffold";
+import type { WorkspacePort } from "../shared/ports/workspace.port";
 
 export type Framework = "vite" | "bun" | "node";
 
@@ -245,7 +245,7 @@ export class Workspace {
 	}
 }
 
-export class NodeWorkspace implements IWorkspace {
+export class NodeWorkspace implements WorkspacePort {
 	constructor(
 		private isQuiet: boolean,
 		private stdio: StdioOptions,
@@ -324,7 +324,7 @@ export class NodeWorkspace implements IWorkspace {
 		schemaPath: string,
 		framework: "vite" | "bun",
 	) {
-		const { safeAppend } = await import("../utils/injection");
+		const { safeAppend } = await import("./injection");
 		return safeAppend(path, schemaPath, framework);
 	}
 }
