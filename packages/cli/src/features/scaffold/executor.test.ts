@@ -38,6 +38,7 @@ describe("Executor", () => {
 		cancel: vi.fn(),
 		fatal: vi.fn(),
 		finish: vi.fn(),
+		flush: vi.fn().mockResolvedValue(undefined),
 	};
 
 	let executor: Executor;
