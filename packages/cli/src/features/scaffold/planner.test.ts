@@ -103,4 +103,16 @@ describe("Planner", () => {
 		expect(plan.skill).toBeDefined();
 		expect(plan.skill?.packageName).toBe("yamcodes/arkenv");
 	});
+
+	it("normalizes metadata paths", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, path: "src/env.ts" },
+		};
+		const plan = createPlan(state);
+		// path.relative will use forward slashes on POSIX, but we want to ensure
+		// our normalization handles the output regardless of platform.
+		expect(plan.metadata.displayPath).toBe("./src/env.ts");
+		expect(plan.metadata.importPath).toBe("./src/env");
+	});
 });

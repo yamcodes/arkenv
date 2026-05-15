@@ -100,7 +100,7 @@ export class Executor {
 						this.reporter.step("Bootstrapping Vite plugin...");
 						const result = await this.workspace.bootstrapViteConfig(
 							viteConfigPath,
-							plan.bootstrap.importPath || "./src/env.ts",
+							plan.bootstrap.importPath || "./src/env",
 						);
 						if (result.success) {
 							if (result.updated) {

@@ -117,10 +117,8 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	}
 
 	// Metadata
-	const relPath = path.relative(cwd, targetPath);
-	const displayPath = (
-		relPath.startsWith(".") ? relPath : `./${relPath}`
-	).replace(/\\/g, "/");
+	const relPath = path.relative(cwd, targetPath).replace(/\\/g, "/");
+	const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
 	const importPath = displayPath.replace(/\.(ts|js|tsx|jsx)$/, "");
 
 	plan.metadata.displayPath = displayPath;
