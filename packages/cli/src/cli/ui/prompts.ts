@@ -2,8 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { cancel, confirm, group, isCancel, select, text } from "@clack/prompts";
 import pc from "picocolors";
-import { getEnvExampleKeys } from "@/features/scaffold/env-parser";
-import type { ProjectOptions } from "@/features/scaffold/plan";
+import { getEnvExampleKeys, type ProjectOptions } from "@/features/scaffold";
 import { code } from "./visuals";
 
 export async function runPromptWizard(

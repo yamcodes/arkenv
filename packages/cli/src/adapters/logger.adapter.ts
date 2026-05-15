@@ -1,4 +1,4 @@
-import type { LoggerPort } from "@/shared/ports/logger.port";
+import type { LoggerPort } from "@/shared/ports";
 import {
 	JsonReporter,
 	type Reporter,

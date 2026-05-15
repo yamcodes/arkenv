@@ -1,5 +1,5 @@
 import pc from "picocolors";
-import type { LoggerPort } from "@/shared/ports/logger.port";
+import type { LoggerPort } from "@/shared/ports";
 import { version } from "../../../package.json";
 
 export class HelpUseCase {

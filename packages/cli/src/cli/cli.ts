@@ -1,4 +1,4 @@
-import { Logger } from "@/adapters/logger.adapter";
+import { Logger } from "@/adapters";
 
 export class CLI {
 	public args: string[];

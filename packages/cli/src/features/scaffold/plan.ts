@@ -68,4 +68,3 @@ export type CollectedState = {
 	existingFiles: string[];
 	isYes: boolean;
 };
-
