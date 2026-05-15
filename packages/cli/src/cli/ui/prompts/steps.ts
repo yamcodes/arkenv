@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import { cancel, confirm, isCancel, select, text } from "@clack/prompts";
+import { confirm, isCancel, select, text } from "@clack/prompts";
 import pc from "picocolors";
 import type { ProjectOptions } from "@/features/scaffold";
-import { code } from "../visuals";
+import { code } from "@/cli/ui";
 
 /**
  * A collection of interactive CLI prompt steps used during initialization.
@@ -52,7 +52,7 @@ export const steps = {
 
 	useDefaultPath: async () => {
 		const answer = await confirm({
-			message: "Use default config path (./src/env.ts)?",
+			message: `Use default config path (${code("./src/env.ts")})?`,
 			initialValue: true,
 			active: "Yes (Recommended)",
 			inactive: "No, let me customize it",
@@ -179,7 +179,7 @@ export const steps = {
 	useEnvExample: async (detectedKeys: string[] | null) => {
 		if (detectedKeys && detectedKeys.length > 0) {
 			const answer = await confirm({
-				message: `Detected ${pc.cyan(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`,
+				message: `Detected ${code(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`,
 				active: "Yes (Recommended)",
 				initialValue: true,
 			});

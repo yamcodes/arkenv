@@ -1,6 +1,6 @@
 import path from "node:path";
 import dedent from "dedent";
-import pc from "picocolors";
+import { code, symbol } from "@/cli/ui";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 
 /**
@@ -27,7 +27,7 @@ export class Executor {
 							plan.bootstrap.framework !== "bun")
 					) {
 						this.reporter.warn(
-							`Skipping safe-append for ${path.basename(file.path)}: unsupported framework.`,
+							`Skipping safe-append for ${code(path.basename(file.path))}: unsupported framework.`,
 						);
 						continue;
 					}
@@ -38,11 +38,11 @@ export class Executor {
 					);
 					if (success) {
 						this.reporter.info(
-							`Appended ArkEnv types to ${path.basename(file.path)}.`,
+							`Appended ArkEnv types to ${code(path.basename(file.path))}.`,
 						);
 					} else {
 						this.reporter.info(
-							`${path.basename(file.path)} already contains ArkEnv types.`,
+							`${code(path.basename(file.path))} already contains ArkEnv types.`,
 						);
 					}
 					continue;
@@ -57,7 +57,7 @@ export class Executor {
 					const actionLabel =
 						file.action === "overwrite" ? "Updated" : "Created";
 					this.reporter.info(
-						`${actionLabel} ${path.basename(file.path)} for typesafe environment variables.`,
+						`${actionLabel} ${code(path.basename(file.path))} for typesafe environment variables.`,
 					);
 				}
 			}
@@ -67,7 +67,7 @@ export class Executor {
 			// 2. Install dependencies
 			if (plan.install && process.env.SKIP_INSTALL !== "true") {
 				this.reporter.step(
-					`Installing dependencies with ${plan.install.packageManager}...`,
+					`Installing dependencies with ${code(plan.install.packageManager)}...`,
 				);
 				const [cmd, args] = this.getInstallCommand(
 					plan.install.packageManager,
@@ -83,11 +83,13 @@ export class Executor {
 					plan.tsConfig.path,
 				);
 				if (tsResult.status === "updated") {
-					this.reporter.info(`Enforced strict: true in your ${tsResult.file!}`);
+					this.reporter.info(
+						`Enforced strict: true in your ${code(tsResult.file!)}`,
+					);
 					tsConfigUpdated = true;
 				} else if (tsResult.status === "error") {
 					this.reporter.warn(
-						`Could not automatically update ${tsResult.file || "tsconfig.json"}. Please ensure 'strict: true' is set manually.`,
+						`Could not automatically update ${code(tsResult.file || "tsconfig.json")}. Please ensure 'strict: true' is set manually.`,
 					);
 				}
 			}
@@ -104,17 +106,21 @@ export class Executor {
 						);
 						if (result.success) {
 							if (result.updated) {
-								this.reporter.info(`Updated ${path.basename(viteConfigPath)}`);
+								this.reporter.info(
+									`Updated ${code(path.basename(viteConfigPath))}`,
+								);
 							}
 						} else {
 							this.reporter.warn(
-								`Could not automatically update ${path.basename(viteConfigPath)}: ${result.error}`,
+								`Could not automatically update ${code(path.basename(viteConfigPath))}: ${result.error}`,
 							);
-							this.reporter.info("Please add '@arkenv/vite-plugin' manually.");
+							this.reporter.info(
+								`Please add ${code("@arkenv/vite-plugin")} manually.`,
+							);
 						}
 					} else {
 						this.reporter.info(
-							"No Vite config found — please add '@arkenv/vite-plugin' to your Vite config manually.",
+							`No Vite config found — please add ${code("@arkenv/vite-plugin")} to your Vite config manually.`,
 						);
 					}
 				} else if (plan.bootstrap.framework === "bun") {
@@ -129,7 +135,7 @@ export class Executor {
 						}
 					} else {
 						this.reporter.info(
-							"No Bun config found — create a bun.config.ts or run `bun init` to bootstrap manually.",
+							`No Bun config found — create a ${code("bun.config.ts")} or run ${code("bun init")} to bootstrap manually.`,
 						);
 					}
 				}
@@ -156,14 +162,17 @@ export class Executor {
 			// 6. Final reporting
 			this.reportNextSteps(plan, skillInstalled);
 
-			this.reporter.finish("ArkEnv scaffolding complete. Happy coding!", {
-				path: plan.metadata.displayPath,
-				framework: plan.metadata.framework,
-				validator: plan.metadata.validator,
-				packageManager: plan.metadata.packageManager,
-				tsConfigUpdated,
-				skillInstalled,
-			});
+			this.reporter.finish(
+				`${symbol} ArkEnv scaffolding complete. Happy coding!`,
+				{
+					path: plan.metadata.displayPath,
+					framework: plan.metadata.framework,
+					validator: plan.metadata.validator,
+					packageManager: plan.metadata.packageManager,
+					tsConfigUpdated,
+					skillInstalled,
+				},
+			);
 		} catch (error) {
 			s.stop("Scaffolding failed.");
 			throw error;
@@ -184,18 +193,18 @@ export class Executor {
 	}
 
 	private reportNextSteps(plan: ScaffoldingPlan, skillInstalled: boolean) {
-		let usageInstructions = `2. Import and use: import { env } from "${plan.metadata.importPath}"`;
+		let usageInstructions = `2. Import and use: import { env } from "${code(plan.metadata.importPath)}"`;
 		if (plan.metadata.framework === "vite") {
-			usageInstructions = "2. Access via import.meta.env.YOUR_VAR";
+			usageInstructions = `2. Access via ${code("import.meta.env.YOUR_VAR")}`;
 		} else if (plan.metadata.framework === "bun") {
-			usageInstructions = "2. Access via process.env.YOUR_VAR";
+			usageInstructions = `2. Access via ${code("process.env.YOUR_VAR")}`;
 		}
 
 		if (skillInstalled) {
 			this.reporter.note(
 				dedent`
 					Inside your AI assistant (e.g. Claude Code), use:
-					/arkenv - automatically refine your schema and configure integrations.
+					${code("/arkenv")} - automatically refine your schema and configure integrations.
 				`,
 				"Next steps",
 			);
@@ -204,10 +213,10 @@ export class Executor {
 			const packageName = plan.skill?.packageName || "yamcodes/arkenv";
 			this.reporter.note(
 				dedent`
-					1. Check ${plan.metadata.displayPath} and refine your environment schema.
+					1. Check ${code(plan.metadata.displayPath)} and refine your environment schema.
 					${usageInstructions}
-					3. (Recommended) Install the AI skill: ${dlx} skills add ${packageName}
-					   Then run /arkenv inside your AI assistant to finish.
+					3. (Recommended) Install the AI skill: ${code(`${dlx} skills add ${packageName}`)}
+					   Then run ${code("/arkenv")} inside your AI assistant to finish.
 				`,
 				"Next steps",
 			);

@@ -3,6 +3,7 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
 import pc from "picocolors";
+import { code } from "@/cli/ui/visuals";
 import { transformViteConfig } from "@/features/config-mutation";
 import { updateTsConfigToStrict } from "@/features/scaffold";
 import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
@@ -154,7 +155,7 @@ export class NodeWorkspace implements WorkspacePort {
 			return {
 				success: true,
 				instructions: dedent`
-					To complete Bun integration, ensure your ${pc.cyan("bunfig.toml")} includes a preload file:
+					To complete Bun integration, ensure your ${code("bunfig.toml")} includes a preload file:
 
 					[preload]
 					preload = ["./bun.setup.ts"]
@@ -182,14 +183,14 @@ export class NodeWorkspace implements WorkspacePort {
 		}
 
 		const instructions = dedent`
-			To complete Bun integration, we recommend creating a ${pc.cyan("bun.setup.ts")} file and adding it to your ${pc.cyan("bunfig.toml")}:
+			To complete Bun integration, we recommend creating a ${code("bun.setup.ts")} file and adding it to your ${code("bunfig.toml")}:
 
 			${pc.dim("[preload]")}
 			${pc.dim('preload = ["./bun.setup.ts"]')}
 
 			In your setup file, import the ArkEnv plugin:
 
-			${pc.cyan('import arkenv from "@arkenv/bun-plugin";')}
+			${code('import arkenv from "@arkenv/bun-plugin";')}
 		`;
 
 		return { success: true, instructions };
