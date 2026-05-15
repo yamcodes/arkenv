@@ -1,5 +1,40 @@
 # @arkenv/cli
 
+## 0.0.8
+
+### Patch Changes
+
+- #### Fix JSON output routing and improve CLI reliability _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
+
+  Fixed several inconsistencies in how the CLI reports its progress and errors:
+
+  - **Correct JSON Stream Routing**: When using `--json`, interactive logs and progress updates are now correctly routed to `stderr`. This ensures that `stdout` contains only valid, pipeable JSON data.
+  - **Improved Silent Mode**: Fixed a bug where some ANSI escape codes could leak into the output when running in `--quiet` mode.
+  - **Accurate Exit Codes**: The CLI now consistently exits with a non-zero status code when a process is cancelled or fails, improving compatibility with CI/CD pipelines.
+  - **Safer Error Logging**: Error stacks and crash details are now routed exclusively to `stderr`, preventing them from corrupting structured output.
+
+- #### Improve CLI output formatting and visual consistency _[`#1008`](https://github.com/yamcodes/arkenv/pull/1008) [`7228020`](https://github.com/yamcodes/arkenv/commit/722802003cc0425db73add2937403ba57d8b2efa) [@yamcodes](https://github.com/yamcodes)_
+
+  - Standardized formatting of paths, filenames, and commands using a light blue color.
+  - Updated all interactive prompts and instruction messages to use consistent code styling.
+
+- #### Improve reliability and transparency of initialization process _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
+
+  Improved the `init` command to be more robust and informative:
+
+  - **Resilient Scaffolding**: The initialization process is now more atomic, validating the plan before applying changes to minimize partial configurations on failure.
+  - **Enhanced Debugging in Quiet Mode**: When running with `--quiet` (common in CI), output from dependency installation is now buffered and only displayed if the installation fails, providing critical context without cluttering successful runs.
+  - **Improved Framework Detection**: Auto-detection of Bun environments is now more reliable, correctly identifying the runtime even when dependencies are not yet installed.
+  - **Clearer Error Reporting**: Provides more specific error messages and instructions when individual scaffolding steps fail.
+
+- #### Robust project configuration and comment preservation _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
+
+  Improved how the CLI modifies project files to be more respectful of user configuration:
+
+  - **Preserve Comments and Formatting**: Updating `tsconfig.json` now uses a non-destructive parser that preserves your comments, indentation, and existing formatting.
+  - **Reliable Plugin Injection**: Injection of ArkEnv plugins into `vite.config.ts` and `bun.config.ts` now uses AST-based manipulation, making it much more robust against varied coding styles and existing configurations.
+  - **Improved Atomic Writes**: File system operations now use a more centralized and tested abstraction, reducing the risk of file corruption during scaffolding.
+
 ## 0.0.7
 
 ### Patch Changes
