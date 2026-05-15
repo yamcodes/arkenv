@@ -177,7 +177,7 @@ export const steps = {
 	},
 
 	useEnvExample: async (detectedKeys: string[] | null) => {
-		if (detectedKeys) {
+		if (detectedKeys && detectedKeys.length > 0) {
 			const answer = await confirm({
 				message: `Detected ${pc.cyan(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`,
 				active: "Yes (Recommended)",

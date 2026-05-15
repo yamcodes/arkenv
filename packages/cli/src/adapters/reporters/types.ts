@@ -23,4 +23,5 @@ export type Reporter = {
 	cancel(message: string): void;
 	fatal(message: string, error?: unknown): void;
 	finish(message: string, details?: Record<string, unknown>): void;
+	flush(): Promise<void>;
 };

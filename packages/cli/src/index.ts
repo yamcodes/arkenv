@@ -9,6 +9,7 @@ async function main() {
 
 	if (cli.helpRequested) {
 		await helpUseCase.execute();
+		await logger.flush();
 		process.exit(0);
 	}
 
@@ -19,6 +20,7 @@ async function main() {
 			logger.error("Missing command.");
 		}
 		await helpUseCase.execute();
+		await logger.flush();
 		process.exit(1);
 	}
 
@@ -30,6 +32,7 @@ async function main() {
 		});
 	} catch (error) {
 		logger.fatal("An unexpected error occurred", error);
+		await logger.flush();
 		process.exit(1);
 	}
 }
@@ -37,18 +40,20 @@ async function main() {
 main();
 
 // Defense-in-depth for unforeseen async rejections
-process.on("unhandledRejection", (err) => {
+process.on("unhandledRejection", async (err) => {
 	if (globalLogger) {
 		globalLogger.fatal("Unhandled rejection", err);
+		await globalLogger.flush();
 	} else {
 		console.error("Unhandled rejection", err);
 	}
 	process.exit(1);
 });
 
-process.on("uncaughtException", (err) => {
+process.on("uncaughtException", async (err) => {
 	if (globalLogger) {
 		globalLogger.fatal("Uncaught exception", err);
+		await globalLogger.flush();
 	} else {
 		console.error("Uncaught exception", err);
 	}

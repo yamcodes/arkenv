@@ -81,4 +81,10 @@ export class JsonReporter implements Reporter {
 			details,
 		});
 	}
+
+	async flush(): Promise<void> {
+		return new Promise((resolve) => {
+			process.stdout.write("", () => resolve());
+		});
+	}
 }

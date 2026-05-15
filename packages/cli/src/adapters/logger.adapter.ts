@@ -97,4 +97,8 @@ export class Logger implements LoggerPort {
 	finish(message: string, details?: Record<string, unknown>) {
 		this.reporter.finish(message, details);
 	}
+
+	async flush() {
+		await this.reporter.flush();
+	}
 }

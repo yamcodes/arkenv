@@ -23,6 +23,7 @@ export type LoggerPort = {
 	cancel(message: string): void;
 	fatal(message: string, error?: unknown): void;
 	finish(message: string, details?: Record<string, unknown>): void;
+	flush(): Promise<void>;
 	interactiveStdout(enable: boolean): void;
 	readonly stdio:
 		| "inherit"

@@ -50,9 +50,9 @@ describe("NodeWorkspace", () => {
 			pkgPath,
 			JSON.stringify({ dependencies: { vite: "*" } }),
 		);
-		// detectFramework is a standalone helper or part of Workspace, let's use the one from NodeWorkspace if possible
-		// Wait, NodeWorkspace doesn't have detectFramework! It's in the Workspace class.
-		// I should probably add it to the port if it's a workspace responsibility.
+		const helper = new Workspace({ cwd: tempDir });
+		const framework = await helper.detectFramework();
+		expect(framework).toBe("vite");
 	});
 
 	it("asserts detection priority when both package.json and config files exist", async () => {

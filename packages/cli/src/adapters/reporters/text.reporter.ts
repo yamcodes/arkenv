@@ -62,4 +62,10 @@ export class TextReporter implements Reporter {
 	finish(message: string, _details?: Record<string, unknown>) {
 		outro(message);
 	}
+
+	async flush(): Promise<void> {
+		return new Promise((resolve) => {
+			process.stderr.write("", () => resolve());
+		});
+	}
 }

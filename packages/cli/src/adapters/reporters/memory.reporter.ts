@@ -58,4 +58,6 @@ export class MemoryReporter implements Reporter {
 	finish(message: string, details?: Record<string, unknown>) {
 		this.logs.push({ type: "finish", message, data: details });
 	}
+
+	async flush(): Promise<void> {}
 }

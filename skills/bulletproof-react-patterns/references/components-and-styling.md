@@ -37,7 +37,7 @@ function Component() {
 
 If a component accepts too many props, split it into multiple components or use composition via `children` or slots.
 
-### Wrapping 3rd Party Components
+### Wrapping 3rd-party Components
 
 Wrap third-party components to adapt them to your application's API. This isolates the dependency so swapping the underlying library only requires changing one file:
 
