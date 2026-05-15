@@ -1,4 +1,9 @@
-import type { BootstrapResult } from "@/features/scaffold/plan";
+export type BootstrapResult = {
+	success: boolean;
+	updated?: boolean | undefined;
+	instructions?: string | undefined;
+	error?: string | undefined;
+};
 
 export type WorkspacePort = {
 	exists(path: string): Promise<boolean>;

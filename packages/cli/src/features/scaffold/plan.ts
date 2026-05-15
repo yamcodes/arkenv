@@ -69,9 +69,3 @@ export type CollectedState = {
 	isYes: boolean;
 };
 
-export type BootstrapResult = {
-	success: boolean;
-	updated?: boolean | undefined;
-	instructions?: string | undefined;
-	error?: string | undefined;
-};

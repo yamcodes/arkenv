@@ -1,5 +1,5 @@
 import { detectCodeFormat, generateCode, parseModule } from "magicast";
-import type { BootstrapResult } from "@/features/scaffold/plan";
+import type { BootstrapResult } from "@/shared/ports/workspace.port";
 
 export type MutationInput = {
 	code: string;
