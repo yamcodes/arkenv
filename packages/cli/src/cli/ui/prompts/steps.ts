@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { confirm, isCancel, select, text } from "@clack/prompts";
 import pc from "picocolors";
-import type { ProjectOptions } from "@/features/scaffold";
 import { code } from "@/cli/ui";
+import type { ProjectOptions } from "@/features/scaffold";
 
 /**
  * A collection of interactive CLI prompt steps used during initialization.
