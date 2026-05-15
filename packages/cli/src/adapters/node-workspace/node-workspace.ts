@@ -2,134 +2,10 @@ import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
-import { applyEdits, modify } from "jsonc-parser";
 import pc from "picocolors";
 import { transformViteConfig } from "@/features/config-mutation";
 import { updateTsConfigToStrict } from "@/features/scaffold";
 import type { WorkspacePort } from "@/shared/ports";
-
-export type Framework = "vite" | "bun" | "node";
-
-export type WorkspaceOptions = {
-	cwd?: string;
-};
-
-export class Workspace {
-	private cwd: string;
-
-	constructor(options: WorkspaceOptions = {}) {
-		this.cwd = options.cwd || process.cwd();
-	}
-
-	resolve(...paths: string[]) {
-		return path.resolve(this.cwd, ...paths);
-	}
-
-	async exists(filePath: string) {
-		try {
-			await fsp.access(this.resolve(filePath));
-			return true;
-		} catch {
-			return false;
-		}
-	}
-
-	async readFile(filePath: string) {
-		return fsp.readFile(this.resolve(filePath), "utf-8");
-	}
-
-	async writeFile(filePath: string, content: string) {
-		const fullPath = this.resolve(filePath);
-		await fsp.mkdir(path.dirname(fullPath), { recursive: true });
-		await fsp.writeFile(fullPath, content, "utf-8");
-	}
-
-	async detectFramework(): Promise<Framework> {
-		try {
-			const content = await this.readFile("package.json");
-			const pkg = JSON.parse(content);
-			const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
-
-			if (allDeps.vite) return "vite";
-			if (allDeps["@types/bun"] || allDeps.bun) return "bun";
-		} catch {
-			// ignore missing or invalid package.json
-		}
-
-		// Check for config files
-		if (
-			(await this.exists("vite.config.ts")) ||
-			(await this.exists("vite.config.js")) ||
-			(await this.exists("vite.config.mts")) ||
-			(await this.exists("vite.config.mjs"))
-		) {
-			return "vite";
-		}
-
-		// Check for bun runtime
-		if ("bun" in process.versions) return "bun";
-
-		return "node";
-	}
-
-	async setTsConfigProperty(propertyPath: string[], value: unknown) {
-		const tsConfigPath = await this.findTsConfig();
-		if (!tsConfigPath) return { status: "not_found" };
-
-		try {
-			const content = await this.readFile(tsConfigPath);
-			const edits = modify(content, propertyPath, value, {
-				formattingOptions: { insertSpaces: true, tabSize: 2 },
-			});
-			const updated = applyEdits(content, edits);
-
-			await this.writeFile(tsConfigPath, updated);
-			return { status: "updated", file: path.basename(tsConfigPath) };
-		} catch {
-			return { status: "error", file: path.basename(tsConfigPath) };
-		}
-	}
-
-	async findTsConfig(): Promise<string | null> {
-		const filenames = [
-			"tsconfig.app.json",
-			"tsconfig.json",
-			"tsconfig.base.json",
-			"tsconfig.node.json",
-		];
-		let currentDir = this.cwd;
-		let isRoot = false;
-
-		do {
-			isRoot = currentDir === path.parse(currentDir).root;
-			for (const file of filenames) {
-				const fullPath = path.join(currentDir, file);
-				try {
-					await fsp.access(fullPath);
-					return fullPath;
-				} catch {
-					// intentionally ignore missing file
-				}
-			}
-			currentDir = path.dirname(currentDir);
-		} while (!isRoot);
-
-		return null;
-	}
-
-	async findViteConfig(): Promise<string | null> {
-		const filenames = [
-			"vite.config.ts",
-			"vite.config.js",
-			"vite.config.mts",
-			"vite.config.mjs",
-		];
-		for (const file of filenames) {
-			if (await this.exists(file)) return this.resolve(file);
-		}
-		return null;
-	}
-}
 
 export class NodeWorkspace implements WorkspacePort {
 	constructor(
@@ -141,25 +17,25 @@ export class NodeWorkspace implements WorkspacePort {
 			| readonly (object | number | string | null | undefined)[],
 	) {}
 
-	async exists(path: string): Promise<boolean> {
+	async exists(filePath: string): Promise<boolean> {
 		try {
-			await fsp.access(path);
+			await fsp.access(filePath);
 			return true;
 		} catch {
 			return false;
 		}
 	}
 
-	async readFile(path: string): Promise<string> {
-		return fsp.readFile(path, "utf-8");
+	async readFile(filePath: string): Promise<string> {
+		return fsp.readFile(filePath, "utf-8");
 	}
 
-	async writeFile(path: string, content: string): Promise<void> {
-		await fsp.writeFile(path, content, "utf-8");
+	async writeFile(filePath: string, content: string): Promise<void> {
+		await fsp.writeFile(filePath, content, "utf-8");
 	}
 
-	async mkdir(path: string, recursive?: boolean): Promise<void> {
-		await fsp.mkdir(path, { recursive });
+	async mkdir(dirPath: string, recursive?: boolean): Promise<void> {
+		await fsp.mkdir(dirPath, { recursive });
 	}
 
 	async execute(command: string, args: string[] = []): Promise<void> {
@@ -202,8 +78,8 @@ export class NodeWorkspace implements WorkspacePort {
 		});
 	}
 
-	async updateTsConfigToStrict(path?: string) {
-		return updateTsConfigToStrict(path);
+	async updateTsConfigToStrict(filePath?: string) {
+		return updateTsConfigToStrict(filePath);
 	}
 
 	async findViteConfig(): Promise<string | null> {
@@ -239,12 +115,12 @@ export class NodeWorkspace implements WorkspacePort {
 		return null;
 	}
 
-	async bootstrapViteConfig(path: string, importPath: string) {
-		const code = await this.readFile(path);
+	async bootstrapViteConfig(filePath: string, importPath: string) {
+		const code = await this.readFile(filePath);
 		const result = transformViteConfig({ code, envImportPath: importPath });
 
 		if (result.success && result.updated && result.code) {
-			await this.writeFile(path, result.code);
+			await this.writeFile(filePath, result.code);
 		}
 
 		return {
@@ -302,11 +178,11 @@ export class NodeWorkspace implements WorkspacePort {
 	}
 
 	async safeAppend(
-		path: string,
+		filePath: string,
 		schemaPath: string,
 		framework: "vite" | "bun",
 	) {
-		const { safeAppend } = await import("./injection");
-		return safeAppend(path, schemaPath, framework);
+		const { safeAppend } = await import("../injection");
+		return safeAppend(filePath, schemaPath, framework);
 	}
 }
