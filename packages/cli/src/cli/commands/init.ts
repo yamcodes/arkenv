@@ -1,5 +1,4 @@
 import path from "node:path";
-import { confirm, isCancel } from "@clack/prompts";
 import pc from "picocolors";
 import { Executor } from "../../features/scaffold/executor";
 import type { CollectedState } from "../../features/scaffold/plan";
@@ -10,8 +9,8 @@ import {
 	detectPackageManager,
 } from "../../features/scaffold/scaffold";
 import type { LoggerPort } from "../../shared/ports/logger.port";
+import type { PromptPort } from "../../shared/ports/prompt.port";
 import type { WorkspacePort } from "../../shared/ports/workspace.port";
-import { runPromptWizard } from "../ui/prompts";
 import { code } from "../ui/visuals";
 
 export type InitInput = {
@@ -24,6 +23,7 @@ export class InitUseCase {
 	constructor(
 		private readonly logger: LoggerPort,
 		private readonly workspace: WorkspacePort,
+		private readonly prompt: PromptPort,
 	) {}
 
 	async execute(input: InitInput) {
@@ -58,29 +58,24 @@ export class InitUseCase {
 						`TypeScript strict mode is not enabled in your ${code(tsConfig.file!)}.`,
 					);
 
-					const confirmStrict = await confirm({
-						message: `ArkEnv requires ${pc.dim("strict")} mode in your ${code(tsConfig.file!)}. Would you like to enable it now?`,
-						initialValue: true,
-						active: "Yes (Recommended)",
-						inactive: "No",
-					});
+					const confirmStrict = await this.prompt.confirm(
+						`ArkEnv requires ${pc.dim("strict")} mode in your ${code(tsConfig.file!)}. Would you like to enable it now?`,
+						true,
+					);
 
-					if (isCancel(confirmStrict)) {
+					if (!confirmStrict) {
 						this.logger.cancel("Operation cancelled.");
 						return null;
 					}
 
-					if (confirmStrict) {
-						shouldUpdateTsConfig = true;
-					}
+					shouldUpdateTsConfig = true;
 				}
 			}
 
 			const detectedFramework = await detectFramework();
-			const options = await runPromptWizard(
+			const options = await this.prompt.runWizard(
 				{ framework: detectedFramework },
 				isYes,
-				isAgent,
 			);
 
 			if (!options) {
@@ -88,23 +83,31 @@ export class InitUseCase {
 				return null;
 			}
 
-			// Handle existing env file prompt
-			// Note: In a strict hexagonal architecture, we'd move this FS check to a port
-			const targetPath = path.resolve(process.cwd(), options.path);
+			// Handle installSkill logic based on product context
+			// If it's an agent, we NEVER auto-install the skill.
+			// If it's not an agent and not isYes, we ask the user.
+			if (isAgent) {
+				options.installSkill = false;
+			} else if (!isYes) {
+				options.installSkill = await this.prompt.confirm(
+					"Would you like to install the ArkEnv agent skill?",
+					true,
+				);
+			}
 
-			// For now, keeping some FS calls here for simplicity as it was in the original code,
-			// but normally we should use this.workspace.exists(targetPath)
+			// Handle existing env file prompt
+			const targetPath = path.resolve(process.cwd(), options.path);
 
 			if (
 				(await this.workspace.exists(targetPath)) &&
 				options.overwriteEnvSchemaFile === undefined
 			) {
-				const confirmOverwrite = await confirm({
-					message: `File ${path.basename(targetPath)} already exists. Overwrite?`,
-					initialValue: false,
-				});
+				const confirmOverwrite = await this.prompt.confirm(
+					`File ${path.basename(targetPath)} already exists. Overwrite?`,
+					false,
+				);
 
-				if (isCancel(confirmOverwrite)) {
+				if (!confirmOverwrite) {
 					this.logger.cancel("Operation cancelled.");
 					return null;
 				}
