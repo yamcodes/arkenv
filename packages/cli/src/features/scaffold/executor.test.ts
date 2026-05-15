@@ -118,4 +118,23 @@ describe("Executor", () => {
 			"vite",
 		);
 	});
+
+	it("installs skill when planned", async () => {
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			skill: {
+				dlxCommand: ["pnpm", "dlx"],
+				packageName: "yamcodes/arkenv",
+				isYes: true,
+			},
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.execute).toHaveBeenCalledWith("pnpm", [
+			"dlx",
+			"skills",
+			"add",
+			"yamcodes/arkenv",
+			"--yes",
+		]);
+	});
 });

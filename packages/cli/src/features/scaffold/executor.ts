@@ -140,11 +140,12 @@ export class Executor {
 			if (plan.skill && process.env.SKIP_INSTALL !== "true") {
 				this.reporter.step("Installing ArkEnv agent skill...");
 				try {
-					const args = ["skills", "add", plan.skill.packageName];
+					const [cmd, ...baseArgs] = plan.skill.dlxCommand;
+					const args = [...baseArgs, "skills", "add", plan.skill.packageName];
 					if (plan.skill.isYes) {
 						args.push("--yes");
 					}
-					await this.workspace.execute(plan.skill.dlxCommand, args);
+					await this.workspace.execute(cmd, args);
 					skillInstalled = true;
 				} catch (err: unknown) {
 					const message = err instanceof Error ? err.message : String(err);
@@ -199,7 +200,7 @@ export class Executor {
 				"Next steps",
 			);
 		} else {
-			const dlx = plan.skill?.dlxCommand || "npx";
+			const dlx = plan.skill?.dlxCommand.join(" ") || "npx";
 			const packageName = plan.skill?.packageName || "yamcodes/arkenv";
 			this.reporter.note(
 				dedent`

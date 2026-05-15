@@ -41,7 +41,7 @@ export type ScaffoldingPlan = {
 	};
 	/** Optional skill installation */
 	skill?: {
-		dlxCommand: string;
+		dlxCommand: string[];
 		packageName: string;
 		isYes: boolean;
 	};

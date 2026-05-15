@@ -102,6 +102,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		expect(plan.skill).toBeDefined();
 		expect(plan.skill?.packageName).toBe("yamcodes/arkenv");
+		expect(plan.skill?.dlxCommand).toEqual(["pnpm", "dlx"]);
 	});
 
 	it("normalizes metadata paths", () => {
