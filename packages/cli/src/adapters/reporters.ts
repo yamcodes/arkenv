@@ -19,7 +19,7 @@ export type Reporter = {
 	json(data: unknown): void;
 	cancel(message: string): void;
 	fatal(message: string, error?: unknown): void;
-	finish(message: string, details?: Record<string, any>): void;
+	finish(message: string, details?: Record<string, unknown>): void;
 };
 
 export class TextReporter implements Reporter {
@@ -74,7 +74,7 @@ export class TextReporter implements Reporter {
 		process.exit(1);
 	}
 
-	finish(message: string, _details?: Record<string, any>) {
+	finish(message: string, _details?: Record<string, unknown>) {
 		outro(message);
 	}
 }
@@ -148,7 +148,7 @@ export class JsonReporter implements Reporter {
 		process.exit(1);
 	}
 
-	finish(message: string, details?: Record<string, any>) {
+	finish(message: string, details?: Record<string, unknown>) {
 		this.json({
 			status: "success",
 			message,
@@ -193,11 +193,11 @@ export class SilentReporter implements Reporter {
 		process.exit(1);
 	}
 
-	finish(_message: string, _details?: Record<string, any>) {}
+	finish(_message: string, _details?: Record<string, unknown>) {}
 }
 
 export class MemoryReporter implements Reporter {
-	public logs: { type: string; message: string; data?: any }[] = [];
+	public logs: { type: string; message: string; data?: unknown }[] = [];
 
 	info(message: string) {
 		this.logs.push({ type: "info", message });
@@ -247,7 +247,7 @@ export class MemoryReporter implements Reporter {
 		this.logs.push({ type: "fatal", message, data: error });
 	}
 
-	finish(message: string, details?: Record<string, any>) {
+	finish(message: string, details?: Record<string, unknown>) {
 		this.logs.push({ type: "finish", message, data: details });
 	}
 }

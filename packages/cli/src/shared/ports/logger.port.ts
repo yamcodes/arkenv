@@ -16,7 +16,11 @@ export type LoggerPort = {
 	json(data: unknown): void;
 	cancel(message: string): void;
 	fatal(message: string, error?: unknown): void;
-	finish(message: string, details?: Record<string, any>): void;
+	finish(message: string, details?: Record<string, unknown>): void;
 	interactiveStdout(enable: boolean): void;
-	readonly stdio: any;
+	readonly stdio:
+		| "inherit"
+		| "ignore"
+		| "pipe"
+		| readonly (object | number | string | null | undefined)[];
 };

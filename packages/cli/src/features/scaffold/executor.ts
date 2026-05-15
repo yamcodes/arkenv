@@ -132,10 +132,9 @@ export class Executor {
 					}
 					await this.workspace.execute(plan.skill.dlxCommand, args);
 					skillInstalled = true;
-				} catch (err: any) {
-					this.reporter.warn(
-						`Failed to install ArkEnv AI skill: ${err.message}`,
-					);
+				} catch (err: unknown) {
+					const message = err instanceof Error ? err.message : String(err);
+					this.reporter.warn(`Failed to install ArkEnv AI skill: ${message}`);
 				}
 			}
 

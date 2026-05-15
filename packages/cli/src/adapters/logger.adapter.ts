@@ -87,7 +87,7 @@ export class Logger implements LoggerPort {
 		this.reporter.fatal(message, error);
 	}
 
-	finish(message: string, details?: Record<string, any>) {
+	finish(message: string, details?: Record<string, unknown>) {
 		this.reporter.finish(message, details);
 	}
 }

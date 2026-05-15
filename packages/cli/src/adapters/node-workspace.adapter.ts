@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
@@ -72,7 +72,7 @@ export class Workspace {
 		return "node";
 	}
 
-	async setTsConfigProperty(propertyPath: string[], value: any) {
+	async setTsConfigProperty(propertyPath: string[], value: unknown) {
 		const tsConfigPath = await this.findTsConfig();
 		if (!tsConfigPath) return { status: "not_found" };
 
@@ -134,7 +134,11 @@ export class Workspace {
 export class NodeWorkspace implements WorkspacePort {
 	constructor(
 		private isQuiet: boolean,
-		private stdio: any,
+		private stdio:
+			| "inherit"
+			| "ignore"
+			| "pipe"
+			| readonly (object | number | string | null | undefined)[],
 	) {}
 
 	async exists(path: string): Promise<boolean> {
@@ -161,7 +165,7 @@ export class NodeWorkspace implements WorkspacePort {
 	async execute(command: string, args: string[] = []): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			const child = spawn(command, args, {
-				stdio: this.isQuiet ? "pipe" : this.stdio,
+				stdio: (this.isQuiet ? "pipe" : this.stdio) as StdioOptions,
 				shell: false,
 			});
 

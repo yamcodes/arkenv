@@ -23,10 +23,10 @@ export function transformViteConfig(
 			"$type" in config &&
 			config.$type === "function-call"
 		) {
-			const callee =
-				config.$callee || (config as any).$name || JSON.stringify(config);
-			if (callee === "defineConfig") {
-				config = config.$args[0];
+			const call = config as { $callee?: string; $args?: unknown[] };
+			const callee = call.$callee || JSON.stringify(config);
+			if (callee === "defineConfig" && call.$args) {
+				config = call.$args[0];
 			}
 		}
 
