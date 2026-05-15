@@ -21,10 +21,20 @@ export class Executor {
 			// 1. Create directories and write files
 			for (const file of plan.files) {
 				if (file.action === "append") {
+					if (
+						!plan.bootstrap ||
+						(plan.bootstrap.framework !== "vite" &&
+							plan.bootstrap.framework !== "bun")
+					) {
+						this.reporter.warn(
+							`Skipping safe-append for ${path.basename(file.path)}: unsupported framework.`,
+						);
+						continue;
+					}
 					const success = await this.workspace.safeAppend(
 						file.path,
 						file.content,
-						plan.bootstrap?.framework as "vite" | "bun",
+						plan.bootstrap.framework,
 					);
 					if (success) {
 						this.reporter.info(
@@ -90,7 +100,7 @@ export class Executor {
 						this.reporter.step("Bootstrapping Vite plugin...");
 						const result = await this.workspace.bootstrapViteConfig(
 							viteConfigPath,
-							plan.bootstrap.importPath!,
+							plan.bootstrap.importPath || "./src/env.ts",
 						);
 						if (result.success) {
 							if (result.updated) {
@@ -190,11 +200,12 @@ export class Executor {
 			);
 		} else {
 			const dlx = plan.skill?.dlxCommand || "npx";
+			const packageName = plan.skill?.packageName || "yamcodes/arkenv";
 			this.reporter.note(
 				dedent`
 					1. Check ${plan.metadata.displayPath} and refine your environment schema.
 					${usageInstructions}
-					3. (Recommended) Install the AI skill: ${dlx} skills add yamcodes/arkenv
+					3. (Recommended) Install the AI skill: ${dlx} skills add ${packageName}
 					   Then run /arkenv inside your AI assistant to finish.
 				`,
 				"Next steps",

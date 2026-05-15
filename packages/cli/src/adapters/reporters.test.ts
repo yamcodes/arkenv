@@ -17,10 +17,16 @@ describe("Reporters", () => {
 	beforeEach(() => {
 		stdoutSpy = vi
 			.spyOn(process.stdout, "write")
-			.mockImplementation(() => true);
+			.mockImplementation((_str: any, cb?: any) => {
+				if (typeof cb === "function") cb();
+				return true;
+			});
 		stderrSpy = vi
 			.spyOn(process.stderr, "write")
-			.mockImplementation(() => true);
+			.mockImplementation((_str: any, cb?: any) => {
+				if (typeof cb === "function") cb();
+				return true;
+			});
 		exitSpy = vi
 			.spyOn(process, "exit")
 			.mockImplementation(() => undefined as never);
@@ -70,6 +76,7 @@ describe("Reporters", () => {
 			reporter.cancel("canceled");
 			expect(stderrSpy).toHaveBeenCalledWith(
 				expect.stringContaining("✘ canceled"),
+				expect.any(Function),
 			);
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
@@ -78,6 +85,7 @@ describe("Reporters", () => {
 			reporter.fatal("fatal error");
 			expect(stderrSpy).toHaveBeenCalledWith(
 				expect.stringContaining("✘ fatal error"),
+				expect.any(Function),
 			);
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
@@ -113,6 +121,7 @@ describe("Reporters", () => {
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "fatal error"'),
 			);
+			expect(stdoutSpy).toHaveBeenCalledWith("", expect.any(Function));
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -124,6 +133,7 @@ describe("Reporters", () => {
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "cancelled"'),
 			);
+			expect(stdoutSpy).toHaveBeenCalledWith("", expect.any(Function));
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 	});

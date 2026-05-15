@@ -32,10 +32,26 @@ export function transformViteConfig(
 			"$type" in config &&
 			config.$type === "function-call"
 		) {
-			const call = config as { $callee?: string; $args?: unknown[] };
+			const call = config as { $callee?: string; $args?: any[] };
 			const callee = call.$callee || JSON.stringify(config);
 			if (callee === "defineConfig" && call.$args) {
-				config = call.$args[0];
+				const arg = call.$args[0];
+				// Guard against defineConfig((env) => ({...})) callback form
+				if (
+					arg &&
+					typeof arg === "object" &&
+					"$type" in arg &&
+					(arg.$type === "arrow-function-expression" ||
+						arg.$type === "function-expression")
+				) {
+					return {
+						success: false,
+						updated: false,
+						error:
+							"The 'defineConfig' callback form is currently not supported for automatic mutation. Please add the plugin manually.",
+					};
+				}
+				config = arg;
 			}
 		}
 
@@ -52,10 +68,8 @@ export function transformViteConfig(
 		}
 
 		if (Array.isArray(config.plugins)) {
-			// Check if already exists using the generated code
-			const hasPlugin =
-				initialCode.includes("arkenvVitePlugin") ||
-				initialCode.includes("arkenvPlugin");
+			// Check if already exists using a word-boundary regex to avoid false positives
+			const hasPlugin = /\barkenv(?:Vite)?Plugin\b/.test(initialCode);
 
 			if (!hasPlugin) {
 				// Add imports

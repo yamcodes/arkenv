@@ -88,15 +88,20 @@ export class InitUseCase {
 			}
 
 			// Handle installSkill logic based on product context
-			// If it's an agent, we NEVER auto-install the skill.
-			// If it's not an agent and not isYes, we ask the user.
 			if (isAgent) {
 				options.installSkill = false;
-			} else if (!isYes) {
-				options.installSkill = await this.prompt.confirm(
+			} else if (isYes) {
+				options.installSkill = true;
+			} else {
+				const confirmInstall = await this.prompt.confirm(
 					"Would you like to install the ArkEnv agent skill?",
 					true,
 				);
+				if (confirmInstall === null) {
+					this.logger.cancel("Operation cancelled.");
+					return null;
+				}
+				options.installSkill = confirmInstall;
 			}
 
 			// Handle existing env file prompt

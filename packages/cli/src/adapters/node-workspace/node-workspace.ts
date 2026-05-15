@@ -118,28 +118,49 @@ export class NodeWorkspace implements WorkspacePort {
 		return null;
 	}
 
-	async bootstrapViteConfig(filePath: string, importPath: string) {
-		const code = await this.readFile(filePath);
-		const result = transformViteConfig({ code, envImportPath: importPath });
+	async bootstrapViteConfig(
+		filePath: string,
+		importPath: string,
+	): Promise<BootstrapResult> {
+		try {
+			const code = await this.readFile(filePath);
+			const result = transformViteConfig({ code, envImportPath: importPath });
 
-		if (result.success && result.updated && result.code) {
-			await this.writeFile(filePath, result.code);
+			if (result.success && result.updated && result.code) {
+				await this.writeFile(filePath, result.code);
+			}
+
+			if (result.success) {
+				return {
+					success: true,
+					updated: result.updated,
+				};
+			}
+			return {
+				success: false,
+				error: result.error!,
+			};
+		} catch (e: unknown) {
+			return {
+				success: false,
+				error: e instanceof Error ? e.message : String(e),
+			};
 		}
-
-		return {
-			success: result.success,
-			updated: result.updated,
-			error: result.error,
-		};
 	}
 
-	async bootstrapBunConfig(configPath?: string | null) {
+	async bootstrapBunConfig(
+		configPath?: string | null,
+	): Promise<BootstrapResult> {
 		if (configPath?.endsWith("bunfig.toml")) {
 			return {
 				success: true,
 				instructions: dedent`
+					To complete Bun integration, ensure your ${pc.cyan("bunfig.toml")} includes a preload file:
+
 					[preload]
 					preload = ["./bun.setup.ts"]
+
+					Then, in your setup file, import the ArkEnv plugin.
 				`,
 			};
 		}
@@ -151,30 +172,25 @@ export class NodeWorkspace implements WorkspacePort {
 			return {
 				success: true,
 				instructions: dedent`
+					To complete Bun integration, add the ArkEnv plugin to your setup file:
+
 					import arkenv from "@arkenv/bun-plugin";
 
-					Bun.build({
-					  // ... other config
-					  plugins: [arkenv],
-					});
+					// If using Bun.build or similar:
+					// plugins: [arkenv]
 				`,
 			};
 		}
 
 		const instructions = dedent`
-			To complete Bun integration, add the following to your setup/preload file:
-			
-			import arkenv from "@arkenv/bun-plugin";
-			
-			Bun.build({
-			  // ... other config
-			  plugins: [arkenv],
-			});
-			
-			If you don't have a setup file, create one (e.g., bun.setup.ts) and add it to your bunfig.toml:
-			
-			[preload]
-			preload = ["./bun.setup.ts"]
+			To complete Bun integration, we recommend creating a ${pc.cyan("bun.setup.ts")} file and adding it to your ${pc.cyan("bunfig.toml")}:
+
+			${pc.dim("[preload]")}
+			${pc.dim('preload = ["./bun.setup.ts"]')}
+
+			In your setup file, import the ArkEnv plugin:
+
+			${pc.cyan('import arkenv from "@arkenv/bun-plugin";')}
 		`;
 
 		return { success: true, instructions };

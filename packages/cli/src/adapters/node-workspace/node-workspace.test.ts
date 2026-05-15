@@ -115,4 +115,49 @@ describe("Workspace", () => {
 		expect(result.success).toBe(true);
 		expect(result.updated).toBe(false);
 	});
+
+	it("returns instructions for bunfig.toml", async () => {
+		const result = await nodeWorkspace.bootstrapBunConfig("bunfig.toml");
+		expect(result.success).toBe(true);
+		expect(result.instructions).toContain("[preload]");
+	});
+
+	it("returns instructions for bun.setup.ts", async () => {
+		const result = await nodeWorkspace.bootstrapBunConfig("bun.setup.ts");
+		expect(result.success).toBe(true);
+		expect(result.instructions).toContain("@arkenv/bun-plugin");
+	});
+
+	it("returns generic bun instructions for unknown config", async () => {
+		const result = await nodeWorkspace.bootstrapBunConfig(null);
+		expect(result.success).toBe(true);
+		expect(result.instructions).toContain("bun.setup.ts");
+	});
+
+	it("handles execute failures with output", async () => {
+		// Create a failing script
+		const scriptPath = path.join(tempDir, "fail.sh");
+		await fsp.writeFile(
+			scriptPath,
+			"#!/bin/sh\necho 'hello error' >&2\nexit 1",
+		);
+		await fsp.chmod(scriptPath, 0o755);
+
+		const quietWorkspace = new NodeWorkspace(true, "pipe");
+		await expect(quietWorkspace.execute(scriptPath)).rejects.toThrow(
+			/Command failed with code 1/,
+		);
+	});
+
+	it("finds vite config files", async () => {
+		await fsp.writeFile(path.join(tempDir, "vite.config.mts"), "");
+		const found = await nodeWorkspace.findViteConfig();
+		expect(found).toContain("vite.config.mts");
+	});
+
+	it("finds bun config files", async () => {
+		await fsp.writeFile(path.join(tempDir, "bunfig.toml"), "");
+		const found = await nodeWorkspace.findBunConfig();
+		expect(found).toContain("bunfig.toml");
+	});
 });

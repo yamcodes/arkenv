@@ -32,11 +32,18 @@ export class SilentReporter implements Reporter {
 		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
 	}
 
-	cancel(_message: string) {
+	cancel(message: string) {
+		process.stderr.write(`✘ Cancelled: ${message}\n`);
 		process.exit(1);
 	}
 
-	fatal(_message: string, _error?: unknown) {
+	fatal(message: string, error?: unknown) {
+		process.stderr.write(`✘ Fatal: ${message}\n`);
+		if (error) {
+			process.stderr.write(
+				`${error instanceof Error ? (error.stack ?? error.message) : String(error)}\n`,
+			);
+		}
 		process.exit(1);
 	}
 

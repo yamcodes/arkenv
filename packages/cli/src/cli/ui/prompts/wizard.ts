@@ -51,15 +51,13 @@ export async function runPromptWizard(
 		},
 		{
 			onCancel: () => {
-				cancel("Operation cancelled.");
-				process.exit(0);
+				// We don't exit here, we let the group return a cancelled state or null
 			},
 		},
 	);
 
-	if (isCancel(result)) {
-		cancel("Operation cancelled.");
-		process.exit(0);
+	if (isCancel(result) || Object.values(result).some((v) => v === null)) {
+		return null;
 	}
 
 	return {

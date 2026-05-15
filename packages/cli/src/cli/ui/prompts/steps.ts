@@ -20,21 +20,16 @@ export const steps = {
 				active: "Yes (override my configuration)",
 				inactive: "No (abort)",
 			});
-			if (isCancel(answer)) {
-				cancel("Operation cancelled.");
-				process.exit(0);
-			}
-			if (!answer) {
-				cancel("Operation cancelled.");
-				process.exit(0);
+			if (isCancel(answer) || !answer) {
+				return null;
 			}
 			return answer;
 		}
 		return true;
 	},
 
-	framework: (defaults?: { framework?: ProjectOptions["framework"] }) =>
-		select({
+	framework: async (defaults?: { framework?: ProjectOptions["framework"] }) => {
+		const answer = await select({
 			message: "Select your framework or runtime:",
 			initialValue: defaults?.framework,
 			options: [
@@ -51,23 +46,33 @@ export const steps = {
 					label: `Node.js${defaults?.framework === "node" ? " (Detected)" : ""}`,
 				},
 			],
-		}),
+		});
+		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
+	},
 
-	useDefaultPath: () =>
-		confirm({
+	useDefaultPath: async () => {
+		const answer = await confirm({
 			message: "Use default config path (./src/env.ts)?",
 			initialValue: true,
 			active: "Yes (Recommended)",
 			inactive: "No, let me customize it",
-		}),
+		});
+		return isCancel(answer) ? null : (answer as boolean);
+	},
 
-	path: async ({ results }: { results: { useDefaultPath?: boolean } }) => {
+	path: async ({
+		results,
+	}: {
+		results: { useDefaultPath?: boolean | null };
+	}) => {
+		if (results.useDefaultPath === null) return null;
 		if (!results.useDefaultPath) {
-			return text({
+			const answer = await text({
 				message: "Where should we create the ArkEnv config?",
 				placeholder: "./src/env.ts",
 				initialValue: "./src/env.ts",
 			});
+			return isCancel(answer) ? null : answer;
 		}
 		return "./src/env.ts";
 	},
@@ -75,8 +80,9 @@ export const steps = {
 	installTypeDefinitions: async ({
 		results,
 	}: {
-		results: { framework?: string; path?: unknown };
+		results: { framework?: string | null; path?: unknown };
 	}) => {
+		if (results.framework === null) return null;
 		if (results.framework === "vite" || results.framework === "bun") {
 			const typeFile =
 				results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
@@ -89,12 +95,13 @@ export const steps = {
 				return true;
 			}
 
-			return confirm({
+			const answer = await confirm({
 				message: `Establish ${code(typeFile)} for typesafe environment variables?`,
 				initialValue: true,
 				active: "Yes (Recommended)",
 				inactive: "No",
 			});
+			return isCancel(answer) ? null : (answer as boolean);
 		}
 		return true;
 	},
@@ -103,11 +110,12 @@ export const steps = {
 		results,
 	}: {
 		results: {
-			framework?: string;
+			framework?: string | null;
 			path?: unknown;
-			installTypeDefinitions?: boolean;
+			installTypeDefinitions?: boolean | null;
 		};
 	}) => {
+		if (results.installTypeDefinitions === null) return null;
 		if (!results.installTypeDefinitions) return "skip";
 		if (results.framework !== "vite" && results.framework !== "bun")
 			return "skip";
@@ -137,16 +145,15 @@ export const steps = {
 				],
 			});
 			if (isCancel(answer)) {
-				cancel("Operation cancelled.");
-				process.exit(0);
+				return null;
 			}
 			return answer as ProjectOptions["envDtsHandling"];
 		}
 		return "overwrite";
 	},
 
-	validator: () =>
-		select({
+	validator: async () => {
+		const answer = await select({
 			message: "Select your preferred validator library:",
 			options: [
 				{
@@ -165,15 +172,18 @@ export const steps = {
 					hint: "The modular and type safe schema library",
 				},
 			],
-		}),
+		});
+		return isCancel(answer) ? null : (answer as ProjectOptions["validator"]);
+	},
 
 	useEnvExample: async (detectedKeys: string[] | null) => {
 		if (detectedKeys) {
-			return confirm({
+			const answer = await confirm({
 				message: `Detected ${pc.cyan(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`,
 				active: "Yes (Recommended)",
 				initialValue: true,
 			});
+			return isCancel(answer) ? null : (answer as boolean);
 		}
 		return false;
 	},
