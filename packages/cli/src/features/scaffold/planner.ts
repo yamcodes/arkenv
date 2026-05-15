@@ -1,11 +1,11 @@
 import path from "node:path";
-import { getEnvTemplate } from "@/features/scaffold/env-template";
-import type { CollectedState, ScaffoldingPlan } from "@/features/scaffold/plan";
-import { getDlxCommand } from "@/features/scaffold/scaffold";
+import { getEnvTemplate } from "./env-template";
+import type { CollectedState, ScaffoldingPlan } from "./plan";
+import { getDlxCommand } from "./scaffold";
 import {
 	bunTypesTemplate,
 	viteTypesTemplate,
-} from "@/features/scaffold/templates";
+} from "./templates";
 
 export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const {

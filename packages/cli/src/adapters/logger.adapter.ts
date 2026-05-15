@@ -4,7 +4,7 @@ import {
 	SilentReporter,
 	type Spinner,
 	TextReporter,
-} from "@/adapters/reporters";
+} from "./reporters";
 import type { LoggerPort } from "@/shared/ports/logger.port";
 
 export type LoggerOptions = {

@@ -1,8 +1,8 @@
 import { NodeWorkspace } from "@/adapters/node-workspace.adapter";
 import { ClackPromptAdapter } from "@/adapters/prompt.adapter";
-import { CLI } from "@/cli/cli";
-import { HelpUseCase } from "@/cli/commands/help";
-import { InitUseCase } from "@/cli/commands/init";
+import { CLI } from "./cli";
+import { HelpUseCase } from "./commands/help";
+import { InitUseCase } from "./commands/init";
 
 export function compose(argv: string[]) {
 	const cli = new CLI(argv);

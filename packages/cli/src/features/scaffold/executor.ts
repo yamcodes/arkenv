@@ -5,7 +5,7 @@ import type {
 	Reporter,
 	ScaffoldingPlan,
 	Workspace,
-} from "@/features/scaffold/plan";
+} from "./plan";
 
 export class Executor {
 	constructor(

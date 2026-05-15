@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import * as prompts from "@clack/prompts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { runPromptWizard } from "@/cli/ui/prompts";
+import { runPromptWizard } from "./prompts";
 
 vi.mock("@clack/prompts", async (importOriginal) => {
 	const actual = await importOriginal<typeof import("@clack/prompts")>();

@@ -1,6 +1,6 @@
 import dedent from "dedent";
 import { describe, expect, it } from "vitest";
-import { transformViteConfig } from "@/features/config-mutation/config-mutation";
+import { transformViteConfig } from "./config-mutation";
 
 describe("config-mutation", () => {
 	describe("transformViteConfig", () => {

@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { CollectedState } from "@/features/scaffold/plan";
-import { createPlan } from "@/features/scaffold/planner";
+import type { CollectedState } from "./plan";
+import { createPlan } from "./planner";
 
 describe("Planner", () => {
 	const defaultState: CollectedState = {

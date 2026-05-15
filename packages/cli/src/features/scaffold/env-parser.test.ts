@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseEnvExample } from "@/features/scaffold/env-parser";
+import { parseEnvExample } from "./env-parser";
 
 describe("env-parser", () => {
 	it("should extract keys from a standard .env.example", () => {

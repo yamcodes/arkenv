@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getEnvTemplate } from "@/features/scaffold/env-template";
+import { getEnvTemplate } from "./env-template";
 
 describe("env-template", () => {
 	describe("getEnvTemplate", () => {

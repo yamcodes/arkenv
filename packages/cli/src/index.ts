@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { compose } from "@/cli/composition";
+import { compose } from "./cli/composition";
 
 async function main() {
 	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);

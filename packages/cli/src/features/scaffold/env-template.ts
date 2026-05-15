@@ -1,9 +1,9 @@
-import type { ProjectOptions } from "@/features/scaffold/plan";
+import type { ProjectOptions } from "./plan";
 import {
 	arktypeTemplate,
 	valibotTemplate,
 	zodTemplate,
-} from "@/features/scaffold/templates";
+} from "./templates";
 
 export function getEnvTemplate(options: ProjectOptions): string {
 	const { validator, envKeys, framework } = options;
