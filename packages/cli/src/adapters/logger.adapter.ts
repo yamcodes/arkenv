@@ -1,3 +1,4 @@
+import type { LoggerPort } from "@/shared/ports/logger.port";
 import {
 	JsonReporter,
 	type Reporter,
@@ -5,7 +6,6 @@ import {
 	type Spinner,
 	TextReporter,
 } from "./reporters";
-import type { LoggerPort } from "@/shared/ports/logger.port";
 
 export type LoggerOptions = {
 	isQuiet: boolean;
