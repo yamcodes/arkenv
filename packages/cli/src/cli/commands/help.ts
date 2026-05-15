@@ -2,6 +2,9 @@ import pc from "picocolors";
 import type { LoggerPort } from "@/shared/ports";
 import { version } from "../../../package.json";
 
+/**
+ * Use case for displaying the CLI help message.
+ */
 export class HelpUseCase {
 	constructor(private readonly logger: LoggerPort) {}
 

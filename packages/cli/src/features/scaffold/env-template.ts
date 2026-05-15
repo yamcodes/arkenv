@@ -1,6 +1,13 @@
 import type { ProjectOptions } from "./plan";
 import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
 
+/**
+ * Generates the complete environment configuration template
+ * based on the user's chosen validator and framework.
+ *
+ * @param options The selected project options.
+ * @returns The generated template code.
+ */
 export function getEnvTemplate(options: ProjectOptions): string {
 	const { validator, envKeys, framework } = options;
 

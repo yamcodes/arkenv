@@ -7,12 +7,19 @@ import {
 	TextReporter,
 } from "./reporters";
 
+/**
+ * Options for configuring the CLI logger.
+ */
 export type LoggerOptions = {
 	isQuiet: boolean;
 	isJson: boolean;
 	isYes?: boolean;
 };
 
+/**
+ * Adapter implementation for the LoggerPort.
+ * Handles different output formats (text, JSON, silent).
+ */
 export class Logger implements LoggerPort {
 	private originalStdoutWrite = process.stdout.write;
 	private reporter: Reporter;

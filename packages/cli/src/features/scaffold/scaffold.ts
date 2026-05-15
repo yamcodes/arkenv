@@ -2,6 +2,12 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import { applyEdits, modify, parse } from "jsonc-parser";
 
+/**
+ * Returns the appropriate 'dlx' or 'exec' command for the given package manager.
+ *
+ * @param pm The package manager name (e.g., "pnpm", "bun").
+ * @returns The dlx command string.
+ */
 export function getDlxCommand(pm: string): string {
 	switch (pm) {
 		case "pnpm":
@@ -39,6 +45,11 @@ async function findTsConfig(): Promise<string | null> {
 	return null;
 }
 
+/**
+ * Checks the workspace's tsconfig.json to see if strict mode is enabled.
+ *
+ * @returns The status of strict mode in the tsconfig.
+ */
 export async function checkTsConfig(): Promise<{
 	status: "strict" | "not_strict" | "not_found";
 	file?: string;
@@ -59,6 +70,12 @@ export async function checkTsConfig(): Promise<{
 	}
 }
 
+/**
+ * Attempts to automatically update the tsconfig.json to enable strict mode.
+ *
+ * @param pathOverride Optional specific path to the tsconfig file.
+ * @returns The result of the update operation.
+ */
 export async function updateTsConfigToStrict(pathOverride?: string): Promise<{
 	status: "updated" | "already_strict" | "not_found" | "error";
 	file?: string;
@@ -87,6 +104,11 @@ export async function updateTsConfigToStrict(pathOverride?: string): Promise<{
 	}
 }
 
+/**
+ * Detects the primary framework used in the current workspace (Vite, Bun, or Node).
+ *
+ * @returns The detected framework.
+ */
 export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
 	try {
 		const pkgJsonPath = path.join(process.cwd(), "package.json");
@@ -120,6 +142,12 @@ export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
 	return "node";
 }
 
+/**
+ * Detects the package manager used in the current workspace based on lockfiles,
+ * user agent, or package.json configurations.
+ *
+ * @returns The detected package manager.
+ */
 export async function detectPackageManager(): Promise<
 	"pnpm" | "yarn" | "npm" | "bun"
 > {

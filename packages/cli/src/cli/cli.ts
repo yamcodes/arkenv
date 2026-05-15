@@ -1,5 +1,8 @@
 import { Logger } from "@/adapters";
 
+/**
+ * Main CLI class that parses arguments and sets up the global execution context.
+ */
 export class CLI {
 	public args: string[];
 	public command: string;

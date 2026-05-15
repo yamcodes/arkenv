@@ -1,9 +1,15 @@
+/**
+ * Defines a long-running progress indicator.
+ */
 export type Spinner = {
 	start(message: string): void;
 	stop(message: string): void;
 	message(message: string): void;
 };
 
+/**
+ * Defines the contract for CLI output mechanisms.
+ */
 export type Reporter = {
 	info(message: string): void;
 	warn(message: string): void;

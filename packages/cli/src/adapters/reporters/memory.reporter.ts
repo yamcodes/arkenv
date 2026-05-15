@@ -1,5 +1,9 @@
 import type { Reporter, Spinner } from "./types";
 
+/**
+ * Reporter implementation that stores logs in memory.
+ * Useful for testing and assertion.
+ */
 export class MemoryReporter implements Reporter {
 	public logs: { type: string; message: string; data?: unknown }[] = [];
 

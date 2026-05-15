@@ -1,9 +1,15 @@
+/**
+ * Represents a CLI spinner for long-running tasks.
+ */
 export type Spinner = {
 	start(message: string): void;
 	stop(message: string): void;
 	message(message: string): void;
 };
 
+/**
+ * Port interface for CLI logging operations.
+ */
 export type LoggerPort = {
 	info(message: string): void;
 	warn(message: string): void;

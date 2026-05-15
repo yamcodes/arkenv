@@ -3,6 +3,9 @@ import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
 
 export type { Reporter, Workspace };
 
+/**
+ * Options chosen by the user or inferred for scaffolding the project.
+ */
 export type ProjectOptions = {
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
@@ -15,6 +18,9 @@ export type ProjectOptions = {
 	installSkill?: boolean | undefined;
 };
 
+/**
+ * Represents the complete plan of actions to scaffold ArkEnv.
+ */
 export type ScaffoldingPlan = {
 	/** Files to be created or modified */
 	files: {
@@ -55,6 +61,9 @@ export type ScaffoldingPlan = {
 	};
 };
 
+/**
+ * The collected state of the user's workspace prior to scaffolding.
+ */
 export type CollectedState = {
 	cwd: string;
 	options: ProjectOptions;

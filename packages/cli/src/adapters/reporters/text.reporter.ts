@@ -2,6 +2,10 @@ import { spinner as clackSpinner, note, outro } from "@clack/prompts";
 import pc from "picocolors";
 import type { Reporter, Spinner } from "./types";
 
+/**
+ * Reporter implementation that outputs styled text to the console.
+ * The default reporter for human interaction.
+ */
 export class TextReporter implements Reporter {
 	info(message: string) {
 		process.stdout.write(`${pc.blue(`ℹ ${message}`)}\n`);

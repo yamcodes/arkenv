@@ -2,9 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { cancel, confirm, isCancel, select, text } from "@clack/prompts";
 import pc from "picocolors";
-import { code } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";
+import { code } from "../visuals";
 
+/**
+ * A collection of interactive CLI prompt steps used during initialization.
+ */
 export const steps = {
 	overwriteEnvSchemaFile: async () => {
 		const defaultPath = "./src/env.ts";

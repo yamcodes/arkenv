@@ -1,3 +1,6 @@
+/**
+ * Represents the result of a configuration bootstrap operation.
+ */
 export type BootstrapResult = {
 	success: boolean;
 	updated?: boolean | undefined;
@@ -5,6 +8,9 @@ export type BootstrapResult = {
 	error?: string | undefined;
 };
 
+/**
+ * Port interface for interacting with the user's workspace/file system.
+ */
 export type WorkspacePort = {
 	exists(path: string): Promise<boolean>;
 	readFile(path: string): Promise<string>;

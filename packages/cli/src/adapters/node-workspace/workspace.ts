@@ -2,12 +2,21 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import { applyEdits, modify } from "jsonc-parser";
 
+/**
+ * Supported build/runtime frameworks.
+ */
 export type Framework = "vite" | "bun" | "node";
 
+/**
+ * Options for configuring a Workspace.
+ */
 export type WorkspaceOptions = {
 	cwd?: string;
 };
 
+/**
+ * Utility class for interacting with the local workspace.
+ */
 export class Workspace {
 	private cwd: string;
 

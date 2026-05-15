@@ -1,11 +1,20 @@
 import { detectCodeFormat, generateCode, parseModule } from "magicast";
 import type { BootstrapResult } from "@/shared/ports";
 
+/**
+ * Input for transforming a configuration file.
+ */
 export type MutationInput = {
 	code: string;
 	envImportPath?: string;
 };
 
+/**
+ * Transforms a Vite configuration file by injecting the ArkEnv Vite plugin.
+ *
+ * @param input The configuration code and optional import path.
+ * @returns The result of the bootstrap operation, potentially including the updated code.
+ */
 export function transformViteConfig(
 	input: MutationInput,
 ): BootstrapResult & { code?: string } {

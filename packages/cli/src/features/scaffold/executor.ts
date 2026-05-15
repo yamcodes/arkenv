@@ -3,6 +3,10 @@ import dedent from "dedent";
 import pc from "picocolors";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 
+/**
+ * Executes a ScaffoldingPlan by performing workspace modifications,
+ * installing dependencies, and bootstrapping framework configurations.
+ */
 export class Executor {
 	constructor(
 		private workspace: Workspace,

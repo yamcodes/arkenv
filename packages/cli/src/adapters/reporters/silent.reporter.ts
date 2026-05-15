@@ -1,5 +1,9 @@
 import type { Reporter, Spinner } from "./types";
 
+/**
+ * Reporter implementation that suppresses most output.
+ * Useful for quiet/background execution modes.
+ */
 export class SilentReporter implements Reporter {
 	private stripAnsi(message: string): string {
 		// biome-ignore lint/suspicious/noControlCharactersInRegex: Standard ANSI escape code stripping

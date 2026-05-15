@@ -7,6 +7,9 @@ import { transformViteConfig } from "@/features/config-mutation";
 import { updateTsConfigToStrict } from "@/features/scaffold";
 import type { WorkspacePort } from "@/shared/ports";
 
+/**
+ * Adapter implementation for WorkspacePort using Node.js APIs.
+ */
 export class NodeWorkspace implements WorkspacePort {
 	constructor(
 		private isQuiet: boolean,

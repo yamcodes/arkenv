@@ -11,12 +11,18 @@ import {
 } from "@/features/scaffold";
 import type { LoggerPort, PromptPort, WorkspacePort } from "@/shared/ports";
 
+/**
+ * Input parameters for the 'init' command.
+ */
 export type InitInput = {
 	isYes: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
 };
 
+/**
+ * Use case for initializing ArkEnv in a new or existing project.
+ */
 export class InitUseCase {
 	constructor(
 		private readonly logger: LoggerPort,

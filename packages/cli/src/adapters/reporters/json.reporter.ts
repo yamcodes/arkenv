@@ -1,6 +1,10 @@
 import pc from "picocolors";
 import type { Reporter, Spinner } from "./types";
 
+/**
+ * Reporter implementation that outputs structured JSON logs.
+ * Useful for machine-readable output or agent modes.
+ */
 export class JsonReporter implements Reporter {
 	info(message: string) {
 		process.stderr.write(`${pc.blue(`ℹ ${message}`)}\n`);
