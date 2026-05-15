@@ -112,7 +112,7 @@ export class InitUseCase {
 				options.overwriteEnvSchemaFile === undefined
 			) {
 				const confirmOverwrite = await this.prompt.confirm(
-					`File ${path.basename(targetPath)} already exists. Overwrite?`,
+					`File ${code(path.basename(targetPath))} already exists. Overwrite?`,
 					false,
 				);
 
