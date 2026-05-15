@@ -9,6 +9,7 @@ export type BootstrapResult =
 	  }
 	| {
 			success: false;
+			updated?: boolean;
 			error: string;
 	  };
 

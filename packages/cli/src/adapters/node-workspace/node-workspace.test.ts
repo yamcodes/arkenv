@@ -119,19 +119,25 @@ describe("Workspace", () => {
 	it("returns instructions for bunfig.toml", async () => {
 		const result = await nodeWorkspace.bootstrapBunConfig("bunfig.toml");
 		expect(result.success).toBe(true);
-		expect(result.instructions).toContain("[preload]");
+		if (result.success) {
+			expect(result.instructions).toContain("[preload]");
+		}
 	});
 
 	it("returns instructions for bun.setup.ts", async () => {
 		const result = await nodeWorkspace.bootstrapBunConfig("bun.setup.ts");
 		expect(result.success).toBe(true);
-		expect(result.instructions).toContain("@arkenv/bun-plugin");
+		if (result.success) {
+			expect(result.instructions).toContain("@arkenv/bun-plugin");
+		}
 	});
 
 	it("returns generic bun instructions for unknown config", async () => {
 		const result = await nodeWorkspace.bootstrapBunConfig(null);
 		expect(result.success).toBe(true);
-		expect(result.instructions).toContain("bun.setup.ts");
+		if (result.success) {
+			expect(result.instructions).toContain("bun.setup.ts");
+		}
 	});
 
 	it("handles execute failures with output", async () => {

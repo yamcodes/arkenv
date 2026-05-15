@@ -13,7 +13,7 @@ describe("config-mutation", () => {
 			`;
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 
 			expect(result.code).toContain(
 				'import arkenvVitePlugin from "@arkenv/vite-plugin"',
@@ -33,7 +33,7 @@ describe("config-mutation", () => {
 				code: initialContent,
 				envImportPath: "./env",
 			});
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 
 			expect(result.code).toContain(
 				'import arkenvVitePlugin from "@arkenv/vite-plugin"',
@@ -50,7 +50,7 @@ describe("config-mutation", () => {
 			`;
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 			expect(result.code).toContain("arkenvVitePlugin()");
 		});
 
@@ -62,7 +62,7 @@ describe("config-mutation", () => {
 			`;
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 			expect(result.code).toContain("plugins: [");
 			expect(result.code).toContain("arkenvVitePlugin()");
 		});
@@ -76,7 +76,7 @@ describe("config-mutation", () => {
 			`;
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 			expect(result.updated).toBe(false);
 		});
 
@@ -88,7 +88,7 @@ describe("config-mutation", () => {
 			`;
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
 		});
 
@@ -100,7 +100,7 @@ describe("config-mutation", () => {
 			`;
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 			expect(result.code).toContain("    plugins: [");
 		});
 
@@ -108,7 +108,7 @@ describe("config-mutation", () => {
 			const initialContent = "export default {\n\tplugins: []\n}";
 
 			const result = transformViteConfig({ code: initialContent });
-			expect(result.success, result.error).toBe(true);
+			expect(result.success).toBe(true);
 			expect(result.code).toContain("\tplugins: [");
 		});
 
@@ -117,7 +117,9 @@ describe("config-mutation", () => {
 
 			const result = transformViteConfig({ code: initialContent });
 			expect(result.success).toBe(false);
-			expect(result.error).toBeDefined();
+			if (!result.success) {
+				expect(result.error).toBeDefined();
+			}
 		});
 	});
 });

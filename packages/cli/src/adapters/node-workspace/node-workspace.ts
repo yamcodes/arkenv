@@ -5,7 +5,7 @@ import dedent from "dedent";
 import pc from "picocolors";
 import { transformViteConfig } from "@/features/config-mutation";
 import { updateTsConfigToStrict } from "@/features/scaffold";
-import type { WorkspacePort } from "@/shared/ports";
+import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
 
 /**
  * Adapter implementation for WorkspacePort using Node.js APIs.
@@ -131,10 +131,9 @@ export class NodeWorkspace implements WorkspacePort {
 			}
 
 			if (result.success) {
-				return {
-					success: true,
-					updated: result.updated,
-				};
+				return result.updated !== undefined
+					? { success: true, updated: result.updated }
+					: { success: true };
 			}
 			return {
 				success: false,
