@@ -1,6 +1,12 @@
 {
 	"version": 1,
 	"skills": {
+		"bulletproof-react-patterns": {
+			"source": "grahamcrackers/skills",
+			"sourceType": "github",
+			"skillPath": "skills/bulletproof-react-patterns/SKILL.md",
+			"computedHash": "21440284bed25f9ed947b2c09e7d5a1d0908717f9df85615cd267f6ba12a1638"
+		},
 		"creating-changesets": {
 			"source": "saleor/configurator",
 			"sourceType": "github",
@@ -24,6 +30,12 @@
 			"sourceType": "github",
 			"skillPath": "skills/engineering/grill-with-docs/SKILL.md",
 			"computedHash": "31a5b1ae116558bf7d3f633f442835f54bd7645923d4f45c7823e52a97317666"
+		},
+		"hexagonal-architecture": {
+			"source": "affaan-m/everything-claude-code",
+			"sourceType": "github",
+			"skillPath": "skills/hexagonal-architecture/SKILL.md",
+			"computedHash": "079f825ab203e42b8a5acbefb2ba50536718e1ec31d100b9521660ba0af749dd"
 		},
 		"improve-codebase-architecture": {
 			"source": "mattpocock/skills",
