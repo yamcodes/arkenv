@@ -459,6 +459,9 @@ importers:
       '@ark/util':
         specifier: 0.56.0
         version: 0.56.0
+      '@arkenv/bun-plugin':
+        specifier: workspace:*
+        version: link:../../packages/bun-plugin
       '@arkenv/fumadocs-ui':
         specifier: workspace:*
         version: link:../../packages/fumadocs-ui
