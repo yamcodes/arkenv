@@ -3,8 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import dedent from "dedent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NodeWorkspace } from ".";
 import { NodeProjectScannerAdapter } from "../node-project-scanner";
+import { NodeWorkspace } from ".";
 
 describe("NodeWorkspace", () => {
 	let tempDir: string;

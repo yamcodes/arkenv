@@ -2,12 +2,12 @@ import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
+import { applyEdits, modify, parse } from "jsonc-parser";
 import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 import { transformViteConfig } from "@/features/config-mutation";
-import { applyEdits, modify, parse } from "jsonc-parser";
-import { NodeProjectScannerAdapter } from "../node-project-scanner";
 import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
+import { NodeProjectScannerAdapter } from "../node-project-scanner";
 
 /**
  * Adapter implementation for WorkspacePort using Node.js APIs.

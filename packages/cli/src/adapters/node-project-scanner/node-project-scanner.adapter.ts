@@ -51,9 +51,15 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 					extPath = path.resolve(path.dirname(configPath), ext);
 				} else {
 					try {
-						extPath = require.resolve(ext, { paths: [path.dirname(configPath)] });
+						extPath = require.resolve(ext, {
+							paths: [path.dirname(configPath)],
+						});
 					} catch {
-						extPath = path.resolve(path.dirname(configPath), "node_modules", ext);
+						extPath = path.resolve(
+							path.dirname(configPath),
+							"node_modules",
+							ext,
+						);
 					}
 				}
 
@@ -270,7 +276,11 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		}
 
 		// Fallback to scanning project files
-		const projectKeys = await this.scanProjectEnvKeys(cwd, tsConfig, envConfigPath);
+		const projectKeys = await this.scanProjectEnvKeys(
+			cwd,
+			tsConfig,
+			envConfigPath,
+		);
 		if (projectKeys.length > 0) {
 			return { keys: projectKeys, source: "project" };
 		}
@@ -330,7 +340,8 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	): Promise<"vite" | "bun" | "node"> {
 		if (tsConfig?.compilerOptions?.types) {
 			const types = tsConfig.compilerOptions.types;
-			if (types.includes("vite") || types.includes("vite/client")) return "vite";
+			if (types.includes("vite") || types.includes("vite/client"))
+				return "vite";
 			if (types.includes("bun") || types.includes("@types/bun")) return "bun";
 		}
 

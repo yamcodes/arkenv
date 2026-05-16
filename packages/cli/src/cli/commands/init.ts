@@ -1,16 +1,12 @@
 import path from "node:path";
 import pc from "picocolors";
 import { code } from "@/cli/ui";
-import {
-	type CollectedState,
-	createPlan,
-	Executor,
-} from "@/features/scaffold";
+import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
 import type {
 	LoggerPort,
+	ProjectScannerPort,
 	PromptPort,
 	WorkspacePort,
-	ProjectScannerPort,
 } from "@/shared/ports";
 
 /**
@@ -97,7 +93,8 @@ export class InitUseCase {
 
 			let hasTypeFile = false;
 			if (detectedFramework === "vite" || detectedFramework === "bun") {
-				const typeFile = detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+				const typeFile =
+					detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 				const targetDir = path.dirname(targetPath);
 				const typeFilePath = path.join(targetDir, typeFile);
 				hasTypeFile = await this.workspace.exists(typeFilePath);

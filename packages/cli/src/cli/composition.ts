@@ -1,4 +1,8 @@
-import { ClackPromptAdapter, NodeWorkspace, NodeProjectScannerAdapter } from "@/adapters";
+import {
+	ClackPromptAdapter,
+	NodeProjectScannerAdapter,
+	NodeWorkspace,
+} from "@/adapters";
 import { CLI } from "./cli";
 import { HelpUseCase, InitUseCase } from "./commands";
 
