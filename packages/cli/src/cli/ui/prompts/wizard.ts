@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { cancel, group, isCancel } from "@clack/prompts";
+import { group, isCancel } from "@clack/prompts";
 import { getEnvExampleKeys, type ProjectOptions } from "@/features/scaffold";
 import { steps } from "./steps";
 
@@ -35,7 +35,7 @@ export async function runPromptWizard(
 			installTypeDefinitions: framework !== "node",
 			envKeys: detectedKeys || undefined,
 			installSkill: false,
-		} as ProjectOptions;
+		};
 	}
 
 	const result = await group(
@@ -51,7 +51,7 @@ export async function runPromptWizard(
 		},
 		{
 			onCancel: () => {
-				// We don't exit here, we let the group return a cancelled state or null
+				// We don't exit here, we let the group return a canceled state or null
 			},
 		},
 	);
