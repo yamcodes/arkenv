@@ -45,10 +45,11 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 ### Use `patch` for:
 
 - Bug fixes that don't change behavior
-- Internal refactoring (no API changes)
 - Dependency updates (non-breaking)
 - Performance improvements
 - Code style/linting fixes
+
+**Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
 
 ### Use `minor` for:
 
@@ -168,13 +169,14 @@ npx changeset version --dry-run
 
 ## Common Mistakes
 
-| Mistake               | Issue              | Fix                                              |
-| --------------------- | ------------------ | ------------------------------------------------ |
-| Wrong bump type       | Unexpected version | Review decision guide above                      |
-| Vague description     | Poor CHANGELOG     | Be specific about changes                        |
-| Missing changeset     | No release notes   | Always add before PR                             |
-| Not including context | Hard to understand | Explain *why* not just *what*                    |
-| Including issue links | Redundant data     | Remove # references; PR links them automatically |
+| Mistake               | Issue               | Fix                                              |
+| --------------------- | ------------------- | ------------------------------------------------ |
+| Wrong bump type       | Unexpected version  | Review decision guide above                      |
+| Vague description     | Poor CHANGELOG      | Be specific about changes                        |
+| Missing changeset     | No release notes    | Always add before PR                             |
+| Not including context | Hard to understand  | Explain *why* not just *what*                    |
+| Meaningless changes   | Cluttered CHANGELOG | Only document changes with consumer value        |
+| Including issue links | Redundant data      | Remove # references; PR links them automatically |
 
 ## Common Scenarios
 
