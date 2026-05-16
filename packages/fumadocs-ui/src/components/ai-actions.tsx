@@ -27,12 +27,14 @@ export function AIActions({
 }) {
 	const [isLoading, setLoading] = useState(false);
 	const [origin, setOrigin] = useState<string | null>(null);
+	const [copyError, setCopyError] = useState<string | null>(null);
 
 	useEffect(() => {
 		setOrigin(window.location.origin);
 	}, []);
 
 	const [checked, onClick] = useCopyButton(async () => {
+		setCopyError(null);
 		const cached = cache.get(markdownUrl);
 		if (cached) return navigator.clipboard.writeText(cached);
 
@@ -52,7 +54,10 @@ export function AIActions({
 					}),
 				}),
 			]);
-		} catch (_err) {
+		} catch (err: any) {
+			console.error("Clipboard error:", err);
+			setCopyError(err.message || "Failed to copy");
+			setTimeout(() => setCopyError(null), 5000);
 		} finally {
 			setLoading(false);
 		}
@@ -203,6 +208,14 @@ export function AIActions({
 				{checked ? <Check /> : <Copy />}
 				Copy Markdown
 			</button>
+			{copyError && (
+				<span
+					className="text-xs text-red-500 max-w-[200px] truncate"
+					title={copyError}
+				>
+					{copyError}
+				</span>
+			)}
 
 			<Popover>
 				<PopoverTrigger

@@ -104,7 +104,7 @@ export class InitUseCase {
 				{
 					framework: detectedFramework,
 					defaultEnvPath,
-					tsConfig: tsConfig.parsed,
+					tsConfig: tsConfig.parsed ?? null,
 					envKeys: envRes?.keys,
 					envKeysSource: envRes?.source,
 					hasTypeFile,

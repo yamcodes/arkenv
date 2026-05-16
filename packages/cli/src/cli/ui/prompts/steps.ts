@@ -74,7 +74,9 @@ export const steps = {
 					placeholder: defaultEnvPath,
 					initialValue: defaultEnvPath,
 				});
-				return isCancel(answer) ? null : answer;
+				if (isCancel(answer)) return null;
+				const trimmed = typeof answer === "string" ? answer.trim() : "";
+				return trimmed === "" ? defaultEnvPath : trimmed;
 			}
 			return defaultEnvPath;
 		},

@@ -2,6 +2,7 @@ import path from "node:path";
 import { group } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
+import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 import { isSuccess } from "./utils";
 
@@ -9,7 +10,7 @@ export async function runPromptWizard(
 	defaults?: {
 		framework?: ProjectOptions["framework"];
 		defaultEnvPath?: string;
-		tsConfig?: any;
+		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[] | undefined;
 		envKeysSource?: ".env.example" | "project" | undefined;
 		hasTypeFile?: boolean;

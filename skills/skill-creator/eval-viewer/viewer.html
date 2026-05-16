@@ -1110,6 +1110,14 @@
       document.getElementById(`panel-${view}`).classList.add("active");
     }
 
+    // Expose handlers globally
+    window.toggleGrades = _toggleGrades;
+    window.togglePrevOutputs = _togglePrevOutputs;
+    window.showDoneDialog = _showDoneDialog;
+    window.closeDoneDialog = _closeDoneDialog;
+    window.showToast = _showToast;
+    window.switchView = _switchView;
+
     // ---- Benchmark rendering ----
     function renderBenchmark() {
       const data = EMBEDDED_DATA.benchmark;
@@ -1129,9 +1137,9 @@
       html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
       html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
       if (metadata.skill_name) html += `<strong>${escapeHtml(metadata.skill_name)}</strong> &mdash; `;
-      if (metadata.timestamp) html += `${metadata.timestamp} &mdash; `;
-      if (metadata.evals_run) html += `Evals: ${metadata.evals_run.join(", ")} &mdash; `;
-      html += `${metadata.runs_per_configuration || "?"} runs per configuration`;
+      if (metadata.timestamp) html += `${escapeHtml(String(metadata.timestamp))} &mdash; `;
+      if (metadata.evals_run) html += `Evals: ${escapeHtml(metadata.evals_run.join(", "))} &mdash; `;
+      html += `${escapeHtml(String(metadata.runs_per_configuration || "?"))} runs per configuration`;
       html += "</p>";
 
       // Summary table

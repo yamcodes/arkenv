@@ -1,4 +1,5 @@
 import type { ProjectOptions } from "@/features/scaffold";
+import type { ParsedTsConfig } from "./project-scanner.port";
 
 /**
  * Port interface for handling interactive CLI prompts.
@@ -9,7 +10,7 @@ export type PromptPort = {
 		defaults?: {
 			framework?: ProjectOptions["framework"];
 			defaultEnvPath?: string;
-			tsConfig?: any;
+			tsConfig?: ParsedTsConfig | null;
 			envKeys?: string[] | undefined;
 			envKeysSource?: ".env.example" | "project" | undefined;
 			hasTypeFile?: boolean;

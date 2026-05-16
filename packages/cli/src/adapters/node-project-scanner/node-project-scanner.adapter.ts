@@ -1,7 +1,10 @@
 import fsp from "node:fs/promises";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { parse } from "jsonc-parser";
 import type { ParsedTsConfig, ProjectScannerPort } from "@/shared/ports";
+
+const requireResolve = createRequire(import.meta.url).resolve;
 
 export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	async findTsConfig(startDir = process.cwd()): Promise<string | null> {
@@ -28,7 +31,18 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		return null;
 	}
 
-	async loadTsConfig(configPath: string): Promise<ParsedTsConfig> {
+	async loadTsConfig(
+		configPath: string,
+		visited = new Set<string>(),
+	): Promise<ParsedTsConfig> {
+		const absConfigPath = path.resolve(configPath);
+		if (visited.has(absConfigPath)) {
+			throw new Error(
+				`Circular extends dependency detected in tsconfig.json: ${absConfigPath}`,
+			);
+		}
+		visited.add(absConfigPath);
+
 		let content = "";
 		try {
 			content = await fsp.readFile(configPath, "utf-8");
@@ -51,7 +65,7 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 					extPath = path.resolve(path.dirname(configPath), ext);
 				} else {
 					try {
-						extPath = require.resolve(ext, {
+						extPath = requireResolve(ext, {
 							paths: [path.dirname(configPath)],
 						});
 					} catch {
@@ -63,7 +77,7 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 					}
 				}
 
-				const baseConfig = await this.loadTsConfig(extPath);
+				const baseConfig = await this.loadTsConfig(extPath, visited);
 				const baseOptions = { ...baseConfig.compilerOptions };
 
 				// Resolve base baseUrl and rootDir relative to extPath
@@ -124,9 +138,24 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		const baseUrl = compilerOptions.baseUrl || path.dirname(tsConfig.path);
 		const paths = compilerOptions.paths || {};
 
+		const matches: {
+			cleanPattern: string;
+			targets: string[];
+			hadStar: boolean;
+		}[] = [];
 		for (const [pattern, targets] of Object.entries(paths)) {
+			const hadStar = pattern.endsWith("*");
 			const cleanPattern = pattern.replace(/\*$/, "");
-			if (importSpecifier.startsWith(cleanPattern)) {
+			matches.push({ cleanPattern, targets, hadStar });
+		}
+
+		matches.sort((a, b) => b.cleanPattern.length - a.cleanPattern.length);
+
+		for (const { cleanPattern, targets, hadStar } of matches) {
+			if (
+				(hadStar && importSpecifier.startsWith(cleanPattern)) ||
+				(!hadStar && importSpecifier === cleanPattern)
+			) {
 				const subpath = importSpecifier.slice(cleanPattern.length);
 				for (const target of targets) {
 					const cleanTarget = target.replace(/\*$/, "");
@@ -303,8 +332,15 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		if (currentTsConfig?.compilerOptions?.rootDir) {
 			const rootDir = currentTsConfig.compilerOptions.rootDir;
 			const rel = path.relative(cwd, rootDir);
-			if (!rel || rel === ".") return "./env.ts";
-			return `./${rel}/env.ts`;
+			if (
+				rel &&
+				rel !== "." &&
+				!rel.startsWith("..") &&
+				!path.isAbsolute(rel)
+			) {
+				return `./${rel}/env.ts`;
+			}
+			return "./env.ts";
 		}
 
 		try {
