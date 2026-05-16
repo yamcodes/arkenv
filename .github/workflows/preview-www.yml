@@ -11,7 +11,11 @@ on:
     types: [opened, synchronize, ready_for_review, labeled]
     paths:
       - "apps/www/**"
-      - "packages/**"
+      - "packages/arkenv/**"
+      - "packages/vite-plugin/**"
+      - "packages/bun-plugin/**"
+      - "packages/fumadocs-ui/**"
+      - "packages/internal/**"
       - ".github/workflows/preview-www.yml"
       - "pnpm-lock.yaml"
 
