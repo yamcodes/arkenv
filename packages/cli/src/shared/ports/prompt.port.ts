@@ -8,6 +8,8 @@ export type PromptPort = {
 	runWizard(
 		defaults?: {
 			framework?: ProjectOptions["framework"];
+			defaultEnvPath?: string;
+			tsConfig?: any;
 		},
 		isYes?: boolean,
 	): Promise<ProjectOptions | null>;

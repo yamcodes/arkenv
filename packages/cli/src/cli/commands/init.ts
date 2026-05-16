@@ -8,6 +8,7 @@ import {
 	detectFramework,
 	detectPackageManager,
 	Executor,
+	suggestDefaultEnvPath,
 } from "@/features/scaffold";
 import type { LoggerPort, PromptPort, WorkspacePort } from "@/shared/ports";
 
@@ -76,9 +77,17 @@ export class InitUseCase {
 				}
 			}
 
-			const detectedFramework = await detectFramework();
+			const detectedFramework = await detectFramework(tsConfig.parsed);
+			const defaultEnvPath = await suggestDefaultEnvPath(
+				process.cwd(),
+				tsConfig.parsed,
+			);
 			const options = await this.prompt.runWizard(
-				{ framework: detectedFramework },
+				{
+					framework: detectedFramework,
+					defaultEnvPath,
+					tsConfig: tsConfig.parsed,
+				},
 				isYes,
 			);
 
@@ -124,7 +133,7 @@ export class InitUseCase {
 				options.overwriteEnvSchemaFile = confirmOverwrite;
 			}
 
-			const packageManager = await detectPackageManager();
+			const packageManager = await detectPackageManager(tsConfig.parsed);
 
 			const existingFiles: string[] = [];
 			if (await this.workspace.exists(targetPath))

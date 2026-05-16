@@ -1,6 +1,11 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { applyEdits, modify, parse } from "jsonc-parser";
+import {
+	findTsConfig,
+	loadTsConfig,
+	type ParsedTsConfig,
+} from "./tsconfig-parser";
 
 /**
  * Returns the appropriate 'dlx' or 'exec' command for the given package manager.
@@ -21,30 +26,6 @@ export function getDlxCommand(pm: string): string[] {
 	}
 }
 
-async function findTsConfig(): Promise<string | null> {
-	const filenames = [
-		"tsconfig.app.json",
-		"tsconfig.json",
-		"tsconfig.base.json",
-		"tsconfig.node.json",
-	];
-	let currentDir = process.cwd();
-
-	while (currentDir !== path.parse(currentDir).root) {
-		for (const file of filenames) {
-			const fullPath = path.join(currentDir, file);
-			try {
-				await fsp.access(fullPath);
-				return fullPath;
-			} catch {
-				// intentionally ignore missing file
-			}
-		}
-		currentDir = path.dirname(currentDir);
-	}
-	return null;
-}
-
 /**
  * Checks the workspace's tsconfig.json to see if strict mode is enabled.
  *
@@ -53,18 +34,18 @@ async function findTsConfig(): Promise<string | null> {
 export async function checkTsConfig(): Promise<{
 	status: "strict" | "not_strict" | "not_found";
 	file?: string;
+	parsed?: ParsedTsConfig;
 }> {
 	const tsConfigPath = await findTsConfig();
 	if (!tsConfigPath) return { status: "not_found" };
 	const fileName = path.basename(tsConfigPath);
 
 	try {
-		const content = await fsp.readFile(tsConfigPath, "utf-8");
-		const parsed = parse(content);
+		const parsed = await loadTsConfig(tsConfigPath);
 		if (parsed?.compilerOptions?.strict === true) {
-			return { status: "strict", file: fileName };
+			return { status: "strict", file: fileName, parsed };
 		}
-		return { status: "not_strict", file: fileName };
+		return { status: "not_strict", file: fileName, parsed };
 	} catch {
 		return { status: "not_found" };
 	}
@@ -105,11 +86,20 @@ export async function updateTsConfigToStrict(pathOverride?: string): Promise<{
 }
 
 /**
- * Detects the primary framework used in the current workspace (Vite, Bun, or Node).
+ * Detects the primary framework used in the current workspace (Vite, Bun, or Node),
+ * considering tsconfig types and configuration files.
  *
  * @returns The detected framework.
  */
-export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
+export async function detectFramework(
+	tsConfig?: ParsedTsConfig | null,
+): Promise<"vite" | "bun" | "node"> {
+	if (tsConfig?.compilerOptions?.types) {
+		const types = tsConfig.compilerOptions.types;
+		if (types.includes("vite") || types.includes("vite/client")) return "vite";
+		if (types.includes("bun") || types.includes("@types/bun")) return "bun";
+	}
+
 	try {
 		const pkgJsonPath = path.join(process.cwd(), "package.json");
 		const content = await fsp.readFile(pkgJsonPath, "utf-8");
@@ -148,16 +138,16 @@ export async function detectFramework(): Promise<"vite" | "bun" | "node"> {
  *
  * @returns The detected package manager.
  */
-export async function detectPackageManager(): Promise<
-	"pnpm" | "yarn" | "npm" | "bun"
-> {
+export async function detectPackageManager(
+	tsConfig?: ParsedTsConfig | null,
+): Promise<"pnpm" | "yarn" | "npm" | "bun"> {
 	const userAgent = process.env.npm_config_user_agent?.toString() || "";
 	if (userAgent.includes("pnpm")) return "pnpm";
 	if (userAgent.includes("yarn")) return "yarn";
 	if (userAgent.includes("bun")) return "bun";
 	if (userAgent.includes("npm")) return "npm";
 
-	let currentDir = process.cwd();
+	let currentDir = tsConfig?.path ? path.dirname(tsConfig.path) : process.cwd();
 
 	while (currentDir !== path.parse(currentDir).root) {
 		try {
@@ -190,4 +180,34 @@ export async function detectPackageManager(): Promise<
 	}
 
 	return "npm";
+}
+
+/**
+ * Suggests the default path for env.ts based on tsconfig.json rootDir or existing project structure.
+ */
+export async function suggestDefaultEnvPath(
+	cwd = process.cwd(),
+	tsConfig?: ParsedTsConfig | null,
+): Promise<string> {
+	let currentTsConfig = tsConfig;
+	if (!currentTsConfig) {
+		const tsConfigPath = await findTsConfig(cwd);
+		if (tsConfigPath) {
+			currentTsConfig = await loadTsConfig(tsConfigPath);
+		}
+	}
+
+	if (currentTsConfig?.compilerOptions?.rootDir) {
+		const rootDir = currentTsConfig.compilerOptions.rootDir;
+		const rel = path.relative(cwd, rootDir);
+		if (!rel || rel === ".") return "./env.ts";
+		return `./${rel}/env.ts`;
+	}
+
+	try {
+		await fsp.access(path.join(cwd, "src"));
+		return "./src/env.ts";
+	} catch {
+		return "./env.ts";
+	}
 }

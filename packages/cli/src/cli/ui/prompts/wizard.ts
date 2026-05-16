@@ -9,10 +9,19 @@ import { isSuccess } from "./utils";
 export async function runPromptWizard(
 	defaults?: {
 		framework?: ProjectOptions["framework"];
+		defaultEnvPath?: string;
+		tsConfig?: any;
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
-	const detectedKeys = await getEnvExampleKeys();
+	const defaultEnvPath = defaults?.defaultEnvPath || "./src/env.ts";
+	const envRes = await getEnvExampleKeys(
+		process.cwd(),
+		defaults?.tsConfig,
+		path.resolve(process.cwd(), defaultEnvPath),
+	);
+	const detectedKeys = envRes?.keys || null;
+	const keysSource = envRes?.source || ".env.example";
 
 	if (isYes) {
 		const framework = defaults?.framework || "node";
@@ -21,14 +30,14 @@ export async function runPromptWizard(
 		if (framework === "vite" || framework === "bun") {
 			const typeFile = framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 			const targetDir = path.dirname(
-				path.resolve(process.cwd(), "./src/env.ts"),
+				path.resolve(process.cwd(), defaultEnvPath),
 			);
 			const typeFilePath = path.join(targetDir, typeFile);
 			envDtsHandling = fs.existsSync(typeFilePath) ? "append" : "overwrite";
 		}
 
 		return shake({
-			path: "./src/env.ts",
+			path: defaultEnvPath,
 			validator: "arktype",
 			framework,
 			language: "ts",
@@ -42,14 +51,14 @@ export async function runPromptWizard(
 
 	const result = await group(
 		{
-			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile,
-			framework: () => steps.framework(defaults),
-			useDefaultPath: steps.useDefaultPath,
-			path: steps.path,
+			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile(defaultEnvPath),
+			framework: steps.framework(defaults),
+			useDefaultPath: steps.useDefaultPath(defaultEnvPath),
+			path: steps.path(defaultEnvPath),
 			installTypeDefinitions: steps.installTypeDefinitions,
 			envDtsHandling: steps.envDtsHandling,
 			validator: steps.validator,
-			useEnvExample: () => steps.useEnvExample(detectedKeys),
+			useEnvExample: steps.useEnvExample(detectedKeys, keysSource),
 		},
 		{
 			onCancel: () => {

@@ -52,8 +52,7 @@ export function AIActions({
 					}),
 				}),
 			]);
-		} catch (err) {
-			console.error(err);
+		} catch (_err) {
 		} finally {
 			setLoading(false);
 		}

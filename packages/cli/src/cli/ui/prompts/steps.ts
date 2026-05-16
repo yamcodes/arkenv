@@ -9,73 +9,75 @@ import type { ProjectOptions } from "@/features/scaffold";
  * A collection of interactive CLI prompt steps used during initialization.
  */
 export const steps = {
-	overwriteEnvSchemaFile: async () => {
-		const defaultPath = "./src/env.ts";
-		if (fs.existsSync(path.resolve(process.cwd(), defaultPath))) {
-			const answer = await confirm({
-				message: pc.yellow(
-					`An existing ArkEnv configuration was found at ${code(defaultPath)}. Do you want to overwrite it?`,
-				),
-				initialValue: false,
-				active: "Yes (override my configuration)",
-				inactive: "No (abort)",
-			});
-			if (isCancel(answer) || !answer) {
-				return null;
+	overwriteEnvSchemaFile:
+		(defaultPath = "./src/env.ts") =>
+		async () => {
+			if (fs.existsSync(path.resolve(process.cwd(), defaultPath))) {
+				const answer = await confirm({
+					message: pc.yellow(
+						`An existing ArkEnv configuration was found at ${code(defaultPath)}. Do you want to overwrite it?`,
+					),
+					initialValue: false,
+					active: "Yes (override my configuration)",
+					inactive: "No (abort)",
+				});
+				if (isCancel(answer) || !answer) {
+					return null;
+				}
+				return answer;
 			}
-			return answer;
-		}
-		return true;
-	},
+			return true;
+		},
 
-	framework: async (defaults?: { framework?: ProjectOptions["framework"] }) => {
-		const answer = await select({
-			message: "Select your framework or runtime:",
-			initialValue: defaults?.framework,
-			options: [
-				{
-					value: "vite",
-					label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
-				},
-				{
-					value: "bun",
-					label: `Bun${defaults?.framework === "bun" ? " (Detected)" : ""}`,
-				},
-				{
-					value: "node",
-					label: `Node.js${defaults?.framework === "node" ? " (Detected)" : ""}`,
-				},
-			],
-		});
-		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
-	},
-
-	useDefaultPath: async () => {
-		const answer = await confirm({
-			message: `Use default config path (${code("./src/env.ts")})?`,
-			initialValue: true,
-			active: "Yes (Recommended)",
-			inactive: "No, let me customize it",
-		});
-		return isCancel(answer) ? null : (answer as boolean);
-	},
-
-	path: async ({
-		results,
-	}: {
-		results: { useDefaultPath?: boolean | null };
-	}) => {
-		if (results.useDefaultPath === null) return null;
-		if (!results.useDefaultPath) {
-			const answer = await text({
-				message: "Where should we create the ArkEnv config?",
-				placeholder: "./src/env.ts",
-				initialValue: "./src/env.ts",
+	framework:
+		(defaults?: { framework?: ProjectOptions["framework"] }) => async () => {
+			const answer = await select({
+				message: "Select your framework or runtime:",
+				initialValue: defaults?.framework,
+				options: [
+					{
+						value: "vite",
+						label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
+					},
+					{
+						value: "bun",
+						label: `Bun${defaults?.framework === "bun" ? " (Detected)" : ""}`,
+					},
+					{
+						value: "node",
+						label: `Node.js${defaults?.framework === "node" ? " (Detected)" : ""}`,
+					},
+				],
 			});
-			return isCancel(answer) ? null : answer;
-		}
-		return "./src/env.ts";
-	},
+			return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
+		},
+
+	useDefaultPath:
+		(defaultEnvPath = "./src/env.ts") =>
+		async () => {
+			const answer = await confirm({
+				message: `Use default config path (${code(defaultEnvPath)})?`,
+				initialValue: true,
+				active: "Yes (Recommended)",
+				inactive: "No, let me customize it",
+			});
+			return isCancel(answer) ? null : (answer as boolean);
+		},
+
+	path:
+		(defaultEnvPath = "./src/env.ts") =>
+		async ({ results }: { results: { useDefaultPath?: boolean | null } }) => {
+			if (results.useDefaultPath === null) return null;
+			if (!results.useDefaultPath) {
+				const answer = await text({
+					message: "Where should we create the ArkEnv config?",
+					placeholder: defaultEnvPath,
+					initialValue: defaultEnvPath,
+				});
+				return isCancel(answer) ? null : answer;
+			}
+			return defaultEnvPath;
+		},
 
 	installTypeDefinitions: async ({
 		results,
@@ -176,15 +178,22 @@ export const steps = {
 		return isCancel(answer) ? null : (answer as ProjectOptions["validator"]);
 	},
 
-	useEnvExample: async (detectedKeys: string[] | null) => {
-		if (detectedKeys && detectedKeys.length > 0) {
-			const answer = await confirm({
-				message: `Detected ${code(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`,
-				active: "Yes (Recommended)",
-				initialValue: true,
-			});
-			return isCancel(answer) ? null : (answer as boolean);
-		}
-		return false;
-	},
+	useEnvExample:
+		(detectedKeys: string[] | null, source = ".env.example") =>
+		async () => {
+			if (detectedKeys && detectedKeys.length > 0) {
+				const message =
+					source === ".env.example"
+						? `Detected ${code(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`
+						: `Detected ${detectedKeys.length} environment variables used in your project. Use them for your schema?`;
+
+				const answer = await confirm({
+					message,
+					active: "Yes (Recommended)",
+					initialValue: true,
+				});
+				return isCancel(answer) ? null : (answer as boolean);
+			}
+			return false;
+		},
 };

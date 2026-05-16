@@ -7,7 +7,7 @@ const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 		version: 1 as const,
 		vendor: "mock",
 		types: {} as { input: unknown; output: TOutput },
-		validate: (value: unknown) => ({ value: outputValue }),
+		validate: (_value: unknown) => ({ value: outputValue }),
 	},
 });
 

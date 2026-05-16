@@ -1,5 +1,8 @@
-import { describe, expect, it } from "vitest";
-import { parseEnvExample } from "./env-parser";
+import fsp from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { parseEnvExample, scanProjectEnvKeys } from "./env-parser";
 
 describe("env-parser", () => {
 	it("should extract keys from a standard .env.example", () => {
@@ -68,5 +71,55 @@ KEY2=VALUE2
     `;
 		const keys = parseEnvExample(content);
 		expect(keys).toEqual(["KEY1", "KEY2"]);
+	});
+
+	describe("scanProjectEnvKeys", () => {
+		let tempDir: string;
+
+		beforeEach(async () => {
+			tempDir = await fsp.mkdtemp(path.join(os.tmpdir(), "env-parser-test-"));
+		});
+
+		afterEach(async () => {
+			await fsp.rm(tempDir, { recursive: true, force: true });
+		});
+
+		it("should detect process.env and import.meta.env usages", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "index.ts"),
+				`
+				const port = process.env.PORT;
+				const apiUrl = import.meta.env.VITE_API_URL;
+				`,
+			);
+
+			const keys = await scanProjectEnvKeys(tempDir);
+			expect(keys).toEqual(["PORT", "VITE_API_URL"]);
+		});
+
+		it("should detect env variables used with alias imports", async () => {
+			const envConfigPath = path.join(tempDir, "src", "env.ts");
+			await fsp.mkdir(path.join(tempDir, "src"), { recursive: true });
+			await fsp.writeFile(
+				path.join(tempDir, "src", "main.ts"),
+				`
+				import { env } from "@/env";
+				console.log(env.DATABASE_URL, env.API_KEY);
+				`,
+			);
+
+			const tsConfig = {
+				path: path.join(tempDir, "tsconfig.json"),
+				compilerOptions: {
+					baseUrl: tempDir,
+					paths: {
+						"@/*": ["./src/*"],
+					},
+				},
+			};
+
+			const keys = await scanProjectEnvKeys(tempDir, tsConfig, envConfigPath);
+			expect(keys).toEqual(["DATABASE_URL", "API_KEY"]);
+		});
 	});
 });

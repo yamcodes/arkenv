@@ -17,7 +17,11 @@ export class ClackPromptAdapter implements PromptPort {
 	}
 
 	async runWizard(
-		defaults?: { framework?: ProjectOptions["framework"] },
+		defaults?: {
+			framework?: ProjectOptions["framework"];
+			defaultEnvPath?: string;
+			tsConfig?: any;
+		},
 		isYes = false,
 	): Promise<ProjectOptions | null> {
 		return runPromptWizard(defaults, isYes);

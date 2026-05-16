@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { type ParsedTsConfig, resolveImportPath } from "./tsconfig-parser";
 
 /**
  * Extracts environment variable keys from a .env.example file.
@@ -27,17 +28,133 @@ export function parseEnvExample(content: string): string[] {
 	return Array.from(new Set(keys)); // Ensure unique keys
 }
 
+async function walk(dir: string, fileList: string[] = []): Promise<string[]> {
+	try {
+		const entries = await fs.readdir(dir, { withFileTypes: true });
+		for (const entry of entries) {
+			if (entry.isDirectory()) {
+				const name = entry.name;
+				if (
+					name === "node_modules" ||
+					name === "dist" ||
+					name === "build" ||
+					name === ".git" ||
+					name === ".turbo" ||
+					name === "scratch"
+				) {
+					continue;
+				}
+				await walk(path.join(dir, name), fileList);
+			} else if (entry.isFile()) {
+				if (
+					/\.(ts|tsx|js|jsx)$/.test(entry.name) &&
+					!entry.name.endsWith(".d.ts")
+				) {
+					fileList.push(path.join(dir, entry.name));
+				}
+			}
+		}
+	} catch {
+		// ignore inaccessible directories
+	}
+	return fileList;
+}
+
 /**
- * Attempts to read .env.example from the current working directory and extract its keys.
- * Returns null if the file doesn't exist or no keys are found.
+ * Scans project source files to detect environment variables used in code,
+ * respecting alias imports and standard patterns.
  */
-export async function getEnvExampleKeys(): Promise<string[] | null> {
-	const filePath = path.join(process.cwd(), ".env.example");
+export async function scanProjectEnvKeys(
+	cwd: string,
+	tsConfig?: ParsedTsConfig | null,
+	envConfigPath?: string,
+): Promise<string[]> {
+	const keys: string[] = [];
+	const files = await walk(cwd);
+
+	const cleanEnvConfigPath = envConfigPath
+		? envConfigPath.replace(/\.(ts|js|tsx|jsx)$/, "")
+		: null;
+
+	for (const file of files) {
+		try {
+			const content = await fs.readFile(file, "utf-8");
+
+			// Match process.env.VAR
+			const processMatches = content.matchAll(
+				/process\.env\.([A-Z_][A-Z0-9_]*)/g,
+			);
+			for (const m of processMatches) {
+				if (m[1]) keys.push(m[1]);
+			}
+
+			// Match import.meta.env.VAR
+			const metaMatches = content.matchAll(
+				/import\.meta\.env\.([A-Z_][A-Z0-9_]*)/g,
+			);
+			for (const m of metaMatches) {
+				if (m[1]) keys.push(m[1]);
+			}
+
+			// Check for alias or relative import of envConfigPath
+			if (cleanEnvConfigPath) {
+				const importMatches = content.matchAll(
+					/import\s+[^;]*from\s+['"]([^'"]+)['"]/g,
+				);
+				for (const m of importMatches) {
+					const importPath = m[1];
+					let resolvedPath: string | null = null;
+					if (tsConfig) {
+						resolvedPath = resolveImportPath(importPath, tsConfig, file);
+					} else if (importPath.startsWith(".")) {
+						resolvedPath = path.resolve(path.dirname(file), importPath);
+					}
+
+					if (
+						resolvedPath &&
+						resolvedPath.replace(/\.(ts|js|tsx|jsx)$/, "") ===
+							cleanEnvConfigPath
+					) {
+						// This file imports the env object, scan for env.VAR usages
+						const envMatches = content.matchAll(/\benv\.([A-Z_][A-Z0-9_]*)/g);
+						for (const em of envMatches) {
+							if (em[1]) keys.push(em[1]);
+						}
+					}
+				}
+			}
+		} catch {
+			// ignore unreadable files
+		}
+	}
+
+	return Array.from(new Set(keys));
+}
+
+/**
+ * Attempts to read .env.example or scan project files to extract env keys.
+ */
+export async function getEnvExampleKeys(
+	cwd = process.cwd(),
+	tsConfig?: ParsedTsConfig | null,
+	envConfigPath?: string,
+): Promise<{ keys: string[]; source: ".env.example" | "project" } | null> {
+	const filePath = path.join(cwd, ".env.example");
 	try {
 		const content = await fs.readFile(filePath, "utf-8");
 		const keys = parseEnvExample(content);
-		return keys.length > 0 ? keys : null;
+		if (keys.length > 0) {
+			return { keys, source: ".env.example" };
+		}
 	} catch {
-		return null;
+		// .env.example not found or unreadable
 	}
+
+	// Fallback to scanning project files
+	const projectKeys = await scanProjectEnvKeys(cwd, tsConfig, envConfigPath);
+	if (projectKeys.length > 0) {
+		return { keys: projectKeys, source: "project" };
+	}
+
+	return null;
 }

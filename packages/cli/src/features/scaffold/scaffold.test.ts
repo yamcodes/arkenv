@@ -2,7 +2,11 @@ import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { checkTsConfig, detectFramework } from "./scaffold";
+import {
+	checkTsConfig,
+	detectFramework,
+	suggestDefaultEnvPath,
+} from "./scaffold";
 
 describe("scaffold", () => {
 	let tempDir: string;
@@ -44,6 +48,37 @@ describe("scaffold", () => {
 				await fsp.writeFile(path.join(tempDir, "vite.config.ts"), "");
 				const result = await detectFramework();
 				expect(result).toBe("vite");
+			});
+
+			it("detects framework from tsconfig types", async () => {
+				const tsConfig = {
+					path: path.join(tempDir, "tsconfig.json"),
+					compilerOptions: { types: ["vite/client"] },
+				};
+				const result = await detectFramework(tsConfig);
+				expect(result).toBe("vite");
+			});
+		});
+
+		describe("suggestDefaultEnvPath", () => {
+			it("suggests path based on rootDir in tsconfig", async () => {
+				const tsConfig = {
+					path: path.join(tempDir, "tsconfig.json"),
+					compilerOptions: { rootDir: path.join(tempDir, "lib") },
+				};
+				const result = await suggestDefaultEnvPath(tempDir, tsConfig);
+				expect(result).toBe("./lib/env.ts");
+			});
+
+			it("suggests ./src/env.ts if src directory exists", async () => {
+				await fsp.mkdir(path.join(tempDir, "src"));
+				const result = await suggestDefaultEnvPath(tempDir, null);
+				expect(result).toBe("./src/env.ts");
+			});
+
+			it("fallbacks to ./env.ts if no src exists", async () => {
+				const result = await suggestDefaultEnvPath(tempDir, null);
+				expect(result).toBe("./env.ts");
 			});
 		});
 	});
