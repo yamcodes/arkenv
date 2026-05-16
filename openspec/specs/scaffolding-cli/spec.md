@@ -13,8 +13,7 @@ The `@arkenv/cli` package SHALL maintain an automated test suite that covers cri
 - **AND** tests SHALL include both logic-level and process-level coverage
 
 ### Requirement: Scaffolding Behavior Coverage
-
-The scaffold workflow SHALL be covered for file generation, overwrite handling, tsconfig strict-mode updates, and dependency installation behavior.
+The scaffold workflow SHALL be covered for file generation, overwrite handling, tsconfig strict-mode updates, dependency installation behavior, and configuration bootstrapping.
 
 #### Scenario: Creating a new env config file
 - **WHEN** `scaffold()` runs with a target path that does not exist
@@ -31,12 +30,6 @@ The scaffold workflow SHALL be covered for file generation, overwrite handling, 
 - **AND** overwrite confirmation is accepted
 - **THEN** the target file SHALL be replaced with generated content
 
-#### Scenario: Existing file append is selected
-- **WHEN** `scaffold()` runs and the target file (e.g., `vite-env.d.ts`) already exists
-- **AND** the append option is selected
-- **THEN** the system SHALL append the required types to the existing file
-- **AND** existing content SHALL be preserved
-
 #### Scenario: Strict mode update is requested
 - **WHEN** `scaffold()` runs with `shouldUpdateTsConfig: true`
 - **THEN** tsconfig strict mode SHALL be updated when possible
@@ -47,6 +40,11 @@ The scaffold workflow SHALL be covered for file generation, overwrite handling, 
 - **THEN** dependency install command SHALL include `arkenv` and selected validator
 - **AND** it SHALL include `@arkenv/vite-plugin` only for `vite`
 - **AND** it SHALL include `@arkenv/bun-plugin` only for `bun`
+
+#### Scenario: Framework plugin is bootstrapped
+- **WHEN** scaffolding framework-specific dependencies succeeds
+- **THEN** the configuration file SHALL be updated to use the installed plugin
+- **AND** a success or manual-fallback message SHALL be presented
 
 #### Scenario: Install failure is actionable
 - **WHEN** dependency installation fails
