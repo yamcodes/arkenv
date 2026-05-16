@@ -1,7 +1,7 @@
 import path from "node:path";
-import dedent from "dedent";
-import { code, symbol } from "@/cli/ui/visuals";
+import { code, symbol } from "@/shared/visuals";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
+import { getInstallCommand, getNextStepsNote } from "./utils";
 
 /**
  * Executes a ScaffoldingPlan by performing workspace modifications,
@@ -69,7 +69,7 @@ export class Executor {
 				this.reporter.step(
 					`Installing dependencies with ${code(plan.install.packageManager)}...`,
 				);
-				const [cmd, args] = this.getInstallCommand(
+				const [cmd, args] = getInstallCommand(
 					plan.install.packageManager,
 					plan.install.dependencies,
 				);
@@ -160,7 +160,8 @@ export class Executor {
 			}
 
 			// 6. Final reporting
-			this.reportNextSteps(plan, skillInstalled);
+			const note = getNextStepsNote(plan, skillInstalled);
+			this.reporter.note(note.message, note.title);
 
 			this.reporter.finish(
 				`${symbol} ArkEnv scaffolding complete. Happy coding!`,
@@ -176,50 +177,6 @@ export class Executor {
 		} catch (error) {
 			s.stop("Scaffolding failed.");
 			throw error;
-		}
-	}
-
-	private getInstallCommand(pm: string, deps: string[]): [string, string[]] {
-		switch (pm) {
-			case "pnpm":
-				return ["pnpm", ["add", ...deps]];
-			case "yarn":
-				return ["yarn", ["add", ...deps]];
-			case "bun":
-				return ["bun", ["add", ...deps]];
-			default:
-				return ["npm", ["install", ...deps]];
-		}
-	}
-
-	private reportNextSteps(plan: ScaffoldingPlan, skillInstalled: boolean) {
-		let usageInstructions = `2. Import and use: import { env } from "${code(plan.metadata.importPath)}"`;
-		if (plan.metadata.framework === "vite") {
-			usageInstructions = `2. Access via ${code("import.meta.env.YOUR_VAR")}`;
-		} else if (plan.metadata.framework === "bun") {
-			usageInstructions = `2. Access via ${code("process.env.YOUR_VAR")}`;
-		}
-
-		if (skillInstalled) {
-			this.reporter.note(
-				dedent`
-					Inside your AI assistant (e.g. Claude Code), use:
-					${code("/arkenv")} - automatically refine your schema and configure integrations.
-				`,
-				"Next steps",
-			);
-		} else {
-			const dlx = plan.skill?.dlxCommand.join(" ") || "npx";
-			const packageName = plan.skill?.packageName || "yamcodes/arkenv";
-			this.reporter.note(
-				dedent`
-					1. Check ${code(plan.metadata.displayPath)} and refine your environment schema.
-					${usageInstructions}
-					3. (Recommended) Install the AI skill: ${code(`${dlx} skills add ${packageName}`)}
-					   Then run ${code("/arkenv")} inside your AI assistant to finish.
-				`,
-				"Next steps",
-			);
 		}
 	}
 }

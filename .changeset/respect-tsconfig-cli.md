@@ -1,5 +1,5 @@
 ---
-"@arkenv/cli": minor
+"@arkenv/cli": patch
 ---
 
 #### Respect `tsconfig.json` for path resolution and scaffolding
