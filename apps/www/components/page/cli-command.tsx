@@ -1,8 +1,8 @@
 "use client";
 
 import { Terminal } from "lucide-react";
-import { CopyButton } from "./copy-button";
 import { useCopyCommand } from "~/hooks/use-copy-command";
+import { CopyButton } from "./copy-button";
 
 export function CLICommand() {
 	const command = "npx @arkenv/cli@latest init";

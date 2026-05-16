@@ -40,13 +40,15 @@ describe("CLICommand", () => {
 			</>,
 		);
 
-		const container = screen.getByRole("button", { name: /copy install command/i });
+		const container = screen.getByRole("button", {
+			name: /copy install command/i,
+		});
 		await user.click(container);
 
 		// Verify copy happened by checking for success markers:
 		// 1. Toast appears
 		// 2. Button aria-label changes to "Copied"
-		
+
 		await waitFor(() => {
 			expect(
 				screen.getByText(/command copied to clipboard/i),
@@ -67,7 +69,9 @@ describe("CLICommand", () => {
 			</>,
 		);
 
-		const container = screen.getByRole("button", { name: /copy install command/i });
+		const container = screen.getByRole("button", {
+			name: /copy install command/i,
+		});
 		container.focus();
 		await user.keyboard("{Enter}");
 
