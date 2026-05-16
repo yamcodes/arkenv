@@ -18,7 +18,8 @@ These skills are intended for users of ArkEnv to improve their development exper
   ### GitHub Workflows
 
   - [**gh-cli**](./gh-cli/SKILL.md): Guidance for using the GitHub CLI (`gh`) for common repository tasks.
-  - [**gh-issue-workflow**](./gh-issue-workflow/SKILL.md): Standardized workflow for managing issues from start to Pull Request.
+  - [**groom-issue**](./groom-issue/SKILL.md): Interactive grilling session to clarify and flesh out poorly written issues.
+  - [**tackle-issue**](./tackle-issue/SKILL.md): Standardized workflow for managing issues from start to Pull Request.
 
   ### OpenSpec (Experimental)
 
