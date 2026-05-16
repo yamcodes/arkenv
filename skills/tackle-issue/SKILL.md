@@ -37,12 +37,13 @@ Before starting any work, you MUST verify that the issue is ready for an agent.
 
 ### 3. Implementation
 
-Proceed with the standard **Research -> Strategy -> Execution** lifecycle. 
+Proceed with the standard **Research -> Strategy -> Execution** lifecycle.
+
 - **Research**: Understand the issue and surrounding code.
 - **Strategy**: Plan the fix or feature.
 - **Execution**: Apply changes surgically. Ensure that:
-    - New tests are added to verify the fix or feature.
-    - Relevant documentation is updated.
+  - New tests are added to verify the fix or feature.
+  - Relevant documentation is updated.
 
 ### 4. Validation & Quality Assurance
 
@@ -71,6 +72,7 @@ If any of these steps fail (and cannot be auto-fixed), you MUST diagnose and fix
 ### 5. Changeset Creation
 
 After validation passes, you MUST create a changeset using the `creating-changesets` skill.
+
 - Determine the appropriate bump type (`patch` or `minor` for v0) based on the `creating-changesets` guidelines.
 - Provide a clear, concise description starting with a `####` header.
 
