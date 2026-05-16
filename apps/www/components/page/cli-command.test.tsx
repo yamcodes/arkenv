@@ -12,18 +12,15 @@ vi.mock("@sentry/nextjs", () => ({
 describe("CLICommand", () => {
 	beforeEach(() => {
 		// Mock clipboard API
-		Object.defineProperty(navigator, "clipboard", {
-			writable: true,
-			configurable: true,
-			value: {
+		vi.stubGlobal("navigator", {
+			clipboard: {
 				writeText: vi.fn().mockResolvedValue(undefined),
 			},
 		});
 	});
 
 	afterEach(() => {
-		// @ts-ignore
-		delete navigator.clipboard;
+		vi.unstubAllGlobals();
 	});
 
 	it("should render with syntax highlighting spans", () => {
