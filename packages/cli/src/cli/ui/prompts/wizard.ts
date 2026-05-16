@@ -26,17 +26,18 @@ export async function runPromptWizard(
 			envDtsHandling = fs.existsSync(typeFilePath) ? "append" : "overwrite";
 		}
 
-		return {
+		const options: ProjectOptions = {
 			path: "./src/env.ts",
 			validator: "arktype",
 			framework,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
-			envDtsHandling,
 			installTypeDefinitions: framework !== "node",
-			envKeys: detectedKeys || undefined,
 			installSkill: false,
 		};
+		if (envDtsHandling) options.envDtsHandling = envDtsHandling;
+		if (detectedKeys) options.envKeys = detectedKeys;
+		return options;
 	}
 
 	const result = await group(
@@ -61,11 +62,15 @@ export async function runPromptWizard(
 		return null;
 	}
 
-	return {
+	const options: ProjectOptions = {
 		...result,
 		language: "ts",
-		envKeys: result.useEnvExample ? (detectedKeys || undefined) : undefined,
 		installSkill: false, // Defaulting to false, will be overridden by orchestrator if needed
 	};
+
+	if (result.useEnvExample && detectedKeys) {
+		options.envKeys = detectedKeys;
 	}
 
+	return options;
+}

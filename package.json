@@ -7,6 +7,7 @@
 		"build:packages": "turbo run build --filter=./packages/*",
 		"dev": "turbo run dev --ui tui",
 		"typecheck": "turbo run typecheck",
+		"typecheck:packages": "turbo run typecheck --filter=./packages/*",
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
 		"release": "pnpm run build:packages && changeset publish",

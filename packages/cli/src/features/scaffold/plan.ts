@@ -11,11 +11,11 @@ export type ProjectOptions = {
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun" | "node";
 	language: "ts"; // TODO: Support JS
-	overwriteEnvSchemaFile?: boolean | undefined;
-	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
-	installTypeDefinitions?: boolean | undefined;
-	envKeys?: string[] | undefined;
-	installSkill?: boolean | undefined;
+	overwriteEnvSchemaFile?: boolean;
+	envDtsHandling?: "overwrite" | "append" | "skip";
+	installTypeDefinitions?: boolean;
+	envKeys?: string[];
+	installSkill?: boolean;
 };
 
 /**
