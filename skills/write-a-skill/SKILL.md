@@ -73,7 +73,7 @@ The description is **the only thing your agent sees** when deciding which skill 
 - Max 1024 chars
 - Write in third person
 - First sentence: what it does
-- Second sentence: "Use when [specific triggers]"
+- Second sentence: "Use when \[specific triggers]"
 
 **Good example**:
 
