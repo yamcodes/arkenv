@@ -15,18 +15,15 @@ describe("CopyButton + useToast + Toaster integration", () => {
 	beforeEach(() => {
 		// Mock clipboard API - must be set up before component renders
 		mockWriteText = vi.fn().mockResolvedValue(undefined);
-		Object.defineProperty(navigator, "clipboard", {
-			writable: true,
-			configurable: true,
-			value: {
+		vi.stubGlobal("navigator", {
+			clipboard: {
 				writeText: mockWriteText,
 			},
 		});
 	});
 
 	afterEach(() => {
-		// Clean up
-		delete (navigator as { clipboard?: unknown }).clipboard;
+		vi.unstubAllGlobals();
 	});
 
 	it("should show toast when copy succeeds", async () => {
@@ -61,10 +58,8 @@ describe("CopyButton + useToast + Toaster integration", () => {
 		mockWriteText.mockRejectedValue(error);
 
 		// Ensure clipboard is set up with the rejecting mock
-		Object.defineProperty(navigator, "clipboard", {
-			writable: true,
-			configurable: true,
-			value: {
+		vi.stubGlobal("navigator", {
+			clipboard: {
 				writeText: mockWriteText,
 			},
 		});

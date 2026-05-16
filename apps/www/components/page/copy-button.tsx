@@ -7,20 +7,17 @@ import { useCopyCommand } from "~/hooks/use-copy-command";
 type CopyButtonProps = {
 	command: string;
 	copied?: boolean;
-	onClick?: () => void;
-	asChild?: boolean;
+	onCopy?: () => void;
 };
 
 export function CopyButton({
 	command,
-	copied: copiedProp,
-	onClick,
-	asChild,
+	copied: externalCopied,
+	onCopy,
 }: CopyButtonProps) {
-	const { copy, copied: copiedInternal } = useCopyCommand(command);
-
-	const isCopied = copiedProp ?? copiedInternal;
-	const handleCopy = onClick ?? copy;
+	const internal = useCopyCommand(command);
+	const copied = externalCopied ?? internal.copied;
+	const copy = onCopy ?? internal.copy;
 
 	return (
 		<Button
@@ -29,7 +26,7 @@ export function CopyButton({
 			size="icon"
 			onClick={(e) => {
 				e.stopPropagation();
-				handleCopy();
+				copy();
 			}}
 			className="hover:bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
 			aria-label={isCopied ? "Copied" : "Copy command"}

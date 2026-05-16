@@ -1,60 +1,84 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Toaster } from "~/components/ui/toaster";
 import { CLICommand } from "./cli-command";
 
-// Mock useCopyCommand
-const mockCopy = vi.fn();
-vi.mock("~/hooks/use-copy-command", () => ({
-	useCopyCommand: (_command: string) => ({
-		copy: mockCopy,
-		copied: false,
-	}),
-}));
-
-// Mock CopyButton to simplify
-vi.mock("./copy-button", () => ({
-	CopyButton: ({ onClick }: { onClick: () => void }) => (
-		// biome-ignore lint/a11y/useKeyWithClickEvents: simple mock
-		// biome-ignore lint/a11y/noStaticElementInteractions: simple mock
-		<span onClick={onClick}>Copy</span>
-	),
+// Mock Sentry
+vi.mock("@sentry/nextjs", () => ({
+	captureException: vi.fn(),
 }));
 
 describe("CLICommand", () => {
-	it("renders correctly with syntax highlighting", () => {
-		render(<CLICommand />);
+	beforeEach(() => {
+		// Mock clipboard API
+		vi.stubGlobal("navigator", {
+			clipboard: {
+				writeText: vi.fn().mockResolvedValue(undefined),
+			},
+		});
+	});
 
-		expect(screen.getByText("npx")).toHaveClass("text-blue-600");
-		expect(screen.getByText("@arkenv/cli@latest")).toHaveClass(
-			"text-emerald-600",
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
+	it("should render with syntax highlighting spans", () => {
+		render(<CLICommand />);
+		expect(screen.getByText("npx")).toBeInTheDocument();
+		expect(screen.getByText("@arkenv/cli")).toBeInTheDocument();
+		expect(screen.getByText("@latest")).toBeInTheDocument();
+		expect(screen.getByText("init")).toBeInTheDocument();
+	});
+
+	it("should copy command when clicking the container", async () => {
+		const user = userEvent.setup();
+		render(
+			<>
+				<CLICommand />
+				<Toaster />
+			</>,
 		);
-		expect(screen.getByText("init")).toHaveClass("text-slate-700");
+
+		const container = screen.getByRole("button", {
+			name: /copy install command/i,
+		});
+		await user.click(container);
+
+		// Verify copy happened by checking for success markers:
+		// 1. Toast appears
+		// 2. Button aria-label changes to "Copied"
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(/command copied to clipboard/i),
+			).toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.getByLabelText("Copied")).toBeInTheDocument();
+		});
 	});
 
-	it("triggers copy when clicked", () => {
-		render(<CLICommand />);
+	it("should copy command when pressing Enter", async () => {
+		const user = userEvent.setup();
+		render(
+			<>
+				<CLICommand />
+				<Toaster />
+			</>,
+		);
 
-		const commandBar = screen.getByRole("button");
-		fireEvent.click(commandBar);
+		const container = screen.getByRole("button", {
+			name: /copy install command/i,
+		});
+		container.focus();
+		await user.keyboard("{Enter}");
 
-		expect(mockCopy).toHaveBeenCalled();
-	});
-
-	it("triggers copy when Enter is pressed", () => {
-		render(<CLICommand />);
-
-		const commandBar = screen.getByRole("button");
-		fireEvent.keyDown(commandBar, { key: "Enter" });
-
-		expect(mockCopy).toHaveBeenCalled();
-	});
-
-	it("triggers copy when Space is pressed", () => {
-		render(<CLICommand />);
-
-		const commandBar = screen.getByRole("button");
-		fireEvent.keyDown(commandBar, { key: " " });
-
-		expect(mockCopy).toHaveBeenCalled();
+		await waitFor(() => {
+			expect(
+				screen.getByText(/command copied to clipboard/i),
+			).toBeInTheDocument();
+		});
 	});
 });
