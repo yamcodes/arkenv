@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import { group, isCancel } from "@clack/prompts";
+import { group } from "@clack/prompts";
 import { getEnvExampleKeys, type ProjectOptions } from "@/features/scaffold";
 import { steps } from "./steps";
+import { isSuccess } from "./utils";
 
 export async function runPromptWizard(
 	defaults?: {
@@ -56,19 +57,15 @@ export async function runPromptWizard(
 		},
 	);
 
-	if (isCancel(result) || Object.values(result).some((v) => v === null)) {
+	if (!isSuccess(result)) {
 		return null;
 	}
 
 	return {
-		path: (result.path as string) || "./src/env.ts",
-		validator: result.validator as ProjectOptions["validator"],
-		framework: result.framework as ProjectOptions["framework"],
+		...result,
 		language: "ts",
-		overwriteEnvSchemaFile: result.overwriteEnvSchemaFile as boolean,
-		envDtsHandling: result.envDtsHandling as ProjectOptions["envDtsHandling"],
-		installTypeDefinitions: result.installTypeDefinitions as boolean,
-		envKeys: result.useEnvExample ? (detectedKeys as string[]) : undefined,
+		envKeys: result.useEnvExample ? (detectedKeys || undefined) : undefined,
 		installSkill: false, // Defaulting to false, will be overridden by orchestrator if needed
 	};
-}
+	}
+
