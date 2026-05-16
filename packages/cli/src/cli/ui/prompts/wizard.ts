@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { group } from "@clack/prompts";
+import { shake } from "radashi";
 import { getEnvExampleKeys, type ProjectOptions } from "@/features/scaffold";
 import { steps } from "./steps";
 import { isSuccess } from "./utils";
@@ -26,7 +27,7 @@ export async function runPromptWizard(
 			envDtsHandling = fs.existsSync(typeFilePath) ? "append" : "overwrite";
 		}
 
-		const options: ProjectOptions = {
+		return shake({
 			path: "./src/env.ts",
 			validator: "arktype",
 			framework,
@@ -34,10 +35,9 @@ export async function runPromptWizard(
 			overwriteEnvSchemaFile: true,
 			installTypeDefinitions: framework !== "node",
 			installSkill: false,
-		};
-		if (envDtsHandling) options.envDtsHandling = envDtsHandling;
-		if (detectedKeys) options.envKeys = detectedKeys;
-		return options;
+			envDtsHandling,
+			envKeys: detectedKeys ?? undefined,
+		});
 	}
 
 	const result = await group(
@@ -62,15 +62,10 @@ export async function runPromptWizard(
 		return null;
 	}
 
-	const options: ProjectOptions = {
+	return shake({
 		...result,
 		language: "ts",
 		installSkill: false, // Defaulting to false, will be overridden by orchestrator if needed
-	};
-
-	if (result.useEnvExample && detectedKeys) {
-		options.envKeys = detectedKeys;
-	}
-
-	return options;
+		envKeys: result.useEnvExample ? (detectedKeys ?? undefined) : undefined,
+	} as Partial<ProjectOptions>) as ProjectOptions;
 }
