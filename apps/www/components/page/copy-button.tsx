@@ -21,7 +21,6 @@ export function CopyButton({
 
 	return (
 		<Button
-			asChild={asChild}
 			variant="ghost"
 			size="icon"
 			onClick={(e) => {
@@ -29,21 +28,9 @@ export function CopyButton({
 				copy();
 			}}
 			className="hover:bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-			aria-label={isCopied ? "Copied" : "Copy command"}
+			aria-label={copied ? "Copied" : "Copy command"}
 		>
-			{asChild ? (
-				<span>
-					{isCopied ? (
-						<Check aria-hidden="true" />
-					) : (
-						<Copy aria-hidden="true" />
-					)}
-				</span>
-			) : isCopied ? (
-				<Check aria-hidden="true" />
-			) : (
-				<Copy aria-hidden="true" />
-			)}
+			{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
 		</Button>
 	);
 }
