@@ -1,44 +1,32 @@
 "use client";
 
-import { captureException } from "@sentry/nextjs";
 import { Check, Copy } from "lucide-react";
-import { useState } from "react";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/hooks/use-toast";
+import { useCopyCommand } from "~/hooks/use-copy-command";
 
 type CopyButtonProps = {
 	command: string;
+	copied?: boolean;
+	onCopy?: () => void;
 };
 
-export function CopyButton({ command }: CopyButtonProps) {
-	const [copied, setCopied] = useState(false);
-	const { toast } = useToast();
-
-	const handleClick = async () => {
-		try {
-			await navigator.clipboard.writeText(command);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 2000);
-			toast({
-				description: "Command copied to clipboard!",
-				duration: 2000,
-			});
-		} catch (error) {
-			captureException(error);
-			toast({
-				title: "Uh oh! Something went wrong.",
-				description:
-					"There was a problem copying the command to your clipboard.",
-				variant: "destructive",
-			});
-		}
-	};
+export function CopyButton({
+	command,
+	copied: externalCopied,
+	onCopy,
+}: CopyButtonProps) {
+	const internal = useCopyCommand(command);
+	const copied = externalCopied ?? internal.copied;
+	const copy = onCopy ?? internal.copy;
 
 	return (
 		<Button
 			variant="ghost"
 			size="icon"
-			onClick={handleClick}
+			onClick={(e) => {
+				e.stopPropagation();
+				copy();
+			}}
 			className="hover:bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
 			aria-label={copied ? "Copied" : "Copy command"}
 		>
