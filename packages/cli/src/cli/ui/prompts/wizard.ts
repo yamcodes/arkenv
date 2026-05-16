@@ -1,34 +1,36 @@
-import fs from "node:fs";
 import path from "node:path";
 import { group } from "@clack/prompts";
 import { shake } from "radashi";
-import { getEnvExampleKeys, type ProjectOptions } from "@/features/scaffold";
+import type { ProjectOptions } from "@/features/scaffold";
+import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 import { isSuccess } from "./utils";
 
 export async function runPromptWizard(
 	defaults?: {
 		framework?: ProjectOptions["framework"];
+		defaultEnvPath?: string;
+		tsConfig?: ParsedTsConfig | null;
+		envKeys?: string[] | undefined;
+		envKeysSource?: ".env.example" | "project" | undefined;
+		hasTypeFile?: boolean;
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
-	const detectedKeys = await getEnvExampleKeys();
+	const defaultEnvPath = defaults?.defaultEnvPath || "./src/env.ts";
+	const detectedKeys = defaults?.envKeys || null;
+	const keysSource = defaults?.envKeysSource || ".env.example";
 
 	if (isYes) {
 		const framework = defaults?.framework || "node";
 		let envDtsHandling: ProjectOptions["envDtsHandling"];
 
 		if (framework === "vite" || framework === "bun") {
-			const typeFile = framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-			const targetDir = path.dirname(
-				path.resolve(process.cwd(), "./src/env.ts"),
-			);
-			const typeFilePath = path.join(targetDir, typeFile);
-			envDtsHandling = fs.existsSync(typeFilePath) ? "append" : "overwrite";
+			envDtsHandling = defaults?.hasTypeFile ? "append" : "overwrite";
 		}
 
 		return shake({
-			path: "./src/env.ts",
+			path: defaultEnvPath,
 			validator: "arktype",
 			framework,
 			language: "ts",
@@ -42,14 +44,14 @@ export async function runPromptWizard(
 
 	const result = await group(
 		{
-			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile,
-			framework: () => steps.framework(defaults),
-			useDefaultPath: steps.useDefaultPath,
-			path: steps.path,
+			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile(defaultEnvPath),
+			framework: steps.framework(defaults),
+			useDefaultPath: steps.useDefaultPath(defaultEnvPath),
+			path: steps.path(defaultEnvPath),
 			installTypeDefinitions: steps.installTypeDefinitions,
 			envDtsHandling: steps.envDtsHandling,
 			validator: steps.validator,
-			useEnvExample: () => steps.useEnvExample(detectedKeys),
+			useEnvExample: steps.useEnvExample(detectedKeys, keysSource),
 		},
 		{
 			onCancel: () => {

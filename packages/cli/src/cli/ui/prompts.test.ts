@@ -32,16 +32,12 @@ describe("runPromptWizard", () => {
 	});
 
 	it("should detect .env.example keys in isYes mode", async () => {
-		await fsp.writeFile(path.join(tempDir, ".env.example"), "API_KEY=foo");
-
-		const result = await runPromptWizard({}, true);
+		const result = await runPromptWizard({ envKeys: ["API_KEY"] }, true);
 
 		expect(result?.envKeys).toEqual(["API_KEY"]);
 	});
 
 	it("should include envKeys if user accepts prompt", async () => {
-		await fsp.writeFile(path.join(tempDir, ".env.example"), "API_KEY=foo");
-
 		vi.mocked(prompts.group).mockResolvedValue({
 			overwrite: true,
 			framework: "node",
@@ -50,14 +46,12 @@ describe("runPromptWizard", () => {
 			useDefaultPath: true,
 		});
 
-		const result = await runPromptWizard();
+		const result = await runPromptWizard({ envKeys: ["API_KEY"] });
 
 		expect(result?.envKeys).toEqual(["API_KEY"]);
 	});
 
 	it("should NOT include envKeys if user declines prompt", async () => {
-		await fsp.writeFile(path.join(tempDir, ".env.example"), "API_KEY=foo");
-
 		vi.mocked(prompts.group).mockResolvedValue({
 			overwrite: true,
 			framework: "node",
@@ -66,7 +60,7 @@ describe("runPromptWizard", () => {
 			useDefaultPath: true,
 		});
 
-		const result = await runPromptWizard();
+		const result = await runPromptWizard({ envKeys: ["API_KEY"] });
 
 		expect(result?.envKeys).toBeUndefined();
 	});

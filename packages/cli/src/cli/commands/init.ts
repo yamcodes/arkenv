@@ -1,15 +1,13 @@
 import path from "node:path";
 import pc from "picocolors";
 import { code } from "@/cli/ui";
-import {
-	type CollectedState,
-	checkTsConfig,
-	createPlan,
-	detectFramework,
-	detectPackageManager,
-	Executor,
-} from "@/features/scaffold";
-import type { LoggerPort, PromptPort, WorkspacePort } from "@/shared/ports";
+import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
+import type {
+	LoggerPort,
+	ProjectScannerPort,
+	PromptPort,
+	WorkspacePort,
+} from "@/shared/ports";
 
 /**
  * Input parameters for the 'init' command.
@@ -28,6 +26,7 @@ export class InitUseCase {
 		private readonly logger: LoggerPort,
 		private readonly workspace: WorkspacePort,
 		private readonly prompt: PromptPort,
+		private readonly scanner: ProjectScannerPort,
 	) {}
 
 	async execute(input: InitInput) {
@@ -52,7 +51,7 @@ export class InitUseCase {
 
 		try {
 			let shouldUpdateTsConfig = false;
-			const tsConfig = await checkTsConfig();
+			const tsConfig = await this.scanner.checkTsConfig();
 
 			if (tsConfig.status === "not_strict") {
 				if (isYes) {
@@ -76,9 +75,40 @@ export class InitUseCase {
 				}
 			}
 
-			const detectedFramework = await detectFramework();
+			const detectedFramework = await this.scanner.detectFramework(
+				process.cwd(),
+				tsConfig.parsed,
+			);
+			const defaultEnvPath = await this.scanner.suggestDefaultEnvPath(
+				process.cwd(),
+				tsConfig.parsed,
+			);
+
+			const targetPath = path.resolve(process.cwd(), defaultEnvPath);
+			const envRes = await this.scanner.getEnvExampleKeys(
+				process.cwd(),
+				tsConfig.parsed,
+				targetPath,
+			);
+
+			let hasTypeFile = false;
+			if (detectedFramework === "vite" || detectedFramework === "bun") {
+				const typeFile =
+					detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+				const targetDir = path.dirname(targetPath);
+				const typeFilePath = path.join(targetDir, typeFile);
+				hasTypeFile = await this.workspace.exists(typeFilePath);
+			}
+
 			const options = await this.prompt.runWizard(
-				{ framework: detectedFramework },
+				{
+					framework: detectedFramework,
+					defaultEnvPath,
+					tsConfig: tsConfig.parsed ?? null,
+					envKeys: envRes?.keys,
+					envKeysSource: envRes?.source,
+					hasTypeFile,
+				},
 				isYes,
 			);
 
@@ -105,14 +135,14 @@ export class InitUseCase {
 			}
 
 			// Handle existing env file prompt
-			const targetPath = path.resolve(process.cwd(), options.path);
+			const finalTargetPath = path.resolve(process.cwd(), options.path);
 
 			if (
-				(await this.workspace.exists(targetPath)) &&
+				(await this.workspace.exists(finalTargetPath)) &&
 				options.overwriteEnvSchemaFile === undefined
 			) {
 				const confirmOverwrite = await this.prompt.confirm(
-					`File ${code(path.basename(targetPath))} already exists. Overwrite?`,
+					`File ${code(path.basename(finalTargetPath))} already exists. Overwrite?`,
 					false,
 				);
 
@@ -124,11 +154,14 @@ export class InitUseCase {
 				options.overwriteEnvSchemaFile = confirmOverwrite;
 			}
 
-			const packageManager = await detectPackageManager();
+			const packageManager = await this.scanner.detectPackageManager(
+				process.cwd(),
+				tsConfig.parsed,
+			);
 
 			const existingFiles: string[] = [];
-			if (await this.workspace.exists(targetPath))
-				existingFiles.push(targetPath);
+			if (await this.workspace.exists(finalTargetPath))
+				existingFiles.push(finalTargetPath);
 
 			let typeFileName: string | undefined;
 			if (options.framework === "vite") {
@@ -138,7 +171,7 @@ export class InitUseCase {
 			}
 
 			if (typeFileName) {
-				const targetDir = path.dirname(targetPath);
+				const targetDir = path.dirname(finalTargetPath);
 				const typeFilePath = path.join(targetDir, typeFileName);
 				if (await this.workspace.exists(typeFilePath))
 					existingFiles.push(typeFilePath);
