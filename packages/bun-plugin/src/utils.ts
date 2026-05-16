@@ -8,7 +8,7 @@ import type { Loader, PluginBuilder } from "bun";
  */
 export function processEnvSchema<T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	config?: ArkEnvConfig,
+	config?: ArkEnvConfig & { publicPrefix?: string },
 ): Map<string, string> {
 	// Type assertion needed on `options` to avoid TS2589 (excessively deep type instantiation)
 	// from ArkType's generic inference on the union type
@@ -16,13 +16,17 @@ export function processEnvSchema<T extends SchemaShape>(
 		...config,
 		env: config?.env ?? process.env,
 	});
-	const prefix = "BUN_PUBLIC_";
+
+	// If publicPrefix is explicitly null or empty, we expose everything (server mode)
+	const prefix = config?.publicPrefix ?? "BUN_PUBLIC_";
 	const allowed = new Set(["NODE_ENV"]);
+
 	const filteredEnv = Object.fromEntries(
 		Object.entries(env).filter(
-			([key]) => allowed.has(key) || key.startsWith(prefix),
+			([key]) => !prefix || allowed.has(key) || key.startsWith(prefix),
 		),
 	);
+
 	const envMap = new Map<string, string>();
 	for (const [key, value] of Object.entries(filteredEnv)) {
 		envMap.set(key, JSON.stringify(value));
@@ -36,6 +40,7 @@ export function processEnvSchema<T extends SchemaShape>(
 export function registerLoader(
 	build: PluginBuilder,
 	envMap: Map<string, string>,
+	onBeforeLoad?: (path: string) => Promise<void>,
 ) {
 	build.onLoad(
 		{ filter: /\.(js|jsx|ts|tsx|mjs|cjs|mts|cts)$/ },
@@ -43,6 +48,11 @@ export function registerLoader(
 			if (args.path.includes("node_modules")) {
 				return undefined;
 			}
+
+			if (onBeforeLoad) {
+				await onBeforeLoad(args.path);
+			}
+
 			try {
 				const file = Bun.file(args.path);
 				const contents = await file.text();

@@ -41,15 +41,15 @@ import { processEnvSchema, registerLoader } from "./utils";
  */
 export function arkenv(
 	options: CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: ArkEnvConfig & { publicPrefix?: string },
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: ArkEnvConfig & { publicPrefix?: string },
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: ArkEnvConfig & { publicPrefix?: string },
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options, arkenvConfig);
 
@@ -73,34 +73,50 @@ Object.defineProperty(hybrid, "name", {
 
 hybrid.setup = (build) => {
 	const envMap = new Map<string, string>();
+	let initialized = false;
+	let initPromise: Promise<void> | null = null;
 
-	build.onStart(async () => {
+	const runDiscovery = async (currentPath?: string) => {
+		if (initialized) return;
+
+		// Skip discovery if we are currently loading one of the possible schema files
+		// to avoid a deadlock during the `import()` call.
 		const cwd = process.cwd();
-		let schema: any;
-
 		const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
-
-		for (const p of possiblePaths) {
-			if (await Bun.file(p).exists()) {
-				try {
-					const mod = await import(p);
-					if (mod.default) {
-						schema = mod.default;
-						break;
-					}
-					if (mod.env) {
-						schema = mod.env;
-						break;
-					}
-				} catch (e) {
-					console.error(`Failed to load env schema from ${p}:`, e);
-				}
-			}
+		if (currentPath && possiblePaths.includes(currentPath)) {
+			return;
 		}
 
-		if (!schema) {
-			const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
-			const example = `
+		if (initPromise) return initPromise;
+
+		initPromise = (async () => {
+			let schema: any;
+
+			for (const p of possiblePaths) {
+				if (await Bun.file(p).exists()) {
+					try {
+						const mod = await import(p);
+						if (mod.default) {
+							schema = mod.default;
+							break;
+						}
+						if (mod.env) {
+							schema = mod.env;
+							break;
+						}
+						if (mod.Env) {
+							schema = mod.Env;
+							break;
+						}
+					} catch (e) {
+						console.error(`Failed to load env schema from ${p}:`, e);
+					}
+				}
+			}
+
+			if (!schema) {
+				const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
+				const example = `
 Example \`src/env.ts\`:
 \`\`\`ts
 import { type } from "arktype";
@@ -111,17 +127,33 @@ export default type({
 });
 \`\`\`
 `;
-			throw new Error(
-				`@arkenv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition.\n${example}`,
-			);
-		}
+				throw new Error(
+					`@arkenv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition.\n${example}`,
+				);
+			}
 
-		const newEnvMap = processEnvSchema(schema);
-		envMap.clear();
-		for (const [k, v] of newEnvMap) {
-			envMap.set(k, v);
-		}
+			// In Bun server/runtime environments, we want to act like Node and not filter by prefix.
+			// We detect this if onStart is missing (runtime plugin) or if target is 'bun'/'node'.
+			const target = (build as any).config?.target;
+			const isServer = !build.onStart || target === "bun" || target === "node";
+			const publicPrefix = isServer ? "" : "BUN_PUBLIC_";
+
+			const newEnvMap = processEnvSchema(schema, { publicPrefix });
+			envMap.clear();
+			for (const [k, v] of newEnvMap) {
+				envMap.set(k, v);
+			}
+			initialized = true;
+		})();
+
+		return initPromise;
+	};
+
+	build.onStart?.(async () => {
+		initialized = false;
+		initPromise = null;
+		await runDiscovery();
 	});
 
-	registerLoader(build, envMap);
+	registerLoader(build, envMap, (path) => runDiscovery(path));
 };
