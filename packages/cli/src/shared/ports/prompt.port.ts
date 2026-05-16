@@ -10,6 +10,9 @@ export type PromptPort = {
 			framework?: ProjectOptions["framework"];
 			defaultEnvPath?: string;
 			tsConfig?: any;
+			envKeys?: string[] | undefined;
+			envKeysSource?: ".env.example" | "project" | undefined;
+			hasTypeFile?: boolean;
 		},
 		isYes?: boolean,
 	): Promise<ProjectOptions | null>;

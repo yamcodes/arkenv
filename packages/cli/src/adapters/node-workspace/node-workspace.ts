@@ -5,7 +5,8 @@ import dedent from "dedent";
 import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 import { transformViteConfig } from "@/features/config-mutation";
-import { updateTsConfigToStrict } from "@/features/scaffold";
+import { applyEdits, modify, parse } from "jsonc-parser";
+import { NodeProjectScannerAdapter } from "../node-project-scanner";
 import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
 
 /**
@@ -83,7 +84,29 @@ export class NodeWorkspace implements WorkspacePort {
 	}
 
 	async updateTsConfigToStrict(filePath?: string) {
-		return updateTsConfigToStrict(filePath);
+		const scanner = new NodeProjectScannerAdapter();
+		const tsConfigPath = filePath || (await scanner.findTsConfig());
+		if (!tsConfigPath) return { status: "not_found" as const };
+		const fileName = path.basename(tsConfigPath);
+
+		try {
+			const content = await this.readFile(tsConfigPath);
+			const parsed = parse(content);
+
+			if (parsed?.compilerOptions?.strict === true) {
+				return { status: "already_strict" as const, file: fileName };
+			}
+
+			const edits = modify(content, ["compilerOptions", "strict"], true, {
+				formattingOptions: { insertSpaces: true, tabSize: 2 },
+			});
+			const updated = applyEdits(content, edits);
+
+			await this.writeFile(tsConfigPath, updated);
+			return { status: "updated" as const, file: fileName };
+		} catch {
+			return { status: "error" as const, file: fileName };
+		}
 	}
 
 	async findViteConfig(): Promise<string | null> {

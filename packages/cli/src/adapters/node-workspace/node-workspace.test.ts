@@ -3,7 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import dedent from "dedent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NodeWorkspace, Workspace } from ".";
+import { NodeWorkspace } from ".";
+import { NodeProjectScannerAdapter } from "../node-project-scanner";
 
 describe("NodeWorkspace", () => {
 	let tempDir: string;
@@ -50,8 +51,8 @@ describe("NodeWorkspace", () => {
 			pkgPath,
 			JSON.stringify({ dependencies: { vite: "*" } }),
 		);
-		const helper = new Workspace({ cwd: tempDir });
-		const framework = await helper.detectFramework();
+		const helper = new NodeProjectScannerAdapter();
+		const framework = await helper.detectFramework(tempDir);
 		expect(framework).toBe("vite");
 	});
 
@@ -63,11 +64,8 @@ describe("NodeWorkspace", () => {
 		);
 		await fsp.writeFile(path.join(tempDir, "bun.config.js"), "");
 
-		// This requires the detectFramework implementation to be available on the workspace
-		// For now I'll use the one from the features/scaffold which NodeWorkspace uses
-		const { detectFramework } = await import("@/features/scaffold");
-		const framework = await detectFramework();
-		// Current implementation: package.json has priority
+		const scanner = new NodeProjectScannerAdapter();
+		const framework = await scanner.detectFramework(tempDir);
 		expect(framework).toBe("vite");
 	});
 

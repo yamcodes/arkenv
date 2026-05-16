@@ -1,8 +1,7 @@
-import fs from "node:fs";
 import path from "node:path";
 import { group } from "@clack/prompts";
 import { shake } from "radashi";
-import { getEnvExampleKeys, type ProjectOptions } from "@/features/scaffold";
+import type { ProjectOptions } from "@/features/scaffold";
 import { steps } from "./steps";
 import { isSuccess } from "./utils";
 
@@ -11,29 +10,22 @@ export async function runPromptWizard(
 		framework?: ProjectOptions["framework"];
 		defaultEnvPath?: string;
 		tsConfig?: any;
+		envKeys?: string[] | undefined;
+		envKeysSource?: ".env.example" | "project" | undefined;
+		hasTypeFile?: boolean;
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
 	const defaultEnvPath = defaults?.defaultEnvPath || "./src/env.ts";
-	const envRes = await getEnvExampleKeys(
-		process.cwd(),
-		defaults?.tsConfig,
-		path.resolve(process.cwd(), defaultEnvPath),
-	);
-	const detectedKeys = envRes?.keys || null;
-	const keysSource = envRes?.source || ".env.example";
+	const detectedKeys = defaults?.envKeys || null;
+	const keysSource = defaults?.envKeysSource || ".env.example";
 
 	if (isYes) {
 		const framework = defaults?.framework || "node";
 		let envDtsHandling: ProjectOptions["envDtsHandling"];
 
 		if (framework === "vite" || framework === "bun") {
-			const typeFile = framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-			const targetDir = path.dirname(
-				path.resolve(process.cwd(), defaultEnvPath),
-			);
-			const typeFilePath = path.join(targetDir, typeFile);
-			envDtsHandling = fs.existsSync(typeFilePath) ? "append" : "overwrite";
+			envDtsHandling = defaults?.hasTypeFile ? "append" : "overwrite";
 		}
 
 		return shake({

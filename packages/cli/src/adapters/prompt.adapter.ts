@@ -21,6 +21,9 @@ export class ClackPromptAdapter implements PromptPort {
 			framework?: ProjectOptions["framework"];
 			defaultEnvPath?: string;
 			tsConfig?: any;
+			envKeys?: string[] | undefined;
+			envKeysSource?: ".env.example" | "project" | undefined;
+			hasTypeFile?: boolean;
 		},
 		isYes = false,
 	): Promise<ProjectOptions | null> {
