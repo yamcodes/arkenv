@@ -1,48 +1,52 @@
 "use client";
 
-import { captureException } from "@sentry/nextjs";
 import { Check, Copy } from "lucide-react";
-import { useState } from "react";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/hooks/use-toast";
+import { useCopyCommand } from "~/hooks/use-copy-command";
 
 type CopyButtonProps = {
 	command: string;
+	copied?: boolean;
+	onClick?: () => void;
+	asChild?: boolean;
 };
 
-export function CopyButton({ command }: CopyButtonProps) {
-	const [copied, setCopied] = useState(false);
-	const { toast } = useToast();
+export function CopyButton({
+	command,
+	copied: copiedProp,
+	onClick,
+	asChild,
+}: CopyButtonProps) {
+	const { copy, copied: copiedInternal } = useCopyCommand(command);
 
-	const handleClick = async () => {
-		try {
-			await navigator.clipboard.writeText(command);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 2000);
-			toast({
-				description: "Command copied to clipboard!",
-				duration: 2000,
-			});
-		} catch (error) {
-			captureException(error);
-			toast({
-				title: "Uh oh! Something went wrong.",
-				description:
-					"There was a problem copying the command to your clipboard.",
-				variant: "destructive",
-			});
-		}
-	};
+	const isCopied = copiedProp ?? copiedInternal;
+	const handleCopy = onClick ?? copy;
 
 	return (
 		<Button
+			asChild={asChild}
 			variant="ghost"
 			size="icon"
-			onClick={handleClick}
+			onClick={(e) => {
+				e.stopPropagation();
+				handleCopy();
+			}}
 			className="hover:bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-			aria-label={copied ? "Copied" : "Copy command"}
+			aria-label={isCopied ? "Copied" : "Copy command"}
 		>
-			{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+			{asChild ? (
+				<span>
+					{isCopied ? (
+						<Check aria-hidden="true" />
+					) : (
+						<Copy aria-hidden="true" />
+					)}
+				</span>
+			) : isCopied ? (
+				<Check aria-hidden="true" />
+			) : (
+				<Copy aria-hidden="true" />
+			)}
 		</Button>
 	);
 }
