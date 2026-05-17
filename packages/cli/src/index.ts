@@ -34,7 +34,11 @@ async function main() {
 			isAgent: cli.isAgent,
 		});
 	} catch (error) {
-		logger.fatal("An unexpected error occurred", error);
+		try {
+			logger.fatal("An unexpected error occurred", error);
+		} catch {
+			// Ignore throw from fatal as we are already handling the error
+		}
 		await logger.flush();
 		process.exit(1);
 	}
@@ -56,9 +60,18 @@ function setupGracefulShutdown(logger: any) {
 		if (logger.interactiveStdout) {
 			logger.interactiveStdout(false);
 		}
-		logger.cancel("Operation cancelled.");
-		await logger.flush();
-		process.exit(code);
+
+		try {
+			logger.cancel("Operation cancelled.");
+			await logger.flush();
+		} catch (err) {
+			// Best-effort logging on shutdown failure
+			if (logger.error) {
+				logger.error("Logger failed during shutdown", err);
+			}
+		} finally {
+			process.exit(code);
+		}
 	};
 
 	process.on("SIGINT", () => shutdown(130));
@@ -70,7 +83,11 @@ main();
 // Defense-in-depth for unforeseen async rejections
 process.on("unhandledRejection", async (err) => {
 	if (globalLogger) {
-		globalLogger.fatal("Unhandled rejection", err);
+		try {
+			globalLogger.fatal("Unhandled rejection", err);
+		} catch {
+			// Already logged
+		}
 		await globalLogger.flush();
 	} else {
 		console.error("Unhandled rejection", err);
@@ -80,7 +97,11 @@ process.on("unhandledRejection", async (err) => {
 
 process.on("uncaughtException", async (err) => {
 	if (globalLogger) {
-		globalLogger.fatal("Uncaught exception", err);
+		try {
+			globalLogger.fatal("Uncaught exception", err);
+		} catch {
+			// Already logged
+		}
 		await globalLogger.flush();
 	} else {
 		console.error("Uncaught exception", err);

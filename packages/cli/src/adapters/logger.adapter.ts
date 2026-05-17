@@ -90,7 +90,7 @@ export class Logger implements LoggerPort {
 		this.reporter.cancel(message);
 	}
 
-	fatal(message: string, error?: unknown) {
+	fatal(message: string, error?: unknown): never {
 		this.reporter.fatal(message, error);
 	}
 

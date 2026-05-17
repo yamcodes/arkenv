@@ -21,7 +21,7 @@ export type LoggerPort = {
 	spinner(): Spinner;
 	json(data: unknown): void;
 	cancel(message: string): void;
-	fatal(message: string, error?: unknown): void;
+	fatal(message: string, error?: unknown): never;
 	finish(message: string, details?: Record<string, unknown>): void;
 	flush(): Promise<void>;
 	interactiveStdout(enable: boolean): void;

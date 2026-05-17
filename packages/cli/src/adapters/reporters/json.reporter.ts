@@ -57,7 +57,7 @@ export class JsonReporter implements Reporter {
 		});
 	}
 
-	fatal(message: string, error?: unknown) {
+	fatal(message: string, error?: unknown): never {
 		this.json({
 			status: "error",
 			details: {
@@ -70,6 +70,7 @@ export class JsonReporter implements Reporter {
 							: undefined,
 			},
 		});
+		throw error instanceof Error ? error : new Error(message);
 	}
 
 	finish(message: string, details?: Record<string, unknown>) {

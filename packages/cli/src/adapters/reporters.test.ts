@@ -80,12 +80,11 @@ describe("Reporters", () => {
 			expect(exitSpy).not.toHaveBeenCalled();
 		});
 
-		it("fatal logs to stderr", () => {
-			reporter.fatal("fatal error");
+		it("fatal logs to stderr and throws", () => {
+			expect(() => reporter.fatal("fatal error")).toThrow("fatal error");
 			expect(stderrSpy).toHaveBeenCalledWith(
 				expect.stringContaining("✘ fatal error"),
 			);
-			expect(exitSpy).not.toHaveBeenCalled();
 		});
 	});
 
@@ -111,15 +110,14 @@ describe("Reporters", () => {
 			);
 		});
 
-		it("fatal logs json to stdout", () => {
-			reporter.fatal("fatal error");
+		it("fatal logs json to stdout and throws", () => {
+			expect(() => reporter.fatal("fatal error")).toThrow("fatal error");
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"status": "error"'),
 			);
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "fatal error"'),
 			);
-			expect(exitSpy).not.toHaveBeenCalled();
 		});
 
 		it("cancel logs json to stdout", () => {

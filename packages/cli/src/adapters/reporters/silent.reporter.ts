@@ -36,13 +36,14 @@ export class SilentReporter implements Reporter {
 		process.stderr.write(`✘ Cancelled: ${message}\n`);
 	}
 
-	fatal(message: string, error?: unknown) {
+	fatal(message: string, error?: unknown): never {
 		process.stderr.write(`✘ Fatal: ${message}\n`);
 		if (error) {
 			process.stderr.write(
 				`${error instanceof Error ? (error.stack ?? error.message) : String(error)}\n`,
 			);
 		}
+		throw error instanceof Error ? error : new Error(message);
 	}
 
 	finish(_message: string, _details?: Record<string, unknown>) {}
