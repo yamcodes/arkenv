@@ -5,7 +5,7 @@ import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
 
 /**
- * Creates a ScaffoldingPlan based on the collected workspace state.
+ * Create a ScaffoldingPlan based on the collected workspace state.
  *
  * @param state The collected state of the workspace.
  * @returns The resulting scaffolding plan.

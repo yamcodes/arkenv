@@ -83,8 +83,9 @@ export async function bootstrapBunConfig(
 		return {
 			success: true,
 			instructions: dedent`
-				No specific Bun APIs (dev server/Bundler) selected. 
-				ArkEnv will run as a standard Node/Vanilla integration.
+				${pc.green("✔")} Use standard Bun runtime integration.
+				Access validated variables directly via ${code("process.env")} in your server-side code.
+				No build-time plugins are required for standard runtime usage.
 			`,
 		};
 	}
@@ -96,8 +97,8 @@ export async function bootstrapBunConfig(
 
 	if (hasServe) {
 		instructions += dedent`
-			${pc.bold("Bun.serve (Fullstack dev server) Integration:")}
-			To enable ArkEnv in your Bun server, add the plugin to your ${code("bunfig.toml")}:
+			${pc.bold("Fullstack dev server (Bun.serve) Integration:")}
+			To inline ${code("PUBLIC_*")} variables in your frontend code, add the plugin to ${code("bunfig.toml")}:
 
 			[serve.static]
 			plugins = ["@arkenv/bun-plugin"]
@@ -108,15 +109,15 @@ export async function bootstrapBunConfig(
 	if (hasBuild) {
 		if (instructions) instructions += "\n";
 		instructions += dedent`
-			${pc.bold("Bun.build (Bundler) Integration:")}
-			To enable ArkEnv in your programmatic build, add the plugin to your ${code("Bun.build")} call:
+			${pc.bold("Programmatic Bundler (Bun.build) Integration:")}
+			To inline ${code("PUBLIC_*")} variables in your custom build script, add the plugin to your ${code("Bun.build")} call:
 
 			${code('import arkenv from "@arkenv/bun-plugin";')}
 
 			await Bun.build({
 			  entrypoints: ["./index.ts"],
 			  outdir: "./dist",
-			  ${pc.green("plugins: [arkenv]")}
+			  ${pc.green('plugins: [arkenv]')}
 			});
 		`;
 	}

@@ -27,17 +27,17 @@ export const frameworkStep =
 export const bunFeaturesStep =
 	(defaults?: { bunFeatures?: ProjectOptions["bunFeatures"] }) => async () => {
 		const answer = await multiselect({
-			message: "Which Bun-specific APIs would you like to integrate?",
+			message: "Optional: Select Bun features for frontend/fullstack bundling:",
 			options: [
 				{
 					value: "serve",
-					label: "Bun.serve (Fullstack dev server)",
-					hint: "Add plugin to bunfig.toml",
+					label: "Fullstack dev server (Bun.serve)",
+					hint: "Inline PUBLIC_ variables in frontend assets via bunfig.toml",
 				},
 				{
 					value: "build",
-					label: "Bun.build (Programmatic Bundler)",
-					hint: "Provide snippet for your build script",
+					label: "Programmatic Bundler (Bun.build)",
+					hint: "Inline PUBLIC_ variables in custom build scripts",
 				},
 			],
 			initialValues: defaults?.bunFeatures ?? [],

@@ -123,9 +123,21 @@ describe("NodeWorkspace", () => {
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.instructions).toContain(
-				"Bun.serve (Fullstack dev server) Integration",
+				"Fullstack dev server (Bun.serve) Integration",
 			);
-			expect(result.instructions).toContain("Bun.build (Bundler) Integration");
+			expect(result.instructions).toContain(
+				"Programmatic Bundler (Bun.build) Integration",
+			);
+			expect(result.instructions).toContain("inline PUBLIC_* variables");
+		}
+	});
+
+	it("returns instructions for standard bun integration", async () => {
+		const result = await workspace.bootstrapBunConfig(null, []);
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.instructions).toContain("standard Bun runtime integration");
+			expect(result.instructions).toContain("process.env");
 		}
 	});
 

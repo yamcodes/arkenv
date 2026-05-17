@@ -188,6 +188,20 @@ pnpm run test:e2e                     # E2E tests
   - `boolean` - Validates boolean values
 - The `$` variable naming convention is used for the root scope (ArkType convention)
 
+**Framework & Runtime Integrations:**
+
+- **Standard (Runtime-only)**: The default for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Environment variables are accessed directly from the runtime (e.g., `process.env`). No build-time plugins are required.
+- **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for browser-side usage.
+- **Bun Fullstack dev server**: Integrated via `@arkenv/bun-plugin` in `bunfig.toml`. Required when using Bun's unified `Bun.serve` to bundle frontend assets and inline `PUBLIC_` variables via build-time replacement.
+- **Bun Programmatic Bundler**: Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser.
+
+**Preferred Bun Vocabulary:**
+
+- **Fullstack dev server**: The unified Bun process (`Bun.serve`) that handles both API routes and integrated frontend bundling.
+- **Frontend / Client-side**: Code intended to run in the browser, where environment variables must be **inlined** at build-time.
+- **Backend / Server-side**: Code running in the Bun runtime, where environment variables are accessed directly from the environment.
+- **Build-time Inlining**: The process where a bundler replaces `process.env.VAR` with a literal value. In Bun, this is configured via the `[serve.static]` section in `bunfig.toml`.
+
 **Type System:**
 
 - Uses `const` type parameters for better type inference
