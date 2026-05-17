@@ -109,7 +109,7 @@ export async function bootstrapBunConfig(
 	if (hasBuild) {
 		if (instructions) instructions += "\n";
 		instructions += dedent`
-			${pc.bold("Programmatic Bundler (Bun.build) Integration:")}
+			${pc.bold("Fullstack programmatic bundler (Bun.build) Integration:")}
 			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your custom build script, add the plugin to your ${code("Bun.build")} call:
 
 			${code('import arkenv from "@arkenv/bun-plugin";')}

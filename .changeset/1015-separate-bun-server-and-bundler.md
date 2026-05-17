@@ -11,4 +11,4 @@ The `arkenv init` command now distinguishes between Vanilla Bun runtime usage an
 - **Composable Scaffolding**: 
     - **Vanilla integration** provides instructions for type-safe usage via the `env` object.
     - **Fullstack dev server integration** provides configuration for `bunfig.toml` to support environment variable inlining.
-    - **Programmatic Bundler integration** provides snippets for custom build scripts to support environment variable inlining.
+    - **Fullstack programmatic bundler integration** provides snippets for custom build scripts to support environment variable inlining.

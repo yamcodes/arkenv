@@ -36,7 +36,7 @@ export const bunFeaturesStep =
 				},
 				{
 					value: "build",
-					label: "Programmatic Bundler (Bun.build)",
+					label: "Fullstack programmatic bundler (Bun.build)",
 					hint: "Inline env variables (e.g. PUBLIC_) in custom build scripts",
 				},
 			],

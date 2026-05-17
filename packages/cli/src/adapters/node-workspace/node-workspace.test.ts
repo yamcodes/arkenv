@@ -126,7 +126,7 @@ describe("NodeWorkspace", () => {
 				"Fullstack dev server (Bun.serve) Integration",
 			);
 			expect(result.instructions).toContain(
-				"Programmatic Bundler (Bun.build) Integration",
+				"Fullstack programmatic bundler (Bun.build) Integration",
 			);
 			expect(result.instructions).toContain("inline environment variables");
 		}

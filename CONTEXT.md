@@ -193,12 +193,13 @@ pnpm run test:e2e                     # E2E tests
 - **Vanilla (Runtime-only)**: The default for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for type safety (e.g., `env.PORT`). No build-time plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for browser-side usage.
 - **Bun Full-Stack Application**:
-  - **Fullstack dev server**: Integrated via `@arkenv/bun-plugin` in `bunfig.toml`. Required when using Bun's unified `Bun.serve` to bundle frontend assets and inline environment variables (e.g., using a `PUBLIC_` prefix) via build-time replacement.
-  - **Programmatic Bundler**: Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser.
+  - **Fullstack dev server (Bun.serve)**: Integrated via `@arkenv/bun-plugin` in `bunfig.toml`. Required when using Bun's unified `Bun.serve` to bundle frontend assets and inline environment variables (e.g., using a `PUBLIC_` prefix) via build-time replacement.
+  - **Fullstack programmatic bundler (Bun.build)**: Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a full-stack context.
 
 **Preferred Bun Vocabulary:**
 
-- **Fullstack dev server**: The unified Bun process (`Bun.serve`) that handles both API routes and integrated frontend bundling.
+- **Fullstack dev server (Bun.serve)**: The unified Bun process that handles both API routes and integrated frontend bundling.
+- **Fullstack programmatic bundler (Bun.build)**: The programmatic API for creating custom frontend build pipelines.
 - **Frontend / Client-side**: Code intended to run in the browser, where environment variables must be **inlined** at build-time.
 - **Backend / Server-side**: Code running in the Bun runtime, where environment variables are accessed directly from the environment.
 - **Build-time Inlining**: The process where a bundler replaces `process.env.VAR` with a literal value. In Bun, this is configured via the `env` option in `bunfig.toml` or `Bun.build`.
