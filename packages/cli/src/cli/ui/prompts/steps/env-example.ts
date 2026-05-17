@@ -12,7 +12,6 @@ export const overwriteEnvSchemaFileStep =
 				message: pc.yellow(
 					`An existing ArkEnv configuration was found at ${code(defaultPath)}. Do you want to overwrite it?`,
 				),
-				hint: pc.dim("(Arrows to navigate, Enter to select)"),
 				initialValue: false,
 				active: "Yes (override my configuration)",
 				inactive: "No (abort)",
@@ -36,7 +35,6 @@ export const useEnvExampleStep =
 
 			const answer = await confirm({
 				message,
-				hint: pc.dim("(Arrows to navigate, Enter to select)"),
 				active: "Yes (Recommended)",
 				initialValue: true,
 			});

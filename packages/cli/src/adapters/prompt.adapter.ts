@@ -11,7 +11,6 @@ export class ClackPromptAdapter implements PromptPort {
 	async confirm(message: string, initialValue = true): Promise<boolean | null> {
 		const result = await clackConfirm({
 			message,
-			hint: pc.dim("(Arrows to navigate, Enter to select)"),
 			initialValue,
 		});
 		if (isCancel(result)) return null;

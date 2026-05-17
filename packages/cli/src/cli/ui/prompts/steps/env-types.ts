@@ -25,7 +25,6 @@ export const installTypeDefinitionsStep = async ({
 
 		const answer = await confirm({
 			message: `Establish ${code(typeFile)} for typesafe environment variables?`,
-			hint: pc.dim("(Arrows to navigate, Enter to select)"),
 			initialValue: true,
 			active: "Yes (Recommended)",
 			inactive: "No",
@@ -59,7 +58,6 @@ export const envDtsHandlingStep = async ({
 	if (fs.existsSync(typeFilePath)) {
 		const answer = await select({
 			message: `Found existing ${code(typeFile)}. How should we handle ArkEnv types?`,
-			hint: pc.dim("(Arrows to navigate, Enter to select)"),
 			options: [
 				{
 					value: "append",

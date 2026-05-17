@@ -7,7 +7,6 @@ export const useDefaultPathStep =
 	async () => {
 		const answer = await confirm({
 			message: `Use default config path (${code(defaultEnvPath)})?`,
-			hint: pc.dim("(Arrows to navigate, Enter to select)"),
 			initialValue: true,
 			active: "Yes (Recommended)",
 			inactive: "No, let me customize it",
