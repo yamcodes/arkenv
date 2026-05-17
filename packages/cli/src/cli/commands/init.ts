@@ -80,7 +80,7 @@ export class InitUseCase {
 				tsConfig.parsed,
 			);
 			const detectedBunFeatures =
-				detectedFramework === "bun"
+				detectedFramework === "bun-fullstack"
 					? await this.scanner.detectBunFeatures(process.cwd(), tsConfig.parsed)
 					: undefined;
 			const defaultEnvPath = await this.scanner.suggestDefaultEnvPath(
@@ -96,7 +96,7 @@ export class InitUseCase {
 			);
 
 			let hasTypeFile = false;
-			if (detectedFramework === "vite" || detectedFramework === "bun") {
+			if (detectedFramework === "vite" || detectedFramework === "bun-fullstack") {
 				const typeFile =
 					detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 				const targetDir = path.dirname(targetPath);
@@ -171,7 +171,7 @@ export class InitUseCase {
 			let typeFileName: string | undefined;
 			if (options.framework === "vite") {
 				typeFileName = "vite-env.d.ts";
-			} else if (options.framework === "bun") {
+			} else if (options.framework === "bun-fullstack") {
 				typeFileName = "bun-env.d.ts";
 			}
 

@@ -44,7 +44,7 @@ describe("safeAppend", () => {
 		const initialContent = '/// <reference types="bun-types" />\n';
 		await fsp.writeFile(dtsPath, initialContent);
 
-		const result = await safeAppend(dtsPath, schemaPath, "bun");
+		const result = await safeAppend(dtsPath, schemaPath, "bun-fullstack");
 
 		expect(result).toBe(true);
 		const content = await fsp.readFile(dtsPath, "utf-8");
@@ -97,7 +97,7 @@ type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
 `;
 		await fsp.writeFile(dtsPath, initialContent);
 
-		const result = await safeAppend(dtsPath, schemaPath, "bun");
+		const result = await safeAppend(dtsPath, schemaPath, "bun-fullstack");
 
 		expect(result).toBe(false);
 		const content = await fsp.readFile(dtsPath, "utf-8");

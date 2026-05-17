@@ -50,7 +50,7 @@ export type ConfigPort = {
 	safeAppend(
 		path: string,
 		schemaPath: string,
-		framework: "vite" | "bun",
+		framework: "vite" | "bun-fullstack",
 	): Promise<boolean>;
 };
 

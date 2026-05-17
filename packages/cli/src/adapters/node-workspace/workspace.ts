@@ -54,7 +54,7 @@ export class Workspace {
 			const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
 			if (allDeps.vite) return "vite";
-			if (allDeps["@types/bun"] || allDeps.bun) return "bun";
+			if (allDeps["@types/bun"] || allDeps.bun) return "bun-fullstack";
 		} catch {
 			// ignore missing or invalid package.json
 		}
@@ -70,9 +70,9 @@ export class Workspace {
 		}
 
 		// Check for bun runtime
-		if ("bun" in process.versions) return "bun";
+		if ("bun" in process.versions) return "bun-fullstack";
 
-		return "node";
+		return "vanilla";
 	}
 
 	async setTsConfigProperty(propertyPath: string[], value: unknown) {
