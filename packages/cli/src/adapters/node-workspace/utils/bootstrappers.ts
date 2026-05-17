@@ -85,7 +85,7 @@ export async function bootstrapBunConfig(
 			instructions: dedent`
 				${pc.green("✔")} Use Vanilla Bun runtime integration.
 				Access validated variables via your ${code("env")} object for type safety.
-				No build-time plugins are required for runtime-only usage.
+				No plugins are required for runtime-only usage.
 			`,
 		};
 	}
