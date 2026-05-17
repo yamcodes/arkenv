@@ -5,11 +5,10 @@ import type { ParsedTsConfig } from "@/shared/ports";
 export async function detectFramework(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,
-): Promise<"vite" | "bun" | "node"> {
+): Promise<"vite" | "bun-fullstack" | "vanilla"> {
 	if (tsConfig?.compilerOptions?.types) {
 		const types = tsConfig.compilerOptions.types;
 		if (types.includes("vite") || types.includes("vite/client")) return "vite";
-		if (types.includes("bun") || types.includes("@types/bun")) return "bun";
 	}
 
 	try {
@@ -19,7 +18,6 @@ export async function detectFramework(
 		const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
 		if (allDeps.vite) return "vite";
-		if (allDeps["@types/bun"] || allDeps.bun) return "bun";
 	} catch {
 		// ignore missing or invalid package.json
 	}
@@ -38,10 +36,18 @@ export async function detectFramework(
 		// vite.config.js not found
 	}
 
-	// Check for bun runtime
-	if ("bun" in process.versions) return "bun";
+	// Bun Detection
+	const isBun =
+		tsConfig?.compilerOptions?.types?.includes("bun") ||
+		tsConfig?.compilerOptions?.types?.includes("@types/bun") ||
+		"bun" in process.versions;
 
-	return "node";
+	if (isBun) {
+		const features = await detectBunFeatures(cwd, tsConfig);
+		if (features.length > 0) return "bun-fullstack";
+	}
+
+	return "vanilla";
 }
 
 export async function detectBunFeatures(
@@ -49,11 +55,29 @@ export async function detectBunFeatures(
 	_tsConfig?: ParsedTsConfig | null,
 ): Promise<("serve" | "build")[]> {
 	const features: ("serve" | "build")[] = [];
-	const { walk } = await import("./env-scanner");
 
+	// Check bunfig.toml first as it's a high-signal indicator
+	try {
+		const bunfigPath = path.join(cwd, "bunfig.toml");
+		const content = await fsp.readFile(bunfigPath, "utf-8");
+		if (content.includes("[serve]") || content.includes("[serve.static]")) {
+			features.push("serve");
+		}
+		// Bun doesn't have a standard [build] section in bunfig.toml yet,
+		// but checking for it doesn't hurt.
+		if (content.includes("[build]")) {
+			features.push("build");
+		}
+	} catch {
+		// ignore missing or unreadable bunfig.toml
+	}
+
+	if (features.includes("serve") && features.includes("build")) return features;
+
+	const { walk } = await import("./env-scanner");
 	const files = await walk(cwd);
-	let foundServe = false;
-	let foundBuild = false;
+	let foundServe = features.includes("serve");
+	let foundBuild = features.includes("build");
 
 	for (const file of files) {
 		try {

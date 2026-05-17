@@ -30,7 +30,7 @@ export type ProjectScannerPort = {
 	detectFramework(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
-	): Promise<"vite" | "bun" | "node">;
+	): Promise<"vite" | "bun-fullstack" | "vanilla">;
 	detectBunFeatures(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,

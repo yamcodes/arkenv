@@ -22,10 +22,10 @@ export async function runPromptWizard(
 	const keysSource = defaults?.envKeysSource || ".env.example";
 
 	if (isYes) {
-		const framework = defaults?.framework || "node";
+		const framework = defaults?.framework || "vanilla";
 		let envDtsHandling: ProjectOptions["envDtsHandling"];
 
-		if (framework === "vite" || framework === "bun") {
+		if (framework === "vite" || framework === "bun-fullstack") {
 			envDtsHandling = defaults?.hasTypeFile ? "append" : "overwrite";
 		}
 
@@ -33,10 +33,11 @@ export async function runPromptWizard(
 			path: defaultEnvPath,
 			validator: "arktype",
 			framework,
-			bunFeatures: framework === "bun" ? defaults?.bunFeatures : undefined,
+			bunFeatures:
+				framework === "bun-fullstack" ? defaults?.bunFeatures : undefined,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
-			installTypeDefinitions: framework !== "node",
+			installTypeDefinitions: framework !== "vanilla",
 			installSkill: false,
 			envDtsHandling,
 			envKeys: detectedKeys ?? undefined,
@@ -47,9 +48,9 @@ export async function runPromptWizard(
 		{
 			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile(defaultEnvPath),
 			framework: steps.framework(defaults),
-			bunFeatures: ({ results }) =>
-				results.framework === "bun"
-					? steps.bunFeatures(defaults)()
+			bunBuild: ({ results }) =>
+				results.framework === "bun-fullstack"
+					? steps.bunBuild()
 					: Promise.resolve(undefined),
 			useDefaultPath: steps.useDefaultPath(defaultEnvPath),
 			path: steps.path(defaultEnvPath),
@@ -69,8 +70,16 @@ export async function runPromptWizard(
 		return null;
 	}
 
+	const bunFeatures: ProjectOptions["bunFeatures"] =
+		result.framework === "bun-fullstack"
+			? result.bunBuild
+				? ["serve", "build"]
+				: ["serve"]
+			: undefined;
+
 	return shake({
 		...result,
+		bunFeatures,
 		language: "ts",
 		installSkill: false, // Defaulting to false, will be overridden by orchestrator if needed
 		envKeys: result.useEnvExample ? (detectedKeys ?? undefined) : undefined,

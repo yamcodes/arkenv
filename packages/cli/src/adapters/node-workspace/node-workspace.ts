@@ -113,7 +113,7 @@ export class NodeWorkspace implements WorkspacePort {
 	async safeAppend(
 		filePath: string,
 		schemaPath: string,
-		framework: "vite" | "bun",
+		framework: "vite" | "bun-fullstack",
 	) {
 		const { safeAppend } = await import("../injection");
 		return safeAppend(filePath, schemaPath, framework);

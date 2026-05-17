@@ -5,7 +5,7 @@ import { applyEdits, modify } from "jsonc-parser";
 /**
  * Supported build/runtime frameworks.
  */
-export type Framework = "vite" | "bun" | "node";
+export type Framework = "vite" | "bun-fullstack" | "vanilla";
 
 /**
  * Options for configuring a Workspace.

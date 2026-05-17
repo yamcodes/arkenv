@@ -2,13 +2,18 @@
 "@arkenv/cli": minor
 ---
 
-#### Refine Bun detection and scaffolding in `arkenv init`
+#### Refine framework terminology and detection in `arkenv init`
 
-The `arkenv init` command now distinguishes between Vanilla Bun runtime usage and fullstack/frontend bundling via Bun's dev server (`Bun.serve`) or programmatic Bundler (`Bun.build`).
+The `arkenv init` command now uses clearer terminology and more robust detection to distinguish between server-side runtime usage and client-side bundling integrations.
 
-- **Refined Detection**: Automatically detect usage of `Bun.serve` or `Bun.build` in your project.
-- **Improved Wizard Flow**: For Bun projects, the wizard now defaults to a **Vanilla** runtime-only integration. Use the optional multi-select step to enable `@arkenv/bun-plugin` only when static inlining of environment variables (e.g. using a `PUBLIC_` prefix) is required for full-stack or frontend code.
-- **Composable Scaffolding**: 
-    - **Vanilla integration** provides instructions for type-safe usage via the `env` object.
-    - **Fullstack dev server integration** provides configuration for `bunfig.toml` to support environment variable inlining.
-    - **Fullstack programmatic bundler integration** provides snippets for custom build scripts to support environment variable inlining.
+- **Refined Terminology**:
+    - **Vanilla**: Renamed from "Node.js" to reflect runtime-only usage across Node.js, Bun, and Deno. Focused on **server-side** validation.
+    - **Bun Fullstack**: Dedicated flow for Bun applications involving **client-side** bundling.
+    - **Vite**: Focused on **client-side** and build-time validation.
+- **Robust Detection**:
+    - Improved detection of **Bun Fullstack** setups by scanning for `Bun.serve` or `Bun.build` usage.
+    - If no bundling features are detected, the CLI defaults to **Vanilla** (even when running on Bun) to avoid unnecessary plugin overhead.
+- **Streamlined Wizard Flow**:
+    - The initial question now asks for your "framework or build tool" with clear hints for **server-side** vs **client-side** usage.
+    - The Bun Fullstack flow is now more focused: it defaults to a `Bun.serve` integration and provides an optional step to bootstrap a `Bun.build` script.
+- **Improved Scaffolding**: Generated code templates now include helpful comments clarifying whether the configuration is intended for server-side or client-side validation.

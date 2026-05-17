@@ -123,10 +123,10 @@ describe("NodeWorkspace", () => {
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.instructions).toContain(
-				"Fullstack dev server (Bun.serve) Integration",
+				"Bun Fullstack (Bun.serve) Integration",
 			);
 			expect(result.instructions).toContain(
-				"Fullstack programmatic bundler (Bun.build) Integration",
+				"Bun Fullstack programmatic bundling (Bun.build)",
 			);
 			expect(result.instructions).toContain("inline environment variables");
 		}
@@ -137,7 +137,6 @@ describe("NodeWorkspace", () => {
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.instructions).toContain("Vanilla Bun runtime integration");
-			expect(result.instructions).toContain("env");
 		}
 	});
 

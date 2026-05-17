@@ -1,50 +1,40 @@
-import { isCancel, multiselect, select } from "@clack/prompts";
+import { confirm, isCancel, select } from "@clack/prompts";
 import type { ProjectOptions } from "@/features/scaffold";
 
 export const frameworkStep =
 	(defaults?: { framework?: ProjectOptions["framework"] }) => async () => {
 		const answer = await select({
-			message: "Select your framework or runtime:",
+			message: "Select your framework or build tool:",
 			initialValue: defaults?.framework,
 			options: [
 				{
+					value: "vanilla",
+					label: `Vanilla${defaults?.framework === "vanilla" ? " (Detected)" : ""}`,
+					hint: "Node.js, Bun, server-side or runtime-only validation",
+				},
+				{
 					value: "vite",
 					label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
+					hint: "Client-side and build-time validation",
 				},
 				{
-					value: "bun",
-					label: `Bun${defaults?.framework === "bun" ? " (Detected)" : ""}`,
-				},
-				{
-					value: "node",
-					label: `Node.js${defaults?.framework === "node" ? " (Detected)" : ""}`,
+					value: "bun-fullstack",
+					label: `Bun fullstack dev server${defaults?.framework === "bun-fullstack" ? " (Detected)" : ""}`,
+					hint: "Client-side bundling and Bun.serve integration",
 				},
 			],
 		});
 		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
 	};
 
-export const bunFeaturesStep =
-	(defaults?: { bunFeatures?: ProjectOptions["bunFeatures"] }) => async () => {
-		const answer = await multiselect({
-			message: "Optional: Select Bun features for frontend/fullstack bundling:",
-			options: [
-				{
-					value: "serve",
-					label: "Fullstack dev server (Bun.serve)",
-					hint: "Inline env variables (e.g. PUBLIC_) in frontend assets via bunfig.toml",
-				},
-				{
-					value: "build",
-					label: "Fullstack programmatic bundler (Bun.build)",
-					hint: "Inline env variables (e.g. PUBLIC_) in custom build scripts",
-				},
-			],
-			initialValues: defaults?.bunFeatures ?? [],
-			required: false,
-		});
-		return isCancel(answer) ? null : (answer as ProjectOptions["bunFeatures"]);
-	};
+export const bunBuildStep = async () => {
+	const answer = await confirm({
+		message:
+			"Optional: Would you also like to bootstrap a custom Bun.build script for programmatic bundling?",
+		initialValue: false,
+	});
+	return isCancel(answer) ? null : answer;
+};
 
 export const validatorStep = async () => {
 	const answer = await select({

@@ -83,9 +83,10 @@ export async function bootstrapBunConfig(
 		return {
 			success: true,
 			instructions: dedent`
-				${pc.green("✔")} Use Vanilla Bun runtime integration.
-				Access validated variables via your ${code("env")} object for type safety.
-				No plugins are required for runtime-only usage.
+				${pc.green("✔")} Use ${pc.bold("Vanilla")} Bun runtime integration.
+				Access validated variables via your ${code("env")} object for typesafety.
+				Primarily used for ${pc.cyan("server-side")} or runtime-only validation.
+				No plugins are required.
 			`,
 		};
 	}
@@ -97,8 +98,8 @@ export async function bootstrapBunConfig(
 
 	if (hasServe) {
 		instructions += dedent`
-			${pc.bold("Fullstack dev server (Bun.serve) Integration:")}
-			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your frontend code, add the plugin to ${code("bunfig.toml")}:
+			${pc.bold("Bun Fullstack (Bun.serve) Integration:")}
+			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your ${pc.cyan("client-side")} code, add the plugin to ${code("bunfig.toml")}:
 
 			[serve.static]
 			plugins = ["@arkenv/bun-plugin"]
@@ -109,8 +110,8 @@ export async function bootstrapBunConfig(
 	if (hasBuild) {
 		if (instructions) instructions += "\n";
 		instructions += dedent`
-			${pc.bold("Fullstack programmatic bundler (Bun.build) Integration:")}
-			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your custom build script, add the plugin to your ${code("Bun.build")} call:
+			${pc.bold("Bun Fullstack programmatic bundling (Bun.build):")}
+			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your custom ${pc.cyan("client-side")} build script, add the plugin to your ${code("Bun.build")} call:
 
 			${code('import arkenv from "@arkenv/bun-plugin";')}
 

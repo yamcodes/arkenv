@@ -4,7 +4,7 @@ import dedent from "dedent";
  * Generates a TypeScript template string for a Zod environment configuration.
  *
  * @param envKeys - Optional array of environment variable keys to include in the schema.
- * @param framework - The framework being used (vite, bun, or node).
+ * @param framework - The framework being used (vite, bun-fullstack, or vanilla).
  * @returns The generated TypeScript template string.
  */
 export const zodTemplate = (envKeys?: string[], framework?: string) => {
@@ -20,7 +20,7 @@ export const zodTemplate = (envKeys?: string[], framework?: string) => {
 	/**
 	 * Environment variable schema.
 	 * In Vite, use \`@arkenv/vite-plugin\` to validate these at build-time
-	 * and provide typesafety for \`import.meta.env\`.
+	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = z.object({
 ${schemaFields}
@@ -28,14 +28,14 @@ ${schemaFields}
 	`;
 	}
 
-	if (framework === "bun") {
+	if (framework === "bun-fullstack") {
 		return dedent /* ts */`
 	import { z } from "zod";
 
 	/**
 	 * Environment variable schema.
-	 * In Bun, use \`@arkenv/bun-plugin\` to validate these at build-time
-	 * and provide typesafety for \`process.env\`.
+	 * In Bun Fullstack, use \`@arkenv/bun-plugin\` to validate these at build-time
+	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = z.object({
 ${schemaFields}
@@ -47,6 +47,9 @@ ${schemaFields}
 	import arkenv from "arkenv/standard";
 	import { z } from "zod";
 
+	/**
+	 * Environment variable schema for server-side or runtime-only validation.
+	 */
 	export const Env = z.object({
 ${schemaFields}
 	});

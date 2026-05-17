@@ -49,7 +49,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	// 2. dependencies
 	const deps = ["arkenv", options.validator];
 	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
-	if (options.framework === "bun" && options.bunFeatures?.length) {
+	if (options.framework === "bun-fullstack" && options.bunFeatures?.length) {
 		deps.push("@arkenv/bun-plugin");
 	}
 
@@ -69,7 +69,8 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	// 4. Type Definitions
 	if (
 		(options.framework === "vite" ||
-			(options.framework === "bun" && options.bunFeatures?.length)) &&
+			(options.framework === "bun-fullstack" &&
+				options.bunFeatures?.length)) &&
 		options.installTypeDefinitions !== false
 	) {
 		const typeFileName =
@@ -104,11 +105,11 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	}
 
 	// 5. Framework-specific bootstrapping
-	if (options.framework === "vite" || options.framework === "bun") {
+	if (options.framework === "vite" || options.framework === "bun-fullstack") {
 		plan.bootstrap = {
 			framework: options.framework,
 			bunFeatures:
-				options.framework === "bun" ? options.bunFeatures : undefined,
+				options.framework === "bun-fullstack" ? options.bunFeatures : undefined,
 		};
 	}
 

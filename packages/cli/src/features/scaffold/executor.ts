@@ -24,7 +24,7 @@ export class Executor {
 					if (
 						!plan.bootstrap ||
 						(plan.bootstrap.framework !== "vite" &&
-							plan.bootstrap.framework !== "bun")
+							plan.bootstrap.framework !== "bun-fullstack")
 					) {
 						this.reporter.warn(
 							`Skipping safe-append for ${code(path.basename(file.path))}: unsupported framework.`,
@@ -123,7 +123,7 @@ export class Executor {
 							`No Vite config found — please add ${code("@arkenv/vite-plugin")} to your Vite config manually.`,
 						);
 					}
-				} else if (plan.bootstrap.framework === "bun") {
+				} else if (plan.bootstrap.framework === "bun-fullstack") {
 					const bunConfigPath = await this.workspace.findBunConfig();
 					if (bunConfigPath || plan.bootstrap.bunFeatures?.length) {
 						const result = await this.workspace.bootstrapBunConfig(
