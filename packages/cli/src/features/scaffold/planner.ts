@@ -69,8 +69,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	// 4. Type Definitions
 	if (
 		(options.framework === "vite" ||
-			(options.framework === "bun-fullstack" &&
-				options.bunFeatures?.length)) &&
+			(options.framework === "bun-fullstack" && options.bunFeatures?.length)) &&
 		options.installTypeDefinitions !== false
 	) {
 		const typeFileName =

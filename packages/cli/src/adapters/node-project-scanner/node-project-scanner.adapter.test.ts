@@ -108,7 +108,10 @@ API_KEY=
 
 	describe("detectBunFeatures", () => {
 		it("detects serve feature from bunfig.toml", async () => {
-			await fsp.writeFile(path.join(tempDir, "bunfig.toml"), "[serve.static]\n");
+			await fsp.writeFile(
+				path.join(tempDir, "bunfig.toml"),
+				"[serve.static]\n",
+			);
 			const result = await scanner.detectBunFeatures(tempDir);
 			expect(result).toContain("serve");
 		});
