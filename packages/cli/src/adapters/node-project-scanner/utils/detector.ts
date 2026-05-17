@@ -80,7 +80,10 @@ export async function detectBunFeatures(
 				(content.includes("Bun.serve") || content.includes("serve("))
 			) {
 				// Crude check for serve import from bun
-				if (/from\s+['"]bun['"]/.test(content) || content.includes("Bun.serve")) {
+				if (
+					/from\s+['"]bun['"]/.test(content) ||
+					content.includes("Bun.serve")
+				) {
 					foundServe = true;
 					features.push("serve");
 				}
@@ -89,7 +92,10 @@ export async function detectBunFeatures(
 				!foundBuild &&
 				(content.includes("Bun.build") || content.includes("build("))
 			) {
-				if (/from\s+['"]bun['"]/.test(content) || content.includes("Bun.build")) {
+				if (
+					/from\s+['"]bun['"]/.test(content) ||
+					content.includes("Bun.build")
+				) {
 					foundBuild = true;
 					features.push("build");
 				}

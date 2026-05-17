@@ -27,14 +27,16 @@ export const frameworkStep =
 		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
 	};
 
-export const bunBuildStep = (initialValue = false) => async () => {
-	const answer = await confirm({
-		message:
-			"Optional: Would you also like to bootstrap a custom Bun.build script for programmatic bundling?",
-		initialValue,
-	});
-	return isCancel(answer) ? null : answer;
-};
+export const bunBuildStep =
+	(initialValue = false) =>
+	async () => {
+		const answer = await confirm({
+			message:
+				"Optional: Would you also like to bootstrap a custom Bun.build script for programmatic bundling?",
+			initialValue,
+		});
+		return isCancel(answer) ? null : answer;
+	};
 
 export const validatorStep = async () => {
 	const answer = await select({
