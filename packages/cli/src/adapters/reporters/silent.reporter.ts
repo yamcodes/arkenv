@@ -33,9 +33,7 @@ export class SilentReporter implements Reporter {
 	}
 
 	cancel(message: string) {
-		process.stderr.write(`✘ Cancelled: ${message}\n`, () => {
-			process.exit(1);
-		});
+		process.stderr.write(`✘ Cancelled: ${message}\n`);
 	}
 
 	fatal(message: string, error?: unknown) {
@@ -45,9 +43,6 @@ export class SilentReporter implements Reporter {
 				`${error instanceof Error ? (error.stack ?? error.message) : String(error)}\n`,
 			);
 		}
-		process.stderr.write("", () => {
-			process.exit(1);
-		});
 	}
 
 	finish(_message: string, _details?: Record<string, unknown>) {}

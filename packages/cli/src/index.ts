@@ -2,10 +2,13 @@
 import { compose } from "./cli/composition";
 
 let globalLogger: any;
+let isShuttingDown = false;
 
 async function main() {
 	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
 	globalLogger = logger;
+
+	setupGracefulShutdown(logger);
 
 	if (cli.helpRequested) {
 		await helpUseCase.execute();
@@ -35,6 +38,31 @@ async function main() {
 		await logger.flush();
 		process.exit(1);
 	}
+}
+
+function setupGracefulShutdown(logger: any) {
+	const shutdown = async (code: number) => {
+		if (isShuttingDown) {
+			process.exit(code);
+		}
+		isShuttingDown = true;
+
+		// Force exit after 2 seconds if graceful shutdown hangs
+		const timeout = setTimeout(() => {
+			process.exit(code);
+		}, 2000);
+		timeout.unref();
+
+		if (logger.interactiveStdout) {
+			logger.interactiveStdout(false);
+		}
+		logger.cancel("Operation cancelled.");
+		await logger.flush();
+		process.exit(code);
+	};
+
+	process.on("SIGINT", () => shutdown(130));
+	process.on("SIGTERM", () => shutdown(143));
 }
 
 main();

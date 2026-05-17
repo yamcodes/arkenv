@@ -55,7 +55,6 @@ export class JsonReporter implements Reporter {
 			status: "cancelled",
 			message,
 		});
-		process.stdout.write("", () => process.exit(1));
 	}
 
 	fatal(message: string, error?: unknown) {
@@ -71,7 +70,6 @@ export class JsonReporter implements Reporter {
 							: undefined,
 			},
 		});
-		process.stdout.write("", () => process.exit(1));
 	}
 
 	finish(message: string, details?: Record<string, unknown>) {

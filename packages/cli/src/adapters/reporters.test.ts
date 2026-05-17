@@ -72,22 +72,20 @@ describe("Reporters", () => {
 			);
 		});
 
-		it("cancel logs to stderr and exits", () => {
+		it("cancel logs to stderr", () => {
 			reporter.cancel("canceled");
 			expect(stderrSpy).toHaveBeenCalledWith(
 				expect.stringContaining("✘ canceled"),
-				expect.any(Function),
 			);
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 		});
 
-		it("fatal logs to stderr and exits", () => {
+		it("fatal logs to stderr", () => {
 			reporter.fatal("fatal error");
 			expect(stderrSpy).toHaveBeenCalledWith(
 				expect.stringContaining("✘ fatal error"),
-				expect.any(Function),
 			);
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 		});
 	});
 
@@ -113,7 +111,7 @@ describe("Reporters", () => {
 			);
 		});
 
-		it("fatal logs json to stdout and exits", () => {
+		it("fatal logs json to stdout", () => {
 			reporter.fatal("fatal error");
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"status": "error"'),
@@ -121,11 +119,10 @@ describe("Reporters", () => {
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "fatal error"'),
 			);
-			expect(stdoutSpy).toHaveBeenCalledWith("", expect.any(Function));
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 		});
 
-		it("cancel logs json to stdout and exits", () => {
+		it("cancel logs json to stdout", () => {
 			reporter.cancel("cancelled");
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"status": "cancelled"'),
@@ -133,8 +130,7 @@ describe("Reporters", () => {
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "cancelled"'),
 			);
-			expect(stdoutSpy).toHaveBeenCalledWith("", expect.any(Function));
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 		});
 	});
 
