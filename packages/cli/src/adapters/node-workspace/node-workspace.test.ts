@@ -3,7 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import dedent from "dedent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NodeProjectScannerAdapter } from "../node-project-scanner";
+import { NodeProjectScannerAdapter } from "@/adapters";
+import { stripAnsi } from "@/test/utils";
 import { NodeWorkspace } from ".";
 
 describe("NodeWorkspace", () => {
@@ -122,13 +123,12 @@ describe("NodeWorkspace", () => {
 		const result = await workspace.bootstrapBunConfig(null, ["serve", "build"]);
 		expect(result.success).toBe(true);
 		if (result.success) {
-			expect(result.instructions).toContain(
-				"Bun Fullstack (Bun.serve) Integration",
-			);
-			expect(result.instructions).toContain(
+			const stripped = stripAnsi(result.instructions);
+			expect(stripped).toContain("Bun Fullstack (Bun.serve) Integration");
+			expect(stripped).toContain(
 				"Bun Fullstack programmatic bundling (Bun.build)",
 			);
-			expect(result.instructions).toContain("inline environment variables");
+			expect(stripped).toContain("inline environment variables");
 		}
 	});
 
@@ -136,7 +136,9 @@ describe("NodeWorkspace", () => {
 		const result = await workspace.bootstrapBunConfig(null, []);
 		expect(result.success).toBe(true);
 		if (result.success) {
-			expect(result.instructions).toContain("Vanilla Bun runtime integration");
+			expect(stripAnsi(result.instructions)).toContain(
+				"Vanilla Bun runtime integration",
+			);
 		}
 	});
 
