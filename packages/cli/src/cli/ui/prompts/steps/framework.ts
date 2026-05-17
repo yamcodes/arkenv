@@ -31,13 +31,13 @@ export const bunFeaturesStep =
 			options: [
 				{
 					value: "serve",
-					label: "Bun.serve (Fullstack Web Server)",
-					hint: "Adds plugin to bunfig.toml",
+					label: "Bun.serve (Fullstack dev server)",
+					hint: "Add plugin to bunfig.toml",
 				},
 				{
 					value: "build",
 					label: "Bun.build (Programmatic Bundler)",
-					hint: "Provides snippet for your build script",
+					hint: "Provide snippet for your build script",
 				},
 			],
 			initialValues: defaults?.bunFeatures ?? [],

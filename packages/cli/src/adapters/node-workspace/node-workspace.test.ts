@@ -122,7 +122,9 @@ describe("NodeWorkspace", () => {
 		const result = await workspace.bootstrapBunConfig(null, ["serve", "build"]);
 		expect(result.success).toBe(true);
 		if (result.success) {
-			expect(result.instructions).toContain("Bun.serve (Server) Integration");
+			expect(result.instructions).toContain(
+				"Bun.serve (Fullstack dev server) Integration",
+			);
 			expect(result.instructions).toContain("Bun.build (Bundler) Integration");
 		}
 	});

@@ -83,7 +83,7 @@ export async function bootstrapBunConfig(
 		return {
 			success: true,
 			instructions: dedent`
-				No specific Bun APIs (Server/Bundler) selected. 
+				No specific Bun APIs (dev server/Bundler) selected. 
 				ArkEnv will run as a standard Node/Vanilla integration.
 			`,
 		};
@@ -96,7 +96,7 @@ export async function bootstrapBunConfig(
 
 	if (hasServe) {
 		instructions += dedent`
-			${pc.bold("Bun.serve (Server) Integration:")}
+			${pc.bold("Bun.serve (Fullstack dev server) Integration:")}
 			To enable ArkEnv in your Bun server, add the plugin to your ${code("bunfig.toml")}:
 
 			[serve.static]
