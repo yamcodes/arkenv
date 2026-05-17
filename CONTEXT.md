@@ -190,10 +190,11 @@ pnpm run test:e2e                     # E2E tests
 
 **Framework & Runtime Integrations:**
 
-- **Standard (Runtime-only)**: The default for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Environment variables are accessed directly from the runtime (e.g., `process.env`). No build-time plugins are required.
+- **Vanilla (Runtime-only)**: The default for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for type safety (e.g., `env.PORT`). No build-time plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for browser-side usage.
-- **Bun Fullstack dev server**: Integrated via `@arkenv/bun-plugin` in `bunfig.toml`. Required when using Bun's unified `Bun.serve` to bundle frontend assets and inline `PUBLIC_` variables via build-time replacement.
-- **Bun Programmatic Bundler**: Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser.
+- **Bun Full-Stack Application**:
+  - **Fullstack dev server**: Integrated via `@arkenv/bun-plugin` in `bunfig.toml`. Required when using Bun's unified `Bun.serve` to bundle frontend assets and inline `PUBLIC_` variables via build-time replacement.
+  - **Programmatic Bundler**: Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser.
 
 **Preferred Bun Vocabulary:**
 

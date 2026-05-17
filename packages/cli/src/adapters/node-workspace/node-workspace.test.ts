@@ -132,12 +132,12 @@ describe("NodeWorkspace", () => {
 		}
 	});
 
-	it("returns instructions for standard bun integration", async () => {
+	it("returns instructions for vanilla bun integration", async () => {
 		const result = await workspace.bootstrapBunConfig(null, []);
 		expect(result.success).toBe(true);
 		if (result.success) {
-			expect(result.instructions).toContain("standard Bun runtime integration");
-			expect(result.instructions).toContain("process.env");
+			expect(result.instructions).toContain("Vanilla Bun runtime integration");
+			expect(result.instructions).toContain("env");
 		}
 	});
 

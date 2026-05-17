@@ -83,9 +83,9 @@ export async function bootstrapBunConfig(
 		return {
 			success: true,
 			instructions: dedent`
-				${pc.green("✔")} Use standard Bun runtime integration.
-				Access validated variables directly via ${code("process.env")} in your server-side code.
-				No build-time plugins are required for standard runtime usage.
+				${pc.green("✔")} Use Vanilla Bun runtime integration.
+				Access validated variables via your ${code("env")} object for type safety.
+				No build-time plugins are required for runtime-only usage.
 			`,
 		};
 	}
