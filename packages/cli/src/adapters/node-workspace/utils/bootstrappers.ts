@@ -117,7 +117,7 @@ export async function bootstrapBunConfig(
 			await Bun.build({
 			  entrypoints: ["./index.ts"],
 			  outdir: "./dist",
-			  ${pc.green('plugins: [arkenv]')}
+			  ${pc.green("plugins: [arkenv]")}
 			});
 		`;
 	}
