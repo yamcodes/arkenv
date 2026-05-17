@@ -2,10 +2,13 @@
 import { compose } from "./cli/composition";
 
 let globalLogger: any;
+let isShuttingDown = false;
 
 async function main() {
 	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
 	globalLogger = logger;
+
+	setupGracefulShutdown(logger);
 
 	if (cli.helpRequested) {
 		await helpUseCase.execute();
@@ -31,10 +34,48 @@ async function main() {
 			isAgent: cli.isAgent,
 		});
 	} catch (error) {
-		logger.fatal("An unexpected error occurred", error);
+		try {
+			logger.fatal("An unexpected error occurred", error);
+		} catch {
+			// Ignore throw from fatal as we are already handling the error
+		}
 		await logger.flush();
 		process.exit(1);
 	}
+}
+
+function setupGracefulShutdown(logger: any) {
+	const shutdown = async (code: number) => {
+		if (isShuttingDown) {
+			process.exit(code);
+		}
+		isShuttingDown = true;
+
+		// Force exit after 2 seconds if graceful shutdown hangs
+		const timeout = setTimeout(() => {
+			process.exit(code);
+		}, 2000);
+		timeout.unref();
+
+		if (logger.interactiveStdout) {
+			logger.interactiveStdout(false);
+		}
+
+		try {
+			logger.cancel("Operation cancelled.");
+			await logger.flush();
+		} catch (err) {
+			// Best-effort logging on shutdown failure
+			if (logger.error) {
+				logger.error("Logger failed during shutdown", err);
+			}
+		} finally {
+			process.exit(code);
+		}
+	};
+
+	process.on("SIGINT", () => shutdown(130));
+	process.on("SIGTERM", () => shutdown(143));
 }
 
 main();
@@ -42,7 +83,11 @@ main();
 // Defense-in-depth for unforeseen async rejections
 process.on("unhandledRejection", async (err) => {
 	if (globalLogger) {
-		globalLogger.fatal("Unhandled rejection", err);
+		try {
+			globalLogger.fatal("Unhandled rejection", err);
+		} catch {
+			// Already logged
+		}
 		await globalLogger.flush();
 	} else {
 		console.error("Unhandled rejection", err);
@@ -52,7 +97,11 @@ process.on("unhandledRejection", async (err) => {
 
 process.on("uncaughtException", async (err) => {
 	if (globalLogger) {
-		globalLogger.fatal("Uncaught exception", err);
+		try {
+			globalLogger.fatal("Uncaught exception", err);
+		} catch {
+			// Already logged
+		}
 		await globalLogger.flush();
 	} else {
 		console.error("Uncaught exception", err);

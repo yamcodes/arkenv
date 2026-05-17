@@ -36,7 +36,9 @@ describe("Executor", () => {
 		note: vi.fn(),
 		json: vi.fn(),
 		cancel: vi.fn(),
-		fatal: vi.fn(),
+		fatal: vi.fn(() => {
+			throw new Error("fatal");
+		}),
 		finish: vi.fn(),
 		flush: vi.fn().mockResolvedValue(undefined),
 	};

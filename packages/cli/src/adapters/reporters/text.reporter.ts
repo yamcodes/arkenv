@@ -44,19 +44,16 @@ export class TextReporter implements Reporter {
 	}
 
 	cancel(message: string) {
-		process.stderr.write(`${pc.red(`✘ ${message}`)}\n`, () => process.exit(1));
+		process.stderr.write(`${pc.red(`✘ ${message}`)}\n`);
 	}
 
-	fatal(message: string, error?: unknown) {
-		const msg = `${pc.red(`✘ ${message}`)}\n`;
+	fatal(message: string, error?: unknown): never {
+		process.stderr.write(`${pc.red(`✘ ${message}`)}\n`);
 		if (error) {
 			const detail = `${pc.red(error instanceof Error ? (error.stack ?? String(error)) : String(error))}\n`;
-			process.stderr.write(msg, () => {
-				process.stderr.write(detail, () => process.exit(1));
-			});
-		} else {
-			process.stderr.write(msg, () => process.exit(1));
+			process.stderr.write(detail);
 		}
+		throw error instanceof Error ? error : new Error(message);
 	}
 
 	finish(message: string, _details?: Record<string, unknown>) {

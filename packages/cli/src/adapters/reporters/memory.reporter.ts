@@ -51,8 +51,9 @@ export class MemoryReporter implements Reporter {
 		this.logs.push({ type: "cancel", message });
 	}
 
-	fatal(message: string, error?: unknown) {
+	fatal(message: string, error?: unknown): never {
 		this.logs.push({ type: "fatal", message, data: error });
+		throw error instanceof Error ? error : new Error(message);
 	}
 
 	finish(message: string, details?: Record<string, unknown>) {

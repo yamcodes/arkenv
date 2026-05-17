@@ -1,4 +1,3 @@
-import path from "node:path";
 import { group } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
@@ -42,23 +41,16 @@ export async function runPromptWizard(
 		});
 	}
 
-	const result = await group(
-		{
-			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile(defaultEnvPath),
-			framework: steps.framework(defaults),
-			useDefaultPath: steps.useDefaultPath(defaultEnvPath),
-			path: steps.path(defaultEnvPath),
-			installTypeDefinitions: steps.installTypeDefinitions,
-			envDtsHandling: steps.envDtsHandling,
-			validator: steps.validator,
-			useEnvExample: steps.useEnvExample(detectedKeys, keysSource),
-		},
-		{
-			onCancel: () => {
-				// We don't exit here, we let the group return a canceled state or null
-			},
-		},
-	);
+	const result = await group({
+		overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile(defaultEnvPath),
+		framework: steps.framework(defaults),
+		useDefaultPath: steps.useDefaultPath(defaultEnvPath),
+		path: steps.path(defaultEnvPath),
+		installTypeDefinitions: steps.installTypeDefinitions,
+		envDtsHandling: steps.envDtsHandling,
+		validator: steps.validator,
+		useEnvExample: steps.useEnvExample(detectedKeys, keysSource),
+	});
 
 	if (!isSuccess(result)) {
 		return null;
