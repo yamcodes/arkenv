@@ -193,8 +193,8 @@ pnpm run test:e2e                     # E2E tests
 - **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
 - **Bun fullstack dev server**:
-  - **Bun.serve**: Integrated via `@arkenv/bun-plugin` in `bunfig.toml`. Required when using Bun's unified `Bun.serve` to bundle frontend assets and inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement during bundling. Primarily used for **client-side** bundling integration.
-  - **Bun.build**: Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.
+  - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.
+  - **Bun.build**: Bun's programmatic bundling API. Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.
 
 **Preferred Bun Vocabulary:**
 

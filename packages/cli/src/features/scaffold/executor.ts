@@ -125,20 +125,14 @@ export class Executor {
 					}
 				} else if (plan.bootstrap.framework === "bun-fullstack") {
 					const bunConfigPath = await this.workspace.findBunConfig();
-					if (bunConfigPath || plan.bootstrap.bunFeatures?.length) {
-						const result = await this.workspace.bootstrapBunConfig(
-							bunConfigPath,
-							plan.bootstrap.bunFeatures,
-						);
-						if (result.success && result.instructions) {
-							this.reporter.info(result.instructions);
-						} else if (!result.success) {
-							this.reporter.error(result.error || "Bun bootstrap failed");
-						}
-					} else {
-						this.reporter.info(
-							`No Bun config found — create a ${code("bun.config.ts")} or run ${code("bun init")} to bootstrap manually.`,
-						);
+					const result = await this.workspace.bootstrapBunConfig(
+						bunConfigPath,
+						plan.bootstrap.bunFeatures,
+					);
+					if (result.success && result.instructions) {
+						this.reporter.info(result.instructions);
+					} else if (!result.success) {
+						this.reporter.error(result.error || "Bun bootstrap failed");
 					}
 				}
 			}

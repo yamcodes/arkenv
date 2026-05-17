@@ -50,7 +50,12 @@ export async function runPromptWizard(
 			framework: steps.framework(defaults),
 			bunBuild: ({ results }) =>
 				results.framework === "bun-fullstack"
-					? steps.bunBuild()
+					? steps.bunBuild(
+							defaults?.bunFeatures?.includes("build") ||
+								(results.framework === "bun-fullstack" &&
+									defaults?.framework === "bun-fullstack" &&
+									defaults?.bunFeatures?.includes("build")),
+						)
 					: Promise.resolve(undefined),
 			useDefaultPath: steps.useDefaultPath(defaultEnvPath),
 			path: steps.path(defaultEnvPath),

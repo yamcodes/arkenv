@@ -37,15 +37,8 @@ export async function detectFramework(
 	}
 
 	// Bun Detection
-	const isBun =
-		tsConfig?.compilerOptions?.types?.includes("bun") ||
-		tsConfig?.compilerOptions?.types?.includes("@types/bun") ||
-		"bun" in process.versions;
-
-	if (isBun) {
-		const features = await detectBunFeatures(cwd, tsConfig);
-		if (features.length > 0) return "bun-fullstack";
-	}
+	const features = await detectBunFeatures(cwd, tsConfig);
+	if (features.length > 0) return "bun-fullstack";
 
 	return "vanilla";
 }
@@ -87,7 +80,7 @@ export async function detectBunFeatures(
 				(content.includes("Bun.serve") || content.includes("serve("))
 			) {
 				// Crude check for serve import from bun
-				if (content.includes('from "bun"') || content.includes("Bun.serve")) {
+				if (/from\s+['"]bun['"]/.test(content) || content.includes("Bun.serve")) {
 					foundServe = true;
 					features.push("serve");
 				}
@@ -96,7 +89,7 @@ export async function detectBunFeatures(
 				!foundBuild &&
 				(content.includes("Bun.build") || content.includes("build("))
 			) {
-				if (content.includes('from "bun"') || content.includes("Bun.build")) {
+				if (/from\s+['"]bun['"]/.test(content) || content.includes("Bun.build")) {
 					foundBuild = true;
 					features.push("build");
 				}

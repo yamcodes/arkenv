@@ -54,7 +54,9 @@ export class Workspace {
 			const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
 			if (allDeps.vite) return "vite";
-			if (allDeps["@types/bun"] || allDeps.bun) return "bun-fullstack";
+
+			const hasBunDep = allDeps["@types/bun"] || allDeps.bun;
+			if (hasBunDep && (await this.hasBunFeatures())) return "bun-fullstack";
 		} catch {
 			// ignore missing or invalid package.json
 		}
@@ -70,9 +72,41 @@ export class Workspace {
 		}
 
 		// Check for bun runtime
-		if ("bun" in process.versions) return "bun-fullstack";
+		if ("bun" in process.versions && (await this.hasBunFeatures())) {
+			return "bun-fullstack";
+		}
 
 		return "vanilla";
+	}
+
+	private async hasBunFeatures(): Promise<boolean> {
+		if (await this.exists("bunfig.toml")) {
+			const content = await this.readFile("bunfig.toml");
+			if (
+				content.includes("[serve]") ||
+				content.includes("[serve.static]") ||
+				content.includes("[build]")
+			) {
+				return true;
+			}
+		}
+
+		// Common entry points
+		const entryPoints = ["src/index.ts", "src/main.ts", "index.ts", "main.ts"];
+		for (const entry of entryPoints) {
+			if (await this.exists(entry)) {
+				const content = await this.readFile(entry);
+				if (
+					content.includes("Bun.serve") ||
+					content.includes("Bun.build") ||
+					/from\s+['"]bun['"]/.test(content)
+				) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	async setTsConfigProperty(propertyPath: string[], value: unknown) {

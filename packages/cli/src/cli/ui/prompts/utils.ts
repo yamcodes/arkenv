@@ -5,6 +5,6 @@ import { isCancel } from "@clack/prompts";
  */
 export function isSuccess<T extends Record<string, any>>(
 	result: T | symbol,
-): result is { [K in keyof T]: T[K] extends null ? never : T[K] } {
+): result is { [K in keyof T]: Exclude<T[K], null> } {
 	return !isCancel(result) && Object.values(result).every((v) => v !== null);
 }

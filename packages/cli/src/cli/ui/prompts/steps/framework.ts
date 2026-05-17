@@ -15,7 +15,7 @@ export const frameworkStep =
 				{
 					value: "vite",
 					label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
-					hint: "Client-side and build-time validation",
+					hint: "Client-side and static inlining validation",
 				},
 				{
 					value: "bun-fullstack",
@@ -27,11 +27,11 @@ export const frameworkStep =
 		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
 	};
 
-export const bunBuildStep = async () => {
+export const bunBuildStep = (initialValue = false) => async () => {
 	const answer = await confirm({
 		message:
 			"Optional: Would you also like to bootstrap a custom Bun.build script for programmatic bundling?",
-		initialValue: false,
+		initialValue,
 	});
 	return isCancel(answer) ? null : answer;
 };
