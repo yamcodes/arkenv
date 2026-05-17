@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { confirm, isCancel, select } from "@clack/prompts";
+import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 import type { ProjectOptions } from "@/features/scaffold";
 
@@ -23,7 +24,7 @@ export const installTypeDefinitionsStep = async ({
 		}
 
 		const answer = await confirm({
-			message: `Establish ${code(typeFile)} for typesafe environment variables?`,
+			message: `Establish ${code(typeFile)} for typesafe environment variables? ${pc.dim("(Arrows to navigate, Enter to select)")}`,
 			initialValue: true,
 			active: "Yes (Recommended)",
 			inactive: "No",
@@ -56,7 +57,7 @@ export const envDtsHandlingStep = async ({
 
 	if (fs.existsSync(typeFilePath)) {
 		const answer = await select({
-			message: `Found existing ${code(typeFile)}. How should we handle ArkEnv types?`,
+			message: `Found existing ${code(typeFile)}. How should we handle ArkEnv types? ${pc.dim("(Arrows to navigate, Enter to select)")}`,
 			options: [
 				{
 					value: "append",

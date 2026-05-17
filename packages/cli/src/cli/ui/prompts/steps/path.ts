@@ -1,11 +1,12 @@
 import { confirm, isCancel, text } from "@clack/prompts";
+import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 
 export const useDefaultPathStep =
 	(defaultEnvPath = "./src/env.ts") =>
 	async () => {
 		const answer = await confirm({
-			message: `Use default config path (${code(defaultEnvPath)})?`,
+			message: `Use default config path (${code(defaultEnvPath)})? ${pc.dim("(Arrows to navigate, Enter to select)")}`,
 			initialValue: true,
 			active: "Yes (Recommended)",
 			inactive: "No, let me customize it",
