@@ -98,7 +98,7 @@ export async function bootstrapBunConfig(
 	if (hasServe) {
 		instructions += dedent`
 			${pc.bold("Fullstack dev server (Bun.serve) Integration:")}
-			To inline ${code("PUBLIC_*")} variables in your frontend code, add the plugin to ${code("bunfig.toml")}:
+			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your frontend code, add the plugin to ${code("bunfig.toml")}:
 
 			[serve.static]
 			plugins = ["@arkenv/bun-plugin"]
@@ -110,14 +110,14 @@ export async function bootstrapBunConfig(
 		if (instructions) instructions += "\n";
 		instructions += dedent`
 			${pc.bold("Programmatic Bundler (Bun.build) Integration:")}
-			To inline ${code("PUBLIC_*")} variables in your custom build script, add the plugin to your ${code("Bun.build")} call:
+			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your custom build script, add the plugin to your ${code("Bun.build")} call:
 
 			${code('import arkenv from "@arkenv/bun-plugin";')}
 
 			await Bun.build({
 			  entrypoints: ["./index.ts"],
 			  outdir: "./dist",
-			  ${pc.green("plugins: [arkenv]")}
+			  ${pc.green('plugins: [arkenv]')}
 			});
 		`;
 	}

@@ -128,7 +128,7 @@ describe("NodeWorkspace", () => {
 			expect(result.instructions).toContain(
 				"Programmatic Bundler (Bun.build) Integration",
 			);
-			expect(result.instructions).toContain("inline PUBLIC_* variables");
+			expect(result.instructions).toContain("inline environment variables");
 		}
 	});
 

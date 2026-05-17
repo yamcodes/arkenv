@@ -32,12 +32,12 @@ export const bunFeaturesStep =
 				{
 					value: "serve",
 					label: "Fullstack dev server (Bun.serve)",
-					hint: "Inline PUBLIC_ variables in frontend assets via bunfig.toml",
+					hint: "Inline env variables (e.g. PUBLIC_) in frontend assets via bunfig.toml",
 				},
 				{
 					value: "build",
 					label: "Programmatic Bundler (Bun.build)",
-					hint: "Inline PUBLIC_ variables in custom build scripts",
+					hint: "Inline env variables (e.g. PUBLIC_) in custom build scripts",
 				},
 			],
 			initialValues: defaults?.bunFeatures ?? [],
