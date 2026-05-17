@@ -44,16 +44,38 @@ describe("Planner", () => {
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
-	it("plans for bun framework", () => {
+	it("plans for bun framework with features", () => {
 		const state: CollectedState = {
 			...defaultState,
-			options: { ...defaultState.options, framework: "bun" },
+			options: {
+				...defaultState.options,
+				framework: "bun",
+				bunFeatures: ["serve"],
+			},
 			detectedFramework: "bun",
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/bun-plugin");
 		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(true);
 		expect(plan.bootstrap?.framework).toBe("bun");
+		expect(plan.bootstrap?.bunFeatures).toContain("serve");
+	});
+
+	it("plans for bun framework without features", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "bun",
+				bunFeatures: [],
+			},
+			detectedFramework: "bun",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).not.toContain("@arkenv/bun-plugin");
+		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(false);
+		expect(plan.bootstrap?.framework).toBe("bun");
+		expect(plan.bootstrap?.bunFeatures).toEqual([]);
 	});
 
 	it("plans tsconfig update when requested", () => {

@@ -44,6 +44,48 @@ export async function detectFramework(
 	return "node";
 }
 
+export async function detectBunFeatures(
+	cwd = process.cwd(),
+	_tsConfig?: ParsedTsConfig | null,
+): Promise<("serve" | "build")[]> {
+	const features: ("serve" | "build")[] = [];
+	const { walk } = await import("./env-scanner");
+
+	const files = await walk(cwd);
+	let foundServe = false;
+	let foundBuild = false;
+
+	for (const file of files) {
+		try {
+			const content = await fsp.readFile(file, "utf-8");
+			if (
+				!foundServe &&
+				(content.includes("Bun.serve") || content.includes("serve("))
+			) {
+				// Crude check for serve import from bun
+				if (content.includes('from "bun"') || content.includes("Bun.serve")) {
+					foundServe = true;
+					features.push("serve");
+				}
+			}
+			if (
+				!foundBuild &&
+				(content.includes("Bun.build") || content.includes("build("))
+			) {
+				if (content.includes('from "bun"') || content.includes("Bun.build")) {
+					foundBuild = true;
+					features.push("build");
+				}
+			}
+			if (foundServe && foundBuild) break;
+		} catch {
+			// ignore unreadable files
+		}
+	}
+
+	return features;
+}
+
 export async function detectPackageManager(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,

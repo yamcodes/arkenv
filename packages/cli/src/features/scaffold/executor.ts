@@ -125,9 +125,11 @@ export class Executor {
 					}
 				} else if (plan.bootstrap.framework === "bun") {
 					const bunConfigPath = await this.workspace.findBunConfig();
-					if (bunConfigPath) {
-						const result =
-							await this.workspace.bootstrapBunConfig(bunConfigPath);
+					if (bunConfigPath || plan.bootstrap.bunFeatures?.length) {
+						const result = await this.workspace.bootstrapBunConfig(
+							bunConfigPath,
+							plan.bootstrap.bunFeatures,
+						);
 						if (result.success && result.instructions) {
 							this.reporter.info(result.instructions);
 						} else if (!result.success) {

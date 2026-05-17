@@ -118,11 +118,12 @@ describe("NodeWorkspace", () => {
 		expect(result.updated).toBe(false);
 	});
 
-	it("returns instructions for bunfig.toml", async () => {
-		const result = await workspace.bootstrapBunConfig("bunfig.toml");
+	it("returns instructions for bun features", async () => {
+		const result = await workspace.bootstrapBunConfig(null, ["serve", "build"]);
 		expect(result.success).toBe(true);
 		if (result.success) {
-			expect(result.instructions).toContain("[preload]");
+			expect(result.instructions).toContain("Bun.serve (Server) Integration");
+			expect(result.instructions).toContain("Bun.build (Bundler) Integration");
 		}
 	});
 

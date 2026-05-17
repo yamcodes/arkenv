@@ -31,6 +31,10 @@ export type ProjectScannerPort = {
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
 	): Promise<"vite" | "bun" | "node">;
+	detectBunFeatures(
+		cwd?: string,
+		tsConfig?: ParsedTsConfig | null,
+	): Promise<("serve" | "build")[]>;
 	detectPackageManager(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,

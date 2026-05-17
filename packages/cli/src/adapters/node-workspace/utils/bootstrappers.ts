@@ -76,49 +76,50 @@ export async function bootstrapViteConfig(
 }
 
 export async function bootstrapBunConfig(
-	configPath?: string | null,
+	_configPath?: string | null,
+	features?: ("serve" | "build")[],
 ): Promise<BootstrapResult> {
-	if (configPath?.endsWith("bunfig.toml")) {
+	if (!features || features.length === 0) {
 		return {
 			success: true,
 			instructions: dedent`
-					To complete Bun integration, ensure your ${code("bunfig.toml")} includes a preload file:
-
-					[preload]
-					preload = ["./bun.setup.ts"]
-
-					Then, in your setup file, import the ArkEnv plugin.
-				`,
+				No specific Bun APIs (Server/Bundler) selected. 
+				ArkEnv will run as a standard Node/Vanilla integration.
+			`,
 		};
 	}
 
-	if (
-		configPath?.endsWith("bun.setup.ts") ||
-		configPath?.endsWith("bun.setup.js")
-	) {
-		return {
-			success: true,
-			instructions: dedent`
-					To complete Bun integration, add the ArkEnv plugin to your setup file:
+	const hasServe = features.includes("serve");
+	const hasBuild = features.includes("build");
 
-					import arkenv from "@arkenv/bun-plugin";
+	let instructions = "";
 
-					// If using Bun.build or similar:
-					// plugins: [arkenv]
-				`,
-		};
+	if (hasServe) {
+		instructions += dedent`
+			${pc.bold("Bun.serve (Server) Integration:")}
+			To enable ArkEnv in your Bun server, add the plugin to your ${code("bunfig.toml")}:
+
+			[serve.static]
+			plugins = ["@arkenv/bun-plugin"]
+
+		`;
 	}
 
-	const instructions = dedent`
-			To complete Bun integration, we recommend creating a ${code("bun.setup.ts")} file and adding it to your ${code("bunfig.toml")}:
-
-			${pc.dim("[preload]")}
-			${pc.dim('preload = ["./bun.setup.ts"]')}
-
-			In your setup file, import the ArkEnv plugin:
+	if (hasBuild) {
+		if (instructions) instructions += "\n";
+		instructions += dedent`
+			${pc.bold("Bun.build (Bundler) Integration:")}
+			To enable ArkEnv in your programmatic build, add the plugin to your ${code("Bun.build")} call:
 
 			${code('import arkenv from "@arkenv/bun-plugin";')}
-		`;
 
-	return { success: true, instructions };
+			await Bun.build({
+			  entrypoints: ["./index.ts"],
+			  outdir: "./dist",
+			  ${pc.green("plugins: [arkenv]")}
+			});
+		`;
+	}
+
+	return { success: true, instructions: instructions.trim() };
 }

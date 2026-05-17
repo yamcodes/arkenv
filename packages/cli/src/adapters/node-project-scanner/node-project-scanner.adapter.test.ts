@@ -84,6 +84,32 @@ API_KEY=
 		});
 	});
 
+	describe("detectBunFeatures", () => {
+		it("detects serve and build features", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "server.ts"),
+				'import { serve } from "bun"; serve({});',
+			);
+			await fsp.writeFile(
+				path.join(tempDir, "build.ts"),
+				"Bun.build({ entrypoints: [] });",
+			);
+
+			const result = await scanner.detectBunFeatures(tempDir);
+			expect(result).toContain("serve");
+			expect(result).toContain("build");
+		});
+
+		it("returns empty array when no bun features are used", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "index.ts"),
+				"console.log('hello')",
+			);
+			const result = await scanner.detectBunFeatures(tempDir);
+			expect(result).toEqual([]);
+		});
+	});
+
 	describe("suggestDefaultEnvPath", () => {
 		it("suggests path based on rootDir in tsconfig", async () => {
 			const tsConfig = {

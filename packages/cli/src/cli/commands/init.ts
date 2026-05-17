@@ -79,6 +79,10 @@ export class InitUseCase {
 				process.cwd(),
 				tsConfig.parsed,
 			);
+			const detectedBunFeatures =
+				detectedFramework === "bun"
+					? await this.scanner.detectBunFeatures(process.cwd(), tsConfig.parsed)
+					: undefined;
 			const defaultEnvPath = await this.scanner.suggestDefaultEnvPath(
 				process.cwd(),
 				tsConfig.parsed,
@@ -103,6 +107,7 @@ export class InitUseCase {
 			const options = await this.prompt.runWizard(
 				{
 					framework: detectedFramework,
+					bunFeatures: detectedBunFeatures,
 					defaultEnvPath,
 					tsConfig: tsConfig.parsed ?? null,
 					envKeys: envRes?.keys,
@@ -181,6 +186,7 @@ export class InitUseCase {
 				cwd: process.cwd(),
 				options,
 				detectedFramework,
+				detectedBunFeatures,
 				packageManager,
 				tsConfig,
 				shouldUpdateTsConfig,

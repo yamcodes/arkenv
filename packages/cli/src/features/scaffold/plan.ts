@@ -10,12 +10,13 @@ export type ProjectOptions = {
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun" | "node";
+	bunFeatures?: ("serve" | "build")[] | undefined;
 	language: "ts"; // TODO: Support JS
-	overwriteEnvSchemaFile?: boolean;
-	envDtsHandling?: "overwrite" | "append" | "skip";
-	installTypeDefinitions?: boolean;
-	envKeys?: string[];
-	installSkill?: boolean;
+	overwriteEnvSchemaFile?: boolean | undefined;
+	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
+	installTypeDefinitions?: boolean | undefined;
+	envKeys?: string[] | undefined;
+	installSkill?: boolean | undefined;
 };
 
 /**
@@ -27,30 +28,39 @@ export type ScaffoldingPlan = {
 		path: string;
 		content: string;
 		action: "create" | "overwrite" | "append";
-		label?: string;
+		label?: string | undefined;
 	}[];
 	/** TypeScript configuration updates */
-	tsConfig?: {
-		path: string;
-		action: "strict";
-	};
+	tsConfig?:
+		| {
+				path: string;
+				action: "strict";
+		  }
+		| undefined;
 	/** Dependencies to install */
-	install?: {
-		packageManager: "pnpm" | "yarn" | "npm" | "bun";
-		dependencies: string[];
-	};
+	install?:
+		| {
+				packageManager: "pnpm" | "yarn" | "npm" | "bun";
+				dependencies: string[];
+		  }
+		| undefined;
 	/** Optional skill installation */
-	skill?: {
-		dlxCommand: string[];
-		packageName: string;
-		isYes: boolean;
-	};
+	skill?:
+		| {
+				dlxCommand: string[];
+				packageName: string;
+				isYes: boolean;
+		  }
+		| undefined;
 	/** Framework-specific bootstrapping */
-	bootstrap?: {
-		framework: "vite" | "bun";
-		path?: string;
-		importPath?: string;
-	};
+	bootstrap?:
+		| {
+				framework: "vite" | "bun";
+				path?: string | undefined;
+				importPath?: string | undefined;
+				bunFeatures?: ("serve" | "build")[] | undefined;
+		  }
+		| undefined;
 	/** Metadata for reporting */
 	metadata: {
 		displayPath: string;
@@ -68,10 +78,11 @@ export type CollectedState = {
 	cwd: string;
 	options: ProjectOptions;
 	detectedFramework: "vite" | "bun" | "node";
+	detectedBunFeatures?: ("serve" | "build")[] | undefined;
 	packageManager: "pnpm" | "yarn" | "npm" | "bun";
 	tsConfig: {
 		status: "strict" | "not_strict" | "not_found";
-		file?: string;
+		file?: string | undefined;
 	};
 	shouldUpdateTsConfig: boolean;
 	existingFiles: string[];

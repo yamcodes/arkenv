@@ -105,8 +105,9 @@ export class NodeWorkspace implements WorkspacePort {
 
 	async bootstrapBunConfig(
 		configPath?: string | null,
+		features?: ("serve" | "build")[],
 	): Promise<BootstrapResult> {
-		return bootstrapBunConfig(configPath);
+		return bootstrapBunConfig(configPath, features);
 	}
 
 	async safeAppend(

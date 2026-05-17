@@ -1,4 +1,4 @@
-import { isCancel, select } from "@clack/prompts";
+import { isCancel, multiselect, select } from "@clack/prompts";
 import type { ProjectOptions } from "@/features/scaffold";
 
 export const frameworkStep =
@@ -22,6 +22,28 @@ export const frameworkStep =
 			],
 		});
 		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
+	};
+
+export const bunFeaturesStep =
+	(defaults?: { bunFeatures?: ProjectOptions["bunFeatures"] }) => async () => {
+		const answer = await multiselect({
+			message: "Which Bun-specific APIs would you like to integrate?",
+			options: [
+				{
+					value: "serve",
+					label: "Bun.serve (Fullstack Web Server)",
+					hint: "Adds plugin to bunfig.toml",
+				},
+				{
+					value: "build",
+					label: "Bun.build (Programmatic Bundler)",
+					hint: "Provides snippet for your build script",
+				},
+			],
+			initialValues: defaults?.bunFeatures ?? [],
+			required: false,
+		});
+		return isCancel(answer) ? null : (answer as ProjectOptions["bunFeatures"]);
 	};
 
 export const validatorStep = async () => {

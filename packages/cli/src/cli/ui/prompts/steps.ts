@@ -6,7 +6,11 @@ import {
 	envDtsHandlingStep,
 	installTypeDefinitionsStep,
 } from "./steps/env-types";
-import { frameworkStep, validatorStep } from "./steps/framework";
+import {
+	bunFeaturesStep,
+	frameworkStep,
+	validatorStep,
+} from "./steps/framework";
 import { pathStep, useDefaultPathStep } from "./steps/path";
 
 /**
@@ -15,6 +19,7 @@ import { pathStep, useDefaultPathStep } from "./steps/path";
 export const steps = {
 	overwriteEnvSchemaFile: overwriteEnvSchemaFileStep,
 	framework: frameworkStep,
+	bunFeatures: bunFeaturesStep,
 	useDefaultPath: useDefaultPathStep,
 	path: pathStep,
 	installTypeDefinitions: installTypeDefinitionsStep,

@@ -1,4 +1,3 @@
-import path from "node:path";
 import { group } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
@@ -9,6 +8,7 @@ import { isSuccess } from "./utils";
 export async function runPromptWizard(
 	defaults?: {
 		framework?: ProjectOptions["framework"];
+		bunFeatures?: ProjectOptions["bunFeatures"];
 		defaultEnvPath?: string;
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[] | undefined;
@@ -33,6 +33,7 @@ export async function runPromptWizard(
 			path: defaultEnvPath,
 			validator: "arktype",
 			framework,
+			bunFeatures: framework === "bun" ? defaults?.bunFeatures : undefined,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
 			installTypeDefinitions: framework !== "node",
@@ -46,6 +47,10 @@ export async function runPromptWizard(
 		{
 			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile(defaultEnvPath),
 			framework: steps.framework(defaults),
+			bunFeatures: ({ results }) =>
+				results.framework === "bun"
+					? steps.bunFeatures(defaults)()
+					: Promise.resolve(undefined),
 			useDefaultPath: steps.useDefaultPath(defaultEnvPath),
 			path: steps.path(defaultEnvPath),
 			installTypeDefinitions: steps.installTypeDefinitions,
