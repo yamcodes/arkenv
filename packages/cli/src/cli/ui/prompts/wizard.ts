@@ -1,4 +1,4 @@
-import { isCancel } from "@clack/prompts";
+import { cancel, isCancel } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
 import type { ParsedTsConfig } from "@/shared/ports";
@@ -85,6 +85,7 @@ export async function runPromptWizard(
 	for (const { key, fn } of stepsToRun) {
 		const result = await fn({ results });
 		if (result === null || (typeof result === "symbol" && isCancel(result))) {
+			cancel("Operation cancelled.");
 			return null;
 		}
 		results[key] = result;
