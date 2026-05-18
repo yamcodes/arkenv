@@ -1,5 +1,13 @@
 # @arkenv/cli
 
+## 0.0.11
+
+### Patch Changes
+
+- #### Fix pluralization and 0-case in environment variable detection messages _[`1c4f566`](https://github.com/yamcodes/arkenv/commit/1c4f566d4812c4eaaef03f6cb3ec2598bb39d372) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now correctly handles singular and plural cases for detected environment variables (e.g., "1 key" vs "2 keys"). It also correctly suppresses the prompt when no variables are detected.
+
 ## 0.0.10
 
 ### Patch Changes
