@@ -1,9 +1,8 @@
-import { group } from "@clack/prompts";
+import { isCancel } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
 import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
-import { isSuccess } from "./utils";
 
 export async function runPromptWizard(
 	defaults?: {
