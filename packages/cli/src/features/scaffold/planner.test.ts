@@ -8,12 +8,12 @@ describe("Planner", () => {
 		cwd: "/test",
 		options: {
 			validator: "arktype",
-			framework: "node",
+			framework: "vanilla",
 			path: "env.ts",
 			language: "ts",
 			installTypeDefinitions: true,
 		},
-		detectedFramework: "node",
+		detectedFramework: "vanilla",
 		packageManager: "pnpm",
 		tsConfig: { status: "strict", file: "tsconfig.json" },
 		shouldUpdateTsConfig: false,
@@ -44,16 +44,38 @@ describe("Planner", () => {
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
-	it("plans for bun framework", () => {
+	it("plans for bun-fullstack framework with features", () => {
 		const state: CollectedState = {
 			...defaultState,
-			options: { ...defaultState.options, framework: "bun" },
-			detectedFramework: "bun",
+			options: {
+				...defaultState.options,
+				framework: "bun-fullstack",
+				bunFeatures: ["serve"],
+			},
+			detectedFramework: "bun-fullstack",
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/bun-plugin");
 		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(true);
-		expect(plan.bootstrap?.framework).toBe("bun");
+		expect(plan.bootstrap?.framework).toBe("bun-fullstack");
+		expect(plan.bootstrap?.bunFeatures).toContain("serve");
+	});
+
+	it("plans for bun-fullstack framework without features", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "bun-fullstack",
+				bunFeatures: [],
+			},
+			detectedFramework: "bun-fullstack",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).not.toContain("@arkenv/bun-plugin");
+		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(false);
+		expect(plan.bootstrap?.framework).toBe("bun-fullstack");
+		expect(plan.bootstrap?.bunFeatures).toEqual([]);
 	});
 
 	it("plans tsconfig update when requested", () => {

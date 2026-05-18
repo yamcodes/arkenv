@@ -9,10 +9,11 @@ export type PromptPort = {
 	runWizard(
 		defaults?: {
 			framework?: ProjectOptions["framework"];
+			bunFeatures?: ProjectOptions["bunFeatures"];
 			defaultEnvPath?: string;
 			tsConfig?: ParsedTsConfig | null;
-			envKeys?: string[] | undefined;
-			envKeysSource?: ".env.example" | "project" | undefined;
+			envKeys?: string[];
+			envKeysSource?: ".env.example" | "project";
 			hasTypeFile?: boolean;
 		},
 		isYes?: boolean,

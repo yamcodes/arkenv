@@ -2,7 +2,7 @@
 name: tackle-issue
 description: Automates the process of working on GitHub issues, including branch creation, issue linking, label management, validation, changesets, and PR creation. Triggered by the command "/tackle-issue ISSUE_NUMBER".
 metadata:
-  internal: true
+   internal: true
 ---
 
 # Tackle Issue
@@ -59,15 +59,10 @@ Once implementation is complete, you MUST run the following validation suite in 
    ```
 3. **Lint & Format Check**:
    ```bash
-   pnpm run check
+   pnpm run fix
    ```
-   - If `pnpm run check` fails, attempt to auto-fix:
-     ```bash
-     pnpm run fix
-     ```
-   - After running `pnpm run fix`, run `pnpm run check` again to ensure all issues are resolved.
 
-If any of these steps fail (and cannot be auto-fixed), you MUST diagnose and fix the errors before proceeding.
+If this step fails (some lint/formatting issues cannot be auto-fixed), you MUST diagnose and fix the errors before proceeding.
 
 ### 5. Changeset Creation
 

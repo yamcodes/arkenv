@@ -4,7 +4,7 @@ import dedent from "dedent";
  * Generates a TypeScript template string for an ArkType environment configuration.
  *
  * @param envKeys - Optional array of environment variable keys to include in the schema.
- * @param framework - The framework being used (vite, bun, or node).
+ * @param framework - The framework being used (vite, bun-fullstack, or vanilla).
  * @returns The generated TypeScript template string.
  */
 export const arktypeTemplate = (envKeys?: string[], framework?: string) => {
@@ -20,7 +20,7 @@ export const arktypeTemplate = (envKeys?: string[], framework?: string) => {
 	/**
 	 * Environment variable schema.
 	 * In Vite, use \`@arkenv/vite-plugin\` to validate these at build-time
-	 * and provide typesafety for \`import.meta.env\`.
+	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = type({
 ${schemaFields}
@@ -28,14 +28,14 @@ ${schemaFields}
 	`;
 	}
 
-	if (framework === "bun") {
+	if (framework === "bun-fullstack") {
 		return dedent /* ts */`
 	import { type } from "arkenv";
 
 	/**
 	 * Environment variable schema.
-	 * In Bun, use \`@arkenv/bun-plugin\` to validate these at build-time
-	 * and provide typesafety for \`process.env\`.
+	 * In Bun Fullstack, use \`@arkenv/bun-plugin\` to validate these at build-time
+	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = type({
 ${schemaFields}
@@ -46,6 +46,9 @@ ${schemaFields}
 	return dedent /* ts */`
 	import arkenv, { type } from "arkenv";
 
+	/**
+	 * Environment variable schema for server-side or runtime-only validation.
+	 */
 	export const Env = type({
 ${schemaFields}
 	});

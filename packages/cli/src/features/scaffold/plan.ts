@@ -9,7 +9,8 @@ export type { Reporter, Workspace };
 export type ProjectOptions = {
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
-	framework: "vite" | "bun" | "node";
+	framework: "vite" | "bun-fullstack" | "vanilla";
+	bunFeatures?: ("serve" | "build")[];
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean;
 	envDtsHandling?: "overwrite" | "append" | "skip";
@@ -47,9 +48,10 @@ export type ScaffoldingPlan = {
 	};
 	/** Framework-specific bootstrapping */
 	bootstrap?: {
-		framework: "vite" | "bun";
+		framework: "vite" | "bun-fullstack";
 		path?: string;
 		importPath?: string;
+		bunFeatures?: ("serve" | "build")[];
 	};
 	/** Metadata for reporting */
 	metadata: {
@@ -67,7 +69,8 @@ export type ScaffoldingPlan = {
 export type CollectedState = {
 	cwd: string;
 	options: ProjectOptions;
-	detectedFramework: "vite" | "bun" | "node";
+	detectedFramework: "vite" | "bun-fullstack" | "vanilla";
+	detectedBunFeatures?: ("serve" | "build")[];
 	packageManager: "pnpm" | "yarn" | "npm" | "bun";
 	tsConfig: {
 		status: "strict" | "not_strict" | "not_found";

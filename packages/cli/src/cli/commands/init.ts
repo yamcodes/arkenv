@@ -1,5 +1,6 @@
 import path from "node:path";
 import pc from "picocolors";
+import { shake } from "radashi";
 import { code } from "@/cli/ui";
 import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
 import type {
@@ -83,6 +84,10 @@ export class InitUseCase {
 				process.cwd(),
 				tsConfig.parsed,
 			);
+			const detectedBunFeatures =
+				detectedFramework === "bun-fullstack"
+					? await this.scanner.detectBunFeatures(process.cwd(), tsConfig.parsed)
+					: undefined;
 			const defaultEnvPath = await this.scanner.suggestDefaultEnvPath(
 				process.cwd(),
 				tsConfig.parsed,
@@ -96,7 +101,10 @@ export class InitUseCase {
 			);
 
 			let hasTypeFile = false;
-			if (detectedFramework === "vite" || detectedFramework === "bun") {
+			if (
+				detectedFramework === "vite" ||
+				detectedFramework === "bun-fullstack"
+			) {
 				const typeFile =
 					detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 				const targetDir = path.dirname(targetPath);
@@ -105,14 +113,15 @@ export class InitUseCase {
 			}
 
 			const options = await this.prompt.runWizard(
-				{
+				shake({
 					framework: detectedFramework,
+					bunFeatures: detectedBunFeatures,
 					defaultEnvPath,
 					tsConfig: tsConfig.parsed ?? null,
 					envKeys: envRes?.keys,
 					envKeysSource: envRes?.source,
 					hasTypeFile,
-				},
+				}),
 				isYes,
 			);
 
@@ -172,7 +181,7 @@ export class InitUseCase {
 			let typeFileName: string | undefined;
 			if (options.framework === "vite") {
 				typeFileName = "vite-env.d.ts";
-			} else if (options.framework === "bun") {
+			} else if (options.framework === "bun-fullstack") {
 				typeFileName = "bun-env.d.ts";
 			}
 
@@ -183,16 +192,17 @@ export class InitUseCase {
 					existingFiles.push(typeFilePath);
 			}
 
-			return {
+			return shake({
 				cwd: process.cwd(),
 				options,
 				detectedFramework,
+				detectedBunFeatures,
 				packageManager,
 				tsConfig,
 				shouldUpdateTsConfig,
 				existingFiles,
 				isYes,
-			};
+			});
 		} finally {
 			// Restore stdout
 			this.logger.interactiveStdout(false);

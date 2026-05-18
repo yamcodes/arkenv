@@ -43,11 +43,14 @@ export type ConfigPort = {
 		path: string,
 		importPath: string,
 	): Promise<BootstrapResult>;
-	bootstrapBunConfig(path: string | null | undefined): Promise<BootstrapResult>;
+	bootstrapBunConfig(
+		path: string | null | undefined,
+		features?: ("serve" | "build")[],
+	): Promise<BootstrapResult>;
 	safeAppend(
 		path: string,
 		schemaPath: string,
-		framework: "vite" | "bun",
+		framework: "vite" | "bun-fullstack",
 	): Promise<boolean>;
 };
 

@@ -63,9 +63,9 @@ API_KEY=
 	});
 
 	describe("detectFramework", () => {
-		it("defaults to node when no signals are found", async () => {
+		it("defaults to vanilla when no signals are found", async () => {
 			const result = await scanner.detectFramework(tempDir);
-			expect(result).toBe("node");
+			expect(result).toBe("vanilla");
 		});
 
 		it("detects vite from vite.config.ts", async () => {
@@ -81,6 +81,63 @@ API_KEY=
 			};
 			const result = await scanner.detectFramework(tempDir, tsConfig);
 			expect(result).toBe("vite");
+		});
+
+		it("detects bun-fullstack from tsconfig types and feature presence", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "server.ts"),
+				'import { serve } from "bun"; serve({});',
+			);
+			const tsConfig = {
+				path: path.join(tempDir, "tsconfig.json"),
+				compilerOptions: { types: ["bun"] },
+			};
+			const result = await scanner.detectFramework(tempDir, tsConfig);
+			expect(result).toBe("bun-fullstack");
+		});
+
+		it("detects vanilla even if bun types exist but no features found", async () => {
+			const tsConfig = {
+				path: path.join(tempDir, "tsconfig.json"),
+				compilerOptions: { types: ["bun"] },
+			};
+			const result = await scanner.detectFramework(tempDir, tsConfig);
+			expect(result).toBe("vanilla");
+		});
+	});
+
+	describe("detectBunFeatures", () => {
+		it("detects serve feature from bunfig.toml", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "bunfig.toml"),
+				"[serve.static]\n",
+			);
+			const result = await scanner.detectBunFeatures(tempDir);
+			expect(result).toContain("serve");
+		});
+
+		it("detects serve and build features", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "server.ts"),
+				'import { serve } from "bun"; serve({});',
+			);
+			await fsp.writeFile(
+				path.join(tempDir, "build.ts"),
+				"Bun.build({ entrypoints: [] });",
+			);
+
+			const result = await scanner.detectBunFeatures(tempDir);
+			expect(result).toContain("serve");
+			expect(result).toContain("build");
+		});
+
+		it("returns empty array when no bun features are used", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "index.ts"),
+				"console.log('hello')",
+			);
+			const result = await scanner.detectBunFeatures(tempDir);
+			expect(result).toEqual([]);
 		});
 	});
 

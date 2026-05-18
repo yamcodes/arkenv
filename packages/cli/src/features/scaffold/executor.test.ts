@@ -63,7 +63,7 @@ describe("Executor", () => {
 		install: { packageManager: "pnpm", dependencies: ["arkenv"] },
 		metadata: {
 			displayPath: "env.ts",
-			framework: "node",
+			framework: "vanilla",
 			validator: "arktype",
 			packageManager: "pnpm",
 			importPath: "./env",

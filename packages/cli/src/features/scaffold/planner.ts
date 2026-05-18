@@ -1,11 +1,12 @@
 import path from "node:path";
+import { shake } from "radashi";
 import { getEnvTemplate } from "./env-template";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
 
 /**
- * Creates a ScaffoldingPlan based on the collected workspace state.
+ * Create a ScaffoldingPlan based on the collected workspace state.
  *
  * @param state The collected state of the workspace.
  * @returns The resulting scaffolding plan.
@@ -49,7 +50,9 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	// 2. dependencies
 	const deps = ["arkenv", options.validator];
 	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
-	if (options.framework === "bun") deps.push("@arkenv/bun-plugin");
+	if (options.framework === "bun-fullstack" && options.bunFeatures?.length) {
+		deps.push("@arkenv/bun-plugin");
+	}
 
 	plan.install = {
 		packageManager,
@@ -66,7 +69,8 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 	// 4. Type Definitions
 	if (
-		(options.framework === "vite" || options.framework === "bun") &&
+		(options.framework === "vite" ||
+			(options.framework === "bun-fullstack" && options.bunFeatures?.length)) &&
 		options.installTypeDefinitions !== false
 	) {
 		const typeFileName =
@@ -101,10 +105,12 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	}
 
 	// 5. Framework-specific bootstrapping
-	if (options.framework === "vite" || options.framework === "bun") {
-		plan.bootstrap = {
+	if (options.framework === "vite" || options.framework === "bun-fullstack") {
+		plan.bootstrap = shake({
 			framework: options.framework,
-		};
+			bunFeatures:
+				options.framework === "bun-fullstack" ? options.bunFeatures : undefined,
+		});
 	}
 
 	// 6. Skill

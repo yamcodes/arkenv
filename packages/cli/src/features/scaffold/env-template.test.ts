@@ -6,7 +6,7 @@ describe("env-template", () => {
 		it("returns arktype template when validator is arktype", () => {
 			const options = {
 				validator: "arktype" as any,
-				framework: "node" as any,
+				framework: "vanilla" as any,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -24,7 +24,7 @@ describe("env-template", () => {
 		it("returns arktype template with envKeys and defaults", () => {
 			const options = {
 				validator: "arktype" as any,
-				framework: "node" as any,
+				framework: "vanilla" as any,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -59,10 +59,10 @@ describe("env-template", () => {
 			);
 		});
 
-		it("returns arktype template for bun when validator is arktype", () => {
+		it("returns arktype template for bun-fullstack when validator is arktype", () => {
 			const options = {
 				validator: "arktype" as any,
-				framework: "bun" as any,
+				framework: "bun-fullstack" as any,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -77,7 +77,7 @@ describe("env-template", () => {
 			expect(template).not.toContain("export const env = arkenv(Env)");
 			expect(template).toContain("export const Env = type({");
 			expect(template).toContain(
-				"In Bun, use \\`@arkenv/bun-plugin\\`".replace(/\\/g, ""),
+				"In Bun Fullstack, use \\`@arkenv/bun-plugin\\`".replace(/\\/g, ""),
 			);
 			expect(template).toContain("validate these at build-time");
 			expect(template).toContain(
@@ -88,7 +88,7 @@ describe("env-template", () => {
 		it("returns zod template when validator is zod", () => {
 			const options = {
 				validator: "zod" as any,
-				framework: "node" as any,
+				framework: "vanilla" as any,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -103,7 +103,7 @@ describe("env-template", () => {
 		it("returns zod template with envKeys and defaults", () => {
 			const options = {
 				validator: "zod" as any,
-				framework: "node" as any,
+				framework: "vanilla" as any,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -117,7 +117,7 @@ describe("env-template", () => {
 		it("returns valibot template when validator is valibot", () => {
 			const options = {
 				validator: "valibot" as any,
-				framework: "node" as any,
+				framework: "vanilla" as any,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -137,7 +137,7 @@ describe("env-template", () => {
 		it("returns valibot template with envKeys and defaults", () => {
 			const options = {
 				validator: "valibot" as any,
-				framework: "node" as any,
+				framework: "vanilla" as any,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -151,7 +151,7 @@ describe("env-template", () => {
 		it("throws error for unsupported validator", () => {
 			const options = {
 				validator: "unknown" as any,
-				framework: "node" as any,
+				framework: "vanilla" as any,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,

@@ -188,6 +188,23 @@ pnpm run test:e2e                     # E2E tests
   - `boolean` - Validates boolean values
 - The `$` variable naming convention is used for the root scope (ArkType convention)
 
+**Framework & Runtime Integrations:**
+
+- **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
+- **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
+- **Bun fullstack dev server**:
+  - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.
+  - **Bun.build**: Bun's programmatic bundling API. Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.
+
+**Preferred Bun Vocabulary:**
+
+- **Bun fullstack dev server**: also known as "Bun development server", the unified terminology for Bun applications that involve frontend bundling or integrated dev servers.
+  - **Bun.serve**: The unified Bun process that handles both API routes and integrated frontend bundling.
+  - **Bun.build**: The programmatic API for creating custom frontend build pipelines.
+- **Frontend / Client-side**: Code intended to run in the browser, where environment variables must be **inlined** during bundling.
+- **Backend / Server-side**: Code running in the Bun runtime, where environment variables are accessed directly from the environment.
+- **Static Inlining**: The process where a bundler replaces `process.env.VAR` with a literal value. In Bun, this is configured via the `env` option in `bunfig.toml` or `Bun.build`.
+
 **Type System:**
 
 - Uses `const` type parameters for better type inference

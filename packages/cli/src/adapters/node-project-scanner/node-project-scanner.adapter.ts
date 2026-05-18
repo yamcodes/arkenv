@@ -1,5 +1,6 @@
 import type { ParsedTsConfig, ProjectScannerPort } from "@/shared/ports";
 import {
+	detectBunFeatures,
 	detectFramework,
 	detectPackageManager,
 	suggestDefaultEnvPath,
@@ -48,8 +49,15 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	async detectFramework(
 		cwd = process.cwd(),
 		tsConfig?: ParsedTsConfig | null,
-	): Promise<"vite" | "bun" | "node"> {
+	): Promise<"vite" | "bun-fullstack" | "vanilla"> {
 		return detectFramework(cwd, tsConfig);
+	}
+
+	async detectBunFeatures(
+		cwd = process.cwd(),
+		tsConfig?: ParsedTsConfig | null,
+	): Promise<("serve" | "build")[]> {
+		return detectBunFeatures(cwd, tsConfig);
 	}
 
 	async detectPackageManager(

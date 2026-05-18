@@ -21,6 +21,14 @@ npx @arkenv/cli@latest init
 - [ArkEnv](https://arkenv.js.org) - Core library and docs
 - [ArkType](https://arktype.io/) - Underlying validator / type system
 
+## Architecture
+
+This CLI is built with a port-and-adapter architecture to remain flexible and testable.
+
+### Local Environment Adapters (`Node*`)
+
+Implementations prefixed with `Node` (e.g., `NodeWorkspace`, `NodeProjectScanner`) represent the standard local development environment. They utilize standard `node:*` APIs (like `node:fs` and `node:child_process`) which are universally supported across modern runtimes including Node.js, Bun, and Deno. This naming reflects the API standard used rather than a runtime restriction.
+
 ## License
 
 MIT

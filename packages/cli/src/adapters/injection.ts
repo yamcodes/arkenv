@@ -7,7 +7,7 @@ const MARKER = "// @arkenv-types";
 export async function safeAppend(
 	dtsPath: string,
 	schemaPath: string,
-	framework: "vite" | "bun",
+	framework: "vite" | "bun-fullstack",
 ): Promise<boolean> {
 	try {
 		const content = await fsp.readFile(dtsPath, "utf-8");

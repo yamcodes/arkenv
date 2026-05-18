@@ -1,28 +1,41 @@
-import { isCancel, select } from "@clack/prompts";
-import pc from "picocolors";
+import { confirm, isCancel, select } from "@clack/prompts";
 import type { ProjectOptions } from "@/features/scaffold";
 
 export const frameworkStep =
 	(defaults?: { framework?: ProjectOptions["framework"] }) => async () => {
 		const answer = await select({
-			message: "Select your framework or runtime:",
+			message: "Select your framework or build tool:",
 			initialValue: defaults?.framework,
 			options: [
 				{
+					value: "vanilla",
+					label: `Vanilla${defaults?.framework === "vanilla" ? " (Detected)" : ""}`,
+					hint: "Node.js, Bun, server-side or runtime-only validation",
+				},
+				{
 					value: "vite",
 					label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
+					hint: "Client-side and static inlining validation",
 				},
 				{
-					value: "bun",
-					label: `Bun${defaults?.framework === "bun" ? " (Detected)" : ""}`,
-				},
-				{
-					value: "node",
-					label: `Node.js${defaults?.framework === "node" ? " (Detected)" : ""}`,
+					value: "bun-fullstack",
+					label: `Bun fullstack dev server${defaults?.framework === "bun-fullstack" ? " (Detected)" : ""}`,
+					hint: "Client-side bundling and Bun.serve integration",
 				},
 			],
 		});
 		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
+	};
+
+export const bunBuildStep =
+	(initialValue = false) =>
+	async () => {
+		const answer = await confirm({
+			message:
+				"Optional: Would you also like to bootstrap a custom Bun.build script for programmatic bundling?",
+			initialValue,
+		});
+		return isCancel(answer) ? null : answer;
 	};
 
 export const validatorStep = async () => {

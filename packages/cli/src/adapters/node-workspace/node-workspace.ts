@@ -105,14 +105,15 @@ export class NodeWorkspace implements WorkspacePort {
 
 	async bootstrapBunConfig(
 		configPath?: string | null,
+		features?: ("serve" | "build")[],
 	): Promise<BootstrapResult> {
-		return bootstrapBunConfig(configPath);
+		return bootstrapBunConfig(configPath, features);
 	}
 
 	async safeAppend(
 		filePath: string,
 		schemaPath: string,
-		framework: "vite" | "bun",
+		framework: "vite" | "bun-fullstack",
 	) {
 		const { safeAppend } = await import("../injection");
 		return safeAppend(filePath, schemaPath, framework);
