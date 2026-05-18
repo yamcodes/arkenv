@@ -28,10 +28,12 @@ export const useEnvExampleStep =
 	(detectedKeys: string[] | null, source = ".env.example") =>
 	async () => {
 		if (detectedKeys && detectedKeys.length > 0) {
+			const count = detectedKeys.length;
+			const isSingular = count === 1;
 			const message =
 				source === ".env.example"
-					? `Detected ${code(".env.example")} with ${detectedKeys.length} keys. Use them for your schema?`
-					: `Detected ${detectedKeys.length} environment variables used in your project. Use them for your schema?`;
+					? `Detected ${code(".env.example")} with ${count} ${isSingular ? "key" : "keys"}. Use ${isSingular ? "it" : "them"} for your schema?`
+					: `Detected ${count} environment variable${isSingular ? "" : "s"} used in your project. Use ${isSingular ? "it" : "them"} for your schema?`;
 
 			const answer = await confirm({
 				message,
