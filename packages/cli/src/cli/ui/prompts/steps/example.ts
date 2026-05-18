@@ -16,11 +16,6 @@ export const exampleStep = () => {
 					hint: "Full-stack validation with Zod",
 				},
 				{
-					value: "next-arktype",
-					label: "Next.js + ArkType",
-					hint: "Optimized for Next.js and ArkType",
-				},
-				{
 					value: "basic-valibot",
 					label: "Basic + Valibot",
 					hint: "Lightweight validation with Valibot",

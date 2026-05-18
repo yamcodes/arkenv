@@ -16,27 +16,9 @@ export const viteZodExample = () => {
   `;
 };
 
-export const nextArktypeExample = () => {
-	return dedent /* ts */`
-    import arkenv, { type } from "arkenv";
-
-    /**
-     * Environment variable schema using ArkType.
-     * Optimized for Next.js with both server and client-side support.
-     */
-    export const Env = type({
-      NEXT_PUBLIC_API_URL: "string.url = 'https://api.example.com'",
-      DATABASE_URL: "string.url",
-      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-    });
-
-    export const env = arkenv(Env);
-  `;
-};
-
 export const basicValibotExample = () => {
 	return dedent /* ts */`
-    import arkenv from "arkenv";
+    import arkenv from "arkenv/standard";
     import * as v from "valibot";
 
     /**

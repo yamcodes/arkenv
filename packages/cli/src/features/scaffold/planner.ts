@@ -55,9 +55,6 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			if (options.example === "vite-zod") {
 				dotEnvContent =
 					"VITE_API_URL=https://api.example.com\nVITE_ENABLE_FEATURE_X=false\n";
-			} else if (options.example === "next-arktype") {
-				dotEnvContent =
-					"NEXT_PUBLIC_API_URL=https://api.example.com\nDATABASE_URL=postgresql://localhost:5432/mydb\n";
 			} else if (options.example === "basic-valibot") {
 				dotEnvContent = "PORT=3000\nHOST=localhost\n";
 			}

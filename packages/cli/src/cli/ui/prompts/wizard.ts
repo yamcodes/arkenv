@@ -60,13 +60,7 @@ export async function runPromptWizard(
 			key: "framework",
 			fn: ({ results }) =>
 				results.example !== "none"
-					? Promise.resolve(
-							results.example === "vite-zod"
-								? "vite"
-								: results.example === "next-arktype"
-									? "vanilla"
-									: "vanilla",
-						)
+					? Promise.resolve(results.example === "vite-zod" ? "vite" : "vanilla")
 					: steps.framework(defaults)(),
 		},
 		{
@@ -92,13 +86,7 @@ export async function runPromptWizard(
 			key: "validator",
 			fn: ({ results }) =>
 				results.example !== "none"
-					? Promise.resolve(
-							results.example === "vite-zod"
-								? "zod"
-								: results.example === "next-arktype"
-									? "arktype"
-									: "valibot",
-						)
+					? Promise.resolve(results.example === "vite-zod" ? "zod" : "valibot")
 					: steps.validator(),
 		},
 		{

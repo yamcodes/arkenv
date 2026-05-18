@@ -2,7 +2,6 @@ import type { ProjectOptions } from "./plan";
 import {
 	arktypeTemplate,
 	basicValibotExample,
-	nextArktypeExample,
 	valibotTemplate,
 	viteZodExample,
 	zodTemplate,
@@ -19,7 +18,6 @@ export function getEnvTemplate(options: ProjectOptions): string {
 	const { validator, envKeys, framework, example } = options;
 
 	if (example === "vite-zod") return `${viteZodExample()}\n`;
-	if (example === "next-arktype") return `${nextArktypeExample()}\n`;
 	if (example === "basic-valibot") return `${basicValibotExample()}\n`;
 
 	switch (validator) {
