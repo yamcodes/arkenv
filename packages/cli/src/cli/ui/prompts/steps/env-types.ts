@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { confirm, isCancel, select } from "@clack/prompts";
+import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 import type { ProjectOptions } from "@/features/scaffold";
 

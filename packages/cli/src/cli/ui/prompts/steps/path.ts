@@ -1,4 +1,5 @@
 import { confirm, isCancel, text } from "@clack/prompts";
+import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 
 export const useDefaultPathStep =

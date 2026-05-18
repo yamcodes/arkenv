@@ -66,6 +66,10 @@ export class InitUseCase {
 						true,
 					);
 
+					if (confirmStrict === null) {
+						return null;
+					}
+
 					if (!confirmStrict) {
 						this.logger.cancel("Operation cancelled.");
 						return null;
@@ -120,8 +124,7 @@ export class InitUseCase {
 				isYes,
 			);
 
-			if (!options) {
-				this.logger.cancel("Operation cancelled.");
+			if (options === null) {
 				return null;
 			}
 
@@ -136,7 +139,6 @@ export class InitUseCase {
 					true,
 				);
 				if (confirmInstall === null) {
-					this.logger.cancel("Operation cancelled.");
 					return null;
 				}
 				options.installSkill = confirmInstall;
@@ -153,6 +155,10 @@ export class InitUseCase {
 					`File ${code(path.basename(finalTargetPath))} already exists. Overwrite?`,
 					false,
 				);
+
+				if (confirmOverwrite === null) {
+					return null;
+				}
 
 				if (!confirmOverwrite) {
 					this.logger.cancel("Operation cancelled.");
