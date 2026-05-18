@@ -1,5 +1,6 @@
 import path from "node:path";
 import pc from "picocolors";
+import { shake } from "radashi";
 import { code } from "@/cli/ui";
 import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
 import type {
@@ -112,7 +113,7 @@ export class InitUseCase {
 			}
 
 			const options = await this.prompt.runWizard(
-				{
+				shake({
 					framework: detectedFramework,
 					bunFeatures: detectedBunFeatures,
 					defaultEnvPath,
@@ -120,7 +121,7 @@ export class InitUseCase {
 					envKeys: envRes?.keys,
 					envKeysSource: envRes?.source,
 					hasTypeFile,
-				},
+				}),
 				isYes,
 			);
 
@@ -191,7 +192,7 @@ export class InitUseCase {
 					existingFiles.push(typeFilePath);
 			}
 
-			return {
+			return shake({
 				cwd: process.cwd(),
 				options,
 				detectedFramework,
@@ -201,7 +202,7 @@ export class InitUseCase {
 				shouldUpdateTsConfig,
 				existingFiles,
 				isYes,
-			};
+			});
 		} finally {
 			// Restore stdout
 			this.logger.interactiveStdout(false);

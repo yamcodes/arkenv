@@ -1,4 +1,5 @@
 import path from "node:path";
+import { shake } from "radashi";
 import { getEnvTemplate } from "./env-template";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
@@ -105,11 +106,11 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 	// 5. Framework-specific bootstrapping
 	if (options.framework === "vite" || options.framework === "bun-fullstack") {
-		plan.bootstrap = {
+		plan.bootstrap = shake({
 			framework: options.framework,
 			bunFeatures:
 				options.framework === "bun-fullstack" ? options.bunFeatures : undefined,
-		};
+		});
 	}
 
 	// 6. Skill

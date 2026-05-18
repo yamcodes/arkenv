@@ -10,13 +10,13 @@ export type ProjectOptions = {
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun-fullstack" | "vanilla";
-	bunFeatures?: ("serve" | "build")[] | undefined;
+	bunFeatures?: ("serve" | "build")[];
 	language: "ts"; // TODO: Support JS
-	overwriteEnvSchemaFile?: boolean | undefined;
-	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
-	installTypeDefinitions?: boolean | undefined;
-	envKeys?: string[] | undefined;
-	installSkill?: boolean | undefined;
+	overwriteEnvSchemaFile?: boolean;
+	envDtsHandling?: "overwrite" | "append" | "skip";
+	installTypeDefinitions?: boolean;
+	envKeys?: string[];
+	installSkill?: boolean;
 };
 
 /**
@@ -28,39 +28,31 @@ export type ScaffoldingPlan = {
 		path: string;
 		content: string;
 		action: "create" | "overwrite" | "append";
-		label?: string | undefined;
+		label?: string;
 	}[];
 	/** TypeScript configuration updates */
-	tsConfig?:
-		| {
-				path: string;
-				action: "strict";
-		  }
-		| undefined;
+	tsConfig?: {
+		path: string;
+		action: "strict";
+	};
 	/** Dependencies to install */
-	install?:
-		| {
-				packageManager: "pnpm" | "yarn" | "npm" | "bun";
-				dependencies: string[];
-		  }
-		| undefined;
+	install?: {
+		packageManager: "pnpm" | "yarn" | "npm" | "bun";
+		dependencies: string[];
+	};
 	/** Optional skill installation */
-	skill?:
-		| {
-				dlxCommand: string[];
-				packageName: string;
-				isYes: boolean;
-		  }
-		| undefined;
+	skill?: {
+		dlxCommand: string[];
+		packageName: string;
+		isYes: boolean;
+	};
 	/** Framework-specific bootstrapping */
-	bootstrap?:
-		| {
-				framework: "vite" | "bun-fullstack";
-				path?: string | undefined;
-				importPath?: string | undefined;
-				bunFeatures?: ("serve" | "build")[] | undefined;
-		  }
-		| undefined;
+	bootstrap?: {
+		framework: "vite" | "bun-fullstack";
+		path?: string;
+		importPath?: string;
+		bunFeatures?: ("serve" | "build")[];
+	};
 	/** Metadata for reporting */
 	metadata: {
 		displayPath: string;
@@ -78,11 +70,11 @@ export type CollectedState = {
 	cwd: string;
 	options: ProjectOptions;
 	detectedFramework: "vite" | "bun-fullstack" | "vanilla";
-	detectedBunFeatures?: ("serve" | "build")[] | undefined;
+	detectedBunFeatures?: ("serve" | "build")[];
 	packageManager: "pnpm" | "yarn" | "npm" | "bun";
 	tsConfig: {
 		status: "strict" | "not_strict" | "not_found";
-		file?: string | undefined;
+		file?: string;
 	};
 	shouldUpdateTsConfig: boolean;
 	existingFiles: string[];
