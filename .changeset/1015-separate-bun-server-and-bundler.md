@@ -1,5 +1,5 @@
 ---
-"@arkenv/cli": minor
+"@arkenv/cli": patch
 ---
 
 ### Refined setup experience in `arkenv init`
