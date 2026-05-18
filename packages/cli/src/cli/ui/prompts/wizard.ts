@@ -46,11 +46,17 @@ export async function runPromptWizard(
 		});
 	}
 
-	const result = await group(
+	const results: any = {};
+
+	const stepsToRun: { key: string; fn: (ctx: { results: any }) => Promise<any> }[] = [
 		{
-			overwriteEnvSchemaFile: steps.overwriteEnvSchemaFile(defaultEnvPath),
-			framework: steps.framework(defaults),
-			bunBuild: ({ results }) =>
+			key: "overwriteEnvSchemaFile",
+			fn: () => steps.overwriteEnvSchemaFile(defaultEnvPath)(),
+		},
+		{ key: "framework", fn: () => steps.framework(defaults)() },
+		{
+			key: "bunBuild",
+			fn: ({ results }) =>
 				results.framework === "bun-fullstack"
 					? steps.bunBuild(
 							defaults?.bunFeatures?.includes("build") ||
@@ -59,36 +65,41 @@ export async function runPromptWizard(
 									defaults?.bunFeatures?.includes("build")),
 						)()
 					: Promise.resolve(undefined),
-			useDefaultPath: steps.useDefaultPath(defaultEnvPath),
-			path: steps.path(defaultEnvPath),
-			installTypeDefinitions: steps.installTypeDefinitions,
-			envDtsHandling: steps.envDtsHandling,
-			validator: steps.validator,
-			useEnvExample: steps.useEnvExample(detectedKeys, keysSource),
 		},
+		{ key: "useDefaultPath", fn: () => steps.useDefaultPath(defaultEnvPath)() },
+		{ key: "path", fn: (ctx) => steps.path(defaultEnvPath)(ctx) },
 		{
-			onCancel: () => {
-				// We don't exit here, we let the group return a canceled state or null
-			},
+			key: "installTypeDefinitions",
+			fn: (ctx) => steps.installTypeDefinitions(ctx as any),
 		},
-	);
+		{ key: "envDtsHandling", fn: (ctx) => steps.envDtsHandling(ctx as any) },
+		{ key: "validator", fn: () => steps.validator() },
+		{
+			key: "useEnvExample",
+			fn: () => steps.useEnvExample(detectedKeys, keysSource)(),
+		},
+	];
 
-	if (!isSuccess(result)) {
-		return null;
+	for (const { key, fn } of stepsToRun) {
+		const result = await fn({ results });
+		if (result === null || (typeof result === "symbol" && isCancel(result))) {
+			return null;
+		}
+		results[key] = result;
 	}
 
 	const bunFeatures: ProjectOptions["bunFeatures"] =
-		result.framework === "bun-fullstack"
-			? result.bunBuild
+		results.framework === "bun-fullstack"
+			? results.bunBuild
 				? ["serve", "build"]
 				: ["serve"]
 			: undefined;
 
 	return shake({
-		...result,
+		...results,
 		bunFeatures,
 		language: "ts",
 		installSkill: false, // Defaulting to false, will be overridden by orchestrator if needed
-		envKeys: result.useEnvExample ? (detectedKeys ?? undefined) : undefined,
+		envKeys: results.useEnvExample ? (detectedKeys ?? undefined) : undefined,
 	} as Partial<ProjectOptions>) as ProjectOptions;
 }
