@@ -85,7 +85,7 @@ export async function runPromptWizard(
 	for (const { key, fn } of stepsToRun) {
 		const result = await fn({ results });
 		if (result === null || (typeof result === "symbol" && isCancel(result))) {
-			cancel("Operation cancelled.");
+			cancel("Operation cancelled");
 			return null;
 		}
 		results[key] = result;

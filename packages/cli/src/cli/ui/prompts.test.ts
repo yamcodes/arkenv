@@ -104,7 +104,7 @@ describe("runPromptWizard", () => {
 
 		expect(result).toBeNull();
 		expect(prompts.select).not.toHaveBeenCalled();
-		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled.");
+		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled");
 	});
 
 	it("should abort immediately if user cancels a prompt (Ctrl+C)", async () => {
@@ -117,6 +117,6 @@ describe("runPromptWizard", () => {
 
 		expect(result).toBeNull();
 		expect(prompts.confirm).not.toHaveBeenCalled();
-		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled.");
+		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled");
 	});
 });
