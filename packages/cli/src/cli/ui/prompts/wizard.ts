@@ -48,7 +48,10 @@ export async function runPromptWizard(
 
 	const results: any = {};
 
-	const stepsToRun: { key: string; fn: (ctx: { results: any }) => Promise<any> }[] = [
+	const stepsToRun: {
+		key: string;
+		fn: (ctx: { results: any }) => Promise<any>;
+	}[] = [
 		{
 			key: "overwriteEnvSchemaFile",
 			fn: () => steps.overwriteEnvSchemaFile(defaultEnvPath)(),
