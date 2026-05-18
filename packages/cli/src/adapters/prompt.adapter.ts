@@ -1,4 +1,5 @@
 import { confirm as clackConfirm, isCancel } from "@clack/prompts";
+import pc from "picocolors";
 import { runPromptWizard } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";
 import type { ParsedTsConfig, PromptPort } from "@/shared/ports";

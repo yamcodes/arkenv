@@ -1,4 +1,5 @@
 import { isCancel, select } from "@clack/prompts";
+import pc from "picocolors";
 import type { ProjectOptions } from "@/features/scaffold";
 
 export const frameworkStep =
