@@ -96,28 +96,27 @@ describe("runPromptWizard", () => {
 
 		expect(result?.envKeys).toBeUndefined();
 	});
-it("should abort immediately if user selects No (abort) on overwrite prompt", async () => {
-	mockExistsSync.mockReturnValue(true);
-	vi.mocked(prompts.confirm).mockResolvedValueOnce(false);
+	it("should abort immediately if user selects No (abort) on overwrite prompt", async () => {
+		mockExistsSync.mockReturnValue(true);
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false);
 
-	const result = await runPromptWizard();
+		const result = await runPromptWizard();
 
-	expect(result).toBeNull();
-	expect(prompts.select).not.toHaveBeenCalled();
-	expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled.");
+		expect(result).toBeNull();
+		expect(prompts.select).not.toHaveBeenCalled();
+		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled.");
+	});
+
+	it("should abort immediately if user cancels a prompt (Ctrl+C)", async () => {
+		const cancelSymbol = Symbol("clack-cancel");
+		vi.mocked(prompts.isCancel).mockImplementation((v) => v === cancelSymbol);
+		mockExistsSync.mockReturnValue(false);
+		vi.mocked(prompts.select).mockResolvedValueOnce(cancelSymbol); // framework
+
+		const result = await runPromptWizard();
+
+		expect(result).toBeNull();
+		expect(prompts.confirm).not.toHaveBeenCalled();
+		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled.");
+	});
 });
-
-it("should abort immediately if user cancels a prompt (Ctrl+C)", async () => {
-	const cancelSymbol = Symbol("clack-cancel");
-	vi.mocked(prompts.isCancel).mockImplementation((v) => v === cancelSymbol);
-	mockExistsSync.mockReturnValue(false);
-	vi.mocked(prompts.select).mockResolvedValueOnce(cancelSymbol); // framework
-
-	const result = await runPromptWizard();
-
-	expect(result).toBeNull();
-	expect(prompts.confirm).not.toHaveBeenCalled();
-	expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled.");
-});
-});
-
