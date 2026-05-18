@@ -55,8 +55,7 @@ export class Workspace {
 
 			if (allDeps.vite) return "vite";
 
-			const hasBunDep = allDeps["@types/bun"] || allDeps.bun;
-			if (hasBunDep && (await this.hasBunFeatures())) return "bun-fullstack";
+			if (await this.hasBunFeatures()) return "bun-fullstack";
 		} catch {
 			// ignore missing or invalid package.json
 		}
@@ -71,8 +70,8 @@ export class Workspace {
 			return "vite";
 		}
 
-		// Check for bun runtime
-		if ("bun" in process.versions && (await this.hasBunFeatures())) {
+		// Check for bun features
+		if (await this.hasBunFeatures()) {
 			return "bun-fullstack";
 		}
 

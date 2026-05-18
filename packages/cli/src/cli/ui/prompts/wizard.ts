@@ -34,7 +34,9 @@ export async function runPromptWizard(
 			validator: "arktype",
 			framework,
 			bunFeatures:
-				framework === "bun-fullstack" ? defaults?.bunFeatures : undefined,
+				framework === "bun-fullstack"
+					? (defaults?.bunFeatures ?? ["serve"])
+					: undefined,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
 			installTypeDefinitions: framework !== "vanilla",
