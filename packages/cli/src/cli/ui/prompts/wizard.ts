@@ -55,7 +55,20 @@ export async function runPromptWizard(
 			key: "overwriteEnvSchemaFile",
 			fn: () => steps.overwriteEnvSchemaFile(defaultEnvPath)(),
 		},
-		{ key: "framework", fn: () => steps.framework(defaults)() },
+		{ key: "example", fn: () => steps.example()() },
+		{
+			key: "framework",
+			fn: ({ results }) =>
+				results.example !== "none"
+					? Promise.resolve(
+							results.example === "vite-zod"
+								? "vite"
+								: results.example === "next-arktype"
+									? "vanilla"
+									: "vanilla",
+						)
+					: steps.framework(defaults)(),
+		},
 		{
 			key: "bunBuild",
 			fn: ({ results }) =>
@@ -75,10 +88,25 @@ export async function runPromptWizard(
 			fn: (ctx) => steps.installTypeDefinitions(ctx as any),
 		},
 		{ key: "envDtsHandling", fn: (ctx) => steps.envDtsHandling(ctx as any) },
-		{ key: "validator", fn: () => steps.validator() },
+		{
+			key: "validator",
+			fn: ({ results }) =>
+				results.example !== "none"
+					? Promise.resolve(
+							results.example === "vite-zod"
+								? "zod"
+								: results.example === "next-arktype"
+									? "arktype"
+									: "valibot",
+						)
+					: steps.validator(),
+		},
 		{
 			key: "useEnvExample",
-			fn: () => steps.useEnvExample(detectedKeys, keysSource)(),
+			fn: ({ results }) =>
+				results.example !== "none"
+					? Promise.resolve(false)
+					: steps.useEnvExample(detectedKeys, keysSource)(),
 		},
 	];
 
@@ -100,6 +128,7 @@ export async function runPromptWizard(
 
 	return shake({
 		...results,
+		example: results.example === "none" ? undefined : results.example,
 		bunFeatures,
 		language: "ts",
 		installSkill: false, // Defaulting to false, will be overridden by orchestrator if needed

@@ -1,5 +1,12 @@
 import type { ProjectOptions } from "./plan";
-import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
+import {
+	arktypeTemplate,
+	basicValibotExample,
+	nextArktypeExample,
+	valibotTemplate,
+	viteZodExample,
+	zodTemplate,
+} from "./templates";
 
 /**
  * Generates the complete environment configuration template
@@ -9,7 +16,11 @@ import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
  * @returns The generated template code.
  */
 export function getEnvTemplate(options: ProjectOptions): string {
-	const { validator, envKeys, framework } = options;
+	const { validator, envKeys, framework, example } = options;
+
+	if (example === "vite-zod") return `${viteZodExample()}\n`;
+	if (example === "next-arktype") return `${nextArktypeExample()}\n`;
+	if (example === "basic-valibot") return `${basicValibotExample()}\n`;
 
 	switch (validator) {
 		case "arktype":

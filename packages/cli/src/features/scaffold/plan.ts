@@ -10,6 +10,7 @@ export type ProjectOptions = {
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun-fullstack" | "vanilla";
+	example?: "vite-zod" | "next-arktype" | "basic-valibot";
 	bunFeatures?: ("serve" | "build")[];
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean;

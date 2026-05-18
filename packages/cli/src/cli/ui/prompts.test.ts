@@ -11,6 +11,9 @@ const { mockExistsSync } = vi.hoisted(() => ({
 }));
 
 vi.mock("node:fs", () => ({
+	default: {
+		existsSync: mockExistsSync,
+	},
 	existsSync: mockExistsSync,
 }));
 
@@ -60,6 +63,7 @@ describe("runPromptWizard", () => {
 	});
 
 	it("should include bunFeatures if user selects them in wizard", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // example
 		vi.mocked(prompts.select).mockResolvedValueOnce("bun-fullstack"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // bunBuild
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
@@ -74,6 +78,7 @@ describe("runPromptWizard", () => {
 	});
 
 	it("should include envKeys if user accepts prompt", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // example
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
@@ -87,6 +92,7 @@ describe("runPromptWizard", () => {
 
 	it("should NOT include envKeys if user declines prompt", async () => {
 		mockExistsSync.mockReturnValue(false);
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // example
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
@@ -96,6 +102,21 @@ describe("runPromptWizard", () => {
 
 		expect(result?.envKeys).toBeUndefined();
 	});
+
+	it("should handle example selection and skip related prompts", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vite-zod"); // example
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("skip"); // envDtsHandling
+
+		const result = await runPromptWizard();
+
+		expect(result?.example).toBe("vite-zod");
+		expect(result?.framework).toBe("vite");
+		expect(result?.validator).toBe("zod");
+		expect(result?.envKeys).toBeUndefined();
+	});
+
 	it("should abort immediately if user selects No (abort) on overwrite prompt", async () => {
 		mockExistsSync.mockReturnValue(true);
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false);
@@ -111,7 +132,7 @@ describe("runPromptWizard", () => {
 		const cancelSymbol = Symbol("clack-cancel");
 		vi.mocked(prompts.isCancel).mockImplementation((v) => v === cancelSymbol);
 		mockExistsSync.mockReturnValue(false);
-		vi.mocked(prompts.select).mockResolvedValueOnce(cancelSymbol); // framework
+		vi.mocked(prompts.select).mockResolvedValueOnce(cancelSymbol); // example
 
 		const result = await runPromptWizard();
 
