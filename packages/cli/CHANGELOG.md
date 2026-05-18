@@ -1,5 +1,33 @@
 # @arkenv/cli
 
+## 0.0.9
+
+### Patch Changes
+
+- #### Refined setup experience in `arkenv init` _[`#1016`](https://github.com/yamcodes/arkenv/pull/1016) [`d536ed7`](https://github.com/yamcodes/arkenv/commit/d536ed7f481f5b81df75329e2eee46c3f9ce1b91) [@yamcodes](https://github.com/yamcodes)_
+
+  - **Clearer Framework Options**: Updated terminology to better distinguish between server-side runtime validation and client-side bundling integrations.
+  - **Architecture Detection**: Improved detection logic recommends the most efficient configuration based on your project's features.
+  - **Better In-File Guidance**: Generated templates now include comments clarifying validation behavior for your specific environment.
+
+- #### Add keyboard navigation hints _[`ac3adcc`](https://github.com/yamcodes/arkenv/commit/ac3adcc26a121975981655fb5c339e95084328bf) [@yamcodes](https://github.com/yamcodes)_
+- #### Improve Ctrl+C handling and implement graceful shutdown _[`#1019`](https://github.com/yamcodes/arkenv/pull/1019) [`102ce4a`](https://github.com/yamcodes/arkenv/commit/102ce4a60b82b88734d3d7c81d4ae430738bc277) [@yamcodes](https://github.com/yamcodes)_
+
+  - Implemented graceful shutdown for `SIGINT` (Ctrl+C) to flush logs and JSON data, with a 2-second safety timeout and support for immediate exit on a second Ctrl+C.
+  - Corrected exit code (130) for `SIGINT` terminations.
+  - Fixed a bug where the `init` wizard would continue after a prompt was cancelled.
+
+- #### Respect `tsconfig.json` for path resolution and scaffolding _[`#1013`](https://github.com/yamcodes/arkenv/pull/1013) [`0a18edd`](https://github.com/yamcodes/arkenv/commit/0a18edd97564b5b178bd20235a1bb0c20ed375ab) [@yamcodes](https://github.com/yamcodes)_
+
+  The Arkenv CLI now dynamically resolves configuration paths and scans project files by respecting `tsconfig.json` settings (`rootDir`, `paths`, `baseUrl`).
+
+  Key improvements include:
+
+  - **Robust `tsconfig` Parser**: Added support for parsing `tsconfig.json` files with comments (`jsonc-parser`), handling `extends`, `rootDir`, `baseUrl`, and `paths` alias resolution.
+  - **Dynamic Scaffolding Defaults**: Updated `init` scaffolding logic to suggest project-appropriate default paths based on `compilerOptions.rootDir` rather than hardcoding `./src/env.ts`.
+  - **Advanced Environment Scanning**: Enhanced `getEnvExampleKeys` to scan project source files for `process.env` and `import.meta.env` usages, correctly resolving aliased imports (e.g. `@/env`).
+  - **Framework & Package Manager Detection**: Leveraged parsed `tsconfig.json` context to accurately identify project frameworks and package managers.
+
 ## 0.0.8
 
 ### Patch Changes
