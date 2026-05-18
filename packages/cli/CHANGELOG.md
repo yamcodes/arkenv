@@ -1,5 +1,14 @@
 # @arkenv/cli
 
+## 0.0.10
+
+### Patch Changes
+
+- #### Add "(Recommended)" label to various prompts for consistency _[`da77efb`](https://github.com/yamcodes/arkenv/commit/da77efb0ff22a998848f94f357cb5e3ced325b98) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix init wizard for Ctrl+C _[`#1024`](https://github.com/yamcodes/arkenv/pull/1024) [`f829e54`](https://github.com/yamcodes/arkenv/commit/f829e543c7e9811b116211c0208a2bd99ab0c840) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix the init wizard to abort immediately when prompts are canceled or overwrite is declined.
+
 ## 0.0.9
 
 ### Patch Changes
