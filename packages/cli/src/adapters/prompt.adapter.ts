@@ -1,5 +1,5 @@
 import { confirm as clackConfirm, isCancel } from "@clack/prompts";
-import pc from "picocolors";
+import { shake } from "radashi";
 import { runPromptWizard } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";
 import type { ParsedTsConfig, PromptPort } from "@/shared/ports";
@@ -8,11 +8,20 @@ import type { ParsedTsConfig, PromptPort } from "@/shared/ports";
  * Adapter implementation for the PromptPort using @clack/prompts.
  */
 export class ClackPromptAdapter implements PromptPort {
-	async confirm(message: string, initialValue = true): Promise<boolean | null> {
-		const result = await clackConfirm({
-			message,
-			initialValue,
-		});
+	async confirm(
+		message: string,
+		initialValue = true,
+		active?: string,
+		inactive?: string,
+	): Promise<boolean | null> {
+		const result = await clackConfirm(
+			shake({
+				message,
+				initialValue,
+				active,
+				inactive,
+			}),
+		);
 		if (isCancel(result)) return null;
 		return result;
 	}

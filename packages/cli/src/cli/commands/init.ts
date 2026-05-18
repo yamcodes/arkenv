@@ -1,5 +1,4 @@
 import path from "node:path";
-import pc from "picocolors";
 import { shake } from "radashi";
 import { code } from "@/cli/ui";
 import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
@@ -63,8 +62,9 @@ export class InitUseCase {
 					);
 
 					const confirmStrict = await this.prompt.confirm(
-						`ArkEnv requires ${pc.dim("strict")} mode in your ${code(tsConfig.file!)}. Would you like to enable it now?`,
+						`ArkEnv requires ${code("strict")} mode in your ${code(tsConfig.file!)}. Would you like to enable it now?`,
 						true,
+						"Yes (Recommended)",
 					);
 
 					if (confirmStrict === null) {
@@ -138,6 +138,7 @@ export class InitUseCase {
 				const confirmInstall = await this.prompt.confirm(
 					"Would you like to install the ArkEnv agent skill?",
 					true,
+					"Yes (Recommended)",
 				);
 				if (confirmInstall === null) {
 					return null;

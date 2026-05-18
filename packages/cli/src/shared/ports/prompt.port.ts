@@ -5,7 +5,12 @@ import type { ParsedTsConfig } from "./project-scanner.port";
  * Port interface for handling interactive CLI prompts.
  */
 export type PromptPort = {
-	confirm(message: string, initialValue?: boolean): Promise<boolean | null>;
+	confirm(
+		message: string,
+		initialValue?: boolean,
+		active?: string,
+		inactive?: string,
+	): Promise<boolean | null>;
 	runWizard(
 		defaults?: {
 			framework?: ProjectOptions["framework"];
