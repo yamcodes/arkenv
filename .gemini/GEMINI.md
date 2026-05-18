@@ -60,14 +60,3 @@ This is a **pnpm monorepo** managed with **Turbo**.
 - **Changesets**: Every PR that changes functionality must include a changeset via `pnpm changeset`.
 - **Syncing Examples**: Use `pnpm sync:examples` to keep example projects in sync with the core library structure.
 
-## Security
-
-This project adheres to the security guidelines outlined in [GHSA-wpqr-6v78-jr5g](https://github.com/google-github-actions/run-gemini-cli/security/advisories/GHSA-wpqr-6v78-jr5g).
-
-### Gemini CLI Trust Model
-
-- **Explicit Trust**: All GitHub workflows that use the Gemini CLI must explicitly set both `GEMINI_TRUST_WORKSPACE: 'true'` and `GEMINI_CLI_TRUST_WORKSPACE: 'true'` only after verifying the input is trusted. This provides redundancy for different CLI and Action versions.
-- **Trusted Inputs**: The `gemini-dispatch.yml` workflow acts as a security gate, ensuring that the CLI only runs on:
-  - Pull requests from the main repository (not forks).
-  - Comments from repository owners, members, or collaborators.
-- **Tool Allowlists**: Workflows must use strict tool allowlists in their settings to prevent arbitrary code execution via prompt injection. Always restrict `run_shell_command` to a minimal set of required binaries.

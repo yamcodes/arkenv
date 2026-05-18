@@ -2,6 +2,7 @@
 
 We'd like to thank the following projects and people for their help and inspiration:
 
+- [@colinhacks](https://github.com/colinhacks) - The creator of [Zod](https://zod.dev/) and [Pullfrog](https://pullfrog.com/). Colin's work on Zod was the foundational inspiration for my personal OSS journey. He also created Pullfrog, an innovative tool that empowers developers by bringing AI agents directly into their GitHub workflows.
 - [ArkType](https://arktype.dev/) - ArkEnv is here thanks to the brilliance of ArkType. If you somehow haven't already, please check it out. Seriously, it's amazing! Also, [David Blass](https://github.com/ssalbdivad) (the creator of ArkType) is a legend.
 - [znv](https://github.com/lostfictions/znv) - Basically ArkEnv but for [Zod](https://zod.dev/). The initial inspiration for this project.
 - [vite-plugin-validate-env](https://github.com/Julien-R44/vite-plugin-validate-env) - Inspiration for the Vite plugin.
