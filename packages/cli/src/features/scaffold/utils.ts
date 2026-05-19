@@ -23,7 +23,7 @@ export function getUsageInstructions(plan: ScaffoldingPlan): string {
 	if (plan.metadata.framework === "vite") {
 		return `2. Access via ${code("import.meta.env.YOUR_VAR")}`;
 	}
-	if (plan.metadata.framework === "bun") {
+	if (plan.metadata.framework === "bun-fullstack") {
 		return `2. Access via ${code("process.env.YOUR_VAR")}`;
 	}
 	return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}`;

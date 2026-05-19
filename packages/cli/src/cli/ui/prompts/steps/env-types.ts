@@ -11,7 +11,7 @@ export const installTypeDefinitionsStep = async ({
 	results: { framework?: string | null; path?: unknown };
 }) => {
 	if (results.framework === null) return null;
-	if (results.framework === "vite" || results.framework === "bun") {
+	if (results.framework === "vite" || results.framework === "bun-fullstack") {
 		const typeFile =
 			results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 		const targetDir = path.dirname(
@@ -45,7 +45,7 @@ export const envDtsHandlingStep = async ({
 }) => {
 	if (results.installTypeDefinitions === null) return null;
 	if (!results.installTypeDefinitions) return "skip";
-	if (results.framework !== "vite" && results.framework !== "bun")
+	if (results.framework !== "vite" && results.framework !== "bun-fullstack")
 		return "skip";
 
 	const typeFile =

@@ -10,6 +10,9 @@ const { mockExistsSync } = vi.hoisted(() => ({
 }));
 
 vi.mock("node:fs", () => ({
+	default: {
+		existsSync: mockExistsSync,
+	},
 	existsSync: mockExistsSync,
 }));
 
