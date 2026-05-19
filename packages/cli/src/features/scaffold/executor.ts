@@ -38,13 +38,25 @@ export class Executor {
 
 					// Checkout the specific example
 					const examplePath = `examples/${plan.clone.template}`;
-					await this.workspace.execute("git", ["-C", tempDir, "sparse-checkout", "set", examplePath]);
+					await this.workspace.execute("git", [
+						"-C",
+						tempDir,
+						"sparse-checkout",
+						"set",
+						examplePath,
+					]);
 
 					// Move files to current directory
 					const fullExamplePath = path.join(tempDir, examplePath);
-					const files = await this.workspace.execute("ls", ["-A", fullExamplePath]);
+					const files = await this.workspace.execute("ls", [
+						"-A",
+						fullExamplePath,
+					]);
 					// Note: This is a bit simplified, ideally we'd use a better way to move files
-					await this.workspace.execute("bash", ["-c", `cp -rn ${fullExamplePath}/. .`]);
+					await this.workspace.execute("bash", [
+						"-c",
+						`cp -rn ${fullExamplePath}/. .`,
+					]);
 
 					// Update package.json name
 					const pkgPath = path.join(process.cwd(), "package.json");
@@ -52,7 +64,10 @@ export class Executor {
 						const pkgContent = await this.workspace.readFile(pkgPath);
 						const pkg = JSON.parse(pkgContent);
 						pkg.name = plan.clone.targetName;
-						await this.workspace.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
+						await this.workspace.writeFile(
+							pkgPath,
+							JSON.stringify(pkg, null, 2),
+						);
 					}
 				} finally {
 					// Cleanup temp dir
