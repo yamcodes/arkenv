@@ -6,7 +6,7 @@ export function getInstallCommand(
 	pm: string,
 	deps: string[],
 ): [string, string[]] {
- 	const isAdding = deps.length > 0;
+	const isAdding = deps.length > 0;
 	switch (pm) {
 		case "pnpm":
 			return ["pnpm", [isAdding ? "add" : "install", ...deps]];
@@ -26,7 +26,7 @@ export function getUsageInstructions(plan: ScaffoldingPlan): string {
 	if (plan.metadata.framework === "bun") {
 		return `2. Access via ${code("process.env.YOUR_VAR")}`;
 	}
-	return `2. Import and use: import { env } from "${code(plan.metadata.importPath)}"`;
+	return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}`;
 }
 
 export function getNextStepsNote(

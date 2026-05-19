@@ -56,6 +56,10 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			};
 		}
 
+		// Templates usually have the schema at src/env.ts
+		plan.metadata.displayPath = "./src/env.ts";
+		plan.metadata.importPath = "./src/env";
+
 		return plan;
 	}
 
