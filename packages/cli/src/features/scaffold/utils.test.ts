@@ -37,7 +37,9 @@ describe("scaffold utils", () => {
 				...basePlan,
 				metadata: { ...basePlan.metadata, framework: "vanilla" },
 			};
-			expect(getUsageInstructions(plan)).toContain('import { env } from "./src/env"');
+			expect(getUsageInstructions(plan)).toContain(
+				'import { env } from "./src/env"',
+			);
 		});
 	});
 });

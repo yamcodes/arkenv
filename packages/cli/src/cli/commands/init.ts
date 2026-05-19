@@ -18,8 +18,8 @@ export type InitInput = {
 	isForce: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
-	template?: string | undefined;
-	name?: string | undefined;
+	template?: string;
+	name?: string;
 };
 
 /**

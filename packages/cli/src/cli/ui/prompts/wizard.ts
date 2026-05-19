@@ -84,7 +84,7 @@ async function runNewProjectWizard(
 		);
 	}
 
-	return {
+	return shake({
 		mode: "new",
 		template: template.id,
 		name: projectName,
@@ -93,7 +93,7 @@ async function runNewProjectWizard(
 		framework: template.framework,
 		language: "ts",
 		installSkill: false,
-	};
+	}) as ProjectOptions;
 }
 
 async function runExistingProjectWizard(

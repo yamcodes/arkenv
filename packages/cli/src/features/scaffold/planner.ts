@@ -24,7 +24,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 	const plan: ScaffoldingPlan = {
 		files: [],
-		metadata: {
+		metadata: shake({
 			displayPath: "",
 			framework: options.framework,
 			validator: options.validator,
@@ -33,7 +33,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			mode,
 			template: options.template,
 			name: options.name,
-		},
+		}) as ScaffoldingPlan["metadata"],
 	};
 
 	if (mode === "new") {
