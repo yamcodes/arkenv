@@ -203,6 +203,9 @@ pnpm run test:e2e                     # E2E tests
     }
   }
   ```
+- **CLI Flag Aliases**:
+  - \`-t\`, \`--template\`: For selecting an example (must use the full template ID from the registry).
+  - \`-n\`, \`--name\`: For specifying the project name.
 - Only examples listed here are displayed in the CLI.
 
 **ArkType Integration:**
