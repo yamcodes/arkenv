@@ -12,6 +12,8 @@ export class CLI {
 	public isJson: boolean;
 	public isAgent: boolean;
 	public helpRequested: boolean;
+	public template: string | undefined;
+	public name: string | undefined;
 	public logger: Logger;
 
 	constructor(argv: string[], options: { logger?: Logger } = {}) {
@@ -24,6 +26,9 @@ export class CLI {
 		this.isAgent = this.args.includes("--agent") || this.args.includes("-a");
 		this.helpRequested =
 			this.args.includes("--help") || this.args.includes("-h");
+
+		this.template = this.getFlagValue("--template", "-t");
+		this.name = this.getFlagValue("--name", "-n");
 
 		if (this.isAgent) {
 			this.isYes = true;
@@ -38,5 +43,13 @@ export class CLI {
 				isJson: this.isJson,
 				isYes: this.isYes,
 			});
+	}
+
+	private getFlagValue(long: string, short: string): string | undefined {
+		const index = this.args.findIndex((a) => a === long || a === short);
+		if (index !== -1 && this.args[index + 1] && !this.args[index + 1].startsWith("-")) {
+			return this.args[index + 1];
+		}
+		return undefined;
 	}
 }

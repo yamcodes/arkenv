@@ -21,6 +21,8 @@ export type RequirementCheckResult = {
 };
 
 export type ProjectScannerPort = {
+	isEmptyDirectory(dir?: string): Promise<boolean>;
+	hasPackageJson(dir?: string): Promise<boolean>;
 	findTsConfig(startDir?: string): Promise<string | null>;
 	loadTsConfig(configPath: string): Promise<ParsedTsConfig>;
 	getEnvExampleKeys(
@@ -37,7 +39,6 @@ export type ProjectScannerPort = {
 		file?: string;
 		parsed?: ParsedTsConfig;
 	}>;
-	checkRequirements(cwd?: string): Promise<RequirementCheckResult[]>;
 	detectFramework(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
@@ -50,4 +51,6 @@ export type ProjectScannerPort = {
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
 	): Promise<"pnpm" | "yarn" | "npm" | "bun">;
+};
+
 };
