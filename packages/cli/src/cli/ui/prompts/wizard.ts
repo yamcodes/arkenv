@@ -45,7 +45,7 @@ async function runNewProjectWizard(
 	let projectName = defaults?.name;
 	if (!projectName && !isYes) {
 		const name = await text({
-			message: "What is your project name?",
+			message: "Project name:",
 			placeholder: defaultProjectName,
 			initialValue: "",
 		});
