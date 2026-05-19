@@ -83,6 +83,21 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
+	it("executes a plan for a new project (cloned template)", async () => {
+		const newProjectPlan: ScaffoldingPlan = {
+			...defaultPlan,
+			install: { packageManager: "bun", dependencies: [] },
+			metadata: {
+				...defaultPlan.metadata,
+				mode: "new",
+				packageManager: "bun",
+			},
+		};
+		await executor.execute(newProjectPlan);
+
+		expect(mockWorkspace.execute).toHaveBeenCalledWith("bun", ["install"]);
+	});
+
 	it("updates tsconfig when planned", async () => {
 		const plan: ScaffoldingPlan = {
 			...defaultPlan,

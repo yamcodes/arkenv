@@ -6,13 +6,14 @@ export function getInstallCommand(
 	pm: string,
 	deps: string[],
 ): [string, string[]] {
+ 	const isAdding = deps.length > 0;
 	switch (pm) {
 		case "pnpm":
-			return ["pnpm", ["add", ...deps]];
+			return ["pnpm", [isAdding ? "add" : "install", ...deps]];
 		case "yarn":
-			return ["yarn", ["add", ...deps]];
+			return ["yarn", [isAdding ? "add" : "install", ...deps]];
 		case "bun":
-			return ["bun", ["add", ...deps]];
+			return ["bun", [isAdding ? "add" : "install", ...deps]];
 		default:
 			return ["npm", ["install", ...deps]];
 	}
