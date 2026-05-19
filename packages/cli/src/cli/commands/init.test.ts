@@ -100,14 +100,14 @@ describe("InitUseCase", () => {
 			},
 		]);
 
-		const result = await (useCase as any).collect({
+		const result = await useCase.execute({
 			isYes: true,
 			isForce: false,
 			isQuiet: true,
 			isAgent: false,
 		});
 
-		expect(result).toBeNull();
+		expect(result).toBe(false);
 		expect(logger.error).toHaveBeenCalledWith(
 			"Technical requirements not met:",
 		);

@@ -19,6 +19,42 @@ function compareSemver(v1: string, v2: string): number {
 	return 0;
 }
 
+function normalizeVersion(version: string): string | null {
+	const match = version.trim().match(/^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+	if (!match) return null;
+	return [match[1], match[2] ?? "0", match[3] ?? "0"].join(".");
+}
+
+function isTypescriptRangeCompatible(
+	range: string,
+	minVersion: string,
+): boolean {
+	const trimmed = range.trim();
+	const shorthand = trimmed.match(/^[\^~]?\s*(v?\d+(?:\.\d+){0,2})$/);
+	if (shorthand) {
+		const version = normalizeVersion(shorthand[1]);
+		return version !== null && compareSemver(version, minVersion) >= 0;
+	}
+
+	const comparators = trimmed.match(/(?:>=|>|<=|<|=)\s*v?\d+(?:\.\d+){0,2}/g);
+	if (!comparators) return false;
+	if (comparators.join(" ") !== trimmed.replace(/\s+/g, " ")) return false;
+
+	return comparators.some((comparator) => {
+		const match = comparator.match(/^(>=|>|<=|<|=)\s*(v?\d+(?:\.\d+){0,2})$/);
+		if (!match) return false;
+
+		const [, operator, rawVersion] = match;
+		const version = normalizeVersion(rawVersion);
+		if (!version) return false;
+
+		if (operator === ">=") return compareSemver(version, minVersion) >= 0;
+		if (operator === ">") return compareSemver(version, minVersion) >= 0;
+		if (operator === "=") return compareSemver(version, minVersion) >= 0;
+		return false;
+	});
+}
+
 export async function checkRequirements(
 	cwd = process.cwd(),
 ): Promise<RequirementCheckResult[]> {
@@ -69,15 +105,7 @@ export async function checkRequirements(
 		const minTsVersion = "5.1.0";
 
 		if (tsVersion) {
-			// Clean version string (remove ^, ~, etc. for simple check, or use semver properly)
-			// Actually radashi semver might handle it or we can just try to satisfy it
-			// For simplicity let's assume it's a semver range and check if 5.1.0 is compatible or if the current installed version is >= 5.1.0
-			// Since we can't easily know the *installed* version without running a command, we check the declared version.
-			const cleanVersion = tsVersion.replace(/^[\^~]/, "");
-			if (
-				/^\d/.test(cleanVersion) &&
-				compareSemver(cleanVersion, minTsVersion) === -1
-			) {
+			if (!isTypescriptRangeCompatible(tsVersion, minTsVersion)) {
 				results.push({
 					status: "fail",
 					requirement: "TypeScript Version",

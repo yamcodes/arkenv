@@ -34,9 +34,9 @@ export class InitUseCase {
 		private readonly registry = new RegistryClient(),
 	) {}
 
-	async execute(input: InitInput) {
+	async execute(input: InitInput): Promise<boolean> {
 		const state = await this.collect(input);
-		if (!state) return;
+		if (!state) return false;
 
 		const plan = createPlan(state);
 		const executor = new Executor(this.workspace, this.logger);
@@ -46,6 +46,8 @@ export class InitUseCase {
 		} catch (error) {
 			this.logger.fatal("Scaffolding failed.", error);
 		}
+
+		return true;
 	}
 
 	private async collect(input: InitInput): Promise<CollectedState | null> {
@@ -159,10 +161,7 @@ export class InitUseCase {
 		);
 
 		let hasTypeFile = false;
-		if (
-			detectedFramework === "vite" ||
-			detectedFramework === "bun-fullstack"
-		) {
+		if (detectedFramework === "vite" || detectedFramework === "bun-fullstack") {
 			const typeFile =
 				detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 			const targetDir = path.dirname(targetPath);

@@ -52,5 +52,3 @@ export type ProjectScannerPort = {
 		tsConfig?: ParsedTsConfig | null,
 	): Promise<"pnpm" | "yarn" | "npm" | "bun">;
 };
-
-};

@@ -198,6 +198,30 @@ API_KEY=
 			expect(tsCheck?.status).toBe("fail");
 		});
 
+		it("fails when typescript range cannot satisfy the minimum version", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "package.json"),
+				JSON.stringify({ devDependencies: { typescript: "<=5.0.0" } }),
+			);
+			const results = await scanner.checkRequirements(tempDir);
+			const tsCheck = results.find(
+				(r) => r.requirement === "TypeScript Version",
+			);
+			expect(tsCheck?.status).toBe("fail");
+		});
+
+		it("fails when typescript range is unrecognized", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "package.json"),
+				JSON.stringify({ devDependencies: { typescript: "latest" } }),
+			);
+			const results = await scanner.checkRequirements(tempDir);
+			const tsCheck = results.find(
+				(r) => r.requirement === "TypeScript Version",
+			);
+			expect(tsCheck?.status).toBe("fail");
+		});
+
 		it("fails when strict mode is disabled", async () => {
 			await fsp.writeFile(
 				path.join(tempDir, "tsconfig.json"),

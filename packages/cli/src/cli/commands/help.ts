@@ -16,6 +16,7 @@ export class HelpUseCase {
 		this.logger.log(
 			"  --yes, -y      Skip prompts and use defaults (also passed to skill processes)",
 		);
+		this.logger.log("  --force, -f    Bypass technical requirement checks");
 		this.logger.log("  --agent, -a    Agent mode: --yes --quiet --json");
 		this.logger.log(
 			"  --template, -t Specify a template ID to scaffold from (New Project Flow)",

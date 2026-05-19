@@ -28,14 +28,19 @@ async function main() {
 	}
 
 	try {
-		await initUseCase.execute({
+		const success = await initUseCase.execute({
 			isYes: cli.isYes,
 			isForce: cli.isForce,
 			isQuiet: cli.isQuiet,
 			isAgent: cli.isAgent,
-			template: cli.template,
-			name: cli.name,
+			...(cli.template ? { template: cli.template } : {}),
+			...(cli.name ? { name: cli.name } : {}),
 		});
+
+		if (!success) {
+			await logger.flush();
+			process.exit(1);
+		}
 	} catch (error) {
 		try {
 			logger.fatal("An unexpected error occurred", error);
