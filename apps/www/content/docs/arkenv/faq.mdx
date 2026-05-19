@@ -33,7 +33,7 @@ ArkEnvError: Errors found while validating environment variables
 
 **No.** ArkEnv is a strict **validator**, not an environment **loader**.
 
-Modern runtimes and meta-frameworks (Vite, Bun, Next.js, Remix) already feature native, highly optimized `.env` loading behavior. If you are running a bare Node.js application, we recommend pairing ArkEnv with a dedicated utility like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
+Modern runtimes and meta-frameworks (Vite, Bun, Next.js, Remix) already feature native, highly optimized `.env` loading behavior. If you are running a bare Node.js application, we recommend pairing ArkEnv with a dedicated utility like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.hirok.io//).
 
 ArkEnv intercepts the populated `process.env` (or a custom configuration object), evaluates it against your schema, and applies [automatic type coercion](/docs/arkenv/coercion).
 
