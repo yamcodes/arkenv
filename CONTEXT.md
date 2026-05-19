@@ -179,6 +179,32 @@ pnpm run test:e2e                     # E2E tests
 - Validation happens at both build-time (via Vite plugin) and runtime
 - Missing or invalid variables throw `ArkEnvError` with clear error messages
 
+**Initialization Flows:**
+
+- **Existing Project Flow**: Triggered when a `package.json` is detected. Focuses on adding ArkEnv to the current project. "Start with an example" is not offered.
+- **New Project Flow**: Triggered in strictly empty directories.
+  - Offers a list of templates from `examples/registry.json` (fetched from GitHub).
+  - Templates are scaffolded using `git sparse-checkout` from the `yamcodes/arkenv` repository.
+  - Prompts for project name (defaults to directory name if "." is provided).
+  - Automatically renames the `name` field in `package.json`.
+  - Package manager is auto-detected via `process.env.npm_config_user_agent`.
+  - Automatically runs the install command after scaffolding.
+
+**Template Registry:**
+
+- A central JSON file (`examples/registry.json`) in the monorepo root.
+- Maps example directory names to metadata:
+  ```json
+  {
+    "with-vite-react": {
+      "label": "Vite",
+      "description": "React + Vite + ArkType",
+      "framework": "vite"
+    }
+  }
+  ```
+- Only examples listed here are displayed in the CLI.
+
 **ArkType Integration:**
 
 - Uses ArkType's `scope` system to extend base types

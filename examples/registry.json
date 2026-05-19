@@ -1,0 +1,27 @@
+{
+	"basic": {
+		"label": "Basic",
+		"description": "Minimal Node.js project with ArkType (Recommended)",
+		"framework": "vanilla"
+	},
+	"with-vite-react": {
+		"label": "Vite",
+		"description": "React + Vite + ArkType (Client-side inlining)",
+		"framework": "vite"
+	},
+	"with-bun": {
+		"label": "Bun (Vanilla)",
+		"description": "Minimal Bun project with ArkType",
+		"framework": "vanilla"
+	},
+	"with-bun-react": {
+		"label": "Bun Fullstack",
+		"description": "React + Bun.serve + ArkType",
+		"framework": "bun-fullstack"
+	},
+	"with-zod": {
+		"label": "Zod (Vanilla)",
+		"description": "Minimal Node.js project using Zod instead of ArkType",
+		"framework": "vanilla"
+	}
+}
