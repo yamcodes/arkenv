@@ -1,10 +1,97 @@
-import { cancel, isCancel } from "@clack/prompts";
+import { cancel, isCancel, text } from "@clack/prompts";
+import path from "node:path";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
+import type { Template } from "@/shared/clients/registry.client";
 import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 
 export async function runPromptWizard(
+	defaults?: {
+		mode?: ProjectOptions["mode"];
+		template?: string;
+		templates?: Template[];
+		name?: string;
+		framework?: ProjectOptions["framework"];
+		bunFeatures?: ProjectOptions["bunFeatures"];
+		defaultEnvPath?: string;
+		tsConfig?: ParsedTsConfig | null;
+		envKeys?: string[];
+		envKeysSource?: ".env.example" | "project";
+		hasTypeFile?: boolean;
+	},
+	isYes = false,
+): Promise<ProjectOptions | null> {
+	const mode = defaults?.mode || "existing";
+
+	if (mode === "new") {
+		return runNewProjectWizard(defaults, isYes);
+	}
+
+	return runExistingProjectWizard(defaults, isYes);
+}
+
+async function runNewProjectWizard(
+	defaults?: {
+		template?: string;
+		templates?: Template[];
+		name?: string;
+	},
+	isYes = false,
+): Promise<ProjectOptions | null> {
+	const templates = defaults?.templates || [];
+	let templateId = defaults?.template;
+
+	if (!templateId && !isYes) {
+		const selected = await steps.example(templates)();
+		if (isCancel(selected)) {
+			cancel("Operation cancelled");
+			return null;
+		}
+		templateId = selected;
+	} else if (!templateId && isYes) {
+		templateId = "basic";
+	}
+
+	const template = templates.find((t) => t.id === templateId) || {
+		id: "basic",
+		framework: "vanilla" as const,
+	};
+
+	let projectName = defaults?.name;
+	if (!projectName && !isYes) {
+		const name = await text({
+			message: "What is your project name?",
+			placeholder: ".",
+			defaultValue: ".",
+		});
+
+		if (isCancel(name)) {
+			cancel("Operation cancelled");
+			return null;
+		}
+		projectName = name as string;
+	} else if (!projectName && isYes) {
+		projectName = ".";
+	}
+
+	if (projectName === ".") {
+		projectName = path.basename(process.cwd());
+	}
+
+	return {
+		mode: "new",
+		template: template.id,
+		name: projectName,
+		path: "./src/env.ts",
+		validator: "arktype",
+		framework: template.framework,
+		language: "ts",
+		installSkill: false,
+	};
+}
+
+async function runExistingProjectWizard(
 	defaults?: {
 		framework?: ProjectOptions["framework"];
 		bunFeatures?: ProjectOptions["bunFeatures"];
@@ -29,6 +116,7 @@ export async function runPromptWizard(
 		}
 
 		return shake({
+			mode: "existing",
 			path: defaultEnvPath,
 			validator: "arktype",
 			framework,
@@ -45,7 +133,7 @@ export async function runPromptWizard(
 		});
 	}
 
-	const results: any = {};
+	const results: any = { mode: "existing" };
 
 	const stepsToRun: {
 		key: string;
@@ -102,7 +190,7 @@ export async function runPromptWizard(
 		...results,
 		bunFeatures,
 		language: "ts",
-		installSkill: false, // Defaulting to false, will be overridden by orchestrator if needed
+		installSkill: false,
 		envKeys: results.useEnvExample ? (detectedKeys ?? undefined) : undefined,
 	} as Partial<ProjectOptions>) as ProjectOptions;
 }

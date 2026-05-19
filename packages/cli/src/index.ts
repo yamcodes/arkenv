@@ -30,8 +30,11 @@ async function main() {
 	try {
 		await initUseCase.execute({
 			isYes: cli.isYes,
+			isForce: cli.isForce,
 			isQuiet: cli.isQuiet,
 			isAgent: cli.isAgent,
+			template: cli.template,
+			name: cli.name,
 		});
 	} catch (error) {
 		try {
