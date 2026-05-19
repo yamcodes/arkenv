@@ -45,16 +45,16 @@ async function runNewProjectWizard(
 	let projectName = defaults?.name;
 	if (!projectName && !isYes) {
 		const name = await text({
-			message: "Project name:",
+			message: "What is your project name?",
 			placeholder: defaultProjectName,
-			initialValue: defaultProjectName,
+			initialValue: "",
 		});
 
 		if (isCancel(name)) {
 			cancel("Operation cancelled");
 			return null;
 		}
-		projectName = name as string;
+		projectName = (name as string) || defaultProjectName;
 	} else if (!projectName && isYes) {
 		projectName = defaultProjectName;
 	}

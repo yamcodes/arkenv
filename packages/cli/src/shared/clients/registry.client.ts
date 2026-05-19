@@ -32,12 +32,12 @@ export class RegistryClient {
 					},
 					{
 						id: "with-vite-react",
-						name: "React (Vite)",
+						name: "React + Vite",
 						framework: "vite",
 					},
 					{
 						id: "with-bun-react",
-						name: "React (Bun fullstack dev server)",
+						name: "React + Bun fullstack dev server",
 						framework: "bun-fullstack",
 					},
 					{

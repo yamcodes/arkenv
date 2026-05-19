@@ -153,7 +153,7 @@ describe("runPromptWizard", () => {
 			},
 		];
 
-		vi.mocked(prompts.text).mockResolvedValueOnce("."); // Use default name
+		vi.mocked(prompts.text).mockResolvedValueOnce(""); // Empty input, should use placeholder/default
 		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
 
 		const result = await runPromptWizard({
@@ -166,7 +166,8 @@ describe("runPromptWizard", () => {
 		expect(result?.template).toBe("basic");
 		expect(prompts.text).toHaveBeenCalledWith(
 			expect.objectContaining({
-				initialValue: "my-cool-project",
+				initialValue: "",
+				placeholder: "my-cool-project",
 			}),
 		);
 	});
