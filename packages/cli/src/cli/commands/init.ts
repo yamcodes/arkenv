@@ -2,6 +2,7 @@ import path from "node:path";
 import { shake } from "radashi";
 import { code } from "@/cli/ui";
 import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
+import { RegistryClient } from "@/shared/clients/registry.client";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
@@ -14,8 +15,11 @@ import type {
  */
 export type InitInput = {
 	isYes: boolean;
+	isForce: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
+	template?: string;
+	name?: string;
 };
 
 /**
@@ -27,11 +31,12 @@ export class InitUseCase {
 		private readonly workspace: WorkspacePort,
 		private readonly prompt: PromptPort,
 		private readonly scanner: ProjectScannerPort,
+		private readonly registry = new RegistryClient(),
 	) {}
 
-	async execute(input: InitInput) {
+	async execute(input: InitInput): Promise<boolean> {
 		const state = await this.collect(input);
-		if (!state) return;
+		if (!state) return false;
 
 		const plan = createPlan(state);
 		const executor = new Executor(this.workspace, this.logger);
@@ -41,172 +46,266 @@ export class InitUseCase {
 		} catch (error) {
 			this.logger.fatal("Scaffolding failed.", error);
 		}
+
+		return true;
 	}
 
 	private async collect(input: InitInput): Promise<CollectedState | null> {
-		const { isYes, isAgent } = input;
-
-		// Redirect stdout to stderr for interactive prompts if JSON mode is active
 		this.logger.interactiveStdout(true);
 
 		try {
-			let shouldUpdateTsConfig = false;
-			const tsConfig = await this.scanner.checkTsConfig();
+			const hasPackageJson = await this.scanner.hasPackageJson();
+			const isEmpty = await this.scanner.isEmptyDirectory();
 
-			if (tsConfig.status === "not_strict") {
-				if (isYes) {
-					shouldUpdateTsConfig = true;
-				} else {
-					this.logger.warn(
-						`TypeScript strict mode is not enabled in your ${code(tsConfig.file!)}.`,
-					);
+			if (hasPackageJson) {
+				return this.collectExistingProject(input);
+			}
 
-					const confirmStrict = await this.prompt.confirm(
-						`ArkEnv requires ${code("strict")} mode in your ${code(tsConfig.file!)}. Would you like to enable it now?`,
-						true,
-						"Yes (Recommended)",
-					);
+			if (isEmpty || input.isForce) {
+				return this.collectNewProject(input);
+			}
 
-					if (confirmStrict === null) {
-						return null;
-					}
+			this.logger.error(
+				`Directory is not empty and no ${code("package.json")} was found.`,
+			);
+			this.logger.info(
+				`To scaffold a new project, please run ${code("arkenv init")} in an empty directory.`,
+			);
+			return null;
+		} finally {
+			this.logger.interactiveStdout(false);
+		}
+	}
 
-					if (!confirmStrict) {
-						this.logger.cancel("Operation cancelled.");
-						return null;
-					}
+	private async collectExistingProject(
+		input: InitInput,
+	): Promise<CollectedState | null> {
+		const { isYes, isForce, isAgent } = input;
 
-					shouldUpdateTsConfig = true;
+		const requirements = await this.scanner.checkRequirements(process.cwd());
+		const failures = requirements.filter((r) => r.status === "fail");
+		const warnings = requirements.filter((r) => r.status === "warn");
+
+		for (const warn of warnings) {
+			this.logger.warn(`${warn.requirement}: ${warn.message}`);
+		}
+
+		if (failures.length > 0) {
+			if (isForce) {
+				this.logger.warn(
+					"Technical requirements not met, but continuing due to --force flag.",
+				);
+				for (const fail of failures) {
+					this.logger.warn(`${fail.requirement}: ${fail.message}`);
 				}
-			}
-
-			const detectedFramework = await this.scanner.detectFramework(
-				process.cwd(),
-				tsConfig.parsed,
-			);
-			const detectedBunFeatures =
-				detectedFramework === "bun-fullstack"
-					? await this.scanner.detectBunFeatures(process.cwd(), tsConfig.parsed)
-					: undefined;
-			const defaultEnvPath = await this.scanner.suggestDefaultEnvPath(
-				process.cwd(),
-				tsConfig.parsed,
-			);
-
-			const targetPath = path.resolve(process.cwd(), defaultEnvPath);
-			const envRes = await this.scanner.getEnvExampleKeys(
-				process.cwd(),
-				tsConfig.parsed,
-				targetPath,
-			);
-
-			let hasTypeFile = false;
-			if (
-				detectedFramework === "vite" ||
-				detectedFramework === "bun-fullstack"
-			) {
-				const typeFile =
-					detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-				const targetDir = path.dirname(targetPath);
-				const typeFilePath = path.join(targetDir, typeFile);
-				hasTypeFile = await this.workspace.exists(typeFilePath);
-			}
-
-			const options = await this.prompt.runWizard(
-				shake({
-					framework: detectedFramework,
-					bunFeatures: detectedBunFeatures,
-					defaultEnvPath,
-					tsConfig: tsConfig.parsed ?? null,
-					envKeys: envRes?.keys,
-					envKeysSource: envRes?.source,
-					hasTypeFile,
-				}),
-				isYes,
-			);
-
-			if (options === null) {
+			} else {
+				this.logger.error("Technical requirements not met:");
+				for (const fail of failures) {
+					this.logger.error(
+						`- ${fail.requirement}: ${fail.message}${fail.current ? ` (Current: ${fail.current}, Expected: ${fail.expected})` : ""}`,
+					);
+				}
+				this.logger.info("Use --force to bypass these checks.");
 				return null;
 			}
+		}
 
-			// Handle installSkill logic based on product context
-			if (isAgent) {
-				options.installSkill = false;
-			} else if (isYes) {
-				options.installSkill = true;
+		let shouldUpdateTsConfig = false;
+		const tsConfig = await this.scanner.checkTsConfig();
+
+		if (tsConfig.status === "not_strict") {
+			if (isYes) {
+				shouldUpdateTsConfig = true;
 			} else {
-				const confirmInstall = await this.prompt.confirm(
-					"Would you like to install the ArkEnv agent skill?",
+				this.logger.warn(
+					`TypeScript strict mode is not enabled in your ${code(tsConfig.file!)}.`,
+				);
+
+				const confirmStrict = await this.prompt.confirm(
+					`ArkEnv requires ${code("strict")} mode in your ${code(tsConfig.file!)}. Would you like to enable it now?`,
 					true,
 					"Yes (Recommended)",
 				);
-				if (confirmInstall === null) {
-					return null;
-				}
-				options.installSkill = confirmInstall;
-			}
 
-			// Handle existing env file prompt
-			const finalTargetPath = path.resolve(process.cwd(), options.path);
-
-			if (
-				(await this.workspace.exists(finalTargetPath)) &&
-				options.overwriteEnvSchemaFile === undefined
-			) {
-				const confirmOverwrite = await this.prompt.confirm(
-					`File ${code(path.basename(finalTargetPath))} already exists. Overwrite?`,
-					false,
-				);
-
-				if (confirmOverwrite === null) {
+				if (confirmStrict === null) {
 					return null;
 				}
 
-				if (!confirmOverwrite) {
+				if (!confirmStrict) {
 					this.logger.cancel("Operation cancelled.");
 					return null;
 				}
 
-				options.overwriteEnvSchemaFile = confirmOverwrite;
+				shouldUpdateTsConfig = true;
 			}
+		}
 
-			const packageManager = await this.scanner.detectPackageManager(
-				process.cwd(),
-				tsConfig.parsed,
+		const detectedFramework = await this.scanner.detectFramework(
+			process.cwd(),
+			tsConfig.parsed,
+		);
+		const detectedBunFeatures =
+			detectedFramework === "bun-fullstack"
+				? await this.scanner.detectBunFeatures(process.cwd(), tsConfig.parsed)
+				: undefined;
+		const defaultEnvPath = await this.scanner.suggestDefaultEnvPath(
+			process.cwd(),
+			tsConfig.parsed,
+		);
+
+		const targetPath = path.resolve(process.cwd(), defaultEnvPath);
+		const envRes = await this.scanner.getEnvExampleKeys(
+			process.cwd(),
+			tsConfig.parsed,
+			targetPath,
+		);
+
+		let hasTypeFile = false;
+		if (detectedFramework === "vite" || detectedFramework === "bun-fullstack") {
+			const typeFile =
+				detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+			const targetDir = path.dirname(targetPath);
+			const typeFilePath = path.join(targetDir, typeFile);
+			hasTypeFile = await this.workspace.exists(typeFilePath);
+		}
+
+		const options = await this.prompt.runWizard(
+			shake({
+				mode: "existing" as const,
+				framework: detectedFramework,
+				bunFeatures: detectedBunFeatures,
+				defaultEnvPath,
+				tsConfig: tsConfig.parsed ?? null,
+				envKeys: envRes?.keys,
+				envKeysSource: envRes?.source,
+				hasTypeFile,
+			}),
+			isYes,
+		);
+
+		if (options === null) {
+			return null;
+		}
+
+		// Handle installSkill logic
+		if (isAgent) {
+			options.installSkill = false;
+		} else if (isYes) {
+			options.installSkill = true;
+		} else {
+			const confirmInstall = await this.prompt.confirm(
+				"Would you like to install the ArkEnv agent skill?",
+				true,
+				"Yes (Recommended)",
+			);
+			if (confirmInstall === null) {
+				return null;
+			}
+			options.installSkill = confirmInstall;
+		}
+
+		// Handle existing env file prompt
+		const finalTargetPath = path.resolve(process.cwd(), options.path);
+
+		if (
+			(await this.workspace.exists(finalTargetPath)) &&
+			options.overwriteEnvSchemaFile === undefined
+		) {
+			const confirmOverwrite = await this.prompt.confirm(
+				`File ${code(path.basename(finalTargetPath))} already exists. Overwrite?`,
+				false,
 			);
 
-			const existingFiles: string[] = [];
-			if (await this.workspace.exists(finalTargetPath))
-				existingFiles.push(finalTargetPath);
-
-			let typeFileName: string | undefined;
-			if (options.framework === "vite") {
-				typeFileName = "vite-env.d.ts";
-			} else if (options.framework === "bun-fullstack") {
-				typeFileName = "bun-env.d.ts";
+			if (confirmOverwrite === null) {
+				return null;
 			}
 
-			if (typeFileName) {
-				const targetDir = path.dirname(finalTargetPath);
-				const typeFilePath = path.join(targetDir, typeFileName);
-				if (await this.workspace.exists(typeFilePath))
-					existingFiles.push(typeFilePath);
+			if (!confirmOverwrite) {
+				this.logger.cancel("Operation cancelled.");
+				return null;
 			}
 
-			return shake({
-				cwd: process.cwd(),
-				options,
-				detectedFramework,
-				detectedBunFeatures,
-				packageManager,
-				tsConfig,
-				shouldUpdateTsConfig,
-				existingFiles,
-				isYes,
-			});
-		} finally {
-			// Restore stdout
-			this.logger.interactiveStdout(false);
+			options.overwriteEnvSchemaFile = confirmOverwrite;
 		}
+
+		const packageManager = await this.scanner.detectPackageManager(
+			process.cwd(),
+			tsConfig.parsed,
+		);
+
+		const existingFiles: string[] = [];
+		if (await this.workspace.exists(finalTargetPath))
+			existingFiles.push(finalTargetPath);
+
+		let typeFileName: string | undefined;
+		if (options.framework === "vite") {
+			typeFileName = "vite-env.d.ts";
+		} else if (options.framework === "bun-fullstack") {
+			typeFileName = "bun-env.d.ts";
+		}
+
+		if (typeFileName) {
+			const targetDir = path.dirname(finalTargetPath);
+			const typeFilePath = path.join(targetDir, typeFileName);
+			if (await this.workspace.exists(typeFilePath))
+				existingFiles.push(typeFilePath);
+		}
+
+		return shake({
+			mode: "existing" as const,
+			cwd: process.cwd(),
+			options,
+			detectedFramework,
+			detectedBunFeatures,
+			packageManager,
+			tsConfig,
+			shouldUpdateTsConfig,
+			existingFiles,
+			isYes,
+		});
+	}
+
+	private async collectNewProject(
+		input: InitInput,
+	): Promise<CollectedState | null> {
+		const { isYes, isAgent, template, name } = input;
+
+		const registry = await this.registry.fetchRegistry();
+
+		const options = await this.prompt.runWizard(
+			shake({
+				mode: "new" as const,
+				templates: registry.templates,
+				template,
+				name,
+			}),
+			isYes,
+		);
+
+		if (options === null) {
+			return null;
+		}
+
+		const packageManager = this.detectPackageManager();
+
+		return shake({
+			mode: "new" as const,
+			cwd: process.cwd(),
+			options,
+			detectedFramework: options.framework,
+			packageManager,
+			tsConfig: { status: "not_found" },
+			shouldUpdateTsConfig: false,
+			existingFiles: [],
+			isYes,
+		});
+	}
+
+	private detectPackageManager(): "pnpm" | "yarn" | "npm" | "bun" {
+		const userAgent = process.env.npm_config_user_agent || "";
+		if (userAgent.includes("pnpm")) return "pnpm";
+		if (userAgent.includes("yarn")) return "yarn";
+		if (userAgent.includes("bun")) return "bun";
+		return "npm";
 	}
 }

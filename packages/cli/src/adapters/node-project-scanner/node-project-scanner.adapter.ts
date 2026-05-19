@@ -1,4 +1,10 @@
-import type { ParsedTsConfig, ProjectScannerPort } from "@/shared/ports";
+import fsp from "node:fs/promises";
+import path from "node:path";
+import type {
+	ParsedTsConfig,
+	ProjectScannerPort,
+	RequirementCheckResult,
+} from "@/shared/ports";
 import {
 	detectBunFeatures,
 	detectFramework,
@@ -6,12 +12,31 @@ import {
 	suggestDefaultEnvPath,
 } from "./utils/detector";
 import { getEnvExampleKeys } from "./utils/env-scanner";
+import { checkRequirements } from "./utils/requirements";
 import { checkTsConfig, findTsConfig, loadTsConfig } from "./utils/tsconfig";
 
 /**
  * Adapter implementation for ProjectScannerPort using Node.js APIs.
  */
 export class NodeProjectScannerAdapter implements ProjectScannerPort {
+	async isEmptyDirectory(dir = process.cwd()): Promise<boolean> {
+		try {
+			const files = await fsp.readdir(dir);
+			return files.length === 0;
+		} catch {
+			return false;
+		}
+	}
+
+	async hasPackageJson(dir = process.cwd()): Promise<boolean> {
+		try {
+			await fsp.access(path.join(dir, "package.json"));
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
 	async findTsConfig(startDir = process.cwd()): Promise<string | null> {
 		return findTsConfig(startDir);
 	}
@@ -44,6 +69,12 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		parsed?: ParsedTsConfig;
 	}> {
 		return checkTsConfig(cwd);
+	}
+
+	async checkRequirements(
+		cwd = process.cwd(),
+	): Promise<RequirementCheckResult[]> {
+		return checkRequirements(cwd);
 	}
 
 	async detectFramework(
