@@ -47,7 +47,11 @@ export class CLI {
 
 	private getFlagValue(long: string, short: string): string | undefined {
 		const index = this.args.findIndex((a) => a === long || a === short);
-		if (index !== -1 && this.args[index + 1] && !this.args[index + 1].startsWith("-")) {
+		if (
+			index !== -1 &&
+			this.args[index + 1] &&
+			!this.args[index + 1].startsWith("-")
+		) {
 			return this.args[index + 1];
 		}
 		return undefined;
