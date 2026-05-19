@@ -1,4 +1,3 @@
-import * as fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -11,6 +10,9 @@ const { mockExistsSync } = vi.hoisted(() => ({
 }));
 
 vi.mock("node:fs", () => ({
+	default: {
+		existsSync: mockExistsSync,
+	},
 	existsSync: mockExistsSync,
 }));
 
@@ -118,5 +120,58 @@ describe("runPromptWizard", () => {
 		expect(result).toBeNull();
 		expect(prompts.confirm).not.toHaveBeenCalled();
 		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled");
+	});
+
+	it("should reject unknown template defaults", async () => {
+		await expect(
+			runPromptWizard(
+				{
+					mode: "new",
+					template: "with-vite-recat",
+					templates: [
+						{
+							id: "basic",
+							name: "Basic",
+							description: "A minimal ArkEnv setup in Node.js",
+							framework: "vanilla",
+						},
+					],
+					name: "example",
+				},
+				true,
+			),
+		).rejects.toThrow("Unknown template with-vite-recat");
+	});
+
+	it("should handle new project wizard with default name", async () => {
+		const mockCwd = path.join(os.tmpdir(), "my-cool-project");
+		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
+
+		const templates = [
+			{
+				id: "basic",
+				name: "Basic",
+				description: "A minimal ArkEnv setup in Node.js",
+				framework: "vanilla" as const,
+			},
+		];
+
+		vi.mocked(prompts.text).mockResolvedValueOnce(""); // Empty input, should use placeholder/default
+		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
+
+		const result = await runPromptWizard({
+			mode: "new",
+			templates,
+		});
+
+		expect(result?.mode).toBe("new");
+		expect(result?.name).toBe("my-cool-project");
+		expect(result?.template).toBe("basic");
+		expect(prompts.text).toHaveBeenCalledWith(
+			expect.objectContaining({
+				initialValue: "",
+				placeholder: "my-cool-project",
+			}),
+		);
 	});
 });

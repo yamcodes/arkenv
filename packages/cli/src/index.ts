@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { shake } from "radashi";
 import { compose } from "./cli/composition";
 
 let globalLogger: any;
@@ -28,11 +29,16 @@ async function main() {
 	}
 
 	try {
-		await initUseCase.execute({
-			isYes: cli.isYes,
-			isQuiet: cli.isQuiet,
-			isAgent: cli.isAgent,
-		});
+		await initUseCase.execute(
+			shake({
+				isYes: cli.isYes,
+				isForce: cli.isForce,
+				isQuiet: cli.isQuiet,
+				isAgent: cli.isAgent,
+				template: cli.template,
+				name: cli.name,
+			}),
+		);
 	} catch (error) {
 		try {
 			logger.fatal("An unexpected error occurred", error);

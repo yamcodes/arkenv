@@ -1,3 +1,4 @@
+import fsp from "node:fs/promises";
 import path from "node:path";
 import { code, symbol } from "@/shared/visuals";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
@@ -18,6 +19,57 @@ export class Executor {
 		s.start("Scaffolding ArkEnv configuration...");
 
 		try {
+			// 0. Handle project cloning for New Project Flow
+			if (plan.clone) {
+				s.stop("Starting new project scaffolding...");
+				this.reporter.step(`Cloning template ${code(plan.clone.template)}...`);
+
+				const tempDir = path.join(process.cwd(), ".arkenv-temp");
+				await this.workspace.mkdir(tempDir, true);
+
+				try {
+					// Clone sparsely
+					await this.workspace.execute("git", [
+						"clone",
+						"--filter=blob:none",
+						"--sparse",
+						plan.clone.repository,
+						tempDir,
+					]);
+
+					// Checkout the specific example
+					const examplePath = `examples/${plan.clone.template}`;
+					await this.workspace.execute("git", [
+						"-C",
+						tempDir,
+						"sparse-checkout",
+						"set",
+						examplePath,
+					]);
+
+					// Move files to current directory
+					const fullExamplePath = path.join(tempDir, examplePath);
+					await copyDirectoryContents(fullExamplePath, process.cwd());
+
+					// Update package.json name
+					const pkgPath = path.join(process.cwd(), "package.json");
+					if (await this.workspace.exists(pkgPath)) {
+						const pkgContent = await this.workspace.readFile(pkgPath);
+						const pkg = JSON.parse(pkgContent);
+						pkg.name = plan.clone.targetName;
+						await this.workspace.writeFile(
+							pkgPath,
+							JSON.stringify(pkg, null, 2),
+						);
+					}
+				} finally {
+					// Cleanup temp dir
+					await fsp.rm(tempDir, { recursive: true, force: true });
+				}
+
+				s.start("Scaffolding complete, finalizing...");
+			}
+
 			// 1. Create directories and write files
 			for (const file of plan.files) {
 				if (file.action === "append") {
@@ -175,4 +227,16 @@ export class Executor {
 			throw error;
 		}
 	}
+}
+
+async function copyDirectoryContents(source: string, destination: string) {
+	const entries = await fsp.readdir(source);
+	await Promise.all(
+		entries.map((entry) =>
+			fsp.cp(path.join(source, entry), path.join(destination, entry), {
+				recursive: true,
+				force: false,
+			}),
+		),
+	);
 }

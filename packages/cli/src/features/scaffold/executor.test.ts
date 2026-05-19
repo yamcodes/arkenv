@@ -67,6 +67,7 @@ describe("Executor", () => {
 			validator: "arktype",
 			packageManager: "pnpm",
 			importPath: "./env",
+			mode: "existing",
 		},
 	};
 
@@ -80,6 +81,21 @@ describe("Executor", () => {
 			"arkenv",
 		]);
 		expect(mockReporter.finish).toHaveBeenCalled();
+	});
+
+	it("executes a plan for a new project (cloned template)", async () => {
+		const newProjectPlan: ScaffoldingPlan = {
+			...defaultPlan,
+			install: { packageManager: "bun", dependencies: [] },
+			metadata: {
+				...defaultPlan.metadata,
+				mode: "new",
+				packageManager: "bun",
+			},
+		};
+		await executor.execute(newProjectPlan);
+
+		expect(mockWorkspace.execute).toHaveBeenCalledWith("bun", ["install"]);
 	});
 
 	it("updates tsconfig when planned", async () => {

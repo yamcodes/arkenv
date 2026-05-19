@@ -6,6 +6,7 @@ import {
 	envDtsHandlingStep,
 	installTypeDefinitionsStep,
 } from "./steps/env-types";
+import { example as exampleStep } from "./steps/example";
 import { bunBuildStep, frameworkStep, validatorStep } from "./steps/framework";
 import { pathStep, useDefaultPathStep } from "./steps/path";
 
@@ -13,6 +14,7 @@ import { pathStep, useDefaultPathStep } from "./steps/path";
  * A collection of interactive CLI prompt steps used during initialization.
  */
 export const steps = {
+	example: exampleStep,
 	overwriteEnvSchemaFile: overwriteEnvSchemaFileStep,
 	framework: frameworkStep,
 	bunBuild: bunBuildStep,

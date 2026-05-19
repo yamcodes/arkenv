@@ -13,6 +13,7 @@ import { bunTypesTemplate, viteTypesTemplate } from "./templates";
  */
 export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const {
+		mode,
 		options,
 		packageManager,
 		tsConfig,
@@ -20,19 +21,51 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		cwd,
 		existingFiles,
 	} = state;
-	const targetPath = path.resolve(cwd, options.path);
-	const targetDir = path.dirname(targetPath);
 
 	const plan: ScaffoldingPlan = {
 		files: [],
-		metadata: {
+		metadata: shake({
 			displayPath: "",
 			framework: options.framework,
 			validator: options.validator,
 			packageManager,
 			importPath: "",
-		},
+			mode,
+			template: options.template,
+			name: options.name,
+		}) as ScaffoldingPlan["metadata"],
 	};
+
+	if (mode === "new") {
+		plan.clone = {
+			repository: "https://github.com/yamcodes/arkenv.git",
+			template: options.template!,
+			targetName: options.name!,
+		};
+
+		plan.install = {
+			packageManager,
+			dependencies: [], // Dependencies are already in the template's package.json
+		};
+
+		if (options.installSkill) {
+			plan.skill = {
+				dlxCommand: getDlxCommand(packageManager),
+				packageName: "yamcodes/arkenv",
+				isYes: state.isYes,
+			};
+		}
+
+		// Templates usually have the schema at src/env.ts
+		plan.metadata.displayPath = "./src/env.ts";
+		plan.metadata.importPath = "./src/env";
+
+		return plan;
+	}
+
+	// mode === "existing"
+	const targetPath = path.resolve(cwd, options.path);
+	const targetDir = path.dirname(targetPath);
 
 	// 1. Env Schema File
 	const envContent = getEnvTemplate(options);
