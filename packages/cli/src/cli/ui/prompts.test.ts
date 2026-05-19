@@ -139,4 +139,35 @@ describe("runPromptWizard", () => {
 			),
 		).rejects.toThrow("Unknown template with-vite-recat");
 	});
+
+	it("should handle new project wizard with default name", async () => {
+		const mockCwd = path.join(os.tmpdir(), "my-cool-project");
+		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
+
+		const templates = [
+			{
+				id: "basic",
+				name: "Basic",
+				description: "A minimal ArkEnv setup in Node.js",
+				framework: "vanilla" as const,
+			},
+		];
+
+		vi.mocked(prompts.text).mockResolvedValueOnce("."); // Use default name
+		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
+
+		const result = await runPromptWizard({
+			mode: "new",
+			templates,
+		});
+
+		expect(result?.mode).toBe("new");
+		expect(result?.name).toBe("my-cool-project");
+		expect(result?.template).toBe("basic");
+		expect(prompts.text).toHaveBeenCalledWith(
+			expect.objectContaining({
+				initialValue: "my-cool-project",
+			}),
+		);
+	});
 });

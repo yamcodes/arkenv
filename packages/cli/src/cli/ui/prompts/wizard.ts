@@ -40,6 +40,29 @@ async function runNewProjectWizard(
 	isYes = false,
 ): Promise<ProjectOptions | null> {
 	const templates = defaults?.templates || [];
+	const defaultProjectName = path.basename(process.cwd());
+
+	let projectName = defaults?.name;
+	if (!projectName && !isYes) {
+		const name = await text({
+			message: "Project name:",
+			placeholder: defaultProjectName,
+			initialValue: defaultProjectName,
+		});
+
+		if (isCancel(name)) {
+			cancel("Operation cancelled");
+			return null;
+		}
+		projectName = name as string;
+	} else if (!projectName && isYes) {
+		projectName = defaultProjectName;
+	}
+
+	if (projectName === ".") {
+		projectName = defaultProjectName;
+	}
+
 	let templateId = defaults?.template;
 
 	if (!templateId && !isYes) {
@@ -59,27 +82,6 @@ async function runNewProjectWizard(
 		throw new Error(
 			`Unknown template ${templateId}. Available templates: ${availableTemplates}`,
 		);
-	}
-
-	let projectName = defaults?.name;
-	if (!projectName && !isYes) {
-		const name = await text({
-			message: "What is your project name?",
-			placeholder: ".",
-			defaultValue: ".",
-		});
-
-		if (isCancel(name)) {
-			cancel("Operation cancelled");
-			return null;
-		}
-		projectName = name as string;
-	} else if (!projectName && isYes) {
-		projectName = ".";
-	}
-
-	if (projectName === ".") {
-		projectName = path.basename(process.cwd());
 	}
 
 	return {
