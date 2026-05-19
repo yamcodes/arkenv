@@ -62,9 +62,9 @@ describe("InitUseCase", () => {
 			{
 				status: "fail",
 				requirement: "Node.js Version",
-				message: "Node.js version must be >= 18.0.0",
-				current: "16.0.0",
-				expected: ">= 18.0.0",
+				message: "Node.js version must be >= 22.0.0",
+				current: "20.0.0",
+				expected: ">= 22.0.0",
 			},
 		]);
 
@@ -89,7 +89,7 @@ describe("InitUseCase", () => {
 			{
 				status: "fail",
 				requirement: "Node.js Version",
-				message: "Node.js version must be >= 18.0.0",
+				message: "Node.js version must be >= 22.0.0",
 			},
 		]);
 		vi.mocked(prompt.runWizard).mockResolvedValue({

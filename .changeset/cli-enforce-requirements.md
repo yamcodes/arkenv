@@ -5,7 +5,7 @@
 #### Enforce technical requirements during `arkenv init`
 
 The CLI now performs early checks for:
-- Node.js version >= 18
+- Node.js version >= 22
 - TypeScript version >= 5.1
 - `strict: true` in `tsconfig.json`
 - `moduleResolution` set to `bundler`, `node16`, or `nodenext` in `tsconfig.json`

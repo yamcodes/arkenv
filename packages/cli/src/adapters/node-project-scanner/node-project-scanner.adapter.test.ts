@@ -162,7 +162,7 @@ API_KEY=
 			// Mock process.version
 			const originalVersion = process.version;
 			Object.defineProperty(process, "version", {
-				value: "v16.0.0",
+				value: "v20.0.0",
 				configurable: true,
 			});
 

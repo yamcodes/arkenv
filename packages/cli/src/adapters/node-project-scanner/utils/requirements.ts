@@ -26,7 +26,7 @@ export async function checkRequirements(
 
 	// 1. Node.js version check
 	const nodeVersion = process.version;
-	const minNodeVersion = "18.0.0";
+	const minNodeVersion = "22.0.0";
 	if (compareSemver(nodeVersion, minNodeVersion) === -1) {
 		results.push({
 			status: "fail",
