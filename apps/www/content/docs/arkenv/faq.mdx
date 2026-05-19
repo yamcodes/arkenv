@@ -31,11 +31,11 @@ ArkEnvError: Errors found while validating environment variables
 
 ## Does ArkEnv load my `.env` files?
 
-**No.** ArkEnv is a strict **validator**, not a environment **loader**.
+**No.** ArkEnv is a strict **validator**, not an environment **loader**.
 
 Modern runtimes and meta-frameworks (Vite, Bun, Next.js, Remix) already feature native, highly optimized `.env` loading behavior. If you are running a bare Node.js application, we recommend pairing ArkEnv with a dedicated utility like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
 
-ArkEnv intercepts the populated `process.env` (or a custom configuration object), evaluates it against your schema, and applies [automatic type coercion](https://www.google.com/search?q=/docs/arkenv/coercion).
+ArkEnv intercepts the populated `process.env` (or a custom configuration object), evaluates it against your schema, and applies [automatic type coercion](/docs/arkenv/coercion).
 
 ## Do I have to use ArkType?
 
@@ -48,13 +48,13 @@ ArkEnv is built on top of the **Standard Schema** specification. This means you 
 - **Typia**
 - ...or any other library implementing the [Standard Schema](https://standardschema.dev) protocol.
 
-For architectural implementation details, see [arkenv/standard](https://www.google.com/search?q=/docs/arkenv/standard).
+For architectural implementation details, see [arkenv/standard](/docs/arkenv/standard).
 
 ## Does ArkEnv work with Zod?
 
 Yes, natively. Because Zod implements the Standard Schema interface, ArkEnv treats it as a first-class citizen.
 
-You can view our reference implementation in the [Zod example repository](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod) or simply let the [ArkEnv CLI](https://www.google.com/search?q=/docs/cli) scaffold an ArkEnv + Zod configuration for you automatically.
+You can view our reference implementation in the [Zod example repository](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod) or simply let the [ArkEnv CLI](/docs/cli) scaffold an ArkEnv + Zod configuration for you automatically.
 
 ## Why use ArkEnv instead of just raw Zod?
 
@@ -93,17 +93,17 @@ We are actively researching isolated plugin architectures for meta-frameworks—
 - If you are building inside the Next.js or Nuxt ecosystems, **T3 Env** remains the gold standard.
 - If your stack relies on **Vite, Node.js microservices, Bun runtimes, standalone CLI tools, or Solid Start**, ArkEnv offers a more tailored, plugin-driven developer experience with deep ecosystem hooks.
 
-Review our explicit architectural matrix in the [detailed comparison](https://www.google.com/search?q=/docs/arkenv/comparison).
+Review our explicit architectural matrix in the [detailed comparison](/docs/arkenv/comparison).
 
 ## What does the ArkEnv CLI do?
 
-The ` @arkenv/cli` package streamlines configuration management. Instead of manually constructing config files, running the interactive initializer analyzes your workspace, detects your framework, lets you choose your validation primitive (ArkType, Zod, etc.), and generates a fully typed environment schema matching your environment.
+The `@arkenv/cli` package streamlines configuration management. Instead of manually constructing config files, running the interactive initializer analyzes your workspace, detects your framework, lets you choose your validation primitive (ArkType, Zod, etc.), and generates a fully typed environment schema matching your environment.
 
-Read the [CLI reference docs](https://www.google.com/search?q=/docs/cli) for a complete list of flags and capabilities.
+Read the [CLI reference docs](/docs/cli) for a complete list of flags and capabilities.
 
 ## Does ArkEnv support AI development tools like Claude Code or Cursor?
 
-Yes. ArkEnv is uniquely built for modern development workflows and features a dedicated [AI Agent Skill](https://www.google.com/search?q=/docs/arkenv/integrations/ai/skills). Providing this context to LLM-driven tools (like Claude Code, Cursor, or Windsurf) allows your AI assistant to automatically maintain, update, and tighten your environment schemas as your application code evolves, ensuring your schema changes match your code changes seamlessly.
+Yes. ArkEnv is uniquely built for modern development workflows and features a dedicated [AI Agent Skill](/docs/arkenv/integrations/ai/skills). Providing this context to LLM-driven tools (like Claude Code, Cursor, or Windsurf) allows your AI assistant to automatically maintain, update, and tighten your environment schemas as your application code evolves, ensuring your schema changes match your code changes seamlessly.
 
 ## Is it safe to use in production?
 
