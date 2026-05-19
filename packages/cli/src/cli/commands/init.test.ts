@@ -46,6 +46,8 @@ describe("InitUseCase", () => {
 		} as unknown as PromptPort;
 
 		scanner = {
+			hasPackageJson: vi.fn().mockResolvedValue(true),
+			isEmptyDirectory: vi.fn().mockResolvedValue(false),
 			checkRequirements: vi.fn().mockResolvedValue([]),
 			checkTsConfig: vi.fn().mockResolvedValue({ status: "strict" }),
 			detectFramework: vi.fn().mockResolvedValue("vanilla"),
@@ -55,6 +57,36 @@ describe("InitUseCase", () => {
 		} as unknown as ProjectScannerPort;
 
 		useCase = new InitUseCase(logger, workspace, prompt, scanner);
+	});
+
+	it("should enter new project flow if no package.json and empty directory", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			mode: "new",
+			template: "basic",
+			name: "my-project",
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result.mode).toBe("new");
+		expect(prompt.runWizard).toHaveBeenCalledWith(
+			expect.objectContaining({
+				mode: "new",
+				templates: expect.any(Array),
+			}),
+			false,
+		);
 	});
 
 	it("should exit early if requirements fail", async () => {

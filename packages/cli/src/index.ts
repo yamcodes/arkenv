@@ -33,6 +33,8 @@ async function main() {
 			isForce: cli.isForce,
 			isQuiet: cli.isQuiet,
 			isAgent: cli.isAgent,
+			template: cli.template,
+			name: cli.name,
 		});
 	} catch (error) {
 		try {

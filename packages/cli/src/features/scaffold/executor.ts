@@ -18,6 +18,50 @@ export class Executor {
 		s.start("Scaffolding ArkEnv configuration...");
 
 		try {
+			// 0. Handle project cloning for New Project Flow
+			if (plan.clone) {
+				s.stop("Starting new project scaffolding...");
+				this.reporter.step(`Cloning template ${code(plan.clone.template)}...`);
+
+				const tempDir = path.join(process.cwd(), ".arkenv-temp");
+				await this.workspace.mkdir(tempDir, true);
+
+				try {
+					// Clone sparsely
+					await this.workspace.execute("git", [
+						"clone",
+						"--filter=blob:none",
+						"--sparse",
+						plan.clone.repository,
+						tempDir,
+					]);
+
+					// Checkout the specific example
+					const examplePath = `examples/${plan.clone.template}`;
+					await this.workspace.execute("git", ["-C", tempDir, "sparse-checkout", "set", examplePath]);
+
+					// Move files to current directory
+					const fullExamplePath = path.join(tempDir, examplePath);
+					const files = await this.workspace.execute("ls", ["-A", fullExamplePath]);
+					// Note: This is a bit simplified, ideally we'd use a better way to move files
+					await this.workspace.execute("bash", ["-c", `cp -rn ${fullExamplePath}/. .`]);
+
+					// Update package.json name
+					const pkgPath = path.join(process.cwd(), "package.json");
+					if (await this.workspace.exists(pkgPath)) {
+						const pkgContent = await this.workspace.readFile(pkgPath);
+						const pkg = JSON.parse(pkgContent);
+						pkg.name = plan.clone.targetName;
+						await this.workspace.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
+					}
+				} finally {
+					// Cleanup temp dir
+					await this.workspace.execute("rm", ["-rf", tempDir]);
+				}
+
+				s.start("Scaffolding complete, finalizing...");
+			}
+
 			// 1. Create directories and write files
 			for (const file of plan.files) {
 				if (file.action === "append") {

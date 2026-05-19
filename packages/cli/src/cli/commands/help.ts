@@ -18,6 +18,12 @@ export class HelpUseCase {
 		);
 		this.logger.log("  --agent, -a    Agent mode: --yes --quiet --json");
 		this.logger.log(
+			"  --template, -t Specify a template ID to scaffold from (New Project Flow)",
+		);
+		this.logger.log(
+			"  --name, -n     Specify the project name (New Project Flow)",
+		);
+		this.logger.log(
 			"  --quiet, -q    Quiet mode: Suppress output, capture logs on failure",
 		);
 		this.logger.log("  --json, -j     Output structured JSON to stdout");

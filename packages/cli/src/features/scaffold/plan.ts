@@ -7,6 +7,9 @@ export type { Reporter, Workspace };
  * Options chosen by the user or inferred for scaffolding the project.
  */
 export type ProjectOptions = {
+	mode: "existing" | "new";
+	template?: string;
+	name?: string;
 	path: string;
 	validator: "arktype" | "zod" | "valibot";
 	framework: "vite" | "bun-fullstack" | "vanilla";
@@ -60,6 +63,15 @@ export type ScaffoldingPlan = {
 		validator: string;
 		packageManager: string;
 		importPath: string;
+		mode: "existing" | "new";
+		template?: string;
+		name?: string;
+	};
+	/** Git clone information for new project flow */
+	clone?: {
+		repository: string;
+		template: string;
+		targetName: string;
 	};
 };
 
@@ -67,6 +79,7 @@ export type ScaffoldingPlan = {
  * The collected state of the user's workspace prior to scaffolding.
  */
 export type CollectedState = {
+	mode: "existing" | "new";
 	cwd: string;
 	options: ProjectOptions;
 	detectedFramework: "vite" | "bun-fullstack" | "vanilla";

@@ -2,6 +2,7 @@ import { confirm as clackConfirm, isCancel } from "@clack/prompts";
 import { shake } from "radashi";
 import { runPromptWizard } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";
+import type { Template } from "@/shared/clients/registry.client";
 import type { ParsedTsConfig, PromptPort } from "@/shared/ports";
 
 /**
@@ -28,6 +29,10 @@ export class ClackPromptAdapter implements PromptPort {
 
 	async runWizard(
 		defaults?: {
+			mode?: ProjectOptions["mode"];
+			template?: string;
+			templates?: Template[];
+			name?: string;
 			framework?: ProjectOptions["framework"];
 			bunFeatures?: ProjectOptions["bunFeatures"];
 			defaultEnvPath?: string;
