@@ -1,4 +1,3 @@
-import * as fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -118,5 +117,26 @@ describe("runPromptWizard", () => {
 		expect(result).toBeNull();
 		expect(prompts.confirm).not.toHaveBeenCalled();
 		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled");
+	});
+
+	it("should reject unknown template defaults", async () => {
+		await expect(
+			runPromptWizard(
+				{
+					mode: "new",
+					template: "with-vite-recat",
+					templates: [
+						{
+							id: "basic",
+							name: "Basic",
+							description: "A minimal ArkEnv setup",
+							framework: "vanilla",
+						},
+					],
+					name: "example",
+				},
+				true,
+			),
+		).rejects.toThrow("Unknown template with-vite-recat");
 	});
 });

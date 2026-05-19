@@ -18,8 +18,8 @@ export type InitInput = {
 	isForce: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
-	template?: string;
-	name?: string;
+	template?: string | undefined;
+	name?: string | undefined;
 };
 
 /**
@@ -159,10 +159,7 @@ export class InitUseCase {
 		);
 
 		let hasTypeFile = false;
-		if (
-			detectedFramework === "vite" ||
-			detectedFramework === "bun-fullstack"
-		) {
+		if (detectedFramework === "vite" || detectedFramework === "bun-fullstack") {
 			const typeFile =
 				detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 			const targetDir = path.dirname(targetPath);

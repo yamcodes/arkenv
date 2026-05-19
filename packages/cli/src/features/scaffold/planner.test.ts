@@ -5,6 +5,7 @@ import { createPlan } from "./planner";
 
 describe("Planner", () => {
 	const defaultState: CollectedState = {
+		mode: "existing",
 		cwd: "/test",
 		options: {
 			validator: "arktype",

@@ -1,3 +1,4 @@
+import fsp from "node:fs/promises";
 import path from "node:path";
 import { code, symbol } from "@/shared/visuals";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
@@ -38,13 +39,17 @@ export class Executor {
 
 					// Checkout the specific example
 					const examplePath = `examples/${plan.clone.template}`;
-					await this.workspace.execute("git", ["-C", tempDir, "sparse-checkout", "set", examplePath]);
+					await this.workspace.execute("git", [
+						"-C",
+						tempDir,
+						"sparse-checkout",
+						"set",
+						examplePath,
+					]);
 
 					// Move files to current directory
 					const fullExamplePath = path.join(tempDir, examplePath);
-					const files = await this.workspace.execute("ls", ["-A", fullExamplePath]);
-					// Note: This is a bit simplified, ideally we'd use a better way to move files
-					await this.workspace.execute("bash", ["-c", `cp -rn ${fullExamplePath}/. .`]);
+					await copyDirectoryContents(fullExamplePath, process.cwd());
 
 					// Update package.json name
 					const pkgPath = path.join(process.cwd(), "package.json");
@@ -52,11 +57,14 @@ export class Executor {
 						const pkgContent = await this.workspace.readFile(pkgPath);
 						const pkg = JSON.parse(pkgContent);
 						pkg.name = plan.clone.targetName;
-						await this.workspace.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
+						await this.workspace.writeFile(
+							pkgPath,
+							JSON.stringify(pkg, null, 2),
+						);
 					}
 				} finally {
 					// Cleanup temp dir
-					await this.workspace.execute("rm", ["-rf", tempDir]);
+					await fsp.rm(tempDir, { recursive: true, force: true });
 				}
 
 				s.start("Scaffolding complete, finalizing...");
@@ -219,4 +227,16 @@ export class Executor {
 			throw error;
 		}
 	}
+}
+
+async function copyDirectoryContents(source: string, destination: string) {
+	const entries = await fsp.readdir(source);
+	await Promise.all(
+		entries.map((entry) =>
+			fsp.cp(path.join(source, entry), path.join(destination, entry), {
+				recursive: true,
+				force: false,
+			}),
+		),
+	);
 }

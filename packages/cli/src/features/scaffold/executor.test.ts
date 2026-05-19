@@ -67,6 +67,7 @@ describe("Executor", () => {
 			validator: "arktype",
 			packageManager: "pnpm",
 			importPath: "./env",
+			mode: "existing",
 		},
 	};
 

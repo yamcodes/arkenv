@@ -1,5 +1,5 @@
-import { cancel, isCancel, text } from "@clack/prompts";
 import path from "node:path";
+import { cancel, isCancel, text } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
 import type { Template } from "@/shared/clients/registry.client";
@@ -53,10 +53,13 @@ async function runNewProjectWizard(
 		templateId = "basic";
 	}
 
-	const template = templates.find((t) => t.id === templateId) || {
-		id: "basic",
-		framework: "vanilla" as const,
-	};
+	const template = templates.find((t) => t.id === templateId);
+	if (!template) {
+		const availableTemplates = templates.map((t) => t.id).join(", ");
+		throw new Error(
+			`Unknown template ${templateId}. Available templates: ${availableTemplates}`,
+		);
+	}
 
 	let projectName = defaults?.name;
 	if (!projectName && !isYes) {

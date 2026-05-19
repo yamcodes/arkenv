@@ -39,6 +39,7 @@ export type ProjectScannerPort = {
 		file?: string;
 		parsed?: ParsedTsConfig;
 	}>;
+	checkRequirements(cwd?: string): Promise<RequirementCheckResult[]>;
 	detectFramework(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
@@ -51,6 +52,4 @@ export type ProjectScannerPort = {
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
 	): Promise<"pnpm" | "yarn" | "npm" | "bun">;
-};
-
 };
