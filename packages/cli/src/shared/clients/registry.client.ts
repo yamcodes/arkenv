@@ -1,7 +1,7 @@
 export type Template = {
 	id: string;
 	name: string;
-	description: string;
+	description?: string;
 	framework: "vite" | "bun-fullstack" | "vanilla";
 };
 
@@ -20,32 +20,30 @@ export class RegistryClient {
 				throw new Error(`Failed to fetch registry: ${response.statusText}`);
 			}
 			return (await response.json()) as TemplateRegistry;
-		} catch (error) {
+		} catch {
 			// Fallback to a minimal registry if fetch fails or for offline use
 			return {
 				templates: [
 					{
 						id: "basic",
 						name: "Basic",
-						description: "A minimal ArkEnv setup",
+						description: "A minimal ArkEnv setup in Node.js",
 						framework: "vanilla",
 					},
 					{
 						id: "with-vite-react",
-						name: "Vite + React",
-						description: "ArkEnv integrated with Vite and React",
+						name: "React (Vite)",
 						framework: "vite",
 					},
 					{
 						id: "with-bun-react",
-						name: "Bun + React",
-						description: "ArkEnv integrated with Bun and React",
+						name: "React (Bun fullstack dev server)",
 						framework: "bun-fullstack",
 					},
 					{
 						id: "with-zod",
 						name: "Zod",
-						description: "ArkEnv with Zod validation",
+						description: "ArkEnv with Zod in Node.js",
 						framework: "vanilla",
 					},
 				],

@@ -7,7 +7,7 @@ export const example = (templates: Template[]) => async () => {
 		options: templates.map((t) => ({
 			value: t.id,
 			label: t.name,
-			hint: t.description,
+			...(t.description ? { hint: t.description } : {}),
 		})),
 	});
 };

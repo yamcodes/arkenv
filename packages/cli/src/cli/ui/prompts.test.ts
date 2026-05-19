@@ -129,7 +129,7 @@ describe("runPromptWizard", () => {
 						{
 							id: "basic",
 							name: "Basic",
-							description: "A minimal ArkEnv setup",
+							description: "A minimal ArkEnv setup in Node.js",
 							framework: "vanilla",
 						},
 					],
