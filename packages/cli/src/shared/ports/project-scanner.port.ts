@@ -2,12 +2,22 @@ export type ParsedTsConfig = {
 	path: string;
 	compilerOptions: {
 		strict?: boolean;
+		module?: string;
+		moduleResolution?: string;
 		rootDir?: string;
 		baseUrl?: string;
 		paths?: Record<string, string[]>;
 		[key: string]: any;
 	};
 	[key: string]: any;
+};
+
+export type RequirementCheckResult = {
+	status: "pass" | "warn" | "fail";
+	requirement: string;
+	message: string;
+	current?: string;
+	expected?: string;
 };
 
 export type ProjectScannerPort = {
@@ -27,6 +37,7 @@ export type ProjectScannerPort = {
 		file?: string;
 		parsed?: ParsedTsConfig;
 	}>;
+	checkRequirements(cwd?: string): Promise<RequirementCheckResult[]>;
 	detectFramework(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,

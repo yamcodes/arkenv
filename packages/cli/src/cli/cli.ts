@@ -7,6 +7,7 @@ export class CLI {
 	public args: string[];
 	public command: string;
 	public isYes: boolean;
+	public isForce: boolean;
 	public isQuiet: boolean;
 	public isJson: boolean;
 	public isAgent: boolean;
@@ -17,6 +18,7 @@ export class CLI {
 		this.args = argv.slice(2);
 		this.command = this.args[0];
 		this.isYes = this.args.includes("--yes") || this.args.includes("-y");
+		this.isForce = this.args.includes("--force") || this.args.includes("-f");
 		this.isQuiet = this.args.includes("--quiet") || this.args.includes("-q");
 		this.isJson = this.args.includes("--json") || this.args.includes("-j");
 		this.isAgent = this.args.includes("--agent") || this.args.includes("-a");
