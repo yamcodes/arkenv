@@ -1,3 +1,24 @@
+# CLI Testing Playground
+
+This playground is configured for testing the `@arkenv/cli` package locally.
+
+## Testing the CLI
+
+To test the CLI's `init` wizard in this playground:
+
+1. **Run the CLI**: From the root of the monorepo, run:
+   ```bash
+   pnpm --filter=arkenv-cli-playground arkenv
+   ```
+   This will automatically rebuild the `@arkenv/cli` package and run the interactive initializer (`arkenv init`) in the context of this playground directory.
+
+2. **Clean / Reset changes**: After running the CLI and verifying the changes (such as updates to `tsconfig.json`, `vite.config.ts`, `package.json`, or the creation of `src/vite-env.d.ts`), you can discard all changes and reset the playground to a clean state by running:
+   ```bash
+   pnpm --filter=arkenv-cli-playground arkenv:clean
+   ```
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

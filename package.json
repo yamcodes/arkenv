@@ -30,7 +30,8 @@
 		"sync:examples:check": "node bin/sync-examples.js --check",
 		"contributors:add": "all-contributors add",
 		"contributors:generate": "all-contributors generate",
-		"knip": "knip"
+		"knip": "knip",
+		"test:cli": "node bin/test-cli.js"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.14",

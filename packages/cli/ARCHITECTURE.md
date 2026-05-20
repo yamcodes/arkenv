@@ -57,3 +57,21 @@ The architecture is specifically designed to support AI agents and headless envi
 - **Domain Tests**: Features are tested with pure data and mock ports. These tests are fast and do not touch the disk.
 - **Adapter Tests**: Concrete implementations in `adapters/` are tested against the actual Node.js environment (e.g., using `fsp.mkdtemp`).
 - **Smoke Tests**: High-level integration tests in `src/smoke.test.ts` verify the final bundled CLI from the user's perspective.
+
+### Interactive Local Testing
+
+To test the interactive onboarding wizard in real-world scenarios, a helper script is provided at the monorepo root. You can run the CLI inside a clean, sandboxed testing directory without affecting any existing codebase.
+
+From the monorepo root:
+
+- **Test in an ArkEnv-less existing project** (creates a folder with `package.json` + `tsconfig.json` + `.env.example` but no ArkEnv setup):
+  ```bash
+  pnpm test:cli --existing
+  ```
+
+- **Test in a completely new/empty directory** (creates a completely blank directory and runs `init`):
+  ```bash
+  pnpm test:cli --new
+  ```
+
+These commands will automatically rebuild the CLI, configure the temporary directory under `apps/playgrounds/tmp-cli-*` (which is git-ignored), and launch the local CLI binary interactively inside it.

@@ -21,9 +21,9 @@ npx @arkenv/cli@latest init
 - [ArkEnv](https://arkenv.js.org) - Core library and docs
 - [ArkType](https://arktype.io/) - Underlying validator / type system
 
-## Architecture
+## Architecture & Development
 
-This CLI is built with a port-and-adapter architecture to remain flexible and testable.
+This CLI is built with a port-and-adapter architecture to remain flexible and testable. See [ARCHITECTURE.md](./ARCHITECTURE.md) for details on the codebase design, architecture rules, and how to use the interactive testing scripts.
 
 ### Local Environment Adapters (`Node*`)
 
