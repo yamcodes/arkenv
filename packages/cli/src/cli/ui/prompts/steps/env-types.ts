@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { confirm, isCancel, select } from "@clack/prompts";
-import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 import type { ProjectOptions } from "@/features/scaffold";
 
+/**
+ * Determines whether the wizard should create framework environment types.
+ */
 export const installTypeDefinitionsStep = async ({
 	results,
 }: {
@@ -34,6 +36,9 @@ export const installTypeDefinitionsStep = async ({
 	return true;
 };
 
+/**
+ * Chooses how to handle an existing framework type definition file.
+ */
 export const envDtsHandlingStep = async ({
 	results,
 }: {

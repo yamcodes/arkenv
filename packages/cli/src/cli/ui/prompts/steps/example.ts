@@ -1,6 +1,9 @@
 import { select } from "@clack/prompts";
 import type { Template } from "@/shared/clients/registry.client";
 
+/**
+ * Builds the example template selection prompt from the registry templates.
+ */
 export const example = (templates: Template[]) => async () => {
 	return select({
 		message: "Select a template:",

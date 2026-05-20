@@ -26,6 +26,9 @@ export type InitInput = {
  * Use case for initializing ArkEnv in a new or existing project.
  */
 export class InitUseCase {
+	/**
+	 * Creates the init use case with adapters for prompting, scanning, and filesystem work.
+	 */
 	constructor(
 		private readonly logger: LoggerPort,
 		private readonly workspace: WorkspacePort,
@@ -34,6 +37,9 @@ export class InitUseCase {
 		private readonly registry = new RegistryClient(),
 	) {}
 
+	/**
+	 * Collects init options, creates a scaffolding plan, and executes it.
+	 */
 	async execute(input: InitInput) {
 		const state = await this.collect(input);
 		if (!state) return;
@@ -48,6 +54,9 @@ export class InitUseCase {
 		}
 	}
 
+	/**
+	 * Chooses the existing project or new project collection flow for the current directory.
+	 */
 	private async collect(input: InitInput): Promise<CollectedState | null> {
 		this.logger.interactiveStdout(true);
 
@@ -75,6 +84,9 @@ export class InitUseCase {
 		}
 	}
 
+	/**
+	 * Collects configuration for installing ArkEnv into a project with `package.json`.
+	 */
 	private async collectExistingProject(
 		input: InitInput,
 	): Promise<CollectedState | null> {
@@ -235,6 +247,9 @@ export class InitUseCase {
 		});
 	}
 
+	/**
+	 * Collects configuration for scaffolding a project from an example template.
+	 */
 	private async collectNewProject(
 		input: InitInput,
 	): Promise<CollectedState | null> {
@@ -271,6 +286,9 @@ export class InitUseCase {
 		});
 	}
 
+	/**
+	 * Infers the active package manager from the current npm user agent.
+	 */
 	private detectPackageManager(): "pnpm" | "yarn" | "npm" | "bun" {
 		const userAgent = process.env.npm_config_user_agent || "";
 		if (userAgent.includes("pnpm")) return "pnpm";

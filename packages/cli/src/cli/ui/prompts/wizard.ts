@@ -6,6 +6,9 @@ import type { Template } from "@/shared/clients/registry.client";
 import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 
+/**
+ * Runs the appropriate init prompt flow for a new or existing project.
+ */
 export async function runPromptWizard(
 	defaults?: Partial<
 		Pick<
@@ -31,6 +34,9 @@ export async function runPromptWizard(
 	return runExistingProjectWizard(defaults, isYes);
 }
 
+/**
+ * Collects options for scaffolding a new project from an example template.
+ */
 async function runNewProjectWizard(
 	defaults?: Partial<Pick<ProjectOptions, "template" | "name">> & {
 		templates?: Template[];
@@ -92,6 +98,9 @@ async function runNewProjectWizard(
 	};
 }
 
+/**
+ * Collects options for adding ArkEnv to a project that already has `package.json`.
+ */
 async function runExistingProjectWizard(
 	defaults?: Partial<Pick<ProjectOptions, "framework" | "bunFeatures">> & {
 		defaultEnvPath?: string;

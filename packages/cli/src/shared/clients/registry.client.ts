@@ -13,6 +13,9 @@ const REGISTRY_URL =
 	"https://raw.githubusercontent.com/yamcodes/arkenv/main/examples/registry.json";
 
 export class RegistryClient {
+	/**
+	 * Fetches the published example template registry, falling back to bundled defaults offline.
+	 */
 	async fetchRegistry(): Promise<TemplateRegistry> {
 		try {
 			const response = await fetch(REGISTRY_URL);

@@ -9,11 +9,17 @@ import { getInstallCommand, getNextStepsNote } from "./utils";
  * installing dependencies, and bootstrapping framework configurations.
  */
 export class Executor {
+	/**
+	 * Creates an executor with workspace operations and reporting for CLI users.
+	 */
 	constructor(
 		private workspace: Workspace,
 		private reporter: Reporter,
 	) {}
 
+	/**
+	 * Applies a scaffolding plan to the workspace and reports next steps for CLI users.
+	 */
 	async execute(plan: ScaffoldingPlan) {
 		const s = this.reporter.spinner();
 		s.start("Scaffolding ArkEnv configuration...");

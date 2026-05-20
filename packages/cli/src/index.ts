@@ -5,6 +5,9 @@ import { compose } from "./cli/composition";
 let globalLogger: any;
 let isShuttingDown = false;
 
+/**
+ * Composes the CLI, dispatches the requested command, and handles fatal failures.
+ */
 async function main() {
 	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
 	globalLogger = logger;
@@ -41,7 +44,13 @@ async function main() {
 	}
 }
 
+/**
+ * Installs signal handlers that cancel prompts and flush logs before exiting.
+ */
 function setupGracefulShutdown(logger: any) {
+	/**
+	 * Flushes the current prompt and logger state before exiting with a signal code.
+	 */
 	const shutdown = async (code: number) => {
 		if (isShuttingDown) {
 			process.exit(code);

@@ -2,6 +2,9 @@ import dedent from "dedent";
 import { code } from "@/shared/visuals";
 import type { ScaffoldingPlan } from "./plan";
 
+/**
+ * Builds the package manager command used to install dependencies or run a bare install.
+ */
 export function getInstallCommand(
 	pm: string,
 	deps: string[],
@@ -19,6 +22,9 @@ export function getInstallCommand(
 	}
 }
 
+/**
+ * Returns the framework usage instruction shown after scaffolding.
+ */
 export function getUsageInstructions(plan: ScaffoldingPlan): string {
 	if (plan.metadata.framework === "vite") {
 		return `2. Access via ${code("import.meta.env.YOUR_VAR")}`;
@@ -29,6 +35,9 @@ export function getUsageInstructions(plan: ScaffoldingPlan): string {
 	return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}`;
 }
 
+/**
+ * Builds the final next steps note shown after a scaffolding run.
+ */
 export function getNextStepsNote(
 	plan: ScaffoldingPlan,
 	skillInstalled: boolean,
