@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import fsp from "node:fs/promises";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Executor } from "./executor";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 
@@ -93,7 +93,9 @@ describe("Executor", () => {
 	});
 
 	it("executes a plan for a new project (cloned template)", async () => {
-		vi.mocked(mockWorkspace.readFile).mockResolvedValue(JSON.stringify({ name: "old-name" }));
+		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
+			JSON.stringify({ name: "old-name" }),
+		);
 
 		const newProjectPlan: ScaffoldingPlan = {
 			...defaultPlan,
