@@ -1,4 +1,5 @@
 import { Logger } from "@/adapters";
+import type { InitInput } from "./commands/init";
 
 /**
  * Main CLI class that parses arguments and sets up the global execution context.
@@ -43,6 +44,22 @@ export class CLI {
 				isJson: this.isJson,
 				isYes: this.isYes,
 			});
+	}
+
+	get initInput(): InitInput {
+		const input: InitInput = {
+			isYes: this.isYes,
+			isForce: this.isForce,
+			isQuiet: this.isQuiet,
+			isAgent: this.isAgent,
+		};
+		if (this.template !== undefined) {
+			input.template = this.template;
+		}
+		if (this.name !== undefined) {
+			input.name = this.name;
+		}
+		return input;
 	}
 
 	private getFlagValue(long: string, short: string): string | undefined {

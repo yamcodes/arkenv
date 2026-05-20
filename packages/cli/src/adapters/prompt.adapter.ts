@@ -28,13 +28,13 @@ export class ClackPromptAdapter implements PromptPort {
 	}
 
 	async runWizard(
-		defaults?: {
-			mode?: ProjectOptions["mode"];
-			template?: string;
+		defaults?: Partial<
+			Pick<
+				ProjectOptions,
+				"mode" | "template" | "name" | "framework" | "bunFeatures"
+			>
+		> & {
 			templates?: Template[];
-			name?: string;
-			framework?: ProjectOptions["framework"];
-			bunFeatures?: ProjectOptions["bunFeatures"];
 			defaultEnvPath?: string;
 			tsConfig?: ParsedTsConfig | null;
 			envKeys?: string[];

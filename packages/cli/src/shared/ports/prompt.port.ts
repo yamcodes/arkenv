@@ -1,5 +1,5 @@
 import type { ProjectOptions } from "@/features/scaffold";
-import type { Template } from "../clients/registry.client";
+import type { Template } from "@/shared/clients/registry.client";
 import type { ParsedTsConfig } from "./project-scanner.port";
 
 /**
@@ -13,13 +13,13 @@ export type PromptPort = {
 		inactive?: string,
 	): Promise<boolean | null>;
 	runWizard(
-		defaults?: {
-			mode?: ProjectOptions["mode"];
-			template?: string;
+		defaults?: Partial<
+			Pick<
+				ProjectOptions,
+				"mode" | "template" | "name" | "framework" | "bunFeatures"
+			>
+		> & {
 			templates?: Template[];
-			name?: string;
-			framework?: ProjectOptions["framework"];
-			bunFeatures?: ProjectOptions["bunFeatures"];
 			defaultEnvPath?: string;
 			tsConfig?: ParsedTsConfig | null;
 			envKeys?: string[];

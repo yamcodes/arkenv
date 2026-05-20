@@ -29,16 +29,7 @@ async function main() {
 	}
 
 	try {
-		await initUseCase.execute(
-			shake({
-				isYes: cli.isYes,
-				isForce: cli.isForce,
-				isQuiet: cli.isQuiet,
-				isAgent: cli.isAgent,
-				template: cli.template,
-				name: cli.name,
-			}),
-		);
+		await initUseCase.execute(shake(cli.initInput));
 	} catch (error) {
 		try {
 			logger.fatal("An unexpected error occurred", error);
