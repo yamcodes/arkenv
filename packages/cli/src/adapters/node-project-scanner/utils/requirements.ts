@@ -19,12 +19,23 @@ function compareSemver(v1: string, v2: string): number {
 	return 0;
 }
 
+/**
+ * Normalizes a semver string by removing leading 'v' and ensuring it has 3 parts (major.minor.patch).
+ * @param version The version string to normalize.
+ * @returns The normalized version string, or null if it cannot be parsed.
+ */
 function normalizeVersion(version: string): string | null {
 	const match = version.trim().match(/^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
 	if (!match) return null;
 	return [match[1], match[2] ?? "0", match[3] ?? "0"].join(".");
 }
 
+/**
+ * Checks if a given TypeScript version range is compatible with a minimum version.
+ * @param range The version range string from package.json (e.g. "^5.1.0", ">=5.0.0").
+ * @param minVersion The minimum required TypeScript version.
+ * @returns True if the range specifies a version that is compatible with the minimum version.
+ */
 function isTypescriptRangeCompatible(
 	range: string,
 	minVersion: string,
@@ -55,6 +66,12 @@ function isTypescriptRangeCompatible(
 	});
 }
 
+/**
+ * Checks project requirements including Node.js version, package.json existence,
+ * TypeScript version, and tsconfig.json settings.
+ * @param cwd The current working directory to check. Defaults to process.cwd().
+ * @returns A promise that resolves to an array of requirement check results.
+ */
 export async function checkRequirements(
 	cwd = process.cwd(),
 ): Promise<RequirementCheckResult[]> {
