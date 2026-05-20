@@ -122,13 +122,13 @@ describe("runPromptWizard", () => {
 		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled");
 	});
 
-	it("should reject unknown template defaults", async () => {
+	it("should reject unknown example defaults", async () => {
 		await expect(
 			runPromptWizard(
 				{
 					mode: "new",
-					template: "with-vite-recat",
-					templates: [
+					example: "with-vite-recat",
+					examples: [
 						{
 							id: "basic",
 							name: "Basic",
@@ -140,14 +140,14 @@ describe("runPromptWizard", () => {
 				},
 				true,
 			),
-		).rejects.toThrow("Unknown template with-vite-recat");
+		).rejects.toThrow("Unknown example with-vite-recat");
 	});
 
 	it("should handle new project wizard with default name", async () => {
 		const mockCwd = path.join(os.tmpdir(), "my-cool-project");
 		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
 
-		const templates = [
+		const examples = [
 			{
 				id: "basic",
 				name: "Basic",
@@ -161,12 +161,12 @@ describe("runPromptWizard", () => {
 
 		const result = await runPromptWizard({
 			mode: "new",
-			templates,
+			examples,
 		});
 
 		expect(result?.mode).toBe("new");
 		expect(result?.name).toBe("my-cool-project");
-		expect(result?.template).toBe("basic");
+		expect(result?.example).toBe("basic");
 		expect(prompts.text).toHaveBeenCalledWith(
 			expect.objectContaining({
 				initialValue: "",

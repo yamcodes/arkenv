@@ -92,7 +92,7 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
-	it("executes a plan for a new project (cloned template)", async () => {
+	it("executes a plan for a new project (cloned example)", async () => {
 		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
 			JSON.stringify({ name: "old-name" }),
 		);
@@ -107,7 +107,7 @@ describe("Executor", () => {
 			},
 			clone: {
 				repository: "https://github.com/yamcodes/arkenv.git",
-				template: "basic",
+				example: "basic",
 				targetName: "my-project",
 			},
 		};

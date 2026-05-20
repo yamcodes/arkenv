@@ -12,7 +12,7 @@ export type PackageManager = "pnpm" | "yarn" | "npm" | "bun";
  */
 export type ProjectOptions = {
 	mode?: "existing" | "new";
-	template?: string;
+	example?: string;
 	name?: string;
 	path: string;
 	validator: Validator;
@@ -68,13 +68,13 @@ export type ScaffoldingPlan = {
 		packageManager: PackageManager;
 		importPath: string;
 		mode: "existing" | "new";
-		template?: string;
+		example?: string;
 		name?: string;
 	};
 	/** Git clone information for new project flow */
 	clone?: {
 		repository: string;
-		template: string;
+		example: string;
 		targetName: string;
 	};
 };

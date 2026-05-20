@@ -63,7 +63,7 @@ describe("InitUseCase", () => {
 		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(true);
 		vi.mocked(prompt.runWizard).mockResolvedValue({
 			mode: "new",
-			template: "basic",
+			example: "basic",
 			name: "my-project",
 			path: "./src/env.ts",
 			validator: "arktype",
@@ -82,7 +82,7 @@ describe("InitUseCase", () => {
 		expect(prompt.runWizard).toHaveBeenCalledWith(
 			expect.objectContaining({
 				mode: "new",
-				templates: expect.any(Array),
+				examples: expect.any(Array),
 			}),
 			false,
 		);
@@ -110,7 +110,7 @@ describe("InitUseCase", () => {
 		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
 		vi.mocked(prompt.runWizard).mockResolvedValue({
 			mode: "new",
-			template: "basic",
+			example: "basic",
 			name: "my-project",
 			path: "./src/env.ts",
 			validator: "arktype",

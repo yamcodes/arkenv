@@ -3,13 +3,13 @@ import path from "node:path";
 import type { Workspace } from "./plan";
 
 /**
- * Clones a template example into the current working directory and rewrites its package name.
+ * Clones a example example into the current working directory and rewrites its package name.
  */
-export async function cloneTemplate(
+export async function cloneExample(
 	workspace: Workspace,
 	cloneInfo: {
 		repository: string;
-		template: string;
+		example: string;
 		targetName: string;
 	},
 ): Promise<void> {
@@ -27,7 +27,7 @@ export async function cloneTemplate(
 		]);
 
 		// Checkout the specific example
-		const examplePath = `examples/${cloneInfo.template}`;
+		const examplePath = `examples/${cloneInfo.example}`;
 		await workspace.execute("git", [
 			"-C",
 			tempDir,

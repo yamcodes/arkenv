@@ -24,10 +24,10 @@ export class HelpUseCase {
 		);
 		this.logger.log("  --agent, -a    Agent mode: --yes --quiet --json");
 		this.logger.log(
-			"  --template, -t Specify a template ID to scaffold from (New Project Flow)",
+			"  --example, -e Specify an example ID to scaffold from (when creating a new project)",
 		);
 		this.logger.log(
-			"  --name, -n     Specify the project name (New Project Flow)",
+			"  --name, -n     Specify the project name (when creating a new project)",
 		);
 		this.logger.log(
 			"  --force, -f    Force scaffolding in non-empty directories",

@@ -1,2 +1,2 @@
-export type { Template, TemplateRegistry } from "./registry.client";
+export type { Example, ExampleRegistry } from "./registry.client";
 export { RegistryClient } from "./registry.client";

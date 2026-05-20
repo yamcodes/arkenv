@@ -1,12 +1,12 @@
-export type Template = {
+export type Example = {
 	id: string;
 	name: string;
 	description?: string;
 	framework: "vite" | "bun-fullstack" | "vanilla";
 };
 
-export type TemplateRegistry = {
-	templates: Template[];
+export type ExampleRegistry = {
+	examples: Example[];
 };
 
 const REGISTRY_URL =
@@ -14,19 +14,19 @@ const REGISTRY_URL =
 
 export class RegistryClient {
 	/**
-	 * Fetches the published example template registry, falling back to bundled defaults offline.
+	 * Fetches the published example example registry, falling back to bundled defaults offline.
 	 */
-	async fetchRegistry(): Promise<TemplateRegistry> {
+	async fetchRegistry(): Promise<ExampleRegistry> {
 		try {
 			const response = await fetch(REGISTRY_URL);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch registry: ${response.statusText}`);
 			}
-			return (await response.json()) as TemplateRegistry;
+			return (await response.json()) as ExampleRegistry;
 		} catch {
 			// Fallback to a minimal registry if fetch fails or for offline use
 			return {
-				templates: [
+				examples: [
 					{
 						id: "basic",
 						name: "Basic",

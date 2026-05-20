@@ -13,7 +13,7 @@ export class CLI {
 	public isJson: boolean;
 	public isAgent: boolean;
 	public helpRequested: boolean;
-	public template: string | undefined;
+	public example: string | undefined;
 	public name: string | undefined;
 	public logger: Logger;
 
@@ -31,7 +31,7 @@ export class CLI {
 		this.helpRequested =
 			this.args.includes("--help") || this.args.includes("-h");
 
-		this.template = this.getFlagValue("--template", "-t");
+		this.example = this.getFlagValue("--example", "-e");
 		this.name = this.getFlagValue("--name", "-n");
 
 		if (this.isAgent) {
@@ -59,8 +59,8 @@ export class CLI {
 			isQuiet: this.isQuiet,
 			isAgent: this.isAgent,
 		};
-		if (this.template !== undefined) {
-			input.template = this.template;
+		if (this.example !== undefined) {
+			input.example = this.example;
 		}
 		if (this.name !== undefined) {
 			input.name = this.name;

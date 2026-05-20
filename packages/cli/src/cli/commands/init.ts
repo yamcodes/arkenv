@@ -18,7 +18,7 @@ export type InitInput = {
 	isForce: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
-	template?: string;
+	example?: string;
 	name?: string;
 };
 
@@ -248,20 +248,20 @@ export class InitUseCase {
 	}
 
 	/**
-	 * Collects configuration for scaffolding a project from an example template.
+	 * Collects configuration for scaffolding a project from an example example.
 	 */
 	private async collectNewProject(
 		input: InitInput,
 	): Promise<CollectedState | null> {
-		const { isYes, isAgent, template, name } = input;
+		const { isYes, isAgent, example, name } = input;
 
 		const registry = await this.registry.fetchRegistry();
 
 		const options = await this.prompt.runWizard(
 			shake({
 				mode: "new" as const,
-				templates: registry.templates,
-				template,
+				examples: registry.examples,
+				example,
 				name,
 			}),
 			isYes,

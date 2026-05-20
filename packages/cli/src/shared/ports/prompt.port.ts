@@ -1,5 +1,5 @@
 import type { ProjectOptions } from "@/features/scaffold";
-import type { Template } from "@/shared/clients";
+import type { Example } from "@/shared/clients";
 import type { ParsedTsConfig } from "./project-scanner.port";
 
 /**
@@ -22,10 +22,10 @@ export type PromptPort = {
 		defaults?: Partial<
 			Pick<
 				ProjectOptions,
-				"mode" | "template" | "name" | "framework" | "bunFeatures"
+				"mode" | "example" | "name" | "framework" | "bunFeatures"
 			>
 		> & {
-			templates?: Template[];
+			examples?: Example[];
 			defaultEnvPath?: string;
 			tsConfig?: ParsedTsConfig | null;
 			envKeys?: string[];

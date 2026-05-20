@@ -2,7 +2,7 @@ import path from "node:path";
 import { cancel, isCancel, text } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
-import type { Template } from "@/shared/clients";
+import type { Example } from "@/shared/clients";
 import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 
@@ -13,10 +13,10 @@ export async function runPromptWizard(
 	defaults?: Partial<
 		Pick<
 			ProjectOptions,
-			"mode" | "template" | "name" | "framework" | "bunFeatures"
+			"mode" | "example" | "name" | "framework" | "bunFeatures"
 		>
 	> & {
-		templates?: Template[];
+		examples?: Example[];
 		defaultEnvPath?: string;
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[];
@@ -35,15 +35,15 @@ export async function runPromptWizard(
 }
 
 /**
- * Collects options for scaffolding a new project from an example template.
+ * Collects options for scaffolding a new project from an example example.
  */
 async function runNewProjectWizard(
-	defaults?: Partial<Pick<ProjectOptions, "template" | "name">> & {
-		templates?: Template[];
+	defaults?: Partial<Pick<ProjectOptions, "example" | "name">> & {
+		examples?: Example[];
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
-	const templates = defaults?.templates || [];
+	const examples = defaults?.examples || [];
 	const defaultProjectName = path.basename(process.cwd());
 
 	let projectName: string;
@@ -67,32 +67,32 @@ async function runNewProjectWizard(
 		projectName = defaultProjectName;
 	}
 
-	let templateId = defaults?.template;
+	let exampleId = defaults?.example;
 
-	if (!templateId && !isYes) {
-		const selected = await steps.example(templates)();
+	if (!exampleId && !isYes) {
+		const selected = await steps.example(examples)();
 		const selectedResult = handlePrompt(selected);
 		if (selectedResult === null) return null;
-		templateId = selectedResult;
-	} else if (!templateId && isYes) {
-		templateId = "basic";
+		exampleId = selectedResult;
+	} else if (!exampleId && isYes) {
+		exampleId = "basic";
 	}
 
-	const template = templates.find((t) => t.id === templateId);
-	if (!template) {
-		const availableTemplates = templates.map((t) => t.id).join(", ");
+	const example = examples.find((t) => t.id === exampleId);
+	if (!example) {
+		const availableExamples = examples.map((t) => t.id).join(", ");
 		throw new Error(
-			`Unknown template ${templateId}. Available templates: ${availableTemplates}`,
+			`Unknown example ${exampleId}. Available examples: ${availableExamples}`,
 		);
 	}
 
 	return {
 		mode: "new",
-		template: template.id,
+		example: example.id,
 		name: projectName,
 		path: "./src/env.ts",
 		validator: "arktype",
-		framework: template.framework,
+		framework: example.framework,
 		language: "ts",
 		installSkill: false,
 	};

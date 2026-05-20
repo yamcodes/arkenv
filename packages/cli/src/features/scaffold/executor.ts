@@ -1,6 +1,6 @@
 import path from "node:path";
 import { code, symbol } from "@/shared/visuals";
-import { cloneTemplate } from "./cloner";
+import { cloneExample } from "./cloner";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 import { getInstallCommand, getNextStepsNote } from "./utils";
 
@@ -28,9 +28,9 @@ export class Executor {
 			// 0. Handle project cloning for New Project Flow
 			if (plan.clone) {
 				s.stop("Starting new project scaffolding...");
-				this.reporter.step(`Cloning template ${code(plan.clone.template)}...`);
+				this.reporter.step(`Cloning example ${code(plan.clone.example)}...`);
 
-				await cloneTemplate(this.workspace, plan.clone);
+				await cloneExample(this.workspace, plan.clone);
 
 				s.start("Scaffolding complete, finalizing...");
 			}
