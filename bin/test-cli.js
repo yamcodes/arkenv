@@ -47,9 +47,9 @@ if (mode !== "--new" && mode !== "--existing") {
 const isNew = mode === "--new";
 const suffix = crypto.randomBytes(2).toString("hex");
 const tempDirName = isNew
-	? `tmp-cli-new-${suffix}`
-	: `tmp-cli-existing-${suffix}`;
-const tempDir = path.resolve(rootDir, "apps", "playgrounds", tempDirName);
+	? `.tmp-cli-new-${suffix}`
+	: `.tmp-cli-existing-${suffix}`;
+const tempDir = path.resolve(rootDir, tempDirName);
 
 // 1. Build the CLI
 console.log("Building @arkenv/cli...");
@@ -68,10 +68,20 @@ fs.writeFileSync(
 	"ignore-workspace-root-check=true\n",
 );
 
+// Write a dummy pnpm-workspace.yaml to isolate the playground from the parent monorepo workspace
+fs.writeFileSync(path.join(tempDir, "pnpm-workspace.yaml"), "packages: []\n");
+
 // Change current working directory to the temporary directory
 process.chdir(tempDir);
 
-if (!isNew) {
+if (isNew) {
+	// Setup a minimal package.json to isolate package installation inside this playground
+	const packageJson = {
+		name: "test-new-project",
+		private: true,
+	};
+	fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2));
+} else {
 	// Setup existing project without ArkEnv
 	console.log(
 		"Setting up existing project files (package.json, tsconfig.json, .env.example)...",
@@ -106,19 +116,28 @@ if (!isNew) {
 	fs.writeFileSync(".env.example", envExampleContent);
 }
 
-// Clean up npm/pnpm lifecycle environment variables to prevent nested pnpm calls
-// from inheriting the workspace root context.
+// Clean up all npm/pnpm lifecycle environment variables to isolate nested calls
 for (const key of Object.keys(process.env)) {
-	if (key.startsWith("npm_") || key.startsWith("PNPM_") || key === "INIT_CWD") {
+	const lowerKey = key.toLowerCase();
+	if (
+		lowerKey.startsWith("npm_") ||
+		lowerKey.startsWith("pnpm_") ||
+		lowerKey === "init_cwd"
+	) {
 		delete process.env[key];
 	}
 }
 
+// Explicitly set the configuration bypass settings so that pnpm allows running inside the subfolder
+process.env.pnpm_config_ignore_workspace_root_check = "true";
+process.env.NPM_CONFIG_IGNORE_WORKSPACE_ROOT_CHECK = "true";
+
 // 3. Run the CLI
+const extraArgs = process.argv.slice(process.argv[2] === mode ? 3 : 2);
 console.log(`Running arkenv init inside ${tempDir}...\n`);
 try {
 	execSync(
-		`node ${path.resolve(rootDir, "packages/cli/dist/index.cjs")} init`,
+		`node ${path.resolve(rootDir, "packages/cli/dist/index.cjs")} init ${extraArgs.join(" ")}`,
 		{
 			cwd: tempDir,
 			stdio: "inherit",

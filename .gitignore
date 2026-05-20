@@ -195,3 +195,5 @@ gha-creds-*.json
 
 # CLI test playgrounds
 apps/playgrounds/tmp-cli-*
+apps/playgrounds/.tmp-cli-*
+/.tmp-cli-*
