@@ -196,4 +196,5 @@ gha-creds-*.json
 # CLI test playgrounds
 /tmp/
 
-
+# Antigravity CLI
+.antigravitycli/
