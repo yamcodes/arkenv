@@ -1,10 +1,6 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
-import type {
-	ParsedTsConfig,
-	ProjectScannerPort,
-	RequirementCheckResult,
-} from "@/shared/ports";
+import type { ParsedTsConfig, ProjectScannerPort } from "@/shared/ports";
 import {
 	detectBunFeatures,
 	detectFramework,
@@ -12,7 +8,6 @@ import {
 	suggestDefaultEnvPath,
 } from "./utils/detector";
 import { getEnvExampleKeys } from "./utils/env-scanner";
-import { checkRequirements } from "./utils/requirements";
 import { checkTsConfig, findTsConfig, loadTsConfig } from "./utils/tsconfig";
 
 /**
@@ -69,12 +64,6 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		parsed?: ParsedTsConfig;
 	}> {
 		return checkTsConfig(cwd);
-	}
-
-	async checkRequirements(
-		cwd = process.cwd(),
-	): Promise<RequirementCheckResult[]> {
-		return checkRequirements(cwd);
 	}
 
 	async detectFramework(

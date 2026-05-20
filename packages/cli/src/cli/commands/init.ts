@@ -80,34 +80,6 @@ export class InitUseCase {
 	): Promise<CollectedState | null> {
 		const { isYes, isForce, isAgent } = input;
 
-		const requirements = await this.scanner.checkRequirements(process.cwd());
-		const failures = requirements.filter((r) => r.status === "fail");
-		const warnings = requirements.filter((r) => r.status === "warn");
-
-		for (const warn of warnings) {
-			this.logger.warn(`${warn.requirement}: ${warn.message}`);
-		}
-
-		if (failures.length > 0) {
-			if (isForce) {
-				this.logger.warn(
-					"Technical requirements not met, but continuing due to --force flag.",
-				);
-				for (const fail of failures) {
-					this.logger.warn(`${fail.requirement}: ${fail.message}`);
-				}
-			} else {
-				this.logger.error("Technical requirements not met:");
-				for (const fail of failures) {
-					this.logger.error(
-						`- ${fail.requirement}: ${fail.message}${fail.current ? ` (Current: ${fail.current}, Expected: ${fail.expected})` : ""}`,
-					);
-				}
-				this.logger.info("Use --force to bypass these checks.");
-				return null;
-			}
-		}
-
 		let shouldUpdateTsConfig = false;
 		const tsConfig = await this.scanner.checkTsConfig();
 

@@ -7,13 +7,13 @@ import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 
 export async function runPromptWizard(
-	defaults?: {
-		mode?: ProjectOptions["mode"];
-		template?: string;
+	defaults?: Partial<
+		Pick<
+			ProjectOptions,
+			"mode" | "template" | "name" | "framework" | "bunFeatures"
+		>
+	> & {
 		templates?: Template[];
-		name?: string;
-		framework?: ProjectOptions["framework"];
-		bunFeatures?: ProjectOptions["bunFeatures"];
 		defaultEnvPath?: string;
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[];
@@ -32,30 +32,28 @@ export async function runPromptWizard(
 }
 
 async function runNewProjectWizard(
-	defaults?: {
-		template?: string;
+	defaults?: Partial<Pick<ProjectOptions, "template" | "name">> & {
 		templates?: Template[];
-		name?: string;
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
 	const templates = defaults?.templates || [];
 	const defaultProjectName = path.basename(process.cwd());
 
-	let projectName = defaults?.name;
-	if (!projectName && !isYes) {
+	let projectName: string;
+	if (defaults?.name) {
+		projectName = defaults.name;
+	} else if (!isYes) {
 		const name = await text({
 			message: "Project name:",
 			placeholder: defaultProjectName,
 			initialValue: "",
 		});
 
-		if (isCancel(name)) {
-			cancel("Operation cancelled");
-			return null;
-		}
-		projectName = (name as string) || defaultProjectName;
-	} else if (!projectName && isYes) {
+		const nameResult = handlePrompt(name);
+		if (nameResult === null) return null;
+		projectName = nameResult || defaultProjectName;
+	} else {
 		projectName = defaultProjectName;
 	}
 
@@ -67,11 +65,9 @@ async function runNewProjectWizard(
 
 	if (!templateId && !isYes) {
 		const selected = await steps.example(templates)();
-		if (isCancel(selected)) {
-			cancel("Operation cancelled");
-			return null;
-		}
-		templateId = selected;
+		const selectedResult = handlePrompt(selected);
+		if (selectedResult === null) return null;
+		templateId = selectedResult;
 	} else if (!templateId && isYes) {
 		templateId = "basic";
 	}
@@ -84,7 +80,7 @@ async function runNewProjectWizard(
 		);
 	}
 
-	return shake({
+	return {
 		mode: "new",
 		template: template.id,
 		name: projectName,
@@ -93,13 +89,11 @@ async function runNewProjectWizard(
 		framework: template.framework,
 		language: "ts",
 		installSkill: false,
-	}) as ProjectOptions;
+	};
 }
 
 async function runExistingProjectWizard(
-	defaults?: {
-		framework?: ProjectOptions["framework"];
-		bunFeatures?: ProjectOptions["bunFeatures"];
+	defaults?: Partial<Pick<ProjectOptions, "framework" | "bunFeatures">> & {
 		defaultEnvPath?: string;
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[];
@@ -176,9 +170,8 @@ async function runExistingProjectWizard(
 	];
 
 	for (const { key, fn } of stepsToRun) {
-		const result = await fn({ results });
-		if (result === null || (typeof result === "symbol" && isCancel(result))) {
-			cancel("Operation cancelled");
+		const result = handlePrompt(await fn({ results }));
+		if (result === null) {
 			return null;
 		}
 		results[key] = result;
@@ -191,11 +184,19 @@ async function runExistingProjectWizard(
 				: ["serve"]
 			: undefined;
 
-	return shake({
+	return shake<ProjectOptions>({
 		...results,
 		bunFeatures,
 		language: "ts",
 		installSkill: false,
 		envKeys: results.useEnvExample ? (detectedKeys ?? undefined) : undefined,
-	} as Partial<ProjectOptions>) as ProjectOptions;
+	});
+}
+
+function handlePrompt<T>(value: T | symbol | null): T | null {
+	if (value === null || isCancel(value)) {
+		cancel("Operation cancelled");
+		return null;
+	}
+	return value as T;
 }

@@ -48,7 +48,6 @@ describe("InitUseCase", () => {
 		scanner = {
 			hasPackageJson: vi.fn().mockResolvedValue(true),
 			isEmptyDirectory: vi.fn().mockResolvedValue(false),
-			checkRequirements: vi.fn().mockResolvedValue([]),
 			checkTsConfig: vi.fn().mockResolvedValue({ status: "strict" }),
 			detectFramework: vi.fn().mockResolvedValue("vanilla"),
 			suggestDefaultEnvPath: vi.fn().mockResolvedValue("./env.ts"),
@@ -86,88 +85,6 @@ describe("InitUseCase", () => {
 				templates: expect.any(Array),
 			}),
 			false,
-		);
-	});
-
-	it("should exit early if requirements fail", async () => {
-		vi.mocked(scanner.checkRequirements).mockResolvedValue([
-			{
-				status: "fail",
-				requirement: "Node.js Version",
-				message: "Node.js version must be >= 22.0.0",
-				current: "20.0.0",
-				expected: ">= 22.0.0",
-			},
-		]);
-
-		const result = await (useCase as any).collect({
-			isYes: true,
-			isForce: false,
-			isQuiet: true,
-			isAgent: false,
-		});
-
-		expect(result).toBeNull();
-		expect(logger.error).toHaveBeenCalledWith(
-			"Technical requirements not met:",
-		);
-		expect(logger.info).toHaveBeenCalledWith(
-			"Use --force to bypass these checks.",
-		);
-	});
-
-	it("should continue if requirements fail but --force is used", async () => {
-		vi.mocked(scanner.checkRequirements).mockResolvedValue([
-			{
-				status: "fail",
-				requirement: "Node.js Version",
-				message: "Node.js version must be >= 22.0.0",
-			},
-		]);
-		vi.mocked(prompt.runWizard).mockResolvedValue({
-			path: "./env.ts",
-			validator: "arktype",
-			framework: "vanilla",
-			language: "ts",
-		});
-
-		const result = await (useCase as any).collect({
-			isYes: true,
-			isForce: true,
-			isQuiet: true,
-			isAgent: false,
-		});
-
-		expect(result).not.toBeNull();
-		expect(logger.warn).toHaveBeenCalledWith(
-			"Technical requirements not met, but continuing due to --force flag.",
-		);
-	});
-
-	it("should display warnings if requirements have warnings", async () => {
-		vi.mocked(scanner.checkRequirements).mockResolvedValue([
-			{
-				status: "warn",
-				requirement: "package.json",
-				message: "package.json not found",
-			},
-		]);
-		vi.mocked(prompt.runWizard).mockResolvedValue({
-			path: "./env.ts",
-			validator: "arktype",
-			framework: "vanilla",
-			language: "ts",
-		});
-
-		await (useCase as any).collect({
-			isYes: true,
-			isForce: false,
-			isQuiet: true,
-			isAgent: false,
-		});
-
-		expect(logger.warn).toHaveBeenCalledWith(
-			"package.json: package.json not found",
 		);
 	});
 });
