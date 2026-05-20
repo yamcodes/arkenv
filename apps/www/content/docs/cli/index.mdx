@@ -58,10 +58,14 @@ The `init` command is the primary entry point for the CLI. It will:
 
 The CLI supports the following flags to customize the behavior:
 
-| Flag      | Alias | Description                                                                                                    |
-| --------- | ----- | -------------------------------------------------------------------------------------------------------------- |
-| `--yes`   | `-y`  | Skip all prompts and use defaults. Also passes the `--yes` flag to underlying processes (like skill installs). |
-| `--quiet` | `-q`  | Quiet mode. Suppresses output unless a command fails, in which case buffered logs are shown for debugging.     |
-| `--json`  | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).             |
-| `--agent` | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                |
-| `--help`  | `-h`  | Show the help message.                                                                                         |
+| Flag         | Alias | Description                                                                                                    |
+| ------------ | ----- | -------------------------------------------------------------------------------------------------------------- |
+| `--yes`      | `-y`  | Skip all prompts and use defaults. Also passes the `--yes` flag to underlying processes (like skill installs). |
+| `--quiet`    | `-q`  | Quiet mode. Suppresses output unless a command fails, in which case buffered logs are shown for debugging.     |
+| `--json`     | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).             |
+| `--agent`    | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                |
+| `--template` | `-t`  | Specify a template ID to scaffold from (New Project Flow).                                                     |
+| `--name`     | `-n`  | Specify the project name (New Project Flow).                                                                   |
+| `--force`    | `-f`  | Force scaffolding a new project in non-empty directories.                                                      |
+| `--help`     | `-h`  | Show the help message.                                                                                         |
+
