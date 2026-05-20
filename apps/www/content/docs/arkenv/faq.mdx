@@ -37,6 +37,8 @@ Modern runtimes and meta-frameworks (Vite, Bun, Next.js, Remix) already feature 
 
 ArkEnv intercepts the populated `process.env` (or a custom configuration object), evaluates it against your schema, and applies [automatic type coercion](/docs/arkenv/coercion).
 
+[//]: # "2. The Validator Story"
+
 ## Do I have to use ArkType?
 
 Not at all. While ArkEnv features native, zero-config integration with [ArkType](https://arktype.io/) (which we highly recommend for its performance and syntax), our core engine is entirely runtime-agnostic.
@@ -63,6 +65,8 @@ Writing custom validation wrappers around raw Zod schemas for every project intr
 1. **Automatic Coercion:** Environment variables are inherently read as strings by the OS. Manually chaining `z.coerce.number()` or parsing boolean strings (`"true"`/`"false"`) across dozens of variables is tedious. ArkEnv handles environmental type coercion automatically based on your target types.
 2. **Terminal-Optimized Diagnostics:** Zod's default error structures are deeply nested and optimized for JSON APIs. ArkEnv intercepts these errors and formats them explicitly for terminal readability so engineers can diagnose deployment failures instantly.
 3. **Framework Bundling Nuances:** In environments like Vite, client-side variables are statically replaced at build time via string substitution. ArkEnv’s dedicated plugins abstract this complexity away, ensuring compile-time and runtime compliance without manual hacking.
+
+[//]: # "3. Frameworks & Comparisons"
 
 ## Can I use ArkEnv with plain JavaScript?
 
@@ -94,6 +98,8 @@ We are actively researching isolated plugin architectures for meta-frameworks—
 - If your stack relies on **Vite, Node.js microservices, Bun runtimes, standalone CLI tools, or Solid Start**, ArkEnv offers a more tailored, plugin-driven developer experience with deep ecosystem hooks.
 
 Review our explicit architectural matrix in the [detailed comparison](/docs/arkenv/comparison).
+
+[//]: # "4. Tooling, Extras & Trust"
 
 ## What does the ArkEnv CLI do?
 
