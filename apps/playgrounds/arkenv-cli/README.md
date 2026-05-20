@@ -1,21 +1,22 @@
 # CLI Testing Playground
 
-This playground is configured for testing the `@arkenv/cli` package locally.
+This playground folder is the reference directory for the `@arkenv/cli` package, but to test the CLI's interactive wizard in a clean sandboxed environment, you should use the global testing utility.
 
 ## Testing the CLI
 
-To test the CLI's `init` wizard in this playground:
+From the root of the monorepo, run one of the following commands:
 
-1. **Run the CLI**: From the root of the monorepo, run:
-   ```bash
-   pnpm --filter=arkenv-cli-playground arkenv
-   ```
-   This will automatically rebuild the `@arkenv/cli` package and run the interactive initializer (`arkenv init`) in the context of this playground directory.
+- **Test in an ArkEnv-less existing project** (creates a folder with `package.json` + `tsconfig.json` + `.env.example` but no ArkEnv setup):
+  ```bash
+  pnpm test:cli --existing
+  ```
 
-2. **Clean / Reset changes**: After running the CLI and verifying the changes (such as updates to `tsconfig.json`, `vite.config.ts`, `package.json`, or the creation of `src/vite-env.d.ts`), you can discard all changes and reset the playground to a clean state by running:
-   ```bash
-   pnpm --filter=arkenv-cli-playground arkenv:clean
-   ```
+- **Test in a completely new/empty directory** (creates a completely blank directory and runs `init`):
+  ```bash
+  pnpm test:cli --new
+  ```
+
+These commands will automatically rebuild the CLI, configure a temporary playground directory under `apps/playgrounds/tmp-cli-*` (which is git-ignored and automatically cleaned up on every run), and launch the local CLI binary interactively inside it.
 
 ---
 
