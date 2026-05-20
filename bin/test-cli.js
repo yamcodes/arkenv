@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import crypto from "node:crypto";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -41,7 +42,10 @@ if (mode !== "--new" && mode !== "--existing") {
 }
 
 const isNew = mode === "--new";
-const tempDirName = isNew ? "tmp-cli-new" : "tmp-cli-existing";
+const suffix = crypto.randomBytes(2).toString("hex");
+const tempDirName = isNew
+	? `tmp-cli-new-${suffix}`
+	: `tmp-cli-existing-${suffix}`;
 const tempDir = path.resolve(rootDir, "apps", "playgrounds", tempDirName);
 
 // 1. Build the CLI
