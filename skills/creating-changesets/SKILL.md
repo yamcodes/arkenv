@@ -34,11 +34,11 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 Under standard Changesets behavior for pre-1.0.0 (`v0`) packages, version bumps are mapped down one level to respect the instability of pre-1.0.0 SemVer (where the second digit is the breaking release/major-equivalent indicator).
 
-| Changeset Type | When to Use | v0 Version Bump (e.g., from `0.0.10` or `0.11.0`) | v1+ Version Bump |
-| :--- | :--- | :--- | :--- |
-| `patch` | Bug fixes, refactoring, dependency updates | Bumps **Patch** (`0.0.10` → `0.0.11` / `0.11.0` → `0.11.1`) | `1.0.0` → `1.0.1` |
-| `minor` | New features, non-breaking API additions | Bumps **Patch** (`0.0.10` → `0.0.11` / `0.11.0` → `0.11.1`) | `1.0.0` → `1.1.0` |
-| `major` | **Breaking changes** (in v0) or v1 transition | Bumps **Minor** (`0.0.10` → `0.1.0` / `0.11.0` → `0.12.0`) | `1.0.0` → `2.0.0` |
+| Changeset Type | When to Use                                   | v0 Version Bump (e.g., from `0.0.10` or `0.11.0`)           | v1+ Version Bump  |
+| :------------- | :-------------------------------------------- | :---------------------------------------------------------- | :---------------- |
+| `patch`        | Bug fixes, refactoring, dependency updates    | Bumps **Patch** (`0.0.10` → `0.0.11` / `0.11.0` → `0.11.1`) | `1.0.0` → `1.0.1` |
+| `minor`        | New features, non-breaking API additions      | Bumps **Patch** (`0.0.10` → `0.0.11` / `0.11.0` → `0.11.1`) | `1.0.0` → `1.1.0` |
+| `major`        | **Breaking changes** (in v0) or v1 transition | Bumps **Minor** (`0.0.10` → `0.1.0` / `0.11.0` → `0.12.0`)  | `1.0.0` → `2.0.0` |
 
 ## Decision Guide (v0 Rules)
 
@@ -72,6 +72,7 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 To determine if a CLI change is a breaking change (requiring a `major` changeset bump in v0 to increment the minor version):
 
 ### Breaking (Requires `major` in v0):
+
 - **Removing** or **renaming** an existing command, subcommand, or option/flag.
 - Changing a parameter from **optional to required**.
 - Changing a parameter's **data type** (e.g. changing `--foo` from a boolean flag to requiring a string).
@@ -80,6 +81,7 @@ To determine if a CLI change is a breaking change (requiring a `major` changeset
 - Bumping **minimum engine requirements** (e.g. dropping support for Node.js 18).
 
 ### Non-Breaking / Features (Use `minor` in v0):
+
 - Adding **new commands** or subcommands.
 - Adding **new optional options or flags**.
 - Enhancing interactive prompt interfaces (as long as non-interactive fallback flags remain intact).
