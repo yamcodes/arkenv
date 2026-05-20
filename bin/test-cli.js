@@ -59,6 +59,15 @@ if (fs.existsSync(tempDir)) {
 }
 fs.mkdirSync(tempDir, { recursive: true });
 
+// Write .npmrc to prevent pnpm from complaining about workspace root installation
+fs.writeFileSync(
+	path.join(tempDir, ".npmrc"),
+	"ignore-workspace-root-check=true\n",
+);
+
+// Change current working directory to the temporary directory
+process.chdir(tempDir);
+
 if (!isNew) {
 	// Setup existing project without ArkEnv
 	console.log(
@@ -76,10 +85,7 @@ if (!isNew) {
 			typescript: "^5.0.0",
 		},
 	};
-	fs.writeFileSync(
-		path.join(tempDir, "package.json"),
-		JSON.stringify(packageJson, null, 2),
-	);
+	fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2));
 
 	const tsconfigJson = {
 		compilerOptions: {
@@ -89,15 +95,12 @@ if (!isNew) {
 			strict: true,
 		},
 	};
-	fs.writeFileSync(
-		path.join(tempDir, "tsconfig.json"),
-		JSON.stringify(tsconfigJson, null, 2),
-	);
+	fs.writeFileSync("tsconfig.json", JSON.stringify(tsconfigJson, null, 2));
 
 	// Add an example .env.example file to test key detection
 	const envExampleContent =
 		"PORT=8000\nDATABASE_URL=postgresql://localhost:5432/mydb\n";
-	fs.writeFileSync(path.join(tempDir, ".env.example"), envExampleContent);
+	fs.writeFileSync(".env.example", envExampleContent);
 }
 
 // 3. Run the CLI
