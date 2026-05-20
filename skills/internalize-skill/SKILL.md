@@ -55,6 +55,7 @@ Use code edits or `awk` to update `SKILL.md` frontmatter. The logic should:
 - Insert or merge the `metadata` block to ensure `internal: true`, plus any specified attribution fields.
 
 Example of expected final frontmatter structure:
+
 ```yaml
 ---
 name: arkenv-changesets
