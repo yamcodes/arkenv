@@ -11,15 +11,18 @@ The `tooling/` directory is designed for:
 - **Build tools** and utilities that don't belong in `packages/`
 - **CI/CD helpers** and automation scripts
 
-## Key Differences from `packages/`
+## Key Differences Across Directories
 
-| Aspect           | `packages/`                     | `tooling/`                |
-| ---------------- | ------------------------------- | ------------------------- |
-| **Purpose**      | Published npm packages          | Development/testing tools |
-| **Changesets**   | ✅ Included in releases          | ❌ Ignored in releases     |
-| **Publishing**   | ✅ Published to npm              | ❌ Not published           |
-| **Dependencies** | Production dependencies         | Development dependencies  |
-| **Examples**     | `arkenv`, `@arkenv/vite-plugin` | `playwright-www`          |
+| Aspect              | `packages/`                                    | `apps/`                                                   | `tooling/`                                     |
+| :------------------ | :--------------------------------------------- | :-------------------------------------------------------- | :--------------------------------------------- |
+| **Purpose**         | Published npm libraries, plugins, or CLIs      | Private user-facing apps or local playgrounds             | Development, testing, and CI/CD infrastructure |
+| **Changesets**      | ✅ Versioned and released                       | ❌ Ignored in releases                                     | ❌ Ignored in releases                          |
+| **Publishing**      | ✅ Published to npm registry                    | ❌ Not published                                           | ❌ Not published                                |
+| **Target Audience** | End-users consuming the NPM packages           | End-users browsing the docs or developers testing locally | Developers maintaining the monorepo            |
+| **Examples**        | `arkenv`, `@arkenv/cli`, `@arkenv/vite-plugin` | `www` (Next.js docs), `playgrounds/*`                     | `playwright-www` (E2E tests)                   |
+
+> [!NOTE]
+> Even though `@arkenv/cli` is an executable command-line tool and not a programmatically-imported library, it resides under `packages/` because it is published to npm for end-users (e.g., via `npx @arkenv/cli`). In contrast, internal development scripts and test orchestrations live in `tooling/`.
 
 ## Structure
 
