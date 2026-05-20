@@ -48,6 +48,10 @@
 			"name": "🛠️ playwright"
 		},
 		{
+			"path": "tmp",
+			"name": "🕒 temporary"
+		},
+		{
 			"path": "apps/www",
 			"name": "🚀 www"
 		},
