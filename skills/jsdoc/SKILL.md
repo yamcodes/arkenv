@@ -1,6 +1,8 @@
 ---
 name: jsdoc
 description: "Use this skill to automatically write or fix JSDoc comments for JavaScript/TypeScript code. It handles requests to document code at any scope: a single function, all functions in a file, or just the new and changed functions in a pull request."
+metadata:
+  internal: true
 ---
 
 # JSDoc Generation Skill
