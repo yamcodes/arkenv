@@ -374,22 +374,6 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
-  apps/playgrounds/tmp-cli-existing:
-    dependencies:
-      arkenv:
-        specifier: ^0.11.0
-        version: 0.11.0(arktype@2.2.0)
-      arktype:
-        specifier: 'catalog:'
-        version: 2.2.0
-      react:
-        specifier: ^19.0.0
-        version: 19.2.5
-    devDependencies:
-      typescript:
-        specifier: ^5.0.0
-        version: 5.9.3
-
   apps/playgrounds/vite:
     dependencies:
       '@arkenv/vite-plugin':
@@ -5245,14 +5229,6 @@ packages:
   arkdark@5.4.2:
     resolution: {integrity: sha512-AMk8Jmrgo4X9TJtjwIa7K1zQqHh1OBzSU129IhB5jetFh6mMAhqT0QqyYQshB+4XEvtDeNjtfry+1XiXAoLYNg==}
     engines: {vscode: ^1.0.0}
-
-  arkenv@0.11.0:
-    resolution: {integrity: sha512-XLVk3uiNRwlaqJiRWqVGz5y75P30DczxuupzVz3EEbs2j539ftwusvlK+5y/MOIerUbskSpsm6c6B61YMr/UPA==}
-    peerDependencies:
-      arktype: ^2.1.22
-    peerDependenciesMeta:
-      arktype:
-        optional: true
 
   arkregex@0.0.4:
     resolution: {integrity: sha512-biS/FkvSwQq59TZ453piUp8bxMui11pgOMV9WHAnli1F8o0ayNCZzUwQadL/bGIUic5TkS/QlPcyMuI8ZIwedQ==}
@@ -14184,10 +14160,6 @@ snapshots:
   aria-query@5.3.2: {}
 
   arkdark@5.4.2: {}
-
-  arkenv@0.11.0(arktype@2.2.0):
-    optionalDependencies:
-      arktype: 2.2.0
 
   arkregex@0.0.4:
     dependencies:

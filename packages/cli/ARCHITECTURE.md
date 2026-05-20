@@ -74,4 +74,4 @@ From the monorepo root:
   pnpm test:cli --new
   ```
 
-These commands will automatically rebuild the CLI, configure the temporary directory under `apps/playgrounds/tmp-cli-*` (which is git-ignored), and launch the local CLI binary interactively inside it.
+These commands will automatically rebuild the CLI, create a temporary directory under the repo root at `tmp/new-*` or `tmp/existing-*` (which is git-ignored), and launch the local CLI binary interactively inside it.
