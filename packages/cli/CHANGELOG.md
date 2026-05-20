@@ -1,5 +1,50 @@
 # @arkenv/cli
 
+## 0.1.0
+
+### Minor Changes
+
+- #### Enforce technical requirements during `arkenv init` _[`#1028`](https://github.com/yamcodes/arkenv/pull/1028) [`77e7235`](https://github.com/yamcodes/arkenv/commit/77e7235f082d3a8006694eb7a4c2ad4535427655) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The CLI now performs early checks for technical requirements and will exit with an error if they are not met.
+
+  The following requirements are now enforced:
+
+  - Node.js version >= 22
+  - TypeScript version >= 5.1
+  - `strict: true` in `tsconfig.json`
+  - `moduleResolution` set to `bundler`, `node16`, or `nodenext` in `tsconfig.json`
+  - Existence of `package.json`
+
+  **Migration**: Ensure your environment and configuration meet these requirements before running `arkenv init`. If you need to bypass these checks, or force scaffolding in a non-empty directory, use the `--force` (or `-f`) flag.
+
+### Patch Changes
+
+- #### Fix pluralization and 0-case in environment variable detection messages _[`1c4f566`](https://github.com/yamcodes/arkenv/commit/1c4f566d4812c4eaaef03f6cb3ec2598bb39d372) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now correctly handles singular and plural cases for detected environment variables (e.g., "1 key" vs "2 keys"). It also correctly suppresses the prompt when no variables are detected.
+
+- #### Add "New Project Flow" into `arkenv init` _[`#1030`](https://github.com/yamcodes/arkenv/pull/1030) [`216d232`](https://github.com/yamcodes/arkenv/commit/216d232d92eb0e777605766572a7898bcf283c2e) [@yamcodes](https://github.com/yamcodes)_
+
+  The `arkenv init` command now supports scaffolding complete projects from verified examples when run in an empty directory.
+
+  - **Smart Detection**: Automatically enters "New Project Flow" in empty directories or when `--force` is used.
+  - **Example Selection**: Interactive prompt to choose from curated examples (Vite, Bun, Zod, etc.).
+  - **New Flags**:
+    - `--example`, `-e`: Skip the prompt and specify an example ID (e.g., `with-vite-react`).
+    - `--name`, `-n`: Specify the project name for the scaffolded project.
+  - **Auto-Install**: Automatically detects and runs the package manager's installation command.
+
+  Usage:
+
+  ```bash
+  # Interactive flow in an empty directory
+  arkenv init
+
+  # Non-interactive scaffolding
+  arkenv init --example with-vite-react --name my-new-app
+  ```
+
 ## 0.0.10
 
 ### Patch Changes
