@@ -95,9 +95,27 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "arkenv/standard"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain('.default("development")');
 			expect(template).toContain(".default(3000)");
+			expect(template).toContain("export const env = arkenv({");
+			expect(template).not.toContain("export const Env =");
+		});
+
+		it("returns zod template for vite when validator is zod", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "vite" as any,
+				path: ".env.config.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import { type } from "arkenv"');
+			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain("export const Env = type({");
 		});
 
 		it("returns zod template with envKeys and defaults", () => {
@@ -124,6 +142,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "arkenv/standard"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("v.integer()");
 			expect(template).toContain(
@@ -132,6 +151,23 @@ describe("env-template", () => {
 			expect(template).toContain(
 				"v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)",
 			);
+			expect(template).toContain("export const env = arkenv({");
+			expect(template).not.toContain("export const Env =");
+		});
+
+		it("returns valibot template for vite when validator is valibot", () => {
+			const options = {
+				validator: "valibot" as any,
+				framework: "vite" as any,
+				path: ".env.config.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import { type } from "arkenv"');
+			expect(template).toContain('import * as v from "valibot"');
+			expect(template).toContain("export const Env = type({");
 		});
 
 		it("returns valibot template with envKeys and defaults", () => {

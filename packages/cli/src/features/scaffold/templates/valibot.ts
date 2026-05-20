@@ -15,6 +15,7 @@ export const valibotTemplate = (envKeys?: string[], framework?: string) => {
 
 	if (framework === "vite") {
 		return dedent /* ts */`
+	import { type } from "arkenv";
 	import * as v from "valibot";
 
 	/**
@@ -22,7 +23,7 @@ export const valibotTemplate = (envKeys?: string[], framework?: string) => {
 	 * In Vite, use \`@arkenv/vite-plugin\` to validate these at build-time
 	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
-	export const Env = v.object({
+	export const Env = type({
 ${schemaFields}
 	});
 	`;
@@ -30,6 +31,7 @@ ${schemaFields}
 
 	if (framework === "bun-fullstack") {
 		return dedent /* ts */`
+	import { type } from "arkenv";
 	import * as v from "valibot";
 
 	/**
@@ -37,7 +39,7 @@ ${schemaFields}
 	 * In Bun Fullstack, use \`@arkenv/bun-plugin\` to validate these at build-time
 	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
-	export const Env = v.object({
+	export const Env = type({
 ${schemaFields}
 	});
 	`;
@@ -50,10 +52,8 @@ ${schemaFields}
 	/**
 	 * Environment variable schema for server-side or runtime-only validation.
 	 */
-	export const Env = v.object({
+	export const env = arkenv({
 ${schemaFields}
 	});
-
-	export const env = arkenv(Env);
 `;
 };
