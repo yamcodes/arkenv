@@ -87,4 +87,44 @@ describe("InitUseCase", () => {
 			false,
 		);
 	});
+
+	it("should error if no package.json and not empty directory and not forced", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result).toBeNull();
+		expect(logger.error).toHaveBeenCalledWith(
+			expect.stringContaining("Directory is not empty and no"),
+		);
+	});
+
+	it("should bypass empty check and enter new project flow if no package.json, not empty directory, and isForce is true", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			mode: "new",
+			template: "basic",
+			name: "my-project",
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: true,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result.mode).toBe("new");
+	});
 });

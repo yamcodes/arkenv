@@ -76,7 +76,7 @@ export class InitUseCase {
 				`Directory is not empty and no ${code("package.json")} was found.`,
 			);
 			this.logger.info(
-				`To scaffold a new project, please run ${code("arkenv init")} in an empty directory.`,
+				`To scaffold a new project, run ${code("arkenv init")} in an empty directory or use ${code("--force")} to proceed anyway.`,
 			);
 			return null;
 		} finally {
