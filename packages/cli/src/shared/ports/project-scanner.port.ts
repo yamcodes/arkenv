@@ -12,6 +12,9 @@ export type ParsedTsConfig = {
 	[key: string]: any;
 };
 
+/**
+ * Represents the result of a single technical requirement check (e.g. Node.js version, TypeScript config).
+ */
 export type RequirementCheckResult = {
 	status: "pass" | "warn" | "fail";
 	requirement: string;
