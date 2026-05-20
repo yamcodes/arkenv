@@ -10,6 +10,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 
+// Force pnpm to allow installing packages in workspace subfolders when testing
+process.env.NPM_CONFIG_IGNORE_WORKSPACE_ROOT_CHECK = "true";
+
 let mode = process.argv[2];
 
 if (!mode) {
