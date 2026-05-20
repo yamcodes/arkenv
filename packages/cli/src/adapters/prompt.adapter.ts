@@ -2,7 +2,7 @@ import { confirm as clackConfirm, isCancel } from "@clack/prompts";
 import { shake } from "radashi";
 import { runPromptWizard } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";
-import type { Template } from "@/shared/clients/registry.client";
+import type { Template } from "@/shared/clients";
 import type { ParsedTsConfig, PromptPort } from "@/shared/ports";
 
 /**

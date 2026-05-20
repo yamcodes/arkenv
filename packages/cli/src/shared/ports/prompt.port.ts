@@ -1,5 +1,5 @@
 import type { ProjectOptions } from "@/features/scaffold";
-import type { Template } from "@/shared/clients/registry.client";
+import type { Template } from "@/shared/clients";
 import type { ParsedTsConfig } from "./project-scanner.port";
 
 /**

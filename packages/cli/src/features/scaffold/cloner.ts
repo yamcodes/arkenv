@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Workspace } from "./plan";
 
 /**
- * Clones a single example template into the current directory and rewrites project metadata.
+ * Clones a template example into the current working directory and rewrites its package name.
  */
 export async function cloneTemplate(
 	workspace: Workspace,
@@ -67,7 +67,7 @@ export async function cloneTemplate(
 }
 
 /**
- * Copies the immediate contents of a directory into another directory.
+ * Copies the direct contents of a source directory into a destination directory.
  */
 async function copyDirectoryContents(source: string, destination: string) {
 	const entries = await fsp.readdir(source);
