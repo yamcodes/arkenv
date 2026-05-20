@@ -3,16 +3,20 @@ import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
 
 export type { Reporter, Workspace };
 
+export type Validator = "arktype" | "zod" | "valibot";
+export type Framework = "vite" | "bun-fullstack" | "vanilla";
+export type PackageManager = "pnpm" | "yarn" | "npm" | "bun";
+
 /**
  * Options chosen by the user or inferred for scaffolding the project.
  */
 export type ProjectOptions = {
-	mode: "existing" | "new";
-	template?: string;
+	mode?: "existing" | "new";
+	example?: string;
 	name?: string;
 	path: string;
-	validator: "arktype" | "zod" | "valibot";
-	framework: "vite" | "bun-fullstack" | "vanilla";
+	validator: Validator;
+	framework: Framework;
 	bunFeatures?: ("serve" | "build")[];
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean;
@@ -40,7 +44,7 @@ export type ScaffoldingPlan = {
 	};
 	/** Dependencies to install */
 	install?: {
-		packageManager: "pnpm" | "yarn" | "npm" | "bun";
+		packageManager: PackageManager;
 		dependencies: string[];
 	};
 	/** Optional skill installation */
@@ -51,7 +55,7 @@ export type ScaffoldingPlan = {
 	};
 	/** Framework-specific bootstrapping */
 	bootstrap?: {
-		framework: "vite" | "bun-fullstack";
+		framework: Exclude<Framework, "vanilla">;
 		path?: string;
 		importPath?: string;
 		bunFeatures?: ("serve" | "build")[];
@@ -59,18 +63,18 @@ export type ScaffoldingPlan = {
 	/** Metadata for reporting */
 	metadata: {
 		displayPath: string;
-		framework: string;
-		validator: string;
-		packageManager: string;
+		framework: Framework;
+		validator: Validator;
+		packageManager: PackageManager;
 		importPath: string;
 		mode: "existing" | "new";
-		template?: string;
+		example?: string;
 		name?: string;
 	};
 	/** Git clone information for new project flow */
 	clone?: {
 		repository: string;
-		template: string;
+		example: string;
 		targetName: string;
 	};
 };
@@ -82,9 +86,9 @@ export type CollectedState = {
 	mode: "existing" | "new";
 	cwd: string;
 	options: ProjectOptions;
-	detectedFramework: "vite" | "bun-fullstack" | "vanilla";
+	detectedFramework: Framework;
 	detectedBunFeatures?: ("serve" | "build")[];
-	packageManager: "pnpm" | "yarn" | "npm" | "bun";
+	packageManager: PackageManager;
 	tsConfig: {
 		status: "strict" | "not_strict" | "not_found";
 		file?: string;

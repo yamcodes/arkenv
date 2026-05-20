@@ -1,61 +1,76 @@
 ---
 name: internalize-skill
-description: "Move newly installed skills from '.agents/skills/' to the project's root 'skills/' directory and mark them as internal by adding 'internal: true' to their metadata in 'SKILL.md'. Use this skill whenever a new skill is installed into '.agents/skills/' and needs to be promoted to a project-internal skill."
+description: "Move newly installed skills from '.agents/skills/' to the project's root 'skills/' directory, with options to rename and attribute them, and mark them as internal. Use this skill whenever a new skill is installed and needs to be promoted, renamed, or attributed as a project-internal skill."
 metadata:
   internal: true
 ---
 
 # Internalize Skill
 
-This skill automates the process of moving externally installed skills to the project's internal `skills/` directory and tagging them as internal.
+This skill automates the process of moving externally installed skills to the project's internal `skills/` directory, tagging them as internal, and optionally renaming and attributing them.
 
 ## Workflow
 
-1. **Identify Target Skills:**
-   - Check the `.agents/skills/` directory for subdirectories.
+1. **Identify Target Skills & Options:**
+   - Check the `.agents/skills/` (or `.agent/skills/`) directory for subdirectories.
    - If the user explicitly named a skill (e.g., "internalize the research skill"), focus only on that one.
-   - If the user was vague (e.g., "internalize the new skills"):
-     - If there is **only one** skill in `.agents/skills/`, proceed with that one.
-     - If there are **multiple** skills, you **MUST** ask the user for clarification (e.g., "I found multiple skills: X, Y, and Z. Which ones should I internalize?"). Do not make assumptions.
-2. **Move to Internal:** Move each identified and confirmed skill directory to the root `skills/` directory.
-3. **Update Metadata:** For each moved skill, update its `SKILL.md` file to include `internal: true` under a `metadata` key in the YAML frontmatter.
+   - If the user was vague, clarify which skill to target.
+   - **Ask the user** if they would like to:
+     - Rename the skill (e.g., change `creating-changesets` to `arkenv-changesets`).
+     - Add attribution details (e.g., `original_author`, original `origin` repository url).
+
+2. **Move/Rename to Internal:**
+   - Move the identified skill directory to `skills/<new-name>` (where `<new-name>` defaults to the original name if no rename is requested).
+
+3. **Update Frontmatter & Metadata:**
+   - Update the `name` field in the `SKILL.md` frontmatter to `<new-name>`.
+   - Update the `metadata` block to include `internal: true`.
+   - If attribution details were specified, add:
+     - `original_author`: The original author's name.
+     - `origin`: The URL or GitHub repository of the original skill.
+     - `author`: The current maintainer or team name.
+
+4. **Append Markdown Credits (Optional):**
+   - If the skill was renamed or customized, append a `## Credits` or `## Acknowledgements` section at the bottom of the skill's `SKILL.md` file linking back to the original source.
 
 ## Implementation Details
 
 The skill should rely on standard bash commands for efficiency and portability.
 
-### Moving Skills
+### Moving & Renaming Skills
 
 ```bash
-mv .agents/skills/<skill-name> skills/
+# If keeping the same name:
+mv .agents/skills/<old-name> skills/
+
+# If renaming:
+mv .agents/skills/<old-name> skills/<new-name>
 ```
 
 ### Updating Metadata
 
-Use `awk` to surgically insert the metadata if it doesn't exist. The logic should:
+Use code edits or `awk` to update `SKILL.md` frontmatter. The logic should:
 
-- Find the second `---` (end of frontmatter).
-- Check if `metadata:` already exists within the frontmatter.
-- If not, insert `metadata:` and `  internal: true` before the second `---`.
-- If `metadata:` exists but `internal: true` is missing, add it under `metadata:`.
+- Update `name: <new-name>` at the top.
+- Insert or merge the `metadata` block to ensure `internal: true`, plus any specified attribution fields.
 
-Example `awk` command for insertion:
+Example of expected final frontmatter structure:
 
-```bash
-awk '
-  /^---$/ { frontmatter_count++ }
-  /^metadata:/ { has_metadata = 1 }
-  frontmatter_count == 2 && !done && !has_metadata {
-    print "metadata:"
-    print "  internal: true"
-    done = 1
-  }
-  { print }
-' SKILL.md > SKILL.md.tmp && mv SKILL.md.tmp SKILL.md
+```yaml
+---
+name: arkenv-changesets
+description: Creates changesets for semantic versioning.
+metadata:
+  author: Yam Borodetsky
+  original_author: Ollie Shop
+  origin: github.com/ollieshop/creating-changesets
+  version: 1.0.0
+  internal: true
+---
 ```
 
 ## Safety Checks
 
-- Ensure `skills/` directory exists before moving.
-- Only process directories in `.agents/skills/`.
-- Verify `SKILL.md` exists before attempting to edit it.
+- Ensure the root `skills/` directory exists before moving.
+- Verify `SKILL.md` exists in the target directory before attempting to edit it.
+- Do not overwrite existing internal skills under `skills/` unless explicitly confirmed by the user.

@@ -14,7 +14,7 @@ Example:
 
 The script supports two directory layouts:
 
-    Workspace layout (from skill-creator iterations):
+    Workspace layout (from create-skill iterations):
     <benchmark_dir>/
     └── eval-N/
         ├── with_skill/

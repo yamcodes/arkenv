@@ -2,7 +2,7 @@ import path from "node:path";
 import { shake } from "radashi";
 import { code } from "@/cli/ui";
 import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
-import { RegistryClient } from "@/shared/clients/registry.client";
+import { RegistryClient } from "@/shared/clients";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
@@ -18,7 +18,7 @@ export type InitInput = {
 	isForce: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
-	template?: string;
+	example?: string;
 	name?: string;
 };
 
@@ -26,6 +26,9 @@ export type InitInput = {
  * Use case for initializing ArkEnv in a new or existing project.
  */
 export class InitUseCase {
+	/**
+	 * Creates the init use case with adapters for prompting, scanning, and filesystem work.
+	 */
 	constructor(
 		private readonly logger: LoggerPort,
 		private readonly workspace: WorkspacePort,
@@ -34,6 +37,9 @@ export class InitUseCase {
 		private readonly registry = new RegistryClient(),
 	) {}
 
+	/**
+	 * Collects init options, creates a scaffolding plan, and executes it.
+	 */
 	async execute(input: InitInput): Promise<boolean> {
 		const state = await this.collect(input);
 		if (!state) return false;
@@ -50,6 +56,9 @@ export class InitUseCase {
 		return true;
 	}
 
+	/**
+	 * Chooses the existing project or new project collection flow for the current directory.
+	 */
 	private async collect(input: InitInput): Promise<CollectedState | null> {
 		this.logger.interactiveStdout(true);
 
@@ -58,18 +67,18 @@ export class InitUseCase {
 			const isEmpty = await this.scanner.isEmptyDirectory();
 
 			if (hasPackageJson) {
-				return this.collectExistingProject(input);
+				return await this.collectExistingProject(input);
 			}
 
 			if (isEmpty || input.isForce) {
-				return this.collectNewProject(input);
+				return await this.collectNewProject(input);
 			}
 
 			this.logger.error(
 				`Directory is not empty and no ${code("package.json")} was found.`,
 			);
 			this.logger.info(
-				`To scaffold a new project, please run ${code("arkenv init")} in an empty directory.`,
+				`To scaffold a new project, run ${code("arkenv init")} in an empty directory or use ${code("--force")} to proceed anyway.`,
 			);
 			return null;
 		} finally {
@@ -77,6 +86,9 @@ export class InitUseCase {
 		}
 	}
 
+	/**
+	 * Collects configuration for installing ArkEnv into a project with `package.json`.
+	 */
 	private async collectExistingProject(
 		input: InitInput,
 	): Promise<CollectedState | null> {
@@ -265,18 +277,21 @@ export class InitUseCase {
 		});
 	}
 
+	/**
+	 * Collects configuration for scaffolding a project from an example example.
+	 */
 	private async collectNewProject(
 		input: InitInput,
 	): Promise<CollectedState | null> {
-		const { isYes, isAgent, template, name } = input;
+		const { isYes, isAgent, example, name } = input;
 
 		const registry = await this.registry.fetchRegistry();
 
 		const options = await this.prompt.runWizard(
 			shake({
 				mode: "new" as const,
-				templates: registry.templates,
-				template,
+				examples: registry.examples,
+				example,
 				name,
 			}),
 			isYes,
@@ -301,6 +316,9 @@ export class InitUseCase {
 		});
 	}
 
+	/**
+	 * Infers the active package manager from the current npm user agent.
+	 */
 	private detectPackageManager(): "pnpm" | "yarn" | "npm" | "bun" {
 		const userAgent = process.env.npm_config_user_agent || "";
 		if (userAgent.includes("pnpm")) return "pnpm";

@@ -2,32 +2,42 @@ import dedent from "dedent";
 import { code } from "@/shared/visuals";
 import type { ScaffoldingPlan } from "./plan";
 
+/**
+ * Builds the package manager command used to install dependencies or run a bare install.
+ */
 export function getInstallCommand(
 	pm: string,
 	deps: string[],
 ): [string, string[]] {
+	const isAdding = deps.length > 0;
 	switch (pm) {
 		case "pnpm":
-			return ["pnpm", ["add", ...deps]];
+			return ["pnpm", [isAdding ? "add" : "install", ...deps]];
 		case "yarn":
-			return ["yarn", ["add", ...deps]];
+			return ["yarn", [isAdding ? "add" : "install", ...deps]];
 		case "bun":
-			return ["bun", ["add", ...deps]];
+			return ["bun", [isAdding ? "add" : "install", ...deps]];
 		default:
 			return ["npm", ["install", ...deps]];
 	}
 }
 
+/**
+ * Returns the framework usage instruction shown after scaffolding.
+ */
 export function getUsageInstructions(plan: ScaffoldingPlan): string {
 	if (plan.metadata.framework === "vite") {
 		return `2. Access via ${code("import.meta.env.YOUR_VAR")}`;
 	}
-	if (plan.metadata.framework === "bun") {
+	if (plan.metadata.framework === "bun-fullstack") {
 		return `2. Access via ${code("process.env.YOUR_VAR")}`;
 	}
-	return `2. Import and use: import { env } from "${code(plan.metadata.importPath)}"`;
+	return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}`;
 }
 
+/**
+ * Builds the final next steps note shown after a scaffolding run.
+ */
 export function getNextStepsNote(
 	plan: ScaffoldingPlan,
 	skillInstalled: boolean,

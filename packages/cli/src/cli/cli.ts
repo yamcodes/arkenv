@@ -1,4 +1,5 @@
 import { Logger } from "@/adapters";
+import type { InitInput } from "./commands/init";
 
 /**
  * Main CLI class that parses arguments and sets up the global execution context.
@@ -12,10 +13,13 @@ export class CLI {
 	public isJson: boolean;
 	public isAgent: boolean;
 	public helpRequested: boolean;
-	public template: string | undefined;
+	public example: string | undefined;
 	public name: string | undefined;
 	public logger: Logger;
 
+	/**
+	 * Creates a CLI context from process arguments and optional adapters.
+	 */
 	constructor(argv: string[], options: { logger?: Logger } = {}) {
 		this.args = argv.slice(2);
 		this.command = this.args[0];
@@ -27,7 +31,7 @@ export class CLI {
 		this.helpRequested =
 			this.args.includes("--help") || this.args.includes("-h");
 
-		this.template = this.getFlagValue("--template", "-t");
+		this.example = this.getFlagValue("--example", "-e");
 		this.name = this.getFlagValue("--name", "-n");
 
 		if (this.isAgent) {
@@ -45,6 +49,28 @@ export class CLI {
 			});
 	}
 
+	/**
+	 * Returns the parsed input consumed by the init command.
+	 */
+	get initInput(): InitInput {
+		const input: InitInput = {
+			isYes: this.isYes,
+			isForce: this.isForce,
+			isQuiet: this.isQuiet,
+			isAgent: this.isAgent,
+		};
+		if (this.example !== undefined) {
+			input.example = this.example;
+		}
+		if (this.name !== undefined) {
+			input.name = this.name;
+		}
+		return input;
+	}
+
+	/**
+	 * Returns the value passed to a long or short CLI flag.
+	 */
 	private getFlagValue(long: string, short: string): string | undefined {
 		const index = this.args.findIndex((a) => a === long || a === short);
 		if (

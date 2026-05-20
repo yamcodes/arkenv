@@ -27,7 +27,7 @@
 			"name": "🎁 @arkenv/bun-plugin"
 		},
 		{
-			"path": "packages/arkenv-cli",
+			"path": "packages/cli",
 			"name": "🎁 @arkenv/cli"
 		},
 		{
@@ -46,6 +46,10 @@
 		{
 			"path": "tooling/playwright-www",
 			"name": "🛠️ playwright"
+		},
+		{
+			"path": "tmp",
+			"name": "🕒 temporary"
 		},
 		{
 			"path": "apps/www",

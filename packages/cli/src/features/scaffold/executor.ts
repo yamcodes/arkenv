@@ -1,5 +1,6 @@
 import path from "node:path";
 import { code, symbol } from "@/shared/visuals";
+import { cloneExample } from "./cloner";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 import { getInstallCommand, getNextStepsNote } from "./utils";
 
@@ -8,11 +9,17 @@ import { getInstallCommand, getNextStepsNote } from "./utils";
  * installing dependencies, and bootstrapping framework configurations.
  */
 export class Executor {
+	/**
+	 * Creates an executor with workspace operations and reporting for CLI users.
+	 */
 	constructor(
 		private workspace: Workspace,
 		private reporter: Reporter,
 	) {}
 
+	/**
+	 * Applies a scaffolding plan to the workspace and reports next steps for CLI users.
+	 */
 	async execute(plan: ScaffoldingPlan) {
 		const s = this.reporter.spinner();
 		s.start("Scaffolding ArkEnv configuration...");
@@ -21,58 +28,9 @@ export class Executor {
 			// 0. Handle project cloning for New Project Flow
 			if (plan.clone) {
 				s.stop("Starting new project scaffolding...");
-				this.reporter.step(`Cloning template ${code(plan.clone.template)}...`);
+				this.reporter.step(`Cloning example ${code(plan.clone.example)}...`);
 
-				const tempDir = path.join(process.cwd(), ".arkenv-temp");
-				await this.workspace.mkdir(tempDir, true);
-
-				try {
-					// Clone sparsely
-					await this.workspace.execute("git", [
-						"clone",
-						"--filter=blob:none",
-						"--sparse",
-						plan.clone.repository,
-						tempDir,
-					]);
-
-					// Checkout the specific example
-					const examplePath = `examples/${plan.clone.template}`;
-					await this.workspace.execute("git", [
-						"-C",
-						tempDir,
-						"sparse-checkout",
-						"set",
-						examplePath,
-					]);
-
-					// Move files to current directory
-					const fullExamplePath = path.join(tempDir, examplePath);
-					const files = await this.workspace.execute("ls", [
-						"-A",
-						fullExamplePath,
-					]);
-					// Note: This is a bit simplified, ideally we'd use a better way to move files
-					await this.workspace.execute("bash", [
-						"-c",
-						`cp -rn ${fullExamplePath}/. .`,
-					]);
-
-					// Update package.json name
-					const pkgPath = path.join(process.cwd(), "package.json");
-					if (await this.workspace.exists(pkgPath)) {
-						const pkgContent = await this.workspace.readFile(pkgPath);
-						const pkg = JSON.parse(pkgContent);
-						pkg.name = plan.clone.targetName;
-						await this.workspace.writeFile(
-							pkgPath,
-							JSON.stringify(pkg, null, 2),
-						);
-					}
-				} finally {
-					// Cleanup temp dir
-					await this.workspace.execute("rm", ["-rf", tempDir]);
-				}
+				await cloneExample(this.workspace, plan.clone);
 
 				s.start("Scaffolding complete, finalizing...");
 			}

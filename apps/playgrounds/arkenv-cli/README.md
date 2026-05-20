@@ -1,3 +1,25 @@
+# CLI Testing Playground
+
+This playground folder is the reference directory for the `@arkenv/cli` package, but to test the CLI's interactive wizard in a clean sandboxed environment, you should use the global testing utility.
+
+## Testing the CLI
+
+From the root of the monorepo, run one of the following commands:
+
+- **Test in an ArkEnv-less existing project** (creates a folder with `package.json` + `tsconfig.json` + `.env.example` but no ArkEnv setup):
+  ```bash
+  pnpm test:cli --existing
+  ```
+
+- **Test in a completely new/empty directory** (creates a completely blank directory and runs `init`):
+  ```bash
+  pnpm test:cli --new
+  ```
+
+These commands will automatically rebuild the CLI, create a temporary playground directory under the repo root at `tmp/new-*` or `tmp/existing-*` (which is git-ignored), and launch the local CLI binary interactively inside it.
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

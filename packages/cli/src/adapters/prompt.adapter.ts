@@ -2,13 +2,16 @@ import { confirm as clackConfirm, isCancel } from "@clack/prompts";
 import { shake } from "radashi";
 import { runPromptWizard } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";
-import type { Template } from "@/shared/clients/registry.client";
+import type { Example } from "@/shared/clients";
 import type { ParsedTsConfig, PromptPort } from "@/shared/ports";
 
 /**
  * Adapter implementation for the PromptPort using @clack/prompts.
  */
 export class ClackPromptAdapter implements PromptPort {
+	/**
+	 * Prompts the user for a boolean confirmation and returns `null` on cancel.
+	 */
 	async confirm(
 		message: string,
 		initialValue = true,
@@ -27,14 +30,17 @@ export class ClackPromptAdapter implements PromptPort {
 		return result;
 	}
 
+	/**
+	 * Runs the init wizard with prefilled defaults from project detection or flags.
+	 */
 	async runWizard(
-		defaults?: {
-			mode?: ProjectOptions["mode"];
-			template?: string;
-			templates?: Template[];
-			name?: string;
-			framework?: ProjectOptions["framework"];
-			bunFeatures?: ProjectOptions["bunFeatures"];
+		defaults?: Partial<
+			Pick<
+				ProjectOptions,
+				"mode" | "example" | "name" | "framework" | "bunFeatures"
+			>
+		> & {
+			examples?: Example[];
 			defaultEnvPath?: string;
 			tsConfig?: ParsedTsConfig | null;
 			envKeys?: string[];

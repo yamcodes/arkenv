@@ -24,28 +24,28 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 	const plan: ScaffoldingPlan = {
 		files: [],
-		metadata: {
+		metadata: shake({
 			displayPath: "",
 			framework: options.framework,
 			validator: options.validator,
 			packageManager,
 			importPath: "",
 			mode,
-			template: options.template,
+			example: options.example,
 			name: options.name,
-		},
+		}) as ScaffoldingPlan["metadata"],
 	};
 
 	if (mode === "new") {
 		plan.clone = {
 			repository: "https://github.com/yamcodes/arkenv.git",
-			template: options.template!,
+			example: options.example!,
 			targetName: options.name!,
 		};
 
 		plan.install = {
 			packageManager,
-			dependencies: [], // Dependencies are already in the template's package.json
+			dependencies: [], // Dependencies are already in the example's package.json
 		};
 
 		if (options.installSkill) {
@@ -55,6 +55,10 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 				isYes: state.isYes,
 			};
 		}
+
+		// Examples usually have the schema at src/env.ts
+		plan.metadata.displayPath = "./src/env.ts";
+		plan.metadata.importPath = "./src/env";
 
 		return plan;
 	}

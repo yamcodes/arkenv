@@ -2,18 +2,21 @@ import path from "node:path";
 import { cancel, isCancel, text } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
-import type { Template } from "@/shared/clients/registry.client";
+import type { Example } from "@/shared/clients";
 import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 
+/**
+ * Runs the appropriate init prompt flow for a new or existing project.
+ */
 export async function runPromptWizard(
-	defaults?: {
-		mode?: ProjectOptions["mode"];
-		template?: string;
-		templates?: Template[];
-		name?: string;
-		framework?: ProjectOptions["framework"];
-		bunFeatures?: ProjectOptions["bunFeatures"];
+	defaults?: Partial<
+		Pick<
+			ProjectOptions,
+			"mode" | "example" | "name" | "framework" | "bunFeatures"
+		>
+	> & {
+		examples?: Example[];
 		defaultEnvPath?: string;
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[];
@@ -31,70 +34,75 @@ export async function runPromptWizard(
 	return runExistingProjectWizard(defaults, isYes);
 }
 
+/**
+ * Collects options for scaffolding a new project from an example example.
+ */
 async function runNewProjectWizard(
-	defaults?: {
-		template?: string;
-		templates?: Template[];
-		name?: string;
+	defaults?: Partial<Pick<ProjectOptions, "example" | "name">> & {
+		examples?: Example[];
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
-	const templates = defaults?.templates || [];
-	let templateId = defaults?.template;
+	const examples = defaults?.examples || [];
+	const defaultProjectName = path.basename(process.cwd());
 
-	if (!templateId && !isYes) {
-		const selected = await steps.example(templates)();
-		if (isCancel(selected)) {
-			cancel("Operation cancelled");
-			return null;
-		}
-		templateId = selected;
-	} else if (!templateId && isYes) {
-		templateId = "basic";
-	}
-
-	const template = templates.find((t) => t.id === templateId) || {
-		id: "basic",
-		framework: "vanilla" as const,
-	};
-
-	let projectName = defaults?.name;
-	if (!projectName && !isYes) {
+	let projectName: string;
+	if (defaults?.name) {
+		projectName = defaults.name;
+	} else if (!isYes) {
 		const name = await text({
-			message: "What is your project name?",
-			placeholder: ".",
-			defaultValue: ".",
+			message: "Project name:",
+			placeholder: defaultProjectName,
+			initialValue: "",
 		});
 
-		if (isCancel(name)) {
-			cancel("Operation cancelled");
-			return null;
-		}
-		projectName = name as string;
-	} else if (!projectName && isYes) {
-		projectName = ".";
+		const nameResult = handlePrompt(name);
+		if (nameResult === null) return null;
+		projectName = nameResult || defaultProjectName;
+	} else {
+		projectName = defaultProjectName;
 	}
 
 	if (projectName === ".") {
-		projectName = path.basename(process.cwd());
+		projectName = defaultProjectName;
+	}
+
+	let exampleId = defaults?.example;
+
+	if (!exampleId && !isYes) {
+		const selected = await steps.example(examples)();
+		const selectedResult = handlePrompt(selected);
+		if (selectedResult === null) return null;
+		exampleId = selectedResult;
+	} else if (!exampleId && isYes) {
+		exampleId = "basic";
+	}
+
+	const example = examples.find((t) => t.id === exampleId);
+	if (!example) {
+		const availableExamples = examples.map((t) => t.id).join(", ");
+		throw new Error(
+			`Unknown example ${exampleId}. Available examples: ${availableExamples}`,
+		);
 	}
 
 	return {
 		mode: "new",
-		template: template.id,
+		example: example.id,
 		name: projectName,
 		path: "./src/env.ts",
 		validator: "arktype",
-		framework: template.framework,
+		framework: example.framework,
 		language: "ts",
 		installSkill: false,
 	};
 }
 
+/**
+ * Collects options for adding ArkEnv to a project that already has `package.json`.
+ */
 async function runExistingProjectWizard(
-	defaults?: {
-		framework?: ProjectOptions["framework"];
-		bunFeatures?: ProjectOptions["bunFeatures"];
+	defaults?: Partial<Pick<ProjectOptions, "framework" | "bunFeatures">> & {
 		defaultEnvPath?: string;
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[];
@@ -171,9 +179,8 @@ async function runExistingProjectWizard(
 	];
 
 	for (const { key, fn } of stepsToRun) {
-		const result = await fn({ results });
-		if (result === null || (typeof result === "symbol" && isCancel(result))) {
-			cancel("Operation cancelled");
+		const result = handlePrompt(await fn({ results }));
+		if (result === null) {
 			return null;
 		}
 		results[key] = result;
@@ -186,11 +193,22 @@ async function runExistingProjectWizard(
 				: ["serve"]
 			: undefined;
 
-	return shake({
+	return shake<ProjectOptions>({
 		...results,
 		bunFeatures,
 		language: "ts",
 		installSkill: false,
 		envKeys: results.useEnvExample ? (detectedKeys ?? undefined) : undefined,
-	} as Partial<ProjectOptions>) as ProjectOptions;
+	});
+}
+
+/**
+ * Normalizes prompt cancellations into `null` so wizard callers can stop safely.
+ */
+function handlePrompt<T>(value: T | symbol | null): T | null {
+	if (value === null || isCancel(value)) {
+		cancel("Operation cancelled");
+		return null;
+	}
+	return value as T;
 }

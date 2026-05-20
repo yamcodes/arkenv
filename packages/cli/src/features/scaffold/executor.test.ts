@@ -1,6 +1,15 @@
+import fsp from "node:fs/promises";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Executor } from "./executor";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
+
+vi.mock("node:fs/promises", () => ({
+	default: {
+		readdir: vi.fn().mockResolvedValue(["package.json"]),
+		cp: vi.fn().mockResolvedValue(undefined),
+		rm: vi.fn().mockResolvedValue(undefined),
+	},
+}));
 
 describe("Executor", () => {
 	const mockWorkspace: Workspace = {
@@ -67,6 +76,7 @@ describe("Executor", () => {
 			validator: "arktype",
 			packageManager: "pnpm",
 			importPath: "./env",
+			mode: "existing",
 		},
 	};
 
@@ -80,6 +90,68 @@ describe("Executor", () => {
 			"arkenv",
 		]);
 		expect(mockReporter.finish).toHaveBeenCalled();
+	});
+
+	it("executes a plan for a new project (cloned example)", async () => {
+		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
+			JSON.stringify({ name: "old-name" }),
+		);
+
+		const newProjectPlan: ScaffoldingPlan = {
+			...defaultPlan,
+			install: { packageManager: "bun", dependencies: [] },
+			metadata: {
+				...defaultPlan.metadata,
+				mode: "new",
+				packageManager: "bun",
+			},
+			clone: {
+				repository: "https://github.com/yamcodes/arkenv.git",
+				example: "basic",
+				targetName: "my-project",
+			},
+		};
+		await executor.execute(newProjectPlan);
+
+		// Assert git sparse-checkout and clone operations
+		expect(mockWorkspace.execute).toHaveBeenCalledWith("git", [
+			"clone",
+			"--filter=blob:none",
+			"--sparse",
+			"https://github.com/yamcodes/arkenv.git",
+			expect.stringContaining(".arkenv-temp"),
+		]);
+
+		expect(mockWorkspace.execute).toHaveBeenCalledWith("git", [
+			"-C",
+			expect.stringContaining(".arkenv-temp"),
+			"sparse-checkout",
+			"set",
+			"examples/basic",
+		]);
+
+		// Assert file copy and cleanup
+		expect(fsp.readdir).toHaveBeenCalledWith(
+			expect.stringContaining(".arkenv-temp/examples/basic"),
+		);
+		expect(fsp.cp).toHaveBeenCalledWith(
+			expect.stringContaining(".arkenv-temp/examples/basic/package.json"),
+			expect.stringContaining("package.json"),
+			expect.any(Object),
+		);
+		expect(fsp.rm).toHaveBeenCalledWith(
+			expect.stringContaining(".arkenv-temp"),
+			expect.any(Object),
+		);
+
+		// Assert package.json rewrite
+		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("package.json"),
+			expect.stringContaining('"name": "my-project"'),
+		);
+
+		// Assert dependency installation
+		expect(mockWorkspace.execute).toHaveBeenCalledWith("bun", ["install"]);
 	});
 
 	it("updates tsconfig when planned", async () => {

@@ -7,11 +7,17 @@
 			"skillPath": "skills/bulletproof-react-patterns/SKILL.md",
 			"computedHash": "21440284bed25f9ed947b2c09e7d5a1d0908717f9df85615cd267f6ba12a1638"
 		},
-		"creating-changesets": {
+		"create-changeset": {
 			"source": "saleor/configurator",
 			"sourceType": "github",
-			"skillPath": ".claude/skills/creating-changesets/SKILL.md",
-			"computedHash": "1c42991a47eb5faf803be1e3e2ae6f3b95ec2931baeb3137a4a1aa02f4036f2b"
+			"skillPath": "skills/create-changeset/SKILL.md",
+			"computedHash": "e2555f1af285f36cd74c21670306dce2cf290c966c2bb2b7603c8bdbe523b72e"
+		},
+		"create-skill": {
+			"source": "anthropics/skills",
+			"sourceType": "github",
+			"skillPath": "skills/create-skill/SKILL.md",
+			"computedHash": "0760b493a0633230ab63b27464e580a8074e5117586fa511a4e0547bdf529b80"
 		},
 		"diagnose": {
 			"source": "mattpocock/skills",
@@ -54,12 +60,6 @@
 			"sourceType": "github",
 			"skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
 			"computedHash": "0164a8b1ef998abca426056c6ed8a7716a9d4692fc6daa5378f68381a6dafd24"
-		},
-		"skill-creator": {
-			"source": "anthropics/skills",
-			"sourceType": "github",
-			"skillPath": "skills/skill-creator/SKILL.md",
-			"computedHash": "5ea13a6d9f0d4bb694405d79acd00cadec0d21bb138c4dd10fcf3c500cb835c2"
 		},
 		"tdd": {
 			"source": "mattpocock/skills",

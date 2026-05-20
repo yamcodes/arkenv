@@ -1,51 +1,52 @@
-export type Template = {
+export type Example = {
 	id: string;
 	name: string;
-	description: string;
+	description?: string;
 	framework: "vite" | "bun-fullstack" | "vanilla";
 };
 
-export type TemplateRegistry = {
-	templates: Template[];
+export type ExampleRegistry = {
+	examples: Example[];
 };
 
 const REGISTRY_URL =
 	"https://raw.githubusercontent.com/yamcodes/arkenv/main/examples/registry.json";
 
 export class RegistryClient {
-	async fetchRegistry(): Promise<TemplateRegistry> {
+	/**
+	 * Fetches the published example example registry, falling back to bundled defaults offline.
+	 */
+	async fetchRegistry(): Promise<ExampleRegistry> {
 		try {
 			const response = await fetch(REGISTRY_URL);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch registry: ${response.statusText}`);
 			}
-			return (await response.json()) as TemplateRegistry;
-		} catch (error) {
+			return (await response.json()) as ExampleRegistry;
+		} catch {
 			// Fallback to a minimal registry if fetch fails or for offline use
 			return {
-				templates: [
+				examples: [
 					{
 						id: "basic",
 						name: "Basic",
-						description: "A minimal ArkEnv setup",
+						description: "A minimal ArkEnv setup in Node.js",
 						framework: "vanilla",
 					},
 					{
 						id: "with-vite-react",
-						name: "Vite + React",
-						description: "ArkEnv integrated with Vite and React",
+						name: "React + Vite",
 						framework: "vite",
 					},
 					{
 						id: "with-bun-react",
-						name: "Bun + React",
-						description: "ArkEnv integrated with Bun and React",
+						name: "React + Bun fullstack dev server",
 						framework: "bun-fullstack",
 					},
 					{
 						id: "with-zod",
 						name: "Zod",
-						description: "ArkEnv with Zod validation",
+						description: "ArkEnv with Zod in Node.js",
 						framework: "vanilla",
 					},
 				],
