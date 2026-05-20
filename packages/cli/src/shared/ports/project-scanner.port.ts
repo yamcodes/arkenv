@@ -12,14 +12,6 @@ export type ParsedTsConfig = {
 	[key: string]: any;
 };
 
-export type RequirementCheckResult = {
-	status: "pass" | "warn" | "fail";
-	requirement: string;
-	message: string;
-	current?: string;
-	expected?: string;
-};
-
 export type ProjectScannerPort = {
 	isEmptyDirectory(dir?: string): Promise<boolean>;
 	hasPackageJson(dir?: string): Promise<boolean>;
@@ -39,7 +31,6 @@ export type ProjectScannerPort = {
 		file?: string;
 		parsed?: ParsedTsConfig;
 	}>;
-	checkRequirements(cwd?: string): Promise<RequirementCheckResult[]>;
 	detectFramework(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
