@@ -106,6 +106,14 @@ if (!isNew) {
 	fs.writeFileSync(".env.example", envExampleContent);
 }
 
+// Clean up npm/pnpm lifecycle environment variables to prevent nested pnpm calls
+// from inheriting the workspace root context.
+for (const key of Object.keys(process.env)) {
+	if (key.startsWith("npm_") || key.startsWith("PNPM_") || key === "INIT_CWD") {
+		delete process.env[key];
+	}
+}
+
 // 3. Run the CLI
 console.log(`Running arkenv init inside ${tempDir}...\n`);
 try {
