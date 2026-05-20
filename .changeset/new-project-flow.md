@@ -1,5 +1,5 @@
 ---
-"@arkenv/cli": minor
+"@arkenv/cli": patch
 ---
 
 #### Integrate "New Project Flow" into `arkenv init`
