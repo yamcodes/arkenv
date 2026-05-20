@@ -30,6 +30,9 @@ export class HelpUseCase {
 			"  --name, -n     Specify the project name (New Project Flow)",
 		);
 		this.logger.log(
+			"  --force, -f    Force scaffolding in non-empty directories",
+		);
+		this.logger.log(
 			"  --quiet, -q    Quiet mode: Suppress output, capture logs on failure",
 		);
 		this.logger.log("  --json, -j     Output structured JSON to stdout");
