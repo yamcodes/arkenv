@@ -40,9 +40,9 @@ export class InitUseCase {
 	/**
 	 * Collects init options, creates a scaffolding plan, and executes it.
 	 */
-	async execute(input: InitInput) {
+	async execute(input: InitInput): Promise<boolean> {
 		const state = await this.collect(input);
-		if (!state) return;
+		if (!state) return false;
 
 		const plan = createPlan(state);
 		const executor = new Executor(this.workspace, this.logger);
@@ -52,6 +52,8 @@ export class InitUseCase {
 		} catch (error) {
 			this.logger.fatal("Scaffolding failed.", error);
 		}
+
+		return true;
 	}
 
 	/**
@@ -65,11 +67,11 @@ export class InitUseCase {
 			const isEmpty = await this.scanner.isEmptyDirectory();
 
 			if (hasPackageJson) {
-				return this.collectExistingProject(input);
+				return await this.collectExistingProject(input);
 			}
 
 			if (isEmpty || input.isForce) {
-				return this.collectNewProject(input);
+				return await this.collectNewProject(input);
 			}
 
 			this.logger.error(
@@ -90,7 +92,35 @@ export class InitUseCase {
 	private async collectExistingProject(
 		input: InitInput,
 	): Promise<CollectedState | null> {
-		const { isYes, isAgent } = input;
+		const { isYes, isForce, isAgent } = input;
+
+		const requirements = await this.scanner.checkRequirements(process.cwd());
+		const failures = requirements.filter((r) => r.status === "fail");
+		const warnings = requirements.filter((r) => r.status === "warn");
+
+		for (const warn of warnings) {
+			this.logger.warn(`${warn.requirement}: ${warn.message}`);
+		}
+
+		if (failures.length > 0) {
+			if (isForce) {
+				this.logger.warn(
+					"Technical requirements not met, but continuing due to --force flag.",
+				);
+				for (const fail of failures) {
+					this.logger.warn(`${fail.requirement}: ${fail.message}`);
+				}
+			} else {
+				this.logger.error("Technical requirements not met:");
+				for (const fail of failures) {
+					this.logger.error(
+						`- ${fail.requirement}: ${fail.message}${fail.current ? ` (Current: ${fail.current}, Expected: ${fail.expected})` : ""}`,
+					);
+				}
+				this.logger.info("Use --force to bypass these checks.");
+				return null;
+			}
+		}
 
 		let shouldUpdateTsConfig = false;
 		const tsConfig = await this.scanner.checkTsConfig();

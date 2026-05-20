@@ -22,15 +22,15 @@ export class HelpUseCase {
 		this.logger.log(
 			"  --yes, -y      Skip prompts and use defaults (also passed to skill processes)",
 		);
+		this.logger.log(
+			"  --force, -f    Bypass technical requirement checks and force scaffolding",
+		);
 		this.logger.log("  --agent, -a    Agent mode: --yes --quiet --json");
 		this.logger.log(
 			"  --example, -e Specify an example ID to scaffold from (when creating a new project)",
 		);
 		this.logger.log(
 			"  --name, -n     Specify the project name (when creating a new project)",
-		);
-		this.logger.log(
-			"  --force, -f    Force scaffolding in non-empty directories",
 		);
 		this.logger.log(
 			"  --quiet, -q    Quiet mode: Suppress output, capture logs on failure",

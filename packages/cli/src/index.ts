@@ -30,9 +30,12 @@ async function main() {
 		await logger.flush();
 		process.exit(1);
 	}
-
 	try {
-		await initUseCase.execute(shake(cli.initInput));
+		const success = await initUseCase.execute(shake(cli.initInput));
+		if (!success) {
+			await logger.flush();
+			process.exit(1);
+		}
 	} catch (error) {
 		try {
 			logger.fatal("An unexpected error occurred", error);

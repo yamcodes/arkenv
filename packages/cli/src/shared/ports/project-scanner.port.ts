@@ -12,6 +12,17 @@ export type ParsedTsConfig = {
 	[key: string]: any;
 };
 
+/**
+ * Represents the result of a single technical requirement check (e.g. Node.js version, TypeScript config).
+ */
+export type RequirementCheckResult = {
+	status: "pass" | "warn" | "fail";
+	requirement: string;
+	message: string;
+	current?: string;
+	expected?: string;
+};
+
 export type ProjectScannerPort = {
 	/**
 	 * Reports whether a directory has no entries.
@@ -52,6 +63,10 @@ export type ProjectScannerPort = {
 		file?: string;
 		parsed?: ParsedTsConfig;
 	}>;
+	/**
+	 * Checks technical requirements for the project.
+	 */
+	checkRequirements(cwd?: string): Promise<RequirementCheckResult[]>;
 	/**
 	 * Detects the most likely runtime or bundler integration.
 	 */
