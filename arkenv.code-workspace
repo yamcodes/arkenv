@@ -27,7 +27,7 @@
 			"name": "🎁 @arkenv/bun-plugin"
 		},
 		{
-			"path": "packages/arkenv-cli",
+			"path": "packages/cli",
 			"name": "🎁 @arkenv/cli"
 		},
 		{
