@@ -3,12 +3,37 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { cancel, intro, isCancel, select } from "@clack/prompts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 
-const mode = process.argv[2];
+let mode = process.argv[2];
+
+if (!mode) {
+	intro("ArkEnv CLI Local Testing Utility");
+	const answer = await select({
+		message: "Which workflow would you like to test?",
+		options: [
+			{
+				value: "--existing",
+				label:
+					"Existing Project Flow (with package.json, tsconfig.json, .env.example)",
+			},
+			{
+				value: "--new",
+				label: "New Project Flow (completely empty directory)",
+			},
+		],
+	});
+
+	if (isCancel(answer)) {
+		cancel("Operation cancelled.");
+		process.exit(0);
+	}
+	mode = answer;
+}
 
 if (mode !== "--new" && mode !== "--existing") {
 	console.error("Usage: node bin/test-cli.js [--new | --existing]");
