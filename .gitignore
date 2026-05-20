@@ -198,3 +198,8 @@ gha-creds-*.json
 
 # Antigravity CLI
 .antigravitycli/
+
+# Skill workspace (eval outputs, grading, review artifacts)
+.agent/skills/*-workspace/
+skills/*-workspace/
+skills/create-skill/scripts/__pycache__/
