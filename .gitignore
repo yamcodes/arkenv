@@ -192,3 +192,8 @@ fabric.properties
 # So (say it with me) I'm going to ignore that for now
 
 gha-creds-*.json
+
+# CLI test playgrounds
+/tmp/
+
+
