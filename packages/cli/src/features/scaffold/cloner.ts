@@ -2,6 +2,9 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import type { Workspace } from "./plan";
 
+/**
+ * Clones a template example into the current working directory and rewrites its package name.
+ */
 export async function cloneTemplate(
 	workspace: Workspace,
 	cloneInfo: {
@@ -63,6 +66,9 @@ export async function cloneTemplate(
 	}
 }
 
+/**
+ * Copies the direct contents of a source directory into a destination directory.
+ */
 async function copyDirectoryContents(source: string, destination: string) {
 	const entries = await fsp.readdir(source);
 	await Promise.all(

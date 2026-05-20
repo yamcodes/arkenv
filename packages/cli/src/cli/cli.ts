@@ -17,6 +17,9 @@ export class CLI {
 	public name: string | undefined;
 	public logger: Logger;
 
+	/**
+	 * Creates a CLI context from process arguments and optional adapters.
+	 */
 	constructor(argv: string[], options: { logger?: Logger } = {}) {
 		this.args = argv.slice(2);
 		this.command = this.args[0];
@@ -46,6 +49,9 @@ export class CLI {
 			});
 	}
 
+	/**
+	 * Returns the parsed input consumed by the init command.
+	 */
 	get initInput(): InitInput {
 		const input: InitInput = {
 			isYes: this.isYes,
@@ -62,6 +68,9 @@ export class CLI {
 		return input;
 	}
 
+	/**
+	 * Returns the value passed to a long or short CLI flag.
+	 */
 	private getFlagValue(long: string, short: string): string | undefined {
 		const index = this.args.findIndex((a) => a === long || a === short);
 		if (
