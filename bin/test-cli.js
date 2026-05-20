@@ -46,10 +46,8 @@ if (mode !== "--new" && mode !== "--existing") {
 
 const isNew = mode === "--new";
 const suffix = crypto.randomBytes(2).toString("hex");
-const tempDirName = isNew
-	? `.tmp-cli-new-${suffix}`
-	: `.tmp-cli-existing-${suffix}`;
-const tempDir = path.resolve(rootDir, tempDirName);
+const tempDirName = isNew ? `new-${suffix}` : `existing-${suffix}`;
+const tempDir = path.resolve(rootDir, "tmp", tempDirName);
 
 // 1. Build the CLI
 console.log("Building @arkenv/cli...");
