@@ -51,6 +51,18 @@ export class Executor {
 					const fullExamplePath = path.join(tempDir, examplePath);
 					await copyDirectoryContents(fullExamplePath, process.cwd());
 
+					// Remove any copied lockfiles to ensure clean install with target package manager
+					const lockfiles = [
+						"package-lock.json",
+						"pnpm-lock.yaml",
+						"yarn.lock",
+						"bun.lockb",
+						"bun.lock",
+					];
+					for (const lockfile of lockfiles) {
+						await fsp.rm(path.join(process.cwd(), lockfile), { force: true });
+					}
+
 					// Update package.json name
 					const pkgPath = path.join(process.cwd(), "package.json");
 					if (await this.workspace.exists(pkgPath)) {
