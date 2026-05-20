@@ -21,7 +21,6 @@ export type RequirementCheckResult = {
 };
 
 export type ProjectScannerPort = {
-<<<<<<< HEAD
 	/**
 	 * Reports whether a directory has no entries.
 	 */
