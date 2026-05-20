@@ -66,9 +66,9 @@ If this step fails (some lint/formatting issues cannot be auto-fixed), you MUST 
 
 ### 5. Changeset Creation
 
-After validation passes, you MUST create a changeset using the `creating-changesets` skill.
+After validation passes, you MUST create a changeset using the `create-changeset` skill.
 
-- Determine the appropriate bump type (`patch` or `minor` for v0) based on the `creating-changesets` guidelines.
+- Determine the appropriate bump type (`patch` or `minor` for v0) based on the `create-changeset` guidelines.
 - Provide a clear, concise description starting with a `####` header.
 
 ### 6. Pull Request Creation

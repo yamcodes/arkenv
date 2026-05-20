@@ -1,5 +1,5 @@
 ---
-name: creating-changesets
+name: create-changeset
 description: "Creates changesets for semantic versioning. Use when adding changesets, preparing releases, determining version bumps (patch/minor/major), generating changelog entries, or documenting breaking changes."
 allowed-tools: "Read, Grep, Glob, Write, Edit, Bash(git:*), Bash(npx changeset:*)"
 metadata:
@@ -32,13 +32,11 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset Types
 
-Under standard Changesets behavior for pre-1.0.0 (`v0`) packages, version bumps are mapped down one level to respect the instability of pre-1.0.0 SemVer (where the second digit is the breaking release/major-equivalent indicator).
-
-| Changeset Type | When to Use                                   | v0 Version Bump (e.g., from `0.0.10` or `0.11.0`)           | v1+ Version Bump  |
-| :------------- | :-------------------------------------------- | :---------------------------------------------------------- | :---------------- |
-| `patch`        | Bug fixes, refactoring, dependency updates    | Bumps **Patch** (`0.0.10` → `0.0.11` / `0.11.0` → `0.11.1`) | `1.0.0` → `1.0.1` |
-| `minor`        | New features, non-breaking API additions      | Bumps **Patch** (`0.0.10` → `0.0.11` / `0.11.0` → `0.11.1`) | `1.0.0` → `1.1.0` |
-| `major`        | **Breaking changes** (in v0) or v1 transition | Bumps **Minor** (`0.0.10` → `0.1.0` / `0.11.0` → `0.12.0`)  | `1.0.0` → `2.0.0` |
+| Type    | When to Use                                | v0 Version Change (Current) | v1+ Version Change |
+| ------- | ------------------------------------------ | --------------------------- | ------------------ |
+| `patch` | Bug fixes, refactoring, dependency updates | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
+| `minor` | New features, **Breaking changes** (in v0) | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
+| `major` | **Avoid in v0** (unless going to v1.0.0)   | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
 
 ## Decision Guide (v0 Rules)
 
@@ -55,37 +53,17 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
 ### Use `minor` for:
 
-- New features (adds backward-compatible functionality)
-- New CLI commands (backward-compatible)
-- New configuration options (optional)
+- **Breaking changes** (Required in v0 for any breaking modification)
+- New features
+- New CLI commands
+- New configuration options
+- Enhanced functionality
+- New entity types support
 - Non-breaking API additions
 
-*Note: In Changesets, for a v0 package, a `minor` bump will result in a patch version increase (e.g., `0.0.10` → `0.0.11`). This is expected behavior.*
+### Use `major` ONLY for:
 
-### Use `major` for:
-
-- **Breaking changes** (Required in v0 for any breaking modification to bump the minor version, e.g. `0.0.10` → `0.1.0` or `0.11.0` → `0.12.0`).
-- Transitioning the project from `0.x.y` to `1.0.0`.
-
-## What is a Breaking Change for a CLI?
-
-To determine if a CLI change is a breaking change (requiring a `major` changeset bump in v0 to increment the minor version):
-
-### Breaking (Requires `major` in v0):
-
-- **Removing** or **renaming** an existing command, subcommand, or option/flag.
-- Changing a parameter from **optional to required**.
-- Changing a parameter's **data type** (e.g. changing `--foo` from a boolean flag to requiring a string).
-- Changing **exit codes** that scripts might rely on for flow control.
-- Changing **stdout/stderr output formats** in a way that breaks programmatic parsing (e.g., altering JSON structure).
-- Bumping **minimum engine requirements** (e.g. dropping support for Node.js 18).
-
-### Non-Breaking / Features (Use `minor` in v0):
-
-- Adding **new commands** or subcommands.
-- Adding **new optional options or flags**.
-- Enhancing interactive prompt interfaces (as long as non-interactive fallback flags remain intact).
-- Fixing logs, spelling, or messages.
+- Explicitly transitioning the project from v0.x.y to v1.0.0. **Do not use major for breaking changes in v0.**
 
 ## Creating a Changeset
 
