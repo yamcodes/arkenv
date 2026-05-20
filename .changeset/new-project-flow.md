@@ -2,7 +2,7 @@
 "@arkenv/cli": patch
 ---
 
-#### Integrate "New Project Flow" into `arkenv init`
+#### Add "New Project Flow" into `arkenv init`
 
 The `arkenv init` command now supports scaffolding complete projects from verified examples when run in an empty directory.
 
