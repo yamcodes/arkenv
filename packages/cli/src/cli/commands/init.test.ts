@@ -87,5 +87,4 @@ describe("InitUseCase", () => {
 			false,
 		);
 	});
-
 });

@@ -141,7 +141,6 @@ API_KEY=
 		});
 	});
 
-
 	describe("suggestDefaultEnvPath", () => {
 		it("suggests path based on rootDir in tsconfig", async () => {
 			const tsConfig = {
