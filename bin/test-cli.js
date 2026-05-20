@@ -82,7 +82,7 @@ if (!isNew) {
 			target: "ESNext",
 			module: "ESNext",
 			moduleResolution: "bundler",
-			strict: false,
+			strict: true,
 		},
 	};
 	fs.writeFileSync(
