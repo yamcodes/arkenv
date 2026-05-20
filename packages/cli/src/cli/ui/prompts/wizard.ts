@@ -193,6 +193,9 @@ async function runExistingProjectWizard(
 	});
 }
 
+/**
+ * Normalizes prompt cancellations into `null` so wizard callers can stop safely.
+ */
 function handlePrompt<T>(value: T | symbol | null): T | null {
 	if (value === null || isCancel(value)) {
 		cancel("Operation cancelled");
