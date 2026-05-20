@@ -1,5 +1,5 @@
 import { select } from "@clack/prompts";
-import type { Template } from "@/shared/clients/registry.client";
+import type { Template } from "@/shared/clients";
 
 export const example = (templates: Template[]) => async () => {
 	return select({

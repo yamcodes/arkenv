@@ -2,7 +2,7 @@ import path from "node:path";
 import { shake } from "radashi";
 import { code } from "@/cli/ui";
 import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
-import { RegistryClient } from "@/shared/clients/registry.client";
+import { RegistryClient } from "@/shared/clients";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
