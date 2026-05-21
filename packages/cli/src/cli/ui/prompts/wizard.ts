@@ -8,7 +8,7 @@ import { steps } from "./steps";
 
 /**
  * Run the appropriate init prompt flow for a new or existing project.
- * 
+ *
  * @param defaults Optional default values and configuration for the wizard
  * @param isYes Whether to run in non-interactive/auto-confirm mode
  * @returns The project options or null if cancelled
@@ -41,7 +41,7 @@ export async function runPromptWizard(
 
 /**
  * Collect option for scaffolding a new project from an example.
- * 
+ *
  * @param defaults Optional default values for the new project
  * @param isYes Whether to run in non-interactive/auto-confirm mode
  * @returns The project options or null if cancelled
@@ -128,7 +128,7 @@ async function runNewProjectWizard(
 
 /**
  * Collect option for adding ArkEnv to a project that already has `package.json`.
- * 
+ *
  * @param defaults Optional default values for the existing project
  * @param isYes Whether to run in non-interactive/auto-confirm mode
  * @returns The project options or null if cancelled
@@ -286,7 +286,7 @@ class CancelError extends Error {
 
 /**
  * Unwrap a prompt result, throwing a CancelError if the user cancelled the prompt.
- * 
+ *
  * @param value The prompt result that may be cancelled or null
  * @returns The unwrapped prompt value
  * @throws CancelError If the user cancelled the prompt or if the result is null
