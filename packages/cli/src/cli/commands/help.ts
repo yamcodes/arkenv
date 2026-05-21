@@ -2,6 +2,24 @@ import pc from "picocolors";
 import type { LoggerPort } from "@/shared/ports";
 import { version } from "../../../package.json";
 
+type HelpItem = {
+	left: string;
+	right: string;
+};
+
+/**
+ * Formats a list of key-value pairs (like options or commands) into columns,
+ * aligning the right column based on the longest left column value.
+ */
+function formatColumns(items: HelpItem[], leftPad = 2, colGap = 4): string[] {
+	const maxLeftLen = Math.max(...items.map((item) => item.left.length), 0);
+	const pad = " ".repeat(leftPad);
+	return items.map((item) => {
+		const rightPad = " ".repeat(maxLeftLen - item.left.length + colGap);
+		return `${pad}${item.left}${rightPad}${item.right}`;
+	});
+}
+
 /**
  * Use case for displaying the CLI help message.
  */
@@ -15,26 +33,53 @@ export class HelpUseCase {
 	 * Writes the CLI help text to the configured logger.
 	 */
 	async execute() {
+		const commands: HelpItem[] = [
+			{
+				left: "arkenv init [project-name]",
+				right: "Set up ArkEnv in your project",
+			},
+		];
+
+		const options: HelpItem[] = [
+			{
+				left: "--yes, -y",
+				right: "Skip prompts and use defaults (also passed to skill processes)",
+			},
+			{
+				left: "--force, -f",
+				right: "Bypass technical requirement checks and force scaffolding",
+			},
+			{
+				left: "--agent, -a",
+				right: "Agent mode: --yes --quiet --json",
+			},
+			{
+				left: "--example, -e",
+				right:
+					"Specify an example ID to scaffold from (when creating a new project)",
+			},
+			{
+				left: "--quiet, -q",
+				right: "Quiet mode: Suppress output, capture logs on failure",
+			},
+			{
+				left: "--json, -j",
+				right: "Output structured JSON to stdout",
+			},
+			{
+				left: "--help, -h",
+				right: "Show this help message",
+			},
+		];
+
 		this.logger.log(`ArkEnv CLI v${version}`);
 		this.logger.log(`\n${pc.bold("Usage:")}`);
-		this.logger.log(
-			"  arkenv init [project-name]    Set up ArkEnv in your project",
-		);
+		for (const line of formatColumns(commands)) {
+			this.logger.log(line);
+		}
 		this.logger.log(`\n${pc.bold("Options:")}`);
-		this.logger.log(
-			"  --yes, -y      Skip prompts and use defaults (also passed to skill processes)",
-		);
-		this.logger.log(
-			"  --force, -f    Bypass technical requirement checks and force scaffolding",
-		);
-		this.logger.log("  --agent, -a    Agent mode: --yes --quiet --json");
-		this.logger.log(
-			"  --example, -e Specify an example ID to scaffold from (when creating a new project)",
-		);
-		this.logger.log(
-			"  --quiet, -q    Quiet mode: Suppress output, capture logs on failure",
-		);
-		this.logger.log("  --json, -j     Output structured JSON to stdout");
-		this.logger.log("  --help, -h     Show this help message");
+		for (const line of formatColumns(options)) {
+			this.logger.log(line);
+		}
 	}
 }
