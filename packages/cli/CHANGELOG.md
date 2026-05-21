@@ -1,5 +1,66 @@
 # @arkenv/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- #### Replace `--name`/`-n` flag with `[project-name]` positional argument on `init` command _[`#1041`](https://github.com/yamcodes/arkenv/pull/1041) [`3c1c462`](https://github.com/yamcodes/arkenv/commit/3c1c462b3ac763dbe405a507fee71ef01a5a1e1c) [@yamcodes](https://github.com/yamcodes)_
+
+  The `init` command now accepts an optional `[project-name]` positional argument (e.g., `arkenv init my-new-project` or `arkenv init .`).
+
+  The `--name` and `-n` flags have been removed.
+
+  **BREAKING CHANGE**: The `--name` / `-n` flags are no longer supported and will result in a parsing error. Use the positional `[project-name]` argument instead.
+
+### Patch Changes
+
+- #### Fix working directory resolution when executing via monorepo scripts _[`169d9bf`](https://github.com/yamcodes/arkenv/commit/169d9bf3028a4ec50a8938742f635bae63286a3e) [@yamcodes](https://github.com/yamcodes)_
+
+  Ensure that the CLI processes paths and directory status checks relative to the directory where the command was initiated (`INIT_CWD`), rather than the monorepo root.
+
+  This fixes issues where running the CLI locally via workspace runners like `pnpm arkenv` from outside the workspace root failed with empty-directory checks.
+
+- #### Fix scaffolding templates for Zod and Valibot validators _[`#1034`](https://github.com/yamcodes/arkenv/pull/1034) [`1c0dbb9`](https://github.com/yamcodes/arkenv/commit/1c0dbb9d9fa8ca1e8b289b895ca8b3d0838a4ecd) [@yamcodes](https://github.com/yamcodes)_
+
+  Vite and Bun fullstack templates now wrap schemas in `type({...})`:
+
+  ```ts
+  import { type } from "arkenv";
+  import { z } from "zod";
+
+  export const Env = type({
+    PORT: z.coerce.number(),
+  });
+  ```
+
+  Vanilla templates now call `arkenv({...})` directly without wrapping:
+
+  ```ts
+  import arkenv from "arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.coerce.number(),
+  });
+  ```
+
+- #### `--example` now forces the new-project wizard regardless of the current directory _[`#1042`](https://github.com/yamcodes/arkenv/pull/1042) [`9116f33`](https://github.com/yamcodes/arkenv/commit/9116f3329ddf0203df046980afa13b2a218ccd1a) [@yamcodes](https://github.com/yamcodes)_
+
+  Previously, passing `--example` in a non-empty directory (or one that already has a
+  `package.json`) would silently fall through to the existing-project flow, ignoring the
+  flag entirely. The flag now always triggers the new-project wizard:
+
+  ```sh
+  # Works even in a non-empty directory or one with package.json
+  arkenv init --example basic
+  ```
+
+  **Special case – `arkenv init . --example basic`**: If you explicitly pass `.` as the
+  project name (or type it at the prompt) and the current directory is **not empty**, the
+  CLI aborts with a clear error instead of scaffolding into the dirty directory. When the
+  directory **is** empty, `.` is used for the current directory while the package name is
+  normalized to the current directory's basename as before.
+
 ## 0.1.0
 
 ### Minor Changes
