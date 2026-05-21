@@ -45,6 +45,9 @@ export class CLI {
 				for (const char of chars) {
 					expandedArgs.push(`-${char}`);
 				}
+				if (expansionValuedFlags.has(`-${chars[chars.length - 1]}`)) {
+					skipNext = true;
+				}
 			} else {
 				expandedArgs.push(arg);
 			}

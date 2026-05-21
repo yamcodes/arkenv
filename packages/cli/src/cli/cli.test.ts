@@ -129,6 +129,15 @@ describe("CLI parser", () => {
 			expect(cli.validationError).toBeUndefined();
 		});
 
+		it("should not expand dash-prefixed values after bundled value-taking flags", () => {
+			const cli = new CLI(["node", "arkenv", "init", "-yqe", "-abc"]);
+			expect(cli.args).toEqual(["init", "-y", "-q", "-e", "-abc"]);
+			expect(cli.isYes).toBe(true);
+			expect(cli.isQuiet).toBe(true);
+			expect(cli.isAgent).toBe(false);
+			expect(cli.validationError).toBe("Unknown argument: -abc");
+		});
+
 		it("should ignore single-letter flags with dash or long flags", () => {
 			const cli1 = new CLI(["node", "arkenv", "init", "-y"]);
 			expect(cli1.isYes).toBe(true);
