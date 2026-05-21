@@ -30,6 +30,8 @@ export type ProjectOptions = {
  * Represents the complete plan of actions to scaffold ArkEnv.
  */
 export type ScaffoldingPlan = {
+	/** The target project root directory */
+	cwd: string;
 	/** Files to be created or modified */
 	files: {
 		path: string;
@@ -76,6 +78,7 @@ export type ScaffoldingPlan = {
 		repository: string;
 		example: string;
 		targetName: string;
+		targetDir: string;
 	};
 };
 

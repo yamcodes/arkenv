@@ -139,4 +139,29 @@ describe("Planner", () => {
 		expect(plan.metadata.displayPath).toBe("./src/env.ts");
 		expect(plan.metadata.importPath).toBe("./src/env");
 	});
+
+	it("extracts basename for targetName in new project mode", () => {
+		const state: CollectedState = {
+			mode: "new",
+			cwd: "/test/yo/my-project",
+			options: {
+				mode: "new",
+				example: "basic",
+				name: "yo/my-project",
+				framework: "vanilla",
+				path: "./src/env.ts",
+				validator: "arktype",
+				language: "ts",
+				installSkill: false,
+			},
+			detectedFramework: "vanilla",
+			packageManager: "pnpm",
+			tsConfig: { status: "not_found" },
+			shouldUpdateTsConfig: false,
+			existingFiles: [],
+			isYes: false,
+		};
+		const plan = createPlan(state);
+		expect(plan.clone?.targetName).toBe("my-project");
+	});
 });
