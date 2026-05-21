@@ -9,6 +9,14 @@ let isShuttingDown = false;
  * Composes the CLI, dispatches the requested command, and handles fatal failures.
  */
 async function main() {
+	if (process.env.INIT_CWD) {
+		try {
+			process.chdir(process.env.INIT_CWD);
+		} catch {
+			// Fallback to process.cwd() if directory change fails
+		}
+	}
+
 	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
 	globalLogger = logger;
 

@@ -31,7 +31,8 @@
 		"contributors:add": "all-contributors add",
 		"contributors:generate": "all-contributors generate",
 		"knip": "knip",
-		"test:cli": "node bin/test-cli.js"
+		"test:cli": "node bin/test-cli.js",
+		"arkenv": "pnpm run build --filter @arkenv/cli && node packages/cli/dist/index.cjs"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.14",

@@ -1,4 +1,5 @@
 import { exec as execCallback } from "node:child_process";
+import fs from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
@@ -51,5 +52,35 @@ describe("cli smoke tests", () => {
 	it("--agent works with --help", async () => {
 		const { stdout, stderr } = await exec(`node ${cliPath} --help --agent`);
 		expect(stdout + stderr).toContain("Usage:");
+	});
+
+	it("respects INIT_CWD environment variable for execution directory", async () => {
+		const uuid = Math.random().toString(36).substring(7);
+		const tempDir = path.resolve(__dirname, `../tmp-smoke-${uuid}`);
+		await fs.mkdir(tempDir, { recursive: true });
+		await fs.writeFile(
+			path.join(tempDir, "package.json"),
+			JSON.stringify({ name: `temp-pkg-${uuid}`, private: true }, null, 2),
+		);
+
+		try {
+			const { stdout } = await exec(`node ${cliPath} init --agent --yes`, {
+				env: {
+					...process.env,
+					INIT_CWD: tempDir,
+					SKIP_INSTALL: "true",
+				},
+			});
+
+			expect(stdout).toContain('"status": "success"');
+
+			const envFileExists = await fs
+				.access(path.join(tempDir, "env.ts"))
+				.then(() => true)
+				.catch(() => false);
+			expect(envFileExists).toBe(true);
+		} finally {
+			await fs.rm(tempDir, { recursive: true, force: true });
+		}
 	});
 });
