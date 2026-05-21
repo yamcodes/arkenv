@@ -47,6 +47,22 @@ export async function cloneExample(
 
 		// Move files to destination directory
 		const fullExamplePath = path.join(tempDir, examplePath);
+
+		// Preflight check: check if any files/directories from the example collide with existing ones in the destination
+		const entries = await fsp.readdir(fullExamplePath);
+		const collisions: string[] = [];
+		for (const entry of entries) {
+			const destPath = path.join(destDir, entry);
+			if (await workspace.exists(destPath)) {
+				collisions.push(entry);
+			}
+		}
+		if (collisions.length > 0) {
+			throw new Error(
+				`Scaffolding into a non-empty directory failed. The following paths already exist: ${collisions.join(", ")}`,
+			);
+		}
+
 		await copyDirectoryContents(fullExamplePath, destDir);
 
 		// Remove any copied lockfiles to ensure clean install with target package manager

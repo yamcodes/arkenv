@@ -335,7 +335,7 @@ export class InitUseCase {
 		input: InitInput,
 		isEmpty = true,
 	): Promise<CollectedState | null> {
-		const { isYes, example, name } = input;
+		const { isYes, example, name, isForce } = input;
 
 		const registry = await this.registry.fetchRegistry();
 
@@ -355,7 +355,7 @@ export class InitUseCase {
 
 		// When the resolved project name is "." (current dir) and the directory is
 		// not empty, abort to avoid clobbering the existing contents.
-		if (options.name === "." && !isEmpty) {
+		if (options.name === "." && !isEmpty && !isForce) {
 			this.logger.error(
 				`Cannot scaffold into ${code(".")} because the current directory is not empty.`,
 			);
