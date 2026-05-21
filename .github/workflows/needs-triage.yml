@@ -19,28 +19,31 @@ jobs:
           script: |-
             const issue = context.payload.issue;
             const currentLabels = issue.labels.map(l => l.name);
-            
+            const stateLabels = [
+              'ready for human',
+              'ready for agent',
+              'needs more info',
+              'wontfix'
+            ];
+            const quotedStateLabels = stateLabels.map(label => `'${label}'`).join(', ');
+
             const hasMeta = currentLabels.includes('meta');
             const hasNeedsTriage = currentLabels.includes('needs triage');
-            const hasReadyForHuman = currentLabels.includes('ready for human');
-            const hasReadyForAgent = currentLabels.includes('ready for agent');
-            const hasNeedsMoreInfo = currentLabels.includes('needs more info');
-            
-            const hasAnyStateLabel = hasReadyForHuman || hasReadyForAgent || hasNeedsMoreInfo;
-            
+            const hasAnyStateLabel = currentLabels.some(label => stateLabels.includes(label));
+
             core.info(`Current labels: ${JSON.stringify(currentLabels)}`);
-            
+
             const isMeta = hasMeta;
             const isNeedsTriageOnly = hasNeedsTriage && !hasAnyStateLabel;
             const isStateLabelOnly = hasAnyStateLabel && !hasNeedsTriage;
-            
+
             if (isMeta || isNeedsTriageOnly || isStateLabelOnly) {
               core.info('Issue labels satisfy validation constraints.');
             } else {
               let errorMsg = 'Issue labels violate validation constraints.\n';
               errorMsg += 'An issue must have either:\n';
               errorMsg += "- 'meta' label\n";
-              errorMsg += "- 'needs triage' label but NOT ('ready for human', 'ready for agent', or 'needs more info')\n";
-              errorMsg += "- ('ready for human', 'ready for agent', or 'needs more info') labels but NOT 'needs triage'\n";
+              errorMsg += `- 'needs triage' label but NOT one of (${quotedStateLabels})\n`;
+              errorMsg += `- one of (${quotedStateLabels}) labels but NOT 'needs triage'\n`;
               core.setFailed(errorMsg);
             }
