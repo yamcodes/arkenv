@@ -52,6 +52,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		plan.install = {
 			packageManager,
 			dependencies: [], // Dependencies are already in the example's package.json
+			...(targetDir !== undefined && { cwd: targetDir }),
 		};
 
 		if (options.installSkill) {

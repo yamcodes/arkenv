@@ -26,7 +26,7 @@ export type FileSystemPort = {
 	 * For this reason, `command` MUST be strictly the executable name (e.g., "pnpm", not "pnpm dlx")
 	 * and any subsequent arguments must be passed in the `args` array.
 	 */
-	execute(command: string, args?: string[]): Promise<void>;
+	execute(command: string, args?: string[], cwd?: string): Promise<void>;
 };
 
 /**

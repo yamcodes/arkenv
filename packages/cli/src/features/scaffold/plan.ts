@@ -46,6 +46,7 @@ export type ScaffoldingPlan = {
 	install?: {
 		packageManager: PackageManager;
 		dependencies: string[];
+		cwd?: string;
 	};
 	/** Optional skill installation */
 	skill?: {

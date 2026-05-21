@@ -90,7 +90,7 @@ export class Executor {
 					plan.install.packageManager,
 					plan.install.dependencies,
 				);
-				await this.workspace.execute(cmd, args);
+				await this.workspace.execute(cmd, args, plan.install.cwd);
 			}
 
 			// 3. TS Config

@@ -85,10 +85,11 @@ describe("Executor", () => {
 
 		expect(mockWorkspace.mkdir).toHaveBeenCalled();
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith("env.ts", "env");
-		expect(mockWorkspace.execute).toHaveBeenCalledWith("pnpm", [
-			"add",
-			"arkenv",
-		]);
+		expect(mockWorkspace.execute).toHaveBeenCalledWith(
+			"pnpm",
+			["add", "arkenv"],
+			undefined,
+		);
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
@@ -99,7 +100,11 @@ describe("Executor", () => {
 
 		const newProjectPlan: ScaffoldingPlan = {
 			...defaultPlan,
-			install: { packageManager: "bun", dependencies: [] },
+			install: {
+				packageManager: "bun",
+				dependencies: [],
+				cwd: "/some/parent/my-project",
+			},
 			metadata: {
 				...defaultPlan.metadata,
 				mode: "new",
@@ -158,7 +163,11 @@ describe("Executor", () => {
 		);
 
 		// Assert dependency installation
-		expect(mockWorkspace.execute).toHaveBeenCalledWith("bun", ["install"]);
+		expect(mockWorkspace.execute).toHaveBeenCalledWith(
+			"bun",
+			["install"],
+			"/some/parent/my-project",
+		);
 	});
 
 	it("executes a plan for a new project with name '.' (cloned into cwd)", async () => {
@@ -184,7 +193,9 @@ describe("Executor", () => {
 		// mkdir should NOT have been called with a new subdirectory path
 		// (only the temp dir mkdir matters here)
 		const mkdirCalls = vi.mocked(mockWorkspace.mkdir).mock.calls;
-		const subDirCall = mkdirCalls.find(([p]) => p === `${cwdBefore}/my-dir-name`);
+		const subDirCall = mkdirCalls.find(
+			([p]) => p === `${cwdBefore}/my-dir-name`,
+		);
 		expect(subDirCall).toBeUndefined();
 
 		// Copy goes into cwd, not a named subdir

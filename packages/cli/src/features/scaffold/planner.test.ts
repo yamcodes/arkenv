@@ -157,6 +157,7 @@ describe("Planner", () => {
 		expect(plan.clone).toBeDefined();
 		expect(plan.clone?.targetDir).toBe("/parent/my-app");
 		expect(plan.clone?.targetName).toBe("my-app");
+		expect(plan.install?.cwd).toBe("/parent/my-app");
 	});
 
 	it("omits targetDir when name is '.' so cloner falls back to cwd", () => {
@@ -176,5 +177,6 @@ describe("Planner", () => {
 		expect(plan.clone).toBeDefined();
 		expect(plan.clone?.targetDir).toBeUndefined();
 		expect(plan.clone?.targetName).toBe(".");
+		expect(plan.install?.cwd).toBeUndefined();
 	});
 });
