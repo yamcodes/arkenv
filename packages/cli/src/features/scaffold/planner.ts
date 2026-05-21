@@ -22,6 +22,8 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		existingFiles,
 	} = state;
 
+	const projectName = options.name ? path.basename(options.name) : undefined;
+
 	const plan: ScaffoldingPlan = {
 		files: [],
 		cwd,
@@ -33,7 +35,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			importPath: "",
 			mode,
 			example: options.example,
-			name: options.name,
+			name: projectName,
 		}) as ScaffoldingPlan["metadata"],
 	};
 
@@ -41,7 +43,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		plan.clone = {
 			repository: "https://github.com/yamcodes/arkenv.git",
 			example: options.example!,
-			targetName: options.name!,
+			targetName: projectName!,
 			targetDir: cwd,
 		};
 
