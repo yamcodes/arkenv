@@ -1,5 +1,18 @@
 # @arkenv/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- #### Fix --help table alignment _[`#1052`](https://github.com/yamcodes/arkenv/pull/1052) [`cf7bd02`](https://github.com/yamcodes/arkenv/commit/cf7bd022ab5477cf5bfbb2132b4d09fac703b9cf) [@yamcodes](https://github.com/yamcodes)_
+- #### Support POSIX-style short-flag bundling in CLI parser _[`#1047`](https://github.com/yamcodes/arkenv/pull/1047) [`b2e4865`](https://github.com/yamcodes/arkenv/commit/b2e4865dfa5cd84370781899d7f0862dbff544d5) [@yamcodes](https://github.com/yamcodes)_
+
+  Enables combining multiple short flags (e.g. `-yq` instead of `-y -q` or `-yfq` instead of `-y -f -q`) in CLI commands. Flag values starting with `-` (e.g. `init -e -abc`) are preserved without expansion.
+
+- #### Validate valued CLI flags and reject missing values _[`#1051`](https://github.com/yamcodes/arkenv/pull/1051) [`dec2581`](https://github.com/yamcodes/arkenv/commit/dec2581e87d10fd45835f9bad1666a62068975b2) [@yamcodes](https://github.com/yamcodes)_
+
+  Add parser-level validation to reject flags that require a value (e.g. `--example` or `-e`) when they are passed without one. A validation error message is set, and the CLI exits with status code 1.
+
 ## 0.2.0
 
 ### Minor Changes
