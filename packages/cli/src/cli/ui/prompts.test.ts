@@ -174,4 +174,29 @@ describe("runPromptWizard", () => {
 			}),
 		);
 	});
+
+	it("should preserve '.' as the project name when the user explicitly types it", async () => {
+		const mockCwd = path.join(os.tmpdir(), "my-project");
+		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
+
+		const examples = [
+			{
+				id: "basic",
+				name: "Basic",
+				description: "A minimal ArkEnv setup in Node.js",
+				framework: "vanilla" as const,
+			},
+		];
+
+		vi.mocked(prompts.text).mockResolvedValueOnce("."); // User types "."
+		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
+
+		const result = await runPromptWizard({
+			mode: "new",
+			examples,
+		});
+
+		// "." should be preserved; normalization is the caller's responsibility.
+		expect(result?.name).toBe(".");
+	});
 });

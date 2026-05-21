@@ -129,6 +129,90 @@ describe("InitUseCase", () => {
 		expect(result.mode).toBe("new");
 	});
 
+	it("should force new project flow if --example is passed even in non-empty directory", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			mode: "new",
+			example: "basic",
+			name: "my-project",
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+			example: "basic",
+		});
+
+		expect(result).not.toBeNull();
+		expect(result.mode).toBe("new");
+		expect(prompt.runWizard).toHaveBeenCalledWith(
+			expect.objectContaining({ mode: "new", example: "basic" }),
+			false,
+		);
+	});
+
+	it("should force new project flow if --example is passed even when package.json exists", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(true);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			mode: "new",
+			example: "basic",
+			name: "my-project",
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+			example: "basic",
+		});
+
+		expect(result).not.toBeNull();
+		expect(result.mode).toBe("new");
+		// collectExistingProject should never have been called (no requirement checks)
+		expect(scanner.checkRequirements).not.toHaveBeenCalled();
+	});
+
+	it("should abort with non-empty error when --example --name . is used and directory is not empty", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			mode: "new",
+			example: "basic",
+			name: ".",
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+			example: "basic",
+			name: ".",
+		});
+
+		expect(result).toBeNull();
+		expect(logger.error).toHaveBeenCalledWith(
+			expect.stringContaining("Cannot scaffold into"),
+		);
+	});
+
 	it("should exit early if requirements fail", async () => {
 		vi.mocked(scanner.checkRequirements).mockResolvedValue([
 			{

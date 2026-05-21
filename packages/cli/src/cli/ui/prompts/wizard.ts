@@ -58,12 +58,10 @@ async function runNewProjectWizard(
 
 		const nameResult = handlePrompt(name);
 		if (nameResult === null) return null;
+		// Preserve "." so the caller (collectNewProject) can enforce the
+		// non-empty-directory guard before normalizing.
 		projectName = nameResult || defaultProjectName;
 	} else {
-		projectName = defaultProjectName;
-	}
-
-	if (projectName === ".") {
 		projectName = defaultProjectName;
 	}
 

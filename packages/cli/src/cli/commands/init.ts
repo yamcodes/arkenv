@@ -66,12 +66,18 @@ export class InitUseCase {
 			const hasPackageJson = await this.scanner.hasPackageJson();
 			const isEmpty = await this.scanner.isEmptyDirectory();
 
+			// --example always forces the new-project flow, even in non-empty or
+			// existing-project directories.
+			if (input.example !== undefined) {
+				return await this.collectNewProject(input, isEmpty);
+			}
+
 			if (hasPackageJson) {
 				return await this.collectExistingProject(input);
 			}
 
 			if (isEmpty || input.isForce) {
-				return await this.collectNewProject(input);
+				return await this.collectNewProject(input, isEmpty);
 			}
 
 			this.logger.error(
@@ -282,6 +288,7 @@ export class InitUseCase {
 	 */
 	private async collectNewProject(
 		input: InitInput,
+		isEmpty = true,
 	): Promise<CollectedState | null> {
 		const { isYes, isAgent, example, name } = input;
 
@@ -299,6 +306,23 @@ export class InitUseCase {
 
 		if (options === null) {
 			return null;
+		}
+
+		// When the resolved project name is "." (current dir) and the directory is
+		// not empty, abort to avoid clobbering the existing contents.
+		if (options.name === "." && !isEmpty) {
+			this.logger.error(
+				`Cannot scaffold into ${code(".")} because the current directory is not empty.`,
+			);
+			this.logger.info(
+				`Run ${code("arkenv init")} in an empty directory or choose a sub-directory name instead.`,
+			);
+			return null;
+		}
+
+		// Normalize "." to the current directory basename for package.json naming.
+		if (options.name === ".") {
+			options.name = path.basename(process.cwd());
 		}
 
 		const packageManager = this.detectPackageManager();
