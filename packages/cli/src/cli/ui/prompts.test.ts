@@ -169,7 +169,7 @@ describe("runPromptWizard", () => {
 		expect(result?.example).toBe("basic");
 		expect(prompts.text).toHaveBeenCalledWith(
 			expect.objectContaining({
-				initialValue: "",
+				defaultValue: "arkenv-project",
 				placeholder: "arkenv-project",
 			}),
 		);
