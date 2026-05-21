@@ -37,10 +37,16 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	};
 
 	if (mode === "new") {
+		const targetDir =
+			options.name && options.name !== "."
+				? path.join(cwd, options.name)
+				: undefined;
+
 		plan.clone = {
 			repository: "https://github.com/yamcodes/arkenv.git",
 			example: options.example!,
 			targetName: options.name!,
+			...(targetDir !== undefined && { targetDir }),
 		};
 
 		plan.install = {

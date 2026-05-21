@@ -76,6 +76,8 @@ export type ScaffoldingPlan = {
 		repository: string;
 		example: string;
 		targetName: string;
+		/** Absolute path to copy the example into. Defaults to process.cwd() when absent. */
+		targetDir?: string;
 	};
 };
 
