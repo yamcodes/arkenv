@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   pullfrog:
@@ -20,12 +21,41 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      pull-requests: read
     steps:
+      - name: Check PR source
+        id: check-pr-source
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const match = context.payload.inputs?.prompt?.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/)
+
+            if (!match) {
+              core.setOutput("skip", "false")
+              return
+            }
+
+            const { data: pull } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: Number(match[1]),
+            })
+
+            const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"])
+            const shouldSkip = pull.head.ref === "changeset-release/main" || botLogins.has(pull.user?.login)
+
+            if (shouldSkip) {
+              core.info(`Skipping Pullfrog for ${pull.head.ref} by ${pull.user?.login}`)
+            }
+
+            core.setOutput("skip", String(shouldSkip))
       - name: Checkout code
+        if: steps.check-pr-source.outputs.skip != 'true'
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Run agent
+        if: steps.check-pr-source.outputs.skip != 'true'
         uses: pullfrog/pullfrog@v0
         with:
           prompt: ${{ inputs.prompt }}
