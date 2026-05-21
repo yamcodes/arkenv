@@ -16,8 +16,10 @@ describe("useEnvExampleStep", () => {
 
 	it("should pluralize correctly for 1 key in .env.example", async () => {
 		vi.mocked(confirm).mockResolvedValue(true);
-		const step = useEnvExampleStep(["API_KEY"], ".env.example");
-		await step();
+		await useEnvExampleStep({
+			detectedKeys: ["API_KEY"],
+			keysSource: ".env.example",
+		});
 
 		expect(confirm).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -28,8 +30,10 @@ describe("useEnvExampleStep", () => {
 
 	it("should pluralize correctly for multiple keys in .env.example", async () => {
 		vi.mocked(confirm).mockResolvedValue(true);
-		const step = useEnvExampleStep(["API_KEY", "DEBUG"], ".env.example");
-		await step();
+		await useEnvExampleStep({
+			detectedKeys: ["API_KEY", "DEBUG"],
+			keysSource: ".env.example",
+		});
 
 		expect(confirm).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -40,8 +44,10 @@ describe("useEnvExampleStep", () => {
 
 	it("should pluralize correctly for 1 environment variable from project", async () => {
 		vi.mocked(confirm).mockResolvedValue(true);
-		const step = useEnvExampleStep(["API_KEY"], "project");
-		await step();
+		await useEnvExampleStep({
+			detectedKeys: ["API_KEY"],
+			keysSource: "project",
+		});
 
 		expect(confirm).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -53,8 +59,10 @@ describe("useEnvExampleStep", () => {
 
 	it("should pluralize correctly for multiple environment variables from project", async () => {
 		vi.mocked(confirm).mockResolvedValue(true);
-		const step = useEnvExampleStep(["API_KEY", "DEBUG"], "project");
-		await step();
+		await useEnvExampleStep({
+			detectedKeys: ["API_KEY", "DEBUG"],
+			keysSource: "project",
+		});
 
 		expect(confirm).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -65,15 +73,13 @@ describe("useEnvExampleStep", () => {
 	});
 
 	it("should return false if no keys are detected", async () => {
-		const step = useEnvExampleStep([]);
-		const result = await step();
+		const result = await useEnvExampleStep({ detectedKeys: [] });
 		expect(result).toBe(false);
 		expect(confirm).not.toHaveBeenCalled();
 	});
 
 	it("should return false if detectedKeys is null", async () => {
-		const step = useEnvExampleStep(null);
-		const result = await step();
+		const result = await useEnvExampleStep({ detectedKeys: null });
 		expect(result).toBe(false);
 		expect(confirm).not.toHaveBeenCalled();
 	});

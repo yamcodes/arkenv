@@ -201,6 +201,8 @@ export class InitUseCase {
 			targetPath,
 		);
 
+		const hasEnvSchemaFile = await this.workspace.exists(targetPath);
+
 		let hasTypeFile = false;
 		if (detectedFramework === "vite" || detectedFramework === "bun-fullstack") {
 			const typeFile =
@@ -220,6 +222,7 @@ export class InitUseCase {
 				envKeys: envRes?.keys,
 				envKeysSource: envRes?.source,
 				hasTypeFile,
+				hasEnvSchemaFile,
 			}),
 			isYes,
 		);

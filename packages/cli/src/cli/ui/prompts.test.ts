@@ -5,17 +5,6 @@ import * as prompts from "@clack/prompts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runPromptWizard } from "./prompts";
 
-const { mockExistsSync } = vi.hoisted(() => ({
-	mockExistsSync: vi.fn().mockReturnValue(false),
-}));
-
-vi.mock("node:fs", () => ({
-	default: {
-		existsSync: mockExistsSync,
-	},
-	existsSync: mockExistsSync,
-}));
-
 vi.mock("@clack/prompts", async (importOriginal) => {
 	const actual = await importOriginal<typeof import("@clack/prompts")>();
 	return {
@@ -36,7 +25,6 @@ describe("runPromptWizard", () => {
 		tempDir = await fsp.mkdtemp(path.join(os.tmpdir(), "prompts-test-"));
 		vi.spyOn(process, "cwd").mockReturnValue(tempDir);
 		vi.resetAllMocks();
-		mockExistsSync.mockReturnValue(false);
 		vi.mocked(prompts.isCancel).mockReturnValue(false);
 	});
 
@@ -88,7 +76,6 @@ describe("runPromptWizard", () => {
 	});
 
 	it("should NOT include envKeys if user declines prompt", async () => {
-		mockExistsSync.mockReturnValue(false);
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
@@ -99,10 +86,9 @@ describe("runPromptWizard", () => {
 		expect(result?.envKeys).toBeUndefined();
 	});
 	it("should abort immediately if user selects No (abort) on overwrite prompt", async () => {
-		mockExistsSync.mockReturnValue(true);
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false);
 
-		const result = await runPromptWizard();
+		const result = await runPromptWizard({ hasEnvSchemaFile: true });
 
 		expect(result).toBeNull();
 		expect(prompts.select).not.toHaveBeenCalled();
@@ -112,7 +98,6 @@ describe("runPromptWizard", () => {
 	it("should abort immediately if user cancels a prompt (Ctrl+C)", async () => {
 		const cancelSymbol = Symbol("clack-cancel");
 		vi.mocked(prompts.isCancel).mockImplementation((v) => v === cancelSymbol);
-		mockExistsSync.mockReturnValue(false);
 		vi.mocked(prompts.select).mockResolvedValueOnce(cancelSymbol); // framework
 
 		const result = await runPromptWizard();

@@ -31,6 +31,7 @@ export type PromptPort = {
 			envKeys?: string[];
 			envKeysSource?: ".env.example" | "project";
 			hasTypeFile?: boolean;
+			hasEnvSchemaFile?: boolean;
 		},
 		isYes?: boolean,
 	): Promise<ProjectOptions | null>;

@@ -6,7 +6,7 @@ import {
 	envDtsHandlingStep,
 	installTypeDefinitionsStep,
 } from "./steps/env-types";
-import { example as exampleStep } from "./steps/example";
+import { exampleStep } from "./steps/example";
 import { bunBuildStep, frameworkStep, validatorStep } from "./steps/framework";
 import { pathStep, useDefaultPathStep } from "./steps/path";
 

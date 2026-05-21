@@ -46,6 +46,7 @@ export class ClackPromptAdapter implements PromptPort {
 			envKeys?: string[];
 			envKeysSource?: ".env.example" | "project";
 			hasTypeFile?: boolean;
+			hasEnvSchemaFile?: boolean;
 		},
 		isYes = false,
 	): Promise<ProjectOptions | null> {

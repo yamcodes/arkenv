@@ -22,6 +22,7 @@ export async function runPromptWizard(
 		envKeys?: string[];
 		envKeysSource?: ".env.example" | "project";
 		hasTypeFile?: boolean;
+		hasEnvSchemaFile?: boolean;
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
@@ -84,7 +85,7 @@ async function runNewProjectWizard(
 	let exampleId = defaults?.example;
 
 	if (!exampleId && !isYes) {
-		const selected = await steps.example(examples)();
+		const selected = await steps.example({ examples });
 		const selectedResult = handlePrompt(selected);
 		if (selectedResult === null) return null;
 		exampleId = selectedResult;
@@ -122,6 +123,7 @@ async function runExistingProjectWizard(
 		envKeys?: string[];
 		envKeysSource?: ".env.example" | "project";
 		hasTypeFile?: boolean;
+		hasEnvSchemaFile?: boolean;
 	},
 	isYes = false,
 ): Promise<ProjectOptions | null> {
@@ -155,64 +157,107 @@ async function runExistingProjectWizard(
 		});
 	}
 
-	const results: any = { mode: "existing" };
+	// 1. overwriteEnvSchemaFile
+	const overwriteEnvSchemaFile = handlePrompt(
+		await steps.overwriteEnvSchemaFile({
+			hasEnvSchemaFile: defaults?.hasEnvSchemaFile ?? false,
+			defaultPath: defaultEnvPath,
+		}),
+	);
+	if (overwriteEnvSchemaFile === null) return null;
 
-	const stepsToRun: {
-		key: string;
-		fn: (ctx: { results: any }) => Promise<any>;
-	}[] = [
-		{
-			key: "overwriteEnvSchemaFile",
-			fn: () => steps.overwriteEnvSchemaFile(defaultEnvPath)(),
-		},
-		{ key: "framework", fn: () => steps.framework(defaults)() },
-		{
-			key: "bunBuild",
-			fn: ({ results }) =>
-				results.framework === "bun-fullstack"
-					? steps.bunBuild(
-							defaults?.bunFeatures?.includes("build") ||
-								(results.framework === "bun-fullstack" &&
-									defaults?.framework === "bun-fullstack" &&
-									defaults?.bunFeatures?.includes("build")),
-						)()
-					: Promise.resolve(undefined),
-		},
-		{ key: "useDefaultPath", fn: () => steps.useDefaultPath(defaultEnvPath)() },
-		{ key: "path", fn: (ctx) => steps.path(defaultEnvPath)(ctx) },
-		{
-			key: "installTypeDefinitions",
-			fn: (ctx) => steps.installTypeDefinitions(ctx as any),
-		},
-		{ key: "envDtsHandling", fn: (ctx) => steps.envDtsHandling(ctx as any) },
-		{ key: "validator", fn: () => steps.validator() },
-		{
-			key: "useEnvExample",
-			fn: () => steps.useEnvExample(detectedKeys, keysSource)(),
-		},
-	];
+	// 2. framework
+	const framework = handlePrompt(
+		await steps.framework({
+			framework: defaults?.framework,
+		}),
+	);
+	if (framework === null) return null;
 
-	for (const { key, fn } of stepsToRun) {
-		const result = handlePrompt(await fn({ results }));
-		if (result === null) {
-			return null;
-		}
-		results[key] = result;
+	// 3. bunBuild
+	let bunBuild: boolean | undefined;
+	if (framework === "bun-fullstack") {
+		const defaultBunBuild =
+			defaults?.bunFeatures?.includes("build") ||
+			(defaults?.framework === "bun-fullstack" &&
+				defaults?.bunFeatures?.includes("build"));
+		const bunBuildResult = handlePrompt(
+			await steps.bunBuild({
+				initialValue: defaultBunBuild,
+			}),
+		);
+		if (bunBuildResult === null) return null;
+		bunBuild = bunBuildResult;
 	}
 
+	// 4. useDefaultPath
+	const useDefaultPath = handlePrompt(
+		await steps.useDefaultPath({
+			defaultEnvPath,
+		}),
+	);
+	if (useDefaultPath === null) return null;
+
+	// 5. path
+	const envPath = handlePrompt(
+		await steps.path({
+			useDefaultPath,
+			defaultEnvPath,
+		}),
+	);
+	if (envPath === null) return null;
+
+	// 6. installTypeDefinitions
+	const installTypeDefinitions = handlePrompt(
+		await steps.installTypeDefinitions({
+			framework,
+			hasTypeFile: defaults?.hasTypeFile ?? false,
+		}),
+	);
+	if (installTypeDefinitions === null) return null;
+
+	// 7. envDtsHandling
+	const envDtsHandling = handlePrompt(
+		await steps.envDtsHandling({
+			framework,
+			installTypeDefinitions,
+			hasTypeFile: defaults?.hasTypeFile ?? false,
+		}),
+	);
+	if (envDtsHandling === null) return null;
+
+	// 8. validator
+	const validator = handlePrompt(await steps.validator());
+	if (validator === null) return null;
+
+	// 9. useEnvExample
+	const useEnvExample = handlePrompt(
+		await steps.useEnvExample({
+			detectedKeys,
+			keysSource,
+		}),
+	);
+	if (useEnvExample === null) return null;
+
 	const bunFeatures: ProjectOptions["bunFeatures"] =
-		results.framework === "bun-fullstack"
-			? results.bunBuild
+		framework === "bun-fullstack"
+			? bunBuild
 				? ["serve", "build"]
 				: ["serve"]
 			: undefined;
 
-	return shake<ProjectOptions>({
-		...results,
+	return shake({
+		mode: "existing",
+		overwriteEnvSchemaFile,
+		framework,
+		path: envPath,
+		installTypeDefinitions,
+		envDtsHandling,
+		validator,
 		bunFeatures,
 		language: "ts",
 		installSkill: false,
-		envKeys: results.useEnvExample ? (detectedKeys ?? undefined) : undefined,
+		envKeys: useEnvExample ? (detectedKeys ?? undefined) : undefined,
 	});
 }
 
