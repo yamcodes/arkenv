@@ -43,7 +43,7 @@ export class HelpUseCase {
 		const options: HelpItem[] = [
 			{
 				left: "--yes, -y",
-				right: "Skip prompts and use defaults (also passed to skill processes)",
+				right: "Skip prompts and use defaults (also passed to subprocesses)",
 			},
 			{
 				left: "--force, -f",
@@ -55,8 +55,7 @@ export class HelpUseCase {
 			},
 			{
 				left: "--example, -e",
-				right:
-					"Specify an example ID to scaffold from (when creating a new project)",
+				right: "Specify an example name when creating a new project",
 			},
 			{
 				left: "--quiet, -q",

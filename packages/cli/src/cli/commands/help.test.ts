@@ -36,7 +36,7 @@ describe("HelpUseCase", () => {
 		// "--yes, -y" is 9 chars. max (13) - 9 + colGap (4) = 8 spaces padding.
 		// "  " (2) + "--yes, -y" (9) + "        " (8) + "Skip prompts..."
 		expect(yesOptionLog).toBe(
-			"  --yes, -y        Skip prompts and use defaults (also passed to skill processes)",
+			"  --yes, -y        Skip prompts and use defaults (also passed to subprocesses)",
 		);
 
 		const exampleOptionLog = logs.find((l) => l.includes("--example, -e"));
@@ -44,7 +44,7 @@ describe("HelpUseCase", () => {
 		// "--example, -e" is 13 chars. max (13) - 13 + colGap (4) = 4 spaces padding.
 		// "  " (2) + "--example, -e" (13) + "    " (4) + "Specify..."
 		expect(exampleOptionLog).toBe(
-			"  --example, -e    Specify an example ID to scaffold from (when creating a new project)",
+			"  --example, -e    Specify an example name when creating a new project",
 		);
 
 		const helpOptionLog = logs.find((l) => l.includes("--help, -h"));
