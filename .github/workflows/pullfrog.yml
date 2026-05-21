@@ -13,32 +13,49 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   pullfrog:
-    # Ignore runs on changeset-release/main branch or triggered by arkenv-bot
-    if: github.ref_name != 'changeset-release/main' && github.actor != 'arkenv-bot[bot]' && github.actor != 'arkenv-bot'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
+      pull-requests: read
     steps:
+      - name: Check PR source
+        id: check-pr-source
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const match = context.payload.inputs?.prompt?.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/)
+
+            if (!match) {
+              core.setOutput("skip", "false")
+              return
+            }
+
+            const { data: pull } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: Number(match[1]),
+            })
+
+            const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"])
+            const shouldSkip = pull.head.ref === "changeset-release/main" || botLogins.has(pull.user?.login)
+
+            if (shouldSkip) {
+              core.info(`Skipping Pullfrog for ${pull.head.ref} by ${pull.user?.login}`)
+            }
+
+            core.setOutput("skip", String(shouldSkip))
       - name: Checkout code
+        if: steps.check-pr-source.outputs.skip != 'true'
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
-      - name: Check commit author
-        id: check-author
-        run: |
-          COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
-          if [ "$COMMIT_AUTHOR" = "arkenv-bot[bot]" ] || [ "$COMMIT_AUTHOR" = "arkenv-bot" ]; then
-            echo "Skipping Pullfrog: latest commit author is $COMMIT_AUTHOR"
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
       - name: Run agent
-        if: steps.check-author.outputs.skip != 'true'
+        if: steps.check-pr-source.outputs.skip != 'true'
         uses: pullfrog/pullfrog@v0
         with:
           prompt: ${{ inputs.prompt }}
