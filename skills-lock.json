@@ -1,11 +1,11 @@
 {
 	"version": 1,
 	"skills": {
-		"bulletproof-react-patterns": {
+		"bulletproof-react": {
 			"source": "grahamcrackers/skills",
 			"sourceType": "github",
-			"skillPath": "skills/bulletproof-react-patterns/SKILL.md",
-			"computedHash": "21440284bed25f9ed947b2c09e7d5a1d0908717f9df85615cd267f6ba12a1638"
+			"skillPath": "skills/bulletproof-react/SKILL.md",
+			"computedHash": "891f599d71317aab375ba025e7552bf797fddcdbfcbd8615200198ec62aa8446"
 		},
 		"create-changeset": {
 			"source": "saleor/configurator",

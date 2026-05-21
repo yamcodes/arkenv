@@ -1,6 +1,6 @@
-# Bulletproof React Patterns — References
+# Bulletproof React — References
 
-Detailed reference documentation for the bulletproof-react-patterns skill. Based on [bulletproof-react](https://github.com/alan2207/bulletproof-react) by Alan Alickovic (MIT License).
+Detailed reference documentation for the bulletproof-react skill. Based on [bulletproof-react](https://github.com/alan2207/bulletproof-react) by Alan Alickovic (MIT License).
 
 ## Files (9 total)
 

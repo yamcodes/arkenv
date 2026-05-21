@@ -1,11 +1,14 @@
 ---
-name: bulletproof-react-patterns
+name: bulletproof-react
 description: Bulletproof React architecture patterns for scalable, maintainable applications. Covers feature-based project structure, component patterns, state management boundaries, API layer design, error handling, security, and testing strategies. Use when structuring a React project, designing application architecture, organizing features, or when the user asks about React project structure or scalable patterns.
 metadata:
+  author: Yam Borodetsky
+  original_author: grahamcrackers
+  origin: github.com/grahamcrackers/skills
   internal: true
 ---
 
-# Bulletproof React Patterns
+# Bulletproof React
 
 Architecture patterns for building scalable, maintainable React applications. Based on [bulletproof-react](https://github.com/alan2207/bulletproof-react).
 
