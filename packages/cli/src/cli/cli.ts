@@ -22,7 +22,35 @@ export class CLI {
 	 * Creates a CLI context from process arguments and optional adapters.
 	 */
 	constructor(argv: string[], options: { logger?: Logger } = {}) {
-		this.args = argv.slice(2);
+		const rawArgs = argv.slice(2);
+		const expandedArgs: string[] = [];
+		const expansionValuedFlags = new Set(["--example", "-e", "--name", "-n"]);
+		let skipNext = false;
+
+		for (const arg of rawArgs) {
+			if (skipNext) {
+				expandedArgs.push(arg);
+				skipNext = false;
+				continue;
+			}
+
+			if (expansionValuedFlags.has(arg)) {
+				expandedArgs.push(arg);
+				skipNext = true;
+				continue;
+			}
+
+			if (/^-[a-zA-Z]{2,}$/.test(arg)) {
+				const chars = arg.slice(1).split("");
+				for (const char of chars) {
+					expandedArgs.push(`-${char}`);
+				}
+			} else {
+				expandedArgs.push(arg);
+			}
+		}
+
+		this.args = expandedArgs;
 		this.command = this.args[0];
 		this.isYes = this.args.includes("--yes") || this.args.includes("-y");
 		this.isForce = this.args.includes("--force") || this.args.includes("-f");
