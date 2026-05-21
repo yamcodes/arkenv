@@ -193,10 +193,7 @@ async function runExistingProjectWizard(
 		// 3. bunBuild
 		let bunBuild: boolean | undefined;
 		if (framework === "bun-fullstack") {
-			const defaultBunBuild =
-				defaults?.bunFeatures?.includes("build") ||
-				(defaults?.framework === "bun-fullstack" &&
-					defaults?.bunFeatures?.includes("build"));
+			const defaultBunBuild = Boolean(defaults?.bunFeatures?.includes("build"));
 			bunBuild = unwrapPrompt(
 				await steps.bunBuild({
 					initialValue: defaultBunBuild,
