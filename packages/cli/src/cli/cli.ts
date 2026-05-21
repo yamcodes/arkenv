@@ -1,19 +1,32 @@
 import { Logger } from "@/adapters";
 import type { InitInput } from "./commands/init";
 
+const FLAG_CONFIG = {
+	isYes: { long: "--yes", short: "-y", kind: "boolean" },
+	isForce: { long: "--force", short: "-f", kind: "boolean" },
+	isQuiet: { long: "--quiet", short: "-q", kind: "boolean" },
+	isJson: { long: "--json", short: "-j", kind: "boolean" },
+	isAgent: { long: "--agent", short: "-a", kind: "boolean" },
+	helpRequested: { long: "--help", short: "-h", kind: "boolean" },
+	example: { long: "--example", short: "-e", kind: "value" },
+} as const;
+
+const knownFlags = new Set<string>(
+	Object.values(FLAG_CONFIG).flatMap((f) => [f.long, f.short]),
+);
+
+const valuedFlags = new Set<string>(
+	Object.values(FLAG_CONFIG)
+		.filter((f) => f.kind === "value")
+		.flatMap((f) => [f.long, f.short]),
+);
+
 /**
  * Main CLI class that parses arguments and sets up the global execution context.
  */
 export class CLI {
 	public args: string[];
 	public command: string;
-	public isYes: boolean;
-	public isForce: boolean;
-	public isQuiet: boolean;
-	public isJson: boolean;
-	public isAgent: boolean;
-	public helpRequested: boolean;
-	public example: string | undefined;
 	public name: string | undefined;
 	public validationError: string | undefined;
 	public logger: Logger;
@@ -24,7 +37,6 @@ export class CLI {
 	constructor(argv: string[], options: { logger?: Logger } = {}) {
 		const rawArgs = argv.slice(2);
 		const expandedArgs: string[] = [];
-		const expansionValuedFlags = new Set(["--example", "-e", "--name", "-n"]);
 		let skipNext = false;
 
 		for (const arg of rawArgs) {
@@ -34,7 +46,7 @@ export class CLI {
 				continue;
 			}
 
-			if (expansionValuedFlags.has(arg)) {
+			if (valuedFlags.has(arg)) {
 				expandedArgs.push(arg);
 				skipNext = true;
 				continue;
@@ -55,34 +67,6 @@ export class CLI {
 
 		this.args = expandedArgs;
 		this.command = this.args[0];
-		this.isYes = this.args.includes("--yes") || this.args.includes("-y");
-		this.isForce = this.args.includes("--force") || this.args.includes("-f");
-		this.isQuiet = this.args.includes("--quiet") || this.args.includes("-q");
-		this.isJson = this.args.includes("--json") || this.args.includes("-j");
-		this.isAgent = this.args.includes("--agent") || this.args.includes("-a");
-		this.helpRequested =
-			this.args.includes("--help") || this.args.includes("-h");
-
-		this.example = this.getFlagValue("--example", "-e");
-
-		const knownFlags = new Set([
-			"--yes",
-			"-y",
-			"--force",
-			"-f",
-			"--quiet",
-			"-q",
-			"--json",
-			"-j",
-			"--agent",
-			"-a",
-			"--help",
-			"-h",
-			"--example",
-			"-e",
-		]);
-
-		const valuedFlags = new Set(["--example", "-e"]);
 
 		let i = 1;
 		const positionalArgs: string[] = [];
@@ -118,12 +102,6 @@ export class CLI {
 			}
 		}
 
-		if (this.isAgent) {
-			this.isYes = true;
-			this.isQuiet = true;
-			this.isJson = true;
-		}
-
 		this.logger =
 			options.logger ||
 			new Logger({
@@ -131,6 +109,40 @@ export class CLI {
 				isJson: this.isJson,
 				isYes: this.isYes,
 			});
+	}
+
+	get isAgent(): boolean {
+		return this.hasFlag("isAgent");
+	}
+
+	get isYes(): boolean {
+		return this.isAgent || this.hasFlag("isYes");
+	}
+
+	get isQuiet(): boolean {
+		return this.isAgent || this.hasFlag("isQuiet");
+	}
+
+	get isJson(): boolean {
+		return this.isAgent || this.hasFlag("isJson");
+	}
+
+	get isForce(): boolean {
+		return this.hasFlag("isForce");
+	}
+
+	get helpRequested(): boolean {
+		return this.hasFlag("helpRequested");
+	}
+
+	get example(): string | undefined {
+		const flag = FLAG_CONFIG.example;
+		return this.getFlagValue(flag.long, flag.short);
+	}
+
+	private hasFlag(prop: keyof typeof FLAG_CONFIG): boolean {
+		const flag = FLAG_CONFIG[prop];
+		return this.args.includes(flag.long) || this.args.includes(flag.short);
 	}
 
 	/**
