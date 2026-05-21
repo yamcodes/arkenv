@@ -109,6 +109,9 @@ describe("InitUseCase", () => {
 		expect(logger.error).toHaveBeenCalledWith(
 			expect.stringContaining("Directory is not empty and no"),
 		);
+		expect(logger.info).toHaveBeenCalledWith(
+			expect.stringContaining("--force"),
+		);
 	});
 
 	it("should bypass empty check and enter new project flow if no package.json, not empty directory, and isForce is true", async () => {
@@ -216,6 +219,33 @@ describe("InitUseCase", () => {
 		expect(logger.error).toHaveBeenCalledWith(
 			expect.stringContaining("Cannot scaffold into"),
 		);
+	});
+
+	it("should allow scaffolding when --example, project-name '.', and --force are used in a non-empty directory", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			mode: "new",
+			example: "basic",
+			name: ".",
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: true,
+			isQuiet: false,
+			isAgent: false,
+			example: "basic",
+			name: ".",
+		});
+
+		expect(result).not.toBeNull();
+		expect(result.mode).toBe("new");
+		expect(logger.error).not.toHaveBeenCalled();
 	});
 
 	it("should exit early if requirements fail", async () => {

@@ -3,17 +3,21 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Executor } from "./executor";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 
+const mockExistingFiles = new Set<string>();
+
 vi.mock("node:fs/promises", () => ({
 	default: {
 		readdir: vi.fn().mockResolvedValue(["package.json"]),
-		cp: vi.fn().mockResolvedValue(undefined),
+		cp: vi.fn().mockImplementation(async (src, dest) => {
+			mockExistingFiles.add(dest);
+		}),
 		rm: vi.fn().mockResolvedValue(undefined),
 	},
 }));
 
 describe("Executor", () => {
 	const mockWorkspace: Workspace = {
-		exists: vi.fn().mockResolvedValue(true),
+		exists: vi.fn().mockImplementation(async (p) => mockExistingFiles.has(p)),
 		readFile: vi.fn().mockResolvedValue(""),
 		writeFile: vi.fn(),
 		mkdir: vi.fn(),
@@ -57,6 +61,7 @@ describe("Executor", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		delete process.env.SKIP_INSTALL;
+		mockExistingFiles.clear();
 		executor = new Executor(mockWorkspace, mockReporter);
 	});
 
@@ -268,5 +273,37 @@ describe("Executor", () => {
 			["dlx", "skills", "add", "yamcodes/arkenv", "--yes"],
 			plan.cwd,
 		);
+	});
+
+	it("fails scaffolding when example files collide with existing files in destination", async () => {
+		const newProjectPlan: ScaffoldingPlan = {
+			...defaultPlan,
+			install: {
+				packageManager: "bun",
+				dependencies: [],
+				cwd: "/some/parent/my-project",
+			},
+			metadata: {
+				...defaultPlan.metadata,
+				mode: "new",
+				packageManager: "bun",
+			},
+			clone: {
+				repository: "https://github.com/yamcodes/arkenv.git",
+				example: "basic",
+				targetName: "my-project",
+				targetDir: "/some/parent/my-project",
+			},
+		};
+
+		// Seed a file collision
+		mockExistingFiles.add("/some/parent/my-project/package.json");
+
+		await expect(executor.execute(newProjectPlan)).rejects.toThrow(
+			"Scaffolding into a non-empty directory failed. The following paths already exist: package.json",
+		);
+
+		// Verify fsp.cp was NOT called
+		expect(fsp.cp).not.toHaveBeenCalled();
 	});
 });
