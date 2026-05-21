@@ -1,5 +1,21 @@
 # @arkenv/cli
 
+## 0.2.2
+
+### Patch Changes
+
+- #### Allow scaffolding into non-empty directory when `--force` is used _[`#1061`](https://github.com/yamcodes/arkenv/pull/1061) [`3a08754`](https://github.com/yamcodes/arkenv/commit/3a08754d39dd36a5e1715bd7ffcc6135e91371ef) [@yamcodes](https://github.com/yamcodes)_
+
+  Ensure `--force` permits new-project scaffolding into a non-empty directory (e.g. `.`) while preventing silent overwrites of user files via a preflight collision check.
+
+- #### Refactor prompt wizard and steps to be pure and typesafe _[`#1060`](https://github.com/yamcodes/arkenv/pull/1060) [`85380d6`](https://github.com/yamcodes/arkenv/commit/85380d624c09d473e04cc14382074bbfc06dbf11) [@yamcodes](https://github.com/yamcodes)_
+
+  Refactored the interactive prompt wizard and individual steps to be pure, modular, and typesafe. Steps now accept explicit configuration options and return normalized results instead of reading the filesystem directly or relying on global mock state.
+
+- #### Strip example `packageManager` fields during scaffolding _[`#1055`](https://github.com/yamcodes/arkenv/pull/1055) [`a30c9ae`](https://github.com/yamcodes/arkenv/commit/a30c9ae949c11f7a1d859c26f2049cda1a7b33f0) [@pullfrog](https://github.com/apps/pullfrog)_
+
+  Remove copied example `packageManager` fields during new project scaffolding so installs use the package manager selected by the CLI.
+
 ## 0.2.1
 
 ### Patch Changes
