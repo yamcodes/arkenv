@@ -82,12 +82,12 @@ npx @arkenv/cli@latest init --example basic
 
 The CLI supports the following flags to customize the behavior:
 
-| Flag        | Alias | Description                                                                                                    |
-| ----------- | ----- | -------------------------------------------------------------------------------------------------------------- |
-| `--yes`     | `-y`  | Skip all prompts and use defaults. Also passes the `--yes` flag to underlying processes (like skill installs). |
-| `--quiet`   | `-q`  | Quiet mode. Suppresses output unless a command fails, in which case buffered logs are shown for debugging.     |
-| `--json`    | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).             |
-| `--agent`   | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                |
+| Flag        | Alias | Description                                                                                                                            |
+| ----------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`     | `-y`  | Skip all prompts and use defaults. Also passes the `--yes` flag to underlying processes (like skill installs).                         |
+| `--quiet`   | `-q`  | Quiet mode. Suppresses output unless a command fails, in which case buffered logs are shown for debugging.                             |
+| `--json`    | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).                                     |
+| `--agent`   | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                                        |
 | `--example` | `-e`  | Scaffold from a named example (e.g. `basic`). Always triggers the new-project flow, even in non-empty or existing-package directories. |
-| `--force`   | `-f`  | Force scaffolding a new project in non-empty directories, and bypass technical requirement checks.             |
-| `--help`    | `-h`  | Show the help message.                                                                                         |
+| `--force`   | `-f`  | Force scaffolding a new project in non-empty directories, and bypass technical requirement checks.                                     |
+| `--help`    | `-h`  | Show the help message.                                                                                                                 |
