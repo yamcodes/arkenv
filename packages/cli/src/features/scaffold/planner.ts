@@ -22,7 +22,10 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		existingFiles,
 	} = state;
 
-	const projectName = options.name ? path.basename(options.name) : undefined;
+	const projectName =
+		options.name && options.name !== "."
+			? path.basename(options.name)
+			: undefined;
 
 	const plan: ScaffoldingPlan = {
 		files: [],
@@ -40,16 +43,30 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	};
 
 	if (mode === "new") {
+		if (!options.example) {
+			throw new Error("New project scaffolding requires an example.");
+		}
+
+		const targetDir =
+			options.name && options.name !== "."
+				? path.join(cwd, options.name)
+				: undefined;
+		const targetName =
+			options.name && options.name !== "."
+				? path.basename(options.name)
+				: path.basename(cwd);
+
 		plan.clone = {
 			repository: "https://github.com/yamcodes/arkenv.git",
-			example: options.example!,
-			targetName: projectName!,
-			targetDir: cwd,
+			example: options.example,
+			targetName,
+			...(targetDir !== undefined && { targetDir }),
 		};
 
 		plan.install = {
 			packageManager,
 			dependencies: [], // Dependencies are already in the example's package.json
+			...(targetDir !== undefined && { cwd: targetDir }),
 		};
 
 		if (options.installSkill) {

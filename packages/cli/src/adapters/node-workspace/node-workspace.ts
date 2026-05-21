@@ -51,9 +51,9 @@ export class NodeWorkspace implements WorkspacePort {
 	): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			const child = spawn(command, args, {
+				cwd,
 				stdio: (this.isQuiet ? "pipe" : this.stdio) as StdioOptions,
 				shell: false,
-				cwd,
 			});
 
 			let stdout = "";

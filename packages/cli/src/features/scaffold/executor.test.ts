@@ -94,14 +94,18 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
-	it("executes a plan for a new project (cloned example)", async () => {
+	it("executes a plan for a new project (cloned example) into a named subdirectory", async () => {
 		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
 			JSON.stringify({ name: "old-name" }),
 		);
 
 		const newProjectPlan: ScaffoldingPlan = {
 			...defaultPlan,
-			install: { packageManager: "bun", dependencies: [] },
+			install: {
+				packageManager: "bun",
+				dependencies: [],
+				cwd: "/some/parent/my-project",
+			},
 			metadata: {
 				...defaultPlan.metadata,
 				mode: "new",
@@ -111,7 +115,7 @@ describe("Executor", () => {
 				repository: "https://github.com/yamcodes/arkenv.git",
 				example: "basic",
 				targetName: "my-project",
-				targetDir: ".",
+				targetDir: "/some/parent/my-project",
 			},
 		};
 		await executor.execute(newProjectPlan);
@@ -133,13 +137,19 @@ describe("Executor", () => {
 			"examples/basic",
 		]);
 
-		// Assert file copy and cleanup
+		// Assert the destination directory was created
+		expect(mockWorkspace.mkdir).toHaveBeenCalledWith(
+			"/some/parent/my-project",
+			true,
+		);
+
+		// Assert file copy lands in the named subdirectory, not cwd
 		expect(fsp.readdir).toHaveBeenCalledWith(
 			expect.stringContaining(".arkenv-temp/examples/basic"),
 		);
 		expect(fsp.cp).toHaveBeenCalledWith(
 			expect.stringContaining(".arkenv-temp/examples/basic/package.json"),
-			expect.stringContaining("package.json"),
+			expect.stringContaining("/some/parent/my-project/package.json"),
 			expect.any(Object),
 		);
 		expect(fsp.rm).toHaveBeenCalledWith(
@@ -147,9 +157,9 @@ describe("Executor", () => {
 			expect.any(Object),
 		);
 
-		// Assert package.json rewrite
+		// Assert package.json rewrite in the subdirectory
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
-			expect.stringContaining("package.json"),
+			"/some/parent/my-project/package.json",
 			expect.stringContaining('"name": "my-project"'),
 		);
 
@@ -157,8 +167,47 @@ describe("Executor", () => {
 		expect(mockWorkspace.execute).toHaveBeenCalledWith(
 			"bun",
 			["install"],
-			newProjectPlan.cwd,
+			"/some/parent/my-project",
 		);
+	});
+
+	it("executes a plan for a new project with name '.' (cloned into cwd)", async () => {
+		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
+			JSON.stringify({ name: "old-name" }),
+		);
+
+		const cwdBefore = process.cwd();
+
+		const dotPlan: ScaffoldingPlan = {
+			...defaultPlan,
+			install: { packageManager: "npm", dependencies: [] },
+			metadata: { ...defaultPlan.metadata, mode: "new", packageManager: "npm" },
+			clone: {
+				repository: "https://github.com/yamcodes/arkenv.git",
+				example: "basic",
+				targetName: "my-dir-name",
+				// No targetDir — "." case, scaffold into cwd
+			},
+		};
+		await executor.execute(dotPlan);
+
+		// mkdir should NOT have been called with a new subdirectory path
+		// (only the temp dir mkdir matters here)
+		const mkdirCalls = vi.mocked(mockWorkspace.mkdir).mock.calls;
+		const subDirCall = mkdirCalls.find(
+			([p]) => p === `${cwdBefore}/my-dir-name`,
+		);
+		expect(subDirCall).toBeUndefined();
+
+		// Copy goes into cwd, not a named subdir
+		expect(fsp.cp).toHaveBeenCalledWith(
+			expect.stringContaining(".arkenv-temp/examples/basic/package.json"),
+			expect.stringContaining("package.json"),
+			expect.any(Object),
+		);
+		// The destination should NOT include a /my-dir-name/ path segment
+		const cpDest = vi.mocked(fsp.cp).mock.calls[0][1] as string;
+		expect(cpDest).not.toContain("/my-dir-name/");
 	});
 
 	it("updates tsconfig when planned", async () => {

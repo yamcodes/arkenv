@@ -140,6 +140,46 @@ describe("Planner", () => {
 		expect(plan.metadata.importPath).toBe("./src/env");
 	});
 
+	it("sets targetDir to a named subdirectory when name is not '.'", () => {
+		const state: CollectedState = {
+			...defaultState,
+			mode: "new",
+			cwd: "/parent",
+			options: {
+				...defaultState.options,
+				mode: "new",
+				example: "basic",
+				name: "my-app",
+				path: "./src/env.ts",
+			},
+		};
+		const plan = createPlan(state);
+		expect(plan.clone).toBeDefined();
+		expect(plan.clone?.targetDir).toBe("/parent/my-app");
+		expect(plan.clone?.targetName).toBe("my-app");
+		expect(plan.install?.cwd).toBe("/parent/my-app");
+	});
+
+	it("omits targetDir when name is '.' so cloner falls back to cwd", () => {
+		const state: CollectedState = {
+			...defaultState,
+			mode: "new",
+			cwd: "/parent",
+			options: {
+				...defaultState.options,
+				mode: "new",
+				example: "basic",
+				name: ".",
+				path: "./src/env.ts",
+			},
+		};
+		const plan = createPlan(state);
+		expect(plan.clone).toBeDefined();
+		expect(plan.clone?.targetDir).toBeUndefined();
+		expect(plan.clone?.targetName).toBe("parent");
+		expect(plan.install?.cwd).toBeUndefined();
+	});
+
 	it("extracts basename for targetName in new project mode", () => {
 		const state: CollectedState = {
 			mode: "new",

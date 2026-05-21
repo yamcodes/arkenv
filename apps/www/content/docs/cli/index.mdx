@@ -46,12 +46,11 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
 
 ### `init`
 
-The `init` command is the primary entry point for the CLI. It accepts an optional `[project-name]` positional argument (which defaults to the current directory `.`).
+The `init` command is the primary entry point for the CLI. It accepts an optional `[project-name]` positional argument, which defaults to the current directory (`.`). It supports two flows:
 
-- **Inside an existing project**: Running `init` will scaffold ArkEnv in that directory. If you specify a directory name, e.g., `init my-sub-project`, the CLI will perform all operations inside that subdirectory.
-- **Outside a project (New Project Flow)**: If the target directory does not have a `package.json` and is empty, the CLI will guide you through creating a new project from an example. The name and directory of the new project will be `[project-name]`.
+### Existing project
 
-During initialization, the CLI will:
+When run in a directory that already has a `package.json`, the CLI will:
 
 1. **Detect Environment**: Check your package manager and project framework (Vite, Bun, Node.js).
 2. **Scan for Keys**: Detect if a `.env.example` exists and extract its keys to pre-populate your schema.
@@ -59,16 +58,36 @@ During initialization, the CLI will:
 4. **Select Validator**: Ask you which validation library you'd prefer to use.
 5. **Generate Code**: Scaffold an `env.ts` file with a working schema and automatically install the required dependencies.
 
+### New project (`--example`)
+
+Passing `--example` always forces the new-project wizard, even if the current directory is non-empty or already has a `package.json`. The wizard will:
+
+1. **Prompt for a project name** (or use `[project-name]` to skip the prompt).
+2. **Clone the selected example** from the ArkEnv repository into a new `<name>/` subdirectory.
+3. **Install dependencies** using your current package manager.
+
+```bash
+# Scaffold the "basic" example into ./my-app/
+npx @arkenv/cli@latest init my-app --example basic
+
+# Use an interactive example picker, prompt for name
+npx @arkenv/cli@latest init --example basic
+```
+
+<Callout type="info">
+  **Using `arkenv init . --example basic`** scaffolds into the current directory instead of a subdirectory. If the current directory is not empty, the CLI will abort with an error to prevent overwriting existing files.
+</Callout>
+
 ## Options
 
 The CLI supports the following flags to customize the behavior:
 
-| Flag        | Alias | Description                                                                                                    |
-| ----------- | ----- | -------------------------------------------------------------------------------------------------------------- |
-| `--yes`     | `-y`  | Skip all prompts and use defaults. Also passes the `--yes` flag to underlying processes (like skill installs). |
-| `--quiet`   | `-q`  | Quiet mode. Suppresses output unless a command fails, in which case buffered logs are shown for debugging.     |
-| `--json`    | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).             |
-| `--agent`   | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                |
-| `--example` | `-e`  | Specify an example ID to scaffold from (when creating a new project).                                          |
-| `--force`   | `-f`  | Force scaffolding a new project in non-empty directories, and bypass technical requirement checks.             |
-| `--help`    | `-h`  | Show the help message.                                                                                         |
+| Flag        | Alias | Description                                                                                                                            |
+| ----------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`     | `-y`  | Skip all prompts and use defaults. Also passes the `--yes` flag to underlying processes (like skill installs).                         |
+| `--quiet`   | `-q`  | Quiet mode. Suppresses output unless a command fails, in which case buffered logs are shown for debugging.                             |
+| `--json`    | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).                                     |
+| `--agent`   | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                                        |
+| `--example` | `-e`  | Scaffold from a named example (e.g. `basic`). Always triggers the new-project flow, even in non-empty or existing-package directories. |
+| `--force`   | `-f`  | Force scaffolding a new project in non-empty directories, and bypass technical requirement checks.                                     |
+| `--help`    | `-h`  | Show the help message.                                                                                                                 |

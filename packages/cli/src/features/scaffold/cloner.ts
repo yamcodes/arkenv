@@ -3,7 +3,9 @@ import path from "node:path";
 import type { Workspace } from "./plan";
 
 /**
- * Clones a example example into the current working directory and rewrites its package name.
+ * Clones a example example into the target directory and rewrites its package name.
+ * When `cloneInfo.targetDir` is set the files are placed there; otherwise they
+ * land in the current working directory (the `name: "."` case).
  */
 export async function cloneExample(
 	workspace: Workspace,
@@ -11,11 +13,17 @@ export async function cloneExample(
 		repository: string;
 		example: string;
 		targetName: string;
-		targetDir: string;
+		targetDir?: string;
 	},
 ): Promise<void> {
-	const tempDir = path.join(cloneInfo.targetDir, ".arkenv-temp");
+	const destDir = cloneInfo.targetDir ?? process.cwd();
+	const tempDir = path.join(process.cwd(), ".arkenv-temp");
 	await workspace.mkdir(tempDir, true);
+
+	// Ensure destination directory exists (a no-op when targeting cwd).
+	if (cloneInfo.targetDir) {
+		await workspace.mkdir(destDir, true);
+	}
 
 	try {
 		// Clone sparsely
@@ -37,9 +45,9 @@ export async function cloneExample(
 			examplePath,
 		]);
 
-		// Move files to target directory
+		// Move files to destination directory
 		const fullExamplePath = path.join(tempDir, examplePath);
-		await copyDirectoryContents(fullExamplePath, cloneInfo.targetDir);
+		await copyDirectoryContents(fullExamplePath, destDir);
 
 		// Remove any copied lockfiles to ensure clean install with target package manager
 		const lockfiles = [
@@ -50,11 +58,11 @@ export async function cloneExample(
 			"bun.lock",
 		];
 		for (const lockfile of lockfiles) {
-			await fsp.rm(path.join(cloneInfo.targetDir, lockfile), { force: true });
+			await fsp.rm(path.join(destDir, lockfile), { force: true });
 		}
 
 		// Update package.json name
-		const pkgPath = path.join(cloneInfo.targetDir, "package.json");
+		const pkgPath = path.join(destDir, "package.json");
 		if (await workspace.exists(pkgPath)) {
 			const pkgContent = await workspace.readFile(pkgPath);
 			const pkg = JSON.parse(pkgContent);

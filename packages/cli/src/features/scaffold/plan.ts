@@ -48,6 +48,7 @@ export type ScaffoldingPlan = {
 	install?: {
 		packageManager: PackageManager;
 		dependencies: string[];
+		cwd?: string;
 	};
 	/** Optional skill installation */
 	skill?: {
@@ -78,7 +79,8 @@ export type ScaffoldingPlan = {
 		repository: string;
 		example: string;
 		targetName: string;
-		targetDir: string;
+		/** Absolute path to copy the example into. Defaults to process.cwd() when absent. */
+		targetDir?: string;
 	};
 };
 

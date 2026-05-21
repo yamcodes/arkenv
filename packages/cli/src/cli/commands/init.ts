@@ -76,12 +76,18 @@ export class InitUseCase {
 				? await this.scanner.isEmptyDirectory(targetDir)
 				: true;
 
+			// --example always forces the new-project flow, even in non-empty or
+			// existing-project directories.
+			if (input.example !== undefined) {
+				return await this.collectNewProject(input, isEmpty);
+			}
+
 			if (hasPackageJson) {
 				return await this.collectExistingProject(input, targetDir);
 			}
 
 			if (isEmpty || input.isForce) {
-				return await this.collectNewProject(input, targetDir);
+				return await this.collectNewProject(input, isEmpty);
 			}
 
 			this.logger.error(
@@ -293,9 +299,9 @@ export class InitUseCase {
 	 */
 	private async collectNewProject(
 		input: InitInput,
-		targetDir: string,
+		isEmpty = true,
 	): Promise<CollectedState | null> {
-		const { isYes, isAgent, example, name } = input;
+		const { isYes, example, name } = input;
 
 		const registry = await this.registry.fetchRegistry();
 
@@ -313,22 +319,23 @@ export class InitUseCase {
 			return null;
 		}
 
-		const packageManager = this.detectPackageManager();
-
-		let finalTargetDir = targetDir;
-		if (!input.name) {
-			if (
-				options.name &&
-				options.name !== path.basename(process.cwd()) &&
-				options.name !== "."
-			) {
-				finalTargetDir = path.resolve(process.cwd(), options.name);
-			}
+		// When the resolved project name is "." (current dir) and the directory is
+		// not empty, abort to avoid clobbering the existing contents.
+		if (options.name === "." && !isEmpty) {
+			this.logger.error(
+				`Cannot scaffold into ${code(".")} because the current directory is not empty.`,
+			);
+			this.logger.info(
+				`Run ${code("arkenv init")} in an empty directory or choose a sub-directory name instead.`,
+			);
+			return null;
 		}
+
+		const packageManager = this.detectPackageManager();
 
 		return shake({
 			mode: "new" as const,
-			cwd: finalTargetDir,
+			cwd: process.cwd(),
 			options,
 			detectedFramework: options.framework,
 			packageManager,
