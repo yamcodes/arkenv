@@ -96,7 +96,7 @@ describe("Executor", () => {
 
 	it("executes a plan for a new project (cloned example) into a named subdirectory", async () => {
 		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
-			JSON.stringify({ name: "old-name" }),
+			JSON.stringify({ name: "old-name", packageManager: "npm@11.9.0" }),
 		);
 
 		const newProjectPlan: ScaffoldingPlan = {
@@ -161,6 +161,10 @@ describe("Executor", () => {
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
 			"/some/parent/my-project/package.json",
 			expect.stringContaining('"name": "my-project"'),
+		);
+		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+			"/some/parent/my-project/package.json",
+			expect.not.stringContaining("packageManager"),
 		);
 
 		// Assert dependency installation

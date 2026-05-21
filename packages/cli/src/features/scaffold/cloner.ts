@@ -67,6 +67,7 @@ export async function cloneExample(
 			const pkgContent = await workspace.readFile(pkgPath);
 			const pkg = JSON.parse(pkgContent);
 			pkg.name = cloneInfo.targetName;
+			delete pkg.packageManager;
 			await workspace.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
 		}
 	} finally {
