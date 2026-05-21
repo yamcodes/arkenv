@@ -121,12 +121,12 @@ describe("CLI parser", () => {
 			expect(cli1.args).toEqual(["init", "-e", "-yq"]);
 			expect(cli1.isYes).toBe(false);
 			expect(cli1.isQuiet).toBe(false);
-			expect(cli1.validationError).toBe("Unknown argument: -yq");
+			expect(cli1.validationError).toBe("Missing value for option: -e");
 
 			const cli2 = new CLI(["node", "arkenv", "init", "--example", "-abc"]);
 			expect(cli2.args).toEqual(["init", "--example", "-abc"]);
 			expect(cli2.isAgent).toBe(false);
-			expect(cli2.validationError).toBe("Unknown argument: -abc");
+			expect(cli2.validationError).toBe("Missing value for option: --example");
 		});
 
 		it("should expand a bundle ending in a value-taking flag and parse its value correctly", () => {
@@ -143,7 +143,7 @@ describe("CLI parser", () => {
 			expect(cli.isYes).toBe(true);
 			expect(cli.isQuiet).toBe(true);
 			expect(cli.isAgent).toBe(false);
-			expect(cli.validationError).toBe("Unknown argument: -abc");
+			expect(cli.validationError).toBe("Missing value for option: -e");
 		});
 
 		it("should ignore single-letter flags with dash or long flags", () => {
@@ -154,6 +154,20 @@ describe("CLI parser", () => {
 			const cli2 = new CLI(["node", "arkenv", "init", "--yes"]);
 			expect(cli2.isYes).toBe(true);
 			expect(cli2.args).toEqual(["init", "--yes"]);
+		});
+
+		it("should reject valued flags passed without a value", () => {
+			const cli1 = new CLI(["node", "arkenv", "init", "--example"]);
+			expect(cli1.validationError).toBe("Missing value for option: --example");
+
+			const cli2 = new CLI(["node", "arkenv", "init", "-e"]);
+			expect(cli2.validationError).toBe("Missing value for option: -e");
+
+			const cli3 = new CLI(["node", "arkenv", "init", "--example", "--yes"]);
+			expect(cli3.validationError).toBe("Missing value for option: --example");
+
+			const cli4 = new CLI(["node", "arkenv", "init", "-yqe"]);
+			expect(cli4.validationError).toBe("Missing value for option: -e");
 		});
 	});
 });

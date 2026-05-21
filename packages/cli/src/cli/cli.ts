@@ -83,7 +83,8 @@ export class CLI {
 					if (i + 1 < this.args.length && !this.args[i + 1].startsWith("-")) {
 						i += 2;
 					} else {
-						i += 1;
+						this.validationError = `Missing value for option: ${arg}`;
+						break;
 					}
 				} else {
 					i += 1;
