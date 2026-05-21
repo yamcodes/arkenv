@@ -21,6 +21,10 @@ These skills are intended for users of ArkEnv to improve their development exper
   - [**groom-issue**](./groom-issue/SKILL.md): Interactive grilling session to clarify and flesh out poorly written issues.
   - [**tackle-issue**](./tackle-issue/SKILL.md): Standardized workflow for managing issues from start to Pull Request.
 
+  ### Code Quality & Refactoring
+
+  - [**modularize**](./modularize/SKILL.md): Refactoring and splitting large files to reduce duplication and preserve public APIs.
+
   ### OpenSpec (Experimental)
 
   - [**openspec-propose**](./openspec-propose/SKILL.md): Propose new changes with full artifact generation.
