@@ -66,8 +66,32 @@ export async function generateMetadata(props: {
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
 
+	const ogUrl = new URL("https://arkenv.js.org/api/og");
+	ogUrl.searchParams.set("title", page.data.title);
+	if (page.data.description) {
+		ogUrl.searchParams.set("description", page.data.description);
+	}
+
 	return {
 		title: `${page.data.title} · ArkEnv`,
 		description: page.data.description,
+		openGraph: {
+			title: `${page.data.title} · ArkEnv`,
+			description: page.data.description,
+			images: [
+				{
+					url: ogUrl.toString(),
+					width: 1200,
+					height: 630,
+					alt: page.data.title,
+				},
+			],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: `${page.data.title} · ArkEnv`,
+			description: page.data.description,
+			images: [ogUrl.toString()],
+		},
 	};
 }
