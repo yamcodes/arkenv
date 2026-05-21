@@ -54,4 +54,4 @@ For CLI commands, components, or services:
 2. **Design Boundaries**: Formulate a plan for the split. Define clear boundaries, minimal interfaces, and ensure no public contracts are broken.
 3. **Incremental Execution**: Extract sub-modules or smaller test files in small, logical batches. Check compilation/type-checking at each step.
 4. **Update Imports & Exports**: Re-wire caller modules, update barrel/index files, and resolve imports cleanly.
-5. **Verify**: Run the targeted tests, execute workspace typechecking, run the package build step (e.g., pnpm build) to guarantee ESM/CJS module resolution/exports remain intact, and execute linting and formatting checks (e.g., pnpm fix).
+5. **Verify**: Run the targeted tests, execute typechecking (e.g., `pnpm typecheck` or `pnpm typecheck:packages`), run the package build step (e.g., `pnpm build` or `pnpm build:packages`) to guarantee ESM/CJS module resolution/exports remain intact, and execute linting and formatting checks (e.g., `pnpm fix`).
