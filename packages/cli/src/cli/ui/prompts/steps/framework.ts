@@ -1,44 +1,47 @@
 import { confirm, isCancel, select } from "@clack/prompts";
 import type { ProjectOptions } from "@/features/scaffold";
 
-export const frameworkStep =
-	(defaults?: { framework?: ProjectOptions["framework"] }) => async () => {
-		const answer = await select({
-			message: "Select your framework or build tool:",
-			initialValue: defaults?.framework,
-			options: [
-				{
-					value: "vanilla",
-					label: `Vanilla${defaults?.framework === "vanilla" ? " (Detected)" : ""}`,
-					hint: "Node.js, Bun, server-side or runtime-only validation",
-				},
-				{
-					value: "vite",
-					label: `Vite${defaults?.framework === "vite" ? " (Detected)" : ""}`,
-					hint: "Client-side and static inlining validation",
-				},
-				{
-					value: "bun-fullstack",
-					label: `Bun fullstack dev server${defaults?.framework === "bun-fullstack" ? " (Detected)" : ""}`,
-					hint: "Client-side bundling and Bun.serve integration",
-				},
-			],
-		});
-		return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
-	};
+export async function frameworkStep(options: {
+	framework?: ProjectOptions["framework"] | undefined;
+}): Promise<ProjectOptions["framework"] | null> {
+	const answer = await select({
+		message: "Select your framework or build tool:",
+		initialValue: options.framework,
+		options: [
+			{
+				value: "vanilla",
+				label: `Vanilla${options.framework === "vanilla" ? " (Detected)" : ""}`,
+				hint: "Node.js, Bun, server-side or runtime-only validation",
+			},
+			{
+				value: "vite",
+				label: `Vite${options.framework === "vite" ? " (Detected)" : ""}`,
+				hint: "Client-side and static inlining validation",
+			},
+			{
+				value: "bun-fullstack",
+				label: `Bun fullstack dev server${options.framework === "bun-fullstack" ? " (Detected)" : ""}`,
+				hint: "Client-side bundling and Bun.serve integration",
+			},
+		],
+	});
+	return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
+}
 
-export const bunBuildStep =
-	(initialValue = false) =>
-	async () => {
-		const answer = await confirm({
-			message:
-				"Optional: Would you also like to bootstrap a custom Bun.build script for programmatic bundling?",
-			initialValue,
-		});
-		return isCancel(answer) ? null : answer;
-	};
+export async function bunBuildStep(options: {
+	initialValue?: boolean | undefined;
+}): Promise<boolean | null> {
+	const answer = await confirm({
+		message:
+			"Optional: Would you also like to bootstrap a custom Bun.build script for programmatic bundling?",
+		initialValue: options.initialValue ?? false,
+	});
+	return isCancel(answer) ? null : answer;
+}
 
-export const validatorStep = async () => {
+export async function validatorStep(): Promise<
+	ProjectOptions["validator"] | null
+> {
 	const answer = await select({
 		message: "Select your preferred validator library:",
 		options: [
@@ -60,4 +63,4 @@ export const validatorStep = async () => {
 		],
 	});
 	return isCancel(answer) ? null : (answer as ProjectOptions["validator"]);
-};
+}

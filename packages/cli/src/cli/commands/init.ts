@@ -1,7 +1,12 @@
 import path from "node:path";
 import { shake } from "radashi";
 import { code } from "@/cli/ui";
-import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
+import {
+	type CollectedState,
+	createPlan,
+	Executor,
+	type Framework,
+} from "@/features/scaffold";
 import { RegistryClient } from "@/shared/clients";
 import type {
 	LoggerPort,
@@ -201,14 +206,29 @@ export class InitUseCase {
 			targetPath,
 		);
 
-		let hasTypeFile = false;
-		if (detectedFramework === "vite" || detectedFramework === "bun-fullstack") {
-			const typeFile =
-				detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+		const hasEnvSchemaFile = await this.workspace.exists(targetPath);
+
+		const hasTypeFileAtPath = async ({
+			framework,
+			envPath,
+		}: {
+			framework: Framework;
+			envPath: string;
+		}) => {
+			if (framework !== "vite" && framework !== "bun-fullstack") {
+				return false;
+			}
+
+			const typeFile = framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+			const targetPath = path.resolve(targetDir, envPath);
 			const targetDirOfSchema = path.dirname(targetPath);
 			const typeFilePath = path.join(targetDirOfSchema, typeFile);
-			hasTypeFile = await this.workspace.exists(typeFilePath);
-		}
+			return this.workspace.exists(typeFilePath);
+		};
+		const hasTypeFile = await hasTypeFileAtPath({
+			framework: detectedFramework,
+			envPath: defaultEnvPath,
+		});
 
 		const options = await this.prompt.runWizard(
 			shake({
@@ -219,7 +239,9 @@ export class InitUseCase {
 				tsConfig: tsConfig.parsed ?? null,
 				envKeys: envRes?.keys,
 				envKeysSource: envRes?.source,
+				hasTypeFileAtPath,
 				hasTypeFile,
+				hasEnvSchemaFile,
 			}),
 			isYes,
 		);

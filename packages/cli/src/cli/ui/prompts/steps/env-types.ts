@@ -1,5 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
 import { confirm, isCancel, select } from "@clack/prompts";
 import { code } from "@/cli/ui/visuals";
 import type { ProjectOptions } from "@/features/scaffold";
@@ -7,21 +5,15 @@ import type { ProjectOptions } from "@/features/scaffold";
 /**
  * Determines whether the wizard should create framework environment types.
  */
-export const installTypeDefinitionsStep = async ({
-	results,
-}: {
-	results: { framework?: string | null; path?: unknown };
-}) => {
-	if (results.framework === null) return null;
-	if (results.framework === "vite" || results.framework === "bun-fullstack") {
+export async function installTypeDefinitionsStep(options: {
+	framework: "vite" | "bun-fullstack" | "vanilla";
+	hasTypeFile: boolean;
+}): Promise<boolean | null> {
+	if (options.framework === "vite" || options.framework === "bun-fullstack") {
 		const typeFile =
-			results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-		const targetDir = path.dirname(
-			path.resolve(process.cwd(), (results.path as string) || "./src/env.ts"),
-		);
-		const typeFilePath = path.join(targetDir, typeFile);
+			options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 
-		if (fs.existsSync(typeFilePath)) {
+		if (options.hasTypeFile) {
 			return true;
 		}
 
@@ -34,33 +26,25 @@ export const installTypeDefinitionsStep = async ({
 		return isCancel(answer) ? null : (answer as boolean);
 	}
 	return true;
-};
+}
 
 /**
  * Chooses how to handle an existing framework type definition file.
  */
-export const envDtsHandlingStep = async ({
-	results,
-}: {
-	results: {
-		framework?: string | null;
-		path?: unknown;
-		installTypeDefinitions?: boolean | null;
-	};
-}) => {
-	if (results.installTypeDefinitions === null) return null;
-	if (!results.installTypeDefinitions) return "skip";
-	if (results.framework !== "vite" && results.framework !== "bun-fullstack")
+export async function envDtsHandlingStep(options: {
+	framework: "vite" | "bun-fullstack" | "vanilla";
+	installTypeDefinitions: boolean;
+	hasTypeFile: boolean;
+}): Promise<ProjectOptions["envDtsHandling"] | null> {
+	if (!options.installTypeDefinitions) return "skip";
+	if (options.framework !== "vite" && options.framework !== "bun-fullstack") {
 		return "skip";
+	}
 
 	const typeFile =
-		results.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-	const targetDir = path.dirname(
-		path.resolve(process.cwd(), (results.path as string) || "./src/env.ts"),
-	);
-	const typeFilePath = path.join(targetDir, typeFile);
+		options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
 
-	if (fs.existsSync(typeFilePath)) {
+	if (options.hasTypeFile) {
 		const answer = await select({
 			message: `Found existing ${code(typeFile)}. How should we handle ArkEnv types?`,
 			options: [
@@ -83,4 +67,4 @@ export const envDtsHandlingStep = async ({
 		return answer as ProjectOptions["envDtsHandling"];
 	}
 	return "overwrite";
-};
+}
