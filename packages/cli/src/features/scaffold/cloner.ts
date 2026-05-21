@@ -11,9 +11,10 @@ export async function cloneExample(
 		repository: string;
 		example: string;
 		targetName: string;
+		targetDir: string;
 	},
 ): Promise<void> {
-	const tempDir = path.join(process.cwd(), ".arkenv-temp");
+	const tempDir = path.join(cloneInfo.targetDir, ".arkenv-temp");
 	await workspace.mkdir(tempDir, true);
 
 	try {
@@ -36,9 +37,9 @@ export async function cloneExample(
 			examplePath,
 		]);
 
-		// Move files to current directory
+		// Move files to target directory
 		const fullExamplePath = path.join(tempDir, examplePath);
-		await copyDirectoryContents(fullExamplePath, process.cwd());
+		await copyDirectoryContents(fullExamplePath, cloneInfo.targetDir);
 
 		// Remove any copied lockfiles to ensure clean install with target package manager
 		const lockfiles = [
@@ -49,11 +50,11 @@ export async function cloneExample(
 			"bun.lock",
 		];
 		for (const lockfile of lockfiles) {
-			await fsp.rm(path.join(process.cwd(), lockfile), { force: true });
+			await fsp.rm(path.join(cloneInfo.targetDir, lockfile), { force: true });
 		}
 
 		// Update package.json name
-		const pkgPath = path.join(process.cwd(), "package.json");
+		const pkgPath = path.join(cloneInfo.targetDir, "package.json");
 		if (await workspace.exists(pkgPath)) {
 			const pkgContent = await workspace.readFile(pkgPath);
 			const pkg = JSON.parse(pkgContent);

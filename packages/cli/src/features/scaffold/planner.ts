@@ -24,6 +24,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 	const plan: ScaffoldingPlan = {
 		files: [],
+		cwd,
 		metadata: shake({
 			displayPath: "",
 			framework: options.framework,
@@ -41,6 +42,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			repository: "https://github.com/yamcodes/arkenv.git",
 			example: options.example!,
 			targetName: options.name!,
+			targetDir: cwd,
 		};
 
 		plan.install = {

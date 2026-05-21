@@ -90,7 +90,7 @@ export class Executor {
 					plan.install.packageManager,
 					plan.install.dependencies,
 				);
-				await this.workspace.execute(cmd, args);
+				await this.workspace.execute(cmd, args, plan.cwd);
 			}
 
 			// 3. TS Config
@@ -114,7 +114,7 @@ export class Executor {
 			// 4. Framework bootstrapping
 			if (plan.bootstrap) {
 				if (plan.bootstrap.framework === "vite") {
-					const viteConfigPath = await this.workspace.findViteConfig();
+					const viteConfigPath = await this.workspace.findViteConfig(plan.cwd);
 					if (viteConfigPath) {
 						this.reporter.step("Bootstrapping Vite plugin...");
 						const result = await this.workspace.bootstrapViteConfig(
@@ -141,7 +141,7 @@ export class Executor {
 						);
 					}
 				} else if (plan.bootstrap.framework === "bun-fullstack") {
-					const bunConfigPath = await this.workspace.findBunConfig();
+					const bunConfigPath = await this.workspace.findBunConfig(plan.cwd);
 					const result = await this.workspace.bootstrapBunConfig(
 						bunConfigPath,
 						plan.bootstrap.bunFeatures,
@@ -164,7 +164,7 @@ export class Executor {
 					if (plan.skill.isYes) {
 						args.push("--yes");
 					}
-					await this.workspace.execute(cmd, args);
+					await this.workspace.execute(cmd, args, plan.cwd);
 					skillInstalled = true;
 				} catch (err: unknown) {
 					const message = err instanceof Error ? err.message : String(err);

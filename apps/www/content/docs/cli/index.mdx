@@ -44,9 +44,14 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
 
 ## Commands
 
-### `init`
+### `init [project-name]`
 
-The `init` command is the primary entry point for the CLI. It will:
+The `init` command is the primary entry point for the CLI. It accepts an optional `[project-name]` positional argument (which defaults to the current directory `.`).
+
+- **Inside an existing project**: Running `init` will scaffold ArkEnv in that directory. If you specify a directory name, e.g., `init my-sub-project`, the CLI will perform all operations inside that subdirectory.
+- **Outside a project (New Project Flow)**: If the target directory does not have a `package.json` and is empty, the CLI will guide you through creating a new project from an example. The name and directory of the new project will be `[project-name]`.
+
+During initialization, the CLI will:
 
 1. **Detect Environment**: Check your package manager and project framework (Vite, Bun, Node.js).
 2. **Scan for Keys**: Detect if a `.env.example` exists and extract its keys to pre-populate your schema.
@@ -65,6 +70,5 @@ The CLI supports the following flags to customize the behavior:
 | `--json`    | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).             |
 | `--agent`   | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                |
 | `--example` | `-e`  | Specify an example ID to scaffold from (when creating a new project).                                          |
-| `--name`    | `-n`  | Specify the project name (when creating a new project).                                                        |
 | `--force`   | `-f`  | Force scaffolding a new project in non-empty directories, and bypass technical requirement checks.             |
 | `--help`    | `-h`  | Show the help message.                                                                                         |

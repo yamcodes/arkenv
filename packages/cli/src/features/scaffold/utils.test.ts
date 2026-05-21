@@ -5,6 +5,7 @@ import { getUsageInstructions } from "./utils";
 describe("scaffold utils", () => {
 	describe("getUsageInstructions", () => {
 		const basePlan: ScaffoldingPlan = {
+			cwd: ".",
 			files: [],
 			metadata: {
 				displayPath: "./src/env.ts",

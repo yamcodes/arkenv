@@ -6,7 +6,9 @@ import { code } from "@/cli/ui/visuals";
 import { transformViteConfig } from "@/features/config-mutation";
 import type { BootstrapResult } from "@/shared/ports";
 
-export async function findViteConfig(): Promise<string | null> {
+export async function findViteConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
 	const filenames = [
 		"vite.config.ts",
 		"vite.config.js",
@@ -14,7 +16,7 @@ export async function findViteConfig(): Promise<string | null> {
 		"vite.config.mjs",
 	];
 	for (const file of filenames) {
-		const fullPath = path.resolve(process.cwd(), file);
+		const fullPath = path.resolve(cwd, file);
 		try {
 			await fsp.access(fullPath);
 			return fullPath;
@@ -25,10 +27,12 @@ export async function findViteConfig(): Promise<string | null> {
 	return null;
 }
 
-export async function findBunConfig(): Promise<string | null> {
+export async function findBunConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
 	const filenames = ["bunfig.toml", "bun.setup.ts", "bun.setup.js"];
 	for (const file of filenames) {
-		const fullPath = path.resolve(process.cwd(), file);
+		const fullPath = path.resolve(cwd, file);
 		try {
 			await fsp.access(fullPath);
 			return fullPath;

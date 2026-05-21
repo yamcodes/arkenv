@@ -63,15 +63,25 @@ export class InitUseCase {
 		this.logger.interactiveStdout(true);
 
 		try {
-			const hasPackageJson = await this.scanner.hasPackageJson();
-			const isEmpty = await this.scanner.isEmptyDirectory();
+			const targetDir =
+				input.name && input.name !== "."
+					? path.resolve(process.cwd(), input.name)
+					: process.cwd();
+
+			const dirExists = await this.workspace.exists(targetDir);
+			const hasPackageJson = dirExists
+				? await this.scanner.hasPackageJson(targetDir)
+				: false;
+			const isEmpty = dirExists
+				? await this.scanner.isEmptyDirectory(targetDir)
+				: true;
 
 			if (hasPackageJson) {
-				return await this.collectExistingProject(input);
+				return await this.collectExistingProject(input, targetDir);
 			}
 
 			if (isEmpty || input.isForce) {
-				return await this.collectNewProject(input);
+				return await this.collectNewProject(input, targetDir);
 			}
 
 			this.logger.error(
@@ -91,10 +101,11 @@ export class InitUseCase {
 	 */
 	private async collectExistingProject(
 		input: InitInput,
+		targetDir: string,
 	): Promise<CollectedState | null> {
 		const { isYes, isForce, isAgent } = input;
 
-		const requirements = await this.scanner.checkRequirements(process.cwd());
+		const requirements = await this.scanner.checkRequirements(targetDir);
 		const failures = requirements.filter((r) => r.status === "fail");
 		const warnings = requirements.filter((r) => r.status === "warn");
 
@@ -123,7 +134,7 @@ export class InitUseCase {
 		}
 
 		let shouldUpdateTsConfig = false;
-		const tsConfig = await this.scanner.checkTsConfig();
+		const tsConfig = await this.scanner.checkTsConfig(targetDir);
 
 		if (tsConfig.status === "not_strict") {
 			if (isYes) {
@@ -153,21 +164,21 @@ export class InitUseCase {
 		}
 
 		const detectedFramework = await this.scanner.detectFramework(
-			process.cwd(),
+			targetDir,
 			tsConfig.parsed,
 		);
 		const detectedBunFeatures =
 			detectedFramework === "bun-fullstack"
-				? await this.scanner.detectBunFeatures(process.cwd(), tsConfig.parsed)
+				? await this.scanner.detectBunFeatures(targetDir, tsConfig.parsed)
 				: undefined;
 		const defaultEnvPath = await this.scanner.suggestDefaultEnvPath(
-			process.cwd(),
+			targetDir,
 			tsConfig.parsed,
 		);
 
-		const targetPath = path.resolve(process.cwd(), defaultEnvPath);
+		const targetPath = path.resolve(targetDir, defaultEnvPath);
 		const envRes = await this.scanner.getEnvExampleKeys(
-			process.cwd(),
+			targetDir,
 			tsConfig.parsed,
 			targetPath,
 		);
@@ -176,8 +187,8 @@ export class InitUseCase {
 		if (detectedFramework === "vite" || detectedFramework === "bun-fullstack") {
 			const typeFile =
 				detectedFramework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-			const targetDir = path.dirname(targetPath);
-			const typeFilePath = path.join(targetDir, typeFile);
+			const targetDirOfSchema = path.dirname(targetPath);
+			const typeFilePath = path.join(targetDirOfSchema, typeFile);
 			hasTypeFile = await this.workspace.exists(typeFilePath);
 		}
 
@@ -217,7 +228,7 @@ export class InitUseCase {
 		}
 
 		// Handle existing env file prompt
-		const finalTargetPath = path.resolve(process.cwd(), options.path);
+		const finalTargetPath = path.resolve(targetDir, options.path);
 
 		if (
 			(await this.workspace.exists(finalTargetPath)) &&
@@ -241,7 +252,7 @@ export class InitUseCase {
 		}
 
 		const packageManager = await this.scanner.detectPackageManager(
-			process.cwd(),
+			targetDir,
 			tsConfig.parsed,
 		);
 
@@ -257,15 +268,15 @@ export class InitUseCase {
 		}
 
 		if (typeFileName) {
-			const targetDir = path.dirname(finalTargetPath);
-			const typeFilePath = path.join(targetDir, typeFileName);
+			const targetDirOfSchema = path.dirname(finalTargetPath);
+			const typeFilePath = path.join(targetDirOfSchema, typeFileName);
 			if (await this.workspace.exists(typeFilePath))
 				existingFiles.push(typeFilePath);
 		}
 
 		return shake({
 			mode: "existing" as const,
-			cwd: process.cwd(),
+			cwd: targetDir,
 			options,
 			detectedFramework,
 			detectedBunFeatures,
@@ -282,6 +293,7 @@ export class InitUseCase {
 	 */
 	private async collectNewProject(
 		input: InitInput,
+		targetDir: string,
 	): Promise<CollectedState | null> {
 		const { isYes, isAgent, example, name } = input;
 
@@ -303,9 +315,20 @@ export class InitUseCase {
 
 		const packageManager = this.detectPackageManager();
 
+		let finalTargetDir = targetDir;
+		if (!input.name) {
+			if (
+				options.name &&
+				options.name !== path.basename(process.cwd()) &&
+				options.name !== "."
+			) {
+				finalTargetDir = path.resolve(process.cwd(), options.name);
+			}
+		}
+
 		return shake({
 			mode: "new" as const,
-			cwd: process.cwd(),
+			cwd: finalTargetDir,
 			options,
 			detectedFramework: options.framework,
 			packageManager,

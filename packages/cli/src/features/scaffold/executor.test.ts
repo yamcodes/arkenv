@@ -61,6 +61,7 @@ describe("Executor", () => {
 	});
 
 	const defaultPlan: ScaffoldingPlan = {
+		cwd: ".",
 		files: [
 			{
 				path: "env.ts",
@@ -85,10 +86,11 @@ describe("Executor", () => {
 
 		expect(mockWorkspace.mkdir).toHaveBeenCalled();
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith("env.ts", "env");
-		expect(mockWorkspace.execute).toHaveBeenCalledWith("pnpm", [
-			"add",
-			"arkenv",
-		]);
+		expect(mockWorkspace.execute).toHaveBeenCalledWith(
+			"pnpm",
+			["add", "arkenv"],
+			defaultPlan.cwd,
+		);
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
@@ -109,6 +111,7 @@ describe("Executor", () => {
 				repository: "https://github.com/yamcodes/arkenv.git",
 				example: "basic",
 				targetName: "my-project",
+				targetDir: ".",
 			},
 		};
 		await executor.execute(newProjectPlan);
@@ -151,7 +154,11 @@ describe("Executor", () => {
 		);
 
 		// Assert dependency installation
-		expect(mockWorkspace.execute).toHaveBeenCalledWith("bun", ["install"]);
+		expect(mockWorkspace.execute).toHaveBeenCalledWith(
+			"bun",
+			["install"],
+			newProjectPlan.cwd,
+		);
 	});
 
 	it("updates tsconfig when planned", async () => {
@@ -203,12 +210,10 @@ describe("Executor", () => {
 			},
 		};
 		await executor.execute(plan);
-		expect(mockWorkspace.execute).toHaveBeenCalledWith("pnpm", [
-			"dlx",
-			"skills",
-			"add",
-			"yamcodes/arkenv",
-			"--yes",
-		]);
+		expect(mockWorkspace.execute).toHaveBeenCalledWith(
+			"pnpm",
+			["dlx", "skills", "add", "yamcodes/arkenv", "--yes"],
+			plan.cwd,
+		);
 	});
 });

@@ -15,6 +15,7 @@ export class CLI {
 	public helpRequested: boolean;
 	public example: string | undefined;
 	public name: string | undefined;
+	public validationError: string | undefined;
 	public logger: Logger;
 
 	/**
@@ -32,7 +33,59 @@ export class CLI {
 			this.args.includes("--help") || this.args.includes("-h");
 
 		this.example = this.getFlagValue("--example", "-e");
-		this.name = this.getFlagValue("--name", "-n");
+
+		const knownFlags = new Set([
+			"--yes",
+			"-y",
+			"--force",
+			"-f",
+			"--quiet",
+			"-q",
+			"--json",
+			"-j",
+			"--agent",
+			"-a",
+			"--help",
+			"-h",
+			"--example",
+			"-e",
+		]);
+
+		const valuedFlags = new Set(["--example", "-e"]);
+
+		let i = 1;
+		const positionalArgs: string[] = [];
+		this.validationError = undefined;
+
+		while (i < this.args.length) {
+			const arg = this.args[i];
+			if (arg.startsWith("-")) {
+				if (!knownFlags.has(arg)) {
+					this.validationError = `Unknown argument: ${arg}`;
+					break;
+				}
+				if (valuedFlags.has(arg)) {
+					if (i + 1 < this.args.length && !this.args[i + 1].startsWith("-")) {
+						i += 2;
+					} else {
+						i += 1;
+					}
+				} else {
+					i += 1;
+				}
+			} else {
+				positionalArgs.push(arg);
+				i += 1;
+			}
+		}
+
+		if (!this.validationError) {
+			if (positionalArgs.length > 1) {
+				this.validationError = `Unknown argument: ${positionalArgs[1]}`;
+			} else {
+				this.name = positionalArgs[0];
+			}
+		}
 
 		if (this.isAgent) {
 			this.isYes = true;
