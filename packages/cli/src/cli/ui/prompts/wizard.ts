@@ -6,6 +6,23 @@ import type { Example } from "@/shared/clients";
 import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 
+type HasTypeFileAtPath = (options: {
+	framework: ProjectOptions["framework"];
+	envPath: string;
+}) => boolean | Promise<boolean>;
+
+type ExistingProjectDefaults = Partial<
+	Pick<ProjectOptions, "framework" | "bunFeatures">
+> & {
+	defaultEnvPath?: string;
+	tsConfig?: ParsedTsConfig | null;
+	envKeys?: string[];
+	envKeysSource?: ".env.example" | "project";
+	hasTypeFileAtPath?: HasTypeFileAtPath;
+	hasTypeFile?: boolean;
+	hasEnvSchemaFile?: boolean;
+};
+
 /**
  * Run the appropriate init prompt flow for a new or existing project.
  *
@@ -25,6 +42,7 @@ export async function runPromptWizard(
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[];
 		envKeysSource?: ".env.example" | "project";
+		hasTypeFileAtPath?: HasTypeFileAtPath;
 		hasTypeFile?: boolean;
 		hasEnvSchemaFile?: boolean;
 	},
@@ -134,14 +152,7 @@ async function runNewProjectWizard(
  * @returns The project options or null if cancelled
  */
 async function runExistingProjectWizard(
-	defaults?: Partial<Pick<ProjectOptions, "framework" | "bunFeatures">> & {
-		defaultEnvPath?: string;
-		tsConfig?: ParsedTsConfig | null;
-		envKeys?: string[];
-		envKeysSource?: ".env.example" | "project";
-		hasTypeFile?: boolean;
-		hasEnvSchemaFile?: boolean;
-	},
+	defaults?: ExistingProjectDefaults,
 	isYes = false,
 ): Promise<ProjectOptions | null> {
 	const defaultEnvPath = defaults?.defaultEnvPath || "./src/env.ts";
@@ -150,10 +161,15 @@ async function runExistingProjectWizard(
 
 	if (isYes) {
 		const framework = defaults?.framework || "vanilla";
+		const hasTypeFile = await getHasTypeFile(
+			defaults,
+			framework,
+			defaultEnvPath,
+		);
 		let envDtsHandling: ProjectOptions["envDtsHandling"];
 
 		if (framework === "vite" || framework === "bun-fullstack") {
-			envDtsHandling = defaults?.hasTypeFile ? "append" : "overwrite";
+			envDtsHandling = hasTypeFile ? "append" : "overwrite";
 		}
 
 		return shake({
@@ -215,12 +231,13 @@ async function runExistingProjectWizard(
 				defaultEnvPath,
 			}),
 		);
+		const hasTypeFile = await getHasTypeFile(defaults, framework, envPath);
 
 		// 6. installTypeDefinitions
 		const installTypeDefinitions = unwrapPrompt(
 			await steps.installTypeDefinitions({
 				framework,
-				hasTypeFile: defaults?.hasTypeFile ?? false,
+				hasTypeFile,
 			}),
 		);
 
@@ -229,7 +246,7 @@ async function runExistingProjectWizard(
 			await steps.envDtsHandling({
 				framework,
 				installTypeDefinitions,
-				hasTypeFile: defaults?.hasTypeFile ?? false,
+				hasTypeFile,
 			}),
 		);
 
@@ -270,6 +287,18 @@ async function runExistingProjectWizard(
 		}
 		throw error;
 	}
+}
+
+async function getHasTypeFile(
+	defaults: ExistingProjectDefaults | undefined,
+	framework: ProjectOptions["framework"],
+	envPath: string,
+): Promise<boolean> {
+	return (
+		(await defaults?.hasTypeFileAtPath?.({ framework, envPath })) ??
+		defaults?.hasTypeFile ??
+		false
+	);
 }
 
 /**

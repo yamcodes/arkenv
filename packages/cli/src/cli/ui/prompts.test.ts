@@ -75,6 +75,30 @@ describe("runPromptWizard", () => {
 		expect(result?.envKeys).toEqual(["API_KEY"]);
 	});
 
+	it("should check type definitions beside the selected custom path", async () => {
+		const hasTypeFileAtPath = vi.fn().mockResolvedValue(true);
+
+		vi.mocked(prompts.select).mockResolvedValueOnce("vite"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // useDefaultPath
+		vi.mocked(prompts.text).mockResolvedValueOnce("./app/env.ts"); // path
+		vi.mocked(prompts.select).mockResolvedValueOnce("append"); // envDtsHandling
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+
+		const result = await runPromptWizard({
+			framework: "vite",
+			defaultEnvPath: "./src/env.ts",
+			hasTypeFile: false,
+			hasTypeFileAtPath,
+		});
+
+		expect(hasTypeFileAtPath).toHaveBeenCalledWith({
+			framework: "vite",
+			envPath: "./app/env.ts",
+		});
+		expect(result?.path).toBe("./app/env.ts");
+		expect(result?.envDtsHandling).toBe("append");
+	});
+
 	it("should NOT include envKeys if user declines prompt", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
