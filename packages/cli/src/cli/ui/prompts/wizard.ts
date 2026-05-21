@@ -7,7 +7,11 @@ import type { ParsedTsConfig } from "@/shared/ports";
 import { steps } from "./steps";
 
 /**
- * Runs the appropriate init prompt flow for a new or existing project.
+ * Run the appropriate init prompt flow for a new or existing project.
+ * 
+ * @param defaults Optional default values and configuration for the wizard
+ * @param isYes Whether to run in non-interactive/auto-confirm mode
+ * @returns The project options or null if cancelled
  */
 export async function runPromptWizard(
 	defaults?: Partial<
@@ -36,7 +40,12 @@ export async function runPromptWizard(
 }
 
 /**
- * Collects options for scaffolding a new project from an example example.
+ * Collect option for scaffolding a new project from an example.
+ * 
+ * @param defaults Optional default values for the new project
+ * @param isYes Whether to run in non-interactive/auto-confirm mode
+ * @returns The project options or null if cancelled
+ * @throws An error if an unknown example ID is specified
  */
 async function runNewProjectWizard(
 	defaults?: Partial<Pick<ProjectOptions, "example" | "name">> & {
@@ -47,74 +56,82 @@ async function runNewProjectWizard(
 	const examples = defaults?.examples || [];
 	const defaultProjectName = "arkenv-project";
 
-	let projectName: string;
-	if (defaults?.name) {
-		const trimmed = defaults.name.trim();
-		if (
-			trimmed === "." ||
-			trimmed === "./" ||
-			path.resolve(process.cwd(), trimmed) === process.cwd()
-		) {
-			projectName = ".";
+	try {
+		let projectName: string;
+		if (defaults?.name) {
+			const trimmed = defaults.name.trim();
+			if (
+				trimmed === "." ||
+				trimmed === "./" ||
+				path.resolve(process.cwd(), trimmed) === process.cwd()
+			) {
+				projectName = ".";
+			} else {
+				projectName = trimmed;
+			}
+		} else if (!isYes) {
+			const name = await text({
+				message: "Project name:",
+				placeholder: defaultProjectName,
+				defaultValue: defaultProjectName,
+			});
+
+			const nameResult = unwrapPrompt(name);
+			const trimmed = (nameResult || defaultProjectName).trim();
+			if (
+				trimmed === "." ||
+				trimmed === "./" ||
+				path.resolve(process.cwd(), trimmed) === process.cwd()
+			) {
+				projectName = ".";
+			} else {
+				projectName = trimmed;
+			}
 		} else {
-			projectName = trimmed;
+			projectName = defaultProjectName;
 		}
-	} else if (!isYes) {
-		const name = await text({
-			message: "Project name:",
-			placeholder: defaultProjectName,
-			defaultValue: defaultProjectName,
-		});
 
-		const nameResult = handlePrompt(name);
-		if (nameResult === null) return null;
-		const trimmed = (nameResult || defaultProjectName).trim();
-		if (
-			trimmed === "." ||
-			trimmed === "./" ||
-			path.resolve(process.cwd(), trimmed) === process.cwd()
-		) {
-			projectName = ".";
-		} else {
-			projectName = trimmed;
+		let exampleId = defaults?.example;
+
+		if (!exampleId && !isYes) {
+			const selected = await steps.example({ examples });
+			exampleId = unwrapPrompt(selected);
+		} else if (!exampleId && isYes) {
+			exampleId = "basic";
 		}
-	} else {
-		projectName = defaultProjectName;
+
+		const example = examples.find((t) => t.id === exampleId);
+		if (!example) {
+			const availableExamples = examples.map((t) => t.id).join(", ");
+			throw new Error(
+				`Unknown example ${exampleId}. Available examples: ${availableExamples}`,
+			);
+		}
+
+		return {
+			mode: "new",
+			example: example.id,
+			name: projectName,
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: example.framework,
+			language: "ts",
+			installSkill: false,
+		};
+	} catch (error) {
+		if (error instanceof CancelError) {
+			return null;
+		}
+		throw error;
 	}
-
-	let exampleId = defaults?.example;
-
-	if (!exampleId && !isYes) {
-		const selected = await steps.example({ examples });
-		const selectedResult = handlePrompt(selected);
-		if (selectedResult === null) return null;
-		exampleId = selectedResult;
-	} else if (!exampleId && isYes) {
-		exampleId = "basic";
-	}
-
-	const example = examples.find((t) => t.id === exampleId);
-	if (!example) {
-		const availableExamples = examples.map((t) => t.id).join(", ");
-		throw new Error(
-			`Unknown example ${exampleId}. Available examples: ${availableExamples}`,
-		);
-	}
-
-	return {
-		mode: "new",
-		example: example.id,
-		name: projectName,
-		path: "./src/env.ts",
-		validator: "arktype",
-		framework: example.framework,
-		language: "ts",
-		installSkill: false,
-	};
 }
 
 /**
- * Collects options for adding ArkEnv to a project that already has `package.json`.
+ * Collect option for adding ArkEnv to a project that already has `package.json`.
+ * 
+ * @param defaults Optional default values for the existing project
+ * @param isYes Whether to run in non-interactive/auto-confirm mode
+ * @returns The project options or null if cancelled
  */
 async function runExistingProjectWizard(
 	defaults?: Partial<Pick<ProjectOptions, "framework" | "bunFeatures">> & {
@@ -157,117 +174,127 @@ async function runExistingProjectWizard(
 		});
 	}
 
-	// 1. overwriteEnvSchemaFile
-	const overwriteEnvSchemaFile = handlePrompt(
-		await steps.overwriteEnvSchemaFile({
-			hasEnvSchemaFile: defaults?.hasEnvSchemaFile ?? false,
-			defaultPath: defaultEnvPath,
-		}),
-	);
-	if (overwriteEnvSchemaFile === null) return null;
-
-	// 2. framework
-	const framework = handlePrompt(
-		await steps.framework({
-			framework: defaults?.framework,
-		}),
-	);
-	if (framework === null) return null;
-
-	// 3. bunBuild
-	let bunBuild: boolean | undefined;
-	if (framework === "bun-fullstack") {
-		const defaultBunBuild =
-			defaults?.bunFeatures?.includes("build") ||
-			(defaults?.framework === "bun-fullstack" &&
-				defaults?.bunFeatures?.includes("build"));
-		const bunBuildResult = handlePrompt(
-			await steps.bunBuild({
-				initialValue: defaultBunBuild,
+	try {
+		// 1. overwriteEnvSchemaFile
+		const overwriteEnvSchemaFile = unwrapPrompt(
+			await steps.overwriteEnvSchemaFile({
+				hasEnvSchemaFile: defaults?.hasEnvSchemaFile ?? false,
+				defaultPath: defaultEnvPath,
 			}),
 		);
-		if (bunBuildResult === null) return null;
-		bunBuild = bunBuildResult;
-	}
 
-	// 4. useDefaultPath
-	const useDefaultPath = handlePrompt(
-		await steps.useDefaultPath({
-			defaultEnvPath,
-		}),
-	);
-	if (useDefaultPath === null) return null;
+		// 2. framework
+		const framework = unwrapPrompt(
+			await steps.framework({
+				framework: defaults?.framework,
+			}),
+		);
 
-	// 5. path
-	const envPath = handlePrompt(
-		await steps.path({
-			useDefaultPath,
-			defaultEnvPath,
-		}),
-	);
-	if (envPath === null) return null;
+		// 3. bunBuild
+		let bunBuild: boolean | undefined;
+		if (framework === "bun-fullstack") {
+			const defaultBunBuild =
+				defaults?.bunFeatures?.includes("build") ||
+				(defaults?.framework === "bun-fullstack" &&
+					defaults?.bunFeatures?.includes("build"));
+			bunBuild = unwrapPrompt(
+				await steps.bunBuild({
+					initialValue: defaultBunBuild,
+				}),
+			);
+		}
 
-	// 6. installTypeDefinitions
-	const installTypeDefinitions = handlePrompt(
-		await steps.installTypeDefinitions({
+		// 4. useDefaultPath
+		const useDefaultPath = unwrapPrompt(
+			await steps.useDefaultPath({
+				defaultEnvPath,
+			}),
+		);
+
+		// 5. path
+		const envPath = unwrapPrompt(
+			await steps.path({
+				useDefaultPath,
+				defaultEnvPath,
+			}),
+		);
+
+		// 6. installTypeDefinitions
+		const installTypeDefinitions = unwrapPrompt(
+			await steps.installTypeDefinitions({
+				framework,
+				hasTypeFile: defaults?.hasTypeFile ?? false,
+			}),
+		);
+
+		// 7. envDtsHandling
+		const envDtsHandling = unwrapPrompt(
+			await steps.envDtsHandling({
+				framework,
+				installTypeDefinitions,
+				hasTypeFile: defaults?.hasTypeFile ?? false,
+			}),
+		);
+
+		// 8. validator
+		const validator = unwrapPrompt(await steps.validator());
+
+		// 9. useEnvExample
+		const useEnvExample = unwrapPrompt(
+			await steps.useEnvExample({
+				detectedKeys,
+				keysSource,
+			}),
+		);
+
+		const bunFeatures: ProjectOptions["bunFeatures"] =
+			framework === "bun-fullstack"
+				? bunBuild
+					? ["serve", "build"]
+					: ["serve"]
+				: undefined;
+
+		return shake({
+			mode: "existing",
+			overwriteEnvSchemaFile,
 			framework,
-			hasTypeFile: defaults?.hasTypeFile ?? false,
-		}),
-	);
-	if (installTypeDefinitions === null) return null;
-
-	// 7. envDtsHandling
-	const envDtsHandling = handlePrompt(
-		await steps.envDtsHandling({
-			framework,
+			path: envPath,
 			installTypeDefinitions,
-			hasTypeFile: defaults?.hasTypeFile ?? false,
-		}),
-	);
-	if (envDtsHandling === null) return null;
-
-	// 8. validator
-	const validator = handlePrompt(await steps.validator());
-	if (validator === null) return null;
-
-	// 9. useEnvExample
-	const useEnvExample = handlePrompt(
-		await steps.useEnvExample({
-			detectedKeys,
-			keysSource,
-		}),
-	);
-	if (useEnvExample === null) return null;
-
-	const bunFeatures: ProjectOptions["bunFeatures"] =
-		framework === "bun-fullstack"
-			? bunBuild
-				? ["serve", "build"]
-				: ["serve"]
-			: undefined;
-
-	return shake({
-		mode: "existing",
-		overwriteEnvSchemaFile,
-		framework,
-		path: envPath,
-		installTypeDefinitions,
-		envDtsHandling,
-		validator,
-		bunFeatures,
-		language: "ts",
-		installSkill: false,
-		envKeys: useEnvExample ? (detectedKeys ?? undefined) : undefined,
-	});
+			envDtsHandling,
+			validator,
+			bunFeatures,
+			language: "ts",
+			installSkill: false,
+			envKeys: useEnvExample ? (detectedKeys ?? undefined) : undefined,
+		});
+	} catch (error) {
+		if (error instanceof CancelError) {
+			return null;
+		}
+		throw error;
+	}
 }
 
 /**
- * Normalizes prompt cancellations into `null` so wizard callers can stop safely.
+ * Represent an error thrown when a user cancels a CLI prompt.
  */
-function handlePrompt<T>(value: T | symbol | null): T | null {
+class CancelError extends Error {
+	constructor() {
+		super("Operation cancelled");
+	}
+}
+
+/**
+ * Unwrap a prompt result, throwing a CancelError if the user cancelled the prompt.
+ * 
+ * @param value The prompt result that may be cancelled or null
+ * @returns The unwrapped prompt value
+ * @throws CancelError If the user cancelled the prompt or if the result is null
+ */
+function unwrapPrompt<T>(value: T | symbol | null): T {
 	if (value === null || isCancel(value)) {
 		cancel("Operation cancelled");
-		return null;
+		throw new CancelError();
 	}
 	return value as T;
 }
