@@ -44,23 +44,39 @@ async function runNewProjectWizard(
 	isYes = false,
 ): Promise<ProjectOptions | null> {
 	const examples = defaults?.examples || [];
-	const defaultProjectName = path.basename(process.cwd());
+	const defaultProjectName = "arkenv-project";
 
 	let projectName: string;
 	if (defaults?.name) {
-		projectName = defaults.name;
+		const trimmed = defaults.name.trim();
+		if (
+			trimmed === "." ||
+			trimmed === "./" ||
+			path.resolve(process.cwd(), trimmed) === process.cwd()
+		) {
+			projectName = ".";
+		} else {
+			projectName = trimmed;
+		}
 	} else if (!isYes) {
 		const name = await text({
 			message: "Project name:",
 			placeholder: defaultProjectName,
-			initialValue: "",
+			defaultValue: defaultProjectName,
 		});
 
 		const nameResult = handlePrompt(name);
 		if (nameResult === null) return null;
-		// Preserve "." so the caller (collectNewProject) can enforce the
-		// non-empty-directory guard before normalizing.
-		projectName = nameResult || defaultProjectName;
+		const trimmed = (nameResult || defaultProjectName).trim();
+		if (
+			trimmed === "." ||
+			trimmed === "./" ||
+			path.resolve(process.cwd(), trimmed) === process.cwd()
+		) {
+			projectName = ".";
+		} else {
+			projectName = trimmed;
+		}
 	} else {
 		projectName = defaultProjectName;
 	}

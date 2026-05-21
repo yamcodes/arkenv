@@ -63,9 +63,21 @@ export class InitUseCase {
 		this.logger.interactiveStdout(true);
 
 		try {
+			let name = input.name;
+			if (name) {
+				const resolved = path.resolve(process.cwd(), name);
+				if (resolved === process.cwd()) {
+					name = ".";
+				}
+			}
+			const normalizedInput: InitInput = {
+				...input,
+				...(name !== undefined && { name }),
+			};
+
 			const targetDir =
-				input.name && input.name !== "."
-					? path.resolve(process.cwd(), input.name)
+				name && name !== "."
+					? path.resolve(process.cwd(), name)
 					: process.cwd();
 
 			const dirExists = await this.workspace.exists(targetDir);
@@ -78,16 +90,16 @@ export class InitUseCase {
 
 			// --example always forces the new-project flow, even in non-empty or
 			// existing-project directories.
-			if (input.example !== undefined) {
-				return await this.collectNewProject(input, isEmpty);
+			if (normalizedInput.example !== undefined) {
+				return await this.collectNewProject(normalizedInput, isEmpty);
 			}
 
 			if (hasPackageJson) {
-				return await this.collectExistingProject(input, targetDir);
+				return await this.collectExistingProject(normalizedInput, targetDir);
 			}
 
-			if (isEmpty || input.isForce) {
-				return await this.collectNewProject(input, isEmpty);
+			if (isEmpty || normalizedInput.isForce) {
+				return await this.collectNewProject(normalizedInput, isEmpty);
 			}
 
 			this.logger.error(

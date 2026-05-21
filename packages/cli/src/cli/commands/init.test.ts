@@ -346,4 +346,35 @@ describe("InitUseCase", () => {
 		expect(result.cwd).toBe(process.cwd());
 		expect(scanner.hasPackageJson).toHaveBeenCalledWith(process.cwd());
 	});
+
+	it("should resolve target directory to process.cwd() and normalize input name to '.' when project-name resolves to current directory", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
+		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			mode: "new",
+			example: "basic",
+			name: ".",
+			path: "./src/env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			name: "./",
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result.cwd).toBe(process.cwd());
+		expect(prompt.runWizard).toHaveBeenCalledWith(
+			expect.objectContaining({
+				mode: "new",
+				name: ".",
+			}),
+			false,
+		);
+	});
 });

@@ -23,6 +23,7 @@ export const pathStep =
 				message: "Where should we create the ArkEnv config?",
 				placeholder: defaultEnvPath,
 				initialValue: defaultEnvPath,
+				defaultValue: defaultEnvPath,
 			});
 			if (isCancel(answer)) return null;
 			const trimmed = typeof answer === "string" ? answer.trim() : "";

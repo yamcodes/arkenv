@@ -165,12 +165,12 @@ describe("runPromptWizard", () => {
 		});
 
 		expect(result?.mode).toBe("new");
-		expect(result?.name).toBe("my-cool-project");
+		expect(result?.name).toBe("arkenv-project");
 		expect(result?.example).toBe("basic");
 		expect(prompts.text).toHaveBeenCalledWith(
 			expect.objectContaining({
 				initialValue: "",
-				placeholder: "my-cool-project",
+				placeholder: "arkenv-project",
 			}),
 		);
 	});
@@ -197,6 +197,30 @@ describe("runPromptWizard", () => {
 		});
 
 		// "." should be preserved; normalization is the caller's responsibility.
+		expect(result?.name).toBe(".");
+	});
+
+	it("should normalize inputs resolving to the current directory (like './') to '.'", async () => {
+		const mockCwd = path.join(os.tmpdir(), "my-project");
+		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
+
+		const examples = [
+			{
+				id: "basic",
+				name: "Basic",
+				description: "A minimal ArkEnv setup in Node.js",
+				framework: "vanilla" as const,
+			},
+		];
+
+		vi.mocked(prompts.text).mockResolvedValueOnce("./"); // User types "./"
+		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
+
+		const result = await runPromptWizard({
+			mode: "new",
+			examples,
+		});
+
 		expect(result?.name).toBe(".");
 	});
 });
