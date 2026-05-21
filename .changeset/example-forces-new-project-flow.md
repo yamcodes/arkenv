@@ -1,5 +1,5 @@
 ---
-"@arkenv/cli": minor
+"@arkenv/cli": patch
 ---
 
 #### `--example` now forces the new-project wizard regardless of the current directory
