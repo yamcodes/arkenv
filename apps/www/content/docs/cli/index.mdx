@@ -11,25 +11,25 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
 <Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
   <Tab value="npm">
     ```bash
-    npx @arkenv/cli@latest init
+    npx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 
   <Tab value="pnpm">
     ```bash
-    pnx @arkenv/cli@latest init
+    pnx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 
   <Tab value="yarn">
     ```bash
-    yarn dlx @arkenv/cli@latest init
+    yarn dlx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 
   <Tab value="bun">
     ```bash
-    bunx @arkenv/cli@latest init
+    bunx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 </Tabs>
@@ -46,7 +46,7 @@ The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an 
 
 ### `init`
 
-The `init` command is the primary entry point for the CLI. It supports two flows:
+The `init` command is the primary entry point for the CLI. It accepts an optional `[project-name]` positional argument, which defaults to the current directory (`.`). It supports two flows:
 
 ### Existing project
 
@@ -62,20 +62,20 @@ When run in a directory that already has a `package.json`, the CLI will:
 
 Passing `--example` always forces the new-project wizard, even if the current directory is non-empty or already has a `package.json`. The wizard will:
 
-1. **Prompt for a project name** (or use `--name` to skip the prompt).
+1. **Prompt for a project name** (or use `[project-name]` to skip the prompt).
 2. **Clone the selected example** from the ArkEnv repository into a new `<name>/` subdirectory.
 3. **Install dependencies** using your current package manager.
 
 ```bash
 # Scaffold the "basic" example into ./my-app/
-npx @arkenv/cli@latest init --example basic --name my-app
+npx @arkenv/cli@latest init my-app --example basic
 
 # Use an interactive example picker, prompt for name
 npx @arkenv/cli@latest init --example basic
 ```
 
 <Callout type="info">
-  **Using `--name .`** scaffolds into the current directory instead of a subdirectory. If the current directory is not empty, the CLI will abort with an error to prevent overwriting existing files.
+  **Using `arkenv init . --example basic`** scaffolds into the current directory instead of a subdirectory. If the current directory is not empty, the CLI will abort with an error to prevent overwriting existing files.
 </Callout>
 
 ## Options
@@ -89,6 +89,5 @@ The CLI supports the following flags to customize the behavior:
 | `--json`    | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).             |
 | `--agent`   | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                |
 | `--example` | `-e`  | Scaffold from a named example (e.g. `basic`). Always triggers the new-project flow, even in non-empty or existing-package directories. |
-| `--name`    | `-n`  | Project name for new-project scaffolding. Defaults to the current directory name. Use `.` to scaffold into the current directory (aborts if non-empty). |
 | `--force`   | `-f`  | Force scaffolding a new project in non-empty directories, and bypass technical requirement checks.             |
 | `--help`    | `-h`  | Show the help message.                                                                                         |

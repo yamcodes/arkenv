@@ -14,6 +14,13 @@ async function main() {
 
 	setupGracefulShutdown(logger);
 
+	if (cli.validationError) {
+		logger.error(cli.validationError);
+		await helpUseCase.execute();
+		await logger.flush();
+		process.exit(1);
+	}
+
 	if (cli.helpRequested) {
 		await helpUseCase.execute();
 		await logger.flush();

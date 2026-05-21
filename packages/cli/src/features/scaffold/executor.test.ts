@@ -61,6 +61,7 @@ describe("Executor", () => {
 	});
 
 	const defaultPlan: ScaffoldingPlan = {
+		cwd: ".",
 		files: [
 			{
 				path: "env.ts",
@@ -88,7 +89,7 @@ describe("Executor", () => {
 		expect(mockWorkspace.execute).toHaveBeenCalledWith(
 			"pnpm",
 			["add", "arkenv"],
-			undefined,
+			defaultPlan.cwd,
 		);
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
@@ -258,12 +259,10 @@ describe("Executor", () => {
 			},
 		};
 		await executor.execute(plan);
-		expect(mockWorkspace.execute).toHaveBeenCalledWith("pnpm", [
-			"dlx",
-			"skills",
-			"add",
-			"yamcodes/arkenv",
-			"--yes",
-		]);
+		expect(mockWorkspace.execute).toHaveBeenCalledWith(
+			"pnpm",
+			["dlx", "skills", "add", "yamcodes/arkenv", "--yes"],
+			plan.cwd,
+		);
 	});
 });

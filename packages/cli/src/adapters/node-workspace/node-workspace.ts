@@ -93,12 +93,12 @@ export class NodeWorkspace implements WorkspacePort {
 		return updateTsConfigToStrict(this, filePath);
 	}
 
-	async findViteConfig(): Promise<string | null> {
-		return findViteConfig();
+	async findViteConfig(cwd?: string): Promise<string | null> {
+		return findViteConfig(cwd);
 	}
 
-	async findBunConfig(): Promise<string | null> {
-		return findBunConfig();
+	async findBunConfig(cwd?: string): Promise<string | null> {
+		return findBunConfig(cwd);
 	}
 
 	async bootstrapViteConfig(

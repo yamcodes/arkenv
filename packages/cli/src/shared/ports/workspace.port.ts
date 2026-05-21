@@ -37,8 +37,8 @@ export type ConfigPort = {
 		status: "updated" | "already_strict" | "not_found" | "error";
 		file?: string;
 	}>;
-	findViteConfig(): Promise<string | null>;
-	findBunConfig(): Promise<string | null>;
+	findViteConfig(cwd?: string): Promise<string | null>;
+	findBunConfig(cwd?: string): Promise<string | null>;
 	bootstrapViteConfig(
 		path: string,
 		importPath: string,

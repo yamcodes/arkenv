@@ -13,7 +13,8 @@ flag entirely. The flag now always triggers the new-project wizard:
 arkenv init --example basic
 ```
 
-**Special case – `--name .`**: If you explicitly pass `.` as the project name (or type it
-at the prompt) and the current directory is **not empty**, the CLI aborts with a clear
-error instead of scaffolding into the dirty directory. When the directory **is** empty,
-`.` is normalized to the current directory's basename as before.
+**Special case – `arkenv init . --example basic`**: If you explicitly pass `.` as the
+project name (or type it at the prompt) and the current directory is **not empty**, the
+CLI aborts with a clear error instead of scaffolding into the dirty directory. When the
+directory **is** empty, `.` is used for the current directory while the package name is
+normalized to the current directory's basename as before.

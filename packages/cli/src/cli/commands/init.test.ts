@@ -33,7 +33,12 @@ describe("InitUseCase", () => {
 		} as unknown as LoggerPort;
 
 		workspace = {
-			exists: vi.fn(),
+			exists: vi.fn().mockImplementation(async (p: string) => {
+				if (p.endsWith(".ts") || p.endsWith(".json") || p.endsWith(".yaml")) {
+					return false;
+				}
+				return true;
+			}),
 			readFile: vi.fn(),
 			writeFile: vi.fn(),
 			mkdir: vi.fn(),
@@ -185,7 +190,7 @@ describe("InitUseCase", () => {
 		expect(scanner.checkRequirements).not.toHaveBeenCalled();
 	});
 
-	it("should abort with non-empty error when --example --name . is used and directory is not empty", async () => {
+	it("should abort with non-empty error when --example and project-name '.' are used in a non-empty directory", async () => {
 		vi.mocked(scanner.hasPackageJson).mockResolvedValue(false);
 		vi.mocked(scanner.isEmptyDirectory).mockResolvedValue(false);
 		vi.mocked(prompt.runWizard).mockResolvedValue({
@@ -293,5 +298,52 @@ describe("InitUseCase", () => {
 		expect(logger.warn).toHaveBeenCalledWith(
 			"package.json: package.json not found",
 		);
+	});
+
+	it("should resolve target directory to subdirectory when project-name positional argument is provided", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			name: "my-project",
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result.cwd).toContain("my-project");
+		expect(scanner.hasPackageJson).toHaveBeenCalledWith(
+			expect.stringContaining("my-project"),
+		);
+		expect(scanner.checkTsConfig).toHaveBeenCalledWith(
+			expect.stringContaining("my-project"),
+		);
+	});
+
+	it("should resolve target directory to process.cwd() when project-name is '.'", async () => {
+		vi.mocked(scanner.hasPackageJson).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			name: ".",
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result.cwd).toBe(process.cwd());
+		expect(scanner.hasPackageJson).toHaveBeenCalledWith(process.cwd());
 	});
 });
