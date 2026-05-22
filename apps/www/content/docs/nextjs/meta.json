@@ -3,8 +3,5 @@
 	"description": "Integration for Next.js",
 	"root": true,
 	"icon": "Nextdotjs",
-	"pages": [
-		"---Guide---",
-		"index"
-	]
+	"pages": ["---Guide---", "index"]
 }
