@@ -18,7 +18,7 @@ description: The ArkEnv integration for Next.js lets you validate environment va
 ### 1. Installation
 
 ```package-install
-@arkenv/nextjs arkenv arktype
+@arkenv/nextjs arktype
 ```
 
 ### 2. Configure Environment
@@ -26,8 +26,7 @@ description: The ArkEnv integration for Next.js lets you validate environment va
 Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define and validate your schemas:
 
 ```ts title="src/env.ts"
-import { createEnv } from "@arkenv/nextjs";
-import { type } from "arkenv";
+import { createEnv, type } from "@arkenv/nextjs";
 
 export const env = createEnv({
 	server: {

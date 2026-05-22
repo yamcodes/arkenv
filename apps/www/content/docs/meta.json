@@ -1,3 +1,9 @@
 {
-	"pages": ["arkenv", "cli", "vite-plugin", "bun-plugin", "nextjs"]
+	"pages": [
+		"arkenv",
+		"cli",
+		"nextjs",
+		"vite-plugin",
+		"bun-plugin"
+	]
 }
