@@ -62,6 +62,10 @@ export function createEnv<
 		: { ...server, ...client, ...shared };
 
 	// Run core validation
+	// Note: We cast parameters to `any` here to avoid a compilation TS2589 error
+	// (Type instantiation is excessively deep and possibly infinite).
+	// Evaluating the full generic intersection schema under `EnvSchema<T>`
+	// exceeds TypeScript's instantiation limits for generic components.
 	const validated = coreCreateEnv(schema as any, { env: combinedEnv as any });
 
 	// Return a Proxy wrapper
