@@ -71,6 +71,7 @@ async function enrichUsers(userIds: string[]): Promise<EnrichedUser[]> {
 ```
 
 **When sequential loop await is acceptable:**
+
 - Each iteration depends on the previous result
 - API strictly requires sequential calls
 - Processing order affects correctness

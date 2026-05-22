@@ -56,6 +56,7 @@ async function loadDashboard(userId: string): Promise<Dashboard> {
 ```
 
 **When sequential is correct:**
+
 - Operations have data dependencies (need result A to make request B)
 - Rate limiting requires sequential requests
 - Order of execution matters for side effects

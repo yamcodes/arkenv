@@ -76,6 +76,7 @@ function getStatusMessage(status: OrderStatus): string {
 ```
 
 **Benefits:**
+
 - Compile-time error when union expands
 - Self-documenting: all cases explicitly handled
 - Runtime safety via assertNever fallback

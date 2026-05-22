@@ -71,8 +71,9 @@ const result = items.reduce((acc, item) => {
 ```
 
 **When spread is acceptable:**
+
 - Outside hot paths
-- Small objects (< 10 properties)
+- Small objects (\< 10 properties)
 - When immutability is required for state management
 - When readability significantly improves
 

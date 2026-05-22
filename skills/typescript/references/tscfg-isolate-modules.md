@@ -70,6 +70,7 @@ export default {
 ```
 
 **Code patterns blocked by isolatedModules:**
+
 - `const enum` (use regular `enum` or union types instead)
 - `export =` / `import =` syntax
 - Re-exporting types without `type` keyword

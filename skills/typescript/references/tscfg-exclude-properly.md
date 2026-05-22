@@ -77,6 +77,7 @@ tsc --explainFiles
 ```
 
 **Common files to exclude:**
+
 - `node_modules` (always)
 - Build output directories (`dist`, `build`, `out`)
 - Test files for production builds

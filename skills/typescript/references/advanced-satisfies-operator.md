@@ -87,6 +87,7 @@ config.timeout = 3000  // Error: Cannot assign to 'timeout' (readonly)
 ```
 
 **When to use satisfies vs type annotation:**
+
 - Use `satisfies` when you want validation but need literal types
 - Use type annotation (`:`) when you want the variable to be exactly that type
 - Use `as const satisfies` for readonly config with validation

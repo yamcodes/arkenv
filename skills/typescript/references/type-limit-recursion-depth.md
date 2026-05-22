@@ -59,6 +59,7 @@ type Config = Partial<AppConfig>
 ```
 
 **When unbounded recursion is acceptable:**
+
 - Types with guaranteed shallow depth (max 2-3 levels)
 - Internal types not exposed in public APIs
 

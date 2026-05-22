@@ -71,6 +71,7 @@ const indent = '  '.repeat(depth)
 ```
 
 **When regex is still needed:**
+
 - Complex pattern matching
 - Capture groups
 - Case-insensitive matching (`/pattern/i`)

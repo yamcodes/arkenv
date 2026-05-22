@@ -77,6 +77,7 @@ function getComputedConfig(config: Config): ComputedConfig {
 ```
 
 **Limitations of WeakMap:**
+
 - Keys must be objects (not primitives)
 - Not iterable (no `.keys()`, `.values()`, `.entries()`)
 - No `.size` property

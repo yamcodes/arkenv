@@ -57,7 +57,8 @@ function findUserById(id: string): User | undefined {
 ```
 
 **When to stick with arrays:**
-- Small collections (< 10 items)
+
+- Small collections (\< 10 items)
 - One-time lookups where conversion cost exceeds benefit
 - When you need array methods like `.map()`, `.filter()`, `.slice()`
 

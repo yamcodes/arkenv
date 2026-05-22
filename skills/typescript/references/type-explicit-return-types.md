@@ -52,11 +52,13 @@ export function fetchUserProfile(userId: string): Promise<UserProfile> {
 ```
 
 **When to skip explicit return types:**
+
 - Private/internal functions with simple returns
 - Arrow functions in local scope
 - Functions where the return type is obvious (e.g., `(): void`)
 
 **Benefits:**
+
 - Declaration files use named type instead of expanded inline type
 - Faster incremental compilation when function body changes
 - Better error messages pointing to return type mismatch

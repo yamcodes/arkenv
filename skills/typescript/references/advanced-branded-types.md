@@ -75,6 +75,7 @@ formatPrice(toCents(price))  // OK: '$29.99'
 ```
 
 **When to use branded types:**
+
 - Entity IDs that shouldn't be mixed
 - Currency/unit conversions
 - Validated strings (email, URL, slug)

@@ -85,6 +85,7 @@ function processUser(user: User | null): void {
 ```
 
 **Benefits:**
+
 - Centralizes validation logic
 - Automatic type narrowing after assertion
 - Clearer intent than if-throw patterns

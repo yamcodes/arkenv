@@ -63,7 +63,8 @@ export default {
 ```
 
 **When barrels are acceptable:**
-- Internal modules with few exports (< 10)
+
+- Internal modules with few exports (\< 10)
 - Package entry points for library consumers
 - When bundler is configured to optimize them
 

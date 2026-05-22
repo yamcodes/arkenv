@@ -69,6 +69,7 @@ async function fetchUserOrders(userId: string): Promise<Result<Order[]>> {
 ```
 
 **Benefits:**
+
 - Errors caught at function definition, not call sites
 - Better IDE autocomplete for consumers
 - Self-documenting API contracts

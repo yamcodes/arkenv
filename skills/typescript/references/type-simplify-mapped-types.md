@@ -60,11 +60,13 @@ type TransformedUser = TransformObject<User>
 ```
 
 **Benefits:**
+
 - Each small utility type is cached separately
 - Easier to debug type errors
 - More reusable across the codebase
 
 **When complex mapped types are acceptable:**
+
 - Internal utility types used in few places
 - Types that genuinely require complex logic
 

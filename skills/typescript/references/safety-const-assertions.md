@@ -69,6 +69,7 @@ function setCoordinates(coords: readonly [number, number]): void { }
 ```
 
 **When to use const assertions:**
+
 - Configuration objects that shouldn't change
 - Enum-like objects with string values
 - Array/tuple literals passed to functions expecting specific types

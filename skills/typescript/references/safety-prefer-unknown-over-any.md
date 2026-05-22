@@ -69,6 +69,7 @@ function parseConfig(configString: string): AppConfig {
 ```
 
 **When any is acceptable:**
+
 - Migrating JavaScript to TypeScript incrementally
 - Third-party library workarounds (with `// @ts-expect-error`)
 - Truly dynamic code where type is unknowable

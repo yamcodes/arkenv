@@ -65,6 +65,7 @@ const { id, name } = user  // pick
 ```
 
 **When Lodash is still valuable:**
+
 - `_.debounce`, `_.throttle` - complex timing logic
 - `_.cloneDeep` - deep object cloning
 - `_.merge` - deep object merging

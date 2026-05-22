@@ -48,7 +48,8 @@ type AppEvent = UserEvent | PageEvent | FormEvent
 ```
 
 **When flat unions are fine:**
-- Small unions (< 20 members) have negligible cost
+
+- Small unions (\< 20 members) have negligible cost
 - Unions of primitive literals used in few places
 - `string | number | boolean` style utility unions
 

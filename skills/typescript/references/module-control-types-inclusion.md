@@ -85,6 +85,7 @@ By default, TypeScript loads all `@types/*` packages from `node_modules`. This c
 ```
 
 **Benefits:**
+
 - Prevents type conflicts between similar packages
 - Reduces memory usage during compilation
 - Faster IDE responsiveness

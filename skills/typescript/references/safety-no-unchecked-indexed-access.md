@@ -79,6 +79,7 @@ const last = items.at(-1)  // Already T | undefined
 ```
 
 **When to disable:**
+
 - Legacy codebases with heavy array indexing (migration cost too high)
 - Performance-critical inner loops where the narrowing pattern adds overhead
 

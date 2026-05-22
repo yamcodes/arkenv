@@ -73,6 +73,7 @@ import { createUser, type User, type UserRole } from './user'
 ```
 
 **Benefits:**
+
 - Smaller bundles (unused modules not included)
 - Faster cold starts (fewer modules to parse)
 - Clearer code intent (types vs runtime values)

@@ -50,6 +50,7 @@ function getFirstItem<T>(collection: T): UnwrapArray<T> {
 ```
 
 **Benefits:**
+
 - Type alias acts as a cache boundary
 - Reduces duplicate computation across multiple call sites
 - Improves IDE responsiveness for autocomplete

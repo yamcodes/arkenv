@@ -57,6 +57,7 @@ function sumOrders(orders: Order[]): number {
 ```
 
 **When to skip this optimization:**
+
 - Arrays under 1,000 items
 - Monomorphic objects (same shape/class)
 - Non-hot paths executed infrequently

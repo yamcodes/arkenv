@@ -62,6 +62,7 @@ tsc  # 15s first build, 1-3s subsequent builds
 **Note:** The `composite` flag implies `incremental: true` and requires `declaration: true`.
 
 **When to disable incremental:**
+
 - CI environments where cache isn't preserved between runs
 - One-off type-checking scripts
 
