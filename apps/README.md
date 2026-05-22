@@ -16,11 +16,11 @@ The `apps/` directory is the home for projects that are not published as package
 
 ## Directory Structure
 
-| Directory                       | Type           | Description                                                     |
-| :------------------------------ | :------------- | :-------------------------------------------------------------- |
-| [`www`](./www)                  | Next.js App    | The Next.js website and documentation portal.                   |
+| Directory                            | Type           | Description                                                     |
+| :----------------------------------- | :------------- | :-------------------------------------------------------------- |
+| [`www`](./www)                       | Next.js App    | The Next.js website and documentation portal.                   |
 | [`playwright-www`](./playwright-www) | Test Suite     | Playwright end-to-end tests for the `www` application.          |
-| [`playgrounds/`](./playgrounds) | Sub-workspaces | Local test playgrounds for Node.js, Bun, Vite, SolidStart, etc. |
+| [`playgrounds/`](./playgrounds)      | Sub-workspaces | Local test playgrounds for Node.js, Bun, Vite, SolidStart, etc. |
 
 ## Versioning & Releases
 
