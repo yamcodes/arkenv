@@ -6,5 +6,5 @@ To support environment variable coercion (e.g. parsing strings to numbers/boolea
 
 **Archived Specs**:
 
-- [2025-12-20-add-coercion](../openspec/changes/archive/2025-12-20-add-coercion/)
-- [2025-12-22-coercion-public-api](../openspec/changes/archive/2025-12-22-coercion-public-api/)
+- [2025-12-20-add-coercion](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec/changes/archive/2025-12-20-add-coercion)
+- [2025-12-22-coercion-public-api](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec/changes/archive/2025-12-22-coercion-public-api)

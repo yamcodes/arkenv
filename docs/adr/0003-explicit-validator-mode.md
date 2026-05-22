@@ -6,6 +6,6 @@ To support parsing environment variables with Standard Schema validators directl
 
 **Archived Specs**:
 
-- [2026-01-17-add-explicit-validator-mode](../openspec/changes/archive/2026-01-17-add-explicit-validator-mode/)
-- [2026-01-21-bun-plugin-validator-mode](../openspec/changes/archive/2026-01-21-bun-plugin-validator-mode/)
-- [2026-01-21-vite-plugin-validator-mode](../openspec/changes/archive/2026-01-21-vite-plugin-validator-mode/)
+- [2026-01-17-add-explicit-validator-mode](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec/changes/archive/2026-01-17-add-explicit-validator-mode)
+- [2026-01-21-bun-plugin-validator-mode](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec/changes/archive/2026-01-21-bun-plugin-validator-mode)
+- [2026-01-21-vite-plugin-validator-mode](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec/changes/archive/2026-01-21-vite-plugin-validator-mode)

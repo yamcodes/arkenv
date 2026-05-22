@@ -17,7 +17,7 @@ We wanted a lightweight, standard way to capture durable, trade-off-driven archi
 We decided to:
 
 1. Decommission all active OpenSpec tooling (workflows, platform-specific commands, and custom agent skills).
-2. Preserve the `.github/openspec/changes/archive/` directory as a historical reference.
+2. Archive the `.github/openspec/` directory under the git tag [`openspec-archive`](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec) as a historical reference.
 3. Adopt Architecture Decision Records (ADRs) as the source of truth for architectural decisions, located centrally in `docs/adr/`.
 4. Prefix ADRs sequentially, beginning with `0000` to document this migration and the ADR process itself.
 

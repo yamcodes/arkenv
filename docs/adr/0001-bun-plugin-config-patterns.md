@@ -9,4 +9,4 @@ To support build-time environment variable validation in Bun environments. The B
 
 **Archived Specs**:
 
-- [2025-11-28-add-bun-plugin](../openspec/changes/archive/2025-11-28-add-bun-plugin/)
+- [2025-11-28-add-bun-plugin](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec/changes/archive/2025-11-28-add-bun-plugin)

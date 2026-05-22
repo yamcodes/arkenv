@@ -10,4 +10,4 @@ To clean up the ad-hoc package exports and provide an explicitly ArkType-free en
 
 **Archived Specs**:
 
-- [2026-02-23-refactor-export-surface](../openspec/changes/archive/2026-02-23-refactor-export-surface/)
+- [2026-02-23-refactor-export-surface](https://github.com/yamcodes/arkenv/tree/openspec-archive/.github/openspec/changes/archive/2026-02-23-refactor-export-surface)
