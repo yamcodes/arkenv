@@ -45,7 +45,7 @@ export function createEnv<
 
 	// Prepare combined environment for core validation
 	const isBrowser = typeof window !== "undefined";
-	const combinedEnv: Record<string, unknown> = { ...runtimeEnv };
+	const combinedEnv = { ...runtimeEnv } as Record<string, string | undefined>;
 
 	if (!isBrowser) {
 		// Fallback server keys to process.env if omitted from runtimeEnv
@@ -62,11 +62,11 @@ export function createEnv<
 		: { ...server, ...client, ...shared };
 
 	// Run core validation
-	// Note: We cast parameters to `any` here to avoid a compilation TS2589 error
+	// Note: We cast schema to `any` here to avoid a compilation TS2589 error
 	// (Type instantiation is excessively deep and possibly infinite).
 	// Evaluating the full generic intersection schema under `EnvSchema<T>`
 	// exceeds TypeScript's instantiation limits for generic components.
-	const validated = coreCreateEnv(schema as any, { env: combinedEnv as any });
+	const validated = coreCreateEnv(schema as any, { env: combinedEnv });
 
 	// Return a Proxy wrapper
 	return new Proxy(validated, {
@@ -82,7 +82,7 @@ export function createEnv<
 			}
 			return Reflect.get(target, prop, receiver);
 		},
-	}) as Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>>;
+	});
 }
 
 export { type } from "arkenv";
