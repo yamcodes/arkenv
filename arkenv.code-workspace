@@ -64,6 +64,14 @@
 			"name": "🧪 playwright-www"
 		},
 		{
+			"path": "apps/playgrounds/nextjs",
+			"name": "🛝 next.js"
+		},
+		{
+			"path": "apps/playgrounds/vite",
+			"name": "🛝 vite"
+		},
+		{
 			"path": "apps/playgrounds/node",
 			"name": "🛝 node"
 		},
@@ -72,24 +80,16 @@
 			"name": "🛝 bun"
 		},
 		{
-			"path": "apps/playgrounds/vite",
-			"name": "🛝 vite"
-		},
-		{
-			"path": "apps/playgrounds/arkenv-cli",
-			"name": "🛝 arkenv-cli"
-		},
-		{
-			"path": "apps/playgrounds/vite-legacy",
-			"name": "🛝 vite-legacy"
+			"path": "apps/playgrounds/solid-start",
+			"name": "🛝 solid-start"
 		},
 		{
 			"path": "apps/playgrounds/bun-react",
 			"name": "🛝 bun-react"
 		},
 		{
-			"path": "apps/playgrounds/solid-start",
-			"name": "🛝 solid-start"
+			"path": "apps/playgrounds/vite-legacy",
+			"name": "🛝 vite-legacy"
 		},
 		{
 			"path": "apps/playgrounds/standard-schema",
@@ -98,6 +98,10 @@
 		{
 			"path": "apps/playgrounds/esbuild-cjs",
 			"name": "🛝 esbuild-cjs"
+		},
+		{
+			"path": "apps/playgrounds/arkenv-cli",
+			"name": "🛝 arkenv-cli"
 		},
 		{
 			"path": "apps/playgrounds/js",
