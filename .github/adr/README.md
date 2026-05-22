@@ -21,5 +21,5 @@ An ADR should be written when a decision is:
 
 Our AI developer agent leverages these ADRs to guide its development and maintain design consistency. Key skills interacting with these records include:
 
-* **`/grill-with-docs`**: Challenges new design/architectural proposals against existing records and glossary terms, dynamically creating or updating ADRs as decisions crystallize.
-* **`/improve-codebase-architecture`**: Scans the codebase for refactoring or architectural consolidation opportunities, referencing the records in this directory to ensure alignment with existing decisions.
+* [**`grill-with-docs`**](../../skills/grill-with-docs/SKILL.md): Challenges new design/architectural proposals against existing records and glossary terms, dynamically creating or updating ADRs as decisions crystallize.
+* [**`improve-codebase-architecture`**](../../skills/improve-codebase-architecture/SKILL.md): Scans the codebase for refactoring or architectural consolidation opportunities, referencing the records in this directory to ensure alignment with existing decisions.
