@@ -145,4 +145,21 @@ describe("createEnv", () => {
 			}
 		}
 	});
+
+	it("should support default values in schema when omitted or undefined in runtimeEnv", () => {
+		const env = createEnv({
+			server: {
+				DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
+			},
+			client: {
+				NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: undefined,
+			} as any,
+		});
+
+		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/mydb");
+		expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+	});
 });
