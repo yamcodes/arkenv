@@ -45,7 +45,7 @@ export function createEnv<
 
 	// Prepare combined environment for core validation
 	const isBrowser = typeof window !== "undefined";
-	const combinedEnv: Record<string, any> = { ...runtimeEnv };
+	const combinedEnv: Record<string, unknown> = { ...runtimeEnv };
 
 	if (!isBrowser) {
 		// Fallback server keys to process.env if omitted from runtimeEnv
@@ -78,7 +78,7 @@ export function createEnv<
 			}
 			return Reflect.get(target, prop, receiver);
 		},
-	}) as any;
+	}) as Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>>;
 }
 
 export { type } from "arkenv";
