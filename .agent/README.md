@@ -14,13 +14,6 @@ Instructional documentation for automated skills, located in `.agent/docs/`:
 - **`docs/triage-labels.md`**: Mapping of canonical triage roles (e.g., `needs-triage`) to this repo's specific GitHub labels.
 - **`docs/domain.md`**: Rules for consuming and contributing to the project's domain documentation (`CONTEXT.md` and ADRs).
 
-### Agent Workflows (`/workflows`)
-Contains "OpenSpec" workflow definitions for complex agent tasks:
-- `opsx-propose.md`: Workflow for proposing new features.
-- `opsx-explore.md`: Workflow for researching and clarifying requirements.
-- `opsx-apply.md`: Workflow for implementing tasks from a proposal.
-- `opsx-archive.md`: Workflow for finalizing and archiving changes.
-
 ### Archived Platforms (`/platforms`)
 Configuration for other AI platforms that are not currently the primary agent. To use these, move them to the root as described in their metadata:
 - `.cursor/`: Cursor IDE configuration.

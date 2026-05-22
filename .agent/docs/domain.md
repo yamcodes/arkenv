@@ -5,7 +5,7 @@ How the engineering skills should consume this repo's domain documentation when 
 ## Before exploring, read these
 
 - **`CONTEXT.md`** at the repo root (seeded from `.github/openspec/project.md`)
-- **`docs/adr/`** — read ADRs that touch the area you're about to work in.
+- **`.github/adr/`** — read ADRs that touch the area you're about to work in.
 
 If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The producer skill (`/grill-with-docs`) creates them lazily when terms or decisions actually get resolved.
 
@@ -16,7 +16,7 @@ Single-context repo:
 ```text
 /
 ├── CONTEXT.md
-├── docs/adr/
+├── .github/adr/
 └── src/
 ```
 
