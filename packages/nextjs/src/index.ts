@@ -3,6 +3,14 @@ import type { SchemaShape } from "@repo/types";
 import { createEnv as coreCreateEnv } from "arkenv";
 import type { type as at, distill } from "arktype";
 
+/**
+ * Create a validated, type-safe environment configuration for Next.js applications.
+ *
+ * @param options The environment validation configuration options
+ * @returns A validated, readonly environment variables object wrapped in a security proxy
+ * @throws An error if any client-side variable is not prefixed with `NEXT_PUBLIC_`
+ * @throws An error if any client or shared variable is missing from `runtimeEnv`
+ */
 export function createEnv<
 	const TServer extends SchemaShape = {},
 	const TClient extends SchemaShape = {},
