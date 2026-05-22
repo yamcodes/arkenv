@@ -11,13 +11,15 @@ jobs:
   validate:
     runs-on: 'ubuntu-latest'
     permissions:
-      issues: 'read'
+      issues: 'write'
     steps:
       - name: 'Validate triage labels'
         uses: 'actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd' # ratchet:actions/github-script@v8.0.0
         with:
           script: |-
             const issue = context.payload.issue;
+            const action = context.payload.action;
+            const labelName = context.payload.label ? context.payload.label.name : null;
             const currentLabels = issue.labels.map(l => l.name);
             const stateLabels = [
               'ready for human',
@@ -25,25 +27,82 @@ jobs:
               'needs more info',
               'wontfix'
             ];
-            const quotedStateLabels = stateLabels.map(label => `'${label}'`).join(', ');
 
-            const hasMeta = currentLabels.includes('meta');
-            const hasNeedsTriage = currentLabels.includes('needs triage');
-            const hasAnyStateLabel = currentLabels.some(label => stateLabels.includes(label));
+            core.info(`Action: ${action}, Label: ${labelName}`);
+            core.info(`Initial labels: ${JSON.stringify(currentLabels)}`);
 
-            core.info(`Current labels: ${JSON.stringify(currentLabels)}`);
-
-            const isMeta = hasMeta;
-            const isNeedsTriageOnly = hasNeedsTriage && !hasAnyStateLabel;
-            const isStateLabelOnly = hasAnyStateLabel && !hasNeedsTriage;
-
-            if (isMeta || isNeedsTriageOnly || isStateLabelOnly) {
-              core.info('Issue labels satisfy validation constraints.');
-            } else {
-              let errorMsg = 'Issue labels violate validation constraints.\n';
-              errorMsg += 'An issue must have either:\n';
-              errorMsg += "- 'meta' label\n";
-              errorMsg += `- 'needs triage' label but NOT one of (${quotedStateLabels})\n`;
-              errorMsg += `- one of (${quotedStateLabels}) labels but NOT 'needs triage'\n`;
-              core.setFailed(errorMsg);
+            if (action === 'labeled' && labelName) {
+              if (stateLabels.includes(labelName)) {
+                if (currentLabels.includes('needs triage')) {
+                  core.info(`State label '${labelName}' was added. Removing 'needs triage'...`);
+                  try {
+                    await github.rest.issues.removeLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: issue.number,
+                      name: 'needs triage'
+                    });
+                    const idx = currentLabels.indexOf('needs triage');
+                    if (idx !== -1) currentLabels.splice(idx, 1);
+                  } catch (err) {
+                    core.warning(`Failed to remove 'needs triage': ${err.message}`);
+                  }
+                }
+              } else if (labelName === 'needs triage') {
+                const labelsToRemove = currentLabels.filter(l => stateLabels.includes(l));
+                if (labelsToRemove.length > 0) {
+                  core.info(`'needs triage' was added. Removing other state labels: ${labelsToRemove.join(', ')}...`);
+                  for (const name of labelsToRemove) {
+                    try {
+                      await github.rest.issues.removeLabel({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: issue.number,
+                        name: name
+                      });
+                      const idx = currentLabels.indexOf(name);
+                      if (idx !== -1) currentLabels.splice(idx, 1);
+                    } catch (err) {
+                      core.warning(`Failed to remove label '${name}': ${err.message}`);
+                    }
+                  }
+                }
+              }
+            } else if (action === 'opened') {
+              if (currentLabels.includes('needs triage') && currentLabels.some(l => stateLabels.includes(l))) {
+                core.info("Issue opened with both 'needs triage' and a state label. Removing 'needs triage'...");
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    name: 'needs triage'
+                  });
+                  const idx = currentLabels.indexOf('needs triage');
+                  if (idx !== -1) currentLabels.splice(idx, 1);
+                } catch (err) {
+                  core.warning(`Failed to remove 'needs triage': ${err.message}`);
+                }
+              }
             }
+
+            // If it doesn't see any of 'ready for human', 'ready for agent', 'needs more info', 'wontfix', or 'meta',
+            // it needs to add the 'needs triage' label.
+            const hasAnyStateOrMeta = currentLabels.some(l => [...stateLabels, 'meta'].includes(l));
+            if (!hasAnyStateOrMeta && !currentLabels.includes('needs triage')) {
+              core.info("No state or meta labels found. Adding 'needs triage'...");
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: ['needs triage']
+                });
+                currentLabels.push('needs triage');
+              } catch (err) {
+                core.warning(`Failed to add 'needs triage' label: ${err.message}`);
+              }
+            }
+
+            core.info(`Final labels: ${JSON.stringify(currentLabels)}`);
+
