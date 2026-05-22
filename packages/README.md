@@ -9,11 +9,10 @@ The `packages/` directory is the home for code modules that are shared across th
 - **Published NPM Packages**: Public-facing libraries, integration plugins, and executables.
 - **Private Internal Packages** (`packages/internal/*`): Shared internal utilities, types, and logic used across published packages but not published to npm.
 
-### What belongs here vs. `apps/` or `tooling/`?
+### What belongs here vs. `apps/`?
 
 - **CLIs & Libraries**: If a codebase is published to npm for end-users to use—even if it is an executable/CLI like `@arkenv/cli` and not an importable library—it belongs here in `packages/`.
-- **Applications (`apps/`)**: Standalone, deployed apps like documentation sites or playgrounds that are not published to npm go in `apps/`.
-- **Internal Tooling (`tooling/`)**: Workspaces used purely for development, testing, and CI/CD (like Playwright E2E suites) that are never published to npm go in `tooling/`.
+- **Applications & Tests (`apps/`)**: Standalone, deployed apps like documentation sites, playgrounds, or testing suites (like Playwright E2E tests) that are not published to npm go in `apps/`.
 
 ## Package Directory
 

@@ -86,11 +86,11 @@ The main goal is to provide a developer-friendly way to validate and type-check 
   - `arkenv` - Core library package
   - `@arkenv/vite-plugin` - Vite plugin package
   - `@arkenv/cli` - Interactive CLI for scaffolding and project mutation
-- **Apps** (`apps/`) - Applications (not published)
+- **Apps** (`apps/`) - Applications and testing suites (not published)
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes
+  - `playwright-www` - Playwright E2E tests for the www application
 - **Examples** (`examples/`) - Standalone example projects
-- **Tooling** (`tooling/`) - Development tools (not published)
 
 **Package Architecture:**
 
@@ -158,7 +158,7 @@ pnpm run test:e2e                     # E2E tests
 - Create changeset with `pnpm changeset` before committing
 - Changesets are in `.changeset/` directory
 - Only published packages (`packages/*`) require changesets
-- Examples and tooling don't need changesets
+- Examples and private applications don't need changesets
 
 **Commits:**
 
@@ -248,7 +248,7 @@ pnpm run test:e2e                     # E2E tests
 - All packages must use `workspace:*` protocol for internal dependencies
 - Internal workspace dependencies (e.g., `@repo/*`) are permitted in both `dependencies` and `devDependencies` if bundled
 - Only packages in `packages/` are published
-- Examples and tooling are not published
+- Examples and private apps are not published
 - Changesets required for published packages only
 
 ## External Dependencies

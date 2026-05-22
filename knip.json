@@ -6,7 +6,7 @@
 		"scripts/**",
 		"examples/**",
 		"apps/playgrounds/**",
-		"tooling/playwright-www/**",
+		"apps/playwright-www/**",
 		"packages/vite-plugin/src/__fixtures__/**",
 		"packages/arkenv/test/setup-attest.ts",
 		"packages/arkenv/src/arktype/coercion/index.ts"

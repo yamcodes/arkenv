@@ -109,7 +109,7 @@ This ensures the library works in real scenarios while keeping examples clean an
 - Validates complete build process
 - Ensures plugin works in real-world scenarios
 
-### End-to-End Tests (`tooling/playwright-www/`)
+### End-to-End Tests (`apps/playwright-www/`)
 
 **What:** Test complete user workflows in the www application using real browsers.
 

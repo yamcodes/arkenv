@@ -457,6 +457,28 @@ importers:
         specifier: 8.0.10
         version: 8.0.10(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)
 
+  apps/playwright-www:
+    dependencies:
+      www:
+        specifier: workspace:*
+        version: link:../www
+    devDependencies:
+      '@axe-core/playwright':
+        specifier: 'catalog:'
+        version: 4.11.3(playwright-core@1.59.1)
+      '@playwright/test':
+        specifier: 1.59.1
+        version: 1.59.1
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.2
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.3
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+
   apps/www:
     dependencies:
       '@ark/util':
@@ -899,28 +921,6 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.5(@opentelemetry/api@1.9.1)(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(@vitest/ui@4.1.5)(jsdom@29.1.1(@noble/hashes@1.8.0))(vite@8.0.10(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))
-
-  tooling/playwright-www:
-    dependencies:
-      www:
-        specifier: workspace:*
-        version: link:../../apps/www
-    devDependencies:
-      '@axe-core/playwright':
-        specifier: 'catalog:'
-        version: 4.11.3(playwright-core@1.59.1)
-      '@playwright/test':
-        specifier: 1.59.1
-        version: 1.59.1
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.12.2
-      rimraf:
-        specifier: 'catalog:'
-        version: 6.1.3
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
 
 packages:
 
