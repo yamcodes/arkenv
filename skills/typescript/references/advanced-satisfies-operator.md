@@ -58,11 +58,11 @@ const routes: Route[] = [
 ]
 // routes[0].path is just 'string'
 
-// With satisfies - preserves literal paths
+// With satisfies and as const - preserves literal paths
 const routes = [
   { path: '/', component: Home },
   { path: '/users', component: Users },
-] satisfies Route[]
+] as const satisfies readonly Route[]
 // routes[0].path is '/'
 
 type RoutePath = typeof routes[number]['path']  // '/' | '/users'

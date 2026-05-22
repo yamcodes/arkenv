@@ -53,12 +53,18 @@ export function createEnv<
 
 	// Prepare combined environment for core validation
 	const isBrowser = typeof window !== "undefined";
-	const combinedEnv = { ...runtimeEnv } as Record<string, string | undefined>;
+	const combinedEnv: Record<string, string | undefined> = {};
+
+	for (const key of Object.keys(runtimeEnv)) {
+		if (runtimeEnv[key] !== undefined) {
+			combinedEnv[key] = runtimeEnv[key] as string;
+		}
+	}
 
 	if (!isBrowser) {
-		// Fallback server keys to process.env if omitted from runtimeEnv
+		// Fallback server keys to process.env if omitted or undefined
 		for (const key of Object.keys(server)) {
-			if (!(key in combinedEnv)) {
+			if (combinedEnv[key] === undefined && process.env[key] !== undefined) {
 				combinedEnv[key] = process.env[key];
 			}
 		}
