@@ -24,6 +24,10 @@
 			"name": "🎁 arkenv"
 		},
 		{
+			"path": "packages/nextjs",
+			"name": "🎁 @arkenv/nextjs"
+		},
+		{
 			"path": "packages/vite-plugin",
 			"name": "🎁 @arkenv/vite-plugin"
 		},
