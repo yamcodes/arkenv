@@ -3,7 +3,7 @@
 	"tags": ["-lintignore"],
 	"ignore": [
 		".github/**",
-		"bin/**",
+		"scripts/**",
 		"examples/**",
 		"apps/playgrounds/**",
 		"tooling/playwright-www/**",

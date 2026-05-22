@@ -41,14 +41,14 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
-        run: node .github/scripts/vercel-wrapper.cjs pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: node scripts/vercel-wrapper.cjs pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
-        run: node .github/scripts/vercel-wrapper.cjs build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: node scripts/vercel-wrapper.cjs build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        run: node .github/scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
+        run: node scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
       - name: Check prod deploy budget (alert only)
         continue-on-error: true
-        run: node .github/scripts/check-deploy-budget.cjs prod
+        run: node scripts/check-deploy-budget.cjs prod
       - name: Save deploy metrics
         if: always()
         uses: actions/cache/save@v5

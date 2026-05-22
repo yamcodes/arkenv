@@ -9,8 +9,8 @@
  * - `catalog:` dependencies → `^<catalog-version>`
  *
  * Usage:
- *   node bin/sync-examples.js           # Sync all examples
- *   node bin/sync-examples.js --check   # Check if examples are in sync (for CI)
+ *   node scripts/sync-examples.js           # Sync all examples
+ *   node scripts/sync-examples.js --check   # Check if examples are in sync (for CI)
  */
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";

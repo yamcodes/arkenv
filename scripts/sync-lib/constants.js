@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// Go up two levels: bin/sync-lib -> bin -> root
+// Go up two levels: scripts/sync-lib -> scripts -> root
 export const ROOT_DIR = join(__dirname, "..", "..");
 export const PLAYGROUNDS_DIR = join(ROOT_DIR, "apps", "playgrounds");
 export const EXAMPLES_DIR = join(ROOT_DIR, "examples");

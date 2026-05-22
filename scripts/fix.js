@@ -4,9 +4,9 @@
  * Unified fix script - single source of truth for what "fix" means in this codebase.
  *
  * Usage:
- *   node bin/fix.js                    # Run biome + manypkg fix
- *   node bin/fix.js --skip-manypkg     # Run biome only (skip manypkg)
- *   node bin/fix.js --unsafe           # Run biome with --unsafe flag
+ *   node scripts/fix.js                    # Run biome + manypkg fix
+ *   node scripts/fix.js --skip-manypkg     # Run biome only (skip manypkg)
+ *   node scripts/fix.js --unsafe           # Run biome with --unsafe flag
  */
 
 import { execSync } from "node:child_process";

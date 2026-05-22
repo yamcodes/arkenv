@@ -4,7 +4,7 @@ change-id: add-deploy-rate-limiter
 
 # Tasks: Deployment Rate Limiter
 
-1. - [x] Create `.github/scripts/check-deploy-budget.cjs` with rate limiting and dry-run logic <!-- id: 0 -->
+1. - [x] Create `scripts/check-deploy-budget.cjs` with rate limiting and dry-run logic <!-- id: 0 -->
 2. - [x] Add deployment budget check to `preview-www.yml` <!-- id: 1 -->
 3. - [x] Add deployment budget check to `deploy-www.yml` <!-- id: 2 -->
 4. - [x] Add rate limiter section to `CONTRIBUTING.md` <!-- id: 3 -->

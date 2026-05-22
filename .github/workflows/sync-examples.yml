@@ -5,13 +5,15 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
-      - "bin/sync-examples.js"
+      - "scripts/sync-examples.js"
+      - "scripts/sync-lib/**"
   push:
     branches: ["main"]
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
-      - "bin/sync-examples.js"
+      - "scripts/sync-examples.js"
+      - "scripts/sync-lib/**"
   workflow_dispatch:
 
 permissions:

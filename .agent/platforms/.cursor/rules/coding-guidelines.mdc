@@ -38,7 +38,7 @@ This project uses [Biome](https://biomejs.dev/) for formatting and linting. The 
 - **Single variable declarations**: Declare one variable per statement (`useSingleVarDeclarator` error)
 - **Unused template literals**: Avoid unnecessary template literals (`noUnusedTemplateLiteral` error)
 - **Number namespace**: Prefer `Number.parseInt` over global `parseInt` (`useNumberNamespace` error)
-- **Console usage**: Console usage is a warning (allowed in `bin/` and examples/playgrounds)
+- **Console usage**: Console usage is a warning (allowed in `scripts/` and examples/playgrounds)
 
 ## File Organization
 

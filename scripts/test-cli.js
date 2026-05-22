@@ -40,7 +40,7 @@ if (!mode) {
 }
 
 if (mode !== "--new" && mode !== "--existing") {
-	console.error("Usage: node bin/test-cli.js [--new | --existing]");
+	console.error("Usage: node scripts/test-cli.js [--new | --existing]");
 	process.exit(1);
 }
 

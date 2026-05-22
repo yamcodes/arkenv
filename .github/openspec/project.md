@@ -68,7 +68,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 - Use self-closing JSX elements (`useSelfClosingElements` error)
 - Declare one variable per statement (`useSingleVarDeclarator` error)
 - Prefer `Number.parseInt` over global `parseInt` (`useNumberNamespace` error)
-- Console usage is a warning (allowed in `bin/` and examples/playgrounds)
+- Console usage is a warning (allowed in `scripts/` and examples/playgrounds)
 
 ### Architecture Patterns
 
