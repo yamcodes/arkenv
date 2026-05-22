@@ -11,8 +11,8 @@
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
 		"release": "pnpm run build:packages && changeset publish",
-		"fix": "node bin/fix.js",
-		"fix:unsafe": "node bin/fix.js --unsafe",
+		"fix": "node scripts/fix.js",
+		"fix:unsafe": "node scripts/fix.js --unsafe",
 		"check": "biome check && pnpm run check:mdx && manypkg check",
 		"check:mdx": "mdxlint . -e md -e mdx --frail",
 		"fix:mdx": "mdxlint . -e md -e mdx --output",
@@ -26,12 +26,12 @@
 		"test:e2e:update": "turbo run test:e2e:update",
 		"changeset": "changeset",
 		"size": "turbo run size",
-		"sync:examples": "node bin/sync-examples.js",
-		"sync:examples:check": "node bin/sync-examples.js --check",
+		"sync:examples": "node scripts/sync-examples.js",
+		"sync:examples:check": "node scripts/sync-examples.js --check",
 		"contributors:add": "all-contributors add",
 		"contributors:generate": "all-contributors generate",
 		"knip": "knip",
-		"test:cli": "node bin/test-cli.js",
+		"test:cli": "node scripts/test-cli.js",
 		"arkenv": "pnpm run build --filter @arkenv/cli && node packages/cli/dist/index.cjs"
 	},
 	"devDependencies": {
@@ -56,5 +56,5 @@
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
-	"packageManager": "pnpm@11.1.3"
+	"packageManager": "pnpm@11.2.2"
 }

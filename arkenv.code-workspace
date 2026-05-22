@@ -53,7 +53,7 @@
 		},
 
 		{
-			"path": "tooling/playwright-www",
+			"path": "apps/playwright-www",
 			"name": "🛠️ playwright"
 		},
 		{

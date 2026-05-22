@@ -9,18 +9,18 @@ The `apps/` directory is the home for projects that are not published as package
 - **Documentation Site** (`apps/www`): The Next.js-powered documentation site for ArkEnv, deployed to Vercel.
 - **Playgrounds** (`apps/playgrounds/*`): Framework and runtime environments (Vite, Bun, SolidStart, Node.js, standard schema, etc.) used to verify, test, and demonstrate ArkEnv features in real-world setups.
 
-### What belongs here vs. `packages/` or `tooling/`?
+### What belongs here vs. `packages/`?
 
-- **Applications (`apps/`)**: Projects that are deployable targets (like the docs website) or local integration testing workspaces (playgrounds) that do not get published to npm.
+- **Applications & Tests (`apps/`)**: Projects that are deployable targets (like the docs website), testing suites (like Playwright E2E tests), or local integration testing workspaces (playgrounds) that do not get published to npm.
 - **NPM Packages (`packages/`)**: Code libraries, plugins, or CLI executables (like `@arkenv/cli`) that are published to npm for end-users.
-- **Development Tooling (`tooling/`)**: Workspaces used purely for development infrastructure, testing suites, or automation helpers (like Playwright E2E testing setups) that support the repository but are not standalone apps or playgrounds.
 
 ## Directory Structure
 
-| Directory                       | Type           | Description                                                     |
-| :------------------------------ | :------------- | :-------------------------------------------------------------- |
-| [`www`](./www)                  | Next.js App    | The Next.js website and documentation portal.                   |
-| [`playgrounds/`](./playgrounds) | Sub-workspaces | Local test playgrounds for Node.js, Bun, Vite, SolidStart, etc. |
+| Directory                            | Type           | Description                                                     |
+| :----------------------------------- | :------------- | :-------------------------------------------------------------- |
+| [`www`](./www)                       | Next.js App    | The Next.js website and documentation portal.                   |
+| [`playwright-www`](./playwright-www) | Test Suite     | Playwright end-to-end tests for the `www` application.          |
+| [`playgrounds/`](./playgrounds)      | Sub-workspaces | Local test playgrounds for Node.js, Bun, Vite, SolidStart, etc. |
 
 ## Versioning & Releases
 

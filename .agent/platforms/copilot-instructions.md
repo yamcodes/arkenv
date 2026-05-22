@@ -282,17 +282,15 @@ These examples demonstrate real-world usage and can serve as templates for new i
 - **Don't modify generated files** like `pnpm-lock.yaml` directly - use `pnpm install` instead
 - **Don't skip changesets** for published packages - always run `pnpm changeset` for version bumps
 - **Avoid adding new dependencies** without considering bundle size impact (aspirational goal: <2kB gzipped, enforced limit: 2kB gzipped)
-
 ### Security Considerations
 - Always validate user input in examples and documentation
 - Use `ArkEnvError` for environment variable errors, not generic errors
 - Never log environment variable values in production code
 - Ensure examples demonstrate secure default practices
 
-### OpenSpec Integration
-This repository uses OpenSpec for spec-driven development. When working on:
-- **New features** - Check `openspec/` for existing specs and create proposals
-- **Breaking changes** - Always create an OpenSpec proposal first
-- **Architecture changes** - Review `openspec/project.md` for conventions
+### Architecture Decision Records (ADRs)
+This repository uses Architecture Decision Records (ADRs) to document significant, trade-off-driven design decisions.
+- **Reviewing Decisions**: Read the files in `docs/adr/` to understand existing architectural constraints and choices.
+- **Historical Context**: The `.github/openspec/changes/archive/` folder contains archived specs from past features for historical reference only. It is not an active workflow.
+- **Process**: New architectural choices are documented by adding sequential markdown files in `docs/adr/`, starting with a process overview at `0000-use-architecture-decision-records.md`.
 
-See `@/openspec/AGENTS.md` for AI assistant instructions on when to use OpenSpec.
