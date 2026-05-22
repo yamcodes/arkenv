@@ -24,7 +24,7 @@ Before asking any questions, you MUST examine the current state of the issue and
    gh issue view <issue-number> --json title,body,labels,comments
    ```
 2. **Analyze Requirements**: Evaluate the issue description and existing comments. Identify gaps, ambiguities, missing edge cases, unclear desired behavior, or lacking acceptance criteria.
-3. **Explore Codebase**: Explore the repository to understand the domain model and existing implementations relevant to the issue. Refer to the project's domain glossary (`CONTEXT.md`), ADRs (`docs/adr/`), and prior rejections (`.out-of-scope/*.md`).
+3. **Explore Codebase**: Explore the repository to understand the domain model and existing implementations relevant to the issue. Refer to the project's domain glossary (`CONTEXT.md`), ADRs (`.github/adr/`), and prior rejections (`.out-of-scope/*.md`).
 
 ### 2. Grilling / Requirement Clarification (If Needed)
 
