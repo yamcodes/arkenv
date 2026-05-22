@@ -2,6 +2,9 @@
 	"title": "@arkenv/nextjs",
 	"description": "Integration for Next.js",
 	"root": true,
-	"icon": "Next",
-	"pages": ["---Guide---", "index"]
+	"icon": "Nextdotjs",
+	"pages": [
+		"---Guide---",
+		"index"
+	]
 }
