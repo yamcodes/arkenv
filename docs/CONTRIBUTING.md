@@ -2,7 +2,6 @@
 
 Thank you for considering a contribution to ArkEnv! As an open source project, ArkEnv welcomes contributions of all kinds.
 
-
 ## Development Setup
 
 1. ### Install pnpm
@@ -10,6 +9,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
    ```sh
    curl -fsSL https://get.pnpm.io/install.sh | sh -
    ```
+
    (Or follow the instructions in the [pnpm docs](https://pnpm.io/installation))
 
 2. ### Clone the repository
@@ -45,6 +45,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 ## Deployment Rate Limiter
 
 To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
+
 - **Daily Limit**: 72 preview deployments per 24 hours.
 - **Cooldown**: 20 minutes between deployments on the same PR.
 
@@ -55,6 +56,7 @@ If the limit or cooldown is reached, the deployment step in the GitHub Action wi
 [Changesets](https://github.com/changesets/changesets) is used to manage versions and changelogs. Each PR that makes changes to the functionality of the package should include a changeset.
 
 To create a changeset:
+
 1. Run `pnpm changeset`
 2. Follow the prompts to describe your changes
 3. Commit the generated `.changeset/*.md` file

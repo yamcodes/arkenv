@@ -290,7 +290,7 @@ These examples demonstrate real-world usage and can serve as templates for new i
 
 ### Architecture Decision Records (ADRs)
 This repository uses Architecture Decision Records (ADRs) to document significant, trade-off-driven design decisions.
-- **Reviewing Decisions**: Read the files in `.github/adr/` to understand existing architectural constraints and choices.
+- **Reviewing Decisions**: Read the files in `docs/adr/` to understand existing architectural constraints and choices.
 - **Historical Context**: The `.github/openspec/changes/archive/` folder contains archived specs from past features for historical reference only. It is not an active workflow.
-- **Process**: New architectural choices are documented by adding sequential markdown files in `.github/adr/`, starting with a process overview at `0000-use-architecture-decision-records.md`.
+- **Process**: New architectural choices are documented by adding sequential markdown files in `docs/adr/`, starting with a process overview at `0000-use-architecture-decision-records.md`.
 

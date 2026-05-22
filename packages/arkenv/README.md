@@ -83,7 +83,7 @@ bunx @arkenv/cli@latest init
 
 If you love ArkEnv, you can support the project by **starring it on GitHub**!
 
-You are also welcome to [contribute to the project](https://github.com/yamcodes/arkenv/blob/main/.github/CONTRIBUTING.md) and join the wonderful people who have contributed:
+You are also welcome to [contribute to the project](https://github.com/yamcodes/arkenv/blob/main/docs/CONTRIBUTING.md) and join the wonderful people who have contributed:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -106,4 +106,4 @@ You are also welcome to [contribute to the project](https://github.com/yamcodes/
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-We [acknowledge](https://github.com/yamcodes/arkenv/blob/main/.github/ACKNOWLEDGEMENTS.md) the various projects and people that inspired ArkEnv.
+We [acknowledge](https://github.com/yamcodes/arkenv/blob/main/docs/ACKNOWLEDGEMENTS.md) the various projects and people that inspired ArkEnv.
