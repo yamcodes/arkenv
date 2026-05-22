@@ -8,6 +8,7 @@ This directory contains internal contributor-facing documentation and architectu
 
 ## Directory Structure
 
+- [**`CONTEXT.md`**](./CONTEXT.md): Domain glossary and definitions of core domain concepts and vocabulary.
 - [**`adr/`**](./adr/): Contains sequentially-numbered Architecture Decision Records (ADRs) documenting critical design choices and trade-offs. Start with [adr/README.md](./adr/README.md).
 - [**`CONTRIBUTING.md`**](./CONTRIBUTING.md): Guide on how to set up the local development environment, code conventions, and submit contributions.
 - [**`TESTING.md`**](./TESTING.md): Instructions for running and writing unit, integration, and E2E tests.

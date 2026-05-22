@@ -12,7 +12,7 @@ This directory is the central hub for AI agent metadata, configuration, and guid
 Instructional documentation for automated skills, located in `.agent/docs/`:
 - **`docs/issue-tracker.md`**: How to use the `gh` CLI to manage issues and PRDs.
 - **`docs/triage-labels.md`**: Mapping of canonical triage roles (e.g., `needs-triage`) to this repo's specific GitHub labels.
-- **`docs/domain.md`**: Rules for consuming and contributing to the project's domain documentation (`CONTEXT.md` and ADRs).
+- **`docs/domain.md`**: Rules for consuming and contributing to the project's domain documentation (`docs/CONTEXT.md` and ADRs).
 
 ### Archived Platforms (`/platforms`)
 Configuration for other AI platforms that are not currently the primary agent. To use these, move them to the root as described in their metadata:
@@ -24,6 +24,6 @@ Configuration for other AI platforms that are not currently the primary agent. T
 
 If you are looking for other types of documentation, please refer to:
 
-- **Internal Project Docs**: Found at the repo root (e.g., `README.md`, `AGENTS.md`) or in the `.github/` directory (e.g., `CONTRIBUTING.md`, `TESTING.md`).
+- **Internal Project Docs**: Found at the repo root (e.g., `README.md`, `AGENTS.md`) or in the `docs/` directory (e.g., `docs/CONTRIBUTING.md`, `docs/TESTING.md`).
 - **External/User Documentation**: For usage of public packages (like `arkenv`) or non-internal skills, see the documentation site content in `apps/www/content/docs/`.
-- **Project Context**: The primary source of truth for the project's domain language is `CONTEXT.md` at the root.
+- **Project Context**: The primary source of truth for the project's domain language is `docs/CONTEXT.md`.
