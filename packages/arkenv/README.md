@@ -2,16 +2,13 @@
   <a href="https://github.com/yamcodes/arkenv/blob/main/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
-    <p align="center">Environment variable validation from editor to runtime</p>
+    <p align="center">
+      Environment variable validation from editor to runtime<br/> for <a href="https://vite.dev/">Vite</a>, <a href="https://bun.com/">Bun</a>, and <a href="https://nodejs.org/">Node.js</a>
+    </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
-    <a href="https://skills.sh/yamcodes/arkenv"><img alt="Agent Skills" src="https://skills.sh/b/yamcodes/arkenv"></a>
-    <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Pullfrog-f5f4f2?logo=pullfrog&logoColor=2f4032"></a><br />
-    <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
-    <a href="https://arktype.io/"><img alt="Powered By ArkType" src="https://custom-icon-badges.demolab.com/badge/ArkType-0d1526?logo=arktype2&logoColor=e9eef9"></a>
-    <a href="https://nodejs.org/en"><img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white"></a>
-    <a href="https://bun.com/"><img alt="Bun" src="https://img.shields.io/badge/Bun-14151a?logo=bun&logoColor=fbf0df"></a>
-    <a href="https://vite.dev/"><img alt="Vite" src="https://custom-icon-badges.demolab.com/badge/Vite-2e2742?logo=vite2&logoColor=dfdfd6"></a>
+    <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
+    <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-f5f4f2?logo=pullfrog&logoColor=2f4032"></a>
   </div>
 </p>
 
@@ -20,9 +17,7 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://arkenv.js.org/docs/arkenv/faq">FAQ</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://arktype.io/docs/ecosystem#arkenv">ArkType ecosystem</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Playground</a>
+  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
 </div>
 
