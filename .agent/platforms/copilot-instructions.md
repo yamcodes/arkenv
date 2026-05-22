@@ -291,8 +291,8 @@ These examples demonstrate real-world usage and can serve as templates for new i
 
 ### OpenSpec Integration
 This repository uses OpenSpec for spec-driven development. When working on:
-- **New features** - Check `openspec/` for existing specs and create proposals
+- **New features** - Check `.github/openspec/` for existing specs and create proposals
 - **Breaking changes** - Always create an OpenSpec proposal first
-- **Architecture changes** - Review `openspec/project.md` for conventions
+- **Architecture changes** - Review `.github/openspec/project.md` for conventions
 
-See `@/openspec/AGENTS.md` for AI assistant instructions on when to use OpenSpec.
+See `@/.github/openspec/project.md` for project context and OpenSpec conventions.

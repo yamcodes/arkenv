@@ -2,7 +2,7 @@
 .changeset/
 .gemini/
 .github/
-openspec/
+.github/openspec/
 **/CHANGELOG.md
 /README.md
 /packages/arkenv/README.md
