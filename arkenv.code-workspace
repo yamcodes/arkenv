@@ -51,11 +51,6 @@
 			"path": "packages/internal/scope",
 			"name": "📦 @repo/scope"
 		},
-
-		{
-			"path": "apps/playwright-www",
-			"name": "🛠️ playwright"
-		},
 		{
 			"path": "tmp",
 			"name": "🕒 temporary"
@@ -63,6 +58,10 @@
 		{
 			"path": "apps/www",
 			"name": "🚀 www"
+		},
+		{
+			"path": "apps/playwright-www",
+			"name": "🧪 playwright-www"
 		},
 		{
 			"path": "apps/playgrounds/node",
