@@ -33,13 +33,13 @@ When ready to implement, run /opsx:apply
 
 2. **Create the change directory**
    ```bash
-   openspec new change "<name>"
+   cd .github && openspec new change "<name>"
    ```
-   This creates a scaffolded change at `openspec/changes/<name>/` with `.openspec.yaml`.
+   This creates a scaffolded change at `.github/openspec/changes/<name>/` with `.openspec.yaml`.
 
 3. **Get the artifact build order**
    ```bash
-   openspec status --change "<name>" --json
+   cd .github && openspec status --change "<name>" --json
    ```
    Parse the JSON to get:
    - `applyRequires`: array of artifact IDs needed before implementation (e.g., `["tasks"]`)
@@ -55,14 +55,14 @@ When ready to implement, run /opsx:apply
 
    - Get instructions:
      ```bash
-     openspec instructions <artifact-id> --change "<name>" --json
+     cd .github && openspec instructions <artifact-id> --change "<name>" --json
      ```
    - The instructions JSON includes:
      - `context`: Project background (constraints for you - do NOT include in output)
      - `rules`: Artifact-specific rules (constraints for you - do NOT include in output)
      - `template`: The structure to use for your output file
      - `instruction`: Schema-specific guidance for this artifact type
-     - `outputPath`: Where to write the artifact
+     - `outputPath`: Where to write the artifact (relative to `.github`)
      - `dependencies`: Completed artifacts to read for context
    - Read any completed dependency files for context
    - Create the artifact file using `template` as the structure
@@ -71,7 +71,7 @@ When ready to implement, run /opsx:apply
 
    b. **Continue until all `applyRequires` artifacts are complete**
 
-   - After creating each artifact, re-run `openspec status --change "<name>" --json`
+   - After creating each artifact, re-run `cd .github && openspec status --change "<name>" --json`
    - Check if every artifact ID in `applyRequires` has `status: "done"` in the artifacts array
    - Stop when all `applyRequires` artifacts are done
 
@@ -82,7 +82,7 @@ When ready to implement, run /opsx:apply
 
 5. **Show final status**
    ```bash
-   openspec status --change "<name>"
+   cd .github && openspec status --change "<name>"
    ```
 
 **Output**
@@ -96,7 +96,7 @@ After completing all artifacts, summarize:
 
 **Artifact Creation Guidelines**
 
-- Follow the `instruction` field from `openspec instructions` for each artifact type
+- Follow the `instruction` field from the `cd .github && openspec instructions ...` command for each artifact type
 - The schema defines what each artifact should contain - follow it
 - Read dependency artifacts for context before creating new ones
 - Use `template` as the structure for your output file - fill in its sections

@@ -86,7 +86,7 @@ You have full context of the OpenSpec system. Use it naturally, don't force it.
 
 At the start, quickly check what exists:
 ```bash
-openspec list --json
+cd .github && openspec list --json
 ```
 
 This tells you:
@@ -108,9 +108,9 @@ Think freely. When insights crystallize, you might offer:
 If the user mentions a change or you detect one is relevant:
 
 1. **Read existing artifacts for context**
-   - `openspec/changes/<name>/proposal.md`
-   - `openspec/changes/<name>/design.md`
-   - `openspec/changes/<name>/tasks.md`
+   - `.github/openspec/changes/<name>/proposal.md`
+   - `.github/openspec/changes/<name>/design.md`
+   - `.github/openspec/changes/<name>/tasks.md`
    - etc.
 
 2. **Reference them naturally in conversation**
