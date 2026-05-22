@@ -3,9 +3,5 @@
 	"description": "Plugin for Bun fullstack dev server",
 	"root": true,
 	"icon": "Bun",
-	"pages": [
-		"---Guide---",
-		"index",
-		"typing-process-env"
-	]
+	"pages": ["---Guide---", "index", "typing-process-env"]
 }
