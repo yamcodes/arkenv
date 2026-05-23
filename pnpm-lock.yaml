@@ -524,6 +524,9 @@ importers:
       '@arkenv/fumadocs-ui':
         specifier: workspace:*
         version: link:../../packages/fumadocs-ui
+      '@arkenv/nextjs':
+        specifier: workspace:*
+        version: link:../../packages/nextjs
       '@arkenv/vite-plugin':
         specifier: workspace:*
         version: link:../../packages/vite-plugin

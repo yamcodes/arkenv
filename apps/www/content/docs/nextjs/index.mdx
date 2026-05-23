@@ -25,10 +25,10 @@ description: The ArkEnv integration for Next.js lets you validate environment va
 
 Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define and validate your schemas:
 
-```ts title="src/env.ts"
-import { createEnv, type } from "@arkenv/nextjs";
+```ts title="src/env.ts" twoslash
+import arkenv from "@arkenv/nextjs";
 
-export const env = createEnv({
+export const env = arkenv({
 	server: {
 		DATABASE_URL: "string",
 	},
@@ -49,22 +49,46 @@ export const env = createEnv({
 
 Import `env` throughout your Next.js application:
 
-```tsx title="src/app/page.tsx"
-import { env } from "@/env";
+```ts title="src/app/page.tsx" twoslash
+// @filename: env.ts
+import arkenv from "@arkenv/nextjs";
+export const env = arkenv({
+	server: { DATABASE_URL: "string" },
+	client: { NEXT_PUBLIC_API_URL: "string" },
+	runtimeEnv: {
+		NEXT_PUBLIC_API_URL: "https://api.example.com",
+	}
+});
 
-export default function Page() {
-	// Access is fully typesafe and autocompleted
-	const apiUrl = env.NEXT_PUBLIC_API_URL;
+// @filename: page.tsx
+// ---cut---
+import { env } from "./env";
 
-	return <div>API URL: {apiUrl}</div>;
-}
+// Access is fully typesafe and autocompleted
+const apiUrl = env.NEXT_PUBLIC_API_URL;
+//      ^?
 ```
 
 If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
 
-```ts
+```ts title="src/app/client-component.tsx" twoslash
+// @filename: env.ts
+import arkenv from "@arkenv/nextjs";
+export const env = arkenv({
+	server: { DATABASE_URL: "string" },
+	client: { NEXT_PUBLIC_API_URL: "string" },
+	runtimeEnv: {
+		NEXT_PUBLIC_API_URL: "https://api.example.com",
+	}
+});
+
+// @filename: client-component.tsx
+// ---cut---
+import { env } from "./env";
+
 // Throws a runtime error if evaluated in a client component (during SSR or in the browser)
 const dbUrl = env.DATABASE_URL;
+//      ^?
 ```
 
 ## Using Standard Schema validators (Zod, Valibot)
@@ -73,7 +97,7 @@ This integration uses ArkType for validation under the hood, which natively supp
 
 Here is an example using Zod:
 
-```ts title="src/env.ts"
+```ts title="src/env.ts" twoslash
 import arkenv from "@arkenv/nextjs";
 import { z } from "zod";
 
