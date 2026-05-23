@@ -83,6 +83,15 @@ API_KEY=
 			expect(result).toBe("vite");
 		});
 
+		it("detects nextjs from package.json dependencies", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "package.json"),
+				JSON.stringify({ dependencies: { next: "^14.0.0" } }),
+			);
+			const result = await scanner.detectFramework(tempDir);
+			expect(result).toBe("nextjs");
+		});
+
 		it("detects bun-fullstack from tsconfig types and feature presence", async () => {
 			await fsp.writeFile(
 				path.join(tempDir, "server.ts"),

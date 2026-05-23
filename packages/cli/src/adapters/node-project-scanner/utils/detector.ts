@@ -5,7 +5,7 @@ import type { ParsedTsConfig } from "@/shared/ports";
 export async function detectFramework(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,
-): Promise<"vite" | "bun-fullstack" | "vanilla"> {
+): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs"> {
 	if (tsConfig?.compilerOptions?.types) {
 		const types = tsConfig.compilerOptions.types;
 		if (types.includes("vite") || types.includes("vite/client")) return "vite";
@@ -18,6 +18,7 @@ export async function detectFramework(
 		const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
 		if (allDeps.vite) return "vite";
+		if (allDeps.next) return "nextjs";
 	} catch {
 		// ignore missing or invalid package.json
 	}

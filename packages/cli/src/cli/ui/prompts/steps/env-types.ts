@@ -1,12 +1,12 @@
 import { confirm, isCancel, select } from "@clack/prompts";
 import { code } from "@/cli/ui/visuals";
-import type { ProjectOptions } from "@/features/scaffold";
+import type { Framework, ProjectOptions } from "@/features/scaffold";
 
 /**
  * Determines whether the wizard should create framework environment types.
  */
 export async function installTypeDefinitionsStep(options: {
-	framework: "vite" | "bun-fullstack" | "vanilla";
+	framework: Framework;
 	hasTypeFile: boolean;
 }): Promise<boolean | null> {
 	if (options.framework === "vite" || options.framework === "bun-fullstack") {
@@ -32,7 +32,7 @@ export async function installTypeDefinitionsStep(options: {
  * Chooses how to handle an existing framework type definition file.
  */
 export async function envDtsHandlingStep(options: {
-	framework: "vite" | "bun-fullstack" | "vanilla";
+	framework: Framework;
 	installTypeDefinitions: boolean;
 	hasTypeFile: boolean;
 }): Promise<ProjectOptions["envDtsHandling"] | null> {
