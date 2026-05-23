@@ -1,34 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ArkEnv + Next.js Example
 
-## Getting Started
+This example demonstrates how to use [@arkenv/nextjs](https://arkenv.js.org/docs/nextjs) with Next.js (App Router). It showcases:
 
-First, run the development server:
+- **Environment variable validation** with ArkEnv.
+- **Strict Server/Client boundary validation**: Server-only variables (like `DATABASE_URL`) are automatically blocked and throw a clear runtime error if accessed on the client-side.
+- **Typesafe environment variables** in both React Server Components (RSC) and Client Components.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Setup
+
+The example defines the environment schema in a single `env.ts` file:
+
+```ts title="env.ts"
+import arkenv from "@arkenv/nextjs";
+
+export const env = arkenv({
+	server: {
+		DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
+	},
+	client: {
+		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	},
+	shared: {
+		NODE_ENV: "string = 'development'",
+	},
+	runtimeEnv: {
+		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+		NODE_ENV: process.env.NODE_ENV,
+	},
+});
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Key Configurations:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Server Schema**: Variables that are only accessible on the server.
+2. **Client Schema**: Variables that are exposed to the client (must begin with `NEXT_PUBLIC_` to match Next.js conventions).
+3. **Shared Schema**: Common variables like `NODE_ENV`.
+4. **Runtime Environment**: You must explicitly map client and shared variables in `runtimeEnv` so that Next.js client-side bundles can correctly inline them.
 
-## Learn More
+## Usage in Components
 
-To learn more about Next.js, take a look at the following resources:
+### React Server Components (RSC)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+You can safely access all server, client, and shared variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```tsx title="app/page.tsx"
+import { env } from "../env";
 
-## Deploy on Vercel
+export default function Page() {
+  const dbUrl = env.DATABASE_URL; // ✅ Allowed
+  const api = env.NEXT_PUBLIC_API_URL; // ✅ Allowed
+  return <div>...</div>;
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template\&filter=next.js\&utm_source=create-next-app\&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Client Components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+You can access client and shared variables, but accessing server variables will throw a runtime error:
+
+```tsx title="app/client-component.tsx"
+"use client";
+
+import { env } from "../env";
+
+export default function ClientComponent() {
+  const api = env.NEXT_PUBLIC_API_URL; // ✅ Allowed (string)
+  const dbUrl = env.DATABASE_URL; // ❌ Throws runtime error on client!
+  return <div>...</div>;
+}
+```
+
+## Running the Example
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start dev server
+pnpm dev
+
+# Build for production
+pnpm build
+```
+
+## Documentation
+
+For more information, see the [@arkenv/nextjs documentation](https://arkenv.js.org/docs/nextjs).
