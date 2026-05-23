@@ -32,4 +32,57 @@ describe("@arkenv/nextjs type regression", () => {
 
 		expectTypeOf(apiUrl).toBeString();
 	});
+
+	it("validates ArkType schema strings across schema sections", () => {
+		createEnv({
+			server: {
+				DATABASE_URL: "string.url",
+			},
+			client: {
+				NEXT_PUBLIC_API_URL: "string.url",
+			},
+			shared: {
+				PORT: "number.port = 3000",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+				PORT: "3000",
+			},
+		});
+	});
+
+	it("rejects invalid ArkType schema strings across schema sections", () => {
+		createEnv({
+			server: {
+				// @ts-expect-error invalid ArkType schema string
+				DATABASE_URL: "not-a-valid-type",
+			},
+			client: {
+				// @ts-expect-error invalid ArkType schema string
+				NEXT_PUBLIC_API_URL: "not-a-valid-type",
+			},
+			shared: {
+				// @ts-expect-error invalid ArkType schema string
+				PORT: "not-a-valid-type",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+				PORT: "3000",
+			},
+		});
+	});
+
+	it("enforces NEXT_PUBLIC_ client keys", () => {
+		createEnv({
+			client: {
+				NEXT_PUBLIC_API_URL: "string.url",
+				// @ts-expect-error client variables must be prefixed with NEXT_PUBLIC_
+				API_URL: "string.url",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+				API_URL: "https://api.example.com",
+			},
+		});
+	});
 });

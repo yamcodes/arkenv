@@ -1,5 +1,6 @@
 import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
+import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
 import { createEnvInternal } from "./create-env";
 
@@ -16,11 +17,11 @@ export function createEnv<
 	const TClient extends SchemaShape = {},
 	const TShared extends SchemaShape = {},
 >(options: {
-	server?: TServer;
-	client?: TClient & {
+	server?: EnvSchema<TServer>;
+	client?: EnvSchema<TClient> & {
 		[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}` ? unknown : never;
 	};
-	shared?: TShared;
+	shared?: EnvSchema<TShared>;
 	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
 		Record<string, unknown>;
 }): Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>> {
