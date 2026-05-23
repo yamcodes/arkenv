@@ -111,6 +111,17 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		deps.push("@arkenv/nextjs");
 	}
 
+	// Framework integrations require arktype as a peer dependency.
+	// Ensure arktype is installed when using a framework integration.
+	if (
+		(options.framework === "vite" ||
+			options.framework === "nextjs" ||
+			(options.framework === "bun-fullstack" && options.bunFeatures?.length)) &&
+		!deps.includes("arktype")
+	) {
+		deps.push("arktype");
+	}
+
 	plan.install = {
 		packageManager,
 		dependencies: deps,

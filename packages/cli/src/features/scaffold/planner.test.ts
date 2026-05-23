@@ -70,6 +70,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
 		expect(plan.install?.dependencies).toContain("zod");
+		expect(plan.install?.dependencies).toContain("arktype");
 	});
 
 	it("plans for bun-fullstack framework with features", () => {

@@ -66,3 +66,30 @@ If you accidentally attempt to access a server-side secret in a Client Component
 // Throws a runtime error if evaluated in a client component (during SSR or in the browser)
 const dbUrl = env.DATABASE_URL;
 ```
+
+## Using Standard Schema validators (Zod, Valibot)
+
+This integration uses ArkType for validation under the hood, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
+
+Here is an example using Zod:
+
+```ts title="src/env.ts"
+import arkenv from "@arkenv/nextjs";
+import { z } from "zod";
+
+export const env = arkenv({
+	server: {
+		DATABASE_URL: z.string().url(),
+	},
+	client: {
+		NEXT_PUBLIC_API_URL: z.string().url(),
+	},
+	shared: {
+		NODE_ENV: z.enum(["development", "production", "test"]),
+	},
+	runtimeEnv: {
+		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+		NODE_ENV: process.env.NODE_ENV,
+	},
+});
+```
