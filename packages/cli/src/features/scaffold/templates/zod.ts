@@ -1,4 +1,5 @@
 import dedent from "dedent";
+import { buildNextjsTemplate } from "./nextjs-template";
 
 /**
  * Generates a TypeScript template string for a Zod environment configuration.
@@ -46,65 +47,22 @@ ${schemaFields}
 	}
 
 	if (framework === "nextjs") {
-		const serverFields: string[] = [];
-		const clientFields: string[] = [];
-		const sharedFields: string[] = [];
-		const runtimeEnvFields: string[] = [];
-
-		if (envKeys && envKeys.length > 0) {
-			for (const key of envKeys) {
-				if (key.startsWith("NEXT_PUBLIC_")) {
-					clientFields.push(`\t\t${key}: z.string().default(""),`);
-					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
-				} else if (key === "NODE_ENV" || key === "PORT") {
-					sharedFields.push(
-						`\t\t${key}: ${key === "PORT" ? "z.coerce.number().int().min(1).max(65535).default(3000)" : 'z.enum(["development", "production", "test"]).default("development")'},`,
-					);
-					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
-				} else {
-					serverFields.push(`\t\t${key}: z.string().default(""),`);
-				}
-			}
-		} else {
-			serverFields.push(
+		return buildNextjsTemplate(envKeys, {
+			extraImports: `import { z } from "zod";`,
+			serverField: (key) => `\t\t${key}: z.string().default(""),`,
+			clientField: (key) => `\t\t${key}: z.string().default(""),`,
+			sharedField: (key, isPort) =>
+				`\t\t${key}: ${isPort ? "z.coerce.number().int().min(1).max(65535).default(3000)" : 'z.enum(["development", "production", "test"]).default("development")'},`,
+			defaultServerFields: [
 				`\t\tDATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
-			);
-			clientFields.push(
+			],
+			defaultClientFields: [
 				`\t\tNEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),`,
-			);
-			sharedFields.push(
+			],
+			defaultSharedFields: [
 				`\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,
-			);
-			runtimeEnvFields.push(
-				"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			);
-			runtimeEnvFields.push("\t\tNODE_ENV: process.env.NODE_ENV,");
-		}
-
-		return dedent /* ts */`
-		import arkenv from "@arkenv/nextjs";
-		import { z } from "zod";
-
-		/**
-		 * Environment variable schema.
-		 * In Next.js, use \`@arkenv/nextjs\` to validate variables at build-time and runtime.
-		 * Enforces client/server separation and prevents secret leaks.
-		 */
-		export const env = arkenv({
-			server: {
-		${serverFields.join("\n")}
-			},
-			client: {
-		${clientFields.join("\n")}
-			},
-			shared: {
-		${sharedFields.join("\n")}
-			},
-			runtimeEnv: {
-		${runtimeEnvFields.join("\n")}
-			},
+			],
 		});
-		`;
 	}
 
 	return dedent /* ts */`
