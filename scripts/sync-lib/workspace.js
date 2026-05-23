@@ -47,6 +47,9 @@ export function getWorkspacePackageVersion(packageName) {
 		arkenv: join(ROOT_DIR, "packages", "arkenv"),
 		"@arkenv/vite-plugin": join(ROOT_DIR, "packages", "vite-plugin"),
 		"@arkenv/bun-plugin": join(ROOT_DIR, "packages", "bun-plugin"),
+		"@arkenv/nextjs": join(ROOT_DIR, "packages", "nextjs"),
+		"@arkenv/cli": join(ROOT_DIR, "packages", "cli"),
+		"@arkenv/fumadocs-ui": join(ROOT_DIR, "packages", "fumadocs-ui"),
 	};
 
 	const packageDir = packageDirs[packageName];
