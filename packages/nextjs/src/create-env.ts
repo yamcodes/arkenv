@@ -4,11 +4,13 @@ import { createEnv as coreCreateEnv } from "arkenv";
 import type { type as at, distill } from "arktype";
 
 /**
- * Shared core function containing validation and proxy wrapper logic.
+ * Validate and wrap environment variables in a security proxy.
  *
  * @param options The environment validation configuration options
  * @param isServer Whether the code is running in a server component (RSC) context
  * @returns A validated, readonly environment variables object wrapped in a security proxy
+ * @throws An error if any client-side variable is not prefixed with `NEXT_PUBLIC_`
+ * @throws An error if any client or shared variable is missing from `runtimeEnv`
  */
 export function createEnvInternal<
 	const TServer extends SchemaShape = {},
