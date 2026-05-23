@@ -7,6 +7,12 @@
 			"framework": "vanilla"
 		},
 		{
+			"id": "with-nextjs",
+			"name": "Next.js",
+			"description": "Minimal Next.js project with ArkType",
+			"framework": "nextjs"
+		},
+		{
 			"id": "with-vite-react",
 			"name": "React + Vite",
 			"description": "React + Vite + ArkType (Client-side inlining)",

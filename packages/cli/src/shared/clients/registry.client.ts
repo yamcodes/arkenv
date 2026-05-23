@@ -2,7 +2,7 @@ export type Example = {
 	id: string;
 	name: string;
 	description?: string;
-	framework: "vite" | "bun-fullstack" | "vanilla";
+	framework: "vite" | "bun-fullstack" | "vanilla" | "nextjs";
 };
 
 export type ExampleRegistry = {
@@ -34,9 +34,21 @@ export class RegistryClient {
 						framework: "vanilla",
 					},
 					{
+						id: "with-nextjs",
+						name: "Next.js",
+						description: "Minimal Next.js project with ArkType",
+						framework: "nextjs",
+					},
+					{
 						id: "with-vite-react",
 						name: "React + Vite",
 						framework: "vite",
+					},
+					{
+						id: "with-bun",
+						name: "Bun (Vanilla)",
+						description: "Minimal Bun project with ArkType",
+						framework: "vanilla",
 					},
 					{
 						id: "with-bun-react",
