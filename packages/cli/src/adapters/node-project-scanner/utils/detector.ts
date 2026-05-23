@@ -2,6 +2,13 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import type { ParsedTsConfig } from "@/shared/ports";
 
+/**
+ * Detect the build or runtime framework used by the project at the target directory.
+ *
+ * @param cwd The target directory path
+ * @param tsConfig The parsed tsconfig details
+ * @returns The detected framework name
+ */
 export async function detectFramework(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,

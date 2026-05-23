@@ -47,6 +47,11 @@ export class Workspace {
 		await fsp.writeFile(fullPath, content, "utf-8");
 	}
 
+	/**
+	 * Detect the workspace's target build or runtime framework.
+	 *
+	 * @returns The detected framework name
+	 */
 	async detectFramework(): Promise<Framework> {
 		try {
 			const content = await this.readFile("package.json");
