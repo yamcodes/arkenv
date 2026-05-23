@@ -1,4 +1,5 @@
 import dedent from "dedent";
+import { buildNextjsTemplate } from "./nextjs-template";
 
 /**
  * Generates a TypeScript template string for a Valibot environment configuration.
@@ -46,65 +47,22 @@ ${schemaFields}
 	}
 
 	if (framework === "nextjs") {
-		const serverFields: string[] = [];
-		const clientFields: string[] = [];
-		const sharedFields: string[] = [];
-		const runtimeEnvFields: string[] = [];
-
-		if (envKeys && envKeys.length > 0) {
-			for (const key of envKeys) {
-				if (key.startsWith("NEXT_PUBLIC_")) {
-					clientFields.push(`\t\t${key}: v.optional(v.string(), ""),`);
-					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
-				} else if (key === "NODE_ENV" || key === "PORT") {
-					sharedFields.push(
-						`\t\t${key}: ${key === "PORT" ? "v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)" : 'v.optional(v.picklist(["development", "production", "test"]), "development")'},`,
-					);
-					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
-				} else {
-					serverFields.push(`\t\t${key}: v.optional(v.string(), ""),`);
-				}
-			}
-		} else {
-			serverFields.push(
+		return buildNextjsTemplate(envKeys, {
+			extraImports: `import * as v from "valibot";`,
+			serverField: (key) => `\t\t${key}: v.optional(v.string(), ""),`,
+			clientField: (key) => `\t\t${key}: v.optional(v.string(), ""),`,
+			sharedField: (key, isPort) =>
+				`\t\t${key}: ${isPort ? "v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)" : 'v.optional(v.picklist(["development", "production", "test"]), "development")'},`,
+			defaultServerFields: [
 				`\t\tDATABASE_URL: v.optional(v.pipe(v.string(), v.url()), "postgres://localhost:5432/mydb"),`,
-			);
-			clientFields.push(
+			],
+			defaultClientFields: [
 				`\t\tNEXT_PUBLIC_API_URL: v.optional(v.pipe(v.string(), v.url()), "https://api.example.com"),`,
-			);
-			sharedFields.push(
+			],
+			defaultSharedFields: [
 				`\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),`,
-			);
-			runtimeEnvFields.push(
-				"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			);
-			runtimeEnvFields.push("\t\tNODE_ENV: process.env.NODE_ENV,");
-		}
-
-		const sections: string[] = [];
-		if (serverFields.length > 0) {
-			sections.push(`\tserver: {\n${serverFields.join("\n")}\n\t}`);
-		}
-		if (clientFields.length > 0) {
-			sections.push(`\tclient: {\n${clientFields.join("\n")}\n\t}`);
-		}
-		if (sharedFields.length > 0) {
-			sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
-		}
-		sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
-
-		return `import arkenv from "@arkenv/nextjs";
-import * as v from "valibot";
-
-/**
- * Environment variable schema.
- * In Next.js, use \`@arkenv/nextjs\` to validate variables at build-time and runtime.
- * Enforces client/server separation and prevents secret leaks.
- */
-export const env = arkenv({
-${sections.join(",\n")},
-});
-`;
+			],
+		});
 	}
 
 	return dedent /* ts */`
