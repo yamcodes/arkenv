@@ -6,14 +6,26 @@
 export type NextjsFieldBuilders = {
 	/** Extra import lines to inject after `import arkenv from "@arkenv/nextjs"` (e.g. `import { z } from "zod"`) */
 	extraImports?: string;
-	/** Returns a formatted schema field line for a server-only env var. */
+	/**
+	 * Format a schema field line for a server-only env var.
+	 *
+	 * @param key The env var name
+	 * @returns A formatted schema field string
+	 */
 	serverField(key: string): string;
-	/** Returns a formatted schema field line for a client-side (`NEXT_PUBLIC_`) env var. */
+	/**
+	 * Format a schema field line for a client-side (`NEXT_PUBLIC_`) env var.
+	 *
+	 * @param key The env var name
+	 * @returns A formatted schema field string
+	 */
 	clientField(key: string): string;
 	/**
-	 * Returns a formatted schema field line for a shared env var.
-	 * @param key - The env var name (e.g. `NODE_ENV` or `PORT`).
-	 * @param isPort - `true` when the key is `PORT`; `false` for `NODE_ENV`.
+	 * Format a schema field line for a shared env var.
+	 *
+	 * @param key The env var name (e.g. `NODE_ENV` or `PORT`)
+	 * @param isPort `true` when the key is `PORT`; `false` for `NODE_ENV`
+	 * @returns A formatted schema field string
 	 */
 	sharedField(key: string, isPort: boolean): string;
 	/** Default `server` section lines used when no `envKeys` are provided. */
@@ -25,16 +37,16 @@ export type NextjsFieldBuilders = {
 };
 
 /**
- * Generates a Next.js `env.ts` template string for any supported validator.
+ * Generate a Next.js `env.ts` template string for any supported validator.
  *
- * The function owns all structural assembly:
- * - Categorising env keys into `server`, `client`, `shared`, and `runtimeEnv`
- * - Producing the `import` header and JSDoc comment
- * - Joining sections and generating the final `export const env = arkenv({…})`
+ * Owns all structural assembly:
+ * - Categorise env keys into `server`, `client`, `shared`, and `runtimeEnv`
+ * - Produce the `import` header and JSDoc comment
+ * - Join sections and emit the final `export const env = arkenv({…})`
  *
- * @param envKeys - Optional array of env var keys scanned from the project.
- * @param builders - Validator-specific field formatters and default values.
- * @returns The generated TypeScript source string.
+ * @param envKeys Optional array of env var keys scanned from the project
+ * @param builders Validator-specific field formatters and default field values
+ * @returns The generated TypeScript source string
  */
 export function buildNextjsTemplate(
 	envKeys: string[] | undefined,
