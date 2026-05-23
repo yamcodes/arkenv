@@ -1,0 +1,68 @@
+---
+title: Introduction
+icon: Album
+description: The ArkEnv integration for Next.js lets you validate environment variables at build-time and runtime.
+---
+
+> [!IMPORTANT]
+> This integration requires [ArkType](https://arktype.io) to be installed.
+
+## Features
+
+- **Compile-Time Validation**: Enforces that all client-side variables start with the `NEXT_PUBLIC_` prefix and checks that all client/shared variables are explicitly mapped in the `runtimeEnv` object for Next.js compiler inlining.
+- **Runtime Protection**: Wraps the validated environment object in a Proxy. Accessing server-only variables from Client Components (during either server-side pre-rendering/SSR or browser runtime execution) throws a descriptive runtime error using package conditional exports (`react-server` vs. `default`).
+- **Minimal Boilerplate**: Server-only variables are dynamically fallback-read from `process.env` at runtime, meaning they do not need to be manually mapped inside the `runtimeEnv` parameter.
+
+## Quickstart
+
+### 1. Installation
+
+```package-install
+@arkenv/nextjs arktype
+```
+
+### 2. Configure Environment
+
+Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define and validate your schemas:
+
+```ts title="src/env.ts"
+import { createEnv, type } from "@arkenv/nextjs";
+
+export const env = createEnv({
+	server: {
+		DATABASE_URL: "string",
+	},
+	client: {
+		NEXT_PUBLIC_API_URL: "string",
+	},
+	shared: {
+		NODE_ENV: "string",
+	},
+	runtimeEnv: {
+		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+		NODE_ENV: process.env.NODE_ENV,
+	},
+});
+```
+
+### 3. Use in your code
+
+Import `env` throughout your Next.js application:
+
+```tsx title="src/app/page.tsx"
+import { env } from "@/env";
+
+export default function Page() {
+	// Access is fully typesafe and autocompleted
+	const apiUrl = env.NEXT_PUBLIC_API_URL;
+
+	return <div>API URL: {apiUrl}</div>;
+}
+```
+
+If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
+
+```ts
+// Throws a runtime error if evaluated in a client component (during SSR or in the browser)
+const dbUrl = env.DATABASE_URL;
+```

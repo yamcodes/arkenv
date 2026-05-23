@@ -1,0 +1,81 @@
+{
+	"name": "@arkenv/nextjs",
+	"version": "0.0.0",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"dependencies": {
+		"arkenv": "workspace:*"
+	},
+	"devDependencies": {
+		"@repo/scope": "workspace:*",
+		"@repo/types": "workspace:*",
+		"@size-limit/preset-small-lib": "catalog:",
+		"arktype": "catalog:",
+		"next": "catalog:",
+		"rimraf": "catalog:",
+		"size-limit": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"arktype": "^2.1.22",
+		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
+	},
+	"exports": {
+		".": {
+			"react-server": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/react-server.js",
+				"require": "./dist/react-server.cjs"
+			},
+			"default": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.js",
+				"require": "./dist/index.cjs"
+			}
+		}
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnextjs",
+	"description": "ArkEnv integration for Next.js",
+	"files": [
+		"dist"
+	],
+	"homepage": "https://arkenv.js.org",
+	"keywords": [
+		"arktype",
+		"arkenv",
+		"environment",
+		"variables",
+		"next",
+		"nextjs"
+	],
+	"license": "MIT",
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"fix": "pnpm -w run fix",
+		"changeset": "pnpm -w run changeset",
+		"size": "size-limit --json > .size-limit.json"
+	},
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"size-limit": [
+		{
+			"path": "dist/index.js",
+			"limit": "3 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype"
+			]
+		}
+	]
+}

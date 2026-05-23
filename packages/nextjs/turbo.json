@@ -1,0 +1,10 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"size": {
+			"dependsOn": ["build"],
+			"cache": true,
+			"inputs": ["$TURBO_DEFAULT$", ".size-limit*", "package.json"]
+		}
+	}
+}

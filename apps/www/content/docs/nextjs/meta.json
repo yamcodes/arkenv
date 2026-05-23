@@ -1,0 +1,7 @@
+{
+	"title": "@arkenv/nextjs",
+	"description": "Integration for Next.js",
+	"root": true,
+	"icon": "Nextdotjs",
+	"pages": ["---Guide---", "index"]
+}

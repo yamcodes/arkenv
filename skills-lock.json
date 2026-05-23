@@ -79,6 +79,12 @@
 			"skillPath": "skills/engineering/triage/SKILL.md",
 			"computedHash": "2b6efb6da12d92551772fcc04acf331f4e0e6f7bd9d4cb23ce0b301e0b128feb"
 		},
+		"typescript": {
+			"source": "pproenca/dot-skills",
+			"sourceType": "github",
+			"skillPath": "skills/.curated/typescript/SKILL.md",
+			"computedHash": "a6abc7c40a305f4f15d1167a36931d97ac5271893924dc101ba945f0aaf241ce"
+		},
 		"write-a-skill": {
 			"source": "mattpocock/skills",
 			"sourceType": "github",
