@@ -1,5 +1,13 @@
 # @arkenv/nextjs
 
+## 0.0.3
+
+### Patch Changes
+
+- #### Fix Next.js schema string autocomplete _[`#1079`](https://github.com/yamcodes/arkenv/pull/1079) [`bbab725`](https://github.com/yamcodes/arkenv/commit/bbab725cc4817053fb0bfb693deaadee4a5f1519) [@pullfrog](https://github.com/apps/pullfrog)_
+
+  Provide ArkType DSL contextual typing for `server`, `client`, and `shared` schema values.
+
 ## 0.0.2
 
 ### Patch Changes
