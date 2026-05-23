@@ -91,6 +91,24 @@ const dbUrl = env.DATABASE_URL;
 //      ^?
 ```
 
+## How It Works
+
+`@arkenv/nextjs` ships **two entry points** that are automatically selected by the Next.js bundler via [Node.js package conditional exports](https://nodejs.org/api/packages.html#conditional-exports):
+
+| Condition | Entry point | `isServer` |
+|---|---|---|
+| `react-server` (RSC / Server Components) | `dist/react-server.js` | `true` |
+| `default` (Client Components + SSR) | `dist/index.js` | `false` |
+
+You always write `import arkenv from "@arkenv/nextjs"` — the bundler silently resolves the correct file.
+
+The `isServer` flag is the mechanism behind runtime protection:
+
+- **`true` (RSC)** — the full schema (`server + client + shared`) is validated, and server variables are read directly from `process.env` if omitted from `runtimeEnv`.
+- **`false` (Client/SSR)** — only the `client + shared` schema is validated. Accessing a key from the `server` schema throws a descriptive error during SSR pre-rendering _and_ in the browser.
+
+This approach statically hardcodes the execution context at the bundler layer, which is more reliable than runtime heuristics like checking `typeof window`.
+
 ## Using Standard Schema validators (Zod, Valibot)
 
 This integration uses ArkType for validation under the hood, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
