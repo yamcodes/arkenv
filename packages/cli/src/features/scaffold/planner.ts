@@ -22,12 +22,6 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		existingFiles,
 	} = state;
 
-	if (options.framework === "nextjs" && options.validator !== "arktype") {
-		throw new Error(
-			"Next.js framework integration only supports the ArkType validator.",
-		);
-	}
-
 	const projectName =
 		options.name && options.name !== "."
 			? path.basename(options.name)

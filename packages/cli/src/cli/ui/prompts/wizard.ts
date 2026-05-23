@@ -252,7 +252,7 @@ async function runExistingProjectWizard(
 		);
 
 		// 8. validator
-		const validator = unwrapPrompt(await steps.validator({ framework }));
+		const validator = unwrapPrompt(await steps.validator());
 
 		// 9. useEnvExample
 		const useEnvExample = unwrapPrompt(

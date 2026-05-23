@@ -57,7 +57,7 @@ describe("Planner", () => {
 		expect(plan.bootstrap).toBeUndefined();
 	});
 
-	it("throws error when nextjs is chosen with non-arktype validator", () => {
+	it("plans for nextjs framework with zod validator", () => {
 		const state: CollectedState = {
 			...defaultState,
 			options: {
@@ -67,9 +67,9 @@ describe("Planner", () => {
 			},
 			detectedFramework: "nextjs",
 		};
-		expect(() => createPlan(state)).toThrow(
-			"Next.js framework integration only supports the ArkType validator.",
-		);
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.install?.dependencies).toContain("zod");
 	});
 
 	it("plans for bun-fullstack framework with features", () => {

@@ -59,15 +59,11 @@ export async function bunBuildStep(options: {
 /**
  * Prompt the user to select their preferred validator library.
  *
- * @param options Optional wizard framework context to automatically skip prompting if Next.js is selected
  * @returns The selected validator or null if cancelled
  */
-export async function validatorStep(options?: {
-	framework?: ProjectOptions["framework"] | undefined;
-}): Promise<ProjectOptions["validator"] | null> {
-	if (options?.framework === "nextjs") {
-		return "arktype";
-	}
+export async function validatorStep(): Promise<
+	ProjectOptions["validator"] | null
+> {
 	const answer = await select({
 		message: "Select your preferred validator library:",
 		options: [

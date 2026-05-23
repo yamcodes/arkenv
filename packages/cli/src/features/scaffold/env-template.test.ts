@@ -92,6 +92,38 @@ describe("env-template", () => {
 			expect(template).not.toContain("CUSTOM_VAR: process.env.CUSTOM_VAR,");
 		});
 
+		it("returns nextjs template for zod when validator is zod", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain("DATABASE_URL: z.string().url().default(");
+		});
+
+		it("returns nextjs template for valibot when validator is valibot", () => {
+			const options = {
+				validator: "valibot" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import * as v from "valibot"');
+			expect(template).toContain(
+				"DATABASE_URL: v.optional(v.pipe(v.string(), v.url())",
+			);
+		});
+
 		it("returns arktype template for vite when validator is arktype", () => {
 			const options = {
 				validator: "arktype" as any,
