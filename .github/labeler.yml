@@ -13,6 +13,10 @@ arkenv:
   - changed-files:
     - any-glob-to-any-file: 'packages/bun-plugin/**/*'
 
+"@arkenv/nextjs":
+  - changed-files:
+    - any-glob-to-any-file: 'packages/nextjs/**/*'
+
 "@arkenv/cli":
   - changed-files:
     - any-glob-to-any-file: 'packages/cli/**/*'
