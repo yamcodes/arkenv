@@ -23,5 +23,11 @@
 	},
 	"engines": {
 		"node": ">=22"
-	}
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-nextjs",
+			"packageManager": "npm"
+		}
+	]
 }
