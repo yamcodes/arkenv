@@ -26,8 +26,10 @@ export function createEnv<
 	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
 		Record<string, unknown>;
 }): Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>> {
-	// Cast to `any` to avoid TS2589 type complexity limits error
-	return createEnvInternal(options, true) as any;
+	type ReturnType = Readonly<
+		distill.Out<at.infer<TServer & TClient & TShared, $>>
+	>;
+	return createEnvInternal(options, true) as ReturnType;
 }
 
 export { type } from "arkenv";

@@ -1,10 +1,23 @@
-import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import { createEnv as coreCreateEnv } from "arkenv";
-import type { type as at, distill } from "arktype";
 
 /**
  * Validate and wrap environment variables in a security proxy.
+ *
+ * @internal
+ *
+ * @remarks
+ * This internal module contains the core Next.js environment validation logic. It is split from
+ * the public entry points to separate execution paths (RSC vs. SSR/Client) at the bundler layer.
+ *
+ * **Trade-offs & Design Decisions:**
+ * 1. **Bundler Resolution (isServer)**: The `isServer` flag is statically hardcoded by the respective
+ *    entry points (`src/index.ts` and `src/react-server.ts`) resolved via package conditional exports
+ *    (`react-server` vs `default`). This resolves client component SSR environment poisoning without
+ *    relying on fragile runtime heuristics.
+ * 2. **Type Circuit Breaker (unknown return)**: This function returns `unknown` rather than the complex,
+ *    recursive ArkType validation types. This prevents TypeScript's compiler from recursively evaluating
+ *    type mapping depths inside the internal implementation, bypassing `TS2589` instantiation limits.
  *
  * @param options The environment validation configuration options
  * @param isServer Whether the code is running in a server component (RSC) context
@@ -12,24 +25,15 @@ import type { type as at, distill } from "arktype";
  * @throws An error if any client-side variable is not prefixed with `NEXT_PUBLIC_`
  * @throws An error if any client or shared variable is missing from `runtimeEnv`
  */
-export function createEnvInternal<
-	const TServer extends SchemaShape = {},
-	const TClient extends SchemaShape = {},
-	const TShared extends SchemaShape = {},
->(
+export function createEnvInternal(
 	options: {
-		server?: TServer;
-		client?: {
-			[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}`
-				? TClient[K]
-				: never;
-		};
-		shared?: TShared;
-		runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
-			Record<string, unknown>;
+		server?: SchemaShape;
+		client?: Record<string, unknown>;
+		shared?: SchemaShape;
+		runtimeEnv: Record<string, unknown>;
 	},
 	isServer: boolean,
-): Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>> {
+): unknown {
 	const server = options.server || {};
 	const client = options.client || {};
 	const shared = options.shared || {};
