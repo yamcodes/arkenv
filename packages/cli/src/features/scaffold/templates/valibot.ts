@@ -81,30 +81,30 @@ ${schemaFields}
 			runtimeEnvFields.push("\t\tNODE_ENV: process.env.NODE_ENV,");
 		}
 
-		return dedent /* ts */`
-		import arkenv from "@arkenv/nextjs";
-		import * as v from "valibot";
+		const sections: string[] = [];
+		if (serverFields.length > 0) {
+			sections.push(`\tserver: {\n${serverFields.join("\n")}\n\t}`);
+		}
+		if (clientFields.length > 0) {
+			sections.push(`\tclient: {\n${clientFields.join("\n")}\n\t}`);
+		}
+		if (sharedFields.length > 0) {
+			sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
+		}
+		sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 
-		/**
-		 * Environment variable schema.
-		 * In Next.js, use \`@arkenv/nextjs\` to validate variables at build-time and runtime.
-		 * Enforces client/server separation and prevents secret leaks.
-		 */
-		export const env = arkenv({
-			server: {
-		${serverFields.join("\n")}
-			},
-			client: {
-		${clientFields.join("\n")}
-			},
-			shared: {
-		${sharedFields.join("\n")}
-			},
-			runtimeEnv: {
-		${runtimeEnvFields.join("\n")}
-			},
-		});
-		`;
+		return `import arkenv from "@arkenv/nextjs";
+import * as v from "valibot";
+
+/**
+ * Environment variable schema.
+ * In Next.js, use \`@arkenv/nextjs\` to validate variables at build-time and runtime.
+ * Enforces client/server separation and prevents secret leaks.
+ */
+export const env = arkenv({
+${sections.join(",\n")},
+});
+`;
 	}
 
 	return dedent /* ts */`
