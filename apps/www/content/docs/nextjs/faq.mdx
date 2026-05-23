@@ -1,0 +1,11 @@
+---
+title: FAQ
+icon: MessageCircleQuestionMark
+description: Frequently asked questions about @arkenv/nextjs.
+---
+
+## I was able to access a client-side variable in a server context! Is that ok?
+
+**Yes.** In Next.js, environment variables prefixed with `NEXT_PUBLIC_` are public and intended to be accessible everywhere.
+
+`@arkenv/nextjs` permits accessing client variables in server-side contexts (like Server Components or API routes) by design. The runtime security proxy only blocks the reverse: accessing server-only variables (those without the `NEXT_PUBLIC_` prefix) on the client.

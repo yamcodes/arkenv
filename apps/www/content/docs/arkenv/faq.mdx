@@ -85,21 +85,20 @@ Because it is built on standard JavaScript APIs, ArkEnv *should* work anywhere J
 
 If you're using ArkEnv on a platform not listed above and run into issues, please [let us know on GitHub](https://github.com/yamcodes/arkenv/issues)!
 
-## Can I use ArkEnv with Next.js or Nuxt?
+## Can I use ArkEnv with Next.js?
 
-Not officially.
-
-We've seen users have success using the core `arkenv` package in these environments. However, meta-frameworks have specific client/server separation nuances that we don't officially abstract away yet. If you need a Next.js-specific solution right now, we recommend [T3 Env](https://env.t3.gg).
-
-We're exploring official integrations for more frameworks—keep an eye on our [roadmap](https://github.com/yamcodes/arkenv/issues/683)!
+Yes! We officially support Next.js via the [@arkenv/nextjs](/docs/nextjs) integration, which enforces client/server boundaries and warns you if server secrets leak into Client Components.
 
 ## How is ArkEnv different from T3 Env, or other similar tools?
 
-[T3 Env](https://env.t3.gg/) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ.
+[T3 Env](https://env.t3.gg/) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ:
 
-If you're using Next.js or Nuxt, we recommend T3 Env.
+- **ArkType Validation**: ArkEnv natively supports [ArkType](https://arktype.io) for schema definitions, yielding extremely fast runtime validation and cleaner schemas.
+- **Built-in Coercion & Tooling**: ArkEnv features robust automatic coercion, a developer-friendly CLI, and native support for AI tools.
 
-If you're building a Vite app, a Node server, a [Bun fullstack app](https://bun.com/docs/guides/ecosystem/react), a CLI tool, or even a Solid Start project, ArkEnv can cover your needs. We provide [official examples](/docs/arkenv/examples) for these use cases.
+We now officially support Vite, Bun, Node.js, and Next.js.
+
+
 
 Read more in the [comparison](/docs/arkenv/comparison) section.
 

@@ -60,11 +60,10 @@ After years of building enterprise-scale applications, I realized that while DIY
 [T3 Env](https://env.t3.gg) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ.
 
 T3 Env follows a "Next.js-first" philosophy, including an explicit client/server split in the "agnostic core". This means that even if you're building a simple Node server and never have to deal with leaking sensitive variables to the client, you'll still have the cognitive overhead of bucketing variables into `server` or `client` keys.
-It also offers a Nuxt plugin.
 
-#### For Next.js or Nuxt
+#### For Next.js
 
-If you're building with Next.js or Nuxt, you should probably stick with T3 Env. It's battle-tested, widely adopted, and specifically optimized for those ecosystems. ArkEnv doesn't currently focus on these frameworks.
+While T3 Env is widely adopted in the Next.js ecosystem, ArkEnv officially supports Next.js via the [@arkenv/nextjs](/docs/nextjs) package, bringing native ArkType support and automatic coercion to Next.js projects.
 
 #### For everything else
 
