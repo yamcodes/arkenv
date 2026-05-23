@@ -2,6 +2,13 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import type { ParsedTsConfig } from "@/shared/ports";
 
+/**
+ * Detect the build or runtime framework used by the project at the target directory.
+ *
+ * @param cwd The target directory path
+ * @param tsConfig The parsed tsconfig details
+ * @returns The detected framework name
+ */
 export async function detectFramework(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,
@@ -36,6 +43,23 @@ export async function detectFramework(
 	} catch {
 		// vite.config.js not found
 	}
+
+	try {
+		await fsp.access(path.join(cwd, "next.config.ts"));
+		return "nextjs";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "next.config.js"));
+		return "nextjs";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "next.config.mjs"));
+		return "nextjs";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "next.config.cjs"));
+		return "nextjs";
+	} catch {}
 
 	// Bun Detection
 	const features = await detectBunFeatures(cwd, tsConfig);

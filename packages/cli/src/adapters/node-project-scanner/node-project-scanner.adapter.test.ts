@@ -92,6 +92,12 @@ API_KEY=
 			expect(result).toBe("nextjs");
 		});
 
+		it("detects nextjs from next.config.ts", async () => {
+			await fsp.writeFile(path.join(tempDir, "next.config.ts"), "");
+			const result = await scanner.detectFramework(tempDir);
+			expect(result).toBe("nextjs");
+		});
+
 		it("detects bun-fullstack from tsconfig types and feature presence", async () => {
 			await fsp.writeFile(
 				path.join(tempDir, "server.ts"),

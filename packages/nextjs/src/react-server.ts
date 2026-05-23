@@ -17,10 +17,8 @@ export function createEnv<
 	const TShared extends SchemaShape = {},
 >(options: {
 	server?: TServer;
-	client?: {
-		[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}`
-			? TClient[K]
-			: never;
+	client?: TClient & {
+		[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}` ? unknown : never;
 	};
 	shared?: TShared;
 	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &

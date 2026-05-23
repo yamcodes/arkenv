@@ -45,6 +45,34 @@ describe("Planner", () => {
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
+	it("plans for nextjs framework", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "nextjs" },
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.files.some((f) => f.path.endsWith("env.d.ts"))).toBe(false);
+		expect(plan.bootstrap).toBeUndefined();
+	});
+
+	it("plans for nextjs framework with zod validator", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				validator: "zod",
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.install?.dependencies).toContain("zod");
+		expect(plan.install?.dependencies).toContain("arktype");
+	});
+
 	it("plans for bun-fullstack framework with features", () => {
 		const state: CollectedState = {
 			...defaultState,

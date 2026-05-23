@@ -36,6 +36,94 @@ describe("env-template", () => {
 			expect(template).not.toContain("NODE_ENV");
 		});
 
+		it("returns nextjs template with defaults", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain("server: {");
+			expect(template).toContain("DATABASE_URL:");
+			expect(template).toContain("client: {");
+			expect(template).toContain("NEXT_PUBLIC_API_URL:");
+			expect(template).toContain("shared: {");
+			expect(template).toContain("NODE_ENV:");
+			expect(template).toContain("runtimeEnv: {");
+			expect(template).toContain(
+				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+			);
+		});
+
+		it("returns nextjs template with custom envKeys split correctly", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				envKeys: [
+					"DATABASE_URL",
+					"NEXT_PUBLIC_API_KEY",
+					"PORT",
+					"NODE_ENV",
+					"CUSTOM_VAR",
+				],
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain("DATABASE_URL:");
+			expect(template).toContain("CUSTOM_VAR:");
+			expect(template).toContain("NEXT_PUBLIC_API_KEY:");
+			expect(template).toContain("PORT:");
+			expect(template).toContain("NODE_ENV:");
+			expect(template).toContain(
+				"NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY,",
+			);
+			expect(template).toContain("PORT: process.env.PORT,");
+			expect(template).toContain("NODE_ENV: process.env.NODE_ENV,");
+			// Server keys should NOT be in runtimeEnv
+			expect(template).not.toContain("DATABASE_URL: process.env.DATABASE_URL,");
+			expect(template).not.toContain("CUSTOM_VAR: process.env.CUSTOM_VAR,");
+		});
+
+		it("returns nextjs template for zod when validator is zod", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain("DATABASE_URL: z.string().url().default(");
+		});
+
+		it("returns nextjs template for valibot when validator is valibot", () => {
+			const options = {
+				validator: "valibot" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import * as v from "valibot"');
+			expect(template).toContain(
+				"DATABASE_URL: v.optional(v.pipe(v.string(), v.url())",
+			);
+		});
+
 		it("returns arktype template for vite when validator is arktype", () => {
 			const options = {
 				validator: "arktype" as any,

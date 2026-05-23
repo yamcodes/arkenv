@@ -1,6 +1,12 @@
 import { confirm, isCancel, select } from "@clack/prompts";
 import type { ProjectOptions } from "@/features/scaffold";
 
+/**
+ * Prompt the user to select their framework or build tool.
+ *
+ * @param options Default framework option to pre-select
+ * @returns The selected framework or null if cancelled
+ */
 export async function frameworkStep(options: {
 	framework?: ProjectOptions["framework"] | undefined;
 }): Promise<ProjectOptions["framework"] | null> {
@@ -23,11 +29,22 @@ export async function frameworkStep(options: {
 				label: `Bun fullstack dev server${options.framework === "bun-fullstack" ? " (Detected)" : ""}`,
 				hint: "Client-side bundling and Bun.serve integration",
 			},
+			{
+				value: "nextjs",
+				label: `Next.js${options.framework === "nextjs" ? " (Detected)" : ""}`,
+				hint: "Next.js App or Pages Router with build and runtime validation",
+			},
 		],
 	});
 	return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
 }
 
+/**
+ * Prompt the user to bootstrap a custom Bun.build script.
+ *
+ * @param options Options including default/initial value for the prompt
+ * @returns Whether the user confirmed or null if cancelled
+ */
 export async function bunBuildStep(options: {
 	initialValue?: boolean | undefined;
 }): Promise<boolean | null> {
@@ -39,6 +56,11 @@ export async function bunBuildStep(options: {
 	return isCancel(answer) ? null : answer;
 }
 
+/**
+ * Prompt the user to select their preferred validator library.
+ *
+ * @returns The selected validator or null if cancelled
+ */
 export async function validatorStep(): Promise<
 	ProjectOptions["validator"] | null
 > {

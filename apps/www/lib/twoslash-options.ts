@@ -1,11 +1,13 @@
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
 
 const require = createRequire(import.meta.url);
 
-export const root = path.resolve(process.cwd(), "../../");
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+export const root = path.resolve(currentDir, "../../..");
 
 export const arkTypePackageJson = JSON.parse(
 	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
@@ -32,6 +34,7 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
 				"arkenv/core": [path.join(root, "packages/arkenv/src/core.ts")],
+				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
 				"@arkenv/vite-plugin": [
 					path.join(root, "packages/vite-plugin/src/index.ts"),
 				],

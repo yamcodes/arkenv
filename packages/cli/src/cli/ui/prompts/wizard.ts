@@ -183,7 +183,8 @@ async function runExistingProjectWizard(
 					: undefined,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
-			installTypeDefinitions: framework !== "vanilla",
+			installTypeDefinitions:
+				framework === "vite" || framework === "bun-fullstack",
 			installSkill: false,
 			envDtsHandling,
 			envKeys: detectedKeys ?? undefined,
