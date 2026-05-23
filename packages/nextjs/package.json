@@ -28,9 +28,18 @@
 		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
 	},
 	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
+		".": {
+			"react-server": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/react-server.js",
+				"require": "./dist/react-server.cjs"
+			},
+			"default": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.js",
+				"require": "./dist/index.cjs"
+			}
+		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnextjs",
 	"description": "ArkEnv integration for Next.js",

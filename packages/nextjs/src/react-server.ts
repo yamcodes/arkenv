@@ -4,7 +4,7 @@ import type { type as at, distill } from "arktype";
 import { createEnvInternal } from "./create-env";
 
 /**
- * Create a validated, type-safe environment configuration for Next.js applications (Client-side / SSR entry point).
+ * Create a validated, type-safe environment configuration for Next.js applications (Server-side RSC entry point).
  *
  * @param options The environment validation configuration options
  * @returns A validated, readonly environment variables object wrapped in a security proxy
@@ -27,7 +27,7 @@ export function createEnv<
 		Record<string, unknown>;
 }): Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>> {
 	// Cast to `any` to avoid TS2589 type complexity limits error
-	return createEnvInternal(options, false) as any;
+	return createEnvInternal(options, true) as any;
 }
 
 export { type } from "arkenv";

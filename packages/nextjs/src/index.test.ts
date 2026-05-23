@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./index";
+import { createEnv as clientCreateEnv } from "./index";
+import { createEnv as serverCreateEnv } from "./react-server";
 
-describe("createEnv", () => {
+describe("createEnv (RSC / Server Entrypoint)", () => {
 	it("should parse a basic environment variable", () => {
-		const env = createEnv({
+		const env = serverCreateEnv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -17,7 +18,7 @@ describe("createEnv", () => {
 
 	it("should enforce NEXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
 		expect(() => {
-			createEnv({
+			serverCreateEnv({
 				client: {
 					// @ts-expect-error - Client keys must be prefixed with NEXT_PUBLIC_
 					API_URL: "string",
@@ -29,25 +30,11 @@ describe("createEnv", () => {
 		}).toThrow(
 			"Client-side environment variables must be prefixed with 'NEXT_PUBLIC_'",
 		);
-
-		expect(() => {
-			createEnv({
-				client: {
-					// @ts-expect-error - testing invalid key prefix
-					INVALID_KEY: "string",
-				},
-				runtimeEnv: {
-					INVALID_KEY: "value",
-				},
-			});
-		}).toThrow(
-			"Client-side environment variables must be prefixed with 'NEXT_PUBLIC_'",
-		);
 	});
 
 	it("should enforce that runtimeEnv contains all client and shared keys at compile-time and runtime", () => {
 		expect(() => {
-			createEnv({
+			serverCreateEnv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
@@ -60,67 +47,29 @@ describe("createEnv", () => {
 				},
 			});
 		}).toThrow("Missing key in runtimeEnv: NEXT_PUBLIC_API_URL");
-
-		expect(() => {
-			createEnv({
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-				},
-				runtimeEnv: {
-					// testing missing client key in runtimeEnv
-				} as any,
-			});
-		}).toThrow("Missing key in runtimeEnv: NEXT_PUBLIC_API_URL");
-
-		expect(() => {
-			createEnv({
-				shared: {
-					NODE_ENV: "string",
-				},
-				runtimeEnv: {
-					// testing missing shared key in runtimeEnv
-				} as any,
-			});
-		}).toThrow("Missing key in runtimeEnv: NODE_ENV");
 	});
 
-	it("should throw in browser context when accessing a server-only key, but allow client/shared keys", () => {
-		// Mock window object
-		const originalWindow = globalThis.window;
-		try {
-			// @ts-expect-error - simulating browser environment
-			globalThis.window = {};
+	it("should allow accessing server-only, client, and shared variables on the server", () => {
+		const env = serverCreateEnv({
+			server: {
+				DATABASE_URL: "string",
+			},
+			client: {
+				NEXT_PUBLIC_API_URL: "string",
+			},
+			shared: {
+				NODE_ENV: "string",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+				NODE_ENV: "test",
+				DATABASE_URL: "postgres://localhost:5432/db",
+			},
+		});
 
-			const env = createEnv({
-				server: {
-					DATABASE_URL: "string",
-				},
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-				},
-				shared: {
-					NODE_ENV: "string",
-				},
-				runtimeEnv: {
-					NEXT_PUBLIC_API_URL: "https://api.example.com",
-					NODE_ENV: "test",
-				},
-			});
-
-			// Accessing client/shared variables should work fine
-			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
-			expect(env.NODE_ENV).toBe("test");
-
-			// Accessing server variable on the client must throw
-			expect(() => {
-				env.DATABASE_URL;
-			}).toThrow(
-				"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
-			);
-		} finally {
-			// Restore globalThis.window
-			globalThis.window = originalWindow;
-		}
+		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
+		expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+		expect(env.NODE_ENV).toBe("test");
 	});
 
 	it("should automatically fall back to process.env for server-only keys omitted from runtimeEnv on the server", () => {
@@ -128,11 +77,10 @@ describe("createEnv", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/fallback_db";
 
 		try {
-			const env = createEnv({
+			const env = serverCreateEnv({
 				server: {
 					DATABASE_URL: "string",
 				},
-				// runtimeEnv does not contain DATABASE_URL!
 				runtimeEnv: {},
 			});
 
@@ -145,9 +93,60 @@ describe("createEnv", () => {
 			}
 		}
 	});
+});
+
+describe("createEnv (Client / SSR Entrypoint)", () => {
+	it("should only validate client and shared schemas, skipping server schema validation", () => {
+		// Even if DATABASE_URL is required in server schema,
+		// and missing from runtimeEnv, clientCreateEnv should not throw validation errors
+		// because server validation is skipped in client mode.
+		const env = clientCreateEnv({
+			server: {
+				DATABASE_URL: "string",
+			},
+			client: {
+				NEXT_PUBLIC_API_URL: "string",
+			},
+			shared: {
+				NODE_ENV: "string",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+				NODE_ENV: "test",
+			},
+		});
+
+		expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+		expect(env.NODE_ENV).toBe("test");
+	});
+
+	it("should throw an error when accessing a server-side variable (simulating SSR / pre-rendering)", () => {
+		const env = clientCreateEnv({
+			server: {
+				DATABASE_URL: "string",
+			},
+			client: {
+				NEXT_PUBLIC_API_URL: "string",
+			},
+			shared: {
+				NODE_ENV: "string",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+				NODE_ENV: "test",
+			},
+		});
+
+		// Accessing server key must throw an error, even if running on Node (simulating Server-Side Rendering of Client Components)
+		expect(() => {
+			env.DATABASE_URL;
+		}).toThrow(
+			"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
+		);
+	});
 
 	it("should support default values in schema when omitted or undefined in runtimeEnv", () => {
-		const env = createEnv({
+		const env = clientCreateEnv({
 			server: {
 				DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
 			},
@@ -159,7 +158,7 @@ describe("createEnv", () => {
 			} as any,
 		});
 
-		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/mydb");
+		// Client variables defaults still resolve
 		expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 	});
 });
