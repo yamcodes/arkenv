@@ -1,5 +1,17 @@
 # @arkenv/cli
 
+## 0.2.3
+
+### Patch Changes
+
+- #### Add Next.js support to ArkEnv CLI _[`97f4c17`](https://github.com/yamcodes/arkenv/commit/97f4c17088cfe8e5554ebc232d3faedb71492049) [@yamcodes](https://github.com/yamcodes)_
+
+  ArkEnv CLI now fully supports initializing ArkEnv in Next.js projects.
+
+  - Automatically detect Next.js projects via `package.json` dependencies or config files (`next.config.ts`, `next.config.js`, etc.).
+  - Configure framework settings, skip redundant type definition scaffolding, and install `@arkenv/nextjs` along with `arktype` (which is required by the integration, even when selecting a different validator like Zod or Valibot).
+  - Dynamically split detected variables into `server`, `client`, and `shared` fields based on the selected validator (ArkType, Zod, or Valibot), mapping browser/shared variables in the `runtimeEnv` block to prevent server secrets from leaking.
+
 ## 0.2.2
 
 ### Patch Changes
