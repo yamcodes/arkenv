@@ -3,7 +3,7 @@
  * Callers supply only what differs between validators; all structural
  * assembly is handled by {@link buildNextjsTemplate}.
  */
-export interface NextjsFieldBuilders {
+export type NextjsFieldBuilders = {
 	/** Extra import lines to inject after `import arkenv from "@arkenv/nextjs"` (e.g. `import { z } from "zod"`) */
 	extraImports?: string;
 	/** Returns a formatted schema field line for a server-only env var. */
@@ -22,7 +22,7 @@ export interface NextjsFieldBuilders {
 	defaultClientFields: string[];
 	/** Default `shared` section lines used when no `envKeys` are provided. */
 	defaultSharedFields: string[];
-}
+};
 
 /**
  * Generates a Next.js `env.ts` template string for any supported validator.
