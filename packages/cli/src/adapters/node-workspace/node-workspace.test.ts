@@ -5,7 +5,7 @@ import dedent from "dedent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NodeProjectScannerAdapter } from "@/adapters";
 import { stripAnsi } from "@/test/utils";
-import { NodeWorkspace } from ".";
+import { NodeWorkspace, Workspace } from ".";
 
 describe("NodeWorkspace", () => {
 	let tempDir: string;
@@ -55,6 +55,17 @@ describe("NodeWorkspace", () => {
 		const helper = new NodeProjectScannerAdapter();
 		const framework = await helper.detectFramework(tempDir);
 		expect(framework).toBe("vite");
+	});
+
+	it("detects nextjs framework in workspace", async () => {
+		const pkgPath = path.join(tempDir, "package.json");
+		await workspace.writeFile(
+			pkgPath,
+			JSON.stringify({ dependencies: { next: "*" } }),
+		);
+		const ws = new Workspace({ cwd: tempDir });
+		const framework = await ws.detectFramework();
+		expect(framework).toBe("nextjs");
 	});
 
 	it("asserts detection priority when both package.json and config files exist", async () => {

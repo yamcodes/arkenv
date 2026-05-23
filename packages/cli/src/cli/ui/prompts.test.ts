@@ -63,6 +63,17 @@ describe("runPromptWizard", () => {
 		expect(result?.bunFeatures).toEqual(["serve", "build"]);
 	});
 
+	it("should force arktype validator and skip prompt for nextjs", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ framework: "nextjs" });
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.validator).toBe("arktype");
+	});
+
 	it("should include envKeys if user accepts prompt", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath

@@ -37,6 +37,23 @@ export async function detectFramework(
 		// vite.config.js not found
 	}
 
+	try {
+		await fsp.access(path.join(cwd, "next.config.ts"));
+		return "nextjs";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "next.config.js"));
+		return "nextjs";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "next.config.mjs"));
+		return "nextjs";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "next.config.cjs"));
+		return "nextjs";
+	} catch {}
+
 	// Bun Detection
 	const features = await detectBunFeatures(cwd, tsConfig);
 	if (features.length > 0) return "bun-fullstack";

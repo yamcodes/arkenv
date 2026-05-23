@@ -45,6 +45,33 @@ describe("Planner", () => {
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
+	it("plans for nextjs framework", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "nextjs" },
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.files.some((f) => f.path.endsWith("env.d.ts"))).toBe(false);
+		expect(plan.bootstrap).toBeUndefined();
+	});
+
+	it("throws error when nextjs is chosen with non-arktype validator", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				validator: "zod",
+			},
+			detectedFramework: "nextjs",
+		};
+		expect(() => createPlan(state)).toThrow(
+			"Next.js framework integration only supports the ArkType validator.",
+		);
+	});
+
 	it("plans for bun-fullstack framework with features", () => {
 		const state: CollectedState = {
 			...defaultState,

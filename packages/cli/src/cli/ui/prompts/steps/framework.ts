@@ -23,6 +23,11 @@ export async function frameworkStep(options: {
 				label: `Bun fullstack dev server${options.framework === "bun-fullstack" ? " (Detected)" : ""}`,
 				hint: "Client-side bundling and Bun.serve integration",
 			},
+			{
+				value: "nextjs",
+				label: `Next.js${options.framework === "nextjs" ? " (Detected)" : ""}`,
+				hint: "Next.js App or Pages Router with build and runtime validation",
+			},
 		],
 	});
 	return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
@@ -39,9 +44,12 @@ export async function bunBuildStep(options: {
 	return isCancel(answer) ? null : answer;
 }
 
-export async function validatorStep(): Promise<
-	ProjectOptions["validator"] | null
-> {
+export async function validatorStep(options?: {
+	framework?: ProjectOptions["framework"] | undefined;
+}): Promise<ProjectOptions["validator"] | null> {
+	if (options?.framework === "nextjs") {
+		return "arktype";
+	}
 	const answer = await select({
 		message: "Select your preferred validator library:",
 		options: [

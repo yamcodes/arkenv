@@ -22,6 +22,12 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		existingFiles,
 	} = state;
 
+	if (options.framework === "nextjs" && options.validator !== "arktype") {
+		throw new Error(
+			"Next.js framework integration only supports the ArkType validator.",
+		);
+	}
+
 	const projectName =
 		options.name && options.name !== "."
 			? path.basename(options.name)
@@ -106,6 +112,9 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
 	if (options.framework === "bun-fullstack" && options.bunFeatures?.length) {
 		deps.push("@arkenv/bun-plugin");
+	}
+	if (options.framework === "nextjs") {
+		deps.push("@arkenv/nextjs");
 	}
 
 	plan.install = {

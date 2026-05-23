@@ -183,7 +183,8 @@ async function runExistingProjectWizard(
 					: undefined,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
-			installTypeDefinitions: framework !== "vanilla",
+			installTypeDefinitions:
+				framework === "vite" || framework === "bun-fullstack",
 			installSkill: false,
 			envDtsHandling,
 			envKeys: detectedKeys ?? undefined,
@@ -251,7 +252,7 @@ async function runExistingProjectWizard(
 		);
 
 		// 8. validator
-		const validator = unwrapPrompt(await steps.validator());
+		const validator = unwrapPrompt(await steps.validator({ framework }));
 
 		// 9. useEnvExample
 		const useEnvExample = unwrapPrompt(
