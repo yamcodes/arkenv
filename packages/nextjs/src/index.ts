@@ -13,13 +13,13 @@ import { createEnvInternal } from "./create-env";
  */
 export function createEnv<
 	const TServer extends SchemaShape = {},
-	const TClient extends {
-		[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}` ? unknown : never;
-	} = {},
+	const TClient extends SchemaShape = {},
 	const TShared extends SchemaShape = {},
 >(options: {
 	server?: TServer;
-	client?: TClient;
+	client?: TClient & {
+		[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}` ? unknown : never;
+	};
 	shared?: TShared;
 	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
 		Record<string, unknown>;
