@@ -7,11 +7,9 @@ description: The ArkEnv integration for Next.js lets you validate environment va
 > [!IMPORTANT]
 > This integration requires [ArkType](https://arktype.io) to be installed.
 
-## Features
+The `@arkenv/nextjs` integration provides end-to-end environment validation for both the server and the browser. It catches configuration bugs early in your build pipeline and prevents sensitive server-side variables from ever reaching client components.
 
-- **Compile-Time Validation**: Enforces that all client-side variables start with the `NEXT_PUBLIC_` prefix and checks that all client/shared variables are explicitly mapped in the `runtimeEnv` object for Next.js compiler inlining.
-- **Runtime Protection**: Wraps the validated environment object in a Proxy. Accessing server-only variables from Client Components (during either server-side pre-rendering/SSR or browser runtime execution) throws a descriptive runtime error using package conditional exports (`react-server` vs. `default`).
-- **Minimal Boilerplate**: Server-only variables are dynamically fallback-read from `process.env` at runtime, meaning they do not need to be manually mapped inside the `runtimeEnv` parameter.
+If a server secret is accidentally accessed in client code, the integration immediately fails your build or throws a descriptive runtime error. We leverage native Next.js conditional exports to guarantee this protection statically—see the [FAQ](/docs/nextjs/faq#how-does-the-runtime-protection-work-under-the-hood) for under-the-hood details.
 
 ## Quickstart
 
@@ -130,24 +128,6 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
     </Steps>
   </Accordion>
 </Accordions>
-
-## How it works
-
-`@arkenv/nextjs` ships **two entry points** that are automatically selected by the Next.js bundler via [Node.js package conditional exports](https://nodejs.org/api/packages.html#conditional-exports):
-
-| Condition                                | Entry point            | `isServer` |
-| ---------------------------------------- | ---------------------- | ---------- |
-| `react-server` (RSC / Server Components) | `dist/react-server.js` | `true`     |
-| `default` (Client Components + SSR)      | `dist/index.js`        | `false`    |
-
-You always write `import arkenv from "@arkenv/nextjs"` — the bundler silently resolves the correct file.
-
-The `isServer` flag is the mechanism behind runtime protection:
-
-- **`true` (RSC)** — the full schema (`server + client + shared`) is validated, and server variables are read directly from `process.env` if omitted from `runtimeEnv`.
-- **`false` (Client/SSR)** — only the `client + shared` schema is validated. Accessing a key from the `server` schema throws a descriptive error during SSR pre-rendering *and* in the browser.
-
-This approach statically hardcodes the execution context at the bundler layer, which is more reliable than runtime heuristics like checking `typeof window`.
 
 ## Using Standard Schema validators (Zod, Valibot)
 

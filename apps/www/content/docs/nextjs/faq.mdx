@@ -4,8 +4,34 @@ icon: MessageCircleQuestionMark
 description: Frequently asked questions about @arkenv/nextjs.
 ---
 
-## I was able to access a client-side variable in a server context! is that ok?
+## I was able to access a client-side variable in a server context! Is that ok?
 
 **Yes.** In Next.js, environment variables prefixed with `NEXT_PUBLIC_` are public and intended to be accessible everywhere.
 
 `@arkenv/nextjs` permits accessing client variables in server-side contexts (like Server Components or API routes) by design. The runtime security proxy only blocks the reverse: accessing server-only variables (those without the `NEXT_PUBLIC_` prefix) on the client.
+
+## Why do I need to map client variables in `runtimeEnv` but not server variables?
+
+Next.js statically analyzes and inlines environment variables prefixed with `NEXT_PUBLIC_` at build time. To do this, the bundler looks for exact string matches like `process.env.NEXT_PUBLIC_VAR`.
+
+If you access them dynamically via a validated object like `env.NEXT_PUBLIC_VAR`, the bundler cannot statically analyze it. By passing them into the `runtimeEnv` object (e.g., `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`), you give the Next.js compiler a static reference it can inline, which ArkEnv then reads.
+
+Server-side variables, on the other hand, do not need to be inlined and are read dynamically from Node's runtime environment, so ArkEnv can fall back to reading them directly from `process.env` without any manual mapping in `runtimeEnv`.
+
+## How does the runtime protection work under the hood?
+
+`@arkenv/nextjs` automatically selects the correct environment logic using Node's package conditional exports. The integration ships with **two entry points** chosen by the Next.js bundler:
+
+| Condition                                | Entry point            | `isServer` |
+| ---------------------------------------- | ---------------------- | ---------- |
+| `react-server` (RSC / Server Components) | `dist/react-server.js` | `true`     |
+| `default` (Client Components + SSR)      | `dist/index.js`        | `false`    |
+
+You always write `import arkenv from "@arkenv/nextjs"`—the bundler silently resolves the correct file.
+
+The `isServer` flag is the mechanism behind runtime protection:
+
+- **`true` (RSC)**: The full schema (`server + client + shared`) is validated, and server variables are read directly from `process.env`.
+- **`false` (Client/SSR)**: Only the `client + shared` schema is validated. Accessing a key from the `server` schema throws a descriptive error during SSR pre-rendering and in the browser, ensuring sensitive data is never leaked.
+
+This approach statically hardcodes the execution context at the bundler layer, which is more reliable than runtime heuristics like checking `typeof window`.

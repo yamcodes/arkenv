@@ -1,17 +1,18 @@
 ---
 title: Introduction
 icon: Album
-description: The ArkEnv plugin for Bun lets you validate environment variables at build-time and runtime with ArkEnv.
+description: The ArkEnv plugin for Bun's fullstack dev server lets you validate environment variables at build-time and runtime.
 ---
 
 > [!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
-## Features
+> [!NOTE]
+> For standard backend applications running on Bun, you likely don't need this plugin. Instead, use the agnostic [core arkenv package](/docs/arkenv) directly. This plugin is specifically designed to handle client-side environment variable inlining when using Bun as a bundler and fullstack server.
 
-- **Static Analysis**: Validates environment variables against your schema and configures Bun's `define` behavior to expose them via `process.env.VARIABLE`, leaving the actual inlining to Bun.
-- **Typesafety**: Ensures your code only accesses variables defined in your schema.
-- **Secure Defaults**: Only exposes variables prefixed with `BUN_PUBLIC_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema. You can customize this prefix by setting the `env` option in your `Bun.build()` configuration.
+The ArkEnv Bun plugin validates your environment variables against your schema when running or building your application. It is specifically designed to work seamlessly with the [Bun fullstack dev server](https://bun.sh/docs/bundler/fullstack) (`Bun.serve`) and the Bun bundler (`Bun.build`). If a variable is missing or invalid, it immediately halts execution with a detailed validation error.
+
+To keep client bundles secure, only variables prefixed with `BUN_PUBLIC_` (and `NODE_ENV` if defined in the schema) are exposed to client-side code. The plugin configures Bun's compiler to inline these variables under `process.env` with full typesafety, and you can easily customize the public prefix in your configuration if needed.
 
 ## Quickstart
 

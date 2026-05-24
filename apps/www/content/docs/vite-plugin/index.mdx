@@ -7,11 +7,9 @@ description: The ArkEnv plugin for Vite lets you validate environment variables 
 > [!IMPORTANT]
 > This plugin requires [ArkType](https://arktype.io) to be installed.
 
-## Features
+The ArkEnv Vite plugin integrates directly into Vite's build pipeline to validate your environment variables against your schema. If a variable is missing or fails validation, the plugin will halt the build or dev server immediately with a clear error message.
 
-- **Static Analysis**: Validates environment variables against your schema and configures Vite's `define` behavior to expose them via `import.meta.env.VARIABLE`, leaving the actual inlining to Vite.
-- **Typesafety**: Ensures your code only accesses variables defined in your schema.
-- **Secure Defaults**: Only exposes variables prefixed with `VITE_` to the client bundle. `NODE_ENV` is also exposed when defined in your schema.
+By matching Vite's default security model, only variables prefixed with `VITE_` (along with `NODE_ENV` if included in your schema) are exposed to your client bundle. The plugin handles the underlying compiler configuration so you get complete autocomplete and typesafety when accessing `import.meta.env` across your project.
 
 ## Quickstart
 
