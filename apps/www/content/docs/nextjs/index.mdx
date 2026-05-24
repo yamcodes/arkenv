@@ -15,81 +15,121 @@ description: The ArkEnv integration for Next.js lets you validate environment va
 
 ## Quickstart
 
-### 1. Installation
+The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project, or spins up a new one from a template.
 
-```package-install
-@arkenv/nextjs arktype
-```
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx @arkenv/cli@latest init
+    ```
+  </Tab>
 
-### 2. Configure Environment
+  <Tab value="pnpm">
+    ```bash
+    pnx @arkenv/cli@latest init
+    ```
+  </Tab>
 
-Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define and validate your schemas:
+  <Tab value="yarn">
+    ```bash
+    yarn dlx @arkenv/cli@latest init
+    ```
+  </Tab>
 
-```ts title="src/env.ts" twoslash
-import arkenv from "@arkenv/nextjs";
+  <Tab value="bun">
+    ```bash
+    bunx @arkenv/cli@latest init
+    ```
+  </Tab>
+</Tabs>
 
-export const env = arkenv({
-	server: {
-		DATABASE_URL: "string",
-	},
-	client: {
-		NEXT_PUBLIC_API_URL: "string",
-	},
-	shared: {
-		NODE_ENV: "string",
-	},
-	runtimeEnv: {
-		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-		NODE_ENV: process.env.NODE_ENV,
-	},
-});
-```
+<Accordions>
+  <Accordion title="Manual Installation">
+    <Steps>
+      <Step>
+        ### Installation
 
-### 3. Use in your code
+        ```package-install
+        @arkenv/nextjs arktype
+        ```
+      </Step>
 
-Import `env` throughout your Next.js application:
+      <Step>
+        ### Configure Environment
 
-```ts title="src/app/page.tsx" twoslash
-// @filename: env.ts
-import arkenv from "@arkenv/nextjs";
-export const env = arkenv({
-	server: { DATABASE_URL: "string" },
-	client: { NEXT_PUBLIC_API_URL: "string" },
-	runtimeEnv: {
-		NEXT_PUBLIC_API_URL: "https://api.example.com",
-	}
-});
+        Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define and validate your schemas:
 
-// @filename: page.tsx
-// ---cut---
-import { env } from "./env";
+        ```ts title="src/env.ts" twoslash
+        import arkenv from "@arkenv/nextjs";
 
-// Access is fully typesafe and autocompleted
-const apiUrl = env.NEXT_PUBLIC_API_URL;
-//      ^?
-```
+        export const env = arkenv({
+        	server: {
+        		DATABASE_URL: "string",
+        	},
+        	client: {
+        		NEXT_PUBLIC_API_URL: "string",
+        	},
+        	shared: {
+        		NODE_ENV: "string",
+        	},
+        	runtimeEnv: {
+        		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        		NODE_ENV: process.env.NODE_ENV,
+        	},
+        });
+        ```
+      </Step>
 
-If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
+      <Step>
+        ### Use in your code
 
-```ts title="src/app/client-component.tsx" twoslash
-// @filename: env.ts
-import arkenv from "@arkenv/nextjs";
-export const env = arkenv({
-	server: { DATABASE_URL: "string" },
-	client: { NEXT_PUBLIC_API_URL: "string" },
-	runtimeEnv: {
-		NEXT_PUBLIC_API_URL: "https://api.example.com",
-	}
-});
+        Import `env` throughout your Next.js application:
 
-// @filename: client-component.tsx
-// ---cut---
-import { env } from "./env";
+        ```ts title="src/app/page.tsx" twoslash
+        // @filename: env.ts
+        import arkenv from "@arkenv/nextjs";
+        export const env = arkenv({
+        	server: { DATABASE_URL: "string" },
+        	client: { NEXT_PUBLIC_API_URL: "string" },
+        	runtimeEnv: {
+        		NEXT_PUBLIC_API_URL: "https://api.example.com",
+        	}
+        });
 
-// Throws a runtime error if evaluated in a client component (during SSR or in the browser)
-const dbUrl = env.DATABASE_URL;
-//      ^?
-```
+        // @filename: page.tsx
+        // ---cut---
+        import { env } from "./env";
+
+        // Access is fully typesafe and autocompleted
+        const apiUrl = env.NEXT_PUBLIC_API_URL;
+        //      ^?
+        ```
+
+        If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
+
+        ```ts title="src/app/client-component.tsx" twoslash
+        // @filename: env.ts
+        import arkenv from "@arkenv/nextjs";
+        export const env = arkenv({
+        	server: { DATABASE_URL: "string" },
+        	client: { NEXT_PUBLIC_API_URL: "string" },
+        	runtimeEnv: {
+        		NEXT_PUBLIC_API_URL: "https://api.example.com",
+        	}
+        });
+
+        // @filename: client-component.tsx
+        // ---cut---
+        import { env } from "./env";
+
+        // Throws a runtime error if evaluated in a client component (during SSR or in the browser)
+        const dbUrl = env.DATABASE_URL;
+        //      ^?
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+</Accordions>
 
 ## How It Works
 

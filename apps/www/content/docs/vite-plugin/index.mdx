@@ -15,72 +15,114 @@ description: The ArkEnv plugin for Vite lets you validate environment variables 
 
 ## Quickstart
 
-### 1. Installation
+The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/vite-plugin` for your existing Vite project, or spins up a new one from a template.
 
-```package-install
-@arkenv/vite-plugin arkenv arktype
-```
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx @arkenv/cli@latest init
+    ```
+  </Tab>
 
-### 2. Configure Plugin
+  <Tab value="pnpm">
+    ```bash
+    pnx @arkenv/cli@latest init
+    ```
+  </Tab>
 
-Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
+  <Tab value="yarn">
+    ```bash
+    yarn dlx @arkenv/cli@latest init
+    ```
+  </Tab>
 
-```ts title="vite.config.ts" twoslash
-import arkenv from "@arkenv/vite-plugin";
-import { type } from "arkenv";
-import { defineConfig } from "vite";
+  <Tab value="bun">
+    ```bash
+    bunx @arkenv/cli@latest init
+    ```
+  </Tab>
+</Tabs>
 
-export const Env = type({
-	PORT: "number.port",
-	VITE_MY_VAR: "string"
-});
+<Accordions>
+  <Accordion title="Manual Installation">
+    <Steps>
+      <Step>
+        ### Installation
 
-export default defineConfig({
-	plugins: [arkenv(Env)]
-});
-```
+        ```package-install
+        @arkenv/vite-plugin arkenv arktype
+        ```
+      </Step>
 
-### 3. Add Typesafety
+      <Step>
+        ### Configure Plugin
 
-To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
+        Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
 
-```ts title="src/vite-env.d.ts"
-/// <reference types="vite/client" />
+        ```ts title="vite.config.ts" twoslash
+        import arkenv from "@arkenv/vite-plugin";
+        import { type } from "arkenv";
+        import { defineConfig } from "vite";
 
-type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
-	typeof import("../vite.config").Env
->;
+        export const Env = type({
+        	PORT: "number.port",
+        	VITE_MY_VAR: "string"
+        });
 
-interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+        export default defineConfig({
+        	plugins: [arkenv(Env)]
+        });
+        ```
+      </Step>
 
-interface ImportMeta {
-	readonly env: ImportMetaEnv;
-}
-```
+      <Step>
+        ### Add Typesafety
 
-> [!TIP]
-> For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
+        To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
 
-### 4. Use in your code
+        ```ts title="src/vite-env.d.ts"
+        /// <reference types="vite/client" />
 
-You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
+        type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+        	typeof import("../vite.config").Env
+        >;
 
-```tsx title="src/App.tsx" twoslash
-// @filename: vite-env.d.ts
-/// <reference types="vite/client" />
-type ImportMetaEnvAugmented = {
-	VITE_MY_VAR: string
-}
-interface ImportMetaEnv extends ImportMetaEnvAugmented {}
-interface ImportMeta {
-	readonly env: ImportMetaEnv
-}
+        interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 
-// @filename: App.tsx
-// ---cut---
-const apiUrl = import.meta.env.VITE_MY_VAR;
-//      ^?
-```
+        interface ImportMeta {
+        	readonly env: ImportMetaEnv;
+        }
+        ```
+
+        > [!TIP]
+        > For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
+      </Step>
+
+      <Step>
+        ### Use in your code
+
+        You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
+
+        ```tsx title="src/App.tsx" twoslash
+        // @filename: vite-env.d.ts
+        /// <reference types="vite/client" />
+        type ImportMetaEnvAugmented = {
+        	VITE_MY_VAR: string
+        }
+        interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+        interface ImportMeta {
+        	readonly env: ImportMetaEnv
+        }
+
+        // @filename: App.tsx
+        // ---cut---
+        const apiUrl = import.meta.env.VITE_MY_VAR;
+        //      ^?
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+</Accordions>
 
 With this setup, if any environment variable is missing or invalid, your dev server won't start and your production build will fail with an error:
 
