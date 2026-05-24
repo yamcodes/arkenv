@@ -3,11 +3,11 @@ name: pnpm-catalogs
 description: Centralized dependency version management for workspaces
 ---
 
-# pnpm Catalogs
+# pnpm catalogs
 
 Catalogs provide a centralized way to manage dependency versions across a workspace. Define versions once, use everywhere.
 
-## Basic Usage
+## Basic usage
 
 Define a catalog in `pnpm-workspace.yaml`:
 
@@ -37,7 +37,7 @@ Reference in `package.json` with `catalog:`:
 }
 ```
 
-## Named Catalogs
+## Named catalogs
 
 Create multiple catalogs for different scenarios:
 
@@ -85,7 +85,7 @@ Reference named catalogs:
 3. **Easy upgrades**: Change version once, affects entire workspace
 4. **Type-safe**: TypeScript support in pnpm-workspace.yaml
 
-## Catalog vs Overrides
+## Catalog vs overrides
 
 | Feature | Catalogs | Overrides |
 |---------|----------|-----------|
@@ -94,7 +94,7 @@ Reference named catalogs:
 | Usage | `"pkg": "catalog:"` | Applied automatically |
 | Opt-in | Explicit per package.json | Global to workspace |
 
-## Publishing with Catalogs
+## Publishing with catalogs
 
 When publishing, `catalog:` references are replaced with actual versions:
 
@@ -114,7 +114,7 @@ When publishing, `catalog:` references are replaced with actual versions:
 }
 ```
 
-## Migration from Overrides
+## Migration from overrides
 
 If you're using overrides for version consistency:
 
@@ -136,7 +136,7 @@ catalog:
 
 Then update package.json files to use `catalog:`.
 
-## Best Practices
+## Best practices
 
 1. **Use default catalog** for commonly shared dependencies
 2. **Use named catalogs** for version variants (e.g., different React versions)

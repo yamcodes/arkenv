@@ -3,11 +3,11 @@ name: pnpm-cli-commands
 description: Essential pnpm commands for package management, running scripts, and workspace operations
 ---
 
-# pnpm CLI Commands
+# pnpm CLI commands
 
 pnpm provides a comprehensive CLI for package management with commands similar to npm/yarn but with unique features.
 
-## Installation Commands
+## Installation commands
 
 ### Install all dependencies
 ```bash
@@ -63,7 +63,7 @@ pnpm update --interactive
 pnpm up -i
 ```
 
-## Script Commands
+## Script commands
 
 ### Run scripts
 ```bash
@@ -87,7 +87,7 @@ pnpm exec <command>
 pnpm exec eslint .
 ```
 
-### dlx - Run without installing
+### Dlx - run without installing
 ```bash
 # Like npx but for pnpm
 pnpm dlx <pkg>
@@ -97,7 +97,7 @@ pnpm dlx create-vite my-app
 pnpm dlx degit user/repo my-project
 ```
 
-## Workspace Commands
+## Workspace commands
 
 ### Run in all packages
 ```bash
@@ -133,7 +133,7 @@ pnpm --filter "@scope/core..." test
 pnpm --filter "...[origin/main]" build
 ```
 
-## Other Useful Commands
+## Other useful commands
 
 ### Link packages
 ```bash
@@ -200,7 +200,7 @@ pnpm pack
 pnpm publish
 ```
 
-## Useful Flags
+## Useful flags
 
 ```bash
 # Ignore scripts

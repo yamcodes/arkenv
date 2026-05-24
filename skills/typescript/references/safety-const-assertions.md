@@ -1,11 +1,11 @@
 ---
-title: Use const Assertions for Literal Types
+title: Use const assertions for literal types
 impact: MEDIUM-HIGH
 impactDescription: preserves literal types, enables better inference
 tags: safety, const-assertion, literals, inference, readonly
 ---
 
-## Use const Assertions for Literal Types
+## Use const assertions for literal types
 
 The `as const` assertion preserves literal types and makes arrays/objects readonly. This enables precise type inference and prevents accidental mutations.
 

@@ -1,11 +1,11 @@
 ---
-title: Add Explicit Return Types to Exported Functions
+title: Add explicit return types to exported functions
 impact: CRITICAL
 impactDescription: 30-50% faster declaration emit
 tags: type, return-types, exports, inference, performance
 ---
 
-## Add Explicit Return Types to Exported Functions
+## Add explicit return types to exported functions
 
 Explicit return types accelerate compilation by eliminating inference overhead. Named types are more compact than inferred anonymous types, speeding up declaration file generation and consumption.
 

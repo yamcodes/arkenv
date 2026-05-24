@@ -12,15 +12,15 @@ The example demonstrates:
 - Full TypeScript type inference across all validators
 - Practical use cases for each validator type
 
-## Key Features
+## Key features
 
-### ArkType Validators
+### ArkType validators
 
 - **Concise syntax**: `"string.host"`, `"number.port"`, `"boolean = false"`
 - **TypeScript literals**: `"'development' | 'production' | 'test'"`
 - **Built-in validators**: host, port, url, email, etc.
 
-### Zod Validators
+### Zod validators
 
 - **Complex transformations**: `.transform()` to parse comma-separated values
 - **Refinements**: `.min()`, `.max()`, custom validation logic
@@ -46,7 +46,7 @@ Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [
    ```
    :white_check_mark: You will see the environment variables printed in the console.
 
-## Environment Variables
+## Environment variables
 
 Create a `.env` file based on `.env.example`:
 
@@ -70,7 +70,7 @@ Optional variables with defaults:
 - `TIMEOUT_MS` - Request timeout in milliseconds (default: 5000)
 - `FEATURE_FLAGS` - List of enabled features (default: \[])
 
-## When to Use Each Validator
+## When to use each validator
 
 ### Use ArkType when:
 

@@ -1,11 +1,11 @@
 ---
-title: Use Branded Types for Type-Safe IDs
+title: Use branded types for type-safe ids
 impact: LOW
 impactDescription: prevents mixing incompatible ID types
 tags: advanced, branded-types, nominal-types, type-safety, ids
 ---
 
-## Use Branded Types for Type-Safe IDs
+## Use branded types for type-safe ids
 
 TypeScript uses structural typing, so `string` types are interchangeable even when they represent different concepts. Branded types add a unique marker to prevent mixing incompatible values.
 

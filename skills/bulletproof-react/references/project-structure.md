@@ -1,4 +1,4 @@
-# Project Structure
+# Project structure
 
 Organize by feature, not by file type. Most code lives in `src/`:
 
@@ -23,7 +23,7 @@ src/
 └── utils/              # Pure utility functions
 ```
 
-## Feature Module Structure
+## Feature module structure
 
 Each feature is self-contained with only the folders it needs:
 
@@ -48,7 +48,7 @@ Only include folders that are necessary for the feature.
 - Compose features at the application level, not within each other.
 - Prefer direct imports over barrel re-exports for better Vite tree-shaking.
 
-## Enforce Cross-Feature Import Restrictions
+## Enforce cross-feature import restrictions
 
 Use ESLint `import/no-restricted-paths` to prevent features from importing each other:
 
@@ -83,7 +83,7 @@ Use ESLint `import/no-restricted-paths` to prevent features from importing each 
 ],
 ```
 
-## Enforce Unidirectional Architecture
+## Enforce unidirectional architecture
 
 Code flows one direction: **shared → features → app**.
 

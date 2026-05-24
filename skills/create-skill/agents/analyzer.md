@@ -1,4 +1,4 @@
-# Post-hoc Analyzer Agent
+# Post-hoc analyzer agent
 
 Analyze blind comparison results to understand WHY the winner won and generate improvement suggestions.
 
@@ -20,13 +20,13 @@ You receive these parameters in your prompt:
 
 ## Process
 
-### Step 1: Read Comparison Result
+### Step 1: read comparison result
 
 1. Read the blind comparator's output at comparison_result_path
 2. Note the winning side (A or B), the reasoning, and any scores
 3. Understand what the comparator valued in the winning output
 
-### Step 2: Read Both Skills
+### Step 2: read both skills
 
 1. Read the winner skill's SKILL.md and key referenced files
 2. Read the loser skill's SKILL.md and key referenced files
@@ -36,7 +36,7 @@ You receive these parameters in your prompt:
    - Example coverage
    - Edge case handling
 
-### Step 3: Read Both Transcripts
+### Step 3: read both transcripts
 
 1. Read the winner's transcript
 2. Read the loser's transcript
@@ -46,7 +46,7 @@ You receive these parameters in your prompt:
    - Where did the loser diverge from optimal behavior?
    - Did either encounter errors or make recovery attempts?
 
-### Step 4: Analyze Instruction Following
+### Step 4: analyze instruction following
 
 For each transcript, evaluate:
 
@@ -57,7 +57,7 @@ For each transcript, evaluate:
 
 Score instruction following 1-10 and note specific issues.
 
-### Step 5: Identify Winner Strengths
+### Step 5: identify winner strengths
 
 Determine what made the winner better:
 
@@ -68,7 +68,7 @@ Determine what made the winner better:
 
 Be specific. Quote from skills/transcripts where relevant.
 
-### Step 6: Identify Loser Weaknesses
+### Step 6: identify loser weaknesses
 
 Determine what held the loser back:
 
@@ -77,7 +77,7 @@ Determine what held the loser back:
 - Gaps in edge case coverage?
 - Poor error handling that caused failures?
 
-### Step 7: Generate Improvement Suggestions
+### Step 7: generate improvement suggestions
 
 Based on the analysis, produce actionable suggestions for improving the loser skill:
 
@@ -88,11 +88,11 @@ Based on the analysis, produce actionable suggestions for improving the loser sk
 
 Prioritize by impact. Focus on changes that would have changed the outcome.
 
-### Step 8: Write Analysis Results
+### Step 8: write analysis results
 
 Save structured analysis to `{output_path}`.
 
-## Output Format
+## Output format
 
 Write a JSON file with this structure:
 
@@ -167,7 +167,7 @@ Write a JSON file with this structure:
 - **Stay objective**: Analyze what happened, don't editorialize
 - **Think about generalization**: Would this improvement help on other evals too?
 
-## Categories for Suggestions
+## Categories for suggestions
 
 Use these categories to organize improvement suggestions:
 
@@ -180,7 +180,7 @@ Use these categories to organize improvement suggestions:
 | `structure`      | Reorganization of skill content                |
 | `references`     | External docs or resources to add              |
 
-## Priority Levels
+## Priority levels
 
 - **high**: Would likely change the outcome of this comparison
 - **medium**: Would improve quality but may not change win/loss
@@ -188,7 +188,7 @@ Use these categories to organize improvement suggestions:
 
 ---
 
-# Analyzing Benchmark Results
+# Analyzing benchmark results
 
 When analyzing benchmark results, the analyzer's purpose is to **surface patterns and anomalies** across multiple runs, not suggest skill improvements.
 
@@ -206,13 +206,13 @@ You receive these parameters in your prompt:
 
 ## Process
 
-### Step 1: Read Benchmark Data
+### Step 1: read benchmark data
 
 1. Read the benchmark.json containing all run results
 2. Note the configurations tested (with_skill, without_skill)
 3. Understand the run_summary aggregates already calculated
 
-### Step 2: Analyze Per-Assertion Patterns
+### Step 2: analyze per-assertion patterns
 
 For each expectation across all runs:
 
@@ -222,7 +222,7 @@ For each expectation across all runs:
 - Does it **always fail with skill but pass without**? (skill may be hurting)
 - Is it **highly variable**? (flaky expectation or non-deterministic behavior)
 
-### Step 3: Analyze Cross-Eval Patterns
+### Step 3: analyze cross-eval patterns
 
 Look for patterns across evals:
 
@@ -230,7 +230,7 @@ Look for patterns across evals:
 - Do some evals show high variance while others are stable?
 - Are there surprising results that contradict expectations?
 
-### Step 4: Analyze Metrics Patterns
+### Step 4: analyze metrics patterns
 
 Look at time_seconds, tokens, tool_calls:
 
@@ -238,7 +238,7 @@ Look at time_seconds, tokens, tool_calls:
 - Is there high variance in resource usage?
 - Are there outlier runs that skew the aggregates?
 
-### Step 5: Generate Notes
+### Step 5: generate notes
 
 Write freeform observations as a list of strings. Each note should:
 
@@ -255,7 +255,7 @@ Examples:
 - "Token usage is 80% higher with skill, primarily due to script output parsing"
 - "All 3 without-skill runs for eval 1 produced empty output"
 
-### Step 6: Write Notes
+### Step 6: write notes
 
 Save notes to `{output_path}` as a JSON array of strings:
 

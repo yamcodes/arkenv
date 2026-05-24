@@ -1,8 +1,8 @@
-# Playwright Tests for www
+# Playwright tests for www
 
 This package contains end-to-end tests for the www application using Playwright.
 
-## Environment Requirements
+## Environment requirements
 
 Before running tests, ensure you have:
 
@@ -10,9 +10,9 @@ Before running tests, ensure you have:
 - **Operating System**: macOS, Linux, or Windows
 - **Browsers**: Playwright browsers installed (see installation below)
 
-## Getting Started
+## Getting started
 
-### Install Dependencies
+### Install dependencies
 
 First, install project dependencies:
 
@@ -26,7 +26,7 @@ Then install the Playwright browsers using the workspace-pinned version:
 pnpm exec playwright install
 ```
 
-### Running Tests
+### Running tests
 
 ```bash
 # Run all tests
@@ -42,7 +42,7 @@ pnpm run test:e2e:headed
 pnpm run test:e2e:debug
 ```
 
-### Using Turbo
+### Using turbo
 
 You can also run tests using Turbo from the root:
 
@@ -51,7 +51,7 @@ You can also run tests using Turbo from the root:
 turbo run test:e2e --filter=@repo/playwright-www
 ```
 
-## Test Structure
+## Test structure
 
 - `tests/` - Contains all test files
 - `tests/test-results/` - Test artifacts (screenshots, traces, reports)
@@ -66,7 +66,7 @@ The tests are configured to:
 - Take screenshots for visual verification
 - Retry failed tests on CI
 
-### Build Requirements
+### Build requirements
 
 **Important**: The `arkenv` package must be built before running tests. This is because:
 
@@ -78,18 +78,18 @@ The tests are configured to:
 
 **Locally**: Run `pnpm run build` (at least once) from the root, or `pnpm run build --filter=www...`
 
-### Web Server Configuration
+### Web server configuration
 
 The test suite uses **different server modes** for CI vs local development:
 
-#### CI (Production Server)
+#### Ci (production server)
 
 - **Mode**: Production build (`next start`)
 - **Rationale**: Faster startup, more stable, matches production environment
 - **Timeout**: 2 minutes (120s)
 - **Build Step**: `turbo run build --filter=www...` (builds www + dependencies)
 
-#### Local (Development Server)
+#### Local (development server)
 
 - **Mode**: Development server (`next dev`)
 - **Rationale**: Hot reload, better debugging, faster iteration
@@ -131,7 +131,7 @@ This error occurs when the web server takes too long to start.
 4. **Clear Next.js cache**: `pnpm --filter=www run clean`
 5. **Verify production server starts**: `pnpm --filter=www run start` (should start in \< 30s)
 
-### Reporter and Artifacts
+### Reporter and artifacts
 
 The test configuration uses different reporters for CI vs local:
 

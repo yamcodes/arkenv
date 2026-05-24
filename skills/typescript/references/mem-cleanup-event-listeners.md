@@ -1,11 +1,11 @@
 ---
-title: Clean Up Event Listeners
+title: Clean up event listeners
 impact: MEDIUM
 impactDescription: prevents unbounded memory growth
 tags: mem, event-listeners, cleanup, memory-leaks, lifecycle
 ---
 
-## Clean Up Event Listeners
+## Clean up event listeners
 
 Event listeners hold references to their callback functions and bound objects. Failing to remove them when components unmount causes memory to grow with each mount/unmount cycle.
 

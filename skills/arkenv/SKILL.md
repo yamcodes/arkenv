@@ -9,26 +9,26 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 
 ## Capabilities
 
-### Core Usage
+### Core usage
 
 - Define typesafe schemas using `ArkType` notation or any `Standard Schema` validator.
 - Implement complex types, arrays, and unions.
 - Configure automatic coercion and default values.
 - Follow best practices for schema organization.
 
-### Framework Integration
+### Framework integration
 
 - **Vite**: Build-time validation and `import.meta.env` type augmentation via `@arkenv/vite-plugin`.
 - **Bun**: Build-time/Runtime validation and `process.env` type augmentation via `@arkenv/bun-plugin`.
 - **Node.js**: Standard `process.env` validation and coercion.
 
-### CLI (Setup & DevOps)
+### CLI (setup & DevOps)
 
 - Initialize ArkEnv in new or existing projects using `pnpm dlx @arkenv/cli@latest init`.
 - Scaffold schema files and detect framework-specific configurations (`Vite`, `Bun`, etc.).
 - Automatically configure `tsconfig.json` and environment types for optimal typesafety.
 
-### Agent Setup (Machine-Readable)
+### Agent setup (machine-readable)
 
 AI agents SHOULD always use the CLI for project initialization to ensure consistency and reliability. Use the `--agent` flag for a fully automated, machine-readable experience.
 
@@ -39,7 +39,7 @@ AI agents SHOULD always use the CLI for project initialization to ensure consist
   - **`--json`**: Emits a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).
 - **Success Verification**: Parse the JSON output to verify `status: "success"` and retrieve details like the scaffolded file path.
 
-## Operational Logic
+## Operational logic
 
 1. **Detection**:
    - Look for `env.ts` or `arkenv` imports to understand existing schema.
@@ -49,7 +49,7 @@ AI agents SHOULD always use the CLI for project initialization to ensure consist
    - Prefer using the CLI for initialization: `pnpm dlx @arkenv/cli@latest init`.
    - If the CLI cannot be used or fails, fall back to manual configuration.
 
-## Setup Workflow
+## Setup workflow
 
 When setting up ArkEnv, follow these steps:
 
@@ -78,9 +78,9 @@ When setting up ArkEnv, follow these steps:
 5. **Usage Update**: Scan the codebase for existing environment variable usage (`process.env` or `import.meta.env`) and ensure they are now typesafe via the augmentations.
 6. **Validation**: Run `pnpm check` (or equivalent) or a build to confirm everything is typesafe and valid.
 
-## Core Concepts
+## Core concepts
 
-### Defining a Schema
+### Defining a schema
 
 The best practice is to export a schema definition using `type`.
 
@@ -94,7 +94,7 @@ export const Env = type({
 });
 ```
 
-### Usage: Node.js (Standard)
+### Usage: Node.js (standard)
 
 In Node.js, you validate the environment at runtime and export the result.
 
@@ -108,7 +108,7 @@ export const env = arkenv(Env);
 const port = env.PORT; // typed as number
 ```
 
-### Usage: Vite (Frontend)
+### Usage: Vite (frontend)
 
 Vite requires build-time injection. Use the plugin in `vite.config.ts` and augment `ImportMetaEnv`.
 
@@ -146,7 +146,7 @@ declare global {
 }
 ```
 
-## CLI Commands
+## CLI commands
 
 ### `init`
 
@@ -156,7 +156,7 @@ Set up ArkEnv in your project. It detects your framework and configures the appr
 pnpm dlx @arkenv/cli@latest init
 ```
 
-## Best Practices
+## Best practices
 
 1. **Prefer Native Primitives**: To leverage the full power of ArkEnv plugins, you should access environment variables through the runtime's native primitives.
    - **Vite**: Use `import.meta.env`.

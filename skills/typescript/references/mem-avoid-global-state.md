@@ -1,11 +1,11 @@
 ---
-title: Avoid Global State Accumulation
+title: Avoid global state accumulation
 impact: MEDIUM
 impactDescription: prevents unbounded memory growth
 tags: mem, global-state, singletons, memory-leaks, caching
 ---
 
-## Avoid Global State Accumulation
+## Avoid global state accumulation
 
 Global variables and module-level state persist for the application's lifetime. Unbounded caches or collections at module scope grow indefinitely, causing memory exhaustion.
 

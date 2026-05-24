@@ -1,12 +1,12 @@
-# Components and Styling
+# Components and styling
 
-## Component Best Practices
+## Component best practices
 
-### Colocate Things Close to Usage
+### Colocate things close to usage
 
 Keep components, functions, styles, and state as close as possible to where they are used. This improves readability and reduces unnecessary re-renders on state updates.
 
-### Avoid Nested Rendering Functions
+### Avoid nested rendering functions
 
 Extract inline rendering functions into separate components:
 
@@ -33,11 +33,11 @@ function Component() {
 }
 ```
 
-### Limit Props
+### Limit props
 
 If a component accepts too many props, split it into multiple components or use composition via `children` or slots.
 
-### Wrapping 3rd-party Components
+### Wrapping 3rd-party components
 
 Wrap third-party components to adapt them to your application's API. This isolates the dependency so swapping the underlying library only requires changing one file:
 
@@ -53,11 +53,11 @@ export function Link({ variant = "default", ...props }: LinkProps) {
 }
 ```
 
-### Component Library
+### Component library
 
 Build abstractions around shared components for consistency and maintainability. Identify repetitions before creating components to avoid wrong abstractions.
 
-## Component Hierarchy
+## Component hierarchy
 
 ```text
 Page Components          → route-level, compose features, handle layout
@@ -65,13 +65,13 @@ Page Components          → route-level, compose features, handle layout
         └── UI Components      → shared primitives, no business logic
 ```
 
-### UI Components
+### Ui components
 
 - **Stateless** where possible — accept data and callbacks via props.
 - **Composable** — use compound component patterns for complex UI.
 - **Polymorphic** when needed — use `as` or `asChild` for flexible rendering.
 
-### Feature Components
+### Feature components
 
 Feature components can:
 
@@ -80,9 +80,9 @@ Feature components can:
 - Compose UI components with business logic.
 - Handle feature-specific error and loading states.
 
-## Component Libraries
+## Component libraries
 
-### Fully Featured (pre-styled)
+### Fully featured (pre-styled)
 
 - [Chakra UI](https://chakra-ui.com/) — great DX, fast prototyping, accessible out of the box
 - [AntD](https://ant.design/) — extensive components, best for admin dashboards
@@ -99,14 +99,14 @@ Best when implementing a custom design system:
 - [Ark UI](https://ark-ui.com/)
 - [Reakit](https://reakit.io/)
 
-### Code-Based (copy-paste, styleable)
+### Code-based (copy-paste, styleable)
 
 Pre-built components provided as source code, not packages:
 
 - [ShadCN UI](https://ui.shadcn.com/)
 - [Park UI](https://park-ui.com/)
 
-## Styling Solutions
+## Styling solutions
 
 - [Tailwind CSS](https://tailwindcss.com/) — utility-first, zero runtime
 - [vanilla-extract](https://github.com/seek-oss/vanilla-extract) — type-safe, zero runtime

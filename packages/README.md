@@ -14,7 +14,7 @@ The `packages/` directory is the home for code modules that are shared across th
 - **CLIs & Libraries**: If a codebase is published to npm for end-users to use—even if it is an executable/CLI like `@arkenv/cli` and not an importable library—it belongs here in `packages/`.
 - **Applications & Tests (`apps/`)**: Standalone, deployed apps like documentation sites, playgrounds, or testing suites (like Playwright E2E tests) that are not published to npm go in `apps/`.
 
-## Package Directory
+## Package directory
 
 | Directory                      | Package Name          | Type    | Description                                                                   |
 | :----------------------------- | :-------------------- | :------ | :---------------------------------------------------------------------------- |
@@ -24,7 +24,7 @@ The `packages/` directory is the home for code modules that are shared across th
 | [`bun-plugin`](./bun-plugin)   | `@arkenv/bun-plugin`  | Public  | Bun integration for static env variable inlining.                             |
 | [`internal/`](./internal)      | `@repo/*`             | Private | Shared internal modules (types, scopes, keywords) used for building.          |
 
-## Versioning & Releases
+## Versioning & releases
 
 Packages in this directory (unless marked `"private": true` like `@repo/*`) are published to the npm registry:
 

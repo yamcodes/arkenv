@@ -1,4 +1,4 @@
-# Bun Plugin Configuration Patterns
+# Bun plugin configuration patterns
 
 To support build-time environment variable validation in Bun environments. The Bun plugin supports two primary configuration patterns:
 

@@ -14,7 +14,7 @@ The `apps/` directory is the home for projects that are not published as package
 - **Applications & Tests (`apps/`)**: Projects that are deployable targets (like the docs website), testing suites (like Playwright E2E tests), or local integration testing workspaces (playgrounds) that do not get published to npm.
 - **NPM Packages (`packages/`)**: Code libraries, plugins, or CLI executables (like `@arkenv/cli`) that are published to npm for end-users.
 
-## Directory Structure
+## Directory structure
 
 | Directory                            | Type           | Description                                                     |
 | :----------------------------------- | :------------- | :-------------------------------------------------------------- |
@@ -22,7 +22,7 @@ The `apps/` directory is the home for projects that are not published as package
 | [`playwright-www`](./playwright-www) | Test Suite     | Playwright end-to-end tests for the `www` application.          |
 | [`playgrounds/`](./playgrounds)      | Sub-workspaces | Local test playgrounds for Node.js, Bun, Vite, SolidStart, etc. |
 
-## Versioning & Releases
+## Versioning & releases
 
 All applications and playgrounds in this directory are private (`"private": true` in `package.json`):
 

@@ -1,11 +1,11 @@
 ---
-title: Use Promise.all for Independent Operations
+title: Use Promise.all for independent operations
 impact: HIGH
 impactDescription: 2-10× improvement in I/O-bound code
 tags: async, promises, parallel, waterfalls, performance
 ---
 
-## Use Promise.all for Independent Operations
+## Use Promise.all for independent operations
 
 Sequential `await` statements create request waterfalls—each operation waits for the previous one to complete. Use `Promise.all()` to execute independent async operations concurrently.
 

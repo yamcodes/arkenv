@@ -1,11 +1,11 @@
 ---
-title: Control @types Package Inclusion
+title: Control @types package inclusion
 impact: HIGH
 impactDescription: prevents type conflicts and reduces memory usage
 tags: module, types, tsconfig, declaration-files, performance
 ---
 
-## Control @types Package Inclusion
+## Control @types package inclusion
 
 By default, TypeScript loads all `@types/*` packages from `node_modules`. This causes conflicts between incompatible type versions and wastes memory loading unused declarations.
 

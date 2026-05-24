@@ -9,20 +9,20 @@ metadata:
 compatibility: "Claude Code with Node.js >=20, pnpm, TypeScript 5.5+"
 ---
 
-# Changeset & Release Manager
+# Changeset & release manager
 
 ## Overview
 
 Automate the creation of changesets following project conventions, ensuring proper version bumps and well-documented release notes.
 
-## When to Use
+## When to use
 
 - After completing a feature or fix
 - Before creating a PR
 - When preparing a release
 - To document breaking changes
 
-## What is a Changeset?
+## What is a changeset?
 
 A changeset is a markdown file in the `.changeset/` directory that describes:
 
@@ -30,7 +30,7 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 2. What type of version bump (patch/minor/major)
 3. A description of the change
 
-## Changeset Types
+## Changeset types
 
 | Type    | When to Use                                | v0 Version Change (Current) | v1+ Version Change |
 | ------- | ------------------------------------------ | --------------------------- | ------------------ |
@@ -38,7 +38,7 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 | `minor` | New features, **Breaking changes** (in v0) | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
 | `major` | **Avoid in v0** (unless going to v1.0.0)   | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
 
-## Decision Guide (v0 Rules)
+## Decision guide (v0 rules)
 
 Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
@@ -65,17 +65,17 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
 - Explicitly transitioning the project from v0.x.y to v1.0.0. **Do not use major for breaking changes in v0.**
 
-## Creating a Changeset
+## Creating a changeset
 
-### Title Convention
+### Title convention
 
 **IMPORTANT**: All changeset descriptions MUST start with a `####` header.
 
-### Usage Examples
+### Usage examples
 
 Always include usage examples or code snippets when adding new features or fixing bugs that affect how the library is used.
 
-### Interactive Method
+### Interactive method
 
 ```bash
 pnpm changeset
@@ -87,7 +87,7 @@ Follow the prompts:
 2. Choose bump type for each package
 3. Write a summary of changes (remember to start with `####`)
 
-### Manual Method
+### Manual method
 
 Create a file in `.changeset/` with a random name:
 
@@ -113,7 +113,7 @@ export const env = createEnv({
 ```
 ````
 
-### File Format
+### File format
 
 ```markdown
 ---
@@ -132,9 +132,9 @@ Include:
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
 ```
 
-## Release Workflow
+## Release workflow
 
-### 1. Create Changeset
+### 1. Create changeset
 
 ```bash
 pnpm changeset
@@ -142,22 +142,22 @@ git add .changeset/
 git commit -m "chore: add changeset for feature"
 ```
 
-### 2. PR and Review
+### 2. Pr and review
 
 - Changeset is part of the PR
 - Reviewers can suggest bump type changes
 
-### 3. Merge to Main
+### 3. Merge to main
 
 - Changesets action creates "Version Packages" PR
 - This PR updates version and CHANGELOG
 
-### 4. Merge Version PR
+### 4. Merge version pr
 
 - Triggers npm publish
 - Creates GitHub release
 
-## Checking Status
+## Checking status
 
 ```bash
 # See what changesets exist
@@ -167,7 +167,7 @@ npx changeset status
 npx changeset version --dry-run
 ```
 
-## Common Mistakes
+## Common mistakes
 
 | Mistake               | Issue               | Fix                                              |
 | --------------------- | ------------------- | ------------------------------------------------ |
@@ -178,7 +178,7 @@ npx changeset version --dry-run
 | Meaningless changes   | Cluttered CHANGELOG | Only document changes with consumer value        |
 | Including issue links | Redundant data      | Remove # references; PR links them automatically |
 
-## Common Scenarios
+## Common scenarios
 
 For detailed examples of common scenarios including:
 
@@ -195,7 +195,7 @@ See **[Scenarios & Examples](references/scenarios.md)**
 - `{baseDir}/CHANGELOG.md` - Generated changelog
 - Changesets docs: [https://github.com/changesets/changesets](https://github.com/changesets/changesets)
 
-## Related Skills
+## Related skills
 
 - **CI/CD automation**: See `managing-github-ci` for release workflow integration
 - **Pre-commit validation**: See `validating-pre-commit` for quality gates before committing

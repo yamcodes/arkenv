@@ -1,8 +1,8 @@
-# @arkenv/cli
+# @ArkEnv/CLI
 
 ## 0.2.4
 
-### Patch Changes
+### Patch changes
 
 - #### Fix empty sections in Next.js scaffolded schema _[`7756fcf`](https://github.com/yamcodes/arkenv/commit/7756fcf2bb5012c65d61783d6dda96976fbffe11) [@yamcodes](https://github.com/yamcodes)_
 
@@ -16,7 +16,7 @@
 
 ## 0.2.3
 
-### Patch Changes
+### Patch changes
 
 - #### Add Next.js support to ArkEnv CLI _[`97f4c17`](https://github.com/yamcodes/arkenv/commit/97f4c17088cfe8e5554ebc232d3faedb71492049) [@yamcodes](https://github.com/yamcodes)_
 
@@ -28,7 +28,7 @@
 
 ## 0.2.2
 
-### Patch Changes
+### Patch changes
 
 - #### Allow scaffolding into non-empty directory when `--force` is used _[`#1061`](https://github.com/yamcodes/arkenv/pull/1061) [`3a08754`](https://github.com/yamcodes/arkenv/commit/3a08754d39dd36a5e1715bd7ffcc6135e91371ef) [@yamcodes](https://github.com/yamcodes)_
 
@@ -44,7 +44,7 @@
 
 ## 0.2.1
 
-### Patch Changes
+### Patch changes
 
 - #### Fix --help table alignment _[`#1052`](https://github.com/yamcodes/arkenv/pull/1052) [`cf7bd02`](https://github.com/yamcodes/arkenv/commit/cf7bd022ab5477cf5bfbb2132b4d09fac703b9cf) [@yamcodes](https://github.com/yamcodes)_
 - #### Support POSIX-style short-flag bundling in CLI parser _[`#1047`](https://github.com/yamcodes/arkenv/pull/1047) [`b2e4865`](https://github.com/yamcodes/arkenv/commit/b2e4865dfa5cd84370781899d7f0862dbff544d5) [@yamcodes](https://github.com/yamcodes)_
@@ -57,7 +57,7 @@
 
 ## 0.2.0
 
-### Minor Changes
+### Minor changes
 
 - #### Replace `--name`/`-n` flag with `[project-name]` positional argument on `init` command _[`#1041`](https://github.com/yamcodes/arkenv/pull/1041) [`3c1c462`](https://github.com/yamcodes/arkenv/commit/3c1c462b3ac763dbe405a507fee71ef01a5a1e1c) [@yamcodes](https://github.com/yamcodes)_
 
@@ -67,7 +67,7 @@
 
   **BREAKING CHANGE**: The `--name` / `-n` flags are no longer supported and will result in a parsing error. Use the positional `[project-name]` argument instead.
 
-### Patch Changes
+### Patch changes
 
 - #### Fix working directory resolution when executing via monorepo scripts _[`169d9bf`](https://github.com/yamcodes/arkenv/commit/169d9bf3028a4ec50a8938742f635bae63286a3e) [@yamcodes](https://github.com/yamcodes)_
 
@@ -118,7 +118,7 @@
 
 ## 0.1.0
 
-### Minor Changes
+### Minor changes
 
 - #### Enforce technical requirements during `arkenv init` _[`#1028`](https://github.com/yamcodes/arkenv/pull/1028) [`77e7235`](https://github.com/yamcodes/arkenv/commit/77e7235f082d3a8006694eb7a4c2ad4535427655) [@yamcodes](https://github.com/yamcodes)_
 
@@ -134,7 +134,7 @@
 
   **Migration**: Ensure your environment and configuration meet these requirements before running `arkenv init`. If you need to bypass these checks, or force scaffolding in a non-empty directory, use the `--force` (or `-f`) flag.
 
-### Patch Changes
+### Patch changes
 
 - #### Fix pluralization and 0-case in environment variable detection messages _[`1c4f566`](https://github.com/yamcodes/arkenv/commit/1c4f566d4812c4eaaef03f6cb3ec2598bb39d372) [@yamcodes](https://github.com/yamcodes)_
 
@@ -163,7 +163,7 @@
 
 ## 0.0.10
 
-### Patch Changes
+### Patch changes
 
 - #### Add "(Recommended)" label to various prompts for consistency _[`da77efb`](https://github.com/yamcodes/arkenv/commit/da77efb0ff22a998848f94f357cb5e3ced325b98) [@yamcodes](https://github.com/yamcodes)_
 - #### Fix init wizard for Ctrl+C _[`#1024`](https://github.com/yamcodes/arkenv/pull/1024) [`f829e54`](https://github.com/yamcodes/arkenv/commit/f829e543c7e9811b116211c0208a2bd99ab0c840) [@yamcodes](https://github.com/yamcodes)_
@@ -172,7 +172,7 @@
 
 ## 0.0.9
 
-### Patch Changes
+### Patch changes
 
 - #### Refined setup experience in `arkenv init` _[`#1016`](https://github.com/yamcodes/arkenv/pull/1016) [`d536ed7`](https://github.com/yamcodes/arkenv/commit/d536ed7f481f5b81df75329e2eee46c3f9ce1b91) [@yamcodes](https://github.com/yamcodes)_
 
@@ -200,7 +200,7 @@
 
 ## 0.0.8
 
-### Patch Changes
+### Patch changes
 
 - #### Fix JSON output routing and improve CLI reliability _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
 
@@ -235,7 +235,7 @@
 
 ## 0.0.7
 
-### Patch Changes
+### Patch changes
 
 - #### Prevent duplicate ArkEnv type injections in `env.d.ts` _[`#987`](https://github.com/yamcodes/arkenv/pull/987) [`6403a08`](https://github.com/yamcodes/arkenv/commit/6403a080178f1ccd58519e65ed4e6f69b9af0aff) [@yamcodes](https://github.com/yamcodes)_
 
@@ -248,7 +248,7 @@
 
 ## 0.0.6
 
-### Patch Changes
+### Patch changes
 
 - #### Generate `env.d.ts` file for plugins _[`#969`](https://github.com/yamcodes/arkenv/pull/969) [`93389bd`](https://github.com/yamcodes/arkenv/commit/93389bd185e47c1bc62383f666e14afd244128a8) [@yamcodes](https://github.com/yamcodes)_
 
@@ -264,7 +264,7 @@
 
 ## 0.0.5
 
-### Patch Changes
+### Patch changes
 
 - #### Add agent skill support _[`#945`](https://github.com/yamcodes/arkenv/pull/945) [`63d6237`](https://github.com/yamcodes/arkenv/commit/63d6237d5d928e965aca64e473e7940eedc019cf) [@yamcodes](https://github.com/yamcodes)_
 
@@ -318,14 +318,14 @@
 
 ## 0.0.4
 
-### Patch Changes
+### Patch changes
 
 - #### Add ArkEnv Agent Skill as recommended next step _[`#944`](https://github.com/yamcodes/arkenv/pull/944) [`718fb4b`](https://github.com/yamcodes/arkenv/commit/718fb4bdfbefca9cbf4da32abf252642f5f19377) [@yamcodes](https://github.com/yamcodes)_
 - #### Adapt CLI templates for framework plugins (Vite/Bun) _[`#943`](https://github.com/yamcodes/arkenv/pull/943) [`eba2f83`](https://github.com/yamcodes/arkenv/commit/eba2f83090bec585961da834473af2647837d5e1) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.3
 
-### Patch Changes
+### Patch changes
 
 - #### Improve CLI UI and fix installation output _[`#904`](https://github.com/yamcodes/arkenv/pull/904) [`ef17a38`](https://github.com/yamcodes/arkenv/commit/ef17a38983aac4a167883f6855e22fecfc797ee2) [@yamcodes](https://github.com/yamcodes)_
 
@@ -343,7 +343,7 @@
 
 ## 0.0.2
 
-### Patch Changes
+### Patch changes
 
 - #### Ctrl+C now quits the CLI _[`0781031`](https://github.com/yamcodes/arkenv/commit/07810318a75f74d9c57b90f665ef1e5b2117b5fc) [@yamcodes](https://github.com/yamcodes)_
 - #### Detect existing setups _[`0781031`](https://github.com/yamcodes/arkenv/commit/07810318a75f74d9c57b90f665ef1e5b2117b5fc) [@yamcodes](https://github.com/yamcodes)_
@@ -352,7 +352,7 @@
 
 ## 0.0.1
 
-### Patch Changes
+### Patch changes
 
 - #### ArkEnv CLI _[`#897`](https://github.com/yamcodes/arkenv/pull/897) [`bd77362`](https://github.com/yamcodes/arkenv/commit/bd773620ed4b3391deb311e9efd2a5284cb30b4a) [@yamcodes](https://github.com/yamcodes)_
 

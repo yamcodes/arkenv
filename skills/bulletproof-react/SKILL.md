@@ -12,7 +12,7 @@ metadata:
 
 Architecture patterns for building scalable, maintainable React applications. Based on [bulletproof-react](https://github.com/alan2207/bulletproof-react).
 
-## Core References
+## Core references
 
 | Topic                | Description                                                                     | Reference                                                      |
 | -------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------- |
@@ -26,7 +26,7 @@ Architecture patterns for building scalable, maintainable React applications. Ba
 | Security             | Authentication, token storage, XSS prevention, RBAC/PBAC authorization          | [security](references/security.md)                             |
 | Performance          | Code splitting, data prefetching, state optimization, children pattern          | [performance](references/performance.md)                       |
 
-## Project Structure
+## Project structure
 
 Organize by feature, not by file type:
 
@@ -45,7 +45,7 @@ src/
 └── utils/              # Pure utility functions
 ```
 
-### Feature Modules
+### Feature modules
 
 ```text
 features/users/
@@ -63,7 +63,7 @@ features/users/
 - Promote to shared directories only when reused by 2+ features.
 - Prefer direct imports over barrel re-exports for Vite tree-shaking.
 
-## Component Hierarchy
+## Component hierarchy
 
 ```text
 Page Components          → route-level, compose features, handle layout
@@ -71,7 +71,7 @@ Page Components          → route-level, compose features, handle layout
         └── UI Components      → shared primitives, no business logic
 ```
 
-## API Layer Pattern
+## API layer pattern
 
 ```typescript
 // Pure API function
@@ -88,7 +88,7 @@ function useUsers(params?: GetUsersParams) {
 }
 ```
 
-## State Management Boundaries
+## State management boundaries
 
 | State Type            | Solution                   | Examples                              |
 | --------------------- | -------------------------- | ------------------------------------- |
@@ -100,7 +100,7 @@ function useUsers(params?: GetUsersParams) {
 
 **Don't mix server and client state.** Never copy query data into `useState`.
 
-## Error Hierarchy
+## Error hierarchy
 
 ```text
 App Error Boundary          → catches unrecoverable crashes
@@ -108,7 +108,7 @@ App Error Boundary          → catches unrecoverable crashes
         └── Feature Error Boundary   → catches feature-specific errors
 ```
 
-## Testing Strategy
+## Testing strategy
 
 | Layer       | Tool                  | What to Test                                    |
 | ----------- | --------------------- | ----------------------------------------------- |

@@ -1,11 +1,11 @@
 ---
-title: Enable skipLibCheck for Faster Builds
+title: Enable skipLibCheck for faster builds
 impact: CRITICAL
 impactDescription: 20-40% faster compilation
 tags: tscfg, skipLibCheck, tsconfig, declaration-files, performance
 ---
 
-## Enable skipLibCheck for Faster Builds
+## Enable skipLibCheck for faster builds
 
 The `skipLibCheck` option skips type-checking of declaration files (`.d.ts`). Since these files are pre-verified by library authors, checking them is redundant and wastes compilation time.
 

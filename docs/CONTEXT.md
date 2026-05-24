@@ -1,4 +1,4 @@
-# Project Context
+# Project context
 
 ## Purpose
 
@@ -13,16 +13,16 @@ ArkEnv is a typesafe environment variable parser powered by [ArkType](https://ar
 
 The main goal is to provide a developer-friendly way to validate and type-check environment variables using familiar TypeScript-like syntax, ensuring applications fail fast with clear error messages when environment variables are missing or invalid.
 
-## Tech Stack
+## Tech stack
 
-### Core Technologies
+### Core technologies
 
 - **TypeScript 6** - Primary language with strict type checking
 - **ArkType 2** - Type validation library (peer dependency)
 - **pnpm 11** - Package manager for monorepo
 - **Turborepo 2** - Monorepo build system and task orchestration
 
-### Build & Development Tools
+### Build & development tools
 
 - **tsdown 0.16** - TypeScript bundler for packages
 - **Biome 2** - Linting and formatting (replaces ESLint/Prettier)
@@ -36,15 +36,15 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 - **Vite 8** - Build tool for vite-plugin package and playgrounds
 - **Bun** - Alternative runtime (supported via examples and playgrounds)
 
-### Infrastructure & Services
+### Infrastructure & services
 
 - **Changesets** - Version management and changelog generation
 - **Sentry** - Error tracking for www application
 - **Vercel Analytics** - Analytics for documentation site
 
-## Project Conventions
+## Project conventions
 
-### Code Style
+### Code style
 
 **Formatting & Linting:**
 
@@ -78,7 +78,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 - Prefer `Number.parseInt` over global `parseInt` (`useNumberNamespace` error)
 - Console usage is a warning (allowed in `scripts/` and examples/playgrounds)
 
-### Architecture Patterns
+### Architecture patterns
 
 **Monorepo Structure:**
 
@@ -114,7 +114,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
   - `moduleResolution: "bundler"` (recommended for modern bundlers)
   - `moduleResolution: "node16"` or `"nodenext"` (for Node.js projects)
 
-### Testing Strategy
+### Testing strategy
 
 **Testing Philosophy:**
 
@@ -145,7 +145,7 @@ pnpm test -- --run "integration"     # Integration tests only
 pnpm run test:e2e                     # E2E tests
 ```
 
-### Git Workflow
+### Git workflow
 
 **Branching:**
 
@@ -170,7 +170,7 @@ pnpm run test:e2e                     # E2E tests
 - Run `pnpm release` after merging PRs to publish packages
 - Only packages in `packages/` are published to npm
 
-## Domain Context
+## Domain context
 
 **Environment Variable Validation:**
 
@@ -218,7 +218,7 @@ pnpm run test:e2e                     # E2E tests
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails
 
-## Important Constraints
+## Important constraints
 
 **Bundle Size:**
 
@@ -252,7 +252,7 @@ pnpm run test:e2e                     # E2E tests
 - Examples and private apps are not published
 - Changesets required for published packages only
 
-## External Dependencies
+## External dependencies
 
 **Peer Dependencies:**
 

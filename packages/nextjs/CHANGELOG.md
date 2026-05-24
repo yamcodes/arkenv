@@ -1,8 +1,8 @@
-# @arkenv/nextjs
+# @ArkEnv/nextjs
 
 ## 0.0.3
 
-### Patch Changes
+### Patch changes
 
 - #### Fix Next.js schema string autocomplete _[`#1079`](https://github.com/yamcodes/arkenv/pull/1079) [`bbab725`](https://github.com/yamcodes/arkenv/commit/bbab725cc4817053fb0bfb693deaadee4a5f1519) [@pullfrog](https://github.com/apps/pullfrog)_
 
@@ -10,7 +10,7 @@
 
 ## 0.0.2
 
-### Patch Changes
+### Patch changes
 
 - #### Fix client variable type inference _[`3531758`](https://github.com/yamcodes/arkenv/commit/3531758d720c465693299bca850c7e2ce2213fcf) [@yamcodes](https://github.com/yamcodes)_
 
@@ -31,6 +31,6 @@
 
 ## 0.0.1
 
-### Patch Changes
+### Patch changes
 
 - #### Initial release _[`#1067`](https://github.com/yamcodes/arkenv/pull/1067) [`a0a4cff`](https://github.com/yamcodes/arkenv/commit/a0a4cffbbbf5706bd8035d842975dde446ebb147) [@yamcodes](https://github.com/yamcodes)_

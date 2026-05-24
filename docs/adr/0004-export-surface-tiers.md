@@ -1,4 +1,4 @@
-# Three-Tier Export Surface
+# Three-tier export surface
 
 To clean up the ad-hoc package exports and provide an explicitly ArkType-free entry point for Standard Schema users. We reorganize the exports into three distinct tiers:
 

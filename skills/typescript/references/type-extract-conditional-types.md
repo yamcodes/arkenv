@@ -1,11 +1,11 @@
 ---
-title: Extract Conditional Types to Named Aliases
+title: Extract conditional types to named aliases
 impact: CRITICAL
 impactDescription: enables compiler caching, prevents re-evaluation
 tags: type, conditional-types, generics, caching, performance
 ---
 
-## Extract Conditional Types to Named Aliases
+## Extract conditional types to named aliases
 
 Inline conditional types are re-evaluated on every function call. Extracting them to named type aliases allows the compiler to cache results and reuse them across multiple call sites.
 

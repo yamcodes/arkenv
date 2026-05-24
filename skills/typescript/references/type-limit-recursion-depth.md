@@ -1,11 +1,11 @@
 ---
-title: Limit Type Recursion Depth
+title: Limit type recursion depth
 impact: HIGH
 impactDescription: prevents exponential type expansion when applicable
 tags: type, recursion, generics, depth, performance
 ---
 
-## Limit Type Recursion Depth
+## Limit type recursion depth
 
 Recursive types without depth limits can cause exponential type expansion, leading to compilation hangs or out-of-memory errors. Add explicit depth counters or use tail-recursive patterns.
 

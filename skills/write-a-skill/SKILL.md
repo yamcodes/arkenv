@@ -5,7 +5,7 @@ metadata:
   internal: true
 ---
 
-# Writing Skills
+# Writing skills
 
 ## Process
 
@@ -25,7 +25,7 @@ metadata:
    - Anything missing or unclear?
    - Should any section be more/less detailed?
 
-## Skill Structure
+## Skill structure
 
 ```
 skill-name/
@@ -36,7 +36,7 @@ skill-name/
     └── helper.js
 ```
 
-## SKILL.md Template
+## SKILL.md template
 
 ```md
 ---
@@ -59,7 +59,7 @@ description: Brief description of capability. Use when [specific triggers].
 [Link to separate files: See [REFERENCE.md](REFERENCE.md)]
 ```
 
-## Description Requirements
+## Description requirements
 
 The description is **the only thing your agent sees** when deciding which skill to load. It's surfaced in the system prompt alongside all other installed skills. Your agent reads these descriptions and picks the relevant skill based on the user's request.
 
@@ -89,7 +89,7 @@ Helps with documents.
 
 The bad example gives your agent no way to distinguish this from other document skills.
 
-## When to Add Scripts
+## When to add scripts
 
 Add utility scripts when:
 
@@ -99,7 +99,7 @@ Add utility scripts when:
 
 Scripts save tokens and improve reliability vs generated code.
 
-## When to Split Files
+## When to split files
 
 Split into separate files when:
 
@@ -107,7 +107,7 @@ Split into separate files when:
 - Content has distinct domains (finance vs sales schemas)
 - Advanced features are rarely needed
 
-## Review Checklist
+## Review checklist
 
 After drafting, verify:
 

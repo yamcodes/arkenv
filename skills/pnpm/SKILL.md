@@ -34,7 +34,7 @@ pnpm is a fast, disk space efficient package manager. It uses a content-addressa
 | Hooks             | Customize resolution with .pnpmfile.cjs hooks                | [features-hooks](references/features-hooks.md)         |
 | Peer Dependencies | Auto-install, strict mode, and dependency rules              | [features-peer-deps](references/features-peer-deps.md) |
 
-## Best Practices
+## Best practices
 
 | Topic       | Description                                                        | Reference                                                              |
 | ----------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------- |

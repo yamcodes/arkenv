@@ -6,7 +6,7 @@ metadata:
   internal: true
 ---
 
-# Setup Matt Pocock's Skills
+# Setup matt pocock's skills
 
 Scaffold the per-repo configuration that the engineering skills assume:
 

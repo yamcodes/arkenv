@@ -2,9 +2,9 @@
 
 Focus on integration and e2e tests for the highest confidence. Unit tests are useful for shared components and complex logic, but the real value comes from testing how parts work together.
 
-## Types of Tests
+## Types of tests
 
-### Unit Tests
+### Unit tests
 
 Test individual parts in isolation. Best for shared components, utility functions, and complex logic in single components.
 
@@ -16,7 +16,7 @@ test("renders confirmation dialog with message", () => {
 });
 ```
 
-### Integration Tests
+### Integration tests
 
 Test how different parts of your application work together. Focus most of your testing effort here.
 
@@ -33,7 +33,7 @@ test("user can create and view a discussion", async () => {
 });
 ```
 
-### End-to-End (E2E) Tests
+### End-to-end (e2e) tests
 
 Evaluate the entire application (frontend + backend) by simulating real user interactions.
 
@@ -48,7 +48,7 @@ test("user can log in and view dashboard", async ({ page }) => {
 });
 ```
 
-## Test Strategy
+## Test strategy
 
 | Layer       | Tool                  | What to Test                                    |
 | ----------- | --------------------- | ----------------------------------------------- |
@@ -58,13 +58,13 @@ test("user can log in and view dashboard", async ({ page }) => {
 | Integration | Testing Library + MSW | Full feature flows (render → interact → verify) |
 | E2E         | Playwright            | Critical user journeys                          |
 
-## Recommended Tooling
+## Recommended tooling
 
 ### Vitest
 
 Powerful testing framework similar to Jest, works well with modern tooling (Vite). Highly customizable and flexible.
 
-### Testing Library
+### Testing library
 
 Test your app the way a real user would use it — test rendered output, not implementation details. If you refactor internal state management, tests should still pass as long as the UI behavior is the same.
 
@@ -75,7 +75,7 @@ Run e2e tests in automated fashion:
 - **Browser mode** — opens a real browser with visualization tools. Use locally during development.
 - **Headless mode** — runs without UI. Use in CI/CD on every deploy.
 
-### MSW (Mock Service Worker)
+### MSW (mock service worker)
 
 Mock API at the network level inside a service worker. Intercepts HTTP requests and returns desired responses based on handlers.
 
@@ -98,7 +98,7 @@ Benefits:
 - Prototype frontends without a backend.
 - Design API endpoints and business logic in handlers.
 
-### Data Models
+### Data models
 
 Define mock data models for consistent test data:
 
@@ -120,7 +120,7 @@ export const db = factory({
 });
 ```
 
-## Testing Principles
+## Testing principles
 
 - Test behavior, not implementation.
 - Mock at the network boundary (MSW), not at the hook/component level.

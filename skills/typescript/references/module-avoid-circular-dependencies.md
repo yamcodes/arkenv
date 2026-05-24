@@ -1,11 +1,11 @@
 ---
-title: Avoid Circular Dependencies
+title: Avoid circular dependencies
 impact: HIGH
 impactDescription: prevents runtime undefined errors and slow compilation
 tags: module, circular, dependencies, architecture, compilation
 ---
 
-## Avoid Circular Dependencies
+## Avoid circular dependencies
 
 Circular dependencies cause undefined values at runtime (due to incomplete module initialization) and slow TypeScript compilation as the checker resolves cycles repeatedly.
 

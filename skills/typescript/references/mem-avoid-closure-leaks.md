@@ -1,11 +1,11 @@
 ---
-title: Avoid Closure Memory Leaks
+title: Avoid closure memory leaks
 impact: MEDIUM
 impactDescription: prevents retained references in long-lived callbacks
 tags: mem, closures, memory-leaks, callbacks, garbage-collection
 ---
 
-## Avoid Closure Memory Leaks
+## Avoid closure memory leaks
 
 Closures retain references to their outer scope variables. Long-lived callbacks can accidentally keep large objects alive, causing memory to grow unboundedly.
 

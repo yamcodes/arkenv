@@ -5,17 +5,17 @@ metadata:
   internal: true
 ---
 
-# JSDoc Generation Skill
+# Jsdoc generation skill
 
 This skill guides the agent in adding or updating JSDoc comments for functions in TypeScript codebases.
 
-## When to add JSDoc
+## When to add jsdoc
 
 - Add JSDoc to functions UNLESS the code is entirely self-explanatory or the function is named so clearly that a comment would be redundant.
 - If in doubt, lean towards adding JSDoc if the function has complex logic or multiple parameters, but skip it for simple getters/setters or obvious utilities.
 - For existing functions that already have JSDoc, ONLY update the JSDoc if there is a typo or if it no longer reflects the code's intent. Do NOT make redundant rephrasings or meaningless sentence shifts.
 
-## JSDoc Requirements
+## Jsdoc requirements
 
 When generating JSDoc comments, you MUST strictly adhere to the following rules:
 
@@ -55,7 +55,7 @@ export function calculateDiscountedPrice(basePrice: number, discountPercentage: 
 }
 ```
 
-## Applying to Multiple Functions
+## Applying to multiple functions
 
 - If the user asks to apply JSDoc to all functions in a file, process every function, but remember to skip those that are trivial and self-explanatory.
 - If the user asks to apply JSDoc to all changed files in a PR, use the GitHub CLI (`gh pr diff` or similar) to identify which functions were added or modified, and only update those functions.

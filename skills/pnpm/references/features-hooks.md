@@ -3,7 +3,7 @@ name: pnpm-hooks
 description: Customize package resolution and dependency behavior with pnpmfile hooks
 ---
 
-# pnpm Hooks
+# pnpm hooks
 
 pnpm provides hooks via `.pnpmfile.cjs` to customize how packages are resolved and their metadata is processed.
 
@@ -31,11 +31,11 @@ module.exports = {
 }
 ```
 
-## readPackage Hook
+## readPackage hook
 
 Called for every package before resolution. Use to modify dependencies, add missing peer deps, or fix broken packages.
 
-### Add Missing Peer Dependency
+### Add missing peer dependency
 
 ```js
 function readPackage(pkg, context) {
@@ -50,7 +50,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-### Override Dependency Version
+### Override dependency version
 
 ```js
 function readPackage(pkg, context) {
@@ -65,7 +65,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-### Remove Unwanted Dependency
+### Remove unwanted dependency
 
 ```js
 function readPackage(pkg, context) {
@@ -77,7 +77,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-### Replace Package
+### Replace package
 
 ```js
 function readPackage(pkg, context) {
@@ -90,7 +90,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-### Fix Broken Package
+### Fix broken package
 
 ```js
 function readPackage(pkg, context) {
@@ -107,7 +107,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-## afterAllResolved Hook
+## afterAllResolved hook
 
 Called after the lockfile is generated. Use for post-resolution modifications.
 
@@ -121,7 +121,7 @@ function afterAllResolved(lockfile, context) {
 }
 ```
 
-## Context Object
+## Context object
 
 The `context` object provides utilities:
 
@@ -157,9 +157,9 @@ module.exports = {
 }
 ```
 
-## Common Patterns
+## Common patterns
 
-### Conditional by Package Name
+### Conditional by package name
 
 ```js
 function readPackage(pkg, context) {
@@ -175,7 +175,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-### Apply to All Packages
+### Apply to all packages
 
 ```js
 function readPackage(pkg, context) {
@@ -187,7 +187,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-### Debug Resolution
+### Debug resolution
 
 ```js
 function readPackage(pkg, context) {
@@ -199,7 +199,7 @@ function readPackage(pkg, context) {
 }
 ```
 
-## Hooks vs Overrides
+## Hooks vs overrides
 
 | Feature | Hooks (.pnpmfile.cjs) | Overrides |
 |---------|----------------------|-----------|

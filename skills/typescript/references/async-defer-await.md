@@ -1,11 +1,11 @@
 ---
-title: Defer await Until Value Is Needed
+title: Defer await until value is needed
 impact: HIGH
 impactDescription: enables implicit parallelization
 tags: async, defer, promises, optimization, performance
 ---
 
-## Defer await Until Value Is Needed
+## Defer await until value is needed
 
 Start async operations immediately but defer `await` until the value is actually required. This allows independent work to proceed while promises resolve in the background.
 

@@ -1,11 +1,11 @@
 ---
-title: Use Set/Map for O(1) Lookups
+title: Use set/map for o(1) lookups
 impact: LOW-MEDIUM
 impactDescription: O(n) to O(1) per lookup
 tags: runtime, set, map, lookup, performance
 ---
 
-## Use Set/Map for O(1) Lookups
+## Use set/map for o(1) lookups
 
 Array methods like `.includes()` and `.find()` are O(n) operations. For frequent lookups, convert arrays to Set or Map for O(1) access.
 

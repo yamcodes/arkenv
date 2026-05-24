@@ -1,11 +1,11 @@
 ---
-title: Prefer unknown Over any
+title: Prefer unknown over any
 impact: MEDIUM-HIGH
 impactDescription: forces type narrowing, prevents runtime errors
 tags: safety, unknown, any, type-narrowing, type-safety
 ---
 
-## Prefer unknown Over any
+## Prefer unknown over any
 
 The `any` type disables all type checking, allowing unsafe operations to pass silently. Use `unknown` to require explicit type narrowing before operations.
 

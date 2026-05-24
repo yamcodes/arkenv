@@ -1,17 +1,17 @@
-# Copilot Instructions for ArkEnv
+# Copilot instructions for ArkEnv
 
-## Project Overview
+## Project overview
 
 ArkEnv is a TypeScript library that provides typesafe environment variable parsing and validation, powered by ArkType. It enables developers to define environment variable schemas with full TypeScript type inference and runtime validation.
 
-### Key Features
+### Key features
 - **Typesafe**: Full TypeScript support with inferred types  
 - **Runtime validation**: Catch missing or invalid environment variables early
 - **Powered by ArkType**: Leverage ArkType's powerful type system
 - **Lightweight**: Zero external, tiny bundle size
 - **Fast**: Optimized for performance with minimal overhead
 
-## Repository Structure
+## Repository structure
 
 This is a monorepo managed with pnpm workspaces and Turbo:
 
@@ -28,7 +28,7 @@ arkenv/
 └── .github/            # GitHub workflows and configuration
 ```
 
-## Development Setup
+## Development setup
 
 The project uses modern tooling:
 - **pnpm**: Package manager with workspace support
@@ -38,7 +38,7 @@ The project uses modern tooling:
 - **TypeScript**: Primary language
 - **Changesets**: Version management and changelog generation
 
-### Common Commands
+### Common commands
 - `pnpm install` - Install dependencies
 - `pnpm build` - Build all packages
 - `pnpm build:packages` - Build only packages (not apps)
@@ -47,9 +47,9 @@ The project uses modern tooling:
 - `pnpm fix` - Auto-fix linting issues
 - `pnpm changeset` - Create a changeset for version management
 
-## Core Architecture
+## Core architecture
 
-### Main Package (`packages/arkenv`)
+### Main package (`packages/arkenv`)
 
 The core package provides:
 
@@ -58,15 +58,15 @@ The core package provides:
 3. **ArkType integration** - Uses ArkType for schema definition and validation
 4. **Type inference** - Full TypeScript type inference from schemas
 
-### Key Files
+### Key files
 - `src/create-env.ts` - Core `createEnv` implementation
 - `src/types.ts` - Built-in type validators (host, port, url, etc.)
 - `src/errors.ts` - Error handling and formatting
 - `src/utils.ts` - Utility functions
 
-## Coding Patterns
+## Coding patterns
 
-### Environment Schema Definition
+### Environment schema definition
 ```typescript
 import arkenv from 'arkenv';
 
@@ -79,26 +79,26 @@ const env = arkenv({
 });
 ```
 
-### Built-in Validators
+### Built-in validators
 The library provides common validators in `src/types.ts`:
 - `host` - Valid IP address or hostname
 - `port` - Valid port number (0-65535)
 - `url` - Valid URL
 - `email` - Valid email address
 
-### Error Handling
+### Error handling
 Environment validation errors are thrown early with descriptive messages showing:
 - Which variables are missing or invalid
 - Expected vs actual values
 - Helpful suggestions for fixing issues
 
-## Testing Guidelines
+## Testing guidelines
 
-### Test Structure
+### Test structure
 
 The project uses three types of tests:
 
-#### Unit Tests (`*.test.ts` or `*.test.tsx`)
+#### Unit tests (`*.test.ts` or `*.test.tsx`)
 **What:** Test individual functions, components, and hooks in isolation with mocked dependencies.
 
 Tests are located alongside source files with `.test.ts` suffix:
@@ -113,7 +113,7 @@ Tests are located alongside source files with `.test.ts` suffix:
 - Mocked external dependencies (clipboard, network, etc.)
 - Focused on single unit behavior
 
-#### Integration Tests (`*.integration.test.ts` or `*.integration.test.tsx`)
+#### Integration tests (`*.integration.test.ts` or `*.integration.test.tsx`)
 **What:** Test how multiple units work together without mocking their interactions.
 
 **Examples:**
@@ -129,7 +129,7 @@ Tests are located alongside source files with `.test.ts` suffix:
 - External APIs still mocked (clipboard, network)
 - Naming convention: `*.integration.test.ts` suffix
 
-#### End-to-End Tests (`tooling/playwright-www/`)
+#### End-to-end tests (`tooling/playwright-www/`)
 **What:** Test complete user workflows in real browsers.
 
 **Key Characteristics:**
@@ -137,13 +137,13 @@ Tests are located alongside source files with `.test.ts` suffix:
 - No mocking - tests real application
 - Cross-browser compatibility testing
 
-### Testing Patterns
+### Testing patterns
 - Use Vitest's `describe`/`it` structure
 - Test both success and failure cases
 - Mock `process.env` for testing different scenarios
 - Verify both runtime behavior and TypeScript types
 
-### Unit Test Example
+### Unit test example
 ```typescript
 import { beforeEach, afterEach, it, expect } from 'vitest';
 
@@ -164,7 +164,7 @@ it('should validate environment variables', () => {
 });
 ```
 
-### Integration Test Example
+### Integration test example
 ```typescript
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -194,7 +194,7 @@ describe("CopyButton + useToast + Toaster integration", () => {
 });
 ```
 
-### Running Tests
+### Running tests
 ```bash
 # Run all tests (unit + integration)
 pnpm test -- --run
@@ -209,7 +209,7 @@ pnpm test --project arkenv -- --run
 pnpm run test:e2e
 ```
 
-## Contributing Workflow
+## Contributing workflow
 
 1. **Development**: Make changes in feature branches
 2. **Testing**: Ensure tests pass with `pnpm test`
@@ -218,45 +218,45 @@ pnpm run test:e2e
 5. **Documentation**: Update docs if adding new features
 6. **Examples**: Add examples for new functionality
 
-### Changeset Guidelines
+### Changeset guidelines
 - **patch**: Bug fixes, internal improvements
 - **minor**: New features, new validators
 - **major**: Breaking changes to API
 
-## Plugin Development
+## Plugin development
 
-### Vite Plugin (`packages/vite-plugin`)
+### Vite plugin (`packages/vite-plugin`)
 The Vite plugin validates environment variables at build time:
 - Integrates with Vite's build process
 - Provides early validation feedback
 - Supports development and production builds
 
-## Performance Considerations
+## Performance considerations
 
 - Environment validation happens once at startup
 - Schemas are compiled for efficient validation
 - Minimal runtime overhead after initial validation
 - Tree-shakable exports for optimal bundle size
 
-## Common Issues & Solutions
+## Common issues & solutions
 
-### Missing Environment Variables
+### Missing environment variables
 The library provides clear error messages with:
 - List of missing variables
 - Expected types/formats
 - Suggestions for `.env` file setup
 
-### Type Inference Issues
+### Type inference issues
 - Ensure ArkType schemas are properly typed
 - Use built-in validators when possible
 - Check TypeScript version compatibility
 
-### Build Issues
+### Build issues
 - Run `pnpm build:packages` for library builds
 - Use `turbo run build` for full monorepo builds
 - Check for TypeScript errors with `pnpm typecheck`
 
-## Best Practices
+## Best practices
 
 1. **Use built-in validators** when available (host, port, url, etc.)
 2. **Provide defaults** for optional environment variables
@@ -265,7 +265,7 @@ The library provides clear error messages with:
 5. **Test edge cases** including invalid and missing values
 6. **Use descriptive variable names** that indicate purpose and format
 
-## Examples Reference
+## Examples reference
 
 Check the `examples/` directory for practical usage patterns:
 - `basic/` - Simple Node.js application
@@ -275,20 +275,20 @@ These examples demonstrate real-world usage and can serve as templates for new i
 
 ## Boundaries
 
-### Do Not
+### Do not
 - **Never commit secrets** or API keys, even in test files
 - **Never modify `.env` files** in examples or apps - these may contain sensitive configuration
 - **Avoid breaking changes** to the public API without explicit approval and a major version changeset
 - **Don't modify generated files** like `pnpm-lock.yaml` directly - use `pnpm install` instead
 - **Don't skip changesets** for published packages - always run `pnpm changeset` for version bumps
 - **Avoid adding new dependencies** without considering bundle size impact (aspirational goal: <2kB gzipped, enforced limit: 2kB gzipped)
-### Security Considerations
+### Security considerations
 - Always validate user input in examples and documentation
 - Use `ArkEnvError` for environment variable errors, not generic errors
 - Never log environment variable values in production code
 - Ensure examples demonstrate secure default practices
 
-### Architecture Decision Records (ADRs)
+### Architecture decision records (adrs)
 This repository uses Architecture Decision Records (ADRs) to document significant, trade-off-driven design decisions.
 - **Reviewing Decisions**: Read the files in `docs/adr/` to understand existing architectural constraints and choices.
 - **Historical Context**: The `.github/openspec/changes/archive/` folder contains archived specs from past features for historical reference only. It is not an active workflow.

@@ -1,6 +1,6 @@
-# API Layer
+# API layer
 
-## Single API Client Instance
+## Single API client instance
 
 Use a single, pre-configured API client instance throughout the application. This can be built with the native fetch API or libraries like axios, graphql-request, or apollo-client.
 
@@ -26,7 +26,7 @@ api.interceptors.response.use(
 export { api };
 ```
 
-## Request Declaration Pattern
+## Request declaration pattern
 
 Every API request declaration consists of:
 
@@ -34,7 +34,7 @@ Every API request declaration consists of:
 2. **A fetcher function** that calls an endpoint using the API client
 3. **A hook** that consumes the fetcher via react-query, swr, etc.
 
-### Query Example
+### Query example
 
 ```typescript
 // features/discussions/api/get-discussions.ts
@@ -70,7 +70,7 @@ export function useDiscussions({ params, queryConfig }: UseDiscussionsOptions) {
 }
 ```
 
-### Mutation Example
+### Mutation example
 
 ```typescript
 // features/discussions/api/create-discussion.ts
@@ -99,7 +99,7 @@ export function useCreateDiscussion() {
 }
 ```
 
-## File Organization
+## File organization
 
 ```text
 features/users/api/
@@ -112,7 +112,7 @@ features/users/api/
 
 In some cases it may be more practical to keep shared API calls in a dedicated top-level `api/` folder rather than inside features.
 
-## Key Principles
+## Key principles
 
 - Keep API functions pure — they return promises with no framework dependencies.
 - Type all responses and infer types down the application for type safety.

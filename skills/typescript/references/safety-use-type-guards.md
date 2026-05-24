@@ -1,11 +1,11 @@
 ---
-title: Use Type Guards for Runtime Type Checking
+title: Use type guards for runtime type checking
 impact: MEDIUM-HIGH
 impactDescription: eliminates type assertions, catches errors at boundaries
 tags: safety, type-guards, narrowing, predicates, validation
 ---
 
-## Use Type Guards for Runtime Type Checking
+## Use type guards for runtime type checking
 
 Type guards provide runtime validation that TypeScript can use for static narrowing. They replace unsafe type assertions with checked operations.
 

@@ -1,11 +1,11 @@
 ---
-title: Enable strictFunctionTypes for Faster Variance Checks
+title: Enable strictFunctionTypes for faster variance checks
 impact: CRITICAL
 impactDescription: enables optimized variance checking
 tags: tscfg, strict, strictFunctionTypes, variance, performance
 ---
 
-## Enable strictFunctionTypes for Faster Variance Checks
+## Enable strictFunctionTypes for faster variance checks
 
 With `strictFunctionTypes` enabled, TypeScript uses fast variance-based checking for function parameters. Without it, TypeScript falls back to slower structural comparison for every function type.
 

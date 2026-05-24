@@ -1,11 +1,11 @@
 ---
-title: Use Modern String Methods
+title: Use modern string methods
 impact: LOW-MEDIUM
 impactDescription: 2-5× faster than regex for simple patterns
 tags: runtime, strings, methods, performance, readability
 ---
 
-## Use Modern String Methods
+## Use modern string methods
 
 Modern string methods like `startsWith()`, `endsWith()`, `includes()`, and `padStart()` are clearer and often faster than regex or manual substring operations.
 

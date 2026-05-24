@@ -74,7 +74,7 @@ metadata:
 
   Don't couple `docs/CONTEXT.md` to implementation details. Only include terms that are meaningful to domain experts.
 
-  ### Offer ADRs sparingly
+  ### Offer adrs sparingly
 
   Only offer to create an ADR when all three are true:
 

@@ -1,11 +1,11 @@
 ---
-title: Clear Timers and Intervals
+title: Clear timers and intervals
 impact: MEDIUM
 impactDescription: prevents callback retention and repeated execution
 tags: mem, timers, intervals, cleanup, memory-leaks
 ---
 
-## Clear Timers and Intervals
+## Clear timers and intervals
 
 `setInterval` and `setTimeout` callbacks retain references to their closure scope. Failing to clear them causes callbacks to execute indefinitely and prevents garbage collection of referenced objects.
 

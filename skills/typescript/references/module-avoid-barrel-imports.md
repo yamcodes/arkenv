@@ -1,11 +1,11 @@
 ---
-title: Avoid Barrel File Imports
+title: Avoid barrel file imports
 impact: HIGH
 impactDescription: 200-800ms import cost, 30-50% larger bundles
 tags: module, barrel-files, imports, tree-shaking, bundling
 ---
 
-## Avoid Barrel File Imports
+## Avoid barrel file imports
 
 Barrel files (index.ts re-exports) defeat tree-shaking and force bundlers to load entire module graphs. Import directly from source files to enable proper dead-code elimination.
 

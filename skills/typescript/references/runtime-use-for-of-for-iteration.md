@@ -1,11 +1,11 @@
 ---
-title: Use for-of for Simple Iteration
+title: Use for-of for simple iteration
 impact: LOW-MEDIUM
 impactDescription: reduces iteration boilerplate by 30-50%
 tags: runtime, loops, iteration, for-of, readability
 ---
 
-## Use for-of for Simple Iteration
+## Use for-of for simple iteration
 
 `for-of` provides clean syntax for array iteration with performance comparable to traditional `for` loops. Use it when you don't need the index and aren't modifying the array.
 

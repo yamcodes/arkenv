@@ -3,13 +3,13 @@ name: pnpm-patches
 description: Patch third-party packages directly with customized fixes
 ---
 
-# pnpm Patches
+# pnpm patches
 
 pnpm's patching feature lets you modify third-party packages directly. Useful for applying fixes before upstream releases or customizing package behavior.
 
-## Creating a Patch
+## Creating a patch
 
-### Step 1: Initialize Patch
+### Step 1: initialize patch
 
 ```bash
 pnpm patch <pkg>@<version>
@@ -24,7 +24,7 @@ This creates a temporary directory with the package source and outputs the path:
 You can now edit the following folder: /tmp/abc123...
 ```
 
-### Step 2: Edit Files
+### Step 2: edit files
 
 Navigate to the temporary directory and make your changes:
 
@@ -33,7 +33,7 @@ cd /tmp/abc123...
 # Edit files as needed
 ```
 
-### Step 3: Commit Patch
+### Step 3: commit patch
 
 ```bash
 pnpm patch-commit <path-from-step-1>
@@ -59,7 +59,7 @@ patches/
 }
 ```
 
-## Patch File Format
+## Patch file format
 
 Patches use standard unified diff format:
 
@@ -76,16 +76,16 @@ index abc123..def456 100644
  }
 ```
 
-## Managing Patches
+## Managing patches
 
-### List Patched Packages
+### List patched packages
 
 ```bash
 pnpm list --depth=0
 # Shows (patched) marker for patched packages
 ```
 
-### Update a Patch
+### Update a patch
 
 ```bash
 # Edit existing patch
@@ -95,7 +95,7 @@ pnpm patch express@4.18.2
 pnpm patch-commit <path>
 ```
 
-### Remove a Patch
+### Remove a patch
 
 ```bash
 pnpm patch-remove <pkg>@<version>
@@ -109,9 +109,9 @@ Or manually:
 2. Remove entry from `patchedDependencies` in `package.json`
 3. Run `pnpm install`
 
-## Patch Configuration
+## Patch configuration
 
-### Custom Patches Directory
+### Custom patches directory
 
 ```json
 {
@@ -123,7 +123,7 @@ Or manually:
 }
 ```
 
-### Multiple Packages
+### Multiple packages
 
 ```json
 {
@@ -154,7 +154,7 @@ Patches are shared across the workspace. Define in the root `package.json`:
 
 All workspace packages using `express@4.18.2` will have the patch applied.
 
-## Best Practices
+## Best practices
 
 1. **Version specificity**: Patches are tied to exact versions. Update patches when upgrading dependencies.
 

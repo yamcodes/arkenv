@@ -1,4 +1,4 @@
-# Explicit Validator Mode
+# Explicit validator mode
 
 To support parsing environment variables with Standard Schema validators directly without requiring ArkType at runtime. We introduce an explicit `validator` mode config option (`"arktype"` | `"standard"`). When `"standard"` is selected, ArkEnv branches immediately to an ArkType-free path and does not load or import ArkType, allowing users to transition to ArkType gradually or use other schema libraries.
 

@@ -1,8 +1,8 @@
-# Testing Strategy
+# Testing strategy
 
 This project uses a comprehensive testing approach that combines unit tests, integration tests, and end-to-end tests to ensure reliability across all layers.
 
-## Testing Philosophy
+## Testing philosophy
 
 **"Examples as Test Fixtures"** - Examples serve dual purposes:
 
@@ -13,11 +13,11 @@ This project uses a comprehensive testing approach that combines unit tests, int
 
 This ensures the library works in real scenarios while keeping examples clean and validating user experiences.
 
-## Component Testing Philosophy
+## Component testing philosophy
 
 **Test behavior, not aesthetics.** Focus on what users can do and what the component guarantees through its API.
 
-### What We Test
+### What we test
 
 - **Public API** - props, events, and component contract
 - **User behavior** - clicks, typing, focus, keyboard, ARIA
@@ -25,14 +25,14 @@ This ensures the library works in real scenarios while keeping examples clean an
 - **Accessibility** - focus order, keyboard activation, aria attributes
 - **Side effects** - UI changes that affect user experience
 
-### What We Don't Test
+### What we don't test
 
 - Pure styling or CSS classes
 - Library internals (Radix/shadcn/MUI)
 - Implementation details (hooks, setState, private variables)
 - Visual variants (use Storybook instead)
 
-### Testing Rules
+### Testing rules
 
 - Use Testing Library + user-event for real user simulation
 - Query by role, name, label, and text (accessibility first)
@@ -40,9 +40,9 @@ This ensures the library works in real scenarios while keeping examples clean an
 - Keep tests fast, deterministic, and parallelizable
 - Co-locate tests: `Component.tsx` next to `Component.test.tsx`
 
-## Test Structure
+## Test structure
 
-### Unit Tests (`*.test.ts` or `*.test.tsx`)
+### Unit tests (`*.test.ts` or `*.test.tsx`)
 
 **What:** Test individual functions, components, and hooks in isolation with mocked dependencies.
 
@@ -65,7 +65,7 @@ This ensures the library works in real scenarios while keeping examples clean an
 - Mocked external dependencies (clipboard, network, etc.)
 - Focused on single unit behavior
 
-### Integration Tests (`*.integration.test.ts` or `*.integration.test.tsx`)
+### Integration tests (`*.integration.test.ts` or `*.integration.test.tsx`)
 
 **What:** Test how multiple units (components, hooks, functions) work together without mocking their interactions.
 
@@ -93,7 +93,7 @@ This ensures the library works in real scenarios while keeping examples clean an
 
 **Naming Convention:** Use `*.integration.test.ts` suffix to distinguish from unit tests.
 
-### Vite Plugin Tests (`packages/vite-plugin/src/*.test.ts`)
+### Vite plugin tests (`packages/vite-plugin/src/*.test.ts`)
 
 **What:** Fixture-based tests using real example projects.
 
@@ -109,7 +109,7 @@ This ensures the library works in real scenarios while keeping examples clean an
 - Validates complete build process
 - Ensures plugin works in real-world scenarios
 
-### End-to-End Tests (`apps/playwright-www/`)
+### End-to-end tests (`apps/playwright-www/`)
 
 **What:** Test complete user workflows in the www application using real browsers.
 
@@ -134,7 +134,7 @@ This ensures the library works in real scenarios while keeping examples clean an
 - Cross-browser compatibility testing
 - Focused on user journeys and behavioral invariants
 
-## Running Tests
+## Running tests
 
 ```bash
 # Run all tests (unit + integration)
@@ -166,9 +166,9 @@ pnpm run test:e2e:ui
 pnpm run test:e2e:headed
 ```
 
-## Test Coverage
+## Test coverage
 
-### Core Package (`arkenv`)
+### Core package (`arkenv`)
 
 **Unit Tests:**
 
@@ -184,14 +184,14 @@ pnpm run test:e2e:headed
 - ✅ Error propagation through validation pipeline (`error.integration.test.ts`)
 - ✅ Array defaults with type validation (`array-defaults.integration.test.ts`)
 
-### Vite Plugin (`@arkenv/vite-plugin`)
+### Vite plugin (`@arkenv/vite-plugin`)
 
 - ✅ Plugin integration with Vite
 - ✅ Environment variable loading and injection
 - ✅ Real project build testing using the example as a fixture
 - ✅ Error handling for missing environment variables
 
-### CLI Package (`@arkenv/cli`)
+### CLI package (`@arkenv/cli`)
 
 - ✅ Environment template selection by validator (`arktype`, `zod`, `valibot`)
 - ✅ Framework and package manager detection heuristics
@@ -200,7 +200,7 @@ pnpm run test:e2e:headed
 - ✅ Dependency installation command composition and failure handling
 - ✅ Process-level smoke tests for `--help` and invalid command behavior
 
-### WWW Application (`apps/www`)
+### WWW application (`apps/www`)
 
 **Unit Tests:**
 
@@ -233,7 +233,7 @@ Examples are kept clean and focused on demonstrating usage:
 - `examples/basic` - Basic Node.js usage
 - `examples/with-bun` - Bun runtime usage
 
-## CI Integration
+## Ci integration
 
 The CI pipeline runs:
 

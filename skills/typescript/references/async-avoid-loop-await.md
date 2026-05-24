@@ -1,11 +1,11 @@
 ---
-title: Avoid await Inside Loops
+title: Avoid await inside loops
 impact: HIGH
 impactDescription: N× faster for N iterations, 10 users = 10× improvement
 tags: async, loops, batching, waterfalls, performance
 ---
 
-## Avoid await Inside Loops
+## Avoid await inside loops
 
 Using `await` inside a loop creates N sequential operations. Collect promises and await them together, or use `Promise.all()` with `map()` for parallel execution.
 

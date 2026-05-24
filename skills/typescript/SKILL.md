@@ -5,11 +5,11 @@ metadata:
   internal: true
 ---
 
-# TypeScript Best Practices
+# TypeScript best practices
 
 Comprehensive performance optimization guide for TypeScript applications. Contains 45 rules across 8 categories, prioritized by impact to guide automated refactoring and code generation.
 
-## When to Apply
+## When to apply
 
 Reference these guidelines when:
 
@@ -19,7 +19,7 @@ Reference these guidelines when:
 - Organizing modules and managing imports
 - Reviewing code for compilation or runtime performance
 
-## Rule Categories by Priority
+## Rule categories by priority
 
 | Priority | Category                | Impact      | Prefix      |
 | -------- | ----------------------- | ----------- | ----------- |
@@ -32,7 +32,7 @@ Reference these guidelines when:
 | 7        | Runtime Optimization    | LOW-MEDIUM  | `runtime-`  |
 | 8        | Advanced Patterns       | LOW         | `advanced-` |
 
-## Table of Contents
+## Table of contents
 
 1. [Type System Performance](references/_sections.md#1-type-system-performance-type) — **CRITICAL**
    - 1.1 [Add Explicit Return Types to Exported Functions](references/type-explicit-return-types.md) — CRITICAL (30-50% faster declaration emit)

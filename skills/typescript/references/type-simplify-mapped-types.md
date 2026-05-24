@@ -1,11 +1,11 @@
 ---
-title: Simplify Complex Mapped Types
+title: Simplify complex mapped types
 impact: HIGH
 impactDescription: reduces type computation by 50-80% when applicable
 tags: type, mapped-types, simplification, utility-types, performance
 ---
 
-## Simplify Complex Mapped Types
+## Simplify complex mapped types
 
 Overly complex mapped types with multiple conditional branches slow compilation significantly. Break them into smaller, focused utility types and compose them.
 

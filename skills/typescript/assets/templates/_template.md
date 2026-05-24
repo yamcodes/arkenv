@@ -1,11 +1,11 @@
 ---
-title: Rule Title Here
+title: Rule title here
 impact: MEDIUM
 impactDescription: Quantified impact (e.g., "2-10× improvement", "200ms savings")
 tags: prefix, technique, related-concepts
 ---
 
-## Rule Title Here
+## Rule title here
 
 Brief explanation of the rule and why it matters (1-3 sentences). Focus on performance implications.
 

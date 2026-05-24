@@ -3,7 +3,7 @@ name: pnpm-configuration
 description: Configuration options via pnpm-workspace.yaml and .npmrc settings
 ---
 
-# pnpm Configuration
+# pnpm configuration
 
 pnpm uses two main configuration files: `pnpm-workspace.yaml` for workspace and pnpm-specific settings, and `.npmrc` for npm-compatible and pnpm-specific settings.
 
@@ -46,11 +46,11 @@ settings:
   shared-workspace-lockfile: true
 ```
 
-## .npmrc Settings
+## .Npmrc settings
 
 pnpm reads settings from `.npmrc` files. Create at project root or user home.
 
-### Common pnpm Settings
+### Common pnpm settings
 
 ```ini
 # Automatically install peer dependencies
@@ -82,7 +82,7 @@ registry=https://registry.npmjs.org/
 @myorg:registry=https://npm.myorg.com/
 ```
 
-### Workspace Settings
+### Workspace settings
 
 ```ini
 # Link workspace packages
@@ -98,7 +98,7 @@ shared-workspace-lockfile=true
 save-workspace-protocol=rolling
 ```
 
-### Node.js Settings
+### Node.js settings
 
 ```ini
 # Use specific Node.js version
@@ -111,7 +111,7 @@ node-version-file=.nvmrc
 manage-package-manager-versions=true
 ```
 
-### Security Settings
+### Security settings
 
 ```ini
 # Ignore specific scripts
@@ -125,7 +125,7 @@ onlyBuiltDependencies[]=sharp
 package-extensions[foo@1].peerDependencies.bar=*
 ```
 
-## Configuration Hierarchy
+## Configuration hierarchy
 
 Settings are read in order (later overrides earlier):
 
@@ -135,7 +135,7 @@ Settings are read in order (later overrides earlier):
 4. Environment variables: `npm_config_<key>=<value>`
 5. `pnpm-workspace.yaml` settings field
 
-## Environment Variables
+## Environment variables
 
 ```bash
 # Set config via env
@@ -145,7 +145,7 @@ npm_config_registry=https://registry.npmjs.org/
 PNPM_HOME=~/.local/share/pnpm
 ```
 
-## Package.json Fields
+## Package.json fields
 
 pnpm reads specific fields from `package.json`:
 
@@ -173,7 +173,7 @@ pnpm reads specific fields from `package.json`:
 }
 ```
 
-## Key Differences from npm/yarn
+## Key differences from npm/yarn
 
 1. **Strict by default**: No phantom dependencies
 2. **Workspace protocol**: `workspace:*` for local packages

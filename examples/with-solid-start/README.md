@@ -1,4 +1,4 @@
-# ArkEnv + SolidStart Example
+# ArkEnv + SolidStart example
 
 This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with [SolidStart](https://start.solidjs.com). It showcases:
 
@@ -55,7 +55,7 @@ const num = import.meta.env.VITE_NUMERIC; // ✅ number
 const bool = import.meta.env.VITE_BOOLEAN; // ✅ boolean
 ```
 
-## Environment Variables
+## Environment variables
 
 You can verify the validation by looking at the `.env.production` file (or creating a `.env` file):
 
@@ -71,7 +71,7 @@ The plugin automatically:
 - Filters to only expose `VITE_*` variables to the client
 - Ensures `import.meta.env` matches your schema
 
-## Running the Example
+## Running the example
 
 ```bash
 # Install dependencies
@@ -95,4 +95,4 @@ For more information, see the [@arkenv/vite-plugin documentation](https://arkenv
 - [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
 - [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
 
-## this project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)
+## This project was created with the [Solid CLI](https://github.com/solidjs-community/Solid-CLI)

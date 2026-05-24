@@ -1,4 +1,4 @@
-# CONTEXT.md Format
+# CONTEXT.md format
 
 ## Structure
 

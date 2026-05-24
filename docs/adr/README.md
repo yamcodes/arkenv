@@ -1,4 +1,4 @@
-# Architecture Decision Records (ADRs)
+# Architecture decision records (adrs)
 
 This directory contains records of design and architectural decisions made for the ArkEnv project.
 
@@ -6,11 +6,11 @@ This directory contains records of design and architectural decisions made for t
 
 ADRs use sequential numbering (e.g., `0001-slug.md`, `0002-slug.md`). When adding a new record, scan for the highest number and increment by one.
 
-## Directory Policy
+## Directory policy
 
 All ADRs are maintained centrally in this `docs/adr/` directory rather than per-package. This keeps the repository root clean while ensuring project-wide and package-specific architectural context remains in a single, discoverable location.
 
-## When to Write an ADR
+## When to write an ADR
 
 An ADR should be written when a decision is:
 
@@ -18,7 +18,7 @@ An ADR should be written when a decision is:
 2. **Surprising without context**: A future developer might look at the code and wonder why it was done that way.
 3. **The result of a real trade-off**: There were genuine alternatives and we picked one for specific reasons.
 
-## Tooling & Agent Skills
+## Tooling & agent skills
 
 Our AI developer agent leverages these ADRs to guide its development and maintain design consistency. Key skills interacting with these records include:
 

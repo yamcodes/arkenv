@@ -1,11 +1,11 @@
 ---
-title: Use Exhaustive Checks for Union Types
+title: Use exhaustive checks for union types
 impact: MEDIUM-HIGH
 impactDescription: prevents 100% of missing case errors at compile time
 tags: safety, exhaustive, never, discriminated-unions, switch
 ---
 
-## Use Exhaustive Checks for Union Types
+## Use exhaustive checks for union types
 
 Exhaustive checks ensure all union members are handled. When a new member is added, TypeScript errors on unhandled cases rather than falling through silently at runtime.
 

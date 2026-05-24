@@ -1,11 +1,11 @@
 ---
-title: Enable Incremental Compilation
+title: Enable incremental compilation
 impact: CRITICAL
 impactDescription: 50-90% faster rebuilds
 tags: tscfg, incremental, tsconfig, compilation, caching
 ---
 
-## Enable Incremental Compilation
+## Enable incremental compilation
 
 Incremental compilation caches project graph information between builds in a `.tsbuildinfo` file. Subsequent compilations only recheck changed files and their dependents.
 

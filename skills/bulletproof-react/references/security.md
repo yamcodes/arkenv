@@ -4,7 +4,7 @@
 
 Client-side authentication enhances UX and complements server-side security — both are essential.
 
-### Token Storage
+### Token storage
 
 | Method             | Pros                              | Cons                       |
 | ------------------ | --------------------------------- | -------------------------- |
@@ -14,7 +14,7 @@ Client-side authentication enhances UX and complements server-side security — 
 
 **Recommended:** Store tokens in `HttpOnly` cookies configured by the server. The client should not have direct access to the token.
 
-### XSS Prevention
+### XSS prevention
 
 Sanitize all user inputs before displaying them:
 
@@ -29,7 +29,7 @@ function MarkdownPreview({ content }: { content: string }) {
 
 Avoid `dangerouslySetInnerHTML` unless content is sanitized. React escapes JSX by default, but raw HTML insertion bypasses this.
 
-### User Data Management
+### User data management
 
 Treat user info as global state accessible throughout the application. Options:
 
@@ -41,7 +41,7 @@ The application assumes the user is authenticated if a user object is present.
 
 ## Authorization
 
-### RBAC (Role-Based Access Control)
+### RBAC (role-based access control)
 
 Restrict access based on user roles (`ADMIN`, `USER`, etc.):
 
@@ -58,7 +58,7 @@ function RBACGuard({ allowedRoles, children }: { allowedRoles: Role[]; children:
 </RBACGuard>;
 ```
 
-### PBAC (Permission-Based Access Control)
+### PBAC (permission-based access control)
 
 For finer-grained control where access depends on resource ownership:
 
@@ -74,7 +74,7 @@ function PBACGuard({ check, children }: { check: boolean; children: React.ReactN
 </PBACGuard>;
 ```
 
-### Combined Usage
+### Combined usage
 
 Use the same guard component with either role-based or policy-based checks:
 
@@ -92,6 +92,6 @@ Use the same guard component with either role-based or policy-based checks:
 
 Use RBAC for broad role-level access. Use PBAC for resource-level ownership checks.
 
-## Security Resources
+## Security resources
 
 For a full list of client-side security risks, see [OWASP Top 10 Client-Side Security Risks](https://owasp.org/www-project-top-10-client-side-security-risks/).

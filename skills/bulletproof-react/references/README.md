@@ -1,4 +1,4 @@
-# Bulletproof React — References
+# Bulletproof React — references
 
 Detailed reference documentation for the bulletproof-react skill. Based on [bulletproof-react](https://github.com/alan2207/bulletproof-react) by Alan Alickovic (MIT License).
 
@@ -13,7 +13,7 @@ Detailed reference documentation for the bulletproof-react skill. Based on [bull
 
 - `components-and-styling.md` — Component best practices, hierarchy, wrapping third-party libs, libraries, styling solutions
 
-### State & Data
+### State & data
 
 - `state-management.md` — Component, application, server cache, form, and URL state categories
 
@@ -23,7 +23,7 @@ Detailed reference documentation for the bulletproof-react skill. Based on [bull
 - `testing.md` — Unit, integration, e2e testing with Vitest, Testing Library, Playwright, MSW
 - `security.md` — Authentication, token storage, XSS prevention, RBAC/PBAC authorization
 
-### Standards & Performance
+### Standards & performance
 
 - `project-standards.md` — ESLint, Prettier, TypeScript, Husky, absolute imports, file naming conventions
 - `performance.md` — Code splitting, data prefetching, state optimization, children pattern, styling perf

@@ -1,32 +1,32 @@
-# @arkenv/fumadocs-ui
+# @ArkEnv/fumadocs-ui
 
 ## 0.0.8
 
-### Patch Changes
+### Patch changes
 
 - #### Fix hamburger menu fade-in behavior on mobile _[`#935`](https://github.com/yamcodes/arkenv/pull/935) [`f1ee3de`](https://github.com/yamcodes/arkenv/commit/f1ee3de8c9cece2669ab4091aa992b25579a6b4e) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.7
 
-### Patch Changes
+### Patch changes
 
 - Fix `arkenvComponents` typesafety issue when used in getMDXComponents _[`#835`](https://github.com/yamcodes/arkenv/pull/835) [`2b41340`](https://github.com/yamcodes/arkenv/commit/2b41340990cee90e7cc4a81b189d0be71706c847) [@renovate](https://github.com/apps/renovate)_
 
 ## 0.0.6
 
-### Patch Changes
+### Patch changes
 
 - #### Fix transparent hamburger menu background issue on mobile _[`9237bf5`](https://github.com/yamcodes/arkenv/commit/9237bf5bc4ded6020078ffa9e231af8be9581fba) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.5
 
-### Patch Changes
+### Patch changes
 
 - #### Hide esc button hint for search on mobile _[`34cf4fb`](https://github.com/yamcodes/arkenv/commit/34cf4fb9d8d97383661f85d255e4ee233d7dff96) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.4
 
-### Patch Changes
+### Patch changes
 
 - #### Add `Header` component _[`#828`](https://github.com/yamcodes/arkenv/pull/828) [`e1f3183`](https://github.com/yamcodes/arkenv/commit/e1f3183f0fbdf5ea4fe5f529a061fdf451fba31c) [@yamcodes](https://github.com/yamcodes)_
 
@@ -58,7 +58,7 @@
 
 ## 0.0.3
 
-### Patch Changes
+### Patch changes
 
 - #### Fix misconfigured package.json _[`a23997c`](https://github.com/yamcodes/arkenv/commit/a23997cb01b86a1e6ffd29df8279e22601864ced) [@yamcodes](https://github.com/yamcodes)_
 
@@ -66,7 +66,7 @@
 
 ## 0.0.2
 
-### Patch Changes
+### Patch changes
 
 - #### First release _[`#775`](https://github.com/yamcodes/arkenv/pull/775) [`bb34860`](https://github.com/yamcodes/arkenv/commit/bb34860193dcb9a29026d84921b35e16a92f409b) [@yamcodes](https://github.com/yamcodes)_
 

@@ -1,11 +1,11 @@
 ---
-title: Use isolatedModules for Single-File Transpilation
+title: Use isolatedModules for single-file transpilation
 impact: CRITICAL
 impactDescription: 80-90% faster transpilation with bundlers
 tags: tscfg, isolatedModules, transpilation, bundlers, performance
 ---
 
-## Use isolatedModules for Single-File Transpilation
+## Use isolatedModules for single-file transpilation
 
 The `isolatedModules` flag ensures each file can be transpiled independently, enabling parallel transpilation by bundlers like esbuild, swc, or Babel. This bypasses TypeScript's slower multi-file analysis.
 

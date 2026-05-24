@@ -1,11 +1,11 @@
 ---
-title: Avoid Object Spread in Hot Loops
+title: Avoid object spread in hot loops
 impact: LOW-MEDIUM
 impactDescription: reduces object allocations by N×
 tags: runtime, object-spread, loops, allocation, performance
 ---
 
-## Avoid Object Spread in Hot Loops
+## Avoid object spread in hot loops
 
 Object spread (`...`) creates a new object on each use. In loops, this causes N object allocations and copies. Mutate objects directly when creating new instances isn't required.
 

@@ -1,11 +1,11 @@
 ---
-title: Use Dynamic Imports for Large Modules
+title: Use dynamic imports for large modules
 impact: HIGH
 impactDescription: reduces initial bundle by 30-70%
 tags: module, dynamic-import, code-splitting, lazy-loading, bundling
 ---
 
-## Use Dynamic Imports for Large Modules
+## Use dynamic imports for large modules
 
 Dynamic `import()` creates separate chunks that load on demand. Use them for large dependencies, route-specific code, and features that aren't needed immediately.
 

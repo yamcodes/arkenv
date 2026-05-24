@@ -8,7 +8,7 @@
 
 <br />
 
-## [Read the docs →](https://arkenv.js.org/docs/bun-plugin)
+## [Read the docs →](https://arkenv.js.org/docs/Bun-plugin)
 
 <br />
 

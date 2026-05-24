@@ -5,7 +5,7 @@ metadata:
   internal: true
 ---
 
-# Improve Codebase Architecture
+# Improve codebase architecture
 
 Surface architectural friction and propose **deepening opportunities** — refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
 

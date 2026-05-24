@@ -1,8 +1,8 @@
-# State Management
+# State management
 
 Divide state into categories based on usage rather than storing everything centrally.
 
-## State Categories
+## State categories
 
 | State Type         | Description                                       | Solutions                                              |
 | ------------------ | ------------------------------------------------- | ------------------------------------------------------ |
@@ -12,7 +12,7 @@ Divide state into categories based on usage rather than storing everything centr
 | Form State         | Form inputs, validation, submission               | React Hook Form, Formik, React Final Form              |
 | URL State          | Data in the address bar (params, query strings)   | React Router, URL search params                        |
 
-## Component State
+## Component state
 
 Start by defining state within the component. Elevate to a higher level only if needed elsewhere.
 
@@ -22,7 +22,7 @@ const [isOpen, setIsOpen] = useState(false);
 
 Use `useReducer` when a single action should update multiple pieces of state.
 
-## Application State
+## Application state
 
 Localize state as closely as possible to the components that need it. Avoid globalizing state prematurely.
 
@@ -36,7 +36,7 @@ Good options:
 
 Use [use-context-selector](https://github.com/dai-shi/use-context-selector) if Context causes performance issues (most state libraries have selectors built in).
 
-## Server Cache State
+## Server cache state
 
 Never copy query data into `useState` — use the query result directly.
 
@@ -57,7 +57,7 @@ Good options:
 - [URQL](https://formidable.com/open-source/urql/) — GraphQL
 - [RTK Query](https://redux-toolkit.js.org/rtk-query) — REST
 
-## Form State
+## Form state
 
 Create abstracted `Form` and input field components that wrap the library and adapt to your application:
 
@@ -70,7 +70,7 @@ Integrate with validation libraries like [Zod](https://github.com/colinhacks/zod
 
 Forms can be [controlled or uncontrolled](https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components) — choose based on need.
 
-## URL State
+## URL state
 
 Use routing solutions to access and control URL parameters:
 
@@ -84,7 +84,7 @@ const [searchParams] = useSearchParams();
 
 URL state is ideal for filters, pagination, active tabs, and shareable views.
 
-## Key Principles
+## Key principles
 
 - Don't mix server and client state.
 - Start local, elevate state only when necessary.

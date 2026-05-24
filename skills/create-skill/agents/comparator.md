@@ -1,4 +1,4 @@
-# Blind Comparator Agent
+# Blind comparator agent
 
 Compare two outputs WITHOUT knowing which skill produced them.
 
@@ -19,14 +19,14 @@ You receive these parameters in your prompt:
 
 ## Process
 
-### Step 1: Read Both Outputs
+### Step 1: read both outputs
 
 1. Examine output A (file or directory)
 2. Examine output B (file or directory)
 3. Note the type, structure, and content of each
 4. If outputs are directories, examine all relevant files inside
 
-### Step 2: Understand the Task
+### Step 2: understand the task
 
 1. Read the eval_prompt carefully
 2. Identify what the task requires:
@@ -34,7 +34,7 @@ You receive these parameters in your prompt:
    - What qualities matter (accuracy, completeness, format)?
    - What would distinguish a good output from a poor one?
 
-### Step 3: Generate Evaluation Rubric
+### Step 3: generate evaluation rubric
 
 Based on the task, generate a rubric with two dimensions:
 
@@ -60,7 +60,7 @@ Adapt criteria to the specific task. For example:
 - Document → "Section structure", "Heading hierarchy", "Paragraph flow"
 - Data output → "Schema correctness", "Data types", "Completeness"
 
-### Step 4: Evaluate Each Output Against the Rubric
+### Step 4: evaluate each output against the rubric
 
 For each output (A and B):
 
@@ -68,7 +68,7 @@ For each output (A and B):
 2. **Calculate dimension totals**: Content score, Structure score
 3. **Calculate overall score**: Average of dimension scores, scaled to 1-10
 
-### Step 5: Check Assertions (if provided)
+### Step 5: check assertions (if provided)
 
 If expectations are provided:
 
@@ -77,7 +77,7 @@ If expectations are provided:
 3. Count pass rates for each output
 4. Use expectation scores as secondary evidence (not the primary decision factor)
 
-### Step 6: Determine the Winner
+### Step 6: determine the winner
 
 Compare A and B based on (in priority order):
 
@@ -87,11 +87,11 @@ Compare A and B based on (in priority order):
 
 Be decisive - ties should be rare. One output is usually better, even if marginally.
 
-### Step 7: Write Comparison Results
+### Step 7: write comparison results
 
 Save results to a JSON file at the path specified (or `comparison.json` if not specified).
 
-## Output Format
+## Output format
 
 Write a JSON file with this structure:
 
@@ -174,7 +174,7 @@ Write a JSON file with this structure:
 
 If no expectations were provided, omit the `expectation_results` field entirely.
 
-## Field Descriptions
+## Field descriptions
 
 - **winner**: "A", "B", or "TIE"
 - **reasoning**: Clear explanation of why the winner was chosen (or why it's a tie)

@@ -2,7 +2,7 @@
 
 Thank you for considering a contribution to ArkEnv! As an open source project, ArkEnv welcomes contributions of all kinds.
 
-## Development Setup
+## Development setup
 
 1. ### Install pnpm
 
@@ -25,7 +25,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
    pnpm install
    ```
 
-## Making Changes
+## Making changes
 
 1. Fork the repository and create your branch from `main`
 2. If you've added code that should be tested, add tests
@@ -42,7 +42,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 6. Commit the generated changeset file along with your changes
 7. Issue that pull request!
 
-## Deployment Rate Limiter
+## Deployment rate limiter
 
 To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
 
@@ -63,7 +63,7 @@ To create a changeset:
 
 The changeset will be automatically used to bump versions and update the changelog when your PR is merged.
 
-## All Contributors
+## All contributors
 
 We use the [All Contributors](https://allcontributors.org/) specification to recognize all contributions.
 

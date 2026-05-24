@@ -1,11 +1,11 @@
 ---
-title: Avoid Large Union Types
+title: Avoid large union types
 impact: CRITICAL
 impactDescription: quadratic O(n²) comparison cost
 tags: type, unions, compilation, performance, discriminated-unions
 ---
 
-## Avoid Large Union Types
+## Avoid large union types
 
 Union type checking is quadratic — TypeScript compares each union member pairwise. Unions with 50+ elements cause measurable compilation slowdowns and IDE lag. This commonly occurs with generated types (GraphQL schemas, API response codes, database enums).
 

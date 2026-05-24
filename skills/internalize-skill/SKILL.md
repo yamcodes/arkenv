@@ -5,7 +5,7 @@ metadata:
   internal: true
 ---
 
-# Internalize Skill
+# Internalize skill
 
 This skill automates the process of moving externally installed skills to the project's internal `skills/` directory, tagging them as internal, and optionally renaming and attributing them.
 
@@ -33,11 +33,11 @@ This skill automates the process of moving externally installed skills to the pr
 4. **Append Markdown Credits (Optional):**
    - If the skill was renamed or customized, append a `## Credits` or `## Acknowledgements` section at the bottom of the skill's `SKILL.md` file linking back to the original source.
 
-## Implementation Details
+## Implementation details
 
 The skill should rely on standard bash commands for efficiency and portability.
 
-### Moving & Renaming Skills
+### Moving & renaming skills
 
 ```bash
 # If keeping the same name:
@@ -47,7 +47,7 @@ mv .agents/skills/<old-name> skills/
 mv .agents/skills/<old-name> skills/<new-name>
 ```
 
-### Updating Metadata
+### Updating metadata
 
 Use code edits or `awk` to update `SKILL.md` frontmatter. The logic should:
 
@@ -69,7 +69,7 @@ metadata:
 ---
 ```
 
-## Safety Checks
+## Safety checks
 
 - Ensure the root `skills/` directory exists before moving.
 - Verify `SKILL.md` exists in the target directory before attempting to edit it.

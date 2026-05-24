@@ -7,7 +7,7 @@ description: Migrating from npm or Yarn to pnpm with minimal friction
 
 Guide for migrating existing projects from npm or Yarn to pnpm.
 
-## Quick Migration
+## Quick migration
 
 ### From npm
 
@@ -19,7 +19,7 @@ rm -rf node_modules package-lock.json
 pnpm install
 ```
 
-### From Yarn
+### From yarn
 
 ```bash
 # Remove yarn lockfile and node_modules
@@ -29,7 +29,7 @@ rm -rf node_modules yarn.lock
 pnpm install
 ```
 
-### Import Existing Lockfile
+### Import existing lockfile
 
 pnpm can import existing lockfiles:
 
@@ -43,9 +43,9 @@ pnpm import
 # - npm-shrinkwrap.json (npm)
 ```
 
-## Handling Common Issues
+## Handling common issues
 
-### Phantom Dependencies
+### Phantom dependencies
 
 pnpm is strict about dependencies. If code imports a package not in `package.json`, it will fail.
 
@@ -60,7 +60,7 @@ import lodash from 'lodash' // Not in dependencies, installed by another package
 pnpm add lodash
 ```
 
-### Missing Peer Dependencies
+### Missing peer dependencies
 
 pnpm reports peer dependency issues by default.
 
@@ -86,7 +86,7 @@ pnpm add react react-dom
 }
 ```
 
-### Symlink Issues
+### Symlink issues
 
 Some tools don't work with symlinks. Use hoisted mode:
 
@@ -102,7 +102,7 @@ public-hoist-pattern[]=*eslint*
 public-hoist-pattern[]=*babel*
 ```
 
-### Native Module Rebuilds
+### Native module rebuilds
 
 If native modules fail, try:
 
@@ -115,9 +115,9 @@ rm -rf node_modules
 pnpm install
 ```
 
-## Monorepo Migration
+## Monorepo migration
 
-### From npm Workspaces
+### From npm workspaces
 
 1. Create `pnpm-workspace.yaml`:
    ```yaml
@@ -140,7 +140,7 @@ pnpm install
    pnpm install
    ```
 
-### From Yarn Workspaces
+### From yarn workspaces
 
 1. Remove Yarn-specific files:
    ```bash
@@ -170,7 +170,7 @@ pnpm install
    "@myorg/utils": "workspace:*"
    ```
 
-### From Lerna
+### From lerna
 
 pnpm can replace Lerna for most use cases:
 
@@ -197,9 +197,9 @@ pnpm changeset version
 pnpm publish -r
 ```
 
-## Configuration Migration
+## Configuration migration
 
-### .npmrc Settings
+### .Npmrc settings
 
 Most npm/Yarn settings work in pnpm's `.npmrc`:
 
@@ -216,7 +216,7 @@ auto-install-peers=true
 strict-peer-dependencies=false
 ```
 
-### Scripts Migration
+### Scripts migration
 
 Most scripts work unchanged. Update pnpm-specific patterns:
 
@@ -236,7 +236,7 @@ Most scripts work unchanged. Update pnpm-specific patterns:
 }
 ```
 
-## CI/CD Migration
+## Ci/cd migration
 
 Update CI configuration:
 
@@ -256,7 +256,7 @@ Add to `package.json` for Corepack:
 }
 ```
 
-## Gradual Migration
+## Gradual migration
 
 For large projects, migrate gradually:
 
@@ -266,7 +266,7 @@ For large projects, migrate gradually:
 4. **Update documentation**: Update README, CONTRIBUTING
 5. **Remove old files**: Delete old lockfiles after team adoption
 
-## Rollback Plan
+## Rollback plan
 
 If migration causes issues:
 

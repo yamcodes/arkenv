@@ -1,4 +1,4 @@
-# GitHub Issue Tracker
+# GitHub issue tracker
 
 This file is a placeholder. The canonical source for GitHub issue tracker conventions is located at:
 `.agent/docs/issue-tracker.md`

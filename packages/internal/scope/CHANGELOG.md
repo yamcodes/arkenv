@@ -1,8 +1,8 @@
-# @repo/scope
+# @Repo/scope
 
 ## 0.1.3
 
-### Patch Changes
+### Patch changes
 
 - #### Remove internal `@repo/keywords` package _[`#726`](https://github.com/yamcodes/arkenv/pull/726) [`926ef9b`](https://github.com/yamcodes/arkenv/commit/926ef9b5a322187feef7fce3a842b04d5ec197fa) [@yamcodes](https://github.com/yamcodes)_
 
@@ -12,7 +12,7 @@
 
 ## 0.1.2
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -28,7 +28,7 @@
 
 ## 0.1.1
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -44,14 +44,14 @@
 
 ## 0.1.0
 
-### Minor Changes
+### Minor changes
 
 - #### Align scope with central coercion _[`#569`](https://github.com/yamcodes/arkenv/pull/569) [`adaada4`](https://github.com/yamcodes/arkenv/commit/adaada4d214c152e8d23c983aea1747d81a0e539) [@yamcodes](https://github.com/yamcodes)_
 
   - **BREAKING**: Removed the custom `boolean` keyword from the root scope. ArkEnv now uses the standard ArkType `boolean` primitive combined with global coercion.
   - Updated `number.port` to use the new strict numeric refinement, as string parsing is now handled by global coercion.
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -67,7 +67,7 @@
 
 ## 0.0.1
 
-### Patch Changes
+### Patch changes
 
 - #### Export $ type _[`#531`](https://github.com/yamcodes/arkenv/pull/531) [`e91a804`](https://github.com/yamcodes/arkenv/commit/e91a804dc6ec7d4a80d9bee94e87d3892f013729) [@yamcodes](https://github.com/yamcodes)_
 

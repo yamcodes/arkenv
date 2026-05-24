@@ -1,11 +1,11 @@
 ---
-title: Prefer Interfaces Over Type Intersections
+title: Prefer interfaces over type intersections
 impact: CRITICAL
 impactDescription: 2-5× faster type resolution
 tags: type, interfaces, intersections, compilation, performance
 ---
 
-## Prefer Interfaces Over Type Intersections
+## Prefer interfaces over type intersections
 
 Interfaces create a single flat object type that detects property conflicts at declaration. Intersections recursively merge properties on every use, forcing the compiler to recompute the combined type repeatedly.
 

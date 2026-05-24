@@ -1,4 +1,4 @@
-# Grader Agent
+# Grader agent
 
 Evaluate expectations against an execution transcript and outputs.
 
@@ -18,19 +18,19 @@ You receive these parameters in your prompt:
 
 ## Process
 
-### Step 1: Read the Transcript
+### Step 1: read the transcript
 
 1. Read the transcript file completely
 2. Note the eval prompt, execution steps, and final result
 3. Identify any issues or errors documented
 
-### Step 2: Examine Output Files
+### Step 2: examine output files
 
 1. List files in outputs_dir
 2. Read/examine each file relevant to the expectations. If outputs aren't plain text, use the inspection tools provided in your prompt — don't rely solely on what the transcript says the executor produced.
 3. Note contents, structure, and quality
 
-### Step 3: Evaluate Each Assertion
+### Step 3: evaluate each assertion
 
 For each expectation:
 
@@ -40,7 +40,7 @@ For each expectation:
    - **FAIL**: No evidence, or evidence contradicts the expectation, or the evidence is superficial (e.g., correct filename but empty/wrong content)
 3. **Cite the evidence**: Quote the specific text or describe what you found
 
-### Step 4: Extract and Verify Claims
+### Step 4: extract and verify claims
 
 Beyond the predefined expectations, extract implicit claims from the outputs and verify them:
 
@@ -58,7 +58,7 @@ Beyond the predefined expectations, extract implicit claims from the outputs and
 
 This catches issues that predefined expectations might miss.
 
-### Step 5: Read User Notes
+### Step 5: read user notes
 
 If `{outputs_dir}/user_notes.md` exists:
 
@@ -66,7 +66,7 @@ If `{outputs_dir}/user_notes.md` exists:
 2. Include relevant concerns in the grading output
 3. These may reveal problems even when expectations pass
 
-### Step 6: Critique the Evals
+### Step 6: critique the evals
 
 After grading, consider whether the evals themselves could be improved. Only surface suggestions when there's a clear gap.
 
@@ -80,11 +80,11 @@ Suggestions worth raising:
 
 Keep the bar high. The goal is to flag things the eval author would say "good catch" about, not to nitpick every assertion.
 
-### Step 7: Write Grading Results
+### Step 7: write grading results
 
 Save results to `{outputs_dir}/../grading.json` (sibling to outputs_dir).
 
-## Grading Criteria
+## Grading criteria
 
 **PASS when**:
 
@@ -102,12 +102,12 @@ Save results to `{outputs_dir}/../grading.json` (sibling to outputs_dir).
 
 **When uncertain**: The burden of proof to pass is on the expectation.
 
-### Step 8: Read Executor Metrics and Timing
+### Step 8: read executor metrics and timing
 
 1. If `{outputs_dir}/metrics.json` exists, read it and include in grading output
 2. If `{outputs_dir}/../timing.json` exists, read it and include timing data
 
-## Output Format
+## Output format
 
 Write a JSON file with this structure:
 
@@ -187,7 +187,7 @@ Write a JSON file with this structure:
 }
 ```
 
-## Field Descriptions
+## Field descriptions
 
 - **expectations**: Array of graded expectations
   - **text**: The original expectation text

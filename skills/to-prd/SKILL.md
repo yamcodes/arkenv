@@ -22,7 +22,7 @@ Check with the user that these modules match their expectations. Check with the 
 3. Write the PRD using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
 <prd-template>
-  ## Problem Statement
+  ## Problem statement
 
   The problem that the user is facing, from the user's perspective.
 
@@ -30,7 +30,7 @@ Check with the user that these modules match their expectations. Check with the 
 
   The solution to the problem, from the user's perspective.
 
-  ## User Stories
+  ## User stories
 
   A LONG, numbered list of user stories. Each user story should be in the format of:
 
@@ -42,7 +42,7 @@ Check with the user that these modules match their expectations. Check with the 
 
   This list of user stories should be extremely extensive and cover all aspects of the feature.
 
-  ## Implementation Decisions
+  ## Implementation decisions
 
   A list of implementation decisions that were made. This can include:
 
@@ -58,7 +58,7 @@ Check with the user that these modules match their expectations. Check with the 
 
   Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
 
-  ## Testing Decisions
+  ## Testing decisions
 
   A list of testing decisions that were made. Include:
 
@@ -66,11 +66,11 @@ Check with the user that these modules match their expectations. Check with the 
   - Which modules will be tested
   - Prior art for the tests (i.e. similar types of tests in the codebase)
 
-  ## Out of Scope
+  ## Out of scope
 
   A description of the things that are out of scope for this PRD.
 
-  ## Further Notes
+  ## Further notes
 
   Any further notes about the feature.
 </prd-template>

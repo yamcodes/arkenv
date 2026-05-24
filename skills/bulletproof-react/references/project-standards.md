@@ -1,6 +1,6 @@
-# Project Standards
+# Project standards
 
-## ESLint
+## Eslint
 
 Configure rules in `.eslintrc.js` (or flat config) to identify and prevent common errors. Enforces consistency throughout the codebase and catches mistakes early.
 
@@ -33,7 +33,7 @@ npx husky init
 }
 ```
 
-## Absolute Imports
+## Absolute imports
 
 Always configure absolute imports to avoid messy relative paths like `../../../component`:
 
@@ -59,7 +59,7 @@ import { Button } from "../../../components/ui/button";
 import { Button } from "@/components/ui/button";
 ```
 
-## File Naming Conventions
+## File naming conventions
 
 Enforce kebab-case for files and folders using ESLint:
 
@@ -75,7 +75,7 @@ Enforce kebab-case for files and folders using ESLint:
 ],
 ```
 
-## Naming Conventions
+## Naming conventions
 
 | Item        | Convention              | Example                   |
 | ----------- | ----------------------- | ------------------------- |

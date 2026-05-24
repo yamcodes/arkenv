@@ -1,11 +1,11 @@
 ---
-title: Use WeakMap for Object Metadata
+title: Use WeakMap for object metadata
 impact: MEDIUM
 impactDescription: prevents memory leaks, enables automatic cleanup
 tags: mem, weakmap, metadata, garbage-collection, memory-leaks
 ---
 
-## Use WeakMap for Object Metadata
+## Use WeakMap for object metadata
 
 WeakMap allows garbage collection of keys when no other references exist. Use it for associating metadata with objects without preventing their cleanup.
 

@@ -1,14 +1,14 @@
-# @arkenv/vite-plugin
+# @ArkEnv/Vite-plugin
 
 ## 0.0.33
 
-### Patch Changes
+### Patch changes
 
 - Support Vite 8 _[`#863`](https://github.com/yamcodes/arkenv/pull/863) [`226d2c5`](https://github.com/yamcodes/arkenv/commit/226d2c53dae62b79ba419f7c3d158ab695a41b70) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.32
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -24,7 +24,7 @@
 
 ## 0.0.31
 
-### Patch Changes
+### Patch changes
 
 - #### `arkenv/standard` import _[`#806`](https://github.com/yamcodes/arkenv/pull/806) [`f9010d0`](https://github.com/yamcodes/arkenv/commit/f9010d00c3f05dbd9862e4aeafab099a9dea4d25) [@yamcodes](https://github.com/yamcodes)_
 
@@ -78,7 +78,7 @@
 
 ## 0.0.30
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -94,7 +94,7 @@
 
 ## 0.0.29
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -110,7 +110,7 @@
 
 ## 0.0.28
 
-### Patch Changes
+### Patch changes
 
 - #### Support configuration _[`bb832b1`](https://github.com/yamcodes/arkenv/commit/bb832b11a0d4d627cd7b04c7e7007c0a8e96ce30) [@yamcodes](https://github.com/yamcodes)_
 
@@ -144,7 +144,7 @@
 
 ## 0.0.27
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -160,7 +160,7 @@
 
 ## 0.0.26
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -176,7 +176,7 @@
 
 ## 0.0.25
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -192,7 +192,7 @@
 
 ## 0.0.24
 
-### Patch Changes
+### Patch changes
 
 - #### Support Vite's `envDir` for custom env directories _[`#614`](https://github.com/yamcodes/arkenv/pull/614) [`b5f2781`](https://github.com/yamcodes/arkenv/commit/b5f278153daa7e1a7fb70aa2a7405e14f92c9a01) [@danciudev](https://github.com/danciudev)_
 
@@ -200,7 +200,7 @@
 
 ## 0.0.23
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -216,7 +216,7 @@
 
 ## 0.0.22
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -232,7 +232,7 @@
 
 ## 0.0.21
 
-### Patch Changes
+### Patch changes
 
 - #### Internal refactoring to reduce type duplication _[`#544`](https://github.com/yamcodes/arkenv/pull/544) [`d4800f9`](https://github.com/yamcodes/arkenv/commit/d4800f97d162dbeb9030576f1e97a1f50d876bad) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
 
@@ -258,7 +258,7 @@
 
 ## 0.0.20
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -274,7 +274,7 @@
 
 ## 0.0.19
 
-### Patch Changes
+### Patch changes
 
 - #### Fix "Type instantiation is excessively deep" error _[`1d86d18`](https://github.com/yamcodes/arkenv/commit/1d86d187b08aba7c6b83f7bdce2d47bae47c7eb9) [@yamcodes](https://github.com/yamcodes)_
 
@@ -294,7 +294,7 @@
 
 ## 0.0.18
 
-### Patch Changes
+### Patch changes
 
 - #### `ImportMetaEnvAugmented` type helper for typesafe `import.meta.env` _[`#415`](https://github.com/yamcodes/arkenv/pull/415) [`79bef3c`](https://github.com/yamcodes/arkenv/commit/79bef3c26b87baf6bb3fe92da8bdfdb048a49e71) [@yamcodes](https://github.com/yamcodes)_
 
@@ -304,7 +304,7 @@
 
 ## 0.0.17
 
-### Patch Changes
+### Patch changes
 
 - #### Support type definitions for schema reuse _[`2424391`](https://github.com/yamcodes/arkenv/commit/24243912101b8a1ef944a3d4d15747196a1a2215) [@yamcodes](https://github.com/yamcodes)_
 
@@ -342,7 +342,7 @@
 
 ## 0.0.16
 
-### Patch Changes
+### Patch changes
 
 - #### Add declaration maps for better IDE experience _[`#360`](https://github.com/yamcodes/arkenv/pull/360) [`17c970f`](https://github.com/yamcodes/arkenv/commit/17c970fb6d8ac433669e9d42c21b5ce6002066dd) [@yamcodes](https://github.com/yamcodes)_
 
@@ -366,7 +366,7 @@
 
 ## 0.0.15
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -382,13 +382,13 @@
 
 ## 0.0.14
 
-### Patch Changes
+### Patch changes
 
 - #### Support array defaults using `type().default()` syntax _[`#224`](https://github.com/yamcodes/arkenv/pull/224) [`ecf9b64`](https://github.com/yamcodes/arkenv/commit/ecf9b64a680d3af5c5786b288fda35608590f7a9) [@yamcodes](https://github.com/yamcodes)_
 
   Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by the plugin due to overly restrictive type constraints. The plugin now accepts any string-keyed record while still maintaining typesafety through ArkType's validation system.
 
-  ##### New Features
+  ##### New features
 
   - Array defaults to empty using `type("string[]").default(() => [])` syntax
   - Support for complex array types with defaults
@@ -425,7 +425,7 @@
 
 ## 0.0.13
 
-### Patch Changes
+### Patch changes
 
 - #### Support Vite 2.x _[`#212`](https://github.com/yamcodes/arkenv/pull/212) [`bfe08f6`](https://github.com/yamcodes/arkenv/commit/bfe08f6d9f21352186420f0f68611840e164da52) [@yamcodes](https://github.com/yamcodes)_
 
@@ -447,7 +447,7 @@
 
 ## 0.0.12
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -463,7 +463,7 @@
 
 ## 0.0.11
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -479,7 +479,7 @@
 
 ## 0.0.10
 
-### Patch Changes
+### Patch changes
 
 - #### Fix types _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
 
@@ -532,7 +532,7 @@
 
 ## 0.0.9
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -548,7 +548,7 @@
 
 ## 0.0.8
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -564,7 +564,7 @@
 
 ## 0.0.7
 
-### Patch Changes
+### Patch changes
 
 - Upgraded ArkType peer dependency from `^2.0.0` to `^2.1.22` for compatibility with the latest version of ArkEnv _[`#129`](https://github.com/yamcodes/arkenv/pull/129) [`dd15b60`](https://github.com/yamcodes/arkenv/commit/dd15b608281b04eaac1bf93d3911a234e7e7565d) [@yamcodes](https://github.com/yamcodes)_
 
@@ -582,7 +582,7 @@
 
 ## 0.0.6
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -598,7 +598,7 @@
 
 ## 0.0.4
 
-### Patch Changes
+### Patch changes
 
 - Use new `arkenv` package _[`#102`](https://github.com/yamcodes/arkenv/pull/102) [`dfdc17f`](https://github.com/yamcodes/arkenv/commit/dfdc17f3510a9c07586201ecaf310cba3b22d67f) [@yamcodes](https://github.com/yamcodes)_
 
@@ -618,7 +618,7 @@
 
 ## 0.0.3
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -634,7 +634,7 @@
 
 ## 0.0.2
 
-### Patch Changes
+### Patch changes
 
 - Support `import.meta.env` environment variables _[`f1c2a02`](https://github.com/yamcodes/arkenv/commit/f1c2a02d2c754261f5cc14f99604d267e6df86db) [@yamcodes](https://github.com/yamcodes)_
 
@@ -644,6 +644,6 @@
 
 ## 0.0.1
 
-### Patch Changes
+### Patch changes
 
 - First release _[`#68`](https://github.com/yamcodes/arkenv/pull/68) [`0a89ed4`](https://github.com/yamcodes/arkenv/commit/0a89ed4af85677fc80690a84afd0077f11bf1508) [@yamcodes](https://github.com/yamcodes)_

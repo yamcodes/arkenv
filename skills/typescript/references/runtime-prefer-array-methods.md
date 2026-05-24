@@ -1,11 +1,11 @@
 ---
-title: Prefer Native Array Methods Over Lodash
+title: Prefer native array methods over lodash
 impact: LOW-MEDIUM
 impactDescription: eliminates library overhead, enables tree-shaking
 tags: runtime, arrays, lodash, native-methods, bundling
 ---
 
-## Prefer Native Array Methods Over Lodash
+## Prefer native array methods over lodash
 
 Modern JavaScript includes most common array operations. Native methods are faster (no function call overhead) and don't add bundle weight. Use native methods when they provide equivalent functionality.
 

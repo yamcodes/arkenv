@@ -1,8 +1,8 @@
-# Use Architecture Decision Records (ADRs)
+# Use architecture decision records (adrs)
 
 To document significant architectural design decisions and transition away from the tool-heavy, active OpenSpec workflow.
 
-## Context & Problem
+## Context & problem
 
 Previously, the project used the active Spec-Driven Development workflow (OpenSpec) with custom tooling, commands, workflows, and platform-specific configurations. While this provided detailed specifications, maintaining custom developer-facing platform scripts and agent-specific workspace tools added significant overhead and increased repository complexity.
 

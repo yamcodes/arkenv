@@ -3,17 +3,17 @@ name: pnpm-store
 description: Content-addressable storage system that makes pnpm fast and disk-efficient
 ---
 
-# pnpm Store
+# pnpm store
 
 pnpm uses a content-addressable store to save disk space and speed up installations. All packages are stored once globally and hard-linked to project `node_modules`.
 
-## How It Works
+## How it works
 
 1. **Global Store**: Packages are downloaded once to a central store
 2. **Hard Links**: Projects link to store instead of copying files
 3. **Content-Addressable**: Files are stored by content hash, deduplicating identical files
 
-### Storage Layout
+### Storage layout
 
 ```
 ~/.pnpm-store/              # Global store (default location)
@@ -35,7 +35,7 @@ project/
     └── express -> .pnpm/express@4.18.2/node_modules/express
 ```
 
-## Store Commands
+## Store commands
 
 ```bash
 # Show store location
@@ -53,7 +53,7 @@ pnpm store add <pkg>
 
 ## Configuration
 
-### Store Location
+### Store location
 
 ```ini
 # .npmrc
@@ -63,7 +63,7 @@ store-dir=~/.pnpm-store
 PNPM_HOME=~/.local/share/pnpm
 ```
 
-### Virtual Store
+### Virtual store
 
 The virtual store (`.pnpm` in `node_modules`) contains symlinks to the global store:
 
@@ -75,7 +75,7 @@ virtual-store-dir=node_modules/.pnpm
 node-linker=hoisted
 ```
 
-## Disk Space Benefits
+## Disk space benefits
 
 pnpm saves significant disk space:
 
@@ -91,7 +91,7 @@ du -sh node_modules        # Apparent size
 du -sh --apparent-size node_modules  # With hard links counted
 ```
 
-## Node Linker Modes
+## Node linker modes
 
 Configure how `node_modules` is structured:
 
@@ -106,19 +106,19 @@ node-linker=hoisted
 node-linker=pnp
 ```
 
-### Isolated Mode (Default)
+### Isolated mode (default)
 
 - Strict dependency resolution
 - No phantom dependencies
 - Packages can only access declared dependencies
 
-### Hoisted Mode
+### Hoisted mode
 
 - Flat `node_modules` like npm
 - For compatibility with tools that don't support symlinks
 - Loses strictness benefits
 
-## Side Effects Cache
+## Side effects cache
 
 Cache build outputs for native modules:
 
@@ -130,7 +130,7 @@ side-effects-cache=true
 side-effects-cache-readonly=true
 ```
 
-## Shared Store Across Machines
+## Shared store across machines
 
 For CI/CD, you can share the store:
 
@@ -159,7 +159,7 @@ pnpm store status
 pnpm store prune
 ```
 
-### Hard link issues (network drives, Docker)
+### Hard link issues (network drives, docker)
 ```ini
 # Use copying instead of hard links
 package-import-method=copy

@@ -1,4 +1,4 @@
-# Out-of-Scope Knowledge Base
+# Out-of-scope knowledge base
 
 The `.out-of-scope/` directory in a repo stores persistent records of rejected feature requests. It serves two purposes:
 

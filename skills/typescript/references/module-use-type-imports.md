@@ -1,11 +1,11 @@
 ---
-title: Use Type-Only Imports for Types
+title: Use type-only imports for types
 impact: HIGH
 impactDescription: eliminates runtime imports for type information
 tags: module, type-imports, tree-shaking, bundling, compilation
 ---
 
-## Use Type-Only Imports for Types
+## Use type-only imports for types
 
 Type-only imports (`import type`) are completely erased during compilation, preventing unnecessary runtime module loading. Regular imports of types can force module execution even when only the type is needed.
 

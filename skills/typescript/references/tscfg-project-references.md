@@ -1,11 +1,11 @@
 ---
-title: Use Project References for Large Codebases
+title: Use project references for large codebases
 impact: CRITICAL
 impactDescription: 60-80% faster incremental builds
 tags: tscfg, project-references, monorepo, tsconfig, compilation
 ---
 
-## Use Project References for Large Codebases
+## Use project references for large codebases
 
 Project references split a codebase into independent compilation units. Each project compiles separately, enabling parallel builds and preventing the compiler from loading the entire codebase at once.
 

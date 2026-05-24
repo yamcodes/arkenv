@@ -1,11 +1,11 @@
 ---
-title: Use satisfies for Type Validation with Inference
+title: Use satisfies for type validation with inference
 impact: LOW
 impactDescription: prevents property access errors, enables 100% autocomplete accuracy
 tags: advanced, satisfies, inference, validation, type-checking
 ---
 
-## Use satisfies for Type Validation with Inference
+## Use satisfies for type validation with inference
 
 The `satisfies` operator validates that a value conforms to a type while preserving the narrower inferred type. This gives you both type safety and precise autocomplete.
 

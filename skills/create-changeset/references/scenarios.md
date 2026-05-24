@@ -1,6 +1,6 @@
-# Changeset Scenarios & Examples
+# Changeset scenarios & examples
 
-## Bug Fix
+## Bug fix
 
 ```markdown
 ---
@@ -12,7 +12,7 @@
 Categories with parent slugs now correctly link to their parent categories during the deploy operation.
 ```
 
-## New Feature
+## New feature
 
 ````markdown
 ---
@@ -39,7 +39,7 @@ console.log(env.PORT) // number
 ```
 ````
 
-## Breaking Change (v0)
+## Breaking change (v0)
 
 ````markdown
 ---
@@ -63,7 +63,7 @@ createEnv({ schema }, { strict: true })
 Migration: Update your `createEnv` calls to separate the options from the schema configuration.
 ````
 
-## Multiple Related Changes
+## Multiple related changes
 
 ```markdown
 ---
@@ -78,9 +78,9 @@ Migration: Update your `createEnv` calls to separate the options from the schema
 - Add `--continue-on-error` flag to proceed despite failures
 ```
 
-## Analyzing Changes for Bump Type
+## Analyzing changes for bump type
 
-### Check git diff
+### Check Git diff
 
 ```bash
 # See what changed since last release
@@ -90,7 +90,7 @@ git log --oneline main..HEAD
 git diff main..HEAD -- src/
 ```
 
-### Key Questions (v0 Context)
+### Key questions (v0 context)
 
 1. **Did the public API change?**
    - CLI commands modified → minor
@@ -106,7 +106,7 @@ git diff main..HEAD -- src/
    - Yes, improved existing → patch
    - No, internal only → patch
 
-## Pre-Release Versions
+## Pre-release versions
 
 For beta/alpha releases:
 

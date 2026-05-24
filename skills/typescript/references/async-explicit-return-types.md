@@ -1,11 +1,11 @@
 ---
-title: Annotate Async Function Return Types
+title: Annotate async function return types
 impact: HIGH
 impactDescription: prevents runtime errors, improves inference
 tags: async, return-types, promises, type-safety, inference
 ---
 
-## Annotate Async Function Return Types
+## Annotate async function return types
 
 Explicit return types on async functions catch mismatches at the function boundary rather than at call sites. They also improve IDE performance by avoiding full function body inference.
 

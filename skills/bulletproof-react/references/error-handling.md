@@ -1,6 +1,6 @@
-# Error Handling
+# Error handling
 
-## API Errors
+## API errors
 
 Implement an interceptor on the API client to manage errors centrally:
 
@@ -28,11 +28,11 @@ api.interceptors.response.use(
 );
 ```
 
-## Error Boundaries
+## Error boundaries
 
 Use multiple error boundaries placed at different levels rather than a single one for the entire app. If an error occurs, it is contained locally without disrupting the whole application.
 
-### Error Hierarchy
+### Error hierarchy
 
 ```text
 App Error Boundary          → catches unrecoverable crashes
@@ -40,7 +40,7 @@ App Error Boundary          → catches unrecoverable crashes
         └── Feature Error Boundary   → catches feature-specific errors
 ```
 
-### Usage Pattern
+### Usage pattern
 
 ```tsx
 <ErrorBoundary fallback={<FeatureError />}>
@@ -52,7 +52,7 @@ App Error Boundary          → catches unrecoverable crashes
 
 Wrap each route and major feature section in its own boundary with meaningful fallback UI.
 
-## Error Tracking
+## Error tracking
 
 Use tools like [Sentry](https://sentry.io/) to track production errors. Don't build custom solutions — purpose-built tools provide:
 
@@ -63,7 +63,7 @@ Use tools like [Sentry](https://sentry.io/) to track production errors. Don't bu
 
 Upload source maps to Sentry to see exactly where in your source code the error occurred.
 
-## Typed Error Responses
+## Typed error responses
 
 Define consistent error response types:
 

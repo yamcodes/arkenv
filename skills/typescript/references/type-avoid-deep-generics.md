@@ -1,11 +1,11 @@
 ---
-title: Avoid Deeply Nested Generic Types
+title: Avoid deeply nested generic types
 impact: CRITICAL
 impactDescription: prevents exponential instantiation cost
 tags: type, generics, nesting, instantiation, performance
 ---
 
-## Avoid Deeply Nested Generic Types
+## Avoid deeply nested generic types
 
 Each layer of generic nesting multiplies type instantiation cost. Flatten generic hierarchies or use intermediate type aliases to reduce the combinatorial explosion of type checking.
 

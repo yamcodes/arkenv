@@ -1,11 +1,11 @@
 ---
-title: Cache Property Access in Loops
+title: Cache property access in loops
 impact: LOW-MEDIUM
 impactDescription: reduces property lookups by N× in hot paths
 tags: runtime, loops, caching, property-access, optimization
 ---
 
-## Cache Property Access in Loops
+## Cache property access in loops
 
 Cache deeply nested or polymorphic property access before hot loops. **Note:** Modern V8's inline caches optimize monomorphic access efficiently — this optimization is only meaningful for 10,000+ iterations with deeply nested or polymorphic properties.
 

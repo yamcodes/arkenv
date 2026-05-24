@@ -1,11 +1,11 @@
 ---
-title: Use Template Literal Types for String Patterns
+title: Use template literal types for string patterns
 impact: LOW
 impactDescription: prevents 100% of string format errors at compile time
 tags: advanced, template-literals, string-types, patterns, validation
 ---
 
-## Use Template Literal Types for String Patterns
+## Use template literal types for string patterns
 
 Template literal types allow defining string patterns at the type level. TypeScript validates that strings match the expected format at compile time.
 

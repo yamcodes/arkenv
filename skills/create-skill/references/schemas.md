@@ -1,4 +1,4 @@
-# JSON Schemas
+# JSON schemas
 
 This document defines the JSON schemas used by create-skill.
 

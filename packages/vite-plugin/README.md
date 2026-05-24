@@ -8,7 +8,7 @@
 
 <br />
 
-## [Read the docs →](https://arkenv.js.org/docs/vite-plugin)
+## [Read the docs →](https://arkenv.js.org/docs/Vite-plugin)
 
 <br />
 

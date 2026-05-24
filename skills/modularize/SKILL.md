@@ -9,11 +9,11 @@ metadata:
 
 A skill for automatically refactoring, splitting, and compressing codebase files when they exceed size or complexity boundaries.
 
-## 1. Core Heuristics & Guardrails
+## 1. Core heuristics & guardrails
 
 Rather than enforcing a strict, rigid line count, utilize \~200 lines as a **warning light/signal** to evaluate logical cohesion and maintainability.
 
-### Heuristics to Evaluate Before Refactoring:
+### Heuristics to evaluate before refactoring:
 
 - **Logical Cohesion**: Does the file focus on one primary concern? Or does it contain independent blocks?
 - **Function/Block Size**: Prioritize keeping functions small (under 20-30 lines) first.
@@ -28,9 +28,9 @@ Rather than enforcing a strict, rigid line count, utilize \~200 lines as a **war
 
 ---
 
-## 2. Refactoring Patterns
+## 2. Refactoring patterns
 
-### A. Test Files
+### A. test files
 
 For large test suites (e.g., splitting a 600+ line test file):
 
@@ -38,7 +38,7 @@ For large test suites (e.g., splitting a 600+ line test file):
 - **Shared Setup**: Extract common setup, beforeEach/afterEach hooks, mocks, or helper functions into a small local test utility or shared helper file, but only when duplication is real and significant.
 - **Run Focused Tests**: After splitting, run the affected test suite files individually before running the wider project check.
 
-### B. Source Modules
+### B. source modules
 
 For CLI commands, components, or services:
 
@@ -48,7 +48,7 @@ For CLI commands, components, or services:
 
 ---
 
-## 3. Step-by-Step Workflow
+## 3. Step-by-step workflow
 
 1. **Inspect & Classify**: Read the file, identify dependencies/imports, and evaluate heuristics to decide whether to refactor or abort.
 2. **Design Boundaries**: Formulate a plan for the split. Define clear boundaries, minimal interfaces, and ensure no public contracts are broken.

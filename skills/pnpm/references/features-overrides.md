@@ -3,15 +3,15 @@ name: pnpm-overrides
 description: Force specific versions of dependencies including transitive dependencies
 ---
 
-# pnpm Overrides
+# pnpm overrides
 
 Overrides let you force specific versions of packages, including transitive dependencies. Useful for fixing security vulnerabilities or compatibility issues.
 
-## Basic Syntax
+## Basic syntax
 
 Define overrides in `pnpm-workspace.yaml` (recommended) or `package.json`:
 
-### In pnpm-workspace.yaml (Recommended)
+### In pnpm-workspace.yaml (recommended)
 
 ```yaml
 packages:
@@ -45,7 +45,7 @@ overrides:
 }
 ```
 
-## Override Patterns
+## Override patterns
 
 ### Override all instances
 ```yaml
@@ -89,9 +89,9 @@ overrides:
 ```
 The `-` removes the package entirely.
 
-## Common Use Cases
+## Common use cases
 
-### Security Fix
+### Security fix
 
 Force patched version of vulnerable package:
 
@@ -102,7 +102,7 @@ overrides:
   "json5": "^2.2.3"
 ```
 
-### Deduplicate Dependencies
+### Deduplicate dependencies
 
 Force single version when multiple are installed:
 
@@ -112,21 +112,21 @@ overrides:
   "react-dom": "^18.2.0"
 ```
 
-### Fix Peer Dependency Issues
+### Fix peer dependency issues
 
 ```yaml
 overrides:
   "@types/react": "^18.2.0"
 ```
 
-### Replace Deprecated Package
+### Replace deprecated package
 
 ```yaml
 overrides:
   "request": "npm:@cypress/request@^3.0.0"
 ```
 
-## Hooks Alternative
+## Hooks alternative
 
 For more complex scenarios, use `.pnpmfile.cjs`:
 
@@ -156,7 +156,7 @@ module.exports = {
 }
 ```
 
-## Overrides vs Catalogs
+## Overrides vs catalogs
 
 | Feature | Overrides | Catalogs |
 |---------|-----------|----------|

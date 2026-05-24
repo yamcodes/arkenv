@@ -1,11 +1,11 @@
 ---
-title: Use Assertion Functions for Validation
+title: Use assertion functions for validation
 impact: MEDIUM-HIGH
 impactDescription: reduces validation boilerplate by 50-70%
 tags: safety, assertion-functions, asserts, validation, narrowing
 ---
 
-## Use Assertion Functions for Validation
+## Use assertion functions for validation
 
 Assertion functions (`asserts` return type) tell TypeScript that if the function returns, the condition is true. This narrows types in the calling scope without explicit if-checks.
 

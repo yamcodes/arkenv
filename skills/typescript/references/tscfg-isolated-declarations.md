@@ -1,11 +1,11 @@
 ---
-title: Enable isolatedDeclarations for Parallel Declaration Emit
+title: Enable isolatedDeclarations for parallel declaration emit
 impact: CRITICAL
 impactDescription: enables parallel .d.ts generation without type-checker
 tags: tscfg, isolatedDeclarations, declarations, parallel, performance
 ---
 
-## Enable isolatedDeclarations for Parallel Declaration Emit
+## Enable isolatedDeclarations for parallel declaration emit
 
 The `isolatedDeclarations` flag (TypeScript 5.5+) ensures each file's exports are annotated sufficiently for tools to generate `.d.ts` files without running the type-checker. This enables parallel declaration emit via bundlers and dramatically speeds up builds in large codebases.
 

@@ -5,7 +5,7 @@ metadata:
    internal: true
 ---
 
-# Tackle Issue
+# Tackle issue
 
 This skill provides a standardized, rigorous workflow for handling GitHub issues. It ensures that issues are properly vetted before work begins and that all changes meet the project's quality standards before a Pull Request is opened.
 
@@ -15,7 +15,7 @@ Use this skill whenever the user says `/tackle-issue <number>` or asks to "tackl
 
 ## Workflow
 
-### 1. Readiness Check & Context Gathering
+### 1. Readiness check & context gathering
 
 Before starting any work, you MUST verify that the issue is ready for an agent.
 
@@ -27,7 +27,7 @@ Before starting any work, you MUST verify that the issue is ready for an agent.
    - **If the label is MISSING**: Abort the process immediately. Inform the user: `Issue #<number> is not marked as 'ready for agent'. Please ensure it is fully specified and labeled correctly before proceeding.`
    - **If the label is PRESENT**: Continue to the next step.
 
-### 2. Development Setup
+### 2. Development setup
 
 1. **Setup Development Branch**: Create and checkout a linked development branch.
    ```bash
@@ -45,7 +45,7 @@ Proceed with the standard **Research -> Strategy -> Execution** lifecycle.
   - New tests are added to verify the fix or feature.
   - Relevant documentation is updated.
 
-### 4. Validation & Quality Assurance
+### 4. Validation & quality assurance
 
 Once implementation is complete, you MUST run the following validation suite in the project root:
 
@@ -64,14 +64,14 @@ Once implementation is complete, you MUST run the following validation suite in 
 
 If this step fails (some lint/formatting issues cannot be auto-fixed), you MUST diagnose and fix the errors before proceeding.
 
-### 5. Changeset Creation
+### 5. Changeset creation
 
 After validation passes, you MUST create a changeset using the `create-changeset` skill.
 
 - Determine the appropriate bump type (`patch` or `minor` for v0) based on the `create-changeset` guidelines.
 - Provide a clear, concise description starting with a `####` header.
 
-### 6. Pull Request Creation
+### 6. Pull request creation
 
 When the task is complete and validated:
 
@@ -89,7 +89,7 @@ When the task is complete and validated:
    gh pr create --title "fix: <issue-title>" --body "Fixes #<issue-number>\n\n<brief-description-of-changes>" --label "<labels>"
    ```
 
-## Best Practices
+## Best practices
 
 - **Strict Readiness**: Never bypass the `ready for agent` check. It ensures the task is well-defined.
 - **Validation First**: Never open a PR that fails `typecheck`, `test`, or `check`.

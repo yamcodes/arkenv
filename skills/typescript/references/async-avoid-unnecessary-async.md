@@ -1,11 +1,11 @@
 ---
-title: Avoid Unnecessary async/await
+title: Avoid unnecessary async/await
 impact: HIGH
 impactDescription: eliminates trivial Promise wrappers and improves stack traces
 tags: async, promises, overhead, optimization, return-await
 ---
 
-## Avoid Unnecessary async/await
+## Avoid unnecessary async/await
 
 Remove `async` from functions that only wrap a single Promise without using `await` for control flow. However, prefer `return await` over bare `return` inside try/catch blocks — it ensures errors are caught and produces better stack traces.
 

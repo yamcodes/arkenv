@@ -1,11 +1,11 @@
 ---
-title: Configure Include and Exclude Properly
+title: Configure include and exclude properly
 impact: CRITICAL
 impactDescription: prevents scanning thousands of unnecessary files
 tags: tscfg, include, exclude, tsconfig, file-discovery
 ---
 
-## Configure Include and Exclude Properly
+## Configure include and exclude properly
 
 TypeScript walks through all included directories to discover files. Overly broad `include` patterns or missing `exclude` patterns force the compiler to scan irrelevant directories, significantly slowing startup.
 

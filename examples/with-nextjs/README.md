@@ -1,4 +1,4 @@
-# ArkEnv + Next.js Example
+# ArkEnv + Next.js example
 
 This example demonstrates how to use [@arkenv/nextjs](https://arkenv.js.org/docs/nextjs) with Next.js (App Router). It showcases:
 
@@ -30,16 +30,16 @@ export const env = arkenv({
 });
 ```
 
-### Key Configurations:
+### Key configurations:
 
 1. **Server Schema**: Variables that are only accessible on the server.
 2. **Client Schema**: Variables that are exposed to the client (must begin with `NEXT_PUBLIC_` to match Next.js conventions).
 3. **Shared Schema**: Common variables like `NODE_ENV`.
 4. **Runtime Environment**: You must explicitly map client and shared variables in `runtimeEnv` so that Next.js client-side bundles can correctly inline them.
 
-## Usage in Components
+## Usage in components
 
-### React Server Components (RSC)
+### React server components (RSC)
 
 You can safely access all server, client, and shared variables:
 
@@ -53,7 +53,7 @@ export default function Page() {
 }
 ```
 
-### Client Components
+### Client components
 
 You can access client and shared variables, but accessing server variables will throw a runtime error:
 
@@ -69,7 +69,7 @@ export default function ClientComponent() {
 }
 ```
 
-## Running the Example
+## Running the example
 
 ```bash
 # Install dependencies

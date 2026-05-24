@@ -5,7 +5,7 @@ metadata:
   internal: true
 ---
 
-# Create Skill
+# Create skill
 
 A skill for creating new skills and iteratively improving them.
 
@@ -46,7 +46,7 @@ It's OK to briefly explain terms if you're in doubt, and feel free to clarify te
 
 ## Creating a skill
 
-### Capture Intent
+### Capture intent
 
 Start by understanding the user's intent. The current conversation might already contain a workflow the user wants to capture (e.g., they say "turn this into a skill"). If so, extract answers from the conversation history first — the tools used, the sequence of steps, corrections the user made, input/output formats observed. The user may need to fill the gaps, and should confirm before proceeding to the next step.
 
@@ -55,7 +55,7 @@ Start by understanding the user's intent. The current conversation might already
 3. What's the expected output format?
 4. Should we set up test cases to verify the skill works? Skills with objectively verifiable outputs (file transforms, data extraction, code generation, fixed workflow steps) benefit from test cases. Skills with subjective outputs (writing style, art) often don't need them. Suggest the appropriate default based on the skill type, but let the user decide.
 
-### Interview and Research
+### Interview and research
 
 Proactively ask questions about edge cases, input/output formats, example files, success criteria, and dependencies. Wait to write test prompts until you've got this part ironed out.
 
@@ -70,9 +70,9 @@ Based on the user interview, fill in these components:
 - **compatibility**: Required tools, dependencies (optional, rarely needed)
 - **the rest of the skill :)**
 
-### Skill Writing Guide
+### Skill writing guide
 
-#### Anatomy of a Skill
+#### Anatomy of a skill
 
 ```
 skill-name/
@@ -85,7 +85,7 @@ skill-name/
     └── assets/     - Files used in output (templates, icons, fonts)
 ```
 
-#### Progressive Disclosure
+#### Progressive disclosure
 
 Skills use a three-level loading system:
 
@@ -114,11 +114,11 @@ cloud-deploy/
 
 Claude reads only the relevant reference file.
 
-#### Principle of Lack of Surprise
+#### Principle of lack of surprise
 
 This goes without saying, but skills must not contain malware, exploit code, or any content that could compromise system security. A skill's contents should not surprise the user in their intent if described. Don't go along with requests to create misleading skills or skills designed to facilitate unauthorized access, data exfiltration, or other malicious activities. Things like a "roleplay as an XYZ" are OK though.
 
-#### Writing Patterns
+#### Writing patterns
 
 Prefer using the imperative form in instructions.
 
@@ -142,11 +142,11 @@ Input: Added user authentication with JWT tokens
 Output: feat(auth): implement JWT-based authentication
 ```
 
-### Writing Style
+### Writing style
 
 Try to explain to the model why things are important in lieu of heavy-handed musty MUSTs. Use theory of mind and try to make the skill general and not super-narrow to specific examples. Start by writing a draft and then look at it with fresh eyes and improve it.
 
-### Test Cases
+### Test cases
 
 After writing the skill draft, come up with 2-3 realistic test prompts — the kind of thing a real user would actually say. Share them with the user: \[you don't have to use this exact language] "Here are a few test cases I'd like to try. Do these look right, or do you want to add more?" Then run them.
 
@@ -174,7 +174,7 @@ This section is one continuous sequence — don't stop partway through. Do NOT u
 
 Put results in `<skill-name>-workspace/` as a sibling to the skill directory. Within the workspace, organize results by iteration (`iteration-1/`, `iteration-2/`, etc.) and within that, each test case gets a directory (`eval-0/`, `eval-1/`, etc.). Don't create all of this upfront — just create directories as you go.
 
-### Step 1: Spawn all runs (with-skill AND baseline) in the same turn
+### Step 1: spawn all runs (with-skill AND baseline) in the same turn
 
 For each test case, spawn two subagents in the same turn — one with the skill, one without. This is important: don't spawn the with-skill runs first and then come back for baselines later. Launch everything at once so it all finishes around the same time.
 
@@ -205,7 +205,7 @@ Write an `eval_metadata.json` for each test case (assertions can be empty for no
 }
 ```
 
-### Step 2: While runs are in progress, draft assertions
+### Step 2: while runs are in progress, draft assertions
 
 Don't just wait for the runs to finish — you can use this time productively. Draft quantitative assertions for each test case and explain them to the user. If assertions already exist in `evals/evals.json`, review them and explain what they check.
 
@@ -213,7 +213,7 @@ Good assertions are objectively verifiable and have descriptive names — they s
 
 Update the `eval_metadata.json` files and `evals/evals.json` with the assertions once drafted. Also explain to the user what they'll see in the viewer — both the qualitative outputs and the quantitative benchmark.
 
-### Step 3: As runs complete, capture timing data
+### Step 3: as runs complete, capture timing data
 
 When each subagent task completes, you receive a notification containing `total_tokens` and `duration_ms`. Save this data immediately to `timing.json` in the run directory:
 
@@ -227,7 +227,7 @@ When each subagent task completes, you receive a notification containing `total_
 
 This is the only opportunity to capture this data — it comes through the task notification and isn't persisted elsewhere. Process each notification as it arrives rather than trying to batch them.
 
-### Step 4: Grade, aggregate, and launch the viewer
+### Step 4: grade, aggregate, and launch the viewer
 
 Once all runs are done:
 
@@ -276,7 +276,7 @@ The "Benchmark" tab shows the stats summary: pass rates, timing, and token usage
 
 Navigation is via prev/next buttons or arrow keys. When done, they click "Submit All Reviews" which saves all feedback to `feedback.json`.
 
-### Step 5: Read the feedback
+### Step 5: read the feedback
 
 When the user tells you they're done, read `feedback.json`:
 
@@ -335,7 +335,7 @@ Keep going until:
 
 ---
 
-## Advanced: Blind comparison
+## Advanced: blind comparison
 
 For situations where you want a more rigorous comparison between two versions of a skill (e.g., the user asks "is the new version actually better?"), there's a blind comparison system. Read `agents/comparator.md` and `agents/analyzer.md` for the details. The basic idea is: give two outputs to an independent agent without telling it which is which, and let it judge quality. Then analyze why the winner won.
 
@@ -343,11 +343,11 @@ This is optional, requires subagents, and most users won't need it. The human re
 
 ---
 
-## Description Optimization
+## Description optimization
 
 The description field in SKILL.md frontmatter is the primary mechanism that determines whether Claude invokes a skill. After creating or improving a skill, offer to optimize the description for better triggering accuracy.
 
-### Step 1: Generate trigger eval queries
+### Step 1: generate trigger eval queries
 
 Create 20 eval queries — a mix of should-trigger and should-not-trigger. Save as JSON:
 
@@ -370,7 +370,7 @@ For the **should-not-trigger** queries (8-10), the most valuable ones are the ne
 
 The key thing to avoid: don't make should-not-trigger queries obviously irrelevant. "Write a fibonacci function" as a negative test for a PDF skill is too easy — it doesn't test anything. The negative cases should be genuinely tricky.
 
-### Step 2: Review with user
+### Step 2: review with user
 
 Present the eval set to the user for review using the HTML template:
 
@@ -385,7 +385,7 @@ Present the eval set to the user for review using the HTML template:
 
 This step matters — bad eval queries lead to bad descriptions.
 
-### Step 3: Run the optimization loop
+### Step 3: run the optimization loop
 
 Tell the user: "This will take some time — I'll run the optimization loop in the background and check on it periodically."
 
@@ -412,13 +412,13 @@ Understanding the triggering mechanism helps design better eval queries. Skills 
 
 This means your eval queries should be substantive enough that Claude would actually benefit from consulting a skill. Simple queries like "read file X" are poor test cases — they won't trigger skills regardless of description quality.
 
-### Step 4: Apply the result
+### Step 4: apply the result
 
 Take `best_description` from the JSON output and update the skill's SKILL.md frontmatter. Show the user before/after and report the scores.
 
 ---
 
-### Package and Present (only if `present_files` tool is available)
+### Package and present (only if `present_files` tool is available)
 
 Check whether you have access to the `present_files` tool. If you don't, skip this step. If you do, package the skill and present the .skill file to the user:
 
@@ -456,7 +456,7 @@ In Claude.ai, the core workflow is the same (draft → test → review → impro
 
 ---
 
-## Cowork-Specific Instructions
+## Cowork-specific instructions
 
 If you're in Cowork, the main things to know are:
 

@@ -1,4 +1,4 @@
-# Refactor Candidates
+# Refactor candidates
 
 After TDD cycle, look for:
 
