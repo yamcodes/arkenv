@@ -1,4 +1,4 @@
-# ArkEnv + Vite example
+# ArkEnv + Vite Example
 
 This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with Vite and React. It showcases:
 
@@ -68,7 +68,7 @@ const myBoolean = import.meta.env.VITE_MY_BOOLEAN; // ✅ boolean
 const port = import.meta.env.PORT; // ❌ Error: PORT is server-only
 ```
 
-## Environment variables
+## Environment Variables
 
 Create a `.env` file in the root directory:
 
@@ -85,7 +85,7 @@ The plugin automatically:
 - Filters to only expose `VITE_*` variables to the client
 - Excludes server-only variables (like `PORT`) from the client bundle
 
-## Running the example
+## Running the Example
 
 ```bash
 # Install dependencies
@@ -109,7 +109,7 @@ For more information, see the [@arkenv/vite-plugin documentation](https://arkenv
 - [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
 - [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
 
-## Key features demonstrated
+## Key Features Demonstrated
 
 1. **Single Schema Definition**: The `Env` schema is defined once and reused for both server-side validation (via `loadEnv`) and client-side validation (via the plugin).
 
