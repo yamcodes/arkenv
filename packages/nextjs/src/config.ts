@@ -1,0 +1,188 @@
+import fs from "node:fs";
+import path from "node:path";
+
+export type WithArkEnvOptions = {
+	schemaPath?: string;
+	outputPath?: string;
+};
+
+/**
+ * Extracts the contents of a specific object definition (client, server, shared)
+ * by matching curly braces and ignoring strings/comments.
+ */
+export function extractSectionContent(
+	fileContent: string,
+	sectionName: "client" | "shared" | "server",
+): string | null {
+	const startRegex = new RegExp(`\\b${sectionName}\\s*(?::\\s*[^=]+)?=\\s*\\{`);
+	const match = fileContent.match(startRegex);
+	if (!match || match.index === undefined) {
+		return null;
+	}
+
+	const startIdx = match.index + match[0].length - 1; // index of '{'
+	let braceCount = 1;
+	let i = startIdx + 1;
+	let inString: string | null = null;
+	let inComment: "line" | "block" | null = null;
+
+	while (i < fileContent.length && braceCount > 0) {
+		const char = fileContent[i];
+		const nextChar = fileContent[i + 1];
+
+		if (inComment === "line") {
+			if (char === "\n") {
+				inComment = null;
+			}
+		} else if (inComment === "block") {
+			if (char === "*" && nextChar === "/") {
+				inComment = null;
+				i++;
+			}
+		} else if (inString) {
+			if (char === "\\") {
+				i++;
+			} else if (char === inString) {
+				inString = null;
+			}
+		} else {
+			if (char === "/" && nextChar === "/") {
+				inComment = "line";
+				i++;
+			} else if (char === "/" && nextChar === "*") {
+				inComment = "block";
+				i++;
+			} else if (char === "'" || char === '"' || char === "`") {
+				inString = char;
+			} else if (char === "{") {
+				braceCount++;
+			} else if (char === "}") {
+				braceCount--;
+			}
+		}
+		i++;
+	}
+
+	if (braceCount === 0) {
+		return fileContent.slice(startIdx + 1, i - 1);
+	}
+
+	return null;
+}
+
+/**
+ * Extracts key names from an object content string.
+ */
+export function extractKeysFromObjectString(objContent: string): string[] {
+	const keys: string[] = [];
+	const regex = /(?:([a-zA-Z_][a-zA-Z0-9_]*)|(['"])(.*?)\2)\s*:/g;
+	let match: RegExpExecArray | null = null;
+	// biome-ignore lint/suspicious/noAssignInExpressions: standard RegExp loop
+	while ((match = regex.exec(objContent)) !== null) {
+		const key = match[1] || match[3];
+		if (key) {
+			keys.push(key);
+		}
+	}
+	return keys;
+}
+
+/**
+ * Next.js configuration wrapper to auto-generate the `runtimeEnv` block.
+ *
+ * @param nextConfig The original Next.js configuration object.
+ * @param options Custom options for finding the schema and writing the output.
+ * @returns The unaltered nextConfig.
+ */
+export function withArkEnv(
+	// biome-ignore lint/suspicious/noExplicitAny: NextConfig is an arbitrary config object of any shape
+	nextConfig: any = {},
+	options: WithArkEnvOptions = {},
+) {
+	const defaultSchemaPaths = [
+		path.join(process.cwd(), "src/env.config.ts"),
+		path.join(process.cwd(), "env.config.ts"),
+		path.join(process.cwd(), "src/env.config.js"),
+		path.join(process.cwd(), "env.config.js"),
+	];
+
+	const schemaPath = options.schemaPath
+		? path.resolve(process.cwd(), options.schemaPath)
+		: defaultSchemaPaths.find((p) => fs.existsSync(p));
+
+	if (!schemaPath || !fs.existsSync(schemaPath)) {
+		throw new Error(
+			"[arkenv] Could not locate environment schema config file. " +
+				"Create 'env.config.ts' or 'src/env.config.ts', or specify 'schemaPath' option in withArkEnv.",
+		);
+	}
+
+	let outputPath = options.outputPath;
+	if (!outputPath) {
+		const ext = path.extname(schemaPath);
+		const baseDir = path.dirname(schemaPath);
+		const outExt = ext.includes("j") ? ".js" : ".ts";
+		outputPath = path.join(baseDir, `env${outExt}`);
+	} else {
+		outputPath = path.resolve(process.cwd(), outputPath);
+	}
+
+	const content = fs.readFileSync(schemaPath, "utf8");
+
+	const clientContent = extractSectionContent(content, "client");
+	const serverContent = extractSectionContent(content, "server");
+	const sharedContent = extractSectionContent(content, "shared");
+
+	const hasClient = clientContent !== null;
+	const hasServer = serverContent !== null;
+	const hasShared = sharedContent !== null;
+
+	if (!hasClient && !hasServer && !hasShared) {
+		throw new Error(
+			`[arkenv] No environment variable schemas (client, server, shared) found in '${schemaPath}'.`,
+		);
+	}
+
+	const clientKeys = hasClient
+		? extractKeysFromObjectString(clientContent)
+		: [];
+	const sharedKeys = hasShared
+		? extractKeysFromObjectString(sharedContent)
+		: [];
+	const runtimeEnvKeys = [...new Set([...clientKeys, ...sharedKeys])];
+
+	let relativePath = path.relative(path.dirname(outputPath), schemaPath);
+	relativePath = relativePath.replace(/\\/g, "/");
+	relativePath = relativePath.replace(/\.[mc]?[jt]sx?$/, "");
+	if (!relativePath.startsWith(".") && !relativePath.startsWith("/")) {
+		relativePath = `./${relativePath}`;
+	}
+
+	const imports: string[] = [];
+	if (hasServer) imports.push("server");
+	if (hasClient) imports.push("client");
+	if (hasShared) imports.push("shared");
+
+	const generatedContent = `// This file is auto-generated by @arkenv/nextjs/config. Do not edit directly.
+import arkenv from "@arkenv/nextjs";
+import { ${imports.join(", ")} } from "${relativePath}";
+
+export const env = arkenv({
+${hasServer ? "\tserver,\n" : ""}${hasClient ? "\tclient,\n" : ""}${hasShared ? "\tshared,\n" : ""}\truntimeEnv: {
+\t\t${runtimeEnvKeys.map((key) => `${key}: process.env.${key},`).join("\n\t\t")}
+\t},
+});
+`;
+
+	if (fs.existsSync(outputPath)) {
+		const existingContent = fs.readFileSync(outputPath, "utf8");
+		if (existingContent === generatedContent) {
+			return nextConfig;
+		}
+	}
+
+	fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+	fs.writeFileSync(outputPath, generatedContent, "utf8");
+
+	return nextConfig;
+}
