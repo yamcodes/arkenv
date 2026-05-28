@@ -91,7 +91,7 @@ jobs:
       - name: Apply overrides for Vite version
         run: node scripts/override-vite.js ${{ matrix.vite-version }}
       - name: Reinstall dependencies with overrides
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
       - name: Build vite-legacy playground
         run: pnpm run build --filter=vite-legacy-playground
 
