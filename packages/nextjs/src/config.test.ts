@@ -80,6 +80,27 @@ describe("withArkEnv config generator", () => {
 				"NEXT_PUBLIC_ANOTHER",
 			]);
 		});
+
+		it("should ignore URLs inside string literals and ignore colons in ternary operators", () => {
+			const content = `
+        NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+        NODE_ENV: isDev ? "development" : "production",
+      `;
+			const keys = extractKeysFromObjectString(content);
+			expect(keys).toEqual(["NEXT_PUBLIC_API_URL", "NODE_ENV"]);
+		});
+
+		it("should ignore keys defined inside nested object literals", () => {
+			const content = `
+        SHARED_VAR: "string",
+        NESTED: {
+          INNER_KEY: "string"
+        },
+        ANOTHER_VAR: "string",
+      `;
+			const keys = extractKeysFromObjectString(content);
+			expect(keys).toEqual(["SHARED_VAR", "NESTED", "ANOTHER_VAR"]);
+		});
 	});
 
 	describe("withArkEnv execution", () => {

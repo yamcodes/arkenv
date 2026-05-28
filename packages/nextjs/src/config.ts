@@ -71,19 +71,81 @@ export function extractSectionContent(
 }
 
 /**
- * Extracts key names from an object content string.
+ * Extracts key names from an object content string, ignoring comments,
+ * strings, and nested structures.
  */
 export function extractKeysFromObjectString(objContent: string): string[] {
 	const keys: string[] = [];
-	const regex = /(?:([a-zA-Z_][a-zA-Z0-9_]*)|(['"])(.*?)\2)\s*:/g;
-	let match: RegExpExecArray | null = null;
-	// biome-ignore lint/suspicious/noAssignInExpressions: standard RegExp loop
-	while ((match = regex.exec(objContent)) !== null) {
-		const key = match[1] || match[3];
-		if (key) {
-			keys.push(key);
+	let i = 0;
+	let startIdx = 0;
+	let foundColon = false;
+	let braceCount = 0;
+	let bracketCount = 0;
+	let parenCount = 0;
+	let inString: string | null = null;
+	let inComment: "line" | "block" | null = null;
+
+	while (i < objContent.length) {
+		const char = objContent[i];
+		const nextChar = objContent[i + 1];
+
+		if (inComment === "line") {
+			if (char === "\n") {
+				inComment = null;
+			}
+		} else if (inComment === "block") {
+			if (char === "*" && nextChar === "/") {
+				inComment = null;
+				i++;
+			}
+		} else if (inString) {
+			if (char === "\\") {
+				i++;
+			} else if (char === inString) {
+				inString = null;
+			}
+		} else {
+			if (char === "/" && nextChar === "/") {
+				inComment = "line";
+				i++;
+			} else if (char === "/" && nextChar === "*") {
+				inComment = "block";
+				i++;
+			} else if (char === "'" || char === '"' || char === "`") {
+				inString = char;
+			} else if (char === "{") {
+				braceCount++;
+			} else if (char === "}") {
+				braceCount--;
+			} else if (char === "[") {
+				bracketCount++;
+			} else if (char === "]") {
+				bracketCount--;
+			} else if (char === "(") {
+				parenCount++;
+			} else if (char === ")") {
+				parenCount--;
+			} else if (braceCount === 0 && bracketCount === 0 && parenCount === 0) {
+				if (char === ":" && !foundColon) {
+					foundColon = true;
+					const slice = objContent.slice(startIdx, i);
+					const cleaned = slice.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "").trim();
+					if (cleaned) {
+						const quoteMatch = cleaned.match(/^(['"`])(.*)\1$/);
+						const key = quoteMatch ? quoteMatch[2] : cleaned;
+						if (key && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+							keys.push(key);
+						}
+					}
+				} else if (char === ",") {
+					foundColon = false;
+					startIdx = i + 1;
+				}
+			}
 		}
+		i++;
 	}
+
 	return keys;
 }
 
