@@ -35,3 +35,20 @@ The `isServer` flag is the mechanism behind runtime protection:
 - **`false` (Client/SSR)**: Only the `client + shared` schema is validated. Accessing a key from the `server` schema throws a descriptive error during SSR pre-rendering and in the browser, ensuring sensitive data is never leaked.
 
 This approach statically hardcodes the execution context at the bundler layer, which is more reliable than runtime heuristics like checking `typeof window`.
+
+## What is the "Separate Files" mode?
+
+By default, a single `env.ts` file works for both server and client variables because the default entry point (`@arkenv/nextjs`) is resolved conditionally by the bundler. Some teams prefer stricter separation—keeping server secrets in a dedicated file that can never be imported by client code.
+
+The **Separate Files** mode provides exactly that:
+
+- **`@arkenv/nextjs/server`** — only accepts `server` and `shared` schemas. It imports `server-only` at the top level, so the Next.js bundler will **fail the build** if any client component imports this file.
+- **`@arkenv/nextjs/client`** — only accepts `client` and `shared` schemas. It can be safely imported anywhere.
+
+Both entry points also expose a **`react-server`** sub-condition for RSC usage, mirroring the dual-bundler behavior of the default entry point.
+
+### Why use separate files?
+
+1. **Compile-time isolation** — `server-only` gives you a bundler-enforced guarantee. Even if you accidentally import the server file in a Client Component, the build fails immediately.
+2. **Cleaner separation of concerns** — Server and client configuration live in distinct files (`env/server.ts` vs. `env/client.ts`), making it obvious which variables belong where.
+3. **Native `extends` API** — Because the server file cannot directly import the client file in all architectures, we provide an `extends` option that merges validated outputs of other ArkEnv proxies while preserving proxy-level protections (unknown-key / typo checks and server-only access restrictions on the client).

@@ -129,6 +129,101 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
   </Accordion>
 </Accordions>
 
+## Separate Files Mode
+
+If you prefer keeping server and client environment variables in separate files, you can use the dedicated `@arkenv/nextjs/server` and `@arkenv/nextjs/client` entry points. This mode uses the `server-only` package to provide compile-time guarantees that server secrets cannot be imported into client code.
+
+<Steps>
+  <Step>
+    ### Server environment file
+
+    Create a server-only environment file that imports `@arkenv/nextjs/server`:
+
+    ```ts title="src/env/server.ts" twoslash
+    import arkenv from "@arkenv/nextjs/server";
+
+    export const serverEnv = arkenv({
+      server: {
+        DATABASE_URL: "string",
+      },
+      shared: {
+        NODE_ENV: "string",
+      },
+      runtimeEnv: {
+        NODE_ENV: process.env.NODE_ENV,
+      },
+    });
+    ```
+  </Step>
+
+  <Step>
+    ### Client environment file
+
+    Create a client environment file that imports `@arkenv/nextjs/client`:
+
+    ```ts title="src/env/client.ts" twoslash
+    import arkenv from "@arkenv/nextjs/client";
+
+    export const clientEnv = arkenv({
+      client: {
+        NEXT_PUBLIC_API_URL: "string",
+      },
+      shared: {
+        NODE_ENV: "string",
+      },
+      runtimeEnv: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        NODE_ENV: process.env.NODE_ENV,
+      },
+    });
+    ```
+  </Step>
+
+  <Step>
+    ### Combining with `extends`
+
+    If your server code needs access to client variables, use the `extends` option to merge validated client outputs into the server environment:
+
+    ```ts title="src/env/server.ts" twoslash
+    // @filename: client.ts
+    import arkenv from "@arkenv/nextjs/client";
+    export const clientEnv = arkenv({
+      client: { NEXT_PUBLIC_API_URL: "string" },
+      runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com" },
+    });
+
+    // @filename: server.ts
+    // ---cut---
+    import arkenv from "@arkenv/nextjs/server";
+    // highlight-next-line
+    import { clientEnv } from "./client";
+
+    export const serverEnv = arkenv({
+      server: {
+        DATABASE_URL: "string",
+      },
+      shared: {
+        NODE_ENV: "string",
+      },
+      // highlight-next-line
+      extends: [clientEnv],
+      runtimeEnv: {
+        DATABASE_URL: process.env.DATABASE_URL,
+        NODE_ENV: process.env.NODE_ENV,
+      },
+    });
+    ```
+
+    Accessing `serverEnv.NEXT_PUBLIC_API_URL` is now fully typed and safe. The underlying proxy still prevents leaking server-only variables to the client, even when extending.
+  </Step>
+
+  <Step>
+    ### Shared definitions
+
+    Both entry points accept a `shared` schema for variables used everywhere. Shared keys must be provided in both `runtimeEnv` objects when using separate files.
+  </Step>
+</Steps>
+
 ## Using Standard Schema validators (Zod, Valibot)
 
 This integration uses ArkType for validation under the hood, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
