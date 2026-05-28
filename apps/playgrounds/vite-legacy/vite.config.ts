@@ -28,9 +28,6 @@ export default defineConfig(({ mode }) => {
 			// The same schema is reused here to avoid duplication
 			arkenvVitePlugin(Env),
 		],
-		resolve: {
-			tsconfigPaths: true,
-		},
 		server: {
 			port: env.PORT,
 		},
