@@ -9,7 +9,8 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
-		"arkenv": "workspace:*"
+		"arkenv": "workspace:*",
+		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
 		"@repo/scope": "workspace:*",
@@ -28,6 +29,23 @@
 		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
 	},
 	"exports": {
+		"./server": {
+			"react-server": {
+				"types": "./dist/server.react-server.d.ts",
+				"import": "./dist/server.react-server.js",
+				"require": "./dist/server.react-server.cjs"
+			},
+			"default": {
+				"types": "./dist/server.d.ts",
+				"import": "./dist/server.js",
+				"require": "./dist/server.cjs"
+			}
+		},
+		"./client": {
+			"types": "./dist/client.d.ts",
+			"import": "./dist/client.js",
+			"require": "./dist/client.cjs"
+		},
 		".": {
 			"react-server": {
 				"types": "./dist/index.d.ts",
