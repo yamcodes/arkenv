@@ -1,5 +1,5 @@
 ---
-"@arkenv/cli": minor
+"@arkenv/cli": patch
 ---
 
 #### Scaffold scanned environment variables as optional types during bootstrap
