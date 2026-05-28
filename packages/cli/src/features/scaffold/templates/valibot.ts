@@ -10,7 +10,7 @@ import { buildNextjsTemplate } from "./nextjs-template";
  */
 export const valibotTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: v.optional(v.string(), ""),`).join("\n")
+		? envKeys.map((key) => `\t\t${key}: v.optional(v.string()),`).join("\n")
 		: `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
 \t\tPORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`;
 
@@ -49,8 +49,8 @@ ${schemaFields}
 	if (framework === "nextjs") {
 		return buildNextjsTemplate(envKeys, {
 			extraImports: `import * as v from "valibot";`,
-			serverField: (key) => `\t\t${key}: v.optional(v.string(), ""),`,
-			clientField: (key) => `\t\t${key}: v.optional(v.string(), ""),`,
+			serverField: (key) => `\t\t${key}: v.optional(v.string()),`,
+			clientField: (key) => `\t\t${key}: v.optional(v.string()),`,
 			sharedField: (key, isPort) =>
 				`\t\t${key}: ${isPort ? "v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)" : 'v.optional(v.picklist(["development", "production", "test"]), "development")'},`,
 			defaultServerFields: [

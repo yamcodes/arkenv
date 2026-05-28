@@ -10,7 +10,7 @@ import { buildNextjsTemplate } from "./nextjs-template";
  */
 export const arktypeTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: "string = ''",`).join("\n")
+		? envKeys.map((key) => `\t\t${key}: "string?",`).join("\n")
 		: `\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",
 \t\tPORT: "number.port = 3000",`;
 
@@ -46,8 +46,8 @@ ${schemaFields}
 
 	if (framework === "nextjs") {
 		return buildNextjsTemplate(envKeys, {
-			serverField: (key) => `\t\t${key}: "string = ''",`,
-			clientField: (key) => `\t\t${key}: "string = ''",`,
+			serverField: (key) => `\t\t${key}: "string?",`,
+			clientField: (key) => `\t\t${key}: "string?",`,
 			sharedField: (key, isPort) =>
 				`\t\t${key}: "${isPort ? "number.port = 3000" : "'development' | 'production' | 'test' = 'development'"}",`,
 			defaultServerFields: [
