@@ -3,16 +3,7 @@ import type { SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
 import { createEnvInternal } from "./create-env";
-
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I,
-) => void
-	? I
-	: never;
-type MergeExtends<TExtends extends readonly unknown[] | undefined> =
-	TExtends extends readonly unknown[]
-		? UnionToIntersection<TExtends[number]>
-		: {};
+import type { MergeExtends } from "./types";
 
 /**
  * Create a validated, type-safe environment configuration for Next.js applications (Client entry point).

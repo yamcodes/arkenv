@@ -139,4 +139,94 @@ describe("Separate Files Next.js mode", () => {
 			"Environment variable 'NEXT_PUBLIC_API_URR' is not defined in the schema.",
 		);
 	});
+
+	it("should support shared schema with extends", () => {
+		const sharedEnv = clientCreateEnv({
+			shared: {
+				NODE_ENV: "string",
+			},
+			runtimeEnv: {
+				NODE_ENV: "development",
+			},
+		});
+
+		const serverEnv = serverCreateEnv({
+			server: {
+				DATABASE_URL: "string",
+			},
+			shared: {
+				API_VERSION: "string",
+			},
+			extends: [sharedEnv],
+			runtimeEnv: {
+				DATABASE_URL: "postgres://localhost:5432/db",
+				API_VERSION: "v1",
+				NODE_ENV: "development",
+			},
+		});
+
+		expect(serverEnv.NODE_ENV).toBe("development");
+		expect(serverEnv.API_VERSION).toBe("v1");
+		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost:5432/db");
+	});
+
+	it("should support multiple extends arrays", () => {
+		const clientEnv = clientCreateEnv({
+			client: {
+				NEXT_PUBLIC_API_URL: "string",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+			},
+		});
+
+		const sharedEnv = clientCreateEnv({
+			shared: {
+				NODE_ENV: "string",
+			},
+			runtimeEnv: {
+				NODE_ENV: "production",
+			},
+		});
+
+		const serverEnv = serverCreateEnv({
+			server: {
+				DATABASE_URL: "string",
+			},
+			extends: [clientEnv, sharedEnv],
+			runtimeEnv: {
+				DATABASE_URL: "postgres://localhost:5432/db",
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+				NODE_ENV: "production",
+			},
+		});
+
+		expect(serverEnv.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+		expect(serverEnv.NODE_ENV).toBe("production");
+		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost:5432/db");
+	});
+
+	it("should support extends in server.react-server.ts entry point", () => {
+		const clientEnv = clientCreateEnv({
+			client: {
+				NEXT_PUBLIC_API_URL: "string",
+			},
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
+			},
+		});
+
+		const serverEnv = serverReactCreateEnv({
+			server: {
+				DATABASE_URL: "string",
+			},
+			extends: [clientEnv],
+			runtimeEnv: {
+				DATABASE_URL: "postgres://localhost:5432/db",
+			},
+		});
+
+		expect(serverEnv.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost:5432/db");
+	});
 });
