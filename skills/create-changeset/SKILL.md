@@ -34,19 +34,20 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 | Type    | When to Use                                | v0 Version Change (Current) | v1+ Version Change |
 | ------- | ------------------------------------------ | --------------------------- | ------------------ |
-| `patch` | Bug fixes, refactoring, dependency updates | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
-| `minor` | New features, **Breaking changes** (in v0) | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
-| `major` | **Avoid in v0** (unless going to v1.0.0)   | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
+| `patch` | Bug fixes, non-breaking features, changes  | 0.y.z → 0.y.(z+1)           | 1.y.z → 1.y.z+1      |
+| `minor` | **Breaking changes** (in v0)               | 0.y.z → 0.(y+1).0           | 1.y.z → 1.y+1.0      |
+| `major` | **Avoid in v0** (explicit instruction only)| 0.y.z → 1.0.0               | 1.y.z → 2.0.0      |
 
 ## Decision guide (v0 rules)
 
-Most packages in this repo are currently in **v0** (0.x.y). For these packages:
+Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 
 ### Use `patch` for:
 
-- Bug fixes that don't change behavior
-- Dependency updates (non-breaking)
+- Bug fixes
+- New features and non-breaking changes
 - Performance improvements
+- Dependency updates
 - Code style/linting fixes
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
@@ -54,16 +55,10 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 ### Use `minor` for:
 
 - **Breaking changes** (Required in v0 for any breaking modification)
-- New features
-- New CLI commands
-- New configuration options
-- Enhanced functionality
-- New entity types support
-- Non-breaking API additions
 
 ### Use `major` ONLY for:
 
-- Explicitly transitioning the project from v0.x.y to v1.0.0. **Do not use major for breaking changes in v0.**
+- Explicitly transitioning the project from v0.y.z to v1.0.0, and **only upon explicit instruction** from the user. Do not use major for breaking changes in v0.
 
 ## Creating a changeset
 

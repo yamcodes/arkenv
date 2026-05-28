@@ -1,5 +1,5 @@
 ---
-"@arkenv/nextjs": minor
+"@arkenv/nextjs": patch
 ---
 
 #### Implement Next.js separate files mode and native extends API
