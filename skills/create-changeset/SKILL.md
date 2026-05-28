@@ -69,7 +69,8 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
 ### Title convention
 
-**IMPORTANT**: All changeset descriptions MUST start with a `####` header.
+- **Format**: All changeset descriptions MUST start with a `####` header.
+- **Mood**: Use the **imperative mood** for headers and key change actions (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops...").
 
 ### Usage examples
 
