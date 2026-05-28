@@ -10,7 +10,7 @@ import { buildNextjsTemplate } from "./nextjs-template";
  */
 export const zodTemplate = (envKeys?: string[], framework?: string) => {
 	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: z.string().default(""),`).join("\n")
+		? envKeys.map((key) => `\t\t${key}: z.string().optional(),`).join("\n")
 		: `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 \t\tPORT: z.coerce.number().int().min(1).max(65535).default(3000),`;
 
@@ -49,8 +49,8 @@ ${schemaFields}
 	if (framework === "nextjs") {
 		return buildNextjsTemplate(envKeys, {
 			extraImports: `import { z } from "zod";`,
-			serverField: (key) => `\t\t${key}: z.string().default(""),`,
-			clientField: (key) => `\t\t${key}: z.string().default(""),`,
+			serverField: (key) => `\t\t${key}: z.string().optional(),`,
+			clientField: (key) => `\t\t${key}: z.string().optional(),`,
 			sharedField: (key, isPort) =>
 				`\t\t${key}: ${isPort ? "z.coerce.number().int().min(1).max(65535).default(3000)" : 'z.enum(["development", "production", "test"]).default("development")'},`,
 			defaultServerFields: [

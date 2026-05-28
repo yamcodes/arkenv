@@ -32,7 +32,7 @@ describe("env-template", () => {
 				envKeys: ["API_KEY"],
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain("API_KEY: \"string = ''\"");
+			expect(template).toContain('API_KEY: "string?"');
 			expect(template).not.toContain("NODE_ENV");
 		});
 
@@ -217,7 +217,7 @@ describe("env-template", () => {
 				envKeys: ["API_KEY"],
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('API_KEY: z.string().default("")');
+			expect(template).toContain("API_KEY: z.string().optional()");
 		});
 
 		it("returns valibot template when validator is valibot", () => {
@@ -269,7 +269,7 @@ describe("env-template", () => {
 				envKeys: ["API_KEY"],
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('API_KEY: v.optional(v.string(), "")');
+			expect(template).toContain("API_KEY: v.optional(v.string())");
 		});
 
 		it("throws error for unsupported validator", () => {
