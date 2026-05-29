@@ -53,7 +53,7 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
 ### Use `minor` for:
 
-- **Breaking changes** (Required in v0 for any breaking modification)
+- **Breaking changes** (Required in v0 for any breaking modification. You MUST prefix the description with `**BREAKING CHANGE**:`).
 - New features
 - New CLI commands
 - New configuration options
@@ -69,7 +69,8 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
 ### Title convention
 
-**IMPORTANT**: All changeset descriptions MUST start with a `####` header.
+- **Format**: All changeset descriptions MUST start with a `####` header.
+- **Mood**: Use the **imperative mood** for headers and key change actions (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops...").
 
 ### Usage examples
 
@@ -127,7 +128,7 @@ Detailed description of the change.
 Include:
 - **Usage examples** (code blocks)
 - Bullet points for details
-- Migration instructions for breaking changes (using `minor` bump and `**BREAKING CHANGE**:` prefix)
+- Migration instructions for breaking changes (using `minor` bump and you MUST include the `**BREAKING CHANGE**:` label)
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
 ```
