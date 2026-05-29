@@ -88,4 +88,8 @@ export type ProjectScannerPort = {
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
 	): Promise<"pnpm" | "yarn" | "npm" | "bun">;
+	/**
+	 * Detects whether the arkenv skill is already installed.
+	 */
+	hasSkill(cwd?: string): Promise<boolean>;
 };

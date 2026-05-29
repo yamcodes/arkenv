@@ -39,6 +39,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			mode,
 			example: options.example,
 			name: projectName,
+			skillDetected: options.skillDetected,
 		}) as ScaffoldingPlan["metadata"],
 	};
 

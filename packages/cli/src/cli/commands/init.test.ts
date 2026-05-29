@@ -59,6 +59,7 @@ describe("InitUseCase", () => {
 			suggestDefaultEnvPath: vi.fn().mockResolvedValue("./env.ts"),
 			getEnvExampleKeys: vi.fn().mockResolvedValue(null),
 			detectPackageManager: vi.fn().mockResolvedValue("pnpm"),
+			hasSkill: vi.fn().mockResolvedValue(false),
 		} as unknown as ProjectScannerPort;
 
 		useCase = new InitUseCase(logger, workspace, prompt, scanner);
@@ -406,5 +407,51 @@ describe("InitUseCase", () => {
 			}),
 			false,
 		);
+	});
+
+	it("should detect installed arkenv skill, log a message, and skip prompt setting installSkill to false", async () => {
+		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result).not.toBeNull();
+		expect(result.options.installSkill).toBe(false);
+		expect(result.options.skillDetected).toBe(true);
+		expect(logger.info).toHaveBeenCalledWith(
+			expect.stringContaining("ArkEnv agent skill detected."),
+		);
+		expect(prompt.confirm).not.toHaveBeenCalled();
+	});
+
+	it("should detect installed arkenv skill and skip prompt setting installSkill to false even with isYes = true", async () => {
+		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result).not.toBeNull();
+		expect(result.options.installSkill).toBe(false);
+		expect(result.options.skillDetected).toBe(true);
 	});
 });
