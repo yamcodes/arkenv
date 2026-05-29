@@ -34,9 +34,9 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 | Type    | When to Use                                | v0 Version Change (Current) | v1+ Version Change |
 | ------- | ------------------------------------------ | --------------------------- | ------------------ |
-| `patch` | Bug fixes, refactoring, dependency updates | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
-| `minor` | New features, **Breaking changes** (in v0) | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
-| `major` | **Avoid in v0** (unless going to v1.0.0)   | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
+| `patch` | Any non-breaking change (fixes, features)  | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
+| `minor` | **Breaking changes**                       | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
+| `major` | Switch to v1 (only when instructed)        | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
 
 ## Decision guide (v0 rules)
 
@@ -44,26 +44,21 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 
 ### Use `patch` for:
 
-- Bug fixes that don't change behavior
+- **Any non-breaking change** (including new features, new CLI commands, new configuration options, enhanced functionality, non-breaking API additions, etc.)
+- Bug fixes
 - Dependency updates (non-breaking)
 - Performance improvements
 - Code style/linting fixes
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
 
-### Use `minor` for:
+### Use `minor` ONLY for:
 
 - **Breaking changes** (Required in v0 for any breaking modification. You MUST prefix the description with `**BREAKING CHANGE**:`).
-- New features
-- New CLI commands
-- New configuration options
-- Enhanced functionality
-- New entity types support
-- Non-breaking API additions
 
 ### Use `major` ONLY for:
 
-- Explicitly transitioning the project from v0.x.y to v1.0.0. **Do not use major for breaking changes in v0.**
+- Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.** Do not use major for breaking changes in v0.
 
 ## Creating a changeset
 
