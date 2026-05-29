@@ -240,7 +240,7 @@ pnpm run test:e2e                     # E2E tests
 
 **Vite Plugin Compatibility:**
 
-- Supports Vite 2.9.18 through 7.x
+- Supports Vite 4.x through 8.x
 - Validates environment variables at build-time
 - Injects validated variables into build
 
