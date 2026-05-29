@@ -326,22 +326,37 @@ API_KEY=
 		});
 
 		it("returns true if skills/arkenv/SKILL.md exists", async () => {
-			await fsp.mkdir(path.join(tempDir, "skills", "arkenv"), { recursive: true });
-			await fsp.writeFile(path.join(tempDir, "skills", "arkenv", "SKILL.md"), "hello");
+			await fsp.mkdir(path.join(tempDir, "skills", "arkenv"), {
+				recursive: true,
+			});
+			await fsp.writeFile(
+				path.join(tempDir, "skills", "arkenv", "SKILL.md"),
+				"hello",
+			);
 			const result = await scanner.hasSkill(tempDir);
 			expect(result).toBe(true);
 		});
 
 		it("returns true if .agent/skills/arkenv/SKILL.md exists", async () => {
-			await fsp.mkdir(path.join(tempDir, ".agent", "skills", "arkenv"), { recursive: true });
-			await fsp.writeFile(path.join(tempDir, ".agent", "skills", "arkenv", "SKILL.md"), "hello");
+			await fsp.mkdir(path.join(tempDir, ".agent", "skills", "arkenv"), {
+				recursive: true,
+			});
+			await fsp.writeFile(
+				path.join(tempDir, ".agent", "skills", "arkenv", "SKILL.md"),
+				"hello",
+			);
 			const result = await scanner.hasSkill(tempDir);
 			expect(result).toBe(true);
 		});
 
 		it("returns true if .agents/skills/arkenv/SKILL.md exists", async () => {
-			await fsp.mkdir(path.join(tempDir, ".agents", "skills", "arkenv"), { recursive: true });
-			await fsp.writeFile(path.join(tempDir, ".agents", "skills", "arkenv", "SKILL.md"), "hello");
+			await fsp.mkdir(path.join(tempDir, ".agents", "skills", "arkenv"), {
+				recursive: true,
+			});
+			await fsp.writeFile(
+				path.join(tempDir, ".agents", "skills", "arkenv", "SKILL.md"),
+				"hello",
+			);
 			const result = await scanner.hasSkill(tempDir);
 			expect(result).toBe(true);
 		});

@@ -139,7 +139,12 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 			const skillsLockPath = path.join(cwd, "skills-lock.json");
 			const content = await fsp.readFile(skillsLockPath, "utf-8");
 			const parsed = JSON.parse(content);
-			if (parsed && typeof parsed === "object" && parsed.skills && typeof parsed.skills === "object") {
+			if (
+				parsed &&
+				typeof parsed === "object" &&
+				parsed.skills &&
+				typeof parsed.skills === "object"
+			) {
 				if ("arkenv" in parsed.skills) {
 					return true;
 				}
