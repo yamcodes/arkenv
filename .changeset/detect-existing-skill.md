@@ -1,5 +1,5 @@
 ---
-"@arkenv/cli": minor
+"@arkenv/cli": patch
 ---
 
 #### Automatically detect installed arkenv AI skill
