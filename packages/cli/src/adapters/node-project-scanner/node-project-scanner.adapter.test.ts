@@ -295,4 +295,60 @@ API_KEY=
 			expect(result).toBe("./env.ts");
 		});
 	});
+
+	describe("hasSkill", () => {
+		it("returns true if skills-lock.json contains arkenv skill", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "skills-lock.json"),
+				JSON.stringify({
+					skills: {
+						arkenv: {
+							version: "1.0.0",
+						},
+					},
+				}),
+			);
+			const result = await scanner.hasSkill(tempDir);
+			expect(result).toBe(true);
+		});
+
+		it("returns false if skills-lock.json does not contain arkenv skill", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "skills-lock.json"),
+				JSON.stringify({
+					skills: {
+						other: {},
+					},
+				}),
+			);
+			const result = await scanner.hasSkill(tempDir);
+			expect(result).toBe(false);
+		});
+
+		it("returns true if skills/arkenv/SKILL.md exists", async () => {
+			await fsp.mkdir(path.join(tempDir, "skills", "arkenv"), { recursive: true });
+			await fsp.writeFile(path.join(tempDir, "skills", "arkenv", "SKILL.md"), "hello");
+			const result = await scanner.hasSkill(tempDir);
+			expect(result).toBe(true);
+		});
+
+		it("returns true if .agent/skills/arkenv/SKILL.md exists", async () => {
+			await fsp.mkdir(path.join(tempDir, ".agent", "skills", "arkenv"), { recursive: true });
+			await fsp.writeFile(path.join(tempDir, ".agent", "skills", "arkenv", "SKILL.md"), "hello");
+			const result = await scanner.hasSkill(tempDir);
+			expect(result).toBe(true);
+		});
+
+		it("returns true if .agents/skills/arkenv/SKILL.md exists", async () => {
+			await fsp.mkdir(path.join(tempDir, ".agents", "skills", "arkenv"), { recursive: true });
+			await fsp.writeFile(path.join(tempDir, ".agents", "skills", "arkenv", "SKILL.md"), "hello");
+			const result = await scanner.hasSkill(tempDir);
+			expect(result).toBe(true);
+		});
+
+		it("returns false if no skill indicators exist", async () => {
+			const result = await scanner.hasSkill(tempDir);
+			expect(result).toBe(false);
+		});
+	});
 });

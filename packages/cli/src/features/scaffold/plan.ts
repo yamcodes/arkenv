@@ -24,6 +24,7 @@ export type ProjectOptions = {
 	installTypeDefinitions?: boolean;
 	envKeys?: string[];
 	installSkill?: boolean;
+	skillDetected?: boolean;
 };
 
 /**
@@ -73,6 +74,7 @@ export type ScaffoldingPlan = {
 		mode: "existing" | "new";
 		example?: string;
 		name?: string;
+		skillDetected?: boolean;
 	};
 	/** Git clone information for new project flow */
 	clone?: {

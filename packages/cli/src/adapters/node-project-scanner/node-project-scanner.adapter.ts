@@ -130,4 +130,38 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	): Promise<"pnpm" | "yarn" | "npm" | "bun"> {
 		return detectPackageManager(cwd, tsConfig);
 	}
+
+	/**
+	 * Detects whether the arkenv skill is already installed.
+	 */
+	async hasSkill(cwd = process.cwd()): Promise<boolean> {
+		try {
+			const skillsLockPath = path.join(cwd, "skills-lock.json");
+			const content = await fsp.readFile(skillsLockPath, "utf-8");
+			const parsed = JSON.parse(content);
+			if (parsed && typeof parsed === "object" && parsed.skills && typeof parsed.skills === "object") {
+				if ("arkenv" in parsed.skills) {
+					return true;
+				}
+			}
+		} catch {
+			// ignore missing or malformed skills-lock.json
+		}
+
+		const skillPaths = [
+			"skills/arkenv/SKILL.md",
+			".agent/skills/arkenv/SKILL.md",
+			".agents/skills/arkenv/SKILL.md",
+		];
+		for (const relativePath of skillPaths) {
+			try {
+				await fsp.access(path.join(cwd, relativePath));
+				return true;
+			} catch {
+				// ignore path not accessible
+			}
+		}
+
+		return false;
+	}
 }
