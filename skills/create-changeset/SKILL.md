@@ -32,11 +32,11 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset types
 
-| Type    | When to Use                                | v0 Version Change (Current) | v1+ Version Change |
-| ------- | ------------------------------------------ | --------------------------- | ------------------ |
-| `patch` | Any non-breaking change (fixes, features)  | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
-| `minor` | **Breaking changes**                       | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
-| `major` | Switch to v1 (only when instructed)        | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
+| Type    | When to Use                               | v0 Version Change (Current) | v1+ Version Change |
+| ------- | ----------------------------------------- | --------------------------- | ------------------ |
+| `patch` | Any non-breaking change (fixes, features) | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
+| `minor` | **Breaking changes**                      | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
+| `major` | Switch to v1 (only when instructed)       | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
 
 ## Decision guide (v0 rules)
 
