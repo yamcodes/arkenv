@@ -9,6 +9,7 @@ export default function ClientComponent() {
 	const tryAccessSecret = () => {
 		try {
 			// This should throw a runtime error on the client
+			// @ts-expect-error DATABASE_URL is not defined in the client-safe schema
 			const dbUrl = env.DATABASE_URL;
 			alert(`Secret accessed successfully: ${dbUrl}`);
 		} catch (e: any) {
