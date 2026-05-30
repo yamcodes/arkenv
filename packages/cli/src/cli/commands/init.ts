@@ -23,6 +23,8 @@ export type InitInput = {
 	isForce: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
+	isStrict?: boolean;
+	isSimple?: boolean;
 	example?: string;
 	name?: string;
 };
@@ -242,6 +244,8 @@ export class InitUseCase {
 				hasTypeFileAtPath,
 				hasTypeFile,
 				hasEnvSchemaFile,
+				isStrict: input.isStrict,
+				isSimple: input.isSimple,
 			}),
 			isYes,
 		);

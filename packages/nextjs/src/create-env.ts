@@ -5,35 +5,94 @@ export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
+function getSchemaKeys(schema: any): string[] {
+	if (!schema || (typeof schema !== "object" && typeof schema !== "function")) {
+		return [];
+	}
+
+	// ArkType Type
+	if (
+		schema.json &&
+		typeof schema.json === "object" &&
+		schema.json.domain === "object"
+	) {
+		const keys: string[] = [];
+		if (Array.isArray(schema.json.required)) {
+			for (const r of schema.json.required) {
+				if (r && typeof r === "object" && "key" in r) {
+					keys.push(r.key);
+				}
+			}
+		}
+		if (Array.isArray(schema.json.optional)) {
+			for (const o of schema.json.optional) {
+				if (o && typeof o === "object" && "key" in o) {
+					keys.push(o.key);
+				}
+			}
+		}
+		return keys;
+	}
+
+	// Zod schema
+	if ("shape" in schema && schema.shape && typeof schema.shape === "object") {
+		return Object.keys(schema.shape);
+	}
+
+	// Valibot schema
+	if (
+		"entries" in schema &&
+		schema.entries &&
+		typeof schema.entries === "object"
+	) {
+		return Object.keys(schema.entries);
+	}
+
+	// Plain object schema
+	return Object.keys(schema);
+}
+
 /**
  * Validate and wrap environment variables in a security proxy.
  *
  * @internal
- *
- * @remarks
- * This internal module contains the core Next.js environment validation logic. It is split from
- * the public entry points to separate execution paths (RSC vs. SSR/Client) at the bundler layer.
- *
- * @param options The environment validation configuration options
- * @param isServer Whether the code is running in a server component (RSC) context
- * @returns A validated, readonly environment variables object wrapped in a security proxy
- * @throws An error if any client-side variable is not prefixed with `NEXT_PUBLIC_`
- * @throws An error if any client or shared variable is missing from `runtimeEnv`
  */
 export function createEnvInternal(
-	options: {
-		server?: SchemaShape;
-		client?: Record<string, unknown>;
-		shared?: SchemaShape;
-		extends?: unknown[];
-		runtimeEnv: Record<string, unknown>;
-	},
-	isServer: boolean,
+	schemaOrOptions: any,
+	optionsOrIsServer: any,
+	context?: { isServer: boolean; isShared?: boolean },
 ): unknown {
-	const server = options.server || {};
-	const client = options.client || {};
-	const shared = options.shared || {};
-	const runtimeEnv = options.runtimeEnv;
+	let server: SchemaShape = {};
+	let client: Record<string, unknown> = {};
+	let shared: SchemaShape = {};
+	let extendsList: unknown[] = [];
+	let runtimeEnv: Record<string, unknown> = {};
+	let isServer = false;
+
+	if (typeof optionsOrIsServer === "boolean") {
+		// Old nested schema behavior (backward compatible)
+		server = schemaOrOptions.server || {};
+		client = schemaOrOptions.client || {};
+		shared = schemaOrOptions.shared || {};
+		extendsList = schemaOrOptions.extends || [];
+		runtimeEnv = schemaOrOptions.runtimeEnv || {};
+		isServer = optionsOrIsServer;
+	} else {
+		// New flat schema behavior
+		const flatSchema = schemaOrOptions || {};
+		const options = optionsOrIsServer || {};
+		extendsList = options.extends || [];
+		runtimeEnv = options.runtimeEnv || {};
+		isServer = !!context?.isServer;
+
+		if (context?.isShared) {
+			shared = flatSchema;
+		} else if (isServer) {
+			server = flatSchema;
+		} else {
+			client = flatSchema;
+		}
+	}
 
 	let extendedEnvValues: Record<string, unknown> = {};
 	const allKeys = new Set<string>();
@@ -53,28 +112,58 @@ export function createEnvInternal(
 		allKeys.add(key);
 	}
 
-	// Process extended environments
-	if (options.extends && Array.isArray(options.extends)) {
-		for (const ext of options.extends) {
-			if (ext && typeof ext === "object") {
-				const raw = (ext as any)[EXTENDED_ENV] || ext;
-				extendedEnvValues = { ...extendedEnvValues, ...raw };
+	// Prepare combined environment for core validation
+	const combinedEnv: Record<string, string | undefined> = {};
 
-				const extKeys = (ext as any)[ENV_KEYS];
-				if (extKeys instanceof Set) {
-					for (const key of extKeys) {
-						allKeys.add(key);
+	// Process extended environments
+	if (extendsList && Array.isArray(extendsList)) {
+		for (const ext of extendsList) {
+			if (ext && (typeof ext === "object" || typeof ext === "function")) {
+				const raw = (ext as any)[EXTENDED_ENV];
+				if (raw) {
+					extendedEnvValues = { ...extendedEnvValues, ...raw };
+
+					const extKeys = (ext as any)[ENV_KEYS];
+					if (extKeys instanceof Set) {
+						for (const key of extKeys) allKeys.add(key);
+					}
+
+					const extServerOnly = (ext as any)[SERVER_ONLY_KEYS];
+					if (extServerOnly instanceof Set) {
+						for (const key of extServerOnly) serverOnlyKeys.add(key);
 					}
 				} else {
-					for (const key of Object.keys(raw)) {
-						allKeys.add(key);
+					// Prepare what we have so far for validating the extended schema
+					for (const key of Object.keys(extendedEnvValues)) {
+						if (extendedEnvValues[key] !== undefined) {
+							combinedEnv[key] = String(extendedEnvValues[key]);
+						}
 					}
-				}
+					for (const key of Object.keys(runtimeEnv)) {
+						if (runtimeEnv[key] !== undefined) {
+							combinedEnv[key] = runtimeEnv[key] as string;
+						}
+					}
+					if (isServer) {
+						for (const key of Object.keys(server)) {
+							if (
+								combinedEnv[key] === undefined &&
+								process.env[key] !== undefined
+							) {
+								combinedEnv[key] = process.env[key];
+							}
+						}
+					}
 
-				const extServerOnly = (ext as any)[SERVER_ONLY_KEYS];
-				if (extServerOnly instanceof Set) {
-					for (const key of extServerOnly) {
-						serverOnlyKeys.add(key);
+					const validated = coreCreateEnv(ext as any, { env: combinedEnv });
+					extendedEnvValues = { ...extendedEnvValues, ...validated };
+
+					const extKeys = getSchemaKeys(ext);
+					for (const key of extKeys) {
+						allKeys.add(key);
+						if (isServer) {
+							serverOnlyKeys.add(key);
+						}
 					}
 				}
 			}
@@ -109,9 +198,7 @@ export function createEnvInternal(
 		}
 	}
 
-	// Prepare combined environment for core validation
-	const combinedEnv: Record<string, string | undefined> = {};
-
+	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {
 			combinedEnv[key] = String(extendedEnvValues[key]);
@@ -139,7 +226,6 @@ export function createEnvInternal(
 		: { ...client, ...shared };
 
 	// Run core validation
-	// Note: We cast schema to `any` here to avoid a compilation TS2589 error
 	const validated = coreCreateEnv(schema as any, { env: combinedEnv });
 
 	const mergedValidated = { ...extendedEnvValues, ...validated };

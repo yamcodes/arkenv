@@ -7,6 +7,7 @@ vi.mock("server-only", () => ({}));
 import { createEnv as clientCreateEnv } from "./client";
 import { createEnv as serverCreateEnv } from "./server";
 import { createEnv as serverReactCreateEnv } from "./server.react-server";
+import { type } from "./shared";
 
 describe("Separate Files Next.js mode", () => {
 	it("should import server-only in server.ts", () => {
@@ -20,24 +21,22 @@ describe("Separate Files Next.js mode", () => {
 	it("should disallow client schema in server entry point at runtime", () => {
 		expect(() => {
 			serverCreateEnv({
-				// @ts-expect-error client schema not allowed
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
 				runtimeEnv: {} as any,
-			});
+			} as any);
 		}).toThrow(
 			"server entry point only accepts 'server' and 'shared' schemas.",
 		);
 
 		expect(() => {
 			serverReactCreateEnv({
-				// @ts-expect-error client schema not allowed
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
 				runtimeEnv: {} as any,
-			});
+			} as any);
 		}).toThrow(
 			"server entry point only accepts 'server' and 'shared' schemas.",
 		);
@@ -228,5 +227,63 @@ describe("Separate Files Next.js mode", () => {
 
 		expect(serverEnv.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost:5432/db");
+	});
+
+	it("should support flat schema with 3-file separate config and extends", () => {
+		const SharedEnv = type({
+			NODE_ENV: "'development' | 'production' | 'test'",
+		});
+
+		const clientEnv = clientCreateEnv(
+			{
+				NEXT_PUBLIC_API_URL: "string",
+			},
+			{
+				extends: [SharedEnv],
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+				},
+			},
+		);
+
+		const serverEnv = serverCreateEnv(
+			{
+				DATABASE_URL: "string",
+			},
+			{
+				extends: [clientEnv],
+				runtimeEnv: {
+					DATABASE_URL: "postgres://localhost/db",
+				},
+			},
+		);
+
+		expect(serverEnv.NODE_ENV).toBe("development");
+		expect(serverEnv.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost/db");
+
+		expect(() => {
+			(clientEnv as any).DATABASE_URL;
+		}).toThrow(
+			"Environment variable 'DATABASE_URL' is not defined in the schema.",
+		);
+	});
+
+	it("should reject client-side flat schema with non-NEXT_PUBLIC_ prefix at runtime", () => {
+		expect(() => {
+			clientCreateEnv(
+				{
+					API_URL: "string",
+				} as any,
+				{
+					runtimeEnv: {
+						API_URL: "https://api.example.com",
+					},
+				},
+			);
+		}).toThrow(
+			"Client-side environment variables must be prefixed with 'NEXT_PUBLIC_'. Found invalid key: API_URL",
+		);
 	});
 });

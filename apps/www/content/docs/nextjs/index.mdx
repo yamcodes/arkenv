@@ -1,7 +1,7 @@
 ---
-title: Introduction
+title: Next.js Integration
 icon: Album
-description: The ArkEnv integration for Next.js lets you validate environment variables at build-time and runtime.
+description: Validate and secure your Next.js environment variables with strict client/server boundaries and zero-boilerplate scaffolding.
 ---
 
 > [!IMPORTANT]
@@ -9,244 +9,252 @@ description: The ArkEnv integration for Next.js lets you validate environment va
 
 The `@arkenv/nextjs` integration provides end-to-end environment validation for both the server and the browser. It catches configuration bugs early in your build pipeline and prevents sensitive server-side variables from ever reaching client components.
 
-If a server secret is accidentally accessed in client code, the integration immediately fails your build or throws a descriptive runtime error. We leverage native Next.js conditional exports to guarantee this protection statically—see the [FAQ](/docs/nextjs/faq#how-does-the-runtime-protection-work-under-the-hood) for under-the-hood details.
+## Recommended Architecture (Separate Files)
 
-## Quickstart
+For maximum security, we recommend a **3-file layout** (`env.shared.ts` → `env.client.ts` → `env.server.ts`). This structure aligns with Next.js's native `use client` boundary model, ensures that server secrets are compile-time locked from browser bundles, and allows a single unified `env` export path.
 
-The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project, or spins up a new one from a template.
+```mermaid
+graph TD
+    Shared["env.shared.ts<br/>(SharedEnv type schema)"] --> Client["env.client.ts<br/>(Unified env export)"]
+    Client --> Server["env.server.ts<br/>(Unified env export)"]
+```
 
-<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
-  <Tab value="npm">
-    ```bash
-    npx @arkenv/cli@latest init
-    ```
-  </Tab>
+### 1. Define Shared Variables
 
-  <Tab value="pnpm">
-    ```bash
-    pnx @arkenv/cli@latest init
-    ```
-  </Tab>
+Create `env.shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
-  <Tab value="yarn">
-    ```bash
-    yarn dlx @arkenv/cli@latest init
-    ```
-  </Tab>
+```ts title="src/env.shared.ts" twoslash
+import { type } from "@arkenv/nextjs/shared";
 
-  <Tab value="bun">
-    ```bash
-    bunx @arkenv/cli@latest init
-    ```
-  </Tab>
-</Tabs>
+export const SharedEnv = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+### 2. Define Client Variables
+
+Create `env.client.ts` using `@arkenv/nextjs/client`. All local keys **must** be prefixed with `NEXT_PUBLIC_`. You must extend `SharedEnv` and provide the destructured `runtimeEnv`:
+
+```ts title="src/env.client.ts" twoslash
+// @filename: env.shared.ts
+import { type } from "@arkenv/nextjs/shared";
+export const SharedEnv = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+// @filename: env.client.ts
+// ---cut---
+import { createEnv } from "@arkenv/nextjs/client";
+import { SharedEnv } from "./env.shared";
+
+export const env = createEnv(
+	{
+		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	},
+	{
+		extends: [SharedEnv],
+		runtimeEnv: {
+			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+			NODE_ENV: process.env.NODE_ENV,
+		},
+	},
+);
+```
+
+### 3. Define Server Variables
+
+Create `env.server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+
+```ts title="src/env.server.ts" twoslash
+// @filename: env.shared.ts
+import { type } from "@arkenv/nextjs/shared";
+export const SharedEnv = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+// @filename: env.client.ts
+import { createEnv } from "@arkenv/nextjs/client";
+import { SharedEnv } from "./env.shared";
+export const env = createEnv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{
+		extends: [SharedEnv],
+		runtimeEnv: {
+			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+			NODE_ENV: process.env.NODE_ENV,
+		},
+	},
+);
+
+// @filename: env.server.ts
+// ---cut---
+import { createEnv } from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./env.client";
+
+export const env = createEnv(
+	{
+		DATABASE_URL: "string",
+	},
+	{
+		extends: [clientEnv],
+	},
+);
+```
+
+---
+
+## Unified Usage in Your Application
+
+Both `env.client.ts` and `env.server.ts` export the resolved environment as `env`. This lets you use consistent `env.MY_VAR` imports depending on where the component executes.
+
+### In Server Components / Routes
+
+Import `env` from the server file. It contains all public, shared, and server-only variables:
+
+```ts title="src/app/page.ts" twoslash
+// @filename: env.shared.ts
+import { type } from "@arkenv/nextjs/shared";
+export const SharedEnv = type({ NODE_ENV: "'development' | 'production' | 'test'" });
+
+// @filename: env.client.ts
+import { createEnv } from "@arkenv/nextjs/client";
+import { SharedEnv } from "./env.shared";
+export const env = createEnv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{ extends: [SharedEnv], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
+);
+
+// @filename: env.server.ts
+import { createEnv } from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./env.client";
+export const env = createEnv(
+	{ DATABASE_URL: "string" },
+	{ extends: [clientEnv] }
+);
+
+// @filename: page.ts
+// ---cut---
+import { env } from "./env.server";
+
+export function Page() {
+	// Access database URL and client API URL safely
+	const db = env.DATABASE_URL;
+	const api = env.NEXT_PUBLIC_API_URL;
+	return `API: ${api}`;
+}
+```
+
+### In Client Components
+
+Import `env` from the client file. If you accidentally try to access a server-only variable like `DATABASE_URL` in a client component, you will get a build-time compiler error (enforced by Next.js's `server-only`) or a clear runtime exception:
+
+```ts title="src/app/client-component.ts" twoslash
+// @filename: env.shared.ts
+import { type } from "@arkenv/nextjs/shared";
+export const SharedEnv = type({ NODE_ENV: "'development' | 'production' | 'test'" });
+
+// @filename: env.client.ts
+import { createEnv } from "@arkenv/nextjs/client";
+import { SharedEnv } from "./env.shared";
+export const env = createEnv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{ extends: [SharedEnv], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
+);
+
+// @filename: client-component.ts
+// ---cut---
+import { env } from "./env.client";
+
+export function ClientComponent() {
+	const api = env.NEXT_PUBLIC_API_URL;
+	// @ts-expect-error DATABASE_URL is not defined in client env
+	const db = env.DATABASE_URL;
+
+	return `API URL: ${api}`;
+}
+```
+
+---
+
+## Scaffolding with CLI
+
+The fastest way to set up the separate-file layout is using the CLI. Run the `init` command in your project directory:
+
+```bash
+npx @arkenv/cli@latest init
+```
+
+The interactive wizard will detect Next.js and prompt you for the layout structure. The **Strict (Recommended)** 3-file setup is selected by default.
+
+### Skipping prompts (flags)
+
+- **Strict Mode**: Force the 3-file layout and skip prompts.
+  ```bash
+  npx @arkenv/cli@latest init --strict
+  ```
+- **Simple Mode**: Force the 1-file layout and skip prompts.
+  ```bash
+  npx @arkenv/cli@latest init --simple
+  ```
+
+---
 
 <Accordions>
-  <Accordion title="Manual Installation">
-    <Steps>
-      <Step>
-        ### Installation
+  <Accordion title="Alternative: Unified 1-File Configuration">
+    If you are building a simple prototype or prefer a single unified configuration file, you can use the default `@arkenv/nextjs` export.
 
-        ```package-install
-        @arkenv/nextjs arktype
-        ```
-      </Step>
+    ### 1. Configure in a single file
 
-      <Step>
-        ### Configure environment
+    ```ts title="src/env.ts" twoslash
+    import arkenv from "@arkenv/nextjs";
 
-        Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define and validate your schemas:
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: "string",
+    	},
+    	client: {
+    		NEXT_PUBLIC_API_URL: "string",
+    	},
+    	shared: {
+    		NODE_ENV: "string",
+    	},
+    	runtimeEnv: {
+    		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    		NODE_ENV: process.env.NODE_ENV,
+    	},
+    });
+    ```
 
-        ```ts title="src/env.ts" twoslash
-        import arkenv from "@arkenv/nextjs";
+    ### 2. Import and Use
 
-        export const env = arkenv({
-        	server: {
-        		DATABASE_URL: "string",
-        	},
-        	client: {
-        		NEXT_PUBLIC_API_URL: "string",
-        	},
-        	shared: {
-        		NODE_ENV: "string",
-        	},
-        	runtimeEnv: {
-        		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-        		NODE_ENV: process.env.NODE_ENV,
-        	},
-        });
-        ```
-      </Step>
-
-      <Step>
-        ### Use in your code
-
-        Import `env` throughout your Next.js application:
-
-        ```ts title="src/app/page.tsx" twoslash
-        // @filename: env.ts
-        import arkenv from "@arkenv/nextjs";
-        export const env = arkenv({
-        	server: { DATABASE_URL: "string" },
-        	client: { NEXT_PUBLIC_API_URL: "string" },
-        	runtimeEnv: {
-        		NEXT_PUBLIC_API_URL: "https://api.example.com",
-        	}
-        });
-
-        // @filename: page.tsx
-        // ---cut---
-        import { env } from "./env";
-
-        // Access is fully typesafe and autocompleted
-        const apiUrl = env.NEXT_PUBLIC_API_URL;
-        //      ^?
-        ```
-
-        If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
-
-        ```ts title="src/app/client-component.tsx" twoslash
-        // @filename: env.ts
-        import arkenv from "@arkenv/nextjs";
-        export const env = arkenv({
-        	server: { DATABASE_URL: "string" },
-        	client: { NEXT_PUBLIC_API_URL: "string" },
-        	runtimeEnv: {
-        		NEXT_PUBLIC_API_URL: "https://api.example.com",
-        	}
-        });
-
-        // @filename: client-component.tsx
-        // ---cut---
-        import { env } from "./env";
-
-        // Throws a runtime error if evaluated in a client component (during SSR or in the browser)
-        const dbUrl = env.DATABASE_URL;
-        //      ^?
-        ```
-      </Step>
-    </Steps>
+    You import `env` from `src/env.ts` in both client and server components. The underlying proxy prevents accessing `DATABASE_URL` on the client.
   </Accordion>
 </Accordions>
 
-## Separate Files Mode
+---
 
-If you prefer keeping server and client environment variables in separate files, you can use the dedicated `@arkenv/nextjs/server` and `@arkenv/nextjs/client` entry points. This mode uses the `server-only` package to provide compile-time guarantees that server secrets cannot be imported into client code.
+## Using Zod or Valibot
 
-<Steps>
-  <Step>
-    ### Server environment file
+You can freely mix Zod or Valibot schemas with the 3-file layout. Standard Schema is supported out of the box.
 
-    Create a server-only environment file that imports `@arkenv/nextjs/server`:
+<Tabs items={['Zod', 'Valibot']}>
+  <Tab value="Zod">
+    ```ts title="src/env.shared.ts" twoslash
+    import { z } from "zod";
 
-    ```ts title="src/env/server.ts" twoslash
-    import arkenv from "@arkenv/nextjs/server";
-
-    export const serverEnv = arkenv({
-      server: {
-        DATABASE_URL: "string",
-      },
-      shared: {
-        NODE_ENV: "string",
-      },
-      runtimeEnv: {
-        NODE_ENV: process.env.NODE_ENV,
-      },
+    export const SharedEnv = z.object({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     });
     ```
-  </Step>
+  </Tab>
 
-  <Step>
-    ### Client environment file
+  <Tab value="Valibot">
+    ```ts title="src/env.shared.ts" twoslash
+    import * as v from "valibot";
 
-    Create a client environment file that imports `@arkenv/nextjs/client`:
-
-    ```ts title="src/env/client.ts" twoslash
-    import arkenv from "@arkenv/nextjs/client";
-
-    export const clientEnv = arkenv({
-      client: {
-        NEXT_PUBLIC_API_URL: "string",
-      },
-      shared: {
-        NODE_ENV: "string",
-      },
-      runtimeEnv: {
-        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-        NODE_ENV: process.env.NODE_ENV,
-      },
+    export const SharedEnv = v.object({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
     });
     ```
-  </Step>
-
-  <Step>
-    ### Combining with `extends`
-
-    If your server code needs access to client variables, use the `extends` option to merge validated client outputs into the server environment:
-
-    ```ts title="src/env/server.ts" twoslash
-    // @filename: client.ts
-    import arkenv from "@arkenv/nextjs/client";
-    export const clientEnv = arkenv({
-      client: { NEXT_PUBLIC_API_URL: "string" },
-      runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com" },
-    });
-
-    // @filename: server.ts
-    // ---cut---
-    import arkenv from "@arkenv/nextjs/server";
-    // highlight-next-line
-    import { clientEnv } from "./client";
-
-    export const serverEnv = arkenv({
-      server: {
-        DATABASE_URL: "string",
-      },
-      shared: {
-        NODE_ENV: "string",
-      },
-      // highlight-next-line
-      extends: [clientEnv],
-      runtimeEnv: {
-        DATABASE_URL: process.env.DATABASE_URL,
-        NODE_ENV: process.env.NODE_ENV,
-      },
-    });
-    ```
-
-    Accessing `serverEnv.NEXT_PUBLIC_API_URL` is now fully typed and safe. The underlying proxy still prevents leaking server-only variables to the client, even when extending.
-  </Step>
-
-  <Step>
-    ### Shared definitions
-
-    Both entry points accept a `shared` schema for variables used everywhere. Shared keys must be provided in both `runtimeEnv` objects when using separate files.
-  </Step>
-</Steps>
-
-## Using Standard Schema validators (Zod, Valibot)
-
-This integration uses ArkType for validation under the hood, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
-
-Here is an example using Zod:
-
-```ts title="src/env.ts" twoslash
-import arkenv from "@arkenv/nextjs";
-import { z } from "zod";
-
-export const env = arkenv({
-	server: {
-		DATABASE_URL: z.string().url(),
-	},
-	client: {
-		NEXT_PUBLIC_API_URL: z.string().url(),
-	},
-	shared: {
-		NODE_ENV: z.enum(["development", "production", "test"]),
-	},
-	runtimeEnv: {
-		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-		NODE_ENV: process.env.NODE_ENV,
-	},
-});
-```
+  </Tab>
+</Tabs>

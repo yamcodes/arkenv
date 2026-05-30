@@ -65,6 +65,7 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 ### Title convention
 
 **IMPORTANT**: All changeset descriptions MUST start with a `####` header.
+- **Mood**: The header title MUST use the **imperative mood** (e.g. "Add", "Fix", "Change", "Improve"), not present indicative (e.g. "Adds", "Fixes", "Changes", "Improves") or past tense (e.g. "Added", "Fixed").
 
 ### Usage examples
 
@@ -115,9 +116,9 @@ export const env = createEnv({
 "package-name": patch|minor
 ---
 
-#### Short title of the change
+#### Short title of the change (MUST use imperative mood)
 
-Detailed description of the change.
+Detailed description of the change (MUST use imperative mood for all actions and descriptions, e.g. "Introduce X" instead of "Introduces X").
 
 Include:
 - **Usage examples** (code blocks)

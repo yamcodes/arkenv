@@ -170,4 +170,20 @@ describe("CLI parser", () => {
 			expect(cli4.validationError).toBe("Missing value for option: -e");
 		});
 	});
+
+	describe("Strict and Simple flags", () => {
+		it("should parse --strict flag", () => {
+			const cli = new CLI(["node", "arkenv", "init", "--strict"]);
+			expect(cli.isStrict).toBe(true);
+			expect(cli.isSimple).toBe(false);
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse --simple flag", () => {
+			const cli = new CLI(["node", "arkenv", "init", "--simple"]);
+			expect(cli.isStrict).toBe(false);
+			expect(cli.isSimple).toBe(true);
+			expect(cli.validationError).toBeUndefined();
+		});
+	});
 });

@@ -1,6 +1,6 @@
 import path from "node:path";
 import { shake } from "radashi";
-import { getEnvTemplate } from "./env-template";
+import { getEnvTemplate, getStrictEnvTemplates } from "./env-template";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
@@ -39,6 +39,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			mode,
 			example: options.example,
 			name: projectName,
+			layout: options.layout,
 		}) as ScaffoldingPlan["metadata"],
 	};
 
@@ -88,17 +89,56 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const targetPath = path.resolve(cwd, options.path);
 	const targetDir = path.dirname(targetPath);
 
-	// 1. Env Schema File
-	const envContent = getEnvTemplate(options);
-	const envFileExists = existingFiles.includes(targetPath);
+	// 1. Env Schema File(s)
+	if (options.framework === "nextjs" && options.layout === "strict") {
+		const ext = path.extname(targetPath);
+		const baseWithoutExt = targetPath.slice(0, -ext.length);
+		const sharedPath = `${baseWithoutExt}.shared${ext}`;
+		const clientPath = `${baseWithoutExt}.client${ext}`;
+		const serverPath = `${baseWithoutExt}.server${ext}`;
 
-	if (!envFileExists || options.overwriteEnvSchemaFile !== false) {
-		plan.files.push({
-			path: targetPath,
-			content: envContent,
-			action: envFileExists ? "overwrite" : "create",
-			label: "environment schema",
-		});
+		const templates = getStrictEnvTemplates(options);
+
+		const sharedExists = existingFiles.includes(sharedPath);
+		const clientExists = existingFiles.includes(clientPath);
+		const serverExists = existingFiles.includes(serverPath);
+
+		if (!sharedExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: sharedPath,
+				content: templates.shared,
+				action: sharedExists ? "overwrite" : "create",
+				label: "shared environment schema",
+			});
+		}
+		if (!clientExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: clientPath,
+				content: templates.client,
+				action: clientExists ? "overwrite" : "create",
+				label: "client environment schema",
+			});
+		}
+		if (!serverExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: serverPath,
+				content: templates.server,
+				action: serverExists ? "overwrite" : "create",
+				label: "server environment schema",
+			});
+		}
+	} else {
+		const envContent = getEnvTemplate(options);
+		const envFileExists = existingFiles.includes(targetPath);
+
+		if (!envFileExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: targetPath,
+				content: envContent,
+				action: envFileExists ? "overwrite" : "create",
+				label: "environment schema",
+			});
+		}
 	}
 
 	// 2. dependencies

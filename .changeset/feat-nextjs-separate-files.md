@@ -1,10 +1,13 @@
 ---
 "@arkenv/nextjs": patch
+"@arkenv/cli": patch
 ---
 
-#### Implement Next.js separate files mode and native extends API
+#### Implement Next.js separate files mode, shared entry point, and native extends API
 
-Introduces dedicated entry points for `@arkenv/nextjs/server` and `@arkenv/nextjs/client` to prevent metadata leakage and support compile-time bundler-enforced isolation. Adds a native `extends` API to merge validated outputs of extended proxies while maintaining proxy-level protections.
+Introduce dedicated entry points for `@arkenv/nextjs/server`, `@arkenv/nextjs/client`, and `@arkenv/nextjs/shared` to prevent metadata leakage and support compile-time bundler-enforced isolation. Add a native `extends` API to merge validated outputs of extended proxies while maintaining proxy-level protections.
+
+Also update the CLI `init` wizard to support interactive layout selection (Strict 3-file vs Simple 1-file) and `--strict` / `--simple` flags to bypass interactive selection.
 
 Example server usage:
 ```ts

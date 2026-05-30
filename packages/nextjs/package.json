@@ -29,6 +29,11 @@
 		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
 	},
 	"exports": {
+		"./shared": {
+			"types": "./dist/shared.d.ts",
+			"import": "./dist/shared.js",
+			"require": "./dist/shared.cjs"
+		},
 		"./server": {
 			"react-server": {
 				"types": "./dist/server.react-server.d.ts",

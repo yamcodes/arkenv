@@ -232,4 +232,31 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		expect(plan.clone?.targetName).toBe("my-project");
 	});
+
+	it("plans three files for nextjs framework in strict layout", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.files).toHaveLength(3);
+
+		const sharedFile = plan.files.find((f) => f.path.endsWith("env.shared.ts"));
+		const clientFile = plan.files.find((f) => f.path.endsWith("env.client.ts"));
+		const serverFile = plan.files.find((f) => f.path.endsWith("env.server.ts"));
+
+		expect(sharedFile).toBeDefined();
+		expect(clientFile).toBeDefined();
+		expect(serverFile).toBeDefined();
+
+		expect(sharedFile?.content).toContain("@arkenv/nextjs/shared");
+		expect(clientFile?.content).toContain("@arkenv/nextjs/client");
+		expect(serverFile?.content).toContain("@arkenv/nextjs/server");
+	});
 });

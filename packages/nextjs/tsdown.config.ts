@@ -7,6 +7,7 @@ export default defineConfig({
 		"src/server.ts",
 		"src/server.react-server.ts",
 		"src/client.ts",
+		"src/shared.ts",
 	],
 	format: ["esm", "cjs"],
 	minify: true,
