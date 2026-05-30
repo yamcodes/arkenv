@@ -9,7 +9,10 @@ export async function GET(
 	{ params }: { params: Promise<{ slug?: string[] }> },
 ) {
 	const { slug } = await params;
-	const page = source.getPage(slug);
+	const normalizedSlug = slug?.map((s, i) =>
+		i === slug.length - 1 ? s.replace(/\.(md|mdx)$/, "") : s,
+	);
+	const page = source.getPage(normalizedSlug);
 	if (!page) notFound();
 
 	return new Response(await getLLMText(page), {
