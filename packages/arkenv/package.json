@@ -73,7 +73,8 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"

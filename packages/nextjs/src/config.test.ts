@@ -94,6 +94,35 @@ describe("config key extraction", () => {
 		const { clientKeys } = extractKeys(source);
 		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
 	});
+
+	it("should ignore braces inside string templates or comments in extractBlock", () => {
+		const source = `
+			export const env = createEnv({
+				client: {
+					NEXT_PUBLIC_VAR_1: "string = '{not-a-brace}'",
+					// {comment-brace}
+					NEXT_PUBLIC_VAR_2: "string = 'foo'",
+				}
+			});
+		`;
+
+		const { clientKeys } = extractKeys(source);
+		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
+	});
+
+	it("should ignore nested keys inside complex values in parseBlockKeys", () => {
+		const source = `
+			export const env = createEnv({
+				client: {
+					NEXT_PUBLIC_VAR_1: type("string", { description: "nested:key" }),
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			});
+		`;
+
+		const { clientKeys } = extractKeys(source);
+		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
+	});
 });
 
 describe("codegen process", () => {

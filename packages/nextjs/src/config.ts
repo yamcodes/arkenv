@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { watch as chokidarWatch } from "chokidar";
 
 export type ArkEnvConfigOptions = {
 	schemaPath?: string;
@@ -83,17 +84,15 @@ function watchSchema(schemaPath: string, outputPath: string) {
 	watcherInitialized = true;
 
 	try {
-		fs.watch(schemaPath, (eventType) => {
-			if (eventType === "change") {
-				try {
-					runCodegen(schemaPath, outputPath);
-				} catch (err: unknown) {
-					const message = err instanceof Error ? err.message : String(err);
-					// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
-					console.error(
-						`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
-					);
-				}
+		chokidarWatch(schemaPath, { ignoreInitial: true }).on("change", () => {
+			try {
+				runCodegen(schemaPath, outputPath);
+			} catch (err: unknown) {
+				const message = err instanceof Error ? err.message : String(err);
+				// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
+				console.error(
+					`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
+				);
 			}
 		});
 	} catch (err: unknown) {
@@ -181,9 +180,52 @@ function extractBlock(content: string, blockName: string): string | null {
 	const startIndex = regex.lastIndex;
 	let braceCount = 1;
 	let index = startIndex;
+	let inString: string | null = null;
+	let inComment: "single" | "multi" | null = null;
 
 	while (index < content.length && braceCount > 0) {
 		const char = content[index];
+		const nextChar = content[index + 1];
+
+		if (inComment === "single") {
+			if (char === "\n" || char === "\r") inComment = null;
+			index++;
+			continue;
+		}
+		if (inComment === "multi") {
+			if (char === "*" && nextChar === "/") {
+				inComment = null;
+				index += 2;
+				continue;
+			}
+			index++;
+			continue;
+		}
+
+		if (inString) {
+			if (char === inString && content[index - 1] !== "\\") {
+				inString = null;
+			}
+			index++;
+			continue;
+		}
+
+		if (char === "/" && nextChar === "/") {
+			inComment = "single";
+			index += 2;
+			continue;
+		}
+		if (char === "/" && nextChar === "*") {
+			inComment = "multi";
+			index += 2;
+			continue;
+		}
+		if (char === "'" || char === '"' || char === "`") {
+			inString = char;
+			index++;
+			continue;
+		}
+
 		if (char === "{") {
 			braceCount++;
 		} else if (char === "}") {
@@ -211,6 +253,7 @@ function parseBlockKeys(blockContent: string): string[] {
 	let inComment: "single" | "multi" | null = null;
 	let currentToken = "";
 	let lastStringContent = "";
+	let braceDepth = 0;
 
 	for (let i = 0; i < blockContent.length; i++) {
 		const char = blockContent[i];
@@ -256,10 +299,25 @@ function parseBlockKeys(blockContent: string): string[] {
 			continue;
 		}
 
+		if (char === "{") {
+			braceDepth++;
+			currentToken = "";
+			lastStringContent = "";
+			continue;
+		}
+		if (char === "}") {
+			braceDepth--;
+			currentToken = "";
+			lastStringContent = "";
+			continue;
+		}
+
 		if (char === ":") {
-			const key = currentToken.trim() || lastStringContent.trim();
-			if (key) {
-				keys.push(key);
+			if (braceDepth === 0) {
+				const key = currentToken.trim() || lastStringContent.trim();
+				if (key) {
+					keys.push(key);
+				}
 			}
 			currentToken = "";
 			lastStringContent = "";
@@ -268,13 +326,7 @@ function parseBlockKeys(blockContent: string): string[] {
 
 		if (/[a-zA-Z0-9_$]/.test(char)) {
 			currentToken += char;
-		} else if (
-			char === "," ||
-			char === "{" ||
-			char === "}" ||
-			char === "\n" ||
-			char === "\r"
-		) {
+		} else if (char === "," || char === "\n" || char === "\r") {
 			currentToken = "";
 			lastStringContent = "";
 		}
@@ -310,8 +362,7 @@ function generateFactoryCode(
  */
 
 import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
-import type { $ } from "@repo/scope";
-import type { type as at, distill } from "arktype";
+import type { Infer } from "@arkenv/nextjs";
 
 export { type } from "@arkenv/nextjs";
 
@@ -325,7 +376,7 @@ export function createEnv<
 		[K in keyof TClient]: K extends \`NEXT_PUBLIC_\${string}\` ? unknown : never;
 	};
 	shared?: TShared;
-}): Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>> {
+}): Readonly<Infer<TServer & TClient & TShared>> {
 	return coreCreateEnv({
 		...options,
 		runtimeEnv: {

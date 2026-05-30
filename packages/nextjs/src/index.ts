@@ -1,7 +1,5 @@
-import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
-import type { EnvSchema } from "arkenv";
-import type { type as at, distill } from "arktype";
+import type { EnvSchema, Infer } from "arkenv";
 import { createEnvInternal } from "./create-env";
 
 /**
@@ -25,13 +23,12 @@ export function createEnv<
 	shared?: EnvSchema<TShared>;
 	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
 		Record<string, unknown>;
-}): Readonly<distill.Out<at.infer<TServer & TClient & TShared, $>>> {
-	type ReturnType = Readonly<
-		distill.Out<at.infer<TServer & TClient & TShared, $>>
-	>;
+}): Readonly<Infer<TServer & TClient & TShared>> {
+	type ReturnType = Readonly<Infer<TServer & TClient & TShared>>;
 	return createEnvInternal(options, false) as ReturnType;
 }
 
+export type { Infer } from "arkenv";
 export { type } from "arkenv";
 
 /**
