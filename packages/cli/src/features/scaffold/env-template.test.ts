@@ -46,7 +46,9 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { createEnv } from "./env.gen"');
+			expect(template).toContain(
+				'import { createEnv } from "./generated/env.gen"',
+			);
 			expect(template).toContain("server: {");
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("client: {");
@@ -73,7 +75,9 @@ describe("env-template", () => {
 				],
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { createEnv } from "./env.gen"');
+			expect(template).toContain(
+				'import { createEnv } from "./generated/env.gen"',
+			);
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("CUSTOM_VAR:");
 			expect(template).toContain("NEXT_PUBLIC_API_KEY:");
@@ -92,7 +96,9 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { createEnv } from "./env.gen"');
+			expect(template).toContain(
+				'import { createEnv } from "./generated/env.gen"',
+			);
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("DATABASE_URL: z.string().url().default(");
 		});
@@ -107,7 +113,9 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { createEnv } from "./env.gen"');
+			expect(template).toContain(
+				'import { createEnv } from "./generated/env.gen"',
+			);
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain(
 				"DATABASE_URL: v.optional(v.pipe(v.string(), v.url())",

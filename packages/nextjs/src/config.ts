@@ -30,9 +30,13 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		);
 	}
 
-	// 2. Determine outputPath (defaults to env.gen.ts in the same directory as schemaPath)
+	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath)
 	const defaultOutputDir = path.dirname(schemaPath);
-	const defaultOutputPath = path.join(defaultOutputDir, "env.gen.ts");
+	const defaultOutputPath = path.join(
+		defaultOutputDir,
+		"generated",
+		"env.gen.ts",
+	);
 	const outputPath = options?.outputPath
 		? path.resolve(options.outputPath)
 		: defaultOutputPath;
@@ -354,8 +358,7 @@ function generateFactoryCode(
 		.map((key) => `\t\t\t${key}: process.env.${key},`)
 		.join("\n");
 
-	return `// @ts-nocheck
-/* eslint-disable */
+	return `/* eslint-disable */
 // prettier-ignore
 // biome-ignore format: auto-generated
 /**

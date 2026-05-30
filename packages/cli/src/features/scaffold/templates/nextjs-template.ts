@@ -94,7 +94,7 @@ export function buildNextjsTemplate(
 	}
 
 	const imports = [
-		`import { createEnv } from "./env.gen";`,
+		`import { createEnv } from "./generated/env.gen";`,
 		...(extraImports ? [extraImports] : []),
 	].join("\n");
 
