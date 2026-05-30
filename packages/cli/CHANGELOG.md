@@ -362,7 +362,7 @@
 
   **Features:**
 
-  - **Framework Detection**: Automatically detects if you are using Vite, Bun, or Node.js to provide the correct installation instructions.
+  - **Framework Detection**: Automatically detects if you are using Next.js, Vite, Bun, or Node.js to provide the correct installation instructions.
   - **Validator Selection**: Supports scaffolding environment templates using ArkType (recommended), Zod, or Valibot.
   - **Strict Mode Enforcement**: Checks and prompts to enforce `strict: true` in your `tsconfig.json` for proper type safety.
 
