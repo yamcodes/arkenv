@@ -172,8 +172,11 @@ export function extractKeys(content: string): {
  * @returns The contents of the block, or null if not found
  */
 function extractBlock(content: string, blockName: string): string | null {
-	// Find "\bblockName\s*:\s*{"
-	const regex = new RegExp(`\\b${blockName}\\s*:\\s*\\{`, "g");
+	// Find "\bblockName\s*:\s*{" or "\bblockName\s*:\s*type({"
+	const regex = new RegExp(
+		`\\b${blockName}\\s*:\\s*(?:[a-zA-Z0-9_$.]+\\s*\\(\\s*)?\\{`,
+		"g",
+	);
 	const match = regex.exec(content);
 	if (!match) return null;
 

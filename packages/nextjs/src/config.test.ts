@@ -123,6 +123,24 @@ describe("config key extraction", () => {
 		const { clientKeys } = extractKeys(source);
 		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
 	});
+
+	it("should extract keys when using ArkType 'type({...})' wrapper", () => {
+		const source = `
+			export const env = createEnv({
+				client: type({
+					NEXT_PUBLIC_VAR_1: "string",
+					NEXT_PUBLIC_VAR_2: "string",
+				}),
+				shared: at.type({
+					NODE_ENV: "string",
+				})
+			});
+		`;
+
+		const { clientKeys, sharedKeys } = extractKeys(source);
+		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
+		expect(sharedKeys).toEqual(["NODE_ENV"]);
+	});
 });
 
 describe("codegen process", () => {
