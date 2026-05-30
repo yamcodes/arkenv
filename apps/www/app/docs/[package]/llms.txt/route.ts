@@ -18,11 +18,11 @@ type Node = {
 };
 
 /**
- * Traverses the page tree nodes to find the folder corresponding to the package slug.
+ * Traverse the page tree nodes to find the folder corresponding to the package slug.
  *
- * @param nodes - The page tree nodes to search.
- * @param packageSlug - The package folder/slug name.
- * @returns The matching Folder node, or undefined if not found.
+ * @param nodes The page tree nodes to search
+ * @param packageSlug The package folder/slug name
+ * @returns The matching Folder node, or undefined if not found
  */
 function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
 	for (const node of nodes) {
@@ -62,8 +62,11 @@ function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
 }
 
 /**
- * GET route handler for package-specific llms.txt endpoints.
- * Serves plain-text indexes for a specific package subdirectory.
+ * Handle GET requests for package-specific llms.txt endpoints.
+ *
+ * @param _req The incoming HTTP request
+ * @param context The route parameters context
+ * @returns A Response containing the plain-text index of the package documentation
  */
 export async function GET(
 	_req: Request,
@@ -91,7 +94,9 @@ export async function GET(
 }
 
 /**
- * Dynamically generates static parameters for all packages present in the page collection slugs.
+ * Generate static parameters for all packages present in the page collection slugs.
+ *
+ * @returns The array of package slug parameters
  */
 export function generateStaticParams() {
 	const packages = new Set<string>();
