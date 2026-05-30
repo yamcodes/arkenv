@@ -14,25 +14,22 @@ Example server usage:
 import { createEnv } from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./env.client";
 
-export const env = createEnv({
-  server: {
-    DATABASE_URL: "string",
-  },
-  extends: [clientEnv],
-  runtimeEnv: {},
-});
+export const env = createEnv(
+  { DATABASE_URL: "string" },
+  { extends: [clientEnv] }
+);
 ```
 
 Example client usage:
 ```ts
 import { createEnv } from "@arkenv/nextjs/client";
 
-export const env = createEnv({
-  client: {
-    NEXT_PUBLIC_API_URL: "string",
-  },
-  runtimeEnv: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-  },
-});
+export const env = createEnv(
+  { NEXT_PUBLIC_API_URL: "string" },
+  {
+    runtimeEnv: {
+      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    },
+  }
+);
 ```
