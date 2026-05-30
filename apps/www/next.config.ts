@@ -31,6 +31,11 @@ const config = {
 				destination: "/docs/arkenv",
 				permanent: true,
 			},
+			{
+				source: "/docs/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
 		];
 	},
 	async rewrites() {
