@@ -30,7 +30,9 @@ describe("/llms.txt route", () => {
 		const response = await GET();
 
 		expect(response.status).toBe(200);
-		expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
+		expect(response.headers.get("Content-Type")).toBe(
+			"text/plain; charset=utf-8",
+		);
 
 		const body = await response.text();
 		expect(body).toBeTypeOf("string");

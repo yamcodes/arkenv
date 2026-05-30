@@ -24,7 +24,8 @@ vi.mock("~/lib/source", () => ({
 
 vi.mock("fumadocs-core/source", () => ({
 	llms: () => ({
-		indexNode: (node: any) => `Mocked Folder Index Content: ${node.$ref || node.name}`,
+		indexNode: (node: any) =>
+			`Mocked Folder Index Content: ${node.$ref || node.name}`,
 	}),
 }));
 
@@ -37,7 +38,9 @@ describe("/docs/[package]/llms.txt route", () => {
 		const response = await GET(req, { params });
 
 		expect(response.status).toBe(200);
-		expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
+		expect(response.headers.get("Content-Type")).toBe(
+			"text/plain; charset=utf-8",
+		);
 
 		const body = await response.text();
 		expect(body).toBeTypeOf("string");

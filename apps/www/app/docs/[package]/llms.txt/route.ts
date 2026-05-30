@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation";
 import { llms } from "fumadocs-core/source";
+import { notFound } from "next/navigation";
 import { source } from "~/lib/source";
 
 export const revalidate = false;
@@ -7,7 +7,7 @@ export const revalidate = false;
 /**
  * Node definition for page tree traversal.
  */
-interface Node {
+type Node = {
 	type: "page" | "folder" | "separator";
 	$ref?: string;
 	url?: string;
@@ -15,7 +15,7 @@ interface Node {
 		url: string;
 	};
 	children?: Node[];
-}
+};
 
 /**
  * Traverses the page tree nodes to find the folder corresponding to the package slug.
@@ -32,7 +32,11 @@ function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
 				return node;
 			}
 			// 2. Or, does its $ref contain the slug?
-			if (node.$ref && (node.$ref.includes(`${packageSlug}/meta.json`) || node.$ref.includes(`${packageSlug}/`))) {
+			if (
+				node.$ref &&
+				(node.$ref.includes(`${packageSlug}/meta.json`) ||
+					node.$ref.includes(`${packageSlug}/`))
+			) {
 				return node;
 			}
 			// 3. Or, do any of its child pages have a URL that starts with `/docs/${packageSlug}`?
@@ -40,7 +44,8 @@ function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
 				(child) =>
 					child.type === "page" &&
 					child.url &&
-					(child.url === `/docs/${packageSlug}` || child.url.startsWith(`/docs/${packageSlug}/`))
+					(child.url === `/docs/${packageSlug}` ||
+						child.url.startsWith(`/docs/${packageSlug}/`)),
 			);
 			if (hasMatchingPage) {
 				return node;
@@ -62,12 +67,15 @@ function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
  */
 export async function GET(
 	_req: Request,
-	{ params }: { params: Promise<{ package: string }> }
+	{ params }: { params: Promise<{ package: string }> },
 ) {
 	const { package: packageSlug } = await params;
-	
+
 	const tree = source.getPageTree();
-	const folderNode = findFolder(tree.children as unknown as Node[], packageSlug);
+	const folderNode = findFolder(
+		tree.children as unknown as Node[],
+		packageSlug,
+	);
 
 	if (!folderNode) {
 		notFound();
