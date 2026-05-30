@@ -90,7 +90,42 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const targetDir = path.dirname(targetPath);
 
 	// 1. Env Schema File
-	const envContent = getEnvTemplate(options);
+	let nextjsImportPath: string | undefined;
+	if (options.framework === "nextjs" && tsConfig?.parsed) {
+		const parsed = tsConfig.parsed;
+		const compilerOptions = parsed.compilerOptions || {};
+		const paths = compilerOptions.paths || {};
+		if (paths["@/*"]) {
+			const tsConfigDir = parsed.path ? path.dirname(parsed.path) : cwd;
+			const generatedDir = path.join(targetDir, "generated");
+			const relGeneratedDir = path
+				.relative(tsConfigDir, generatedDir)
+				.replace(/\\/g, "/");
+
+			for (const pattern of paths["@/*"]) {
+				const normalizedPattern = pattern
+					.replace(/^\.\//, "")
+					.replace(/\*$/, "");
+				if (
+					normalizedPattern === "" ||
+					relGeneratedDir.startsWith(normalizedPattern)
+				) {
+					let subPath = relGeneratedDir;
+					if (
+						normalizedPattern !== "" &&
+						relGeneratedDir.startsWith(normalizedPattern)
+					) {
+						subPath = relGeneratedDir.substring(normalizedPattern.length);
+					}
+					subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
+					nextjsImportPath = `@/${subPath}/env.gen`.replace(/\/+/g, "/");
+					break;
+				}
+			}
+		}
+	}
+
+	const envContent = getEnvTemplate(options, nextjsImportPath);
 	const envFileExists = existingFiles.includes(targetPath);
 
 	if (!envFileExists || options.overwriteEnvSchemaFile !== false) {

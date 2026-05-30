@@ -58,6 +58,21 @@ describe("env-template", () => {
 			expect(template).not.toContain("runtimeEnv:");
 		});
 
+		it("returns nextjs template with custom nextjsImportPath", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options, "@/generated/env.gen");
+			expect(template).toContain(
+				'import { createEnv } from "@/generated/env.gen"',
+			);
+		});
+
 		it("returns nextjs template with custom envKeys split correctly", () => {
 			const options = {
 				validator: "arktype" as any,

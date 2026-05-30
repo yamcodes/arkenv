@@ -233,4 +233,91 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		expect(plan.clone?.targetName).toBe("my-project");
 	});
+
+	it("resolves nextjsImportPath using tsconfig paths mapping when schema is inside mapped folder", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				path: "src/env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./src/*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import { createEnv } from "@/generated/env.gen"',
+		);
+	});
+
+	it("resolves nextjsImportPath using tsconfig paths mapping with root wildcard mapping", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				path: "env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import { createEnv } from "@/generated/env.gen"',
+		);
+	});
+
+	it("falls back to relative path if schema is outside mapped tsconfig paths folder", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				path: "env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./src/*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import { createEnv } from "./generated/env.gen"',
+		);
+	});
 });

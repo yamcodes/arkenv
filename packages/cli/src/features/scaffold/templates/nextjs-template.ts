@@ -46,11 +46,13 @@ export type NextjsFieldBuilders = {
  *
  * @param envKeys Optional array of env var keys scanned from the project
  * @param builders Validator-specific field formatters and default field values
+ * @param nextjsImportPath The optional custom import path for the generated file
  * @returns The generated TypeScript source string
  */
 export function buildNextjsTemplate(
 	envKeys: string[] | undefined,
 	builders: NextjsFieldBuilders,
+	nextjsImportPath?: string,
 ): string {
 	const {
 		extraImports,
@@ -94,7 +96,7 @@ export function buildNextjsTemplate(
 	}
 
 	const imports = [
-		`import { createEnv } from "./generated/env.gen";`,
+		`import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";`,
 		...(extraImports ? [extraImports] : []),
 	].join("\n");
 

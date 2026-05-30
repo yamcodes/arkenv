@@ -2,13 +2,18 @@ import dedent from "dedent";
 import { buildNextjsTemplate } from "./nextjs-template";
 
 /**
- * Generates a TypeScript template string for a Zod environment configuration.
+ * Generate a TypeScript template string for a Zod environment configuration.
  *
- * @param envKeys - Optional array of environment variable keys to include in the schema.
- * @param framework - The framework being used (vite, bun-fullstack, or vanilla).
- * @returns The generated TypeScript template string.
+ * @param envKeys Optional array of environment variable keys to include in the schema
+ * @param framework The framework being used (vite, bun-fullstack, or vanilla)
+ * @param nextjsImportPath The optional custom import path for the generated file in Next.js
+ * @returns The generated TypeScript template string
  */
-export const zodTemplate = (envKeys?: string[], framework?: string) => {
+export const zodTemplate = (
+	envKeys?: string[],
+	framework?: string,
+	nextjsImportPath?: string,
+) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: z.string().optional(),`).join("\n")
 		: `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
@@ -25,7 +30,7 @@ export const zodTemplate = (envKeys?: string[], framework?: string) => {
 	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = type({
-${schemaFields}
+		${schemaFields}
 	});
 	`;
 	}
@@ -41,28 +46,32 @@ ${schemaFields}
 	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = type({
-${schemaFields}
+		${schemaFields}
 	});
 	`;
 	}
 
 	if (framework === "nextjs") {
-		return buildNextjsTemplate(envKeys, {
-			extraImports: `import { z } from "zod";`,
-			serverField: (key) => `\t\t${key}: z.string().optional(),`,
-			clientField: (key) => `\t\t${key}: z.string().optional(),`,
-			sharedField: (key, isPort) =>
-				`\t\t${key}: ${isPort ? "z.coerce.number().int().min(1).max(65535).default(3000)" : 'z.enum(["development", "production", "test"]).default("development")'},`,
-			defaultServerFields: [
-				`\t\tDATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
-			],
-			defaultClientFields: [
-				`\t\tNEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),`,
-			],
-			defaultSharedFields: [
-				`\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,
-			],
-		});
+		return buildNextjsTemplate(
+			envKeys,
+			{
+				extraImports: `import { z } from "zod";`,
+				serverField: (key) => `\t\t${key}: z.string().optional(),`,
+				clientField: (key) => `\t\t${key}: z.string().optional(),`,
+				sharedField: (key, isPort) =>
+					`\t\t${key}: ${isPort ? "z.coerce.number().int().min(1).max(65535).default(3000)" : 'z.enum(["development", "production", "test"]).default("development")'},`,
+				defaultServerFields: [
+					`\t\tDATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
+				],
+				defaultClientFields: [
+					`\t\tNEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),`,
+				],
+				defaultSharedFields: [
+					`\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,
+				],
+			},
+			nextjsImportPath,
+		);
 	}
 
 	return dedent /* ts */`
