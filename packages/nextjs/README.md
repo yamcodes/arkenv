@@ -14,20 +14,20 @@ Next.js requires client-side environment variables to be statically destructured
 
 To automate this, `@arkenv/nextjs/config` provides `withArkEnv`, which statically extracts your keys and writes a tailored factory in `env.gen.ts`.
 
-### 1. Configure `next.config.js`
+### 1. Configure `next.config.ts`
 
 Wrap your Next.js configuration in `withArkEnv`:
 
-```javascript
-// next.config.js
-const { withArkEnv } = require("@arkenv/nextjs/config");
+```typescript
+// next.config.ts
+import { withArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // Your standard Next.js config
+const nextConfig: NextConfig = {
+  // Your standard Next.js config options
 };
 
-module.exports = withArkEnv(nextConfig);
+export default withArkEnv(nextConfig);
 ```
 
 ### 2. Define your schema in `env.ts`
@@ -58,15 +58,18 @@ export const env = createEnv({
 
 ## Customizing Paths
 
-If you want to keep generated files in a separate subdirectory (like `src/generated/`), you can specify the `schemaPath` and `outputPath` options in `next.config.js`:
+If you want to keep generated files in a separate subdirectory (like `src/generated/`), you can specify the `schemaPath` and `outputPath` options in `next.config.ts`:
 
-```javascript
-// next.config.js
-const { withArkEnv } = require("@arkenv/nextjs/config");
+```typescript
+// next.config.ts
+import { withArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
 
-module.exports = withArkEnv({
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-}, {
+};
+
+export default withArkEnv(nextConfig, {
   schemaPath: "src/env.ts",
   outputPath: "src/generated/env.gen.ts"
 });

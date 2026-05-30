@@ -6,12 +6,12 @@
 
 Add a Next.js configuration wrapper in `@arkenv/nextjs/config` that automates client-side and shared environment variable destructuring in the `runtimeEnv` block:
 
-```javascript
-// next.config.mjs
+```typescript
+// next.config.ts
 import { withArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
 	reactStrictMode: true,
 };
 
