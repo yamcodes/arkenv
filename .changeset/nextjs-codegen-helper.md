@@ -4,14 +4,37 @@
 
 #### Add `withArkEnv` configuration helper for Next.js
 
-Add a Next.js configuration wrapper in `@arkenv/nextjs/config` that automates `runtimeEnv` destructuring:
+Add a Next.js configuration wrapper in `@arkenv/nextjs/config` that automates client-side and shared environment variable destructuring in the `runtimeEnv` block:
 
-```js
-// next.config.js
-const { withArkEnv } = require("@arkenv/nextjs/config");
-module.exports = withArkEnv({
-  reactStrictMode: true,
-});
+```javascript
+// next.config.mjs
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+	reactStrictMode: true,
+};
+
+export default withArkEnv(nextConfig);
 ```
 
-It statically extracts `client` and `shared` keys from `env.ts` and auto-generates a tailored `createEnv` factory inside `env.gen.ts` to pre-fill the `runtimeEnv` block. This allows developers to define schemas in `env.ts` and import from `./env` without manually writing or keeping any `runtimeEnv` boilerplate in sync.
+Key features:
+- **Zero-Boilerplate Destructuring**: Statically extracts `client` and `shared` keys from your `env.ts` schema and generates a tailored `createEnv` factory in `env.gen.ts` that pre-fills the `runtimeEnv` block.
+- **Development Watcher**: Automatically starts a lightweight file watcher in development mode to regenerate `env.gen.ts` on the fly when `env.ts` changes.
+- **Customizable Output**: Supports custom schema and output paths, enabling developers to write generated files to a dedicated folder (e.g., `src/generated/env.gen.ts`).
+
+Example usage in `env.ts`:
+
+```typescript
+// env.ts
+import { createEnv } from "./env.gen";
+
+export const env = createEnv({
+	client: {
+		NEXT_PUBLIC_API_URL: "string",
+	},
+	shared: {
+		NODE_ENV: "string",
+	},
+});
+```
