@@ -21,6 +21,7 @@ The `packages/` directory is the home for code modules that are shared across th
 | [`arkenv`](./arkenv)           | `arkenv`              | Public  | Core typesafe environment variable parser.                                    |
 | [`cli`](./cli)                 | `@arkenv/cli`         | Public  | Scaffolding CLI tool (run via `npx arkenv` or installed as a dev dependency). |
 | [`vite-plugin`](./vite-plugin) | `@arkenv/vite-plugin` | Public  | Vite integration for build-time validation.                                   |
+| [`nextjs`](./nextjs)           | `@arkenv/nextjs`      | Public  | Next.js integration with automatic runtimeEnv code generation.                  |
 | [`bun-plugin`](./bun-plugin)   | `@arkenv/bun-plugin`  | Public  | Bun integration for static env variable inlining.                             |
 | [`internal/`](./internal)      | `@repo/*`             | Private | Shared internal modules (types, scopes, keywords) used for building.          |
 
