@@ -32,7 +32,7 @@ ArkEnvError: Errors found while validating environment variables
 
 **No.** ArkEnv is a **validator**, not a **loader**.
 
-Most modern frameworks (Vite, Bun, Next.js, Remix) already have built-in support for loading `.env` files. If you are using plain Node.js, we recommend using a dedicated loader like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
+Most modern frameworks (Next.js, Vite, Bun, Remix) already have built-in support for loading `.env` files. If you are using plain Node.js, we recommend using a dedicated loader like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
 
 ArkEnv takes whatever is in `process.env` (or your chosen source), ensures it matches your schema, and applies transformations like [automatic coercion](/docs/arkenv/coercion).
 
@@ -96,7 +96,7 @@ Yes! We officially support Next.js via the [@arkenv/nextjs](/docs/nextjs) integr
 - **ArkType Validation**: ArkEnv natively supports [ArkType](https://arktype.io) for schema definitions, yielding extremely fast runtime validation and cleaner schemas.
 - **Built-in Coercion & Tooling**: ArkEnv features robust automatic coercion, a developer-friendly CLI, and native support for AI tools.
 
-We now officially support Vite, Bun, Node.js, and Next.js.
+We now officially support Next.js, Node.js, Vite, and Bun.
 
 Read more in the [comparison](/docs/arkenv/comparison) section.
 
