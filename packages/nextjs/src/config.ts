@@ -19,11 +19,12 @@ export type ArkEnvConfigOptions = {
 	 *
 	 * Defaults to searching for `"src/env.ts"` or `"env.ts"` in the project root.
 	 *
+	 * @default "src/env.ts"
 	 * @example
 	 * ```ts
-	 * withArkEnv(nextConfig, {
+	 * export default withArkEnv(nextConfig, {
 	 *   schemaPath: "./src/env.ts"
-	 * })
+	 * });
 	 * ```
 	 */
 	schemaPath?: string;
@@ -31,13 +32,14 @@ export type ArkEnvConfigOptions = {
 	/**
 	 * Specify the path where the generated file (`env.gen.ts`) should be written.
 	 *
-	 * Defaults to `"generated/env.gen.ts"` in the same directory as the schema.
+	 * Defaults to `"generated/env.gen.ts"` in the same directory as the schema file.
 	 *
+	 * @default "[schemaDirectory]/generated/env.gen.ts"
 	 * @example
 	 * ```ts
-	 * withArkEnv(nextConfig, {
+	 * export default withArkEnv(nextConfig, {
 	 *   outputPath: "./src/generated/env.gen.ts"
-	 * })
+	 * });
 	 * ```
 	 */
 	outputPath?: string;
