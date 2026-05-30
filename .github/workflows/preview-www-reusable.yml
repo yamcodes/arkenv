@@ -1,4 +1,8 @@
-name: Preview www (arkenv.js.org)
+name: Preview www Reusable
+
+on:
+  workflow_call:
+
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -6,27 +10,9 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
   TZ: ${{ vars.TIMEZONE || 'Asia/Almaty' }}
-on:
-  pull_request:
-    types: [opened, synchronize, ready_for_review, labeled]
-    paths:
-      - "apps/www/**"
-      - "packages/arkenv/**"
-      - "packages/vite-plugin/**"
-      - "packages/bun-plugin/**"
-      - "packages/fumadocs-ui/**"
-      - "packages/internal/**"
-      - ".github/workflows/preview-www.yml"
-      - "pnpm-lock.yaml"
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   Deploy-Preview:
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'preview') ||
-      (github.event.action != 'labeled' && (github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'preview')))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
