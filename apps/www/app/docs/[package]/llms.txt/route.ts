@@ -34,8 +34,8 @@ function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
 			// 2. Or, does its $ref contain the slug?
 			if (
 				node.$ref &&
-				(node.$ref.includes(`${packageSlug}/meta.json`) ||
-					node.$ref.includes(`${packageSlug}/`))
+				(node.$ref === `${packageSlug}/meta.json` ||
+					node.$ref.startsWith(`${packageSlug}/`))
 			) {
 				return node;
 			}

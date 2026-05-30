@@ -29,7 +29,8 @@ vi.mock("fumadocs-core/source", () => ({
 	}),
 }));
 
-import { GET } from "./route";
+import { source } from "~/lib/source";
+import { GET, generateStaticParams } from "./route";
 
 describe("/docs/[package]/llms.txt route", () => {
 	it("should return the package-specific llms.txt content for arkenv", async () => {
@@ -52,5 +53,43 @@ describe("/docs/[package]/llms.txt route", () => {
 		const params = Promise.resolve({ package: "nonexistent" });
 
 		await expect(GET(req, { params })).rejects.toThrow();
+	});
+
+	it("should return static params for all expected packages", () => {
+		const spy = vi.spyOn(source, "getPages").mockReturnValue([
+			{
+				slugs: ["arkenv", "intro"],
+				url: "/docs/arkenv",
+				data: { title: "ArkEnv" },
+			},
+			{ slugs: ["cli", "intro"], url: "/docs/cli", data: { title: "CLI" } },
+			{
+				slugs: ["bun-plugin", "intro"],
+				url: "/docs/bun-plugin",
+				data: { title: "Bun Plugin" },
+			},
+			{
+				slugs: ["nextjs", "intro"],
+				url: "/docs/nextjs",
+				data: { title: "NextJS" },
+			},
+			{
+				slugs: ["vite-plugin", "intro"],
+				url: "/docs/vite-plugin",
+				data: { title: "Vite Plugin" },
+			},
+		] as any);
+
+		const params = generateStaticParams();
+
+		expect(params).toEqual([
+			{ package: "arkenv" },
+			{ package: "cli" },
+			{ package: "bun-plugin" },
+			{ package: "nextjs" },
+			{ package: "vite-plugin" },
+		]);
+
+		spy.mockRestore();
 	});
 });
