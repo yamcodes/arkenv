@@ -46,17 +46,14 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import { createEnv } from "./env.gen"');
 			expect(template).toContain("server: {");
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("client: {");
 			expect(template).toContain("NEXT_PUBLIC_API_URL:");
 			expect(template).toContain("shared: {");
 			expect(template).toContain("NODE_ENV:");
-			expect(template).toContain("runtimeEnv: {");
-			expect(template).toContain(
-				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			);
+			expect(template).not.toContain("runtimeEnv:");
 		});
 
 		it("returns nextjs template with custom envKeys split correctly", () => {
@@ -76,20 +73,13 @@ describe("env-template", () => {
 				],
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import { createEnv } from "./env.gen"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("CUSTOM_VAR:");
 			expect(template).toContain("NEXT_PUBLIC_API_KEY:");
 			expect(template).toContain("PORT:");
 			expect(template).toContain("NODE_ENV:");
-			expect(template).toContain(
-				"NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY,",
-			);
-			expect(template).toContain("PORT: process.env.PORT,");
-			expect(template).toContain("NODE_ENV: process.env.NODE_ENV,");
-			// Server keys should NOT be in runtimeEnv
-			expect(template).not.toContain("DATABASE_URL: process.env.DATABASE_URL,");
-			expect(template).not.toContain("CUSTOM_VAR: process.env.CUSTOM_VAR,");
+			expect(template).not.toContain("runtimeEnv:");
 		});
 
 		it("returns nextjs template for zod when validator is zod", () => {
@@ -102,7 +92,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import { createEnv } from "./env.gen"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("DATABASE_URL: z.string().url().default(");
 		});
@@ -117,7 +107,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import arkenv from "@arkenv/nextjs"');
+			expect(template).toContain('import { createEnv } from "./env.gen"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain(
 				"DATABASE_URL: v.optional(v.pipe(v.string(), v.url())",

@@ -65,16 +65,13 @@ export function buildNextjsTemplate(
 	const serverFields: string[] = [];
 	const clientFields: string[] = [];
 	const sharedFields: string[] = [];
-	const runtimeEnvFields: string[] = [];
 
 	if (envKeys && envKeys.length > 0) {
 		for (const key of envKeys) {
 			if (key.startsWith("NEXT_PUBLIC_")) {
 				clientFields.push(clientField(key));
-				runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
 			} else if (key === "NODE_ENV" || key === "PORT") {
 				sharedFields.push(sharedField(key, key === "PORT"));
-				runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
 			} else {
 				serverFields.push(serverField(key));
 			}
@@ -83,10 +80,6 @@ export function buildNextjsTemplate(
 		serverFields.push(...defaultServerFields);
 		clientFields.push(...defaultClientFields);
 		sharedFields.push(...defaultSharedFields);
-		runtimeEnvFields.push(
-			"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			"\t\tNODE_ENV: process.env.NODE_ENV,",
-		);
 	}
 
 	const sections: string[] = [];
@@ -99,10 +92,9 @@ export function buildNextjsTemplate(
 	if (sharedFields.length > 0) {
 		sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
 	}
-	sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 
 	const imports = [
-		`import arkenv from "@arkenv/nextjs";`,
+		`import { createEnv } from "./env.gen";`,
 		...(extraImports ? [extraImports] : []),
 	].join("\n");
 
@@ -110,10 +102,10 @@ export function buildNextjsTemplate(
 
 /**
  * Environment variable schema.
- * In Next.js, use \`@arkenv/nextjs\` to validate variables at build-time and runtime.
+ * In Next.js, use the generated \`createEnv\` from \`env.gen.ts\` to validate variables.
  * Enforces client/server separation and prevents secret leaks.
  */
-export const env = arkenv({
+export const env = createEnv({
 ${sections.join(",\n")},
 });
 `;

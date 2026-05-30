@@ -42,5 +42,16 @@ describe("scaffold utils", () => {
 				'import { env } from "./src/env"',
 			);
 		});
+
+		it("returns nextjs-specific instructions", () => {
+			const plan: ScaffoldingPlan = {
+				...basePlan,
+				metadata: { ...basePlan.metadata, framework: "nextjs" },
+			};
+			expect(getUsageInstructions(plan)).toContain("withArkEnv");
+			expect(getUsageInstructions(plan)).toContain(
+				'import { env } from "./src/env"',
+			);
+		});
 	});
 });
