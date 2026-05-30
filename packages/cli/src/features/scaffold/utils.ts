@@ -48,7 +48,7 @@ export function getNextStepsNote(
 	plan: ScaffoldingPlan,
 	skillInstalled: boolean,
 ): { message: string; title: string } {
-	if (skillInstalled) {
+	if (skillInstalled || plan.metadata.skillDetected) {
 		return {
 			message: dedent`
 					Inside your AI assistant (e.g. Claude Code), use:

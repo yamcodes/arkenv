@@ -240,7 +240,7 @@ pnpm run test:e2e                     # E2E tests
 
 **Vite Plugin Compatibility:**
 
-- Supports Vite 2.9.18 through 7.x
+- Supports Vite 4.x through 8.x
 - Validates environment variables at build-time
 - Injects validated variables into build
 
@@ -257,7 +257,7 @@ pnpm run test:e2e                     # E2E tests
 **Peer Dependencies:**
 
 - **arktype** (^2.1.22) - Required by both `arkenv` and `@arkenv/vite-plugin`
-- **vite** (^2.9.18 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0) - Required by `@arkenv/vite-plugin`
+- **vite** (^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0) - Required by `@arkenv/vite-plugin`
 
 **External Services (www app only):**
 

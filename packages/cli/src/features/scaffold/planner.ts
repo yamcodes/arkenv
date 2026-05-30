@@ -40,6 +40,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			example: options.example,
 			name: projectName,
 			layout: options.layout,
+			skillDetected: options.skillDetected,
 		}) as ScaffoldingPlan["metadata"],
 	};
 

@@ -128,7 +128,7 @@ export class InitUseCase {
 		input: InitInput,
 		targetDir: string,
 	): Promise<CollectedState | null> {
-		const { isYes, isForce, isAgent } = input;
+		const { isYes, isForce, isQuiet, isAgent } = input;
 
 		const requirements = await this.scanner.checkRequirements(targetDir);
 		const failures = requirements.filter((r) => r.status === "fail");
@@ -254,8 +254,18 @@ export class InitUseCase {
 			return null;
 		}
 
+		const hasSkill = await this.scanner.hasSkill(targetDir);
+		if (hasSkill) {
+			options.skillDetected = true;
+			if (!isQuiet && !isAgent) {
+				this.logger.info("ArkEnv agent skill detected.");
+			}
+		}
+
 		// Handle installSkill logic
-		if (isAgent) {
+		if (hasSkill) {
+			options.installSkill = false;
+		} else if (isAgent) {
 			options.installSkill = false;
 		} else if (isYes) {
 			options.installSkill = true;

@@ -32,11 +32,11 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset types
 
-| Type    | When to Use                                 | v0 Version Change (Current) | v1+ Version Change |
-| ------- | ------------------------------------------- | --------------------------- | ------------------ |
-| `patch` | Bug fixes, non-breaking features, changes   | 0.y.z → 0.y.(z+1)           | 1.y.z → 1.y.z+1    |
-| `minor` | **Breaking changes** (in v0)                | 0.y.z → 0.(y+1).0           | 1.y.z → 1.y+1.0    |
-| `major` | **Avoid in v0** (explicit instruction only) | 0.y.z → 1.0.0               | 1.y.z → 2.0.0      |
+| Type    | When to Use                               | v0 Version Change (Current) | v1+ Version Change |
+| ------- | ----------------------------------------- | --------------------------- | ------------------ |
+| `patch` | Any non-breaking change (fixes, features) | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
+| `minor` | **Breaking changes**                      | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
+| `major` | Switch to v1 (only when instructed)       | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
 
 ## Decision guide (v0 rules)
 
@@ -44,28 +44,29 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 
 ### Use `patch` for:
 
+- **Any non-breaking change** (including new features, new CLI commands, new configuration options, enhanced functionality, non-breaking API additions, etc.)
 - Bug fixes
-- New features and non-breaking changes
+- Dependency updates (non-breaking)
 - Performance improvements
 - Dependency updates
 - Code style/linting fixes
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
 
-### Use `minor` for:
+### Use `minor` ONLY for:
 
-- **Breaking changes** (Required in v0 for any breaking modification)
+- **Breaking changes** (Required in v0 for any breaking modification. You MUST prefix the description with `**BREAKING CHANGE**:`).
 
 ### Use `major` ONLY for:
 
-- Explicitly transitioning the project from v0.y.z to v1.0.0, and **only upon explicit instruction** from the user. Do not use major for breaking changes in v0.
+- Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.** Do not use major for breaking changes in v0.
 
 ## Creating a changeset
 
 ### Title convention
 
-**IMPORTANT**: All changeset descriptions MUST start with a `####` header.
-- **Mood**: The header title MUST use the **imperative mood** (e.g. "Add", "Fix", "Change", "Improve"), not present indicative (e.g. "Adds", "Fixes", "Changes", "Improves") or past tense (e.g. "Added", "Fixed").
+- **Format**: All changeset descriptions MUST start with a `####` header.
+- **Mood**: The header title and all detailed description actions/sentences MUST use the **imperative mood** (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops...").
 
 ### Usage examples
 
@@ -123,7 +124,7 @@ Detailed description of the change (MUST use imperative mood for all actions and
 Include:
 - **Usage examples** (code blocks)
 - Bullet points for details
-- Migration instructions for breaking changes (using `minor` bump and `**BREAKING CHANGE**:` prefix)
+- Migration instructions for breaking changes (using `minor` bump and you MUST include the `**BREAKING CHANGE**:` label)
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
 ```
