@@ -174,7 +174,11 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	}
 
 	// 5. Framework-specific bootstrapping
-	if (options.framework === "vite" || options.framework === "bun-fullstack") {
+	if (
+		options.framework === "vite" ||
+		options.framework === "bun-fullstack" ||
+		options.framework === "nextjs"
+	) {
 		plan.bootstrap = shake({
 			framework: options.framework,
 			bunFeatures:

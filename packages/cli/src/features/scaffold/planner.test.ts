@@ -54,7 +54,8 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
 		expect(plan.files.some((f) => f.path.endsWith("env.d.ts"))).toBe(false);
-		expect(plan.bootstrap).toBeUndefined();
+		expect(plan.bootstrap).toBeDefined();
+		expect(plan.bootstrap?.framework).toBe("nextjs");
 	});
 
 	it("plans for nextjs framework with zod validator", () => {
