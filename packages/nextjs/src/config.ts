@@ -9,11 +9,12 @@ export type ArkEnvConfigOptions = {
 let watcherInitialized = false;
 
 /**
- * Next.js config wrapper to automatically generate the `runtimeEnv` block in `env.gen.ts`.
+ * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts`.
  *
  * @param nextConfig The Next.js configuration object or function
  * @param options Optional configuration paths for schema and output files
  * @returns The Next.js configuration object unchanged
+ * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 	// 1. Locate the env.ts schema file
@@ -55,6 +56,11 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 	return nextConfig;
 }
 
+/**
+ * Find the path to the schema file in the project.
+ *
+ * @returns The absolute path to the schema file, or null if not found
+ */
 function findSchemaPath(): string | null {
 	const possiblePaths = [
 		path.join(process.cwd(), "src", "env.ts"),
@@ -66,6 +72,12 @@ function findSchemaPath(): string | null {
 	return null;
 }
 
+/**
+ * Watch the schema file for changes and trigger codegen.
+ *
+ * @param schemaPath The absolute path to the schema file
+ * @param outputPath The absolute path to the generated output file
+ */
 function watchSchema(schemaPath: string, outputPath: string) {
 	if (watcherInitialized) return;
 	watcherInitialized = true;
@@ -93,6 +105,12 @@ function watchSchema(schemaPath: string, outputPath: string) {
 	}
 }
 
+/**
+ * Run code generation to read the schema file and generate the env.gen.ts factory.
+ *
+ * @param schemaPath The absolute path to the schema file
+ * @param outputPath The absolute path to the generated output file
+ */
 export function runCodegen(schemaPath: string, outputPath: string) {
 	const fileContent = fs.readFileSync(schemaPath, "utf-8");
 	const { clientKeys, sharedKeys } = extractKeys(fileContent);
@@ -121,7 +139,9 @@ export function runCodegen(schemaPath: string, outputPath: string) {
 
 /**
  * Statically extract client and shared keys from the schema content.
- * Strips comments and string literals first to be highly robust.
+ *
+ * @param content The schema file string content
+ * @returns An object containing the extracted client and shared keys
  */
 export function extractKeys(content: string): {
 	clientKeys: string[];
@@ -145,6 +165,13 @@ export function extractKeys(content: string): {
 	return { clientKeys, sharedKeys };
 }
 
+/**
+ * Extract a specific block from the schema content by name.
+ *
+ * @param content The schema file string content
+ * @param blockName The name of the block to extract (e.g., 'client' or 'shared')
+ * @returns The contents of the block, or null if not found
+ */
 function extractBlock(content: string, blockName: string): string | null {
 	// Find "\bblockName\s*:\s*{"
 	const regex = new RegExp(`\\b${blockName}\\s*:\\s*\\{`, "g");
@@ -172,6 +199,12 @@ function extractBlock(content: string, blockName: string): string | null {
 	return null;
 }
 
+/**
+ * Parse environment variable keys from a block's content.
+ *
+ * @param blockContent The raw content of the block
+ * @returns An array of parsed environment variable keys
+ */
 function parseBlockKeys(blockContent: string): string[] {
 	const keys: string[] = [];
 	let inString: string | null = null;
@@ -250,6 +283,13 @@ function parseBlockKeys(blockContent: string): string[] {
 	return keys;
 }
 
+/**
+ * Generate the TypeScript factory code for the tailored createEnv helper.
+ *
+ * @param clientKeys The client environment variable keys
+ * @param sharedKeys The shared environment variable keys
+ * @returns The generated TypeScript source code string
+ */
 function generateFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
