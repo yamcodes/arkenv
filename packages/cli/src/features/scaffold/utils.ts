@@ -23,27 +23,6 @@ export function getInstallCommand(
 }
 
 /**
- * Returns the framework usage instruction shown after scaffolding.
- */
-export function getUsageInstructions(plan: ScaffoldingPlan): string {
-	if (plan.metadata.framework === "vite") {
-		return `2. Access via ${code("import.meta.env.YOUR_VAR")}`;
-	}
-	if (plan.metadata.framework === "bun-fullstack") {
-		return `2. Access via ${code("process.env.YOUR_VAR")}`;
-	}
-	if (plan.metadata.framework === "nextjs") {
-		return dedent`
-			2. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:
-			   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}
-			   ${code("export default withArkEnv(nextConfig);")}
-			3. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}
-		`;
-	}
-	return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}`;
-}
-
-/**
  * Builds the final next steps note shown after a scaffolding run.
  */
 export function getNextStepsNote(

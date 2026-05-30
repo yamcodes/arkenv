@@ -12,7 +12,7 @@ pnpm add @arkenv/nextjs arktype
 
 Next.js requires client-side environment variables to be statically destructured (`process.env.NEXT_PUBLIC_...`) to allow static inlining during bundling.
 
-To automate this, `@arkenv/nextjs/config` provides `withArkEnv`, which statically extracts your keys and writes a tailored factory in `env.gen.ts`.
+To automate this, `@arkenv/nextjs/config` provides `withArkEnv`, which statically extracts your keys and writes a tailored factory in `generated/env.gen.ts`.
 
 ### 1. Configure `next.config.ts`
 
@@ -32,11 +32,11 @@ export default withArkEnv(nextConfig);
 
 ### 2. Define your schema in `env.ts`
 
-Import `createEnv` from the generated `./env.gen` file instead of the package:
+Import `createEnv` from the generated `./generated/env.gen` file instead of the package:
 
 ```typescript
 // src/env.ts
-import { createEnv } from "./env.gen";
+import { createEnv } from "./generated/env.gen";
 
 export const env = createEnv({
   server: {
@@ -52,7 +52,7 @@ export const env = createEnv({
 });
 ```
 
-*Note: For the best DX and CI/CD compatibility, we recommend committing `env.gen.ts` to source control.*
+*Note: For the best DX and CI/CD compatibility, we recommend committing `generated/env.gen.ts` to source control.*
 
 ---
 

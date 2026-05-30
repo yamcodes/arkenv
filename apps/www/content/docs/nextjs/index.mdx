@@ -55,10 +55,10 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
       <Step>
         ### Configure environment
 
-        Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define your schemas. Import `createEnv` from the auto-generated `./env.gen.ts` helper file (rather than importing directly from `@arkenv/nextjs`):
+        Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define your schemas. Import `createEnv` from the auto-generated `./generated/env.gen.ts` helper file (rather than importing directly from `@arkenv/nextjs`):
 
         ```ts title="src/env.ts" twoslash
-        // @filename: env.gen.ts
+        // @filename: generated/env.gen.ts
         import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
         import type { type as at, distill } from "arktype";
         export { type } from "@arkenv/nextjs";
@@ -77,7 +77,7 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
 
         // @filename: env.ts
         // ---cut---
-        import { createEnv } from "./env.gen";
+        import { createEnv } from "./generated/env.gen";
 
         export const env = createEnv({
         	server: {
@@ -114,12 +114,12 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         ```ts
         export default withArkEnv(nextConfig, {
         	schemaPath: "src/env.ts",              // Path to your schema (default: src/env.ts or env.ts)
-        	outputPath: "src/generated/env.gen.ts", // Custom output path (default: co-located env.gen.ts)
+        	outputPath: "src/generated/env.gen.ts", // Custom output path (default: src/generated/env.gen.ts)
         });
         ```
 
         > [!TIP]
-        > We recommend committing the generated `env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
+        > We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
       </Step>
 
       <Step>
@@ -128,7 +128,7 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         Import `env` throughout your Next.js application:
 
         ```ts title="src/app/page.tsx" twoslash
-        // @filename: env.gen.ts
+        // @filename: generated/env.gen.ts
         import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
         import type { type as at, distill } from "arktype";
         export { type } from "@arkenv/nextjs";
@@ -145,7 +145,7 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         }
 
         // @filename: env.ts
-        import { createEnv } from "./env.gen";
+        import { createEnv } from "./generated/env.gen";
         export const env = createEnv({
         	server: { DATABASE_URL: "string" },
         	client: { NEXT_PUBLIC_API_URL: "string" },
@@ -163,7 +163,7 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
 
         ```ts title="src/app/client-component.tsx" twoslash
-        // @filename: env.gen.ts
+        // @filename: generated/env.gen.ts
         import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
         import type { type as at, distill } from "arktype";
         export { type } from "@arkenv/nextjs";
@@ -180,7 +180,7 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         }
 
         // @filename: env.ts
-        import { createEnv } from "./env.gen";
+        import { createEnv } from "./generated/env.gen";
         export const env = createEnv({
         	server: { DATABASE_URL: "string" },
         	client: { NEXT_PUBLIC_API_URL: "string" },
@@ -206,7 +206,7 @@ This integration uses ArkType for validation under the hood, which natively supp
 Here is an example using Zod:
 
 ```ts title="src/env.ts" twoslash
-// @filename: env.gen.ts
+// @filename: generated/env.gen.ts
 import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
 export { type } from "@arkenv/nextjs";
@@ -224,7 +224,7 @@ export function createEnv<
 
 // @filename: env.ts
 // ---cut---
-import { createEnv } from "./env.gen";
+import { createEnv } from "./generated/env.gen";
 import { z } from "zod";
 
 export const env = createEnv({

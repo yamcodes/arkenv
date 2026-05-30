@@ -19,8 +19,8 @@ export default withArkEnv(nextConfig);
 ```
 
 Key features:
-- **Zero-Boilerplate Destructuring**: Statically extract `client` and `shared` keys from your `env.ts` schema and generate a tailored `createEnv` factory in `env.gen.ts` that pre-fills the `runtimeEnv` block.
-- **Development Watcher**: Automatically start a lightweight file watcher in development mode to regenerate `env.gen.ts` on the fly when `env.ts` changes.
+- **Zero-Boilerplate Destructuring**: Statically extract `client` and `shared` keys from your `env.ts` schema and generate a tailored `createEnv` factory in `generated/env.gen.ts` that pre-fills the `runtimeEnv` block.
+- **Development Watcher**: Automatically start a lightweight file watcher in development mode to regenerate `generated/env.gen.ts` on the fly when `env.ts` changes.
 - **Customizable Output**: Support custom schema and output paths, enabling developers to write generated files to a dedicated folder (e.g., `src/generated/env.gen.ts`).
 - **Deprecate Direct Exports**: Mark direct `createEnv` and default `arkenv` exports from the main and `react-server` entry points as deprecated to steer developers toward the new codegen workflow.
 
@@ -29,7 +29,7 @@ Example usage in `env.ts`:
 
 ```typescript
 // env.ts
-import { createEnv } from "./env.gen";
+import { createEnv } from "./generated/env.gen";
 
 export const env = createEnv({
 	client: {
