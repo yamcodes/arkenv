@@ -2,8 +2,44 @@ import fs from "node:fs";
 import path from "node:path";
 import { watch as chokidarWatch } from "chokidar";
 
+/**
+ * Configuration options for the ArkEnv Next.js integration.
+ *
+ * @example
+ * ```ts
+ * const configOptions: ArkEnvConfigOptions = {
+ *   schemaPath: "./src/env.ts",
+ *   outputPath: "./src/generated/env.gen.ts"
+ * };
+ * ```
+ */
 export type ArkEnvConfigOptions = {
+	/**
+	 * Specify the path to the schema definition file.
+	 *
+	 * Defaults to searching for `"src/env.ts"` or `"env.ts"` in the project root.
+	 *
+	 * @example
+	 * ```ts
+	 * withArkEnv(nextConfig, {
+	 *   schemaPath: "./src/env.ts"
+	 * })
+	 * ```
+	 */
 	schemaPath?: string;
+
+	/**
+	 * Specify the path where the generated file (`env.gen.ts`) should be written.
+	 *
+	 * Defaults to `"generated/env.gen.ts"` in the same directory as the schema.
+	 *
+	 * @example
+	 * ```ts
+	 * withArkEnv(nextConfig, {
+	 *   outputPath: "./src/generated/env.gen.ts"
+	 * })
+	 * ```
+	 */
 	outputPath?: string;
 };
 
