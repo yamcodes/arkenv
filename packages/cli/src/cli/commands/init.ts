@@ -208,7 +208,24 @@ export class InitUseCase {
 			targetPath,
 		);
 
-		const hasEnvSchemaFile = await this.workspace.exists(targetPath);
+		const hasEnvSchemaFile = await (async () => {
+			// For strict layout, we need to check the variant paths, not the base path.
+			// When isStrict is requested via flag, peek at those paths before the wizard runs.
+			if (input.isStrict) {
+				const ext = path.extname(targetPath);
+				const baseWithoutExt = targetPath.slice(0, -ext.length);
+				const strictPaths = [
+					`${baseWithoutExt}.shared${ext}`,
+					`${baseWithoutExt}.client${ext}`,
+					`${baseWithoutExt}.server${ext}`,
+				];
+				const checks = await Promise.all(
+					strictPaths.map((p) => this.workspace.exists(p)),
+				);
+				if (checks.some(Boolean)) return true;
+			}
+			return this.workspace.exists(targetPath);
+		})();
 
 		const hasTypeFileAtPath = async ({
 			framework,
@@ -284,25 +301,43 @@ export class InitUseCase {
 		// Handle existing env file prompt
 		const finalTargetPath = path.resolve(targetDir, options.path);
 
-		if (
-			(await this.workspace.exists(finalTargetPath)) &&
-			options.overwriteEnvSchemaFile === undefined
-		) {
-			const confirmOverwrite = await this.prompt.confirm(
-				`File ${code(path.basename(finalTargetPath))} already exists. Overwrite?`,
-				false,
-			);
+		if (options.overwriteEnvSchemaFile === undefined) {
+			// For strict layout, check whether any of the three variant files already exist
+			const existsCheck =
+				options.layout === "strict"
+					? await (async () => {
+							const ext = path.extname(finalTargetPath);
+							const baseWithoutExt = finalTargetPath.slice(0, -ext.length);
+							const checks = await Promise.all([
+								this.workspace.exists(`${baseWithoutExt}.shared${ext}`),
+								this.workspace.exists(`${baseWithoutExt}.client${ext}`),
+								this.workspace.exists(`${baseWithoutExt}.server${ext}`),
+							]);
+							return checks.some(Boolean);
+						})()
+					: await this.workspace.exists(finalTargetPath);
 
-			if (confirmOverwrite === null) {
-				return null;
+			if (existsCheck) {
+				const label =
+					options.layout === "strict"
+						? "Strict layout files (env.shared/client/server)"
+						: path.basename(finalTargetPath);
+				const confirmOverwrite = await this.prompt.confirm(
+					`${label} already exist. Overwrite?`,
+					false,
+				);
+
+				if (confirmOverwrite === null) {
+					return null;
+				}
+
+				if (!confirmOverwrite) {
+					this.logger.cancel("Operation cancelled.");
+					return null;
+				}
+
+				options.overwriteEnvSchemaFile = confirmOverwrite;
 			}
-
-			if (!confirmOverwrite) {
-				this.logger.cancel("Operation cancelled.");
-				return null;
-			}
-
-			options.overwriteEnvSchemaFile = confirmOverwrite;
 		}
 
 		const packageManager = await this.scanner.detectPackageManager(
@@ -310,9 +345,23 @@ export class InitUseCase {
 			tsConfig.parsed,
 		);
 
+		const ext = path.extname(finalTargetPath);
+		const baseWithoutExt = finalTargetPath.slice(0, -ext.length);
+
+		// Determine which paths we actually care about based on the resolved layout
+		const pathsToCheck =
+			options.layout === "strict"
+				? [
+						`${baseWithoutExt}.shared${ext}`,
+						`${baseWithoutExt}.client${ext}`,
+						`${baseWithoutExt}.server${ext}`,
+					]
+				: [finalTargetPath];
+
 		const existingFiles: string[] = [];
-		if (await this.workspace.exists(finalTargetPath))
-			existingFiles.push(finalTargetPath);
+		for (const p of pathsToCheck) {
+			if (await this.workspace.exists(p)) existingFiles.push(p);
+		}
 
 		let typeFileName: string | undefined;
 		if (options.framework === "vite") {

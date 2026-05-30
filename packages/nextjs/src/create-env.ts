@@ -161,7 +161,13 @@ export function createEnvInternal(
 					const extKeys = getSchemaKeys(ext);
 					for (const key of extKeys) {
 						allKeys.add(key);
-						if (isServer) {
+						// Only classify as server-only if we are on the server, it's not a public key,
+						// and we aren't explicitly inside the shared entry point.
+						if (
+							isServer &&
+							!key.startsWith("NEXT_PUBLIC_") &&
+							!context?.isShared
+						) {
 							serverOnlyKeys.add(key);
 						}
 					}
@@ -243,6 +249,11 @@ export function createEnvInternal(
 				return serverOnlyKeys;
 			}
 
+			// Always allow symbol properties (Symbol.iterator, Symbol.toStringTag, etc.)
+			if (typeof prop === "symbol") {
+				return Reflect.get(target, prop, receiver);
+			}
+
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
 					throw new Error(
@@ -250,20 +261,20 @@ export function createEnvInternal(
 					);
 				}
 
-				const isCommonKey =
-					prop === "default" ||
-					prop === "__esModule" ||
-					prop === "$$typeof" ||
-					prop === "toJSON" ||
-					prop === "toString" ||
-					prop === "valueOf" ||
-					prop === "constructor" ||
-					prop === "inspect";
+				// Allow schema keys and standard Object prototype properties
+				if (!allKeys.has(prop) && !(prop in Object.prototype)) {
+					// Fallback for bundler/framework-specific properties that bypass the prototype
+					const isCommonKey =
+						prop === "__esModule" ||
+						prop === "$$typeof" ||
+						prop === "toJSON" ||
+						prop === "inspect";
 
-				if (!allKeys.has(prop) && !isCommonKey) {
-					throw new Error(
-						`Environment variable '${prop}' is not defined in the schema.`,
-					);
+					if (!isCommonKey) {
+						throw new Error(
+							`Environment variable '${prop}' is not defined in the schema.`,
+						);
+					}
 				}
 			}
 			return Reflect.get(target, prop, receiver);
