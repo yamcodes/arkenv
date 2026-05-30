@@ -1,5 +1,21 @@
 # @ArkEnv/CLI
 
+## 0.2.5
+
+### Patch Changes
+
+- #### Automatically detect installed ArkEnv agent skill _[`#1090`](https://github.com/yamcodes/arkenv/pull/1090) [`00f504f`](https://github.com/yamcodes/arkenv/commit/00f504f133e38b039cb2802a12162cee5efa1f23) [@yamcodes](https://github.com/yamcodes)_
+
+  During initialization, check if the `arkenv` agent skill is already present in the workspace. If detected, the installation prompt and setup are bypassed, defaulting to `false`, and an informational message confirming the detection is logged.
+
+- #### Scaffold scanned environment variables as optional types during bootstrap _[`#1083`](https://github.com/yamcodes/arkenv/pull/1083) [`182d1af`](https://github.com/yamcodes/arkenv/commit/182d1af57df5761adb217b0b823b0ddb6d2b5181) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now generates optional schemas without default fallback values for custom/scanned environment keys during bootstrap:
+
+  - **ArkType**: Scaffolds fields with `"string?"` instead of `"string = ''"`
+  - **Zod**: Scaffolds fields with `z.string().optional()` instead of `z.string().default("")`
+  - **Valibot**: Scaffolds fields with `v.optional(v.string())` instead of `v.optional(v.string(), "")`
+
 ## 0.2.4
 
 ### Patch changes
