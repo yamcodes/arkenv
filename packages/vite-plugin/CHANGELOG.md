@@ -1,5 +1,13 @@
 # @ArkEnv/Vite-plugin
 
+## 0.1.0
+
+### Minor Changes
+
+- #### Update Vite peer dependency floor to ^4.0.0 _[`#1087`](https://github.com/yamcodes/arkenv/pull/1087) [`e508608`](https://github.com/yamcodes/arkenv/commit/e508608c0d7e2b1339b3a93974d8247b77347376) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: Drop support for Vite 2 and Vite 3. Limit the supported Vite range to versions actually validated in CI (Vite 4, 5, 6, 7, and 8).
+
 ## 0.0.33
 
 ### Patch changes
