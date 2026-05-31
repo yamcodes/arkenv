@@ -1,5 +1,39 @@
 # @ArkEnv/nextjs
 
+## 0.0.5
+
+### Patch Changes
+
+- #### Generate tailored `createEnv` factory in Next.js strict layout _[`#1116`](https://github.com/yamcodes/arkenv/pull/1116) [`b62ebbd`](https://github.com/yamcodes/arkenv/commit/b62ebbd316db239295884a32348d1a496e8cd49b) [@yamcodes](https://github.com/yamcodes)_
+
+  Generate a tailored `createEnv` factory helper in `env.gen.ts` when using the strict split-schema layout (instead of exporting a raw `runtimeEnv` object).
+
+  This eliminates the need to manually declare or reference the `runtimeEnv` object inside the client schema `client.ts` file, aligning it closer to the core `arkenv` experience of simply calling `createEnv(schema, options)`.
+
+  Example usage in `client.ts`:
+
+  ```ts
+  import { createEnv } from "./generated/env.gen";
+  import { SharedSchema } from "./internal/shared";
+
+  export const env = createEnv(
+    {
+      NEXT_PUBLIC_API_URL: "string",
+    },
+    {
+      extends: [SharedSchema],
+    }
+  );
+  ```
+
+- #### Support split schema layout in Next.js config wrapper _[`#1116`](https://github.com/yamcodes/arkenv/pull/1116) [`b62ebbd`](https://github.com/yamcodes/arkenv/commit/b62ebbd316db239295884a32348d1a496e8cd49b) [@yamcodes](https://github.com/yamcodes)_
+
+  Add support for the strict split schema layout in the Next.js `withArkEnv` configuration wrapper and update CLI scaffolding instructions:
+
+  - Add a `layout` option (`"simple" | "strict"`) to `withArkEnv` configuration, which defaults to auto-detecting the strict layout if split files (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`) exist.
+  - Implement key extraction from strict client and shared schema files.
+  - Update CLI next-steps messages to include `withArkEnv` wrapping instructions for strict layout nextjs projects.
+
 ## 0.0.4
 
 ### Patch Changes
