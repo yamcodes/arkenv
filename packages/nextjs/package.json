@@ -92,12 +92,60 @@
 	"types": "./dist/index.d.ts",
 	"size-limit": [
 		{
+			"name": "@arkenv/nextjs",
 			"path": "dist/index.js",
 			"limit": "3 kB",
 			"import": "*",
 			"ignore": [
 				"next",
-				"arktype"
+				"arktype",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/shared",
+			"path": "dist/shared.js",
+			"limit": "1.5 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/server",
+			"path": "dist/server.js",
+			"limit": "2 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"server-only",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/server.react-server",
+			"path": "dist/server.react-server.js",
+			"limit": "2 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"server-only",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/client",
+			"path": "dist/client.js",
+			"limit": "2 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"arkenv"
 			]
 		}
 	]
