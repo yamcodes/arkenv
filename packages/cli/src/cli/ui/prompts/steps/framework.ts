@@ -97,14 +97,14 @@ export async function layoutStep(): Promise<"strict" | "simple" | null> {
 		message: "How would you like to structure your environment variables?",
 		options: [
 			{
-				value: "strict",
-				label: "Strict (Recommended)",
-				hint: "Generates separate shared, client, and server files for maximum security",
+				value: "simple",
+				label: "Unified (Recommended)",
+				hint: "Generates a single env.ts file for best Developer Experience",
 			},
 			{
-				value: "simple",
-				label: "Simple",
-				hint: "Generates a single unified file for quick prototyping",
+				value: "strict",
+				label: "Strict (Enterprise / Monorepo)",
+				hint: "Generates separate files to completely block server imports in client bundles at compile-time",
 			},
 		],
 	});
