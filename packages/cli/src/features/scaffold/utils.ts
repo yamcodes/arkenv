@@ -36,7 +36,7 @@ export function getUsageInstructions(plan: ScaffoldingPlan): string {
 		plan.metadata.framework === "nextjs" &&
 		plan.metadata.layout === "strict"
 	) {
-		return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}.client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}.server"`)} (server)`;
+		return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)`;
 	}
 	return `2. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}`;
 }
@@ -67,7 +67,7 @@ export function getNextStepsNote(
 		const lastDot = displayLocation.lastIndexOf(".");
 		const base =
 			lastDot !== -1 ? displayLocation.slice(0, lastDot) : displayLocation;
-		displayLocation = `${base}.shared.ts, ${base}.client.ts, and ${base}.server.ts`;
+		displayLocation = `${base}/shared.ts, ${base}/client.ts, and ${base}/server.ts`;
 	}
 
 	return {

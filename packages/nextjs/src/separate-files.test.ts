@@ -286,4 +286,22 @@ describe("Separate Files Next.js mode", () => {
 			"Client-side environment variables must be prefixed with 'NEXT_PUBLIC_'. Found invalid key: API_URL",
 		);
 	});
+
+	it("should reject extra keys in runtimeEnv not defined in the schema", () => {
+		expect(() => {
+			clientCreateEnv(
+				{
+					NEXT_PUBLIC_API_URL: "string",
+				},
+				{
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						DATABASE_URL: "postgres://localhost/db",
+					} as any,
+				},
+			);
+		}).toThrow(
+			"Environment variable 'DATABASE_URL' is passed to runtimeEnv but is not defined in the schema.",
+		);
+	});
 });

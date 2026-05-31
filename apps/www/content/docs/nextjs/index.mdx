@@ -11,19 +11,19 @@ The `@arkenv/nextjs` integration provides end-to-end environment validation for 
 
 ## Recommended Architecture (Separate Files)
 
-For maximum security, we recommend a **3-file layout** (`env.shared.ts` → `env.client.ts` → `env.server.ts`). This structure aligns with Next.js's native `use client` boundary model, ensures that server secrets are compile-time locked from browser bundles, and allows a single unified `env` export path.
+For maximum security, we recommend a **3-file layout** (`env/shared.ts` → `env/client.ts` → `env/server.ts`). This structure aligns with Next.js's native `use client` boundary model, ensures that server secrets are compile-time locked from browser bundles, and allows a single unified `env` export path.
 
 ```mermaid
 graph TD
-    Shared["env.shared.ts<br/>(SharedEnv type schema)"] --> Client["env.client.ts<br/>(Unified env export)"]
-    Client --> Server["env.server.ts<br/>(Unified env export)"]
+    Shared["env/shared.ts<br/>(SharedEnv type schema)"] --> Client["env/client.ts<br/>(Unified env export)"]
+    Client --> Server["env/server.ts<br/>(Unified env export)"]
 ```
 
 ### 1. Define Shared Variables
 
-Create `env.shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+Create `env/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
-```ts title="src/env.shared.ts" twoslash
+```ts title="src/env/shared.ts" twoslash
 import { type } from "@arkenv/nextjs/shared";
 
 export const SharedEnv = type({
@@ -33,21 +33,21 @@ export const SharedEnv = type({
 
 ### 2. Define Client Variables
 
-Create `env.client.ts` using `@arkenv/nextjs/client`. All local keys **must** be prefixed with `NEXT_PUBLIC_`. You must extend `SharedEnv` and provide the destructured `runtimeEnv`:
+Create `env/client.ts` using `@arkenv/nextjs/client`. All local keys **must** be prefixed with `NEXT_PUBLIC_`. You must extend `SharedEnv` and provide the destructured `runtimeEnv`:
 
-```ts title="src/env.client.ts" twoslash
-// @filename: env.shared.ts
+```ts title="src/env/client.ts" twoslash
+// @filename: env/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 export const SharedEnv = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 
-// @filename: env.client.ts
+// @filename: env/client.ts
 // ---cut---
-import { createEnv } from "@arkenv/nextjs/client";
-import { SharedEnv } from "./env.shared";
+import arkenv from "@arkenv/nextjs/client";
+import { SharedEnv } from "./shared";
 
-export const env = createEnv(
+export const env = arkenv(
 	{
 		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
 	},
@@ -63,19 +63,19 @@ export const env = createEnv(
 
 ### 3. Define Server Variables
 
-Create `env.server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
 
-```ts title="src/env.server.ts" twoslash
-// @filename: env.shared.ts
+```ts title="src/env/server.ts" twoslash
+// @filename: env/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 export const SharedEnv = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 
-// @filename: env.client.ts
-import { createEnv } from "@arkenv/nextjs/client";
-import { SharedEnv } from "./env.shared";
-export const env = createEnv(
+// @filename: env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedEnv } from "./shared";
+export const env = arkenv(
 	{ NEXT_PUBLIC_API_URL: "string" },
 	{
 		extends: [SharedEnv],
@@ -86,12 +86,12 @@ export const env = createEnv(
 	},
 );
 
-// @filename: env.server.ts
+// @filename: env/server.ts
 // ---cut---
-import { createEnv } from "@arkenv/nextjs/server";
-import { env as clientEnv } from "./env.client";
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
 
-export const env = createEnv(
+export const env = arkenv(
 	{
 		DATABASE_URL: "string",
 	},
@@ -105,36 +105,36 @@ export const env = createEnv(
 
 ## Unified Usage in Your Application
 
-Both `env.client.ts` and `env.server.ts` export the resolved environment as `env`. This lets you use consistent `env.MY_VAR` imports depending on where the component executes.
+Both `env/client.ts` and `env/server.ts` export the resolved environment as `env`. This lets you use consistent `env.MY_VAR` imports depending on where the component executes.
 
 ### In Server Components / Routes
 
 Import `env` from the server file. It contains all public, shared, and server-only variables:
 
 ```ts title="src/app/page.ts" twoslash
-// @filename: env.shared.ts
+// @filename: env/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 export const SharedEnv = type({ NODE_ENV: "'development' | 'production' | 'test'" });
 
-// @filename: env.client.ts
-import { createEnv } from "@arkenv/nextjs/client";
-import { SharedEnv } from "./env.shared";
-export const env = createEnv(
+// @filename: env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedEnv } from "./shared";
+export const env = arkenv(
 	{ NEXT_PUBLIC_API_URL: "string" },
 	{ extends: [SharedEnv], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
 );
 
-// @filename: env.server.ts
-import { createEnv } from "@arkenv/nextjs/server";
-import { env as clientEnv } from "./env.client";
-export const env = createEnv(
+// @filename: env/server.ts
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+export const env = arkenv(
 	{ DATABASE_URL: "string" },
 	{ extends: [clientEnv] }
 );
 
 // @filename: page.ts
 // ---cut---
-import { env } from "./env.server";
+import { env } from "./env/server";
 
 export function Page() {
 	// Access database URL and client API URL safely
@@ -149,21 +149,21 @@ export function Page() {
 Import `env` from the client file. If you accidentally try to access a server-only variable like `DATABASE_URL` in a client component, you will get a build-time compiler error (enforced by Next.js's `server-only`) or a clear runtime exception:
 
 ```ts title="src/app/client-component.ts" twoslash
-// @filename: env.shared.ts
+// @filename: env/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 export const SharedEnv = type({ NODE_ENV: "'development' | 'production' | 'test'" });
 
-// @filename: env.client.ts
-import { createEnv } from "@arkenv/nextjs/client";
-import { SharedEnv } from "./env.shared";
-export const env = createEnv(
+// @filename: env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedEnv } from "./shared";
+export const env = arkenv(
 	{ NEXT_PUBLIC_API_URL: "string" },
 	{ extends: [SharedEnv], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
 );
 
 // @filename: client-component.ts
 // ---cut---
-import { env } from "./env.client";
+import { env } from "./env/client";
 
 export function ClientComponent() {
 	const api = env.NEXT_PUBLIC_API_URL;

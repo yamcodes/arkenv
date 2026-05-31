@@ -204,6 +204,15 @@ export function createEnvInternal(
 		}
 	}
 
+	// Check runtimeEnv does not have any keys not defined in the schema (allKeys)
+	for (const key of Object.keys(runtimeEnv)) {
+		if (!allKeys.has(key)) {
+			throw new Error(
+				`Environment variable '${key}' is passed to runtimeEnv but is not defined in the schema.`,
+			);
+		}
+	}
+
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {

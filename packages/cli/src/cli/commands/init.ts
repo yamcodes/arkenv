@@ -215,9 +215,9 @@ export class InitUseCase {
 				const ext = path.extname(targetPath);
 				const baseWithoutExt = targetPath.slice(0, -ext.length);
 				const strictPaths = [
-					`${baseWithoutExt}.shared${ext}`,
-					`${baseWithoutExt}.client${ext}`,
-					`${baseWithoutExt}.server${ext}`,
+					path.join(baseWithoutExt, `shared${ext}`),
+					path.join(baseWithoutExt, `client${ext}`),
+					path.join(baseWithoutExt, `server${ext}`),
 				];
 				const checks = await Promise.all(
 					strictPaths.map((p) => this.workspace.exists(p)),
@@ -309,9 +309,15 @@ export class InitUseCase {
 							const ext = path.extname(finalTargetPath);
 							const baseWithoutExt = finalTargetPath.slice(0, -ext.length);
 							const checks = await Promise.all([
-								this.workspace.exists(`${baseWithoutExt}.shared${ext}`),
-								this.workspace.exists(`${baseWithoutExt}.client${ext}`),
-								this.workspace.exists(`${baseWithoutExt}.server${ext}`),
+								this.workspace.exists(
+									path.join(baseWithoutExt, `shared${ext}`),
+								),
+								this.workspace.exists(
+									path.join(baseWithoutExt, `client${ext}`),
+								),
+								this.workspace.exists(
+									path.join(baseWithoutExt, `server${ext}`),
+								),
 							]);
 							return checks.some(Boolean);
 						})()
@@ -352,9 +358,9 @@ export class InitUseCase {
 		const pathsToCheck =
 			options.layout === "strict"
 				? [
-						`${baseWithoutExt}.shared${ext}`,
-						`${baseWithoutExt}.client${ext}`,
-						`${baseWithoutExt}.server${ext}`,
+						path.join(baseWithoutExt, `shared${ext}`),
+						path.join(baseWithoutExt, `client${ext}`),
+						path.join(baseWithoutExt, `server${ext}`),
 					]
 				: [finalTargetPath];
 

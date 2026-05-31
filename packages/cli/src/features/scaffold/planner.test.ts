@@ -247,9 +247,15 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		expect(plan.files).toHaveLength(3);
 
-		const sharedFile = plan.files.find((f) => f.path.endsWith("env.shared.ts"));
-		const clientFile = plan.files.find((f) => f.path.endsWith("env.client.ts"));
-		const serverFile = plan.files.find((f) => f.path.endsWith("env.server.ts"));
+		const sharedFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/shared.ts"),
+		);
+		const clientFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
+		);
+		const serverFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/server.ts"),
+		);
 
 		expect(sharedFile).toBeDefined();
 		expect(clientFile).toBeDefined();
@@ -261,9 +267,9 @@ describe("Planner", () => {
 	});
 
 	it("plans all three strict layout files as overwrite on rerun when they already exist", () => {
-		const sharedPath = path.resolve("/test", "src/env.shared.ts");
-		const clientPath = path.resolve("/test", "src/env.client.ts");
-		const serverPath = path.resolve("/test", "src/env.server.ts");
+		const sharedPath = path.resolve("/test", "src/env/shared.ts");
+		const clientPath = path.resolve("/test", "src/env/client.ts");
+		const serverPath = path.resolve("/test", "src/env/server.ts");
 
 		const state: CollectedState = {
 			...defaultState,

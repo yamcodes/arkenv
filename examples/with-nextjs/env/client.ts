@@ -1,7 +1,7 @@
-import { createEnv } from "@arkenv/nextjs/client";
-import { SharedEnv } from "./env.shared";
+import arkenv from "@arkenv/nextjs/client";
+import { SharedEnv } from "./shared";
 
-export const env = createEnv(
+export const env = arkenv(
 	{
 		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
 	},

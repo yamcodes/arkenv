@@ -94,9 +94,9 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	if (options.framework === "nextjs" && options.layout === "strict") {
 		const ext = path.extname(targetPath);
 		const baseWithoutExt = targetPath.slice(0, -ext.length);
-		const sharedPath = `${baseWithoutExt}.shared${ext}`;
-		const clientPath = `${baseWithoutExt}.client${ext}`;
-		const serverPath = `${baseWithoutExt}.server${ext}`;
+		const sharedPath = path.join(baseWithoutExt, `shared${ext}`);
+		const clientPath = path.join(baseWithoutExt, `client${ext}`);
+		const serverPath = path.join(baseWithoutExt, `server${ext}`);
 
 		const templates = getStrictEnvTemplates(options);
 
