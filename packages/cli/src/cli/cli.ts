@@ -9,6 +9,7 @@ const FLAG_CONFIG = {
 	isAgent: { long: "--agent", short: "-a", kind: "boolean" },
 	helpRequested: { long: "--help", short: "-h", kind: "boolean" },
 	example: { long: "--example", short: "-e", kind: "value" },
+	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
 } as const;
 
 const knownFlags = new Set<string>(
@@ -141,6 +142,10 @@ export class CLI {
 		return this.getFlagValue(flag.long, flag.short);
 	}
 
+	get noCodegen(): boolean {
+		return this.hasFlag("noCodegen");
+	}
+
 	private hasFlag(prop: keyof typeof FLAG_CONFIG): boolean {
 		const flag = FLAG_CONFIG[prop];
 		return this.args.includes(flag.long) || this.args.includes(flag.short);
@@ -161,6 +166,9 @@ export class CLI {
 		}
 		if (this.name !== undefined) {
 			input.name = this.name;
+		}
+		if (this.noCodegen) {
+			input.noCodegen = true;
 		}
 		return input;
 	}

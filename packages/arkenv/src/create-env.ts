@@ -24,6 +24,17 @@ import type { ArkEnvError } from "./core";
  * @template def - The schema shape object
  */
 export type EnvSchema<def> = at.validate<def, $>;
+
+/**
+ * Infer the validated and coerced environment object type from a schema.
+ * Supports declarative schema shapes, compiled ArkType schemas, and Standard Schema validators.
+ *
+ * @template T - The schema type
+ */
+export type Infer<T> = T extends SchemaShape
+	? distill.Out<at.infer<T, $>>
+	: InferType<T>;
+
 type RuntimeEnvironment = Dict<string>;
 
 /**

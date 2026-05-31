@@ -55,12 +55,31 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
       <Step>
         ### Configure environment
 
-        Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define and validate your schemas:
+        Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define your schemas. Import `createEnv` from the auto-generated `./generated/env.gen.ts` helper file (rather than importing directly from `@arkenv/nextjs`):
 
         ```ts title="src/env.ts" twoslash
-        import arkenv from "@arkenv/nextjs";
+        // @filename: generated/env.gen.ts
+        import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+        import type { type as at, distill } from "arktype";
+        export { type } from "@arkenv/nextjs";
 
-        export const env = arkenv({
+        export function createEnv<
+        	const TServer = {},
+        	const TClient = {},
+        	const TShared = {},
+        >(options: {
+        	server?: TServer;
+        	client?: TClient;
+        	shared?: TShared;
+        }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+        	return {} as any;
+        }
+
+        // @filename: env.ts
+        // ---cut---
+        import { createEnv } from "./generated/env.gen";
+
+        export const env = createEnv({
         	server: {
         		DATABASE_URL: "string",
         	},
@@ -70,12 +89,40 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         	shared: {
         		NODE_ENV: "string",
         	},
-        	runtimeEnv: {
-        		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-        		NODE_ENV: process.env.NODE_ENV,
-        	},
         });
         ```
+      </Step>
+
+      <Step>
+        ### Register configuration wrapper
+
+        Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
+
+        ```ts title="next.config.ts"
+        import { withArkEnv } from "@arkenv/nextjs/config";
+        import type { NextConfig } from "next";
+
+        const nextConfig: NextConfig = {
+        	/* config options here */
+        };
+
+        export default withArkEnv(nextConfig);
+        ```
+
+        You can customize the schema and output paths using optional parameters:
+
+        ```ts
+        export default withArkEnv(nextConfig, {
+        	schemaPath: "src/env.ts",              // Path to your schema (default: src/env.ts or env.ts)
+        	outputPath: "src/generated/env.gen.ts", // Custom output path (default: src/generated/env.gen.ts)
+        });
+        ```
+
+        > [!NOTE]
+        > If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env.ts` instead.
+
+        > [!TIP]
+        > We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
       </Step>
 
       <Step>
@@ -84,14 +131,27 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         Import `env` throughout your Next.js application:
 
         ```ts title="src/app/page.tsx" twoslash
+        // @filename: generated/env.gen.ts
+        import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+        import type { type as at, distill } from "arktype";
+        export { type } from "@arkenv/nextjs";
+        export function createEnv<
+        	const TServer = {},
+        	const TClient = {},
+        	const TShared = {},
+        >(options: {
+        	server?: TServer;
+        	client?: TClient;
+        	shared?: TShared;
+        }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+        	return {} as any;
+        }
+
         // @filename: env.ts
-        import arkenv from "@arkenv/nextjs";
-        export const env = arkenv({
+        import { createEnv } from "./generated/env.gen";
+        export const env = createEnv({
         	server: { DATABASE_URL: "string" },
         	client: { NEXT_PUBLIC_API_URL: "string" },
-        	runtimeEnv: {
-        		NEXT_PUBLIC_API_URL: "https://api.example.com",
-        	}
         });
 
         // @filename: page.tsx
@@ -106,14 +166,27 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
 
         ```ts title="src/app/client-component.tsx" twoslash
+        // @filename: generated/env.gen.ts
+        import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+        import type { type as at, distill } from "arktype";
+        export { type } from "@arkenv/nextjs";
+        export function createEnv<
+        	const TServer = {},
+        	const TClient = {},
+        	const TShared = {},
+        >(options: {
+        	server?: TServer;
+        	client?: TClient;
+        	shared?: TShared;
+        }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+        	return {} as any;
+        }
+
         // @filename: env.ts
-        import arkenv from "@arkenv/nextjs";
-        export const env = arkenv({
+        import { createEnv } from "./generated/env.gen";
+        export const env = createEnv({
         	server: { DATABASE_URL: "string" },
         	client: { NEXT_PUBLIC_API_URL: "string" },
-        	runtimeEnv: {
-        		NEXT_PUBLIC_API_URL: "https://api.example.com",
-        	}
         });
 
         // @filename: client-component.tsx
@@ -136,10 +209,28 @@ This integration uses ArkType for validation under the hood, which natively supp
 Here is an example using Zod:
 
 ```ts title="src/env.ts" twoslash
-import arkenv from "@arkenv/nextjs";
+// @filename: generated/env.gen.ts
+import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import type { type as at, distill } from "arktype";
+export { type } from "@arkenv/nextjs";
+export function createEnv<
+	const TServer = {},
+	const TClient = {},
+	const TShared = {},
+>(options: {
+	server?: TServer;
+	client?: TClient;
+	shared?: TShared;
+}): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+	return {} as any;
+}
+
+// @filename: env.ts
+// ---cut---
+import { createEnv } from "./generated/env.gen";
 import { z } from "zod";
 
-export const env = arkenv({
+export const env = createEnv({
 	server: {
 		DATABASE_URL: z.string().url(),
 	},
@@ -148,10 +239,6 @@ export const env = arkenv({
 	},
 	shared: {
 		NODE_ENV: z.enum(["development", "production", "test"]),
-	},
-	runtimeEnv: {
-		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-		NODE_ENV: process.env.NODE_ENV,
 	},
 });
 ```
