@@ -1,5 +1,21 @@
 # @ArkEnv/Vite-plugin
 
+## 0.1.1
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`c6c30ab`](https://github.com/yamcodes/arkenv/commit/c6c30abbc1df4bb74b2ab5c6f689fcae557ffb05)
+
+</small>
+
+- `arkenv@0.11.1`
+
+</details>
+
 ## 0.1.0
 
 ### Minor Changes

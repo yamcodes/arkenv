@@ -1,5 +1,52 @@
 # @ArkEnv/CLI
 
+## 0.2.6
+
+### Patch Changes
+
+- #### Implement Next.js separate files mode, shared entry point, and native extends API _[`#1084`](https://github.com/yamcodes/arkenv/pull/1084) [`d921785`](https://github.com/yamcodes/arkenv/commit/d92178567ed4cdd5227cc107bf98d148e5fae0c1) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce dedicated entry points for `@arkenv/nextjs/server`, `@arkenv/nextjs/client`, and `@arkenv/nextjs/shared` to prevent metadata leakage and support compile-time bundler-enforced isolation. Add a native `extends` API to merge validated outputs of extended proxies while maintaining proxy-level protections.
+
+  Also update the CLI `init` wizard to support interactive layout selection (Strict 3-file vs Simple 1-file) and `--strict` / `--simple` flags to bypass interactive selection.
+
+  Example server usage:
+
+  ```ts
+  import { createEnv } from "@arkenv/nextjs/server";
+  import { env as clientEnv } from "./env.client";
+
+  export const env = createEnv(
+    { DATABASE_URL: "string" },
+    { extends: [clientEnv] }
+  );
+  ```
+
+  Example client usage:
+
+  ```ts
+  import { createEnv } from "@arkenv/nextjs/client";
+
+  export const env = createEnv(
+    { NEXT_PUBLIC_API_URL: "string" },
+    {
+      runtimeEnv: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+      },
+    }
+  );
+  ```
+
+- #### Update Next.js scaffolding template to use codegen workflow _[`#1092`](https://github.com/yamcodes/arkenv/pull/1092) [`c6c30ab`](https://github.com/yamcodes/arkenv/commit/c6c30abbc1df4bb74b2ab5c6f689fcae557ffb05) [@yamcodes](https://github.com/yamcodes)_
+
+  Update the CLI `nextjs` scaffolding template to adopt the new `@arkenv/nextjs/config` codegen workflow. The generated `env.ts` file now imports the auto-generated `createEnv` factory from `env.gen.ts` instead of directly importing from `@arkenv/nextjs`, which eliminates the need to manually destructure `runtimeEnv` variables.
+
+  Additionally, update the CLI usage instructions to guide developers on wrapping their Next.js configuration using the `withArkEnv` helper inside `next.config.ts`.
+
+  #### Add `--no-codegen` CLI option and dedicated prompt for Next.js scaffolding
+
+  Introduce a `--no-codegen` (or `-C`) option and an interactive prompt to allow developers to opt out of the Next.js automatic environment variable code generation workflow. When opted out, the CLI scaffolds the project to use standard runtimeEnv destructuring and skips post-scaffold code generation bootstrapping.
+
 ## 0.2.5
 
 ### Patch Changes
