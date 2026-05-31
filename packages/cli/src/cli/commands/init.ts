@@ -215,7 +215,7 @@ export class InitUseCase {
 				const ext = path.extname(targetPath);
 				const baseWithoutExt = targetPath.slice(0, -ext.length);
 				const strictPaths = [
-					path.join(baseWithoutExt, `shared${ext}`),
+					path.join(baseWithoutExt, "internal", `shared${ext}`),
 					path.join(baseWithoutExt, `client${ext}`),
 					path.join(baseWithoutExt, `server${ext}`),
 				];
@@ -310,7 +310,7 @@ export class InitUseCase {
 							const baseWithoutExt = finalTargetPath.slice(0, -ext.length);
 							const checks = await Promise.all([
 								this.workspace.exists(
-									path.join(baseWithoutExt, `shared${ext}`),
+									path.join(baseWithoutExt, "internal", `shared${ext}`),
 								),
 								this.workspace.exists(
 									path.join(baseWithoutExt, `client${ext}`),
@@ -326,7 +326,7 @@ export class InitUseCase {
 			if (existsCheck) {
 				const label =
 					options.layout === "strict"
-						? "Strict layout files (env.shared/client/server)"
+						? "Strict layout files (client, server, internal/shared)"
 						: path.basename(finalTargetPath);
 				const confirmOverwrite = await this.prompt.confirm(
 					`${label} already exist. Overwrite?`,
@@ -358,7 +358,7 @@ export class InitUseCase {
 		const pathsToCheck =
 			options.layout === "strict"
 				? [
-						path.join(baseWithoutExt, `shared${ext}`),
+						path.join(baseWithoutExt, "internal", `shared${ext}`),
 						path.join(baseWithoutExt, `client${ext}`),
 						path.join(baseWithoutExt, `server${ext}`),
 					]

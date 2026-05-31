@@ -128,19 +128,23 @@ export function getStrictEnvTemplates(
 	if (validator === "arktype") {
 		shared = `import { type } from "@arkenv/nextjs/shared";
 
-export const SharedEnv = type({
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
+ */
+export const SharedSchema = type({
 	${sharedFields.map((f) => f.trim()).join("\n\t")}
 });`;
 
 		client = `import arkenv from "@arkenv/nextjs/client";
-import { SharedEnv } from "./shared";
+import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
 	{
 		${clientFields.map((f) => f.trim()).join("\n\t\t")}
 	},
 	{
-		extends: [SharedEnv],
+		extends: [SharedSchema],
 		runtimeEnv: {
 			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
 		},
@@ -161,20 +165,24 @@ export const env = arkenv(
 	} else if (validator === "zod") {
 		shared = `import { z } from "zod";
 
-export const SharedEnv = z.object({
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
+ */
+export const SharedSchema = z.object({
 	${sharedFields.map((f) => f.trim()).join("\n\t")}
 });`;
 
 		client = `import arkenv from "@arkenv/nextjs/client";
 import { z } from "zod";
-import { SharedEnv } from "./shared";
+import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
 	{
 		${clientFields.map((f) => f.trim()).join("\n\t\t")}
 	},
 	{
-		extends: [SharedEnv],
+		extends: [SharedSchema],
 		runtimeEnv: {
 			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
 		},
@@ -196,20 +204,24 @@ export const env = arkenv(
 	} else if (validator === "valibot") {
 		shared = `import * as v from "valibot";
 
-export const SharedEnv = v.object({
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
+ */
+export const SharedSchema = v.object({
 	${sharedFields.map((f) => f.trim()).join("\n\t")}
 });`;
 
 		client = `import arkenv from "@arkenv/nextjs/client";
 import * as v from "valibot";
-import { SharedEnv } from "./shared";
+import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
 	{
 		${clientFields.map((f) => f.trim()).join("\n\t\t")}
 	},
 	{
-		extends: [SharedEnv],
+		extends: [SharedSchema],
 		runtimeEnv: {
 			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
 		},

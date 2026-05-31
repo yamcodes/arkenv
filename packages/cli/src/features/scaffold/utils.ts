@@ -67,7 +67,7 @@ export function getNextStepsNote(
 		const lastDot = displayLocation.lastIndexOf(".");
 		const base =
 			lastDot !== -1 ? displayLocation.slice(0, lastDot) : displayLocation;
-		displayLocation = `${base}/shared.ts, ${base}/client.ts, and ${base}/server.ts`;
+		displayLocation = `${base}/client.ts, ${base}/server.ts, and ${base}/internal/shared.ts`;
 	}
 
 	return {

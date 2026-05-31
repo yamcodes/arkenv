@@ -230,7 +230,7 @@ describe("Separate Files Next.js mode", () => {
 	});
 
 	it("should support flat schema with 3-file separate config and extends", () => {
-		const SharedEnv = type({
+		const SharedSchema = type({
 			NODE_ENV: "'development' | 'production' | 'test'",
 		});
 
@@ -239,7 +239,7 @@ describe("Separate Files Next.js mode", () => {
 				NEXT_PUBLIC_API_URL: "string",
 			},
 			{
-				extends: [SharedEnv],
+				extends: [SharedSchema],
 				runtimeEnv: {
 					NEXT_PUBLIC_API_URL: "https://api.example.com",
 					NODE_ENV: "development",
