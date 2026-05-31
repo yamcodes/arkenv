@@ -174,7 +174,7 @@ async function runExistingProjectWizard(
 				? "strict"
 				: defaults?.isSimple
 					? "simple"
-					: "strict";
+					: "simple";
 		}
 		const hasTypeFile = await getHasTypeFile(
 			defaults,
