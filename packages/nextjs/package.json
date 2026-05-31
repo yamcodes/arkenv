@@ -134,6 +134,20 @@
 				"arktype",
 				"arkenv"
 			]
+		},
+		{
+			"name": "@arkenv/nextjs/config",
+			"path": "dist/config.js",
+			"limit": "2 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"arkenv",
+				"chokidar",
+				"node:fs",
+				"node:path"
+			]
 		}
 	]
 }
