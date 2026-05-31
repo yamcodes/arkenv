@@ -1,7 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { extractKeys, runCodegen, withArkEnv } from "./config";
+import {
+	extractClientKeys,
+	extractKeys,
+	extractSharedKeys,
+	runCodegen,
+	withArkEnv,
+} from "./config";
 
 describe("config key extraction", () => {
 	it("should extract client and shared keys correctly", () => {
@@ -289,5 +295,233 @@ describe("withArkEnv wrapper", () => {
 		expect(fs.existsSync(path.join(tempDir, "generated", "env.gen.ts"))).toBe(
 			true,
 		);
+	});
+
+	it("should support strict layout auto-detection and generation", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		// Set up a strict structure
+		const strictBaseDir = path.join(tempDir, "env");
+		fs.mkdirSync(path.join(strictBaseDir, "internal"), { recursive: true });
+
+		fs.writeFileSync(
+			path.join(strictBaseDir, "internal", "shared.ts"),
+			`
+			import { type } from "@arkenv/nextjs/shared";
+			export const SharedSchema = type({
+				NODE_ENV: "string = 'development'",
+			});
+			`,
+			"utf-8",
+		);
+
+		fs.writeFileSync(
+			path.join(strictBaseDir, "client.ts"),
+			`
+			import arkenv from "@arkenv/nextjs/client";
+			import { SharedSchema } from "./internal/shared";
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+				},
+				{
+					extends: [SharedSchema],
+					runtimeEnv: {},
+				}
+			);
+			`,
+			"utf-8",
+		);
+
+		fs.writeFileSync(
+			path.join(strictBaseDir, "server.ts"),
+			`
+			import arkenv from "@arkenv/nextjs/server";
+			export const env = arkenv({
+				DATABASE_URL: "string",
+			});
+			`,
+			"utf-8",
+		);
+
+		const inputConfig = { reactStrictMode: true };
+		const outputConfig = withArkEnv(inputConfig, {
+			schemaPath: strictBaseDir,
+		});
+
+		expect(outputConfig).toBe(inputConfig);
+		const genPath = path.join(strictBaseDir, "generated", "env.gen.ts");
+		expect(fs.existsSync(genPath)).toBe(true);
+
+		const generatedContent = fs.readFileSync(genPath, "utf-8");
+		expect(generatedContent).toContain("export function createEnv<");
+		expect(generatedContent).toContain(
+			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+		);
+		expect(generatedContent).toContain("NODE_ENV: process.env.NODE_ENV,");
+		expect(generatedContent).not.toContain("DATABASE_URL");
+	});
+
+	it("should throw a descriptive error when layout: 'strict' is set but required files are missing", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		// Only create the schema file, not the strict layout files
+		fs.writeFileSync(
+			schemaPath,
+			`export const env = createEnv({ client: { NEXT_PUBLIC_VAR: "string" } });`,
+			"utf-8",
+		);
+
+		expect(() =>
+			withArkEnv({ reactStrictMode: true }, { schemaPath, layout: "strict" }),
+		).toThrow("[ArkEnv] Strict layout requires");
+	});
+});
+
+describe("strict config key extraction", () => {
+	it("should extract client keys from arkenv call", () => {
+		const clientSource = `
+			import arkenv from "@arkenv/nextjs/client";
+			import { SharedSchema } from "./internal/shared";
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_VAR_1: "string",
+					NEXT_PUBLIC_VAR_2: "string = 'default'",
+				},
+				{
+					extends: [SharedSchema],
+				}
+			);
+		`;
+		const keys = extractClientKeys(clientSource);
+		expect(keys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
+	});
+
+	it("should extract shared keys from SharedSchema", () => {
+		const sharedSource = `
+			import { type } from "@arkenv/nextjs/shared";
+			export const SharedSchema = type({
+				NODE_ENV: "string = 'development'",
+				PORT: "number.port = 3000",
+			});
+		`;
+		const keys = extractSharedKeys(sharedSource);
+		expect(keys).toEqual(["NODE_ENV", "PORT"]);
+	});
+
+	it("extractClientKeys: should ignore single-line comments inside arkenv block", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					// This is a comment
+					NEXT_PUBLIC_VAR_1: "string",
+					// Another comment: with colon
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_VAR_1",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractClientKeys: should ignore multi-line comments inside arkenv block", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					/*
+					 * Multi-line comment:
+					 * FAKE_KEY: this should be ignored
+					 */
+					NEXT_PUBLIC_VAR_1: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual(["NEXT_PUBLIC_VAR_1"]);
+	});
+
+	it("extractClientKeys: should not be confused by braces inside string literals", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_VAR_1: "string = '{not-a-brace}'",
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_VAR_1",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractClientKeys: should not be confused by colons inside string literals", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_API_URL: "string = 'http://localhost:3000'",
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_API_URL",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractClientKeys: should ignore nested object literals in values", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_VAR_1: type("string", { description: "nested:key" }),
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_VAR_1",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractSharedKeys: should ignore single-line comments inside SharedSchema", () => {
+		const sharedSource = `
+			export const SharedSchema = type({
+				// NODE_ENV is always set
+				NODE_ENV: "string = 'development'",
+				// PORT: ignored comment
+				PORT: "number.port = 3000",
+			});
+		`;
+		expect(extractSharedKeys(sharedSource)).toEqual(["NODE_ENV", "PORT"]);
+	});
+
+	it("extractSharedKeys: should not be confused by colons inside string literals", () => {
+		const sharedSource = `
+			export const SharedSchema = type({
+				DATABASE_URL: "string = 'postgresql://localhost:5432/db'",
+				NODE_ENV: "string",
+			});
+		`;
+		expect(extractSharedKeys(sharedSource)).toEqual([
+			"DATABASE_URL",
+			"NODE_ENV",
+		]);
+	});
+
+	it("extractSharedKeys: should not be confused by braces inside string literals", () => {
+		const sharedSource = `
+			export const SharedSchema = type({
+				NODE_ENV: "string = '{dev}'",
+				PORT: "number = 3000",
+			});
+		`;
+		expect(extractSharedKeys(sharedSource)).toEqual(["NODE_ENV", "PORT"]);
 	});
 });

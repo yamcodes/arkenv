@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getEnvTemplate } from "./env-template";
+import { getEnvTemplate, getStrictEnvTemplates } from "./env-template";
 
 describe("env-template", () => {
 	describe("getEnvTemplate", () => {
@@ -296,6 +296,76 @@ describe("env-template", () => {
 			};
 			expect(() => getEnvTemplate(options)).toThrow(
 				"Unsupported validator: unknown",
+			);
+		});
+	});
+
+	describe("getStrictEnvTemplates", () => {
+		it("returns strict templates with codegen enabled", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: false,
+			};
+			const templates = getStrictEnvTemplates(options);
+			expect(templates.shared).toContain(
+				"export const SharedSchema = z.object({",
+			);
+			expect(templates.client).toContain(
+				'import { createEnv } from "./generated/env.gen";',
+			);
+			expect(templates.client).toContain("export const env = createEnv(");
+			expect(templates.client).not.toContain(
+				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+			);
+			expect(templates.server).toContain("extends: [clientEnv],");
+		});
+
+		it("returns strict templates with codegen disabled", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: true,
+			};
+			const templates = getStrictEnvTemplates(options);
+			expect(templates.shared).toContain(
+				"export const SharedSchema = z.object({",
+			);
+			expect(templates.client).not.toContain(
+				'import { runtimeEnv } from "./generated/env.gen";',
+			);
+			expect(templates.client).toContain("runtimeEnv: {");
+			expect(templates.client).toContain(
+				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+			);
+			expect(templates.server).toContain("extends: [clientEnv],");
+		});
+
+		it("generates cleanly formatted empty objects when no client keys are present", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: false,
+				envKeys: ["DATABASE_URL"], // Only a server key, no client keys, no shared keys
+			};
+			const templates = getStrictEnvTemplates(options);
+			expect(templates.client).toContain(
+				"createEnv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
+			);
+			expect(templates.shared).toContain(
+				"export const SharedSchema = z.object({});",
 			);
 		});
 	});
