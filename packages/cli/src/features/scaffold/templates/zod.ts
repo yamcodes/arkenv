@@ -13,11 +13,12 @@ export const zodTemplate = (
 	envKeys?: string[],
 	framework?: string,
 	nextjsImportPath?: string,
+	disableCodegen?: boolean,
 ) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: z.string().optional(),`).join("\n")
 		: `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-\t\tPORT: z.coerce.number().int().min(1).max(65535).default(3000),`;
+		PORT: z.coerce.number().int().min(1).max(65535).default(3000),`;
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -71,6 +72,7 @@ export const zodTemplate = (
 				],
 			},
 			nextjsImportPath,
+			disableCodegen,
 		);
 	}
 

@@ -52,10 +52,14 @@ export function getNextStepsNote(
 	} else if (plan.metadata.framework === "bun-fullstack") {
 		message += `${step++}. Access via ${code("process.env.YOUR_VAR")}\n`;
 	} else if (plan.metadata.framework === "nextjs") {
-		message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
-		message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
-		message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
-		message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
+		if (plan.metadata.disableCodegen) {
+			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
+		} else {
+			message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
+			message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
+			message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
+		}
 	} else {
 		message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 	}

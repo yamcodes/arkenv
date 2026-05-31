@@ -40,6 +40,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			example: options.example,
 			name: projectName,
 			skillDetected: options.skillDetected,
+			disableCodegen: options.disableCodegen,
 		}) as ScaffoldingPlan["metadata"],
 	};
 
@@ -91,7 +92,11 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 	// 1. Env Schema File
 	let nextjsImportPath: string | undefined;
-	if (options.framework === "nextjs" && tsConfig?.parsed) {
+	if (
+		options.framework === "nextjs" &&
+		!options.disableCodegen &&
+		tsConfig?.parsed
+	) {
 		const parsed = tsConfig.parsed;
 		const compilerOptions = parsed.compilerOptions || {};
 		const paths = compilerOptions.paths || {};
@@ -212,7 +217,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	if (
 		options.framework === "vite" ||
 		options.framework === "bun-fullstack" ||
-		options.framework === "nextjs"
+		(options.framework === "nextjs" && !options.disableCodegen)
 	) {
 		plan.bootstrap = shake({
 			framework: options.framework,

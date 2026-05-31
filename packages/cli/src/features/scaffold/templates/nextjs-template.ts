@@ -53,6 +53,7 @@ export function buildNextjsTemplate(
 	envKeys: string[] | undefined,
 	builders: NextjsFieldBuilders,
 	nextjsImportPath?: string,
+	disableCodegen?: boolean,
 ): string {
 	const {
 		extraImports,
@@ -93,6 +94,44 @@ export function buildNextjsTemplate(
 	}
 	if (sharedFields.length > 0) {
 		sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
+	}
+
+	if (disableCodegen) {
+		const runtimeEnvFields: string[] = [];
+		if (envKeys && envKeys.length > 0) {
+			for (const key of envKeys) {
+				if (
+					key.startsWith("NEXT_PUBLIC_") ||
+					key === "NODE_ENV" ||
+					key === "PORT"
+				) {
+					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
+				}
+			}
+		} else {
+			runtimeEnvFields.push(
+				"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+				"\t\tNODE_ENV: process.env.NODE_ENV,",
+			);
+		}
+		sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
+
+		const imports = [
+			'import arkenv from "@arkenv/nextjs";',
+			...(extraImports ? [extraImports] : []),
+		].join("\n");
+
+		return `${imports}
+
+/**
+ * Environment variable schema.
+ * In Next.js, use \`@arkenv/nextjs\` to validate variables at build-time and runtime.
+ * Enforces client/server separation and prevents secret leaks.
+ */
+export const env = arkenv({
+${sections.join(",\n")},
+});
+`;
 	}
 
 	const imports = [

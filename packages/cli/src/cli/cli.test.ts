@@ -64,6 +64,20 @@ describe("CLI parser", () => {
 		expect(cli.validationError).toBe("Unknown argument: --foo");
 	});
 
+	it("should parse no-codegen flag", () => {
+		const cli1 = new CLI(["node", "arkenv", "init", "--no-codegen"]);
+		expect(cli1.noCodegen).toBe(true);
+		expect(cli1.initInput.noCodegen).toBe(true);
+
+		const cli2 = new CLI(["node", "arkenv", "init", "-C"]);
+		expect(cli2.noCodegen).toBe(true);
+		expect(cli2.initInput.noCodegen).toBe(true);
+
+		const cli3 = new CLI(["node", "arkenv", "init"]);
+		expect(cli3.noCodegen).toBe(false);
+		expect(cli3.initInput.noCodegen).toBeUndefined();
+	});
+
 	describe("Agent presets override", () => {
 		it("should set isYes, isQuiet, and isJson to true when --agent is passed", () => {
 			const cli = new CLI(["node", "arkenv", "init", "--agent"]);

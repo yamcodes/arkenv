@@ -51,7 +51,8 @@ export class HelpUseCase {
 			},
 			{
 				left: "--agent, -a",
-				right: "Agent mode: --yes --quiet --json",
+				right:
+					"Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
 			},
 			{
 				left: "--example, -e",
@@ -64,6 +65,10 @@ export class HelpUseCase {
 			{
 				left: "--json, -j",
 				right: "Output structured JSON to stdout",
+			},
+			{
+				left: "--no-codegen, -C",
+				right: "Disable automatic env.gen.ts code generation for Next.js",
 			},
 			{
 				left: "--help, -h",

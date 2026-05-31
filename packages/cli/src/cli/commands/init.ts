@@ -25,6 +25,7 @@ export type InitInput = {
 	isAgent: boolean;
 	example?: string;
 	name?: string;
+	noCodegen?: boolean;
 };
 
 /**
@@ -242,6 +243,7 @@ export class InitUseCase {
 				hasTypeFileAtPath,
 				hasTypeFile,
 				hasEnvSchemaFile,
+				disableCodegen: input.noCodegen,
 			}),
 			isYes,
 		);

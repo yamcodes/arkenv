@@ -118,6 +118,9 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
         });
         ```
 
+        > [!NOTE]
+        > If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env.ts` instead.
+
         > [!TIP]
         > We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
       </Step>
