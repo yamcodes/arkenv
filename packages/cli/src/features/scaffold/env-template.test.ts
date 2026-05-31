@@ -348,5 +348,25 @@ describe("env-template", () => {
 			);
 			expect(templates.server).toContain("extends: [clientEnv],");
 		});
+
+		it("generates cleanly formatted empty objects when no client keys are present", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: false,
+				envKeys: ["DATABASE_URL"], // Only a server key, no client keys, no shared keys
+			};
+			const templates = getStrictEnvTemplates(options);
+			expect(templates.client).toContain(
+				"arkenv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
+			);
+			expect(templates.shared).toContain(
+				"export const SharedSchema = z.object({});",
+			);
+		});
 	});
 });

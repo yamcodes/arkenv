@@ -33,6 +33,13 @@ export type StrictEnvTemplates = {
 	server: string;
 };
 
+function formatSchemaObject(fields: string[], indent = "\t\t"): string {
+	if (fields.length === 0) {
+		return "{}";
+	}
+	return `{\n${indent}${fields.map((f) => f.trim()).join(`\n${indent}`)}\n${indent.slice(1)}}`;
+}
+
 /**
  * Generates the shared, client, and server environment configuration templates
  * for the 3-file Strict Next.js layout.
@@ -136,18 +143,14 @@ export function getStrictEnvTemplates(
  * @internal 🛑 INTERNAL SCHEMA ONLY.
  * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
  */
-export const SharedSchema = type({
-	${sharedFields.map((f) => f.trim()).join("\n\t")}
-});`;
+export const SharedSchema = type(${formatSchemaObject(sharedFields, "\t")});`;
 
 		client = disableCodegen
 			? `import arkenv from "@arkenv/nextjs/client";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
-	{
-		${clientFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
 		runtimeEnv: {
@@ -160,9 +163,7 @@ import { SharedSchema } from "./internal/shared";
 import { runtimeEnv } from "./generated/env.gen";
 
 export const env = arkenv(
-	{
-		${clientFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
 		runtimeEnv,
@@ -173,9 +174,7 @@ export const env = arkenv(
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{
-		${serverFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(serverFields, "\t\t")},
 	{
 		extends: [clientEnv],
 	},
@@ -187,9 +186,7 @@ export const env = arkenv(
  * @internal 🛑 INTERNAL SCHEMA ONLY.
  * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
  */
-export const SharedSchema = z.object({
-	${sharedFields.map((f) => f.trim()).join("\n\t")}
-});`;
+export const SharedSchema = z.object(${formatSchemaObject(sharedFields, "\t")});`;
 
 		client = disableCodegen
 			? `import arkenv from "@arkenv/nextjs/client";
@@ -197,9 +194,7 @@ import { z } from "zod";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
-	{
-		${clientFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
 		runtimeEnv: {
@@ -213,9 +208,7 @@ import { SharedSchema } from "./internal/shared";
 import { runtimeEnv } from "./generated/env.gen";
 
 export const env = arkenv(
-	{
-		${clientFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
 		runtimeEnv,
@@ -227,9 +220,7 @@ import { z } from "zod";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{
-		${serverFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(serverFields, "\t\t")},
 	{
 		extends: [clientEnv],
 	},
@@ -241,9 +232,7 @@ export const env = arkenv(
  * @internal 🛑 INTERNAL SCHEMA ONLY.
  * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
  */
-export const SharedSchema = v.object({
-	${sharedFields.map((f) => f.trim()).join("\n\t")}
-});`;
+export const SharedSchema = v.object(${formatSchemaObject(sharedFields, "\t")});`;
 
 		client = disableCodegen
 			? `import arkenv from "@arkenv/nextjs/client";
@@ -251,9 +240,7 @@ import * as v from "valibot";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
-	{
-		${clientFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
 		runtimeEnv: {
@@ -267,9 +254,7 @@ import { SharedSchema } from "./internal/shared";
 import { runtimeEnv } from "./generated/env.gen";
 
 export const env = arkenv(
-	{
-		${clientFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
 		runtimeEnv,
@@ -281,9 +266,7 @@ import * as v from "valibot";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{
-		${serverFields.map((f) => f.trim()).join("\n\t\t")}
-	},
+	${formatSchemaObject(serverFields, "\t\t")},
 	{
 		extends: [clientEnv],
 	},
