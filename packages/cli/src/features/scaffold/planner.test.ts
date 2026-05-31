@@ -253,6 +253,69 @@ describe("Planner", () => {
 		expect(plan.clone?.targetName).toBe("my-project");
 	});
 
+	it("plans three files for nextjs framework in strict layout", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.files).toHaveLength(3);
+
+		const sharedFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/internal/shared.ts"),
+		);
+		const clientFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
+		);
+		const serverFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/server.ts"),
+		);
+
+		expect(sharedFile).toBeDefined();
+		expect(clientFile).toBeDefined();
+		expect(serverFile).toBeDefined();
+
+		expect(sharedFile?.content).toContain("@arkenv/nextjs/shared");
+		expect(clientFile?.content).toContain("@arkenv/nextjs/client");
+		expect(serverFile?.content).toContain("@arkenv/nextjs/server");
+	});
+
+	it("plans all three strict layout files as overwrite on rerun when they already exist", () => {
+		const sharedPath = path.resolve("/test", "src/env/internal/shared.ts");
+		const clientPath = path.resolve("/test", "src/env/client.ts");
+		const serverPath = path.resolve("/test", "src/env/server.ts");
+
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+				overwriteEnvSchemaFile: true,
+			},
+			detectedFramework: "nextjs",
+			existingFiles: [sharedPath, clientPath, serverPath],
+		};
+		const plan = createPlan(state);
+		expect(plan.files).toHaveLength(3);
+
+		const sharedFile = plan.files.find((f) => f.path === sharedPath);
+		const clientFile = plan.files.find((f) => f.path === clientPath);
+		const serverFile = plan.files.find((f) => f.path === serverPath);
+
+		// All three must be "overwrite", not "create"
+		expect(sharedFile?.action).toBe("overwrite");
+		expect(clientFile?.action).toBe("overwrite");
+		expect(serverFile?.action).toBe("overwrite");
+	});
+
 	it("resolves nextjsImportPath using tsconfig paths mapping when schema is inside mapped folder", () => {
 		const state: CollectedState = {
 			...defaultState,

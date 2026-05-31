@@ -187,6 +187,20 @@ export class Executor {
 			const note = getNextStepsNote(plan, skillInstalled);
 			this.reporter.note(note.message, note.title);
 
+			if (plan.metadata.layout === "strict") {
+				const oldEnvPath = path.resolve(plan.cwd, plan.metadata.displayPath);
+				if (await this.workspace.exists(oldEnvPath)) {
+					const displayFile = plan.metadata.displayPath;
+					const baseName = path.basename(
+						displayFile,
+						path.extname(displayFile),
+					);
+					this.reporter.warn(
+						`Found existing single-file schema at ${code(displayFile)}. You can delete it after updating your imports to point to your new ${code(`${baseName}/client`)} and ${code(`${baseName}/server`)}.`,
+					);
+				}
+			}
+
 			this.reporter.finish(
 				`${symbol} ArkEnv scaffolding complete. Happy coding!`,
 				{

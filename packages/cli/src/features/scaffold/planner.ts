@@ -1,6 +1,6 @@
 import path from "node:path";
 import { shake } from "radashi";
-import { getEnvTemplate } from "./env-template";
+import { getEnvTemplate, getStrictEnvTemplates } from "./env-template";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
@@ -39,6 +39,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			mode,
 			example: options.example,
 			name: projectName,
+			layout: options.layout,
 			skillDetected: options.skillDetected,
 			disableCodegen: options.disableCodegen,
 		}) as ScaffoldingPlan["metadata"],
@@ -90,56 +91,95 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const targetPath = path.resolve(cwd, options.path);
 	const targetDir = path.dirname(targetPath);
 
-	// 1. Env Schema File
-	let nextjsImportPath: string | undefined;
-	if (
-		options.framework === "nextjs" &&
-		!options.disableCodegen &&
-		tsConfig?.parsed
-	) {
-		const parsed = tsConfig.parsed;
-		const compilerOptions = parsed.compilerOptions || {};
-		const paths = compilerOptions.paths || {};
-		if (paths["@/*"]) {
-			const tsConfigDir = parsed.path ? path.dirname(parsed.path) : cwd;
-			const generatedDir = path.join(targetDir, "generated");
-			const relGeneratedDir = path
-				.relative(tsConfigDir, generatedDir)
-				.replace(/\\/g, "/");
+	// 1. Env Schema File(s)
+	if (options.framework === "nextjs" && options.layout === "strict") {
+		const ext = path.extname(targetPath);
+		const baseWithoutExt = targetPath.slice(0, -ext.length);
+		const sharedPath = path.join(baseWithoutExt, "internal", `shared${ext}`);
+		const clientPath = path.join(baseWithoutExt, `client${ext}`);
+		const serverPath = path.join(baseWithoutExt, `server${ext}`);
 
-			for (const pattern of paths["@/*"]) {
-				const normalizedPattern = pattern
-					.replace(/^\.\//, "")
-					.replace(/\*$/, "");
-				if (
-					normalizedPattern === "" ||
-					relGeneratedDir.startsWith(normalizedPattern)
-				) {
-					let subPath = relGeneratedDir;
+		const templates = getStrictEnvTemplates(options);
+
+		const sharedExists = existingFiles.includes(sharedPath);
+		const clientExists = existingFiles.includes(clientPath);
+		const serverExists = existingFiles.includes(serverPath);
+
+		if (!sharedExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: sharedPath,
+				content: templates.shared,
+				action: sharedExists ? "overwrite" : "create",
+				label: "shared environment schema",
+			});
+		}
+		if (!clientExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: clientPath,
+				content: templates.client,
+				action: clientExists ? "overwrite" : "create",
+				label: "client environment schema",
+			});
+		}
+		if (!serverExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: serverPath,
+				content: templates.server,
+				action: serverExists ? "overwrite" : "create",
+				label: "server environment schema",
+			});
+		}
+	} else {
+		let nextjsImportPath: string | undefined;
+		if (
+			options.framework === "nextjs" &&
+			!options.disableCodegen &&
+			tsConfig?.parsed
+		) {
+			const parsed = tsConfig.parsed;
+			const compilerOptions = parsed.compilerOptions || {};
+			const paths = compilerOptions.paths || {};
+			if (paths["@/*"]) {
+				const tsConfigDir = parsed.path ? path.dirname(parsed.path) : cwd;
+				const generatedDir = path.join(targetDir, "generated");
+				const relGeneratedDir = path
+					.relative(tsConfigDir, generatedDir)
+					.replace(/\\/g, "/");
+
+				for (const pattern of paths["@/*"]) {
+					const normalizedPattern = pattern
+						.replace(/^\.\//, "")
+						.replace(/\*$/, "");
 					if (
-						normalizedPattern !== "" &&
+						normalizedPattern === "" ||
 						relGeneratedDir.startsWith(normalizedPattern)
 					) {
-						subPath = relGeneratedDir.substring(normalizedPattern.length);
+						let subPath = relGeneratedDir;
+						if (
+							normalizedPattern !== "" &&
+							relGeneratedDir.startsWith(normalizedPattern)
+						) {
+							subPath = relGeneratedDir.substring(normalizedPattern.length);
+						}
+						subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
+						nextjsImportPath = `@/${subPath}/env.gen`.replace(/\/+/g, "/");
+						break;
 					}
-					subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
-					nextjsImportPath = `@/${subPath}/env.gen`.replace(/\/+/g, "/");
-					break;
 				}
 			}
 		}
-	}
 
-	const envContent = getEnvTemplate(options, nextjsImportPath);
-	const envFileExists = existingFiles.includes(targetPath);
+		const envContent = getEnvTemplate(options, nextjsImportPath);
+		const envFileExists = existingFiles.includes(targetPath);
 
-	if (!envFileExists || options.overwriteEnvSchemaFile !== false) {
-		plan.files.push({
-			path: targetPath,
-			content: envContent,
-			action: envFileExists ? "overwrite" : "create",
-			label: "environment schema",
-		});
+		if (!envFileExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: targetPath,
+				content: envContent,
+				action: envFileExists ? "overwrite" : "create",
+				label: "environment schema",
+			});
+		}
 	}
 
 	// 2. dependencies

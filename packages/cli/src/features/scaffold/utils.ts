@@ -45,14 +45,24 @@ export function getNextStepsNote(
 	let message = "";
 	let step = 1;
 
-	message += `${step++}. Check ${code(plan.metadata.displayPath)} and refine your environment schema.\n`;
+	let displayLocation = plan.metadata.displayPath;
+	if (plan.metadata.layout === "strict") {
+		const lastDot = displayLocation.lastIndexOf(".");
+		const base =
+			lastDot !== -1 ? displayLocation.slice(0, lastDot) : displayLocation;
+		displayLocation = `${base}/client.ts, ${base}/server.ts, and ${base}/internal/shared.ts`;
+	}
+
+	message += `${step++}. Check ${code(displayLocation)} and refine your environment schema.\n`;
 
 	if (plan.metadata.framework === "vite") {
 		message += `${step++}. Access via ${code("import.meta.env.YOUR_VAR")}\n`;
 	} else if (plan.metadata.framework === "bun-fullstack") {
 		message += `${step++}. Access via ${code("process.env.YOUR_VAR")}\n`;
 	} else if (plan.metadata.framework === "nextjs") {
-		if (plan.metadata.disableCodegen) {
+		if (plan.metadata.layout === "strict") {
+			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
+		} else if (plan.metadata.disableCodegen) {
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 		} else {
 			message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;

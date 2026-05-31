@@ -18,6 +18,7 @@ export type ProjectOptions = {
 	path: string;
 	validator: Validator;
 	framework: Framework;
+	layout?: "strict" | "simple";
 	bunFeatures?: ("serve" | "build")[];
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean;
@@ -76,6 +77,7 @@ export type ScaffoldingPlan = {
 		mode: "existing" | "new";
 		example?: string;
 		name?: string;
+		layout?: "strict" | "simple";
 		skillDetected?: boolean;
 		disableCodegen?: boolean;
 	};

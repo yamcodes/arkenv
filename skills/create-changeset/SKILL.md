@@ -40,7 +40,7 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Decision guide (v0 rules)
 
-Most packages in this repo are currently in **v0** (0.x.y). For these packages:
+Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 
 ### Use `patch` for:
 
@@ -48,6 +48,7 @@ Most packages in this repo are currently in **v0** (0.x.y). For these packages:
 - Bug fixes
 - Dependency updates (non-breaking)
 - Performance improvements
+- Dependency updates
 - Code style/linting fixes
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.

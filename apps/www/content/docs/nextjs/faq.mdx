@@ -20,20 +20,38 @@ ArkEnv's `withArkEnv` helper parses your schema file at build time, identifies t
 
 Server-side variables, on the other hand, do not need to be inlined and are read dynamically from Node's runtime environment, so the helper skips mapping them to avoid bloating the client bundle.
 
+---
+
 ## How does the runtime protection work under the hood?
 
-`@arkenv/nextjs` automatically selects the correct environment logic using Node's package conditional exports. The integration ships with **two entry points** chosen by the Next.js bundler:
+`@arkenv/nextjs` automatically selects the correct environment logic using Node's package conditional exports and imports. The integration is built to support two main configurations:
+
+### 1. Recommended (Separate Files) Layout
+
+In this setup, we enforce client/server boundaries at both compile-time and runtime:
+
+- **`@arkenv/nextjs/shared`**: Defines variables that are shared across both boundaries (no prefix enforcement).
+- **`@arkenv/nextjs/client`**: Accepts only `NEXT_PUBLIC_` prefixed keys (except those extended from `shared`). It is safe to import in client components.
+- **`@arkenv/nextjs/server`**: Accepts server-only keys and extends client/shared. It imports `server-only` under the hood. If a client component imports `env.server.ts`, the Next.js compiler immediately throws a build error.
+
+### 2. Unified (1-File) Layout
+
+If using the unified layout, the integration ships with two entry points chosen conditionally by the Next.js bundler:
 
 | Condition                                | Entry point            | `isServer` |
 | ---------------------------------------- | ---------------------- | ---------- |
 | `react-server` (RSC / Server Components) | `dist/react-server.js` | `true`     |
 | `default` (Client Components + SSR)      | `dist/index.js`        | `false`    |
 
-You always write `import arkenv from "@arkenv/nextjs"`—the bundler silently resolves the correct file.
+The `isServer` flag determines the proxy behavior:
 
-The `isServer` flag is the mechanism behind runtime protection:
+- **`true` (RSC)**: The full schema (`server + client + shared`) is validated, and server variables are read from `process.env`.
+- **`false` (Client/SSR)**: Only the `client + shared` schema is validated. Accessing a key from the `server` schema throws a descriptive error.
 
-- **`true` (RSC)**: The full schema (`server + client + shared`) is validated, and server variables are read directly from `process.env`.
-- **`false` (Client/SSR)**: Only the `client + shared` schema is validated. Accessing a key from the `server` schema throws a descriptive error during SSR pre-rendering and in the browser, ensuring sensitive data is never leaked.
+---
 
-This approach statically hardcodes the execution context at the bundler layer, which is more reliable than runtime heuristics like checking `typeof window`.
+## Why is Separate Files the recommended approach?
+
+1. **Compile-time Isolation**: Next.js's native `server-only` package throws a compiler error if server code is imported into a client bundle. With separate files, this boundary is enforced by the compiler before the code even runs.
+2. **Framework Alignment**: Next.js already forces developers to think in terms of Client Component boundaries (`"use client"`). Having matching separate files (`env.client.ts` vs `env.server.ts`) naturally mirrors the framework's architecture.
+3. **No Boilerplate Penalty**: The ArkEnv CLI completely eliminates the effort of setting up separate files. Running `arkenv init` scaffolds the entire 3-file setup with `extends` pre-wired.

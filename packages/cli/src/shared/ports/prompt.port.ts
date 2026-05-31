@@ -36,6 +36,8 @@ export type PromptPort = {
 			}) => boolean | Promise<boolean>;
 			hasTypeFile?: boolean;
 			hasEnvSchemaFile?: boolean;
+			isStrict?: boolean;
+			isSimple?: boolean;
 		},
 		isYes?: boolean,
 	): Promise<ProjectOptions | null>;

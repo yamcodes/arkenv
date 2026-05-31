@@ -35,6 +35,15 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
 				"arkenv/core": [path.join(root, "packages/arkenv/src/core.ts")],
 				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
+				"@arkenv/nextjs/server": [
+					path.join(root, "packages/nextjs/src/server.ts"),
+				],
+				"@arkenv/nextjs/client": [
+					path.join(root, "packages/nextjs/src/client.ts"),
+				],
+				"@arkenv/nextjs/shared": [
+					path.join(root, "packages/nextjs/src/shared.ts"),
+				],
 				"@arkenv/vite-plugin": [
 					path.join(root, "packages/vite-plugin/src/index.ts"),
 				],

@@ -11,6 +11,7 @@ on:
     paths:
       - "apps/www/**"
       - "packages/arkenv/**"
+      - "packages/nextjs/**"
       - "packages/vite-plugin/**"
       - "packages/bun-plugin/**"
       - "packages/fumadocs-ui/**"

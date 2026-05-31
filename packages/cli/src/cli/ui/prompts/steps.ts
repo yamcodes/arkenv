@@ -10,6 +10,7 @@ import { exampleStep } from "./steps/example";
 import {
 	bunBuildStep,
 	frameworkStep,
+	layoutStep,
 	nextjsCodegenStep,
 	validatorStep,
 } from "./steps/framework";
@@ -23,6 +24,7 @@ export const steps = {
 	overwriteEnvSchemaFile: overwriteEnvSchemaFileStep,
 	framework: frameworkStep,
 	bunBuild: bunBuildStep,
+	layout: layoutStep,
 	nextjsCodegen: nextjsCodegenStep,
 	useDefaultPath: useDefaultPathStep,
 	path: pathStep,

@@ -1,7 +1,7 @@
 ---
-title: Introduction
+title: Next.js Integration
 icon: Album
-description: The ArkEnv integration for Next.js lets you validate environment variables at build-time and runtime.
+description: Validate and secure your Next.js environment variables with strict client/server boundaries and zero-boilerplate scaffolding.
 ---
 
 > [!IMPORTANT]
@@ -9,49 +9,225 @@ description: The ArkEnv integration for Next.js lets you validate environment va
 
 The `@arkenv/nextjs` integration provides end-to-end environment validation for both the server and the browser. It catches configuration bugs early in your build pipeline and prevents sensitive server-side variables from ever reaching client components.
 
-If a server secret is accidentally accessed in client code, the integration immediately fails your build or throws a descriptive runtime error. We leverage native Next.js conditional exports to guarantee this protection statically—see the [FAQ](/docs/nextjs/faq#how-does-the-runtime-protection-work-under-the-hood) for under-the-hood details.
+## Recommended Architecture (Separate Files)
 
-## Quickstart
+For maximum security, we recommend a **3-file layout** (`env/internal/shared.ts` → `env/client.ts` → `env/server.ts`). This structure aligns with Next.js's native `use client` boundary model, ensures that server secrets are compile-time locked from browser bundles, and allows a single unified `env` export path.
 
-The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project, or spins up a new one from a template.
+```mermaid
+graph TD
+    Shared["env/internal/shared.ts<br/>(SharedSchema type schema)"] --> Client["env/client.ts<br/>(Unified env export)"]
+    Client --> Server["env/server.ts<br/>(Unified env export)"]
+```
 
-<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
-  <Tab value="npm">
-    ```bash
-    npx @arkenv/cli@latest init
-    ```
-  </Tab>
+### 1. Define Shared Variables
 
-  <Tab value="pnpm">
-    ```bash
-    pnx @arkenv/cli@latest init
-    ```
-  </Tab>
+Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
-  <Tab value="yarn">
-    ```bash
-    yarn dlx @arkenv/cli@latest init
-    ```
-  </Tab>
+```ts title="src/env/internal/shared.ts" twoslash
+import { type } from "@arkenv/nextjs/shared";
 
-  <Tab value="bun">
-    ```bash
-    bunx @arkenv/cli@latest init
-    ```
-  </Tab>
-</Tabs>
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+### 2. Define Client Variables
+
+Create `env/client.ts` using `@arkenv/nextjs/client`. All local keys **must** be prefixed with `NEXT_PUBLIC_`. You must extend `SharedSchema` and provide the destructured `runtimeEnv`:
+
+```ts title="src/env/client.ts" twoslash
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/nextjs/shared";
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+// @filename: env/client.ts
+// ---cut---
+import arkenv from "@arkenv/nextjs/client";
+import { SharedSchema } from "./internal/shared";
+
+export const env = arkenv(
+	{
+		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	},
+	{
+		extends: [SharedSchema],
+		runtimeEnv: {
+			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+			NODE_ENV: process.env.NODE_ENV,
+		},
+	},
+);
+```
+
+### 3. Define Server Variables
+
+Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+
+```ts title="src/env/server.ts" twoslash
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/nextjs/shared";
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+// @filename: env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedSchema } from "./internal/shared";
+export const env = arkenv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{
+		extends: [SharedSchema],
+		runtimeEnv: {
+			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+			NODE_ENV: process.env.NODE_ENV,
+		},
+	},
+);
+
+// @filename: env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+	{
+		DATABASE_URL: "string",
+	},
+	{
+		extends: [clientEnv],
+	},
+);
+```
+
+---
+
+## Unified Usage in Your Application
+
+Both `env/client.ts` and `env/server.ts` export the resolved environment as `env`. This lets you use consistent `env.MY_VAR` imports depending on where the component executes.
+
+### In Server Components / Routes
+
+Import `env` from the server file. It contains all public, shared, and server-only variables:
+
+```ts title="src/app/page.ts" twoslash
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/nextjs/shared";
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
+
+// @filename: env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedSchema } from "./internal/shared";
+export const env = arkenv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
+);
+
+// @filename: env/server.ts
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+export const env = arkenv(
+	{ DATABASE_URL: "string" },
+	{ extends: [clientEnv] }
+);
+
+// @filename: page.ts
+// ---cut---
+import { env } from "./env/server";
+
+export function Page() {
+	// Access database URL and client API URL safely
+	const db = env.DATABASE_URL;
+	const api = env.NEXT_PUBLIC_API_URL;
+	return `API: ${api}`;
+}
+```
+
+### In Client Components
+
+Import `env` from the client file (`env/client.ts`). The boundary protection works at two levels:
+
+1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
+
+```ts title="src/app/client-component.ts" twoslash
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/nextjs/shared";
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
+
+// @filename: env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedSchema } from "./internal/shared";
+export const env = arkenv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
+);
+
+// @filename: client-component.ts
+// ---cut---
+import { env } from "./env/client";
+
+export function ClientComponent() {
+	const api = env.NEXT_PUBLIC_API_URL;
+	// @ts-expect-error DATABASE_URL is not defined in client env
+	const db = env.DATABASE_URL;
+
+	return `API URL: ${api}`;
+}
+```
+
+2. **Compile-Time Isolation**: If you accidentally import `env` from the server file (`env/server.ts`) in a Client Component (or any file imported by one), Next.js's bundler will fail the build with a compilation error. This is because `@arkenv/nextjs/server` imports Next.js's native `server-only` package to block browser compilation of server code.
+
+---
+
+## Scaffolding with CLI
+
+The fastest way to set up the separate-file layout is using the CLI. Run the `init` command in your project directory:
+
+```bash
+npx @arkenv/cli@latest init
+```
+
+The interactive wizard will detect Next.js and prompt you for the layout structure. The **Strict (Recommended)** 3-file setup is selected by default.
+
+### Skipping prompts (flags)
+
+- **Strict Mode**: Force the 3-file layout and skip prompts.
+  ```bash
+  npx @arkenv/cli@latest init --strict
+  ```
+- **Simple Mode**: Force the 1-file layout and skip prompts.
+  ```bash
+  npx @arkenv/cli@latest init --simple
+  ```
+
+---
 
 <Accordions>
-  <Accordion title="Manual Installation">
+  <Accordion title="Alternative: Unified 1-File Configuration">
+    If you are building a simple prototype or prefer a single unified configuration file, you can use the default `@arkenv/nextjs` export.
+
     <Steps>
-      <Step>
-        ### Installation
-
-        ```package-install
-        @arkenv/nextjs arktype
-        ```
-      </Step>
-
       <Step>
         ### Configure environment
 
@@ -202,11 +378,49 @@ The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
   </Accordion>
 </Accordions>
 
-## Using Standard Schema validators (Zod, Valibot)
+---
 
-This integration uses ArkType for validation under the hood, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
+## Using Zod or Valibot
 
-Here is an example using Zod:
+You can freely mix Zod or Valibot schemas with the 3-file layout. Standard Schema is supported out of the box.
+
+### 3-File Layout (Recommended)
+
+You can freely mix Zod or Valibot schemas with the 3-file layout:
+
+<Tabs items={['Zod', 'Valibot']}>
+  <Tab value="Zod">
+    ```ts title="src/env/internal/shared.ts" twoslash
+    import { z } from "zod";
+
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = z.object({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="src/env/internal/shared.ts" twoslash
+    import * as v from "valibot";
+
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = v.object({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Unified 1-File Layout
+
+Here is an example using Zod with the 1-file codegen layout:
 
 ```ts title="src/env.ts" twoslash
 // @filename: generated/env.gen.ts

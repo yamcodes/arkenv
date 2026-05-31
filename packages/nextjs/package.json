@@ -10,7 +10,8 @@
 	"module": "./dist/index.js",
 	"dependencies": {
 		"arkenv": "workspace:*",
-		"chokidar": "^4.0.3"
+		"chokidar": "^4.0.3",
+		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
 		"@repo/scope": "workspace:*",
@@ -29,6 +30,21 @@
 		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
 	},
 	"exports": {
+		"./shared": {
+			"types": "./dist/shared.d.ts",
+			"import": "./dist/shared.js",
+			"require": "./dist/shared.cjs"
+		},
+		"./server": {
+			"types": "./dist/server.d.ts",
+			"import": "./dist/server.js",
+			"require": "./dist/server.cjs"
+		},
+		"./client": {
+			"types": "./dist/client.d.ts",
+			"import": "./dist/client.js",
+			"require": "./dist/client.cjs"
+		},
 		".": {
 			"react-server": {
 				"types": "./dist/index.d.ts",
@@ -75,12 +91,62 @@
 	"types": "./dist/index.d.ts",
 	"size-limit": [
 		{
+			"name": "@arkenv/nextjs",
 			"path": "dist/index.js",
 			"limit": "3 kB",
 			"import": "*",
 			"ignore": [
 				"next",
-				"arktype"
+				"arktype",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/shared",
+			"path": "dist/shared.js",
+			"limit": "1.5 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/server",
+			"path": "dist/server.js",
+			"limit": "2 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"server-only",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/client",
+			"path": "dist/client.js",
+			"limit": "2 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"arkenv"
+			]
+		},
+		{
+			"name": "@arkenv/nextjs/config",
+			"path": "dist/config.js",
+			"limit": "2 kB",
+			"import": "*",
+			"ignore": [
+				"next",
+				"arktype",
+				"arkenv",
+				"chokidar",
+				"node:fs",
+				"node:path"
 			]
 		}
 	]

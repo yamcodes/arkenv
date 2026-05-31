@@ -21,6 +21,8 @@ type ExistingProjectDefaults = Partial<
 	hasTypeFileAtPath?: HasTypeFileAtPath;
 	hasTypeFile?: boolean;
 	hasEnvSchemaFile?: boolean;
+	isStrict?: boolean;
+	isSimple?: boolean;
 };
 
 /**
@@ -166,6 +168,14 @@ async function runExistingProjectWizard(
 
 	if (isYes) {
 		const framework = defaults?.framework || "vanilla";
+		let layout: "strict" | "simple" | undefined;
+		if (framework === "nextjs") {
+			layout = defaults?.isStrict
+				? "strict"
+				: defaults?.isSimple
+					? "simple"
+					: "strict";
+		}
 		const hasTypeFile = await getHasTypeFile(
 			defaults,
 			framework,
@@ -182,6 +192,7 @@ async function runExistingProjectWizard(
 			path: defaultEnvPath,
 			validator: "arktype",
 			framework,
+			layout,
 			bunFeatures:
 				framework === "bun-fullstack"
 					? (defaults?.bunFeatures ?? ["serve"])
@@ -212,6 +223,18 @@ async function runExistingProjectWizard(
 				framework: defaults?.framework,
 			}),
 		);
+
+		// Next.js layout prompt
+		let layout: "strict" | "simple" | undefined;
+		if (framework === "nextjs") {
+			if (defaults?.isStrict) {
+				layout = "strict";
+			} else if (defaults?.isSimple) {
+				layout = "simple";
+			} else {
+				layout = unwrapPrompt(await steps.layout());
+			}
+		}
 
 		// 3. bunBuild
 		let bunBuild: boolean | undefined;
@@ -290,6 +313,7 @@ async function runExistingProjectWizard(
 			mode: "existing",
 			overwriteEnvSchemaFile,
 			framework,
+			layout,
 			path: envPath,
 			installTypeDefinitions,
 			envDtsHandling,

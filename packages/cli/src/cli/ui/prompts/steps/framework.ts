@@ -88,6 +88,30 @@ export async function validatorStep(): Promise<
 }
 
 /**
+ * Prompt the user to select their Next.js structure layout (Strict vs Simple).
+ *
+ * @returns The selected layout or null if cancelled
+ */
+export async function layoutStep(): Promise<"strict" | "simple" | null> {
+	const answer = await select({
+		message: "How would you like to structure your environment variables?",
+		options: [
+			{
+				value: "strict",
+				label: "Strict (Recommended)",
+				hint: "Generates separate shared, client, and server files for maximum security",
+			},
+			{
+				value: "simple",
+				label: "Simple",
+				hint: "Generates a single unified file for quick prototyping",
+			},
+		],
+	});
+	return isCancel(answer) ? null : (answer as "strict" | "simple");
+}
+
+/**
  * Prompt the user to enable Next.js automatic environment variable codegen.
  *
  * @param options Options including default/initial value for the prompt
