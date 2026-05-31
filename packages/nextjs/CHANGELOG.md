@@ -1,5 +1,13 @@
 # @ArkEnv/nextjs
 
+## 0.0.6
+
+### Patch Changes
+
+- #### Fix env.gen import path in strict layout and export default alias _[`#1121`](https://github.com/yamcodes/arkenv/pull/1121) [`e75194e`](https://github.com/yamcodes/arkenv/commit/e75194e8883abea2ca2dd1b598b880977052d14f) [@yamcodes](https://github.com/yamcodes)_
+
+  Correct the hardcoded import path to generated factory in Next.js 3-file strict mode client template. Also export `createEnv` as default export (aliased as `arkenv`) in the generated `env.gen.ts` file.
+
 ## 0.0.5
 
 ### Patch Changes
