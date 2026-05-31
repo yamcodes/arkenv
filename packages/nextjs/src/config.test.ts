@@ -193,6 +193,8 @@ describe("codegen process", () => {
 
 		// Check exports and wrapper types
 		expect(generatedContent).toContain("export function createEnv<");
+		expect(generatedContent).toContain("const arkenv = createEnv;");
+		expect(generatedContent).toContain("export default arkenv;");
 
 		// Check that relative path import was resolved correctly (relative from __temp_tests__/env.gen.ts to __temp_tests__/env.ts is ./env)
 		// Wait, path.relative(__temp_tests__, __temp_tests__/env.ts) is "env.ts", which normalizes to "./env"
@@ -357,6 +359,8 @@ describe("withArkEnv wrapper", () => {
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");
 		expect(generatedContent).toContain("export function createEnv<");
+		expect(generatedContent).toContain("const arkenv = createEnv;");
+		expect(generatedContent).toContain("export default arkenv;");
 		expect(generatedContent).toContain(
 			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 		);

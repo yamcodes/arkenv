@@ -325,6 +325,22 @@ describe("env-template", () => {
 			expect(templates.server).toContain("extends: [clientEnv],");
 		});
 
+		it("returns strict templates with custom nextjsImportPath", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: false,
+			};
+			const templates = getStrictEnvTemplates(options, "@/generated/env.gen");
+			expect(templates.client).toContain(
+				'import { createEnv } from "@/generated/env.gen";',
+			);
+		});
+
 		it("returns strict templates with codegen disabled", () => {
 			const options = {
 				validator: "zod" as any,

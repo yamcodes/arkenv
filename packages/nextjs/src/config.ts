@@ -618,6 +618,9 @@ ${runtimeEnvLines}
 		},
 	} as any) as any;
 }
+
+const arkenv = createEnv;
+export default arkenv;
 `;
 }
 
@@ -671,6 +674,9 @@ ${runtimeEnvLines}
 		},
 	} as any);
 }
+
+const arkenv = createEnv;
+export default arkenv;
 `;
 }
 

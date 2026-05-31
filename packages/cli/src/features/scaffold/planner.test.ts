@@ -402,4 +402,36 @@ describe("Planner", () => {
 			'import { createEnv } from "./generated/env.gen"',
 		);
 	});
+
+	it("resolves nextjsImportPath in strict layout using tsconfig paths mapping", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./src/*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const clientFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
+		);
+		expect(clientFile?.content).toContain(
+			'import { createEnv } from "@/env/generated/env.gen"',
+		);
+	});
 });
