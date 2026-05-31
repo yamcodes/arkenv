@@ -162,7 +162,10 @@ export function Page() {
 
 ### In Client Components
 
-Import `env` from the client file. If you accidentally try to access a server-only variable like `DATABASE_URL` in a client component, you will get a build-time compiler error (enforced by Next.js's `server-only`) or a clear runtime exception:
+Import `env` from the client file (`env/client.ts`). The boundary protection works at two levels:
+
+1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
+
 
 ```ts title="src/app/client-component.ts" twoslash
 // @filename: env/internal/shared.ts
@@ -193,6 +196,8 @@ export function ClientComponent() {
 	return `API URL: ${api}`;
 }
 ```
+
+2. **Compile-Time Isolation**: If you accidentally import `env` from the server file (`env/server.ts`) in a Client Component (or any file imported by one), Next.js's bundler will fail the build with a compilation error. This is because `@arkenv/nextjs/server` imports Next.js's native `server-only` package to block browser compilation of server code.
 
 ---
 
