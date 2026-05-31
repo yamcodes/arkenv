@@ -72,9 +72,6 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		: findSchemaPath();
 
 	// Auto-detect layout if not specified
-	let resolvedLayout = options?.layout;
-	let baseDir = schemaPath;
-
 	let exists = false;
 	if (schemaPath) {
 		if (fs.existsSync(schemaPath)) {
@@ -98,83 +95,10 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		);
 	}
 
-	if (!resolvedLayout) {
-		const stat = fs.statSync(
-			fs.existsSync(schemaPath)
-				? schemaPath
-				: schemaPath.slice(0, -path.extname(schemaPath).length),
-		);
-		if (stat.isDirectory()) {
-			const dir = fs.existsSync(schemaPath)
-				? schemaPath
-				: schemaPath.slice(0, -path.extname(schemaPath).length);
-			if (
-				fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
-				fs.existsSync(path.join(dir, "client.ts")) &&
-				fs.existsSync(path.join(dir, "server.ts"))
-			) {
-				resolvedLayout = "strict";
-				baseDir = dir;
-			} else {
-				resolvedLayout = "simple";
-			}
-		} else {
-			const parent = path.dirname(schemaPath);
-			const ext = path.extname(schemaPath);
-			const baseWithoutExt = schemaPath.slice(0, -ext.length);
-			const checkStrict = (dir: string) => {
-				return (
-					fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
-					fs.existsSync(path.join(dir, "client.ts")) &&
-					fs.existsSync(path.join(dir, "server.ts"))
-				);
-			};
-			if (
-				fs.existsSync(baseWithoutExt) &&
-				fs.statSync(baseWithoutExt).isDirectory() &&
-				checkStrict(baseWithoutExt)
-			) {
-				resolvedLayout = "strict";
-				baseDir = baseWithoutExt;
-			} else if (checkStrict(parent)) {
-				resolvedLayout = "strict";
-				baseDir = parent;
-			} else if (
-				path.basename(parent) === "internal" &&
-				checkStrict(path.dirname(parent))
-			) {
-				resolvedLayout = "strict";
-				baseDir = path.dirname(parent);
-			} else {
-				resolvedLayout = "simple";
-			}
-		}
-	} else if (resolvedLayout === "strict") {
-		const stat = fs.statSync(
-			fs.existsSync(schemaPath)
-				? schemaPath
-				: schemaPath.slice(0, -path.extname(schemaPath).length),
-		);
-		if (!stat.isDirectory()) {
-			const parent = path.dirname(schemaPath);
-			if (path.basename(parent) === "internal") {
-				baseDir = path.dirname(parent);
-			} else {
-				const ext = path.extname(schemaPath);
-				const baseWithoutExt = schemaPath.slice(0, -ext.length);
-				if (
-					fs.existsSync(baseWithoutExt) &&
-					fs.statSync(baseWithoutExt).isDirectory()
-				) {
-					baseDir = baseWithoutExt;
-				} else {
-					baseDir = parent;
-				}
-			}
-		} else {
-			baseDir = schemaPath;
-		}
-	}
+	const { layout: resolvedLayout, baseDir } = resolveLayout(
+		schemaPath,
+		options?.layout,
+	);
 
 	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath/baseDir)
 	const defaultOutputDir =
@@ -220,6 +144,105 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
  *
  * @returns The absolute path to the schema file, or null if not found
  */
+/**
+ * Resolve the layout (simple vs strict) and the base directory from a schema path.
+ *
+ * Auto-detects layout when `layoutOption` is not provided. When `layoutOption`
+ * is `"strict"`, validates that the required split files exist and throws a
+ * descriptive error if either is missing.
+ *
+ * @param schemaPath The absolute path to the schema file or directory
+ * @param layoutOption The explicit layout option, if provided
+ * @returns The resolved layout and base directory
+ * @throws An error if strict layout files are missing
+ */
+function resolveLayout(
+	schemaPath: string,
+	layoutOption?: "simple" | "strict",
+): { layout: "simple" | "strict"; baseDir: string } {
+	const checkStrict = (dir: string) =>
+		fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
+		fs.existsSync(path.join(dir, "client.ts")) &&
+		fs.existsSync(path.join(dir, "server.ts"));
+
+	const resolveBaseDir = (p: string): string => {
+		// Normalize: if schemaPath has an extension, try the extensionless form as a dir
+		const ext = path.extname(p);
+		const baseWithoutExt = ext ? p.slice(0, -ext.length) : p;
+		if (
+			fs.existsSync(baseWithoutExt) &&
+			fs.statSync(baseWithoutExt).isDirectory()
+		) {
+			return baseWithoutExt;
+		}
+		return p;
+	};
+
+	if (!layoutOption) {
+		// Auto-detect
+		const resolved = resolveBaseDir(schemaPath);
+		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+			if (checkStrict(resolved)) {
+				return { layout: "strict", baseDir: resolved };
+			}
+			return { layout: "simple", baseDir: resolved };
+		}
+
+		// schemaPath is a file — check surrounding dirs
+		const parent = path.dirname(schemaPath);
+		const ext = path.extname(schemaPath);
+		const baseWithoutExt = ext ? schemaPath.slice(0, -ext.length) : schemaPath;
+		if (
+			fs.existsSync(baseWithoutExt) &&
+			fs.statSync(baseWithoutExt).isDirectory() &&
+			checkStrict(baseWithoutExt)
+		) {
+			return { layout: "strict", baseDir: baseWithoutExt };
+		}
+		if (checkStrict(parent)) {
+			return { layout: "strict", baseDir: parent };
+		}
+		if (
+			path.basename(parent) === "internal" &&
+			checkStrict(path.dirname(parent))
+		) {
+			return { layout: "strict", baseDir: path.dirname(parent) };
+		}
+		return { layout: "simple", baseDir: schemaPath };
+	}
+
+	if (layoutOption === "strict") {
+		// Resolve baseDir for an explicit strict layout
+		let baseDir: string;
+		const resolved = resolveBaseDir(schemaPath);
+		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+			baseDir = resolved;
+		} else {
+			const parent = path.dirname(schemaPath);
+			if (path.basename(parent) === "internal") {
+				baseDir = path.dirname(parent);
+			} else {
+				baseDir = parent;
+			}
+		}
+
+		// Validate that required split files exist
+		const clientPath = path.join(baseDir, "client.ts");
+		const sharedPath = path.join(baseDir, "internal", "shared.ts");
+		if (!fs.existsSync(clientPath) || !fs.existsSync(sharedPath)) {
+			throw new Error(
+				`[ArkEnv] Strict layout requires "${clientPath}" and "${sharedPath}" to exist. ` +
+					`Ensure both files are present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
+			);
+		}
+
+		return { layout: "strict", baseDir };
+	}
+
+	// layoutOption === "simple"
+	return { layout: "simple", baseDir: schemaPath };
+}
+
 function findSchemaPath(): string | null {
 	const possiblePaths = [
 		path.join(process.cwd(), "src", "env.ts"),
@@ -295,76 +318,10 @@ export function runCodegen(
 	outputPath: string,
 	layoutOption?: "simple" | "strict",
 ) {
-	let resolvedLayout = layoutOption;
-	let baseDir = schemaPath;
-
-	if (!resolvedLayout) {
-		if (fs.existsSync(schemaPath)) {
-			const stat = fs.statSync(schemaPath);
-			if (stat.isDirectory()) {
-				if (
-					fs.existsSync(path.join(schemaPath, "internal", "shared.ts")) &&
-					fs.existsSync(path.join(schemaPath, "client.ts")) &&
-					fs.existsSync(path.join(schemaPath, "server.ts"))
-				) {
-					resolvedLayout = "strict";
-					baseDir = schemaPath;
-				} else {
-					resolvedLayout = "simple";
-				}
-			} else {
-				const parent = path.dirname(schemaPath);
-				const ext = path.extname(schemaPath);
-				const baseWithoutExt = schemaPath.slice(0, -ext.length);
-				const checkStrict = (dir: string) => {
-					return (
-						fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
-						fs.existsSync(path.join(dir, "client.ts")) &&
-						fs.existsSync(path.join(dir, "server.ts"))
-					);
-				};
-				if (
-					fs.existsSync(baseWithoutExt) &&
-					fs.statSync(baseWithoutExt).isDirectory() &&
-					checkStrict(baseWithoutExt)
-				) {
-					resolvedLayout = "strict";
-					baseDir = baseWithoutExt;
-				} else if (checkStrict(parent)) {
-					resolvedLayout = "strict";
-					baseDir = parent;
-				} else if (
-					path.basename(parent) === "internal" &&
-					checkStrict(path.dirname(parent))
-				) {
-					resolvedLayout = "strict";
-					baseDir = path.dirname(parent);
-				} else {
-					resolvedLayout = "simple";
-				}
-			}
-		} else {
-			resolvedLayout = "simple";
-		}
-	} else if (resolvedLayout === "strict") {
-		if (fs.existsSync(schemaPath) && fs.statSync(schemaPath).isFile()) {
-			const parent = path.dirname(schemaPath);
-			if (path.basename(parent) === "internal") {
-				baseDir = path.dirname(parent);
-			} else {
-				const ext = path.extname(schemaPath);
-				const baseWithoutExt = schemaPath.slice(0, -ext.length);
-				if (
-					fs.existsSync(baseWithoutExt) &&
-					fs.statSync(baseWithoutExt).isDirectory()
-				) {
-					baseDir = baseWithoutExt;
-				} else {
-					baseDir = parent;
-				}
-			}
-		}
-	}
+	const { layout: resolvedLayout, baseDir } = resolveLayout(
+		schemaPath,
+		layoutOption,
+	);
 
 	let generatedCode = "";
 	if (resolvedLayout === "strict") {

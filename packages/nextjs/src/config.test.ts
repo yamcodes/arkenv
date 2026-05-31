@@ -363,6 +363,23 @@ describe("withArkEnv wrapper", () => {
 		expect(generatedContent).toContain("NODE_ENV: process.env.NODE_ENV,");
 		expect(generatedContent).not.toContain("DATABASE_URL");
 	});
+
+	it("should throw a descriptive error when layout: 'strict' is set but required files are missing", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		// Only create the schema file, not the strict layout files
+		fs.writeFileSync(
+			schemaPath,
+			`export const env = createEnv({ client: { NEXT_PUBLIC_VAR: "string" } });`,
+			"utf-8",
+		);
+
+		expect(() =>
+			withArkEnv({ reactStrictMode: true }, { schemaPath, layout: "strict" }),
+		).toThrow("[ArkEnv] Strict layout requires");
+	});
 });
 
 describe("strict config key extraction", () => {
@@ -394,5 +411,117 @@ describe("strict config key extraction", () => {
 		`;
 		const keys = extractSharedKeys(sharedSource);
 		expect(keys).toEqual(["NODE_ENV", "PORT"]);
+	});
+
+	it("extractClientKeys: should ignore single-line comments inside arkenv block", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					// This is a comment
+					NEXT_PUBLIC_VAR_1: "string",
+					// Another comment: with colon
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_VAR_1",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractClientKeys: should ignore multi-line comments inside arkenv block", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					/*
+					 * Multi-line comment:
+					 * FAKE_KEY: this should be ignored
+					 */
+					NEXT_PUBLIC_VAR_1: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual(["NEXT_PUBLIC_VAR_1"]);
+	});
+
+	it("extractClientKeys: should not be confused by braces inside string literals", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_VAR_1: "string = '{not-a-brace}'",
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_VAR_1",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractClientKeys: should not be confused by colons inside string literals", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_API_URL: "string = 'http://localhost:3000'",
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_API_URL",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractClientKeys: should ignore nested object literals in values", () => {
+		const clientSource = `
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_VAR_1: type("string", { description: "nested:key" }),
+					NEXT_PUBLIC_VAR_2: "string",
+				}
+			);
+		`;
+		expect(extractClientKeys(clientSource)).toEqual([
+			"NEXT_PUBLIC_VAR_1",
+			"NEXT_PUBLIC_VAR_2",
+		]);
+	});
+
+	it("extractSharedKeys: should ignore single-line comments inside SharedSchema", () => {
+		const sharedSource = `
+			export const SharedSchema = type({
+				// NODE_ENV is always set
+				NODE_ENV: "string = 'development'",
+				// PORT: ignored comment
+				PORT: "number.port = 3000",
+			});
+		`;
+		expect(extractSharedKeys(sharedSource)).toEqual(["NODE_ENV", "PORT"]);
+	});
+
+	it("extractSharedKeys: should not be confused by colons inside string literals", () => {
+		const sharedSource = `
+			export const SharedSchema = type({
+				DATABASE_URL: "string = 'postgresql://localhost:5432/db'",
+				NODE_ENV: "string",
+			});
+		`;
+		expect(extractSharedKeys(sharedSource)).toEqual([
+			"DATABASE_URL",
+			"NODE_ENV",
+		]);
+	});
+
+	it("extractSharedKeys: should not be confused by braces inside string literals", () => {
+		const sharedSource = `
+			export const SharedSchema = type({
+				NODE_ENV: "string = '{dev}'",
+				PORT: "number = 3000",
+			});
+		`;
+		expect(extractSharedKeys(sharedSource)).toEqual(["NODE_ENV", "PORT"]);
 	});
 });
