@@ -338,11 +338,6 @@ export function runCodegen(
 		const clientKeys = extractClientKeys(clientContent);
 		const sharedKeys = extractSharedKeys(sharedContent);
 
-		const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
-		const runtimeEnvLines = allKeys
-			.map((key) => `\t${key}: process.env.${key},`)
-			.join("\n");
-
 		generatedCode = generateClientFactoryCode(clientKeys, sharedKeys);
 	} else {
 		const fileContent = fs.readFileSync(schemaPath, "utf-8");
