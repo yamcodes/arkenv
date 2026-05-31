@@ -316,7 +316,7 @@ describe("env-template", () => {
 				"export const SharedSchema = z.object({",
 			);
 			expect(templates.client).toContain(
-				'import { createEnv } from "../generated/env.gen";',
+				'import { createEnv } from "./generated/env.gen";',
 			);
 			expect(templates.client).toContain("export const env = createEnv(");
 			expect(templates.client).not.toContain(
