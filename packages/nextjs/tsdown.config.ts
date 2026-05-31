@@ -5,7 +5,6 @@ export default defineConfig({
 		"src/index.ts",
 		"src/react-server.ts",
 		"src/server.ts",
-		"src/server.react-server.ts",
 		"src/client.ts",
 		"src/shared.ts",
 	],

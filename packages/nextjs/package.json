@@ -35,16 +35,9 @@
 			"require": "./dist/shared.cjs"
 		},
 		"./server": {
-			"react-server": {
-				"types": "./dist/server.react-server.d.ts",
-				"import": "./dist/server.react-server.js",
-				"require": "./dist/server.react-server.cjs"
-			},
-			"default": {
-				"types": "./dist/server.d.ts",
-				"import": "./dist/server.js",
-				"require": "./dist/server.cjs"
-			}
+			"types": "./dist/server.d.ts",
+			"import": "./dist/server.js",
+			"require": "./dist/server.cjs"
 		},
 		"./client": {
 			"types": "./dist/client.d.ts",
@@ -116,18 +109,6 @@
 		{
 			"name": "@arkenv/nextjs/server",
 			"path": "dist/server.js",
-			"limit": "2 kB",
-			"import": "*",
-			"ignore": [
-				"next",
-				"arktype",
-				"server-only",
-				"arkenv"
-			]
-		},
-		{
-			"name": "@arkenv/nextjs/server.react-server",
-			"path": "dist/server.react-server.js",
 			"limit": "2 kB",
 			"import": "*",
 			"ignore": [

@@ -6,7 +6,6 @@ vi.mock("server-only", () => ({}));
 
 import { createEnv as clientCreateEnv } from "./client";
 import { createEnv as serverCreateEnv } from "./server";
-import { createEnv as serverReactCreateEnv } from "./server.react-server";
 import { type } from "./shared";
 
 describe("Separate Files Next.js mode", () => {
@@ -21,17 +20,6 @@ describe("Separate Files Next.js mode", () => {
 	it("should disallow client schema in server entry point at runtime", () => {
 		expect(() => {
 			serverCreateEnv({
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-				},
-				runtimeEnv: {} as any,
-			} as any);
-		}).toThrow(
-			"server entry point only accepts 'server' and 'shared' schemas.",
-		);
-
-		expect(() => {
-			serverReactCreateEnv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
@@ -202,30 +190,6 @@ describe("Separate Files Next.js mode", () => {
 
 		expect(serverEnv.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 		expect(serverEnv.NODE_ENV).toBe("production");
-		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost:5432/db");
-	});
-
-	it("should support extends in server.react-server.ts entry point", () => {
-		const clientEnv = clientCreateEnv({
-			client: {
-				NEXT_PUBLIC_API_URL: "string",
-			},
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: "https://api.example.com",
-			},
-		});
-
-		const serverEnv = serverReactCreateEnv({
-			server: {
-				DATABASE_URL: "string",
-			},
-			extends: [clientEnv],
-			runtimeEnv: {
-				DATABASE_URL: "postgres://localhost:5432/db",
-			},
-		});
-
-		expect(serverEnv.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost:5432/db");
 	});
 
