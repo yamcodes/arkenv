@@ -98,13 +98,13 @@ export async function layoutStep(): Promise<"strict" | "simple" | null> {
 		options: [
 			{
 				value: "simple",
-				label: "Unified (Recommended)",
-				hint: "Generates a single env.ts file for best Developer Experience",
+				label: "Simple",
+				hint: "(Recommended) A single env.ts file for the best DX",
 			},
 			{
 				value: "strict",
-				label: "Strict (Enterprise / Monorepo)",
-				hint: "Generates separate files to completely block server imports in client bundles at compile-time",
+				label: "Strict",
+				hint: "Separate shared, client, and server files for hard bundle boundaries.",
 			},
 		],
 	});
