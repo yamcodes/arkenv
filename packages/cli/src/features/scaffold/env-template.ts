@@ -33,6 +33,16 @@ export type StrictEnvTemplates = {
 	server: string;
 };
 
+/**
+ * Format an array of schema field strings as a braced object literal.
+ *
+ * Returns `"{}"` for an empty field list. Non-empty fields are each trimmed
+ * and joined with newlines at the given indentation level.
+ *
+ * @param fields The schema field strings to format (e.g. `["FOO: \"string\""]`)
+ * @param indent The indentation prefix to use for inner lines
+ * @returns A formatted object literal string
+ */
 function formatSchemaObject(fields: string[], indent = "\t\t"): string {
 	if (fields.length === 0) {
 		return "{}";

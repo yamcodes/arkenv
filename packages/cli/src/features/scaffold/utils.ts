@@ -3,7 +3,11 @@ import { code } from "@/shared/visuals";
 import type { ScaffoldingPlan } from "./plan";
 
 /**
- * Builds the package manager command used to install dependencies or run a bare install.
+ * Build the package manager command used to install dependencies or run a bare install.
+ *
+ * @param pm The package manager name (e.g. `"pnpm"`, `"yarn"`, `"bun"`, or npm fallback)
+ * @param deps The dependency names to add; pass an empty array to run a bare install
+ * @returns A tuple of `[executable, args]` ready to pass to a child-process spawn call
  */
 export function getInstallCommand(
 	pm: string,
@@ -23,7 +27,15 @@ export function getInstallCommand(
 }
 
 /**
- * Builds the final next steps note shown after a scaffolding run.
+ * Build the final next-steps note shown after a scaffolding run.
+ *
+ * When the AI skill is already installed, returns a short prompt to use the
+ * `/arkenv` slash command. Otherwise constructs a numbered checklist tailored
+ * to the project's framework, layout, and codegen settings.
+ *
+ * @param plan The scaffolding plan produced by the planner
+ * @param skillInstalled Whether the ArkEnv AI skill was installed during this run
+ * @returns An object with a `title` and a multi-line `message` string
  */
 export function getNextStepsNote(
 	plan: ScaffoldingPlan,

@@ -272,8 +272,9 @@ function findSchemaPath(): string | null {
 /**
  * Watch the schema file for changes and trigger codegen.
  *
- * @param schemaPath The absolute path to the schema file
+ * @param schemaPath The absolute path to the schema file, or an array of paths to watch
  * @param outputPath The absolute path to the generated output file
+ * @param layout The resolved layout to pass through to codegen on each change
  */
 function watchSchema(
 	schemaPath: string | string[],
@@ -310,8 +311,10 @@ function watchSchema(
 /**
  * Run code generation to read the schema file and generate the env.gen.ts factory.
  *
- * @param schemaPath The absolute path to the schema file
+ * @param schemaPath The absolute path to the schema file or directory
  * @param outputPath The absolute path to the generated output file
+ * @param layoutOption The explicit layout to use; auto-detected from the filesystem when omitted
+ * @throws An error if strict layout files are missing when `layoutOption` is `"strict"`
  */
 export function runCodegen(
 	schemaPath: string,
@@ -618,6 +621,16 @@ ${runtimeEnvLines}
 `;
 }
 
+/**
+ * Generate the TypeScript factory code for the strict-layout `createEnv` helper.
+ *
+ * Unlike `generateFactoryCode`, this variant imports from `@arkenv/nextjs/client`
+ * and exposes a positional-schema signature suited for split-file projects.
+ *
+ * @param clientKeys The env var keys extracted from `client.ts`
+ * @param sharedKeys The env var keys extracted from `internal/shared.ts`
+ * @returns The generated TypeScript source code string
+ */
 function generateClientFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
@@ -661,16 +674,44 @@ ${runtimeEnvLines}
 `;
 }
 
+/**
+ * Extract env var keys from a strict-layout `client.ts` file.
+ *
+ * Locates the first `arkenv({...})` call and delegates to `parseBlockKeys`
+ * to enumerate the keys defined in the schema object.
+ *
+ * @param content The source text of `client.ts`
+ * @returns An array of env var key names found in the client schema
+ */
 export function extractClientKeys(content: string): string[] {
 	const block = extractClientBlock(content);
 	return block ? parseBlockKeys(block) : [];
 }
 
+/**
+ * Extract env var keys from a strict-layout `internal/shared.ts` file.
+ *
+ * Locates the `SharedSchema = ...({...})` assignment and delegates to
+ * `parseBlockKeys` to enumerate the keys defined in the schema object.
+ *
+ * @param content The source text of `internal/shared.ts`
+ * @returns An array of env var key names found in the shared schema
+ */
 export function extractSharedKeys(content: string): string[] {
 	const block = extractSharedBlock(content);
 	return block ? parseBlockKeys(block) : [];
 }
 
+/**
+ * Extract the schema object body from a strict-layout `client.ts` file.
+ *
+ * Matches the first `arkenv(...)` call, then performs brace-balanced
+ * traversal while respecting strings and comments to find the boundaries
+ * of the first argument object.
+ *
+ * @param content The source text of `client.ts`
+ * @returns The raw text inside the first `{...}` argument, or `null` if not found
+ */
 function extractClientBlock(content: string): string | null {
 	const regex = /\barkenv\s*\(\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
 	const match = regex.exec(content);
@@ -740,6 +781,16 @@ function extractClientBlock(content: string): string | null {
 	return null;
 }
 
+/**
+ * Extract the schema object body from a strict-layout `internal/shared.ts` file.
+ *
+ * Matches the `SharedSchema = ...({...})` assignment, then performs
+ * brace-balanced traversal while respecting strings and comments to find
+ * the boundaries of the schema object.
+ *
+ * @param content The source text of `internal/shared.ts`
+ * @returns The raw text inside the `{...}` schema object, or `null` if not found
+ */
 function extractSharedBlock(content: string): string | null {
 	const regex = /\bSharedSchema\s*=\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
 	const match = regex.exec(content);
