@@ -282,7 +282,7 @@ describe("Planner", () => {
 		expect(serverFile).toBeDefined();
 
 		expect(sharedFile?.content).toContain("@arkenv/nextjs/shared");
-		expect(clientFile?.content).toContain("./generated/env.gen");
+		expect(clientFile?.content).toContain("../generated/env.gen");
 		expect(serverFile?.content).toContain("@arkenv/nextjs/server");
 	});
 
@@ -400,6 +400,38 @@ describe("Planner", () => {
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain(
 			'import { createEnv } from "./generated/env.gen"',
+		);
+	});
+
+	it("resolves nextjsImportPath in strict layout using tsconfig paths mapping", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./src/*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const clientFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
+		);
+		expect(clientFile?.content).toContain(
+			'import { createEnv } from "@/env/generated/env.gen"',
 		);
 	});
 });

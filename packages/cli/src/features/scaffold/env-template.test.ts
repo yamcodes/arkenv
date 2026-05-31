@@ -316,13 +316,29 @@ describe("env-template", () => {
 				"export const SharedSchema = z.object({",
 			);
 			expect(templates.client).toContain(
-				'import { createEnv } from "./generated/env.gen";',
+				'import { createEnv } from "../generated/env.gen";',
 			);
 			expect(templates.client).toContain("export const env = createEnv(");
 			expect(templates.client).not.toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 			);
 			expect(templates.server).toContain("extends: [clientEnv],");
+		});
+
+		it("returns strict templates with custom nextjsImportPath", () => {
+			const options = {
+				validator: "zod" as any,
+				framework: "nextjs" as any,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: false,
+			};
+			const templates = getStrictEnvTemplates(options, "@/generated/env.gen");
+			expect(templates.client).toContain(
+				'import { createEnv } from "@/generated/env.gen";',
+			);
 		});
 
 		it("returns strict templates with codegen disabled", () => {

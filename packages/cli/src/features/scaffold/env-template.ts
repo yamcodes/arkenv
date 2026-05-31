@@ -59,6 +59,7 @@ function formatSchemaObject(fields: string[], indent = "\t\t"): string {
  */
 export function getStrictEnvTemplates(
 	options: ProjectOptions,
+	nextjsImportPath?: string,
 ): StrictEnvTemplates {
 	const { validator, envKeys, disableCodegen } = options;
 
@@ -168,7 +169,7 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "./generated/env.gen";
+			: `import { createEnv } from "${nextjsImportPath || "../generated/env.gen"}";
 import { SharedSchema } from "./internal/shared";
 
 export const env = createEnv(
@@ -210,7 +211,7 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "./generated/env.gen";
+			: `import { createEnv } from "${nextjsImportPath || "../generated/env.gen"}";
 import { z } from "zod";
 import { SharedSchema } from "./internal/shared";
 
@@ -254,7 +255,7 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "./generated/env.gen";
+			: `import { createEnv } from "${nextjsImportPath || "../generated/env.gen"}";
 import * as v from "valibot";
 import { SharedSchema } from "./internal/shared";
 
