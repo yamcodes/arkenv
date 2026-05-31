@@ -356,7 +356,7 @@ describe("withArkEnv wrapper", () => {
 		expect(fs.existsSync(genPath)).toBe(true);
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");
-		expect(generatedContent).toContain("export const runtimeEnv = {");
+		expect(generatedContent).toContain("export function createEnv<");
 		expect(generatedContent).toContain(
 			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 		);

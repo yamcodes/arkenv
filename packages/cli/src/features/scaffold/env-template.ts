@@ -158,15 +158,13 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import arkenv from "@arkenv/nextjs/client";
+			: `import { createEnv } from "./generated/env.gen";
 import { SharedSchema } from "./internal/shared";
-import { runtimeEnv } from "./generated/env.gen";
 
-export const env = arkenv(
+export const env = createEnv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
-		runtimeEnv,
 	},
 );`;
 
@@ -202,16 +200,14 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import arkenv from "@arkenv/nextjs/client";
+			: `import { createEnv } from "./generated/env.gen";
 import { z } from "zod";
 import { SharedSchema } from "./internal/shared";
-import { runtimeEnv } from "./generated/env.gen";
 
-export const env = arkenv(
+export const env = createEnv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
-		runtimeEnv,
 	},
 );`;
 
@@ -248,16 +244,14 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import arkenv from "@arkenv/nextjs/client";
+			: `import { createEnv } from "./generated/env.gen";
 import * as v from "valibot";
 import { SharedSchema } from "./internal/shared";
-import { runtimeEnv } from "./generated/env.gen";
 
-export const env = arkenv(
+export const env = createEnv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
-		runtimeEnv,
 	},
 );`;
 

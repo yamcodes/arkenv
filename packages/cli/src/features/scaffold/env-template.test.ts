@@ -316,9 +316,9 @@ describe("env-template", () => {
 				"export const SharedSchema = z.object({",
 			);
 			expect(templates.client).toContain(
-				'import { runtimeEnv } from "./generated/env.gen";',
+				'import { createEnv } from "./generated/env.gen";',
 			);
-			expect(templates.client).toContain("runtimeEnv,");
+			expect(templates.client).toContain("export const env = createEnv(");
 			expect(templates.client).not.toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 			);
@@ -362,7 +362,7 @@ describe("env-template", () => {
 			};
 			const templates = getStrictEnvTemplates(options);
 			expect(templates.client).toContain(
-				"arkenv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
+				"createEnv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
 			);
 			expect(templates.shared).toContain(
 				"export const SharedSchema = z.object({});",
