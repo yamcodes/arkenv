@@ -192,7 +192,6 @@ pnpm run test:e2e                     # E2E tests
 
 - **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
-<<<<<<< HEAD
 - **Next.js**: Integrated via `@arkenv/nextjs`. Provides two layout patterns:
   - **3-File Layout (Strict)**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
   - **Unified 1-File Layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `createEnv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
