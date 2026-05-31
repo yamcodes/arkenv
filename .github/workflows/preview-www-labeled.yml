@@ -1,0 +1,26 @@
+name: Preview www (Label Triggered)
+
+on:
+  pull_request:
+    types: [labeled]
+    paths:
+      - "apps/www/**"
+      - "packages/arkenv/**"
+      - "packages/vite-plugin/**"
+      - "packages/bun-plugin/**"
+      - "packages/fumadocs-ui/**"
+      - "packages/internal/**"
+      - ".github/workflows/preview-www-reusable.yml"
+      - ".github/workflows/preview-www-default.yml"
+      - ".github/workflows/preview-www-labeled.yml"
+      - "pnpm-lock.yaml"
+
+concurrency:
+  group: preview-www-labeled-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  Deploy-Preview:
+    if: github.event.label.name == 'preview'
+    uses: ./.github/workflows/preview-www-reusable.yml
+    secrets: inherit

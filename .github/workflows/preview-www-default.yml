@@ -1,0 +1,26 @@
+name: Preview www (Default Events)
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+    paths:
+      - "apps/www/**"
+      - "packages/arkenv/**"
+      - "packages/vite-plugin/**"
+      - "packages/bun-plugin/**"
+      - "packages/fumadocs-ui/**"
+      - "packages/internal/**"
+      - ".github/workflows/preview-www-reusable.yml"
+      - ".github/workflows/preview-www-default.yml"
+      - ".github/workflows/preview-www-labeled.yml"
+      - "pnpm-lock.yaml"
+
+concurrency:
+  group: preview-www-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  Deploy-Preview:
+    if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'preview')
+    uses: ./.github/workflows/preview-www-reusable.yml
+    secrets: inherit
