@@ -51,10 +51,11 @@ function formatSchemaObject(fields: string[], indent = "\t\t"): string {
 }
 
 /**
- * Generates the shared, client, and server environment configuration templates
+ * Generate the shared, client, and server environment configuration templates
  * for the 3-file Strict Next.js layout.
  *
  * @param options The selected project options.
+ * @param nextjsImportPath The optional custom import path for the generated file in Next.js.
  * @returns The generated templates for all three files.
  */
 export function getStrictEnvTemplates(

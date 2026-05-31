@@ -44,6 +44,7 @@ Proceed with the standard **Research -> Strategy -> Execution** lifecycle.
 - **Execution**: Apply changes surgically. Ensure that:
   - New tests are added to verify the fix or feature.
   - Relevant documentation is updated.
+  - JSDoc comments are added or updated for all new or modified functions according to the `jsdoc` skill.
 
 ### 4. Validation & quality assurance
 
