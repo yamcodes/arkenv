@@ -11,6 +11,7 @@ import {
 	bunBuildStep,
 	frameworkStep,
 	layoutStep,
+	nextjsCodegenStep,
 	validatorStep,
 } from "./steps/framework";
 import { pathStep, useDefaultPathStep } from "./steps/path";
@@ -24,6 +25,7 @@ export const steps = {
 	framework: frameworkStep,
 	bunBuild: bunBuildStep,
 	layout: layoutStep,
+	nextjsCodegen: nextjsCodegenStep,
 	useDefaultPath: useDefaultPathStep,
 	path: pathStep,
 	installTypeDefinitions: installTypeDefinitionsStep,

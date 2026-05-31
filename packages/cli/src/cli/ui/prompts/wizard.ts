@@ -12,7 +12,7 @@ type HasTypeFileAtPath = (options: {
 }) => boolean | Promise<boolean>;
 
 type ExistingProjectDefaults = Partial<
-	Pick<ProjectOptions, "framework" | "bunFeatures">
+	Pick<ProjectOptions, "framework" | "bunFeatures" | "disableCodegen">
 > & {
 	defaultEnvPath?: string;
 	tsConfig?: ParsedTsConfig | null;
@@ -36,7 +36,12 @@ export async function runPromptWizard(
 	defaults?: Partial<
 		Pick<
 			ProjectOptions,
-			"mode" | "example" | "name" | "framework" | "bunFeatures"
+			| "mode"
+			| "example"
+			| "name"
+			| "framework"
+			| "bunFeatures"
+			| "disableCodegen"
 		>
 	> & {
 		examples?: Example[];
@@ -199,6 +204,7 @@ async function runExistingProjectWizard(
 			installSkill: false,
 			envDtsHandling,
 			envKeys: detectedKeys ?? undefined,
+			disableCodegen: defaults?.disableCodegen ?? false,
 		});
 	}
 
@@ -239,6 +245,17 @@ async function runExistingProjectWizard(
 					initialValue: defaultBunBuild,
 				}),
 			);
+		}
+
+		// Next.js codegen prompt
+		let disableCodegen: boolean | undefined = defaults?.disableCodegen;
+		if (framework === "nextjs" && disableCodegen === undefined) {
+			const useCodegen = unwrapPrompt(
+				await steps.nextjsCodegen({
+					initialValue: true,
+				}),
+			);
+			disableCodegen = !useCodegen;
 		}
 
 		// 4. useDefaultPath
@@ -305,6 +322,7 @@ async function runExistingProjectWizard(
 			language: "ts",
 			installSkill: false,
 			envKeys: useEnvExample ? (detectedKeys ?? undefined) : undefined,
+			disableCodegen,
 		});
 	} catch (error) {
 		if (error instanceof CancelError) {

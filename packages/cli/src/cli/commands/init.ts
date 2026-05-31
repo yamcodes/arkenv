@@ -27,6 +27,7 @@ export type InitInput = {
 	isSimple?: boolean;
 	example?: string;
 	name?: string;
+	noCodegen?: boolean;
 };
 
 /**
@@ -263,6 +264,7 @@ export class InitUseCase {
 				hasEnvSchemaFile,
 				isStrict: input.isStrict,
 				isSimple: input.isSimple,
+				disableCodegen: input.noCodegen,
 			}),
 			isYes,
 		);

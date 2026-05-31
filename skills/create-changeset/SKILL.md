@@ -66,7 +66,7 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 ### Title convention
 
 - **Format**: All changeset descriptions MUST start with a `####` header.
-- **Mood**: The header title and all detailed description actions/sentences MUST use the **imperative mood** (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops...").
+- **Mood**: You MUST use the **imperative mood** for all headers, change summaries, and actions. Write changesets as commands to the codebase (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops..."). Any changeset using indicative ("Adds/fixes") or past tense ("Added/fixed") is strictly invalid.
 
 ### Usage examples
 
@@ -117,9 +117,9 @@ export const env = createEnv({
 "package-name": patch|minor
 ---
 
-#### Short title of the change (MUST use imperative mood)
+#### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
 
-Detailed description of the change (MUST use imperative mood for all actions and descriptions, e.g. "Introduce X" instead of "Introduces X").
+Detailed description of the change (also using imperative mood for action summaries).
 
 Include:
 - **Usage examples** (code blocks)

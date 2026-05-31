@@ -110,3 +110,22 @@ export async function layoutStep(): Promise<"strict" | "simple" | null> {
 	});
 	return isCancel(answer) ? null : (answer as "strict" | "simple");
 }
+
+/**
+ * Prompt the user to enable Next.js automatic environment variable codegen.
+ *
+ * @param options Options including default/initial value for the prompt
+ * @returns Whether the user confirmed (enabled) or null if cancelled
+ */
+export async function nextjsCodegenStep(options: {
+	initialValue?: boolean | undefined;
+}): Promise<boolean | null> {
+	const answer = await confirm({
+		message:
+			"Enable automated Next.js code generation for environment variables?",
+		initialValue: options.initialValue ?? true,
+		active: "Yes (Recommended)",
+		inactive: "No",
+	});
+	return isCancel(answer) ? null : answer;
+}

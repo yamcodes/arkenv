@@ -46,11 +46,14 @@ export type NextjsFieldBuilders = {
  *
  * @param envKeys Optional array of env var keys scanned from the project
  * @param builders Validator-specific field formatters and default field values
+ * @param nextjsImportPath The optional custom import path for the generated file
  * @returns The generated TypeScript source string
  */
 export function buildNextjsTemplate(
 	envKeys: string[] | undefined,
 	builders: NextjsFieldBuilders,
+	nextjsImportPath?: string,
+	disableCodegen?: boolean,
 ): string {
 	const {
 		extraImports,
@@ -65,16 +68,13 @@ export function buildNextjsTemplate(
 	const serverFields: string[] = [];
 	const clientFields: string[] = [];
 	const sharedFields: string[] = [];
-	const runtimeEnvFields: string[] = [];
 
 	if (envKeys && envKeys.length > 0) {
 		for (const key of envKeys) {
 			if (key.startsWith("NEXT_PUBLIC_")) {
 				clientFields.push(clientField(key));
-				runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
 			} else if (key === "NODE_ENV" || key === "PORT") {
 				sharedFields.push(sharedField(key, key === "PORT"));
-				runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
 			} else {
 				serverFields.push(serverField(key));
 			}
@@ -83,10 +83,6 @@ export function buildNextjsTemplate(
 		serverFields.push(...defaultServerFields);
 		clientFields.push(...defaultClientFields);
 		sharedFields.push(...defaultSharedFields);
-		runtimeEnvFields.push(
-			"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			"\t\tNODE_ENV: process.env.NODE_ENV,",
-		);
 	}
 
 	const sections: string[] = [];
@@ -99,14 +95,33 @@ export function buildNextjsTemplate(
 	if (sharedFields.length > 0) {
 		sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
 	}
-	sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 
-	const imports = [
-		`import arkenv from "@arkenv/nextjs";`,
-		...(extraImports ? [extraImports] : []),
-	].join("\n");
+	if (disableCodegen) {
+		const runtimeEnvFields: string[] = [];
+		if (envKeys && envKeys.length > 0) {
+			for (const key of envKeys) {
+				if (
+					key.startsWith("NEXT_PUBLIC_") ||
+					key === "NODE_ENV" ||
+					key === "PORT"
+				) {
+					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
+				}
+			}
+		} else {
+			runtimeEnvFields.push(
+				"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+				"\t\tNODE_ENV: process.env.NODE_ENV,",
+			);
+		}
+		sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 
-	return `${imports}
+		const imports = [
+			'import arkenv from "@arkenv/nextjs";',
+			...(extraImports ? [extraImports] : []),
+		].join("\n");
+
+		return `${imports}
 
 /**
  * Environment variable schema.
@@ -114,6 +129,24 @@ export function buildNextjsTemplate(
  * Enforces client/server separation and prevents secret leaks.
  */
 export const env = arkenv({
+${sections.join(",\n")},
+});
+`;
+	}
+
+	const imports = [
+		`import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";`,
+		...(extraImports ? [extraImports] : []),
+	].join("\n");
+
+	return `${imports}
+
+/**
+ * Environment variable schema.
+ * In Next.js, use the generated \`createEnv\` from \`env.gen.ts\` to validate variables.
+ * Enforces client/server separation and prevents secret leaks.
+ */
+export const env = createEnv({
 ${sections.join(",\n")},
 });
 `;

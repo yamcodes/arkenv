@@ -10,6 +10,7 @@
 	"module": "./dist/index.js",
 	"dependencies": {
 		"arkenv": "workspace:*",
+		"chokidar": "^4.0.3",
 		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
@@ -55,6 +56,11 @@
 				"import": "./dist/index.js",
 				"require": "./dist/index.cjs"
 			}
+		},
+		"./config": {
+			"types": "./dist/config.d.ts",
+			"import": "./dist/config.js",
+			"require": "./dist/config.cjs"
 		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnextjs",

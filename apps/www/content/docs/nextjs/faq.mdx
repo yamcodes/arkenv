@@ -10,13 +10,15 @@ description: Frequently asked questions about @arkenv/nextjs.
 
 `@arkenv/nextjs` permits accessing client variables in server-side contexts (like Server Components or API routes) by design. The runtime security proxy only blocks the reverse: accessing server-only variables (those without the `NEXT_PUBLIC_` prefix) on the client.
 
-## Why do I need to map client variables in `runtimeEnv` but not server variables?
+## Do I need to manually map client variables in `runtimeEnv`?
 
-Next.js statically analyzes and inlines environment variables prefixed with `NEXT_PUBLIC_` at build time. To do this, the bundler looks for exact string matches like `process.env.NEXT_PUBLIC_VAR`.
+**No.** ArkEnv automates this mapping entirely via the `withArkEnv` configuration helper.
 
-If you access them dynamically via a validated object like `env.NEXT_PUBLIC_VAR`, the bundler cannot statically analyze it. By passing them into the `runtimeEnv` object (e.g., `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`), you give the Next.js compiler a static reference it can inline, which ArkEnv then reads.
+Historically (and in other environment validation libraries), you had to write a manual `runtimeEnv` mapping object containing keys like `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR` so that the Next.js bundler could statically analyze and inline those references into the client-side build.
 
-Server-side variables, on the other hand, do not need to be inlined and are read dynamically from Node's runtime environment, so ArkEnv can fall back to reading them directly from `process.env` without any manual mapping in `runtimeEnv`.
+ArkEnv's `withArkEnv` helper parses your schema file at build time, identifies the client-side and shared keys, and automatically generates a tailored `createEnv` factory inside `env.gen.ts` that includes the complete, compiled `runtimeEnv` block. You get the benefits of automatic inlining without any manual boilerplate.
+
+Server-side variables, on the other hand, do not need to be inlined and are read dynamically from Node's runtime environment, so the helper skips mapping them to avoid bloating the client bundle.
 
 ---
 

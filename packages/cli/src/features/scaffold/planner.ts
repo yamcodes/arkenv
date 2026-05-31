@@ -41,6 +41,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			name: projectName,
 			layout: options.layout,
 			skillDetected: options.skillDetected,
+			disableCodegen: options.disableCodegen,
 		}) as ScaffoldingPlan["metadata"],
 	};
 
@@ -129,7 +130,46 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			});
 		}
 	} else {
-		const envContent = getEnvTemplate(options);
+		let nextjsImportPath: string | undefined;
+		if (
+			options.framework === "nextjs" &&
+			!options.disableCodegen &&
+			tsConfig?.parsed
+		) {
+			const parsed = tsConfig.parsed;
+			const compilerOptions = parsed.compilerOptions || {};
+			const paths = compilerOptions.paths || {};
+			if (paths["@/*"]) {
+				const tsConfigDir = parsed.path ? path.dirname(parsed.path) : cwd;
+				const generatedDir = path.join(targetDir, "generated");
+				const relGeneratedDir = path
+					.relative(tsConfigDir, generatedDir)
+					.replace(/\\/g, "/");
+
+				for (const pattern of paths["@/*"]) {
+					const normalizedPattern = pattern
+						.replace(/^\.\//, "")
+						.replace(/\*$/, "");
+					if (
+						normalizedPattern === "" ||
+						relGeneratedDir.startsWith(normalizedPattern)
+					) {
+						let subPath = relGeneratedDir;
+						if (
+							normalizedPattern !== "" &&
+							relGeneratedDir.startsWith(normalizedPattern)
+						) {
+							subPath = relGeneratedDir.substring(normalizedPattern.length);
+						}
+						subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
+						nextjsImportPath = `@/${subPath}/env.gen`.replace(/\/+/g, "/");
+						break;
+					}
+				}
+			}
+		}
+
+		const envContent = getEnvTemplate(options, nextjsImportPath);
 		const envFileExists = existingFiles.includes(targetPath);
 
 		if (!envFileExists || options.overwriteEnvSchemaFile !== false) {
@@ -214,7 +254,11 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	}
 
 	// 5. Framework-specific bootstrapping
-	if (options.framework === "vite" || options.framework === "bun-fullstack") {
+	if (
+		options.framework === "vite" ||
+		options.framework === "bun-fullstack" ||
+		(options.framework === "nextjs" && !options.disableCodegen)
+	) {
 		plan.bootstrap = shake({
 			framework: options.framework,
 			bunFeatures:

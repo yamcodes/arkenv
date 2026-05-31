@@ -1,4 +1,5 @@
 import type { LoggerPort as Reporter } from "@/shared/ports/logger.port";
+import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
 import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
 
 export type { Reporter, Workspace };
@@ -26,6 +27,7 @@ export type ProjectOptions = {
 	envKeys?: string[];
 	installSkill?: boolean;
 	skillDetected?: boolean;
+	disableCodegen?: boolean;
 };
 
 /**
@@ -77,6 +79,7 @@ export type ScaffoldingPlan = {
 		name?: string;
 		layout?: "strict" | "simple";
 		skillDetected?: boolean;
+		disableCodegen?: boolean;
 	};
 	/** Git clone information for new project flow */
 	clone?: {
@@ -101,6 +104,7 @@ export type CollectedState = {
 	tsConfig: {
 		status: "strict" | "not_strict" | "not_found";
 		file?: string;
+		parsed?: ParsedTsConfig;
 	};
 	shouldUpdateTsConfig: boolean;
 	existingFiles: string[];

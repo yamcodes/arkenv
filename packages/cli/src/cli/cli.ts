@@ -11,6 +11,7 @@ const FLAG_CONFIG = {
 	example: { long: "--example", short: "-e", kind: "value" },
 	isStrict: { long: "--strict", short: "", kind: "boolean" },
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
+	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
 } as const;
 
 const knownFlags = new Set<string>(
@@ -151,6 +152,10 @@ export class CLI {
 		return this.hasFlag("isSimple");
 	}
 
+	get noCodegen(): boolean {
+		return this.hasFlag("noCodegen");
+	}
+
 	private hasFlag(prop: keyof typeof FLAG_CONFIG): boolean {
 		const flag = FLAG_CONFIG[prop];
 		return (
@@ -176,6 +181,9 @@ export class CLI {
 		}
 		if (this.name !== undefined) {
 			input.name = this.name;
+		}
+		if (this.noCodegen) {
+			input.noCodegen = true;
 		}
 		return input;
 	}
