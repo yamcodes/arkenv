@@ -100,9 +100,8 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		options?.layout,
 	);
 
-	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath/baseDir)
-	const defaultOutputDir =
-		resolvedLayout === "strict" && baseDir ? baseDir : path.dirname(schemaPath);
+	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath)
+	const defaultOutputDir = path.dirname(schemaPath);
 	const defaultOutputPath = path.join(
 		defaultOutputDir,
 		"generated",
@@ -618,6 +617,8 @@ ${runtimeEnvLines}
 		},
 	} as any) as any;
 }
+
+export default createEnv;
 `;
 }
 
@@ -671,6 +672,8 @@ ${runtimeEnvLines}
 		},
 	} as any);
 }
+
+export default createEnv;
 `;
 }
 

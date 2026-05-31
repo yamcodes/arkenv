@@ -352,11 +352,16 @@ describe("withArkEnv wrapper", () => {
 		});
 
 		expect(outputConfig).toBe(inputConfig);
-		const genPath = path.join(strictBaseDir, "generated", "env.gen.ts");
+		const genPath = path.join(
+			path.dirname(strictBaseDir),
+			"generated",
+			"env.gen.ts",
+		);
 		expect(fs.existsSync(genPath)).toBe(true);
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");
 		expect(generatedContent).toContain("export function createEnv<");
+		expect(generatedContent).toContain("export default createEnv;");
 		expect(generatedContent).toContain(
 			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 		);

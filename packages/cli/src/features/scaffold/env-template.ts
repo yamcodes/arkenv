@@ -55,10 +55,12 @@ function formatSchemaObject(fields: string[], indent = "\t\t"): string {
  * for the 3-file Strict Next.js layout.
  *
  * @param options The selected project options.
+ * @param nextjsImportPath The optional import path for the generated `env.gen.ts` file.
  * @returns The generated templates for all three files.
  */
 export function getStrictEnvTemplates(
 	options: ProjectOptions,
+	nextjsImportPath?: string,
 ): StrictEnvTemplates {
 	const { validator, envKeys, disableCodegen } = options;
 
@@ -168,7 +170,7 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "./generated/env.gen";
+			: `import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";
 import { SharedSchema } from "./internal/shared";
 
 export const env = createEnv(
@@ -210,7 +212,7 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "./generated/env.gen";
+			: `import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";
 import { z } from "zod";
 import { SharedSchema } from "./internal/shared";
 
@@ -254,7 +256,7 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "./generated/env.gen";
+			: `import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";
 import * as v from "valibot";
 import { SharedSchema } from "./internal/shared";
 

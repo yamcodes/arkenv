@@ -99,7 +99,50 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		const clientPath = path.join(baseWithoutExt, `client${ext}`);
 		const serverPath = path.join(baseWithoutExt, `server${ext}`);
 
-		const templates = getStrictEnvTemplates(options);
+		let nextjsImportPath: string | undefined;
+		const generatedDir = path.join(path.dirname(baseWithoutExt), "generated");
+		if (tsConfig?.parsed) {
+			const parsed = tsConfig.parsed;
+			const compilerOptions = parsed.compilerOptions || {};
+			const paths = compilerOptions.paths || {};
+			if (paths["@/*"]) {
+				const tsConfigDir = parsed.path ? path.dirname(parsed.path) : cwd;
+				const relGeneratedDir = path
+					.relative(tsConfigDir, generatedDir)
+					.replace(/\\/g, "/");
+
+				for (const pattern of paths["@/*"]) {
+					const normalizedPattern = pattern
+						.replace(/^\.\//, "")
+						.replace(/\*$/, "");
+					if (
+						normalizedPattern === "" ||
+						relGeneratedDir.startsWith(normalizedPattern)
+					) {
+						let subPath = relGeneratedDir;
+						if (
+							normalizedPattern !== "" &&
+							relGeneratedDir.startsWith(normalizedPattern)
+						) {
+							subPath = relGeneratedDir.substring(normalizedPattern.length);
+						}
+						subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
+						nextjsImportPath = `@/${subPath}/env.gen`.replace(/\/+/g, "/");
+						break;
+					}
+				}
+			}
+		}
+		if (!nextjsImportPath) {
+			const relImport = path
+				.relative(baseWithoutExt, generatedDir)
+				.replace(/\\/g, "/");
+			nextjsImportPath = relImport.startsWith(".")
+				? `${relImport}/env.gen`
+				: `./${relImport}/env.gen`;
+		}
+
+		const templates = getStrictEnvTemplates(options, nextjsImportPath);
 
 		const sharedExists = existingFiles.includes(sharedPath);
 		const clientExists = existingFiles.includes(clientPath);
