@@ -43,7 +43,7 @@ export type StrictEnvTemplates = {
 export function getStrictEnvTemplates(
 	options: ProjectOptions,
 ): StrictEnvTemplates {
-	const { validator, envKeys } = options;
+	const { validator, envKeys, disableCodegen } = options;
 
 	const serverFields: string[] = [];
 	const clientFields: string[] = [];
@@ -140,7 +140,8 @@ export const SharedSchema = type({
 	${sharedFields.map((f) => f.trim()).join("\n\t")}
 });`;
 
-		client = `import arkenv from "@arkenv/nextjs/client";
+		client = disableCodegen
+			? `import arkenv from "@arkenv/nextjs/client";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
@@ -152,6 +153,19 @@ export const env = arkenv(
 		runtimeEnv: {
 			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
 		},
+	},
+);`
+			: `import arkenv from "@arkenv/nextjs/client";
+import { SharedSchema } from "./internal/shared";
+import { runtimeEnv } from "./generated/env.gen";
+
+export const env = arkenv(
+	{
+		${clientFields.map((f) => f.trim()).join("\n\t\t")}
+	},
+	{
+		extends: [SharedSchema],
+		runtimeEnv,
 	},
 );`;
 
@@ -177,7 +191,8 @@ export const SharedSchema = z.object({
 	${sharedFields.map((f) => f.trim()).join("\n\t")}
 });`;
 
-		client = `import arkenv from "@arkenv/nextjs/client";
+		client = disableCodegen
+			? `import arkenv from "@arkenv/nextjs/client";
 import { z } from "zod";
 import { SharedSchema } from "./internal/shared";
 
@@ -190,6 +205,20 @@ export const env = arkenv(
 		runtimeEnv: {
 			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
 		},
+	},
+);`
+			: `import arkenv from "@arkenv/nextjs/client";
+import { z } from "zod";
+import { SharedSchema } from "./internal/shared";
+import { runtimeEnv } from "./generated/env.gen";
+
+export const env = arkenv(
+	{
+		${clientFields.map((f) => f.trim()).join("\n\t\t")}
+	},
+	{
+		extends: [SharedSchema],
+		runtimeEnv,
 	},
 );`;
 
@@ -216,7 +245,8 @@ export const SharedSchema = v.object({
 	${sharedFields.map((f) => f.trim()).join("\n\t")}
 });`;
 
-		client = `import arkenv from "@arkenv/nextjs/client";
+		client = disableCodegen
+			? `import arkenv from "@arkenv/nextjs/client";
 import * as v from "valibot";
 import { SharedSchema } from "./internal/shared";
 
@@ -229,6 +259,20 @@ export const env = arkenv(
 		runtimeEnv: {
 			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
 		},
+	},
+);`
+			: `import arkenv from "@arkenv/nextjs/client";
+import * as v from "valibot";
+import { SharedSchema } from "./internal/shared";
+import { runtimeEnv } from "./generated/env.gen";
+
+export const env = arkenv(
+	{
+		${clientFields.map((f) => f.trim()).join("\n\t\t")}
+	},
+	{
+		extends: [SharedSchema],
+		runtimeEnv,
 	},
 );`;
 

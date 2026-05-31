@@ -165,6 +165,48 @@ describe("scaffold utils", () => {
 			);
 		});
 
+		it("returns nextjs-specific instructions with strict layout and codegen enabled", () => {
+			const plan: ScaffoldingPlan = {
+				...basePlan,
+				metadata: {
+					...basePlan.metadata,
+					framework: "nextjs",
+					layout: "strict",
+					disableCodegen: false,
+				},
+			};
+			const note = getNextStepsNote(plan, false);
+			expect(note.message).toContain(
+				`Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}`,
+			);
+			expect(note.message).toContain(
+				code('import { withArkEnv } from "@arkenv/nextjs/config";'),
+			);
+			expect(note.message).toContain(
+				code("export default withArkEnv(nextConfig);"),
+			);
+			expect(note.message).toContain(
+				`Import and use: ${code('import { env } from "./src/env/client"')} (client) or ${code('import { env } from "./src/env/server"')} (server)`,
+			);
+		});
+
+		it("returns nextjs-specific instructions with strict layout and codegen disabled", () => {
+			const plan: ScaffoldingPlan = {
+				...basePlan,
+				metadata: {
+					...basePlan.metadata,
+					framework: "nextjs",
+					layout: "strict",
+					disableCodegen: true,
+				},
+			};
+			const note = getNextStepsNote(plan, false);
+			expect(note.message).not.toContain("withArkEnv");
+			expect(note.message).toContain(
+				`Import and use: ${code('import { env } from "./src/env/client"')} (client) or ${code('import { env } from "./src/env/server"')} (server)`,
+			);
+		});
+
 		it("returns default instructions for vanilla framework", () => {
 			const note = getNextStepsNote(basePlan, false);
 			expect(note.message).toContain(

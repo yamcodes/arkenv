@@ -43,6 +43,16 @@ export type ArkEnvConfigOptions = {
 	 * ```
 	 */
 	outputPath?: string;
+
+	/**
+	 * Specify the configuration layout.
+	 *
+	 * - `"simple"` (default): A single `env.ts` schema file.
+	 * - `"strict"`: A 3-file split schema layout (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`).
+	 *
+	 * @default "simple"
+	 */
+	layout?: "simple" | "strict";
 };
 
 let watcherInitialized = false;
@@ -56,11 +66,31 @@ let watcherInitialized = false;
  * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
-	// 1. Locate the env.ts schema file
+	// 1. Locate the env.ts schema file or strict schema directory
 	const schemaPath = options?.schemaPath
 		? path.resolve(options.schemaPath)
 		: findSchemaPath();
-	if (!schemaPath || !fs.existsSync(schemaPath)) {
+
+	// Auto-detect layout if not specified
+	let resolvedLayout = options?.layout;
+	let baseDir = schemaPath;
+
+	let exists = false;
+	if (schemaPath) {
+		if (fs.existsSync(schemaPath)) {
+			exists = true;
+		} else {
+			const ext = path.extname(schemaPath);
+			if (ext) {
+				const baseWithoutExt = schemaPath.slice(0, -ext.length);
+				if (fs.existsSync(baseWithoutExt)) {
+					exists = true;
+				}
+			}
+		}
+	}
+
+	if (!schemaPath || !exists) {
 		throw new Error(
 			`[ArkEnv] Could not find schema file at ${
 				options?.schemaPath || "src/env.ts or env.ts"
@@ -68,8 +98,87 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		);
 	}
 
-	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath)
-	const defaultOutputDir = path.dirname(schemaPath);
+	if (!resolvedLayout) {
+		const stat = fs.statSync(
+			fs.existsSync(schemaPath)
+				? schemaPath
+				: schemaPath.slice(0, -path.extname(schemaPath).length),
+		);
+		if (stat.isDirectory()) {
+			const dir = fs.existsSync(schemaPath)
+				? schemaPath
+				: schemaPath.slice(0, -path.extname(schemaPath).length);
+			if (
+				fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
+				fs.existsSync(path.join(dir, "client.ts")) &&
+				fs.existsSync(path.join(dir, "server.ts"))
+			) {
+				resolvedLayout = "strict";
+				baseDir = dir;
+			} else {
+				resolvedLayout = "simple";
+			}
+		} else {
+			const parent = path.dirname(schemaPath);
+			const ext = path.extname(schemaPath);
+			const baseWithoutExt = schemaPath.slice(0, -ext.length);
+			const checkStrict = (dir: string) => {
+				return (
+					fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
+					fs.existsSync(path.join(dir, "client.ts")) &&
+					fs.existsSync(path.join(dir, "server.ts"))
+				);
+			};
+			if (
+				fs.existsSync(baseWithoutExt) &&
+				fs.statSync(baseWithoutExt).isDirectory() &&
+				checkStrict(baseWithoutExt)
+			) {
+				resolvedLayout = "strict";
+				baseDir = baseWithoutExt;
+			} else if (checkStrict(parent)) {
+				resolvedLayout = "strict";
+				baseDir = parent;
+			} else if (
+				path.basename(parent) === "internal" &&
+				checkStrict(path.dirname(parent))
+			) {
+				resolvedLayout = "strict";
+				baseDir = path.dirname(parent);
+			} else {
+				resolvedLayout = "simple";
+			}
+		}
+	} else if (resolvedLayout === "strict") {
+		const stat = fs.statSync(
+			fs.existsSync(schemaPath)
+				? schemaPath
+				: schemaPath.slice(0, -path.extname(schemaPath).length),
+		);
+		if (!stat.isDirectory()) {
+			const parent = path.dirname(schemaPath);
+			if (path.basename(parent) === "internal") {
+				baseDir = path.dirname(parent);
+			} else {
+				const ext = path.extname(schemaPath);
+				const baseWithoutExt = schemaPath.slice(0, -ext.length);
+				if (
+					fs.existsSync(baseWithoutExt) &&
+					fs.statSync(baseWithoutExt).isDirectory()
+				) {
+					baseDir = baseWithoutExt;
+				} else {
+					baseDir = parent;
+				}
+			}
+		} else {
+			baseDir = schemaPath;
+		}
+	}
+
+	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath/baseDir)
+	const defaultOutputDir =
+		resolvedLayout === "strict" && baseDir ? baseDir : path.dirname(schemaPath);
 	const defaultOutputPath = path.join(
 		defaultOutputDir,
 		"generated",
@@ -81,19 +190,26 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 
 	// 3. Run initial code generation
 	try {
-		runCodegen(schemaPath, outputPath);
+		runCodegen(schemaPath, outputPath, resolvedLayout);
 	} catch (error: unknown) {
 		const message = error instanceof Error ? error.message : String(error);
 		throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
 	}
 
 	// 4. Initialize development file watcher if in dev mode
-	// Note: We check process.env.NODE_ENV or standard Next dev runtime markers
 	const isDev =
 		process.env.NODE_ENV === "development" ||
 		process.env.NEXT_PHASE === "phase-development-server";
 	if (isDev) {
-		watchSchema(schemaPath, outputPath);
+		const watchPaths =
+			resolvedLayout === "strict" && baseDir
+				? [
+						path.join(baseDir, "internal", "shared.ts"),
+						path.join(baseDir, "client.ts"),
+						path.join(baseDir, "server.ts"),
+					].filter(fs.existsSync)
+				: [schemaPath];
+		watchSchema(watchPaths, outputPath, resolvedLayout);
 	}
 
 	return nextConfig;
@@ -112,6 +228,21 @@ function findSchemaPath(): string | null {
 	for (const p of possiblePaths) {
 		if (fs.existsSync(p)) return p;
 	}
+
+	const possibleDirs = [
+		path.join(process.cwd(), "src", "env"),
+		path.join(process.cwd(), "env"),
+	];
+	for (const d of possibleDirs) {
+		if (
+			fs.existsSync(d) &&
+			fs.existsSync(path.join(d, "internal", "shared.ts")) &&
+			fs.existsSync(path.join(d, "client.ts")) &&
+			fs.existsSync(path.join(d, "server.ts"))
+		) {
+			return d;
+		}
+	}
 	return null;
 }
 
@@ -121,14 +252,21 @@ function findSchemaPath(): string | null {
  * @param schemaPath The absolute path to the schema file
  * @param outputPath The absolute path to the generated output file
  */
-function watchSchema(schemaPath: string, outputPath: string) {
+function watchSchema(
+	schemaPath: string | string[],
+	outputPath: string,
+	layout?: "simple" | "strict",
+) {
 	if (watcherInitialized) return;
 	watcherInitialized = true;
 
 	try {
 		chokidarWatch(schemaPath, { ignoreInitial: true }).on("change", () => {
 			try {
-				runCodegen(schemaPath, outputPath);
+				const mainSchemaPath = Array.isArray(schemaPath)
+					? schemaPath[0]
+					: schemaPath;
+				runCodegen(mainSchemaPath, outputPath, layout);
 			} catch (err: unknown) {
 				const message = err instanceof Error ? err.message : String(err);
 				// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
@@ -152,11 +290,120 @@ function watchSchema(schemaPath: string, outputPath: string) {
  * @param schemaPath The absolute path to the schema file
  * @param outputPath The absolute path to the generated output file
  */
-export function runCodegen(schemaPath: string, outputPath: string) {
-	const fileContent = fs.readFileSync(schemaPath, "utf-8");
-	const { clientKeys, sharedKeys } = extractKeys(fileContent);
+export function runCodegen(
+	schemaPath: string,
+	outputPath: string,
+	layoutOption?: "simple" | "strict",
+) {
+	let resolvedLayout = layoutOption;
+	let baseDir = schemaPath;
 
-	const generatedCode = generateFactoryCode(clientKeys, sharedKeys);
+	if (!resolvedLayout) {
+		if (fs.existsSync(schemaPath)) {
+			const stat = fs.statSync(schemaPath);
+			if (stat.isDirectory()) {
+				if (
+					fs.existsSync(path.join(schemaPath, "internal", "shared.ts")) &&
+					fs.existsSync(path.join(schemaPath, "client.ts")) &&
+					fs.existsSync(path.join(schemaPath, "server.ts"))
+				) {
+					resolvedLayout = "strict";
+					baseDir = schemaPath;
+				} else {
+					resolvedLayout = "simple";
+				}
+			} else {
+				const parent = path.dirname(schemaPath);
+				const ext = path.extname(schemaPath);
+				const baseWithoutExt = schemaPath.slice(0, -ext.length);
+				const checkStrict = (dir: string) => {
+					return (
+						fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
+						fs.existsSync(path.join(dir, "client.ts")) &&
+						fs.existsSync(path.join(dir, "server.ts"))
+					);
+				};
+				if (
+					fs.existsSync(baseWithoutExt) &&
+					fs.statSync(baseWithoutExt).isDirectory() &&
+					checkStrict(baseWithoutExt)
+				) {
+					resolvedLayout = "strict";
+					baseDir = baseWithoutExt;
+				} else if (checkStrict(parent)) {
+					resolvedLayout = "strict";
+					baseDir = parent;
+				} else if (
+					path.basename(parent) === "internal" &&
+					checkStrict(path.dirname(parent))
+				) {
+					resolvedLayout = "strict";
+					baseDir = path.dirname(parent);
+				} else {
+					resolvedLayout = "simple";
+				}
+			}
+		} else {
+			resolvedLayout = "simple";
+		}
+	} else if (resolvedLayout === "strict") {
+		if (fs.existsSync(schemaPath) && fs.statSync(schemaPath).isFile()) {
+			const parent = path.dirname(schemaPath);
+			if (path.basename(parent) === "internal") {
+				baseDir = path.dirname(parent);
+			} else {
+				const ext = path.extname(schemaPath);
+				const baseWithoutExt = schemaPath.slice(0, -ext.length);
+				if (
+					fs.existsSync(baseWithoutExt) &&
+					fs.statSync(baseWithoutExt).isDirectory()
+				) {
+					baseDir = baseWithoutExt;
+				} else {
+					baseDir = parent;
+				}
+			}
+		}
+	}
+
+	let generatedCode = "";
+	if (resolvedLayout === "strict") {
+		const clientPath = path.join(baseDir, "client.ts");
+		const sharedPath = path.join(baseDir, "internal", "shared.ts");
+
+		const clientContent = fs.existsSync(clientPath)
+			? fs.readFileSync(clientPath, "utf-8")
+			: "";
+		const sharedContent = fs.existsSync(sharedPath)
+			? fs.readFileSync(sharedPath, "utf-8")
+			: "";
+
+		const clientKeys = extractClientKeys(clientContent);
+		const sharedKeys = extractSharedKeys(sharedContent);
+
+		const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
+		const runtimeEnvLines = allKeys
+			.map((key) => `\t${key}: process.env.${key},`)
+			.join("\n");
+
+		generatedCode = `/* eslint-disable */
+// prettier-ignore
+// biome-ignore format: auto-generated
+/**
+ * @file env.gen.ts
+ * @note This file is auto-generated by ArkEnv. DO NOT EDIT DIRECTLY.
+ * @see https://arkenv.js.org
+ */
+
+export const runtimeEnv = {
+${runtimeEnvLines}
+} as const;
+`;
+	} else {
+		const fileContent = fs.readFileSync(schemaPath, "utf-8");
+		const { clientKeys, sharedKeys } = extractKeys(fileContent);
+		generatedCode = generateFactoryCode(clientKeys, sharedKeys);
+	}
 
 	// Ensure parent directory exists
 	const outputDir = path.dirname(outputPath);
@@ -429,4 +676,152 @@ ${runtimeEnvLines}
 	} as any) as any;
 }
 `;
+}
+
+export function extractClientKeys(content: string): string[] {
+	const block = extractClientBlock(content);
+	return block ? parseBlockKeys(block) : [];
+}
+
+export function extractSharedKeys(content: string): string[] {
+	const block = extractSharedBlock(content);
+	return block ? parseBlockKeys(block) : [];
+}
+
+function extractClientBlock(content: string): string | null {
+	const regex = /\barkenv\s*\(\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
+	const match = regex.exec(content);
+	if (!match) return null;
+
+	const startIndex = regex.lastIndex;
+	let braceCount = 1;
+	let index = startIndex;
+	let inString: string | null = null;
+	let inComment: "single" | "multi" | null = null;
+
+	while (index < content.length && braceCount > 0) {
+		const char = content[index];
+		const nextChar = content[index + 1];
+
+		if (inComment === "single") {
+			if (char === "\n" || char === "\r") inComment = null;
+			index++;
+			continue;
+		}
+		if (inComment === "multi") {
+			if (char === "*" && nextChar === "/") {
+				inComment = null;
+				index += 2;
+				continue;
+			}
+			index++;
+			continue;
+		}
+
+		if (inString) {
+			if (char === inString && content[index - 1] !== "\\") {
+				inString = null;
+			}
+			index++;
+			continue;
+		}
+
+		if (char === "/" && nextChar === "/") {
+			inComment = "single";
+			index += 2;
+			continue;
+		}
+		if (char === "/" && nextChar === "*") {
+			inComment = "multi";
+			index += 2;
+			continue;
+		}
+		if (char === "'" || char === '"' || char === "`") {
+			inString = char;
+			index++;
+			continue;
+		}
+
+		if (char === "{") {
+			braceCount++;
+		} else if (char === "}") {
+			braceCount--;
+		}
+		index++;
+	}
+
+	if (braceCount === 0) {
+		return content.slice(startIndex, index - 1);
+	}
+
+	return null;
+}
+
+function extractSharedBlock(content: string): string | null {
+	const regex = /\bSharedSchema\s*=\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
+	const match = regex.exec(content);
+	if (!match) return null;
+
+	const startIndex = regex.lastIndex;
+	let braceCount = 1;
+	let index = startIndex;
+	let inString: string | null = null;
+	let inComment: "single" | "multi" | null = null;
+
+	while (index < content.length && braceCount > 0) {
+		const char = content[index];
+		const nextChar = content[index + 1];
+
+		if (inComment === "single") {
+			if (char === "\n" || char === "\r") inComment = null;
+			index++;
+			continue;
+		}
+		if (inComment === "multi") {
+			if (char === "*" && nextChar === "/") {
+				inComment = null;
+				index += 2;
+				continue;
+			}
+			index++;
+			continue;
+		}
+
+		if (inString) {
+			if (char === inString && content[index - 1] !== "\\") {
+				inString = null;
+			}
+			index++;
+			continue;
+		}
+
+		if (char === "/" && nextChar === "/") {
+			inComment = "single";
+			index += 2;
+			continue;
+		}
+		if (char === "/" && nextChar === "*") {
+			inComment = "multi";
+			index += 2;
+			continue;
+		}
+		if (char === "'" || char === '"' || char === "`") {
+			inString = char;
+			index++;
+			continue;
+		}
+
+		if (char === "{") {
+			braceCount++;
+		} else if (char === "}") {
+			braceCount--;
+		}
+		index++;
+	}
+
+	if (braceCount === 0) {
+		return content.slice(startIndex, index - 1);
+	}
+
+	return null;
 }

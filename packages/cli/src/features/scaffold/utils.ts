@@ -61,7 +61,14 @@ export function getNextStepsNote(
 		message += `${step++}. Access via ${code("process.env.YOUR_VAR")}\n`;
 	} else if (plan.metadata.framework === "nextjs") {
 		if (plan.metadata.layout === "strict") {
-			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
+			if (plan.metadata.disableCodegen) {
+				message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
+			} else {
+				message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
+				message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
+				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+				message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
+			}
 		} else if (plan.metadata.disableCodegen) {
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 		} else {

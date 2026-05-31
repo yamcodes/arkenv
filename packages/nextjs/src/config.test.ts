@@ -1,7 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { extractKeys, runCodegen, withArkEnv } from "./config";
+import {
+	extractClientKeys,
+	extractKeys,
+	extractSharedKeys,
+	runCodegen,
+	withArkEnv,
+} from "./config";
 
 describe("config key extraction", () => {
 	it("should extract client and shared keys correctly", () => {
@@ -289,5 +295,104 @@ describe("withArkEnv wrapper", () => {
 		expect(fs.existsSync(path.join(tempDir, "generated", "env.gen.ts"))).toBe(
 			true,
 		);
+	});
+
+	it("should support strict layout auto-detection and generation", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		// Set up a strict structure
+		const strictBaseDir = path.join(tempDir, "env");
+		fs.mkdirSync(path.join(strictBaseDir, "internal"), { recursive: true });
+
+		fs.writeFileSync(
+			path.join(strictBaseDir, "internal", "shared.ts"),
+			`
+			import { type } from "@arkenv/nextjs/shared";
+			export const SharedSchema = type({
+				NODE_ENV: "string = 'development'",
+			});
+			`,
+			"utf-8",
+		);
+
+		fs.writeFileSync(
+			path.join(strictBaseDir, "client.ts"),
+			`
+			import arkenv from "@arkenv/nextjs/client";
+			import { SharedSchema } from "./internal/shared";
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+				},
+				{
+					extends: [SharedSchema],
+					runtimeEnv: {},
+				}
+			);
+			`,
+			"utf-8",
+		);
+
+		fs.writeFileSync(
+			path.join(strictBaseDir, "server.ts"),
+			`
+			import arkenv from "@arkenv/nextjs/server";
+			export const env = arkenv({
+				DATABASE_URL: "string",
+			});
+			`,
+			"utf-8",
+		);
+
+		const inputConfig = { reactStrictMode: true };
+		const outputConfig = withArkEnv(inputConfig, {
+			schemaPath: strictBaseDir,
+		});
+
+		expect(outputConfig).toBe(inputConfig);
+		const genPath = path.join(strictBaseDir, "generated", "env.gen.ts");
+		expect(fs.existsSync(genPath)).toBe(true);
+
+		const generatedContent = fs.readFileSync(genPath, "utf-8");
+		expect(generatedContent).toContain("export const runtimeEnv = {");
+		expect(generatedContent).toContain(
+			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+		);
+		expect(generatedContent).toContain("NODE_ENV: process.env.NODE_ENV,");
+		expect(generatedContent).not.toContain("DATABASE_URL");
+	});
+});
+
+describe("strict config key extraction", () => {
+	it("should extract client keys from arkenv call", () => {
+		const clientSource = `
+			import arkenv from "@arkenv/nextjs/client";
+			import { SharedSchema } from "./internal/shared";
+			export const env = arkenv(
+				{
+					NEXT_PUBLIC_VAR_1: "string",
+					NEXT_PUBLIC_VAR_2: "string = 'default'",
+				},
+				{
+					extends: [SharedSchema],
+				}
+			);
+		`;
+		const keys = extractClientKeys(clientSource);
+		expect(keys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
+	});
+
+	it("should extract shared keys from SharedSchema", () => {
+		const sharedSource = `
+			import { type } from "@arkenv/nextjs/shared";
+			export const SharedSchema = type({
+				NODE_ENV: "string = 'development'",
+				PORT: "number.port = 3000",
+			});
+		`;
+		const keys = extractSharedKeys(sharedSource);
+		expect(keys).toEqual(["NODE_ENV", "PORT"]);
 	});
 });
