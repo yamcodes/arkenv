@@ -98,8 +98,8 @@ export async function layoutStep(): Promise<"strict" | "simple" | null> {
 		options: [
 			{
 				value: "simple",
-				label: "Simple",
-				hint: "(Recommended) A single env.ts file for the best DX",
+				label: "Simple (Recommended)",
+				hint: "A single env.ts file for the best DX",
 			},
 			{
 				value: "strict",
