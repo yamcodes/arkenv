@@ -46,9 +46,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain(
-				'import { createEnv } from "./generated/env.gen"',
-			);
+			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain("server: {");
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("client: {");
@@ -68,9 +66,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options, "@/generated/env.gen");
-			expect(template).toContain(
-				'import { createEnv } from "@/generated/env.gen"',
-			);
+			expect(template).toContain('import arkenv from "@/generated/env.gen"');
 		});
 
 		it("returns nextjs template with custom envKeys split correctly", () => {
@@ -90,9 +86,7 @@ describe("env-template", () => {
 				],
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain(
-				'import { createEnv } from "./generated/env.gen"',
-			);
+			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("CUSTOM_VAR:");
 			expect(template).toContain("NEXT_PUBLIC_API_KEY:");
@@ -111,9 +105,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain(
-				'import { createEnv } from "./generated/env.gen"',
-			);
+			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("DATABASE_URL: z.string().url().default(");
 		});
@@ -128,9 +120,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain(
-				'import { createEnv } from "./generated/env.gen"',
-			);
+			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain(
 				"DATABASE_URL: v.optional(v.pipe(v.string(), v.url())",
@@ -316,9 +306,9 @@ describe("env-template", () => {
 				"export const SharedSchema = z.object({",
 			);
 			expect(templates.client).toContain(
-				'import { createEnv } from "./generated/env.gen";',
+				'import arkenv from "./generated/env.gen";',
 			);
-			expect(templates.client).toContain("export const env = createEnv(");
+			expect(templates.client).toContain("export const env = arkenv(");
 			expect(templates.client).not.toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 			);
@@ -337,7 +327,7 @@ describe("env-template", () => {
 			};
 			const templates = getStrictEnvTemplates(options, "@/generated/env.gen");
 			expect(templates.client).toContain(
-				'import { createEnv } from "@/generated/env.gen";',
+				'import arkenv from "@/generated/env.gen";',
 			);
 		});
 
@@ -378,7 +368,7 @@ describe("env-template", () => {
 			};
 			const templates = getStrictEnvTemplates(options);
 			expect(templates.client).toContain(
-				"createEnv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
+				"arkenv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
 			);
 			expect(templates.shared).toContain(
 				"export const SharedSchema = z.object({});",

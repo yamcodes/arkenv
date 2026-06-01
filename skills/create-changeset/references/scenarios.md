@@ -19,17 +19,17 @@ Categories with parent slugs now correctly link to their parent categories durin
 "arkenv": minor
 ---
 
-#### Add `createEnv` for type-safe environment variables
+#### Add `arkenv` for type-safe environment variables
 
-The new `createEnv` function allows you to define your environment schema using ArkType.
+The new `arkenv` function allows you to define your environment schema using ArkType.
 
 Usage:
 
 ```ts
-import { createEnv } from "arkenv"
+import arkenv from "arkenv"
 import { type } from "arktype"
 
-const env = createEnv({
+const env = arkenv({
   schema: {
     PORT: type.number.parseable()
   }
@@ -48,19 +48,19 @@ console.log(env.PORT) // number
 
 #### Change configuration format for validators
 
-**BREAKING CHANGE**: Validator options are now passed as a second argument to `createEnv`.
+**BREAKING CHANGE**: Validator options are now passed as a second argument to `arkenv`.
 
 Before:
 ```ts
-createEnv({ schema, strict: true })
+arkenv({ schema, strict: true })
 ```
 
 After:
 ```ts
-createEnv({ schema }, { strict: true })
+arkenv({ schema }, { strict: true })
 ```
 
-Migration: Update your `createEnv` calls to separate the options from the schema configuration.
+Migration: Update your `arkenv` calls to separate the options from the schema configuration.
 ````
 
 ## Multiple related changes
