@@ -12,14 +12,10 @@ function main() {
 	const cliBin = require.resolve("@arkenv/cli");
 	const args = process.argv.slice(2);
 
-	const result = spawnSync(
-		process.execPath,
-		[cliBin, "init", ...args],
-		{
-			stdio: "inherit",
-			shell: false,
-		},
-	);
+	const result = spawnSync(process.execPath, [cliBin, "init", ...args], {
+		stdio: "inherit",
+		shell: false,
+	});
 
 	process.exit(result.status ?? 0);
 }
