@@ -40,7 +40,8 @@ jobs:
           path: .github/deploy-metrics.json
           key: deploy-metrics-v1
       - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+        # Pin the CLI to avoid upstream breakage from newly published majors.
+        run: npm install --global vercel@46.1.1
       - name: Pull Vercel Environment Information
         run: node scripts/vercel-wrapper.cjs pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
