@@ -59,8 +59,8 @@ export const zodTemplate = (
 				extraImports: `import { z } from "zod";`,
 				serverField: (key) => `\t\t${key}: z.string().optional(),`,
 				clientField: (key) => `\t\t${key}: z.string().optional(),`,
-				sharedField: (key, isPort) =>
-					`\t\t${key}: ${isPort ? "z.coerce.number().int().min(1).max(65535).default(3000)" : 'z.enum(["development", "production", "test"]).default("development")'},`,
+				sharedField: (key) =>
+					`\t\t${key}: z.enum(["development", "production", "test"]).default("development"),`,
 				defaultServerFields: [
 					`\t\tDATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
 				],
