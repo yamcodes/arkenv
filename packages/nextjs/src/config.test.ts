@@ -1,6 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
+import { watch as chokidarWatch } from "chokidar";
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("chokidar", () => {
+	return {
+		watch: vi.fn().mockImplementation(() => {
+			return {
+				on: vi.fn().mockReturnThis(),
+				close: vi.fn().mockResolvedValue(undefined),
+			};
+		}),
+	};
+});
+
 import {
 	extractClientKeys,
 	extractKeys,
@@ -383,6 +396,38 @@ describe("withArkEnv wrapper", () => {
 		expect(() =>
 			withArkEnv({ reactStrictMode: true }, { schemaPath, layout: "strict" }),
 		).toThrow("[ArkEnv] Strict layout requires");
+	});
+
+	it("should close the previous watcher when initialized multiple times in development", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`export const env = createEnv({ client: { NEXT_PUBLIC_API_URL: "string" } });`,
+			"utf-8",
+		);
+
+		const originalNodeEnv = process.env.NODE_ENV;
+		process.env.NODE_ENV = "development";
+
+		try {
+			// Call withArkEnv once
+			withArkEnv({ reactStrictMode: true }, { schemaPath });
+			expect(chokidarWatch).toHaveBeenCalledTimes(1);
+
+			// Call withArkEnv a second time
+			withArkEnv({ reactStrictMode: true }, { schemaPath });
+			expect(chokidarWatch).toHaveBeenCalledTimes(2);
+
+			const firstWatcherInstance =
+				vi.mocked(chokidarWatch).mock.results[0].value;
+			expect(firstWatcherInstance.close).toHaveBeenCalledTimes(1);
+		} finally {
+			process.env.NODE_ENV = originalNodeEnv;
+			delete (globalThis as any).__arkenv_watcher__;
+		}
 	});
 });
 
