@@ -1,0 +1,33 @@
+{
+	"name": "nextjs-strict-playground",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start"
+	},
+	"dependencies": {
+		"@arkenv/nextjs": "workspace:*",
+		"arkenv": "workspace:*",
+		"arktype": "catalog:",
+		"next": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"typescript": "catalog:"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-nextjs-strict",
+			"packageManager": "npm"
+		}
+	]
+}

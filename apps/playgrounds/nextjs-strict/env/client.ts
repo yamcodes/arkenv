@@ -1,4 +1,4 @@
-import arkenv from "@arkenv/nextjs/client";
+import arkenv from "./generated/env.gen";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
@@ -7,9 +7,5 @@ export const env = arkenv(
 	},
 	{
 		extends: [SharedSchema],
-		runtimeEnv: {
-			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-			NODE_ENV: process.env.NODE_ENV,
-		},
 	},
 );

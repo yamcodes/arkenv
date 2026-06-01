@@ -1,4 +1,4 @@
-import { env } from "../env";
+import { env } from "../env/server";
 import ClientComponent from "./client-component";
 
 export default function Home() {
@@ -11,10 +11,10 @@ export default function Home() {
 				margin: "0 auto",
 			}}
 		>
-			<h1>ArkEnv Next.js Playground</h1>
+			<h1>ArkEnv Next.js Playground (Strict Mode)</h1>
 			<p>
 				Demonstrating compile-time and runtime validation for Next.js
-				environment variables.
+				environment variables using strict 3-file layout.
 			</p>
 
 			<div
