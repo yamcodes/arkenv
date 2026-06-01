@@ -6,7 +6,7 @@ ArkEnv ships three public entry points from a single npm package:
 
 | Entry    | Import                                      | ArkType required? | Purpose                                            |
 | -------- | ------------------------------------------- | ----------------- | -------------------------------------------------- |
-| Main     | `import { createEnv } from "arkenv"`        | Yes (static)      | ArkType-first `createEnv` + `type` helper          |
+| Main     | `import arkenv from "arkenv"`               | Yes (static)      | ArkType-first `createEnv` + `type` helper          |
 | Standard | `import arkenv from "arkenv/standard"`      | No                | ArkType-free `createEnv` for Standard Schema users |
 | Core     | `import { ArkEnvError } from "arkenv/core"` | No                | Entry-agnostic primitives (errors, types)          |
 
