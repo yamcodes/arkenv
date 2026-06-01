@@ -1,4 +1,4 @@
-import arkenv from "./generated/env.gen";
+import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
 	server: {

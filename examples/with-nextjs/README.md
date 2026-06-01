@@ -11,7 +11,7 @@ This example demonstrates how to use [@arkenv/nextjs](https://arkenv.js.org/docs
 The example defines the environment schema in a single `env.ts` file:
 
 ```ts title="env.ts"
-import arkenv from "./generated/env.gen";
+import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
 	server: {
