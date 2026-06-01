@@ -23,11 +23,10 @@ export type NextjsFieldBuilders = {
 	/**
 	 * Format a schema field line for a shared env var.
 	 *
-	 * @param key The env var name (e.g. `NODE_ENV` or `PORT`)
-	 * @param isPort `true` when the key is `PORT`; `false` for `NODE_ENV`
+	 * @param key The env var name (e.g. `NODE_ENV`)
 	 * @returns A formatted schema field string
 	 */
-	sharedField(key: string, isPort: boolean): string;
+	sharedField(key: string): string;
 	/** Default `server` section lines used when no `envKeys` are provided. */
 	defaultServerFields: string[];
 	/** Default `client` section lines used when no `envKeys` are provided. */
@@ -44,7 +43,7 @@ export type NextjsFieldBuilders = {
  * - Produce the `import` header and JSDoc comment
  * - Join sections and emit the final `export const env = arkenv({…})`
  *
- * @param envKeys Optional array of env var keys scanned from the project
+ * @param envKeys Optional array of env keys scanned from the project
  * @param builders Validator-specific field formatters and default field values
  * @param nextjsImportPath The optional custom import path for the generated file
  * @returns The generated TypeScript source string
@@ -73,8 +72,8 @@ export function buildNextjsTemplate(
 		for (const key of envKeys) {
 			if (key.startsWith("NEXT_PUBLIC_")) {
 				clientFields.push(clientField(key));
-			} else if (key === "NODE_ENV" || key === "PORT") {
-				sharedFields.push(sharedField(key, key === "PORT"));
+			} else if (key === "NODE_ENV") {
+				sharedFields.push(sharedField(key));
 			} else {
 				serverFields.push(serverField(key));
 			}
@@ -100,11 +99,7 @@ export function buildNextjsTemplate(
 		const runtimeEnvFields: string[] = [];
 		if (envKeys && envKeys.length > 0) {
 			for (const key of envKeys) {
-				if (
-					key.startsWith("NEXT_PUBLIC_") ||
-					key === "NODE_ENV" ||
-					key === "PORT"
-				) {
+				if (key.startsWith("NEXT_PUBLIC_") || key === "NODE_ENV") {
 					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
 				}
 			}
