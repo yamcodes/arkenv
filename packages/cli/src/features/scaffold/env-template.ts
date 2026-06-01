@@ -80,28 +80,42 @@ export function getStrictEnvTemplates(
 					clientFields.push(`${key}: v.optional(v.string()),`);
 				}
 				runtimeEnvFields.push(`${key}: process.env.${key},`);
-			} else if (key === "NODE_ENV" || key === "PORT") {
+			} else if (key === "NODE_ENV") {
 				if (validator === "arktype") {
 					sharedFields.push(
-						`${key}: "${key === "PORT" ? "number.port = 3000" : "'development' | 'production' | 'test' = 'development'"}",`,
+						`${key}: "'development' | 'production' | 'test' = 'development'",`,
 					);
 				} else if (validator === "zod") {
 					sharedFields.push(
-						`${key}: ${key === "PORT" ? "z.coerce.number().int().min(1).max(65535).default(3000)" : 'z.enum(["development", "production", "test"]).default("development")'},`,
+						`${key}: z.enum(["development", "production", "test"]).default("development"),`,
 					);
 				} else if (validator === "valibot") {
 					sharedFields.push(
-						`${key}: ${key === "PORT" ? "v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)" : 'v.optional(v.picklist(["development", "production", "test"]), "development")'},`,
+						`${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`,
 					);
 				}
 				runtimeEnvFields.push(`${key}: process.env.${key},`);
 			} else {
-				if (validator === "arktype") {
-					serverFields.push(`${key}: "string?",`);
-				} else if (validator === "zod") {
-					serverFields.push(`${key}: z.string().optional(),`);
-				} else if (validator === "valibot") {
-					serverFields.push(`${key}: v.optional(v.string()),`);
+				if (key === "PORT") {
+					if (validator === "arktype") {
+						serverFields.push(`PORT: "number.port = 3000",`);
+					} else if (validator === "zod") {
+						serverFields.push(
+							"PORT: z.coerce.number().int().min(1).max(65535).default(3000),",
+						);
+					} else if (validator === "valibot") {
+						serverFields.push(
+							"PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),",
+						);
+					}
+				} else {
+					if (validator === "arktype") {
+						serverFields.push(`${key}: "string?",`);
+					} else if (validator === "zod") {
+						serverFields.push(`${key}: z.string().optional(),`);
+					} else if (validator === "valibot") {
+						serverFields.push(`${key}: v.optional(v.string()),`);
+					}
 				}
 			}
 		}
