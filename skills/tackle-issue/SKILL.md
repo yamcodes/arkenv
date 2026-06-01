@@ -67,7 +67,7 @@ If this step fails (some lint/formatting issues cannot be auto-fixed), you MUST 
 
 ### 5. Changeset creation
 
-After validation passes, you MUST create a changeset using the `create-changeset` skill.
+After validation passes, you MUST create a changeset using the `create-changeset` skill **ONLY if your changes affect a published package, a private package, or anything that gets imported by other packages**. Do not create a changeset if the changes are isolated strictly to playgrounds or examples.
 
 - Determine the appropriate bump type (`patch` or `minor` for v0) based on the `create-changeset` guidelines.
 - Provide a clear, concise description starting with a `####` header.
@@ -76,7 +76,7 @@ After validation passes, you MUST create a changeset using the `create-changeset
 
 When the task is complete and validated:
 
-1. **Commit and Push**: Stage all changes (including the changeset) and push.
+1. **Commit and Push**: Stage all changes (including the changeset if created) and push.
    ```bash
    git add .
    git commit -m "fix: tackle issue #<issue-number>"
@@ -95,4 +95,4 @@ When the task is complete and validated:
 - **Strict Readiness**: Never bypass the `ready for agent` check. It ensures the task is well-defined.
 - **Validation First**: Never open a PR that fails `typecheck`, `test`, or `check`.
 - **Link Everything**: Always use `gh issue develop` and `Fixes #<num>` for traceability.
-- **Changesets**: Always include a changeset for consumer-facing changes.
+- **Changesets**: Include a changeset for changes affecting published packages, private packages, or anything imported by other packages. Avoid changesets when changes are isolated to playgrounds or examples.
