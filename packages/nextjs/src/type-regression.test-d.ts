@@ -37,16 +37,17 @@ describe("@arkenv/nextjs type regression", () => {
 		createEnv({
 			server: {
 				DATABASE_URL: "string.url",
+				PORT: "number.port = 3000",
 			},
 			client: {
 				NEXT_PUBLIC_API_URL: "string.url",
 			},
 			shared: {
-				PORT: "number.port = 3000",
+				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 			},
 			runtimeEnv: {
 				NEXT_PUBLIC_API_URL: "https://api.example.com",
-				PORT: "3000",
+				NODE_ENV: "development",
 			},
 		});
 	});
@@ -56,6 +57,8 @@ describe("@arkenv/nextjs type regression", () => {
 			server: {
 				// @ts-expect-error invalid ArkType schema string
 				DATABASE_URL: "not-a-valid-type",
+				// @ts-expect-error invalid ArkType schema string
+				PORT: "not-a-valid-type",
 			},
 			client: {
 				// @ts-expect-error invalid ArkType schema string
@@ -63,11 +66,11 @@ describe("@arkenv/nextjs type regression", () => {
 			},
 			shared: {
 				// @ts-expect-error invalid ArkType schema string
-				PORT: "not-a-valid-type",
+				NODE_ENV: "not-a-valid-type",
 			},
 			runtimeEnv: {
 				NEXT_PUBLIC_API_URL: "https://api.example.com",
-				PORT: "3000",
+				NODE_ENV: "development",
 			},
 		});
 	});

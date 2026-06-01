@@ -56,8 +56,8 @@ export const arktypeTemplate = (
 			{
 				serverField: (key) => `\t\t${key}: "string?",`,
 				clientField: (key) => `\t\t${key}: "string?",`,
-				sharedField: (key, isPort) =>
-					`\t\t${key}: "${isPort ? "number.port = 3000" : "'development' | 'production' | 'test' = 'development'"}",`,
+				sharedField: (key) =>
+					`\t\t${key}: "'development' | 'production' | 'test' = 'development'",`,
 				defaultServerFields: [
 					`\t\tDATABASE_URL: "string = 'postgres://localhost:5432/mydb'",`,
 				],
