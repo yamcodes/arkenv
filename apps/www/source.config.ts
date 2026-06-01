@@ -1,11 +1,107 @@
 import { rehypeCodeDefaultOptions, remarkNpm } from "fumadocs-core/mdx-plugins";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
-import { rehypeGithubAlerts } from "rehype-github-alerts";
 import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
 import { arktypeTwoslashOptions } from "./lib/twoslash-options";
+
+type AstNode = {
+	type: string;
+	name?: string;
+	attributes?: any;
+	children?: AstNode[];
+	data?: Record<string, unknown>;
+};
+
+function remarkDirectiveAdmonitionCustom(options: {
+	types: Record<string, string>;
+}) {
+	const types = options.types;
+	return (tree: AstNode) => {
+		const traverse = (node: AstNode) => {
+			if (!node) return;
+			if (node.children) {
+				node.children = node.children.filter(
+					(c): c is AstNode => c !== undefined && c !== null,
+				);
+				node.children.forEach(traverse);
+
+				node.children = node.children
+					.map((child) => {
+						if (!child) return child;
+						if (
+							child.type === "containerDirective" &&
+							child.name &&
+							child.name in types
+						) {
+							const CalloutContainer = "CalloutContainer";
+							const CalloutTitle = "CalloutTitle";
+							const CalloutDescription = "CalloutDescription";
+
+							const attributes = [
+								{
+									type: "mdxJsxAttribute",
+									name: "type",
+									value: types[child.name],
+								},
+							];
+							for (const [k, v] of Object.entries(child.attributes ?? {})) {
+								attributes.push({
+									type: "mdxJsxAttribute",
+									name: k,
+									value: v as any,
+								});
+							}
+
+							const titleNodes: AstNode[] = [];
+							const descriptionNodes: AstNode[] = [];
+							for (const item of child.children ?? []) {
+								if (!item) continue;
+								if (item.type === "paragraph" && item.data?.directiveLabel) {
+									if (item.children) {
+										titleNodes.push(
+											...item.children.filter((c): c is AstNode => !!c),
+										);
+									}
+								} else {
+									descriptionNodes.push(item);
+								}
+							}
+
+							const children: AstNode[] = [];
+							if (titleNodes.length > 0) {
+								children.push({
+									type: "mdxJsxFlowElement",
+									name: CalloutTitle,
+									attributes: {},
+									children: titleNodes,
+								});
+							}
+							if (descriptionNodes.length > 0) {
+								children.push({
+									type: "mdxJsxFlowElement",
+									name: CalloutDescription,
+									attributes: {},
+									children: descriptionNodes,
+								});
+							}
+
+							return {
+								type: "mdxJsxFlowElement",
+								attributes,
+								name: CalloutContainer,
+								children,
+							} as AstNode;
+						}
+						return child;
+					})
+					.filter((c): c is AstNode => !!c);
+			}
+		};
+		traverse(tree);
+	};
+}
 
 export const docs = defineDocs({
 	dir: "content/docs",
@@ -19,8 +115,21 @@ export const docs = defineDocs({
 
 export default defineConfig({
 	mdxOptions: {
-		rehypePlugins: [rehypeGithubAlerts, rehypeOptimizeInternalLinks],
-		remarkPlugins: [remarkGemoji, remarkNpm, remarkDirective],
+		rehypePlugins: [rehypeOptimizeInternalLinks],
+		remarkPlugins: [
+			remarkGemoji,
+			remarkNpm,
+			remarkDirective,
+			remarkDirectiveAdmonitionCustom({
+				types: {
+					note: "info",
+					tip: "info",
+					important: "warning",
+					warning: "warning",
+					caution: "error",
+				},
+			}) as any,
+		],
 		rehypeCodeOptions: {
 			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv"],
 			themes: {

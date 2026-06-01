@@ -49,7 +49,6 @@
 		"posthog-node": "5.32.0",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
-		"rehype-github-alerts": "4.2.0",
 		"remark-directive": "4.0.0",
 		"remark-gemoji": "8.0.0",
 		"require-in-the-middle": "8.0.1",
