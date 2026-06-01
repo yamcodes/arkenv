@@ -8,12 +8,12 @@ This example demonstrates how to use [@arkenv/nextjs](https://arkenv.js.org/docs
 
 ## Setup
 
-The example defines the environment schema in a single `env.ts` file, importing `createEnv` from the auto-generated `./generated/env.gen` helper:
+The example defines the environment schema in a single `env.ts` file, importing `arkenv` from the auto-generated `./generated/env.gen` helper:
 
 ```ts title="env.ts"
-import { createEnv } from "./generated/env.gen";
+import arkenv from "./generated/env.gen";
 
-export const env = createEnv({
+export const env = arkenv({
 	server: {
 		DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
 	},
@@ -21,7 +21,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
 	},
 	shared: {
-		NODE_ENV: "string = 'development'",
+		NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	},
 });
 ```
