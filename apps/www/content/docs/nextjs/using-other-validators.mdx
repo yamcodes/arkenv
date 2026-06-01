@@ -1,0 +1,79 @@
+---
+title: Custom Validators (Zod & Valibot)
+description: Mix and match ArkType with Zod, Valibot, or other Standard Schema compatible libraries.
+---
+
+You can freely mix Zod or Valibot schemas with standard schemas. Standard Schema is supported out of the box.
+
+### Unified 1-File Layout
+
+Here is an example using Zod with the 1-file codegen layout:
+
+```ts title="src/env.ts" twoslash
+// @filename: generated/env.gen.ts
+import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import type { type as at, distill } from "arktype";
+export { type } from "@arkenv/nextjs";
+export function createEnv<
+	const TServer = {},
+	const TClient = {},
+	const TShared = {},
+>(options: {
+	server?: TServer;
+	client?: TClient;
+	shared?: TShared;
+}): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+	return {} as any;
+}
+
+// @filename: env.ts
+// ---cut---
+import { createEnv } from "./generated/env.gen";
+import { z } from "zod";
+
+export const env = createEnv({
+	server: {
+		DATABASE_URL: z.string().url(),
+	},
+	client: {
+		NEXT_PUBLIC_API_URL: z.string().url(),
+	},
+	shared: {
+		NODE_ENV: z.enum(["development", "production", "test"]),
+	},
+});
+```
+
+### 3-File Layout
+
+You can freely mix Zod or Valibot schemas with the 3-file layout:
+
+<Tabs items={['Zod', 'Valibot']}>
+  <Tab value="Zod">
+    ```ts title="src/env/internal/shared.ts" twoslash
+    import { z } from "zod";
+
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = z.object({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="src/env/internal/shared.ts" twoslash
+    import * as v from "valibot";
+
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = v.object({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    });
+    ```
+  </Tab>
+</Tabs>
