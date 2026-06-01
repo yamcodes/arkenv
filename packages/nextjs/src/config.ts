@@ -2,6 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { watch as chokidarWatch } from "chokidar";
 
+declare global {
+	// eslint-disable-next-line no-var
+	var __arkenv_watcher__: import("chokidar").FSWatcher | undefined;
+}
+
 /**
  * Configuration options for the ArkEnv Next.js integration.
  *
@@ -279,7 +284,7 @@ function watchSchema(
 	outputPath: string,
 	layout?: "simple" | "strict",
 ) {
-	const previousWatcher = (globalThis as any).__arkenv_watcher__;
+	const previousWatcher = globalThis.__arkenv_watcher__;
 	if (previousWatcher && typeof previousWatcher.close === "function") {
 		previousWatcher.close().catch((err: unknown) => {
 			const message = err instanceof Error ? err.message : String(err);
@@ -292,7 +297,7 @@ function watchSchema(
 
 	try {
 		const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
-		(globalThis as any).__arkenv_watcher__ = watcher;
+		globalThis.__arkenv_watcher__ = watcher;
 
 		watcher.on("change", () => {
 			try {

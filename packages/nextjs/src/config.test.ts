@@ -1,16 +1,26 @@
 import fs from "node:fs";
 import path from "node:path";
-import { watch as chokidarWatch } from "chokidar";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("chokidar", () => {
+let useMockWatcher = false;
+const mockClose = vi.fn().mockResolvedValue(undefined);
+const mockWatch = vi.fn().mockImplementation(() => {
 	return {
-		watch: vi.fn().mockImplementation(() => {
-			return {
-				on: vi.fn().mockReturnThis(),
-				close: vi.fn().mockResolvedValue(undefined),
-			};
-		}),
+		on: vi.fn().mockReturnThis(),
+		close: mockClose,
+	};
+});
+
+vi.mock("chokidar", async (importOriginal) => {
+	const original = await importOriginal<typeof import("chokidar")>();
+	return {
+		...original,
+		watch: (schemaPath: any, options?: any) => {
+			if (useMockWatcher) {
+				return mockWatch(schemaPath, options);
+			}
+			return original.watch(schemaPath, options);
+		},
 	};
 });
 
@@ -399,6 +409,10 @@ describe("withArkEnv wrapper", () => {
 	});
 
 	it("should close the previous watcher when initialized multiple times in development", () => {
+		useMockWatcher = true;
+		mockWatch.mockClear();
+		mockClose.mockClear();
+
 		if (!fs.existsSync(tempDir)) {
 			fs.mkdirSync(tempDir, { recursive: true });
 		}
@@ -415,18 +429,17 @@ describe("withArkEnv wrapper", () => {
 		try {
 			// Call withArkEnv once
 			withArkEnv({ reactStrictMode: true }, { schemaPath });
-			expect(chokidarWatch).toHaveBeenCalledTimes(1);
+			expect(mockWatch).toHaveBeenCalledTimes(1);
 
 			// Call withArkEnv a second time
 			withArkEnv({ reactStrictMode: true }, { schemaPath });
-			expect(chokidarWatch).toHaveBeenCalledTimes(2);
+			expect(mockWatch).toHaveBeenCalledTimes(2);
 
-			const firstWatcherInstance =
-				vi.mocked(chokidarWatch).mock.results[0].value;
-			expect(firstWatcherInstance.close).toHaveBeenCalledTimes(1);
+			expect(mockClose).toHaveBeenCalledTimes(1);
 		} finally {
 			process.env.NODE_ENV = originalNodeEnv;
 			delete (globalThis as any).__arkenv_watcher__;
+			useMockWatcher = false;
 		}
 	});
 });
