@@ -170,10 +170,10 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";
+			: `import arkenv from "${nextjsImportPath || "./generated/env.gen"}";
 import { SharedSchema } from "./internal/shared";
 
-export const env = createEnv(
+export const env = arkenv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
@@ -212,11 +212,11 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";
+			: `import arkenv from "${nextjsImportPath || "./generated/env.gen"}";
 import { z } from "zod";
 import { SharedSchema } from "./internal/shared";
 
-export const env = createEnv(
+export const env = arkenv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],
@@ -256,11 +256,11 @@ export const env = arkenv(
 		},
 	},
 );`
-			: `import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";
+			: `import arkenv from "${nextjsImportPath || "./generated/env.gen"}";
 import * as v from "valibot";
 import { SharedSchema } from "./internal/shared";
 
-export const env = createEnv(
+export const env = arkenv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
 		extends: [SharedSchema],

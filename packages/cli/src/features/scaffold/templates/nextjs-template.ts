@@ -135,7 +135,7 @@ ${sections.join(",\n")},
 	}
 
 	const imports = [
-		`import { createEnv } from "${nextjsImportPath || "./generated/env.gen"}";`,
+		`import arkenv from "${nextjsImportPath || "./generated/env.gen"}";`,
 		...(extraImports ? [extraImports] : []),
 	].join("\n");
 
@@ -143,10 +143,10 @@ ${sections.join(",\n")},
 
 /**
  * Environment variable schema.
- * In Next.js, use the generated \`createEnv\` from \`env.gen.ts\` to validate variables.
+ * In Next.js, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.
  * Enforces client/server separation and prevents secret leaks.
  */
-export const env = createEnv({
+export const env = arkenv({
 ${sections.join(",\n")},
 });
 `;
