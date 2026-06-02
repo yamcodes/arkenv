@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- #### Add `Infer<T>` helper to resolve environment variable types _[`#1092`](https://github.com/yamcodes/arkenv/pull/1092) [`c6c30ab`](https://github.com/yamcodes/arkenv/commit/c6c30abbc1df4bb74b2ab5c6f689fcae557ffb05) [@yamcodes](https://github.com/yamcodes)_
+- #### Add `Infer<T>` helper to resolve environment variable types *[`#1092`](https://github.com/yamcodes/arkenv/pull/1092) [`c6c30ab`](https://github.com/yamcodes/arkenv/commit/c6c30abbc1df4bb74b2ab5c6f689fcae557ffb05) [@yamcodes](https://github.com/yamcodes)*
 
   Introduce the `Infer<T>` type helper, allowing developers to extract the inferred output types of their environment schemas. It supports both declarative schema shapes and compiled schemas (like Zod or ArkType types).
 
@@ -25,7 +25,7 @@
 
 ### Minor changes
 
-- #### Remove `ArkEnvError` import from "arkenv" _[`#815`](https://github.com/yamcodes/arkenv/pull/815) [`5e8025f`](https://github.com/yamcodes/arkenv/commit/5e8025fd53e5637cd326848f6e0e0d3a20fc1a8b) [@yamcodes](https://github.com/yamcodes)_
+- #### Remove `ArkEnvError` import from "arkenv" *[`#815`](https://github.com/yamcodes/arkenv/pull/815) [`5e8025f`](https://github.com/yamcodes/arkenv/commit/5e8025fd53e5637cd326848f6e0e0d3a20fc1a8b) [@yamcodes](https://github.com/yamcodes)*
 
   The `ArkEnvError` class is now only available via:
 
@@ -37,7 +37,7 @@
 
 ### Minor changes
 
-- #### `arkenv/standard` import _[`#806`](https://github.com/yamcodes/arkenv/pull/806) [`f9010d0`](https://github.com/yamcodes/arkenv/commit/f9010d00c3f05dbd9862e4aeafab099a9dea4d25) [@yamcodes](https://github.com/yamcodes)_
+- #### `arkenv/standard` import *[`#806`](https://github.com/yamcodes/arkenv/pull/806) [`f9010d0`](https://github.com/yamcodes/arkenv/commit/f9010d00c3f05dbd9862e4aeafab099a9dea4d25) [@yamcodes](https://github.com/yamcodes)*
 
   `arkenv` now ships three separate entry points:
 
@@ -79,7 +79,7 @@
 
 ### Patch changes
 
-- #### Fix inline schema autocompletion _[`#797`](https://github.com/yamcodes/arkenv/pull/797) [`8f1b0dd`](https://github.com/yamcodes/arkenv/commit/8f1b0dd1c10773da60ea12362f162136c23ddac0) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix inline schema autocompletion *[`#797`](https://github.com/yamcodes/arkenv/pull/797) [`8f1b0dd`](https://github.com/yamcodes/arkenv/commit/8f1b0dd1c10773da60ea12362f162136c23ddac0) [@yamcodes](https://github.com/yamcodes)*
 
   Fixed a regression where editor autocompletion for ArkType DSL strings (e.g. `"string"`, `"number.port"`) stopped working when using `arkenv()` with an inline schema object. The `createEnv` overloads are now narrowed by `validator` config type, making them mutually exclusive and order-independent.
 
@@ -87,11 +87,11 @@
 
 ### Patch changes
 
-- #### Fix CommonJS bundling compatibility _[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix CommonJS bundling compatibility *[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)*
 
   Fixed a crash when ArkEnv is bundled into a CommonJS format using tools like esbuild. This improves compatibility with environments like AWS Lambda and ensures correct interoperability when ArkEnv is used as an external dependency in CommonJS bundles.
 
-- #### Improve internal error handling types _[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)_
+- #### Improve internal error handling types *[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)*
 
   Refined internal error handling logic with better TypeScript typesafety and guards.
 
@@ -99,7 +99,7 @@
 
 ### Patch changes
 
-- #### Fix Standard Schema type inference _[`#758`](https://github.com/yamcodes/arkenv/pull/758) [`3b747b0`](https://github.com/yamcodes/arkenv/commit/3b747b07660e035fda4a40ca90c630e283d6ba1c) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix Standard Schema type inference *[`#758`](https://github.com/yamcodes/arkenv/pull/758) [`3b747b0`](https://github.com/yamcodes/arkenv/commit/3b747b07660e035fda4a40ca90c630e283d6ba1c) [@yamcodes](https://github.com/yamcodes)*
 
   Fixed type inference when using `validator: "standard"` mode. The `env` object now correctly infers types from Standard Schema validators like Zod or Valibot.
 
@@ -107,7 +107,7 @@
 
 ### Minor changes
 
-- #### ArkType is now an optional peer dependency _[`#723`](https://github.com/yamcodes/arkenv/pull/723) [`6bd0741`](https://github.com/yamcodes/arkenv/commit/6bd07410f97a8756366b9432be8504a8507d0876) [@yamcodes](https://github.com/yamcodes)_
+- #### ArkType is now an optional peer dependency *[`#723`](https://github.com/yamcodes/arkenv/pull/723) [`6bd0741`](https://github.com/yamcodes/arkenv/commit/6bd07410f97a8756366b9432be8504a8507d0876) [@yamcodes](https://github.com/yamcodes)*
 
   To achieve a true zero-dependency core, ArkType is now an optional peer dependency.
 
@@ -130,7 +130,7 @@
 
 ### Patch changes
 
-- #### Remove internal `@repo/keywords` package _[`#726`](https://github.com/yamcodes/arkenv/pull/726) [`926ef9b`](https://github.com/yamcodes/arkenv/commit/926ef9b5a322187feef7fce3a842b04d5ec197fa) [@yamcodes](https://github.com/yamcodes)_
+- #### Remove internal `@repo/keywords` package *[`#726`](https://github.com/yamcodes/arkenv/pull/726) [`926ef9b`](https://github.com/yamcodes/arkenv/commit/926ef9b5a322187feef7fce3a842b04d5ec197fa) [@yamcodes](https://github.com/yamcodes)*
 
   The internal `@repo/keywords` package, which was compiled into the `arkenv` package, has been removed. The keywords are now either defined directly in the `arkenv` package or changed to pure functions.
 
@@ -140,7 +140,7 @@
 
 ### Patch changes
 
-- #### Object coercion _[`#694`](https://github.com/yamcodes/arkenv/pull/694) [`01c1704`](https://github.com/yamcodes/arkenv/commit/01c17041029a41f2dfcacd7dd7ed2d1cd5a8c058) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+- #### Object coercion *[`#694`](https://github.com/yamcodes/arkenv/pull/694) [`01c1704`](https://github.com/yamcodes/arkenv/commit/01c17041029a41f2dfcacd7dd7ed2d1cd5a8c058) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)*
 
   ArkEnv now coerces objects when the `coerce` option is enabled (true by default).
   Objects are parsed from JSON strings, allowing for nested typesafe configuration.
@@ -166,7 +166,7 @@
 
 ### Patch changes
 
-- #### Array coercion _[`#693`](https://github.com/yamcodes/arkenv/pull/693) [`7919b6d`](https://github.com/yamcodes/arkenv/commit/7919b6dcd171553d0e6e6e819a862408284e1f71) [@yamcodes](https://github.com/yamcodes)_
+- #### Array coercion *[`#693`](https://github.com/yamcodes/arkenv/pull/693) [`7919b6d`](https://github.com/yamcodes/arkenv/commit/7919b6dcd171553d0e6e6e819a862408284e1f71) [@yamcodes](https://github.com/yamcodes)*
 
   ArkEnv now coerces arrays when the `coerce` option is enabled (true by default).
   Arrays are parsed using trimmed, comma-separated values by default.
@@ -213,7 +213,7 @@
 
 ### Patch changes
 
-- #### Strip undeclared keys from output by default _[`#662`](https://github.com/yamcodes/arkenv/pull/662) [`d83d746`](https://github.com/yamcodes/arkenv/commit/d83d746e5f3672b97dea1d3eff0515a04af1d0e2) [@yamcodes](https://github.com/yamcodes)_
+- #### Strip undeclared keys from output by default *[`#662`](https://github.com/yamcodes/arkenv/pull/662) [`d83d746`](https://github.com/yamcodes/arkenv/commit/d83d746e5f3672b97dea1d3eff0515a04af1d0e2) [@yamcodes](https://github.com/yamcodes)*
 
   Environment variables not defined in your schema are now stripped from the output object by default.
 
@@ -257,7 +257,7 @@
 
 ### Minor changes
 
-- ### Coercion _[`#569`](https://github.com/yamcodes/arkenv/pull/569) [`adaada4`](https://github.com/yamcodes/arkenv/commit/adaada4d214c152e8d23c983aea1747d81a0e539) [@yamcodes](https://github.com/yamcodes)_
+- ### Coercion *[`#569`](https://github.com/yamcodes/arkenv/pull/569) [`adaada4`](https://github.com/yamcodes/arkenv/commit/adaada4d214c152e8d23c983aea1747d81a0e539) [@yamcodes](https://github.com/yamcodes)*
 
   Introduced **Schema-Directed Coercion**: now, environment variables defined as `number` or `boolean` in your schema are automatically parsed to their correct types.
 
@@ -280,7 +280,7 @@
 
 ### Patch changes
 
-- #### Fix error formatting _[`#582`](https://github.com/yamcodes/arkenv/pull/582) [`674a2ad`](https://github.com/yamcodes/arkenv/commit/674a2adfe8ffbb9bc3235f76c5d9d00e55ee37a4) [@aruaycodes](https://github.com/aruaycodes)_
+- #### Fix error formatting *[`#582`](https://github.com/yamcodes/arkenv/pull/582) [`674a2ad`](https://github.com/yamcodes/arkenv/commit/674a2adfe8ffbb9bc3235f76c5d9d00e55ee37a4) [@aruaycodes](https://github.com/aruaycodes)*
 
   The ArkEnv error message is now formatted better, using correct spacing and removing the `f` prefix.
 
@@ -340,7 +340,7 @@
 
 ### Patch changes
 
-- #### Fix editor autocomplete for `createEnv` (`arkenv`) function _[`#531`](https://github.com/yamcodes/arkenv/pull/531) [`e91a804`](https://github.com/yamcodes/arkenv/commit/e91a804dc6ec7d4a80d9bee94e87d3892f013729) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix editor autocomplete for `createEnv` (`arkenv`) function *[`#531`](https://github.com/yamcodes/arkenv/pull/531) [`e91a804`](https://github.com/yamcodes/arkenv/commit/e91a804dc6ec7d4a80d9bee94e87d3892f013729) [@yamcodes](https://github.com/yamcodes)*
 
   Fix a signature issue where editor autocomplete was not working for the `createEnv` function.
 
@@ -348,7 +348,7 @@
 
 ### Patch changes
 
-- #### Fix "Type instantiation is excessively deep" error _[`1d86d18`](https://github.com/yamcodes/arkenv/commit/1d86d187b08aba7c6b83f7bdce2d47bae47c7eb9) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix "Type instantiation is excessively deep" error *[`1d86d18`](https://github.com/yamcodes/arkenv/commit/1d86d187b08aba7c6b83f7bdce2d47bae47c7eb9) [@yamcodes](https://github.com/yamcodes)*
 
   Fixed "Type instantiation is excessively deep and possibly infinite" errors when using ArkEnv with complex ArkType schemas. This was [reported](https://github.com/yamcodes/arkenv/issues/497) in the ArkEnv Vite Plugin along with [ArkType 2.1.28](https://github.com/arktypeio/arktype/blob/HEAD/ark/type/CHANGELOG.md#2128), and was fixed by an overall improvement of type stability including optimizing how generics are passed to the validation logic.
 
@@ -356,7 +356,7 @@
 
 ### Patch changes
 
-- #### Support type definitions for schema reuse _[`2424391`](https://github.com/yamcodes/arkenv/commit/24243912101b8a1ef944a3d4d15747196a1a2215) [@yamcodes](https://github.com/yamcodes)_
+- #### Support type definitions for schema reuse *[`2424391`](https://github.com/yamcodes/arkenv/commit/24243912101b8a1ef944a3d4d15747196a1a2215) [@yamcodes](https://github.com/yamcodes)*
 
   `arkenv()` and `@arkenv/vite-plugin` now accept both raw schema objects and type definitions created with ArkType's `type()` function. This allows you to define your schema once and reuse it across your application, which is especially useful for multi-runtime setups like Vite where you need the same schema in both `vite.config.ts` and client code.
 
@@ -378,7 +378,7 @@
 
 ### Patch changes
 
-- #### Add declaration maps for better IDE experience _[`#360`](https://github.com/yamcodes/arkenv/pull/360) [`17c970f`](https://github.com/yamcodes/arkenv/commit/17c970fb6d8ac433669e9d42c21b5ce6002066dd) [@yamcodes](https://github.com/yamcodes)_
+- #### Add declaration maps for better IDE experience *[`#360`](https://github.com/yamcodes/arkenv/pull/360) [`17c970f`](https://github.com/yamcodes/arkenv/commit/17c970fb6d8ac433669e9d42c21b5ce6002066dd) [@yamcodes](https://github.com/yamcodes)*
 
   Enable TypeScript declaration maps so that when you use "Go to Definition" in your IDE, it navigates directly to the original source code instead of the generated type definition files. This makes it easier to explore and understand how the packages work.
 
@@ -386,11 +386,11 @@
 
 ### Patch changes
 
-- #### Enable minification to reduce bundle size _[`#336`](https://github.com/yamcodes/arkenv/pull/336) [`7236cb2`](https://github.com/yamcodes/arkenv/commit/7236cb25de07f7afcc571dd3364b1507544de523) [@yamcodes](https://github.com/yamcodes)_
+- #### Enable minification to reduce bundle size *[`#336`](https://github.com/yamcodes/arkenv/pull/336) [`7236cb2`](https://github.com/yamcodes/arkenv/commit/7236cb25de07f7afcc571dd3364b1507544de523) [@yamcodes](https://github.com/yamcodes)*
 
   Enable minification in build output. Reduces bundle size from 711 B to 708 B. Comments are removed from the bundle but remain in source files.
 
-- #### Fix browser compatibility by replacing `util.styleText` with cross-platform ANSI codes _[`#290`](https://github.com/yamcodes/arkenv/pull/290) [`bf465de`](https://github.com/yamcodes/arkenv/commit/bf465dee26cd20619455bcc77f66424ca48da0fe) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix browser compatibility by replacing `util.styleText` with cross-platform ANSI codes *[`#290`](https://github.com/yamcodes/arkenv/pull/290) [`bf465de`](https://github.com/yamcodes/arkenv/commit/bf465dee26cd20619455bcc77f66424ca48da0fe) [@yamcodes](https://github.com/yamcodes)*
 
   Replace Node.js `util.styleText` with cross-platform ANSI color codes to fix the "Module 'node:util' has been externalized for browser compatibility" error in browser environments. The library still maintains zero dependencies!
 
@@ -415,7 +415,7 @@
 
 ### Patch changes
 
-- #### Automatic boolean string conversion _[`#218`](https://github.com/yamcodes/arkenv/pull/218) [`e554e2b`](https://github.com/yamcodes/arkenv/commit/e554e2b41aab1b8e29d873982ea587c069f4732d) [@yamcodes](https://github.com/yamcodes)_
+- #### Automatic boolean string conversion *[`#218`](https://github.com/yamcodes/arkenv/pull/218) [`e554e2b`](https://github.com/yamcodes/arkenv/commit/e554e2b41aab1b8e29d873982ea587c069f4732d) [@yamcodes](https://github.com/yamcodes)*
 
   The `boolean` type now accepts `"true"`/`"false"` strings from environment variables and converts them to actual boolean values. This also works with boolean defaults.
 
@@ -445,7 +445,7 @@
 
 ### Patch changes
 
-- #### Support array defaults using type().default() syntax _[`#199`](https://github.com/yamcodes/arkenv/pull/199) [`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
+- #### Support array defaults using type().default() syntax *[`#199`](https://github.com/yamcodes/arkenv/pull/199) [`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)*
 
   Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by `createEnv` due to overly restrictive type constraints. The function now accepts any string-keyed record while still maintaining typesafety through ArkType's validation system.
 
@@ -469,7 +469,7 @@
 
 ### Patch changes
 
-- Export `ArkEnvError` _[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)_
+- Export `ArkEnvError` *[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)*
 
   You can now import `ArkEnvError` from `arkenv`:
 
@@ -477,7 +477,7 @@
   import { ArkEnvError } from "arkenv";
   ```
 
-- Improve JSDoc _[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)_
+- Improve JSDoc *[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)*
 
   The JSDoc for `arkenv` and `createEnv` is now more descriptive.
 
@@ -485,7 +485,7 @@
 
 ### Minor changes
 
-- #### `EnvSchema` type now always uses ArkEnv scope _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
+- #### `EnvSchema` type now always uses ArkEnv scope *[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)*
 
   The `EnvSchema` type has been simplified and fixed to include the ArkEnv scope.
 
@@ -505,7 +505,7 @@
 
   We no longer allow specifying a custom scope in the `EnvSchema` type.
 
-- #### `createEnv` signature simplified _[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)_
+- #### `createEnv` signature simplified *[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)*
 
   The `createEnv` function now has a simpler signature:
 
@@ -517,7 +517,7 @@
 
 ### Patch changes
 
-- #### Fix default export autocomplete for better developer experience _[`#147`](https://github.com/yamcodes/arkenv/pull/147) [`2ec4daa`](https://github.com/yamcodes/arkenv/commit/2ec4daae714f6fde09e75d9fae417015111ee007) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix default export autocomplete for better developer experience *[`#147`](https://github.com/yamcodes/arkenv/pull/147) [`2ec4daa`](https://github.com/yamcodes/arkenv/commit/2ec4daae714f6fde09e75d9fae417015111ee007) [@yamcodes](https://github.com/yamcodes)*
 
   The default export now properly aliases as `arkenv` instead of `createEnv`, providing better autocomplete when importing.
 
@@ -540,7 +540,7 @@
 
   This change maintains full backward compatibility - all existing imports continue to work unchanged (like `import { createEnv } from "arkenv";`).
 
-- #### Replace Chalk dependency with Node.js built-in `util.styleText` _[`e6eca4f`](https://github.com/yamcodes/arkenv/commit/e6eca4f34eeed2bc2249c3a5a2fced9880bee081) [@yamcodes](https://github.com/yamcodes)_
+- #### Replace Chalk dependency with Node.js built-in `util.styleText` *[`e6eca4f`](https://github.com/yamcodes/arkenv/commit/e6eca4f34eeed2bc2249c3a5a2fced9880bee081) [@yamcodes](https://github.com/yamcodes)*
 
   Remove the external `chalk` dependency and replace it with Node.js built-in `util.styleText`, available [from Node.js v20.12.0](https://nodejs.org/api/util.html#utilstyletextformat-text-options). This makes ArkEnv zero-dependency.
 
@@ -548,7 +548,7 @@
 
 ### Minor changes
 
-- #### Expose `type` function _[`#139`](https://github.com/yamcodes/arkenv/pull/139) [`721c014`](https://github.com/yamcodes/arkenv/commit/721c014679983d18a235cece0259fe6940269b07) [@yamcodes](https://github.com/yamcodes)_
+- #### Expose `type` function *[`#139`](https://github.com/yamcodes/arkenv/pull/139) [`721c014`](https://github.com/yamcodes/arkenv/commit/721c014679983d18a235cece0259fe6940269b07) [@yamcodes](https://github.com/yamcodes)*
 
   ArkEnv now exposes a `type` function with built-in ArkEnv scope, providing access to environment-specific types like `string.host` and `number.port`.
 
@@ -574,7 +574,7 @@
 
 ### Minor changes
 
-- #### Export `createEnv` as the default export _[`#136`](https://github.com/yamcodes/arkenv/pull/136) [`2b06c4c`](https://github.com/yamcodes/arkenv/commit/2b06c4c09f3be7192dbd0e23a1bc78506a4d7293) [@yamcodes](https://github.com/yamcodes)_
+- #### Export `createEnv` as the default export *[`#136`](https://github.com/yamcodes/arkenv/pull/136) [`2b06c4c`](https://github.com/yamcodes/arkenv/commit/2b06c4c09f3be7192dbd0e23a1bc78506a4d7293) [@yamcodes](https://github.com/yamcodes)*
 
   You can now import `createEnv` as the default export:
 
@@ -610,7 +610,7 @@
 
 ### Minor changes
 
-- ## Improved type inference and scope-based validation _[`#129`](https://github.com/yamcodes/arkenv/pull/129) [`dd15b60`](https://github.com/yamcodes/arkenv/commit/dd15b608281b04eaac1bf93d3911a234e7e7565d) [@yamcodes](https://github.com/yamcodes)_
+- ## Improved type inference and scope-based validation *[`#129`](https://github.com/yamcodes/arkenv/pull/129) [`dd15b60`](https://github.com/yamcodes/arkenv/commit/dd15b608281b04eaac1bf93d3911a234e7e7565d) [@yamcodes](https://github.com/yamcodes)*
 
   The `createEnv` function got a facelift with better TypeScript inference and introduced a new scope-based validation system.
 
@@ -655,7 +655,7 @@
 
 ### Minor changes
 
-- Rename `defineEnv` to `createEnv` _[`d46b233`](https://github.com/yamcodes/arkenv/commit/d46b23355546fd0531123cfaaffab95f74a472da) [@yamcodes](https://github.com/yamcodes)_
+- Rename `defineEnv` to `createEnv` *[`d46b233`](https://github.com/yamcodes/arkenv/commit/d46b23355546fd0531123cfaaffab95f74a472da) [@yamcodes](https://github.com/yamcodes)*
 
   The main API for building a validated env object is now `createEnv`.
 
@@ -687,7 +687,7 @@
 
 ### Minor changes
 
-- Rename from `ark.env` to `arkenv` _[`#102`](https://github.com/yamcodes/arkenv/pull/102) [`dfdc17f`](https://github.com/yamcodes/arkenv/commit/dfdc17f3510a9c07586201ecaf310cba3b22d67f) [@yamcodes](https://github.com/yamcodes)_
+- Rename from `ark.env` to `arkenv` *[`#102`](https://github.com/yamcodes/arkenv/pull/102) [`dfdc17f`](https://github.com/yamcodes/arkenv/commit/dfdc17f3510a9c07586201ecaf310cba3b22d67f) [@yamcodes](https://github.com/yamcodes)*
 
   BREAKING CHANGE:
 
@@ -717,7 +717,7 @@
 
 ### Patch changes
 
-- Switch from picocolors to Chalk _[`f7c6501`](https://github.com/yamcodes/arkenv/commit/f7c6501272064d13a6f048d68ba826d58eb2eee7) [@yamcodes](https://github.com/yamcodes)_
+- Switch from picocolors to Chalk *[`f7c6501`](https://github.com/yamcodes/arkenv/commit/f7c6501272064d13a6f048d68ba826d58eb2eee7) [@yamcodes](https://github.com/yamcodes)*
 
   Switch the CLI coloring tool from [picocolors](https://github.com/alexeyraspopov/picocolors) to [Chalk](https://github.com/chalk/chalk). Chalk is a much more popular library that is already included in our lockfile, and is more modern [by being ESM](https://github.com/chalk/chalk#install).
 
@@ -725,13 +725,13 @@
 
 ### Patch changes
 
-- Fix badges in README _[`9e07e48`](https://github.com/yamcodes/arkenv/commit/9e07e4872ece404fe2075af55c4d14dd1944bd93) [@yamcodes](https://github.com/yamcodes)_
+- Fix badges in README *[`9e07e48`](https://github.com/yamcodes/arkenv/commit/9e07e4872ece404fe2075af55c4d14dd1944bd93) [@yamcodes](https://github.com/yamcodes)*
 
 ## 0.1.3
 
 ### Patch changes
 
-- Fix Node 18 build issue _[`97424ef`](https://github.com/yamcodes/arkenv/commit/97424ef331d6ce1a9f26c9b50c5cc43d7d0547bb) [@yamcodes](https://github.com/yamcodes)_
+- Fix Node 18 build issue *[`97424ef`](https://github.com/yamcodes/arkenv/commit/97424ef331d6ce1a9f26c9b50c5cc43d7d0547bb) [@yamcodes](https://github.com/yamcodes)*
 
   Fix picocolors imports causing arkenv to not work in Node 18
 
@@ -739,7 +739,7 @@
 
 ### Patch changes
 
-- Fix npm README _[`cddd970`](https://github.com/yamcodes/arkenv/commit/cddd970e9d8f0213ece7b8b8cb3d6cf47fbbeecd) [@yamcodes](https://github.com/yamcodes)_
+- Fix npm README *[`cddd970`](https://github.com/yamcodes/arkenv/commit/cddd970e9d8f0213ece7b8b8cb3d6cf47fbbeecd) [@yamcodes](https://github.com/yamcodes)*
 
   This is just a documentation fix to display the correct README.md file in the npm registry.
 
@@ -747,7 +747,7 @@
 
 ### Patch changes
 
-- Fix build exports _[`05f60dd`](https://github.com/yamcodes/arkenv/commit/05f60ddb4f2869f2a6a771dd6aa4b79d4b4cb738) [@yamcodes](https://github.com/yamcodes)_
+- Fix build exports *[`05f60dd`](https://github.com/yamcodes/arkenv/commit/05f60ddb4f2869f2a6a771dd6aa4b79d4b4cb738) [@yamcodes](https://github.com/yamcodes)*
 
   Fix the built package by modifying the exports to the correct path.
 
@@ -755,7 +755,7 @@
 
 ### Minor changes
 
-- Rename main function to `env` and use support a default export _[`ba5bee4`](https://github.com/yamcodes/arkenv/commit/ba5bee435154b183e0973ec1e17e5739473af866) [@yamcodes](https://github.com/yamcodes)_
+- Rename main function to `env` and use support a default export *[`ba5bee4`](https://github.com/yamcodes/arkenv/commit/ba5bee435154b183e0973ec1e17e5739473af866) [@yamcodes](https://github.com/yamcodes)*
 
   This change allows importing and using the library in the following way:
 
@@ -778,7 +778,7 @@
 
 ### Patch changes
 
-- Throw custom ArkEnvError _[`f6e4856`](https://github.com/yamcodes/arkenv/commit/f6e485620aa7f27d6674e1828afd61be023cea99) [@yamcodes](https://github.com/yamcodes)_
+- Throw custom ArkEnvError *[`f6e4856`](https://github.com/yamcodes/arkenv/commit/f6e485620aa7f27d6674e1828afd61be023cea99) [@yamcodes](https://github.com/yamcodes)*
 
   Improve error handling by throwing ArkEnvError when environment validation fails
 
@@ -786,11 +786,11 @@
 
 ### Patch changes
 
-- Fix `port` type _[`6be6305`](https://github.com/yamcodes/arkenv/commit/6be630501af6b69bfaebd438814dfe5ab4dcacd3) [@yamcodes](https://github.com/yamcodes)_
+- Fix `port` type *[`6be6305`](https://github.com/yamcodes/arkenv/commit/6be630501af6b69bfaebd438814dfe5ab4dcacd3) [@yamcodes](https://github.com/yamcodes)*
 
   Fix the `port` type to be a `number`.
 
-- Better error handling _[`80052dd`](https://github.com/yamcodes/arkenv/commit/80052dd9ba5e46ac8233d37cb47d40b5177b521f) [@yamcodes](https://github.com/yamcodes)_
+- Better error handling *[`80052dd`](https://github.com/yamcodes/arkenv/commit/80052dd9ba5e46ac8233d37cb47d40b5177b521f) [@yamcodes](https://github.com/yamcodes)*
 
   Error handling has been overhauled. Now, errors are thrown (instead of crashing the process) when the environment variables are invalid. The errors are formatted with colors and indentation for better readability.
 
@@ -798,7 +798,7 @@
 
 ### Patch changes
 
-- Support custom user environments _[`dfa942b`](https://github.com/yamcodes/arkenv/commit/dfa942b7eaa9f49dae2a968c4cb24f6c90bfa3f4) [@yamcodes](https://github.com/yamcodes)_
+- Support custom user environments *[`dfa942b`](https://github.com/yamcodes/arkenv/commit/dfa942b7eaa9f49dae2a968c4cb24f6c90bfa3f4) [@yamcodes](https://github.com/yamcodes)*
 
   We've added a new optional parameter to `env` to allow for custom environment variables. This can be used for example in Vite apps by passing `import.meta.env` as the second parameter.
 
@@ -806,7 +806,7 @@
 
 ### Patch changes
 
-- Add `host` and `port` utility types _[`e41bf8e`](https://github.com/yamcodes/arkenv/commit/e41bf8ee3d95c9c96105d53aa19d7b77c3e4dd28) [@yamcodes](https://github.com/yamcodes)_
+- Add `host` and `port` utility types *[`e41bf8e`](https://github.com/yamcodes/arkenv/commit/e41bf8ee3d95c9c96105d53aa19d7b77c3e4dd28) [@yamcodes](https://github.com/yamcodes)*
 
   We're adding utility types with this feature, the first are `host` and `port`.
 
@@ -814,9 +814,9 @@
 
   `port`: A `string` that can be parsed into a `number` between 0 and 65535
 
-- TypeScript inference _[`f9297e0`](https://github.com/yamcodes/arkenv/commit/f9297e05438f2a43c0a5855567b5fbf3d529cfd6) [@yamcodes](https://github.com/yamcodes)_
+- TypeScript inference *[`f9297e0`](https://github.com/yamcodes/arkenv/commit/f9297e05438f2a43c0a5855567b5fbf3d529cfd6) [@yamcodes](https://github.com/yamcodes)*
 
-  ** ArkEnv now supports TypeScript inference** - check out this quick example:
+  \*\* ArkEnv now supports TypeScript inference\*\* - check out this quick example:
 
   ```ts
   const { HOST } = env({
