@@ -7,10 +7,10 @@
 			"skillPath": "skills/bulletproof-react/SKILL.md",
 			"computedHash": "891f599d71317aab375ba025e7552bf797fddcdbfcbd8615200198ec62aa8446"
 		},
-		"create-changeset": {
+		"changeset": {
 			"source": "saleor/configurator",
 			"sourceType": "github",
-			"skillPath": "skills/create-changeset/SKILL.md",
+			"skillPath": "skills/changeset/SKILL.md",
 			"computedHash": "e2555f1af285f36cd74c21670306dce2cf290c966c2bb2b7603c8bdbe523b72e"
 		},
 		"create-skill": {

@@ -77,6 +77,30 @@ describe("Planner", () => {
 		expect(envFile?.content).toContain("runtimeEnv:");
 	});
 
+	it("plans wrapNextjsConfig as true by default for nextjs", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "nextjs" },
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.bootstrap?.wrapNextjsConfig).toBe(true);
+	});
+
+	it("plans wrapNextjsConfig as false when opted out", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				wrapNextjsConfig: false,
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.bootstrap?.wrapNextjsConfig).toBe(false);
+	});
+
 	it("plans for nextjs framework with zod validator", () => {
 		const state: CollectedState = {
 			...defaultState,

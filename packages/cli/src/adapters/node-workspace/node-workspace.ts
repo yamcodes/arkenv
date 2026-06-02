@@ -4,8 +4,10 @@ import pc from "picocolors";
 import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
 import {
 	bootstrapBunConfig,
+	bootstrapNextjsConfig,
 	bootstrapViteConfig,
 	findBunConfig,
+	findNextjsConfig,
 	findViteConfig,
 } from "./utils/bootstrappers";
 import { updateTsConfigToStrict } from "./utils/tsconfig";
@@ -101,6 +103,10 @@ export class NodeWorkspace implements WorkspacePort {
 		return findBunConfig(cwd);
 	}
 
+	async findNextjsConfig(cwd?: string): Promise<string | null> {
+		return findNextjsConfig(cwd);
+	}
+
 	async bootstrapViteConfig(
 		filePath: string,
 		importPath: string,
@@ -113,6 +119,10 @@ export class NodeWorkspace implements WorkspacePort {
 		features?: ("serve" | "build")[],
 	): Promise<BootstrapResult> {
 		return bootstrapBunConfig(configPath, features);
+	}
+
+	async bootstrapNextjsConfig(filePath: string): Promise<BootstrapResult> {
+		return bootstrapNextjsConfig(this, filePath);
 	}
 
 	async safeAppend(

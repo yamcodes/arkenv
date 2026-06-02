@@ -289,9 +289,9 @@ yarn install
 
 Keep old lockfile in git history for easy rollback.
 
-{/* 
+<!-- 
   Source references:
   - https://pnpm.io/installation
   - https://pnpm.io/cli/import
   - https://pnpm.io/limitations
-  */}
+  -->

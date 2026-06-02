@@ -56,6 +56,13 @@ describe("runPromptWizard", () => {
 		expect(result?.layout).toBe("simple");
 	});
 
+	it("should default wrapNextjsConfig to true for nextjs in isYes mode", async () => {
+		const result = await runPromptWizard({ framework: "nextjs" }, true);
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.wrapNextjsConfig).toBe(true);
+	});
+
 	it("should include bunFeatures if user selects them in wizard", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("bun-fullstack"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // bunBuild
@@ -73,6 +80,8 @@ describe("runPromptWizard", () => {
 	it("should allow validator selection for nextjs", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
 		vi.mocked(prompts.select).mockResolvedValueOnce("strict"); // layout
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // nextjsCodegen
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // wrapNextjsConfig
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("zod"); // validator
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
@@ -82,6 +91,39 @@ describe("runPromptWizard", () => {
 		expect(result?.framework).toBe("nextjs");
 		expect(result?.layout).toBe("strict");
 		expect(result?.validator).toBe("zod");
+		expect(result?.wrapNextjsConfig).toBe(true);
+		expect(result?.disableCodegen).toBe(false);
+	});
+
+	it("should skip wrapNextjsConfig when user disables codegen", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
+		vi.mocked(prompts.select).mockResolvedValueOnce("simple"); // layout
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // nextjsCodegen
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ framework: "nextjs" });
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.disableCodegen).toBe(true);
+		expect(result?.wrapNextjsConfig).toBeUndefined();
+	});
+
+	it("should set wrapNextjsConfig to false when user declines", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
+		vi.mocked(prompts.select).mockResolvedValueOnce("simple"); // layout
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // nextjsCodegen
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // wrapNextjsConfig
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ framework: "nextjs" });
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.disableCodegen).toBe(false);
+		expect(result?.wrapNextjsConfig).toBe(false);
 	});
 
 	it("should include envKeys if user accepts prompt", async () => {

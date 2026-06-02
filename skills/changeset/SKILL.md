@@ -1,5 +1,5 @@
 ---
-name: create-changeset
+name: changeset
 description: "Creates changesets for semantic versioning. Use when adding changesets, preparing releases, determining version bumps (patch/minor/major), generating changelog entries, or documenting breaking changes."
 allowed-tools: "Read, Grep, Glob, Write, Edit, Bash(git:*), Bash(npx changeset:*)"
 metadata:
@@ -13,12 +13,13 @@ compatibility: "Claude Code with Node.js >=20, pnpm, TypeScript 5.5+"
 
 ## Overview
 
-Automate the creation of changesets following project conventions, ensuring proper version bumps and well-documented release notes.
+Automate the creation and modification of changesets following project conventions, ensuring proper version bumps and well-documented release notes.
 
 ## When to use
 
 - After completing a feature or fix
 - Before creating a PR
+- When updating or correcting an existing changeset
 - When preparing a release
 - To document breaking changes
 
@@ -90,7 +91,7 @@ Create a file in `.changeset/` with a random name:
 
 ````markdown
 ---
-"arkenv": minor
+"arkenv": patch
 ---
 
 #### Add `arkenv` helper for improved type inference
@@ -129,27 +130,56 @@ Include:
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
 ```
 
+## Modifying an existing changeset
+
+### When to modify
+
+- The bump type is wrong (e.g., used `minor` for a patch-level change)
+- The description uses past or indicative tense instead of imperative mood
+- Usage examples are missing or incorrect
+- The changeset references GitHub issues directly
+- A change is documented that should be excluded (internal-only refactoring with no consumer value)
+- Multiple related changes exist across separate changesets that should be combined
+
+### Process
+
+1. **Read** the existing changeset file from `.changeset/`
+2. **Assess** what needs to change: bump type, description, examples, or scope
+3. **Edit** the file directly — changesets are plain markdown files
+4. **Remove** the file entirely if the changeset no longer applies (e.g., the change was reverted)
+
+### Validation checklist after modification
+
+- [ ] Bump type matches the decision guide (patch for non-breaking, minor for breaking)
+- [ ] Title starts with `####` header
+- [ ] All descriptions use imperative mood (no past tense, no indicative)
+- [ ] Usage examples present for user-facing changes
+- [ ] No GitHub issue references (# numbers)
+- [ ] Breaking changes have `**BREAKING CHANGE**:` prefix
+
 ## Release workflow
 
-### 1. Create changeset
+### 1. Create or modify changeset
 
 ```bash
+# Create
 pnpm changeset
-git add .changeset/
-git commit -m "chore: add changeset for feature"
+
+# Or modify manually
+# Edit .changeset/<name>.md directly
 ```
 
-### 2. Pr and review
+### 2. PR and review
 
 - Changeset is part of the PR
-- Reviewers can suggest bump type changes
+- Reviewers can suggest bump type changes or edits
 
 ### 3. Merge to main
 
 - Changesets action creates "Version Packages" PR
 - This PR updates version and CHANGELOG
 
-### 4. Merge version pr
+### 4. Merge version PR
 
 - Triggers npm publish
 - Creates GitHub release
@@ -162,6 +192,9 @@ npx changeset status
 
 # Preview version bump
 npx changeset version --dry-run
+
+# List all changeset files
+ls .changeset/*.md
 ```
 
 ## Common mistakes
@@ -171,6 +204,7 @@ npx changeset version --dry-run
 | Wrong bump type       | Unexpected version  | Review decision guide above                      |
 | Vague description     | Poor CHANGELOG      | Be specific about changes                        |
 | Missing changeset     | No release notes    | Always add before PR                             |
+| Past tense in body    | Style violation     | Rewrite in imperative mood                       |
 | Not including context | Hard to understand  | Explain *why* not just *what*                    |
 | Meaningless changes   | Cluttered CHANGELOG | Only document changes with consumer value        |
 | Including issue links | Redundant data      | Remove # references; PR links them automatically |

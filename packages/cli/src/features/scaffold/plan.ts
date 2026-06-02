@@ -28,6 +28,7 @@ export type ProjectOptions = {
 	installSkill?: boolean;
 	skillDetected?: boolean;
 	disableCodegen?: boolean;
+	wrapNextjsConfig?: boolean;
 };
 
 /**
@@ -66,6 +67,7 @@ export type ScaffoldingPlan = {
 		path?: string;
 		importPath?: string;
 		bunFeatures?: ("serve" | "build")[];
+		wrapNextjsConfig?: boolean;
 	};
 	/** Metadata for reporting */
 	metadata: {

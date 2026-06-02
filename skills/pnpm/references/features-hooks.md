@@ -228,8 +228,8 @@ function readPackage(pkg, context) {
 pnpm install --reporter=append-only
 ```
 
-{/* 
+<!-- 
   Source references:
   - https://pnpm.io/hooks
   - https://pnpm.io/onlyBuiltDependencies
-  */}
+  -->

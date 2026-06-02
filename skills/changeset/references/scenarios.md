@@ -12,11 +12,11 @@
 Categories with parent slugs now correctly link to their parent categories during the deploy operation.
 ```
 
-## New feature
+## New feature (non-breaking, v0)
 
 ````markdown
 ---
-"arkenv": minor
+"arkenv": patch
 ---
 
 #### Add `arkenv` for type-safe environment variables
@@ -93,16 +93,16 @@ git diff main..HEAD -- src/
 ### Key questions (v0 context)
 
 1. **Did the public API change?**
-   - CLI commands modified → minor
-   - Configuration schema changed → patch/minor
-   - New features added → minor
+   - CLI commands modified → patch (if backward-compatible), minor (if breaking)
+   - Configuration schema changed → patch (additive/non-breaking), minor (breaking)
+   - New features added → patch (non-breaking), minor (breaking)
 
 2. **Could this break existing users?**
    - Yes → minor (Breaking changes in v0 are minor bumps)
    - No → patch
 
 3. **Is this user-facing?**
-   - Yes, new capability → minor
+   - Yes, new capability → patch (non-breaking), minor (breaking)
    - Yes, improved existing → patch
    - No, internal only → patch
 

@@ -27,12 +27,16 @@ describe("Executor", () => {
 			.mockResolvedValue({ status: "updated", file: "tsconfig.json" }),
 		findViteConfig: vi.fn().mockResolvedValue("vite.config.ts"),
 		findBunConfig: vi.fn().mockResolvedValue("bunfig.toml"),
+		findNextjsConfig: vi.fn().mockResolvedValue("next.config.ts"),
 		bootstrapViteConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
 		bootstrapBunConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, instructions: "done" }),
+		bootstrapNextjsConfig: vi
+			.fn()
+			.mockResolvedValue({ success: true, updated: true }),
 		safeAppend: vi.fn().mockResolvedValue(true),
 	};
 
@@ -273,6 +277,46 @@ describe("Executor", () => {
 			["dlx", "skills", "add", "yamcodes/arkenv", "--yes"],
 			plan.cwd,
 		);
+	});
+
+	it("bootstraps nextjs config when planned", async () => {
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			metadata: { ...defaultPlan.metadata, framework: "nextjs" },
+			bootstrap: { framework: "nextjs", importPath: "./env" },
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.findNextjsConfig).toHaveBeenCalled();
+		expect(mockWorkspace.bootstrapNextjsConfig).toHaveBeenCalledWith(
+			"next.config.ts",
+		);
+	});
+
+	it("bootstraps nextjs but skips config if no config file found", async () => {
+		vi.mocked(mockWorkspace.findNextjsConfig).mockResolvedValue(null);
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			metadata: { ...defaultPlan.metadata, framework: "nextjs" },
+			bootstrap: { framework: "nextjs", importPath: "./env" },
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.findNextjsConfig).toHaveBeenCalled();
+		expect(mockWorkspace.bootstrapNextjsConfig).not.toHaveBeenCalled();
+	});
+
+	it("skips nextjs config bootstrap when wrapNextjsConfig is false", async () => {
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			metadata: { ...defaultPlan.metadata, framework: "nextjs" },
+			bootstrap: {
+				framework: "nextjs",
+				importPath: "./env",
+				wrapNextjsConfig: false,
+			},
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.findNextjsConfig).not.toHaveBeenCalled();
+		expect(mockWorkspace.bootstrapNextjsConfig).not.toHaveBeenCalled();
 	});
 
 	it("fails scaffolding when example files collide with existing files in destination", async () => {

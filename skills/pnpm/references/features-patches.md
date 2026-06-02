@@ -196,9 +196,9 @@ Ensure:
 1. Version in `patchedDependencies` matches installed version exactly
 2. Run `pnpm install` after adding patch configuration
 
-{/* 
+<!-- 
   Source references:
   - https://pnpm.io/patches
   - https://pnpm.io/cli/patch
   - https://pnpm.io/cli/patch-commit
-  */}
+  -->
