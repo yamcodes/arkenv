@@ -13,6 +13,12 @@
 			"framework": "nextjs"
 		},
 		{
+			"id": "with-nextjs-strict",
+			"name": "Next.js (Strict)",
+			"description": "Minimal Next.js project using strict split schema layout",
+			"framework": "nextjs"
+		},
+		{
 			"id": "with-vite-react",
 			"name": "React + Vite",
 			"description": "React + Vite + ArkType (Client-side inlining)",
