@@ -172,7 +172,10 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	}
 
 	/**
-	 * Checks the Git working tree status in the target directory.
+	 * Check the Git working tree status in the target directory.
+	 *
+	 * @param cwd The directory to check for Git status
+	 * @returns An object indicating whether the working tree is clean, dirty, not a repo, or unknown
 	 */
 	async checkGitStatus(
 		cwd = process.cwd(),
