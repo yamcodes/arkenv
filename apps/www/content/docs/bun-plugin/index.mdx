@@ -4,11 +4,13 @@ icon: Album
 description: The ArkEnv plugin for Bun's fullstack dev server lets you validate environment variables at build-time and runtime.
 ---
 
-> [!IMPORTANT]
-> This plugin requires [ArkType](https://arktype.io) to be installed.
+:::important
+This plugin requires [ArkType](https://arktype.io) to be installed.
+:::
 
-> [!NOTE]
-> For standard backend applications running on Bun, you likely don't need this plugin. Instead, use the agnostic [core arkenv package](/docs/arkenv) directly. This plugin is specifically designed to handle client-side environment variable inlining when using Bun as a bundler and fullstack server.
+:::note
+For standard backend applications running on Bun, you likely don't need this plugin. Instead, use the agnostic [core arkenv package](/docs/arkenv) directly. This plugin is specifically designed to handle client-side environment variable inlining when using Bun as a bundler and fullstack server.
+:::
 
 The ArkEnv Bun plugin validates your environment variables against your schema when running or building your application. It is specifically designed to work seamlessly with the [Bun fullstack dev server](https://bun.sh/docs/bundler/fullstack) (`Bun.serve`) and the Bun bundler (`Bun.build`). If a variable is missing or invalid, it immediately halts execution with a detailed validation error.
 
@@ -171,8 +173,9 @@ plugins = ["./plugins/arkenv.ts"]
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
-> [!NOTE]
-> When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
+:::note
+When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
+:::
 
 ```ts title="src/env.ts" twoslash
 import { type } from "arkenv";

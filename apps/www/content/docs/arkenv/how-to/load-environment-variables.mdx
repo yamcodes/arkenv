@@ -250,8 +250,9 @@ const env2 = arkenv(
 );
 ```
 
-> [!NOTE]
-> Since `process.env` values are always strings, using `coerce: false` with numeric or boolean schemas will cause validation to fail unless you provide a custom `env` source containing the expected literal types.
+:::note
+Since `process.env` values are always strings, using `coerce: false` with numeric or boolean schemas will cause validation to fail unless you provide a custom `env` source containing the expected literal types.
+:::
 
 ### Custom environment source
 

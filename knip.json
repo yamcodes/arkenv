@@ -42,7 +42,6 @@
 				"import-in-the-middle",
 				"mdast-util-mdx-jsx",
 				"posthog-node",
-				"rehype-github-alerts",
 				"remark-directive",
 				"remark-gemoji",
 				"require-in-the-middle",
