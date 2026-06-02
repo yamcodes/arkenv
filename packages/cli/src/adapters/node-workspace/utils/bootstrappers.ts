@@ -3,7 +3,10 @@ import path from "node:path";
 import dedent from "dedent";
 import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
-import { transformViteConfig } from "@/features/config-mutation";
+import {
+	transformNextjsConfig,
+	transformViteConfig,
+} from "@/features/config-mutation";
 import type { BootstrapResult } from "@/shared/ports";
 
 export async function findViteConfig(
@@ -41,6 +44,61 @@ export async function findBunConfig(
 		}
 	}
 	return null;
+}
+
+export async function findNextjsConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
+	const filenames = [
+		"next.config.ts",
+		"next.config.js",
+		"next.config.mts",
+		"next.config.mjs",
+	];
+	for (const file of filenames) {
+		const fullPath = path.resolve(cwd, file);
+		try {
+			await fsp.access(fullPath);
+			return fullPath;
+		} catch {
+			// ignore missing file
+		}
+	}
+	return null;
+}
+
+export async function bootstrapNextjsConfig(
+	workspace: {
+		readFile(path: string): Promise<string>;
+		writeFile(path: string, content: string): Promise<void>;
+	},
+	filePath: string,
+): Promise<BootstrapResult> {
+	try {
+		const configCode = await workspace.readFile(filePath);
+		const result = transformNextjsConfig({
+			code: configCode,
+		});
+
+		if (result.success && result.updated && result.code) {
+			await workspace.writeFile(filePath, result.code);
+		}
+
+		if (result.success) {
+			return result.updated !== undefined
+				? { success: true, updated: result.updated }
+				: { success: true };
+		}
+		return {
+			success: false,
+			error: result.error!,
+		};
+	} catch (e: unknown) {
+		return {
+			success: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
 }
 
 export async function bootstrapViteConfig(

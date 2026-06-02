@@ -112,6 +112,7 @@ export class Executor {
 			}
 
 			// 4. Framework bootstrapping
+			let nextjsConfigBootstrapped = false;
 			if (plan.bootstrap) {
 				if (plan.bootstrap.framework === "vite") {
 					const viteConfigPath = await this.workspace.findViteConfig(plan.cwd);
@@ -162,6 +163,37 @@ export class Executor {
 							`Failed to automatically generate ${code("env.gen.ts")}. It will be generated when you start your dev server.`,
 						);
 					}
+
+					// Bootstrap Next.js config wrapper
+					this.reporter.step("Bootstrapping Next.js config...");
+					const nextjsConfigPath = await this.workspace.findNextjsConfig(
+						plan.cwd,
+					);
+					if (nextjsConfigPath) {
+						const result =
+							await this.workspace.bootstrapNextjsConfig(nextjsConfigPath);
+						if (result.success) {
+							if (result.updated) {
+								this.reporter.info(
+									`Updated ${code(path.basename(nextjsConfigPath))}`,
+								);
+								nextjsConfigBootstrapped = true;
+							} else {
+								this.reporter.info(
+									`${code(path.basename(nextjsConfigPath))} already uses withArkEnv`,
+								);
+								nextjsConfigBootstrapped = true;
+							}
+						} else {
+							this.reporter.warn(
+								`Could not automatically update ${code(path.basename(nextjsConfigPath))}: ${result.error}`,
+							);
+						}
+					} else {
+						this.reporter.info(
+							`No Next.js config found. Please wrap your config with ${code("withArkEnv")} manually.`,
+						);
+					}
 				}
 			}
 
@@ -184,7 +216,11 @@ export class Executor {
 			}
 
 			// 6. Final reporting
-			const note = getNextStepsNote(plan, skillInstalled);
+			const note = getNextStepsNote(
+				plan,
+				skillInstalled,
+				nextjsConfigBootstrapped,
+			);
 			this.reporter.note(note.message, note.title);
 
 			if (plan.metadata.layout === "strict") {

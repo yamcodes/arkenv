@@ -149,6 +149,54 @@ describe("scaffold utils", () => {
 			);
 		});
 
+		it("omits withArkEnv instruction when nextjs config is bootstrapped", () => {
+			const plan: ScaffoldingPlan = {
+				...basePlan,
+				metadata: {
+					...basePlan.metadata,
+					framework: "nextjs",
+					disableCodegen: false,
+				},
+			};
+			const note = getNextStepsNote(plan, false, true);
+			expect(note.message).not.toContain("withArkEnv");
+			expect(note.message).toContain(
+				`Import and use: ${code('import { env } from "./src/env"')}`,
+			);
+		});
+
+		it("includes withArkEnv instruction even when skill is installed but nextjs config is not bootstrapped", () => {
+			const plan: ScaffoldingPlan = {
+				...basePlan,
+				metadata: {
+					...basePlan.metadata,
+					framework: "nextjs",
+					disableCodegen: false,
+				},
+			};
+			const note = getNextStepsNote(plan, true, false);
+			expect(note.message).toContain(
+				`${code("/arkenv")} - automatically refine your schema`,
+			);
+			expect(note.message).toContain("withArkEnv");
+		});
+
+		it("omits withArkEnv when skill is installed and nextjs config IS bootstrapped", () => {
+			const plan: ScaffoldingPlan = {
+				...basePlan,
+				metadata: {
+					...basePlan.metadata,
+					framework: "nextjs",
+					disableCodegen: false,
+				},
+			};
+			const note = getNextStepsNote(plan, true, true);
+			expect(note.message).toContain(
+				`${code("/arkenv")} - automatically refine your schema`,
+			);
+			expect(note.message).not.toContain("withArkEnv");
+		});
+
 		it("returns nextjs-specific instructions with codegen disabled", () => {
 			const plan: ScaffoldingPlan = {
 				...basePlan,
