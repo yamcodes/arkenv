@@ -128,10 +128,10 @@ export function transformViteConfig(
 }
 
 /**
- * Transforms a Next.js configuration file by wrapping the default export with `withArkEnv`.
+ * Transform a Next.js configuration file by wrapping the default export with `withArkEnv`.
  *
- * @param input The configuration code and optional import path.
- * @returns The result of the bootstrap operation, potentially including the updated code.
+ * @param input The configuration code and optional import path
+ * @returns The result of the bootstrap operation, potentially including the updated code
  */
 export function transformNextjsConfig(
 	input: MutationInput,

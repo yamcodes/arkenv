@@ -46,6 +46,12 @@ export async function findBunConfig(
 	return null;
 }
 
+/**
+ * Search for a Next.js configuration file in the given directory.
+ *
+ * @param cwd The directory to search in (defaults to `process.cwd()`)
+ * @returns The full path to the found config file, or `null` if none exists
+ */
 export async function findNextjsConfig(
 	cwd = process.cwd(),
 ): Promise<string | null> {
@@ -67,6 +73,13 @@ export async function findNextjsConfig(
 	return null;
 }
 
+/**
+ * Bootstrap a Next.js config file by wrapping its default export with `withArkEnv`.
+ *
+ * @param workspace An object providing `readFile` and `writeFile` for the target file
+ * @param filePath The path to the Next.js config file
+ * @returns The result of the bootstrap operation
+ */
 export async function bootstrapNextjsConfig(
 	workspace: {
 		readFile(path: string): Promise<string>;

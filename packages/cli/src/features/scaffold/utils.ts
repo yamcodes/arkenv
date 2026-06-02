@@ -35,6 +35,7 @@ export function getInstallCommand(
  *
  * @param plan The scaffolding plan produced by the planner
  * @param skillInstalled Whether the ArkEnv AI skill was installed during this run
+ * @param nextjsConfigBootstrapped Whether the Next.js config was already wrapped with `withArkEnv`
  * @returns An object with a `title` and a multi-line `message` string
  */
 export function getNextStepsNote(

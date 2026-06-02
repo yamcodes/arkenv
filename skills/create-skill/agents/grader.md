@@ -13,8 +13,8 @@ You have two jobs: grade the outputs, and critique the evals themselves. A passi
 You receive these parameters in your prompt:
 
 - **expectations**: List of expectations to evaluate (strings)
-- **transcript_path**: Path to the execution transcript (markdown file)
-- **outputs_dir**: Directory containing output files from execution
+- **transcript\_path**: Path to the execution transcript (markdown file)
+- **outputs\_dir**: Directory containing output files from execution
 
 ## Process
 
@@ -26,7 +26,7 @@ You receive these parameters in your prompt:
 
 ### Step 2: examine output files
 
-1. List files in outputs_dir
+1. List files in outputs\_dir
 2. Read/examine each file relevant to the expectations. If outputs aren't plain text, use the inspection tools provided in your prompt — don't rely solely on what the transcript says the executor produced.
 3. Note contents, structure, and quality
 
@@ -82,7 +82,7 @@ Keep the bar high. The goal is to flag things the eval author would say "good ca
 
 ### Step 7: write grading results
 
-Save results to `{outputs_dir}/../grading.json` (sibling to outputs_dir).
+Save results to `{outputs_dir}/../grading.json` (sibling to outputs\_dir).
 
 ## Grading criteria
 
@@ -197,23 +197,23 @@ Write a JSON file with this structure:
   - **passed**: Count of passed expectations
   - **failed**: Count of failed expectations
   - **total**: Total expectations evaluated
-  - **pass_rate**: Fraction passed (0.0 to 1.0)
-- **execution_metrics**: Copied from executor's metrics.json (if available)
-  - **output_chars**: Total character count of output files (proxy for tokens)
-  - **transcript_chars**: Character count of transcript
+  - **pass\_rate**: Fraction passed (0.0 to 1.0)
+- **execution\_metrics**: Copied from executor's metrics.json (if available)
+  - **output\_chars**: Total character count of output files (proxy for tokens)
+  - **transcript\_chars**: Character count of transcript
 - **timing**: Wall clock timing from timing.json (if available)
-  - **executor_duration_seconds**: Time spent in executor subagent
-  - **total_duration_seconds**: Total elapsed time for the run
+  - **executor\_duration\_seconds**: Time spent in executor subagent
+  - **total\_duration\_seconds**: Total elapsed time for the run
 - **claims**: Extracted and verified claims from the output
   - **claim**: The statement being verified
   - **type**: "factual", "process", or "quality"
   - **verified**: Boolean - whether the claim holds
   - **evidence**: Supporting or contradicting evidence
-- **user_notes_summary**: Issues flagged by the executor
+- **user\_notes\_summary**: Issues flagged by the executor
   - **uncertainties**: Things the executor wasn't sure about
-  - **needs_review**: Items requiring human attention
+  - **needs\_review**: Items requiring human attention
   - **workarounds**: Places where the skill didn't work as expected
-- **eval_feedback**: Improvement suggestions for the evals (only when warranted)
+- **eval\_feedback**: Improvement suggestions for the evals (only when warranted)
   - **suggestions**: List of concrete suggestions, each with a `reason` and optionally an `assertion` it relates to
   - **overall**: Brief assessment — can be "No suggestions, evals look solid" if nothing to flag
 

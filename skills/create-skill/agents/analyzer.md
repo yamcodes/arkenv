@@ -11,18 +11,18 @@ After the blind comparator determines a winner, the Post-hoc Analyzer "unblids" 
 You receive these parameters in your prompt:
 
 - **winner**: "A" or "B" (from blind comparison)
-- **winner_skill_path**: Path to the skill that produced the winning output
-- **winner_transcript_path**: Path to the execution transcript for the winner
-- **loser_skill_path**: Path to the skill that produced the losing output
-- **loser_transcript_path**: Path to the execution transcript for the loser
-- **comparison_result_path**: Path to the blind comparator's output JSON
-- **output_path**: Where to save the analysis results
+- **winner\_skill\_path**: Path to the skill that produced the winning output
+- **winner\_transcript\_path**: Path to the execution transcript for the winner
+- **loser\_skill\_path**: Path to the skill that produced the losing output
+- **loser\_transcript\_path**: Path to the execution transcript for the loser
+- **comparison\_result\_path**: Path to the blind comparator's output JSON
+- **output\_path**: Where to save the analysis results
 
 ## Process
 
 ### Step 1: read comparison result
 
-1. Read the blind comparator's output at comparison_result_path
+1. Read the blind comparator's output at comparison\_result\_path
 2. Note the winning side (A or B), the reasoning, and any scores
 3. Understand what the comparator valued in the winning output
 
@@ -200,17 +200,17 @@ Review all benchmark run results and generate freeform notes that help the user 
 
 You receive these parameters in your prompt:
 
-- **benchmark_data_path**: Path to the in-progress benchmark.json with all run results
-- **skill_path**: Path to the skill being benchmarked
-- **output_path**: Where to save the notes (as JSON array of strings)
+- **benchmark\_data\_path**: Path to the in-progress benchmark.json with all run results
+- **skill\_path**: Path to the skill being benchmarked
+- **output\_path**: Where to save the notes (as JSON array of strings)
 
 ## Process
 
 ### Step 1: read benchmark data
 
 1. Read the benchmark.json containing all run results
-2. Note the configurations tested (with_skill, without_skill)
-3. Understand the run_summary aggregates already calculated
+2. Note the configurations tested (with\_skill, without\_skill)
+3. Understand the run\_summary aggregates already calculated
 
 ### Step 2: analyze per-assertion patterns
 
@@ -232,7 +232,7 @@ Look for patterns across evals:
 
 ### Step 4: analyze metrics patterns
 
-Look at time_seconds, tokens, tool_calls:
+Look at time\_seconds, tokens, tool\_calls:
 
 - Does the skill significantly increase execution time?
 - Is there high variance in resource usage?
@@ -282,4 +282,4 @@ Save notes to `{output_path}` as a JSON array of strings:
 - Suggest improvements to the skill (that's for the improvement step, not benchmarking)
 - Make subjective quality judgments ("the output was good/bad")
 - Speculate about causes without evidence
-- Repeat information already in the run_summary aggregates
+- Repeat information already in the run\_summary aggregates

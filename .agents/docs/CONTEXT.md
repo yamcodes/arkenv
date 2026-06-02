@@ -66,7 +66,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 - **Files**: kebab-case (`create-env.ts`)
 - **Functions**: camelCase (`createEnv`)
 - **Types**: PascalCase (`ArkEnvError`)
-- **Constants**: UPPER_SNAKE_CASE for environment variables
+- **Constants**: UPPER\_SNAKE\_CASE for environment variables
 
 **Code Quality Rules:**
 
