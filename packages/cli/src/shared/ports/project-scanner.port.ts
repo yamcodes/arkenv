@@ -92,4 +92,13 @@ export type ProjectScannerPort = {
 	 * Detects whether the arkenv skill is already installed.
 	 */
 	hasSkill(cwd?: string): Promise<boolean>;
+	/**
+	 * Check the Git working tree status in the target directory.
+	 *
+	 * @param cwd The directory to check for Git status
+	 * @returns An object indicating whether the working tree is clean, dirty, not a repo, or unknown
+	 */
+	checkGitStatus(
+		cwd?: string,
+	): Promise<{ status: "clean" | "dirty" | "not_a_repo" | "unknown" }>;
 };

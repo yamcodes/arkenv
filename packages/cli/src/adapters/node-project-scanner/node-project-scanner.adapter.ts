@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import type {
@@ -168,5 +169,40 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check the Git working tree status in the target directory.
+	 *
+	 * @param cwd The directory to check for Git status
+	 * @returns An object indicating whether the working tree is clean, dirty, not a repo, or unknown
+	 */
+	async checkGitStatus(
+		cwd = process.cwd(),
+	): Promise<{ status: "clean" | "dirty" | "not_a_repo" | "unknown" }> {
+		try {
+			const stdout = execSync("git status --porcelain", {
+				cwd,
+				encoding: "utf-8",
+			});
+			return stdout.trim().length === 0
+				? { status: "clean" }
+				: { status: "dirty" };
+		} catch (error) {
+			const err = error as { code?: string; stderr?: string };
+			if (err.code === "ENOENT") {
+				console.debug(
+					"Git is not installed on this system. Skipping git status check.",
+				);
+				return { status: "not_a_repo" };
+			}
+			if (
+				typeof err.stderr === "string" &&
+				err.stderr.includes("not a git repository")
+			) {
+				return { status: "not_a_repo" };
+			}
+			return { status: "unknown" };
+		}
 	}
 }

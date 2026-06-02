@@ -64,13 +64,16 @@ describe("cli smoke tests", () => {
 		);
 
 		try {
-			const { stdout } = await exec(`node ${cliPath} init --agent --yes`, {
-				env: {
-					...process.env,
-					INIT_CWD: tempDir,
-					SKIP_INSTALL: "true",
+			const { stdout } = await exec(
+				`node ${cliPath} init --agent --yes --force`,
+				{
+					env: {
+						...process.env,
+						INIT_CWD: tempDir,
+						SKIP_INSTALL: "true",
+					},
 				},
-			});
+			);
 
 			expect(stdout).toContain('"status": "success"');
 

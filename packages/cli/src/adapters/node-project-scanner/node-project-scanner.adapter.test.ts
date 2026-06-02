@@ -1,7 +1,17 @@
+import { execSync } from "node:child_process";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("node:child_process", async (importOriginal) => {
+	const mod = (await importOriginal()) as typeof import("node:child_process");
+	return {
+		...mod,
+		execSync: vi.fn(mod.execSync),
+	};
+});
+
 import { NodeProjectScannerAdapter } from "./node-project-scanner.adapter";
 
 describe("NodeProjectScannerAdapter", () => {
@@ -364,6 +374,58 @@ API_KEY=
 		it("returns false if no skill indicators exist", async () => {
 			const result = await scanner.hasSkill(tempDir);
 			expect(result).toBe(false);
+		});
+	});
+
+	describe("checkGitStatus", () => {
+		it("returns not_a_repo when directory is not a git repository", async () => {
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("not_a_repo");
+		});
+
+		it("returns clean when git repository has no changes", async () => {
+			execSync("git init", { cwd: tempDir });
+			execSync('git config user.email "test@test.com"', { cwd: tempDir });
+			execSync('git config user.name "Test"', { cwd: tempDir });
+			await fsp.writeFile(path.join(tempDir, "README.md"), "# test");
+			execSync("git add .", { cwd: tempDir });
+			execSync("git commit -m 'initial'", { cwd: tempDir });
+
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("clean");
+		});
+
+		it("returns not_a_repo when git is not installed (ENOENT)", async () => {
+			vi.mocked(execSync).mockImplementationOnce(() => {
+				const err = new Error("spawn git ENOENT");
+				(err as NodeJS.ErrnoException).code = "ENOENT";
+				throw err;
+			});
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("not_a_repo");
+		});
+
+		it("returns unknown when git returns an unexpected error", async () => {
+			vi.mocked(execSync).mockImplementationOnce(() => {
+				const err = new Error("git error");
+				(err as any).stderr = "fatal: some unexpected error";
+				throw err;
+			});
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("unknown");
+		});
+
+		it("returns dirty when git repository has uncommitted changes", async () => {
+			execSync("git init", { cwd: tempDir });
+			execSync('git config user.email "test@test.com"', { cwd: tempDir });
+			execSync('git config user.name "Test"', { cwd: tempDir });
+			await fsp.writeFile(path.join(tempDir, "README.md"), "# test");
+			execSync("git add .", { cwd: tempDir });
+			execSync("git commit -m 'initial'", { cwd: tempDir });
+			await fsp.writeFile(path.join(tempDir, "new-file.txt"), "dirty");
+
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("dirty");
 		});
 	});
 });
