@@ -9,7 +9,6 @@ import { createEnvInternal } from "./create-env";
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  * @throws An error if any client-side variable is not prefixed with `NEXT_PUBLIC_`
  * @throws An error if any client or shared variable is missing from `runtimeEnv`
- * @deprecated Use the codegen workflow by wrapping your config with `withArkEnv` from `@arkenv/nextjs/config` and importing `createEnv` from `./env.gen.ts`.
  */
 export function createEnv<
 	const TServer extends SchemaShape = {},
@@ -35,8 +34,6 @@ export { type } from "arkenv";
  * ArkEnv's Next.js integration export, an alias for {@link createEnv}
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
- *
- * @deprecated Use the codegen workflow by wrapping your config with `withArkEnv` from `@arkenv/nextjs/config` and importing `createEnv` from `./env.gen.ts`.
  */
 const arkenv = createEnv;
 export default arkenv;

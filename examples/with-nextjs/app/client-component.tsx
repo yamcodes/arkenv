@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { env } from "../env";
+import { env } from "@/env";
 
 export default function ClientComponent() {
 	const [secretError, setSecretError] = useState<string | null>(null);

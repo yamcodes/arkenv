@@ -1,5 +1,21 @@
 # @ArkEnv/CLI
 
+## 0.2.9
+
+### Patch Changes
+
+- #### Update Next.js scaffold templates to use default import `arkenv` _[`#1140`](https://github.com/yamcodes/arkenv/pull/1140) [`befcefa`](https://github.com/yamcodes/arkenv/commit/befcefa83f6823f4c3f5e54a83ee5ae1112e1e55) [@yamcodes](https://github.com/yamcodes)_
+
+  Change the generated `env.ts` templates to import the default `arkenv` factory from the generated config helper instead of the named `createEnv` import, ensuring compatibility with the ArkType IDE extension.
+
+- #### Improve readability of recommended framework option in init wizard _[`2bd5cd4`](https://github.com/yamcodes/arkenv/commit/2bd5cd4f71fc091348df2fde2c3ccddd6d89d9d9) [@yamcodes](https://github.com/yamcodes)_
+
+  Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
+
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+
+  Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
+
 ## 0.2.8
 
 ### Patch Changes

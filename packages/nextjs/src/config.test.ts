@@ -1,6 +1,29 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+let useMockWatcher = false;
+const mockClose = vi.fn().mockResolvedValue(undefined);
+const mockWatch = vi.fn().mockImplementation(() => {
+	return {
+		on: vi.fn().mockReturnThis(),
+		close: mockClose,
+	};
+});
+
+vi.mock("chokidar", async (importOriginal) => {
+	const original = await importOriginal<typeof import("chokidar")>();
+	return {
+		...original,
+		watch: (schemaPath: any, options?: any) => {
+			if (useMockWatcher) {
+				return mockWatch(schemaPath, options);
+			}
+			return original.watch(schemaPath, options);
+		},
+	};
+});
+
 import {
 	extractClientKeys,
 	extractKeys,
@@ -12,8 +35,8 @@ import {
 describe("config key extraction", () => {
 	it("should extract client and shared keys correctly", () => {
 		const source = `
-			import { createEnv } from "./env.gen";
-			export const env = createEnv({
+			import arkenv from "./env.gen";
+			export const env = arkenv({
 				server: {
 					DATABASE_URL: "string",
 				},
@@ -38,7 +61,7 @@ describe("config key extraction", () => {
 
 	it("should handle single-line comments", () => {
 		const source = `
-			export const env = createEnv({
+			export const env = arkenv({
 				client: {
 					// This is a comment
 					NEXT_PUBLIC_VAR_1: "string",
@@ -54,7 +77,7 @@ describe("config key extraction", () => {
 
 	it("should handle multi-line comments", () => {
 		const source = `
-			export const env = createEnv({
+			export const env = arkenv({
 				client: {
 					/*
 					* Multi-line comment:
@@ -70,7 +93,7 @@ describe("config key extraction", () => {
 
 	it("should ignore string values that contain colons", () => {
 		const source = `
-			export const env = createEnv({
+			export const env = arkenv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string = 'http://localhost:3000'",
 					NEXT_PUBLIC_NESTED: 'string = "foo:bar"',
@@ -89,7 +112,7 @@ describe("config key extraction", () => {
 
 	it("should extract quoted keys correctly", () => {
 		const source = `
-			export const env = createEnv({
+			export const env = arkenv({
 				client: {
 					"NEXT_PUBLIC_VAR_1": "string",
 					'NEXT_PUBLIC_VAR_2': "string",
@@ -103,7 +126,7 @@ describe("config key extraction", () => {
 
 	it("should ignore braces inside string templates or comments in extractBlock", () => {
 		const source = `
-			export const env = createEnv({
+			export const env = arkenv({
 				client: {
 					NEXT_PUBLIC_VAR_1: "string = '{not-a-brace}'",
 					// {comment-brace}
@@ -118,7 +141,7 @@ describe("config key extraction", () => {
 
 	it("should ignore nested keys inside complex values in parseBlockKeys", () => {
 		const source = `
-			export const env = createEnv({
+			export const env = arkenv({
 				client: {
 					NEXT_PUBLIC_VAR_1: type("string", { description: "nested:key" }),
 					NEXT_PUBLIC_VAR_2: "string",
@@ -132,7 +155,7 @@ describe("config key extraction", () => {
 
 	it("should extract keys when using ArkType 'type({...})' wrapper", () => {
 		const source = `
-			export const env = createEnv({
+			export const env = arkenv({
 				client: type({
 					NEXT_PUBLIC_VAR_1: "string",
 					NEXT_PUBLIC_VAR_2: "string",
@@ -169,8 +192,8 @@ describe("codegen process", () => {
 		fs.writeFileSync(
 			schemaPath,
 			`
-			import { createEnv } from "./env.gen";
-			export const env = createEnv({
+			import arkenv from "./env.gen";
+			export const env = arkenv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
@@ -220,7 +243,7 @@ describe("codegen process", () => {
 		fs.writeFileSync(
 			schemaPath,
 			`
-			export const env = createEnv({
+			export const env = arkenv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				}
@@ -281,7 +304,7 @@ describe("withArkEnv wrapper", () => {
 		fs.writeFileSync(
 			schemaPath,
 			`
-			export const env = createEnv({
+			export const env = arkenv({
 				client: { NEXT_PUBLIC_API_URL: "string" }
 			});
 			`,
@@ -376,13 +399,48 @@ describe("withArkEnv wrapper", () => {
 		// Only create the schema file, not the strict layout files
 		fs.writeFileSync(
 			schemaPath,
-			`export const env = createEnv({ client: { NEXT_PUBLIC_VAR: "string" } });`,
+			`export const env = arkenv({ client: { NEXT_PUBLIC_VAR: "string" } });`,
 			"utf-8",
 		);
 
 		expect(() =>
 			withArkEnv({ reactStrictMode: true }, { schemaPath, layout: "strict" }),
 		).toThrow("[ArkEnv] Strict layout requires");
+	});
+
+	it("should close the previous watcher when initialized multiple times in development", () => {
+		useMockWatcher = true;
+		mockWatch.mockClear();
+		mockClose.mockClear();
+
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`export const env = createEnv({ client: { NEXT_PUBLIC_API_URL: "string" } });`,
+			"utf-8",
+		);
+
+		const originalNodeEnv = process.env.NODE_ENV;
+		process.env.NODE_ENV = "development";
+
+		try {
+			// Call withArkEnv once
+			withArkEnv({ reactStrictMode: true }, { schemaPath });
+			expect(mockWatch).toHaveBeenCalledTimes(1);
+
+			// Call withArkEnv a second time
+			withArkEnv({ reactStrictMode: true }, { schemaPath });
+			expect(mockWatch).toHaveBeenCalledTimes(2);
+
+			expect(mockClose).toHaveBeenCalledTimes(1);
+		} finally {
+			process.env.NODE_ENV = originalNodeEnv;
+			delete (globalThis as any).__arkenv_watcher__;
+			useMockWatcher = false;
+		}
 	});
 });
 

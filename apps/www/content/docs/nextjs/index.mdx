@@ -19,7 +19,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
   <Step>
     ### Configure environment
 
-    Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define your schemas. Import `createEnv` from the auto-generated `./generated/env.gen.ts` helper file (rather than importing directly from `@arkenv/nextjs`):
+    Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define your schemas. Import `arkenv` from the auto-generated `./generated/env.gen.ts` helper file (rather than importing directly from `@arkenv/nextjs`):
 
     ```ts title="src/env.ts" twoslash
     // @filename: generated/env.gen.ts
@@ -27,7 +27,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
 
-    export function createEnv<
+    export default function arkenv<
     	const TServer = {},
     	const TClient = {},
     	const TShared = {},
@@ -41,9 +41,9 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
 
     // @filename: env.ts
     // ---cut---
-    import { createEnv } from "./generated/env.gen";
+    import arkenv from "./generated/env.gen";
 
-    export const env = createEnv({
+    export const env = arkenv({
     	server: {
     		DATABASE_URL: "string",
     	},
@@ -99,7 +99,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
-    export function createEnv<
+    export default function arkenv<
     	const TServer = {},
     	const TClient = {},
     	const TShared = {},
@@ -112,8 +112,8 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     }
 
     // @filename: env.ts
-    import { createEnv } from "./generated/env.gen";
-    export const env = createEnv({
+    import arkenv from "./generated/env.gen";
+    export const env = arkenv({
     	server: { DATABASE_URL: "string" },
     	client: { NEXT_PUBLIC_API_URL: "string" },
     });
@@ -134,7 +134,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
-    export function createEnv<
+    export default function arkenv<
     	const TServer = {},
     	const TClient = {},
     	const TShared = {},
@@ -147,8 +147,8 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     }
 
     // @filename: env.ts
-    import { createEnv } from "./generated/env.gen";
-    export const env = createEnv({
+    import arkenv from "./generated/env.gen";
+    export const env = arkenv({
     	server: { DATABASE_URL: "string" },
     	client: { NEXT_PUBLIC_API_URL: "string" },
     });
@@ -394,7 +394,7 @@ Here is an example using Zod with the 1-file codegen layout:
 import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
 export { type } from "@arkenv/nextjs";
-export function createEnv<
+export default function arkenv<
 	const TServer = {},
 	const TClient = {},
 	const TShared = {},
@@ -408,10 +408,10 @@ export function createEnv<
 
 // @filename: env.ts
 // ---cut---
-import { createEnv } from "./generated/env.gen";
+import arkenv from "./generated/env.gen";
 import { z } from "zod";
 
-export const env = createEnv({
+export const env = arkenv({
 	server: {
 		DATABASE_URL: z.string().url(),
 	},
@@ -457,3 +457,20 @@ You can freely mix Zod or Valibot schemas with the 3-file layout:
     ```
   </Tab>
 </Tabs>
+
+---
+
+## The Danger of Shared Variables
+
+> [!WARNING]
+> Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
+
+### The Undefined Fallback Bug
+
+Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
+If you define a custom variable in `shared` with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
+
+- On the **server**, ArkEnv reads the actual value from the environment (e.g. `PORT = 8080`).
+- On the **client**, Next.js strips `process.env.PORT` to `undefined`, causing ArkEnv to fall back to the default value (`3000`).
+
+This asymmetry causes React hydration mismatches and corrupts client-side state. Always place non-prefixed variables under `server` so they are strictly server-only.

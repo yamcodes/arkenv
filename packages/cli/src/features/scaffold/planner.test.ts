@@ -341,7 +341,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain(
-			'import { createEnv } from "@/generated/env.gen"',
+			'import arkenv from "@/generated/env.gen"',
 		);
 	});
 
@@ -370,7 +370,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain(
-			'import { createEnv } from "@/generated/env.gen"',
+			'import arkenv from "@/generated/env.gen"',
 		);
 	});
 
@@ -399,7 +399,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain(
-			'import { createEnv } from "./generated/env.gen"',
+			'import arkenv from "./generated/env.gen"',
 		);
 	});
 
@@ -431,7 +431,7 @@ describe("Planner", () => {
 			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
 		);
 		expect(clientFile?.content).toContain(
-			'import { createEnv } from "@/env/generated/env.gen"',
+			'import arkenv from "@/env/generated/env.gen"',
 		);
 	});
 });

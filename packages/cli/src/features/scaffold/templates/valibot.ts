@@ -59,8 +59,8 @@ export const valibotTemplate = (
 				extraImports: `import * as v from "valibot";`,
 				serverField: (key) => `\t\t${key}: v.optional(v.string()),`,
 				clientField: (key) => `\t\t${key}: v.optional(v.string()),`,
-				sharedField: (key, isPort) =>
-					`\t\t${key}: ${isPort ? "v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)" : 'v.optional(v.picklist(["development", "production", "test"]), "development")'},`,
+				sharedField: (key) =>
+					`\t\t${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`,
 				defaultServerFields: [
 					`\t\tDATABASE_URL: v.optional(v.pipe(v.string(), v.url()), "postgres://localhost:5432/mydb"),`,
 				],

@@ -93,15 +93,15 @@ Create a file in `.changeset/` with a random name:
 "arkenv": minor
 ---
 
-#### Add `createEnv` helper for improved type inference
+#### Add `arkenv` helper for improved type inference
 
 Usage:
 
 ```ts
-import { createEnv } from "arkenv"
+import arkenv from "arkenv"
 import { type } from "arktype"
 
-export const env = createEnv({
+export const env = arkenv({
   schema: {
     NODE_ENV: type("'development' | 'production' | 'test'"),
     PORT: type.number.parseable()

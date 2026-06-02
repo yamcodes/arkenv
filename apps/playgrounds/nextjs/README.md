@@ -8,10 +8,10 @@ This example demonstrates how to use [@arkenv/nextjs](https://arkenv.js.org/docs
 
 ## Setup
 
-The example defines the environment schema in a single `env.ts` file, importing `arkenv` from the auto-generated `./generated/env.gen` helper:
+The example defines the environment schema in a single `env.ts` file:
 
 ```ts title="env.ts"
-import arkenv from "./generated/env.gen";
+import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
 	server: {
@@ -31,7 +31,7 @@ export const env = arkenv({
 1. **Server Schema**: Variables that are only accessible on the server.
 2. **Client Schema**: Variables that are exposed to the client (must begin with `NEXT_PUBLIC_` to match Next.js conventions).
 3. **Shared Schema**: Common variables like `NODE_ENV`.
-4. **Configuration Wrapper**: The Next.js configuration `next.config.ts` wraps the config object with `withArkEnv` from `@arkenv/nextjs/config`. This statically scans `env.ts` and automatically generates the `generated/env.gen.ts` file containing the pre-filled `runtimeEnv` block.
+4. **Automatic Codegen**: ArkEnv automatically parses the keys and generates the `generated/env.gen.ts` file via the `withArkEnv` wrapper in `next.config.ts`, avoiding the need for a manual `runtimeEnv` block.
 
 ## Usage in Components
 

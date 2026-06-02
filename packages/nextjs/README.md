@@ -32,13 +32,13 @@ export default withArkEnv(nextConfig);
 
 ### 2. Define your schema in `env.ts`
 
-Import `createEnv` from the generated `./generated/env.gen` file instead of the package:
+Import `arkenv` from the generated `./generated/env.gen` file instead of the package:
 
 ```typescript
 // src/env.ts
-import { createEnv } from "./generated/env.gen";
+import arkenv from "./generated/env.gen";
 
-export const env = createEnv({
+export const env = arkenv({
   server: {
     DATABASE_URL: "string",
     STRIPE_API_KEY: "string",
@@ -79,11 +79,28 @@ Then, import from the custom location:
 
 ```typescript
 // src/env.ts
-import { createEnv } from "./generated/env.gen";
+import arkenv from "./generated/env.gen";
 
-export const env = createEnv({
+export const env = arkenv({
   client: {
     NEXT_PUBLIC_API_URL: "string",
   }
 });
 ```
+
+---
+
+## The Danger of Shared Variables
+
+> [!WARNING]
+> Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
+
+### The Undefined Fallback Bug
+
+Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
+If you define a custom variable in `shared` with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
+
+- On the **server**, ArkEnv reads the actual value from the environment (e.g. `PORT = 8080`).
+- On the **client**, Next.js strips `process.env.PORT` to `undefined`, causing ArkEnv to fall back to the default value (`3000`).
+
+This asymmetry causes React hydration mismatches and corrupts client-side state. Always place non-prefixed variables under `server` so they are strictly server-only.

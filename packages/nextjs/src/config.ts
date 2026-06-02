@@ -2,6 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { watch as chokidarWatch } from "chokidar";
 
+declare global {
+	// eslint-disable-next-line no-var
+	var __arkenv_watcher__: import("chokidar").FSWatcher | undefined;
+}
+
 /**
  * Configuration options for the ArkEnv Next.js integration.
  *
@@ -54,8 +59,6 @@ export type ArkEnvConfigOptions = {
 	 */
 	layout?: "simple" | "strict";
 };
-
-let watcherInitialized = false;
 
 /**
  * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts`.
@@ -281,11 +284,22 @@ function watchSchema(
 	outputPath: string,
 	layout?: "simple" | "strict",
 ) {
-	if (watcherInitialized) return;
-	watcherInitialized = true;
+	const previousWatcher = globalThis.__arkenv_watcher__;
+	if (previousWatcher && typeof previousWatcher.close === "function") {
+		previousWatcher.close().catch((err: unknown) => {
+			const message = err instanceof Error ? err.message : String(err);
+			// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
+			console.error(
+				`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
+			);
+		});
+	}
 
 	try {
-		chokidarWatch(schemaPath, { ignoreInitial: true }).on("change", () => {
+		const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
+		globalThis.__arkenv_watcher__ = watcher;
+
+		watcher.on("change", () => {
 			try {
 				const mainSchemaPath = Array.isArray(schemaPath)
 					? schemaPath[0]
