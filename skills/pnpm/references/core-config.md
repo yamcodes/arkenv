@@ -130,7 +130,7 @@ package-extensions[foo@1].peerDependencies.bar=*
 Settings are read in order (later overrides earlier):
 
 1. `/etc/npmrc` - Global config
-2. `~/.npmrc` - User config  
+2. `~/.npmrc` - User config
 3. `<project>/.npmrc` - Project config
 4. Environment variables: `npm_config_<key>=<value>`
 5. `pnpm-workspace.yaml` settings field
@@ -180,9 +180,9 @@ pnpm reads specific fields from `package.json`:
 3. **Catalogs**: Centralized version management
 4. **Content-addressable store**: Shared across projects
 
-<!-- 
+```text
 Source references:
 - https://pnpm.io/pnpm-workspace_yaml
 - https://pnpm.io/npmrc
 - https://pnpm.io/package_json
--->
+```

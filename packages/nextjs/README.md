@@ -92,7 +92,7 @@ export const env = arkenv({
 
 ## The Danger of Shared Variables
 
-> \[!WARNING]
+> [!WARNING]
 > Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
 
 ### The Undefined Fallback Bug

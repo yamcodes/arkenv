@@ -126,7 +126,7 @@ App Error Boundary          → catches unrecoverable crashes
 | Hooks       | camelCase, `use` prefix | `useUsers.ts`             |
 | Utilities   | camelCase               | `formatDate.ts`           |
 | Types       | PascalCase              | `User`, `CreateUserInput` |
-| Constants   | UPPER\_SNAKE\_CASE      | `MAX_RETRIES`             |
+| Constants   | UPPER_SNAKE_CASE      | `MAX_RETRIES`             |
 | Directories | kebab-case              | `user-settings/`          |
 | Files       | kebab-case              | `user-card.tsx`           |
 

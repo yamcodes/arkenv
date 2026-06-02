@@ -9,7 +9,7 @@ With ArkEnv, this can be typesafe with the one-time setup below. After this, eac
 
 ## Setup
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > You must have the core `arkenv` package installed as a dependency in your project. See [ArkEnv quickstart](/docs/arkenv/quickstart) for instructions.
 
 Add this to a `vite-env.d.ts` file in your `src` directory:
@@ -38,7 +38,7 @@ interface ViteTypeOptions {
 }
 ```
 
-> \[!NOTE]
+> [!NOTE]
 > The `interface ImportMeta` block is required in some TypeScript configurations to ensure that the augmented `ImportMetaEnv` is correctly recognized on `import.meta.env`.
 
 ## Usage
@@ -113,7 +113,7 @@ interface ViteTypeOptions {
 }
 ```
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > **Imports will break type augmentation**
 >
 > If the `ImportMetaEnv` augmentation does not work, make sure you do not have any `import` statements in `vite-env.d.ts`. See [the TypeScript documentation](https://www.typescriptlang.org/docs/handbook/2/modules.html#how-javascript-modules-are-defined) for more information.
