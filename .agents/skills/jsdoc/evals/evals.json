@@ -1,0 +1,66 @@
+{
+	"skill_name": "jsdoc",
+	"evals": [
+		{
+			"id": 1,
+			"prompt": "Add JSDoc to the `processUserLogin` function in `auth.ts`",
+			"expected_output": "The `processUserLogin` function should have a JSDoc block documenting its inputs and outputs without type tags, using the imperative verb form.",
+			"files": [],
+			"assertions": [
+				"JSDoc block is added to processUserLogin",
+				"JSDoc contains @param for username, passwordHash, rememberMe, ipAddress",
+				"JSDoc contains @returns tag",
+				"JSDoc does not contain any type annotations like {string} or {boolean}",
+				"JSDoc description starts with an imperative verb"
+			]
+		},
+		{
+			"id": 2,
+			"prompt": "Update the jsdoc for all functions in `utils/math.ts`",
+			"expected_output": "All non-trivial functions in utils/math.ts should have updated JSDoc blocks following the specified rules. Simple getters should be ignored.",
+			"files": [],
+			"assertions": [
+				"JSDoc block is added to add and calculateCompoundInterest",
+				"JSDoc either omitted from getPi, or follows all rules",
+				"JSDoc does not contain any type annotations",
+				"JSDoc description starts with an imperative verb"
+			]
+		},
+		{
+			"id": 3,
+			"prompt": "Go through the files changed in the current PR and add jsdoc to any new functions.",
+			"expected_output": "Only functions that are newly added in the current PR should have JSDoc added/updated, following the specified rules.",
+			"files": [],
+			"assertions": [
+				"JSDoc block is added to upgradePlan and cancelSubscription",
+				"createSubscription JSDoc is left unchanged",
+				"JSDoc does not contain any type annotations on newly added docs",
+				"JSDoc description starts with an imperative verb on newly added docs"
+			]
+		},
+		{
+			"id": 4,
+			"prompt": "Go through the files changed in the current PR and ensure jsdoc is updated for both new and existing functions.",
+			"expected_output": "All functions in the changed files should be checked. Missing JSDoc should be added. Existing JSDoc should only be updated if there is a typo or meaning change, avoiding redundant rephrasings.",
+			"files": [],
+			"assertions": [
+				"JSDoc block is added to upgradePlan and cancelSubscription",
+				"createSubscription JSDoc typo 'typo' is corrected or intent is updated",
+				"createSubscription JSDoc is not completely rewritten in a redundant way",
+				"JSDoc does not contain any type annotations on any functions"
+			]
+		},
+		{
+			"id": 5,
+			"prompt": "Add JSDoc to the `parseData` function in `parser.ts`",
+			"expected_output": "The JSDoc block should include a @throws tag since the function throws an error.",
+			"files": [],
+			"assertions": [
+				"JSDoc contains @throws tag",
+				"JSDoc contains @param and @returns tags",
+				"JSDoc does not contain any type annotations",
+				"JSDoc description starts with an imperative verb"
+			]
+		}
+	]
+}
