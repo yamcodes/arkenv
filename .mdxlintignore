@@ -6,6 +6,7 @@ tooling/playwright-www
 .github
 .github/skills
 skills
+**/CHANGELOG.md
 /README.md
 node_modules
 dist
