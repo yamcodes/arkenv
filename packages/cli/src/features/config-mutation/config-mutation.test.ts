@@ -38,7 +38,7 @@ describe("config-mutation", () => {
 			expect(result.code).toContain(
 				'import arkenvVitePlugin from "@arkenv/vite-plugin"',
 			);
-			expect(result.code).toContain('import {Env} from "./env"');
+			expect(result.code).toContain('import { Env } from "./env"');
 			expect(result.code).toContain("arkenvVitePlugin(Env)");
 		});
 

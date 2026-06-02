@@ -304,6 +304,21 @@ describe("Executor", () => {
 		expect(mockWorkspace.bootstrapNextjsConfig).not.toHaveBeenCalled();
 	});
 
+	it("skips nextjs config bootstrap when wrapNextjsConfig is false", async () => {
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			metadata: { ...defaultPlan.metadata, framework: "nextjs" },
+			bootstrap: {
+				framework: "nextjs",
+				importPath: "./env",
+				wrapNextjsConfig: false,
+			},
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.findNextjsConfig).not.toHaveBeenCalled();
+		expect(mockWorkspace.bootstrapNextjsConfig).not.toHaveBeenCalled();
+	});
+
 	it("fails scaffolding when example files collide with existing files in destination", async () => {
 		const newProjectPlan: ScaffoldingPlan = {
 			...defaultPlan,

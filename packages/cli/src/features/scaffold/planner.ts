@@ -302,6 +302,10 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			framework: options.framework,
 			bunFeatures:
 				options.framework === "bun-fullstack" ? options.bunFeatures : undefined,
+			wrapNextjsConfig:
+				options.framework === "nextjs"
+					? options.wrapNextjsConfig !== false
+					: undefined,
 		});
 	}
 

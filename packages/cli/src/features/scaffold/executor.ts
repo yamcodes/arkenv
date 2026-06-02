@@ -165,34 +165,36 @@ export class Executor {
 					}
 
 					// Bootstrap Next.js config wrapper
-					this.reporter.step("Bootstrapping Next.js config...");
-					const nextjsConfigPath = await this.workspace.findNextjsConfig(
-						plan.cwd,
-					);
-					if (nextjsConfigPath) {
-						const result =
-							await this.workspace.bootstrapNextjsConfig(nextjsConfigPath);
-						if (result.success) {
-							if (result.updated) {
-								this.reporter.info(
-									`Updated ${code(path.basename(nextjsConfigPath))}`,
-								);
-								nextjsConfigBootstrapped = true;
+					if (plan.bootstrap.wrapNextjsConfig !== false) {
+						this.reporter.step("Bootstrapping Next.js config...");
+						const nextjsConfigPath = await this.workspace.findNextjsConfig(
+							plan.cwd,
+						);
+						if (nextjsConfigPath) {
+							const result =
+								await this.workspace.bootstrapNextjsConfig(nextjsConfigPath);
+							if (result.success) {
+								if (result.updated) {
+									this.reporter.info(
+										`Updated ${code(path.basename(nextjsConfigPath))}`,
+									);
+									nextjsConfigBootstrapped = true;
+								} else {
+									this.reporter.info(
+										`${code(path.basename(nextjsConfigPath))} already uses withArkEnv`,
+									);
+									nextjsConfigBootstrapped = true;
+								}
 							} else {
-								this.reporter.info(
-									`${code(path.basename(nextjsConfigPath))} already uses withArkEnv`,
+								this.reporter.warn(
+									`Could not automatically update ${code(path.basename(nextjsConfigPath))}: ${result.error}`,
 								);
-								nextjsConfigBootstrapped = true;
 							}
 						} else {
-							this.reporter.warn(
-								`Could not automatically update ${code(path.basename(nextjsConfigPath))}: ${result.error}`,
+							this.reporter.info(
+								`No Next.js config found. Please wrap your config with ${code("withArkEnv")} manually.`,
 							);
 						}
-					} else {
-						this.reporter.info(
-							`No Next.js config found. Please wrap your config with ${code("withArkEnv")} manually.`,
-						);
 					}
 				}
 			}

@@ -15,6 +15,17 @@ export type MutationInput = {
 };
 
 /**
+ * Normalizes named import spacing in generated code.
+ * magicast produces `import {Foo}`; this ensures `import { Foo }`.
+ */
+function normalizeImportSpacing(code: string): string {
+	return code.replace(
+		/import\s*\{([^\n}]*)\}\s*from/g,
+		(match, p1) => `import { ${p1.trim()} } from`,
+	);
+}
+
+/**
  * Transforms a Vite configuration file by injecting the ArkEnv Vite plugin.
  *
  * @param input The configuration code and optional import path.
@@ -115,6 +126,7 @@ export function transformViteConfig(
 			? "arkenvVitePlugin(Env)"
 			: "arkenvVitePlugin()";
 		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
+		code = normalizeImportSpacing(code);
 
 		return { success: true, updated: true, code };
 	} catch (e: unknown) {
@@ -187,9 +199,10 @@ export function transformNextjsConfig(
 			mod.exports.default,
 		);
 
-		const code = generateCode(mod, {
+		let code = generateCode(mod, {
 			format: detectCodeFormat(initialCode),
 		}).code;
+		code = normalizeImportSpacing(code);
 
 		return { success: true, updated: true, code };
 	} catch (e: unknown) {

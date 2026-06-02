@@ -56,6 +56,13 @@ describe("runPromptWizard", () => {
 		expect(result?.layout).toBe("simple");
 	});
 
+	it("should default wrapNextjsConfig to true for nextjs in isYes mode", async () => {
+		const result = await runPromptWizard({ framework: "nextjs" }, true);
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.wrapNextjsConfig).toBe(true);
+	});
+
 	it("should include bunFeatures if user selects them in wizard", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("bun-fullstack"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // bunBuild

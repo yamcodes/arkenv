@@ -205,6 +205,7 @@ async function runExistingProjectWizard(
 			envDtsHandling,
 			envKeys: detectedKeys ?? undefined,
 			disableCodegen: defaults?.disableCodegen ?? false,
+			wrapNextjsConfig: framework === "nextjs" ? true : undefined,
 		});
 	}
 
