@@ -167,10 +167,17 @@ export class InitUseCase {
 				);
 			} else {
 				this.logger.error(
-					"Git working tree is not clean. Commit or stash your changes before running arkenv init, or use --force to proceed anyway.",
+					"Git working tree is not clean. Commit or stash your changes (use 'git stash -u' for untracked files) before running arkenv init.",
 				);
+				this.logger.info("Use --force to bypass this check.");
 				return null;
 			}
+		}
+
+		if (gitStatus.status === "unknown") {
+			this.logger.warn(
+				"Git working tree status could not be determined. Proceeding with caution.",
+			);
 		}
 
 		let shouldUpdateTsConfig = false;

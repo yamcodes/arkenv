@@ -186,8 +186,11 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 				? { status: "clean" }
 				: { status: "dirty" };
 		} catch (error) {
-			const err = error as any;
+			const err = error as { code?: string; stderr?: string };
 			if (err.code === "ENOENT") {
+				console.debug(
+					"Git is not installed on this system. Skipping git status check.",
+				);
 				return { status: "not_a_repo" };
 			}
 			if (

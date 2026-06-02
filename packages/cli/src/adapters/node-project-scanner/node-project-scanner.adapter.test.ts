@@ -2,7 +2,16 @@ import { execSync } from "node:child_process";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("node:child_process", async (importOriginal) => {
+	const mod = (await importOriginal()) as typeof import("node:child_process");
+	return {
+		...mod,
+		execSync: vi.fn(mod.execSync),
+	};
+});
+
 import { NodeProjectScannerAdapter } from "./node-project-scanner.adapter";
 
 describe("NodeProjectScannerAdapter", () => {
@@ -384,6 +393,26 @@ API_KEY=
 
 			const result = await scanner.checkGitStatus(tempDir);
 			expect(result.status).toBe("clean");
+		});
+
+		it("returns not_a_repo when git is not installed (ENOENT)", async () => {
+			vi.mocked(execSync).mockImplementationOnce(() => {
+				const err = new Error("spawn git ENOENT");
+				(err as NodeJS.ErrnoException).code = "ENOENT";
+				throw err;
+			});
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("not_a_repo");
+		});
+
+		it("returns unknown when git returns an unexpected error", async () => {
+			vi.mocked(execSync).mockImplementationOnce(() => {
+				const err = new Error("git error");
+				(err as any).stderr = "fatal: some unexpected error";
+				throw err;
+			});
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("unknown");
 		});
 
 		it("returns dirty when git repository has uncommitted changes", async () => {

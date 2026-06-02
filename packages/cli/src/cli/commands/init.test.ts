@@ -494,6 +494,30 @@ describe("InitUseCase", () => {
 		expect(result).not.toBeNull();
 	});
 
+	it("should warn and proceed when git status is unknown", async () => {
+		vi.mocked(scanner.checkGitStatus).mockResolvedValue({
+			status: "unknown",
+		});
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: true,
+			isAgent: false,
+		});
+
+		expect(result).not.toBeNull();
+		expect(logger.warn).toHaveBeenCalledWith(
+			expect.stringContaining("could not be determined"),
+		);
+	});
+
 	it("should detect installed arkenv skill, log a message, and skip prompt setting installSkill to false", async () => {
 		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
 		vi.mocked(prompt.runWizard).mockResolvedValue({

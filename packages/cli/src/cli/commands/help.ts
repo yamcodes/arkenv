@@ -48,7 +48,7 @@ export class HelpUseCase {
 			{
 				left: "--force, -f",
 				right:
-					"Bypass technical requirement checks and git dirty working tree check, then force scaffolding",
+					"Bypass technical requirement checks and dirty git working tree check, then force scaffolding",
 			},
 			{
 				left: "--agent, -a",
