@@ -14,16 +14,16 @@ The example defines the environment schema across three split files in the `env/
    ```ts
    import { type } from "@arkenv/nextjs/shared";
    export const SharedSchema = type({
-       NODE_ENV: "string = 'development'",
+        NODE_ENV: "'development' | 'production' | 'test' = 'development'",
    });
    ```
 
 2. **Client variables**: `env/client.ts`
    ```ts
-   import { createEnv } from "./generated/env.gen";
-   import { SharedSchema } from "./internal/shared";
+    import arkenv from "./generated/env.gen";
+    import { SharedSchema } from "./internal/shared";
 
-   export const env = createEnv(
+    export const env = arkenv(
        {
            NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
        },
