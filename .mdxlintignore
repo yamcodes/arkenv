@@ -1,4 +1,5 @@
 .agent/
+.agents/
 .changeset/
 .gemini/
 .github/
