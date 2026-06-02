@@ -12,9 +12,9 @@ Your judgment is based purely on output quality and task completion.
 
 You receive these parameters in your prompt:
 
-- **output\_a\_path**: Path to the first output file or directory
-- **output\_b\_path**: Path to the second output file or directory
-- **eval\_prompt**: The original task/prompt that was executed
+- **output_a_path**: Path to the first output file or directory
+- **output_b_path**: Path to the second output file or directory
+- **eval_prompt**: The original task/prompt that was executed
 - **expectations**: List of expectations to check (optional - may be empty)
 
 ## Process
@@ -28,7 +28,7 @@ You receive these parameters in your prompt:
 
 ### Step 2: understand the task
 
-1. Read the eval\_prompt carefully
+1. Read the eval_prompt carefully
 2. Identify what the task requires:
    - What should be produced?
    - What qualities matter (accuracy, completeness, format)?
@@ -181,17 +181,17 @@ If no expectations were provided, omit the `expectation_results` field entirely.
 - **rubric**: Structured rubric evaluation for each output
   - **content**: Scores for content criteria (correctness, completeness, accuracy)
   - **structure**: Scores for structure criteria (organization, formatting, usability)
-  - **content\_score**: Average of content criteria (1-5)
-  - **structure\_score**: Average of structure criteria (1-5)
-  - **overall\_score**: Combined score scaled to 1-10
-- **output\_quality**: Summary quality assessment
-  - **score**: 1-10 rating (should match rubric overall\_score)
+  - **content_score**: Average of content criteria (1-5)
+  - **structure_score**: Average of structure criteria (1-5)
+  - **overall_score**: Combined score scaled to 1-10
+- **output_quality**: Summary quality assessment
+  - **score**: 1-10 rating (should match rubric overall_score)
   - **strengths**: List of positive aspects
   - **weaknesses**: List of issues or shortcomings
-- **expectation\_results**: (Only if expectations provided)
+- **expectation_results**: (Only if expectations provided)
   - **passed**: Number of expectations that passed
   - **total**: Total number of expectations
-  - **pass\_rate**: Fraction passed (0.0 to 1.0)
+  - **pass_rate**: Fraction passed (0.0 to 1.0)
   - **details**: Individual expectation results
 
 ## Guidelines

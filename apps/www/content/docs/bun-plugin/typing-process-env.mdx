@@ -9,10 +9,10 @@ With ArkEnv, this can be typesafe with the one-time setup below. After this, eac
 
 ## Setup
 
-> \[!TIP]
+> [!TIP]
 > This guide is the final step to complete the [Simple setup](/docs/bun-plugin) from the introduction page.
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > You must have the core `arkenv` package installed as a dependency in your project. See [ArkEnv quickstart](/docs/arkenv/quickstart) for instructions.
 
 Add this to a `bun-env.d.ts` file in your project root:
@@ -29,7 +29,7 @@ declare namespace NodeJS {
 }
 ```
 
-> \[!NOTE]
+> [!NOTE]
 > Notice the line that references `"./src/env"` - if your `env.ts` file is somewhere else (say, `"./env"`), update it accordingly.
 
 ## Usage
@@ -67,7 +67,7 @@ The `ProcessEnvAugmented` type:
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in the augmented `process.env` type.
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > **Imports will break type augmentation**
 >
 > If the `ProcessEnv` augmentation does not work, make sure you do not have any `import` statements in `bun-env.d.ts`. See [the TypeScript documentation](https://www.typescriptlang.org/docs/handbook/2/modules.html#how-javascript-modules-are-defined) for more information.
