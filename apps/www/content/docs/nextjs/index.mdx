@@ -466,8 +466,9 @@ You can freely mix Zod or Valibot schemas with the 3-file layout:
 
 ## The Danger of Shared Variables
 
-> [!WARNING]
-> Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
+:::warning
+Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
+:::
 
 ### The Undefined Fallback Bug
 
