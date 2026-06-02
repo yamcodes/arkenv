@@ -51,7 +51,7 @@ Three beats:
 - Humour in frustration paths (forgot-password, payment-failed, account-locked).
 - Stock placeholder names: Jane Doe, John Smith, Lorem Ipsum (unless the page is a lorem-ipsum tool).
 - Startup clichés in product copy: Acme, Nexus, Unleash, Seamless, Supercharge, Transform, Elevate, Empower, Delight, Magical.
-- Marketing copy that promises a feeling without naming a feature. "Experience the power of \_\_\_" is empty.
+- Marketing copy that promises a feeling without naming a feature. "Experience the power of ___" is empty.
 
 ## Proper typography
 

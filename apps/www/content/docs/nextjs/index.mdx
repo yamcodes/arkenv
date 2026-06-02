@@ -4,7 +4,7 @@ icon: Album
 description: Validate and secure your Next.js environment variables with zero-boilerplate scaffolding and a seamless developer experience.
 ---
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > This integration requires [ArkType](https://arktype.io) to be installed.
 
 The `@arkenv/nextjs` integration provides end-to-end environment validation for both the server and the browser. It catches configuration bugs early in your build pipeline and prevents sensitive server-side variables from ever reaching client components.
@@ -82,10 +82,10 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     });
     ```
 
-    > \[!NOTE]
+    > [!NOTE]
     > If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env.ts` instead.
 
-    > \[!TIP]
+    > [!TIP]
     > We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
   </Step>
 
@@ -168,7 +168,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
 
 ## Alternative: Strict Layout (Separate Files)
 
-> \[!WARNING]
+> [!WARNING]
 > While defining both the client and server schemas in a single file provides the best developer experience, it also means that your validation schemas for the server variables will be shipped to the client. If you consider the names of your variables sensitive, you should split your schemas into separate files.
 
 For maximum security, you can use a **3-file layout** (`env/internal/shared.ts` → `env/client.ts` → `env/server.ts`). This structure aligns with Next.js's native `use client` boundary model, ensures that server secrets are compile-time locked from browser bundles, and allows a single unified `env` export path.
@@ -462,7 +462,7 @@ You can freely mix Zod or Valibot schemas with the 3-file layout:
 
 ## The Danger of Shared Variables
 
-> \[!WARNING]
+> [!WARNING]
 > Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
 
 ### The Undefined Fallback Bug

@@ -20,7 +20,7 @@ Hallmark must **not** offer catalog-vs-custom on every prompt. That's friction, 
 
 If any signal fires, ask one short follow-up before picking a theme:
 
-> *"This brief reads like a custom palette would fit better than the 22 named themes. Want me to construct a custom OKLCH palette + free-font pairing tuned to <one-line summary of the vibe>, or stay on the catalog for variety + speed?"*
+> *"This brief reads like a custom palette would fit better than the 22 named themes. Want me to construct a custom OKLCH palette + free-font pairing tuned to \[one-line summary of the vibe], or stay on the catalog for variety + speed?"*
 
 Wait for the user to answer. If they say custom (or yes / go) → continue this protocol from § A. If they say catalog (or no / stay catalog) → drop the fork and proceed with the catalog route. **Default to catalog** — silence routes to catalog, not custom.
 
@@ -65,19 +65,19 @@ Build the palette in this order. Each step cites the rule it's obeying — do no
 
 ### B.3 · Ink
 
-- If paper L < 50: ink L **88–96 %**.
+- If paper L \< 50: ink L **88–96 %**.
 - If paper L ≥ 50: ink L **16–24 %**.
 - Tint ink chroma **0.005–0.014** toward anchor (a shade darker / lighter, never neutral).
 - Ink-2 (secondary text): step 4–8 % L away from ink toward paper. Same hue family.
 
 ### B.4 · Supporting greys
 
-Step by ~6–10 % L between paper and ink, all tinted toward anchor with chroma 0.005–0.018:
+Step by \~6–10 % L between paper and ink, all tinted toward anchor with chroma 0.005–0.018:
 
-- `--color-rule` — dividers · L ~70–82 % (light paper) or ~26–34 % (dark paper).
+- `--color-rule` — dividers · L \~70–82 % (light paper) or \~26–34 % (dark paper).
 - `--color-rule-2` — secondary dividers · 4–6 % L closer to paper than rule.
-- `--color-muted` — de-emphasised text · L ~38–56 %.
-- `--color-neutral` — mid-grey equivalent · L ~30–56 %.
+- `--color-muted` — de-emphasised text · L \~38–56 %.
+- `--color-neutral` — mid-grey equivalent · L \~30–56 %.
 
 These are not arbitrary. The L-step gives the palette **typographic depth** without leaning on accent.
 
@@ -140,7 +140,7 @@ A custom theme must declare its three diversification-rule axis values explicitl
 
 ### D.1 · Paper band
 
-- **dark** — paper L < 30 %
+- **dark** — paper L \< 30 %
 - **mid** — paper L 30–85 %
 - **light** — paper L > 85 %
 
@@ -164,7 +164,7 @@ Pick one based on the chosen display face:
 
 - **warm** — hue 10–60° (red, orange, amber)
 - **cool** — hue 200–300° (blue, indigo, cyan)
-- **neutral** — no chromatic accent (austere; chroma < 0.05)
+- **neutral** — no chromatic accent (austere; chroma \< 0.05)
 - **chromatic-other** — anything outside warm/cool/neutral. Sub-tag the specific anchor: `chromatic-green ~145°` · `chromatic-sage ~120°` · `chromatic-phosphor ~150°` · `chromatic-terracotta ~30°` · `chromatic-dusty-pink ~350°` · `chromatic-moss ~140°` · `chromatic-amber ~75°`.
 
 ### D.4 · Where these go
@@ -230,6 +230,7 @@ Concrete generations to seed model imitation. Each shows the brief, the user's v
 **Vibe answer:** *"archival warmth, hand-set, no varnish."*  **Anchor:** *"terracotta."*
 
 **Palette:**
+
 - paper `oklch(94% 0.020 65)` — warm-cream, hue 65 (amber-warm)
 - paper-2 `oklch(91% 0.022 65)` — one elevation step
 - ink `oklch(22% 0.014 60)` — warm dark brown-black
@@ -245,6 +246,7 @@ Concrete generations to seed model imitation. Each shows the brief, the user's v
 **Axes:** **light / italic-serif / chromatic-terracotta**.
 
 **Stamp:**
+
 ```css
 /* Hallmark · macrostructure: Long Document · H5 hero knobs: salutation=time-stamp, body=2 paragraphs, signoff=initials
  * theme: custom · vibe: "archival warmth, hand-set, no varnish" · paper: oklch(94% 0.020 65) · accent: oklch(58% 0.16 35)
@@ -260,6 +262,7 @@ Concrete generations to seed model imitation. Each shows the brief, the user's v
 **Vibe answer:** *"industrial precision, cool, technical."*  **Anchor:** *"sea-blue."*
 
 **Palette:**
+
 - paper `oklch(13% 0.012 220)` — dark cool
 - paper-2 `oklch(17% 0.014 220)` — one step up
 - paper-3 `oklch(22% 0.014 220)` — two steps up (panels)
@@ -277,6 +280,7 @@ Note: this *is* a single-family page (Geist + Geist Mono are the same family at 
 **Axes:** **dark / mono / cool**.
 
 **Stamp:**
+
 ```css
 /* Hallmark · macrostructure: Workbench · F2 sticky-scroll knobs: pinned=right, content=trace-panel, steps=3
  * theme: custom · vibe: "industrial precision, cool, technical" · paper: oklch(13% 0.012 220) · accent: oklch(72% 0.16 220)
@@ -291,9 +295,10 @@ Note: this *is* a single-family page (Geist + Geist Mono are the same family at 
 
 **Vibe answer:** *"moss, lichen, soft pink, herbal."*  **Anchor:** *(skipped — pick from vibe)*.
 
-The vibe names two hues: *moss* (greenish, ~140°) and *soft pink* (warm, ~350°). Pick **soft pink as the accent** (single anchor — custom is one-accent strict) and use the moss-green as the *paper tint* (chroma 0.018 toward 145°). This carries the dual-vibe without splitting accent.
+The vibe names two hues: *moss* (greenish, \~140°) and *soft pink* (warm, \~350°). Pick **soft pink as the accent** (single anchor — custom is one-accent strict) and use the moss-green as the *paper tint* (chroma 0.018 toward 145°). This carries the dual-vibe without splitting accent.
 
 **Palette:**
+
 - paper `oklch(96% 0.018 145)` — moss-tinted near-white
 - paper-2 `oklch(93% 0.020 145)`
 - ink `oklch(22% 0.014 140)` — moss-tinted dark
@@ -308,6 +313,7 @@ The vibe names two hues: *moss* (greenish, ~140°) and *soft pink* (warm, ~350°
 **Axes:** **light / roman-serif / chromatic-other (dusty-pink)**.
 
 **Stamp:**
+
 ```css
 /* Hallmark · macrostructure: Catalogue · F1 catalogue knobs: tiles=8, columns=2, rule=hairline-between
  * theme: custom · vibe: "moss, lichen, soft pink, herbal" · paper: oklch(96% 0.018 145) · accent: oklch(72% 0.13 350)
