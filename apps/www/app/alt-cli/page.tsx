@@ -1,39 +1,13 @@
 import { ExternalLink } from "@arkenv/fumadocs-ui/components";
 import type { Metadata } from "next";
-import {
-	CLICommand,
-	CodeFrame,
-	CompatibilityRails,
-} from "~/components/page";
+import { CLICommand } from "~/components/page";
+import { InstallTabs } from "~/components/page/install-tabs";
+import { TerminalTabs } from "~/components/page/terminal-tabs";
 
 export const metadata: Metadata = {
 	title: "ArkEnv — typesafe env vars",
 	description: "Environment variable validation from editor to runtime",
 };
-
-const envTsCode = `import arkenv from "arkenv";
-
-const env = arkenv({
-  PORT:     "number",
-  API_KEY:  "string",
-  DATABASE_URL: "string",
-  NODE_ENV: "'development' | 'production'",
-});
-
-// env.PORT is typed as number
-// env.NODE_ENV is typed as "development" | "production"`;
-
-const pluginCode = `// next.config.ts
-import arkenv from "arkenv";
-import withArkEnv from "@arkenv/nextjs";
-
-const env = arkenv({
-  API_URL: "string",
-  AUTH_SECRET: "string",
-});
-
-// @ts-expect-error nextConfig is defined in the actual config
-export default withArkEnv(nextConfig, env);`;
 
 export default function AltCliPage() {
 	return (
@@ -70,111 +44,68 @@ export default function AltCliPage() {
 						Read the docs &rarr;
 					</a>
 				</div>
+
+				{/* Stats row (opencode.ai inspired) */}
+				<div className="cli-stats">
+					<div className="cli-stat">
+						<div className="cli-stat__value">1</div>
+						<div className="cli-stat__label">schema file</div>
+					</div>
+					<div className="cli-stat">
+						<div className="cli-stat__value">6</div>
+						<div className="cli-stat__label">framework plugins</div>
+					</div>
+					<div className="cli-stat">
+						<div className="cli-stat__value">0</div>
+						<div className="cli-stat__label">runtime deps</div>
+					</div>
+				</div>
 			</section>
 
-			{/* Bento Grid — Features */}
-			<section className="cli-bento">
-				<div className="cli-bento__grid">
-					{/* Wide: Code block */}
-					<div className="cli-bento__block--full">
-						<CodeFrame
-							label="env.ts"
-							code={envTsCode}
-							language="ts"
-							caption=""
-						/>
-					</div>
-
-					{/* Declare */}
-					<div className="cli-bento__block cli-bento__accent">
-						<span className="cli-bento__kicker">$ declare</span>
-						<h3 className="cli-bento__title">One schema.</h3>
-						<p className="cli-bento__desc">
-							Define your env vars once. TypeScript infers every
-							type automatically &mdash; no codegen step required.
+			{/* Feature grid (openspec.dev border-separated) */}
+			<section className="cli-grid">
+				<div className="cli-grid__wrap">
+					<div className="cli-grid__item">
+						<span className="cli-grid__kicker">$ declare</span>
+						<h3 className="cli-grid__title">One schema.</h3>
+						<p className="cli-grid__desc">
+							Define your env vars once in a single <code>env.ts</code>.
+							TypeScript infers every type automatically.
 						</p>
-						<div className="cli-bento__meta">
-							<code>env.ts</code> &mdash; single source of truth
-						</div>
 					</div>
-
-					{/* Infer */}
-					<div className="cli-bento__block cli-bento__accent">
-						<span className="cli-bento__kicker">$ infer</span>
-						<h3 className="cli-bento__title">Full types.</h3>
-						<p className="cli-bento__desc">
-							Autocomplete for every variable across every
-							framework. No runtime dependencies, no build step.
+					<div className="cli-grid__item">
+						<span className="cli-grid__kicker">$ infer</span>
+						<h3 className="cli-grid__title">Full types.</h3>
+						<p className="cli-grid__desc">
+							Autocomplete for every variable. No codegen, no build
+							step, no runtime dependencies.
 						</p>
-						<div className="cli-bento__meta">
-							Zero-config TypeScript inference
-						</div>
 					</div>
-
-					{/* Validate */}
-					<div className="cli-bento__block cli-bento__accent">
-						<span className="cli-bento__kicker">$ validate</span>
-						<h3 className="cli-bento__title">Every boundary.</h3>
-						<p className="cli-bento__desc">
+					<div className="cli-grid__item">
+						<span className="cli-grid__kicker">$ validate</span>
+						<h3 className="cli-grid__title">Every boundary.</h3>
+						<p className="cli-grid__desc">
 							Build-time checks catch missing vars before deploy.
 							Runtime guards against config drift in production.
 						</p>
-						<div className="cli-bento__meta">
-							CI &middot; CLI &middot; runtime &mdash; same schema
-						</div>
 					</div>
-
-					{/* Integrate */}
-					<div className="cli-bento__block cli-bento__accent">
-						<span className="cli-bento__kicker">$ integrate</span>
-						<h3 className="cli-bento__title">Your stack.</h3>
-						<p className="cli-bento__desc">
-							Drop in a single plugin per framework. Next.js, Vite,
-							Bun, or any runtime &mdash; one line of config.
+					<div className="cli-grid__item">
+						<span className="cli-grid__kicker">$ integrate</span>
+						<h3 className="cli-grid__title">Your stack.</h3>
+						<p className="cli-grid__desc">
+							One plugin per framework. Next.js, Vite, Bun &mdash;
+							one line of config, zero runtime overhead.
 						</p>
-						<div className="cli-bento__meta">
-							<code>@arkenv/nextjs</code> &middot; <code>@arkenv/vite</code> &middot; <code>@arkenv/bun</code>
-						</div>
-					</div>
-
-					{/* Plugin code */}
-					<div className="cli-bento__block--full">
-						<CodeFrame
-							label="next.config.ts"
-							code={pluginCode}
-							language="ts"
-							caption=""
-						/>
 					</div>
 				</div>
 			</section>
 
-			{/* Output display */}
-			<section className="cli-output">
-				<pre className="cli-output__pre">
-<span className="cli-output__prompt">$</span> arkenv check<br />
-<span className="cli-output__dim">───────────────────</span><br />
-<span className="cli-output__check">✓</span> API_URL is set <span className="cli-output__dim">(production)</span><br />
-<span className="cli-output__check">✓</span> AUTH_SECRET is set <span className="cli-output__dim">(production)</span><br />
-<span className="cli-output__check">✓</span> DATABASE_URL is set <span className="cli-output__dim">(production)</span><br />
-<span className="cli-output__check">✓</span> NODE_ENV is <span className="cli-output__dim">&ldquo;production&rdquo;</span><br />
-<span className="cli-output__dim">───────────────────</span><br />
-<span className="cli-output__label">All 12 variables resolved.</span>
-				</pre>
+			{/* Terminal showcase (openspec.dev inspired) */}
+			<section className="cli-term">
+				<TerminalTabs />
 			</section>
 
-			{/* Compatibility + CTA */}
-			<section className="cli-section-head">
-				<span className="cli-section-head__kicker">$ plugins</span>
-				<h2 className="cli-section-head__title">
-					One plugin. Every framework.
-				</h2>
-				<div style={{ marginTop: "var(--space-lg)" }}>
-					<CompatibilityRails className="max-w-full mx-0" />
-				</div>
-			</section>
-
-			{/* Final CTA */}
+			{/* CTA */}
 			<section className="cli-cta">
 				<h2 className="cli-cta__title">
 					Ship typesafe env vars &mdash; from editor to runtime.
@@ -182,6 +113,10 @@ export default function AltCliPage() {
 				<p className="cli-cta__sub">
 					Zero setup. Full autocomplete. One schema everywhere.
 				</p>
+
+				{/* Tabbed install command (opencode.ai inspired) */}
+				<InstallTabs />
+
 				<div className="cli-cta__actions">
 					<a href="/docs/arkenv/quickstart" className="cli-btn cli-btn--primary">
 						$ npx arkenv init

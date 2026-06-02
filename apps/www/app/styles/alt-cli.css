@@ -154,6 +154,124 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+/* ── Stats row (opencode.ai inspired) ── */
+
+.cli-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--color-rule);
+  border-radius: 8px;
+  max-width: 36rem;
+}
+
+.cli-stat {
+  padding: var(--space-md) var(--space-lg);
+  text-align: center;
+  border-right: 1px solid var(--color-rule);
+}
+
+.cli-stat:last-child {
+  border-right: none;
+}
+
+.cli-stat__value {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  line-height: 1.2;
+}
+
+.cli-stat__label {
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+  margin-top: var(--space-3xs);
+}
+
+/* ── Install command (opencode.ai inspired) ── */
+
+.cli-install {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-rule-2);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: var(--text-sm);
+  height: 2.75rem;
+}
+
+.cli-install__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: 0 var(--space-md);
+  height: 100%;
+  color: var(--color-ink-3);
+  background: var(--color-paper);
+  border: none;
+  border-right: 1px solid var(--color-rule-2);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  transition: background var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+
+.cli-install__tab:last-child {
+  border-right: none;
+}
+
+.cli-install__tab:hover {
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+}
+
+.cli-install__tab.is-active {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+}
+
+.cli-install__tab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.cli-install__cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: 0 var(--space-lg);
+  height: 100%;
+  color: var(--color-ink-2);
+  white-space: nowrap;
+}
+
+.cli-install__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 100%;
+  background: var(--color-paper);
+  border: none;
+  border-left: 1px solid var(--color-rule-2);
+  color: var(--color-ink-3);
+  cursor: pointer;
+  transition: background var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+
+.cli-install__copy:hover {
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+}
+
+.cli-install__copy:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
 }
 
 /* ── CTA buttons ── */
@@ -222,152 +340,236 @@
   user-select: none;
 }
 
-/* ── Bento grid ── */
+/* ── Compact feature grid (openspec.dev border-separated) ── */
 
-.cli-bento {
+.cli-grid {
   max-width: 80rem;
   margin-inline: auto;
   padding: 0 var(--space-lg) var(--space-3xl);
   width: 100%;
 }
 
-.cli-bento__grid {
+.cli-grid__wrap {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-md);
-}
-
-@media (min-width: 768px) {
-  .cli-bento__grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.cli-bento__block {
+  grid-template-columns: repeat(2, 1fr);
   border: 1px solid var(--color-rule);
   border-radius: 8px;
-  background: var(--color-paper);
-  padding: var(--space-xl);
-}
-
-.cli-bento__block--wide {
-  grid-column: 1 / -1;
-}
-
-.cli-bento__block--full {
-  grid-column: 1 / -1;
-  padding: 0;
   overflow: hidden;
 }
 
-.cli-bento__accent {
-  border-left: 2px solid var(--color-accent);
+.cli-grid__item {
+  padding: var(--space-xl);
+  border-bottom: 1px solid var(--color-rule);
+  border-right: 1px solid var(--color-rule);
 }
 
-.cli-bento__kicker {
+.cli-grid__item:nth-child(even) {
+  border-right: none;
+}
+
+.cli-grid__item:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+.cli-grid__kicker {
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: var(--text-xs);
   font-weight: 500;
   color: var(--color-accent);
   display: block;
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-2xs);
 }
 
-.cli-bento__title {
+.cli-grid__title {
   font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 1.2;
   color: var(--color-ink);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-2xs);
   overflow-wrap: anywhere;
   min-width: 0;
 }
 
-.cli-bento__desc {
+.cli-grid__desc {
   font-size: var(--text-sm);
   line-height: 1.6;
   color: var(--color-ink-2);
 }
 
-.cli-bento__meta {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: var(--text-xs);
-  color: var(--color-ink-3);
-  margin-top: var(--space-md);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-rule);
-}
+/* ── Terminal showcase (openspec.dev inspired) ── */
 
-/* ── Output display ── */
-
-.cli-output {
+.cli-term {
   max-width: 80rem;
   margin-inline: auto;
-  padding: 0 var(--space-lg) var(--space-2xl);
+  padding: 0 var(--space-lg) var(--space-3xl);
   width: 100%;
 }
 
-.cli-output__pre {
-  background: var(--color-paper-2);
+.cli-term__window {
   border: 1px solid var(--color-rule);
   border-radius: 8px;
-  padding: var(--space-lg) var(--space-xl);
+  overflow: hidden;
+  background: var(--color-paper-2);
+}
+
+.cli-term__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-rule);
+  background: var(--color-paper);
+}
+
+.cli-term__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.cli-term__dot--red { background: oklch(55% 0.17 30); }
+.cli-term__dot--amber { background: oklch(65% 0.12 80); }
+.cli-term__dot--green { background: var(--color-success); }
+
+.cli-term__body {
+  display: flex;
+  min-height: 18rem;
+}
+
+.cli-term__nav {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--color-rule);
+  background: var(--color-paper);
+  padding: var(--space-xs) 0;
+}
+
+.cli-term__tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+  white-space: nowrap;
+  text-align: left;
+}
+
+.cli-term__tab:hover {
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+}
+
+.cli-term__tab.is-active {
+  color: var(--color-accent);
+  background: var(--color-accent-dim);
+}
+
+.cli-term__tab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.cli-term__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  background: var(--color-rule);
+  color: var(--color-ink-2);
+  flex-shrink: 0;
+}
+
+.cli-term__tab.is-active .cli-term__num {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+}
+
+.cli-term__content {
+  flex: 1;
+  padding: var(--space-lg);
+  overflow-x: auto;
+}
+
+.cli-term__panel {
+  display: none;
+}
+
+.cli-term__panel.is-active {
+  display: block;
+}
+
+.cli-term__line {
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: var(--text-sm);
   line-height: 1.8;
   color: var(--color-ink-2);
-  overflow-x: auto;
-  margin: 0;
-  font-feature-settings: "ss01";
+  white-space: pre;
 }
 
-.cli-output__prompt {
+.cli-term__prompt {
   color: var(--color-ink-3);
   user-select: none;
 }
 
-.cli-output__check {
+.cli-term__check {
   color: var(--color-success);
 }
 
-.cli-output__dim {
+.cli-term__dim {
   color: var(--color-ink-3);
 }
 
-.cli-output__label {
+.cli-term__accent {
   color: var(--color-accent);
 }
 
-/* ── Section head ── */
-
-.cli-section-head {
-  max-width: 80rem;
-  margin-inline: auto;
-  padding: var(--space-3xl) var(--space-lg) var(--space-xl);
-  width: 100%;
-}
-
-.cli-section-head__kicker {
+.cli-term__tree {
   font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: var(--text-xs);
-  font-weight: 500;
-  color: var(--color-accent);
-  display: block;
-  margin-bottom: var(--space-xs);
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  color: var(--color-ink-2);
 }
 
-.cli-section-head__title {
+.cli-term__tree .folder { color: var(--color-accent); }
+.cli-term__tree .branch { color: var(--color-ink-3); }
+.cli-term__tree .file { color: var(--color-ink-2); }
+
+.cli-term__label {
   font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(1.25rem, 2.5vw + 0.25rem, 1.75rem);
+  font-size: var(--text-xs);
   font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
   color: var(--color-ink);
-  max-width: 32ch;
-  overflow-wrap: anywhere;
-  min-width: 0;
+  margin-bottom: var(--space-2xs);
+  margin-top: var(--space-md);
+}
+
+.cli-term__label:first-child {
+  margin-top: 0;
+}
+
+.cli-term__code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--color-ink-2);
+  background: var(--color-paper);
+  padding: var(--space-md);
+  border: 1px solid var(--color-rule);
+  border-radius: 4px;
+  margin-top: var(--space-xs);
+  white-space: pre;
+  overflow-x: auto;
 }
 
 /* ── CTA section ── */
@@ -478,25 +680,80 @@
     justify-content: center;
   }
 
-  .cli-bento {
+  .cli-stats {
+    max-width: 100%;
+  }
+
+  .cli-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cli-stat {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .cli-install {
+    flex-wrap: wrap;
+    height: auto;
+    border-radius: 6px;
+  }
+
+  .cli-install__tab {
+    height: 2.5rem;
+    font-size: 0.75rem;
+    padding: 0 var(--space-sm);
+  }
+
+  .cli-install__cmd {
+    height: 2.5rem;
+    font-size: 0.75rem;
+    padding: 0 var(--space-md);
+  }
+
+  .cli-install__copy {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+
+  .cli-grid {
     padding: 0 var(--space-md) var(--space-2xl);
   }
 
-  .cli-bento__block {
+  .cli-grid__item {
     padding: var(--space-lg);
   }
 
-  .cli-output {
-    padding: 0 var(--space-md) var(--space-xl);
+  .cli-grid__title {
+    font-size: var(--text-sm);
   }
 
-  .cli-output__pre {
-    font-size: 0.75rem;
+  .cli-term {
+    padding: 0 var(--space-md) var(--space-2xl);
+  }
+
+  .cli-term__body {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .cli-term__nav {
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid var(--color-rule);
+    overflow-x: auto;
+  }
+
+  .cli-term__tab {
+    white-space: nowrap;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .cli-term__content {
     padding: var(--space-md);
   }
 
-  .cli-section-head {
-    padding: var(--space-2xl) var(--space-md) var(--space-lg);
+  .cli-term__code {
+    font-size: 0.75rem;
   }
 
   .cli-cta {
@@ -522,12 +779,12 @@
     font-size: clamp(1.5rem, 6vw + 0.25rem, 2rem);
   }
 
-  .cli-bento__block {
+  .cli-grid__item {
     padding: var(--space-md);
   }
 
-  .cli-bento__title {
-    font-size: var(--text-md);
+  .cli-stat__value {
+    font-size: var(--text-base);
   }
 }
 
