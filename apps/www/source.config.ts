@@ -76,7 +76,7 @@ function remarkDirectiveAdmonitionCustom(options: {
 								children.push({
 									type: "mdxJsxFlowElement",
 									name: CALLOUT_TITLE,
-									attributes: {},
+									attributes: [],
 									children: titleNodes,
 								});
 							}
@@ -84,7 +84,7 @@ function remarkDirectiveAdmonitionCustom(options: {
 								children.push({
 									type: "mdxJsxFlowElement",
 									name: CALLOUT_DESCRIPTION,
-									attributes: {},
+									attributes: [],
 									children: descriptionNodes,
 								});
 							}
@@ -122,15 +122,18 @@ export default defineConfig({
 			remarkGemoji,
 			remarkNpm,
 			remarkDirective,
-			remarkDirectiveAdmonitionCustom({
-				types: {
-					note: "info",
-					tip: "info",
-					important: "warning",
-					warning: "warning",
-					caution: "error",
+			[
+				remarkDirectiveAdmonitionCustom,
+				{
+					types: {
+						note: "info",
+						tip: "info",
+						important: "warning",
+						warning: "warning",
+						caution: "error",
+					},
 				},
-			}),
+			],
 		],
 		rehypeCodeOptions: {
 			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv"],
