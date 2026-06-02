@@ -1,4 +1,4 @@
-This file documents the .agent directory structure and conventions for human readers.
+{/* This file is for human eyes to understand the .agent directory structure and conventions */}
 
 # Agent configuration & documentation
 
