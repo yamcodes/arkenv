@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-example-with-nextjs",
+	"name": "arkenv-example-with-nextjs-strict",
 	"type": "module",
 	"private": true,
 	"scripts": {
