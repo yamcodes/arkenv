@@ -15,7 +15,7 @@ const SUPPORTED_LANGS = new Set([
 
 const twoslashOptions = {
 	...arktypeTwoslashOptions,
-	explicitTrigger: false,
+	explicitTrigger: true,
 };
 
 export async function highlight(code: string, lang: string) {
