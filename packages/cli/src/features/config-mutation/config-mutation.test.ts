@@ -118,9 +118,7 @@ describe("config-mutation", () => {
 			const result = transformViteConfig({ code: initialContent });
 			expect(result).toMatchObject({
 				success: false,
-				error: expect.stringContaining(
-					"Could not find default export object",
-				),
+				error: expect.stringContaining("Could not find default export object"),
 			});
 		});
 	});

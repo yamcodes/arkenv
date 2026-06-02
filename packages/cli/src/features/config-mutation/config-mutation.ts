@@ -164,8 +164,7 @@ export function transformNextjsConfig(
 		if (
 			typeof mod.exports.default === "object" &&
 			"$type" in (mod.exports.default as object) &&
-			(mod.exports.default as { $type?: string }).$type ===
-				"function-call" &&
+			(mod.exports.default as { $type?: string }).$type === "function-call" &&
 			(mod.exports.default as { $callee?: string }).$callee === "withArkEnv"
 		) {
 			return { success: true, updated: false };
