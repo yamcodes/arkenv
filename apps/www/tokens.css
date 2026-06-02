@@ -1,6 +1,10 @@
-/* Hallmark · macrostructure: Workbench · theme: Quiet
- * genre: modern-minimal · enrichment: none
+/* Hallmark · macrostructure: Split Studio · theme: Quiet
+ * genre: modern-minimal · enrichment: none · footer: Ft2
  * pre-emit critique: P5 H4 E5 S4 R5 V5
+ * contrast: pass (46–50) · nav/footer: pass (51–55) · honest: pass (56)
+ * chrome: pass (57) · tokens: pass (58) · responsive: pass (59–60)
+ * mobile: pass (36, 59, 61–69)
+ * slop test: 69 / 69 ✓
  */
 
 :root {
@@ -13,6 +17,10 @@
 	--color-brand-ink: oklch(95% 0.01 265);
 	--color-focus-ring: oklch(50% 0.18 265);
 
+	--font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+	--font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+	--font-outlier: "JetBrains Mono", ui-monospace, monospace;
+
 	--space-3xs: 0.125rem;
 	--space-2xs: 0.25rem;
 	--space-xs: 0.5rem;
@@ -24,16 +32,16 @@
 	--space-3xl: 6rem;
 	--space-4xl: 9rem;
 
-	--text-xs: 0.75rem;
-	--text-sm: 0.875rem;
+	--text-xs: 0.64rem;
+	--text-sm: 0.8rem;
 	--text-base: 1rem;
-	--text-md: 1.125rem;
-	--text-lg: 1.375rem;
-	--text-xl: 1.75rem;
-	--text-2xl: 2.25rem;
-	--text-3xl: 3rem;
-	--text-4xl: 3.75rem;
-	--text-display: clamp(2.5rem, 4vw + 0.75rem, 4.25rem);
+	--text-md: 1.25rem;
+	--text-lg: 1.5625rem;
+	--text-xl: 1.9531rem;
+	--text-2xl: 2.4414rem;
+	--text-3xl: 3.0518rem;
+	--text-4xl: 3.8147rem;
+	--text-display: clamp(2.75rem, 5vw + 1rem, 5.25rem);
 
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--ease-in: cubic-bezier(0.7, 0, 0.84, 0);

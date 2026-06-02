@@ -1,6 +1,20 @@
 [
 	{
 		"date": "2026-06-02",
+		"macrostructure": "Split Studio",
+		"theme": "Quiet",
+		"enrichment": "none",
+		"brief": "ArkEnv · homepage redesign — confident"
+	},
+	{
+		"date": "2026-06-02",
+		"macrostructure": "Marquee Hero",
+		"theme": "Coral",
+		"enrichment": "none",
+		"brief": "ArkEnv · homepage redesign — confident"
+	},
+	{
+		"date": "2026-06-02",
 		"macrostructure": "Workbench",
 		"theme": "Quiet",
 		"enrichment": "none",
