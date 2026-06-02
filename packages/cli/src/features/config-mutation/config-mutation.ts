@@ -26,6 +26,16 @@ function normalizeImportSpacing(code: string): string {
 }
 
 /**
+ * Preserves the trailing newline of the original file if present.
+ * magicast strips trailing newlines; this restores them.
+ */
+function preserveTrailingNewline(code: string, originalCode: string): string {
+	return originalCode.endsWith("\n") && !code.endsWith("\n")
+		? `${code}\n`
+		: code;
+}
+
+/**
  * Transforms a Vite configuration file by injecting the ArkEnv Vite plugin.
  *
  * @param input The configuration code and optional import path.
@@ -127,6 +137,7 @@ export function transformViteConfig(
 			: "arkenvVitePlugin()";
 		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
 		code = normalizeImportSpacing(code);
+		code = preserveTrailingNewline(code, initialCode);
 
 		return { success: true, updated: true, code };
 	} catch (e: unknown) {
@@ -203,6 +214,7 @@ export function transformNextjsConfig(
 			format: detectCodeFormat(initialCode),
 		}).code;
 		code = normalizeImportSpacing(code);
+		code = preserveTrailingNewline(code, initialCode);
 
 		return { success: true, updated: true, code };
 	} catch (e: unknown) {

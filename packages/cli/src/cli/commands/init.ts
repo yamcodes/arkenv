@@ -273,27 +273,6 @@ export class InitUseCase {
 			return null;
 		}
 
-		// Prompt for Next.js config wrapping when codegen is enabled
-		if (
-			options.framework === "nextjs" &&
-			!options.disableCodegen &&
-			options.wrapNextjsConfig === undefined
-		) {
-			if (isYes) {
-				options.wrapNextjsConfig = true;
-			} else {
-				const confirmWrap = await this.prompt.confirm(
-					"Would you like to wrap your Next.js config with withArkEnv?",
-					true,
-					"Yes (Recommended)",
-				);
-				if (confirmWrap === null) {
-					return null;
-				}
-				options.wrapNextjsConfig = confirmWrap;
-			}
-		}
-
 		const hasSkill = await this.scanner.hasSkill(targetDir);
 		if (hasSkill) {
 			options.skillDetected = true;

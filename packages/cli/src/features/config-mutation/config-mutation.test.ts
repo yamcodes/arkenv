@@ -215,5 +215,22 @@ describe("config-mutation", () => {
 			expect(result.code).toContain('from "next"');
 			expect(result.code).toContain("withArkEnv(nextConfig)");
 		});
+
+		it("preserves trailing newline when present", async () => {
+			const initialContent = "export default { experimental: {} }\n";
+
+			const result = transformNextjsConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code).toContain("withArkEnv({");
+			expect(result.code).toMatch(/\n$/);
+		});
+
+		it("does not add trailing newline when absent", async () => {
+			const initialContent = "export default { experimental: {} }";
+
+			const result = transformNextjsConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code).not.toMatch(/\n$/);
+		});
 	});
 });

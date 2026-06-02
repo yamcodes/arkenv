@@ -1,9 +1,10 @@
 import path from "node:path";
-import { cancel, isCancel, text } from "@clack/prompts";
+import { cancel, confirm, isCancel, text } from "@clack/prompts";
 import { shake } from "radashi";
 import type { ProjectOptions } from "@/features/scaffold";
 import type { Example } from "@/shared/clients";
 import type { ParsedTsConfig } from "@/shared/ports";
+import { code } from "@/shared/visuals";
 import { steps } from "./steps";
 
 type HasTypeFileAtPath = (options: {
@@ -259,6 +260,22 @@ async function runExistingProjectWizard(
 			disableCodegen = !useCodegen;
 		}
 
+		// Next.js config wrapping prompt
+		let wrapNextjsConfig: boolean | undefined;
+		if (framework === "nextjs" && !disableCodegen) {
+			const answer = await confirm({
+				message: `Would you like to wrap your Next.js config with ${code("withArkEnv")}?`,
+				initialValue: true,
+				active: "Yes (Recommended)",
+				inactive: "No",
+			});
+			if (isCancel(answer)) {
+				cancel("Operation cancelled");
+				throw new CancelError();
+			}
+			wrapNextjsConfig = answer;
+		}
+
 		// 4. useDefaultPath
 		const useDefaultPath = unwrapPrompt(
 			await steps.useDefaultPath({
@@ -324,6 +341,7 @@ async function runExistingProjectWizard(
 			installSkill: false,
 			envKeys: useEnvExample ? (detectedKeys ?? undefined) : undefined,
 			disableCodegen,
+			wrapNextjsConfig,
 		});
 	} catch (error) {
 		if (error instanceof CancelError) {
