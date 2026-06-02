@@ -1,7 +1,7 @@
 import {
+	builders,
 	detectCodeFormat,
 	generateCode,
-	parseExpression,
 	parseModule,
 } from "magicast";
 import type { BootstrapResult } from "@/shared/ports";
@@ -149,11 +149,6 @@ export function transformNextjsConfig(
 			};
 		}
 
-		// Check if already wrapped with withArkEnv
-		if (/\bwithArkEnv\b/.test(initialCode)) {
-			return { success: true, updated: false };
-		}
-
 		const mod = parseModule(initialCode);
 
 		// Verify there's a default export
@@ -165,29 +160,33 @@ export function transformNextjsConfig(
 			};
 		}
 
+		// Check if already wrapped with withArkEnv using the AST
+		if (
+			typeof mod.exports.default === "object" &&
+			"$type" in (mod.exports.default as object) &&
+			(mod.exports.default as { $type?: string }).$type ===
+				"function-call" &&
+			(mod.exports.default as { $callee?: string }).$callee === "withArkEnv"
+		) {
+			return { success: true, updated: false };
+		}
+
+		// Also check via regex for cases where withArkEnv is used inline
+		if (/\bwithArkEnv\b/.test(initialCode)) {
+			return { success: true, updated: false };
+		}
+
 		// Add import
 		mod.imports.$add({
 			from: "@arkenv/nextjs/config",
 			imported: "withArkEnv",
 		});
 
-		// Extract default export expression from original code
-		const exportMatch = initialCode.match(/export\s+default\s+/);
-		if (!exportMatch) {
-			return {
-				success: false,
-				updated: false,
-				error: "Could not find default export in Next.js config",
-			};
-		}
-
-		let exportExpr = initialCode
-			.slice(exportMatch.index! + exportMatch[0].length)
-			.trim();
-		exportExpr = exportExpr.replace(/;+\s*$/, "");
-
-		// Wrap the default export with withArkEnv(...)
-		mod.exports.default = parseExpression(`withArkEnv(${exportExpr})`);
+		// Wrap the default export with withArkEnv(...) using the AST
+		mod.exports.default = builders.functionCall(
+			"withArkEnv",
+			mod.exports.default,
+		);
 
 		const code = generateCode(mod, {
 			format: detectCodeFormat(initialCode),

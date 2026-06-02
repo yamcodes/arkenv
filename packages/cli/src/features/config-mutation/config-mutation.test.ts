@@ -116,11 +116,12 @@ describe("config-mutation", () => {
 			const initialContent = "export default someFunction()";
 
 			const result = transformViteConfig({ code: initialContent });
-			if (result.success) {
-				throw new Error("Expected transformation to fail");
-			}
-			expect(result.success).toBe(false);
-			expect(result.error).toContain("Could not find default export object");
+			expect(result).toMatchObject({
+				success: false,
+				error: expect.stringContaining(
+					"Could not find default export object",
+				),
+			});
 		});
 	});
 
@@ -188,20 +189,18 @@ describe("config-mutation", () => {
 			`;
 
 			const result = transformNextjsConfig({ code: initialContent });
-			if (result.success) {
-				throw new Error("Expected transformation to fail");
-			}
-			expect(result.success).toBe(false);
-			expect(result.error).toContain("CommonJS");
+			expect(result).toMatchObject({
+				success: false,
+				error: expect.stringContaining("CommonJS"),
+			});
 		});
 
 		it("returns failure when no default export exists", async () => {
 			const result = transformNextjsConfig({ code: "const x = 1;" });
-			if (result.success) {
-				throw new Error("Expected transformation to fail");
-			}
-			expect(result.success).toBe(false);
-			expect(result.error).toContain("Could not find default export");
+			expect(result).toMatchObject({
+				success: false,
+				error: expect.stringContaining("Could not find default export"),
+			});
 		});
 
 		it("preserves import when wrapping", async () => {
