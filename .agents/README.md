@@ -1,6 +1,4 @@
-\`\`\`
-This file is for human eyes to understand the .agent directory structure and conventions
-\`\`\`
+{/* This file is for human eyes to understand the .agent directory structure and conventions */}
 
 # Agent configuration & documentation
 

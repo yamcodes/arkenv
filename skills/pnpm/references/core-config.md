@@ -180,9 +180,9 @@ pnpm reads specific fields from `package.json`:
 3. **Catalogs**: Centralized version management
 4. **Content-addressable store**: Shared across projects
 
-```text
-Source references:
-- https://pnpm.io/pnpm-workspace_yaml
-- https://pnpm.io/npmrc
-- https://pnpm.io/package_json
-```
+{/* 
+  Source references:
+  - https://pnpm.io/npmrc
+  - https://pnpm.io/configuring
+  - https://pnpm.io/package_json
+  */}

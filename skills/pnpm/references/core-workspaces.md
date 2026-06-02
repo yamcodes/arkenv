@@ -201,9 +201,9 @@ my-monorepo/
         └── package.json
 ```
 
-```text
-Source references:
-- https://pnpm.io/workspaces
-- https://pnpm.io/filtering
-- https://pnpm.io/npmrc#workspace-settings
-```
+{/* 
+  Source references:
+  - https://pnpm.io/workspaces
+  - https://pnpm.io/pnpm-workspace_yaml
+  - https://pnpm.io/filtering
+  */}

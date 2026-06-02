@@ -164,7 +164,9 @@ Aliases work with any valid pnpm specifier:
 
 4. **Test thoroughly**: Aliased packages may have subtle differences in behavior
 
-```text
-Source references:
-- https://pnpm.io/aliases
-```
+{/* 
+  Source references:
+  - https://pnpm.io/aliases
+  - https://pnpm.io/cli/add
+  - https://pnpm.io/cli/install
+  */}

@@ -153,7 +153,8 @@ catalog:
 # "dependencies": { "@myorg/utils": "workspace:^" }
 ```
 
-```text
-Source references:
-- https://pnpm.io/catalogs
-```
+{/* 
+  Source references:
+  - https://pnpm.io/catalogs
+  - https://pnpm.io/pnpm-workspace_yaml
+  */}

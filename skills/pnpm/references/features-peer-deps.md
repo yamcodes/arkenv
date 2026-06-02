@@ -245,8 +245,9 @@ pnpm list --depth=Infinity
 
 5. **Test with different peer versions** if you support multiple majors
 
-```text
-Source references:
-- https://pnpm.io/package_json#pnpmpeerdependencyrules
-- https://pnpm.io/npmrc#auto-install-peers
-```
+{/* 
+  Source references:
+  - https://pnpm.io/how-peers-are-resolved
+  - https://pnpm.io/package_json
+  - https://pnpm.io/npmrc
+  */}

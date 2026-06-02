@@ -281,9 +281,9 @@ workspace-concurrency=4
 | Build changed only  | `pnpm --filter "...[origin/main]" build` |
 | Clean store         | `pnpm store prune`                       |
 
-```text
-Source references:
-- https://pnpm.io/npmrc
-- https://pnpm.io/cli/install
-- https://pnpm.io/filtering
-```
+{/* 
+  Source references:
+  - https://pnpm.io/performance
+  - https://pnpm.io/benchmarks
+  - https://github.com/pnpm/pnpm/releases
+  */}

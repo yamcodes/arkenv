@@ -233,10 +233,10 @@ pnpm install -P
 pnpm install --no-optional
 ```
 
-```text
-Source references:
-- https://pnpm.io/cli/install
-- https://pnpm.io/cli/add
-- https://pnpm.io/cli/run
-- https://pnpm.io/filtering
-```
+{/* 
+  Source references:
+  - https://pnpm.io/cli/install
+  - https://pnpm.io/cli/add
+  - https://pnpm.io/cli/run
+  - https://pnpm.io/filtering
+  */}

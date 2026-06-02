@@ -186,8 +186,9 @@ pnpm why lodash
 pnpm list lodash --depth=Infinity
 ```
 
-```text
-Source references:
-- https://pnpm.io/package_json#pnpmoverrides
-- https://pnpm.io/pnpmfile
-```
+{/* 
+  Source references:
+  - https://pnpm.io/overrides
+  - https://pnpm.io/package_json
+  - https://pnpm.io/resolution
+  */}
