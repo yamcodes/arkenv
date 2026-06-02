@@ -59,7 +59,7 @@ The Next.js configuration `next.config.ts` wraps the config object with `withArk
 Import `env` from the server file:
 
 ```tsx title="app/page.tsx"
-import { env } from "../env/server";
+import { env } from "@/env/server";
 
 export default function Page() {
   const dbUrl = env.DATABASE_URL; // ✅ Allowed
@@ -75,7 +75,7 @@ Import `env` from the client file:
 ```tsx title="app/client-component.tsx"
 "use client";
 
-import { env } from "../env/client";
+import { env } from "@/env/client";
 
 export default function ClientComponent() {
   const api = env.NEXT_PUBLIC_API_URL; // ✅ Allowed

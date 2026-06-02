@@ -1,4 +1,4 @@
-import { env } from "../env/server";
+import { env } from "@/env/server";
 import ClientComponent from "./client-component";
 
 export default function Home() {
