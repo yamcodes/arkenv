@@ -1,6 +1,15 @@
 [
 	{
 		"date": "2026-06-02",
+		"macrostructure": "Bento Grid",
+		"theme": "custom",
+		"theme_axes": "light / geometric-sans / cool",
+		"vibe": "clean precision, terminal-honed, technical",
+		"enrichment": "none",
+		"brief": "ArkEnv · alt-cli page v2 — CLI-inspired alternative homepage"
+	},
+	{
+		"date": "2026-06-02",
 		"macrostructure": "Workbench",
 		"theme": "studied-DNA (source: linear.app) — dark near-black · periwinkle accent",
 		"theme_axes": "dark / geometric-sans / cool",

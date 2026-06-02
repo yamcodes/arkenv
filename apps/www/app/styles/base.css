@@ -29,8 +29,14 @@
 		top: var(--fd-nav-height, 80px);
 	}
 
-	/* Twoslash code block max height */
-	.fd-twoslash-popover .fd-scroll-container {
-		max-height: 160px !important;
-	}
+}
+
+/* Twoslash code block scrolls independently of docs */
+.fd-twoslash-popover {
+	overflow: visible;
+	max-height: none;
+}
+.fd-twoslash-popover .fd-codeblock {
+	max-height: 120px;
+	overflow-y: auto;
 }

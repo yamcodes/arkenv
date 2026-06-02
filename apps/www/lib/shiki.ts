@@ -22,7 +22,7 @@ const SUPPORTED_LANGS = new Set([
 
 const twoslashOptions = {
 	...arktypeTwoslashOptions,
-	explicitTrigger: true,
+	explicitTrigger: false,
 };
 
 export async function highlight(code: string, lang: string) {

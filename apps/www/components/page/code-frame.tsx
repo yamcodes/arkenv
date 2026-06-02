@@ -1,4 +1,5 @@
 import { highlight } from "~/lib/shiki";
+import { TwoslashHover } from "./twoslash-hover";
 
 export async function CodeFrame({
 	label,
@@ -31,10 +32,9 @@ export async function CodeFrame({
 				>
 					{label}
 				</div>
-				<div
+				<TwoslashHover
+					html={highlighted}
 					className="overflow-x-auto [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre]:text-sm [&_pre]:leading-relaxed"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: shiki-generated HTML is safe
-					dangerouslySetInnerHTML={{ __html: highlighted }}
 				/>
 			</div>
 			<figcaption

@@ -6,7 +6,6 @@ import {
 	CompatibilityRails,
 	QuickstartButton,
 } from "~/components/page";
-import "~/app/styles/alt.css";
 
 export const metadata: Metadata = {
 	title: "ArkEnv — typesafe env vars",
@@ -38,6 +37,7 @@ const env = arkenv({
   AUTH_SECRET: "string",
 });
 
+// @ts-expect-error nextConfig is defined in the actual config
 export default withArkEnv(nextConfig, env);
 
 // Build-time validation.
@@ -51,7 +51,7 @@ export default function AltHomePage() {
 		<div id="alt-root" className="flex flex-1 flex-col" style={{ backgroundColor: "var(--color-paper)" }}>
 			{/* Hero — Stacked title + code panel */}
 			<section
-				className="w-full flex items-center"
+				className="w-full flex items-center alt-hero-wrap"
 				style={{
 					minHeight: "calc(100dvh - var(--fd-nav-height, 80px))",
 					paddingBlock: "var(--space-3xl) var(--space-2xl)",
@@ -91,7 +91,7 @@ export default function AltHomePage() {
 							</div>
 						</div>
 						<div className="min-w-0">
-							<div className="alt-panel alt-grain">
+							<div className="alt-panel alt-grain alt-panel-glow">
 								<CodeFrame
 									label="env.ts"
 									code={envTsCode}
@@ -137,11 +137,11 @@ export default function AltHomePage() {
 			</section>
 
 			{/* 1.0 · Schema */}
-			<section className="w-full alt-workbench-section" style={{ borderTop: "1px solid var(--color-rule)", paddingBlock: "var(--space-2xl)" }}>
+			<section className="w-full alt-workbench-section alt-section-glow" style={{ borderTop: "1px solid var(--color-rule)", paddingBlock: "var(--space-2xl)" }}>
 				<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="alt-section-grid grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-16 items-center">
 						<div className="min-w-0 order-last lg:order-first" style={{ maxWidth: "32rem" }}>
-							<div className="alt-panel alt-grain">
+							<div className="alt-panel alt-grain alt-panel-glow">
 								<CodeFrame label="env.ts" code={envTsCode} language="ts" caption="" />
 							</div>
 						</div>
@@ -175,7 +175,7 @@ export default function AltHomePage() {
 			</section>
 
 			{/* 2.0 · Plugins */}
-			<section className="w-full alt-workbench-section" style={{ borderTop: "1px solid var(--color-rule)", paddingBlock: "var(--space-2xl)" }}>
+			<section className="w-full alt-workbench-section alt-section-glow" style={{ borderTop: "1px solid var(--color-rule)", paddingBlock: "var(--space-2xl)" }}>
 				<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="alt-section-grid grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-16 items-center">
 						<div className="min-w-0">
@@ -199,7 +199,7 @@ export default function AltHomePage() {
 							/>
 						</div>
 						<div className="min-w-0">
-							<div className="alt-panel" style={{ padding: "var(--space-lg)" }}>
+							<div className="alt-panel alt-panel-glow" style={{ padding: "var(--space-lg)" }}>
 								<h3
 									className="text-sm font-semibold tracking-tight mb-4"
 									style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
@@ -214,11 +214,11 @@ export default function AltHomePage() {
 			</section>
 
 			{/* 3.0 · Ship */}
-			<section className="w-full alt-workbench-section" style={{ borderTop: "1px solid var(--color-rule)", paddingBlock: "var(--space-2xl)" }}>
+			<section className="w-full alt-workbench-section alt-section-glow" style={{ borderTop: "1px solid var(--color-rule)", paddingBlock: "var(--space-2xl)" }}>
 				<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="alt-section-grid grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-16 items-center">
 						<div className="min-w-0 order-last lg:order-first">
-							<div className="alt-panel alt-grain" style={{ padding: "var(--space-lg)", maxWidth: "32rem" }}>
+							<div className="alt-panel alt-grain alt-panel-glow" style={{ padding: "var(--space-lg)", maxWidth: "32rem" }}>
 								<div style={{ color: "var(--color-ink-4)", fontSize: "0.75rem", fontFamily: "JetBrains Mono, monospace", marginBottom: "var(--space-md)", fontFeatureSettings: '"ss01"' }}>
 									$ npx @arkenv/cli@latest check
 								</div>
@@ -283,7 +283,7 @@ export default function AltHomePage() {
 			{/* CTA */}
 			<section style={{ borderTop: "1px solid var(--color-rule)", paddingBlock: "var(--space-2xl)" }}>
 				<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="alt-cta-card text-center max-w-2xl mx-auto">
+					<div className="alt-cta-card alt-panel-glow text-center max-w-2xl mx-auto">
 						<h2
 							className="text-xl sm:text-2xl font-semibold tracking-tight mb-3"
 							style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
