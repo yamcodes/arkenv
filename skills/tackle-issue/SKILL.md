@@ -67,9 +67,9 @@ If this step fails (some lint/formatting issues cannot be auto-fixed), you MUST 
 
 ### 5. Changeset creation
 
-After validation passes, you MUST create a changeset using the `create-changeset` skill **ONLY if your changes affect a published package, a private package, or anything that gets imported by other packages**. Do not create a changeset if the changes are isolated strictly to playgrounds or examples.
+After validation passes, you MUST create a changeset using the `changeset` skill **ONLY if your changes affect a published package, a private package, or anything that gets imported by other packages**. Do not create a changeset if the changes are isolated strictly to playgrounds or examples.
 
-- Determine the appropriate bump type (`patch` or `minor` for v0) based on the `create-changeset` guidelines.
+- Determine the appropriate bump type (`patch` or `minor` for v0) based on the `changeset` guidelines.
 - Provide a clear, concise description starting with a `####` header.
 
 ### 6. Pull request creation
