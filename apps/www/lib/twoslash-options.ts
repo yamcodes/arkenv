@@ -4,14 +4,19 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
 
-const require = createRequire(import.meta.url);
-
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(currentDir, "../../..");
 
-export const arkTypePackageJson = JSON.parse(
-	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
-);
+let _arkTypePackageJson: Record<string, unknown> | null = null;
+function getArkTypePackageJson() {
+	if (!_arkTypePackageJson) {
+		const require = createRequire(import.meta.url);
+		_arkTypePackageJson = JSON.parse(
+			fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
+		);
+	}
+	return _arkTypePackageJson;
+}
 
 export type TwoslashNode = {
 	type: "hover" | "error" | "tag" | "query" | "completion";
@@ -199,7 +204,10 @@ declare global {
 				return isWhiteListed;
 			}
 			case "error":
-				for (const transformation of arkTypePackageJson.contributes
+				const pkg = getArkTypePackageJson() as {
+					contributes: { configurationDefaults: { "errorLens.replace": { matcher: string; message: string }[] } };
+				};
+				for (const transformation of pkg.contributes
 					.configurationDefaults["errorLens.replace"]) {
 					const regex = new RegExp(transformation.matcher);
 					const matchResult = regex.exec(node.text);

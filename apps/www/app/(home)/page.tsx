@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 	description: "Environment variable validation from editor to runtime",
 };
 
-const envTsCode = `import { arkenv } from "arkenv";
+const envTsCode = `import arkenv from "arkenv";
 
 const env = arkenv({
   PORT:     "number",
@@ -30,14 +30,15 @@ const env = arkenv({
 // env.NODE_ENV is typed as "development" | "production"`;
 
 const pluginCode = `// next.config.ts
-import { arkenv } from "arkenv";
-import { withArkEnv } from "@arkenv/nextjs";
+import arkenv from "arkenv";
+import withArkEnv from "@arkenv/nextjs";
 
 const env = arkenv({
   API_URL: "string",
   AUTH_SECRET: "string",
 });
 
+// @ts-expect-error nextConfig is defined in the actual config
 export default withArkEnv(nextConfig, env);
 
 // Build-time validation.
