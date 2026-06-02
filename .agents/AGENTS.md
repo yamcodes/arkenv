@@ -11,4 +11,3 @@ Custom vocabulary mapped to GitHub labels (e.g., `needs triage`, `needs more inf
 ### Domain docs
 
 Single-context layout with `CONTEXT.md` in the `docs/` directory. See `.agent/docs/domain.md`.
-

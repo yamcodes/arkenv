@@ -28,6 +28,7 @@ strict-peer-dependencies=true
 ```
 
 When strict, pnpm will fail if:
+
 - Peer dependency is missing
 - Installed version doesn't match required range
 
@@ -68,6 +69,7 @@ Suppress warnings for missing peer dependencies:
 ```
 
 Use patterns:
+
 - `"react"` - exact package name
 - `"@babel/*"` - all packages in scope
 - `"*"` - all packages (not recommended)
@@ -243,8 +245,9 @@ pnpm list --depth=Infinity
 
 5. **Test with different peer versions** if you support multiple majors
 
-<!-- 
-Source references:
-- https://pnpm.io/package_json#pnpmpeerdependencyrules
-- https://pnpm.io/npmrc#auto-install-peers
--->
+{/* 
+  Source references:
+  - https://pnpm.io/how-peers-are-resolved
+  - https://pnpm.io/package_json
+  - https://pnpm.io/npmrc
+  */}

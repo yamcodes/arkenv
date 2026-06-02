@@ -201,13 +201,14 @@ function readPackage(pkg, context) {
 
 ## Hooks vs overrides
 
-| Feature | Hooks (.pnpmfile.cjs) | Overrides |
-|---------|----------------------|-----------|
-| Complexity | Can use JavaScript logic | Declarative only |
-| Scope | Any package metadata | Version only |
-| Use case | Complex fixes, conditional logic | Simple version pins |
+| Feature    | Hooks (.pnpmfile.cjs)            | Overrides           |
+| ---------- | -------------------------------- | ------------------- |
+| Complexity | Can use JavaScript logic         | Declarative only    |
+| Scope      | Any package metadata             | Version only        |
+| Use case   | Complex fixes, conditional logic | Simple version pins |
 
 **Prefer overrides** for simple version fixes. **Use hooks** when you need:
+
 - Conditional logic
 - Non-version modifications (exports, peer deps)
 - Logging/debugging
@@ -227,7 +228,8 @@ function readPackage(pkg, context) {
 pnpm install --reporter=append-only
 ```
 
-<!-- 
-Source references:
-- https://pnpm.io/pnpmfile
--->
+{/* 
+  Source references:
+  - https://pnpm.io/hooks
+  - https://pnpm.io/onlyBuiltDependencies
+  */}

@@ -153,6 +153,7 @@ For CI/CD, you can share the store:
 ## Troubleshooting
 
 ### Store corruption
+
 ```bash
 # Verify and fix store
 pnpm store status
@@ -160,20 +161,22 @@ pnpm store prune
 ```
 
 ### Hard link issues (network drives, docker)
+
 ```ini
 # Use copying instead of hard links
 package-import-method=copy
 ```
 
 ### Permission issues
+
 ```bash
 # Fix store permissions
 chmod -R u+w ~/.pnpm-store
 ```
 
-<!-- 
-Source references:
-- https://pnpm.io/symlinked-node-modules-structure
-- https://pnpm.io/cli/store
-- https://pnpm.io/npmrc#store-dir
--->
+{/* 
+  Source references:
+  - https://pnpm.io/store
+  - https://pnpm.io/store-path
+  - https://pnpm.io/cli/store
+  */}
