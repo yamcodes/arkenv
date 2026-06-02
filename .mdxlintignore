@@ -1,8 +1,15 @@
 tmp
 tooling/playwright-www
-.agent
+.agents
+.changeset
+.gemini
+.github
 .github/skills
 skills
 /README.md
+node_modules
+dist
+.next
+.source
 packages/**/CHANGELOG.md
 packages/arkenv/README.md

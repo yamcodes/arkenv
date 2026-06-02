@@ -2,8 +2,8 @@
 
 :root {
 	--radius: 0.125rem;
-	--fd-nav-height: 80px;
-	--fd-header-height: 80px;
+	--fd-nav-height: 80px !important;
+	--fd-header-height: 80px !important;
 	/* WCAG AA compliant: 6.13:1 contrast on white background */
 	--color-fd-muted-foreground: hsl(240 4% 40%);
 }
@@ -27,7 +27,7 @@
 #nd-notebook-layout,
 #nd-home-layout,
 #nd-docs-layout {
-	--fd-header-height: 80px;
+	--fd-header-height: 80px !important;
 }
 
 /* Override search bar and keyboard shortcuts to use minimal radius */
@@ -39,12 +39,12 @@ button[data-search],
 .prose .rounded-xl,
 [data-radix-popper-content-wrapper] [role="dialog"],
 kbd {
-	border-radius: 0.125rem;
+	border-radius: 0.125rem !important;
 }
 
 #nd-nav,
 #nd-subnav {
-	height: var(--fd-nav-height);
+	height: var(--fd-nav-height) !important;
 	z-index: 50;
 }
 
@@ -52,7 +52,7 @@ kbd {
 #nd-subnav nav,
 #nd-nav > div,
 #nd-subnav > div {
-	height: var(--fd-nav-height);
+	height: var(--fd-nav-height) !important;
 }
 
 /* Heading anchors: avoid underlines and keep icons aligned */
@@ -62,11 +62,11 @@ kbd {
 
 [data-arkenv-heading-link] {
 	text-decoration: none;
-	border-bottom: 0;
+	border-bottom: 0 !important;
 }
 
 [data-arkenv-heading-link]:hover {
-	border-bottom: 0;
+	border-bottom: 0 !important;
 }
 
 /* Icon floats to the left of the heading without taking space */
@@ -139,11 +139,11 @@ a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
 	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
 		:has(> svg:only-child)
 	) {
-	background-image: none;
-	padding-right: 0;
+	background-image: none !important;
+	padding-right: 0 !important;
 	display: inline-flex;
 	align-items: center;
-	gap: 0;
+	gap: 0 !important;
 }
 
 /* Sidebar specifically needs full flex for better link hit-areas */
@@ -214,36 +214,36 @@ aside .theme-toggle {
 
 /* Fumadocs built-in nav backdrop (fallback, overridden by custom Header) */
 #nd-nav {
-	background-color: transparent;
-	backdrop-filter: none;
+	background-color: transparent !important;
+	backdrop-filter: none !important;
 }
 
 #nd-nav > div,
 #nd-nav > nav {
-	background-color: rgba(255, 255, 255, 0.95);
+	background-color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .dark #nd-nav > div,
 .dark #nd-nav > nav {
-	background-color: rgba(8, 16, 33, 0.95);
+	background-color: rgba(8, 16, 33, 0.95) !important;
 }
 
 @supports (backdrop-filter: blur(8px)) {
 	#nd-nav > div,
 	#nd-nav > nav {
-		backdrop-filter: blur(8px);
-		background-color: rgba(255, 255, 255, 0.8);
+		backdrop-filter: blur(8px) !important;
+		background-color: rgba(255, 255, 255, 0.8) !important;
 	}
 
 	.dark #nd-nav > div,
 	.dark #nd-nav > nav {
-		background-color: rgba(8, 16, 33, 0.8);
+		background-color: rgba(8, 16, 33, 0.8) !important;
 	}
 }
 
 #nd-nav nav {
-	backdrop-filter: none;
-	background-color: transparent;
+	backdrop-filter: none !important;
+	background-color: transparent !important;
 }
 
 /* Sidebar item base styles */
@@ -301,19 +301,19 @@ div:has(+ #nd-sidebar-mobile) {
 /* Radix popper portals (workspace switcher dropdown, etc.) render at the body
    level — they must be above the sidebar drawer to stay visible */
 [data-radix-popper-content-wrapper] {
-	z-index: 70;
+	z-index: 70 !important;
 }
 
 /* Search dialog: raise above header (z-50) and mobile sidebar (z-60) */
 [role="dialog"][data-state] {
-	z-index: 65;
+	z-index: 65 !important;
 }
 
 /* On mobile: push the search input box below the fixed header,
    and hide the ESC close hint (no keyboard on mobile) */
 @media (max-width: 767px) {
 	[role="dialog"][data-state] {
-		top: calc(var(--fd-nav-height, 80px) + 0.5rem);
+		top: calc(var(--fd-nav-height, 80px) + 0.5rem) !important;
 	}
 
 	[role="dialog"][data-state] button.font-mono {

@@ -6,6 +6,12 @@ import remarkGemoji from "remark-gemoji";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
 import { arktypeTwoslashOptions } from "./lib/twoslash-options";
 
+const CALLOUT_CONTAINER = "CalloutContainer";
+const CALLOUT_TITLE = "CalloutTitle";
+const CALLOUT_DESCRIPTION = "CalloutDescription";
+
+type RemarkPlugin = (tree: AstNode) => void;
+
 type AstNode = {
 	type: string;
 	name?: string;
@@ -16,7 +22,7 @@ type AstNode = {
 
 function remarkDirectiveAdmonitionCustom(options: {
 	types: Record<string, string>;
-}) {
+}): RemarkPlugin {
 	const types = options.types;
 	return (tree: AstNode) => {
 		const traverse = (node: AstNode) => {
@@ -35,10 +41,6 @@ function remarkDirectiveAdmonitionCustom(options: {
 							child.name &&
 							child.name in types
 						) {
-							const CalloutContainer = "CalloutContainer";
-							const CalloutTitle = "CalloutTitle";
-							const CalloutDescription = "CalloutDescription";
-
 							const attributes = [
 								{
 									type: "mdxJsxAttribute",
@@ -73,7 +75,7 @@ function remarkDirectiveAdmonitionCustom(options: {
 							if (titleNodes.length > 0) {
 								children.push({
 									type: "mdxJsxFlowElement",
-									name: CalloutTitle,
+									name: CALLOUT_TITLE,
 									attributes: {},
 									children: titleNodes,
 								});
@@ -81,7 +83,7 @@ function remarkDirectiveAdmonitionCustom(options: {
 							if (descriptionNodes.length > 0) {
 								children.push({
 									type: "mdxJsxFlowElement",
-									name: CalloutDescription,
+									name: CALLOUT_DESCRIPTION,
 									attributes: {},
 									children: descriptionNodes,
 								});
@@ -90,7 +92,7 @@ function remarkDirectiveAdmonitionCustom(options: {
 							return {
 								type: "mdxJsxFlowElement",
 								attributes,
-								name: CalloutContainer,
+								name: CALLOUT_CONTAINER,
 								children,
 							} as AstNode;
 						}
@@ -128,7 +130,7 @@ export default defineConfig({
 					warning: "warning",
 					caution: "error",
 				},
-			}) as any,
+			}),
 		],
 		rehypeCodeOptions: {
 			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv"],
