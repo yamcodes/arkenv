@@ -1,0 +1,226 @@
+/* Hallmark · macrostructure: Workbench · genre: modern-minimal
+ * theme: studied-DNA (source: https://linear.app)
+ * paper: oklch(3.3% 0.003 265) · accent: oklch(60% 0.18 278)
+ * display: Geist (body+sans single-family) · label: JetBrains Mono
+ * studied: yes · DNA-source: url (linear.app)
+ * pre-emit critique: P5 H4 E5 S4 R5 V5
+ */
+
+#alt-root {
+	--color-paper: oklch(3.3% 0.003 265);
+	--color-paper-2: oklch(6% 0.005 265);
+	--color-paper-3: oklch(11% 0.005 265);
+	--color-ink: oklch(97% 0.002 265);
+	--color-ink-2: oklch(82% 0.004 265);
+	--color-ink-3: oklch(65% 0.004 265);
+	--color-ink-4: oklch(48% 0.005 265);
+	--color-rule: oklch(16% 0.006 265);
+	--color-rule-2: oklch(22% 0.006 265);
+	--color-brand: oklch(60% 0.18 278);
+	--color-brand-hover: oklch(65% 0.15 278);
+	--color-brand-ink: oklch(95% 0.02 278);
+	--color-brand-tint: oklch(60% 0.18 278 / 0.08);
+	--color-focus-ring: oklch(65% 0.15 278);
+	--color-emphasis: oklch(58% 0.12 180);
+}
+
+/* --- Hero --- */
+
+.alt-hero-word {
+	display: inline-block;
+	opacity: 0;
+	filter: blur(10px);
+	transform: translateY(24%);
+	animation: word-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes word-reveal {
+	to {
+		opacity: 1;
+		filter: blur(0);
+		transform: translateY(0);
+	}
+}
+
+/* --- Section labels (FIG 0.1 style) --- */
+
+.alt-fig-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-family: "JetBrains Mono", ui-monospace, monospace;
+	font-size: 0.6875rem;
+	font-weight: 510;
+	letter-spacing: 0;
+	text-transform: uppercase;
+	color: var(--color-ink-4);
+	white-space: nowrap;
+}
+
+.alt-fig-label::before {
+	content: "";
+	display: inline-block;
+	width: 1rem;
+	height: 1px;
+	background: var(--color-rule-2);
+	margin-right: 0.25rem;
+}
+
+/* --- Numbered section header --- */
+
+.alt-section-number {
+	font-family: "JetBrains Mono", ui-monospace, monospace;
+	font-size: 0.75rem;
+	font-weight: 510;
+	color: var(--color-ink-4);
+	font-feature-settings: "ss01";
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.alt-section-number::after {
+	content: "";
+	display: inline-block;
+	width: 1.5rem;
+	height: 1px;
+	background: var(--color-rule-2);
+}
+
+/* --- Code panel (painted over existing CodeFrame) --- */
+
+#alt-root .alt-code-panel {
+	border-color: var(--color-rule-2);
+	background: var(--color-paper-2);
+}
+
+#alt-root .alt-code-panel .alt-code-header {
+	border-color: var(--color-rule);
+	color: var(--color-ink-3);
+	font-size: 0.75rem;
+	font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* --- Panel card (for numbered-section visuals) --- */
+
+.alt-panel {
+	border: 1px solid var(--color-rule-2);
+	border-radius: 12px;
+	background: var(--color-paper-2);
+	overflow: hidden;
+}
+
+/* --- Grain overlay (CSS-only) --- */
+
+.alt-grain {
+	position: relative;
+}
+
+.alt-grain::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0.035;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	background-size: 128px 128px;
+	border-radius: inherit;
+}
+
+/* --- Button pill style --- */
+
+.alt-btn-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.625rem 1.5rem;
+	border-radius: 999px;
+	font-size: 0.9375rem;
+	font-weight: 510;
+	line-height: 1;
+	background: var(--color-brand);
+	color: var(--color-brand-ink);
+	border: none;
+	cursor: pointer;
+	transition: background var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+
+.alt-btn-primary:hover {
+	background: var(--color-brand-hover);
+	transform: translateY(-1px);
+}
+
+.alt-btn-primary:active {
+	transform: translateY(0);
+}
+
+.alt-btn-primary:focus-visible {
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
+}
+
+/* --- CTA section divider --- */
+
+.alt-cta-card {
+	border: 1px solid var(--color-rule-2);
+	border-radius: 16px;
+	background: var(--color-paper-2);
+	padding: var(--space-xl) var(--space-lg);
+}
+
+/* --- Footer --- */
+
+#alt-root .alt-footer {
+	border-top: 1px solid var(--color-rule);
+	color: var(--color-ink-4);
+}
+
+#alt-root .alt-footer a {
+	color: var(--color-ink-3);
+	transition: color var(--dur-short) var(--ease-out);
+}
+
+#alt-root .alt-footer a:hover {
+	color: var(--color-ink);
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 768px) {
+	.alt-fig-grid {
+		grid-template-columns: 1fr !important;
+		gap: var(--space-lg) !important;
+	}
+
+	.alt-workbench-section .alt-section-grid {
+		grid-template-columns: 1fr !important;
+		gap: var(--space-xl) !important;
+	}
+
+	.alt-hero-grid {
+		grid-template-columns: 1fr !important;
+	}
+}
+
+@media (max-width: 640px) {
+	#alt-root {
+		--space-xl: 1.5rem;
+		--space-2xl: 2.5rem;
+		--space-3xl: 4rem;
+	}
+
+	.alt-btn-primary {
+		padding: 0.5rem 1.25rem;
+		font-size: 0.875rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.alt-hero-word {
+		opacity: 1;
+		filter: none;
+		transform: none;
+		animation: none;
+	}
+}
