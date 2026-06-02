@@ -159,6 +159,20 @@ export class InitUseCase {
 			}
 		}
 
+		const gitStatus = await this.scanner.checkGitStatus(targetDir);
+		if (gitStatus.status === "dirty") {
+			if (isForce) {
+				this.logger.warn(
+					"Git working tree is not clean, but continuing due to --force flag.",
+				);
+			} else {
+				this.logger.error(
+					"Git working tree is not clean. Commit or stash your changes before running arkenv init, or use --force to proceed anyway.",
+				);
+				return null;
+			}
+		}
+
 		let shouldUpdateTsConfig = false;
 		const tsConfig = await this.scanner.checkTsConfig(targetDir);
 

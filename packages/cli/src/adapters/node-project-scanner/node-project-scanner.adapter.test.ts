@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -364,6 +365,38 @@ API_KEY=
 		it("returns false if no skill indicators exist", async () => {
 			const result = await scanner.hasSkill(tempDir);
 			expect(result).toBe(false);
+		});
+	});
+
+	describe("checkGitStatus", () => {
+		it("returns not_a_repo when directory is not a git repository", async () => {
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("not_a_repo");
+		});
+
+		it("returns clean when git repository has no changes", async () => {
+			execSync("git init", { cwd: tempDir });
+			execSync('git config user.email "test@test.com"', { cwd: tempDir });
+			execSync('git config user.name "Test"', { cwd: tempDir });
+			await fsp.writeFile(path.join(tempDir, "README.md"), "# test");
+			execSync("git add .", { cwd: tempDir });
+			execSync("git commit -m 'initial'", { cwd: tempDir });
+
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("clean");
+		});
+
+		it("returns dirty when git repository has uncommitted changes", async () => {
+			execSync("git init", { cwd: tempDir });
+			execSync('git config user.email "test@test.com"', { cwd: tempDir });
+			execSync('git config user.name "Test"', { cwd: tempDir });
+			await fsp.writeFile(path.join(tempDir, "README.md"), "# test");
+			execSync("git add .", { cwd: tempDir });
+			execSync("git commit -m 'initial'", { cwd: tempDir });
+			await fsp.writeFile(path.join(tempDir, "new-file.txt"), "dirty");
+
+			const result = await scanner.checkGitStatus(tempDir);
+			expect(result.status).toBe("dirty");
 		});
 	});
 });
