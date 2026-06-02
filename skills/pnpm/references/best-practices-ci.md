@@ -277,3 +277,9 @@ jobs:
 4. **Specify `packageManager`** in package.json
 5. **Use `--filter`** in monorepos to build only what changed
 6. **Multi-stage Docker builds** for smaller images
+
+<!-- 
+  Source references:
+  - https://pnpm.io/continuous-integration
+  - https://github.com/pnpm/action-setup
+  -->

@@ -280,3 +280,10 @@ workspace-concurrency=4
 | Parallel workspace  | `pnpm -r --parallel run build`           |
 | Build changed only  | `pnpm --filter "...[origin/main]" build` |
 | Clean store         | `pnpm store prune`                       |
+
+<!-- 
+  Source references:
+  - https://pnpm.io/performance
+  - https://pnpm.io/benchmarks
+  - https://github.com/pnpm/pnpm/releases
+  -->

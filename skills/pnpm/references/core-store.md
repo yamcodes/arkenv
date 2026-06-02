@@ -173,3 +173,10 @@ package-import-method=copy
 # Fix store permissions
 chmod -R u+w ~/.pnpm-store
 ```
+
+<!-- 
+  Source references:
+  - https://pnpm.io/store
+  - https://pnpm.io/store-path
+  - https://pnpm.io/cli/store
+  -->

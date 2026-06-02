@@ -185,3 +185,10 @@ pnpm why lodash
 # List all versions
 pnpm list lodash --depth=Infinity
 ```
+
+<!-- 
+  Source references:
+  - https://pnpm.io/overrides
+  - https://pnpm.io/package_json
+  - https://pnpm.io/resolution
+  -->

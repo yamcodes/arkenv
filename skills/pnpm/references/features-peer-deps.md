@@ -244,3 +244,10 @@ pnpm list --depth=Infinity
    ```
 
 5. **Test with different peer versions** if you support multiple majors
+
+<!-- 
+  Source references:
+  - https://pnpm.io/how-peers-are-resolved
+  - https://pnpm.io/package_json
+  - https://pnpm.io/npmrc
+  -->

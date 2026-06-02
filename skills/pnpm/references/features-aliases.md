@@ -163,3 +163,10 @@ Aliases work with any valid pnpm specifier:
 3. **Prefer overrides for global replacement**: If you want to replace a package everywhere, use overrides instead of aliases
 
 4. **Test thoroughly**: Aliased packages may have subtle differences in behavior
+
+<!-- 
+  Source references:
+  - https://pnpm.io/aliases
+  - https://pnpm.io/cli/add
+  - https://pnpm.io/cli/install
+  -->

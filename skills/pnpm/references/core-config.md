@@ -179,3 +179,10 @@ pnpm reads specific fields from `package.json`:
 2. **Workspace protocol**: `workspace:*` for local packages
 3. **Catalogs**: Centralized version management
 4. **Content-addressable store**: Shared across projects
+
+<!-- 
+  Source references:
+  - https://pnpm.io/npmrc
+  - https://pnpm.io/configuring
+  - https://pnpm.io/package_json
+  -->

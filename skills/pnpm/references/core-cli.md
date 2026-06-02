@@ -232,3 +232,11 @@ pnpm install -P
 # No optional dependencies
 pnpm install --no-optional
 ```
+
+<!-- 
+  Source references:
+  - https://pnpm.io/cli/install
+  - https://pnpm.io/cli/add
+  - https://pnpm.io/cli/run
+  - https://pnpm.io/filtering
+  -->
