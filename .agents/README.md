@@ -1,4 +1,5 @@
-<!-- This file is for human eyes to understand the .agent directory structure and conventions -->
+{/* This file is for human eyes to understand the .agent directory structure and conventions */}
+
 # Agent configuration & documentation
 
 This directory is the central hub for AI agent metadata, configuration, and guidance. It is designed to keep the project root clean while providing agents with the context they need to operate effectively.
@@ -6,16 +7,21 @@ This directory is the central hub for AI agent metadata, configuration, and guid
 ## Directory overview
 
 ### Core metadata
+
 - **`AGENTS.md`**: The primary entry point for agents. It contains the "Agent Skills" block that defines how skills like `triage`, `to-prd`, and `diagnose` should operate in this repo.
 
 ### Skill configuration (matt pocock's engineering skills)
+
 Instructional documentation for automated skills, located in `.agent/docs/`:
+
 - **`docs/issue-tracker.md`**: How to use the `gh` CLI to manage issues and PRDs.
 - **`docs/triage-labels.md`**: Mapping of canonical triage roles (e.g., `needs-triage`) to this repo's specific GitHub labels.
 - **`docs/domain.md`**: Rules for consuming and contributing to the project's domain documentation (`docs/CONTEXT.md` and ADRs).
 
 ### Archived platforms (`/platforms`)
+
 Configuration for other AI platforms that are not currently the primary agent. To use these, move them to the root as described in their metadata:
+
 - `.cursor/`: Cursor IDE configuration.
 - `.claude/`: Claude Dev / Cline configuration.
 - `copilot-instructions.md`: Custom instructions for GitHub Copilot.

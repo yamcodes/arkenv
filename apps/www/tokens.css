@@ -1,0 +1,76 @@
+/* Hallmark · macrostructure: Workbench · theme: Quiet
+ * genre: modern-minimal · enrichment: none
+ * pre-emit critique: P5 H4 E5 S4 R5 V5
+ */
+
+:root {
+	--color-paper: oklch(99% 0.003 250);
+	--color-paper-2: oklch(96% 0.005 250);
+	--color-ink: oklch(15% 0.012 250);
+	--color-ink-2: oklch(45% 0.01 250);
+	--color-rule: oklch(88% 0.006 250);
+	--color-brand: oklch(45% 0.17 265);
+	--color-brand-ink: oklch(95% 0.01 265);
+	--color-focus-ring: oklch(50% 0.18 265);
+
+	--space-3xs: 0.125rem;
+	--space-2xs: 0.25rem;
+	--space-xs: 0.5rem;
+	--space-sm: 0.75rem;
+	--space-md: 1rem;
+	--space-lg: 1.5rem;
+	--space-xl: 2.5rem;
+	--space-2xl: 4rem;
+	--space-3xl: 6rem;
+	--space-4xl: 9rem;
+
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-md: 1.125rem;
+	--text-lg: 1.375rem;
+	--text-xl: 1.75rem;
+	--text-2xl: 2.25rem;
+	--text-3xl: 3rem;
+	--text-4xl: 3.75rem;
+	--text-display: clamp(2.5rem, 4vw + 0.75rem, 4.25rem);
+
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+	--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+	--dur-micro: 120ms;
+	--dur-short: 220ms;
+	--dur-long: 420ms;
+
+	--radius-card: 12px;
+	--radius-sm: 6px;
+	--radius-pill: 999px;
+
+	--z-base: 1;
+	--z-raised: 10;
+	--z-dropdown: 100;
+	--z-sticky: 200;
+	--z-modal: 400;
+	--z-toast: 500;
+	--z-tooltip: 600;
+}
+
+.dark {
+	--color-paper: oklch(12% 0.008 250);
+	--color-paper-2: oklch(16% 0.008 250);
+	--color-ink: oklch(92% 0.005 250);
+	--color-ink-2: oklch(65% 0.005 250);
+	--color-rule: oklch(25% 0.006 250);
+	--color-brand: oklch(60% 0.15 265);
+	--color-brand-ink: oklch(92% 0.012 265);
+	--color-focus-ring: oklch(65% 0.14 265);
+}
+
+html {
+	overflow-x: clip;
+}
+
+body {
+	overflow-x: clip;
+}

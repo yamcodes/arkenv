@@ -1,11 +1,11 @@
 import { ExternalLink } from "@arkenv/fumadocs-ui/components";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { AnnouncementBadge } from "~/components/announcement-badge";
 import { HeroGradientOverlay } from "~/components/hero-gradient-overlay";
 import { HeroVisual } from "~/components/hero-visual";
 import {
 	CLICommand,
+	CodeFrame,
 	CompatibilityRails,
 	QuickstartButton,
 	StarUsButton,
@@ -17,97 +17,246 @@ export const metadata: Metadata = {
 	description: "Environment variable validation from editor to runtime",
 };
 
+const envTsCode = `import { arkenv } from "arkenv";
+
+const env = arkenv({
+  PORT:     "number",
+  API_KEY:  "string",
+  DATABASE_URL: "string",
+  NODE_ENV: "'development' | 'production'",
+});
+
+// env.PORT is typed as number
+// env.NODE_ENV is typed as "development" | "production"`;
+
+const pluginCode = `// next.config.ts
+import { arkenv } from "arkenv";
+import { withArkEnv } from "@arkenv/nextjs";
+
+const env = arkenv({
+  API_URL: "string",
+  AUTH_SECRET: "string",
+});
+
+export default withArkEnv(nextConfig, env);
+
+// Build-time validation.
+// Client/server boundary enforcement.
+// Editor autocomplete for every variable.`;
+
 export default function HomePage() {
 	return (
-		<div className="flex flex-1 flex-col items-center justify-center relative w-full overflow-hidden">
-			{/* Top gradient overlay for dark mode - SVG version */}
+		<div
+			className="flex flex-1 flex-col"
+			style={{ backgroundColor: "var(--color-paper)" }}
+		>
 			<HeroGradientOverlay />
 
-			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:pl-20 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-4 md:gap-8 lg:gap-12 lg:mt-20">
-				<div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:flex-[1.4] relative z-20 mt-12 w-full max-w-full">
-					<div className="lg:mb-6 mb-0">
-						<AnnouncementBadge href="docs/nextjs" new>
-							Official Next.js integration!
-						</AnnouncementBadge>
-					</div>
-					<h1 className="mb-4 mt-6 lg:mt-0 w-full max-w-2xl">
-						<div className="text-5xl md:text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
+			{/* Compact hero */}
+			<section className="relative z-10 w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24">
+				<div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
+					<div className="flex-1 min-w-0">
+						<div className="mb-4">
+							<AnnouncementBadge href="docs/nextjs" new>
+								Official Next.js integration!
+							</AnnouncementBadge>
+						</div>
+						<h1
+							className="text-[--text-display] font-semibold tracking-tighter leading-[1.08] mb-3 overflow-wrap-anywhere min-w-0"
+							style={{ color: "var(--color-ink)" }}
+						>
 							Better{" "}
-							<span className="bg-linear-to-br from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent inline-block pr-1 -mr-1">
-								typesafe
-							</span>{" "}
-							than sorry
-						</div>
-						<div className="text-xl md:text-2xl mt-4 text-gray-600 dark:text-gray-400">
+							<span style={{ color: "var(--color-brand)" }}>typesafe</span> than
+							sorry
+						</h1>
+						<p
+							className="text-lg sm:text-xl mt-3 max-w-xl leading-relaxed"
+							style={{ color: "var(--color-ink-2)" }}
+						>
 							Environment variable validation from editor to runtime
+						</p>
+						<div className="flex flex-wrap items-center gap-3 mt-6">
+							<QuickstartButton />
+							<CLICommand />
 						</div>
-					</h1>
-					<CompatibilityRails className="order-2 md:order-1" />
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-6 w-full sm:w-auto sm:max-w-none order-1 md:order-2 items-center">
-						<QuickstartButton />
-						<CLICommand />
-						<StarUsButton />
+					</div>
+					<div className="hidden lg:block flex-1 w-full max-w-lg mx-auto lg:mx-0">
+						<HeroVisual />
 					</div>
 				</div>
-				<div className="hidden md:flex lg:flex-1 w-full justify-center lg:justify-end relative z-0">
-					<HeroVisual />
-				</div>
-			</div>
+			</section>
 
-			<div className="sm:mt-8 max-w-5xl mx-auto w-full relative z-20 px-4">
+			{/* Compatibility rails */}
+			<section className="w-full mt-12 sm:mt-16 lg:mt-20">
+				<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+					<CompatibilityRails className="max-w-full mx-0" />
+				</div>
+			</section>
+
+			{/* Screenshot block 1: env.ts */}
+			<section
+				className="w-full mt-16 sm:mt-20 lg:mt-24 px-4 sm:px-6 lg:px-8"
+				style={{ paddingBlock: "var(--space-3xl)" }}
+			>
+				<div className="max-w-screen-xl mx-auto">
+					<CodeFrame
+						label="env.ts"
+						code={envTsCode}
+						language="ts"
+						caption="Declare your schema once. Full autocomplete — everywhere."
+					/>
+				</div>
+			</section>
+
+			{/* Platform divider — compatibility rails as full-width interlude */}
+			<section
+				className="w-full py-12 sm:py-16"
+				style={{
+					borderBlock: "1px solid var(--color-rule)",
+				}}
+			>
+				<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+					<p
+						className="text-xs font-medium tracking-widest uppercase mb-4 text-center"
+						style={{ color: "var(--color-ink-2)" }}
+					>
+						Works with your stack
+					</p>
+					<CompatibilityRails className="max-w-full mx-0" />
+				</div>
+			</section>
+
+			{/* Screenshot block 2: Framework integration */}
+			<section
+				className="w-full px-4 sm:px-6 lg:px-8"
+				style={{ paddingBlock: "var(--space-3xl)" }}
+			>
+				<div className="max-w-screen-xl mx-auto">
+					<CodeFrame
+						label="next.config.ts"
+						code={pluginCode}
+						language="ts"
+						caption="One plugin. Build-time validation. Zero runtime overhead."
+					/>
+				</div>
+			</section>
+
+			{/* Video demo — the richest "screenshot" */}
+			<section className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 				<VideoDemo />
-			</div>
+			</section>
 
-			{/* Homepage Footer with Fade Gradient and Stylized Separator */}
-			<div className="w-full relative mt-8 md:mt-32">
-				{/* Background fade gradient */}
-				<div
-					className="absolute inset-0 bg-linear-to-b from-transparent to-gray-200/90 dark:to-black/80 -z-10"
-					aria-hidden="true"
-				/>
-
-				<footer className="relative z-20">
-					{/* Stylized Divider: ----------(space)(icon)(space)---------- */}
-					<div className="flex items-center w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
-						<div className="h-px flex-1 bg-linear-to-r from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
-						<div className="px-3 md:px-6 flex items-center justify-center">
-							<div className="relative group" aria-hidden="true">
-								<Image
-									src="/assets/icon.svg"
-									alt=""
-									aria-hidden="true"
-									width={22}
-									height={22}
-									className="opacity-80 grayscale brightness-0 dark:brightness-0 dark:invert group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:invert-0 transition-all duration-500"
-								/>
-								<div
-									className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-									aria-hidden="true"
-								/>
-							</div>
-						</div>
-						<div className="h-px flex-1 bg-linear-to-l from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
-					</div>
-
-					<div className="max-w-screen-2xl mx-auto py-8 md:py-14 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
-						<div className="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
-							Proud part of the{" "}
+			{/* GitHub stats — numbered proof */}
+			<section
+				className="w-full px-4 sm:px-6 lg:px-8"
+				style={{ paddingBlock: "var(--space-2xl)" }}
+			>
+				<div className="max-w-screen-xl mx-auto">
+					<StarUsButton />
+					<div className="hidden sm:flex items-center justify-center gap-6 mt-6 text-sm">
+						<a
+							href="https://github.com/yamcodes/arkenv"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-2 transition-colors"
+							style={{ color: "var(--color-ink-2)" }}
+						>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								aria-hidden="true"
+							>
+								<title>GitHub</title>
+								<path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z" />
+							</svg>
+							<span>Star us on GitHub</span>
+						</a>
+						<span
+							className="inline-flex items-center gap-1 text-sm"
+							style={{ color: "var(--color-ink-2)" }}
+						>
+							Part of the{" "}
 							<ExternalLink
 								href="https://arktype.io/docs/ecosystem#arkenv"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="text-gray-900 dark:text-gray-100 transition-colors"
 							>
 								ArkType ecosystem
 							</ExternalLink>
-						</div>
-						<div className="flex flex-col gap-1.5 items-center text-gray-500 dark:text-gray-500 text-sm">
-							<div>Released under the MIT License</div>
-							<div>Copyright © 2025-present Yam Borodetsky</div>
-						</div>
+						</span>
 					</div>
-				</footer>
-			</div>
+				</div>
+			</section>
+
+			{/* Sticky CTA bar */}
+			<aside
+				className="sticky bottom-0 w-full z-[--z-sticky] py-3 px-4 sm:px-6 lg:px-8 backdrop-blur-md border-t"
+				style={{
+					backgroundColor:
+						"color-mix(in oklch, var(--color-paper) 85%, transparent)",
+					borderColor: "var(--color-rule)",
+				}}
+			>
+				<div className="max-w-screen-xl mx-auto flex items-center justify-between gap-4">
+					<p
+						className="hidden sm:block text-sm font-medium"
+						style={{ color: "var(--color-ink)" }}
+					>
+						Ship typesafe env vars — from editor to runtime.
+					</p>
+					<QuickstartButton />
+				</div>
+			</aside>
+
+			{/* Footer */}
+			<footer
+				className="w-full py-10 px-4 sm:px-6 lg:px-8 border-t"
+				style={{
+					borderColor: "var(--color-rule)",
+					backgroundColor: "var(--color-paper)",
+				}}
+			>
+				<div
+					className="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm"
+					style={{ color: "var(--color-ink-2)" }}
+				>
+					<div className="flex items-center gap-2">
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 12 12"
+							aria-hidden="true"
+							className="opacity-60"
+						>
+							<path
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="0.9"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M8.5 6c0-1.379-1.121-2.5-2.5-2.5A2.502 2.502 0 0 0 3.5 6c0 1.379 1.121 2.5 2.5 2.5S8.5 7.379 8.5 6ZM6 11V8.5M1 6h2.5m5 0H11M6 3.5V1M2.464 2.464l1.768 1.768m3.536 3.536 1.768 1.768m-7.072 0 1.768-1.768m3.536-3.536 1.768-1.768"
+							/>
+							<circle cx="6" cy="6" r="0.9" fill="currentColor" />
+						</svg>
+						<span className="font-medium">ArkEnv</span>
+					</div>
+					<div className="flex items-center gap-3 text-xs">
+						<span>MIT License</span>
+						<span aria-hidden="true">·</span>
+						<span>&copy; 2025–present Yam Borodetsky</span>
+						<span aria-hidden="true">·</span>
+						<ExternalLink
+							href="https://arktype.io/docs/ecosystem#arkenv"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							ArkType Ecosystem
+						</ExternalLink>
+					</div>
+				</div>
+			</footer>
 		</div>
 	);
 }
