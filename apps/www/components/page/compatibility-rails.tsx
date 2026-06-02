@@ -80,21 +80,6 @@ const platforms: RailItem[] = [
 		icon: ({ className }) => <SiBun className={className} />,
 	},
 	{
-		name: "Node.js",
-		url: "https://nodejs.org",
-		icon: ({ className }) => <SiNodedotjs className={className} />,
-	},
-	{
-		name: "Vite",
-		url: "https://vite.dev",
-		icon: ({ className }) => <SiVite className={className} />,
-	},
-	{
-		name: "Bun",
-		url: "https://bun.sh",
-		icon: ({ className }) => <SiBun className={className} />,
-	},
-	{
 		name: "Vinxi",
 		url: "https://vinxi.vercel.app",
 		icon: ({ className }) => <VinxiIcon className={className} />,
