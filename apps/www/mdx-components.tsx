@@ -1,5 +1,10 @@
 import { arkenvComponents } from "@arkenv/fumadocs-ui/mdx";
 import * as twoslashComponents from "fumadocs-twoslash/ui";
+import {
+	CalloutContainer,
+	CalloutDescription,
+	CalloutTitle,
+} from "fumadocs-ui/components/callout";
 import { Cards } from "fumadocs-ui/components/card";
 import type { MDXComponents } from "mdx/types";
 import { Button } from "~/components/ui/button";
@@ -13,6 +18,9 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		...arkenvComponents,
 		...twoslashComponents,
 		Button,
+		CalloutContainer,
+		CalloutDescription,
+		CalloutTitle,
 		Card,
 		Cards,
 		...components,

@@ -25,8 +25,7 @@ vi.mock("next/navigation", () => ({
 
 const makeRequest = () => new Request("http://localhost/");
 
-const makeParams = (slug: string[] | undefined) =>
-	Promise.resolve({ slug });
+const makeParams = (slug: string[] | undefined) => Promise.resolve({ slug });
 
 describe("GET /llms.mdx/docs/[[...slug]]", () => {
 	beforeEach(() => {

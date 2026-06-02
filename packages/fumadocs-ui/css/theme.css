@@ -2,8 +2,8 @@
 
 :root {
 	--radius: 0.125rem;
-	--fd-nav-height: 80px !important;
-	--fd-header-height: 80px !important;
+	--fd-nav-height: 80px;
+	--fd-header-height: 80px;
 	/* WCAG AA compliant: 6.13:1 contrast on white background */
 	--color-fd-muted-foreground: hsl(240 4% 40%);
 }
@@ -27,7 +27,7 @@
 #nd-notebook-layout,
 #nd-home-layout,
 #nd-docs-layout {
-	--fd-header-height: 80px !important;
+	--fd-header-height: 80px;
 }
 
 /* Override search bar and keyboard shortcuts to use minimal radius */
@@ -39,12 +39,12 @@ button[data-search],
 .prose .rounded-xl,
 [data-radix-popper-content-wrapper] [role="dialog"],
 kbd {
-	border-radius: 0.125rem !important;
+	border-radius: 0.125rem;
 }
 
 #nd-nav,
 #nd-subnav {
-	height: var(--fd-nav-height) !important;
+	height: var(--fd-nav-height);
 	z-index: 50;
 }
 
@@ -52,7 +52,7 @@ kbd {
 #nd-subnav nav,
 #nd-nav > div,
 #nd-subnav > div {
-	height: var(--fd-nav-height) !important;
+	height: var(--fd-nav-height);
 }
 
 /* Heading anchors: avoid underlines and keep icons aligned */
@@ -62,11 +62,11 @@ kbd {
 
 [data-arkenv-heading-link] {
 	text-decoration: none;
-	border-bottom: 0 !important;
+	border-bottom: 0;
 }
 
 [data-arkenv-heading-link]:hover {
-	border-bottom: 0 !important;
+	border-bottom: 0;
 }
 
 /* Icon floats to the left of the heading without taking space */
@@ -76,22 +76,37 @@ kbd {
 }
 
 /* Link underlines in documentation */
-article a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]),
-[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) {
+article
+a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+	[data-no-underline]
+),
+[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+	[class*="fd-"]
+):not([data-no-underline]) {
 	text-decoration: none;
 	border-bottom: 2px solid currentColor;
 	padding-bottom: 1px;
 	transition: border-bottom-width 0.1s ease;
 }
 
-article a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover,
-[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover {
+article
+	a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
+		[data-no-underline]
+	):hover,
+[data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not(
+	[class*="fd-"]
+):not([data-no-underline]):hover {
 	border-bottom-width: 3px;
 }
 
 /* External links in documentation */
-article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(:has(img)),
-[data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(:has(img)) {
+article
+a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
+	[data-no-arrow]
+):not(:has(img)),
+[data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(
+	:has(img)
+) {
 	padding-right: 1.1em;
 	background-image: var(--icon-external);
 	background-repeat: no-repeat;
@@ -99,30 +114,58 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not([
 	background-position: right center;
 }
 
-.dark article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(:has(img)),
-.dark [data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(:has(img)) {
+.dark
+	article
+	a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not(
+		[data-no-arrow]
+	):not(:has(img)),
+.dark
+	[data-external-link]:not(.fd-card):not([data-card]):not([data-no-arrow]):not(
+		:has(img)
+	) {
 	background-image: var(--icon-external-dark);
 }
 
 /* Sidebar & Nav: External link icons using ::after for flex containers */
-[data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)),
-#nd-nav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)),
-#nd-subnav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)) {
-	background-image: none !important;
-	padding-right: 0 !important;
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	),
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	),
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
+	background-image: none;
+	padding-right: 0;
 	display: inline-flex;
 	align-items: center;
-	gap: 0 !important;
+	gap: 0;
 }
 
 /* Sidebar specifically needs full flex for better link hit-areas */
-[data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child)) {
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	) {
 	display: flex;
 }
 
-[data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-#nd-nav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-#nd-subnav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after {
+[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
 	content: "";
 	width: 0.9em;
 	height: 0.9em;
@@ -135,9 +178,21 @@ article a[rel*="noopener"][target="_blank"]:not(.fd-card):not([data-card]):not([
 	opacity: 0.5;
 }
 
-.dark [data-radix-scroll-area-viewport] a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-.dark #nd-nav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after,
-.dark #nd-subnav a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(:has(> svg:only-child))::after {
+.dark
+	[data-radix-scroll-area-viewport]
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-nav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after,
+.dark
+	#nd-subnav
+	a[target="_blank"]:not([data-no-arrow]):not(:has(img)):not(
+		:has(> svg:only-child)
+	)::after {
 	background-image: var(--icon-external-dark);
 }
 
@@ -159,36 +214,36 @@ aside .theme-toggle {
 
 /* Fumadocs built-in nav backdrop (fallback, overridden by custom Header) */
 #nd-nav {
-	background-color: transparent !important;
-	backdrop-filter: none !important;
+	background-color: transparent;
+	backdrop-filter: none;
 }
 
 #nd-nav > div,
 #nd-nav > nav {
-	background-color: rgba(255, 255, 255, 0.95) !important;
+	background-color: rgba(255, 255, 255, 0.95);
 }
 
 .dark #nd-nav > div,
 .dark #nd-nav > nav {
-	background-color: rgba(8, 16, 33, 0.95) !important;
+	background-color: rgba(8, 16, 33, 0.95);
 }
 
 @supports (backdrop-filter: blur(8px)) {
 	#nd-nav > div,
 	#nd-nav > nav {
-		backdrop-filter: blur(8px) !important;
-		background-color: rgba(255, 255, 255, 0.8) !important;
+		backdrop-filter: blur(8px);
+		background-color: rgba(255, 255, 255, 0.8);
 	}
 
 	.dark #nd-nav > div,
 	.dark #nd-nav > nav {
-		background-color: rgba(8, 16, 33, 0.8) !important;
+		background-color: rgba(8, 16, 33, 0.8);
 	}
 }
 
 #nd-nav nav {
-	backdrop-filter: none !important;
-	background-color: transparent !important;
+	backdrop-filter: none;
+	background-color: transparent;
 }
 
 /* Sidebar item base styles */
@@ -246,19 +301,19 @@ div:has(+ #nd-sidebar-mobile) {
 /* Radix popper portals (workspace switcher dropdown, etc.) render at the body
    level — they must be above the sidebar drawer to stay visible */
 [data-radix-popper-content-wrapper] {
-	z-index: 70 !important;
+	z-index: 70;
 }
 
 /* Search dialog: raise above header (z-50) and mobile sidebar (z-60) */
 [role="dialog"][data-state] {
-	z-index: 65 !important;
+	z-index: 65;
 }
 
 /* On mobile: push the search input box below the fixed header,
    and hide the ESC close hint (no keyboard on mobile) */
 @media (max-width: 767px) {
 	[role="dialog"][data-state] {
-		top: calc(var(--fd-nav-height, 80px) + 0.5rem) !important;
+		top: calc(var(--fd-nav-height, 80px) + 0.5rem);
 	}
 
 	[role="dialog"][data-state] button.font-mono {

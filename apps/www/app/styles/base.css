@@ -11,7 +11,9 @@
 
 	code,
 	pre {
-		font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+		font-family:
+			var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+			"Liberation Mono", "Courier New", monospace;
 	}
 
 	button:not(:disabled) {
@@ -31,6 +33,6 @@
 
 	/* Twoslash code block max height */
 	.fd-twoslash-popover .fd-scroll-container {
-		max-height: 160px !important;
+		max-height: 160px;
 	}
 }

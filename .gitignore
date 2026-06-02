@@ -86,3 +86,4 @@ gha-creds-*.json
 .agent/skills/*-workspace/
 skills/*-workspace/
 skills/create-skill/scripts/__pycache__/
+tooling/
