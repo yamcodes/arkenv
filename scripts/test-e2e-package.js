@@ -15,11 +15,11 @@ console.log("\n📦 Building workspace packages...");
 execSync("pnpm run build", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Pack the arkenv package
+const arkenvDir = path.join(rootDir, "packages/arkenv");
 console.log("\n🎒 Packing arkenv package...");
-execSync("pnpm --filter arkenv pack", { cwd: rootDir, stdio: "inherit" });
+execSync("pnpm pack", { cwd: arkenvDir, stdio: "inherit" });
 
 // 3. Locate the tarball
-const arkenvDir = path.join(rootDir, "packages/arkenv");
 const files = fs.readdirSync(arkenvDir);
 const tarballName = files.find((file) => /^arkenv-\d+\.\d+\.\d+(?:-.*)?\.tgz$/.test(file));
 if (!tarballName) {
