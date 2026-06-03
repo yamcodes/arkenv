@@ -1,5 +1,6 @@
 import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError, type ValidationIssue } from "./core";
+import { applyCoercion, findCoercionPaths } from "./coercion/shared.ts";
 
 /**
  * Configuration options for {@link parseStandard}.
@@ -22,6 +23,22 @@ export type ParseStandardConfig = {
 	 * @default "delete"
 	 */
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
+	/**
+	 * Whether to perform best-effort coercion on the environment variables.
+	 * Coercion requires validators that implement the StandardJSONSchemaV1 spec.
+	 *
+	 * @default false
+	 */
+	coerce?: boolean;
+	/**
+	 * The format to use for array parsing when coercion is enabled.
+	 *
+	 * - `comma` (default): Strings are split by comma and trimmed.
+	 * - `json`: Strings are parsed as JSON.
+	 *
+	 * @default "comma"
+	 */
+	arrayFormat?: "comma" | "json";
 };
 
 /**
@@ -35,15 +52,62 @@ export function parseStandard(
 	def: Record<string, unknown>,
 	config: ParseStandardConfig,
 ) {
-	const { env = process.env, onUndeclaredKey = "delete" } = config;
+	const {
+		env = process.env,
+		onUndeclaredKey = "delete",
+		coerce = false,
+		arrayFormat = "comma",
+	} = config;
 	const output: Record<string, unknown> = {};
 	const errors: ValidationIssue[] = [];
 	const envKeys = new Set(Object.keys(env));
 
+	let coercedEnv: Record<string, unknown> = { ...env };
+	const missingJsonSchemaKeys: string[] = [];
+
+	if (coerce) {
+		const jsonSchema: Record<string, any> = { type: "object", properties: {} };
+		let hasJsonSchema = false;
+
+		for (const key in def) {
+			const validator = def[key] as any;
+			if (
+				validator &&
+				typeof validator === "object" &&
+				"~standard" in validator &&
+				typeof validator["~standard"] === "object" &&
+				"jsonSchema" in validator["~standard"] &&
+				typeof validator["~standard"].jsonSchema === "object" &&
+				typeof validator["~standard"].jsonSchema.input === "function"
+			) {
+				try {
+					const schema = validator["~standard"].jsonSchema.input({
+						target: "draft-07",
+					});
+					if (schema) {
+						jsonSchema.properties[key] = schema;
+						hasJsonSchema = true;
+					}
+				} catch {
+					missingJsonSchemaKeys.push(key);
+				}
+			} else {
+				missingJsonSchemaKeys.push(key);
+			}
+		}
+
+		if (hasJsonSchema) {
+			const targets = findCoercionPaths(jsonSchema);
+			coercedEnv = applyCoercion(coercedEnv, targets, {
+				arrayFormat,
+			}) as Record<string, unknown>;
+		}
+	}
+
 	// 1. Validate declared keys
 	for (const key in def) {
 		const validator = def[key];
-		const value = env[key];
+		const value = coercedEnv[key];
 
 		// Check if it's a Standard Schema validator
 		if (
@@ -84,9 +148,16 @@ export function parseStandard(
 								)
 								.join(".")}`
 						: key;
+
+				let message = issue.message;
+
+				if (coerce && missingJsonSchemaKeys.includes(key)) {
+					message = `${message} (Hint: You enabled 'coerce: true', but the validator for '${key}' does not implement Standard JSON Schema. To enable coercion for this field, use a compatible schema or an adapter.)`;
+				}
+
 				errors.push({
 					path: issuePath,
-					message: issue.message,
+					message,
 				});
 			}
 		} else {
@@ -105,7 +176,7 @@ export function parseStandard(
 					message: "Undeclared key",
 				});
 			} else if (onUndeclaredKey === "ignore") {
-				output[key] = env[key];
+				output[key] = coercedEnv[key];
 			}
 		}
 	}

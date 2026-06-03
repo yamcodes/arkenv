@@ -55,3 +55,23 @@ export const coerceJson = (s: unknown) => {
 		return s;
 	}
 };
+
+/**
+ * Attempt to coerce a value to a Date.
+ *
+ * If the input is already a Date, returns it unchanged.
+ * If the input is a valid date string, returns a Date object.
+ * Otherwise, returns the original value unchanged.
+ *
+ * @internal
+ * @param s - The value to coerce
+ * @returns The coerced Date or the original value
+ */
+export const coerceDate = (s: unknown) => {
+	if (s instanceof Date) return s;
+	if (typeof s !== "string") return s;
+	const trimmed = s.trim();
+	if (trimmed === "") return s;
+	const d = new Date(trimmed);
+	return Number.isNaN(d.getTime()) ? s : d;
+};
