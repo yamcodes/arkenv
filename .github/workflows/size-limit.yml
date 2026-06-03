@@ -2,7 +2,7 @@ name: "size-limit"
 on:
   pull_request:
     branches:
-      - main
+      - dev
     paths:
       - "packages/**"
   workflow_dispatch:

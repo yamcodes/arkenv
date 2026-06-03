@@ -27,7 +27,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 
 ## Making changes
 
-1. Fork the repository and create your branch from `main`
+1. Fork the repository and create your branch from `dev`
 2. If you've added code that should be tested, add tests
 3. Ensure the test suite passes
 4. Update the documentation if needed

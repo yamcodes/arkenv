@@ -42,7 +42,7 @@ jobs:
             })
 
             const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"])
-            const shouldSkip = pull.head.ref === "changeset-release/main" || botLogins.has(pull.user?.login)
+            const shouldSkip = pull.head.ref === "changeset-release/dev" || botLogins.has(pull.user?.login)
 
             if (shouldSkip) {
               core.info(`Skipping Pullfrog for ${pull.head.ref} by ${pull.user?.login}`)
