@@ -88,6 +88,12 @@ try {
 		}
 		fs.writeFileSync(pkgJsonPath, JSON.stringify(pkg, null, 2));
 
+		// Remove lockfile to ensure npm installs all dependencies fresh based on the modified package.json
+		const lockfilePath = path.join(fixtureDestDir, "package-lock.json");
+		if (fs.existsSync(lockfilePath)) {
+			fs.rmSync(lockfilePath, { force: true });
+		}
+
 		// Run npm install
 		console.log(`Running npm install in ${fixtureDestDir}...`);
 		execSync(
