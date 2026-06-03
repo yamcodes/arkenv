@@ -2,10 +2,16 @@ import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
-import { ArkEnvError, type ValidationIssue } from "../core";
-import type { ArkEnvConfig, EnvSchema } from "../create-env";
+import {
+	ArkEnvError,
+	type EnvIssue,
+	type EnvIssueCode,
+	type EnvIssueMeta,
+	shouldRedact,
+} from "../core.ts";
+import type { ArkEnvConfig, EnvSchema } from "../create-env.ts";
 import { styleText } from "../utils/style-text.ts";
-import { coerce } from "./coercion/coerce";
+import { coerce } from "./coercion/coerce.ts";
 
 /**
  * Re-export of ArkType's `distill` utilities.
@@ -19,14 +25,17 @@ import { coerce } from "./coercion/coerce";
 export type { distill };
 
 /**
- * Converts ArkType's `ArkErrors` (keyed by path) into a flat `ValidationIssue[]`
+ * Converts ArkType's `ArkErrors` (keyed by path) into a flat `EnvIssue[]`
  * suitable for `ArkEnvError`. Strips leading path references from messages to
- * avoid duplication when `formatInternalErrors` prepends the styled path, and
+ * avoid duplication when `formatIssues` prepends the styled path, and
  * applies cyan styling to inline "(was …)" values.
  *
  * @internal
  */
-function arkErrorsToIssues(errors: ArkErrors): ValidationIssue[] {
+function arkErrorsToIssues(
+	errors: ArkErrors,
+	config?: ArkEnvConfig,
+): EnvIssue[] {
 	return Object.entries(errors.byPath).map(([path, error]) => {
 		let message = error.message;
 
@@ -43,19 +52,74 @@ function arkErrorsToIssues(errors: ArkErrors): ValidationIssue[] {
 			message = rest.trimStart();
 		}
 
+		// Check for redaction
+		const debugSecrets =
+			config?.debugSecrets ??
+			(typeof process !== "undefined" &&
+				(process.env.ARKENV_DEBUG_SECRETS === "true" ||
+					process.env.ARKENV_DEBUG_SECRETS === "1"));
+		const isSensitive = shouldRedact(path);
+
 		// Style (was ...) inline values
 		const valueMatch = message.match(/\(was (.*)\)/);
 		if (valueMatch?.[1]) {
 			const value = valueMatch[1];
-			if (!value.includes("\x1b[")) {
+			const displayedValue =
+				!debugSecrets && isSensitive ? "[REDACTED]" : value;
+			if (!displayedValue.includes("\x1b[")) {
 				message = message.replace(
 					`(was ${value})`,
-					`(was ${styleText("cyan", value)})`,
+					`(was ${styleText("cyan", displayedValue)})`,
 				);
 			}
 		}
 
-		return { path, message };
+		// Map code
+		let code: EnvIssueCode = "INVALID_TYPE";
+		if (error.code === "required") {
+			code = "MISSING_VARIABLE";
+		} else if (error.code === "pattern") {
+			code = "PATTERN_MISMATCH";
+		} else if (["min", "minLength"].includes(error.code)) {
+			code = "VALUE_TOO_SMALL";
+		} else if (["max", "maxLength"].includes(error.code)) {
+			code = "VALUE_TOO_LARGE";
+		} else if (
+			["divisor", "index", "sequence", "intersection", "union"].includes(
+				error.code,
+			)
+		) {
+			code = "INVALID_TYPE";
+		} else {
+			code = "INVALID_FORMAT";
+		}
+
+		// Safe meta extraction
+		const meta: EnvIssueMeta = {
+			engine: "arktype",
+			engineCode: error.code,
+		};
+		const errObj = error as any;
+		if (errObj.min !== undefined && typeof errObj.min === "number") {
+			meta.min = errObj.min;
+		} else if (
+			errObj.rule !== undefined &&
+			typeof errObj.rule === "number"
+		) {
+			meta.min = errObj.rule;
+		}
+		if (errObj.max !== undefined && typeof errObj.max === "number") {
+			meta.max = errObj.max;
+		}
+
+		return {
+			path,
+			message,
+			code,
+			expected: error.expected,
+			received: error.code === "required" ? undefined : error.data,
+			meta,
+		};
 	});
 }
 
@@ -105,7 +169,7 @@ export function parse<const T extends SchemaShape>(
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors
 	if (validatedEnv instanceof ArkErrors) {
-		throw new ArkEnvError(arkErrorsToIssues(validatedEnv));
+		throw new ArkEnvError(arkErrorsToIssues(validatedEnv, config));
 	}
 
 	return validatedEnv;

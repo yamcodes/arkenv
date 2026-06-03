@@ -1,10 +1,12 @@
 import type { StandardSchemaV1 } from "@repo/types";
+import { ArkEnvError } from "./core.ts";
+import type { SafeCreateEnvResult } from "./create-env.ts";
 import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
-} from "./guards";
-import { type ParseStandardConfig, parseStandard } from "./parse-standard";
+} from "./guards.ts";
+import { type ParseStandardConfig, parseStandard } from "./parse-standard.ts";
 
 /**
  * Configuration options for the `arkenv/standard` entry's `createEnv`.
@@ -48,6 +50,29 @@ export function createEnv<const T extends Record<string, StandardSchemaV1>>(
 	return parseStandard(def as Record<string, unknown>, config ?? {}) as {
 		[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
 	};
+}
+
+/**
+ * Non-throwing standard mode utility to parse and validate environment variables using Standard Schema 1.0 validators.
+ * Returns a serializable result object containing either the validated data or error issues.
+ *
+ * @param def - An object mapping variable names to Standard Schema validators
+ * @param config - Optional configuration
+ * @returns The SafeCreateEnvResult containing the data or plain error issues
+ */
+export function safeCreateEnv<const T extends Record<string, StandardSchemaV1>>(
+	def: T,
+	config?: StandardEnvConfig,
+): SafeCreateEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
+	try {
+		const data = createEnv(def, config);
+		return { success: true, data };
+	} catch (error) {
+		if (error instanceof ArkEnvError) {
+			return { success: false, error: error.message, issues: error.issues };
+		}
+		throw error;
+	}
 }
 
 /**
