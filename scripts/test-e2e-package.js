@@ -90,15 +90,18 @@ try {
 
 		// Run npm install
 		console.log(`Running npm install in ${fixtureDestDir}...`);
-		execSync(`${npmCmd} install --include=dev --no-fund --no-audit --prefer-offline`, {
-			cwd: fixtureDestDir,
-			stdio: "inherit",
-			env: {
-				...process.env,
-				NODE_ENV: "development",
+		execSync(
+			`${npmCmd} install --include=dev --no-fund --no-audit --prefer-offline`,
+			{
+				cwd: fixtureDestDir,
+				stdio: "inherit",
+				env: {
+					...process.env,
+					NODE_ENV: "development",
+				},
+				shell: true,
 			},
-			shell: true,
-		});
+		);
 
 		// For with-zod, assert that arktype is NOT installed
 		if (fixture === "with-zod") {
