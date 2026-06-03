@@ -88,10 +88,12 @@ try {
 		}
 		fs.writeFileSync(pkgJsonPath, JSON.stringify(pkg, null, 2));
 
-		// Remove lockfile to ensure npm installs all dependencies fresh based on the modified package.json
-		const lockfilePath = path.join(fixtureDestDir, "package-lock.json");
-		if (fs.existsSync(lockfilePath)) {
-			fs.rmSync(lockfilePath, { force: true });
+		// Remove lockfile for with-zod to ensure npm installs all dependencies fresh based on the modified package.json
+		if (fixture === "with-zod") {
+			const lockfilePath = path.join(fixtureDestDir, "package-lock.json");
+			if (fs.existsSync(lockfilePath)) {
+				fs.rmSync(lockfilePath, { force: true });
+			}
 		}
 
 		// Run npm install
