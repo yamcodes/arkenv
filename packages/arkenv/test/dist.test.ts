@@ -1,0 +1,141 @@
+import { beforeAll, describe, expect, it, vi, afterEach } from "vitest";
+import { existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+let arkenv: any;
+let createEnv: any;
+let standardArkenv: any;
+let createStandardEnv: any;
+let ArkEnvError: any;
+
+beforeAll(async () => {
+	const distDir = join(__dirname, "../dist");
+	if (!existsSync(distDir) || !existsSync(join(distDir, "index.mjs"))) {
+		// Automatically compile the package if dist is missing
+		execSync("pnpm run build", { cwd: join(__dirname, ".."), stdio: "inherit" });
+	}
+
+	// Dynamically load to prevent compile-time module resolution errors if dist/ is missing initially
+	const index = await import("../dist/index.mjs");
+	arkenv = index.default;
+	createEnv = index.createEnv;
+
+	const standard = await import("../dist/standard.mjs");
+	standardArkenv = standard.default;
+	createStandardEnv = standard.createEnv;
+
+	const core = await import("../dist/core.mjs");
+	ArkEnvError = core.ArkEnvError;
+});
+
+describe("Distribution Built Outputs", () => {
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
+	describe("Core Tier (arkenv/core)", () => {
+		it("should export ArkEnvError and format validation issues correctly", () => {
+			const error = new ArkEnvError([
+				{ path: "PORT", message: "must be a valid port number" },
+			]);
+			expect(error.name).toBe("ArkEnvError");
+			expect(error.message).toContain("PORT");
+			expect(error.message).toContain("must be a valid port number");
+		});
+	});
+
+	describe("Standard Tier (arkenv/standard)", () => {
+		it("should validate using Standard Schema validators (e.g. Zod-like)", () => {
+			vi.stubEnv("PORT", "3000");
+			vi.stubEnv("HOST", "localhost");
+
+			// Mock a minimal Standard Schema 1.0 validator
+			const portValidator = {
+				"~standard": {
+					version: 1,
+					validate: (value: unknown) => {
+						const num = Number(value);
+						if (Number.isNaN(num)) {
+							return { issues: [{ message: "must be a number" }] };
+						}
+						return { value: num };
+					},
+				},
+			};
+
+			const hostValidator = {
+				"~standard": {
+					version: 1,
+					validate: (value: unknown) => {
+						if (value !== "localhost") {
+							return { issues: [{ message: "must be localhost" }] };
+						}
+						return { value };
+					},
+				},
+			};
+
+			const env = createStandardEnv({
+				PORT: portValidator as any,
+				HOST: hostValidator as any,
+			});
+
+			expect(env.PORT).toBe(3000);
+			expect(env.HOST).toBe("localhost");
+		});
+
+		it("should throw ArkEnvError when validation fails", () => {
+			vi.stubEnv("PORT", "invalid-port");
+
+			const portValidator = {
+				"~standard": {
+					version: 1,
+					validate: (value: unknown) => {
+						const num = Number(value);
+						if (Number.isNaN(num)) {
+							return { issues: [{ path: [], message: "must be a number" }] };
+						}
+						return { value: num };
+					},
+				},
+			};
+
+			expect(() => {
+				createStandardEnv({
+					PORT: portValidator as any,
+				});
+			}).toThrow(ArkEnvError);
+		});
+	});
+
+	describe("Main Tier (arkenv)", () => {
+		it("should validate using ArkType schemas", () => {
+			vi.stubEnv("PORT", "8080");
+			vi.stubEnv("HOST", "127.0.0.1");
+
+			// The default entrypoint supports ArkType DSL schemas
+			const env = createEnv({
+				PORT: "number.port",
+				HOST: "string.host",
+			});
+
+			expect(env.PORT).toBe(8080);
+			expect(env.HOST).toBe("127.0.0.1");
+		});
+
+		it("should throw ArkEnvError for invalid environment inputs", () => {
+			vi.stubEnv("PORT", "99999"); // Out of range for a port
+
+			expect(() => {
+				createEnv({
+					PORT: "number.port",
+				});
+			}).toThrow(ArkEnvError);
+		});
+	});
+});

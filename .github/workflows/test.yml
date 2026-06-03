@@ -39,6 +39,10 @@ jobs:
       - name: Build packages
         run: pnpm run build --filter=./packages/*
       - run: pnpm run test
+      - name: Verify build artifacts
+        run: pnpm run verify-artifacts
+      - name: Run E2E package tests
+        run: pnpm run test:e2e:package
 
   test-typesafety:
     runs-on: ubuntu-latest
