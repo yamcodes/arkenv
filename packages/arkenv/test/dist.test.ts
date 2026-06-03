@@ -1,8 +1,8 @@
-import { beforeAll, describe, expect, it, vi, afterEach } from "vitest";
-import { existsSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,7 +17,10 @@ beforeAll(async () => {
 	const distDir = join(__dirname, "../dist");
 	if (!existsSync(distDir) || !existsSync(join(distDir, "index.mjs"))) {
 		// Automatically compile the package if dist is missing
-		execSync("pnpm run build", { cwd: join(__dirname, ".."), stdio: "inherit" });
+		execSync("pnpm run build", {
+			cwd: join(__dirname, ".."),
+			stdio: "inherit",
+		});
 	}
 
 	// Dynamically load to prevent compile-time module resolution errors if dist/ is missing initially

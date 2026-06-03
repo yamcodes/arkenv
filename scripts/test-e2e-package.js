@@ -1,8 +1,8 @@
-import fs from "node:fs";
-import path from "node:path";
-import os from "node:os";
-import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,9 +21,13 @@ execSync("pnpm pack", { cwd: arkenvDir, stdio: "inherit" });
 
 // 3. Locate the tarball
 const files = fs.readdirSync(arkenvDir);
-const tarballName = files.find((file) => /^arkenv-\d+\.\d+\.\d+(?:-.*)?\.tgz$/.test(file));
+const tarballName = files.find((file) =>
+	/^arkenv-\d+\.\d+\.\d+(?:-.*)?\.tgz$/.test(file),
+);
 if (!tarballName) {
-	console.error("❌ Error: Could not find generated arkenv tarball (.tgz) file.");
+	console.error(
+		"❌ Error: Could not find generated arkenv tarball (.tgz) file.",
+	);
 	process.exit(1);
 }
 const tarballPath = path.join(arkenvDir, tarballName);
@@ -53,7 +57,9 @@ try {
 			recursive: true,
 			filter: (src) => {
 				const relative = path.relative(fixtureSrcDir, src);
-				return !relative.startsWith("node_modules") && !relative.startsWith("dist");
+				return (
+					!relative.startsWith("node_modules") && !relative.startsWith("dist")
+				);
 			},
 		});
 
@@ -94,9 +100,13 @@ try {
 		if (fixture === "with-zod") {
 			const arktypePath = path.join(fixtureDestDir, "node_modules", "arktype");
 			if (fs.existsSync(arktypePath)) {
-				throw new Error("Optional peer dependency 'arktype' was mistakenly installed in clean-room standard-only fixture.");
+				throw new Error(
+					"Optional peer dependency 'arktype' was mistakenly installed in clean-room standard-only fixture.",
+				);
 			}
-			console.log("✅ Verified: 'arktype' is NOT present in standard-schema fixture node_modules");
+			console.log(
+				"✅ Verified: 'arktype' is NOT present in standard-schema fixture node_modules",
+			);
 		}
 
 		// Run start script and assert output
@@ -112,11 +122,15 @@ try {
 		// Assertions
 		if (fixture === "basic") {
 			if (!stdout.includes("Hello world!")) {
-				throw new Error("Fixture 'basic' did not print expected output: 'Hello world!'");
+				throw new Error(
+					"Fixture 'basic' did not print expected output: 'Hello world!'",
+				);
 			}
 		} else if (fixture === "with-zod") {
 			if (!stdout.includes("Value: https://example.com")) {
-				throw new Error("Fixture 'with-zod' did not print expected output: 'Value: https://example.com'");
+				throw new Error(
+					"Fixture 'with-zod' did not print expected output: 'Value: https://example.com'",
+				);
 			}
 		}
 

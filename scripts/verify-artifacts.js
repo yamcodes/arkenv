@@ -1,7 +1,7 @@
+import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { execSync } from "node:child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,14 +21,14 @@ const targets = [
 const patterns = [
 	/import\s+(?:.*?\s+from\s+)?['"]arktype['"]/i,
 	/export\s+(?:.*?\s+from\s+)?['"]arktype['"]/i,
-	/(?:import|require)\s*\(\s*['"]arktype['"]\s*\)/i
+	/(?:import|require)\s*\(\s*['"]arktype['"]\s*\)/i,
 ];
 
 function checkFile(filePath) {
 	const absolutePath = path.join(rootDir, filePath);
 	if (!fs.existsSync(absolutePath)) {
 		console.error(`❌ Error: File not found: ${filePath}`);
-		console.error(`Make sure to run a build first: pnpm run build`);
+		console.error("Make sure to run a build first: pnpm run build");
 		process.exit(1);
 	}
 
@@ -36,7 +36,9 @@ function checkFile(filePath) {
 
 	for (const pattern of patterns) {
 		if (pattern.test(content)) {
-			console.error(`❌ Error: Forbidden reference to 'arktype' found in ${filePath}`);
+			console.error(
+				`❌ Error: Forbidden reference to 'arktype' found in ${filePath}`,
+			);
 			console.error(`Matched pattern: ${pattern.toString()}`);
 			process.exit(1);
 		}
