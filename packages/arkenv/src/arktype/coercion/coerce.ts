@@ -1,7 +1,7 @@
 import type { BaseType } from "arktype";
 import {
-	type CoerceOptions,
 	applyCoercion,
+	type CoerceOptions,
 	findCoercionPaths,
 } from "../../coercion/shared.ts";
 

@@ -113,9 +113,15 @@ const createMockStandardJSONSchema = <TOutput>(
 		validate: (value: unknown) => {
 			// Basic runtime type check for the tests
 			const expectedType = typeof outputValue;
-			if (expectedType !== "object" && typeof value !== expectedType && !(outputValue instanceof Date && value instanceof Date)) {
+			if (
+				expectedType !== "object" &&
+				typeof value !== expectedType &&
+				!(outputValue instanceof Date && value instanceof Date)
+			) {
 				return {
-					issues: [{ message: `Expected ${expectedType}, received ${typeof value}` }],
+					issues: [
+						{ message: `Expected ${expectedType}, received ${typeof value}` },
+					],
 				};
 			}
 			return { value: value as TOutput };
@@ -130,14 +136,14 @@ const createMockStandardJSONSchema = <TOutput>(
 describe("Standard Mode Coercion", () => {
 	it("should not coerce by default", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
-		
+
 		expect(() =>
 			createEnv(
 				{ NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }) },
 				{ coerce: false }, // Explicit default
-			)
+			),
 		).toThrow(/Expected number, received string/);
-		
+
 		vi.unstubAllEnvs();
 	});
 
@@ -164,33 +170,44 @@ describe("Standard Mode Coercion", () => {
 
 		const env = createEnv(
 			{
-				DATE_VAR: createMockStandardJSONSchema(new Date("2023-01-01T00:00:00.000Z"), { type: "string", format: "date-time" }),
+				DATE_VAR: createMockStandardJSONSchema(
+					new Date("2023-01-01T00:00:00.000Z"),
+					{ type: "string", format: "date-time" },
+				),
 			},
 			{ coerce: true },
 		);
 
 		expect(env.DATE_VAR).toBeInstanceOf(Date);
-		expect((env.DATE_VAR as Date).toISOString()).toBe("2023-01-01T00:00:00.000Z");
+		expect((env.DATE_VAR as Date).toISOString()).toBe(
+			"2023-01-01T00:00:00.000Z",
+		);
 
 		vi.unstubAllEnvs();
 	});
 
 	it("should provide smart hints when coerce is true but JSON schema is missing", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
-		
+
 		expect(() =>
 			createEnv(
-				{ NUMBER_VAR: {
-					"~standard": {
-						version: 1,
-						vendor: "mock",
-						validate: () => ({ issues: [{ message: "Expected number, received string" }] })
-					}
-				} as any },
+				{
+					NUMBER_VAR: {
+						"~standard": {
+							version: 1,
+							vendor: "mock",
+							validate: () => ({
+								issues: [{ message: "Expected number, received string" }],
+							}),
+						},
+					} as any,
+				},
 				{ coerce: true },
-			)
-		).toThrow(/Hint: You enabled 'coerce: true', but the validator for 'NUMBER_VAR' does not implement Standard JSON Schema/);
-		
+			),
+		).toThrow(
+			/Hint: You enabled 'coerce: true', but the validator for 'NUMBER_VAR' does not implement Standard JSON Schema/,
+		);
+
 		vi.unstubAllEnvs();
 	});
 });

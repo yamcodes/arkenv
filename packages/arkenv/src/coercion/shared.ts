@@ -1,4 +1,9 @@
-import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs.ts";
+import {
+	coerceBoolean,
+	coerceDate,
+	coerceJson,
+	coerceNumber,
+} from "./morphs.ts";
 
 /**
  * A marker used in the coercion path to indicate that the target
@@ -48,7 +53,9 @@ export const findCoercionPaths = (
 
 	if ("enum" in node && node.enum) {
 		if (
-			node.enum.some((v: any) => typeof v === "number" || typeof v === "boolean")
+			node.enum.some(
+				(v: any) => typeof v === "number" || typeof v === "boolean",
+			)
 		) {
 			results.push({ path: [...path], type: "primitive" });
 		}
@@ -59,7 +66,11 @@ export const findCoercionPaths = (
 			results.push({ path: [...path], type: "primitive" });
 		} else if (node.type === "boolean") {
 			results.push({ path: [...path], type: "primitive" });
-		} else if (node.type === "string" && "format" in node && (node.format === "date-time" || node.format === "date")) {
+		} else if (
+			node.type === "string" &&
+			"format" in node &&
+			(node.format === "date-time" || node.format === "date")
+		) {
 			results.push({ path: [...path], type: "date" });
 		} else if (node.type === "object") {
 			// Check if this object has properties defined
@@ -92,7 +103,10 @@ export const findCoercionPaths = (
 					// Tuple traversal
 					node.items.forEach((item, index) => {
 						results.push(
-							...findCoercionPaths(item as Record<string, any>, [...path, `${index}`]),
+							...findCoercionPaths(item as Record<string, any>, [
+								...path,
+								`${index}`,
+							]),
 						);
 					});
 				} else {
