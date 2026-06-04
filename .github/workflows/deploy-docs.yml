@@ -2,6 +2,12 @@ name: deploy-docs
 
 on:
   workflow_dispatch:
+    inputs:
+      force_override:
+        description: '⚠️ ADMIN ONLY: Bypass doc-only safety check'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -26,34 +32,38 @@ jobs:
 
       - name: Verify Doc-Only Changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Fetch main to compare
-          git fetch origin main:main
-          
-          # Get list of changed files between main and dev
-          CHANGED_FILES=$(git diff --name-only main...dev)
-          
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "No changes between dev and main. Nothing to sync."
-            exit 0
+          if [ "${{ github.event.inputs.force_override }}" = "true" ]; then
+            echo "⚠️ Admin override enabled. Bypassing safety checks."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            
+            # Fetch main to compare
+            git fetch origin main:main
+            
+            # Get list of changed files between main and dev
+            CHANGED_FILES=$(git diff --name-only main...dev)
+            
+            if [ -z "$CHANGED_FILES" ]; then
+              echo "No changes between dev and main. Nothing to sync."
+              exit 0
+            fi
+            
+            echo "Files changed between main and dev:"
+            echo "$CHANGED_FILES"
+            
+            # Filter out files that are allowed for doc-only deploys:
+            # docs/**, www/**, and markdown files in the root
+            NON_DOCS=$(echo "$CHANGED_FILES" | grep -vE "^(docs/|www/|[^/]+\.md)$")
+            
+            if [ -n "$NON_DOCS" ]; then
+              echo "::error::Cannot sync dev to main. The following files contain unreleased code changes:"
+              echo "$NON_DOCS"
+              exit 1
+            fi
+            
+            echo "✅ All changes are doc-only. Safe to fast-forward."
           fi
-          
-          echo "Files changed between main and dev:"
-          echo "$CHANGED_FILES"
-          
-          # Filter out files that are allowed for doc-only deploys:
-          # docs/**, www/**, and markdown files in the root
-          NON_DOCS=$(echo "$CHANGED_FILES" | grep -vE "^(docs/|www/|[^/]+\.md)$")
-          
-          if [ -n "$NON_DOCS" ]; then
-            echo "::error::Cannot sync dev to main. The following files contain unreleased code changes:"
-            echo "$NON_DOCS"
-            exit 1
-          fi
-          
-          echo "✅ All changes are doc-only. Safe to fast-forward."
 
       - name: Sync main branch
         run: |
