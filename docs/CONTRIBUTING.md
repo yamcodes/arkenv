@@ -93,12 +93,12 @@ If `dev` already contains unreleased features, you cannot fast-forward `main` di
 1. Identify the commit hashes of your doc changes on `dev`.
 2. Run the rescue script:
    ```sh
-   ./scripts/promote-docs.sh rescue <commit-hash>
+   ./scripts/sync-main.sh rescue <commit-hash>
    ```
 3. Merge the resulting pull request into `main` (this deploys the docs to production).
 4. Run the reconciliation script to merge `main` back into `dev` and prevent git history drift:
    ```sh
-   ./scripts/promote-docs.sh reconcile
+   ./scripts/sync-main.sh reconcile
    ```
 
 ## Deployment rate limiter
