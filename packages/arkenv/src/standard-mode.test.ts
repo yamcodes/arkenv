@@ -141,9 +141,12 @@ describe("Standard Mode Type Inference", () => {
 
 		// 1. Test missing variable
 		try {
-			createEnv({
-				SOME_VAR: mockZodValidator,
-			}, { env: {} });
+			createEnv(
+				{
+					SOME_VAR: mockZodValidator,
+				},
+				{ env: {} },
+			);
 			expect.fail("Should throw");
 		} catch (error: any) {
 			expect(error.name).toBe("ArkEnvError");
@@ -155,9 +158,12 @@ describe("Standard Mode Type Inference", () => {
 
 		// 2. Test invalid format
 		try {
-			createEnv({
-				SOME_VAR: mockZodValidator,
-			}, { env: { SOME_VAR: "invalid" } });
+			createEnv(
+				{
+					SOME_VAR: mockZodValidator,
+				},
+				{ env: { SOME_VAR: "invalid" } },
+			);
 			expect.fail("Should throw");
 		} catch (error: any) {
 			expect(error.name).toBe("ArkEnvError");
@@ -174,7 +180,7 @@ describe("Standard Mode Type Inference", () => {
 				version: 1 as const,
 				vendor: "zod" as const,
 				types: {} as any,
-				validate: (value: unknown) => ({
+				validate: (_value: unknown) => ({
 					issues: [
 						{
 							message: "Invalid key",
@@ -189,9 +195,12 @@ describe("Standard Mode Type Inference", () => {
 		};
 
 		try {
-			createEnv({
-				DB_PASSWORD: mockZodValidator,
-			}, { env: { DB_PASSWORD: "my-secret-password" } });
+			createEnv(
+				{
+					DB_PASSWORD: mockZodValidator,
+				},
+				{ env: { DB_PASSWORD: "my-secret-password" } },
+			);
 			expect.fail("Should throw");
 		} catch (error: any) {
 			expect(error.issues[0].message).toContain("[REDACTED]");
@@ -200,12 +209,15 @@ describe("Standard Mode Type Inference", () => {
 
 		// Programmatic debugSecrets override
 		try {
-			createEnv({
-				DB_PASSWORD: mockZodValidator,
-			}, {
-				env: { DB_PASSWORD: "my-secret-password" },
-				debugSecrets: true,
-			});
+			createEnv(
+				{
+					DB_PASSWORD: mockZodValidator,
+				},
+				{
+					env: { DB_PASSWORD: "my-secret-password" },
+					debugSecrets: true,
+				},
+			);
 			expect.fail("Should throw");
 		} catch (error: any) {
 			expect(error.issues[0].message).toContain("my-secret-password");
@@ -218,7 +230,7 @@ describe("Standard Mode Type Inference", () => {
 				version: 1 as const,
 				vendor: "zod" as const,
 				types: {} as any,
-				validate: (value: unknown) => ({
+				validate: (_value: unknown) => ({
 					issues: [
 						{
 							message: "Invalid nested property",
@@ -232,13 +244,18 @@ describe("Standard Mode Type Inference", () => {
 
 		// Malformed JSON should not crash, raw string should remain in received, and traversalError populated
 		try {
-			createEnv({
-				CONFIG: mockNestedValidator,
-			}, { env: { CONFIG: "{ malformed json" } });
+			createEnv(
+				{
+					CONFIG: mockNestedValidator,
+				},
+				{ env: { CONFIG: "{ malformed json" } },
+			);
 			expect.fail("Should throw");
 		} catch (error: any) {
 			expect(error.issues[0].received).toBe("{ malformed json");
-			expect(error.issues[0].meta?.traversalError).toContain("Unparseable JSON");
+			expect(error.issues[0].meta?.traversalError).toContain(
+				"Unparseable JSON",
+			);
 		}
 	});
 
@@ -265,17 +282,23 @@ describe("Standard Mode Type Inference", () => {
 			},
 		};
 
-		const resultSuccess = safeCreateEnv({
-			PORT: mockZodValidator,
-		}, { env: { PORT: "3000" } });
+		const resultSuccess = safeCreateEnv(
+			{
+				PORT: mockZodValidator,
+			},
+			{ env: { PORT: "3000" } },
+		);
 		expect(resultSuccess.success).toBe(true);
 		if (resultSuccess.success) {
 			expect(resultSuccess.data).toEqual({ PORT: "3000" });
 		}
 
-		const resultFail = safeCreateEnv({
-			PORT: mockZodValidator,
-		}, { env: {} });
+		const resultFail = safeCreateEnv(
+			{
+				PORT: mockZodValidator,
+			},
+			{ env: {} },
+		);
 		expect(resultFail.success).toBe(false);
 		if (!resultFail.success) {
 			expect(resultFail.error).toContain("PORT");
@@ -283,4 +306,3 @@ describe("Standard Mode Type Inference", () => {
 		}
 	});
 });
-

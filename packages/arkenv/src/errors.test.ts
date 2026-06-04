@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
 	ArkEnvError,
+	type EnvIssue,
 	formatError,
 	formatIssues,
 	safeStringify,
 	shouldRedact,
-	type EnvIssue,
 } from "./core.ts";
 import { safeCreateEnv } from "./create-env.ts";
 
@@ -41,7 +41,9 @@ describe("safeStringify", () => {
 
 	it("should format arrays with truncation", () => {
 		expect(safeStringify([1, 2, 3], "PORT")).toBe("[1, 2, 3]");
-		expect(safeStringify([1, 2, 3, 4, 5], "PORT")).toBe("[1, 2, 3, ...(+2 more)]");
+		expect(safeStringify([1, 2, 3, 4, 5], "PORT")).toBe(
+			"[1, 2, 3, ...(+2 more)]",
+		);
 	});
 
 	it("should format objects with truncation", () => {
@@ -110,10 +112,7 @@ describe("ArkEnvError & safeCreateEnv", () => {
 
 	it("should run safeCreateEnv successfully", () => {
 		// safeCreateEnv handles EnvSchema
-		const result = safeCreateEnv(
-			{ PORT: "number" },
-			{ env: { PORT: "3000" } },
-		);
+		const result = safeCreateEnv({ PORT: "number" }, { env: { PORT: "3000" } });
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.data).toEqual({ PORT: 3000 });
@@ -121,10 +120,7 @@ describe("ArkEnvError & safeCreateEnv", () => {
 	});
 
 	it("should return failure for safeCreateEnv with invalid input", () => {
-		const result = safeCreateEnv(
-			{ PORT: "number" },
-			{ env: { PORT: "abc" } },
-		);
+		const result = safeCreateEnv({ PORT: "number" }, { env: { PORT: "abc" } });
 		expect(result.success).toBe(false);
 		if (!result.success) {
 			expect(result.error).toContain("PORT");

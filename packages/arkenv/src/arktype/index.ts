@@ -102,10 +102,7 @@ function arkErrorsToIssues(
 		const errObj = error as any;
 		if (errObj.min !== undefined && typeof errObj.min === "number") {
 			meta.min = errObj.min;
-		} else if (
-			errObj.rule !== undefined &&
-			typeof errObj.rule === "number"
-		) {
+		} else if (errObj.rule !== undefined && typeof errObj.rule === "number") {
 			meta.min = errObj.rule;
 		}
 		if (errObj.max !== undefined && typeof errObj.max === "number") {

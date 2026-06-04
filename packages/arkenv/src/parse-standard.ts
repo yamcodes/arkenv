@@ -107,8 +107,8 @@ export function parseStandard(
 						: key;
 
 				// Resolve received value and handle nested traversal errors
-				let receivedVal: unknown = undefined;
-				let traversalError: string | undefined = undefined;
+				let receivedVal: unknown;
+				let traversalError: string | undefined;
 
 				if (key in env) {
 					if (issue.path && issue.path.length > 0) {
@@ -118,7 +118,8 @@ export function parseStandard(
 								let current: any = rawVal;
 								if (
 									typeof rawVal === "string" &&
-									(rawVal.trim().startsWith("{") || rawVal.trim().startsWith("["))
+									(rawVal.trim().startsWith("{") ||
+										rawVal.trim().startsWith("["))
 								) {
 									try {
 										current = JSON.parse(rawVal);

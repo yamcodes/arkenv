@@ -12,7 +12,7 @@ export type EnvIssueCode =
 	| "INVALID_SCHEMA"
 	| "CUSTOM";
 
-export interface EnvIssueMeta {
+export type EnvIssueMeta = {
 	min?: number;
 	max?: number;
 	validation?: string;
@@ -20,16 +20,16 @@ export interface EnvIssueMeta {
 	engineCode?: string;
 	engine: "arktype" | "zod" | "valibot" | "unknown";
 	traversalError?: string;
-}
+};
 
-export interface EnvIssue {
+export type EnvIssue = {
 	path: string;
 	message: string;
 	code: EnvIssueCode;
 	expected?: string;
 	received?: unknown;
 	meta?: EnvIssueMeta;
-}
+};
 
 /**
  * @deprecated Use EnvIssue instead
@@ -112,7 +112,7 @@ export function safeStringify(
 
 export function formatIssues(
 	issues: EnvIssue[],
-	options?: { debugSecrets?: boolean },
+	_options?: { debugSecrets?: boolean },
 ): string {
 	return issues
 		.map((issue) => {
