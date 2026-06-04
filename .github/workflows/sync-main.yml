@@ -1,4 +1,4 @@
-name: deploy-docs
+name: Sync Main
 
 on:
   workflow_dispatch:
@@ -13,8 +13,8 @@ permissions:
   contents: write
 
 jobs:
-  deploy-docs:
-    name: Deploy Doc-Only Changes
+  sync-main:
+    name: Sync main branch with dev
     runs-on: ubuntu-latest
     steps:
       - name: Generate GitHub App Token
@@ -32,15 +32,14 @@ jobs:
 
       - name: Verify Doc-Only Changes
         run: |
+          # ALWAYS configure git and fetch main first so git knows about it
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main:main
+          
           if [ "${{ github.event.inputs.force_override }}" = "true" ]; then
             echo "⚠️ Admin override enabled. Bypassing safety checks."
           else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            
-            # Fetch main to compare
-            git fetch origin main:main
-            
             # Get list of changed files between main and dev
             CHANGED_FILES=$(git diff --name-only main...dev)
             

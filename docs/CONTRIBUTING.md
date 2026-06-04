@@ -83,7 +83,7 @@ If you make documentation updates (e.g., fixing a typo) and want to push them to
 If `dev` is currently clean (meaning there are no unreleased features merged into it):
 
 1. Merge your doc changes into `dev`.
-2. Manually trigger the **`deploy-docs`** GitHub Workflow.
+2. Manually trigger the **`Sync Main`** GitHub Workflow.
 3. This workflow verifies that the diff is strictly doc-only, fast-forwards `main` to `dev`, and pushes it to deploy.
 
 #### Scenario B: `dev` has unreleased code
