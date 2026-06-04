@@ -63,8 +63,8 @@ We use a two-branch branching model (`dev` and `main`) to ensure that the produc
 
 ### Branches
 
-* **`dev`**: The default branch. All development and feature pull requests target `dev`. Merging to `dev` triggers a Vercel Preview deployment (useful for reviewing documentation changes before release).
-* **`main`**: The production branch. `main` is *only* updated when a release is actually published. Vercel deploys the production website from `main`.
+- **`dev`**: The default branch. All development and feature pull requests target `dev`. Merging to `dev` triggers a Vercel Preview deployment (useful for reviewing documentation changes before release).
+- **`main`**: The production branch. `main` is *only* updated when a release is actually published. Vercel deploys the production website from `main`.
 
 ### Release Lifecycle
 
@@ -79,13 +79,17 @@ We use a two-branch branching model (`dev` and `main`) to ensure that the produc
 If you make documentation updates (e.g., fixing a typo) and want to push them to production without waiting for the next package release, use one of the following methods:
 
 #### Scenario A: `dev` has no unreleased code
+
 If `dev` is currently clean (meaning there are no unreleased features merged into it):
+
 1. Merge your doc changes into `dev`.
 2. Manually trigger the **`deploy-docs`** GitHub Workflow.
 3. This workflow verifies that the diff is strictly doc-only, fast-forwards `main` to `dev`, and pushes it to deploy.
 
 #### Scenario B: `dev` has unreleased code
+
 If `dev` already contains unreleased features, you cannot fast-forward `main` directly. Instead, you must run the promotion helper script locally to cherry-pick the fixes:
+
 1. Identify the commit hashes of your doc changes on `dev`.
 2. Run the rescue script:
    ```sh
@@ -96,7 +100,6 @@ If `dev` already contains unreleased features, you cannot fast-forward `main` di
    ```sh
    ./scripts/promote-docs.sh reconcile
    ```
-
 
 ## Deployment rate limiter
 
