@@ -1,0 +1,71 @@
+name: Sync main
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_override:
+        description: '⚠️ ADMIN ONLY: Bypass doc-only safety check'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync-main:
+    name: Sync main branch with dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Verify Doc-Only Changes
+        run: |
+          # ALWAYS configure git and fetch main first so git knows about it
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main:main
+          
+          if [ "${{ github.event.inputs.force_override }}" = "true" ]; then
+            echo "⚠️ Admin override enabled. Bypassing safety checks."
+          else
+            # Get list of changed files between main and dev
+            CHANGED_FILES=$(git diff --name-only main...dev)
+            
+            if [ -z "$CHANGED_FILES" ]; then
+              echo "No changes between dev and main. Nothing to sync."
+              exit 0
+            fi
+            
+            echo "Files changed between main and dev:"
+            echo "$CHANGED_FILES"
+            
+            # Filter out files that are allowed for doc-only deploys:
+            # docs/**, www/**, and markdown files in the root
+            NON_DOCS=$(echo "$CHANGED_FILES" | grep -vE "^(docs/|www/|[^/]+\.md)$")
+            
+            if [ -n "$NON_DOCS" ]; then
+              echo "::error::Cannot sync dev to main. The following files contain unreleased code changes:"
+              echo "$NON_DOCS"
+              exit 1
+            fi
+            
+            echo "✅ All changes are doc-only. Safe to fast-forward."
+          fi
+
+      - name: Sync main branch
+        run: |
+          git checkout main
+          git merge dev --ff-only
+          git push origin main
