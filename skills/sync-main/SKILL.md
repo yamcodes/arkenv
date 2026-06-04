@@ -24,8 +24,8 @@ git diff --name-only origin/main...origin/dev
 Based on the file list, classify the sync into one of the following three categories:
 
 1. **Doc-Only (Easy Case)**: All changed files are strictly under `docs/`, `www/`, or are root-level Markdown files (matching the regex `^(docs/|www/|[^/]+\.md)$`).
-2. **Infra-Only (Easy Case + Force)**: There are **no changes** in the `packages/` directory, but there are changes to workflows, scripts, or skills (e.g. `.github/workflows/`, `scripts/`, `skills/`).
-3. **Code Changes (Hard Case)**: There are modifications to files in the `packages/` directory (unreleased library features or fixes).
+2. **Infra-Only (Easy Case + Force)**: There are **no changes** to package code, tests, or examples, but there are changes to workflows, scripts, or skills (e.g. `.github/workflows/`, `scripts/`, `skills/`).
+3. **Code Changes (Hard Case)**: There are modifications to files in the `packages/`, `tests/`, `examples/`, or `apps/` directories (unreleased library features, fixes, or test/example updates).
 
 ---
 
