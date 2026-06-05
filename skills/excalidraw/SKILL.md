@@ -135,11 +135,11 @@ Create the `.excalidraw` file with appropriate elements:
 - **Position**: `x`, `y` coordinates
 - **Size**: `width`, `height`
 - **Style**: `strokeColor`, `backgroundColor`, `fillStyle`
-- **Font**: `fontFamily: 5` (Excalifont - **required for all text elements**)
+- **Font**: `fontFamily: 1` (Virgil - hand-drawn style, default for all text elements)
 - **Text**: Embedded text for labels
 - **Connections**: `points` array for arrows
 
-**Important**: All text elements must use `fontFamily: 5` (Excalifont) for consistent visual appearance.
+**Important**: All text elements must use `fontFamily: 1` (Virgil) for consistent visual appearance.
 
 ### Step 5: Format the Output
 
@@ -192,7 +192,7 @@ Structure the complete Excalidraw file:
    - Important/Central: Yellow (`#ffd43b`)
    - Alerts/Warnings: Light red (`#ffc9c9`)
 4. **Text sizing**: 16-24px for readability
-5. **Font**: Always use `fontFamily: 5` (Excalifont) for all text elements
+5. **Font**: Always use `fontFamily: 1` (Virgil) for all text elements
 6. **Arrow style**: Use straight arrows for simple flows, curved for complex relationships
 
 ### Complexity Management
@@ -300,7 +300,7 @@ Before delivering the diagram:
 - [ ] All elements have unique IDs
 - [ ] Coordinates prevent overlapping
 - [ ] Text is readable (font size 16+)
-- [ ] **All text elements use `fontFamily: 5` (Excalifont)**
+- [ ] **All text elements use `fontFamily: 1` (Virgil)**
 - [ ] Arrows connect logically
 - [ ] Colors follow consistent scheme
 - [ ] File is valid JSON

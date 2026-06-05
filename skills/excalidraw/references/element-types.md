@@ -364,7 +364,7 @@ const height = fontSize * 1.2 * lines;
   "height": 40,
   "text": "System Architecture",
   "fontSize": 32,
-  "fontFamily": 2,
+  "fontFamily": 1,
   "textAlign": "center",
   "verticalAlign": "top"
 }

@@ -168,7 +168,7 @@ def create_arrow(
             "locked": False,
             "text": label,
             "fontSize": 14,
-            "fontFamily": 5,
+            "fontFamily": 1,
             "textAlign": "center",
             "verticalAlign": "top",
             "containerId": None,
