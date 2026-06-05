@@ -64,8 +64,11 @@ Present the user with a clear summary of the unreleased package files that were 
    - Release a patch version of the packages (`pnpm changeset` -> trigger release workflow).
    - *Recommendation*: Use this if the doc fix is urgent, and the unreleased library code on `dev` is stable and ready to go live.
 3. **Option 3: Cherry-Pick/Rescue**
-   - Cherry-pick only the doc commits onto `main` and reconcile `dev` back to `main`.
-   - *Recommendation*: Use this only if the doc fix is urgent, but the library code on `dev` is incomplete and cannot be released.
+   - Cherry-pick only the doc commits onto `main` (if the doc fixes are isolated in their own clean commits).
+   - *Recommendation*: Use this if the doc fix is urgent, the library code on `dev` cannot be released, AND the doc commits do not contain unreleased code.
+4. **Option 4: Manual Recreation (Tangled Commits)**
+   - If the urgent doc fix is bundled in the *exact same commit* as unreleased package code, do not cherry-pick. Instead, manually recreate the doc fix directly against `main` using your code editing tools.
+   - *Recommendation*: Use this if the doc fix is urgent but the commits are hopelessly tangled with unreleased code.
 
 ---
 
