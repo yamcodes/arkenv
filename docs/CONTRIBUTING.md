@@ -44,7 +44,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 
 ## Branching & Release Workflow
 
-We use a two-branch branching model (`dev` and `main`) to ensure that the production documentation site does not display unreleased features.
+We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production documentation site is strictly synchronized with npm releases, meaning it never displays unreleased features. For the architectural reasoning behind this decision, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).
 
 ```
                   ┌───────────────┐
@@ -61,45 +61,50 @@ We use a two-branch branching model (`dev` and `main`) to ensure that the produc
                     └───────────┘
 ```
 
-### Branches
+### Key Workflows
 
-- **`dev`**: The default branch. All development and feature pull requests target `dev`. Merging to `dev` triggers a Vercel Preview deployment (useful for reviewing documentation changes before release).
-- **`main`**: The production branch. `main` is *only* updated when a release is actually published. Vercel deploys the production website from `main`.
+#### Use Case 1: Developing a New Feature
 
-### Release Lifecycle
+When adding functionality or new documentation pages for unreleased code:
 
-1. Merging PRs into `dev` triggers the Changeset Action, which opens/updates a "Version Packages" PR against `dev`.
-2. When the "Version Packages" PR is merged into `dev`:
-   - Packages are published to npm.
-   - The CI workflow automatically fast-forwards `main` to `dev` and pushes it.
-   - This push to `main` triggers Vercel to update the production website.
+1. Create a feature branch off `dev`.
+2. Commit your code and run `pnpm changeset` to generate a version bump file.
+3. Open a Pull Request targeting `dev`.
+4. Merging to `dev` will deploy a Vercel Preview (for review), but it will **not** affect the production documentation site.
 
-### Syncing Documentation Changes Early
+#### Use Case 2: Releasing Packages to npm
 
-If you make documentation updates (e.g., fixing a typo) and want to push them to production without waiting for the next package release, use one of the following methods:
+When you are ready to publish the unreleased features currently sitting on `dev`:
 
-#### Scenario A: `dev` has no unreleased code
+1. Navigate to the automatically generated "Version Packages" PR (created by Changesets) targeting `dev`.
+2. Review the aggregated `CHANGELOG.md` and version bumps.
+3. Merge the "Version Packages" PR into `dev`.
+4. A GitHub workflow will automatically build and publish the packages to npm.
+5. Immediately after a successful publish, the workflow automatically fast-forwards the `main` branch to match `dev`. This push to `main` triggers the production documentation deploy.
 
-If `dev` is currently clean (meaning there are no unreleased features merged into it):
+#### Use Case 3: Fixing a Typo on the Live Docs
 
-1. Merge your doc changes into `dev`.
-2. Manually trigger the **`Sync main`** GitHub Workflow.
-3. This workflow verifies that the diff is strictly doc-only, fast-forwards `main` to `dev`, and pushes it to deploy.
+When you need to fix a typo or make a cosmetic change to the live documentation *without* publishing a new npm package:
 
-#### Scenario B: `dev` has unreleased code
-
-If `dev` already contains unreleased features, you cannot fast-forward `main` directly. Instead, you must run the promotion helper script locally to cherry-pick the fixes:
-
-1. Identify the commit hashes of your doc changes on `dev`.
-2. Run the rescue script:
+1. Do not use the standard `dev` feature workflow (otherwise your typo fix will be trapped in `dev` until the next npm release).
+2. Ask your AI Agent to invoke the `/sync-main` slash command, or manually run the `sync-main` skill.
+3. **If `dev` is clean** (no unreleased features): Merge your doc fix to `dev`, then run the `Sync main` GitHub workflow to fast-forward `main`.
+4. **If `dev` has unreleased features**: Use the script locally to cherry-pick your fix:
    ```sh
    ./scripts/sync-main.sh rescue <commit-hash>
-   ```
-3. Merge the resulting pull request into `main` (this deploys the docs to production).
-4. Run the reconciliation script to merge `main` back into `dev` and prevent git history drift:
-   ```sh
    ./scripts/sync-main.sh reconcile
    ```
+   This ensures the fix hits `main` instantly while preventing Git history drift.
+
+#### Use Case 4: Coordinating a Major Version (e.g., v1)
+
+When working on a massive marketing push, docs facelift, or breaking API changes that will take weeks or months to coordinate:
+
+1. **Create a long-lived branch:** Branch off `dev` and name it `next` or `v1`.
+2. **Develop in parallel:** Merge all breaking code and marketing doc updates into `v1`. Meanwhile, you can continue merging normal bug fixes and minor features into `dev` and releasing them to `main` as usual.
+3. **Prevent drift:** Periodically merge `dev` into `v1` (e.g., weekly) to ensure `v1` receives all the hotfixes from production and doesn't suffer a massive merge conflict at the end.
+4. **Previews & Betas:** Vercel will automatically deploy the `v1` branch as a Preview environment for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
+5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
 ## Deployment rate limiter
 

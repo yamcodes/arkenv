@@ -134,6 +134,44 @@ This ensures the library works in real scenarios while keeping examples clean an
 - Cross-browser compatibility testing
 - Focused on user journeys and behavioral invariants
 
+### Distribution tests (`packages/arkenv/test/dist.test.ts`)
+
+**What:** Run a subset of assertions directly against the compiled library output (`dist/`).
+
+**Focus:**
+
+- Verifying that all three package tiers (`arkenv`, `arkenv/standard`, and `arkenv/core`) load and execute correctly.
+- Catching broken relative paths or incorrect exports in the build config.
+
+**Key Characteristics:**
+
+- Imports directly from `dist/` rather than `src/` to validate bundled code.
+- Automatically builds the package if `dist/` is not present during local testing.
+
+### Package-level E2E tests (`scripts/test-e2e-package.js`)
+
+**What:** Verify clean-room package installation behavior of the built tarball in example fixtures.
+
+**Focus:**
+
+- Recreating real-world user installations by packaging the monorepo output and installing the `.tgz` tarball.
+- Verifying standard-schema validator integrations function correctly without having optional peer dependencies (`arktype`) installed.
+
+**Key Characteristics:**
+
+- Creates isolated temporary test directories outside the workspace (`os.tmpdir()`).
+- Simulates complete offline dependency installations and execution of start scripts.
+
+### Static artifact verification (`scripts/verify-artifacts.js`)
+
+**What:** Programmatically verify distribution output constraints.
+
+**Focus:**
+
+- Inspecting built ESM and CJS files to ensure no forbidden dependency imports.
+- Ensuring the `standard` and `core` tiers do not import or require the `arktype` library.
+- Executing bundle size budget verifications using `size-limit`.
+
 ## Running tests
 
 ```bash
@@ -164,6 +202,15 @@ pnpm run test:e2e:ui
 
 # Run e2e tests in headed mode
 pnpm run test:e2e:headed
+
+# Run only distribution tests
+pnpm --filter arkenv test:dist
+
+# Verify build artifacts and run static analysis checks
+pnpm run verify-artifacts
+
+# Run package-level E2E installation tests
+pnpm run test:e2e:package
 ```
 
 ## Test coverage
@@ -183,6 +230,10 @@ pnpm run test:e2e:headed
 - ✅ Custom types working with `createEnv` (`custom-types.integration.test.ts`)
 - ✅ Error propagation through validation pipeline (`error.integration.test.ts`)
 - ✅ Array defaults with type validation (`array-defaults.integration.test.ts`)
+
+**Distribution Tests:**
+
+- ✅ Module loading and runtime validation of `dist/` artifacts (`dist.test.ts`)
 
 ### Vite plugin (`@arkenv/vite-plugin`)
 
@@ -237,7 +288,9 @@ Examples are kept clean and focused on demonstrating usage:
 
 The CI pipeline runs:
 
-- Unit tests for core functionality
+- Unit tests for core functionality and built outputs
+- Static artifact verification to ensure standard/core remain dependency-free
+- Clean-room E2E package installation tests across standard and core tiers
 - Integration tests for the Vite plugin using real examples
 - End-to-end tests for the www application across multiple browsers
 - Ensures no regressions in real-world usage scenarios

@@ -32,6 +32,8 @@
 		"contributors:generate": "all-contributors generate",
 		"knip": "knip",
 		"test:cli": "node scripts/test-cli.js",
+		"verify-artifacts": "node scripts/verify-artifacts.js",
+		"test:e2e:package": "node scripts/test-e2e-package.js",
 		"arkenv": "pnpm run build --filter @arkenv/cli && node packages/cli/dist/index.cjs"
 	},
 	"devDependencies": {
@@ -56,5 +58,5 @@
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
-	"packageManager": "pnpm@11.2.2"
+	"packageManager": "pnpm@11.5.1"
 }

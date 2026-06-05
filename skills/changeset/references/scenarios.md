@@ -84,10 +84,10 @@ Migration: Update your `arkenv` calls to separate the options from the schema co
 
 ```bash
 # See what changed since last release
-git log --oneline main..HEAD
+git log --oneline dev..HEAD
 
 # See detailed changes
-git diff main..HEAD -- src/
+git diff dev..HEAD -- src/
 ```
 
 ### Key questions (v0 context)
