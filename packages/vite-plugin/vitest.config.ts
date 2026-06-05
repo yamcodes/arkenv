@@ -6,6 +6,7 @@ export default defineProject({
 		name: "@arkenv/vite-plugin",
 	},
 	resolve: {
+		tsconfigPaths: true,
 		alias: [
 			{
 				find: /^arkenv\/arktype$/,

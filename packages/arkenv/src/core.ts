@@ -1,5 +1,5 @@
-import { indent } from "./utils/indent.ts";
-import { styleText } from "./utils/style-text.ts";
+import { indent } from "./utils/indent";
+import { styleText } from "./utils/style-text";
 
 /**
  * A single validation issue produced during environment variable parsing.

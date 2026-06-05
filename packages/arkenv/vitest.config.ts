@@ -6,4 +6,7 @@ export default defineProject({
 		include: ["**/*.{test,spec,test-d}.?(c|m)[jt]s?(x)"],
 		// globalSetup: ["test/setup-attest.ts"],
 	},
+	resolve: {
+		tsconfigPaths: true,
+	},
 });

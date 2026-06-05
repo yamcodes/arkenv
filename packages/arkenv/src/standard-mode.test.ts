@@ -100,3 +100,168 @@ describe("Standard Mode Type Inference", () => {
 		vi.unstubAllEnvs();
 	});
 });
+
+// Mock Standard JSON Schema validators for coercion testing
+const createMockStandardJSONSchema = <TOutput>(
+	outputValue: TOutput,
+	jsonSchema: Record<string, any>,
+) => ({
+	"~standard": {
+		version: 1 as const,
+		vendor: "mock",
+		types: {} as { input: unknown; output: TOutput },
+		validate: (value: unknown) => {
+			// Basic runtime type check for the tests
+			const expectedType = typeof outputValue;
+			if (
+				expectedType !== "object" &&
+				typeof value !== expectedType &&
+				!(outputValue instanceof Date && value instanceof Date)
+			) {
+				return {
+					issues: [
+						{ message: `Expected ${expectedType}, received ${typeof value}` },
+					],
+				};
+			}
+			return { value: value as TOutput };
+		},
+		jsonSchema: {
+			input: () => jsonSchema,
+			output: () => jsonSchema,
+		},
+	},
+});
+
+describe("Standard Mode Coercion", () => {
+	it("should not coerce by default", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		expect(() =>
+			createEnv(
+				{ NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }) },
+				{ coerce: false }, // Explicit default
+			),
+		).toThrow(/Expected number, received string/);
+
+		vi.unstubAllEnvs();
+	});
+
+	it("should coerce numbers and booleans when coerce is true", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+		vi.stubEnv("BOOLEAN_VAR", "true");
+
+		const env = createEnv(
+			{
+				NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }),
+				BOOLEAN_VAR: createMockStandardJSONSchema(true, { type: "boolean" }),
+			},
+			{ coerce: true },
+		);
+
+		expect(env.NUMBER_VAR).toBe(42);
+		expect(env.BOOLEAN_VAR).toBe(true);
+
+		vi.unstubAllEnvs();
+	});
+
+	it("should coerce dates when coerce is true", () => {
+		vi.stubEnv("DATE_VAR", "2023-01-01T00:00:00.000Z");
+
+		const env = createEnv(
+			{
+				DATE_VAR: createMockStandardJSONSchema(
+					new Date("2023-01-01T00:00:00.000Z"),
+					{ type: "string", format: "date-time" },
+				),
+			},
+			{ coerce: true },
+		);
+
+		expect(env.DATE_VAR).toBeInstanceOf(Date);
+		expect((env.DATE_VAR as Date).toISOString()).toBe(
+			"2023-01-01T00:00:00.000Z",
+		);
+
+		vi.unstubAllEnvs();
+	});
+
+	it("should provide smart hints when coerce is true but JSON schema is missing", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		expect(() =>
+			createEnv(
+				{
+					NUMBER_VAR: {
+						"~standard": {
+							version: 1,
+							vendor: "mock",
+							validate: () => ({
+								issues: [{ message: "Expected number, received string" }],
+							}),
+						},
+					},
+				} as any,
+				{ coerce: true },
+			),
+		).toThrow(
+			/Hint: 'coerce: true' enabled, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
+		);
+
+		vi.unstubAllEnvs();
+	});
+
+	it("should support fallback coercion triggers: toJSONSchema and toStandardJSONSchema.v1", () => {
+		vi.stubEnv("ZOD_MINI_VAR", "42");
+		vi.stubEnv("STNL_VAR", "true");
+
+		const mockZodMiniValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "zod-mini",
+				types: {} as { input: unknown; output: number },
+				validate: (val: unknown) => {
+					if (typeof val !== "number") {
+						return {
+							issues: [{ message: `Expected number, received ${typeof val}` }],
+						};
+					}
+					return { value: val };
+				},
+			},
+			toJSONSchema: () => ({ type: "number" }),
+		};
+
+		const mockStnlValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "stnl",
+				types: {} as { input: unknown; output: boolean },
+				validate: (val: unknown) => {
+					if (typeof val !== "boolean") {
+						return {
+							issues: [{ message: `Expected boolean, received ${typeof val}` }],
+						};
+					}
+					return { value: val };
+				},
+			},
+			toStandardJSONSchema: {
+				v1: () => ({ type: "boolean" }),
+			},
+		};
+
+		const env = createEnv(
+			{
+				ZOD_MINI_VAR: mockZodMiniValidator as any,
+				STNL_VAR: mockStnlValidator as any,
+			},
+			{ coerce: true },
+		);
+
+		expect(env.ZOD_MINI_VAR).toBe(42);
+		expect(env.STNL_VAR).toBe(true);
+
+		vi.unstubAllEnvs();
+	});
+});
