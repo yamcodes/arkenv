@@ -139,14 +139,14 @@ We chose **Model 2: Dual-Branch Development and Release Flow**.
 
 ### AI & LLM Documentation Endpoints
 
-To align with official Fumadocs conventions and recommended LLM integrations (as documented on `fumadocs.dev`), the documentation site serves dedicated machine-readable endpoints for AI agents. This branching and release model guarantees their integrity:
+To align with official Fumadocs conventions and recommended LLM integrations (as documented on `fumadocs.dev`), the documentation site serves dedicated machine-readable endpoints for AI agents. These endpoints rely on Fumadocs' built-in LLM support and content negotiation utilities, and this branching and release model guarantees their integrity:
 
-- **`/llms.txt` (Root Index)**: Serves a structured plain-text index of the entire documentation page tree generated from the page tree using the Loader API (`llms(source).index()`).
-- **`/docs/[package]/llms.txt` (Package-Specific Index)**: Serves a plain-text index of a specific package's documentation folder subtree using `llms(source).indexNode()`.
-- **`/llms-full.txt` (Full Context)**: Serves a concatenated markdown document containing all documentation pages for single-pass ingestion, mapped using a custom `getLLMText()` page converter.
+- **`/llms.txt` (Root Index)**: Serves a structured Markdown-formatted index of the entire documentation page tree generated using the Fumadocs `llms` utility (`llms(source).index()`).
+- **`/docs/[package]/llms.txt` (Package-Specific Index)**: Serves a Markdown-formatted index of a specific package's documentation folder subtree using the `llms(source).indexNode(folderNode)` helper.
+- **`/llms-full.txt` (Full Context)**: Serves a concatenated markdown document containing all documentation pages for single-pass ingestion, aggregated by mapping over all pages in the source and applying the custom `getLLMText()` page converter. This converter extracts the stringified Markdown processed by the built-in `remarkLLMs` plugin, which is enabled by setting `includeProcessedMarkdown: true` in the collection's `postprocess` config (accessible via `page.data.getText("processed")`).
 - **Path-based Markdown Endpoints (`*.md` / `*.mdx`)**: Serves page-specific raw markdown content. This supports both:
   - **Suffix-based path rewrites** (e.g. requesting `/docs/quickstart.md` or `/docs/quickstart.mdx` which Next.js rewrites to the `/llms.mdx/docs/*` route).
-  - **Content-Type negotiation** (routing requests with an `Accept: text/markdown` header using the `isMarkdownPreferred` and `rewritePath` helpers in `apps/www/proxy.ts`).
+  - **Content-Type negotiation** (routing requests with an `Accept: text/markdown` header using the Fumadocs content negotiation helpers `isMarkdownPreferred` and `rewritePath` from `fumadocs-core/negotiation` in `apps/www/proxy.ts`).
 
 Production crawlers hitting these endpoints on the main domain (e.g., `arkenv.js.org/llms.txt`) are guaranteed to only retrieve documentation matching released package versions. In preview environments (deployed from `dev`), these endpoints expose unreleased features, facilitating prompt engineering and agent verification during development.
 
