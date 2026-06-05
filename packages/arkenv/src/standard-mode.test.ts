@@ -223,6 +223,53 @@ describe("Standard Mode Coercion", () => {
 		vi.unstubAllEnvs();
 	});
 
+	it("should provide smart hints by default when JSON schema is missing", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		expect(() =>
+			createEnv({
+				NUMBER_VAR: {
+					"~standard": {
+						version: 1,
+						vendor: "mock",
+						validate: () => ({
+							issues: [{ message: "Expected number, received string" }],
+						}),
+					},
+				},
+			} as any),
+		).toThrow(
+			/Hint: coercion is enabled by default, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
+		);
+
+		vi.unstubAllEnvs();
+	});
+
+	it("should not provide smart hints when coerce is false and JSON schema is missing", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		const t = () =>
+			createEnv(
+				{
+					NUMBER_VAR: {
+						"~standard": {
+							version: 1,
+							vendor: "mock",
+							validate: () => ({
+								issues: [{ message: "Expected number, received string" }],
+							}),
+						},
+					},
+				} as any,
+				{ coerce: false },
+			);
+
+		expect(t).toThrow("Expected number, received string");
+		expect(t).not.toThrow(/Hint/);
+
+		vi.unstubAllEnvs();
+	});
+
 	it("should support fallback coercion triggers: toJSONSchema and toStandardJSONSchema.v1", () => {
 		vi.stubEnv("ZOD_MINI_VAR", "42");
 		vi.stubEnv("STNL_VAR", "true");
