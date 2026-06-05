@@ -156,12 +156,14 @@ export function parseStandard(
 				const iss = issue as any;
 				const meta: EnvIssueMeta = {
 					engine,
-					engineCode: issueCode || undefined,
-					min: iss.minimum ?? iss.min,
-					max: iss.maximum ?? iss.max,
-					validation: iss.validation,
-					traversalError,
 				};
+				if (issueCode) meta.engineCode = issueCode;
+				const min = iss.minimum ?? iss.min;
+				if (min !== undefined) meta.min = min;
+				const max = iss.maximum ?? iss.max;
+				if (max !== undefined) meta.max = max;
+				if (iss.validation !== undefined) meta.validation = iss.validation;
+				if (traversalError !== undefined) meta.traversalError = traversalError;
 
 				let message = issue.message;
 				if (code === "MISSING_VARIABLE") {
@@ -185,14 +187,16 @@ export function parseStandard(
 							: `${message} ${suffix}`;
 				}
 
-				errors.push({
+				const issueObj: EnvIssue = {
 					path: issuePath,
 					message,
 					code,
-					expected,
-					received: receivedVal,
 					meta,
-				});
+				};
+				if (expected) issueObj.expected = expected;
+				if (receivedVal !== undefined) issueObj.received = receivedVal;
+
+				errors.push(issueObj);
 			}
 		} else {
 			output[key] = result.value;
