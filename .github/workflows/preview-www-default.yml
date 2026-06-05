@@ -6,30 +6,10 @@ on:
     branches:
       - dev
       - v1
-    paths:
-      - "apps/www/**"
-      - "packages/**"
-      - "!packages/cli/**"
-      - "!apps/playgrounds/**"
-      - "!examples/**"
-      - ".github/workflows/preview-www-reusable.yml"
-      - ".github/workflows/preview-www-default.yml"
-      - ".github/workflows/preview-www-labeled.yml"
-      - "pnpm-lock.yaml"
   push:
     branches:
       - dev
       - v1
-    paths:
-      - "apps/www/**"
-      - "packages/**"
-      - "!packages/cli/**"
-      - "!apps/playgrounds/**"
-      - "!examples/**"
-      - ".github/workflows/preview-www-reusable.yml"
-      - ".github/workflows/preview-www-default.yml"
-      - ".github/workflows/preview-www-labeled.yml"
-      - "pnpm-lock.yaml"
 
 concurrency:
   group: preview-www-${{ github.event.pull_request.number || github.ref_name }}
