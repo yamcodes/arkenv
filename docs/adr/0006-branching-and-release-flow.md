@@ -11,6 +11,7 @@ This requirement introduces several constraints:
 1. **Out-of-Sync Prevention**: If we deploy the documentation site directly on every merge to a single default branch (`main`), the website will display documentation for features that have been merged but not yet released on npm (out of sync).
 2. **Release Staging Window**: During the time a Changesets-generated "Version Packages" PR is open, subsequent commits to the development branch can cause packages and documentation to diverge further before a release is finalized.
 3. **Fast-track Doc Hotfixes**: We need a way to immediately push documentation-only typo fixes to production without waiting for the next package release cycle.
+4. **AI & LLM Crawler Alignment**: Developers increasingly rely on AI coding assistants (such as Gemini, Copilot, or ChatGPT) that fetch documentation via machine-readable endpoints (`/llms.txt`, `/llms-full.txt`, and page-level `.md`/`.mdx` routes). If the production site serves unreleased APIs or features on these endpoints, LLM assistants will suggest non-existent code to developers, leading to broken developer experiences.
 
 We analyzed seven different models to address these constraints:
 
@@ -136,6 +137,16 @@ We chose **Model 2: Dual-Branch Development and Release Flow**.
 - **`dev` (Default Branch)**: All active development, feature branches, and dependency updates target `dev`. Preview deployments are triggered from here.
 - **`main` (Production Branch)**: Represents the production state. Direct commits are forbidden. It is only updated via fast-forward merges from `dev` or approved doc-rescue PRs.
 
+### AI & LLM Documentation Endpoints
+
+To align with modern conventions (like those on `fumadocs.dev`), the documentation site serves dedicated machine-readable endpoints for AI agents. This branching and release model guarantees their integrity:
+
+- **`/llms.txt` (Index)**: Serves a structured plain-text index of the documentation page tree.
+- **`/llms-full.txt` (Full Context)**: Serves a concatenated markdown document containing all documentation pages for single-pass ingestion.
+- **`*.md` / `*.mdx` Page Endpoints**: Rewrites request paths to serve page-specific raw markdown (e.g. `/docs/arkenv.md` or `Accept: text/markdown`).
+
+Production crawlers hitting these endpoints on the main domain (e.g., `arkenv.dev/llms.txt`) are guaranteed to only retrieve documentation matching released package versions. In preview environments (deployed from `dev`), these endpoints expose unreleased features, facilitating prompt engineering and agent verification during development.
+
 ### Automated Release Loop
 
 1. **Staging**: Merging a feature PR containing a changeset into `dev` triggers the Changesets GitHub Action to open or update the **"Version Packages" PR** targeting `dev`.
@@ -157,6 +168,7 @@ If documentation hotfixes (such as typo fixes or formatting corrections) need to
 ## Consequences
 
 - **Production Safety**: The production documentation site is kept in sync with published npm versions automatically, eliminating the risk of documenting unreleased APIs.
+- **AI Prompting Integrity**: AI coding assistants indexing the production site only ingest documentation for released package versions, eliminating code suggestion failures or unreleased API hallucinations for package consumers.
 - **Strict Branch Discipline**: Developers must target `dev` for feature PRs. Direct PRs to `main` are restricted to emergency hotfixes via the `rescue` workflow.
 - **No History Drift**: The required reconciliation step ensures that any hotfix merged to `main` is brought back into `dev`, maintaining a clean topological relationship where `dev` is always a direct descendant of `main`.
 - **Robust Release Automation**: Release pipelines are fully automated, removing the need for manual publishing or manual syncing of git tags and branches.
@@ -171,3 +183,7 @@ If documentation hotfixes (such as typo fixes or formatting corrections) need to
 - [.github/workflows/release.yml](../../.github/workflows/release.yml)
 - [.github/workflows/deploy-www.yml](../../.github/workflows/deploy-www.yml)
 - [.github/workflows/sync-main.yml](../../.github/workflows/sync-main.yml)
+- [apps/www/app/llms.txt/route.ts](../../apps/www/app/llms.txt/route.ts) (Fumadocs `llms.txt` page tree index)
+- [apps/www/app/llms-full.txt/route.ts](../../apps/www/app/llms-full.txt/route.ts) (Concatenated LLM text generator)
+- [apps/www/app/llms.mdx/docs/\[\[...slug\]\]/route.ts](../../apps/www/app/llms.mdx/docs/\[\[...slug]]/route.ts) (Page-specific markdown endpoint)
+- [apps/www/next.config.ts](../../apps/www/next.config.ts) (Rewrite rules for `.md` / `.mdx` content extensions)
