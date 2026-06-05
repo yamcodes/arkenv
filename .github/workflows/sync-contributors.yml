@@ -5,7 +5,7 @@ on:
     paths:
       - ".all-contributorsrc"
   push:
-    branches: ["main"]
+    branches: ["dev"]
     paths:
       - ".all-contributorsrc"
   workflow_dispatch:

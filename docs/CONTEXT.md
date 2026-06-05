@@ -149,7 +149,9 @@ pnpm run test:e2e                     # E2E tests
 
 **Branching:**
 
-- Create feature branches from `main`
+- Create feature branches from `dev`
+- `dev` is the default branch and continuous integration target
+- `main` is the production release branch, updated only after a successful npm publish
 - Use descriptive branch names
 
 **Versioning:**
