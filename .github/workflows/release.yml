@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - v1
 
 permissions:
   id-token: write # Required for OIDC
@@ -53,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Sync main branch
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs.published == 'true' && github.ref_name == 'dev'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

@@ -67,8 +67,8 @@ jobs:
             }
 
             const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"])
-            // Also skip the automated Sync PR (dev → main) by head branch name
-            const skipHeadRefs = new Set(["changeset-release/dev", "dev"])
+            // Also skip the automated Sync PRs and changeset release PRs for dev and v1
+            const skipHeadRefs = new Set(["changeset-release/dev", "dev", "changeset-release/v1", "v1"])
             const shouldSkip = skipHeadRefs.has(headRef) || botLogins.has(author)
 
             if (shouldSkip) {

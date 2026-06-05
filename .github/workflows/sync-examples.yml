@@ -8,7 +8,7 @@ on:
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   push:
-    branches: ["dev"]
+    branches: ["dev", "v1"]
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
