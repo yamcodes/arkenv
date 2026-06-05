@@ -2,9 +2,9 @@ name: test
 
 on:
   pull_request:
-    branches: [main]
+    branches: [dev]
   push:
-    branches: [main]
+    branches: [dev]
   schedule:
     - cron: "0 0 * * 6" # Every Saturday
   workflow_dispatch:
@@ -150,7 +150,7 @@ jobs:
       - name: Run ${{ matrix.suite }} tests (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: pnpm run test:${{ matrix.suite }} --affected --log-order=stream
-      - name: Run ${{ matrix.suite }} tests (main/workflow_dispatch)
+      - name: Run ${{ matrix.suite }} tests (dev/workflow_dispatch)
         if: ${{ github.event_name != 'pull_request' }}
         run: pnpm run test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
       - uses: actions/upload-artifact@v7
@@ -169,7 +169,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2 # for checking against main and for following the PR history
+          fetch-depth: 2 # for checking against dev and for following the PR history
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -220,7 +220,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2 # for checking against main and for following the PR history
+          fetch-depth: 2 # for checking against dev and for following the PR history
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |

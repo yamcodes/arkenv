@@ -27,7 +27,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 
 ## Making changes
 
-1. Fork the repository and create your branch from `main`
+1. Fork the repository and create your branch from `dev`
 2. If you've added code that should be tested, add tests
 3. Ensure the test suite passes
 4. Update the documentation if needed
@@ -41,6 +41,65 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
    - Provide a summary of the changes
 6. Commit the generated changeset file along with your changes
 7. Issue that pull request!
+
+## Branching & Release Workflow
+
+We use a two-branch branching model (`dev` and `main`) to ensure that the production documentation site does not display unreleased features.
+
+```
+                  ┌───────────────┐
+                  │  Feature PRs  │
+                  └───────┬───────┘
+                          ▼
+                    ┌───────────┐
+                    │    dev    │ (Default branch / Previews)
+                    └─────┬─────┘
+                          │ (Changeset version PR merged & published)
+                          ▼
+                    ┌───────────┐
+                    │   main    │ (Production docs / Vercel prod)
+                    └───────────┘
+```
+
+### Branches
+
+- **`dev`**: The default branch. All development and feature pull requests target `dev`. Merging to `dev` triggers a Vercel Preview deployment (useful for reviewing documentation changes before release).
+- **`main`**: The production branch. `main` is *only* updated when a release is actually published. Vercel deploys the production website from `main`.
+
+### Release Lifecycle
+
+1. Merging PRs into `dev` triggers the Changeset Action, which opens/updates a "Version Packages" PR against `dev`.
+2. When the "Version Packages" PR is merged into `dev`:
+   - Packages are published to npm.
+   - The CI workflow automatically fast-forwards `main` to `dev` and pushes it.
+   - This push to `main` triggers Vercel to update the production website.
+
+### Syncing Documentation Changes Early
+
+If you make documentation updates (e.g., fixing a typo) and want to push them to production without waiting for the next package release, use one of the following methods:
+
+#### Scenario A: `dev` has no unreleased code
+
+If `dev` is currently clean (meaning there are no unreleased features merged into it):
+
+1. Merge your doc changes into `dev`.
+2. Manually trigger the **`Sync main`** GitHub Workflow.
+3. This workflow verifies that the diff is strictly doc-only, fast-forwards `main` to `dev`, and pushes it to deploy.
+
+#### Scenario B: `dev` has unreleased code
+
+If `dev` already contains unreleased features, you cannot fast-forward `main` directly. Instead, you must run the promotion helper script locally to cherry-pick the fixes:
+
+1. Identify the commit hashes of your doc changes on `dev`.
+2. Run the rescue script:
+   ```sh
+   ./scripts/sync-main.sh rescue <commit-hash>
+   ```
+3. Merge the resulting pull request into `main` (this deploys the docs to production).
+4. Run the reconciliation script to merge `main` back into `dev` and prevent git history drift:
+   ```sh
+   ./scripts/sync-main.sh reconcile
+   ```
 
 ## Deployment rate limiter
 
