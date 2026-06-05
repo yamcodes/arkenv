@@ -3,6 +3,9 @@ name: Preview www (Default Events)
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review]
+    branches:
+      - dev
+      - v1
     paths:
       - "apps/www/**"
       - "packages/arkenv/**"
