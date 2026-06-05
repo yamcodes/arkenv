@@ -32,7 +32,7 @@ graph TD
 
 ### Model 2: Dual-Branch Development and Release Flow (Selected Option)
 
-Development and feature PRs target a default `dev` branch. Previews are deployed from `dev`. Merging the "Version Packages" PR on `dev` publishes packages and fast-forwards `main`, which triggers the production doc deployment.
+Development and feature PRs target a default `dev` branch. Previews are deployed from `dev`. Merging the "Version Packages" PR into `dev` publishes packages and fast-forwards `main`, which triggers the production doc deployment.
 
 - **Pro**: Minimizes the out-of-sync window in production to the build/deployment time of the release.
 - **Pro**: Allows selective/early docs hotfixes to be cherry-picked onto `main` and then reconciled back into `dev`.
@@ -138,9 +138,9 @@ We chose **Model 2: Dual-Branch Development and Release Flow**.
 
 ### Automated Release Loop
 
-1. **Staging**: Merging a feature PR containing a changeset to `dev` triggers the Changesets GitHub Action to open or update the **"Version Packages" PR**.
-2. **Release**: Merging the "Version Packages" PR back to `dev` runs [`release.yml`](file:///.github/workflows/release.yml) which:
-   - Publishes the bumped packages to npm.
+1. **Staging**: Merging a feature PR containing a changeset into `dev` triggers the Changesets GitHub Action to open or update the **"Version Packages" PR** targeting `dev`.
+2. **Release**: Merging the "Version Packages" PR into `dev` runs [`release.yml`](file:///.github/workflows/release.yml) which:
+   - Publishes the bumped packages to npm (via `changeset publish`).
    - Programmatically merges `dev` into `main` with a fast-forward (`--ff-only`) constraint.
    - Pushes `main` to GitHub.
 3. **Deployment**: Pushing to `main` triggers [`deploy-www.yml`](file:///.github/workflows/deploy-www.yml) which builds and deploys the updated documentation site to production.
@@ -166,6 +166,7 @@ If documentation hotfixes (such as typo fixes or formatting corrections) need to
 **References**:
 
 - [CONTRIBUTING.md](../CONTRIBUTING.md)
+- [skills/changeset/SKILL.md](../../skills/changeset/SKILL.md) (Changeset formatting guidelines, imperative mood requirement, and v0 versioning rules)
 - [scripts/sync-main.sh](../../scripts/sync-main.sh)
 - [.github/workflows/release.yml](../../.github/workflows/release.yml)
 - [.github/workflows/deploy-www.yml](../../.github/workflows/deploy-www.yml)
