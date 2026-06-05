@@ -1,9 +1,4 @@
-import {
-	coerceBoolean,
-	coerceDate,
-	coerceJson,
-	coerceNumber,
-} from "./morphs.ts";
+import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
 
 /**
  * A marker used in the coercion path to indicate that the target
@@ -174,7 +169,8 @@ export const applyCoercion = (
 				return;
 			}
 
-			if (Object.hasOwn(current, k)) {
+			// biome-ignore lint/suspicious/noPrototypeBuiltins: Object.hasOwn is not supported under current tsconfig lib settings
+			if (Object.prototype.hasOwnProperty.call(current, k)) {
 				const v = current[k];
 				if (type === "array" && typeof v === "string") {
 					current[k] = splitString(v);

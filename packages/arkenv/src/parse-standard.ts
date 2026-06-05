@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { applyCoercion, findCoercionPaths } from "./coercion/shared.ts";
+import { applyCoercion, findCoercionPaths } from "./coercion/shared";
 import { ArkEnvError, type ValidationIssue } from "./core";
 
 /**

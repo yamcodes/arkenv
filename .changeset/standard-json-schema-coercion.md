@@ -22,5 +22,3 @@ const env = createEnv(
 	}
 );
 ```
-
-If a validation fails and a validator does not expose a JSON Schema natively, a smart hint will now be appended to the error output to guide you toward a solution (e.g., using an adapter).
