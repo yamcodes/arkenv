@@ -8,11 +8,10 @@ on:
       - v1
     paths:
       - "apps/www/**"
-      - "packages/arkenv/**"
-      - "packages/vite-plugin/**"
-      - "packages/bun-plugin/**"
-      - "packages/fumadocs-ui/**"
-      - "packages/internal/**"
+      - "packages/**"
+      - "!packages/cli/**"
+      - "!apps/playgrounds/**"
+      - "!examples/**"
       - ".github/workflows/preview-www-reusable.yml"
       - ".github/workflows/preview-www-default.yml"
       - ".github/workflows/preview-www-labeled.yml"
