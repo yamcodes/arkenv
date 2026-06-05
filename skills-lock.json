@@ -25,6 +25,12 @@
 			"skillPath": "skills/engineering/diagnose/SKILL.md",
 			"computedHash": "15939a26f86edec2d4862042b8564e5a062cb81d04e047a0cea6305c8830b5f5"
 		},
+		"excalidraw": {
+			"source": "github/awesome-copilot",
+			"sourceType": "github",
+			"skillPath": "skills/excalidraw/SKILL.md",
+			"computedHash": "cba18fc5e51e9c9c33a6a8e3c21aca7df84f6fc06643f9e90d8c36867c858441"
+		},
 		"grill-me": {
 			"source": "mattpocock/skills",
 			"sourceType": "github",
