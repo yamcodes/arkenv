@@ -1,22 +1,24 @@
-# Branching and release flow
+# Branching and Release Flow
 
-To document the architectural decision on the repository's branching model, release cycle, and documentation deployment workflow, transitioning to a two-branch (`dev`/`main`) system using Changesets.
+To document the architectural decision on the repository's branching model, package release cycle, and documentation deployment workflow, transitioning to a dual-branch (`dev`/`main`) release flow managed by Changesets.
 
-## Context & problem
+## Context & Problem
 
-We manage a monorepo containing published npm packages (`packages/*`) and a documentation website (`apps/www`). The documentation website must reflect the features and state of the released packages in production:
+We manage a monorepo containing published npm packages (`packages/*`) and a documentation website (`apps/www`). The documentation website must accurately reflect the features and state of the released packages in production.
 
-1. If we deploy the documentation site directly on every merge to a single default branch (`main`), the website will display documentation for features that have been merged but not yet released on npm (out of sync).
-2. During the time a Changesets-generated "Version Packages" PR is open, any subsequent commits can cause packages and documentation to get further out of sync.
-3. We need a way to immediately push documentation-only typo fixes to production without waiting for the next package release cycle.
+This requirement introduces several constraints:
 
-We analyzed 5 different models to address these constraints:
+1. **Out-of-Sync Prevention**: If we deploy the documentation site directly on every merge to a single default branch (`main`), the website will display documentation for features that have been merged but not yet released on npm (out of sync).
+2. **Release Staging Window**: During the time a Changesets-generated "Version Packages" PR is open, subsequent commits to the development branch can cause packages and documentation to diverge further before a release is finalized.
+3. **Fast-track Doc Hotfixes**: We need a way to immediately push documentation-only typo fixes to production without waiting for the next package release cycle.
 
-### Model 1: Pure Changesets Flow (Main Flow)
+We analyzed seven different models to address these constraints:
 
-A single `main` branch where code and doc changes are committed. Merging to `main` deploys the docs to production immediately, while packages are only released when the "Version Packages" PR is merged.
+### Model 1: Trunk-Based Development with Changesets
 
-- **Con**: During the window between merging a feature and merging the "Version Packages" PR, the docs are out of sync with npm.
+A single default branch (`main`) where code and doc changes are committed. Merging to `main` deploys the docs to production immediately, while packages are only released when the Changesets "Version Packages" PR is merged.
+
+- **Con**: During the window between merging a feature and merging the "Version Packages" PR, the documentation is out of sync with npm.
 
 ```mermaid
 graph TD
@@ -28,12 +30,12 @@ graph TD
     C -.->|"Out of Sync Window<br/>(Docs live, packages unreleased)"| E
 ```
 
-### Model 2: Dev/Main Flow with Changesets (Selected Option)
+### Model 2: Dual-Branch Development and Release Flow (Selected Option)
 
 Development and feature PRs target a default `dev` branch. Previews are deployed from `dev`. Merging the "Version Packages" PR on `dev` publishes packages and fast-forwards `main`, which triggers the production doc deployment.
 
-- **Pro**: Minimizes the out-of-sync window in production.
-- **Pro**: Allows selective/early docs hotfixes to be cherry-picked onto `main` via helper scripts.
+- **Pro**: Minimizes the out-of-sync window in production to the build/deployment time of the release.
+- **Pro**: Allows selective/early docs hotfixes to be cherry-picked onto `main` and then reconciled back into `dev`.
 
 ```mermaid
 graph TD
@@ -47,9 +49,9 @@ graph TD
     E -.->|"Out of Sync Window<br/>(Minimized)"| G
 ```
 
-### Model 3: Dev/Main Flow without Changesets
+### Model 3: Traditional Dual-Branch Flow without Changesets
 
-Traditional dev/main branching model, but without Changesets. Releases are manually built and pushed from `main`.
+Traditional dev/main branching model, but without automated release tooling. Releases are manually built and pushed from `main`.
 
 - **Con**: High manual release overhead and loss of automated version/changelog generation.
 
@@ -62,9 +64,9 @@ graph TD
     D --> F[Deploy Docs to Production]
 ```
 
-### Model 4: Main Flow + Selective Docs Deployment
+### Model 4: Trunk-Based Development with Tag-Triggered Deployments
 
-Single `main` branch, but docs are only deployed when a release is published (e.g. triggered by tag/release events).
+Single default branch (`main`), but documentation is only deployed when a new release tag is published.
 
 - **Con**: Hard to deploy critical typo/documentation fixes while a package version release is pending on `main`.
 
@@ -73,12 +75,12 @@ graph TD
     A[Commit Code & Docs Changes] --> B[Merge to main]
     B --> C["Open 'Version Packages' PR"]
     C -->|Merge| D[Release Packages to npm]
-    D --> E[Trigger Docs Deployment]
+    D --> E[Trigger Docs Deployment via Git Tag]
 ```
 
-### Model 5: Main Flow + Version Labeling
+### Model 5: Trunk-Based Development with Feature-Flagged/Labeled Documentation
 
-Single `main` branch. Docs are deployed immediately, but an automated process labels documentation sections matching new features as "unreleased" until the package is published.
+Single default branch. Docs are deployed immediately, but an automated process labels documentation sections matching new features as "unreleased" until the package is published.
 
 - **Con**: High configuration and maintenance complexity; fragile to parse doc changes.
 
@@ -92,7 +94,7 @@ graph TD
     F --> G["Remove 'Unreleased' Labels<br/>from docs"]
 ```
 
-### Model 6: Multi-Version / Versioned Documentation
+### Model 6: Multi-Versioned Documentation Site
 
 The website is always deployed from a single branch (e.g., `main`). The documentation website natively supports versioning (e.g., using a framework-level version selector).
 
@@ -109,12 +111,12 @@ graph TD
     D -->|Next/Unreleased| F[Serve Next/Dev Docs]
 ```
 
-### Model 7: Dynamic NPM/Tag-based Documentation
+### Model 7: Runtime/Build-Time Remote Documentation Fetching
 
 The documentation website code and content are decoupled. The website fetches and renders documentation content dynamically at build or run time from the published npm packages or specific git tags.
 
-- **Pro**: Decouples website deployment completely from package releases. The website can be updated and deployed anytime without displaying unreleased features.
-- **Con**: Relies on external dynamic fetching (increased risk of build failures or runtime API limits) and lacks simple local MDX previews during development without extra emulation.
+- **Pro**: Decouples website deployment completely from package releases.
+- **Con**: Relies on external dynamic fetching (increased risk of build failures or runtime API limits) and lacks simple local MDX previews during development.
 
 ```mermaid
 graph TD
@@ -123,24 +125,48 @@ graph TD
     D --> E[Render Documentation Pages]
 ```
 
+---
+
 ## Decision
 
-We chose **Model 2: Dev/Main Flow with Changesets**.
+We chose **Model 2: Dual-Branch Development and Release Flow**.
 
-- Development takes place on the default `dev` branch.
-- Changesets manage versioning and trigger package releases when merged to `dev`.
-- Merging the Version Packages PR triggers package publishing, fast-forwards `main` to `dev`, and pushes to GitHub, deploying the production documentation site.
-- If documentation hotfixes (like typo fixes) need to be deployed to production early without waiting for the next package release, we use the local helper script `./scripts/sync-main.sh` to cherry-pick them to `main` and then reconcile `dev`.
+### Branching Scheme
+
+- **`dev` (Default Branch)**: All active development, feature branches, and dependency updates target `dev`. Preview deployments are triggered from here.
+- **`main` (Production Branch)**: Represents the production state. Direct commits are forbidden. It is only updated via fast-forward merges from `dev` or approved doc-rescue PRs.
+
+### Automated Release Loop
+
+1. **Staging**: Merging a feature PR containing a changeset to `dev` triggers the Changesets GitHub Action to open or update the **"Version Packages" PR**.
+2. **Release**: Merging the "Version Packages" PR back to `dev` runs [`release.yml`](file:///.github/workflows/release.yml) which:
+   - Publishes the bumped packages to npm.
+   - Programmatically merges `dev` into `main` with a fast-forward (`--ff-only`) constraint.
+   - Pushes `main` to GitHub.
+3. **Deployment**: Pushing to `main` triggers [`deploy-www.yml`](file:///.github/workflows/deploy-www.yml) which builds and deploys the updated documentation site to production.
+
+### Hotfix Cherry-Picking and Branch Reconciliation
+
+If documentation hotfixes (such as typo fixes or formatting corrections) need to be deployed to production immediately without waiting for a package release, we run a two-part manual/CI flow:
+
+1. **Rescue (Cherry-pick to `main`)**: Run `./scripts/sync-main.sh rescue <commit-hashes>` locally. This cuts a hotfix branch from `main`, cherry-picks the specified doc commits from `dev`, and opens a PR targeting `main`. Once merged, the production docs deploy immediately.
+2. **Reconciliation (Preventing History Drift)**: After the rescue PR is merged, the developer **must** run `./scripts/sync-main.sh reconcile`. This merges `main` back into `dev`, aligning their git histories and ensuring future automated `--ff-only` merges do not fail due to divergence.
+
+---
 
 ## Consequences
 
-- **Production Safety**: The production documentation site is kept in sync with published npm versions automatically.
-- **Branch Management**: Developers must target `dev` for feature PRs.
-- **Docs Hotfixes**: Doc-only updates can be published to `main` early using automated cherry-picking, avoiding history drift.
-- **Release Automation**: Release pipelines are fully automated via Changesets and GitHub Actions.
+- **Production Safety**: The production documentation site is kept in sync with published npm versions automatically, eliminating the risk of documenting unreleased APIs.
+- **Strict Branch Discipline**: Developers must target `dev` for feature PRs. Direct PRs to `main` are restricted to emergency hotfixes via the `rescue` workflow.
+- **No History Drift**: The required reconciliation step ensures that any hotfix merged to `main` is brought back into `dev`, maintaining a clean topological relationship where `dev` is always a direct descendant of `main`.
+- **Robust Release Automation**: Release pipelines are fully automated, removing the need for manual publishing or manual syncing of git tags and branches.
 
 ---
 
 **References**:
 
 - [CONTRIBUTING.md](../CONTRIBUTING.md)
+- [scripts/sync-main.sh](../../scripts/sync-main.sh)
+- [.github/workflows/release.yml](../../.github/workflows/release.yml)
+- [.github/workflows/deploy-www.yml](../../.github/workflows/deploy-www.yml)
+- [.github/workflows/sync-main.yml](../../.github/workflows/sync-main.yml)
