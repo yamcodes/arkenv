@@ -28,26 +28,51 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const match = context.payload.inputs?.prompt?.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/)
+            let prNumber = null;
+            let headRef = null;
+            let author = null;
 
-            if (!match) {
+            try {
+              const parsed = JSON.parse(context.payload.inputs?.prompt || "{}");
+              if (parsed["~pullfrog"]) {
+                prNumber = parsed.event?.issue_number;
+                headRef = parsed.event?.branch;
+                author = parsed.event?.context?.author;
+              }
+            } catch (e) {
+              // Not JSON, continue to regex
+            }
+
+            if (!prNumber) {
+              const match = context.payload.inputs?.prompt?.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/);
+              if (match) {
+                prNumber = Number(match[1]);
+              }
+            }
+
+            if (!prNumber) {
               core.setOutput("skip", "false")
               return
             }
 
-            const { data: pull } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: Number(match[1]),
-            })
+            // If we don't have headRef or author from the JSON, fetch from API
+            if (!headRef || !author) {
+              const { data: pull } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+              headRef = pull.head.ref;
+              author = pull.user?.login;
+            }
 
             const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"])
             // Also skip the automated Sync PR (dev → main) by head branch name
             const skipHeadRefs = new Set(["changeset-release/dev", "dev"])
-            const shouldSkip = skipHeadRefs.has(pull.head.ref) || botLogins.has(pull.user?.login)
+            const shouldSkip = skipHeadRefs.has(headRef) || botLogins.has(author)
 
             if (shouldSkip) {
-              core.info(`Skipping Pullfrog for ${pull.head.ref} by ${pull.user?.login}`)
+              core.info(`Skipping Pullfrog for ${headRef} by ${author}`)
             }
 
             core.setOutput("skip", String(shouldSkip))
