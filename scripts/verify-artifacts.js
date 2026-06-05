@@ -24,23 +24,26 @@ const patterns = [
 	/(?:import|require)\s*\(\s*['"]arktype['"]\s*\)/i,
 ];
 
+const failures = [];
+
 function checkFile(filePath) {
 	const absolutePath = path.join(rootDir, filePath);
 	if (!fs.existsSync(absolutePath)) {
-		console.error(`❌ Error: File not found: ${filePath}`);
-		console.error("Make sure to run a build first: pnpm run build");
-		process.exit(1);
+		failures.push({
+			filePath,
+			error: "File not found. Make sure to run a build first: pnpm run build",
+		});
+		return;
 	}
 
 	const content = fs.readFileSync(absolutePath, "utf-8");
 
 	for (const pattern of patterns) {
 		if (pattern.test(content)) {
-			console.error(
-				`❌ Error: Forbidden reference to 'arktype' found in ${filePath}`,
-			);
-			console.error(`Matched pattern: ${pattern.toString()}`);
-			process.exit(1);
+			failures.push({
+				filePath,
+				error: `Forbidden reference to 'arktype' found. Matched pattern: ${pattern.toString()}`,
+			});
 		}
 	}
 }
@@ -50,7 +53,17 @@ console.log("🔍 Running Static Analysis Verification on built artifacts...");
 // 1. Check for forbidden references
 for (const target of targets) {
 	checkFile(target);
-	console.log(`✅ Passed: ${target}`);
+	if (!failures.some((f) => f.filePath === target)) {
+		console.log(`✅ Passed: ${target}`);
+	}
+}
+
+if (failures.length > 0) {
+	console.error("\n❌ Static Analysis Verification failed with the following errors:");
+	for (const failure of failures) {
+		console.error(`- ${failure.filePath}: ${failure.error}`);
+	}
+	process.exit(1);
 }
 
 // 2. Check bundle size limits
