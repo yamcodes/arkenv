@@ -1,22 +1,63 @@
 import { indent } from "./utils/indent.ts";
 import { styleText } from "./utils/style-text.ts";
 
-/**
- * A single validation issue produced during environment variable parsing.
- * Used by {@link ArkEnvError} to report which key failed and why.
- */
-export type ValidationIssue = {
-	path: string;
-	message: string;
+export type EnvIssueCode =
+	| "MISSING_VARIABLE"
+	| "INVALID_TYPE"
+	| "VALUE_TOO_SMALL"
+	| "VALUE_TOO_LARGE"
+	| "PATTERN_MISMATCH"
+	| "INVALID_FORMAT"
+	| "UNDECLARED_KEY"
+	| "INVALID_SCHEMA"
+	| "CUSTOM";
+
+export type EnvIssueMeta = {
+	min?: number;
+	max?: number;
+	validation?: string;
+	constraint?: string;
+	engineCode?: string;
+	engine: "arktype" | "zod" | "valibot" | "unknown";
+	traversalError?: string;
 };
 
-export const formatInternalErrors = (errors: ValidationIssue[]): string =>
-	errors
-		.map(
-			(error) =>
-				`${styleText("yellow", error.path)} ${error.message.trimStart()}`,
-		)
+export type EnvIssue = {
+	path: string;
+	message: string;
+	code: EnvIssueCode;
+	expected?: string;
+	received?: unknown;
+	meta?: EnvIssueMeta;
+};
+
+/**
+ * @deprecated Use EnvIssue instead
+ */
+export type ValidationIssue = EnvIssue;
+
+export function formatIssues(issues: EnvIssue[]): string {
+	return issues
+		.map((issue) => {
+			const pathStr = styleText("yellow", issue.path);
+			const messageStr = issue.message.trimStart();
+			return `${pathStr} ${messageStr}`;
+		})
 		.join("\n");
+}
+
+export function formatError(error: ArkEnvError | EnvIssue[]): string {
+	if (Array.isArray(error)) {
+		return formatIssues(error);
+	}
+	return formatIssues(error.issues);
+}
+
+/**
+ * @deprecated Use formatIssues instead
+ */
+export const formatInternalErrors = (errors: ValidationIssue[]): string =>
+	formatIssues(errors);
 
 /**
  * Error thrown when environment variable validation fails.
@@ -42,13 +83,16 @@ export const formatInternalErrors = (errors: ValidationIssue[]): string =>
  * ```
  */
 export class ArkEnvError extends Error {
+	readonly issues: EnvIssue[];
+
 	constructor(
-		errors: ValidationIssue[],
+		issues: EnvIssue[],
 		message = "Errors found while validating environment variables",
 	) {
-		const formattedErrors = formatInternalErrors(errors);
+		const formattedErrors = formatIssues(issues);
 		super(`${styleText("red", message)}\n${indent(formattedErrors)}\n`);
 		this.name = "ArkEnvError";
+		this.issues = issues;
 	}
 }
 

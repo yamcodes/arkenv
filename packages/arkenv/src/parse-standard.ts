@@ -1,5 +1,12 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvError, type ValidationIssue } from "./core";
+import {
+	ArkEnvError,
+	type EnvIssue,
+	type EnvIssueCode,
+	type EnvIssueMeta,
+} from "./core.ts";
+import { safeStringify, shouldRedact } from "./utils/redact.ts";
+import { styleText } from "./utils/style-text.ts";
 
 /**
  * Configuration options for {@link parseStandard}.
@@ -22,6 +29,12 @@ export type ParseStandardConfig = {
 	 * @default "delete"
 	 */
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
+
+	/**
+	 * Whether to bypass secret redaction and print raw sensitive values during debugging.
+	 * Defaults to checking `process.env.ARKENV_DEBUG_SECRETS === "true"` or `"1"`.
+	 */
+	debugSecrets?: boolean;
 };
 
 /**
@@ -37,7 +50,7 @@ export function parseStandard(
 ) {
 	const { env = process.env, onUndeclaredKey = "delete" } = config;
 	const output: Record<string, unknown> = {};
-	const errors: ValidationIssue[] = [];
+	const errors: EnvIssue[] = [];
 	const envKeys = new Set(Object.keys(env));
 
 	// 1. Validate declared keys
@@ -55,6 +68,8 @@ export function parseStandard(
 				{
 					path: key,
 					message: `Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
+					code: "INVALID_SCHEMA",
+					meta: { engine: "unknown" },
 				},
 			]);
 		}
@@ -66,28 +81,122 @@ export function parseStandard(
 				{
 					path: key,
 					message: "Async validation is not supported. ArkEnv is synchronous.",
+					code: "INVALID_SCHEMA",
+					meta: { engine: "unknown" },
 				},
 			]);
 		}
 
 		if (result.issues) {
+			const vendor = (validator as any)["~standard"]?.vendor || "unknown";
+			const engine = ["zod", "valibot"].includes(vendor) ? vendor : "unknown";
+
 			for (const issue of result.issues) {
+				const getProp = (s: any) =>
+					s && typeof s === "object" && "key" in s ? String(s.key) : String(s);
 				const issuePath =
 					issue.path && issue.path.length > 0
-						? `${key}.${issue.path
-								.map((segment) =>
-									segment !== null &&
-									typeof segment === "object" &&
-									"key" in segment
-										? String(segment.key)
-										: String(segment),
-								)
-								.join(".")}`
+						? `${key}.${issue.path.map(getProp).join(".")}`
 						: key;
-				errors.push({
+
+				let receivedVal: unknown;
+				let traversalError: string | undefined;
+
+				if (key in env) {
+					const rawVal = env[key];
+					receivedVal = rawVal;
+					if (rawVal !== undefined && issue.path?.length) {
+						try {
+							let current: any = rawVal;
+							const trimmed = rawVal.trim();
+							if (trimmed[0] === "{" || trimmed[0] === "[") {
+								try {
+									current = JSON.parse(rawVal);
+								} catch (e: any) {
+									traversalError = `[Unparseable JSON: ${e.message}]`;
+								}
+							}
+							if (!traversalError) {
+								for (const seg of issue.path) {
+									current = current?.[getProp(seg)];
+								}
+								receivedVal = current;
+							}
+						} catch (e: any) {
+							traversalError = `[Traversal error: ${e.message}]`;
+						}
+					}
+				} else {
+					receivedVal = (issue as any).received;
+				}
+
+				const issueCode = (issue as any).code;
+				let code: EnvIssueCode = "INVALID_TYPE";
+				const msg = issue.message?.toLowerCase() || "";
+
+				if (
+					(issueCode === "invalid_type" &&
+						(receivedVal === undefined || receivedVal === "undefined")) ||
+					msg === "required"
+				) {
+					code = "MISSING_VARIABLE";
+				} else if (
+					["invalid_string", "invalid_date", "custom"].includes(issueCode)
+				) {
+					code = "INVALID_FORMAT";
+				} else if (issueCode === "too_small") {
+					code = "VALUE_TOO_SMALL";
+				} else if (issueCode === "too_big") {
+					code = "VALUE_TOO_LARGE";
+				} else if (/regex|pattern|match/.test(msg)) {
+					code = "PATTERN_MISMATCH";
+				}
+
+				const expected = (issue as any).expected || undefined;
+				const iss = issue as any;
+				const meta: EnvIssueMeta = {
+					engine,
+				};
+				if (issueCode) meta.engineCode = issueCode;
+				const min = iss.minimum ?? iss.min;
+				if (min !== undefined) meta.min = min;
+				const max = iss.maximum ?? iss.max;
+				if (max !== undefined) meta.max = max;
+				if (iss.validation !== undefined) meta.validation = iss.validation;
+				if (traversalError !== undefined) meta.traversalError = traversalError;
+
+				let message = issue.message;
+				if (code === "MISSING_VARIABLE") {
+					message = expected
+						? `must be ${expected} (was missing)`
+						: "is required";
+				} else if (!message.includes("(was ")) {
+					const debugSecrets =
+						config?.debugSecrets ??
+						(typeof process !== "undefined" &&
+							(process.env.ARKENV_DEBUG_SECRETS === "true" ||
+								process.env.ARKENV_DEBUG_SECRETS === "1"));
+					const displayVal =
+						!debugSecrets && shouldRedact(issuePath)
+							? "[REDACTED]"
+							: safeStringify(receivedVal, issuePath, config);
+					const suffix = `(was ${styleText("cyan", displayVal)})`;
+					message =
+						expected && !message.includes("Expected")
+							? `must be ${expected} ${suffix}`
+							: `${message} ${suffix}`;
+				}
+
+				const issueObj: EnvIssue = {
 					path: issuePath,
-					message: issue.message,
-				});
+					message,
+					code,
+					meta,
+				};
+				if (expected) issueObj.expected = expected;
+				if (receivedVal !== undefined) issueObj.received = receivedVal;
+
+				errors.push(issueObj);
 			}
 		} else {
 			output[key] = result.value;
@@ -103,6 +212,8 @@ export function parseStandard(
 				errors.push({
 					path: key,
 					message: "Undeclared key",
+					code: "UNDECLARED_KEY",
+					meta: { engine: "unknown" },
 				});
 			} else if (onUndeclaredKey === "ignore") {
 				output[key] = env[key];
