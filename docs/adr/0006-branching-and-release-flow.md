@@ -33,7 +33,7 @@ graph TD
 
 ### Model 2: Dual-Branch Development and Release Flow (Selected Option)
 
-Development and feature PRs target a default `dev` branch. Previews are deployed from `dev`. Merging the "Version Packages" PR into `dev` publishes packages and fast-forwards `main`, which triggers the production doc deployment.
+Development and feature PRs target a default `dev` branch. Previews (which include both ephemeral PR preview environments and a persistent development docs environment, e.g. `dev.docs`) are deployed from `dev`. Merging the "Version Packages" PR into `dev` publishes packages and fast-forwards `main`, which triggers the production doc deployment.
 
 - **Pro**: Minimizes the out-of-sync window in production to the build/deployment time of the release.
 - **Pro**: Allows selective/early docs hotfixes to be cherry-picked onto `main` and then reconciled back into `dev`.
@@ -123,7 +123,7 @@ graph TD
 The documentation website code and content are decoupled. The website fetches and renders documentation content dynamically at build or run time from the published npm packages or specific git tags.
 
 - **Pro**: Decouples website deployment completely from package releases.
-- **Con**: Relies on external dynamic fetching (increased risk of build failures or runtime API limits) and lacks simple local MDX previews during development.
+- **Con**: Introduces significant build and runtime complexity (e.g. configuring remote fetches, managing fallback states, and handling remote API rate limits or build-time failures).
 
 ```mermaid
 graph TD
@@ -154,13 +154,13 @@ To align with official Fumadocs conventions and recommended LLM integrations (as
   - **Suffix-based path rewrites** (e.g. requesting `/docs/quickstart.md` or `/docs/quickstart.mdx` which Next.js rewrites to the `/llms.mdx/docs/*` route).
   - **Content-Type negotiation** (routing requests with an `Accept: text/markdown` header using the Fumadocs content negotiation helpers `isMarkdownPreferred` and `rewritePath` from `fumadocs-core/negotiation` in `apps/www/proxy.ts`).
 
-Production crawlers hitting these endpoints on the main domain (e.g., `arkenv.js.org/llms.txt`) are guaranteed to only retrieve documentation matching released package versions. In preview environments (deployed from `dev`), these endpoints expose unreleased features, facilitating prompt engineering and agent verification during development.
+Production crawlers hitting these endpoints on the main domain (e.g., `arkenv.js.org/llms.txt`) are guaranteed to only retrieve documentation matching released package versions. In preview environments (deployed from `dev`), these endpoints expose unreleased features, facilitating prompt engineering and agent verification during development. To prevent search engines and LLM crawlers from accidentally indexing the preview URLs of unreleased dev branch content, preview environments strictly enforce an `X-Robots-Tag: noindex, nofollow` HTTP header on all pages and utilize a restrictive `robots.txt` configuration (disallowing all crawlers).
 
 ### Automated Release Loop
 
 1. **Staging**: Merging a feature PR containing a changeset into `dev` triggers the Changesets GitHub Action to open or update the **"Version Packages" PR** targeting `dev`.
 2. **Release**: Merging the "Version Packages" PR into `dev` runs [`release.yml`](file:///.github/workflows/release.yml) which:
-   - Publishes the bumped packages to npm (via `changeset publish`).
+   - Publishes the bumped packages to npm (via `changeset publish`). The subsequent fast-forward and push to `main` are strictly conditional on this publish command exiting with a `0` status code for all packages, ensuring release pipeline atomicity.
    - Programmatically merges `dev` into `main` with a fast-forward (`--ff-only`) constraint.
    - Pushes `main` to GitHub.
 3. **Deployment**: Pushing to `main` triggers [`deploy-www.yml`](file:///.github/workflows/deploy-www.yml) which builds and deploys the updated documentation site to production.
@@ -170,7 +170,7 @@ Production crawlers hitting these endpoints on the main domain (e.g., `arkenv.js
 If documentation hotfixes (such as typo fixes or formatting corrections) need to be deployed to production immediately without waiting for a package release, we run a two-part manual/CI flow:
 
 1. **Rescue (Cherry-pick to `main`)**: Run `./scripts/sync-main.sh rescue <commit-hashes>` locally. This cuts a hotfix branch from `main`, cherry-picks the specified doc commits from `dev`, and opens a PR targeting `main`. Once merged, the production docs deploy immediately.
-2. **Reconciliation (Preventing History Drift)**: After the rescue PR is merged, the developer **must** run `./scripts/sync-main.sh reconcile`. This merges `main` back into `dev`, aligning their git histories and ensuring future automated `--ff-only` merges do not fail due to divergence.
+2. **Reconciliation (Preventing History Drift)**: To prevent history drift and eliminate the risk of developers forgetting to run manual scripts, a GitHub Action workflow triggers automatically upon any push/merge into `main` (which includes hotfix rescue PRs). This workflow automatically merges `main` back into `dev` if `main` is not already an ancestor of `dev`. If a merge conflict occurs, the workflow automatically opens a reconciliation Pull Request targeting `dev` to allow developers to resolve the conflicts.
 
 ---
 
@@ -179,7 +179,7 @@ If documentation hotfixes (such as typo fixes or formatting corrections) need to
 - **Production Safety**: The production documentation site is kept in sync with published npm versions automatically, eliminating the risk of documenting unreleased APIs.
 - **AI Prompting Integrity**: AI coding assistants indexing the production site only ingest documentation for released package versions, eliminating code suggestion failures or unreleased API hallucinations for package consumers.
 - **Strict Branch Discipline**: Developers must target `dev` for feature PRs. Direct PRs to `main` are restricted to emergency hotfixes via the `rescue` workflow.
-- **No History Drift**: The required reconciliation step ensures that any hotfix merged to `main` is brought back into `dev`, maintaining a clean topological relationship where `dev` is always a direct descendant of `main`.
+- **No History Drift**: The automated reconciliation workflow ensures that any hotfix merged to `main` is brought back into `dev`, maintaining a clean topological relationship where `dev` is always a direct descendant of `main`.
 - **Robust Release Automation**: Release pipelines are fully automated, removing the need for manual publishing or manual syncing of git tags and branches.
 
 ---
