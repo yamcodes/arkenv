@@ -22,16 +22,13 @@ export function createEnv<
 		extends?: [...TExtends];
 	},
 ) {
-	return coreCreateEnv<TSchema, TExtends>(
-		schema as any,
-		{
-			...options,
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-				NODE_ENV: process.env.NODE_ENV,
-			},
-		} as any,
-	);
+	return coreCreateEnv<TSchema, TExtends>(schema as any, {
+		...options,
+		runtimeEnv: {
+			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+			NODE_ENV: process.env.NODE_ENV,
+		},
+	} as any);
 }
 
 const arkenv = createEnv;

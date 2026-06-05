@@ -42,11 +42,12 @@ export type ParseStandardConfig = {
 };
 
 /**
- * Standard Schema 1.0 parser dispatcher.
- * This helper implements parsing for the `arkenv/standard` entry point.
+ * Parse and validate environment variables using Standard Schema 1.0 validators.
  *
- * @param def - An object mapping environment variable keys to Standard Schema 1.0 validators.
- * @param config - Parsing options (env source, undeclared key handling).
+ * @param def An object mapping environment variable keys to Standard Schema 1.0 validators
+ * @param config Parsing options, including environment source, undeclared key handling, and coercion config
+ * @returns The parsed and validated environment variables
+ * @throws An ArkEnvError if validation fails
  */
 export function parseStandard(
 	def: Record<string, unknown>,
@@ -70,37 +71,26 @@ export function parseStandard(
 		let hasJsonSchema = false;
 
 		for (const key in def) {
-			const validator = def[key] as any;
-			if (
-				validator &&
-				typeof validator === "object" &&
-				"~standard" in validator &&
-				typeof validator["~standard"] === "object" &&
-				"jsonSchema" in validator["~standard"] &&
-				typeof validator["~standard"].jsonSchema === "object" &&
-				typeof validator["~standard"].jsonSchema.input === "function"
-			) {
+			const std = (def[key] as any)?.["~standard"];
+			if (typeof std?.jsonSchema?.input === "function") {
 				try {
-					const schema = validator["~standard"].jsonSchema.input({
-						target: "draft-07",
-					});
+					const schema = std.jsonSchema.input({ target: "draft-07" });
 					if (schema) {
 						jsonSchema.properties[key] = schema;
 						hasJsonSchema = true;
+						continue;
 					}
-				} catch {
-					missingJsonSchemaKeys.push(key);
-				}
-			} else {
-				missingJsonSchemaKeys.push(key);
+				} catch {}
 			}
+			missingJsonSchemaKeys.push(key);
 		}
 
 		if (hasJsonSchema) {
-			const targets = findCoercionPaths(jsonSchema);
-			coercedEnv = applyCoercion(coercedEnv, targets, {
-				arrayFormat,
-			}) as Record<string, unknown>;
+			coercedEnv = applyCoercion(
+				coercedEnv,
+				findCoercionPaths(jsonSchema),
+				{ arrayFormat },
+			) as Record<string, unknown>;
 		}
 	}
 
@@ -152,7 +142,7 @@ export function parseStandard(
 				let message = issue.message;
 
 				if (coerce && missingJsonSchemaKeys.includes(key)) {
-					message = `${message} (Hint: You enabled 'coerce: true', but the validator for '${key}' does not implement Standard JSON Schema. To enable coercion for this field, use a compatible schema or an adapter.)`;
+					message += ` (Hint: 'coerce: true' enabled, but the validator for '${key}' lacks Standard JSON Schema support.)`;
 				}
 
 				errors.push({

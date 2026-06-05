@@ -97,7 +97,7 @@
 		{
 			"name": "arkenv/standard",
 			"path": "dist/standard.mjs",
-			"limit": "1.1 kB",
+			"limit": "2.3 kB",
 			"import": "*"
 		},
 		{

@@ -200,13 +200,11 @@ describe("Standard Mode Coercion", () => {
 								issues: [{ message: "Expected number, received string" }],
 							}),
 						},
-					} as any,
-				},
+					},
+				} as any,
 				{ coerce: true },
-			),
-		).toThrow(
-			/Hint: You enabled 'coerce: true', but the validator for 'NUMBER_VAR' does not implement Standard JSON Schema/,
-		);
+			)
+		).toThrow(/Hint: 'coerce: true' enabled, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/);
 
 		vi.unstubAllEnvs();
 	});

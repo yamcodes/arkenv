@@ -32,126 +32,81 @@ export type CoerceOptions = {
 };
 
 /**
- * Recursively find all paths in a JSON Schema that require coercion.
- * We prioritize "number", "integer", "boolean", "array", "object", and "date" types.
+ * Find all paths in a JSON Schema that require coercion.
+ *
+ * Prioritize "number", "integer", "boolean", "array", "object", and "date" types.
+ *
+ * @param node The JSON Schema node to traverse
+ * @param path The current path segments in the schema tree
+ * @returns An array of coercion targets containing their path and type
  */
 export const findCoercionPaths = (
 	node: Record<string, any>,
 	path: string[] = [],
 ): CoercionTarget[] => {
 	const results: CoercionTarget[] = [];
-
-	if (typeof node === "boolean") {
-		return results;
-	}
+	if (!node || typeof node !== "object") return results;
 
 	if ("const" in node) {
-		if (typeof node.const === "number" || typeof node.const === "boolean") {
+		const t = typeof node.const;
+		if (t === "number" || t === "boolean") {
 			results.push({ path: [...path], type: "primitive" });
 		}
 	}
 
-	if ("enum" in node && node.enum) {
-		if (
-			node.enum.some(
-				(v: any) => typeof v === "number" || typeof v === "boolean",
-			)
-		) {
+	if ("enum" in node && Array.isArray(node.enum)) {
+		if (node.enum.some((v) => typeof v === "number" || typeof v === "boolean")) {
 			results.push({ path: [...path], type: "primitive" });
 		}
 	}
 
-	if ("type" in node) {
-		if (node.type === "number" || node.type === "integer") {
-			results.push({ path: [...path], type: "primitive" });
-		} else if (node.type === "boolean") {
-			results.push({ path: [...path], type: "primitive" });
-		} else if (
-			node.type === "string" &&
-			"format" in node &&
-			(node.format === "date-time" || node.format === "date")
-		) {
-			results.push({ path: [...path], type: "date" });
-		} else if (node.type === "object") {
-			// Check if this object has properties defined
-			// If it does, we want to coerce the whole object from a JSON string
-			// But we also want to recursively check nested properties
-			const hasProperties =
-				"properties" in node &&
-				node.properties &&
-				Object.keys(node.properties).length > 0;
-
-			if (hasProperties) {
-				// Mark this path as needing object coercion (JSON parsing)
-				results.push({ path: [...path], type: "object" });
+	const type = node.type;
+	if (type === "number" || type === "integer" || type === "boolean") {
+		results.push({ path: [...path], type: "primitive" });
+	} else if (type === "string" && "format" in node && (node.format === "date-time" || node.format === "date")) {
+		results.push({ path: [...path], type: "date" });
+	} else if (type === "object") {
+		if (node.properties && Object.keys(node.properties).length > 0) {
+			results.push({ path: [...path], type: "object" });
+			for (const key in node.properties) {
+				results.push(...findCoercionPaths(node.properties[key], [...path, key]));
 			}
-
-			// Also recursively check nested properties for their own coercions
-			if ("properties" in node && node.properties) {
-				for (const [key, prop] of Object.entries(node.properties)) {
-					results.push(
-						...findCoercionPaths(prop as Record<string, any>, [...path, key]),
-					);
-				}
-			}
-		} else if (node.type === "array") {
-			// Mark the array itself as a target for splitting strings
-			results.push({ path: [...path], type: "array" });
-
-			if ("items" in node && node.items) {
-				if (Array.isArray(node.items)) {
-					// Tuple traversal
-					node.items.forEach((item, index) => {
-						results.push(
-							...findCoercionPaths(item as Record<string, any>, [
-								...path,
-								`${index}`,
-							]),
-						);
-					});
-				} else {
-					// List traversal
-					results.push(
-						...findCoercionPaths(node.items as Record<string, any>, [
-							...path,
-							ARRAY_ITEM_MARKER,
-						]),
-					);
-				}
+		}
+	} else if (type === "array") {
+		results.push({ path: [...path], type: "array" });
+		if (node.items) {
+			if (Array.isArray(node.items)) {
+				node.items.forEach((item, index) => {
+					results.push(...findCoercionPaths(item, [...path, String(index)]));
+				});
+			} else {
+				results.push(...findCoercionPaths(node.items, [...path, ARRAY_ITEM_MARKER]));
 			}
 		}
 	}
 
-	if ("anyOf" in node && node.anyOf) {
-		for (const branch of node.anyOf) {
-			results.push(...findCoercionPaths(branch as Record<string, any>, path));
+	for (const comb of ["anyOf", "allOf", "oneOf"]) {
+		if (comb in node && Array.isArray(node[comb])) {
+			for (const branch of node[comb]) {
+				results.push(...findCoercionPaths(branch, path));
+			}
 		}
 	}
 
-	if ("allOf" in node && node.allOf) {
-		for (const branch of node.allOf) {
-			results.push(...findCoercionPaths(branch as Record<string, any>, path));
-		}
-	}
-
-	if ("oneOf" in node && node.oneOf) {
-		for (const branch of node.oneOf) {
-			results.push(...findCoercionPaths(branch as Record<string, any>, path));
-		}
-	}
-
-	// Deduplicate by path and type combination
 	const seen = new Set<string>();
 	return results.filter((t) => {
-		const key = JSON.stringify(t.path) + t.type;
-		if (seen.has(key)) return false;
-		seen.add(key);
-		return true;
+		const key = t.path.join("/") + ":" + t.type;
+		return seen.has(key) ? false : seen.add(key);
 	});
 };
 
 /**
  * Apply coercion to a data object based on identified paths.
+ *
+ * @param data The input environment data object to coerce
+ * @param targets The coercion targets mapping paths to types
+ * @param options The coercion options, including array parsing format
+ * @returns The coerced data object
  */
 export const applyCoercion = (
 	data: unknown,
@@ -160,7 +115,6 @@ export const applyCoercion = (
 ) => {
 	const { arrayFormat = "comma" } = options;
 
-	// Helper to split string to array
 	const splitString = (val: string) => {
 		if (arrayFormat === "json") {
 			try {
@@ -169,144 +123,82 @@ export const applyCoercion = (
 				return val;
 			}
 		}
-
-		if (!val.trim()) return [];
-		return val.split(",").map((s) => s.trim());
+		return val.trim() ? val.split(",").map((s) => s.trim()) : [];
 	};
 
 	if (typeof data !== "object" || data === null) {
-		// If root data needs coercion
-		if (targets.some((t) => t.path.length === 0)) {
-			const rootTarget = targets.find((t) => t.path.length === 0);
-
-			if (rootTarget?.type === "object" && typeof data === "string") {
-				return coerceJson(data);
-			}
-
-			if (rootTarget?.type === "array" && typeof data === "string") {
-				return splitString(data);
-			}
-
-			if (rootTarget?.type === "date" && typeof data === "string") {
-				return coerceDate(data);
-			}
-
-			const asNumber = coerceNumber(data);
-			if (typeof asNumber === "number") {
-				return asNumber;
-			}
-			return coerceBoolean(data);
+		const root = targets.find((t) => t.path.length === 0);
+		if (root && typeof data === "string") {
+			if (root.type === "object") return coerceJson(data);
+			if (root.type === "array") return splitString(data);
+			if (root.type === "date") return coerceDate(data);
+		}
+		if (root && root.type === "primitive") {
+			const n = coerceNumber(data);
+			return typeof n === "number" ? n : coerceBoolean(data);
 		}
 		return data;
 	}
 
-	// Sort targets by path length to ensure parent objects/arrays are coerced before their children
-	const sortedTargets = [...targets].sort(
-		(a, b) => a.path.length - b.path.length,
-	);
+	const sorted = [...targets].sort((a, b) => a.path.length - b.path.length);
 
-	const walk = (
-		current: unknown,
-		targetPath: string[],
-		type: "primitive" | "array" | "object" | "date",
-	) => {
-		if (!current || typeof current !== "object") return;
+	const walk = (current: any, path: string[], type: string) => {
+		if (!current || typeof current !== "object" || path.length === 0) return;
 
-		if (targetPath.length === 0) {
-			return;
-		}
-
-		// If we've reached the last key, apply coercion
-		if (targetPath.length === 1) {
-			const lastKey = targetPath[0];
-
-			if (lastKey === ARRAY_ITEM_MARKER) {
+		if (path.length === 1) {
+			const k = path[0];
+			if (k === ARRAY_ITEM_MARKER) {
 				if (Array.isArray(current)) {
 					for (let i = 0; i < current.length; i++) {
-						const original = current[i];
+						const v = current[i];
 						if (type === "primitive") {
-							const asNumber = coerceNumber(original);
-							if (typeof asNumber === "number") {
-								current[i] = asNumber;
-							} else {
-								current[i] = coerceBoolean(original);
-							}
+							const n = coerceNumber(v);
+							current[i] = typeof n === "number" ? n : coerceBoolean(v);
 						} else if (type === "object") {
-							current[i] = coerceJson(original);
+							current[i] = coerceJson(v);
 						} else if (type === "date") {
-							current[i] = coerceDate(original);
+							current[i] = coerceDate(v);
 						}
 					}
 				}
 				return;
 			}
 
-			const record = current as Record<string, unknown>;
-			// biome-ignore lint/suspicious/noPrototypeBuiltins: ES2020 compatibility
-			if (Object.prototype.hasOwnProperty.call(record, lastKey)) {
-				const original = record[lastKey];
-
-				if (type === "array" && typeof original === "string") {
-					record[lastKey] = splitString(original);
-					return;
-				}
-
-				if (type === "object" && typeof original === "string") {
-					record[lastKey] = coerceJson(original);
-					return;
-				}
-
-				if (type === "date" && typeof original === "string") {
-					record[lastKey] = coerceDate(original);
-					return;
-				}
-
-				if (Array.isArray(original)) {
+			if (Object.prototype.hasOwnProperty.call(current, k)) {
+				const v = current[k];
+				if (type === "array" && typeof v === "string") {
+					current[k] = splitString(v);
+				} else if (type === "object" && typeof v === "string") {
+					current[k] = coerceJson(v);
+				} else if (type === "date" && typeof v === "string") {
+					current[k] = coerceDate(v);
+				} else if (Array.isArray(v)) {
 					if (type === "primitive") {
-						for (let i = 0; i < original.length; i++) {
-							const item = original[i];
-							const asNumber = coerceNumber(item);
-							if (typeof asNumber === "number") {
-								original[i] = asNumber;
-							} else {
-								original[i] = coerceBoolean(item);
-							}
+						for (let i = 0; i < v.length; i++) {
+							const n = coerceNumber(v[i]);
+							v[i] = typeof n === "number" ? n : coerceBoolean(v[i]);
 						}
 					}
-				} else {
-					if (type === "primitive") {
-						const asNumber = coerceNumber(original);
-						// If numeric parsing didn't produce a number, try boolean coercion
-						if (typeof asNumber === "number") {
-							record[lastKey] = asNumber;
-						} else {
-							record[lastKey] = coerceBoolean(original);
-						}
-					}
+				} else if (type === "primitive") {
+					const n = coerceNumber(v);
+					current[k] = typeof n === "number" ? n : coerceBoolean(v);
 				}
 			}
 			return;
 		}
 
-		// Recurse down
-		const [nextKey, ...rest] = targetPath;
-
-		if (nextKey === ARRAY_ITEM_MARKER) {
+		const [next, ...rest] = path;
+		if (next === ARRAY_ITEM_MARKER) {
 			if (Array.isArray(current)) {
-				for (const item of current) {
-					walk(item, rest, type);
-				}
+				for (const item of current) walk(item, rest, type);
 			}
-			return;
+		} else {
+			walk(current[next], rest, type);
 		}
-
-		const record = current as Record<string, unknown>;
-		walk(record[nextKey], rest, type);
 	};
 
-	for (const target of sortedTargets) {
-		walk(data, target.path, target.type);
+	for (const t of sorted) {
+		walk(data, t.path, t.type);
 	}
-
 	return data;
 };

@@ -5,8 +5,8 @@ description: Environment variables are auto-morphed into typesafe numbers, boole
 
 Traditionally, environment variables are always strings by default. ArkEnv **coerces** these strings into their target types based on your schema, so you only have to think about the types you want.
 
-:::important
-Coercion is not available in `arkenv/standard` - use your validator's native coercion instead.
+:::note
+In `arkenv/standard` (the ArkType-free entry point), coercion is supported as an opt-in feature. You must set `coerce: true` in your configuration, and your validator must support Standard JSON Schema (e.g. via `~standard.jsonSchema`).
 :::
 
 ## Numbers

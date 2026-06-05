@@ -11,11 +11,9 @@
  */
 export const coerceNumber = (s: unknown) => {
 	if (typeof s === "number") return s;
-	if (typeof s !== "string") return s;
-	const trimmed = s.trim();
-	if (trimmed === "") return s;
-	if (trimmed === "NaN") return Number.NaN;
-	const n = Number(trimmed);
+	if (typeof s !== "string" || !s.trim()) return s;
+	if (s.trim() === "NaN") return Number.NaN;
+	const n = Number(s);
 	return Number.isNaN(n) ? s : n;
 };
 
@@ -48,7 +46,7 @@ export const coerceBoolean = (s: unknown) => {
 export const coerceJson = (s: unknown) => {
 	if (typeof s !== "string") return s;
 	const trimmed = s.trim();
-	if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return s;
+	if (trimmed[0] !== "{" && trimmed[0] !== "[") return s;
 	try {
 		return JSON.parse(trimmed);
 	} catch {
@@ -69,9 +67,7 @@ export const coerceJson = (s: unknown) => {
  */
 export const coerceDate = (s: unknown) => {
 	if (s instanceof Date) return s;
-	if (typeof s !== "string") return s;
-	const trimmed = s.trim();
-	if (trimmed === "") return s;
-	const d = new Date(trimmed);
+	if (typeof s !== "string" || !s.trim()) return s;
+	const d = new Date(s);
 	return Number.isNaN(d.getTime()) ? s : d;
 };
