@@ -152,6 +152,8 @@ pnpm run test:e2e                     # E2E tests
 - Create feature branches from `dev`
 - `dev` is the default branch and continuous integration target
 - `main` is the production release branch, updated only after a successful npm publish
+- The documentation site (`apps/www`) deploys strictly from `main` to prevent unreleased features from appearing live
+- To make immediate typo or cosmetic fixes to the live docs without a package release, push directly to `main` and use the `sync-main` workflow/skill to cherry-pick and reconcile those changes back into `dev`
 - Use descriptive branch names
 
 **Versioning:**

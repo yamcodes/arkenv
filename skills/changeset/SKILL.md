@@ -171,18 +171,20 @@ pnpm changeset
 
 ### 2. PR and review
 
-- Changeset is part of the PR
+- Changeset is part of the feature PR targeting the `dev` branch
 - Reviewers can suggest bump type changes or edits
 
-### 3. Merge to main
+### 3. Merge to dev
 
-- Changesets action creates "Version Packages" PR
-- This PR updates version and CHANGELOG
+- Merging a feature PR containing a changeset to `dev` triggers the Changesets GitHub Action
+- The action automatically creates or updates a "Version Packages" PR targeting the `dev` branch (since `baseBranch` is set to `dev` in `.changeset/config.json`)
+- This "Version Packages" PR contains all accumulated version updates and CHANGELOG entries
 
 ### 4. Merge version PR
 
-- Triggers npm publish
-- Creates GitHub release
+- Merging the "Version Packages" PR on `dev` triggers the publication of bumped packages to npm
+- Upon successful publish, the release workflow programmatically fast-forwards the `main` branch to `dev` (`git merge dev --ff-only`) and pushes it
+- The push to `main` triggers the production documentation website deployment
 
 ## Checking status
 

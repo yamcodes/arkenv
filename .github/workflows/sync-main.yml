@@ -52,8 +52,8 @@ jobs:
             echo "$CHANGED_FILES"
             
             # Filter out files that are allowed for doc-only deploys:
-            # docs/**, www/**, and markdown files in the root
-            NON_DOCS=$(echo "$CHANGED_FILES" | grep -vE "^(docs/|www/|[^/]+\.md)$")
+            # docs/**, apps/www/**, and markdown files in the root
+            NON_DOCS=$(echo "$CHANGED_FILES" | grep -vE "^(docs/|apps/www/|[^/]+\.md)$")
             
             if [ -n "$NON_DOCS" ]; then
               echo "::error::Cannot sync dev to main. The following files contain unreleased code changes:"
