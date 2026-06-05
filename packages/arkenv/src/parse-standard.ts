@@ -277,7 +277,7 @@ export function parseStandard(
 	}
 
 	if (errors.length > 0) {
-		throw new ArkEnvError(errors, undefined, config);
+		throw new ArkEnvError(errors);
 	}
 
 	return output;

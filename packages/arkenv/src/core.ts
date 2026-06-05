@@ -38,11 +38,11 @@ export type ValidationIssue = EnvIssue;
 
 const SENSITIVE_KEYWORDS = [
 	/secret/i,
-	/key/i,
+	/(_|^)key(_|$)/i,
 	/token/i,
-	/password/i,
-	/pass/i,
-	/auth/i,
+	/(_|^)password(_|$)/i,
+	/(_|^)pass(_|$)/i,
+	/(_|^)auth(_|$)/i,
 	/jwt/i,
 	/cert/i,
 	/credential/i,
@@ -51,7 +51,9 @@ const SENSITIVE_KEYWORDS = [
 ];
 
 export function shouldRedact(path: string): boolean {
-	return SENSITIVE_KEYWORDS.some((regex) => regex.test(path));
+	const isSensitive = SENSITIVE_KEYWORDS.some((regex) => regex.test(path));
+	const isPublic = /public/i.test(path);
+	return isSensitive && !isPublic;
 }
 
 export function safeStringify(
@@ -110,10 +112,7 @@ export function safeStringify(
 	}
 }
 
-export function formatIssues(
-	issues: EnvIssue[],
-	_options?: { debugSecrets?: boolean },
-): string {
+export function formatIssues(issues: EnvIssue[]): string {
 	return issues
 		.map((issue) => {
 			const pathStr = styleText("yellow", issue.path);
@@ -123,23 +122,18 @@ export function formatIssues(
 		.join("\n");
 }
 
-export function formatError(
-	error: ArkEnvError | EnvIssue[],
-	options?: { debugSecrets?: boolean },
-): string {
+export function formatError(error: ArkEnvError | EnvIssue[]): string {
 	if (Array.isArray(error)) {
-		return formatIssues(error, options);
+		return formatIssues(error);
 	}
-	return formatIssues(error.issues, options);
+	return formatIssues(error.issues);
 }
 
 /**
  * @deprecated Use formatIssues instead
  */
-export const formatInternalErrors = (
-	errors: ValidationIssue[],
-	options?: { debugSecrets?: boolean },
-): string => formatIssues(errors, options);
+export const formatInternalErrors = (errors: ValidationIssue[]): string =>
+	formatIssues(errors);
 
 /**
  * Error thrown when environment variable validation fails.
@@ -170,9 +164,8 @@ export class ArkEnvError extends Error {
 	constructor(
 		issues: EnvIssue[],
 		message = "Errors found while validating environment variables",
-		options?: { debugSecrets?: boolean },
 	) {
-		const formattedErrors = formatIssues(issues, options);
+		const formattedErrors = formatIssues(issues);
 		super(`${styleText("red", message)}\n${indent(formattedErrors)}\n`);
 		this.name = "ArkEnvError";
 		this.issues = issues;
