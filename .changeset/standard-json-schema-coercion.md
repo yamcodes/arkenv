@@ -18,7 +18,7 @@ const env = createEnv(
 		HOST: z.string(),
 	},
 	{
-		coerce: true, // Enables Standard JSON Schema-based coercion
+		coerce: true, // Enable Standard JSON Schema-based coercion
 	}
 );
 ```
