@@ -50,12 +50,6 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@arkenv/bun-plugin": [
 					path.join(root, "packages/bun-plugin/src/index.ts"),
 				],
-				"@repo/types": [
-					path.join(root, "packages/internal/types/src/index.ts"),
-				],
-				"@repo/scope": [
-					path.join(root, "packages/internal/scope/src/index.ts"),
-				],
 				"@repo/keywords": [
 					path.join(root, "packages/internal/keywords/src/index.ts"),
 				],

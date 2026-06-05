@@ -1,5 +1,5 @@
-import type { SchemaShape } from "@repo/types";
 import type { EnvSchema, Infer } from "arkenv";
+import type { SchemaShape } from "arkenv/internal";
 import { createEnvInternal } from "./create-env";
 
 /**

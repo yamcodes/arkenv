@@ -1,5 +1,5 @@
-import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import { type ArkEnvConfig, createEnv, type EnvSchema } from "arkenv";
+import type { CompiledEnvSchema, SchemaShape } from "arkenv/internal";
 import { loadEnv, type Plugin } from "vite";
 
 export type { ImportMetaEnvAugmented } from "./types";

@@ -1,5 +1,5 @@
-import type { $ } from "@repo/scope";
 import type { Type } from "arktype";
+import type { $ } from "../scope/index";
 
 export type SchemaShape = Record<string, unknown>;
 

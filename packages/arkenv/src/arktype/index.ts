@@ -1,9 +1,9 @@
-import { $ } from "@repo/scope";
-import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
 import { ArkEnvError, type ValidationIssue } from "../core";
 import type { ArkEnvConfig, EnvSchema } from "../create-env";
+import { $ } from "../internal/scope/index";
+import type { SchemaShape } from "../internal/types/index";
 import { styleText } from "../utils/style-text.ts";
 import { coerce } from "./coercion/coerce";
 

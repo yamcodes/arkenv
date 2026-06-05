@@ -35,8 +35,6 @@
 				"@fumadocs/cli",
 				"@radix-ui/react-popover",
 				"@radix-ui/react-separator",
-				"@repo/scope",
-				"@repo/types",
 				"arkenv",
 				"arktype",
 				"import-in-the-middle",

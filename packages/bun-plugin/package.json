@@ -12,7 +12,6 @@
 		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
-		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/bun": "catalog:",

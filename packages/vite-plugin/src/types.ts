@@ -1,4 +1,4 @@
-import type { FilterByPrefix, InferType } from "@repo/types";
+import type { FilterByPrefix, InferType } from "arkenv/internal";
 import type { type } from "arktype";
 
 /**

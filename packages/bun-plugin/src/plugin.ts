@@ -1,6 +1,6 @@
 import { join } from "node:path";
-import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import type { ArkEnvConfig, EnvSchema } from "arkenv";
+import type { CompiledEnvSchema, SchemaShape } from "arkenv/internal";
 import type { BunPlugin } from "bun";
 import { processEnvSchema, registerLoader } from "./utils";
 

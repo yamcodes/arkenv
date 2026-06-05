@@ -1,4 +1,4 @@
-import type { InferType } from "@repo/types";
+import type { InferType } from "arkenv/internal";
 
 /**
  * Shared type utilities for Next.js entry points.

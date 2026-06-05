@@ -13,7 +13,5 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: false,
 	sourcemap: true,
-	deps: {
-		alwaysBundle: ["@repo/types"],
-	},
+	// No dependencies to bundle
 });

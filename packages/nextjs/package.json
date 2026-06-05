@@ -14,8 +14,6 @@
 		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
-		"@repo/scope": "workspace:*",
-		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
 		"next": "catalog:",

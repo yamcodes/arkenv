@@ -1,9 +1,9 @@
-import type { StandardSchemaV1 } from "@repo/types";
 import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
 } from "./guards";
+import type { StandardSchemaV1 } from "./internal/types/index";
 import { type ParseStandardConfig, parseStandard } from "./parse-standard";
 
 /**

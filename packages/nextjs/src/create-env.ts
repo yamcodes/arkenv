@@ -1,5 +1,5 @@
-import type { SchemaShape } from "@repo/types";
 import { createEnv as coreCreateEnv } from "arkenv";
+import type { SchemaShape } from "arkenv/internal";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");

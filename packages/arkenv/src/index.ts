@@ -1,5 +1,5 @@
-import { $ } from "@repo/scope";
 import { createEnv } from "./create-env";
+import { $ } from "./internal/scope/index";
 
 export { createEnv };
 /**

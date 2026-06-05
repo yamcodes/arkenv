@@ -1,7 +1,6 @@
 import "server-only";
-import type { $ } from "@repo/scope";
-import type { SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
+import type { $, SchemaShape } from "arkenv/internal";
 import type { type as at, distill } from "arktype";
 import { createEnvInternal } from "./create-env";
 import type { MergeExtends } from "./types";

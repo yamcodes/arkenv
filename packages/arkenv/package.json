@@ -30,6 +30,14 @@
 			},
 			"import": "./dist/core.mjs",
 			"require": "./dist/core.cjs"
+		},
+		"./internal": {
+			"types": {
+				"import": "./dist/internal.d.mts",
+				"require": "./dist/internal.d.cts"
+			},
+			"import": "./dist/internal.mjs",
+			"require": "./dist/internal.cjs"
 		}
 	},
 	"scripts": {
@@ -63,8 +71,6 @@
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
 		"@ark/attest": "catalog:",
-		"@repo/scope": "workspace:*",
-		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/node": "catalog:",
@@ -104,6 +110,12 @@
 			"name": "arkenv/core",
 			"path": "dist/core.mjs",
 			"limit": "500 B",
+			"import": "*"
+		},
+		{
+			"name": "arkenv/internal",
+			"path": "dist/internal.mjs",
+			"limit": "1 kB",
 			"import": "*"
 		}
 	]

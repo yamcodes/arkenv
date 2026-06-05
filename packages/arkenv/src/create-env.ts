@@ -1,13 +1,13 @@
-import type { $ } from "@repo/scope";
+import type { type as at, distill } from "arktype";
+import { parse } from "./arktype";
+import type { ArkEnvError } from "./core";
+import type { $ } from "./internal/scope/index";
 import type {
 	CompiledEnvSchema,
 	Dict,
 	InferType,
 	SchemaShape,
-} from "@repo/types";
-import type { type as at, distill } from "arktype";
-import { parse } from "./arktype";
-import type { ArkEnvError } from "./core";
+} from "./internal/types/index";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.

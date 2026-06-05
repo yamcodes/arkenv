@@ -1,5 +1,5 @@
-import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError, type ValidationIssue } from "./core";
+import type { StandardSchemaV1 } from "./internal/types/index";
 
 /**
  * Configuration options for {@link parseStandard}.
