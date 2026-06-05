@@ -4,10 +4,9 @@ import {
 	type EnvIssue,
 	formatError,
 	formatIssues,
-	safeStringify,
-	shouldRedact,
 } from "./core.ts";
 import { safeCreateEnv } from "./create-env.ts";
+import { safeStringify, shouldRedact } from "./utils/redact.ts";
 
 describe("shouldRedact", () => {
 	it("should detect sensitive keys", () => {

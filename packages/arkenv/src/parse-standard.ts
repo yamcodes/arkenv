@@ -4,9 +4,8 @@ import {
 	type EnvIssue,
 	type EnvIssueCode,
 	type EnvIssueMeta,
-	safeStringify,
-	shouldRedact,
 } from "./core.ts";
+import { safeStringify, shouldRedact } from "./utils/redact.ts";
 import { styleText } from "./utils/style-text.ts";
 
 /**
@@ -93,155 +92,97 @@ export function parseStandard(
 			const engine = ["zod", "valibot"].includes(vendor) ? vendor : "unknown";
 
 			for (const issue of result.issues) {
+				const getProp = (s: any) =>
+					s && typeof s === "object" && "key" in s ? String(s.key) : String(s);
 				const issuePath =
 					issue.path && issue.path.length > 0
-						? `${key}.${issue.path
-								.map((segment) =>
-									segment !== null &&
-									typeof segment === "object" &&
-									"key" in segment
-										? String(segment.key)
-										: String(segment),
-								)
-								.join(".")}`
+						? `${key}.${issue.path.map(getProp).join(".")}`
 						: key;
 
-				// Resolve received value and handle nested traversal errors
 				let receivedVal: unknown;
 				let traversalError: string | undefined;
 
 				if (key in env) {
-					if (issue.path && issue.path.length > 0) {
+					const rawVal = env[key];
+					receivedVal = rawVal;
+					if (rawVal !== undefined && issue.path?.length) {
 						try {
-							const rawVal = env[key];
-							if (rawVal !== undefined) {
-								let current: any = rawVal;
-								if (
-									typeof rawVal === "string" &&
-									(rawVal.trim().startsWith("{") ||
-										rawVal.trim().startsWith("["))
-								) {
-									try {
-										current = JSON.parse(rawVal);
-									} catch (e: any) {
-										traversalError = `[Unparseable JSON: ${e.message}]`;
-									}
-								}
-								if (!traversalError) {
-									for (const segment of issue.path) {
-										const prop =
-											typeof segment === "object" &&
-											segment !== null &&
-											"key" in segment
-												? segment.key
-												: segment;
-										current = current?.[prop];
-									}
-									receivedVal = current;
-								} else {
-									receivedVal = rawVal;
+							let current: any = rawVal;
+							const trimmed = rawVal.trim();
+							if (trimmed[0] === "{" || trimmed[0] === "[") {
+								try {
+									current = JSON.parse(rawVal);
+								} catch (e: any) {
+									traversalError = `[Unparseable JSON: ${e.message}]`;
 								}
 							}
+							if (!traversalError) {
+								for (const seg of issue.path) {
+									current = current?.[getProp(seg)];
+								}
+								receivedVal = current;
+							}
 						} catch (e: any) {
-							receivedVal = env[key];
 							traversalError = `[Traversal error: ${e.message}]`;
 						}
-					} else {
-						receivedVal = env[key];
 					}
-				} else if ((issue as any).received !== undefined) {
+				} else {
 					receivedVal = (issue as any).received;
 				}
 
-				// Map engine code to granular EnvIssueCode
 				const issueCode = (issue as any).code;
 				let code: EnvIssueCode = "INVALID_TYPE";
+				const msg = issue.message?.toLowerCase() || "";
 
 				if (
-					issueCode === "invalid_type" &&
-					(receivedVal === undefined || receivedVal === "undefined")
+					(issueCode === "invalid_type" &&
+						(receivedVal === undefined || receivedVal === "undefined")) ||
+					msg === "required"
 				) {
 					code = "MISSING_VARIABLE";
 				} else if (
-					issueCode === "invalid_string" ||
-					issueCode === "invalid_date" ||
-					issueCode === "custom"
+					["invalid_string", "invalid_date", "custom"].includes(issueCode)
 				) {
 					code = "INVALID_FORMAT";
 				} else if (issueCode === "too_small") {
 					code = "VALUE_TOO_SMALL";
 				} else if (issueCode === "too_big") {
 					code = "VALUE_TOO_LARGE";
-				} else if (
-					issue.message &&
-					issue.message.toLowerCase() === "required"
-				) {
-					code = "MISSING_VARIABLE";
-				} else if (
-					issueCode === "invalid_union" ||
-					issueCode === "invalid_arguments" ||
-					issueCode === "invalid_return_type"
-				) {
-					code = "INVALID_TYPE";
-				} else if (
-					issue.message &&
-					/regex|pattern|match/i.test(issue.message)
-				) {
+				} else if (/regex|pattern|match/.test(msg)) {
 					code = "PATTERN_MISMATCH";
-				} else {
-					code = "INVALID_TYPE";
 				}
 
 				const expected = (issue as any).expected || undefined;
-
-				// Safe meta extraction
+				const iss = issue as any;
 				const meta: EnvIssueMeta = {
 					engine,
 					engineCode: issueCode || undefined,
+					min: iss.minimum ?? iss.min,
+					max: iss.maximum ?? iss.max,
+					validation: iss.validation,
+					traversalError,
 				};
-				if ((issue as any).minimum !== undefined) {
-					meta.min = (issue as any).minimum;
-				} else if ((issue as any).min !== undefined) {
-					meta.min = (issue as any).min;
-				}
-				if ((issue as any).maximum !== undefined) {
-					meta.max = (issue as any).maximum;
-				} else if ((issue as any).max !== undefined) {
-					meta.max = (issue as any).max;
-				}
-				if ((issue as any).validation !== undefined) {
-					meta.validation = (issue as any).validation;
-				}
-				if (traversalError) {
-					meta.traversalError = traversalError;
-				}
 
-				// Construct reshaped error message
 				let message = issue.message;
 				if (code === "MISSING_VARIABLE") {
 					message = expected
 						? `must be ${expected} (was missing)`
 						: "is required";
-				} else {
-					if (!message.includes("(was ")) {
-						const debugSecrets =
-							config?.debugSecrets ??
-							(typeof process !== "undefined" &&
-								(process.env.ARKENV_DEBUG_SECRETS === "true" ||
-									process.env.ARKENV_DEBUG_SECRETS === "1"));
-						const isSensitive = shouldRedact(issuePath);
-						const displayVal =
-							!debugSecrets && isSensitive
-								? "[REDACTED]"
-								: safeStringify(receivedVal, issuePath, config);
-						const styledVal = styleText("cyan", displayVal);
-
-						if (expected && !message.includes("Expected")) {
-							message = `must be ${expected} (was ${styledVal})`;
-						} else {
-							message = `${message} (was ${styledVal})`;
-						}
-					}
+				} else if (!message.includes("(was ")) {
+					const debugSecrets =
+						config?.debugSecrets ??
+						(typeof process !== "undefined" &&
+							(process.env.ARKENV_DEBUG_SECRETS === "true" ||
+								process.env.ARKENV_DEBUG_SECRETS === "1"));
+					const displayVal =
+						!debugSecrets && shouldRedact(issuePath)
+							? "[REDACTED]"
+							: safeStringify(receivedVal, issuePath, config);
+					const suffix = `(was ${styleText("cyan", displayVal)})`;
+					message =
+						expected && !message.includes("Expected")
+							? `must be ${expected} ${suffix}`
+							: `${message} ${suffix}`;
 				}
 
 				errors.push({

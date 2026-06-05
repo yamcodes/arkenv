@@ -7,9 +7,9 @@ import {
 	type EnvIssue,
 	type EnvIssueCode,
 	type EnvIssueMeta,
-	shouldRedact,
 } from "../core.ts";
 import type { ArkEnvConfig, EnvSchema } from "../create-env.ts";
+import { shouldRedact } from "../utils/redact.ts";
 import { styleText } from "../utils/style-text.ts";
 import { coerce } from "./coercion/coerce.ts";
 
