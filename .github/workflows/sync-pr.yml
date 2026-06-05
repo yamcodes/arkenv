@@ -44,9 +44,9 @@ jobs:
         run: |
           git fetch origin dev main
 
-          # Check if there are any actual file differences between dev and main
-          if git diff --quiet origin/main...origin/dev; then
-            echo "✅ dev has no file differences compared to main. No Sync PR needed."
+          # Check if main is already fully merged into dev (no drift)
+          if git merge-base --is-ancestor origin/dev origin/main; then
+            echo "✅ dev is already up-to-date with main. No Sync PR needed."
             exit 0
           fi
 
@@ -69,6 +69,6 @@ jobs:
               --head dev \
               --title "chore: sync dev → main" \
               --body "$PR_BODY" \
-              --label "sync"
+              --label "maintenance"
             echo "✅ Sync PR created."
           fi
