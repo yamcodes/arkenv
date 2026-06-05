@@ -64,14 +64,18 @@ We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production docum
 ### Key Workflows
 
 #### Use Case 1: Developing a New Feature
+
 When adding functionality or new documentation pages for unreleased code:
+
 1. Create a feature branch off `dev`.
 2. Commit your code and run `pnpm changeset` to generate a version bump file.
 3. Open a Pull Request targeting `dev`.
 4. Merging to `dev` will deploy a Vercel Preview (for review), but it will **not** affect the production documentation site.
 
 #### Use Case 2: Releasing Packages to npm
+
 When you are ready to publish the unreleased features currently sitting on `dev`:
+
 1. Navigate to the automatically generated "Version Packages" PR (created by Changesets) targeting `dev`.
 2. Review the aggregated `CHANGELOG.md` and version bumps.
 3. Merge the "Version Packages" PR into `dev`.
@@ -79,7 +83,9 @@ When you are ready to publish the unreleased features currently sitting on `dev`
 5. Immediately after a successful publish, the workflow automatically fast-forwards the `main` branch to match `dev`. This push to `main` triggers the production documentation deploy.
 
 #### Use Case 3: Fixing a Typo on the Live Docs
+
 When you need to fix a typo or make a cosmetic change to the live documentation *without* publishing a new npm package:
+
 1. Do not use the standard `dev` feature workflow (otherwise your typo fix will be trapped in `dev` until the next npm release).
 2. Ask your AI Agent to invoke the `/sync-main` slash command, or manually run the `sync-main` skill.
 3. **If `dev` is clean** (no unreleased features): Merge your doc fix to `dev`, then run the `Sync main` GitHub workflow to fast-forward `main`.
