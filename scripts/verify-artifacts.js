@@ -59,7 +59,9 @@ for (const target of targets) {
 }
 
 if (failures.length > 0) {
-	console.error("\n❌ Static Analysis Verification failed with the following errors:");
+	console.error(
+		"\n❌ Static Analysis Verification failed with the following errors:",
+	);
 	for (const failure of failures) {
 		console.error(`- ${failure.filePath}: ${failure.error}`);
 	}
