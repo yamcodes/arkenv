@@ -6,6 +6,7 @@ import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
 import { SearchToggle } from "~/components/ui/search-toggle";
+import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { source } from "~/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -24,6 +25,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 					banner: (
 						<div className="hidden lg:block">
 							<InstallButton />
+						</div>
+					),
+					footer: (
+						<div className="flex items-center justify-start p-4 border-t border-border/20">
+							<ThemeToggle />
 						</div>
 					),
 					collapsible: false,
