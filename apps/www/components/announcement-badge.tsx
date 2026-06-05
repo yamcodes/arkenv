@@ -28,10 +28,10 @@ export function AnnouncementBadge({
 		<Link
 			href={href}
 			data-no-underline
-			className="group relative flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 px-1 py-1 text-sm font-medium text-blue-900 transition-all hover:bg-blue-500/10 dark:text-blue-200 backdrop-blur-sm shadow-sm hover:shadow-md hover:border-blue-500/30"
+			className="group relative flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-1 py-1 text-sm font-medium text-foreground transition-all hover:bg-primary/10 backdrop-blur-sm shadow-sm hover:shadow-md hover:border-primary/30"
 		>
 			{newBadge && (
-				<NewBadge className="h-5 font-semibold bg-blue-500/10 text-blue-700 border-blue-500/10 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/20 shadow-none hover:bg-blue-500/20 transition-colors" />
+				<NewBadge className="h-5 font-semibold bg-primary/10 text-primary border-primary/10 dark:bg-primary/15 dark:text-primary dark:border-primary/20 shadow-none hover:bg-primary/20 transition-colors" />
 			)}
 			<span
 				className={`flex items-center gap-1 mr-1${!newBadge ? " ml-2" : ""}`}

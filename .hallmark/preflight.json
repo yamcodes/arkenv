@@ -1,0 +1,7 @@
+{
+	"fonts": "Geist + JetBrains Mono (next/font/google, apps/www/app/layout.tsx L10, L14)",
+	"palette": "HSL & Hex custom properties (apps/www/app/styles/theme/light.css :root)",
+	"motion": "no framework motion library detected (package.json)",
+	"spacing": "Tailwind spacing (apps/www/app/styles/theme/light.css)",
+	"framework": "Next.js 16 (app router)"
+}
