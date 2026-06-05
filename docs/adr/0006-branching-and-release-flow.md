@@ -92,6 +92,37 @@ graph TD
     F --> G["Remove 'Unreleased' Labels<br/>from docs"]
 ```
 
+### Model 6: Multi-Version / Versioned Documentation
+
+The website is always deployed from a single branch (e.g., `main`). The documentation website natively supports versioning (e.g., using a framework-level version selector).
+
+- **Pro**: Unreleased changes are clearly marked under a `/docs/next` path, while `/docs` points to the latest stable release.
+- **Pro**: Decouples website deployment from the package release cycle.
+- **Con**: Higher setup/configuration complexity for maintaining versioned documentation folders and route mappings.
+
+```mermaid
+graph TD
+    A[Commit Code & Docs Changes] --> B[Merge to main]
+    B --> C[Deploy Docs Site]
+    C --> D{Doc Version Router}
+    D -->|Stable version/Latest| E[Serve Released Docs]
+    D -->|Next/Unreleased| F[Serve Next/Dev Docs]
+```
+
+### Model 7: Dynamic NPM/Tag-based Documentation
+
+The documentation website code and content are decoupled. The website fetches and renders documentation content dynamically at build or run time from the published npm packages or specific git tags.
+
+- **Pro**: Decouples website deployment completely from package releases. The website can be updated and deployed anytime without displaying unreleased features.
+- **Con**: Relies on external dynamic fetching (increased risk of build failures or runtime API limits) and lacks simple local MDX previews during development without extra emulation.
+
+```mermaid
+graph TD
+    A[Commit Code Changes] --> B[Publish Release to npm]
+    C[Web App Build/Request] --> D[Fetch MDX/Docs from npm/Git Tag]
+    D --> E[Render Documentation Pages]
+```
+
 ## Decision
 
 We chose **Model 2: Dev/Main Flow with Changesets**.
