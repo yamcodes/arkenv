@@ -95,13 +95,19 @@ graph TD
     F --> G["Remove 'Unreleased' Labels<br/>from docs"]
 ```
 
-### Model 6: Multi-Versioned Documentation Site
+### Model 6: Fumadocs Versioning Strategies (Full vs. Partial Versioning)
 
-The website is always deployed from a single branch (e.g., `main`). The documentation website natively supports versioning (e.g., using a framework-level version selector).
+The website natively supports multi-versioning using either of Fumadocs' recommended strategies:
 
-- **Pro**: Unreleased changes are clearly marked under a `/docs/next` path, while `/docs` points to the latest stable release.
-- **Pro**: Decouples website deployment from the package release cycle.
-- **Con**: Higher setup/configuration complexity for maintaining versioned documentation folders and route mappings.
+- **Full Versioning (Branch-Based Subdomains)**: Versioning the entire website by deploying separate Git branches (e.g. `v1`, `v2`) as distinct apps on different subdomains.
+
+- **Partial Versioning (Folder-Based Tabs)**: Structuring version folders under a single branch (e.g. `/docs/v1`, `/docs/v2`), grouped dynamically using Fumadocs **Root Folders** (`meta.json` with `"root": true`) and displayed as sidebar dropdowns using **Layout Tabs**.
+
+- **Pro (Full Versioning)**: Old docs and branches are isolated; upgrading dependencies/landing pages on `main` won't affect older versions.
+
+- **Pro (Partial Versioning)**: Allows unreleased changes to be clearly marked under a `/docs/next` folder/tab, while `/docs` points to the latest stable version under a single domain deployment.
+
+- **Con**: Higher setup/configuration complexity for maintaining duplicate folders, route mappings, and navigation configurations.
 
 ```mermaid
 graph TD
