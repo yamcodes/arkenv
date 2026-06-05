@@ -1,9 +1,11 @@
 ---
-name: excalidraw-diagram-generator
+name: excalidraw
 description: 'Generate Excalidraw diagrams from natural language descriptions. Use when asked to "create a diagram", "make a flowchart", "visualize a process", "draw a system architecture", "create a mind map", or "generate an Excalidraw file". Supports flowcharts, relationship diagrams, mind maps, and system architecture diagrams. Outputs .excalidraw JSON files that can be opened directly in Excalidraw.'
 metadata:
-  internal: true
+  author: Yam Borodetsky
+  original_author: github
   origin: https://github.com/github/awesome-copilot
+  internal: true
 ---
 
 # Excalidraw Diagram Generator
@@ -321,10 +323,10 @@ For specialized diagrams (e.g., AWS/GCP/Azure architecture diagrams), you can us
    
    1. Visit https://libraries.excalidraw.com/
    2. Search for "[AWS Architecture Icons/etc.]" and download the .excalidrawlib file
-   3. Create directory: skills/excalidraw-diagram-generator/libraries/[icon-set-name]/
+   3. Create directory: skills/excalidraw/libraries/[icon-set-name]/
    4. Place the downloaded file in that directory
    5. Run the splitter script:
-      python skills/excalidraw-diagram-generator/scripts/split-excalidraw-library.py skills/excalidraw-diagram-generator/libraries/[icon-set-name]/
+      python skills/excalidraw/scripts/split-excalidraw-library.py skills/excalidraw/libraries/[icon-set-name]/
    
    This will split the library into individual icon files for efficient use.
    After setup is complete, I can create your diagram using the actual AWS/cloud icons.
@@ -337,7 +339,7 @@ For specialized diagrams (e.g., AWS/GCP/Azure architecture diagrams), you can us
 
 **Step 1: Create Library Directory**
 ```bash
-mkdir -p skills/excalidraw-diagram-generator/libraries/aws-architecture-icons
+mkdir -p skills/excalidraw/libraries/aws-architecture-icons
 ```
 
 **Step 2: Download Library**
@@ -355,13 +357,13 @@ mkdir -p skills/excalidraw-diagram-generator/libraries/aws-architecture-icons
 
 **Step 4: Run Splitter Script**
 ```bash
-python skills/excalidraw-diagram-generator/scripts/split-excalidraw-library.py skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/
+python skills/excalidraw/scripts/split-excalidraw-library.py skills/excalidraw/libraries/aws-architecture-icons/
 ```
 
 **Step 5: Verify Setup**
 After running the script, verify the following structure exists:
 ```
-skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/
+skills/excalidraw/libraries/aws-architecture-icons/
   aws-architecture-icons.excalidrawlib  (original)
   reference.md                          (generated - icon lookup table)
   icons/                                (generated - individual icon files)
@@ -388,7 +390,7 @@ The repository includes Python scripts that handle icon integration automaticall
 
 2. **Add icons using Python script**:
    ```bash
-   python skills/excalidraw-diagram-generator/scripts/add-icon-to-diagram.py \
+   python skills/excalidraw/scripts/add-icon-to-diagram.py \
      <diagram-path> <icon-name> <x> <y> [--label "Text"] [--library-path PATH]
    ```
    - Edit via `.excalidraw.edit` is enabled by default to avoid overwrite issues; pass `--no-use-edit-suffix` to disable.
@@ -408,7 +410,7 @@ The repository includes Python scripts that handle icon integration automaticall
 
 3. **Add connecting arrows**:
    ```bash
-   python skills/excalidraw-diagram-generator/scripts/add-arrow.py \
+   python skills/excalidraw/scripts/add-arrow.py \
      <diagram-path> <from-x> <from-y> <to-x> <to-y> [--label "Text"] [--style solid|dashed|dotted] [--color HEX]
    ```
    - Edit via `.excalidraw.edit` is enabled by default to avoid overwrite issues; pass `--no-use-edit-suffix` to disable.
@@ -458,7 +460,7 @@ Only use this if Python scripts are unavailable:
 
 1. **Check for libraries**: 
    ```
-   List directory: skills/excalidraw-diagram-generator/libraries/
+   List directory: skills/excalidraw/libraries/
    Look for subdirectories containing reference.md files
    ```
 

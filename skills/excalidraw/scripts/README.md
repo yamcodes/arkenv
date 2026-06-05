@@ -21,7 +21,7 @@ python split-excalidraw-library.py <path-to-library-directory>
 
 1. **Create library directory**:
    ```bash
-   mkdir -p skills/excalidraw-diagram-generator/libraries/aws-architecture-icons
+   mkdir -p skills/excalidraw/libraries/aws-architecture-icons
    ```
 
 2. **Download and place library file**:
@@ -32,7 +32,7 @@ python split-excalidraw-library.py <path-to-library-directory>
 
 3. **Run the script**:
    ```bash
-   python skills/excalidraw-diagram-generator/scripts/split-excalidraw-library.py skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/
+   python skills/excalidraw/scripts/split-excalidraw-library.py skills/excalidraw/libraries/aws-architecture-icons/
    ```
 
 ### Output Structure
@@ -40,7 +40,7 @@ python split-excalidraw-library.py <path-to-library-directory>
 The script creates the following structure in the library directory:
 
 ```
-skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/
+skills/excalidraw/libraries/aws-architecture-icons/
   aws-architecture-icons.excalidrawlib  # Original file (kept)
   reference.md                          # Generated: Quick reference table
   icons/                                # Generated: Individual icon files

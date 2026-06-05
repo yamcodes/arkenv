@@ -6,14 +6,14 @@ This script splits an Excalidraw library file (*.excalidrawlib) into individual
 icon JSON files and generates a reference.md file for easy lookup.
 
 The script expects the following structure:
-  skills/excalidraw-diagram-generator/libraries/{icon-set-name}/
+  skills/excalidraw/libraries/{icon-set-name}/
     {icon-set-name}.excalidrawlib  (place this file first)
 
 Usage:
     python split-excalidraw-library.py <path-to-library-directory>
 
 Example:
-    python split-excalidraw-library.py skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/
+    python split-excalidraw-library.py skills/excalidraw/libraries/aws-architecture-icons/
 """
 
 import json
@@ -171,7 +171,7 @@ def main():
     if len(sys.argv) != 2:
         print("Usage: python split-excalidraw-library.py <path-to-library-directory>")
         print("\nExample:")
-        print("  python split-excalidraw-library.py skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/")
+        print("  python split-excalidraw-library.py skills/excalidraw/libraries/aws-architecture-icons/")
         print("\nNote: The directory should contain a .excalidrawlib file.")
         sys.exit(1)
 
