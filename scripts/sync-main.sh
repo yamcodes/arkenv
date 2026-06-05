@@ -2,8 +2,8 @@
 set -e
 
 # Usage:
-#   ./scripts/promote-docs.sh rescue <commit-hash-1> [commit-hash-2 ...]
-#   ./scripts/promote-docs.sh reconcile
+#   ./scripts/sync-main.sh rescue <commit-hash-1> [commit-hash-2 ...]
+#   ./scripts/sync-main.sh reconcile
 
 MODE=$1
 
