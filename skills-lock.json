@@ -37,6 +37,12 @@
 			"skillPath": "skills/engineering/grill-with-docs/SKILL.md",
 			"computedHash": "31a5b1ae116558bf7d3f633f442835f54bd7645923d4f45c7823e52a97317666"
 		},
+		"hallmark": {
+			"source": "nutlope/hallmark",
+			"sourceType": "github",
+			"skillPath": "skills/hallmark/SKILL.md",
+			"computedHash": "8a8ecafd613f09e701330b5aa4a591ac539abb2605596df4a2394f03628d1d76"
+		},
 		"hexagonal-architecture": {
 			"source": "affaan-m/everything-claude-code",
 			"sourceType": "github",
