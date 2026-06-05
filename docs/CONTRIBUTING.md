@@ -44,7 +44,7 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 
 ## Branching & Release Workflow
 
-We use a two-branch branching model (`dev` and `main`) to ensure that the production documentation site does not display unreleased features.
+We use a two-branch branching model (`dev` and `main`) to ensure that the production documentation site does not display unreleased features. For a detailed comparison of alternative branching models and the design trade-offs behind this decision, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).
 
 ```
                   ┌───────────────┐
