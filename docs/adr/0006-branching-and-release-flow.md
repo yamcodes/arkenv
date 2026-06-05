@@ -20,14 +20,10 @@ A single `main` branch where code and doc changes are committed. Merging to `mai
 
 ```mermaid
 graph TD
-    classDef main fill:#e3fafc,stroke:#0b7285,stroke-width:2px;
-    classDef deploy fill:#ebfbee,stroke:#2b8a3e,stroke-width:2px;
-    classDef release fill:#fff4e6,stroke:#d9480f,stroke-width:2px;
-    
-    A[Commit Code & Docs Changes]:::main --> B[Merge to main]:::main
-    B --> C[Deploy Docs to Production]:::deploy
-    B --> D["Open 'Version Packages' PR"]:::main
-    D -->|Merge| E[Release Packages to npm]:::release
+    A[Commit Code & Docs Changes] --> B[Merge to main]
+    B --> C[Deploy Docs to Production]
+    B --> D["Open 'Version Packages' PR"]
+    D -->|Merge| E[Release Packages to npm]
     
     C -.->|"Out of Sync Window<br/>(Docs live, packages unreleased)"| E
 ```
@@ -41,17 +37,12 @@ Development and feature PRs target a default `dev` branch. Previews are deployed
 
 ```mermaid
 graph TD
-    classDef dev fill:#e8f4fd,stroke:#1971c2,stroke-width:2px;
-    classDef main fill:#e3fafc,stroke:#0b7285,stroke-width:2px;
-    classDef deploy fill:#ebfbee,stroke:#2b8a3e,stroke-width:2px;
-    classDef release fill:#fff4e6,stroke:#d9480f,stroke-width:2px;
-    
-    A[Commit Code & Docs Changes]:::dev --> B[Merge to dev]:::dev
-    B --> C["Deploy Previews (dev.docs)"]:::deploy
-    B --> D["Open 'Version Packages' PR"]:::dev
-    D -->|Merge| E[Release Packages to npm]:::release
-    E --> F[Fast-forward main to dev]:::main
-    F --> G[Deploy Docs to Production]:::deploy
+    A[Commit Code & Docs Changes] --> B[Merge to dev]
+    B --> C["Deploy Previews (dev.docs)"]
+    B --> D["Open 'Version Packages' PR"]
+    D -->|Merge| E[Release Packages to npm]
+    E --> F[Fast-forward main to dev]
+    F --> G[Deploy Docs to Production]
     
     E -.->|"Out of Sync Window<br/>(Minimized)"| G
 ```
@@ -64,16 +55,11 @@ Traditional dev/main branching model, but without Changesets. Releases are manua
 
 ```mermaid
 graph TD
-    classDef dev fill:#e8f4fd,stroke:#1971c2,stroke-width:2px;
-    classDef main fill:#e3fafc,stroke:#0b7285,stroke-width:2px;
-    classDef deploy fill:#ebfbee,stroke:#2b8a3e,stroke-width:2px;
-    classDef release fill:#fff4e6,stroke:#d9480f,stroke-width:2px;
-    
-    A[Commit Code & Docs Changes]:::dev --> B[Merge to dev]:::dev
-    B --> C["Deploy Previews / Snapshots"]:::deploy
-    B --> D[Merge dev to main]:::main
-    D --> E[Custom Release Scripts]:::release
-    D --> F[Deploy Docs to Production]:::deploy
+    A[Commit Code & Docs Changes] --> B[Merge to dev]
+    B --> C["Deploy Previews / Snapshots"]
+    B --> D[Merge dev to main]
+    D --> E[Custom Release Scripts]
+    D --> F[Deploy Docs to Production]
 ```
 
 ### Model 4: Main Flow + Selective Docs Deployment
@@ -84,14 +70,10 @@ Single `main` branch, but docs are only deployed when a release is published (e.
 
 ```mermaid
 graph TD
-    classDef main fill:#e3fafc,stroke:#0b7285,stroke-width:2px;
-    classDef deploy fill:#ebfbee,stroke:#2b8a3e,stroke-width:2px;
-    classDef release fill:#fff4e6,stroke:#d9480f,stroke-width:2px;
-    
-    A[Commit Code & Docs Changes]:::main --> B[Merge to main]:::main
-    B --> C["Open 'Version Packages' PR"]:::main
-    C -->|Merge| D[Release Packages to npm]:::release
-    D --> E[Trigger Docs Deployment]:::deploy
+    A[Commit Code & Docs Changes] --> B[Merge to main]
+    B --> C["Open 'Version Packages' PR"]
+    C -->|Merge| D[Release Packages to npm]
+    D --> E[Trigger Docs Deployment]
 ```
 
 ### Model 5: Main Flow + Version Labeling
@@ -102,16 +84,12 @@ Single `main` branch. Docs are deployed immediately, but an automated process la
 
 ```mermaid
 graph TD
-    classDef main fill:#e3fafc,stroke:#0b7285,stroke-width:2px;
-    classDef deploy fill:#ebfbee,stroke:#2b8a3e,stroke-width:2px;
-    classDef release fill:#fff4e6,stroke:#d9480f,stroke-width:2px;
-    
-    A[Commit Code & Docs Changes]:::main --> B[Merge to main]:::main
-    B --> C[Deploy Docs to Production]:::deploy
-    C --> D["Automated Process Labels<br/>new features as 'Unreleased'"]:::deploy
-    B --> E["Open 'Version Packages' PR"]:::main
-    E -->|Merge| F[Release Packages to npm]:::release
-    F --> G["Remove 'Unreleased' Labels<br/>from docs"]:::deploy
+    A[Commit Code & Docs Changes] --> B[Merge to main]
+    B --> C[Deploy Docs to Production]
+    B --> D["Automated Process Labels<br/>new features as 'Unreleased'"]
+    B --> E["Open 'Version Packages' PR"]
+    E -->|Merge| F[Release Packages to npm]
+    F --> G["Remove 'Unreleased' Labels<br/>from docs"]
 ```
 
 ## Decision
