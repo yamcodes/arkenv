@@ -55,6 +55,7 @@ esbuild-why*.html
 
 # explicitly ignored folder
 ignore-me/
+/repos/
 
 # deploy metrics
 .github/deploy-metrics.json
