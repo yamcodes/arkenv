@@ -2,9 +2,9 @@ name: test
 
 on:
   pull_request:
-    branches: [dev]
+    branches: [dev, v1]
   push:
-    branches: [dev]
+    branches: [dev, v1]
   schedule:
     - cron: "0 0 * * 6" # Every Saturday
   workflow_dispatch:
