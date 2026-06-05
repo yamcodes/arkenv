@@ -42,6 +42,27 @@ Thank you for considering a contribution to ArkEnv! As an open source project, A
 6. Commit the generated changeset file along with your changes
 7. Issue that pull request!
 
+## Commit & PR title style
+
+We **do not use Conventional Commits** (`feat:`, `fix:`, `chore:`, etc.). Instead, we write commit messages and PR titles in plain **sentence-case imperative style**:
+
+- Start with a capital letter
+- Use the imperative mood ("Add", "Fix", "Update", not "Added" or "Adds")
+- Keep the rest of the message in normal sentence case (not ALL CAPS or Title Case)
+- No trailing period
+
+**Examples:**
+
+```
+✅ Add support for custom error messages
+✅ Fix type inference for optional variables
+✅ Update README with Bun integration example
+
+❌ feat: add support for custom error messages
+❌ added support for custom error messages
+❌ Add Support For Custom Error Messages
+```
+
 ## Branching & Release Workflow
 
 We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production documentation site is strictly synchronized with npm releases, meaning it never displays unreleased features. For the architectural reasoning behind this decision, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).

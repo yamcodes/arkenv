@@ -160,10 +160,16 @@ pnpm run test:e2e                     # E2E tests
 - Only published packages (`packages/*`) require changesets
 - Examples and private applications don't need changesets
 
-**Commits:**
+**Commits & PR titles:**
 
-- Commit changeset file along with code changes
-- Changesets automatically generate changelogs and version bumps
+- This project does **not** use Conventional Commits (`feat:`, `fix:`, `chore:`, etc.)
+- Use plain **sentence-case imperative** style instead:
+  - Start with a capital letter
+  - Imperative mood: "Add", "Fix", "Update" (not "Added" or "Adds")
+  - Rest of the message in normal sentence case
+  - No trailing period
+- Examples: `Add support for custom error messages`, `Fix type inference for optional variables`
+- Wrong: `feat: add support`, `Added support`, `Add Support For Custom Error Messages`
 
 **Publishing:**
 

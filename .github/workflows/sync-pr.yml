@@ -69,6 +69,6 @@ jobs:
               --head dev \
               --title "chore: sync dev → main" \
               --body "$PR_BODY" \
-              --label "sync"
+              --label "maintenance"
             echo "✅ Sync PR created."
           fi
