@@ -35,7 +35,7 @@ jobs:
           # ALWAYS configure git and fetch main first so git knows about it
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main:main
+          git fetch origin main
           
           if [ "${{ github.event.inputs.force_override }}" = "true" ]; then
             echo "⚠️ Admin override enabled. Bypassing safety checks."
