@@ -6,6 +6,7 @@ export default defineProject({
 		name: "@arkenv/nextjs",
 	},
 	resolve: {
+		tsconfigPaths: true,
 		alias: [
 			{
 				find: /^arkenv\/arktype$/,

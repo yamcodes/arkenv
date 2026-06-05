@@ -16,13 +16,13 @@ Already using ArkType? You can still use Zod, Valibot, and other Standard Schema
 | **ArkType DSL**           |     ✅    |         ❌         |
 | **ArkEnv keywords**¹      |     ✅    |         ❌         |
 | **ArkEnv plugins**        |     ✅    |         ❌         |
-| **Automatic coercion**    |     ✅    |    Opt-in (✅)²    |
+| **Automatic coercion**    |     ✅    |         ✅²        |
 | **Standard Schema**       |     ✅    |         ✅         |
 | **Works without ArkType** |     ❌    |         ✅         |
 
 ¹ ArkEnv extends ArkType with custom keywords like `string.host` and `number.port`
 
-² Dynamic coercion is supported in `arkenv/standard` if the validator implements the Standard JSON Schema spec and you enable `coerce: true` in your configuration.
+² Dynamic coercion requires `coerce: true` and a Standard JSON Schema validator like [Zod](https://zod.dev) or [Valibot](https://valibot.dev) (see [Coercion](/docs/arkenv/coercion)).
 
 ✅ Built-in / first-class support
 

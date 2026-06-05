@@ -4,7 +4,7 @@
 
 #### Add opt-in Standard JSON Schema coercion to `arkenv/standard`
 
-Introduce opt-in, best-effort type coercion for standard mode (`arkenv/standard`). This enables coercion for environment variables without relying on ArkType's runtime footprint by leveraging the `StandardJSONSchemaV1` specification.
+Introduce opt-in type coercion for standard mode (`arkenv/standard`). This coercion only works if the validator is a standard JSON Schema compliant validator (e.g., Zod, Valibot, or custom schemas that implement the `StandardJSONSchemaV1` interface). This enables coercion for environment variables without relying on ArkType's runtime footprint.
 
 Usage:
 

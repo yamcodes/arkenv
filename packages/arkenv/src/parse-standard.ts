@@ -25,8 +25,10 @@ export type ParseStandardConfig = {
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
 	/**
 	 * Whether to perform best-effort coercion on the environment variables.
-	 * Coercion requires validators that implement the StandardJSONSchemaV1 spec.
+	 * Coercion requires validators that implement the StandardJSONSchemaV1 spec
+	 * (e.g. Zod, Valibot).
 	 *
+	 * @see https://standard-schema.dev
 	 * @default false
 	 */
 	coerce?: boolean;
@@ -40,6 +42,102 @@ export type ParseStandardConfig = {
 	 */
 	arrayFormat?: "comma" | "json";
 };
+
+/**
+ * Extract JSON Schema definitions from standard schema validators.
+ */
+function extractJsonSchema(
+	def: Record<string, unknown>,
+	missingJsonSchemaKeys: string[],
+): { jsonSchema: Record<string, any>; hasJsonSchema: boolean } {
+	const jsonSchema: Record<string, any> = { type: "object", properties: {} };
+	let hasJsonSchema = false;
+
+	for (const key in def) {
+		const validator = def[key] as any;
+		if (!validator) {
+			missingJsonSchemaKeys.push(key);
+			continue;
+		}
+
+		// 1. Standard way via ~standard property
+		const std = validator["~standard"];
+		if (typeof std?.jsonSchema?.input === "function") {
+			try {
+				const schema = std.jsonSchema.input({ target: "draft-07" });
+				if (schema) {
+					jsonSchema.properties[key] = schema;
+					hasJsonSchema = true;
+					continue;
+				}
+			} catch {}
+		}
+
+		// 2. Direct jsonSchema.input on validator
+		if (typeof validator.jsonSchema?.input === "function") {
+			try {
+				const schema = validator.jsonSchema.input({ target: "draft-07" });
+				if (schema) {
+					jsonSchema.properties[key] = schema;
+					hasJsonSchema = true;
+					continue;
+				}
+			} catch {}
+		}
+
+		// 3. toJSONSchema method (e.g. zod mini, zod-to-json-schema)
+		if (typeof validator.toJSONSchema === "function") {
+			try {
+				const schema = validator.toJSONSchema();
+				if (schema) {
+					jsonSchema.properties[key] = schema;
+					hasJsonSchema = true;
+					continue;
+				}
+			} catch {}
+		}
+
+		// 4. toStandardJSONSchema.v1 method (e.g. stnl)
+		if (typeof validator.toStandardJSONSchema?.v1 === "function") {
+			try {
+				const schema = validator.toStandardJSONSchema.v1();
+				if (schema) {
+					jsonSchema.properties[key] = schema;
+					hasJsonSchema = true;
+					continue;
+				}
+			} catch {}
+		}
+
+		missingJsonSchemaKeys.push(key);
+	}
+
+	return { jsonSchema, hasJsonSchema };
+}
+
+/**
+ * Format standard schema validation issue path.
+ */
+function formatIssuePath(
+	key: string,
+	path:
+		| readonly (
+				| string
+				| number
+				| symbol
+				| { readonly key: string | number | symbol }
+		  )[]
+		| undefined,
+): string {
+	if (!path || path.length === 0) return key;
+
+	const segments = path.map((segment) =>
+		segment !== null && typeof segment === "object" && "key" in segment
+			? String(segment.key)
+			: String(segment),
+	);
+	return [key, ...segments].join(".");
+}
 
 /**
  * Parse and validate environment variables using Standard Schema 1.0 validators.
@@ -67,24 +165,10 @@ export function parseStandard(
 	const missingJsonSchemaKeys: string[] = [];
 
 	if (coerce) {
-		const jsonSchema: Record<string, any> = { type: "object", properties: {} };
-		let hasJsonSchema = false;
-
-		for (const key in def) {
-			const std = (def[key] as any)?.["~standard"];
-			if (typeof std?.jsonSchema?.input === "function") {
-				try {
-					const schema = std.jsonSchema.input({ target: "draft-07" });
-					if (schema) {
-						jsonSchema.properties[key] = schema;
-						hasJsonSchema = true;
-						continue;
-					}
-				} catch {}
-			}
-			missingJsonSchemaKeys.push(key);
-		}
-
+		const { jsonSchema, hasJsonSchema } = extractJsonSchema(
+			def,
+			missingJsonSchemaKeys,
+		);
 		if (hasJsonSchema) {
 			coercedEnv = applyCoercion(coercedEnv, findCoercionPaths(jsonSchema), {
 				arrayFormat,
@@ -124,19 +208,7 @@ export function parseStandard(
 
 		if (result.issues) {
 			for (const issue of result.issues) {
-				const issuePath =
-					issue.path && issue.path.length > 0
-						? `${key}.${issue.path
-								.map((segment) =>
-									segment !== null &&
-									typeof segment === "object" &&
-									"key" in segment
-										? String(segment.key)
-										: String(segment),
-								)
-								.join(".")}`
-						: key;
-
+				const issuePath = formatIssuePath(key, issue.path);
 				let message = issue.message;
 
 				if (coerce && missingJsonSchemaKeys.includes(key)) {

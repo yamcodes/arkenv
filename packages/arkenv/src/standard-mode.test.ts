@@ -210,4 +210,58 @@ describe("Standard Mode Coercion", () => {
 
 		vi.unstubAllEnvs();
 	});
+
+	it("should support fallback coercion triggers: toJSONSchema and toStandardJSONSchema.v1", () => {
+		vi.stubEnv("ZOD_MINI_VAR", "42");
+		vi.stubEnv("STNL_VAR", "true");
+
+		const mockZodMiniValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "zod-mini",
+				types: {} as { input: unknown; output: number },
+				validate: (val: unknown) => {
+					if (typeof val !== "number") {
+						return {
+							issues: [{ message: `Expected number, received ${typeof val}` }],
+						};
+					}
+					return { value: val };
+				},
+			},
+			toJSONSchema: () => ({ type: "number" }),
+		};
+
+		const mockStnlValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "stnl",
+				types: {} as { input: unknown; output: boolean },
+				validate: (val: unknown) => {
+					if (typeof val !== "boolean") {
+						return {
+							issues: [{ message: `Expected boolean, received ${typeof val}` }],
+						};
+					}
+					return { value: val };
+				},
+			},
+			toStandardJSONSchema: {
+				v1: () => ({ type: "boolean" }),
+			},
+		};
+
+		const env = createEnv(
+			{
+				ZOD_MINI_VAR: mockZodMiniValidator as any,
+				STNL_VAR: mockStnlValidator as any,
+			},
+			{ coerce: true },
+		);
+
+		expect(env.ZOD_MINI_VAR).toBe(42);
+		expect(env.STNL_VAR).toBe(true);
+
+		vi.unstubAllEnvs();
+	});
 });

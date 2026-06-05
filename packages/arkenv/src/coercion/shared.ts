@@ -131,75 +131,67 @@ export const applyCoercion = (
 		return val.trim() ? val.split(",").map((s) => s.trim()) : [];
 	};
 
+	const coerceValue = (val: unknown, type: CoercionTarget["type"]): unknown => {
+		if (type === "array" && typeof val === "string") {
+			return splitString(val);
+		}
+		if (type === "object" && typeof val === "string") {
+			return coerceJson(val);
+		}
+		if (type === "date" && typeof val === "string") {
+			return coerceDate(val);
+		}
+		if (type === "primitive") {
+			if (Array.isArray(val)) {
+				for (let i = 0; i < val.length; i++) {
+					const n = coerceNumber(val[i]);
+					val[i] = typeof n === "number" ? n : coerceBoolean(val[i]);
+				}
+				return val;
+			}
+			const n = coerceNumber(val);
+			return typeof n === "number" ? n : coerceBoolean(val);
+		}
+		return val;
+	};
+
 	if (typeof data !== "object" || data === null) {
 		const root = targets.find((t) => t.path.length === 0);
-		if (root && typeof data === "string") {
-			if (root.type === "object") return coerceJson(data);
-			if (root.type === "array") return splitString(data);
-			if (root.type === "date") return coerceDate(data);
-		}
-		if (root && root.type === "primitive") {
-			const n = coerceNumber(data);
-			return typeof n === "number" ? n : coerceBoolean(data);
+		if (root) {
+			return coerceValue(data, root.type);
 		}
 		return data;
 	}
 
 	const sorted = [...targets].sort((a, b) => a.path.length - b.path.length);
 
-	const walk = (current: any, path: string[], type: string) => {
+	const walk = (current: any, path: string[], type: CoercionTarget["type"]) => {
 		if (!current || typeof current !== "object" || path.length === 0) return;
 
-		if (path.length === 1) {
-			const k = path[0];
-			if (k === ARRAY_ITEM_MARKER) {
+		const [key, ...rest] = path;
+
+		if (rest.length === 0) {
+			if (key === ARRAY_ITEM_MARKER) {
 				if (Array.isArray(current)) {
 					for (let i = 0; i < current.length; i++) {
-						const v = current[i];
-						if (type === "primitive") {
-							const n = coerceNumber(v);
-							current[i] = typeof n === "number" ? n : coerceBoolean(v);
-						} else if (type === "object") {
-							current[i] = coerceJson(v);
-						} else if (type === "date") {
-							current[i] = coerceDate(v);
-						}
+						current[i] = coerceValue(current[i], type);
 					}
 				}
-				return;
-			}
-
-			// biome-ignore lint/suspicious/noPrototypeBuiltins: Object.hasOwn is not supported under current tsconfig lib settings
-			if (Object.prototype.hasOwnProperty.call(current, k)) {
-				const v = current[k];
-				if (type === "array" && typeof v === "string") {
-					current[k] = splitString(v);
-				} else if (type === "object" && typeof v === "string") {
-					current[k] = coerceJson(v);
-				} else if (type === "date" && typeof v === "string") {
-					current[k] = coerceDate(v);
-				} else if (Array.isArray(v)) {
-					if (type === "primitive") {
-						for (let i = 0; i < v.length; i++) {
-							const n = coerceNumber(v[i]);
-							v[i] = typeof n === "number" ? n : coerceBoolean(v[i]);
-						}
-					}
-				} else if (type === "primitive") {
-					const n = coerceNumber(v);
-					current[k] = typeof n === "number" ? n : coerceBoolean(v);
+			} else {
+				// biome-ignore lint/suspicious/noPrototypeBuiltins: Object.hasOwn is not supported under current tsconfig lib settings
+				if (Object.prototype.hasOwnProperty.call(current, key)) {
+					current[key] = coerceValue(current[key], type);
 				}
 			}
 			return;
 		}
 
-		const [next, ...rest] = path;
-		if (next === ARRAY_ITEM_MARKER) {
+		if (key === ARRAY_ITEM_MARKER) {
 			if (Array.isArray(current)) {
 				for (const item of current) walk(item, rest, type);
 			}
 		} else {
-			walk(current[next], rest, type);
+			walk(current[key], rest, type);
 		}
 	};
 

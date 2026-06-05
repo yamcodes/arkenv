@@ -5,6 +5,7 @@ export default defineConfig({
 		environment: "node",
 	},
 	resolve: {
+		tsconfigPaths: true,
 		alias: {
 			// Mock bun module for testing
 			bun: new URL("./src/__mocks__/bun.ts", import.meta.url).pathname,

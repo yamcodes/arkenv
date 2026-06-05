@@ -3,7 +3,7 @@ import {
 	applyCoercion,
 	type CoerceOptions,
 	findCoercionPaths,
-} from "../../coercion/shared.ts";
+} from "@/coercion/shared";
 
 /**
  * Create a coercing wrapper around an ArkType schema using JSON Schema introspection.
