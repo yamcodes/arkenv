@@ -40,7 +40,9 @@ jobs:
         run: |
           SKIP_MANYPKG=false
 
-          if [ "${{ github.event_name }}" = "pull_request" ] && [ "$HEAD_REF" = "changeset-release/dev" ]; then
+          # Skip manypkg for Changesets PRs and the automated Sync PR (dev → main)
+          if [ "${{ github.event_name }}" = "pull_request" ] && \
+             ([ "$HEAD_REF" = "changeset-release/dev" ] || [ "$HEAD_REF" = "dev" ]); then
             SKIP_MANYPKG=true
           elif [ "${{ github.event_name }}" = "push" ]; then
             if echo "$COMMIT_MESSAGE" | grep -qi "Version Packages"; then
