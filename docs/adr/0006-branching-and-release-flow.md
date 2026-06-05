@@ -139,13 +139,16 @@ We chose **Model 2: Dual-Branch Development and Release Flow**.
 
 ### AI & LLM Documentation Endpoints
 
-To align with modern conventions (like those on `fumadocs.dev`), the documentation site serves dedicated machine-readable endpoints for AI agents. This branching and release model guarantees their integrity:
+To align with official Fumadocs conventions and recommended LLM integrations (as documented on `fumadocs.dev`), the documentation site serves dedicated machine-readable endpoints for AI agents. This branching and release model guarantees their integrity:
 
-- **`/llms.txt` (Index)**: Serves a structured plain-text index of the documentation page tree.
-- **`/llms-full.txt` (Full Context)**: Serves a concatenated markdown document containing all documentation pages for single-pass ingestion.
-- **`*.md` / `*.mdx` Page Endpoints**: Rewrites request paths to serve page-specific raw markdown (e.g. `/docs/arkenv.md` or `Accept: text/markdown`).
+- **`/llms.txt` (Root Index)**: Serves a structured plain-text index of the entire documentation page tree generated from the page tree using the Loader API (`llms(source).index()`).
+- **`/docs/[package]/llms.txt` (Package-Specific Index)**: Serves a plain-text index of a specific package's documentation folder subtree using `llms(source).indexNode()`.
+- **`/llms-full.txt` (Full Context)**: Serves a concatenated markdown document containing all documentation pages for single-pass ingestion, mapped using a custom `getLLMText()` page converter.
+- **Path-based Markdown Endpoints (`*.md` / `*.mdx`)**: Serves page-specific raw markdown content. This supports both:
+  - **Suffix-based path rewrites** (e.g. requesting `/docs/quickstart.md` or `/docs/quickstart.mdx` which Next.js rewrites to the `/llms.mdx/docs/*` route).
+  - **Content-Type negotiation** (routing requests with an `Accept: text/markdown` header using the `isMarkdownPreferred` and `rewritePath` helpers in `apps/www/proxy.ts`).
 
-Production crawlers hitting these endpoints on the main domain (e.g., `arkenv.dev/llms.txt`) are guaranteed to only retrieve documentation matching released package versions. In preview environments (deployed from `dev`), these endpoints expose unreleased features, facilitating prompt engineering and agent verification during development.
+Production crawlers hitting these endpoints on the main domain (e.g., `arkenv.js.org/llms.txt`) are guaranteed to only retrieve documentation matching released package versions. In preview environments (deployed from `dev`), these endpoints expose unreleased features, facilitating prompt engineering and agent verification during development.
 
 ### Automated Release Loop
 
@@ -184,6 +187,9 @@ If documentation hotfixes (such as typo fixes or formatting corrections) need to
 - [.github/workflows/deploy-www.yml](../../.github/workflows/deploy-www.yml)
 - [.github/workflows/sync-main.yml](../../.github/workflows/sync-main.yml)
 - [apps/www/app/llms.txt/route.ts](../../apps/www/app/llms.txt/route.ts) (Fumadocs `llms.txt` page tree index)
+- [apps/www/app/docs/\[package\]/llms.txt/route.ts](../../apps/www/app/docs/\[package]/llms.txt/route.ts) (Package-specific `llms.txt` plain-text index)
 - [apps/www/app/llms-full.txt/route.ts](../../apps/www/app/llms-full.txt/route.ts) (Concatenated LLM text generator)
 - [apps/www/app/llms.mdx/docs/\[\[...slug\]\]/route.ts](../../apps/www/app/llms.mdx/docs/\[\[...slug]]/route.ts) (Page-specific markdown endpoint)
 - [apps/www/next.config.ts](../../apps/www/next.config.ts) (Rewrite rules for `.md` / `.mdx` content extensions)
+- [apps/www/proxy.ts](../../apps/www/proxy.ts) (Content-type negotiation routing based on `Accept` header)
+- [apps/www/source.config.ts](../../apps/www/source.config.ts) (Fumadocs collection setup and postprocess options)
