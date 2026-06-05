@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       force_override:
-        description: '⚠️ ADMIN ONLY: Bypass doc-only safety check'
+        description: "⚠️ ADMIN ONLY: Bypass doc-only safety check"
         required: false
         type: boolean
         default: false
@@ -21,7 +21,7 @@ jobs:
         id: generate-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.APP_ID }}
+          client-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Checkout Repo
@@ -35,8 +35,8 @@ jobs:
           # ALWAYS configure git and fetch main first so git knows about it
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main:main
-          
+          git fetch origin main
+
           if [ "${{ github.event.inputs.force_override }}" = "true" ]; then
             echo "⚠️ Admin override enabled. Bypassing safety checks."
           else
