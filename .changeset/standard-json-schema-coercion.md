@@ -2,9 +2,9 @@
 "arkenv": patch
 ---
 
-#### Add opt-in Standard JSON Schema coercion to `arkenv/standard`
+#### Add Standard JSON Schema coercion to `arkenv/standard`
 
-Introduce opt-in type coercion for standard mode (`arkenv/standard`). This coercion only works if the validator is a standard JSON Schema compliant validator (e.g., Zod, Valibot, or custom schemas that implement the `StandardJSONSchemaV1` interface). This enables coercion for environment variables without relying on ArkType's runtime footprint.
+Introduce opt-out type coercion for standard mode (`arkenv/standard`). This coercion only works if the validator is a standard JSON Schema compliant validator (e.g., Zod, Valibot, or custom schemas that implement the `StandardJSONSchemaV1` interface). This enables coercion for environment variables without relying on ArkType's runtime footprint.
 
 Usage:
 
@@ -20,5 +20,17 @@ const env = createEnv(
 	{
 		coerce: true, // Enable Standard JSON Schema-based coercion
 	}
+);
+```
+
+If you need to disable coercion, explicitly pass `{ coerce: false }` in your configuration:
+
+```ts
+import arkenv from "arkenv/standard";
+import { z } from "zod";
+
+const env = arkenv(
+  { PORT: z.number() },
+  { coerce: false }
 );
 ```

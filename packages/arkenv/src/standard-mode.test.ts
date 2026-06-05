@@ -134,13 +134,25 @@ const createMockStandardJSONSchema = <TOutput>(
 });
 
 describe("Standard Mode Coercion", () => {
-	it("should not coerce by default", () => {
+	it("should coerce by default", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		const env = createEnv({
+			NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }),
+		});
+
+		expect(env.NUMBER_VAR).toBe(42);
+
+		vi.unstubAllEnvs();
+	});
+
+	it("should not coerce when coerce is false", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 
 		expect(() =>
 			createEnv(
 				{ NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }) },
-				{ coerce: false }, // Explicit default
+				{ coerce: false },
 			),
 		).toThrow(/Expected number, received string/);
 
@@ -205,7 +217,7 @@ describe("Standard Mode Coercion", () => {
 				{ coerce: true },
 			),
 		).toThrow(
-			/Hint: 'coerce: true' enabled, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
+			/Hint: coercion is enabled by default, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
 		);
 
 		vi.unstubAllEnvs();

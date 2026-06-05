@@ -29,7 +29,7 @@ export type ParseStandardConfig = {
 	 * (e.g. Zod, Valibot).
 	 *
 	 * @see https://standard-schema.dev
-	 * @default false
+	 * @default true
 	 */
 	coerce?: boolean;
 	/**
@@ -154,7 +154,7 @@ export function parseStandard(
 	const {
 		env = process.env,
 		onUndeclaredKey = "delete",
-		coerce = false,
+		coerce = true,
 		arrayFormat = "comma",
 	} = config;
 	const output: Record<string, unknown> = {};
@@ -212,7 +212,7 @@ export function parseStandard(
 				let message = issue.message;
 
 				if (coerce && missingJsonSchemaKeys.includes(key)) {
-					message += ` (Hint: 'coerce: true' enabled, but the validator for '${key}' lacks Standard JSON Schema support.)`;
+					message += ` (Hint: coercion is enabled by default, but the validator for '${key}' lacks Standard JSON Schema support.)`;
 				}
 
 				errors.push({
