@@ -96,6 +96,14 @@ When you need to fix a typo or make a cosmetic change to the live documentation 
    ```
    This ensures the fix hits `main` instantly while preventing Git history drift.
 
+#### Use Case 4: Coordinating a Major Version (e.g., v1)
+When working on a massive marketing push, docs facelift, or breaking API changes that will take weeks or months to coordinate:
+1. **Create a long-lived branch:** Branch off `dev` and name it `next` or `v1`. 
+2. **Develop in parallel:** Merge all breaking code and marketing doc updates into `v1`. Meanwhile, you can continue merging normal bug fixes and minor features into `dev` and releasing them to `main` as usual.
+3. **Prevent drift:** Periodically merge `dev` into `v1` (e.g., weekly) to ensure `v1` receives all the hotfixes from production and doesn't suffer a massive merge conflict at the end.
+4. **Previews & Betas:** Vercel will automatically deploy the `v1` branch as a Preview environment for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
+5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
+
 ## Deployment rate limiter
 
 To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
