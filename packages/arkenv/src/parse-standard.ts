@@ -86,11 +86,9 @@ export function parseStandard(
 		}
 
 		if (hasJsonSchema) {
-			coercedEnv = applyCoercion(
-				coercedEnv,
-				findCoercionPaths(jsonSchema),
-				{ arrayFormat },
-			) as Record<string, unknown>;
+			coercedEnv = applyCoercion(coercedEnv, findCoercionPaths(jsonSchema), {
+				arrayFormat,
+			}) as Record<string, unknown>;
 		}
 	}
 

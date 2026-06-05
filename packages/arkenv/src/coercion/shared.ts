@@ -55,7 +55,9 @@ export const findCoercionPaths = (
 	}
 
 	if ("enum" in node && Array.isArray(node.enum)) {
-		if (node.enum.some((v) => typeof v === "number" || typeof v === "boolean")) {
+		if (
+			node.enum.some((v) => typeof v === "number" || typeof v === "boolean")
+		) {
 			results.push({ path: [...path], type: "primitive" });
 		}
 	}
@@ -63,13 +65,19 @@ export const findCoercionPaths = (
 	const type = node.type;
 	if (type === "number" || type === "integer" || type === "boolean") {
 		results.push({ path: [...path], type: "primitive" });
-	} else if (type === "string" && "format" in node && (node.format === "date-time" || node.format === "date")) {
+	} else if (
+		type === "string" &&
+		"format" in node &&
+		(node.format === "date-time" || node.format === "date")
+	) {
 		results.push({ path: [...path], type: "date" });
 	} else if (type === "object") {
 		if (node.properties && Object.keys(node.properties).length > 0) {
 			results.push({ path: [...path], type: "object" });
 			for (const key in node.properties) {
-				results.push(...findCoercionPaths(node.properties[key], [...path, key]));
+				results.push(
+					...findCoercionPaths(node.properties[key], [...path, key]),
+				);
 			}
 		}
 	} else if (type === "array") {
@@ -80,7 +88,9 @@ export const findCoercionPaths = (
 					results.push(...findCoercionPaths(item, [...path, String(index)]));
 				});
 			} else {
-				results.push(...findCoercionPaths(node.items, [...path, ARRAY_ITEM_MARKER]));
+				results.push(
+					...findCoercionPaths(node.items, [...path, ARRAY_ITEM_MARKER]),
+				);
 			}
 		}
 	}
@@ -164,7 +174,7 @@ export const applyCoercion = (
 				return;
 			}
 
-			if (Object.prototype.hasOwnProperty.call(current, k)) {
+			if (Object.hasOwn(current, k)) {
 				const v = current[k];
 				if (type === "array" && typeof v === "string") {
 					current[k] = splitString(v);

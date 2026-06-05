@@ -203,8 +203,10 @@ describe("Standard Mode Coercion", () => {
 					},
 				} as any,
 				{ coerce: true },
-			)
-		).toThrow(/Hint: 'coerce: true' enabled, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/);
+			),
+		).toThrow(
+			/Hint: 'coerce: true' enabled, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
+		);
 
 		vi.unstubAllEnvs();
 	});
