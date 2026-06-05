@@ -4,6 +4,9 @@ import { defineProject } from "vitest/config";
 export default defineProject({
 	test: {
 		name: "@arkenv/nextjs",
+		unstubEnvs: true,
+		restoreMocks: true,
+		unstubGlobals: true,
 	},
 	resolve: {
 		tsconfigPaths: true,

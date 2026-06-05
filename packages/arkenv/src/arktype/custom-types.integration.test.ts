@@ -1,12 +1,8 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createEnv } from "../create-env.ts";
 import { type } from "../index.ts";
 
 describe("createEnv + type + scope + types integration", () => {
-	afterEach(() => {
-		vi.unstubAllEnvs();
-	});
-
 	describe("string.host integration", () => {
 		it("should validate localhost through createEnv", () => {
 			vi.stubEnv("HOST", "localhost");

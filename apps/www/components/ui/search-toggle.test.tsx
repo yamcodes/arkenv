@@ -11,7 +11,6 @@ vi.mock("fumadocs-ui/contexts/search", () => ({
 describe("SearchToggle", () => {
 	afterEach(() => {
 		cleanup();
-		vi.restoreAllMocks();
 		vi.unstubAllGlobals();
 	});
 

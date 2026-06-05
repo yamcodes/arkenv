@@ -5,6 +5,9 @@ export default defineProject({
 		name: "arkenv",
 		include: ["**/*.{test,spec,test-d}.?(c|m)[jt]s?(x)"],
 		// globalSetup: ["test/setup-attest.ts"],
+		unstubEnvs: true,
+		restoreMocks: true,
+		unstubGlobals: true,
 	},
 	resolve: {
 		tsconfigPaths: true,

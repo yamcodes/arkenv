@@ -181,7 +181,6 @@ describe("codegen process", () => {
 		if (fs.existsSync(tempDir)) {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
-		vi.restoreAllMocks();
 	});
 
 	it("should parse file, resolve relative imports, and write generated code", () => {
@@ -293,7 +292,6 @@ describe("withArkEnv wrapper", () => {
 		if (fs.existsSync(tempDir)) {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
-		vi.restoreAllMocks();
 	});
 
 	it("should pass nextConfig through unchanged", () => {

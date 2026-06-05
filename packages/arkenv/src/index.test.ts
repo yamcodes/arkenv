@@ -1,13 +1,7 @@
-import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import arkenv, { createEnv } from "./index";
 
 describe("index.ts exports", () => {
-	afterEach(() => {
-		// Restore mocks and unstub all environment variables
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-	});
-
 	it("should export createEnv as default export", () => {
 		expect(arkenv).toBe(createEnv);
 		expect(typeof arkenv).toBe("function");

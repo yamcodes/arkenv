@@ -32,8 +32,6 @@ describe("Standard Mode Type Inference", () => {
 		expect(env.STRING_VAR).toBe("test-string");
 		expect(env.NUMBER_VAR).toBe(123);
 		expect(env.BOOLEAN_VAR).toBe(true);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should not have ArkType-specific types in standard mode", () => {
@@ -45,8 +43,6 @@ describe("Standard Mode Type Inference", () => {
 
 		// Verify the type is a plain string, not wrapped in ArkType types
 		expectTypeOf(env.TEST_VAR).toBeString();
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should correctly infer object types from Standard Schema", () => {
@@ -62,8 +58,6 @@ describe("Standard Mode Type Inference", () => {
 
 		expectTypeOf(env.OBJECT_VAR).toEqualTypeOf<ExpectedOutput>();
 		expect(env.OBJECT_VAR).toEqual({ foo: "test", bar: 42 });
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should throw error when ArkType DSL strings are used in standard mode", () => {
@@ -96,8 +90,6 @@ describe("Standard Mode Type Inference", () => {
 		expectTypeOf(env.VAR1).toBeString();
 		expectTypeOf(env.VAR2).toBeNumber();
 		expectTypeOf(env.VAR3).toEqualTypeOf<{ nested: string }>();
-
-		vi.unstubAllEnvs();
 	});
 });
 
@@ -142,8 +134,6 @@ describe("Standard Mode Coercion", () => {
 		});
 
 		expect(env.NUMBER_VAR).toBe(42);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should not coerce when coerce is false", () => {
@@ -155,8 +145,6 @@ describe("Standard Mode Coercion", () => {
 				{ coerce: false },
 			),
 		).toThrow(/Expected number, received string/);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should coerce numbers and booleans when coerce is true", () => {
@@ -173,8 +161,6 @@ describe("Standard Mode Coercion", () => {
 
 		expect(env.NUMBER_VAR).toBe(42);
 		expect(env.BOOLEAN_VAR).toBe(true);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should coerce dates when coerce is true", () => {
@@ -194,8 +180,6 @@ describe("Standard Mode Coercion", () => {
 		expect((env.DATE_VAR as Date).toISOString()).toBe(
 			"2023-01-01T00:00:00.000Z",
 		);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should provide smart hints when coerce is true but JSON schema is missing", () => {
@@ -219,8 +203,6 @@ describe("Standard Mode Coercion", () => {
 		).toThrow(
 			/Hint: coercion is enabled by default, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
 		);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should provide smart hints by default when JSON schema is missing", () => {
@@ -241,8 +223,6 @@ describe("Standard Mode Coercion", () => {
 		).toThrow(
 			/Hint: coercion is enabled by default, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
 		);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should not provide smart hints when coerce is false and JSON schema is missing", () => {
@@ -266,8 +246,6 @@ describe("Standard Mode Coercion", () => {
 
 		expect(t).toThrow("Expected number, received string");
 		expect(t).not.toThrow(/Hint/);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should support fallback coercion triggers: toJSONSchema and toStandardJSONSchema.v1", () => {
@@ -320,7 +298,5 @@ describe("Standard Mode Coercion", () => {
 
 		expect(env.ZOD_MINI_VAR).toBe(42);
 		expect(env.STNL_VAR).toBe(true);
-
-		vi.unstubAllEnvs();
 	});
 });
