@@ -55,7 +55,7 @@ When bootstrapping with the CLI, it generates three separate schema files under 
 By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to compile your `runtimeEnv` block. This is why the client-side schema imports from `./generated/env.gen` rather than `@arkenv/nextjs/client`. To opt out, simply import from `@arkenv/nextjs/client` directly and provide your own `runtimeEnv` mapping.
 :::
 
-```ts title="src/env/internal/shared.ts"
+```ts title="src/env/internal/shared.ts" twoslash
 import { type } from "@arkenv/nextjs/shared";
 
 /**
@@ -67,7 +67,30 @@ export const SharedSchema = type({
 });
 ```
 
-```ts title="src/env/client.ts"
+```ts title="src/env/client.ts" twoslash
+// @filename: /env/internal/shared.ts
+import { type } from "@arkenv/nextjs/shared";
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+// @filename: /env/generated/env.gen.ts
+import type { type as at, distill } from "arktype";
+export { type } from "@arkenv/nextjs/client";
+export default function arkenv<
+	const TSchema extends Record<string, any> = {},
+	const TExtends extends readonly unknown[] = [],
+>(
+	schema: TSchema,
+	options?: {
+		extends?: [...TExtends];
+	},
+): Readonly<distill.Out<at.infer<TSchema>>> {
+	return {} as any;
+}
+
+// @filename: /env/client.ts
+// ---cut---
 import arkenv from "./generated/env.gen";
 import { SharedSchema } from "./internal/shared";
 
@@ -81,7 +104,13 @@ export const env = arkenv(
 );
 ```
 
-```ts title="src/env/server.ts"
+```ts title="src/env/server.ts" twoslash
+// @filename: /env/client.ts
+import type { type as at, distill } from "arktype";
+export const env = {} as Readonly<distill.Out<at.infer<{ NEXT_PUBLIC_API_URL: "string" }>>>;
+
+// @filename: /env/server.ts
+// ---cut---
 import arkenv from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./client";
 

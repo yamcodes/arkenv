@@ -61,7 +61,26 @@ When bootstrapping with the CLI, it generates a single `env.ts` file where you d
 By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to build and inject the `runtimeEnv` block at compile time. This is why the schema file imports from `@/generated/env.gen` rather than `@arkenv/nextjs` directly. To opt out, simply import from `@arkenv/nextjs` directly and provide your own `runtimeEnv` mapping.
 :::
 
-```ts title="src/env.ts"
+```ts title="src/env.ts" twoslash
+// @filename: /generated/env.gen.ts
+import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import type { type as at, distill } from "arktype";
+export { type } from "@arkenv/nextjs";
+
+export default function arkenv<
+	const TServer = {},
+	const TClient = {},
+	const TShared = {},
+>(options: {
+	server?: TServer;
+	client?: TClient;
+	shared?: TShared;
+}): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+	return {} as any;
+}
+
+// @filename: /env.ts
+// ---cut---
 import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
