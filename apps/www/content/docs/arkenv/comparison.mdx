@@ -6,11 +6,11 @@ icon: Scale
 
 ## Comparison cheatsheet
 
-| Feature                         | **ArkEnv** | T3 Env | vite-plugin-validate-env | znv | envalid | dotenv-safe |
+| Feature                         | **ArkEnv** | T3 Env | vite-plugin-validate-env | znv | Envalid | dotenv-safe |
 | :------------------------------ | :--------: | :----: | :----------------------: | :-: | :-----: | :---------: |
 | **Native ArkType support\***    |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
 | **Standard Schema**             |      ✅     |    ✅   |             ✅            |  ❌  |    ❌    |      ❌      |
-| **Typesafe**                    |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
+| **Typesafety**                  |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
 | **Automatic coercion**          |      ✅     |    ❌   |             ❌            |  ✅  |    ✅    |      ❌      |
 | **Default values**              |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
 | **First-class Vite support**    |      ✅     |    ❌   |             ✅            |  ❌  |    ❌    |      ❌      |
@@ -21,9 +21,11 @@ icon: Scale
 
 \* ArkType is supported directly without the need to use ArkType's `type` for each key separately.
 
-✅ Built-in / first-class support
+Sub-feature statuses:
 
-❌ Not supported
+- ✅ Built-in / first-class support
+- ❌ Not supported
+- — Not applicable / not required by runtime
 
 ## Detailed comparisons
 
@@ -56,33 +58,27 @@ However, once you move beyond "hello world" territory, the DIY path starts to fe
 
 After years of building enterprise-scale applications, I realized that while DIY is possible, a battle-tested, unified solution is almost always better. ArkEnv is that solution.
 
-### T3 env
+### T3 Env
 
-[T3 Env](https://env.t3.gg) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ.
+T3 Env is a major inspiration for ArkEnv, but they differ significantly in design and boilerplate:
 
-T3 Env follows a "Next.js-first" philosophy, including an explicit client/server split in the "agnostic core". This means that even if you're building a simple Node server and never have to deal with leaking sensitive variables to the client, you'll still have the cognitive overhead of bucketing variables into `server` or `client` keys.
+- **Fewer moving parts** - In Next.js, T3 Env requires maintaining a dedicated `runtimeEnv` object to inline client variables (e.g. `NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL`). You have to sync this extra moving part with your schema, or your code can break silently. ArkEnv eliminates this friction by generating mappings automatically under the hood. (You can opt-out of this behavior if you don't want codegen.)
+- **Flat by default** - T3 Env forces strict client/server blocks even in its agnostic core, which is redundant for simple Node scripts or server-only code. ArkEnv defaults to a flat schema, and only splits client/server boundaries in fullstack frameworks like Next.js.
+- **Richer feature set** - ArkEnv ships with more features like native ArkType synergy, automatic type coercion, first-class Vite and Bun fullstack dev server integration, and a dedicated CLI.
 
-#### For Next.js
+:::note
+T3 Env provides a dedicated package for Nuxt, which is not yet natively supported by ArkEnv (though we are [open to PRs](https://github.com/yamcodes/arkenv/issues/1182)).
+:::
 
-While T3 Env is widely adopted in the Next.js ecosystem, ArkEnv officially supports Next.js via the [@arkenv/nextjs](/docs/nextjs) package, bringing native ArkType support and automatic coercion to Next.js projects.
-
-#### For everything else
-
-If you're building a Vite app, a Node server, a [Bun fullstack app](https://bun.com/docs/guides/ecosystem/react), a CLI tool, or even a Solid Start project, ArkEnv can cover your needs. We provide [official examples](/docs/arkenv/examples) for these use cases.
-
-Even if you aren't ready to commit fully to ArkType, ArkEnv's support for [Standard Schema](https://standardschema.dev/) means you can keep using Zod, Valibot, or other compliant validators while benefiting from our specific framework features.
-
-By choosing ArkEnv, you gain access to features like [automatic coercion](/docs/arkenv/coercion), [native ArkType synergy](https://github.com/yamcodes/arkenv/tree/main/examples/basic), and [first-class Vite support](/docs/vite-plugin) that are missing from T3 Env.
-
-### Vite-plugin-validate-env
+### vite-plugin-validate-env
 
 [@julr/vite-plugin-validate-env](https://github.com/julien-r44/vite-plugin-validate-env) is a specialized plugin for validating variables at build time. It's a great tool for focused Vite projects and supports any Standard Schema validator.
 
-I really like this plugin and even use it in some of my production code. However, ArkEnv provides a more holistic solution. Our [first-class Vite plugin](/docs/vite-plugin) offers equivalent functionality but extends it with features like global coercion and native ArkType support.
+I really like this plugin and have even used it in some of my production code. However, ArkEnv provides a more holistic solution. Our [first-class Vite plugin](/docs/vite-plugin) offers equivalent functionality but extends it with features like global coercion and native ArkType support.
 
 Notably, while `@julr/vite-plugin-validate-env` focuses primarily on build-time checks, ArkEnv makes it easy to [use typesafe environment variables in your Vite config](/docs/vite-plugin/arkenv-in-viteconfig) itself - a pain point we've addressed specifically.
 
-### Znv
+### znv
 
 [znv](https://github.com/lostfictions/znv) is a lean, zero-dependency validator for Zod. Its elegant approach to coercion was a significant influence on ArkEnv's own design.
 
@@ -92,11 +88,11 @@ Unlike znv, we maintain first-class integrations for popular frameworks.
 
 ### Envalid
 
-[envalid](https://github.com/af/envalid) is the "Cadillac" of environment validators - legendary, robust, and widely adopted.
+[Envalid](https://github.com/af/envalid) is the "Cadillac" of environment validators - legendary, robust, and widely adopted.
 
-However, it was designed for a slightly different era of the web. It lacks native support for modern validation libraries like Zod, ArkType, or Valibot (without manual wrappers) and doesn't provide first-class hooks into modern toolchains like Vite or Bun.
+However, it was designed for a slightly different era of the web. It lacks native support for modern validation libraries like Zod, ArkType, or Valibot (without manual wrappers) and doesn't provide first-class hooks into modern toolchains like Next.js, Vite, or Bun.
 
-Unless you are maintaining a legacy codebase where `envalid` is already deeply entrenched, ArkEnv offers a modern, typesafe alternative that fits perfectly into today's ecosystem.
+Unless you are maintaining a legacy codebase where Envalid is already deeply entrenched, ArkEnv offers a modern, typesafe alternative that fits perfectly into today's ecosystem.
 
 ### dotenv-safe
 
