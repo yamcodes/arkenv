@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
+import ts from "typescript";
 
 const require = createRequire(import.meta.url);
 
@@ -30,21 +31,15 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
 		compilerOptions: {
+			module: ts.ModuleKind.ESNext,
+			moduleResolution: ts.ModuleResolutionKind.Bundler,
+			target: ts.ScriptTarget.ES2022,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
 				"arkenv/core": [path.join(root, "packages/arkenv/src/core.ts")],
 				"@/*": [path.join(root, "packages/arkenv/src/*")],
 				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
-				"@arkenv/nextjs/server": [
-					path.join(root, "packages/nextjs/src/server.ts"),
-				],
-				"@arkenv/nextjs/client": [
-					path.join(root, "packages/nextjs/src/client.ts"),
-				],
-				"@arkenv/nextjs/shared": [
-					path.join(root, "packages/nextjs/src/shared.ts"),
-				],
 				"@arkenv/vite-plugin": [
 					path.join(root, "packages/vite-plugin/src/index.ts"),
 				],
@@ -101,7 +96,56 @@ declare global {
 	const match: typeof a.match
 
 	type Prettify<t> = t extends infer o ? { [K in keyof o]: o[K] } & {} : never
-}`,
+}
+
+declare module "@arkenv/nextjs/client" {
+	import type { type as at, distill } from "arktype";
+	export const type: typeof at;
+	export function createEnv<
+		const TSchema = {},
+		const TExtends extends readonly unknown[] = [],
+	>(
+		schema: TSchema,
+		options?: {
+			extends?: [...TExtends];
+			runtimeEnv?: Record<string, unknown>;
+		},
+	): Readonly<distill.Out<at.infer<TSchema>> & TExtends[number]>;
+	export default createEnv;
+}
+
+declare module "@arkenv/nextjs/server" {
+	import type { type as at, distill } from "arktype";
+	export const type: typeof at;
+	export function createEnv<
+		const TSchema = {},
+		const TExtends extends readonly unknown[] = [],
+	>(
+		schema: TSchema,
+		options?: {
+			extends?: [...TExtends];
+			runtimeEnv?: Record<string, unknown>;
+		},
+	): Readonly<distill.Out<at.infer<TSchema>> & TExtends[number]>;
+	export default createEnv;
+}
+
+declare module "@arkenv/nextjs/shared" {
+	import type { type as at, distill } from "arktype";
+	export const type: typeof at;
+	export function createEnv<
+		const TSchema = {},
+		const TExtends extends readonly unknown[] = [],
+	>(
+		schema: TSchema,
+		options?: {
+			extends?: [...TExtends];
+			runtimeEnv?: Record<string, unknown>;
+		},
+	): Readonly<distill.Out<at.infer<TSchema>> & TExtends[number]>;
+	export default createEnv;
+}
+`,
 		},
 	},
 	filterNode: (node: TwoslashNode) => {

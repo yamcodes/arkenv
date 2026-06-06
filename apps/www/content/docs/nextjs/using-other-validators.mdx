@@ -1,52 +1,95 @@
 ---
-title: Custom Validators (Zod & Valibot)
+title: Zod, Valibot, and other Standard Schema validators
+icon: Blocks
 description: Mix and match ArkType with Zod, Valibot, or other Standard Schema compatible libraries.
 ---
 
 You can freely mix Zod or Valibot schemas with standard schemas. Standard Schema is supported out of the box.
 
-### Unified 1-File Layout
+### Simple layout
 
-Here is an example using Zod with the 1-file codegen layout:
+Here is an example using Zod or Valibot with the simple layout:
 
-```ts title="src/env.ts" twoslash
-// @filename: generated/env.gen.ts
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
-import type { type as at, distill } from "arktype";
-export { type } from "@arkenv/nextjs";
-export default function arkenv<
-	const TServer = {},
-	const TClient = {},
-	const TShared = {},
->(options: {
-	server?: TServer;
-	client?: TClient;
-	shared?: TShared;
-}): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
-	return {} as any;
-}
+<Tabs items={['Zod', 'Valibot']}>
+  <Tab value="Zod">
+    ```ts title="src/env.ts" twoslash
+    // @filename: generated/env.gen.ts
+    import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+    import type { type as at, distill } from "arktype";
+    export { type } from "@arkenv/nextjs";
+    export default function arkenv<
+    	const TServer = {},
+    	const TClient = {},
+    	const TShared = {},
+    >(options: {
+    	server?: TServer;
+    	client?: TClient;
+    	shared?: TShared;
+    }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+    	return {} as any;
+    }
 
-// @filename: env.ts
-// ---cut---
-import arkenv from "./generated/env.gen";
-import { z } from "zod";
+    // @filename: env.ts
+    // ---cut---
+    import arkenv from "./generated/env.gen";
+    import { z } from "zod";
 
-export const env = arkenv({
-	server: {
-		DATABASE_URL: z.string().url(),
-	},
-	client: {
-		NEXT_PUBLIC_API_URL: z.string().url(),
-	},
-	shared: {
-		NODE_ENV: z.enum(["development", "production", "test"]),
-	},
-});
-```
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: z.string().url(),
+    	},
+    	client: {
+    		NEXT_PUBLIC_API_URL: z.string().url(),
+    	},
+    	shared: {
+    		NODE_ENV: z.enum(["development", "production", "test"]),
+    	},
+    });
+    ```
+  </Tab>
 
-### 3-File Layout
+  <Tab value="Valibot">
+    ```ts title="src/env.ts" twoslash
+    // @filename: generated/env.gen.ts
+    import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+    import type { type as at, distill } from "arktype";
+    export { type } from "@arkenv/nextjs";
+    export default function arkenv<
+    	const TServer = {},
+    	const TClient = {},
+    	const TShared = {},
+    >(options: {
+    	server?: TServer;
+    	client?: TClient;
+    	shared?: TShared;
+    }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+    	return {} as any;
+    }
 
-You can freely mix Zod or Valibot schemas with the 3-file layout:
+    // @filename: env.ts
+    // ---cut---
+    import arkenv from "./generated/env.gen";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: v.pipe(v.string(), v.url()),
+    	},
+    	client: {
+    		NEXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
+    	},
+    	shared: {
+    		NODE_ENV: v.picklist(["development", "production", "test"]),
+    	},
+    });
+    ```
+  </Tab>
+</Tabs>
+
+
+### Strict layout
+
+You can freely mix Zod or Valibot schemas with the strict layout:
 
 <Tabs items={['Zod', 'Valibot']}>
   <Tab value="Zod">

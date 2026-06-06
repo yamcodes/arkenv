@@ -1,4 +1,4 @@
-import { rehypeCodeDefaultOptions, remarkNpm } from "fumadocs-core/mdx-plugins";
+import { rehypeCodeDefaultOptions, remarkNpm, remarkMdxFiles } from "fumadocs-core/mdx-plugins";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
 import remarkDirective from "remark-directive";
@@ -119,6 +119,7 @@ export default defineConfig({
 	mdxOptions: {
 		rehypePlugins: [rehypeOptimizeInternalLinks],
 		remarkPlugins: [
+			remarkMdxFiles,
 			remarkGemoji,
 			remarkNpm,
 			remarkDirective,

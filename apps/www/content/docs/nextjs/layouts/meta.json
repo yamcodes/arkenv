@@ -1,0 +1,8 @@
+{
+	"title": "Layouts",
+	"defaultOpen": true,
+	"pages": [
+		"[Zap][Simple](/docs/nextjs/layouts/simple-layout)",
+		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict-layout)"
+	]
+}

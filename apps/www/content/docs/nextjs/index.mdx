@@ -1,5 +1,5 @@
 ---
-title: Next.js Integration
+title: Introduction
 icon: Album
 description: Validate and secure your Next.js environment variables with zero-boilerplate scaffolding and a seamless developer experience.
 ---
@@ -40,56 +40,42 @@ The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
   </Tab>
 </Tabs>
 
-The interactive wizard will detect Next.js and prompt you for the layout structure. The **Unified (Recommended)** layout setup is selected by default.
-
-### Skipping prompts (flags)
-
-- **Simple Mode**: Force the 1-file layout and skip prompts.
-  ```bash
-  npx @arkenv/cli@latest init --simple
-  ```
-- **Strict Mode**: Force the 3-file layout and skip prompts.
-  ```bash
-  npx @arkenv/cli@latest init --strict
-  ```
-
 ---
 
-## Layout Strategies
+## Layout strategies
 
 ArkEnv supports two layout structures to match your security and developer experience preferences:
 
-### 1. Unified 1-File Layout (Recommended)
-
-Defines both client and server schemas in a single file (`src/env.ts`), eliminating the friction of managing imports and boundaries across multiple environment files.
-
-- Fully features a runtime proxy to prevent server-side secrets from leaking to the client.
-- Zero-boilerplate code generation.
-- See the [Unified Config Guide](/docs/nextjs/unified-config) for manual setup and usage details.
-
-### 2. Strict Multi-File Layout
-
-Defines client and server schemas in separate files (`env/client.ts`, `env/server.ts`, `env/internal/shared.ts`).
-
-- Compile-time locked server secrets to prevent browser bundling.
-- Perfect for applications where the environment variable names themselves are considered highly sensitive.
-- See the [Strict Layout Manual Setup](/docs/nextjs/manual-setup) for a step-by-step setup guide.
-
----
-
-## Custom Validators
-
-ArkEnv uses ArkType by default, but also supports any Standard Schema compatible library (like Zod or Valibot). See the [Custom Validators Guide](/docs/nextjs/using-other-validators) for code examples.
+<Cards>
+  <Card 
+    title="Simple layout (recommended)" 
+    href="/docs/nextjs/simple-layout"
+  >
+    Defines both client and server schemas in a single file (`src/env.ts`). Fully features a runtime proxy to prevent server secrets from leaking to the client. Zero-boilerplate code generation.
+  </Card>
+  <Card 
+    title="Strict layout" 
+    href="/docs/nextjs/strict-layout"
+  >
+    Defines client and server schemas in separate files (`env/client.ts`, `env/server.ts`, `env/internal/shared.ts`). Compile-time locked server secrets to prevent browser bundling.
+  </Card>
+</Cards>
 
 ---
 
-## The Danger of Shared Variables
+## Custom validators
+
+ArkEnv uses ArkType by default, but also supports any Standard Schema compatible library (like Zod or Valibot). See the [Custom validators](/docs/nextjs/using-other-validators) guide for code examples.
+
+---
+
+## The danger of shared variables
 
 :::warning
 Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
 :::
 
-### The Undefined Fallback Bug
+### The undefined fallback bug
 
 Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
 If you define a custom variable in `shared` with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
