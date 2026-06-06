@@ -63,9 +63,9 @@ After years of building enterprise-scale applications, I realized that while DIY
 
 [T3 Env](https://env.t3.gg) is a major inspiration for ArkEnv. While both libraries provide typesafe environment validation, they differ in design and boilerplate:
 
-- In Next.js, T3 Env requires you to manually maintain `runtimeEnv` block (e.g. `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) so Next.js can inline variables. This violates the principle of locality - any time you change a variable, you have to remember to update both the schema and the `runtimeEnv` block. ArkEnv's compiler automatically scans your schema and generates these mappings for you.
-- T3 Env enforces a strict client/server split. You are always forced to group keys into `server` and `client` blocks, which is redundant for simple Node.js servers and other non-Next.js usecases. ArkEnv uses a flat, simple config by default and securely splits between client/server variables for fullstack frameworks like Next.js. 
-- ArkEnv has even more features: native ArkType synergy, automatic coercion, first-class Vite integration, and a CLI out of the box.
+- **Manual runtime mapping** - In Next.js, T3 Env requires you to manually maintain a `runtimeEnv` object (e.g., `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) so the bundler can inline client variables. This violates the single source of truth principle—every time you change a variable, you have to update both the schema and the mapping. If you forget to update one, your code silently breaks. ArkEnv's compiler automatically scans your schema and generates these mappings under the hood.
+- **Enforced client/server split** - T3 Env forces you to group keys into strict `server` and `client` blocks, which adds noise and boilerplate for simple Node.js servers, CLIs, or non-Next.js projects. ArkEnv uses a flat schema by default and securely handles client/server boundaries based on the target framework.
+- **Extended feature set** - ArkEnv comes with several built-in capabilities that T3 Env lacks, such as native ArkType synergy (where types flow seamlessly from schema to usage without manual `type(...)` wrappers), automatic type coercion, first-class Vite integration, and a dedicated CLI out of the box.
 
 :::note
 T3 Env provides a dedicated package for Nuxt, which is not yet natively supported by ArkEnv (though we are [open to PRs](https://github.com/yamcodes/arkenv/issues/1182)).
