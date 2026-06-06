@@ -1,5 +1,6 @@
 {
 	"title": "Layouts",
+	"icon": "Layers",
 	"defaultOpen": true,
 	"pages": [
 		"[Zap][Simple (Recommended)](/docs/nextjs/layouts/simple)",
