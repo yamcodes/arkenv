@@ -52,7 +52,7 @@ The easiest way to bootstrap the strict layout is with the [ArkEnv CLI](/docs/cl
 When bootstrapping with the CLI, it generates three separate schema files under `src/env/`:
 
 :::note
-By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to compile your `runtimeEnv` block. This is why the client-side schema imports from `./generated/env.gen` rather than `@arkenv/nextjs/client`.
+By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to compile your `runtimeEnv` block. This is why the client-side schema imports from `./generated/env.gen` rather than `@arkenv/nextjs/client`. To opt out, simply import from `@arkenv/nextjs/client` directly and provide your own `runtimeEnv` mapping.
 :::
 
 ```ts title="src/env/internal/shared.ts"
