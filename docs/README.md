@@ -2,7 +2,7 @@
 
 This directory contains internal contributor-facing documentation and architectural decision records to help manage and develop the repository.
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > This directory is for **internal contributor documentation** and **community health only**.
 > The official documentation for ArkEnv is located at [arkenv.js.org/docs](https://arkenv.js.org/docs).
 
