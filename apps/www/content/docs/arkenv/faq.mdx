@@ -10,9 +10,9 @@ icon: MessageCircleQuestionMark
 
 We’ve seen teams struggle with environment variables in JavaScript projects. Because the runtime environment is an external dependency, it is **notoriously brittle**. Yet, we often avoid validating it because it feels like boilerplate. It’s tempting to assert with a quick `process.env.MY_VAR as string` and hope for the best.
 
-But **hope isn't an architecture**. Variables go mysteriously missing during a CI/CD deployment. A boolean flags as `"false"` (a truthy string) and breaks your conditional logic. A teammate introduces a new variable without announcing it, leaving everyone else to **chase down mysterious runtime errors**.
+But hope is not an architecture: variables go mysteriously missing during a CI/CD deployment, a boolean flags as `"false"` (a truthy string) and breaks your conditional logic. At some point, someone introduces a new variable without announcing it, leaving everyone else to chase down mysterious runtime errors.
 
-We built ArkEnv to **eliminate this exact class of failures**. With a single initialization command (`npx @arkenv/cli@latest init`), you establish a **fail-safe mechanism** that guarantees your runtime configuration exactly mirrors your technical specifications **before a single line of application code executes**.
+We built ArkEnv to **eliminate this exact class of failures**. With a single initialization command (`npx @arkenv/cli@latest init`), you establish a **fail-safe mechanism** that guarantees your runtime configuration exactly mirrors your technical specification **before a single line of application code executes**.
 
 ArkEnv delivers native framework plugins, automated type coercion, and schema-aware AI agent support out-of-the-box. Read our full design philosophy in the [intro](/docs/arkenv) section.
 
