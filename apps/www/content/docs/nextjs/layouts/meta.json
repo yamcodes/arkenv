@@ -2,7 +2,7 @@
 	"title": "Layouts",
 	"defaultOpen": true,
 	"pages": [
-		"[Zap][Simple (Recommended)](/docs/nextjs/layouts/simple-layout)",
-		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict-layout)"
+		"[Zap][Simple (Recommended)](/docs/nextjs/layouts/simple)",
+		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict)"
 	]
 }

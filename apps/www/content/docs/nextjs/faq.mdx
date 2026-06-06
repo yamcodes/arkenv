@@ -44,3 +44,16 @@ If the simple layout is recommended, why use the strict layout?
 1. **Compile-time isolation**: Next.js's native `server-only` package throws a compiler error if server code is imported into a client bundle. With the strict layout, this boundary is enforced by the compiler before the code even runs.
 2. **Framework alignment**: Next.js already forces developers to think in terms of Client Component boundaries (`"use client"`). Having matching separate files (`env.client.ts` vs `env.server.ts`) naturally mirrors the framework's architecture.
 3. **No boilerplate penalty**: The ArkEnv CLI completely eliminates the effort of setting up separate files. Running `arkenv init` scaffolds the entire 3-file setup with `extends` pre-wired.
+
+---
+
+## Why should I restrict the shared block to `NODE_ENV`?
+
+Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
+
+If you define a custom variable in `shared` with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
+
+- On the **server**, ArkEnv reads the actual value from the environment (e.g., `PORT = 8080`).
+- On the **client**, Next.js strips `process.env.PORT` to `undefined`, causing ArkEnv to fall back to the default value (`3000`).
+
+This asymmetry causes React hydration mismatches and corrupts client-side state. Always place non-prefixed variables under `server` so they are strictly server-only.

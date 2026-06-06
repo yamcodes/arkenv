@@ -40,42 +40,39 @@ The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
   </Tab>
 </Tabs>
 
----
-
 ## Layout strategies
 
 ArkEnv supports two layout structures to match your security and developer experience preferences:
 
 <Cards>
-  <Card title="Simple layout (recommended)" href="/docs/nextjs/simple-layout">
-    Defines both client and server schemas in a single file (`src/env.ts`). Fully features a runtime proxy to prevent server secrets from leaking to the client. Zero-boilerplate code generation.
-  </Card>
-
-  <Card title="Strict layout" href="/docs/nextjs/strict-layout">
-    Defines client and server schemas in separate files (`env/client.ts`, `env/server.ts`, `env/internal/shared.ts`). Compile-time locked server secrets to prevent browser bundling.
-  </Card>
+  <Card 
+    title="Simple layout (recommended)" 
+    href="/docs/nextjs/layouts/simple"
+    description="Define client and server schemas in a single file (src/env.ts) to prioritize developer experience (DX)."
+  />
+  <Card 
+    title="Strict layout" 
+    href="/docs/nextjs/layouts/strict"
+    description="Separate client and server schemas into different files to prioritize strict compile-time security."
+  />
 </Cards>
 
----
+## Next steps
 
-## Custom validators
-
-ArkEnv uses ArkType by default, but also supports any Standard Schema compatible library (like Zod or Valibot). See the [Custom validators](/docs/nextjs/using-other-validators) guide for code examples.
-
----
-
-## The danger of shared variables
-
-:::warning
-Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
-:::
-
-### The undefined fallback bug
-
-Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
-If you define a custom variable in `shared` with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
-
-- On the **server**, ArkEnv reads the actual value from the environment (e.g. `PORT = 8080`).
-- On the **client**, Next.js strips `process.env.PORT` to `undefined`, causing ArkEnv to fall back to the default value (`3000`).
-
-This asymmetry causes React hydration mismatches and corrupts client-side state. Always place non-prefixed variables under `server` so they are strictly server-only.
+<Cards>
+  <Card 
+    title="Zod, Valibot, and other Standard Schema validators" 
+    href="/docs/nextjs/using-other-validators" 
+    description="Learn how to mix and match ArkType with other Standard Schema validators in Next.js." 
+  />
+  <Card 
+    title="FAQ" 
+    href="/docs/nextjs/faq" 
+    description="Find answers to frequently asked questions about @arkenv/nextjs, including the danger of custom shared variables." 
+  />
+  <Card 
+    title="Next.js Environment Variables Guide" 
+    href="https://nextjs.org/docs/pages/guides/environment-variables" 
+    description="Read the official Next.js documentation on how environment variables are loaded and exposed." 
+  />
+</Cards>
