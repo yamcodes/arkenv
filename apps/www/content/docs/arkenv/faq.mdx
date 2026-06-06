@@ -89,7 +89,7 @@ Read more in the [comparison](/docs/arkenv/comparison) section.
 
 ## What does the ArkEnv CLI do?
 
-The `@arkenv/cli` package **streamlines configuration management**. Instead of manually constructing config files, the interactive initializer analyzes your workspace, detects your framework, lets you choose your validation primitive (ArkType, Zod, etc.), and **generates a fully typed environment schema** matching your environment.
+The `@arkenv/cli` package **automates setting up ArkEnv in your project**. It can scan your workspace to detect your framework and **generate a fully typed environment schema**, or scaffold a new, ArkEnv-compliant project from scratch.
 
 Read the [CLI reference docs](/docs/cli) for a complete list of flags and capabilities.
 
@@ -99,6 +99,6 @@ Yes. ArkEnv is optimized for modern development workflows and features a **dedic
 
 ## Is it safe to use in production?
 
-Yes. ArkEnv is built to be a **high-performance, low-overhead utility**. The core runtime is tiny (\~2kB gzipped) and carries **zero external dependencies**, so it won't bloat your production dependency tree or introduce supply-chain vulnerabilities. It offloads parsing mechanics to your chosen validation library and **safely shuts down the process** if a configuration error is detected.
+Yes. ArkEnv is built to be a **high-performance, low-overhead utility**. The core runtime is tiny (\~2kB gzipped) and carries **zero external dependencies**, so it won't bloat your production dependency tree or introduce supply-chain vulnerabilities. It offloads parsing mechanics to your chosen validation library, **safely shutting down the process** if a configuration error is detected.
 
-ArkEnv is currently in v0 and complies with Semantic Versioning 2.0.0. We are actively working toward v1 (track our progress on our [roadmap](https://github.com/yamcodes/arkenv/issues/683)), but the core validation engine is **already proven in production** and not expected to change meaningfully.
+The entire codebase is backed by **rigorous integration and smoke test suites**, ensuring high reliability. While ArkEnv is currently in v0 and complies with Semantic Versioning 2.0.0 (track our progress on our [roadmap](https://github.com/yamcodes/arkenv/issues/683)), the core validation engine is **already proven in production** and not expected to change meaningfully.
