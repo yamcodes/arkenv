@@ -57,27 +57,29 @@ Yes. **Zod is a first-class ArkEnv citizen**. We have an official [Zod example](
 
 ## Why do you guys like ArkType so much?
 
-That's a great question! We're big ArkType nerds because it's a revolutionary validation library, that pretty much "brings TypeScript to runtime".
+That's a great question! We're big ArkType nerds because it's a revolutionary validation library, that pretty much "brings TypeScript to runtime" (with a few added goodies).
 
 Look at how concise an ArkEnv schema can be:
 
-```typescript title="env.ts"
-import { createEnv } from "@arkenv/core";
+```typescript title="env.ts" twoslash
+import arkenv from "arkenv";
 
-export const env = createEnv({
-  server: {
-    PORT: "number >= 1024",
-    DATABASE_URL: "string.url",
-    NODE_ENV: "'development' | 'production'",
-  }
+export const env = arkenv({
+  PORT: "0 <= number <= 65535",
+  DATABASE_URL: "string.url",
+  NODE_ENV: "'development' | 'production' | 'test'",
 });
 ```
 
-This string-based syntax makes defining schemas incredibly intuitive and readable. Instead of chaining endless method calls like `.string().url()` or `.number().min(1024)`, you simply write strings that describe your types.
+This string-based syntax makes defining schemas incredibly intuitive and readable. Instead of chaining endless method calls like `.string().url()` or `.number().min(1024)`, you simply write strings that describe your types, and everything works from editor to runtime.
 
-How clean is that for validation API? Honestly, that's why ArkEnv exists, as a way to honor this beautiful feat of engineering.
+Still, we support any modern validation library through [Standard Schema](/docs/arkenv/integrations/standard-schema), so even if you're not as excited about ArkType as we are (that's ok!), you're more than welcome in the ArkEnv community. **ArkEnv works without ArkType even being installed in your project.**
 
-Still, we support any modern validation library through Standard Schema, so even if you're not as excited as us (that's ok!), you're welcome in the ArkEnv community.
+> I built ArkEnv as a love letter to David Blass, who wrote ArkType.
+> He built one of the coolest APIs I've seen in the TypeScript space.
+> I truly believe he achieved a beautiful feat of engineering. 
+
+_\- Yam (creator of ArkEnv)_
 
 ## Why use ArkEnv instead of just raw ArkType or Zod?
 
