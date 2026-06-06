@@ -28,7 +28,7 @@ Modern IDEs may still infer types from ArkEnv’s `.d.ts` files, but this is not
    ```bash
    npm run dev
    ```
-   :white\_check\_mark: You will see the environment variables printed in the console.
+   :white_check_mark: You will see the environment variables printed in the console.
 
 ### Adding environment variables
 
