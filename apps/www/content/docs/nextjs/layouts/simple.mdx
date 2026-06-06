@@ -53,18 +53,13 @@ The easiest way to bootstrap the simple layout is with the [ArkEnv CLI](/docs/cl
   </Tab>
 </Tabs>
 
-### How code generation works
-
-By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config. This wrapper:
-1. Statically scans your schema (`src/env.ts`) at build time.
-2. Automatically generates a helper file (`src/generated/env.gen.ts`) with a pre-wired `runtimeEnv` block mapping all your client and shared variables (e.g., `NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL`).
-3. Keeps your client bundles clean by skipping server-only variables entirely.
-
-This allows your schema to import directly from `@/generated/env.gen` without having to manually map variables using `process.env`.
-
 ## Your schema
 
 When bootstrapping with the CLI, it generates a single `env.ts` file where you define your client, server, and shared schemas:
+
+:::note
+By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to build and inject the `runtimeEnv` block at compile time. This is why the schema file imports from `@/generated/env.gen` rather than `@arkenv/nextjs` directly.
+:::
 
 ```ts title="src/env.ts"
 import arkenv from "@/generated/env.gen";
