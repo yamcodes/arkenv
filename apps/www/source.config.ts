@@ -1,4 +1,8 @@
-import { rehypeCodeDefaultOptions, remarkNpm, remarkMdxFiles } from "fumadocs-core/mdx-plugins";
+import {
+	rehypeCodeDefaultOptions,
+	remarkMdxFiles,
+	remarkNpm,
+} from "fumadocs-core/mdx-plugins";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
 import remarkDirective from "remark-directive";

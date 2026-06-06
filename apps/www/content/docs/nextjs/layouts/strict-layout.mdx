@@ -14,6 +14,7 @@ src
     ├── client.ts
     └── server.ts
 ```
+
 By importing `arkenv` from `@/env/client` in client-side code and `@/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `@/env/server` is accidentally imported in a Client Component, ArkEnv fails the build with a compilation error.
 
 ---
@@ -22,103 +23,103 @@ By importing `arkenv` from `@/env/client` in client-side code and `@/env/server`
 
 <Steps>
   <Step>
-### Define shared variables
+    ### Define shared variables
 
-Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+    Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
-```ts title="src/env/internal/shared.ts" twoslash
-import { type } from "@arkenv/nextjs/shared";
+    ```ts title="src/env/internal/shared.ts" twoslash
+    import { type } from "@arkenv/nextjs/shared";
 
-/**
- * @internal 🛑 INTERNAL SCHEMA ONLY.
- * Do not import this directly. Import `env` from `./client` or `./server` instead.
- */
-export const SharedSchema = type({
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
   </Step>
 
   <Step>
-### Define client variables
+    ### Define client variables
 
-Create `env/client.ts` using `@arkenv/nextjs/client`. All local keys **must** be prefixed with `NEXT_PUBLIC_`. You must extend `SharedSchema` and provide the destructured `runtimeEnv`:
+    Create `env/client.ts` using `@arkenv/nextjs/client`. All local keys **must** be prefixed with `NEXT_PUBLIC_`. You must extend `SharedSchema` and provide the destructured `runtimeEnv`:
 
-```ts title="src/env/client.ts" twoslash
-// @filename: /internal/shared.ts
-import { type } from "@arkenv/nextjs/shared";
-/**
- * @internal 🛑 INTERNAL SCHEMA ONLY.
- * Do not import this directly. Import `env` from `./client` or `./server` instead.
- */
-export const SharedSchema = type({
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
+    ```ts title="src/env/client.ts" twoslash
+    // @filename: /internal/shared.ts
+    import { type } from "@arkenv/nextjs/shared";
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
 
-// @filename: /client.ts
-// ---cut---
-import arkenv from "@arkenv/nextjs/client";
-import { SharedSchema } from "./internal/shared";
+    // @filename: /client.ts
+    // ---cut---
+    import arkenv from "@arkenv/nextjs/client";
+    import { SharedSchema } from "./internal/shared";
 
-export const env = arkenv(
-	{
-		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-	},
-	{
-		extends: [SharedSchema],
-		runtimeEnv: {
-			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-			NODE_ENV: process.env.NODE_ENV,
-		},
-	},
-);
-```
+    export const env = arkenv(
+    	{
+    		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    	},
+    	{
+    		extends: [SharedSchema],
+    		runtimeEnv: {
+    			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    			NODE_ENV: process.env.NODE_ENV,
+    		},
+    	},
+    );
+    ```
   </Step>
 
   <Step>
-### Define server variables
+    ### Define server variables
 
-Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+    Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
 
-```ts title="src/env/server.ts" twoslash
-// @filename: /internal/shared.ts
-import { type } from "@arkenv/nextjs/shared";
-/**
- * @internal 🛑 INTERNAL SCHEMA ONLY.
- * Do not import this directly. Import `env` from `./client` or `./server` instead.
- */
-export const SharedSchema = type({
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
+    ```ts title="src/env/server.ts" twoslash
+    // @filename: /internal/shared.ts
+    import { type } from "@arkenv/nextjs/shared";
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
 
-// @filename: /client.ts
-import arkenv from "@arkenv/nextjs/client";
-import { SharedSchema } from "./internal/shared";
-export const env = arkenv(
-	{ NEXT_PUBLIC_API_URL: "string" },
-	{
-		extends: [SharedSchema],
-		runtimeEnv: {
-			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-			NODE_ENV: process.env.NODE_ENV,
-		},
-	},
-);
+    // @filename: /client.ts
+    import arkenv from "@arkenv/nextjs/client";
+    import { SharedSchema } from "./internal/shared";
+    export const env = arkenv(
+    	{ NEXT_PUBLIC_API_URL: "string" },
+    	{
+    		extends: [SharedSchema],
+    		runtimeEnv: {
+    			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    			NODE_ENV: process.env.NODE_ENV,
+    		},
+    	},
+    );
 
-// @filename: /server.ts
-// ---cut---
-import arkenv from "@arkenv/nextjs/server";
-import { env as clientEnv } from "./client";
+    // @filename: /server.ts
+    // ---cut---
+    import arkenv from "@arkenv/nextjs/server";
+    import { env as clientEnv } from "./client";
 
-export const env = arkenv(
-	{
-		DATABASE_URL: "string",
-	},
-	{
-		extends: [clientEnv],
-	},
-);
-```
+    export const env = arkenv(
+    	{
+    		DATABASE_URL: "string",
+    	},
+    	{
+    		extends: [clientEnv],
+    	},
+    );
+    ```
   </Step>
 </Steps>
 

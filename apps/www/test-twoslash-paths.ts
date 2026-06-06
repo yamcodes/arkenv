@@ -19,6 +19,5 @@ export const clientEnv = arkenvClient(
 import arkenvServer from "../../packages/nextjs/src/server";
 export const serverEnv = arkenvServer(
 	{ DATABASE_URL: "string" },
-	{ extends: [clientEnv] }
+	{ extends: [clientEnv] },
 );
-

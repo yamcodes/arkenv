@@ -47,16 +47,11 @@ The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatic
 ArkEnv supports two layout structures to match your security and developer experience preferences:
 
 <Cards>
-  <Card 
-    title="Simple layout (recommended)" 
-    href="/docs/nextjs/simple-layout"
-  >
+  <Card title="Simple layout (recommended)" href="/docs/nextjs/simple-layout">
     Defines both client and server schemas in a single file (`src/env.ts`). Fully features a runtime proxy to prevent server secrets from leaking to the client. Zero-boilerplate code generation.
   </Card>
-  <Card 
-    title="Strict layout" 
-    href="/docs/nextjs/strict-layout"
-  >
+
+  <Card title="Strict layout" href="/docs/nextjs/strict-layout">
     Defines client and server schemas in separate files (`env/client.ts`, `env/server.ts`, `env/internal/shared.ts`). Compile-time locked server secrets to prevent browser bundling.
   </Card>
 </Cards>

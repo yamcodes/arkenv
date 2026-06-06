@@ -26,10 +26,10 @@ Server-side variables, on the other hand, do not need to be inlined and are read
 
 `@arkenv/nextjs` relies on Next.js bundling mechanics and package conditional exports to enforce strict environment isolation based on where the code is running:
 
-| Export condition | Next.js context | Accessible variables |
-| :--- | :--- | :--- |
-| `react-server` | Server Components & Route Handlers | All variables (`server`, `client`, `shared`) |
-| `default` | Client Components (SSR & Browser) | Public variables only (`client`, `shared`) |
+| Export condition | Next.js context                    | Accessible variables                         |
+| :--------------- | :--------------------------------- | :------------------------------------------- |
+| `react-server`   | Server Components & Route Handlers | All variables (`server`, `client`, `shared`) |
+| `default`        | Client Components (SSR & Browser)  | Public variables only (`client`, `shared`)   |
 
 When your app runs on the server, the full schema is validated and all variables are available. If a client component attempts to read a server-only variable during SSR or in the browser, ArkEnv's runtime proxy intercepts the call and immediately throws a descriptive runtime error.
 
