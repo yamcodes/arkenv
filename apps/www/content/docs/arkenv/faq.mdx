@@ -8,7 +8,7 @@ icon: MessageCircleQuestionMark
 
 ## Why do I need ArkEnv?
 
-We’ve seen teams struggle with environment variables in JavaScript projects. Because the runtime environment is an external dependency, it is **notoriously brittle**. Yet, we often avoid validating it because it feels like boilerplate. It’s tempting to assert with a quick `process.env.MY_VAR as string` and **hope for the best**.
+We’ve seen teams struggle with environment variables in JavaScript projects. Because the runtime environment is an external dependency, it is **notoriously brittle**. Yet, we often avoid validating it because it feels like boilerplate. It’s tempting to assert with a quick `process.env.MY_VAR as string` and hope for the best.
 
 But **hope isn't an architecture**. Variables go mysteriously missing during a CI/CD deployment. A boolean flags as `"false"` (a truthy string) and breaks your conditional logic. A teammate introduces a new variable without announcing it, leaving everyone else to **chase down mysterious runtime errors**.
 
