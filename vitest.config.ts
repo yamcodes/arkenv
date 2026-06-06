@@ -8,6 +8,9 @@ export default defineConfig({
 			reporter: ["text", "json", "html"],
 			exclude: [
 				...coverageConfigDefaults.exclude,
+				"**/dist/",
+				"**/coverage/**",
+				"**/*.d.ts",
 				"**/.next/",
 				"**/dist-test/",
 				"**/build/**",
