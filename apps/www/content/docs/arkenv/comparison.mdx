@@ -15,15 +15,18 @@ icon: Scale
 | **Default values**              |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
 | **First-class Vite support**    |      ✅     |    ❌   |             ✅            |  ❌  |    ❌    |      ❌      |
 | **First-class Next.js support** |      ✅     |    ✅   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **No manual runtimeEnv**        |      ✅     |    ❌   |             —            |  —  |    —    |      —      |
 | **Bun fullstack dev server**    |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
 | **Zero external dependencies**  |      ✅     |    ✅   |             ❌            |  ✅  |    ❌    |      ✅      |
 | **Command Line Interface**      |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
 
 \* ArkType is supported directly without the need to use ArkType's `type` for each key separately.
 
-✅ Built-in / first-class support
+Sub-feature statuses:
 
-❌ Not supported
+- ✅ Built-in / first-class support
+- ❌ Not supported
+- — Not applicable / not required by runtime
 
 ## Detailed comparisons
 
@@ -65,6 +68,8 @@ T3 Env follows a "Next.js-first" philosophy, including an explicit client/server
 #### For Next.js
 
 While T3 Env is widely adopted in the Next.js ecosystem, ArkEnv officially supports Next.js via the [@arkenv/nextjs](/docs/nextjs) package, bringing native ArkType support and automatic coercion to Next.js projects.
+
+Furthermore, **ArkEnv eliminates the need to manually write and maintain a `runtimeEnv` block**. In T3 Env, you are forced to manually map all client-side and shared environment variables (e.g. `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) so Next.js can statically analyze and inline them. In contrast, ArkEnv's automatic code generation wrapper (`withArkEnv`) statically scans your schema file at build/dev time and automatically generates a helper file with pre-wired `runtimeEnv` mappings. This ensures client-side bundles remain perfectly secure and clean with zero boilerplate.
 
 #### For everything else
 
