@@ -11,7 +11,7 @@ This example demonstrates how to use [@arkenv/nextjs](https://arkenv.js.org/docs
 The example defines the environment schema in a single `env.ts` file:
 
 ```ts title="env.ts"
-import arkenv from "@arkenv/nextjs";
+import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
 	server: {
@@ -21,11 +21,7 @@ export const env = arkenv({
 		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
 	},
 	shared: {
-		NODE_ENV: "string = 'development'",
-	},
-	runtimeEnv: {
-		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-		NODE_ENV: process.env.NODE_ENV,
+		NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	},
 });
 ```
@@ -35,7 +31,7 @@ export const env = arkenv({
 1. **Server Schema**: Variables that are only accessible on the server.
 2. **Client Schema**: Variables that are exposed to the client (must begin with `NEXT_PUBLIC_` to match Next.js conventions).
 3. **Shared Schema**: Common variables like `NODE_ENV`.
-4. **Runtime Environment**: You must explicitly map client and shared variables in `runtimeEnv` so that Next.js client-side bundles can correctly inline them.
+4. **Automatic Codegen**: ArkEnv automatically parses the keys and generates the `generated/env.gen.ts` file via the `withArkEnv` wrapper in `next.config.ts`, avoiding the need for a manual `runtimeEnv` block.
 
 ## Usage in Components
 

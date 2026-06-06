@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { styleText } from "./style-text";
 
 describe("styleText", () => {
@@ -10,10 +10,6 @@ describe("styleText", () => {
 				env: {},
 				stdout: { isTTY: true },
 			});
-		});
-
-		afterEach(() => {
-			vi.unstubAllGlobals();
 		});
 
 		it("should apply red ANSI color code", () => {
@@ -53,10 +49,6 @@ describe("styleText", () => {
 			vi.stubGlobal("process", undefined);
 		});
 
-		afterEach(() => {
-			vi.unstubAllGlobals();
-		});
-
 		it("should return plain text for red", () => {
 			const result = styleText("red", "error message");
 			expect(result).toBe("error message");
@@ -94,8 +86,6 @@ describe("styleText", () => {
 
 			const result = styleText("red", "test");
 			expect(result).toBe("test");
-
-			vi.unstubAllGlobals();
 		});
 
 		it("should handle process.versions.node being null", () => {
@@ -103,8 +93,6 @@ describe("styleText", () => {
 
 			const result = styleText("red", "test");
 			expect(result).toBe("test");
-
-			vi.unstubAllGlobals();
 		});
 
 		it("should handle long text", () => {
@@ -117,16 +105,10 @@ describe("styleText", () => {
 			const longText = "a".repeat(10000);
 			const result = styleText("red", longText);
 			expect(result).toBe(`\x1b[31m${longText}\x1b[0m`);
-
-			vi.unstubAllGlobals();
 		});
 	});
 
 	describe("color disabling", () => {
-		afterEach(() => {
-			vi.unstubAllGlobals();
-		});
-
 		it("should disable colors when NO_COLOR is set", () => {
 			vi.stubGlobal("process", {
 				versions: { node: "22.0.0" },

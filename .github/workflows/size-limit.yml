@@ -2,7 +2,7 @@ name: "size-limit"
 on:
   pull_request:
     branches:
-      - main
+      - dev
     paths:
       - "packages/**"
   workflow_dispatch:
@@ -38,7 +38,7 @@ jobs:
         uses: actions/create-github-app-token@v3
         if: env.APP_PRIVATE_KEY != ''
         with:
-          app-id: ${{ vars.APP_ID }}
+          client-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - uses: actions/checkout@v6
         with:

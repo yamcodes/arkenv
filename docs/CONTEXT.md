@@ -149,7 +149,13 @@ pnpm run test:e2e                     # E2E tests
 
 **Branching:**
 
-- Create feature branches from `main`
+- Create feature branches from `dev`
+- `dev` is the default branch and continuous integration target
+- **Base Branch & Comparisons**: Always use `origin/dev` (not `main` or `origin/main`) for any `git diff` checks, branch bases, or code comparisons unless explicitly instructed otherwise.
+- **PR Target Branch**: When opening a Pull Request (via `gh pr create` or the GitHub UI), always ensure the target base branch is set to `dev` (which is the default on GitHub), unless you are specifically applying a documentation hotfix directly to `main`.
+- `main` is the production release branch, updated only after a successful npm publish
+- The documentation site (`apps/www`) deploys strictly from `main` to prevent unreleased features from appearing live
+- To make immediate typo or cosmetic fixes to the live docs without a package release, push directly to `main` and use the `sync-main` workflow/skill to cherry-pick and reconcile those changes back into `dev`
 - Use descriptive branch names
 
 **Versioning:**

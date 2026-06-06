@@ -1,4 +1,9 @@
-import { detectCodeFormat, generateCode, parseModule } from "magicast";
+import {
+	builders,
+	detectCodeFormat,
+	generateCode,
+	parseModule,
+} from "magicast";
 import type { BootstrapResult } from "@/shared/ports";
 
 /**
@@ -8,6 +13,27 @@ export type MutationInput = {
 	code: string;
 	envImportPath?: string;
 };
+
+/**
+ * Normalizes named import spacing in generated code.
+ * magicast produces `import {Foo}`; this ensures `import { Foo }`.
+ */
+function normalizeImportSpacing(code: string): string {
+	return code.replace(
+		/import\s*\{([^\n}]*)\}\s*from/g,
+		(match, p1) => `import { ${p1.trim()} } from`,
+	);
+}
+
+/**
+ * Preserves the trailing newline of the original file if present.
+ * magicast strips trailing newlines; this restores them.
+ */
+function preserveTrailingNewline(code: string, originalCode: string): string {
+	return originalCode.endsWith("\n") && !code.endsWith("\n")
+		? `${code}\n`
+		: code;
+}
 
 /**
  * Transforms a Vite configuration file by injecting the ArkEnv Vite plugin.
@@ -110,6 +136,8 @@ export function transformViteConfig(
 			? "arkenvVitePlugin(Env)"
 			: "arkenvVitePlugin()";
 		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
+		code = normalizeImportSpacing(code);
+		code = preserveTrailingNewline(code, initialCode);
 
 		return { success: true, updated: true, code };
 	} catch (e: unknown) {
@@ -118,6 +146,83 @@ export function transformViteConfig(
 			success: false,
 			updated: false,
 			error: `Failed to parse Vite config: ${error}`,
+		};
+	}
+}
+
+/**
+ * Transform a Next.js configuration file by wrapping the default export with `withArkEnv`.
+ *
+ * @param input The configuration code and optional import path
+ * @returns The result of the bootstrap operation, potentially including the updated code
+ */
+export function transformNextjsConfig(
+	input: MutationInput,
+): BootstrapResult & { code?: string } {
+	try {
+		const initialCode = input.code;
+
+		// Check for CommonJS - can't auto-mutate
+		if (/module\.exports\b/.test(initialCode)) {
+			return {
+				success: false,
+				updated: false,
+				error:
+					"CommonJS is not supported for automatic mutation. Please wrap your config with `withArkEnv` manually.",
+			};
+		}
+
+		const mod = parseModule(initialCode);
+
+		// Verify there's a default export
+		if (!mod.exports.default) {
+			return {
+				success: false,
+				updated: false,
+				error: "Could not find default export in Next.js config",
+			};
+		}
+
+		// Check if already wrapped with withArkEnv using the AST
+		if (
+			typeof mod.exports.default === "object" &&
+			"$type" in (mod.exports.default as object) &&
+			(mod.exports.default as { $type?: string }).$type === "function-call" &&
+			(mod.exports.default as { $callee?: string }).$callee === "withArkEnv"
+		) {
+			return { success: true, updated: false };
+		}
+
+		// Also check via regex for cases where withArkEnv is used inline
+		if (/\bwithArkEnv\b/.test(initialCode)) {
+			return { success: true, updated: false };
+		}
+
+		// Add import
+		mod.imports.$add({
+			from: "@arkenv/nextjs/config",
+			imported: "withArkEnv",
+		});
+
+		// Wrap the default export with withArkEnv(...) using the AST
+		mod.exports.default = builders.functionCall(
+			"withArkEnv",
+			mod.exports.default,
+		);
+
+		let code = generateCode(mod, {
+			format: detectCodeFormat(initialCode),
+		}).code;
+		code = normalizeImportSpacing(code);
+		code = preserveTrailingNewline(code, initialCode);
+
+		return { success: true, updated: true, code };
+	} catch (e: unknown) {
+		const error = e instanceof Error ? e.message : String(e);
+		return {
+			success: false,
+			updated: false,
+			error: `Failed to parse Next.js config: ${error}`,
 		};
 	}
 }

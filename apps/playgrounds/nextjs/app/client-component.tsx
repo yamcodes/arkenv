@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { env } from "../env/client";
+import { env } from "@/env";
 
 export default function ClientComponent() {
 	const [secretError, setSecretError] = useState<string | null>(null);
@@ -9,7 +9,6 @@ export default function ClientComponent() {
 	const tryAccessSecret = () => {
 		try {
 			// This should throw a runtime error on the client
-			// @ts-expect-error DATABASE_URL is not defined in the client-safe schema
 			const dbUrl = env.DATABASE_URL;
 			alert(`Secret accessed successfully: ${dbUrl}`);
 		} catch (e: any) {

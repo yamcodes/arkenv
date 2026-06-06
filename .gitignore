@@ -55,6 +55,7 @@ esbuild-why*.html
 
 # explicitly ignored folder
 ignore-me/
+/repos/
 
 # deploy metrics
 .github/deploy-metrics.json
@@ -86,3 +87,4 @@ gha-creds-*.json
 .agent/skills/*-workspace/
 skills/*-workspace/
 skills/create-skill/scripts/__pycache__/
+tooling/

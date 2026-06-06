@@ -159,6 +159,27 @@ export class InitUseCase {
 			}
 		}
 
+		const gitStatus = await this.scanner.checkGitStatus(targetDir);
+		if (gitStatus.status === "dirty") {
+			if (isForce) {
+				this.logger.warn(
+					"Git working tree is not clean, but continuing due to --force flag.",
+				);
+			} else {
+				this.logger.error(
+					"Git working tree is not clean. Commit or stash your changes (use 'git stash -u' for untracked files) before running arkenv init.",
+				);
+				this.logger.info("Use --force to bypass this check.");
+				return null;
+			}
+		}
+
+		if (gitStatus.status === "unknown") {
+			this.logger.warn(
+				"Git working tree status could not be determined. Proceeding with caution.",
+			);
+		}
+
 		let shouldUpdateTsConfig = false;
 		const tsConfig = await this.scanner.checkTsConfig(targetDir);
 

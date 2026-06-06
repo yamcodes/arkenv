@@ -13,7 +13,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
   <Step>
     ### Configure environment
 
-    Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define your schemas. Import `createEnv` from the auto-generated `./generated/env.gen.ts` helper file (rather than importing directly from `@arkenv/nextjs`):
+    Create an `env.ts` file (typically in `src/env.ts` or at the root of your project) to define your schemas. Import `arkenv` from the auto-generated `./generated/env.gen.ts` helper file (rather than importing directly from `@arkenv/nextjs`):
 
     ```ts title="src/env.ts" twoslash
     // @filename: generated/env.gen.ts
@@ -21,7 +21,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
 
-    export function createEnv<
+    export default function arkenv<
     	const TServer = {},
     	const TClient = {},
     	const TShared = {},
@@ -35,9 +35,9 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
 
     // @filename: env.ts
     // ---cut---
-    import { createEnv } from "./generated/env.gen";
+    import arkenv from "./generated/env.gen";
 
-    export const env = createEnv({
+    export const env = arkenv({
     	server: {
     		DATABASE_URL: "string",
     	},
@@ -76,11 +76,13 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     });
     ```
 
-    > [!NOTE]
-    > If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env.ts` instead.
+    :::note
+    If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env.ts` instead.
+    :::
 
-    > [!TIP]
-    > We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
+    :::tip
+    We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
+    :::
   </Step>
 
   <Step>
@@ -93,7 +95,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
-    export function createEnv<
+    export default function arkenv<
     	const TServer = {},
     	const TClient = {},
     	const TShared = {},
@@ -106,8 +108,8 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     }
 
     // @filename: env.ts
-    import { createEnv } from "./generated/env.gen";
-    export const env = createEnv({
+    import arkenv from "./generated/env.gen";
+    export const env = arkenv({
     	server: { DATABASE_URL: "string" },
     	client: { NEXT_PUBLIC_API_URL: "string" },
     });
@@ -128,7 +130,7 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
-    export function createEnv<
+    export default function arkenv<
     	const TServer = {},
     	const TClient = {},
     	const TShared = {},
@@ -141,8 +143,8 @@ ArkEnv features a runtime proxy that prevents server-side secrets from leaking t
     }
 
     // @filename: env.ts
-    import { createEnv } from "./generated/env.gen";
-    export const env = createEnv({
+    import arkenv from "./generated/env.gen";
+    export const env = arkenv({
     	server: { DATABASE_URL: "string" },
     	client: { NEXT_PUBLIC_API_URL: "string" },
     });

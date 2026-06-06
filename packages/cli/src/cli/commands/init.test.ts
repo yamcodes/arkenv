@@ -60,6 +60,7 @@ describe("InitUseCase", () => {
 			getEnvExampleKeys: vi.fn().mockResolvedValue(null),
 			detectPackageManager: vi.fn().mockResolvedValue("pnpm"),
 			hasSkill: vi.fn().mockResolvedValue(false),
+			checkGitStatus: vi.fn().mockResolvedValue({ status: "clean" }),
 		} as unknown as ProjectScannerPort;
 
 		useCase = new InitUseCase(logger, workspace, prompt, scanner);
@@ -406,6 +407,114 @@ describe("InitUseCase", () => {
 				name: ".",
 			}),
 			false,
+		);
+	});
+
+	it("should error when git working tree is dirty and --force is not set", async () => {
+		vi.mocked(scanner.checkGitStatus).mockResolvedValue({
+			status: "dirty",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result).toBeNull();
+		expect(logger.error).toHaveBeenCalledWith(
+			expect.stringContaining("Git working tree is not clean"),
+		);
+	});
+
+	it("should continue with a warning when git working tree is dirty and --force is set", async () => {
+		vi.mocked(scanner.checkGitStatus).mockResolvedValue({
+			status: "dirty",
+		});
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: true,
+			isQuiet: true,
+			isAgent: false,
+		});
+
+		expect(result).not.toBeNull();
+		expect(logger.warn).toHaveBeenCalledWith(
+			expect.stringContaining("Git working tree is not clean"),
+		);
+	});
+
+	it("should proceed normally when git status is not_a_repo", async () => {
+		vi.mocked(scanner.checkGitStatus).mockResolvedValue({
+			status: "not_a_repo",
+		});
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: true,
+			isAgent: false,
+		});
+
+		expect(result).not.toBeNull();
+	});
+
+	it("should proceed normally when git working tree is clean", async () => {
+		vi.mocked(scanner.checkGitStatus).mockResolvedValue({
+			status: "clean",
+		});
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: true,
+			isAgent: false,
+		});
+
+		expect(result).not.toBeNull();
+	});
+
+	it("should warn and proceed when git status is unknown", async () => {
+		vi.mocked(scanner.checkGitStatus).mockResolvedValue({
+			status: "unknown",
+		});
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: true,
+			isAgent: false,
+		});
+
+		expect(result).not.toBeNull();
+		expect(logger.warn).toHaveBeenCalledWith(
+			expect.stringContaining("could not be determined"),
 		);
 	});
 

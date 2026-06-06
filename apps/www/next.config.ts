@@ -63,6 +63,25 @@ const config = {
 	},
 	// This is required to support PostHog trailing slash API requests
 	skipTrailingSlashRedirect: true,
+	async headers() {
+		const isPreview =
+			process.env.NEXT_PUBLIC_VERCEL_ENV === "preview" ||
+			process.env.VERCEL_ENV === "preview";
+		if (isPreview) {
+			return [
+				{
+					source: "/:path*",
+					headers: [
+						{
+							key: "X-Robots-Tag",
+							value: "noindex, nofollow",
+						},
+					],
+				},
+			];
+		}
+		return [];
+	},
 } as const satisfies NextConfig;
 
 const sentryConfig = {

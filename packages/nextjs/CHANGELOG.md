@@ -1,5 +1,33 @@
 # @ArkEnv/nextjs
 
+## 0.0.8
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`88b0eee`](https://github.com/yamcodes/arkenv/commit/88b0eee7a87ffaf249d69035a747f1bb55f7079b)
+
+</small>
+
+- `arkenv@0.12.0`
+
+</details>
+
+## 0.0.7
+
+### Patch Changes
+
+- #### Fix development watcher memory and file descriptor leak _[`#1136`](https://github.com/yamcodes/arkenv/pull/1136) [`593509a`](https://github.com/yamcodes/arkenv/commit/593509a471c51b452477b0abb92053819333e91e) [@yamcodes](https://github.com/yamcodes)_
+
+  Store the active `chokidar` watcher instance on `globalThis.__arkenv_watcher__` and close it when configuring a new watcher instance.
+
+- #### Remove `@deprecated` JSDoc tag from `createEnv` and `arkenv` in the main and react-server entries _[`#1139`](https://github.com/yamcodes/arkenv/pull/1139) [`fae4c1f`](https://github.com/yamcodes/arkenv/commit/fae4c1fb911a59bbb2e5d43f58961ba84c6623a8) [@yamcodes](https://github.com/yamcodes)_
+
+  Avoid warning users when they call `createEnv` manually without using the codegen workflow.
+
 ## 0.0.6
 
 ### Patch Changes

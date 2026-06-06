@@ -35,18 +35,39 @@ export function getInstallCommand(
  *
  * @param plan The scaffolding plan produced by the planner
  * @param skillInstalled Whether the ArkEnv AI skill was installed during this run
+ * @param nextjsConfigBootstrapped Whether the Next.js config was already wrapped with `withArkEnv`
  * @returns An object with a `title` and a multi-line `message` string
  */
 export function getNextStepsNote(
 	plan: ScaffoldingPlan,
 	skillInstalled: boolean,
+	nextjsConfigBootstrapped?: boolean,
 ): { message: string; title: string } {
 	if (skillInstalled || plan.metadata.skillDetected) {
+		const isNextjsWithCodegen =
+			plan.metadata.framework === "nextjs" && !plan.metadata.disableCodegen;
+		const needsManualConfig = isNextjsWithCodegen && !nextjsConfigBootstrapped;
+
+		let message = dedent`
+				Inside your AI assistant (e.g. Claude Code), use:
+				${code("/arkenv")} - automatically refine your schema and configure integrations.
+			`;
+
+		if (needsManualConfig) {
+			message += "\n\n";
+			message += `Also, wrap your Next.js config with ${code("withArkEnv")}:\n`;
+			message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
+			if (plan.metadata.layout === "strict") {
+				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+				message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
+			} else {
+				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+				message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
+			}
+		}
+
 		return {
-			message: dedent`
-					Inside your AI assistant (e.g. Claude Code), use:
-					${code("/arkenv")} - automatically refine your schema and configure integrations.
-				`,
+			message,
 			title: "Next steps",
 		};
 	}
@@ -67,6 +88,10 @@ export function getNextStepsNote(
 
 	message += `${step++}. Check ${code(displayLocation)} and refine your environment schema.\n`;
 
+	const isNextjsWithCodegen =
+		plan.metadata.framework === "nextjs" && !plan.metadata.disableCodegen;
+	const needsManualConfig = isNextjsWithCodegen && !nextjsConfigBootstrapped;
+
 	if (plan.metadata.framework === "vite") {
 		message += `${step++}. Access via ${code("import.meta.env.YOUR_VAR")}\n`;
 	} else if (plan.metadata.framework === "bun-fullstack") {
@@ -76,17 +101,21 @@ export function getNextStepsNote(
 			if (plan.metadata.disableCodegen) {
 				message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
 			} else {
-				message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
-				message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
-				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+				if (needsManualConfig) {
+					message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
+					message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
+					message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+				}
 				message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
 			}
 		} else if (plan.metadata.disableCodegen) {
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 		} else {
-			message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
-			message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
-			message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+			if (needsManualConfig) {
+				message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
+				message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
+				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+			}
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 		}
 	} else {

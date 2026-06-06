@@ -77,6 +77,30 @@ describe("Planner", () => {
 		expect(envFile?.content).toContain("runtimeEnv:");
 	});
 
+	it("plans wrapNextjsConfig as true by default for nextjs", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "nextjs" },
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.bootstrap?.wrapNextjsConfig).toBe(true);
+	});
+
+	it("plans wrapNextjsConfig as false when opted out", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				wrapNextjsConfig: false,
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.bootstrap?.wrapNextjsConfig).toBe(false);
+	});
+
 	it("plans for nextjs framework with zod validator", () => {
 		const state: CollectedState = {
 			...defaultState,
@@ -341,7 +365,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain(
-			'import { createEnv } from "@/generated/env.gen"',
+			'import arkenv from "@/generated/env.gen"',
 		);
 	});
 
@@ -370,7 +394,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain(
-			'import { createEnv } from "@/generated/env.gen"',
+			'import arkenv from "@/generated/env.gen"',
 		);
 	});
 
@@ -399,7 +423,7 @@ describe("Planner", () => {
 		const plan = createPlan(state);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain(
-			'import { createEnv } from "./generated/env.gen"',
+			'import arkenv from "./generated/env.gen"',
 		);
 	});
 
@@ -431,7 +455,7 @@ describe("Planner", () => {
 			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
 		);
 		expect(clientFile?.content).toContain(
-			'import { createEnv } from "@/env/generated/env.gen"',
+			'import arkenv from "@/env/generated/env.gen"',
 		);
 	});
 });

@@ -14,7 +14,7 @@ Here is an example using Zod with the 1-file codegen layout:
 import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
 export { type } from "@arkenv/nextjs";
-export function createEnv<
+export default function arkenv<
 	const TServer = {},
 	const TClient = {},
 	const TShared = {},
@@ -28,10 +28,10 @@ export function createEnv<
 
 // @filename: env.ts
 // ---cut---
-import { createEnv } from "./generated/env.gen";
+import arkenv from "./generated/env.gen";
 import { z } from "zod";
 
-export const env = createEnv({
+export const env = arkenv({
 	server: {
 		DATABASE_URL: z.string().url(),
 	},

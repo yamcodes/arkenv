@@ -20,7 +20,6 @@ describe("NodeWorkspace", () => {
 	});
 
 	afterEach(async () => {
-		vi.restoreAllMocks();
 		await fsp.rm(tempDir, { recursive: true, force: true });
 	});
 
@@ -177,5 +176,55 @@ describe("NodeWorkspace", () => {
 		await fsp.writeFile(path.join(tempDir, "bunfig.toml"), "");
 		const found = await workspace.findBunConfig();
 		expect(found).toContain("bunfig.toml");
+	});
+
+	it("finds nextjs config files", async () => {
+		await fsp.writeFile(path.join(tempDir, "next.config.ts"), "");
+		const found = await workspace.findNextjsConfig();
+		expect(found).toContain("next.config.ts");
+	});
+
+	it("finds nextjs config with .mts extension", async () => {
+		await fsp.writeFile(path.join(tempDir, "next.config.mts"), "");
+		const found = await workspace.findNextjsConfig();
+		expect(found).toContain("next.config.mts");
+	});
+
+	it("returns null if no nextjs config found", async () => {
+		const found = await workspace.findNextjsConfig();
+		expect(found).toBeNull();
+	});
+
+	it("bootstraps nextjs config by injecting withArkEnv wrapper", async () => {
+		const nextConfig = dedent`
+			export default {
+				experimental: {}
+			}
+		`;
+		const configPath = path.join(tempDir, "next.config.ts");
+		await fsp.writeFile(configPath, nextConfig);
+
+		const result = await workspace.bootstrapNextjsConfig(configPath);
+		expect(result.success).toBe(true);
+		expect(result.updated).toBe(true);
+
+		const updated = await fsp.readFile(configPath, "utf-8");
+		expect(updated).toContain('from "@arkenv/nextjs/config"');
+		expect(updated).toContain("withArkEnv({");
+	});
+
+	it("is idempotent when bootstrapping nextjs config that already uses withArkEnv", async () => {
+		const nextConfig = dedent`
+			import { withArkEnv } from "@arkenv/nextjs/config"
+			export default withArkEnv({
+				experimental: {}
+			})
+		`;
+		const configPath = path.join(tempDir, "next.config.ts");
+		await fsp.writeFile(configPath, nextConfig);
+
+		const result = await workspace.bootstrapNextjsConfig(configPath);
+		expect(result.success).toBe(true);
+		expect(result.updated).toBe(false);
 	});
 });

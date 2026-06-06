@@ -32,13 +32,13 @@ export default withArkEnv(nextConfig);
 
 ### 2. Define your schema in `env.ts`
 
-Import `createEnv` from the generated `./generated/env.gen` file instead of the package:
+Import `arkenv` from the generated `./generated/env.gen` file instead of the package:
 
 ```typescript
 // src/env.ts
-import { createEnv } from "./generated/env.gen";
+import arkenv from "./generated/env.gen";
 
-export const env = createEnv({
+export const env = arkenv({
   server: {
     DATABASE_URL: "string",
     STRIPE_API_KEY: "string",
@@ -79,9 +79,9 @@ Then, import from the custom location:
 
 ```typescript
 // src/env.ts
-import { createEnv } from "./generated/env.gen";
+import arkenv from "./generated/env.gen";
 
-export const env = createEnv({
+export const env = arkenv({
   client: {
     NEXT_PUBLIC_API_URL: "string",
   }

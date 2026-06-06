@@ -279,7 +279,7 @@ jobs:
 6. **Multi-stage Docker builds** for smaller images
 
 <!-- 
-Source references:
-- https://pnpm.io/continuous-integration
-- https://github.com/pnpm/action-setup
--->
+  Source references:
+  - https://pnpm.io/continuous-integration
+  - https://github.com/pnpm/action-setup
+  -->

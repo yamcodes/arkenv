@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Toaster } from "~/components/ui/toaster";
 import { CLICommand } from "./cli-command";
 
@@ -17,10 +17,6 @@ describe("CLICommand", () => {
 				writeText: vi.fn().mockResolvedValue(undefined),
 			},
 		});
-	});
-
-	afterEach(() => {
-		vi.unstubAllGlobals();
 	});
 
 	it("should render with syntax highlighting spans", () => {

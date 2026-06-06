@@ -1,5 +1,53 @@
 # @ArkEnv/CLI
 
+## 0.2.10
+
+### Patch Changes
+
+- #### Check git working tree is clean before `arkenv init` _[`#1151`](https://github.com/yamcodes/arkenv/pull/1151) [`4e6300c`](https://github.com/yamcodes/arkenv/commit/4e6300cb769efd626a69edbf7a38f520e796f386) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now verifies the git working tree is clean before modifying files in the existing-project flow. If the working tree is dirty and `--force` is not provided, the command aborts with a clear error message. Use `--force` to bypass this check.
+
+  Non-git repositories and clean working trees proceed normally without any extra prompts.
+
+- #### Automatically wrap Next.js config with `withArkEnv` during `arkenv init` _[`#1150`](https://github.com/yamcodes/arkenv/pull/1150) [`4a267e5`](https://github.com/yamcodes/arkenv/commit/4a267e5c1ca18fc2ac7ba720decb6681834f9ebf) [@yamcodes](https://github.com/yamcodes)_
+
+  Running `arkenv init` in a Next.js project now auto-detects `next.config.ts` (or `.js`/`.mts`/`.mjs`) and wraps the default export with `withArkEnv`:
+
+  ```ts
+  // next.config.ts - before
+  export default {
+    experimental: {},
+  };
+
+  // next.config.ts - after
+  import { withArkEnv } from "@arkenv/nextjs/config";
+  export default withArkEnv({
+    experimental: {},
+  });
+  ```
+
+  - Add `transformNextjsConfig` AST transformer to wrap default exports with `withArkEnv` using magicast
+  - Add `findNextjsConfig` and `bootstrapNextjsConfig` utilities for Next.js config discovery and mutation
+  - Integrate Next.js config bootstrapping into the CLI executor during `arkenv init`
+  - Fix next-steps suppression: show manual `withArkEnv` instructions even when the AI skill is detected if auto-bootstrapping failed
+
+## 0.2.9
+
+### Patch Changes
+
+- #### Update Next.js scaffold templates to use default import `arkenv` _[`#1140`](https://github.com/yamcodes/arkenv/pull/1140) [`befcefa`](https://github.com/yamcodes/arkenv/commit/befcefa83f6823f4c3f5e54a83ee5ae1112e1e55) [@yamcodes](https://github.com/yamcodes)_
+
+  Change the generated `env.ts` templates to import the default `arkenv` factory from the generated config helper instead of the named `createEnv` import, ensuring compatibility with the ArkType IDE extension.
+
+- #### Improve readability of recommended framework option in init wizard _[`2bd5cd4`](https://github.com/yamcodes/arkenv/commit/2bd5cd4f71fc091348df2fde2c3ccddd6d89d9d9) [@yamcodes](https://github.com/yamcodes)_
+
+  Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
+
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+
+  Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
+
 ## 0.2.8
 
 ### Patch Changes
@@ -160,6 +208,7 @@
 ### Patch changes
 
 - #### Fix --help table alignment _[`#1052`](https://github.com/yamcodes/arkenv/pull/1052) [`cf7bd02`](https://github.com/yamcodes/arkenv/commit/cf7bd022ab5477cf5bfbb2132b4d09fac703b9cf) [@yamcodes](https://github.com/yamcodes)_
+
 - #### Support POSIX-style short-flag bundling in CLI parser _[`#1047`](https://github.com/yamcodes/arkenv/pull/1047) [`b2e4865`](https://github.com/yamcodes/arkenv/commit/b2e4865dfa5cd84370781899d7f0862dbff544d5) [@yamcodes](https://github.com/yamcodes)_
 
   Enables combining multiple short flags (e.g. `-yq` instead of `-y -q` or `-yfq` instead of `-y -f -q`) in CLI commands. Flag values starting with `-` (e.g. `init -e -abc`) are preserved without expansion.
@@ -294,6 +343,7 @@
   - **Better In-File Guidance**: Generated templates now include comments clarifying validation behavior for your specific environment.
 
 - #### Add keyboard navigation hints _[`ac3adcc`](https://github.com/yamcodes/arkenv/commit/ac3adcc26a121975981655fb5c339e95084328bf) [@yamcodes](https://github.com/yamcodes)_
+
 - #### Improve Ctrl+C handling and implement graceful shutdown _[`#1019`](https://github.com/yamcodes/arkenv/pull/1019) [`102ce4a`](https://github.com/yamcodes/arkenv/commit/102ce4a60b82b88734d3d7c81d4ae430738bc277) [@yamcodes](https://github.com/yamcodes)_
 
   - Implemented graceful shutdown for `SIGINT` (Ctrl+C) to flush logs and JSON data, with a 2-second safety timeout and support for immediate exit on a second Ctrl+C.
@@ -369,7 +419,7 @@
 
   If one _is_ present, the CLI will offer to append the necessary types to it.
 
-  This allows for typesafety when calling via `process.env` or `import.meta.env`, see: https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env
+  This allows for typesafety when calling via `process.env` or `import.meta.env`, see: [https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
 
 - #### Add default values to the initial env keys _[`07eed0f`](https://github.com/yamcodes/arkenv/commit/07eed0f8a7288f8e31f5e2e22a6d37648e82b84e) [@yamcodes](https://github.com/yamcodes)_
 

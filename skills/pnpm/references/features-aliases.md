@@ -14,6 +14,7 @@ pnpm add <alias>@npm:<package>@<version>
 ```
 
 In `package.json`:
+
 ```json
 {
   "dependencies": {
@@ -38,6 +39,7 @@ Install different versions side by side:
 ```
 
 Usage:
+
 ```js
 import lodash3 from 'lodash3'
 import lodash4 from 'lodash4'
@@ -163,6 +165,8 @@ Aliases work with any valid pnpm specifier:
 4. **Test thoroughly**: Aliased packages may have subtle differences in behavior
 
 <!-- 
-Source references:
-- https://pnpm.io/aliases
--->
+  Source references:
+  - https://pnpm.io/aliases
+  - https://pnpm.io/cli/add
+  - https://pnpm.io/cli/install
+  -->

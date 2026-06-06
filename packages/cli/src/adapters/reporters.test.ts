@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	JsonReporter,
 	MemoryReporter,
@@ -30,10 +30,6 @@ describe("Reporters", () => {
 		exitSpy = vi
 			.spyOn(process, "exit")
 			.mockImplementation(() => undefined as never);
-	});
-
-	afterEach(() => {
-		vi.restoreAllMocks();
 	});
 
 	describe("TextReporter", () => {

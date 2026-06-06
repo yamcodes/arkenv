@@ -4,8 +4,9 @@ icon: Album
 description: Validate and secure your Next.js environment variables with zero-boilerplate scaffolding and a seamless developer experience.
 ---
 
-> [!IMPORTANT]
-> This integration requires [ArkType](https://arktype.io) to be installed.
+:::important
+This integration requires [ArkType](https://arktype.io) to be installed.
+:::
 
 The `@arkenv/nextjs` integration provides end-to-end environment validation for both the server and the browser. It catches configuration bugs early in your build pipeline and prevents sensitive server-side variables from ever reaching client components.
 
@@ -84,8 +85,9 @@ ArkEnv uses ArkType by default, but also supports any Standard Schema compatible
 
 ## The Danger of Shared Variables
 
-> [!WARNING]
-> Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
+:::warning
+Restrict the `shared` block only to `NODE_ENV`. Avoid placing custom variables (like `PORT` or other custom configuration) in the `shared` block.
+:::
 
 ### The Undefined Fallback Bug
 
