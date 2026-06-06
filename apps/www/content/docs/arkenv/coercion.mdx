@@ -5,9 +5,15 @@ description: Environment variables are auto-morphed into typesafe numbers, boole
 
 Traditionally, environment variables are always strings by default. ArkEnv **coerces** these strings into their target types based on your schema, so you only have to think about the types you want.
 
-:::important
-Coercion is not available in `arkenv/standard` - use your validator's native coercion instead.
-:::
+:::note
+Coercion in [arkenv/standard](/docs/arkenv/standard) only works with:
+
+- [Zod](https://zod.dev) (v4.2+)
+- [Valibot](https://valibot.dev) (v1.2+ via `@valibot/to-json-schema`)
+- [Zod Mini](https://zod.dev)
+- [stnl](https://github.com/re-utils/stnl)
+- Any validator compliant with [Standard JSON Schema v1](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec)
+  :::
 
 ## Numbers
 

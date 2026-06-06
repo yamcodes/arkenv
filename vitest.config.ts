@@ -29,5 +29,7 @@ export default defineConfig({
 			],
 		},
 		unstubEnvs: true,
+		restoreMocks: true,
+		unstubGlobals: true,
 	},
 });

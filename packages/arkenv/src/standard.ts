@@ -17,8 +17,8 @@ export type StandardEnvConfig = ParseStandardConfig;
  * This entry is ArkType-free - ArkType is never imported, even transitively.
  * Use this when your project must not depend on ArkType.
  *
- * @param def - An object mapping variable names to Standard Schema validators
- * @param config - Optional configuration
+ * @param def An object mapping variable names to Standard Schema validators
+ * @param config Optional configuration
  * @returns The validated environment variables
  * @throws An {@link ArkEnvError} if validation fails
  *

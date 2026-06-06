@@ -12,6 +12,9 @@
 		"outDir": "dist",
 		"resolveJsonModule": true,
 		"rootDir": "src",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
 		"declaration": true,
 		"declarationMap": true,
 		"allowImportingTsExtensions": true,
