@@ -35,13 +35,13 @@ ArkEnvError: Errors found while validating environment variables
 
 Most modern frameworks load `.env` files automatically. For plain Node.js, we recommend using [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
 
-ArkEnv intercepts the populated `process.env` (or a custom configuration object), evaluates it against your schema, and applies [automatic type coercion](/docs/arkenv/coercion).
+ArkEnv intercepts the populated `process.env` or `import.meta.env` object, evaluates it against your schema, and applies [automatic type coercion](/docs/arkenv/coercion).
 
 [//]: # "2. The Validator Story"
 
 ## Do I have to use ArkType?
 
-Not at all. While we recommend [ArkType](https://arktype.io/) for its speed and clean syntax, you can drop in any validator that implements the [Standard Schema](https://standardschema.dev) protocol.
+**Not at all.** Any validator that implements the [Standard Schema](https://standardschema.dev) protocol is supported.
 
 This includes:
 
@@ -49,21 +49,21 @@ This includes:
 - **Valibot**
 - **Typia**
 
-See the [guide for details](/docs/arkenv/standard).
+See the [guide for details](/docs/arkenv/integrations/standard-schema).
 
 ## Does ArkEnv work with Zod?
 
-Yes, natively. Because Zod implements the Standard Schema interface, ArkEnv treats it as a first-class citizen.
+Yes. **Zod is a first-class ArkEnv citizen**. We have an official [Zod example](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod) in our repository and the [ArkEnv CLI](/docs/cli) can scaffold an ArkEnv + Zod configuration for you automatically.
 
-You can view our reference implementation in the [Zod example repository](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod) or simply let the [ArkEnv CLI](/docs/cli) scaffold an ArkEnv + Zod configuration for you automatically.
+## Why use ArkEnv instead of just raw ArkType or Zod?
 
-## Why use ArkEnv instead of just raw Zod?
+Using "raw" ArkType or Zod for environment variables is tempting since it doesn't require any extra dependencies. However, it introduces security issues and boilerplate.
 
-Using "raw" Zod for environment variables often leads to a lot of repetitive boilerplate:
+With ArkEnv:
 
-- **It handles type coercion automatically** so you don't have to manually chain `z.coerce` or parse boolean strings like `"true"`/`"false"`.
-- **It formats error messages for the terminal** instead of deeply nested JSON, so you can diagnose deployment failures instantly.
-- **It includes native plugins for frameworks** like Vite and Next.js, which handle client-side static replacement out of the box.
+- Sensitive, server-side variables fail loudly if used in client-side code so they don't leak.
+- Diagnostics are optimized so you can spot failing variables clearly from the terminal.
+- A variable typed `boolean` will be parsed as a `boolean`, not a `string` requiring manual handling.
 
 [//]: # "3. Frameworks & Comparisons"
 
@@ -71,13 +71,9 @@ Using "raw" Zod for environment variables often leads to a lot of repetitive boi
 
 Yes! While we recommend TypeScript for editor autocomplete and build-time safety, the validation engine works perfectly in plain JavaScript. Check out our [basic-js example](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js).
 
-## Is ArkEnv only for Vite and Bun?
+## Is ArkEnv only for Next.js or Vite?
 
 No. While we officially support Next.js, Node.js, Vite, and Bun through wrappers and plugins, the core API is based on standard JavaScript APIs and should run anywhere JavaScript does.
-
-## Can I use ArkEnv with Next.js?
-
-Yes! We officially support Next.js via the [@arkenv/nextjs](/docs/nextjs) integration, which enforces client/server boundaries and warns you if server secrets leak into Client Components.
 
 ## How is ArkEnv different from T3 Env, or other similar tools?
 
@@ -99,10 +95,10 @@ Read the [CLI reference docs](/docs/cli) for a complete list of flags and capabi
 
 ## Does ArkEnv support AI development tools like Claude Code or Cursor?
 
-Yes. ArkEnv is uniquely built for modern development workflows and features a dedicated [AI Agent Skill](/docs/arkenv/integrations/ai/skills). Providing this context to LLM-driven tools (like Claude Code, Cursor, or Windsurf) allows your AI assistant to automatically maintain, update, and tighten your environment schemas as your application code evolves, ensuring your schema changes match your code changes seamlessly.
+Yes. ArkEnv is optimized for modern development workflows and features a dedicated [AI Agent Skill](/docs/arkenv/integrations/ai/skills). Providing this context to LLM-driven tools (like Claude Code, Cursor, Codex or Antigravity) allows your AI assistant to automatically maintain, update, and tighten your environment schemas as your application code evolves, so your schema changes match your code changes seamlessly.
 
 ## Is it safe to use in production?
 
-Yes. ArkEnv is built to be a high-performance, low-overhead utility. The core runtime is tiny (\~2kB gzipped) and carries **zero external dependencies**, ensuring it won't bloat your production dependency tree or introduce supply-chain vulnerabilities. It offloads the core parsing mechanics to your chosen, trusted validation library and safely shuts down the process if a configuration error is detected.
+Yes. ArkEnv is built to be a high-performance, low-overhead utility. The core runtime is tiny (\~2kB gzipped) and carries **zero external dependencies**, so it won't bloat your production dependency tree or introduce supply-chain vulnerabilities. It offloads the core parsing mechanics to your chosen, trusted validation library and safely shuts down the process if a configuration error is detected.
 
-We are currently in a stable `v0.y.z` release cycle as we work toward v1 (track our progress on our [roadmap](https://github.com/yamcodes/arkenv/issues/683)). However, the core validation engine is already well-tested, reliable, and used in production.
+ArkEnv is currently in v0 and complies with Semantic Versioning 2.0.0. We're aggressively working towards v1 in a dedicated branch - track our progress on our [roadmap](https://github.com/yamcodes/arkenv/issues/683). The core validation engine is already used in production and not expected to change meaningfully.
