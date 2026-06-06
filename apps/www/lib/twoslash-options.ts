@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
+import ts from "typescript";
 
 const require = createRequire(import.meta.url);
 
@@ -30,6 +31,9 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
 		compilerOptions: {
+			module: ts.ModuleKind.ESNext,
+			moduleResolution: ts.ModuleResolutionKind.Bundler,
+			target: ts.ScriptTarget.ES2022,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
