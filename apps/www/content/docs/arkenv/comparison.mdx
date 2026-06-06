@@ -63,7 +63,7 @@ After years of building enterprise-scale applications, I realized that while DIY
 
 [T3 Env](https://env.t3.gg) is a major inspiration for ArkEnv. While both libraries provide typesafe environment validation, they differ in design and boilerplate:
 
-- **No manual `runtimeEnv`**: In Next.js, T3 Env requires you to manually maintain a duplicate `runtimeEnv` block (e.g. `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) so Next.js can inline variables. ArkEnv’s compiler automatically scans your schema and generates these mappings for you.
+- **No manual `runtimeEnv`**: In Next.js, T3 Env requires you to manually maintain a duplicate `runtimeEnv` block (e.g. `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) so Next.js can inline variables. ArkEnv automatically scans your schema and generates these mappings for you.
 - **Mental model**: T3 Env enforces a strict client/server split in its core package. Even when writing a simple Node server, you are forced to group keys into `server` and `client` blocks. ArkEnv lets you define simple flat schemas where appropriate, while providing clean layouts (like simple vs. strict) for front-end frameworks.
 - **Features**: ArkEnv features native ArkType synergy, automatic coercion, first-class Vite integration, and a CLI out of the box.
 
