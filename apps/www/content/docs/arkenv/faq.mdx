@@ -55,6 +55,30 @@ See the [guide for details](/docs/arkenv/integrations/standard-schema).
 
 Yes. **Zod is a first-class ArkEnv citizen**. We have an official [Zod example](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod) in our repository and the [ArkEnv CLI](/docs/cli) can scaffold an ArkEnv + Zod configuration for you automatically.
 
+## Why do you guys like ArkType so much?
+
+That's a great question! We're big ArkType nerds because it's a revolutionary validation library, that pretty much "brings TypeScript to runtime".
+
+Look at how concise an ArkEnv schema can be:
+
+```typescript title="env.ts"
+import { createEnv } from "@arkenv/core";
+
+export const env = createEnv({
+  server: {
+    PORT: "number >= 1024",
+    DATABASE_URL: "string.url",
+    NODE_ENV: "'development' | 'production'",
+  }
+});
+```
+
+This string-based syntax makes defining schemas incredibly intuitive and readable. Instead of chaining endless method calls like `.string().url()` or `.number().min(1024)`, you simply write strings that describe your types.
+
+How clean is that for validation API? Honestly, that's why ArkEnv exists, as a way to honor this beautiful feat of engineering.
+
+Still, we support any modern validation library through Standard Schema, so even if you're not as excited as us (that's ok!), you're welcome in the ArkEnv community.
+
 ## Why use ArkEnv instead of just raw ArkType or Zod?
 
 Using "raw" ArkType or Zod for environment variables is tempting since it doesn't require any extra dependencies. However, it introduces security issues and boilerplate.
