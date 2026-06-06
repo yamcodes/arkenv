@@ -44,7 +44,7 @@ Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [
    ```bash
    npm run dev
    ```
-   :white_check_mark: You will see the environment variables printed in the console.
+   :white\_check\_mark: You will see the environment variables printed in the console.
 
 ## Environment Variables
 
