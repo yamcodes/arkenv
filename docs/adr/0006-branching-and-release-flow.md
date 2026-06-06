@@ -31,7 +31,7 @@ Based on our analysis of external open-source projects, we evaluated three prima
 
 We have decided to adopt a **Dual-Branch (`dev` / `main`) Model** using **Changesets** for package versioning.
 
-1. **`dev`** is the default branch. Feature PRs merge here. Vercel Preview deployments run here, but production does not.
+1. **`dev`** is the default branch. Feature PRs merge here. Vercel Preview deployments run here, but production does not. All feature development, issue tackling, and comparisons (such as git diffs or branch bases) must target `dev` (`origin/dev`).
 2. **Changesets** continuously aggregates version bumps into a "Version Packages" PR against `dev`. This solves the monorepo versioning problem.
 3. When the Changesets PR is merged, the packages publish to npm, and a workflow fast-forwards **`main`** to match `dev`.
 4. **`main`** is our production branch. The production documentation site strictly deploys from here.
