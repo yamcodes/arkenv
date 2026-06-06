@@ -3,15 +3,15 @@ name: pnpm-overrides
 description: Force specific versions of dependencies including transitive dependencies
 ---
 
-# pnpm Overrides
+# pnpm overrides
 
 Overrides let you force specific versions of packages, including transitive dependencies. Useful for fixing security vulnerabilities or compatibility issues.
 
-## Basic Syntax
+## Basic syntax
 
 Define overrides in `pnpm-workspace.yaml` (recommended) or `package.json`:
 
-### In pnpm-workspace.yaml (Recommended)
+### In pnpm-workspace.yaml (recommended)
 
 ```yaml
 packages:
@@ -45,31 +45,38 @@ overrides:
 }
 ```
 
-## Override Patterns
+## Override patterns
 
 ### Override all instances
+
 ```yaml
 overrides:
   lodash: ^4.17.21
 ```
+
 Forces all lodash installations to use ^4.17.21.
 
 ### Override specific parent version
+
 ```yaml
 overrides:
   "foo@^1.0.0": ^1.2.3
 ```
+
 Only override foo when the requested version matches ^1.0.0.
 
 ### Override nested dependency
+
 ```yaml
 overrides:
   "express>cookie": ^0.6.0
   "foo@1.x>bar@^2.0.0>qux": ^1.0.0
 ```
+
 Override cookie only when it's a dependency of express.
 
 ### Replace with different package
+
 ```yaml
 overrides:
   # Replace underscore with lodash
@@ -83,15 +90,17 @@ overrides:
 ```
 
 ### Remove a dependency
+
 ```yaml
 overrides:
   "unwanted-pkg": "-"
 ```
+
 The `-` removes the package entirely.
 
-## Common Use Cases
+## Common use cases
 
-### Security Fix
+### Security fix
 
 Force patched version of vulnerable package:
 
@@ -102,7 +111,7 @@ overrides:
   "json5": "^2.2.3"
 ```
 
-### Deduplicate Dependencies
+### Deduplicate dependencies
 
 Force single version when multiple are installed:
 
@@ -112,21 +121,21 @@ overrides:
   "react-dom": "^18.2.0"
 ```
 
-### Fix Peer Dependency Issues
+### Fix peer dependency issues
 
 ```yaml
 overrides:
   "@types/react": "^18.2.0"
 ```
 
-### Replace Deprecated Package
+### Replace deprecated package
 
 ```yaml
 overrides:
   "request": "npm:@cypress/request@^3.0.0"
 ```
 
-## Hooks Alternative
+## Hooks alternative
 
 For more complex scenarios, use `.pnpmfile.cjs`:
 
@@ -156,14 +165,14 @@ module.exports = {
 }
 ```
 
-## Overrides vs Catalogs
+## Overrides vs catalogs
 
-| Feature | Overrides | Catalogs |
-|---------|-----------|----------|
-| Affects | All dependencies (including transitive) | Direct dependencies only |
-| Usage | Automatic | Explicit `catalog:` reference |
-| Purpose | Force versions, fix issues | Version management |
-| Granularity | Can target specific parents | Package-wide only |
+| Feature     | Overrides                               | Catalogs                      |
+| ----------- | --------------------------------------- | ----------------------------- |
+| Affects     | All dependencies (including transitive) | Direct dependencies only      |
+| Usage       | Automatic                               | Explicit `catalog:` reference |
+| Purpose     | Force versions, fix issues              | Version management            |
+| Granularity | Can target specific parents             | Package-wide only             |
 
 ## Debugging
 
@@ -178,7 +187,8 @@ pnpm list lodash --depth=Infinity
 ```
 
 <!-- 
-Source references:
-- https://pnpm.io/package_json#pnpmoverrides
-- https://pnpm.io/pnpmfile
--->
+  Source references:
+  - https://pnpm.io/overrides
+  - https://pnpm.io/package_json
+  - https://pnpm.io/resolution
+  -->

@@ -3,13 +3,13 @@ name: pnpm-ci-cd-setup
 description: Optimizing pnpm for continuous integration and deployment workflows
 ---
 
-# pnpm CI/CD Setup
+# pnpm ci/cd setup
 
 Best practices for using pnpm in CI/CD environments for fast, reliable builds.
 
-## GitHub Actions
+## GitHub actions
 
-### Basic Setup
+### Basic setup
 
 ```yaml
 name: CI
@@ -36,7 +36,7 @@ jobs:
       - run: pnpm build
 ```
 
-### With Store Caching
+### With store caching
 
 For larger projects, cache the pnpm store:
 
@@ -61,7 +61,7 @@ For larger projects, cache the pnpm store:
 - run: pnpm install --frozen-lockfile
 ```
 
-### Matrix Testing
+### Matrix testing
 
 ```yaml
 jobs:
@@ -82,7 +82,7 @@ jobs:
       - run: pnpm test
 ```
 
-## GitLab CI
+## GitLab ci
 
 ```yaml
 image: node:20
@@ -124,7 +124,7 @@ build:
 
 ## Docker
 
-### Multi-Stage Build
+### Multi-stage build
 
 ```dockerfile
 # Build stage
@@ -162,7 +162,7 @@ RUN pnpm install --frozen-lockfile --prod
 CMD ["node", "dist/index.js"]
 ```
 
-### Optimized for Monorepos
+### Optimized for monorepos
 
 ```dockerfile
 FROM node:20-slim AS builder
@@ -186,9 +186,9 @@ COPY . .
 RUN pnpm --filter @myorg/api build
 ```
 
-## Key CI Flags
+## Key ci flags
 
-### --frozen-lockfile
+### --Frozen-lockfile
 
 **Always use in CI.** Fails if `pnpm-lock.yaml` needs updates:
 
@@ -196,7 +196,7 @@ RUN pnpm --filter @myorg/api build
 pnpm install --frozen-lockfile
 ```
 
-### --prefer-offline
+### --Prefer-offline
 
 Use cached packages when available:
 
@@ -204,7 +204,7 @@ Use cached packages when available:
 pnpm install --frozen-lockfile --prefer-offline
 ```
 
-### --ignore-scripts
+### --Ignore-scripts
 
 Skip lifecycle scripts for faster installs (use cautiously):
 
@@ -212,7 +212,7 @@ Skip lifecycle scripts for faster installs (use cautiously):
 pnpm install --frozen-lockfile --ignore-scripts
 ```
 
-## Corepack Integration
+## Corepack integration
 
 Use Corepack to manage pnpm version:
 
@@ -229,9 +229,9 @@ Use Corepack to manage pnpm version:
 - run: pnpm install --frozen-lockfile
 ```
 
-## Monorepo CI Strategies
+## Monorepo ci strategies
 
-### Build Changed Packages Only
+### Build changed packages only
 
 ```yaml
 - name: Build changed packages
@@ -239,7 +239,7 @@ Use Corepack to manage pnpm version:
     pnpm --filter "...[origin/main]" build
 ```
 
-### Parallel Jobs per Package
+### Parallel jobs per package
 
 ```yaml
 jobs:
@@ -269,7 +269,7 @@ jobs:
       - run: pnpm --filter ${{ matrix.package }} test
 ```
 
-## Best Practices Summary
+## Best practices summary
 
 1. **Always use `--frozen-lockfile`** in CI
 2. **Cache the pnpm store** for faster installs
@@ -279,7 +279,7 @@ jobs:
 6. **Multi-stage Docker builds** for smaller images
 
 <!-- 
-Source references:
-- https://pnpm.io/continuous-integration
-- https://github.com/pnpm/action-setup
--->
+  Source references:
+  - https://pnpm.io/continuous-integration
+  - https://github.com/pnpm/action-setup
+  -->

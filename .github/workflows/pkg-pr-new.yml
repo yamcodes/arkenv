@@ -2,12 +2,14 @@ name: "pkg.pr.new"
 on:
   pull_request:
     branches:
-      - main
+      - dev
+      - v1
     paths:
       - "packages/**"
   push:
     branches:
-      - main
+      - dev
+      - v1
     paths:
       - "packages/**"
       - ".github/workflows/pkg-pr-new.yml"

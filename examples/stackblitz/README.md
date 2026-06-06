@@ -1,4 +1,4 @@
-# ArkEnv basic example (Stackblitz)
+# ArkEnv basic example (StackBlitz)
 
 This example shows how to use ArkEnv in a basic Node.js application.
 

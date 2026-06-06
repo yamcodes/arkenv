@@ -4,7 +4,7 @@ import z from "zod";
 const env = arkenv({
 	TEST_VALUE: z.url(),
 	PORT: z.coerce.number(),
-	HOST: z.literal("localhost").or(z.string().hostname()),
+	HOST: z.literal("localhost").or(z.hostname()),
 });
 
 console.log(`Value: ${String(env.TEST_VALUE)}`);

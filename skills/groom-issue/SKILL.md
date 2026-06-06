@@ -5,7 +5,7 @@ metadata:
   internal: true
 ---
 
-# Groom Issue
+# Groom issue
 
 This skill takes a poorly written, ambiguous, or incomplete issue, conducts an interactive grilling session with the user to clarify requirements, updates the issue on GitHub using the GitHub CLI (`gh`), and utilizes the existing `/triage` skill workflow to apply the correct canonical labels and post an authoritative agent brief.
 
@@ -15,7 +15,7 @@ Use this skill whenever the user says `/groom-issue <number>` or asks to "groom"
 
 ## Workflow
 
-### 1. Context Gathering & Initial Assessment
+### 1. Context gathering & initial assessment
 
 Before asking any questions, you MUST examine the current state of the issue and the surrounding codebase.
 
@@ -24,9 +24,9 @@ Before asking any questions, you MUST examine the current state of the issue and
    gh issue view <issue-number> --json title,body,labels,comments
    ```
 2. **Analyze Requirements**: Evaluate the issue description and existing comments. Identify gaps, ambiguities, missing edge cases, unclear desired behavior, or lacking acceptance criteria.
-3. **Explore Codebase**: Explore the repository to understand the domain model and existing implementations relevant to the issue. Refer to the project's domain glossary (`CONTEXT.md`), ADRs (`docs/adr/`), and prior rejections (`.out-of-scope/*.md`).
+3. **Explore Codebase**: Explore the repository to understand the domain model and existing implementations relevant to the issue. Refer to the project's domain glossary (`docs/CONTEXT.md`), ADRs (`docs/adr/`), and prior rejections (`.out-of-scope/*.md`).
 
-### 2. Grilling / Requirement Clarification (If Needed)
+### 2. Grilling / requirement clarification (if needed)
 
 If the issue is vague, poorly written, or lacks concrete acceptance criteria, conduct a rigorous interview session with the user (following the principles of `/grill-with-docs`):
 
@@ -34,7 +34,7 @@ If the issue is vague, poorly written, or lacks concrete acceptance criteria, co
 2. **Wait for Feedback**: Present your recommended answer/approach for each question and wait for the user's confirmation before proceeding to the next question.
 3. **Probe Specifics**: Challenge fuzzy language, establish clear boundaries between domain concepts, and explore concrete edge cases and error conditions.
 
-### 3. Fleshing Out the Issue on GitHub
+### 3. Fleshing out the issue on GitHub
 
 Once the requirements are fully clarified and agreed upon:
 
@@ -47,7 +47,7 @@ Once the requirements are fully clarified and agreed upon:
    gh issue edit <issue-number> --body "<refined-issue-body>"
    ```
 
-### 4. Triage & Agent Brief
+### 4. Triage & agent brief
 
 At the end of the grooming process, you MUST utilize the existing `/triage` skill workflow (refer to `skills/triage/SKILL.md` and `skills/triage/AGENT-BRIEF.md`) to properly classify and prepare the issue:
 

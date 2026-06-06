@@ -1,0 +1,94 @@
+name: '🏷️ Needs Triage Validation'
+
+on:
+  issues:
+    types:
+      - 'opened'
+      - 'labeled'
+      - 'unlabeled'
+
+jobs:
+  validate:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      issues: 'write'
+    steps:
+      - name: 'Validate triage labels'
+        uses: 'actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd' # ratchet:actions/github-script@v8.0.0
+        with:
+          script: |-
+            const issue = context.payload.issue;
+            const action = context.payload.action;
+            const labelName = context.payload.label ? context.payload.label.name : null;
+            const stateLabels = [
+              'ready for human',
+              'ready for agent',
+              'needs more info',
+              'wontfix'
+            ];
+            const stateOrMetaLabels = [...stateLabels, 'meta'];
+
+            let currentLabels = (await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              per_page: 100
+            })).data.map(label => label.name);
+
+            const removeLabel = async (name) => {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  name: name
+                });
+                currentLabels = currentLabels.filter(label => label !== name);
+              } catch (err) {
+                core.warning(`Failed to remove label '${name}': ${err.message}`);
+              }
+            };
+
+            const addLabel = async (name) => {
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: [name]
+                });
+                currentLabels.push(name);
+              } catch (err) {
+                core.warning(`Failed to add label '${name}': ${err.message}`);
+              }
+            };
+
+            core.info(`Action: ${action}, Label: ${labelName}`);
+            core.info(`Current labels: ${JSON.stringify(currentLabels)}`);
+
+            if (action === 'labeled' && labelName) {
+              if (stateOrMetaLabels.includes(labelName)) {
+                if (currentLabels.includes('needs triage')) {
+                  core.info(`Label '${labelName}' was added. Removing 'needs triage'...`);
+                  await removeLabel('needs triage');
+                }
+              } else if (labelName === 'needs triage') {
+                if (currentLabels.some(l => stateOrMetaLabels.includes(l))) {
+                  core.info("'needs triage' was added while a state or meta label exists. Removing 'needs triage'...");
+                  await removeLabel('needs triage');
+                }
+              }
+            } else if (action === 'opened') {
+              if (currentLabels.includes('needs triage') && currentLabels.some(l => stateOrMetaLabels.includes(l))) {
+                core.info("Issue opened with both 'needs triage' and a state or meta label. Removing 'needs triage'...");
+                await removeLabel('needs triage');
+              }
+            }
+
+            const hasAnyStateOrMeta = currentLabels.some(l => stateOrMetaLabels.includes(l));
+            if (!hasAnyStateOrMeta && !currentLabels.includes('needs triage')) {
+              core.info("No state or meta labels found. Adding 'needs triage'...");
+              await addLabel('needs triage');
+            }
+
+            core.info(`Final labels: ${JSON.stringify(currentLabels)}`);

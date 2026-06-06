@@ -5,7 +5,6 @@
 @import "./styles/theme/light.css";
 @import "./styles/theme/dark.css";
 @import "./styles/theme/inline.css";
-@import "./styles/components/github-alerts.css";
 @import "./styles/base.css";
 @import "fumadocs-twoslash/twoslash.css";
 

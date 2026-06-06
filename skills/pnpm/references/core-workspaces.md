@@ -3,11 +3,11 @@ name: pnpm-workspaces
 description: Monorepo support with workspaces for managing multiple packages
 ---
 
-# pnpm Workspaces
+# pnpm workspaces
 
 pnpm has built-in support for monorepos (multi-package repositories) through workspaces.
 
-## Setting Up Workspaces
+## Setting up workspaces
 
 Create `pnpm-workspace.yaml` at the repository root:
 
@@ -23,7 +23,7 @@ packages:
   - '!**/test/**'
 ```
 
-## Workspace Protocol
+## Workspace protocol
 
 Use `workspace:` protocol to reference local packages:
 
@@ -37,16 +37,16 @@ Use `workspace:` protocol to reference local packages:
 }
 ```
 
-### Protocol Variants
+### Protocol variants
 
-| Protocol | Behavior | Published As |
-|----------|----------|--------------|
-| `workspace:*` | Any version | Actual version (e.g., `1.2.3`) |
-| `workspace:^` | Compatible version | `^1.2.3` |
-| `workspace:~` | Patch version | `~1.2.3` |
-| `workspace:^1.0.0` | Semver range | `^1.0.0` |
+| Protocol           | Behavior           | Published As                   |
+| ------------------ | ------------------ | ------------------------------ |
+| `workspace:*`      | Any version        | Actual version (e.g., `1.2.3`) |
+| `workspace:^`      | Compatible version | `^1.2.3`                       |
+| `workspace:~`      | Patch version      | `~1.2.3`                       |
+| `workspace:^1.0.0` | Semver range       | `^1.0.0`                       |
 
-## Filtering Packages
+## Filtering packages
 
 Run commands on specific packages using `--filter`:
 
@@ -67,7 +67,7 @@ pnpm -r build
 pnpm --recursive build
 ```
 
-### Dependency-based Filtering
+### Dependency-based filtering
 
 ```bash
 # Package and all its dependencies
@@ -84,9 +84,10 @@ pnpm --filter "...[origin/main]" test
 pnpm --filter "[HEAD~5]" lint
 ```
 
-## Workspace Commands
+## Workspace commands
 
 ### Install dependencies
+
 ```bash
 # Install all workspace packages
 pnpm install
@@ -99,6 +100,7 @@ pnpm --filter @myorg/app add @myorg/utils
 ```
 
 ### Run scripts
+
 ```bash
 # Run in all packages with that script
 pnpm -r run build
@@ -114,6 +116,7 @@ pnpm -r --stream run dev
 ```
 
 ### Execute commands
+
 ```bash
 # Run command in all packages
 pnpm -r exec pwd
@@ -122,7 +125,7 @@ pnpm -r exec pwd
 pnpm --filter "./packages/**" exec rm -rf dist
 ```
 
-## Workspace Settings
+## Workspace settings
 
 Configure in `.npmrc` or `pnpm-workspace.yaml`:
 
@@ -143,7 +146,7 @@ save-workspace-protocol=rolling
 workspace-concurrency=4
 ```
 
-## Publishing Workspaces
+## Publishing workspaces
 
 When publishing, `workspace:` protocols are converted:
 
@@ -164,11 +167,12 @@ When publishing, `workspace:` protocols are converted:
 ```
 
 Use `--no-git-checks` for publishing from CI:
+
 ```bash
 pnpm publish -r --no-git-checks
 ```
 
-## Best Practices
+## Best practices
 
 1. **Use workspace protocol** for internal dependencies
 2. **Enable `link-workspace-packages`** for automatic linking
@@ -176,7 +180,7 @@ pnpm publish -r --no-git-checks
 4. **Filter by dependencies** when building to ensure correct order
 5. **Use catalogs** for shared external dependency versions
 
-## Example Project Structure
+## Example project structure
 
 ```
 my-monorepo/
@@ -198,8 +202,8 @@ my-monorepo/
 ```
 
 <!-- 
-Source references:
-- https://pnpm.io/workspaces
-- https://pnpm.io/filtering
-- https://pnpm.io/npmrc#workspace-settings
--->
+  Source references:
+  - https://pnpm.io/workspaces
+  - https://pnpm.io/pnpm-workspace_yaml
+  - https://pnpm.io/filtering
+  -->

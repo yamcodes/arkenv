@@ -1,4 +1,4 @@
-# Interface Design for Testability
+# Interface design for testability
 
 Good interfaces make testing natural:
 

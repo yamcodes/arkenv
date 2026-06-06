@@ -1,4 +1,4 @@
-# Deep Modules
+# Deep modules
 
 From "A Philosophy of Software Design":
 

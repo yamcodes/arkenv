@@ -26,7 +26,7 @@ export type FileSystemPort = {
 	 * For this reason, `command` MUST be strictly the executable name (e.g., "pnpm", not "pnpm dlx")
 	 * and any subsequent arguments must be passed in the `args` array.
 	 */
-	execute(command: string, args?: string[]): Promise<void>;
+	execute(command: string, args?: string[], cwd?: string): Promise<void>;
 };
 
 /**
@@ -37,8 +37,9 @@ export type ConfigPort = {
 		status: "updated" | "already_strict" | "not_found" | "error";
 		file?: string;
 	}>;
-	findViteConfig(): Promise<string | null>;
-	findBunConfig(): Promise<string | null>;
+	findViteConfig(cwd?: string): Promise<string | null>;
+	findBunConfig(cwd?: string): Promise<string | null>;
+	findNextjsConfig(cwd?: string): Promise<string | null>;
 	bootstrapViteConfig(
 		path: string,
 		importPath: string,
@@ -47,6 +48,7 @@ export type ConfigPort = {
 		path: string | null | undefined,
 		features?: ("serve" | "build")[],
 	): Promise<BootstrapResult>;
+	bootstrapNextjsConfig(path: string): Promise<BootstrapResult>;
 	safeAppend(
 		path: string,
 		schemaPath: string,

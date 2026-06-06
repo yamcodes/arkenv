@@ -1,6 +1,6 @@
 import path from "node:path";
 import { shake } from "radashi";
-import { getEnvTemplate } from "./env-template";
+import { getEnvTemplate, getStrictEnvTemplates } from "./env-template";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
@@ -13,6 +13,7 @@ import { bunTypesTemplate, viteTypesTemplate } from "./templates";
  */
 export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const {
+		mode,
 		options,
 		packageManager,
 		tsConfig,
@@ -20,31 +21,204 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		cwd,
 		existingFiles,
 	} = state;
-	const targetPath = path.resolve(cwd, options.path);
-	const targetDir = path.dirname(targetPath);
+
+	const projectName =
+		options.name && options.name !== "."
+			? path.basename(options.name)
+			: undefined;
 
 	const plan: ScaffoldingPlan = {
 		files: [],
-		metadata: {
+		cwd,
+		metadata: shake({
 			displayPath: "",
 			framework: options.framework,
 			validator: options.validator,
 			packageManager,
 			importPath: "",
-		},
+			mode,
+			example: options.example,
+			name: projectName,
+			layout: options.layout,
+			skillDetected: options.skillDetected,
+			disableCodegen: options.disableCodegen,
+		}) as ScaffoldingPlan["metadata"],
 	};
 
-	// 1. Env Schema File
-	const envContent = getEnvTemplate(options);
-	const envFileExists = existingFiles.includes(targetPath);
+	if (mode === "new") {
+		if (!options.example) {
+			throw new Error("New project scaffolding requires an example.");
+		}
 
-	if (!envFileExists || options.overwriteEnvSchemaFile !== false) {
-		plan.files.push({
-			path: targetPath,
-			content: envContent,
-			action: envFileExists ? "overwrite" : "create",
-			label: "environment schema",
-		});
+		const targetDir =
+			options.name && options.name !== "."
+				? path.join(cwd, options.name)
+				: undefined;
+		const targetName =
+			options.name && options.name !== "."
+				? path.basename(options.name)
+				: path.basename(cwd);
+
+		plan.clone = {
+			repository: "https://github.com/yamcodes/arkenv.git",
+			example: options.example,
+			targetName,
+			...(targetDir !== undefined && { targetDir }),
+		};
+
+		plan.install = {
+			packageManager,
+			dependencies: [], // Dependencies are already in the example's package.json
+			...(targetDir !== undefined && { cwd: targetDir }),
+		};
+
+		if (options.installSkill) {
+			plan.skill = {
+				dlxCommand: getDlxCommand(packageManager),
+				packageName: "yamcodes/arkenv",
+				isYes: state.isYes,
+			};
+		}
+
+		// Examples usually have the schema at src/env.ts
+		plan.metadata.displayPath = "./src/env.ts";
+		plan.metadata.importPath = "./src/env";
+
+		return plan;
+	}
+
+	// mode === "existing"
+	const targetPath = path.resolve(cwd, options.path);
+	const targetDir = path.dirname(targetPath);
+
+	// 1. Env Schema File(s)
+	if (options.framework === "nextjs" && options.layout === "strict") {
+		const ext = path.extname(targetPath);
+		const baseWithoutExt = targetPath.slice(0, -ext.length);
+		const sharedPath = path.join(baseWithoutExt, "internal", `shared${ext}`);
+		const clientPath = path.join(baseWithoutExt, `client${ext}`);
+		const serverPath = path.join(baseWithoutExt, `server${ext}`);
+
+		let nextjsImportPath: string | undefined;
+		if (
+			options.framework === "nextjs" &&
+			!options.disableCodegen &&
+			tsConfig?.parsed
+		) {
+			const parsed = tsConfig.parsed;
+			const compilerOptions = parsed.compilerOptions || {};
+			const paths = compilerOptions.paths || {};
+			if (paths["@/*"]) {
+				const tsConfigDir = parsed.path ? path.dirname(parsed.path) : cwd;
+				const generatedDir = path.join(baseWithoutExt, "generated");
+				const relGeneratedDir = path
+					.relative(tsConfigDir, generatedDir)
+					.replace(/\\/g, "/");
+
+				for (const pattern of paths["@/*"]) {
+					const normalizedPattern = pattern
+						.replace(/^\.\//, "")
+						.replace(/\*$/, "");
+					if (
+						normalizedPattern === "" ||
+						relGeneratedDir.startsWith(normalizedPattern)
+					) {
+						let subPath = relGeneratedDir;
+						if (
+							normalizedPattern !== "" &&
+							relGeneratedDir.startsWith(normalizedPattern)
+						) {
+							subPath = relGeneratedDir.substring(normalizedPattern.length);
+						}
+						subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
+						nextjsImportPath = `@/${subPath}/env.gen`.replace(/\/+/g, "/");
+						break;
+					}
+				}
+			}
+		}
+
+		const templates = getStrictEnvTemplates(options, nextjsImportPath);
+
+		const sharedExists = existingFiles.includes(sharedPath);
+		const clientExists = existingFiles.includes(clientPath);
+		const serverExists = existingFiles.includes(serverPath);
+
+		if (!sharedExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: sharedPath,
+				content: templates.shared,
+				action: sharedExists ? "overwrite" : "create",
+				label: "shared environment schema",
+			});
+		}
+		if (!clientExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: clientPath,
+				content: templates.client,
+				action: clientExists ? "overwrite" : "create",
+				label: "client environment schema",
+			});
+		}
+		if (!serverExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: serverPath,
+				content: templates.server,
+				action: serverExists ? "overwrite" : "create",
+				label: "server environment schema",
+			});
+		}
+	} else {
+		let nextjsImportPath: string | undefined;
+		if (
+			options.framework === "nextjs" &&
+			!options.disableCodegen &&
+			tsConfig?.parsed
+		) {
+			const parsed = tsConfig.parsed;
+			const compilerOptions = parsed.compilerOptions || {};
+			const paths = compilerOptions.paths || {};
+			if (paths["@/*"]) {
+				const tsConfigDir = parsed.path ? path.dirname(parsed.path) : cwd;
+				const generatedDir = path.join(targetDir, "generated");
+				const relGeneratedDir = path
+					.relative(tsConfigDir, generatedDir)
+					.replace(/\\/g, "/");
+
+				for (const pattern of paths["@/*"]) {
+					const normalizedPattern = pattern
+						.replace(/^\.\//, "")
+						.replace(/\*$/, "");
+					if (
+						normalizedPattern === "" ||
+						relGeneratedDir.startsWith(normalizedPattern)
+					) {
+						let subPath = relGeneratedDir;
+						if (
+							normalizedPattern !== "" &&
+							relGeneratedDir.startsWith(normalizedPattern)
+						) {
+							subPath = relGeneratedDir.substring(normalizedPattern.length);
+						}
+						subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
+						nextjsImportPath = `@/${subPath}/env.gen`.replace(/\/+/g, "/");
+						break;
+					}
+				}
+			}
+		}
+
+		const envContent = getEnvTemplate(options, nextjsImportPath);
+		const envFileExists = existingFiles.includes(targetPath);
+
+		if (!envFileExists || options.overwriteEnvSchemaFile !== false) {
+			plan.files.push({
+				path: targetPath,
+				content: envContent,
+				action: envFileExists ? "overwrite" : "create",
+				label: "environment schema",
+			});
+		}
 	}
 
 	// 2. dependencies
@@ -52,6 +226,20 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	if (options.framework === "vite") deps.push("@arkenv/vite-plugin");
 	if (options.framework === "bun-fullstack" && options.bunFeatures?.length) {
 		deps.push("@arkenv/bun-plugin");
+	}
+	if (options.framework === "nextjs") {
+		deps.push("@arkenv/nextjs");
+	}
+
+	// Framework integrations require arktype as a peer dependency.
+	// Ensure arktype is installed when using a framework integration.
+	if (
+		(options.framework === "vite" ||
+			options.framework === "nextjs" ||
+			(options.framework === "bun-fullstack" && options.bunFeatures?.length)) &&
+		!deps.includes("arktype")
+	) {
+		deps.push("arktype");
 	}
 
 	plan.install = {
@@ -105,11 +293,19 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	}
 
 	// 5. Framework-specific bootstrapping
-	if (options.framework === "vite" || options.framework === "bun-fullstack") {
+	if (
+		options.framework === "vite" ||
+		options.framework === "bun-fullstack" ||
+		(options.framework === "nextjs" && !options.disableCodegen)
+	) {
 		plan.bootstrap = shake({
 			framework: options.framework,
 			bunFeatures:
 				options.framework === "bun-fullstack" ? options.bunFeatures : undefined,
+			wrapNextjsConfig:
+				options.framework === "nextjs"
+					? options.wrapNextjsConfig !== false
+					: undefined,
 		});
 	}
 

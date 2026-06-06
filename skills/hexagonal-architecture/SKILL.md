@@ -6,11 +6,11 @@ metadata:
   internal: true
 ---
 
-# Hexagonal Architecture
+# Hexagonal architecture
 
 Hexagonal architecture (Ports and Adapters) keeps business logic independent from frameworks, transport, and persistence details. The core app depends on abstract ports, and adapters implement those ports at the edges.
 
-## When to Use
+## When to use
 
 - Building new features where long-term maintainability and testability matter.
 - Refactoring layered or framework-heavy code where domain logic is mixed with I/O concerns.
@@ -19,7 +19,7 @@ Hexagonal architecture (Ports and Adapters) keeps business logic independent fro
 
 Use this skill when the request involves boundaries, domain-centric design, refactoring tightly coupled services, or decoupling application logic from specific libraries.
 
-## Core Concepts
+## Core concepts
 
 - **Domain model**: Business rules and entities/value objects. No framework imports.
 - **Use cases (application layer)**: Orchestrate domain behavior and workflow steps.
@@ -37,13 +37,13 @@ Dependency direction is always inward:
 - Domain -> domain-only abstractions (no framework or infrastructure dependencies)
 - Domain -> nothing external
 
-## How It Works
+## How it works
 
-### Step 1: Model a use case boundary
+### Step 1: model a use case boundary
 
 Define a single use case with a clear input and output DTO. Keep transport details (Express `req`, GraphQL `context`, job payload wrappers) outside this boundary.
 
-### Step 2: Define outbound ports first
+### Step 2: define outbound ports first
 
 Identify every side effect as a port:
 
@@ -53,27 +53,27 @@ Identify every side effect as a port:
 
 Ports should model capabilities, not technologies.
 
-### Step 3: Implement the use case with pure orchestration
+### Step 3: implement the use case with pure orchestration
 
 Use case class/function receives ports via constructor/arguments. It validates application-level invariants, coordinates domain rules, and returns plain data structures.
 
-### Step 4: Build adapters at the edge
+### Step 4: build adapters at the edge
 
 - Inbound adapter converts protocol input to use-case input.
 - Outbound adapter maps app contracts to concrete APIs/ORM/query builders.
 - Mapping stays in adapters, not inside use cases.
 
-### Step 5: Wire everything in a composition root
+### Step 5: wire everything in a composition root
 
 Instantiate adapters, then inject them into use cases. Keep this wiring centralized to avoid hidden service-locator behavior.
 
-### Step 6: Test per boundary
+### Step 6: test per boundary
 
 - Unit test use cases with fake ports.
 - Integration test adapters with real infra dependencies.
 - E2E test user-facing flows through inbound adapters.
 
-## Architecture Diagram
+## Architecture diagram
 
 ```mermaid
 flowchart LR
@@ -85,7 +85,7 @@ flowchart LR
   UseCase --> DomainModel["DomainModel"]
 ```
 
-## Suggested Module Layout
+## Suggested module layout
 
 Use feature-first organization with explicit boundaries:
 
@@ -118,7 +118,7 @@ src/
         ordersContainer.ts
 ```
 
-## TypeScript Example
+## TypeScript example
 
 ### Port definitions
 
@@ -203,7 +203,7 @@ export const buildCreateOrderUseCase = (deps: { db: SqlClient; stripe: StripeCli
 };
 ```
 
-## Multi-Language Mapping
+## Multi-language mapping
 
 Use the same boundary rules across ecosystems; only syntax and wiring style change.
 
@@ -228,7 +228,7 @@ Use the same boundary rules across ecosystems; only syntax and wiring style chan
   - Use cases: structs with interface fields plus explicit `New...` constructors.
   - Composition: wire in `cmd/<app>/main.go` (or dedicated wiring package), keep constructors explicit.
 
-## Anti-Patterns to Avoid
+## Anti-patterns to avoid
 
 - Domain entities importing ORM models, web framework types, or SDK clients.
 - Use cases reading directly from `req`, `res`, or queue metadata.
@@ -236,7 +236,7 @@ Use the same boundary rules across ecosystems; only syntax and wiring style chan
 - Letting adapters call each other directly instead of flowing through use-case ports.
 - Spreading dependency wiring across many files with hidden global singletons.
 
-## Migration Playbook
+## Migration playbook
 
 1. Pick one vertical slice (single endpoint/job) with frequent change pain.
 2. Extract a use-case boundary with explicit input/output types.
@@ -246,7 +246,7 @@ Use the same boundary rules across ecosystems; only syntax and wiring style chan
 6. Add tests around the new boundary (unit + adapter integration).
 7. Repeat slice-by-slice; avoid full rewrites.
 
-### Refactoring Existing Systems
+### Refactoring existing systems
 
 - **Strangler approach**: keep current endpoints, route one use case at a time through new ports/adapters.
 - **No big-bang rewrites**: migrate per feature slice and preserve behavior with characterization tests.
@@ -255,7 +255,7 @@ Use the same boundary rules across ecosystems; only syntax and wiring style chan
 - **Slice selection rule**: prioritize high-churn, low-blast-radius flows first.
 - **Rollback path**: keep a reversible toggle or route switch per migrated slice until production behavior is verified.
 
-## Testing Guidance (Same Hexagonal Boundaries)
+## Testing guidance (same hexagonal boundaries)
 
 - **Domain tests**: test entities/value objects as pure business rules (no mocks, no framework setup).
 - **Use-case unit tests**: test orchestration with fakes/stubs for outbound ports; assert business outcomes and port interactions.
@@ -265,7 +265,7 @@ Use the same boundary rules across ecosystems; only syntax and wiring style chan
 - **End-to-end tests**: cover critical user journeys through inbound adapter -> use case -> outbound adapter.
 - **Refactor safety**: add characterization tests before extraction; keep them until new boundary behavior is stable and equivalent.
 
-## Best Practices Checklist
+## Best practices checklist
 
 - Domain and use-case layers import only internal types and ports.
 - Every external dependency is represented by an outbound port.

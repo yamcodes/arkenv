@@ -4,64 +4,56 @@ icon: Album
 description: Quickly scaffold ArkEnv projects with an interactive CLI.
 ---
 
-The `@arkenv/cli` is the fastest way to get started with ArkEnv. It provides an interactive walkthrough to help you choose a validation library, configure your environment schema, and set up your project structure.
+The ArkEnv CLI is the command-line interface used to initialize and configure ArkEnv in your project.
 
-## Quickstart
+## Usage
+
+Run the CLI using your package manager of choice. The CLI will guide you through the setup process interactively.
 
 <Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
   <Tab value="npm">
     ```bash
-    npx @arkenv/cli@latest init
+    npx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 
   <Tab value="pnpm">
     ```bash
-    pnx @arkenv/cli@latest init
+    pnx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 
   <Tab value="yarn">
     ```bash
-    yarn dlx @arkenv/cli@latest init
+    yarn dlx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 
   <Tab value="bun">
     ```bash
-    bunx @arkenv/cli@latest init
+    bunx @arkenv/cli@latest init [project-name] [options]
     ```
   </Tab>
 </Tabs>
 
-## Features
+## Behavior
 
-- **Interactive Prompts**: A guided experience powered by `@clack/prompts`.
-- **Zero Dependencies**: Lightweight and fast, it won't clutter your `node_modules` after use.
-- **Validation Library Support**: Choose between [ArkType](https://arktype.io), [Zod](https://zod.dev), and [Valibot](https://valibot.dev).
-- **.env.example Detection**: Automatically parses your `.env.example` to suggest a starting schema based on your existing keys.
-- **Automatic Detection**: Cleverly detects your framework and runtime (Node, Bun, Vite) to pre-select the best defaults.
+The CLI automatically adjusts its workflow depending on where it is executed:
 
-## Commands
-
-### `init`
-
-The `init` command is the primary entry point for the CLI. It will:
-
-1. **Detect Environment**: Check your package manager and project framework (Vite, Bun, Node.js).
-2. **Scan for Keys**: Detect if a `.env.example` exists and extract its keys to pre-populate your schema.
-3. **Enforce Best Practices**: Detect if `tsconfig.json` has `strict` mode enabled, and prompt to enable it if not.
-4. **Select Validator**: Ask you which validation library you'd prefer to use.
-5. **Generate Code**: Scaffold an `env.ts` file with a working schema and automatically install the required dependencies.
+- **Existing project**: If a `package.json` exists in the target directory, the CLI configures ArkEnv directly in the project. It scans for any `.env` or `.env.example` files to automatically pre-populate the schema fields, installs the selected validator dependencies, and generates the `env.ts` file.
+- **New project**: If the target directory does not contain a `package.json` and is empty, the CLI guides you through creating a new project from an ArkEnv starter template. See our [official examples](/docs/arkenv/examples#examples) for a list of available templates.
 
 ## Options
 
-The CLI supports the following flags to customize the behavior:
+Configure the CLI behavior using the following command-line flags:
 
-| Flag      | Alias | Description                                                                                                    |
-| --------- | ----- | -------------------------------------------------------------------------------------------------------------- |
-| `--yes`   | `-y`  | Skip all prompts and use defaults. Also passes the `--yes` flag to underlying processes (like skill installs). |
-| `--quiet` | `-q`  | Quiet mode. Suppresses output unless a command fails, in which case buffered logs are shown for debugging.     |
-| `--json`  | `-j`  | Emit a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).             |
-| `--agent` | `-a`  | For agents. Macro for `--quiet --json --yes`, also skip the agent install step.                                |
-| `--help`  | `-h`  | Show the help message.                                                                                         |
+| Flag           | Alias | Description                                                                                                                                      |
+| -------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--yes`        | `-y`  | Skip all prompts and use the default configuration.                                                                                              |
+| `--quiet`      | `-q`  | Suppress all output logs unless an error occurs.                                                                                                 |
+| `--json`       | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                     |
+| `--agent`      | `-a`  | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`. |
+| `--example`    | `-e`  | Specify an example name when creating a new project.                                                                                             |
+| `--force`      | `-f`  | Bypass checks and force initialization.                                                                                                          |
+| `--no-codegen` | `-C`  | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                        |
+| `--help`       | `-h`  | Display the CLI help information.                                                                                                                |

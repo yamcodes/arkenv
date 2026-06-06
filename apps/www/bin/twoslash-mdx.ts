@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noConsole: This is a CLI debugging script
 import fs from "node:fs";
 import { twoslasher } from "twoslash";
 import { arktypeTwoslashOptions } from "../lib/twoslash-options";

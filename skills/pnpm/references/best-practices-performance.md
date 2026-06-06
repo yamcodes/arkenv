@@ -3,13 +3,13 @@ name: pnpm-performance-optimization
 description: Tips and tricks for faster installs and better performance
 ---
 
-# pnpm Performance Optimization
+# pnpm performance optimization
 
 pnpm is fast by default, but these optimizations can make it even faster.
 
-## Install Optimizations
+## Install optimizations
 
-### Use Frozen Lockfile
+### Use frozen lockfile
 
 Skip resolution when lockfile exists:
 
@@ -19,7 +19,7 @@ pnpm install --frozen-lockfile
 
 This is faster because pnpm skips the resolution phase entirely.
 
-### Prefer Offline Mode
+### Prefer offline mode
 
 Use cached packages when available:
 
@@ -28,12 +28,13 @@ pnpm install --prefer-offline
 ```
 
 Or configure globally:
+
 ```ini
 # .npmrc
 prefer-offline=true
 ```
 
-### Skip Optional Dependencies
+### Skip optional dependencies
 
 If you don't need optional deps:
 
@@ -41,7 +42,7 @@ If you don't need optional deps:
 pnpm install --no-optional
 ```
 
-### Skip Scripts
+### Skip scripts
 
 For CI or when scripts aren't needed:
 
@@ -51,7 +52,7 @@ pnpm install --ignore-scripts
 
 **Caution:** Some packages require postinstall scripts to work correctly.
 
-### Only Build Specific Dependencies
+### Only build specific dependencies
 
 Only run build scripts for specific packages:
 
@@ -72,9 +73,9 @@ Or skip builds entirely for deps that don't need them:
 }
 ```
 
-## Store Optimizations
+## Store optimizations
 
-### Side Effects Cache
+### Side effects cache
 
 Cache native module build results:
 
@@ -85,7 +86,7 @@ side-effects-cache=true
 
 This caches the results of postinstall scripts, speeding up subsequent installs.
 
-### Shared Store
+### Shared store
 
 Use a single store for all projects (default behavior):
 
@@ -95,11 +96,12 @@ store-dir=~/.pnpm-store
 ```
 
 Benefits:
+
 - Packages downloaded once for all projects
 - Hard links save disk space
 - Faster installs from cache
 
-### Store Maintenance
+### Store maintenance
 
 Periodically clean unused packages:
 
@@ -111,9 +113,9 @@ pnpm store prune
 pnpm store status
 ```
 
-## Workspace Optimizations
+## Workspace optimizations
 
-### Parallel Execution
+### Parallel execution
 
 Run workspace scripts in parallel:
 
@@ -122,12 +124,13 @@ pnpm -r --parallel run build
 ```
 
 Control concurrency:
+
 ```ini
 # .npmrc
 workspace-concurrency=8
 ```
 
-### Stream Output
+### Stream output
 
 See output in real-time:
 
@@ -135,7 +138,7 @@ See output in real-time:
 pnpm -r --stream run build
 ```
 
-### Filter to Changed Packages
+### Filter to changed packages
 
 Only build what changed:
 
@@ -144,7 +147,7 @@ Only build what changed:
 pnpm --filter "...[origin/main]" run build
 ```
 
-### Topological Order
+### Topological order
 
 Build dependencies before dependents:
 
@@ -154,13 +157,14 @@ pnpm -r run build
 ```
 
 For explicit sequential builds:
+
 ```bash
 pnpm -r --workspace-concurrency=1 run build
 ```
 
-## Network Optimizations
+## Network optimizations
 
-### Configure Registry
+### Configure registry
 
 Use closest/fastest registry:
 
@@ -169,7 +173,7 @@ Use closest/fastest registry:
 registry=https://registry.npmmirror.com/
 ```
 
-### HTTP Settings
+### HTTP settings
 
 Tune network settings:
 
@@ -181,7 +185,7 @@ fetch-retry-maxtimeout=60000
 network-concurrency=16
 ```
 
-### Proxy Configuration
+### Proxy configuration
 
 ```ini
 # .npmrc
@@ -189,9 +193,9 @@ proxy=http://proxy.company.com:8080
 https-proxy=http://proxy.company.com:8080
 ```
 
-## Lockfile Optimization
+## Lockfile optimization
 
-### Single Lockfile (Monorepos)
+### Single lockfile (monorepos)
 
 Use shared lockfile for all packages (default):
 
@@ -201,11 +205,12 @@ shared-workspace-lockfile=true
 ```
 
 Benefits:
+
 - Single source of truth
 - Faster resolution
 - Consistent versions across workspace
 
-### Lockfile-only Mode
+### Lockfile-only mode
 
 Only update lockfile without installing:
 
@@ -215,7 +220,7 @@ pnpm install --lockfile-only
 
 ## Benchmarking
 
-### Compare Install Times
+### Compare install times
 
 ```bash
 # Clean install
@@ -230,7 +235,7 @@ time pnpm install --frozen-lockfile
 time pnpm install --frozen-lockfile --prefer-offline
 ```
 
-### Profile Resolution
+### Profile resolution
 
 Debug slow installs:
 
@@ -242,7 +247,7 @@ pnpm install --reporter=append-only
 DEBUG=pnpm:* pnpm install
 ```
 
-## Configuration Summary
+## Configuration summary
 
 Optimized `.npmrc` for performance:
 
@@ -265,20 +270,20 @@ network-concurrency=16
 workspace-concurrency=4
 ```
 
-## Quick Reference
+## Quick reference
 
-| Scenario | Command/Setting |
-|----------|-----------------|
-| CI installs | `pnpm install --frozen-lockfile` |
-| Offline development | `--prefer-offline` |
-| Skip native builds | `neverBuiltDependencies` |
-| Parallel workspace | `pnpm -r --parallel run build` |
-| Build changed only | `pnpm --filter "...[origin/main]" build` |
-| Clean store | `pnpm store prune` |
+| Scenario            | Command/Setting                          |
+| ------------------- | ---------------------------------------- |
+| CI installs         | `pnpm install --frozen-lockfile`         |
+| Offline development | `--prefer-offline`                       |
+| Skip native builds  | `neverBuiltDependencies`                 |
+| Parallel workspace  | `pnpm -r --parallel run build`           |
+| Build changed only  | `pnpm --filter "...[origin/main]" build` |
+| Clean store         | `pnpm store prune`                       |
 
 <!-- 
-Source references:
-- https://pnpm.io/npmrc
-- https://pnpm.io/cli/install
-- https://pnpm.io/filtering
--->
+  Source references:
+  - https://pnpm.io/performance
+  - https://pnpm.io/benchmarks
+  - https://github.com/pnpm/pnpm/releases
+  -->

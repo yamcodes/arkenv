@@ -1,4 +1,4 @@
-# @repo/types
+# @Repo/types
 
 Internal TypeScript/ArkType types shared across ArkEnv packages.
 
@@ -14,13 +14,13 @@ This package is **internal only** and is not published to npm. It's intended for
 import type { InferType } from "@repo/types";
 ```
 
-## Available Types
+## Available types
 
 ### `InferType<T>`
 
 Extracts the inferred type from an ArkType type definition by checking its call signature. When a type definition is called, it returns either the validated value or `type.errors`.
 
-## Important Notes
+## Important notes
 
 - **Not published**: This package is marked as `private: true` and will not be published to npm
 - **Internal use only**: Do not depend on this package from external projects

@@ -114,7 +114,7 @@ DATABASE_HOST=localhost DATABASE_PORT=5432 npm start
 - Use AWS Secrets Manager for sensitive values
 - Set environment variables in ECS Task Definitions or Lambda configurations
 
-#### Google Cloud Platform
+#### Google cloud platform
 
 - Use Cloud Secret Manager for sensitive values
 - Set environment variables in Cloud Run or App Engine configurations
@@ -250,8 +250,9 @@ const env2 = arkenv(
 );
 ```
 
-> [!NOTE]
-> Since `process.env` values are always strings, using `coerce: false` with numeric or boolean schemas will cause validation to fail unless you provide a custom `env` source containing the expected literal types.
+:::note
+Since `process.env` values are always strings, using `coerce: false` with numeric or boolean schemas will cause validation to fail unless you provide a custom `env` source containing the expected literal types.
+:::
 
 ### Custom environment source
 

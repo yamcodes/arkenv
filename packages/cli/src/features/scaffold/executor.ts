@@ -1,5 +1,6 @@
 import path from "node:path";
 import { code, symbol } from "@/shared/visuals";
+import { cloneExample } from "./cloner";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 import { getInstallCommand, getNextStepsNote } from "./utils";
 
@@ -8,16 +9,32 @@ import { getInstallCommand, getNextStepsNote } from "./utils";
  * installing dependencies, and bootstrapping framework configurations.
  */
 export class Executor {
+	/**
+	 * Creates an executor with workspace operations and reporting for CLI users.
+	 */
 	constructor(
 		private workspace: Workspace,
 		private reporter: Reporter,
 	) {}
 
+	/**
+	 * Applies a scaffolding plan to the workspace and reports next steps for CLI users.
+	 */
 	async execute(plan: ScaffoldingPlan) {
 		const s = this.reporter.spinner();
 		s.start("Scaffolding ArkEnv configuration...");
 
 		try {
+			// 0. Handle project cloning for New Project Flow
+			if (plan.clone) {
+				s.stop("Starting new project scaffolding...");
+				this.reporter.step(`Cloning example ${code(plan.clone.example)}...`);
+
+				await cloneExample(this.workspace, plan.clone);
+
+				s.start("Scaffolding complete, finalizing...");
+			}
+
 			// 1. Create directories and write files
 			for (const file of plan.files) {
 				if (file.action === "append") {
@@ -73,7 +90,7 @@ export class Executor {
 					plan.install.packageManager,
 					plan.install.dependencies,
 				);
-				await this.workspace.execute(cmd, args);
+				await this.workspace.execute(cmd, args, plan.install.cwd ?? plan.cwd);
 			}
 
 			// 3. TS Config
@@ -95,9 +112,10 @@ export class Executor {
 			}
 
 			// 4. Framework bootstrapping
+			let nextjsConfigBootstrapped = false;
 			if (plan.bootstrap) {
 				if (plan.bootstrap.framework === "vite") {
-					const viteConfigPath = await this.workspace.findViteConfig();
+					const viteConfigPath = await this.workspace.findViteConfig(plan.cwd);
 					if (viteConfigPath) {
 						this.reporter.step("Bootstrapping Vite plugin...");
 						const result = await this.workspace.bootstrapViteConfig(
@@ -124,7 +142,7 @@ export class Executor {
 						);
 					}
 				} else if (plan.bootstrap.framework === "bun-fullstack") {
-					const bunConfigPath = await this.workspace.findBunConfig();
+					const bunConfigPath = await this.workspace.findBunConfig(plan.cwd);
 					const result = await this.workspace.bootstrapBunConfig(
 						bunConfigPath,
 						plan.bootstrap.bunFeatures,
@@ -133,6 +151,50 @@ export class Executor {
 						this.reporter.info(result.instructions);
 					} else if (!result.success) {
 						this.reporter.error(result.error || "Bun bootstrap failed");
+					}
+				} else if (plan.bootstrap.framework === "nextjs") {
+					this.reporter.step("Generating Next.js environment bindings...");
+					const script = `import('@arkenv/nextjs/config').then(({ runCodegen }) => { const path = require('path'); const schemaPath = path.resolve(process.cwd(), '${plan.metadata.displayPath}'); const outputPath = path.join(path.dirname(schemaPath), 'generated', 'env.gen.ts'); runCodegen(schemaPath, outputPath); }).catch(err => { console.error(err); process.exit(1); });`;
+					try {
+						await this.workspace.execute("node", ["-e", script], plan.cwd);
+						this.reporter.info(`Generated ${code("env.gen.ts")} for Next.js`);
+					} catch (error) {
+						this.reporter.warn(
+							`Failed to automatically generate ${code("env.gen.ts")}. It will be generated when you start your dev server.`,
+						);
+					}
+
+					// Bootstrap Next.js config wrapper
+					if (plan.bootstrap.wrapNextjsConfig !== false) {
+						this.reporter.step("Bootstrapping Next.js config...");
+						const nextjsConfigPath = await this.workspace.findNextjsConfig(
+							plan.cwd,
+						);
+						if (nextjsConfigPath) {
+							const result =
+								await this.workspace.bootstrapNextjsConfig(nextjsConfigPath);
+							if (result.success) {
+								if (result.updated) {
+									this.reporter.info(
+										`Updated ${code(path.basename(nextjsConfigPath))}`,
+									);
+									nextjsConfigBootstrapped = true;
+								} else {
+									this.reporter.info(
+										`${code(path.basename(nextjsConfigPath))} already uses withArkEnv`,
+									);
+									nextjsConfigBootstrapped = true;
+								}
+							} else {
+								this.reporter.warn(
+									`Could not automatically update ${code(path.basename(nextjsConfigPath))}: ${result.error}`,
+								);
+							}
+						} else {
+							this.reporter.info(
+								`No Next.js config found. Please wrap your config with ${code("withArkEnv")} manually.`,
+							);
+						}
 					}
 				}
 			}
@@ -147,7 +209,7 @@ export class Executor {
 					if (plan.skill.isYes) {
 						args.push("--yes");
 					}
-					await this.workspace.execute(cmd, args);
+					await this.workspace.execute(cmd, args, plan.cwd);
 					skillInstalled = true;
 				} catch (err: unknown) {
 					const message = err instanceof Error ? err.message : String(err);
@@ -156,8 +218,26 @@ export class Executor {
 			}
 
 			// 6. Final reporting
-			const note = getNextStepsNote(plan, skillInstalled);
+			const note = getNextStepsNote(
+				plan,
+				skillInstalled,
+				nextjsConfigBootstrapped,
+			);
 			this.reporter.note(note.message, note.title);
+
+			if (plan.metadata.layout === "strict") {
+				const oldEnvPath = path.resolve(plan.cwd, plan.metadata.displayPath);
+				if (await this.workspace.exists(oldEnvPath)) {
+					const displayFile = plan.metadata.displayPath;
+					const baseName = path.basename(
+						displayFile,
+						path.extname(displayFile),
+					);
+					this.reporter.warn(
+						`Found existing single-file schema at ${code(displayFile)}. You can delete it after updating your imports to point to your new ${code(`${baseName}/client`)} and ${code(`${baseName}/server`)}.`,
+					);
+				}
+			}
 
 			this.reporter.finish(
 				`${symbol} ArkEnv scaffolding complete. Happy coding!`,

@@ -3,13 +3,14 @@ name: pnpm-cli-commands
 description: Essential pnpm commands for package management, running scripts, and workspace operations
 ---
 
-# pnpm CLI Commands
+# pnpm CLI commands
 
 pnpm provides a comprehensive CLI for package management with commands similar to npm/yarn but with unique features.
 
-## Installation Commands
+## Installation commands
 
 ### Install all dependencies
+
 ```bash
 pnpm install
 # or
@@ -17,6 +18,7 @@ pnpm i
 ```
 
 ### Add a dependency
+
 ```bash
 # Production dependency
 pnpm add <pkg>
@@ -38,6 +40,7 @@ pnpm add <pkg>@^1.0.0
 ```
 
 ### Remove a dependency
+
 ```bash
 pnpm remove <pkg>
 pnpm rm <pkg>
@@ -46,6 +49,7 @@ pnpm un <pkg>
 ```
 
 ### Update dependencies
+
 ```bash
 # Update all
 pnpm update
@@ -63,9 +67,10 @@ pnpm update --interactive
 pnpm up -i
 ```
 
-## Script Commands
+## Script commands
 
 ### Run scripts
+
 ```bash
 pnpm run <script>
 # or shorthand
@@ -79,6 +84,7 @@ pnpm run --if-present build
 ```
 
 ### Execute binaries
+
 ```bash
 # Run local binary
 pnpm exec <command>
@@ -87,7 +93,8 @@ pnpm exec <command>
 pnpm exec eslint .
 ```
 
-### dlx - Run without installing
+### Dlx - run without installing
+
 ```bash
 # Like npx but for pnpm
 pnpm dlx <pkg>
@@ -97,9 +104,10 @@ pnpm dlx create-vite my-app
 pnpm dlx degit user/repo my-project
 ```
 
-## Workspace Commands
+## Workspace commands
 
 ### Run in all packages
+
 ```bash
 # Run script in all workspace packages
 pnpm -r run <script>
@@ -115,6 +123,7 @@ pnpm --filter "@myorg/*" run lint
 ```
 
 ### Filter patterns
+
 ```bash
 # By package name
 pnpm --filter <pkg-name> <command>
@@ -133,9 +142,10 @@ pnpm --filter "@scope/core..." test
 pnpm --filter "...[origin/main]" build
 ```
 
-## Other Useful Commands
+## Other useful commands
 
 ### Link packages
+
 ```bash
 # Link global package
 pnpm link --global
@@ -146,6 +156,7 @@ pnpm link --global <pkg>
 ```
 
 ### Patch packages
+
 ```bash
 # Create patch for a package
 pnpm patch <pkg>@<version>
@@ -158,6 +169,7 @@ pnpm patch-remove <pkg>
 ```
 
 ### Store management
+
 ```bash
 # Show store path
 pnpm store path
@@ -170,6 +182,7 @@ pnpm store status
 ```
 
 ### Other commands
+
 ```bash
 # Clean install (like npm ci)
 pnpm install --frozen-lockfile
@@ -200,7 +213,7 @@ pnpm pack
 pnpm publish
 ```
 
-## Useful Flags
+## Useful flags
 
 ```bash
 # Ignore scripts
@@ -221,9 +234,9 @@ pnpm install --no-optional
 ```
 
 <!-- 
-Source references:
-- https://pnpm.io/cli/install
-- https://pnpm.io/cli/add
-- https://pnpm.io/cli/run
-- https://pnpm.io/filtering
--->
+  Source references:
+  - https://pnpm.io/cli/install
+  - https://pnpm.io/cli/add
+  - https://pnpm.io/cli/run
+  - https://pnpm.io/filtering
+  -->

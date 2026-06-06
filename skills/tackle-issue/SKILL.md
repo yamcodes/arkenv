@@ -5,7 +5,7 @@ metadata:
    internal: true
 ---
 
-# Tackle Issue
+# Tackle issue
 
 This skill provides a standardized, rigorous workflow for handling GitHub issues. It ensures that issues are properly vetted before work begins and that all changes meet the project's quality standards before a Pull Request is opened.
 
@@ -15,7 +15,7 @@ Use this skill whenever the user says `/tackle-issue <number>` or asks to "tackl
 
 ## Workflow
 
-### 1. Readiness Check & Context Gathering
+### 1. Readiness check & context gathering
 
 Before starting any work, you MUST verify that the issue is ready for an agent.
 
@@ -27,7 +27,7 @@ Before starting any work, you MUST verify that the issue is ready for an agent.
    - **If the label is MISSING**: Abort the process immediately. Inform the user: `Issue #<number> is not marked as 'ready for agent'. Please ensure it is fully specified and labeled correctly before proceeding.`
    - **If the label is PRESENT**: Continue to the next step.
 
-### 2. Development Setup
+### 2. Development setup
 
 1. **Setup Development Branch**: Create and checkout a linked development branch.
    ```bash
@@ -44,8 +44,9 @@ Proceed with the standard **Research -> Strategy -> Execution** lifecycle.
 - **Execution**: Apply changes surgically. Ensure that:
   - New tests are added to verify the fix or feature.
   - Relevant documentation is updated.
+  - JSDoc comments are added or updated for all new or modified functions according to the `jsdoc` skill.
 
-### 4. Validation & Quality Assurance
+### 4. Validation & quality assurance
 
 Once implementation is complete, you MUST run the following validation suite in the project root:
 
@@ -64,18 +65,18 @@ Once implementation is complete, you MUST run the following validation suite in 
 
 If this step fails (some lint/formatting issues cannot be auto-fixed), you MUST diagnose and fix the errors before proceeding.
 
-### 5. Changeset Creation
+### 5. Changeset creation
 
-After validation passes, you MUST create a changeset using the `creating-changesets` skill.
+After validation passes, you MUST create a changeset using the `changeset` skill **ONLY if your changes affect a published package, a private package, or anything that gets imported by other packages**. Do not create a changeset if the changes are isolated strictly to playgrounds or examples.
 
-- Determine the appropriate bump type (`patch` or `minor` for v0) based on the `creating-changesets` guidelines.
+- Determine the appropriate bump type (`patch` or `minor` for v0) based on the `changeset` guidelines.
 - Provide a clear, concise description starting with a `####` header.
 
-### 6. Pull Request Creation
+### 6. Pull request creation
 
 When the task is complete and validated:
 
-1. **Commit and Push**: Stage all changes (including the changeset) and push.
+1. **Commit and Push**: Stage all changes (including the changeset if created) and push.
    ```bash
    git add .
    git commit -m "fix: tackle issue #<issue-number>"
@@ -89,9 +90,9 @@ When the task is complete and validated:
    gh pr create --title "fix: <issue-title>" --body "Fixes #<issue-number>\n\n<brief-description-of-changes>" --label "<labels>"
    ```
 
-## Best Practices
+## Best practices
 
 - **Strict Readiness**: Never bypass the `ready for agent` check. It ensures the task is well-defined.
 - **Validation First**: Never open a PR that fails `typecheck`, `test`, or `check`.
 - **Link Everything**: Always use `gh issue develop` and `Fixes #<num>` for traceability.
-- **Changesets**: Always include a changeset for consumer-facing changes.
+- **Changesets**: Include a changeset for changes affecting published packages, private packages, or anything imported by other packages. Avoid changesets when changes are isolated to playgrounds or examples.

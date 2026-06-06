@@ -5,7 +5,7 @@ metadata:
   internal: true
 ---
 
-# Test-Driven Development
+# Test-driven development
 
 ## Philosophy
 
@@ -17,7 +17,7 @@ metadata:
 
 See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
 
-## Anti-Pattern: Horizontal Slices
+## Anti-pattern: horizontal slices
 
 **DO NOT write all tests first, then all implementation.** This is "horizontal slicing" - treating RED as "write all tests" and GREEN as "write all code."
 
@@ -61,7 +61,7 @@ Ask: "What should the public interface look like? Which behaviors are most impor
 
 **You can't test everything.** Confirm with the user exactly which behaviors matter most. Focus testing effort on critical paths and complex logic, not every possible edge case.
 
-### 2. Tracer Bullet
+### 2. Tracer bullet
 
 Write ONE test that confirms ONE thing about the system:
 
@@ -72,7 +72,7 @@ GREEN: Write minimal code to pass → test passes
 
 This is your tracer bullet - proves the path works end-to-end.
 
-### 3. Incremental Loop
+### 3. Incremental loop
 
 For each remaining behavior:
 
@@ -100,7 +100,7 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 
 **Never refactor while RED.** Get to GREEN first.
 
-## Checklist Per Cycle
+## Checklist per cycle
 
 ```text
 [ ] Test describes behavior, not implementation

@@ -6,7 +6,7 @@ icon: MessageCircleQuestionMark
 
 [//]: # "1. The Core Pitch & Proof"
 
-## Why do I need ArkEnv?
+## Why do i need ArkEnv?
 
 We’ve all seen teams struggle with environment variables in JavaScript projects. Because the runtime environment is an external dependency, it is notoriously brittle. Yet, we often avoid validating it because it feels like boilerplate. It’s tempting to assert with a quick `process.env.MY_VAR as string` and hope for the best.
 
@@ -33,13 +33,13 @@ ArkEnvError: Errors found while validating environment variables
 
 **No.** ArkEnv is a strict **validator**, not an environment **loader**.
 
-Modern runtimes and meta-frameworks (Vite, Bun, Next.js, Remix) already feature native, highly optimized `.env` loading behavior. If you are running a bare Node.js application, we recommend pairing ArkEnv with a dedicated utility like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.hirok.io/).
+Modern runtimes and meta-frameworks (Vite, Bun, Next.js, Remix) already feature native, highly optimized `.env` loading behavior. If you are running a bare Node.js application, we recommend pairing ArkEnv with a dedicated utility like [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
 
 ArkEnv intercepts the populated `process.env` (or a custom configuration object), evaluates it against your schema, and applies [automatic type coercion](/docs/arkenv/coercion).
 
 [//]: # "2. The Validator Story"
 
-## Do I have to use ArkType?
+## Do i have to use ArkType?
 
 Not at all. While ArkEnv features native, zero-config integration with [ArkType](https://arktype.io/) (which we highly recommend for its performance and syntax), our core engine is entirely runtime-agnostic.
 
@@ -68,7 +68,7 @@ Writing custom validation wrappers around raw Zod schemas for every project intr
 
 [//]: # "3. Frameworks & Comparisons"
 
-## Can I use ArkEnv with plain JavaScript?
+## Can i use ArkEnv with plain JavaScript?
 
 Yes. While we highly recommend TypeScript to unlock compile-time typesafety, autocomplete, and seamless schema-to-editor type inference, the runtime validation engine works perfectly in standard JavaScript. Take a look at our [basic-js example](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) to understand the setup.
 
@@ -82,22 +82,20 @@ No. ArkEnv is architected to be completely runtime-agnostic. We maintain officia
 
 Because the core library targets standard JavaScript APIs, ArkEnv is highly portable and runs smoothly on Deno or Edge environments (like Cloudflare Workers). However, if you are targeting specialized edge platforms and encounter any friction, please open an issue on our [GitHub repository](https://github.com/yamcodes/arkenv/issues).
 
-## Can I use ArkEnv with Next.js or Nuxt?
+## Can i use ArkEnv with Next.js?
 
-Not officially.
+Yes! We officially support Next.js via the [@arkenv/nextjs](/docs/nextjs) integration, which enforces client/server boundaries and warns you if server secrets leak into Client Components.
 
-While the core `arkenv` validation package can be manually integrated into these runtimes, meta-frameworks introduce highly specific client-side vs. server-side isolation rules that require distinct build-time abstractions. If you are building a dedicated Next.js or Nuxt application today, we highly recommend using [T3 Env](https://env.t3.gg).
+## How is ArkEnv different from t3 env, or other similar tools?
 
-We are actively researching isolated plugin architectures for meta-frameworks—track our progress on the [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683).
+[T3 Env](https://env.t3.gg/) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ:
 
-## How is ArkEnv different from T3 Env?
+- **ArkType Validation**: ArkEnv natively supports [ArkType](https://arktype.io) for schema definitions, yielding extremely fast runtime validation and cleaner schemas.
+- **Built-in Coercion & Tooling**: ArkEnv features robust automatic coercion, a developer-friendly CLI, and native support for AI tools.
 
-[T3 Env](https://env.t3.gg/) is an exceptional tool and served as a core inspiration for ArkEnv. The primary differences lie in architectural focus and scope:
+We now officially support Next.js, Node.js, Vite, and Bun.
 
-- If you are building inside the Next.js or Nuxt ecosystems, **T3 Env** remains the gold standard.
-- If your stack relies on **Vite, Node.js microservices, Bun runtimes, standalone CLI tools, or Solid Start**, ArkEnv offers a more tailored, plugin-driven developer experience with deep ecosystem hooks.
-
-Review our explicit architectural matrix in the [detailed comparison](/docs/arkenv/comparison).
+Read more in the [comparison](/docs/arkenv/comparison) section.
 
 [//]: # "4. Tooling, Extras & Trust"
 

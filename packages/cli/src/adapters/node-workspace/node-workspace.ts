@@ -4,8 +4,10 @@ import pc from "picocolors";
 import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
 import {
 	bootstrapBunConfig,
+	bootstrapNextjsConfig,
 	bootstrapViteConfig,
 	findBunConfig,
+	findNextjsConfig,
 	findViteConfig,
 } from "./utils/bootstrappers";
 import { updateTsConfigToStrict } from "./utils/tsconfig";
@@ -44,9 +46,14 @@ export class NodeWorkspace implements WorkspacePort {
 		await fsp.mkdir(dirPath, { recursive });
 	}
 
-	async execute(command: string, args: string[] = []): Promise<void> {
+	async execute(
+		command: string,
+		args: string[] = [],
+		cwd?: string,
+	): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			const child = spawn(command, args, {
+				cwd,
 				stdio: (this.isQuiet ? "pipe" : this.stdio) as StdioOptions,
 				shell: false,
 			});
@@ -88,12 +95,16 @@ export class NodeWorkspace implements WorkspacePort {
 		return updateTsConfigToStrict(this, filePath);
 	}
 
-	async findViteConfig(): Promise<string | null> {
-		return findViteConfig();
+	async findViteConfig(cwd?: string): Promise<string | null> {
+		return findViteConfig(cwd);
 	}
 
-	async findBunConfig(): Promise<string | null> {
-		return findBunConfig();
+	async findBunConfig(cwd?: string): Promise<string | null> {
+		return findBunConfig(cwd);
+	}
+
+	async findNextjsConfig(cwd?: string): Promise<string | null> {
+		return findNextjsConfig(cwd);
 	}
 
 	async bootstrapViteConfig(
@@ -108,6 +119,10 @@ export class NodeWorkspace implements WorkspacePort {
 		features?: ("serve" | "build")[],
 	): Promise<BootstrapResult> {
 		return bootstrapBunConfig(configPath, features);
+	}
+
+	async bootstrapNextjsConfig(filePath: string): Promise<BootstrapResult> {
+		return bootstrapNextjsConfig(this, filePath);
 	}
 
 	async safeAppend(

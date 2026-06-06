@@ -3,17 +3,18 @@ name: pnpm-aliases
 description: Install packages under custom names for versioning, forks, or alternatives
 ---
 
-# pnpm Aliases
+# pnpm aliases
 
 pnpm supports package aliases using the `npm:` protocol. This lets you install packages under different names, use multiple versions of the same package, or substitute packages.
 
-## Basic Syntax
+## Basic syntax
 
 ```bash
 pnpm add <alias>@npm:<package>@<version>
 ```
 
 In `package.json`:
+
 ```json
 {
   "dependencies": {
@@ -22,9 +23,9 @@ In `package.json`:
 }
 ```
 
-## Use Cases
+## Use cases
 
-### Multiple Versions of Same Package
+### Multiple versions of same package
 
 Install different versions side by side:
 
@@ -38,12 +39,13 @@ Install different versions side by side:
 ```
 
 Usage:
+
 ```js
 import lodash3 from 'lodash3'
 import lodash4 from 'lodash4'
 ```
 
-### Replace Package with Fork
+### Replace package with fork
 
 Substitute a package with a fork or alternative:
 
@@ -57,7 +59,7 @@ Substitute a package with a fork or alternative:
 
 All imports of `original-pkg` will resolve to `my-fork`.
 
-### Replace Deprecated Package
+### Replace deprecated package
 
 ```json
 {
@@ -67,7 +69,7 @@ All imports of `original-pkg` will resolve to `my-fork`.
 }
 ```
 
-### Scoped to Unscoped (or vice versa)
+### Scoped to unscoped (or vice versa)
 
 ```json
 {
@@ -78,7 +80,7 @@ All imports of `original-pkg` will resolve to `my-fork`.
 }
 ```
 
-## CLI Usage
+## CLI usage
 
 ### Add with alias
 
@@ -123,7 +125,7 @@ Or use `@types` packages with aliases:
 }
 ```
 
-## Combined with Overrides
+## Combined with overrides
 
 Force all transitive dependencies to use an alias:
 
@@ -135,7 +137,7 @@ overrides:
 
 This replaces all `underscore` imports (including in dependencies) with lodash.
 
-## Git and Local Aliases
+## Git and local aliases
 
 Aliases work with any valid pnpm specifier:
 
@@ -148,7 +150,7 @@ Aliases work with any valid pnpm specifier:
 }
 ```
 
-## Best Practices
+## Best practices
 
 1. **Clear naming**: Use descriptive alias names that indicate purpose
    ```json
@@ -163,6 +165,8 @@ Aliases work with any valid pnpm specifier:
 4. **Test thoroughly**: Aliased packages may have subtle differences in behavior
 
 <!-- 
-Source references:
-- https://pnpm.io/aliases
--->
+  Source references:
+  - https://pnpm.io/aliases
+  - https://pnpm.io/cli/add
+  - https://pnpm.io/cli/install
+  -->

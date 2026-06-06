@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   pullfrog:
@@ -20,12 +21,68 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      pull-requests: read
     steps:
+      - name: Check PR source
+        id: check-pr-source
+        uses: actions/github-script@v8
+        with:
+          script: |
+            let prNumber = null;
+            let headRef = null;
+            let author = null;
+
+            try {
+              const parsed = JSON.parse(context.payload.inputs?.prompt || "{}");
+              if (parsed["~pullfrog"]) {
+                prNumber = parsed.event?.issue_number;
+                headRef = parsed.event?.branch;
+                author = parsed.event?.context?.author;
+              }
+            } catch (e) {
+              // Not JSON, continue to regex
+            }
+
+            if (!prNumber) {
+              const match = context.payload.inputs?.prompt?.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/);
+              if (match) {
+                prNumber = Number(match[1]);
+              }
+            }
+
+            if (!prNumber) {
+              core.setOutput("skip", "false")
+              return
+            }
+
+            // If we don't have headRef or author from the JSON, fetch from API
+            if (!headRef || !author) {
+              const { data: pull } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+              headRef = pull.head.ref;
+              author = pull.user?.login;
+            }
+
+            const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"])
+            // Also skip the automated Sync PRs and changeset release PRs for dev and v1
+            const skipHeadRefs = new Set(["changeset-release/dev", "dev", "changeset-release/v1", "v1"])
+            const shouldSkip = skipHeadRefs.has(headRef) || botLogins.has(author)
+
+            if (shouldSkip) {
+              core.info(`Skipping Pullfrog for ${headRef} by ${author}`)
+            }
+
+            core.setOutput("skip", String(shouldSkip))
       - name: Checkout code
+        if: steps.check-pr-source.outputs.skip != 'true'
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Run agent
+        if: steps.check-pr-source.outputs.skip != 'true'
         uses: pullfrog/pullfrog@v0
         with:
           prompt: ${{ inputs.prompt }}

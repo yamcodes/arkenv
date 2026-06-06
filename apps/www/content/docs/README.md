@@ -1,4 +1,4 @@
-# ArkEnv Documentation
+# ArkEnv documentation
 
 Welcome to the ArkEnv documentation!
 

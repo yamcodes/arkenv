@@ -56,8 +56,6 @@ describe("github utilities", () => {
 		});
 
 		it("should use fallback URL when no URL is configured", () => {
-			vi.unstubAllEnvs();
-
 			const result = breakDownGithubUrl();
 
 			expect(result).toEqual({
@@ -147,8 +145,6 @@ describe("github utilities", () => {
 		});
 
 		it("should use fallback URL when no URL is configured", () => {
-			vi.unstubAllEnvs();
-
 			const result = getLinkTitleAndHref("test.md");
 
 			expect(result).toEqual({

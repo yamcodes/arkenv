@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { ArkEnvError } from "../core.ts";
 import { createEnv } from "../create-env.ts";
 import { type } from "../index.ts";
@@ -8,10 +8,6 @@ const stripAnsi = (str: string) =>
 	str.replace(new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g"), "");
 
 describe("createEnv + type + errors + utils integration", () => {
-	afterEach(() => {
-		vi.unstubAllEnvs();
-	});
-
 	describe("error propagation through full stack", () => {
 		it("should throw ArkEnvError with formatted message for invalid type", () => {
 			vi.stubEnv("PORT", "not-a-number");

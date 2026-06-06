@@ -1,8 +1,8 @@
-# @repo/types
+# @Repo/types
 
 ## 0.1.0
 
-### Minor Changes
+### Minor changes
 
 - #### Renamed type: `CompiledEnvSchema` (was `EnvSchemaWithType`) _[`#739`](https://github.com/yamcodes/arkenv/pull/739) [`16c6047`](https://github.com/yamcodes/arkenv/commit/16c6047dad8d797b6e87d77ca413ba6582a16916) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
 
@@ -10,7 +10,7 @@
 
 ## 0.0.7
 
-### Patch Changes
+### Patch changes
 
 - #### Added Standard Schema, helpers _[`#723`](https://github.com/yamcodes/arkenv/pull/723) [`6bd0741`](https://github.com/yamcodes/arkenv/commit/6bd07410f97a8756366b9432be8504a8507d0876) [@yamcodes](https://github.com/yamcodes)_
 
@@ -28,7 +28,7 @@
 
 ## 0.0.6
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -42,7 +42,7 @@
 
 ## 0.0.5
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -56,7 +56,7 @@
 
 ## 0.0.4
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -72,7 +72,7 @@
 
 ## 0.0.3
 
-### Patch Changes
+### Patch changes
 
 - #### Export `FilterByPrefix` _[`#544`](https://github.com/yamcodes/arkenv/pull/544) [`d4800f9`](https://github.com/yamcodes/arkenv/commit/d4800f97d162dbeb9030576f1e97a1f50d876bad) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
 
@@ -80,7 +80,7 @@
 
 ## 0.0.2
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -96,7 +96,7 @@
 
 ## 0.0.1
 
-### Patch Changes
+### Patch changes
 
 - #### Add Schema types _[`#511`](https://github.com/yamcodes/arkenv/pull/511) [`0a44dcd`](https://github.com/yamcodes/arkenv/commit/0a44dcd6425e6da918f5ae370d966ef009c65ff9) [@yamcodes](https://github.com/yamcodes)_
 

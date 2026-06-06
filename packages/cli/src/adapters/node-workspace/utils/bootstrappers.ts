@@ -3,10 +3,15 @@ import path from "node:path";
 import dedent from "dedent";
 import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
-import { transformViteConfig } from "@/features/config-mutation";
+import {
+	transformNextjsConfig,
+	transformViteConfig,
+} from "@/features/config-mutation";
 import type { BootstrapResult } from "@/shared/ports";
 
-export async function findViteConfig(): Promise<string | null> {
+export async function findViteConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
 	const filenames = [
 		"vite.config.ts",
 		"vite.config.js",
@@ -14,7 +19,7 @@ export async function findViteConfig(): Promise<string | null> {
 		"vite.config.mjs",
 	];
 	for (const file of filenames) {
-		const fullPath = path.resolve(process.cwd(), file);
+		const fullPath = path.resolve(cwd, file);
 		try {
 			await fsp.access(fullPath);
 			return fullPath;
@@ -25,10 +30,12 @@ export async function findViteConfig(): Promise<string | null> {
 	return null;
 }
 
-export async function findBunConfig(): Promise<string | null> {
+export async function findBunConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
 	const filenames = ["bunfig.toml", "bun.setup.ts", "bun.setup.js"];
 	for (const file of filenames) {
-		const fullPath = path.resolve(process.cwd(), file);
+		const fullPath = path.resolve(cwd, file);
 		try {
 			await fsp.access(fullPath);
 			return fullPath;
@@ -37,6 +44,74 @@ export async function findBunConfig(): Promise<string | null> {
 		}
 	}
 	return null;
+}
+
+/**
+ * Search for a Next.js configuration file in the given directory.
+ *
+ * @param cwd The directory to search in (defaults to `process.cwd()`)
+ * @returns The full path to the found config file, or `null` if none exists
+ */
+export async function findNextjsConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
+	const filenames = [
+		"next.config.ts",
+		"next.config.js",
+		"next.config.mts",
+		"next.config.mjs",
+	];
+	for (const file of filenames) {
+		const fullPath = path.resolve(cwd, file);
+		try {
+			await fsp.access(fullPath);
+			return fullPath;
+		} catch {
+			// ignore missing file
+		}
+	}
+	return null;
+}
+
+/**
+ * Bootstrap a Next.js config file by wrapping its default export with `withArkEnv`.
+ *
+ * @param workspace An object providing `readFile` and `writeFile` for the target file
+ * @param filePath The path to the Next.js config file
+ * @returns The result of the bootstrap operation
+ */
+export async function bootstrapNextjsConfig(
+	workspace: {
+		readFile(path: string): Promise<string>;
+		writeFile(path: string, content: string): Promise<void>;
+	},
+	filePath: string,
+): Promise<BootstrapResult> {
+	try {
+		const configCode = await workspace.readFile(filePath);
+		const result = transformNextjsConfig({
+			code: configCode,
+		});
+
+		if (result.success && result.updated && result.code) {
+			await workspace.writeFile(filePath, result.code);
+		}
+
+		if (result.success) {
+			return result.updated !== undefined
+				? { success: true, updated: result.updated }
+				: { success: true };
+		}
+		return {
+			success: false,
+			error: result.error!,
+		};
+	} catch (e: unknown) {
+		return {
+			success: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
 }
 
 export async function bootstrapViteConfig(

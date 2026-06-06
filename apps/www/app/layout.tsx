@@ -17,6 +17,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+	metadataBase: new URL("https://arkenv.js.org"),
 	icons: {
 		icon: [
 			{
@@ -24,6 +25,14 @@ export const metadata: Metadata = {
 				type: "image/svg+xml",
 			},
 		],
+	},
+	openGraph: {
+		siteName: "ArkEnv",
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
 	},
 };
 

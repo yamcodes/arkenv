@@ -5,7 +5,7 @@ import { applyEdits, modify } from "jsonc-parser";
 /**
  * Supported build/runtime frameworks.
  */
-export type Framework = "vite" | "bun-fullstack" | "vanilla";
+export type Framework = "vite" | "bun-fullstack" | "vanilla" | "nextjs";
 
 /**
  * Options for configuring a Workspace.
@@ -47,6 +47,11 @@ export class Workspace {
 		await fsp.writeFile(fullPath, content, "utf-8");
 	}
 
+	/**
+	 * Detect the workspace's target build or runtime framework.
+	 *
+	 * @returns The detected framework name
+	 */
 	async detectFramework(): Promise<Framework> {
 		try {
 			const content = await this.readFile("package.json");
@@ -54,6 +59,7 @@ export class Workspace {
 			const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
 			if (allDeps.vite) return "vite";
+			if (allDeps.next) return "nextjs";
 
 			if (await this.hasBunFeatures()) return "bun-fullstack";
 		} catch {
@@ -68,6 +74,15 @@ export class Workspace {
 			(await this.exists("vite.config.mjs"))
 		) {
 			return "vite";
+		}
+
+		if (
+			(await this.exists("next.config.ts")) ||
+			(await this.exists("next.config.js")) ||
+			(await this.exists("next.config.mjs")) ||
+			(await this.exists("next.config.cjs"))
+		) {
+			return "nextjs";
 		}
 
 		// Check for bun features

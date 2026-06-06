@@ -1,8 +1,40 @@
-# @arkenv/bun-plugin
+# @ArkEnv/Bun-plugin
+
+## 0.1.8
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`88b0eee`](https://github.com/yamcodes/arkenv/commit/88b0eee7a87ffaf249d69035a747f1bb55f7079b)
+
+</small>
+
+- `arkenv@0.12.0`
+
+</details>
+
+## 0.1.7
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`c6c30ab`](https://github.com/yamcodes/arkenv/commit/c6c30abbc1df4bb74b2ab5c6f689fcae557ffb05)
+
+</small>
+
+- `arkenv@0.11.1`
+
+</details>
 
 ## 0.1.6
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -18,7 +50,7 @@
 
 ## 0.1.5
 
-### Patch Changes
+### Patch changes
 
 - #### Support `NODE_ENV` in schema _[`#804`](https://github.com/yamcodes/arkenv/pull/804) [`6f8b4f0`](https://github.com/yamcodes/arkenv/commit/6f8b4f032d085c5079cf63abe17dce5e73d61f07) [@joakimbeng](https://github.com/joakimbeng)_
 
@@ -41,7 +73,7 @@
 
 ## 0.1.4
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -57,7 +89,7 @@
 
 ## 0.1.3
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -73,7 +105,7 @@
 
 ## 0.1.2
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -89,7 +121,7 @@
 
 ## 0.1.1
 
-### Patch Changes
+### Patch changes
 
 - #### Support configuration _[`#763`](https://github.com/yamcodes/arkenv/pull/763) [`06de0ef`](https://github.com/yamcodes/arkenv/commit/06de0ef3febbfc685213043ad5454f6b9e8ab564) [@yamcodes](https://github.com/yamcodes)_
 
@@ -123,13 +155,13 @@
 
 ## 0.1.0
 
-### Minor Changes
+### Minor changes
 
 - #### Refactoring + remove `processEnvSchema` export _[`#739`](https://github.com/yamcodes/arkenv/pull/739) [`16c6047`](https://github.com/yamcodes/arkenv/commit/16c6047dad8d797b6e87d77ca413ba6582a16916) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
 
   **Breaking change:** We've removed the `processEnvSchema` export from this library as it's an internal utility.
 
-### Patch Changes
+### Patch changes
 
 - #### Support for `.mts` and `.cts` extensions _[`#739`](https://github.com/yamcodes/arkenv/pull/739) [`16c6047`](https://github.com/yamcodes/arkenv/commit/16c6047dad8d797b6e87d77ca413ba6582a16916) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
 
@@ -147,7 +179,7 @@
 
 ## 0.0.9
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -163,7 +195,7 @@
 
 ## 0.0.8
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -179,7 +211,7 @@
 
 ## 0.0.7
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -195,7 +227,7 @@
 
 ## 0.0.6
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -211,7 +243,7 @@
 
 ## 0.0.5
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -227,7 +259,7 @@
 
 ## 0.0.4
 
-### Patch Changes
+### Patch changes
 
 - #### Internal refactoring to reduce type duplication _[`#544`](https://github.com/yamcodes/arkenv/pull/544) [`d4800f9`](https://github.com/yamcodes/arkenv/commit/d4800f97d162dbeb9030576f1e97a1f50d876bad) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)_
 
@@ -247,7 +279,7 @@
 
 ## 0.0.3
 
-### Patch Changes
+### Patch changes
 
 <details><summary>Updated 1 dependency</summary>
 
@@ -263,7 +295,7 @@
 
 ## 0.0.2
 
-### Patch Changes
+### Patch changes
 
 - #### Fix "Type instantiation is excessively deep" error _[`1d86d18`](https://github.com/yamcodes/arkenv/commit/1d86d187b08aba7c6b83f7bdce2d47bae47c7eb9) [@yamcodes](https://github.com/yamcodes)_
 
@@ -283,7 +315,7 @@
 
 ## 0.0.1
 
-### Patch Changes
+### Patch changes
 
 - Add Bun plugin for build-time environment variable validation and typesafe access, similar to the Vite plugin. _[`#439`](https://github.com/yamcodes/arkenv/pull/439) [`61a7c52`](https://github.com/yamcodes/arkenv/commit/61a7c522abb5a7e923d7c879bff1e80e6944cff2) [@yamcodes](https://github.com/yamcodes)_
 

@@ -1,14 +1,33 @@
 #!/usr/bin/env node
+import { shake } from "radashi";
 import { compose } from "./cli/composition";
 
 let globalLogger: any;
 let isShuttingDown = false;
 
+/**
+ * Composes the CLI, dispatches the requested command, and handles fatal failures.
+ */
 async function main() {
+	if (process.env.INIT_CWD) {
+		try {
+			process.chdir(process.env.INIT_CWD);
+		} catch {
+			// Fallback to process.cwd() if directory change fails
+		}
+	}
+
 	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
 	globalLogger = logger;
 
 	setupGracefulShutdown(logger);
+
+	if (cli.validationError) {
+		logger.error(cli.validationError);
+		await helpUseCase.execute();
+		await logger.flush();
+		process.exit(1);
+	}
 
 	if (cli.helpRequested) {
 		await helpUseCase.execute();
@@ -26,13 +45,12 @@ async function main() {
 		await logger.flush();
 		process.exit(1);
 	}
-
 	try {
-		await initUseCase.execute({
-			isYes: cli.isYes,
-			isQuiet: cli.isQuiet,
-			isAgent: cli.isAgent,
-		});
+		const success = await initUseCase.execute(shake(cli.initInput));
+		if (!success) {
+			await logger.flush();
+			process.exit(1);
+		}
 	} catch (error) {
 		try {
 			logger.fatal("An unexpected error occurred", error);
@@ -44,7 +62,13 @@ async function main() {
 	}
 }
 
+/**
+ * Installs signal handlers that cancel prompts and flush logs before exiting.
+ */
 function setupGracefulShutdown(logger: any) {
+	/**
+	 * Flushes the current prompt and logger state before exiting with a signal code.
+	 */
 	const shutdown = async (code: number) => {
 		if (isShuttingDown) {
 			process.exit(code);

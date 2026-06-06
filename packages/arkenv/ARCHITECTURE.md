@@ -1,24 +1,24 @@
-# ArkEnv Architecture
+# ArkEnv architecture
 
-## Three-Tier Export Surface
+## Three-tier export surface
 
 ArkEnv ships three public entry points from a single npm package:
 
 | Entry    | Import                                      | ArkType required? | Purpose                                            |
 | -------- | ------------------------------------------- | ----------------- | -------------------------------------------------- |
-| Main     | `import { createEnv } from "arkenv"`        | Yes (static)      | ArkType-first `createEnv` + `type` helper          |
+| Main     | `import arkenv from "arkenv"`               | Yes (static)      | ArkType-first `createEnv` + `type` helper          |
 | Standard | `import arkenv from "arkenv/standard"`      | No                | ArkType-free `createEnv` for Standard Schema users |
 | Core     | `import { ArkEnvError } from "arkenv/core"` | No                | Entry-agnostic primitives (errors, types)          |
 
 The main entry re-exports `type` from `src/arktype/index.ts`, which statically imports ArkType. This is intentional: the main entry is the ArkType-first surface and its dependency on ArkType is explicit. Users who need an ArkType-free import use `arkenv/standard` or `arkenv/core`.
 
-## Ownership Rules
+## Ownership rules
 
 - **Entry-specific exports** belong in the entry (`src/index.ts` for ArkType, `src/standard.ts` for Standard Schema).
 - **Entry-agnostic exports** (e.g. `ArkEnvError`) belong in `arkenv/core` (`src/core.ts`).
 - **Internal modules** (`src/guards.ts`, `src/parse-standard.ts`, `src/arktype/`) are not public entries.
 
-## Single-Implementation Invariant
+## Single-implementation invariant
 
 The ArkType entry's `createEnv` MUST NOT contain ArkType-specific validation logic. Its only ArkType-specific step is calling `$.type.raw()` on the user's definition to produce a compiled schema. All subsequent validation - `onUndeclaredKey`, coercion, error collection - is handled by `parse` in `src/arktype/index.ts`.
 
@@ -26,7 +26,7 @@ Similarly, the standard entry delegates to `parseStandard` in `src/parse-standar
 
 If ArkType-specific behavior is needed, it belongs in `src/arktype/index.ts#parse`, not in `create-env.ts` or `src/index.ts`.
 
-## Why One Package, Not Two
+## Why one package, not two
 
 Splitting `arkenv/standard` into a separate npm package (`arkenv-standard`) would:
 

@@ -1,4 +1,4 @@
-# ArkType Land
+# ArkType land
 
 This module **assumes that the user has `arktype` installed** in their project. It is intentionally isolated from the core of `arkenv` to allow for optional and lazy loading of the ArkType library.
 

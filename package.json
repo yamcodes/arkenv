@@ -11,8 +11,8 @@
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
 		"release": "pnpm run build:packages && changeset publish",
-		"fix": "node bin/fix.js",
-		"fix:unsafe": "node bin/fix.js --unsafe",
+		"fix": "node scripts/fix.js",
+		"fix:unsafe": "node scripts/fix.js --unsafe",
 		"check": "biome check && pnpm run check:mdx && manypkg check",
 		"check:mdx": "mdxlint . -e md -e mdx --frail",
 		"fix:mdx": "mdxlint . -e md -e mdx --output",
@@ -26,15 +26,20 @@
 		"test:e2e:update": "turbo run test:e2e:update",
 		"changeset": "changeset",
 		"size": "turbo run size",
-		"sync:examples": "node bin/sync-examples.js",
-		"sync:examples:check": "node bin/sync-examples.js --check",
+		"sync:examples": "node scripts/sync-examples.js",
+		"sync:examples:check": "node scripts/sync-examples.js --check",
 		"contributors:add": "all-contributors add",
 		"contributors:generate": "all-contributors generate",
-		"knip": "knip"
+		"knip": "knip",
+		"test:cli": "node scripts/test-cli.js",
+		"verify-artifacts": "node scripts/verify-artifacts.js",
+		"test:e2e:package": "node scripts/test-e2e-package.js",
+		"arkenv": "pnpm run build --filter @arkenv/cli && node packages/cli/dist/index.cjs"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.14",
 		"@changesets/cli": "2.31.0",
+		"@clack/prompts": "^1.3.0",
 		"@manypkg/cli": "0.25.1",
 		"@playwright/test": "",
 		"@types/node": "catalog:",
@@ -49,9 +54,9 @@
 		"remark-frontmatter": "^5.0.0",
 		"remark-gfm": "^4.0.1",
 		"rimraf": "catalog:",
-		"turbo": "2.9.14",
+		"turbo": "2.9.16",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
-	"packageManager": "pnpm@11.0.9"
+	"packageManager": "pnpm@11.5.1"
 }

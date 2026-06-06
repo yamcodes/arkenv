@@ -1,4 +1,4 @@
-# @arkenv/fumadocs-ui
+# @ArkEnv/fumadocs-ui
 
 A Fumadocs-ready component and theme package for ArkEnv documentation. It ships sharpened Tailwind v4 styling, external link handling, enhanced headings/code blocks, AI actions, and a ready-to-use MDX component map.
 

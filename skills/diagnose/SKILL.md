@@ -11,7 +11,7 @@ A discipline for hard bugs. Skip phases only when explicitly justified.
 
 When exploring the codebase, use the project's domain glossary to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
-## Phase 1 — Build a feedback loop
+## Phase 1 — build a feedback loop
 
 **This is the skill.** Everything else is mechanical. If you have a fast, deterministic, agent-runnable pass/fail signal for the bug, you will find the cause — bisection, hypothesis-testing, and instrumentation all just consume that signal. If you don't have one, no amount of staring at code will save you.
 
@@ -52,7 +52,7 @@ Stop and say so explicitly. List what you tried. Ask the user for: (a) access to
 
 Do not proceed to Phase 2 until you have a loop you believe in.
 
-## Phase 2 — Reproduce
+## Phase 2 — reproduce
 
 Run the loop. Watch the bug appear.
 
@@ -64,7 +64,7 @@ Confirm:
 
 Do not proceed until you reproduce the bug.
 
-## Phase 3 — Hypothesise
+## Phase 3 — hypothesise
 
 Generate **3–5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
 
@@ -76,7 +76,7 @@ If you cannot state the prediction, the hypothesis is a vibe — discard or shar
 
 **Show the ranked list to the user before testing.** They often have domain knowledge that re-ranks instantly ("we just deployed a change to #3"), or know hypotheses they've already ruled out. Cheap checkpoint, big time saver. Don't block on it — proceed with your ranking if the user is AFK.
 
-## Phase 4 — Instrument
+## Phase 4 — instrument
 
 Each probe must map to a specific prediction from Phase 3. **Change one variable at a time.**
 
@@ -90,7 +90,7 @@ Tool preference:
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
 
-## Phase 5 — Fix + regression test
+## Phase 5 — fix + regression test
 
 Write the regression test **before the fix** — but only if there is a **correct seam** for it.
 
@@ -106,7 +106,7 @@ If a correct seam exists:
 4. Watch it pass.
 5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
 
-## Phase 6 — Cleanup + post-mortem
+## Phase 6 — cleanup + post-mortem
 
 Required before declaring done:
 

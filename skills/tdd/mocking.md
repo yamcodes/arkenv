@@ -1,4 +1,4 @@
-# When to Mock
+# When to mock
 
 Mock at **system boundaries** only:
 
@@ -13,7 +13,7 @@ Don't mock:
 - Internal collaborators
 - Anything you control
 
-## Designing for Mockability
+## Designing for mockability
 
 At system boundaries, design interfaces that are easy to mock:
 

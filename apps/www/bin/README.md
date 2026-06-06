@@ -1,4 +1,4 @@
-# Documentation Scripts (`/bin`)
+# Documentation scripts (`/bin`)
 
 This directory contains utility scripts used by the documentation site for building, environment setup, and content verification.
 

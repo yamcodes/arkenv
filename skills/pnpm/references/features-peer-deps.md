@@ -3,11 +3,11 @@ name: pnpm-peer-dependencies
 description: Handling peer dependencies with auto-install and resolution rules
 ---
 
-# pnpm Peer Dependencies
+# pnpm peer dependencies
 
 pnpm has strict peer dependency handling by default. It provides configuration options to control how peer dependencies are resolved and reported.
 
-## Auto-Install Peer Dependencies
+## Auto-install peer dependencies
 
 By default, pnpm automatically installs peer dependencies:
 
@@ -18,7 +18,7 @@ auto-install-peers=true
 
 When enabled, pnpm automatically adds missing peer dependencies based on the best matching version.
 
-## Strict Peer Dependencies
+## Strict peer dependencies
 
 Control whether peer dependency issues cause errors:
 
@@ -28,10 +28,11 @@ strict-peer-dependencies=true
 ```
 
 When strict, pnpm will fail if:
+
 - Peer dependency is missing
 - Installed version doesn't match required range
 
-## Peer Dependency Rules
+## Peer dependency rules
 
 Configure peer dependency behavior in `package.json`:
 
@@ -68,6 +69,7 @@ Suppress warnings for missing peer dependencies:
 ```
 
 Use patterns:
+
 - `"react"` - exact package name
 - `"@babel/*"` - all packages in scope
 - `"*"` - all packages (not recommended)
@@ -104,7 +106,7 @@ Allow any version for specified peer dependencies:
 }
 ```
 
-## Adding Peer Dependencies via Hooks
+## Adding peer dependencies via hooks
 
 Use `.pnpmfile.cjs` to add missing peer dependencies:
 
@@ -128,7 +130,7 @@ module.exports = {
 }
 ```
 
-## Peer Dependencies in Workspaces
+## Peer dependencies in workspaces
 
 Workspace packages can satisfy peer dependencies:
 
@@ -151,9 +153,9 @@ Workspace packages can satisfy peer dependencies:
 
 The workspace `app` provides `react` which satisfies `components`' peer dependency.
 
-## Common Scenarios
+## Common scenarios
 
-### Monorepo with Shared React
+### Monorepo with shared React
 
 ```yaml
 # pnpm-workspace.yaml
@@ -181,7 +183,7 @@ catalog:
 }
 ```
 
-### Suppress ESLint Plugin Warnings
+### Suppress eslint plugin warnings
 
 ```json
 {
@@ -196,7 +198,7 @@ catalog:
 }
 ```
 
-### Allow Multiple Major Versions
+### Allow multiple major versions
 
 ```json
 {
@@ -211,7 +213,7 @@ catalog:
 }
 ```
 
-## Debugging Peer Dependencies
+## Debugging peer dependencies
 
 ```bash
 # See why a package is installed
@@ -224,7 +226,7 @@ pnpm install --reporter=append-only 2>&1 | grep -i peer
 pnpm list --depth=Infinity
 ```
 
-## Best Practices
+## Best practices
 
 1. **Enable auto-install-peers** for convenience (default in pnpm v8+)
 
@@ -244,7 +246,8 @@ pnpm list --depth=Infinity
 5. **Test with different peer versions** if you support multiple majors
 
 <!-- 
-Source references:
-- https://pnpm.io/package_json#pnpmpeerdependencyrules
-- https://pnpm.io/npmrc#auto-install-peers
--->
+  Source references:
+  - https://pnpm.io/how-peers-are-resolved
+  - https://pnpm.io/package_json
+  - https://pnpm.io/npmrc
+  -->

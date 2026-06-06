@@ -1,6 +1,6 @@
-# Good and Bad Tests
+# Good and bad tests
 
-## Good Tests
+## Good tests
 
 **Integration-style**: Test through real interfaces, not mocks of internal parts.
 
@@ -22,7 +22,7 @@ Characteristics:
 - Describes WHAT, not HOW
 - One logical assertion per test
 
-## Bad Tests
+## Bad tests
 
 **Implementation-detail tests**: Coupled to internal structure.
 

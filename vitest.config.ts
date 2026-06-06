@@ -2,7 +2,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-		projects: ["packages/*", "apps/*"],
+		projects: ["packages/*", "apps/*", "!apps/playwright-www", "!**/*.md"],
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "json", "html"],
@@ -29,5 +29,7 @@ export default defineConfig({
 			],
 		},
 		unstubEnvs: true,
+		restoreMocks: true,
+		unstubGlobals: true,
 	},
 });

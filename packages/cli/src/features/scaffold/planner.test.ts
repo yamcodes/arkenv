@@ -5,6 +5,7 @@ import { createPlan } from "./planner";
 
 describe("Planner", () => {
 	const defaultState: CollectedState = {
+		mode: "existing",
 		cwd: "/test",
 		options: {
 			validator: "arktype",
@@ -42,6 +43,78 @@ describe("Planner", () => {
 		expect(plan.install?.dependencies).toContain("@arkenv/vite-plugin");
 		expect(plan.files.some((f) => f.path.endsWith("vite-env.d.ts"))).toBe(true);
 		expect(plan.bootstrap?.framework).toBe("vite");
+	});
+
+	it("plans for nextjs framework", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "nextjs" },
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.files.some((f) => f.path.endsWith("env.d.ts"))).toBe(false);
+		expect(plan.bootstrap).toBeDefined();
+		expect(plan.bootstrap?.framework).toBe("nextjs");
+	});
+
+	it("plans for nextjs framework with disableCodegen", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				disableCodegen: true,
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.bootstrap).toBeUndefined();
+		expect(plan.metadata.disableCodegen).toBe(true);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain('import arkenv from "@arkenv/nextjs";');
+		expect(envFile?.content).toContain("runtimeEnv:");
+	});
+
+	it("plans wrapNextjsConfig as true by default for nextjs", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "nextjs" },
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.bootstrap?.wrapNextjsConfig).toBe(true);
+	});
+
+	it("plans wrapNextjsConfig as false when opted out", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				wrapNextjsConfig: false,
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.bootstrap?.wrapNextjsConfig).toBe(false);
+	});
+
+	it("plans for nextjs framework with zod validator", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				validator: "zod",
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.install?.dependencies).toContain("zod");
+		expect(plan.install?.dependencies).toContain("arktype");
 	});
 
 	it("plans for bun-fullstack framework with features", () => {
@@ -137,5 +210,252 @@ describe("Planner", () => {
 		// our normalization handles the output regardless of platform.
 		expect(plan.metadata.displayPath).toBe("./src/env.ts");
 		expect(plan.metadata.importPath).toBe("./src/env");
+	});
+
+	it("sets targetDir to a named subdirectory when name is not '.'", () => {
+		const state: CollectedState = {
+			...defaultState,
+			mode: "new",
+			cwd: "/parent",
+			options: {
+				...defaultState.options,
+				mode: "new",
+				example: "basic",
+				name: "my-app",
+				path: "./src/env.ts",
+			},
+		};
+		const plan = createPlan(state);
+		expect(plan.clone).toBeDefined();
+		expect(plan.clone?.targetDir).toBe("/parent/my-app");
+		expect(plan.clone?.targetName).toBe("my-app");
+		expect(plan.install?.cwd).toBe("/parent/my-app");
+	});
+
+	it("omits targetDir when name is '.' so cloner falls back to cwd", () => {
+		const state: CollectedState = {
+			...defaultState,
+			mode: "new",
+			cwd: "/parent",
+			options: {
+				...defaultState.options,
+				mode: "new",
+				example: "basic",
+				name: ".",
+				path: "./src/env.ts",
+			},
+		};
+		const plan = createPlan(state);
+		expect(plan.clone).toBeDefined();
+		expect(plan.clone?.targetDir).toBeUndefined();
+		expect(plan.clone?.targetName).toBe("parent");
+		expect(plan.install?.cwd).toBeUndefined();
+	});
+
+	it("extracts basename for targetName in new project mode", () => {
+		const state: CollectedState = {
+			mode: "new",
+			cwd: "/test/yo/my-project",
+			options: {
+				mode: "new",
+				example: "basic",
+				name: "yo/my-project",
+				framework: "vanilla",
+				path: "./src/env.ts",
+				validator: "arktype",
+				language: "ts",
+				installSkill: false,
+			},
+			detectedFramework: "vanilla",
+			packageManager: "pnpm",
+			tsConfig: { status: "not_found" },
+			shouldUpdateTsConfig: false,
+			existingFiles: [],
+			isYes: false,
+		};
+		const plan = createPlan(state);
+		expect(plan.clone?.targetName).toBe("my-project");
+	});
+
+	it("plans three files for nextjs framework in strict layout", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		expect(plan.files).toHaveLength(3);
+
+		const sharedFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/internal/shared.ts"),
+		);
+		const clientFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
+		);
+		const serverFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/server.ts"),
+		);
+
+		expect(sharedFile).toBeDefined();
+		expect(clientFile).toBeDefined();
+		expect(serverFile).toBeDefined();
+
+		expect(sharedFile?.content).toContain("@arkenv/nextjs/shared");
+		expect(clientFile?.content).toContain("./generated/env.gen");
+		expect(serverFile?.content).toContain("@arkenv/nextjs/server");
+	});
+
+	it("plans all three strict layout files as overwrite on rerun when they already exist", () => {
+		const sharedPath = path.resolve("/test", "src/env/internal/shared.ts");
+		const clientPath = path.resolve("/test", "src/env/client.ts");
+		const serverPath = path.resolve("/test", "src/env/server.ts");
+
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+				overwriteEnvSchemaFile: true,
+			},
+			detectedFramework: "nextjs",
+			existingFiles: [sharedPath, clientPath, serverPath],
+		};
+		const plan = createPlan(state);
+		expect(plan.files).toHaveLength(3);
+
+		const sharedFile = plan.files.find((f) => f.path === sharedPath);
+		const clientFile = plan.files.find((f) => f.path === clientPath);
+		const serverFile = plan.files.find((f) => f.path === serverPath);
+
+		// All three must be "overwrite", not "create"
+		expect(sharedFile?.action).toBe("overwrite");
+		expect(clientFile?.action).toBe("overwrite");
+		expect(serverFile?.action).toBe("overwrite");
+	});
+
+	it("resolves nextjsImportPath using tsconfig paths mapping when schema is inside mapped folder", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				path: "src/env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./src/*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import arkenv from "@/generated/env.gen"',
+		);
+	});
+
+	it("resolves nextjsImportPath using tsconfig paths mapping with root wildcard mapping", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				path: "env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import arkenv from "@/generated/env.gen"',
+		);
+	});
+
+	it("falls back to relative path if schema is outside mapped tsconfig paths folder", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				path: "env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./src/*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import arkenv from "./generated/env.gen"',
+		);
+	});
+
+	it("resolves nextjsImportPath in strict layout using tsconfig paths mapping", () => {
+		const state: CollectedState = {
+			...defaultState,
+			cwd: "/test",
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				layout: "strict",
+				path: "src/env.ts",
+			},
+			tsConfig: {
+				status: "strict",
+				file: "tsconfig.json",
+				parsed: {
+					path: "/test/tsconfig.json",
+					compilerOptions: {
+						paths: {
+							"@/*": ["./src/*"],
+						},
+					},
+				},
+			},
+		};
+		const plan = createPlan(state);
+		const clientFile = plan.files.find((f) =>
+			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
+		);
+		expect(clientFile?.content).toContain(
+			'import arkenv from "@/env/generated/env.gen"',
+		);
 	});
 });

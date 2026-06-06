@@ -3,7 +3,7 @@ name: autofix.ci # needed to securely identify the workflow
 on:
   pull_request:
   push:
-    branches: ["main"]
+    branches: ["dev", "v1"]
 permissions:
   contents: read
 
@@ -40,7 +40,9 @@ jobs:
         run: |
           SKIP_MANYPKG=false
 
-          if [ "${{ github.event_name }}" = "pull_request" ] && [ "$HEAD_REF" = "changeset-release/main" ]; then
+          # Skip manypkg for Changesets PRs and automated Sync PRs
+          if [ "${{ github.event_name }}" = "pull_request" ] && \
+             ([ "$HEAD_REF" = "changeset-release/dev" ] || [ "$HEAD_REF" = "dev" ] || [ "$HEAD_REF" = "changeset-release/v1" ] || [ "$HEAD_REF" = "v1" ]); then
             SKIP_MANYPKG=true
           elif [ "${{ github.event_name }}" = "push" ]; then
             if echo "$COMMIT_MESSAGE" | grep -qi "Version Packages"; then
@@ -51,6 +53,6 @@ jobs:
           echo "SKIP_MANYPKG=$SKIP_MANYPKG" >> "$GITHUB_ENV"
 
       - name: Fix linting issues
-        run: node bin/fix.js
+        run: node scripts/fix.js
 
       - uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8

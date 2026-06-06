@@ -2,6 +2,7 @@
 
 import {
 	SiBun,
+	SiNextdotjs,
 	SiNodedotjs,
 	SiVite,
 	SiZod,
@@ -59,19 +60,24 @@ const validators: RailItem[] = [
 
 const platforms: RailItem[] = [
 	{
+		name: "Next.js",
+		url: "https://nextjs.org",
+		icon: ({ className }) => <SiNextdotjs className={className} />,
+	},
+	{
 		name: "Node.js",
 		url: "https://nodejs.org",
 		icon: ({ className }) => <SiNodedotjs className={className} />,
 	},
 	{
-		name: "Bun",
-		url: "https://bun.sh",
-		icon: ({ className }) => <SiBun className={className} />,
-	},
-	{
 		name: "Vite",
 		url: "https://vite.dev",
 		icon: ({ className }) => <SiVite className={className} />,
+	},
+	{
+		name: "Bun",
+		url: "https://bun.sh",
+		icon: ({ className }) => <SiBun className={className} />,
 	},
 	{
 		name: "Vinxi",

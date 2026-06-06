@@ -1,0 +1,22 @@
+name: Preview www (Default Events)
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+    branches:
+      - dev
+      - v1
+  push:
+    branches:
+      - dev
+      - v1
+
+concurrency:
+  group: preview-www-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  Deploy-Preview:
+    if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'preview')
+    uses: ./.github/workflows/preview-www-reusable.yml
+    secrets: inherit

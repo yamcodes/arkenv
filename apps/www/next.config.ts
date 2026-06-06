@@ -31,12 +31,21 @@ const config = {
 				destination: "/docs/arkenv",
 				permanent: true,
 			},
+			{
+				source: "/docs/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
 		];
 	},
 	async rewrites() {
 		return [
 			{
 				source: "/docs/:path*.mdx",
+				destination: "/llms.mdx/docs/:path*",
+			},
+			{
+				source: "/docs/:path*.md",
 				destination: "/llms.mdx/docs/:path*",
 			},
 			/**
@@ -54,6 +63,25 @@ const config = {
 	},
 	// This is required to support PostHog trailing slash API requests
 	skipTrailingSlashRedirect: true,
+	async headers() {
+		const isPreview =
+			process.env.NEXT_PUBLIC_VERCEL_ENV === "preview" ||
+			process.env.VERCEL_ENV === "preview";
+		if (isPreview) {
+			return [
+				{
+					source: "/:path*",
+					headers: [
+						{
+							key: "X-Robots-Tag",
+							value: "noindex, nofollow",
+						},
+					],
+				},
+			];
+		}
+		return [];
+	},
 } as const satisfies NextConfig;
 
 const sentryConfig = {

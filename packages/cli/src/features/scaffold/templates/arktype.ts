@@ -1,17 +1,24 @@
 import dedent from "dedent";
+import { buildNextjsTemplate } from "./nextjs-template";
 
 /**
- * Generates a TypeScript template string for an ArkType environment configuration.
+ * Generate a TypeScript template string for an ArkType environment configuration.
  *
- * @param envKeys - Optional array of environment variable keys to include in the schema.
- * @param framework - The framework being used (vite, bun-fullstack, or vanilla).
- * @returns The generated TypeScript template string.
+ * @param envKeys Optional array of environment variable keys to include in the schema
+ * @param framework The framework being used (vite, bun-fullstack, or vanilla)
+ * @param nextjsImportPath The optional custom import path for the generated file in Next.js
+ * @returns The generated TypeScript template string
  */
-export const arktypeTemplate = (envKeys?: string[], framework?: string) => {
+export const arktypeTemplate = (
+	envKeys?: string[],
+	framework?: string,
+	nextjsImportPath?: string,
+	disableCodegen?: boolean,
+) => {
 	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: "string = ''",`).join("\n")
+		? envKeys.map((key) => `\t\t${key}: "string?",`).join("\n")
 		: `\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",
-\t\tPORT: "number.port = 3000",`;
+		PORT: "number.port = 3000",`;
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -23,7 +30,7 @@ export const arktypeTemplate = (envKeys?: string[], framework?: string) => {
 	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = type({
-${schemaFields}
+		${schemaFields}
 	});
 	`;
 	}
@@ -38,9 +45,32 @@ ${schemaFields}
 	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = type({
-${schemaFields}
+		${schemaFields}
 	});
 	`;
+	}
+
+	if (framework === "nextjs") {
+		return buildNextjsTemplate(
+			envKeys,
+			{
+				serverField: (key) => `\t\t${key}: "string?",`,
+				clientField: (key) => `\t\t${key}: "string?",`,
+				sharedField: (key) =>
+					`\t\t${key}: "'development' | 'production' | 'test' = 'development'",`,
+				defaultServerFields: [
+					`\t\tDATABASE_URL: "string = 'postgres://localhost:5432/mydb'",`,
+				],
+				defaultClientFields: [
+					`\t\tNEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",`,
+				],
+				defaultSharedFields: [
+					`\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",`,
+				],
+			},
+			nextjsImportPath,
+			disableCodegen,
+		);
 	}
 
 	return dedent /* ts */`

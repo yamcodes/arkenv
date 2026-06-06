@@ -1,23 +1,35 @@
 {
 	"version": 1,
 	"skills": {
-		"bulletproof-react-patterns": {
+		"bulletproof-react": {
 			"source": "grahamcrackers/skills",
 			"sourceType": "github",
-			"skillPath": "skills/bulletproof-react-patterns/SKILL.md",
-			"computedHash": "21440284bed25f9ed947b2c09e7d5a1d0908717f9df85615cd267f6ba12a1638"
+			"skillPath": "skills/bulletproof-react/SKILL.md",
+			"computedHash": "891f599d71317aab375ba025e7552bf797fddcdbfcbd8615200198ec62aa8446"
 		},
-		"creating-changesets": {
+		"changeset": {
 			"source": "saleor/configurator",
 			"sourceType": "github",
-			"skillPath": ".claude/skills/creating-changesets/SKILL.md",
-			"computedHash": "1c42991a47eb5faf803be1e3e2ae6f3b95ec2931baeb3137a4a1aa02f4036f2b"
+			"skillPath": "skills/changeset/SKILL.md",
+			"computedHash": "e2555f1af285f36cd74c21670306dce2cf290c966c2bb2b7603c8bdbe523b72e"
+		},
+		"create-skill": {
+			"source": "anthropics/skills",
+			"sourceType": "github",
+			"skillPath": "skills/create-skill/SKILL.md",
+			"computedHash": "0760b493a0633230ab63b27464e580a8074e5117586fa511a4e0547bdf529b80"
 		},
 		"diagnose": {
 			"source": "mattpocock/skills",
 			"sourceType": "github",
 			"skillPath": "skills/engineering/diagnose/SKILL.md",
 			"computedHash": "15939a26f86edec2d4862042b8564e5a062cb81d04e047a0cea6305c8830b5f5"
+		},
+		"excalidraw": {
+			"source": "github/awesome-copilot",
+			"sourceType": "github",
+			"skillPath": "skills/excalidraw/SKILL.md",
+			"computedHash": "cba18fc5e51e9c9c33a6a8e3c21aca7df84f6fc06643f9e90d8c36867c858441"
 		},
 		"grill-me": {
 			"source": "mattpocock/skills",
@@ -31,6 +43,12 @@
 			"skillPath": "skills/engineering/grill-with-docs/SKILL.md",
 			"computedHash": "31a5b1ae116558bf7d3f633f442835f54bd7645923d4f45c7823e52a97317666"
 		},
+		"hallmark": {
+			"source": "nutlope/hallmark",
+			"sourceType": "github",
+			"skillPath": "skills/hallmark/SKILL.md",
+			"computedHash": "8a8ecafd613f09e701330b5aa4a591ac539abb2605596df4a2394f03628d1d76"
+		},
 		"hexagonal-architecture": {
 			"source": "affaan-m/everything-claude-code",
 			"sourceType": "github",
@@ -43,6 +61,12 @@
 			"skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
 			"computedHash": "c77b86b4332919499608f9af1880074e1fec65a59b95c70c27a9f39cd137865e"
 		},
+		"next-best-practices": {
+			"source": "vercel-labs/next-skills",
+			"sourceType": "github",
+			"skillPath": "skills/next-best-practices/SKILL.md",
+			"computedHash": "f4678aef4ffc10a5ea64a91e57abe5a5081af813b06d58d565caf3e8ef56e26c"
+		},
 		"pnpm": {
 			"source": "antfu/skills",
 			"sourceType": "github",
@@ -54,12 +78,6 @@
 			"sourceType": "github",
 			"skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
 			"computedHash": "0164a8b1ef998abca426056c6ed8a7716a9d4692fc6daa5378f68381a6dafd24"
-		},
-		"skill-creator": {
-			"source": "anthropics/skills",
-			"sourceType": "github",
-			"skillPath": "skills/skill-creator/SKILL.md",
-			"computedHash": "5ea13a6d9f0d4bb694405d79acd00cadec0d21bb138c4dd10fcf3c500cb835c2"
 		},
 		"tdd": {
 			"source": "mattpocock/skills",
@@ -78,6 +96,12 @@
 			"sourceType": "github",
 			"skillPath": "skills/engineering/triage/SKILL.md",
 			"computedHash": "2b6efb6da12d92551772fcc04acf331f4e0e6f7bd9d4cb23ce0b301e0b128feb"
+		},
+		"typescript": {
+			"source": "pproenca/dot-skills",
+			"sourceType": "github",
+			"skillPath": "skills/.curated/typescript/SKILL.md",
+			"computedHash": "a6abc7c40a305f4f15d1167a36931d97ac5271893924dc101ba945f0aaf241ce"
 		},
 		"write-a-skill": {
 			"source": "mattpocock/skills",

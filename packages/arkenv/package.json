@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "0.11.0",
+	"version": "0.12.0",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
@@ -36,6 +36,7 @@
 		"build": "tsdown",
 		"size": "size-limit --json > .size-limit.json",
 		"test:once": "vitest run",
+		"test:dist": "vitest run test/dist.test.ts",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
@@ -73,7 +74,8 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22"
@@ -96,7 +98,7 @@
 		{
 			"name": "arkenv/standard",
 			"path": "dist/standard.mjs",
-			"limit": "1.1 kB",
+			"limit": "2.3 kB",
 			"import": "*"
 		},
 		{

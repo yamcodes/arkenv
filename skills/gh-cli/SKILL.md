@@ -5,20 +5,20 @@ metadata:
   internal: true
 ---
 
-# GH CLI
+# Gh CLI
 
 This skill provides guidance for using the GitHub CLI (`gh`) to automate and streamline GitHub workflows.
 
-## Common Workflows
+## Common workflows
 
-### Actions & Runs
+### Actions & runs
 
 - **List recent runs**: `gh run list`
 - **View a specific run**: `gh run view <run-id>`
 - **View job logs**: `gh run view <run-id> --job <job-id> --log`
 - **Rerun failed jobs**: `gh run rerun <run-id> --failed`
 
-### Pull Requests
+### Pull requests
 
 - **List PRs**: `gh pr list`
 - **View PR details**: `gh pr view <pr-number>`
@@ -32,7 +32,7 @@ This skill provides guidance for using the GitHub CLI (`gh`) to automate and str
 - **View issue**: `gh issue view <issue-number>`
 - **Create issue**: `gh issue create --title "..." --body "..."`
 
-## Best Practices
+## Best practices
 
 - **Use `--repo`**: When working in a multi-repo context or if not in a git repo, always specify `--repo <owner>/<repo>`.
 - **JSON Output**: Use `--json` with `-q` (jq filter) for scriptable output.

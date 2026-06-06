@@ -1,8 +1,8 @@
-# ArkEnv Skills
+# ArkEnv skills
 
 This directory contains skills for AI agents to help them understand and use ArkEnv more effectively.
 
-## Available Skills
+## Available skills
 
 These skills are intended for users of ArkEnv to improve their development experience.
 
@@ -15,18 +15,15 @@ These skills are intended for users of ArkEnv to improve their development exper
 
   Internal skills are automatically discovered by agents within this workspace via symlinks in `.agent/`, `.gemini/`, and `.github/`.
 
-  ### GitHub Workflows
+  ### GitHub workflows
 
   - [**gh-cli**](./gh-cli/SKILL.md): Guidance for using the GitHub CLI (`gh`) for common repository tasks.
   - [**groom-issue**](./groom-issue/SKILL.md): Interactive grilling session to clarify and flesh out poorly written issues.
   - [**tackle-issue**](./tackle-issue/SKILL.md): Standardized workflow for managing issues from start to Pull Request.
 
-  ### OpenSpec (Experimental)
+  ### Code quality & refactoring
 
-  - [**openspec-propose**](./openspec-propose/SKILL.md): Propose new changes with full artifact generation.
-  - [**openspec-explore**](./openspec-explore/SKILL.md): Deep-thinking and codebase investigation mode.
-  - [**openspec-apply-change**](./openspec-apply-change/SKILL.md): Structured implementation of OpenSpec tasks.
-  - [**openspec-archive-change**](./openspec-archive-change/SKILL.md): Finalizing and archiving completed changes.
+  - [**modularize**](./modularize/SKILL.md): Refactoring and splitting large files to reduce duplication and preserve public APIs.
   - [**internalize-skill**](./internalize-skill/SKILL.md): Promoting externally installed skills to project-internal skills.
 </details>
 

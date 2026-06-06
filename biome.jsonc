@@ -119,8 +119,7 @@
 		},
 		{
 			"includes": [
-				"**/bin/**/*",
-				".github/scripts/**/*",
+				"**/scripts/**/*",
 				".github/actions/**/*",
 				"packages/cli/**/*",
 				"packages/bun-plugin/**/*",
