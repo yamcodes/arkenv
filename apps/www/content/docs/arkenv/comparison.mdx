@@ -61,23 +61,15 @@ After years of building enterprise-scale applications, I realized that while DIY
 
 ### T3 env
 
-[T3 Env](https://env.t3.gg) is a fantastic library and a major inspiration for ArkEnv. While we share similar goals, our underlying mental models and architectural decisions differ.
+[T3 Env](https://env.t3.gg) is a major inspiration for ArkEnv. While both libraries provide typesafe environment validation, they differ in design and boilerplate:
 
-T3 Env follows a "Next.js-first" philosophy, including an explicit client/server split in the "agnostic core". This means that even if you're building a simple Node server and never have to deal with leaking sensitive variables to the client, you'll still have the cognitive overhead of bucketing variables into `server` or `client` keys.
+- **No manual `runtimeEnv`**: In Next.js, T3 Env requires you to manually maintain a duplicate `runtimeEnv` block (e.g. `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) so Next.js can inline variables. ArkEnv’s compiler automatically scans your schema and generates these mappings for you.
+- **Mental model**: T3 Env enforces a strict client/server split in its core package. Even when writing a simple Node server, you are forced to group keys into `server` and `client` blocks. ArkEnv lets you define simple flat schemas where appropriate, while providing clean layouts (like simple vs. strict) for front-end frameworks.
+- **Features**: ArkEnv features native ArkType synergy, automatic coercion, first-class Vite integration, and a CLI out of the box.
 
-#### For Next.js
-
-While T3 Env is widely adopted in the Next.js ecosystem, ArkEnv officially supports Next.js via the [@arkenv/nextjs](/docs/nextjs) package, bringing native ArkType support and automatic coercion to Next.js projects.
-
-Furthermore, **ArkEnv eliminates the need to manually write and maintain a `runtimeEnv` block**. In T3 Env, you are forced to manually map all client-side and shared environment variables (e.g. `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) so Next.js can statically analyze and inline them. In contrast, ArkEnv's automatic code generation wrapper (`withArkEnv`) statically scans your schema file at build/dev time and automatically generates a helper file with pre-wired `runtimeEnv` mappings. This ensures client-side bundles remain perfectly secure and clean with zero boilerplate.
-
-#### For everything else
-
-If you're building a Vite app, a Node server, a [Bun fullstack app](https://bun.com/docs/guides/ecosystem/react), a CLI tool, or even a Solid Start project, ArkEnv can cover your needs. We provide [official examples](/docs/arkenv/examples) for these use cases.
-
-Even if you aren't ready to commit fully to ArkType, ArkEnv's support for [Standard Schema](https://standardschema.dev/) means you can keep using Zod, Valibot, or other compliant validators while benefiting from our specific framework features.
-
-By choosing ArkEnv, you gain access to features like [automatic coercion](/docs/arkenv/coercion), [native ArkType synergy](https://github.com/yamcodes/arkenv/tree/main/examples/basic), and [first-class Vite support](/docs/vite-plugin) that are missing from T3 Env.
+:::note
+While ArkEnv supports Zod, Valibot, and other validators via Standard Schema, T3 Env also has dedicated package support for Nuxt, which ArkEnv does not yet natively support.
+:::
 
 ### Vite-plugin-validate-env
 
