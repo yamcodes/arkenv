@@ -32,7 +32,7 @@ By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withA
 This eliminates the manual effort of mapping variables (e.g. `NEXT_PUBLIC_VAR: process.env.NEXT_PUBLIC_VAR`) while ensuring client bundles remain clean by skipping server-only secrets.
 
 :::note
-The generated helper is **only** imported inside your schema definition file (e.g., `src/env.ts`). The rest of your application code imports `env` directly from the schema file itself, just like core ArkEnv.
+The generated helper is *only* imported inside your schema definition file (e.g., `src/env.ts`). The rest of your application code imports `env` directly from the schema file itself, just like core ArkEnv.
 :::
 
 For example, when you define a schema:
