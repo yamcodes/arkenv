@@ -114,6 +114,37 @@ The generated helper is *only* imported inside your schema definition file (e.g.
   </Tab>
 </Tabs>
 
+## Can I disable code generation?
+
+Yes. By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config that scans your schema and generates a `env.gen.ts` file at compile time. This gives you the best DX, but it is entirely optional.
+
+To opt out, pass the `--no-codegen` flag when bootstrapping with the CLI:
+
+```bash
+npx @arkenv/cli@latest init --no-codegen
+```
+
+The CLI will scaffold the manual `runtimeEnv` destructuring pattern instead. If you are setting up manually, skip the `withArkEnv` wrapper in `next.config.ts` and import `createEnv` directly from `@arkenv/nextjs`:
+
+```ts title="src/env.ts"
+import { createEnv } from "@arkenv/nextjs";
+
+export const env = createEnv({
+  server: {
+    DATABASE_URL: "string",
+  },
+  client: {
+    NEXT_PUBLIC_API_URL: "string",
+  },
+  runtimeEnv: {
+    DATABASE_URL: process.env.DATABASE_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  },
+});
+```
+
+You are then responsible for keeping `runtimeEnv` in sync with your schema manually.
+
 ---
 
 ## How does the runtime protection work under the hood?
