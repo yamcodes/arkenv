@@ -35,9 +35,7 @@ This eliminates the manual effort of mapping variables (e.g. `NEXT_PUBLIC_VAR: p
 The generated helper is *only* imported inside your schema definition file (e.g., `src/env.ts`). The rest of your application code imports `env` directly from the schema file itself, just like core ArkEnv.
 :::
 
-For example, when you define a schema:
-
-<Tabs items={['Your schema', 'Generated helper']}>
+<Tabs items={['Your schema', 'App code', 'Generated helper']}>
   <Tab value="Your schema">
     ```ts title="src/env.ts"
     import arkenv from "@/generated/env.gen";
@@ -52,6 +50,7 @@ For example, when you define a schema:
       shared: {
         NODE_ENV: "string",
       },
+      // ✅ No `runtimeEnv` block needed!
     });
     ```
   </Tab>
@@ -72,6 +71,15 @@ For example, when you define a schema:
     }
 
     export default createEnv;
+    ```
+  </Tab>
+  <Tab value="App code">
+    ```ts title="app/page.tsx"
+    import { env } from "@/src/env";
+
+    export default function Home() {
+      return <div>API: {env.client.NEXT_PUBLIC_API_URL}</div>;
+    }
     ```
   </Tab>
 </Tabs>
