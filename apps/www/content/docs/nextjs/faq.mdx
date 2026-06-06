@@ -24,6 +24,10 @@ Server-side variables, on the other hand, do not need to be inlined and are read
 
 ## How does the code generation (`withArkEnv` config wrapper) work under the hood?
 
+:::tip
+Code generation is optional - see [Can I disable code generation?](#can-i-disable-code-generation)
+:::
+
 By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config. This wrapper:
 
 1. **Statically scans** your schema file(s) at build time to detect client-side and shared environment variable keys.
@@ -113,6 +117,7 @@ The generated helper is *only* imported inside your schema definition file (e.g.
     ```
   </Tab>
 </Tabs>
+
 
 ## Can I disable code generation?
 
