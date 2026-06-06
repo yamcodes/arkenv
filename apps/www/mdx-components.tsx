@@ -6,6 +6,7 @@ import {
 	CalloutTitle,
 } from "fumadocs-ui/components/callout";
 import { Cards } from "fumadocs-ui/components/card";
+import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -23,6 +24,9 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		CalloutTitle,
 		Card,
 		Cards,
+		Files,
+		Folder,
+		File,
 		...components,
 		table: (props) => (
 			<Table
