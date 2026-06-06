@@ -33,7 +33,7 @@ ArkEnvError: Errors found while validating environment variables
 
 **No.** ArkEnv **validates your environment variables—it doesn't load them**.
 
-Most modern frameworks load `.env` files automatically. For plain Node.js, we recommend using [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.is/).
+Most modern frameworks load `.env` files automatically. For plain Node.js, we recommend using [dotenv](https://www.npmjs.com/package/dotenv) or [tsx](https://tsx.hirok.io/).
 
 ArkEnv intercepts the populated `process.env` or `import.meta.env` object, evaluates it against your schema, and applies **automatic type coercion**.
 
