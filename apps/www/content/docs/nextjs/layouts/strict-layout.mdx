@@ -1,7 +1,7 @@
 ---
 title: Strict layout
 icon: ShieldCheck
-description: The most secure way to use ArkEnv in your Next.js application, separating client and server schemas.
+description: Get the best security in Next.js using strictly separated client and server schemas.
 ---
 
 In this setup, you define your client, server, and shared schemas in separate files.
@@ -14,7 +14,7 @@ src
     ├── client.ts
     └── server.ts
 ```
-By importing from `@/env/client` in client-side code and `@/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `@/env/server` is accidentally imported in a Client Component, ArkEnv fails the build with a compilation error.
+By importing `arkenv` from `@/env/client` in client-side code and `@/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `@/env/server` is accidentally imported in a Client Component, ArkEnv fails the build with a compilation error.
 
 ---
 
