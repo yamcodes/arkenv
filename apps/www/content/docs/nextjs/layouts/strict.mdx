@@ -267,7 +267,7 @@ Both `env/client.ts` and `env/server.ts` export the resolved environment as `env
 Import `env` from the server file. It contains all public, shared, and server-only variables:
 
 ```ts title="src/app/page.ts" twoslash
-// @filename: /internal/shared.ts
+// @filename: /env/internal/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -275,7 +275,7 @@ import { type } from "@arkenv/nextjs/shared";
  */
 export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
 
-// @filename: /client.ts
+// @filename: /env/client.ts
 import arkenv from "@arkenv/nextjs/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
@@ -283,7 +283,7 @@ export const env = arkenv(
 	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
 );
 
-// @filename: /server.ts
+// @filename: /env/server.ts
 import arkenv from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./client";
 export const env = arkenv(
@@ -310,7 +310,7 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
 
 ```ts title="src/app/client-component.ts" twoslash
-// @filename: /internal/shared.ts
+// @filename: /env/internal/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -318,7 +318,7 @@ import { type } from "@arkenv/nextjs/shared";
  */
 export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
 
-// @filename: /client.ts
+// @filename: /env/client.ts
 import arkenv from "@arkenv/nextjs/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
