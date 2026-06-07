@@ -1,0 +1,51 @@
+{
+	"name": "create-arkenv",
+	"type": "module",
+	"version": "0.2.8",
+	"description": "Create ArkEnv projects with a single command",
+	"bin": {
+		"create-arkenv": "./dist/index.cjs"
+	},
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./*": "./dist/*"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"test": "vitest",
+		"test:run": "vitest run",
+		"typecheck": "tsc --noEmit"
+	},
+	"keywords": [
+		"arkenv",
+		"create",
+		"scaffold",
+		"init"
+	],
+	"license": "MIT",
+	"homepage": "https://arkenv.js.org",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/create-arkenv",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"dependencies": {
+		"@arkenv/cli": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	}
+}
