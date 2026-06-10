@@ -11,7 +11,7 @@ Coercion in [arkenv/standard](/docs/arkenv/standard) only works with:
 - [Zod](https://zod.dev) (v4.2+)
 - [Valibot](https://valibot.dev) (v1.2+ via `@valibot/to-json-schema`)
 - [Zod Mini](https://zod.dev)
-- [stnl](https://github.com/re-utils/stnl)
+- [VineJS](https://vinejs.dev/) (v4.3.0+)
 - Any validator compliant with [Standard JSON Schema v1](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec)
   :::
 
@@ -105,33 +105,6 @@ ArkEnv introspects your schema to identify fields that should be numbers, boolea
 ## Performance
 
 Coercion is highly optimized: ArkEnv performs a one-time introspection of your schema to map out exactly which paths need conversion. At runtime, it only touches the variables that actually need coercion, keeping your startup time virtually identical to manually parsing `process.env`.
-
-## Empty values
-
-By default, an empty value in your environment (e.g., `PORT=` in a `.env` file) is treated as an empty string (`""`). This means defaults won't apply and validation may fail for non-string types.
-
-You can opt-in to treating empty values as missing by setting `emptyAsUndefined` to `true`:
-
-```ts twoslash
-import arkenv from "arkenv";
-// ---cut---
-const env = arkenv(
-  {
-    PORT: "number = 3000",
-    DEBUG: "boolean = false",
-  },
-  {
-    emptyAsUndefined: true,
-    env: {
-      PORT: "",
-      DEBUG: "",
-    },
-  }
-);
-
-// env.PORT  → 3000 (default applied)
-// env.DEBUG → false (default applied)
-```
 
 ## Disabling coercion
 

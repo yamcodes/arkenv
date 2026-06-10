@@ -210,6 +210,14 @@ describe("createEnv", () => {
 				);
 				expect(env.TAGS).toEqual([]);
 			});
+
+			it("should still work when coercion is disabled", () => {
+				const env = createEnv(
+					{ VAL: "string = 'default'" },
+					{ env: { VAL: "" }, emptyAsUndefined: true, coerce: false },
+				);
+				expect(env.VAL).toBe("default");
+			});
 		});
 	});
 
