@@ -2,9 +2,10 @@ import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
-import { ArkEnvError, type ValidationIssue } from "../core";
-import type { ArkEnvConfig, EnvSchema } from "../create-env";
-import { styleText } from "../utils/style-text.ts";
+import { stripEmptyStrings } from "@/coercion/shared";
+import { ArkEnvError, type ValidationIssue } from "@/core";
+import type { ArkEnvConfig, EnvSchema } from "@/create-env";
+import { styleText } from "@/utils/style-text";
 import { coerce } from "./coercion/coerce";
 
 /**
@@ -84,6 +85,7 @@ export function parse<const T extends SchemaShape>(
 		coerce: shouldCoerce = true,
 		onUndeclaredKey = "delete",
 		arrayFormat = "comma",
+		emptyAsUndefined = false,
 	} = config;
 
 	// If def is a type definition (has assert method), use it directly
@@ -100,8 +102,13 @@ export function parse<const T extends SchemaShape>(
 		finalSchema = coerce($.type, schemaWithKeys, { arrayFormat });
 	}
 
+	// Optionally treat empty strings as undefined
+	const processedEnv = emptyAsUndefined
+		? stripEmptyStrings(env as Record<string, string | undefined>)
+		: env;
+
 	// Validate the environment variables
-	const validatedEnv = finalSchema(env);
+	const validatedEnv = finalSchema(processedEnv);
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors
 	if (validatedEnv instanceof ArkErrors) {

@@ -39,6 +39,8 @@ jobs:
 
             It tracks all commits on `dev` that have not yet been merged into `main`, keeping the two branches in sync after every push to `dev`.
 
+            🌍 **Preview the latest dev documentation**: https://arkenv-dev.vercel.app
+
             > [!NOTE]
             > This PR is opened and managed by **arkenv-bot**. It is skipped by Pullfrog and other bot-aware workflows.
         run: |
@@ -47,6 +49,16 @@ jobs:
           # Check if main is already fully merged into dev (no drift)
           if git merge-base --is-ancestor origin/dev origin/main; then
             echo "✅ dev is already up-to-date with main. No Sync PR needed."
+            EXISTING_PR=$(gh pr list \
+              --base main \
+              --head dev \
+              --state open \
+              --json number \
+              --jq '.[0].number')
+            if [ -n "$EXISTING_PR" ]; then
+              echo "Closing obsolete Sync PR #$EXISTING_PR..."
+              gh pr close "$EXISTING_PR" --comment "Closing automatically as dev is now fully merged into main."
+            fi
             exit 0
           fi
 
@@ -67,8 +79,8 @@ jobs:
             gh pr create \
               --base main \
               --head dev \
-              --title "chore: sync dev → main" \
+              --title 'Sync `dev` → `main`' \
               --body "$PR_BODY" \
-              --label "sync"
+              --label "maintenance"
             echo "✅ Sync PR created."
           fi

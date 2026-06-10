@@ -1,6 +1,6 @@
 // biome-ignore-all lint/suspicious/noConsole: This is a CLI debugging script
 import fs from "node:fs";
-import { twoslasher } from "twoslash";
+import { createTwoslasher } from "twoslash";
 import { arktypeTwoslashOptions } from "../lib/twoslash-options";
 
 const mdxPath = process.argv[2];
@@ -14,9 +14,10 @@ const content = fs.readFileSync(mdxPath, "utf8");
 // Use the shared options, but we need the inner twoslashOptions property
 // which contains compilerOptions, extraFiles, etc.
 const options = arktypeTwoslashOptions.twoslashOptions;
+const twoslasher = createTwoslasher(options);
 
 const codeBlockRegex =
-	/```(ts|tsx|js|jsx) twoslash(?:.*)\r?\n([\s\S]*?)\r?\n```/g;
+	/```(ts|tsx|js|jsx)(?:[ \t]+[^\n]*?)?[ \t]+twoslash(?:[ \t]+[^\n]*?)?\r?\n([\s\S]*?)\r?\n[ \t]*```/g;
 let blockIndex = 1;
 
 for (const match of content.matchAll(codeBlockRegex)) {
@@ -25,7 +26,7 @@ for (const match of content.matchAll(codeBlockRegex)) {
 	if (code === undefined) continue;
 	console.log(`\n--- Block ${blockIndex++} ---`);
 	try {
-		const result = twoslasher(code, lang, options);
+		const result = twoslasher(code, lang);
 
 		console.log("Hovers:");
 		for (const h of result.hovers) {

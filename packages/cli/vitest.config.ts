@@ -5,6 +5,9 @@ export default defineConfig({
 		name: "cli",
 		environment: "node",
 		include: ["src/**/*.test.ts"],
+		unstubEnvs: true,
+		restoreMocks: true,
+		unstubGlobals: true,
 	},
 	resolve: {
 		tsconfigPaths: true,

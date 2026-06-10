@@ -32,8 +32,6 @@ describe("Standard Mode Type Inference", () => {
 		expect(env.STRING_VAR).toBe("test-string");
 		expect(env.NUMBER_VAR).toBe(123);
 		expect(env.BOOLEAN_VAR).toBe(true);
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should not have ArkType-specific types in standard mode", () => {
@@ -45,8 +43,6 @@ describe("Standard Mode Type Inference", () => {
 
 		// Verify the type is a plain string, not wrapped in ArkType types
 		expectTypeOf(env.TEST_VAR).toBeString();
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should correctly infer object types from Standard Schema", () => {
@@ -62,8 +58,6 @@ describe("Standard Mode Type Inference", () => {
 
 		expectTypeOf(env.OBJECT_VAR).toEqualTypeOf<ExpectedOutput>();
 		expect(env.OBJECT_VAR).toEqual({ foo: "test", bar: 42 });
-
-		vi.unstubAllEnvs();
 	});
 
 	it("should throw error when ArkType DSL strings are used in standard mode", () => {
@@ -96,7 +90,241 @@ describe("Standard Mode Type Inference", () => {
 		expectTypeOf(env.VAR1).toBeString();
 		expectTypeOf(env.VAR2).toBeNumber();
 		expectTypeOf(env.VAR3).toEqualTypeOf<{ nested: string }>();
+	});
+});
 
-		vi.unstubAllEnvs();
+// Mock Standard JSON Schema validators for coercion testing
+const createMockStandardJSONSchema = <TOutput>(
+	outputValue: TOutput,
+	jsonSchema: Record<string, any>,
+) => ({
+	"~standard": {
+		version: 1 as const,
+		vendor: "mock",
+		types: {} as { input: unknown; output: TOutput },
+		validate: (value: unknown) => {
+			// Basic runtime type check for the tests
+			const expectedType = typeof outputValue;
+			if (
+				expectedType !== "object" &&
+				typeof value !== expectedType &&
+				!(outputValue instanceof Date && value instanceof Date)
+			) {
+				return {
+					issues: [
+						{ message: `Expected ${expectedType}, received ${typeof value}` },
+					],
+				};
+			}
+			return { value: value as TOutput };
+		},
+		jsonSchema: {
+			input: () => jsonSchema,
+			output: () => jsonSchema,
+		},
+	},
+});
+
+describe("Standard Mode Coercion", () => {
+	it("should coerce by default", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		const env = createEnv({
+			NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }),
+		});
+
+		expect(env.NUMBER_VAR).toBe(42);
+	});
+
+	it("should not coerce when coerce is false", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		expect(() =>
+			createEnv(
+				{ NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }) },
+				{ coerce: false },
+			),
+		).toThrow(/Expected number, received string/);
+	});
+
+	it("should coerce numbers and booleans when coerce is true", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+		vi.stubEnv("BOOLEAN_VAR", "true");
+
+		const env = createEnv(
+			{
+				NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }),
+				BOOLEAN_VAR: createMockStandardJSONSchema(true, { type: "boolean" }),
+			},
+			{ coerce: true },
+		);
+
+		expect(env.NUMBER_VAR).toBe(42);
+		expect(env.BOOLEAN_VAR).toBe(true);
+	});
+
+	it("should coerce dates when coerce is true", () => {
+		vi.stubEnv("DATE_VAR", "2023-01-01T00:00:00.000Z");
+
+		const env = createEnv(
+			{
+				DATE_VAR: createMockStandardJSONSchema(
+					new Date("2023-01-01T00:00:00.000Z"),
+					{ type: "string", format: "date-time" },
+				),
+			},
+			{ coerce: true },
+		);
+
+		expect(env.DATE_VAR).toBeInstanceOf(Date);
+		expect((env.DATE_VAR as Date).toISOString()).toBe(
+			"2023-01-01T00:00:00.000Z",
+		);
+	});
+
+	it("should provide smart hints when coerce is true but JSON schema is missing", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		expect(() =>
+			createEnv(
+				{
+					NUMBER_VAR: {
+						"~standard": {
+							version: 1,
+							vendor: "mock",
+							validate: () => ({
+								issues: [{ message: "Expected number, received string" }],
+							}),
+						},
+					},
+				} as any,
+				{ coerce: true },
+			),
+		).toThrow(
+			/Hint: coercion is enabled by default, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
+		);
+	});
+
+	it("should provide smart hints by default when JSON schema is missing", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		expect(() =>
+			createEnv({
+				NUMBER_VAR: {
+					"~standard": {
+						version: 1,
+						vendor: "mock",
+						validate: () => ({
+							issues: [{ message: "Expected number, received string" }],
+						}),
+					},
+				},
+			} as any),
+		).toThrow(
+			/Hint: coercion is enabled by default, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
+		);
+	});
+
+	it("should not provide smart hints when coerce is false and JSON schema is missing", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		const t = () =>
+			createEnv(
+				{
+					NUMBER_VAR: {
+						"~standard": {
+							version: 1,
+							vendor: "mock",
+							validate: () => ({
+								issues: [{ message: "Expected number, received string" }],
+							}),
+						},
+					},
+				} as any,
+				{ coerce: false },
+			);
+
+		expect(t).toThrow("Expected number, received string");
+		expect(t).not.toThrow(/Hint/);
+	});
+
+	it("should support fallback coercion triggers: toJSONSchema and toStandardJSONSchema.v1", () => {
+		vi.stubEnv("ZOD_MINI_VAR", "42");
+		vi.stubEnv("STNL_VAR", "true");
+
+		const mockZodMiniValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "zod-mini",
+				types: {} as { input: unknown; output: number },
+				validate: (val: unknown) => {
+					if (typeof val !== "number") {
+						return {
+							issues: [{ message: `Expected number, received ${typeof val}` }],
+						};
+					}
+					return { value: val };
+				},
+			},
+			toJSONSchema: () => ({ type: "number" }),
+		};
+
+		const mockStnlValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "stnl",
+				types: {} as { input: unknown; output: boolean },
+				validate: (val: unknown) => {
+					if (typeof val !== "boolean") {
+						return {
+							issues: [{ message: `Expected boolean, received ${typeof val}` }],
+						};
+					}
+					return { value: val };
+				},
+			},
+			toStandardJSONSchema: {
+				v1: () => ({ type: "boolean" }),
+			},
+		};
+
+		const env = createEnv(
+			{
+				ZOD_MINI_VAR: mockZodMiniValidator as any,
+				STNL_VAR: mockStnlValidator as any,
+			},
+			{ coerce: true },
+		);
+
+		expect(env.ZOD_MINI_VAR).toBe(42);
+		expect(env.STNL_VAR).toBe(true);
+	});
+});
+
+describe("Standard Mode emptyAsUndefined", () => {
+	it("should treat empty strings as undefined when enabled", () => {
+		vi.stubEnv("STRING_VAR", "");
+
+		const env = createEnv(
+			{
+				STRING_VAR: createMockStandardSchema("default-value"),
+			},
+			{ emptyAsUndefined: true },
+		);
+
+		expect(env.STRING_VAR).toBe("default-value");
+	});
+
+	it("should pass empty strings through when disabled", () => {
+		vi.stubEnv("STRING_VAR", "");
+
+		const env = createEnv(
+			{
+				STRING_VAR: createMockStandardSchema(""),
+			},
+			{ emptyAsUndefined: false },
+		);
+
+		expect(env.STRING_VAR).toBe("");
 	});
 });

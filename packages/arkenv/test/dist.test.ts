@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,10 +37,6 @@ beforeAll(async () => {
 });
 
 describe("Distribution Built Outputs", () => {
-	afterEach(() => {
-		vi.unstubAllEnvs();
-	});
-
 	describe("Core Tier (arkenv/core)", () => {
 		it("should export ArkEnvError and format validation issues correctly", () => {
 			const error = new ArkEnvError([

@@ -1,0 +1,89 @@
+---
+title: Options
+description: Configuration options for the arkenv() function.
+---
+
+The second argument to `arkenv()` is an optional configuration object.
+
+:::note
+All options listed below apply to both `arkenv` (ArkType mode) and `arkenv/standard` (Standard Schema mode).
+:::
+
+## `env`
+
+The environment variables to parse. Defaults to `process.env`.
+
+```ts twoslash
+import arkenv from "arkenv";
+// ---cut---
+const env = arkenv(
+  { PORT: "number" },
+  { env: { PORT: "3000" } }
+);
+```
+
+## `coerce`
+
+Whether to coerce environment variables to their defined types. Defaults to `true`.
+
+```ts twoslash
+import arkenv from "arkenv";
+// ---cut---
+const env = arkenv(
+  { PORT: "number" },
+  { coerce: false }
+);
+```
+
+See the [coercion docs](/docs/arkenv/coercion) for more details.
+
+## `onUndeclaredKey`
+
+Control how ArkEnv handles environment variables that are not defined in your schema. Defaults to `"delete"`.
+
+- `"delete"` — Undeclared keys are allowed on input but stripped from the output.
+- `"ignore"` — Undeclared keys are allowed and preserved in the output.
+- `"reject"` — Undeclared keys will cause validation to fail.
+
+## `arrayFormat`
+
+The format to use for array parsing when coercion is enabled. Defaults to `"comma"`.
+
+- `"comma"` — Strings are split by comma and trimmed.
+- `"json"` — Strings are parsed as JSON.
+
+```ts twoslash
+import arkenv from "arkenv";
+// ---cut---
+const env = arkenv(
+  { TAGS: "string[]" },
+  { arrayFormat: "json", env: { TAGS: '["web", "app"]' } }
+);
+```
+
+## `emptyAsUndefined`
+
+Whether to treat empty strings (`""`) as `undefined` before validation. Defaults to `false`.
+
+When enabled, an environment variable set to an empty value (e.g., `PORT=` in a `.env` file) will be treated as if it were missing, allowing defaults to apply and preventing validation errors for numeric or boolean types.
+
+```ts twoslash
+import arkenv from "arkenv";
+// ---cut---
+const env = arkenv(
+  {
+    PORT: "number = 3000",
+    DEBUG: "boolean = false",
+  },
+  {
+    emptyAsUndefined: true,
+    env: {
+      PORT: "",
+      DEBUG: "",
+    },
+  }
+);
+
+// env.PORT  → 3000 (default applied)
+// env.DEBUG → false (default applied)
+```

@@ -56,14 +56,12 @@ for (const name of readdirSync(fixturesDir).filter(
 	describe(`Fixture: ${name}`, () => {
 		beforeEach(() => {
 			// Clear environment variables and mock cleanup
-			vi.unstubAllEnvs();
 			mockCreateEnv.mockClear();
 			mockLoadEnv.mockClear();
 		});
 
 		afterEach(() => {
 			// Complete cleanup: restore environment and reset mocks
-			vi.unstubAllEnvs();
 			mockCreateEnv.mockReset();
 			mockLoadEnv.mockReset();
 		});
@@ -104,13 +102,11 @@ for (const name of readdirSync(fixturesDir).filter(
 // Unit tests for plugin functionality
 describe("Plugin Unit Tests", () => {
 	beforeEach(() => {
-		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
-		vi.unstubAllEnvs();
 		mockCreateEnv.mockReset();
 		mockLoadEnv.mockReset();
 	});
@@ -557,13 +553,11 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 	});
 
 	beforeEach(() => {
-		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
-		vi.unstubAllEnvs();
 		mockCreateEnv.mockClear();
 		mockLoadEnv.mockClear();
 	});

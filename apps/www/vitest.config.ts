@@ -18,5 +18,6 @@ export default defineProject({
 		setupFiles: ["./tests/setup.ts"],
 		restoreMocks: true,
 		unstubEnvs: true,
+		unstubGlobals: true,
 	},
 });

@@ -26,7 +26,6 @@ describe("useCopyCommand", () => {
 	});
 
 	afterEach(() => {
-		vi.unstubAllGlobals();
 		vi.clearAllMocks();
 		vi.useRealTimers();
 	});

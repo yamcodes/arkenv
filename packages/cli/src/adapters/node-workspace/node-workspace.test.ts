@@ -20,7 +20,6 @@ describe("NodeWorkspace", () => {
 	});
 
 	afterEach(async () => {
-		vi.restoreAllMocks();
 		await fsp.rm(tempDir, { recursive: true, force: true });
 	});
 
