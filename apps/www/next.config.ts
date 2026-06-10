@@ -23,6 +23,11 @@ const config = {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
 	},
+	experimental: {
+		// Aggressively reclaim memory during Webpack builds in dev mode.
+		// Can be reverted if any instability is observed in Next.js 16.
+		webpackMemoryOptimizations: true,
+	},
 	// Redirect /docs to /docs/arkenv
 	async redirects() {
 		return [
