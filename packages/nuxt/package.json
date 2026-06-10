@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/nuxt",
-	"version": "0.0.1",
+	"version": "0.0.0",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -14,6 +14,7 @@
 	},
 	"devDependencies": {
 		"@nuxt/kit": "^3.12.0",
+		"@nuxt/schema": "^3.12.0",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",

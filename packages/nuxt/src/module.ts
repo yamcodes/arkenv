@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { defineNuxtModule } from "@nuxt/kit";
+import { defineNuxtModule, useLogger } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
 import {
 	extractClientKeys,
@@ -13,11 +13,11 @@ import {
 	watchSchema,
 } from "./config";
 
-export interface ModuleOptions {
+export type ModuleOptions = {
 	schemaPath?: string;
 	outputPath?: string;
 	layout?: "simple" | "strict";
-}
+};
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -26,6 +26,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	},
 	defaults: {},
 	setup(options, nuxt) {
+		const logger = useLogger("arkenv");
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
 			: findSchemaPath(nuxt.options.rootDir);
@@ -56,7 +57,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		try {
 			runCodegen(schemaPath, outputPath, resolvedLayout);
 		} catch (error) {
-			console.error(`[ArkEnv] Failed to generate env.gen.ts: ${error}`);
+			logger.error(`Failed to generate env.gen.ts: ${error}`);
 		}
 
 		// 2. Watcher in dev mode
@@ -123,10 +124,12 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		// 4. Vite extendConfig to block server-only imports on client side
 		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
 			if (isClient) {
-				config.plugins = config.plugins || [];
-				config.plugins.push({
+				// biome-ignore lint/suspicious/noExplicitAny: bypassed because Nuxt's Vite config type is overly restrictive
+				const anyConfig = config as any;
+				anyConfig.plugins = anyConfig.plugins || [];
+				anyConfig.plugins.push({
 					name: "arkenv-nuxt-client-security",
-					resolveId(id) {
+					resolveId(id: string) {
 						if (
 							id === "@arkenv/nuxt/server" ||
 							id.endsWith("/packages/nuxt/dist/server.js") ||

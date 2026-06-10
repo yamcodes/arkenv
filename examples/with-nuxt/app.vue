@@ -3,15 +3,18 @@ import { ref } from "vue";
 import { env } from "./env";
 
 const secretError = ref<string | null>(null);
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 const dbUrlOnServer = process.server ? env.DATABASE_URL : "(Hidden on client)";
 
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 const tryAccessSecret = () => {
 	try {
 		// This should throw a runtime error on the client
 		const dbUrl = env.DATABASE_URL;
 		alert(`Secret accessed successfully: ${dbUrl}`);
-	} catch (e: any) {
-		secretError.value = e.message || String(e);
+	} catch (e) {
+		const err = e as Error;
+		secretError.value = err.message || String(e);
 	}
 };
 </script>
