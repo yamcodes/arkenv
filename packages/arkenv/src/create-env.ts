@@ -74,6 +74,17 @@ export type ArkEnvConfig = {
 	 * @default "comma"
 	 */
 	arrayFormat?: "comma" | "json";
+
+	/**
+	 * Whether to treat empty strings (`""`) as `undefined` before validation.
+	 *
+	 * When enabled, an environment variable set to an empty value (e.g. `PORT=`)
+	 * will be treated as if it were missing, allowing defaults to apply and
+	 * preventing validation errors for numeric or boolean types.
+	 *
+	 * @default false
+	 */
+	emptyAsUndefined?: boolean;
 };
 
 /**

@@ -106,6 +106,33 @@ ArkEnv introspects your schema to identify fields that should be numbers, boolea
 
 Coercion is highly optimized: ArkEnv performs a one-time introspection of your schema to map out exactly which paths need conversion. At runtime, it only touches the variables that actually need coercion, keeping your startup time virtually identical to manually parsing `process.env`.
 
+## Empty values
+
+By default, an empty value in your environment (e.g., `PORT=` in a `.env` file) is treated as an empty string (`""`). This means defaults won't apply and validation may fail for non-string types.
+
+You can opt-in to treating empty values as missing by setting `emptyAsUndefined` to `true`:
+
+```ts twoslash
+import arkenv from "arkenv";
+// ---cut---
+const env = arkenv(
+  {
+    PORT: "number = 3000",
+    DEBUG: "boolean = false",
+  },
+  {
+    emptyAsUndefined: true,
+    env: {
+      PORT: "",
+      DEBUG: "",
+    },
+  }
+);
+
+// env.PORT  → 3000 (default applied)
+// env.DEBUG → false (default applied)
+```
+
 ## Disabling coercion
 
 You can opt-out of this behavior by setting `coerce` to `false`.

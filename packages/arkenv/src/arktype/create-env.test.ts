@@ -176,6 +176,41 @@ describe("createEnv", () => {
 			const env = createEnv({ VAL: "unknown" }, { env: { VAL: "" } });
 			expect(env.VAL).toBe("");
 		});
+
+		describe("emptyAsUndefined", () => {
+			it("should apply defaults to empty environment variables", () => {
+				const env = createEnv(
+					{ PORT: "number = 3000" },
+					{ env: { PORT: "" }, emptyAsUndefined: true },
+				);
+				expect(env.PORT).toBe(3000);
+			});
+
+			it("should allow optional keys to be undefined when empty", () => {
+				const env = createEnv(
+					{ VAL: "string?" },
+					{ env: { VAL: "" }, emptyAsUndefined: true },
+				);
+				expect(env.VAL).toBeUndefined();
+			});
+
+			it("should throw for required keys when empty", () => {
+				expect(() =>
+					createEnv(
+						{ VAL: "string" },
+						{ env: { VAL: "" }, emptyAsUndefined: true },
+					),
+				).toThrow();
+			});
+
+			it("should respect array defaults when empty", () => {
+				const env = createEnv(
+					{ TAGS: type("string[]").default(() => []) },
+					{ env: { TAGS: "" }, emptyAsUndefined: true },
+				);
+				expect(env.TAGS).toEqual([]);
+			});
+		});
 	});
 
 	describe("standard array syntax", () => {

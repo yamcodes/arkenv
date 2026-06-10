@@ -1,6 +1,28 @@
 import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
 
 /**
+ * Remove keys with empty string values from an environment record.
+ *
+ * When a key is set to `""` (e.g. `PORT=` in a `.env` file), deleting it
+ * allows the validator to treat it as missing so that defaults apply.
+ *
+ * @param env The environment variables record
+ * @returns A new record with empty string keys removed
+ */
+export const stripEmptyStrings = (
+	env: Record<string, string | undefined>,
+): Record<string, string | undefined> => {
+	const result: Record<string, string | undefined> = {};
+	for (const key in env) {
+		const value = env[key];
+		if (value !== "") {
+			result[key] = value;
+		}
+	}
+	return result;
+};
+
+/**
  * A marker used in the coercion path to indicate that the target
  * is the *elements* of an array, rather than the array property itself.
  */
