@@ -5,6 +5,7 @@ import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
 import {
 	transformNextjsConfig,
+	transformNuxtConfig,
 	transformViteConfig,
 } from "@/features/config-mutation";
 import type { BootstrapResult } from "@/shared/ports";
@@ -90,6 +91,67 @@ export async function bootstrapNextjsConfig(
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformNextjsConfig({
+			code: configCode,
+		});
+
+		if (result.success && result.updated && result.code) {
+			await workspace.writeFile(filePath, result.code);
+		}
+
+		if (result.success) {
+			return result.updated !== undefined
+				? { success: true, updated: result.updated }
+				: { success: true };
+		}
+		return {
+			success: false,
+			error: result.error!,
+		};
+	} catch (e: unknown) {
+		return {
+			success: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
+}
+
+/**
+ * Search for a Nuxt configuration file in the given directory.
+ */
+export async function findNuxtConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
+	const filenames = [
+		"nuxt.config.ts",
+		"nuxt.config.js",
+		"nuxt.config.mts",
+		"nuxt.config.mjs",
+	];
+	for (const file of filenames) {
+		const fullPath = path.resolve(cwd, file);
+		try {
+			await fsp.access(fullPath);
+			return fullPath;
+		} catch {
+			// ignore missing file
+		}
+	}
+	return null;
+}
+
+/**
+ * Bootstrap a Nuxt config file by adding '@arkenv/nuxt/module' to its modules.
+ */
+export async function bootstrapNuxtConfig(
+	workspace: {
+		readFile(path: string): Promise<string>;
+		writeFile(path: string, content: string): Promise<void>;
+	},
+	filePath: string,
+): Promise<BootstrapResult> {
+	try {
+		const configCode = await workspace.readFile(filePath);
+		const result = transformNuxtConfig({
 			code: configCode,
 		});
 

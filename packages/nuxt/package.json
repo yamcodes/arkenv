@@ -1,0 +1,89 @@
+{
+	"name": "@arkenv/nuxt",
+	"version": "0.0.1",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"dependencies": {
+		"arkenv": "workspace:*",
+		"chokidar": "^4.0.3"
+	},
+	"devDependencies": {
+		"@nuxt/kit": "^3.12.0",
+		"@repo/scope": "workspace:*",
+		"@repo/types": "workspace:*",
+		"@size-limit/preset-small-lib": "catalog:",
+		"arktype": "catalog:",
+		"nuxt": "^3.12.0",
+		"rimraf": "catalog:",
+		"size-limit": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"arktype": "^2.1.22",
+		"nuxt": "^3.0.0 || ^4.0.0-0"
+	},
+	"exports": {
+		"./shared": {
+			"types": "./dist/shared.d.ts",
+			"import": "./dist/shared.js",
+			"require": "./dist/shared.cjs"
+		},
+		"./server": {
+			"types": "./dist/server.d.ts",
+			"import": "./dist/server.js",
+			"require": "./dist/server.cjs"
+		},
+		"./client": {
+			"types": "./dist/client.d.ts",
+			"import": "./dist/client.js",
+			"require": "./dist/client.cjs"
+		},
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./module": {
+			"types": "./dist/module.d.ts",
+			"import": "./dist/module.js",
+			"require": "./dist/module.cjs"
+		},
+		"./config": {
+			"types": "./dist/config.d.ts",
+			"import": "./dist/config.js",
+			"require": "./dist/config.cjs"
+		}
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnuxt",
+	"description": "ArkEnv integration for Nuxt",
+	"files": [
+		"dist"
+	],
+	"homepage": "https://arkenv.js.org",
+	"keywords": [
+		"arktype",
+		"arkenv",
+		"environment",
+		"variables",
+		"nuxt",
+		"nuxt3"
+	],
+	"license": "MIT",
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"fix": "pnpm -w run fix",
+		"changeset": "pnpm -w run changeset"
+	},
+	"type": "module",
+	"types": "./dist/index.d.ts"
+}

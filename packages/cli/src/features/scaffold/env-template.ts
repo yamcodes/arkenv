@@ -69,9 +69,14 @@ export function getStrictEnvTemplates(
 	const sharedFields: string[] = [];
 	const runtimeEnvFields: string[] = [];
 
+	const clientPrefix =
+		options.framework === "nuxt" ? "NUXT_PUBLIC_" : "NEXT_PUBLIC_";
+	const pkgName =
+		options.framework === "nuxt" ? "@arkenv/nuxt" : "@arkenv/nextjs";
+
 	if (envKeys && envKeys.length > 0) {
 		for (const key of envKeys) {
-			if (key.startsWith("NEXT_PUBLIC_")) {
+			if (key.startsWith(clientPrefix)) {
 				if (validator === "arktype") {
 					clientFields.push(`${key}: "string?",`);
 				} else if (validator === "zod") {
@@ -121,12 +126,16 @@ export function getStrictEnvTemplates(
 		}
 	} else {
 		// Use defaults
+		const defaultClientKey =
+			options.framework === "nuxt"
+				? "NUXT_PUBLIC_API_URL"
+				: "NEXT_PUBLIC_API_URL";
 		if (validator === "arktype") {
 			serverFields.push(
 				`DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",`,
 			);
 			clientFields.push(
-				`NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",`,
+				`${defaultClientKey}: "string = 'https://api.example.com'",`,
 			);
 			sharedFields.push(
 				`NODE_ENV: "'development' | 'production' | 'test' = 'development'",`,
@@ -136,7 +145,7 @@ export function getStrictEnvTemplates(
 				`DATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
 			);
 			clientFields.push(
-				`NEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),`,
+				`${defaultClientKey}: z.string().url().default("https://api.example.com"),`,
 			);
 			sharedFields.push(
 				`NODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,
@@ -146,14 +155,14 @@ export function getStrictEnvTemplates(
 				`DATABASE_URL: v.optional(v.pipe(v.string(), v.url()), "postgres://localhost:5432/mydb"),`,
 			);
 			clientFields.push(
-				`NEXT_PUBLIC_API_URL: v.optional(v.pipe(v.string(), v.url()), "https://api.example.com"),`,
+				`${defaultClientKey}: v.optional(v.pipe(v.string(), v.url()), "https://api.example.com"),`,
 			);
 			sharedFields.push(
 				`NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),`,
 			);
 		}
 		runtimeEnvFields.push(
-			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+			`${defaultClientKey}: process.env.${defaultClientKey},`,
 			"NODE_ENV: process.env.NODE_ENV,",
 		);
 	}
@@ -163,7 +172,7 @@ export function getStrictEnvTemplates(
 	let server = "";
 
 	if (validator === "arktype") {
-		shared = `import { type } from "@arkenv/nextjs/shared";
+		shared = `import { type } from "${pkgName}/shared";
 
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -172,7 +181,7 @@ export function getStrictEnvTemplates(
 export const SharedSchema = type(${formatSchemaObject(sharedFields, "\t")});`;
 
 		client = disableCodegen
-			? `import arkenv from "@arkenv/nextjs/client";
+			? `import arkenv from "${pkgName}/client";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
@@ -194,7 +203,7 @@ export const env = arkenv(
 	},
 );`;
 
-		server = `import arkenv from "@arkenv/nextjs/server";
+		server = `import arkenv from "${pkgName}/server";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
@@ -213,7 +222,7 @@ export const env = arkenv(
 export const SharedSchema = z.object(${formatSchemaObject(sharedFields, "\t")});`;
 
 		client = disableCodegen
-			? `import arkenv from "@arkenv/nextjs/client";
+			? `import arkenv from "${pkgName}/client";
 import { z } from "zod";
 import { SharedSchema } from "./internal/shared";
 
@@ -237,7 +246,7 @@ export const env = arkenv(
 	},
 );`;
 
-		server = `import arkenv from "@arkenv/nextjs/server";
+		server = `import arkenv from "${pkgName}/server";
 import { z } from "zod";
 import { env as clientEnv } from "./client";
 
@@ -257,7 +266,7 @@ export const env = arkenv(
 export const SharedSchema = v.object(${formatSchemaObject(sharedFields, "\t")});`;
 
 		client = disableCodegen
-			? `import arkenv from "@arkenv/nextjs/client";
+			? `import arkenv from "${pkgName}/client";
 import * as v from "valibot";
 import { SharedSchema } from "./internal/shared";
 
@@ -281,7 +290,7 @@ export const env = arkenv(
 	},
 );`;
 
-		server = `import arkenv from "@arkenv/nextjs/server";
+		server = `import arkenv from "${pkgName}/server";
 import * as v from "valibot";
 import { env as clientEnv } from "./client";
 

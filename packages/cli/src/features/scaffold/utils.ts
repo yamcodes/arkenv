@@ -46,6 +46,8 @@ export function getNextStepsNote(
 	if (skillInstalled || plan.metadata.skillDetected) {
 		const isNextjsWithCodegen =
 			plan.metadata.framework === "nextjs" && !plan.metadata.disableCodegen;
+		const isNuxtWithCodegen =
+			plan.metadata.framework === "nuxt" && !plan.metadata.disableCodegen;
 		const needsManualConfig = isNextjsWithCodegen && !nextjsConfigBootstrapped;
 
 		let message = dedent`
@@ -62,6 +64,13 @@ export function getNextStepsNote(
 				message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
 			} else {
 				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
+				message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
+			}
+		} else if (isNuxtWithCodegen) {
+			message += "\n\n";
+			if (plan.metadata.layout === "strict") {
+				message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
+			} else {
 				message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 			}
 		}
@@ -116,6 +125,12 @@ export function getNextStepsNote(
 				message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
 				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
 			}
+			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
+		}
+	} else if (plan.metadata.framework === "nuxt") {
+		if (plan.metadata.layout === "strict") {
+			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
+		} else {
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 		}
 	} else {

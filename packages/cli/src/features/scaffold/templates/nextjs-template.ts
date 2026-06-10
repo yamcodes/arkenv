@@ -53,6 +53,7 @@ export function buildNextjsTemplate(
 	builders: NextjsFieldBuilders,
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
+	framework?: string,
 ): string {
 	const {
 		extraImports,
@@ -64,13 +65,17 @@ export function buildNextjsTemplate(
 		defaultSharedFields,
 	} = builders;
 
+	const clientPrefix = framework === "nuxt" ? "NUXT_PUBLIC_" : "NEXT_PUBLIC_";
+	const pkgName = framework === "nuxt" ? "@arkenv/nuxt" : "@arkenv/nextjs";
+	const frameworkName = framework === "nuxt" ? "Nuxt" : "Next.js";
+
 	const serverFields: string[] = [];
 	const clientFields: string[] = [];
 	const sharedFields: string[] = [];
 
 	if (envKeys && envKeys.length > 0) {
 		for (const key of envKeys) {
-			if (key.startsWith("NEXT_PUBLIC_")) {
+			if (key.startsWith(clientPrefix)) {
 				clientFields.push(clientField(key));
 			} else if (key === "NODE_ENV") {
 				sharedFields.push(sharedField(key));
@@ -99,20 +104,20 @@ export function buildNextjsTemplate(
 		const runtimeEnvFields: string[] = [];
 		if (envKeys && envKeys.length > 0) {
 			for (const key of envKeys) {
-				if (key.startsWith("NEXT_PUBLIC_") || key === "NODE_ENV") {
+				if (key.startsWith(clientPrefix) || key === "NODE_ENV") {
 					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
 				}
 			}
 		} else {
 			runtimeEnvFields.push(
-				"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+				`\t\t${clientPrefix}API_URL: process.env.${clientPrefix}API_URL,`,
 				"\t\tNODE_ENV: process.env.NODE_ENV,",
 			);
 		}
 		sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 
 		const imports = [
-			'import arkenv from "@arkenv/nextjs";',
+			`import arkenv from "${pkgName}";`,
 			...(extraImports ? [extraImports] : []),
 		].join("\n");
 
@@ -120,7 +125,7 @@ export function buildNextjsTemplate(
 
 /**
  * Environment variable schema.
- * In Next.js, use \`@arkenv/nextjs\` to validate variables at build-time and runtime.
+ * In ${frameworkName}, use \`${pkgName}\` to validate variables at build-time and runtime.
  * Enforces client/server separation and prevents secret leaks.
  */
 export const env = arkenv({
@@ -138,7 +143,7 @@ ${sections.join(",\n")},
 
 /**
  * Environment variable schema.
- * In Next.js, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.
+ * In ${frameworkName}, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.
  * Enforces client/server separation and prevents secret leaks.
  */
 export const env = arkenv({

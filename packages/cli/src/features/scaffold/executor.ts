@@ -112,7 +112,7 @@ export class Executor {
 			}
 
 			// 4. Framework bootstrapping
-			let nextjsConfigBootstrapped = false;
+			let frameworkConfigBootstrapped = false;
 			if (plan.bootstrap) {
 				if (plan.bootstrap.framework === "vite") {
 					const viteConfigPath = await this.workspace.findViteConfig(plan.cwd);
@@ -178,12 +178,12 @@ export class Executor {
 									this.reporter.info(
 										`Updated ${code(path.basename(nextjsConfigPath))}`,
 									);
-									nextjsConfigBootstrapped = true;
+									frameworkConfigBootstrapped = true;
 								} else {
 									this.reporter.info(
 										`${code(path.basename(nextjsConfigPath))} already uses withArkEnv`,
 									);
-									nextjsConfigBootstrapped = true;
+									frameworkConfigBootstrapped = true;
 								}
 							} else {
 								this.reporter.warn(
@@ -195,6 +195,45 @@ export class Executor {
 								`No Next.js config found. Please wrap your config with ${code("withArkEnv")} manually.`,
 							);
 						}
+					}
+				} else if (plan.bootstrap.framework === "nuxt") {
+					this.reporter.step("Generating Nuxt environment bindings...");
+					const script = `import('@arkenv/nuxt/config').then(({ runCodegen }) => { const path = require('path'); const schemaPath = path.resolve(process.cwd(), '${plan.metadata.displayPath}'); const outputPath = path.join(path.dirname(schemaPath), 'generated', 'env.gen.ts'); runCodegen(schemaPath, outputPath); }).catch(err => { console.error(err); process.exit(1); });`;
+					try {
+						await this.workspace.execute("node", ["-e", script], plan.cwd);
+						this.reporter.info(`Generated ${code("env.gen.ts")} for Nuxt`);
+					} catch (error) {
+						this.reporter.warn(
+							`Failed to automatically generate ${code("env.gen.ts")}. It will be generated when you start your dev server.`,
+						);
+					}
+
+					// Bootstrap Nuxt config wrapper
+					this.reporter.step("Bootstrapping Nuxt config...");
+					const nuxtConfigPath = await this.workspace.findNuxtConfig(plan.cwd);
+					if (nuxtConfigPath) {
+						const result =
+							await this.workspace.bootstrapNuxtConfig(nuxtConfigPath);
+						if (result.success) {
+							if (result.updated) {
+								this.reporter.info(
+									`Updated ${code(path.basename(nuxtConfigPath))}`,
+								);
+							} else {
+								this.reporter.info(
+									`${code(path.basename(nuxtConfigPath))} already registers @arkenv/nuxt/module`,
+								);
+							}
+							frameworkConfigBootstrapped = true;
+						} else {
+							this.reporter.warn(
+								`Could not automatically update ${code(path.basename(nuxtConfigPath))}: ${result.error}`,
+							);
+						}
+					} else {
+						this.reporter.info(
+							`No Nuxt config found. Please register ${code("@arkenv/nuxt/module")} manually.`,
+						);
 					}
 				}
 			}
@@ -221,7 +260,7 @@ export class Executor {
 			const note = getNextStepsNote(
 				plan,
 				skillInstalled,
-				nextjsConfigBootstrapped,
+				frameworkConfigBootstrapped,
 			);
 			this.reporter.note(note.message, note.title);
 

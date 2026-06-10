@@ -12,7 +12,7 @@ import type { ParsedTsConfig } from "@/shared/ports";
 export async function detectFramework(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,
-): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs"> {
+): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt"> {
 	if (tsConfig?.compilerOptions?.types) {
 		const types = tsConfig.compilerOptions.types;
 		if (types.includes("vite") || types.includes("vite/client")) return "vite";
@@ -26,6 +26,7 @@ export async function detectFramework(
 
 		if (allDeps.vite) return "vite";
 		if (allDeps.next) return "nextjs";
+		if (allDeps.nuxt) return "nuxt";
 	} catch {
 		// ignore missing or invalid package.json
 	}
@@ -59,6 +60,23 @@ export async function detectFramework(
 	try {
 		await fsp.access(path.join(cwd, "next.config.cjs"));
 		return "nextjs";
+	} catch {}
+
+	try {
+		await fsp.access(path.join(cwd, "nuxt.config.ts"));
+		return "nuxt";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "nuxt.config.js"));
+		return "nuxt";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "nuxt.config.mjs"));
+		return "nuxt";
+	} catch {}
+	try {
+		await fsp.access(path.join(cwd, "nuxt.config.cjs"));
+		return "nuxt";
 	} catch {}
 
 	// Bun Detection

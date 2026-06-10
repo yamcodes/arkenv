@@ -1,0 +1,29 @@
+{
+	"name": "nuxt-playground",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "nuxt dev",
+		"build": "nuxt build",
+		"start": "nuxt preview"
+	},
+	"dependencies": {
+		"@arkenv/nuxt": "workspace:*",
+		"arkenv": "workspace:*",
+		"arktype": "catalog:",
+		"nuxt": "^3.12.0"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-nuxt",
+			"packageManager": "npm"
+		}
+	]
+}

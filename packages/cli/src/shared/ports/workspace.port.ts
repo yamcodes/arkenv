@@ -40,6 +40,7 @@ export type ConfigPort = {
 	findViteConfig(cwd?: string): Promise<string | null>;
 	findBunConfig(cwd?: string): Promise<string | null>;
 	findNextjsConfig(cwd?: string): Promise<string | null>;
+	findNuxtConfig(cwd?: string): Promise<string | null>;
 	bootstrapViteConfig(
 		path: string,
 		importPath: string,
@@ -49,6 +50,7 @@ export type ConfigPort = {
 		features?: ("serve" | "build")[],
 	): Promise<BootstrapResult>;
 	bootstrapNextjsConfig(path: string): Promise<BootstrapResult>;
+	bootstrapNuxtConfig(path: string): Promise<BootstrapResult>;
 	safeAppend(
 		path: string,
 		schemaPath: string,

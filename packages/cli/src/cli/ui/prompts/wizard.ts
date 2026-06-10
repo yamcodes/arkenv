@@ -170,7 +170,7 @@ async function runExistingProjectWizard(
 	if (isYes) {
 		const framework = defaults?.framework || "vanilla";
 		let layout: "strict" | "simple" | undefined;
-		if (framework === "nextjs") {
+		if (framework === "nextjs" || framework === "nuxt") {
 			layout = defaults?.isStrict
 				? "strict"
 				: defaults?.isSimple
@@ -226,9 +226,9 @@ async function runExistingProjectWizard(
 			}),
 		);
 
-		// Next.js layout prompt
+		// Next.js & Nuxt layout prompt
 		let layout: "strict" | "simple" | undefined;
-		if (framework === "nextjs") {
+		if (framework === "nextjs" || framework === "nuxt") {
 			if (defaults?.isStrict) {
 				layout = "strict";
 			} else if (defaults?.isSimple) {
@@ -249,12 +249,16 @@ async function runExistingProjectWizard(
 			);
 		}
 
-		// Next.js codegen prompt
+		// Next.js & Nuxt codegen prompt
 		let disableCodegen: boolean | undefined = defaults?.disableCodegen;
-		if (framework === "nextjs" && disableCodegen === undefined) {
+		if (
+			(framework === "nextjs" || framework === "nuxt") &&
+			disableCodegen === undefined
+		) {
 			const useCodegen = unwrapPrompt(
 				await steps.nextjsCodegen({
 					initialValue: true,
+					framework,
 				}),
 			);
 			disableCodegen = !useCodegen;
