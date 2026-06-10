@@ -5,6 +5,7 @@ import {
 } from "fumadocs-core/mdx-plugins";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
+import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
@@ -147,7 +148,10 @@ export default defineConfig({
 				dark: "github-dark-high-contrast",
 			},
 			transformers: [
-				transformerTwoslash(arktypeTwoslashOptions),
+				transformerTwoslash({
+					...arktypeTwoslashOptions,
+					typesCache: createFileSystemTypesCache(),
+				}),
 				...(rehypeCodeDefaultOptions.transformers ?? []),
 			],
 		},
