@@ -300,3 +300,31 @@ describe("Standard Mode Coercion", () => {
 		expect(env.STNL_VAR).toBe(true);
 	});
 });
+
+describe("Standard Mode emptyAsUndefined", () => {
+	it("should treat empty strings as undefined when enabled", () => {
+		vi.stubEnv("STRING_VAR", "");
+
+		const env = createEnv(
+			{
+				STRING_VAR: createMockStandardSchema("default-value"),
+			},
+			{ emptyAsUndefined: true },
+		);
+
+		expect(env.STRING_VAR).toBe("default-value");
+	});
+
+	it("should pass empty strings through when disabled", () => {
+		vi.stubEnv("STRING_VAR", "");
+
+		const env = createEnv(
+			{
+				STRING_VAR: createMockStandardSchema(""),
+			},
+			{ emptyAsUndefined: false },
+		);
+
+		expect(env.STRING_VAR).toBe("");
+	});
+});

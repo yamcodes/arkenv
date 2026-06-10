@@ -1,5 +1,9 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { applyCoercion, findCoercionPaths } from "./coercion/shared";
+import {
+	applyCoercion,
+	findCoercionPaths,
+	stripEmptyStrings,
+} from "./coercion/shared";
 import { ArkEnvError, type ValidationIssue } from "./core";
 
 /**
@@ -41,6 +45,17 @@ export type ParseStandardConfig = {
 	 * @default "comma"
 	 */
 	arrayFormat?: "comma" | "json";
+
+	/**
+	 * Whether to treat empty strings (`""`) as `undefined` before validation.
+	 *
+	 * When enabled, an environment variable set to an empty value (e.g. `PORT=`)
+	 * will be treated as if it were missing, allowing defaults to apply and
+	 * preventing validation errors for numeric or boolean types.
+	 *
+	 * @default false
+	 */
+	emptyAsUndefined?: boolean;
 };
 
 /**
@@ -156,12 +171,17 @@ export function parseStandard(
 		onUndeclaredKey = "delete",
 		coerce = true,
 		arrayFormat = "comma",
+		emptyAsUndefined = false,
 	} = config;
 	const output: Record<string, unknown> = {};
 	const errors: ValidationIssue[] = [];
-	const envKeys = new Set(Object.keys(env));
 
-	let coercedEnv: Record<string, unknown> = { ...env };
+	const processedEnv = emptyAsUndefined
+		? stripEmptyStrings(env as Record<string, string | undefined>)
+		: env;
+	const envKeys = new Set(Object.keys(processedEnv));
+
+	let coercedEnv: Record<string, unknown> = { ...processedEnv };
 	const missingJsonSchemaKeys: string[] = [];
 
 	if (coerce) {

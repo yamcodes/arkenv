@@ -37,6 +37,21 @@ Most modern frameworks load `.env` files automatically. For plain Node.js, we re
 
 ArkEnv intercepts the populated `process.env` or `import.meta.env` object, evaluates it against your schema, and applies **automatic type coercion**.
 
+## Why do empty values in my `.env` file cause validation errors?
+
+An empty value (e.g., `PORT=` in a `.env` file) is passed to ArkEnv as an empty string (`""`). By default, ArkEnv treats this as an actual value — it won't apply defaults and it will fail validation for non-string types like `number` or `boolean`.
+
+If you want empty values to be treated as missing (so defaults apply), enable the `emptyAsUndefined` option:
+
+```ts
+const env = arkenv(
+  { PORT: "number = 3000" },
+  { emptyAsUndefined: true }
+);
+```
+
+See the [options docs](/docs/arkenv/options) for more details.
+
 [//]: # "2. The Validator Story"
 
 ## Do I have to use ArkType?
