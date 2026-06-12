@@ -13,6 +13,14 @@ export type ArkEnvConfigOptions = {
 	layout?: "simple" | "strict";
 };
 
+/**
+ * Resolve the layout mode and base directory for a given schema file path.
+ *
+ * @param schemaPath The absolute path to the schema file or directory
+ * @param layoutOption An optional explicit layout configuration ("simple" or "strict")
+ * @returns An object containing the resolved layout mode and the base directory path
+ * @throws An error if explicit "strict" layout is requested but required split files are missing
+ */
 export function resolveLayout(
 	schemaPath: string,
 	layoutOption?: "simple" | "strict",
@@ -94,6 +102,12 @@ export function resolveLayout(
 	return { layout: "simple", baseDir: schemaPath };
 }
 
+/**
+ * Find the path to the schema file or directory in the project.
+ *
+ * @param cwd The working directory to search from (defaults to process.cwd())
+ * @returns The absolute path to the schema file/directory, or null if not found
+ */
 export function findSchemaPath(cwd = process.cwd()): string | null {
 	const possiblePaths = [
 		path.join(cwd, "src", "env.ts"),
@@ -117,6 +131,13 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
 	return null;
 }
 
+/**
+ * Watch the schema file(s) for changes and automatically run codegen to update output.
+ *
+ * @param schemaPath The absolute path or list of paths of schema files to watch
+ * @param outputPath The absolute path where the generated code should be written
+ * @param layout The layout option to pass to codegen
+ */
 export function watchSchema(
 	schemaPath: string | string[],
 	outputPath: string,
@@ -167,6 +188,13 @@ export function watchSchema(
 	}
 }
 
+/**
+ * Run code generation to read the schema file and generate the env.gen.ts helper.
+ *
+ * @param schemaPath The absolute path to the schema file or directory
+ * @param outputPath The absolute path to the generated output file
+ * @param layoutOption The explicit layout configuration option
+ */
 export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
@@ -226,6 +254,12 @@ export function runCodegen(
 	}
 }
 
+/**
+ * Extract environment variable keys statically from the schema file content.
+ *
+ * @param content The string content of the schema file
+ * @returns An object containing arrays of server, client, and shared keys
+ */
 export function extractKeys(content: string): {
 	serverKeys: string[];
 	clientKeys: string[];
@@ -253,6 +287,13 @@ export function extractKeys(content: string): {
 	return { serverKeys, clientKeys, sharedKeys };
 }
 
+/**
+ * Extract the body of a specific block (e.g. 'server', 'client', or 'shared') from the schema content.
+ *
+ * @param content The string content of the schema file
+ * @param blockName The name of the block to extract
+ * @returns The body of the block as a string, or null if not found
+ */
 function extractBlock(content: string, blockName: string): string | null {
 	const regex = new RegExp(
 		`\\b${blockName}\\s*:\\s*(?:[a-zA-Z0-9_$.]+\\s*\\(\\s*)?\\{`,
@@ -325,6 +366,12 @@ function extractBlock(content: string, blockName: string): string | null {
 	return null;
 }
 
+/**
+ * Parse environment variable keys from the extracted block content.
+ *
+ * @param blockContent The raw body string of the schema block
+ * @returns An array of parsed key names
+ */
 function parseBlockKeys(blockContent: string): string[] {
 	const keys: string[] = [];
 	let inString: string | null = null;
@@ -412,6 +459,12 @@ function parseBlockKeys(blockContent: string): string[] {
 	return keys;
 }
 
+/**
+ * Extract the body of the `arkenv` function call block from the schema content.
+ *
+ * @param content The string content of the schema file
+ * @returns The body of the block as a string, or null if not found
+ */
 export function extractArkenvBlock(content: string): string | null {
 	const regex = /\barkenv\s*\(\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
 	const match = regex.exec(content);
@@ -481,21 +534,45 @@ export function extractArkenvBlock(content: string): string | null {
 	return null;
 }
 
+/**
+ * Extract environment variable keys statically from client schema file content.
+ *
+ * @param content The string content of the client schema file
+ * @returns An array of extracted client keys
+ */
 export function extractClientKeys(content: string): string[] {
 	const block = extractArkenvBlock(content);
 	return block ? parseBlockKeys(block) : [];
 }
 
+/**
+ * Extract environment variable keys statically from server schema file content.
+ *
+ * @param content The string content of the server schema file
+ * @returns An array of extracted server keys
+ */
 export function extractServerKeys(content: string): string[] {
 	const block = extractArkenvBlock(content);
 	return block ? parseBlockKeys(block) : [];
 }
 
+/**
+ * Extract environment variable keys statically from shared schema file content.
+ *
+ * @param content The string content of the shared schema file
+ * @returns An array of extracted shared keys
+ */
 export function extractSharedKeys(content: string): string[] {
 	const block = extractSharedBlock(content);
 	return block ? parseBlockKeys(block) : [];
 }
 
+/**
+ * Extract the body of the `SharedSchema` variable assignment block from the schema content.
+ *
+ * @param content The string content of the schema file
+ * @returns The body of the block as a string, or null if not found
+ */
 function extractSharedBlock(content: string): string | null {
 	const regex = /\bSharedSchema\s*=\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
 	const match = regex.exec(content);
@@ -565,6 +642,14 @@ function extractSharedBlock(content: string): string | null {
 	return null;
 }
 
+/**
+ * Generate the code for the client/server factory file (`env.gen.ts`) in simple layout mode.
+ *
+ * @param serverKeys The server environment variable keys
+ * @param clientKeys The client environment variable keys
+ * @param sharedKeys The shared environment variable keys
+ * @returns The generated TypeScript code as a string
+ */
 function generateFactoryCode(
 	serverKeys: string[],
 	clientKeys: string[],
@@ -639,6 +724,14 @@ export default arkenv;
 `;
 }
 
+/**
+ * Generate the code for the client-side factory file (`env.gen.ts`) in strict layout mode.
+ *
+ * @param serverKeys The server environment variable keys
+ * @param clientKeys The client environment variable keys
+ * @param sharedKeys The shared environment variable keys
+ * @returns The generated TypeScript code as a string
+ */
 function generateClientFactoryCode(
 	serverKeys: string[],
 	clientKeys: string[],

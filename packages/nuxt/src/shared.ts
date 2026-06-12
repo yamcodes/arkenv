@@ -7,6 +7,10 @@ import type { MergeExtends } from "./types";
 
 /**
  * Create a validated, type-safe environment configuration for Nuxt applications (Shared entry point).
+ *
+ * @param schema The schema definition containing the shared variables
+ * @param options Optional configuration options
+ * @returns A validated, readonly environment variables object wrapped in a security proxy
  */
 export function createEnv<
 	const TSchema extends SchemaShape = {},
