@@ -1,75 +1,10 @@
 import type { SchemaShape } from "@repo/types";
-import { createEnv as coreCreateEnv } from "arkenv";
+import { createEnv as coreCreateEnv, getSchemaKeys } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
-function getSchemaKeys(schema: any): string[] {
-	if (!schema || (typeof schema !== "object" && typeof schema !== "function")) {
-		return [];
-	}
-
-	// ArkType Type
-	if (
-		schema.json &&
-		typeof schema.json === "object" &&
-		schema.json.domain === "object"
-	) {
-		const keys: string[] = [];
-		if (Array.isArray(schema.json.required)) {
-			for (const r of schema.json.required) {
-				if (r && typeof r === "object" && "key" in r) {
-					keys.push(r.key);
-				}
-			}
-		}
-		if (Array.isArray(schema.json.optional)) {
-			for (const o of schema.json.optional) {
-				if (o && typeof o === "object" && "key" in o) {
-					keys.push(o.key);
-				}
-			}
-		}
-		return keys;
-	}
-
-	// Standard Schema / JSON Schema fallback
-	const std = schema["~standard"];
-	const jsonSchemaInput =
-		(typeof std?.jsonSchema?.input === "function" && std.jsonSchema.input) ||
-		(typeof schema.jsonSchema?.input === "function" && schema.jsonSchema.input);
-
-	if (jsonSchemaInput) {
-		try {
-			const json = jsonSchemaInput({ target: "draft-07" });
-			if (json && typeof json === "object" && json.properties) {
-				return Object.keys(json.properties);
-			}
-		} catch {}
-	}
-
-	if (typeof schema.toJSONSchema === "function") {
-		try {
-			const json = schema.toJSONSchema();
-			if (json && typeof json === "object" && json.properties) {
-				return Object.keys(json.properties);
-			}
-		} catch {}
-	}
-
-	if (typeof schema.toStandardJSONSchema?.v1 === "function") {
-		try {
-			const json = schema.toStandardJSONSchema.v1();
-			if (json && typeof json === "object" && json.properties) {
-				return Object.keys(json.properties);
-			}
-		} catch {}
-	}
-
-	// Plain object schema
-	return Object.keys(schema);
-}
 
 /**
  * Validate and wrap environment variables in a security proxy.
@@ -132,7 +67,7 @@ export function createEnvInternal(
 	}
 
 	// Prepare combined environment for core validation
-	const combinedEnv: Record<string, string | undefined> = {};
+	const combinedEnv: Record<string, unknown> = {};
 
 	// Process extended environments
 	if (extendsList && Array.isArray(extendsList)) {
@@ -155,12 +90,12 @@ export function createEnvInternal(
 					// Prepare what we have so far for validating the extended schema
 					for (const key of Object.keys(extendedEnvValues)) {
 						if (extendedEnvValues[key] !== undefined) {
-							combinedEnv[key] = String(extendedEnvValues[key]);
+							combinedEnv[key] = extendedEnvValues[key];
 						}
 					}
 					for (const key of Object.keys(runtimeEnv)) {
 						if (runtimeEnv[key] !== undefined) {
-							combinedEnv[key] = String(runtimeEnv[key]);
+							combinedEnv[key] = runtimeEnv[key];
 						}
 					}
 					if (isServer) {
@@ -235,13 +170,13 @@ export function createEnvInternal(
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {
-			combinedEnv[key] = String(extendedEnvValues[key]);
+			combinedEnv[key] = extendedEnvValues[key];
 		}
 	}
 
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
-			combinedEnv[key] = String(runtimeEnv[key]);
+			combinedEnv[key] = runtimeEnv[key];
 		}
 	}
 

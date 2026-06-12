@@ -1,6 +1,28 @@
 import fs from "node:fs";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+let useMockWatcher = false;
+const mockClose = vi.fn().mockResolvedValue(undefined);
+const mockWatch = vi.fn().mockImplementation(() => {
+	return {
+		on: vi.fn().mockReturnThis(),
+		close: mockClose,
+	};
+});
+
+vi.mock("chokidar", async (importOriginal) => {
+	const original = await importOriginal<typeof import("chokidar")>();
+	return {
+		...original,
+		watch: (schemaPath: any, options?: any) => {
+			if (useMockWatcher) {
+				return mockWatch(schemaPath, options);
+			}
+			return original.watch(schemaPath, options);
+		},
+	};
+});
 import {
 	extractClientKeys,
 	extractKeys,
@@ -8,6 +30,7 @@ import {
 	extractSharedKeys,
 	resolveLayout,
 	runCodegen,
+	watchSchema,
 } from "./config";
 
 describe("Nuxt config parser & codegen", () => {
@@ -72,6 +95,37 @@ describe("Nuxt config parser & codegen", () => {
 		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
 	});
 
+	it("should handle parser edge cases with comments, nested objects, and templates", () => {
+		const content = `
+			export const env = arkenv({
+				server: {
+					// A single line comment
+					DATABASE_URL: "string", /* inline comment */
+					/* 
+					   Multi-line comment 
+					*/
+					ADMIN_KEY: "string",
+					NESTED: {
+						A: "string"
+					}
+				},
+				client: {
+					NUXT_PUBLIC_API_URL: "string = 'http://localhost'",
+					// NUXT_PUBLIC_IGNORE: "string"
+					NUXT_PUBLIC_TEMPLATE: \`string:\${1}\`
+				},
+				shared: {
+					NODE_ENV: "string"
+				}
+			});
+		`;
+
+		const res = extractKeys(content);
+		expect(res.serverKeys).toEqual(["DATABASE_URL", "ADMIN_KEY", "NESTED"]);
+		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL", "NUXT_PUBLIC_TEMPLATE"]);
+		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
+	});
+
 	it("should extract client, server, and shared keys in strict layout", () => {
 		const clientContent = `
 			import arkenv from "./generated/env.gen";
@@ -128,6 +182,44 @@ describe("Nuxt config parser & codegen", () => {
 			);
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should close the previous watcher when initialized multiple times in development", async () => {
+		useMockWatcher = true;
+		mockWatch.mockClear();
+		mockClose.mockClear();
+
+		const tempDir = path.join(__dirname, "temp-watcher-test");
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+		const schemaPath = path.join(tempDir, "env.ts");
+		const outputPath = path.join(tempDir, "env.gen.ts");
+
+		fs.writeFileSync(
+			schemaPath,
+			`export const env = createEnv({ client: { NUXT_PUBLIC_API_URL: "string" } });`,
+			"utf-8",
+		);
+
+		try {
+			// Call watchSchema once
+			watchSchema(schemaPath, outputPath, "simple");
+			expect(mockWatch).toHaveBeenCalledTimes(1);
+
+			// Call watchSchema a second time
+			watchSchema(schemaPath, outputPath, "simple");
+			await new Promise((resolve) => setTimeout(resolve, 0));
+			expect(mockWatch).toHaveBeenCalledTimes(2);
+
+			expect(mockClose).toHaveBeenCalledTimes(1);
+		} finally {
+			delete (globalThis as any).__arkenv_nuxt_watcher__;
+			useMockWatcher = false;
+			if (fs.existsSync(tempDir)) {
+				fs.rmSync(tempDir, { recursive: true, force: true });
+			}
 		}
 	});
 });

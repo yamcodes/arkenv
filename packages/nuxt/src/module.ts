@@ -130,11 +130,13 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 				anyConfig.plugins.push({
 					name: "arkenv-nuxt-client-security",
 					resolveId(id: string) {
-						if (
+						const isServerModule =
 							id === "@arkenv/nuxt/server" ||
-							id.endsWith("/packages/nuxt/dist/server.js") ||
-							id.endsWith("/packages/nuxt/dist/server.cjs")
-						) {
+							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\]server(?:\.(?:js|mjs|cjs|ts))?$/.test(
+								id,
+							);
+
+						if (isServerModule) {
 							throw new Error(
 								"[ArkEnv] Importing server-only environment schema on the client is not allowed!",
 							);

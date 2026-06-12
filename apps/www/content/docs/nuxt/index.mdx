@@ -1,0 +1,57 @@
+---
+title: Introduction
+icon: Album
+description: Validate and secure your Nuxt environment variables with zero-boilerplate scaffolding and a seamless developer experience.
+---
+
+:::important
+This integration requires [ArkType](https://arktype.io) to be installed.
+:::
+
+The `@arkenv/nuxt` integration provides end-to-end environment validation for both the server and the browser. It automatically injects your configuration into Nuxt's `runtimeConfig`, catching configuration bugs early and preventing sensitive server-side variables from ever reaching the client via a custom Vite plugin.
+
+## Quickstart
+
+The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nuxt` for your existing Nuxt project.
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx @arkenv/cli@latest init
+    ```
+  </Tab>
+
+  <Tab value="pnpm">
+    ```bash
+    pnpm dlx @arkenv/cli@latest init
+    ```
+  </Tab>
+
+  <Tab value="yarn">
+    ```bash
+    yarn dlx @arkenv/cli@latest init
+    ```
+  </Tab>
+
+  <Tab value="bun">
+    ```bash
+    bunx @arkenv/cli@latest init
+    ```
+  </Tab>
+</Tabs>
+
+## Layout strategies
+
+ArkEnv supports two layout structures to match your security and developer experience preferences:
+
+<Cards>
+  <Card title="Simple layout (recommended)" href="/docs/nuxt/layouts/simple" description="Define client and server schemas in a single file (env.ts) to prioritize developer experience (DX)." />
+
+  <Card title="Strict layout" href="/docs/nuxt/layouts/strict" description="Separate client and server schemas into different files to prioritize strict compile-time security." />
+</Cards>
+
+## Nuxt specific features
+
+<Cards>
+  <Card title="Runtime Config Integration" href="/docs/nuxt/runtime-config" description="Learn how @arkenv/nuxt automatically injects keys into Nuxt's private and public runtimeConfig." />
+</Cards>
