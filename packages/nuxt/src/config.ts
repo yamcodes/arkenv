@@ -142,7 +142,7 @@ export function watchSchema(
 	schemaPath: string | string[],
 	outputPath: string,
 	layout?: "simple" | "strict",
-) {
+): void {
 	const previousWatcher = globalThis.__arkenv_nuxt_watcher__;
 
 	const startWatch = () => {
@@ -199,7 +199,7 @@ export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
 	layoutOption?: "simple" | "strict",
-) {
+): void {
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
 		layoutOption,
