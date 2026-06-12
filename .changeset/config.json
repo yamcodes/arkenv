@@ -8,5 +8,5 @@
 	"baseBranch": "dev",
 	"updateInternalDependencies": "patch",
 	"bumpVersionsWithWorkspaceProtocolOnly": true,
-	"ignore": ["www", "*-playground", "@repo/playwright-www"]
+	"ignore": ["www", "*-playground", "@repo/playwright-www", "@repo/build-utils"]
 }
