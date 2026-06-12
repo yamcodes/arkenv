@@ -3,5 +3,5 @@
 	"description": "Integration for Nuxt",
 	"root": true,
 	"icon": "Nuxtdotjs",
-	"pages": ["---Guide---", "index", "layouts", "runtime-config"]
+	"pages": ["---Guide---", "index", "layouts", "runtime-config", "faq"]
 }
