@@ -1,5 +1,13 @@
 # @ArkEnv/CLI
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
 ## 0.2.10
 
 ### Patch Changes

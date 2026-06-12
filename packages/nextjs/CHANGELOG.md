@@ -1,5 +1,27 @@
 # @ArkEnv/nextjs
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [`b666698`](https://github.com/yamcodes/arkenv/commit/b66669888cf2f8c756cce12fd6210c492146cd87)
+
+</small>
+
+- `arkenv@1.0.0-alpha.0`
+
+</details>
+
 ## 0.0.9
 
 ### Patch Changes
