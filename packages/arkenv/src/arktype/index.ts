@@ -6,7 +6,7 @@ import {
 	applyCoercion,
 	findCoercionPaths,
 	stripEmptyStrings,
-} from "@/coercion/shared";
+} from "@/coercion";
 import { ArkEnvError, type ValidationIssue } from "@/core";
 import type { ArkEnvConfig, EnvSchema } from "@/create-env";
 import { styleText } from "@/utils/style-text";
@@ -27,6 +27,9 @@ export type { distill };
  * suitable for `ArkEnvError`. Strips leading path references from messages to
  * avoid duplication when `formatInternalErrors` prepends the styled path, and
  * applies cyan styling to inline "(was …)" values.
+ *
+ * @param errors The ArkType errors object to convert
+ * @returns An array of flattened validation issues
  *
  * @internal
  */
@@ -77,6 +80,11 @@ function arkErrorsToIssues(errors: ArkErrors): ValidationIssue[] {
  * This is a low-level utility used internally by ArkEnv.
  * Most users should prefer the default `arkenv()` export.
  *
+ * @param def The ArkType schema definition to validate against
+ * @param config The configuration object for parsing and coercion
+ * @returns The parsed and validated environment variables
+ * @throws {@link ArkEnvError} if validation fails
+ *
  * @internal
  */
 export function parse<const T extends SchemaShape>(
@@ -109,13 +117,13 @@ export function parse<const T extends SchemaShape>(
 	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
 	if (shouldCoerce) {
 		const json = schemaWithKeys.in.toJsonSchema({
-			fallback: (ctx: any) => ctx.base,
+			fallback: (ctx: { base: unknown }) => ctx.base,
 		});
-		const targets = findCoercionPaths(json as any);
+		const targets = findCoercionPaths(json);
 		if (targets.length > 0) {
 			coercedEnv = applyCoercion(coercedEnv, targets, {
 				arrayFormat,
-			}) as Record<string, unknown>;
+			});
 		}
 	}
 

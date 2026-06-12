@@ -49,6 +49,21 @@ export type CoerceOptions = {
 };
 
 /**
+ * Internal representation of a JSON Schema node for coercion traversal.
+ */
+interface JsonSchemaNode {
+	type?: string | string[];
+	const?: unknown;
+	enum?: unknown[];
+	format?: string;
+	properties?: Record<string, unknown>;
+	items?: unknown | unknown[];
+	anyOf?: unknown[];
+	allOf?: unknown[];
+	oneOf?: unknown[];
+}
+
+/**
  * Find all paths in a JSON Schema that require coercion.
  *
  * Prioritize "number", "integer", "boolean", "array", "object", and "date" types.
@@ -58,63 +73,61 @@ export type CoerceOptions = {
  * @returns An array of coercion targets containing their path and type
  */
 export const findCoercionPaths = (
-	node: Record<string, any>,
+	node: unknown,
 	path: string[] = [],
 ): CoercionTarget[] => {
 	const results: CoercionTarget[] = [];
-	if (!node || typeof node !== "object") return results;
+	if (!node || typeof node !== "object" || Array.isArray(node)) return results;
 
-	if ("const" in node) {
-		const t = typeof node.const;
+	const n = node as JsonSchemaNode;
+
+	if ("const" in n) {
+		const t = typeof n.const;
 		if (t === "number" || t === "boolean") {
 			results.push({ path: [...path], type: "primitive" });
 		}
 	}
 
-	if ("enum" in node && Array.isArray(node.enum)) {
-		if (
-			node.enum.some((v) => typeof v === "number" || typeof v === "boolean")
-		) {
+	if ("enum" in n && Array.isArray(n.enum)) {
+		if (n.enum.some((v) => typeof v === "number" || typeof v === "boolean")) {
 			results.push({ path: [...path], type: "primitive" });
 		}
 	}
 
-	const type = node.type;
+	const type = n.type;
 	if (type === "number" || type === "integer" || type === "boolean") {
 		results.push({ path: [...path], type: "primitive" });
 	} else if (
 		type === "string" &&
-		"format" in node &&
-		(node.format === "date-time" || node.format === "date")
+		"format" in n &&
+		(n.format === "date-time" || n.format === "date")
 	) {
 		results.push({ path: [...path], type: "date" });
 	} else if (type === "object") {
-		if (node.properties && Object.keys(node.properties).length > 0) {
+		if (n.properties && Object.keys(n.properties).length > 0) {
 			results.push({ path: [...path], type: "object" });
-			for (const key in node.properties) {
-				results.push(
-					...findCoercionPaths(node.properties[key], [...path, key]),
-				);
+			for (const key in n.properties) {
+				results.push(...findCoercionPaths(n.properties[key], [...path, key]));
 			}
 		}
 	} else if (type === "array") {
 		results.push({ path: [...path], type: "array" });
-		if (node.items) {
-			if (Array.isArray(node.items)) {
-				node.items.forEach((item, index) => {
+		if (n.items) {
+			if (Array.isArray(n.items)) {
+				n.items.forEach((item, index) => {
 					results.push(...findCoercionPaths(item, [...path, String(index)]));
 				});
 			} else {
 				results.push(
-					...findCoercionPaths(node.items, [...path, ARRAY_ITEM_MARKER]),
+					...findCoercionPaths(n.items, [...path, ARRAY_ITEM_MARKER]),
 				);
 			}
 		}
 	}
 
-	for (const comb of ["anyOf", "allOf", "oneOf"]) {
-		if (comb in node && Array.isArray(node[comb])) {
-			for (const branch of node[comb]) {
+	for (const comb of ["anyOf", "allOf", "oneOf"] as const) {
+		if (n[comb] && Array.isArray(n[comb])) {
+			for (const branch of n[comb]) {
 				results.push(...findCoercionPaths(branch, path));
 			}
 		}
@@ -135,11 +148,11 @@ export const findCoercionPaths = (
  * @param options The coercion options, including array parsing format
  * @returns The coerced data object
  */
-export const applyCoercion = (
-	data: unknown,
+export const applyCoercion = <T = unknown>(
+	data: T,
 	targets: CoercionTarget[],
 	options: CoerceOptions = {},
-) => {
+): T => {
 	const { arrayFormat = "comma" } = options;
 
 	const splitString = (val: string) => {
@@ -180,7 +193,7 @@ export const applyCoercion = (
 	if (typeof data !== "object" || data === null) {
 		const root = targets.find((t) => t.path.length === 0);
 		if (root) {
-			return coerceValue(data, root.type);
+			return coerceValue(data, root.type) as T;
 		}
 		return data;
 	}

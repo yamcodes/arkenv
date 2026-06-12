@@ -1,13 +1,13 @@
 import { ArkErrors, type } from "arktype";
 import { describe, expect, it } from "vitest";
-import { applyCoercion, findCoercionPaths } from "@/coercion/shared";
+import { applyCoercion, findCoercionPaths } from "@/coercion";
 
 function coerce(at: typeof type, schema: any) {
 	return (env: any) => {
 		const json = schema.in.toJsonSchema({
-			fallback: (ctx: any) => ctx.base,
+			fallback: (ctx: { base: unknown }) => ctx.base,
 		});
-		const targets = findCoercionPaths(json as any);
+		const targets = findCoercionPaths(json);
 		const coercedEnv =
 			Array.isArray(env) || typeof env !== "object" || env === null
 				? env
