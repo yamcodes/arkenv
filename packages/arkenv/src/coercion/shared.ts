@@ -51,7 +51,7 @@ export type CoerceOptions = {
 /**
  * Internal representation of a JSON Schema node for coercion traversal.
  */
-interface JsonSchemaNode {
+type JsonSchemaNode = {
 	type?: string | string[];
 	const?: unknown;
 	enum?: unknown[];
@@ -61,7 +61,7 @@ interface JsonSchemaNode {
 	anyOf?: unknown[];
 	allOf?: unknown[];
 	oneOf?: unknown[];
-}
+};
 
 /**
  * Find all paths in a JSON Schema that require coercion.
