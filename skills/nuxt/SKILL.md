@@ -2,9 +2,12 @@
 name: nuxt
 description: Nuxt full-stack Vue framework with SSR, auto-imports, and file-based routing. Use when working with Nuxt apps, server routes, useFetch, middleware, or hybrid rendering.
 metadata:
-  author: Anthony Fu
+  author: Yam C Borodetsky
+  original_author: Anthony Fu
+  origin: https://github.com/antfu/skills
   version: "2026.1.28"
   source: Generated from https://github.com/nuxt/nuxt, scripts located at https://github.com/antfu/skills
+  internal: true
 ---
 
 Nuxt is a full-stack Vue framework that provides server-side rendering, file-based routing, auto-imports, and a powerful module system. It uses Nitro as its server engine for universal deployment across Node.js, serverless, and edge platforms.
@@ -53,3 +56,7 @@ Nuxt is a full-stack Vue framework that provides server-side rendering, file-bas
 | Layers | Extending applications with reusable layers | [advanced-layers](references/advanced-layers.md) |
 | Lifecycle Hooks | Build-time, runtime, and server hooks | [advanced-hooks](references/advanced-hooks.md) |
 | Module Authoring | Creating publishable Nuxt modules with Nuxt Kit | [advanced-module-authoring](references/advanced-module-authoring.md) |
+
+## Credits
+
+This skill was originally created by [Anthony Fu](https://github.com/antfu) and sourced from [antfu/skills](https://github.com/antfu/skills).
