@@ -1,6 +1,6 @@
 {
 	"mode": "pre",
-	"tag": "next",
+	"tag": "alpha",
 	"initialVersions": {
 		"arkenv-cli-playground": "0.0.0",
 		"bun-react-playground": "0.1.0",
