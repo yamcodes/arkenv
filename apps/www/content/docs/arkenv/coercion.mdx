@@ -100,7 +100,12 @@ Coercion works recursively: even variables inside a JSON object are coerced to t
 
 ## How it works
 
-ArkEnv introspects your schema to identify fields that should be numbers, booleans, and other non-string types you define. When you call `createEnv()` (or `arkenv()`), it pre-processes your environment variables to perform these conversions *before* validation.
+ArkEnv uses a unified pre-coercion model shared across both `arkenv` and `arkenv/standard`. When you call `createEnv()` (or `arkenv()`):
+
+1. **Introspection**: ArkEnv extracts the JSON Schema of your defined schema. For `arkenv` (ArkType), it introspects the schema (with a fallback to handle unjsonifiable parts of the schema like custom morphs or predicates). For `arkenv/standard` (e.g., Zod, Valibot), it extracts JSON Schema using the validator's standard metadata.
+2. **Paths Identification**: It computes the exact paths requiring coercion (using `findCoercionPaths`) to identify target non-string types like numbers, booleans, arrays, or objects.
+3. **Pre-Coercion**: ArkEnv creates a shallow copy of the input environment object and applies coercion to it directly (using `applyCoercion`), preventing any mutation of the original `process.env`.
+4. **Validation**: Finally, the pre-coerced copy is passed to the original, unmodified schema for validation.
 
 ## Performance
 
