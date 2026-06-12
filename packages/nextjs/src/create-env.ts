@@ -5,7 +5,6 @@ export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
-
 /**
  * Validate and wrap environment variables in a security proxy.
  *

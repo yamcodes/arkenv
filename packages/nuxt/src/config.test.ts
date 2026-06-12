@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 let useMockWatcher = false;
 const mockClose = vi.fn().mockResolvedValue(undefined);
@@ -23,6 +23,7 @@ vi.mock("chokidar", async (importOriginal) => {
 		},
 	};
 });
+
 import {
 	extractClientKeys,
 	extractKeys,
@@ -122,7 +123,10 @@ describe("Nuxt config parser & codegen", () => {
 
 		const res = extractKeys(content);
 		expect(res.serverKeys).toEqual(["DATABASE_URL", "ADMIN_KEY", "NESTED"]);
-		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL", "NUXT_PUBLIC_TEMPLATE"]);
+		expect(res.clientKeys).toEqual([
+			"NUXT_PUBLIC_API_URL",
+			"NUXT_PUBLIC_TEMPLATE",
+		]);
 		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
 	});
 
