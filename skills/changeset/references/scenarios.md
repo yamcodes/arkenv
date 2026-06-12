@@ -108,15 +108,4 @@ git diff dev..HEAD -- src/
 
 ## Pre-release versions
 
-For beta/alpha releases:
-
-```bash
-# Enter pre-release mode
-npx changeset pre enter beta
-
-# Create changesets as normal
-pnpm changeset
-
-# Exit pre-release mode
-npx changeset pre exit
-```
+For details on the `alpha` ➔ `beta` ➔ `rc` progression, branching strategies, and npm tag publishing commands, see the [Contributing Guide](file:///Users/yamcodes/code/arkenv/docs/CONTRIBUTING.md#use-case-4-coordinating-a-major-version-eg-v1).

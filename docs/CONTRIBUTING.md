@@ -124,8 +124,15 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 1. **Create a long-lived branch:** Branch off `dev` and name it `next` or `v1`.
 2. **Develop in parallel:** Merge all breaking code and marketing doc updates into `v1`. Meanwhile, you can continue merging normal bug fixes and minor features into `dev` and releasing them to `main` as usual.
 3. **Prevent drift:** Periodically merge `dev` into `v1` (e.g., weekly) to ensure `v1` receives all the hotfixes from production and doesn't suffer a massive merge conflict at the end.
-4. **Previews & Betas:** Vercel will automatically deploy the `v1` branch as a Preview environment for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
-5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
+4. **Previews & Pre-releases (`alpha` ➔ `beta` ➔ `rc`):** Vercel will automatically deploy the `v1` branch as a Preview environment. To safely publish pre-release npm packages from this branch without affecting the `latest` npm tag, initialize Changesets pre-release mode by specifying the phase:
+   - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
+   - **Beta** (Feature complete, testing needed): `pnpm changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
+   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`)
+   
+   > [!IMPORTANT]
+   > **SemVer Pre-release Identifiers vs Build Metadata**: 
+   > Always use dot-separated pre-release identifiers (e.g., `1.0.0-alpha.0`, `1.0.0-alpha.1`) to track sequential builds. Do NOT use build metadata with a plus sign (e.g., `1.0.0-alpha.0+build.1`), because the SemVer specification and npm ignore build metadata when determining version precedence. Npm will not allow publishing multiple packages with versions that differ only by build metadata.
+5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
 ## Deployment rate limiter
 
