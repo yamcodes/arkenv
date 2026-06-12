@@ -106,6 +106,24 @@ With ArkEnv:
 - Diagnostics are **optimized for the terminal** so you can spot and debug failing variables clearly.
 - A variable typed `boolean` is parsed as a **boolean**, not a `"false"` string requiring manual handling.
 
+## How does coercion work under the hood?
+
+ArkEnv uses a unified pre-coercion execution model for both the default `arkenv` (ArkType) and `arkenv/standard` (Standard Schema) entry points:
+
+1. **JSON Schema Introspection**: At boot time, ArkEnv extracts a JSON Schema from the validator.
+2. **Path Identification**: It traverses the JSON Schema (using `findCoercionPaths`) to identify which paths (like numbers, booleans, arrays, or objects) require type conversion.
+3. **Targeted Pre-Coercion**: ArkEnv creates a shallow copy of the input environment object and applies coercion (using `applyCoercion`) to identified paths (e.g., converting `"3000"` to `3000` or `"true"` to `true`).
+4. **Validation**: The coerced copy is validated against the original, unmodified schema.
+
+## Is coercion available in `arkenv/standard`?
+
+Yes! Coercion is available in both `arkenv` and `arkenv/standard`. They share the exact same pre-coercion pipeline and coercion logic.
+
+The main difference lies in how they extract JSON Schema:
+
+- **ArkType**: Introspects the schema with an unjsonifiable fallback (preserving custom scopes and exotic types like predicates or custom morphs).
+- **Standard Schema**: Relies entirely on the validator's JSON Schema output via the standard metadata protocol (`validator["~standard"].jsonSchema.input()`).
+
 [//]: # "3. Frameworks & Comparisons"
 
 ## Can I use ArkEnv with plain JavaScript?
