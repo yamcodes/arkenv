@@ -1,0 +1,68 @@
+---
+title: Runtime Config Integration
+icon: Activity
+description: How @arkenv/nuxt integrates with Nuxt's native runtimeConfig for dynamic env swapping.
+---
+
+Unlike frameworks like Next.js which rely on static code inlining (compiling environment variables directly into build artifacts), Nuxt features a built-in **Runtime Config** system.
+
+`@arkenv/nuxt` integrates natively with this system to register environment variable keys. This enables dynamic environment variable resolution and swapping at runtime.
+
+---
+
+## How it works
+
+When the `@arkenv/nuxt/module` loads:
+
+1. **Server Keys**: It automatically registers your `server` environment keys to Nuxt's private `runtimeConfig`.
+2. **Client & Shared Keys**: It automatically registers your `client` and `shared` keys to Nuxt's `runtimeConfig.public`.
+
+For example, given this schema:
+
+```ts title="env.ts"
+export const env = arkenv({
+	server: {
+		DATABASE_URL: "string",
+	},
+	client: {
+		NUXT_PUBLIC_API_URL: "string",
+	},
+	shared: {
+		NODE_ENV: "string",
+	},
+});
+```
+
+Nuxt will initialize with a configuration equivalent to:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+	runtimeConfig: {
+		// Server keys are private
+		DATABASE_URL: process.env.DATABASE_URL || "",
+		public: {
+			// Client/Shared keys are public
+			NUXT_PUBLIC_API_URL: process.env.NUXT_PUBLIC_API_URL || "",
+			NODE_ENV: process.env.NODE_ENV || "",
+		}
+	}
+});
+```
+
+At runtime, the generated `env.gen.ts` file automatically retrieves these values via Nuxt's native `useRuntimeConfig()` utility instead of reading from `process.env` directly.
+
+---
+
+## Benefits of Runtime Config
+
+### 1. Build Once, Deploy Anywhere
+
+Because variables are fetched from `useRuntimeConfig()`, you can run a production build of your Nuxt application (`nuxt build`) once, package it (e.g., in a Docker container), and deploy it to staging, QA, or production. You only need to set the environment variables at startup time; **no application rebuild is required** when values change.
+
+### 2. Native Nuxt Overrides
+
+Since keys are registered in the runtime configuration, you can leverage Nuxt's native runtime config override prefixes (like `NUXT_DATABASE_URL` or `NUXT_PUBLIC_API_URL`) to easily swap values dynamically in different environments.
+
+### 3. Server-Side Safety
+
+Nuxt guarantees that any value placed inside the top-level `runtimeConfig` is never exposed to the client. This serves as a secondary layer of defense alongside ArkEnv's compile-time block and runtime Proxies.
