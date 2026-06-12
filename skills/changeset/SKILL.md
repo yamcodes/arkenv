@@ -184,7 +184,13 @@ pnpm changeset
 
 - Merging the "Version Packages" PR on `dev` triggers the publication of bumped packages to npm
 - Upon successful publish, the release workflow programmatically fast-forwards the `main` branch to `dev` (`git merge dev --ff-only`) and pushes it
-- The push to `main` triggers the production documentation website deployment
+- The push to `main` triggers the production documentation website
+
+## Pre-release versions
+
+For managing alpha, beta, and release candidate (rc) pre-releases, we follow a strict versioning policy using the `alpha` ➔ `beta` ➔ `rc` progression.
+
+To avoid duplication, the exact pre-release branching strategies, command workflows, and SemVer naming rules are documented in the [Contributing Guide](file:///Users/yamcodes/code/arkenv/docs/CONTRIBUTING.md#use-case-4-coordinating-a-major-version-eg-v1).
 
 ## Checking status
 
