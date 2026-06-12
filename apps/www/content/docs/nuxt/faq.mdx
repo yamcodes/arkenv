@@ -12,15 +12,11 @@ Nuxt implements its own distinct patterns for configuration, environment loading
 2. **Client Prefixes & Structures**: Vite projects expose client-safe variables using `VITE_` and inject them into `import.meta.env`. Nuxt uses the `NUXT_PUBLIC_` prefix and registers them inside `runtimeConfig.public` to make them accessible via `useRuntimeConfig()`.
 3. **Compile-time Security Guard**: The custom Vite plugin inside `@arkenv/nuxt/module` is not designed to load environment values; instead, it acts as a build-time guard that blocks compilation if a developer accidentally attempts to import `@arkenv/nuxt/server` or server-specific schema files on the client side.
 
----
-
 ## I was able to access a client-side variable in a server context! Is that ok?
 
 **Yes.** In Nuxt, environment variables prefixed with `NUXT_PUBLIC_` are public and intended to be accessible everywhere (both server-side and browser-side).
 
 `@arkenv/nuxt` permits accessing client variables in server-side contexts (like server routes, middleware, or plugins) by design. The runtime security proxy only blocks the reverse: accessing server-only variables (those without the `NUXT_PUBLIC_` prefix) on the client side.
-
----
 
 ## Do I need to manually map client variables in `runtimeEnv`?
 
@@ -29,8 +25,6 @@ Nuxt implements its own distinct patterns for configuration, environment loading
 In other environment validation libraries, you must manually write a `runtimeEnv` mapping object containing keys like `NUXT_PUBLIC_VAR: process.env.NUXT_PUBLIC_VAR` so that the bundler can access and package them.
 
 ArkEnv's Nuxt module scans your schema file(s) at build time, identifies the client-side and shared keys, and automatically generates a tailored `createEnv` factory inside `generated/env.gen.ts` that includes the complete, compiled `runtimeEnv` block using Nuxt's `runtimeConfig`. You get the benefits of typesafe validation without manual mapping boilerplate.
-
----
 
 ## How does the compile-time client security work?
 
@@ -43,8 +37,6 @@ If any module running in the client context attempts to resolve or import `@arke
 ```
 
 This guarantees that private server keys, validation schemas, and database constraints never bloat or leak into browser bundles.
-
----
 
 ## When should I use the strict layout?
 
