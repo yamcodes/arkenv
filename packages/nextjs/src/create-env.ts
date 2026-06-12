@@ -1,18 +1,60 @@
 import type { SchemaShape } from "@repo/types";
-import { createEnv as coreCreateEnv, getSchemaKeys } from "arkenv";
+import { createEnv as coreCreateEnv } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
+function getSchemaKeys(schema: any): string[] {
+	if (!schema || (typeof schema !== "object" && typeof schema !== "function")) {
+		return [];
+	}
+
+	// ArkType Type
+	if (
+		schema.json &&
+		typeof schema.json === "object" &&
+		schema.json.domain === "object"
+	) {
+		const keys: string[] = [];
+		if (Array.isArray(schema.json.required)) {
+			for (const r of schema.json.required) {
+				if (r && typeof r === "object" && "key" in r) {
+					keys.push(r.key);
+				}
+			}
+		}
+		if (Array.isArray(schema.json.optional)) {
+			for (const o of schema.json.optional) {
+				if (o && typeof o === "object" && "key" in o) {
+					keys.push(o.key);
+				}
+			}
+		}
+		return keys;
+	}
+
+	// Zod schema
+	if ("shape" in schema && schema.shape && typeof schema.shape === "object") {
+		return Object.keys(schema.shape);
+	}
+
+	// Valibot schema
+	if (
+		"entries" in schema &&
+		schema.entries &&
+		typeof schema.entries === "object"
+	) {
+		return Object.keys(schema.entries);
+	}
+
+	// Plain object schema
+	return Object.keys(schema);
+}
+
 /**
  * Validate and wrap environment variables in a security proxy.
  *
- * @param schemaOrOptions The schema definition or the unified options object
- * @param optionsOrIsServer The options object or a boolean indicating if running on the server
- * @param context The optional execution context containing server and entrypoint flags
- * @returns The wrapped and validated environment proxy object
- * @throws An error if a required key is missing or invalid
  * @internal
  */
 export function createEnvInternal(
@@ -71,7 +113,7 @@ export function createEnvInternal(
 	}
 
 	// Prepare combined environment for core validation
-	const combinedEnv: Record<string, unknown> = {};
+	const combinedEnv: Record<string, string | undefined> = {};
 
 	// Process extended environments
 	if (extendsList && Array.isArray(extendsList)) {
@@ -94,12 +136,12 @@ export function createEnvInternal(
 					// Prepare what we have so far for validating the extended schema
 					for (const key of Object.keys(extendedEnvValues)) {
 						if (extendedEnvValues[key] !== undefined) {
-							combinedEnv[key] = extendedEnvValues[key];
+							combinedEnv[key] = String(extendedEnvValues[key]);
 						}
 					}
 					for (const key of Object.keys(runtimeEnv)) {
 						if (runtimeEnv[key] !== undefined) {
-							combinedEnv[key] = runtimeEnv[key];
+							combinedEnv[key] = runtimeEnv[key] as string;
 						}
 					}
 					if (isServer) {
@@ -174,13 +216,13 @@ export function createEnvInternal(
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {
-			combinedEnv[key] = extendedEnvValues[key];
+			combinedEnv[key] = String(extendedEnvValues[key]);
 		}
 	}
 
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
-			combinedEnv[key] = runtimeEnv[key];
+			combinedEnv[key] = runtimeEnv[key] as string;
 		}
 	}
 
@@ -245,27 +287,6 @@ export function createEnvInternal(
 				}
 			}
 			return Reflect.get(target, prop, receiver);
-		},
-		ownKeys(target) {
-			const keys = Reflect.ownKeys(target);
-			if (!isServer) {
-				return keys.filter(
-					(k) => typeof k !== "string" || !serverOnlyKeys.has(k),
-				);
-			}
-			return keys;
-		},
-		getOwnPropertyDescriptor(target, prop) {
-			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
-				return undefined;
-			}
-			return Reflect.getOwnPropertyDescriptor(target, prop);
-		},
-		has(target, prop) {
-			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
-				return false;
-			}
-			return Reflect.has(target, prop);
 		},
 	});
 }

@@ -203,7 +203,7 @@ export function createEnvInternal(
 
 	const mergedValidated = { ...extendedEnvValues, ...validated };
 
-	// Return a Proxy wrapper
+	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client
 	return new Proxy(mergedValidated, {
 		get(target, prop, receiver) {
 			if (prop === EXTENDED_ENV) {
@@ -246,6 +246,8 @@ export function createEnvInternal(
 			}
 			return Reflect.get(target, prop, receiver);
 		},
+		// Intercept Object.keys(), Object.getOwnPropertyNames(), Reflect.ownKeys()
+		// to prevent enumerating server-only keys on the client
 		ownKeys(target) {
 			const keys = Reflect.ownKeys(target);
 			if (!isServer) {
@@ -255,12 +257,14 @@ export function createEnvInternal(
 			}
 			return keys;
 		},
+		// Intercept Object.getOwnPropertyDescriptor() to hide server-only properties on the client
 		getOwnPropertyDescriptor(target, prop) {
 			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
 				return undefined;
 			}
 			return Reflect.getOwnPropertyDescriptor(target, prop);
 		},
+		// Intercept "key in obj" existence checks to hide server-only keys on the client
 		has(target, prop) {
 			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
 				return false;

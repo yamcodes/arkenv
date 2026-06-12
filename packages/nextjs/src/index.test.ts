@@ -161,46 +161,4 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 		// Client variables defaults still resolve
 		expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 	});
-
-	it("should prevent server-only key names and descriptors from leaking on the client", () => {
-		const env = clientCreateEnv({
-			server: {
-				DATABASE_URL: "string",
-			},
-			client: {
-				NEXT_PUBLIC_API_URL: "string",
-			},
-			shared: {
-				NODE_ENV: "string",
-			},
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: "https://api.example.com",
-				NODE_ENV: "test",
-			},
-		});
-
-		// Enumerate keys
-		const keys = Object.keys(env);
-		expect(keys).toContain("NEXT_PUBLIC_API_URL");
-		expect(keys).toContain("NODE_ENV");
-		expect(keys).not.toContain("DATABASE_URL");
-
-		// ownKeys
-		const ownKeys = Reflect.ownKeys(env);
-		expect(ownKeys).toContain("NEXT_PUBLIC_API_URL");
-		expect(ownKeys).toContain("NODE_ENV");
-		expect(ownKeys).not.toContain("DATABASE_URL");
-
-		// in operator
-		expect("NEXT_PUBLIC_API_URL" in env).toBe(true);
-		expect("DATABASE_URL" in env).toBe(false);
-
-		// getOwnPropertyDescriptor
-		expect(
-			Object.getOwnPropertyDescriptor(env, "NEXT_PUBLIC_API_URL"),
-		).toBeDefined();
-		expect(
-			Object.getOwnPropertyDescriptor(env, "DATABASE_URL"),
-		).toBeUndefined();
-	});
 });

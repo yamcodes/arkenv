@@ -35,6 +35,9 @@ export type Infer<T> = T extends SchemaShape
 	? distill.Out<at.infer<T, $>>
 	: InferType<T>;
 
+// Changed from Dict<string> to Record<string, unknown> to allow framework adapters
+// (like Nuxt) to pass un-coerced runtime config values directly to coreCreateEnv,
+// delegating type coercion and validation fully to the core validator.
 type RuntimeEnvironment = Record<string, unknown>;
 
 /**

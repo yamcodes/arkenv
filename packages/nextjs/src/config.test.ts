@@ -406,7 +406,7 @@ describe("withArkEnv wrapper", () => {
 		).toThrow("[ArkEnv] Strict layout requires");
 	});
 
-	it("should close the previous watcher when initialized multiple times in development", async () => {
+	it("should close the previous watcher when initialized multiple times in development", () => {
 		useMockWatcher = true;
 		mockWatch.mockClear();
 		mockClose.mockClear();
@@ -431,7 +431,6 @@ describe("withArkEnv wrapper", () => {
 
 			// Call withArkEnv a second time
 			withArkEnv({ reactStrictMode: true }, { schemaPath });
-			await new Promise((resolve) => setTimeout(resolve, 0));
 			expect(mockWatch).toHaveBeenCalledTimes(2);
 
 			expect(mockClose).toHaveBeenCalledTimes(1);
