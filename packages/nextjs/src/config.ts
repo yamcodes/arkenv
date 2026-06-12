@@ -285,40 +285,50 @@ function watchSchema(
 	layout?: "simple" | "strict",
 ) {
 	const previousWatcher = globalThis.__arkenv_watcher__;
-	if (previousWatcher && typeof previousWatcher.close === "function") {
-		previousWatcher.close().catch((err: unknown) => {
+
+	const startWatch = () => {
+		try {
+			const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
+			globalThis.__arkenv_watcher__ = watcher;
+
+			watcher.on("change", () => {
+				try {
+					const mainSchemaPath = Array.isArray(schemaPath)
+						? schemaPath[0]
+						: schemaPath;
+					runCodegen(mainSchemaPath, outputPath, layout);
+				} catch (err: unknown) {
+					const message = err instanceof Error ? err.message : String(err);
+					// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
+					console.error(
+						`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
+					);
+				}
+			});
+		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : String(err);
 			// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
 			console.error(
-				`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
+				`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
 			);
-		});
-	}
+		}
+	};
 
-	try {
-		const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
-		globalThis.__arkenv_watcher__ = watcher;
-
-		watcher.on("change", () => {
-			try {
-				const mainSchemaPath = Array.isArray(schemaPath)
-					? schemaPath[0]
-					: schemaPath;
-				runCodegen(mainSchemaPath, outputPath, layout);
-			} catch (err: unknown) {
+	if (previousWatcher && typeof previousWatcher.close === "function") {
+		previousWatcher
+			.close()
+			.catch((err: unknown) => {
 				const message = err instanceof Error ? err.message : String(err);
 				// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
 				console.error(
-					`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
+					`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
 				);
-			}
-		});
-	} catch (err: unknown) {
-		const message = err instanceof Error ? err.message : String(err);
-		// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
-		console.error(
-			`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
-		);
+			})
+			.finally(() => {
+				startWatch();
+			});
+	} else {
+		startWatch();
 	}
 }
 

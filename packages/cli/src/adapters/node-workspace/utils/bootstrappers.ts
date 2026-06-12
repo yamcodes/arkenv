@@ -126,6 +126,7 @@ export async function findNuxtConfig(
 		"nuxt.config.js",
 		"nuxt.config.mts",
 		"nuxt.config.mjs",
+		"nuxt.config.cjs",
 	];
 	for (const file of filenames) {
 		const fullPath = path.resolve(cwd, file);

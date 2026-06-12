@@ -71,6 +71,10 @@ export async function detectFramework(
 		return "nuxt";
 	} catch {}
 	try {
+		await fsp.access(path.join(cwd, "nuxt.config.mts"));
+		return "nuxt";
+	} catch {}
+	try {
 		await fsp.access(path.join(cwd, "nuxt.config.mjs"));
 		return "nuxt";
 	} catch {}

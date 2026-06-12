@@ -123,37 +123,47 @@ export function watchSchema(
 	layout?: "simple" | "strict",
 ) {
 	const previousWatcher = globalThis.__arkenv_nuxt_watcher__;
-	if (previousWatcher && typeof previousWatcher.close === "function") {
-		previousWatcher.close().catch((err: unknown) => {
+
+	const startWatch = () => {
+		try {
+			const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
+			globalThis.__arkenv_nuxt_watcher__ = watcher;
+
+			watcher.on("change", () => {
+				try {
+					const mainSchemaPath = Array.isArray(schemaPath)
+						? schemaPath[0]
+						: schemaPath;
+					runCodegen(mainSchemaPath, outputPath, layout);
+				} catch (err: unknown) {
+					const message = err instanceof Error ? err.message : String(err);
+					console.error(
+						`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
+					);
+				}
+			});
+		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : String(err);
 			console.error(
-				`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
+				`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
 			);
-		});
-	}
+		}
+	};
 
-	try {
-		const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
-		globalThis.__arkenv_nuxt_watcher__ = watcher;
-
-		watcher.on("change", () => {
-			try {
-				const mainSchemaPath = Array.isArray(schemaPath)
-					? schemaPath[0]
-					: schemaPath;
-				runCodegen(mainSchemaPath, outputPath, layout);
-			} catch (err: unknown) {
+	if (previousWatcher && typeof previousWatcher.close === "function") {
+		previousWatcher
+			.close()
+			.catch((err: unknown) => {
 				const message = err instanceof Error ? err.message : String(err);
 				console.error(
-					`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
+					`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
 				);
-			}
-		});
-	} catch (err: unknown) {
-		const message = err instanceof Error ? err.message : String(err);
-		console.error(
-			`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
-		);
+			})
+			.finally(() => {
+				startWatch();
+			});
+	} else {
+		startWatch();
 	}
 }
 
@@ -561,7 +571,7 @@ function generateFactoryCode(
 	sharedKeys: string[],
 ): string {
 	const serverEnvLines = serverKeys
-		.map((key) => `\t\t\t${key}: config?.${key} ?? process.env.${key},`)
+		.map((key) => `\t\t\t\t${key}: config?.${key} ?? process.env.${key},`)
 		.join("\n");
 	const clientSharedEnvLines = Array.from(
 		new Set([...clientKeys, ...sharedKeys]),
@@ -569,7 +579,12 @@ function generateFactoryCode(
 		.map((key) => `\t\t\t${key}: config?.public?.${key} ?? process.env.${key},`)
 		.join("\n");
 
-	const allLines = [serverEnvLines, clientSharedEnvLines]
+	const serverGuard =
+		serverKeys.length > 0
+			? `\t\t\t...(isServer ? {\n${serverEnvLines}\n\t\t\t} : {}),`
+			: "";
+
+	const runtimeEnvLines = [clientSharedEnvLines, serverGuard]
 		.filter(Boolean)
 		.join("\n");
 
@@ -609,10 +624,12 @@ export function createEnv<
 	shared?: TShared;
 }): Readonly<Infer<TServer & TClient & TShared>> {
 	const config = getRuntimeConfig();
+	const isServer = typeof window === "undefined";
 	return coreCreateEnv({
 		...options,
+		server: isServer ? options.server : undefined,
 		runtimeEnv: {
-${allLines}
+${runtimeEnvLines}
 		},
 	} as any) as any;
 }

@@ -198,7 +198,13 @@ export class Executor {
 					}
 				} else if (plan.bootstrap.framework === "nuxt") {
 					this.reporter.step("Generating Nuxt environment bindings...");
-					const script = `import('@arkenv/nuxt/config').then(({ runCodegen }) => { const path = require('path'); const schemaPath = path.resolve(process.cwd(), '${plan.metadata.displayPath}'); const outputPath = path.join(path.dirname(schemaPath), 'generated', 'env.gen.ts'); runCodegen(schemaPath, outputPath); }).catch(err => { console.error(err); process.exit(1); });`;
+					const schemaPath = path.resolve(plan.cwd, plan.metadata.displayPath);
+					const outputPath = path.join(
+						path.dirname(schemaPath),
+						"generated",
+						"env.gen.ts",
+					);
+					const script = `import('@arkenv/nuxt/config').then(({ runCodegen }) => { runCodegen('${schemaPath}', '${outputPath}'); }).catch(err => { console.error(err); process.exit(1); });`;
 					try {
 						await this.workspace.execute("node", ["-e", script], plan.cwd);
 						this.reporter.info(`Generated ${code("env.gen.ts")} for Nuxt`);

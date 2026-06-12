@@ -34,18 +34,37 @@ function getSchemaKeys(schema: any): string[] {
 		return keys;
 	}
 
-	// Zod schema
-	if ("shape" in schema && schema.shape && typeof schema.shape === "object") {
-		return Object.keys(schema.shape);
+	// Standard Schema / JSON Schema fallback
+	const std = schema["~standard"];
+	const jsonSchemaInput =
+		(typeof std?.jsonSchema?.input === "function" && std.jsonSchema.input) ||
+		(typeof schema.jsonSchema?.input === "function" && schema.jsonSchema.input);
+
+	if (jsonSchemaInput) {
+		try {
+			const json = jsonSchemaInput({ target: "draft-07" });
+			if (json && typeof json === "object" && json.properties) {
+				return Object.keys(json.properties);
+			}
+		} catch {}
 	}
 
-	// Valibot schema
-	if (
-		"entries" in schema &&
-		schema.entries &&
-		typeof schema.entries === "object"
-	) {
-		return Object.keys(schema.entries);
+	if (typeof schema.toJSONSchema === "function") {
+		try {
+			const json = schema.toJSONSchema();
+			if (json && typeof json === "object" && json.properties) {
+				return Object.keys(json.properties);
+			}
+		} catch {}
+	}
+
+	if (typeof schema.toStandardJSONSchema?.v1 === "function") {
+		try {
+			const json = schema.toStandardJSONSchema.v1();
+			if (json && typeof json === "object" && json.properties) {
+				return Object.keys(json.properties);
+			}
+		} catch {}
 	}
 
 	// Plain object schema
@@ -141,7 +160,7 @@ export function createEnvInternal(
 					}
 					for (const key of Object.keys(runtimeEnv)) {
 						if (runtimeEnv[key] !== undefined) {
-							combinedEnv[key] = runtimeEnv[key] as string;
+							combinedEnv[key] = String(runtimeEnv[key]);
 						}
 					}
 					if (isServer) {
@@ -222,7 +241,7 @@ export function createEnvInternal(
 
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
-			combinedEnv[key] = runtimeEnv[key] as string;
+			combinedEnv[key] = String(runtimeEnv[key]);
 		}
 	}
 
@@ -287,6 +306,27 @@ export function createEnvInternal(
 				}
 			}
 			return Reflect.get(target, prop, receiver);
+		},
+		ownKeys(target) {
+			const keys = Reflect.ownKeys(target);
+			if (!isServer) {
+				return keys.filter(
+					(k) => typeof k !== "string" || !serverOnlyKeys.has(k),
+				);
+			}
+			return keys;
+		},
+		getOwnPropertyDescriptor(target, prop) {
+			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
+				return undefined;
+			}
+			return Reflect.getOwnPropertyDescriptor(target, prop);
+		},
+		has(target, prop) {
+			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
+				return false;
+			}
+			return Reflect.has(target, prop);
 		},
 	});
 }
