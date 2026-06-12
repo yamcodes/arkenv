@@ -2,11 +2,14 @@ import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
-import { stripEmptyStrings } from "@/coercion/shared";
+import {
+	applyCoercion,
+	findCoercionPaths,
+	stripEmptyStrings,
+} from "@/coercion/shared";
 import { ArkEnvError, type ValidationIssue } from "@/core";
 import type { ArkEnvConfig, EnvSchema } from "@/create-env";
 import { styleText } from "@/utils/style-text";
-import { coerce } from "./coercion/coerce";
 
 /**
  * Re-export of ArkType's `distill` utilities.
@@ -96,19 +99,28 @@ export function parse<const T extends SchemaShape>(
 	// Apply the `onUndeclaredKey` option
 	const schemaWithKeys = schema.onUndeclaredKey(onUndeclaredKey);
 
-	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
-	let finalSchema = schemaWithKeys;
-	if (shouldCoerce) {
-		finalSchema = coerce($.type, schemaWithKeys, { arrayFormat });
-	}
-
 	// Optionally treat empty strings as undefined
 	const processedEnv = emptyAsUndefined
 		? stripEmptyStrings(env as Record<string, string | undefined>)
 		: env;
 
+	let coercedEnv = { ...processedEnv } as Record<string, unknown>;
+
+	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
+	if (shouldCoerce) {
+		const json = schemaWithKeys.in.toJsonSchema({
+			fallback: (ctx: any) => ctx.base,
+		});
+		const targets = findCoercionPaths(json as any);
+		if (targets.length > 0) {
+			coercedEnv = applyCoercion(coercedEnv, targets, {
+				arrayFormat,
+			}) as Record<string, unknown>;
+		}
+	}
+
 	// Validate the environment variables
-	const validatedEnv = finalSchema(processedEnv);
+	const validatedEnv = schemaWithKeys(coercedEnv);
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors
 	if (validatedEnv instanceof ArkErrors) {
