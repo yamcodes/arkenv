@@ -2,7 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { defineNuxtModule, useLogger } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
+import { name, version, peerDependencies } from "../package.json";
 import {
+	closeWatcher,
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
@@ -21,8 +23,12 @@ export type ModuleOptions = {
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
-		name: "@arkenv/nuxt",
+		name,
+		version,
 		configKey: "arkenv",
+		compatibility: {
+			nuxt: peerDependencies?.nuxt,
+		},
 	},
 	defaults: {},
 	setup(options, nuxt) {
@@ -70,7 +76,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 							path.join(baseDir, "server.ts"),
 						].filter(fs.existsSync)
 					: [schemaPath];
-			watchSchema(watchPaths, outputPath, resolvedLayout);
+			watchSchema(watchPaths, outputPath, resolvedLayout, logger);
+
+			nuxt.hook("close", async () => {
+				await closeWatcher(logger);
+			});
 		}
 
 		// 3. Register env keys to runtimeConfig

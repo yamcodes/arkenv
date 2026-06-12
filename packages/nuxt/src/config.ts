@@ -137,11 +137,13 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
  * @param schemaPath The absolute path or list of paths of schema files to watch
  * @param outputPath The absolute path where the generated code should be written
  * @param layout The layout option to pass to codegen
+ * @param logger An optional logger instance to record error messages
  */
 export function watchSchema(
 	schemaPath: string | string[],
 	outputPath: string,
 	layout?: "simple" | "strict",
+	logger?: { error: (msg: string) => void; info?: (msg: string) => void },
 ): void {
 	const previousWatcher = globalThis.__arkenv_nuxt_watcher__;
 
@@ -158,16 +160,24 @@ export function watchSchema(
 					runCodegen(mainSchemaPath, outputPath, layout);
 				} catch (err: unknown) {
 					const message = err instanceof Error ? err.message : String(err);
-					console.error(
-						`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
-					);
+					if (logger) {
+						logger.error(`Failed to regenerate env.gen.ts: ${message}`);
+					} else {
+						console.error(
+							`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
+						);
+					}
 				}
 			});
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : String(err);
-			console.error(
-				`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
-			);
+			if (logger) {
+				logger.error(`Failed to start watch on ${schemaPath}: ${message}`);
+			} else {
+				console.error(
+					`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
+				);
+			}
 		}
 	};
 
@@ -176,15 +186,45 @@ export function watchSchema(
 			.close()
 			.catch((err: unknown) => {
 				const message = err instanceof Error ? err.message : String(err);
-				console.error(
-					`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
-				);
+				if (logger) {
+					logger.error(`Failed to close previous watcher: ${message}`);
+				} else {
+					console.error(
+						`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
+					);
+				}
 			})
 			.finally(() => {
 				startWatch();
 			});
 	} else {
 		startWatch();
+	}
+}
+
+/**
+ * Close the schema watcher if one is running.
+ *
+ * @param logger An optional logger instance to record errors
+ */
+export async function closeWatcher(logger?: {
+	error: (msg: string) => void;
+	info?: (msg: string) => void;
+}): Promise<void> {
+	const watcher = globalThis.__arkenv_nuxt_watcher__;
+	if (watcher && typeof watcher.close === "function") {
+		try {
+			await watcher.close();
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : String(err);
+			if (logger) {
+				logger.error(`Failed to close watcher: ${message}`);
+			} else {
+				console.error(`[ArkEnv Watcher] Failed to close watcher: ${message}`);
+			}
+		} finally {
+			globalThis.__arkenv_nuxt_watcher__ = undefined;
+		}
 	}
 }
 

@@ -77,4 +77,54 @@ describe("Nuxt module integration", () => {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
 	});
+
+	it("should set up watcher in dev mode and register close hook", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-dev-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				server: { DATABASE_URL: "string" },
+				client: { NUXT_PUBLIC_API_URL: "string" },
+				shared: { NODE_ENV: "string" }
+			});
+			`,
+		);
+
+		const mockNuxt: any = {
+			options: {
+				dev: true,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			// Run module setup
+			await (module as any).setup(
+				{
+					schemaPath: "./env.ts",
+					outputPath: "./generated/env.gen.ts",
+				},
+				mockNuxt,
+			);
+
+			// Check if vite hook was registered
+			expect(mockNuxt.hook).toHaveBeenCalledWith(
+				"vite:extendConfig",
+				expect.any(Function),
+			);
+
+			// Check if close hook was registered
+			expect(mockNuxt.hook).toHaveBeenCalledWith("close", expect.any(Function));
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 });
