@@ -20,3 +20,15 @@ export type MergeExtends<TExtends extends readonly unknown[] | undefined> =
 	TExtends extends readonly unknown[]
 		? UnionToIntersection<ResolveExtendsElement<TExtends[number]>>
 		: {};
+
+export type LayoutMode = "simple" | "strict";
+
+export type ResolvedLayout = {
+	layout: LayoutMode;
+	baseDir: string;
+};
+
+export type Logger = {
+	error: (msg: string) => void;
+	info?: (msg: string) => void;
+};

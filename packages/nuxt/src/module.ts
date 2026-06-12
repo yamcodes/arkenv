@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { defineNuxtModule, useLogger } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
-import { name, version, peerDependencies } from "../package.json";
+import { name, peerDependencies, version } from "../package.json";
 import {
 	closeWatcher,
 	extractClientKeys,
