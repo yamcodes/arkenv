@@ -12,6 +12,14 @@ vi.mock("@nuxt/kit", () => {
 				setup: config.setup,
 			};
 		},
+		useLogger: () => {
+			return {
+				info: vi.fn(),
+				warn: vi.fn(),
+				error: vi.fn(),
+				success: vi.fn(),
+			};
+		},
 	};
 });
 

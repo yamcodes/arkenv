@@ -123,6 +123,30 @@ describe("createEnv (Nuxt runtime)", () => {
 			}).toThrow(
 				"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
 			);
+
+			// Enumerate keys
+			const keys = Object.keys(env);
+			expect(keys).toContain("NUXT_PUBLIC_API_URL");
+			expect(keys).toContain("NODE_ENV");
+			expect(keys).not.toContain("DATABASE_URL");
+
+			// ownKeys
+			const ownKeys = Reflect.ownKeys(env);
+			expect(ownKeys).toContain("NUXT_PUBLIC_API_URL");
+			expect(ownKeys).toContain("NODE_ENV");
+			expect(ownKeys).not.toContain("DATABASE_URL");
+
+			// in operator
+			expect("NUXT_PUBLIC_API_URL" in env).toBe(true);
+			expect("DATABASE_URL" in env).toBe(false);
+
+			// getOwnPropertyDescriptor
+			expect(
+				Object.getOwnPropertyDescriptor(env, "NUXT_PUBLIC_API_URL"),
+			).toBeDefined();
+			expect(
+				Object.getOwnPropertyDescriptor(env, "DATABASE_URL"),
+			).toBeUndefined();
 		} finally {
 			(globalThis as any).window = originalWindow;
 		}
