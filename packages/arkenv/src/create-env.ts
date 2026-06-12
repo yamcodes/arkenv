@@ -121,9 +121,11 @@ export function createEnv<const T extends SchemaShape>(
 }
 
 /**
- * Extracts the keys from a schema definition dynamically.
+ * Extract the keys from a schema definition dynamically.
  * Supports plain objects, ArkType schemas, and Standard Schema validators.
  *
+ * @param schema The schema definition to extract keys from
+ * @returns An array of extracted key names
  * @internal
  */
 // biome-ignore lint/suspicious/noExplicitAny: Need to handle various schema formats

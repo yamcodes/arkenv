@@ -8,6 +8,11 @@ export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 /**
  * Validate and wrap environment variables in a security proxy.
  *
+ * @param schemaOrOptions The schema definition or the unified options object
+ * @param optionsOrIsServer The options object or a boolean indicating if running on the server
+ * @param context The optional execution context containing server and entrypoint flags
+ * @returns The wrapped and validated environment proxy object
+ * @throws An error if a required key is missing or invalid
  * @internal
  */
 export function createEnvInternal(

@@ -1,11 +1,18 @@
 ---
 "@arkenv/cli": patch
 "@arkenv/nuxt": patch
+"@arkenv/nextjs": patch
+"arkenv": patch
 ---
 
 #### Introduce Nuxt support to ArkEnv
 
 Add the `@arkenv/nuxt` package and Nuxt module integration to validate and parse environment variables at build and runtime. Support automated code generation and watch mode during development.
+
+#### Centralize schema key extraction and fix type coercion
+
+- Centralize the `getSchemaKeys` utility inside `arkenv` core to share it across framework integrations.
+- Remove destructive `String()` coercion in `@arkenv/nuxt` and `@arkenv/nextjs` to prevent validation failures on structured environment data.
 
 Usage:
 

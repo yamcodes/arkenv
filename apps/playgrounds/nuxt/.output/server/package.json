@@ -1,0 +1,30 @@
+{
+  "name": "nuxt-playground-prod",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@ark/schema": "0.56.0",
+    "@ark/util": "0.56.0",
+    "@babel/parser": "7.29.3",
+    "@vue/compiler-core": "3.5.35",
+    "@vue/compiler-dom": "3.5.35",
+    "@vue/compiler-ssr": "3.5.35",
+    "@vue/reactivity": "3.5.35",
+    "@vue/runtime-core": "3.5.35",
+    "@vue/runtime-dom": "3.5.35",
+    "@vue/server-renderer": "3.5.35",
+    "@vue/shared": "3.5.35",
+    "arkregex": "0.0.5",
+    "arktype": "2.2.0",
+    "devalue": "5.8.1",
+    "entities": "7.0.1",
+    "estree-walker": "2.0.2",
+    "hookable": "6.1.1",
+    "source-map-js": "1.2.1",
+    "ufo": "1.6.4",
+    "unhead": "2.1.15",
+    "vue": "3.5.35",
+    "vue-bundle-renderer": "2.2.0"
+  }
+}
