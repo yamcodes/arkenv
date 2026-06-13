@@ -1,14 +1,7 @@
 import type { $ } from "@repo/scope";
-import type {
-	CompiledEnvSchema,
-	Dict,
-	InferType,
-	SchemaShape,
-} from "@repo/types";
+import type { CompiledEnvSchema, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import type { ArkEnvError } from "./core";
 import { parse } from "./arktype";
-import { getSchemaKeys } from "./schema";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -129,5 +122,3 @@ export function createEnv<const T extends SchemaShape>(
 	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
 	return parse(def as any, config);
 }
-
-

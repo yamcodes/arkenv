@@ -1,5 +1,6 @@
-export { runCodegen } from "./codegen";
+export type { LayoutMode, Logger, ResolvedLayout } from "@arkenv/build-utils";
 export {
+	closeWatcher,
 	extractArkenvBlock,
 	extractClientKeys,
 	extractKeys,
@@ -7,7 +8,6 @@ export {
 	extractSharedKeys,
 	findSchemaPath,
 	resolveLayout,
-	closeWatcher,
 	watchSchema,
 } from "@arkenv/build-utils";
-export type { LayoutMode, Logger, ResolvedLayout } from "@arkenv/build-utils";
+export { runCodegen } from "./codegen";

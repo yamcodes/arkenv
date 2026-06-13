@@ -1,18 +1,18 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+	extractClientKeys,
+	extractKeys,
+	extractSharedKeys,
 	findSchemaPath,
 	resolveLayout,
 	watchSchema,
-	extractKeys,
-	extractClientKeys,
-	extractSharedKeys,
 } from "@arkenv/build-utils";
 
 // Re-export key extraction utilities for backwards compatibility and testing
 export {
-	extractKeys,
 	extractClientKeys,
+	extractKeys,
 	extractSharedKeys,
 } from "@arkenv/build-utils";
 

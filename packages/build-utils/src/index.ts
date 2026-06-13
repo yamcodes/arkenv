@@ -175,7 +175,10 @@ export function extractKeys(content: string): {
  * @param blockName The name of the block to extract
  * @returns The body of the block as a string, or null if not found
  */
-export function extractBlock(content: string, blockName: string): string | null {
+export function extractBlock(
+	content: string,
+	blockName: string,
+): string | null {
 	const regex = new RegExp(
 		`\\b${blockName}\\s*:\\s*(?:[a-zA-Z0-9_$.]+\\s*\\(\\s*)?\\{`,
 		"g",
@@ -550,7 +553,9 @@ export function watchSchema(
 					if (logger) {
 						logger.error(`Failed to regenerate env: ${message}`);
 					} else {
-						console.error(`[ArkEnv Watcher] Failed to regenerate env: ${message}`);
+						console.error(
+							`[ArkEnv Watcher] Failed to regenerate env: ${message}`,
+						);
 					}
 				}
 			});
@@ -567,18 +572,16 @@ export function watchSchema(
 	};
 
 	if (previousWatcher && typeof previousWatcher.close === "function") {
-		previousWatcher
-			.close()
-			.catch((err: unknown) => {
-				const message = err instanceof Error ? err.message : String(err);
-				if (logger) {
-					logger.error(`Failed to close previous watcher: ${message}`);
-				} else {
-					console.error(
-						`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
-					);
-				}
-			});
+		previousWatcher.close().catch((err: unknown) => {
+			const message = err instanceof Error ? err.message : String(err);
+			if (logger) {
+				logger.error(`Failed to close previous watcher: ${message}`);
+			} else {
+				console.error(
+					`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
+				);
+			}
+		});
 	}
 	startWatch();
 }
