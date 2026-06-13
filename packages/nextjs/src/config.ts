@@ -7,14 +7,14 @@ import {
 	findSchemaPath,
 	resolveLayout,
 	watchSchema,
-} from "@arkenv/build-tools";
+} from "@arkenv/build";
 
 // Re-export key extraction utilities for backwards compatibility and testing
 export {
 	extractClientKeys,
 	extractKeys,
 	extractSharedKeys,
-} from "@arkenv/build-tools";
+} from "@arkenv/build";
 
 /**
  * Configuration options for the ArkEnv Next.js integration.

@@ -1,7 +1,7 @@
 ---
 "@arkenv/nuxt": patch
 "@arkenv/cli": patch
-"@arkenv/build-tools": patch
+"@arkenv/build": patch
 "@arkenv/nextjs": patch
 ---
 

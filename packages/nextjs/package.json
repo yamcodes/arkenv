@@ -9,7 +9,7 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
-		"@arkenv/build-tools": "workspace:*",
+		"@arkenv/build": "workspace:*",
 		"arkenv": "workspace:*",
 		"chokidar": "^4.0.3",
 		"server-only": "^0.0.1"

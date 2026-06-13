@@ -7,7 +7,7 @@ import {
 	extractSharedKeys,
 	type LayoutMode,
 	resolveLayout,
-} from "@arkenv/build-tools";
+} from "@arkenv/build";
 
 /**
  * Run code generation to read the schema file and generate the env.gen.ts helper.
