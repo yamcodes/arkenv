@@ -585,7 +585,7 @@ function parseBlockKeys(blockContent: string): string[] {
 }
 
 /**
- * Generate the TypeScript factory code for the tailored createEnv helper.
+ * Generate the TypeScript factory code for the tailored arkenv helper.
  *
  * @param clientKeys The client environment variable keys
  * @param sharedKeys The shared environment variable keys
@@ -609,12 +609,12 @@ function generateFactoryCode(
  * @see https://arkenv.js.org
  */
 
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { Infer } from "@arkenv/nextjs";
 
 export { type } from "@arkenv/nextjs";
 
-export function createEnv<
+export function arkenv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
 	const TShared extends Record<string, any> = {},
@@ -625,7 +625,7 @@ export function createEnv<
 	};
 	shared?: TShared;
 }): Readonly<Infer<TServer & TClient & TShared>> {
-	return coreCreateEnv({
+	return coreArkenv({
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
@@ -633,13 +633,12 @@ ${runtimeEnvLines}
 	} as any) as any;
 }
 
-const arkenv = createEnv;
 export default arkenv;
 `;
 }
 
 /**
- * Generate the TypeScript factory code for the strict-layout `createEnv` helper.
+ * Generate the TypeScript factory code for the strict-layout `arkenv` helper.
  *
  * Unlike `generateFactoryCode`, this variant imports from `@arkenv/nextjs/client`
  * and exposes a positional-schema signature suited for split-file projects.
@@ -666,11 +665,11 @@ function generateClientFactoryCode(
  * @see https://arkenv.js.org
  */
 
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs/client";
+import { arkenv as coreArkenv } from "@arkenv/nextjs/client";
 
 export { type } from "@arkenv/nextjs/client";
 
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, any> = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -681,7 +680,7 @@ export function createEnv<
 		extends?: [...TExtends];
 	},
 ) {
-	return coreCreateEnv<TSchema, TExtends>(schema as any, {
+	return coreArkenv<TSchema, TExtends>(schema as any, {
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
@@ -689,7 +688,6 @@ ${runtimeEnvLines}
 	} as any);
 }
 
-const arkenv = createEnv;
 export default arkenv;
 `;
 }

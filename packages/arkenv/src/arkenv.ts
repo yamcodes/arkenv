@@ -38,7 +38,7 @@ export type Infer<T> = T extends SchemaShape
 type RuntimeEnvironment = Dict<string>;
 
 /**
- * Configuration options for `createEnv`
+ * Configuration options for `arkenv`
  */
 export type ArkEnvConfig = {
 	/**
@@ -100,19 +100,19 @@ export type ArkEnvConfig = {
  * @returns The parsed environment variables
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
  */
-export function createEnv<const T extends SchemaShape>(
+export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
 	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
-export function createEnv<T extends CompiledEnvSchema>(
+export function arkenv<T extends CompiledEnvSchema>(
 	def: T,
 	config?: ArkEnvConfig,
 ): InferType<T>;
-export function createEnv<const T extends SchemaShape>(
+export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>> | InferType<typeof def>;
-export function createEnv<const T extends SchemaShape>(
+export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config: ArkEnvConfig = {},
 ): distill.Out<at.infer<T, $>> | InferType<typeof def> {

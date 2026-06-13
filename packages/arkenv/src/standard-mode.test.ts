@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import { createEnv } from "./standard.ts";
+import { arkenv } from "./standard.ts";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
@@ -17,7 +17,7 @@ describe("Standard Mode Type Inference", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 		vi.stubEnv("BOOLEAN_VAR", "true");
 
-		const env = createEnv({
+		const env = arkenv({
 			STRING_VAR: createMockStandardSchema("test-string"),
 			NUMBER_VAR: createMockStandardSchema(123),
 			BOOLEAN_VAR: createMockStandardSchema(true),
@@ -37,7 +37,7 @@ describe("Standard Mode Type Inference", () => {
 	it("should not have ArkType-specific types in standard mode", () => {
 		vi.stubEnv("TEST_VAR", "value");
 
-		const env = createEnv({
+		const env = arkenv({
 			TEST_VAR: createMockStandardSchema("output"),
 		});
 
@@ -49,7 +49,7 @@ describe("Standard Mode Type Inference", () => {
 		vi.stubEnv("OBJECT_VAR", "{}");
 
 		type ExpectedOutput = { foo: string; bar: number };
-		const env = createEnv({
+		const env = arkenv({
 			OBJECT_VAR: createMockStandardSchema<ExpectedOutput>({
 				foo: "test",
 				bar: 42,
@@ -62,7 +62,7 @@ describe("Standard Mode Type Inference", () => {
 
 	it("should throw error when ArkType DSL strings are used in standard mode", () => {
 		expect(() =>
-			createEnv({
+			arkenv({
 				TEST_VAR: "string",
 			} as any),
 		).toThrow(/ArkType DSL strings are not supported in "standard" mode/);
@@ -70,7 +70,7 @@ describe("Standard Mode Type Inference", () => {
 
 	it("should throw error when non-standard validators are used", () => {
 		expect(() =>
-			createEnv({
+			arkenv({
 				TEST_VAR: { notAStandardSchema: true },
 			} as any),
 		).toThrow(/Invalid validator: expected a Standard Schema 1.0 validator/);
@@ -81,7 +81,7 @@ describe("Standard Mode Type Inference", () => {
 		vi.stubEnv("VAR2", "b");
 		vi.stubEnv("VAR3", "c");
 
-		const env = createEnv({
+		const env = arkenv({
 			VAR1: createMockStandardSchema("string-output"),
 			VAR2: createMockStandardSchema(999),
 			VAR3: createMockStandardSchema({ nested: "object" }),
@@ -129,7 +129,7 @@ describe("Standard Mode Coercion", () => {
 	it("should coerce by default", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 
-		const env = createEnv({
+		const env = arkenv({
 			NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }),
 		});
 
@@ -140,7 +140,7 @@ describe("Standard Mode Coercion", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 
 		expect(() =>
-			createEnv(
+			arkenv(
 				{ NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }) },
 				{ coerce: false },
 			),
@@ -151,7 +151,7 @@ describe("Standard Mode Coercion", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 		vi.stubEnv("BOOLEAN_VAR", "true");
 
-		const env = createEnv(
+		const env = arkenv(
 			{
 				NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }),
 				BOOLEAN_VAR: createMockStandardJSONSchema(true, { type: "boolean" }),
@@ -166,7 +166,7 @@ describe("Standard Mode Coercion", () => {
 	it("should coerce dates when coerce is true", () => {
 		vi.stubEnv("DATE_VAR", "2023-01-01T00:00:00.000Z");
 
-		const env = createEnv(
+		const env = arkenv(
 			{
 				DATE_VAR: createMockStandardJSONSchema(
 					new Date("2023-01-01T00:00:00.000Z"),
@@ -186,7 +186,7 @@ describe("Standard Mode Coercion", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 
 		expect(() =>
-			createEnv(
+			arkenv(
 				{
 					NUMBER_VAR: {
 						"~standard": {
@@ -209,7 +209,7 @@ describe("Standard Mode Coercion", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 
 		expect(() =>
-			createEnv({
+			arkenv({
 				NUMBER_VAR: {
 					"~standard": {
 						version: 1,
@@ -229,7 +229,7 @@ describe("Standard Mode Coercion", () => {
 		vi.stubEnv("NUMBER_VAR", "42");
 
 		const t = () =>
-			createEnv(
+			arkenv(
 				{
 					NUMBER_VAR: {
 						"~standard": {
@@ -288,7 +288,7 @@ describe("Standard Mode Coercion", () => {
 			},
 		};
 
-		const env = createEnv(
+		const env = arkenv(
 			{
 				ZOD_MINI_VAR: mockZodMiniValidator as any,
 				STNL_VAR: mockStnlValidator as any,
@@ -305,7 +305,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 	it("should treat empty strings as undefined when enabled", () => {
 		vi.stubEnv("STRING_VAR", "");
 
-		const env = createEnv(
+		const env = arkenv(
 			{
 				STRING_VAR: createMockStandardSchema("default-value"),
 			},
@@ -318,7 +318,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 	it("should pass empty strings through when disabled", () => {
 		vi.stubEnv("STRING_VAR", "");
 
-		const env = createEnv(
+		const env = arkenv(
 			{
 				STRING_VAR: createMockStandardSchema(""),
 			},

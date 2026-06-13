@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createEnv as clientCreateEnv } from "./index";
-import { createEnv as serverCreateEnv } from "./react-server";
+import { arkenv as clientArkenv } from "./index";
+import { arkenv as serverArkenv } from "./react-server";
 
-describe("createEnv (RSC / Server Entrypoint)", () => {
+describe("arkenv (RSC / Server Entrypoint)", () => {
 	it("should parse a basic environment variable", () => {
-		const env = serverCreateEnv({
+		const env = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -18,7 +18,7 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 
 	it("should enforce NEXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
 		expect(() => {
-			serverCreateEnv({
+			serverArkenv({
 				client: {
 					// @ts-expect-error - Client keys must be prefixed with NEXT_PUBLIC_
 					API_URL: "string",
@@ -34,7 +34,7 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 
 	it("should enforce that runtimeEnv contains all client and shared keys at compile-time and runtime", () => {
 		expect(() => {
-			serverCreateEnv({
+			serverArkenv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
@@ -50,7 +50,7 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 	});
 
 	it("should allow accessing server-only, client, and shared variables on the server", () => {
-		const env = serverCreateEnv({
+		const env = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -77,7 +77,7 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/fallback_db";
 
 		try {
-			const env = serverCreateEnv({
+			const env = serverArkenv({
 				server: {
 					DATABASE_URL: "string",
 				},
@@ -95,12 +95,12 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 	});
 });
 
-describe("createEnv (Client / SSR Entrypoint)", () => {
+describe("arkenv (Client / SSR Entrypoint)", () => {
 	it("should only validate client and shared schemas, skipping server schema validation", () => {
 		// Even if DATABASE_URL is required in server schema,
-		// and missing from runtimeEnv, clientCreateEnv should not throw validation errors
+		// and missing from runtimeEnv, clientArkenv should not throw validation errors
 		// because server validation is skipped in client mode.
-		const env = clientCreateEnv({
+		const env = clientArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -121,7 +121,7 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 	});
 
 	it("should throw an error when accessing a server-side variable (simulating SSR / pre-rendering)", () => {
-		const env = clientCreateEnv({
+		const env = clientArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -146,7 +146,7 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 	});
 
 	it("should support default values in schema when omitted or undefined in runtimeEnv", () => {
-		const env = clientCreateEnv({
+		const env = clientArkenv({
 			server: {
 				DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
 			},

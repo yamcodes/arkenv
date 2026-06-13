@@ -8,7 +8,7 @@ import type { MergeExtends } from "./types";
 /**
  * Create a validated, type-safe environment configuration for Next.js applications (Shared entry point).
  */
-export function createEnv<
+export function arkenv<
 	const TSchema extends SchemaShape = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -27,5 +27,4 @@ export function createEnv<
 
 export { type } from "arkenv";
 
-const arkenv = createEnv;
 export default arkenv;
