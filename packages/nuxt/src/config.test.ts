@@ -209,11 +209,15 @@ describe("Nuxt config parser & codegen", () => {
 
 		try {
 			// Call watchSchema once
-			watchSchema(schemaPath, outputPath, "simple");
+			watchSchema(schemaPath, () => {
+				runCodegen(schemaPath, outputPath, "simple");
+			});
 			expect(mockWatch).toHaveBeenCalledTimes(1);
 
 			// Call watchSchema a second time
-			watchSchema(schemaPath, outputPath, "simple");
+			watchSchema(schemaPath, () => {
+				runCodegen(schemaPath, outputPath, "simple");
+			});
 			await new Promise((resolve) => setTimeout(resolve, 0));
 			expect(mockWatch).toHaveBeenCalledTimes(2);
 

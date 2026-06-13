@@ -831,6 +831,22 @@ importers:
         specifier: 'catalog:'
         version: 4.4.1
 
+  packages/build-utils:
+    dependencies:
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.2
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.21.10(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(typescript@6.0.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+
   packages/bun-plugin:
     dependencies:
       arkenv:
@@ -993,6 +1009,9 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
     devDependencies:
+      '@arkenv/build-utils':
+        specifier: workspace:*
+        version: link:../build-utils
       '@repo/scope':
         specifier: workspace:*
         version: link:../internal/scope
@@ -1033,6 +1052,9 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
     devDependencies:
+      '@arkenv/build-utils':
+        specifier: workspace:*
+        version: link:../build-utils
       '@nuxt/kit':
         specifier: ^3.12.0
         version: 3.21.8(magicast@0.5.2)
@@ -21794,7 +21816,7 @@ snapshots:
 
   tsdown@0.21.10(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(typescript@6.0.3):
     dependencies:
-      ansis: 4.2.0
+      ansis: 4.3.1
       cac: 7.0.0
       defu: 6.1.7
       empathic: 2.0.0
@@ -21804,9 +21826,9 @@ snapshots:
       picomatch: 4.0.4
       rolldown: 1.0.0-rc.17
       rolldown-plugin-dts: 0.23.2(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(rolldown@1.0.0-rc.17)(typescript@6.0.3)
-      semver: 7.7.4
+      semver: 7.8.3
       tinyexec: 1.1.2
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
       unrun: 0.2.37

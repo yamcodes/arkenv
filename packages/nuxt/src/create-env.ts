@@ -201,10 +201,30 @@ export function createEnvInternal(
 	// Run core validation
 	const validated = coreCreateEnv(schema as any, { env: combinedEnv });
 
-	const mergedValidated = { ...extendedEnvValues, ...validated };
+	const mergedValidated = { ...extendedEnvValues, ...validated } as Record<
+		string,
+		unknown
+	>;
 
 	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client
-	return new Proxy(mergedValidated, {
+	return createSecurityProxy(
+		mergedValidated,
+		allKeys,
+		serverOnlyKeys,
+		isServer,
+	);
+}
+
+/**
+ * Wraps the validated environment object in a Proxy to enforce client/server security access rules.
+ */
+function createSecurityProxy(
+	target: Record<string, unknown>,
+	allKeys: Set<string>,
+	serverOnlyKeys: Set<string>,
+	isServer: boolean,
+): unknown {
+	return new Proxy(target, {
 		get(target, prop, receiver) {
 			if (prop === EXTENDED_ENV) {
 				return target;

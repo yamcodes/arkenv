@@ -1,3 +1,140 @@
+import fs from "node:fs";
+import path from "node:path";
+import { watch as chokidarWatch, type FSWatcher } from "chokidar";
+
+// Global watcher reference isolated to this bundle's scope
+let activeWatcher: FSWatcher | undefined;
+
+export type LayoutMode = "simple" | "strict";
+
+export type ResolvedLayout = {
+	layout: LayoutMode;
+	baseDir: string;
+};
+
+export type Logger = {
+	error: (msg: string) => void;
+	info?: (msg: string) => void;
+};
+
+/**
+ * Resolve the layout mode and base directory for a given schema file path.
+ *
+ * @param schemaPath The absolute path to the schema file or directory
+ * @param layoutOption An optional explicit layout configuration ("simple" or "strict")
+ * @returns An object containing the resolved layout mode and the base directory path
+ * @throws An error if explicit "strict" layout is requested but required split files are missing
+ */
+export function resolveLayout(
+	schemaPath: string,
+	layoutOption?: LayoutMode,
+): ResolvedLayout {
+	const checkStrict = (dir: string) =>
+		fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
+		fs.existsSync(path.join(dir, "client.ts")) &&
+		fs.existsSync(path.join(dir, "server.ts"));
+
+	const resolveBaseDir = (p: string): string => {
+		const ext = path.extname(p);
+		const baseWithoutExt = ext ? p.slice(0, -ext.length) : p;
+		if (
+			fs.existsSync(baseWithoutExt) &&
+			fs.statSync(baseWithoutExt).isDirectory()
+		) {
+			return baseWithoutExt;
+		}
+		return p;
+	};
+
+	if (!layoutOption) {
+		const resolved = resolveBaseDir(schemaPath);
+		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+			if (checkStrict(resolved)) {
+				return { layout: "strict", baseDir: resolved };
+			}
+			return { layout: "simple", baseDir: resolved };
+		}
+
+		const parent = path.dirname(schemaPath);
+		const ext = path.extname(schemaPath);
+		const baseWithoutExt = ext ? schemaPath.slice(0, -ext.length) : schemaPath;
+		if (
+			fs.existsSync(baseWithoutExt) &&
+			fs.statSync(baseWithoutExt).isDirectory() &&
+			checkStrict(baseWithoutExt)
+		) {
+			return { layout: "strict", baseDir: baseWithoutExt };
+		}
+		if (checkStrict(parent)) {
+			return { layout: "strict", baseDir: parent };
+		}
+		if (
+			path.basename(parent) === "internal" &&
+			checkStrict(path.dirname(parent))
+		) {
+			return { layout: "strict", baseDir: path.dirname(parent) };
+		}
+		return { layout: "simple", baseDir: schemaPath };
+	}
+
+	if (layoutOption === "strict") {
+		let baseDir: string;
+		const resolved = resolveBaseDir(schemaPath);
+		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+			baseDir = resolved;
+		} else {
+			const parent = path.dirname(schemaPath);
+			if (path.basename(parent) === "internal") {
+				baseDir = path.dirname(parent);
+			} else {
+				baseDir = parent;
+			}
+		}
+
+		const clientPath = path.join(baseDir, "client.ts");
+		const sharedPath = path.join(baseDir, "internal", "shared.ts");
+		if (!fs.existsSync(clientPath) || !fs.existsSync(sharedPath)) {
+			throw new Error(
+				`[ArkEnv] Strict layout requires "${clientPath}" and "${sharedPath}" to exist. ` +
+					`Ensure both files are present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
+			);
+		}
+
+		return { layout: "strict", baseDir };
+	}
+
+	return { layout: "simple", baseDir: schemaPath };
+}
+
+/**
+ * Find the path to the schema file or directory in the project.
+ *
+ * @param cwd The working directory to search from (defaults to process.cwd())
+ * @returns The absolute path to the schema file/directory, or null if not found
+ */
+export function findSchemaPath(cwd = process.cwd()): string | null {
+	const possiblePaths = [
+		path.join(cwd, "src", "env.ts"),
+		path.join(cwd, "env.ts"),
+	];
+	for (const p of possiblePaths) {
+		if (fs.existsSync(p)) return p;
+	}
+
+	const possibleDirs = [path.join(cwd, "src", "env"), path.join(cwd, "env")];
+	for (const d of possibleDirs) {
+		if (
+			fs.existsSync(d) &&
+			fs.existsSync(path.join(d, "internal", "shared.ts")) &&
+			fs.existsSync(path.join(d, "client.ts")) &&
+			fs.existsSync(path.join(d, "server.ts"))
+		) {
+			return d;
+		}
+	}
+	return null;
+}
+
 /**
  * Extract environment variable keys statically from the schema file content.
  *
@@ -38,7 +175,7 @@ export function extractKeys(content: string): {
  * @param blockName The name of the block to extract
  * @returns The body of the block as a string, or null if not found
  */
-function extractBlock(content: string, blockName: string): string | null {
+export function extractBlock(content: string, blockName: string): string | null {
 	const regex = new RegExp(
 		`\\b${blockName}\\s*:\\s*(?:[a-zA-Z0-9_$.]+\\s*\\(\\s*)?\\{`,
 		"g",
@@ -116,7 +253,7 @@ function extractBlock(content: string, blockName: string): string | null {
  * @param blockContent The raw body string of the schema block
  * @returns An array of parsed key names
  */
-function parseBlockKeys(blockContent: string): string[] {
+export function parseBlockKeys(blockContent: string): string[] {
 	const keys: string[] = [];
 	let inString: string | null = null;
 	let inComment: "single" | "multi" | null = null;
@@ -317,7 +454,7 @@ export function extractSharedKeys(content: string): string[] {
  * @param content The string content of the schema file
  * @returns The body of the block as a string, or null if not found
  */
-function extractSharedBlock(content: string): string | null {
+export function extractSharedBlock(content: string): string | null {
 	const regex = /\bSharedSchema\s*=\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
 	const match = regex.exec(content);
 	if (!match) return null;
@@ -384,4 +521,87 @@ function extractSharedBlock(content: string): string | null {
 	}
 
 	return null;
+}
+
+/**
+ * Watch the schema file(s) for changes and automatically run a callback on change.
+ *
+ * @param schemaPath The absolute path or list of paths of schema files to watch
+ * @param onTrigger The callback to trigger when files change
+ * @param logger An optional logger instance to record error messages
+ */
+export function watchSchema(
+	schemaPath: string | string[],
+	onTrigger: () => void,
+	logger?: Logger,
+): void {
+	const previousWatcher = activeWatcher;
+
+	const startWatch = () => {
+		try {
+			const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
+			activeWatcher = watcher;
+
+			watcher.on("change", () => {
+				try {
+					onTrigger();
+				} catch (err: unknown) {
+					const message = err instanceof Error ? err.message : String(err);
+					if (logger) {
+						logger.error(`Failed to regenerate env: ${message}`);
+					} else {
+						console.error(`[ArkEnv Watcher] Failed to regenerate env: ${message}`);
+					}
+				}
+			});
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : String(err);
+			if (logger) {
+				logger.error(`Failed to start watch on ${schemaPath}: ${message}`);
+			} else {
+				console.error(
+					`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
+				);
+			}
+		}
+	};
+
+	if (previousWatcher && typeof previousWatcher.close === "function") {
+		previousWatcher
+			.close()
+			.catch((err: unknown) => {
+				const message = err instanceof Error ? err.message : String(err);
+				if (logger) {
+					logger.error(`Failed to close previous watcher: ${message}`);
+				} else {
+					console.error(
+						`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
+					);
+				}
+			});
+	}
+	startWatch();
+}
+
+/**
+ * Close the schema watcher if one is running.
+ *
+ * @param logger An optional logger instance to record errors
+ */
+export async function closeWatcher(logger?: Logger): Promise<void> {
+	const watcher = activeWatcher;
+	if (watcher && typeof watcher.close === "function") {
+		try {
+			await watcher.close();
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : String(err);
+			if (logger) {
+				logger.error(`Failed to close watcher: ${message}`);
+			} else {
+				console.error(`[ArkEnv Watcher] Failed to close watcher: ${message}`);
+			}
+		} finally {
+			activeWatcher = undefined;
+		}
+	}
 }

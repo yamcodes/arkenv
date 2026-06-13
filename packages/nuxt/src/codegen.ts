@@ -5,9 +5,9 @@ import {
 	extractKeys,
 	extractServerKeys,
 	extractSharedKeys,
-} from "./parser";
-import { resolveLayout } from "./resolver";
-import type { LayoutMode } from "./types";
+	resolveLayout,
+	type LayoutMode,
+} from "@arkenv/build-utils";
 
 /**
  * Run code generation to read the schema file and generate the env.gen.ts helper.

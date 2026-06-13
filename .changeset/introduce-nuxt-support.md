@@ -1,6 +1,8 @@
 ---
 "@arkenv/nuxt": patch
 "@arkenv/cli": patch
+"@arkenv/build-utils": patch
+"@arkenv/nextjs": patch
 ---
 
 #### Introduce Nuxt support and update CLI scaffolding integration

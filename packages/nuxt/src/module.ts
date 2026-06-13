@@ -76,7 +76,16 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 							path.join(baseDir, "server.ts"),
 						].filter(fs.existsSync)
 					: [schemaPath];
-			watchSchema(watchPaths, outputPath, resolvedLayout, logger);
+			watchSchema(
+				watchPaths,
+				() => {
+					const mainSchemaPath = Array.isArray(watchPaths)
+						? watchPaths[0]
+						: watchPaths;
+					runCodegen(mainSchemaPath, outputPath, resolvedLayout);
+				},
+				logger,
+			);
 
 			nuxt.hook("close", async () => {
 				await closeWatcher(logger);
