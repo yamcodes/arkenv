@@ -1,6 +1,6 @@
 import type { InferType } from "@repo/types";
 
-export type { LayoutMode, Logger, ResolvedLayout } from "@arkenv/build-utils";
+export type { LayoutMode, Logger, ResolvedLayout } from "@arkenv/build-tools";
 
 /**
  * Shared type utilities for Nuxt entry points.
