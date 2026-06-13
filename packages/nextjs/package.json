@@ -9,12 +9,12 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
+		"@arkenv/build-utils": "workspace:*",
 		"arkenv": "workspace:*",
 		"chokidar": "^4.0.3",
 		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
-		"@arkenv/build-utils": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",

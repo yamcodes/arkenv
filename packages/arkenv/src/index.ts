@@ -1,5 +1,6 @@
 import { $ } from "@repo/scope";
-import { createEnv, getSchemaKeys } from "./create-env";
+import { createEnv } from "./create-env";
+import { getSchemaKeys } from "./schema";
 
 export { createEnv, getSchemaKeys };
 /**

@@ -3,10 +3,11 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"postinstall": "nuxt prepare",
-		"dev": "nuxt dev",
 		"build": "nuxt build",
-		"start": "nuxt preview"
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare"
 	},
 	"dependencies": {
 		"@arkenv/nuxt": "workspace:*",

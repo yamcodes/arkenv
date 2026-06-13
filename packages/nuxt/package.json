@@ -9,11 +9,11 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
+		"@arkenv/build-utils": "workspace:*",
 		"arkenv": "workspace:*",
 		"chokidar": "^4.0.3"
 	},
 	"devDependencies": {
-		"@arkenv/build-utils": "workspace:*",
 		"@nuxt/kit": "^3.12.0",
 		"@nuxt/schema": "^3.12.0",
 		"@repo/scope": "workspace:*",

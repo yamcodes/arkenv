@@ -999,6 +999,9 @@ importers:
 
   packages/nextjs:
     dependencies:
+      '@arkenv/build-utils':
+        specifier: workspace:*
+        version: link:../build-utils
       arkenv:
         specifier: workspace:*
         version: link:../arkenv
@@ -1009,9 +1012,6 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
     devDependencies:
-      '@arkenv/build-utils':
-        specifier: workspace:*
-        version: link:../build-utils
       '@repo/scope':
         specifier: workspace:*
         version: link:../internal/scope
@@ -1045,6 +1045,9 @@ importers:
 
   packages/nuxt:
     dependencies:
+      '@arkenv/build-utils':
+        specifier: workspace:*
+        version: link:../build-utils
       arkenv:
         specifier: workspace:*
         version: link:../arkenv
@@ -1052,9 +1055,6 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
     devDependencies:
-      '@arkenv/build-utils':
-        specifier: workspace:*
-        version: link:../build-utils
       '@nuxt/kit':
         specifier: ^3.12.0
         version: 3.21.8(magicast@0.5.2)
