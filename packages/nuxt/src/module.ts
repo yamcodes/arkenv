@@ -1,7 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { defineNuxtModule } from "@nuxt/kit";
-import type { NuxtModule } from "@nuxt/schema";
 import {
 	extractClientKeys,
 	extractKeys,
@@ -10,6 +8,8 @@ import {
 	findSchemaPath,
 	resolveLayout,
 } from "@arkenv/build";
+import { defineNuxtModule } from "@nuxt/kit";
+import type { NuxtModule } from "@nuxt/schema";
 import { name, peerDependencies, version } from "../package.json";
 
 export type ModuleOptions = {
@@ -52,7 +52,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 							path.join(baseDir, "server.ts"),
 						].filter(fs.existsSync)
 					: [schemaPath];
-			
+
 			nuxt.options.watch = nuxt.options.watch || [];
 			for (const p of watchPaths) {
 				nuxt.options.watch.push(p);
