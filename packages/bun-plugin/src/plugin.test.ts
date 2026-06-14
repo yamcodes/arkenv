@@ -5,25 +5,25 @@ vi.mock("arkenv", async (importActual) => {
 	const actual = await importActual<typeof import("arkenv")>();
 	return {
 		...actual,
-		createEnv: vi.fn(actual.createEnv),
+		arkenv: vi.fn(actual.arkenv),
 	};
 });
 
 import { arkenv } from "./plugin";
 
-const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
+const { arkenv: mockArkenv } = vi.mocked(await import("arkenv"));
 
 describe("Bun Plugin", () => {
 	let originalEnv: NodeJS.ProcessEnv;
 
 	beforeEach(() => {
 		originalEnv = { ...process.env };
-		mockCreateEnv.mockClear();
+		mockArkenv.mockClear();
 	});
 
 	afterEach(() => {
 		process.env = originalEnv;
-		mockCreateEnv.mockClear();
+		mockArkenv.mockClear();
 	});
 
 	it("should create a plugin function", () => {
@@ -59,12 +59,12 @@ describe("Bun Plugin", () => {
 		}).toThrow();
 	});
 
-	it("should pass arkenvConfig to createEnv", () => {
+	it("should pass arkenvConfig to arkenv", () => {
 		process.env.BUN_PUBLIC_TEST = "test-value";
 
 		arkenv({ BUN_PUBLIC_TEST: "string" }, { coerce: false });
 
-		expect(mockCreateEnv).toHaveBeenCalledWith(
+		expect(mockArkenv).toHaveBeenCalledWith(
 			{ BUN_PUBLIC_TEST: "string" },
 			expect.objectContaining({
 				coerce: false,

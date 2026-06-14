@@ -55,7 +55,7 @@ This ensures the library works in real scenarios while keeping examples clean an
 
 **Examples:**
 
-- `create-env.test.ts` - Tests `createEnv` function with mocked environment variables
+- `arkenv.test.ts` - Tests `arkenv` function with mocked environment variables
 - `copy-button.test.tsx` - Tests `CopyButton` component with mocked clipboard and toast
 - `use-toast.test.ts` - Tests `useToast` hook in isolation
 
@@ -78,8 +78,8 @@ This ensures the library works in real scenarios while keeping examples clean an
 
 **Examples:**
 
-- `custom-types.integration.test.ts` - Tests `createEnv` + `scope` + custom types working together
-- `error.integration.test.ts` - Tests error propagation through `createEnv` + `formatErrors` + `ArkEnvError`
+- `custom-types.integration.test.ts` - Tests `arkenv` + `scope` + custom types working together
+- `error.integration.test.ts` - Tests error propagation through `arkenv` + `formatErrors` + `ArkEnvError`
 - `copy-button.integration.test.tsx` - Tests `CopyButton` + `useToast` + `Toaster` as a complete flow
 - `heading.integration.test.tsx` - Tests `Heading` + `useIsMobile` responding to viewport changes
 - `toaster.integration.test.tsx` - Tests `useToast` hook + `Toaster` component state synchronization
@@ -227,7 +227,7 @@ pnpm run test:e2e:package
 
 **Integration Tests:**
 
-- ✅ Custom types working with `createEnv` (`custom-types.integration.test.ts`)
+- ✅ Custom types working with `arkenv` (`custom-types.integration.test.ts`)
 - ✅ Error propagation through validation pipeline (`error.integration.test.ts`)
 - ✅ Array defaults with type validation (`array-defaults.integration.test.ts`)
 

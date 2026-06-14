@@ -1,5 +1,5 @@
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
-import { type ArkEnvConfig, createEnv, type EnvSchema } from "arkenv";
+import { type ArkEnvConfig, arkenv, type EnvSchema } from "arkenv";
 import type { Loader, PluginBuilder } from "bun";
 
 /**
@@ -12,7 +12,7 @@ export function processEnvSchema<T extends SchemaShape>(
 ): Map<string, string> {
 	// Type assertion needed on `options` to avoid TS2589 (excessively deep type instantiation)
 	// from ArkType's generic inference on the union type
-	const env: SchemaShape = createEnv(options as any, {
+	const env: SchemaShape = arkenv(options as any, {
 		...config,
 		env: config?.env ?? process.env,
 	});

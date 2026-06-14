@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createEnv } from "../create-env.ts";
+import { arkenv } from "../arkenv.ts";
 import { type } from "../index.ts";
 import { indent, styleText } from "../utils/index.ts";
 
@@ -24,7 +24,7 @@ const expectedError = (
 	return formattedErrors.join("\n");
 };
 
-describe("createEnv", () => {
+describe("arkenv", () => {
 	let originalEnv: NodeJS.ProcessEnv;
 
 	beforeEach(() => {
@@ -36,13 +36,13 @@ describe("createEnv", () => {
 	});
 	describe("coercion", () => {
 		it("should coerce number from string", () => {
-			const env = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
+			const env = arkenv({ PORT: "number" }, { env: { PORT: "3000" } });
 			expect(env.PORT).toBe(3000);
 			expect(typeof env.PORT).toBe("number");
 		});
 
 		it("should coerce boolean from string", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ DEBUG: "boolean", VERBOSE: "boolean" },
 				{ env: { DEBUG: "true", VERBOSE: "false" } },
 			);
@@ -51,7 +51,7 @@ describe("createEnv", () => {
 		});
 
 		it("should coerce number.integer from string", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ COUNT: "number.integer" },
 				{ env: { COUNT: "123" } },
 			);
@@ -59,24 +59,24 @@ describe("createEnv", () => {
 		});
 
 		it("should coerce numeric ranges from string", () => {
-			const env = createEnv({ AGE: "number >= 18" }, { env: { AGE: "21" } });
+			const env = arkenv({ AGE: "number >= 18" }, { env: { AGE: "21" } });
 			expect(env.AGE).toBe(21);
 		});
 
 		it("should coerce numeric divisors from string", () => {
-			const env = createEnv({ EVEN: "number % 2" }, { env: { EVEN: "4" } });
+			const env = arkenv({ EVEN: "number % 2" }, { env: { EVEN: "4" } });
 			expect(env.EVEN).toBe(4);
 		});
 
 		it("should work with optional coerced properties", () => {
 			const schema = { "PORT?": "number" } as const;
-			expect(createEnv(schema, { env: { PORT: "3000" } }).PORT).toBe(3000);
-			expect(createEnv(schema, { env: {} }).PORT).toBeUndefined();
+			expect(arkenv(schema, { env: { PORT: "3000" } }).PORT).toBe(3000);
+			expect(arkenv(schema, { env: {} }).PORT).toBeUndefined();
 		});
 
 		it("should coerce strict number literals", () => {
 			const schema = { VAL: "1 | 2" } as const;
-			expect(createEnv(schema, { env: { VAL: "1" } }).VAL).toBe(1);
+			expect(arkenv(schema, { env: { VAL: "1" } }).VAL).toBe(1);
 		});
 
 		it("should work with schemas containing morphs", () => {
@@ -87,7 +87,7 @@ describe("createEnv", () => {
 				),
 			});
 
-			const env = createEnv(Env, {
+			const env = arkenv(Env, {
 				env: {
 					PORT: "3000",
 					VITE_MY_NUMBER_MANUAL: "456",
@@ -101,12 +101,12 @@ describe("createEnv", () => {
 
 	describe("numeric keywords", () => {
 		it("should coerce number", () => {
-			const env = createEnv({ VAL: "number" }, { env: { VAL: "123.456" } });
+			const env = arkenv({ VAL: "number" }, { env: { VAL: "123.456" } });
 			expect(env.VAL).toBe(123.456);
 		});
 
 		it("should coerce number.Infinity", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ VAL: "number.Infinity" },
 				{ env: { VAL: "Infinity" } },
 			);
@@ -115,12 +115,12 @@ describe("createEnv", () => {
 
 		// TODO: Support NaN coercion
 		// it("should coerce number.NaN", () => {
-		// 	const env = createEnv({ VAL: "number.NaN" }, { VAL: "NaN" });
+		// 	const env = arkenv({ VAL: "number.NaN" }, { VAL: "NaN" });
 		// 	expect(env.VAL).toBeNaN();
 		// });
 
 		it("should coerce number.NegativeInfinity", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ VAL: "number.NegativeInfinity" },
 				{ env: { VAL: "-Infinity" } },
 			);
@@ -128,7 +128,7 @@ describe("createEnv", () => {
 		});
 
 		it("should coerce number.epoch", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ VAL: "number.epoch" },
 				{ env: { VAL: "1640995200000" } },
 			);
@@ -136,12 +136,12 @@ describe("createEnv", () => {
 		});
 
 		it("should coerce number.integer", () => {
-			const env = createEnv({ VAL: "number.integer" }, { env: { VAL: "42" } });
+			const env = arkenv({ VAL: "number.integer" }, { env: { VAL: "42" } });
 			expect(env.VAL).toBe(42);
 		});
 
 		it("should coerce number.safe", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ VAL: "number.safe" },
 				{ env: { VAL: "9007199254740991" } },
 			);
@@ -151,35 +151,31 @@ describe("createEnv", () => {
 
 	describe("defaults and empty strings", () => {
 		it("should use defaults when value is missing", () => {
-			const env = createEnv({ FOO: "string = 'bar'" }, { env: {} });
+			const env = arkenv({ FOO: "string = 'bar'" }, { env: {} });
 			expect(env.FOO).toBe("bar");
 		});
 
 		it("should treat empty string as empty string for string types", () => {
-			const env = createEnv({ VAL: "string" }, { env: { VAL: "" } });
+			const env = arkenv({ VAL: "string" }, { env: { VAL: "" } });
 			expect(env.VAL).toBe("");
 		});
 
 		it("should throw for empty string when number is expected", () => {
-			expect(() =>
-				createEnv({ VAL: "number" }, { env: { VAL: "" } }),
-			).toThrow();
+			expect(() => arkenv({ VAL: "number" }, { env: { VAL: "" } })).toThrow();
 		});
 
 		it("should throw for empty string when boolean is expected", () => {
-			expect(() =>
-				createEnv({ VAL: "boolean" }, { env: { VAL: "" } }),
-			).toThrow();
+			expect(() => arkenv({ VAL: "boolean" }, { env: { VAL: "" } })).toThrow();
 		});
 
 		it("should allow empty strings when the schema is unknown", () => {
-			const env = createEnv({ VAL: "unknown" }, { env: { VAL: "" } });
+			const env = arkenv({ VAL: "unknown" }, { env: { VAL: "" } });
 			expect(env.VAL).toBe("");
 		});
 
 		describe("emptyAsUndefined", () => {
 			it("should apply defaults to empty environment variables", () => {
-				const env = createEnv(
+				const env = arkenv(
 					{ PORT: "number = 3000" },
 					{ env: { PORT: "" }, emptyAsUndefined: true },
 				);
@@ -187,7 +183,7 @@ describe("createEnv", () => {
 			});
 
 			it("should allow optional keys to be undefined when empty", () => {
-				const env = createEnv(
+				const env = arkenv(
 					{ VAL: "string?" },
 					{ env: { VAL: "" }, emptyAsUndefined: true },
 				);
@@ -196,7 +192,7 @@ describe("createEnv", () => {
 
 			it("should throw for required keys when empty", () => {
 				expect(() =>
-					createEnv(
+					arkenv(
 						{ VAL: "string" },
 						{ env: { VAL: "" }, emptyAsUndefined: true },
 					),
@@ -204,7 +200,7 @@ describe("createEnv", () => {
 			});
 
 			it("should respect array defaults when empty", () => {
-				const env = createEnv(
+				const env = arkenv(
 					{ TAGS: type("string[]").default(() => []) },
 					{ env: { TAGS: "" }, emptyAsUndefined: true },
 				);
@@ -212,7 +208,7 @@ describe("createEnv", () => {
 			});
 
 			it("should still work when coercion is disabled", () => {
-				const env = createEnv(
+				const env = arkenv(
 					{ VAL: "string = 'default'" },
 					{ env: { VAL: "" }, emptyAsUndefined: true, coerce: false },
 				);
@@ -223,7 +219,7 @@ describe("createEnv", () => {
 
 	describe("standard array syntax", () => {
 		it("should parse string[] from comma-separated string", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ TAGS: "string[]" },
 				{ env: { TAGS: "foo,bar,baz" } },
 			);
@@ -231,7 +227,7 @@ describe("createEnv", () => {
 		});
 
 		it("should parse number[] from comma-separated string", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ PORTS: "number[]" },
 				{ env: { PORTS: "3000, 8080" } },
 			);
@@ -239,7 +235,7 @@ describe("createEnv", () => {
 		});
 
 		it("should parse boolean[] from comma-separated string", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ FLAGS: "boolean[]" },
 				{ env: { FLAGS: "true, false" } },
 			);
@@ -247,7 +243,7 @@ describe("createEnv", () => {
 		});
 
 		it("should parse (string|number)[] from mixed string", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ MIXED: "(string|number)[]" },
 				{ env: { MIXED: "foo, 123, bar" } },
 			);
@@ -255,7 +251,7 @@ describe("createEnv", () => {
 		});
 
 		it("should parse (string|number)[] with only numbers", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ MIXED: "(string|number)[]" },
 				{ env: { MIXED: "1, 2, 3" } },
 			);
@@ -263,7 +259,7 @@ describe("createEnv", () => {
 		});
 
 		it("should parse (string|boolean)[] with mixed values", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ MIXED: "(string|boolean)[]" },
 				{ env: { MIXED: "true, foo, false" } },
 			);
@@ -274,7 +270,7 @@ describe("createEnv", () => {
 	it("should validate string env variables", () => {
 		process.env.TEST_STRING = "hello";
 
-		const env = createEnv({
+		const env = arkenv({
 			TEST_STRING: "string",
 		});
 
@@ -283,7 +279,7 @@ describe("createEnv", () => {
 
 	it("should throw when required env variable is missing", () => {
 		expect(() =>
-			createEnv({
+			arkenv({
 				MISSING_VAR: "string",
 			}),
 		).toThrow(
@@ -301,7 +297,7 @@ describe("createEnv", () => {
 		process.env.WRONG_TYPE = "not a number";
 
 		expect(() =>
-			createEnv({
+			arkenv({
 				WRONG_TYPE: "number",
 			}),
 		).toThrow(
@@ -320,7 +316,7 @@ describe("createEnv", () => {
 			TEST_STRING: "hello",
 		};
 
-		const { TEST_STRING } = createEnv(
+		const { TEST_STRING } = arkenv(
 			{
 				TEST_STRING: "string",
 			},
@@ -331,7 +327,7 @@ describe("createEnv", () => {
 	});
 
 	it("should support array types with default values", () => {
-		const env = createEnv(
+		const env = arkenv(
 			{
 				NUMBERS: type("number[]").default(() => [1, 2, 3]),
 				STRINGS: type("string[]").default(() => ["a", "b"]),
@@ -345,7 +341,7 @@ describe("createEnv", () => {
 
 	it("should support array types with defaults when no environment value provided", () => {
 		// Test default value usage when environment variable is not set
-		const env = createEnv(
+		const env = arkenv(
 			{
 				NUMBERS: type("number[]").default(() => [1, 2, 3]),
 			},
@@ -365,7 +361,7 @@ describe("createEnv", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(Env);
+			const env = arkenv(Env);
 
 			expect(env.TEST_STRING).toBe("hello");
 			expect(env.TEST_PORT).toBe(3000);
@@ -380,7 +376,7 @@ describe("createEnv", () => {
 				TEST_PORT: "number.port",
 			});
 
-			const env = createEnv(Env);
+			const env = arkenv(Env);
 
 			// TypeScript should infer these correctly
 			const str = env.TEST_STRING;
@@ -398,12 +394,12 @@ describe("createEnv", () => {
 			});
 
 			// Use the same schema multiple times
-			const env1 = createEnv(Env, {
+			const env1 = arkenv(Env, {
 				env: {
 					TEST_STRING: "first",
 				},
 			});
-			const env2 = createEnv(Env, {
+			const env2 = arkenv(Env, {
 				env: {
 					TEST_STRING: "second",
 				},
@@ -420,7 +416,7 @@ describe("createEnv", () => {
 				INVALID_PORT: "number.port",
 			});
 
-			expect(() => createEnv(Env)).toThrow(/INVALID_PORT/);
+			expect(() => arkenv(Env)).toThrow(/INVALID_PORT/);
 		});
 
 		it("should work with custom environment and type definitions", () => {
@@ -434,7 +430,7 @@ describe("createEnv", () => {
 				PORT: "8080",
 			};
 
-			const env = createEnv(Env, { env: customEnv });
+			const env = arkenv(Env, { env: customEnv });
 
 			expect(env.HOST).toBe("localhost");
 			expect(env.PORT).toBe(8080);
@@ -444,7 +440,7 @@ describe("createEnv", () => {
 	describe("options", () => {
 		it("should disable coercion when coerce is set to false", () => {
 			expect(() =>
-				createEnv(
+				arkenv(
 					{
 						NUMBER: "number",
 					},
@@ -463,7 +459,7 @@ describe("createEnv", () => {
 			process.env = { ...originalEnv, TEST_NUM: "123" };
 			try {
 				expect(() =>
-					createEnv({ TEST_NUM: "number" }, { coerce: false }),
+					arkenv({ TEST_NUM: "number" }, { coerce: false }),
 				).toThrow();
 			} finally {
 				process.env = originalEnv;
@@ -471,7 +467,7 @@ describe("createEnv", () => {
 		});
 
 		it("should allow string values when coercion is disabled if schema expects strings", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{
 					VAL: "string",
 				},
@@ -486,7 +482,7 @@ describe("createEnv", () => {
 		});
 
 		it("should strip extra keys that are not defined in the schema by default", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ HOST: "string" },
 				{
 					env: {
@@ -500,7 +496,7 @@ describe("createEnv", () => {
 		});
 
 		it("should preserve extra keys when onUndeclaredKey is set to 'ignore'", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ HOST: "string" },
 				{
 					env: {
@@ -515,7 +511,7 @@ describe("createEnv", () => {
 
 		it("should throw when onUndeclaredKey is set to 'reject' and extra keys are present", () => {
 			expect(() =>
-				createEnv(
+				arkenv(
 					{ HOST: "string" },
 					{
 						env: {
@@ -529,7 +525,7 @@ describe("createEnv", () => {
 		});
 
 		it("should explicitly delete extra keys when onUndeclaredKey is set to 'delete'", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ HOST: "string" },
 				{
 					env: {
@@ -546,7 +542,7 @@ describe("createEnv", () => {
 
 	describe("array format configuration", () => {
 		it("should parse arrays as JSON when arrayFormat is 'json'", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: '["foo", "bar"]' },
@@ -558,7 +554,7 @@ describe("createEnv", () => {
 
 		it("should fail validation if arrayFormat is 'json' but value is not valid JSON array", () => {
 			expect(() => {
-				createEnv(
+				arkenv(
 					{ TAGS: "string[]" },
 					{
 						env: { TAGS: "foo,bar" }, // Comma separated, not JSON
@@ -569,7 +565,7 @@ describe("createEnv", () => {
 		});
 
 		it("should default to comma separation", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: "foo,bar" },
@@ -580,7 +576,7 @@ describe("createEnv", () => {
 		});
 
 		it("should parse numeric arrays as JSON", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ NUMBERS: "number[]" },
 				{
 					env: { NUMBERS: "[1, 2, 3]" },
@@ -591,20 +587,17 @@ describe("createEnv", () => {
 		});
 
 		it("should handle empty comma-separated string", () => {
-			const env = createEnv({ TAGS: "string[]" }, { env: { TAGS: "" } });
+			const env = arkenv({ TAGS: "string[]" }, { env: { TAGS: "" } });
 			expect(env.TAGS).toEqual([]);
 		});
 
 		it("should handle single-element array", () => {
-			const env = createEnv(
-				{ TAGS: "string[]" },
-				{ env: { TAGS: "only-one" } },
-			);
+			const env = arkenv({ TAGS: "string[]" }, { env: { TAGS: "only-one" } });
 			expect(env.TAGS).toEqual(["only-one"]);
 		});
 
 		it("should handle empty JSON array", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ TAGS: "string[]" },
 				{
 					env: { TAGS: "[]" },
@@ -617,7 +610,7 @@ describe("createEnv", () => {
 
 	describe("object coercion", () => {
 		it("should parse an object from a JSON string", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ DATABASE: { HOST: "string", PORT: "number" } },
 				{
 					env: {
@@ -631,7 +624,7 @@ describe("createEnv", () => {
 		});
 
 		it("should handle nested object coercion", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ CONFIG: { DB: { PORT: "number" }, APP: { NAME: "string" } } },
 				{
 					env: {
@@ -647,7 +640,7 @@ describe("createEnv", () => {
 
 		it("should fail validation if object is not valid JSON", () => {
 			expect(() => {
-				createEnv(
+				arkenv(
 					{ DATABASE: { HOST: "string" } },
 					{ env: { DATABASE: '{"HOST": "localhost"' } }, // Missing closing brace
 				);
@@ -655,7 +648,7 @@ describe("createEnv", () => {
 		});
 
 		it("should parse objects within arrays", () => {
-			const env = createEnv(
+			const env = arkenv(
 				{ SERVICES: type({ NAME: "string", PORT: "number" }).array() },
 				{
 					env: {

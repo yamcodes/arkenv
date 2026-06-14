@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./standard.ts";
+import { arkenv } from "./standard.ts";
 
 const mockStandardSchema = {
 	"~standard": {
@@ -10,7 +10,7 @@ const mockStandardSchema = {
 
 describe("validator isolation (standard entry)", () => {
 	it("parses standard schemas without ArkType", () => {
-		const result = createEnv(
+		const result = arkenv(
 			{ PORT: mockStandardSchema },
 			{ env: { PORT: "3000" } },
 		);
@@ -20,13 +20,13 @@ describe("validator isolation (standard entry)", () => {
 
 	it("throws on ArkType DSL strings", () => {
 		expect(() =>
-			createEnv({ PORT: "number.port" } as any, { env: { PORT: "3000" } }),
+			arkenv({ PORT: "number.port" } as any, { env: { PORT: "3000" } }),
 		).toThrow('ArkType DSL strings are not supported in "standard" mode');
 	});
 
 	it("throws on validators without ~standard property", () => {
 		expect(() =>
-			createEnv({ PORT: { someArktypeThing: true } } as any, {
+			arkenv({ PORT: { someArktypeThing: true } } as any, {
 				env: { PORT: "3000" },
 			}),
 		).toThrow('"~standard" property');
