@@ -1,5 +1,5 @@
 import type { $ } from "@repo/scope";
-import type { CompiledEnvSchema, InferType, SchemaShape } from "@repo/types";
+import type { CompiledEnvSchema, Dict, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 
@@ -31,14 +31,11 @@ export type Infer<T> = T extends SchemaShape
 
 /**
  * The environment variables passed to `createEnv`.
- * Changed from `Dict<string>` to `Record<string, unknown>` to support framework adapters
- * (like Nuxt) that load configuration values as pre-parsed numbers/booleans/objects.
- *
- * Tradeoff:
- * - Pro: Allows direct passing of typed runtime configs (like Nuxt's `runtimeConfig`) without manual string coercion.
- * - Con: Bypasses the strict compile-time guarantee that all input environment variables are strings (since process.env is string-only).
+ * Uses `Dict<string>` (`Record<string, string | undefined>`) to enforce
+ * compile-time safety: all input environment variables must be strings
+ * (or undefined), matching `process.env` semantics.
  */
-type RuntimeEnvironment = Record<string, unknown>;
+type RuntimeEnvironment = Dict<string>;
 
 /**
  * Configuration options for `createEnv`
