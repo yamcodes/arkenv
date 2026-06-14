@@ -150,4 +150,20 @@ describe("createEnv (Nuxt runtime)", () => {
 			(globalThis as any).window = originalWindow;
 		}
 	});
+
+	it("should allow Vue reactivity internal properties on the proxy without throwing", () => {
+		const env = createEnv({
+			client: {
+				NUXT_PUBLIC_API_URL: "string",
+			},
+			runtimeEnv: {
+				NUXT_PUBLIC_API_URL: "https://api.example.com",
+			},
+		});
+
+		expect(env.__v_isRef).toBeUndefined();
+		expect(env.__v_isReactive).toBeUndefined();
+		expect(env.__v_isReadonly).toBeUndefined();
+		expect(env.__v_raw).toBeUndefined();
+	});
 });
