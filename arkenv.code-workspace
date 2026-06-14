@@ -28,6 +28,10 @@
 			"name": "🎁 @arkenv/nextjs"
 		},
 		{
+			"path": "packages/nuxt",
+			"name": "🎁 @arkenv/nuxt"
+		},
+		{
 			"path": "packages/vite-plugin",
 			"name": "🎁 @arkenv/vite-plugin"
 		},
@@ -66,6 +70,10 @@
 		{
 			"path": "apps/playgrounds/nextjs",
 			"name": "🛝 next.js"
+		},
+		{
+			"path": "apps/playgrounds/nuxt",
+			"name": "🛝 nuxt"
 		},
 		{
 			"path": "apps/playgrounds/vite",
@@ -118,6 +126,10 @@
 		{
 			"path": "examples/with-nextjs",
 			"name": "💡 with-nextjs"
+		},
+		{
+			"path": "examples/with-nuxt",
+			"name": "💡 with-nuxt"
 		},
 		{
 			"path": "examples/with-vite-react",

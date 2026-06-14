@@ -52,7 +52,8 @@ export const zodTemplate = (
 	`;
 	}
 
-	if (framework === "nextjs") {
+	if (framework === "nextjs" || framework === "nuxt") {
+		const clientPrefix = framework === "nuxt" ? "NUXT_PUBLIC_" : "NEXT_PUBLIC_";
 		return buildNextjsTemplate(
 			envKeys,
 			{
@@ -65,7 +66,7 @@ export const zodTemplate = (
 					`\t\tDATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
 				],
 				defaultClientFields: [
-					`\t\tNEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),`,
+					`\t\t${clientPrefix}API_URL: z.string().url().default("https://api.example.com"),`,
 				],
 				defaultSharedFields: [
 					`\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,
@@ -73,6 +74,7 @@ export const zodTemplate = (
 			},
 			nextjsImportPath,
 			disableCodegen,
+			framework,
 		);
 	}
 

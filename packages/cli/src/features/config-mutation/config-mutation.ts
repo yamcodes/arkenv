@@ -226,3 +226,81 @@ export function transformNextjsConfig(
 		};
 	}
 }
+
+/**
+ * Transform a Nuxt configuration file by adding `@arkenv/nuxt/module` to its modules.
+ *
+ * @param input The configuration code and optional import path
+ * @returns The result of the bootstrap operation, potentially including the updated code
+ */
+export function transformNuxtConfig(
+	input: MutationInput,
+): BootstrapResult & { code?: string } {
+	try {
+		const initialCode = input.code;
+		const mod = parseModule(initialCode);
+
+		let config = mod.exports.default;
+
+		// Handle defineNuxtConfig({...}) wrapper
+		if (
+			config &&
+			typeof config === "object" &&
+			"$type" in config &&
+			config.$type === "function-call"
+		) {
+			const call = config as { $callee?: string; $args?: any[] };
+			const callee = call.$callee || JSON.stringify(config);
+			if (callee === "defineNuxtConfig" && call.$args) {
+				config = call.$args[0];
+			}
+		}
+
+		if (
+			!config ||
+			typeof config !== "object" ||
+			(typeof config === "object" && "$type" in config)
+		) {
+			return {
+				success: false,
+				updated: false,
+				error: "Could not find default export object in Nuxt config",
+			};
+		}
+
+		if (!config.modules) {
+			config.modules = [];
+		}
+
+		if (Array.isArray(config.modules)) {
+			const hasModule = config.modules.includes("@arkenv/nuxt/module");
+
+			if (!hasModule) {
+				config.modules.push("@arkenv/nuxt/module");
+			} else {
+				return { success: true, updated: false };
+			}
+		} else {
+			return {
+				success: false,
+				updated: false,
+				error: "The 'modules' property in your Nuxt config is not an array.",
+			};
+		}
+
+		let code = generateCode(mod, {
+			format: detectCodeFormat(initialCode),
+		}).code;
+		code = normalizeImportSpacing(code);
+		code = preserveTrailingNewline(code, initialCode);
+
+		return { success: true, updated: true, code };
+	} catch (e: unknown) {
+		const error = e instanceof Error ? e.message : String(e);
+		return {
+			success: false,
+			updated: false,
+			error: `Failed to parse Nuxt config: ${error}`,
+		};
+	}
+}

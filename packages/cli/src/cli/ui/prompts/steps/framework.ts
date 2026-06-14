@@ -34,6 +34,11 @@ export async function frameworkStep(options: {
 				label: `Next.js${options.framework === "nextjs" ? " (Detected)" : ""}`,
 				hint: "Next.js App or Pages Router with build and runtime validation",
 			},
+			{
+				value: "nuxt",
+				label: `Nuxt${options.framework === "nuxt" ? " (Detected)" : ""}`,
+				hint: "Nuxt with build and runtime validation",
+			},
 		],
 	});
 	return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
@@ -119,10 +124,11 @@ export async function layoutStep(): Promise<"strict" | "simple" | null> {
  */
 export async function nextjsCodegenStep(options: {
 	initialValue?: boolean | undefined;
+	framework?: string;
 }): Promise<boolean | null> {
+	const frameworkName = options.framework === "nuxt" ? "Nuxt" : "Next.js";
 	const answer = await confirm({
-		message:
-			"Enable automated Next.js code generation for environment variables?",
+		message: `Enable automated ${frameworkName} code generation for environment variables?`,
 		initialValue: options.initialValue ?? true,
 		active: "Yes (Recommended)",
 		inactive: "No",
