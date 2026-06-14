@@ -56,7 +56,6 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
-					outputPath: "./generated/env.gen.ts",
 				},
 				mockNuxt,
 			);
@@ -110,7 +109,6 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
-					outputPath: "./generated/env.gen.ts",
 				},
 				mockNuxt,
 			);
