@@ -6,14 +6,13 @@
 		"build": "nuxt build",
 		"dev": "nuxt dev",
 		"generate": "nuxt generate",
-		"preview": "nuxt preview",
-		"postinstall": "nuxt prepare"
+		"preview": "nuxt preview"
 	},
 	"dependencies": {
 		"@arkenv/nuxt": "workspace:*",
 		"arkenv": "workspace:*",
 		"arktype": "catalog:",
-		"nuxt": "^3.12.0"
+		"nuxt": "^4.4.8"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",

@@ -1,1 +1,5 @@
-.env
+.nuxt
+.output
+.turbo
+node_modules
+dist

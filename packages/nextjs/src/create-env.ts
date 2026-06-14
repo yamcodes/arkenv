@@ -1,9 +1,56 @@
 import type { SchemaShape } from "@repo/types";
-import { createEnv as coreCreateEnv, getSchemaKeys } from "arkenv";
+import { createEnv as coreCreateEnv } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
+
+function getSchemaKeys(schema: any): string[] {
+	if (!schema || (typeof schema !== "object" && typeof schema !== "function")) {
+		return [];
+	}
+
+	// ArkType Type
+	if (
+		schema.json &&
+		typeof schema.json === "object" &&
+		schema.json.domain === "object"
+	) {
+		const keys: string[] = [];
+		if (Array.isArray(schema.json.required)) {
+			for (const r of schema.json.required) {
+				if (r && typeof r === "object" && "key" in r) {
+					keys.push(r.key);
+				}
+			}
+		}
+		if (Array.isArray(schema.json.optional)) {
+			for (const o of schema.json.optional) {
+				if (o && typeof o === "object" && "key" in o) {
+					keys.push(o.key);
+				}
+			}
+		}
+		return keys;
+	}
+
+	// Zod schema
+	if ("shape" in schema && schema.shape && typeof schema.shape === "object") {
+		return Object.keys(schema.shape);
+	}
+
+	// Valibot schema
+	if (
+		"entries" in schema &&
+		schema.entries &&
+		typeof schema.entries === "object"
+	) {
+		return Object.keys(schema.entries);
+	}
+
+	// Plain object schema
+	return Object.keys(schema);
+}
 
 /**
  * Validate and wrap environment variables in a security proxy.
@@ -66,7 +113,7 @@ export function createEnvInternal(
 	}
 
 	// Prepare combined environment for core validation
-	const combinedEnv: Record<string, unknown> = {};
+	const combinedEnv: Record<string, string | undefined> = {};
 
 	// Process extended environments
 	if (extendsList && Array.isArray(extendsList)) {
@@ -89,12 +136,12 @@ export function createEnvInternal(
 					// Prepare what we have so far for validating the extended schema
 					for (const key of Object.keys(extendedEnvValues)) {
 						if (extendedEnvValues[key] !== undefined) {
-							combinedEnv[key] = extendedEnvValues[key];
+							combinedEnv[key] = String(extendedEnvValues[key]);
 						}
 					}
 					for (const key of Object.keys(runtimeEnv)) {
 						if (runtimeEnv[key] !== undefined) {
-							combinedEnv[key] = runtimeEnv[key];
+							combinedEnv[key] = runtimeEnv[key] as string;
 						}
 					}
 					if (isServer) {
@@ -169,13 +216,13 @@ export function createEnvInternal(
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {
-			combinedEnv[key] = extendedEnvValues[key];
+			combinedEnv[key] = String(extendedEnvValues[key]);
 		}
 	}
 
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
-			combinedEnv[key] = runtimeEnv[key];
+			combinedEnv[key] = runtimeEnv[key] as string;
 		}
 	}
 
@@ -196,30 +243,10 @@ export function createEnvInternal(
 	// Run core validation
 	const validated = coreCreateEnv(schema as any, { env: combinedEnv });
 
-	const mergedValidated = { ...extendedEnvValues, ...validated } as Record<
-		string,
-		unknown
-	>;
+	const mergedValidated = { ...extendedEnvValues, ...validated };
 
-	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client
-	return createSecurityProxy(
-		mergedValidated,
-		allKeys,
-		serverOnlyKeys,
-		isServer,
-	);
-}
-
-/**
- * Wraps the validated environment object in a Proxy to enforce client/server security access rules.
- */
-function createSecurityProxy(
-	target: Record<string, unknown>,
-	allKeys: Set<string>,
-	serverOnlyKeys: Set<string>,
-	isServer: boolean,
-): unknown {
-	return new Proxy(target, {
+	// Return a Proxy wrapper
+	return new Proxy(mergedValidated, {
 		get(target, prop, receiver) {
 			if (prop === EXTENDED_ENV) {
 				return target;
@@ -260,31 +287,6 @@ function createSecurityProxy(
 				}
 			}
 			return Reflect.get(target, prop, receiver);
-		},
-		// Intercept Object.keys(), Object.getOwnPropertyNames(), Reflect.ownKeys()
-		// to prevent enumerating server-only keys on the client
-		ownKeys(target) {
-			const keys = Reflect.ownKeys(target);
-			if (!isServer) {
-				return keys.filter(
-					(k) => typeof k !== "string" || !serverOnlyKeys.has(k),
-				);
-			}
-			return keys;
-		},
-		// Intercept Object.getOwnPropertyDescriptor() to hide server-only properties on the client
-		getOwnPropertyDescriptor(target, prop) {
-			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
-				return undefined;
-			}
-			return Reflect.getOwnPropertyDescriptor(target, prop);
-		},
-		// Intercept "key in obj" existence checks to hide server-only keys on the client
-		has(target, prop) {
-			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
-				return false;
-			}
-			return Reflect.has(target, prop);
 		},
 	});
 }
