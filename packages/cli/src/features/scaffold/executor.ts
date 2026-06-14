@@ -197,23 +197,6 @@ export class Executor {
 						}
 					}
 				} else if (plan.bootstrap.framework === "nuxt") {
-					this.reporter.step("Generating Nuxt environment bindings...");
-					const schemaPath = path.resolve(plan.cwd, plan.metadata.displayPath);
-					const outputPath = path.join(
-						path.dirname(schemaPath),
-						"generated",
-						"env.gen.ts",
-					);
-					const script = `import('@arkenv/nuxt/config').then(({ runCodegen }) => { runCodegen('${schemaPath}', '${outputPath}'); }).catch(err => { console.error(err); process.exit(1); });`;
-					try {
-						await this.workspace.execute("node", ["-e", script], plan.cwd);
-						this.reporter.info(`Generated ${code("env.gen.ts")} for Nuxt`);
-					} catch (error) {
-						this.reporter.warn(
-							`Failed to automatically generate ${code("env.gen.ts")}. It will be generated when you start your dev server.`,
-						);
-					}
-
 					// Bootstrap Nuxt config wrapper
 					this.reporter.step("Bootstrapping Nuxt config...");
 					const nuxtConfigPath = await this.workspace.findNuxtConfig(plan.cwd);

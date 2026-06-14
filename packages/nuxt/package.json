@@ -10,8 +10,7 @@
 	"module": "./dist/index.js",
 	"dependencies": {
 		"@arkenv/build": "workspace:*",
-		"arkenv": "workspace:*",
-		"chokidar": "^4.0.3"
+		"arkenv": "workspace:*"
 	},
 	"devDependencies": {
 		"@nuxt/kit": "^4.4.8",

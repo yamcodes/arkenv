@@ -1,19 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
-import { defineNuxtModule, useLogger } from "@nuxt/kit";
+import { defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
-import { name, peerDependencies, version } from "../package.json";
 import {
-	closeWatcher,
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
 	extractSharedKeys,
 	findSchemaPath,
 	resolveLayout,
-	runCodegen,
-	watchSchema,
-} from "./config";
+} from "@arkenv/build";
+import { name, peerDependencies, version } from "../package.json";
 
 export type ModuleOptions = {
 	schemaPath?: string;
@@ -32,7 +29,6 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	},
 	defaults: {},
 	setup(options, nuxt) {
-		const logger = useLogger("arkenv");
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
 			: findSchemaPath(nuxt.options.rootDir);
@@ -46,27 +42,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			options.layout,
 		);
 
-		const defaultOutputDir =
-			resolvedLayout === "strict" && baseDir
-				? baseDir
-				: path.dirname(schemaPath);
-		const defaultOutputPath = path.join(
-			defaultOutputDir,
-			"generated",
-			"env.gen.ts",
-		);
-		const outputPath = options.outputPath
-			? path.resolve(nuxt.options.rootDir, options.outputPath)
-			: defaultOutputPath;
-
-		// 1. Initial codegen
-		try {
-			runCodegen(schemaPath, outputPath, resolvedLayout);
-		} catch (error) {
-			logger.error(`Failed to generate env.gen.ts: ${error}`);
-		}
-
-		// 2. Watcher in dev mode
+		// Register schema paths to watch so Nuxt restarts and updates runtimeConfig when they change
 		if (nuxt.options.dev) {
 			const watchPaths =
 				resolvedLayout === "strict" && baseDir
@@ -76,20 +52,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 							path.join(baseDir, "server.ts"),
 						].filter(fs.existsSync)
 					: [schemaPath];
-			watchSchema(
-				watchPaths,
-				() => {
-					const mainSchemaPath = Array.isArray(watchPaths)
-						? watchPaths[0]
-						: watchPaths;
-					runCodegen(mainSchemaPath, outputPath, resolvedLayout);
-				},
-				logger,
-			);
-
-			nuxt.hook("close", async () => {
-				await closeWatcher(logger);
-			});
+			
+			nuxt.options.watch = nuxt.options.watch || [];
+			for (const p of watchPaths) {
+				nuxt.options.watch.push(p);
+			}
 		}
 
 		// 3. Register env keys to runtimeConfig

@@ -8,7 +8,6 @@ import { createEnvInternal } from "./create-env";
  * @param options The environment validation configuration options
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
- * @throws An error if any client or shared variable is missing from `runtimeEnv`
  */
 export function createEnv<
 	const TServer extends SchemaShape = {},
@@ -20,8 +19,7 @@ export function createEnv<
 		[K in keyof TClient]: K extends `NUXT_PUBLIC_${string}` ? unknown : never;
 	};
 	shared?: EnvSchema<TShared>;
-	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
-		Record<string, unknown>;
+	runtimeEnv?: Record<string, unknown>;
 }): Readonly<Infer<TServer & TClient & TShared>> {
 	type ReturnType = Readonly<Infer<TServer & TClient & TShared>>;
 	// In Nuxt, we want to know whether we are in client or server.

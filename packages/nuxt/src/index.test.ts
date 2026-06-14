@@ -40,7 +40,6 @@ describe("createEnv (Nuxt runtime)", () => {
 				shared: {
 					NODE_ENV: "string",
 				},
-				// @ts-expect-error - runtimeEnv is missing required NUXT_PUBLIC_API_URL and NODE_ENV
 				runtimeEnv: {
 					// Missing keys!
 				},

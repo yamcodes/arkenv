@@ -78,7 +78,7 @@ describe("Nuxt module integration", () => {
 		}
 	});
 
-	it("should set up watcher in dev mode and register close hook", async () => {
+	it("should add schema path to nuxt.options.watch in dev mode", async () => {
 		const tempDir = path.resolve(__dirname, "temp-module-dev-test");
 		fs.mkdirSync(tempDir, { recursive: true });
 
@@ -121,8 +121,8 @@ describe("Nuxt module integration", () => {
 				expect.any(Function),
 			);
 
-			// Check if close hook was registered
-			expect(mockNuxt.hook).toHaveBeenCalledWith("close", expect.any(Function));
+			// Check if schemaPath was added to watch paths
+			expect(mockNuxt.options.watch).toContain(schemaPath);
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}

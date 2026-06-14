@@ -1,6 +1,6 @@
-import arkenv from "./generated/env.gen";
+import { createEnv } from "@arkenv/nuxt";
 
-export const env = arkenv({
+export const env = createEnv({
 	server: {
 		DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
 	},

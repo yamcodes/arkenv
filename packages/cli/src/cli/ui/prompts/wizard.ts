@@ -251,10 +251,9 @@ async function runExistingProjectWizard(
 
 		// Next.js & Nuxt codegen prompt
 		let disableCodegen: boolean | undefined = defaults?.disableCodegen;
-		if (
-			(framework === "nextjs" || framework === "nuxt") &&
-			disableCodegen === undefined
-		) {
+		if (framework === "nuxt") {
+			disableCodegen = true;
+		} else if (framework === "nextjs" && disableCodegen === undefined) {
 			const useCodegen = unwrapPrompt(
 				await steps.nextjsCodegen({
 					initialValue: true,

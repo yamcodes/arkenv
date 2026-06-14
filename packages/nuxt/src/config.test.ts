@@ -1,28 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { describe, expect, it, vi } from "vitest";
-
-let useMockWatcher = false;
-const mockClose = vi.fn().mockResolvedValue(undefined);
-const mockWatch = vi.fn().mockImplementation(() => {
-	return {
-		on: vi.fn().mockReturnThis(),
-		close: mockClose,
-	};
-});
-
-vi.mock("chokidar", async (importOriginal) => {
-	const original = await importOriginal<typeof import("chokidar")>();
-	return {
-		...original,
-		watch: (schemaPath: any, options?: any) => {
-			if (useMockWatcher) {
-				return mockWatch(schemaPath, options);
-			}
-			return original.watch(schemaPath, options);
-		},
-	};
-});
+import { describe, expect, it } from "vitest";
 
 import {
 	extractClientKeys,
@@ -30,8 +8,6 @@ import {
 	extractServerKeys,
 	extractSharedKeys,
 	resolveLayout,
-	runCodegen,
-	watchSchema,
 } from "./config";
 
 describe("Nuxt config parser & codegen", () => {
@@ -153,81 +129,5 @@ describe("Nuxt config parser & codegen", () => {
 		expect(extractClientKeys(clientContent)).toEqual(["NUXT_PUBLIC_API_URL"]);
 		expect(extractServerKeys(serverContent)).toEqual(["DATABASE_URL"]);
 		expect(extractSharedKeys(sharedContent)).toEqual(["NODE_ENV"]);
-	});
-
-	it("should generate codegen output in simple layout", () => {
-		const tempDir = path.join(__dirname, "temp-codegen-test");
-		fs.mkdirSync(tempDir, { recursive: true });
-		try {
-			const schemaPath = path.join(tempDir, "env.ts");
-			const outputPath = path.join(tempDir, "env.gen.ts");
-			fs.writeFileSync(
-				schemaPath,
-				`
-				export const env = arkenv({
-					server: { DATABASE_URL: "string" },
-					client: { NUXT_PUBLIC_API_URL: "string" },
-					shared: { NODE_ENV: "string" }
-				});
-				`,
-			);
-
-			runCodegen(schemaPath, outputPath, "simple");
-
-			const outputContent = fs.readFileSync(outputPath, "utf-8");
-			expect(outputContent).toContain(
-				'import { createEnv as coreCreateEnv } from "@arkenv/nuxt";',
-			);
-			expect(outputContent).toContain(
-				"NUXT_PUBLIC_API_URL: config?.public?.NUXT_PUBLIC_API_URL ?? process.env.NUXT_PUBLIC_API_URL,",
-			);
-			expect(outputContent).toContain(
-				"DATABASE_URL: config?.DATABASE_URL ?? process.env.DATABASE_URL,",
-			);
-		} finally {
-			fs.rmSync(tempDir, { recursive: true, force: true });
-		}
-	});
-
-	it("should close the previous watcher when initialized multiple times in development", async () => {
-		useMockWatcher = true;
-		mockWatch.mockClear();
-		mockClose.mockClear();
-
-		const tempDir = path.join(__dirname, "temp-watcher-test");
-		if (!fs.existsSync(tempDir)) {
-			fs.mkdirSync(tempDir, { recursive: true });
-		}
-		const schemaPath = path.join(tempDir, "env.ts");
-		const outputPath = path.join(tempDir, "env.gen.ts");
-
-		fs.writeFileSync(
-			schemaPath,
-			`export const env = createEnv({ client: { NUXT_PUBLIC_API_URL: "string" } });`,
-			"utf-8",
-		);
-
-		try {
-			// Call watchSchema once
-			watchSchema(schemaPath, () => {
-				runCodegen(schemaPath, outputPath, "simple");
-			});
-			expect(mockWatch).toHaveBeenCalledTimes(1);
-
-			// Call watchSchema a second time
-			watchSchema(schemaPath, () => {
-				runCodegen(schemaPath, outputPath, "simple");
-			});
-			await new Promise((resolve) => setTimeout(resolve, 0));
-			expect(mockWatch).toHaveBeenCalledTimes(2);
-
-			expect(mockClose).toHaveBeenCalledTimes(1);
-		} finally {
-			delete (globalThis as any).__arkenv_nuxt_watcher__;
-			useMockWatcher = false;
-			if (fs.existsSync(tempDir)) {
-				fs.rmSync(tempDir, { recursive: true, force: true });
-			}
-		}
 	});
 });

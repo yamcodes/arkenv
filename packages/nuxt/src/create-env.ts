@@ -26,6 +26,7 @@ export function createEnvInternal(
 	let extendsList: unknown[] = [];
 	let runtimeEnv: Record<string, unknown> = {};
 	let isServer = false;
+	let skipDestructureCheck = false;
 
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
@@ -33,15 +34,23 @@ export function createEnvInternal(
 		client = schemaOrOptions.client || {};
 		shared = schemaOrOptions.shared || {};
 		extendsList = schemaOrOptions.extends || [];
-		runtimeEnv = schemaOrOptions.runtimeEnv || {};
+		runtimeEnv =
+			schemaOrOptions.runtimeEnv ||
+			(typeof process !== "undefined" ? process.env : undefined) ||
+			{};
 		isServer = optionsOrIsServer;
+		skipDestructureCheck = !schemaOrOptions.runtimeEnv;
 	} else {
 		// New flat schema behavior
 		const flatSchema = schemaOrOptions || {};
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
-		runtimeEnv = options.runtimeEnv || {};
+		runtimeEnv =
+			options.runtimeEnv ||
+			(typeof process !== "undefined" ? process.env : undefined) ||
+			{};
 		isServer = !!context?.isServer;
+		skipDestructureCheck = !options.runtimeEnv;
 
 		if (context?.isShared) {
 			shared = flatSchema;
@@ -153,21 +162,23 @@ export function createEnvInternal(
 	}
 
 	// Check runtimeEnv has all local client and shared keys
-	const requiredKeys = [...Object.keys(client), ...Object.keys(shared)];
-	for (const key of requiredKeys) {
-		if (!(key in runtimeEnv)) {
-			throw new Error(
-				`Missing key in runtimeEnv: ${key}. All client and shared environment variables must be explicitly destructured in runtimeEnv.`,
-			);
+	if (!skipDestructureCheck) {
+		const requiredKeys = [...Object.keys(client), ...Object.keys(shared)];
+		for (const key of requiredKeys) {
+			if (!(key in runtimeEnv)) {
+				throw new Error(
+					`Missing key in runtimeEnv: ${key}. All client and shared environment variables must be explicitly destructured in runtimeEnv.`,
+				);
+			}
 		}
-	}
 
-	// Check runtimeEnv does not have any keys not defined in the schema (allKeys)
-	for (const key of Object.keys(runtimeEnv)) {
-		if (!allKeys.has(key)) {
-			throw new Error(
-				`Environment variable '${key}' is passed to runtimeEnv but is not defined in the schema.`,
-			);
+		// Check runtimeEnv does not have any keys not defined in the schema (allKeys)
+		for (const key of Object.keys(runtimeEnv)) {
+			if (!allKeys.has(key)) {
+				throw new Error(
+					`Environment variable '${key}' is passed to runtimeEnv but is not defined in the schema.`,
+				);
+			}
 		}
 	}
 

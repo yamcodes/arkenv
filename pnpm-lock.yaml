@@ -1048,9 +1048,6 @@ importers:
       arkenv:
         specifier: workspace:*
         version: link:../arkenv
-      chokidar:
-        specifier: ^4.0.3
-        version: 4.0.3
     devDependencies:
       '@nuxt/kit':
         specifier: ^4.4.8

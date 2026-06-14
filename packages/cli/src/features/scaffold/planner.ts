@@ -304,7 +304,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		options.framework === "vite" ||
 		options.framework === "bun-fullstack" ||
 		(options.framework === "nextjs" && !options.disableCodegen) ||
-		(options.framework === "nuxt" && !options.disableCodegen)
+		options.framework === "nuxt"
 	) {
 		plan.bootstrap = shake({
 			framework: options.framework,
