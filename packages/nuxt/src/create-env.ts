@@ -28,6 +28,10 @@ export function createEnvInternal(
 	let isServer = false;
 	let skipDestructureCheck = false;
 
+	const globalConfig = typeof window !== "undefined"
+		? (window as any).__NUXT__?.config?.public
+		: undefined;
+
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
 		server = schemaOrOptions.server || {};
@@ -37,6 +41,7 @@ export function createEnvInternal(
 		runtimeEnv =
 			schemaOrOptions.runtimeEnv ||
 			(typeof process !== "undefined" ? process.env : undefined) ||
+			globalConfig ||
 			{};
 		isServer = optionsOrIsServer;
 		skipDestructureCheck = !schemaOrOptions.runtimeEnv;
@@ -48,6 +53,7 @@ export function createEnvInternal(
 		runtimeEnv =
 			options.runtimeEnv ||
 			(typeof process !== "undefined" ? process.env : undefined) ||
+			globalConfig ||
 			{};
 		isServer = !!context?.isServer;
 		skipDestructureCheck = !options.runtimeEnv;
