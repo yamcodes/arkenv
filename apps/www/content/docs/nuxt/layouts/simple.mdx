@@ -125,17 +125,8 @@ export const env = arkenv({
 
         Import `env` throughout your Nuxt application:
 
-        ```ts twoslash title="components/MyComponent.vue"
-        // @filename: env.ts
-        import arkenv from '@arkenv/nuxt';
-        export const env = arkenv({
-        	server: { DATABASE_URL: "string" },
-        	client: { NUXT_PUBLIC_API_URL: "string" },
-        	shared: { NODE_ENV: "string" },
-        });
-        // @filename: components/MyComponent.vue.ts
-        // ---cut---
-        import { env } from "../env";
+        ```ts title="components/MyComponent.vue"
+        import { env } from "~~/env";
 
         // Access is fully typesafe and autocompleted
         const apiUrl = env.NUXT_PUBLIC_API_URL;
@@ -143,17 +134,8 @@ export const env = arkenv({
 
         If you accidentally attempt to access a server-side secret in client-side code, it will throw a descriptive runtime exception during browser execution:
 
-        ```ts twoslash title="components/ClientOnlyComponent.vue"
-        // @filename: env.ts
-        import arkenv from '@arkenv/nuxt';
-        export const env = arkenv({
-        	server: { DATABASE_URL: "string" },
-        	client: { NUXT_PUBLIC_API_URL: "string" },
-        	shared: { NODE_ENV: "string" },
-        });
-        // @filename: components/ClientOnlyComponent.vue.ts
-        // ---cut---
-        import { env } from "../env";
+        ```ts title="components/ClientOnlyComponent.vue"
+        import { env } from "~~/env";
 
         // Throws a runtime error if evaluated in client-side code
         const dbUrl = env.DATABASE_URL;
