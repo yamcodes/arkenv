@@ -161,9 +161,10 @@ describe("createEnv (Nuxt runtime)", () => {
 			},
 		});
 
-		expect(env.__v_isRef).toBeUndefined();
-		expect(env.__v_isReactive).toBeUndefined();
-		expect(env.__v_isReadonly).toBeUndefined();
-		expect(env.__v_raw).toBeUndefined();
+		const envRecord = env as Record<string, unknown>;
+		expect(envRecord.__v_isRef).toBeUndefined();
+		expect(envRecord.__v_isReactive).toBeUndefined();
+		expect(envRecord.__v_isReadonly).toBeUndefined();
+		expect(envRecord.__v_raw).toBeUndefined();
 	});
 });
