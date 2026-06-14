@@ -27,6 +27,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 							<InstallButton />
 						</div>
 					),
+					footer: (
+						<div className="flex items-center justify-start p-4 border-t border-border/20">
+							<ThemeToggle />
+						</div>
+					),
 					collapsible: false,
 				}}
 				themeSwitch={{ enabled: false }}
@@ -53,15 +58,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 								]}
 								actions={[
 									<SearchToggle key="search" />,
-									<div key="theme-desktop" className="hidden md:block">
-										<ThemeToggle />
-									</div>,
 									<HeaderGithubLink
 										key="github"
 										className="hidden md:flex h-8 text-fd-muted-foreground hover:text-fd-foreground"
 									/>,
 								]}
-								menuActions={[<ThemeToggle key="theme-toggle" />]}
+								menuActions={[]}
 								menuSocialActions={[
 									<HeaderGithubLink
 										key="github"

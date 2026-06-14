@@ -4,7 +4,6 @@ import type { CSSProperties, ReactNode } from "react";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
 import { SearchToggle } from "~/components/ui/search-toggle";
-import { ThemeToggle } from "~/components/ui/theme-toggle";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
@@ -23,15 +22,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 						]}
 						actions={[
 							<SearchToggle key="search" />,
-							<div key="theme-desktop" className="hidden md:block">
-								<ThemeToggle />
-							</div>,
 							<HeaderGithubLink
 								key="github"
 								className="hidden md:flex h-8 text-fd-muted-foreground hover:text-fd-foreground"
 							/>,
 						]}
-						menuActions={[<ThemeToggle key="theme-toggle" />]}
+						menuActions={[]}
 						menuSocialActions={[
 							<HeaderGithubLink
 								key="github"
