@@ -64,7 +64,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 **Naming Conventions:**
 
 - **Files**: kebab-case (`arkenv.ts`)
-- **Functions**: camelCase / lowercase (e.g., `arkenv`, `createEnvInternal`)
+- **Functions**: camelCase (`createEnvInternal`)
 - **Types**: PascalCase (`ArkEnvError`)
 - **Constants**: UPPER_SNAKE_CASE for environment variables
 
