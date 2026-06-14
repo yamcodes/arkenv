@@ -77,6 +77,21 @@ describe("Planner", () => {
 		expect(envFile?.content).toContain("runtimeEnv:");
 	});
 
+	it("plans for nuxt framework", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "nuxt" },
+			detectedFramework: "nuxt",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nuxt");
+		expect(plan.bootstrap).toBeDefined();
+		expect(plan.bootstrap?.framework).toBe("nuxt");
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain('import arkenv from "@arkenv/nuxt";');
+		expect(envFile?.content).not.toContain("runtimeEnv:");
+	});
+
 	it("plans wrapNextjsConfig as true by default for nextjs", () => {
 		const state: CollectedState = {
 			...defaultState,

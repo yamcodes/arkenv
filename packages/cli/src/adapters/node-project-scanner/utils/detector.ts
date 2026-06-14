@@ -2,6 +2,16 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import type { ParsedTsConfig } from "@/shared/ports";
 
+async function hasConfig(cwd: string, files: string[]): Promise<boolean> {
+	for (const file of files) {
+		try {
+			await fsp.access(path.join(cwd, file));
+			return true;
+		} catch {}
+	}
+	return false;
+}
+
 /**
  * Detect the build or runtime framework used by the project at the target directory.
  *
@@ -12,7 +22,7 @@ import type { ParsedTsConfig } from "@/shared/ports";
 export async function detectFramework(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,
-): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs"> {
+): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt"> {
 	if (tsConfig?.compilerOptions?.types) {
 		const types = tsConfig.compilerOptions.types;
 		if (types.includes("vite") || types.includes("vite/client")) return "vite";
@@ -26,40 +36,36 @@ export async function detectFramework(
 
 		if (allDeps.vite) return "vite";
 		if (allDeps.next) return "nextjs";
+		if (allDeps.nuxt) return "nuxt";
 	} catch {
 		// ignore missing or invalid package.json
 	}
 
 	// Check for config files
-	try {
-		await fsp.access(path.join(cwd, "vite.config.ts"));
+	if (await hasConfig(cwd, ["vite.config.ts", "vite.config.js"])) {
 		return "vite";
-	} catch {
-		// vite.config.ts not found
 	}
-	try {
-		await fsp.access(path.join(cwd, "vite.config.js"));
-		return "vite";
-	} catch {
-		// vite.config.js not found
+	if (
+		await hasConfig(cwd, [
+			"next.config.ts",
+			"next.config.js",
+			"next.config.mjs",
+			"next.config.cjs",
+		])
+	) {
+		return "nextjs";
 	}
-
-	try {
-		await fsp.access(path.join(cwd, "next.config.ts"));
-		return "nextjs";
-	} catch {}
-	try {
-		await fsp.access(path.join(cwd, "next.config.js"));
-		return "nextjs";
-	} catch {}
-	try {
-		await fsp.access(path.join(cwd, "next.config.mjs"));
-		return "nextjs";
-	} catch {}
-	try {
-		await fsp.access(path.join(cwd, "next.config.cjs"));
-		return "nextjs";
-	} catch {}
+	if (
+		await hasConfig(cwd, [
+			"nuxt.config.ts",
+			"nuxt.config.js",
+			"nuxt.config.mts",
+			"nuxt.config.mjs",
+			"nuxt.config.cjs",
+		])
+	) {
+		return "nuxt";
+	}
 
 	// Bun Detection
 	const features = await detectBunFeatures(cwd, tsConfig);

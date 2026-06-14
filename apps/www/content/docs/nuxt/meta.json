@@ -1,0 +1,7 @@
+{
+	"title": "@arkenv/nuxt",
+	"description": "Integration for Nuxt",
+	"root": true,
+	"icon": "Nuxt",
+	"pages": ["---Guide---", "index", "layouts", "runtime-config", "faq"]
+}
