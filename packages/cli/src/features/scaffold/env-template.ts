@@ -62,7 +62,8 @@ export function getStrictEnvTemplates(
 	options: ProjectOptions,
 	nextjsImportPath?: string,
 ): StrictEnvTemplates {
-	const { validator, envKeys, disableCodegen } = options;
+	const { validator, envKeys } = options;
+	const disableCodegen = options.disableCodegen || options.framework === "nuxt";
 
 	const serverFields: string[] = [];
 	const clientFields: string[] = [];
@@ -167,6 +168,10 @@ export function getStrictEnvTemplates(
 		);
 	}
 
+	const runtimeEnvOptions = options.framework === "nuxt"
+		? ""
+		: `,\n\t\truntimeEnv: {\n\t\t\t${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}\n\t\t}`;
+
 	let shared = "";
 	let client = "";
 	let server = "";
@@ -187,10 +192,7 @@ import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
-		extends: [SharedSchema],
-		runtimeEnv: {
-			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
-		},
+		extends: [SharedSchema]${runtimeEnvOptions}
 	},
 );`
 			: `import arkenv from "${nextjsImportPath || "./generated/env.gen"}";
@@ -229,10 +231,7 @@ import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
-		extends: [SharedSchema],
-		runtimeEnv: {
-			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
-		},
+		extends: [SharedSchema]${runtimeEnvOptions}
 	},
 );`
 			: `import arkenv from "${nextjsImportPath || "./generated/env.gen"}";
@@ -273,10 +272,7 @@ import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
 	${formatSchemaObject(clientFields, "\t\t")},
 	{
-		extends: [SharedSchema],
-		runtimeEnv: {
-			${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}
-		},
+		extends: [SharedSchema]${runtimeEnvOptions}
 	},
 );`
 			: `import arkenv from "${nextjsImportPath || "./generated/env.gen"}";

@@ -100,7 +100,7 @@ export function buildNextjsTemplate(
 		sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
 	}
 
-	if (disableCodegen) {
+	if (disableCodegen || framework === "nuxt") {
 		const runtimeEnvFields: string[] = [];
 		if (envKeys && envKeys.length > 0) {
 			for (const key of envKeys) {
@@ -114,7 +114,9 @@ export function buildNextjsTemplate(
 				"\t\tNODE_ENV: process.env.NODE_ENV,",
 			);
 		}
-		sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
+		if (framework !== "nuxt") {
+			sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
+		}
 
 		const imports = [
 			`import arkenv from "${pkgName}";`,
