@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { env } from "./env";
+import { env } from "~~/env";
 
 const secretError = ref<string | null>(null);
 // biome-ignore lint/correctness/noUnusedVariables: used in template

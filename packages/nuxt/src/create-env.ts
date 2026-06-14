@@ -266,7 +266,8 @@ function createSecurityProxy(
 						prop === "__esModule" ||
 						prop === "$$typeof" ||
 						prop === "toJSON" ||
-						prop === "inspect";
+						prop === "inspect" ||
+						prop.startsWith("__v_");
 
 					if (!isCommonKey) {
 						throw new Error(
