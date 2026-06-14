@@ -186,7 +186,11 @@ export const applyCoercion = (
 
 	const sorted = [...targets].sort((a, b) => a.path.length - b.path.length);
 
-	const updateAtPath = (current: any, path: string[], fn: (val: any) => any): any => {
+	const updateAtPath = (
+		current: any,
+		path: string[],
+		fn: (val: any) => any,
+	): any => {
 		if (path.length === 0) {
 			return fn(current);
 		}
@@ -225,7 +229,7 @@ export const applyCoercion = (
 			return current;
 		}
 
-		if (Object.prototype.hasOwnProperty.call(current, key)) {
+		if (Object.hasOwn(current, key)) {
 			const nextVal = updateAtPath(current[key], rest, fn);
 			if (nextVal !== current[key]) {
 				return {

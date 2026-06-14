@@ -112,4 +112,3 @@ describe("applyCoercion - safety and non-mutation", () => {
 		expect(result.tags).toBe(env.tags); // Untouched array retains reference
 	});
 });
-
