@@ -60,7 +60,11 @@ When bootstrapping with the CLI, it generates a single `env.ts` file where you d
 By default, ArkEnv for Nuxt uses an automatic code generation module (`@arkenv/nuxt/module`) in your Nuxt config to build the `runtimeEnv` block at compile time. This is why the schema file imports from `./generated/env.gen` rather than `@arkenv/nuxt` directly.
 :::
 
-```ts title="env.ts"
+```ts twoslash title="env.ts"
+// @filename: ./generated/env.gen.ts
+export { default } from '@arkenv/nuxt';
+// @filename: env.ts
+// ---cut---
 import arkenv from "./generated/env.gen";
 
 export const env = arkenv({
@@ -84,7 +88,11 @@ export const env = arkenv({
 
         Create an `env.ts` file at the root of your project to define your schemas. Import `arkenv` from the auto-generated `./generated/env.gen.ts` helper file:
 
-        ```ts title="env.ts"
+        ```ts twoslash title="env.ts"
+        // @filename: ./generated/env.gen.ts
+        export { default } from '@arkenv/nuxt';
+        // @filename: env.ts
+        // ---cut---
         import arkenv from "./generated/env.gen";
 
         export const env = arkenv({
@@ -134,8 +142,19 @@ export const env = arkenv({
 
         Import `env` throughout your Nuxt application:
 
-        ```ts title="components/MyComponent.vue"
-        import { env } from "~~/env";
+        ```ts twoslash title="components/MyComponent.vue"
+        // @filename: ./generated/env.gen.ts
+        export { default } from '@arkenv/nuxt';
+        // @filename: env.ts
+        import arkenv from "./generated/env.gen";
+        export const env = arkenv({
+        	server: { DATABASE_URL: "string" },
+        	client: { NUXT_PUBLIC_API_URL: "string" },
+        	shared: { NODE_ENV: "string" },
+        });
+        // @filename: components/MyComponent.vue.ts
+        // ---cut---
+        import { env } from "../env";
 
         // Access is fully typesafe and autocompleted
         const apiUrl = env.NUXT_PUBLIC_API_URL;
@@ -143,8 +162,19 @@ export const env = arkenv({
 
         If you accidentally attempt to access a server-side secret in client-side code, it will throw a descriptive runtime exception during browser execution:
 
-        ```ts title="components/ClientOnlyComponent.vue"
-        import { env } from "~~/env";
+        ```ts twoslash title="components/ClientOnlyComponent.vue"
+        // @filename: ./generated/env.gen.ts
+        export { default } from '@arkenv/nuxt';
+        // @filename: env.ts
+        import arkenv from "./generated/env.gen";
+        export const env = arkenv({
+        	server: { DATABASE_URL: "string" },
+        	client: { NUXT_PUBLIC_API_URL: "string" },
+        	shared: { NODE_ENV: "string" },
+        });
+        // @filename: components/ClientOnlyComponent.vue.ts
+        // ---cut---
+        import { env } from "../env";
 
         // Throws a runtime error if evaluated in client-side code
         const dbUrl = env.DATABASE_URL;

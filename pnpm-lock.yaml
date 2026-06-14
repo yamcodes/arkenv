@@ -583,6 +583,9 @@ importers:
       '@arkenv/nextjs':
         specifier: workspace:*
         version: link:../../packages/nextjs
+      '@arkenv/nuxt':
+        specifier: workspace:*
+        version: link:../../packages/nuxt
       '@arkenv/vite-plugin':
         specifier: workspace:*
         version: link:../../packages/vite-plugin

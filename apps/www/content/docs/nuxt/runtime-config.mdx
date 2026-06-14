@@ -19,7 +19,9 @@ When the `@arkenv/nuxt/module` loads:
 
 For example, given this schema:
 
-```ts title="env.ts"
+```ts twoslash title="env.ts"
+import arkenv from '@arkenv/nuxt';
+// ---cut---
 export const env = arkenv({
 	server: {
 		DATABASE_URL: "string",

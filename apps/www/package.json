@@ -21,6 +21,7 @@
 		"@arkenv/bun-plugin": "workspace:*",
 		"@arkenv/fumadocs-ui": "workspace:*",
 		"@arkenv/nextjs": "workspace:*",
+		"@arkenv/nuxt": "workspace:*",
 		"@arkenv/vite-plugin": "workspace:*",
 		"@fumadocs/mdx-remote": "1.4.10",
 		"@icons-pack/react-simple-icons": "13.13.0",
