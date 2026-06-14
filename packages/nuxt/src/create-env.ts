@@ -28,9 +28,10 @@ export function createEnvInternal(
 	let isServer = false;
 	let skipDestructureCheck = false;
 
-	const globalConfig = typeof window !== "undefined"
-		? (window as any).__NUXT__?.config?.public
-		: undefined;
+	const globalConfig =
+		typeof window !== "undefined"
+			? (window as any).__NUXT__?.config?.public
+			: undefined;
 
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
