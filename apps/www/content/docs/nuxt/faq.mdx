@@ -24,7 +24,7 @@ Nuxt implements its own distinct patterns for configuration, environment loading
 
 In other environment validation libraries, you must manually write a `runtimeEnv` mapping object containing keys like `NUXT_PUBLIC_VAR: process.env.NUXT_PUBLIC_VAR` so that the bundler can access and package them.
 
-ArkEnv's Nuxt module scans your schema file(s) at build time, identifies the client-side and shared keys, and automatically generates a tailored `createEnv` factory inside `generated/env.gen.ts` that includes the complete, compiled `runtimeEnv` block using Nuxt's `runtimeConfig`. You get the benefits of typesafe validation without manual mapping boilerplate.
+ArkEnv's Nuxt module scans your schema file(s) at build time, identifies the client-side and shared keys, and automatically registers them to Nuxt's `runtimeConfig`. You get the benefits of typesafe validation without manual mapping boilerplate.
 
 ## How does the compile-time client security work?
 
@@ -45,3 +45,13 @@ If the simple layout is recommended, why use the strict layout?
 1. **Compile-time isolation**: A custom Vite compiler plugin checks and blocks any client-side imports of server environments before the code runs.
 2. **Clean separation of concerns**: Separating client schemas (`client.ts`) and server schemas (`server.ts`) naturally matches Nuxt's architectural boundaries (e.g. client components vs. server routes).
 3. **No boilerplate penalty**: The ArkEnv CLI completely eliminates the setup effort. Running `arkenv init --strict` scaffolds the entire 3-file setup with the unified client and server factories pre-wired.
+
+## Can I deploy the same build to staging and production?
+
+**Yes.** Because `@arkenv/nuxt` reads environment variables via Nuxt's `useRuntimeConfig()` at runtime instead of inlining them at build time, you can:
+
+1. Run `nuxt build` once
+2. Package the output (e.g. in a Docker image)
+3. Deploy that same artifact to staging, QA, and production — changing only the environment variables at container startup
+
+No application rebuild is required when values change. You can also use Nuxt's native override prefixes (e.g. `NUXT_DATABASE_URL` or `NUXT_PUBLIC_API_URL`) to swap values dynamically across environments.
