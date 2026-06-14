@@ -50,10 +50,6 @@ The easiest way to bootstrap the strict layout is with the [ArkEnv CLI](/docs/cl
 
 When bootstrapping with the CLI, it generates three separate schema files under `env/`:
 
-:::note
-By default, ArkEnv for Nuxt uses an automatic code generation module (`@arkenv/nuxt/module`) in your Nuxt config to compile your `runtimeEnv` block. This is why the client-side schema imports from `./generated/env.gen` rather than `@arkenv/nuxt/client`.
-:::
-
 ```ts twoslash title="env/internal/shared.ts"
 import { type } from "@arkenv/nuxt/shared";
 
@@ -72,11 +68,9 @@ import { type } from "@arkenv/nuxt/shared";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
-// @filename: env/generated/env.gen.ts
-export { default } from '@arkenv/nuxt/client';
 // @filename: env/client.ts
 // ---cut---
-import arkenv from "./generated/env.gen";
+import arkenv from "@arkenv/nuxt/client";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
@@ -95,10 +89,8 @@ import { type } from "@arkenv/nuxt/shared";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
-// @filename: env/generated/env.gen.ts
-export { default } from '@arkenv/nuxt/client';
 // @filename: env/client.ts
-import arkenv from "./generated/env.gen";
+import arkenv from "@arkenv/nuxt/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
 	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
@@ -120,7 +112,7 @@ export const env = arkenv(
 ```
 
 <Accordions>
-  <Accordion title="Manual Setup">
+  <Accordion title="Manual setup">
     <Steps>
       <Step>
         ### Define shared variables
@@ -143,7 +135,7 @@ export const env = arkenv(
       <Step>
         ### Define client variables
 
-        Create `env/client.ts` importing `arkenv` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NUXT_PUBLIC_` and you must extend `SharedSchema`:
+        Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_` and you must extend `SharedSchema`:
 
         ```ts twoslash title="env/client.ts"
         // @filename: env/internal/shared.ts
@@ -151,11 +143,9 @@ export const env = arkenv(
         export const SharedSchema = type({
         	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
         });
-        // @filename: env/generated/env.gen.ts
-        export { default } from '@arkenv/nuxt/client';
         // @filename: env/client.ts
         // ---cut---
-        import arkenv from "./generated/env.gen";
+        import arkenv from "@arkenv/nuxt/client";
         import { SharedSchema } from "./internal/shared";
 
         export const env = arkenv(
@@ -180,10 +170,8 @@ export const env = arkenv(
         export const SharedSchema = type({
         	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
         });
-        // @filename: env/generated/env.gen.ts
-        export { default } from '@arkenv/nuxt/client';
         // @filename: env/client.ts
-        import arkenv from "./generated/env.gen";
+        import arkenv from "@arkenv/nuxt/client";
         import { SharedSchema } from "./internal/shared";
         export const env = arkenv(
         	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
@@ -208,7 +196,7 @@ export const env = arkenv(
       <Step>
         ### Register module in Nuxt config
 
-        Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory, generates the `env.gen.ts` file, and automatically regenerates on changes:
+        Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory and registers environment variables to Nuxt's `runtimeConfig`:
 
         ```ts title="nuxt.config.ts"
         export default defineNuxtConfig({
@@ -216,22 +204,17 @@ export const env = arkenv(
         });
         ```
 
-        You can customize the schema and output paths using optional parameters:
+        You can customize the schema path using optional parameters:
 
         ```ts title="nuxt.config.ts"
         export default defineNuxtConfig({
         	modules: ["@arkenv/nuxt/module"],
         	arkenv: {
-        		schemaPath: "env",              // Path to your schema directory (default: env or src/env)
-        		outputPath: "env/generated/env.gen.ts", // Custom output path
-        		layout: "strict"                // Explicitly specify layout
+        		schemaPath: "env",     // Path to your schema directory (default: env or src/env)
+        		layout: "strict"       // Explicitly specify layout
         	}
         });
         ```
-
-        :::tip
-        We recommend committing the generated `env/generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone.
-        :::
       </Step>
     </Steps>
   </Accordion>
@@ -241,7 +224,7 @@ export const env = arkenv(
 
 Both `env/client.ts` and `env/server.ts` export the resolved environment as `env`. This lets you use consistent `env.MY_VAR` imports depending on where the code executes.
 
-### In Server Code (Server Routes, Middleware)
+### In server code (server routes, middleware)
 
 Import `env` from the server file. It contains all public, shared, and server-only variables:
 
@@ -251,10 +234,8 @@ import { type } from "@arkenv/nuxt/shared";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
-// @filename: env/generated/env.gen.ts
-export { default } from '@arkenv/nuxt/client';
 // @filename: env/client.ts
-import arkenv from "./generated/env.gen";
+import arkenv from "@arkenv/nuxt/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
 	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
@@ -279,11 +260,11 @@ export default function defineEventHandler(event: unknown) {
 }
 ```
 
-### In Client-Side Code
+### In client-side code
 
 Import `env` from the client file (`env/client.ts`). The boundary protection works at two levels:
 
-1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
+1. **TypeScript type safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
 
 ```ts twoslash title="env/client.ts (usage)"
 // @filename: env/internal/shared.ts
@@ -291,10 +272,8 @@ import { type } from "@arkenv/nuxt/shared";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
-// @filename: env/generated/env.gen.ts
-export { default } from '@arkenv/nuxt/client';
 // @filename: env/client.ts
-import arkenv from "./generated/env.gen";
+import arkenv from "@arkenv/nuxt/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
 	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
@@ -309,4 +288,4 @@ const api = env.NUXT_PUBLIC_API_URL;
 const db = env.DATABASE_URL;
 ```
 
-2. **Compile-Time Isolation**: If you accidentally import `env` from the server file (`env/server.ts`) in client-side code, Nuxt's Vite bundler will fail the build with a compilation error. This is because `@arkenv/nuxt` registers a custom Vite plugin that detects imports of the server module on the client side and blocks them at build time.
+2. **Compile-time isolation**: If you accidentally import `env` from the server file (`env/server.ts`) in client-side code, Nuxt's Vite bundler will fail the build with a compilation error. This is because `@arkenv/nuxt` registers a custom Vite plugin that detects imports of the server module on the client side and blocks them at build time.

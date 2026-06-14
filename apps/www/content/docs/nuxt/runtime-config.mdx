@@ -1,5 +1,5 @@
 ---
-title: Runtime Config Integration
+title: Runtime config integration
 icon: Activity
 description: How @arkenv/nuxt integrates with Nuxt's native runtimeConfig for dynamic env swapping.
 ---
@@ -51,20 +51,20 @@ export default defineNuxtConfig({
 });
 ```
 
-At runtime, the generated `env.gen.ts` file automatically retrieves these values via Nuxt's native `useRuntimeConfig()` utility instead of reading from `process.env` directly.
+At runtime, `@arkenv/nuxt` automatically retrieves these values via Nuxt's native `useRuntimeConfig()` utility instead of reading from `process.env` directly.
 
 ---
 
 ## Benefits of Runtime Config
 
-### 1. Build Once, Deploy Anywhere
+### 1. Build once, deploy anywhere
 
 Because variables are fetched from `useRuntimeConfig()`, you can run a production build of your Nuxt application (`nuxt build`) once, package it (e.g., in a Docker container), and deploy it to staging, QA, or production. You only need to set the environment variables at startup time; **no application rebuild is required** when values change.
 
-### 2. Native Nuxt Overrides
+### 2. Native Nuxt overrides
 
 Since keys are registered in the runtime configuration, you can leverage Nuxt's native runtime config override prefixes (like `NUXT_DATABASE_URL` or `NUXT_PUBLIC_API_URL`) to easily swap values dynamically in different environments.
 
-### 3. Server-Side Safety
+### 3. Server-side safety
 
 Nuxt guarantees that any value placed inside the top-level `runtimeConfig` is never exposed to the client. This serves as a secondary layer of defense alongside ArkEnv's compile-time block and runtime Proxies.

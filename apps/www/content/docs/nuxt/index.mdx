@@ -5,7 +5,7 @@ description: Validate and secure environment variables in Nuxt applications.
 ---
 
 :::important
-This integration requires [ArkType](https://arktype.io) to be installed.
+This integration requires [ArkType](https://arktype.io) to be installed. You can also use any [Standard Schema](/docs/nuxt#standard-schema-validators) compatible validator.
 :::
 
 The `@arkenv/nuxt` integration provides end-to-end environment validation for both the server and the browser. It automatically injects your configuration into Nuxt's `runtimeConfig`, catching configuration bugs early and preventing sensitive server-side variables from ever reaching the client via a custom Vite plugin.
@@ -53,7 +53,33 @@ ArkEnv supports two layout structures to match your security and developer exper
 ## Next steps
 
 <Cards>
-  <Card title="Runtime Config Integration" href="/docs/nuxt/runtime-config" description="Learn how @arkenv/nuxt automatically injects keys into Nuxt's private and public runtimeConfig." />
+  <Card title="Runtime config integration" href="/docs/nuxt/runtime-config" description="Learn how @arkenv/nuxt automatically injects keys into Nuxt's private and public runtimeConfig." />
 
-  <Card title="Nuxt Configuration Guide" href="https://nuxt.com/docs/getting-started/configuration" description="Read the official Nuxt documentation on how environment variables and runtime configuration work." />
+  <Card title="Nuxt configuration guide" href="https://nuxt.com/docs/getting-started/configuration" description="Read the official Nuxt documentation on how environment variables and runtime configuration work." />
 </Cards>
+
+## Standard Schema validators
+
+Any validator that implements the [Standard Schema](https://standardschema.dev/) specification works with `@arkenv/nuxt` — including [Zod](https://zod.dev/) and [Valibot](https://valibot.dev/):
+
+```ts twoslash title="env.ts"
+import arkenv from '@arkenv/nuxt';
+import * as z from 'zod';
+// ---cut---
+export const env = arkenv({
+  server: {
+    // ArkType DSL
+    DATABASE_URL: "string",
+    // Zod
+    API_KEY: z.string().min(32),
+  },
+  client: {
+    NUXT_PUBLIC_API_URL: "string",
+  },
+  shared: {
+    NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  },
+});
+```
+
+See the [Standard Schema validators](/docs/arkenv/integrations/standard-schema) guide for more details.
