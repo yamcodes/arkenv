@@ -168,9 +168,10 @@ export function getStrictEnvTemplates(
 		);
 	}
 
-	const runtimeEnvOptions = options.framework === "nuxt"
-		? ""
-		: `,\n\t\truntimeEnv: {\n\t\t\t${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}\n\t\t}`;
+	const runtimeEnvOptions =
+		options.framework === "nuxt"
+			? ""
+			: `,\n\t\truntimeEnv: {\n\t\t\t${runtimeEnvFields.map((f) => f.trim()).join("\n\t\t\t")}\n\t\t}`;
 
 	let shared = "";
 	let client = "";
