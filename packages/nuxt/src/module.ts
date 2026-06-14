@@ -14,7 +14,6 @@ import { name, peerDependencies, version } from "../package.json";
 
 export type ModuleOptions = {
 	schemaPath?: string;
-	outputPath?: string;
 	layout?: "simple" | "strict";
 };
 
