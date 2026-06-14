@@ -63,8 +63,8 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 **Naming Conventions:**
 
-- **Files**: kebab-case (`create-env.ts`)
-- **Functions**: camelCase (`createEnv`)
+- **Files**: kebab-case (`arkenv.ts`)
+- **Functions**: camelCase (`arkenv`)
 - **Types**: PascalCase (`ArkEnvError`)
 - **Constants**: UPPER_SNAKE_CASE for environment variables
 
@@ -95,7 +95,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 **Package Architecture:**
 
 - **Core Package** (`arkenv`):
-  - Main export: `createEnv` function (also exported as default `arkenv`)
+  - Main export: `arkenv` function (also exported as default export)
   - Uses ArkType's `scope` system for type validation
   - Custom types: `string.host`, `number.port`, `boolean`
   - Error handling via `ArkEnvError` class
@@ -200,7 +200,7 @@ pnpm run test:e2e                     # E2E tests
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
 - **Next.js**: Integrated via `@arkenv/nextjs`. Provides two layout patterns:
   - **Strict layout**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
-  - **Simple layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `createEnv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
+  - **Simple layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
 - **Bun fullstack dev server**:
   - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.
   - **Bun.build**: Bun's programmatic bundling API. Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.
@@ -218,7 +218,7 @@ pnpm run test:e2e                     # E2E tests
 
 - Uses `const` type parameters for better type inference
 - Leverages ArkType's `type.infer` and `type.validate` utilities
-- Typesafe environment object returned from `createEnv`
+- Typesafe environment object returned from `arkenv`
 
 **Error Handling:**
 

@@ -262,13 +262,13 @@ describe("codegen process", () => {
 		// Wait! The templates generated for config should be:
 		// import { config } from "../env"; or similar?
 		// Oh, wait! In arkenv wrapper pattern, we do NOT import config!
-		// The developer imports createEnv from "./env.gen", and calls it in env.ts.
+		// The developer imports arkenv from "./env.gen", and calls it in env.ts.
 		// So the generated file does NOT import from "./env" at all!
 		// Wait! Let's check my template:
-		// Yes! The generated template does NOT import any config! It only imports coreCreateEnv from "@arkenv/nextjs"!
+		// Yes! The generated template does NOT import any config! It only imports coreArkenv from "@arkenv/nextjs"!
 		// Oh, wow! That is even simpler and cleaner!
 		// Wait, let's verify if my generateFactoryCode template has any relative import of config:
-		// No, it doesn't! It just exports the generic wrapper function `createEnv`.
+		// No, it doesn't! It just exports the generic wrapper function `arkenv`.
 		// But wait! Why does `generateFactoryCode` compute `relativeImportPath`?
 		// Ah! In `generateFactoryCode`, we computed `relativeImportPath` but we didn't actually use it in the returned string template!
 		// Oh, let me check my config.ts code:
@@ -278,7 +278,7 @@ describe("codegen process", () => {
 		// That is brilliant! Since the factory is generic and accepts the schema options directly, it doesn't need to know about the schema file at all! It just needs to know which keys to destructure in `runtimeEnv`.
 		// This makes it completely decoupled and robust!
 		// Let's verify that this is correct.
-		// Yes, `createEnv` wrapper takes `options` (which is the schema) and returns `coreCreateEnv({ ...options, runtimeEnv: { ... } })`.
+		// Yes, `arkenv` wrapper takes `options` (which is the schema) and returns `coreArkenv({ ...options, runtimeEnv: { ... } })`.
 		// It has no dependency on the schema file!
 		// This is so beautiful!
 	});
