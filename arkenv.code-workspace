@@ -48,6 +48,10 @@
 			"name": "🎁 @arkenv/fumadocs-ui"
 		},
 		{
+			"path": "packages/build",
+			"name": "🎁 @arkenv/build"
+		},
+		{
 			"path": "packages/internal/types",
 			"name": "📦 @repo/types"
 		},

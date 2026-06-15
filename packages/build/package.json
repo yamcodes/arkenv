@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/build",
-	"version": "1.0.0-alpha.0",
+	"version": "0.0.0",
 	"description": "Shared build and codegen utilities for ArkEnv framework plugins",
 	"type": "module",
 	"main": "./dist/index.cjs",
