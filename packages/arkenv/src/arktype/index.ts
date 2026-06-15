@@ -103,9 +103,7 @@ export function parse<const T extends SchemaShape>(
 	}
 
 	// Optionally treat empty strings as undefined
-	const processedEnv = emptyAsUndefined
-		? stripEmptyStrings(env as Record<string, string | undefined>)
-		: env;
+	const processedEnv = emptyAsUndefined ? stripEmptyStrings(env) : env;
 
 	// Validate the environment variables
 	const validatedEnv = finalSchema(processedEnv);

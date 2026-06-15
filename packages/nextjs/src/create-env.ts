@@ -1,4 +1,4 @@
-import type { SchemaShape } from "@repo/types";
+import type { Dict, SchemaShape } from "@repo/types";
 import { createEnv as coreCreateEnv } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
@@ -63,10 +63,10 @@ export function createEnvInternal(
 	context?: { isServer: boolean; isShared?: boolean },
 ): unknown {
 	let server: SchemaShape = {};
-	let client: Record<string, unknown> = {};
+	let client: SchemaShape = {};
 	let shared: SchemaShape = {};
 	let extendsList: unknown[] = [];
-	let runtimeEnv: Record<string, unknown> = {};
+	let runtimeEnv: Dict<string> = {};
 	let isServer = false;
 
 	if (typeof optionsOrIsServer === "boolean") {
@@ -94,7 +94,7 @@ export function createEnvInternal(
 		}
 	}
 
-	let extendedEnvValues: Record<string, unknown> = {};
+	let extendedEnvValues: Dict<string> = {};
 	const allKeys = new Set<string>();
 	const serverOnlyKeys = new Set<string>();
 
@@ -113,7 +113,7 @@ export function createEnvInternal(
 	}
 
 	// Prepare combined environment for core validation
-	const combinedEnv: Record<string, string | undefined> = {};
+	const combinedEnv: Dict<string> = {};
 
 	// Process extended environments
 	if (extendsList && Array.isArray(extendsList)) {
@@ -136,12 +136,12 @@ export function createEnvInternal(
 					// Prepare what we have so far for validating the extended schema
 					for (const key of Object.keys(extendedEnvValues)) {
 						if (extendedEnvValues[key] !== undefined) {
-							combinedEnv[key] = String(extendedEnvValues[key]);
+							combinedEnv[key] = extendedEnvValues[key];
 						}
 					}
 					for (const key of Object.keys(runtimeEnv)) {
 						if (runtimeEnv[key] !== undefined) {
-							combinedEnv[key] = runtimeEnv[key] as string;
+							combinedEnv[key] = runtimeEnv[key];
 						}
 					}
 					if (isServer) {
@@ -216,13 +216,13 @@ export function createEnvInternal(
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {
-			combinedEnv[key] = String(extendedEnvValues[key]);
+			combinedEnv[key] = extendedEnvValues[key];
 		}
 	}
 
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
-			combinedEnv[key] = runtimeEnv[key] as string;
+			combinedEnv[key] = runtimeEnv[key];
 		}
 	}
 

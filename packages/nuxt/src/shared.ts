@@ -19,7 +19,6 @@ export function createEnv<
 	schema: EnvSchema<TSchema>,
 	options?: {
 		extends?: [...TExtends];
-		runtimeEnv?: Record<keyof TSchema | string, unknown>;
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>> {
 	const isServer = typeof window === "undefined";
