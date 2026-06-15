@@ -23,7 +23,7 @@ export function createEnv<
 	},
 	options?: {
 		extends?: [...TExtends];
-		runtimeEnv?: Record<string, unknown>;
+
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
@@ -37,8 +37,7 @@ export function createEnv<
 	};
 	shared?: EnvSchema<TShared>;
 	extends?: [...TExtends];
-	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
-		Record<string, unknown>;
+
 }): Readonly<
 	distill.Out<at.infer<TClient & TShared, $>> & MergeExtends<TExtends>
 >;
@@ -47,9 +46,7 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	const isLegacy =
 		schemaOrOptions &&
 		typeof schemaOrOptions === "object" &&
-		("runtimeEnv" in schemaOrOptions ||
-			"client" in schemaOrOptions ||
-			"shared" in schemaOrOptions);
+		("client" in schemaOrOptions || "shared" in schemaOrOptions);
 
 	if (isLegacy) {
 		if ("server" in schemaOrOptions) {

@@ -1,4 +1,4 @@
-import type { SchemaShape } from "@repo/types";
+import type { Dict, SchemaShape } from "@repo/types";
 import { createEnv as coreCreateEnv, getSchemaKeys } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
@@ -24,14 +24,17 @@ export function createEnvInternal(
 	let client: Record<string, unknown> = {};
 	let shared: SchemaShape = {};
 	let extendsList: unknown[] = [];
-	let runtimeEnv: Record<string, unknown> = {};
 	let isServer = false;
-	let skipDestructureCheck = false;
 
 	const globalConfig =
 		typeof window !== "undefined"
 			? (window as any).__NUXT__?.config?.public
 			: undefined;
+
+	const sourceEnv: Record<string, unknown> =
+		(typeof process !== "undefined" ? process.env : undefined) ||
+		globalConfig ||
+		{};
 
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
@@ -39,25 +42,13 @@ export function createEnvInternal(
 		client = schemaOrOptions.client || {};
 		shared = schemaOrOptions.shared || {};
 		extendsList = schemaOrOptions.extends || [];
-		runtimeEnv =
-			schemaOrOptions.runtimeEnv ||
-			(typeof process !== "undefined" ? process.env : undefined) ||
-			globalConfig ||
-			{};
 		isServer = optionsOrIsServer;
-		skipDestructureCheck = !schemaOrOptions.runtimeEnv;
 	} else {
 		// New flat schema behavior
 		const flatSchema = schemaOrOptions || {};
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
-		runtimeEnv =
-			options.runtimeEnv ||
-			(typeof process !== "undefined" ? process.env : undefined) ||
-			globalConfig ||
-			{};
 		isServer = !!context?.isServer;
-		skipDestructureCheck = !options.runtimeEnv;
 
 		if (context?.isShared) {
 			shared = flatSchema;
@@ -113,9 +104,9 @@ export function createEnvInternal(
 							combinedEnv[key] = extendedEnvValues[key];
 						}
 					}
-					for (const key of Object.keys(runtimeEnv)) {
-						if (runtimeEnv[key] !== undefined) {
-							combinedEnv[key] = runtimeEnv[key];
+					for (const key of Object.keys(sourceEnv)) {
+						if (sourceEnv[key] !== undefined) {
+							combinedEnv[key] = sourceEnv[key];
 						}
 					}
 					if (isServer) {
@@ -129,7 +120,9 @@ export function createEnvInternal(
 						}
 					}
 
-					const validated = coreCreateEnv(ext as any, { env: combinedEnv });
+					const validated = coreCreateEnv(ext as any, {
+						env: combinedEnv as Dict<string>,
+					});
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
 
 					const extKeys = getSchemaKeys(ext);
@@ -168,26 +161,7 @@ export function createEnvInternal(
 		}
 	}
 
-	// Check runtimeEnv has all local client and shared keys
-	if (!skipDestructureCheck) {
-		const requiredKeys = [...Object.keys(client), ...Object.keys(shared)];
-		for (const key of requiredKeys) {
-			if (!(key in runtimeEnv)) {
-				throw new Error(
-					`Missing key in runtimeEnv: ${key}. All client and shared environment variables must be explicitly destructured in runtimeEnv.`,
-				);
-			}
-		}
 
-		// Check runtimeEnv does not have any keys not defined in the schema (allKeys)
-		for (const key of Object.keys(runtimeEnv)) {
-			if (!allKeys.has(key)) {
-				throw new Error(
-					`Environment variable '${key}' is passed to runtimeEnv but is not defined in the schema.`,
-				);
-			}
-		}
-	}
 
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
@@ -196,9 +170,9 @@ export function createEnvInternal(
 		}
 	}
 
-	for (const key of Object.keys(runtimeEnv)) {
-		if (runtimeEnv[key] !== undefined) {
-			combinedEnv[key] = runtimeEnv[key];
+	for (const key of Object.keys(sourceEnv)) {
+		if (sourceEnv[key] !== undefined) {
+			combinedEnv[key] = sourceEnv[key];
 		}
 	}
 
@@ -217,7 +191,9 @@ export function createEnvInternal(
 		: { ...client, ...shared };
 
 	// Run core validation
-	const validated = coreCreateEnv(schema as any, { env: combinedEnv });
+	const validated = coreCreateEnv(schema as any, {
+		env: combinedEnv as Dict<string>,
+	});
 
 	const mergedValidated = { ...extendedEnvValues, ...validated } as Record<
 		string,
