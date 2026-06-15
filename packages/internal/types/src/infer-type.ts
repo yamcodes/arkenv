@@ -1,4 +1,5 @@
 import type { type } from "arktype";
+import type { Dict } from "./helpers";
 import type { StandardSchemaV1 } from "./standard-schema";
 
 /**
@@ -15,7 +16,7 @@ export type InferType<T> =
 	T extends StandardSchemaV1<infer _Input, infer Output>
 		? Output
 		: // Then check ArkType patterns
-			T extends (value: Record<string, string | undefined>) => infer R
+			T extends (value: Dict<string>) => infer R
 			? R extends type.errors
 				? never
 				: R
