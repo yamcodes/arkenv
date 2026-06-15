@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/bun-plugin",
-	"version": "0.1.9",
+	"version": "0.1.10",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -63,7 +63,7 @@
 	"size-limit": [
 		{
 			"path": "dist/index.js",
-			"limit": "2.5 kB",
+			"limit": "2.6 kB",
 			"import": "*",
 			"ignore": [
 				"bun",

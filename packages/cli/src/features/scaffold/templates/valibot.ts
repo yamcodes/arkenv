@@ -52,7 +52,8 @@ export const valibotTemplate = (
 	`;
 	}
 
-	if (framework === "nextjs") {
+	if (framework === "nextjs" || framework === "nuxt") {
+		const clientPrefix = framework === "nuxt" ? "NUXT_PUBLIC_" : "NEXT_PUBLIC_";
 		return buildNextjsTemplate(
 			envKeys,
 			{
@@ -65,7 +66,7 @@ export const valibotTemplate = (
 					`\t\tDATABASE_URL: v.optional(v.pipe(v.string(), v.url()), "postgres://localhost:5432/mydb"),`,
 				],
 				defaultClientFields: [
-					`\t\tNEXT_PUBLIC_API_URL: v.optional(v.pipe(v.string(), v.url()), "https://api.example.com"),`,
+					`\t\t${clientPrefix}API_URL: v.optional(v.pipe(v.string(), v.url()), "https://api.example.com"),`,
 				],
 				defaultSharedFields: [
 					`\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),`,
@@ -73,6 +74,7 @@ export const valibotTemplate = (
 			},
 			nextjsImportPath,
 			disableCodegen,
+			framework,
 		);
 	}
 

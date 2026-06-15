@@ -17,6 +17,10 @@ arkenv:
   - changed-files:
     - any-glob-to-any-file: 'packages/nextjs/**/*'
 
+"@arkenv/nuxt":
+  - changed-files:
+    - any-glob-to-any-file: 'packages/nuxt/**/*'
+
 "@arkenv/cli":
   - changed-files:
     - any-glob-to-any-file: 'packages/cli/**/*'

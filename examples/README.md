@@ -9,6 +9,7 @@ This directory contains a collection of example projects that demonstrate variou
 | [basic](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                               | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals.                 |
 | [with-nextjs](https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs)                   | Minimal example of *using ArkEnv in a [Next.js](https://nextjs.org/) app* (Simple layout).                               |
 | [with-nextjs-strict](https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs-strict)     | Minimal example of *using ArkEnv in a [Next.js](https://nextjs.org/) app* (Strict split 3-file layout).                  |
+| [with-nuxt](https://github.com/yamcodes/arkenv/tree/main/examples/with-nuxt)                       | Minimal example of *using ArkEnv in a [Nuxt](https://nuxt.com/) app*.                                                    |
 | [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)           | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/) + [React](https://react.dev/) app*.                      |
 | [with-bun](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun)                         | Minimal example of *using ArkEnv in a [Bun](https://bun.sh/) app*.                                                       |
 | [with-bun-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react)             | Minimal example of *using ArkEnv in a [Bun + React](https://bun.com/docs/guides/ecosystem/react) full-stack app*.        |
@@ -35,6 +36,7 @@ Some examples of this mapping (not comprehensive):
 | `with-bun`           | `apps/playgrounds/bun`           |
 | `with-nextjs`        | `apps/playgrounds/nextjs`        |
 | `with-nextjs-strict` | `apps/playgrounds/nextjs-strict` |
+| `with-nuxt`          | `apps/playgrounds/nuxt`          |
 | `with-bun-react`     | `apps/playgrounds/bun-react`     |
 | `with-vite-react`    | `apps/playgrounds/vite`          |
 

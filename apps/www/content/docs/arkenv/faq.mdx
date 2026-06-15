@@ -114,7 +114,7 @@ Yes! While we recommend TypeScript for editor autocomplete and build-time safety
 
 ## Is ArkEnv only for Next.js or Vite?
 
-No. While we officially support Next.js, Node.js, Vite, and Bun through wrappers and plugins, the core API is **built on standard Web and JavaScript APIs** and should run anywhere JavaScript does.
+No. While we officially support Next.js, Nuxt, Node.js, Vite, and Bun through wrappers and plugins, the core API is **built on standard Web and JavaScript APIs** and should run anywhere JavaScript does.
 
 ## How is ArkEnv different from T3 Env, or other similar tools?
 
@@ -122,7 +122,7 @@ No. While we officially support Next.js, Node.js, Vite, and Bun through wrappers
 
 - Natively supports [ArkType](https://arktype.io/) for schema definitions, yielding **extremely fast validation and cleaner schemas**.
 - Includes **built-in type coercion** and developer-friendly CLI tooling out of the box.
-- Supports **Vite and Bun out of the box** alongside Next.js and Node.js.
+- Supports **Vite and Bun out of the box** alongside Next.js, Node.js, and Nuxt.
 
 Read more in the [comparison](/docs/arkenv/comparison) section.
 
@@ -140,6 +140,6 @@ Yes. ArkEnv is optimized for modern development workflows and features a **dedic
 
 ## Is it safe to use in production?
 
-Yes. ArkEnv is tested rigorously and carries **zero external dependencies**, eliminating supply-chain vulnerabilities. The core runtime is a tiny \~2kB gzipped. The actual parsing mechanism is handled by your chosen validation library and ArkEnv will **safely shut down the process** if a configuration error is detected or if a server-side variable leaks to the client.
+Yes. ArkEnv is tested rigorously and carries **zero external dependencies**, eliminating supply-chain vulnerabilities. The core runtime is a tiny \~2 kB gzipped. The actual parsing mechanism is handled by your chosen validation library and ArkEnv will **safely shut down the process** if a configuration error is detected or if a server-side variable leaks to the client.
 
 ArkEnv is currently in v0 (roadmap towards v1 [here](https://github.com/yamcodes/arkenv/issues/683)), and fully compliant with [Semantic Versioning 2.0.0](https://semver.org/). The core library is used in production and not expected to change meaningfully.

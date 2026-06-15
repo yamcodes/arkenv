@@ -5,9 +5,11 @@ import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
 import {
 	bootstrapBunConfig,
 	bootstrapNextjsConfig,
+	bootstrapNuxtConfig,
 	bootstrapViteConfig,
 	findBunConfig,
 	findNextjsConfig,
+	findNuxtConfig,
 	findViteConfig,
 } from "./utils/bootstrappers";
 import { updateTsConfigToStrict } from "./utils/tsconfig";
@@ -107,6 +109,10 @@ export class NodeWorkspace implements WorkspacePort {
 		return findNextjsConfig(cwd);
 	}
 
+	async findNuxtConfig(cwd?: string): Promise<string | null> {
+		return findNuxtConfig(cwd);
+	}
+
 	async bootstrapViteConfig(
 		filePath: string,
 		importPath: string,
@@ -123,6 +129,10 @@ export class NodeWorkspace implements WorkspacePort {
 
 	async bootstrapNextjsConfig(filePath: string): Promise<BootstrapResult> {
 		return bootstrapNextjsConfig(this, filePath);
+	}
+
+	async bootstrapNuxtConfig(filePath: string): Promise<BootstrapResult> {
+		return bootstrapNuxtConfig(this, filePath);
 	}
 
 	async safeAppend(

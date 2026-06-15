@@ -7,7 +7,6 @@ import type {
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
-import type { ArkEnvError } from "./core";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -35,6 +34,12 @@ export type Infer<T> = T extends SchemaShape
 	? distill.Out<at.infer<T, $>>
 	: InferType<T>;
 
+/**
+ * The environment variables passed to `createEnv`.
+ * Uses `Dict<string>` to enforce
+ * compile-time safety: all input environment variables must be strings
+ * (or undefined), matching `process.env` semantics.
+ */
 type RuntimeEnvironment = Dict<string>;
 
 /**

@@ -15,6 +15,7 @@ icon: Scale
 | **Default values**              |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
 | **First-class Vite support**    |      ✅     |    ❌   |             ✅            |  ❌  |    ❌    |      ❌      |
 | **First-class Next.js support** |      ✅     |    ✅   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **First-class Nuxt support**    |      ✅     |    ✅   |             ❌            |  ❌  |    ❌    |      ❌      |
 | **Bun fullstack dev server**    |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
 | **Zero external dependencies**  |      ✅     |    ✅   |             ❌            |  ✅  |    ❌    |      ✅      |
 | **Command Line Interface**      |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
@@ -60,13 +61,9 @@ After years of building enterprise-scale applications, I realized that while DIY
 
 [T3 Env](https://env.t3.gg) is a major inspiration for ArkEnv, but they differ significantly in design and boilerplate:
 
-- **Fewer moving parts** - In Next.js, T3 Env requires maintaining a dedicated `runtimeEnv` object to inline client variables (e.g. `NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL`). You have to sync this extra moving part with your schema, or your code can break silently. ArkEnv eliminates this friction by generating mappings automatically under the hood. (You can opt-out of this behavior if you don't want codegen.)
-- **Flat by default** - T3 Env forces strict client/server blocks even in its agnostic core, which is redundant for simple Node scripts or server-only code. ArkEnv defaults to a flat schema, and only splits client/server boundaries in fullstack frameworks like Next.js.
-- **Richer feature set** - ArkEnv ships with more features like native ArkType synergy, automatic type coercion, first-class Vite and Bun fullstack dev server integration, and a dedicated CLI.
-
-:::note
-T3 Env provides a dedicated package for Nuxt, which is not yet natively supported by ArkEnv (though we are [open to PRs](https://github.com/yamcodes/arkenv/issues/1182)).
-:::
+- **Fewer moving parts** - In Next.js and Nuxt, T3 Env requires maintaining a dedicated `runtimeEnv` object to inline client variables (e.g. `NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL`). You have to sync this extra moving part with your schema, or your code can break silently. ArkEnv eliminates this friction by generating mappings automatically under the hood. (You can opt-out of this behavior if you don't want codegen.)
+- **Flat by default** - T3 Env forces strict client/server blocks even in its agnostic core, which is redundant for simple Node scripts or server-only code. ArkEnv defaults to a flat schema, and only splits client/server boundaries in fullstack frameworks like Next.js and Nuxt.
+- **Richer feature set** - ArkEnv ships with more features like native ArkType synergy, automatic type coercion, first-class Vite, Nuxt, and Bun fullstack dev server integration, and a dedicated CLI.
 
 ### vite-plugin-validate-env
 
