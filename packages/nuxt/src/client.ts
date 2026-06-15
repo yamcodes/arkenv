@@ -37,7 +37,8 @@ export function createEnv<
 	};
 	shared?: EnvSchema<TShared>;
 	extends?: [...TExtends];
-	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> & Record<string, unknown>;
+	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
+		Record<string, unknown>;
 }): Readonly<
 	distill.Out<at.infer<TClient & TShared, $>> & MergeExtends<TExtends>
 >;
