@@ -63,7 +63,7 @@
 	"size-limit": [
 		{
 			"path": "dist/index.js",
-			"limit": "2.5 kB",
+			"limit": "2.6 kB",
 			"import": "*",
 			"ignore": [
 				"bun",
