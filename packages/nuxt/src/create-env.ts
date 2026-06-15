@@ -161,8 +161,6 @@ export function createEnvInternal(
 		}
 	}
 
-
-
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {

@@ -20,7 +20,6 @@ export function createEnv<
 	schema: EnvSchema<TSchema>,
 	options?: {
 		extends?: [...TExtends];
-
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
@@ -32,7 +31,6 @@ export function createEnv<
 	server?: EnvSchema<TServer>;
 	shared?: EnvSchema<TShared>;
 	extends?: [...TExtends];
-
 }): Readonly<
 	distill.Out<at.infer<TServer & TShared, $>> & MergeExtends<TExtends>
 >;
