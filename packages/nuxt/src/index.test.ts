@@ -3,16 +3,16 @@ import { createEnv } from "./index";
 
 describe("createEnv (Nuxt runtime)", () => {
 	it("should parse a basic environment variable", () => {
+		process.env.DATABASE_URL = "postgres://localhost:5432/db";
+
 		const env = createEnv({
 			server: {
 				DATABASE_URL: "string",
 			},
-			runtimeEnv: {
-				DATABASE_URL: "postgres://localhost:5432/db",
-			},
 		});
 
 		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
+		delete process.env.DATABASE_URL;
 	});
 
 	it("should enforce NUXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
@@ -22,32 +22,17 @@ describe("createEnv (Nuxt runtime)", () => {
 					// @ts-expect-error - Client keys must be prefixed with NUXT_PUBLIC_
 					API_URL: "string",
 				},
-				runtimeEnv: {
-					API_URL: "https://api.example.com",
-				},
 			});
 		}).toThrow(
 			"Client-side environment variables must be prefixed with 'NUXT_PUBLIC_'",
 		);
 	});
 
-	it("should enforce that runtimeEnv contains all client and shared keys", () => {
-		expect(() => {
-			createEnv({
-				client: {
-					NUXT_PUBLIC_API_URL: "string",
-				},
-				shared: {
-					NODE_ENV: "string",
-				},
-				runtimeEnv: {
-					// Missing keys!
-				},
-			});
-		}).toThrow("Missing key in runtimeEnv: NUXT_PUBLIC_API_URL");
-	});
-
 	it("should allow accessing server-side, client, and shared variables on the server", () => {
+		process.env.DATABASE_URL = "postgres://localhost:5432/db";
+		process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
+		process.env.NODE_ENV = "test";
+
 		const env = createEnv({
 			server: {
 				DATABASE_URL: "string",
@@ -58,44 +43,30 @@ describe("createEnv (Nuxt runtime)", () => {
 			shared: {
 				NODE_ENV: "string",
 			},
-			runtimeEnv: {
-				NUXT_PUBLIC_API_URL: "https://api.example.com",
-				NODE_ENV: "test",
-				DATABASE_URL: "postgres://localhost:5432/db",
-			},
 		});
 
 		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
 		expect(env.NUXT_PUBLIC_API_URL).toBe("https://api.example.com");
 		expect(env.NODE_ENV).toBe("test");
-	});
 
-	it("should automatically fall back to process.env for server-only keys omitted from runtimeEnv on the server", () => {
-		const originalEnv = process.env.DATABASE_URL;
-		process.env.DATABASE_URL = "postgres://localhost:5432/fallback_db";
-
-		try {
-			const env = createEnv({
-				server: {
-					DATABASE_URL: "string",
-				},
-				runtimeEnv: {},
-			});
-
-			expect(env.DATABASE_URL).toBe("postgres://localhost:5432/fallback_db");
-		} finally {
-			if (originalEnv === undefined) {
-				delete process.env.DATABASE_URL;
-			} else {
-				process.env.DATABASE_URL = originalEnv;
-			}
-		}
+		delete process.env.DATABASE_URL;
+		delete process.env.NUXT_PUBLIC_API_URL;
+		delete process.env.NODE_ENV;
 	});
 
 	it("should throw an error when accessing a server-side variable on the client", () => {
 		// Mock window to simulate browser client
 		const originalWindow = globalThis.window;
-		(globalThis as any).window = {};
+		(globalThis as any).window = {
+			__NUXT__: {
+				config: {
+					public: {
+						NUXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+					},
+				},
+			},
+		};
 
 		try {
 			const env = createEnv({
@@ -107,10 +78,6 @@ describe("createEnv (Nuxt runtime)", () => {
 				},
 				shared: {
 					NODE_ENV: "string",
-				},
-				runtimeEnv: {
-					NUXT_PUBLIC_API_URL: "https://api.example.com",
-					NODE_ENV: "test",
 				},
 			});
 
@@ -152,19 +119,31 @@ describe("createEnv (Nuxt runtime)", () => {
 	});
 
 	it("should allow Vue reactivity internal properties on the proxy without throwing", () => {
-		const env = createEnv({
-			client: {
-				NUXT_PUBLIC_API_URL: "string",
+		const originalWindow = globalThis.window;
+		(globalThis as any).window = {
+			__NUXT__: {
+				config: {
+					public: {
+						NUXT_PUBLIC_API_URL: "https://api.example.com",
+					},
+				},
 			},
-			runtimeEnv: {
-				NUXT_PUBLIC_API_URL: "https://api.example.com",
-			},
-		});
+		};
 
-		const envRecord = env as Record<string, unknown>;
-		expect(envRecord.__v_isRef).toBeUndefined();
-		expect(envRecord.__v_isReactive).toBeUndefined();
-		expect(envRecord.__v_isReadonly).toBeUndefined();
-		expect(envRecord.__v_raw).toBeUndefined();
+		try {
+			const env = createEnv({
+				client: {
+					NUXT_PUBLIC_API_URL: "string",
+				},
+			});
+
+			const envRecord = env as Record<string, unknown>;
+			expect(envRecord.__v_isRef).toBeUndefined();
+			expect(envRecord.__v_isReactive).toBeUndefined();
+			expect(envRecord.__v_isReadonly).toBeUndefined();
+			expect(envRecord.__v_raw).toBeUndefined();
+		} finally {
+			(globalThis as any).window = originalWindow;
+		}
 	});
 });

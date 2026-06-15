@@ -31,11 +31,6 @@ export function createEnvInternal(
 			? (window as any).__NUXT__?.config?.public
 			: undefined;
 
-	const sourceEnv: Record<string, unknown> =
-		(typeof process !== "undefined" ? process.env : undefined) ||
-		globalConfig ||
-		{};
-
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
 		server = schemaOrOptions.server || {};
@@ -58,6 +53,12 @@ export function createEnvInternal(
 			client = flatSchema;
 		}
 	}
+
+	const sourceEnv: Record<string, unknown> = isServer
+		? (typeof process !== "undefined" ? process.env : undefined) || {}
+		: globalConfig ||
+			(typeof process !== "undefined" ? process.env : undefined) ||
+			{};
 
 	let extendedEnvValues: Record<string, unknown> = {};
 	const allKeys = new Set<string>();
