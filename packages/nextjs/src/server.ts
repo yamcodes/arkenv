@@ -1,6 +1,6 @@
 import "server-only";
 import type { $ } from "@repo/scope";
-import type { SchemaShape } from "@repo/types";
+import type { Dict, SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
 import { createEnvInternal } from "./create-env";
@@ -16,7 +16,7 @@ export function createEnv<
 	schema: EnvSchema<TSchema>,
 	options?: {
 		extends?: [...TExtends];
-		runtimeEnv?: Record<keyof TSchema | string, unknown>;
+		runtimeEnv?: Dict<string>;
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
@@ -28,7 +28,7 @@ export function createEnv<
 	server?: EnvSchema<TServer>;
 	shared?: EnvSchema<TShared>;
 	extends?: [...TExtends];
-	runtimeEnv?: Record<keyof TShared, unknown> & Record<string, unknown>;
+	runtimeEnv?: Record<keyof TShared, string | undefined> & Dict<string>;
 }): Readonly<
 	distill.Out<at.infer<TServer & TShared, $>> & MergeExtends<TExtends>
 >;
