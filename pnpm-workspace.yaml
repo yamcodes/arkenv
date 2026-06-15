@@ -3,6 +3,7 @@ packages:
   - packages/internal/*
   - apps/*
   - apps/playgrounds/*
+publishBranch: dev
 allowBuilds:
   '@biomejs/biome': true
   '@parcel/watcher': true
