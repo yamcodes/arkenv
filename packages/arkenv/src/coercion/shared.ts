@@ -10,9 +10,9 @@ import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
  * @returns A new record with empty string keys removed
  */
 export const stripEmptyStrings = (
-	env: Record<string, string | undefined>,
-): Record<string, string | undefined> => {
-	const result: Record<string, string | undefined> = {};
+	env: Record<string, unknown>,
+): Record<string, unknown> => {
+	const result: Record<string, unknown> = {};
 	for (const key in env) {
 		const value = env[key];
 		if (value !== "") {
@@ -166,10 +166,12 @@ export const applyCoercion = (
 		if (type === "primitive") {
 			if (Array.isArray(val)) {
 				return val.map((item) => {
+					if (typeof item !== "string") return item;
 					const n = coerceNumber(item);
 					return typeof n === "number" ? n : coerceBoolean(item);
 				});
 			}
+			if (typeof val !== "string") return val;
 			const n = coerceNumber(val);
 			return typeof n === "number" ? n : coerceBoolean(val);
 		}
