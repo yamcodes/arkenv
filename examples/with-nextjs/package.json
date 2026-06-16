@@ -8,8 +8,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@arkenv/nextjs": "^0.0.9",
-		"arkenv": "^0.12.1",
+		"@arkenv/nextjs": "^0.1.0",
+		"arkenv": "^0.12.2",
 		"arktype": "^2.2.0",
 		"next": "^16.2.6",
 		"react": "^19.2.5",
