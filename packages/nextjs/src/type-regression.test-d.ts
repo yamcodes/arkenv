@@ -1,9 +1,9 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { createEnv } from "./index";
+import { arkenv } from "./index";
 
 describe("@arkenv/nextjs type regression", () => {
 	it("infers client variables as their validated type", () => {
-		const env = createEnv({
+		const env = arkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -19,7 +19,7 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("infers docs-style imports as string values", () => {
-		const env = createEnv({
+		const env = arkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string",
 			},
@@ -34,7 +34,7 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("validates ArkType schema strings across schema sections", () => {
-		createEnv({
+		arkenv({
 			server: {
 				DATABASE_URL: "string.url",
 				PORT: "number.port = 3000",
@@ -53,7 +53,7 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("rejects invalid ArkType schema strings across schema sections", () => {
-		createEnv({
+		arkenv({
 			server: {
 				// @ts-expect-error invalid ArkType schema string
 				DATABASE_URL: "not-a-valid-type",
@@ -76,7 +76,7 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("enforces NEXT_PUBLIC_ client keys", () => {
-		createEnv({
+		arkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string.url",
 				// @ts-expect-error client variables must be prefixed with NEXT_PUBLIC_

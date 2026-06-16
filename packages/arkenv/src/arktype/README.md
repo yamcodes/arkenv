@@ -13,4 +13,4 @@ This directory contains the ArkType-specific validator logic for `arkenv`.
 
 ## How it works
 
-When `createEnv` is called via `arkenv` (the main entry), this module is statically imported. The main entry has an explicit, static dependency on ArkType. Users who want an ArkType-free path use `arkenv/standard` instead.
+When `arkenv` is called via the main entry, this module is statically imported. The main entry has an explicit, static dependency on ArkType. Users who want an ArkType-free path use `arkenv/standard` instead.

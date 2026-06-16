@@ -56,14 +56,14 @@ The project uses modern tooling:
 
 The core package provides:
 
-1. **`createEnv(schema)`** - Main function to create validated environment objects. Also available as the default export, typically imported as `arkenv`.
+1. **`arkenv(schema)`** - Main function to create validated environment objects. Exposed as default export, and also as named export `arkenv`.
 2. **Built-in validators** - Common validators like `host`, `port`, `url`, etc.
 3. **ArkType integration** - Uses ArkType for schema definition and validation
 4. **Type inference** - Full TypeScript type inference from schemas
 
 ### Key files
 
-- `src/create-env.ts` - Core `createEnv` implementation
+- `src/arkenv.ts` - Core `arkenv` implementation
 - `src/types.ts` - Built-in type validators (host, port, url, etc.)
 - `src/errors.ts` - Error handling and formatting
 - `src/utils.ts` - Utility functions
@@ -113,7 +113,7 @@ The project uses three types of tests:
 
 Tests are located alongside source files with `.test.ts` suffix:
 
-- `create-env.test.ts` - Tests for main `createEnv` functionality
+- `arkenv.test.ts` - Tests for main `arkenv` functionality
 - `types.test.ts` - Tests for built-in validators
 - `errors.test.ts` - Tests for error handling
 - `utils.test.ts` - Tests for utility functions
@@ -131,7 +131,7 @@ Tests are located alongside source files with `.test.ts` suffix:
 
 **Examples:**
 
-- `custom-types.integration.test.ts` - Tests `createEnv` + `scope` + custom types working together
+- `custom-types.integration.test.ts` - Tests `arkenv` + `scope` + custom types working together
 - `error.integration.test.ts` - Tests error propagation through validation pipeline
 - `copy-button.integration.test.tsx` - Tests `CopyButton` + `useToast` + `Toaster` flow
 - `heading.integration.test.tsx` - Tests `Heading` + `useIsMobile` responsive behavior

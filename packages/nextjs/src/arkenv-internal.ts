@@ -1,5 +1,5 @@
 import type { SchemaShape } from "@repo/types";
-import { createEnv as coreCreateEnv } from "arkenv";
+import { arkenv as coreArkenv } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -57,7 +57,7 @@ function getSchemaKeys(schema: any): string[] {
  *
  * @internal
  */
-export function createEnvInternal(
+export function arkenvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
 	context?: { isServer: boolean; isShared?: boolean },
@@ -155,7 +155,7 @@ export function createEnvInternal(
 						}
 					}
 
-					const validated = coreCreateEnv(ext as any, { env: combinedEnv });
+					const validated = coreArkenv(ext as any, { env: combinedEnv });
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
 
 					const extKeys = getSchemaKeys(ext);
@@ -241,7 +241,7 @@ export function createEnvInternal(
 		: { ...client, ...shared };
 
 	// Run core validation
-	const validated = coreCreateEnv(schema as any, { env: combinedEnv });
+	const validated = coreArkenv(schema as any, { env: combinedEnv });
 
 	const mergedValidated = { ...extendedEnvValues, ...validated };
 

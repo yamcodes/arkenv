@@ -48,8 +48,8 @@ This project uses [Biome](https://biomejs.dev/) for formatting and linting. The 
 
 ## Naming Conventions
 
-- **Files**: Use kebab-case for files (`create-env.ts`)
-- **Functions**: Use camelCase (`createEnv`)
+- **Files**: Use kebab-case for files (`arkenv-internal.ts`)
+- **Functions**: Use camelCase (`arkenv`, `myFunction`)
 - **Types**: Use PascalCase (`ArkEnvError`)
 - **Constants**: Use UPPER_SNAKE_CASE for environment variables and constants
 

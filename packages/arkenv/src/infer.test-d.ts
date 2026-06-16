@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from "vitest";
 import { z } from "zod";
-import { createEnv, type Infer, type } from "./index";
-import { createEnv as createEnvStandard } from "./standard";
+import { arkenv, type Infer, type } from "./index";
+import { arkenv as arkenvStandard } from "./standard";
 
 describe("Infer<T> Type Helper", () => {
 	it("infers types from a declarative schema shape", () => {
@@ -51,14 +51,14 @@ describe("Infer<T> Type Helper", () => {
 	});
 });
 
-describe("createEnv Type Inference with Zod", () => {
+describe("arkenv Type Inference with Zod", () => {
 	it("infers types correctly with arkenv (core) using a declarative shape", () => {
 		const schema = {
 			PORT: z.coerce.number(),
 			HOST: z.string(),
 		};
 
-		const env = createEnv(schema, { env: { PORT: "3000", HOST: "localhost" } });
+		const env = arkenv(schema, { env: { PORT: "3000", HOST: "localhost" } });
 
 		expectTypeOf(env).toEqualTypeOf<{
 			PORT: number;
@@ -72,7 +72,7 @@ describe("createEnv Type Inference with Zod", () => {
 			HOST: z.string(),
 		};
 
-		const env = createEnvStandard(schema, {
+		const env = arkenvStandard(schema, {
 			env: { PORT: "3000", HOST: "localhost" },
 		});
 

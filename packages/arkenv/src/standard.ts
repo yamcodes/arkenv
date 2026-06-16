@@ -7,7 +7,7 @@ import {
 import { type ParseStandardConfig, parseStandard } from "./parse-standard";
 
 /**
- * Configuration options for the `arkenv/standard` entry's `createEnv`.
+ * Configuration options for the `arkenv/standard` entry's `arkenv`.
  */
 export type StandardEnvConfig = ParseStandardConfig;
 
@@ -33,7 +33,7 @@ export type StandardEnvConfig = ParseStandardConfig;
  * });
  * ```
  */
-export function createEnv<const T extends Record<string, StandardSchemaV1>>(
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,
 	config?: StandardEnvConfig,
 ): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> } {
@@ -51,9 +51,8 @@ export function createEnv<const T extends Record<string, StandardSchemaV1>>(
 }
 
 /**
- * ArkEnv's Standard Schema export, an alias for {@link createEnv}
+ * ArkEnv's Standard Schema export
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  */
-const arkenv = createEnv;
 export default arkenv;

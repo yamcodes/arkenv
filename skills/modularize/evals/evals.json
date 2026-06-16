@@ -9,9 +9,9 @@
 			"expectations": [
 				"The original test file create-env.test.ts is split into smaller files based on topic (e.g. coercion.test.ts, arrays.test.ts, options.test.ts)",
 				"All tests pass successfully under vitest (pnpm run test)",
-				"Public API of createEnv remains unbroken",
+				"Public API of arkenv remains unbroken",
 				"Common setups such as process.env backup/restore are cleanly extracted or managed",
-				"No unrelated changes or behavior edits are made to createEnv code"
+				"No unrelated changes or behavior edits are made to arkenv code"
 			]
 		},
 		{

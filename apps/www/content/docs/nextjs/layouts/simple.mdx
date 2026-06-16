@@ -63,7 +63,7 @@ By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withA
 
 ```ts title="src/env.ts" twoslash
 // @filename: /generated/env.gen.ts
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
 export { type } from "@arkenv/nextjs";
 
@@ -106,7 +106,7 @@ export const env = arkenv({
 
         ```ts title="src/env.ts" twoslash
         // @filename: /generated/env.gen.ts
-        import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+        import { arkenv as coreArkenv } from "@arkenv/nextjs";
         import type { type as at, distill } from "arktype";
         export { type } from "@arkenv/nextjs";
 
@@ -181,7 +181,7 @@ export const env = arkenv({
 
         ```ts title="src/app/page.tsx" twoslash
         // @filename: /generated/env.gen.ts
-        import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+        import { arkenv as coreArkenv } from "@arkenv/nextjs";
         import type { type as at, distill } from "arktype";
         export { type } from "@arkenv/nextjs";
         export default function arkenv<
@@ -216,7 +216,7 @@ export const env = arkenv({
 
         ```ts title="src/app/client-component.tsx" twoslash
         // @filename: /generated/env.gen.ts
-        import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+        import { arkenv as coreArkenv } from "@arkenv/nextjs";
         import type { type as at, distill } from "arktype";
         export { type } from "@arkenv/nextjs";
         export default function arkenv<

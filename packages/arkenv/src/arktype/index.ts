@@ -2,13 +2,13 @@ import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
+import type { ArkEnvConfig, EnvSchema } from "@/arkenv";
 import {
 	applyCoercion,
 	findCoercionPaths,
 	stripEmptyStrings,
 } from "@/coercion";
 import { ArkEnvError, type ValidationIssue } from "@/core";
-import type { ArkEnvConfig, EnvSchema } from "@/create-env";
 import { styleText } from "@/utils/style-text";
 
 /**
