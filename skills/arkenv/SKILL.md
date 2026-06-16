@@ -1,6 +1,6 @@
 ---
 name: arkenv
-description: "Answer questions about ArkEnv and help implement environment variable validation. Use when developers: (1) Ask about environment variable validation or typesafety, (2) Want to setup ArkEnv in a project, (3) Need to define or update schemas using ArkType or Standard Schema, (4) Are integrating with Vite, Bun, or other runtimes. Triggers on: 'ArkEnv', 'env validation', 'typesafe env', 'createEnv', 'env.ts', '@arkenv/cli'."
+description: "Answer questions about ArkEnv and help implement environment variable validation. Use when developers: (1) Ask about environment variable validation or typesafety, (2) Want to setup ArkEnv in a project, (3) Need to define or update schemas using ArkType or Standard Schema, (4) Are integrating with Vite, Bun, or other runtimes. Triggers on: 'ArkEnv', 'env validation', 'typesafe env', 'arkenv', 'env.ts', '@arkenv/cli'."
 ---
 
 # ArkEnv

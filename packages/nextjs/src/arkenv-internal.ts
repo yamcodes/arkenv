@@ -57,7 +57,7 @@ function getSchemaKeys(schema: any): string[] {
  *
  * @internal
  */
-export function createEnvInternal(
+export function arkenvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
 	context?: { isServer: boolean; isShared?: boolean },

@@ -2,7 +2,7 @@ import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
-import { createEnvInternal } from "./create-env";
+import { arkenvInternal } from "./arkenv-internal";
 import type { MergeExtends } from "./types";
 
 /**
@@ -19,7 +19,7 @@ export function arkenv<
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>> {
 	const isServer = typeof window === "undefined";
-	return createEnvInternal(schema, options, {
+	return arkenvInternal(schema, options, {
 		isServer,
 		isShared: true,
 	}) as any;

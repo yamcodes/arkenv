@@ -1,6 +1,6 @@
 import type { SchemaShape } from "@repo/types";
 import type { EnvSchema, Infer } from "arkenv";
-import { createEnvInternal } from "./create-env";
+import { arkenvInternal } from "./arkenv-internal";
 
 /**
  * Create a validated, type-safe environment configuration for Next.js applications (Client-side / SSR entry point).
@@ -24,7 +24,7 @@ export function arkenv<
 		Record<string, unknown>;
 }): Readonly<Infer<TServer & TClient & TShared>> {
 	type ReturnType = Readonly<Infer<TServer & TClient & TShared>>;
-	return createEnvInternal(options, false) as ReturnType;
+	return arkenvInternal(options, false) as ReturnType;
 }
 
 export type { Infer } from "arkenv";
