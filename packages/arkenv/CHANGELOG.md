@@ -1,5 +1,22 @@
 # ArkEnv
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`2e03bde`](https://github.com/yamcodes/arkenv/commit/2e03bdefa7f8ba75f27c4dbc52dc92aa39c977ce) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
+### Patch Changes
+
+- #### Unify environment variable coercion execution model _[`9ef5c79`](https://github.com/yamcodes/arkenv/commit/9ef5c7998785974b5309bb77fb11c1b55c3f3dda) [@yamcodes](https://github.com/yamcodes)_
+
+  Change the coercion mechanism for the default `arkenv` (ArkType) entry point to use a pre-coercion execution model, aligning it with the `arkenv/standard` entry point.
+
+  - Prevent in-place mutation of the input environment object (like `process.env`) by applying coercion to a shallow copy of the object before validation.
+  - Remove the `.pipe()` wrapper and unsafe type casting in the ArkType coercion path.
+
 ## 0.12.2
 
 ### Patch Changes

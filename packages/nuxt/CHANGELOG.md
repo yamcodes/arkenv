@@ -1,5 +1,21 @@
 # @arkenv/nuxt
 
+## 0.0.2-alpha.0
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`2e03bde`](https://github.com/yamcodes/arkenv/commit/2e03bdefa7f8ba75f27c4dbc52dc92aa39c977ce) [`9ef5c79`](https://github.com/yamcodes/arkenv/commit/9ef5c7998785974b5309bb77fb11c1b55c3f3dda)
+
+</small>
+
+- `arkenv@1.0.0-alpha.0`
+
+</details>
+
 ## 0.0.1
 
 ### Patch Changes

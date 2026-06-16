@@ -1,5 +1,13 @@
 # @ArkEnv/CLI
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`2e03bde`](https://github.com/yamcodes/arkenv/commit/2e03bdefa7f8ba75f27c4dbc52dc92aa39c977ce) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
 ## 0.2.11
 
 ### Patch Changes
@@ -52,7 +60,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 
