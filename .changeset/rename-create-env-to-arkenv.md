@@ -1,6 +1,6 @@
 ---
-"arkenv": minor
-"@arkenv/nextjs": minor
+"arkenv": major
+"@arkenv/nextjs": major
 ---
 
 #### Rename `createEnv` function to `arkenv`
@@ -14,9 +14,7 @@ Update all usages:
 import { createEnv } from "arkenv";
 
 export const env = createEnv({
-  schema: {
-    NODE_ENV: type("'development' | 'production' | 'test'"),
-  },
+  NODE_ENV: "'development' | 'production' | 'test'",
 });
 
 // After
@@ -24,9 +22,7 @@ import arkenv from "arkenv";
 // or: import { arkenv } from "arkenv";
 
 export const env = arkenv({
-  schema: {
-    NODE_ENV: type("'development' | 'production' | 'test'"),
-  },
+  NODE_ENV: "'development' | 'production' | 'test'",
 });
 ```
 
