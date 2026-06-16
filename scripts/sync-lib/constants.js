@@ -17,4 +17,11 @@ export const DEFAULT_EXCLUDES = [
 	".pnpm-debug.log",
 	"pnpm-lock.yaml", // Examples use npm/bun lockfiles instead
 	"eslint.config.js", // Monorepo uses biome, examples don't need eslint
+	".next",
+	".nuxt",
+	".output",
+	".vinxi",
+	"next-env.d.ts",
+	".env*",
+	"app.config.timestamp_*",
 ];

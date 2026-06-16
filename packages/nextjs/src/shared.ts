@@ -1,5 +1,5 @@
 import type { $ } from "@repo/scope";
-import type { SchemaShape } from "@repo/types";
+import type { Dict, SchemaShape } from "@repo/types";
 import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
 import { arkenvInternal } from "./arkenv-internal";
@@ -15,7 +15,7 @@ export function arkenv<
 	schema: EnvSchema<TSchema>,
 	options?: {
 		extends?: [...TExtends];
-		runtimeEnv?: Record<keyof TSchema | string, unknown>;
+		runtimeEnv?: Dict<string>;
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>> {
 	const isServer = typeof window === "undefined";

@@ -5,7 +5,12 @@ import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
 export type { Reporter, Workspace };
 
 export type Validator = "arktype" | "zod" | "valibot";
-export type Framework = "vite" | "bun-fullstack" | "vanilla" | "nextjs";
+export type Framework =
+	| "vite"
+	| "bun-fullstack"
+	| "vanilla"
+	| "nextjs"
+	| "nuxt";
 export type PackageManager = "pnpm" | "yarn" | "npm" | "bun";
 
 /**

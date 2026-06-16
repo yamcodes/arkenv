@@ -1,0 +1,57 @@
+---
+title: FAQ
+icon: MessageCircleQuestionMark
+description: Frequently asked questions about @arkenv/nuxt.
+---
+
+## Since Nuxt uses Vite under the hood, why doesn't it reuse `@arkenv/vite-plugin`?
+
+Nuxt implements its own distinct patterns for configuration, environment loading, and client-side bundler integration that differ fundamentally from raw Vite projects:
+
+1. **Dynamic Runtime Config System**: `@arkenv/vite-plugin` relies on Vite's `define` property to statically inline values at build time (e.g. replacing `import.meta.env.VITE_API_URL` with a hardcoded string). If we used that in Nuxt, we would lose Nuxt's core **Runtime Config** feature, which allows you to build your app once and dynamically swap public/private environment values in production without a rebuild.
+2. **Client Prefixes & Structures**: Vite projects expose client-safe variables using `VITE_` and inject them into `import.meta.env`. Nuxt uses the `NUXT_PUBLIC_` prefix and registers them inside `runtimeConfig.public` to make them accessible via `useRuntimeConfig()`.
+3. **Compile-time Security Guard**: The custom Vite plugin inside `@arkenv/nuxt/module` is not designed to load environment values; instead, it acts as a build-time guard that blocks compilation if a developer accidentally attempts to import `@arkenv/nuxt/server` or server-specific schema files on the client side.
+
+## I was able to access a client-side variable in a server context! Is that ok?
+
+**Yes.** In Nuxt, environment variables prefixed with `NUXT_PUBLIC_` are public and intended to be accessible everywhere (both server-side and browser-side).
+
+`@arkenv/nuxt` permits accessing client variables in server-side contexts (like server routes, middleware, or plugins) by design. The runtime security proxy only blocks the reverse: accessing server-only variables (those without the `NUXT_PUBLIC_` prefix) on the client side.
+
+## Do I need to manually map client variables in `runtimeEnv`?
+
+**No.** ArkEnv automates this mapping entirely via the `@arkenv/nuxt/module` configuration helper.
+
+In other environment validation libraries, you must manually write a `runtimeEnv` mapping object containing keys like `NUXT_PUBLIC_VAR: process.env.NUXT_PUBLIC_VAR` so that the bundler can access and package them.
+
+ArkEnv's Nuxt module scans your schema file(s) at build time, identifies the client-side and shared keys, and automatically registers them to Nuxt's `runtimeConfig`. You get the benefits of typesafe validation without manual mapping boilerplate.
+
+## How does the compile-time client security work?
+
+For projects using the **strict layout**, the protection leverages a custom Vite plugin inside `@arkenv/nuxt/module` that intercepts file resolution.
+
+If any module running in the client context attempts to resolve or import `@arkenv/nuxt/server` (or files ending with `/server` inside your schema directory), the plugin immediately throws a compile-time error:
+
+```text
+[ArkEnv] Importing server-only environment schema on the client is not allowed!
+```
+
+This guarantees that private server keys, validation schemas, and database constraints never bloat or leak into browser bundles.
+
+## When should I use the strict layout?
+
+If the simple layout is recommended, why use the strict layout?
+
+1. **Compile-time isolation**: A custom Vite compiler plugin checks and blocks any client-side imports of server environments before the code runs.
+2. **Clean separation of concerns**: Separating client schemas (`client.ts`) and server schemas (`server.ts`) naturally matches Nuxt's architectural boundaries (e.g. client components vs. server routes).
+3. **No boilerplate penalty**: The ArkEnv CLI completely eliminates the setup effort. Running `arkenv init --strict` scaffolds the entire 3-file setup with the unified client and server factories pre-wired.
+
+## Can I deploy the same build to staging and production?
+
+**Yes.** Because `@arkenv/nuxt` reads environment variables via Nuxt's `useRuntimeConfig()` at runtime instead of inlining them at build time, you can:
+
+1. Run `nuxt build` once
+2. Package the output (e.g. in a Docker image)
+3. Deploy that same artifact to staging, QA, and production — changing only the environment variables at container startup
+
+No application rebuild is required when values change. You can also use Nuxt's native override prefixes (e.g. `NUXT_DATABASE_URL` or `NUXT_PUBLIC_API_URL`) to swap values dynamically across environments.

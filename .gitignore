@@ -52,6 +52,7 @@ esbuild-why*.html
 
 # arktype clone
 /arktype/
+/nestjs-clone/
 
 # explicitly ignored folder
 ignore-me/
