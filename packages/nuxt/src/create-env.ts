@@ -1,5 +1,5 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { createEnv as coreCreateEnv, getSchemaKeys } from "arkenv";
+import { arkenv as coreCreateEnv, getSchemaKeys } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
