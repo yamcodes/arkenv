@@ -67,7 +67,7 @@ When setting up ArkEnv, follow these steps:
    - **Vite**: Update `vite.config.ts` to import and include the `@arkenv/vite-plugin` plugin.
    - **Bun**: Configure `bunfig.toml` or add the plugin to the runtime if necessary.
 4. **Typesafety & Augmentation**:
-    - **Next.js (Codegen)**: Import `arkenv` from `./generated/env.gen` instead of core `@arkenv/nextjs`. The codegen file automatically handles the runtime mapping and type definitions.
+   - **Next.js (Codegen)**: Import `arkenv` from `./generated/env.gen` instead of core `@arkenv/nextjs`. The codegen file automatically handles the runtime mapping and type definitions.
    - **Vite**: Add type augmentation to `src/vite-env.d.ts` or a new `env.d.ts`.
      ```ts
      interface ImportMetaEnv extends import("@arkenv/vite-plugin").ImportMetaEnvAugmented<typeof import("./env").Env> {}

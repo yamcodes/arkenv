@@ -1,8 +1,6 @@
 ---
 "arkenv": minor
 "@arkenv/nextjs": minor
-"@arkenv/vite-plugin": minor
-"@arkenv/bun-plugin": minor
 ---
 
 #### Rename `createEnv` function to `arkenv`
