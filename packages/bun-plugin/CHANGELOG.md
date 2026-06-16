@@ -1,5 +1,21 @@
 # @ArkEnv/Bun-plugin
 
+## 1.0.0-alpha.1
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf)
+
+</small>
+
+- `arkenv@1.0.0-alpha.1`
+
+</details>
+
 ## 1.0.0-alpha.0
 
 ### Major Changes
