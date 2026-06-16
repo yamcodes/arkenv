@@ -10,9 +10,9 @@ import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
  * @returns A new record with empty string keys removed
  */
 export const stripEmptyStrings = (
-	env: Record<string, string | undefined>,
-): Record<string, string | undefined> => {
-	const result: Record<string, string | undefined> = {};
+	env: Record<string, unknown>,
+): Record<string, unknown> => {
+	const result: Record<string, unknown> = {};
 	for (const key in env) {
 		const value = env[key];
 		if (value !== "") {
@@ -178,12 +178,13 @@ export const applyCoercion = <T = unknown>(
 		}
 		if (type === "primitive") {
 			if (Array.isArray(val)) {
-				for (let i = 0; i < val.length; i++) {
-					const n = coerceNumber(val[i]);
-					val[i] = typeof n === "number" ? n : coerceBoolean(val[i]);
-				}
-				return val;
+				return val.map((item) => {
+					if (typeof item !== "string") return item;
+					const n = coerceNumber(item);
+					return typeof n === "number" ? n : coerceBoolean(item);
+				});
 			}
+			if (typeof val !== "string") return val;
 			const n = coerceNumber(val);
 			return typeof n === "number" ? n : coerceBoolean(val);
 		}
@@ -200,38 +201,67 @@ export const applyCoercion = <T = unknown>(
 
 	const sorted = [...targets].sort((a, b) => a.path.length - b.path.length);
 
-	const walk = (current: any, path: string[], type: CoercionTarget["type"]) => {
-		if (!current || typeof current !== "object" || path.length === 0) return;
+	const updateAtPath = (
+		current: any,
+		path: string[],
+		fn: (val: any) => any,
+	): any => {
+		if (path.length === 0) {
+			return fn(current);
+		}
 
 		const [key, ...rest] = path;
 
-		if (rest.length === 0) {
-			if (key === ARRAY_ITEM_MARKER) {
-				if (Array.isArray(current)) {
-					for (let i = 0; i < current.length; i++) {
-						current[i] = coerceValue(current[i], type);
-					}
-				}
-			} else {
-				// biome-ignore lint/suspicious/noPrototypeBuiltins: Object.hasOwn is not supported under current tsconfig lib settings
-				if (Object.prototype.hasOwnProperty.call(current, key)) {
-					current[key] = coerceValue(current[key], type);
-				}
-			}
-			return;
-		}
-
 		if (key === ARRAY_ITEM_MARKER) {
 			if (Array.isArray(current)) {
-				for (const item of current) walk(item, rest, type);
+				let changed = false;
+				const nextArr = current.map((item) => {
+					const nextVal = updateAtPath(item, rest, fn);
+					if (nextVal !== item) {
+						changed = true;
+					}
+					return nextVal;
+				});
+				return changed ? nextArr : current;
 			}
-		} else {
-			walk(current[key], rest, type);
+			return current;
 		}
+
+		if (!current || typeof current !== "object") {
+			return current;
+		}
+
+		if (Array.isArray(current)) {
+			const index = Number(key);
+			if (!Number.isNaN(index) && index >= 0 && index < current.length) {
+				const nextVal = updateAtPath(current[index], rest, fn);
+				if (nextVal !== current[index]) {
+					const copy = [...current];
+					copy[index] = nextVal;
+					return copy;
+				}
+			}
+			return current;
+		}
+
+		if (Object.hasOwn(current, key)) {
+			const nextVal = updateAtPath(current[key], rest, fn);
+			if (nextVal !== current[key]) {
+				return {
+					...current,
+					[key]: nextVal,
+				};
+			}
+		}
+
+		return current;
 	};
 
+	let result = data;
 	for (const t of sorted) {
-		walk(data, t.path, t.type);
+		if (t.path.length > 0) {
+			result = updateAtPath(result, t.path, (val) => coerceValue(val, t.type));
+		}
 	}
-	return data;
+	return result;
 };

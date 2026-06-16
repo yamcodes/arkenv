@@ -1,12 +1,12 @@
 ---
 name: changeset
-description: "Creates changesets for semantic versioning. Use when adding changesets, preparing releases, determining version bumps (patch/minor/major), generating changelog entries, or documenting breaking changes."
-allowed-tools: "Read, Grep, Glob, Write, Edit, Bash(git:*), Bash(npx changeset:*)"
+description: Creates changesets for semantic versioning. Use when adding changesets, preparing releases, determining version bumps (patch/minor/major), generating changelog entries, or documenting breaking changes.
 metadata:
-  author: Ollie Shop
+  author: Yam C Borodetsky
+  original_author: Ollie Shop
+  origin: github.com/ollieshop/creating-changesets
   version: 1.0.0
   internal: true
-compatibility: "Claude Code with Node.js >=20, pnpm, TypeScript 5.5+"
 ---
 
 # Changeset & release manager
@@ -230,11 +230,15 @@ See **[Scenarios & Examples](references/scenarios.md)**
 
 ## References
 
-- `{baseDir}/.changeset/config.json` - Changeset configuration
-- `{baseDir}/CHANGELOG.md` - Generated changelog
+- [config.json](file:///.changeset/config.json) - Changeset configuration
+- [CHANGELOG.md](file:///CHANGELOG.md) - Generated changelog
 - Changesets docs: [https://github.com/changesets/changesets](https://github.com/changesets/changesets)
 
 ## Related skills
 
-- **CI/CD automation**: See `managing-github-ci` for release workflow integration
-- **Pre-commit validation**: See `validating-pre-commit` for quality gates before committing
+- **GitHub CLI**: See [gh-cli](../gh-cli/SKILL.md) for GitHub-related tasks.
+- **Tackle Issue**: See [tackle-issue](../tackle-issue/SKILL.md) for the workflow of addressing issues.
+
+## Credits
+
+This skill was originally created by [Ollie Shop](https://github.com/ollieshop) and sourced from [github.com/ollieshop/creating-changesets](https://github.com/ollieshop/creating-changesets).

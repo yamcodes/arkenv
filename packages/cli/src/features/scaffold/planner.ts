@@ -92,7 +92,10 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const targetDir = path.dirname(targetPath);
 
 	// 1. Env Schema File(s)
-	if (options.framework === "nextjs" && options.layout === "strict") {
+	if (
+		(options.framework === "nextjs" || options.framework === "nuxt") &&
+		options.layout === "strict"
+	) {
 		const ext = path.extname(targetPath);
 		const baseWithoutExt = targetPath.slice(0, -ext.length);
 		const sharedPath = path.join(baseWithoutExt, "internal", `shared${ext}`);
@@ -101,7 +104,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 		let nextjsImportPath: string | undefined;
 		if (
-			options.framework === "nextjs" &&
+			(options.framework === "nextjs" || options.framework === "nuxt") &&
 			!options.disableCodegen &&
 			tsConfig?.parsed
 		) {
@@ -171,7 +174,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	} else {
 		let nextjsImportPath: string | undefined;
 		if (
-			options.framework === "nextjs" &&
+			(options.framework === "nextjs" || options.framework === "nuxt") &&
 			!options.disableCodegen &&
 			tsConfig?.parsed
 		) {
@@ -230,12 +233,16 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	if (options.framework === "nextjs") {
 		deps.push("@arkenv/nextjs");
 	}
+	if (options.framework === "nuxt") {
+		deps.push("@arkenv/nuxt");
+	}
 
 	// Framework integrations require arktype as a peer dependency.
 	// Ensure arktype is installed when using a framework integration.
 	if (
 		(options.framework === "vite" ||
 			options.framework === "nextjs" ||
+			options.framework === "nuxt" ||
 			(options.framework === "bun-fullstack" && options.bunFeatures?.length)) &&
 		!deps.includes("arktype")
 	) {
@@ -296,7 +303,8 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	if (
 		options.framework === "vite" ||
 		options.framework === "bun-fullstack" ||
-		(options.framework === "nextjs" && !options.disableCodegen)
+		(options.framework === "nextjs" && !options.disableCodegen) ||
+		options.framework === "nuxt"
 	) {
 		plan.bootstrap = shake({
 			framework: options.framework,

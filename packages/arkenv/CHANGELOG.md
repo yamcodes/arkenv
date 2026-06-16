@@ -49,6 +49,33 @@
   - Prevent in-place mutation of the input environment object (like `process.env`) by applying coercion to a shallow copy of the object before validation.
   - Remove the `.pipe()` wrapper and unsafe type casting in the ArkType coercion path.
 
+## 0.12.2
+
+### Patch Changes
+
+- #### Expose `getSchemaKeys` helper _[`#1191`](https://github.com/yamcodes/arkenv/pull/1191) [`a3e32db`](https://github.com/yamcodes/arkenv/commit/a3e32db63b0b694e11487950507c06fa7b1466b0) [@yamcodes](https://github.com/yamcodes)_
+
+  Expose `getSchemaKeys` helper and widen `RuntimeEnvironment` type to support typed framework runtime configurations.
+
+- #### Handle pre-parsed primitives gracefully in coercion logic _[`#1206`](https://github.com/yamcodes/arkenv/pull/1206) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1) [@yamcodes](https://github.com/yamcodes)_
+
+  Updated the core coercion logic to defensively skip values that are not strings. This ensures ArkEnv won't crash or behave unpredictably when passed configuration objects that have already been parsed into numbers, booleans, or complex objects by other systems (such as Nuxt's `runtimeConfig`).
+
+- #### Fix coercion to prevent in-place mutation of environment config objects _[`#1206`](https://github.com/yamcodes/arkenv/pull/1206) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1) [@yamcodes](https://github.com/yamcodes)_
+
+  Refactor `applyCoercion` to perform non-mutating updates on environment configuration data. Clone objects and arrays along the validation path instead of modifying them in-place, preventing runtime crashes on frozen configuration objects (e.g., framework runtime configurations) and avoiding side-effects on reusable config objects.
+
+  Usage:
+
+  ```ts
+  import { createEnv } from "arkenv";
+
+  const env = createEnv(
+    { DATABASE: { port: "number" } },
+    { env: { DATABASE: Object.freeze({ port: "3000" }) } } // Frozen object is now safely parsed without crashes!
+  );
+  ```
+
 ## 0.12.1
 
 ### Patch Changes

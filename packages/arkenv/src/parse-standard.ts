@@ -1,4 +1,4 @@
-import type { StandardSchemaV1 } from "@repo/types";
+import type { Dict, StandardSchemaV1 } from "@repo/types";
 import {
 	applyCoercion,
 	findCoercionPaths,
@@ -13,7 +13,7 @@ export type ParseStandardConfig = {
 	/**
 	 * The environment variables to parse. Defaults to `process.env`
 	 */
-	env?: Record<string, string | undefined>;
+	env?: Dict<string>;
 	/**
 	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
@@ -177,7 +177,7 @@ export function parseStandard(
 	const errors: ValidationIssue[] = [];
 
 	const processedEnv = emptyAsUndefined
-		? stripEmptyStrings(env as Record<string, string | undefined>)
+		? stripEmptyStrings(env as Dict<string>)
 		: env;
 	const envKeys = new Set(Object.keys(processedEnv));
 

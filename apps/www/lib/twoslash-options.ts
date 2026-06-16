@@ -55,6 +55,10 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@arkenv/bun-plugin": [
 					path.join(root, "packages/bun-plugin/src/index.ts"),
 				],
+				"@arkenv/nuxt": [path.join(root, "packages/nuxt/src/index.ts")],
+				"@arkenv/nuxt/server": [path.join(root, "packages/nuxt/src/server.ts")],
+				"@arkenv/nuxt/client": [path.join(root, "packages/nuxt/src/client.ts")],
+				"@arkenv/nuxt/shared": [path.join(root, "packages/nuxt/src/shared.ts")],
 				"@repo/types": [
 					path.join(root, "packages/internal/types/src/index.ts"),
 				],

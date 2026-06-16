@@ -108,9 +108,7 @@ export function parse<const T extends SchemaShape>(
 	const schemaWithKeys = schema.onUndeclaredKey(onUndeclaredKey);
 
 	// Optionally treat empty strings as undefined
-	const processedEnv = emptyAsUndefined
-		? stripEmptyStrings(env as Record<string, string | undefined>)
-		: env;
+	const processedEnv = emptyAsUndefined ? stripEmptyStrings(env) : env;
 
 	let coercedEnv = { ...processedEnv } as Record<string, unknown>;
 

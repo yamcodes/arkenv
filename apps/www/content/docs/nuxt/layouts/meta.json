@@ -1,0 +1,9 @@
+{
+	"title": "Layouts",
+	"icon": "Layers",
+	"defaultOpen": true,
+	"pages": [
+		"[Zap][Simple (Recommended)](/docs/nuxt/layouts/simple)",
+		"[ShieldCheck][Strict](/docs/nuxt/layouts/strict)"
+	]
+}

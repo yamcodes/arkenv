@@ -1,3 +1,4 @@
+import type { Dict } from "@repo/types";
 import { describe, expect, it } from "vitest";
 import { arkenv } from "../../arkenv.ts";
 import { type } from "../../index.ts";
@@ -159,7 +160,7 @@ describe("coercion integration", () => {
 					PORT: "8080",
 					VERSION: "1.0.0",
 					EXTRA: "unused",
-				} as Record<string, string | undefined>,
+				} as Dict<string>,
 				arrayFormat: "json",
 				onUndeclaredKey: "delete",
 			},

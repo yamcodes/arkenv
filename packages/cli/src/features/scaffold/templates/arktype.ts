@@ -50,7 +50,8 @@ export const arktypeTemplate = (
 	`;
 	}
 
-	if (framework === "nextjs") {
+	if (framework === "nextjs" || framework === "nuxt") {
+		const clientPrefix = framework === "nuxt" ? "NUXT_PUBLIC_" : "NEXT_PUBLIC_";
 		return buildNextjsTemplate(
 			envKeys,
 			{
@@ -62,7 +63,7 @@ export const arktypeTemplate = (
 					`\t\tDATABASE_URL: "string = 'postgres://localhost:5432/mydb'",`,
 				],
 				defaultClientFields: [
-					`\t\tNEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",`,
+					`\t\t${clientPrefix}API_URL: "string = 'https://api.example.com'",`,
 				],
 				defaultSharedFields: [
 					`\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",`,
@@ -70,6 +71,7 @@ export const arktypeTemplate = (
 			},
 			nextjsImportPath,
 			disableCodegen,
+			framework,
 		);
 	}
 
