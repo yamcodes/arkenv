@@ -4,10 +4,15 @@ import {
 	findCoercionPaths,
 	stripEmptyStrings,
 } from "@/coercion/shared";
-import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "@/core";
-import { getStandardMeta, mapStandardCode } from "@/utils/errors";
-import { isDebugSecrets, safeStringify, shouldRedact } from "@/utils/redact";
-import { styleText } from "@/utils/style-text";
+import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "./core";
+import { getStandardMeta, mapStandardCode } from "./utils/errors";
+import { isDebugSecrets, safeStringify, shouldRedact } from "./utils/redact";
+import { styleText } from "./utils/style-text";
+import {
+	extractJsonSchema,
+	formatIssuePath,
+	traverseReceivedValue,
+} from "./utils/standard-helpers";
 
 /**
  * Configuration options for {@link parseStandard}.
@@ -68,113 +73,7 @@ export type ParseStandardConfig = {
 	emptyAsUndefined?: boolean;
 };
 
-/**
- * Extract JSON Schema definitions from standard schema validators.
- */
-function extractJsonSchema(
-	def: Record<string, unknown>,
-	missingJsonSchemaKeys: string[],
-): { jsonSchema: Record<string, any>; hasJsonSchema: boolean } {
-	const jsonSchema: Record<string, any> = { type: "object", properties: {} };
-	let hasJsonSchema = false;
 
-	for (const key in def) {
-		const validator = def[key] as any;
-		if (!validator) {
-			missingJsonSchemaKeys.push(key);
-			continue;
-		}
-
-		// 1. Standard way via ~standard property
-		const std = validator["~standard"];
-		if (typeof std?.jsonSchema?.input === "function") {
-			try {
-				const schema = std.jsonSchema.input({ target: "draft-07" });
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		// 2. Direct jsonSchema.input on validator
-		if (typeof validator.jsonSchema?.input === "function") {
-			try {
-				const schema = validator.jsonSchema.input({ target: "draft-07" });
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		// 3. toJSONSchema method (e.g. zod mini, zod-to-json-schema)
-		if (typeof validator.toJSONSchema === "function") {
-			try {
-				const schema = validator.toJSONSchema();
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		// 4. toStandardJSONSchema.v1 method (e.g. stnl)
-		if (typeof validator.toStandardJSONSchema?.v1 === "function") {
-			try {
-				const schema = validator.toStandardJSONSchema.v1();
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		missingJsonSchemaKeys.push(key);
-	}
-
-	return { jsonSchema, hasJsonSchema };
-}
-
-/**
- * Get the property key from a path segment.
- *
- * @param s - The path segment which can be a key or a segment object
- * @returns The string representation of the property key
- */
-function getProp(
-	s: string | number | symbol | { readonly key: string | number | symbol },
-): string {
-	return typeof s === "object" && s !== null && "key" in s
-		? String(s.key)
-		: String(s);
-}
-
-/**
- * Format standard schema validation issue path.
- *
- * @param key - The base key of the environment variable
- * @param path - The relative path segments of the issue
- * @returns The formatted dot-separated path string
- */
-function formatIssuePath(
-	key: string,
-	path:
-		| readonly (
-				| string
-				| number
-				| symbol
-				| { readonly key: string | number | symbol }
-		  )[]
-		| undefined,
-): string {
-	if (!path || path.length === 0) return key;
-	return [key, ...path.map(getProp)].join(".");
-}
 
 /**
  * Parse and validate environment variables using Standard Schema 1.0 validators.
@@ -264,27 +163,12 @@ export function parseStandard(
 
 				if (key in processedEnv) {
 					const rawVal = processedEnv[key];
-					receivedVal = rawVal;
 					if (typeof rawVal === "string" && issue.path?.length) {
-						try {
-							let current: any = rawVal;
-							const trimmed = rawVal.trim();
-							if (trimmed[0] === "{" || trimmed[0] === "[") {
-								try {
-									current = JSON.parse(rawVal);
-								} catch (e: any) {
-									traversalError = `[Unparseable JSON: ${e.message}]`;
-								}
-							}
-							if (!traversalError) {
-								for (const seg of issue.path) {
-									current = current?.[getProp(seg)];
-								}
-								receivedVal = current;
-							}
-						} catch (e: any) {
-							traversalError = `[Traversal error: ${e.message}]`;
-						}
+						const traversed = traverseReceivedValue(rawVal, issue.path);
+						receivedVal = traversed.receivedVal;
+						traversalError = traversed.traversalError;
+					} else {
+						receivedVal = rawVal;
 					}
 				} else {
 					receivedVal = (issue as any).received;

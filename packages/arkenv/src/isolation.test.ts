@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { arkenv } from "@/standard";
+import { arkenv } from "./standard";
 
 const mockStandardSchema = {
 	"~standard": {

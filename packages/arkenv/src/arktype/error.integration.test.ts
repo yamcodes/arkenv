@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { type } from "@";
-import { arkenv } from "@/arkenv";
+import arkenv, { type } from "@";
 import type { ArkEnvError } from "@/core";
 
 // Helper to strip ANSI color codes (ESC character code 27)

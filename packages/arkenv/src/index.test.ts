@@ -1,5 +1,6 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import defaultArkenv, { arkenv as namedArkenv } from "./";
+// Import both the default export and the named export to verify they are identical and correctly exposed.
+import defaultArkenv, { arkenv as namedArkenv } from ".";
 
 describe("index.ts exports", () => {
 	it("should export arkenv as default export", () => {

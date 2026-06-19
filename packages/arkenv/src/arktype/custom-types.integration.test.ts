@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { type } from "@";
-import { arkenv } from "@/arkenv";
+import arkenv, { type } from "@";
 
 describe("arkenv + type + scope + types integration", () => {
 	describe("string.host integration", () => {

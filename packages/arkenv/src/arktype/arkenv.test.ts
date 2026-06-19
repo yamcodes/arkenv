@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { type } from "@";
-import { arkenv } from "@/arkenv";
+import arkenv, { type } from "@";
 import { indent, styleText } from "@/utils";
 
 /**

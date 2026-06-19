@@ -1,6 +1,9 @@
-import type { EnvIssueCode } from "@/core";
+import { ArkEnvError, type EnvIssueCode, type SafeArkEnvResult } from "../core";
 
-const ARK_CODE_MAP: Record<string, EnvIssueCode> = {
+/**
+ * Mapping of ArkType validation error codes to normalized EnvIssueCode classification codes.
+ */
+const ARKTYPE_CODE_MAP = {
 	required: "MISSING_VARIABLE",
 	pattern: "PATTERN_MISMATCH",
 	min: "VALUE_TOO_SMALL",
@@ -12,7 +15,7 @@ const ARK_CODE_MAP: Record<string, EnvIssueCode> = {
 	sequence: "INVALID_TYPE",
 	intersection: "INVALID_TYPE",
 	union: "INVALID_TYPE",
-};
+} satisfies Record<string, EnvIssueCode>;
 
 /**
  * Map an ArkType validation error code to a normalized EnvIssueCode.
@@ -21,7 +24,7 @@ const ARK_CODE_MAP: Record<string, EnvIssueCode> = {
  * @returns The normalized EnvIssueCode classification
  */
 export function mapArkTypeCode(engineCode: string): EnvIssueCode {
-	return ARK_CODE_MAP[engineCode] ?? "INVALID_FORMAT";
+	return (ARKTYPE_CODE_MAP as Record<string, EnvIssueCode>)[engineCode] ?? "INVALID_FORMAT";
 }
 
 /**
@@ -90,4 +93,21 @@ export function getStandardMeta(issue: any): { min?: number; max?: number } {
 		...(typeof min === "number" ? { min } : {}),
 		...(typeof max === "number" ? { max } : {}),
 	};
+}
+
+/**
+ * Execute a parser function and return a SafeArkEnvResult.
+ *
+ * @param parseFn - The function that parses the environment variables and might throw an ArkEnvError
+ * @returns A SafeArkEnvResult containing either the parsed data or the caught ArkEnvError
+ */
+export function executeSafe<T>(parseFn: () => T): SafeArkEnvResult<T> {
+	try {
+		return { success: true, data: parseFn() };
+	} catch (error) {
+		if (error instanceof ArkEnvError) {
+			return { success: false, error };
+		}
+		throw error;
+	}
 }

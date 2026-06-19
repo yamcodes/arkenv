@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from "vitest";
 import { z } from "zod";
-import { arkenv, type Infer, type } from "./";
+import { arkenv, type Infer, type } from ".";
 import { arkenv as arkenvStandard } from "./standard";
 
 describe("Infer<T> Type Helper", () => {

@@ -131,3 +131,10 @@ export class ArkEnvError extends Error {
 }
 
 Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
+
+/**
+ * Result of a non-throwing arkenv parse operation.
+ */
+export type SafeArkEnvResult<T> =
+	| { success: true; data: T }
+	| { success: false; error: ArkEnvError };

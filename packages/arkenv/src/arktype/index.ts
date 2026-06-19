@@ -30,6 +30,11 @@ export type { distill };
  * avoid duplication when `formatIssues` prepends the styled path, and
  * applies cyan styling to inline "(was …)" values.
  *
+ * Note: We use `EnvIssue` instead of a generic `ValidationIssue` to explicitly
+ * represent errors occurring during environment variable resolution. This avoids
+ * naming conflicts with common validation libraries and allows carrying environment-specific
+ * metadata (such as JSON traversal errors and engine-specific codes).
+ *
  * @param errors The ArkType errors object to convert
  * @param config Optional ArkEnvConfig to read debugSecrets options
  * @returns An array of flattened validation issues

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { safeArkenv } from "@/arkenv";
-import { ArkEnvError, type EnvIssue, formatError, formatIssues } from "@/core";
+import { safeArkEnv } from "./arkenv";
+import { ArkEnvError, type EnvIssue, formatError, formatIssues } from "./core";
 import { safeStringify, shouldRedact } from "@/utils/redact";
 
 describe("shouldRedact", () => {
@@ -11,6 +11,19 @@ describe("shouldRedact", () => {
 		expect(shouldRedact("API_TOKEN")).toBe(true);
 		expect(shouldRedact("PORT")).toBe(false);
 		expect(shouldRedact("HOST")).toBe(false);
+	});
+
+	it("should not redact keys containing 'PUBLIC'", () => {
+		expect(shouldRedact("NEXT_PUBLIC_API_KEY")).toBe(false);
+		expect(shouldRedact("PUBLIC_TOKEN")).toBe(false);
+		expect(shouldRedact("PUBLIC_URL")).toBe(false);
+	});
+
+	it("should redact keys matching specific sensitive patterns", () => {
+		expect(shouldRedact("auth")).toBe(true);
+		expect(shouldRedact("password")).toBe(true);
+		expect(shouldRedact("pass")).toBe(true);
+		expect(shouldRedact("secret")).toBe(true);
 	});
 });
 
@@ -88,7 +101,7 @@ describe("formatIssues & formatError", () => {
 	});
 });
 
-describe("ArkEnvError & safeArkenv", () => {
+describe("ArkEnvError & safeArkEnv", () => {
 	it("should create error and store issues", () => {
 		const issues: EnvIssue[] = [
 			{
@@ -104,16 +117,16 @@ describe("ArkEnvError & safeArkenv", () => {
 		expect(error.name).toBe("ArkEnvError");
 	});
 
-	it("should run safeArkenv successfully", () => {
-		const result = safeArkenv({ PORT: "number" }, { env: { PORT: "3000" } });
+	it("should run safeArkEnv successfully", () => {
+		const result = safeArkEnv({ PORT: "number" }, { env: { PORT: "3000" } });
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.data).toEqual({ PORT: 3000 });
 		}
 	});
 
-	it("should return failure for safeArkenv with invalid input", () => {
-		const result = safeArkenv({ PORT: "number" }, { env: { PORT: "abc" } });
+	it("should return failure for safeArkEnv with invalid input", () => {
+		const result = safeArkEnv({ PORT: "number" }, { env: { PORT: "abc" } });
 		expect(result.success).toBe(false);
 		if (!result.success) {
 			expect(result.error).toBeInstanceOf(ArkEnvError);

@@ -1,12 +1,12 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import type { SafeArkenvResult } from "@/arkenv";
-import { ArkEnvError } from "@/core";
+import { ArkEnvError, type SafeArkEnvResult } from "./core";
+import { executeSafe } from "./utils/errors";
 import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
-} from "@/guards";
-import { type ParseStandardConfig, parseStandard } from "@/parse-standard";
+} from "./guards";
+import { type ParseStandardConfig, parseStandard } from "./parse-standard";
 
 /**
  * Configuration options for the `arkenv/standard` entry's `arkenv`.
@@ -60,19 +60,11 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
  * @param config - Optional configuration
  * @returns The SafeArkenvResult containing the data or the validation error object
  */
-export function safeArkenv<const T extends Record<string, StandardSchemaV1>>(
+export function safeArkEnv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,
 	config?: StandardEnvConfig,
-): SafeArkenvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
-	try {
-		const data = arkenv(def, config);
-		return { success: true, data };
-	} catch (error) {
-		if (error instanceof ArkEnvError) {
-			return { success: false, error };
-		}
-		throw error;
-	}
+): SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
+	return executeSafe(() => arkenv(def, config));
 }
 
 /**

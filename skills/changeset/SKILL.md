@@ -33,11 +33,11 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset types
 
-| Type    | When to Use                               | v0 Version Change (Current) | v1+ Version Change |
-| ------- | ----------------------------------------- | --------------------------- | ------------------ |
-| `patch` | Any non-breaking change (fixes, features) | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
-| `minor` | **Breaking changes**                      | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
-| `major` | Switch to v1 (only when instructed)       | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
+| Type    | When to Use in v0 (Current)               | When to Use in v1+                       |
+| ------- | ----------------------------------------- | ----------------------------------------- |
+| `patch` | Any non-breaking change (fixes, features) | Non-breaking bug fixes                    |
+| `minor` | **Breaking changes**                      | Non-breaking new features                 |
+| `major` | Switch to v1 (only when instructed)       | **Breaking changes**                      |
 
 ## Decision guide (v0 rules)
 
@@ -49,7 +49,6 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 - Bug fixes
 - Dependency updates (non-breaking)
 - Performance improvements
-- Dependency updates
 - Code style/linting fixes
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
@@ -61,6 +60,20 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 ### Use `major` ONLY for:
 
 - Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.** Do not use major for breaking changes in v0.
+
+## Decision guide (v1+ rules)
+
+For packages in **v1+** (e.g. active `v1` branch):
+
+### Use `patch` for:
+- Backward-compatible bug fixes
+- Internal performance or refactor improvements with user value
+
+### Use `minor` for:
+- Backward-compatible new features or API additions
+
+### Use `major` for:
+- **Breaking changes** (Any change that breaks backward compatibility. You MUST prefix the description with `**BREAKING CHANGE**:`).
 
 ## Creating a changeset
 
@@ -115,14 +128,14 @@ export const env = arkenv({
 
 ```markdown
 ---
-"package-name": patch|minor
+"package-name": patch|minor|major
 ---
 
 #### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
 
-A concise, single-paragraph description of the change (using the imperative mood for action summaries). Keep it brief and avoid list format or bullet points.
+A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
 
-**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using a `minor` bump and including the `**BREAKING CHANGE**:` label) as a section of 1-2 lines at the very end of the changeset file.
+**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the end of the changeset. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
 ```
 
 
