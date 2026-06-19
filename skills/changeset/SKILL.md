@@ -120,15 +120,11 @@ export const env = arkenv({
 
 #### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
 
-Detailed description of the change (also using imperative mood for action summaries).
+A concise, single-paragraph description of the change (using the imperative mood for action summaries). Keep it brief and avoid list format or bullet points.
 
-Include:
-- **Usage examples** (code blocks)
-- Bullet points for details
-- **Breaking Changes Formatting**: Place migration instructions or descriptions of breaking changes (using a `minor` bump and including the `**BREAKING CHANGE**:` label) as a section of 1-2 lines at the very end of the changeset file.
-
-**Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
+**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using a `minor` bump and including the `**BREAKING CHANGE**:` label) as a section of 1-2 lines at the very end of the changeset file.
 ```
+
 
 ## Modifying an existing changeset
 

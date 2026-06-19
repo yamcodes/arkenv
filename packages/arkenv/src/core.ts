@@ -3,16 +3,26 @@ import { styleText } from "@/utils/style-text";
 
 /**
  * Machine-readable classification codes for environment validation issues.
+ * Serves as the Source of Truth (SoT) for error categorization in ArkEnv.
  */
 export type EnvIssueCode =
+	/** The environment variable is required but was not provided, and has no default value. */
 	| "MISSING_VARIABLE"
+	/** The variable value failed a type assertion (e.g., expected a number or boolean but received a string). */
 	| "INVALID_TYPE"
+	/** The variable value falls below the minimum allowed numeric limit or string/array length constraint. */
 	| "VALUE_TOO_SMALL"
+	/** The variable value exceeds the maximum allowed numeric limit or string/array length constraint. */
 	| "VALUE_TOO_LARGE"
+	/** The variable value did not match the specified regular expression (regex) pattern constraint. */
 	| "PATTERN_MISMATCH"
+	/** The variable value is not in a valid format (e.g., failed email or UUID format validation). */
 	| "INVALID_FORMAT"
+	/** An undeclared key was found in the environment, and the schema config is set to reject undeclared keys. */
 	| "UNDECLARED_KEY"
+	/** The provided validation schema definition itself is malformed or invalid. */
 	| "INVALID_SCHEMA"
+	/** A validation error was triggered by a custom validator function or inline pipe logic. */
 	| "CUSTOM";
 
 /**
@@ -113,8 +123,8 @@ export class ArkEnvError extends Error {
 		issues: EnvIssue[],
 		message = "Errors found while validating environment variables",
 	) {
-		const formattedErrors = formatIssues(issues);
-		super(`${styleText("red", message)}\n${indent(formattedErrors)}\n`);
+		const formattedIssues = formatIssues(issues);
+		super(`${styleText("red", message)}\n${indent(formattedIssues)}\n`);
 		this.name = "ArkEnvError";
 		this.issues = issues;
 	}

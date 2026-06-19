@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { arkenv } from "./standard.ts";
+import { arkenv } from "@/standard";
 
 const mockStandardSchema = {
 	"~standard": {
@@ -37,7 +37,7 @@ describe("ArkType loading", () => {
 	it("loads ArkType statically when importing from index.ts", async () => {
 		// Importing from index.ts SHOULD load arktype statically
 		// (index.ts imports $ which imports arktype)
-		const mod = await import("./index.ts");
+		const mod = await import("@/index");
 		expect(mod.type).toBeDefined();
 		expect(typeof mod.type).toBe("function");
 	});

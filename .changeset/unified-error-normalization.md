@@ -4,12 +4,7 @@
 
 #### Refactor error system to use normalized `EnvIssue` and add `safeArkenv` API
 
-Unify validation error formatting across all validation engines (ArkType and Standard Schema).
+Unify validation error formatting across ArkType and Standard Schema engines, introduce the `EnvIssue` type for programmatic access via `ArkEnvError.issues`, add the non-throwing `safeArkenv` API, and default to redacting credentials in stringified error reports.
 
-- Implement `EnvIssue` type and attach the full list of errors to `ArkEnvError.issues` for programmatic access.
-- Add `safeArkenv` API to both `arkenv` and `arkenv/standard` entries for non-throwing validation in Server Actions or Next.js components.
-- Standardize Standard Schema validation errors to look and act like ArkType validation errors, resolving received values and flattening paths.
-- Redact credentials and sensitive environment variables by default in stringified error reports.
-- Support `debugSecrets` configuration and `process.env.ARKENV_DEBUG_SECRETS=true` to temporarily bypass redaction.
+**BREAKING CHANGE**: The exact text format of the `message` property on thrown `ArkEnvError` instances has changed. Check and update any test suites that assert on exact error message text.
 
-**BREAKING CHANGE**: The exact text format of the `message` property on thrown `ArkEnvError` instances has changed. Check and update any test suites or CI/CD pipelines that assert on the exact error message text.

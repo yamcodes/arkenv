@@ -51,15 +51,26 @@ Systematically retrieve and fix comments from a PR review.
   - File and lines changed.
   - Action taken (e.g., "Fixed", "Already Addressed", "Skipped").
   - Verification status.
-- **Comment back on PR**: Use the GitHub CLI or API to reply to the comments or post a summary comment on the PR:
-  - To reply to an individual comment thread:
+- **Comment and Resolve on PR**: Always reply to and resolve addressed threads on GitHub:
+  - **Reply**: Post a reply to the thread using the REST API (with the database ID of the last comment):
     ```bash
-    gh api repos/:owner/:repo/pulls/comments/<comment_id>/replies -f body="Addressed in latest commit."
+    gh api -X POST /repos/:owner/:repo/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Addressed in latest commit."
     ```
-  - To add a general comment to the PR:
+  - **Resolve Thread**: Mark the thread as resolved using the GraphQL API (using the GraphQL thread ID `PRRT_...`):
+    ```bash
+    gh api graphql -F threadId="<thread_id>" -f query='
+      mutation($threadId: ID!) {
+        resolveReviewThread(input: { threadId: $threadId }) {
+          thread { id isResolved }
+        }
+      }
+    '
+    ```
+  - **General Comment**: To add a general comment to the PR:
     ```bash
     gh pr comment <PR_NUMBER> --body "Addressed review comments: ..."
     ```
+
 
 ---
 
