@@ -25,10 +25,11 @@ Systematically retrieve and fix comments from a PR review.
 ### 1. Locate current PR and comments
 - Run `git status` to find the current branch.
 - Run `gh pr status` to find the active pull request number and repository information.
-- **Fetch Comments (Avoid Truncation)**: Standard commands like `gh pr view <PR_NUMBER> --comments` can be truncated by the shell pager or terminal output limits. To reliably retrieve the complete list of comments, query the GitHub API directly:
+- **Fetch Comments (Avoid Missing Inline Comments)**: Standard commands like `gh pr view <PR_NUMBER> --comments` only return high-level conversation summaries and **completely omit inline code review comments** made in the diff. To reliably retrieve the complete list of inline review comments, query the GitHub API directly:
   ```bash
   gh api repos/:owner/:repo/pulls/<PR_NUMBER>/comments --jq '.[] | {id, path, line, body}'
   ```
+
 
 ### 2. Parse and analyze comments
 - Extract the list of review comments. Focus on unresolved or actionable requests.
