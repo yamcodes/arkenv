@@ -1,3 +1,4 @@
+import type { Dict } from "@repo/types";
 import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
 
 /**
@@ -9,10 +10,8 @@ import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
  * @param env The environment variables record
  * @returns A new record with empty string keys removed
  */
-export const stripEmptyStrings = (
-	env: Record<string, unknown>,
-): Record<string, unknown> => {
-	const result: Record<string, unknown> = {};
+export const stripEmptyStrings = (env: Dict<string>): Dict<string> => {
+	const result: Dict<string> = {};
 	for (const key in env) {
 		const value = env[key];
 		if (value !== "") {
@@ -277,7 +276,7 @@ export const applyCoercion = <T = unknown>(
  * @returns The processed environment, the coerced environment, and any missing schema keys
  */
 export function coerceEnvironment(
-	env: Record<string, unknown>,
+	env: Dict<string>,
 	emptyAsUndefined: boolean,
 	arrayFormat: "comma" | "json",
 	getSchema?: () => {
@@ -286,7 +285,7 @@ export function coerceEnvironment(
 		missingKeys?: string[];
 	},
 ): {
-	processedEnv: Record<string, unknown>;
+	processedEnv: Dict<string>;
 	coercedEnv: Record<string, unknown>;
 	missingKeys: string[];
 } {
