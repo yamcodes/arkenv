@@ -15,7 +15,7 @@ import { arkenv } from "./standard/index";
 ## Best Practice
 
 ```typescript
-import { type } from "@/";
+import { type } from "@";
 import { applyCoercion } from "@/coercion";
 import { arkenv } from "./standard";
 ```

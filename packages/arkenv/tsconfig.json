@@ -14,7 +14,7 @@
 		"rootDir": "src",
 		"paths": {
 			"@/*": ["./src/*"],
-			"@/": ["./src/index.ts"]
+			"@": ["./src/index.ts"]
 		},
 		"declaration": true,
 		"declarationMap": true,

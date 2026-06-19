@@ -1,6 +1,6 @@
 import type { Dict } from "@repo/types";
 import { describe, expect, it } from "vitest";
-import { type } from "@/";
+import { type } from "@";
 import { arkenv } from "@/arkenv";
 
 describe("coercion integration", () => {

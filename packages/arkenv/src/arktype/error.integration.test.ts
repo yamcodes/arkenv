@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { type } from "@/";
+import { type } from "@";
 import { arkenv } from "@/arkenv";
 import type { ArkEnvError } from "@/core";
 
