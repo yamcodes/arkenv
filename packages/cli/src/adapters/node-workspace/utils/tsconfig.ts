@@ -1,6 +1,6 @@
 import path from "node:path";
 import { applyEdits, modify, parse } from "jsonc-parser";
-import { findTsConfig } from "../../node-project-scanner/utils/tsconfig";
+import { findTsConfig } from "@/adapters/node-project-scanner/utils/tsconfig";
 
 export async function updateTsConfigToStrict(
 	workspace: {

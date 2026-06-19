@@ -1,18 +1,17 @@
 import type { Dict, StandardSchemaV1 } from "@repo/types";
-import {
-	applyCoercion,
-	findCoercionPaths,
-	stripEmptyStrings,
-} from "@/coercion/shared";
+import { coerceEnvironment } from "@/coercion/shared";
 import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "./core";
-import { getStandardMeta, mapStandardCode } from "./utils/errors";
-import { isDebugSecrets, safeStringify, shouldRedact } from "./utils/redact";
+import {
+	buildEnvIssue,
+	formatStandardIssueMessage,
+	getStandardMeta,
+	mapStandardCode,
+} from "./utils/errors";
 import {
 	extractJsonSchema,
 	formatIssuePath,
 	traverseReceivedValue,
 } from "./utils/standard-helpers";
-import { styleText } from "./utils/style-text";
 
 /**
  * Configuration options for {@link parseStandard}.
@@ -95,25 +94,27 @@ export function parseStandard(
 	const output: Record<string, unknown> = {};
 	const errors: EnvIssue[] = [];
 
-	const processedEnv = emptyAsUndefined
-		? stripEmptyStrings(env as Dict<string>)
-		: env;
+	const {
+		processedEnv,
+		coercedEnv,
+		missingKeys: missingJsonSchemaKeys,
+	} = coerceEnvironment(
+		env as Dict<string>,
+		emptyAsUndefined,
+		arrayFormat,
+		coerce
+			? () => {
+					const { jsonSchema, hasJsonSchema, missingKeys } =
+						extractJsonSchema(def);
+					return {
+						schema: jsonSchema,
+						hasSchema: hasJsonSchema,
+						missingKeys,
+					};
+				}
+			: undefined,
+	);
 	const envKeys = new Set(Object.keys(processedEnv));
-
-	let coercedEnv: Record<string, unknown> = { ...processedEnv };
-	const missingJsonSchemaKeys: string[] = [];
-
-	if (coerce) {
-		const { jsonSchema, hasJsonSchema } = extractJsonSchema(
-			def,
-			missingJsonSchemaKeys,
-		);
-		if (hasJsonSchema) {
-			coercedEnv = applyCoercion(coercedEnv, findCoercionPaths(jsonSchema), {
-				arrayFormat,
-			}) as Record<string, unknown>;
-		}
-	}
 
 	// 1. Validate declared keys
 	for (const key in def) {
@@ -127,12 +128,12 @@ export function parseStandard(
 			!("~standard" in validator)
 		) {
 			throw new ArkEnvError([
-				{
-					path: key,
-					message: `Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
-					code: "INVALID_SCHEMA",
-					meta: { engine: "unknown" },
-				},
+				buildEnvIssue(
+					key,
+					`Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
+					"INVALID_SCHEMA",
+					{ engine: "unknown" },
+				),
 			]);
 		}
 
@@ -140,12 +141,12 @@ export function parseStandard(
 
 		if (result instanceof Promise) {
 			throw new ArkEnvError([
-				{
-					path: key,
-					message: "Async validation is not supported. ArkEnv is synchronous.",
-					code: "INVALID_SCHEMA",
-					meta: { engine: "unknown" },
-				},
+				buildEnvIssue(
+					key,
+					"Async validation is not supported. ArkEnv is synchronous.",
+					"INVALID_SCHEMA",
+					{ engine: "unknown" },
+				),
 			]);
 		}
 
@@ -188,38 +189,22 @@ export function parseStandard(
 				if (iss.validation !== undefined) meta.validation = iss.validation;
 				if (traversalError !== undefined) meta.traversalError = traversalError;
 
-				let message = issue.message;
-				if (code === "MISSING_VARIABLE") {
-					message = expected
-						? `must be ${expected} (was missing)`
-						: "is required";
-				} else if (!message.includes("(was ")) {
-					const debug = isDebugSecrets(config?.debugSecrets);
-					const displayVal =
-						!debug && shouldRedact(issuePath)
-							? "[REDACTED]"
-							: safeStringify(receivedVal, issuePath, config);
-					const suffix = `(was ${styleText("cyan", displayVal)})`;
-					message =
-						expected && !message.includes("Expected")
-							? `must be ${expected} ${suffix}`
-							: `${message} ${suffix}`;
-				}
+				let message = formatStandardIssueMessage(
+					issue.message || "",
+					code,
+					expected,
+					receivedVal,
+					issuePath,
+					config,
+				);
 
 				if (coerce && missingJsonSchemaKeys.includes(key)) {
 					message += ` (Hint: coercion is enabled by default, but the validator for '${key}' lacks Standard JSON Schema support.)`;
 				}
 
-				const issueObj: EnvIssue = {
-					path: issuePath,
-					message,
-					code,
-					meta,
-				};
-				if (expected) issueObj.expected = expected;
-				if (receivedVal !== undefined) issueObj.received = receivedVal;
-
-				errors.push(issueObj);
+				errors.push(
+					buildEnvIssue(issuePath, message, code, meta, expected, receivedVal),
+				);
 			}
 		} else {
 			output[key] = result.value;
@@ -232,12 +217,11 @@ export function parseStandard(
 	if (onUndeclaredKey !== "delete") {
 		for (const key of envKeys) {
 			if (onUndeclaredKey === "reject") {
-				errors.push({
-					path: key,
-					message: "Undeclared key",
-					code: "UNDECLARED_KEY",
-					meta: { engine: "unknown" },
-				});
+				errors.push(
+					buildEnvIssue(key, "Undeclared key", "UNDECLARED_KEY", {
+						engine: "unknown",
+					}),
+				);
 			} else if (onUndeclaredKey === "ignore") {
 				output[key] = coercedEnv[key];
 			}

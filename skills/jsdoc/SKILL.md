@@ -25,6 +25,7 @@ When generating JSDoc comments, you MUST strictly adhere to the following rules:
 4. **Document errors**: If the function explicitly throws an error (e.g., `throw new Error(...)`), document it using the `@throws` tag.
 5. **NO Type Tags**: The codebase uses TypeScript, so do NOT include types in the JSDoc tags. For example, use `@param id The user ID` instead of `@param {string} id The user ID`.
 6. **Imperative Verb Form**: The description MUST use the imperative verb form. For example, use "Create a user", "Add an item", "Calculate the total" instead of "Creates a user", "Adds an item", "Calculates the total".
+7. **No Trailing Periods in Tags**: Descriptions inside `@param`, `@returns`, and `@throws` tags must NOT end with a period. The main function description may end with a period, but tag descriptions should remain concise and period-free.
 
 ## Example
 

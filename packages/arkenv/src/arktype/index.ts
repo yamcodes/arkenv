@@ -3,15 +3,14 @@ import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
 import type { ArkEnvConfig, EnvSchema } from "@/arkenv";
-import {
-	applyCoercion,
-	findCoercionPaths,
-	stripEmptyStrings,
-} from "@/coercion";
+import { coerceEnvironment } from "@/coercion";
 import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "@/core";
-import { getArkTypeMeta, mapArkTypeCode } from "@/utils/errors";
-import { isDebugSecrets, shouldRedact } from "@/utils/redact";
-import { styleText } from "@/utils/style-text";
+import {
+	buildEnvIssue,
+	getArkTypeMeta,
+	mapArkTypeCode,
+	redactMessageWasValue,
+} from "@/utils/errors";
 
 /**
  * Re-export of ArkType's `distill` utilities.
@@ -54,22 +53,8 @@ function arkErrorsToIssues(
 			message = rest.trimStart();
 		}
 
-		// Check for redaction
-		const debug = isDebugSecrets(config?.debugSecrets);
-		const isSensitive = shouldRedact(path);
-
-		// Style (was ...) inline values
-		const valueMatch = message.match(/\(was (.*)\)/);
-		if (valueMatch?.[1]) {
-			const value = valueMatch[1];
-			const displayedValue = !debug && isSensitive ? "[REDACTED]" : value;
-			if (!displayedValue.includes("\x1b[")) {
-				message = message.replace(
-					`(was ${value})`,
-					`(was ${styleText("cyan", displayedValue)})`,
-				);
-			}
-		}
+		// Redact and style (was ...) inline values
+		message = redactMessageWasValue(message, path, config?.debugSecrets);
 
 		// Map code and metadata using centralized helpers
 		const code = mapArkTypeCode(error.code);
@@ -80,14 +65,14 @@ function arkErrorsToIssues(
 			...bounds,
 		};
 
-		return {
+		return buildEnvIssue(
 			path,
 			message,
 			code,
-			expected: error.expected,
-			received: error.code === "required" ? undefined : error.data,
 			meta,
-		};
+			error.expected,
+			error.code === "required" ? undefined : error.data,
+		);
 	});
 }
 
@@ -132,23 +117,20 @@ export function parse<const T extends SchemaShape>(
 	// Apply the `onUndeclaredKey` option
 	const schemaWithKeys = schema.onUndeclaredKey(onUndeclaredKey);
 
-	// Optionally treat empty strings as undefined
-	const processedEnv = emptyAsUndefined ? stripEmptyStrings(env) : env;
-
-	let coercedEnv = { ...processedEnv } as Record<string, unknown>;
-
-	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
-	if (shouldCoerce) {
-		const json = schemaWithKeys.in.toJsonSchema({
-			fallback: (ctx: { base: unknown }) => ctx.base,
-		});
-		const targets = findCoercionPaths(json);
-		if (targets.length > 0) {
-			coercedEnv = applyCoercion(coercedEnv, targets, {
-				arrayFormat,
-			});
-		}
-	}
+	// Optionally strip empty strings and apply coercion
+	const { coercedEnv } = coerceEnvironment(
+		env,
+		emptyAsUndefined,
+		arrayFormat,
+		shouldCoerce
+			? () => {
+					const json = schemaWithKeys.in.toJsonSchema({
+						fallback: (ctx: { base: unknown }) => ctx.base,
+					});
+					return { schema: json, hasSchema: true };
+				}
+			: undefined,
+	);
 
 	// Validate the environment variables
 	const validatedEnv = schemaWithKeys(coercedEnv);

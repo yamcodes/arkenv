@@ -1,23 +1,23 @@
-import { applyCoercion, findCoercionPaths } from "@/coercion/shared";
-
 /**
  * Extract JSON Schema definitions from standard schema validators.
  *
- * @param def - The schema dictionary mapping keys to validators
- * @param missingJsonSchemaKeys - Array to accumulate keys that do not support JSON Schema
- * @returns The generated JSON Schema and a flag indicating if any JSON Schema was found
+ * @param def The schema dictionary mapping keys to validators
+ * @returns The generated JSON Schema, a flag indicating if any JSON Schema was found,
+ *          and a list of keys that do not support JSON Schema
  */
-export function extractJsonSchema(
-	def: Record<string, unknown>,
-	missingJsonSchemaKeys: string[],
-): { jsonSchema: Record<string, any>; hasJsonSchema: boolean } {
+export function extractJsonSchema(def: Record<string, unknown>): {
+	jsonSchema: Record<string, any>;
+	hasJsonSchema: boolean;
+	missingKeys: string[];
+} {
 	const jsonSchema: Record<string, any> = { type: "object", properties: {} };
 	let hasJsonSchema = false;
+	const missingKeys: string[] = [];
 
 	for (const key in def) {
 		const validator = def[key] as any;
 		if (!validator) {
-			missingJsonSchemaKeys.push(key);
+			missingKeys.push(key);
 			continue;
 		}
 
@@ -70,16 +70,16 @@ export function extractJsonSchema(
 			} catch {}
 		}
 
-		missingJsonSchemaKeys.push(key);
+		missingKeys.push(key);
 	}
 
-	return { jsonSchema, hasJsonSchema };
+	return { jsonSchema, hasJsonSchema, missingKeys };
 }
 
 /**
  * Get the property key from a path segment.
  *
- * @param s - The path segment which can be a key or a segment object
+ * @param s The path segment which can be a key or a segment object
  * @returns The string representation of the property key
  */
 export function getProp(
@@ -93,8 +93,8 @@ export function getProp(
 /**
  * Format standard schema validation issue path.
  *
- * @param key - The base key of the environment variable
- * @param path - The relative path segments of the issue
+ * @param key The base key of the environment variable
+ * @param path The relative path segments of the issue
  * @returns The formatted dot-separated path string
  */
 export function formatIssuePath(
@@ -116,8 +116,8 @@ export function formatIssuePath(
  * Traverse the raw string value (attempting to parse as JSON if it represents an object/array)
  * to extract the nested value targeted by the issue path.
  *
- * @param rawVal - The raw string value of the environment variable
- * @param path - The path segments of the validation issue
+ * @param rawVal The raw string value of the environment variable
+ * @param path The path segments of the validation issue
  * @returns An object containing the resolved nested value and an optional traversal error string
  */
 export function traverseReceivedValue(
