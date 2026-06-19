@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { safeCreateEnv } from "./arkenv.ts";
 import {
 	ArkEnvError,
 	type EnvIssue,
 	formatError,
 	formatIssues,
 } from "./core.ts";
-import { safeCreateEnv } from "./arkenv.ts";
 import { safeStringify, shouldRedact } from "./utils/redact.ts";
 
 describe("shouldRedact", () => {

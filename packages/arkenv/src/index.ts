@@ -2,7 +2,7 @@ import { $ } from "@repo/scope";
 import { arkenv, safeCreateEnv } from "./arkenv.ts";
 import { getSchemaKeys } from "./schema.ts";
 
-export { arkenv, safeCreateEnv, getSchemaKeys };
+export { arkenv, getSchemaKeys, safeCreateEnv };
 /**
  * Like ArkType's `type`, but with ArkEnv's extra keywords, such as:
  *
