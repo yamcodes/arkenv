@@ -135,7 +135,7 @@ export const env = arkenv({
 
 A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
 
-**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the end of the changeset. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
+**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise — 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
 ```
 
 
