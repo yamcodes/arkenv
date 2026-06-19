@@ -47,12 +47,10 @@ describe("env-template", () => {
 			};
 			const template = getEnvTemplate(options);
 			expect(template).toContain('import arkenv from "./generated/env.gen"');
-			expect(template).toContain("server: {");
 			expect(template).toContain("DATABASE_URL:");
-			expect(template).toContain("client: {");
 			expect(template).toContain("NEXT_PUBLIC_API_URL:");
-			expect(template).toContain("shared: {");
 			expect(template).toContain("NODE_ENV:");
+			expect(template).toContain('shared: ["NODE_ENV"]');
 			expect(template).not.toContain("runtimeEnv:");
 		});
 

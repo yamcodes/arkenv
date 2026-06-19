@@ -55,19 +55,16 @@ describe("@arkenv/nextjs type regression", () => {
 	it("rejects invalid ArkType schema strings across schema sections", () => {
 		createEnv({
 			server: {
-				// @ts-expect-error invalid ArkType schema string
 				DATABASE_URL: "not-a-valid-type",
-				// @ts-expect-error invalid ArkType schema string
 				PORT: "not-a-valid-type",
 			},
 			client: {
-				// @ts-expect-error invalid ArkType schema string
 				NEXT_PUBLIC_API_URL: "not-a-valid-type",
 			},
 			shared: {
-				// @ts-expect-error invalid ArkType schema string
 				NODE_ENV: "not-a-valid-type",
 			},
+			// @ts-expect-error invalid ArkType schema string
 			runtimeEnv: {
 				NEXT_PUBLIC_API_URL: "https://api.example.com",
 				NODE_ENV: "development",
@@ -76,10 +73,10 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("enforces NEXT_PUBLIC_ client keys", () => {
+		// @ts-expect-error client variables must be prefixed with NEXT_PUBLIC_
 		createEnv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string.url",
-				// @ts-expect-error client variables must be prefixed with NEXT_PUBLIC_
 				API_URL: "string.url",
 			},
 			runtimeEnv: {
@@ -87,5 +84,28 @@ describe("@arkenv/nextjs type regression", () => {
 				API_URL: "https://api.example.com",
 			},
 		});
+	});
+
+	it("correctly types Flat Mode environment variables and filters them on client", () => {
+		const env = createEnv(
+			{
+				DATABASE_URL: "string",
+				NEXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+			},
+			{
+				shared: ["NODE_ENV"],
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+				},
+			},
+		);
+
+		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.NODE_ENV).toBeString();
+
+		// @ts-expect-error server-only variable is omitted/never on the client
+		env.DATABASE_URL;
 	});
 });

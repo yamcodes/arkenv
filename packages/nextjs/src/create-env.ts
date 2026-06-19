@@ -60,7 +60,11 @@ function getSchemaKeys(schema: any): string[] {
 export function createEnvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
-	context?: { isServer: boolean; isShared?: boolean },
+	context?: {
+		isServer: boolean;
+		isShared?: boolean;
+		strictLayout?: "client" | "server";
+	},
 ): unknown {
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};
@@ -87,10 +91,21 @@ export function createEnvInternal(
 
 		if (context?.isShared) {
 			shared = flatSchema;
-		} else if (isServer) {
+		} else if (context?.strictLayout === "client") {
+			client = flatSchema;
+		} else if (context?.strictLayout === "server") {
 			server = flatSchema;
 		} else {
-			client = flatSchema;
+			const sharedKeys = options.shared || [];
+			for (const key of Object.keys(flatSchema)) {
+				if (sharedKeys.includes(key)) {
+					shared[key] = flatSchema[key];
+				} else if (key.startsWith("NEXT_PUBLIC_")) {
+					client[key] = flatSchema[key];
+				} else {
+					server[key] = flatSchema[key];
+				}
+			}
 		}
 	}
 
@@ -220,9 +235,19 @@ export function createEnvInternal(
 		}
 	}
 
+	const globalEnv =
+		typeof globalThis !== "undefined"
+			? (globalThis as any).__arkenv_env__
+			: undefined;
+
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
 			combinedEnv[key] = runtimeEnv[key];
+		}
+		if (globalEnv && globalEnv[key] !== undefined) {
+			if (key.startsWith("NEXT_PUBLIC_") || key in client || key in shared) {
+				combinedEnv[key] = globalEnv[key];
+			}
 		}
 	}
 
@@ -266,7 +291,7 @@ export function createEnvInternal(
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
 					throw new Error(
-						`Accessing server-side environment variable '${prop}' on the client is not allowed.`,
+						`ArkEnv Error: Attempted to access server environment variable '${prop}' on the client.`,
 					);
 				}
 

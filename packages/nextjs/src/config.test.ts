@@ -226,9 +226,11 @@ describe("codegen process", () => {
 
 		// Check destructured runtimeEnv keys
 		expect(generatedContent).toContain(
-			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+			'NEXT_PUBLIC_API_URL: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL,',
 		);
-		expect(generatedContent).toContain("NODE_ENV: process.env.NODE_ENV,");
+		expect(generatedContent).toContain(
+			'NODE_ENV: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,',
+		);
 	});
 
 	it("should handle custom output path relative importing", () => {
@@ -383,9 +385,11 @@ describe("withArkEnv wrapper", () => {
 		expect(generatedContent).toContain("const arkenv = createEnv;");
 		expect(generatedContent).toContain("export default arkenv;");
 		expect(generatedContent).toContain(
-			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+			'NEXT_PUBLIC_API_URL: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL,',
 		);
-		expect(generatedContent).toContain("NODE_ENV: process.env.NODE_ENV,");
+		expect(generatedContent).toContain(
+			'NODE_ENV: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,',
+		);
 		expect(generatedContent).not.toContain("DATABASE_URL");
 	});
 
@@ -583,5 +587,30 @@ describe("strict config key extraction", () => {
 			});
 		`;
 		expect(extractSharedKeys(sharedSource)).toEqual(["NODE_ENV", "PORT"]);
+	});
+});
+
+describe("Flat Mode config key extraction", () => {
+	it("should extract client and shared keys correctly under Flat Mode", () => {
+		const source = `
+			import arkenv from "./env.gen";
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NEXT_PUBLIC_API_URL: "string",
+				NEXT_PUBLIC_APP_TITLE: "string = 'My App'",
+				NODE_ENV: "string",
+			}, {
+				shared: ["NODE_ENV"]
+			});
+		`;
+
+		const { clientKeys, sharedKeys, isLegacy } = extractKeys(source);
+
+		expect(clientKeys).toEqual([
+			"NEXT_PUBLIC_API_URL",
+			"NEXT_PUBLIC_APP_TITLE",
+		]);
+		expect(sharedKeys).toEqual(["NODE_ENV"]);
+		expect(isLegacy).toBe(false);
 	});
 });

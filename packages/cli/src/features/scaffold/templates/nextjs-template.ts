@@ -89,6 +89,66 @@ export function buildNextjsTemplate(
 		sharedFields.push(...defaultSharedFields);
 	}
 
+	if (framework === "nextjs") {
+		const allFields = [...serverFields, ...clientFields, ...sharedFields];
+		const flatFields = allFields.map((field) => field.replace(/^\t\t/, "\t"));
+
+		const sharedKeyNames: string[] = [];
+		if (envKeys && envKeys.length > 0) {
+			for (const key of envKeys) {
+				if (key === "NODE_ENV") {
+					sharedKeyNames.push(key);
+				}
+			}
+		} else {
+			sharedKeyNames.push("NODE_ENV");
+		}
+
+		const optionParts: string[] = [];
+		if (sharedKeyNames.length > 0) {
+			optionParts.push(
+				`\tshared: [${sharedKeyNames.map((k) => `"${k}"`).join(", ")}]`,
+			);
+		}
+
+		if (disableCodegen) {
+			const runtimeEnvFields: string[] = [];
+			if (envKeys && envKeys.length > 0) {
+				for (const key of envKeys) {
+					if (key.startsWith(clientPrefix) || key === "NODE_ENV") {
+						runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
+					}
+				}
+			} else {
+				runtimeEnvFields.push(
+					"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+					"\t\tNODE_ENV: process.env.NODE_ENV,",
+				);
+			}
+			optionParts.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
+		}
+
+		const optionsStr =
+			optionParts.length > 0 ? `, {\n${optionParts.join(",\n")}\n}` : "";
+
+		const imports = [
+			`import arkenv from "${disableCodegen ? "@arkenv/nextjs" : nextjsImportPath || "./generated/env.gen"}";`,
+			...(extraImports ? [extraImports] : []),
+		].join("\n");
+
+		return `${imports}
+
+/**
+ * Environment variable schema.
+ * In ${frameworkName}, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.
+ * Enforces client/server separation and prevents secret leaks.
+ */
+export const env = arkenv({
+${flatFields.join("\n")}
+}${optionsStr});
+`;
+	}
+
 	const sections: string[] = [];
 	if (serverFields.length > 0) {
 		sections.push(`\tserver: {\n${serverFields.join("\n")}\n\t}`);
