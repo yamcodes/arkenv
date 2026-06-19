@@ -1,12 +1,12 @@
 import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError, type SafeArkEnvResult } from "./core";
-import { executeSafe } from "./utils/errors";
 import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
 } from "./guards";
 import { type ParseStandardConfig, parseStandard } from "./parse-standard";
+import { executeSafe } from "./utils/errors";
 
 /**
  * Configuration options for the `arkenv/standard` entry's `arkenv`.

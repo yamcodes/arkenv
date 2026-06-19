@@ -7,12 +7,12 @@ import {
 import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "./core";
 import { getStandardMeta, mapStandardCode } from "./utils/errors";
 import { isDebugSecrets, safeStringify, shouldRedact } from "./utils/redact";
-import { styleText } from "./utils/style-text";
 import {
 	extractJsonSchema,
 	formatIssuePath,
 	traverseReceivedValue,
 } from "./utils/standard-helpers";
+import { styleText } from "./utils/style-text";
 
 /**
  * Configuration options for {@link parseStandard}.
@@ -72,8 +72,6 @@ export type ParseStandardConfig = {
 	 */
 	emptyAsUndefined?: boolean;
 };
-
-
 
 /**
  * Parse and validate environment variables using Standard Schema 1.0 validators.

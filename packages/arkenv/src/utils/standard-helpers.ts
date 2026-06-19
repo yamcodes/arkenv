@@ -1,7 +1,4 @@
-import {
-	applyCoercion,
-	findCoercionPaths,
-} from "@/coercion/shared";
+import { applyCoercion, findCoercionPaths } from "@/coercion/shared";
 
 /**
  * Extract JSON Schema definitions from standard schema validators.

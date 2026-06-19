@@ -24,7 +24,10 @@ const ARKTYPE_CODE_MAP = {
  * @returns The normalized EnvIssueCode classification
  */
 export function mapArkTypeCode(engineCode: string): EnvIssueCode {
-	return (ARKTYPE_CODE_MAP as Record<string, EnvIssueCode>)[engineCode] ?? "INVALID_FORMAT";
+	return (
+		(ARKTYPE_CODE_MAP as Record<string, EnvIssueCode>)[engineCode] ??
+		"INVALID_FORMAT"
+	);
 }
 
 /**

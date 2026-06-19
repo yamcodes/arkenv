@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { safeStringify, shouldRedact } from "@/utils/redact";
 import { safeArkEnv } from "./arkenv";
 import { ArkEnvError, type EnvIssue, formatError, formatIssues } from "./core";
-import { safeStringify, shouldRedact } from "@/utils/redact";
 
 describe("shouldRedact", () => {
 	it("should detect sensitive keys", () => {
