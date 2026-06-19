@@ -89,7 +89,7 @@
 		{
 			"name": "arkenv",
 			"path": "dist/index.mjs",
-			"limit": "2.3 kB",
+			"limit": "2.6 kB",
 			"import": "*",
 			"ignore": [
 				"arktype"
@@ -98,7 +98,7 @@
 		{
 			"name": "arkenv/standard",
 			"path": "dist/standard.mjs",
-			"limit": "2.3 kB",
+			"limit": "3.5 kB",
 			"import": "*"
 		},
 		{

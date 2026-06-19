@@ -262,7 +262,7 @@ export function parseStandard(
 				if (key in processedEnv) {
 					const rawVal = processedEnv[key];
 					receivedVal = rawVal;
-					if (rawVal !== undefined && issue.path?.length) {
+					if (typeof rawVal === "string" && issue.path?.length) {
 						try {
 							let current: any = rawVal;
 							const trimmed = rawVal.trim();
