@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { type } from "@/";
 import { arkenv } from "@/arkenv";
-import { type } from "@/index";
 
 describe("object parsing integration", () => {
 	it("should parse JSON string into object with string properties", () => {

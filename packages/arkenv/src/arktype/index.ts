@@ -7,7 +7,7 @@ import {
 	applyCoercion,
 	findCoercionPaths,
 	stripEmptyStrings,
-} from "@/coercion/index";
+} from "@/coercion";
 import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "@/core";
 import { getArkTypeMeta, mapArkTypeCode } from "@/utils/errors";
 import { isDebugSecrets, shouldRedact } from "@/utils/redact";

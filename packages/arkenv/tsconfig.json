@@ -13,7 +13,8 @@
 		"resolveJsonModule": true,
 		"rootDir": "src",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@/": ["./src/index.ts"]
 		},
 		"declaration": true,
 		"declarationMap": true,

@@ -6,7 +6,7 @@ import type {
 	SchemaShape,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { parse } from "@/arktype/index";
+import { parse } from "@/arktype";
 import { ArkEnvError } from "@/core";
 
 /**

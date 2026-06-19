@@ -63,6 +63,7 @@ Reference these guidelines when:
    - 4.3 [Control @types Package Inclusion](references/module-control-types-inclusion.md) — HIGH (prevents type conflicts and reduces memory usage)
    - 4.4 [Use Dynamic Imports for Large Modules](references/module-dynamic-imports.md) — HIGH (reduces initial bundle by 30-70%)
    - 4.5 [Use Type-Only Imports for Types](references/module-use-type-imports.md) — HIGH (eliminates runtime imports for type information)
+   - 4.6 [Avoid Referencing Index Files in Import Paths](references/module-avoid-index-in-imports.md) — HIGH (prevents redundant imports and ensures cleaner import syntax)
 5. [Type Safety Patterns](references/_sections.md#5-type-safety-patterns-safety) — **MEDIUM-HIGH**
    - 5.1 [Enable noUncheckedIndexedAccess](references/safety-no-unchecked-indexed-access.md) — MEDIUM-HIGH (prevents 100% of unchecked index access errors at compile time)
    - 5.2 [Enable strictNullChecks](references/safety-strict-null-checks.md) — MEDIUM-HIGH (prevents null/undefined runtime errors)
