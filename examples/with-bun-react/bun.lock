@@ -5,8 +5,8 @@
     "": {
       "name": "arkenv-example-with-bun-react",
       "dependencies": {
-        "@arkenv/bun-plugin": "^1.0.0-alpha.0",
-        "arkenv": "^1.0.0-alpha.0",
+        "@arkenv/bun-plugin": "^1.0.0-alpha.1",
+        "arkenv": "^1.0.0-alpha.1",
         "arktype": "^2.2.0",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
@@ -24,7 +24,7 @@
 
     "@ark/util": ["@ark/util@0.56.0", "", {}, "sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA=="],
 
-    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-alpha.0", "", { "dependencies": { "arkenv": "1.0.0-alpha.0" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-ceoJqcHlVlXQ5zLGcx/Y3E5akT3/HKbViMMOqlYEgXG0DHZgVoobelbEp4SOW51mMG4GD8dBDMRBjL68JgGsQw=="],
+    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-alpha.1", "", { "dependencies": { "arkenv": "1.0.0-alpha.1" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-zEihg+dc7bTyigJSvaZ/c5BJIQR8ymKcC+iYXtp1QdajTzJXWIVugtiJvUVsS6KIUvm4o6cMx4fgVa/PuG6KFQ=="],
 
     "@oven/bun-darwin-aarch64": ["@oven/bun-darwin-aarch64@1.3.13", "", { "os": "darwin", "cpu": "arm64" }, "sha512-qAS6Hg8Q14ckfBuqJ2Zh7gBQSVSUHeibSq4OFqBTv6DzyJuxYlr0sdYQzmYmnbPxbqobekqUDTa/4XEaqRi7vg=="],
 
@@ -58,7 +58,7 @@
 
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
-    "arkenv": ["arkenv@1.0.0-alpha.0", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-GsEZ4tkB+uubOn9aeAbgcqbFmjQj9inJ0S4TPvtYq5EnCrX5y0lnI8hq0zZWpYBqC0RMHfYVJ4AvxMR4K2cfuw=="],
+    "arkenv": ["arkenv@1.0.0-alpha.1", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-GnZ8wqnMe/2keGdoUkd1thWvLClvDYMloAFTVa5J+CmSbuvEaQ77KGzTsOCaytoyzGbSix4bdkyxYq+Al8yiAA=="],
 
     "arkregex": ["arkregex@0.0.5", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw=="],
 
