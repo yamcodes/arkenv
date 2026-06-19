@@ -1,6 +1,6 @@
 import type { SchemaShape } from "@repo/types";
 import type { EnvSchema, Infer } from "arkenv";
-import { createEnvInternal } from "./create-env";
+import { arkenvInternal } from "./arkenv-internal";
 
 /**
  * Create a validated, type-safe environment configuration for Next.js applications (Server-side RSC entry point).
@@ -10,7 +10,7 @@ import { createEnvInternal } from "./create-env";
  * @throws An error if any client-side variable is not prefixed with `NEXT_PUBLIC_`
  * @throws An error if any client or shared variable is missing from `runtimeEnv`
  */
-export function createEnv<
+export function arkenv<
 	const TServer extends SchemaShape = {},
 	const TClient extends SchemaShape = {},
 	const TShared extends SchemaShape = {},
@@ -24,16 +24,15 @@ export function createEnv<
 		Record<string, unknown>;
 }): Readonly<Infer<TServer & TClient & TShared>> {
 	type ReturnType = Readonly<Infer<TServer & TClient & TShared>>;
-	return createEnvInternal(options, true) as ReturnType;
+	return arkenvInternal(options, true) as ReturnType;
 }
 
 export type { Infer } from "arkenv";
 export { type } from "arkenv";
 
 /**
- * ArkEnv's Next.js integration export, an alias for {@link createEnv}
+ * ArkEnv's Next.js integration export
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  */
-const arkenv = createEnv;
 export default arkenv;

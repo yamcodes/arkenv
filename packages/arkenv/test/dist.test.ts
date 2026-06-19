@@ -2,15 +2,15 @@ import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-let arkenv: any;
-let createEnv: any;
-let standardArkenv: any;
-let createStandardEnv: any;
+let defaultArkenv: any;
+let namedArkenv: any;
+let defaultStandardArkenv: any;
+let namedStandardArkenv: any;
 let ArkEnvError: any;
 
 beforeAll(async () => {
@@ -25,22 +25,18 @@ beforeAll(async () => {
 
 	// Dynamically load to prevent compile-time module resolution errors if dist/ is missing initially
 	const index = await import("../dist/index.mjs");
-	arkenv = index.default;
-	createEnv = index.createEnv;
+	defaultArkenv = index.default;
+	namedArkenv = index.arkenv;
 
 	const standard = await import("../dist/standard.mjs");
-	standardArkenv = standard.default;
-	createStandardEnv = standard.createEnv;
+	defaultStandardArkenv = standard.default;
+	namedStandardArkenv = standard.arkenv;
 
 	const core = await import("../dist/core.mjs");
 	ArkEnvError = core.ArkEnvError;
 });
 
 describe("Distribution Built Outputs", () => {
-	afterEach(() => {
-		vi.unstubAllEnvs();
-	});
-
 	describe("Core Tier (arkenv/core)", () => {
 		it("should export ArkEnvError and format validation issues correctly", () => {
 			const error = new ArkEnvError([
@@ -53,6 +49,11 @@ describe("Distribution Built Outputs", () => {
 	});
 
 	describe("Standard Tier (arkenv/standard)", () => {
+		it("should export arkenv as default and named export and they should be identical", () => {
+			expect(defaultStandardArkenv).toBe(namedStandardArkenv);
+			expect(typeof defaultStandardArkenv).toBe("function");
+		});
+
 		it("should validate using Standard Schema validators (e.g. Zod-like)", () => {
 			vi.stubEnv("PORT", "3000");
 			vi.stubEnv("HOST", "localhost");
@@ -83,7 +84,7 @@ describe("Distribution Built Outputs", () => {
 				},
 			};
 
-			const env = createStandardEnv({
+			const env = namedStandardArkenv({
 				PORT: portValidator as any,
 				HOST: hostValidator as any,
 			});
@@ -109,7 +110,7 @@ describe("Distribution Built Outputs", () => {
 			};
 
 			expect(() => {
-				createStandardEnv({
+				namedStandardArkenv({
 					PORT: portValidator as any,
 				});
 			}).toThrow(ArkEnvError);
@@ -117,12 +118,17 @@ describe("Distribution Built Outputs", () => {
 	});
 
 	describe("Main Tier (arkenv)", () => {
+		it("should export arkenv as default and named export and they should be identical", () => {
+			expect(defaultArkenv).toBe(namedArkenv);
+			expect(typeof defaultArkenv).toBe("function");
+		});
+
 		it("should validate using ArkType schemas", () => {
 			vi.stubEnv("PORT", "8080");
 			vi.stubEnv("HOST", "127.0.0.1");
 
 			// The default entrypoint supports ArkType DSL schemas
-			const env = createEnv({
+			const env = defaultArkenv({
 				PORT: "number.port",
 				HOST: "string.host",
 			});
@@ -135,7 +141,7 @@ describe("Distribution Built Outputs", () => {
 			vi.stubEnv("PORT", "99999"); // Out of range for a port
 
 			expect(() => {
-				createEnv({
+				defaultArkenv({
 					PORT: "number.port",
 				});
 			}).toThrow(ArkEnvError);

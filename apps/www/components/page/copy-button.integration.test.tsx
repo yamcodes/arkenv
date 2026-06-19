@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Toaster } from "~/components/ui/toaster";
 import { CopyButton } from "./copy-button";
 
@@ -20,10 +20,6 @@ describe("CopyButton + useToast + Toaster integration", () => {
 				writeText: mockWriteText,
 			},
 		});
-	});
-
-	afterEach(() => {
-		vi.unstubAllGlobals();
 	});
 
 	it("should show toast when copy succeeds", async () => {

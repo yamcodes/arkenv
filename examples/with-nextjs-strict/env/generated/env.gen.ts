@@ -7,11 +7,11 @@
  * @see https://arkenv.js.org
  */
 
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs/client";
+import { arkenv as coreArkenv } from "@arkenv/nextjs/client";
 
 export { type } from "@arkenv/nextjs/client";
 
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, any> = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -22,17 +22,13 @@ export function createEnv<
 		extends?: [...TExtends];
 	},
 ) {
-	return coreCreateEnv<TSchema, TExtends>(
-		schema as any,
-		{
-			...options,
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-				NODE_ENV: process.env.NODE_ENV,
-			},
-		} as any,
-	);
+	return coreArkenv<TSchema, TExtends>(schema as any, {
+		...options,
+		runtimeEnv: {
+			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+			NODE_ENV: process.env.NODE_ENV,
+		},
+	} as any);
 }
 
-const arkenv = createEnv;
 export default arkenv;

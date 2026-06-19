@@ -4,8 +4,12 @@ import { defineProject } from "vitest/config";
 export default defineProject({
 	test: {
 		name: "@arkenv/vite-plugin",
+		unstubEnvs: true,
+		restoreMocks: true,
+		unstubGlobals: true,
 	},
 	resolve: {
+		tsconfigPaths: true,
 		alias: [
 			{
 				find: /^arkenv\/arktype$/,

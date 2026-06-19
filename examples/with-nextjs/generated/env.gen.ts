@@ -7,12 +7,12 @@
  * @see https://arkenv.js.org
  */
 
+import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { Infer } from "@arkenv/nextjs";
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
 
 export { type } from "@arkenv/nextjs";
 
-export function createEnv<
+export function arkenv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
 	const TShared extends Record<string, any> = {},
@@ -23,7 +23,7 @@ export function createEnv<
 	};
 	shared?: TShared;
 }): Readonly<Infer<TServer & TClient & TShared>> {
-	return coreCreateEnv({
+	return coreArkenv({
 		...options,
 		runtimeEnv: {
 			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
@@ -32,5 +32,4 @@ export function createEnv<
 	} as any) as any;
 }
 
-const arkenv = createEnv;
 export default arkenv;

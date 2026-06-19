@@ -1,5 +1,145 @@
 # @ArkEnv/nextjs
 
+## 1.0.0-alpha.1
+
+### Major Changes
+
+- #### Rename `createEnv` function to `arkenv` _[`#1203`](https://github.com/yamcodes/arkenv/pull/1203) [`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: Rename the primary environment variable validation function from `createEnv` to `arkenv` across all packages in the ecosystem, and expose it as both the default export and a named export.
+
+  Update all usages:
+
+  ```ts
+  // Before
+  import { createEnv } from "arkenv";
+
+  export const env = createEnv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+
+  // After
+  import arkenv from "arkenv";
+  // or: import { arkenv } from "arkenv";
+
+  export const env = arkenv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  Migration Steps:
+
+  - Replace all imports and invocations of `createEnv` with `arkenv`.
+  - Update config generators and plugins (Next.js config templates, Vite plugin, Bun plugin) to use `arkenv`.
+
+## 0.1.0
+
+### Minor Changes
+
+- #### Enforce strict intersection typing on `runtimeEnv` and reject legacy configs _[`#1206`](https://github.com/yamcodes/arkenv/pull/1206) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1) [@yamcodes](https://github.com/yamcodes)_
+
+  Restored strict intersection types (`Record<RequiredKeys, unknown> & Record<string, unknown>`) on the Next.js `createEnv` adapter to guarantee compile-time enforcement of required schema keys. Additionally, narrowed the accepted `runtimeEnv` record value type to `string | undefined` to actively reject invalid configurations.
+
+  **BREAKING CHANGE**: If you were using the legacy Next.js `env` object configuration (e.g., passing a nested object to `runtimeEnv`), or if you were failing to explicitly map all required keys into `runtimeEnv`, your build will now fail with a TypeScript error. You must explicitly map all variables referenced in your schema as `string | undefined`.
+
+  Usage:
+
+  ```ts
+  import { createEnv } from "@arkenv/nextjs";
+
+  export const env = createEnv({
+    client: { NEXT_PUBLIC_API: "string" },
+    runtimeEnv: {
+      // TypeScript will error if NEXT_PUBLIC_API is missing,
+      // and will also error if you try to pass an object or array.
+      NEXT_PUBLIC_API: process.env.NEXT_PUBLIC_API,
+    },
+  });
+  ```
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf)
+
+</small>
+
+- `arkenv@1.0.0-alpha.1`
+
+</details>
+
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [`b666698`](https://github.com/yamcodes/arkenv/commit/b66669888cf2f8c756cce12fd6210c492146cd87)
+
+</small>
+
+- `arkenv@1.0.0-alpha.0`
+
+</details>
+
+## 0.1.0
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a3e32db`](https://github.com/yamcodes/arkenv/commit/a3e32db63b0b694e11487950507c06fa7b1466b0) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1)
+
+</small>
+
+- `arkenv@0.12.2`
+
+</details>
+
+## 0.0.9
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3bfbcb7`](https://github.com/yamcodes/arkenv/commit/3bfbcb7ee48439f0cfa71cc2f23c9555660cd905)
+
+</small>
+
+- `arkenv@0.12.1`
+
+</details>
+
+## 0.0.8
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`88b0eee`](https://github.com/yamcodes/arkenv/commit/88b0eee7a87ffaf249d69035a747f1bb55f7079b)
+
+</small>
+
+- `arkenv@0.12.0`
+
+</details>
+
 ## 0.0.7
 
 ### Patch Changes

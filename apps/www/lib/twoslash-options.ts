@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
+import ts from "typescript";
 
 const require = createRequire(import.meta.url);
 
@@ -30,10 +31,14 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
 		compilerOptions: {
+			module: ts.ModuleKind.ESNext,
+			moduleResolution: ts.ModuleResolutionKind.Bundler,
+			target: ts.ScriptTarget.ES2022,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
 				"arkenv/core": [path.join(root, "packages/arkenv/src/core.ts")],
+				"@/*": [path.join(root, "packages/arkenv/src/*"), "./*"],
 				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
 				"@arkenv/nextjs/server": [
 					path.join(root, "packages/nextjs/src/server.ts"),
@@ -50,6 +55,10 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@arkenv/bun-plugin": [
 					path.join(root, "packages/bun-plugin/src/index.ts"),
 				],
+				"@arkenv/nuxt": [path.join(root, "packages/nuxt/src/index.ts")],
+				"@arkenv/nuxt/server": [path.join(root, "packages/nuxt/src/server.ts")],
+				"@arkenv/nuxt/client": [path.join(root, "packages/nuxt/src/client.ts")],
+				"@arkenv/nuxt/shared": [path.join(root, "packages/nuxt/src/shared.ts")],
 				"@repo/types": [
 					path.join(root, "packages/internal/types/src/index.ts"),
 				],

@@ -1,6 +1,6 @@
 ---
 name: arkenv
-description: "Answer questions about ArkEnv and help implement environment variable validation. Use when developers: (1) Ask about environment variable validation or typesafety, (2) Want to setup ArkEnv in a project, (3) Need to define or update schemas using ArkType or Standard Schema, (4) Are integrating with Vite, Bun, or other runtimes. Triggers on: 'ArkEnv', 'env validation', 'typesafe env', 'createEnv', 'env.ts', '@arkenv/cli'."
+description: "Answer questions about ArkEnv and help implement environment variable validation. Use when developers: (1) Ask about environment variable validation or typesafety, (2) Want to setup ArkEnv in a project, (3) Need to define or update schemas using ArkType or Standard Schema, (4) Are integrating with Vite, Bun, or other runtimes. Triggers on: 'ArkEnv', 'env validation', 'typesafe env', 'arkenv', 'env.ts', '@arkenv/cli'."
 ---
 
 # ArkEnv
@@ -67,7 +67,7 @@ When setting up ArkEnv, follow these steps:
    - **Vite**: Update `vite.config.ts` to import and include the `@arkenv/vite-plugin` plugin.
    - **Bun**: Configure `bunfig.toml` or add the plugin to the runtime if necessary.
 4. **Typesafety & Augmentation**:
-   - **Next.js (Codegen)**: Import `createEnv` from `./generated/env.gen` instead of core `@arkenv/nextjs`. The codegen file automatically handles the runtime mapping and type definitions.
+   - **Next.js (Codegen)**: Import `arkenv` from `./generated/env.gen` instead of core `@arkenv/nextjs`. The codegen file automatically handles the runtime mapping and type definitions.
    - **Vite**: Add type augmentation to `src/vite-env.d.ts` or a new `env.d.ts`.
      ```ts
      interface ImportMetaEnv extends import("@arkenv/vite-plugin").ImportMetaEnvAugmented<typeof import("./env").Env> {}
@@ -224,7 +224,7 @@ pnpm dlx @arkenv/cli@latest init [options]
    - **Bun**: Use `process.env`.
    - This ensures that build-time validation, static replacement (Vite), and runtime optimizations (Bun) work as intended while remaining fully typesafe via type augmentation.
 2. **Avoid `import { env }` in Plugin-managed Projects**: In projects using `@arkenv/vite-plugin` or `@arkenv/bun-plugin`, you should generally avoid importing a runtime-validated `env` object. Using native primitives is the "cleanest" way to get typesafety and ensures consistency with framework-specific behavior.
-3. **Use Codegen in Next.js**: For Next.js projects, prefer using the `withArkEnv` wrapper and importing `createEnv` / `env` from the generated `generated/env.gen.ts` file. This automates the destructuring of `runtimeEnv` to allow static inlining on the client side without leaking secrets.
+3. **Use Codegen in Next.js**: For Next.js projects, prefer using the `withArkEnv` wrapper and importing `arkenv` / `env` from the generated `generated/env.gen.ts` file. This automates the destructuring of `runtimeEnv` to allow static inlining on the client side without leaking secrets.
 4. **Commit Generated Code for CI/CD**: Commit `generated/env.gen.ts` to source control to ensure compatibility with CI/CD pipelines.
 5. **Use Type Augmentation**: This is the recommended way to make `import.meta.env` or `process.env` typesafe. It connects your schema definition to the native primitives without adding runtime overhead to your application logic.
 6. **Re-use Schema**: Define your schema once and use it for both the plugin (build-time/config) and runtime validation if needed.

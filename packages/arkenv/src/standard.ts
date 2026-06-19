@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError } from "./core.ts";
-import type { SafeCreateEnvResult } from "./create-env.ts";
+import type { SafeCreateEnvResult } from "./arkenv.ts";
 import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
@@ -9,7 +9,7 @@ import {
 import { type ParseStandardConfig, parseStandard } from "./parse-standard.ts";
 
 /**
- * Configuration options for the `arkenv/standard` entry's `createEnv`.
+ * Configuration options for the `arkenv/standard` entry's `arkenv`.
  */
 export type StandardEnvConfig = ParseStandardConfig;
 
@@ -19,8 +19,8 @@ export type StandardEnvConfig = ParseStandardConfig;
  * This entry is ArkType-free - ArkType is never imported, even transitively.
  * Use this when your project must not depend on ArkType.
  *
- * @param def - An object mapping variable names to Standard Schema validators
- * @param config - Optional configuration
+ * @param def An object mapping variable names to Standard Schema validators
+ * @param config Optional configuration
  * @returns The validated environment variables
  * @throws An {@link ArkEnvError} if validation fails
  *
@@ -35,7 +35,7 @@ export type StandardEnvConfig = ParseStandardConfig;
  * });
  * ```
  */
-export function createEnv<const T extends Record<string, StandardSchemaV1>>(
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,
 	config?: StandardEnvConfig,
 ): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> } {
@@ -65,7 +65,7 @@ export function safeCreateEnv<const T extends Record<string, StandardSchemaV1>>(
 	config?: StandardEnvConfig,
 ): SafeCreateEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
 	try {
-		const data = createEnv(def, config);
+		const data = arkenv(def, config);
 		return { success: true, data };
 	} catch (error) {
 		if (error instanceof ArkEnvError) {
@@ -76,9 +76,8 @@ export function safeCreateEnv<const T extends Record<string, StandardSchemaV1>>(
 }
 
 /**
- * ArkEnv's Standard Schema export, an alias for {@link createEnv}
+ * ArkEnv's Standard Schema export
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  */
-const arkenv = createEnv;
 export default arkenv;

@@ -8,7 +8,7 @@ const mockExistingFiles = new Set<string>();
 vi.mock("node:fs/promises", () => ({
 	default: {
 		readdir: vi.fn().mockResolvedValue(["package.json"]),
-		cp: vi.fn().mockImplementation(async (src, dest) => {
+		cp: vi.fn().mockImplementation(async (_src, dest) => {
 			mockExistingFiles.add(dest);
 		}),
 		rm: vi.fn().mockResolvedValue(undefined),
@@ -28,6 +28,7 @@ describe("Executor", () => {
 		findViteConfig: vi.fn().mockResolvedValue("vite.config.ts"),
 		findBunConfig: vi.fn().mockResolvedValue("bunfig.toml"),
 		findNextjsConfig: vi.fn().mockResolvedValue("next.config.ts"),
+		findNuxtConfig: vi.fn().mockResolvedValue("nuxt.config.ts"),
 		bootstrapViteConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
@@ -35,6 +36,9 @@ describe("Executor", () => {
 			.fn()
 			.mockResolvedValue({ success: true, instructions: "done" }),
 		bootstrapNextjsConfig: vi
+			.fn()
+			.mockResolvedValue({ success: true, updated: true }),
+		bootstrapNuxtConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
 		safeAppend: vi.fn().mockResolvedValue(true),

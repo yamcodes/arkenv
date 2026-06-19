@@ -33,7 +33,7 @@ alwaysApply: true
 - Fast execution (< 100ms per test)
 - Mocked external dependencies (clipboard, network, etc.)
 - Focused on single unit behavior
-- Co-locate with source: `create-env.ts` → `create-env.test.ts`
+- Co-locate with source: `arkenv.ts` → `arkenv.test.ts`
 
 ### Integration Tests (`*.integration.test.ts` or `*.integration.test.tsx`)
 **What:** Test how multiple units (components, hooks, functions) work together without mocking their interactions.
@@ -45,8 +45,8 @@ alwaysApply: true
 - State synchronization across boundaries
 
 **Examples:**
-- `custom-types.integration.test.ts` - Tests `createEnv` + `scope` + custom types working together
-- `error.integration.test.ts` - Tests error propagation through `createEnv` + `formatErrors` + `ArkEnvError`
+- `custom-types.integration.test.ts` - Tests `arkenv` + `scope` + custom types working together
+- `error.integration.test.ts` - Tests error propagation through `arkenv` + `formatErrors` + `ArkEnvError`
 - `copy-button.integration.test.tsx` - Tests `CopyButton` + `useToast` + `Toaster` as a complete flow
 - `heading.integration.test.tsx` - Tests `Heading` + `useIsMobile` responding to viewport changes
 - `toaster.integration.test.tsx` - Tests `useToast` hook + `Toaster` component state synchronization
@@ -98,12 +98,12 @@ alwaysApply: true
 
 ```typescript
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./create-env";
+import arkenv from "./arkenv";
 
-describe("createEnv", () => {
+describe("arkenv", () => {
   it("should validate string env variables", () => {
     process.env.TEST_STRING = "hello";
-    const env = createEnv({
+    const env = arkenv({
       TEST_STRING: "string",
     });
     expect(env.TEST_STRING).toBe("hello");

@@ -1,7 +1,8 @@
 import { $ } from "@repo/scope";
-import { createEnv, safeCreateEnv } from "./create-env.ts";
+import { arkenv, safeCreateEnv } from "./arkenv.ts";
+import { getSchemaKeys } from "./schema.ts";
 
-export { createEnv, safeCreateEnv };
+export { arkenv, safeCreateEnv, getSchemaKeys };
 /**
  * Like ArkType's `type`, but with ArkEnv's extra keywords, such as:
  *
@@ -17,12 +18,11 @@ export type {
 	EnvSchema,
 	Infer,
 	SafeCreateEnvResult,
-} from "./create-env.ts";
+} from "./arkenv.ts";
 
 /**
- * ArkEnv's main export, an alias for {@link createEnv}
+ * ArkEnv's main export, an alias for {@link arkenv}
  *
  * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
  */
-const arkenv = createEnv;
 export default arkenv;

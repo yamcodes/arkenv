@@ -8,10 +8,14 @@ import {
 	type EnvIssueCode,
 	type EnvIssueMeta,
 } from "../core.ts";
-import type { ArkEnvConfig, EnvSchema } from "../create-env.ts";
+import type { ArkEnvConfig, EnvSchema } from "../arkenv.ts";
 import { shouldRedact } from "../utils/redact.ts";
 import { styleText } from "../utils/style-text.ts";
-import { coerce } from "./coercion/coerce.ts";
+import {
+	applyCoercion,
+	findCoercionPaths,
+	stripEmptyStrings,
+} from "../coercion/index.ts";
 
 /**
  * Re-export of ArkType's `distill` utilities.
@@ -29,6 +33,9 @@ export type { distill };
  * suitable for `ArkEnvError`. Strips leading path references from messages to
  * avoid duplication when `formatIssues` prepends the styled path, and
  * applies cyan styling to inline "(was …)" values.
+ *
+ * @param errors The ArkType errors object to convert
+ * @returns An array of flattened validation issues
  *
  * @internal
  */
@@ -134,6 +141,11 @@ function arkErrorsToIssues(
  * This is a low-level utility used internally by ArkEnv.
  * Most users should prefer the default `arkenv()` export.
  *
+ * @param def The ArkType schema definition to validate against
+ * @param config The configuration object for parsing and coercion
+ * @returns The parsed and validated environment variables
+ * @throws {@link ArkEnvError} if validation fails
+ *
  * @internal
  */
 export function parse<const T extends SchemaShape>(
@@ -145,6 +157,7 @@ export function parse<const T extends SchemaShape>(
 		coerce: shouldCoerce = true,
 		onUndeclaredKey = "delete",
 		arrayFormat = "comma",
+		emptyAsUndefined = false,
 	} = config;
 
 	// If def is a type definition (has assert method), use it directly
@@ -155,14 +168,26 @@ export function parse<const T extends SchemaShape>(
 	// Apply the `onUndeclaredKey` option
 	const schemaWithKeys = schema.onUndeclaredKey(onUndeclaredKey);
 
+	// Optionally treat empty strings as undefined
+	const processedEnv = emptyAsUndefined ? stripEmptyStrings(env) : env;
+
+	let coercedEnv = { ...processedEnv } as Record<string, unknown>;
+
 	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
-	let finalSchema = schemaWithKeys;
 	if (shouldCoerce) {
-		finalSchema = coerce($.type, schemaWithKeys, { arrayFormat });
+		const json = schemaWithKeys.in.toJsonSchema({
+			fallback: (ctx: { base: unknown }) => ctx.base,
+		});
+		const targets = findCoercionPaths(json);
+		if (targets.length > 0) {
+			coercedEnv = applyCoercion(coercedEnv, targets, {
+				arrayFormat,
+			});
+		}
 	}
 
 	// Validate the environment variables
-	const validatedEnv = finalSchema(env);
+	const validatedEnv = schemaWithKeys(coercedEnv);
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors
 	if (validatedEnv instanceof ArkErrors) {

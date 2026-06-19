@@ -1,6 +1,21 @@
 import { ArkErrors, type } from "arktype";
 import { describe, expect, it } from "vitest";
-import { coerce } from "./coerce";
+import { applyCoercion, findCoercionPaths } from "@/coercion";
+
+function coerce(at: typeof type, schema: any) {
+	return (env: any) => {
+		const json = schema.in.toJsonSchema({
+			fallback: (ctx: { base: unknown }) => ctx.base,
+		});
+		const targets = findCoercionPaths(json);
+		const coercedEnv =
+			Array.isArray(env) || typeof env !== "object" || env === null
+				? env
+				: { ...env };
+		const result = applyCoercion(coercedEnv, targets);
+		return schema(result);
+	};
+}
 
 describe("coerce", () => {
 	it("should coerce numeric properties", () => {

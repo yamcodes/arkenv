@@ -1,0 +1,252 @@
+---
+title: Simple layout
+icon: Zap
+description: Get the ultimate DX in Next.js using a single, unified schema file.
+---
+
+In this setup, you define your client, server, and shared schemas in a single file.
+
+```files
+src
+└── env.ts
+```
+
+To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected.
+
+:::warning
+Defining your schemas together means the *server validation logic* is shipped in the client bundle.
+
+| ⚠️ Visible in JS bundle                                                         | 🔒 Secure on server                                  |
+| :------------------------------------------------------------------------------ | :--------------------------------------------------- |
+| **Schema** (keys, types, and constraints)<br />e.g., `DATABASE_URL: string.url` | **Runtime values**<br />e.g., `"postgresql://db..."` |
+
+If exposing your server variable names, types, or constraints is a security concern, use the [strict layout](/docs/nextjs/layouts/strict) instead.
+:::
+
+## Setup
+
+The easiest way to bootstrap the simple layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project and generates your `env.ts` file.
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx @arkenv/cli@latest init --simple
+    ```
+  </Tab>
+
+  <Tab value="pnpm">
+    ```bash
+    pnx @arkenv/cli@latest init --simple
+    ```
+  </Tab>
+
+  <Tab value="yarn">
+    ```bash
+    yarn dlx @arkenv/cli@latest init --simple
+    ```
+  </Tab>
+
+  <Tab value="bun">
+    ```bash
+    bunx @arkenv/cli@latest init --simple
+    ```
+  </Tab>
+</Tabs>
+
+## Your schema
+
+When bootstrapping with the CLI, it generates a single `env.ts` file where you define your client, server, and shared schemas:
+
+:::note
+By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to build and inject the `runtimeEnv` block at compile time. This is why the schema file imports from `@/generated/env.gen` rather than `@arkenv/nextjs` directly. To opt out, simply import from `@arkenv/nextjs` directly and provide your own `runtimeEnv` mapping.
+:::
+
+```ts title="src/env.ts" twoslash
+// @filename: /generated/env.gen.ts
+import { arkenv as coreArkenv } from "@arkenv/nextjs";
+import type { type as at, distill } from "arktype";
+export { type } from "@arkenv/nextjs";
+
+export default function arkenv<
+	const TServer = {},
+	const TClient = {},
+	const TShared = {},
+>(options: {
+	server?: TServer;
+	client?: TClient;
+	shared?: TShared;
+}): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+	return {} as any;
+}
+
+// @filename: /env.ts
+// ---cut---
+import arkenv from "@/generated/env.gen";
+
+export const env = arkenv({
+	server: {
+		DATABASE_URL: "string",
+	},
+	client: {
+		NEXT_PUBLIC_API_URL: "string",
+	},
+	shared: {
+		NODE_ENV: "string",
+	},
+});
+```
+
+<Accordions>
+  <Accordion title="Manual Setup">
+    <Steps>
+      <Step>
+        ### Configure environment
+
+        Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schemas. Import `arkenv` from the auto-generated `@/generated/env.gen.ts` helper file:
+
+        ```ts title="src/env.ts" twoslash
+        // @filename: /generated/env.gen.ts
+        import { arkenv as coreArkenv } from "@arkenv/nextjs";
+        import type { type as at, distill } from "arktype";
+        export { type } from "@arkenv/nextjs";
+
+        export default function arkenv<
+        	const TServer = {},
+        	const TClient = {},
+        	const TShared = {},
+        >(options: {
+        	server?: TServer;
+        	client?: TClient;
+        	shared?: TShared;
+        }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+        	return {} as any;
+        }
+
+        // @filename: /env.ts
+        // ---cut---
+        import arkenv from "@/generated/env.gen";
+
+        export const env = arkenv({
+        	server: {
+        		DATABASE_URL: "string",
+        	},
+        	client: {
+        		NEXT_PUBLIC_API_URL: "string",
+        	},
+        	shared: {
+        		NODE_ENV: "string",
+        	},
+        });
+        ```
+      </Step>
+
+      <Step>
+        ### Register configuration wrapper
+
+        Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
+
+        ```ts title="next.config.ts"
+        import { withArkEnv } from "@arkenv/nextjs/config";
+        import type { NextConfig } from "next";
+
+        const nextConfig: NextConfig = {
+        	/* config options here */
+        };
+
+        export default withArkEnv(nextConfig);
+        ```
+
+        You can customize the schema and output paths using optional parameters:
+
+        ```ts
+        export default withArkEnv(nextConfig, {
+        	schemaPath: "src/env.ts",              // Path to your schema (default: src/env.ts or env.ts)
+        	outputPath: "src/generated/env.gen.ts", // Custom output path (default: src/generated/env.gen.ts)
+        });
+        ```
+
+        :::note
+        If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env.ts` instead.
+        :::
+
+        :::tip
+        We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
+        :::
+      </Step>
+
+      <Step>
+        ### Use in your code
+
+        Import `env` throughout your Next.js application:
+
+        ```ts title="src/app/page.tsx" twoslash
+        // @filename: /generated/env.gen.ts
+        import { arkenv as coreArkenv } from "@arkenv/nextjs";
+        import type { type as at, distill } from "arktype";
+        export { type } from "@arkenv/nextjs";
+        export default function arkenv<
+        	const TServer = {},
+        	const TClient = {},
+        	const TShared = {},
+        >(options: {
+        	server?: TServer;
+        	client?: TClient;
+        	shared?: TShared;
+        }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+        	return {} as any;
+        }
+
+        // @filename: /env.ts
+        import arkenv from "./generated/env.gen";
+        export const env = arkenv({
+        	server: { DATABASE_URL: "string" },
+        	client: { NEXT_PUBLIC_API_URL: "string" },
+        });
+
+        // @filename: /page.tsx
+        // ---cut---
+        import { env } from "./env";
+
+        // Access is fully typesafe and autocompleted
+        const apiUrl = env.NEXT_PUBLIC_API_URL;
+        //      ^?
+        ```
+
+        If you accidentally attempt to access a server-side secret in a Client Component, it will throw a descriptive runtime exception during both server-side pre-rendering (SSR) and browser runtime execution:
+
+        ```ts title="src/app/client-component.tsx" twoslash
+        // @filename: /generated/env.gen.ts
+        import { arkenv as coreArkenv } from "@arkenv/nextjs";
+        import type { type as at, distill } from "arktype";
+        export { type } from "@arkenv/nextjs";
+        export default function arkenv<
+        	const TServer = {},
+        	const TClient = {},
+        	const TShared = {},
+        >(options: {
+        	server?: TServer;
+        	client?: TClient;
+        	shared?: TShared;
+        }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+        	return {} as any;
+        }
+
+        // @filename: /env.ts
+        import arkenv from "./generated/env.gen";
+        export const env = arkenv({
+        	server: { DATABASE_URL: "string" },
+        	client: { NEXT_PUBLIC_API_URL: "string" },
+        });
+
+        // @filename: /client-component.tsx
+        // ---cut---
+        import { env } from "./env";
+
+        // Throws a runtime error if evaluated in a client component (during SSR or in the browser)
+        const dbUrl = env.DATABASE_URL;
+        //      ^?
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+</Accordions>

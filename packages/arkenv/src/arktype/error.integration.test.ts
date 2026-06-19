@@ -1,23 +1,19 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { arkenv } from "../arkenv.ts";
 import type { ArkEnvError } from "../core.ts";
-import { createEnv } from "../create-env.ts";
 import { type } from "../index.ts";
 
 // Helper to strip ANSI color codes (ESC character code 27)
 const stripAnsi = (str: string) =>
 	str.replace(new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g"), "");
 
-describe("createEnv + type + errors + utils integration", () => {
-	afterEach(() => {
-		vi.unstubAllEnvs();
-	});
-
+describe("arkenv + type + errors + utils integration", () => {
 	describe("error propagation through full stack", () => {
 		it("should throw ArkEnvError with formatted message for invalid type", () => {
 			vi.stubEnv("PORT", "not-a-number");
 
 			try {
-				createEnv({
+				arkenv({
 					PORT: type("number.port"),
 				});
 				expect.fail("Should have thrown");
@@ -38,7 +34,7 @@ describe("createEnv + type + errors + utils integration", () => {
 			vi.stubEnv("HOST", "invalid-host");
 
 			try {
-				createEnv({
+				arkenv({
 					HOST: type("string.host"),
 				});
 				expect.fail("Should have thrown");
@@ -56,7 +52,7 @@ describe("createEnv + type + errors + utils integration", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			try {
-				createEnv({
+				arkenv({
 					DEBUG: type("boolean"),
 				});
 				expect.fail("Should have thrown");
@@ -73,7 +69,7 @@ describe("createEnv + type + errors + utils integration", () => {
 
 		it("should throw ArkEnvError with formatted message for missing required variable", () => {
 			try {
-				createEnv({
+				arkenv({
 					REQUIRED_VAR: "string",
 				});
 				expect.fail("Should have thrown");
@@ -94,7 +90,7 @@ describe("createEnv + type + errors + utils integration", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			try {
-				createEnv({
+				arkenv({
 					HOST: type("string.host"),
 					PORT: type("number.port"),
 					DEBUG: type("boolean"),
@@ -117,7 +113,7 @@ describe("createEnv + type + errors + utils integration", () => {
 			vi.stubEnv("PORT", "not-a-number");
 
 			try {
-				createEnv({
+				arkenv({
 					PORT: type("number.port"),
 				});
 				expect.fail("Should have thrown");
@@ -148,7 +144,7 @@ describe("createEnv + type + errors + utils integration", () => {
 			vi.stubEnv("PORT", invalidValue);
 
 			try {
-				createEnv({
+				arkenv({
 					PORT: type("number.port"),
 				});
 				expect.fail("Should have thrown");
@@ -167,7 +163,7 @@ describe("createEnv + type + errors + utils integration", () => {
 			vi.stubEnv("PORT", "99999");
 
 			try {
-				createEnv({
+				arkenv({
 					HOST: type("string.host"),
 					PORT: type("number.port"),
 				});

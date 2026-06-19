@@ -1,32 +1,26 @@
-import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import arkenv, { createEnv } from "./index";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
+import defaultArkenv, { arkenv as namedArkenv } from "./index";
 
 describe("index.ts exports", () => {
-	afterEach(() => {
-		// Restore mocks and unstub all environment variables
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-	});
-
-	it("should export createEnv as default export", () => {
-		expect(arkenv).toBe(createEnv);
-		expect(typeof arkenv).toBe("function");
+	it("should export arkenv as default export", () => {
+		expect(defaultArkenv).toBe(namedArkenv);
+		expect(typeof defaultArkenv).toBe("function");
 	});
 
 	it("should have correct types for exported functions", () => {
 		// Type assertion to verify exported function types
-		expectTypeOf(arkenv).toBeFunction();
-		expectTypeOf(createEnv).toBeFunction();
+		expectTypeOf(defaultArkenv).toBeFunction();
+		expectTypeOf(namedArkenv).toBeFunction();
 
 		// Verify they have the same type signature
-		expectTypeOf(arkenv).toEqualTypeOf(createEnv);
+		expectTypeOf(defaultArkenv).toEqualTypeOf(namedArkenv);
 	});
 
 	it("should work with default import", () => {
 		// Set test environment variable
 		vi.stubEnv("TEST_DEFAULT_IMPORT", "test-value");
 
-		const env = arkenv({
+		const env = defaultArkenv({
 			TEST_DEFAULT_IMPORT: "string",
 		});
 
@@ -38,7 +32,7 @@ describe("index.ts exports", () => {
 		// Set test environment variable
 		vi.stubEnv("TEST_NAMED_IMPORT", "test-value");
 
-		const env = createEnv({
+		const env = namedArkenv({
 			TEST_NAMED_IMPORT: "string",
 		});
 
@@ -48,7 +42,7 @@ describe("index.ts exports", () => {
 
 	it("should throw error with default import when validation fails", () => {
 		expect(() =>
-			arkenv({
+			defaultArkenv({
 				MISSING_DEFAULT_VAR: "string",
 			}),
 		).toThrow();
@@ -56,7 +50,7 @@ describe("index.ts exports", () => {
 
 	it("should throw error with named import when validation fails", () => {
 		expect(() =>
-			createEnv({
+			namedArkenv({
 				MISSING_NAMED_VAR: "string",
 			}),
 		).toThrow();
@@ -66,11 +60,11 @@ describe("index.ts exports", () => {
 		// Set test environment variable
 		vi.stubEnv("COMPARISON_TEST", "same-value");
 
-		const envFromDefault = arkenv({
+		const envFromDefault = defaultArkenv({
 			COMPARISON_TEST: "string",
 		});
 
-		const envFromNamed = createEnv({
+		const envFromNamed = namedArkenv({
 			COMPARISON_TEST: "string",
 		});
 

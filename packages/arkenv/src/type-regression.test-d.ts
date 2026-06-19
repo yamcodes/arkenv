@@ -1,10 +1,10 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { createEnv, type } from "./index";
+import { arkenv, type } from "./index";
 
 describe("Type Regression (Issue #796)", () => {
 	it("inline and explicit schemas infer the same type", () => {
-		const inline = createEnv({ PORT: "number" }, { env: { PORT: "3000" } });
-		const explicit = createEnv(type({ PORT: "number" }), {
+		const inline = arkenv({ PORT: "number" }, { env: { PORT: "3000" } });
+		const explicit = arkenv(type({ PORT: "number" }), {
 			env: { PORT: "3000" },
 		});
 
@@ -12,7 +12,7 @@ describe("Type Regression (Issue #796)", () => {
 	});
 
 	it("narrows basic types correctly", () => {
-		const env = createEnv(
+		const env = arkenv(
 			{ STR: "string", NUM: "number", BOOL: "boolean" },
 			{ env: { STR: "hi", NUM: "1", BOOL: "true" } },
 		);
@@ -23,12 +23,12 @@ describe("Type Regression (Issue #796)", () => {
 	});
 
 	it("infers unions correctly", () => {
-		const env = createEnv({ VAL: "string | number" }, { env: { VAL: "123" } });
+		const env = arkenv({ VAL: "string | number" }, { env: { VAL: "123" } });
 		expectTypeOf(env.VAL).toEqualTypeOf<string | number>();
 	});
 
 	it("infers custom keywords correctly", () => {
-		const env = createEnv(
+		const env = arkenv(
 			{ PORT: "number.port", HOST: "string.host" },
 			{ env: { PORT: "8080", HOST: "localhost" } },
 		);
@@ -37,17 +37,17 @@ describe("Type Regression (Issue #796)", () => {
 	});
 
 	it("infers arrays correctly", () => {
-		const env = createEnv({ TAGS: "string[]" }, { env: { TAGS: "a,b,c" } });
+		const env = arkenv({ TAGS: "string[]" }, { env: { TAGS: "a,b,c" } });
 		expectTypeOf(env.TAGS).toEqualTypeOf<string[]>();
 	});
 
 	it("infers optional variables correctly", () => {
-		const env = createEnv({ "OPTIONAL?": "string" }, { env: {} });
+		const env = arkenv({ "OPTIONAL?": "string" }, { env: {} });
 		expectTypeOf(env.OPTIONAL).toEqualTypeOf<string | undefined>();
 	});
 
 	it("infers default values correctly", () => {
-		const env = createEnv({ WITH_DEFAULT: "string = 'default'" }, { env: {} });
+		const env = arkenv({ WITH_DEFAULT: "string = 'default'" }, { env: {} });
 		expectTypeOf(env.WITH_DEFAULT).toBeString();
 	});
 
@@ -59,7 +59,7 @@ describe("Type Regression (Issue #796)", () => {
 	   Upstream Issue: https://github.com/arktypeio/arktype/issues/1617
 
 	   it("snapshots DSL completions for inline values", () => {
-	       attest(() => createEnv({ PORT: "n" })).completions({ n: ["never", "null", "number"] });
+	       attest(() => arkenv({ PORT: "n" })).completions({ n: ["never", "null", "number"] });
 	   });
 	*/
 });

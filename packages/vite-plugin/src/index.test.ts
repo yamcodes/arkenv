@@ -10,7 +10,7 @@ vi.mock("arkenv", async (importActual) => {
 	return {
 		...actual,
 		default: vi.fn(actual.default),
-		createEnv: vi.fn(actual.createEnv),
+		arkenv: vi.fn(actual.arkenv),
 	};
 });
 
@@ -28,7 +28,7 @@ import arkenvPlugin from "./index.js";
 const fixturesDir = join(__dirname, "__fixtures__");
 
 // Get the mocked functions
-const { createEnv: mockCreateEnv } = vi.mocked(await import("arkenv"));
+const { arkenv: mockArkenv } = vi.mocked(await import("arkenv"));
 
 const mockLoadEnv = vi.mocked(vite.loadEnv);
 
@@ -56,22 +56,20 @@ for (const name of readdirSync(fixturesDir).filter(
 	describe(`Fixture: ${name}`, () => {
 		beforeEach(() => {
 			// Clear environment variables and mock cleanup
-			vi.unstubAllEnvs();
-			mockCreateEnv.mockClear();
+			mockArkenv.mockClear();
 			mockLoadEnv.mockClear();
 		});
 
 		afterEach(() => {
 			// Complete cleanup: restore environment and reset mocks
-			vi.unstubAllEnvs();
-			mockCreateEnv.mockReset();
+			mockArkenv.mockReset();
 			mockLoadEnv.mockReset();
 		});
 
 		it("should build successfully with the plugin", async () => {
 			const config = await readTestConfig(fixtureDir);
 
-			// We no longer mock createEnv return value here,
+			// We no longer mock arkenv return value here,
 			// letting it run with real implementations.
 
 			await expect(
@@ -93,8 +91,8 @@ for (const name of readdirSync(fixturesDir).filter(
 				}),
 			).resolves.not.toThrow();
 
-			// Verify that createEnv was called with the correct parameters
-			expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+			// Verify that arkenv was called with the correct parameters
+			expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 				env: expect.objectContaining(config.envVars || {}),
 			});
 		});
@@ -104,14 +102,12 @@ for (const name of readdirSync(fixturesDir).filter(
 // Unit tests for plugin functionality
 describe("Plugin Unit Tests", () => {
 	beforeEach(() => {
-		vi.unstubAllEnvs();
-		mockCreateEnv.mockClear();
+		mockArkenv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
-		vi.unstubAllEnvs();
-		mockCreateEnv.mockReset();
+		mockArkenv.mockReset();
 		mockLoadEnv.mockReset();
 	});
 
@@ -126,9 +122,9 @@ describe("Plugin Unit Tests", () => {
 		expect(pluginInstance).toHaveProperty("config");
 	});
 
-	it("should call createEnv during config hook", () => {
-		// Mock createEnv to return a valid object
-		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+	it("should call arkenv during config hook", () => {
+		// Mock arkenv to return a valid object
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
@@ -142,7 +138,7 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		expect(mockCreateEnv).toHaveBeenCalledWith(
+		expect(mockArkenv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
@@ -151,13 +147,13 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should return define object with transformed environment variables", () => {
-		// Mock createEnv to return transformed values
+		// Mock arkenv to return transformed values
 		const mockTransformedEnv = {
 			VITE_STRING: "hello",
 			VITE_NUMBER: 42,
 			VITE_BOOLEAN: true,
 		};
-		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_STRING: "string",
@@ -196,7 +192,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_ZERO: 0,
 			VITE_FALSE: false,
 		};
-		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_NULL: "string",
@@ -226,7 +222,7 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should handle empty environment object", () => {
-		mockCreateEnv.mockReturnValue({});
+		mockArkenv.mockReturnValue({});
 
 		const pluginInstance = arkenvPlugin({});
 
@@ -250,7 +246,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_UPPERCASE: "test",
 			vite_lowercase: "test", // This doesn't start with VITE_ so it will be filtered out
 		};
-		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_SPECIAL_CHARS: "string",
@@ -279,9 +275,9 @@ describe("Plugin Unit Tests", () => {
 		expect(result.define).not.toHaveProperty("import.meta.env.vite_lowercase");
 	});
 
-	it("should propagate errors from createEnv", () => {
+	it("should propagate errors from arkenv", () => {
 		const error = new Error("Environment validation failed");
-		mockCreateEnv.mockImplementation(() => {
+		mockArkenv.mockImplementation(() => {
 			throw error;
 		});
 
@@ -303,14 +299,14 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should filter out server-only variables (default VITE_ prefix)", () => {
-		// Mock createEnv to return both server-only and client-safe variables
+		// Mock arkenv to return both server-only and client-safe variables
 		const mockTransformedEnv = {
 			PORT: 3000,
 			DATABASE_URL: "postgres://localhost:5432/db",
 			VITE_API_URL: "https://api.example.com",
 			VITE_DEBUG: true,
 		};
-		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv);
 
 		const pluginInstance = arkenvPlugin({
 			PORT: "number.port",
@@ -340,14 +336,14 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should respect custom envPrefix configuration", () => {
-		// Mock createEnv to return variables with different prefixes
+		// Mock arkenv to return variables with different prefixes
 		const mockTransformedEnv = {
 			PUBLIC_API_URL: "https://api.example.com",
 			PUBLIC_DEBUG: true,
 			VITE_OLD_VAR: "should not be exposed",
 			SECRET_KEY: "should not be exposed",
 		};
-		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv);
 
 		const pluginInstance = arkenvPlugin({
 			PUBLIC_API_URL: "string",
@@ -382,7 +378,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_API_URL: "https://api.example.com",
 			PUBLIC_DEBUG: true,
 		};
-		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_API_URL: "string",
@@ -409,14 +405,14 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should support array of prefixes in envPrefix configuration", () => {
-		// Mock createEnv to return variables with different prefixes
+		// Mock arkenv to return variables with different prefixes
 		const mockTransformedEnv = {
 			VITE_API_URL: "https://api.example.com",
 			PUBLIC_DEBUG: true,
 			CUSTOM_PREFIX_VAR: "test",
 			SECRET_KEY: "should not be exposed",
 		};
-		mockCreateEnv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_API_URL: "string",
@@ -447,7 +443,7 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should use custom envDir when provided in config", async () => {
-		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
@@ -464,8 +460,8 @@ describe("Plugin Unit Tests", () => {
 		// Assert that loadEnv was called with the mode ("test"), the custom envDir ("/custom/env/dir"), and the expected prefix ("")
 		expect(mockLoadEnv).toHaveBeenCalledWith("test", "/custom/env/dir", "");
 
-		// Verify createEnv was called - the envDir is used by loadEnv internally
-		expect(mockCreateEnv).toHaveBeenCalledWith(
+		// Verify arkenv was called - the envDir is used by loadEnv internally
+		expect(mockArkenv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
@@ -474,7 +470,7 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should default to process.cwd() when envDir is not configured", () => {
-		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
@@ -491,8 +487,8 @@ describe("Plugin Unit Tests", () => {
 		// Assert that loadEnv was called with the mode ("test"), the default envDir (process.cwd()), and the expected prefix ("")
 		expect(mockLoadEnv).toHaveBeenCalledWith("test", process.cwd(), "");
 
-		// Verify createEnv was called successfully with default behavior
-		expect(mockCreateEnv).toHaveBeenCalledWith(
+		// Verify arkenv was called successfully with default behavior
+		expect(mockArkenv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
@@ -500,8 +496,8 @@ describe("Plugin Unit Tests", () => {
 		);
 	});
 
-	it("should pass arkenvConfig to createEnv when provided", () => {
-		mockCreateEnv.mockReturnValue({ VITE_TEST: "test" });
+	it("should pass arkenvConfig to arkenv when provided", () => {
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
 
 		const pluginInstance = arkenvPlugin(
 			{ VITE_TEST: "string" },
@@ -517,8 +513,8 @@ describe("Plugin Unit Tests", () => {
 			);
 		}
 
-		// Verify createEnv was called with the arkenvConfig merged with env
-		expect(mockCreateEnv).toHaveBeenCalledWith(
+		// Verify arkenv was called with the arkenvConfig merged with env
+		expect(mockArkenv).toHaveBeenCalledWith(
 			{ VITE_TEST: "string" },
 			{
 				coerce: false,
@@ -557,14 +553,12 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 	});
 
 	beforeEach(() => {
-		vi.unstubAllEnvs();
-		mockCreateEnv.mockClear();
+		mockArkenv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
 	afterEach(() => {
-		vi.unstubAllEnvs();
-		mockCreateEnv.mockClear();
+		mockArkenv.mockClear();
 		mockLoadEnv.mockClear();
 	});
 
@@ -575,7 +569,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 			vite.build(createBuildConfig(customEnvDir, config.Env)),
 		).resolves.not.toThrow();
 
-		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(expectedEnvVars),
 		});
 	});
@@ -588,7 +582,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 			vite.build(createBuildConfig(nonExistentEnvDir, config.Env)),
 		).rejects.toThrow();
 
-		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.any(Object),
 		});
 	});
@@ -609,12 +603,12 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 			vite.build(createBuildConfig(customEnvDir, config.Env)),
 		).resolves.not.toThrow();
 
-		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(expectedEnvVars),
 		});
 	});
 
-	it("should pass all loaded env vars to createEnv, not just schema keys", async () => {
+	it("should pass all loaded env vars to arkenv, not just schema keys", async () => {
 		const config = await readTestConfig(withEnvDirFixture);
 		const envWithExtra = {
 			...expectedEnvVars,
@@ -624,7 +618,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		await vite.build(createBuildConfig(customEnvDir, config.Env));
 
 		// Verify that all env vars (including non-schema ones) are passed
-		expect(mockCreateEnv).toHaveBeenCalledWith(config.Env, {
+		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(envWithExtra),
 		});
 	});

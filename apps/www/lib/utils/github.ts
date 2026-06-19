@@ -10,7 +10,7 @@ export const breakDownGithubUrl = (githubUrl?: string) => {
 		process.env.NEXT_PUBLIC_GITHUB_URL ??
 		"https://github.com/yamcodes/arkenv";
 
-	const defaultBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "main";
+	const defaultBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "dev";
 	const cleanUrl = url.replace(/\/$/, "");
 	const urlObj = new URL(cleanUrl);
 	const [owner, repo] = urlObj.pathname.split("/").filter(Boolean).slice(-2);

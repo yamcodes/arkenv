@@ -14,13 +14,15 @@ Already using ArkType? You can still use Zod, Valibot, and other Standard Schema
 | Feature                   | `arkenv` | `arkenv/standard` |
 | :------------------------ | :------: | :---------------: |
 | **ArkType DSL**           |     ✅    |         ❌         |
-| **ArkEnv keywords**\*     |     ✅    |         ❌         |
+| **ArkEnv keywords**¹      |     ✅    |         ❌         |
 | **ArkEnv plugins**        |     ✅    |         ❌         |
-| **Automatic coercion**    |     ✅    |         ❌         |
+| **Automatic coercion**    |     ✅    |         ✅²        |
 | **Standard Schema**       |     ✅    |         ✅         |
 | **Works without ArkType** |     ❌    |         ✅         |
 
-\* ArkEnv extends ArkType with custom keywords like `string.host` and `number.port`
+¹ ArkEnv extends ArkType with custom keywords like `string.host` and `number.port`
+
+² Only works with Standard JSON Schema validators like Zod 4, Zod Mini and Valibot - see [Coercion](/docs/arkenv/coercion)
 
 ✅ Built-in / first-class support
 
