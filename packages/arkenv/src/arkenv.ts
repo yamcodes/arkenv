@@ -36,7 +36,7 @@ export type Infer<T> = T extends SchemaShape
 	: InferType<T>;
 
 /**
- * The environment variables passed to `createEnv`.
+ * The environment variables passed to `arkenv`.
  * Uses `Dict<string>` to enforce
  * compile-time safety: all input environment variables must be strings
  * (or undefined), matching `process.env` semantics.

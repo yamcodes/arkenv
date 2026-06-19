@@ -145,7 +145,25 @@ function extractJsonSchema(
 }
 
 /**
+ * Get the property key from a path segment.
+ *
+ * @param s - The path segment which can be a key or a segment object
+ * @returns The string representation of the property key
+ */
+function getProp(
+	s: string | number | symbol | { readonly key: string | number | symbol },
+): string {
+	return typeof s === "object" && s !== null && "key" in s
+		? String(s.key)
+		: String(s);
+}
+
+/**
  * Format standard schema validation issue path.
+ *
+ * @param key - The base key of the environment variable
+ * @param path - The relative path segments of the issue
+ * @returns The formatted dot-separated path string
  */
 function formatIssuePath(
 	key: string,
@@ -159,13 +177,7 @@ function formatIssuePath(
 		| undefined,
 ): string {
 	if (!path || path.length === 0) return key;
-
-	const segments = path.map((segment) =>
-		segment !== null && typeof segment === "object" && "key" in segment
-			? String(segment.key)
-			: String(segment),
-	);
-	return [key, ...segments].join(".");
+	return [key, ...path.map(getProp)].join(".");
 }
 
 /**
@@ -179,7 +191,7 @@ function formatIssuePath(
 export function parseStandard(
 	def: Record<string, unknown>,
 	config: ParseStandardConfig,
-) {
+): Record<string, unknown> {
 	const {
 		env = process.env,
 		onUndeclaredKey = "delete",
@@ -249,12 +261,7 @@ export function parseStandard(
 			const engine = ["zod", "valibot"].includes(vendor) ? vendor : "unknown";
 
 			for (const issue of result.issues) {
-				const getProp = (s: any) =>
-					s && typeof s === "object" && "key" in s ? String(s.key) : String(s);
-				const issuePath =
-					issue.path && issue.path.length > 0
-						? `${key}.${issue.path.map(getProp).join(".")}`
-						: key;
+				const issuePath = formatIssuePath(key, issue.path);
 
 				let receivedVal: unknown;
 				let traversalError: string | undefined;
