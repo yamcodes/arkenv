@@ -1,5 +1,5 @@
 import type { Dict, StandardSchemaV1 } from "@repo/types";
-import { coerceEnvironment } from "@/coercion/shared";
+import { coerceEnvironment } from "@/coercion";
 import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "./core";
 import {
 	buildEnvIssue,

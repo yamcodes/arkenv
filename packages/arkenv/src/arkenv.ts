@@ -111,10 +111,15 @@ export type ArkenvOutput<T extends SchemaShape, D> =
 
 /**
  * Utility to parse environment variables using ArkType or Standard Schema
- * @param def - The schema definition
- * @param config - The evaluation configuration
+ *
+ * Naming convention: the main function is lowercase (`arkenv`) following the
+ * JavaScript convention for functions (e.g. `zod`, `joi`). Classes and types
+ * use PascalCase with the full product name (`ArkEnvError`, `SafeArkEnvResult`).
+ *
+ * @param def The schema definition
+ * @param config The evaluation configuration
  * @returns The parsed environment variables
- * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
+ * @throws An {@link ArkEnvError | error} if the environment variables are invalid
  */
 export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,

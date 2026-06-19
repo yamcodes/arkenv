@@ -10,6 +10,12 @@ import { styleText } from "./style-text";
 
 /**
  * Mapping of ArkType validation error codes to normalized EnvIssueCode classification codes.
+ *
+ * These codes are runtime strings produced by the ArkType validator and are not
+ * exported as a public type or constant by the ArkType library. The mapping is
+ * maintained manually based on ArkType's internal error reporting behavior.
+ *
+ * @see https://arktype.io/docs/intro
  */
 const ARKTYPE_CODE_MAP = {
 	required: "MISSING_VARIABLE",
