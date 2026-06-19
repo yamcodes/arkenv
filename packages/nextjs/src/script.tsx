@@ -39,7 +39,6 @@ export function ArkEnvScript({
 	return (
 		<script
 			id="arkenv-script"
-			// biome-ignore lint/security/noDangerouslySetInnerHTML: needed to inject the env variables script tag
 			dangerouslySetInnerHTML={{ __html: scriptContent }}
 		/>
 	);

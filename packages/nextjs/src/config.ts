@@ -378,8 +378,8 @@ export function extractKeys(content: string): {
 				const arrayContent = sharedMatch[1];
 				const stringRegex =
 					/(?:"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'|`([^`\\]*(?:\\.[^`\\]*)*)`)/g;
-				let match;
-				while ((match = stringRegex.exec(arrayContent)) !== null) {
+				const matches = arrayContent.matchAll(stringRegex);
+				for (const match of matches) {
 					const val = match[1] || match[2] || match[3];
 					if (val) {
 						optionSharedKeys.push(val);
