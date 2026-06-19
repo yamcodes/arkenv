@@ -3,15 +3,11 @@ import {
 	applyCoercion,
 	findCoercionPaths,
 	stripEmptyStrings,
-} from "./coercion/shared.ts";
-import {
-	ArkEnvError,
-	type EnvIssue,
-	type EnvIssueCode,
-	type EnvIssueMeta,
-} from "./core.ts";
-import { safeStringify, shouldRedact } from "./utils/redact.ts";
-import { styleText } from "./utils/style-text.ts";
+} from "@/coercion/shared";
+import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "@/core";
+import { getStandardMeta, mapStandardCode } from "@/utils/errors";
+import { isDebugSecrets, safeStringify, shouldRedact } from "@/utils/redact";
+import { styleText } from "@/utils/style-text";
 
 /**
  * Configuration options for {@link parseStandard}.
@@ -294,38 +290,19 @@ export function parseStandard(
 					receivedVal = (issue as any).received;
 				}
 
-				const issueCode = (issue as any).code;
-				let code: EnvIssueCode = "INVALID_TYPE";
-				const msg = issue.message?.toLowerCase() || "";
-
-				if (
-					(issueCode === "invalid_type" &&
-						(receivedVal === undefined || receivedVal === "undefined")) ||
-					msg === "required"
-				) {
-					code = "MISSING_VARIABLE";
-				} else if (
-					["invalid_string", "invalid_date", "custom"].includes(issueCode)
-				) {
-					code = "INVALID_FORMAT";
-				} else if (issueCode === "too_small") {
-					code = "VALUE_TOO_SMALL";
-				} else if (issueCode === "too_big") {
-					code = "VALUE_TOO_LARGE";
-				} else if (/regex|pattern|match/.test(msg)) {
-					code = "PATTERN_MISMATCH";
-				}
+				const issueCode = (issue as any).code || "invalid_type";
+				const msg = issue.message || "";
+				const code = mapStandardCode(issueCode, msg, receivedVal);
 
 				const expected = (issue as any).expected || undefined;
-				const iss = issue as any;
+				const bounds = getStandardMeta(issue);
+
 				const meta: EnvIssueMeta = {
 					engine,
+					...bounds,
 				};
 				if (issueCode) meta.engineCode = issueCode;
-				const min = iss.minimum ?? iss.min;
-				if (min !== undefined) meta.min = min;
-				const max = iss.maximum ?? iss.max;
-				if (max !== undefined) meta.max = max;
+				const iss = issue as any;
 				if (iss.validation !== undefined) meta.validation = iss.validation;
 				if (traversalError !== undefined) meta.traversalError = traversalError;
 
@@ -335,13 +312,9 @@ export function parseStandard(
 						? `must be ${expected} (was missing)`
 						: "is required";
 				} else if (!message.includes("(was ")) {
-					const debugSecrets =
-						config?.debugSecrets ??
-						(typeof process !== "undefined" &&
-							(process.env.ARKENV_DEBUG_SECRETS === "true" ||
-								process.env.ARKENV_DEBUG_SECRETS === "1"));
+					const debug = isDebugSecrets(config?.debugSecrets);
 					const displayVal =
-						!debugSecrets && shouldRedact(issuePath)
+						!debug && shouldRedact(issuePath)
 							? "[REDACTED]"
 							: safeStringify(receivedVal, issuePath, config);
 					const suffix = `(was ${styleText("cyan", displayVal)})`;

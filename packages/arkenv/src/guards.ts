@@ -1,4 +1,4 @@
-import { ArkEnvError } from "./core.ts";
+import { ArkEnvError } from "@/core";
 
 /**
  * Throws if the given value is a string (ArkType DSL) in standard mode.

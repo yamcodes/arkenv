@@ -2,20 +2,16 @@ import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
-import type { ArkEnvConfig, EnvSchema } from "../arkenv.ts";
+import type { ArkEnvConfig, EnvSchema } from "@/arkenv";
 import {
 	applyCoercion,
 	findCoercionPaths,
 	stripEmptyStrings,
-} from "../coercion/index.ts";
-import {
-	ArkEnvError,
-	type EnvIssue,
-	type EnvIssueCode,
-	type EnvIssueMeta,
-} from "../core.ts";
-import { shouldRedact } from "../utils/redact.ts";
-import { styleText } from "../utils/style-text.ts";
+} from "@/coercion/index";
+import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "@/core";
+import { getArkTypeMeta, mapArkTypeCode } from "@/utils/errors";
+import { isDebugSecrets, shouldRedact } from "@/utils/redact";
+import { styleText } from "@/utils/style-text";
 
 /**
  * Re-export of ArkType's `distill` utilities.
@@ -35,6 +31,7 @@ export type { distill };
  * applies cyan styling to inline "(was …)" values.
  *
  * @param errors The ArkType errors object to convert
+ * @param config Optional ArkEnvConfig to read debugSecrets options
  * @returns An array of flattened validation issues
  *
  * @internal
@@ -60,19 +57,14 @@ function arkErrorsToIssues(
 		}
 
 		// Check for redaction
-		const debugSecrets =
-			config?.debugSecrets ??
-			(typeof process !== "undefined" &&
-				(process.env.ARKENV_DEBUG_SECRETS === "true" ||
-					process.env.ARKENV_DEBUG_SECRETS === "1"));
+		const debug = isDebugSecrets(config?.debugSecrets);
 		const isSensitive = shouldRedact(path);
 
 		// Style (was ...) inline values
 		const valueMatch = message.match(/\(was (.*)\)/);
 		if (valueMatch?.[1]) {
 			const value = valueMatch[1];
-			const displayedValue =
-				!debugSecrets && isSensitive ? "[REDACTED]" : value;
+			const displayedValue = !debug && isSensitive ? "[REDACTED]" : value;
 			if (!displayedValue.includes("\x1b[")) {
 				message = message.replace(
 					`(was ${value})`,
@@ -81,40 +73,14 @@ function arkErrorsToIssues(
 			}
 		}
 
-		// Map code
-		let code: EnvIssueCode = "INVALID_TYPE";
-		if (error.code === "required") {
-			code = "MISSING_VARIABLE";
-		} else if (error.code === "pattern") {
-			code = "PATTERN_MISMATCH";
-		} else if (["min", "minLength"].includes(error.code)) {
-			code = "VALUE_TOO_SMALL";
-		} else if (["max", "maxLength"].includes(error.code)) {
-			code = "VALUE_TOO_LARGE";
-		} else if (
-			["divisor", "index", "sequence", "intersection", "union"].includes(
-				error.code,
-			)
-		) {
-			code = "INVALID_TYPE";
-		} else {
-			code = "INVALID_FORMAT";
-		}
-
-		// Safe meta extraction
+		// Map code and metadata using centralized helpers
+		const code = mapArkTypeCode(error.code);
+		const bounds = getArkTypeMeta(error);
 		const meta: EnvIssueMeta = {
 			engine: "arktype",
 			engineCode: error.code,
+			...bounds,
 		};
-		const errObj = error as any;
-		if (errObj.min !== undefined && typeof errObj.min === "number") {
-			meta.min = errObj.min;
-		} else if (errObj.rule !== undefined && typeof errObj.rule === "number") {
-			meta.min = errObj.rule;
-		}
-		if (errObj.max !== undefined && typeof errObj.max === "number") {
-			meta.max = errObj.max;
-		}
 
 		return {
 			path,

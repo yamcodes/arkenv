@@ -1,6 +1,9 @@
-import { indent } from "./utils/indent";
-import { styleText } from "./utils/style-text";
+import { indent } from "@/utils/indent";
+import { styleText } from "@/utils/style-text";
 
+/**
+ * Machine-readable classification codes for environment validation issues.
+ */
 export type EnvIssueCode =
 	| "MISSING_VARIABLE"
 	| "INVALID_TYPE"
@@ -12,30 +15,50 @@ export type EnvIssueCode =
 	| "INVALID_SCHEMA"
 	| "CUSTOM";
 
+/**
+ * Metadata associated with an environment validation issue.
+ */
 export type EnvIssueMeta = {
+	/** The minimum expected boundary for numeric/string length constraints */
 	min?: number;
+	/** The maximum expected boundary for numeric/string length constraints */
 	max?: number;
+	/** Additional validation pattern/specifier details */
 	validation?: string;
+	/** Any custom constraint descriptions */
 	constraint?: string;
+	/** The raw issue code from the underlying validation engine */
 	engineCode?: string;
-	engine: "arktype" | "zod" | "valibot" | "unknown";
+	/** The validation engine that reported the issue (e.g. "arktype", "zod") */
+	engine: string;
+	/** Traversal error occurred during JSON-parsing of the environment variable */
 	traversalError?: string;
 };
 
+/**
+ * Normalized validation issue representing a failure on a specific environment variable.
+ */
 export type EnvIssue = {
+	/** The dot-separated property path/name of the environment variable */
 	path: string;
+	/** The descriptive, user-friendly error message */
 	message: string;
+	/** The normalized classification code for the issue */
 	code: EnvIssueCode;
+	/** The expected type or value shape description */
 	expected?: string;
+	/** The raw value received (redacted in string formatting if sensitive) */
 	received?: unknown;
+	/** Additional validation metadata and engine codes */
 	meta?: EnvIssueMeta;
 };
 
 /**
- * @deprecated Use EnvIssue instead
+ * Format a list of normalized environment issues into a single styled string.
+ *
+ * @param issues - The array of normalized issues to format
+ * @returns The formatted and styled error report string
  */
-export type ValidationIssue = EnvIssue;
-
 export function formatIssues(issues: EnvIssue[]): string {
 	return issues
 		.map((issue) => {
@@ -46,18 +69,18 @@ export function formatIssues(issues: EnvIssue[]): string {
 		.join("\n");
 }
 
+/**
+ * Format an ArkEnvError or a list of issues into a single styled string.
+ *
+ * @param error - The ArkEnvError instance or raw list of issues
+ * @returns The formatted error report string
+ */
 export function formatError(error: ArkEnvError | EnvIssue[]): string {
 	if (Array.isArray(error)) {
 		return formatIssues(error);
 	}
 	return formatIssues(error.issues);
 }
-
-/**
- * @deprecated Use formatIssues instead
- */
-export const formatInternalErrors = (errors: ValidationIssue[]): string =>
-	formatIssues(errors);
 
 /**
  * Error thrown when environment variable validation fails.
@@ -83,6 +106,7 @@ export const formatInternalErrors = (errors: ValidationIssue[]): string =>
  * ```
  */
 export class ArkEnvError extends Error {
+	/** The list of normalized issues that caused the validation failure */
 	readonly issues: EnvIssue[];
 
 	constructor(

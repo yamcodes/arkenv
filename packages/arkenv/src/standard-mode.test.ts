@@ -1,5 +1,6 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import { arkenv, safeCreateEnv } from "./standard.ts";
+import { ArkEnvError } from "./core";
+import { arkenv, safeArkenv } from "./standard";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
@@ -487,7 +488,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 		}
 	});
 
-	it("should support safeCreateEnv standard mode API", () => {
+	it("should support safeArkenv standard mode API", () => {
 		const mockZodValidator = {
 			"~standard": {
 				version: 1 as const,
@@ -510,7 +511,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 			},
 		};
 
-		const resultSuccess = safeCreateEnv(
+		const resultSuccess = safeArkenv(
 			{
 				PORT: mockZodValidator,
 			},
@@ -521,7 +522,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 			expect(resultSuccess.data).toEqual({ PORT: "3000" });
 		}
 
-		const resultFail = safeCreateEnv(
+		const resultFail = safeArkenv(
 			{
 				PORT: mockZodValidator,
 			},
@@ -529,8 +530,8 @@ describe("Standard Mode emptyAsUndefined", () => {
 		);
 		expect(resultFail.success).toBe(false);
 		if (!resultFail.success) {
-			expect(resultFail.error).toContain("PORT");
-			expect(resultFail.issues[0].code).toBe("MISSING_VARIABLE");
+			expect(resultFail.error).toBeInstanceOf(ArkEnvError);
+			expect(resultFail.error.issues[0].code).toBe("MISSING_VARIABLE");
 		}
 	});
 });

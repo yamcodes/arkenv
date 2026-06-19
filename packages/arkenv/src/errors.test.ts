@@ -1,12 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { safeCreateEnv } from "./arkenv.ts";
-import {
-	ArkEnvError,
-	type EnvIssue,
-	formatError,
-	formatIssues,
-} from "./core.ts";
-import { safeStringify, shouldRedact } from "./utils/redact.ts";
+import { safeArkenv } from "@/arkenv";
+import { ArkEnvError, type EnvIssue, formatError, formatIssues } from "@/core";
+import { safeStringify, shouldRedact } from "@/utils/redact";
 
 describe("shouldRedact", () => {
 	it("should detect sensitive keys", () => {
@@ -93,7 +88,7 @@ describe("formatIssues & formatError", () => {
 	});
 });
 
-describe("ArkEnvError & safeCreateEnv", () => {
+describe("ArkEnvError & safeArkenv", () => {
 	it("should create error and store issues", () => {
 		const issues: EnvIssue[] = [
 			{
@@ -109,23 +104,22 @@ describe("ArkEnvError & safeCreateEnv", () => {
 		expect(error.name).toBe("ArkEnvError");
 	});
 
-	it("should run safeCreateEnv successfully", () => {
-		// safeCreateEnv handles EnvSchema
-		const result = safeCreateEnv({ PORT: "number" }, { env: { PORT: "3000" } });
+	it("should run safeArkenv successfully", () => {
+		const result = safeArkenv({ PORT: "number" }, { env: { PORT: "3000" } });
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.data).toEqual({ PORT: 3000 });
 		}
 	});
 
-	it("should return failure for safeCreateEnv with invalid input", () => {
-		const result = safeCreateEnv({ PORT: "number" }, { env: { PORT: "abc" } });
+	it("should return failure for safeArkenv with invalid input", () => {
+		const result = safeArkenv({ PORT: "number" }, { env: { PORT: "abc" } });
 		expect(result.success).toBe(false);
 		if (!result.success) {
-			expect(result.error).toContain("PORT");
-			expect(result.issues).toBeDefined();
-			expect(result.issues.length).toBe(1);
-			expect(result.issues[0].path).toBe("PORT");
+			expect(result.error).toBeInstanceOf(ArkEnvError);
+			expect(result.error.issues).toBeDefined();
+			expect(result.error.issues.length).toBe(1);
+			expect(result.error.issues[0].path).toBe("PORT");
 		}
 	});
 });

@@ -6,8 +6,8 @@ import type {
 	SchemaShape,
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { parse } from "./arktype/index.ts";
-import { ArkEnvError, type EnvIssue } from "./core.ts";
+import { parse } from "@/arktype/index";
+import { ArkEnvError } from "@/core";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -100,11 +100,11 @@ export type ArkEnvConfig = {
 };
 
 /**
- * The result structure returned by safeCreateEnv.
+ * The result structure returned by `safeArkenv`.
  */
-export type SafeCreateEnvResult<T> =
+export type SafeArkenvResult<T> =
 	| { success: true; data: T }
-	| { success: false; error: string; issues: EnvIssue[] };
+	| { success: false; error: ArkEnvError };
 
 /**
  * Utility to parse environment variables using ArkType or Standard Schema
@@ -139,30 +139,30 @@ export function arkenv<const T extends SchemaShape>(
  *
  * @param def - The schema definition
  * @param config - The evaluation configuration
- * @returns The SafeCreateEnvResult containing the data or plain error issues
+ * @returns The SafeArkenvResult containing the data or the validation error object
  */
-export function safeCreateEnv<const T extends SchemaShape>(
+export function safeArkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
 	config?: ArkEnvConfig,
-): SafeCreateEnvResult<distill.Out<at.infer<T, $>>>;
-export function safeCreateEnv<T extends CompiledEnvSchema>(
+): SafeArkenvResult<distill.Out<at.infer<T, $>>>;
+export function safeArkenv<T extends CompiledEnvSchema>(
 	def: T,
 	config?: ArkEnvConfig,
-): SafeCreateEnvResult<InferType<T>>;
-export function safeCreateEnv<const T extends SchemaShape>(
+): SafeArkenvResult<InferType<T>>;
+export function safeArkenv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config?: ArkEnvConfig,
-): SafeCreateEnvResult<distill.Out<at.infer<T, $>> | InferType<typeof def>>;
-export function safeCreateEnv<const T extends SchemaShape>(
+): SafeArkenvResult<distill.Out<at.infer<T, $>> | InferType<typeof def>>;
+export function safeArkenv<const T extends SchemaShape>(
 	def: EnvSchema<T> | CompiledEnvSchema,
 	config: ArkEnvConfig = {},
-): SafeCreateEnvResult<distill.Out<at.infer<T, $>> | InferType<typeof def>> {
+): SafeArkenvResult<distill.Out<at.infer<T, $>> | InferType<typeof def>> {
 	try {
 		const data = arkenv(def as any, config);
 		return { success: true, data };
 	} catch (error) {
 		if (error instanceof ArkEnvError) {
-			return { success: false, error: error.message, issues: error.issues };
+			return { success: false, error };
 		}
 		throw error;
 	}

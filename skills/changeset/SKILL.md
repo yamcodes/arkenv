@@ -125,7 +125,7 @@ Detailed description of the change (also using imperative mood for action summar
 Include:
 - **Usage examples** (code blocks)
 - Bullet points for details
-- Migration instructions for breaking changes (using `minor` bump and you MUST include the `**BREAKING CHANGE**:` label)
+- **Breaking Changes Formatting**: Place migration instructions or descriptions of breaking changes (using a `minor` bump and including the `**BREAKING CHANGE**:` label) as a section of 1-2 lines at the very end of the changeset file.
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
 ```
