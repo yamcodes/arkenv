@@ -1,5 +1,7 @@
 # Runtime Shared Logic Strategy
 
+> **Originating RFC:** [Issue #1197 — Internal vs. Published Packages Strategy](https://github.com/yamcodes/arkenv/issues/1197)
+
 ## Context
 
 ArkEnv relies on several internal utility functions and runtime configurations that must be shared across our core engine (`arkenv`) as well as framework plugins (e.g., `@arkenv/nextjs`, `@arkenv/nuxt`). This creates an architectural decision regarding how to distribute and share this logic effectively without compromising developer experience, type safety, or build environments.
@@ -24,7 +26,7 @@ We distinguish between two categories of shared logic:
 Runtime logic must remain 100% dependency-free and must not suffer from version or singleton skew.
 
 1. **Stateless Logic (Helpers/Parsers):** Shared stateless logic will live in an internal monorepo package (e.g., `@repo/utils`). Using our bundler (`tsdown`), this logic will be physically inlined into the distributables of the consuming published packages (`arkenv`, `@arkenv/cli`).
-2. **Stateful Logic (Singletons/Schemas):** Any stateful logic or singleton configuration will be managed via Subpath Exports directly from the core `arkenv` package, rather than using peer dependencies to enforce a single instance.
+2. **Stateful Logic (Singletons/Schemas):** Any stateful logic or singleton configuration will be managed via Subpath Exports directly from the core `arkenv` package, rather than using peer dependencies to enforce a single instance. The core package exposes named entry points such as `arkenv/standard` and `arkenv/core` via its `exports` field. Future stateful internals (e.g., shared ArkType scopes) may be exposed through additional subpaths like `arkenv/internal` if needed.
 
 ### Build-Time Shared Logic
 
