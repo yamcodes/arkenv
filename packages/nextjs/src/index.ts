@@ -24,7 +24,7 @@ export function createEnv<
 		distill.Out<at.infer<TSchema, $>>,
 		Extract<
 			keyof distill.Out<at.infer<TSchema, $>>,
-			(keyof TSchema & `NEXT_PUBLIC_${string}`) | TShared
+			(keyof TSchema & `NEXT_PUBLIC_${string}`) | TShared | (keyof TSchema & "NODE_ENV")
 		>
 	> &
 		MergeExtends<TExtends>

@@ -97,11 +97,9 @@ export function buildNextjsTemplate(
 		if (envKeys && envKeys.length > 0) {
 			for (const key of envKeys) {
 				if (key === "NODE_ENV") {
-					sharedKeyNames.push(key);
+					// NODE_ENV is implicitly shared, no need to list it in options.shared
 				}
 			}
-		} else {
-			sharedKeyNames.push("NODE_ENV");
 		}
 
 		const optionParts: string[] = [];

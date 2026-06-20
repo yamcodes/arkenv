@@ -14,12 +14,10 @@ export const env = arkenv({
 	DATABASE_URL: "string",
 	NEXT_PUBLIC_API_URL: "string",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-}, {
-	shared: ["NODE_ENV"]
 });
 ```
 
-- Filter client-safe keys starting with `NEXT_PUBLIC_` and shared keys specified in `options.shared`.
+- Filter client-safe keys starting with `NEXT_PUBLIC_` and shared keys specified in `options.shared`. `NODE_ENV` is implicitly shared.
 - Exclude server-only keys from autocomplete on the client using TypeScript `Pick`.
-- Wrap the client-side returned variables in a Proxy that throws an error at runtime when a server-only variable is accessed on the client.
+- Wrap the returned variables in a Proxy that throws an error at runtime when a server-only variable is accessed on the client.
 - Update CLI scaffolding to generate the Flat layout by default.

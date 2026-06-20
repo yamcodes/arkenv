@@ -50,7 +50,7 @@ describe("env-template", () => {
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("NEXT_PUBLIC_API_URL:");
 			expect(template).toContain("NODE_ENV:");
-			expect(template).toContain('shared: ["NODE_ENV"]');
+			expect(template).not.toContain("shared:");
 			expect(template).not.toContain("runtimeEnv:");
 		});
 
