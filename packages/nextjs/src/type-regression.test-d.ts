@@ -92,18 +92,21 @@ describe("@arkenv/nextjs type regression", () => {
 				DATABASE_URL: "string",
 				NEXT_PUBLIC_API_URL: "string",
 				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+				CUSTOM_VAR: "string",
 			},
 			{
-				shared: ["NODE_ENV"],
+				expose: ["CUSTOM_VAR"],
 				runtimeEnv: {
 					NEXT_PUBLIC_API_URL: "https://api.example.com",
 					NODE_ENV: "development",
+					CUSTOM_VAR: "custom_val",
 				},
 			},
 		);
 
 		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
 		expectTypeOf(env.NODE_ENV).toBeString();
+		expectTypeOf(env.CUSTOM_VAR).toBeString();
 
 		// @ts-expect-error server-only variable is omitted/never on the client
 		env.DATABASE_URL;

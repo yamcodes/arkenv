@@ -591,7 +591,7 @@ describe("strict config key extraction", () => {
 });
 
 describe("Flat Mode config key extraction", () => {
-	it("should extract client and shared keys correctly under Flat Mode", () => {
+	it("should extract client and exposed keys correctly under Flat Mode with expose option", () => {
 		const source = `
 			import arkenv from "./env.gen";
 			export const env = arkenv({
@@ -599,8 +599,9 @@ describe("Flat Mode config key extraction", () => {
 				NEXT_PUBLIC_API_URL: "string",
 				NEXT_PUBLIC_APP_TITLE: "string = 'My App'",
 				NODE_ENV: "string",
+				CUSTOM_EXPOSE: "string",
 			}, {
-				shared: ["NODE_ENV"]
+				expose: ["CUSTOM_EXPOSE"]
 			});
 		`;
 
@@ -610,7 +611,23 @@ describe("Flat Mode config key extraction", () => {
 			"NEXT_PUBLIC_API_URL",
 			"NEXT_PUBLIC_APP_TITLE",
 		]);
-		expect(sharedKeys).toEqual(["NODE_ENV"]);
+		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_EXPOSE"]);
 		expect(isLegacy).toBe(false);
+	});
+
+	it("should support deprecated shared option in Flat Mode key extraction", () => {
+		const source = `
+			import arkenv from "./env.gen";
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NODE_ENV: "string",
+				CUSTOM_SHARED: "string",
+			}, {
+				shared: ["CUSTOM_SHARED"]
+			});
+		`;
+
+		const { sharedKeys } = extractKeys(source);
+		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_SHARED"]);
 	});
 });

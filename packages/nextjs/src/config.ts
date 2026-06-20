@@ -371,19 +371,21 @@ export function extractKeys(content: string): {
 		}
 	} else {
 		// New flat layout
-		const optionSharedKeys: string[] = [];
+		const optionExposedKeys: string[] = [];
 		if (args.optionsArg) {
-			const sharedMatch = args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
-			if (sharedMatch) {
-				const matches = sharedMatch[1].matchAll(/['"`](.*?)['"`]/g);
+			const exposeMatch =
+				args.optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
+				args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
+			if (exposeMatch) {
+				const matches = exposeMatch[1].matchAll(/['"`](.*?)['"`]/g);
 				for (const match of matches) {
-					optionSharedKeys.push(match[1]);
+					optionExposedKeys.push(match[1]);
 				}
 			}
 		}
 
 		for (const key of topKeys) {
-			if (optionSharedKeys.includes(key) || key === "NODE_ENV") {
+			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
 				sharedKeys.push(key);
 			} else if (key.startsWith("NEXT_PUBLIC_")) {
 				clientKeys.push(key);
@@ -478,7 +480,7 @@ export function createEnv<
 >(
 	schema: TSchema,
 	options?: {
-		shared?: readonly (keyof TSchema)[];
+		expose?: readonly (keyof TSchema)[];
 		extends?: [...TExtends];
 	},
 ) {

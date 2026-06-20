@@ -10,12 +10,14 @@ import type { MergeExtends } from "./types";
  */
 export function createEnv<
 	const TSchema extends SchemaShape & { runtimeEnv?: never } = {},
-	const TShared extends keyof TSchema = never,
+	const TExpose extends keyof TSchema = never,
 	const TExtends extends readonly unknown[] = [],
 >(
 	schema: EnvSchema<TSchema>,
 	options?: {
-		shared?: readonly TShared[];
+		expose?: readonly TExpose[];
+		/** @deprecated Use `expose` instead */
+		shared?: readonly TExpose[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;
 	},
@@ -25,7 +27,7 @@ export function createEnv<
 		Extract<
 			keyof distill.Out<at.infer<TSchema, $>>,
 			| (keyof TSchema & `NEXT_PUBLIC_${string}`)
-			| TShared
+			| TExpose
 			| (keyof TSchema & "NODE_ENV")
 		>
 	> &

@@ -163,24 +163,27 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 	});
 
 	describe("Flat Mode", () => {
-		it("should validate and allow access to client and shared variables, but throw for server-only variables on client", () => {
+		it("should validate and allow access to client and exposed variables, but throw for server-only variables on client", () => {
 			const env = clientCreateEnv(
 				{
 					DATABASE_URL: "string",
 					NEXT_PUBLIC_API_URL: "string",
 					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
 				},
 				{
-					shared: ["NODE_ENV"],
+					expose: ["CUSTOM_VAR"],
 					runtimeEnv: {
 						NEXT_PUBLIC_API_URL: "https://api.example.com",
 						NODE_ENV: "test",
+						CUSTOM_VAR: "custom_val",
 					},
 				},
 			);
 
 			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 			expect(env.NODE_ENV).toBe("test");
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
 
 			expect(() => {
 				(env as any).DATABASE_URL;
@@ -195,13 +198,15 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 					DATABASE_URL: "string",
 					NEXT_PUBLIC_API_URL: "string",
 					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
 				},
 				{
-					shared: ["NODE_ENV"],
+					expose: ["CUSTOM_VAR"],
 					runtimeEnv: {
 						NEXT_PUBLIC_API_URL: "https://api.example.com",
 						NODE_ENV: "test",
 						DATABASE_URL: "postgres://localhost:5432/db",
+						CUSTOM_VAR: "custom_val",
 					},
 				},
 			);
@@ -209,6 +214,7 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 			expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
 			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 			expect(env.NODE_ENV).toBe("test");
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
 		});
 	});
 });

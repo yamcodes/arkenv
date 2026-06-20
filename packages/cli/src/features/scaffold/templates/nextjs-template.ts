@@ -93,19 +93,19 @@ export function buildNextjsTemplate(
 		const allFields = [...serverFields, ...clientFields, ...sharedFields];
 		const flatFields = allFields.map((field) => field.replace(/^\t\t/, "\t"));
 
-		const sharedKeyNames: string[] = [];
+		const exposedKeyNames: string[] = [];
 		if (envKeys && envKeys.length > 0) {
 			for (const key of envKeys) {
 				if (key === "NODE_ENV") {
-					// NODE_ENV is implicitly shared, no need to list it in options.shared
+					// NODE_ENV is implicitly shared, no need to list it in options.expose
 				}
 			}
 		}
 
 		const optionParts: string[] = [];
-		if (sharedKeyNames.length > 0) {
+		if (exposedKeyNames.length > 0) {
 			optionParts.push(
-				`\tshared: [${sharedKeyNames.map((k) => `"${k}"`).join(", ")}]`,
+				`\texpose: [${exposedKeyNames.map((k) => `"${k}"`).join(", ")}]`,
 			);
 		}
 
