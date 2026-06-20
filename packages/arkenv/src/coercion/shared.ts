@@ -1,3 +1,4 @@
+import type { Dict } from "@repo/types";
 import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
 
 /**
