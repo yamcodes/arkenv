@@ -14,6 +14,25 @@ import {
 } from "./utils/standard-helpers";
 
 /**
+ * ⚠️ ARCHITECTURAL WARNING: DO NOT DRY THIS FILE ⚠️
+ *
+ * This file contains parsing logic that looks very similar to the code in
+ * `src/arktype/index.ts`. **This duplication is 100% intentional.**
+ *
+ * `parse-standard.ts` powers the `arkenv/standard` module export. The entire
+ * purpose of the `arkenv/standard` entrypoint is to guarantee a zero-dependency
+ * environment for users utilizing Zod or Valibot, ensuring the `arktype` library
+ * is NEVER included in their bundle.
+ *
+ * If you attempt to DRY up this code by merging it with the ArkType parser or
+ * importing utilities from `src/arktype/*`, bundlers will statically trace those
+ * imports and silently drag the entire ArkType library into the `arkenv/standard`
+ * bundle.
+ *
+ * Prioritize strict module boundaries and tree-shaking over DRYness.
+ */
+
+/**
  * Configuration options for {@link parseStandard}.
  */
 export type ParseStandardConfig = {
