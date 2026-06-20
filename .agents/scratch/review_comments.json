@@ -1,140 +1,140 @@
 [
-  {
-    "url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443631309",
-    "pull_request_review_id": 4534203043,
-    "id": 3443631309,
-    "node_id": "PRRC_kwDONvYw487NQaTN",
-    "diff_hunk": "@@ -220,10 +235,20 @@ export function createEnvInternal(\n \t\t}\n \t}\n \n+\tconst globalEnv =\n+\t\ttypeof globalThis !== \"undefined\"\n+\t\t\t? (globalThis as any).__arkenv_env__\n+\t\t\t: undefined;\n+\n \tfor (const key of Object.keys(runtimeEnv)) {\n \t\tif (runtimeEnv[key] !== undefined) {\n \t\t\tcombinedEnv[key] = runtimeEnv[key];\n \t\t}\n+\t\tif (globalEnv && globalEnv[key] !== undefined) {",
-    "path": "packages/nextjs/src/create-env.ts",
-    "commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
-    "original_commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
-    "user": {
-      "login": "pullfrog[bot]",
-      "id": 226033991,
-      "node_id": "BOT_kgDODXkBRw",
-      "avatar_url": "https://avatars.githubusercontent.com/in/1768019?v=4",
-      "gravatar_id": "",
-      "url": "https://api.github.com/users/pullfrog%5Bbot%5D",
-      "html_url": "https://github.com/apps/pullfrog",
-      "followers_url": "https://api.github.com/users/pullfrog%5Bbot%5D/followers",
-      "following_url": "https://api.github.com/users/pullfrog%5Bbot%5D/following{/other_user}",
-      "gists_url": "https://api.github.com/users/pullfrog%5Bbot%5D/gists{/gist_id}",
-      "starred_url": "https://api.github.com/users/pullfrog%5Bbot%5D/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/pullfrog%5Bbot%5D/subscriptions",
-      "organizations_url": "https://api.github.com/users/pullfrog%5Bbot%5D/orgs",
-      "repos_url": "https://api.github.com/users/pullfrog%5Bbot%5D/repos",
-      "events_url": "https://api.github.com/users/pullfrog%5Bbot%5D/events{/privacy}",
-      "received_events_url": "https://api.github.com/users/pullfrog%5Bbot%5D/received_events",
-      "type": "Bot",
-      "user_view_type": "public",
-      "site_admin": false
-    },
-    "body": "ℹ️ `globalThis.__arkenv_env__` values are applied in `createEnvInternal` (here) AND already embedded in the generated `runtimeEnv` template strings (e.g. `typeof window !== \"undefined\" ? (globalThis as any).__arkenv_env__?.${key} ?? process.env.${key} : process.env.${key}`). This means `__arkenv_env__` values are written into `combinedEnv` twice — once via the resolved `runtimeEnv` value and once directly from `globalEnv`. The result is the same value written twice, so it's harmless, but worth noting the double path exists.",
-    "created_at": "2026-06-19T16:27:41Z",
-    "updated_at": "2026-06-19T16:27:42Z",
-    "html_url": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443631309",
-    "pull_request_url": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218",
-    "_links": {
-      "self": {
-        "href": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443631309"
-      },
-      "html": {
-        "href": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443631309"
-      },
-      "pull_request": {
-        "href": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218"
-      }
-    },
-    "reactions": {
-      "url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443631309/reactions",
-      "total_count": 0,
-      "+1": 0,
-      "-1": 0,
-      "laugh": 0,
-      "hooray": 0,
-      "confused": 0,
-      "heart": 0,
-      "rocket": 0,
-      "eyes": 0
-    },
-    "start_line": null,
-    "original_start_line": null,
-    "start_side": null,
-    "line": 247,
-    "original_line": 247,
-    "side": "RIGHT",
-    "author_association": "CONTRIBUTOR",
-    "original_position": 50,
-    "position": 50,
-    "subject_type": "line"
-  },
-  {
-    "url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443642776",
-    "pull_request_review_id": 4534215833,
-    "id": 3443642776,
-    "node_id": "PRRC_kwDONvYw487NQdGY",
-    "diff_hunk": "@@ -0,0 +1,25 @@\n+---\n+\"@arkenv/nextjs\": patch\n+\"@arkenv/cli\": patch\n+---\n+\n+#### Add Flat Layout Mode for Next.js integration\n+\n+Introduce a new \"Flat\" layout mode for `@arkenv/nextjs`. The Flat API allows developers to define a flat schema mapping directly to their `.env` file structure:\n+\n+```ts\n+import arkenv from \"./generated/env.gen\";\n+\n+export const env = arkenv({\n+\tDATABASE_URL: \"string\",\n+\tNEXT_PUBLIC_API_URL: \"string\",\n+\tNODE_ENV: \"'development' | 'production' | 'test' = 'development'\",\n+}, {\n+\tshared: [\"NODE_ENV\"]\n+});",
-    "path": ".changeset/flat-layout-mode.md",
-    "commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
-    "original_commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
-    "user": {
-      "login": "yamcodes",
-      "id": 2014360,
-      "node_id": "MDQ6VXNlcjIwMTQzNjA=",
-      "avatar_url": "https://avatars.githubusercontent.com/u/2014360?v=4",
-      "gravatar_id": "",
-      "url": "https://api.github.com/users/yamcodes",
-      "html_url": "https://github.com/yamcodes",
-      "followers_url": "https://api.github.com/users/yamcodes/followers",
-      "following_url": "https://api.github.com/users/yamcodes/following{/other_user}",
-      "gists_url": "https://api.github.com/users/yamcodes/gists{/gist_id}",
-      "starred_url": "https://api.github.com/users/yamcodes/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/yamcodes/subscriptions",
-      "organizations_url": "https://api.github.com/users/yamcodes/orgs",
-      "repos_url": "https://api.github.com/users/yamcodes/repos",
-      "events_url": "https://api.github.com/users/yamcodes/events{/privacy}",
-      "received_events_url": "https://api.github.com/users/yamcodes/received_events",
-      "type": "User",
-      "user_view_type": "public",
-      "site_admin": false
-    },
-    "body": "doubting we even need `shared` now, thoughts ? ",
-    "created_at": "2026-06-19T16:30:56Z",
-    "updated_at": "2026-06-19T16:30:56Z",
-    "html_url": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443642776",
-    "pull_request_url": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218",
-    "_links": {
-      "self": {
-        "href": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443642776"
-      },
-      "html": {
-        "href": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443642776"
-      },
-      "pull_request": {
-        "href": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218"
-      }
-    },
-    "reactions": {
-      "url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443642776/reactions",
-      "total_count": 0,
-      "+1": 0,
-      "-1": 0,
-      "laugh": 0,
-      "hooray": 0,
-      "confused": 0,
-      "heart": 0,
-      "rocket": 0,
-      "eyes": 0
-    },
-    "start_line": 17,
-    "original_start_line": 17,
-    "start_side": "RIGHT",
-    "line": 19,
-    "original_line": 19,
-    "side": "RIGHT",
-    "author_association": "OWNER",
-    "original_position": 19,
-    "position": 19,
-    "subject_type": "line"
-  }
+	{
+		"url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443631309",
+		"pull_request_review_id": 4534203043,
+		"id": 3443631309,
+		"node_id": "PRRC_kwDONvYw487NQaTN",
+		"diff_hunk": "@@ -220,10 +235,20 @@ export function createEnvInternal(\n \t\t}\n \t}\n \n+\tconst globalEnv =\n+\t\ttypeof globalThis !== \"undefined\"\n+\t\t\t? (globalThis as any).__arkenv_env__\n+\t\t\t: undefined;\n+\n \tfor (const key of Object.keys(runtimeEnv)) {\n \t\tif (runtimeEnv[key] !== undefined) {\n \t\t\tcombinedEnv[key] = runtimeEnv[key];\n \t\t}\n+\t\tif (globalEnv && globalEnv[key] !== undefined) {",
+		"path": "packages/nextjs/src/create-env.ts",
+		"commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
+		"original_commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
+		"user": {
+			"login": "pullfrog[bot]",
+			"id": 226033991,
+			"node_id": "BOT_kgDODXkBRw",
+			"avatar_url": "https://avatars.githubusercontent.com/in/1768019?v=4",
+			"gravatar_id": "",
+			"url": "https://api.github.com/users/pullfrog%5Bbot%5D",
+			"html_url": "https://github.com/apps/pullfrog",
+			"followers_url": "https://api.github.com/users/pullfrog%5Bbot%5D/followers",
+			"following_url": "https://api.github.com/users/pullfrog%5Bbot%5D/following{/other_user}",
+			"gists_url": "https://api.github.com/users/pullfrog%5Bbot%5D/gists{/gist_id}",
+			"starred_url": "https://api.github.com/users/pullfrog%5Bbot%5D/starred{/owner}{/repo}",
+			"subscriptions_url": "https://api.github.com/users/pullfrog%5Bbot%5D/subscriptions",
+			"organizations_url": "https://api.github.com/users/pullfrog%5Bbot%5D/orgs",
+			"repos_url": "https://api.github.com/users/pullfrog%5Bbot%5D/repos",
+			"events_url": "https://api.github.com/users/pullfrog%5Bbot%5D/events{/privacy}",
+			"received_events_url": "https://api.github.com/users/pullfrog%5Bbot%5D/received_events",
+			"type": "Bot",
+			"user_view_type": "public",
+			"site_admin": false
+		},
+		"body": "ℹ️ `globalThis.__arkenv_env__` values are applied in `createEnvInternal` (here) AND already embedded in the generated `runtimeEnv` template strings (e.g. `typeof window !== \"undefined\" ? (globalThis as any).__arkenv_env__?.${key} ?? process.env.${key} : process.env.${key}`). This means `__arkenv_env__` values are written into `combinedEnv` twice — once via the resolved `runtimeEnv` value and once directly from `globalEnv`. The result is the same value written twice, so it's harmless, but worth noting the double path exists.",
+		"created_at": "2026-06-19T16:27:41Z",
+		"updated_at": "2026-06-19T16:27:42Z",
+		"html_url": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443631309",
+		"pull_request_url": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218",
+		"_links": {
+			"self": {
+				"href": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443631309"
+			},
+			"html": {
+				"href": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443631309"
+			},
+			"pull_request": {
+				"href": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218"
+			}
+		},
+		"reactions": {
+			"url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443631309/reactions",
+			"total_count": 0,
+			"+1": 0,
+			"-1": 0,
+			"laugh": 0,
+			"hooray": 0,
+			"confused": 0,
+			"heart": 0,
+			"rocket": 0,
+			"eyes": 0
+		},
+		"start_line": null,
+		"original_start_line": null,
+		"start_side": null,
+		"line": 247,
+		"original_line": 247,
+		"side": "RIGHT",
+		"author_association": "CONTRIBUTOR",
+		"original_position": 50,
+		"position": 50,
+		"subject_type": "line"
+	},
+	{
+		"url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443642776",
+		"pull_request_review_id": 4534215833,
+		"id": 3443642776,
+		"node_id": "PRRC_kwDONvYw487NQdGY",
+		"diff_hunk": "@@ -0,0 +1,25 @@\n+---\n+\"@arkenv/nextjs\": patch\n+\"@arkenv/cli\": patch\n+---\n+\n+#### Add Flat Layout Mode for Next.js integration\n+\n+Introduce a new \"Flat\" layout mode for `@arkenv/nextjs`. The Flat API allows developers to define a flat schema mapping directly to their `.env` file structure:\n+\n+```ts\n+import arkenv from \"./generated/env.gen\";\n+\n+export const env = arkenv({\n+\tDATABASE_URL: \"string\",\n+\tNEXT_PUBLIC_API_URL: \"string\",\n+\tNODE_ENV: \"'development' | 'production' | 'test' = 'development'\",\n+}, {\n+\tshared: [\"NODE_ENV\"]\n+});",
+		"path": ".changeset/flat-layout-mode.md",
+		"commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
+		"original_commit_id": "76b99f8d62c50553839deaa1d21c378fdcf4d6e7",
+		"user": {
+			"login": "yamcodes",
+			"id": 2014360,
+			"node_id": "MDQ6VXNlcjIwMTQzNjA=",
+			"avatar_url": "https://avatars.githubusercontent.com/u/2014360?v=4",
+			"gravatar_id": "",
+			"url": "https://api.github.com/users/yamcodes",
+			"html_url": "https://github.com/yamcodes",
+			"followers_url": "https://api.github.com/users/yamcodes/followers",
+			"following_url": "https://api.github.com/users/yamcodes/following{/other_user}",
+			"gists_url": "https://api.github.com/users/yamcodes/gists{/gist_id}",
+			"starred_url": "https://api.github.com/users/yamcodes/starred{/owner}{/repo}",
+			"subscriptions_url": "https://api.github.com/users/yamcodes/subscriptions",
+			"organizations_url": "https://api.github.com/users/yamcodes/orgs",
+			"repos_url": "https://api.github.com/users/yamcodes/repos",
+			"events_url": "https://api.github.com/users/yamcodes/events{/privacy}",
+			"received_events_url": "https://api.github.com/users/yamcodes/received_events",
+			"type": "User",
+			"user_view_type": "public",
+			"site_admin": false
+		},
+		"body": "doubting we even need `shared` now, thoughts ? ",
+		"created_at": "2026-06-19T16:30:56Z",
+		"updated_at": "2026-06-19T16:30:56Z",
+		"html_url": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443642776",
+		"pull_request_url": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218",
+		"_links": {
+			"self": {
+				"href": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443642776"
+			},
+			"html": {
+				"href": "https://github.com/yamcodes/arkenv/pull/1218#discussion_r3443642776"
+			},
+			"pull_request": {
+				"href": "https://api.github.com/repos/yamcodes/arkenv/pulls/1218"
+			}
+		},
+		"reactions": {
+			"url": "https://api.github.com/repos/yamcodes/arkenv/pulls/comments/3443642776/reactions",
+			"total_count": 0,
+			"+1": 0,
+			"-1": 0,
+			"laugh": 0,
+			"hooray": 0,
+			"confused": 0,
+			"heart": 0,
+			"rocket": 0,
+			"eyes": 0
+		},
+		"start_line": 17,
+		"original_start_line": 17,
+		"start_side": "RIGHT",
+		"line": 19,
+		"original_line": 19,
+		"side": "RIGHT",
+		"author_association": "OWNER",
+		"original_position": 19,
+		"position": 19,
+		"subject_type": "line"
+	}
 ]
