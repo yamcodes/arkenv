@@ -1,0 +1,949 @@
+test (latest)	Set up job	﻿2026-06-20T06:09:39.6987543Z Current runner version: '2.335.1'
+test (latest)	Set up job	2026-06-20T06:09:39.7024497Z ##[group]Runner Image Provisioner
+test (latest)	Set up job	2026-06-20T06:09:39.7025736Z Hosted Compute Agent
+test (latest)	Set up job	2026-06-20T06:09:39.7026750Z Version: 20260611.554
+test (latest)	Set up job	2026-06-20T06:09:39.7027796Z Commit: 5e0782fdc9014723d3be820dd114dd31555c2bd1
+test (latest)	Set up job	2026-06-20T06:09:39.7028966Z Build Date: 2026-06-11T21:40:46Z
+test (latest)	Set up job	2026-06-20T06:09:39.7030331Z Worker ID: {68fe8fde-4510-4b60-b997-891abd1afbec}
+test (latest)	Set up job	2026-06-20T06:09:39.7031440Z Azure Region: eastus2
+test (latest)	Set up job	2026-06-20T06:09:39.7032452Z ##[endgroup]
+test (latest)	Set up job	2026-06-20T06:09:39.7034651Z ##[group]Operating System
+test (latest)	Set up job	2026-06-20T06:09:39.7035605Z Ubuntu
+test (latest)	Set up job	2026-06-20T06:09:39.7036555Z 24.04.4
+test (latest)	Set up job	2026-06-20T06:09:39.7037400Z LTS
+test (latest)	Set up job	2026-06-20T06:09:39.7038258Z ##[endgroup]
+test (latest)	Set up job	2026-06-20T06:09:39.7039166Z ##[group]Runner Image
+test (latest)	Set up job	2026-06-20T06:09:39.7040343Z Image: ubuntu-24.04
+test (latest)	Set up job	2026-06-20T06:09:39.7041239Z Version: 20260615.205.1
+test (latest)	Set up job	2026-06-20T06:09:39.7042940Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260615.205/images/ubuntu/Ubuntu2404-Readme.md
+test (latest)	Set up job	2026-06-20T06:09:39.7045918Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260615.205
+test (latest)	Set up job	2026-06-20T06:09:39.7047571Z ##[endgroup]
+test (latest)	Set up job	2026-06-20T06:09:39.7052893Z ##[group]GITHUB_TOKEN Permissions
+test (latest)	Set up job	2026-06-20T06:09:39.7056006Z Actions: write
+test (latest)	Set up job	2026-06-20T06:09:39.7056994Z ArtifactMetadata: write
+test (latest)	Set up job	2026-06-20T06:09:39.7058003Z Attestations: write
+test (latest)	Set up job	2026-06-20T06:09:39.7058924Z Checks: write
+test (latest)	Set up job	2026-06-20T06:09:39.7059985Z CodeQuality: write
+test (latest)	Set up job	2026-06-20T06:09:39.7061029Z Contents: write
+test (latest)	Set up job	2026-06-20T06:09:39.7061939Z CopilotRequests: write
+test (latest)	Set up job	2026-06-20T06:09:39.7062915Z Deployments: write
+test (latest)	Set up job	2026-06-20T06:09:39.7063783Z Discussions: write
+test (latest)	Set up job	2026-06-20T06:09:39.7064607Z Issues: write
+test (latest)	Set up job	2026-06-20T06:09:39.7065531Z Metadata: read
+test (latest)	Set up job	2026-06-20T06:09:39.7066402Z Models: read
+test (latest)	Set up job	2026-06-20T06:09:39.7067533Z Packages: write
+test (latest)	Set up job	2026-06-20T06:09:39.7068389Z Pages: write
+test (latest)	Set up job	2026-06-20T06:09:39.7069268Z PullRequests: write
+test (latest)	Set up job	2026-06-20T06:09:39.7070455Z RepositoryProjects: write
+test (latest)	Set up job	2026-06-20T06:09:39.7071417Z SecurityEvents: write
+test (latest)	Set up job	2026-06-20T06:09:39.7072447Z Statuses: write
+test (latest)	Set up job	2026-06-20T06:09:39.7073312Z VulnerabilityAlerts: read
+test (latest)	Set up job	2026-06-20T06:09:39.7074293Z ##[endgroup]
+test (latest)	Set up job	2026-06-20T06:09:39.7077486Z Secret source: Actions
+test (latest)	Set up job	2026-06-20T06:09:39.7078580Z Prepare workflow directory
+test (latest)	Set up job	2026-06-20T06:09:39.7799383Z Prepare all required actions
+test (latest)	Set up job	2026-06-20T06:09:39.7853394Z Getting action download info
+test (latest)	Set up job	2026-06-20T06:09:39.9902250Z Download action repository 'actions/checkout@v6' (SHA:df4cb1c069e1874edd31b4311f1884172cec0e10)
+test (latest)	Set up job	2026-06-20T06:09:40.0653033Z Download action repository 'pnpm/action-setup@v6' (SHA:0ebf47130e4866e96fce0953f49152a61190b271)
+test (latest)	Set up job	2026-06-20T06:09:40.2132125Z Download action repository 'actions/setup-node@v6' (SHA:48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e)
+test (latest)	Set up job	2026-06-20T06:09:40.3086758Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+test (latest)	Set up job	2026-06-20T06:09:40.5745626Z Complete job name: test (latest)
+test (latest)	Run actions/checkout@v6	﻿2026-06-20T06:09:40.6527748Z ##[group]Run actions/checkout@v6
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6529428Z with:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6531783Z   repository: yamcodes/arkenv
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6545496Z   token: ***
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6546018Z   ssh-strict: true
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6546664Z   ssh-user: git
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6547200Z   persist-credentials: true
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6547820Z   clean: true
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6548440Z   sparse-checkout-cone-mode: true
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6549372Z   fetch-depth: 1
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6550447Z   fetch-tags: false
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6551771Z   show-progress: true
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6552354Z   lfs: false
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6553121Z   submodules: false
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6554078Z   set-safe-directory: true
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6555628Z env:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6557111Z   TURBO_TOKEN: ***
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6557885Z   TURBO_TEAM: yamcodes
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.6559359Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7828872Z Syncing repository: yamcodes/arkenv
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7831480Z ##[group]Getting Git version info
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7832507Z Working directory is '/home/runner/work/arkenv/arkenv'
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7834304Z [command]/usr/bin/git version
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7835307Z git version 2.54.0
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7851641Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7866785Z Temporarily overriding HOME='/home/runner/work/_temp/850e609d-4093-4717-a390-5748cc3a7978' before making global git config changes
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7872019Z Adding repository directory to the temporary git global config as a safe directory
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7874099Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/arkenv/arkenv
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7924898Z Deleting the contents of '/home/runner/work/arkenv/arkenv'
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7928489Z ##[group]Determining repository object format
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7931190Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7932129Z ##[group]Initializing the repository
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.7937504Z [command]/usr/bin/git init /home/runner/work/arkenv/arkenv
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8058840Z hint: Using 'master' as the name for the initial branch. This default branch name
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8060963Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8062419Z hint: to use in all of your new repositories, which will suppress this warning,
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8064158Z hint: call:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8064720Z hint:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8065389Z hint: 	git config --global init.defaultBranch <name>
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8066697Z hint:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8067928Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8070279Z hint: 'development'. The just-created branch can be renamed via this command:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8072134Z hint:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8072953Z hint: 	git branch -m <name>
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8074216Z hint:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8075635Z hint: Disable this message with "git config set advice.defaultBranchName false"
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8078249Z Initialized empty Git repository in /home/runner/work/arkenv/arkenv/.git/
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8082580Z [command]/usr/bin/git remote add origin https://github.com/yamcodes/arkenv
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8132005Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8133064Z ##[group]Disabling automatic garbage collection
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8136950Z [command]/usr/bin/git config --local gc.auto 0
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8171414Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8173140Z ##[group]Setting up auth
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8174529Z Removing SSH command configuration
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8179795Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8218660Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8568780Z Removing HTTP extra header
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8576186Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8614717Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8850006Z Removing includeIf entries pointing to credentials config files
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8851758Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.8884071Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9121722Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9163337Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/arkenv/arkenv/.git.path /home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9195511Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/arkenv/arkenv/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9230673Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9263480Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9298890Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9300027Z ##[group]Fetching the repository
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:40.9307954Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8ca24e60e217c4fb2c8401963cdeeaf39f06dca9:refs/remotes/pull/1157/merge
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2486297Z From https://github.com/yamcodes/arkenv
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2488626Z  * [new ref]         8ca24e60e217c4fb2c8401963cdeeaf39f06dca9 -> pull/1157/merge
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2527428Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2529299Z ##[group]Determining the checkout info
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2531662Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2535694Z [command]/usr/bin/git sparse-checkout disable
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2586644Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2621430Z ##[group]Checking out the ref
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.2625360Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1157/merge
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3492949Z Note: switching to 'refs/remotes/pull/1157/merge'.
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3494264Z 
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3495190Z You are in 'detached HEAD' state. You can look around, make experimental
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3497438Z changes and commit them, and you can discard any commits you make in this
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3499157Z state without impacting any branches by switching back to a branch.
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3500292Z 
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3500929Z If you want to create a new branch to retain commits you create, you may
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3502838Z do so (now or later) by using -c with the switch command. Example:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3503639Z 
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3504055Z   git switch -c <new-branch-name>
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3504849Z 
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3505404Z Or undo this operation with:
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3506107Z 
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3506760Z   git switch -
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3507374Z 
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3508224Z Turn off this advice by setting config variable advice.detachedHead to false
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3509349Z 
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3510774Z HEAD is now at 8ca24e6 Merge 53ba7dcf9d5d1b02b7cd397b2dfcd34a0a567568 into d42ded24bd56d231d7b645f90e054441ccfddfa7
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3515330Z ##[endgroup]
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3549101Z [command]/usr/bin/git log -1 --format=%H
+test (latest)	Run actions/checkout@v6	2026-06-20T06:09:41.3574496Z 8ca24e60e217c4fb2c8401963cdeeaf39f06dca9
+test (latest)	Run pnpm/action-setup@v6	﻿2026-06-20T06:09:41.3875818Z ##[group]Run pnpm/action-setup@v6
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3876951Z with:
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3877806Z   dest: ~/setup-pnpm
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3878762Z   run_install: null
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3879974Z   cache: false
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3880968Z   cache_dependency_path: pnpm-lock.yaml
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3882130Z   package_json_file: package.json
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3883176Z   standalone: false
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3884066Z env:
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3885230Z   TURBO_TOKEN: ***
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3886140Z   TURBO_TEAM: yamcodes
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.3887063Z ##[endgroup]
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:41.5388096Z ##[group]Running self-installer...
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.1099968Z 
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.1100768Z added 1 package, and audited 2 packages in 1s
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.1101223Z 
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.1101412Z 1 package is looking for funding
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.1101840Z   run `npm fund` for details
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.1108523Z 
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.1108810Z found 0 vulnerabilities
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.7174860Z Checking for updates...
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.8525005Z The currently active pnpm v11.7.0 is already "11.7.0" and doesn't need an update
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.8722687Z ##[endgroup]
+test (latest)	Run pnpm/action-setup@v6	2026-06-20T06:09:43.8723645Z Installation Completed!
+test (latest)	Run actions/setup-node@v6	﻿2026-06-20T06:09:43.8911172Z ##[group]Run actions/setup-node@v6
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8911503Z with:
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8911717Z   node-version: latest
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8911955Z   cache: pnpm
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8912207Z   check-latest: false
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8915067Z   token: ***
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8915305Z   package-manager-cache: true
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8915561Z env:
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8915796Z   TURBO_TOKEN: ***
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8916024Z   TURBO_TEAM: yamcodes
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8916315Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:43.8916650Z ##[endgroup]
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:44.1344097Z getting latest node version...
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:44.1344885Z getting latest node version...
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:44.1371099Z Attempting to download v26.3.1...
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:44.5441552Z Acquiring 26.3.1 - x64 from https://github.com/actions/node-versions/releases/download/26.3.1-27765697053/node-26.3.1-linux-x64.tar.gz
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:44.9357229Z Extracting ...
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:44.9474296Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/a83999a8-1a18-4aa7-81f4-476ec8a839b0 -f /home/runner/work/_temp/e4c5e969-ed57-4dde-aa09-c2facdc8ed84
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:46.4005063Z Adding to the cache ...
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.0336013Z ##[group]Environment details
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.2684338Z node: v26.3.1
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.2684778Z npm: 11.16.0
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.2685093Z yarn: 1.22.22
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.2685963Z ##[endgroup]
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.2704738Z [command]/home/runner/setup-pnpm/node_modules/.bin/pnpm store path --silent
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.8285899Z /home/runner/setup-pnpm/node_modules/.bin/store/v11
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:48.9126974Z Cache hit for: node-cache-Linux-x64-pnpm-91d261151f2b36abf3973b4510395872db5f3869d7617fe975f9a57665a3efe9
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:49.9823012Z Received 301989888 of 426732554 (70.8%), 285.7 MBs/sec
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:50.3307406Z Received 426732554 of 426732554 (100.0%), 300.1 MBs/sec
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:50.3308776Z Cache Size: ~407 MB (426732554 B)
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:50.3343895Z [command]/usr/bin/tar -xf /home/runner/work/_temp/39c11055-b514-4237-a087-f91c948b9387/cache.tzst -P -C /home/runner/work/arkenv/arkenv --use-compress-program unzstd
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:55.5675111Z Cache restored successfully
+test (latest)	Run actions/setup-node@v6	2026-06-20T06:09:55.5874791Z Cache restored from key: node-cache-Linux-x64-pnpm-91d261151f2b36abf3973b4510395872db5f3869d7617fe975f9a57665a3efe9
+test (latest)	Run oven-sh/setup-bun@v2	﻿2026-06-20T06:09:55.6136712Z ##[group]Run oven-sh/setup-bun@v2
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6137019Z with:
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6137231Z   bun-version: 1.3.13
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6137469Z   no-cache: false
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6140511Z   token: ***
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6140723Z env:
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6140960Z   TURBO_TOKEN: ***
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6141199Z   TURBO_TEAM: yamcodes
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6141486Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.6141813Z ##[endgroup]
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:55.8642548Z Cache hit for: bun-68bqnNjVR1ckwhD0nFe5oJmGfoU=
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:56.2102092Z Received 36181061 of 36181061 (100.0%), 120.6 MBs/sec
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:56.2103011Z Cache Size: ~35 MB (36181061 B)
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:56.2138764Z [command]/usr/bin/tar -xf /home/runner/work/_temp/8f0e5c44-91f6-40d5-815a-f9d7889928bb/cache.tzst -P -C /home/runner/work/arkenv/arkenv --use-compress-program unzstd
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:56.3934764Z Cache restored successfully
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:56.3960756Z [command]/home/runner/.bun/bin/bun --revision
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:56.4014804Z 1.3.13+bf2e2cecf
+test (latest)	Run oven-sh/setup-bun@v2	2026-06-20T06:09:56.4021099Z Using a cached version of Bun: 1.3.13+bf2e2cecf
+test (latest)	Install dependencies	﻿2026-06-20T06:09:56.4204117Z ##[group]Run pnpm install
+test (latest)	Install dependencies	2026-06-20T06:09:56.4204515Z ^[[36;1mpnpm install^[[0m
+test (latest)	Install dependencies	2026-06-20T06:09:56.4368582Z shell: /usr/bin/bash -e {0}
+test (latest)	Install dependencies	2026-06-20T06:09:56.4368896Z env:
+test (latest)	Install dependencies	2026-06-20T06:09:56.4369287Z   TURBO_TOKEN: ***
+test (latest)	Install dependencies	2026-06-20T06:09:56.4369532Z   TURBO_TEAM: yamcodes
+test (latest)	Install dependencies	2026-06-20T06:09:56.4370075Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+test (latest)	Install dependencies	2026-06-20T06:09:56.4370424Z ##[endgroup]
+test (latest)	Install dependencies	2026-06-20T06:09:56.8808738Z apps/playgrounds/js                      | [WARN] Unsupported engine: wanted: {"node":"24"} (current: {"node":"v26.3.1","pnpm":"11.7.0"})
+test (latest)	Install dependencies	2026-06-20T06:09:56.8815657Z apps/playgrounds/node                    | [WARN] Unsupported engine: wanted: {"node":"24"} (current: {"node":"v26.3.1","pnpm":"11.7.0"})
+test (latest)	Install dependencies	2026-06-20T06:09:56.9018626Z Scope: all 26 workspace projects
+test (latest)	Install dependencies	2026-06-20T06:09:57.0821408Z ? Verifying lockfile against supply-chain policies (2079 entries)...
+test (latest)	Install dependencies	2026-06-20T06:09:57.0927772Z Lockfile is up to date, resolution step is skipped
+test (latest)	Install dependencies	2026-06-20T06:09:57.2424202Z Progress: resolved 1, reused 0, downloaded 0, added 0
+test (latest)	Install dependencies	2026-06-20T06:09:57.3871571Z Packages: +1810
+test (latest)	Install dependencies	2026-06-20T06:09:57.3872337Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+test (latest)	Install dependencies	2026-06-20T06:09:58.2461529Z Progress: resolved 1810, reused 680, downloaded 0, added 0
+test (latest)	Install dependencies	2026-06-20T06:09:59.2489458Z Progress: resolved 1810, reused 1224, downloaded 0, added 0
+test (latest)	Install dependencies	2026-06-20T06:10:00.2502716Z Progress: resolved 1810, reused 1598, downloaded 0, added 0
+test (latest)	Install dependencies	2026-06-20T06:10:01.2506843Z Progress: resolved 1810, reused 1773, downloaded 0, added 146
+test (latest)	Install dependencies	2026-06-20T06:10:02.2531326Z Progress: resolved 1810, reused 1773, downloaded 0, added 609
+test (latest)	Install dependencies	2026-06-20T06:10:03.2533425Z Progress: resolved 1810, reused 1773, downloaded 0, added 934
+test (latest)	Install dependencies	2026-06-20T06:10:04.2534570Z Progress: resolved 1810, reused 1773, downloaded 0, added 1360
+test (latest)	Install dependencies	2026-06-20T06:10:04.9726548Z ✓ Lockfile passes supply-chain policies (2079 entries in 7.8s)
+test (latest)	Install dependencies	2026-06-20T06:10:05.2527335Z Progress: resolved 1810, reused 1773, downloaded 0, added 1703
+test (latest)	Install dependencies	2026-06-20T06:10:05.5820449Z Progress: resolved 1810, reused 1773, downloaded 0, added 1810, done
+test (latest)	Install dependencies	2026-06-20T06:10:06.5846918Z .../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+test (latest)	Install dependencies	2026-06-20T06:10:06.6065658Z .../sharp@0.34.5/node_modules/sharp install$ node install/check.js || npm run build
+test (latest)	Install dependencies	2026-06-20T06:10:06.6251339Z .../esbuild@0.28.0/node_modules/esbuild postinstall$ node install.js
+test (latest)	Install dependencies	2026-06-20T06:10:06.6252876Z .../esbuild@0.27.7/node_modules/esbuild postinstall$ node install.js
+test (latest)	Install dependencies	2026-06-20T06:10:06.6281316Z .../esbuild@0.25.12/node_modules/esbuild postinstall$ node install.js
+test (latest)	Install dependencies	2026-06-20T06:10:06.6870410Z .../node_modules/@parcel/watcher install: Done
+test (latest)	Install dependencies	2026-06-20T06:10:06.7253206Z .../node_modules/@sentry/cli postinstall$ node ./scripts/install.js
+test (latest)	Install dependencies	2026-06-20T06:10:06.7545690Z .../sharp@0.34.5/node_modules/sharp install: Done
+test (latest)	Install dependencies	2026-06-20T06:10:06.7573088Z .../esbuild@0.27.7/node_modules/esbuild postinstall: Done
+test (latest)	Install dependencies	2026-06-20T06:10:06.7574615Z .../esbuild@0.28.0/node_modules/esbuild postinstall: Done
+test (latest)	Install dependencies	2026-06-20T06:10:06.7931210Z .../esbuild@0.25.12/node_modules/esbuild postinstall: Done
+test (latest)	Install dependencies	2026-06-20T06:10:06.8191322Z .../node_modules/protobufjs postinstall$ node scripts/postinstall
+test (latest)	Install dependencies	2026-06-20T06:10:06.8853265Z .../core-js@3.49.0/node_modules/core-js postinstall$ node -e "try{require('./postinstall')}catch(e){}"
+test (latest)	Install dependencies	2026-06-20T06:10:06.9722597Z .../node_modules/protobufjs postinstall: Done
+test (latest)	Install dependencies	2026-06-20T06:10:06.9819923Z .../node_modules/@sentry/cli postinstall: Done
+test (latest)	Install dependencies	2026-06-20T06:10:06.9999741Z .../core-js@3.49.0/node_modules/core-js postinstall: Done
+test (latest)	Install dependencies	2026-06-20T06:10:07.0004752Z .../.pnpm/bun@1.3.13/node_modules/bun postinstall$ node install.js
+test (latest)	Install dependencies	2026-06-20T06:10:07.0964507Z .../.pnpm/bun@1.3.13/node_modules/bun postinstall: Done
+test (latest)	Install dependencies	2026-06-20T06:10:07.7222315Z [WARN] Failed to create bin at /home/runner/work/arkenv/arkenv/apps/playgrounds/arkenv-cli/node_modules/.bin/arkenv. ENOENT: no such file or directory, open '/home/runner/work/arkenv/arkenv/packages/cli/dist/index.cjs'
+test (latest)	Install dependencies	2026-06-20T06:10:09.8300329Z 
+test (latest)	Install dependencies	2026-06-20T06:10:09.8301836Z devDependencies:
+test (latest)	Install dependencies	2026-06-20T06:10:09.8302539Z + @biomejs/biome 2.4.14
+test (latest)	Install dependencies	2026-06-20T06:10:09.8303430Z + @changesets/cli 2.31.0
+test (latest)	Install dependencies	2026-06-20T06:10:09.8303930Z + @clack/prompts 1.3.0
+test (latest)	Install dependencies	2026-06-20T06:10:09.8304355Z + @manypkg/cli 0.25.1
+test (latest)	Install dependencies	2026-06-20T06:10:09.8304777Z + @playwright/test 1.59.1
+test (latest)	Install dependencies	2026-06-20T06:10:09.8305183Z + @types/node 24.12.2
+test (latest)	Install dependencies	2026-06-20T06:10:09.8305560Z + @vitest/coverage-v8 4.1.5
+test (latest)	Install dependencies	2026-06-20T06:10:09.8306415Z + @vitest/ui 4.1.5
+test (latest)	Install dependencies	2026-06-20T06:10:09.8306749Z + all-contributors-cli 6.26.1
+test (latest)	Install dependencies	2026-06-20T06:10:09.8307092Z + changesets-changelog-clean 1.3.0
+test (latest)	Install dependencies	2026-06-20T06:10:09.8307382Z + dpdm 4.2.0
+test (latest)	Install dependencies	2026-06-20T06:10:09.8307615Z + esbuild 0.28.0
+test (latest)	Install dependencies	2026-06-20T06:10:09.8307841Z + knip 6.12.2
+test (latest)	Install dependencies	2026-06-20T06:10:09.8308061Z + mdxlint 1.0.0
+test (latest)	Install dependencies	2026-06-20T06:10:09.8308397Z + remark-frontmatter 5.0.0
+test (latest)	Install dependencies	2026-06-20T06:10:09.8308677Z + remark-gfm 4.0.1
+test (latest)	Install dependencies	2026-06-20T06:10:09.8308909Z + rimraf 6.1.3
+test (latest)	Install dependencies	2026-06-20T06:10:09.8309157Z + turbo 2.9.18
+test (latest)	Install dependencies	2026-06-20T06:10:09.8309400Z + typescript 6.0.3
+test (latest)	Install dependencies	2026-06-20T06:10:09.8309833Z + vitest 4.1.5
+test (latest)	Install dependencies	2026-06-20T06:10:09.8309968Z 
+test (latest)	Install dependencies	2026-06-20T06:10:11.5017586Z [WARN] Failed to create bin at /home/runner/work/arkenv/arkenv/apps/playgrounds/arkenv-cli/node_modules/.bin/arkenv. ENOENT: no such file or directory, open '/home/runner/work/arkenv/arkenv/apps/playgrounds/arkenv-cli/node_modules/@arkenv/cli/dist/index.cjs'
+test (latest)	Install dependencies	2026-06-20T06:10:11.5655318Z Done in 15s using pnpm v11.7.0
+test (latest)	Build packages	﻿2026-06-20T06:10:11.6494324Z ##[group]Run pnpm run build --filter=./packages/*
+test (latest)	Build packages	2026-06-20T06:10:11.6494777Z ^[[36;1mpnpm run build --filter=./packages/*^[[0m
+test (latest)	Build packages	2026-06-20T06:10:11.6530259Z shell: /usr/bin/bash -e {0}
+test (latest)	Build packages	2026-06-20T06:10:11.6530544Z env:
+test (latest)	Build packages	2026-06-20T06:10:11.6531119Z   TURBO_TOKEN: ***
+test (latest)	Build packages	2026-06-20T06:10:11.6531360Z   TURBO_TEAM: yamcodes
+test (latest)	Build packages	2026-06-20T06:10:11.6531674Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+test (latest)	Build packages	2026-06-20T06:10:11.6532004Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:12.1217486Z $ turbo run build '--filter=./packages/*'
+test (latest)	Build packages	2026-06-20T06:10:12.1754136Z 
+test (latest)	Build packages	2026-06-20T06:10:12.1754801Z Attention:
+test (latest)	Build packages	2026-06-20T06:10:12.1755532Z Turborepo now collects completely anonymous telemetry regarding usage.
+test (latest)	Build packages	2026-06-20T06:10:12.1756328Z This information is used to shape the Turborepo roadmap and prioritize features.
+test (latest)	Build packages	2026-06-20T06:10:12.1757551Z You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+test (latest)	Build packages	2026-06-20T06:10:12.1758240Z https://turborepo.dev/docs/telemetry
+test (latest)	Build packages	2026-06-20T06:10:12.1758619Z 
+test (latest)	Build packages	2026-06-20T06:10:12.4185552Z  WARNING     • Remote caching unavailable (Authentication failed — check TURBO_TOKEN or run "turbo login")
+test (latest)	Build packages	2026-06-20T06:10:12.4186377Z 
+test (latest)	Build packages	2026-06-20T06:10:12.4187476Z    • Packages in scope: @arkenv/build, @arkenv/bun-plugin, @arkenv/cli, @arkenv/fumadocs-ui, @arkenv/nextjs, @arkenv/nuxt, @arkenv/vite-plugin, arkenv
+test (latest)	Build packages	2026-06-20T06:10:12.4188934Z    • Running build in 8 packages
+test (latest)	Build packages	2026-06-20T06:10:12.4189481Z 
+test (latest)	Build packages	2026-06-20T06:10:16.8065779Z ##[group]@arkenv/build:build
+test (latest)	Build packages	2026-06-20T06:10:16.8128053Z cache miss, executing 2929f8a786399994
+test (latest)	Build packages	2026-06-20T06:10:16.8163435Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:16.8200704Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8202296Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/build/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:16.8203247Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8203900Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8204565Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:16.8205583Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m  ^[[2m6.37 kB^[[22m ^[[2m│ gzip: 1.99 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8206600Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 1 files, total: 6.37 kB
+test (latest)	Build packages	2026-06-20T06:10:16.8207704Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.d.cts.map  ^[[2m0.75 kB^[[22m ^[[2m│ gzip: 0.35 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8209202Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m      ^[[2m4.27 kB^[[22m ^[[2m│ gzip: 1.15 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8210434Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 2 files, total: 5.02 kB
+test (latest)	Build packages	2026-06-20T06:10:16.8211162Z ^[[32m✔^[[39m Build complete in ^[[32m2946ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8212291Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mindex.js^[[22m        ^[[2m 5.47 kB^[[22m ^[[2m│ gzip: 1.72 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8213639Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.js.map    ^[[2m23.66 kB^[[22m ^[[2m│ gzip: 4.67 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8215392Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.d.ts.map  ^[[2m 0.75 kB^[[22m ^[[2m│ gzip: 0.35 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8216782Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.ts^[[22m^[[39m      ^[[2m 4.27 kB^[[22m ^[[2m│ gzip: 1.15 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8217897Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 4 files, total: 34.15 kB
+test (latest)	Build packages	2026-06-20T06:10:16.8218616Z ^[[32m✔^[[39m Build complete in ^[[32m2951ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8219548Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:16.8352565Z ##[group]@repo/scope:build
+test (latest)	Build packages	2026-06-20T06:10:16.8361753Z cache miss, executing be9bb13fa03cce08
+test (latest)	Build packages	2026-06-20T06:10:16.8413014Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:16.8441397Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8451289Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/internal/scope/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:16.8459859Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8461227Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8462349Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:16.8463310Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m  ^[[2m0.33 kB^[[22m ^[[2m│ gzip: 0.23 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8464260Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 1 files, total: 0.33 kB
+test (latest)	Build packages	2026-06-20T06:10:16.8465923Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugin `tsdown:deps`. See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:16.8466919Z 
+test (latest)	Build packages	2026-06-20T06:10:16.8467630Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.d.cts.map  ^[[2m0.21 kB^[[22m ^[[2m│ gzip: 0.14 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8469046Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m      ^[[2m2.96 kB^[[22m ^[[2m│ gzip: 0.66 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8470279Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 2 files, total: 3.16 kB
+test (latest)	Build packages	2026-06-20T06:10:16.8471441Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:16.8472298Z   - rolldown-plugin-dts:generate (63%)
+test (latest)	Build packages	2026-06-20T06:10:16.8472831Z   - tsdown:deps (36%)
+test (latest)	Build packages	2026-06-20T06:10:16.8473540Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:16.8474039Z 
+test (latest)	Build packages	2026-06-20T06:10:16.8474866Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mindex.js^[[22m        ^[[2m0.27 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8476155Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.js.map    ^[[2m1.05 kB^[[22m ^[[2m│ gzip: 0.53 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8477384Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.d.ts.map  ^[[2m0.21 kB^[[22m ^[[2m│ gzip: 0.14 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8478478Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.ts^[[22m^[[39m      ^[[2m2.96 kB^[[22m ^[[2m│ gzip: 0.66 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:16.8479141Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 4 files, total: 4.48 kB
+test (latest)	Build packages	2026-06-20T06:10:16.8480259Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:16.8480972Z   - rolldown-plugin-dts:generate (60%)
+test (latest)	Build packages	2026-06-20T06:10:16.8481323Z   - tsdown:deps (36%)
+test (latest)	Build packages	2026-06-20T06:10:16.8481752Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:16.8482044Z 
+test (latest)	Build packages	2026-06-20T06:10:16.8482297Z ^[[32m✔^[[39m Build complete in ^[[32m3279ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8482714Z ^[[32m✔^[[39m Build complete in ^[[32m3279ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:16.8483302Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:16.8752497Z  WARNING  Insufficient permissions to write to remote cache. Please verify that your role has write access for Remote Cache Artifact at https://vercel.com/docs/accounts/team-members-and-roles/access-roles/team-level-roles?resource=Remote+Cache+Artifact
+test (latest)	Build packages	2026-06-20T06:10:17.1625814Z  WARNING  Insufficient permissions to write to remote cache. Please verify that your role has write access for Remote Cache Artifact at https://vercel.com/docs/accounts/team-members-and-roles/access-roles/team-level-roles?resource=Remote+Cache+Artifact
+test (latest)	Build packages	2026-06-20T06:10:17.2062185Z ##[group]@arkenv/cli:build
+test (latest)	Build packages	2026-06-20T06:10:17.2063606Z cache miss, executing 898f6e27abbdefde
+test (latest)	Build packages	2026-06-20T06:10:17.2064425Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:17.2065929Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2067724Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/cli/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:17.2069091Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2070216Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2071015Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:17.2072242Z ^[[34mℹ^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m  ^[[2m0.01 kB^[[22m ^[[2m│ gzip: 0.03 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.2073489Z ^[[34mℹ^[[39m 1 files, total: 0.01 kB
+test (latest)	Build packages	2026-06-20T06:10:17.2074754Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:17.2075825Z   - rolldown-plugin-dts:generate (52%)
+test (latest)	Build packages	2026-06-20T06:10:17.2076540Z   - tsdown:deps (48%)
+test (latest)	Build packages	2026-06-20T06:10:17.2077445Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:17.2078655Z 
+test (latest)	Build packages	2026-06-20T06:10:17.2080495Z ^[[34mℹ^[[39m Hint: consider adding ^[[34mdeps.onlyBundle^[[39m option to avoid unintended bundling of dependencies, or set ^[[34mdeps.onlyBundle: false^[[39m to disable this hint.
+test (latest)	Build packages	2026-06-20T06:10:17.2082471Z See more at ^[[4mhttps://tsdown.dev/options/dependencies#deps-onlybundle^[[24m
+test (latest)	Build packages	2026-06-20T06:10:17.2083399Z Detected dependencies in bundle:
+test (latest)	Build packages	2026-06-20T06:10:17.2084107Z - ^[[34mpicocolors^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2084935Z - ^[[34mfast-string-truncated-width^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2085740Z - ^[[34mfast-string-width^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2086400Z - ^[[34mfast-wrap-ansi^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2087066Z - ^[[34msisteransi^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2087725Z - ^[[34m@clack/core^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2088348Z - ^[[34m@clack/prompts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2089299Z ^[[34mℹ^[[39m Granting execute permission to ^[[4mdist/index.cjs^[[24m
+test (latest)	Build packages	2026-06-20T06:10:17.2090966Z ^[[34mℹ^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m           ^[[2m97.40 kB^[[22m ^[[2m│ gzip: 27.98 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.2092559Z ^[[34mℹ^[[39m ^[[2mdist/^[[22mchunk-i8uDWG73.cjs  ^[[2m 0.89 kB^[[22m ^[[2m│ gzip:  0.45 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.2093596Z ^[[34mℹ^[[39m 2 files, total: 98.29 kB
+test (latest)	Build packages	2026-06-20T06:10:17.2096404Z ^[[33m[INEFFECTIVE_DYNAMIC_IMPORT] Warning:^[[0m src/adapters/injection.ts is dynamically imported by src/adapters/node-workspace/node-workspace.ts but also statically imported by src/adapters/index.ts, dynamic import will not move module into another chunk.
+test (latest)	Build packages	2026-06-20T06:10:17.2098125Z 
+test (latest)	Build packages	2026-06-20T06:10:17.2101311Z ^[[33m[INEFFECTIVE_DYNAMIC_IMPORT] Warning:^[[0m src/adapters/node-project-scanner/utils/env-scanner.ts is dynamically imported by src/adapters/node-project-scanner/utils/detector.ts but also statically imported by src/adapters/node-project-scanner/node-project-scanner.adapter.ts, dynamic import will not move module into another chunk.
+test (latest)	Build packages	2026-06-20T06:10:17.2103469Z 
+test (latest)	Build packages	2026-06-20T06:10:17.2107236Z ^[[33m[INEFFECTIVE_DYNAMIC_IMPORT] Warning:^[[0m src/adapters/node-project-scanner/utils/tsconfig.ts is dynamically imported by src/adapters/node-project-scanner/utils/detector.ts but also statically imported by src/adapters/node-project-scanner/node-project-scanner.adapter.ts, src/adapters/node-project-scanner/utils/requirements.ts, src/adapters/node-workspace/utils/tsconfig.ts, dynamic import will not move module into another chunk.
+test (latest)	Build packages	2026-06-20T06:10:17.2110408Z 
+test (latest)	Build packages	2026-06-20T06:10:17.2112012Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugin `tsdown:deps`. See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:17.2113322Z 
+test (latest)	Build packages	2026-06-20T06:10:17.2114011Z ^[[32m✔^[[39m Build complete in ^[[32m3434ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.2115127Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:17.2338664Z  WARNING  Insufficient permissions to write to remote cache. Please verify that your role has write access for Remote Cache Artifact at https://vercel.com/docs/accounts/team-members-and-roles/access-roles/team-level-roles?resource=Remote+Cache+Artifact
+test (latest)	Build packages	2026-06-20T06:10:17.4629208Z ##[group]@arkenv/fumadocs-ui:build
+test (latest)	Build packages	2026-06-20T06:10:17.4630188Z cache miss, executing be416be0cc1e4577
+test (latest)	Build packages	2026-06-20T06:10:17.4630764Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:17.4632039Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.4633563Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/fumadocs-ui/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:17.4635114Z ^[[34mℹ^[[39m entry: ^[[34msrc/components/index.ts, src/utils/index.ts, src/mdx/index.tsx^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.4636223Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.4636982Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:17.4638264Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mcomponents/index.cjs^[[22m  ^[[2m12.03 kB^[[22m ^[[2m│ gzip: 4.64 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4640675Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mmdx/index.cjs^[[22m         ^[[2m 1.02 kB^[[22m ^[[2m│ gzip: 0.46 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4642965Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mutils/index.cjs^[[22m       ^[[2m 0.18 kB^[[22m ^[[2m│ gzip: 0.16 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4645450Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mheading-_ymnXyQe.cjs  ^[[2m 6.03 kB^[[22m ^[[2m│ gzip: 2.34 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4647215Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22murl-JO2-uzPp.cjs      ^[[2m 0.84 kB^[[22m ^[[2m│ gzip: 0.38 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4648564Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 5 files, total: 20.09 kB
+test (latest)	Build packages	2026-06-20T06:10:17.4650837Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugin `tsdown:deps`. See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:17.4652176Z 
+test (latest)	Build packages	2026-06-20T06:10:17.4653459Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mcomponents/index.d.cts^[[22m^[[39m      ^[[2m2.40 kB^[[22m ^[[2m│ gzip: 0.96 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4655500Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mmdx/index.d.cts^[[22m^[[39m             ^[[2m2.23 kB^[[22m ^[[2m│ gzip: 0.62 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4657479Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mutils/index.d.cts^[[22m^[[39m           ^[[2m0.54 kB^[[22m ^[[2m│ gzip: 0.24 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4659478Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32mcode-blocks-BIzdy_Fb.d.cts^[[39m  ^[[2m1.97 kB^[[22m ^[[2m│ gzip: 0.74 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4661511Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 4 files, total: 7.13 kB
+test (latest)	Build packages	2026-06-20T06:10:17.4662965Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:17.4664135Z   - rolldown-plugin-dts:generate (63%)
+test (latest)	Build packages	2026-06-20T06:10:17.4664945Z   - tsdown:deps (26%)
+test (latest)	Build packages	2026-06-20T06:10:17.4665855Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:17.4666519Z 
+test (latest)	Build packages	2026-06-20T06:10:17.4667105Z ^[[32m✔^[[39m Build complete in ^[[32m3646ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.4668384Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mcomponents/index.mjs^[[22m        ^[[2m11.43 kB^[[22m ^[[2m│ gzip: 4.61 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4670250Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mmdx/index.mjs^[[22m               ^[[2m 0.94 kB^[[22m ^[[2m│ gzip: 0.43 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4671892Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mutils/index.mjs^[[22m             ^[[2m 0.12 kB^[[22m ^[[2m│ gzip: 0.12 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4673454Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mheading-XhVwgTlK.mjs        ^[[2m 4.75 kB^[[22m ^[[2m│ gzip: 2.06 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4674926Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22murl-ZsLGjed4.mjs            ^[[2m 0.61 kB^[[22m ^[[2m│ gzip: 0.31 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4676510Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mcomponents/index.d.mts^[[22m^[[39m      ^[[2m 2.40 kB^[[22m ^[[2m│ gzip: 0.96 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4678378Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mmdx/index.d.mts^[[22m^[[39m             ^[[2m 2.23 kB^[[22m ^[[2m│ gzip: 0.62 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4680482Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mutils/index.d.mts^[[22m^[[39m           ^[[2m 0.54 kB^[[22m ^[[2m│ gzip: 0.24 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4682828Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32mcode-blocks-84sbH-Ro.d.mts^[[39m  ^[[2m 1.97 kB^[[22m ^[[2m│ gzip: 0.74 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:17.4684350Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 9 files, total: 24.98 kB
+test (latest)	Build packages	2026-06-20T06:10:17.4685820Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:17.4686841Z   - tsdown:deps (74%)
+test (latest)	Build packages	2026-06-20T06:10:17.4687509Z   - rolldown-plugin-dts:generate (22%)
+test (latest)	Build packages	2026-06-20T06:10:17.4688506Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:17.4689199Z 
+test (latest)	Build packages	2026-06-20T06:10:17.4691102Z ^[[32m✔^[[39m Build complete in ^[[32m3649ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:17.4692272Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:17.5645448Z  WARNING  Insufficient permissions to write to remote cache. Please verify that your role has write access for Remote Cache Artifact at https://vercel.com/docs/accounts/team-members-and-roles/access-roles/team-level-roles?resource=Remote+Cache+Artifact
+test (latest)	Build packages	2026-06-20T06:10:18.2631353Z ##[group]@repo/types:build
+test (latest)	Build packages	2026-06-20T06:10:18.2632389Z cache miss, executing eccb509b7aca9854
+test (latest)	Build packages	2026-06-20T06:10:18.2632852Z $ tsc
+test (latest)	Build packages	2026-06-20T06:10:18.2633538Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:18.3700519Z  WARNING  Insufficient permissions to write to remote cache. Please verify that your role has write access for Remote Cache Artifact at https://vercel.com/docs/accounts/team-members-and-roles/access-roles/team-level-roles?resource=Remote+Cache+Artifact
+test (latest)	Build packages	2026-06-20T06:10:20.1280837Z ##[group]arkenv:build
+test (latest)	Build packages	2026-06-20T06:10:20.1281502Z cache miss, executing a059c6c62e4d337e
+test (latest)	Build packages	2026-06-20T06:10:20.1281895Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:20.1283161Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:20.1285475Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/arkenv/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:20.1286917Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts, src/standard.ts, src/core.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:20.1287749Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:20.1288356Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:20.1289371Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mstandard.cjs^[[22m         ^[[2m4.14 kB^[[22m ^[[2m│ gzip: 1.71 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1290872Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m            ^[[2m2.59 kB^[[22m ^[[2m│ gzip: 1.15 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1292131Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mcore.cjs^[[22m             ^[[2m0.36 kB^[[22m ^[[2m│ gzip: 0.23 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1293356Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22merrors-DsmUnUhU.cjs  ^[[2m6.50 kB^[[22m ^[[2m│ gzip: 2.40 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1294619Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mcore-Dpt2C_dw.cjs    ^[[2m1.29 kB^[[22m ^[[2m│ gzip: 0.62 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1295643Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 5 files, total: 14.89 kB
+test (latest)	Build packages	2026-06-20T06:10:20.1296809Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex-Do-2CL1V.d.cts.map  ^[[2m5.33 kB^[[22m ^[[2m│ gzip: 1.85 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1298202Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.d.cts.map           ^[[2m1.51 kB^[[22m ^[[2m│ gzip: 0.51 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1299553Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mcore-DhPdJKvR.d.cts.map   ^[[2m0.69 kB^[[22m ^[[2m│ gzip: 0.39 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1301071Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mstandard.d.cts.map        ^[[2m0.66 kB^[[22m ^[[2m│ gzip: 0.32 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1302459Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m               ^[[2m8.95 kB^[[22m ^[[2m│ gzip: 2.64 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1303937Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mstandard.d.cts^[[22m^[[39m            ^[[2m3.92 kB^[[22m ^[[2m│ gzip: 1.54 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1305509Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mcore.d.cts^[[22m^[[39m                ^[[2m0.46 kB^[[22m ^[[2m│ gzip: 0.24 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1306615Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32mindex-Do-2CL1V.d.cts^[[39m      ^[[2m8.25 kB^[[22m ^[[2m│ gzip: 2.20 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1308169Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32mcore-DhPdJKvR.d.cts^[[39m       ^[[2m4.44 kB^[[22m ^[[2m│ gzip: 1.71 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1309361Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 9 files, total: 34.21 kB
+test (latest)	Build packages	2026-06-20T06:10:20.1310336Z ^[[32m✔^[[39m Build complete in ^[[32m1208ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:20.1311618Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mstandard.mjs^[[22m              ^[[2m 3.90 kB^[[22m ^[[2m│ gzip: 1.63 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1313029Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mindex.mjs^[[22m                 ^[[2m 2.34 kB^[[22m ^[[2m│ gzip: 1.08 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1314432Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mcore.mjs^[[22m                  ^[[2m 0.12 kB^[[22m ^[[2m│ gzip: 0.11 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1315811Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22merrors-ErWLMu4F.mjs.map   ^[[2m29.87 kB^[[22m ^[[2m│ gzip: 8.73 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1317148Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mstandard.mjs.map          ^[[2m20.58 kB^[[22m ^[[2m│ gzip: 5.93 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1318944Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.mjs.map             ^[[2m16.70 kB^[[22m ^[[2m│ gzip: 5.40 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1320788Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mcore-EZ6bwRYg.mjs.map     ^[[2m 8.72 kB^[[22m ^[[2m│ gzip: 3.27 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1322146Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22merrors-ErWLMu4F.mjs       ^[[2m 5.75 kB^[[22m ^[[2m│ gzip: 2.31 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1323464Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex-NbQAnciD.d.mts.map  ^[[2m 5.33 kB^[[22m ^[[2m│ gzip: 1.85 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1324765Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.d.mts.map           ^[[2m 1.51 kB^[[22m ^[[2m│ gzip: 0.51 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1326136Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mcore-EZ6bwRYg.mjs         ^[[2m 0.88 kB^[[22m ^[[2m│ gzip: 0.56 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1327585Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mcore-cCZoujZK.d.mts.map   ^[[2m 0.69 kB^[[22m ^[[2m│ gzip: 0.39 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1329018Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mstandard.d.mts.map        ^[[2m 0.66 kB^[[22m ^[[2m│ gzip: 0.32 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1330718Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.mts^[[22m^[[39m               ^[[2m 8.76 kB^[[22m ^[[2m│ gzip: 2.58 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1332220Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mstandard.d.mts^[[22m^[[39m            ^[[2m 3.74 kB^[[22m ^[[2m│ gzip: 1.47 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1333754Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mcore.d.mts^[[22m^[[39m                ^[[2m 0.28 kB^[[22m ^[[2m│ gzip: 0.16 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1335242Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32mindex-NbQAnciD.d.mts^[[39m      ^[[2m 8.06 kB^[[22m ^[[2m│ gzip: 2.14 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1336722Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32mcore-cCZoujZK.d.mts^[[39m       ^[[2m 4.26 kB^[[22m ^[[2m│ gzip: 1.64 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:20.1337492Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 18 files, total: 122.16 kB
+test (latest)	Build packages	2026-06-20T06:10:20.1338015Z ^[[32m✔^[[39m Build complete in ^[[32m1213ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:20.1338774Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:24.0023717Z ##[group]@arkenv/nextjs:build
+test (latest)	Build packages	2026-06-20T06:10:24.0024775Z cache miss, executing d72dcae1a64c228b
+test (latest)	Build packages	2026-06-20T06:10:24.0050629Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:24.0081715Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.0090124Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/nextjs/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:24.0093172Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts, src/react-server.ts, src/config.ts, src/server.ts, src/client.ts, src/shared.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.0094564Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.0095290Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:24.0096569Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mconfig.cjs^[[22m                        ^[[2m 9.13 kB^[[22m ^[[2m│ gzip: 2.91 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0098312Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mserver.cjs^[[22m                        ^[[2m 0.60 kB^[[22m ^[[2m│ gzip: 0.38 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0101585Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mclient.cjs^[[22m                        ^[[2m 0.58 kB^[[22m ^[[2m│ gzip: 0.38 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0124527Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mshared.cjs^[[22m                        ^[[2m 0.42 kB^[[22m ^[[2m│ gzip: 0.29 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0126604Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mreact-server.cjs^[[22m                  ^[[2m 0.39 kB^[[22m ^[[2m│ gzip: 0.27 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0151618Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m                         ^[[2m 0.38 kB^[[22m ^[[2m│ gzip: 0.27 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0193112Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mconfig.cjs.map                    ^[[2m34.31 kB^[[22m ^[[2m│ gzip: 7.56 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0200439Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22markenv-internal-P3ZtMWBg.cjs.map  ^[[2m12.85 kB^[[22m ^[[2m│ gzip: 3.49 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0221357Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22markenv-internal-P3ZtMWBg.cjs      ^[[2m 3.20 kB^[[22m ^[[2m│ gzip: 1.20 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0223610Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mclient.cjs.map                    ^[[2m 2.45 kB^[[22m ^[[2m│ gzip: 0.97 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0225167Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mserver.cjs.map                    ^[[2m 2.23 kB^[[22m ^[[2m│ gzip: 0.91 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0226671Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mreact-server.cjs.map              ^[[2m 1.71 kB^[[22m ^[[2m│ gzip: 0.79 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0228180Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.cjs.map                     ^[[2m 1.70 kB^[[22m ^[[2m│ gzip: 0.78 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0229802Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mshared.cjs.map                    ^[[2m 1.18 kB^[[22m ^[[2m│ gzip: 0.62 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0240877Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 14 files, total: 71.14 kB
+test (latest)	Build packages	2026-06-20T06:10:24.0243738Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/index.ts" is using named (including "arkenv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:24.0247232Z 
+test (latest)	Build packages	2026-06-20T06:10:24.0250065Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/react-server.ts" is using named (including "arkenv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:24.0251844Z 
+test (latest)	Build packages	2026-06-20T06:10:24.0254310Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/server.ts" is using named (including "arkenv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:24.0256130Z 
+test (latest)	Build packages	2026-06-20T06:10:24.0258617Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/client.ts" is using named (including "arkenv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:24.0260499Z 
+test (latest)	Build packages	2026-06-20T06:10:24.0262960Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/shared.ts" is using named (including "arkenv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:24.0264630Z 
+test (latest)	Build packages	2026-06-20T06:10:24.0265472Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex-CRUkF6-E.d.cts.map  ^[[2m5.27 kB^[[22m ^[[2m│ gzip: 1.82 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0266805Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mclient.d.cts.map          ^[[2m0.67 kB^[[22m ^[[2m│ gzip: 0.30 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0268406Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mserver.d.cts.map          ^[[2m0.59 kB^[[22m ^[[2m│ gzip: 0.28 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0269838Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mconfig.d.cts.map          ^[[2m0.54 kB^[[22m ^[[2m│ gzip: 0.29 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0271090Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mreact-server.d.cts.map    ^[[2m0.40 kB^[[22m ^[[2m│ gzip: 0.22 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0272347Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.d.cts.map           ^[[2m0.39 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0273591Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mshared.d.cts.map          ^[[2m0.31 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0274861Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mtypes-BTG7L0mq.d.cts.map  ^[[2m0.30 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0284578Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mconfig.d.cts^[[22m^[[39m              ^[[2m3.70 kB^[[22m ^[[2m│ gzip: 1.24 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0286837Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mclient.d.cts^[[22m^[[39m              ^[[2m1.38 kB^[[22m ^[[2m│ gzip: 0.59 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0340131Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mreact-server.d.cts^[[22m^[[39m        ^[[2m1.19 kB^[[22m ^[[2m│ gzip: 0.60 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0341676Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m               ^[[2m1.18 kB^[[22m ^[[2m│ gzip: 0.59 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0343105Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mserver.d.cts^[[22m^[[39m              ^[[2m1.16 kB^[[22m ^[[2m│ gzip: 0.53 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0344535Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mshared.d.cts^[[22m^[[39m              ^[[2m0.75 kB^[[22m ^[[2m│ gzip: 0.45 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0345933Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32mindex-CRUkF6-E.d.cts^[[39m      ^[[2m7.59 kB^[[22m ^[[2m│ gzip: 1.93 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0347315Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32mtypes-BTG7L0mq.d.cts^[[39m      ^[[2m0.60 kB^[[22m ^[[2m│ gzip: 0.36 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0348343Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 16 files, total: 26.00 kB
+test (latest)	Build packages	2026-06-20T06:10:24.0349013Z ^[[32m✔^[[39m Build complete in ^[[32m2686ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.0367697Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mconfig.js^[[22m                        ^[[2m 8.02 kB^[[22m ^[[2m│ gzip: 2.61 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0368762Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mserver.js^[[22m                        ^[[2m 0.41 kB^[[22m ^[[2m│ gzip: 0.29 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0369894Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mclient.js^[[22m                        ^[[2m 0.39 kB^[[22m ^[[2m│ gzip: 0.28 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0371225Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mshared.js^[[22m                        ^[[2m 0.23 kB^[[22m ^[[2m│ gzip: 0.19 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0372640Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mreact-server.js^[[22m                  ^[[2m 0.19 kB^[[22m ^[[2m│ gzip: 0.17 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0374066Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mindex.js^[[22m                         ^[[2m 0.19 kB^[[22m ^[[2m│ gzip: 0.17 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0375403Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mconfig.js.map                    ^[[2m33.87 kB^[[22m ^[[2m│ gzip: 7.49 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0376825Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22markenv-internal-CazNPFI7.js.map  ^[[2m12.85 kB^[[22m ^[[2m│ gzip: 3.49 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0378268Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex-DvODqC0J.d.ts.map          ^[[2m 5.26 kB^[[22m ^[[2m│ gzip: 1.82 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0379824Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22markenv-internal-CazNPFI7.js      ^[[2m 3.10 kB^[[22m ^[[2m│ gzip: 1.16 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0381224Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mclient.js.map                    ^[[2m 2.41 kB^[[22m ^[[2m│ gzip: 0.96 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0382446Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mserver.js.map                    ^[[2m 2.19 kB^[[22m ^[[2m│ gzip: 0.89 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0384147Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mreact-server.js.map              ^[[2m 1.68 kB^[[22m ^[[2m│ gzip: 0.77 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0385480Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.js.map                     ^[[2m 1.67 kB^[[22m ^[[2m│ gzip: 0.77 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0387575Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mshared.js.map                    ^[[2m 1.15 kB^[[22m ^[[2m│ gzip: 0.61 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0388912Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mclient.d.ts.map                  ^[[2m 0.67 kB^[[22m ^[[2m│ gzip: 0.30 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0392579Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mserver.d.ts.map                  ^[[2m 0.59 kB^[[22m ^[[2m│ gzip: 0.27 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0394095Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mconfig.d.ts.map                  ^[[2m 0.54 kB^[[22m ^[[2m│ gzip: 0.29 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0395467Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mreact-server.d.ts.map            ^[[2m 0.40 kB^[[22m ^[[2m│ gzip: 0.22 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0397073Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.d.ts.map                   ^[[2m 0.39 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0411623Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mshared.d.ts.map                  ^[[2m 0.31 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0413231Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mtypes-8YUW70UX.d.ts.map          ^[[2m 0.30 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0414706Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mconfig.d.ts^[[22m^[[39m                      ^[[2m 3.70 kB^[[22m ^[[2m│ gzip: 1.23 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0416163Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mclient.d.ts^[[22m^[[39m                      ^[[2m 1.38 kB^[[22m ^[[2m│ gzip: 0.59 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0417639Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mreact-server.d.ts^[[22m^[[39m                ^[[2m 1.19 kB^[[22m ^[[2m│ gzip: 0.60 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0419082Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.ts^[[22m^[[39m                       ^[[2m 1.17 kB^[[22m ^[[2m│ gzip: 0.59 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0420767Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mserver.d.ts^[[22m^[[39m                      ^[[2m 1.16 kB^[[22m ^[[2m│ gzip: 0.52 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0422565Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mshared.d.ts^[[22m^[[39m                      ^[[2m 0.74 kB^[[22m ^[[2m│ gzip: 0.44 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0426630Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32mindex-DvODqC0J.d.ts^[[39m              ^[[2m 7.59 kB^[[22m ^[[2m│ gzip: 1.93 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0428213Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32mtypes-8YUW70UX.d.ts^[[39m              ^[[2m 0.60 kB^[[22m ^[[2m│ gzip: 0.36 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.0429186Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 30 files, total: 94.31 kB
+test (latest)	Build packages	2026-06-20T06:10:24.0430026Z ^[[32m✔^[[39m Build complete in ^[[32m2695ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.0430818Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:24.5787073Z ##[group]@arkenv/bun-plugin:build
+test (latest)	Build packages	2026-06-20T06:10:24.5801214Z cache miss, executing 5ce4581a99d52bc4
+test (latest)	Build packages	2026-06-20T06:10:24.5801942Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:24.5802934Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.5804011Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/bun-plugin/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:24.5804932Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.5805764Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.5806445Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:24.5807565Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m      ^[[2m2.00 kB^[[22m ^[[2m│ gzip: 1.08 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5808973Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.cjs.map  ^[[2m8.40 kB^[[22m ^[[2m│ gzip: 3.00 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5810470Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 2 files, total: 10.41 kB
+test (latest)	Build packages	2026-06-20T06:10:24.5813584Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/index.ts" is using named (including "arkenv", "default", "hybrid") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:24.5816703Z 
+test (latest)	Build packages	2026-06-20T06:10:24.5818218Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugin `tsdown:deps`. See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:24.5819276Z 
+test (latest)	Build packages	2026-06-20T06:10:24.5820591Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mindex.js^[[22m        ^[[2m 1.89 kB^[[22m ^[[2m│ gzip: 1.03 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5821975Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.js.map    ^[[2m 8.37 kB^[[22m ^[[2m│ gzip: 2.98 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5823303Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.d.ts.map  ^[[2m 5.91 kB^[[22m ^[[2m│ gzip: 2.06 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5824644Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.ts^[[22m^[[39m      ^[[2m11.95 kB^[[22m ^[[2m│ gzip: 3.40 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5825657Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 4 files, total: 28.11 kB
+test (latest)	Build packages	2026-06-20T06:10:24.5827063Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.d.cts.map  ^[[2m 5.91 kB^[[22m ^[[2m│ gzip: 2.07 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5828425Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m      ^[[2m11.95 kB^[[22m ^[[2m│ gzip: 3.40 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.5829397Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 2 files, total: 17.86 kB
+test (latest)	Build packages	2026-06-20T06:10:24.5830691Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:24.5831472Z   - rolldown-plugin-dts:generate (71%)
+test (latest)	Build packages	2026-06-20T06:10:24.5831961Z   - tsdown:deps (25%)
+test (latest)	Build packages	2026-06-20T06:10:24.5832629Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:24.5833109Z 
+test (latest)	Build packages	2026-06-20T06:10:24.5833892Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:24.5834719Z   - rolldown-plugin-dts:generate (59%)
+test (latest)	Build packages	2026-06-20T06:10:24.5835203Z   - tsdown:deps (32%)
+test (latest)	Build packages	2026-06-20T06:10:24.5835896Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:24.5836378Z 
+test (latest)	Build packages	2026-06-20T06:10:24.5836749Z ^[[32m✔^[[39m Build complete in ^[[32m3256ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.5837418Z ^[[32m✔^[[39m Build complete in ^[[32m3257ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.5838214Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:24.7016070Z ##[group]@arkenv/vite-plugin:build
+test (latest)	Build packages	2026-06-20T06:10:24.7016864Z cache miss, executing 58602c565d0d3468
+test (latest)	Build packages	2026-06-20T06:10:24.7050612Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:24.7080019Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.7095322Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/vite-plugin/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:24.7096385Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.7097048Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.7097605Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:24.7098542Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m  ^[[2m0.47 kB^[[22m ^[[2m│ gzip: 0.33 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.7130158Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 1 files, total: 0.47 kB
+test (latest)	Build packages	2026-06-20T06:10:24.7131811Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugin `tsdown:deps`. See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:24.7132764Z 
+test (latest)	Build packages	2026-06-20T06:10:24.7133456Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.d.cts.map  ^[[2m 5.84 kB^[[22m ^[[2m│ gzip: 2.05 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.7134821Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m      ^[[2m11.30 kB^[[22m ^[[2m│ gzip: 3.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.7135795Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 2 files, total: 17.14 kB
+test (latest)	Build packages	2026-06-20T06:10:24.7136884Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:24.7137730Z   - rolldown-plugin-dts:generate (47%)
+test (latest)	Build packages	2026-06-20T06:10:24.7138234Z   - tsdown:deps (46%)
+test (latest)	Build packages	2026-06-20T06:10:24.7139283Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:24.7140049Z 
+test (latest)	Build packages	2026-06-20T06:10:24.7140844Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mindex.js^[[22m        ^[[2m 0.50 kB^[[22m ^[[2m│ gzip: 0.36 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.7142105Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.d.ts.map  ^[[2m 5.84 kB^[[22m ^[[2m│ gzip: 2.05 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.7143360Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.js.map    ^[[2m 4.24 kB^[[22m ^[[2m│ gzip: 1.68 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.7144719Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.ts^[[22m^[[39m      ^[[2m11.30 kB^[[22m ^[[2m│ gzip: 3.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:24.7145678Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 4 files, total: 21.88 kB
+test (latest)	Build packages	2026-06-20T06:10:24.7146814Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:24.7147600Z   - tsdown:deps (46%)
+test (latest)	Build packages	2026-06-20T06:10:24.7148063Z   - rolldown-plugin-dts:generate (45%)
+test (latest)	Build packages	2026-06-20T06:10:24.7148851Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:24.7149884Z 
+test (latest)	Build packages	2026-06-20T06:10:24.7150273Z ^[[32m✔^[[39m Build complete in ^[[32m3383ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.7150945Z ^[[32m✔^[[39m Build complete in ^[[32m3384ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:24.7151774Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:26.0385455Z ##[group]@arkenv/nuxt:build
+test (latest)	Build packages	2026-06-20T06:10:26.0386203Z cache miss, executing b7edb3fb84aa89e5
+test (latest)	Build packages	2026-06-20T06:10:26.0386591Z $ tsdown
+test (latest)	Build packages	2026-06-20T06:10:26.0387696Z ^[[34mℹ^[[39m ^[[34mtsdown v0.21.10^[[39m powered by ^[[38;2;255;126;23mrolldown v1.0.0-rc.17^[[39m
+test (latest)	Build packages	2026-06-20T06:10:26.0388963Z ^[[34mℹ^[[39m config file: ^[[4m/home/runner/work/arkenv/arkenv/packages/nuxt/tsdown.config.ts^[[24m 
+test (latest)	Build packages	2026-06-20T06:10:26.0391015Z ^[[34mℹ^[[39m entry: ^[[34msrc/index.ts, src/config.ts, src/module.ts, src/server.ts, src/client.ts, src/shared.ts^[[39m
+test (latest)	Build packages	2026-06-20T06:10:26.0392030Z ^[[34mℹ^[[39m tsconfig: ^[[34mtsconfig.json^[[39m
+test (latest)	Build packages	2026-06-20T06:10:26.0392413Z ^[[34mℹ^[[39m Build start
+test (latest)	Build packages	2026-06-20T06:10:26.0393118Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mmodule.cjs^[[22m                   ^[[2m 2.64 kB^[[22m ^[[2m│ gzip: 1.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0394076Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mconfig.cjs^[[22m                   ^[[2m 0.87 kB^[[22m ^[[2m│ gzip: 0.25 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0394921Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mserver.cjs^[[22m                   ^[[2m 0.59 kB^[[22m ^[[2m│ gzip: 0.38 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0395732Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mclient.cjs^[[22m                   ^[[2m 0.57 kB^[[22m ^[[2m│ gzip: 0.38 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0396610Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mshared.cjs^[[22m                   ^[[2m 0.43 kB^[[22m ^[[2m│ gzip: 0.30 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0397595Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[1mindex.cjs^[[22m                    ^[[2m 0.40 kB^[[22m ^[[2m│ gzip: 0.28 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0398710Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mcreate-env-CGYsxe9z.cjs.map  ^[[2m12.93 kB^[[22m ^[[2m│ gzip: 3.67 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0400334Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mmodule.cjs.map               ^[[2m 6.54 kB^[[22m ^[[2m│ gzip: 2.13 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0401685Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mcreate-env-CGYsxe9z.cjs      ^[[2m 2.76 kB^[[22m ^[[2m│ gzip: 1.12 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0403113Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mclient.cjs.map               ^[[2m 2.73 kB^[[22m ^[[2m│ gzip: 1.09 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0404496Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mserver.cjs.map               ^[[2m 2.53 kB^[[22m ^[[2m│ gzip: 1.02 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0405819Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.cjs.map                ^[[2m 1.84 kB^[[22m ^[[2m│ gzip: 0.87 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0407069Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mshared.cjs.map               ^[[2m 1.41 kB^[[22m ^[[2m│ gzip: 0.70 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0408007Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 13 files, total: 36.24 kB
+test (latest)	Build packages	2026-06-20T06:10:26.0411163Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/index.ts" is using named (including "createEnv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:26.0413603Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0416313Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/module.ts" is using named (including "default", "t") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:26.0417740Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0420357Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/server.ts" is using named (including "createEnv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:26.0422436Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0424856Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/client.ts" is using named (including "createEnv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:26.0426553Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0428937Z ^[[33m[MIXED_EXPORTS] Warning:^[[0m Entry module "src/shared.ts" is using named (including "createEnv", "default", "type") and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+test (latest)	Build packages	2026-06-20T06:10:26.0430866Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0432206Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugin `tsdown:deps`. See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:26.0433162Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0434008Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex-CJFWgLlP.d.cts.map  ^[[2m5.27 kB^[[22m ^[[2m│ gzip: 1.82 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0435390Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mclient.d.cts.map          ^[[2m0.61 kB^[[22m ^[[2m│ gzip: 0.28 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0436287Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mserver.d.cts.map          ^[[2m0.56 kB^[[22m ^[[2m│ gzip: 0.26 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0437048Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mindex.d.cts.map           ^[[2m0.38 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0437782Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mshared.d.cts.map          ^[[2m0.32 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0438579Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mtypes-ClPSU_dc.d.cts.map  ^[[2m0.30 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0439347Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22mmodule.d.cts.map          ^[[2m0.16 kB^[[22m ^[[2m│ gzip: 0.14 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0441061Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mclient.d.cts^[[22m^[[39m              ^[[2m1.71 kB^[[22m ^[[2m│ gzip: 0.74 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0442180Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mserver.d.cts^[[22m^[[39m              ^[[2m1.46 kB^[[22m ^[[2m│ gzip: 0.65 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0443035Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.cts^[[22m^[[39m               ^[[2m1.25 kB^[[22m ^[[2m│ gzip: 0.64 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0443897Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mshared.d.cts^[[22m^[[39m              ^[[2m0.96 kB^[[22m ^[[2m│ gzip: 0.52 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0444748Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mconfig.d.cts^[[22m^[[39m              ^[[2m0.37 kB^[[22m ^[[2m│ gzip: 0.16 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0445585Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mmodule.d.cts^[[22m^[[39m              ^[[2m0.29 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0446943Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32mindex-CJFWgLlP.d.cts^[[39m      ^[[2m7.58 kB^[[22m ^[[2m│ gzip: 1.93 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0448622Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m ^[[2mdist/^[[22m^[[32mtypes-ClPSU_dc.d.cts^[[39m      ^[[2m0.60 kB^[[22m ^[[2m│ gzip: 0.36 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0449749Z ^[[34mℹ^[[39m ^[[33m[CJS]^[[39m 15 files, total: 21.83 kB
+test (latest)	Build packages	2026-06-20T06:10:26.0450884Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:26.0451695Z   - rolldown-plugin-dts:generate (69%)
+test (latest)	Build packages	2026-06-20T06:10:26.0452147Z   - tsdown:deps (25%)
+test (latest)	Build packages	2026-06-20T06:10:26.0452850Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:26.0453421Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0453875Z ^[[32m✔^[[39m Build complete in ^[[32m4729ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:26.0455176Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mmodule.js^[[22m                   ^[[2m 1.92 kB^[[22m ^[[2m│ gzip: 0.91 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0456748Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mserver.js^[[22m                   ^[[2m 0.39 kB^[[22m ^[[2m│ gzip: 0.29 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0458062Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mclient.js^[[22m                   ^[[2m 0.38 kB^[[22m ^[[2m│ gzip: 0.28 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0459811Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mconfig.js^[[22m                   ^[[2m 0.33 kB^[[22m ^[[2m│ gzip: 0.17 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0461175Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mshared.js^[[22m                   ^[[2m 0.24 kB^[[22m ^[[2m│ gzip: 0.20 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0462597Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[1mindex.js^[[22m                    ^[[2m 0.21 kB^[[22m ^[[2m│ gzip: 0.18 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0464016Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mcreate-env-BmMtOz-H.js.map  ^[[2m12.91 kB^[[22m ^[[2m│ gzip: 3.66 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0465312Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mmodule.js.map               ^[[2m 6.33 kB^[[22m ^[[2m│ gzip: 2.08 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0466655Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex-BmUjY1z3.d.ts.map     ^[[2m 5.26 kB^[[22m ^[[2m│ gzip: 1.82 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0467991Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mclient.js.map               ^[[2m 2.69 kB^[[22m ^[[2m│ gzip: 1.08 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0469353Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mcreate-env-BmMtOz-H.js      ^[[2m 2.67 kB^[[22m ^[[2m│ gzip: 1.08 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0470805Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mserver.js.map               ^[[2m 2.48 kB^[[22m ^[[2m│ gzip: 1.01 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0472061Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.js.map                ^[[2m 1.80 kB^[[22m ^[[2m│ gzip: 0.86 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0473277Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mshared.js.map               ^[[2m 1.37 kB^[[22m ^[[2m│ gzip: 0.69 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0474540Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mclient.d.ts.map             ^[[2m 0.61 kB^[[22m ^[[2m│ gzip: 0.28 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0475952Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mserver.d.ts.map             ^[[2m 0.56 kB^[[22m ^[[2m│ gzip: 0.26 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0477487Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mindex.d.ts.map              ^[[2m 0.38 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0478947Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mshared.d.ts.map             ^[[2m 0.32 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0480559Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mtypes-5etgc4a7.d.ts.map     ^[[2m 0.30 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0481966Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22mmodule.d.ts.map             ^[[2m 0.16 kB^[[22m ^[[2m│ gzip: 0.14 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0483559Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mclient.d.ts^[[22m^[[39m                 ^[[2m 1.71 kB^[[22m ^[[2m│ gzip: 0.73 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0485278Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mserver.d.ts^[[22m^[[39m                 ^[[2m 1.46 kB^[[22m ^[[2m│ gzip: 0.65 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0486956Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mindex.d.ts^[[22m^[[39m                  ^[[2m 1.25 kB^[[22m ^[[2m│ gzip: 0.64 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0488868Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mshared.d.ts^[[22m^[[39m                 ^[[2m 0.96 kB^[[22m ^[[2m│ gzip: 0.52 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0490732Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mconfig.d.ts^[[22m^[[39m                 ^[[2m 0.37 kB^[[22m ^[[2m│ gzip: 0.16 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0492400Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32m^[[1mmodule.d.ts^[[22m^[[39m                 ^[[2m 0.29 kB^[[22m ^[[2m│ gzip: 0.21 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0494093Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32mindex-BmUjY1z3.d.ts^[[39m         ^[[2m 7.58 kB^[[22m ^[[2m│ gzip: 1.92 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0495874Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m ^[[2mdist/^[[22m^[[32mtypes-5etgc4a7.d.ts^[[39m         ^[[2m 0.59 kB^[[22m ^[[2m│ gzip: 0.35 kB^[[22m
+test (latest)	Build packages	2026-06-20T06:10:26.0496995Z ^[[34mℹ^[[39m ^[[34m[ESM]^[[39m 28 files, total: 55.53 kB
+test (latest)	Build packages	2026-06-20T06:10:26.0498232Z ^[[33m[PLUGIN_TIMINGS] Warning:^[[0m Your build spent significant time in plugins. Here is a breakdown:
+test (latest)	Build packages	2026-06-20T06:10:26.0499099Z   - tsdown:deps (73%)
+test (latest)	Build packages	2026-06-20T06:10:26.0500231Z   - rolldown-plugin-dts:generate (24%)
+test (latest)	Build packages	2026-06-20T06:10:26.0501015Z See https://rolldown.rs/options/checks#plugintimings for more details.
+test (latest)	Build packages	2026-06-20T06:10:26.0501571Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0501998Z ^[[32m✔^[[39m Build complete in ^[[32m4733ms^[[39m
+test (latest)	Build packages	2026-06-20T06:10:26.0502925Z ##[endgroup]
+test (latest)	Build packages	2026-06-20T06:10:26.0503180Z 
+test (latest)	Build packages	2026-06-20T06:10:26.0503384Z  Tasks:    10 successful, 10 total
+test (latest)	Build packages	2026-06-20T06:10:26.0503891Z Cached:    0 cached, 10 total
+test (latest)	Build packages	2026-06-20T06:10:26.0504367Z   Time:    13.869s 
+test (latest)	Build packages	2026-06-20T06:10:26.0504601Z 
+test (latest)	Run pnpm run test	﻿2026-06-20T06:10:26.1631465Z ##[group]Run pnpm run test
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.1631798Z ^[[36;1mpnpm run test^[[0m
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.1667081Z shell: /usr/bin/bash -e {0}
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.1667372Z env:
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.1667743Z   TURBO_TOKEN: ***
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.1667991Z   TURBO_TEAM: yamcodes
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.1668279Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.1668611Z ##[endgroup]
+test (latest)	Run pnpm run test	2026-06-20T06:10:26.6111062Z $ vitest
+test (latest)	Run pnpm run test	2026-06-20T06:10:27.2128235Z 
+test (latest)	Run pnpm run test	2026-06-20T06:10:27.2132379Z ^[[1m^[[30m^[[46m RUN ^[[49m^[[39m^[[22m ^[[36mv4.1.5 ^[[39m^[[90m/home/runner/work/arkenv/arkenv^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:27.2133033Z 
+test (latest)	Run pnpm run test	2026-06-20T06:10:27.4017723Z (node:3010) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+test (latest)	Run pnpm run test	2026-06-20T06:10:27.4019275Z (Use `node --trace-deprecation ...` to show where the warning was created)
+test (latest)	Run pnpm run test	2026-06-20T06:10:27.6057109Z  ^[[32m✓^[[39m ^[[30m^[[46m @arkenv/nextjs ^[[49m^[[39m src/config.test.ts ^[[2m(^[[22m^[[2m24 tests^[[22m^[[2m)^[[22m^[[32m 23^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.0105309Z  ^[[32m✓^[[39m ^[[30m^[[43m @arkenv/bun-plugin ^[[49m^[[39m src/utils.test.ts ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 20^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.0178544Z  ^[[32m✓^[[39m ^[[30m^[[43m @arkenv/bun-plugin ^[[49m^[[39m src/plugin.test.ts ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 22^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.2368745Z  ^[[32m✓^[[39m ^[[30m^[[46m @arkenv/nextjs ^[[49m^[[39m src/server-only.test.ts ^[[2m(^[[22m^[[2m1 test^[[22m^[[2m)^[[22m^[[32m 15^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.2524550Z  ^[[32m✓^[[39m ^[[30m^[[46m @arkenv/nextjs ^[[49m^[[39m src/separate-files.test.ts ^[[2m(^[[22m^[[2m11 tests^[[22m^[[2m)^[[22m^[[32m 26^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.4880221Z  ^[[32m✓^[[39m ^[[30m^[[45m @arkenv/nuxt ^[[49m^[[39m src/config.test.ts ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 8^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.5922112Z  ^[[32m✓^[[39m ^[[30m^[[46m @arkenv/nextjs ^[[49m^[[39m src/index.test.ts ^[[2m(^[[22m^[[2m8 tests^[[22m^[[2m)^[[22m^[[32m 21^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.6902276Z  ^[[32m✓^[[39m ^[[30m^[[45m @arkenv/nuxt ^[[49m^[[39m src/module.test.ts ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 12^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:28.8541878Z  ^[[32m✓^[[39m ^[[30m^[[45m @arkenv/nuxt ^[[49m^[[39m src/index.test.ts ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 21^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:29.1770700Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/standard-mode.test.ts ^[[2m(^[[22m^[[2m20 tests^[[22m^[[2m)^[[22m^[[32m 29^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:29.4348293Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/arkenv.test.ts ^[[2m(^[[22m^[[2m59 tests^[[22m^[[2m)^[[22m^[[32m 132^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:29.6522039Z  ^[[32m✓^[[39m ^[[30m^[[46m @arkenv/vite-plugin ^[[49m^[[39m src/index.test.ts ^[[2m(^[[22m^[[2m21 tests^[[22m^[[2m)^[[22m^[[32m 249^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:29.7255345Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/coercion/coerce.test.ts ^[[2m(^[[22m^[[2m24 tests^[[22m^[[2m)^[[22m^[[32m 55^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:30.0068823Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/type.test.ts ^[[2m(^[[22m^[[2m14 tests^[[22m^[[2m)^[[22m^[[32m 28^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:30.2318462Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/error.integration.test.ts ^[[2m(^[[22m^[[2m8 tests^[[22m^[[2m)^[[22m^[[32m 29^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:30.3485504Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/custom-types.integration.test.ts ^[[2m(^[[22m^[[2m20 tests^[[22m^[[2m)^[[22m^[[32m 66^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:30.6146103Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/coercion/coercion.integration.test.ts ^[[2m(^[[22m^[[2m18 tests^[[22m^[[2m)^[[22m^[[32m 62^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:30.7930328Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/object-parsing.integration.test.ts ^[[2m(^[[22m^[[2m14 tests^[[22m^[[2m)^[[22m^[[32m 48^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:30.8452011Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/utils/style-text.test.ts ^[[2m(^[[22m^[[2m19 tests^[[22m^[[2m)^[[22m^[[32m 12^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.0579866Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/utils/bundling-interop.test.ts ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[33m 503^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.0601034Z      ^[[33m^[[2m✓^[[22m^[[39m should work when arkenv is external in a CJS bundle ^[[33m 424^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.2712064Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/coercion/morphs.test.ts ^[[2m(^[[22m^[[2m15 tests^[[22m^[[2m)^[[22m^[[32m 11^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.3253190Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/errors.test.ts ^[[2m(^[[22m^[[2m13 tests^[[22m^[[2m)^[[22m^[[32m 18^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.4064521Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m test/dist.test.ts ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[33m 385^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.4601976Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/coercion/shared.test.ts ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[32m 7^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.8626648Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/index.test.ts ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[32m 24^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:31.9673794Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/type-regression.test-d.ts ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[32m 25^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:32.0573175Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/utils/load-arktype-bundle.test.ts ^[[2m(^[[22m^[[2m1 test^[[22m^[[2m)^[[22m^[[33m 379^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:32.0575188Z      ^[[33m^[[2m✓^[[22m^[[39m should work when bundled as CommonJS with esbuild ^[[33m 376^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:32.2371862Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/utils/indent.test.ts ^[[2m(^[[22m^[[2m6 tests^[[22m^[[2m)^[[22m^[[32m 4^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:32.4632080Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/infer.test-d.ts ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 18^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:32.4868279Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/isolation.test.ts ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[33m 313^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:32.4870253Z      ^[[33m^[[2m✓^[[22m^[[39m loads ArkType statically when importing from index.ts ^[[33m 305^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:32.7549062Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv ^[[49m^[[39m src/arktype/array-defaults.integration.test.ts ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[32m 26^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:34.1230505Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m hooks/use-toast.test.ts ^[[2m(^[[22m^[[2m12 tests^[[22m^[[2m)^[[22m^[[32m 20^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:34.7592278Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/page/copy-button.integration.test.tsx ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[33m 580^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:34.7594036Z      ^[[33m^[[2m✓^[[22m^[[39m should show toast when copy succeeds ^[[33m 327^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:34.8292013Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/ui/toaster.integration.test.tsx ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[33m 718^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:35.4572112Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m lib/utils/github.test.ts ^[[2m(^[[22m^[[2m14 tests^[[22m^[[2m)^[[22m^[[32m 12^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:36.0671973Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m app/llms.mdx/docs/[[...slug]]/route.test.ts ^[[2m(^[[22m^[[2m6 tests^[[22m^[[2m)^[[22m^[[32m 20^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:36.5926407Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/ui/button.test.tsx ^[[2m(^[[22m^[[2m10 tests^[[22m^[[2m)^[[22m^[[33m 321^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:36.7657796Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m app/docs/[package]/llms.txt/route.test.ts ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[32m 16^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:37.3127308Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m hooks/use-copy-command.test.ts ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[32m 30^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:37.9020148Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m hooks/use-is-mobile.test.ts ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[32m 32^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:38.7044649Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/page/cli-command.test.tsx ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[33m 401^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:38.9561287Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/page/copy-button.test.tsx ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 220^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:39.9959072Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m app/api/og/route.test.tsx ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 19^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:40.4458810Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/ui/search-toggle.test.tsx ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[32m 88^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:41.1888465Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/page/star-us-button.test.tsx ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 214^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:41.2657899Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m app/opengraph-image.test.tsx ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 13^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:42.0182701Z (node:3471) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+test (latest)	Run pnpm run test	2026-06-20T06:10:42.0188720Z (Use `node --trace-warnings ...` to show where the warning was created)
+test (latest)	Run pnpm run test	2026-06-20T06:10:42.4231921Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m app/llms.txt/route.test.ts ^[[2m(^[[22m^[[2m1 test^[[22m^[[2m)^[[22m^[[32m 9^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:42.7390739Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/page/logo.test.tsx ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 113^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:43.5372966Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/cli/commands/init.test.ts ^[[2m(^[[22m^[[2m20 tests^[[22m^[[2m)^[[22m^[[32m 253^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:43.8327198Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/features/scaffold/planner.test.ts ^[[2m(^[[22m^[[2m24 tests^[[22m^[[2m)^[[22m^[[32m 19^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.0700845Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m components/page/quickstart-button.test.tsx ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 240^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2511759Z fatal: not a git repository (or any of the parent directories): .git
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2656640Z hint: Using 'master' as the name for the initial branch. This default branch name
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2681054Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2711066Z hint: to use in all of your new repositories, which will suppress this warning,
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2712080Z hint: call:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2712450Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2713003Z hint: 	git config --global init.defaultBranch <name>
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2713569Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2714199Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2715208Z hint: 'development'. The just-created branch can be renamed via this command:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2715853Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2719158Z hint: 	git branch -m <name>
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2719852Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.2720702Z hint: Disable this message with "git config set advice.defaultBranchName false"
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3157912Z ^[[90mstdout^[[2m | src/adapters/node-project-scanner/node-project-scanner.adapter.test.ts^[[2m > ^[[22m^[[2mNodeProjectScannerAdapter^[[2m > ^[[22m^[[2mcheckGitStatus^[[2m > ^[[22m^[[2mreturns not_a_repo when git is not installed (ENOENT)
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3193343Z ^[[22m^[[39mGit is not installed on this system. Skipping git status check.
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3194257Z 
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3264581Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/features/scaffold/env-template.test.ts ^[[2m(^[[22m^[[2m20 tests^[[22m^[[2m)^[[22m^[[32m 16^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3385351Z hint: Using 'master' as the name for the initial branch. This default branch name
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3395437Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3396677Z hint: to use in all of your new repositories, which will suppress this warning,
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3397420Z hint: call:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3397798Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3411723Z hint: 	git config --global init.defaultBranch <name>
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3423319Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3424301Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3425279Z hint: 'development'. The just-created branch can be renamed via this command:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3425935Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3426297Z hint: 	git branch -m <name>
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3426683Z hint:
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3427438Z hint: Disable this message with "git config set advice.defaultBranchName false"
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.3885612Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/adapters/node-project-scanner/node-project-scanner.adapter.test.ts ^[[2m(^[[22m^[[2m37 tests^[[22m^[[2m)^[[22m^[[32m 223^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.6738144Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/features/scaffold/executor.test.ts ^[[2m(^[[22m^[[2m11 tests^[[22m^[[2m)^[[22m^[[32m 28^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.6821639Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/cli/ui/prompts.test.ts ^[[2m(^[[22m^[[2m17 tests^[[22m^[[2m)^[[22m^[[32m 64^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.8022595Z  ^[[32m✓^[[39m ^[[30m^[[42m arkenv.js.org ^[[49m^[[39m lib/twoslash-options.test.ts ^[[2m(^[[22m^[[2m1 test^[[22m^[[2m)^[[22m^[[33m 2660^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.8024680Z      ^[[33m^[[2m✓^[[22m^[[39m infers @arkenv/nextjs client variables as strings in docs snippets ^[[33m 2658^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:44.9550669Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/features/scaffold/utils.test.ts ^[[2m(^[[22m^[[2m23 tests^[[22m^[[2m)^[[22m^[[32m 12^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.1641436Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/cli/cli.test.ts ^[[2m(^[[22m^[[2m21 tests^[[22m^[[2m)^[[22m^[[32m 14^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.2227599Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/adapters/node-workspace/node-workspace.test.ts ^[[2m(^[[22m^[[2m20 tests^[[22m^[[2m)^[[22m^[[32m 79^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.2578566Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/features/config-mutation/config-mutation.test.ts ^[[2m(^[[22m^[[2m18 tests^[[22m^[[2m)^[[22m^[[32m 75^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.4342302Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/adapters/reporters.test.ts ^[[2m(^[[22m^[[2m16 tests^[[22m^[[2m)^[[22m^[[32m 24^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.4453433Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/adapters/injection.test.ts ^[[2m(^[[22m^[[2m6 tests^[[22m^[[2m)^[[22m^[[32m 30^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.6161934Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/cli/commands/help.test.ts ^[[2m(^[[22m^[[2m1 test^[[22m^[[2m)^[[22m^[[32m 5^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.6792194Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/cli/ui/prompts/steps/env-example.test.ts ^[[2m(^[[22m^[[2m6 tests^[[22m^[[2m)^[[22m^[[32m 12^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:45.8016420Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/features/scaffold/scaffold.test.ts ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[32m 6^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:46.2885045Z  ^[[32m✓^[[39m ^[[30m^[[46m internal ^[[49m^[[39m scope/src/root.test.ts ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[32m 12^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:46.6421111Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/smoke.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[33m 1184^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:46.7411039Z  ^[[32m✓^[[39m ^[[30m^[[46m internal ^[[49m^[[39m scope/src/keywords.test.ts ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[32m 7^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0610852Z  ^[[32m✓^[[39m ^[[30m^[[45m cli ^[[49m^[[39m src/circular.test.ts ^[[2m(^[[22m^[[2m1 test^[[22m^[[2m)^[[22m^[[33m 1203^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0612035Z      ^[[33m^[[2m✓^[[22m^[[39m should not have any circular imports ^[[33m 1202^[[2mms^[[22m^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0696313Z 
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0704233Z ^[[2m Test Files ^[[22m ^[[1m^[[32m69 passed^[[39m^[[22m^[[90m (69)^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0705745Z ^[[2m      Tests ^[[22m ^[[1m^[[32m714 passed^[[39m^[[22m^[[90m (714)^[[39m
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0706459Z ^[[2m   Start at ^[[22m 06:10:27
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0708396Z ^[[2m   Duration ^[[22m 19.84s^[[2m (transform 3.26s, setup 3.57s, import 14.57s, tests 11.58s, environment 16.58s)^[[22m
+test (latest)	Run pnpm run test	2026-06-20T06:10:47.0710749Z 
+test (latest)	Verify build artifacts	﻿2026-06-20T06:10:47.1364125Z ##[group]Run pnpm run verify-artifacts
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.1364509Z ^[[36;1mpnpm run verify-artifacts^[[0m
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.1399104Z shell: /usr/bin/bash -e {0}
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.1399379Z env:
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.1399953Z   TURBO_TOKEN: ***
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.1400204Z   TURBO_TEAM: yamcodes
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.1400497Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.1400828Z ##[endgroup]
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.5926021Z $ node scripts/verify-artifacts.js
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6396262Z 🔍 Running Static Analysis Verification on built artifacts...
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6401021Z ✅ Passed: packages/arkenv/dist/standard.mjs
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6402023Z ✅ Passed: packages/arkenv/dist/standard.cjs
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6403839Z ✅ Passed: packages/arkenv/dist/standard.d.mts
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6404584Z ✅ Passed: packages/arkenv/dist/standard.d.cts
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6405476Z ✅ Passed: packages/arkenv/dist/core.mjs
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6406261Z ✅ Passed: packages/arkenv/dist/core.cjs
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6407719Z ✅ Passed: packages/arkenv/dist/core.d.mts
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6408689Z ✅ Passed: packages/arkenv/dist/core.d.cts
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6409246Z 
+test (latest)	Verify build artifacts	2026-06-20T06:10:47.6410001Z 📦 Running size-limit validation...
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.0652904Z apps/playgrounds/js                      | [WARN] Unsupported engine: wanted: {"node":"24"} (current: {"node":"v26.3.1","pnpm":"11.7.0"})
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.0660565Z apps/playgrounds/node                    | [WARN] Unsupported engine: wanted: {"node":"24"} (current: {"node":"v26.3.1","pnpm":"11.7.0"})
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.0887190Z $ size-limit --json > .size-limit.json
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.2428586Z /home/runner/work/arkenv/arkenv/packages/arkenv:
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.2429906Z [ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] arkenv@1.0.0-alpha.1 size: `size-limit --json > .size-limit.json`
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.2430675Z Exit status 1
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.2650451Z ❌ Error: size-limit validation failed
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.2861430Z [ELIFECYCLE] Command failed with exit code 1.
+test (latest)	Verify build artifacts	2026-06-20T06:10:48.3096577Z ##[error]Process completed with exit code 1.
+test (latest)	Post Run pnpm/action-setup@v6	﻿2026-06-20T06:10:48.3193820Z Post job cleanup.
+test (latest)	Post Run pnpm/action-setup@v6	2026-06-20T06:10:48.4658582Z Pruning is unnecessary.
+test (latest)	Post Run actions/checkout@v6	﻿2026-06-20T06:10:48.4799177Z Post job cleanup.
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5660879Z [command]/usr/bin/git version
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5731633Z git version 2.54.0
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5775470Z Temporarily overriding HOME='/home/runner/work/_temp/90d8fb2f-4ac1-45dd-b510-fce2191f4e20' before making global git config changes
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5776927Z Adding repository directory to the temporary git global config as a safe directory
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5781546Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/arkenv/arkenv
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5815491Z Removing SSH command configuration
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5822105Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.5857061Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6100116Z Removing HTTP extra header
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6105520Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6141044Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6374718Z Removing includeIf entries pointing to credentials config files
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6381459Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6409958Z includeif.gitdir:/home/runner/work/arkenv/arkenv/.git.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6410953Z includeif.gitdir:/home/runner/work/arkenv/arkenv/.git/worktrees/*.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6411738Z includeif.gitdir:/github/workspace/.git.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6412477Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6420481Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/arkenv/arkenv/.git.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6443987Z /home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6454861Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/arkenv/arkenv/.git.path /home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6489147Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/arkenv/arkenv/.git/worktrees/*.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6512200Z /home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6522049Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/arkenv/arkenv/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6554839Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6577851Z /github/runner_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6585386Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6617619Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6640532Z /github/runner_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6650132Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6683527Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test (latest)	Post Run actions/checkout@v6	2026-06-20T06:10:48.6922339Z Removing credentials config '/home/runner/work/_temp/git-credentials-0705992a-eb8d-4212-9d48-92af1cfc2646.config'
+test (latest)	Complete job	﻿2026-06-20T06:10:48.7085185Z Cleaning up orphan processes
