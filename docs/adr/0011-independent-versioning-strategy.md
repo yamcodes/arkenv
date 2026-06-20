@@ -7,7 +7,7 @@ ArkEnv is a monorepo containing a core engine, a CLI codegen tool, multiple fram
 For example:
 
 - A bug fix in `@arkenv/nextjs` should not force a new version of `arkenv`.
-- A breaking change in `arkenv` should be reflected immediately in `@arkenv/cli` to prevent schema/codegen version mismatches.
+- An update to `@arkenv/cli` (e.g., modifying its interactive prompt or code templates) should not require a new release of `arkenv`.
 
 ## Decision
 
@@ -76,9 +76,9 @@ Because this is a monorepo, plugins reference the local `arkenv` package during 
 
 ## Consequences
 
-- **Positive:** Core engine stability. Inner-circle releases are deliberate and reflect genuine engine or codegen changes.
+- **Positive:** Core engine stability. The core `arkenv` package is only released when there are genuine engine-level changes or bug fixes.
 - **Positive:** Plugin agility. Framework integrations can iterate and release quickly without coordinating with core releases.
-- **Positive:** Clear contract. Users understand that `arkenv` and `@arkenv/cli` move together, while plugins move at their own pace.
+- **Positive:** Clear contract. Users understand that each tool (including `@arkenv/cli`) floats and releases on its own schedule.
 - **Positive:** Peer dependency enforcement catches mismatched installations early.
-- **Negative:** Slightly more complex release management (Changesets handles this via the `fixed` and `independent` configuration mix).
+- **Negative:** Release management requires tracking changelogs and versions across separate packages independently.
 - **Negative:** Plugin authors must ensure peer dependency ranges accurately reflect tested compatibility.
