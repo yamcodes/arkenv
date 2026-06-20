@@ -13,7 +13,7 @@ import {
 	traverseReceivedValue,
 } from "./utils/standard-helpers";
 
-/**
+/*
  * ⚠️ ARCHITECTURAL WARNING: DO NOT DRY THIS FILE ⚠️
  *
  * This file contains parsing logic that looks very similar to the code in
