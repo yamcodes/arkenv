@@ -591,7 +591,7 @@ describe("strict config key extraction", () => {
 });
 
 describe("Flat Mode config key extraction", () => {
-	it("should extract client and exposed keys correctly under Flat Mode with expose option", () => {
+	it("should extract client and exposed keys correctly under Flat Mode with exposeToClient option", () => {
 		const source = `
 			import arkenv from "./env.gen";
 			export const env = arkenv({
@@ -601,7 +601,7 @@ describe("Flat Mode config key extraction", () => {
 				NODE_ENV: "string",
 				CUSTOM_EXPOSE: "string",
 			}, {
-				expose: ["CUSTOM_EXPOSE"]
+				exposeToClient: ["CUSTOM_EXPOSE"]
 			});
 		`;
 
@@ -613,6 +613,22 @@ describe("Flat Mode config key extraction", () => {
 		]);
 		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_EXPOSE"]);
 		expect(isLegacy).toBe(false);
+	});
+
+	it("should support deprecated expose option in Flat Mode key extraction", () => {
+		const source = `
+			import arkenv from "./env.gen";
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NODE_ENV: "string",
+				CUSTOM_EXPOSE: "string",
+			}, {
+				expose: ["CUSTOM_EXPOSE"]
+			});
+		`;
+
+		const { sharedKeys } = extractKeys(source);
+		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_EXPOSE"]);
 	});
 
 	it("should support deprecated shared option in Flat Mode key extraction", () => {

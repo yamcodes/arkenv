@@ -105,7 +105,7 @@ export function buildNextjsTemplate(
 		const optionParts: string[] = [];
 		if (exposedKeyNames.length > 0) {
 			optionParts.push(
-				`\texpose: [${exposedKeyNames.map((k) => `"${k}"`).join(", ")}]`,
+				`\texposeToClient: [${exposedKeyNames.map((k) => `"${k}"`).join(", ")}]`,
 			);
 		}
 

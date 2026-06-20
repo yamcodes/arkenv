@@ -172,7 +172,7 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 					CUSTOM_VAR: "string",
 				},
 				{
-					expose: ["CUSTOM_VAR"],
+					exposeToClient: ["CUSTOM_VAR"],
 					runtimeEnv: {
 						NEXT_PUBLIC_API_URL: "https://api.example.com",
 						NODE_ENV: "test",
@@ -201,7 +201,7 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 					CUSTOM_VAR: "string",
 				},
 				{
-					expose: ["CUSTOM_VAR"],
+					exposeToClient: ["CUSTOM_VAR"],
 					runtimeEnv: {
 						NEXT_PUBLIC_API_URL: "https://api.example.com",
 						NODE_ENV: "test",
@@ -214,6 +214,27 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 			expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
 			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 			expect(env.NODE_ENV).toBe("test");
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
+		});
+
+		it("should support deprecated expose and shared options as fallbacks in Flat Mode", () => {
+			const env = clientCreateEnv(
+				{
+					DATABASE_URL: "string",
+					NEXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
+				},
+				{
+					expose: ["CUSTOM_VAR"],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						CUSTOM_VAR: "custom_val",
+					},
+				},
+			);
+
 			expect((env as any).CUSTOM_VAR).toBe("custom_val");
 		});
 	});

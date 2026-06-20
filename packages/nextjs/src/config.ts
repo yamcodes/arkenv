@@ -374,6 +374,7 @@ export function extractKeys(content: string): {
 		const optionExposedKeys: string[] = [];
 		if (args.optionsArg) {
 			const exposeMatch =
+				args.optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
 				args.optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
 				args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
 			if (exposeMatch) {
@@ -480,7 +481,7 @@ export function createEnv<
 >(
 	schema: TSchema,
 	options?: {
-		expose?: readonly (keyof TSchema)[];
+		exposeToClient?: readonly (keyof TSchema)[];
 		extends?: [...TExtends];
 	},
 ) {

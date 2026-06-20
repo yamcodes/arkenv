@@ -15,8 +15,10 @@ export function createEnv<
 >(
 	schema: EnvSchema<TSchema>,
 	options?: {
+		exposeToClient?: readonly TExpose[];
+		/** @deprecated Use `exposeToClient` instead */
 		expose?: readonly TExpose[];
-		/** @deprecated Use `expose` instead */
+		/** @deprecated Use `exposeToClient` instead */
 		shared?: readonly TExpose[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;

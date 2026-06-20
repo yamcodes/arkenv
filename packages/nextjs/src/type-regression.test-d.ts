@@ -95,7 +95,7 @@ describe("@arkenv/nextjs type regression", () => {
 				CUSTOM_VAR: "string",
 			},
 			{
-				expose: ["CUSTOM_VAR"],
+				exposeToClient: ["CUSTOM_VAR"],
 				runtimeEnv: {
 					NEXT_PUBLIC_API_URL: "https://api.example.com",
 					NODE_ENV: "development",

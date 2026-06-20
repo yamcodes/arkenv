@@ -96,7 +96,8 @@ export function createEnvInternal(
 		} else if (context?.strictLayout === "server") {
 			server = flatSchema;
 		} else {
-			const exposedKeys = options.expose || options.shared || [];
+			const exposedKeys =
+				options.exposeToClient || options.expose || options.shared || [];
 			for (const key of Object.keys(flatSchema)) {
 				if (exposedKeys.includes(key) || key === "NODE_ENV") {
 					shared[key] = flatSchema[key];

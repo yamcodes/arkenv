@@ -17,7 +17,7 @@ export const env = arkenv({
 });
 ```
 
-- Filter client-safe keys starting with `NEXT_PUBLIC_` and exposed keys specified in `options.expose`. `NODE_ENV` is implicitly shared.
+- Filter client-safe keys starting with `NEXT_PUBLIC_` and exposed keys specified in `options.exposeToClient`. `NODE_ENV` is implicitly shared.
 - Exclude server-only keys from autocomplete on the client using TypeScript `Pick`.
 - Wrap the returned variables in a Proxy that throws an error at runtime when a server-only variable is accessed on the client.
 - Update CLI scaffolding to generate the Flat layout by default.
