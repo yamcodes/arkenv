@@ -13,6 +13,10 @@ For example:
 
 We will adopt an **independent versioning model** where all packages in the monorepo float independently. There is no locked inner circle because ArkEnv has a single core engine package (`arkenv`), and all other packages (including `@arkenv/cli`) act as independent consumers or utilities.
 
+### Future Core Package Split
+
+If the `arkenv` package is ever split into `@arkenv/core` and `@arkenv/standard` in the future, those two packages **must be versioned together in lockstep** (added to the `fixed` group in the Changesets config). Because they would constitute the core runtime engine together, a version mismatch between them could cause critical compatibility errors or break structural typing. For now, since `arkenv` is a single package, the `fixed` group remains empty.
+
 ### Independent Outer Ring
 
 The following packages float independently:
