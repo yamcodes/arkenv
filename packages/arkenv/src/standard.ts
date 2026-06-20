@@ -58,7 +58,7 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
  *
  * @param def - An object mapping variable names to Standard Schema validators
  * @param config - Optional configuration
- * @returns The SafeArkenvResult containing the data or the validation error object
+ * @returns The SafeArkEnvResult containing the data or the validation error object
  */
 export function safeArkEnv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,

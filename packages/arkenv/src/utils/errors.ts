@@ -16,8 +16,9 @@ import { styleText } from "./style-text";
  * maintained manually based on ArkType's internal error reporting behavior.
  *
  * @see https://arktype.io/docs/intro
+ * @internal
  */
-const ARKTYPE_CODE_MAP = {
+const ARKTYPE_CODE_MAP: Record<string, EnvIssueCode> = {
 	required: "MISSING_VARIABLE",
 	pattern: "PATTERN_MISMATCH",
 	min: "VALUE_TOO_SMALL",
@@ -29,19 +30,17 @@ const ARKTYPE_CODE_MAP = {
 	sequence: "INVALID_TYPE",
 	intersection: "INVALID_TYPE",
 	union: "INVALID_TYPE",
-} satisfies Record<string, EnvIssueCode>;
+};
 
 /**
  * Map an ArkType validation error code to a normalized EnvIssueCode.
  *
  * @param engineCode The raw code returned by the ArkType engine
  * @returns The normalized EnvIssueCode classification
+ * @internal
  */
 export function mapArkTypeCode(engineCode: string): EnvIssueCode {
-	return (
-		(ARKTYPE_CODE_MAP as Record<string, EnvIssueCode>)[engineCode] ??
-		"INVALID_FORMAT"
-	);
+	return ARKTYPE_CODE_MAP[engineCode] ?? "INVALID_FORMAT";
 }
 
 /**
@@ -49,6 +48,7 @@ export function mapArkTypeCode(engineCode: string): EnvIssueCode {
  *
  * @param error The raw error object from ArkType
  * @returns An object containing normalized min and/or max values if present
+ * @internal
  */
 export function getArkTypeMeta(error: any): { min?: number; max?: number } {
 	const min = error.min ?? error.rule;
@@ -59,6 +59,16 @@ export function getArkTypeMeta(error: any): { min?: number; max?: number } {
 	};
 }
 
+/**
+ * Mapping of Standard Schema validation issue codes to normalized EnvIssueCode classification codes.
+ *
+ * This serves as an internal translation map specifically for Standard Schema validators
+ * (such as Zod or Valibot) to map their engine-specific error keys to our unified union type.
+ * It is not a duplicate Source of Truth for the allowed issue codes themselves, which are
+ * defined solely by the `EnvIssueCode` type in `core.ts`.
+ *
+ * @internal
+ */
 const STANDARD_CODE_MAP: Record<string, EnvIssueCode> = {
 	too_small: "VALUE_TOO_SMALL",
 	too_big: "VALUE_TOO_LARGE",
@@ -74,6 +84,7 @@ const STANDARD_CODE_MAP: Record<string, EnvIssueCode> = {
  * @param message The error message associated with the issue
  * @param receivedVal The raw value received by the validator
  * @returns The normalized EnvIssueCode classification
+ * @internal
  */
 export function mapStandardCode(
 	engineCode: string,
@@ -102,6 +113,7 @@ export function mapStandardCode(
  *
  * @param issue The raw issue from Standard Schema
  * @returns An object containing normalized min and/or max values if present
+ * @internal
  */
 export function getStandardMeta(issue: any): { min?: number; max?: number } {
 	const min = issue.minimum ?? issue.min;
@@ -117,6 +129,7 @@ export function getStandardMeta(issue: any): { min?: number; max?: number } {
  *
  * @param parseFn The function that parses the environment variables and might throw an ArkEnvError
  * @returns A SafeArkEnvResult containing either the parsed data or the caught ArkEnvError
+ * @internal
  */
 export function executeSafe<T>(parseFn: () => T): SafeArkEnvResult<T> {
 	try {
@@ -139,6 +152,7 @@ export function executeSafe<T>(parseFn: () => T): SafeArkEnvResult<T> {
  * @param expected The expected type or value shape description
  * @param received The raw value received (redacted in string formatting if sensitive)
  * @returns A fully populated EnvIssue
+ * @internal
  */
 export function buildEnvIssue(
 	path: string,
@@ -165,6 +179,7 @@ export function buildEnvIssue(
  * @param path The environment variable name/path under validation
  * @param config Optional config containing the debugSecrets override
  * @returns The formatted message string
+ * @internal
  */
 export function formatStandardIssueMessage(
 	baseMessage: string,
@@ -203,6 +218,7 @@ export function formatStandardIssueMessage(
  * @param path The environment variable name/path under validation
  * @param debugSecrets Optional override for debug secrets mode
  * @returns The message with redacted/styled `(was …)` value
+ * @internal
  */
 export function redactMessageWasValue(
 	message: string,

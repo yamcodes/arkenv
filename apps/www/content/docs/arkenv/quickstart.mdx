@@ -164,6 +164,25 @@ const dbConfig = {
 console.log(`Connecting to ${dbConfig.host}:${dbConfig.port}...`);
 ```
 
+## Safe parsing (Non-throwing)
+
+By default, calling `arkenv()` will throw an `ArkEnvError` if validation fails. If you prefer to handle validation issues without catching thrown exceptions, you can use the non-throwing `safeArkEnv()` function instead. It returns a result object containing either the successfully parsed data or the caught error.
+
+```ts title="env.ts" twoslash
+import { safeArkEnv } from 'arkenv';
+
+const result = safeArkEnv({
+  PORT: "number = 3000",
+});
+
+if (result.success) {
+  console.log("Validated config:", result.data);
+  // env.PORT is guaranteed to be a number here
+} else {
+  console.error("Validation failed:", result.error.message);
+}
+```
+
 ## Next steps
 
 <Cards>
