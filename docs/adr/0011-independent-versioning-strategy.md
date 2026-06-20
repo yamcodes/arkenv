@@ -35,6 +35,7 @@ All framework plugins (e.g., `@arkenv/nextjs`, `@arkenv/bun-plugin`) declare `ar
 
 - **Avoid Duplication & Runtime Failures:** Wrapping `arkenv` as a regular dependency in plugins risks duplicating the core engine package in `node_modules` (due to varying version resolution matching or hoisting strategies of package managers).
 - **Structural Typing & Singletons:** Duplication breaks ArkType's structural typing and `instanceof` checks (e.g., schema validation context, symbols, internal singletons). Having a single shared instance of the `arkenv` core engine across the user's codebase is critical.
+- **Enterprise Precedent (SDK Integrations):** This Wide Peer approach follows the standard set by major framework SDKs that rely on singleton states or structural typing. For example, `@supabase/ssr` relies on `peerDependencies` for `@supabase/supabase-js`, `@trpc/next` relies on `peerDependencies` for `@trpc/server`, and `@stripe/react-stripe-js` relies on `peerDependencies` for `@stripe/stripe-js`. This is to guarantee singletons and avoid duplicate instance crashes.
 
 #### Enforcing Peer Dependencies Without Sacrificing DX
 
