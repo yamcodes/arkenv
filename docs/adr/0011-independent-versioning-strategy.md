@@ -1,4 +1,4 @@
-# Hybrid Versioning Strategy
+# Independent Versioning Strategy
 
 ## Context
 
@@ -11,25 +11,17 @@ For example:
 
 ## Decision
 
-We will adopt a **hybrid versioning model** that combines fixed (locked) versioning for the core inner circle with independent versioning for the outer ring of plugins and utilities.
+We will adopt an **independent versioning model** where all packages in the monorepo float independently. There is no locked inner circle because ArkEnv has a single core engine package (`arkenv`), and all other packages (including `@arkenv/cli`) act as independent consumers or utilities.
 
-### Inner Circle (Fixed / Locked)
-
-The following packages are always kept in version lockstep:
-
-- `arkenv` (core engine)
-- `@arkenv/cli` (codegen tool)
-
-**Rationale:** `@arkenv/cli` generates code based on `arkenv`'s schema internals. A version mismatch between the CLI and the core engine can produce incompatible or broken generated files. Keeping them fixed eliminates this class of errors.
-
-### Outer Ring (Independent)
+### Independent Outer Ring
 
 The following packages float independently:
 
+- The CLI codegen tool: `@arkenv/cli`
 - Framework plugins: `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`
 - Build utilities: `@arkenv/build`, `@arkenv/fumadocs-ui`
 
-**Rationale:** These packages integrate with external frameworks and tools that evolve on their own schedules. A local integration fix (e.g., adapting to a new Next.js API) should not trigger a core engine release. Independent versioning allows us to ship plugin-specific fixes without cascading version bumps to the entire ecosystem.
+**Rationale:** These packages integrate with external frameworks and tools that evolve on their own schedules. A local integration fix (e.g., adapting to a new Next.js API) or a tweak to a CLI prompt should not trigger a core engine release. Independent versioning allows us to ship plugin-specific and tooling-specific fixes without cascading version bumps to the entire ecosystem. The CLI (`@arkenv/cli`) itself is merely a scaffolding utility that writes configuration files; it does not depend on deep `arkenv` internals, and therefore does not need to be version-locked to the core engine.
 
 ### The Glue (Strict Peer Dependencies)
 
