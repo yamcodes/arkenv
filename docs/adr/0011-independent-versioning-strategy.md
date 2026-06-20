@@ -29,11 +29,19 @@ The following packages float independently:
 
 ### The Glue (Strict Peer Dependencies)
 
-All framework plugins declare `arkenv` as a **strict peer dependency**:
+All framework plugins (e.g., `@arkenv/nextjs`, `@arkenv/bun-plugin`) declare `arkenv` as a **strict peer dependency** rather than a regular dependency.
 
-- This enforces compatibility at the package manager level.
-- Users are warned (or blocked) if they install an incompatible plugin/core combination.
-- It prevents silent version skew that could break structural typing at runtime.
+#### Why not regular dependencies?
+
+- **Avoid Duplication & Runtime Failures:** Wrapping `arkenv` as a regular dependency in plugins risks duplicating the core engine package in `node_modules` (due to varying version resolution matching or hoisting strategies of package managers).
+- **Structural Typing & Singletons:** Duplication breaks ArkType's structural typing and `instanceof` checks (e.g., schema validation context, symbols, internal singletons). Having a single shared instance of the `arkenv` core engine across the user's codebase is critical.
+
+#### Enforcing Peer Dependencies Without Sacrificing DX
+
+While requiring peer dependencies can sometimes lead to extra manual installation steps, the developer experience (DX) is fully preserved:
+
+- **CLI-Forward Scaffolding:** The starting point and primary onboarding path for ArkEnv projects is running `npx arkenv init`. This CLI-forward approach handles project initialization, dependency installation, and boilerplate generation automatically.
+- **Auto-Installation:** Modern package managers (NPM v7+, PNPM, Yarn) automatically resolve and install peer dependencies by default, removing manual friction for the end user while maintaining runtime singleton safety.
 
 #### Monorepo Protocol: `workspace:*` vs `workspace:^`
 
