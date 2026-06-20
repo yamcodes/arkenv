@@ -94,10 +94,12 @@ export function buildNextjsTemplate(
 		const flatFields = allFields.map((field) => field.replace(/^\t\t/, "\t"));
 
 		const exposedKeyNames: string[] = [];
-		if (envKeys && envKeys.length > 0) {
-			for (const key of envKeys) {
-				if (key === "NODE_ENV") {
-					// NODE_ENV is implicitly shared, no need to list it in options.expose
+		for (const field of sharedFields) {
+			const match = field.trim().match(/^([a-zA-Z0-9_]+)\s*:/);
+			if (match) {
+				const key = match[1];
+				if (key !== "NODE_ENV") {
+					exposedKeyNames.push(key);
 				}
 			}
 		}
