@@ -23,7 +23,7 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
-		"arkenv": "workspace:^",
+		"arkenv": "^1.0.0",
 		"arktype": "^2.1.22",
 		"bun": "^1.0.0"
 	},

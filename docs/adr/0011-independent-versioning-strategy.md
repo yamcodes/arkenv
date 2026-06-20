@@ -53,11 +53,11 @@ Because this is a monorepo, plugins reference the local `arkenv` package during 
 - When published to npm, pnpm rewrites `workspace:*` to the **exact current version** (e.g., `"1.0.0-alpha.1"`).
 - This is correct for `devDependencies` because they are not installed by end users.
 
-**`peerDependencies`: `"arkenv": "workspace:^"`**
+**`peerDependencies`: `"arkenv": "^1.0.0"`**
 
-- During local development, this also links to the workspace package.
-- When published to npm, pnpm rewrites `workspace:^` to a **caret range** (e.g., `"^1.0.0-alpha.1"`).
-- This is **mandatory** for `peerDependencies`. Using `workspace:*` here would publish an exact pin, meaning every patch release of `arkenv` would trigger an unmet peer dependency warning for all users until they manually update every plugin. The caret range allows users to upgrade `arkenv` within the major version without friction.
+- We use the **Wide Peer** strategy by hardcoding the absolute minimum supported version of `arkenv`. We completely drop the `workspace:` prefix here.
+- This decoupling is necessary to solve the "Artificial Floor" problem where using `workspace:^` forces the published package to artificially require the exact version of the core engine present in the monorepo at publish time.
+- Because it is a regular hardcoded range, anyone from `1.0.0` upwards can install the new plugin update without being forced to upgrade their core engine.
 
 **`dependencies` (Highly Coupled Internals): `"arkenv": "workspace:~"`**
 
@@ -66,11 +66,11 @@ Because this is a monorepo, plugins reference the local `arkenv` package during 
 - This ensures that a minor feature update to `arkenv` cannot silently break the coupled internal tool. If `arkenv` bumps its minor version, the dependent package must also be released and bumped.
 - **Not currently used** in the ArkEnv monorepo, but reserved for future highly-coupled internal tools.
 
-| Field                  | Protocol      | Local Dev          | Published                       |
-| ---------------------- | ------------- | ------------------ | ------------------------------- |
-| `devDependencies`      | `workspace:*` | Links to workspace | Exact version (`1.0.0-alpha.1`) |
-| `peerDependencies`     | `workspace:^` | Links to workspace | Caret range (`^1.0.0-alpha.1`)  |
-| `dependencies` (tight) | `workspace:~` | Links to workspace | Tilde range (`~1.0.0-alpha.1`)  |
+| Field                  | Protocol      | Local Dev           | Published                       |
+| ---------------------- | ------------- | ------------------- | ------------------------------- |
+| `devDependencies`      | `workspace:*` | Links to workspace  | Exact version (`1.0.0-alpha.1`) |
+| `peerDependencies`     | `^1.0.0`      | Standard resolution | Hardcoded range (`^1.0.0`)      |
+| `dependencies` (tight) | `workspace:~` | Links to workspace  | Tilde range (`~1.0.0-alpha.1`)  |
 
 > **Reference:** See [pnpm documentation on publishing workspace packages](https://pnpm.io/workspaces#publishing-workspace-packages) for full details on how `workspace:` protocols are rewritten during publish.
 
