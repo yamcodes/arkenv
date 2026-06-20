@@ -15,6 +15,10 @@ export function createEnv<
 >(
 	schema: EnvSchema<TSchema>,
 	options?: {
+		exposeToClient?: readonly TShared[];
+		/** @deprecated Use `exposeToClient` instead */
+		expose?: readonly TShared[];
+		/** @deprecated Use `exposeToClient` instead */
 		shared?: readonly TShared[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;
