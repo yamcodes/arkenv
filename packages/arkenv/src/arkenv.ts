@@ -8,7 +8,7 @@ import type {
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 import { ArkEnvError, type SafeArkEnvResult } from "./core";
-import { executeSafe } from "./utils/errors";
+import { safeExecute } from "./utils/errors";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -165,7 +165,7 @@ export function arkenv<
 	config: ArkEnvConfig = {},
 ): ArkenvOutput<T, D> | SafeArkEnvResult<ArkenvOutput<T, D>> {
 	if (config.safe) {
-		return executeSafe(() => parse(def as any, config));
+		return safeExecute(() => parse(def as any, config));
 	}
 	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
 	return parse(def as any, config);

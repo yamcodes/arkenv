@@ -6,7 +6,7 @@ import {
 	assertStandardSchemaMap,
 } from "./guards";
 import { type ParseStandardConfig, parseStandard } from "./parse-standard";
-import { executeSafe } from "./utils/errors";
+import { safeExecute } from "./utils/errors";
 
 /**
  * Configuration options for the `arkenv/standard` entry's `arkenv`.
@@ -58,7 +58,7 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	}
 
 	if (config.safe) {
-		return executeSafe(
+		return safeExecute(
 			() =>
 				parseStandard(def as Record<string, unknown>, config) as {
 					[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;

@@ -139,7 +139,7 @@ export function getStandardMeta(issue: any): { min?: number; max?: number } {
  * @returns A SafeArkEnvResult containing either the parsed data or the caught ArkEnvError
  * @internal
  */
-export function executeSafe<T>(parseFn: () => T): SafeArkEnvResult<T> {
+export function safeExecute<T>(parseFn: () => T): SafeArkEnvResult<T> {
 	try {
 		return { success: true, data: parseFn() };
 	} catch (error) {
