@@ -1,10 +1,12 @@
 import type { StandardSchemaV1 } from "@repo/types";
+import { ArkEnvError, type SafeArkEnvResult } from "./core";
 import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
 } from "./guards";
 import { type ParseStandardConfig, parseStandard } from "./parse-standard";
+import { safeExecute } from "./utils/errors";
 
 /**
  * Configuration options for the `arkenv/standard` entry's `arkenv`.
@@ -19,8 +21,8 @@ export type StandardEnvConfig = ParseStandardConfig;
  *
  * @param def An object mapping variable names to Standard Schema validators
  * @param config Optional configuration
- * @returns The validated environment variables
- * @throws An {@link ArkEnvError} if validation fails
+ * @returns The validated environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
+ * @throws An {@link ArkEnvError} if validation fails and `safe` is not enabled
  *
  * @example
  * ```ts
@@ -35,8 +37,18 @@ export type StandardEnvConfig = ParseStandardConfig;
  */
 export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,
-	config?: StandardEnvConfig,
-): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> } {
+	config?: StandardEnvConfig & { safe?: false },
+): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> };
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
+	def: T,
+	config: StandardEnvConfig & { safe: true },
+): SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }>;
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
+	def: T,
+	config: StandardEnvConfig = {},
+):
+	| { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }
+	| SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
 	assertStandardSchemaMap(def);
 
 	for (const key in def) {
@@ -45,7 +57,16 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 		assertStandardSchema(key, validator);
 	}
 
-	return parseStandard(def as Record<string, unknown>, config ?? {}) as {
+	if (config.safe) {
+		return safeExecute(
+			() =>
+				parseStandard(def as Record<string, unknown>, config) as {
+					[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
+				},
+		);
+	}
+
+	return parseStandard(def as Record<string, unknown>, config) as {
 		[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
 	};
 }

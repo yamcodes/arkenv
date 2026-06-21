@@ -23,6 +23,9 @@ export type { ImportMetaEnvAugmented } from "./types";
  * @param options - The environment variable schema definition. Can be an `EnvSchema` object
  *   for typesafe validation or an ArkType `CompiledEnvSchema` for dynamic schemas.
  * @param arkenvConfig - Optional ArkEnv configuration (e.g. `coerce`, `onUndeclaredKey`).
+ *   Note: The `safe` option is omitted from the configuration because the plugin
+ *   requires the raw environment object to inject into the bundler. If you need
+ *   to handle validation errors without crashing the build, invoke `arkenv` manually.
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
  *
  * @example
@@ -50,15 +53,15 @@ export type { ImportMetaEnvAugmented } from "./types";
  */
 export default function arkenv(
 	options: CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",
@@ -76,6 +79,7 @@ export default function arkenv<const T extends SchemaShape>(
 			const env: SchemaShape = coreArkenv(options as any, {
 				...arkenvConfig,
 				env: arkenvConfig?.env ?? loadEnv(mode, envDir, ""),
+				safe: false,
 			});
 
 			// Filter to only include environment variables matching the prefix

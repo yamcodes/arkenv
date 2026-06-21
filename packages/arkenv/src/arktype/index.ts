@@ -3,13 +3,14 @@ import type { SchemaShape } from "@repo/types";
 import type { distill } from "arktype";
 import { ArkErrors } from "arktype";
 import type { ArkEnvConfig, EnvSchema } from "@/arkenv";
+import { coerceEnvironment } from "@/coercion";
+import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "@/core";
 import {
-	applyCoercion,
-	findCoercionPaths,
-	stripEmptyStrings,
-} from "@/coercion";
-import { ArkEnvError, type ValidationIssue } from "@/core";
-import { styleText } from "@/utils/style-text";
+	buildEnvIssue,
+	getArkTypeMeta,
+	mapArkTypeCode,
+	redactMessageWasValue,
+} from "@/utils/errors";
 
 /**
  * Re-export of ArkType's `distill` utilities.
@@ -23,17 +24,19 @@ import { styleText } from "@/utils/style-text";
 export type { distill };
 
 /**
- * Converts ArkType's `ArkErrors` (keyed by path) into a flat `ValidationIssue[]`
- * suitable for `ArkEnvError`. Strips leading path references from messages to
- * avoid duplication when `formatInternalErrors` prepends the styled path, and
- * applies cyan styling to inline "(was …)" values.
+ * Convert ArkType's `ArkErrors` (keyed by path) into a flat `EnvIssue[]`
+ * suitable for `ArkEnvError`.
  *
  * @param errors The ArkType errors object to convert
+ * @param config Optional ArkEnvConfig to read debugSecrets options
  * @returns An array of flattened validation issues
  *
  * @internal
  */
-function arkErrorsToIssues(errors: ArkErrors): ValidationIssue[] {
+function arkErrorsToIssues(
+	errors: ArkErrors,
+	config?: ArkEnvConfig,
+): EnvIssue[] {
 	return Object.entries(errors.byPath).map(([path, error]) => {
 		let message = error.message;
 
@@ -50,19 +53,24 @@ function arkErrorsToIssues(errors: ArkErrors): ValidationIssue[] {
 			message = rest.trimStart();
 		}
 
-		// Style (was ...) inline values
-		const valueMatch = message.match(/\(was (.*)\)/);
-		if (valueMatch?.[1]) {
-			const value = valueMatch[1];
-			if (!value.includes("\x1b[")) {
-				message = message.replace(
-					`(was ${value})`,
-					`(was ${styleText("cyan", value)})`,
-				);
-			}
-		}
+		// Redact and style (was ...) inline values
+		message = redactMessageWasValue(message, path, config?.debugSecrets);
 
-		return { path, message };
+		// Map code and metadata using centralized helpers
+		const code = mapArkTypeCode(error.code);
+		const bounds = getArkTypeMeta(error);
+		const meta: EnvIssueMeta = {
+			...bounds,
+		};
+
+		return buildEnvIssue(
+			path,
+			message,
+			code,
+			meta,
+			error.expected,
+			error.code === "required" ? undefined : error.data,
+		);
 	});
 }
 
@@ -107,30 +115,27 @@ export function parse<const T extends SchemaShape>(
 	// Apply the `onUndeclaredKey` option
 	const schemaWithKeys = schema.onUndeclaredKey(onUndeclaredKey);
 
-	// Optionally treat empty strings as undefined
-	const processedEnv = emptyAsUndefined ? stripEmptyStrings(env) : env;
-
-	let coercedEnv = { ...processedEnv } as Record<string, unknown>;
-
-	// Apply coercion transformation to allow strings to be parsed as numbers/booleans
-	if (shouldCoerce) {
-		const json = schemaWithKeys.in.toJsonSchema({
-			fallback: (ctx: { base: unknown }) => ctx.base,
-		});
-		const targets = findCoercionPaths(json);
-		if (targets.length > 0) {
-			coercedEnv = applyCoercion(coercedEnv, targets, {
-				arrayFormat,
-			});
-		}
-	}
+	// Optionally strip empty strings and apply coercion
+	const { coercedEnv } = coerceEnvironment(
+		env,
+		emptyAsUndefined,
+		arrayFormat,
+		shouldCoerce
+			? () => {
+					const json = schemaWithKeys.in.toJsonSchema({
+						fallback: (ctx: { base: unknown }) => ctx.base,
+					});
+					return { schema: json, hasSchema: true };
+				}
+			: undefined,
+	);
 
 	// Validate the environment variables
 	const validatedEnv = schemaWithKeys(coercedEnv);
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors
 	if (validatedEnv instanceof ArkErrors) {
-		throw new ArkEnvError(arkErrorsToIssues(validatedEnv));
+		throw new ArkEnvError(arkErrorsToIssues(validatedEnv, config));
 	}
 
 	return validatedEnv;

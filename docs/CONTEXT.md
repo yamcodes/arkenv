@@ -176,6 +176,15 @@ pnpm run test:e2e                     # E2E tests
 - Run `pnpm release` after merging PRs to publish packages
 - Only packages in `packages/` are published to npm
 
+## Design Decisions
+
+**Split Parsing Engines (ArkType vs Standard Schema):**
+
+- ArkEnv maintains two distinct parsing engines: `src/arktype/index.ts` and `src/parse-standard.ts`.
+- Despite visual similarities, they are strictly isolated to guarantee the `arkenv/standard` module boundary remains "ArkType-free".
+- Unifying them would force bundlers to trace static imports and drag ArkType into the dependency tree of Standard Schema users, violating the zero-dependency goal.
+- We prioritize optimal tree-shaking, bundle size isolation, and decoupling over dogmatic DRYness.
+
 ## Domain context
 
 **Environment Variable Validation:**
@@ -225,8 +234,12 @@ pnpm run test:e2e                     # E2E tests
 - Leverages ArkType's `type.infer` and `type.validate` utilities
 - Typesafe environment object returned from `arkenv`
 
-**Error Handling:**
+**Error Handling & Vocabulary:**
 
+- **Issue vs. Error Distinction**: ArkEnv strictly differentiates between an "Issue" and an "Error".
+  - **Issue (`EnvIssue`)**: A single, isolated validation failure on a specific environment variable.
+  - **Error (`ArkEnvError`)**: The overarching runtime exception that is thrown when validation fails. It contains an array of `EnvIssue`s.
+- Functions dealing with individual failures should use "Issue" (e.g., `formatIssues`), while functions dealing with the final halting exception should use "Error" (e.g., `ArkEnvError`).
 - `ArkEnvError` extends `Error` and formats ArkType validation errors
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails

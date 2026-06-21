@@ -1,3 +1,4 @@
+import type { Dict } from "@repo/types";
 import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
 
 /**
@@ -9,10 +10,8 @@ import { coerceBoolean, coerceDate, coerceJson, coerceNumber } from "./morphs";
  * @param env The environment variables record
  * @returns A new record with empty string keys removed
  */
-export const stripEmptyStrings = (
-	env: Record<string, unknown>,
-): Record<string, unknown> => {
-	const result: Record<string, unknown> = {};
+export const stripEmptyStrings = (env: Dict<string>): Dict<string> => {
+	const result: Dict<string> = {};
 	for (const key in env) {
 		const value = env[key];
 		if (value !== "") {

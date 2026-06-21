@@ -1,5 +1,6 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import { arkenv } from "./standard.ts";
+import { ArkEnvError } from "./core";
+import { arkenv } from "./standard";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
@@ -326,5 +327,209 @@ describe("Standard Mode emptyAsUndefined", () => {
 		);
 
 		expect(env.STRING_VAR).toBe("");
+	});
+
+	it("should parse and normalize Standard Schema errors correctly", () => {
+		const mockZodValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "zod" as const,
+				types: {} as any,
+				validate: (value: unknown) => {
+					if (value === undefined) {
+						return {
+							issues: [
+								{
+									message: "Required",
+									code: "invalid_type",
+									path: [],
+									expected: "string",
+									received: "undefined",
+								} as any,
+							],
+						};
+					}
+					if (value === "invalid") {
+						return {
+							issues: [
+								{
+									message: "Invalid email",
+									code: "invalid_string",
+									validation: "email",
+									path: [],
+									expected: "string",
+									received: "string",
+								} as any,
+							],
+						};
+					}
+					return { value };
+				},
+			},
+		};
+
+		// 1. Test missing variable
+		try {
+			arkenv(
+				{
+					SOME_VAR: mockZodValidator,
+				},
+				{ env: {} },
+			);
+			expect.fail("Should throw");
+		} catch (error: any) {
+			expect(error.name).toBe("ArkEnvError");
+			expect(error.issues).toBeDefined();
+			expect(error.issues[0].code).toBe("MISSING_VARIABLE");
+			expect(error.issues[0].message).toContain("must be string");
+		}
+
+		// 2. Test invalid format
+		try {
+			arkenv(
+				{
+					SOME_VAR: mockZodValidator,
+				},
+				{ env: { SOME_VAR: "invalid" } },
+			);
+			expect.fail("Should throw");
+		} catch (error: any) {
+			expect(error.name).toBe("ArkEnvError");
+			expect(error.issues).toBeDefined();
+			expect(error.issues[0].code).toBe("INVALID_FORMAT");
+			expect(error.issues[0].message).toContain("must be string");
+			expect(error.issues[0].message).toContain("invalid");
+		}
+	});
+
+	it("should redact sensitive fields in standard mode by default", () => {
+		const mockZodValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "zod" as const,
+				types: {} as any,
+				validate: (_value: unknown) => ({
+					issues: [
+						{
+							message: "Invalid key",
+							code: "custom",
+							path: [],
+							expected: "string",
+							received: "string",
+						} as any,
+					],
+				}),
+			},
+		};
+
+		try {
+			arkenv(
+				{
+					DB_PASSWORD: mockZodValidator,
+				},
+				{ env: { DB_PASSWORD: "my-secret-password" } },
+			);
+			expect.fail("Should throw");
+		} catch (error: any) {
+			expect(error.issues[0].message).toContain("[REDACTED]");
+			expect(error.issues[0].message).not.toContain("my-secret-password");
+		}
+
+		// Programmatic debugSecrets override
+		try {
+			arkenv(
+				{
+					DB_PASSWORD: mockZodValidator,
+				},
+				{
+					env: { DB_PASSWORD: "my-secret-password" },
+					debugSecrets: true,
+				},
+			);
+			expect.fail("Should throw");
+		} catch (error: any) {
+			expect(error.issues[0].message).toContain("my-secret-password");
+		}
+	});
+
+	it("should safely handle traversal and JSON parsing issues", () => {
+		const mockNestedValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "zod" as const,
+				types: {} as any,
+				validate: (_value: unknown) => ({
+					issues: [
+						{
+							message: "Invalid nested property",
+							code: "invalid_type",
+							path: ["port"],
+						} as any,
+					],
+				}),
+			},
+		};
+
+		// Malformed JSON should not crash, raw string should remain in received, and traversalError populated
+		try {
+			arkenv(
+				{
+					CONFIG: mockNestedValidator,
+				},
+				{ env: { CONFIG: "{ malformed json" } },
+			);
+			expect.fail("Should throw");
+		} catch (error: any) {
+			expect(error.issues[0].received).toBe("{ malformed json");
+			expect(error.issues[0].meta?.traversalError).toContain(
+				"Unparseable JSON",
+			);
+		}
+	});
+
+	it("should support arkenv({ safe: true }) standard mode API", () => {
+		const mockZodValidator = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "zod" as const,
+				types: {} as any,
+				validate: (value: unknown) => {
+					if (value === undefined) {
+						return {
+							issues: [
+								{
+									message: "Required",
+									code: "invalid_type",
+									path: [],
+								} as any,
+							],
+						};
+					}
+					return { value };
+				},
+			},
+		};
+
+		const resultSuccess = arkenv(
+			{
+				PORT: mockZodValidator,
+			},
+			{ safe: true, env: { PORT: "3000" } },
+		);
+		expect(resultSuccess.success).toBe(true);
+		if (resultSuccess.success) {
+			expect(resultSuccess.data).toEqual({ PORT: "3000" });
+		}
+
+		const resultFail = arkenv(
+			{
+				PORT: mockZodValidator,
+			},
+			{ safe: true, env: {} },
+		);
+		expect(resultFail.success).toBe(false);
+		if (!resultFail.success) {
+			expect(resultFail.issues[0].code).toBe("MISSING_VARIABLE");
+		}
 	});
 });
