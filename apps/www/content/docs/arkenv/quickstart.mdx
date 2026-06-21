@@ -166,14 +166,14 @@ console.log(`Connecting to ${dbConfig.host}:${dbConfig.port}...`);
 
 ## Safe parsing (Non-throwing)
 
-By default, calling `arkenv()` will throw an `ArkEnvError` if validation fails. If you prefer to handle validation issues without catching thrown exceptions, you can use the non-throwing `safeArkEnv()` function instead. It returns a result object containing either the successfully parsed data or an array of validation issues.
+By default, calling `arkenv()` will throw an `ArkEnvError` if validation fails. If you prefer to handle validation issues without catching thrown exceptions, you can pass the `{ safe: true }` option instead. It returns a result object containing either the successfully parsed data or an array of validation issues.
 
 ```ts title="env.ts" twoslash
-import { safeArkEnv } from 'arkenv';
+import { arkenv } from 'arkenv';
 
-const result = safeArkEnv({
+const result = arkenv({
   PORT: "number = 3000",
-});
+}, { safe: true });
 
 if (result.success) {
   console.log("Validated config:", result.data);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { safeStringify, shouldRedact } from "@/utils/redact";
-import { safeArkEnv } from "./arkenv";
+import { arkenv } from "./arkenv";
 import { ArkEnvError, type EnvIssue, formatError, formatIssues } from "./core";
 
 describe("shouldRedact", () => {
@@ -101,7 +101,7 @@ describe("formatIssues & formatError", () => {
 	});
 });
 
-describe("ArkEnvError & safeArkEnv", () => {
+describe("ArkEnvError & arkenv safe mode", () => {
 	it("should create error and store issues", () => {
 		const issues: EnvIssue[] = [
 			{
@@ -117,16 +117,16 @@ describe("ArkEnvError & safeArkEnv", () => {
 		expect(error.name).toBe("ArkEnvError");
 	});
 
-	it("should run safeArkEnv successfully", () => {
-		const result = safeArkEnv({ PORT: "number" }, { env: { PORT: "3000" } });
+	it("should run arkenv safely", () => {
+		const result = arkenv({ PORT: "number" }, { safe: true, env: { PORT: "3000" } });
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.data).toEqual({ PORT: 3000 });
 		}
 	});
 
-	it("should return failure for safeArkEnv with invalid input", () => {
-		const result = safeArkEnv({ PORT: "number" }, { env: { PORT: "abc" } });
+	it("should return failure for arkenv safe mode with invalid input", () => {
+		const result = arkenv({ PORT: "number" }, { safe: true, env: { PORT: "abc" } });
 		expect(result.success).toBe(false);
 		if (!result.success) {
 			expect(result.issues).toBeDefined();

@@ -89,6 +89,15 @@ export type ParseStandardConfig = {
 	 * @default false
 	 */
 	emptyAsUndefined?: boolean;
+
+	/**
+	 * Whether to return a safe result object instead of throwing an error on validation failure.
+	 *
+	 * When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
+	 *
+	 * @default false
+	 */
+	safe?: boolean;
 };
 
 /**

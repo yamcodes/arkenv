@@ -37,8 +37,18 @@ export type StandardEnvConfig = ParseStandardConfig;
  */
 export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,
-	config?: StandardEnvConfig,
-): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> } {
+	config?: StandardEnvConfig & { safe?: false },
+): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> };
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
+	def: T,
+	config: StandardEnvConfig & { safe: true },
+): SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }>;
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
+	def: T,
+	config: StandardEnvConfig = {},
+):
+	| { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }
+	| SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
 	assertStandardSchemaMap(def);
 
 	for (const key in def) {
@@ -47,24 +57,18 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 		assertStandardSchema(key, validator);
 	}
 
-	return parseStandard(def as Record<string, unknown>, config ?? {}) as {
+	if (config.safe) {
+		return executeSafe(
+			() =>
+				parseStandard(def as Record<string, unknown>, config) as {
+					[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
+				},
+		);
+	}
+
+	return parseStandard(def as Record<string, unknown>, config) as {
 		[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
 	};
-}
-
-/**
- * Non-throwing standard mode utility to parse and validate environment variables using Standard Schema 1.0 validators.
- * Returns a serializable result object containing either the validated data or error issues.
- *
- * @param def - An object mapping variable names to Standard Schema validators
- * @param config - Optional configuration
- * @returns The SafeArkEnvResult containing the data or the validation error object
- */
-export function safeArkEnv<const T extends Record<string, StandardSchemaV1>>(
-	def: T,
-	config?: StandardEnvConfig,
-): SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
-	return executeSafe(() => arkenv(def, config));
 }
 
 /**

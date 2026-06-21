@@ -98,6 +98,15 @@ export type ArkEnvConfig = {
 	 * @default false
 	 */
 	emptyAsUndefined?: boolean;
+
+	/**
+	 * Whether to return a safe result object instead of throwing an error on validation failure.
+	 *
+	 * When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
+	 *
+	 * @default false
+	 */
+	safe?: boolean;
 };
 
 export type { SafeArkEnvResult };
@@ -123,49 +132,38 @@ export type ArkenvOutput<T extends SchemaShape, D> =
  */
 export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
+	config?: ArkEnvConfig & { safe?: false },
 ): distill.Out<at.infer<T, $>>;
 export function arkenv<T extends CompiledEnvSchema>(
 	def: T,
-	config?: ArkEnvConfig,
+	config?: ArkEnvConfig & { safe?: false },
 ): InferType<T>;
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config?: ArkEnvConfig): ArkenvOutput<T, D>;
+>(def: D, config?: ArkEnvConfig & { safe?: false }): ArkenvOutput<T, D>;
+export function arkenv<const T extends SchemaShape>(
+	def: EnvSchema<T>,
+	config: ArkEnvConfig & { safe: true },
+): SafeArkEnvResult<distill.Out<at.infer<T, $>>>;
+export function arkenv<T extends CompiledEnvSchema>(
+	def: T,
+	config: ArkEnvConfig & { safe: true },
+): SafeArkEnvResult<InferType<T>>;
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config: ArkEnvConfig = {}): ArkenvOutput<T, D> {
+>(def: D, config: ArkEnvConfig & { safe: true }): SafeArkEnvResult<ArkenvOutput<T, D>>;
+export function arkenv<
+	const T extends SchemaShape,
+	const D extends EnvSchema<T> | CompiledEnvSchema,
+>(
+	def: D,
+	config: ArkEnvConfig = {},
+): ArkenvOutput<T, D> | SafeArkEnvResult<ArkenvOutput<T, D>> {
+	if (config.safe) {
+		return executeSafe(() => parse(def as any, config));
+	}
 	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
 	return parse(def as any, config);
-}
-
-/**
- * Non-throwing utility to parse environment variables using ArkType or Standard Schema.
- * Returns a serializable result object containing either the validated data or error issues.
- *
- * @param def - The schema definition
- * @param config - The evaluation configuration
- * @returns The SafeArkEnvResult containing the data or the validation error object
- */
-export function safeArkEnv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
-): SafeArkEnvResult<distill.Out<at.infer<T, $>>>;
-export function safeArkEnv<T extends CompiledEnvSchema>(
-	def: T,
-	config?: ArkEnvConfig,
-): SafeArkEnvResult<InferType<T>>;
-export function safeArkEnv<
-	const T extends SchemaShape,
-	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config?: ArkEnvConfig): SafeArkEnvResult<ArkenvOutput<T, D>>;
-export function safeArkEnv<
-	const T extends SchemaShape,
-	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config: ArkEnvConfig = {}): SafeArkEnvResult<ArkenvOutput<T, D>> {
-	// Cast to any is required here because 'def' is a union type (EnvSchema | CompiledEnvSchema)
-	// which TypeScript's overload resolution cannot resolve statically. It is safely resolved at runtime.
-	return executeSafe(() => arkenv(def as any, config));
 }
