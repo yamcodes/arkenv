@@ -15,7 +15,14 @@
 		"@repo/scope": "0.1.3",
 		"@repo/types": "0.1.0",
 		"@arkenv/nextjs": "0.0.7",
-		"@arkenv/vite-plugin": "0.1.1"
+		"@arkenv/vite-plugin": "0.1.1",
+		"@arkenv/build": "0.0.1",
+		"@arkenv/nuxt": "0.0.1"
 	},
-	"changesets": ["init-v1", "rename-create-env-to-arkenv", "unify-coercion"]
+	"changesets": [
+		"init-v1",
+		"rename-create-env-to-arkenv",
+		"unified-error-normalization",
+		"unify-coercion"
+	]
 }
