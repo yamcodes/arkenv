@@ -118,7 +118,10 @@ describe("ArkEnvError & arkenv safe mode", () => {
 	});
 
 	it("should run arkenv safely", () => {
-		const result = arkenv({ PORT: "number" }, { safe: true, env: { PORT: "3000" } });
+		const result = arkenv(
+			{ PORT: "number" },
+			{ safe: true, env: { PORT: "3000" } },
+		);
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.data).toEqual({ PORT: 3000 });
@@ -126,7 +129,10 @@ describe("ArkEnvError & arkenv safe mode", () => {
 	});
 
 	it("should return failure for arkenv safe mode with invalid input", () => {
-		const result = arkenv({ PORT: "number" }, { safe: true, env: { PORT: "abc" } });
+		const result = arkenv(
+			{ PORT: "number" },
+			{ safe: true, env: { PORT: "abc" } },
+		);
 		expect(result.success).toBe(false);
 		if (!result.success) {
 			expect(result.issues).toBeDefined();

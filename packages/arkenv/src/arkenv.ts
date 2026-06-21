@@ -153,7 +153,10 @@ export function arkenv<T extends CompiledEnvSchema>(
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config: ArkEnvConfig & { safe: true }): SafeArkEnvResult<ArkenvOutput<T, D>>;
+>(
+	def: D,
+	config: ArkEnvConfig & { safe: true },
+): SafeArkEnvResult<ArkenvOutput<T, D>>;
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
