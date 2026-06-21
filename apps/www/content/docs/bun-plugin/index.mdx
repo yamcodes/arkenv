@@ -20,31 +20,9 @@ To keep client bundles secure, only variables prefixed with `BUN_PUBLIC_` (and `
 
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/bun-plugin` for your existing Bun project, or spins up a new one from a template.
 
-<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
-  <Tab value="npm">
-    ```bash
-    npx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="pnpm">
-    ```bash
-    pnx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="yarn">
-    ```bash
-    yarn dlx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="bun">
-    ```bash
-    bunx @arkenv/cli@latest init
-    ```
-  </Tab>
-</Tabs>
+```npm
+npx @arkenv/cli@latest init
+```
 
 <Accordions>
   <Accordion title="Manual Installation">
@@ -174,7 +152,13 @@ plugins = ["./plugins/arkenv.ts"]
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
 :::note
-When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
+When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, install it via:
+
+```npm
+npm install zod
+```
+
+(or use `valibot` instead).
 :::
 
 ```ts title="src/env.ts" twoslash
