@@ -109,7 +109,8 @@ if (!result.success) {
 }
 ```
 
-:::warn Not supported in Integrations
+:::warning[Not supported in integrations]
+
 The `safe: true` option is purposefully omitted from the configuration options of framework integrations (like `@arkenv/vite-plugin`, `@arkenv/nextjs`, etc.).
 
 Framework integrations rely on injecting the raw, validated environment variables into the build process. If `safe: true` were enabled, a validation failure would result in the plugin silently injecting the `{ success: false, issues }` wrapper object into your application bundle instead of crashing the build, leading to broken downstream behavior.
