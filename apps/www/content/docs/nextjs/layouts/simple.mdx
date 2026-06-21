@@ -13,7 +13,7 @@ src
 
 To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected.
 
-:::warning
+:::warning[Server logic in client bundle]
 Defining your schemas together means the *server validation logic* is shipped in the client bundle.
 
 | ⚠️ Visible in JS bundle                                                         | 🔒 Secure on server                                  |

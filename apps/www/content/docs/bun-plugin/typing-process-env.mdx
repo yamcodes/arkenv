@@ -70,8 +70,7 @@ The `ProcessEnvAugmented` type:
 
 Server-only variables (like `PORT`) are automatically excluded from the client bundle and won't appear in the augmented `process.env` type.
 
-:::important
-**Imports will break type augmentation**
+:::important[Imports will break type augmentation]
 
 If the `ProcessEnv` augmentation does not work, make sure you do not have any `import` statements in `bun-env.d.ts`. See [the TypeScript documentation](https://www.typescriptlang.org/docs/handbook/2/modules.html#how-javascript-modules-are-defined) for more information.
 :::
