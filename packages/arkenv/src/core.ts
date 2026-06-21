@@ -37,10 +37,6 @@ export type EnvIssueMeta = {
 	validation?: string;
 	/** Any custom constraint descriptions */
 	constraint?: string;
-	/** The raw issue code from the underlying validation engine */
-	engineCode?: string;
-	/** The validation engine that reported the issue (e.g. "arktype", "standard") */
-	engine: string;
 	/** Traversal error occurred during JSON-parsing of the environment variable */
 	traversalError?: string;
 };
@@ -59,7 +55,7 @@ export type EnvIssue = {
 	expected?: string;
 	/** The raw value received (redacted in string formatting if sensitive) */
 	received?: unknown;
-	/** Additional validation metadata and engine codes */
+	/** Additional validation metadata */
 	meta?: EnvIssueMeta;
 };
 
@@ -79,18 +75,6 @@ export function formatIssues(issues: EnvIssue[]): string {
 		.join("\n");
 }
 
-/**
- * Format an ArkEnvError or a list of issues into a single styled string.
- *
- * @param error - The ArkEnvError instance or raw list of issues
- * @returns The formatted error report string
- */
-export function formatError(error: ArkEnvError | EnvIssue[]): string {
-	if (Array.isArray(error)) {
-		return formatIssues(error);
-	}
-	return formatIssues(error.issues);
-}
 
 /**
  * Error thrown when environment variable validation fails.

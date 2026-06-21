@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { safeStringify, shouldRedact } from "@/utils/redact";
 import { arkenv } from "./arkenv";
-import { ArkEnvError, type EnvIssue, formatError, formatIssues } from "./core";
+import { ArkEnvError, type EnvIssue, formatIssues } from "./core";
 
 describe("shouldRedact", () => {
 	it("should detect sensitive keys", () => {
@@ -61,20 +61,18 @@ describe("safeStringify", () => {
 	});
 });
 
-describe("formatIssues & formatError", () => {
+describe("formatIssues", () => {
 	it("should format issues correctly", () => {
 		const issues: EnvIssue[] = [
 			{
 				path: "PORT",
 				message: "must be a number",
 				code: "INVALID_TYPE",
-				meta: { engine: "arktype" },
 			},
 			{
 				path: "API_KEY",
 				message: "is required",
 				code: "MISSING_VARIABLE",
-				meta: { engine: "arktype" },
 			},
 		];
 
@@ -85,20 +83,6 @@ describe("formatIssues & formatError", () => {
 		expect(result).toContain("is required");
 	});
 
-	it("should format errors via formatError", () => {
-		const issues: EnvIssue[] = [
-			{
-				path: "PORT",
-				message: "must be a number",
-				code: "INVALID_TYPE",
-				meta: { engine: "arktype" },
-			},
-		];
-		const error = new ArkEnvError(issues);
-		const result = formatError(error);
-		expect(result).toContain("PORT");
-		expect(result).toContain("must be a number");
-	});
 });
 
 describe("ArkEnvError & arkenv safe mode", () => {
@@ -106,9 +90,8 @@ describe("ArkEnvError & arkenv safe mode", () => {
 		const issues: EnvIssue[] = [
 			{
 				path: "PORT",
-				message: 'must be a number (was "abc")',
+				message: "must be a number (was \"abc\")",
 				code: "INVALID_TYPE",
-				meta: { engine: "arktype" },
 			},
 		];
 

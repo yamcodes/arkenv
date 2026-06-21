@@ -60,8 +60,6 @@ function arkErrorsToIssues(
 		const code = mapArkTypeCode(error.code);
 		const bounds = getArkTypeMeta(error);
 		const meta: EnvIssueMeta = {
-			engine: "arktype",
-			engineCode: error.code,
 			...bounds,
 		};
 

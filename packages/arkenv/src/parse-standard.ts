@@ -160,7 +160,6 @@ export function parseStandard(
 					key,
 					`Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
 					"INVALID_SCHEMA",
-					{ engine: "unknown" },
 				),
 			]);
 		}
@@ -173,15 +172,11 @@ export function parseStandard(
 					key,
 					"Async validation is not supported. ArkEnv is synchronous.",
 					"INVALID_SCHEMA",
-					{ engine: "unknown" },
 				),
 			]);
 		}
 
 		if (result.issues) {
-			const vendor = (validator as any)["~standard"]?.vendor || "unknown";
-			const engine = ["zod", "valibot"].includes(vendor) ? vendor : "unknown";
-
 			for (const issue of result.issues) {
 				const issuePath = formatIssuePath(key, issue.path);
 
@@ -209,10 +204,8 @@ export function parseStandard(
 				const bounds = getStandardMeta(issue);
 
 				const meta: EnvIssueMeta = {
-					engine,
 					...bounds,
 				};
-				if (issueCode) meta.engineCode = issueCode;
 				const iss = issue as any;
 				if (iss.validation !== undefined) meta.validation = iss.validation;
 				if (traversalError !== undefined) meta.traversalError = traversalError;
@@ -246,9 +239,7 @@ export function parseStandard(
 		for (const key of envKeys) {
 			if (onUndeclaredKey === "reject") {
 				errors.push(
-					buildEnvIssue(key, "Undeclared key", "UNDECLARED_KEY", {
-						engine: "unknown",
-					}),
+					buildEnvIssue(key, "Undeclared key", "UNDECLARED_KEY"),
 				);
 			} else if (onUndeclaredKey === "ignore") {
 				output[key] = coercedEnv[key];

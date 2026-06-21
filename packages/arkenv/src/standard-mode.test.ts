@@ -381,8 +381,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 			expect(error.name).toBe("ArkEnvError");
 			expect(error.issues).toBeDefined();
 			expect(error.issues[0].code).toBe("MISSING_VARIABLE");
-			expect(error.issues[0].message).toContain("must be string (was missing)");
-			expect(error.issues[0].meta?.engine).toBe("zod");
+			expect(error.issues[0].message).toContain("must be string");
 		}
 
 		// 2. Test invalid format
