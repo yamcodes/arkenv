@@ -177,7 +177,7 @@ const result = safeArkEnv({
 
 if (result.success) {
   console.log("Validated config:", result.data);
-  // env.PORT is guaranteed to be a number here
+  // result.data.PORT is guaranteed to be a number here
 } else {
   console.error("Validation failed:", result.error.message);
 }

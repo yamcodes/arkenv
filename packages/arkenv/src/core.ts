@@ -39,7 +39,7 @@ export type EnvIssueMeta = {
 	constraint?: string;
 	/** The raw issue code from the underlying validation engine */
 	engineCode?: string;
-	/** The validation engine that reported the issue (e.g. "arktype", "zod") */
+	/** The validation engine that reported the issue (e.g. "arktype", "standard") */
 	engine: string;
 	/** Traversal error occurred during JSON-parsing of the environment variable */
 	traversalError?: string;
