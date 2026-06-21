@@ -104,7 +104,7 @@ export const env = arkenv(
 
 <Accordions>
   <Accordion title="Manual Setup">
-    ### Define shared variables \[step] [!toc]
+    ### Define shared variables [step] [!toc]
 
     Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
@@ -120,7 +120,7 @@ export const env = arkenv(
     });
     ```
 
-    ### Define client variables \[step] [!toc]
+    ### Define client variables [step] [!toc]
 
     Create `env/client.ts` importing `arkenv` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
 
@@ -161,7 +161,7 @@ export const env = arkenv(
     );
     ```
 
-    ### Define server variables \[step] [!toc]
+    ### Define server variables [step] [!toc]
 
     Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
 
@@ -191,7 +191,7 @@ export const env = arkenv(
     );
     ```
 
-    ### Register configuration wrapper \[step] [!toc]
+    ### Register configuration wrapper [step] [!toc]
 
     Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema directory, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
 

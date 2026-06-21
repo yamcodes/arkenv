@@ -76,7 +76,7 @@ export const env = arkenv({
 
 <Accordions>
   <Accordion title="Manual Setup">
-    ### Configure environment \[step] [!toc]
+    ### Configure environment [step] [!toc]
 
     Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schemas. Import `arkenv` from the auto-generated `@/generated/env.gen.ts` helper file:
 
@@ -115,7 +115,7 @@ export const env = arkenv({
     });
     ```
 
-    ### Register configuration wrapper \[step] [!toc]
+    ### Register configuration wrapper [step] [!toc]
 
     Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
 
@@ -147,7 +147,7 @@ export const env = arkenv({
     We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
     :::
 
-    ### Use in your code \[step] [!toc]
+    ### Use in your code [step] [!toc]
 
     Import `env` throughout your Next.js application:
 
