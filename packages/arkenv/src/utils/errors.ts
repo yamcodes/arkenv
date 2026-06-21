@@ -1,3 +1,4 @@
+import type { ArkError } from "arktype";
 import {
 	ArkEnvError,
 	type EnvIssue,
@@ -26,11 +27,16 @@ const ARKTYPE_CODE_MAP = {
 	max: "VALUE_TOO_LARGE",
 	maxLength: "VALUE_TOO_LARGE",
 	divisor: "INVALID_TYPE",
-	index: "INVALID_TYPE",
-	sequence: "INVALID_TYPE",
 	intersection: "INVALID_TYPE",
 	union: "INVALID_TYPE",
-} satisfies Record<string, EnvIssueCode>;
+	unit: "INVALID_TYPE",
+	proto: "INVALID_TYPE",
+	domain: "INVALID_TYPE",
+	exactLength: "INVALID_FORMAT",
+	before: "INVALID_FORMAT",
+	after: "INVALID_FORMAT",
+	predicate: "CUSTOM",
+} satisfies Record<ArkError["code"], EnvIssueCode>;
 
 /**
  * Map an ArkType validation error code to a normalized EnvIssueCode.
