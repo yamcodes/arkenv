@@ -279,27 +279,13 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 
 ```ts title="src/app/client-component.ts" twoslash
 // @errors: 2339
-// @filename: /env/internal/shared.ts
-import { type } from "@arkenv/nextjs/shared";
-/**
- * @internal 🛑 INTERNAL SCHEMA ONLY.
- * Do not import this directly. Import `env` from `./client` or `./server` instead.
- */
-export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
-
-// @filename: /env/client.ts
-import arkenv from "@arkenv/nextjs/client";
-import { SharedSchema } from "./internal/shared";
-export const env = arkenv(
-	{ NEXT_PUBLIC_API_URL: "string" },
-	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
-);
-
 // @filename: nextjs-env.d.ts
 declare module "@/env/client" {
-	export { env } from "./env/client";
+	export const env: {
+		NEXT_PUBLIC_API_URL: string;
+		NODE_ENV: "development" | "production" | "test";
+	};
 }
-
 // @filename: /client-component.ts
 // ---cut---
 import { env } from "@/env/client";
