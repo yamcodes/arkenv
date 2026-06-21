@@ -278,7 +278,7 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
 
 ```ts title="src/app/client-component.ts" twoslash
-// @errors: 2339
+// @errors: 2339 2307
 // @filename: /env/internal/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 /**
