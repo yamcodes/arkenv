@@ -82,7 +82,6 @@ describe("formatIssues", () => {
 		expect(result).toContain("API_KEY");
 		expect(result).toContain("is required");
 	});
-
 });
 
 describe("ArkEnvError & arkenv safe mode", () => {
@@ -90,7 +89,7 @@ describe("ArkEnvError & arkenv safe mode", () => {
 		const issues: EnvIssue[] = [
 			{
 				path: "PORT",
-				message: "must be a number (was \"abc\")",
+				message: 'must be a number (was "abc")',
 				code: "INVALID_TYPE",
 			},
 		];

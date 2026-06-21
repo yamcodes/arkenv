@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-ArkEnv operates as a zero-dependency environment variable parser. It uses ArkType as its primary validation engine (`arkenv`), while also offering a completely separate entry point (`arkenv/standard`) that leverages Standard Schema 1.0 (for users preferring Zod, Valibot, etc.). 
+ArkEnv operates as a zero-dependency environment variable parser. It uses ArkType as its primary validation engine (`arkenv`), while also offering a completely separate entry point (`arkenv/standard`) that leverages Standard Schema 1.0 (for users preferring Zod, Valibot, etc.).
 
 During the refactoring to a single core repository with multiple internal exports, a code review raised concerns about code duplication between `src/arktype/index.ts` and `src/parse-standard.ts`. Both files implement similar logic for parsing objects, extracting issue metadata, and formatting validation results. The suggestion was to "aggressively unify or codeshare" these implementations to abide by the DRY (Don't Repeat Yourself) principle.
 

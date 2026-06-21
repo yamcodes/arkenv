@@ -75,7 +75,6 @@ export function formatIssues(issues: EnvIssue[]): string {
 		.join("\n");
 }
 
-
 /**
  * Error thrown when environment variable validation fails.
  *

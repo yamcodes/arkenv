@@ -238,9 +238,7 @@ export function parseStandard(
 	if (onUndeclaredKey !== "delete") {
 		for (const key of envKeys) {
 			if (onUndeclaredKey === "reject") {
-				errors.push(
-					buildEnvIssue(key, "Undeclared key", "UNDECLARED_KEY"),
-				);
+				errors.push(buildEnvIssue(key, "Undeclared key", "UNDECLARED_KEY"));
 			} else if (onUndeclaredKey === "ignore") {
 				output[key] = coercedEnv[key];
 			}
