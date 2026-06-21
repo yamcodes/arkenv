@@ -88,6 +88,10 @@ npx @arkenv/cli@latest init
       // ---cut---
       const apiUrl = import.meta.env.VITE_MY_VAR;
       //      ^?
+
+      // Autocomplete works out-of-the-box!
+      const typing = import.meta.env.
+      //                             ^|
       ```
   </Accordion>
 </Accordions>
@@ -138,6 +142,10 @@ interface ImportMeta {
 // ---cut---
 const apiUrl = import.meta.env.VITE_API_URL;
 //      ^?
+
+// Autocomplete works out-of-the-box!
+const typing = import.meta.env.
+//                             ^|
 ```
 
 For advanced workflows, see [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).

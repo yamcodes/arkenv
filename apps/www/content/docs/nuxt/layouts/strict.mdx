@@ -236,7 +236,6 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 1. **TypeScript type safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
 
 ```ts twoslash title="env/client.ts"
-// @noErrors
 // @filename: env/internal/shared.ts
 import { type } from "@arkenv/nuxt/shared";
 export const SharedSchema = type({
@@ -254,7 +253,7 @@ export const env = arkenv(
 import { env } from "~~/env/client";
 
 const api = env.NUXT_PUBLIC_API_URL;
-// @ts-expect-error DATABASE_URL is not defined in client env
+// @errors: 2339
 const db = env.DATABASE_URL;
 ```
 
