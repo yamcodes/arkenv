@@ -5,15 +5,17 @@ description: Configuration options for the arkenv() function.
 
 The second argument to `arkenv()` is an optional configuration object.
 
-<AutoTypeTable path="../../packages/arkenv/src/create-env.ts" name="ArkEnvConfig" />
-
 :::note
 All options listed below apply to both `arkenv` (ArkType mode) and `arkenv/standard` (Standard Schema mode).
 :::
 
+## Configuration options
+
+<AutoTypeTable path="../../packages/arkenv/src/create-env.ts" name="ArkEnvConfig" />
+
 ## Examples
 
-### Custom `env` Source
+### Custom env source
 
 You can pass a custom object instead of `process.env`. This is particularly useful in environments like Cloudflare Workers where variables are passed via a context object, or when testing.
 
@@ -26,7 +28,7 @@ const env = arkenv(
 );
 ```
 
-### Disabling Coercion
+### Disabling coercion
 
 By default, ArkEnv automatically coerces string environment variables to numbers or booleans if the schema requires it. You can disable this behavior:
 
@@ -41,7 +43,7 @@ const env = arkenv(
 
 See the [coercion docs](/docs/arkenv/coercion) for more details.
 
-### Custom Array Format
+### Custom array format
 
 When coercion is enabled, you can specify how array strings are parsed.
 
@@ -54,7 +56,7 @@ const env = arkenv(
 );
 ```
 
-### Empty Strings as Undefined
+### Empty strings as undefined
 
 When `emptyAsUndefined` is enabled, an environment variable set to an empty value (e.g., `PORT=` in a `.env` file) will be treated as if it were missing. This allows defaults to apply and prevents validation errors for numeric or boolean types.
 
