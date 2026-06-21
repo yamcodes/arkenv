@@ -2,9 +2,9 @@
 "arkenv": major
 ---
 
-#### Refactor error system to use normalized `EnvIssue` and add `safeArkEnv` API
+#### Refactor error system to use normalized `EnvIssue` and add `{ safe: true }` API
 
-Introduce a unified `EnvIssue` type for programmatic access to validation issues via `ArkEnvError.issues`, and add the non-throwing `safeArkEnv` API.
+Introduce a unified `EnvIssue` type for programmatic access to validation issues via `ArkEnvError.issues`, and add the non-throwing `{ safe: true }` configuration option to `arkenv`.
 
 Error messages now use ANSI colors instead of a bullet-point prefix:
 
@@ -15,4 +15,4 @@ Error messages now use ANSI colors instead of a bullet-point prefix:
 
 Note: Header (red), variable path (yellow), and received value (cyan) are now styled with ANSI escape codes. Update any test suites asserting on exact error text.
 
-**BREAKING CHANGE**: `ValidationIssue` and `formatInternalErrors` removed. Use `EnvIssue` and `formatIssues` / `formatError` instead.
+**BREAKING CHANGE**: `ValidationIssue` and `formatInternalErrors` removed. Use `EnvIssue` and `formatIssues` instead.

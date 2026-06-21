@@ -127,8 +127,8 @@ export type ArkenvOutput<T extends SchemaShape, D> =
  *
  * @param def The schema definition
  * @param config The evaluation configuration
- * @returns The parsed environment variables
- * @throws An {@link ArkEnvError | error} if the environment variables are invalid
+ * @returns The parsed environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
+ * @throws An {@link ArkEnvError | error} if the environment variables are invalid and `safe` is not enabled
  */
 export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,

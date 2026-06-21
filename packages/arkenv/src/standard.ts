@@ -21,8 +21,8 @@ export type StandardEnvConfig = ParseStandardConfig;
  *
  * @param def An object mapping variable names to Standard Schema validators
  * @param config Optional configuration
- * @returns The validated environment variables
- * @throws An {@link ArkEnvError} if validation fails
+ * @returns The validated environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
+ * @throws An {@link ArkEnvError} if validation fails and `safe` is not enabled
  *
  * @example
  * ```ts
