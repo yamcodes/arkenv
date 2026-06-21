@@ -50,15 +50,15 @@ export type { ImportMetaEnvAugmented } from "./types";
  */
 export default function arkenv(
 	options: CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): Plugin {
 	return {
 		name: "@arkenv/vite-plugin",

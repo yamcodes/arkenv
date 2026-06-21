@@ -41,15 +41,15 @@ import { processEnvSchema, registerLoader } from "./utils";
  */
 export function arkenv(
 	options: CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options, arkenvConfig);
 
