@@ -18,7 +18,7 @@ import { styleText } from "./style-text";
  * @see https://arktype.io/docs/intro
  * @internal
  */
-const ARKTYPE_CODE_MAP: Record<string, EnvIssueCode> = {
+const ARKTYPE_CODE_MAP = {
 	required: "MISSING_VARIABLE",
 	pattern: "PATTERN_MISMATCH",
 	min: "VALUE_TOO_SMALL",
@@ -30,7 +30,7 @@ const ARKTYPE_CODE_MAP: Record<string, EnvIssueCode> = {
 	sequence: "INVALID_TYPE",
 	intersection: "INVALID_TYPE",
 	union: "INVALID_TYPE",
-};
+} satisfies Record<string, EnvIssueCode>;
 
 /**
  * Map an ArkType validation error code to a normalized EnvIssueCode.
@@ -69,13 +69,13 @@ export function getArkTypeMeta(error: any): { min?: number; max?: number } {
  *
  * @internal
  */
-const STANDARD_CODE_MAP: Record<string, EnvIssueCode> = {
+const STANDARD_CODE_MAP = {
 	too_small: "VALUE_TOO_SMALL",
 	too_big: "VALUE_TOO_LARGE",
 	invalid_string: "INVALID_FORMAT",
 	invalid_date: "INVALID_FORMAT",
 	custom: "INVALID_FORMAT",
-};
+} satisfies Record<string, EnvIssueCode>;
 
 /**
  * Map a Standard Schema validation issue to a normalized EnvIssueCode.

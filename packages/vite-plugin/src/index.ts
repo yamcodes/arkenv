@@ -23,7 +23,7 @@ export type { ImportMetaEnvAugmented } from "./types";
  * @param options - The environment variable schema definition. Can be an `EnvSchema` object
  *   for typesafe validation or an ArkType `CompiledEnvSchema` for dynamic schemas.
  * @param arkenvConfig - Optional ArkEnv configuration (e.g. `coerce`, `onUndeclaredKey`).
- *   Note: The `safe` option is omitted from the configuration because the plugin 
+ *   Note: The `safe` option is omitted from the configuration because the plugin
  *   requires the raw environment object to inject into the bundler. If you need
  *   to handle validation errors without crashing the build, invoke `arkenv` manually.
  * @returns A Vite plugin that validates environment variables and exposes them to the client.
