@@ -1,5 +1,21 @@
 # @ArkEnv/nextjs
 
+## 1.0.0-alpha.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`427ced6`](https://github.com/yamcodes/arkenv/commit/427ced6bd9af4589c5fd696906bdf712104870bb)
+
+</small>
+
+- `arkenv@1.0.0-alpha.2`
+
+</details>
+
 ## 1.0.0-alpha.1
 
 ### Major Changes
@@ -56,6 +72,7 @@
     },
   });
   ```
+
 ### Patch Changes
 
 <details><summary>Updated 1 dependency</summary>
