@@ -94,6 +94,7 @@ for (const name of readdirSync(fixturesDir).filter(
 			// Verify that arkenv was called with the correct parameters
 			expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 				env: expect.objectContaining(config.envVars || {}),
+				safe: false,
 			});
 		});
 	});
@@ -142,6 +143,7 @@ describe("Plugin Unit Tests", () => {
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
@@ -465,6 +467,7 @@ describe("Plugin Unit Tests", () => {
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
@@ -492,6 +495,7 @@ describe("Plugin Unit Tests", () => {
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
@@ -519,6 +523,7 @@ describe("Plugin Unit Tests", () => {
 			{
 				coerce: false,
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
@@ -571,6 +576,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(expectedEnvVars),
+			safe: false,
 		});
 	});
 
@@ -584,6 +590,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.any(Object),
+			safe: false,
 		});
 	});
 
@@ -605,6 +612,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(expectedEnvVars),
+			safe: false,
 		});
 	});
 
@@ -620,6 +628,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		// Verify that all env vars (including non-schema ones) are passed
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(envWithExtra),
+			safe: false,
 		});
 	});
 });
