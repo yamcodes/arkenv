@@ -41,6 +41,7 @@
 		"fumadocs-core": "16.8.7",
 		"fumadocs-mdx": "14.3.2",
 		"fumadocs-twoslash": "3.2.0",
+		"fumadocs-typescript": "^5.2.6",
 		"fumadocs-ui": "16.8.7",
 		"import-in-the-middle": "2.0.6",
 		"lucide-react": "1.14.0",
