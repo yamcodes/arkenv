@@ -17,57 +17,57 @@ npx @arkenv/cli@latest init
 
 <Accordions>
   <Accordion title="Manual Installation">
-      ### Install ArkEnv [step] [!toc]
+    ### Install ArkEnv \[step] [!toc]
 
-      <Accordions defaultValue="Install ArkEnv + ArkType (recommended) + Plugins (optional)">
-        <Accordion title="Install ArkEnv + ArkType (recommended) + Plugins (optional)">
-          ArkEnv works best when paired with [ArkType](https://arktype.io):
+    <Accordions defaultValue="Install ArkEnv + ArkType (recommended) + Plugins (optional)">
+      <Accordion title="Install ArkEnv + ArkType (recommended) + Plugins (optional)">
+        ArkEnv works best when paired with [ArkType](https://arktype.io):
 
-          ```package-install
-          arkenv arktype
-          ```
+        ```package-install
+        arkenv arktype
+        ```
 
-          If you're using Vite, see [ArkEnv for Vite](/docs/vite-plugin).
+        If you're using Vite, see [ArkEnv for Vite](/docs/vite-plugin).
 
-          If you're using Bun, see [ArkEnv for Bun](/docs/bun-plugin).
-        </Accordion>
+        If you're using Bun, see [ArkEnv for Bun](/docs/bun-plugin).
+      </Accordion>
 
-        <Accordion title="Install ArkEnv only">
-          ```package-install
-          arkenv
-          ```
+      <Accordion title="Install ArkEnv only">
+        ```package-install
+        arkenv
+        ```
 
-          Import from [arkenv/standard](/docs/arkenv/standard) to use ArkEnv without ArkType.
-        </Accordion>
-      </Accordions>
+        Import from [arkenv/standard](/docs/arkenv/standard) to use ArkEnv without ArkType.
+      </Accordion>
+    </Accordions>
 
-      ### Configure TypeScript (recommended) [step] [!toc]
+    ### Configure TypeScript (recommended) \[step] [!toc]
 
-      ArkEnv expects **TypeScript >= 5.1** and `strict` mode in your `tsconfig.json`.
+    ArkEnv expects **TypeScript >= 5.1** and `strict` mode in your `tsconfig.json`.
 
-      You're also expected to use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution).
+    You're also expected to use a [modern TypeScript module resolution](https://www.typescriptlang.org/tsconfig/#moduleResolution).
 
-      ```json title="tsconfig.json"
-      // [!code word:config]
-      {
-        "compilerOptions": {
-          "strict": true, // [!code focus]
-          "moduleResolution": "bundler" // [!code focus] or "node16" / "nodenext"
-        }
+    ```json title="tsconfig.json"
+    // [!code word:config]
+    {
+      "compilerOptions": {
+        "strict": true, // [!code focus]
+        "moduleResolution": "bundler" // [!code focus] or "node16" / "nodenext"
       }
-      ```
+    }
+    ```
 
-      :::note
-      While ArkEnv [can](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) work with plain JavaScript, TypeScript is strongly recommended for the best experience.
-      :::
+    :::note
+    While ArkEnv [can](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) work with plain JavaScript, TypeScript is strongly recommended for the best experience.
+    :::
 
-      ### Setup ArkType (optional) [step] [!toc]
+    ### Setup ArkType (optional) \[step] [!toc]
 
-      While ArkEnv [works with any Standard Schema validator](/docs/arkenv/integrations/standard-schema), we
-      recommend using ArkType for the ultimate ArkEnv experience.
+    While ArkEnv [works with any Standard Schema validator](/docs/arkenv/integrations/standard-schema), we
+    recommend using ArkType for the ultimate ArkEnv experience.
 
-      Follow the [ArkType setup](https://arktype.io/docs/intro/setup) to complete your configuration. We
-      recommend installing the ArkType syntax highlighting extension if your IDE supports it.
+    Follow the [ArkType setup](https://arktype.io/docs/intro/setup) to complete your configuration. We
+    recommend installing the ArkType syntax highlighting extension if your IDE supports it.
   </Accordion>
 </Accordions>
 
