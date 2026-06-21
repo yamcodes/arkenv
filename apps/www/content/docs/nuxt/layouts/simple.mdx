@@ -52,73 +52,65 @@ export const env = arkenv({
 
 <Accordions>
   <Accordion title="Manual setup">
-    <Steps>
-      <Step>
-        ### Configure environment
+      ### Configure environment [step]
 
-        Create an `env.ts` file at the root of your project to define your schemas. Import `arkenv` from `@arkenv/nuxt`:
+      Create an `env.ts` file at the root of your project to define your schemas. Import `arkenv` from `@arkenv/nuxt`:
 
-        ```ts twoslash title="env.ts"
-        import arkenv from '@arkenv/nuxt';
-        // ---cut---
-        export const env = arkenv({
-        	server: {
-        		DATABASE_URL: "string",
-        	},
-        	client: {
-        		NUXT_PUBLIC_API_URL: "string",
-        	},
-        	shared: {
-        		NODE_ENV: "string",
-        	},
-        });
-        ```
-      </Step>
+      ```ts twoslash title="env.ts"
+      import arkenv from '@arkenv/nuxt';
+      // ---cut---
+      export const env = arkenv({
+      	server: {
+      		DATABASE_URL: "string",
+      	},
+      	client: {
+      		NUXT_PUBLIC_API_URL: "string",
+      	},
+      	shared: {
+      		NODE_ENV: "string",
+      	},
+      });
+      ```
 
-      <Step>
-        ### Register module in Nuxt config
+      ### Register module in Nuxt config [step]
 
-        Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema and registers environment variables to Nuxt's `runtimeConfig`:
+      Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema and registers environment variables to Nuxt's `runtimeConfig`:
 
-        ```ts title="nuxt.config.ts"
-        export default defineNuxtConfig({
-        	modules: ["@arkenv/nuxt/module"]
-        });
-        ```
+      ```ts title="nuxt.config.ts"
+      export default defineNuxtConfig({
+      	modules: ["@arkenv/nuxt/module"]
+      });
+      ```
 
-        You can customize the schema path using optional parameters:
+      You can customize the schema path using optional parameters:
 
-        ```ts title="nuxt.config.ts"
-        export default defineNuxtConfig({
-        	modules: ["@arkenv/nuxt/module"],
-        	arkenv: {
-        		schemaPath: "env.ts"  // Path to your schema (default: env.ts or src/env.ts)
-        	}
-        });
-        ```
-      </Step>
+      ```ts title="nuxt.config.ts"
+      export default defineNuxtConfig({
+      	modules: ["@arkenv/nuxt/module"],
+      	arkenv: {
+      		schemaPath: "env.ts"  // Path to your schema (default: env.ts or src/env.ts)
+      	}
+      });
+      ```
 
-      <Step>
-        ### Use in your code
+      ### Use in your code [step]
 
-        Import `env` throughout your Nuxt application:
+      Import `env` throughout your Nuxt application:
 
-        ```ts title="components/MyComponent.vue"
-        import { env } from "~~/env";
+      ```ts title="components/MyComponent.vue"
+      import { env } from "~~/env";
 
-        // Access is fully typesafe and autocompleted
-        const apiUrl = env.NUXT_PUBLIC_API_URL;
-        ```
+      // Access is fully typesafe and autocompleted
+      const apiUrl = env.NUXT_PUBLIC_API_URL;
+      ```
 
-        If you accidentally attempt to access a server-side secret in client-side code, it will throw a descriptive runtime exception during browser execution:
+      If you accidentally attempt to access a server-side secret in client-side code, it will throw a descriptive runtime exception during browser execution:
 
-        ```ts title="components/ClientOnlyComponent.vue"
-        import { env } from "~~/env";
+      ```ts title="components/ClientOnlyComponent.vue"
+      import { env } from "~~/env";
 
-        // Throws a runtime error if evaluated in client-side code
-        const dbUrl = env.DATABASE_URL;
-        ```
-      </Step>
-    </Steps>
+      // Throws a runtime error if evaluated in client-side code
+      const dbUrl = env.DATABASE_URL;
+      ```
   </Accordion>
 </Accordions>

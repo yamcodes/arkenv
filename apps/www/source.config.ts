@@ -3,6 +3,7 @@ import {
 	remarkMdxFiles,
 	remarkNpm,
 } from "fumadocs-core/mdx-plugins";
+import { remarkSteps } from "fumadocs-core/mdx-plugins/remark-steps";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
 import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
@@ -143,6 +144,7 @@ export default defineConfig({
 			remarkMdxFiles,
 			remarkGemoji,
 			remarkNpm,
+			remarkSteps,
 			remarkBunXToBunx,
 			remarkDirective,
 			[

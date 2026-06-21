@@ -91,110 +91,100 @@ export const env = arkenv(
 
 <Accordions>
   <Accordion title="Manual setup">
-    <Steps>
-      <Step>
-        ### Define shared variables
+      ### Define shared variables [step]
 
-        Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+      Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
-        ```ts twoslash title="env/internal/shared.ts"
-        import { type } from "@arkenv/nuxt/shared";
+      ```ts twoslash title="env/internal/shared.ts"
+      import { type } from "@arkenv/nuxt/shared";
 
-        /**
-         * @internal 🛑 INTERNAL SCHEMA ONLY.
-         * Do not import this directly. Import `env` from `./client` or `./server` instead.
-         */
-        export const SharedSchema = type({
-        	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-        });
-        ```
-      </Step>
+      /**
+       * @internal 🛑 INTERNAL SCHEMA ONLY.
+       * Do not import this directly. Import `env` from `./client` or `./server` instead.
+       */
+      export const SharedSchema = type({
+      	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      });
+      ```
 
-      <Step>
-        ### Define client variables
+      ### Define client variables [step]
 
-        Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_` and you must extend `SharedSchema`:
+      Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_` and you must extend `SharedSchema`:
 
-        ```ts twoslash title="env/client.ts"
-        // @filename: env/internal/shared.ts
-        import { type } from "@arkenv/nuxt/shared";
-        export const SharedSchema = type({
-        	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-        });
-        // @filename: env/client.ts
-        // ---cut---
-        import arkenv from "@arkenv/nuxt/client";
-        import { SharedSchema } from "./internal/shared";
+      ```ts twoslash title="env/client.ts"
+      // @filename: env/internal/shared.ts
+      import { type } from "@arkenv/nuxt/shared";
+      export const SharedSchema = type({
+      	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      });
+      // @filename: env/client.ts
+      // ---cut---
+      import arkenv from "@arkenv/nuxt/client";
+      import { SharedSchema } from "./internal/shared";
 
-        export const env = arkenv(
-        	{
-        		NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-        	},
-        	{
-        		extends: [SharedSchema],
-        	},
-        );
-        ```
-      </Step>
+      export const env = arkenv(
+      	{
+      		NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+      	},
+      	{
+      		extends: [SharedSchema],
+      	},
+      );
+      ```
 
-      <Step>
-        ### Define server variables
+      ### Define server variables [step]
 
-        Create `env/server.ts` using `@arkenv/nuxt/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+      Create `env/server.ts` using `@arkenv/nuxt/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
 
-        ```ts twoslash title="env/server.ts"
-        // @filename: env/internal/shared.ts
-        import { type } from "@arkenv/nuxt/shared";
-        export const SharedSchema = type({
-        	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-        });
-        // @filename: env/client.ts
-        import arkenv from "@arkenv/nuxt/client";
-        import { SharedSchema } from "./internal/shared";
-        export const env = arkenv(
-        	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
-        	{ extends: [SharedSchema] },
-        );
-        // @filename: env/server.ts
-        // ---cut---
-        import arkenv from "@arkenv/nuxt/server";
-        import { env as clientEnv } from "./client";
+      ```ts twoslash title="env/server.ts"
+      // @filename: env/internal/shared.ts
+      import { type } from "@arkenv/nuxt/shared";
+      export const SharedSchema = type({
+      	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      });
+      // @filename: env/client.ts
+      import arkenv from "@arkenv/nuxt/client";
+      import { SharedSchema } from "./internal/shared";
+      export const env = arkenv(
+      	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
+      	{ extends: [SharedSchema] },
+      );
+      // @filename: env/server.ts
+      // ---cut---
+      import arkenv from "@arkenv/nuxt/server";
+      import { env as clientEnv } from "./client";
 
-        export const env = arkenv(
-        	{
-        		DATABASE_URL: "string",
-        	},
-        	{
-        		extends: [clientEnv],
-        	},
-        );
-        ```
-      </Step>
+      export const env = arkenv(
+      	{
+      		DATABASE_URL: "string",
+      	},
+      	{
+      		extends: [clientEnv],
+      	},
+      );
+      ```
 
-      <Step>
-        ### Register module in Nuxt config
+      ### Register module in Nuxt config [step]
 
-        Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory and registers environment variables to Nuxt's `runtimeConfig`:
+      Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory and registers environment variables to Nuxt's `runtimeConfig`:
 
-        ```ts title="nuxt.config.ts"
-        export default defineNuxtConfig({
-        	modules: ["@arkenv/nuxt/module"]
-        });
-        ```
+      ```ts title="nuxt.config.ts"
+      export default defineNuxtConfig({
+      	modules: ["@arkenv/nuxt/module"]
+      });
+      ```
 
-        You can customize the schema path using optional parameters:
+      You can customize the schema path using optional parameters:
 
-        ```ts title="nuxt.config.ts"
-        export default defineNuxtConfig({
-        	modules: ["@arkenv/nuxt/module"],
-        	arkenv: {
-        		schemaPath: "env",     // Path to your schema directory (default: env or src/env)
-        		layout: "strict"       // Explicitly specify layout
-        	}
-        });
-        ```
-      </Step>
-    </Steps>
+      ```ts title="nuxt.config.ts"
+      export default defineNuxtConfig({
+      	modules: ["@arkenv/nuxt/module"],
+      	arkenv: {
+      		schemaPath: "env",     // Path to your schema directory (default: env or src/env)
+      		layout: "strict"       // Explicitly specify layout
+      	}
+      });
+      ```
   </Accordion>
 </Accordions>
 

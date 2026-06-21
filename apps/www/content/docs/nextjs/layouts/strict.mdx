@@ -104,135 +104,125 @@ export const env = arkenv(
 
 <Accordions>
   <Accordion title="Manual Setup">
-    <Steps>
-      <Step>
-        ### Define shared variables
+      ### Define shared variables [step]
 
-        Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+      Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
-        ```ts title="src/env/internal/shared.ts" twoslash
-        import { type } from "@arkenv/nextjs/shared";
+      ```ts title="src/env/internal/shared.ts" twoslash
+      import { type } from "@arkenv/nextjs/shared";
 
-        /**
-         * @internal 🛑 INTERNAL SCHEMA ONLY.
-         * Do not import this directly. Import `env` from `./client` or `./server` instead.
-         */
-        export const SharedSchema = type({
-        	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-        });
-        ```
-      </Step>
+      /**
+       * @internal 🛑 INTERNAL SCHEMA ONLY.
+       * Do not import this directly. Import `env` from `./client` or `./server` instead.
+       */
+      export const SharedSchema = type({
+      	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      });
+      ```
 
-      <Step>
-        ### Define client variables
+      ### Define client variables [step]
 
-        Create `env/client.ts` importing `arkenv` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
+      Create `env/client.ts` importing `arkenv` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
 
-        ```ts title="src/env/client.ts" twoslash
-        // @filename: /env/internal/shared.ts
-        import { type } from "@arkenv/nextjs/shared";
-        export const SharedSchema = type({
-        	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-        });
+      ```ts title="src/env/client.ts" twoslash
+      // @filename: /env/internal/shared.ts
+      import { type } from "@arkenv/nextjs/shared";
+      export const SharedSchema = type({
+      	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      });
 
-        // @filename: /env/generated/env.gen.ts
-        import type { type as at, distill } from "arktype";
-        export { type } from "@arkenv/nextjs/client";
-        export default function arkenv<
-        	const TSchema extends Record<string, any> = {},
-        	const TExtends extends readonly unknown[] = [],
-        >(
-        	schema: TSchema,
-        	options?: {
-        		extends?: [...TExtends];
-        	},
-        ): Readonly<distill.Out<at.infer<TSchema>>> {
-        	return {} as any;
-        }
+      // @filename: /env/generated/env.gen.ts
+      import type { type as at, distill } from "arktype";
+      export { type } from "@arkenv/nextjs/client";
+      export default function arkenv<
+      	const TSchema extends Record<string, any> = {},
+      	const TExtends extends readonly unknown[] = [],
+      >(
+      	schema: TSchema,
+      	options?: {
+      		extends?: [...TExtends];
+      	},
+      ): Readonly<distill.Out<at.infer<TSchema>>> {
+      	return {} as any;
+      }
 
-        // @filename: /env/client.ts
-        // ---cut---
-        import arkenv from "./generated/env.gen";
-        import { SharedSchema } from "./internal/shared";
+      // @filename: /env/client.ts
+      // ---cut---
+      import arkenv from "./generated/env.gen";
+      import { SharedSchema } from "./internal/shared";
 
-        export const env = arkenv(
-        	{
-        		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-        	},
-        	{
-        		extends: [SharedSchema],
-        	},
-        );
-        ```
-      </Step>
+      export const env = arkenv(
+      	{
+      		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+      	},
+      	{
+      		extends: [SharedSchema],
+      	},
+      );
+      ```
 
-      <Step>
-        ### Define server variables
+      ### Define server variables [step]
 
-        Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+      Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
 
-        ```ts title="src/env/server.ts" twoslash
-        // @filename: /env/internal/shared.ts
-        import { type } from "@arkenv/nextjs/shared";
-        export const SharedSchema = type({
-        	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-        });
+      ```ts title="src/env/server.ts" twoslash
+      // @filename: /env/internal/shared.ts
+      import { type } from "@arkenv/nextjs/shared";
+      export const SharedSchema = type({
+      	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      });
 
-        // @filename: /env/client.ts
-        import type { type as at, distill } from "arktype";
-        export const env = {} as Readonly<distill.Out<at.infer<{ NEXT_PUBLIC_API_URL: "string" }>>>;
+      // @filename: /env/client.ts
+      import type { type as at, distill } from "arktype";
+      export const env = {} as Readonly<distill.Out<at.infer<{ NEXT_PUBLIC_API_URL: "string" }>>>;
 
-        // @filename: /env/server.ts
-        // ---cut---
-        import arkenv from "@arkenv/nextjs/server";
-        import { env as clientEnv } from "./client";
+      // @filename: /env/server.ts
+      // ---cut---
+      import arkenv from "@arkenv/nextjs/server";
+      import { env as clientEnv } from "./client";
 
-        export const env = arkenv(
-        	{
-        		DATABASE_URL: "string",
-        	},
-        	{
-        		extends: [clientEnv],
-        	},
-        );
-        ```
-      </Step>
+      export const env = arkenv(
+      	{
+      		DATABASE_URL: "string",
+      	},
+      	{
+      		extends: [clientEnv],
+      	},
+      );
+      ```
 
-      <Step>
-        ### Register configuration wrapper
+      ### Register configuration wrapper [step]
 
-        Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema directory, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
+      Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema directory, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
 
-        ```ts title="next.config.ts"
-        import { withArkEnv } from "@arkenv/nextjs/config";
-        import type { NextConfig } from "next";
+      ```ts title="next.config.ts"
+      import { withArkEnv } from "@arkenv/nextjs/config";
+      import type { NextConfig } from "next";
 
-        const nextConfig: NextConfig = {
-        	/* config options here */
-        };
+      const nextConfig: NextConfig = {
+      	/* config options here */
+      };
 
-        export default withArkEnv(nextConfig);
-        ```
+      export default withArkEnv(nextConfig);
+      ```
 
-        You can customize the schema and output paths using optional parameters:
+      You can customize the schema and output paths using optional parameters:
 
-        ```ts
-        export default withArkEnv(nextConfig, {
-        	schemaPath: "src/env",              // Path to your schema directory (default: src/env or env)
-        	outputPath: "src/env/generated/env.gen.ts", // Custom output path
-        	layout: "strict",                   // Explicitly specify layout
-        });
-        ```
+      ```ts
+      export default withArkEnv(nextConfig, {
+      	schemaPath: "src/env",              // Path to your schema directory (default: src/env or env)
+      	outputPath: "src/env/generated/env.gen.ts", // Custom output path
+      	layout: "strict",                   // Explicitly specify layout
+      });
+      ```
 
-        :::note
-        If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env/client.ts` instead.
-        :::
+      :::note
+      If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env/client.ts` instead.
+      :::
 
-        :::tip
-        We recommend committing the generated `env/generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
-        :::
-      </Step>
-    </Steps>
+      :::tip
+      We recommend committing the generated `env/generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
+      :::
   </Accordion>
 </Accordions>
 

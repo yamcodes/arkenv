@@ -22,83 +22,73 @@ npx @arkenv/cli@latest init
 
 <Accordions>
   <Accordion title="Manual Installation">
-    <Steps>
-      <Step>
-        ### Installation
+      ### Installation [step]
 
-        ```package-install
-        @arkenv/vite-plugin arkenv arktype
-        ```
-      </Step>
+      ```package-install
+      @arkenv/vite-plugin arkenv arktype
+      ```
 
-      <Step>
-        ### Configure plugin
+      ### Configure plugin [step]
 
-        Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
+      Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
 
-        ```ts title="vite.config.ts" twoslash
-        import arkenv from "@arkenv/vite-plugin";
-        import { type } from "arkenv";
-        import { defineConfig } from "vite";
+      ```ts title="vite.config.ts" twoslash
+      import arkenv from "@arkenv/vite-plugin";
+      import { type } from "arkenv";
+      import { defineConfig } from "vite";
 
-        export const Env = type({
-        	PORT: "number.port",
-        	VITE_MY_VAR: "string"
-        });
+      export const Env = type({
+      	PORT: "number.port",
+      	VITE_MY_VAR: "string"
+      });
 
-        export default defineConfig({
-        	plugins: [arkenv(Env)]
-        });
-        ```
-      </Step>
+      export default defineConfig({
+      	plugins: [arkenv(Env)]
+      });
+      ```
 
-      <Step>
-        ### Add typesafety
+      ### Add typesafety [step]
 
-        To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
+      To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
 
-        ```ts title="src/vite-env.d.ts"
-        /// <reference types="vite/client" />
+      ```ts title="src/vite-env.d.ts"
+      /// <reference types="vite/client" />
 
-        type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
-        	typeof import("../vite.config").Env
-        >;
+      type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+      	typeof import("../vite.config").Env
+      >;
 
-        interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+      interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 
-        interface ImportMeta {
-        	readonly env: ImportMetaEnv;
-        }
-        ```
+      interface ImportMeta {
+      	readonly env: ImportMetaEnv;
+      }
+      ```
 
-        :::tip
-        For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
-        :::
-      </Step>
+      :::tip
+      For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
+      :::
 
-      <Step>
-        ### Use in your code
+      ### Use in your code [step]
 
-        You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
+      You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
 
-        ```tsx title="src/App.tsx" twoslash
-        // @filename: vite-env.d.ts
-        /// <reference types="vite/client" />
-        type ImportMetaEnvAugmented = {
-        	VITE_MY_VAR: string
-        }
-        interface ImportMetaEnv extends ImportMetaEnvAugmented {}
-        interface ImportMeta {
-        	readonly env: ImportMetaEnv
-        }
+      ```tsx title="src/App.tsx" twoslash
+      // @filename: vite-env.d.ts
+      /// <reference types="vite/client" />
+      type ImportMetaEnvAugmented = {
+      	VITE_MY_VAR: string
+      }
+      interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+      interface ImportMeta {
+      	readonly env: ImportMetaEnv
+      }
 
-        // @filename: App.tsx
-        // ---cut---
-        const apiUrl = import.meta.env.VITE_MY_VAR;
-        //      ^?
-        ```
-      </Step>
-    </Steps>
+      // @filename: App.tsx
+      // ---cut---
+      const apiUrl = import.meta.env.VITE_MY_VAR;
+      //      ^?
+      ```
   </Accordion>
 </Accordions>
 
