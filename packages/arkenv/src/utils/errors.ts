@@ -158,11 +158,11 @@ export function buildEnvIssue(
 	path: string,
 	message: string,
 	code: EnvIssueCode,
-	meta: EnvIssueMeta,
+	meta?: EnvIssueMeta,
 	expected?: string,
 	received?: unknown,
 ): EnvIssue {
-	const issue: EnvIssue = { path, message, code, meta };
+	const issue: EnvIssue = { path, message, code, meta: meta ?? {} };
 	if (expected) issue.expected = expected;
 	if (received !== undefined) issue.received = received;
 	return issue;

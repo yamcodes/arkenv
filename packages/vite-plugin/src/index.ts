@@ -76,6 +76,7 @@ export default function arkenv<const T extends SchemaShape>(
 			const env: SchemaShape = coreArkenv(options as any, {
 				...arkenvConfig,
 				env: arkenvConfig?.env ?? loadEnv(mode, envDir, ""),
+				safe: false,
 			});
 
 			// Filter to only include environment variables matching the prefix

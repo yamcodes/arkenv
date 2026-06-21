@@ -15,6 +15,7 @@ export function processEnvSchema<T extends SchemaShape>(
 	const env: SchemaShape = arkenv(options as any, {
 		...config,
 		env: config?.env ?? process.env,
+		safe: false,
 	});
 	const prefix = "BUN_PUBLIC_";
 	const allowed = new Set(["NODE_ENV"]);
