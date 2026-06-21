@@ -136,7 +136,7 @@ export function executeSafe<T>(parseFn: () => T): SafeArkEnvResult<T> {
 		return { success: true, data: parseFn() };
 	} catch (error) {
 		if (error instanceof ArkEnvError) {
-			return { success: false, error };
+			return { success: false, issues: error.issues };
 		}
 		throw error;
 	}

@@ -137,4 +137,4 @@ Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
  */
 export type SafeArkEnvResult<T> =
 	| { success: true; data: T }
-	| { success: false; error: ArkEnvError };
+	| { success: false; issues: readonly EnvIssue[] };

@@ -530,8 +530,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 		);
 		expect(resultFail.success).toBe(false);
 		if (!resultFail.success) {
-			expect(resultFail.error).toBeInstanceOf(ArkEnvError);
-			expect(resultFail.error.issues[0].code).toBe("MISSING_VARIABLE");
+			expect(resultFail.issues[0].code).toBe("MISSING_VARIABLE");
 		}
 	});
 });

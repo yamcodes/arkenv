@@ -129,10 +129,9 @@ describe("ArkEnvError & safeArkEnv", () => {
 		const result = safeArkEnv({ PORT: "number" }, { env: { PORT: "abc" } });
 		expect(result.success).toBe(false);
 		if (!result.success) {
-			expect(result.error).toBeInstanceOf(ArkEnvError);
-			expect(result.error.issues).toBeDefined();
-			expect(result.error.issues.length).toBe(1);
-			expect(result.error.issues[0].path).toBe("PORT");
+			expect(result.issues).toBeDefined();
+			expect(result.issues.length).toBe(1);
+			expect(result.issues[0].path).toBe("PORT");
 		}
 	});
 });
