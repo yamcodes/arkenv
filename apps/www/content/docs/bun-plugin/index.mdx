@@ -26,13 +26,13 @@ npx @arkenv/cli@latest init
 
 <Accordions>
   <Accordion title="Manual Installation">
-      ### Installation [step]
+      ### Installation [step] [!toc]
 
       ```package-install
       @arkenv/bun-plugin arkenv arktype
       ```
 
-      ### Configure plugin [step]
+      ### Configure plugin [step] [!toc]
 
       The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `Bun.serve`) and your build script (for `Bun.build`).
 
@@ -66,15 +66,16 @@ npx @arkenv/cli@latest init
       });
       ```
 
-      ### Add typesafety [step]
+      ### Add typesafety [step] [!toc]
 
       To make `process.env` fully typesafe, see the [Typing process.env](/docs/bun-plugin/typing-process-env) guide to complete your setup.
 
-      ### Use in your code [step]
+      ### Use in your code [step] [!toc]
 
       You can now use `process.env` with full typesafety and autocompletion throughout your application.
 
       ```tsx title="src/App.tsx" twoslash
+      // @noErrors
       // @filename: bun-env.d.ts
       /// <reference types="bun-types" />
       type ProcessEnvAugmented = {

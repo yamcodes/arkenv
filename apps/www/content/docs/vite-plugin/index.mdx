@@ -22,13 +22,13 @@ npx @arkenv/cli@latest init
 
 <Accordions>
   <Accordion title="Manual Installation">
-      ### Installation [step]
+      ### Installation [step] [!toc]
 
       ```package-install
       @arkenv/vite-plugin arkenv arktype
       ```
 
-      ### Configure plugin [step]
+      ### Configure plugin [step] [!toc]
 
       Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
 
@@ -47,7 +47,7 @@ npx @arkenv/cli@latest init
       });
       ```
 
-      ### Add typesafety [step]
+      ### Add typesafety [step] [!toc]
 
       To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
 
@@ -69,11 +69,12 @@ npx @arkenv/cli@latest init
       For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
       :::
 
-      ### Use in your code [step]
+      ### Use in your code [step] [!toc]
 
       You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
 
       ```tsx title="src/App.tsx" twoslash
+      // @noErrors
       // @filename: vite-env.d.ts
       /// <reference types="vite/client" />
       type ImportMetaEnvAugmented = {
@@ -126,6 +127,7 @@ export default defineConfig({
 ```
 
 ```tsx title="src/App.tsx" twoslash
+// @noErrors
 // @filename: vite-env.d.ts
 /// <reference types="vite/client" />
 type ImportMetaEnvAugmented = {
