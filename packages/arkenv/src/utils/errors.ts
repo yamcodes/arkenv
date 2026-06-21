@@ -40,7 +40,9 @@ const ARKTYPE_CODE_MAP = {
  * @internal
  */
 export function mapArkTypeCode(engineCode: string): EnvIssueCode {
-	return ARKTYPE_CODE_MAP[engineCode] ?? "INVALID_FORMAT";
+	return engineCode in ARKTYPE_CODE_MAP
+		? ARKTYPE_CODE_MAP[engineCode as keyof typeof ARKTYPE_CODE_MAP]
+		: "INVALID_FORMAT";
 }
 
 /**
@@ -99,8 +101,8 @@ export function mapStandardCode(
 	) {
 		return "MISSING_VARIABLE";
 	}
-	if (STANDARD_CODE_MAP[engineCode]) {
-		return STANDARD_CODE_MAP[engineCode];
+	if (engineCode in STANDARD_CODE_MAP) {
+		return STANDARD_CODE_MAP[engineCode as keyof typeof STANDARD_CODE_MAP];
 	}
 	if (/regex|pattern|match/.test(msg)) {
 		return "PATTERN_MISMATCH";
