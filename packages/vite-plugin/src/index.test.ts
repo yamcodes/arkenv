@@ -94,6 +94,7 @@ for (const name of readdirSync(fixturesDir).filter(
 			// Verify that arkenv was called with the correct parameters
 			expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 				env: expect.objectContaining(config.envVars || {}),
+				safe: false,
 			});
 		});
 	});
@@ -124,7 +125,7 @@ describe("Plugin Unit Tests", () => {
 
 	it("should call arkenv during config hook", () => {
 		// Mock arkenv to return a valid object
-		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" } as any);
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
@@ -142,6 +143,7 @@ describe("Plugin Unit Tests", () => {
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
@@ -153,7 +155,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_NUMBER: 42,
 			VITE_BOOLEAN: true,
 		};
-		mockArkenv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv as any);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_STRING: "string",
@@ -192,7 +194,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_ZERO: 0,
 			VITE_FALSE: false,
 		};
-		mockArkenv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv as any);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_NULL: "string",
@@ -222,7 +224,7 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should handle empty environment object", () => {
-		mockArkenv.mockReturnValue({});
+		mockArkenv.mockReturnValue({} as any);
 
 		const pluginInstance = arkenvPlugin({});
 
@@ -246,7 +248,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_UPPERCASE: "test",
 			vite_lowercase: "test", // This doesn't start with VITE_ so it will be filtered out
 		};
-		mockArkenv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv as any);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_SPECIAL_CHARS: "string",
@@ -306,7 +308,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_API_URL: "https://api.example.com",
 			VITE_DEBUG: true,
 		};
-		mockArkenv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv as any);
 
 		const pluginInstance = arkenvPlugin({
 			PORT: "number.port",
@@ -343,7 +345,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_OLD_VAR: "should not be exposed",
 			SECRET_KEY: "should not be exposed",
 		};
-		mockArkenv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv as any);
 
 		const pluginInstance = arkenvPlugin({
 			PUBLIC_API_URL: "string",
@@ -378,7 +380,7 @@ describe("Plugin Unit Tests", () => {
 			VITE_API_URL: "https://api.example.com",
 			PUBLIC_DEBUG: true,
 		};
-		mockArkenv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv as any);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_API_URL: "string",
@@ -412,7 +414,7 @@ describe("Plugin Unit Tests", () => {
 			CUSTOM_PREFIX_VAR: "test",
 			SECRET_KEY: "should not be exposed",
 		};
-		mockArkenv.mockReturnValue(mockTransformedEnv);
+		mockArkenv.mockReturnValue(mockTransformedEnv as any);
 
 		const pluginInstance = arkenvPlugin({
 			VITE_API_URL: "string",
@@ -443,7 +445,7 @@ describe("Plugin Unit Tests", () => {
 	});
 
 	it("should use custom envDir when provided in config", async () => {
-		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" } as any);
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
@@ -465,12 +467,13 @@ describe("Plugin Unit Tests", () => {
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
 
 	it("should default to process.cwd() when envDir is not configured", () => {
-		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" } as any);
 
 		const pluginInstance = arkenvPlugin({ VITE_TEST: "string" });
 
@@ -492,12 +495,13 @@ describe("Plugin Unit Tests", () => {
 			{ VITE_TEST: "string" },
 			{
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
 
 	it("should pass arkenvConfig to arkenv when provided", () => {
-		mockArkenv.mockReturnValue({ VITE_TEST: "test" });
+		mockArkenv.mockReturnValue({ VITE_TEST: "test" } as any);
 
 		const pluginInstance = arkenvPlugin(
 			{ VITE_TEST: "string" },
@@ -519,6 +523,7 @@ describe("Plugin Unit Tests", () => {
 			{
 				coerce: false,
 				env: expect.any(Object),
+				safe: false,
 			},
 		);
 	});
@@ -571,6 +576,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(expectedEnvVars),
+			safe: false,
 		});
 	});
 
@@ -584,6 +590,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.any(Object),
+			safe: false,
 		});
 	});
 
@@ -605,6 +612,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(expectedEnvVars),
+			safe: false,
 		});
 	});
 
@@ -620,6 +628,7 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 		// Verify that all env vars (including non-schema ones) are passed
 		expect(mockArkenv).toHaveBeenCalledWith(config.Env, {
 			env: expect.objectContaining(envWithExtra),
+			safe: false,
 		});
 	});
 });

@@ -8,13 +8,14 @@ import type { Loader, PluginBuilder } from "bun";
  */
 export function processEnvSchema<T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	config?: ArkEnvConfig,
+	config?: Omit<ArkEnvConfig, "safe">,
 ): Map<string, string> {
 	// Type assertion needed on `options` to avoid TS2589 (excessively deep type instantiation)
 	// from ArkType's generic inference on the union type
 	const env: SchemaShape = arkenv(options as any, {
 		...config,
 		env: config?.env ?? process.env,
+		safe: false,
 	});
 	const prefix = "BUN_PUBLIC_";
 	const allowed = new Set(["NODE_ENV"]);

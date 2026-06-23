@@ -13,7 +13,12 @@ export { arkenv, getSchemaKeys };
  * https://arktype.io/docs/type-api
  */
 export const type = $.type;
-export type { ArkEnvConfig, EnvSchema, Infer } from "./arkenv";
+export type {
+	ArkEnvConfig,
+	EnvSchema,
+	Infer,
+	SafeArkEnvResult,
+} from "./arkenv";
 
 /**
  * ArkEnv's main export, an alias for {@link arkenv}

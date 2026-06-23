@@ -37,19 +37,22 @@ import { processEnvSchema, registerLoader } from "./utils";
  *
  * @param options - The environment variable schema definition.
  * @param arkenvConfig - Optional ArkEnv configuration (e.g. `coerce`, `onUndeclaredKey`).
+ *   Note: The `safe` option is omitted from the configuration because the plugin
+ *   requires the raw environment object to inject into the bundler. If you need
+ *   to handle validation errors without crashing the build, invoke `arkenv` manually.
  * @returns A Bun plugin that validates environment variables and exposes prefixed variables to client code.
  */
 export function arkenv(
 	options: CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	arkenvConfig?: ArkEnvConfig,
+	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
 ): BunPlugin {
 	const envMap = processEnvSchema<T>(options, arkenvConfig);
 

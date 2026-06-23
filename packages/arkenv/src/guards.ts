@@ -11,6 +11,7 @@ export function assertNotArkTypeDsl(key: string, value: unknown): void {
 				path: key,
 				message:
 					'ArkType DSL strings are not supported in "standard" mode. Use a Standard Schema validator (e.g., Zod, Valibot) or import from "arkenv" for ArkType schemas.',
+				code: "INVALID_SCHEMA",
 			},
 		]);
 	}
@@ -39,6 +40,7 @@ export function assertStandardSchema(key: string, value: unknown): void {
 				path: key,
 				message:
 					'Invalid validator: expected a Standard Schema 1.0 validator (must have "~standard" property). Import from "arkenv" to use ArkType schemas.',
+				code: "INVALID_SCHEMA",
 			},
 		]);
 	}
@@ -57,6 +59,7 @@ export function assertStandardSchemaMap(
 				path: "",
 				message:
 					'Invalid schema: expected an object mapping in "standard" mode.',
+				code: "INVALID_SCHEMA",
 			},
 		]);
 	}

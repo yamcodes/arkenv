@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { arkenv } from "../arkenv.ts";
-import type { ArkEnvError } from "../core.ts";
-import { type } from "../index.ts";
+import arkenv, { type } from "@";
+import type { ArkEnvError } from "@/core";
 
 // Helper to strip ANSI color codes (ESC character code 27)
 const stripAnsi = (str: string) =>

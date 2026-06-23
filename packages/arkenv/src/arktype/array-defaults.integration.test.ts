@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import arkenv, { type } from "../index.ts";
+import arkenv, { type } from "@";
 
 describe("arkenv array defaults", () => {
 	it("should work with arrow function array defaults", () => {

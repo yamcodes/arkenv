@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { arkenv } from "../arkenv.ts";
-import { type } from "../index.ts";
-import { indent, styleText } from "../utils/index.ts";
+import arkenv, { type } from "@";
+import { indent, styleText } from "@/utils";
 
 /**
  * Format the errors returned by env for testing purposes

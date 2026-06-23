@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { arkenv } from "../arkenv.ts";
-import { type } from "../index.ts";
+import arkenv, { type } from "@";
 
 describe("object parsing integration", () => {
 	it("should parse JSON string into object with string properties", () => {

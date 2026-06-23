@@ -1,2 +1,2 @@
-export * from "./indent.ts";
-export * from "./style-text.ts";
+export * from "./indent";
+export * from "./style-text";

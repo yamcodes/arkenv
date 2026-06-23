@@ -123,6 +123,7 @@ export function createEnvInternal(
 
 					const validated = coreCreateEnv(ext as any, {
 						env: combinedEnv as Dict<string>,
+						safe: false,
 					});
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
 
@@ -192,6 +193,7 @@ export function createEnvInternal(
 	// Run core validation
 	const validated = coreCreateEnv(schema as any, {
 		env: combinedEnv as Dict<string>,
+		safe: false,
 	});
 
 	const mergedValidated = { ...extendedEnvValues, ...validated } as Record<

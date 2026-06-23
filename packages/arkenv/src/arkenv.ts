@@ -7,6 +7,8 @@ import type {
 } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
+import { ArkEnvError, type SafeArkEnvResult } from "./core";
+import { safeExecute } from "./utils/errors";
 
 /**
  * Declarative environment schema definition accepted by ArkEnv.
@@ -35,7 +37,7 @@ export type Infer<T> = T extends SchemaShape
 	: InferType<T>;
 
 /**
- * The environment variables passed to `createEnv`.
+ * The environment variables passed to `arkenv`.
  * Uses `Dict<string>` to enforce
  * compile-time safety: all input environment variables must be strings
  * (or undefined), matching `process.env` semantics.
@@ -81,6 +83,12 @@ export type ArkEnvConfig = {
 	arrayFormat?: "comma" | "json";
 
 	/**
+	 * Whether to bypass secret redaction and print raw sensitive values during debugging.
+	 * Defaults to checking `process.env.ARKENV_DEBUG_SECRETS === "true"` or `"1"`.
+	 */
+	debugSecrets?: boolean;
+
+	/**
 	 * Whether to treat empty strings (`""`) as `undefined` before validation.
 	 *
 	 * When enabled, an environment variable set to an empty value (e.g. `PORT=`)
@@ -90,37 +98,75 @@ export type ArkEnvConfig = {
 	 * @default false
 	 */
 	emptyAsUndefined?: boolean;
+
+	/**
+	 * Whether to return a safe result object instead of throwing an error on validation failure.
+	 *
+	 * When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
+	 *
+	 * @default false
+	 */
+	safe?: boolean;
 };
 
+export type { SafeArkEnvResult };
+
 /**
- * TODO: `SchemaShape` is basically `Record<string, unknown>`.
- * If possible, find a better type than "const T extends Record<string, unknown>",
- * and be as close as possible to the type accepted by ArkType's `type`.
+ * Helper type to represent the output of parsing either an EnvSchema or CompiledEnvSchema.
  */
+export type ArkenvOutput<T extends SchemaShape, D> =
+	| distill.Out<at.infer<T, $>>
+	| InferType<D>;
 
 /**
  * Utility to parse environment variables using ArkType or Standard Schema
- * @param def - The schema definition
- * @param config - The evaluation configuration
- * @returns The parsed environment variables
- * @throws An {@link ArkEnvError | error} if the environment variables are invalid.
+ *
+ * Naming convention: the main function is lowercase (`arkenv`) following the
+ * JavaScript convention for functions (e.g. `zod`, `joi`). Classes and types
+ * use PascalCase with the full product name (`ArkEnvError`, `SafeArkEnvResult`).
+ *
+ * @param def The schema definition
+ * @param config The evaluation configuration
+ * @returns The parsed environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
+ * @throws An {@link ArkEnvError | error} if the environment variables are invalid and `safe` is not enabled
  */
 export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	config?: ArkEnvConfig,
+	config?: ArkEnvConfig & { safe?: false },
 ): distill.Out<at.infer<T, $>>;
 export function arkenv<T extends CompiledEnvSchema>(
 	def: T,
-	config?: ArkEnvConfig,
+	config?: ArkEnvConfig & { safe?: false },
 ): InferType<T>;
+export function arkenv<
+	const T extends SchemaShape,
+	const D extends EnvSchema<T> | CompiledEnvSchema,
+>(def: D, config?: ArkEnvConfig & { safe?: false }): ArkenvOutput<T, D>;
 export function arkenv<const T extends SchemaShape>(
-	def: EnvSchema<T> | CompiledEnvSchema,
-	config?: ArkEnvConfig,
-): distill.Out<at.infer<T, $>> | InferType<typeof def>;
-export function arkenv<const T extends SchemaShape>(
-	def: EnvSchema<T> | CompiledEnvSchema,
+	def: EnvSchema<T>,
+	config: ArkEnvConfig & { safe: true },
+): SafeArkEnvResult<distill.Out<at.infer<T, $>>>;
+export function arkenv<T extends CompiledEnvSchema>(
+	def: T,
+	config: ArkEnvConfig & { safe: true },
+): SafeArkEnvResult<InferType<T>>;
+export function arkenv<
+	const T extends SchemaShape,
+	const D extends EnvSchema<T> | CompiledEnvSchema,
+>(
+	def: D,
+	config: ArkEnvConfig & { safe: true },
+): SafeArkEnvResult<ArkenvOutput<T, D>>;
+export function arkenv<
+	const T extends SchemaShape,
+	const D extends EnvSchema<T> | CompiledEnvSchema,
+>(
+	def: D,
 	config: ArkEnvConfig = {},
-): distill.Out<at.infer<T, $>> | InferType<typeof def> {
+): ArkenvOutput<T, D> | SafeArkEnvResult<ArkenvOutput<T, D>> {
+	if (config.safe) {
+		return safeExecute(() => parse(def as any, config));
+	}
 	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
 	return parse(def as any, config);
 }

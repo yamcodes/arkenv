@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "1.0.0-alpha.1",
+	"version": "1.0.0-alpha.2",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
@@ -89,7 +89,7 @@
 		{
 			"name": "arkenv",
 			"path": "dist/index.mjs",
-			"limit": "2.1 kB",
+			"limit": "2.7 kB",
 			"import": "*",
 			"ignore": [
 				"arktype"
@@ -98,7 +98,7 @@
 		{
 			"name": "arkenv/standard",
 			"path": "dist/standard.mjs",
-			"limit": "2.3 kB",
+			"limit": "3.5 kB",
 			"import": "*"
 		},
 		{

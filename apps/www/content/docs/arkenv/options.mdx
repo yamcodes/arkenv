@@ -80,3 +80,33 @@ const env = arkenv(
 // env.PORT  → 3000 (default applied)
 // env.DEBUG → false (default applied)
 ```
+
+## `safe`
+
+Whether to return a safe result object instead of throwing an error on validation failure. Defaults to `false`.
+
+When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
+
+```ts twoslash
+import arkenv from "arkenv";
+// ---cut---
+const result = arkenv(
+  { PORT: "number" },
+  { safe: true, env: { PORT: "invalid" } }
+);
+
+if (!result.success) {
+  console.error("Validation failed:", result.issues);
+} else {
+  console.log("Port is:", result.data.PORT);
+}
+```
+
+:::warning\[Not supported in integrations]
+
+The `safe: true` option is purposefully omitted from the configuration options of framework integrations (like `@arkenv/vite-plugin`, `@arkenv/nextjs`, etc.).
+
+Framework integrations rely on injecting the raw, validated environment variables into the build process. If `safe: true` were enabled, a validation failure would result in the plugin silently injecting the `{ success: false, issues }` wrapper object into your application bundle instead of crashing the build, leading to broken downstream behavior.
+
+If you need to handle validation failures programmatically without failing the build, you should invoke `arkenv()` manually rather than using an automated bundler plugin.
+:::

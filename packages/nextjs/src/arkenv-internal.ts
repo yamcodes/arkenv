@@ -155,7 +155,10 @@ export function arkenvInternal(
 						}
 					}
 
-					const validated = coreArkenv(ext as any, { env: combinedEnv });
+					const validated = coreArkenv(ext as any, {
+						env: combinedEnv,
+						safe: false,
+					});
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
 
 					const extKeys = getSchemaKeys(ext);
@@ -241,7 +244,10 @@ export function arkenvInternal(
 		: { ...client, ...shared };
 
 	// Run core validation
-	const validated = coreArkenv(schema as any, { env: combinedEnv });
+	const validated = coreArkenv(schema as any, {
+		env: combinedEnv,
+		safe: false,
+	});
 
 	const mergedValidated = { ...extendedEnvValues, ...validated };
 

@@ -1,5 +1,24 @@
 # ArkEnv
 
+## 1.0.0-alpha.2
+
+### Major Changes
+
+- #### Refactor error system to use normalized `EnvIssue` and add `{ safe: true }` API _[`#1157`](https://github.com/yamcodes/arkenv/pull/1157) [`427ced6`](https://github.com/yamcodes/arkenv/commit/427ced6bd9af4589c5fd696906bdf712104870bb) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce a unified `EnvIssue` type for programmatic access to validation issues via `ArkEnvError.issues`, and add the non-throwing `{ safe: true }` configuration option to `arkenv`.
+
+  Error messages now use ANSI colors instead of a bullet-point prefix:
+
+  ```diff
+  - - [PORT] must be a valid port number (was "invalid-port")
+  + PORT must be a valid port number (was "invalid-port")
+  ```
+
+  Note: Header (red), variable path (yellow), and received value (cyan) are now styled with ANSI escape codes. Update any test suites asserting on exact error text.
+
+  **BREAKING CHANGE**: `ValidationIssue` and `formatInternalErrors` removed. Use `EnvIssue` and `formatIssues` instead.
+
 ## 1.0.0-alpha.1
 
 ### Major Changes

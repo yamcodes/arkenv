@@ -1,10 +1,36 @@
 import type { Dict, StandardSchemaV1 } from "@repo/types";
+import { coerceEnvironment } from "@/coercion";
+import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "./core";
 import {
-	applyCoercion,
-	findCoercionPaths,
-	stripEmptyStrings,
-} from "./coercion/shared";
-import { ArkEnvError, type ValidationIssue } from "./core";
+	buildEnvIssue,
+	formatStandardIssueMessage,
+	getStandardMeta,
+	mapStandardCode,
+} from "./utils/errors";
+import {
+	extractJsonSchema,
+	formatIssuePath,
+	traverseReceivedValue,
+} from "./utils/standard-helpers";
+
+/*
+ * ⚠️ ARCHITECTURAL WARNING: DO NOT DRY THIS FILE ⚠️
+ *
+ * This file contains parsing logic that looks very similar to the code in
+ * `src/arktype/index.ts`. **This duplication is 100% intentional.**
+ *
+ * `parse-standard.ts` powers the `arkenv/standard` module export. The entire
+ * purpose of the `arkenv/standard` entrypoint is to guarantee a zero-dependency
+ * environment for users utilizing Zod or Valibot, ensuring the `arktype` library
+ * is NEVER included in their bundle.
+ *
+ * If you attempt to DRY up this code by merging it with the ArkType parser or
+ * importing utilities from `src/arktype/*`, bundlers will statically trace those
+ * imports and silently drag the entire ArkType library into the `arkenv/standard`
+ * bundle.
+ *
+ * Prioritize strict module boundaries and tree-shaking over DRYness.
+ */
 
 /**
  * Configuration options for {@link parseStandard}.
@@ -28,6 +54,12 @@ export type ParseStandardConfig = {
 	 */
 	onUndeclaredKey?: "ignore" | "delete" | "reject";
 	/**
+	 * Whether to bypass secret redaction and print raw sensitive values during debugging.
+	 * Defaults to checking `process.env.ARKENV_DEBUG_SECRETS === "true"` or `"1"`.
+	 */
+	debugSecrets?: boolean;
+
+	/**
 	 * Whether to perform best-effort coercion on the environment variables.
 	 * Coercion requires validators that implement the StandardJSONSchemaV1 spec
 	 * (e.g. Zod, Valibot).
@@ -36,6 +68,7 @@ export type ParseStandardConfig = {
 	 * @default true
 	 */
 	coerce?: boolean;
+
 	/**
 	 * The format to use for array parsing when coercion is enabled.
 	 *
@@ -56,103 +89,16 @@ export type ParseStandardConfig = {
 	 * @default false
 	 */
 	emptyAsUndefined?: boolean;
+
+	/**
+	 * Whether to return a safe result object instead of throwing an error on validation failure.
+	 *
+	 * When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
+	 *
+	 * @default false
+	 */
+	safe?: boolean;
 };
-
-/**
- * Extract JSON Schema definitions from standard schema validators.
- */
-function extractJsonSchema(
-	def: Record<string, unknown>,
-	missingJsonSchemaKeys: string[],
-): { jsonSchema: Record<string, any>; hasJsonSchema: boolean } {
-	const jsonSchema: Record<string, any> = { type: "object", properties: {} };
-	let hasJsonSchema = false;
-
-	for (const key in def) {
-		const validator = def[key] as any;
-		if (!validator) {
-			missingJsonSchemaKeys.push(key);
-			continue;
-		}
-
-		// 1. Standard way via ~standard property
-		const std = validator["~standard"];
-		if (typeof std?.jsonSchema?.input === "function") {
-			try {
-				const schema = std.jsonSchema.input({ target: "draft-07" });
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		// 2. Direct jsonSchema.input on validator
-		if (typeof validator.jsonSchema?.input === "function") {
-			try {
-				const schema = validator.jsonSchema.input({ target: "draft-07" });
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		// 3. toJSONSchema method (e.g. zod mini, zod-to-json-schema)
-		if (typeof validator.toJSONSchema === "function") {
-			try {
-				const schema = validator.toJSONSchema();
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		// 4. toStandardJSONSchema.v1 method (e.g. stnl)
-		if (typeof validator.toStandardJSONSchema?.v1 === "function") {
-			try {
-				const schema = validator.toStandardJSONSchema.v1();
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
-		}
-
-		missingJsonSchemaKeys.push(key);
-	}
-
-	return { jsonSchema, hasJsonSchema };
-}
-
-/**
- * Format standard schema validation issue path.
- */
-function formatIssuePath(
-	key: string,
-	path:
-		| readonly (
-				| string
-				| number
-				| symbol
-				| { readonly key: string | number | symbol }
-		  )[]
-		| undefined,
-): string {
-	if (!path || path.length === 0) return key;
-
-	const segments = path.map((segment) =>
-		segment !== null && typeof segment === "object" && "key" in segment
-			? String(segment.key)
-			: String(segment),
-	);
-	return [key, ...segments].join(".");
-}
 
 /**
  * Parse and validate environment variables using Standard Schema 1.0 validators.
@@ -165,7 +111,7 @@ function formatIssuePath(
 export function parseStandard(
 	def: Record<string, unknown>,
 	config: ParseStandardConfig,
-) {
+): Record<string, unknown> {
 	const {
 		env = process.env,
 		onUndeclaredKey = "delete",
@@ -174,27 +120,29 @@ export function parseStandard(
 		emptyAsUndefined = false,
 	} = config;
 	const output: Record<string, unknown> = {};
-	const errors: ValidationIssue[] = [];
+	const errors: EnvIssue[] = [];
 
-	const processedEnv = emptyAsUndefined
-		? stripEmptyStrings(env as Dict<string>)
-		: env;
+	const {
+		processedEnv,
+		coercedEnv,
+		missingKeys: missingJsonSchemaKeys,
+	} = coerceEnvironment(
+		env as Dict<string>,
+		emptyAsUndefined,
+		arrayFormat,
+		coerce
+			? () => {
+					const { jsonSchema, hasJsonSchema, missingKeys } =
+						extractJsonSchema(def);
+					return {
+						schema: jsonSchema,
+						hasSchema: hasJsonSchema,
+						missingKeys,
+					};
+				}
+			: undefined,
+	);
 	const envKeys = new Set(Object.keys(processedEnv));
-
-	let coercedEnv: Record<string, unknown> = { ...processedEnv };
-	const missingJsonSchemaKeys: string[] = [];
-
-	if (coerce) {
-		const { jsonSchema, hasJsonSchema } = extractJsonSchema(
-			def,
-			missingJsonSchemaKeys,
-		);
-		if (hasJsonSchema) {
-			coercedEnv = applyCoercion(coercedEnv, findCoercionPaths(jsonSchema), {
-				arrayFormat,
-			}) as Record<string, unknown>;
-		}
-	}
 
 	// 1. Validate declared keys
 	for (const key in def) {
@@ -208,10 +156,11 @@ export function parseStandard(
 			!("~standard" in validator)
 		) {
 			throw new ArkEnvError([
-				{
-					path: key,
-					message: `Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
-				},
+				buildEnvIssue(
+					key,
+					`Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
+					"INVALID_SCHEMA",
+				),
 			]);
 		}
 
@@ -219,26 +168,64 @@ export function parseStandard(
 
 		if (result instanceof Promise) {
 			throw new ArkEnvError([
-				{
-					path: key,
-					message: "Async validation is not supported. ArkEnv is synchronous.",
-				},
+				buildEnvIssue(
+					key,
+					"Async validation is not supported. ArkEnv is synchronous.",
+					"INVALID_SCHEMA",
+				),
 			]);
 		}
 
 		if (result.issues) {
 			for (const issue of result.issues) {
 				const issuePath = formatIssuePath(key, issue.path);
-				let message = issue.message;
+
+				let receivedVal: unknown;
+				let traversalError: string | undefined;
+
+				if (key in processedEnv) {
+					const rawVal = processedEnv[key];
+					if (typeof rawVal === "string" && issue.path?.length) {
+						const traversed = traverseReceivedValue(rawVal, issue.path);
+						receivedVal = traversed.receivedVal;
+						traversalError = traversed.traversalError;
+					} else {
+						receivedVal = rawVal;
+					}
+				} else {
+					receivedVal = (issue as any).received;
+				}
+
+				const issueCode = (issue as any).code || "invalid_type";
+				const msg = issue.message || "";
+				const code = mapStandardCode(issueCode, msg, receivedVal);
+
+				const expected = (issue as any).expected || undefined;
+				const bounds = getStandardMeta(issue);
+
+				const meta: EnvIssueMeta = {
+					...bounds,
+				};
+				const iss = issue as any;
+				if (iss.validation !== undefined) meta.validation = iss.validation;
+				if (traversalError !== undefined) meta.traversalError = traversalError;
+
+				let message = formatStandardIssueMessage(
+					issue.message || "",
+					code,
+					expected,
+					receivedVal,
+					issuePath,
+					config,
+				);
 
 				if (coerce && missingJsonSchemaKeys.includes(key)) {
 					message += ` (Hint: coercion is enabled by default, but the validator for '${key}' lacks Standard JSON Schema support.)`;
 				}
 
-				errors.push({
-					path: issuePath,
-					message,
-				});
+				errors.push(
+					buildEnvIssue(issuePath, message, code, meta, expected, receivedVal),
+				);
 			}
 		} else {
 			output[key] = result.value;
@@ -251,10 +238,7 @@ export function parseStandard(
 	if (onUndeclaredKey !== "delete") {
 		for (const key of envKeys) {
 			if (onUndeclaredKey === "reject") {
-				errors.push({
-					path: key,
-					message: "Undeclared key",
-				});
+				errors.push(buildEnvIssue(key, "Undeclared key", "UNDECLARED_KEY"));
 			} else if (onUndeclaredKey === "ignore") {
 				output[key] = coercedEnv[key];
 			}

@@ -33,11 +33,11 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset types
 
-| Type    | When to Use                               | Standard SemVer (v1+) | v0 SemVer (0.y.z) |
-| ------- | ----------------------------------------- | --------------------- | ----------------- |
-| `patch` | Non-breaking fixes and small changes      | 1.0.0 → 1.0.1         | 0.0.1 → 0.0.2     |
-| `minor` | Non-breaking new features                 | 1.0.0 → 1.1.0         | 0.0.1 → 0.1.0*    |
-| `major` | **Breaking changes**                      | 1.0.0 → 2.0.0         | 0.0.1 → 1.0.0**   |
+| Type    | When to Use in v0 (Current)               | When to Use in v1+                       |
+| ------- | ----------------------------------------- | ----------------------------------------- |
+| `patch` | Any non-breaking change (fixes, features) | Non-breaking bug fixes                    |
+| `minor` | **Breaking changes**                      | Non-breaking new features                 |
+| `major` | Switch to v1 (only when instructed)       | **Breaking changes**                      |
 
 \* In v0, `minor` is used for **breaking changes**, not features.
 \*\* In v0, `major` is used only when explicitly transitioning to v1.
@@ -81,6 +81,20 @@ Use these rules only when working with packages still at `0.y.z` that are **not*
 ### Use `major` ONLY for:
 
 - Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.**
+
+## Decision guide (v1+ rules)
+
+For packages in **v1+** (e.g. active `v1` branch):
+
+### Use `patch` for:
+- Backward-compatible bug fixes
+- Internal performance or refactor improvements with user value
+
+### Use `minor` for:
+- Backward-compatible new features or API additions
+
+### Use `major` for:
+- **Breaking changes** (Any change that breaks backward compatibility. You MUST prefix the description with `**BREAKING CHANGE**:`).
 
 ## Creating a changeset
 
@@ -135,12 +149,12 @@ export const env = arkenv({
 
 ```markdown
 ---
-"package-name": patch|minor
+"package-name": patch|minor|major
 ---
 
 #### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
 
-Detailed description of the change (also using imperative mood for action summaries).
+A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
 
 Include:
 - **Usage examples** (code blocks)
@@ -148,7 +162,9 @@ Include:
 - Migration instructions for breaking changes (using `major` bump and you MUST include a `**BREAKING CHANGE**:` note at the bottom)
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
+**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise — 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
 ```
+
 
 ## Modifying an existing changeset
 

@@ -1,7 +1,6 @@
 import type { Dict } from "@repo/types";
 import { describe, expect, it } from "vitest";
-import { arkenv } from "../../arkenv.ts";
-import { type } from "../../index.ts";
+import arkenv, { type } from "@";
 
 describe("coercion integration", () => {
 	it("should coerce and validate numbers", () => {
