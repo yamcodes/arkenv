@@ -1,6 +1,6 @@
+import { indent, styleText } from "@repo/utils";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import arkenv, { type } from "@";
-import { indent, styleText } from "@repo/utils";
 
 /**
  * Format the errors returned by env for testing purposes

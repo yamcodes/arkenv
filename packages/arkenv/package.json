@@ -48,10 +48,10 @@
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
 		"@ark/attest": "catalog:",
+		"@arkenv/standard": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@repo/utils": "workspace:*",
-		"@arkenv/standard": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/node": "catalog:",

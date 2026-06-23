@@ -1,10 +1,10 @@
 export * from "./coercion";
 export {
 	ArkEnvError,
-	formatIssues,
 	type EnvIssue,
 	type EnvIssueCode,
 	type EnvIssueMeta,
+	formatIssues,
 	type SafeArkEnvResult,
 } from "./core";
 export {
