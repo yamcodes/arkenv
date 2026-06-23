@@ -28,9 +28,9 @@ describe("arkenv bundling interop", () => {
 
 		const testFile = join(tempDir, "test.ts");
 		const outFile = join(tempDir, "test.cjs");
-		const arkenvNodeModules = join(tempDir, "node_modules", "arkenv");
+		const arkenvNodeModules = join(tempDir, "node_modules", "@arkenv/core");
 
-		// Setup arkenv in node_modules
+		// Setup @arkenv/core in node_modules
 		mkdirSync(arkenvNodeModules, { recursive: true });
 		// Copy package.json and dist
 		cpSync(
@@ -50,15 +50,15 @@ describe("arkenv bundling interop", () => {
 		// Create a test script
 		writeFileSync(
 			testFile,
-			`import arkenv from "arkenv";
+			`import arkenv from "@arkenv/core";
 const env = arkenv({});
 console.log('SUCCESS');
 `,
 		);
 
-		// Bundle it with esbuild as CJS, marking arkenv as external
+		// Bundle it with esbuild as CJS, marking @arkenv/core as external
 		execSync(
-			`${esbuildPath} ${testFile} --bundle --format=cjs --platform=node --external:arkenv --outfile=${outFile}`,
+			`${esbuildPath} ${testFile} --bundle --format=cjs --platform=node --external:@arkenv/core --outfile=${outFile}`,
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
@@ -88,17 +88,21 @@ console.log('SUCCESS');
 
 		const testFile = join(tempDir, "test.ts");
 		const outFile = join(tempDir, "test.mjs");
-		const arkenvNodeModules = join(tempDir, "node_modules", "arkenv");
+		const arkenvNodeModules = join(tempDir, "node_modules", "@arkenv/standard");
 
-		// Setup arkenv in node_modules
+		// Setup @arkenv/standard in node_modules
 		mkdirSync(arkenvNodeModules, { recursive: true });
 		cpSync(
-			join(projectRoot, "package.json"),
+			join(projectRoot, "../standard/package.json"),
 			join(arkenvNodeModules, "package.json"),
 		);
-		cpSync(join(projectRoot, "dist"), join(arkenvNodeModules, "dist"), {
-			recursive: true,
-		});
+		cpSync(
+			join(projectRoot, "../standard/dist"),
+			join(arkenvNodeModules, "dist"),
+			{
+				recursive: true,
+			},
+		);
 
 		// Create a package.json in the temp dir
 		writeFileSync(
@@ -109,23 +113,23 @@ console.log('SUCCESS');
 		// Create a test script using the standard entry (ArkType-free)
 		writeFileSync(
 			testFile,
-			`import arkenv from "arkenv/standard";
+			`import arkenv from "@arkenv/standard";
 const schema = { PORT: { "~standard": { version: 1, validate: (v) => ({ value: v }) } } };
 const env = arkenv(schema, { env: { PORT: "3000" } });
 console.log('SUCCESS');
 `,
 		);
 
-		// Bundle it with esbuild as ESM, marking arkenv as external
+		// Bundle it with esbuild as ESM, marking @arkenv/standard as external
 		execSync(
-			`${esbuildPath} ${testFile} --bundle --format=esm --platform=node --external:arkenv --outfile=${outFile}`,
+			`${esbuildPath} ${testFile} --bundle --format=esm --platform=node --external:@arkenv/standard --outfile=${outFile}`,
 			{ cwd: tempDir, stdio: "ignore" },
 		);
 
 		// Run the bundled output - arktype must NOT be required for this to work
 		try {
 			// Assert the actual dist artifact contains no arktype references (isolation invariant)
-			const distPath = join(projectRoot, "dist", "standard.mjs");
+			const distPath = join(projectRoot, "../standard/dist/index.js");
 			const distContents = readFileSync(distPath, "utf8");
 			expect(distContents).not.toContain("arktype");
 
