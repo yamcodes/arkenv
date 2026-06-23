@@ -1,7 +1,8 @@
 import "server-only";
+import type { EnvSchema } from "@arkenv/core";
+import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { $ } from "@repo/scope";
 import type { Dict, SchemaShape } from "@repo/types";
-import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
 import { arkenvInternal } from "./arkenv-internal";
 import type { MergeExtends } from "./types";
@@ -47,14 +48,24 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 				"server entry point only accepts 'server' and 'shared' schemas.",
 			);
 		}
-		return arkenvInternal(schemaOrOptions, true);
+		return arkenvInternal(
+			schemaOrOptions,
+			true,
+			undefined,
+			coreArkenv,
+			getSchemaKeys,
+		);
 	}
 
-	return arkenvInternal(schemaOrOptions, optionsOrIsServer, {
-		isServer: true,
-	});
+	return arkenvInternal(
+		schemaOrOptions,
+		optionsOrIsServer,
+		{ isServer: true },
+		coreArkenv,
+		getSchemaKeys,
+	);
 }
 
-export { type } from "arkenv";
+export { type } from "@arkenv/core";
 
 export default arkenv;

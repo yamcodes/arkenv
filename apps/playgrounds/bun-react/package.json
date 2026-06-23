@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@arkenv/bun-plugin": "workspace:*",
-		"arkenv": "workspace:*",
+		"@arkenv/core": "workspace:*",
 		"arktype": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:"

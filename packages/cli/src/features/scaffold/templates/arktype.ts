@@ -22,7 +22,7 @@ export const arktypeTemplate = (
 
 	if (framework === "vite") {
 		return dedent /* ts */`
-	import { type } from "arkenv";
+	import { type } from "@arkenv/core";
 
 	/**
 	 * Environment variable schema.
@@ -37,7 +37,7 @@ export const arktypeTemplate = (
 
 	if (framework === "bun-fullstack") {
 		return dedent /* ts */`
-	import { type } from "arkenv";
+	import { type } from "@arkenv/core";
 
 	/**
 	 * Environment variable schema.
@@ -76,7 +76,7 @@ export const arktypeTemplate = (
 	}
 
 	return dedent /* ts */`
-	import arkenv, { type } from "arkenv";
+	import arkenv, { type } from "@arkenv/core";
 
 	/**
 	 * Environment variable schema for server-side or runtime-only validation.

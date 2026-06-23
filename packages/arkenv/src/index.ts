@@ -1,6 +1,6 @@
 import { $ } from "@repo/scope";
+import { getSchemaKeys } from "@repo/utils";
 import { arkenv } from "./arkenv";
-import { getSchemaKeys } from "./schema";
 
 export { arkenv, getSchemaKeys };
 /**

@@ -1,56 +1,8 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { arkenv as coreArkenv } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
-
-function getSchemaKeys(schema: any): string[] {
-	if (!schema || (typeof schema !== "object" && typeof schema !== "function")) {
-		return [];
-	}
-
-	// ArkType Type
-	if (
-		schema.json &&
-		typeof schema.json === "object" &&
-		schema.json.domain === "object"
-	) {
-		const keys: string[] = [];
-		if (Array.isArray(schema.json.required)) {
-			for (const r of schema.json.required) {
-				if (r && typeof r === "object" && "key" in r) {
-					keys.push(r.key);
-				}
-			}
-		}
-		if (Array.isArray(schema.json.optional)) {
-			for (const o of schema.json.optional) {
-				if (o && typeof o === "object" && "key" in o) {
-					keys.push(o.key);
-				}
-			}
-		}
-		return keys;
-	}
-
-	// Zod schema
-	if ("shape" in schema && schema.shape && typeof schema.shape === "object") {
-		return Object.keys(schema.shape);
-	}
-
-	// Valibot schema
-	if (
-		"entries" in schema &&
-		schema.entries &&
-		typeof schema.entries === "object"
-	) {
-		return Object.keys(schema.entries);
-	}
-
-	// Plain object schema
-	return Object.keys(schema);
-}
 
 /**
  * Validate and wrap environment variables in a security proxy.
@@ -60,7 +12,9 @@ function getSchemaKeys(schema: any): string[] {
 export function arkenvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
-	context?: { isServer: boolean; isShared?: boolean },
+	context: { isServer: boolean; isShared?: boolean } | undefined,
+	coreArkenv: any,
+	getSchemaKeys: any,
 ): unknown {
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};

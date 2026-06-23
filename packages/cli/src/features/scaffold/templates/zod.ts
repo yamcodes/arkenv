@@ -22,7 +22,7 @@ export const zodTemplate = (
 
 	if (framework === "vite") {
 		return dedent /* ts */`
-	import { type } from "arkenv";
+	import { type } from "@arkenv/core";
 	import { z } from "zod";
 
 	/**
@@ -38,7 +38,7 @@ export const zodTemplate = (
 
 	if (framework === "bun-fullstack") {
 		return dedent /* ts */`
-	import { type } from "arkenv";
+	import { type } from "@arkenv/core";
 	import { z } from "zod";
 
 	/**
@@ -79,7 +79,7 @@ export const zodTemplate = (
 	}
 
 	return dedent /* ts */`
-	import arkenv from "arkenv/standard";
+	import arkenv from "@arkenv/standard";
 	import { z } from "zod";
 
 	/**

@@ -9,10 +9,11 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"devDependencies": {
+		"@arkenv/core": "workspace:*",
+		"@arkenv/standard": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
-		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
@@ -22,14 +23,33 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
-		"arkenv": "^1.0.0",
+		"@arkenv/core": "^1.0.0",
+		"@arkenv/standard": "^1.0.0",
 		"arktype": "^2.1.22",
 		"vite": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
 	},
+	"peerDependenciesMeta": {
+		"@arkenv/core": {
+			"optional": true
+		},
+		"@arkenv/standard": {
+			"optional": true
+		},
+		"arktype": {
+			"optional": true
+		}
+	},
 	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./standard": {
+			"types": "./dist/standard.d.ts",
+			"import": "./dist/standard.js",
+			"require": "./dist/standard.cjs"
+		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fvite-plugin",
 	"description": "ArkEnv plugin for Vite",

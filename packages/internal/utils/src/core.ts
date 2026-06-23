@@ -1,5 +1,5 @@
-import { indent } from "@/utils/indent";
-import { styleText } from "@/utils/style-text";
+import { indent } from "./utils/indent";
+import { styleText } from "./utils/style-text";
 
 /**
  * Machine-readable classification codes for environment validation issues.

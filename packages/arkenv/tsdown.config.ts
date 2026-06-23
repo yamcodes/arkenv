@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-	entry: ["src/index.ts", "src/standard.ts", "src/core.ts"],
+	entry: ["src/index.ts"],
 	format: {
 		esm: {},
 		cjs: {
@@ -14,7 +14,7 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: true,
 	deps: {
-		alwaysBundle: ["@repo/scope", "@repo/types"],
+		alwaysBundle: ["@repo/scope", "@repo/types", "@repo/utils"],
 		neverBundle: ["arktype"],
 	},
 	outputOptions: {

@@ -1,5 +1,5 @@
 {
-	"name": "arkenv",
+	"name": "@arkenv/core",
 	"type": "module",
 	"version": "1.0.0-alpha.2",
 	"description": "Typesafe environment variables parsing and validation with ArkType",
@@ -14,22 +14,6 @@
 			},
 			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs"
-		},
-		"./standard": {
-			"types": {
-				"import": "./dist/standard.d.mts",
-				"require": "./dist/standard.d.cts"
-			},
-			"import": "./dist/standard.mjs",
-			"require": "./dist/standard.cjs"
-		},
-		"./core": {
-			"types": {
-				"import": "./dist/core.d.mts",
-				"require": "./dist/core.d.cts"
-			},
-			"import": "./dist/core.mjs",
-			"require": "./dist/core.cjs"
 		}
 	},
 	"scripts": {
@@ -66,6 +50,7 @@
 		"@ark/attest": "catalog:",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
+		"@repo/utils": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/node": "catalog:",
@@ -80,32 +65,15 @@
 	"peerDependencies": {
 		"arktype": "^2.1.22"
 	},
-	"peerDependenciesMeta": {
-		"arktype": {
-			"optional": true
-		}
-	},
 	"size-limit": [
 		{
-			"name": "arkenv",
+			"name": "@arkenv/core",
 			"path": "dist/index.mjs",
 			"limit": "2.7 kB",
 			"import": "*",
 			"ignore": [
 				"arktype"
 			]
-		},
-		{
-			"name": "arkenv/standard",
-			"path": "dist/standard.mjs",
-			"limit": "3.5 kB",
-			"import": "*"
-		},
-		{
-			"name": "arkenv/core",
-			"path": "dist/core.mjs",
-			"limit": "500 B",
-			"import": "*"
 		}
 	]
 }

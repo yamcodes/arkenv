@@ -1,5 +1,4 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { arkenv as coreArkenv, getSchemaKeys } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -11,6 +10,8 @@ export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
  * @param schemaOrOptions The schema definition or the unified options object
  * @param optionsOrIsServer The options object or a boolean indicating if running on the server
  * @param context The optional execution context containing server and entrypoint flags
+ * @param coreArkenv The arkenv function to use for validation
+ * @param getSchemaKeys The getSchemaKeys function to extract schema keys
  * @returns The wrapped and validated environment proxy object
  * @throws An error if a required key is missing or invalid
  * @internal
@@ -18,7 +19,9 @@ export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 export function arkenvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
-	context?: { isServer: boolean; isShared?: boolean },
+	context: { isServer: boolean; isShared?: boolean } | undefined,
+	coreArkenv: any,
+	getSchemaKeys: any,
 ): unknown {
 	let server: SchemaShape = {};
 	let client: Record<string, unknown> = {};

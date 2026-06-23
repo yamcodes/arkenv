@@ -1,5 +1,5 @@
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
-import { type ArkEnvConfig, arkenv, type EnvSchema } from "arkenv";
+import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 import type { Loader, PluginBuilder } from "bun";
 
 /**
@@ -7,12 +7,11 @@ import type { Loader, PluginBuilder } from "bun";
  * Processes an environment variable schema and returns a map of validated, filtered values.
  */
 export function processEnvSchema<T extends SchemaShape>(
-	options: EnvSchema<T> | CompiledEnvSchema,
-	config?: Omit<ArkEnvConfig, "safe">,
+	options: CompiledEnvSchema | any,
+	config: Omit<ArkEnvConfig, "safe"> | undefined,
+	coreArkenv: any,
 ): Map<string, string> {
-	// Type assertion needed on `options` to avoid TS2589 (excessively deep type instantiation)
-	// from ArkType's generic inference on the union type
-	const env: SchemaShape = arkenv(options as any, {
+	const env: SchemaShape = coreArkenv(options as any, {
 		...config,
 		env: config?.env ?? process.env,
 		safe: false,

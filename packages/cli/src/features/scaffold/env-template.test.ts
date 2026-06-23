@@ -13,7 +13,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import arkenv, { type } from "arkenv"');
+			expect(template).toContain('import arkenv, { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
@@ -137,7 +137,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { type } from "arkenv"');
+			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
@@ -160,7 +160,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { type } from "arkenv"');
+			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
@@ -186,7 +186,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import arkenv from "arkenv/standard"');
+			expect(template).toContain('import arkenv from "@arkenv/standard"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain('.default("development")');
 			expect(template).toContain(".default(3000)");
@@ -204,7 +204,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { type } from "arkenv"');
+			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("export const Env = type({");
 		});
@@ -233,7 +233,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import arkenv from "arkenv/standard"');
+			expect(template).toContain('import arkenv from "@arkenv/standard"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("v.integer()");
 			expect(template).toContain(
@@ -256,7 +256,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain('import { type } from "arkenv"');
+			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("export const Env = type({");
 		});
