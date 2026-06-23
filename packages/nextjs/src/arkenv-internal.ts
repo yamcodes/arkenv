@@ -13,8 +13,10 @@ export function arkenvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
 	context: { isServer: boolean; isShared?: boolean } | undefined,
-	coreArkenv: any,
-	getSchemaKeys: any,
+	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
+	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
+	/** Extracts the declared key names from a schema object. */
+	getSchemaKeys: (schema: any) => string[],
 ): unknown {
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};

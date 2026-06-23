@@ -62,6 +62,11 @@ export type ArkEnvConfigOptions = {
 	/**
 	 * Force standard mode code generation.
 	 *
+	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard/client`
+	 * instead of `@arkenv/nextjs/client`, ensuring the Standard Schema engine (`@arkenv/standard`)
+	 * is used and `arktype` is never bundled. This is set automatically when importing from
+	 * `@arkenv/nextjs/standard/config`, but can be toggled manually for custom setups.
+	 *
 	 * @default false
 	 */
 	standard?: boolean;
