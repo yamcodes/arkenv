@@ -11,15 +11,15 @@ The `packages/` directory is the home for code modules that are shared across th
 
 ### What belongs here vs. `apps/`?
 
-- **CLIs & Libraries**: If a codebase is published to npm for end-users to use—even if it is an executable/CLI like `@arkenv/cli` and not an importable library—it belongs here in `packages/`.
+- **CLIs & Libraries**: If a codebase is published to npm for end-users to use—even if it is an executable/CLI like `arkenv` and not an importable library—it belongs here in `packages/`.
 - **Applications & Tests (`apps/`)**: Standalone, deployed apps like documentation sites, playgrounds, or testing suites (like Playwright E2E tests) that are not published to npm go in `apps/`.
 
 ## Package directory
 
 | Directory                      | Package Name          | Type    | Description                                                                   |
 | :----------------------------- | :-------------------- | :------ | :---------------------------------------------------------------------------- |
-| [`arkenv`](./arkenv)           | `arkenv`              | Public  | Core typesafe environment variable parser.                                    |
-| [`cli`](./cli)                 | `@arkenv/cli`         | Public  | Scaffolding CLI tool (run via `npx arkenv` or installed as a dev dependency). |
+| [`arkenv`](./arkenv)           | `@arkenv/core`        | Public  | Core typesafe environment variable parser.                                    |
+| [`cli`](./cli)                 | `arkenv`              | Public  | Scaffolding CLI tool (run via `npx arkenv` or installed as a dev dependency). |
 | [`vite-plugin`](./vite-plugin) | `@arkenv/vite-plugin` | Public  | Vite integration for build-time validation.                                   |
 | [`nextjs`](./nextjs)           | `@arkenv/nextjs`      | Public  | Next.js integration with automatic runtimeEnv code generation.                |
 | [`bun-plugin`](./bun-plugin)   | `@arkenv/bun-plugin`  | Public  | Bun integration for static env variable inlining.                             |

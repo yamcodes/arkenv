@@ -1,11 +1,6 @@
-import {
-	ArkEnvError,
-	type EnvIssue,
-	formatIssues,
-	safeStringify,
-	shouldRedact,
-} from "@repo/utils";
+import { safeStringify, shouldRedact } from "@repo/utils";
 import { describe, expect, it } from "vitest";
+import { ArkEnvError, type EnvIssue, formatIssues } from "@";
 import { arkenv } from "./arkenv";
 
 describe("shouldRedact", () => {

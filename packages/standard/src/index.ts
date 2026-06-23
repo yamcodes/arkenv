@@ -4,6 +4,8 @@ import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
+	type EnvIssue,
+	formatIssues,
 	getSchemaKeys,
 	type ParseStandardConfig,
 	parseStandard,
@@ -11,7 +13,13 @@ import {
 	safeExecute,
 } from "@repo/utils";
 
-export { ArkEnvError, getSchemaKeys, type SafeArkEnvResult };
+export {
+	ArkEnvError,
+	type EnvIssue,
+	formatIssues,
+	getSchemaKeys,
+	type SafeArkEnvResult,
+};
 
 /**
  * Configuration options for the `arkenv/standard` entry's `arkenv`.

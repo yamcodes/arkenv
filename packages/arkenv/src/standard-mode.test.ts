@@ -1,5 +1,4 @@
-import { arkenv } from "@arkenv/standard";
-import { ArkEnvError } from "@repo/utils";
+import { ArkEnvError, arkenv } from "@arkenv/standard";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 
 // Mock Standard Schema validators for testing

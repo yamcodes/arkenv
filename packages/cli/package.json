@@ -1,5 +1,5 @@
 {
-	"name": "@arkenv/cli",
+	"name": "arkenv",
 	"type": "module",
 	"version": "1.0.0-alpha.0",
 	"description": "Interactive CLI for scaffolding ArkEnv projects",

@@ -21,7 +21,7 @@
 		{
 			"path": "packages/arkenv",
 
-			"name": "🎁 arkenv"
+			"name": "🎁 @arkenv/core"
 		},
 		{
 			"path": "packages/nextjs",
@@ -41,7 +41,7 @@
 		},
 		{
 			"path": "packages/cli",
-			"name": "🎁 @arkenv/cli"
+			"name": "🎁 arkenv"
 		},
 		{
 			"path": "packages/fumadocs-ui",

@@ -13,7 +13,7 @@ import {
 } from "@repo/utils";
 import type { ArkError, distill } from "arktype";
 import { ArkErrors } from "arktype";
-import type { ArkEnvConfig, EnvSchema } from "../arkenv";
+import type { ArkEnvConfig, EnvSchema } from "@/arkenv";
 
 const ARKTYPE_CODE_MAP = {
 	required: "MISSING_VARIABLE",
@@ -34,12 +34,24 @@ const ARKTYPE_CODE_MAP = {
 	predicate: "CUSTOM",
 } satisfies Record<ArkError["code"], EnvIssueCode>;
 
+/**
+ * Map an ArkType error code to an ArkEnv issue code.
+ *
+ * @param engineCode The ArkType engine error code
+ * @returns The corresponding ArkEnv issue code
+ */
 function mapArkTypeCode(engineCode: string): EnvIssueCode {
 	return engineCode in ARKTYPE_CODE_MAP
 		? ARKTYPE_CODE_MAP[engineCode as keyof typeof ARKTYPE_CODE_MAP]
 		: "INVALID_FORMAT";
 }
 
+/**
+ * Extract numeric bounds from an ArkType error object.
+ *
+ * @param error The ArkType error object
+ * @returns An object containing optional min and max bounds
+ */
 function getArkTypeMeta(error: any): { min?: number; max?: number } {
 	const min = error.min ?? error.rule;
 	const max = error.max;
@@ -49,6 +61,14 @@ function getArkTypeMeta(error: any): { min?: number; max?: number } {
 	};
 }
 
+/**
+ * Redact and colorize the value inside a "(was ...)" message fragment.
+ *
+ * @param message The validation error message
+ * @param path The environment variable key path
+ * @param debugSecrets Whether to display sensitive values in debug mode
+ * @returns The modified error message with styled or redacted value
+ */
 function redactMessageWasValue(
 	message: string,
 	path: string,
