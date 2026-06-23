@@ -8,13 +8,11 @@
 	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
-	"dependencies": {
-		"arkenv": "workspace:*"
-	},
 	"devDependencies": {
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
+		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
@@ -24,6 +22,7 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
+		"arkenv": "^1.0.0",
 		"arktype": "^2.1.22",
 		"vite": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
 	},

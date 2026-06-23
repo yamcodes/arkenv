@@ -9,7 +9,6 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
-		"arkenv": "workspace:*",
 		"chokidar": "^4.0.3",
 		"server-only": "^0.0.1"
 	},
@@ -17,6 +16,7 @@
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
+		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"next": "catalog:",
 		"rimraf": "catalog:",
@@ -26,6 +26,7 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
+		"arkenv": "^1.0.0",
 		"arktype": "^2.1.22",
 		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
 	},

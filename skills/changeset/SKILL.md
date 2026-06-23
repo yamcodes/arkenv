@@ -39,19 +39,40 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 | `minor` | **Breaking changes**                      | Non-breaking new features                 |
 | `major` | Switch to v1 (only when instructed)       | **Breaking changes**                      |
 
-## Decision guide (v0 rules)
+\* In v0, `minor` is used for **breaking changes**, not features.
+\*\* In v0, `major` is used only when explicitly transitioning to v1.
 
-Most packages in this repo are currently in **v0** (0.y.z). For these packages:
+## Decision guide
+
+> **Current Status:** The ArkEnv monorepo is in **v1 prerelease mode** (alpha). All packages follow **standard SemVer (v1+ rules)**.
 
 ### Use `patch` for:
 
-- **Any non-breaking change** (including new features, new CLI commands, new configuration options, enhanced functionality, non-breaking API additions, etc.)
 - Bug fixes
 - Dependency updates (non-breaking)
 - Performance improvements
 - Code style/linting fixes
+- Small documentation corrections
+
+### Use `minor` for:
+
+- **New features** (new CLI commands, new configuration options, enhanced functionality, non-breaking API additions, etc.)
+- New exports or public APIs
+- Significant documentation improvements
+
+### Use `major` for:
+
+- **Breaking changes** (any modification that requires consumers to change their code). You MUST include a `**BREAKING CHANGE**:` note at the bottom of the changeset with migration instructions.
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
+
+## v0 Rules (Legacy / Reference Only)
+
+Use these rules only when working with packages still at `0.y.z` that are **not** in v1 prerelease mode:
+
+### Use `patch` for:
+
+- **Any non-breaking change** (including new features, bug fixes, dependency updates, performance improvements, etc.)
 
 ### Use `minor` ONLY for:
 
@@ -59,7 +80,7 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 
 ### Use `major` ONLY for:
 
-- Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.** Do not use major for breaking changes in v0.
+- Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.**
 
 ## Decision guide (v1+ rules)
 
@@ -135,6 +156,12 @@ export const env = arkenv({
 
 A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
 
+Include:
+- **Usage examples** (code blocks)
+- Bullet points for details
+- Migration instructions for breaking changes (using `major` bump and you MUST include a `**BREAKING CHANGE**:` note at the bottom)
+
+**Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
 **BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise — 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
 ```
 
@@ -159,12 +186,12 @@ A concise, technical description of the change (using the imperative mood for ac
 
 ### Validation checklist after modification
 
-- [ ] Bump type matches the decision guide (patch for non-breaking, minor for breaking)
+- [ ] Bump type matches the decision guide (patch/minor for non-breaking, major for breaking)
 - [ ] Title starts with `####` header
 - [ ] All descriptions use imperative mood (no past tense, no indicative)
 - [ ] Usage examples present for user-facing changes
 - [ ] No GitHub issue references (# numbers)
-- [ ] Breaking changes have `**BREAKING CHANGE**:` prefix
+- [ ] Breaking changes use `major` bump and include a `**BREAKING CHANGE**:` note at the bottom
 
 ## Release workflow
 

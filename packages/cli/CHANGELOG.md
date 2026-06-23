@@ -368,7 +368,7 @@
 
 - #### Respect `tsconfig.json` for path resolution and scaffolding _[`#1013`](https://github.com/yamcodes/arkenv/pull/1013) [`0a18edd`](https://github.com/yamcodes/arkenv/commit/0a18edd97564b5b178bd20235a1bb0c20ed375ab) [@yamcodes](https://github.com/yamcodes)_
 
-  The Arkenv CLI now dynamically resolves configuration paths and scans project files by respecting `tsconfig.json` settings (`rootDir`, `paths`, `baseUrl`).
+  The ArkEnv CLI now dynamically resolves configuration paths and scans project files by respecting `tsconfig.json` settings (`rootDir`, `paths`, `baseUrl`).
 
   Key improvements include:
 

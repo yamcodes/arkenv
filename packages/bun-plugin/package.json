@@ -8,14 +8,12 @@
 	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
-	"dependencies": {
-		"arkenv": "workspace:*"
-	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/bun": "catalog:",
+		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"bun": "catalog:",
 		"rimraf": "catalog:",
@@ -25,6 +23,7 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
+		"arkenv": "^1.0.0",
 		"arktype": "^2.1.22",
 		"bun": "^1.0.0"
 	},

@@ -1,5 +1,5 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { arkenv as coreCreateEnv, getSchemaKeys } from "arkenv";
+import { arkenv as coreArkenv, getSchemaKeys } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -15,7 +15,7 @@ export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
  * @throws An error if a required key is missing or invalid
  * @internal
  */
-export function createEnvInternal(
+export function arkenvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
 	context?: { isServer: boolean; isShared?: boolean },
@@ -121,7 +121,7 @@ export function createEnvInternal(
 						}
 					}
 
-					const validated = coreCreateEnv(ext as any, {
+					const validated = coreArkenv(ext as any, {
 						env: combinedEnv as Dict<string>,
 						safe: false,
 					});
@@ -191,7 +191,7 @@ export function createEnvInternal(
 		: { ...client, ...shared };
 
 	// Run core validation
-	const validated = coreCreateEnv(schema as any, {
+	const validated = coreArkenv(schema as any, {
 		env: combinedEnv as Dict<string>,
 		safe: false,
 	});

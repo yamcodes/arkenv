@@ -9,8 +9,7 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
-		"@arkenv/build": "workspace:*",
-		"arkenv": "workspace:*"
+		"@arkenv/build": "workspace:*"
 	},
 	"devDependencies": {
 		"@nuxt/kit": "^4.4.8",
@@ -18,6 +17,7 @@
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
+		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"nuxt": "^4.4.8",
 		"rimraf": "catalog:",
@@ -27,6 +27,7 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
+		"arkenv": "^1.0.0",
 		"arktype": "^2.1.22",
 		"nuxt": "^3.0.0 || ^4.0.0-0"
 	},
