@@ -9,9 +9,15 @@ The second argument to `arkenv()` is an optional configuration object.
 All options listed below apply to both `arkenv` (ArkType mode) and `arkenv/standard` (Standard Schema mode).
 :::
 
-## `env`
+## Configuration options
 
-The environment variables to parse. Defaults to `process.env`.
+<AutoTypeTable path="../../packages/arkenv/src/create-env.ts" name="ArkEnvConfig" />
+
+## Examples
+
+### Custom env source
+
+You can pass a custom object instead of `process.env`. This is particularly useful in environments like Cloudflare Workers where variables are passed via a context object, or when testing.
 
 ```ts twoslash
 import arkenv from "arkenv";
@@ -22,9 +28,9 @@ const env = arkenv(
 );
 ```
 
-## `coerce`
+### Disabling coercion
 
-Whether to coerce environment variables to their defined types. Defaults to `true`.
+By default, ArkEnv automatically coerces string environment variables to numbers or booleans if the schema requires it. You can disable this behavior:
 
 ```ts twoslash
 import arkenv from "arkenv";
@@ -37,20 +43,9 @@ const env = arkenv(
 
 See the [coercion docs](/docs/arkenv/coercion) for more details.
 
-## `onUndeclaredKey`
+### Custom array format
 
-Control how ArkEnv handles environment variables that are not defined in your schema. Defaults to `"delete"`.
-
-- `"delete"` — Undeclared keys are allowed on input but stripped from the output.
-- `"ignore"` — Undeclared keys are allowed and preserved in the output.
-- `"reject"` — Undeclared keys will cause validation to fail.
-
-## `arrayFormat`
-
-The format to use for array parsing when coercion is enabled. Defaults to `"comma"`.
-
-- `"comma"` — Strings are split by comma and trimmed.
-- `"json"` — Strings are parsed as JSON.
+When coercion is enabled, you can specify how array strings are parsed.
 
 ```ts twoslash
 import arkenv from "arkenv";
@@ -61,11 +56,9 @@ const env = arkenv(
 );
 ```
 
-## `emptyAsUndefined`
+### Empty strings as undefined
 
-Whether to treat empty strings (`""`) as `undefined` before validation. Defaults to `false`.
-
-When enabled, an environment variable set to an empty value (e.g., `PORT=` in a `.env` file) will be treated as if it were missing, allowing defaults to apply and preventing validation errors for numeric or boolean types.
+When `emptyAsUndefined` is enabled, an environment variable set to an empty value (e.g., `PORT=` in a `.env` file) will be treated as if it were missing. This allows defaults to apply and prevents validation errors for numeric or boolean types.
 
 ```ts twoslash
 import arkenv from "arkenv";
