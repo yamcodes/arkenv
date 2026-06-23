@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import arkenv, { type } from "@";
-import type { ArkEnvError } from "@/core";
+import type { ArkEnvError } from "@repo/utils";
 
 // Helper to strip ANSI color codes (ESC character code 27)
 const stripAnsi = (str: string) =>
@@ -122,7 +122,7 @@ describe("arkenv + type + errors + utils integration", () => {
 				// Error message should contain indented formatting (indent function adds spaces)
 				// The formatted error should be indented under the main error message
 				const lines = envError.message.split("\n");
-				const errorLine = lines.find((line) => line.includes("PORT"));
+				const errorLine = lines.find((line: string) => line.includes("PORT"));
 				expect(errorLine).toBeDefined();
 				// Indented lines should start with spaces (from indent function, default is 2 spaces)
 				if (errorLine) {

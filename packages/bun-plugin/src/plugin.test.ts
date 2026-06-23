@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module with a spy that calls the real implementation by default
-vi.mock("arkenv", async (importActual) => {
-	const actual = await importActual<typeof import("arkenv")>();
+vi.mock("@arkenv/core", async (importActual) => {
+	const actual = await importActual<typeof import("@arkenv/core")>();
 	return {
 		...actual,
 		arkenv: vi.fn(actual.arkenv),
@@ -11,7 +11,7 @@ vi.mock("arkenv", async (importActual) => {
 
 import { arkenv } from "./plugin";
 
-const { arkenv: mockArkenv } = vi.mocked(await import("arkenv"));
+const { arkenv: mockArkenv } = vi.mocked(await import("@arkenv/core"));
 
 describe("Bun Plugin", () => {
 	let originalEnv: NodeJS.ProcessEnv;

@@ -800,6 +800,9 @@ importers:
       '@ark/attest':
         specifier: 'catalog:'
         version: 0.56.0(typescript@6.0.3)
+      '@arkenv/standard':
+        specifier: workspace:*
+        version: link:../standard
       '@repo/scope':
         specifier: workspace:*
         version: link:../internal/scope
@@ -867,6 +870,9 @@ importers:
       '@repo/types':
         specifier: workspace:*
         version: link:../internal/types
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../internal/utils
       '@size-limit/esbuild-why':
         specifier: 'catalog:'
         version: 12.1.0(size-limit@12.1.0(jiti@2.7.0))
@@ -1159,6 +1165,9 @@ importers:
       '@repo/types':
         specifier: workspace:*
         version: link:../internal/types
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../internal/utils
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
         version: 12.1.0(size-limit@12.1.0(jiti@2.7.0))

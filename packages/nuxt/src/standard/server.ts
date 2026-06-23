@@ -1,5 +1,5 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
-import type { Dict, StandardSchemaV1 } from "@repo/types";
+import type { StandardSchemaV1 } from "@repo/types";
 import { arkenvInternal } from "../arkenv-internal";
 import type { MergeExtends } from "../types";
 

@@ -1,6 +1,6 @@
 import { ArkErrors, type } from "arktype";
 import { describe, expect, it } from "vitest";
-import { applyCoercion, findCoercionPaths } from "@/coercion";
+import { applyCoercion, findCoercionPaths } from "@repo/utils";
 
 function coerce(at: typeof type, schema: any) {
 	return (env: any) => {

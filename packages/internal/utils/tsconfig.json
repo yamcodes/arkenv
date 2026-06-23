@@ -16,7 +16,9 @@
 		"declarationMap": true,
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"types": ["node"],
+		"lib": ["es2020", "es2022.object"]
 	},
 	"include": ["src"]
 }

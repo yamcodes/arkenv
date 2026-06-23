@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { arkenv } from "@arkenv/core";
 import { processEnvSchema } from "./utils";
 
 describe("Bun Plugin Utils", () => {
@@ -21,7 +22,7 @@ describe("Bun Plugin Utils", () => {
 			BUN_PUBLIC_API_URL: "string",
 			PORT: "number.port",
 			DATABASE_URL: "string",
-		} as const);
+		} as const, undefined, arkenv);
 
 		// Check that prefixed variables are present
 		expect(envMap.has("BUN_PUBLIC_API_URL")).toBe(true);
@@ -39,7 +40,7 @@ describe("Bun Plugin Utils", () => {
 
 		const envMap = processEnvSchema({
 			NODE_ENV: "'development' | 'test' | 'production'",
-		} as const);
+		} as const, undefined, arkenv);
 
 		// Check that NODE_ENV is present
 		expect(envMap.has("NODE_ENV")).toBe(true);

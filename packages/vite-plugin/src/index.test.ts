@@ -5,8 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the arkenv module to capture calls
 // Mock the arkenv module with a spy that calls the real implementation by default
-vi.mock("arkenv", async (importActual) => {
-	const actual = await importActual<typeof import("arkenv")>();
+vi.mock("@arkenv/core", async (importActual) => {
+	const actual = await importActual<typeof import("@arkenv/core")>();
 	return {
 		...actual,
 		default: vi.fn(actual.default),
@@ -28,7 +28,7 @@ import arkenvPlugin from "./index.js";
 const fixturesDir = join(__dirname, "__fixtures__");
 
 // Get the mocked functions
-const { arkenv: mockArkenv } = vi.mocked(await import("arkenv"));
+const { arkenv: mockArkenv } = vi.mocked(await import("@arkenv/core"));
 
 const mockLoadEnv = vi.mocked(vite.loadEnv);
 
