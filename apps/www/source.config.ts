@@ -3,6 +3,7 @@ import {
 	remarkMdxFiles,
 	remarkNpm,
 } from "fumadocs-core/mdx-plugins";
+import { remarkSteps } from "fumadocs-core/mdx-plugins/remark-steps";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
 import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
@@ -23,6 +24,7 @@ type AstNode = {
 	attributes?: any;
 	children?: AstNode[];
 	data?: Record<string, unknown>;
+	value?: string;
 };
 
 function remarkDirectiveAdmonitionCustom(options: {
@@ -110,6 +112,21 @@ function remarkDirectiveAdmonitionCustom(options: {
 	};
 }
 
+function remarkBunXToBunx(): RemarkPlugin {
+	return (tree: AstNode) => {
+		const traverse = (node: AstNode) => {
+			if (!node) return;
+			if (node.type === "code" && typeof node.value === "string") {
+				node.value = node.value.replace(/(^|\n)bun x /g, "$1bunx ");
+			}
+			if (node.children) {
+				node.children.forEach(traverse);
+			}
+		};
+		traverse(tree);
+	};
+}
+
 export const docs = defineDocs({
 	dir: "content/docs",
 	docs: {
@@ -127,6 +144,8 @@ export default defineConfig({
 			remarkMdxFiles,
 			remarkGemoji,
 			remarkNpm,
+			remarkSteps,
+			remarkBunXToBunx,
 			remarkDirective,
 			[
 				remarkDirectiveAdmonitionCustom,

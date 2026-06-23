@@ -52,6 +52,10 @@ if (fs.existsSync(docsDir)) {
 					content = content.replace(/\\\[!/g, "[!");
 					changed = true;
 				}
+				if (content.includes("\\[step]")) {
+					content = content.replace(/\\\[step\]/g, "[step]");
+					changed = true;
+				}
 				if (content.includes("\\_")) {
 					content = content.replace(/\\_/g, "_");
 					changed = true;
