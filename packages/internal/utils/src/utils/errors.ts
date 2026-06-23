@@ -4,7 +4,7 @@ import {
 	type EnvIssueCode,
 	type EnvIssueMeta,
 	type SafeArkEnvResult,
-} from "../core";
+} from "@/core";
 import { isDebugSecrets, safeStringify, shouldRedact } from "./redact";
 import { styleText } from "./style-text";
 

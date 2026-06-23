@@ -2,6 +2,13 @@ import { join } from "node:path";
 import type { BunPlugin } from "bun";
 import { processEnvSchema, registerLoader } from "./utils";
 
+/**
+ * Create a generic Bun plugin instance parameterized with a validator and name.
+ *
+ * @param coreArkenv The arkenv validation function to use
+ * @param pluginName The display name of the plugin
+ * @returns An object containing the configured arkenv plugin creator and the hybrid plugin instance
+ */
 export function createBunPlugin(coreArkenv: any, pluginName: string) {
 	function arkenv(options: any, arkenvConfig?: any): BunPlugin {
 		const envMap = processEnvSchema(options, arkenvConfig, coreArkenv);

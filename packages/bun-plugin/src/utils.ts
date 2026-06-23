@@ -7,11 +7,11 @@ import type { Loader, PluginBuilder } from "bun";
  * Processes an environment variable schema and returns a map of validated, filtered values.
  */
 export function processEnvSchema<T extends SchemaShape>(
-	options: CompiledEnvSchema | any,
+	options: T | Record<string, unknown>,
 	config: Omit<ArkEnvConfig, "safe"> | undefined,
-	coreArkenv: any,
+	coreArkenv: (def: any, config?: any) => Record<string, unknown>,
 ): Map<string, string> {
-	const env: SchemaShape = coreArkenv(options as any, {
+	const env = coreArkenv(options, {
 		...config,
 		env: config?.env ?? process.env,
 		safe: false,
