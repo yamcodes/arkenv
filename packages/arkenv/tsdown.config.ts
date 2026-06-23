@@ -11,7 +11,7 @@ export default defineConfig({
 		},
 	},
 	platform: "node",
-	minify: true,
+	minify: false,
 	fixedExtension: true,
 	deps: {
 		alwaysBundle: ["@repo/scope", "@repo/types", "@repo/utils"],
