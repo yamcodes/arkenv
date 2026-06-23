@@ -1,4 +1,4 @@
-import module from "../module";
+import module from "@/module";
 
-export * from "../module";
+export * from "@/module";
 export default module;

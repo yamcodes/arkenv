@@ -1,6 +1,6 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
-import { arkenvInternal } from "../arkenv-internal";
+import { arkenvInternal } from "@/arkenv-internal";
 
 /**
  * Create a validated, type-safe environment configuration for Next.js applications in Standard Mode.

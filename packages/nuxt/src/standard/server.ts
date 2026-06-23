@@ -1,7 +1,7 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
-import { arkenvInternal } from "../arkenv-internal";
-import type { MergeExtends } from "../types";
+import { arkenvInternal } from "@/arkenv-internal";
+import type { MergeExtends } from "@/types";
 
 /**
  * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point, Standard Mode).

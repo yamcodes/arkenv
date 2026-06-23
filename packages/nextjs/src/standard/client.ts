@@ -1,9 +1,13 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { Dict, StandardSchemaV1 } from "@repo/types";
-import { arkenvInternal } from "../arkenv-internal";
+import { arkenvInternal } from "@/arkenv-internal";
 
 /**
  * Create a validated, type-safe environment configuration for Next.js applications (Client entry point, Standard Mode).
+ *
+ * @param schema A flat schema of `NEXT_PUBLIC_*` Standard Schema validators
+ * @param options Optional extends and runtimeEnv overrides
+ * @returns A validated, readonly environment variables object
  */
 export function arkenv<
 	const TSchema extends Record<string, StandardSchemaV1> = {},
@@ -17,6 +21,13 @@ export function arkenv<
 	},
 ): Readonly<{ [K in keyof TSchema]: StandardSchemaV1.InferOutput<TSchema[K]> }>;
 
+/**
+ * Create a validated, type-safe environment configuration for Next.js applications using
+ * the split client/shared schema pattern (Client entry point, Standard Mode).
+ *
+ * @param options The environment validation configuration with client and shared schemas
+ * @returns A validated, readonly environment variables object
+ */
 export function arkenv<
 	const TClient extends Record<string, StandardSchemaV1> = {},
 	const TShared extends Record<string, StandardSchemaV1> = {},

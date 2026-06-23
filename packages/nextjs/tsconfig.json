@@ -12,6 +12,10 @@
 		"outDir": "dist",
 		"resolveJsonModule": true,
 		"declaration": true,
-		"declarationMap": true
+		"declarationMap": true,
+		"paths": {
+			"@/*": ["./src/*"],
+			"@": ["./src/index.ts"]
+		}
 	}
 }

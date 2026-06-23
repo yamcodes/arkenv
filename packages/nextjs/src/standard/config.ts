@@ -1,7 +1,7 @@
 import {
 	type ArkEnvConfigOptions,
 	withArkEnv as originalWithArkEnv,
-} from "../config";
+} from "@/config";
 
 /**
  * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts` (Standard Mode).
