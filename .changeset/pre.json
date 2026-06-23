@@ -20,6 +20,7 @@
 		"@arkenv/nuxt": "0.0.1"
 	},
 	"changesets": [
+		"epg3nspi",
 		"init-v1",
 		"rename-create-env-to-arkenv",
 		"unified-error-normalization",

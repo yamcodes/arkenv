@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/nuxt",
-	"version": "0.0.2-alpha.0",
+	"version": "1.0.0-alpha.1",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
