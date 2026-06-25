@@ -25,7 +25,7 @@ We distinguish between two categories of shared logic:
 
 Runtime logic must remain 100% dependency-free and must not suffer from version or singleton skew.
 
-1. **Stateless Logic (Helpers/Parsers):** Shared stateless logic will live in an internal monorepo package (e.g., `@repo/utils`). Using our bundler (`tsdown`), this logic will be physically inlined into the distributables of the consuming published packages (`arkenv`, `@arkenv/cli`).
+1. **Stateless Logic (Helpers/Parsers):** Shared stateless logic will live in an internal monorepo package (e.g., `@repo/utils`). Using our bundler (`tsdown`), this logic will be physically inlined into the distributables of the consuming published packages (`arkenv`, `@arkenv/core`).
 2. **Stateful Logic (Singletons/Schemas):** Any stateful logic or singleton configuration will be managed via Subpath Exports directly from the core `arkenv` package, rather than using peer dependencies to enforce a single instance. The core package exposes named entry points such as `arkenv/standard` and `arkenv/core` via its `exports` field. Future stateful internals (e.g., shared ArkType scopes) may be exposed through additional subpaths like `arkenv/internal` if needed.
 
 ### Build-Time Shared Logic

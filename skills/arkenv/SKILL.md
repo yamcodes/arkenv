@@ -1,6 +1,6 @@
 ---
 name: arkenv
-description: "Answer questions about ArkEnv and help implement environment variable validation. Use when developers: (1) Ask about environment variable validation or typesafety, (2) Want to setup ArkEnv in a project, (3) Need to define or update schemas using ArkType or Standard Schema, (4) Are integrating with Vite, Bun, or other runtimes. Triggers on: 'ArkEnv', 'env validation', 'typesafe env', 'arkenv', 'env.ts', '@arkenv/cli'."
+description: "Answer questions about ArkEnv and help implement environment variable validation. Use when developers: (1) Ask about environment variable validation or typesafety, (2) Want to setup ArkEnv in a project, (3) Need to define or update schemas using ArkType or Standard Schema, (4) Are integrating with Vite, Bun, or other runtimes. Triggers on: 'ArkEnv', 'env validation', 'typesafe env', 'arkenv', 'env.ts'."
 ---
 
 # ArkEnv
@@ -25,7 +25,7 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 
 ### CLI (setup & DevOps)
 
-- Initialize ArkEnv in new or existing projects using `pnpm dlx @arkenv/cli@latest init`.
+- Initialize ArkEnv in new or existing projects using `pnpm dlx arkenv@latest init`.
 - Scaffold schema files and detect framework-specific configurations (`Next.js`, `Vite`, `Bun`, etc.).
 - Support layout selection (`--strict` for 3-file split vs `--simple` for a single file).
 - Support option to skip codegen (`--no-codegen` / `-C`).
@@ -35,7 +35,7 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 
 AI agents SHOULD always use the CLI for project initialization to ensure consistency and reliability. Use the `--agent` flag for a fully automated, machine-readable experience.
 
-- **Command**: `pnpm dlx @arkenv/cli@latest init --agent`
+- **Command**: `pnpm dlx arkenv@latest init --agent`
 - **Behavior**: The `--agent` flag automatically enables the following behaviors:
   - **`--yes`**: Bypasses all interactive prompts and uses recommended defaults.
   - **`--quiet`**: Suppresses spinners and ANSI formatting for cleaner terminal logs.
@@ -49,14 +49,14 @@ AI agents SHOULD always use the CLI for project initialization to ensure consist
    - Check for framework config files (`next.config.ts`, `next.config.js`, `vite.config.ts`, `bunfig.toml`, `package.json` scripts) to recommend appropriate plugins.
 2. **Setup**:
    - If ArkEnv is not present or a fresh setup is requested, trigger the **Setup Workflow**.
-   - Prefer using the CLI for initialization: `pnpm dlx @arkenv/cli@latest init`.
+   - Prefer using the CLI for initialization: `pnpm dlx arkenv@latest init`.
    - If the CLI cannot be used or fails, fall back to manual configuration.
 
 ## Setup workflow
 
 When setting up ArkEnv, follow these steps:
 
-1. **Initialize**: Run `pnpm dlx @arkenv/cli@latest init --agent` (optionally appending `--strict` or `--simple` based on layout preference). This will detect the environment, install dependencies, and scaffold schemas.
+1. **Initialize**: Run `pnpm dlx arkenv@latest init --agent` (optionally appending `--strict` or `--simple` based on layout preference). This will detect the environment, install dependencies, and scaffold schemas.
 2. **Review & Refine Schemas**:
    - **Simple Layout**: Inspect and refine the generated `env.ts`. Ensure it captures the required environment variables.
    - **Strict Layout**: Inspect and refine the generated files under the `env/` directory: `client.ts` (client-only variables), `server.ts` (server-only variables), and `internal/shared.ts` (variables shared between client and server).
@@ -208,7 +208,7 @@ declare global {
 Set up ArkEnv in your project. It detects your framework and configures the appropriate plugin and type augmentations.
 
 ```bash
-pnpm dlx @arkenv/cli@latest init [options]
+pnpm dlx arkenv@latest init [options]
 ```
 
 #### Options:

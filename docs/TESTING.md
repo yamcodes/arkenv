@@ -242,7 +242,7 @@ pnpm run test:e2e:package
 - ✅ Real project build testing using the example as a fixture
 - ✅ Error handling for missing environment variables
 
-### CLI package (`@arkenv/cli`)
+### CLI package (`arkenv`)
 
 - ✅ Environment template selection by validator (`arktype`, `zod`, `valibot`)
 - ✅ Framework and package manager detection heuristics

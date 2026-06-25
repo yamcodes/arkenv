@@ -7,11 +7,11 @@ ArkEnv is a monorepo containing a core engine, a CLI codegen tool, multiple fram
 For example:
 
 - A bug fix in `@arkenv/nextjs` should not force a new version of `arkenv`.
-- An update to `@arkenv/cli` (e.g., modifying its interactive prompt or code templates) should not require a new release of `arkenv`.
+- An update to `arkenv` (e.g., modifying its interactive prompt or code templates) should not require a new release of `arkenv`.
 
 ## Decision
 
-We will adopt an **independent versioning model** where all packages in the monorepo float independently. There is no locked inner circle because ArkEnv has a single core engine package (`arkenv`), and all other packages (including `@arkenv/cli`) act as independent consumers or utilities.
+We will adopt an **independent versioning model** where all packages in the monorepo float independently. There is no locked inner circle because ArkEnv has a single core engine package (`arkenv`), and all other packages (including `arkenv`) act as independent consumers or utilities.
 
 ### Future Core Package Split
 
@@ -21,11 +21,11 @@ If the `arkenv` package is ever split into `@arkenv/core` and `@arkenv/standard`
 
 The following packages float independently:
 
-- The CLI codegen tool: `@arkenv/cli`
+- The CLI codegen tool: `arkenv`
 - Framework plugins: `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`
 - Build utilities: `@arkenv/build`, `@arkenv/fumadocs-ui`
 
-**Rationale:** These packages integrate with external frameworks and tools that evolve on their own schedules. A local integration fix (e.g., adapting to a new Next.js API) or a tweak to a CLI prompt should not trigger a core engine release. Independent versioning allows us to ship plugin-specific and tooling-specific fixes without cascading version bumps to the entire ecosystem. The CLI (`@arkenv/cli`) itself is merely a scaffolding utility that writes configuration files; it does not depend on deep `arkenv` internals, and therefore does not need to be version-locked to the core engine.
+**Rationale:** These packages integrate with external frameworks and tools that evolve on their own schedules. A local integration fix (e.g., adapting to a new Next.js API) or a tweak to a CLI prompt should not trigger a core engine release. Independent versioning allows us to ship plugin-specific and tooling-specific fixes without cascading version bumps to the entire ecosystem. The CLI (`arkenv`) itself is merely a scaffolding utility that writes configuration files; it does not depend on deep `arkenv` internals, and therefore does not need to be version-locked to the core engine.
 
 ### The Glue (Strict Peer Dependencies)
 
@@ -79,7 +79,7 @@ Because this is a monorepo, plugins reference the local `arkenv` package during 
 
 - **Positive:** Core engine stability. The core `arkenv` package is only released when there are genuine engine-level changes or bug fixes.
 - **Positive:** Plugin agility. Framework integrations can iterate and release quickly without coordinating with core releases.
-- **Positive:** Clear contract. Users understand that each tool (including `@arkenv/cli`) floats and releases on its own schedule.
+- **Positive:** Clear contract. Users understand that each tool (including `arkenv`) floats and releases on its own schedule.
 - **Positive:** Peer dependency enforcement catches mismatched installations early.
 - **Negative:** Release management requires tracking changelogs and versions across separate packages independently.
 - **Negative:** Plugin authors must ensure peer dependency ranges accurately reflect tested compatibility.

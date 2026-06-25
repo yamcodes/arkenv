@@ -1,6 +1,6 @@
 ---
 "arkenv": major
-"@arkenv/cli": major
+"@arkenv/core": major
 "@arkenv/vite-plugin": major
 "@arkenv/bun-plugin": major
 "@arkenv/nextjs": major
