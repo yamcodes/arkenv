@@ -83,9 +83,13 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 **Monorepo Structure:**
 
 - **Packages** (`packages/`) - Published npm packages
-  - `arkenv` - Core library package
+  - `@arkenv/core` - Core library package with native ArkType support
+  - `@arkenv/standard` - ArkType-free Standard Schema entrypoint
   - `@arkenv/vite-plugin` - Vite plugin package
-  - `@arkenv/cli` - Interactive CLI for scaffolding and project mutation
+  - `@arkenv/bun-plugin` - Bun plugin package
+  - `@arkenv/nextjs` - Next.js integration package
+  - `@arkenv/nuxt` - Nuxt integration package
+  - `arkenv` - Interactive CLI for scaffolding and project mutation
 - **Apps** (`apps/`) - Applications and testing suites (not published)
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes
@@ -94,12 +98,16 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 **Package Architecture:**
 
-- **Core Package** (`arkenv`):
-  - Main export: `arkenv` function (also exported as default export)
-  - Uses ArkType's `scope` system for type validation
-  - Custom types: `string.host`, `number.port`, `boolean`
-  - Error handling via `ArkEnvError` class
-  - Zero external dependencies (except `arktype` as peer dependency)
+- **Core Packages**:
+  - **`@arkenv/core`**:
+    - Main export: `arkenv` function (also exported as default export)
+    - Uses ArkType's `scope` system for type validation
+    - Custom types: `string.host`, `number.port`, `boolean`
+    - Error handling via `ArkEnvError` class
+    - Zero external dependencies (except `arktype` as peer dependency)
+  - **`@arkenv/standard`**:
+    - Main export: `arkenv` function (also exported as default export)
+    - Zero external dependencies; validates environment variables using Standard Schema (Zod, Valibot, etc.)
 
 **Build System:**
 

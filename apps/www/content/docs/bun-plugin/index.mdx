@@ -172,3 +172,39 @@ declare namespace NodeJS {
 const apiUrl = process.env.BUN_PUBLIC_API_URL;
 //      ^?
 ```
+
+### ArkType-free mode (Standard Mode)
+
+If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` in your Bun project:
+
+1. Install `@arkenv/standard` and `@arkenv/bun-plugin`:
+
+```package-install
+@arkenv/standard @arkenv/bun-plugin zod
+```
+
+2. Register the plugin programmatically in your build script using `@arkenv/bun-plugin/standard`:
+
+```ts title="build.ts"
+import arkenv from "@arkenv/bun-plugin/standard";
+import { z } from "zod";
+
+const Env = {
+  BUN_PUBLIC_API_URL: z.string().url(),
+  BUN_PUBLIC_DEBUG: z.boolean(),
+};
+
+await Bun.build({
+  entrypoints: ["./app.tsx"],
+  outdir: "./dist",
+  plugins: [arkenv(Env)],
+});
+```
+
+3. To use the static dev server plugin with auto-discovery, update `bunfig.toml` to reference `@arkenv/bun-plugin/standard`:
+
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["@arkenv/bun-plugin/standard"]
+```
+

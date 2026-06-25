@@ -87,3 +87,40 @@ You can freely mix Zod or Valibot schemas with the strict layout:
     ```
   </Tab>
 </Tabs>
+
+## ArkType-free mode (Standard Mode)
+
+If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` as a dependency in your Nuxt project:
+
+1. Install `@arkenv/standard` and `@arkenv/nuxt` (along with your validator):
+
+```package-install
+@arkenv/standard @arkenv/nuxt zod
+```
+
+2. Register the module in your Nuxt configuration using `@arkenv/nuxt/standard/module` (instead of `@arkenv/nuxt/module`):
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  modules: [
+    '@arkenv/nuxt/standard/module'
+  ]
+})
+```
+
+3. Import from `@arkenv/nuxt/standard` in your environment schema file:
+
+```ts title="env.ts" twoslash
+import arkenv from '@arkenv/nuxt/standard';
+import { z } from 'zod';
+
+export const env = arkenv({
+  server: {
+    DATABASE_URL: z.string().url(),
+  },
+  client: {
+    NUXT_PUBLIC_API_URL: z.string().url(),
+  },
+});
+```
+
