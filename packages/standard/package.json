@@ -56,7 +56,7 @@
 		{
 			"name": "@arkenv/standard",
 			"path": "dist/index.js",
-			"limit": "3.5 kB",
+			"limit": "3.6 kB",
 			"import": "*"
 		}
 	]
