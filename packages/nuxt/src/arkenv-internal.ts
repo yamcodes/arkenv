@@ -8,12 +8,12 @@ export type LegacyNestedSchema = {
 	server?: SchemaShape;
 	client?: SchemaShape;
 	shared?: SchemaShape;
-	extends?: unknown[];
+	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
 };
 
 export type FlatSchemaOptions = {
-	extends?: unknown[];
+	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
 };
 
@@ -35,8 +35,8 @@ export function arkenvInternal(
 	context: { isServer: boolean; isShared?: boolean } | undefined,
 	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
 	coreArkenv: (
-		schema: SchemaShape,
-		config?: { env?: Dict<string>; safe?: boolean },
+		schema: any,
+		config?: any,
 	) => Record<string, unknown>,
 	/** Extracts the declared key names from a schema object. */
 	getSchemaKeys: (schema: SchemaShape) => string[],
@@ -44,7 +44,7 @@ export function arkenvInternal(
 	let server: SchemaShape = {};
 	let client: Record<string, unknown> = {};
 	let shared: SchemaShape = {};
-	let extendsList: unknown[] = [];
+	let extendsList: readonly unknown[] = [];
 	let isServer = false;
 
 	const globalConfig =
@@ -54,14 +54,15 @@ export function arkenvInternal(
 
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
-		server = schemaOrOptions.server || {};
-		client = schemaOrOptions.client || {};
-		shared = schemaOrOptions.shared || {};
-		extendsList = schemaOrOptions.extends || [];
+		const legacySchema = schemaOrOptions as LegacyNestedSchema | null | undefined;
+		server = (legacySchema?.server || {}) as SchemaShape;
+		client = (legacySchema?.client || {}) as Record<string, unknown>;
+		shared = (legacySchema?.shared || {}) as SchemaShape;
+		extendsList = legacySchema?.extends || [];
 		isServer = optionsOrIsServer;
 	} else {
 		// New flat schema behavior
-		const flatSchema = schemaOrOptions || {};
+		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
 		isServer = !!context?.isServer;

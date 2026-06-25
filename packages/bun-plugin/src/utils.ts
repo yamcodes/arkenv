@@ -1,4 +1,4 @@
-import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
+import type { SchemaShape } from "@repo/types";
 import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 import type { Loader, PluginBuilder } from "bun";
 

@@ -8,12 +8,12 @@ export type LegacyNestedSchema = {
 	server?: SchemaShape;
 	client?: SchemaShape;
 	shared?: SchemaShape;
-	extends?: unknown[];
+	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
 };
 
 export type FlatSchemaOptions = {
-	extends?: unknown[];
+	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
 };
 
@@ -28,8 +28,8 @@ export function arkenvInternal(
 	context: { isServer: boolean; isShared?: boolean } | undefined,
 	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
 	coreArkenv: (
-		schema: SchemaShape,
-		config?: { env?: Dict<string>; safe?: boolean },
+		schema: any,
+		config?: any,
 	) => Record<string, unknown>,
 	/** Extracts the declared key names from a schema object. */
 	getSchemaKeys: (schema: SchemaShape) => string[],
@@ -37,24 +37,25 @@ export function arkenvInternal(
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};
 	let shared: SchemaShape = {};
-	let extendsList: unknown[] = [];
+	let extendsList: readonly unknown[] = [];
 	let runtimeEnv: Dict<string> = {};
 	let isServer = false;
 
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
-		server = schemaOrOptions.server || {};
-		client = schemaOrOptions.client || {};
-		shared = schemaOrOptions.shared || {};
-		extendsList = schemaOrOptions.extends || [];
-		runtimeEnv = schemaOrOptions.runtimeEnv || {};
+		const legacySchema = schemaOrOptions as LegacyNestedSchema | null | undefined;
+		server = (legacySchema?.server || {}) as SchemaShape;
+		client = (legacySchema?.client || {}) as SchemaShape;
+		shared = (legacySchema?.shared || {}) as SchemaShape;
+		extendsList = legacySchema?.extends || [];
+		runtimeEnv = (legacySchema?.runtimeEnv || {}) as Dict<string>;
 		isServer = optionsOrIsServer;
 	} else {
 		// New flat schema behavior
-		const flatSchema = schemaOrOptions || {};
+		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
-		runtimeEnv = options.runtimeEnv || {};
+		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
 		isServer = !!context?.isServer;
 
 		if (context?.isShared) {
@@ -66,7 +67,7 @@ export function arkenvInternal(
 		}
 	}
 
-	let extendedEnvValues: Dict<string> = {};
+	let extendedEnvValues: Record<string, unknown> = {};
 	const allKeys = new Set<string>();
 	const serverOnlyKeys = new Set<string>();
 
@@ -85,7 +86,7 @@ export function arkenvInternal(
 	}
 
 	// Prepare combined environment for core validation
-	const combinedEnv: Dict<string> = {};
+	const combinedEnv: Record<string, unknown> = {};
 
 	// Process extended environments
 	if (extendsList && Array.isArray(extendsList)) {
@@ -133,7 +134,7 @@ export function arkenvInternal(
 					}
 
 					const validated = coreArkenv(ext as SchemaShape, {
-						env: combinedEnv,
+						env: combinedEnv as Dict<string>,
 						safe: false,
 					});
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
@@ -222,7 +223,7 @@ export function arkenvInternal(
 
 	// Run core validation
 	const validated = coreArkenv(schema as SchemaShape, {
-		env: combinedEnv,
+		env: combinedEnv as Dict<string>,
 		safe: false,
 	});
 
