@@ -4,19 +4,35 @@ export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
+export type LegacyNestedSchema = {
+	server?: SchemaShape;
+	client?: SchemaShape;
+	shared?: SchemaShape;
+	extends?: unknown[];
+	runtimeEnv?: Dict<string>;
+};
+
+export type FlatSchemaOptions = {
+	extends?: unknown[];
+	runtimeEnv?: Dict<string>;
+};
+
 /**
  * Validate and wrap environment variables in a security proxy.
  *
  * @internal
  */
 export function arkenvInternal(
-	schemaOrOptions: any,
-	optionsOrIsServer: any,
+	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
+	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
 	context: { isServer: boolean; isShared?: boolean } | undefined,
 	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
-	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
+	coreArkenv: (
+		schema: SchemaShape,
+		config?: { env?: Dict<string>; safe?: boolean },
+	) => Record<string, unknown>,
 	/** Extracts the declared key names from a schema object. */
-	getSchemaKeys: (schema: any) => string[],
+	getSchemaKeys: (schema: SchemaShape) => string[],
 ): unknown {
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};
@@ -75,16 +91,21 @@ export function arkenvInternal(
 	if (extendsList && Array.isArray(extendsList)) {
 		for (const ext of extendsList) {
 			if (ext && (typeof ext === "object" || typeof ext === "function")) {
-				const raw = (ext as any)[EXTENDED_ENV];
+				const raw = (ext as Record<string | symbol, unknown>)[EXTENDED_ENV];
 				if (raw) {
-					extendedEnvValues = { ...extendedEnvValues, ...raw };
+					extendedEnvValues = {
+						...extendedEnvValues,
+						...(raw as Record<string, unknown>),
+					};
 
-					const extKeys = (ext as any)[ENV_KEYS];
+					const extKeys = (ext as Record<string | symbol, unknown>)[ENV_KEYS];
 					if (extKeys instanceof Set) {
 						for (const key of extKeys) allKeys.add(key);
 					}
 
-					const extServerOnly = (ext as any)[SERVER_ONLY_KEYS];
+					const extServerOnly = (ext as Record<string | symbol, unknown>)[
+						SERVER_ONLY_KEYS
+					];
 					if (extServerOnly instanceof Set) {
 						for (const key of extServerOnly) serverOnlyKeys.add(key);
 					}
@@ -111,7 +132,7 @@ export function arkenvInternal(
 						}
 					}
 
-					const validated = coreArkenv(ext as any, {
+					const validated = coreArkenv(ext as SchemaShape, {
 						env: combinedEnv,
 						safe: false,
 					});
@@ -200,7 +221,7 @@ export function arkenvInternal(
 		: { ...client, ...shared };
 
 	// Run core validation
-	const validated = coreArkenv(schema as any, {
+	const validated = coreArkenv(schema as SchemaShape, {
 		env: combinedEnv,
 		safe: false,
 	});

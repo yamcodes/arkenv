@@ -24,9 +24,9 @@ describe("Standard Mode Type Inference", () => {
 		});
 
 		// Type-level assertions
-		expectTypeOf(env.STRING_VAR).toEqualTypeOf<string>();
-		expectTypeOf(env.NUMBER_VAR).toEqualTypeOf<number>();
-		expectTypeOf(env.BOOLEAN_VAR).toEqualTypeOf<boolean>();
+		expectTypeOf(env.STRING_VAR).toBeString();
+		expectTypeOf(env.NUMBER_VAR).toBeNumber();
+		expectTypeOf(env.BOOLEAN_VAR).toBeBoolean();
 
 		// Runtime assertions
 		expect(env.STRING_VAR).toBe("test-string");
@@ -42,7 +42,7 @@ describe("Standard Mode Type Inference", () => {
 		});
 
 		// Verify the type is a plain string, not wrapped in ArkType types
-		expectTypeOf(env.TEST_VAR).toEqualTypeOf<string>();
+		expectTypeOf(env.TEST_VAR).toBeString();
 	});
 
 	it("should correctly infer object types from Standard Schema", () => {
@@ -87,8 +87,8 @@ describe("Standard Mode Type Inference", () => {
 			VAR3: createMockStandardSchema({ nested: "object" }),
 		});
 
-		expectTypeOf(env.VAR1).toEqualTypeOf<string>();
-		expectTypeOf(env.VAR2).toEqualTypeOf<number>();
+		expectTypeOf(env.VAR1).toBeString();
+		expectTypeOf(env.VAR2).toBeNumber();
 		expectTypeOf(env.VAR3).toEqualTypeOf<{ nested: string }>();
 	});
 });
