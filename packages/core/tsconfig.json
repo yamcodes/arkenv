@@ -13,12 +13,14 @@
 		"resolveJsonModule": true,
 		"rootDir": "src",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@": ["./src/index.ts"]
 		},
 		"declaration": true,
 		"declarationMap": true,
 		"allowImportingTsExtensions": true,
-		"types": ["node"]
+		"types": ["node"],
+		"lib": ["es2020", "es2022.object"]
 	},
 	"include": ["src"]
 }
