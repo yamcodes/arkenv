@@ -1,7 +1,7 @@
 {
 	"name": "@arkenv/standard",
 	"type": "module",
-	"version": "1.0.0-alpha.2",
+	"version": "1.0.0-alpha.3",
 	"description": "Dependency-free, typesafe environment variables validation based on Standard Schema",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
