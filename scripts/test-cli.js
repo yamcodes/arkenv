@@ -135,7 +135,7 @@ const extraArgs = process.argv.slice(process.argv[2] === mode ? 3 : 2);
 console.log(`Running arkenv init inside ${tempDir}...\n`);
 try {
 	execSync(
-		`node ${path.resolve(rootDir, "packages/cli/dist/index.cjs")} init ${extraArgs.join(" ")}`,
+		`node ${path.resolve(rootDir, "packages/arkenv/dist/index.cjs")} init ${extraArgs.join(" ")}`,
 		{
 			cwd: tempDir,
 			stdio: "inherit",

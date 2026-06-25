@@ -3,9 +3,9 @@
 	"evals": [
 		{
 			"id": 1,
-			"prompt": "Modularize the test suite at packages/arkenv/src/arktype/create-env.test.ts by splitting it into smaller, topic-focused test files (e.g., coercion.test.ts, arrays.test.ts, options.test.ts, etc.) and ensuring all tests continue to pass under vitest.",
+			"prompt": "Modularize the test suite at packages/core/src/arktype/create-env.test.ts by splitting it into smaller, topic-focused test files (e.g., coercion.test.ts, arrays.test.ts, options.test.ts, etc.) and ensuring all tests continue to pass under vitest.",
 			"expected_output": "The large create-env.test.ts is split into topic-focused test files, and all tests pass under vitest.",
-			"files": ["../../packages/arkenv/src/arktype/create-env.test.ts"],
+			"files": ["../../packages/core/src/arktype/create-env.test.ts"],
 			"expectations": [
 				"The original test file create-env.test.ts is split into smaller files based on topic (e.g. coercion.test.ts, arrays.test.ts, options.test.ts)",
 				"All tests pass successfully under vitest (pnpm run test)",
@@ -16,9 +16,9 @@
 		},
 		{
 			"id": 2,
-			"prompt": "Refactor the CLI command packages/cli/src/cli/commands/init.ts to isolate interactive UI prompts, file system adapters, and terminal reporters into discrete sub-modules, leaving init.ts purely as the high-level orchestrator. Preserve the InitInput type and InitUseCase class as the public contract.",
+			"prompt": "Refactor the CLI command packages/arkenv/src/cli/commands/init.ts to isolate interactive UI prompts, file system adapters, and terminal reporters into discrete sub-modules, leaving init.ts purely as the high-level orchestrator. Preserve the InitInput type and InitUseCase class as the public contract.",
 			"expected_output": "The init.ts CLI command file is refactored into sub-modules under a sub-directory, leaving init.ts as a high-level orchestrator preserving InitInput and InitUseCase.",
-			"files": ["../../packages/cli/src/cli/commands/init.ts"],
+			"files": ["../../packages/arkenv/src/cli/commands/init.ts"],
 			"expectations": [
 				"The InitUseCase class and InitInput type remain exported from init.ts",
 				"Interactive prompt wizard logic is isolated into a separate file/module",
