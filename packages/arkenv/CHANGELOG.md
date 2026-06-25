@@ -1,4 +1,89 @@
-# arkenv
+# @arkenv/core
+
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- #### Split core engine into `@arkenv/core` and `@arkenv/standard` and add standard subpath exports to framework plugins _[`#1225`](https://github.com/yamcodes/arkenv/pull/1225) [`44c840f`](https://github.com/yamcodes/arkenv/commit/44c840ff95931310be965262b0c7c3e94c80f8d8) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce `@arkenv/standard` as a dependency-free validation engine for Standard Schema validators (e.g., Zod, Valibot), and rename the main `arkenv` package to `@arkenv/core` (with `arktype` as a required peer dependency).
+
+  Framework plugins (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`) now export a `/standard` subpath to allow using Standard Schema mode without any dependency on `arktype`.
+
+  Example using `@arkenv/standard`:
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.coerce.number().default(3000),
+  });
+  ```
+
+  Example of Vite plugin configuration in Standard Mode:
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin/standard";
+  import { defineConfig } from "vite";
+
+  export default defineConfig({
+    plugins: [arkenv()],
+  });
+  ```
+
+  **BREAKING CHANGE:** The package `arkenv` has been renamed to `@arkenv/core`. Framework plugins now list `@arkenv/core` and `@arkenv/standard` as optional peer dependencies. You must install either `@arkenv/core` (if using ArkType) or `@arkenv/standard` (if using Standard Schema).
+
+## 1.0.0-alpha.2
+
+### Major Changes
+
+- #### Refactor error system to use normalized `EnvIssue` and add `{ safe: true }` API _[`#1157`](https://github.com/yamcodes/arkenv/pull/1157) [`427ced6`](https://github.com/yamcodes/arkenv/commit/427ced6bd9af4589c5fd696906bdf712104870bb) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce a unified `EnvIssue` type for programmatic access to validation issues via `ArkEnvError.issues`, and add the non-throwing `{ safe: true }` configuration option to `arkenv`.
+
+  Error messages now use ANSI colors instead of a bullet-point prefix:
+
+  ```diff
+  - - [PORT] must be a valid port number (was "invalid-port")
+  + PORT must be a valid port number (was "invalid-port")
+  ```
+
+  Note: Header (red), variable path (yellow), and received value (cyan) are now styled with ANSI escape codes. Update any test suites asserting on exact error text.
+
+  **BREAKING CHANGE**: `ValidationIssue` and `formatInternalErrors` removed. Use `EnvIssue` and `formatIssues` instead.
+
+## 1.0.0-alpha.1
+
+### Major Changes
+
+- #### Rename `createEnv` function to `arkenv` _[`#1203`](https://github.com/yamcodes/arkenv/pull/1203) [`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: Rename the primary environment variable validation function from `createEnv` to `arkenv` across all packages in the ecosystem, and expose it as both the default export and a named export.
+
+  Update all usages:
+
+  ```ts
+  // Before
+  import { createEnv } from "arkenv";
+
+  export const env = createEnv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+
+  // After
+  import arkenv from "arkenv";
+  // or: import { arkenv } from "arkenv";
+
+  export const env = arkenv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  Migration Steps:
+
+  - Replace all imports and invocations of `createEnv` with `arkenv`.
+  - Update config generators and plugins (Next.js config templates, Vite plugin, Bun plugin) to use `arkenv`.
 
 ## 1.0.0-alpha.0
 

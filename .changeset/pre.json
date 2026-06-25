@@ -17,12 +17,16 @@
 		"@arkenv/nextjs": "0.0.7",
 		"@arkenv/vite-plugin": "0.1.1",
 		"@arkenv/build": "0.0.1",
-		"@arkenv/nuxt": "0.0.1"
+		"@arkenv/nuxt": "0.0.1",
+		"@arkenv/core": "1.0.0-alpha.2",
+		"@repo/utils": "0.1.3",
+		"@arkenv/standard": "1.0.0-alpha.2"
 	},
 	"changesets": [
 		"epg3nspi",
 		"init-v1",
 		"rename-create-env-to-arkenv",
+		"standard-mode-packaging",
 		"unified-error-normalization",
 		"unify-coercion"
 	]
