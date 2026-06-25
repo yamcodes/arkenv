@@ -22,7 +22,7 @@ describe("CLICommand", () => {
 	it("should render with syntax highlighting spans", () => {
 		render(<CLICommand />);
 		expect(screen.getByText("npx")).toBeInTheDocument();
-		expect(screen.getByText("@arkenv/cli@latest init")).toBeInTheDocument();
+		expect(screen.getByText("arkenv@latest init")).toBeInTheDocument();
 	});
 
 	it("should copy command when clicking the container", async () => {
