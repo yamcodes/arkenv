@@ -54,7 +54,7 @@
 		"remark-frontmatter": "^5.0.0",
 		"remark-gfm": "^4.0.1",
 		"rimraf": "catalog:",
-		"turbo": "2.9.18",
+		"turbo": "2.10.0",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
