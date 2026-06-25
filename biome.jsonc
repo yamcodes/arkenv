@@ -125,7 +125,7 @@
 			"includes": [
 				"**/scripts/**/*",
 				".github/actions/**/*",
-				"packages/cli/**/*",
+				"packages/arkenv/**/*",
 				"packages/bun-plugin/**/*",
 				"packages/vite-plugin/**/*"
 			],

@@ -14,10 +14,10 @@ describe("load-arktype bundling compatibility", () => {
 		const testFile = join(tempDir, "test.ts");
 		const outFile = join(tempDir, "test.cjs");
 
-		// Find the package root (arkenv/packages/arkenv)
-		const projectRoot = process.cwd().includes("packages/arkenv")
+		// Find the package root (arkenv/packages/core)
+		const projectRoot = process.cwd().includes("packages/core")
 			? process.cwd()
-			: join(process.cwd(), "packages/arkenv");
+			: join(process.cwd(), "packages/core");
 
 		const arkenvDistPath = join(projectRoot, "dist/index.mjs");
 		const esbuildPath = join(projectRoot, "../../node_modules/.bin/esbuild");

@@ -19,11 +19,11 @@
 			"name": "✨ skills"
 		},
 		{
-			"path": "packages/cli",
+			"path": "packages/arkenv",
 			"name": "🎁 arkenv"
 		},
 		{
-			"path": "packages/arkenv",
+			"path": "packages/core",
 
 			"name": "🎁 @arkenv/core"
 		},

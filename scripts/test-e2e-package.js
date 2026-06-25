@@ -14,18 +14,18 @@ console.log("🚀 Starting E2E Package Installation Tests...");
 console.log("\n📦 Building workspace packages...");
 execSync("pnpm run build", { cwd: rootDir, stdio: "inherit" });
 
-// 2. Pack the arkenv and standard packages
-const arkenvDir = path.join(rootDir, "packages/arkenv");
+// 2. Pack the core and standard packages
+const coreDir = path.join(rootDir, "packages/core");
 const standardDir = path.join(rootDir, "packages/standard");
 
 console.log("\n🎒 Packing @arkenv/core package...");
-execSync("pnpm pack", { cwd: arkenvDir, stdio: "inherit" });
+execSync("pnpm pack", { cwd: coreDir, stdio: "inherit" });
 
 console.log("\n🎒 Packing @arkenv/standard package...");
 execSync("pnpm pack", { cwd: standardDir, stdio: "inherit" });
 
 // 3. Locate the tarballs
-const coreFiles = fs.readdirSync(arkenvDir);
+const coreFiles = fs.readdirSync(coreDir);
 const coreTarballName = coreFiles.find((file) =>
 	/^arkenv-core-\d+\.\d+\.\d+(?:-.*)?\.tgz$/.test(file),
 );
@@ -35,7 +35,7 @@ if (!coreTarballName) {
 	);
 	process.exit(1);
 }
-const coreTarballPath = path.join(arkenvDir, coreTarballName);
+const coreTarballPath = path.join(coreDir, coreTarballName);
 console.log(`Found @arkenv/core tarball: ${coreTarballPath}`);
 
 const standardFiles = fs.readdirSync(standardDir);
