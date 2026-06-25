@@ -9,7 +9,6 @@
 
 import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { Infer } from "@arkenv/nextjs";
-
 export { type } from "@arkenv/nextjs";
 
 export function arkenv<

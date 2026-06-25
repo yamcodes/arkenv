@@ -1,6 +1,5 @@
+import { ArkEnvError, arkenv } from "@arkenv/standard";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import { ArkEnvError } from "./core";
-import { arkenv } from "./standard";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({

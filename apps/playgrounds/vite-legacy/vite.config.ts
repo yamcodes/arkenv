@@ -1,6 +1,6 @@
+import arkenv, { type } from "@arkenv/core";
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import reactPlugin from "@vitejs/plugin-react";
-import arkenv, { type } from "arkenv";
 import { defineConfig, loadEnv } from "vite";
 
 // Define the schema once, outside of defineConfig using type()

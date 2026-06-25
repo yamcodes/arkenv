@@ -12,7 +12,7 @@ The `apps/` directory is the home for projects that are not published as package
 ### What belongs here vs. `packages/`?
 
 - **Applications & Tests (`apps/`)**: Projects that are deployable targets (like the docs website), testing suites (like Playwright E2E tests), or local integration testing workspaces (playgrounds) that do not get published to npm.
-- **NPM Packages (`packages/`)**: Code libraries, plugins, or CLI executables (like `@arkenv/cli`) that are published to npm for end-users.
+- **NPM Packages (`packages/`)**: Code libraries, plugins, or CLI executables (like `arkenv`) that are published to npm for end-users.
 
 ## Directory structure
 

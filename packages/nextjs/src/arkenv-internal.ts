@@ -1,56 +1,21 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { arkenv as coreArkenv } from "arkenv";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
-function getSchemaKeys(schema: any): string[] {
-	if (!schema || (typeof schema !== "object" && typeof schema !== "function")) {
-		return [];
-	}
+export type LegacyNestedSchema = {
+	server?: SchemaShape;
+	client?: SchemaShape;
+	shared?: SchemaShape;
+	extends?: readonly unknown[];
+	runtimeEnv?: Dict<string>;
+};
 
-	// ArkType Type
-	if (
-		schema.json &&
-		typeof schema.json === "object" &&
-		schema.json.domain === "object"
-	) {
-		const keys: string[] = [];
-		if (Array.isArray(schema.json.required)) {
-			for (const r of schema.json.required) {
-				if (r && typeof r === "object" && "key" in r) {
-					keys.push(r.key);
-				}
-			}
-		}
-		if (Array.isArray(schema.json.optional)) {
-			for (const o of schema.json.optional) {
-				if (o && typeof o === "object" && "key" in o) {
-					keys.push(o.key);
-				}
-			}
-		}
-		return keys;
-	}
-
-	// Zod schema
-	if ("shape" in schema && schema.shape && typeof schema.shape === "object") {
-		return Object.keys(schema.shape);
-	}
-
-	// Valibot schema
-	if (
-		"entries" in schema &&
-		schema.entries &&
-		typeof schema.entries === "object"
-	) {
-		return Object.keys(schema.entries);
-	}
-
-	// Plain object schema
-	return Object.keys(schema);
-}
+export type FlatSchemaOptions = {
+	extends?: readonly unknown[];
+	runtimeEnv?: Dict<string>;
+};
 
 /**
  * Validate and wrap environment variables in a security proxy.
@@ -58,31 +23,39 @@ function getSchemaKeys(schema: any): string[] {
  * @internal
  */
 export function arkenvInternal(
-	schemaOrOptions: any,
-	optionsOrIsServer: any,
-	context?: { isServer: boolean; isShared?: boolean },
+	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
+	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+	context: { isServer: boolean; isShared?: boolean } | undefined,
+	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
+	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
+	/** Extracts the declared key names from a schema object. */
+	getSchemaKeys: (schema: SchemaShape) => string[],
 ): unknown {
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};
 	let shared: SchemaShape = {};
-	let extendsList: unknown[] = [];
+	let extendsList: readonly unknown[] = [];
 	let runtimeEnv: Dict<string> = {};
 	let isServer = false;
 
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
-		server = schemaOrOptions.server || {};
-		client = schemaOrOptions.client || {};
-		shared = schemaOrOptions.shared || {};
-		extendsList = schemaOrOptions.extends || [];
-		runtimeEnv = schemaOrOptions.runtimeEnv || {};
+		const legacySchema = schemaOrOptions as
+			| LegacyNestedSchema
+			| null
+			| undefined;
+		server = (legacySchema?.server || {}) as SchemaShape;
+		client = (legacySchema?.client || {}) as SchemaShape;
+		shared = (legacySchema?.shared || {}) as SchemaShape;
+		extendsList = legacySchema?.extends || [];
+		runtimeEnv = (legacySchema?.runtimeEnv || {}) as Dict<string>;
 		isServer = optionsOrIsServer;
 	} else {
 		// New flat schema behavior
-		const flatSchema = schemaOrOptions || {};
+		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
-		runtimeEnv = options.runtimeEnv || {};
+		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
 		isServer = !!context?.isServer;
 
 		if (context?.isShared) {
@@ -94,7 +67,7 @@ export function arkenvInternal(
 		}
 	}
 
-	let extendedEnvValues: Dict<string> = {};
+	let extendedEnvValues: Record<string, unknown> = {};
 	const allKeys = new Set<string>();
 	const serverOnlyKeys = new Set<string>();
 
@@ -113,22 +86,27 @@ export function arkenvInternal(
 	}
 
 	// Prepare combined environment for core validation
-	const combinedEnv: Dict<string> = {};
+	const combinedEnv: Record<string, unknown> = {};
 
 	// Process extended environments
 	if (extendsList && Array.isArray(extendsList)) {
 		for (const ext of extendsList) {
 			if (ext && (typeof ext === "object" || typeof ext === "function")) {
-				const raw = (ext as any)[EXTENDED_ENV];
+				const raw = (ext as Record<string | symbol, unknown>)[EXTENDED_ENV];
 				if (raw) {
-					extendedEnvValues = { ...extendedEnvValues, ...raw };
+					extendedEnvValues = {
+						...extendedEnvValues,
+						...(raw as Record<string, unknown>),
+					};
 
-					const extKeys = (ext as any)[ENV_KEYS];
+					const extKeys = (ext as Record<string | symbol, unknown>)[ENV_KEYS];
 					if (extKeys instanceof Set) {
 						for (const key of extKeys) allKeys.add(key);
 					}
 
-					const extServerOnly = (ext as any)[SERVER_ONLY_KEYS];
+					const extServerOnly = (ext as Record<string | symbol, unknown>)[
+						SERVER_ONLY_KEYS
+					];
 					if (extServerOnly instanceof Set) {
 						for (const key of extServerOnly) serverOnlyKeys.add(key);
 					}
@@ -155,8 +133,8 @@ export function arkenvInternal(
 						}
 					}
 
-					const validated = coreArkenv(ext as any, {
-						env: combinedEnv,
+					const validated = coreArkenv(ext as SchemaShape, {
+						env: combinedEnv as Dict<string>,
 						safe: false,
 					});
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
@@ -244,8 +222,8 @@ export function arkenvInternal(
 		: { ...client, ...shared };
 
 	// Run core validation
-	const validated = coreArkenv(schema as any, {
-		env: combinedEnv,
+	const validated = coreArkenv(schema as SchemaShape, {
+		env: combinedEnv as Dict<string>,
 		safe: false,
 	});
 

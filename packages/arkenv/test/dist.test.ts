@@ -12,6 +12,7 @@ let namedArkenv: any;
 let defaultStandardArkenv: any;
 let namedStandardArkenv: any;
 let ArkEnvError: any;
+let standardArkEnvError: any;
 
 beforeAll(async () => {
 	const distDir = join(__dirname, "../dist");
@@ -23,17 +24,29 @@ beforeAll(async () => {
 		});
 	}
 
+	const standardDistDir = join(__dirname, "../../standard/dist");
+	if (
+		!existsSync(standardDistDir) ||
+		!existsSync(join(standardDistDir, "index.js"))
+	) {
+		// Automatically compile @arkenv/standard if dist is missing
+		execSync("pnpm run build", {
+			cwd: join(__dirname, "../../standard"),
+			stdio: "inherit",
+		});
+	}
+
 	// Dynamically load to prevent compile-time module resolution errors if dist/ is missing initially
 	const index = await import("../dist/index.mjs");
 	defaultArkenv = index.default;
 	namedArkenv = index.arkenv;
 
-	const standard = await import("../dist/standard.mjs");
+	const standard = await import("../../standard/dist/index.js");
 	defaultStandardArkenv = standard.default;
 	namedStandardArkenv = standard.arkenv;
 
-	const core = await import("../dist/core.mjs");
-	ArkEnvError = core.ArkEnvError;
+	ArkEnvError = index.ArkEnvError;
+	standardArkEnvError = standard.ArkEnvError;
 });
 
 describe("Distribution Built Outputs", () => {
@@ -113,7 +126,7 @@ describe("Distribution Built Outputs", () => {
 				namedStandardArkenv({
 					PORT: portValidator as any,
 				});
-			}).toThrow(ArkEnvError);
+			}).toThrow(standardArkEnvError);
 		});
 	});
 

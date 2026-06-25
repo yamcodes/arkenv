@@ -28,7 +28,7 @@ If exposing your server variable names, types, or constraints is a security conc
 The easiest way to bootstrap the simple layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project and generates your `env.ts` file.
 
 ```npm
-npx @arkenv/cli@latest init --simple
+npx arkenv@latest init --simple
 ```
 
 ## Your schema
@@ -78,7 +78,7 @@ export const env = arkenv({
   <Accordion title="Manual Setup">
     ### Configure environment [step] [!toc]
 
-    Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schemas. Import `arkenv` from the auto-generated `@/generated/env.gen.ts` helper file:
+    Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schemas. Import `@arkenv/core` from the auto-generated `@/generated/env.gen.ts` helper file:
 
     ```ts title="src/env.ts" twoslash
     // @filename: /generated/env.gen.ts

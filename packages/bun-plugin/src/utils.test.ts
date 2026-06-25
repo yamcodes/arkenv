@@ -1,3 +1,4 @@
+import { arkenv } from "@arkenv/core";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { processEnvSchema } from "./utils";
 
@@ -17,11 +18,15 @@ describe("Bun Plugin Utils", () => {
 		process.env.PORT = "3000";
 		process.env.DATABASE_URL = "postgres://localhost/db";
 
-		const envMap = processEnvSchema({
-			BUN_PUBLIC_API_URL: "string",
-			PORT: "number.port",
-			DATABASE_URL: "string",
-		} as const);
+		const envMap = processEnvSchema(
+			{
+				BUN_PUBLIC_API_URL: "string",
+				PORT: "number.port",
+				DATABASE_URL: "string",
+			} as const,
+			undefined,
+			arkenv,
+		);
 
 		// Check that prefixed variables are present
 		expect(envMap.has("BUN_PUBLIC_API_URL")).toBe(true);
@@ -37,9 +42,13 @@ describe("Bun Plugin Utils", () => {
 	it("should not filter out NODE_ENV", () => {
 		process.env.NODE_ENV = "development";
 
-		const envMap = processEnvSchema({
-			NODE_ENV: "'development' | 'test' | 'production'",
-		} as const);
+		const envMap = processEnvSchema(
+			{
+				NODE_ENV: "'development' | 'test' | 'production'",
+			} as const,
+			undefined,
+			arkenv,
+		);
 
 		// Check that NODE_ENV is present
 		expect(envMap.has("NODE_ENV")).toBe(true);

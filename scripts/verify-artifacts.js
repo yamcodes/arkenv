@@ -8,14 +8,9 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, "..");
 
 const targets = [
-	"packages/arkenv/dist/standard.mjs",
-	"packages/arkenv/dist/standard.cjs",
-	"packages/arkenv/dist/standard.d.mts",
-	"packages/arkenv/dist/standard.d.cts",
-	"packages/arkenv/dist/core.mjs",
-	"packages/arkenv/dist/core.cjs",
-	"packages/arkenv/dist/core.d.mts",
-	"packages/arkenv/dist/core.d.cts",
+	"packages/standard/dist/index.js",
+	"packages/standard/dist/index.cjs",
+	"packages/standard/dist/index.d.ts",
 ];
 
 const patterns = [
@@ -71,7 +66,10 @@ if (failures.length > 0) {
 // 2. Check bundle size limits
 console.log("\n📦 Running size-limit validation...");
 try {
-	execSync("pnpm --filter arkenv run size", { cwd: rootDir, stdio: "inherit" });
+	execSync("pnpm --filter @arkenv/core --filter @arkenv/standard run size", {
+		cwd: rootDir,
+		stdio: "inherit",
+	});
 	console.log("✅ Passed: size-limit validation");
 } catch (error) {
 	console.error("❌ Error: size-limit validation failed");

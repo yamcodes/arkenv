@@ -8,8 +8,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"@arkenv/core": "workspace:*",
 		"@arkenv/nextjs": "workspace:*",
-		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"next": "catalog:",
 		"react": "catalog:",

@@ -19,9 +19,13 @@
 			"name": "✨ skills"
 		},
 		{
+			"path": "packages/cli",
+			"name": "🎁 arkenv"
+		},
+		{
 			"path": "packages/arkenv",
 
-			"name": "🎁 arkenv"
+			"name": "🎁 @arkenv/core"
 		},
 		{
 			"path": "packages/nextjs",
@@ -38,10 +42,6 @@
 		{
 			"path": "packages/bun-plugin",
 			"name": "🎁 @arkenv/bun-plugin"
-		},
-		{
-			"path": "packages/cli",
-			"name": "🎁 @arkenv/cli"
 		},
 		{
 			"path": "packages/fumadocs-ui",

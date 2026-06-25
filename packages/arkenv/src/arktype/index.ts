@@ -1,16 +1,93 @@
 import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
-import type { distill } from "arktype";
+import {
+	ArkEnvError,
+	buildEnvIssue,
+	coerceEnvironment,
+	type EnvIssue,
+	type EnvIssueCode,
+	type EnvIssueMeta,
+	isDebugSecrets,
+	shouldRedact,
+	styleText,
+} from "@repo/utils";
+import type { ArkError, distill } from "arktype";
 import { ArkErrors } from "arktype";
 import type { ArkEnvConfig, EnvSchema } from "@/arkenv";
-import { coerceEnvironment } from "@/coercion";
-import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "@/core";
-import {
-	buildEnvIssue,
-	getArkTypeMeta,
-	mapArkTypeCode,
-	redactMessageWasValue,
-} from "@/utils/errors";
+
+const ARKTYPE_CODE_MAP = {
+	required: "MISSING_VARIABLE",
+	pattern: "PATTERN_MISMATCH",
+	min: "VALUE_TOO_SMALL",
+	minLength: "VALUE_TOO_SMALL",
+	max: "VALUE_TOO_LARGE",
+	maxLength: "VALUE_TOO_LARGE",
+	divisor: "INVALID_TYPE",
+	intersection: "INVALID_TYPE",
+	union: "INVALID_TYPE",
+	unit: "INVALID_TYPE",
+	proto: "INVALID_TYPE",
+	domain: "INVALID_TYPE",
+	exactLength: "INVALID_FORMAT",
+	before: "INVALID_FORMAT",
+	after: "INVALID_FORMAT",
+	predicate: "CUSTOM",
+} satisfies Record<ArkError["code"], EnvIssueCode>;
+
+/**
+ * Map an ArkType error code to an ArkEnv issue code.
+ *
+ * @param engineCode The ArkType engine error code
+ * @returns The corresponding ArkEnv issue code
+ */
+function mapArkTypeCode(engineCode: string): EnvIssueCode {
+	return engineCode in ARKTYPE_CODE_MAP
+		? ARKTYPE_CODE_MAP[engineCode as keyof typeof ARKTYPE_CODE_MAP]
+		: "INVALID_FORMAT";
+}
+
+/**
+ * Extract numeric bounds from an ArkType error object.
+ *
+ * @param error The ArkType error object
+ * @returns An object containing optional min and max bounds
+ */
+function getArkTypeMeta(error: any): { min?: number; max?: number } {
+	const min = error.min ?? error.rule;
+	const max = error.max;
+	return {
+		...(typeof min === "number" ? { min } : {}),
+		...(typeof max === "number" ? { max } : {}),
+	};
+}
+
+/**
+ * Redact and colorize the value inside a "(was ...)" message fragment.
+ *
+ * @param message The validation error message
+ * @param path The environment variable key path
+ * @param debugSecrets Whether to display sensitive values in debug mode
+ * @returns The modified error message with styled or redacted value
+ */
+function redactMessageWasValue(
+	message: string,
+	path: string,
+	debugSecrets?: boolean,
+): string {
+	const valueMatch = message.match(/\(was (.*)\)/);
+	if (!valueMatch?.[1]) return message;
+
+	const value = valueMatch[1];
+	const debug = isDebugSecrets(debugSecrets);
+	const displayedValue = !debug && shouldRedact(path) ? "[REDACTED]" : value;
+
+	if (displayedValue.includes("\x1b[")) return message;
+
+	return message.replace(
+		`(was ${value})`,
+		`(was ${styleText("cyan", displayedValue)})`,
+	);
+}
 
 /**
  * Re-export of ArkType's `distill` utilities.

@@ -1,6 +1,7 @@
+import type { EnvSchema } from "@arkenv/core";
+import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { $ } from "@repo/scope";
 import type { Dict, SchemaShape } from "@repo/types";
-import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
 import { arkenvInternal } from "./arkenv-internal";
 import type { MergeExtends } from "./types";
@@ -19,12 +20,18 @@ export function arkenv<
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>> {
 	const isServer = typeof window === "undefined";
-	return arkenvInternal(schema, options, {
-		isServer,
-		isShared: true,
-	}) as any;
+	return arkenvInternal(
+		schema,
+		options,
+		{
+			isServer,
+			isShared: true,
+		},
+		coreArkenv,
+		getSchemaKeys,
+	) as any;
 }
 
-export { type } from "arkenv";
+export { type } from "@arkenv/core";
 
 export default arkenv;

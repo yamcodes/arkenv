@@ -1,12 +1,25 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvError, type SafeArkEnvResult } from "./core";
 import {
+	ArkEnvError,
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
-} from "./guards";
-import { type ParseStandardConfig, parseStandard } from "./parse-standard";
-import { safeExecute } from "./utils/errors";
+	type EnvIssue,
+	formatIssues,
+	getSchemaKeys,
+	type ParseStandardConfig,
+	parseStandard,
+	type SafeArkEnvResult,
+	safeExecute,
+} from "@repo/utils";
+
+export {
+	ArkEnvError,
+	type EnvIssue,
+	formatIssues,
+	getSchemaKeys,
+	type SafeArkEnvResult,
+};
 
 /**
  * Configuration options for the `arkenv/standard` entry's `arkenv`.
@@ -26,7 +39,7 @@ export type StandardEnvConfig = ParseStandardConfig;
  *
  * @example
  * ```ts
- * import arkenv from "arkenv/standard";
+ * import arkenv from "@arkenv/standard";
  * import { z } from "zod";
  *
  * const env = arkenv({
@@ -71,9 +84,4 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	};
 }
 
-/**
- * ArkEnv's Standard Schema export
- *
- * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
- */
 export default arkenv;

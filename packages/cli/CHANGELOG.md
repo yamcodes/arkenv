@@ -1,4 +1,4 @@
-# @ArkEnv/CLI
+# arkenv
 
 ## 1.0.0-alpha.0
 

@@ -17,7 +17,7 @@ By matching Vite's default security model, only variables prefixed with `VITE_` 
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/vite-plugin` for your existing Vite project, or spins up a new one from a template.
 
 ```npm
-npx @arkenv/cli@latest init
+npx arkenv@latest init
 ```
 
 <Accordions>
@@ -25,7 +25,7 @@ npx @arkenv/cli@latest init
     ### Installation [step] [!toc]
 
     ```package-install
-    @arkenv/vite-plugin arkenv arktype
+    @arkenv/vite-plugin @arkenv/core arktype
     ```
 
     ### Configure plugin [step] [!toc]
@@ -34,7 +34,7 @@ npx @arkenv/cli@latest init
 
     ```ts title="vite.config.ts" twoslash
     import arkenv from "@arkenv/vite-plugin";
-    import { type } from "arkenv";
+    import { type } from '@arkenv/core';
     import { defineConfig } from "vite";
 
     export const Env = type({
@@ -111,7 +111,7 @@ This plugin uses ArkType for validation, which natively supports Standard Schema
 
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 import { defineConfig } from "vite";
 import { z } from "zod";
 
@@ -148,6 +148,49 @@ const apiUrl = import.meta.env.VITE_API_URL;
 // Autocomplete works out-of-the-box!
 const typing = import.meta.env.
 //                             ^|
+```
+
+### ArkType-free mode (Standard Mode)
+
+If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` in your Vite project:
+
+1. Install `@arkenv/standard` and `@arkenv/vite-plugin`:
+
+```package-install
+@arkenv/standard @arkenv/vite-plugin zod
+```
+
+2. Configure the plugin and schema in your Vite config using `@arkenv/vite-plugin/standard`:
+
+```ts title="vite.config.ts"
+import arkenv from "@arkenv/vite-plugin/standard";
+import { defineConfig } from "vite";
+import { z } from "zod";
+
+export const Env = {
+  VITE_API_URL: z.string().url(),
+  VITE_API_KEY: z.string().min(1),
+};
+
+export default defineConfig({
+  plugins: [arkenv(Env)]
+});
+```
+
+3. Augment your types using `@arkenv/vite-plugin/standard` in `src/vite-env.d.ts`:
+
+```ts title="src/vite-env.d.ts"
+/// <reference types="vite/client" />
+
+type ImportMetaEnvAugmented = import("@arkenv/vite-plugin/standard").ImportMetaEnvAugmented<
+  typeof import("../vite.config").Env
+>;
+
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
 ```
 
 For advanced workflows, see [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).

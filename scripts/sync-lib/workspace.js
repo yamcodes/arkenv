@@ -44,12 +44,13 @@ export function parseCatalog() {
 export function getWorkspacePackageVersion(packageName) {
 	// Map package names to their directories
 	const packageDirs = {
-		arkenv: join(ROOT_DIR, "packages", "arkenv"),
+		"@arkenv/core": join(ROOT_DIR, "packages", "arkenv"),
+		"@arkenv/standard": join(ROOT_DIR, "packages", "standard"),
 		"@arkenv/vite-plugin": join(ROOT_DIR, "packages", "vite-plugin"),
 		"@arkenv/bun-plugin": join(ROOT_DIR, "packages", "bun-plugin"),
 		"@arkenv/nextjs": join(ROOT_DIR, "packages", "nextjs"),
 		"@arkenv/nuxt": join(ROOT_DIR, "packages", "nuxt"),
-		"@arkenv/cli": join(ROOT_DIR, "packages", "cli"),
+		arkenv: join(ROOT_DIR, "packages", "cli"),
 		"@arkenv/fumadocs-ui": join(ROOT_DIR, "packages", "fumadocs-ui"),
 	};
 

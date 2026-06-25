@@ -50,8 +50,8 @@ const tempDirName = isNew ? `new-${suffix}` : `existing-${suffix}`;
 const tempDir = path.resolve(rootDir, "tmp", tempDirName);
 
 // 1. Build the CLI
-console.log("Building @arkenv/cli...");
-execSync("pnpm --filter=@arkenv/cli build", { cwd: rootDir, stdio: "inherit" });
+console.log("Building arkenv (CLI)...");
+execSync("pnpm --filter=arkenv build", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Prepare the directory
 console.log(`Preparing temporary directory: ${tempDir}`);

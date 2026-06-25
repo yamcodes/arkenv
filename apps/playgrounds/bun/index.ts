@@ -1,4 +1,4 @@
-import arkenv from "arkenv";
+import arkenv from "@arkenv/core";
 
 const env = arkenv({
 	HOST: "string.host",

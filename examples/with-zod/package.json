@@ -17,7 +17,7 @@
 		"tsx": "^4.21.0"
 	},
 	"dependencies": {
-		"arkenv": "^0.11.0",
+		"@arkenv/standard": "^1.0.0-alpha.2",
 		"zod": "^4.3.5"
 	},
 	"engines": {

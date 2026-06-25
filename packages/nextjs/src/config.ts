@@ -58,6 +58,18 @@ export type ArkEnvConfigOptions = {
 	 * @default "simple"
 	 */
 	layout?: "simple" | "strict";
+
+	/**
+	 * Force standard mode code generation.
+	 *
+	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard/client`
+	 * instead of `@arkenv/nextjs/client`, ensuring the Standard Schema engine (`@arkenv/standard`)
+	 * is used and `arktype` is never bundled. This is set automatically when importing from
+	 * `@arkenv/nextjs/standard/config`, but can be toggled manually for custom setups.
+	 *
+	 * @default false
+	 */
+	standard?: boolean;
 };
 
 /**
@@ -117,7 +129,7 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 
 	// 3. Run initial code generation
 	try {
-		runCodegen(schemaPath, outputPath, resolvedLayout);
+		runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
 	} catch (error: unknown) {
 		const message = error instanceof Error ? error.message : String(error);
 		throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
@@ -136,7 +148,7 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 						path.join(baseDir, "server.ts"),
 					].filter(fs.existsSync)
 				: [schemaPath];
-		watchSchema(watchPaths, outputPath, resolvedLayout);
+		watchSchema(watchPaths, outputPath, resolvedLayout, options?.standard);
 	}
 
 	return nextConfig;
@@ -278,11 +290,13 @@ function findSchemaPath(): string | null {
  * @param schemaPath The absolute path to the schema file, or an array of paths to watch
  * @param outputPath The absolute path to the generated output file
  * @param layout The resolved layout to pass through to codegen on each change
+ * @param forceStandard Force standard mode code generation
  */
 function watchSchema(
 	schemaPath: string | string[],
 	outputPath: string,
 	layout?: "simple" | "strict",
+	forceStandard?: boolean,
 ) {
 	const previousWatcher = globalThis.__arkenv_watcher__;
 	if (previousWatcher && typeof previousWatcher.close === "function") {
@@ -304,7 +318,7 @@ function watchSchema(
 				const mainSchemaPath = Array.isArray(schemaPath)
 					? schemaPath[0]
 					: schemaPath;
-				runCodegen(mainSchemaPath, outputPath, layout);
+				runCodegen(mainSchemaPath, outputPath, layout, forceStandard);
 			} catch (err: unknown) {
 				const message = err instanceof Error ? err.message : String(err);
 				// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
@@ -328,12 +342,14 @@ function watchSchema(
  * @param schemaPath The absolute path to the schema file or directory
  * @param outputPath The absolute path to the generated output file
  * @param layoutOption The explicit layout to use; auto-detected from the filesystem when omitted
+ * @param forceStandard Force standard mode code generation
  * @throws An error if strict layout files are missing when `layoutOption` is `"strict"`
  */
 export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
 	layoutOption?: "simple" | "strict",
+	forceStandard?: boolean,
 ) {
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
@@ -352,14 +368,30 @@ export function runCodegen(
 			? fs.readFileSync(sharedPath, "utf-8")
 			: "";
 
+		const isStandard =
+			!!forceStandard ||
+			clientContent.includes("@arkenv/standard") ||
+			clientContent.includes("arkenv/standard") ||
+			sharedContent.includes("@arkenv/standard") ||
+			sharedContent.includes("arkenv/standard");
+
 		const clientKeys = extractClientKeys(clientContent);
 		const sharedKeys = extractSharedKeys(sharedContent);
 
-		generatedCode = generateClientFactoryCode(clientKeys, sharedKeys);
+		generatedCode = generateClientFactoryCode(
+			clientKeys,
+			sharedKeys,
+			isStandard,
+		);
 	} else {
 		const fileContent = fs.readFileSync(schemaPath, "utf-8");
+		const isStandard =
+			!!forceStandard ||
+			fileContent.includes("@arkenv/standard") ||
+			fileContent.includes("arkenv/standard");
+
 		const { clientKeys, sharedKeys } = extractKeys(fileContent);
-		generatedCode = generateFactoryCode(clientKeys, sharedKeys);
+		generatedCode = generateFactoryCode(clientKeys, sharedKeys, isStandard);
 	}
 
 	// Ensure parent directory exists
@@ -589,16 +621,38 @@ function parseBlockKeys(blockContent: string): string[] {
  *
  * @param clientKeys The client environment variable keys
  * @param sharedKeys The shared environment variable keys
+ * @param isStandard Whether standard mode is used
  * @returns The generated TypeScript source code string
  */
 function generateFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
+	isStandard?: boolean,
 ): string {
 	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
 	const runtimeEnvLines = allKeys
 		.map((key) => `\t\t\t${key}: process.env.${key},`)
 		.join("\n");
+
+	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
+	const typeExport = isStandard
+		? ""
+		: `\nexport { type } from "@arkenv/nextjs";\n`;
+	const returnType = isStandard
+		? `Readonly<{
+	[K in keyof (TServer & TClient & TShared)]: TServer & TClient & TShared extends Record<K, infer V>
+		? V extends { "~standard": { validate: (value: any) => { value: infer Out } } }
+			? Out
+			: V extends { "~standard": { validate: (value: any) => Promise<{ value: infer Out }> } }
+				? Out
+				: any
+		: any
+}>`
+		: "Readonly<Infer<TServer & TClient & TShared>>";
+
+	const typeImport = isStandard
+		? ""
+		: '\nimport type { Infer } from "@arkenv/nextjs";';
 
 	return `/* eslint-disable */
 // prettier-ignore
@@ -609,11 +663,7 @@ function generateFactoryCode(
  * @see https://arkenv.js.org
  */
 
-import { arkenv as coreArkenv } from "@arkenv/nextjs";
-import type { Infer } from "@arkenv/nextjs";
-
-export { type } from "@arkenv/nextjs";
-
+import { arkenv as coreArkenv } from "${importPath}";${typeImport}${typeExport}
 export function arkenv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
@@ -624,7 +674,7 @@ export function arkenv<
 		[K in keyof TClient]: K extends \`NEXT_PUBLIC_\${string}\` ? unknown : never;
 	};
 	shared?: TShared;
-}): Readonly<Infer<TServer & TClient & TShared>> {
+}): ${returnType} {
 	return coreArkenv({
 		...options,
 		runtimeEnv: {
@@ -645,16 +695,25 @@ export default arkenv;
  *
  * @param clientKeys The env var keys extracted from `client.ts`
  * @param sharedKeys The env var keys extracted from `internal/shared.ts`
+ * @param isStandard Whether standard mode is used
  * @returns The generated TypeScript source code string
  */
 function generateClientFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
+	isStandard?: boolean,
 ): string {
 	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
 	const runtimeEnvLines = allKeys
 		.map((key) => `\t\t\t${key}: process.env.${key},`)
 		.join("\n");
+
+	const importPath = isStandard
+		? "@arkenv/nextjs/standard/client"
+		: "@arkenv/nextjs/client";
+	const typeExport = isStandard
+		? ""
+		: `\nexport { type } from "@arkenv/nextjs/client";\n`;
 
 	return `/* eslint-disable */
 // prettier-ignore
@@ -665,10 +724,7 @@ function generateClientFactoryCode(
  * @see https://arkenv.js.org
  */
 
-import { arkenv as coreArkenv } from "@arkenv/nextjs/client";
-
-export { type } from "@arkenv/nextjs/client";
-
+import { arkenv as coreArkenv } from "${importPath}";${typeExport}
 export function arkenv<
 	const TSchema extends Record<string, any> = {},
 	const TExtends extends readonly unknown[] = [],

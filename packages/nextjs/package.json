@@ -13,10 +13,11 @@
 		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
+		"@arkenv/core": "workspace:*",
+		"@arkenv/standard": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
-		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"next": "catalog:",
 		"rimraf": "catalog:",
@@ -26,9 +27,21 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
-		"arkenv": "^1.0.0",
+		"@arkenv/core": "^1.0.0",
+		"@arkenv/standard": "^1.0.0",
 		"arktype": "^2.1.22",
 		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
+	},
+	"peerDependenciesMeta": {
+		"@arkenv/core": {
+			"optional": true
+		},
+		"@arkenv/standard": {
+			"optional": true
+		},
+		"arktype": {
+			"optional": true
+		}
 	},
 	"exports": {
 		"./shared": {
@@ -62,6 +75,31 @@
 			"types": "./dist/config.d.ts",
 			"import": "./dist/config.js",
 			"require": "./dist/config.cjs"
+		},
+		"./standard/shared": {
+			"types": "./dist/standard/shared.d.ts",
+			"import": "./dist/standard/shared.js",
+			"require": "./dist/standard/shared.cjs"
+		},
+		"./standard/server": {
+			"types": "./dist/standard/server.d.ts",
+			"import": "./dist/standard/server.js",
+			"require": "./dist/standard/server.cjs"
+		},
+		"./standard/client": {
+			"types": "./dist/standard/client.d.ts",
+			"import": "./dist/standard/client.js",
+			"require": "./dist/standard/client.cjs"
+		},
+		"./standard": {
+			"types": "./dist/standard/index.d.ts",
+			"import": "./dist/standard/index.js",
+			"require": "./dist/standard/index.cjs"
+		},
+		"./standard/config": {
+			"types": "./dist/standard/config.d.ts",
+			"import": "./dist/standard/config.js",
+			"require": "./dist/standard/config.cjs"
 		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnextjs",

@@ -1,9 +1,9 @@
 ---
-title: arkenv/standard
+title: "@arkenv/standard"
 description: The ArkType-free entry point for Standard Schema validators.
 ---
 
-`arkenv/standard` is the ArkType-free entry point. Use it when you want Standard Schema validators (Zod, Valibot, etc.) without pulling in ArkType as a dependency.
+`@arkenv/standard` is the ArkType-free entry point. Use it when you want Standard Schema validators (Zod, Valibot, etc.) without pulling in ArkType as a dependency.
 
 :::tip
 Already using ArkType? You can still use Zod, Valibot, and other Standard Schema validators alongside it. See [Standard Schema validators](/docs/arkenv/integrations/standard-schema).
@@ -11,14 +11,14 @@ Already using ArkType? You can still use Zod, Valibot, and other Standard Schema
 
 ## When to use it
 
-| Feature                   | `arkenv` | `arkenv/standard` |
-| :------------------------ | :------: | :---------------: |
-| **ArkType DSL**           |     ✅    |         ❌         |
-| **ArkEnv keywords**¹      |     ✅    |         ❌         |
-| **ArkEnv plugins**        |     ✅    |         ❌         |
-| **Automatic coercion**    |     ✅    |         ✅²        |
-| **Standard Schema**       |     ✅    |         ✅         |
-| **Works without ArkType** |     ❌    |         ✅         |
+| Feature                   | `@arkenv/core` | `@arkenv/standard` |
+| :------------------------ | :------------: | :----------------: |
+| **ArkType DSL**           |        ✅       |          ❌         |
+| **ArkEnv keywords**¹      |        ✅       |          ❌         |
+| **ArkEnv plugins**        |        ✅       |          ❌         |
+| **Automatic coercion**    |        ✅       |         ✅²         |
+| **Standard Schema**       |        ✅       |          ✅         |
+| **Works without ArkType** |        ❌       |          ✅         |
 
 ¹ ArkEnv extends ArkType with custom keywords like `string.host` and `number.port`
 
@@ -28,12 +28,12 @@ Already using ArkType? You can still use Zod, Valibot, and other Standard Schema
 
 ❌ Not supported
 
-> In a new project, prefer `arkenv`. `arkenv/standard` exists for migrations and ArkType-free setups.
+> In a new project, prefer `@arkenv/core`. `@arkenv/standard` exists for migrations and ArkType-free setups.
 
 ## Usage
 
 ```ts twoslash
-import arkenv from 'arkenv/standard';
+import arkenv from '@arkenv/standard';
 import { z } from 'zod';
 
 const env = arkenv({

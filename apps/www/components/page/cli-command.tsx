@@ -4,7 +4,7 @@ import { Check, Copy, Terminal } from "lucide-react";
 import { useCopyCommand } from "~/hooks/use-copy-command";
 
 export function CLICommand() {
-	const command = "npx @arkenv/cli@latest init";
+	const command = "npx arkenv@latest init";
 	const { copied, copy } = useCopyCommand(command);
 
 	return (
@@ -17,7 +17,7 @@ export function CLICommand() {
 			<Terminal className="w-4 h-4 text-blue-500 dark:text-blue-400 opacity-70 group-hover:opacity-100 transition-opacity shrink-0" />
 			<code className="text-sm font-mono whitespace-nowrap overflow-hidden text-ellipsis text-left">
 				<span className="text-amber-800 dark:text-amber-400">npx </span>
-				<span>@arkenv/cli@latest init</span>
+				<span>arkenv@latest init</span>
 			</code>
 			<div className="ml-auto border-l border-slate-200 dark:border-slate-700/50 pl-2.5 pr-1 shrink-0">
 				{copied ? (

@@ -1,5 +1,6 @@
+import type { EnvSchema, Infer } from "@arkenv/core";
+import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { SchemaShape } from "@repo/types";
-import type { EnvSchema, Infer } from "arkenv";
 import { arkenvInternal } from "./arkenv-internal";
 
 /**
@@ -24,11 +25,17 @@ export function arkenv<
 		Record<string, unknown>;
 }): Readonly<Infer<TServer & TClient & TShared>> {
 	type ReturnType = Readonly<Infer<TServer & TClient & TShared>>;
-	return arkenvInternal(options, false) as ReturnType;
+	return arkenvInternal(
+		options,
+		false,
+		undefined,
+		coreArkenv,
+		getSchemaKeys,
+	) as ReturnType;
 }
 
-export type { Infer } from "arkenv";
-export { type } from "arkenv";
+export type { Infer } from "@arkenv/core";
+export { type } from "@arkenv/core";
 
 /**
  * ArkEnv's Next.js integration export

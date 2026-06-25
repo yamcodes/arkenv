@@ -117,7 +117,8 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 					resolveId(id: string) {
 						const isServerModule =
 							id === "@arkenv/nuxt/server" ||
-							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\]server(?:\.(?:js|mjs|cjs|ts))?$/.test(
+							id === "@arkenv/nuxt/standard/server" ||
+							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.(?:js|mjs|cjs|ts))?$/.test(
 								id,
 							);
 

@@ -1,4 +1,3 @@
-import type { ArkError } from "arktype";
 import {
 	ArkEnvError,
 	type EnvIssue,
@@ -8,64 +7,6 @@ import {
 } from "@/core";
 import { isDebugSecrets, safeStringify, shouldRedact } from "./redact";
 import { styleText } from "./style-text";
-
-/**
- * Mapping of ArkType validation error codes to normalized EnvIssueCode classification codes.
- *
- * These codes are runtime strings produced by the ArkType validator and are not
- * exported as a public type or constant by the ArkType library. The mapping is
- * maintained manually based on ArkType's internal error reporting behavior.
- *
- * @see https://arktype.io/docs/intro
- * @internal
- */
-const ARKTYPE_CODE_MAP = {
-	required: "MISSING_VARIABLE",
-	pattern: "PATTERN_MISMATCH",
-	min: "VALUE_TOO_SMALL",
-	minLength: "VALUE_TOO_SMALL",
-	max: "VALUE_TOO_LARGE",
-	maxLength: "VALUE_TOO_LARGE",
-	divisor: "INVALID_TYPE",
-	intersection: "INVALID_TYPE",
-	union: "INVALID_TYPE",
-	unit: "INVALID_TYPE",
-	proto: "INVALID_TYPE",
-	domain: "INVALID_TYPE",
-	exactLength: "INVALID_FORMAT",
-	before: "INVALID_FORMAT",
-	after: "INVALID_FORMAT",
-	predicate: "CUSTOM",
-} satisfies Record<ArkError["code"], EnvIssueCode>;
-
-/**
- * Map an ArkType validation error code to a normalized EnvIssueCode.
- *
- * @param engineCode The raw code returned by the ArkType engine
- * @returns The normalized EnvIssueCode classification
- * @internal
- */
-export function mapArkTypeCode(engineCode: string): EnvIssueCode {
-	return engineCode in ARKTYPE_CODE_MAP
-		? ARKTYPE_CODE_MAP[engineCode as keyof typeof ARKTYPE_CODE_MAP]
-		: "INVALID_FORMAT";
-}
-
-/**
- * Extract validation boundary metadata from an ArkType error object.
- *
- * @param error The raw error object from ArkType
- * @returns An object containing normalized min and/or max values if present
- * @internal
- */
-export function getArkTypeMeta(error: any): { min?: number; max?: number } {
-	const min = error.min ?? error.rule;
-	const max = error.max;
-	return {
-		...(typeof min === "number" ? { min } : {}),
-		...(typeof max === "number" ? { max } : {}),
-	};
-}
 
 /**
  * Mapping of Standard Schema validation issue codes to normalized EnvIssueCode classification codes.
@@ -177,7 +118,7 @@ export function buildEnvIssue(
 }
 
 /**
- * Format a Standard Schema validation issue message, appending a `(was …)` suffix
+ * Format a Standard Schema validation issue message, appending a `(was …)` substring
  * and redacting sensitive values when appropriate.
  *
  * @param baseMessage The raw message from the Standard Schema validator
@@ -213,37 +154,4 @@ export function formatStandardIssueMessage(
 	return expected && !baseMessage.includes("Expected")
 		? `must be ${expected} ${suffix}`
 		: `${baseMessage} ${suffix}`;
-}
-
-/**
- * Redact the value inside an existing `(was <value>)` substring within a message.
- *
- * ArkType already embeds `(was …)` in its error messages; this helper swaps the
- * raw value for `[REDACTED]` when the path is sensitive and debug mode is off,
- * and styles the result in cyan.
- *
- * @param message The message containing `(was <value>)`
- * @param path The environment variable name/path under validation
- * @param debugSecrets Optional override for debug secrets mode
- * @returns The message with redacted/styled `(was …)` value
- * @internal
- */
-export function redactMessageWasValue(
-	message: string,
-	path: string,
-	debugSecrets?: boolean,
-): string {
-	const valueMatch = message.match(/\(was (.*)\)/);
-	if (!valueMatch?.[1]) return message;
-
-	const value = valueMatch[1];
-	const debug = isDebugSecrets(debugSecrets);
-	const displayedValue = !debug && shouldRedact(path) ? "[REDACTED]" : value;
-
-	if (displayedValue.includes("\x1b[")) return message;
-
-	return message.replace(
-		`(was ${value})`,
-		`(was ${styleText("cyan", displayedValue)})`,
-	);
 }

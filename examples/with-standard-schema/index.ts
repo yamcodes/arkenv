@@ -1,4 +1,4 @@
-import arkenv from "arkenv/standard";
+import arkenv from "@arkenv/standard";
 import * as z from "zod";
 
 const env = arkenv({

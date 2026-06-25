@@ -1,4 +1,4 @@
-# `@arkenv/cli`
+# `arkenv` (CLI)
 
 The interactive, zero-dependency scaffolding experience for the [ArkEnv](https://arkenv.js.org) ecosystem.
 
@@ -13,7 +13,7 @@ The interactive, zero-dependency scaffolding experience for the [ArkEnv](https:/
 <br />
 
 ```sh
-npx @arkenv/cli@latest init
+npx arkenv@latest init
 ```
 
 ## Related
@@ -33,7 +33,7 @@ To run your local changes to the CLI from anywhere inside this repository:
 pnpm arkenv [command]
 ```
 
-This root workspace script will automatically rebuild `@arkenv/cli` and execute the built bundle via Node.
+This root workspace script will automatically rebuild `arkenv` (CLI) and execute the built bundle via Node.
 
 ### Local environment adapters (`Node*`)
 

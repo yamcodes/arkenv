@@ -1,0 +1,63 @@
+{
+	"name": "@arkenv/standard",
+	"type": "module",
+	"version": "1.0.0-alpha.2",
+	"description": "Dependency-free, typesafe environment variables validation based on Standard Schema",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"scripts": {
+		"build": "tsdown",
+		"size": "size-limit --json > .size-limit.json",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"fix": "pnpm -w run fix"
+	},
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"pnpm",
+		"standard-schema",
+		"zod",
+		"valibot",
+		"environment",
+		"variables",
+		"typesafe",
+		"validation"
+	],
+	"license": "MIT",
+	"homepage": "https://arkenv.js.org",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"devDependencies": {
+		"@repo/types": "workspace:*",
+		"@repo/utils": "workspace:*",
+		"@size-limit/esbuild-why": "catalog:",
+		"@size-limit/preset-small-lib": "catalog:",
+		"@types/node": "catalog:",
+		"rimraf": "catalog:",
+		"size-limit": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	},
+	"size-limit": [
+		{
+			"name": "@arkenv/standard",
+			"path": "dist/index.js",
+			"limit": "3.6 kB",
+			"import": "*"
+		}
+	]
+}

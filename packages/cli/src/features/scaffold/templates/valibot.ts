@@ -22,7 +22,7 @@ export const valibotTemplate = (
 
 	if (framework === "vite") {
 		return dedent /* ts */`
-	import { type } from "arkenv";
+	import { type } from "@arkenv/core";
 	import * as v from "valibot";
 
 	/**
@@ -38,7 +38,7 @@ export const valibotTemplate = (
 
 	if (framework === "bun-fullstack") {
 		return dedent /* ts */`
-	import { type } from "arkenv";
+	import { type } from "@arkenv/core";
 	import * as v from "valibot";
 
 	/**
@@ -79,7 +79,7 @@ export const valibotTemplate = (
 	}
 
 	return dedent /* ts */`
-	import arkenv from "arkenv/standard";
+	import arkenv from "@arkenv/standard";
 	import * as v from "valibot";
 
 	/**

@@ -1,4 +1,4 @@
-# @ArkEnv/fumadocs-ui
+# @arkenv/fumadocs-ui
 
 ## 1.0.0-alpha.0
 

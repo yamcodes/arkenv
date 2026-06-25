@@ -1,4 +1,4 @@
-# ArkEnv
+# @arkenv/core
 
 ## 1.0.0-alpha.2
 
