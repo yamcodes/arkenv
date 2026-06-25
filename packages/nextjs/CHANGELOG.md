@@ -1,4 +1,4 @@
-# @ArkEnv/nextjs
+# @arkenv/nextjs
 
 ## 1.0.0-alpha.3
 

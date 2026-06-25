@@ -1,4 +1,4 @@
-# @ArkEnv/Vite-plugin
+# @arkenv/vite-plugin
 
 ## 1.0.0-alpha.3
 

@@ -34,10 +34,7 @@ export function arkenvInternal(
 	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
 	context: { isServer: boolean; isShared?: boolean } | undefined,
 	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
-	coreArkenv: (
-		schema: any,
-		config?: any,
-	) => Record<string, unknown>,
+	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
 	/** Extracts the declared key names from a schema object. */
 	getSchemaKeys: (schema: SchemaShape) => string[],
 ): unknown {
@@ -54,7 +51,10 @@ export function arkenvInternal(
 
 	if (typeof optionsOrIsServer === "boolean") {
 		// Old nested schema behavior (backward compatible)
-		const legacySchema = schemaOrOptions as LegacyNestedSchema | null | undefined;
+		const legacySchema = schemaOrOptions as
+			| LegacyNestedSchema
+			| null
+			| undefined;
 		server = (legacySchema?.server || {}) as SchemaShape;
 		client = (legacySchema?.client || {}) as Record<string, unknown>;
 		shared = (legacySchema?.shared || {}) as SchemaShape;
