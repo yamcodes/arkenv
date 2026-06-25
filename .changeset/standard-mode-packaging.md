@@ -1,4 +1,5 @@
 ---
+"arkenv": major
 "@arkenv/core": major
 "@arkenv/standard": major
 "@arkenv/vite-plugin": major
@@ -9,7 +10,7 @@
 
 #### Split core engine into `@arkenv/core` and `@arkenv/standard` and add standard subpath exports to framework plugins
 
-Introduce `@arkenv/standard` as a dependency-free validation engine for Standard Schema validators (e.g., Zod, Valibot), and rename the main `arkenv` package to `@arkenv/core` (with `arktype` as a required peer dependency).
+Introduce `@arkenv/standard` as a dependency-free validation engine for Standard Schema validators (e.g., Zod, Valibot), rename the main `arkenv` package to `@arkenv/core` (with `arktype` as a required peer dependency), and rename the CLI package `@arkenv/cli` to `arkenv`.
 
 Framework plugins (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`) now export a `/standard` subpath to allow using Standard Schema mode without any dependency on `arktype`.
 
@@ -35,4 +36,4 @@ export default defineConfig({
 });
 ```
 
-**BREAKING CHANGE:** The package `arkenv` has been renamed to `@arkenv/core`. Framework plugins now list `@arkenv/core` and `@arkenv/standard` as optional peer dependencies. You must install either `@arkenv/core` (if using ArkType) or `@arkenv/standard` (if using Standard Schema).
+**BREAKING CHANGE:** The package `arkenv` has been renamed to `@arkenv/core`, and the CLI package `@arkenv/cli` has been renamed to `arkenv`. Framework plugins now list `@arkenv/core` and `@arkenv/standard` as optional peer dependencies. You must install either `@arkenv/core` (if using ArkType) or `@arkenv/standard` (if using Standard Schema).

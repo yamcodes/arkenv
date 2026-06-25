@@ -14,6 +14,7 @@ dist
 .source
 packages/**/CHANGELOG.md
 packages/arkenv/README.md
+packages/core/README.md
 repos
 nestjs-clone
 

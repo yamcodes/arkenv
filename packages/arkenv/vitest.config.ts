@@ -1,10 +1,10 @@
-import { defineProject } from "vitest/config";
+import { defineConfig } from "vitest/config";
 
-export default defineProject({
+export default defineConfig({
 	test: {
-		name: "arkenv",
-		include: ["**/*.{test,spec,test-d}.?(c|m)[jt]s?(x)"],
-		// globalSetup: ["test/setup-attest.ts"],
+		name: "cli",
+		environment: "node",
+		include: ["src/**/*.test.ts"],
 		unstubEnvs: true,
 		restoreMocks: true,
 		unstubGlobals: true,

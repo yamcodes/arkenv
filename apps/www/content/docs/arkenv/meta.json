@@ -1,5 +1,5 @@
 {
-	"title": "arkenv",
+	"title": "@arkenv/core",
 	"description": "Agnostic core",
 	"root": true,
 	"icon": "Box",
