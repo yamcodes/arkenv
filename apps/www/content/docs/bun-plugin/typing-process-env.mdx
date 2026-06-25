@@ -14,7 +14,7 @@ This guide is the final step to complete the [Simple setup](/docs/bun-plugin) fr
 :::
 
 :::important
-You must have the core `arkenv` package installed as a dependency in your project. See [ArkEnv quickstart](/docs/arkenv/quickstart) for instructions.
+You must have the core `@arkenv/core` package installed as a dependency in your project. See [ArkEnv quickstart](/docs/arkenv/quickstart) for instructions.
 :::
 
 Add this to a `bun-env.d.ts` file in your project root:
@@ -48,7 +48,7 @@ const debug = process.env.BUN_PUBLIC_DEBUG; // ✅ Typesafe
 `NODE_ENV` is also supported - when defined in your schema, it is validated and correctly typed:
 
 ```ts title="src/env.ts"
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 
 export default type({
   BUN_PUBLIC_API_URL: "string.url",

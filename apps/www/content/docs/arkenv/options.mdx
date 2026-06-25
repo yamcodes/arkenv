@@ -6,7 +6,7 @@ description: Configuration options for the arkenv() function.
 The second argument to `arkenv()` is an optional configuration object.
 
 :::note
-All options listed below apply to both `arkenv` (ArkType mode) and `arkenv/standard` (Standard Schema mode).
+All options listed below apply to both `@arkenv/core` (ArkType mode) and `@arkenv/standard` (Standard Schema mode).
 :::
 
 ## Configuration options
@@ -20,7 +20,7 @@ All options listed below apply to both `arkenv` (ArkType mode) and `arkenv/stand
 You can pass a custom object instead of `process.env`. This is particularly useful in environments like Cloudflare Workers where variables are passed via a context object, or when testing.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 const env = arkenv(
   { PORT: "number" },
@@ -33,7 +33,7 @@ const env = arkenv(
 By default, ArkEnv automatically coerces string environment variables to numbers or booleans if the schema requires it. You can disable this behavior:
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 const env = arkenv(
   { PORT: "number" },
@@ -48,7 +48,7 @@ See the [coercion docs](/docs/arkenv/coercion) for more details.
 When coercion is enabled, you can specify how array strings are parsed.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 const env = arkenv(
   { TAGS: "string[]" },
@@ -61,7 +61,7 @@ const env = arkenv(
 When `emptyAsUndefined` is enabled, an environment variable set to an empty value (e.g., `PORT=` in a `.env` file) will be treated as if it were missing. This allows defaults to apply and prevents validation errors for numeric or boolean types.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 const env = arkenv(
   {
@@ -88,7 +88,7 @@ Whether to return a safe result object instead of throwing an error on validatio
 When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 const result = arkenv(
   { PORT: "number" },

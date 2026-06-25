@@ -21,7 +21,7 @@ To keep client bundles secure, only variables prefixed with `BUN_PUBLIC_` (and `
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/bun-plugin` for your existing Bun project, or spins up a new one from a template.
 
 ```npm
-npx @arkenv/cli@latest init
+npx arkenv@latest init
 ```
 
 <Accordions>
@@ -29,7 +29,7 @@ npx @arkenv/cli@latest init
     ### Installation [step] [!toc]
 
     ```package-install
-    @arkenv/bun-plugin arkenv arktype
+    @arkenv/bun-plugin @arkenv/core arktype
     ```
 
     ### Configure plugin [step] [!toc]
@@ -39,7 +39,7 @@ npx @arkenv/cli@latest init
     #### Create your schema
 
     ```ts title="src/env.ts" twoslash
-    import { type } from "arkenv";
+    import { type } from '@arkenv/core';
 
     export default type({
       BUN_PUBLIC_API_URL: "string",
@@ -107,7 +107,7 @@ Pass your schema directly to the plugin function:
 
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 
 const Env = type({
   BUN_PUBLIC_API_URL: "string",
@@ -127,7 +127,7 @@ Create a custom plugin file and reference it in `bunfig.toml`:
 
 ```ts title="plugins/arkenv.ts"
 import arkenv from "@arkenv/bun-plugin";
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 
 const Env = type({
   BUN_PUBLIC_API_URL: "string",
@@ -147,7 +147,7 @@ plugins = ["./plugins/arkenv.ts"]
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
 ```ts title="src/env.ts" twoslash
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 import { z } from "zod";
 
 export default type({

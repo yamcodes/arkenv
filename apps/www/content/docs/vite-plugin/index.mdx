@@ -17,7 +17,7 @@ By matching Vite's default security model, only variables prefixed with `VITE_` 
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/vite-plugin` for your existing Vite project, or spins up a new one from a template.
 
 ```npm
-npx @arkenv/cli@latest init
+npx arkenv@latest init
 ```
 
 <Accordions>
@@ -25,7 +25,7 @@ npx @arkenv/cli@latest init
     ### Installation [step] [!toc]
 
     ```package-install
-    @arkenv/vite-plugin arkenv arktype
+    @arkenv/vite-plugin @arkenv/core arktype
     ```
 
     ### Configure plugin [step] [!toc]
@@ -34,7 +34,7 @@ npx @arkenv/cli@latest init
 
     ```ts title="vite.config.ts" twoslash
     import arkenv from "@arkenv/vite-plugin";
-    import { type } from "arkenv";
+    import { type } from '@arkenv/core';
     import { defineConfig } from "vite";
 
     export const Env = type({
@@ -111,7 +111,7 @@ This plugin uses ArkType for validation, which natively supports Standard Schema
 
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 import { defineConfig } from "vite";
 import { z } from "zod";
 

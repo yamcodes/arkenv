@@ -12,7 +12,7 @@ ArkEnv is tested on [**Next.js** **16.x**](https://github.com/yamcodes/arkenv/tr
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures ArkEnv for your project, installs dependencies, and scaffolds your initial schema.
 
 ```npm
-npx @arkenv/cli@latest init
+npx arkenv@latest init
 ```
 
 <Accordions>
@@ -24,7 +24,7 @@ npx @arkenv/cli@latest init
         ArkEnv works best when paired with [ArkType](https://arktype.io):
 
         ```package-install
-        arkenv arktype
+        @arkenv/core arktype
         ```
 
         If you're using Vite, see [ArkEnv for Vite](/docs/vite-plugin).
@@ -34,10 +34,10 @@ npx @arkenv/cli@latest init
 
       <Accordion title="Install ArkEnv only">
         ```package-install
-        arkenv
+        @arkenv/core
         ```
 
-        Import from [arkenv/standard](/docs/arkenv/standard) to use ArkEnv without ArkType.
+        Import from [@arkenv/standard](/docs/arkenv/standard) to use ArkEnv without ArkType.
       </Accordion>
     </Accordions>
 
@@ -76,7 +76,7 @@ npx @arkenv/cli@latest init
 Your `env.ts` file is where the ✨magic✨ happens – variables referenced from this object are guaranteed to match the schema defined here.
 
 ```ts title="env.ts" twoslash
-import arkenv, { type } from 'arkenv';
+import arkenv, { type } from '@arkenv/core';
 
 export const env = arkenv({
   // Automatic inference for simple literals
@@ -112,7 +112,7 @@ You can now import the **validated**, **typesafe** env object anywhere in your c
 
 ```typescript title="database.ts" twoslash
 // @filename: env.ts
-import arkenv, { type } from 'arkenv';
+import arkenv, { type } from '@arkenv/core';
 export const env = arkenv({
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
   DATABASE_HOST: "string.host",
