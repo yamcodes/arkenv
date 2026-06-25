@@ -8,7 +8,6 @@
  */
 
 import { arkenv as coreArkenv } from "@arkenv/nextjs/client";
-
 export { type } from "@arkenv/nextjs/client";
 
 export function arkenv<
