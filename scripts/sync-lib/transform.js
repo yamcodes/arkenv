@@ -12,7 +12,10 @@ export function transformDependencies(deps, catalog) {
 		if (version === "workspace:*" || version.startsWith("workspace:")) {
 			const publishedVersion = getWorkspacePackageVersion(name);
 			if (publishedVersion) {
-				transformed[name] = `^${publishedVersion}`;
+				const hasCaret = !publishedVersion.includes("-");
+				transformed[name] = hasCaret
+					? `^${publishedVersion}`
+					: publishedVersion;
 			} else {
 				// Keep as-is if we can't find the version
 				transformed[name] = version;
@@ -20,7 +23,8 @@ export function transformDependencies(deps, catalog) {
 		} else if (version === "catalog:" || version.startsWith("catalog:")) {
 			const catalogVersion = catalog[name];
 			if (catalogVersion) {
-				transformed[name] = `^${catalogVersion}`;
+				const hasCaret = !catalogVersion.includes("-");
+				transformed[name] = hasCaret ? `^${catalogVersion}` : catalogVersion;
 			} else {
 				// Keep as-is if not in catalog
 				transformed[name] = version;
