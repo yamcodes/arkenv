@@ -12,6 +12,26 @@ import {
 
 export { extractClientKeys, extractSharedKeys };
 
+let hasWarnedSimpleLayout = false;
+
+function normalizeLayout(
+	layout: ArkEnvConfigOptions["layout"],
+): "simple" | "strict" | undefined {
+	if (layout === "simple") {
+		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
+			hasWarnedSimpleLayout = true;
+			console.warn(
+				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
+			);
+		}
+		return "simple";
+	}
+	if (layout === "flat") {
+		return "simple";
+	}
+	return layout;
+}
+
 /**
  * Configuration options for the ArkEnv Next.js integration.
  *
@@ -57,12 +77,16 @@ export type ArkEnvConfigOptions = {
 	/**
 	 * Specify the configuration layout.
 	 *
-	 * - `"simple"` (default): A single `env.ts` schema file.
+	 * - `"flat"` (default): A single `env.ts` schema file.
 	 * - `"strict"`: A 3-file split schema layout (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`).
 	 *
-	 * @default "simple"
+	 * @default "flat"
 	 */
-	layout?: "simple" | "strict";
+	layout?:
+		| "flat"
+		| "strict"
+		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
+		| "simple";
 };
 
 /**
@@ -101,9 +125,11 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 		);
 	}
 
+	const normalizedLayout = normalizeLayout(options?.layout);
+
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
-		options?.layout,
+		normalizedLayout,
 	);
 
 	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath/baseDir)
@@ -169,11 +195,13 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
-	layoutOption?: "simple" | "strict",
+	layoutOption?: ArkEnvConfigOptions["layout"],
 ) {
+	const normalizedLayout = normalizeLayout(layoutOption);
+
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
-		layoutOption,
+		normalizedLayout,
 	);
 
 	let generatedCode = "";
