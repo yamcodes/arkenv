@@ -1,0 +1,103 @@
+---
+title: Nested → Flat migration
+icon: ArrowLeftRight
+description: Migrate a deprecated Nested layout to the Flat layout. Linked from the runtime deprecation warning.
+---
+
+:::warning[Deprecated Layout]
+The **Nested Layout** is deprecated in v0 and will be **removed in v1**. New projects should use the [Flat Layout](/docs/nextjs/layouts/flat). This page exists only to help existing apps migrate off the deprecated structure.
+:::
+
+## What the Nested layout looked like
+
+The Nested layout grouped schemas into `server`, `client`, and `shared` blocks inside a single `env.ts`:
+
+```ts title="src/env.ts"
+import arkenv from "./generated/env.gen";
+
+export const env = arkenv({
+	server: {
+		DATABASE_URL: "string",
+	},
+	client: {
+		NEXT_PUBLIC_API_URL: "string",
+	},
+	shared: {
+		NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+	},
+});
+```
+
+## How to flatten it into your `env.ts`
+
+Remove the `server`, `client`, and `shared` wrapper blocks and move all of your validation schemas to the top level of the configuration object. ArkEnv infers server vs. client from the `NEXT_PUBLIC_` prefix (and `NODE_ENV` is implicitly shared), so the wrapper blocks are no longer needed.
+
+<Tabs items={['Before (Nested)', 'After (Flat)']}>
+  <Tab value="Before (Nested)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: "string",
+    	},
+    	client: {
+    		NEXT_PUBLIC_API_URL: "string",
+    	},
+    	shared: {
+    		NODE_ENV: "string",
+    	},
+    });
+    ```
+  </Tab>
+
+  <Tab value="After (Flat)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NEXT_PUBLIC_API_URL: "string",
+    	NODE_ENV: "string",
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Exposing custom public variables
+
+If you had non-`NEXT_PUBLIC_`-prefixed variables in the old `shared` block that need to reach the client, list their keys in the `exposeToClient` options array instead:
+
+<Tabs items={['Before (Nested)', 'After (Flat)']}>
+  <Tab value="Before (Nested)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: "string",
+    	},
+    	shared: {
+    		CUSTOM_PUBLIC_VAR: "string",
+    		NODE_ENV: "string",
+    	},
+    });
+    ```
+  </Tab>
+
+  <Tab value="After (Flat)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	CUSTOM_PUBLIC_VAR: "string",
+    	NODE_ENV: "string",
+    }, {
+    	exposeToClient: ["CUSTOM_PUBLIC_VAR"]
+    });
+    ```
+  </Tab>
+</Tabs>
+
+See the [Flat layout documentation](/docs/nextjs/layouts/flat) for the full reference. The legacy `--simple` CLI flag is no longer supported for Next.js projects; new projects default to the Flat layout (or use `npx @arkenv/cli@latest init --flat` explicitly).

@@ -49,14 +49,8 @@ The generated helper is *only* imported inside your schema definition file (e.g.
     export { type } from "@arkenv/nextjs";
 
     export default function arkenv<
-    	const TServer = {},
-    	const TClient = {},
-    	const TShared = {},
-    >(options: {
-    	server?: TServer;
-    	client?: TClient;
-    	shared?: TShared;
-    }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+    	const TSchema extends Record<string, unknown> = {},
+    >(schema: TSchema): Readonly<distill.Out<at.infer<TSchema>>> {
     	return {} as any;
     }
 
@@ -65,15 +59,9 @@ The generated helper is *only* imported inside your schema definition file (e.g.
     import arkenv from "@/generated/env.gen";
 
     export const env = arkenv({
-      server: {
-        DATABASE_URL: "string",
-      },
-      client: {
-        NEXT_PUBLIC_API_URL: "string",
-      },
-      shared: {
-        NODE_ENV: "string",
-      },
+      DATABASE_URL: "string",
+      NEXT_PUBLIC_API_URL: "string",
+      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
     });
     ```
   </Tab>
@@ -92,7 +80,7 @@ The generated helper is *only* imported inside your schema definition file (e.g.
     import { env } from "@/src/env";
 
     export default function Home() {
-      return <div>API: {env.client.NEXT_PUBLIC_API_URL}</div>;
+      return <div>API: {env.NEXT_PUBLIC_API_URL}</div>;
     }
     ```
   </Tab>
@@ -103,14 +91,15 @@ The generated helper is *only* imported inside your schema definition file (e.g.
     import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
     export { type } from "@arkenv/nextjs";
 
-    export function createEnv(options: any) {
-      return coreCreateEnv({
-        ...options,
+    export function createEnv<const TSchema extends Record<string, unknown> = {}>(
+      schema: TSchema,
+    ) {
+      return coreCreateEnv(schema as any, {
         runtimeEnv: {
-          NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-          NODE_ENV: process.env.NODE_ENV,
+          NEXT_PUBLIC_API_URL: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL,
+          NODE_ENV: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,
         },
-      });
+      } as any);
     }
 
     export default createEnv;
@@ -134,15 +123,12 @@ The CLI will scaffold the manual `runtimeEnv` destructuring pattern instead. If 
 import { createEnv } from "@arkenv/nextjs";
 
 export const env = createEnv({
-  server: {
-    DATABASE_URL: "string",
-  },
-  client: {
-    NEXT_PUBLIC_API_URL: "string",
-  },
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string",
+}, {
   runtimeEnv: {
-    DATABASE_URL: process.env.DATABASE_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NODE_ENV: process.env.NODE_ENV,
   },
 });
 ```
@@ -176,15 +162,15 @@ If the flat layout is recommended, why use the strict layout?
 
 ---
 
-## Why should I restrict the shared block to `NODE_ENV`?
+## Why is only `NODE_ENV` safe to expose to both client and server?
 
-Next.js automatically replaces references to `process.env.NODE_ENV` with the current environment (e.g., `'production'`, `'development'`, or `'test'`) during build time. This allows it to be safely shared between server and client without causing hydration mismatches, unlike other custom variables which would be stripped. For details, see the [Next.js Environment Variables documentation](https://nextjs.org/docs/app/guides/environment-variables).
+Next.js automatically replaces references to `process.env.NODE_ENV` with the current environment (e.g., `'production'`, `'development'`, or `'test'`) during build time. This makes it safe to share between server and client without causing hydration mismatches. For details, see the [Next.js Environment Variables documentation](https://nextjs.org/docs/app/guides/environment-variables).
 
 For other variables, Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
 
-If you define a custom variable in `shared` with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
+In the flat layout, the only variable ArkEnv exposes to both environments by default is `NODE_ENV`. If you use [`exposeToClient`](/docs/nextjs/layouts/flat) to expose a custom non-`NEXT_PUBLIC_` variable with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
 
 - On the **server**, ArkEnv reads the actual value from the environment (e.g., `PORT = 8080`).
 - On the **client**, Next.js strips `process.env.PORT` to `undefined`, causing ArkEnv to fall back to the default value (`3000`).
 
-This asymmetry causes React hydration mismatches and corrupts client-side state. Always place non-prefixed variables under `server` so they are strictly server-only.
+This asymmetry causes React hydration mismatches and corrupts client-side state. Only real public values (prefixed with `NEXT_PUBLIC_`) and `NODE_ENV` belong in the shared/client surface. If a value is server-only, leave it out of `exposeToClient` so it stays strictly server-only.
