@@ -466,37 +466,17 @@ ${GENERATED_FOOTER}`;
 /**
  * Generate the TypeScript factory code for the Flat Layout createEnv helper.
  *
- * Architecture note — "Wrapper" (Path A) vs "Static Object" (Path B):
+ * @remarks
+ * **Architecture tripwire:** This intentionally emits a generic *wrapper*
+ * factory (not a statically compiled object) and omits internal types (the `$`
+ * scope and `MergeExtends`). It must stay a generic wrapper because the schema
+ * is owned by the user-land `env.ts`. The full-schema return type plus the
+ * runtime Proxy in `@arkenv/nextjs` (which throws on client access to
+ * server-only vars) are deliberate. Do not statically compile the schema here
+ * or reference internal-only types from generated code.
  *
- * This emits a generic `createEnv` *factory* whose return type is inferred from
- * the caller's schema via `distill.Out<at.infer<TSchema>>`. The factory is
- * intentionally decoupled from the schema contents (the schema lives in the
- * user's `env.ts`, not here), which is what keeps the single-file flat-layout
- * DX simple and avoids regenerating this file on every schema edit.
- *
- * The return type deliberately exposes the *full* schema so Server Components
- * get correct types for server-only keys (e.g. `DATABASE_URL`). TypeScript
- * cannot apply the package's `react-server` export condition to this
- * transitively-imported generated file, so we annotate the full type here and
- * rely on the runtime Proxy in `@arkenv/nextjs` to enforce the security
- * boundary (it throws when a server-only var is read on the client). This
- * mirrors the "trust the proxy" approach used by libraries like
- * `@t3-oss/env-nextjs`.
- *
- * Known, accepted limitations of the wrapper (Path A):
- * - We use bare `at.infer<TSchema>` rather than `at.infer<TSchema, $>` because
- *   the arkenv scope (`$` from `@repo/scope`) is internal and not part of the
- *   public `@arkenv/nextjs` surface, so it can't be referenced from user-land
- *   generated code. Flat-layout schemas don't use custom scope keywords today.
- * - The `extends` option's contributed keys are not reflected in the return
- *   type (no `MergeExtends`, which is likewise internal). Flat-layout usage
- *   doesn't rely on `extends`.
- *
- * The fully "bulletproof" alternative (Path B) — having the CLI statically
- * evaluate the ArkType schema and emit a hardcoded `{ KEY: type }` object with
- * zero generic overhead — would require the CLI to own the `env` declaration
- * and act as a mini ArkType compiler. That is a deliberate future enhancement
- * behind a separate "compiled" mode, not a retrofit onto this factory.
+ * 📖 See ADR-0010: Flat layout codegen and type inference strategy
+ * (`docs/adr/0010-flat-layout-codegen-type-strategy.md`).
  */
 function generateFlatFactoryCode(
 	clientKeys: string[],
