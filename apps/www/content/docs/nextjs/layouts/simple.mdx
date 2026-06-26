@@ -117,27 +117,50 @@ export const env = arkenv({
 
     ### Register configuration wrapper [step] [!toc]
 
-    Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
+    To scan your schema, build the generated helper file, and automatically watch for changes during development, register ArkEnv in your Next.js configuration.
 
-    ```ts title="next.config.ts"
-    import { withArkEnv } from "@arkenv/nextjs/config";
-    import type { NextConfig } from "next";
+    You can either use the side-effect import at the very top of your configuration file (recommended for a simple, non-wrapping setup), or wrap your configuration object using the `withArkEnv` helper:
 
-    const nextConfig: NextConfig = {
-    	/* config options here */
-    };
+    <Tabs items={['Side-effect import (Recommended)', 'Config wrapper']}>
+      <Tab value="Side-effect import (Recommended)">
+        Simply add this import at the top of your `next.config.ts` (or `next.config.js`):
 
-    export default withArkEnv(nextConfig);
-    ```
+        ```ts title="next.config.ts"
+        import "@arkenv/nextjs/register";
+        import type { NextConfig } from "next";
 
-    You can customize the schema and output paths using optional parameters:
+        const nextConfig: NextConfig = {
+        	/* config options here */
+        };
 
-    ```ts
-    export default withArkEnv(nextConfig, {
-    	schemaPath: "src/env.ts",              // Path to your schema (default: src/env.ts or env.ts)
-    	outputPath: "src/generated/env.gen.ts", // Custom output path (default: src/generated/env.gen.ts)
-    });
-    ```
+        export default nextConfig;
+        ```
+      </Tab>
+
+      <Tab value="Config wrapper">
+        Wrap your Next.js configuration using the `withArkEnv` helper:
+
+        ```ts title="next.config.ts"
+        import { withArkEnv } from "@arkenv/nextjs/config";
+        import type { NextConfig } from "next";
+
+        const nextConfig: NextConfig = {
+        	/* config options here */
+        };
+
+        export default withArkEnv(nextConfig);
+        ```
+
+        You can customize the schema and output paths using optional parameters:
+
+        ```ts
+        export default withArkEnv(nextConfig, {
+        	schemaPath: "src/env.ts",              // Path to your schema (default: src/env.ts or env.ts)
+        	outputPath: "src/generated/env.gen.ts", // Custom output path (default: src/generated/env.gen.ts)
+        });
+        ```
+      </Tab>
+    </Tabs>
 
     :::note
     If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env.ts` instead.
