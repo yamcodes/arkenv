@@ -150,7 +150,11 @@ export class CLI {
 	}
 
 	get isSimple(): boolean {
-		return this.hasFlag("isSimple") || this.hasFlag("isFlat");
+		return this.hasFlag("isSimple");
+	}
+
+	get isFlat(): boolean {
+		return this.hasFlag("isFlat");
 	}
 
 	get noCodegen(): boolean {

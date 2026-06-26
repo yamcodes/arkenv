@@ -1,0 +1,108 @@
+---
+title: Migrating to Flat Layout
+description: Migrate your Next.js environment configuration from the deprecated nested layout to the recommended flat layout.
+---
+
+The legacy **Nested Layout** (which structures your schemas into separate `server`, `client`, and `shared` nested blocks) has been deprecated in `@arkenv/nextjs` in favor of the **Flat Layout**. 
+
+This guide walks you through migrating your Next.js environment variables configuration to the recommended Flat Layout.
+
+---
+
+## Why migrate?
+
+1. **Cleaner syntax**: Omit nested wrapper blocks (`server`, `client`, `shared`) to match your actual `.env` file structure directly.
+2. **Simplified code generation**: Type validation helpers are much cleaner to generate and maintain internally, leading to a faster and more robust DX.
+3. **Flexible client exposure**: Expose any non-prefixed custom variables using `options.exposeToClient` without having to define a separate `shared` block.
+
+---
+
+## Migration steps
+
+To migrate, you need to flatten the schema object structure in your `env.ts` file.
+
+### 1. Flatten the schema
+
+Remove the `server`, `client`, and `shared` wrapper blocks. Move all of your validation schemas to the top level of the configuration object.
+
+<Tabs items={['Before (Nested)', 'After (Flat)']}>
+  <Tab value="Before (Nested)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: "string",
+    	},
+    	client: {
+    		NEXT_PUBLIC_API_URL: "string",
+    	},
+    	shared: {
+    		NODE_ENV: "string",
+    	},
+    });
+    ```
+  </Tab>
+
+  <Tab value="After (Flat)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NEXT_PUBLIC_API_URL: "string",
+    	NODE_ENV: "string",
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### 2. Expose custom public variables
+
+Under the Flat Layout, variables starting with `NEXT_PUBLIC_` are automatically exposed to the client bundle. 
+
+If you have custom variables that are not prefixed with `NEXT_PUBLIC_` but need to be exposed to client-side bundles (previously defined in the `shared` block), list their keys in the `exposeToClient` options array:
+
+<Tabs items={['Before (Nested)', 'After (Flat)']}>
+  <Tab value="Before (Nested)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: "string",
+    	},
+    	shared: {
+    		CUSTOM_PUBLIC_VAR: "string",
+    		NODE_ENV: "string",
+    	},
+    });
+    ```
+  </Tab>
+
+  <Tab value="After (Flat)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	CUSTOM_PUBLIC_VAR: "string",
+    	NODE_ENV: "string",
+    }, {
+    	exposeToClient: ["CUSTOM_PUBLIC_VAR"]
+    });
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## CLI flags
+
+When initializing new projects using the `@arkenv/cli`, you can use the `--flat` flag to scaffold your project with the flat layout structure:
+
+```bash
+npx @arkenv/cli@latest init --flat
+```
+
+*Note: The legacy `--simple` flag is kept as an alias for `--flat` for backward compatibility but is no longer actively recommended.*

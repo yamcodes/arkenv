@@ -124,3 +124,42 @@ describe("dynamic client environment variable lookup", () => {
 		vi.unstubAllGlobals();
 	});
 });
+
+describe("legacy nested layout deprecation warning", () => {
+	it("should warn on legacy nested layout structure in development mode", () => {
+		const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+		const originalNodeEnv = process.env.NODE_ENV;
+		process.env.NODE_ENV = "development";
+
+		try {
+			// Call legacy signature
+			createEnv({
+				client: {
+					NEXT_PUBLIC_VAL: "string",
+				},
+				runtimeEnv: {
+					NEXT_PUBLIC_VAL: "hello",
+				},
+			});
+
+			expect(warnSpy).toHaveBeenCalledTimes(1);
+			expect(warnSpy.mock.calls[0][0]).toContain(
+				"Deprecated: The nested layout structure",
+			);
+
+			// Calling it again should not warn (one-time warn)
+			createEnv({
+				client: {
+					NEXT_PUBLIC_VAL: "string",
+				},
+				runtimeEnv: {
+					NEXT_PUBLIC_VAL: "hello",
+				},
+			});
+			expect(warnSpy).toHaveBeenCalledTimes(1);
+		} finally {
+			process.env.NODE_ENV = originalNodeEnv;
+			warnSpy.mockRestore();
+		}
+	});
+});

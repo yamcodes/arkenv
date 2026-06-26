@@ -4,6 +4,9 @@
 	"defaultOpen": true,
 	"pages": [
 		"[Zap][Flat (Recommended)](/docs/nextjs/layouts/flat)",
-		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict)"
+		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict)",
+		"[ArrowLeftRight][Migrating to Flat](/docs/nextjs/layouts/migration)",
+		"---Legacy---",
+		"[AlertTriangle][Nested (Deprecated)](/docs/nextjs/layouts/simple)"
 	]
 }
