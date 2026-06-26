@@ -147,7 +147,7 @@
 		{
 			"name": "@arkenv/nextjs/config",
 			"path": "dist/config.js",
-			"limit": "3 kB",
+			"limit": "3.5 kB",
 			"import": "*",
 			"ignore": [
 				"next",

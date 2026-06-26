@@ -9,7 +9,7 @@ export default function ClientComponent() {
 	const tryAccessSecret = () => {
 		try {
 			// This should throw a runtime error on the client
-			const dbUrl = env.DATABASE_URL;
+			const dbUrl = (env as any).DATABASE_URL;
 			alert(`Secret accessed successfully: ${dbUrl}`);
 		} catch (e: any) {
 			setSecretError(e.message || String(e));
