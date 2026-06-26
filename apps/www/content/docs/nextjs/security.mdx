@@ -1,0 +1,56 @@
+---
+title: Security model
+icon: ShieldCheck
+description: Understand exactly what @arkenv/nextjs protects, what Next.js protects, and how each layout affects your leak surface.
+---
+
+The most important thing to understand: **Next.js, not ArkEnv, protects your secret values.**
+
+Any variable without a `NEXT_PUBLIC_` prefix is stripped from the client bundle by Next.js at build time. This is true whether or not you use ArkEnv. ArkEnv's job is different:
+
+- **Validation** — fail at build/boot if a required secret is missing or malformed, instead of a silent `undefined` that surfaces later as a confusing (and sometimes security-relevant) bug.
+- **Type safety & coercion** — `env.PORT` is a `number`, not `string | undefined`.
+- **Misuse guards** — the runtime proxy throws a descriptive error if you read a server-only variable on the client, instead of returning `undefined` and tempting you to "fix" it by adding `NEXT_PUBLIC_` (which *would* leak the secret).
+
+:::tip[Mental model]
+Next.js hides your *values*. ArkEnv *validates your infrastructure* and guards against *misuse*.
+:::
+
+## Leak surface by layout
+
+For a server-only secret like `DATABASE_URL`:
+
+| Layout                   | Secret **value** in client bundle | Variable **name + type** in client bundle | Compile-time block | Runtime block (Proxy) |
+| :----------------------- | :-------------------------------: | :---------------------------------------: | :----------------: | :-------------------: |
+| **Flat** (recommended)   |                 No                |                  **Yes**                  |         No         |        **Yes**        |
+| **Nested** (deprecated)  |                 No                |                  **Yes**                  |         No         |        **Yes**        |
+| **Strict** (split files) |                 No                |                     No                    |       **Yes**      |        **Yes**        |
+
+Key takeaways:
+
+- **No layout leaks secret values** — that's Next.js's native guarantee.
+- **Flat exposes variable *names and types*** (not values) because the schema file is imported into client code. This is almost never a real concern. If your variable *names* are sensitive (e.g. they reveal internal infrastructure), use the [strict layout](/docs/nextjs/layouts/strict), where `server.ts` is never imported into the client graph.
+- **Only strict gives compile-time blocking.** In flat, reading a server variable in a client component type-checks but throws at runtime.
+
+## Why doesn't flat block server variables at compile time?
+
+This is a deliberate, structural decision — not a missing feature.
+
+TypeScript compiles your `env.ts` in a **single pass**. It has no way to know whether a given file will end up in a Server Component build or a Client Component build, so it cannot return a "server type" in one place and a "client type" in another from the same generated file. Any attempt to omit server keys for the client would either break every Server Component, or force you to add `customConditions: ["react-server"]` to `tsconfig.json` — which flips *all* files to the server type and hands client components server-variable autocomplete anyway, defeating the purpose.
+
+So flat intentionally types the full schema everywhere and relies on the **runtime proxy** as the boundary: full autocomplete on the server, a loud runtime error on misuse from the client. If you want the compiler itself to enforce the boundary, that is exactly what the [strict layout](/docs/nextjs/layouts/strict) is for.
+
+:::note
+This mirrors [`@t3-oss/env-nextjs`](https://env.t3.gg), whose single-file mode has the same posture (full type inference plus a runtime proxy throw) and the same recommendation: split your files if variable names are sensitive.
+:::
+
+## How the runtime boundary is enforced
+
+`@arkenv/nextjs` keys its server/client determination off **package conditional exports**, not a `typeof window` check:
+
+| Export condition | Next.js context                    | Accessible variables                   |
+| :--------------- | :--------------------------------- | :------------------------------------- |
+| `react-server`   | Server Components & Route Handlers | All variables (server, client, shared) |
+| `default`        | Client Components (SSR & Browser)  | Public variables only (client, shared) |
+
+Because the boundary is fixed at bundle time, a client component that reads a server-only variable throws **during SSR** — not just in the browser — so the mistake fails fast before it ever reaches a user.
