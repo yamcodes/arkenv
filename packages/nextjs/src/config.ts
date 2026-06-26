@@ -484,6 +484,11 @@ export function createEnv<
 >(
 	schema: TSchema,
 	options?: {
+		/**
+		 * Custom environment variables to expose to the client bundle.
+		 * By default, variables prefixed with \`NEXT_PUBLIC_\` and \`NODE_ENV\` are exposed automatically.
+		 * Use this option to expose custom variables that do not have the \`NEXT_PUBLIC_\` prefix.
+		 */
 		exposeToClient?: readonly TExpose[];
 		extends?: [...TExtends];
 	},
