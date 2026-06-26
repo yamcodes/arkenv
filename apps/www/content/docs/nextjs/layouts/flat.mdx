@@ -20,7 +20,7 @@ Defining your schemas together means the *server validation logic* is shipped in
 | :------------------------------------------------------------------------------ | :--------------------------------------------------- |
 | **Schema** (keys, types, and constraints)<br />e.g., `DATABASE_URL: string.url` | **Runtime values**<br />e.g., `"postgresql://db..."` |
 
-If exposing your server variable names, types, or constraints is a security concern, use the [strict layout](/docs/nextjs/layouts/strict) instead.
+The values themselves are *not* shipped to the client! But if exposing your server variable *names*, *types*, or *constraints* is a security concern, use the [strict layout](/docs/nextjs/layouts/strict) instead.
 :::
 
 ## Setup
