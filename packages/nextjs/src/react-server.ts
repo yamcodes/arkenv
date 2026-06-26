@@ -59,6 +59,8 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 
 export type { Infer } from "arkenv";
 export { type } from "arkenv";
+export type { ArkEnvScriptProps } from "./script";
+export { ArkEnvScript } from "./script";
 
 const arkenv = createEnv;
 export default arkenv;

@@ -51,7 +51,7 @@
 		},
 		".": {
 			"react-server": {
-				"types": "./dist/index.d.ts",
+				"types": "./dist/react-server.d.ts",
 				"import": "./dist/react-server.js",
 				"require": "./dist/react-server.cjs"
 			},

@@ -79,7 +79,6 @@ The `setupArkEnv()` function and `withArkEnv()` wrapper accept the following opt
 | `schemaPath` | `string`               | `src/env.ts` or `env.ts`           | The path to your environment schema file or directory.                             |
 | `outputPath` | `string`               | `[schemaDir]/generated/env.gen.ts` | The path where the generated helper (`env.gen.ts`) will be written.                |
 | `layout`     | `'simple' \| 'strict'` | `'simple'` (Flat layout)           | Specifies the schema layout. Use `'strict'` if using the multi-file strict layout. |
-| `watch`      | `boolean`              | `true` (in dev)                    | Whether to watch the schema files and regenerate the helper in development mode.   |
 
 ---
 
@@ -97,18 +96,18 @@ import { ArkEnvScript } from "@arkenv/nextjs";
 
 #### Usage
 
-Insert it inside the `<head>` of your root layout (`app/layout.tsx`):
+Insert it inside the `<body>` of your root layout (`app/layout.tsx`):
 
 ```tsx title="app/layout.tsx"
 import { ArkEnvScript } from "@arkenv/nextjs";
 
 export default function RootLayout({ children }) {
 	return (
-		<html>
-			<head>
+		<html lang="en">
+			<body>
 				<ArkEnvScript />
-			</head>
-			<body>{children}</body>
+				{children}
+			</body>
 		</html>
 	);
 }

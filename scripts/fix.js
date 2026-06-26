@@ -60,6 +60,10 @@ if (fs.existsSync(docsDir)) {
 					content = content.replace(/\\_/g, "_");
 					changed = true;
 				}
+				if (/:::[a-z]+\\\[/.test(content)) {
+					content = content.replace(/(:::[a-z]+)\\\[/g, "$1[");
+					changed = true;
+				}
 				if (changed) {
 					fs.writeFileSync(fullPath, content);
 				}

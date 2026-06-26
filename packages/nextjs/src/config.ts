@@ -478,21 +478,22 @@ import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
 export { type } from "@arkenv/nextjs";
 
 export function createEnv<
-	const TSchema extends Record<string, any> = {},
+	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
+	const TExpose extends keyof TSchema = never,
 	const TExtends extends readonly unknown[] = [],
 >(
 	schema: TSchema,
 	options?: {
-		exposeToClient?: readonly (keyof TSchema)[];
+		exposeToClient?: readonly TExpose[];
 		extends?: [...TExtends];
 	},
 ) {
-	return coreCreateEnv(schema as any, {
+	return coreCreateEnv<TSchema, TExpose, TExtends>(schema as any, {
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
 		},
-	} as any) as any;
+	} as any);
 }
 ${GENERATED_FOOTER}`;
 }

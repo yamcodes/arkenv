@@ -23,18 +23,7 @@ export function createEnv<
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;
 	},
-): Readonly<
-	Pick<
-		distill.Out<at.infer<TSchema, $>>,
-		Extract<
-			keyof distill.Out<at.infer<TSchema, $>>,
-			| (keyof TSchema & `NEXT_PUBLIC_${string}`)
-			| TExpose
-			| (keyof TSchema & "NODE_ENV")
-		>
-	> &
-		MergeExtends<TExtends>
->;
+): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
 export function createEnv<
 	const TServer extends SchemaShape = {},
@@ -70,6 +59,8 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 
 export type { Infer } from "arkenv";
 export { type } from "arkenv";
+export type { ArkEnvScriptProps } from "./script";
+export { ArkEnvScript } from "./script";
 
 const arkenv = createEnv;
 export default arkenv;

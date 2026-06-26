@@ -7,22 +7,23 @@ import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
 export { type } from "@arkenv/nextjs";
 
 export function createEnv<
-	const TSchema extends Record<string, any> = {},
+	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
+	const TExpose extends keyof TSchema = never,
 	const TExtends extends readonly unknown[] = [],
 >(
 	schema: TSchema,
 	options?: {
-		exposeToClient?: readonly (keyof TSchema)[];
+		exposeToClient?: readonly TExpose[];
 		extends?: [...TExtends];
 	},
 ) {
-	return coreCreateEnv(schema as any, {
+	return coreCreateEnv<TSchema, TExpose, TExtends>(schema as any, {
 		...options,
 		runtimeEnv: {
 			NEXT_PUBLIC_API_URL: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL,
 			NODE_ENV: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,
 		},
-	} as any) as any;
+	} as any);
 }
 
 export default createEnv;
