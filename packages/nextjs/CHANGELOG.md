@@ -1,5 +1,82 @@
 # @ArkEnv/nextjs
 
+## 0.1.1
+
+### Patch Changes
+
+- #### Add Flat Layout Mode for Next.js integration _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce a new "Flat" layout mode for `@arkenv/nextjs`. The Flat API allows developers to define a flat schema mapping directly to their `.env` file structure:
+
+  ```ts
+  import arkenv from "./generated/env.gen";
+
+  export const env = arkenv(
+    {
+      DATABASE_URL: "string",
+      NEXT_PUBLIC_API_URL: "string",
+      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      CUSTOM_VAR: "string",
+    },
+    {
+      exposeToClient: ["CUSTOM_VAR"],
+    }
+  );
+  ```
+
+  - Automatically expose `NEXT_PUBLIC_` variables and custom keys specified in `options.exposeToClient` to the client.
+  - Secure server-only variables at runtime via a Proxy that throws on unauthorized client access.
+  - Share `NODE_ENV` implicitly to match [standard Next.js build-time inlining behavior.](https://nextjs.org/docs/app/guides/environment-variables)
+  - Rename the configuration `layout` option value from `"simple"` to `"flat"`. `"simple"` is kept as a deprecated runtime alias and will be removed in the next major version.
+  - Update CLI scaffolding to generate the Flat layout by default.
+  - Update documentation and playground/example apps to use and recommend the Flat layout strategy.
+
+- #### Deprecate Next.js nested layout and add CLI `--flat` flag _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
+
+  - Deprecate the legacy nested options overload signature of `createEnv` in `@arkenv/nextjs`.
+  - Add a one-time development-only runtime warning nudge when the legacy nested layout format is detected.
+  - Add the `--flat` flag to `@arkenv/cli` to scaffold the recommended flat layout for Next.js.
+  - **BREAKING CHANGE**: Drop support for the `@arkenv/cli` `--simple` flag on Next.js projects; passing it now hard-fails with an error. Run `npx arkenv init` instead (the flat layout is now the default).
+  - Remove the nested layout choice from the Next.js interactive CLI prompt, defaulting to flat.
+  - Remove the standalone nested layout documentation page and redirect its URL to the FAQ.
+  - Update the documentation to guide users from the legacy nested layout to the recommended flat layout.
+
+- #### Add standalone setup API and dynamic client environment variables support _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
+
+  Improve the Next.js developer experience with the following enhancements:
+
+  - Expose `setupArkEnv` from `@arkenv/nextjs/config` as a non-wrapping alternative to `withArkEnv`. Use it directly when you are already juggling multiple config wrappers and want to avoid another `withX(...)` layer.
+  - Remove the `@arkenv/nextjs/register` side-effect import; use `withArkEnv` for the idiomatic wrapper path or `setupArkEnv` for the non-wrapping path.
+  - Support runtime-injectable client-side variables via a new `<ArkEnvScript />` component, enabling containerized deployments to configure public client-side variables dynamically without rebuilds.
+  - Fix typesafety for the flat layout so that `env` returns a strongly-typed schema (rather than resolving to `any`) and server-side variables can be accessed in server components without TypeScript compile errors.
+
+  Usage:
+
+  ```ts
+  // next.config.ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+  import type { NextConfig } from "next";
+
+  const nextConfig: NextConfig = {};
+  export default withArkEnv(nextConfig);
+  ```
+
+  ```tsx
+  // app/layout.tsx
+  import { ArkEnvScript } from "@arkenv/nextjs";
+
+  export default function RootLayout({ children }) {
+    return (
+      <html lang="en">
+        <body>
+          <ArkEnvScript />
+          {children}
+        </body>
+      </html>
+    );
+  }
+  ```
+
 ## 0.1.0
 
 ### Minor Changes
