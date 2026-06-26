@@ -50,11 +50,6 @@ export class InitUseCase {
 	 * Collects init options, creates a scaffolding plan, and executes it.
 	 */
 	async execute(input: InitInput): Promise<boolean> {
-		if (input.isSimple) {
-			this.logger.log(
-				"⚠️  Warning: The --simple flag is deprecated and will be removed in a future version. Please use the recommended --flat flag for the Flat Layout structure.",
-			);
-		}
 		const state = await this.collect(input);
 		if (!state) return false;
 
@@ -220,6 +215,12 @@ export class InitUseCase {
 			targetDir,
 			tsConfig.parsed,
 		);
+		if (input.isSimple && detectedFramework === "nextjs") {
+			this.logger.error(
+				"❌ Error: The --simple layout is deprecated and no longer supported by the CLI. Arkenv now exclusively uses the Flat Layout. Run npx arkenv init without this flag.",
+			);
+			return null;
+		}
 		const detectedBunFeatures =
 			detectedFramework === "bun-fullstack"
 				? await this.scanner.detectBunFeatures(targetDir, tsConfig.parsed)

@@ -99,10 +99,13 @@ If you have custom variables that are not prefixed with `NEXT_PUBLIC_` but need 
 
 ## CLI flags
 
-When initializing new projects using the `@arkenv/cli`, you can use the `--flat` flag to scaffold your project with the flat layout structure:
+New Next.js projects scaffolded with the `@arkenv/cli` will automatically use the Flat layout by default. You can also use the explicit `--flat` flag:
 
 ```bash
 npx @arkenv/cli@latest init --flat
 ```
 
-*Note: The legacy `--simple` flag is kept as an alias for `--flat` for backward compatibility but is no longer actively recommended.*
+:::warning[Unsupported Flag]
+The legacy `--simple` flag is no longer supported for Next.js projects. Passing it will result in an error. All new projects should use the Flat layout.
+:::
+
