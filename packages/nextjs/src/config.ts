@@ -467,13 +467,15 @@ ${GENERATED_FOOTER}`;
  * Generate the TypeScript factory code for the Flat Layout createEnv helper.
  *
  * @remarks
- * **Architecture tripwire:** This intentionally emits a generic *wrapper*
- * factory (not a statically compiled object) and omits internal types (the `$`
- * scope and `MergeExtends`). It must stay a generic wrapper because the schema
- * is owned by the user-land `env.ts`. The full-schema return type plus the
- * runtime Proxy in `@arkenv/nextjs` (which throws on client access to
- * server-only vars) are deliberate. Do not statically compile the schema here
- * or reference internal-only types from generated code.
+ * **Architecture tripwire:** Do not statically compile the schema here or
+ * reference internal-only types (the `$` scope or `MergeExtends`).
+ *
+ * - **Generic wrapper:** The factory must stay generic because the concrete
+ *   schema is owned by the user-land `env.ts`.
+ * - **Type strategy:** It intentionally returns the full schema type to ensure
+ *   flawless Server Component autocomplete.
+ * - **Security boundary:** Client-side protection is deliberately deferred to
+ *   the runtime Proxy in `@arkenv/nextjs`, which throws on unauthorized access.
  *
  * 📖 See ADR-0010: Flat layout codegen and type inference strategy
  * (`docs/adr/0010-flat-layout-codegen-type-strategy.md`).
