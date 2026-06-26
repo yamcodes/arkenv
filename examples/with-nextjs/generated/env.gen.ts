@@ -7,17 +7,16 @@ import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
 export { type } from "@arkenv/nextjs";
 
 export function createEnv<
-	const TServer extends Record<string, any> = {},
-	const TClient extends Record<string, any> = {},
-	const TShared extends Record<string, any> = {},
->(options: {
-	server?: TServer;
-	client?: TClient & {
-		[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}` ? unknown : never;
-	};
-	shared?: TShared;
-}) {
-	return coreCreateEnv({
+	const TSchema extends Record<string, any> = {},
+	const TExtends extends readonly unknown[] = [],
+>(
+	schema: TSchema,
+	options?: {
+		exposeToClient?: readonly (keyof TSchema)[];
+		extends?: [...TExtends];
+	},
+) {
+	return coreCreateEnv(schema as any, {
 		...options,
 		runtimeEnv: {
 			NEXT_PUBLIC_API_URL: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL,
