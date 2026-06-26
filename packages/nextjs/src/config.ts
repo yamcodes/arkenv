@@ -474,6 +474,7 @@ function generateFlatFactoryCode(
 
 	return `${GENERATED_HEADER}
 import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import type { type as at, distill } from "arktype";
 
 export { type } from "@arkenv/nextjs";
 
@@ -492,13 +493,17 @@ export function createEnv<
 		exposeToClient?: readonly TExpose[];
 		extends?: [...TExtends];
 	},
-) {
-	return coreCreateEnv<TSchema, TExpose, TExtends>(schema as any, {
+): Readonly<distill.Out<at.infer<TSchema>>> {
+	// Types expose the full schema for a great DX on the server; the runtime
+	// Proxy from \`@arkenv/nextjs\` enforces the security boundary by throwing
+	// when a server-only variable is accessed on the client.
+	const env = coreCreateEnv(schema as any, {
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
 		},
 	} as any);
+	return env as unknown as Readonly<distill.Out<at.infer<TSchema>>>;
 }
 ${GENERATED_FOOTER}`;
 }

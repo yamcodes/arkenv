@@ -8,8 +8,9 @@ export default function ClientComponent() {
 
 	const tryAccessSecret = () => {
 		try {
-			// This should throw a runtime error on the client
-			const dbUrl = (env as any).DATABASE_URL;
+			// Types allow this for a great DX, but the runtime Proxy enforces the
+			// security boundary: accessing a server-only variable on the client throws.
+			const dbUrl = env.DATABASE_URL;
 			alert(`Secret accessed successfully: ${dbUrl}`);
 		} catch (e: any) {
 			setSecretError(e.message || String(e));
