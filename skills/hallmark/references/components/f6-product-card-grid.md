@@ -1,7 +1,7 @@
 ### F6 · Product card grid
 Each card is a product, not a feature. Image · name · price · one micro-action. Reads like a shop floor, not a marketing site.
-*Use when:* the brief is commerce, catalogue, lookbook, marketplace — anything where the page sells *things*, not *features*.
-*Don't confuse with:* F1 Bento (which sells *features*; tiles vary in size and span). Product cards are uniform on purpose — the rhythm comes from the products, not the layout.
+*Use when:* the brief is commerce, catalogue, lookbook, marketplace - anything where the page sells *things*, not *features*.
+*Don't confuse with:* F1 Bento (which sells *features*; tiles vary in size and span). Product cards are uniform on purpose - the rhythm comes from the products, not the layout.
 
 **Variation knobs:** card ratio (3/4 portrait · 1/1 square · 4/3 landscape) · density (3-up · 4-up · 5-up) · price treatment (under name · over image · hover-reveal) · micro-action (Add · Save · View → · none).
 
@@ -33,9 +33,9 @@ Each card is a product, not a feature. Image · name · price · one micro-actio
 ```
 
 **Anti-patterns to avoid in product grids:**
-- Don't borrow Bento's irregular spans — products want uniform rhythm.
+- Don't borrow Bento's irregular spans - products want uniform rhythm.
 - Don't put feature-style two-line descriptions under product names. The price *is* the description.
-- Don't auto-scale the image on idle — only on hover, and only by 1.02× max.
+- Don't auto-scale the image on idle - only on hover, and only by 1.02× max.
 - Don't use cards with shadow + radius + border + tile + ribbon. Pick one container signal.
 
 ---

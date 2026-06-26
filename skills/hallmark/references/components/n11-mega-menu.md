@@ -1,5 +1,5 @@
 ### N11 · Mega-menu panel
-A standard top bar whose triggers open a **full-width multi-column panel** — icon · title · description per item, grouped under column headers, often with a promoted feature card on one side. The page dims behind a scrim. Vercel "Products", Figma "Products", Notion "Resources".
+A standard top bar whose triggers open a **full-width multi-column panel** - icon · title · description per item, grouped under column headers, often with a promoted feature card on one side. The page dims behind a scrim. Vercel "Products", Figma "Products", Notion "Resources".
 *Use when:* the brand has many destinations that need grouping + explanation (a platform with 6+ products, or docs/resources hubs). The payload is the design problem, not the bar.
 *Don't confuse with:* N1b (small single-column dropdowns); N1a (no dropdowns at all).
 
@@ -35,6 +35,6 @@ A standard top bar whose triggers open a **full-width multi-column panel** — i
 ```
 *JS:* hover opens (with a ~140ms close-grace timer so the pointer can travel into the panel), click toggles, Esc closes, only one panel open at a time, scrim + `aria-expanded` follow state.
 
-**Knobs** — *Columns:* 2 · 3 · 4 · *Feature cell:* none · promo card · code sample · *Scrim:* dim+blur (default) · dim only · none · *Open on:* hover+click (default) · click only.
-*Anti-pattern:* never more than ~4 columns; never a panel taller than ~60vh; never open on hover with no close-grace timer (the menu flickers when the pointer crosses the gap). Items must carry a one-line description — a bare link grid is just N1b in disguise.
+**Knobs** - *Columns:* 2 · 3 · 4 · *Feature cell:* none · promo card · code sample · *Scrim:* dim+blur (default) · dim only · none · *Open on:* hover+click (default) · click only.
+*Anti-pattern:* never more than ~4 columns; never a panel taller than ~60vh; never open on hover with no close-grace timer (the menu flickers when the pointer crosses the gap). Items must carry a one-line description - a bare link grid is just N1b in disguise.
 *Mobile:* collapse the whole thing to a drawer; the columns stack as accordion groups.

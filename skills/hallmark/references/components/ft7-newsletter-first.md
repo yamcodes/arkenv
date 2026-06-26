@@ -1,6 +1,6 @@
 ### Ft7 · Newsletter-first
 The form (label + input + submit) is the *primary* element of the footer; everything else (wordmark, links, copyright) is set in 12 px muted type beneath. Stratechery, Substack-shaped sites, indie magazines.
-*Use when:* the brand legitimately publishes — and the page above the fold has *already* offered a subscription. The footer is a final invitation, not an ambush.
+*Use when:* the brand legitimately publishes - and the page above the fold has *already* offered a subscription. The footer is a final invitation, not an ambush.
 *Don't confuse with:* Ft1 (which doesn't ask for anything).
 
 ```html

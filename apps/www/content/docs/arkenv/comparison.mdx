@@ -48,7 +48,7 @@ That's it. You're done. Who needs another library for this, right?
 
 At first glance, this approach delivers exactly what you need: validation, typesafety, defaults, and even type morphs.
 
-One thing no library can change, though: frameworks like Next.js strip non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env.X`. ArkEnv's codegen builds on top of that by only mapping safe keys into `runtimeEnv`, so server secrets never reach the client-side proxy. We aren't here to play hide-and-seek with your keys. We're here to validate your infrastructure and fail loudly before you push a broken `undefined` bug into production.
+One thing no library can change, though: frameworks like Next.js strip non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env`. ArkEnv's codegen builds on top of that by only mapping safe keys into `runtimeEnv`, so server secrets never reach the client-side proxy. We aren't here to play hide-and-seek with your keys. We're here to validate your infrastructure and fail loudly before you push a broken `undefined` bug into production.
 
 However, once you move beyond "hello world" territory, the DIY path starts to feel a bit more tedious:
 

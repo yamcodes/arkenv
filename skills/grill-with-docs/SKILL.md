@@ -48,17 +48,17 @@ metadata:
   │       └── docs/adr/
   ```
 
-  Create files lazily — only when you have something to write. If no `docs/CONTEXT.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
+  Create files lazily - only when you have something to write. If no `docs/CONTEXT.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
 
   ## During the session
 
   ### Challenge against the glossary
 
-  When the user uses a term that conflicts with the existing language in `docs/CONTEXT.md`, call it out immediately. "Your glossary defines 'cancellation' as X, but you seem to mean Y — which is it?"
+  When the user uses a term that conflicts with the existing language in `docs/CONTEXT.md`, call it out immediately. "Your glossary defines 'cancellation' as X, but you seem to mean Y - which is it?"
 
   ### Sharpen fuzzy language
 
-  When the user uses vague or overloaded terms, propose a precise canonical term. "You're saying 'account' — do you mean the Customer or the User? Those are different things."
+  When the user uses vague or overloaded terms, propose a precise canonical term. "You're saying 'account' - do you mean the Customer or the User? Those are different things."
 
   ### Discuss concrete scenarios
 
@@ -66,11 +66,11 @@ metadata:
 
   ### Cross-reference with code
 
-  When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: "Your code cancels entire Orders, but you just said partial cancellation is possible — which is right?"
+  When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: "Your code cancels entire Orders, but you just said partial cancellation is possible - which is right?"
 
   ### Update docs/CONTEXT.md inline
 
-  When a term is resolved, update `docs/CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
+  When a term is resolved, update `docs/CONTEXT.md` right there. Don't batch these up - capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
 
   Don't couple `docs/CONTEXT.md` to implementation details. Only include terms that are meaningful to domain experts.
 
@@ -78,9 +78,9 @@ metadata:
 
   Only offer to create an ADR when all three are true:
 
-  1. **Hard to reverse** — the cost of changing your mind later is meaningful
-  2. **Surprising without context** — a future reader will wonder "why did they do it this way?"
-  3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
+  1. **Hard to reverse** - the cost of changing your mind later is meaningful
+  2. **Surprising without context** - a future reader will wonder "why did they do it this way?"
+  3. **The result of a real trade-off** - there were genuine alternatives and you picked one for specific reasons
 
   If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
 </supporting-info>

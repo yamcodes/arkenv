@@ -75,7 +75,7 @@ If the second command (`changeset publish`) depends on build outputs, the turbo 
 - Use `globalDependencies` only for truly global files (root `.env`)
 - Use task-level `inputs` for package-specific .env files with `$TURBO_DEFAULT$` to preserve default behavior
 
-With `futureFlags.globalConfiguration`, this is less of a concern because `global.inputs` acts as implicit task inputs — tasks can opt out of specific files with negation globs. But keeping the list focused is still good practice.
+With `futureFlags.globalConfiguration`, this is less of a concern because `global.inputs` acts as implicit task inputs - tasks can opt out of specific files with negation globs. But keeping the list focused is still good practice.
 
 ## #4 Repetitive Task Configuration
 

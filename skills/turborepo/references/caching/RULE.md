@@ -37,7 +37,7 @@ These affect specific tasks:
 - Environment variables in task's `env` key
 - Task configuration (command, outputs, dependencies)
 - Hashes of dependent tasks (`dependsOn`)
-- Files from `global.inputs` (when using `futureFlags.globalConfiguration` — see below)
+- Files from `global.inputs` (when using `futureFlags.globalConfiguration` - see below)
 
 ```json
 {
@@ -74,7 +74,7 @@ task cache key = hash(global hash, task hash)
 `global.inputs` files are merged into each task's input globs. This means:
 
 - Tasks can **exclude** specific global files with negation globs: `"inputs": ["$TURBO_DEFAULT$", "!$TURBO_ROOT$/tsconfig.json"]`
-- The global hash is smaller (it still includes lockfile, engines, `global.env`, etc. — but not file hashes from `global.inputs`)
+- The global hash is smaller (it still includes lockfile, engines, `global.env`, etc. - but not file hashes from `global.inputs`)
 - The task hash correctly includes the global input file hashes alongside the task's own inputs
 
 ```json

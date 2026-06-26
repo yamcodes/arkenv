@@ -2,7 +2,7 @@
 
 ## Code splitting
 
-Split production JavaScript at the route level to optimize loading times. Only essential code is loaded initially — additional parts are fetched lazily as needed.
+Split production JavaScript at the route level to optimize loading times. Only essential code is loaded initially - additional parts are fetched lazily as needed.
 
 ```tsx
 // app/router.tsx
@@ -12,7 +12,7 @@ const Dashboard = lazy(() => import("./routes/dashboard"));
 const Settings = lazy(() => import("./routes/settings"));
 ```
 
-Avoid excessive splitting — too many small chunks increases request overhead. Focus on critical route-level boundaries.
+Avoid excessive splitting - too many small chunks increases request overhead. Focus on critical route-level boundaries.
 
 ## Data prefetching
 
@@ -41,7 +41,7 @@ function DiscussionLink({ id }: { id: string }) {
 
 ### Split state
 
-Don't put everything in a single state — split to avoid unnecessary re-renders:
+Don't put everything in a single state - split to avoid unnecessary re-renders:
 
 ```tsx
 // Instead of one monolithic state:
@@ -78,7 +78,7 @@ For applications tracking many elements at once, consider atomic state libraries
 The `children` prop is the simplest way to avoid unnecessary re-renders. JSX passed as `children` represents an isolated VDOM structure that does not re-render when the parent's state changes:
 
 ```tsx
-// Not optimized — PureComponent re-renders on every count update
+// Not optimized - PureComponent re-renders on every count update
 function Counter() {
     const [count, setCount] = useState(0);
     return (
@@ -89,7 +89,7 @@ function Counter() {
     );
 }
 
-// Optimized — PureComponent does NOT re-render
+// Optimized - PureComponent does NOT re-render
 function App() {
     return (
         <Counter>

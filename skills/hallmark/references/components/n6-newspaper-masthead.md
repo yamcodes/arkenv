@@ -1,5 +1,5 @@
 ### N6 · Newspaper masthead
-Full-width header, large centred wordmark on the top row, thin issue/date line above or below in serif small caps, optional inline link row beneath, double-rule below the whole thing. Reads as editorial, broadsheet — NYT, FT, Vogue.
+Full-width header, large centred wordmark on the top row, thin issue/date line above or below in serif small caps, optional inline link row beneath, double-rule below the whole thing. Reads as editorial, broadsheet - NYT, FT, Vogue.
 *Use when:* the page is editorial, magazine-shaped, or framed as an issue / edition.
 *Don't confuse with:* N1 Wordmark + 2 links (which is asymmetric and small).
 

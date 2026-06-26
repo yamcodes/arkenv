@@ -1,6 +1,6 @@
 ### Ft5 · Statement
-One large display sentence dominates the footer — a closing line, not a sitemap. Wordmark, minimal links, copyright sit beneath in muted small type. Stripe (older), Mailchimp pre-rebrand, agency portfolio closers.
-*Use when:* the page wants a *closing line* — editorial, manifesto, atmospheric. The sentence pairs with the page's argument.
+One large display sentence dominates the footer - a closing line, not a sitemap. Wordmark, minimal links, copyright sit beneath in muted small type. Stripe (older), Mailchimp pre-rebrand, agency portfolio closers.
+*Use when:* the page wants a *closing line* - editorial, manifesto, atmospheric. The sentence pairs with the page's argument.
 *Don't confuse with:* Ft1 Mast-headed (which leads with the wordmark, not a sentence).
 
 ```html

@@ -2,60 +2,60 @@
 
 Loaded by [`SKILL.md`](../SKILL.md) Step 6 when emitting the design system as portable tokens. Defines the four canonical formats Hallmark always writes:
 
-1. **`tokens.css`** — the source of truth. Always emitted alongside the page CSS.
-2. **Tailwind v4 `@theme`** — for projects on Tailwind. Emitted into `design.md`'s Exports section on multi-page projects.
-3. **DTCG `tokens.json`** — for projects using a token pipeline (Style Dictionary, Token Studio, Cobalt). Emitted into `design.md`.
-4. **shadcn/ui CSS variables** — for projects using shadcn/ui's component library. Emitted into `design.md`.
+1. **`tokens.css`** - the source of truth. Always emitted alongside the page CSS.
+2. **Tailwind v4 `@theme`** - for projects on Tailwind. Emitted into `design.md`'s Exports section on multi-page projects.
+3. **DTCG `tokens.json`** - for projects using a token pipeline (Style Dictionary, Token Studio, Cobalt). Emitted into `design.md`.
+4. **shadcn/ui CSS variables** - for projects using shadcn/ui's component library. Emitted into `design.md`.
 
 The output rule: `tokens.css` is always written. The other three live inline in `design.md` so the user copies whichever they need into a new project. **No new verb.** This is a side effect of every build.
 
 ---
 
-## Token taxonomy — Hallmark's source of truth
+## Token taxonomy - Hallmark's source of truth
 
 Every Hallmark output writes these tokens (or a subset, if the page doesn't use one). The names are the source; every other format is a translation.
 
-| Hallmark token | Type | Example value |
-| --- | --- | --- |
-| `--color-paper` | colour | `oklch(96% 0.018 80)` |
-| `--color-paper-2` | colour | `oklch(94% 0.020 80)` |
-| `--color-paper-3` | colour | `oklch(91% 0.022 80)` |
-| `--color-ink` | colour | `oklch(15% 0.012 80)` |
-| `--color-ink-2` | colour | `oklch(28% 0.014 80)` |
-| `--color-rule` | colour | `oklch(86% 0.018 80)` |
-| `--color-rule-2` | colour | `oklch(72% 0.020 80)` |
-| `--color-muted` | colour | `oklch(50% 0.014 80)` |
-| `--color-neutral` | colour | `oklch(38% 0.012 80)` |
-| `--color-accent` | colour | `oklch(58% 0.16 70)` |
-| `--color-accent-ink` | colour | (text on accent fill, ≥ APCA 7:1) |
-| `--color-focus` | colour | (often = accent at higher chroma) |
-| `--font-display` | font | `"Fraunces", ui-serif, Georgia, serif` |
-| `--font-body` | font | `"Geist", ui-sans-serif, system-ui, sans-serif` |
-| `--font-outlier` | font | `"Geist Mono", ui-monospace, monospace` |
-| `--space-3xs` … `--space-5xl` | length | 4-pt scale: `0.25rem` … `8rem` |
-| `--text-xs` … `--text-display` | length | 1.25 (major-third) ratio scale |
-| `--ease-out` / `--ease-in` / `--ease-in-out` | easing | `cubic-bezier(0.16, 1, 0.3, 1)` etc. |
-| `--dur-micro` / `--dur-short` / `--dur-long` | time | `120ms` / `220ms` / `420ms` |
-| `--rule-hair` / `--rule-fine` | length | `1px` / `2px` |
-| `--radius-card` / `--radius-pill` / `--radius-input` | length | varies per theme |
-| `--shadow-card` | shadow | varies per theme |
+| Hallmark token                                       | Type   | Example value                                   |
+| ---------------------------------------------------- | ------ | ----------------------------------------------- |
+| `--color-paper`                                      | colour | `oklch(96% 0.018 80)`                           |
+| `--color-paper-2`                                    | colour | `oklch(94% 0.020 80)`                           |
+| `--color-paper-3`                                    | colour | `oklch(91% 0.022 80)`                           |
+| `--color-ink`                                        | colour | `oklch(15% 0.012 80)`                           |
+| `--color-ink-2`                                      | colour | `oklch(28% 0.014 80)`                           |
+| `--color-rule`                                       | colour | `oklch(86% 0.018 80)`                           |
+| `--color-rule-2`                                     | colour | `oklch(72% 0.020 80)`                           |
+| `--color-muted`                                      | colour | `oklch(50% 0.014 80)`                           |
+| `--color-neutral`                                    | colour | `oklch(38% 0.012 80)`                           |
+| `--color-accent`                                     | colour | `oklch(58% 0.16 70)`                            |
+| `--color-accent-ink`                                 | colour | (text on accent fill, ≥ APCA 7:1)               |
+| `--color-focus`                                      | colour | (often = accent at higher chroma)               |
+| `--font-display`                                     | font   | `"Fraunces", ui-serif, Georgia, serif`          |
+| `--font-body`                                        | font   | `"Geist", ui-sans-serif, system-ui, sans-serif` |
+| `--font-outlier`                                     | font   | `"Geist Mono", ui-monospace, monospace`         |
+| `--space-3xs` … `--space-5xl`                        | length | 4-pt scale: `0.25rem` … `8rem`                  |
+| `--text-xs` … `--text-display`                       | length | 1.25 (major-third) ratio scale                  |
+| `--ease-out` / `--ease-in` / `--ease-in-out`         | easing | `cubic-bezier(0.16, 1, 0.3, 1)` etc.            |
+| `--dur-micro` / `--dur-short` / `--dur-long`         | time   | `120ms` / `220ms` / `420ms`                     |
+| `--rule-hair` / `--rule-fine`                        | length | `1px` / `2px`                                   |
+| `--radius-card` / `--radius-pill` / `--radius-input` | length | varies per theme                                |
+| `--shadow-card`                                      | shadow | varies per theme                                |
 
-If the page introduces *additional* tokens, name them by role and add to `tokens.css`. Don't make up token names downstream that aren't in `tokens.css` — the source of truth is the source of truth.
+If the page introduces *additional* tokens, name them by role and add to `tokens.css`. Don't make up token names downstream that aren't in `tokens.css` - the source of truth is the source of truth.
 
 ---
 
-## Format 1 — `tokens.css`
+## Format 1 - `tokens.css`
 
 The source. Plain CSS custom properties at `:root`. Every Hallmark page CSS imports this file at the top:
 
 ```css
 @import "tokens.css";
-/* page CSS continues — uses var(--color-paper), never raw values */
+/* page CSS continues - uses var(--color-paper), never raw values */
 ```
 
 Or, if the project uses a CSS bundler / framework that doesn't honour bare `@import`, the project's existing entry-point imports `tokens.css` before the page CSS that consumes it (keep it among the other top-of-file `@import`s, never above or in place of `@import "tailwindcss"`). The page CSS still references tokens by name, never by raw value.
 
-**Worked example — editorial theme (Specimen-like):**
+**Worked example - editorial theme (Specimen-like):**
 
 ```css
 :root {
@@ -116,7 +116,7 @@ Or, if the project uses a CSS bundler / framework that doesn't honour bare `@imp
 }
 ```
 
-**Worked example — modern-minimal theme (austere, pure-white):**
+**Worked example - modern-minimal theme (austere, pure-white):**
 
 ```css
 :root {
@@ -149,9 +149,9 @@ Or, if the project uses a CSS bundler / framework that doesn't honour bare `@imp
 
 ---
 
-## Format 2 — Tailwind v4 `@theme`
+## Format 2 - Tailwind v4 `@theme`
 
-Tailwind v4 reads CSS variables inside `@theme` and generates utilities (`bg-paper`, `text-ink`, etc.) automatically. The translation from Hallmark tokens is direct — same variable names, same OKLCH values:
+Tailwind v4 reads CSS variables inside `@theme` and generates utilities (`bg-paper`, `text-ink`, etc.) automatically. The translation from Hallmark tokens is direct - same variable names, same OKLCH values:
 
 ```css
 @theme {
@@ -173,7 +173,7 @@ Tailwind v4 reads CSS variables inside `@theme` and generates utilities (`bg-pap
   --font-body:    "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-outlier: "Geist Mono", ui-monospace, monospace;
 
-  /* Spacing — Tailwind reads --spacing-* by default; we keep Hallmark's --space-* names alongside */
+  /* Spacing - Tailwind reads --spacing-* by default; we keep Hallmark's --space-* names alongside */
   --spacing-3xs: 0.25rem;
   --spacing-2xs: 0.5rem;
   --spacing-xs:  0.75rem;
@@ -183,7 +183,7 @@ Tailwind v4 reads CSS variables inside `@theme` and generates utilities (`bg-pap
   --spacing-xl:  3rem;
   --spacing-2xl: 4.5rem;
 
-  /* Type scale — Tailwind reads --text-* */
+  /* Type scale - Tailwind reads --text-* */
   --text-xs:      0.75rem;
   --text-sm:      0.875rem;
   --text-md:      1.125rem;
@@ -196,7 +196,7 @@ Tailwind v4 reads CSS variables inside `@theme` and generates utilities (`bg-pap
   --radius-pill:  0;
   --radius-input: 0;
 
-  /* Easings — Tailwind reads --ease-* */
+  /* Easings - Tailwind reads --ease-* */
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -207,11 +207,11 @@ Notes:
 - Tailwind v4 expects `--spacing-*` (with `ing`) for the spacing utilities. We mirror Hallmark's `--space-*` to `--spacing-*` so both names work.
 - `--text-*` works as-is (Tailwind v4 picks them up for `text-md` etc.).
 - `--font-*` becomes `font-display` / `font-body` / `font-outlier` utilities.
-- The user's `tailwind.config.{ts,js}` may need `@source` directives but no `theme.extend` — v4 reads `@theme` directly.
+- The user's `tailwind.config.{ts,js}` may need `@source` directives but no `theme.extend` - v4 reads `@theme` directly.
 
 ---
 
-## Format 3 — DTCG `tokens.json`
+## Format 3 - DTCG `tokens.json`
 
 W3C Design Tokens Community Group format. For projects using Style Dictionary, Cobalt, or Token Studio. Path-based; OKLCH stays as a string value; `$type` is required.
 
@@ -266,12 +266,12 @@ W3C Design Tokens Community Group format. For projects using Style Dictionary, C
 ```
 
 Notes:
-- DTCG accepts `oklch(...)` strings on modern tooling. If the user's pipeline doesn't, convert to hex (lossy — flag this) or to `color(oklch ...)` (CSS Color 4).
-- The `text-display` value uses a fixed `6rem` for portability — the responsive `clamp(...)` belongs in CSS, not in token JSON.
+- DTCG accepts `oklch(...)` strings on modern tooling. If the user's pipeline doesn't, convert to hex (lossy - flag this) or to `color(oklch ...)` (CSS Color 4).
+- The `text-display` value uses a fixed `6rem` for portability - the responsive `clamp(...)` belongs in CSS, not in token JSON.
 
 ---
 
-## Format 4 — shadcn/ui CSS variables
+## Format 4 - shadcn/ui CSS variables
 
 shadcn/ui's component library reads CSS custom properties with specific names, in a specific shape. The values are **space-separated** triples (no `oklch()` wrapper, no commas) so shadcn can compose them with `oklch(<value> / <alpha>)`.
 
@@ -326,4 +326,4 @@ When SKILL.md Step 6 emits exports:
 3. **On Tailwind projects** (detected at pre-flight), additionally surface the Tailwind `@theme` block in the build output so the user knows where to paste it (typically into `app/globals.css` or the equivalent).
 4. **Merge into an existing entry stylesheet; never overwrite it.** When the target project already has `app/globals.css` (or `src/index.css`, `src/styles/global.css`): keep its existing `@import "tailwindcss"` / `@tailwind base|components|utilities` directives exactly as they are, append Hallmark's `:root` tokens and base rules *after* them, and keep any `@import "tokens.css"` at the very top of the file (CSS parses `@import` only before other rules, so a misplaced one is silently dropped and your tokens vanish). If the project already defines brand tokens (`--background`, `--foreground`, a Tailwind `@theme`), map Hallmark's roles onto those names rather than adding a parallel set, or scope Hallmark's tokens under a wrapper class. Replace the file outright only when the user has asked for a full takeover.
 
-Don't blanket-emit tokens.json or shadcn variables on single-page projects — the user can copy them out of `design.md` if they upgrade to a multi-page system.
+Don't blanket-emit tokens.json or shadcn variables on single-page projects - the user can copy them out of `design.md` if they upgrade to a multi-page system.

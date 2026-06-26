@@ -19,4 +19,4 @@ A heavy, full-width nav with a 2 px solid border-bottom, all-caps wordmark and t
 .slab-nav a { text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--text-sm); font-weight: 600; }
 ```
 
-*Anti-pattern:* combining N7 with rounded corners, soft shadows, or backdrop-blur — those vocabularies fight. If you reach for blur, drop to N5; if you reach for round, drop to N1.
+*Anti-pattern:* combining N7 with rounded corners, soft shadows, or backdrop-blur - those vocabularies fight. If you reach for blur, drop to N5; if you reach for round, drop to N1.

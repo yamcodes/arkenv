@@ -1,5 +1,5 @@
 ### N3 · Side-rail
-A thin vertical strip on the left edge — wordmark rotated, plus 2–3 dot-indicators for sections. Editorial / portfolio energy.
+A thin vertical strip on the left edge - wordmark rotated, plus 2–3 dot-indicators for sections. Editorial / portfolio energy.
 *Use when:* the page is long and section-numbered.
 *Don't confuse with:* N1 Top wordmark (which is horizontal).
 

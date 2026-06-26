@@ -54,17 +54,17 @@ Analyze the user's description to determine:
 
 ### Step 2: Choose the Appropriate Diagram Type
 
-| User Intent | Diagram Type | Example Keywords |
-|-------------|--------------|------------------|
-| Process flow, steps, procedures | **Flowchart** | "workflow", "process", "steps", "procedure" |
-| Connections, dependencies, associations | **Relationship Diagram** | "relationship", "connections", "dependencies", "structure" |
-| Concept hierarchy, brainstorming | **Mind Map** | "mind map", "concepts", "ideas", "breakdown" |
-| System design, components | **Architecture Diagram** | "architecture", "system", "components", "modules" |
-| Data flow, transformation processes | **Data Flow Diagram (DFD)** | "data flow", "data processing", "data transformation" |
+| User Intent                                        | Diagram Type                 | Example Keywords                                             |
+| -------------------------------------------------- | ---------------------------- | ------------------------------------------------------------ |
+| Process flow, steps, procedures                    | **Flowchart**                | "workflow", "process", "steps", "procedure"                  |
+| Connections, dependencies, associations            | **Relationship Diagram**     | "relationship", "connections", "dependencies", "structure"   |
+| Concept hierarchy, brainstorming                   | **Mind Map**                 | "mind map", "concepts", "ideas", "breakdown"                 |
+| System design, components                          | **Architecture Diagram**     | "architecture", "system", "components", "modules"            |
+| Data flow, transformation processes                | **Data Flow Diagram (DFD)**  | "data flow", "data processing", "data transformation"        |
 | Cross-functional processes, actor responsibilities | **Business Flow (Swimlane)** | "business process", "swimlane", "actors", "responsibilities" |
-| Object-oriented design, class structures | **Class Diagram** | "class", "inheritance", "OOP", "object model" |
-| Interaction sequences, message flows | **Sequence Diagram** | "sequence", "interaction", "messages", "timeline" |
-| Database design, entity relationships | **ER Diagram** | "database", "entity", "relationship", "data model" |
+| Object-oriented design, class structures           | **Class Diagram**            | "class", "inheritance", "OOP", "object model"                |
+| Interaction sequences, message flows               | **Sequence Diagram**         | "sequence", "interaction", "messages", "timeline"            |
+| Database design, entity relationships              | **ER Diagram**               | "database", "entity", "relationship", "data model"           |
 
 ### Step 3: Extract Structured Information
 
@@ -173,12 +173,12 @@ Structure the complete Excalidraw file:
 
 ### Element Count Guidelines
 
-| Diagram Type | Recommended Count | Maximum |
-|--------------|-------------------|---------|
-| Flowchart steps | 3-10 | 15 |
-| Relationship entities | 3-8 | 12 |
-| Mind map branches | 4-6 | 8 |
-| Mind map sub-topics per branch | 2-4 | 6 |
+| Diagram Type                   | Recommended Count | Maximum |
+| ------------------------------ | ----------------- | ------- |
+| Flowchart steps                | 3-10              | 15      |
+| Relationship entities          | 3-8               | 12      |
+| Mind map branches              | 4-6               | 8       |
+| Mind map sub-topics per branch | 2-4               | 6       |
 
 ### Layout Tips
 
@@ -243,13 +243,13 @@ Would you like me to start with the high-level view?"
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Elements overlap | Increase spacing between coordinates |
-| Text doesn't fit in boxes | Increase box width or reduce font size |
-| Too many elements | Break into multiple diagrams |
-| Unclear layout | Use grid layout (rows/columns) or radial layout (mind maps) |
-| Colors inconsistent | Define color palette upfront based on element types |
+| Issue                     | Solution                                                    |
+| ------------------------- | ----------------------------------------------------------- |
+| Elements overlap          | Increase spacing between coordinates                        |
+| Text doesn't fit in boxes | Increase box width or reduce font size                      |
+| Too many elements         | Break into multiple diagrams                                |
+| Unclear layout            | Use grid layout (rows/columns) or radial layout (mind maps) |
+| Colors inconsistent       | Define color palette upfront based on element types         |
 
 ## Advanced Techniques
 
@@ -570,7 +570,7 @@ python scripts/add-arrow.py my-aws-diagram.excalidraw 565 330 650 350 --label "S
 - Complex coordinate math
 - Risk of ID conflicts
 
-### Supported Icon Libraries (Examples — verify availability)
+### Supported Icon Libraries (Examples - verify availability)
 
 - This workflow works with any valid `.excalidrawlib` file you provide.
 - Examples of library categories you may find on https://libraries.excalidraw.com/:

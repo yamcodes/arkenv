@@ -138,7 +138,7 @@ export class Executor {
 						}
 					} else {
 						this.reporter.info(
-							`No Vite config found — please add ${code("@arkenv/vite-plugin")} to your Vite config manually.`,
+							`No Vite config found - please add ${code("@arkenv/vite-plugin")} to your Vite config manually.`,
 						);
 					}
 				} else if (plan.bootstrap.framework === "bun-fullstack") {

@@ -1,5 +1,5 @@
 ### N13 · Inline ⌘K search pill
-A **visible** search pill sits inline in the bar — placeholder text plus a `⌘K` kbd hint — alongside (not replacing) the links. Click it, or press ⌘K / Ctrl K, to open a spotlight modal with grouped, keyboard-navigable results. The opposite of N4 (which *hides* nav behind the shortcut): here the affordance is on the surface for newcomers, with the shortcut for power users. Tailwind, Linear, Raycast, docs sites.
+A **visible** search pill sits inline in the bar - placeholder text plus a `⌘K` kbd hint - alongside (not replacing) the links. Click it, or press ⌘K / Ctrl K, to open a spotlight modal with grouped, keyboard-navigable results. The opposite of N4 (which *hides* nav behind the shortcut): here the affordance is on the surface for newcomers, with the shortcut for power users. Tailwind, Linear, Raycast, docs sites.
 *Use when:* the product is search-heavy or docs-heavy and search is a primary action (dev tools, music/library apps, large content sites).
 *Don't confuse with:* N4 (no visible nav, ⌘K only); a plain search icon that just focuses an input in place.
 
@@ -34,6 +34,6 @@ A **visible** search pill sits inline in the bar — placeholder text plus a `�
 ```
 *JS:* ⌘K / Ctrl K toggles, Esc closes, backdrop-click closes, ↑/↓ move the active item, Enter selects, focus the input on open and lock body scroll.
 
-**Knobs** — *Pill placement:* centred (default) · right-of-brand · *Result groups:* flat · grouped (default) · *Footer hints:* shown (default) · hidden · *Open trigger:* pill+⌘K (default) · ⌘K only (→ that's N4, not N13).
-*Anti-pattern:* don't fake the modal with a `<div>` that traps no focus and ignores Esc — if you ship the pill you ship the keyboard model. The pill must look like search (icon + placeholder), not a generic button.
+**Knobs** - *Pill placement:* centred (default) · right-of-brand · *Result groups:* flat · grouped (default) · *Footer hints:* shown (default) · hidden · *Open trigger:* pill+⌘K (default) · ⌘K only (→ that's N4, not N13).
+*Anti-pattern:* don't fake the modal with a `<div>` that traps no focus and ignores Esc - if you ship the pill you ship the keyboard model. The pill must look like search (icon + placeholder), not a generic button.
 *Mobile:* the pill collapses to a search icon; the modal goes full-height sheet.

@@ -72,7 +72,7 @@ skills/excalidraw/libraries/aws-architecture-icons/
 3. Move the generated folders to `../libraries/`
 4. The AI assistant will use `reference.md` files to locate and use icons efficiently
 
-### Library Sources (Examples — verify availability)
+### Library Sources (Examples - verify availability)
 
 - Examples found on https://libraries.excalidraw.com/ may include cloud/service icon sets.
 - Availability changes over time; verify the exact library names on the site before use.

@@ -203,7 +203,7 @@ describe("Executor", () => {
 				repository: "https://github.com/yamcodes/arkenv.git",
 				example: "basic",
 				targetName: "my-dir-name",
-				// No targetDir — "." case, scaffold into cwd
+				// No targetDir - "." case, scaffold into cwd
 			},
 		};
 		await executor.execute(dotPlan);

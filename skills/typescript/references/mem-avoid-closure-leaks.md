@@ -40,7 +40,7 @@ function createDataProcessor(largeDataset: DataRecord[]): () => void {
   const getRecord = (id: string): DataRecord | undefined =>
     largeDataset.find(r => r.id === id)
 
-  // Release the array reference — closure only captures pendingQueue and getRecord
+  // Release the array reference - closure only captures pendingQueue and getRecord
   // Caller should also release their reference to largeDataset
   return function processNext(): void {
     const nextId = pendingQueue.shift()
@@ -52,7 +52,7 @@ function createDataProcessor(largeDataset: DataRecord[]): () => void {
 }
 ```
 
-**Better pattern — accept an iterator to avoid holding the full dataset:**
+**Better pattern - accept an iterator to avoid holding the full dataset:**
 
 ```typescript
 function createDataProcessor(records: Iterable<DataRecord>): () => void {
