@@ -4,11 +4,11 @@ icon: ShieldCheck
 description: Understand exactly what @arkenv/nextjs protects, what Next.js protects, and how each layout affects your leak surface.
 ---
 
-The most important thing to understand about ArkEnv: its primary job is validating your infrastructure, not acting as a vault.
+The most important thing to understand about ArkEnv: it validates your environment variables and makes them typesafe.
 
-ArkEnv exists to fail your build if a secret is missing, guarantee type safety, and prevent silent `undefined` bugs. However, when you pass secrets through any library in Next.js, you need absolute certainty that they won't accidentally bundle into the browser.
+Without ArkEnv, `process.env.DATABASE_URL` is `string | undefined`. With ArkEnv, it's `string` — and if it's missing or malformed, your build or server startup fails immediately with a clear error instead of producing a silent `undefined` bug somewhere downstream.
 
-To keep your values safe while providing this Developer Experience, ArkEnv uses a strict codegen boundary.
+But because ArkEnv manages your secrets, you need absolute certainty about how it interacts with the Next.js bundler.
 
 Next.js natively strips non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env.X`. ArkEnv builds a secure layer on top of this:
 
@@ -17,10 +17,6 @@ Next.js natively strips non-`NEXT_PUBLIC_` values from the client bundle when yo
 
 :::tip[Mental model]
 The Next.js bundler and ArkEnv's codegen work together to hide your **values**. ArkEnv validates your **infrastructure** and prevents runtime misuse.
-:::
-
-:::note
-If you [disable code generation](/docs/nextjs/faq#can-i-disable-code-generation), you manually provide `runtimeEnv`. As long as you reference server values via `process.env.X`, Next.js still strips them from the client bundle, and the ArkEnv proxy still throws on server-key access.
 :::
 
 ## Leak surface
