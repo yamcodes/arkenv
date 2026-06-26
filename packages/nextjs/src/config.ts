@@ -386,6 +386,8 @@ export function extractKeys(content: string): {
 		}
 
 		for (const key of topKeys) {
+			// NODE_ENV is implicitly shared as Next.js automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
+			// See: https://nextjs.org/docs/app/guides/environment-variables
 			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
 				sharedKeys.push(key);
 			} else if (key.startsWith("NEXT_PUBLIC_")) {

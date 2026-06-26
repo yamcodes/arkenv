@@ -99,6 +99,8 @@ export function createEnvInternal(
 			const exposedKeys =
 				options.exposeToClient || options.expose || options.shared || [];
 			for (const key of Object.keys(flatSchema)) {
+				// NODE_ENV is implicitly shared as Next.js automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
+				// See: https://nextjs.org/docs/app/guides/environment-variables
 				if (exposedKeys.includes(key) || key === "NODE_ENV") {
 					shared[key] = flatSchema[key];
 				} else if (key.startsWith("NEXT_PUBLIC_")) {

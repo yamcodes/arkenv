@@ -20,7 +20,7 @@ export const env = arkenv({
 });
 ```
 
-- Filter client-safe keys starting with `NEXT_PUBLIC_` and exposed keys specified in `options.exposeToClient`. `NODE_ENV` is implicitly shared.
-- Exclude server-only keys from autocomplete on the client using TypeScript `Pick`.
-- Wrap the returned variables in a Proxy that throws an error at runtime when a server-only variable is accessed on the client.
+- Automatically expose `NEXT_PUBLIC_` variables and custom keys specified in `options.exposeToClient` to the client.
+- Secure server-only variables by preventing client-side access at runtime and excluding them from TypeScript autocomplete on the client.
+- Share `NODE_ENV` implicitly to match [standard Next.js build-time inlining behavior.](https://nextjs.org/docs/app/guides/environment-variables)
 - Update CLI scaffolding to generate the Flat layout by default.

@@ -178,7 +178,9 @@ If the simple layout is recommended, why use the strict layout?
 
 ## Why should I restrict the shared block to `NODE_ENV`?
 
-Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
+Next.js automatically replaces references to `process.env.NODE_ENV` with the current environment (e.g., `'production'`, `'development'`, or `'test'`) during build time. This allows it to be safely shared between server and client without causing hydration mismatches, unlike other custom variables which would be stripped. For details, see the [Next.js Environment Variables documentation](https://nextjs.org/docs/app/guides/environment-variables).
+
+For other variables, Next.js statically strips `process.env` references from client-side bundles unless they are prefixed with `NEXT_PUBLIC_`.
 
 If you define a custom variable in `shared` with a default value (e.g., `PORT` defaulting to `3000` or `THEME` defaulting to `'dark'`), the environment behaves asymmetrically:
 
