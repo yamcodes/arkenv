@@ -9,6 +9,7 @@ import {
 	resolveLayout,
 	watchSchema,
 } from "@arkenv/build";
+import { createJiti } from "jiti";
 
 export { extractClientKeys, extractSharedKeys };
 
@@ -150,6 +151,47 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 	} catch (error: unknown) {
 		const message = error instanceof Error ? error.message : String(error);
 		throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
+	}
+
+	// 4. Validate schema against environment variables
+	const isVitest = process.env.VITEST === "true";
+	const runValidation =
+		!isVitest || process.env.ARKENV_TEST_VALIDATION === "true";
+	if (runValidation) {
+		try {
+			process.env.ARKENV_FORCE_SERVER = "true";
+			const fileToEvaluate =
+				resolvedLayout === "strict" && baseDir
+					? path.join(baseDir, "server.ts")
+					: schemaPath;
+
+			const filenameForJiti =
+				typeof __filename !== "undefined"
+					? __filename
+					: (typeof import.meta !== "undefined" && import.meta.url) || "";
+			const dir = path.dirname(filenameForJiti);
+			const sharedPath = fs.existsSync(path.join(dir, "shared.ts"))
+				? path.join(dir, "shared.ts")
+				: path.join(dir, "shared.js");
+
+			const jiti = createJiti(fileToEvaluate, {
+				moduleCache: false,
+				fsCache: false,
+				alias: {
+					"server-only": sharedPath,
+					"./script": sharedPath,
+					"./script.tsx": sharedPath,
+				},
+			});
+			jiti(fileToEvaluate);
+		} catch (error: any) {
+			console.error("\n❌ [ArkEnv] Environment validation failed:");
+			console.error(error.message || error);
+			console.error("");
+			process.exit(1);
+		} finally {
+			delete process.env.ARKENV_FORCE_SERVER;
+		}
 	}
 
 	// 4. Initialize development file watcher if in dev mode

@@ -12,6 +12,7 @@
 		"@arkenv/build": "workspace:*",
 		"arkenv": "workspace:*",
 		"chokidar": "^4.0.3",
+		"jiti": "catalog:",
 		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
@@ -149,6 +150,7 @@
 				"arktype",
 				"arkenv",
 				"chokidar",
+				"jiti",
 				"node:fs",
 				"node:path"
 			]

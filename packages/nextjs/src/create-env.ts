@@ -88,14 +88,16 @@ export function createEnvInternal(
 		shared = schemaOrOptions.shared || {};
 		extendsList = schemaOrOptions.extends || [];
 		runtimeEnv = schemaOrOptions.runtimeEnv || {};
-		isServer = optionsOrIsServer;
+		isServer =
+			process.env.ARKENV_FORCE_SERVER === "true" || !!optionsOrIsServer;
 	} else {
 		// New flat schema behavior
 		const flatSchema = schemaOrOptions || {};
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
 		runtimeEnv = options.runtimeEnv || {};
-		isServer = !!context?.isServer;
+		isServer =
+			process.env.ARKENV_FORCE_SERVER === "true" || !!context?.isServer;
 
 		if (context?.isShared) {
 			shared = flatSchema;
