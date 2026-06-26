@@ -20,6 +20,9 @@ export function createEnv<
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
+/**
+ * @deprecated Use the unified flat layout signature instead: `createEnv(schema, options)`
+ */
 export function createEnv<
 	const TServer extends SchemaShape = {},
 	const TShared extends SchemaShape = {},

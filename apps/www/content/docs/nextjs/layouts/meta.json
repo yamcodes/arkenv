@@ -4,7 +4,6 @@
 	"defaultOpen": true,
 	"pages": [
 		"[Zap][Flat (Recommended)](/docs/nextjs/layouts/flat)",
-		"[FolderHeart][Simple](/docs/nextjs/layouts/simple)",
 		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict)"
 	]
 }

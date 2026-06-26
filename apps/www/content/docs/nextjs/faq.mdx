@@ -168,7 +168,7 @@ For projects using the **strict layout**, the protection goes even further: it l
 
 ## When should I use the strict layout?
 
-If the simple layout is recommended, why use the strict layout?
+If the flat layout is recommended, why use the strict layout?
 
 1. **Compile-time isolation**: Next.js's native `server-only` package throws a compiler error if server code is imported into a client bundle. With the strict layout, this boundary is enforced by the compiler before the code even runs.
 2. **Framework alignment**: Next.js already forces developers to think in terms of Client Component boundaries (`"use client"`). Having matching separate files (`env.client.ts` vs `env.server.ts`) naturally mirrors the framework's architecture.
