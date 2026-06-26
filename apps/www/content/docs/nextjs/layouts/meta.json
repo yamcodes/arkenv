@@ -5,7 +5,6 @@
 	"pages": [
 		"[Zap][Flat (Recommended)](/docs/nextjs/layouts/flat)",
 		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict)",
-		"---Legacy---",
 		"[TriangleAlert][Nested (Deprecated)](/docs/nextjs/layouts/simple)"
 	]
 }
