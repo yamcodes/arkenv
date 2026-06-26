@@ -10,8 +10,6 @@
 		"security",
 		"configuration",
 		"using-other-validators",
-		"---Migration---",
-		"migration/nested-to-flat",
 		"faq"
 	]
 }

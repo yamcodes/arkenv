@@ -4,6 +4,12 @@ icon: MessageCircleQuestionMark
 description: Frequently asked questions about @arkenv/nextjs.
 ---
 
+## How do I define client-side variables?
+
+ArkEnv uses a [Flat Layout](/docs/nextjs/layouts/flat) that maps directly to your `.env` file. Any variable prefixed with `NEXT_PUBLIC_` is automatically available to the client. There is no need to nest variables into separate objects.
+
+---
+
 ## I was able to access a client-side variable in a server context! Is that ok?
 
 **Yes.** In Next.js, environment variables prefixed with `NEXT_PUBLIC_` are public and intended to be accessible everywhere.

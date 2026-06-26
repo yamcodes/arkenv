@@ -41,6 +41,16 @@ const config = {
 				destination: "/llms.txt",
 				permanent: true,
 			},
+			{
+				source: "/docs/nextjs/layouts/simple",
+				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/migration/nested-to-flat",
+				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				permanent: true,
+			},
 		];
 	},
 	async rewrites() {
