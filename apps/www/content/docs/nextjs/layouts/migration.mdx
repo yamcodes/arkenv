@@ -3,7 +3,7 @@ title: Migrating to Flat Layout
 description: Migrate your Next.js environment configuration from the deprecated nested layout to the recommended flat layout.
 ---
 
-The legacy **Nested Layout** (which structures your schemas into separate `server`, `client`, and `shared` nested blocks) has been deprecated in `@arkenv/nextjs` in favor of the **Flat Layout**. 
+The legacy **Nested Layout** (which structures your schemas into separate `server`, `client`, and `shared` nested blocks) has been deprecated in `@arkenv/nextjs` in favor of the **Flat Layout**.
 
 This guide walks you through migrating your Next.js environment variables configuration to the recommended Flat Layout.
 
@@ -59,7 +59,7 @@ Remove the `server`, `client`, and `shared` wrapper blocks. Move all of your val
 
 ### 2. Expose custom public variables
 
-Under the Flat Layout, variables starting with `NEXT_PUBLIC_` are automatically exposed to the client bundle. 
+Under the Flat Layout, variables starting with `NEXT_PUBLIC_` are automatically exposed to the client bundle.
 
 If you have custom variables that are not prefixed with `NEXT_PUBLIC_` but need to be exposed to client-side bundles (previously defined in the `shared` block), list their keys in the `exposeToClient` options array:
 
@@ -108,4 +108,3 @@ npx @arkenv/cli@latest init --flat
 :::warning[Unsupported Flag]
 The legacy `--simple` flag is no longer supported for Next.js projects. Passing it will result in an error. All new projects should use the Flat layout.
 :::
-
