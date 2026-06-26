@@ -116,7 +116,11 @@ export function buildNextjsTemplate(
 			const runtimeEnvFields: string[] = [];
 			if (envKeys && envKeys.length > 0) {
 				for (const key of envKeys) {
-					if (key.startsWith(clientPrefix) || key === "NODE_ENV") {
+					if (
+						key.startsWith(clientPrefix) ||
+						key === "NODE_ENV" ||
+						exposedKeyNames.includes(key)
+					) {
 						runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
 					}
 				}
@@ -125,6 +129,9 @@ export function buildNextjsTemplate(
 					"\t\tNEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 					"\t\tNODE_ENV: process.env.NODE_ENV,",
 				);
+				for (const key of exposedKeyNames) {
+					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
+				}
 			}
 			optionParts.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 		}

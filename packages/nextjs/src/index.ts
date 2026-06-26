@@ -6,6 +6,25 @@ import { createEnvInternal } from "./create-env";
 import type { MergeExtends } from "./types";
 
 /**
+ * Extract keys from a schema type that are visible on the client:
+ * - Keys prefixed with `NEXT_PUBLIC_`
+ * - `NODE_ENV` (implicitly shared by Next.js)
+ * - Keys listed in `exposeToClient`
+ */
+type ClientVisibleKeys<
+	TSchema extends SchemaShape,
+	TExpose extends keyof TSchema,
+> = {
+	[K in keyof TSchema]: K extends `NEXT_PUBLIC_${string}`
+		? K
+		: K extends "NODE_ENV"
+			? K
+			: K extends TExpose
+				? K
+				: never;
+}[keyof TSchema];
+
+/**
  * Create a validated, type-safe environment configuration for Next.js applications (Client-side / SSR entry point).
  */
 export function createEnv<
@@ -28,7 +47,16 @@ export function createEnv<
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;
 	},
-): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
+): Readonly<
+	Pick<
+		distill.Out<at.infer<TSchema, $>>,
+		Extract<
+			keyof distill.Out<at.infer<TSchema, $>>,
+			ClientVisibleKeys<TSchema, TExpose>
+		>
+	> &
+		MergeExtends<TExtends>
+>;
 
 /**
  * @deprecated Use the unified flat layout signature instead: `createEnv(schema, options)`
