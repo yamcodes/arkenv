@@ -16,10 +16,10 @@ The breaking constraint: TypeScript does **not** apply the `react-server` export
 
 Two implementation paths were considered:
 
-- **Path A — Generic wrapper (chosen).** Generate a generic `createEnv` factory whose return type is inferred from the caller's schema via `distill.Out<at.infer<TSchema>>`, annotated explicitly so it exposes the full schema. The runtime `Proxy` from `@arkenv/nextjs` enforces the security boundary by throwing when a server-only variable is read on the client. This mirrors the "trust the proxy" approach used by `@t3-oss/env-nextjs`.
-- **Path B — Static compiled object.** Have the CLI statically evaluate the ArkType schema at build time and emit a hardcoded `export const env: { DATABASE_URL: string; ... }` with zero generic overhead and perfectly human-readable types.
+- **Path A - Generic wrapper (chosen).** Generate a generic `createEnv` factory whose return type is inferred from the caller's schema via `distill.Out<at.infer<TSchema>>`, annotated explicitly so it exposes the full schema. The runtime `Proxy` from `@arkenv/nextjs` enforces the security boundary by throwing when a server-only variable is read on the client. This mirrors the "trust the proxy" approach used by `@t3-oss/env-nextjs`.
+- **Path B - Static compiled object.** Have the CLI statically evaluate the ArkType schema at build time and emit a hardcoded `export const env: { DATABASE_URL: string; ... }` with zero generic overhead and perfectly human-readable types.
 
-Path B is attractive but, for the flat layout, conflicts with its own design: the concrete `env` lives in the user's `env.ts`, not in `env.gen.ts`. Delivering Path B would require the CLI to take ownership of the `env` declaration and act as a mini ArkType compiler — statically parsing arbitrary ArkType syntax (morphs, narrows, unions, defaults, `.to()`, etc.) into TypeScript literal types. That re-couples codegen to schema contents (regenerating on every edit), is high-maintenance, and silently drifts from ArkType as its grammar evolves.
+Path B is attractive but, for the flat layout, conflicts with its own design: the concrete `env` lives in the user's `env.ts`, not in `env.gen.ts`. Delivering Path B would require the CLI to take ownership of the `env` declaration and act as a mini ArkType compiler - statically parsing arbitrary ArkType syntax (morphs, narrows, unions, defaults, `.to()`, etc.) into TypeScript literal types. That re-couples codegen to schema contents (regenerating on every edit), is high-maintenance, and silently drifts from ArkType as its grammar evolves.
 
 ## Decision
 
@@ -36,5 +36,5 @@ We adopt **Path A** for the flat layout.
 - **Zero-config DX.** Server Components type server-only keys; client components type all keys (runtime Proxy guards misuse). Users never touch `tsconfig.json`.
 - **Simple, robust CLI.** Codegen stays a boilerplate emitter decoupled from schema contents; it never tracks ArkType grammar.
 - **Security is runtime-enforced in flat mode.** A developer can write `env.DATABASE_URL` in a client component and TypeScript will allow it; the Proxy throws at runtime. Teams wanting compile-time prevention should use the strict layout.
-- **Future "compiled mode" remains open.** Path B (CLI statically compiling ArkType into static types) is a deliberate future enhancement behind a separate layout/flag — not a retrofit onto the flat factory.
+- **Future "compiled mode" remains open.** Path B (CLI statically compiling ArkType into static types) is a deliberate future enhancement behind a separate layout/flag - not a retrofit onto the flat factory.
 - **Maintenance tripwire.** A concise `@remarks` note on `generateFlatFactoryCode` references this ADR so contributors and AI agents editing `config.ts` do not attempt to statically compile the schema or add internal-only types to generated code.

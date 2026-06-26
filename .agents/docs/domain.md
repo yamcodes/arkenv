@@ -5,7 +5,7 @@ How the engineering skills should consume this repo's domain documentation when 
 ## Before exploring, read these
 
 - **`docs/CONTEXT.md`** (seeded from `.github/openspec/project.md`)
-- **`docs/adr/`** — read ADRs that touch the area you're about to work in.
+- **`docs/adr/`** - read ADRs that touch the area you're about to work in.
 
 If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The producer skill (`/grill-with-docs`) creates them lazily when terms or decisions actually get resolved.
 
@@ -29,4 +29,4 @@ When your output names a domain concept (in an issue title, a refactor proposal,
 
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
-> *Contradicts ADR-0007 (event-sourced orders) — but worth reopening because…*
+> *Contradicts ADR-0007 (event-sourced orders) - but worth reopening because…*
