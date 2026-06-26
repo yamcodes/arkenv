@@ -11,6 +11,7 @@ const FLAG_CONFIG = {
 	example: { long: "--example", short: "-e", kind: "value" },
 	isStrict: { long: "--strict", short: "", kind: "boolean" },
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
+	isFlat: { long: "--flat", short: "", kind: "boolean" },
 	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
 } as const;
 
@@ -149,7 +150,7 @@ export class CLI {
 	}
 
 	get isSimple(): boolean {
-		return this.hasFlag("isSimple");
+		return this.hasFlag("isSimple") || this.hasFlag("isFlat");
 	}
 
 	get noCodegen(): boolean {
