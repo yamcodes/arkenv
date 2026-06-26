@@ -1,0 +1,115 @@
+---
+title: Configuration & API
+description: API reference and configuration options for @arkenv/nextjs.
+---
+
+ArkEnv offers multiple ways to configure and register environment validation in Next.js, depending on your project structure and preferences.
+
+## Registration methods
+
+### 1. Side-effect registration (Recommended)
+
+Importing `@arkenv/nextjs/register` runs `setupArkEnv()` as a side-effect. This is the simplest setup method, requiring zero wrapper configuration.
+
+Add this import at the very top of your `next.config.ts` or `next.config.js`:
+
+```ts title="next.config.ts"
+import "@arkenv/nextjs/register";
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+	/* config options here */
+};
+
+export default nextConfig;
+```
+
+When using the side-effect import, ArkEnv looks for your schema in default paths (such as `src/env.ts` or `env.ts`) and outputs the generated helper to `[schemaDirectory]/generated/env.gen.ts`.
+
+---
+
+### 2. Standalone setup (`setupArkEnv`)
+
+If you want to configure custom paths (like a custom schema path or output directory) without wrapping your configuration object, you can invoke `setupArkEnv` directly in your configuration file:
+
+```ts title="next.config.ts"
+import { setupArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
+
+setupArkEnv({
+	schemaPath: "src/env/my-schema.ts",
+	outputPath: "src/generated/my-env.gen.ts",
+});
+
+const nextConfig: NextConfig = {
+	/* config options here */
+};
+
+export default nextConfig;
+```
+
+---
+
+### 3. Config wrapper (`withArkEnv`)
+
+The `withArkEnv` helper wraps your Next.js configuration object. It calls `setupArkEnv` underneath and returns the config object untouched.
+
+```ts title="next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+	/* config options here */
+};
+
+export default withArkEnv(nextConfig, {
+	schemaPath: "src/env.ts",
+	outputPath: "src/generated/env.gen.ts",
+});
+```
+
+---
+
+## Configuration options
+
+The `setupArkEnv()` function and `withArkEnv()` wrapper accept the following options:
+
+| Option       | Type                   | Default                            | Description                                                                        |
+| :----------- | :--------------------- | :--------------------------------- | :--------------------------------------------------------------------------------- |
+| `schemaPath` | `string`               | `src/env.ts` or `env.ts`           | The path to your environment schema file or directory.                             |
+| `outputPath` | `string`               | `[schemaDir]/generated/env.gen.ts` | The path where the generated helper (`env.gen.ts`) will be written.                |
+| `layout`     | `'simple' \| 'strict'` | `'simple'` (Flat layout)           | Specifies the schema layout. Use `'strict'` if using the multi-file strict layout. |
+| `watch`      | `boolean`              | `true` (in dev)                    | Whether to watch the schema files and regenerate the helper in development mode.   |
+
+---
+
+## Components
+
+### `<ArkEnvScript />`
+
+Used to inject public client-side variables dynamically during server-side rendering (SSR), enabling support for runtime environment configuration changes in containerized deployments.
+
+#### Import
+
+```tsx
+import { ArkEnvScript } from "@arkenv/nextjs";
+```
+
+#### Usage
+
+Insert it inside the `<head>` of your root layout (`app/layout.tsx`):
+
+```tsx title="app/layout.tsx"
+import { ArkEnvScript } from "@arkenv/nextjs";
+
+export default function RootLayout({ children }) {
+	return (
+		<html>
+			<head>
+				<ArkEnvScript />
+			</head>
+			<body>{children}</body>
+		</html>
+	);
+}
+```
