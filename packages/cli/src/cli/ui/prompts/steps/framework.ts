@@ -93,18 +93,30 @@ export async function validatorStep(): Promise<
 }
 
 /**
- * Prompt the user to select their Next.js structure layout (Strict vs Simple).
+ * Prompt the user to select their Next.js/Nuxt structure layout (Strict vs Simple/Flat).
  *
+ * @param options Optional options specifying the active framework
  * @returns The selected layout or null if cancelled
  */
-export async function layoutStep(): Promise<"strict" | "simple" | null> {
+export async function layoutStep(options?: {
+	framework?: string;
+}): Promise<"strict" | "simple" | null> {
+	const defaultLabel =
+		options?.framework === "nextjs"
+			? "Flat (Recommended)"
+			: "Simple (Recommended)";
+	const defaultHint =
+		options?.framework === "nextjs"
+			? "A single flat env.ts file for the best DX"
+			: "A single env.ts file for the best DX";
+
 	const answer = await select({
 		message: "How would you like to structure your environment variables?",
 		options: [
 			{
 				value: "simple",
-				label: "Simple (Recommended)",
-				hint: "A single env.ts file for the best DX",
+				label: defaultLabel,
+				hint: defaultHint,
 			},
 			{
 				value: "strict",

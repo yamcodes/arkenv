@@ -20,10 +20,12 @@ npx @arkenv/cli@latest init
 
 ## Layout strategies
 
-ArkEnv supports two layout structures to match your security and developer experience preferences:
+ArkEnv supports three layout structures to match your security and developer experience preferences:
 
 <Cards>
-  <Card title="Simple layout (recommended)" href="/docs/nextjs/layouts/simple" description="Define client and server schemas in a single file (src/env.ts) to prioritize developer experience (DX)." />
+  <Card title="Flat layout (recommended)" href="/docs/nextjs/layouts/flat" description="Define client and server variables in a single flat schema file (src/env.ts) for the best developer experience (DX)." />
+
+  <Card title="Simple layout" href="/docs/nextjs/layouts/simple" description="Define client, server, and shared schemas in a nested single-file structure (src/env.ts)." />
 
   <Card title="Strict layout" href="/docs/nextjs/layouts/strict" description="Separate client and server schemas into different files to prioritize strict compile-time security." />
 </Cards>

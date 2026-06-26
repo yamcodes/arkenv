@@ -24,3 +24,4 @@ export const env = arkenv({
 - Secure server-only variables by preventing client-side access at runtime and excluding them from TypeScript autocomplete on the client.
 - Share `NODE_ENV` implicitly to match [standard Next.js build-time inlining behavior.](https://nextjs.org/docs/app/guides/environment-variables)
 - Update CLI scaffolding to generate the Flat layout by default.
+- Update documentation and playground/example apps to use and recommend the Flat layout strategy.

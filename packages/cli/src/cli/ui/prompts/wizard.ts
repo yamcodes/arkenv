@@ -234,7 +234,7 @@ async function runExistingProjectWizard(
 			} else if (defaults?.isSimple) {
 				layout = "simple";
 			} else {
-				layout = unwrapPrompt(await steps.layout());
+				layout = unwrapPrompt(await steps.layout({ framework }));
 			}
 		}
 
