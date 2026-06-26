@@ -4,7 +4,7 @@ description: Get the ultimate DX in Next.js using a single, unified schema file.
 ---
 
 :::warning[Deprecated Layout]
-⚠️ **Deprecated**: The Nested Layout is deprecated and will be removed in the next major release. Please use the new **[Flat Layout](/docs/nextjs/layouts/flat)** instead.
+⚠️ **Deprecated**: The Nested Layout is deprecated and will be removed in the next major release. Please use the new **[Flat Layout](/docs/nextjs/layouts/flat)** instead. Already using it? Jump to [Migrating to the Flat Layout](#migrating-to-the-flat-layout).
 :::
 
 In this setup, you define your client, server, and shared schemas in a single file.
@@ -246,3 +246,105 @@ export const env = arkenv({
     ```
   </Accordion>
 </Accordions>
+
+---
+
+## Migrating to the Flat Layout
+
+This section walks you through migrating from the deprecated Nested Layout (separate `server`, `client`, and `shared` nested blocks) to the recommended [Flat Layout](/docs/nextjs/layouts/flat).
+
+### Why migrate?
+
+1. **Cleaner syntax**: Omit nested wrapper blocks (`server`, `client`, `shared`) to match your actual `.env` file structure directly.
+2. **Simplified code generation**: Type validation helpers are much cleaner to generate and maintain internally, leading to a faster and more robust DX.
+3. **Flexible client exposure**: Expose any non-prefixed custom variables using `options.exposeToClient` without having to define a separate `shared` block.
+
+### Migration steps
+
+To migrate, you need to flatten the schema object structure in your `env.ts` file.
+
+#### 1. Flatten the schema
+
+Remove the `server`, `client`, and `shared` wrapper blocks. Move all of your validation schemas to the top level of the configuration object.
+
+<Tabs items={['Before (Nested)', 'After (Flat)']}>
+  <Tab value="Before (Nested)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: "string",
+    	},
+    	client: {
+    		NEXT_PUBLIC_API_URL: "string",
+    	},
+    	shared: {
+    		NODE_ENV: "string",
+    	},
+    });
+    ```
+  </Tab>
+
+  <Tab value="After (Flat)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NEXT_PUBLIC_API_URL: "string",
+    	NODE_ENV: "string",
+    });
+    ```
+  </Tab>
+</Tabs>
+
+#### 2. Expose custom public variables
+
+Under the Flat Layout, variables starting with `NEXT_PUBLIC_` are automatically exposed to the client bundle.
+
+If you have custom variables that are not prefixed with `NEXT_PUBLIC_` but need to be exposed to client-side bundles (previously defined in the `shared` block), list their keys in the `exposeToClient` options array:
+
+<Tabs items={['Before (Nested)', 'After (Flat)']}>
+  <Tab value="Before (Nested)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	server: {
+    		DATABASE_URL: "string",
+    	},
+    	shared: {
+    		CUSTOM_PUBLIC_VAR: "string",
+    		NODE_ENV: "string",
+    	},
+    });
+    ```
+  </Tab>
+
+  <Tab value="After (Flat)">
+    ```ts title="src/env.ts"
+    import arkenv from "./generated/env.gen";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	CUSTOM_PUBLIC_VAR: "string",
+    	NODE_ENV: "string",
+    }, {
+    	exposeToClient: ["CUSTOM_PUBLIC_VAR"]
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### CLI flags
+
+New Next.js projects scaffolded with the `@arkenv/cli` will automatically use the Flat layout by default. You can also use the explicit `--flat` flag:
+
+```bash
+npx @arkenv/cli@latest init --flat
+```
+
+:::warning[Unsupported Flag]
+The legacy `--simple` flag is no longer supported for Next.js projects. Passing it will result in an error. All new projects should use the Flat layout.
+:::
