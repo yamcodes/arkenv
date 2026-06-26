@@ -66,14 +66,14 @@ Powerful testing framework similar to Jest, works well with modern tooling (Vite
 
 ### Testing library
 
-Test your app the way a real user would use it — test rendered output, not implementation details. If you refactor internal state management, tests should still pass as long as the UI behavior is the same.
+Test your app the way a real user would use it - test rendered output, not implementation details. If you refactor internal state management, tests should still pass as long as the UI behavior is the same.
 
 ### Playwright
 
 Run e2e tests in automated fashion:
 
-- **Browser mode** — opens a real browser with visualization tools. Use locally during development.
-- **Headless mode** — runs without UI. Use in CI/CD on every deploy.
+- **Browser mode** - opens a real browser with visualization tools. Use locally during development.
+- **Headless mode** - runs without UI. Use in CI/CD on every deploy.
 
 ### MSW (mock service worker)
 

@@ -1,5 +1,5 @@
 ### N5 · Floating pill
-A rounded full-pill nav, *visibly detached* from the page edges, sitting ~`var(--space-md)` from the top, soft blur backdrop, soft shadow. Reads as contemporary modern-minimal — Vercel, Linear, Framer, Raycast.
+A rounded full-pill nav, *visibly detached* from the page edges, sitting ~`var(--space-md)` from the top, soft blur backdrop, soft shadow. Reads as contemporary modern-minimal - Vercel, Linear, Framer, Raycast.
 *Use when:* the page is modern-minimal / atmospheric and the hero has a distinct surface or imagery beneath the pill that the blur can sit over.
 *Don't confuse with:* N1 Wordmark + 2 links (which is full-width); N2 Floating chip (which is corner-anchored).
 
@@ -25,4 +25,4 @@ A rounded full-pill nav, *visibly detached* from the page edges, sitting ~`var(-
 }
 ```
 
-*Anti-pattern:* a "pill" that's ~95 % viewport-wide is just a full-width nav with rounded ends — defeats the point. The pill must be visibly detached and content-sized; if your link list pushes it past ~720 px, drop a link or switch to N1.
+*Anti-pattern:* a "pill" that's ~95 % viewport-wide is just a full-width nav with rounded ends - defeats the point. The pill must be visibly detached and content-sized; if your link list pushes it past ~720 px, drop a link or switch to N1.

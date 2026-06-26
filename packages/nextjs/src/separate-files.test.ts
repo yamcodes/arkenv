@@ -106,7 +106,7 @@ describe("Separate Files Next.js mode", () => {
 			// @ts-expect-error DATABASE_URL is not allowed on client
 			clientExtendingServer.DATABASE_URL;
 		}).toThrow(
-			"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
+			"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
 		);
 	});
 

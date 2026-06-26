@@ -14,6 +14,7 @@ export const valibotTemplate = (
 	framework?: string,
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
+	layout?: "strict" | "simple" | "flat",
 ) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: v.optional(v.string()),`).join("\n")
@@ -75,6 +76,7 @@ export const valibotTemplate = (
 			nextjsImportPath,
 			disableCodegen,
 			framework,
+			layout,
 		);
 	}
 

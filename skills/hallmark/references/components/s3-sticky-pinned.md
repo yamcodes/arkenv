@@ -16,4 +16,4 @@ Heading remains in viewport while content scrolls beneath. Orientation aid.
 .head-sticky { position: sticky; top: var(--banner-height, 0px); background: var(--color-paper); padding-block: var(--space-sm); border-bottom: 1px solid var(--color-ink); z-index: var(--z-sticky); }
 ```
 
-**Sticky pairing rule:** if the page emits a sticky `<header>` / `<nav>` / `.banner` (anything with `position: sticky; top: 0`), you MUST also declare `--banner-height` (a px value matching the nav's height) and `--z-sticky-nav` (≥ 1 above `--z-sticky`) in `tokens.css`. The S3 recipe above pulls both. Without those tokens the section head paints over the nav during scroll — see slop-test gate 56.
+**Sticky pairing rule:** if the page emits a sticky `<header>` / `<nav>` / `.banner` (anything with `position: sticky; top: 0`), you MUST also declare `--banner-height` (a px value matching the nav's height) and `--z-sticky-nav` (≥ 1 above `--z-sticky`) in `tokens.css`. The S3 recipe above pulls both. Without those tokens the section head paints over the nav during scroll - see slop-test gate 56.

@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 								logo={<Logo />}
 								sidebarTrigger={<DocsSidebarTrigger />}
 								links={[
-									{ text: "Documentation", url: "/docs/arkenv" },
+									{ text: "Documentation", url: "/docs" },
 									{
 										text: "Roadmap",
 										url: "https://github.com/yamcodes/arkenv/issues/683",

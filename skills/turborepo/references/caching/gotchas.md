@@ -169,7 +169,7 @@ turbo build --verbosity=2
 
 When `futureFlags.globalConfiguration` is on, `global.inputs` files appear in per-task hash inputs (not the global hash). If you're getting unexpected cache misses:
 
-1. Check `--summarize` output — global input files will show up in the **task inputs** section, not the global hash section
+1. Check `--summarize` output - global input files will show up in the **task inputs** section, not the global hash section
 2. Verify tasks aren't accidentally excluding global inputs via negation globs in `inputs`
 3. Remember that toggling the `globalConfiguration` flag itself invalidates all caches (the flag value is part of the global hash)
 

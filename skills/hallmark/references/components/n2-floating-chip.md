@@ -1,5 +1,5 @@
 ### N2 · Floating chip
-A small fixed chip in a corner — wordmark + a single action ("Try it"). Doesn't sit in document flow.
+A small fixed chip in a corner - wordmark + a single action ("Try it"). Doesn't sit in document flow.
 *Use when:* the page is fold-heavy and traditional nav would fight the content.
 *Don't confuse with:* C4 Sticky bottom bar (which is full-width).
 

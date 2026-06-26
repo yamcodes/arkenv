@@ -31,9 +31,9 @@ Four sample Step 5 preview blocks for the model to imitate, varied across macros
 >
 > - **Macrostructure** · Manifesto
 > - **Theme** · Manifesto (dark · Inter Tight 900 · single red bleed)
-> - **Enrichment** · none (typography only — voice carries the brand)
+> - **Enrichment** · none (typography only - voice carries the brand)
 > - **Sections** · Masthead · Title · Five Declarations · Bleed Band · What We Refuse · Working Rules · Practice · Reading · Colophon
-> - **Motion** · none — typography only
+> - **Motion** · none - typography only
 > - **Slop test** · 58 / 58 ✓
 > - **Diversification** · differs from Newsprint on paper band (dark vs light) + display style (display-heavy vs geometric-sans)
 
@@ -46,4 +46,4 @@ Four sample Step 5 preview blocks for the model to imitate, varied across macros
 > - **Sections** · Masthead · Letter · Three Notes · Visit · Colophon
 > - **Motion** · breathing-loop on bean (with reduced-motion fallback)
 > - **Slop test** · 58 / 58 ✓
-> - **Diversification** · custom axes: light / italic-serif / chromatic-terracotta — differs from previous catalog Newsprint on accent hue + display style
+> - **Diversification** · custom axes: light / italic-serif / chromatic-terracotta - differs from previous catalog Newsprint on accent hue + display style

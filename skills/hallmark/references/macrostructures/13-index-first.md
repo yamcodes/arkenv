@@ -15,9 +15,9 @@ Avoid for marketing pages. Index-First is for browsing audiences; selling needs 
 
 Reference: Are.na's homepage feel, archive sites, documentation indices.
 
-**Sample opening lines** (imitate the *specificity* — Index-First openings are headers for what's below, sometimes nothing more than a label):
-> *"Selected work · 2018 — 2026."* — date range, no preamble
-> *"Things Become Other Things · Lightness above weightiness."* — craigmod.com — two phrases joined by a divider
-> *"Writer + Photographer."* — craigmod.com — three words, summarises the whole site
+**Sample opening lines** (imitate the *specificity* - Index-First openings are headers for what's below, sometimes nothing more than a label):
+> *"Selected work · 2018 - 2026."* - date range, no preamble
+> *"Things Become Other Things · Lightness above weightiness."* - craigmod.com - two phrases joined by a divider
+> *"Writer + Photographer."* - craigmod.com - three words, summarises the whole site
 
 ---

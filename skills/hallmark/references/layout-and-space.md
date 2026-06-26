@@ -1,6 +1,6 @@
 # Layout and space
 
-Layout is where "AI-generated" gets caught. Equal columns, everything centred, every card identical — these are the tells.
+Layout is where "AI-generated" gets caught. Equal columns, everything centred, every card identical - these are the tells.
 
 ## Principles
 
@@ -41,19 +41,19 @@ Layout is where "AI-generated" gets caught. Equal columns, everything centred, e
 
 ## Asymmetry techniques
 
-- **Wide left margin.** Treat the left as a permanent negative space — narrow column of labels, wide column of content. **Labels must NOT be section eyebrows / numbers paired with the heading** — that's gate-54-banned. Reserve this technique for body-level micro-labels (caption, footnote, date) alongside body copy.
-- **Hanging headers.** ⚠️ **Opt-in only.** Section labels sit in the left margin; content flows to the right. Permitted only when the user explicitly asks for an editorial / hanging-header layout AND no eyebrow / number / chapter tag sits in the left margin. The eyebrow-left / heading-right pattern is banned by slop-test gate 54 — it's the most reliable templated-editorial AI tell. Default to a stacked single-column section head.
+- **Wide left margin.** Treat the left as a permanent negative space - narrow column of labels, wide column of content. **Labels must NOT be section eyebrows / numbers paired with the heading** - that's gate-54-banned. Reserve this technique for body-level micro-labels (caption, footnote, date) alongside body copy.
+- **Hanging headers.** ⚠️ **Opt-in only.** Section labels sit in the left margin; content flows to the right. Permitted only when the user explicitly asks for an editorial / hanging-header layout AND no eyebrow / number / chapter tag sits in the left margin. The eyebrow-left / heading-right pattern is banned by slop-test gate 54 - it's the most reliable templated-editorial AI tell. Default to a stacked single-column section head.
 - **Offset grids.** Odd columns wider than even. Or the other way.
 - **Grid-breaks.** One element that deliberately extends past a column boundary: a pull-quote, a photograph, a rule, a number.
 - **Generous top, tight bottom** (or vice-versa). Sections don't need to be evenly padded.
-- **Alignment coherence.** A section head's horizontal alignment should be a deliberate choice that *coheres* with the body it introduces — match it (left head over left-flush body; centred head over symmetric / centred body) or break from it on purpose (a head that escapes an asymmetric grid). What reads as an AI mistake is the *accidental* mismatch: a narrow head block auto-centred (`margin-inline: auto` plus a `max-width` / `ch` cap) left floating over full-width, left-flush content beneath it. Centred, hanging, bottom-aligned, and asymmetric heads all stay on the table — the guard is intentionality, not uniformity.
+- **Alignment coherence.** A section head's horizontal alignment should be a deliberate choice that *coheres* with the body it introduces - match it (left head over left-flush body; centred head over symmetric / centred body) or break from it on purpose (a head that escapes an asymmetric grid). What reads as an AI mistake is the *accidental* mismatch: a narrow head block auto-centred (`margin-inline: auto` plus a `max-width` / `ch` cap) left floating over full-width, left-flush content beneath it. Centred, hanging, bottom-aligned, and asymmetric heads all stay on the table - the guard is intentionality, not uniformity.
 
 ## Depth
 
-- Depth is **weight and scale**, not shadow. A heavier weight, a larger size, a warmer hue — these create hierarchy better than drop shadows.
+- Depth is **weight and scale**, not shadow. A heavier weight, a larger size, a warmer hue - these create hierarchy better than drop shadows.
 - If you use shadow, use one:
-  - **Whisper** — `0 1px 2px oklch(20% 0.01 <hue> / 0.05)` for hovering cards.
-  - **Hairline** — `0 0 0 1px oklch(30% 0.01 <hue> / 0.06)` as an alternative to a 1px border.
+  - **Whisper** - `0 1px 2px oklch(20% 0.01 <hue> / 0.05)` for hovering cards.
+  - **Hairline** - `0 0 0 1px oklch(30% 0.01 <hue> / 0.06)` as an alternative to a 1px border.
 - Never stack multiple shadows. Never use a coloured glow on a light background.
 - Z-index has **six levels, named.** Don't freestyle numbers.
 
@@ -81,7 +81,7 @@ Layout is where "AI-generated" gets caught. Equal columns, everything centred, e
 
 ## Page-edge clipping
 
-The clipped-edge enrichment archetype (E1) — and any other deliberately overflowing element (full-bleed marquee, oversized headline that exceeds the viewport on small screens, a tilted figure that pushes past a column) — needs a parent that *visually* shows the overflow without letting the document scroll horizontally.
+The clipped-edge enrichment archetype (E1) - and any other deliberately overflowing element (full-bleed marquee, oversized headline that exceeds the viewport on small screens, a tilted figure that pushes past a column) - needs a parent that *visually* shows the overflow without letting the document scroll horizontally.
 
 The default is unsafe: a `width: calc(100% + 12vw)` figure inside a section with `overflow: visible` makes the document scroll horizontally on every viewport. The page feels broken on touch devices. Slop-test gate 34 fails on this.
 

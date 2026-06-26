@@ -2,7 +2,7 @@
 
 ## Authentication
 
-Client-side authentication enhances UX and complements server-side security — both are essential.
+Client-side authentication enhances UX and complements server-side security - both are essential.
 
 ### Token storage
 
@@ -33,7 +33,7 @@ Avoid `dangerouslySetInnerHTML` unless content is sanitized. React escapes JSX b
 
 Treat user info as global state accessible throughout the application. Options:
 
-- TanStack Query (if already using it) — via [react-query-auth](https://github.com/alan2207/react-query-auth)
+- TanStack Query (if already using it) - via [react-query-auth](https://github.com/alan2207/react-query-auth)
 - React Context + hooks
 - Third-party state management (Zustand, Redux)
 

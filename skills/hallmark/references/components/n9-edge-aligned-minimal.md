@@ -1,5 +1,5 @@
 ### N9 · Edge-aligned minimal
-Wordmark hard-left, single CTA hard-right, vast empty space between, no link row at all. The *absence* is the design — Apple product pages, Carl Hauser, luxury sites.
+Wordmark hard-left, single CTA hard-right, vast empty space between, no link row at all. The *absence* is the design - Apple product pages, Carl Hauser, luxury sites.
 *Use when:* the page is luxury / quiet / Atelier / Garden and the brand earns the silence.
 *Don't confuse with:* N1 Wordmark + 2 links (which fills the middle).
 

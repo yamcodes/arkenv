@@ -5,6 +5,8 @@ export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
+let hasWarnedLegacy = false;
+
 function getSchemaKeys(schema: any): string[] {
 	if (!schema || (typeof schema !== "object" && typeof schema !== "function")) {
 		return [];
@@ -60,7 +62,11 @@ function getSchemaKeys(schema: any): string[] {
 export function createEnvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
-	context?: { isServer: boolean; isShared?: boolean },
+	context?: {
+		isServer: boolean;
+		isShared?: boolean;
+		strictLayout?: "client" | "server";
+	},
 ): unknown {
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};
@@ -70,6 +76,12 @@ export function createEnvInternal(
 	let isServer = false;
 
 	if (typeof optionsOrIsServer === "boolean") {
+		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
+			hasWarnedLegacy = true;
+			console.warn(
+				"⚠️ [arkenv] Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in createEnv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/nextjs/faq#how-do-i-define-client-side-variables",
+			);
+		}
 		// Old nested schema behavior (backward compatible)
 		server = schemaOrOptions.server || {};
 		client = schemaOrOptions.client || {};
@@ -87,10 +99,24 @@ export function createEnvInternal(
 
 		if (context?.isShared) {
 			shared = flatSchema;
-		} else if (isServer) {
+		} else if (context?.strictLayout === "client") {
+			client = flatSchema;
+		} else if (context?.strictLayout === "server") {
 			server = flatSchema;
 		} else {
-			client = flatSchema;
+			const exposedKeys =
+				options.exposeToClient || options.expose || options.shared || [];
+			for (const key of Object.keys(flatSchema)) {
+				// NODE_ENV is implicitly shared as Next.js automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
+				// See: https://nextjs.org/docs/app/guides/environment-variables
+				if (exposedKeys.includes(key) || key === "NODE_ENV") {
+					shared[key] = flatSchema[key];
+				} else if (key.startsWith("NEXT_PUBLIC_")) {
+					client[key] = flatSchema[key];
+				} else {
+					server[key] = flatSchema[key];
+				}
+			}
 		}
 	}
 
@@ -220,9 +246,19 @@ export function createEnvInternal(
 		}
 	}
 
+	const globalEnv =
+		typeof globalThis !== "undefined"
+			? (globalThis as any).__arkenv_env__
+			: undefined;
+
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
 			combinedEnv[key] = runtimeEnv[key];
+		}
+		if (globalEnv && globalEnv[key] !== undefined) {
+			if (key.startsWith("NEXT_PUBLIC_") || key in client || key in shared) {
+				combinedEnv[key] = globalEnv[key];
+			}
 		}
 	}
 
@@ -266,7 +302,7 @@ export function createEnvInternal(
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
 					throw new Error(
-						`Accessing server-side environment variable '${prop}' on the client is not allowed.`,
+						`ArkEnv Error: Attempted to access server environment variable '${prop}' on the client.`,
 					);
 				}
 

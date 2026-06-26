@@ -14,6 +14,7 @@ export const arktypeTemplate = (
 	framework?: string,
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
+	layout?: "strict" | "simple" | "flat",
 ) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: "string?",`).join("\n")
@@ -72,6 +73,7 @@ export const arktypeTemplate = (
 			nextjsImportPath,
 			disableCodegen,
 			framework,
+			layout,
 		);
 	}
 

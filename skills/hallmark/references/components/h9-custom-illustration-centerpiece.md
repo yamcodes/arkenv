@@ -1,6 +1,6 @@
 ### H9 · Custom Illustration Centerpiece
-A single hand-built SVG (Tier B in the enrichment hierarchy — or pure CSS at Tier A for simpler shapes) sitting on the hero as one illustrative element. The bakery loaf, the studio's mascot, the workflow diagram.
-*Use when:* the brand has a *thing* that benefits from being drawn — a craft, a character, a process.
+A single hand-built SVG (Tier B in the enrichment hierarchy - or pure CSS at Tier A for simpler shapes) sitting on the hero as one illustrative element. The bakery loaf, the studio's mascot, the workflow diagram.
+*Use when:* the brand has a *thing* that benefits from being drawn - a craft, a character, a process.
 *Don't confuse with:* H6 Photographic (real photography) or H8 Mockup (a product screenshot, not artwork).
 
 The illustration itself is *built*, not picked from Storyset / Humaaans / unDraw / Lottie. See [`custom-craft.md`](../custom-craft.md) for full recipes (CSS art, hand-built SVG, declarative animation). The cookbook entry below is the page-level structural sketch.

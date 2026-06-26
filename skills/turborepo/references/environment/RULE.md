@@ -85,7 +85,7 @@ When the `globalConfiguration` future flag is enabled, global environment keys m
 | `globalEnv`            | `env`            |
 | `globalPassThroughEnv` | `passThroughEnv` |
 
-`global.env` and `global.passThroughEnv` behave identically to their top-level counterparts — they affect the global hash and all tasks, respectively. The rename is purely organizational.
+`global.env` and `global.passThroughEnv` behave identically to their top-level counterparts - they affect the global hash and all tasks, respectively. The rename is purely organizational.
 
 ```json
 {

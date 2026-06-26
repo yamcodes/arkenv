@@ -198,7 +198,7 @@ aside .theme-toggle {
 	transition: color 150ms;
 }
 
-/* Remove rectangular hover background — use text color transition instead */
+/* Remove rectangular hover background - use text color transition instead */
 #nd-sidebar a.wrap-anywhere:hover,
 #nd-sidebar button.wrap-anywhere:hover {
 	background-color: transparent;
@@ -215,7 +215,7 @@ aside .theme-toggle {
 	@apply font-medium;
 }
 
-/* Remove fumadocs' xl:pt-14 on the docs article — our header spacer handles the top offset */
+/* Remove fumadocs' xl:pt-14 on the docs article - our header spacer handles the top offset */
 @media (min-width: 80rem) {
 	#nd-page {
 		padding-top: 1.5rem;
@@ -244,7 +244,7 @@ div:has(+ #nd-sidebar-mobile) {
 }
 
 /* Radix popper portals (workspace switcher dropdown, etc.) render at the body
-   level — they must be above the sidebar drawer to stay visible */
+   level - they must be above the sidebar drawer to stay visible */
 [data-radix-popper-content-wrapper] {
 	z-index: 70 !important;
 }

@@ -114,7 +114,7 @@ In some cases it may be more practical to keep shared API calls in a dedicated t
 
 ## Key principles
 
-- Keep API functions pure — they return promises with no framework dependencies.
+- Keep API functions pure - they return promises with no framework dependencies.
 - Type all responses and infer types down the application for type safety.
 - Handle errors centrally in the API client via interceptors.
 - Colocate API declarations with the features that use them.

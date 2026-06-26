@@ -7,7 +7,7 @@ tags: safety, noUncheckedIndexedAccess, strict, arrays, undefined
 
 ## Enable noUncheckedIndexedAccess
 
-With `noUncheckedIndexedAccess` enabled, TypeScript adds `undefined` to the type of array elements and index signature properties. This catches one of the most common sources of runtime errors — accessing elements that may not exist.
+With `noUncheckedIndexedAccess` enabled, TypeScript adds `undefined` to the type of array elements and index signature properties. This catches one of the most common sources of runtime errors - accessing elements that may not exist.
 
 **Incorrect (without noUncheckedIndexedAccess):**
 
@@ -21,11 +21,11 @@ With `noUncheckedIndexedAccess` enabled, TypeScript adds `undefined` to the type
 
 ```typescript
 const users = ['Alice', 'Bob', 'Charlie']
-const first = users[0]  // Type: string (lies — could be undefined)
+const first = users[0]  // Type: string (lies - could be undefined)
 console.log(first.toUpperCase())  // No error, but crashes if array is empty
 
 const scores: Record<string, number> = { math: 95 }
-const science = scores['science']  // Type: number (lies — key doesn't exist)
+const science = scores['science']  // Type: number (lies - key doesn't exist)
 console.log(science.toFixed(2))  // No error, but crashes at runtime
 ```
 
@@ -60,7 +60,7 @@ if (science !== undefined) {
 **Common patterns with noUncheckedIndexedAccess:**
 
 ```typescript
-// Array destructuring — first element is T | undefined
+// Array destructuring - first element is T | undefined
 const [head, ...rest] = items
 if (head) {
   processItem(head)
@@ -71,7 +71,7 @@ function getRequired(items: string[], index: number): string {
   if (index < 0 || index >= items.length) {
     throw new RangeError(`Index ${index} out of bounds`)
   }
-  return items[index]!  // Safe — bounds checked above
+  return items[index]!  // Safe - bounds checked above
 }
 
 // Array.at() returns T | undefined regardless of this flag

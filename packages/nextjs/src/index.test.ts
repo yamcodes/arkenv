@@ -18,9 +18,9 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 
 	it("should enforce NEXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
 		expect(() => {
+			// @ts-expect-error - Client keys must be prefixed with NEXT_PUBLIC_
 			serverCreateEnv({
 				client: {
-					// @ts-expect-error - Client keys must be prefixed with NEXT_PUBLIC_
 					API_URL: "string",
 				},
 				runtimeEnv: {
@@ -141,7 +141,7 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 		expect(() => {
 			env.DATABASE_URL;
 		}).toThrow(
-			"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
+			"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
 		);
 	});
 
@@ -155,10 +155,87 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 			},
 			runtimeEnv: {
 				NEXT_PUBLIC_API_URL: undefined,
-			} as any,
+			},
 		});
 
 		// Client variables defaults still resolve
 		expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+	});
+
+	describe("Flat Mode", () => {
+		it("should validate and allow access to client and exposed variables, but throw for server-only variables on client", () => {
+			const env = clientCreateEnv(
+				{
+					DATABASE_URL: "string",
+					NEXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
+				},
+				{
+					exposeToClient: ["CUSTOM_VAR"],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						CUSTOM_VAR: "custom_val",
+					},
+				},
+			);
+
+			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+			expect(env.NODE_ENV).toBe("test");
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
+
+			expect(() => {
+				(env as any).DATABASE_URL;
+			}).toThrow(
+				"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
+			);
+		});
+
+		it("should allow accessing all variables on the server in Flat Mode", () => {
+			const env = serverCreateEnv(
+				{
+					DATABASE_URL: "string",
+					NEXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
+				},
+				{
+					exposeToClient: ["CUSTOM_VAR"],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						DATABASE_URL: "postgres://localhost:5432/db",
+						CUSTOM_VAR: "custom_val",
+					},
+				},
+			);
+
+			expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
+			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+			expect(env.NODE_ENV).toBe("test");
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
+		});
+
+		it("should support deprecated expose and shared options as fallbacks in Flat Mode", () => {
+			const env = clientCreateEnv(
+				{
+					DATABASE_URL: "string",
+					NEXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
+				},
+				{
+					expose: ["CUSTOM_VAR"],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						CUSTOM_VAR: "custom_val",
+					},
+				},
+			);
+
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
+		});
 	});
 });

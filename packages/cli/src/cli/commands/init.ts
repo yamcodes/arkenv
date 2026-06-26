@@ -25,6 +25,7 @@ export type InitInput = {
 	isAgent: boolean;
 	isStrict?: boolean;
 	isSimple?: boolean;
+	isFlat?: boolean;
 	example?: string;
 	name?: string;
 	noCodegen?: boolean;
@@ -214,6 +215,12 @@ export class InitUseCase {
 			targetDir,
 			tsConfig.parsed,
 		);
+		if (input.isSimple && detectedFramework === "nextjs") {
+			this.logger.error(
+				"❌ Error: The --simple layout is deprecated and no longer supported by the CLI. Arkenv now exclusively uses the Flat Layout. Run npx arkenv init without this flag.",
+			);
+			return null;
+		}
 		const detectedBunFeatures =
 			detectedFramework === "bun-fullstack"
 				? await this.scanner.detectBunFeatures(targetDir, tsConfig.parsed)
@@ -285,6 +292,7 @@ export class InitUseCase {
 				hasEnvSchemaFile,
 				isStrict: input.isStrict,
 				isSimple: input.isSimple,
+				isFlat: input.isFlat,
 				disableCodegen: input.noCodegen,
 			}),
 			isYes,
