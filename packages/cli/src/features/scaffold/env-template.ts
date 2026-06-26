@@ -13,15 +13,15 @@ export function getEnvTemplate(
 	options: ProjectOptions,
 	nextjsImportPath?: string,
 ): string {
-	const { validator, envKeys, framework, disableCodegen } = options;
+	const { validator, envKeys, framework, disableCodegen, layout } = options;
 
 	switch (validator) {
 		case "arktype":
-			return `${arktypeTemplate(envKeys, framework, nextjsImportPath, disableCodegen)}\n`;
+			return `${arktypeTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout)}\n`;
 		case "zod":
-			return `${zodTemplate(envKeys, framework, nextjsImportPath, disableCodegen)}\n`;
+			return `${zodTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout)}\n`;
 		case "valibot":
-			return `${valibotTemplate(envKeys, framework, nextjsImportPath, disableCodegen)}\n`;
+			return `${valibotTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout)}\n`;
 		default:
 			throw new Error(`Unsupported validator: ${validator}`);
 	}

@@ -180,6 +180,7 @@ export class CLI {
 			isAgent: this.isAgent,
 			isStrict: this.isStrict,
 			isSimple: this.isSimple,
+			isFlat: this.isFlat,
 		};
 		if (this.example !== undefined) {
 			input.example = this.example;

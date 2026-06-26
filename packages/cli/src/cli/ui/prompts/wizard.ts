@@ -24,6 +24,7 @@ type ExistingProjectDefaults = Partial<
 	hasEnvSchemaFile?: boolean;
 	isStrict?: boolean;
 	isSimple?: boolean;
+	isFlat?: boolean;
 };
 
 /**
@@ -169,13 +170,17 @@ async function runExistingProjectWizard(
 
 	if (isYes) {
 		const framework = defaults?.framework || "vanilla";
-		let layout: "strict" | "simple" | undefined;
+		let layout: "strict" | "simple" | "flat" | undefined;
 		if (framework === "nextjs" || framework === "nuxt") {
-			layout = defaults?.isStrict
-				? "strict"
-				: defaults?.isSimple
-					? "simple"
-					: "simple";
+			if (defaults?.isStrict) {
+				layout = "strict";
+			} else if (defaults?.isSimple) {
+				layout = "simple";
+			} else if (defaults?.isFlat) {
+				layout = "flat";
+			} else {
+				layout = framework === "nextjs" ? "flat" : "simple";
+			}
 		}
 		const hasTypeFile = await getHasTypeFile(
 			defaults,
@@ -227,12 +232,14 @@ async function runExistingProjectWizard(
 		);
 
 		// Next.js & Nuxt layout prompt
-		let layout: "strict" | "simple" | undefined;
+		let layout: "strict" | "simple" | "flat" | undefined;
 		if (framework === "nextjs" || framework === "nuxt") {
 			if (defaults?.isStrict) {
 				layout = "strict";
 			} else if (defaults?.isSimple) {
 				layout = "simple";
+			} else if (defaults?.isFlat) {
+				layout = "flat";
 			} else {
 				layout = unwrapPrompt(await steps.layout({ framework }));
 			}

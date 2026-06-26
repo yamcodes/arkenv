@@ -203,7 +203,8 @@ describe("CLI parser", () => {
 		it("should parse --flat flag", () => {
 			const cli = new CLI(["node", "arkenv", "init", "--flat"]);
 			expect(cli.isStrict).toBe(false);
-			expect(cli.isSimple).toBe(true);
+			expect(cli.isSimple).toBe(false);
+			expect(cli.isFlat).toBe(true);
 			expect(cli.validationError).toBeUndefined();
 		});
 	});

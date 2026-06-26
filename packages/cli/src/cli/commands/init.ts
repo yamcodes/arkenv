@@ -25,6 +25,7 @@ export type InitInput = {
 	isAgent: boolean;
 	isStrict?: boolean;
 	isSimple?: boolean;
+	isFlat?: boolean;
 	example?: string;
 	name?: string;
 	noCodegen?: boolean;
@@ -49,6 +50,11 @@ export class InitUseCase {
 	 * Collects init options, creates a scaffolding plan, and executes it.
 	 */
 	async execute(input: InitInput): Promise<boolean> {
+		if (input.isSimple) {
+			this.logger.log(
+				"⚠️  Warning: The --simple flag is deprecated and will be removed in a future version. Please use the recommended --flat flag for the Flat Layout structure.",
+			);
+		}
 		const state = await this.collect(input);
 		if (!state) return false;
 
@@ -285,6 +291,7 @@ export class InitUseCase {
 				hasEnvSchemaFile,
 				isStrict: input.isStrict,
 				isSimple: input.isSimple,
+				isFlat: input.isFlat,
 				disableCodegen: input.noCodegen,
 			}),
 			isYes,

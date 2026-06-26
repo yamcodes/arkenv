@@ -54,6 +54,41 @@ describe("env-template", () => {
 			expect(template).not.toContain("runtimeEnv:");
 		});
 
+		it("returns nextjs flat layout template when layout is flat", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "nextjs" as any,
+				layout: "flat" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain("DATABASE_URL:");
+			expect(template).not.toContain("server:");
+			expect(template).not.toContain("client:");
+			expect(template).not.toContain("shared:");
+		});
+
+		it("returns nextjs nested layout template when layout is simple", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "nextjs" as any,
+				layout: "simple" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain("server:");
+			expect(template).toContain("client:");
+			expect(template).toContain("shared:");
+		});
+
 		it("returns nextjs template with custom nextjsImportPath", () => {
 			const options = {
 				validator: "arktype" as any,

@@ -54,6 +54,7 @@ export function buildNextjsTemplate(
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
 	framework?: string,
+	layout?: "strict" | "simple" | "flat",
 ): string {
 	const {
 		extraImports,
@@ -89,7 +90,7 @@ export function buildNextjsTemplate(
 		sharedFields.push(...defaultSharedFields);
 	}
 
-	if (framework === "nextjs") {
+	if (framework === "nextjs" && layout !== "simple") {
 		const allFields = [...serverFields, ...clientFields, ...sharedFields];
 		const flatFields = allFields.map((field) => field.replace(/^\t\t/, "\t"));
 

@@ -100,32 +100,39 @@ export async function validatorStep(): Promise<
  */
 export async function layoutStep(options?: {
 	framework?: string;
-}): Promise<"strict" | "simple" | null> {
-	const defaultLabel =
+}): Promise<"strict" | "simple" | "flat" | null> {
+	const layoutOptions =
 		options?.framework === "nextjs"
-			? "Flat (Recommended)"
-			: "Simple (Recommended)";
-	const defaultHint =
-		options?.framework === "nextjs"
-			? "A single flat env.ts file for the best DX"
-			: "A single env.ts file for the best DX";
+			? [
+					{
+						value: "flat",
+						label: "Flat (Recommended)",
+						hint: "A single flat env.ts file for the best DX",
+					},
+					{
+						value: "strict",
+						label: "Strict",
+						hint: "Separate shared, client, and server files for hard bundle boundaries.",
+					},
+				]
+			: [
+					{
+						value: "simple",
+						label: "Simple (Recommended)",
+						hint: "A single env.ts file for the best DX",
+					},
+					{
+						value: "strict",
+						label: "Strict",
+						hint: "Separate shared, client, and server files for hard bundle boundaries.",
+					},
+				];
 
 	const answer = await select({
 		message: "How would you like to structure your environment variables?",
-		options: [
-			{
-				value: "simple",
-				label: defaultLabel,
-				hint: defaultHint,
-			},
-			{
-				value: "strict",
-				label: "Strict",
-				hint: "Separate shared, client, and server files for hard bundle boundaries.",
-			},
-		],
+		options: layoutOptions,
 	});
-	return isCancel(answer) ? null : (answer as "strict" | "simple");
+	return isCancel(answer) ? null : (answer as "strict" | "simple" | "flat");
 }
 
 /**

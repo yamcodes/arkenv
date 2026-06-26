@@ -48,11 +48,11 @@ describe("runPromptWizard", () => {
 		expect(result?.bunFeatures).toEqual(["serve"]);
 	});
 
-	it("should default layout to simple for nextjs in isYes mode", async () => {
+	it("should default layout to flat for nextjs in isYes mode", async () => {
 		const result = await runPromptWizard({ framework: "nextjs" }, true);
 
 		expect(result?.framework).toBe("nextjs");
-		expect(result?.layout).toBe("simple");
+		expect(result?.layout).toBe("flat");
 	});
 
 	it("should default wrapNextjsConfig to true for nextjs in isYes mode", async () => {
