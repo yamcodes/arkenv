@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
 	extractBlock,
 	extractClientKeys,
@@ -90,6 +91,52 @@ export type ArkEnvConfigOptions = {
 		| "simple";
 };
 
+function findProjectRoot(startDir: string): string {
+	let dir = startDir;
+	while (dir !== path.dirname(dir)) {
+		if (
+			fs.existsSync(path.join(dir, "package.json")) ||
+			fs.existsSync(path.join(dir, "tsconfig.json"))
+		) {
+			return dir;
+		}
+		dir = path.dirname(dir);
+	}
+	return startDir;
+}
+
+function resolveTsconfigPaths(projectRoot: string): Record<string, string> {
+	const aliases: Record<string, string> = {};
+	try {
+		const tsconfigPath = path.join(projectRoot, "tsconfig.json");
+		if (fs.existsSync(tsconfigPath)) {
+			const content = fs.readFileSync(tsconfigPath, "utf-8");
+			const pathsMatch = content.match(/"paths"\s*:\s*\{([^}]*)\}/);
+			if (pathsMatch) {
+				let pathsContent = pathsMatch[1]
+					.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1")
+					.trim();
+				// Strip trailing comma if present before closing brace
+				pathsContent = pathsContent.replace(/,(\s*)$/, "$1");
+				const json = JSON.parse(`{${pathsContent}}`);
+				for (const [key, value] of Object.entries(json)) {
+					if (Array.isArray(value) && value.length > 0) {
+						const aliasKey = key.endsWith("/*") ? key.slice(0, -1) : key;
+						const targetVal = value[0];
+						const targetPath = targetVal.endsWith("/*")
+							? targetVal.slice(0, -1)
+							: targetVal;
+						aliases[aliasKey] = path.resolve(projectRoot, targetPath);
+					}
+				}
+			}
+		}
+	} catch (_e) {
+		// Ignore parsing errors and fallback
+	}
+	return aliases;
+}
+
 /**
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
@@ -168,11 +215,16 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 			const filenameForJiti =
 				typeof __filename !== "undefined"
 					? __filename
-					: (typeof import.meta !== "undefined" && import.meta.url) || "";
+					: typeof import.meta !== "undefined" && import.meta.url
+						? fileURLToPath(import.meta.url)
+						: "";
 			const dir = path.dirname(filenameForJiti);
 			const sharedPath = fs.existsSync(path.join(dir, "shared.ts"))
 				? path.join(dir, "shared.ts")
 				: path.join(dir, "shared.js");
+
+			const projectRoot = findProjectRoot(path.dirname(fileToEvaluate));
+			const tsconfigAliases = resolveTsconfigPaths(projectRoot);
 
 			const jiti = createJiti(fileToEvaluate, {
 				moduleCache: false,
@@ -181,12 +233,13 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 					"server-only": sharedPath,
 					"./script": sharedPath,
 					"./script.tsx": sharedPath,
+					...tsconfigAliases,
 				},
 			});
 			jiti(fileToEvaluate);
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error("\n❌ [ArkEnv] Environment validation failed:");
-			console.error(error.message || error);
+			console.error(error instanceof Error ? error.message : String(error));
 			console.error("");
 			process.exit(1);
 		} finally {
