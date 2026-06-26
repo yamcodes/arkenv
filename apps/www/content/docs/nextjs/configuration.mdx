@@ -79,6 +79,22 @@ The `withArkEnv()` wrapper accepts the following options:
 
 ---
 
+## Disabling codegen
+
+By default, ArkEnv generates an `env.gen.ts` helper so you don't have to write a manual `runtimeEnv` mapping. If you prefer to opt out of codegen entirely, you can. This is useful if you want full control over the `runtimeEnv` object or are working in an environment where file generation is undesirable.
+
+Pass the `--no-codegen` flag when bootstrapping with the CLI:
+
+```bash
+npx @arkenv/cli@latest init --no-codegen
+```
+
+Or set it up manually by skipping `withArkEnv` in `next.config.ts` and importing `createEnv` directly from `@arkenv/nextjs` in your schema file. You then become responsible for keeping `runtimeEnv` in sync with your schema.
+
+See the [FAQ](/docs/nextjs/faq#can-i-disable-code-generation) for the full manual setup pattern.
+
+---
+
 ## Components
 
 ### `<ArkEnvScript />`
