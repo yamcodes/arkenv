@@ -65,11 +65,6 @@
 			"types": "./dist/config.d.ts",
 			"import": "./dist/config.js",
 			"require": "./dist/config.cjs"
-		},
-		"./register": {
-			"types": "./dist/register.d.ts",
-			"import": "./dist/register.js",
-			"require": "./dist/register.cjs"
 		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnextjs",

@@ -8,7 +8,6 @@ export default defineConfig({
 		"src/server.ts",
 		"src/client.ts",
 		"src/shared.ts",
-		"src/register.ts",
 	],
 	format: ["esm", "cjs"],
 	minify: true,

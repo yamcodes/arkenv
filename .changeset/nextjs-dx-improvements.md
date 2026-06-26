@@ -2,23 +2,23 @@
 "@arkenv/nextjs": patch
 ---
 
-#### Add non-wrapping setup API and dynamic client environment variables support
+#### Add standalone setup API and dynamic client environment variables support
 
 Improve the Next.js developer experience with the following enhancements:
 
-- Expose `setupArkEnv` from `@arkenv/nextjs/config` and a side-effect import `@arkenv/nextjs/register` to register ArkEnv in `next.config.js` without wrapping the configuration object.
+- Expose `setupArkEnv` from `@arkenv/nextjs/config` as a non-wrapping alternative to `withArkEnv`. Use it directly when you are already juggling multiple config wrappers and want to avoid another `withX(...)` layer.
 - Support runtime-injectable client-side variables via a new `<ArkEnvScript />` component, enabling containerized deployments to configure public client-side variables dynamically without rebuilds.
 - Fix typesafety for the flat layout so that `env` returns a strongly-typed schema (rather than resolving to `any`) and server-side variables can be accessed in server components without TypeScript compile errors.
 
 Usage:
 
 ```ts
-// next.config.js
-import "@arkenv/nextjs/register";
+// next.config.ts
+import { withArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
 
-export default {
-  // your normal next config
-};
+const nextConfig: NextConfig = {};
+export default withArkEnv(nextConfig);
 ```
 
 ```tsx
