@@ -3,6 +3,6 @@
 "@arkenv/cli": patch
 ---
 
-#### Add `codegen: false` support and `globalThis` build-time validation flag
+#### Add `codegen: false` support to `@arkenv/nextjs/config`
 
-Introduce the `codegen?: boolean` config option. When `codegen` is `false`, code generation is skipped during Next.js build-time bootstrapping, but environment variable validation is still executed. Refactored build-time validation to use a transient `globalThis` flag instead of process environment mutation, preventing runtime SSR pollution.
+Introduce the `codegen?: boolean` config option. When `codegen` is `false`, code generation is skipped during Next.js build-time bootstrapping, but environment variable validation is still executed. The CLI's `--no-codegen` flag now skips generating `env.gen.ts` during scaffolding while still wrapping `next.config.ts` with `withArkEnv(nextConfig, { codegen: false })`.

@@ -153,15 +153,18 @@ export class Executor {
 						this.reporter.error(result.error || "Bun bootstrap failed");
 					}
 				} else if (plan.bootstrap.framework === "nextjs") {
-					this.reporter.step("Generating Next.js environment bindings...");
-					const script = `import('@arkenv/nextjs/config').then(({ runCodegen }) => { const path = require('path'); const schemaPath = path.resolve(process.cwd(), '${plan.metadata.displayPath}'); const outputPath = path.join(path.dirname(schemaPath), 'generated', 'env.gen.ts'); runCodegen(schemaPath, outputPath); }).catch(err => { console.error(err); process.exit(1); });`;
-					try {
-						await this.workspace.execute("node", ["-e", script], plan.cwd);
-						this.reporter.info(`Generated ${code("env.gen.ts")} for Next.js`);
-					} catch (error) {
-						this.reporter.warn(
-							`Failed to automatically generate ${code("env.gen.ts")}. It will be generated when you start your dev server.`,
-						);
+					// Only generate env.gen.ts when codegen is enabled
+					if (!plan.bootstrap.disableCodegen) {
+						this.reporter.step("Generating Next.js environment bindings...");
+						const script = `import('@arkenv/nextjs/config').then(({ runCodegen }) => { const path = require('path'); const schemaPath = path.resolve(process.cwd(), '${plan.metadata.displayPath}'); const outputPath = path.join(path.dirname(schemaPath), 'generated', 'env.gen.ts'); runCodegen(schemaPath, outputPath); }).catch(err => { console.error(err); process.exit(1); });`;
+						try {
+							await this.workspace.execute("node", ["-e", script], plan.cwd);
+							this.reporter.info(`Generated ${code("env.gen.ts")} for Next.js`);
+						} catch (error) {
+							this.reporter.warn(
+								`Failed to automatically generate ${code("env.gen.ts")}. It will be generated when you start your dev server.`,
+							);
+						}
 					}
 
 					// Bootstrap Next.js config wrapper

@@ -223,7 +223,7 @@ export const env = arkenv(
     :::
 
     :::note
-    If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env/client.ts` instead.
+    If you scaffolded your project using the `--no-codegen` CLI option, your `next.config.ts` will already be wrapped with `withArkEnv(nextConfig, { codegen: false })`. This skips `env/generated/env.gen.ts` generation while keeping build-time validation active, and you become responsible for manually destructuring `runtimeEnv` in `env/client.ts`.
     :::
 
     :::tip

@@ -176,7 +176,7 @@ export function setupArkEnv(
 	}
 
 	// 4. Validate schema against environment variables
-	const runValidation = options?.validate ?? process.env.VITEST !== "true";
+	const runValidation = options?.validate ?? true;
 	if (runValidation) {
 		try {
 			process.env.ARKENV_FORCE_SERVER = "true";
