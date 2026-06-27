@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { arkenv as clientArkenv, createEnv as clientCreateEnv } from "./index";
-import { arkenv as serverArkenv, createEnv as serverCreateEnv } from "./react-server";
+import {
+	arkenv as serverArkenv,
+	createEnv as serverCreateEnv,
+} from "./react-server";
 
 describe("arkenv (RSC / Server Entrypoint)", () => {
 	it("should parse a basic environment variable", () => {

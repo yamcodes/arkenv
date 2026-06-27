@@ -308,7 +308,11 @@ export function runCodegen(
 		const clientKeys = extractClientKeys(clientContent);
 		const sharedKeys = extractSharedKeys(sharedContent);
 
-		generatedCode = generateClientFactoryCode(clientKeys, sharedKeys, isStandard);
+		generatedCode = generateClientFactoryCode(
+			clientKeys,
+			sharedKeys,
+			isStandard,
+		);
 	} else {
 		const fileContent = fs.readFileSync(schemaPath, "utf-8");
 		const isStandard =
@@ -629,7 +633,9 @@ function generateFlatFactoryCode(
 	const returnType = isStandard
 		? "Readonly<TSchema>"
 		: "Readonly<distill.Out<at.infer<TSchema>>>";
-	const castReturn = isStandard ? "" : " as unknown as Readonly<distill.Out<at.infer<TSchema>>>";
+	const castReturn = isStandard
+		? ""
+		: " as unknown as Readonly<distill.Out<at.infer<TSchema>>>";
 	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
 
 	return `${GENERATED_HEADER}
