@@ -53,19 +53,16 @@ describe("@arkenv/nuxt type regression", () => {
 	});
 
 	it("rejects invalid ArkType schema strings across schema sections", () => {
+		// @ts-expect-error invalid ArkType schema string
 		createEnv({
 			server: {
-				// @ts-expect-error invalid ArkType schema string
 				DATABASE_URL: "not-a-valid-type",
-				// @ts-expect-error invalid ArkType schema string
 				PORT: "not-a-valid-type",
 			},
 			client: {
-				// @ts-expect-error invalid ArkType schema string
 				NUXT_PUBLIC_API_URL: "not-a-valid-type",
 			},
 			shared: {
-				// @ts-expect-error invalid ArkType schema string
 				NODE_ENV: "not-a-valid-type",
 			},
 			runtimeEnv: {

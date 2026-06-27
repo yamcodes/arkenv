@@ -54,6 +54,7 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 
 	return createEnvInternal(schemaOrOptions, optionsOrIsServer, {
 		isServer: true,
+		strictLayout: "server",
 	});
 }
 

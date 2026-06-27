@@ -17,9 +17,9 @@ describe("createEnv (Nuxt runtime)", () => {
 
 	it("should enforce NUXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
 		expect(() => {
+			// @ts-expect-error - Client keys must be prefixed with NUXT_PUBLIC_
 			createEnv({
 				client: {
-					// @ts-expect-error - Client keys must be prefixed with NUXT_PUBLIC_
 					API_URL: "string",
 				},
 			});
@@ -144,6 +144,75 @@ describe("createEnv (Nuxt runtime)", () => {
 			expect(envRecord.__v_raw).toBeUndefined();
 		} finally {
 			(globalThis as any).window = originalWindow;
+		}
+	});
+
+	it("should support flat layout at runtime on both client and server", () => {
+		process.env.DATABASE_URL = "postgres://localhost:5432/db";
+		process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
+		process.env.NODE_ENV = "test";
+		process.env.CUSTOM_SHARED = "shared-value";
+
+		// Server-side flat schema evaluation
+		const serverEnv = createEnv(
+			{
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
+				CUSTOM_SHARED: "string",
+			},
+			{
+				exposeToClient: ["CUSTOM_SHARED"],
+			},
+		);
+
+		expect(serverEnv.DATABASE_URL).toBe("postgres://localhost:5432/db");
+		expect(serverEnv.NUXT_PUBLIC_API_URL).toBe("https://api.example.com");
+		expect(serverEnv.NODE_ENV).toBe("test");
+		expect(serverEnv.CUSTOM_SHARED).toBe("shared-value");
+
+		// Client-side flat schema evaluation
+		const originalWindow = globalThis.window;
+		(globalThis as any).window = {
+			__NUXT__: {
+				config: {
+					public: {
+						NUXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						CUSTOM_SHARED: "shared-value",
+					},
+				},
+			},
+		};
+
+		try {
+			const clientEnv = createEnv(
+				{
+					DATABASE_URL: "string",
+					NUXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_SHARED: "string",
+				},
+				{
+					exposeToClient: ["CUSTOM_SHARED"],
+				},
+			);
+
+			expect(clientEnv.NUXT_PUBLIC_API_URL).toBe("https://api.example.com");
+			expect(clientEnv.NODE_ENV).toBe("test");
+			expect(clientEnv.CUSTOM_SHARED).toBe("shared-value");
+
+			expect(() => {
+				clientEnv.DATABASE_URL;
+			}).toThrow(
+				"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
+			);
+		} finally {
+			(globalThis as any).window = originalWindow;
+			delete process.env.DATABASE_URL;
+			delete process.env.NUXT_PUBLIC_API_URL;
+			delete process.env.NODE_ENV;
+			delete process.env.CUSTOM_SHARED;
 		}
 	});
 });
