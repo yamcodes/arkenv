@@ -10,7 +10,7 @@ Without ArkEnv, `process.env.DATABASE_URL` is `string | undefined`. With ArkEnv,
 
 But because ArkEnv manages your secrets, you need absolute certainty about how it interacts with the Next.js bundler.
 
-Next.js natively strips non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env.X`. ArkEnv builds a secure layer on top of this:
+Next.js natively strips non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env`. ArkEnv builds a secure layer on top of this:
 
 1. **Build-time exclusion.** The `withArkEnv` plugin guarantees that only client and shared values are mapped for the browser. Server secrets are deliberately excluded, meaning they are never even shipped to the client-side bundle.
 2. **Runtime misuse guard.** If you try to read a server-only key in a Client Component, the ArkEnv proxy intercepts the read and throws a loud error before returning anything.
@@ -28,7 +28,7 @@ If you have a server-only secret like `DATABASE_URL`, here is what is actually e
 | **Flat** (recommended) |                 ❌                 |                     ✅                     |          ❌         |           ✅           |
 | **Strict** (split)     |                 ❌                 |                     ❌                     |          ✅         |           ✅           |
 
-- **Values are never leaked.** Next.js handles raw `process.env.X` references; ArkEnv's boundary handles the `env.X` object.
+- **Values are never leaked.** Next.js handles raw `process.env` references; ArkEnv's boundary handles the `env` object.
 - **Flat mode exposes variable names and types** (but not values) because the single schema file is imported into your client code. For 99% of applications, knowing a variable is named `DATABASE_URL` is not a security risk.
 - If your variable names reveal sensitive infrastructure (e.g. internal hostnames or vendor names), you should use the [Strict Layout](/docs/nextjs/layouts/strict). Because it uses separate files, the server schema is never imported into the client graph.
 
