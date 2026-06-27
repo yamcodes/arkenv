@@ -212,7 +212,7 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 		}
 	}
 
-	// 4. Initialize development file watcher if in dev mode
+	// 5. Initialize development file watcher if in dev mode
 	const isDev =
 		process.env.NODE_ENV === "development" ||
 		process.env.NEXT_PHASE === "phase-development-server";

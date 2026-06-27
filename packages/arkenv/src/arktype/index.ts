@@ -110,14 +110,8 @@ export function parse<const T extends SchemaShape>(
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors.
 	// We also check constructor name and arkKind to be robust against module loading mismatches (e.g. under Vitest).
-	if (
-		validatedEnv &&
-		typeof validatedEnv === "object" &&
-		(validatedEnv instanceof ArkErrors ||
-			validatedEnv.constructor?.name === "ArkErrors" ||
-			(validatedEnv as any)[" arkKind"] === "errors")
-	) {
-		throw new ArkEnvError(arkErrorsToIssues(validatedEnv as any));
+	if (validatedEnv instanceof ArkErrors) {
+		throw new ArkEnvError(arkErrorsToIssues(validatedEnv));
 	}
 
 	return validatedEnv;
