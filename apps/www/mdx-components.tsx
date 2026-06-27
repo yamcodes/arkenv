@@ -4,7 +4,7 @@ import {
 	createFileSystemGeneratorCache,
 	createGenerator,
 } from "fumadocs-typescript";
-import { AutoTypeTable } from "fumadocs-typescript/ui";
+import { TypeTable } from "~/components/ui/type-table";
 import {
 	CalloutContainer,
 	CalloutDescription,
@@ -32,9 +32,17 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		CalloutDescription,
 		CalloutTitle,
 		Card,
-		AutoTypeTable: (props: any) => (
-			<AutoTypeTable {...props} generator={generator} />
-		),
+		AutoTypeTable: ({ filename, name, field, ...props }: any) => {
+			const file = generator.getFile(filename);
+			if (!file) throw new Error(`File ${filename} not found`);
+			const exportInfo = file.exports.find((e) => e.name === name);
+			if (!exportInfo) throw new Error(`Export ${name} not found`);
+
+			const type = field ? exportInfo.types[field] : exportInfo.types;
+			if (!type) throw new Error(`Field ${field} not found in ${name}`);
+
+			return <TypeTable type={type as any} expandAll {...props} />;
+		},
 		Cards,
 		Files,
 		Folder,
