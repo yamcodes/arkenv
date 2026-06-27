@@ -127,8 +127,11 @@ export class NodeWorkspace implements WorkspacePort {
 		return bootstrapBunConfig(configPath, features);
 	}
 
-	async bootstrapNextjsConfig(filePath: string): Promise<BootstrapResult> {
-		return bootstrapNextjsConfig(this, filePath);
+	async bootstrapNextjsConfig(
+		filePath: string,
+		disableCodegen?: boolean,
+	): Promise<BootstrapResult> {
+		return bootstrapNextjsConfig(this, filePath, disableCodegen);
 	}
 
 	async bootstrapNuxtConfig(filePath: string): Promise<BootstrapResult> {

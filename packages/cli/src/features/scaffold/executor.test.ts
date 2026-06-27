@@ -293,6 +293,7 @@ describe("Executor", () => {
 		expect(mockWorkspace.findNextjsConfig).toHaveBeenCalled();
 		expect(mockWorkspace.bootstrapNextjsConfig).toHaveBeenCalledWith(
 			"next.config.ts",
+			undefined,
 		);
 	});
 

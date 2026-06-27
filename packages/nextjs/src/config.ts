@@ -96,6 +96,13 @@ export type ArkEnvConfigOptions = {
 	 * @default true
 	 */
 	validate?: boolean;
+
+	/**
+	 * Enable or disable automatic code generation of the `env.gen.ts` file.
+	 *
+	 * @default true
+	 */
+	codegen?: boolean;
 };
 
 /**
@@ -153,19 +160,22 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 		? path.resolve(options.outputPath)
 		: defaultOutputPath;
 
-	// 3. Run initial code generation
-	try {
-		runCodegen(schemaPath, outputPath, resolvedLayout);
-	} catch (error: unknown) {
-		const message = error instanceof Error ? error.message : String(error);
-		throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
+	// 3. Run initial code generation if enabled
+	const codegen = options?.codegen ?? true;
+	if (codegen) {
+		try {
+			runCodegen(schemaPath, outputPath, resolvedLayout);
+		} catch (error: unknown) {
+			const message = error instanceof Error ? error.message : String(error);
+			throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
+		}
 	}
 
 	// 4. Validate schema against environment variables
 	const runValidation = options?.validate ?? process.env.VITEST !== "true";
 	if (runValidation) {
 		try {
-			process.env.ARKENV_FORCE_SERVER = "true";
+			(globalThis as any).__arkenv_build_time_validation__ = true;
 			const fileToEvaluate =
 				resolvedLayout === "strict" && baseDir
 					? path.join(baseDir, "server.ts")
@@ -229,15 +239,15 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 			console.error("");
 			process.exit(1);
 		} finally {
-			delete process.env.ARKENV_FORCE_SERVER;
+			delete (globalThis as any).__arkenv_build_time_validation__;
 		}
 	}
 
-	// 4. Initialize development file watcher if in dev mode
+	// 5. Initialize development file watcher if in dev mode and codegen is enabled
 	const isDev =
 		process.env.NODE_ENV === "development" ||
 		process.env.NEXT_PHASE === "phase-development-server";
-	if (isDev) {
+	if (isDev && codegen) {
 		const watchPaths =
 			resolvedLayout === "strict" && baseDir
 				? [

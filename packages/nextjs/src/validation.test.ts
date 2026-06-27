@@ -313,4 +313,54 @@ describe("build-time environment validation", () => {
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 	});
+
+	describe("codegen option", () => {
+		it("should skip file generation but still validate when codegen is false", () => {
+			fs.writeFileSync(
+				schemaPath,
+				`
+				import arkenv from "@arkenv/nextjs";
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				}, {
+					runtimeEnv: {
+						DATABASE_URL: process.env.DATABASE_URL,
+					}
+				});
+				`,
+				"utf-8",
+			);
+
+			// Missing DATABASE_URL, should exit build
+			expect(() => {
+				setupArkEnv({
+					schemaPath,
+					outputPath,
+					layout: "flat",
+					codegen: false,
+					validate: true,
+				});
+			}).toThrow("process.exit called with 1");
+
+			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(fs.existsSync(outputPath)).toBe(false);
+
+			// Provide DATABASE_URL, should pass
+			process.env.DATABASE_URL = "postgres://localhost/db";
+			exitSpy.mockClear();
+
+			expect(() => {
+				setupArkEnv({
+					schemaPath,
+					outputPath,
+					layout: "flat",
+					codegen: false,
+					validate: true,
+				});
+			}).not.toThrow();
+
+			expect(exitSpy).not.toHaveBeenCalled();
+			expect(fs.existsSync(outputPath)).toBe(false);
+		});
+	});
 });

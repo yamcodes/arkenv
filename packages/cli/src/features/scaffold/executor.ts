@@ -171,8 +171,10 @@ export class Executor {
 							plan.cwd,
 						);
 						if (nextjsConfigPath) {
-							const result =
-								await this.workspace.bootstrapNextjsConfig(nextjsConfigPath);
+							const result = await this.workspace.bootstrapNextjsConfig(
+								nextjsConfigPath,
+								plan.bootstrap.disableCodegen,
+							);
 							if (result.success) {
 								if (result.updated) {
 									this.reporter.info(
