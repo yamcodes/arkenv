@@ -1,5 +1,5 @@
 ---
-"@arkenv/nuxt": patch
+"@arkenv/nuxt": minor
 "@arkenv/build": patch
 ---
 

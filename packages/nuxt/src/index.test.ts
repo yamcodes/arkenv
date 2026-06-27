@@ -215,4 +215,45 @@ describe("createEnv (Nuxt runtime)", () => {
 			delete process.env.CUSTOM_SHARED;
 		}
 	});
+
+	it("should support, validate and merge runtimeEnv correctly in flat layout", () => {
+		// Verify runtimeEnv merges and overrides process.env
+		process.env.DATABASE_URL = "original-db";
+		try {
+			const env = createEnv(
+				{
+					DATABASE_URL: "string",
+					NUXT_PUBLIC_API_URL: "string",
+				},
+				{
+					runtimeEnv: {
+						DATABASE_URL: "override-db",
+						NUXT_PUBLIC_API_URL: "https://override.api.com",
+					},
+				},
+			);
+
+			expect(env.DATABASE_URL).toBe("override-db");
+			expect(env.NUXT_PUBLIC_API_URL).toBe("https://override.api.com");
+
+			// Verify it throws if runtimeEnv has a key not defined in schema
+			expect(() => {
+				createEnv(
+					{
+						DATABASE_URL: "string",
+					},
+					{
+						runtimeEnv: {
+							DATABASE_URL: "db-val",
+							UNDEFINED_KEY: "invalid",
+						},
+					},
+				);
+			}).toThrow(
+				"Environment variable 'UNDEFINED_KEY' is passed to runtimeEnv but is not defined in the schema.",
+			);
+		} finally {
+			delete process.env.DATABASE_URL;
+		}
+	});
 });

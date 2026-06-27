@@ -30,6 +30,7 @@ export function createEnvInternal(
 	let client: Record<string, unknown> = {};
 	let shared: SchemaShape = {};
 	let extendsList: unknown[] = [];
+	let runtimeEnv: Record<string, unknown> = {};
 	let isServer = false;
 
 	const globalConfig =
@@ -49,12 +50,14 @@ export function createEnvInternal(
 		client = schemaOrOptions.client || {};
 		shared = schemaOrOptions.shared || {};
 		extendsList = schemaOrOptions.extends || [];
+		runtimeEnv = schemaOrOptions.runtimeEnv || {};
 		isServer = optionsOrIsServer;
 	} else {
 		// New flat schema behavior
 		const flatSchema = schemaOrOptions || {};
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
+		runtimeEnv = options.runtimeEnv || {};
 		isServer =
 			(globalThis as any).__arkenv_force_server__ === true ||
 			!!context?.isServer;
@@ -189,6 +192,15 @@ export function createEnvInternal(
 		}
 	}
 
+	// Check runtimeEnv does not have any keys not defined in the schema (allKeys)
+	for (const key of Object.keys(runtimeEnv)) {
+		if (!allKeys.has(key)) {
+			throw new Error(
+				`Environment variable '${key}' is passed to runtimeEnv but is not defined in the schema.`,
+			);
+		}
+	}
+
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {
@@ -199,6 +211,12 @@ export function createEnvInternal(
 	for (const key of Object.keys(sourceEnv)) {
 		if (sourceEnv[key] !== undefined) {
 			combinedEnv[key] = sourceEnv[key];
+		}
+	}
+
+	for (const key of Object.keys(runtimeEnv)) {
+		if (runtimeEnv[key] !== undefined) {
+			combinedEnv[key] = runtimeEnv[key];
 		}
 	}
 

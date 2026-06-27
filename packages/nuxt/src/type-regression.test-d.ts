@@ -85,4 +85,28 @@ describe("@arkenv/nuxt type regression", () => {
 			},
 		});
 	});
+
+	it("correctly types Flat Mode environment variables", () => {
+		const env = createEnv(
+			{
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+				CUSTOM_VAR: "string",
+			},
+			{
+				exposeToClient: ["CUSTOM_VAR"],
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+					CUSTOM_VAR: "custom_val",
+				},
+			},
+		);
+
+		expectTypeOf(env.DATABASE_URL).toBeString();
+		expectTypeOf(env.NUXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.NODE_ENV).toBeString();
+		expectTypeOf(env.CUSTOM_VAR).toBeString();
+	});
 });
