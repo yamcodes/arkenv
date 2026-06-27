@@ -91,6 +91,18 @@ export type ArkEnvConfigOptions = {
 		| "simple";
 
 	/**
+	 * Force standard mode code generation.
+	 *
+	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard/*`
+	 * instead of `@arkenv/nextjs/*`, ensuring the Standard Schema engine (`@arkenv/standard`)
+	 * is used and `arktype` is never bundled. This is set automatically when importing from
+	 * `@arkenv/nextjs/standard/config`, but can be toggled manually for custom setups.
+	 *
+	 * @default false
+	 */
+	standard?: boolean;
+
+	/**
 	 * Enable or disable build-time environment variable validation during build/dev startup.
 	 *
 	 * @default true
@@ -168,7 +180,7 @@ export function setupArkEnv(
 	const codegen = options?.codegen ?? true;
 	if (codegen) {
 		try {
-			runCodegen(schemaPath, outputPath, resolvedLayout);
+			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
 			throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
@@ -234,7 +246,7 @@ export function setupArkEnv(
 					].filter(fs.existsSync)
 				: [schemaPath];
 		watchSchema(watchPaths, () => {
-			runCodegen(schemaPath, outputPath, resolvedLayout);
+			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
 		});
 	}
 }
@@ -258,12 +270,14 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
  * @param schemaPath The absolute path to the schema file or directory
  * @param outputPath The absolute path to the generated output file
  * @param layoutOption The explicit layout to use; auto-detected from the filesystem when omitted
+ * @param forceStandard Force standard mode code generation
  * @throws An error if strict layout files are missing when `layoutOption` is `"strict"`
  */
 export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
 	layoutOption?: ArkEnvConfigOptions["layout"],
+	forceStandard?: boolean,
 ) {
 	const normalizedLayout = normalizeLayout(layoutOption);
 
@@ -284,17 +298,37 @@ export function runCodegen(
 			? fs.readFileSync(sharedPath, "utf-8")
 			: "";
 
+		const isStandard =
+			!!forceStandard ||
+			clientContent.includes("@arkenv/standard") ||
+			clientContent.includes("arkenv/standard") ||
+			sharedContent.includes("@arkenv/standard") ||
+			sharedContent.includes("arkenv/standard");
+
 		const clientKeys = extractClientKeys(clientContent);
 		const sharedKeys = extractSharedKeys(sharedContent);
 
-		generatedCode = generateClientFactoryCode(clientKeys, sharedKeys);
+		generatedCode = generateClientFactoryCode(
+			clientKeys,
+			sharedKeys,
+			isStandard,
+		);
 	} else {
 		const fileContent = fs.readFileSync(schemaPath, "utf-8");
+		const isStandard =
+			!!forceStandard ||
+			fileContent.includes("@arkenv/standard") ||
+			fileContent.includes("arkenv/standard");
+
 		const { clientKeys, sharedKeys, isLegacy } = extractKeys(fileContent);
 		if (isLegacy) {
-			generatedCode = generateFactoryCode(clientKeys, sharedKeys);
+			generatedCode = generateFactoryCode(clientKeys, sharedKeys, isStandard);
 		} else {
-			generatedCode = generateFlatFactoryCode(clientKeys, sharedKeys);
+			generatedCode = generateFlatFactoryCode(
+				clientKeys,
+				sharedKeys,
+				isStandard,
+			);
 		}
 	}
 
@@ -525,19 +559,25 @@ export default createEnv;
  *
  * @param clientKeys The client environment variable keys
  * @param sharedKeys The shared environment variable keys
+ * @param isStandard Whether standard mode is used
  * @returns The generated TypeScript source code string
  */
 function generateFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
+	isStandard?: boolean,
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
+	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
+	const coreName = isStandard ? "arkenv" : "createEnv";
+	const typeExport = isStandard
+		? ""
+		: '\nexport { type } from "@arkenv/nextjs";\n';
+	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
 
 	return `${GENERATED_HEADER}
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
-
-export { type } from "@arkenv/nextjs";
-
+import { ${coreName} as coreCreateEnv } from "${importPath}";
+${typeExport}
 export function createEnv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
@@ -549,7 +589,7 @@ export function createEnv<
 	};
 	shared?: TShared;
 }) {
-	return coreCreateEnv({
+	return ${callPrefix}({
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
@@ -579,15 +619,28 @@ ${GENERATED_FOOTER}`;
 function generateFlatFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
+	isStandard?: boolean,
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
+	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
+	const coreName = isStandard ? "arkenv" : "createEnv";
+	const typeExport = isStandard
+		? ""
+		: '\nexport { type } from "@arkenv/nextjs";\n';
+	const typeImport = isStandard
+		? ""
+		: '\nimport type { type as at, distill } from "arktype";';
+	const returnType = isStandard
+		? "Readonly<TSchema>"
+		: "Readonly<distill.Out<at.infer<TSchema>>>";
+	const castReturn = isStandard
+		? ""
+		: " as unknown as Readonly<distill.Out<at.infer<TSchema>>>";
+	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
 
 	return `${GENERATED_HEADER}
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
-import type { type as at, distill } from "arktype";
-
-export { type } from "@arkenv/nextjs";
-
+import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
+${typeExport}
 export function createEnv<
 	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
 	const TExpose extends keyof TSchema = never,
@@ -603,17 +656,17 @@ export function createEnv<
 		exposeToClient?: readonly TExpose[];
 		extends?: [...TExtends];
 	},
-): Readonly<distill.Out<at.infer<TSchema>>> {
+): ${returnType} {
 	// Types expose the full schema for a great DX on the server; the runtime
 	// Proxy from \`@arkenv/nextjs\` enforces the security boundary by throwing
 	// when a server-only variable is accessed on the client.
-	const env = coreCreateEnv(schema as any, {
+	const env = ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
 		},
 	} as any);
-	return env as unknown as Readonly<distill.Out<at.infer<TSchema>>>;
+	return env${castReturn};
 }
 ${GENERATED_FOOTER}`;
 }
@@ -626,18 +679,45 @@ ${GENERATED_FOOTER}`;
  *
  * @param clientKeys The env var keys extracted from `client.ts`
  * @param sharedKeys The env var keys extracted from `internal/shared.ts`
+ * @param isStandard Whether standard mode is used
  * @returns The generated TypeScript source code string
  */
 function generateClientFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
+	isStandard?: boolean,
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
+	const importPath = isStandard
+		? "@arkenv/nextjs/standard/client"
+		: "@arkenv/nextjs/client";
+	const coreName = isStandard ? "arkenv" : "createEnv";
+	const typeExport = isStandard
+		? ""
+		: '\nexport { type } from "@arkenv/nextjs/client";\n';
+	const typeImport = isStandard
+		? ""
+		: '\nimport type { Infer } from "@arkenv/core";';
+	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const returnType = isStandard
+		? "Readonly<TSchema & MergeExtends<TExtends>>"
+		: "Readonly<Infer<TSchema> & MergeExtends<TExtends>>";
 
 	return `${GENERATED_HEADER}
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs/client";
+import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
+${typeExport}
+type ResolveExtend<T> = [Infer<T>] extends [never] ? T : Infer<T>;
 
-export { type } from "@arkenv/nextjs/client";
+type UnionToIntersection<U> = (
+	U extends any ? (k: U) => void : never
+) extends (k: infer I) => void
+	? I
+	: never;
+
+type MergeExtends<TExtends extends readonly unknown[] | undefined> =
+	TExtends extends readonly unknown[]
+		? UnionToIntersection<ResolveExtend<TExtends[number]>>
+		: {};
 
 export function createEnv<
 	const TSchema extends Record<string, any> = {},
@@ -649,8 +729,8 @@ export function createEnv<
 	options?: {
 		extends?: [...TExtends];
 	},
-) {
-	return coreCreateEnv<TSchema, TExtends>(schema as any, {
+): ${returnType} {
+	return ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}

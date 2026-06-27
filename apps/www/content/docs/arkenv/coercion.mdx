@@ -6,7 +6,7 @@ description: Environment variables are auto-morphed into typesafe numbers, boole
 Traditionally, environment variables are always strings by default. ArkEnv **coerces** these strings into their target types based on your schema, so you only have to think about the types you want.
 
 :::note
-Coercion in [arkenv/standard](/docs/arkenv/standard) only works with:
+Coercion in [@arkenv/standard](/docs/arkenv/standard) only works with:
 
 - [Zod](https://zod.dev) (v4.2+)
 - [Valibot](https://valibot.dev) (v1.2+ via `@valibot/to-json-schema`)
@@ -20,7 +20,7 @@ Coercion in [arkenv/standard](/docs/arkenv/standard) only works with:
 Any field defined as a `number` or a numeric subtype (like `number.integer` or `number.port`) will be automatically parsed.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 // All are numbers! (hover `env` to see)
 const env = arkenv({
@@ -35,7 +35,7 @@ const env = arkenv({
 The `boolean` type handles the values `"true"` and `"false"`.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 // DEBUG is true if process.env.DEBUG is "true"
 const env = arkenv({
@@ -48,7 +48,7 @@ const env = arkenv({
 ArkEnv can parse strings into arrays. By default, it splits the string by commas and trims each value.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 const env = arkenv({
   TAGS: "string[]",
@@ -66,7 +66,7 @@ const env = arkenv({
 If your environment variables use JSON format instead of commas, you can change the `arrayFormat` option:
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 const env = arkenv(
   { TAGS: "string[]" },
@@ -82,7 +82,7 @@ const env = arkenv(
 ArkEnv can parse JSON strings into objects. This is useful for grouping related configuration into a single environment variable.
 
 ```ts title="index.ts" twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 
 const env = arkenv({
   DATABASE: {
@@ -100,7 +100,12 @@ Coercion works recursively: even variables inside a JSON object are coerced to t
 
 ## How it works
 
-ArkEnv introspects your schema to identify fields that should be numbers, booleans, and other non-string types you define. When you call `createEnv()` (or `arkenv()`), it pre-processes your environment variables to perform these conversions *before* validation.
+ArkEnv uses a unified pre-coercion model shared across both `@arkenv/core` and `@arkenv/standard`. When you call `arkenv()`:
+
+1. **Introspection**: ArkEnv extracts the JSON Schema of your defined schema. For `@arkenv/core` (ArkType), it introspects the schema (with a fallback to handle unjsonifiable parts of the schema like custom morphs or predicates). For `@arkenv/standard` (e.g., Zod, Valibot), it extracts JSON Schema using the validator's standard metadata.
+2. **Paths Identification**: It computes the exact paths requiring coercion (using `findCoercionPaths`) to identify target non-string types like numbers, booleans, arrays, or objects.
+3. **Pre-Coercion**: ArkEnv creates a shallow copy of the input environment object and applies coercion to it directly (using `applyCoercion`), preventing any mutation of the original `process.env`.
+4. **Validation**: Finally, the pre-coerced copy is passed to the original, unmodified schema for validation.
 
 ## Performance
 
@@ -111,7 +116,7 @@ Coercion is highly optimized: ArkEnv performs a one-time introspection of your s
 You can opt-out of this behavior by setting `coerce` to `false`.
 
 ```ts twoslash
-import arkenv from "arkenv";
+import arkenv from '@arkenv/core';
 // ---cut---
 // ⚠️ This will throw an error!
 // "3000" (string) is not a number.

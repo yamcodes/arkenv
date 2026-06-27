@@ -1,4 +1,4 @@
-import arkenv, { type } from "arkenv";
+import arkenv, { type } from "@arkenv/core";
 
 const Env = type({
 	VITE_ONE: "string",

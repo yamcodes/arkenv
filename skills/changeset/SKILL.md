@@ -33,26 +33,46 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset types
 
-| Type    | When to Use                               | v0 Version Change (Current) | v1+ Version Change |
-| ------- | ----------------------------------------- | --------------------------- | ------------------ |
-| `patch` | Any non-breaking change (fixes, features) | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
-| `minor` | **Breaking changes**                      | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
-| `major` | Switch to v1 (only when instructed)       | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
+| Type    | When to Use in v0 (Current)               | When to Use in v1+                       |
+| ------- | ----------------------------------------- | ----------------------------------------- |
+| `patch` | Any non-breaking change (fixes, features) | Non-breaking bug fixes                    |
+| `minor` | **Breaking changes**                      | Non-breaking new features                 |
+| `major` | Switch to v1 (only when instructed)       | **Breaking changes**                      |
 
-## Decision guide (v0 rules)
+\* In v0, `minor` is used for **breaking changes**, not features.
+\*\* In v0, `major` is used only when explicitly transitioning to v1.
 
-Most packages in this repo are currently in **v0** (0.y.z). For these packages:
+## Decision guide
+
+> **Current Status:** The ArkEnv monorepo is in **v1 prerelease mode** (alpha). All packages follow **standard SemVer (v1+ rules)**.
 
 ### Use `patch` for:
 
-- **Any non-breaking change** (including new features, new CLI commands, new configuration options, enhanced functionality, non-breaking API additions, etc.)
 - Bug fixes
 - Dependency updates (non-breaking)
 - Performance improvements
-- Dependency updates
 - Code style/linting fixes
+- Small documentation corrections
+
+### Use `minor` for:
+
+- **New features** (new CLI commands, new configuration options, enhanced functionality, non-breaking API additions, etc.)
+- New exports or public APIs
+- Significant documentation improvements
+
+### Use `major` for:
+
+- **Breaking changes** (any modification that requires consumers to change their code). You MUST include a `**BREAKING CHANGE**:` note at the bottom of the changeset with migration instructions.
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
+
+## v0 Rules (Legacy / Reference Only)
+
+Use these rules only when working with packages still at `0.y.z` that are **not** in v1 prerelease mode:
+
+### Use `patch` for:
+
+- **Any non-breaking change** (including new features, bug fixes, dependency updates, performance improvements, etc.)
 
 ### Use `minor` ONLY for:
 
@@ -60,7 +80,21 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 
 ### Use `major` ONLY for:
 
-- Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.** Do not use major for breaking changes in v0.
+- Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.**
+
+## Decision guide (v1+ rules)
+
+For packages in **v1+** (e.g. active `v1` branch):
+
+### Use `patch` for:
+- Backward-compatible bug fixes
+- Internal performance or refactor improvements with user value
+
+### Use `minor` for:
+- Backward-compatible new features or API additions
+
+### Use `major` for:
+- **Breaking changes** (Any change that breaks backward compatibility. You MUST prefix the description with `**BREAKING CHANGE**:`).
 
 ## Creating a changeset
 
@@ -115,20 +149,22 @@ export const env = arkenv({
 
 ```markdown
 ---
-"package-name": patch|minor
+"package-name": patch|minor|major
 ---
 
 #### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
 
-Detailed description of the change (also using imperative mood for action summaries).
+A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
 
 Include:
 - **Usage examples** (code blocks)
 - Bullet points for details
-- Migration instructions for breaking changes (using `minor` bump and you MUST include the `**BREAKING CHANGE**:` label)
+- Migration instructions for breaking changes (using `major` bump and you MUST include a `**BREAKING CHANGE**:` note at the bottom)
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
+**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise — 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
 ```
+
 
 ## Modifying an existing changeset
 
@@ -150,12 +186,12 @@ Include:
 
 ### Validation checklist after modification
 
-- [ ] Bump type matches the decision guide (patch for non-breaking, minor for breaking)
+- [ ] Bump type matches the decision guide (patch/minor for non-breaking, major for breaking)
 - [ ] Title starts with `####` header
 - [ ] All descriptions use imperative mood (no past tense, no indicative)
 - [ ] Usage examples present for user-facing changes
 - [ ] No GitHub issue references (# numbers)
-- [ ] Breaking changes have `**BREAKING CHANGE**:` prefix
+- [ ] Breaking changes use `major` bump and include a `**BREAKING CHANGE**:` note at the bottom
 
 ## Release workflow
 
@@ -184,7 +220,13 @@ pnpm changeset
 
 - Merging the "Version Packages" PR on `dev` triggers the publication of bumped packages to npm
 - Upon successful publish, the release workflow programmatically fast-forwards the `main` branch to `dev` (`git merge dev --ff-only`) and pushes it
-- The push to `main` triggers the production documentation website deployment
+- The push to `main` triggers the production documentation website
+
+## Pre-release versions
+
+For managing alpha, beta, and release candidate (rc) pre-releases, we follow a strict versioning policy using the `alpha` ➔ `beta` ➔ `rc` progression.
+
+To avoid duplication, the exact pre-release branching strategies, command workflows, and SemVer naming rules are documented in the [Contributing Guide](file:///Users/yamcodes/code/arkenv/docs/CONTRIBUTING.md#use-case-4-coordinating-a-major-version-eg-v1).
 
 ## Checking status
 

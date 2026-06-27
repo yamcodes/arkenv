@@ -1,6 +1,7 @@
+import type { EnvSchema, Infer } from "@arkenv/core";
+import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { SchemaShape } from "@repo/types";
-import type { EnvSchema, Infer } from "arkenv";
-import { createEnvInternal } from "./create-env";
+import { arkenvInternal } from "./arkenv-internal";
 
 /**
  * Create a validated, type-safe environment configuration for Nuxt applications.
@@ -25,11 +26,17 @@ export function createEnv<
 	// In Nuxt, we want to know whether we are in client or server.
 	// We can check if `typeof window === "undefined"` to dynamically detect server runtime.
 	const isServer = typeof window === "undefined";
-	return createEnvInternal(options, isServer) as ReturnType;
+	return arkenvInternal(
+		options,
+		isServer,
+		undefined,
+		coreArkenv,
+		getSchemaKeys,
+	) as ReturnType;
 }
 
-export type { Infer } from "arkenv";
-export { type } from "arkenv";
+export type { Infer } from "@arkenv/core";
+export { type } from "@arkenv/core";
 
 /**
  * ArkEnv's Nuxt integration export, an alias for {@link createEnv}

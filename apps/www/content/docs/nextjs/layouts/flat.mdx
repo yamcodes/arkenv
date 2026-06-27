@@ -28,7 +28,7 @@ The values themselves are *not* shipped to the client! But if exposing your serv
 The easiest way to bootstrap the flat layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project and generates your `env.ts` file.
 
 ```npm
-npx @arkenv/cli@latest init
+npx arkenv@latest init
 ```
 
 ## Your schema
@@ -41,7 +41,7 @@ By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withA
 
 ```ts title="src/env.ts" twoslash
 // @filename: /generated/env.gen.ts
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
 export { type } from "@arkenv/nextjs";
 
@@ -102,11 +102,11 @@ export const env = arkenv({
   <Accordion title="Manual Setup">
     ### Configure environment [step] [!toc]
 
-    Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schema. Import `arkenv` from the auto-generated `@/generated/env.gen.ts` helper file:
+    Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schema. Import `createEnv` from the auto-generated `@/generated/env.gen.ts` helper file:
 
     ```ts title="src/env.ts" twoslash
     // @filename: /generated/env.gen.ts
-    import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+    import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
 
@@ -172,7 +172,7 @@ export const env = arkenv({
 
     ```ts title="src/app/page.tsx" twoslash
     // @filename: /generated/env.gen.ts
-    import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+    import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
     export default function arkenv<const T extends {}>(
@@ -202,7 +202,7 @@ export const env = arkenv({
 
     ```ts title="src/app/client-component.tsx" twoslash
     // @filename: /generated/env.gen.ts
-    import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+    import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
     export default function arkenv<const T extends {}>(

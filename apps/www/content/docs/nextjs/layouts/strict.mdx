@@ -15,14 +15,14 @@ src
     └── server.ts
 ```
 
-By importing `arkenv` from `@/env/client` in client-side code and `@/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `@/env/server` is accidentally imported in a Client Component, ArkEnv fails the build with a compilation error.
+By importing `@arkenv/core` from `@/env/client` in client-side code and `@/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `@/env/server` is accidentally imported in a Client Component, ArkEnv fails the build with a compilation error.
 
 ## Setup
 
 The easiest way to bootstrap the strict layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project using the **strict layout** option.
 
 ```npm
-npx @arkenv/cli@latest init --strict
+npx arkenv@latest init --strict
 ```
 
 ## Your schema
@@ -122,7 +122,7 @@ export const env = arkenv(
 
     ### Define client variables [step] [!toc]
 
-    Create `env/client.ts` importing `arkenv` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
+    Create `env/client.ts` importing `@arkenv/core` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
 
     ```ts title="src/env/client.ts" twoslash
     // @filename: /env/internal/shared.ts

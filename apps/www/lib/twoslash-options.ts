@@ -35,10 +35,8 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 			moduleResolution: ts.ModuleResolutionKind.Bundler,
 			target: ts.ScriptTarget.ES2022,
 			paths: {
-				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
-				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
-				"arkenv/core": [path.join(root, "packages/arkenv/src/core.ts")],
-				"@/*": [path.join(root, "packages/arkenv/src/*"), "./*"],
+				"@arkenv/core": [path.join(root, "packages/core/src/index.ts")],
+				"@arkenv/standard": [path.join(root, "packages/standard/src/index.ts")],
 				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
 				"@arkenv/nextjs/server": [
 					path.join(root, "packages/nextjs/src/server.ts"),
@@ -49,16 +47,55 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@arkenv/nextjs/shared": [
 					path.join(root, "packages/nextjs/src/shared.ts"),
 				],
+				"@arkenv/nextjs/standard": [
+					path.join(root, "packages/nextjs/src/standard/index.ts"),
+				],
+				"@arkenv/nextjs/standard/server": [
+					path.join(root, "packages/nextjs/src/standard/server.ts"),
+				],
+				"@arkenv/nextjs/standard/client": [
+					path.join(root, "packages/nextjs/src/standard/client.ts"),
+				],
+				"@arkenv/nextjs/standard/shared": [
+					path.join(root, "packages/nextjs/src/standard/shared.ts"),
+				],
+				"@arkenv/nextjs/standard/config": [
+					path.join(root, "packages/nextjs/src/standard/config.ts"),
+				],
 				"@arkenv/vite-plugin": [
 					path.join(root, "packages/vite-plugin/src/index.ts"),
 				],
+				"@arkenv/vite-plugin/standard": [
+					path.join(root, "packages/vite-plugin/src/standard.ts"),
+				],
 				"@arkenv/bun-plugin": [
 					path.join(root, "packages/bun-plugin/src/index.ts"),
+				],
+				"@arkenv/bun-plugin/standard": [
+					path.join(root, "packages/bun-plugin/src/standard.ts"),
 				],
 				"@arkenv/nuxt": [path.join(root, "packages/nuxt/src/index.ts")],
 				"@arkenv/nuxt/server": [path.join(root, "packages/nuxt/src/server.ts")],
 				"@arkenv/nuxt/client": [path.join(root, "packages/nuxt/src/client.ts")],
 				"@arkenv/nuxt/shared": [path.join(root, "packages/nuxt/src/shared.ts")],
+				"@arkenv/nuxt/standard": [
+					path.join(root, "packages/nuxt/src/standard/index.ts"),
+				],
+				"@arkenv/nuxt/standard/server": [
+					path.join(root, "packages/nuxt/src/standard/server.ts"),
+				],
+				"@arkenv/nuxt/standard/client": [
+					path.join(root, "packages/nuxt/src/standard/client.ts"),
+				],
+				"@arkenv/nuxt/standard/shared": [
+					path.join(root, "packages/nuxt/src/standard/shared.ts"),
+				],
+				"@arkenv/nuxt/standard/module": [
+					path.join(root, "packages/nuxt/src/standard/module.ts"),
+				],
+				"@arkenv/nuxt/standard/config": [
+					path.join(root, "packages/nuxt/src/standard/config.ts"),
+				],
 				"@repo/types": [
 					path.join(root, "packages/internal/types/src/index.ts"),
 				],

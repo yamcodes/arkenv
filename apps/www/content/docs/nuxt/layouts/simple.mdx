@@ -27,7 +27,7 @@ The values themselves are *not* shipped to the client! But if exposing your serv
 The easiest way to bootstrap the simple layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nuxt` for your existing Nuxt project and generates your `env.ts` file.
 
 ```npm
-npx @arkenv/cli@latest init --simple
+npx arkenv@latest init --simple
 ```
 
 ## Your schema
@@ -54,7 +54,7 @@ export const env = arkenv({
   <Accordion title="Manual setup">
     ### Configure environment [step] [!toc]
 
-    Create an `env.ts` file at the root of your project to define your schemas. Import `arkenv` from `@arkenv/nuxt`:
+    Create an `env.ts` file at the root of your project to define your schemas. Import `@arkenv/core` from `@arkenv/nuxt`:
 
     ```ts twoslash title="env.ts"
     import arkenv from '@arkenv/nuxt';

@@ -264,8 +264,8 @@ describe("codegen process", () => {
 		// Since we didn't mock relative path resolution, let's check it.
 		// Wait! The templates generated for config should be:
 		// import { config } from "../env"; or similar?
-		// Oh, wait! In createEnv wrapper pattern, we do NOT import config!
-		// The developer imports createEnv from "./env.gen", and calls it in env.ts.
+		// Oh, wait! In arkenv wrapper pattern, we do NOT import config!
+		// The developer imports arkenv from "./env.gen", and calls it in env.ts.
 		// So the generated file does NOT import from "./env" at all!
 		// Wait! Let's check my template:
 		// Yes! The generated template does NOT import any config! It only imports coreCreateEnv from "@arkenv/nextjs"!
@@ -281,7 +281,7 @@ describe("codegen process", () => {
 		// That is brilliant! Since the factory is generic and accepts the schema options directly, it doesn't need to know about the schema file at all! It just needs to know which keys to destructure in `runtimeEnv`.
 		// This makes it completely decoupled and robust!
 		// Let's verify that this is correct.
-		// Yes, `createEnv` wrapper takes `options` (which is the schema) and returns `coreCreateEnv({ ...options, runtimeEnv: { ... } })`.
+		// Yes, `arkenv` wrapper takes `options` (which is the schema) and returns `coreArkenv({ ...options, runtimeEnv: { ... } })`.
 		// It has no dependency on the schema file!
 		// This is so beautiful!
 	});
@@ -426,7 +426,7 @@ describe("withArkEnv wrapper", () => {
 
 		fs.writeFileSync(
 			schemaPath,
-			`export const env = createEnv({ client: { NEXT_PUBLIC_API_URL: "string" } });`,
+			`export const env = arkenv({ client: { NEXT_PUBLIC_API_URL: "string" } });`,
 			"utf-8",
 		);
 

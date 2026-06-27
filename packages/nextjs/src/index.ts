@@ -1,8 +1,9 @@
+import type { EnvSchema, Infer } from "@arkenv/core";
+import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
-import type { EnvSchema, Infer } from "arkenv";
 import type { type as at, distill } from "arktype";
-import { createEnvInternal } from "./create-env";
+import { arkenvInternal } from "./arkenv-internal";
 import type { MergeExtends } from "./types";
 
 /**
@@ -27,7 +28,7 @@ type ClientVisibleKeys<
 /**
  * Create a validated, type-safe environment configuration for Next.js applications (Client-side / SSR entry point).
  */
-export function createEnv<
+export function arkenv<
 	const TSchema extends SchemaShape & { runtimeEnv?: never } = {},
 	const TExpose extends keyof TSchema = never,
 	const TExtends extends readonly unknown[] = [],
@@ -61,7 +62,7 @@ export function createEnv<
 /**
  * @deprecated Use the unified flat layout signature instead: `createEnv(schema, options)`
  */
-export function createEnv<
+export function arkenv<
 	const TServer extends SchemaShape = {},
 	const TClient extends SchemaShape = {},
 	const TShared extends SchemaShape = {},
@@ -75,7 +76,7 @@ export function createEnv<
 		Record<string, unknown>;
 }): Readonly<Infer<TServer & TClient & TShared>>;
 
-export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
+export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	const isLegacy =
 		schemaOrOptions &&
 		typeof schemaOrOptions === "object" &&
@@ -85,18 +86,34 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 			"shared" in schemaOrOptions);
 
 	if (isLegacy) {
-		return createEnvInternal(schemaOrOptions, false);
+		return arkenvInternal(
+			schemaOrOptions,
+			false,
+			undefined,
+			coreArkenv,
+			getSchemaKeys,
+		);
 	}
 
-	return createEnvInternal(schemaOrOptions, optionsOrIsServer, {
-		isServer: false,
-	});
+	return arkenvInternal(
+		schemaOrOptions,
+		optionsOrIsServer,
+		{ isServer: false },
+		coreArkenv,
+		getSchemaKeys,
+	);
 }
 
-export type { Infer } from "arkenv";
-export { type } from "arkenv";
+export const createEnv = arkenv;
+
+export type { Infer } from "@arkenv/core";
+export { type } from "@arkenv/core";
 export type { ArkEnvScriptProps } from "./script";
 export { ArkEnvScript } from "./script";
 
-const arkenv = createEnv;
+/**
+ * ArkEnv's Next.js integration export
+ *
+ * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
+ */
 export default arkenv;

@@ -20,8 +20,12 @@
 		},
 		{
 			"path": "packages/arkenv",
-
 			"name": "🎁 arkenv"
+		},
+		{
+			"path": "packages/core",
+
+			"name": "🎁 @arkenv/core"
 		},
 		{
 			"path": "packages/nextjs",
@@ -38,10 +42,6 @@
 		{
 			"path": "packages/bun-plugin",
 			"name": "🎁 @arkenv/bun-plugin"
-		},
-		{
-			"path": "packages/cli",
-			"name": "🎁 @arkenv/cli"
 		},
 		{
 			"path": "packages/fumadocs-ui",

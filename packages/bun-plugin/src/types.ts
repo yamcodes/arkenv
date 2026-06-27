@@ -17,7 +17,7 @@ import type { type } from "arktype";
  * ```ts
  * // bun.config.ts or similar
  * import arkenv from '@arkenv/bun-plugin';
- * import { type } from 'arkenv';
+ * import { type } from '@arkenv/core';
  *
  * export const Env = type({
  *   BUN_PUBLIC_API_URL: 'string',

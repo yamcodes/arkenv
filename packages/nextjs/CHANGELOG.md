@@ -1,4 +1,132 @@
-# @ArkEnv/nextjs
+# @arkenv/nextjs
+
+## 1.0.0-alpha.4
+
+### Major Changes
+
+- #### Split core engine into `@arkenv/core` and `@arkenv/standard` and add standard subpath exports to framework plugins _[`#1225`](https://github.com/yamcodes/arkenv/pull/1225) [`44c840f`](https://github.com/yamcodes/arkenv/commit/44c840ff95931310be965262b0c7c3e94c80f8d8) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce `@arkenv/standard` as a dependency-free validation engine for Standard Schema validators (e.g., Zod, Valibot), and rename the main `arkenv` package to `@arkenv/core` (with `arktype` as a required peer dependency).
+
+  Framework plugins (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`) now export a `/standard` subpath to allow using Standard Schema mode without any dependency on `arktype`.
+
+  Example using `@arkenv/standard`:
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.coerce.number().default(3000),
+  });
+  ```
+
+  Example of Vite plugin configuration in Standard Mode:
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin/standard";
+  import { defineConfig } from "vite";
+
+  export default defineConfig({
+    plugins: [arkenv()],
+  });
+  ```
+
+  **BREAKING CHANGE:** The package `arkenv` has been renamed to `@arkenv/core`. Framework plugins now list `@arkenv/core` and `@arkenv/standard` as optional peer dependencies. You must install either `@arkenv/core` (if using ArkType) or `@arkenv/standard` (if using Standard Schema).
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`44c840f`](https://github.com/yamcodes/arkenv/commit/44c840ff95931310be965262b0c7c3e94c80f8d8)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.3`
+- `@arkenv/standard@1.0.0-alpha.3`
+
+</details>
+
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- #### Move `arkenv` to peer dependencies in framework plugins _[`#1202`](https://github.com/yamcodes/arkenv/pull/1202) [`763270c`](https://github.com/yamcodes/arkenv/commit/763270c473767c144509fb5628327635274f4611) [@yamcodes](https://github.com/yamcodes)_
+
+  Framework plugins no longer declare `arkenv` as a regular dependency. `arkenv` is now declared as a `peerDependency` with a caret range (`^1.0.0`), ensuring a single shared instance across all plugins and the host application.
+
+  This change prevents duplicate instances of `arkenv` in `node_modules`, which could break ArkType structural typing and schema validation at runtime.
+
+  Plugins affected:
+
+  - `@arkenv/nextjs`
+  - `@arkenv/nuxt`
+  - `@arkenv/vite-plugin`
+  - `@arkenv/bun-plugin`
+
+  Before:
+
+  ```bash
+  npm install @arkenv/nextjs
+  ```
+
+  After:
+
+  ```bash
+  npm install arkenv @arkenv/nextjs
+  ```
+
+  **BREAKING CHANGE:** Users must now install `arkenv` alongside the plugin. Previously, `arkenv` was automatically pulled in as a regular dependency.
+
+## 1.0.0-alpha.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`427ced6`](https://github.com/yamcodes/arkenv/commit/427ced6bd9af4589c5fd696906bdf712104870bb)
+
+</small>
+
+- `arkenv@1.0.0-alpha.2`
+
+</details>
+
+## 1.0.0-alpha.1
+
+### Major Changes
+
+- #### Rename `createEnv` function to `arkenv` _[`#1203`](https://github.com/yamcodes/arkenv/pull/1203) [`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: Rename the primary environment variable validation function from `createEnv` to `arkenv` across all packages in the ecosystem, and expose it as both the default export and a named export.
+
+  Update all usages:
+
+  ```ts
+  // Before
+  import { createEnv } from "arkenv";
+
+  export const env = createEnv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+
+  // After
+  import arkenv from "arkenv";
+  // or: import { arkenv } from "arkenv";
+
+  export const env = arkenv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  Migration Steps:
+
+  - Replace all imports and invocations of `createEnv` with `arkenv`.
+  - Update config generators and plugins (Next.js config templates, Vite plugin, Bun plugin) to use `arkenv`.
 
 ## 0.1.2
 
@@ -123,6 +251,44 @@
     },
   });
   ```
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf)
+
+</small>
+
+- `arkenv@1.0.0-alpha.1`
+
+</details>
+
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [`b666698`](https://github.com/yamcodes/arkenv/commit/b66669888cf2f8c756cce12fd6210c492146cd87)
+
+</small>
+
+- `arkenv@1.0.0-alpha.0`
+
+</details>
+
+## 0.1.0
 
 ### Patch Changes
 

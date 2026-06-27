@@ -8,15 +8,15 @@
 		"apps/playgrounds/**",
 		"apps/playwright-www/**",
 		"packages/vite-plugin/src/__fixtures__/**",
-		"packages/arkenv/test/setup-attest.ts",
-		"packages/arkenv/src/arktype/coercion/index.ts"
+		"packages/core/test/setup-attest.ts",
+		"packages/core/src/arktype/coercion/index.ts"
 	],
 	"ignoreDependencies": ["esbuild", "bun"],
 	"ignoreBinaries": ["tsx", "size-limit"],
 	"ignoreIssues": {
 		"packages/bun-plugin/src/index.ts": ["duplicates"],
-		"packages/arkenv/src/arktype/index.ts": ["types"],
-		"packages/arkenv/package.json": ["devDependencies"]
+		"packages/core/src/arktype/index.ts": ["types"],
+		"packages/core/package.json": ["devDependencies"]
 	},
 	"workspaces": {
 		".": {},

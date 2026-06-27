@@ -90,3 +90,7 @@ gha-creds-*.json
 skills/*-workspace/
 skills/create-skill/scripts/__pycache__/
 tooling/
+job_logs.txt
+
+# Temporary test folders from bundling-interop tests
+packages/arkenv/test/temp-interop-*

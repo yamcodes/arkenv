@@ -18,7 +18,7 @@ Here is an example using Zod or Valibot with the flat layout:
   <Tab value="Zod">
     ```ts title="src/env.ts" twoslash
     // @filename: generated/env.gen.ts
-    import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+    import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
     export default function arkenv<const T extends {}>(
@@ -44,7 +44,7 @@ Here is an example using Zod or Valibot with the flat layout:
   <Tab value="Valibot">
     ```ts title="src/env.ts" twoslash
     // @filename: generated/env.gen.ts
-    import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+    import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
     export default function arkenv<const T extends {}>(
@@ -101,3 +101,35 @@ You can freely mix Zod or Valibot schemas with the strict layout:
     ```
   </Tab>
 </Tabs>
+
+## ArkType-free mode (Standard Mode)
+
+If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` as a dependency in your Next.js project:
+
+1. Install `@arkenv/standard` and `@arkenv/nextjs` (along with your validator):
+
+```package-install
+@arkenv/standard @arkenv/nextjs zod
+```
+
+2. Import from `@arkenv/nextjs/standard` in your environment schema file:
+
+```ts title="env.ts" twoslash
+import arkenv from '@arkenv/nextjs/standard';
+import { z } from 'zod';
+
+export const env = arkenv({
+  server: {
+    DATABASE_URL: z.string().url(),
+  },
+  client: {
+    NEXT_PUBLIC_API_URL: z.string().url(),
+  },
+  runtimeEnv: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  },
+});
+```
+
+> [!NOTE]
+> If you are using the default Simple layout with codegen, the CLI will automatically generate `generated/env.gen.ts` importing from `@arkenv/nextjs/standard` if your schema file imports from `@arkenv/standard` or `@arkenv/nextjs/standard`.

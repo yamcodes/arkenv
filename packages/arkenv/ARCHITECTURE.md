@@ -1,37 +1,77 @@
-# ArkEnv architecture
+# ArkEnv CLI architecture
 
-## Three-tier export surface
+This project follows a hybrid of **Hexagonal Architecture (Ports and Adapters)** and **Feature-Sliced Design (FSD)** principles. The goal is to keep the core ArkEnv logic entirely headless and decoupled from the terminal UI and the file system.
 
-ArkEnv ships three public entry points from a single npm package:
+## The core rule: pure orchestration & headless domains
 
-| Entry    | Import                                      | ArkType required? | Purpose                                            |
-| -------- | ------------------------------------------- | ----------------- | -------------------------------------------------- |
-| Main     | `import arkenv from "arkenv"`               | Yes (static)      | ArkType-first `createEnv` + `type` helper          |
-| Standard | `import arkenv from "arkenv/standard"`      | No                | ArkType-free `createEnv` for Standard Schema users |
-| Core     | `import { ArkEnvError } from "arkenv/core"` | No                | Entry-agnostic primitives (errors, types)          |
+The most important rule in this codebase is the strict separation of concerns:
 
-The main entry re-exports `type` from `src/arktype/index.ts`, which statically imports ArkType. This is intentional: the main entry is the ArkType-first surface and its dependency on ArkType is explicit. Users who need an ArkType-free import use `arkenv/standard` or `arkenv/core`.
+- **Zero UI Imports in Core/Shell**: Files in `features/` (Domains) and `cli/commands/` (Use Cases) must never import from `cli/ui/` or libraries like `@clack/prompts`.
+- **Port-Based Interaction**: Use Cases must interact with the user only through the `PromptPort` defined in `shared/ports/`. This ensures the business flow is agnostic to whether it is running in a terminal, a browser, or a headless agent.
+- **Zero direct I/O**: Features and Use Cases interact with the outside world (file system, process) only through **Ports** defined in `shared/ports/`.
 
-## Ownership rules
+## Project structure
 
-- **Entry-specific exports** belong in the entry (`src/index.ts` for ArkType, `src/standard.ts` for Standard Schema).
-- **Entry-agnostic exports** (e.g. `ArkEnvError`) belong in `arkenv/core` (`src/core.ts`).
-- **Internal modules** (`src/guards.ts`, `src/parse-standard.ts`, `src/arktype/`) are not public entries.
+```text
+src/
+├── cli/                      # Driving Adapters (The Shell)
+│   ├── commands/             # Pure Command orchestrators (init, help)
+│   ├── ui/                   # Terminal UI logic (Visuals only)
+│   ├── composition.ts        # Composition Root (Dependency Injection)
+│   └── cli.ts                # Arg parsing and global state
+│
+├── features/                 # Pure Business Domains (Headless)
+│   ├── scaffold/             # Generation engine (Planner, Executor)
+│   └── config-mutation/      # AST-based configuration manipulation
+│
+├── adapters/                 # Driven Adapters (Infrastructure)
+│   ├── node-workspace.adapter.ts # Concrete File System & Process logic
+│   ├── logger.adapter.ts     # Concrete Terminal & JSON output logic
+│   └── prompt.adapter.ts     # Concrete @clack/prompts implementation
+│
+└── shared/                   # Cross-cutting concerns
+    └── ports/                # Infrastructure contracts (Interfaces)
+```
 
-## Single-implementation invariant
+## Dependency flow
 
-The ArkType entry's `createEnv` MUST NOT contain ArkType-specific validation logic. Its only ArkType-specific step is calling `$.type.raw()` on the user's definition to produce a compiled schema. All subsequent validation - `onUndeclaredKey`, coercion, error collection - is handled by `parse` in `src/arktype/index.ts`.
+The dependency direction always flows **inward** toward the ports or **outward** from the driving shell:
 
-Similarly, the standard entry delegates to `parseStandard` in `src/parse-standard.ts`. There is exactly one validation implementation per entry point, and neither lives in an entry-point file itself.
+1. **CLI (Shell)**: Orchestrates the flow using Ports.
+   - `cli/commands/init` -> `PromptPort.runWizard()`
+   - `cli/commands/init` -> `features/scaffold` (pass pure data)
+2. **Features (Core)**: Import only from `shared/ports/`. They are entirely side-effect free, delegating all I/O to the injected adapters.
+3. **Adapters (Infra)**: Implement the contracts defined in `shared/ports/`. This is where terminal-specific (Clack) or OS-specific (fs) logic lives.
 
-If ArkType-specific behavior is needed, it belongs in `src/arktype/index.ts#parse`, not in `create-env.ts` or `src/index.ts`.
+## Headless / agent mode (`--agent`)
 
-## Why one package, not two
+The architecture is specifically designed to support AI agents and headless environments via the `--agent` and `--json` flags.
 
-Splitting `arkenv/standard` into a separate npm package (`arkenv-standard`) would:
+- When `--agent` is passed, the `composition.ts` root injects a `JsonReporter` into the `LoggerPort`.
+- Because the `scaffold` and `config-mutation` features are headless, they continue to function exactly the same.
+- The `init` command skips interactive `ui/prompts` and passes default/provided options directly to the `features`.
+- No interactive prompt will ever hang a headless process.
 
-- Require separate versioning and release coordination
-- Duplicate shared code (`ArkEnvError`, `parseStandard`, `guards.ts`)
-- Fragment the documentation surface
+## Testing strategy
 
-The sub-path export approach (`arkenv/standard`) provides the same module isolation guarantee (disjoint module graph) at the bundler level, without the operational overhead of a separate package. Tree-shaking is NOT relied upon - the isolation is structural: `src/standard.ts` has no imports of `src/create-env.ts` or any ArkType module.
+- **Domain Tests**: Features are tested with pure data and mock ports. These tests are fast and do not touch the disk.
+- **Adapter Tests**: Concrete implementations in `adapters/` are tested against the actual Node.js environment (e.g., using `fsp.mkdtemp`).
+- **Smoke Tests**: High-level integration tests in `src/smoke.test.ts` verify the final bundled CLI from the user's perspective.
+
+### Interactive local testing
+
+To test the interactive onboarding wizard in real-world scenarios, a helper script is provided at the monorepo root. You can run the CLI inside a clean, sandboxed testing directory without affecting any existing codebase.
+
+From the monorepo root:
+
+- **Test in an ArkEnv-less existing project** (creates a folder with `package.json` + `tsconfig.json` + `.env.example` but no ArkEnv setup):
+  ```bash
+  pnpm test:cli --existing
+  ```
+
+- **Test in a completely new/empty directory** (creates a completely blank directory and runs `init`):
+  ```bash
+  pnpm test:cli --new
+  ```
+
+These commands will automatically rebuild the CLI, create a temporary directory under the repo root at `tmp/new-*` or `tmp/existing-*` (which is git-ignored), and launch the local CLI binary interactively inside it.

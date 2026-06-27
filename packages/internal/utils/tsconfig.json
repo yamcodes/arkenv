@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "preserve",
+		"strict": true,
+		"esModuleInterop": true,
+		"moduleResolution": "bundler",
+		"skipLibCheck": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noEmit": true,
+		"outDir": "dist",
+		"resolveJsonModule": true,
+		"rootDir": "src",
+		"declaration": true,
+		"declarationMap": true,
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"types": ["node"],
+		"lib": ["es2020", "es2022.object"]
+	},
+	"include": ["src"]
+}

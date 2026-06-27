@@ -1,8 +1,9 @@
+import type { EnvSchema } from "@arkenv/core";
+import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
-import type { EnvSchema } from "arkenv";
 import type { type as at, distill } from "arktype";
-import { createEnvInternal } from "./create-env";
+import { arkenvInternal } from "./arkenv-internal";
 import type { MergeExtends } from "./types";
 
 /**
@@ -52,15 +53,25 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 				"client entry point only accepts 'client' and 'shared' schemas.",
 			);
 		}
-		return createEnvInternal(schemaOrOptions, false);
+		return arkenvInternal(
+			schemaOrOptions,
+			false,
+			undefined,
+			coreArkenv,
+			getSchemaKeys,
+		);
 	}
 
-	return createEnvInternal(schemaOrOptions, optionsOrIsServer, {
-		isServer: false,
-	});
+	return arkenvInternal(
+		schemaOrOptions,
+		optionsOrIsServer,
+		{ isServer: false },
+		coreArkenv,
+		getSchemaKeys,
+	);
 }
 
-export { type } from "arkenv";
+export { type } from "@arkenv/core";
 
 const arkenv = createEnv;
 export default arkenv;

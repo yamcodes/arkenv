@@ -14,24 +14,42 @@ console.log("🚀 Starting E2E Package Installation Tests...");
 console.log("\n📦 Building workspace packages...");
 execSync("pnpm run build", { cwd: rootDir, stdio: "inherit" });
 
-// 2. Pack the arkenv package
-const arkenvDir = path.join(rootDir, "packages/arkenv");
-console.log("\n🎒 Packing arkenv package...");
-execSync("pnpm pack", { cwd: arkenvDir, stdio: "inherit" });
+// 2. Pack the core and standard packages
+const coreDir = path.join(rootDir, "packages/core");
+const standardDir = path.join(rootDir, "packages/standard");
 
-// 3. Locate the tarball
-const files = fs.readdirSync(arkenvDir);
-const tarballName = files.find((file) =>
-	/^arkenv-\d+\.\d+\.\d+(?:-.*)?\.tgz$/.test(file),
+console.log("\n🎒 Packing @arkenv/core package...");
+execSync("pnpm pack", { cwd: coreDir, stdio: "inherit" });
+
+console.log("\n🎒 Packing @arkenv/standard package...");
+execSync("pnpm pack", { cwd: standardDir, stdio: "inherit" });
+
+// 3. Locate the tarballs
+const coreFiles = fs.readdirSync(coreDir);
+const coreTarballName = coreFiles.find((file) =>
+	/^arkenv-core-\d+\.\d+\.\d+(?:-.*)?\.tgz$/.test(file),
 );
-if (!tarballName) {
+if (!coreTarballName) {
 	console.error(
-		"❌ Error: Could not find generated arkenv tarball (.tgz) file.",
+		"❌ Error: Could not find generated @arkenv/core tarball (.tgz) file.",
 	);
 	process.exit(1);
 }
-const tarballPath = path.join(arkenvDir, tarballName);
-console.log(`Found tarball: ${tarballPath}`);
+const coreTarballPath = path.join(coreDir, coreTarballName);
+console.log(`Found @arkenv/core tarball: ${coreTarballPath}`);
+
+const standardFiles = fs.readdirSync(standardDir);
+const standardTarballName = standardFiles.find((file) =>
+	/^arkenv-standard-\d+\.\d+\.\d+(?:-.*)?\.tgz$/.test(file),
+);
+if (!standardTarballName) {
+	console.error(
+		"❌ Error: Could not find generated @arkenv/standard tarball (.tgz) file.",
+	);
+	process.exit(1);
+}
+const standardTarballPath = path.join(standardDir, standardTarballName);
+console.log(`Found @arkenv/standard tarball: ${standardTarballPath}`);
 
 // 4. Set up temporary directory in os.tmpdir()
 const tempBaseDir = fs.mkdtempSync(path.join(os.tmpdir(), "arkenv-e2e-"));
@@ -41,8 +59,15 @@ const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
 
 try {
 	// Normalize path for Windows file url compatibility
-	const normalizedTarballPath = path.resolve(tarballPath).replace(/\\/g, "/");
-	const tarballDependency = `file:${normalizedTarballPath}`;
+	const normalizedCoreTarballPath = path
+		.resolve(coreTarballPath)
+		.replace(/\\/g, "/");
+	const coreTarballDependency = `file:${normalizedCoreTarballPath}`;
+
+	const normalizedStandardTarballPath = path
+		.resolve(standardTarballPath)
+		.replace(/\\/g, "/");
+	const standardTarballDependency = `file:${normalizedStandardTarballPath}`;
 
 	// We will run tests against examples/basic and examples/with-zod
 	const fixtures = ["basic", "with-zod"];
@@ -75,16 +100,23 @@ try {
 			);
 		}
 
-		// Update dependency on arkenv to point to local tarball
+		// Update dependency to point to local tarballs
 		const pkgJsonPath = path.join(fixtureDestDir, "package.json");
 		const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
-		if (pkg.dependencies && pkg.dependencies["arkenv"]) {
-			pkg.dependencies["arkenv"] = tarballDependency;
-		} else if (pkg.devDependencies && pkg.devDependencies["arkenv"]) {
-			pkg.devDependencies["arkenv"] = tarballDependency;
-		} else {
-			pkg.dependencies = pkg.dependencies || {};
-			pkg.dependencies["arkenv"] = tarballDependency;
+		if (fixture === "basic") {
+			if (pkg.dependencies && pkg.dependencies["@arkenv/core"]) {
+				pkg.dependencies["@arkenv/core"] = coreTarballDependency;
+			} else {
+				pkg.dependencies = pkg.dependencies || {};
+				pkg.dependencies["@arkenv/core"] = coreTarballDependency;
+			}
+		} else if (fixture === "with-zod") {
+			if (pkg.dependencies && pkg.dependencies["@arkenv/standard"]) {
+				pkg.dependencies["@arkenv/standard"] = standardTarballDependency;
+			} else {
+				pkg.dependencies = pkg.dependencies || {};
+				pkg.dependencies["@arkenv/standard"] = standardTarballDependency;
+			}
 		}
 		fs.writeFileSync(pkgJsonPath, JSON.stringify(pkg, null, 2));
 
@@ -160,12 +192,18 @@ try {
 		console.warn(`Warning: Failed to clean up temp base dir: ${e.message}`);
 	}
 
-	// Cleanup tarball
-	console.log(`🧹 Cleaning up packed tarball ${tarballPath}...`);
+	// Cleanup tarballs
+	console.log(`🧹 Cleaning up packed tarball ${coreTarballPath}...`);
 	try {
-		fs.rmSync(tarballPath, { force: true });
+		fs.rmSync(coreTarballPath, { force: true });
 	} catch (e) {
-		console.warn(`Warning: Failed to clean up tarball: ${e.message}`);
+		console.warn(`Warning: Failed to clean up core tarball: ${e.message}`);
+	}
+	console.log(`🧹 Cleaning up packed tarball ${standardTarballPath}...`);
+	try {
+		fs.rmSync(standardTarballPath, { force: true });
+	} catch (e) {
+		console.warn(`Warning: Failed to clean up standard tarball: ${e.message}`);
 	}
 }
 

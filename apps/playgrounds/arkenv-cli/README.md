@@ -1,6 +1,6 @@
 # CLI Testing Playground
 
-This playground folder is the reference directory for the `@arkenv/cli` package, but to test the CLI's interactive wizard in a clean sandboxed environment, you should use the global testing utility.
+This playground folder is the reference directory for the `arkenv` CLI package, but to test the CLI's interactive wizard in a clean sandboxed environment, you should use the global testing utility.
 
 ## Testing the CLI
 

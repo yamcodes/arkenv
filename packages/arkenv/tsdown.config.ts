@@ -1,35 +1,13 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-	entry: ["src/index.ts", "src/standard.ts", "src/core.ts"],
-	format: {
-		esm: {},
-		cjs: {
-			define: {
-				"import.meta": "{}",
-			},
-		},
-	},
+	entry: "src/index.ts",
+	format: "cjs",
 	platform: "node",
 	minify: true,
 	fixedExtension: true,
+	shims: true,
 	deps: {
-		alwaysBundle: ["@repo/scope", "@repo/types"],
-		neverBundle: ["arktype"],
-	},
-	outputOptions: {
-		exports: "named",
-	},
-	footer: ({ format }) => {
-		// TODO: Avoid this, this is a hack
-		if (format === "cjs") {
-			return `
-// CJS Interop Shim
-if (module.exports && module.exports.default) {
-    Object.assign(module.exports.default, module.exports);
-    module.exports = module.exports.default;
-}
-      `;
-		}
+		alwaysBundle: ["@clack/prompts", "picocolors"],
 	},
 });

@@ -9,8 +9,8 @@
 		"preview": "nuxt preview"
 	},
 	"dependencies": {
+		"@arkenv/core": "workspace:*",
 		"@arkenv/nuxt": "workspace:*",
-		"arkenv": "workspace:*",
 		"arktype": "catalog:",
 		"nuxt": "^4.4.8"
 	},
