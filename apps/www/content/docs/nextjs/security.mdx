@@ -6,7 +6,7 @@ description: Understand exactly what @arkenv/nextjs protects, what Next.js prote
 
 The most important thing to understand about ArkEnv: **it validates your environment variables and makes them typesafe.**
 
-Without ArkEnv, `process.env.DATABASE_URL` is `string | undefined`. With ArkEnv, it's `string` — and if it's missing or malformed, your build or server startup fails immediately with a clear error instead of producing a silent `undefined` bug somewhere downstream.
+Without ArkEnv, `process.env.DATABASE_URL` is `string | undefined`. With ArkEnv, it's `string` - and if it's missing or malformed, your build or server startup fails immediately with a clear error instead of producing a silent `undefined` bug somewhere downstream.
 
 But because ArkEnv manages your secrets, you need absolute certainty about how it interacts with the Next.js bundler.
 
@@ -40,7 +40,7 @@ This comes down to how TypeScript compiles your `env.ts` file. TypeScript reads 
 
 If we tried to force the types to omit server keys for the browser, we would end up breaking autocomplete for your Server Components entirely.
 
-To give you the best Developer Experience — a single file with perfect autocomplete — we intentionally type the full schema everywhere. We then rely entirely on the runtime proxy to act as the security boundary.
+To give you the best Developer Experience - a single file with perfect autocomplete - we intentionally type the full schema everywhere. We then rely entirely on the runtime proxy to act as the security boundary.
 
 :::note
 This approach exactly mirrors single-file mode in [`@t3-oss/env-nextjs`](https://env.t3.gg) (full type inference plus a runtime proxy throw). If you require strict compile-time boundaries, both libraries recommend splitting your configuration into separate files.

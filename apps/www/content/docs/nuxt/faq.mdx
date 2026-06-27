@@ -20,7 +20,7 @@ ArkEnv's Nuxt module scans your schema file(s) at build time, identifies the cli
 
 ## How does the compile-time client security work?
 
-In the **strict layout**, server-only schemas live in a separate file (for example, `env/server.ts`). If client-side code accidentally imports from that file, the build fails immediately with a clear compile-time error — before the code ever reaches the browser.
+In the **strict layout**, server-only schemas live in a separate file (for example, `env/server.ts`). If client-side code accidentally imports from that file, the build fails immediately with a clear compile-time error - before the code ever reaches the browser.
 
 This guarantees that private server keys, validation schemas, and database constraints never ship in client bundles.
 
