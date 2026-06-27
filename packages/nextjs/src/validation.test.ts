@@ -1,7 +1,32 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { setupArkEnv } from "./config";
+import { setupArkEnv as originalSetupArkEnv } from "./config";
+
+const nextjsSrc = path.resolve(__dirname);
+const arkenvSrc = path.resolve(nextjsSrc, "../../arkenv/src");
+
+const testAliases = {
+	"@arkenv/nextjs/shared": path.join(nextjsSrc, "shared.ts"),
+	"@arkenv/nextjs/server": path.join(nextjsSrc, "server.ts"),
+	"@arkenv/nextjs/client": path.join(nextjsSrc, "client.ts"),
+	"@arkenv/nextjs/config": path.join(nextjsSrc, "config.ts"),
+	"@arkenv/nextjs": path.join(nextjsSrc, "index.ts"),
+	"arkenv/standard": path.join(arkenvSrc, "standard.ts"),
+	"arkenv/core": path.join(arkenvSrc, "core.ts"),
+	arkenv: path.join(arkenvSrc, "index.ts"),
+	"@repo/scope": path.join(nextjsSrc, "../../internal/scope/src/index.ts"),
+	"@repo/types": path.join(nextjsSrc, "../../internal/types/src/index.ts"),
+};
+
+function setupArkEnv(options?: any) {
+	return originalSetupArkEnv(options, {
+		_jitiAliases: {
+			...testAliases,
+			...options?._jitiAliases,
+		},
+	});
+}
 
 describe("build-time environment validation", () => {
 	const tempDir = path.join(__dirname, "__temp_validation_tests__");

@@ -109,9 +109,13 @@ export type ArkEnvConfigOptions = {
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
  * @param options Optional configuration paths for schema and output files
+ * @param internalOptions Optional configuration for internal testing hooks
  * @throws An error if the schema file cannot be found or if code generation fails
  */
-export function setupArkEnv(options?: ArkEnvConfigOptions): void {
+export function setupArkEnv(
+	options?: ArkEnvConfigOptions,
+	internalOptions?: { _jitiAliases?: Record<string, string> },
+): void {
 	// 1. Locate the env.ts schema file or strict schema directory
 	const schemaPath = options?.schemaPath
 		? path.resolve(options.schemaPath)
@@ -175,7 +179,7 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 	const runValidation = options?.validate ?? process.env.VITEST !== "true";
 	if (runValidation) {
 		try {
-			(globalThis as any).__arkenv_build_time_validation__ = true;
+			process.env.ARKENV_FORCE_SERVER = "true";
 			const fileToEvaluate =
 				resolvedLayout === "strict" && baseDir
 					? path.join(baseDir, "server.ts")
@@ -196,35 +200,8 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 				"server-only": sharedPath,
 				"./script": sharedPath,
 				"./script.tsx": sharedPath,
+				...internalOptions?._jitiAliases,
 			};
-
-			if (process.env.VITEST === "true") {
-				// Solve fragile resolution in tests when workspace is not built.
-				// Aliasing internal workspace packages to their source files ensures all internal
-				// imports resolve consistently as ESM. This avoids a dual package hazard (loading
-				// both ESM and CJS entrypoints of dependency libraries like 'arktype') which
-				// would otherwise cause module prototype mismatch errors (e.g. instanceof ArkErrors failing).
-				const nextjsSrc = dir.endsWith("dist")
-					? path.resolve(dir, "../src")
-					: dir;
-				const arkenvSrc = path.resolve(nextjsSrc, "../../arkenv/src");
-				aliases["@arkenv/nextjs/shared"] = path.join(nextjsSrc, "shared.ts");
-				aliases["@arkenv/nextjs/server"] = path.join(nextjsSrc, "server.ts");
-				aliases["@arkenv/nextjs/client"] = path.join(nextjsSrc, "client.ts");
-				aliases["@arkenv/nextjs/config"] = path.join(nextjsSrc, "config.ts");
-				aliases["@arkenv/nextjs"] = path.join(nextjsSrc, "index.ts");
-				aliases["arkenv/standard"] = path.join(arkenvSrc, "standard.ts");
-				aliases["arkenv/core"] = path.join(arkenvSrc, "core.ts");
-				aliases["arkenv"] = path.join(arkenvSrc, "index.ts");
-				aliases["@repo/scope"] = path.join(
-					nextjsSrc,
-					"../../internal/scope/src/index.ts",
-				);
-				aliases["@repo/types"] = path.join(
-					nextjsSrc,
-					"../../internal/types/src/index.ts",
-				);
-			}
 
 			const jiti = createJiti(fileToEvaluate, {
 				moduleCache: false,
@@ -239,7 +216,7 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 			console.error("");
 			process.exit(1);
 		} finally {
-			delete (globalThis as any).__arkenv_build_time_validation__;
+			delete process.env.ARKENV_FORCE_SERVER;
 		}
 	}
 
