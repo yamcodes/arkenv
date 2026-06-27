@@ -4,19 +4,19 @@ icon: ShieldCheck
 description: Understand exactly what @arkenv/nextjs protects, what Next.js protects, and how each layout affects your leak surface.
 ---
 
-The most important thing to understand about ArkEnv: it validates your environment variables and makes them typesafe.
+The most important thing to understand about ArkEnv: **it validates your environment variables and makes them typesafe.**
 
-Without ArkEnv, `process.env.DATABASE_URL` is `string | undefined`. With ArkEnv, it's `string` - and if it's missing or malformed, your build or server startup fails immediately with a clear error instead of producing a silent `undefined` bug somewhere downstream.
+Without ArkEnv, `process.env.DATABASE_URL` is `string | undefined`. With ArkEnv, it's `string` — and if it's missing or malformed, your build or server startup fails immediately with a clear error instead of producing a silent `undefined` bug somewhere downstream.
 
 But because ArkEnv manages your secrets, you need absolute certainty about how it interacts with the Next.js bundler.
 
-Next.js natively strips non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env`. ArkEnv builds a secure layer on top of this:
+Next.js natively strips non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env.X`. ArkEnv builds a secure layer on top of this:
 
-1. **Codegen exclusion.** With the default `withArkEnv` setup, the generated `runtimeEnv` explicitly only maps client and shared values. Server secrets are deliberately excluded, meaning they are never even shipped to the client-side bundle.
+1. **Build-time exclusion.** The `withArkEnv` plugin guarantees that only client and shared values are mapped for the browser. Server secrets are deliberately excluded, meaning they are never even shipped to the client-side bundle.
 2. **Runtime misuse guard.** If you try to read a server-only key in a Client Component, the ArkEnv proxy intercepts the read and throws a loud error before returning anything.
 
 :::tip[Mental model]
-The Next.js bundler and ArkEnv's codegen work together to hide your *values*. ArkEnv validates your *infrastructure* and prevents *runtime misuse*.
+The Next.js bundler and ArkEnv's plugin work together to hide your *values*. ArkEnv validates your *infrastructure* and prevents *runtime misuse*.
 :::
 
 ## Leak surface
@@ -28,7 +28,7 @@ If you have a server-only secret like `DATABASE_URL`, here is what is actually e
 | **Flat** (recommended) |                 ❌                 |                     ✅                     |          ❌         |           ✅           |
 | **Strict** (split)     |                 ❌                 |                     ❌                     |          ✅         |           ✅           |
 
-- **Values are never leaked.** Next.js handles raw `process.env` references; ArkEnv's codegen boundary handles the `env` object.
+- **Values are never leaked.** Next.js handles raw `process.env.X` references; ArkEnv's boundary handles the `env.X` object.
 - **Flat mode exposes variable names and types** (but not values) because the single schema file is imported into your client code. For 99% of applications, knowing a variable is named `DATABASE_URL` is not a security risk.
 - If your variable names reveal sensitive infrastructure (e.g. internal hostnames or vendor names), you should use the [Strict Layout](/docs/nextjs/layouts/strict). Because it uses separate files, the server schema is never imported into the client graph.
 
@@ -40,19 +40,8 @@ This comes down to how TypeScript compiles your `env.ts` file. TypeScript reads 
 
 If we tried to force the types to omit server keys for the browser, we would end up breaking autocomplete for your Server Components entirely.
 
-To give you the best Developer Experience - a single file with perfect autocomplete - we intentionally type the full schema everywhere. We then rely entirely on the runtime proxy to act as the security boundary.
+To give you the best Developer Experience — a single file with perfect autocomplete — we intentionally type the full schema everywhere. We then rely entirely on the runtime proxy to act as the security boundary.
 
 :::note
 This approach exactly mirrors single-file mode in [`@t3-oss/env-nextjs`](https://env.t3.gg) (full type inference plus a runtime proxy throw). If you require strict compile-time boundaries, both libraries recommend splitting your configuration into separate files.
 :::
-
-## How the boundary is enforced
-
-ArkEnv does not rely on a naive `typeof window` check to determine if code is running on the client. We use Next.js conditional package exports:
-
-| Export condition | Next.js context                    | Accessible variables                   |
-| :--------------- | :--------------------------------- | :------------------------------------- |
-| `react-server`   | Server Components & Route Handlers | All variables (server, client, shared) |
-| `default`        | Client Components (SSR & Browser)  | Public variables only (client, shared) |
-
-Because this boundary is fixed during the bundling process, if a Client Component attempts to read a server-only variable, it will throw an error during SSR rendering on the server - long before that broken component ever reaches your user's browser.
