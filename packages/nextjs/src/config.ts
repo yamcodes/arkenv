@@ -237,12 +237,8 @@ export function setupArkEnv(
  * @returns The Next.js configuration object unchanged
  * @throws An error if the schema file cannot be found or if code generation fails
  */
-export function withArkEnv<T>(
-	nextConfig: T,
-	options?: ArkEnvConfigOptions,
-	internalOptions?: { _jitiAliases?: Record<string, string> },
-): T {
-	setupArkEnv(options, internalOptions);
+export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
+	setupArkEnv(options);
 	return nextConfig;
 }
 
