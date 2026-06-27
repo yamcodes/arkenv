@@ -96,21 +96,19 @@ export type ArkEnvConfigOptions = {
 	 * @default true
 	 */
 	validate?: boolean;
-
-	/**
-	 * @internal
-	 * Used strictly for overriding module resolution during workspace testing.
-	 */
-	_jitiAliases?: Record<string, string>;
 };
 
 /**
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
  * @param options Optional configuration paths for schema and output files
+ * @param internalOptions Optional configuration for internal testing hooks
  * @throws An error if the schema file cannot be found or if code generation fails
  */
-export function setupArkEnv(options?: ArkEnvConfigOptions): void {
+export function setupArkEnv(
+	options?: ArkEnvConfigOptions,
+	internalOptions?: { _jitiAliases?: Record<string, string> },
+): void {
 	// 1. Locate the env.ts schema file or strict schema directory
 	const schemaPath = options?.schemaPath
 		? path.resolve(options.schemaPath)
@@ -192,7 +190,7 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 				"server-only": sharedPath,
 				"./script": sharedPath,
 				"./script.tsx": sharedPath,
-				...options?._jitiAliases,
+				...internalOptions?._jitiAliases,
 			};
 
 			const jiti = createJiti(fileToEvaluate, {

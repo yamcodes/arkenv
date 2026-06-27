@@ -15,7 +15,7 @@ We evaluated two architectural paths to support build-time schema evaluation:
 - **Option 1: Dependency-free validation, forcing Next.js 15+ and `next.config.ts`**
   Remove `jiti` entirely. Require the user to migrate to Next.js 15+ and `next.config.ts`, and instruct them to manually write a top-level import (`import "./src/env"`) at the top of their Next.js configuration to trigger validation at build time.
 - **Option 2: Internal dynamic transpilation via `jiti` in `withArkEnv` wrapper (Chosen)**
-  Keep the `withArkEnv` wrapper. Bundle `jiti` (a lightweight, widely-adopted, best-in-class TypeScript runtime execution tool) as a development dependency in `@arkenv/nextjs`. The wrapper automatically spins up a `jiti` instance to parse and validate `env.ts` during initialization.
+  Keep the `withArkEnv` wrapper. Bundle `jiti` (a lightweight, widely-adopted, best-in-class TypeScript runtime execution tool) as a production dependency in `@arkenv/nextjs`. The wrapper automatically spins up a `jiti` instance to parse and validate `env.ts` during initialization.
 
 ## Decision
 

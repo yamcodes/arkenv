@@ -20,8 +20,7 @@ const testAliases = {
 };
 
 function setupArkEnv(options?: any) {
-	return originalSetupArkEnv({
-		...options,
+	return originalSetupArkEnv(options, {
 		_jitiAliases: {
 			...testAliases,
 			...options?._jitiAliases,
