@@ -4,6 +4,7 @@ import type {
 	Dict,
 	InferType,
 	SchemaShape,
+	StandardSchemaV1,
 } from "@repo/types";
 import { ArkEnvError, type SafeArkEnvResult, safeExecute } from "@repo/utils";
 import type { type as at, distill } from "arktype";
@@ -31,9 +32,16 @@ export type EnvSchema<def> = at.validate<def, $>;
  *
  * @template T - The schema type
  */
-export type Infer<T> = T extends SchemaShape
-	? distill.Out<at.infer<T, $>>
-	: InferType<T>;
+export type Infer<T> =
+	T extends StandardSchemaV1<infer _Input, infer Output>
+		? Output
+		: T extends { t: infer U }
+			? U
+			: T extends at.Any<infer U, infer _Scope>
+				? U
+				: T extends SchemaShape
+					? distill.Out<at.infer<T, $>>
+					: InferType<T>;
 
 /**
  * The environment variables passed to `arkenv`.

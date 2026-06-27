@@ -46,6 +46,9 @@
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
 	"author": "Yam Borodetsky <yam@yam.codes>",
+	"publishConfig": {
+		"access": "public"
+	},
 	"devDependencies": {
 		"@ark/attest": "catalog:",
 		"@arkenv/standard": "workspace:*",
