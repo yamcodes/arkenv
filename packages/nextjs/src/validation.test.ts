@@ -11,7 +11,6 @@ describe("build-time environment validation", () => {
 	let consoleErrorSpy: any;
 
 	beforeEach(() => {
-		process.env.ARKENV_TEST_VALIDATION = "true";
 		exitSpy = vi
 			.spyOn(process, "exit")
 			.mockImplementation((code?: string | number | null | undefined) => {
@@ -31,7 +30,6 @@ describe("build-time environment validation", () => {
 			}
 		}
 
-		delete process.env.ARKENV_TEST_VALIDATION;
 		exitSpy.mockRestore();
 		consoleErrorSpy.mockRestore();
 
@@ -65,20 +63,20 @@ describe("build-time environment validation", () => {
 			process.env.NODE_ENV = "development";
 
 			// First run setup to generate the template file (env.gen.ts) so env.ts can import it
-			delete process.env.ARKENV_TEST_VALIDATION;
 			setupArkEnv({
 				schemaPath,
 				outputPath,
 				layout: "flat",
+				validate: false,
 			});
 
 			// Now enable validation for the second pass
-			process.env.ARKENV_TEST_VALIDATION = "true";
 			expect(() => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
 					layout: "flat",
+					validate: true,
 				});
 			}).not.toThrow();
 
@@ -103,20 +101,20 @@ describe("build-time environment validation", () => {
 			// DATABASE_URL is missing
 
 			// First run setup to generate the template file (env.gen.ts) so env.ts can import it
-			delete process.env.ARKENV_TEST_VALIDATION;
 			setupArkEnv({
 				schemaPath,
 				outputPath,
 				layout: "flat",
+				validate: false,
 			});
 
 			// Now enable validation for the second pass
-			process.env.ARKENV_TEST_VALIDATION = "true";
 			expect(() => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
 					layout: "flat",
+					validate: true,
 				});
 			}).toThrow("process.exit called with 1");
 
@@ -139,20 +137,20 @@ describe("build-time environment validation", () => {
 			process.env.PORT = "not-a-number";
 
 			// First run setup to generate the template file (env.gen.ts) so env.ts can import it
-			delete process.env.ARKENV_TEST_VALIDATION;
 			setupArkEnv({
 				schemaPath,
 				outputPath,
 				layout: "flat",
+				validate: false,
 			});
 
 			// Now enable validation for the second pass
-			process.env.ARKENV_TEST_VALIDATION = "true";
 			expect(() => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
 					layout: "flat",
+					validate: true,
 				});
 			}).toThrow("process.exit called with 1");
 
@@ -226,20 +224,20 @@ describe("build-time environment validation", () => {
 
 			// First run setup to generate the template file (env.gen.ts) so clientPath can import it
 			// We disable validation on first pass to let the file compile
-			delete process.env.ARKENV_TEST_VALIDATION;
 			setupArkEnv({
 				schemaPath: strictBaseDir,
 				outputPath: strictOutputPath,
 				layout: "strict",
+				validate: false,
 			});
 
 			// Now enable validation for the second pass
-			process.env.ARKENV_TEST_VALIDATION = "true";
 			expect(() => {
 				setupArkEnv({
 					schemaPath: strictBaseDir,
 					outputPath: strictOutputPath,
 					layout: "strict",
+					validate: true,
 				});
 			}).not.toThrow();
 
@@ -295,20 +293,20 @@ describe("build-time environment validation", () => {
 			// DATABASE_URL is missing
 
 			// First pass codegen
-			delete process.env.ARKENV_TEST_VALIDATION;
 			setupArkEnv({
 				schemaPath: strictBaseDir,
 				outputPath: strictOutputPath,
 				layout: "strict",
+				validate: false,
 			});
 
 			// Second pass validation
-			process.env.ARKENV_TEST_VALIDATION = "true";
 			expect(() => {
 				setupArkEnv({
 					schemaPath: strictBaseDir,
 					outputPath: strictOutputPath,
 					layout: "strict",
+					validate: true,
 				});
 			}).toThrow("process.exit called with 1");
 

@@ -89,53 +89,14 @@ export type ArkEnvConfigOptions = {
 		| "strict"
 		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
 		| "simple";
+
+	/**
+	 * Enable or disable build-time environment variable validation during build/dev startup.
+	 *
+	 * @default true
+	 */
+	validate?: boolean;
 };
-
-function findProjectRoot(startDir: string): string {
-	let dir = startDir;
-	while (dir !== path.dirname(dir)) {
-		if (
-			fs.existsSync(path.join(dir, "package.json")) ||
-			fs.existsSync(path.join(dir, "tsconfig.json"))
-		) {
-			return dir;
-		}
-		dir = path.dirname(dir);
-	}
-	return startDir;
-}
-
-function resolveTsconfigPaths(projectRoot: string): Record<string, string> {
-	const aliases: Record<string, string> = {};
-	try {
-		const tsconfigPath = path.join(projectRoot, "tsconfig.json");
-		if (fs.existsSync(tsconfigPath)) {
-			const content = fs.readFileSync(tsconfigPath, "utf-8");
-			const pathsMatch = content.match(/"paths"\s*:\s*\{([^}]*)\}/);
-			if (pathsMatch) {
-				let pathsContent = pathsMatch[1]
-					.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1")
-					.trim();
-				// Strip trailing comma if present before closing brace
-				pathsContent = pathsContent.replace(/,(\s*)$/, "$1");
-				const json = JSON.parse(`{${pathsContent}}`);
-				for (const [key, value] of Object.entries(json)) {
-					if (Array.isArray(value) && value.length > 0) {
-						const aliasKey = key.endsWith("/*") ? key.slice(0, -1) : key;
-						const targetVal = value[0];
-						const targetPath = targetVal.endsWith("/*")
-							? targetVal.slice(0, -1)
-							: targetVal;
-						aliases[aliasKey] = path.resolve(projectRoot, targetPath);
-					}
-				}
-			}
-		}
-	} catch (_e) {
-		// Ignore parsing errors and fallback
-	}
-	return aliases;
-}
 
 /**
  * Run ArkEnv codegen and setup without wrapping nextConfig.
@@ -201,9 +162,7 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 	}
 
 	// 4. Validate schema against environment variables
-	const isVitest = process.env.VITEST === "true";
-	const runValidation =
-		!isVitest || process.env.ARKENV_TEST_VALIDATION === "true";
+	const runValidation = options?.validate ?? process.env.VITEST !== "true";
 	if (runValidation) {
 		try {
 			process.env.ARKENV_FORCE_SERVER = "true";
@@ -223,18 +182,33 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 				? path.join(dir, "shared.ts")
 				: path.join(dir, "shared.js");
 
-			const projectRoot = findProjectRoot(path.dirname(fileToEvaluate));
-			const tsconfigAliases = resolveTsconfigPaths(projectRoot);
+			const aliases: Record<string, string> = {
+				"server-only": sharedPath,
+				"./script": sharedPath,
+				"./script.tsx": sharedPath,
+			};
+
+			if (process.env.VITEST === "true") {
+				// Solve fragile resolution in tests when workspace is not built
+				const nextjsSrc = dir.endsWith("dist")
+					? path.resolve(dir, "../src")
+					: dir;
+				const arkenvSrc = path.resolve(nextjsSrc, "../../arkenv/src");
+				aliases["@arkenv/nextjs/shared"] = path.join(nextjsSrc, "shared.ts");
+				aliases["@arkenv/nextjs/server"] = path.join(nextjsSrc, "server.ts");
+				aliases["@arkenv/nextjs/client"] = path.join(nextjsSrc, "client.ts");
+				aliases["@arkenv/nextjs/config"] = path.join(nextjsSrc, "config.ts");
+				aliases["@arkenv/nextjs"] = path.join(nextjsSrc, "index.ts");
+				aliases["arkenv/standard"] = path.join(arkenvSrc, "standard.ts");
+				aliases["arkenv/core"] = path.join(arkenvSrc, "core.ts");
+				aliases["arkenv"] = path.join(arkenvSrc, "index.ts");
+			}
 
 			const jiti = createJiti(fileToEvaluate, {
 				moduleCache: false,
 				fsCache: false,
-				alias: {
-					"server-only": sharedPath,
-					"./script": sharedPath,
-					"./script.tsx": sharedPath,
-					...tsconfigAliases,
-				},
+				tsconfigPaths: true,
+				alias: aliases,
 			});
 			jiti(fileToEvaluate);
 		} catch (error: unknown) {
