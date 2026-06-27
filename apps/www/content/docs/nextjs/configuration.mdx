@@ -94,11 +94,11 @@ Or set it up manually by skipping `withArkEnv` in `next.config.ts` and importing
 > [!TIP]
 > **Build-time validation without codegen:**
 > If you disable codegen, you will not be using `withArkEnv`. To trigger build-time environment variable validation anyway, simply import your `env.ts` file directly in your `next.config.ts` file:
-> 
+>
 > ```ts title="next.config.ts"
 > import "./src/env"; // Triggers validation on Next.js build / dev startup
 > import type { NextConfig } from "next";
-> 
+>
 > const nextConfig: NextConfig = {};
 > export default nextConfig;
 > ```
