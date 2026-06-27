@@ -144,105 +144,54 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
 function extractCallArguments(
 	content: string,
 ): { schemaArg: string; optionsArg: string | null } | null {
-	const regex = /\b(?:arkenv|createEnv)\s*\(/g;
-	while (regex.exec(content) !== null) {
+	const callRegex = /\b(?:arkenv|createEnv)\s*\(/g;
+	let match: RegExpExecArray | null;
+
+	while ((match = callRegex.exec(content)) !== null) {
+		const start = callRegex.lastIndex;
 		let parenCount = 1;
-		let index = regex.lastIndex;
-		let inString: string | null = null;
-		let inComment: "single" | "multi" | null = null;
 		let braceCount = 0;
 		let bracketCount = 0;
-
 		const args: string[] = [];
-		let currentArg = "";
+		let lastIndex = start;
 
-		while (index < content.length && parenCount > 0) {
-			const char = content[index];
-			const nextChar = content[index + 1];
+		const tokenRegex =
+			/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[(){}[\],]/g;
+		tokenRegex.lastIndex = start;
 
-			if (inComment === "single") {
-				if (char === "\n" || char === "\r") inComment = null;
-				currentArg += char;
-				index++;
-				continue;
-			}
-			if (inComment === "multi") {
-				if (char === "*" && nextChar === "/") {
-					inComment = null;
-					currentArg += "*/";
-					index += 2;
-					continue;
-				}
-				currentArg += char;
-				index++;
-				continue;
-			}
+		let tokenMatch: RegExpExecArray | null;
+		while (parenCount > 0 && (tokenMatch = tokenRegex.exec(content)) !== null) {
+			const token = tokenMatch[0];
+			const index = tokenMatch.index;
 
-			if (inString) {
-				if (char === inString && content[index - 1] !== "\\") {
-					inString = null;
-				}
-				currentArg += char;
-				index++;
-				continue;
-			}
-
-			if (char === "/" && nextChar === "/") {
-				inComment = "single";
-				currentArg += "//";
-				index += 2;
-				continue;
-			}
-			if (char === "/" && nextChar === "*") {
-				inComment = "multi";
-				currentArg += "/*";
-				index += 2;
-				continue;
-			}
-			if (char === "'" || char === '"' || char === "`") {
-				inString = char;
-				currentArg += char;
-				index++;
-				continue;
-			}
-
-			if (char === "(") {
+			if (token === "(") {
 				parenCount++;
-			} else if (char === ")") {
+			} else if (token === ")") {
 				parenCount--;
-			} else if (char === "{") {
+			} else if (token === "{") {
 				braceCount++;
-			} else if (char === "}") {
+			} else if (token === "}") {
 				braceCount--;
-			} else if (char === "[") {
+			} else if (token === "[") {
 				bracketCount++;
-			} else if (char === "]") {
+			} else if (token === "]") {
 				bracketCount--;
-			}
-
-			if (parenCount === 0) {
-				args.push(currentArg);
-				break;
-			}
-
-			if (
-				char === "," &&
+			} else if (
+				token === "," &&
 				parenCount === 1 &&
 				braceCount === 0 &&
 				bracketCount === 0
 			) {
-				args.push(currentArg);
-				currentArg = "";
-			} else {
-				currentArg += char;
+				args.push(content.slice(lastIndex, index).trim());
+				lastIndex = tokenRegex.lastIndex;
 			}
-			index++;
 		}
 
-		if (parenCount === 0 && args.length > 0) {
+		if (parenCount === 0) {
+			args.push(content.slice(lastIndex, tokenRegex.lastIndex - 1).trim());
 			return {
-				schemaArg: args[0].trim(),
-				optionsArg: args[1] ? args[1].trim() : null,
+				schemaArg: args[0] || "",
+				optionsArg: args[1] || null,
 			};
 		}
 	}
@@ -347,67 +296,26 @@ export function extractBlock(
 	const match = regex.exec(content);
 	if (!match) return null;
 
-	const startIndex = regex.lastIndex;
+	const start = regex.lastIndex;
 	let braceCount = 1;
-	let index = startIndex;
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
 
-	while (index < content.length && braceCount > 0) {
-		const char = content[index];
-		const nextChar = content[index + 1];
+	const tokenRegex =
+		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}]/g;
+	tokenRegex.lastIndex = start;
 
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			index++;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				index += 2;
-				continue;
-			}
-			index++;
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && content[index - 1] !== "\\") {
-				inString = null;
-			}
-			index++;
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			index += 2;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			index += 2;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			index++;
-			continue;
-		}
-
-		if (char === "{") {
+	let tokenMatch: RegExpExecArray | null;
+	while (braceCount > 0 && (tokenMatch = tokenRegex.exec(content)) !== null) {
+		const token = tokenMatch[0];
+		if (token === "{") {
 			braceCount++;
-		} else if (char === "}") {
+		} else if (token === "}") {
 			braceCount--;
 		}
-		index++;
 	}
 
 	if (braceCount === 0) {
-		return content.slice(startIndex, index - 1);
+		return content.slice(start, tokenRegex.lastIndex - 1).trim();
 	}
-
 	return null;
 }
 
@@ -419,85 +327,56 @@ export function extractBlock(
  */
 export function parseBlockKeys(blockContent: string): string[] {
 	const keys: string[] = [];
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
-	let currentToken = "";
-	let lastStringContent = "";
+	const tokenRegex =
+		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}[\]:]|[a-zA-Z0-9_$]+/g;
+
+	let lastIdentifier = "";
+	let lastString = "";
 	let braceDepth = 0;
+	let bracketDepth = 0;
 
-	for (let i = 0; i < blockContent.length; i++) {
-		const char = blockContent[i];
-		const nextChar = blockContent[i + 1];
+	let match: RegExpExecArray | null;
+	while ((match = tokenRegex.exec(blockContent)) !== null) {
+		const token = match[0];
 
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				i++;
-			}
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && blockContent[i - 1] !== "\\") {
-				inString = null;
-				lastStringContent = currentToken;
-				currentToken = "";
-			} else {
-				currentToken += char;
-			}
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			i++;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			i++;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			currentToken = "";
-			continue;
-		}
-
-		if (char === "{") {
+		if (token === "{") {
 			braceDepth++;
-			currentToken = "";
-			lastStringContent = "";
-			continue;
-		}
-		if (char === "}") {
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === "}") {
 			braceDepth--;
-			currentToken = "";
-			lastStringContent = "";
-			continue;
-		}
-
-		if (char === ":") {
-			if (braceDepth === 0) {
-				const key = currentToken.trim() || lastStringContent.trim();
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === "[") {
+			bracketDepth++;
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === "]") {
+			bracketDepth--;
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === ":") {
+			if (braceDepth === 0 && bracketDepth === 0) {
+				const key = lastIdentifier || lastString;
 				if (key) {
 					keys.push(key);
 				}
 			}
-			currentToken = "";
-			lastStringContent = "";
-			continue;
-		}
-
-		if (/[a-zA-Z0-9_$]/.test(char)) {
-			currentToken += char;
-		} else if (char === "," || char === "\n" || char === "\r") {
-			currentToken = "";
-			lastStringContent = "";
+			lastIdentifier = "";
+			lastString = "";
+		} else if (
+			token.startsWith("'") ||
+			token.startsWith('"') ||
+			token.startsWith("`")
+		) {
+			lastString = token.slice(1, -1);
+			lastIdentifier = "";
+		} else if (/^[a-zA-Z0-9_$]+$/.test(token)) {
+			lastIdentifier = token;
+			lastString = "";
+		} else {
+			lastIdentifier = "";
+			lastString = "";
 		}
 	}
 
@@ -515,67 +394,26 @@ export function extractArkenvBlock(content: string): string | null {
 	const match = regex.exec(content);
 	if (!match) return null;
 
-	const startIndex = regex.lastIndex;
+	const start = regex.lastIndex;
 	let braceCount = 1;
-	let index = startIndex;
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
 
-	while (index < content.length && braceCount > 0) {
-		const char = content[index];
-		const nextChar = content[index + 1];
+	const tokenRegex =
+		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}]/g;
+	tokenRegex.lastIndex = start;
 
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			index++;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				index += 2;
-				continue;
-			}
-			index++;
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && content[index - 1] !== "\\") {
-				inString = null;
-			}
-			index++;
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			index += 2;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			index += 2;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			index++;
-			continue;
-		}
-
-		if (char === "{") {
+	let tokenMatch: RegExpExecArray | null;
+	while (braceCount > 0 && (tokenMatch = tokenRegex.exec(content)) !== null) {
+		const token = tokenMatch[0];
+		if (token === "{") {
 			braceCount++;
-		} else if (char === "}") {
+		} else if (token === "}") {
 			braceCount--;
 		}
-		index++;
 	}
 
 	if (braceCount === 0) {
-		return content.slice(startIndex, index - 1);
+		return content.slice(start, tokenRegex.lastIndex - 1).trim();
 	}
-
 	return null;
 }
 

@@ -5,7 +5,7 @@
 
 #### Add flat layout support to `@arkenv/nuxt`
 
-Introduce flat layout schema support and type-safe `createEnv` signature overloads to `@arkenv/nuxt`.
+Introduce flat layout schema support and typesafe `createEnv` signature overloads to `@arkenv/nuxt`.
 
 - Add `"flat"` layout mode to `ModuleOptions` and auto-detect it when a single `env.ts` file is configured.
 - Emit a deprecation warning in development when using the legacy `"simple"` layout option.

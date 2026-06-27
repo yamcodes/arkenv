@@ -22,7 +22,7 @@ export function createEnv<
 }): Readonly<Infer<TServer & TClient & TShared>>;
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications.
+ * Create a validated, typesafe environment configuration for Nuxt applications.
  */
 export function createEnv<
 	const TSchema extends SchemaShape & {
