@@ -207,7 +207,15 @@ declare global {
 
 				return isWhiteListed;
 			}
-			case "error":
+			case "error": {
+				// Filter out module-resolution and missing-name errors (TS2307, TS2304)
+				// that occur due to framework-specific path aliases (@/*, ~~/*) in Twoslash's virtual VFS.
+				// This allows us to display real IDE-like errors (like TS2339) in documentation
+				// without cluttering them with path resolution errors.
+				const errorCode = (node as any).code;
+				if (errorCode === 2307 || errorCode === 2304) {
+					return false;
+				}
 				for (const transformation of arkTypePackageJson.contributes
 					.configurationDefaults["errorLens.replace"]) {
 					const regex = new RegExp(transformation.matcher);
@@ -230,6 +238,7 @@ declare global {
 					}
 				}
 				return true;
+			}
 			default:
 				return true;
 		}
