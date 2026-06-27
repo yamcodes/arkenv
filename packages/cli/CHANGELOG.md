@@ -1,11 +1,30 @@
 # @ArkEnv/CLI
 
+## 0.3.1
+
+### Patch Changes
+
+- #### Add `codegen: false` option to `@arkenv/nextjs/config` _[`#1236`](https://github.com/yamcodes/arkenv/pull/1236) [`062034f`](https://github.com/yamcodes/arkenv/commit/062034f17fa63393a2943fa176975e8096be9efd) [@yamcodes](https://github.com/yamcodes)_
+
+  Add a `codegen` option to `withArkEnv` and `setupArkEnv` that disables automatic `env.gen.ts` generation while keeping build-time environment validation active.
+
+  Usage:
+
+  ```ts title="next.config.ts"
+  import { withArkEnv } from "@arkenv/nextjs/config";
+  import type { NextConfig } from "next";
+
+  const nextConfig: NextConfig = {};
+  export default withArkEnv(nextConfig, { codegen: false });
+  ```
+
+  When `codegen` is `false`, provide a manual `runtimeEnv` mapping in your schema file. The CLI's `--no-codegen` flag now also skips generating `env.gen.ts` during scaffolding while still wrapping `next.config.ts` with `withArkEnv(nextConfig, { codegen: false })`.
+
 ## 0.3.0
 
 ### Minor Changes
 
 - #### Deprecate Next.js nested layout and add CLI `--flat` flag _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
-
   - Deprecate the legacy nested options overload signature of `createEnv` in `@arkenv/nextjs`.
   - Add a one-time development-only runtime warning nudge when the legacy nested layout format is detected.
   - Add the `--flat` flag to `@arkenv/cli` to scaffold the recommended flat layout for Next.js.
@@ -32,7 +51,7 @@
     },
     {
       exposeToClient: ["CUSTOM_VAR"],
-    }
+    },
   );
   ```
 
@@ -137,14 +156,13 @@
     },
     {
       extends: [SharedSchema],
-    }
+    },
   );
   ```
 
 - #### Support split schema layout in Next.js config wrapper _[`#1116`](https://github.com/yamcodes/arkenv/pull/1116) [`b62ebbd`](https://github.com/yamcodes/arkenv/commit/b62ebbd316db239295884a32348d1a496e8cd49b) [@yamcodes](https://github.com/yamcodes)_
 
   Add support for the strict split schema layout in the Next.js `withArkEnv` configuration wrapper and update CLI scaffolding instructions:
-
   - Add a `layout` option (`"simple" | "strict"`) to `withArkEnv` configuration, which defaults to auto-detecting the strict layout if split files (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`) exist.
   - Implement key extraction from strict client and shared schema files.
   - Update CLI next-steps messages to include `withArkEnv` wrapping instructions for strict layout nextjs projects.
@@ -167,7 +185,7 @@
 
   export const env = createEnv(
     { DATABASE_URL: "string" },
-    { extends: [clientEnv] }
+    { extends: [clientEnv] },
   );
   ```
 
@@ -182,7 +200,7 @@
       runtimeEnv: {
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
       },
-    }
+    },
   );
   ```
 
@@ -207,7 +225,6 @@
 - #### Scaffold scanned environment variables as optional types during bootstrap _[`#1083`](https://github.com/yamcodes/arkenv/pull/1083) [`182d1af`](https://github.com/yamcodes/arkenv/commit/182d1af57df5761adb217b0b823b0ddb6d2b5181) [@yamcodes](https://github.com/yamcodes)_
 
   The CLI now generates optional schemas without default fallback values for custom/scanned environment keys during bootstrap:
-
   - **ArkType**: Scaffolds fields with `"string?"` instead of `"string = ''"`
   - **Zod**: Scaffolds fields with `z.string().optional()` instead of `z.string().default("")`
   - **Valibot**: Scaffolds fields with `v.optional(v.string())` instead of `v.optional(v.string(), "")`
@@ -233,7 +250,6 @@
 - #### Add Next.js support to ArkEnv CLI _[`97f4c17`](https://github.com/yamcodes/arkenv/commit/97f4c17088cfe8e5554ebc232d3faedb71492049) [@yamcodes](https://github.com/yamcodes)_
 
   ArkEnv CLI now fully supports initializing ArkEnv in Next.js projects.
-
   - Automatically detect Next.js projects via `package.json` dependencies or config files (`next.config.ts`, `next.config.js`, etc.).
   - Configure framework settings, skip redundant type definition scaffolding, and install `@arkenv/nextjs` along with `arktype` (which is required by the integration, even when selecting a different validator like Zod or Valibot).
   - Dynamically split detected variables into `server`, `client`, and `shared` fields based on the selected validator (ArkType, Zod, or Valibot), mapping browser/shared variables in the `runtimeEnv` block to prevent server secrets from leaking.
@@ -338,7 +354,6 @@
   **BREAKING CHANGE**: The CLI now performs early checks for technical requirements and will exit with an error if they are not met.
 
   The following requirements are now enforced:
-
   - Node.js version >= 22
   - TypeScript version >= 5.1
   - `strict: true` in `tsconfig.json`
@@ -356,7 +371,6 @@
 - #### Add "New Project Flow" into `arkenv init` _[`#1030`](https://github.com/yamcodes/arkenv/pull/1030) [`216d232`](https://github.com/yamcodes/arkenv/commit/216d232d92eb0e777605766572a7898bcf283c2e) [@yamcodes](https://github.com/yamcodes)_
 
   The `arkenv init` command now supports scaffolding complete projects from verified examples when run in an empty directory.
-
   - **Smart Detection**: Automatically enters "New Project Flow" in empty directories or when `--force` is used.
   - **Example Selection**: Interactive prompt to choose from curated examples (Vite, Bun, Zod, etc.).
   - **New Flags**:
@@ -388,7 +402,6 @@
 ### Patch changes
 
 - #### Refined setup experience in `arkenv init` _[`#1016`](https://github.com/yamcodes/arkenv/pull/1016) [`d536ed7`](https://github.com/yamcodes/arkenv/commit/d536ed7f481f5b81df75329e2eee46c3f9ce1b91) [@yamcodes](https://github.com/yamcodes)_
-
   - **Clearer Framework Options**: Updated terminology to better distinguish between server-side runtime validation and client-side bundling integrations.
   - **Architecture Detection**: Improved detection logic recommends the most efficient configuration based on your project's features.
   - **Better In-File Guidance**: Generated templates now include comments clarifying validation behavior for your specific environment.
@@ -396,7 +409,6 @@
 - #### Add keyboard navigation hints _[`ac3adcc`](https://github.com/yamcodes/arkenv/commit/ac3adcc26a121975981655fb5c339e95084328bf) [@yamcodes](https://github.com/yamcodes)_
 
 - #### Improve Ctrl+C handling and implement graceful shutdown _[`#1019`](https://github.com/yamcodes/arkenv/pull/1019) [`102ce4a`](https://github.com/yamcodes/arkenv/commit/102ce4a60b82b88734d3d7c81d4ae430738bc277) [@yamcodes](https://github.com/yamcodes)_
-
   - Implemented graceful shutdown for `SIGINT` (Ctrl+C) to flush logs and JSON data, with a 2-second safety timeout and support for immediate exit on a second Ctrl+C.
   - Corrected exit code (130) for `SIGINT` terminations.
   - Fixed a bug where the `init` wizard would continue after a prompt was cancelled.
@@ -406,7 +418,6 @@
   The Arkenv CLI now dynamically resolves configuration paths and scans project files by respecting `tsconfig.json` settings (`rootDir`, `paths`, `baseUrl`).
 
   Key improvements include:
-
   - **Robust `tsconfig` Parser**: Added support for parsing `tsconfig.json` files with comments (`jsonc-parser`), handling `extends`, `rootDir`, `baseUrl`, and `paths` alias resolution.
   - **Dynamic Scaffolding Defaults**: Updated `init` scaffolding logic to suggest project-appropriate default paths based on `compilerOptions.rootDir` rather than hardcoding `./src/env.ts`.
   - **Advanced Environment Scanning**: Enhanced `getEnvExampleKeys` to scan project source files for `process.env` and `import.meta.env` usages, correctly resolving aliased imports (e.g. `@/env`).
@@ -419,21 +430,18 @@
 - #### Fix JSON output routing and improve CLI reliability _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
 
   Fixed several inconsistencies in how the CLI reports its progress and errors:
-
   - **Correct JSON Stream Routing**: When using `--json`, interactive logs and progress updates are now correctly routed to `stderr`. This ensures that `stdout` contains only valid, pipeable JSON data.
   - **Improved Silent Mode**: Fixed a bug where some ANSI escape codes could leak into the output when running in `--quiet` mode.
   - **Accurate Exit Codes**: The CLI now consistently exits with a non-zero status code when a process is cancelled or fails, improving compatibility with CI/CD pipelines.
   - **Safer Error Logging**: Error stacks and crash details are now routed exclusively to `stderr`, preventing them from corrupting structured output.
 
 - #### Improve CLI output formatting and visual consistency _[`#1008`](https://github.com/yamcodes/arkenv/pull/1008) [`7228020`](https://github.com/yamcodes/arkenv/commit/722802003cc0425db73add2937403ba57d8b2efa) [@yamcodes](https://github.com/yamcodes)_
-
   - Standardized formatting of paths, filenames, and commands using a light blue color.
   - Updated all interactive prompts and instruction messages to use consistent code styling.
 
 - #### Improve reliability and transparency of initialization process _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
 
   Improved the `init` command to be more robust and informative:
-
   - **Resilient Scaffolding**: The initialization process is now more atomic, validating the plan before applying changes to minimize partial configurations on failure.
   - **Enhanced Debugging in Quiet Mode**: When running with `--quiet` (common in CI), output from dependency installation is now buffered and only displayed if the installation fails, providing critical context without cluttering successful runs.
   - **Improved Framework Detection**: Auto-detection of Bun environments is now more reliable, correctly identifying the runtime even when dependencies are not yet installed.
@@ -442,7 +450,6 @@
 - #### Robust project configuration and comment preservation _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
 
   Improved how the CLI modifies project files to be more respectful of user configuration:
-
   - **Preserve Comments and Formatting**: Updating `tsconfig.json` now uses a non-destructive parser that preserves your comments, indentation, and existing formatting.
   - **Reliable Plugin Injection**: Injection of ArkEnv plugins into `vite.config.ts` and `bun.config.ts` now uses AST-based manipulation, making it much more robust against varied coding styles and existing configurations.
   - **Improved Atomic Writes**: File system operations now use a more centralized and tested abstraction, reducing the risk of file corruption during scaffolding.
@@ -456,7 +463,6 @@
   Fixed an issue where the CLI would append ArkEnv type definitions multiple times if the `// @arkenv-types` marker was missing but the types were already present. The CLI now detects existing `ImportMetaEnvAugmented` (Vite) and `ProcessEnvAugmented` (Bun) definitions to avoid duplication.
 
 - #### Improve CLI feedback for Vite config and type definitions _[`#992`](https://github.com/yamcodes/arkenv/pull/992) [`b89a7e8`](https://github.com/yamcodes/arkenv/commit/b89a7e88effa6705c6de41a6238342140ac30692) [@yamcodes](https://github.com/yamcodes)_
-
   - Only log "Updated vite.config.ts" if the file was actually modified.
   - Clarify the type definition append step and provide feedback if the update was skipped.
 
@@ -542,13 +548,11 @@
 ### Patch changes
 
 - #### Improve CLI UI and fix installation output _[`#904`](https://github.com/yamcodes/arkenv/pull/904) [`ef17a38`](https://github.com/yamcodes/arkenv/commit/ef17a38983aac4a167883f6855e22fecfc797ee2) [@yamcodes](https://github.com/yamcodes)_
-
   - Display CLI version on the help page and at startup
   - Fix "doubling up" of terminal output during dependency installation by piping process output
   - Resolve Node.js DEP0190 deprecation warning in scaffolding logic
 
 - #### Auto-detect `.env.example` keys during init and suggest schema _[`#904`](https://github.com/yamcodes/arkenv/pull/904) [`ef17a38`](https://github.com/yamcodes/arkenv/commit/ef17a38983aac4a167883f6855e22fecfc797ee2) [@yamcodes](https://github.com/yamcodes)_
-
   - Robust parsing of `.env.example` to extract variable keys
   - Integration with the `init` wizard to suggest keys for scaffolding
   - Minimal scaffolding templates without introductory comments or platform notes
@@ -575,7 +579,6 @@
   The CLI provides an interactive wizard to onboard your project to ArkEnv with optimal configuration for your specific framework and schema validator.
 
   **Features:**
-
   - **Framework Detection**: Automatically detects if you are using Vite, Bun, or Node.js to provide the correct installation instructions.
   - **Validator Selection**: Supports scaffolding environment templates using ArkType (recommended), Zod, or Valibot.
   - **Strict Mode Enforcement**: Checks and prompts to enforce `strict: true` in your `tsconfig.json` for proper type safety.
