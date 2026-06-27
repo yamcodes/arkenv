@@ -43,7 +43,6 @@ describe("Next.js Standard Mode Flat Layout", () => {
 				CUSTOM_VAR: mockSchema(""),
 			},
 			{
-				exposeToClient: ["CUSTOM_VAR"],
 				runtimeEnv: {
 					NEXT_PUBLIC_API_URL: "https://api.example.com",
 					NODE_ENV: "test",
