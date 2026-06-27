@@ -12,6 +12,7 @@ import type { BootstrapResult } from "@/shared/ports";
 export type MutationInput = {
 	code: string;
 	envImportPath?: string;
+	disableCodegen?: boolean | undefined;
 };
 
 /**
@@ -205,10 +206,18 @@ export function transformNextjsConfig(
 		});
 
 		// Wrap the default export with withArkEnv(...) using the AST
-		mod.exports.default = builders.functionCall(
-			"withArkEnv",
-			mod.exports.default,
-		);
+		if (input.disableCodegen) {
+			mod.exports.default = builders.functionCall(
+				"withArkEnv",
+				mod.exports.default,
+				{ codegen: false },
+			);
+		} else {
+			mod.exports.default = builders.functionCall(
+				"withArkEnv",
+				mod.exports.default,
+			);
+		}
 
 		let code = generateCode(mod, {
 			format: detectCodeFormat(initialCode),

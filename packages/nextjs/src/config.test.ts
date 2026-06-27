@@ -315,6 +315,7 @@ describe("withArkEnv wrapper", () => {
 		const inputConfig = { reactStrictMode: true };
 		const outputConfig = withArkEnv(inputConfig, {
 			schemaPath,
+			validate: false,
 		});
 
 		expect(outputConfig).toBe(inputConfig);
@@ -375,6 +376,7 @@ describe("withArkEnv wrapper", () => {
 		const inputConfig = { reactStrictMode: true };
 		const outputConfig = withArkEnv(inputConfig, {
 			schemaPath: strictBaseDir,
+			validate: false,
 		});
 
 		expect(outputConfig).toBe(inputConfig);
@@ -406,7 +408,10 @@ describe("withArkEnv wrapper", () => {
 		);
 
 		expect(() =>
-			withArkEnv({ reactStrictMode: true }, { schemaPath, layout: "strict" }),
+			withArkEnv(
+				{ reactStrictMode: true },
+				{ schemaPath, layout: "strict", validate: false },
+			),
 		).toThrow("[ArkEnv] Strict layout requires");
 	});
 
@@ -430,11 +435,11 @@ describe("withArkEnv wrapper", () => {
 
 		try {
 			// Call withArkEnv once
-			withArkEnv({ reactStrictMode: true }, { schemaPath });
+			withArkEnv({ reactStrictMode: true }, { schemaPath, validate: false });
 			expect(mockWatch).toHaveBeenCalledTimes(1);
 
 			// Call withArkEnv a second time
-			withArkEnv({ reactStrictMode: true }, { schemaPath });
+			withArkEnv({ reactStrictMode: true }, { schemaPath, validate: false });
 			expect(mockWatch).toHaveBeenCalledTimes(2);
 
 			expect(mockClose).toHaveBeenCalledTimes(1);

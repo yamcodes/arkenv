@@ -87,11 +87,13 @@ export async function bootstrapNextjsConfig(
 		writeFile(path: string, content: string): Promise<void>;
 	},
 	filePath: string,
+	disableCodegen?: boolean,
 ): Promise<BootstrapResult> {
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformNextjsConfig({
 			code: configCode,
+			disableCodegen,
 		});
 
 		if (result.success && result.updated && result.code) {

@@ -73,6 +73,7 @@ export type ScaffoldingPlan = {
 		importPath?: string;
 		bunFeatures?: ("serve" | "build")[];
 		wrapNextjsConfig?: boolean;
+		disableCodegen?: boolean;
 	};
 	/** Metadata for reporting */
 	metadata: {

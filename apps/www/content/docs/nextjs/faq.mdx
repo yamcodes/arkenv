@@ -30,22 +30,36 @@ Server-side variables, on the other hand, do not need to be inlined and are read
 
 ## Can I disable code generation?
 
-Yes. If you prefer to maintain the `runtimeEnv` mapping manually (or if your build environment restricts writing files during builds), you can completely opt out of the code generation workflow.
+Yes. If you prefer to maintain the `runtimeEnv` mapping manually (or if your build environment restricts writing files during builds), you can opt out of code generation.
 
-To do this, remove the `withArkEnv` wrapper from your Next.js configuration. Because `withArkEnv` requires code generation to build the client-side proxy mapping, it cannot be used without generating files.
-
-To trigger build-time environment variable validation anyway, simply import your `env.ts` file directly at the top of your `next.config.ts` file:
+Pass `{ codegen: false }` to `withArkEnv` to keep build-time environment variable validation active without generating `env.gen.ts`:
 
 ```ts title="next.config.ts"
-import "./src/env"; // Triggers validation on Next.js build / dev startup
+import { withArkEnv } from "@arkenv/nextjs/config";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {};
-export default nextConfig;
+export default withArkEnv(nextConfig, { codegen: false });
+```
+
+When codegen is disabled, import `createEnv` directly from `@arkenv/nextjs` in your schema file and provide a manual `runtimeEnv` mapping:
+
+```ts title="src/env.ts"
+import { createEnv } from "@arkenv/nextjs";
+
+export const env = createEnv({
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string",
+}, {
+  runtimeEnv: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NODE_ENV: process.env.NODE_ENV,
+  },
+});
 ```
 
 :::note
-By disabling codegen, you become responsible for manually destructuring `runtimeEnv` in your schema file.
+By disabling codegen, you become responsible for keeping `runtimeEnv` in sync with your schema manually.
 :::
 
 ---
