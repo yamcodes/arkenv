@@ -77,4 +77,5 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	);
 }
 
+export const createEnv = arkenv;
 export default arkenv;

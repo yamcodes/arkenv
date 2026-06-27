@@ -1,5 +1,15 @@
 import { describe, expectTypeOf, it } from "vitest";
 import { createEnv } from "./index";
+import { createEnv as createEnvStandard } from "./standard";
+
+const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
+	"~standard": {
+		version: 1 as const,
+		vendor: "mock",
+		types: {} as { input: unknown; output: TOutput },
+		validate: (_value: unknown) => ({ value: outputValue }),
+	},
+});
 
 describe("@arkenv/nuxt type regression", () => {
 	it("infers client variables as their validated type", () => {
@@ -87,5 +97,31 @@ describe("@arkenv/nuxt type regression", () => {
 				API_URL: "https://api.example.com",
 			},
 		});
+	});
+
+	it("correctly types Standard Mode Flat Mode environment variables and filters them on client", () => {
+		const env = createEnvStandard(
+			{
+				DATABASE_URL: createMockStandardSchema(""),
+				NUXT_PUBLIC_API_URL: createMockStandardSchema(""),
+				NODE_ENV: createMockStandardSchema("development"),
+				CUSTOM_VAR: createMockStandardSchema(""),
+			},
+			{
+				exposeToClient: ["CUSTOM_VAR"],
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+					CUSTOM_VAR: "custom_val",
+				},
+			},
+		);
+
+		expectTypeOf(env.NUXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.NODE_ENV).toBeString();
+		expectTypeOf(env.CUSTOM_VAR).toBeString();
+
+		// @ts-expect-error server-only variable is omitted/never on the client
+		env.DATABASE_URL;
 	});
 });

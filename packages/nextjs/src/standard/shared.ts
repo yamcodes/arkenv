@@ -29,4 +29,5 @@ export function arkenv<
 	) as any;
 }
 
+export const createEnv = arkenv;
 export default arkenv;

@@ -569,11 +569,11 @@ function generateFactoryCode(
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
-	const coreName = isStandard ? "arkenv" : "createEnv";
+	const coreName = "createEnv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs";\n';
-	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const callPrefix = "coreCreateEnv";
 
 	return `${GENERATED_HEADER}
 import { ${coreName} as coreCreateEnv } from "${importPath}";
@@ -623,7 +623,7 @@ function generateFlatFactoryCode(
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
-	const coreName = isStandard ? "arkenv" : "createEnv";
+	const coreName = "createEnv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs";\n';
@@ -636,7 +636,7 @@ function generateFlatFactoryCode(
 	const castReturn = isStandard
 		? ""
 		: " as unknown as Readonly<distill.Out<at.infer<TSchema>>>";
-	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const callPrefix = "coreCreateEnv";
 
 	return `${GENERATED_HEADER}
 import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
@@ -691,14 +691,14 @@ function generateClientFactoryCode(
 	const importPath = isStandard
 		? "@arkenv/nextjs/standard/client"
 		: "@arkenv/nextjs/client";
-	const coreName = isStandard ? "arkenv" : "createEnv";
+	const coreName = "createEnv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs/client";\n';
 	const typeImport = isStandard
 		? ""
 		: '\nimport type { Infer } from "@arkenv/core";';
-	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const callPrefix = "coreCreateEnv";
 	const returnType = isStandard
 		? "Readonly<TSchema & MergeExtends<TExtends>>"
 		: "Readonly<Infer<TSchema> & MergeExtends<TExtends>>";
