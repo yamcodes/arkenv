@@ -108,7 +108,7 @@ export function parse<const T extends SchemaShape>(
 	// Validate the environment variables
 	const validatedEnv = finalSchema(processedEnv);
 
-	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors
+	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors.
 	if (validatedEnv instanceof ArkErrors) {
 		throw new ArkEnvError(arkErrorsToIssues(validatedEnv));
 	}

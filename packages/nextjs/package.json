@@ -12,6 +12,7 @@
 		"@arkenv/build": "workspace:*",
 		"arkenv": "workspace:*",
 		"chokidar": "^4.0.3",
+		"jiti": "catalog:",
 		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
@@ -142,15 +143,17 @@
 		{
 			"name": "@arkenv/nextjs/config",
 			"path": "dist/config.js",
-			"limit": "3.5 kB",
+			"limit": "4 kB",
 			"import": "*",
 			"ignore": [
 				"next",
 				"arktype",
 				"arkenv",
 				"chokidar",
+				"jiti",
 				"node:fs",
-				"node:path"
+				"node:path",
+				"node:url"
 			]
 		}
 	]

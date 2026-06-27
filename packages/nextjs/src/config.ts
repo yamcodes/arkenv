@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
 	extractBlock,
 	extractClientKeys,
@@ -9,6 +10,7 @@ import {
 	resolveLayout,
 	watchSchema,
 } from "@arkenv/build";
+import { createJiti } from "jiti";
 
 export { extractClientKeys, extractSharedKeys };
 
@@ -87,15 +89,26 @@ export type ArkEnvConfigOptions = {
 		| "strict"
 		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
 		| "simple";
+
+	/**
+	 * Enable or disable build-time environment variable validation during build/dev startup.
+	 *
+	 * @default true
+	 */
+	validate?: boolean;
 };
 
 /**
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
  * @param options Optional configuration paths for schema and output files
+ * @param internalOptions Optional configuration for internal testing hooks
  * @throws An error if the schema file cannot be found or if code generation fails
  */
-export function setupArkEnv(options?: ArkEnvConfigOptions): void {
+export function setupArkEnv(
+	options?: ArkEnvConfigOptions,
+	internalOptions?: { _jitiAliases?: Record<string, string> },
+): void {
 	// 1. Locate the env.ts schema file or strict schema directory
 	const schemaPath = options?.schemaPath
 		? path.resolve(options.schemaPath)
@@ -152,7 +165,52 @@ export function setupArkEnv(options?: ArkEnvConfigOptions): void {
 		throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
 	}
 
-	// 4. Initialize development file watcher if in dev mode
+	// 4. Validate schema against environment variables
+	const runValidation = options?.validate ?? process.env.VITEST !== "true";
+	if (runValidation) {
+		try {
+			process.env.ARKENV_FORCE_SERVER = "true";
+			const fileToEvaluate =
+				resolvedLayout === "strict" && baseDir
+					? path.join(baseDir, "server.ts")
+					: schemaPath;
+
+			const filenameForJiti =
+				typeof __filename !== "undefined"
+					? __filename
+					: typeof import.meta !== "undefined" && import.meta.url
+						? fileURLToPath(import.meta.url)
+						: "";
+			const dir = path.dirname(filenameForJiti);
+			const sharedPath = fs.existsSync(path.join(dir, "shared.ts"))
+				? path.join(dir, "shared.ts")
+				: path.join(dir, "shared.js");
+
+			const aliases: Record<string, string> = {
+				"server-only": sharedPath,
+				"./script": sharedPath,
+				"./script.tsx": sharedPath,
+				...internalOptions?._jitiAliases,
+			};
+
+			const jiti = createJiti(fileToEvaluate, {
+				moduleCache: false,
+				fsCache: false,
+				tsconfigPaths: true,
+				alias: aliases,
+			});
+			jiti(fileToEvaluate);
+		} catch (error: unknown) {
+			console.error("\n❌ [ArkEnv] Environment validation failed:");
+			console.error(error instanceof Error ? error.message : String(error));
+			console.error("");
+			process.exit(1);
+		} finally {
+			delete process.env.ARKENV_FORCE_SERVER;
+		}
+	}
+
+	// 5. Initialize development file watcher if in dev mode
 	const isDev =
 		process.env.NODE_ENV === "development" ||
 		process.env.NEXT_PHASE === "phase-development-server";
