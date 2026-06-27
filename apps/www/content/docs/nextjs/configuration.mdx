@@ -89,18 +89,18 @@ Pass the `--no-codegen` flag when bootstrapping with the CLI:
 npx @arkenv/cli@latest init --no-codegen
 ```
 
-Or set it up manually by skipping `withArkEnv` in `next.config.ts` and importing `createEnv` directly from `@arkenv/nextjs` in your schema file. You then become responsible for keeping `runtimeEnv` in sync with your schema.
+Or set it up manually by passing the `{ codegen: false }` option to `withArkEnv` in `next.config.ts`, and importing `createEnv` directly from `@arkenv/nextjs` in your schema file. You then become responsible for keeping `runtimeEnv` in sync with your schema.
 
 > [!TIP]
 > **Build-time validation without codegen:**
-> If you disable codegen, you will not be using `withArkEnv`. To trigger build-time environment variable validation anyway, simply import your `env.ts` file directly in your `next.config.ts` file:
+> When using `{ codegen: false }`, `withArkEnv` will skip compiling and generating `env.gen.ts` but will still execute build-time environment variable validation, ensuring invalid variables fail the build:
 >
 > ```ts title="next.config.ts"
-> import "./src/env"; // Triggers validation on Next.js build / dev startup
+> import { withArkEnv } from "@arkenv/nextjs/config";
 > import type { NextConfig } from "next";
 >
 > const nextConfig: NextConfig = {};
-> export default nextConfig;
+> export default withArkEnv(nextConfig, { codegen: false });
 > ```
 
 See the [FAQ](/docs/nextjs/faq#can-i-disable-code-generation) for the full manual setup pattern.
