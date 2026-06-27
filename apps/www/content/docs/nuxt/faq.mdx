@@ -20,15 +20,9 @@ ArkEnv's Nuxt module scans your schema file(s) at build time, identifies the cli
 
 ## How does the compile-time client security work?
 
-For projects using the **strict layout**, the protection leverages a custom Vite plugin inside `@arkenv/nuxt/module` that intercepts file resolution.
+In the **strict layout**, server-only schemas live in a separate file (for example, `env/server.ts`). If client-side code accidentally imports from that file, the build fails immediately with a clear compile-time error - before the code ever reaches the browser.
 
-If any module running in the client context attempts to resolve or import `@arkenv/nuxt/server` (or files ending with `/server` inside your schema directory), the plugin immediately throws a compile-time error:
-
-```text
-[ArkEnv] Importing server-only environment schema on the client is not allowed!
-```
-
-This guarantees that private server keys, validation schemas, and database constraints never bloat or leak into browser bundles.
+This guarantees that private server keys, validation schemas, and database constraints never ship in client bundles.
 
 ## When should I use the strict layout?
 
