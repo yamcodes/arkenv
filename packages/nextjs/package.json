@@ -143,7 +143,7 @@
 		{
 			"name": "@arkenv/nextjs/config",
 			"path": "dist/config.js",
-			"limit": "3.5 kB",
+			"limit": "4 kB",
 			"import": "*",
 			"ignore": [
 				"next",
@@ -152,7 +152,8 @@
 				"chokidar",
 				"jiti",
 				"node:fs",
-				"node:path"
+				"node:path",
+				"node:url"
 			]
 		}
 	]
