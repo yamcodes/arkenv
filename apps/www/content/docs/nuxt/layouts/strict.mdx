@@ -258,4 +258,4 @@ const api = env.NUXT_PUBLIC_API_URL;
 const db = env.DATABASE_URL;
 ```
 
-2. **Compile-time isolation**: If you accidentally import `env` from the server file (`env/server.ts`) in client-side code, Nuxt's Vite bundler will fail the build with a compilation error. This is because `@arkenv/nuxt` registers a custom Vite plugin that detects imports of the server module on the client side and blocks them at build time.
+2. **Compile-time isolation**: If you accidentally import `env` from the server file (`env/server.ts`) in client-side code, the build fails with a compilation error before the code ever runs.
