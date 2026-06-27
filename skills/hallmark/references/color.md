@@ -13,10 +13,10 @@ Most AI-generated UI fails on colour. It picks blue. It uses pure black. It draw
 
 A complete Hallmark palette has four layers.
 
-1. **Paper** — the base surface. `oklch(96–98% 0.005–0.015 <anchor hue>)` for light mode, `oklch(12–16% 0.008–0.015 <anchor hue>)` for dark.
-2. **Ink** — the primary text. `oklch(16–22% 0.005–0.015 <anchor hue>)` for light mode, `oklch(92–96% 0.005–0.01 <anchor hue>)` for dark.
-3. **Neutrals** — 5 to 9 steps between Paper and Ink, each with the anchor's chroma tint at low values (0.005–0.015).
-4. **Accent** — one saturated colour with meaningful chroma (0.12–0.22). Used for links, active states, highlights, focus rings. Never as a background fill that covers more than a few percent of the surface.
+1. **Paper** - the base surface. `oklch(96–98% 0.005–0.015 <anchor hue>)` for light mode, `oklch(12–16% 0.008–0.015 <anchor hue>)` for dark.
+2. **Ink** - the primary text. `oklch(16–22% 0.005–0.015 <anchor hue>)` for light mode, `oklch(92–96% 0.005–0.01 <anchor hue>)` for dark.
+3. **Neutrals** - 5 to 9 steps between Paper and Ink, each with the anchor's chroma tint at low values (0.005–0.015).
+4. **Accent** - one saturated colour with meaningful chroma (0.12–0.22). Used for links, active states, highlights, focus rings. Never as a background fill that covers more than a few percent of the surface.
 
 Example (warm-oat anchor, hue 80):
 
@@ -52,12 +52,12 @@ Example (midnight anchor, hue 40):
 
 Use the APCA contrast check when you can; otherwise WCAG 2.1 ratios.
 
-| Content | Minimum | Target |
-| --- | --- | --- |
-| Body text | 4.5:1 | 7:1 |
-| Large text (≥ 18.66px bold or 24px) | 3:1 | 4.5:1 |
-| UI component boundaries | 3:1 | 4.5:1 |
-| Placeholder / helper text | 4.5:1 | 4.5:1 |
+| Content                             | Minimum | Target |
+| ----------------------------------- | ------- | ------ |
+| Body text                           | 4.5:1   | 7:1    |
+| Large text (≥ 18.66px bold or 24px) | 3:1     | 4.5:1  |
+| UI component boundaries             | 3:1     | 4.5:1  |
+| Placeholder / helper text           | 4.5:1   | 4.5:1  |
 
 Verify with the browser devtools vision-deficiency emulator before shipping.
 

@@ -1,6 +1,6 @@
 # Motion
 
-Most AI-generated motion is scattered — hover lifts on every card, fade-in on every scroll, bouncing icons. Quiet it. One orchestrated moment beats ten small ones.
+Most AI-generated motion is scattered - hover lifts on every card, fade-in on every scroll, bouncing icons. Quiet it. One orchestrated moment beats ten small ones.
 
 > For per-interaction recipes (button press, focus, modal, toast, optimistic update, command palette, drag handle, etc.), see [`microinteractions.md`](microinteractions.md). This file is the *language* of motion; that file is the *vocabulary*.
 
@@ -24,7 +24,7 @@ Use these three. Name them as tokens.
 }
 ```
 
-`ease`, `ease-in-out` (default), `cubic-bezier(0.25, 0.1, 0.25, 1)` — these are the browser defaults and they read as uncrafted.
+`ease`, `ease-in-out` (default), `cubic-bezier(0.25, 0.1, 0.25, 1)` - these are the browser defaults and they read as uncrafted.
 
 ## Durations
 
@@ -94,7 +94,7 @@ Cap total stagger at ~500ms. Beyond that the page feels slow to settle.
 }
 ```
 
-Functional motion (progress bars, loading spinners, skeletons) still runs — just slower.
+Functional motion (progress bars, loading spinners, skeletons) still runs - just slower.
 
 ## Bans
 
@@ -106,4 +106,4 @@ Functional motion (progress bars, loading spinners, skeletons) still runs — ju
 - Parallax.
 - Custom cursors.
 - Scroll-driven animations without a reduced-motion fallback.
-- Infinite loops (other than functional loaders) — they pull the eye and never let go.
+- Infinite loops (other than functional loaders) - they pull the eye and never let go.

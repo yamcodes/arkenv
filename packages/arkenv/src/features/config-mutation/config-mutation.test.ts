@@ -232,5 +232,23 @@ describe("config-mutation", () => {
 			expect(result.success).toBe(true);
 			expect(result.code).not.toMatch(/\n$/);
 		});
+
+		it("wraps a plain object export with codegen: false option when disableCodegen is true", async () => {
+			const initialContent = dedent`
+				export default {
+					experimental: {}
+				}
+			`;
+
+			const result = transformNextjsConfig({
+				code: initialContent,
+				disableCodegen: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('from "@arkenv/nextjs/config"');
+			expect(result.code).toContain("withArkEnv({");
+			expect(result.code).toContain("codegen: false");
+		});
 	});
 });

@@ -16,7 +16,7 @@ async function processOrder(orderId: string): Promise<OrderResult> {
   const order = await fetchOrder(orderId)  // Blocks here
   const config = await loadProcessingConfig()  // Waits for order first, unnecessarily
 
-  // config doesn't depend on order — these could run in parallel
+  // config doesn't depend on order - these could run in parallel
   if (order.priority === 'express') {
     return processExpress(order, config)
   }

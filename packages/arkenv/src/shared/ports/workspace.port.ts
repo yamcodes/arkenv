@@ -49,7 +49,10 @@ export type ConfigPort = {
 		path: string | null | undefined,
 		features?: ("serve" | "build")[],
 	): Promise<BootstrapResult>;
-	bootstrapNextjsConfig(path: string): Promise<BootstrapResult>;
+	bootstrapNextjsConfig(
+		path: string,
+		disableCodegen?: boolean,
+	): Promise<BootstrapResult>;
 	bootstrapNuxtConfig(path: string): Promise<BootstrapResult>;
 	safeAppend(
 		path: string,

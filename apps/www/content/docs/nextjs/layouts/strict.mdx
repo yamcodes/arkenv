@@ -193,7 +193,9 @@ export const env = arkenv(
 
     ### Register configuration wrapper [step] [!toc]
 
-    Wrap your Next.js configuration in `next.config.ts` (or `next.config.js`) using the `withArkEnv` helper from `@arkenv/nextjs/config`. This statically scans your schema directory, generates the `env.gen.ts` file, and automatically regenerates it on changes during development:
+    To scan your schema directory, build the generated helper file, and automatically watch for changes during development, register ArkEnv in your Next.js configuration.
+
+    Wrap your Next.js configuration using the `withArkEnv` helper:
 
     ```ts title="next.config.ts"
     import { withArkEnv } from "@arkenv/nextjs/config";
@@ -217,7 +219,11 @@ export const env = arkenv(
     ```
 
     :::note
-    If you scaffolded your project using the `--no-codegen` CLI option, you do not need to wrap your configuration with `withArkEnv`. The CLI will have scaffolded the manual `runtimeEnv` destructuring pattern in `env/client.ts` instead.
+    If you are already using multiple config wrappers and want to avoid another `withX(...)` layer, you can call [`setupArkEnv`](/docs/nextjs/configuration#avoiding-wrapper-bloat) directly.
+    :::
+
+    :::note
+    If you scaffolded your project using the `--no-codegen` CLI option, your `next.config.ts` will already be wrapped with `withArkEnv(nextConfig, { codegen: false })`. This skips `env/generated/env.gen.ts` generation while keeping build-time validation active, and you become responsible for manually destructuring `runtimeEnv` in `env/client.ts`.
     :::
 
     :::tip

@@ -54,7 +54,7 @@ Wrap each route and major feature section in its own boundary with meaningful fa
 
 ## Error tracking
 
-Use tools like [Sentry](https://sentry.io/) to track production errors. Don't build custom solutions — purpose-built tools provide:
+Use tools like [Sentry](https://sentry.io/) to track production errors. Don't build custom solutions - purpose-built tools provide:
 
 - Platform and browser context
 - Stack traces with source maps

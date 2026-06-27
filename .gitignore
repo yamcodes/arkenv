@@ -86,6 +86,7 @@ gha-creds-*.json
 
 # Skill workspace (eval outputs, grading, review artifacts)
 .agent/skills/*-workspace/
+.agents/scratch/
 skills/*-workspace/
 skills/create-skill/scripts/__pycache__/
 tooling/

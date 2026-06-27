@@ -15,9 +15,9 @@ Avoid for transactional commerce. Letter is intimate; commerce is functional.
 
 Reference: Frank Chimero's site, founder farewell posts, indie newsletter front pages.
 
-**Sample opening lines** (imitate the *specificity* — Letter openings are first-person greetings, dated, with a place if relevant):
-> *"Hello, I'm Anya."* — Anya (test 06) — single line, name, full stop
-> *"Saturday, 6:14 a.m. The dough went in at midnight."* — opens on a moment, then explains it
-> *"Hey there. This page is soft because the surface should be soft."* — Hallmark Hum — colloquial open + a principle
+**Sample opening lines** (imitate the *specificity* - Letter openings are first-person greetings, dated, with a place if relevant):
+> *"Hello, I'm Anya."* - Anya (test 06) - single line, name, full stop
+> *"Saturday, 6:14 a.m. The dough went in at midnight."* - opens on a moment, then explains it
+> *"Hey there. This page is soft because the surface should be soft."* - Hallmark Hum - colloquial open + a principle
 
 ---

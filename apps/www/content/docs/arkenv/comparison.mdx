@@ -48,6 +48,8 @@ That's it. You're done. Who needs another library for this, right?
 
 At first glance, this approach delivers exactly what you need: validation, typesafety, defaults, and even type morphs.
 
+One thing no library can change, though: frameworks like Next.js strip non-`NEXT_PUBLIC_` values from the client bundle when you reference them directly as `process.env`. ArkEnv's codegen builds on top of that by only mapping safe keys into `runtimeEnv`, so server secrets never reach the client-side proxy. We aren't here to play hide-and-seek with your keys. We're here to validate your infrastructure and fail loudly before you push a broken `undefined` bug into production.
+
 However, once you move beyond "hello world" territory, the DIY path starts to feel a bit more tedious:
 
 - **Manual parsing** - Since `process.env` consists entirely of strings, every number or boolean requires manual parsing. ArkEnv handles this automatically with built-in [coercion](/docs/arkenv/coercion).
@@ -64,6 +66,7 @@ After years of building enterprise-scale applications, I realized that while DIY
 - **Fewer moving parts** - In Next.js and Nuxt, T3 Env requires maintaining a dedicated `runtimeEnv` object to inline client variables (e.g. `NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL`). You have to sync this extra moving part with your schema, or your code can break silently. ArkEnv eliminates this friction by generating mappings automatically under the hood. (You can opt-out of this behavior if you don't want codegen.)
 - **Flat by default** - T3 Env forces strict client/server blocks even in its agnostic core, which is redundant for simple Node scripts or server-only code. ArkEnv defaults to a flat schema, and only splits client/server boundaries in fullstack frameworks like Next.js and Nuxt.
 - **Richer feature set** - ArkEnv ships with more features like native ArkType synergy, automatic type coercion, first-class Vite, Nuxt, and Bun fullstack dev server integration, and a dedicated CLI.
+- **Same security, less ceremony** - ArkEnv's flat layout shares the exact same security posture as T3 Env's single-file mode: full type inference plus a runtime proxy that throws when a server variable is accessed on the client. The difference is that ArkEnv achieves this **without forcing you to manually categorize variables into `server:` and `client:` blocks**. Both libraries ship the schema (not the values) to the client in single-file mode, so if your variable *names* are sensitive, ArkEnv offers a strict layout with full compile-time isolation - see the [Next.js security model](/docs/nextjs/security) for the complete leak-surface breakdown.
 
 ### vite-plugin-validate-env
 

@@ -11,7 +11,7 @@ Keep components, functions, styles, and state as close as possible to where they
 Extract inline rendering functions into separate components:
 
 ```tsx
-// Avoid — gets out of control quickly
+// Avoid - gets out of control quickly
 function Component() {
     function renderItems() {
         return <ul>...</ul>;
@@ -19,7 +19,7 @@ function Component() {
     return <div>{renderItems()}</div>;
 }
 
-// Prefer — extract to a separate component
+// Prefer - extract to a separate component
 function Items() {
     return <ul>...</ul>;
 }
@@ -67,9 +67,9 @@ Page Components          → route-level, compose features, handle layout
 
 ### Ui components
 
-- **Stateless** where possible — accept data and callbacks via props.
-- **Composable** — use compound component patterns for complex UI.
-- **Polymorphic** when needed — use `as` or `asChild` for flexible rendering.
+- **Stateless** where possible - accept data and callbacks via props.
+- **Composable** - use compound component patterns for complex UI.
+- **Polymorphic** when needed - use `as` or `asChild` for flexible rendering.
 
 ### Feature components
 
@@ -84,10 +84,10 @@ Feature components can:
 
 ### Fully featured (pre-styled)
 
-- [Chakra UI](https://chakra-ui.com/) — great DX, fast prototyping, accessible out of the box
-- [AntD](https://ant.design/) — extensive components, best for admin dashboards
-- [MUI](https://mui.com/) — most popular, Material Design or headless
-- [Mantine](https://mantine.dev/) — modern, customizable, many built-in hooks
+- [Chakra UI](https://chakra-ui.com/) - great DX, fast prototyping, accessible out of the box
+- [AntD](https://ant.design/) - extensive components, best for admin dashboards
+- [MUI](https://mui.com/) - most popular, Material Design or headless
+- [Mantine](https://mantine.dev/) - modern, customizable, many built-in hooks
 
 ### Headless (unstyled)
 
@@ -108,14 +108,14 @@ Pre-built components provided as source code, not packages:
 
 ## Styling solutions
 
-- [Tailwind CSS](https://tailwindcss.com/) — utility-first, zero runtime
-- [vanilla-extract](https://github.com/seek-oss/vanilla-extract) — type-safe, zero runtime
-- [Panda CSS](https://panda-css.com/) — type-safe, zero runtime
-- [CSS Modules](https://github.com/css-modules/css-modules) — scoped, zero runtime
-- [styled-components](https://styled-components.com/) — runtime CSS-in-JS
-- [emotion](https://emotion.sh/) — runtime CSS-in-JS
+- [Tailwind CSS](https://tailwindcss.com/) - utility-first, zero runtime
+- [vanilla-extract](https://github.com/seek-oss/vanilla-extract) - type-safe, zero runtime
+- [Panda CSS](https://panda-css.com/) - type-safe, zero runtime
+- [CSS Modules](https://github.com/css-modules/css-modules) - scoped, zero runtime
+- [styled-components](https://styled-components.com/) - runtime CSS-in-JS
+- [emotion](https://emotion.sh/) - runtime CSS-in-JS
 
-Keep React Server Components in mind — they require zero-runtime styling solutions.
+Keep React Server Components in mind - they require zero-runtime styling solutions.
 
 ## Storybook
 

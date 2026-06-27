@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "es2020",
+		"jsx": "react-jsx",
 		"module": "esnext",
 		"strict": true,
 		"esModuleInterop": true,

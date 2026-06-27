@@ -70,7 +70,8 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
-		expect(plan.bootstrap).toBeUndefined();
+		expect(plan.bootstrap).toBeDefined();
+		expect(plan.bootstrap?.disableCodegen).toBe(true);
 		expect(plan.metadata.disableCodegen).toBe(true);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
 		expect(envFile?.content).toContain('import arkenv from "@arkenv/nextjs";');

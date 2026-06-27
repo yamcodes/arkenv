@@ -15,10 +15,10 @@ Avoid for transactional pages. Manifesto sells *agreement*, not action.
 
 Reference: Linear's positioning pages, agency rebrand sites, political campaign landing pages.
 
-**Sample opening lines** (imitate the *specificity* — manifestos commit, they don't hedge):
-> *"WE ARE A STUDIO. WE ARE NOT A PLATFORM."* — Meridian (test 04) — defines by refusal, all caps, a single accent word
-> *"We design products that last twelve years. We do not design products that need replacing every two."* — concrete number, paired declaration
-> *"Lightness above weightiness, elevate everyone you encounter."* — craigmod.com — one-line principle, no explanation needed
+**Sample opening lines** (imitate the *specificity* - manifestos commit, they don't hedge):
+> *"WE ARE A STUDIO. WE ARE NOT A PLATFORM."* - Meridian (test 04) - defines by refusal, all caps, a single accent word
+> *"We design products that last twelve years. We do not design products that need replacing every two."* - concrete number, paired declaration
+> *"Lightness above weightiness, elevate everyone you encounter."* - craigmod.com - one-line principle, no explanation needed
 
 ```html
 <section class="manifesto bleed-ink">

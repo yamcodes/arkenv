@@ -12,14 +12,14 @@ env.ts
 
 To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected.
 
-:::warning\[Server logic in client bundle]
+:::warning[Server logic in client bundle]
 Defining your schemas together means the *server validation logic* is shipped in the client bundle.
 
 | ⚠️ Visible in JS bundle                                                         | 🔒 Secure on server                                  |
 | :------------------------------------------------------------------------------ | :--------------------------------------------------- |
 | **Schema** (keys, types, and constraints)<br />e.g., `DATABASE_URL: string.url` | **Runtime values**<br />e.g., `"postgresql://db..."` |
 
-If exposing your server variable names, types, or constraints is a security concern, use the [strict layout](/docs/nuxt/layouts/strict) instead.
+The values themselves are *not* shipped to the client! But if exposing your server variable *names*, *types*, or *constraints* is a security concern, use the [strict layout](/docs/nuxt/layouts/strict) instead.
 :::
 
 ## Setup

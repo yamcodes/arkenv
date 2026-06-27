@@ -22,6 +22,9 @@ export function arkenv<
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
+/**
+ * @deprecated Use the unified flat layout signature instead: `createEnv(schema, options)`
+ */
 export function arkenv<
 	const TClient extends SchemaShape = {},
 	const TShared extends SchemaShape = {},
@@ -64,11 +67,13 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	return arkenvInternal(
 		schemaOrOptions,
 		optionsOrIsServer,
-		{ isServer: false },
+		{ isServer: false, strictLayout: "client" },
 		coreArkenv,
 		getSchemaKeys,
 	);
 }
+
+export const createEnv = arkenv;
 
 export { type } from "@arkenv/core";
 

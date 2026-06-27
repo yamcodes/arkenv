@@ -203,7 +203,7 @@ describe("Executor", () => {
 				repository: "https://github.com/yamcodes/arkenv.git",
 				example: "basic",
 				targetName: "my-dir-name",
-				// No targetDir — "." case, scaffold into cwd
+				// No targetDir - "." case, scaffold into cwd
 			},
 		};
 		await executor.execute(dotPlan);
@@ -293,6 +293,7 @@ describe("Executor", () => {
 		expect(mockWorkspace.findNextjsConfig).toHaveBeenCalled();
 		expect(mockWorkspace.bootstrapNextjsConfig).toHaveBeenCalledWith(
 			"next.config.ts",
+			undefined,
 		);
 	});
 

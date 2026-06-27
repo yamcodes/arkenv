@@ -181,7 +181,7 @@ Include:
 
 1. **Read** the existing changeset file from `.changeset/`
 2. **Assess** what needs to change: bump type, description, examples, or scope
-3. **Edit** the file directly — changesets are plain markdown files
+3. **Edit** the file directly - changesets are plain markdown files
 4. **Remove** the file entirely if the changeset no longer applies (e.g., the change was reverted)
 
 ### Validation checklist after modification

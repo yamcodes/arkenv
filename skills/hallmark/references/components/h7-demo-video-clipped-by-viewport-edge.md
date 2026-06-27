@@ -1,5 +1,5 @@
-### H7 · Demo Video — Clipped-by-viewport-edge
-Display headline left, demo video right, the rightmost ~10–20 % extending past the viewport so it's intentionally cut off. The clip *is* the design — implies "there's more product than fits the screen". Pioneered by Linear, refined by Vercel / Resend / Cursor.
+### H7 · Demo Video - Clipped-by-viewport-edge
+Display headline left, demo video right, the rightmost ~10–20 % extending past the viewport so it's intentionally cut off. The clip *is* the design - implies "there's more product than fits the screen". Pioneered by Linear, refined by Vercel / Resend / Cursor.
 *Use when:* the brief is SaaS / dev-tool / dashboard / platform AND you have real footage of the product (or a hand-built CSS-art mockup of it).
 *Don't confuse with:* H4 Stat-Led (number-led, no video) or H8 Mockup Split (still screenshot, not video).
 

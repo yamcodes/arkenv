@@ -1,0 +1,141 @@
+---
+title: Configuration & API
+icon: Wrench
+description: API reference and configuration options for @arkenv/nextjs.
+---
+
+## Register ArkEnv in your Next.js config
+
+The idiomatic way to use ArkEnv in Next.js is the `withArkEnv` config wrapper. It runs ArkEnv's codegen and validation as part of the Next.js build lifecycle and returns your config object unchanged.
+
+```ts title="next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+	/* config options here */
+};
+
+export default withArkEnv(nextConfig);
+```
+
+By default, ArkEnv looks for your schema in `src/env.ts` or `env.ts` and writes the generated helper to `[schemaDirectory]/generated/env.gen.ts`.
+
+### Custom paths
+
+Pass options as the second argument:
+
+```ts title="next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/config";
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig, {
+	schemaPath: "src/env/my-schema.ts",
+	outputPath: "src/generated/my-env.gen.ts",
+});
+```
+
+---
+
+## Configuration options
+
+The `withArkEnv()` wrapper accepts the following options:
+
+| Option       | Type                 | Default                            | Description                                                                      |
+| :----------- | :------------------- | :--------------------------------- | :------------------------------------------------------------------------------- |
+| `schemaPath` | `string`             | `src/env.ts` or `env.ts`           | The path to your environment schema file or directory.                           |
+| `outputPath` | `string`             | `[schemaDir]/generated/env.gen.ts` | The path where the generated helper (`env.gen.ts`) will be written.              |
+| `layout`     | `'flat' \| 'strict'` | `'flat'`                           | Specify the schema layout. Use `'strict'` if using the multi-file strict layout. |
+| `codegen`    | `boolean`            | `true`                             | Enable or disable automatic generation of the `env.gen.ts` helper.               |
+| `validate`   | `boolean`            | `true`                             | Enable or disable build-time environment variable validation.                    |
+
+---
+
+## Avoiding wrapper bloat
+
+<Accordions>
+  <Accordion title="Use setupArkEnv directly (escape hatch)">
+    If you are already juggling multiple config wrappers (e.g. Sentry, next-intl, MDX) and want to avoid another layer of `withX(withY(...))`, you can call the same underlying function directly.
+
+    `withArkEnv` is just a thin wrapper around `setupArkEnv` that calls it and returns your config object unchanged:
+
+    ```ts title="next.config.ts"
+    import { setupArkEnv } from "@arkenv/nextjs/config";
+    import type { NextConfig } from "next";
+
+    setupArkEnv({
+    	schemaPath: "src/env.ts",
+    	outputPath: "src/generated/env.gen.ts",
+    });
+
+    const nextConfig: NextConfig = {
+    	/* config options here */
+    };
+
+    export default nextConfig;
+    ```
+  </Accordion>
+</Accordions>
+
+---
+
+## Disabling codegen
+
+By default, ArkEnv generates an `env.gen.ts` helper so you don't have to write a manual `runtimeEnv` mapping. If you prefer to opt out of codegen entirely, you can. This is useful if you want full control over the `runtimeEnv` object or are working in an environment where file generation is undesirable.
+
+Pass the `--no-codegen` flag when bootstrapping with the CLI:
+
+```bash
+npx @arkenv/cli@latest init --no-codegen
+```
+
+Or set it up manually by passing the `{ codegen: false }` option to `withArkEnv` in `next.config.ts`, and importing `createEnv` directly from `@arkenv/nextjs` in your schema file. You then become responsible for keeping `runtimeEnv` in sync with your schema.
+
+> [!TIP]
+> **Build-time validation without codegen:**
+> When using `{ codegen: false }`, `withArkEnv` will skip compiling and generating `env.gen.ts` but will still execute build-time environment variable validation, ensuring invalid variables fail the build:
+>
+> ```ts title="next.config.ts"
+> import { withArkEnv } from "@arkenv/nextjs/config";
+> import type { NextConfig } from "next";
+>
+> const nextConfig: NextConfig = {};
+> export default withArkEnv(nextConfig, { codegen: false });
+> ```
+
+See the [FAQ](/docs/nextjs/faq#can-i-disable-code-generation) for the full manual setup pattern.
+
+---
+
+## Components
+
+### `<ArkEnvScript />`
+
+Used to inject public client-side variables dynamically during server-side rendering (SSR), enabling support for runtime environment configuration changes in containerized deployments.
+
+#### Import
+
+```tsx
+import { ArkEnvScript } from "@arkenv/nextjs";
+```
+
+#### Usage
+
+Insert it inside the `<body>` of your root layout (`app/layout.tsx`):
+
+```tsx title="app/layout.tsx"
+import { ArkEnvScript } from "@arkenv/nextjs";
+
+export default function RootLayout({ children }) {
+	return (
+		<html lang="en">
+			<body>
+				<ArkEnvScript />
+				{children}
+			</body>
+		</html>
+	);
+}
+```

@@ -196,7 +196,7 @@ def embed_file(path: Path) -> dict:
             "data_b64": b64,
         }
     else:
-        # Binary / unknown — base64 download link
+        # Binary / unknown - base64 download link
         try:
             raw = path.read_bytes()
             b64 = base64.b64encode(raw).decode("ascii")
@@ -442,7 +442,7 @@ def main() -> None:
     try:
         server = HTTPServer(("127.0.0.1", port), handler)
     except OSError:
-        # Port still in use after kill attempt — find a free one
+        # Port still in use after kill attempt - find a free one
         server = HTTPServer(("127.0.0.1", 0), handler)
         port = server.server_address[1]
 

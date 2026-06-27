@@ -73,7 +73,7 @@ jobs:
             --jq '.[0].number')
 
           if [ -n "$EXISTING_PR" ]; then
-            echo "✅ Sync PR #$EXISTING_PR already exists. Nothing to do — it will update automatically as dev changes."
+            echo "✅ Sync PR #$EXISTING_PR already exists. Nothing to do - it will update automatically as dev changes."
           else
             echo "📬 No open Sync PR found. Creating one..."
             gh pr create \

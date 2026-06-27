@@ -303,7 +303,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	if (
 		options.framework === "vite" ||
 		options.framework === "bun-fullstack" ||
-		(options.framework === "nextjs" && !options.disableCodegen) ||
+		options.framework === "nextjs" ||
 		options.framework === "nuxt"
 	) {
 		plan.bootstrap = shake({
@@ -314,6 +314,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 				options.framework === "nextjs"
 					? options.wrapNextjsConfig !== false
 					: undefined,
+			disableCodegen: options.disableCodegen,
 		});
 	}
 

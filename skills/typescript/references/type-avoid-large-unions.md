@@ -7,12 +7,12 @@ tags: type, unions, compilation, performance, discriminated-unions
 
 ## Avoid large union types
 
-Union type checking is quadratic — TypeScript compares each union member pairwise. Unions with 50+ elements cause measurable compilation slowdowns and IDE lag. This commonly occurs with generated types (GraphQL schemas, API response codes, database enums).
+Union type checking is quadratic - TypeScript compares each union member pairwise. Unions with 50+ elements cause measurable compilation slowdowns and IDE lag. This commonly occurs with generated types (GraphQL schemas, API response codes, database enums).
 
 **Incorrect (large generated union, O(n²) checks):**
 
 ```typescript
-// Auto-generated from GraphQL schema — 200+ event types
+// Auto-generated from GraphQL schema - 200+ event types
 type AnalyticsEvent =
   | 'page_view' | 'button_click' | 'form_submit' | 'scroll_depth'
   | 'video_play' | 'video_pause' | 'video_complete' | 'ad_impression'

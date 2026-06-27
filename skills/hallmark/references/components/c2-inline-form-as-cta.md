@@ -1,5 +1,5 @@
 ### C2 · Inline form-as-CTA
-The CTA *is* the form — a single email input with a "Submit →" beside it. No separate landing for sign-up.
+The CTA *is* the form - a single email input with a "Submit →" beside it. No separate landing for sign-up.
 *Use when:* the action is collecting an email.
 *Don't confuse with:* C1 Outlined chip (which navigates, not submits).
 

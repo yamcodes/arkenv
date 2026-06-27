@@ -9,7 +9,9 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"dependencies": {
+		"@arkenv/build": "workspace:*",
 		"chokidar": "^4.0.3",
+		"jiti": "catalog:",
 		"server-only": "^0.0.1"
 	},
 	"devDependencies": {
@@ -18,8 +20,10 @@
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
+		"@types/react": "catalog:",
 		"arktype": "catalog:",
 		"next": "catalog:",
+		"react": "catalog:",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
@@ -30,7 +34,8 @@
 		"@arkenv/core": "^1.0.0",
 		"@arkenv/standard": "^1.0.0",
 		"arktype": "^2.1.22",
-		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0"
+		"next": "^13.4.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-0",
+		"react": "catalog:"
 	},
 	"peerDependenciesMeta": {
 		"@arkenv/core": {
@@ -61,7 +66,7 @@
 		},
 		".": {
 			"react-server": {
-				"types": "./dist/index.d.ts",
+				"types": "./dist/react-server.d.ts",
 				"import": "./dist/react-server.js",
 				"require": "./dist/react-server.cjs"
 			},
@@ -177,15 +182,17 @@
 		{
 			"name": "@arkenv/nextjs/config",
 			"path": "dist/config.js",
-			"limit": "3 kB",
+			"limit": "4 kB",
 			"import": "*",
 			"ignore": [
 				"next",
 				"arktype",
 				"arkenv",
 				"chokidar",
+				"jiti",
 				"node:fs",
-				"node:path"
+				"node:path",
+				"node:url"
 			]
 		}
 	]

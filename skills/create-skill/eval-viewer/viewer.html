@@ -655,7 +655,7 @@
 
     // ---- Init ----
     async function init() {
-      // Load saved feedback from server — but only if this isn't a fresh
+      // Load saved feedback from server - but only if this isn't a fresh
       // iteration (indicated by previous_feedback being present). When
       // previous feedback exists, the feedback.json on disk is stale from
       // the prior iteration and should not pre-fill the textareas.
@@ -1016,7 +1016,7 @@
       }).then(() => {
         document.getElementById("feedback-status").textContent = "Saved";
       }).catch(() => {
-        // Static mode or server unavailable — no-op on auto-save,
+        // Static mode or server unavailable - no-op on auto-save,
         // feedback will be downloaded on final submit
         document.getElementById("feedback-status").textContent = "Will download on submit";
       });
@@ -1033,7 +1033,7 @@
         feedbackMap[run.id] = text;
       }
 
-      // POST once with status: complete — include ALL runs so the model
+      // POST once with status: complete - include ALL runs so the model
       // can distinguish "no feedback" (looks good) from "not reviewed"
       const reviews = [];
       const ts = new Date().toISOString();
@@ -1048,7 +1048,7 @@
       }).then(() => {
         document.getElementById("done-overlay").classList.add("visible");
       }).catch(() => {
-        // Server not available (static mode) — download as file
+        // Server not available (static mode) - download as file
         const blob = new Blob([payload], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");

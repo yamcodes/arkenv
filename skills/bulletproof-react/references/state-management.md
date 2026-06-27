@@ -28,17 +28,17 @@ Localize state as closely as possible to the components that need it. Avoid glob
 
 Good options:
 
-- [Zustand](https://github.com/pmndrs/zustand) — minimal, hooks-based
-- [Jotai](https://github.com/pmndrs/jotai) — atomic, great for frequent granular updates
-- [Redux Toolkit](https://redux-toolkit.js.org/) — structured, excellent DevTools
-- [XState](https://xstate.js.org/) — state machines for complex workflows
-- React Context + hooks — built-in, best for low-velocity data (themes, user info)
+- [Zustand](https://github.com/pmndrs/zustand) - minimal, hooks-based
+- [Jotai](https://github.com/pmndrs/jotai) - atomic, great for frequent granular updates
+- [Redux Toolkit](https://redux-toolkit.js.org/) - structured, excellent DevTools
+- [XState](https://xstate.js.org/) - state machines for complex workflows
+- React Context + hooks - built-in, best for low-velocity data (themes, user info)
 
 Use [use-context-selector](https://github.com/dai-shi/use-context-selector) if Context causes performance issues (most state libraries have selectors built in).
 
 ## Server cache state
 
-Never copy query data into `useState` — use the query result directly.
+Never copy query data into `useState` - use the query result directly.
 
 ```tsx
 // Don't do this
@@ -51,24 +51,24 @@ const { data: users } = useUsers(); // always fresh
 
 Good options:
 
-- [TanStack Query](https://tanstack.com/query) — REST + GraphQL
-- [SWR](https://swr.vercel.app/) — REST + GraphQL
-- [Apollo Client](https://www.apollographql.com/) — GraphQL
-- [URQL](https://formidable.com/open-source/urql/) — GraphQL
-- [RTK Query](https://redux-toolkit.js.org/rtk-query) — REST
+- [TanStack Query](https://tanstack.com/query) - REST + GraphQL
+- [SWR](https://swr.vercel.app/) - REST + GraphQL
+- [Apollo Client](https://www.apollographql.com/) - GraphQL
+- [URQL](https://formidable.com/open-source/urql/) - GraphQL
+- [RTK Query](https://redux-toolkit.js.org/rtk-query) - REST
 
 ## Form state
 
 Create abstracted `Form` and input field components that wrap the library and adapt to your application:
 
 ```tsx
-// components/ui/form/form.tsx — wraps React Hook Form
-// components/ui/form/input.tsx — wraps form input primitives
+// components/ui/form/form.tsx - wraps React Hook Form
+// components/ui/form/input.tsx - wraps form input primitives
 ```
 
 Integrate with validation libraries like [Zod](https://github.com/colinhacks/zod) or [Yup](https://github.com/jquense/yup).
 
-Forms can be [controlled or uncontrolled](https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components) — choose based on need.
+Forms can be [controlled or uncontrolled](https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components) - choose based on need.
 
 ## URL state
 
@@ -88,5 +88,5 @@ URL state is ideal for filters, pagination, active tabs, and shareable views.
 
 - Don't mix server and client state.
 - Start local, elevate state only when necessary.
-- Don't rush to Context — consider lifting state up or composition first.
+- Don't rush to Context - consider lifting state up or composition first.
 - For high-frequency updates, consider atomic state libraries (Jotai) over Context.

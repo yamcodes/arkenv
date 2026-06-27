@@ -10,9 +10,9 @@ ArkEnv for Next.js supports any Standard Schema validator. That includes Zod, Va
   <Card title="Which schema libraries implement the spec?" href="https://standardschema.dev/schema#what-schema-libraries-implement-the-spec" description="Standard Schema" />
 </Cards>
 
-### Simple layout
+### Flat layout
 
-Here is an example using Zod or Valibot with the simple layout:
+Here is an example using Zod or Valibot with the flat layout:
 
 <Tabs items={['Zod', 'Valibot']}>
   <Tab value="Zod">
@@ -21,15 +21,10 @@ Here is an example using Zod or Valibot with the simple layout:
     import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
-    export default function arkenv<
-    	const TServer = {},
-    	const TClient = {},
-    	const TShared = {},
-    >(options: {
-    	server?: TServer;
-    	client?: TClient;
-    	shared?: TShared;
-    }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+    export default function arkenv<const T extends {}>(
+    	schema: T,
+    	options?: any
+    ): Readonly<distill.Out<at.infer<T>>> {
     	return {} as any;
     }
 
@@ -39,15 +34,9 @@ Here is an example using Zod or Valibot with the simple layout:
     import { z } from "zod";
 
     export const env = arkenv({
-    	server: {
-    		DATABASE_URL: z.string().url(),
-    	},
-    	client: {
-    		NEXT_PUBLIC_API_URL: z.string().url(),
-    	},
-    	shared: {
-    		NODE_ENV: z.enum(["development", "production", "test"]),
-    	},
+    	DATABASE_URL: z.string().url(),
+    	NEXT_PUBLIC_API_URL: z.string().url(),
+    	NODE_ENV: z.enum(["development", "production", "test"]),
     });
     ```
   </Tab>
@@ -58,15 +47,10 @@ Here is an example using Zod or Valibot with the simple layout:
     import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
     export { type } from "@arkenv/nextjs";
-    export default function arkenv<
-    	const TServer = {},
-    	const TClient = {},
-    	const TShared = {},
-    >(options: {
-    	server?: TServer;
-    	client?: TClient;
-    	shared?: TShared;
-    }): Readonly<distill.Out<at.infer<TServer & TClient & TShared>>> {
+    export default function arkenv<const T extends {}>(
+    	schema: T,
+    	options?: any
+    ): Readonly<distill.Out<at.infer<T>>> {
     	return {} as any;
     }
 
@@ -76,15 +60,9 @@ Here is an example using Zod or Valibot with the simple layout:
     import * as v from "valibot";
 
     export const env = arkenv({
-    	server: {
-    		DATABASE_URL: v.pipe(v.string(), v.url()),
-    	},
-    	client: {
-    		NEXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
-    	},
-    	shared: {
-    		NODE_ENV: v.picklist(["development", "production", "test"]),
-    	},
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NEXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
+    	NODE_ENV: v.picklist(["development", "production", "test"]),
     });
     ```
   </Tab>

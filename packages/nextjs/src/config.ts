@@ -1,10 +1,37 @@
 import fs from "node:fs";
 import path from "node:path";
-import { watch as chokidarWatch } from "chokidar";
+import { fileURLToPath } from "node:url";
+import {
+	extractBlock,
+	extractClientKeys,
+	extractSharedKeys,
+	findSchemaPath,
+	parseBlockKeys,
+	resolveLayout,
+	watchSchema,
+} from "@arkenv/build";
+import { createJiti } from "jiti";
 
-declare global {
-	// eslint-disable-next-line no-var
-	var __arkenv_watcher__: import("chokidar").FSWatcher | undefined;
+export { extractClientKeys, extractSharedKeys };
+
+let hasWarnedSimpleLayout = false;
+
+function normalizeLayout(
+	layout: ArkEnvConfigOptions["layout"],
+): "simple" | "strict" | undefined {
+	if (layout === "simple") {
+		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
+			hasWarnedSimpleLayout = true;
+			console.warn(
+				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
+			);
+		}
+		return "simple";
+	}
+	if (layout === "flat") {
+		return "simple";
+	}
+	return layout;
 }
 
 /**
@@ -52,35 +79,55 @@ export type ArkEnvConfigOptions = {
 	/**
 	 * Specify the configuration layout.
 	 *
-	 * - `"simple"` (default): A single `env.ts` schema file.
+	 * - `"flat"` (default): A single `env.ts` schema file.
 	 * - `"strict"`: A 3-file split schema layout (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`).
 	 *
-	 * @default "simple"
+	 * @default "flat"
 	 */
-	layout?: "simple" | "strict";
+	layout?:
+		| "flat"
+		| "strict"
+		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
+		| "simple";
 
 	/**
 	 * Force standard mode code generation.
 	 *
-	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard/client`
-	 * instead of `@arkenv/nextjs/client`, ensuring the Standard Schema engine (`@arkenv/standard`)
+	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard/*`
+	 * instead of `@arkenv/nextjs/*`, ensuring the Standard Schema engine (`@arkenv/standard`)
 	 * is used and `arktype` is never bundled. This is set automatically when importing from
 	 * `@arkenv/nextjs/standard/config`, but can be toggled manually for custom setups.
 	 *
 	 * @default false
 	 */
 	standard?: boolean;
+
+	/**
+	 * Enable or disable build-time environment variable validation during build/dev startup.
+	 *
+	 * @default true
+	 */
+	validate?: boolean;
+
+	/**
+	 * Enable or disable automatic code generation of the `env.gen.ts` file.
+	 *
+	 * @default true
+	 */
+	codegen?: boolean;
 };
 
 /**
- * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts`.
+ * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
- * @param nextConfig The Next.js configuration object or function
  * @param options Optional configuration paths for schema and output files
- * @returns The Next.js configuration object unchanged
+ * @param internalOptions Optional configuration for internal testing hooks
  * @throws An error if the schema file cannot be found or if code generation fails
  */
-export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
+export function setupArkEnv(
+	options?: ArkEnvConfigOptions,
+	internalOptions?: { _jitiAliases?: Record<string, string> },
+): void {
 	// 1. Locate the env.ts schema file or strict schema directory
 	const schemaPath = options?.schemaPath
 		? path.resolve(options.schemaPath)
@@ -106,13 +153,15 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		throw new Error(
 			`[ArkEnv] Could not find schema file at ${
 				options?.schemaPath || "src/env.ts or env.ts"
-			}. Please specify 'schemaPath' in withArkEnv options.`,
+			}. Please specify 'schemaPath' in setupArkEnv options.`,
 		);
 	}
 
+	const normalizedLayout = normalizeLayout(options?.layout);
+
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
-		options?.layout,
+		normalizedLayout,
 	);
 
 	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath/baseDir)
@@ -127,19 +176,67 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		? path.resolve(options.outputPath)
 		: defaultOutputPath;
 
-	// 3. Run initial code generation
-	try {
-		runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
-	} catch (error: unknown) {
-		const message = error instanceof Error ? error.message : String(error);
-		throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
+	// 3. Run initial code generation if enabled
+	const codegen = options?.codegen ?? true;
+	if (codegen) {
+		try {
+			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
+		} catch (error: unknown) {
+			const message = error instanceof Error ? error.message : String(error);
+			throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
+		}
 	}
 
-	// 4. Initialize development file watcher if in dev mode
+	// 4. Validate schema against environment variables
+	const runValidation = options?.validate ?? true;
+	if (runValidation) {
+		try {
+			(globalThis as any).__arkenv_force_server__ = true;
+			const fileToEvaluate =
+				resolvedLayout === "strict" && baseDir
+					? path.join(baseDir, "server.ts")
+					: schemaPath;
+
+			const filenameForJiti =
+				typeof __filename !== "undefined"
+					? __filename
+					: typeof import.meta !== "undefined" && import.meta.url
+						? fileURLToPath(import.meta.url)
+						: "";
+			const dir = path.dirname(filenameForJiti);
+			const sharedPath = fs.existsSync(path.join(dir, "shared.ts"))
+				? path.join(dir, "shared.ts")
+				: path.join(dir, "shared.js");
+
+			const aliases: Record<string, string> = {
+				"server-only": sharedPath,
+				"./script": sharedPath,
+				"./script.tsx": sharedPath,
+				...internalOptions?._jitiAliases,
+			};
+
+			const jiti = createJiti(fileToEvaluate, {
+				moduleCache: false,
+				fsCache: false,
+				tsconfigPaths: true,
+				alias: aliases,
+			});
+			jiti(fileToEvaluate);
+		} catch (error: unknown) {
+			console.error("\n❌ [ArkEnv] Environment validation failed:");
+			console.error(error instanceof Error ? error.message : String(error));
+			console.error("");
+			process.exit(1);
+		} finally {
+			delete (globalThis as any).__arkenv_force_server__;
+		}
+	}
+
+	// 5. Initialize development file watcher if in dev mode and codegen is enabled
 	const isDev =
 		process.env.NODE_ENV === "development" ||
 		process.env.NEXT_PHASE === "phase-development-server";
-	if (isDev) {
+	if (isDev && codegen) {
 		const watchPaths =
 			resolvedLayout === "strict" && baseDir
 				? [
@@ -148,192 +245,23 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 						path.join(baseDir, "server.ts"),
 					].filter(fs.existsSync)
 				: [schemaPath];
-		watchSchema(watchPaths, outputPath, resolvedLayout, options?.standard);
+		watchSchema(watchPaths, () => {
+			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
+		});
 	}
+}
 
+/**
+ * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts`.
+ *
+ * @param nextConfig The Next.js configuration object or function
+ * @param options Optional configuration paths for schema and output files
+ * @returns The Next.js configuration object unchanged
+ * @throws An error if the schema file cannot be found or if code generation fails
+ */
+export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
+	setupArkEnv(options);
 	return nextConfig;
-}
-
-/**
- * Find the path to the schema file in the project.
- *
- * @returns The absolute path to the schema file, or null if not found
- */
-/**
- * Resolve the layout (simple vs strict) and the base directory from a schema path.
- *
- * Auto-detects layout when `layoutOption` is not provided. When `layoutOption`
- * is `"strict"`, validates that the required split files exist and throws a
- * descriptive error if either is missing.
- *
- * @param schemaPath The absolute path to the schema file or directory
- * @param layoutOption The explicit layout option, if provided
- * @returns The resolved layout and base directory
- * @throws An error if strict layout files are missing
- */
-function resolveLayout(
-	schemaPath: string,
-	layoutOption?: "simple" | "strict",
-): { layout: "simple" | "strict"; baseDir: string } {
-	const checkStrict = (dir: string) =>
-		fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
-		fs.existsSync(path.join(dir, "client.ts")) &&
-		fs.existsSync(path.join(dir, "server.ts"));
-
-	const resolveBaseDir = (p: string): string => {
-		// Normalize: if schemaPath has an extension, try the extensionless form as a dir
-		const ext = path.extname(p);
-		const baseWithoutExt = ext ? p.slice(0, -ext.length) : p;
-		if (
-			fs.existsSync(baseWithoutExt) &&
-			fs.statSync(baseWithoutExt).isDirectory()
-		) {
-			return baseWithoutExt;
-		}
-		return p;
-	};
-
-	if (!layoutOption) {
-		// Auto-detect
-		const resolved = resolveBaseDir(schemaPath);
-		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
-			if (checkStrict(resolved)) {
-				return { layout: "strict", baseDir: resolved };
-			}
-			return { layout: "simple", baseDir: resolved };
-		}
-
-		// schemaPath is a file — check surrounding dirs
-		const parent = path.dirname(schemaPath);
-		const ext = path.extname(schemaPath);
-		const baseWithoutExt = ext ? schemaPath.slice(0, -ext.length) : schemaPath;
-		if (
-			fs.existsSync(baseWithoutExt) &&
-			fs.statSync(baseWithoutExt).isDirectory() &&
-			checkStrict(baseWithoutExt)
-		) {
-			return { layout: "strict", baseDir: baseWithoutExt };
-		}
-		if (checkStrict(parent)) {
-			return { layout: "strict", baseDir: parent };
-		}
-		if (
-			path.basename(parent) === "internal" &&
-			checkStrict(path.dirname(parent))
-		) {
-			return { layout: "strict", baseDir: path.dirname(parent) };
-		}
-		return { layout: "simple", baseDir: schemaPath };
-	}
-
-	if (layoutOption === "strict") {
-		// Resolve baseDir for an explicit strict layout
-		let baseDir: string;
-		const resolved = resolveBaseDir(schemaPath);
-		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
-			baseDir = resolved;
-		} else {
-			const parent = path.dirname(schemaPath);
-			if (path.basename(parent) === "internal") {
-				baseDir = path.dirname(parent);
-			} else {
-				baseDir = parent;
-			}
-		}
-
-		// Validate that required split files exist
-		const clientPath = path.join(baseDir, "client.ts");
-		const sharedPath = path.join(baseDir, "internal", "shared.ts");
-		if (!fs.existsSync(clientPath) || !fs.existsSync(sharedPath)) {
-			throw new Error(
-				`[ArkEnv] Strict layout requires "${clientPath}" and "${sharedPath}" to exist. ` +
-					`Ensure both files are present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
-			);
-		}
-
-		return { layout: "strict", baseDir };
-	}
-
-	// layoutOption === "simple"
-	return { layout: "simple", baseDir: schemaPath };
-}
-
-function findSchemaPath(): string | null {
-	const possiblePaths = [
-		path.join(process.cwd(), "src", "env.ts"),
-		path.join(process.cwd(), "env.ts"),
-	];
-	for (const p of possiblePaths) {
-		if (fs.existsSync(p)) return p;
-	}
-
-	const possibleDirs = [
-		path.join(process.cwd(), "src", "env"),
-		path.join(process.cwd(), "env"),
-	];
-	for (const d of possibleDirs) {
-		if (
-			fs.existsSync(d) &&
-			fs.existsSync(path.join(d, "internal", "shared.ts")) &&
-			fs.existsSync(path.join(d, "client.ts")) &&
-			fs.existsSync(path.join(d, "server.ts"))
-		) {
-			return d;
-		}
-	}
-	return null;
-}
-
-/**
- * Watch the schema file for changes and trigger codegen.
- *
- * @param schemaPath The absolute path to the schema file, or an array of paths to watch
- * @param outputPath The absolute path to the generated output file
- * @param layout The resolved layout to pass through to codegen on each change
- * @param forceStandard Force standard mode code generation
- */
-function watchSchema(
-	schemaPath: string | string[],
-	outputPath: string,
-	layout?: "simple" | "strict",
-	forceStandard?: boolean,
-) {
-	const previousWatcher = globalThis.__arkenv_watcher__;
-	if (previousWatcher && typeof previousWatcher.close === "function") {
-		previousWatcher.close().catch((err: unknown) => {
-			const message = err instanceof Error ? err.message : String(err);
-			// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
-			console.error(
-				`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
-			);
-		});
-	}
-
-	try {
-		const watcher = chokidarWatch(schemaPath, { ignoreInitial: true });
-		globalThis.__arkenv_watcher__ = watcher;
-
-		watcher.on("change", () => {
-			try {
-				const mainSchemaPath = Array.isArray(schemaPath)
-					? schemaPath[0]
-					: schemaPath;
-				runCodegen(mainSchemaPath, outputPath, layout, forceStandard);
-			} catch (err: unknown) {
-				const message = err instanceof Error ? err.message : String(err);
-				// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
-				console.error(
-					`[ArkEnv Watcher] Failed to regenerate env.gen.ts: ${message}`,
-				);
-			}
-		});
-	} catch (err: unknown) {
-		const message = err instanceof Error ? err.message : String(err);
-		// biome-ignore lint/suspicious/noConsole: watcher errors must be logged
-		console.error(
-			`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
-		);
-	}
 }
 
 /**
@@ -348,12 +276,14 @@ function watchSchema(
 export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
-	layoutOption?: "simple" | "strict",
+	layoutOption?: ArkEnvConfigOptions["layout"],
 	forceStandard?: boolean,
 ) {
+	const normalizedLayout = normalizeLayout(layoutOption);
+
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
-		layoutOption,
+		normalizedLayout,
 	);
 
 	let generatedCode = "";
@@ -378,11 +308,7 @@ export function runCodegen(
 		const clientKeys = extractClientKeys(clientContent);
 		const sharedKeys = extractSharedKeys(sharedContent);
 
-		generatedCode = generateClientFactoryCode(
-			clientKeys,
-			sharedKeys,
-			isStandard,
-		);
+		generatedCode = generateClientFactoryCode(clientKeys, sharedKeys, isStandard);
 	} else {
 		const fileContent = fs.readFileSync(schemaPath, "utf-8");
 		const isStandard =
@@ -390,8 +316,16 @@ export function runCodegen(
 			fileContent.includes("@arkenv/standard") ||
 			fileContent.includes("arkenv/standard");
 
-		const { clientKeys, sharedKeys } = extractKeys(fileContent);
-		generatedCode = generateFactoryCode(clientKeys, sharedKeys, isStandard);
+		const { clientKeys, sharedKeys, isLegacy } = extractKeys(fileContent);
+		if (isLegacy) {
+			generatedCode = generateFactoryCode(clientKeys, sharedKeys, isStandard);
+		} else {
+			generatedCode = generateFlatFactoryCode(
+				clientKeys,
+				sharedKeys,
+				isStandard,
+			);
+		}
 	}
 
 	// Ensure parent directory exists
@@ -414,6 +348,114 @@ export function runCodegen(
 	}
 }
 
+function extractCallArguments(
+	content: string,
+): { schemaArg: string; optionsArg: string | null } | null {
+	const regex = /\b(?:arkenv|createEnv)\s*\(/g;
+	while (regex.exec(content) !== null) {
+		let parenCount = 1;
+		let index = regex.lastIndex;
+		let inString: string | null = null;
+		let inComment: "single" | "multi" | null = null;
+		let braceCount = 0;
+		let bracketCount = 0;
+
+		const args: string[] = [];
+		let currentArg = "";
+
+		while (index < content.length && parenCount > 0) {
+			const char = content[index];
+			const nextChar = content[index + 1];
+
+			if (inComment === "single") {
+				if (char === "\n" || char === "\r") inComment = null;
+				currentArg += char;
+				index++;
+				continue;
+			}
+			if (inComment === "multi") {
+				if (char === "*" && nextChar === "/") {
+					inComment = null;
+					currentArg += "*/";
+					index += 2;
+					continue;
+				}
+				currentArg += char;
+				index++;
+				continue;
+			}
+
+			if (inString) {
+				if (char === inString && content[index - 1] !== "\\") {
+					inString = null;
+				}
+				currentArg += char;
+				index++;
+				continue;
+			}
+
+			if (char === "/" && nextChar === "/") {
+				inComment = "single";
+				currentArg += "//";
+				index += 2;
+				continue;
+			}
+			if (char === "/" && nextChar === "*") {
+				inComment = "multi";
+				currentArg += "/*";
+				index += 2;
+				continue;
+			}
+			if (char === "'" || char === '"' || char === "`") {
+				inString = char;
+				currentArg += char;
+				index++;
+				continue;
+			}
+
+			if (char === "(") {
+				parenCount++;
+			} else if (char === ")") {
+				parenCount--;
+			} else if (char === "{") {
+				braceCount++;
+			} else if (char === "}") {
+				braceCount--;
+			} else if (char === "[") {
+				bracketCount++;
+			} else if (char === "]") {
+				bracketCount--;
+			}
+
+			if (parenCount === 0) {
+				args.push(currentArg);
+				break;
+			}
+
+			if (
+				char === "," &&
+				parenCount === 1 &&
+				braceCount === 0 &&
+				bracketCount === 0
+			) {
+				args.push(currentArg);
+				currentArg = "";
+			} else {
+				currentArg += char;
+			}
+			index++;
+		}
+
+		if (parenCount === 0 && args.length > 0) {
+			return {
+				schemaArg: args[0].trim(),
+				optionsArg: args[1] ? args[1].trim() : null,
+			};
+		}
+	}
+	return null;
+}
+
 /**
  * Statically extract client and shared keys from the schema content.
  *
@@ -423,201 +465,93 @@ export function runCodegen(
 export function extractKeys(content: string): {
 	clientKeys: string[];
 	sharedKeys: string[];
+	isLegacy?: boolean;
 } {
 	const clientKeys: string[] = [];
 	const sharedKeys: string[] = [];
 
-	// Extract client block
-	const clientBlock = extractBlock(content, "client");
-	if (clientBlock) {
-		clientKeys.push(...parseBlockKeys(clientBlock));
+	const args = extractCallArguments(content);
+	if (!args) {
+		return { clientKeys, sharedKeys, isLegacy: false };
 	}
 
-	// Extract shared block
-	const sharedBlock = extractBlock(content, "shared");
-	if (sharedBlock) {
-		sharedKeys.push(...parseBlockKeys(sharedBlock));
-	}
+	// Strip outer braces if present
+	const trimmedSchema = args.schemaArg
+		.replace(/^\{/, "")
+		.replace(/\}$/, "")
+		.trim();
+	const topKeys = parseBlockKeys(trimmedSchema);
+	const isLegacy =
+		topKeys.includes("client") ||
+		topKeys.includes("server") ||
+		topKeys.includes("shared");
 
-	return { clientKeys, sharedKeys };
-}
-
-/**
- * Extract a specific block from the schema content by name.
- *
- * @param content The schema file string content
- * @param blockName The name of the block to extract (e.g., 'client' or 'shared')
- * @returns The contents of the block, or null if not found
- */
-function extractBlock(content: string, blockName: string): string | null {
-	// Find "\bblockName\s*:\s*{" or "\bblockName\s*:\s*type({"
-	const regex = new RegExp(
-		`\\b${blockName}\\s*:\\s*(?:[a-zA-Z0-9_$.]+\\s*\\(\\s*)?\\{`,
-		"g",
-	);
-	const match = regex.exec(content);
-	if (!match) return null;
-
-	const startIndex = regex.lastIndex;
-	let braceCount = 1;
-	let index = startIndex;
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
-
-	while (index < content.length && braceCount > 0) {
-		const char = content[index];
-		const nextChar = content[index + 1];
-
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			index++;
-			continue;
+	if (isLegacy) {
+		const clientBlock = extractBlock(args.schemaArg, "client");
+		if (clientBlock) {
+			clientKeys.push(...parseBlockKeys(clientBlock));
 		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				index += 2;
-				continue;
-			}
-			index++;
-			continue;
+		const sharedBlock = extractBlock(args.schemaArg, "shared");
+		if (sharedBlock) {
+			sharedKeys.push(...parseBlockKeys(sharedBlock));
 		}
-
-		if (inString) {
-			if (char === inString && content[index - 1] !== "\\") {
-				inString = null;
-			}
-			index++;
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			index += 2;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			index += 2;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			index++;
-			continue;
-		}
-
-		if (char === "{") {
-			braceCount++;
-		} else if (char === "}") {
-			braceCount--;
-		}
-		index++;
-	}
-
-	if (braceCount === 0) {
-		return content.slice(startIndex, index - 1);
-	}
-
-	return null;
-}
-
-/**
- * Parse environment variable keys from a block's content.
- *
- * @param blockContent The raw content of the block
- * @returns An array of parsed environment variable keys
- */
-function parseBlockKeys(blockContent: string): string[] {
-	const keys: string[] = [];
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
-	let currentToken = "";
-	let lastStringContent = "";
-	let braceDepth = 0;
-
-	for (let i = 0; i < blockContent.length; i++) {
-		const char = blockContent[i];
-		const nextChar = blockContent[i + 1];
-
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				i++;
-			}
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && blockContent[i - 1] !== "\\") {
-				inString = null;
-				lastStringContent = currentToken;
-				currentToken = "";
-			} else {
-				currentToken += char;
-			}
-			continue;
-		}
-
-		// Start comments/strings
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			i++;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			i++;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			currentToken = "";
-			continue;
-		}
-
-		if (char === "{") {
-			braceDepth++;
-			currentToken = "";
-			lastStringContent = "";
-			continue;
-		}
-		if (char === "}") {
-			braceDepth--;
-			currentToken = "";
-			lastStringContent = "";
-			continue;
-		}
-
-		if (char === ":") {
-			if (braceDepth === 0) {
-				const key = currentToken.trim() || lastStringContent.trim();
-				if (key) {
-					keys.push(key);
+	} else {
+		// New flat layout
+		const optionExposedKeys: string[] = [];
+		if (args.optionsArg) {
+			const exposeMatch =
+				args.optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
+				args.optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
+				args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
+			if (exposeMatch) {
+				const matches = exposeMatch[1].matchAll(/['"`](.*?)['"`]/g);
+				for (const match of matches) {
+					optionExposedKeys.push(match[1]);
 				}
 			}
-			currentToken = "";
-			lastStringContent = "";
-			continue;
 		}
 
-		if (/[a-zA-Z0-9_$]/.test(char)) {
-			currentToken += char;
-		} else if (char === "," || char === "\n" || char === "\r") {
-			currentToken = "";
-			lastStringContent = "";
+		for (const key of topKeys) {
+			// NODE_ENV is implicitly shared as Next.js automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
+			// See: https://nextjs.org/docs/app/guides/environment-variables
+			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
+				sharedKeys.push(key);
+			} else if (key.startsWith("NEXT_PUBLIC_")) {
+				clientKeys.push(key);
+			}
 		}
 	}
 
-	return keys;
+	return { clientKeys, sharedKeys, isLegacy };
 }
 
 /**
- * Generate the TypeScript factory code for the tailored arkenv helper.
+ * Generate the triple-tab indented runtime environment variables mapping.
+ */
+function generateRuntimeEnvLines(
+	clientKeys: string[],
+	sharedKeys: string[],
+): string {
+	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
+	return allKeys
+		.map(
+			(key) =>
+				`\t\t\t${key}: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.${key} ?? process.env.${key} : process.env.${key},`,
+		)
+		.join("\n");
+}
+
+const GENERATED_HEADER = `/* eslint-disable */
+// biome-ignore format: auto-generated
+// Generated by ArkEnv. DO NOT EDIT DIRECTLY.
+`;
+
+const GENERATED_FOOTER = `
+export default createEnv;
+`;
+
+/**
+ * Generate the TypeScript factory code for the tailored createEnv helper.
  *
  * @param clientKeys The client environment variable keys
  * @param sharedKeys The shared environment variable keys
@@ -629,42 +563,18 @@ function generateFactoryCode(
 	sharedKeys: string[],
 	isStandard?: boolean,
 ): string {
-	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
-	const runtimeEnvLines = allKeys
-		.map((key) => `\t\t\t${key}: process.env.${key},`)
-		.join("\n");
-
+	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
+	const coreName = isStandard ? "arkenv" : "createEnv";
 	const typeExport = isStandard
 		? ""
-		: `\nexport { type } from "@arkenv/nextjs";\n`;
-	const returnType = isStandard
-		? `Readonly<{
-	[K in keyof (TServer & TClient & TShared)]: TServer & TClient & TShared extends Record<K, infer V>
-		? V extends { "~standard": { validate: (value: any) => { value: infer Out } } }
-			? Out
-			: V extends { "~standard": { validate: (value: any) => Promise<{ value: infer Out }> } }
-				? Out
-				: any
-		: any
-}>`
-		: "Readonly<Infer<TServer & TClient & TShared>>";
+		: '\nexport { type } from "@arkenv/nextjs";\n';
+	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
 
-	const typeImport = isStandard
-		? ""
-		: '\nimport type { Infer } from "@arkenv/nextjs";';
-
-	return `/* eslint-disable */
-// prettier-ignore
-// biome-ignore format: auto-generated
-/**
- * @file env.gen.ts
- * @note This file is auto-generated by ArkEnv. DO NOT EDIT DIRECTLY.
- * @see https://arkenv.js.org
- */
-
-import { arkenv as coreArkenv } from "${importPath}";${typeImport}${typeExport}
-export function arkenv<
+	return `${GENERATED_HEADER}
+import { ${coreName} as coreCreateEnv } from "${importPath}";
+${typeExport}
+export function createEnv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
 	const TShared extends Record<string, any> = {},
@@ -674,21 +584,89 @@ export function arkenv<
 		[K in keyof TClient]: K extends \`NEXT_PUBLIC_\${string}\` ? unknown : never;
 	};
 	shared?: TShared;
-}): ${returnType} {
-	return coreArkenv({
+}) {
+	return ${callPrefix}({
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
 		},
 	} as any) as any;
 }
-
-export default arkenv;
-`;
+${GENERATED_FOOTER}`;
 }
 
 /**
- * Generate the TypeScript factory code for the strict-layout `arkenv` helper.
+ * Generate the TypeScript factory code for the Flat Layout createEnv helper.
+ *
+ * @remarks
+ * **Architecture tripwire:** Do not statically compile the schema here or
+ * reference internal-only types (the `$` scope or `MergeExtends`).
+ *
+ * - **Generic wrapper:** The factory must stay generic because the concrete
+ *   schema is owned by the user-land `env.ts`.
+ * - **Type strategy:** It intentionally returns the full schema type to ensure
+ *   flawless Server Component autocomplete.
+ * - **Security boundary:** Client-side protection is deliberately deferred to
+ *   the runtime Proxy in `@arkenv/nextjs`, which throws on unauthorized access.
+ *
+ * 📖 See ADR-0010: Flat layout codegen and type inference strategy
+ * (`docs/adr/0010-flat-layout-codegen-type-strategy.md`).
+ */
+function generateFlatFactoryCode(
+	clientKeys: string[],
+	sharedKeys: string[],
+	isStandard?: boolean,
+): string {
+	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
+	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
+	const coreName = isStandard ? "arkenv" : "createEnv";
+	const typeExport = isStandard
+		? ""
+		: '\nexport { type } from "@arkenv/nextjs";\n';
+	const typeImport = isStandard
+		? ""
+		: '\nimport type { type as at, distill } from "arktype";';
+	const returnType = isStandard
+		? "Readonly<TSchema>"
+		: "Readonly<distill.Out<at.infer<TSchema>>>";
+	const castReturn = isStandard ? "" : " as unknown as Readonly<distill.Out<at.infer<TSchema>>>";
+	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+
+	return `${GENERATED_HEADER}
+import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
+${typeExport}
+export function createEnv<
+	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
+	const TExpose extends keyof TSchema = never,
+	const TExtends extends readonly unknown[] = [],
+>(
+	schema: TSchema,
+	options?: {
+		/**
+		 * Custom environment variables to expose to the client bundle.
+		 * By default, variables prefixed with \`NEXT_PUBLIC_\` and \`NODE_ENV\` are exposed automatically.
+		 * Use this option to expose custom variables that do not have the \`NEXT_PUBLIC_\` prefix.
+		 */
+		exposeToClient?: readonly TExpose[];
+		extends?: [...TExtends];
+	},
+): ${returnType} {
+	// Types expose the full schema for a great DX on the server; the runtime
+	// Proxy from \`@arkenv/nextjs\` enforces the security boundary by throwing
+	// when a server-only variable is accessed on the client.
+	const env = ${callPrefix}(schema as any, {
+		...options,
+		runtimeEnv: {
+${runtimeEnvLines}
+		},
+	} as any);
+	return env${castReturn};
+}
+${GENERATED_FOOTER}`;
+}
+
+/**
+ * Generate the TypeScript factory code for the strict-layout `createEnv` helper.
  *
  * Unlike `generateFactoryCode`, this variant imports from `@arkenv/nextjs/client`
  * and exposes a positional-schema signature suited for split-file projects.
@@ -703,29 +681,20 @@ function generateClientFactoryCode(
 	sharedKeys: string[],
 	isStandard?: boolean,
 ): string {
-	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
-	const runtimeEnvLines = allKeys
-		.map((key) => `\t\t\t${key}: process.env.${key},`)
-		.join("\n");
-
+	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard
 		? "@arkenv/nextjs/standard/client"
 		: "@arkenv/nextjs/client";
+	const coreName = isStandard ? "arkenv" : "createEnv";
 	const typeExport = isStandard
 		? ""
-		: `\nexport { type } from "@arkenv/nextjs/client";\n`;
+		: '\nexport { type } from "@arkenv/nextjs/client";\n';
+	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
 
-	return `/* eslint-disable */
-// prettier-ignore
-// biome-ignore format: auto-generated
-/**
- * @file env.gen.ts
- * @note This file is auto-generated by ArkEnv. DO NOT EDIT DIRECTLY.
- * @see https://arkenv.js.org
- */
-
-import { arkenv as coreArkenv } from "${importPath}";${typeExport}
-export function arkenv<
+	return `${GENERATED_HEADER}
+import { ${coreName} as coreCreateEnv } from "${importPath}";
+${typeExport}
+export function createEnv<
 	const TSchema extends Record<string, any> = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -736,200 +705,12 @@ export function arkenv<
 		extends?: [...TExtends];
 	},
 ) {
-	return coreArkenv<TSchema, TExtends>(schema as any, {
+	return ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {
 ${runtimeEnvLines}
 		},
 	} as any);
 }
-
-export default arkenv;
-`;
-}
-
-/**
- * Extract env var keys from a strict-layout `client.ts` file.
- *
- * Locates the first `arkenv({...})` call and delegates to `parseBlockKeys`
- * to enumerate the keys defined in the schema object.
- *
- * @param content The source text of `client.ts`
- * @returns An array of env var key names found in the client schema
- */
-export function extractClientKeys(content: string): string[] {
-	const block = extractClientBlock(content);
-	return block ? parseBlockKeys(block) : [];
-}
-
-/**
- * Extract env var keys from a strict-layout `internal/shared.ts` file.
- *
- * Locates the `SharedSchema = ...({...})` assignment and delegates to
- * `parseBlockKeys` to enumerate the keys defined in the schema object.
- *
- * @param content The source text of `internal/shared.ts`
- * @returns An array of env var key names found in the shared schema
- */
-export function extractSharedKeys(content: string): string[] {
-	const block = extractSharedBlock(content);
-	return block ? parseBlockKeys(block) : [];
-}
-
-/**
- * Extract the schema object body from a strict-layout `client.ts` file.
- *
- * Matches the first `arkenv(...)` call, then performs brace-balanced
- * traversal while respecting strings and comments to find the boundaries
- * of the first argument object.
- *
- * @param content The source text of `client.ts`
- * @returns The raw text inside the first `{...}` argument, or `null` if not found
- */
-function extractClientBlock(content: string): string | null {
-	const regex = /\barkenv\s*\(\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
-	const match = regex.exec(content);
-	if (!match) return null;
-
-	const startIndex = regex.lastIndex;
-	let braceCount = 1;
-	let index = startIndex;
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
-
-	while (index < content.length && braceCount > 0) {
-		const char = content[index];
-		const nextChar = content[index + 1];
-
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			index++;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				index += 2;
-				continue;
-			}
-			index++;
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && content[index - 1] !== "\\") {
-				inString = null;
-			}
-			index++;
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			index += 2;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			index += 2;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			index++;
-			continue;
-		}
-
-		if (char === "{") {
-			braceCount++;
-		} else if (char === "}") {
-			braceCount--;
-		}
-		index++;
-	}
-
-	if (braceCount === 0) {
-		return content.slice(startIndex, index - 1);
-	}
-
-	return null;
-}
-
-/**
- * Extract the schema object body from a strict-layout `internal/shared.ts` file.
- *
- * Matches the `SharedSchema = ...({...})` assignment, then performs
- * brace-balanced traversal while respecting strings and comments to find
- * the boundaries of the schema object.
- *
- * @param content The source text of `internal/shared.ts`
- * @returns The raw text inside the `{...}` schema object, or `null` if not found
- */
-function extractSharedBlock(content: string): string | null {
-	const regex = /\bSharedSchema\s*=\s*(?:[a-zA-Z0-9_$.]+\s*\(\s*)*\{/g;
-	const match = regex.exec(content);
-	if (!match) return null;
-
-	const startIndex = regex.lastIndex;
-	let braceCount = 1;
-	let index = startIndex;
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
-
-	while (index < content.length && braceCount > 0) {
-		const char = content[index];
-		const nextChar = content[index + 1];
-
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			index++;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				index += 2;
-				continue;
-			}
-			index++;
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && content[index - 1] !== "\\") {
-				inString = null;
-			}
-			index++;
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			index += 2;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			index += 2;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			index++;
-			continue;
-		}
-
-		if (char === "{") {
-			braceCount++;
-		} else if (char === "}") {
-			braceCount--;
-		}
-		index++;
-	}
-
-	if (braceCount === 0) {
-		return content.slice(startIndex, index - 1);
-	}
-
-	return null;
+${GENERATED_FOOTER}`;
 }

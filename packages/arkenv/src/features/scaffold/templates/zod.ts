@@ -14,6 +14,7 @@ export const zodTemplate = (
 	framework?: string,
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
+	layout?: "strict" | "simple" | "flat",
 ) => {
 	const schemaFields = envKeys?.length
 		? envKeys.map((key) => `\t\t${key}: z.string().optional(),`).join("\n")
@@ -75,6 +76,7 @@ export const zodTemplate = (
 			nextjsImportPath,
 			disableCodegen,
 			framework,
+			layout,
 		);
 	}
 

@@ -39,7 +39,7 @@ ArkEnv intercepts the populated `process.env` or `import.meta.env` object, evalu
 
 ## Why do empty values in my `.env` file cause validation errors?
 
-An empty value (e.g., `PORT=` in a `.env` file) is passed to ArkEnv as an empty string (`""`). By default, ArkEnv treats this as an actual value — it won't apply defaults and it will fail validation for non-string types like `number` or `boolean`.
+An empty value (e.g., `PORT=` in a `.env` file) is passed to ArkEnv as an empty string (`""`). By default, ArkEnv treats this as an actual value - it won't apply defaults and it will fail validation for non-string types like `number` or `boolean`.
 
 If you want empty values to be treated as missing (so defaults apply), enable the `emptyAsUndefined` option:
 

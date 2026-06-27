@@ -15,7 +15,14 @@ export type LegacyNestedSchema = {
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
+	/** @deprecated Use `exposeToClient` instead. */
+	expose?: readonly string[];
+	/** @deprecated Use `exposeToClient` instead. */
+	shared?: readonly string[];
+	exposeToClient?: readonly string[];
 };
+
+let hasWarnedLegacy = false;
 
 /**
  * Validate and wrap environment variables in a security proxy.
@@ -25,11 +32,17 @@ export type FlatSchemaOptions = {
 export function arkenvInternal(
 	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
 	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
-	context: { isServer: boolean; isShared?: boolean } | undefined,
+	context:
+		| {
+				isServer: boolean;
+				isShared?: boolean;
+				strictLayout?: "client" | "server";
+		  }
+		| undefined,
 	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
 	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
 	/** Extracts the declared key names from a schema object. */
-	getSchemaKeys: (schema: SchemaShape) => string[],
+	getSchemaKeysArg: (schema: SchemaShape) => string[],
 ): unknown {
 	let server: SchemaShape = {};
 	let client: SchemaShape = {};
@@ -39,6 +52,12 @@ export function arkenvInternal(
 	let isServer = false;
 
 	if (typeof optionsOrIsServer === "boolean") {
+		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
+			hasWarnedLegacy = true;
+			console.warn(
+				"⚠️ [arkenv] Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in createEnv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/nextjs/faq#how-do-i-define-client-side-variables",
+			);
+		}
 		// Old nested schema behavior (backward compatible)
 		const legacySchema = schemaOrOptions as
 			| LegacyNestedSchema
@@ -49,21 +68,39 @@ export function arkenvInternal(
 		shared = (legacySchema?.shared || {}) as SchemaShape;
 		extendsList = legacySchema?.extends || [];
 		runtimeEnv = (legacySchema?.runtimeEnv || {}) as Dict<string>;
-		isServer = optionsOrIsServer;
+		isServer =
+			(globalThis as any).__arkenv_force_server__ === true ||
+			!!optionsOrIsServer;
 	} else {
 		// New flat schema behavior
 		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
 		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
-		isServer = !!context?.isServer;
+		isServer =
+			(globalThis as any).__arkenv_force_server__ === true ||
+			!!context?.isServer;
 
 		if (context?.isShared) {
 			shared = flatSchema;
-		} else if (isServer) {
+		} else if (context?.strictLayout === "client") {
+			client = flatSchema;
+		} else if (context?.strictLayout === "server") {
 			server = flatSchema;
 		} else {
-			client = flatSchema;
+			const exposedKeys =
+				options.exposeToClient || options.expose || options.shared || [];
+			for (const key of Object.keys(flatSchema)) {
+				// NODE_ENV is implicitly shared as Next.js automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
+				// See: https://nextjs.org/docs/app/guides/environment-variables
+				if (exposedKeys.includes(key) || key === "NODE_ENV") {
+					shared[key] = flatSchema[key];
+				} else if (key.startsWith("NEXT_PUBLIC_")) {
+					client[key] = flatSchema[key];
+				} else {
+					server[key] = flatSchema[key];
+				}
+			}
 		}
 	}
 
@@ -139,7 +176,7 @@ export function arkenvInternal(
 					});
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
 
-					const extKeys = getSchemaKeys(ext);
+					const extKeys = getSchemaKeysArg(ext);
 					for (const key of extKeys) {
 						allKeys.add(key);
 						// Only classify as server-only if we are on the server, it's not a public key,
@@ -201,9 +238,19 @@ export function arkenvInternal(
 		}
 	}
 
+	const globalEnv =
+		typeof globalThis !== "undefined"
+			? (globalThis as any).__arkenv_env__
+			: undefined;
+
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
 			combinedEnv[key] = runtimeEnv[key];
+		}
+		if (globalEnv && globalEnv[key] !== undefined) {
+			if (key.startsWith("NEXT_PUBLIC_") || key in client || key in shared) {
+				combinedEnv[key] = globalEnv[key];
+			}
 		}
 	}
 
@@ -250,7 +297,7 @@ export function arkenvInternal(
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
 					throw new Error(
-						`Accessing server-side environment variable '${prop}' on the client is not allowed.`,
+						`ArkEnv Error: Attempted to access server environment variable '${prop}' on the client.`,
 					);
 				}
 

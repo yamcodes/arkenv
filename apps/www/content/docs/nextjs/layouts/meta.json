@@ -3,7 +3,7 @@
 	"icon": "Layers",
 	"defaultOpen": true,
 	"pages": [
-		"[Zap][Simple (Recommended)](/docs/nextjs/layouts/simple)",
+		"[Zap][Flat (Recommended)](/docs/nextjs/layouts/flat)",
 		"[ShieldCheck][Strict](/docs/nextjs/layouts/strict)"
 	]
 }

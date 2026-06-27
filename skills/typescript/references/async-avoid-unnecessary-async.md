@@ -7,7 +7,7 @@ tags: async, promises, overhead, optimization, return-await
 
 ## Avoid unnecessary async/await
 
-Remove `async` from functions that only wrap a single Promise without using `await` for control flow. However, prefer `return await` over bare `return` inside try/catch blocks — it ensures errors are caught and produces better stack traces.
+Remove `async` from functions that only wrap a single Promise without using `await` for control flow. However, prefer `return await` over bare `return` inside try/catch blocks - it ensures errors are caught and produces better stack traces.
 
 **Incorrect (trivial async wrapper with no logic):**
 
@@ -15,12 +15,12 @@ Remove `async` from functions that only wrap a single Promise without using `awa
 async function getUser(userId: string): Promise<User> {
   return userRepository.findById(userId)
   // async keyword creates unnecessary Promise wrapper
-  // No await, no try/catch — async adds nothing here
+  // No await, no try/catch - async adds nothing here
 }
 
 async function deleteUser(userId: string): Promise<void> {
   return userRepository.delete(userId)
-  // Same pattern — async is pure overhead
+  // Same pattern - async is pure overhead
 }
 ```
 
@@ -40,7 +40,7 @@ function deleteUser(userId: string): Promise<void> {
 **Keep async + return await in try/catch:**
 
 ```typescript
-// Correct — return await ensures the error is caught
+// Correct - return await ensures the error is caught
 async function getUser(userId: string): Promise<User> {
   try {
     return await userRepository.findById(userId)
