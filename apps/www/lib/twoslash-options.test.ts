@@ -38,8 +38,32 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 		const filter = arktypeTwoslashOptions.filterNode;
 		if (!filter) throw new Error("filterNode is not defined");
 
-		expect(filter({ type: "error", text: "Cannot find module", code: 2307, line: 1, character: 1 } as any)).toBe(false);
-		expect(filter({ type: "error", text: "Cannot find name", code: 2304, line: 1, character: 1 } as any)).toBe(false);
-		expect(filter({ type: "error", text: "Property 'foo' does not exist", code: 2339, line: 1, character: 1 } as any)).toBe(true);
+		expect(
+			filter({
+				type: "error",
+				text: "Cannot find module",
+				code: 2307,
+				line: 1,
+				character: 1,
+			} as any),
+		).toBe(false);
+		expect(
+			filter({
+				type: "error",
+				text: "Cannot find name",
+				code: 2304,
+				line: 1,
+				character: 1,
+			} as any),
+		).toBe(false);
+		expect(
+			filter({
+				type: "error",
+				text: "Property 'foo' does not exist",
+				code: 2339,
+				line: 1,
+				character: 1,
+			} as any),
+		).toBe(true);
 	});
 });
