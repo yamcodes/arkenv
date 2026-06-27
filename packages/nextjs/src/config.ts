@@ -695,11 +695,30 @@ function generateClientFactoryCode(
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs/client";\n';
+	const typeImport = isStandard
+		? ""
+		: '\nimport type { Infer } from "@arkenv/core";';
 	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const returnType = isStandard
+		? "Readonly<TSchema & MergeExtends<TExtends>>"
+		: "Readonly<Infer<TSchema> & MergeExtends<TExtends>>";
 
 	return `${GENERATED_HEADER}
-import { ${coreName} as coreCreateEnv } from "${importPath}";
+import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
 ${typeExport}
+type ResolveExtend<T> = [Infer<T>] extends [never] ? T : Infer<T>;
+
+type UnionToIntersection<U> = (
+	U extends any ? (k: U) => void : never
+) extends (k: infer I) => void
+	? I
+	: never;
+
+type MergeExtends<TExtends extends readonly unknown[] | undefined> =
+	TExtends extends readonly unknown[]
+		? UnionToIntersection<ResolveExtend<TExtends[number]>>
+		: {};
+
 export function createEnv<
 	const TSchema extends Record<string, any> = {},
 	const TExtends extends readonly unknown[] = [],
@@ -710,7 +729,7 @@ export function createEnv<
 	options?: {
 		extends?: [...TExtends];
 	},
-) {
+): ${returnType} {
 	return ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {

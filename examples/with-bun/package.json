@@ -10,7 +10,7 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"@arkenv/core": "^1.0.0-alpha.2",
+		"@arkenv/core": "1.0.0-alpha.3",
 		"arktype": "^2.2.0"
 	},
 	"devDependencies": {

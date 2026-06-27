@@ -8,8 +8,8 @@
 		"start": "vinxi start"
 	},
 	"dependencies": {
-		"@arkenv/core": "^1.0.0-alpha.2",
-		"@arkenv/vite-plugin": "^1.0.0-alpha.3",
+		"@arkenv/core": "1.0.0-alpha.3",
+		"@arkenv/vite-plugin": "1.0.0-alpha.4",
 		"@solidjs/start": "1.3.2",
 		"arktype": "^2.2.0",
 		"solid-js": "1.9.12",
