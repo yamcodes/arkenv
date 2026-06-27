@@ -179,7 +179,7 @@ export function setupArkEnv(
 	const runValidation = options?.validate ?? true;
 	if (runValidation) {
 		try {
-			process.env.ARKENV_FORCE_SERVER = "true";
+			(globalThis as any).__arkenv_force_server__ = true;
 			const fileToEvaluate =
 				resolvedLayout === "strict" && baseDir
 					? path.join(baseDir, "server.ts")
@@ -216,7 +216,7 @@ export function setupArkEnv(
 			console.error("");
 			process.exit(1);
 		} finally {
-			delete process.env.ARKENV_FORCE_SERVER;
+			delete (globalThis as any).__arkenv_force_server__;
 		}
 	}
 

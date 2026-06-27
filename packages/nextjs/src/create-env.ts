@@ -89,7 +89,7 @@ export function createEnvInternal(
 		extendsList = schemaOrOptions.extends || [];
 		runtimeEnv = schemaOrOptions.runtimeEnv || {};
 		isServer =
-			process.env.ARKENV_FORCE_SERVER === "true" || !!optionsOrIsServer;
+			(globalThis as any).__arkenv_force_server__ === true || !!optionsOrIsServer;
 	} else {
 		// New flat schema behavior
 		const flatSchema = schemaOrOptions || {};
@@ -97,7 +97,7 @@ export function createEnvInternal(
 		extendsList = options.extends || [];
 		runtimeEnv = options.runtimeEnv || {};
 		isServer =
-			process.env.ARKENV_FORCE_SERVER === "true" || !!context?.isServer;
+			(globalThis as any).__arkenv_force_server__ === true || !!context?.isServer;
 
 		if (context?.isShared) {
 			shared = flatSchema;
