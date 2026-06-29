@@ -4,7 +4,7 @@
 
 #### Add build-time validation and `env.gen.ts` codegen to the Nuxt module
 
-Add `validate` and `codegen` options to the `@arkenv/nuxt` module so environment variables are validated at build/dev time and a typed `env.gen.ts` factory can be generated automatically.
+Add `validate` and `codegen` options to the `@arkenv/nuxt` module. When enabled, environment variables are validated at build and dev time, and a typed `env.gen.ts` factory is generated next to the schema file. The module also regenerates the factory when the schema changes during development.
 
 Usage:
 
@@ -31,9 +31,6 @@ import { type } from "arktype"
 
 export const env = createEnv({
   DATABASE_URL: type.string,
-  NEXT_PUBLIC_API_URL: "string"
+  NUXT_PUBLIC_API_URL: "string"
 })
 ```
-
-- Enable live regeneration of `env.gen.ts` when the schema file changes in development.
-- Expose `setupArkEnv`, `runCodegen`, and `validateSchema` helpers for custom integrations.
