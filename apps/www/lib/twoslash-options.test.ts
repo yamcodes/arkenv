@@ -74,11 +74,11 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 	it("resolves '@/env/client' and '~~/env/client' without TS2307 errors", () => {
 		const resultNextjs = twoslasher(
 			`// @errors: 2339
-// @filename: /env/internal/shared.ts
+// @filename: env/internal/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
 
-// @filename: /env/client.ts
+// @filename: env/client.ts
 import arkenv from "@arkenv/nextjs/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
@@ -86,7 +86,7 @@ export const env = arkenv(
 	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
 );
 
-// @filename: /client-component.ts
+// @filename: client-component.ts
 // ---cut---
 import { env } from "@/env/client";
 const db = env.DATABASE_URL;
@@ -101,11 +101,11 @@ const db = env.DATABASE_URL;
 
 		const resultNuxt = twoslasher(
 			`// @errors: 2339
-// @filename: /env/internal/shared.ts
+// @filename: env/internal/shared.ts
 import { type } from "@arkenv/nuxt/shared";
 export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
 
-// @filename: /env/client.ts
+// @filename: env/client.ts
 import arkenv from "@arkenv/nuxt/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
@@ -113,7 +113,7 @@ export const env = arkenv(
 	{ extends: [SharedSchema] }
 );
 
-// @filename: /pages/index.ts
+// @filename: pages/index.ts
 // ---cut---
 import { env } from "~~/env/client";
 const db = env.DATABASE_URL;

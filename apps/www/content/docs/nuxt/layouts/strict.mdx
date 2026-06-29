@@ -237,19 +237,19 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 
 ```ts title="pages/index.ts" twoslash
 // @errors: 2339
-// @filename: /env/internal/shared.ts
+// @filename: env/internal/shared.ts
 import { type } from "@arkenv/nuxt/shared";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
-// @filename: /env/client.ts
+// @filename: env/client.ts
 import arkenv from "@arkenv/nuxt/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
 	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
 	{ extends: [SharedSchema] },
 );
-// @filename: /pages/index.ts
+// @filename: pages/index.ts
 // ---cut---
 import { env } from "~~/env/client";
 
