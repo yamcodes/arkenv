@@ -1,5 +1,32 @@
 # @arkenv/nextjs
 
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add flat-layout overload to standard mode integrations _[`#1249`](https://github.com/yamcodes/arkenv/pull/1249) [`a6ed115`](https://github.com/yamcodes/arkenv/commit/a6ed11524629bc1620b364c4cf5931b99820b0b4) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce flat-layout signature overloads to `@arkenv/nextjs/standard` and `@arkenv/nuxt/standard`, enabling Standard Schema users (e.g., Zod, Valibot) to use the same flat environment structure as the core ArkType mode.
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nextjs/standard";
+  import { z } from "zod";
+
+  export const env = arkenv(
+    {
+      DATABASE_URL: z.string().url(),
+      NEXT_PUBLIC_API_URL: z.string().url(),
+    },
+    {
+      runtimeEnv: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+      },
+    }
+  );
+  ```
+
 ## 1.0.0-alpha.4
 
 ### Major Changes
@@ -172,7 +199,7 @@
     },
     {
       exposeToClient: ["CUSTOM_VAR"],
-    },
+    }
   );
   ```
 
@@ -184,6 +211,7 @@
   - Update documentation and playground/example apps to use and recommend the Flat layout strategy.
 
 - #### Deprecate Next.js nested layout and add CLI `--flat` flag _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
+
   - Deprecate the legacy nested options overload signature of `createEnv` in `@arkenv/nextjs`.
   - Add a one-time development-only runtime warning nudge when the legacy nested layout format is detected.
   - Add the `--flat` flag to `@arkenv/cli` to scaffold the recommended flat layout for Next.js.
@@ -195,6 +223,7 @@
 - #### Add standalone setup API and dynamic client environment variables support _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
 
   Improve the Next.js developer experience with the following enhancements:
+
   - Expose `setupArkEnv` from `@arkenv/nextjs/config` as a non-wrapping alternative to `withArkEnv`. Use it directly when you are already juggling multiple config wrappers and want to avoid another `withX(...)` layer.
   - Remove the `@arkenv/nextjs/register` side-effect import; use `withArkEnv` for the idiomatic wrapper path or `setupArkEnv` for the non-wrapping path.
   - Support runtime-injectable client-side variables via a new `<ArkEnvScript />` component, enabling containerized deployments to configure public client-side variables dynamically without rebuilds.
@@ -378,13 +407,14 @@
     },
     {
       extends: [SharedSchema],
-    },
+    }
   );
   ```
 
 - #### Support split schema layout in Next.js config wrapper _[`#1116`](https://github.com/yamcodes/arkenv/pull/1116) [`b62ebbd`](https://github.com/yamcodes/arkenv/commit/b62ebbd316db239295884a32348d1a496e8cd49b) [@yamcodes](https://github.com/yamcodes)_
 
   Add support for the strict split schema layout in the Next.js `withArkEnv` configuration wrapper and update CLI scaffolding instructions:
+
   - Add a `layout` option (`"simple" | "strict"`) to `withArkEnv` configuration, which defaults to auto-detecting the strict layout if split files (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`) exist.
   - Implement key extraction from strict client and shared schema files.
   - Update CLI next-steps messages to include `withArkEnv` wrapping instructions for strict layout nextjs projects.
@@ -407,7 +437,7 @@
 
   export const env = createEnv(
     { DATABASE_URL: "string" },
-    { extends: [clientEnv] },
+    { extends: [clientEnv] }
   );
   ```
 
@@ -422,7 +452,7 @@
       runtimeEnv: {
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
       },
-    },
+    }
   );
   ```
 
@@ -443,6 +473,7 @@
   ```
 
   Key features:
+
   - **Zero-Boilerplate Destructuring**: Statically extract `client` and `shared` keys from your `env.ts` schema and generate a tailored `createEnv` factory in `generated/env.gen.ts` that pre-fills the `runtimeEnv` block.
   - **Development Watcher**: Automatically start a lightweight file watcher in development mode to regenerate `generated/env.gen.ts` on the fly when `env.ts` changes.
   - **Customizable Output**: Support custom schema and output paths, enabling developers to write generated files to a dedicated folder (e.g., `src/generated/env.gen.ts`).

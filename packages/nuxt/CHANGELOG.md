@@ -1,5 +1,32 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.3
+
+### Minor Changes
+
+- #### Add flat-layout overload to standard mode integrations _[`#1249`](https://github.com/yamcodes/arkenv/pull/1249) [`a6ed115`](https://github.com/yamcodes/arkenv/commit/a6ed11524629bc1620b364c4cf5931b99820b0b4) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce flat-layout signature overloads to `@arkenv/nextjs/standard` and `@arkenv/nuxt/standard`, enabling Standard Schema users (e.g., Zod, Valibot) to use the same flat environment structure as the core ArkType mode.
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nextjs/standard";
+  import { z } from "zod";
+
+  export const env = arkenv(
+    {
+      DATABASE_URL: z.string().url(),
+      NEXT_PUBLIC_API_URL: z.string().url(),
+    },
+    {
+      runtimeEnv: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+      },
+    }
+  );
+  ```
+
 ## 1.0.0-alpha.2
 
 ### Major Changes
