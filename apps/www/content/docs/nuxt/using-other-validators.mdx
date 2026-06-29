@@ -10,9 +10,9 @@ ArkEnv for Nuxt supports any Standard Schema validator. That includes Zod, Valib
   <Card title="Which schema libraries implement the spec?" href="https://standardschema.dev/schema#what-schema-libraries-implement-the-spec" description="Standard Schema" />
 </Cards>
 
-## Simple layout
+## Flat layout
 
-Here is an example using Zod or Valibot with the simple layout:
+Here is an example using Zod or Valibot with the flat layout:
 
 <Tabs items={['Zod', 'Valibot']}>
   <Tab value="Zod">
@@ -21,15 +21,9 @@ Here is an example using Zod or Valibot with the simple layout:
     import { z } from 'zod';
     // ---cut---
     export const env = arkenv({
-    	server: {
-    		DATABASE_URL: z.string().url(),
-    	},
-    	client: {
-    		NUXT_PUBLIC_API_URL: z.string().url(),
-    	},
-    	shared: {
-    		NODE_ENV: z.enum(["development", "production", "test"]),
-    	},
+    	DATABASE_URL: z.string().url(),
+    	NUXT_PUBLIC_API_URL: z.string().url(),
+    	NODE_ENV: z.enum(["development", "production", "test"]),
     });
     ```
   </Tab>
@@ -40,15 +34,9 @@ Here is an example using Zod or Valibot with the simple layout:
     import * as v from 'valibot';
     // ---cut---
     export const env = arkenv({
-    	server: {
-    		DATABASE_URL: v.pipe(v.string(), v.url()),
-    	},
-    	client: {
-    		NUXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
-    	},
-    	shared: {
-    		NODE_ENV: v.picklist(["development", "production", "test"]),
-    	},
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NUXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
+    	NODE_ENV: v.picklist(["development", "production", "test"]),
     });
     ```
   </Tab>
