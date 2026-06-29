@@ -145,9 +145,9 @@ function extractCallArguments(
 	content: string,
 ): { schemaArg: string; optionsArg: string | null } | null {
 	const callRegex = /\b(?:arkenv|createEnv)\s*\(/g;
-	let match: RegExpExecArray | null;
+	let match = callRegex.exec(content);
 
-	while ((match = callRegex.exec(content)) !== null) {
+	while (match !== null) {
 		const start = callRegex.lastIndex;
 		let parenCount = 1;
 		let braceCount = 0;
@@ -159,8 +159,8 @@ function extractCallArguments(
 			/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[(){}[\],]/g;
 		tokenRegex.lastIndex = start;
 
-		let tokenMatch: RegExpExecArray | null;
-		while (parenCount > 0 && (tokenMatch = tokenRegex.exec(content)) !== null) {
+		let tokenMatch = tokenRegex.exec(content);
+		while (parenCount > 0 && tokenMatch !== null) {
 			const token = tokenMatch[0];
 			const index = tokenMatch.index;
 
@@ -185,6 +185,7 @@ function extractCallArguments(
 				args.push(content.slice(lastIndex, index).trim());
 				lastIndex = tokenRegex.lastIndex;
 			}
+			tokenMatch = tokenRegex.exec(content);
 		}
 
 		if (parenCount === 0) {
@@ -194,6 +195,7 @@ function extractCallArguments(
 				optionsArg: args[1] || null,
 			};
 		}
+		match = callRegex.exec(content);
 	}
 	return null;
 }
@@ -303,14 +305,15 @@ export function extractBlock(
 		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}]/g;
 	tokenRegex.lastIndex = start;
 
-	let tokenMatch: RegExpExecArray | null;
-	while (braceCount > 0 && (tokenMatch = tokenRegex.exec(content)) !== null) {
+	let tokenMatch = tokenRegex.exec(content);
+	while (braceCount > 0 && tokenMatch !== null) {
 		const token = tokenMatch[0];
 		if (token === "{") {
 			braceCount++;
 		} else if (token === "}") {
 			braceCount--;
 		}
+		tokenMatch = tokenRegex.exec(content);
 	}
 
 	if (braceCount === 0) {
@@ -335,8 +338,8 @@ export function parseBlockKeys(blockContent: string): string[] {
 	let braceDepth = 0;
 	let bracketDepth = 0;
 
-	let match: RegExpExecArray | null;
-	while ((match = tokenRegex.exec(blockContent)) !== null) {
+	let match = tokenRegex.exec(blockContent);
+	while (match !== null) {
 		const token = match[0];
 
 		if (token === "{") {
@@ -378,6 +381,7 @@ export function parseBlockKeys(blockContent: string): string[] {
 			lastIdentifier = "";
 			lastString = "";
 		}
+		match = tokenRegex.exec(blockContent);
 	}
 
 	return keys;
@@ -401,14 +405,15 @@ export function extractArkenvBlock(content: string): string | null {
 		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}]/g;
 	tokenRegex.lastIndex = start;
 
-	let tokenMatch: RegExpExecArray | null;
-	while (braceCount > 0 && (tokenMatch = tokenRegex.exec(content)) !== null) {
+	let tokenMatch = tokenRegex.exec(content);
+	while (braceCount > 0 && tokenMatch !== null) {
 		const token = tokenMatch[0];
 		if (token === "{") {
 			braceCount++;
 		} else if (token === "}") {
 			braceCount--;
 		}
+		tokenMatch = tokenRegex.exec(content);
 	}
 
 	if (braceCount === 0) {

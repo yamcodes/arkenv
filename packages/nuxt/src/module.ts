@@ -29,6 +29,7 @@ function normalizeLayout(
 	if (layout === "simple") {
 		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
 			hasWarnedSimpleLayout = true;
+			// biome-ignore lint/suspicious/noConsole: deprecation warning
 			console.warn(
 				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
 			);
