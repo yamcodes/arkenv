@@ -115,10 +115,10 @@ If you want to use Zod, Valibot, or other Standard Schema validators **without**
 2. Import from `@arkenv/nextjs/standard` in your environment schema file:
 
 ```ts title="env.ts" twoslash
-import { createEnv } from '@arkenv/nextjs/standard';
+import arkenv from '@arkenv/nextjs/standard';
 import { z } from 'zod';
 
-export const env = createEnv({
+export const env = arkenv({
   DATABASE_URL: z.string().url(),
   NEXT_PUBLIC_API_URL: z.string().url(),
 }, {
@@ -129,7 +129,7 @@ export const env = createEnv({
 ```
 
 :::note
-Legacy nested layout `createEnv({ server, client, shared, runtimeEnv })` is still supported but deprecated.
+Legacy nested layout `arkenv({ server, client, shared, runtimeEnv })` is still supported but deprecated.
 :::
 
 > [!NOTE]

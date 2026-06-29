@@ -111,15 +111,15 @@ export default defineNuxtConfig({
 3. Import from `@arkenv/nuxt/standard` in your environment schema file:
 
 ```ts title="env.ts" twoslash
-import { createEnv } from '@arkenv/nuxt/standard';
+import arkenv from '@arkenv/nuxt/standard';
 import { z } from 'zod';
 
-export const env = createEnv({
+export const env = arkenv({
   DATABASE_URL: z.string().url(),
   NUXT_PUBLIC_API_URL: z.string().url(),
 });
 ```
 
 :::note
-Legacy nested layout `createEnv({ server, client, shared })` is still supported but deprecated.
+Legacy nested layout `arkenv({ server, client, shared })` is still supported but deprecated.
 :::
