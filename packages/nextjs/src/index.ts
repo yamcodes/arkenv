@@ -60,7 +60,7 @@ export function arkenv<
 >;
 
 /**
- * @deprecated Use the unified flat layout signature instead: `createEnv(schema, options)`
+ * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
  */
 export function arkenv<
 	const TServer extends SchemaShape = {},

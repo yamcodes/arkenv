@@ -47,7 +47,7 @@ export function arkenv<
 /**
  * Create a validated, type-safe environment configuration for Next.js applications in Standard Mode.
  *
- * @deprecated Use the unified flat layout signature instead: `createEnv(schema, options)`
+ * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
  * @param options The environment validation configuration options
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  */

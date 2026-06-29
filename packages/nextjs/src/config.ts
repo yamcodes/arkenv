@@ -555,7 +555,7 @@ export default arkenv;
 `;
 
 /**
- * Generate the TypeScript factory code for the tailored createEnv helper.
+ * Generate the TypeScript factory code for the tailored arkenv helper.
  *
  * @param clientKeys The client environment variable keys
  * @param sharedKeys The shared environment variable keys
@@ -573,10 +573,10 @@ function generateFactoryCode(
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs";\n';
-	const callPrefix = "coreCreateEnv";
+	const callPrefix = "coreArkenv";
 
 	return `${GENERATED_HEADER}
-import { ${coreName} as coreCreateEnv } from "${importPath}";
+import { ${coreName} as coreArkenv } from "${importPath}";
 ${typeExport}
 export function arkenv<
 	const TServer extends Record<string, any> = {},
@@ -600,7 +600,7 @@ ${GENERATED_FOOTER}`;
 }
 
 /**
- * Generate the TypeScript factory code for the Flat Layout createEnv helper.
+ * Generate the TypeScript factory code for the Flat Layout arkenv helper.
  *
  * @remarks
  * **Architecture tripwire:** Do not statically compile the schema here or
@@ -636,10 +636,10 @@ function generateFlatFactoryCode(
 	const castReturn = isStandard
 		? ""
 		: " as unknown as Readonly<distill.Out<at.infer<TSchema>>>";
-	const callPrefix = "coreCreateEnv";
+	const callPrefix = "coreArkenv";
 
 	return `${GENERATED_HEADER}
-import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
+import { ${coreName} as coreArkenv } from "${importPath}";${typeImport}
 ${typeExport}
 export function arkenv<
 	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
@@ -672,7 +672,7 @@ ${GENERATED_FOOTER}`;
 }
 
 /**
- * Generate the TypeScript factory code for the strict-layout `createEnv` helper.
+ * Generate the TypeScript factory code for the strict-layout `arkenv` helper.
  *
  * Unlike `generateFactoryCode`, this variant imports from `@arkenv/nextjs/client`
  * and exposes a positional-schema signature suited for split-file projects.
@@ -698,13 +698,13 @@ function generateClientFactoryCode(
 	const typeImport = isStandard
 		? ""
 		: '\nimport type { Infer } from "@arkenv/core";';
-	const callPrefix = "coreCreateEnv";
+	const callPrefix = "coreArkenv";
 	const returnType = isStandard
 		? "Readonly<TSchema & MergeExtends<TExtends>>"
 		: "Readonly<Infer<TSchema> & MergeExtends<TExtends>>";
 
 	return `${GENERATED_HEADER}
-import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
+import { ${coreName} as coreArkenv } from "${importPath}";${typeImport}
 ${typeExport}
 type ResolveExtend<T> = [Infer<T>] extends [never] ? T : Infer<T>;
 

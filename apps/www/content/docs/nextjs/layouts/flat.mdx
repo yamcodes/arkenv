@@ -74,7 +74,7 @@ If you have custom variables that do not follow the prefix convention but must b
 
 ```ts title="src/env.ts" twoslash
 // @filename: /generated/env.gen.ts
-import { createEnv as coreCreateEnv } from "@arkenv/nextjs";
+import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
 export { type } from "@arkenv/nextjs";
 
@@ -102,7 +102,7 @@ export const env = arkenv({
   <Accordion title="Manual Setup">
     ### Configure environment [step] [!toc]
 
-    Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schema. Import `createEnv` from the auto-generated `@/generated/env.gen.ts` helper file:
+    Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schema. Import `arkenv` from the auto-generated `@/generated/env.gen.ts` helper file:
 
     ```ts title="src/env.ts" twoslash
     // @filename: /generated/env.gen.ts
