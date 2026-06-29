@@ -42,6 +42,7 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
+		vfsRoot: root,
 		compilerOptions: {
 			module: ts.ModuleKind.ESNext,
 			moduleResolution: ts.ModuleResolutionKind.Bundler,
