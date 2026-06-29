@@ -1,5 +1,17 @@
 # @arkenv/build
 
+## 0.0.2
+
+### Patch Changes
+
+- #### Add flat layout support to `@arkenv/nuxt` _[`#1248`](https://github.com/yamcodes/arkenv/pull/1248) [`be8034f`](https://github.com/yamcodes/arkenv/commit/be8034f18a8afd2ff8ee2151fac66d5f47cfe5c7) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce flat layout schema support and typesafe `createEnv` signature overloads to `@arkenv/nuxt`.
+
+  - Add `"flat"` layout mode to `ModuleOptions` and auto-detect it when a single `env.ts` file is configured.
+  - Emit a deprecation warning in development when using the legacy `"simple"` layout option.
+  - Expose flat `createEnv(schema, options)` overload with type inference for `NUXT_PUBLIC_` prefixes, `NODE_ENV`, and custom `exposeToClient` variables.
+
 ## 0.0.1
 
 ### Patch Changes
