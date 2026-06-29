@@ -333,13 +333,32 @@ export function validateSchema(
 			...internalOptions?._jitiAliases,
 		};
 
-		const jiti = createJiti(fileToEvaluate, {
+		const jitiOptions = {
 			moduleCache: false,
 			fsCache: false,
 			tsconfigPaths: true,
 			alias: aliases,
-		});
-		jiti(fileToEvaluate);
+		} as const;
+
+		try {
+			const jiti = createJiti(fileToEvaluate, jitiOptions);
+			jiti(fileToEvaluate);
+		} catch (error: unknown) {
+			const message = error instanceof Error ? error.message : String(error);
+			// Nuxt projects commonly extend `./.nuxt/tsconfig.json`, which does not
+			// exist until Nuxt generates it. Gracefully fall back to loading the
+			// schema without tsconfig path resolution so validation can still run
+			// during the initial build.
+			if (message.includes("tsconfig") && message.includes("not found")) {
+				const jiti = createJiti(fileToEvaluate, {
+					...jitiOptions,
+					tsconfigPaths: false,
+				});
+				jiti(fileToEvaluate);
+				return;
+			}
+			throw error;
+		}
 	} finally {
 		delete (globalThis as any).__arkenv_force_server__;
 	}
