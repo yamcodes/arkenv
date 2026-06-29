@@ -4,43 +4,26 @@ import { defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
 import { name, peerDependencies, version } from "../package.json";
 import {
+	type ArkEnvConfigOptions,
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	normalizeLayout,
 	resolveLayout,
+	runCodegen,
+	validateSchema,
+	watchSchema,
 } from "./config";
 
 export type ModuleOptions = {
 	schemaPath?: string;
-	layout?:
-		| "flat"
-		| "strict"
-		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
-		| "simple";
+	outputPath?: string;
+	layout?: ArkEnvConfigOptions["layout"];
+	validate?: boolean;
+	codegen?: boolean;
 };
-
-let hasWarnedSimpleLayout = false;
-
-function normalizeLayout(
-	layout: ModuleOptions["layout"],
-): "simple" | "strict" | undefined {
-	if (layout === "simple") {
-		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
-			hasWarnedSimpleLayout = true;
-			// biome-ignore lint/suspicious/noConsole: deprecation warning
-			console.warn(
-				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
-			);
-		}
-		return "simple";
-	}
-	if (layout === "flat") {
-		return "simple";
-	}
-	return layout;
-}
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -51,7 +34,10 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt: peerDependencies?.nuxt,
 		},
 	},
-	defaults: {},
+	defaults: {
+		validate: true,
+		codegen: true,
+	},
 	setup(options, nuxt) {
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
@@ -68,6 +54,19 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			normalizedLayout,
 		);
 
+		const defaultOutputDir =
+			resolvedLayout === "strict" && baseDir
+				? baseDir
+				: path.dirname(schemaPath);
+		const defaultOutputPath = path.join(
+			defaultOutputDir,
+			"generated",
+			"env.gen.ts",
+		);
+		const outputPath = options.outputPath
+			? path.resolve(nuxt.options.rootDir, options.outputPath)
+			: defaultOutputPath;
+
 		// Register schema paths to watch so Nuxt restarts and updates runtimeConfig when they change
 		if (nuxt.options.dev) {
 			const watchPaths =
@@ -83,6 +82,43 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			for (const p of watchPaths) {
 				nuxt.options.watch.push(p);
 			}
+		}
+
+		// Run codegen and validation via the shared config helpers
+		const codegen = options.codegen ?? true;
+		const validate = options.validate ?? true;
+
+		if (codegen) {
+			try {
+				runCodegen(schemaPath, outputPath, resolvedLayout);
+			} catch (error: unknown) {
+				const message = error instanceof Error ? error.message : String(error);
+				throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
+			}
+		}
+
+		if (validate) {
+			try {
+				validateSchema(schemaPath, resolvedLayout, baseDir ?? "");
+			} catch (error: unknown) {
+				const message = error instanceof Error ? error.message : String(error);
+				throw new Error(`[ArkEnv] Environment validation failed: ${message}`);
+			}
+		}
+
+		// In dev mode, regenerate env.gen.ts when schema files change
+		if (nuxt.options.dev && codegen) {
+			const watchPaths =
+				resolvedLayout === "strict" && baseDir
+					? [
+							path.join(baseDir, "internal", "shared.ts"),
+							path.join(baseDir, "client.ts"),
+							path.join(baseDir, "server.ts"),
+						].filter(fs.existsSync)
+					: [schemaPath];
+			watchSchema(watchPaths, () => {
+				runCodegen(schemaPath, outputPath, resolvedLayout);
+			});
 		}
 
 		// 3. Register env keys to runtimeConfig

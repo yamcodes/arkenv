@@ -10,7 +10,8 @@
 	"module": "./dist/index.js",
 	"dependencies": {
 		"@arkenv/build": "workspace:*",
-		"arkenv": "workspace:*"
+		"arkenv": "workspace:*",
+		"jiti": "catalog:"
 	},
 	"devDependencies": {
 		"@nuxt/kit": "^4.4.8",

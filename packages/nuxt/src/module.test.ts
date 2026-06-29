@@ -56,6 +56,7 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
+					validate: false,
 				},
 				mockNuxt,
 			);
@@ -109,6 +110,7 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
+					validate: false,
 				},
 				mockNuxt,
 			);
@@ -121,6 +123,109 @@ describe("Nuxt module integration", () => {
 
 			// Check if schemaPath was added to watch paths
 			expect(mockNuxt.options.watch).toContain(schemaPath);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should generate env.gen.ts when codegen is enabled", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-codegen-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import arkenv from "./generated/env.gen";
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
+			});
+			`,
+		);
+
+		const outputPath = path.join(tempDir, "generated", "env.gen.ts");
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			await (module as any).setup(
+				{
+					schemaPath: "./env.ts",
+					validate: false,
+					codegen: true,
+				},
+				mockNuxt,
+			);
+
+			expect(fs.existsSync(outputPath)).toBe(true);
+			const generatedContent = fs.readFileSync(outputPath, "utf-8");
+			expect(generatedContent).toContain("export function createEnv<");
+			expect(generatedContent).toContain(
+				'import { createEnv as coreCreateEnv } from "@arkenv/nuxt";',
+			);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should throw when validation fails and validate is enabled", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-validation-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import arkenv from "./generated/env.gen";
+			export const env = arkenv({
+				DATABASE_URL: "string",
+			});
+			`,
+		);
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			// First generate the env.gen.ts file
+			await (module as any).setup(
+				{
+					schemaPath: "./env.ts",
+					validate: false,
+					codegen: true,
+				},
+				mockNuxt,
+			);
+
+			// Now enable validation; DATABASE_URL is missing
+			expect(() =>
+				(module as any).setup(
+					{
+						schemaPath: "./env.ts",
+						validate: true,
+						codegen: false,
+					},
+					mockNuxt,
+				),
+			).toThrow("[ArkEnv] Environment validation failed");
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
