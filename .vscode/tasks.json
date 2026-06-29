@@ -5,7 +5,7 @@
 			"type": "npm",
 			"script": "fix",
 			"label": "fix",
-			"detail": "node bin/fix.js",
+			"detail": "node scripts/fix.js",
 			"problemMatcher": []
 		},
 		{
