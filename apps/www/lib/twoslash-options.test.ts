@@ -1,6 +1,11 @@
-import { twoslasher } from "twoslash";
+import { createTwoslasher } from "twoslash";
 import { describe, expect, it } from "vitest";
 import { arktypeTwoslashOptions } from "./twoslash-options";
+
+// Use createTwoslasher so vfsRoot is applied at factory time.
+// The standalone twoslasher() only reads compilerOptions/handbookOptions per-call
+// and ignores vfsRoot, causing path alias resolution to fail on CI.
+const twoslasher = createTwoslasher(arktypeTwoslashOptions.twoslashOptions);
 
 describe("arktypeTwoslashOptions", () => {
 	it("infers @arkenv/nextjs client variables as strings in docs snippets", () => {
@@ -23,7 +28,6 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 //      ^?
 `,
 			"ts",
-			arktypeTwoslashOptions.twoslashOptions,
 		);
 
 		expect(result.queries).toContainEqual(
@@ -88,7 +92,6 @@ import { env } from "@/env/client";
 const db = env.DATABASE_URL;
 `,
 			"ts",
-			arktypeTwoslashOptions.twoslashOptions,
 		);
 
 		// Assert we only have the TS2339 error, not TS2307
@@ -116,7 +119,6 @@ import { env } from "~~/env/client";
 const db = env.DATABASE_URL;
 `,
 			"ts",
-			arktypeTwoslashOptions.twoslashOptions,
 		);
 
 		const nuxtErrors = resultNuxt.errors.map((e) => e.code);
