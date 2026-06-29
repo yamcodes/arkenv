@@ -14,13 +14,22 @@ export const arkTypePackageJson = JSON.parse(
 	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
 );
 
-export type TwoslashNode = {
-	type: "hover" | "error" | "tag" | "query" | "completion";
-	text: string;
-	docs?: string;
-	line: number;
-	character: number;
-};
+export type TwoslashNode =
+	| {
+			type: "hover" | "tag" | "query" | "completion";
+			text: string;
+			docs?: string;
+			line: number;
+			character: number;
+	  }
+	| {
+			type: "error";
+			text: string;
+			docs?: string;
+			line: number;
+			character: number;
+			code: number;
+	  };
 
 export type ArkTypeTwoslashOptions = TransformerTwoslashOptions & {
 	filterNode?: (node: TwoslashNode) => boolean;
@@ -211,12 +220,12 @@ declare global {
 				return isWhiteListed;
 			}
 			case "error": {
-				// Filter out module-resolution and missing-name errors (TS2307, TS2304)
-				// that occur due to framework-specific path aliases (@/*, ~~/*) in Twoslash's virtual VFS.
+				// Filter out module-resolution errors (TS2307)
+				// that occur due to framework-specific path aliases in Twoslash's virtual VFS.
 				// This allows us to display real IDE-like errors (like TS2339) in documentation
 				// without cluttering them with path resolution errors.
-				const errorCode = (node as any).code;
-				if (errorCode === 2307 || errorCode === 2304) {
+				const errorCode = node.code;
+				if (errorCode === 2307) {
 					return false;
 				}
 				for (const transformation of arkTypePackageJson.contributes
