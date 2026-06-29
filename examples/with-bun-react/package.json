@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "bun --hot src/index.tsx",
-		"build": "NODE_ENV=production bun bin/build.ts",
+		"build": "NODE_ENV=production bun scripts/build.ts",
 		"preview": "bun dist/index.html",
 		"start": "NODE_ENV=production bun src/index.tsx",
 		"clean": "rimraf dist node_modules"
