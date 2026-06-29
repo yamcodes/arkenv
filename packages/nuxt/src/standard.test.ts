@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import arkenvStandard, {
-	arkenv as namedArkenvStandard,
-} from "./standard";
+import arkenvStandard, { arkenv as namedArkenvStandard } from "./standard";
 import { arkenv as clientArkenv } from "./standard/client";
 import { arkenv as serverArkenv } from "./standard/server";
 import { arkenv as sharedArkenv } from "./standard/shared";
