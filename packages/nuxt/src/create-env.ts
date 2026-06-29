@@ -5,6 +5,8 @@ export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
+let hasWarnedLegacy = false;
+
 /**
  * Validate and wrap environment variables in a security proxy.
  *
@@ -18,12 +20,17 @@ export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 export function createEnvInternal(
 	schemaOrOptions: any,
 	optionsOrIsServer: any,
-	context?: { isServer: boolean; isShared?: boolean },
+	context?: {
+		isServer: boolean;
+		isShared?: boolean;
+		strictLayout?: "client" | "server";
+	},
 ): unknown {
 	let server: SchemaShape = {};
 	let client: Record<string, unknown> = {};
 	let shared: SchemaShape = {};
 	let extendsList: unknown[] = [];
+	let runtimeEnv: Record<string, unknown> = {};
 	let isServer = false;
 
 	const globalConfig =
@@ -32,25 +39,49 @@ export function createEnvInternal(
 			: undefined;
 
 	if (typeof optionsOrIsServer === "boolean") {
+		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
+			hasWarnedLegacy = true;
+			// biome-ignore lint/suspicious/noConsole: deprecation warning
+			console.warn(
+				"⚠️ [arkenv] Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in createEnv) is deprecated and will be removed in the next major version. Please migrate to the flat layout.",
+			);
+		}
 		// Old nested schema behavior (backward compatible)
 		server = schemaOrOptions.server || {};
 		client = schemaOrOptions.client || {};
 		shared = schemaOrOptions.shared || {};
 		extendsList = schemaOrOptions.extends || [];
+		runtimeEnv = schemaOrOptions.runtimeEnv || {};
 		isServer = optionsOrIsServer;
 	} else {
 		// New flat schema behavior
 		const flatSchema = schemaOrOptions || {};
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
-		isServer = !!context?.isServer;
+		runtimeEnv = options.runtimeEnv || {};
+		isServer =
+			(globalThis as any).__arkenv_force_server__ === true ||
+			!!context?.isServer;
 
 		if (context?.isShared) {
 			shared = flatSchema;
-		} else if (isServer) {
+		} else if (context?.strictLayout === "client") {
+			client = flatSchema;
+		} else if (context?.strictLayout === "server") {
 			server = flatSchema;
 		} else {
-			client = flatSchema;
+			const exposedKeys =
+				options.exposeToClient || options.expose || options.shared || [];
+			for (const key of Object.keys(flatSchema)) {
+				// NODE_ENV is implicitly shared as Nuxt automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
+				if (exposedKeys.includes(key) || key === "NODE_ENV") {
+					shared[key] = flatSchema[key];
+				} else if (key.startsWith("NUXT_PUBLIC_")) {
+					client[key] = flatSchema[key];
+				} else {
+					server[key] = flatSchema[key];
+				}
+			}
 		}
 	}
 
@@ -162,6 +193,15 @@ export function createEnvInternal(
 		}
 	}
 
+	// Check runtimeEnv does not have any keys not defined in the schema (allKeys)
+	for (const key of Object.keys(runtimeEnv)) {
+		if (!allKeys.has(key)) {
+			throw new Error(
+				`Environment variable '${key}' is passed to runtimeEnv but is not defined in the schema.`,
+			);
+		}
+	}
+
 	// Build final combinedEnv
 	for (const key of Object.keys(extendedEnvValues)) {
 		if (extendedEnvValues[key] !== undefined) {
@@ -172,6 +212,12 @@ export function createEnvInternal(
 	for (const key of Object.keys(sourceEnv)) {
 		if (sourceEnv[key] !== undefined) {
 			combinedEnv[key] = sourceEnv[key];
+		}
+	}
+
+	for (const key of Object.keys(runtimeEnv)) {
+		if (runtimeEnv[key] !== undefined) {
+			combinedEnv[key] = runtimeEnv[key];
 		}
 	}
 

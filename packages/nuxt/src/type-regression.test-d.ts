@@ -53,19 +53,16 @@ describe("@arkenv/nuxt type regression", () => {
 	});
 
 	it("rejects invalid ArkType schema strings across schema sections", () => {
+		// @ts-expect-error invalid ArkType schema string
 		createEnv({
 			server: {
-				// @ts-expect-error invalid ArkType schema string
 				DATABASE_URL: "not-a-valid-type",
-				// @ts-expect-error invalid ArkType schema string
 				PORT: "not-a-valid-type",
 			},
 			client: {
-				// @ts-expect-error invalid ArkType schema string
 				NUXT_PUBLIC_API_URL: "not-a-valid-type",
 			},
 			shared: {
-				// @ts-expect-error invalid ArkType schema string
 				NODE_ENV: "not-a-valid-type",
 			},
 			runtimeEnv: {
@@ -87,5 +84,29 @@ describe("@arkenv/nuxt type regression", () => {
 				API_URL: "https://api.example.com",
 			},
 		});
+	});
+
+	it("correctly types Flat Mode environment variables", () => {
+		const env = createEnv(
+			{
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+				CUSTOM_VAR: "string",
+			},
+			{
+				exposeToClient: ["CUSTOM_VAR"],
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+					CUSTOM_VAR: "custom_val",
+				},
+			},
+		);
+
+		expectTypeOf(env.DATABASE_URL).toBeString();
+		expectTypeOf(env.NUXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.NODE_ENV).toBeString();
+		expectTypeOf(env.CUSTOM_VAR).toBeString();
 	});
 });

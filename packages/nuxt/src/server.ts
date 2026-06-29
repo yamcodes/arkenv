@@ -6,7 +6,7 @@ import { createEnvInternal } from "./create-env";
 import type { MergeExtends } from "./types";
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point).
+ * Create a validated, typesafe environment configuration for Nuxt applications (Server entry point).
  *
  * @param schemaOrOptions The schema definition or configuration options containing server/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status
@@ -54,6 +54,7 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 
 	return createEnvInternal(schemaOrOptions, optionsOrIsServer, {
 		isServer: true,
+		strictLayout: "server",
 	});
 }
 
