@@ -1,6 +1,7 @@
 ---
 "arkenv": major
 "@arkenv/nextjs": major
+"@arkenv/nuxt": major
 ---
 
 #### Rename `createEnv` function to `arkenv`
@@ -28,4 +29,4 @@ export const env = arkenv({
 
 Migration Steps:
 - Replace all imports and invocations of `createEnv` with `arkenv`.
-- Update config generators and plugins (Next.js config templates, Vite plugin, Bun plugin) to use `arkenv`.
+- Update config generators and plugins (Next.js config templates, Nuxt module templates, Vite plugin, Bun plugin) to use `arkenv`.

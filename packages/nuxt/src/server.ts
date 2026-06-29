@@ -14,7 +14,7 @@ import type { MergeExtends } from "./types";
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  * @throws An error if a client-side variable is missing from `runtimeEnv`
  */
-export function createEnv<
+export function arkenv<
 	const TSchema extends SchemaShape = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -24,7 +24,7 @@ export function createEnv<
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
-export function createEnv<
+export function arkenv<
 	const TServer extends SchemaShape = {},
 	const TShared extends SchemaShape = {},
 	const TExtends extends readonly unknown[] = [],
@@ -36,7 +36,7 @@ export function createEnv<
 	distill.Out<at.infer<TServer & TShared, $>> & MergeExtends<TExtends>
 >;
 
-export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
+export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	const isLegacy =
 		schemaOrOptions &&
 		typeof schemaOrOptions === "object" &&
@@ -70,5 +70,4 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 
 export { type } from "@arkenv/core";
 
-const arkenv = createEnv;
 export default arkenv;

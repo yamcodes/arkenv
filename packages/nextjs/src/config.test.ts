@@ -216,13 +216,13 @@ describe("codegen process", () => {
 		);
 
 		// Check exports and wrapper types
-		expect(generatedContent).toContain("export function createEnv<");
-		expect(generatedContent).toContain("export default createEnv;");
+		expect(generatedContent).toContain("export function arkenv<");
+		expect(generatedContent).toContain("export default arkenv;");
 
 		// Check that relative path import was resolved correctly (relative from __temp_tests__/env.gen.ts to __temp_tests__/env.ts is ./env)
 		// Wait, path.relative(__temp_tests__, __temp_tests__/env.ts) is "env.ts", which normalizes to "./env"
 		expect(generatedContent).toContain(
-			'import { createEnv as coreCreateEnv } from "@arkenv/nextjs";',
+			'import { arkenv as coreArkenv } from "@arkenv/nextjs";',
 		);
 
 		// Check destructured runtimeEnv keys
@@ -258,7 +258,7 @@ describe("codegen process", () => {
 
 		expect(fs.existsSync(customOutputPath)).toBe(true);
 		const generatedContent = fs.readFileSync(customOutputPath, "utf-8");
-		expect(generatedContent).toContain("export function createEnv<");
+		expect(generatedContent).toContain("export function arkenv<");
 
 		// The relative import from generated/env.gen.ts to env.ts should be ../env
 		// Since we didn't mock relative path resolution, let's check it.
@@ -268,10 +268,10 @@ describe("codegen process", () => {
 		// The developer imports arkenv from "./env.gen", and calls it in env.ts.
 		// So the generated file does NOT import from "./env" at all!
 		// Wait! Let's check my template:
-		// Yes! The generated template does NOT import any config! It only imports coreCreateEnv from "@arkenv/nextjs"!
+		// Yes! The generated template does NOT import any config! It only imports coreArkenv from "@arkenv/nextjs"!
 		// Oh, wow! That is even simpler and cleaner!
 		// Wait, let's verify if my generateFactoryCode template has any relative import of config:
-		// No, it doesn't! It just exports the generic wrapper function `createEnv`.
+		// No, it doesn't! It just exports the generic wrapper function `arkenv`.
 		// But wait! Why does `generateFactoryCode` compute `relativeImportPath`?
 		// Ah! In `generateFactoryCode`, we computed `relativeImportPath` but we didn't actually use it in the returned string template!
 		// Oh, let me check my config.ts code:
@@ -384,8 +384,8 @@ describe("withArkEnv wrapper", () => {
 		expect(fs.existsSync(genPath)).toBe(true);
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");
-		expect(generatedContent).toContain("export function createEnv<");
-		expect(generatedContent).toContain("export default createEnv;");
+		expect(generatedContent).toContain("export function arkenv<");
+		expect(generatedContent).toContain("export default arkenv;");
 		expect(generatedContent).toContain(
 			'NEXT_PUBLIC_API_URL: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL,',
 		);

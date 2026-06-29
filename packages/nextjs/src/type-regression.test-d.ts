@@ -1,5 +1,15 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { arkenv, createEnv } from "./index";
+import { arkenv } from "./index";
+import arkenvStandard from "./standard";
+
+const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
+	"~standard": {
+		version: 1 as const,
+		vendor: "mock",
+		types: {} as { input: unknown; output: TOutput },
+		validate: (_value: unknown) => ({ value: outputValue }),
+	},
+});
 
 describe("@arkenv/nextjs type regression", () => {
 	it("infers client variables as their validated type", () => {
@@ -74,7 +84,7 @@ describe("@arkenv/nextjs type regression", () => {
 
 	it("enforces NEXT_PUBLIC_ client keys", () => {
 		// @ts-expect-error client variables must be prefixed with NEXT_PUBLIC_
-		createEnv({
+		arkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string.url",
 				API_URL: "string.url",
@@ -87,12 +97,38 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("correctly types Flat Mode environment variables and filters them on client", () => {
-		const env = createEnv(
+		const env = arkenv(
 			{
 				DATABASE_URL: "string",
 				NEXT_PUBLIC_API_URL: "string",
 				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 				CUSTOM_VAR: "string",
+			},
+			{
+				exposeToClient: ["CUSTOM_VAR"],
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+					CUSTOM_VAR: "custom_val",
+				},
+			},
+		);
+
+		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.NODE_ENV).toBeString();
+		expectTypeOf(env.CUSTOM_VAR).toBeString();
+
+		// @ts-expect-error server-only variable is omitted/never on the client
+		env.DATABASE_URL;
+	});
+
+	it("correctly types Standard Mode Flat Mode environment variables and filters them on client", () => {
+		const env = arkenvStandard(
+			{
+				DATABASE_URL: createMockStandardSchema(""),
+				NEXT_PUBLIC_API_URL: createMockStandardSchema(""),
+				NODE_ENV: createMockStandardSchema("development"),
+				CUSTOM_VAR: createMockStandardSchema(""),
 			},
 			{
 				exposeToClient: ["CUSTOM_VAR"],

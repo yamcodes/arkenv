@@ -119,17 +119,18 @@ import arkenv from '@arkenv/nextjs/standard';
 import { z } from 'zod';
 
 export const env = arkenv({
-  server: {
-    DATABASE_URL: z.string().url(),
-  },
-  client: {
-    NEXT_PUBLIC_API_URL: z.string().url(),
-  },
+  DATABASE_URL: z.string().url(),
+  NEXT_PUBLIC_API_URL: z.string().url(),
+}, {
   runtimeEnv: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 });
 ```
+
+:::note
+Legacy nested layout `arkenv({ server, client, shared, runtimeEnv })` is still supported but deprecated.
+:::
 
 > [!NOTE]
 > If you are using the default Simple layout with codegen, the CLI will automatically generate `generated/env.gen.ts` importing from `@arkenv/nextjs/standard` if your schema file imports from `@arkenv/standard` or `@arkenv/nextjs/standard`.

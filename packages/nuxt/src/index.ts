@@ -10,7 +10,7 @@ import { arkenvInternal } from "./arkenv-internal";
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
  */
-export function createEnv<
+export function arkenv<
 	const TServer extends SchemaShape = {},
 	const TClient extends SchemaShape = {},
 	const TShared extends SchemaShape = {},
@@ -38,10 +38,4 @@ export function createEnv<
 export type { Infer } from "@arkenv/core";
 export { type } from "@arkenv/core";
 
-/**
- * ArkEnv's Nuxt integration export, an alias for {@link createEnv}
- *
- * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
- */
-const arkenv = createEnv;
 export default arkenv;

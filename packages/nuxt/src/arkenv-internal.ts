@@ -15,6 +15,11 @@ export type LegacyNestedSchema = {
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
+	/** @deprecated Use `exposeToClient` instead. */
+	expose?: readonly string[];
+	/** @deprecated Use `exposeToClient` instead. */
+	shared?: readonly string[];
+	exposeToClient?: readonly string[];
 };
 
 /**
@@ -42,6 +47,7 @@ export function arkenvInternal(
 	let client: Record<string, unknown> = {};
 	let shared: SchemaShape = {};
 	let extendsList: readonly unknown[] = [];
+	let runtimeEnv: Dict<string> = {};
 	let isServer = false;
 
 	const globalConfig =
@@ -59,20 +65,33 @@ export function arkenvInternal(
 		client = (legacySchema?.client || {}) as Record<string, unknown>;
 		shared = (legacySchema?.shared || {}) as SchemaShape;
 		extendsList = legacySchema?.extends || [];
+		runtimeEnv = (legacySchema?.runtimeEnv || {}) as Dict<string>;
 		isServer = optionsOrIsServer;
 	} else {
 		// New flat schema behavior
 		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
-		isServer = !!context?.isServer;
+		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
+		isServer =
+			(globalThis as any).__arkenv_force_server__ === true ||
+			!!context?.isServer;
 
 		if (context?.isShared) {
 			shared = flatSchema;
-		} else if (isServer) {
-			server = flatSchema;
 		} else {
-			client = flatSchema;
+			const exposedKeys =
+				options.exposeToClient || options.expose || options.shared || [];
+			for (const key of Object.keys(flatSchema)) {
+				// NODE_ENV is implicitly shared
+				if (exposedKeys.includes(key) || key === "NODE_ENV") {
+					shared[key] = flatSchema[key];
+				} else if (key.startsWith("NUXT_PUBLIC_")) {
+					client[key] = flatSchema[key];
+				} else {
+					server[key] = flatSchema[key];
+				}
+			}
 		}
 	}
 
@@ -200,6 +219,12 @@ export function arkenvInternal(
 	for (const key of Object.keys(sourceEnv)) {
 		if (sourceEnv[key] !== undefined) {
 			combinedEnv[key] = sourceEnv[key];
+		}
+	}
+
+	for (const key of Object.keys(runtimeEnv)) {
+		if (runtimeEnv[key] !== undefined) {
+			combinedEnv[key] = runtimeEnv[key];
 		}
 	}
 

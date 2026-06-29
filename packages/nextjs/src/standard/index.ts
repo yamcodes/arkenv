@@ -1,10 +1,53 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
 import { arkenvInternal } from "@/arkenv-internal";
+import type { MergeExtends } from "../types";
+
+type ClientVisibleKeys<
+	TSchema extends Record<string, StandardSchemaV1>,
+	TExpose extends keyof TSchema,
+> = {
+	[K in keyof TSchema]: K extends `NEXT_PUBLIC_${string}`
+		? K
+		: K extends "NODE_ENV"
+			? K
+			: K extends TExpose
+				? K
+				: never;
+}[keyof TSchema];
 
 /**
  * Create a validated, type-safe environment configuration for Next.js applications in Standard Mode.
  *
+ * @param schema A flat schema of environment variable Standard Schema validators
+ * @param options Optional configuration including client-side variables and extends
+ * @returns A validated, readonly environment variables object wrapped in a security proxy
+ */
+export function arkenv<
+	const TSchema extends Record<string, StandardSchemaV1> = {},
+	const TExpose extends keyof TSchema = never,
+	const TExtends extends readonly unknown[] = [],
+>(
+	schema: TSchema,
+	options?: {
+		exposeToClient?: readonly TExpose[];
+		expose?: readonly TExpose[];
+		shared?: readonly TExpose[];
+		extends?: [...TExtends];
+		runtimeEnv?: Record<string, unknown>;
+	},
+): Readonly<
+	Pick<
+		{ [K in keyof TSchema]: StandardSchemaV1.InferOutput<TSchema[K]> },
+		Extract<keyof TSchema, ClientVisibleKeys<TSchema, TExpose>>
+	> &
+		MergeExtends<TExtends>
+>;
+
+/**
+ * Create a validated, type-safe environment configuration for Next.js applications in Standard Mode.
+ *
+ * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
  * @param options The environment validation configuration options
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  */
@@ -24,19 +67,34 @@ export function arkenv<
 	[K in keyof (TServer & TClient & TShared)]: StandardSchemaV1.InferOutput<
 		(TServer & TClient & TShared)[K]
 	>;
-}> {
-	type ReturnType = Readonly<{
-		[K in keyof (TServer & TClient & TShared)]: StandardSchemaV1.InferOutput<
-			(TServer & TClient & TShared)[K]
-		>;
-	}>;
+}>;
+
+export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
+	const isLegacy =
+		schemaOrOptions &&
+		typeof schemaOrOptions === "object" &&
+		("runtimeEnv" in schemaOrOptions ||
+			"server" in schemaOrOptions ||
+			"client" in schemaOrOptions ||
+			"shared" in schemaOrOptions);
+
+	if (isLegacy) {
+		return arkenvInternal(
+			schemaOrOptions,
+			false,
+			undefined,
+			coreArkenv,
+			getSchemaKeys,
+		);
+	}
+
 	return arkenvInternal(
-		options,
-		false,
-		undefined,
+		schemaOrOptions,
+		optionsOrIsServer,
+		{ isServer: false },
 		coreArkenv,
 		getSchemaKeys,
-	) as ReturnType;
+	);
 }
 
 export default arkenv;

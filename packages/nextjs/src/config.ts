@@ -551,11 +551,11 @@ const GENERATED_HEADER = `/* eslint-disable */
 `;
 
 const GENERATED_FOOTER = `
-export default createEnv;
+export default arkenv;
 `;
 
 /**
- * Generate the TypeScript factory code for the tailored createEnv helper.
+ * Generate the TypeScript factory code for the tailored arkenv helper.
  *
  * @param clientKeys The client environment variable keys
  * @param sharedKeys The shared environment variable keys
@@ -569,16 +569,16 @@ function generateFactoryCode(
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
-	const coreName = isStandard ? "arkenv" : "createEnv";
+	const coreName = "arkenv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs";\n';
-	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const callPrefix = "coreArkenv";
 
 	return `${GENERATED_HEADER}
-import { ${coreName} as coreCreateEnv } from "${importPath}";
+import { ${coreName} as coreArkenv } from "${importPath}";
 ${typeExport}
-export function createEnv<
+export function arkenv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
 	const TShared extends Record<string, any> = {},
@@ -592,7 +592,7 @@ export function createEnv<
 	return ${callPrefix}({
 		...options,
 		runtimeEnv: {
-${runtimeEnvLines}
+			${runtimeEnvLines}
 		},
 	} as any) as any;
 }
@@ -600,7 +600,7 @@ ${GENERATED_FOOTER}`;
 }
 
 /**
- * Generate the TypeScript factory code for the Flat Layout createEnv helper.
+ * Generate the TypeScript factory code for the Flat Layout arkenv helper.
  *
  * @remarks
  * **Architecture tripwire:** Do not statically compile the schema here or
@@ -623,7 +623,7 @@ function generateFlatFactoryCode(
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
-	const coreName = isStandard ? "arkenv" : "createEnv";
+	const coreName = "arkenv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs";\n';
@@ -636,12 +636,12 @@ function generateFlatFactoryCode(
 	const castReturn = isStandard
 		? ""
 		: " as unknown as Readonly<distill.Out<at.infer<TSchema>>>";
-	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const callPrefix = "coreArkenv";
 
 	return `${GENERATED_HEADER}
-import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
+import { ${coreName} as coreArkenv } from "${importPath}";${typeImport}
 ${typeExport}
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
 	const TExpose extends keyof TSchema = never,
 	const TExtends extends readonly unknown[] = [],
@@ -663,7 +663,7 @@ export function createEnv<
 	const env = ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {
-${runtimeEnvLines}
+			${runtimeEnvLines}
 		},
 	} as any);
 	return env${castReturn};
@@ -672,7 +672,7 @@ ${GENERATED_FOOTER}`;
 }
 
 /**
- * Generate the TypeScript factory code for the strict-layout `createEnv` helper.
+ * Generate the TypeScript factory code for the strict-layout `arkenv` helper.
  *
  * Unlike `generateFactoryCode`, this variant imports from `@arkenv/nextjs/client`
  * and exposes a positional-schema signature suited for split-file projects.
@@ -691,20 +691,20 @@ function generateClientFactoryCode(
 	const importPath = isStandard
 		? "@arkenv/nextjs/standard/client"
 		: "@arkenv/nextjs/client";
-	const coreName = isStandard ? "arkenv" : "createEnv";
+	const coreName = "arkenv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs/client";\n';
 	const typeImport = isStandard
 		? ""
 		: '\nimport type { Infer } from "@arkenv/core";';
-	const callPrefix = isStandard ? "(coreCreateEnv as any)" : "coreCreateEnv";
+	const callPrefix = "coreArkenv";
 	const returnType = isStandard
 		? "Readonly<TSchema & MergeExtends<TExtends>>"
 		: "Readonly<Infer<TSchema> & MergeExtends<TExtends>>";
 
 	return `${GENERATED_HEADER}
-import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
+import { ${coreName} as coreArkenv } from "${importPath}";${typeImport}
 ${typeExport}
 type ResolveExtend<T> = [Infer<T>] extends [never] ? T : Infer<T>;
 
@@ -719,7 +719,7 @@ type MergeExtends<TExtends extends readonly unknown[] | undefined> =
 		? UnionToIntersection<ResolveExtend<TExtends[number]>>
 		: {};
 
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, any> = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -733,7 +733,7 @@ export function createEnv<
 	return ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {
-${runtimeEnvLines}
+			${runtimeEnvLines}
 		},
 	} as any);
 }
