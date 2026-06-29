@@ -28,14 +28,14 @@ export type TwoslashNode =
 			docs?: string;
 			line: number;
 			character: number;
-			code: number;
+			code?: number | string;
 	  };
 
 export type ArkTypeTwoslashOptions = Omit<
 	TransformerTwoslashOptions,
 	"filterNode"
 > & {
-	filterNode?: (node: any) => boolean;
+	filterNode?: (node: TwoslashNode) => boolean;
 };
 
 export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
@@ -47,6 +47,7 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 			module: ts.ModuleKind.ESNext,
 			moduleResolution: ts.ModuleResolutionKind.Bundler,
 			target: ts.ScriptTarget.ES2022,
+			baseUrl: root,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
