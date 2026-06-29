@@ -104,7 +104,7 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	);
 }
 
-export const createEnv = arkenv;
+
 
 export type { Infer } from "@arkenv/core";
 export { type } from "@arkenv/core";

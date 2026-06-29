@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { arkenv, createEnv } from "./index";
-import { createEnv as createEnvStandard } from "./standard";
+import { arkenv } from "./index";
+import arkenvStandard from "./standard";
 
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 	"~standard": {
@@ -84,7 +84,7 @@ describe("@arkenv/nextjs type regression", () => {
 
 	it("enforces NEXT_PUBLIC_ client keys", () => {
 		// @ts-expect-error client variables must be prefixed with NEXT_PUBLIC_
-		createEnv({
+		arkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string.url",
 				API_URL: "string.url",
@@ -97,7 +97,7 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("correctly types Flat Mode environment variables and filters them on client", () => {
-		const env = createEnv(
+		const env = arkenv(
 			{
 				DATABASE_URL: "string",
 				NEXT_PUBLIC_API_URL: "string",
@@ -123,7 +123,7 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("correctly types Standard Mode Flat Mode environment variables and filters them on client", () => {
-		const env = createEnvStandard(
+		const env = arkenvStandard(
 			{
 				DATABASE_URL: createMockStandardSchema(""),
 				NEXT_PUBLIC_API_URL: createMockStandardSchema(""),

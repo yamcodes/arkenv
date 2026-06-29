@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { arkenv as clientArkenv, createEnv as clientCreateEnv } from "./index";
-import {
-	arkenv as serverArkenv,
-	createEnv as serverCreateEnv,
-} from "./react-server";
+import { arkenv as clientArkenv } from "./index";
+import { arkenv as serverArkenv } from "./react-server";
 
 describe("arkenv (RSC / Server Entrypoint)", () => {
 	it("should parse a basic environment variable", () => {
@@ -22,7 +19,7 @@ describe("arkenv (RSC / Server Entrypoint)", () => {
 	it("should enforce NEXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
 		expect(() => {
 			// @ts-expect-error - Client keys must be prefixed with NEXT_PUBLIC_
-			serverCreateEnv({
+			serverArkenv({
 				client: {
 					API_URL: "string",
 				},
@@ -167,7 +164,7 @@ describe("arkenv (Client / SSR Entrypoint)", () => {
 
 	describe("Flat Mode", () => {
 		it("should validate and allow access to client and exposed variables, but throw for server-only variables on client", () => {
-			const env = clientCreateEnv(
+			const env = clientArkenv(
 				{
 					DATABASE_URL: "string",
 					NEXT_PUBLIC_API_URL: "string",
@@ -196,7 +193,7 @@ describe("arkenv (Client / SSR Entrypoint)", () => {
 		});
 
 		it("should allow accessing all variables on the server in Flat Mode", () => {
-			const env = serverCreateEnv(
+			const env = serverArkenv(
 				{
 					DATABASE_URL: "string",
 					NEXT_PUBLIC_API_URL: "string",
@@ -221,7 +218,7 @@ describe("arkenv (Client / SSR Entrypoint)", () => {
 		});
 
 		it("should support deprecated expose and shared options as fallbacks in Flat Mode", () => {
-			const env = clientCreateEnv(
+			const env = clientArkenv(
 				{
 					DATABASE_URL: "string",
 					NEXT_PUBLIC_API_URL: "string",

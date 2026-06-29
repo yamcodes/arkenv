@@ -2,12 +2,12 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import createEnvStandard, {
-	createEnv as namedCreateEnvStandard,
+import arkenvStandard, {
+	arkenv as namedArkenvStandard,
 } from "./standard";
-import { createEnv as clientCreateEnv } from "./standard/client";
-import { createEnv as serverCreateEnv } from "./standard/server";
-import { createEnv as sharedCreateEnv } from "./standard/shared";
+import { arkenv as clientArkenv } from "./standard/client";
+import { arkenv as serverArkenv } from "./standard/server";
+import { arkenv as sharedArkenv } from "./standard/shared";
 
 // Mock Standard Schema validator
 const mockSchema = <TOutput>(outputValue: TOutput) => ({
@@ -22,20 +22,20 @@ const mockSchema = <TOutput>(outputValue: TOutput) => ({
 });
 
 describe("Next.js Standard Mode Flat Layout", () => {
-	it("exports createEnv as both named and default", () => {
-		expect(createEnvStandard).toBe(namedCreateEnvStandard);
+	it("exports arkenv as both named and default", () => {
+		expect(arkenvStandard).toBe(namedArkenvStandard);
 	});
 
-	it("exports createEnv from all standard subpaths", () => {
-		expect(clientCreateEnv).toBeDefined();
-		expect(serverCreateEnv).toBeDefined();
-		expect(sharedCreateEnv).toBeDefined();
+	it("exports arkenv from all standard subpaths", () => {
+		expect(clientArkenv).toBeDefined();
+		expect(serverArkenv).toBeDefined();
+		expect(sharedArkenv).toBeDefined();
 	});
 
 	it("correctly handles flat layout and splits keys by prefix / options at runtime", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/db";
 
-		const env = serverCreateEnv(
+		const env = serverArkenv(
 			{
 				DATABASE_URL: mockSchema(""),
 				NEXT_PUBLIC_API_URL: mockSchema(""),
@@ -66,7 +66,7 @@ describe("Next.js Standard Mode Flat Layout", () => {
 		(globalThis as any).window = {};
 
 		try {
-			const env = namedCreateEnvStandard(
+			const env = namedArkenvStandard(
 				{
 					DATABASE_URL: mockSchema("secret"),
 					NEXT_PUBLIC_API_URL: mockSchema("https://api.example.com"),

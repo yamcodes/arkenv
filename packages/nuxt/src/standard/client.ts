@@ -12,7 +12,7 @@ import type { MergeExtends } from "@/types";
  * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
  * @throws An error if a server-only variable is accessed on the client side
  */
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, StandardSchemaV1> = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -28,7 +28,7 @@ export function createEnv<
 	} & MergeExtends<TExtends>
 >;
 
-export function createEnv<
+export function arkenv<
 	const TClient extends Record<string, StandardSchemaV1> = {},
 	const TShared extends Record<string, StandardSchemaV1> = {},
 	const TExtends extends readonly unknown[] = [],
@@ -46,7 +46,7 @@ export function createEnv<
 	} & MergeExtends<TExtends>
 >;
 
-export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
+export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	const isLegacy =
 		schemaOrOptions &&
 		typeof schemaOrOptions === "object" &&
@@ -76,5 +76,4 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	);
 }
 
-const arkenv = createEnv;
 export default arkenv;

@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { createEnv } from "./index";
+import { arkenv } from "./index";
 
-describe("createEnv (Nuxt runtime)", () => {
+describe("arkenv (Nuxt runtime)", () => {
 	it("should parse a basic environment variable", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/db";
 
-		const env = createEnv({
+		const env = arkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -17,7 +17,7 @@ describe("createEnv (Nuxt runtime)", () => {
 
 	it("should enforce NUXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
 		expect(() => {
-			createEnv({
+			arkenv({
 				client: {
 					// @ts-expect-error - Client keys must be prefixed with NUXT_PUBLIC_
 					API_URL: "string",
@@ -33,7 +33,7 @@ describe("createEnv (Nuxt runtime)", () => {
 		process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
 		process.env.NODE_ENV = "test";
 
-		const env = createEnv({
+		const env = arkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -69,7 +69,7 @@ describe("createEnv (Nuxt runtime)", () => {
 		};
 
 		try {
-			const env = createEnv({
+			const env = arkenv({
 				server: {
 					DATABASE_URL: "string",
 				},
@@ -131,7 +131,7 @@ describe("createEnv (Nuxt runtime)", () => {
 		};
 
 		try {
-			const env = createEnv({
+			const env = arkenv({
 				client: {
 					NUXT_PUBLIC_API_URL: "string",
 				},

@@ -551,7 +551,7 @@ const GENERATED_HEADER = `/* eslint-disable */
 `;
 
 const GENERATED_FOOTER = `
-export default createEnv;
+export default arkenv;
 `;
 
 /**
@@ -569,7 +569,7 @@ function generateFactoryCode(
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
-	const coreName = "createEnv";
+	const coreName = "arkenv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs";\n';
@@ -578,7 +578,7 @@ function generateFactoryCode(
 	return `${GENERATED_HEADER}
 import { ${coreName} as coreCreateEnv } from "${importPath}";
 ${typeExport}
-export function createEnv<
+export function arkenv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
 	const TShared extends Record<string, any> = {},
@@ -592,7 +592,7 @@ export function createEnv<
 	return ${callPrefix}({
 		...options,
 		runtimeEnv: {
-${runtimeEnvLines}
+			${runtimeEnvLines}
 		},
 	} as any) as any;
 }
@@ -623,7 +623,7 @@ function generateFlatFactoryCode(
 ): string {
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
-	const coreName = "createEnv";
+	const coreName = "arkenv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs";\n';
@@ -641,7 +641,7 @@ function generateFlatFactoryCode(
 	return `${GENERATED_HEADER}
 import { ${coreName} as coreCreateEnv } from "${importPath}";${typeImport}
 ${typeExport}
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
 	const TExpose extends keyof TSchema = never,
 	const TExtends extends readonly unknown[] = [],
@@ -663,7 +663,7 @@ export function createEnv<
 	const env = ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {
-${runtimeEnvLines}
+			${runtimeEnvLines}
 		},
 	} as any);
 	return env${castReturn};
@@ -691,7 +691,7 @@ function generateClientFactoryCode(
 	const importPath = isStandard
 		? "@arkenv/nextjs/standard/client"
 		: "@arkenv/nextjs/client";
-	const coreName = "createEnv";
+	const coreName = "arkenv";
 	const typeExport = isStandard
 		? ""
 		: '\nexport { type } from "@arkenv/nextjs/client";\n';
@@ -719,7 +719,7 @@ type MergeExtends<TExtends extends readonly unknown[] | undefined> =
 		? UnionToIntersection<ResolveExtend<TExtends[number]>>
 		: {};
 
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, any> = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -733,7 +733,7 @@ export function createEnv<
 	return ${callPrefix}(schema as any, {
 		...options,
 		runtimeEnv: {
-${runtimeEnvLines}
+			${runtimeEnvLines}
 		},
 	} as any);
 }

@@ -23,7 +23,7 @@ type ClientVisibleKeys<
  * @param options Optional configuration including client-side variables and extends
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  */
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, StandardSchemaV1> = {},
 	const TExpose extends keyof TSchema = never,
 	const TExtends extends readonly unknown[] = [],
@@ -47,12 +47,12 @@ export function createEnv<
 /**
  * Create a validated, type-safe environment configuration for Nuxt applications (Standard Mode).
  *
- * @deprecated Use the unified flat layout signature instead: `createEnv(schema, options)`
+ * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
  * @param options The environment validation configuration options
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
  */
-export function createEnv<
+export function arkenv<
 	const TServer extends Record<string, StandardSchemaV1> = {},
 	const TClient extends Record<string, StandardSchemaV1> = {},
 	const TShared extends Record<string, StandardSchemaV1> = {},
@@ -69,7 +69,7 @@ export function createEnv<
 	>;
 }>;
 
-export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
+export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	const isLegacy =
 		schemaOrOptions &&
 		typeof schemaOrOptions === "object" &&
@@ -99,5 +99,4 @@ export function createEnv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	);
 }
 
-const arkenv = createEnv;
 export default arkenv;

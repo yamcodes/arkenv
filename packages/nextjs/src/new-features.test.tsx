@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { setupArkEnv } from "./config";
-import { createEnv } from "./index";
+import { arkenv } from "./index";
 import { ArkEnvScript } from "./script";
 
 describe("setupArkEnv non-wrapping API", () => {
@@ -89,7 +89,7 @@ describe("dynamic client environment variable lookup", () => {
 			NEXT_PUBLIC_DYNAMIC: "dynamic-override",
 		};
 
-		const env = createEnv({
+		const env = arkenv({
 			client: {
 				NEXT_PUBLIC_DYNAMIC: "string",
 			},
@@ -110,7 +110,7 @@ describe("dynamic client environment variable lookup", () => {
 			NEXT_PUBLIC_OTHER: "other-value",
 		};
 
-		const env = createEnv({
+		const env = arkenv({
 			client: {
 				NEXT_PUBLIC_DYNAMIC: "string",
 			},
@@ -133,7 +133,7 @@ describe("legacy nested layout deprecation warning", () => {
 
 		try {
 			// Call legacy signature
-			createEnv({
+			arkenv({
 				client: {
 					NEXT_PUBLIC_VAL: "string",
 				},
@@ -148,7 +148,7 @@ describe("legacy nested layout deprecation warning", () => {
 			);
 
 			// Calling it again should not warn (one-time warn)
-			createEnv({
+			arkenv({
 				client: {
 					NEXT_PUBLIC_VAL: "string",
 				},

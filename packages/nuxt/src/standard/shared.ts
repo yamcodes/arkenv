@@ -10,7 +10,7 @@ import type { MergeExtends } from "@/types";
  * @param options Optional configuration options
  * @returns A validated, readonly environment variables object wrapped in a security proxy
  */
-export function createEnv<
+export function arkenv<
 	const TSchema extends Record<string, StandardSchemaV1> = {},
 	const TExtends extends readonly unknown[] = [],
 >(
@@ -36,5 +36,4 @@ export function createEnv<
 	) as any;
 }
 
-const arkenv = createEnv;
 export default arkenv;
