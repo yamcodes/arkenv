@@ -27,7 +27,7 @@
 				"lib/plugins/**",
 				"lib/twoslash-options.ts",
 				"source.config.ts",
-				"bin/postinstall.js"
+				"scripts/postinstall.js"
 			],
 			"ignoreDependencies": [
 				"@arkenv/vite-plugin",

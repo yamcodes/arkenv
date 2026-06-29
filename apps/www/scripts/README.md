@@ -1,4 +1,4 @@
-# Documentation scripts (`/bin`)
+# Documentation scripts (`/scripts`)
 
 This directory contains utility scripts used by the documentation site for building, environment setup, and content verification.
 
@@ -32,7 +32,7 @@ pnpm twoslash content/docs/arkenv/index.mdx
 A compatibility wrapper for running build commands.
 
 - **Node 25+ Support**: Automatically disables Web Storage (`--no-webstorage`) to avoid conflicts during the Next.js build process.
-- **Usage**: Called internally by `pnpm build` (e.g., `node ./bin/build next build`).
+- **Usage**: Called internally by `pnpm build` (e.g., `node ./scripts/build next build`).
 
 ---
 
