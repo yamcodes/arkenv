@@ -141,31 +141,146 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
  * @param content The string content of the schema file
  * @returns An object containing arrays of server, client, and shared keys
  */
-export function extractKeys(content: string): {
+function extractCallArguments(
+	content: string,
+): { schemaArg: string; optionsArg: string | null } | null {
+	const callRegex = /\b(?:arkenv|createEnv)\s*\(/g;
+	let match = callRegex.exec(content);
+
+	while (match !== null) {
+		const start = callRegex.lastIndex;
+		let parenCount = 1;
+		let braceCount = 0;
+		let bracketCount = 0;
+		const args: string[] = [];
+		let lastIndex = start;
+
+		const tokenRegex =
+			/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[(){}[\],]/g;
+		tokenRegex.lastIndex = start;
+
+		let tokenMatch = tokenRegex.exec(content);
+		while (parenCount > 0 && tokenMatch !== null) {
+			const token = tokenMatch[0];
+			const index = tokenMatch.index;
+
+			if (token === "(") {
+				parenCount++;
+			} else if (token === ")") {
+				parenCount--;
+			} else if (token === "{") {
+				braceCount++;
+			} else if (token === "}") {
+				braceCount--;
+			} else if (token === "[") {
+				bracketCount++;
+			} else if (token === "]") {
+				bracketCount--;
+			} else if (
+				token === "," &&
+				parenCount === 1 &&
+				braceCount === 0 &&
+				bracketCount === 0
+			) {
+				args.push(content.slice(lastIndex, index).trim());
+				lastIndex = tokenRegex.lastIndex;
+			}
+			if (parenCount === 0) {
+				break;
+			}
+			tokenMatch = tokenRegex.exec(content);
+		}
+
+		if (parenCount === 0) {
+			args.push(content.slice(lastIndex, tokenRegex.lastIndex - 1).trim());
+			return {
+				schemaArg: args[0] || "",
+				optionsArg: args[1] || null,
+			};
+		}
+		match = callRegex.exec(content);
+	}
+	return null;
+}
+
+/**
+ * Statically extract client, shared, and server keys from the schema content.
+ * Supports both legacy nested layout and the flat layout with parameterizable public prefix.
+ *
+ * @param content The schema file string content
+ * @param publicPrefix An optional framework-specific public prefix (e.g. "NEXT_PUBLIC_" or "NUXT_PUBLIC_")
+ * @returns An object containing arrays of server, client, and shared keys
+ */
+export function extractKeys(
+	content: string,
+	publicPrefix?: string,
+): {
 	serverKeys: string[];
 	clientKeys: string[];
 	sharedKeys: string[];
+	isLegacy?: boolean;
 } {
 	const serverKeys: string[] = [];
 	const clientKeys: string[] = [];
 	const sharedKeys: string[] = [];
 
-	const serverBlock = extractBlock(content, "server");
-	if (serverBlock) {
-		serverKeys.push(...parseBlockKeys(serverBlock));
+	const args = extractCallArguments(content);
+	if (!args) {
+		return { serverKeys, clientKeys, sharedKeys, isLegacy: false };
 	}
 
-	const clientBlock = extractBlock(content, "client");
-	if (clientBlock) {
-		clientKeys.push(...parseBlockKeys(clientBlock));
+	// Strip outer braces if present
+	const trimmedSchema = args.schemaArg
+		.replace(/^\{/, "")
+		.replace(/\}$/, "")
+		.trim();
+	const topKeys = parseBlockKeys(trimmedSchema);
+	const isLegacy =
+		topKeys.includes("client") ||
+		topKeys.includes("server") ||
+		topKeys.includes("shared");
+
+	if (isLegacy) {
+		const clientBlock = extractBlock(args.schemaArg, "client");
+		if (clientBlock) {
+			clientKeys.push(...parseBlockKeys(clientBlock));
+		}
+		const sharedBlock = extractBlock(args.schemaArg, "shared");
+		if (sharedBlock) {
+			sharedKeys.push(...parseBlockKeys(sharedBlock));
+		}
+		const serverBlock = extractBlock(args.schemaArg, "server");
+		if (serverBlock) {
+			serverKeys.push(...parseBlockKeys(serverBlock));
+		}
+	} else {
+		// New flat layout
+		const optionExposedKeys: string[] = [];
+		if (args.optionsArg) {
+			const exposeMatch =
+				args.optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
+				args.optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
+				args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
+			if (exposeMatch) {
+				const matches = exposeMatch[1].matchAll(/['"`](.*?)['"`]/g);
+				for (const match of matches) {
+					optionExposedKeys.push(match[1]);
+				}
+			}
+		}
+
+		for (const key of topKeys) {
+			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
+				sharedKeys.push(key);
+			} else if (publicPrefix && key.startsWith(publicPrefix)) {
+				clientKeys.push(key);
+			} else {
+				serverKeys.push(key);
+			}
+		}
 	}
 
-	const sharedBlock = extractBlock(content, "shared");
-	if (sharedBlock) {
-		sharedKeys.push(...parseBlockKeys(sharedBlock));
-	}
-
-	return { serverKeys, clientKeys, sharedKeys };
+	return { serverKeys, clientKeys, sharedKeys, isLegacy };
 }
 
 /**
@@ -186,67 +301,30 @@ export function extractBlock(
 	const match = regex.exec(content);
 	if (!match) return null;
 
-	const startIndex = regex.lastIndex;
+	const start = regex.lastIndex;
 	let braceCount = 1;
-	let index = startIndex;
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
 
-	while (index < content.length && braceCount > 0) {
-		const char = content[index];
-		const nextChar = content[index + 1];
+	const tokenRegex =
+		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}]/g;
+	tokenRegex.lastIndex = start;
 
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			index++;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				index += 2;
-				continue;
-			}
-			index++;
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && content[index - 1] !== "\\") {
-				inString = null;
-			}
-			index++;
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			index += 2;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			index += 2;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			index++;
-			continue;
-		}
-
-		if (char === "{") {
+	let tokenMatch = tokenRegex.exec(content);
+	while (braceCount > 0 && tokenMatch !== null) {
+		const token = tokenMatch[0];
+		if (token === "{") {
 			braceCount++;
-		} else if (char === "}") {
+		} else if (token === "}") {
 			braceCount--;
 		}
-		index++;
+		if (braceCount === 0) {
+			break;
+		}
+		tokenMatch = tokenRegex.exec(content);
 	}
 
 	if (braceCount === 0) {
-		return content.slice(startIndex, index - 1);
+		return content.slice(start, tokenRegex.lastIndex - 1).trim();
 	}
-
 	return null;
 }
 
@@ -258,86 +336,58 @@ export function extractBlock(
  */
 export function parseBlockKeys(blockContent: string): string[] {
 	const keys: string[] = [];
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
-	let currentToken = "";
-	let lastStringContent = "";
+	const tokenRegex =
+		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}[\]:]|[a-zA-Z0-9_$]+/g;
+
+	let lastIdentifier = "";
+	let lastString = "";
 	let braceDepth = 0;
+	let bracketDepth = 0;
 
-	for (let i = 0; i < blockContent.length; i++) {
-		const char = blockContent[i];
-		const nextChar = blockContent[i + 1];
+	let match = tokenRegex.exec(blockContent);
+	while (match !== null) {
+		const token = match[0];
 
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				i++;
-			}
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && blockContent[i - 1] !== "\\") {
-				inString = null;
-				lastStringContent = currentToken;
-				currentToken = "";
-			} else {
-				currentToken += char;
-			}
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			i++;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			i++;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			currentToken = "";
-			continue;
-		}
-
-		if (char === "{") {
+		if (token === "{") {
 			braceDepth++;
-			currentToken = "";
-			lastStringContent = "";
-			continue;
-		}
-		if (char === "}") {
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === "}") {
 			braceDepth--;
-			currentToken = "";
-			lastStringContent = "";
-			continue;
-		}
-
-		if (char === ":") {
-			if (braceDepth === 0) {
-				const key = currentToken.trim() || lastStringContent.trim();
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === "[") {
+			bracketDepth++;
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === "]") {
+			bracketDepth--;
+			lastIdentifier = "";
+			lastString = "";
+		} else if (token === ":") {
+			if (braceDepth === 0 && bracketDepth === 0) {
+				const key = lastIdentifier || lastString;
 				if (key) {
 					keys.push(key);
 				}
 			}
-			currentToken = "";
-			lastStringContent = "";
-			continue;
+			lastIdentifier = "";
+			lastString = "";
+		} else if (
+			token.startsWith("'") ||
+			token.startsWith('"') ||
+			token.startsWith("`")
+		) {
+			lastString = token.slice(1, -1);
+			lastIdentifier = "";
+		} else if (/^[a-zA-Z0-9_$]+$/.test(token)) {
+			lastIdentifier = token;
+			lastString = "";
+		} else {
+			lastIdentifier = "";
+			lastString = "";
 		}
-
-		if (/[a-zA-Z0-9_$]/.test(char)) {
-			currentToken += char;
-		} else if (char === "," || char === "\n" || char === "\r") {
-			currentToken = "";
-			lastStringContent = "";
-		}
+		match = tokenRegex.exec(blockContent);
 	}
 
 	return keys;
@@ -354,67 +404,30 @@ export function extractArkenvBlock(content: string): string | null {
 	const match = regex.exec(content);
 	if (!match) return null;
 
-	const startIndex = regex.lastIndex;
+	const start = regex.lastIndex;
 	let braceCount = 1;
-	let index = startIndex;
-	let inString: string | null = null;
-	let inComment: "single" | "multi" | null = null;
 
-	while (index < content.length && braceCount > 0) {
-		const char = content[index];
-		const nextChar = content[index + 1];
+	const tokenRegex =
+		/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[{}]/g;
+	tokenRegex.lastIndex = start;
 
-		if (inComment === "single") {
-			if (char === "\n" || char === "\r") inComment = null;
-			index++;
-			continue;
-		}
-		if (inComment === "multi") {
-			if (char === "*" && nextChar === "/") {
-				inComment = null;
-				index += 2;
-				continue;
-			}
-			index++;
-			continue;
-		}
-
-		if (inString) {
-			if (char === inString && content[index - 1] !== "\\") {
-				inString = null;
-			}
-			index++;
-			continue;
-		}
-
-		if (char === "/" && nextChar === "/") {
-			inComment = "single";
-			index += 2;
-			continue;
-		}
-		if (char === "/" && nextChar === "*") {
-			inComment = "multi";
-			index += 2;
-			continue;
-		}
-		if (char === "'" || char === '"' || char === "`") {
-			inString = char;
-			index++;
-			continue;
-		}
-
-		if (char === "{") {
+	let tokenMatch = tokenRegex.exec(content);
+	while (braceCount > 0 && tokenMatch !== null) {
+		const token = tokenMatch[0];
+		if (token === "{") {
 			braceCount++;
-		} else if (char === "}") {
+		} else if (token === "}") {
 			braceCount--;
 		}
-		index++;
+		if (braceCount === 0) {
+			break;
+		}
+		tokenMatch = tokenRegex.exec(content);
 	}
 
 	if (braceCount === 0) {
-		return content.slice(startIndex, index - 1);
+		return content.slice(start, tokenRegex.lastIndex - 1).trim();
 	}
-
 	return null;
 }
 

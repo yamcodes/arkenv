@@ -1,5 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+import { defineNuxtModule } from "@nuxt/kit";
+import type { NuxtModule } from "@nuxt/schema";
+import { name, peerDependencies, version } from "../package.json";
 import {
 	extractClientKeys,
 	extractKeys,
@@ -7,15 +10,37 @@ import {
 	extractSharedKeys,
 	findSchemaPath,
 	resolveLayout,
-} from "@arkenv/build";
-import { defineNuxtModule } from "@nuxt/kit";
-import type { NuxtModule } from "@nuxt/schema";
-import { name, peerDependencies, version } from "../package.json";
+} from "./config";
 
 export type ModuleOptions = {
 	schemaPath?: string;
-	layout?: "simple" | "strict";
+	layout?:
+		| "flat"
+		| "strict"
+		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
+		| "simple";
 };
+
+let hasWarnedSimpleLayout = false;
+
+function normalizeLayout(
+	layout: ModuleOptions["layout"],
+): "simple" | "strict" | undefined {
+	if (layout === "simple") {
+		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
+			hasWarnedSimpleLayout = true;
+			// biome-ignore lint/suspicious/noConsole: deprecation warning
+			console.warn(
+				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
+			);
+		}
+		return "simple";
+	}
+	if (layout === "flat") {
+		return "simple";
+	}
+	return layout;
+}
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -36,9 +61,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			return;
 		}
 
+		const normalizedLayout = normalizeLayout(options.layout);
+
 		const { layout: resolvedLayout, baseDir } = resolveLayout(
 			schemaPath,
-			options.layout,
+			normalizedLayout,
 		);
 
 		// Register schema paths to watch so Nuxt restarts and updates runtimeConfig when they change
