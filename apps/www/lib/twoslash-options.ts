@@ -31,8 +31,11 @@ export type TwoslashNode =
 			code: number;
 	  };
 
-export type ArkTypeTwoslashOptions = TransformerTwoslashOptions & {
-	filterNode?: (node: TwoslashNode) => boolean;
+export type ArkTypeTwoslashOptions = Omit<
+	TransformerTwoslashOptions,
+	"filterNode"
+> & {
+	filterNode?: (node: any) => boolean;
 };
 
 export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
@@ -43,14 +46,14 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 			module: ts.ModuleKind.ESNext,
 			moduleResolution: ts.ModuleResolutionKind.Bundler,
 			target: ts.ScriptTarget.ES2022,
-			baseUrl: "/",
+			baseUrl: root,
 			paths: {
 				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
 				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
 				"arkenv/core": [path.join(root, "packages/arkenv/src/core.ts")],
 				"@/*": [path.join(root, "packages/arkenv/src/*"), "./*"],
-				"@/env/client": ["env/client.ts"],
-				"~~/env/client": ["env/client.ts"],
+				"@/env/client": ["/env/client.ts"],
+				"~~/env/client": ["/env/client.ts"],
 				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
 				"@arkenv/nextjs/server": [
 					path.join(root, "packages/nextjs/src/server.ts"),
