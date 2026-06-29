@@ -3,10 +3,10 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"mdx": "node ./bin/mdx",
+		"mdx": "node ./scripts/mdx",
 		"prebuild": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx",
 		"predev": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx",
-		"build": "node ./bin/build next build",
+		"build": "node ./scripts/build next build",
 		"dev": "conc -n Next.js,next-video 'next dev' 'pnpm exec next-video sync -w'",
 		"start": "next start",
 		"clean": "rimraf node_modules .next .source",
@@ -14,7 +14,7 @@
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
 		"typecheck": "tsc --noEmit",
-		"twoslash": "tsx bin/twoslash-mdx.ts"
+		"twoslash": "tsx scripts/twoslash-mdx.ts"
 	},
 	"dependencies": {
 		"@ark/util": "0.56.0",
