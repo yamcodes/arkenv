@@ -185,6 +185,9 @@ function extractCallArguments(
 				args.push(content.slice(lastIndex, index).trim());
 				lastIndex = tokenRegex.lastIndex;
 			}
+			if (parenCount === 0) {
+				break;
+			}
 			tokenMatch = tokenRegex.exec(content);
 		}
 
@@ -313,6 +316,9 @@ export function extractBlock(
 		} else if (token === "}") {
 			braceCount--;
 		}
+		if (braceCount === 0) {
+			break;
+		}
 		tokenMatch = tokenRegex.exec(content);
 	}
 
@@ -412,6 +418,9 @@ export function extractArkenvBlock(content: string): string | null {
 			braceCount++;
 		} else if (token === "}") {
 			braceCount--;
+		}
+		if (braceCount === 0) {
+			break;
 		}
 		tokenMatch = tokenRegex.exec(content);
 	}
