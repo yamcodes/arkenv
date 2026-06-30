@@ -8,6 +8,7 @@ export default defineConfig({
 		"src/server.ts",
 		"src/client.ts",
 		"src/shared.ts",
+		"src/mock-imports.ts",
 	],
 	format: ["esm", "cjs"],
 	minify: true,
@@ -15,6 +16,6 @@ export default defineConfig({
 	sourcemap: true,
 	deps: {
 		alwaysBundle: ["@repo/types"],
-		neverBundle: ["@nuxt/kit", "@nuxt/schema"],
+		neverBundle: ["@nuxt/kit", "@nuxt/schema", "#imports", "nuxt/app"],
 	},
 });

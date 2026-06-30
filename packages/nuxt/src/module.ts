@@ -12,17 +12,13 @@ import {
 	findSchemaPath,
 	normalizeLayout,
 	resolveLayout,
-	runCodegen,
 	validateSchema,
-	watchSchema,
 } from "./config";
 
 export type ModuleOptions = {
 	schemaPath?: string;
-	outputPath?: string;
 	layout?: ArkEnvConfigOptions["layout"];
 	validate?: boolean;
-	codegen?: boolean;
 };
 
 const CLIENT_SECURITY_ERROR =
@@ -61,7 +57,6 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	},
 	defaults: {
 		validate: true,
-		codegen: true,
 	},
 	setup(options, nuxt) {
 		const schemaPath = options.schemaPath
@@ -84,19 +79,6 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt.options.srcDir ?? nuxt.options.rootDir,
 		);
 
-		const defaultOutputDir =
-			resolvedLayout === "strict" && baseDir
-				? baseDir
-				: path.dirname(schemaPath);
-		const defaultOutputPath = path.join(
-			defaultOutputDir,
-			"generated",
-			"env.gen.ts",
-		);
-		const outputPath = options.outputPath
-			? path.resolve(nuxt.options.rootDir, options.outputPath)
-			: defaultOutputPath;
-
 		// Register schema paths to watch so Nuxt restarts and updates runtimeConfig when they change
 		if (nuxt.options.dev) {
 			const watchPaths =
@@ -114,18 +96,8 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		}
 
-		// Run codegen and validation via the shared config helpers
-		const codegen = options.codegen ?? true;
+		// Run validation via the shared config helpers
 		const validate = options.validate ?? true;
-
-		if (codegen) {
-			try {
-				runCodegen(schemaPath, outputPath, resolvedLayout);
-			} catch (error: unknown) {
-				const message = error instanceof Error ? error.message : String(error);
-				throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
-			}
-		}
 
 		if (validate) {
 			try {
@@ -134,21 +106,6 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 				const message = error instanceof Error ? error.message : String(error);
 				throw new Error(`[ArkEnv] Environment validation failed: ${message}`);
 			}
-		}
-
-		// In dev mode, regenerate env.gen.ts when schema files change
-		if (nuxt.options.dev && codegen) {
-			const watchPaths =
-				resolvedLayout === "strict" && baseDir
-					? [
-							path.join(baseDir, "internal", "shared.ts"),
-							path.join(baseDir, "client.ts"),
-							path.join(baseDir, "server.ts"),
-						].filter(fs.existsSync)
-					: [schemaPath];
-			watchSchema(watchPaths, () => {
-				runCodegen(schemaPath, outputPath, resolvedLayout);
-			});
 		}
 
 		// 3. Register env keys to runtimeConfig

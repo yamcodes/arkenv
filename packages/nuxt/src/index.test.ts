@@ -1,4 +1,16 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("#imports", () => {
+	return {
+		useRuntimeConfig: () => {
+			if ((globalThis as any).__mockRuntimeConfig) {
+				return (globalThis as any).__mockRuntimeConfig;
+			}
+			throw new Error("Nuxt instance not found");
+		},
+	};
+});
+
 import { createEnv } from "./index";
 
 describe("createEnv (Nuxt runtime)", () => {
@@ -254,6 +266,50 @@ describe("createEnv (Nuxt runtime)", () => {
 			);
 		} finally {
 			delete process.env.DATABASE_URL;
+		}
+	});
+
+	it("should dynamically resolve client keys from useRuntimeConfig on the client", () => {
+		const originalWindow = globalThis.window;
+		(globalThis as any).window = {};
+
+		(globalThis as any).__mockRuntimeConfig = {
+			public: {
+				NUXT_PUBLIC_API_URL: "https://dynamic-config.api.com",
+			},
+		};
+
+		try {
+			const env = createEnv({
+				NUXT_PUBLIC_API_URL: "string",
+			});
+
+			expect(env.NUXT_PUBLIC_API_URL).toBe("https://dynamic-config.api.com");
+		} finally {
+			(globalThis as any).window = originalWindow;
+			delete (globalThis as any).__mockRuntimeConfig;
+		}
+	});
+
+	it("should dynamically resolve server keys from useRuntimeConfig on the server", () => {
+		(globalThis as any).__mockRuntimeConfig = {
+			DATABASE_URL: "postgres://dynamic-server/db",
+			public: {},
+		};
+
+		try {
+			const env = createEnv(
+				{
+					DATABASE_URL: "string",
+				},
+				{
+					isServer: true,
+				} as any
+			);
+
+			expect(env.DATABASE_URL).toBe("postgres://dynamic-server/db");
+		} finally {
+			delete (globalThis as any).__mockRuntimeConfig;
 		}
 	});
 });

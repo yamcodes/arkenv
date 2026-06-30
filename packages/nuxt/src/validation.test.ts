@@ -17,6 +17,7 @@ const testAliases = {
 	arkenv: path.join(arkenvSrc, "index.ts"),
 	"@repo/scope": path.join(nuxtSrc, "../../internal/scope/src/index.ts"),
 	"@repo/types": path.join(nuxtSrc, "../../internal/types/src/index.ts"),
+	"#imports": path.join(nuxtSrc, "mock-imports.ts"),
 };
 
 function setupArkEnv(options?: any) {
@@ -31,7 +32,6 @@ function setupArkEnv(options?: any) {
 describe("build-time environment validation", () => {
 	const tempDir = path.join(__dirname, "__temp_validation_tests__");
 	const schemaPath = path.join(tempDir, "env.ts");
-	const outputPath = path.join(tempDir, "generated", "env.gen.ts");
 	let exitSpy: any;
 	let consoleErrorSpy: any;
 
@@ -62,6 +62,7 @@ describe("build-time environment validation", () => {
 		delete process.env.DATABASE_URL;
 		delete process.env.NUXT_PUBLIC_API_URL;
 		delete process.env.NODE_ENV;
+		delete process.env.PORT;
 
 		if (fs.existsSync(tempDir)) {
 			fs.rmSync(tempDir, { recursive: true, force: true });
@@ -73,8 +74,8 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				schemaPath,
 				`
-				import arkenv from "./generated/env.gen";
-				export const env = arkenv({
+				import { createEnv } from "@arkenv/nuxt";
+				export const env = createEnv({
 					DATABASE_URL: "string",
 					NUXT_PUBLIC_API_URL: "string",
 					NODE_ENV: "'development' | 'production'",
@@ -87,34 +88,23 @@ describe("build-time environment validation", () => {
 			process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
 			process.env.NODE_ENV = "development";
 
-			// First run setup to generate the template file (env.gen.ts) so env.ts can import it
-			setupArkEnv({
-				schemaPath,
-				outputPath,
-				layout: "flat",
-				validate: false,
-			});
-
-			// Now enable validation for the second pass
 			expect(() => {
 				setupArkEnv({
 					schemaPath,
-					outputPath,
 					layout: "flat",
 					validate: true,
 				});
 			}).not.toThrow();
 
 			expect(exitSpy).not.toHaveBeenCalled();
-			expect(fs.existsSync(outputPath)).toBe(true);
 		});
 
 		it("should throw error when a required environment variable is missing", () => {
 			fs.writeFileSync(
 				schemaPath,
 				`
-				import arkenv from "./generated/env.gen";
-				export const env = arkenv({
+				import { createEnv } from "@arkenv/nuxt";
+				export const env = createEnv({
 					DATABASE_URL: "string",
 					NUXT_PUBLIC_API_URL: "string",
 				});
@@ -123,21 +113,10 @@ describe("build-time environment validation", () => {
 			);
 
 			process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
-			// DATABASE_URL is missing
 
-			// First run setup to generate the template file (env.gen.ts) so env.ts can import it
-			setupArkEnv({
-				schemaPath,
-				outputPath,
-				layout: "flat",
-				validate: false,
-			});
-
-			// Now enable validation for the second pass
 			expect(() => {
 				setupArkEnv({
 					schemaPath,
-					outputPath,
 					layout: "flat",
 					validate: true,
 				});
@@ -151,8 +130,8 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				schemaPath,
 				`
-				import arkenv from "./generated/env.gen";
-				export const env = arkenv({
+				import { createEnv } from "@arkenv/nuxt";
+				export const env = createEnv({
 					PORT: "number",
 				});
 				`,
@@ -161,19 +140,9 @@ describe("build-time environment validation", () => {
 
 			process.env.PORT = "not-a-number";
 
-			// First run setup to generate the template file (env.gen.ts) so env.ts can import it
-			setupArkEnv({
-				schemaPath,
-				outputPath,
-				layout: "flat",
-				validate: false,
-			});
-
-			// Now enable validation for the second pass
 			expect(() => {
 				setupArkEnv({
 					schemaPath,
-					outputPath,
 					layout: "flat",
 					validate: true,
 				});
@@ -189,11 +158,6 @@ describe("build-time environment validation", () => {
 		const clientPath = path.join(strictBaseDir, "client.ts");
 		const serverPath = path.join(strictBaseDir, "server.ts");
 		const sharedPath = path.join(strictBaseDir, "internal", "shared.ts");
-		const strictOutputPath = path.join(
-			strictBaseDir,
-			"generated",
-			"env.gen.ts",
-		);
 
 		beforeEach(() => {
 			fs.mkdirSync(path.join(strictBaseDir, "internal"), { recursive: true });
@@ -214,16 +178,12 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				clientPath,
 				`
-				import arkenv from "./generated/env.gen";
+				import { createEnv } from "@arkenv/nuxt/client";
 				import { SharedSchema } from "./internal/shared";
-				export const env = arkenv({
+				export const env = createEnv({
 					NUXT_PUBLIC_API_URL: "string",
 				}, {
-					extends: [SharedSchema],
-					runtimeEnv: {
-						NUXT_PUBLIC_API_URL: process.env.NUXT_PUBLIC_API_URL,
-						NODE_ENV: process.env.NODE_ENV,
-					}
+					extends: [SharedSchema]
 				});
 				`,
 				"utf-8",
@@ -232,9 +192,9 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				serverPath,
 				`
-				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
+				import { createEnv } from "${path.resolve(__dirname, "./server.ts")}";
 				import { env as clientEnv } from "./client";
-				export const env = arkenv({
+				export const env = createEnv({
 					DATABASE_URL: "string",
 				}, {
 					extends: [clientEnv],
@@ -247,20 +207,9 @@ describe("build-time environment validation", () => {
 			process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
 			process.env.NODE_ENV = "development";
 
-			// First run setup to generate the template file (env.gen.ts) so clientPath can import it
-			// We disable validation on first pass to let the file compile
-			setupArkEnv({
-				schemaPath: strictBaseDir,
-				outputPath: strictOutputPath,
-				layout: "strict",
-				validate: false,
-			});
-
-			// Now enable validation for the second pass
 			expect(() => {
 				setupArkEnv({
 					schemaPath: strictBaseDir,
-					outputPath: strictOutputPath,
 					layout: "strict",
 					validate: true,
 				});
@@ -284,16 +233,12 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				clientPath,
 				`
-				import arkenv from "./generated/env.gen";
+				import { createEnv } from "@arkenv/nuxt/client";
 				import { SharedSchema } from "./internal/shared";
-				export const env = arkenv({
+				export const env = createEnv({
 					NUXT_PUBLIC_API_URL: "string",
 				}, {
-					extends: [SharedSchema],
-					runtimeEnv: {
-						NUXT_PUBLIC_API_URL: process.env.NUXT_PUBLIC_API_URL,
-						NODE_ENV: process.env.NODE_ENV,
-					}
+					extends: [SharedSchema]
 				});
 				`,
 				"utf-8",
@@ -302,9 +247,9 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				serverPath,
 				`
-				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
+				import { createEnv } from "${path.resolve(__dirname, "./server.ts")}";
 				import { env as clientEnv } from "./client";
-				export const env = arkenv({
+				export const env = createEnv({
 					DATABASE_URL: "string",
 				}, {
 					extends: [clientEnv],
@@ -317,75 +262,15 @@ describe("build-time environment validation", () => {
 			process.env.NODE_ENV = "development";
 			// DATABASE_URL is missing
 
-			// First pass codegen
-			setupArkEnv({
-				schemaPath: strictBaseDir,
-				outputPath: strictOutputPath,
-				layout: "strict",
-				validate: false,
-			});
-
-			// Second pass validation
 			expect(() => {
 				setupArkEnv({
 					schemaPath: strictBaseDir,
-					outputPath: strictOutputPath,
 					layout: "strict",
 					validate: true,
 				});
 			}).toThrow(/Errors found while validating/);
 
 			expect(exitSpy).not.toHaveBeenCalled();
-		});
-	});
-
-	describe("codegen option", () => {
-		it("should skip file generation but still validate when codegen is false", () => {
-			fs.writeFileSync(
-				schemaPath,
-				`
-				import arkenv from "@arkenv/nuxt";
-				export const env = arkenv({
-					DATABASE_URL: "string",
-				}, {
-					runtimeEnv: {
-						DATABASE_URL: process.env.DATABASE_URL,
-					}
-				});
-				`,
-				"utf-8",
-			);
-
-			// Missing DATABASE_URL, should throw error
-			expect(() => {
-				setupArkEnv({
-					schemaPath,
-					outputPath,
-					layout: "flat",
-					codegen: false,
-					validate: true,
-				});
-			}).toThrow(/Errors found while validating/);
-
-			expect(exitSpy).not.toHaveBeenCalled();
-			expect(fs.existsSync(outputPath)).toBe(false);
-
-			// Provide DATABASE_URL, should pass
-			process.env.DATABASE_URL = "postgres://localhost/db";
-			exitSpy.mockClear();
-
-			expect(() => {
-				setupArkEnv({
-					schemaPath,
-					outputPath,
-					layout: "flat",
-					codegen: false,
-					validate: true,
-				});
-			}).not.toThrow();
-
-			expect(exitSpy).not.toHaveBeenCalled();
-			expect(fs.existsSync(outputPath)).toBe(false);
 		});
 	});
 });

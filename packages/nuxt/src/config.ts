@@ -7,7 +7,6 @@ import {
 	extractSharedKeys,
 	findSchemaPath,
 	resolveLayout,
-	watchSchema,
 } from "@arkenv/build";
 import { createJiti } from "jiti";
 
@@ -17,7 +16,6 @@ export {
 	extractServerKeys,
 	findSchemaPath,
 	resolveLayout,
-	watchSchema,
 } from "@arkenv/build";
 export { extractClientKeys, extractSharedKeys };
 
@@ -106,21 +104,14 @@ export type ArkEnvConfigOptions = {
 	 * @default true
 	 */
 	validate?: boolean;
-
-	/**
-	 * Enable or disable automatic code generation of the `env.gen.ts` file.
-	 *
-	 * @default true
-	 */
-	codegen?: boolean;
 };
 
 /**
- * Run ArkEnv codegen and validation without a full Nuxt module lifecycle.
+ * Run ArkEnv validation without a full Nuxt module lifecycle.
  *
  * @param options Optional configuration paths for schema and output files
  * @param internalOptions Optional configuration for internal testing hooks
- * @throws An error if the schema file cannot be found or if code generation fails
+ * @throws An error if the schema file cannot be found or if validation fails
  */
 export function setupArkEnv(
 	options?: ArkEnvConfigOptions,
@@ -162,30 +153,7 @@ export function setupArkEnv(
 		normalizedLayout,
 	);
 
-	// 2. Determine outputPath (defaults to generated/env.gen.ts in the same directory as schemaPath/baseDir)
-	const defaultOutputDir =
-		resolvedLayout === "strict" && baseDir ? baseDir : path.dirname(schemaPath);
-	const defaultOutputPath = path.join(
-		defaultOutputDir,
-		"generated",
-		"env.gen.ts",
-	);
-	const outputPath = options?.outputPath
-		? path.resolve(options.outputPath)
-		: defaultOutputPath;
-
-	// 3. Run initial code generation if enabled
-	const codegen = options?.codegen ?? true;
-	if (codegen) {
-		try {
-			runCodegen(schemaPath, outputPath, resolvedLayout);
-		} catch (error: unknown) {
-			const message = error instanceof Error ? error.message : String(error);
-			throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
-		}
-	}
-
-	// 4. Validate schema against environment variables
+	// 2. Validate schema against environment variables
 	const runValidation = options?.validate ?? true;
 	if (runValidation) {
 		try {
@@ -197,89 +165,9 @@ export function setupArkEnv(
 			throw error;
 		}
 	}
-
-	// 5. Initialize development file watcher if in dev mode and codegen is enabled
-	const isDev = process.env.NODE_ENV === "development";
-	if (isDev && codegen) {
-		const watchPaths =
-			resolvedLayout === "strict" && baseDir
-				? [
-						path.join(baseDir, "internal", "shared.ts"),
-						path.join(baseDir, "client.ts"),
-						path.join(baseDir, "server.ts"),
-					].filter(fs.existsSync)
-				: [schemaPath];
-		watchSchema(watchPaths, () => {
-			runCodegen(schemaPath, outputPath, resolvedLayout);
-		});
-	}
 }
 
-/**
- * Run code generation to read the schema file and generate the env.gen.ts factory.
- *
- * @param schemaPath The absolute path to the schema file or directory
- * @param outputPath The absolute path to the generated output file
- * @param layoutOption The explicit layout to use; auto-detected from the filesystem when omitted
- * @throws An error if strict layout files are missing when `layoutOption` is `"strict"`
- */
-export function runCodegen(
-	schemaPath: string,
-	outputPath: string,
-	layoutOption?: ArkEnvConfigOptions["layout"],
-) {
-	const normalizedLayout = normalizeLayout(layoutOption);
 
-	const { layout: resolvedLayout, baseDir } = resolveLayout(
-		schemaPath,
-		normalizedLayout,
-	);
-
-	let generatedCode = "";
-	if (resolvedLayout === "strict") {
-		const clientPath = path.join(baseDir, "client.ts");
-		const sharedPath = path.join(baseDir, "internal", "shared.ts");
-
-		const clientContent = fs.existsSync(clientPath)
-			? fs.readFileSync(clientPath, "utf-8")
-			: "";
-		const sharedContent = fs.existsSync(sharedPath)
-			? fs.readFileSync(sharedPath, "utf-8")
-			: "";
-
-		const clientKeys = extractClientKeys(clientContent);
-		const sharedKeys = extractSharedKeys(sharedContent);
-
-		generatedCode = generateClientFactoryCode(clientKeys, sharedKeys);
-	} else {
-		const fileContent = fs.readFileSync(schemaPath, "utf-8");
-		const { clientKeys, sharedKeys, isLegacy } = extractKeys(fileContent);
-		if (isLegacy) {
-			generatedCode = generateFactoryCode(clientKeys, sharedKeys);
-		} else {
-			generatedCode = generateFlatFactoryCode(clientKeys, sharedKeys);
-		}
-	}
-
-	// Ensure parent directory exists
-	const outputDir = path.dirname(outputPath);
-	if (!fs.existsSync(outputDir)) {
-		fs.mkdirSync(outputDir, { recursive: true });
-	}
-
-	// Write if changed to avoid unnecessary filesystem/watcher triggers
-	let shouldWrite = true;
-	if (fs.existsSync(outputPath)) {
-		const existingContent = fs.readFileSync(outputPath, "utf-8");
-		if (existingContent === generatedCode) {
-			shouldWrite = false;
-		}
-	}
-
-	if (shouldWrite) {
-		fs.writeFileSync(outputPath, generatedCode, "utf-8");
-	}
-}
 
 /**
  * Validate the resolved schema against the current process environment.
@@ -375,6 +263,12 @@ export function validateSchema(
 				: path.join(dir, "server.js"),
 		);
 
+		const mockImportsPath = fs.existsSync(path.join(dir, "mock-imports.ts"))
+			? path.join(dir, "mock-imports.ts")
+			: fs.existsSync(path.join(dir, "mock-imports.js"))
+				? path.join(dir, "mock-imports.js")
+				: path.join(dir, "mock-imports.cjs");
+
 		const aliases: Record<string, string> = {
 			"@arkenv/nuxt/shared": sharedPath,
 			"@arkenv/nuxt": indexPath,
@@ -382,6 +276,7 @@ export function validateSchema(
 			"@arkenv/nuxt/server": serverPath,
 			"./script": sharedPath,
 			"./script.tsx": sharedPath,
+			"#imports": mockImportsPath,
 			...internalOptions?._jitiAliases,
 		};
 
@@ -439,167 +334,4 @@ export function extractKeys(content: string): {
 	return coreExtractKeys(content, "NUXT_PUBLIC_");
 }
 
-/**
- * Generate the triple-tab indented runtime environment variables mapping.
- */
-function generateRuntimeEnvLines(
-	clientKeys: string[],
-	sharedKeys: string[],
-): string {
-	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
-	return allKeys
-		.map((key) => {
-			const propStr = JSON.stringify(key);
-			return `\t\t\t${propStr}: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.[${propStr}] ?? process.env[${propStr}] : process.env[${propStr}],`;
-		})
-		.join("\n");
-}
 
-const GENERATED_HEADER = `/* eslint-disable */
-// biome-ignore format: auto-generated
-// Generated by ArkEnv. DO NOT EDIT DIRECTLY.
-`;
-
-const GENERATED_FOOTER = `
-export default createEnv;
-`;
-
-/**
- * Generate the TypeScript factory code for the tailored createEnv helper.
- *
- * @param clientKeys The client environment variable keys
- * @param sharedKeys The shared environment variable keys
- * @returns The generated TypeScript source code string
- */
-function generateFactoryCode(
-	clientKeys: string[],
-	sharedKeys: string[],
-): string {
-	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
-
-	return `${GENERATED_HEADER}
-import { createEnv as coreCreateEnv } from "@arkenv/nuxt";
-
-export { type } from "@arkenv/nuxt";
-
-export function createEnv<
-	const TServer extends Record<string, any> = {},
-	const TClient extends Record<string, any> = {},
-	const TShared extends Record<string, any> = {},
->(options: {
-	server?: TServer;
-	client?: TClient & {
-		[K in keyof TClient]: K extends \`NUXT_PUBLIC_\${string}\` ? unknown : never;
-	};
-	shared?: TShared;
-}) {
-	return coreCreateEnv({
-		...options,
-		runtimeEnv: {
-${runtimeEnvLines}
-		},
-	} as any) as any;
-}
-${GENERATED_FOOTER}`;
-}
-
-/**
- * Generate the TypeScript factory code for the Flat Layout createEnv helper.
- *
- * @remarks
- * **Architecture tripwire:** Do not statically compile the schema here or
- * reference internal-only types (the `$` scope or `MergeExtends`).
- *
- * - **Generic wrapper:** The factory must stay generic because the concrete
- *   schema is owned by the user-land `env.ts`.
- * - **Type strategy:** It intentionally returns the full schema type to ensure
- *   flawless server-side autocomplete.
- * - **Security boundary:** Client-side protection is deliberately deferred to
- *   the runtime Proxy in `@arkenv/nuxt`, which throws on unauthorized access.
- *
- * 📖 See ADR-0010: Flat layout codegen and type inference strategy
- * (`docs/adr/0010-flat-layout-codegen-type-strategy.md`).
- */
-function generateFlatFactoryCode(
-	clientKeys: string[],
-	sharedKeys: string[],
-): string {
-	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
-
-	return `${GENERATED_HEADER}
-import { createEnv as coreCreateEnv } from "@arkenv/nuxt";
-import type { type as at, distill } from "arktype";
-
-export { type } from "@arkenv/nuxt";
-
-export function createEnv<
-	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
-	const TExpose extends keyof TSchema = never,
-	const TExtends extends readonly unknown[] = [],
->(
-	schema: TSchema,
-	options?: {
-		/**
-		 * Custom environment variables to expose to the client bundle.
-		 * By default, variables prefixed with \`NUXT_PUBLIC_\` and \`NODE_ENV\` are exposed automatically.
-		 * Use this option to expose custom variables that do not have the \`NUXT_PUBLIC_\` prefix.
-		 */
-		exposeToClient?: readonly TExpose[];
-		extends?: [...TExtends];
-	},
-): Readonly<distill.Out<at.infer<TSchema>>> {
-	// Types expose the full schema for a great DX on the server; the runtime
-	// Proxy from \`@arkenv/nuxt\` enforces the security boundary by throwing
-	// when a server-only variable is accessed on the client.
-	const env = coreCreateEnv(schema as any, {
-		...options,
-		runtimeEnv: {
-${runtimeEnvLines}
-		},
-	} as any);
-	return env as unknown as Readonly<distill.Out<at.infer<TSchema>>>;
-}
-${GENERATED_FOOTER}`;
-}
-
-/**
- * Generate the TypeScript factory code for the strict-layout `createEnv` helper.
- *
- * Unlike `generateFactoryCode`, this variant imports from `@arkenv/nuxt/client`
- * and exposes a positional-schema signature suited for split-file projects.
- *
- * @param clientKeys The env var keys extracted from `client.ts`
- * @param sharedKeys The env var keys extracted from `internal/shared.ts`
- * @returns The generated TypeScript source code string
- */
-function generateClientFactoryCode(
-	clientKeys: string[],
-	sharedKeys: string[],
-): string {
-	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
-
-	return `${GENERATED_HEADER}
-import { createEnv as coreCreateEnv } from "@arkenv/nuxt/client";
-
-export { type } from "@arkenv/nuxt/client";
-
-export function createEnv<
-	const TSchema extends Record<string, any> = {},
-	const TExtends extends readonly unknown[] = [],
->(
-	schema: TSchema & {
-		[K in keyof TSchema]: K extends \`NUXT_PUBLIC_\${string}\` ? unknown : never;
-	},
-	options?: {
-		extends?: [...TExtends];
-	},
-) {
-	return coreCreateEnv<TSchema, TExtends>(schema as any, {
-		...options,
-		runtimeEnv: {
-${runtimeEnvLines}
-		},
-	} as any);
-}
-${GENERATED_FOOTER}`;
-}

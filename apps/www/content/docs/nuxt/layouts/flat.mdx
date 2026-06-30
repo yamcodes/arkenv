@@ -83,7 +83,7 @@ export const env = arkenv({
 
     ### Register module in Nuxt config [step] [!toc]
 
-    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema and registers environment variables to Nuxt's `runtimeConfig`:
+    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. The module scans your schema at build time for validation and registers the public keys to Nuxt's `runtimeConfig`. At runtime, values are resolved dynamically from `useRuntimeConfig()` — no generated files are created or needed:
 
     ```ts title="nuxt.config.ts"
     export default defineNuxtConfig({
