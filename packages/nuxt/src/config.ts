@@ -47,7 +47,6 @@ export function normalizeLayout(
  * ```ts
  * const configOptions: ArkEnvConfigOptions = {
  *   schemaPath: "./src/env.ts",
- *   outputPath: "./src/generated/env.gen.ts"
  * };
  * ```
  */
@@ -67,22 +66,6 @@ export type ArkEnvConfigOptions = {
 	 * ```
 	 */
 	schemaPath?: string;
-
-	/**
-	 * Specify the path where the generated file (`env.gen.ts`) should be written.
-	 *
-	 * Defaults to `"generated/env.gen.ts"` in the same directory as the schema file.
-	 *
-	 * @default "[schemaDirectory]/generated/env.gen.ts"
-	 * @example
-	 * ```ts
-	 * export default defineNuxtConfig({
-	 *   modules: ["@arkenv/nuxt/module"],
-	 *   arkenv: { outputPath: "./generated/env.gen.ts" }
-	 * });
-	 * ```
-	 */
-	outputPath?: string;
 
 	/**
 	 * Specify the configuration layout.

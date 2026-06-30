@@ -126,7 +126,7 @@ describe("Nuxt config parser", () => {
 
 	it("should extract client, server, and shared keys in strict layout", () => {
 		const clientContent = `
-			import arkenv from "./generated/env.gen";
+			import arkenv from "@arkenv/nuxt/client";
 			export const env = arkenv({
 				NUXT_PUBLIC_API_URL: "string"
 			});
