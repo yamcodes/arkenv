@@ -1,9 +1,11 @@
 # ADR 0013: Flat layout codegen and type inference strategy
 
 ## Status
+
 Accepted
 
 ## Context
+
 To define how the `@arkenv/nextjs` flat layout generates its `env.gen.ts` factory and how that factory types the returned `env`, balancing single-file developer experience, correct Server Component types, and client-side security.
 
 The flat layout lets developers declare every environment variable in a single `env.ts` by calling a generated `arkenv(schema, options)` factory. The schema is owned by the user's `env.ts`; the only file ArkEnv generates is `env.gen.ts`, which exports the factory.
@@ -24,6 +26,7 @@ Two implementation paths were considered:
 Path B is attractive but, for the flat layout, conflicts with its own design: the concrete `env` lives in the user's `env.ts`, not in `env.gen.ts`. Delivering Path B would require the CLI to take ownership of the `env` declaration and act as a mini ArkType compiler - statically parsing arbitrary ArkType syntax (morphs, narrows, unions, defaults, `.to()`, etc.) into TypeScript literal types. That re-couples codegen to schema contents (regenerating on every edit), is high-maintenance, and silently drifts from ArkType as its grammar evolves.
 
 ## Decision
+
 We adopt **Path A** for the flat layout.
 
 1. **Explicit full-type annotation.** `generateFlatFactoryCode` emits the factory with an explicit return type of `Readonly<distill.Out<at.infer<TSchema>>>`, exposing the full schema regardless of how `@arkenv/nextjs` resolves. This bypasses the `react-server` TypeScript wall with zero user `tsconfig` changes.
@@ -33,6 +36,7 @@ We adopt **Path A** for the flat layout.
 5. **Strict layout is unaffected.** Projects needing compile-time client/server separation use the strict layout (`env/server.ts`, `env/client.ts`), which keeps its dedicated entry points.
 
 ## Consequences
+
 - **Zero-config DX.** Server Components type server-only keys; client components type all keys (runtime Proxy guards misuse). Users never touch `tsconfig.json`.
 - **Simple, robust CLI.** Codegen stays a boilerplate emitter decoupled from schema contents; it never tracks ArkType grammar.
 - **Security is runtime-enforced in flat mode.** A developer can write `env.DATABASE_URL` in a client component and TypeScript will allow it; the Proxy throws at runtime. Teams wanting compile-time prevention should use the strict layout.

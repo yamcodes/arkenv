@@ -1,9 +1,11 @@
 # ADR 0009: Introduce @arkenv/build for Shared Build and Codegen Logic
 
 ## Status
+
 Accepted
 
 ## Context
+
 To centralize build-time schema parsing, layout resolution, and file-watching logic shared between framework integrations (like `@arkenv/nextjs` and `@arkenv/nuxt`) without bloating the core runtime package or introducing private monorepo packages.
 
 With the introduction of Nuxt support via `@arkenv/nuxt`, we needed to implement build-time AST schema parsing (to extract environment variable keys), layout resolution (to handle simple vs. strict multi-file layouts), and development file-watching using `chokidar`. Next.js already implements an identical workflow to generate the `env.gen.ts` file in development.
@@ -15,6 +17,7 @@ Duplicating this build-time parsing and watching logic across framework integrat
 3. **No Private Monorepo Packages**: Establishing a private workspace package (e.g., `@repo/build` or `@repo/kit`) was considered but rejected because private workspace packages complicate CI/CD, Docker multi-stage builds, and deployment setups for users and internal automated tooling. Specifically, if framework plugins depended on an unpublished monorepo package, end-user deployments to platforms like Vercel would crash trying to resolve it.
 
 ## Decision
+
 We decided to create a new, published npm package: `@arkenv/build`.
 
 1. **Publishing Status**: The package is published to npm but is explicitly documented in its README as an unstable, internal-only package. Changesets track `@arkenv/build` to automate its versioning and publication.
@@ -25,6 +28,7 @@ We decided to create a new, published npm package: `@arkenv/build`.
 3. **Package Usage**: `@arkenv/nextjs` and `@arkenv/nuxt` list `@arkenv/build` as a regular dependency (or devDependency where appropriate) to access these shared helpers during build/dev phases.
 
 ## Consequences
+
 - **Zero Core Bloat**: The core `arkenv` runtime package remains 100% dependency-free and edge-runtime compatible.
 - **Dry Codebase**: Shared parser, watcher, and codegen logic is implemented and tested in a single package.
 - **Robust CI/CD & Deployments**: Because `@arkenv/build` is published to npm, package references resolve naturally through standard npm registries, avoiding the complexities of private monorepo references in production/deployment environments and preventing missing-package crashes.

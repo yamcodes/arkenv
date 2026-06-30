@@ -1,14 +1,17 @@
 # ADR 0002: Coercion via pre-coercion execution model
 
 ## Status
+
 Accepted
 
 ## Context
+
 To support environment variable coercion (e.g., parsing strings to numbers/booleans at runtime) without breaking ArkType's refinement syntax or mutating the input environment object.
 
 Initially, ArkType's coercion was implemented by wrapping the compiled schema in a `.pipe()` pipeline inside ArkType's type system. However, this required an unsafe `as BaseType<t, $>` cast, mutated the input environment object in-place, and differed from the execution model of standard schema validators.
 
 ## Decision
+
 To unify the architecture (as described in [#1178](https://github.com/yamcodes/arkenv/issues/1178)), both the `arkenv` and `arkenv/standard` entry points now share a unified pre-coercion model:
 
 1. **Introspect Schema**: Extracts the JSON Schema (using `.in.toJsonSchema` for ArkType, or standard metadata for other validators).
@@ -17,6 +20,7 @@ To unify the architecture (as described in [#1178](https://github.com/yamcodes/a
 4. **Validate**: Passes the pre-coerced copy to the original, unmodified schema for validation.
 
 ## Consequences
+
 - Simplifies the codebase.
 - Avoids unsafe type casting.
 - Avoids mutating the original environment object.
