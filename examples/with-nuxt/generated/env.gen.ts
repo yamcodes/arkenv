@@ -20,8 +20,8 @@ export function createEnv<
 	return coreCreateEnv({
 		...options,
 		runtimeEnv: {
-			NUXT_PUBLIC_API_URL: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.NUXT_PUBLIC_API_URL ?? process.env.NUXT_PUBLIC_API_URL : process.env.NUXT_PUBLIC_API_URL,
-			NODE_ENV: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,
+			"NUXT_PUBLIC_API_URL": typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.["NUXT_PUBLIC_API_URL"] ?? process.env["NUXT_PUBLIC_API_URL"] : process.env["NUXT_PUBLIC_API_URL"],
+			"NODE_ENV": typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.["NODE_ENV"] ?? process.env["NODE_ENV"] : process.env["NODE_ENV"],
 		},
 	} as any) as any;
 }
