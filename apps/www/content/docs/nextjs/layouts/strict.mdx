@@ -104,7 +104,7 @@ export const env = arkenv(
 
 <Accordions>
   <Accordion title="Manual Setup">
-    ### Install dependencies [step] [!toc]
+    ### Install dependencies \[step] \[!toc]
 
     First, install the Next.js integration package and the core engine:
 
@@ -116,7 +116,7 @@ export const env = arkenv(
     If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
     :::
 
-    ### Define shared variables [step] [!toc]
+    ### Define shared variables \[step] \[!toc]
 
     Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
@@ -132,7 +132,7 @@ export const env = arkenv(
     });
     ```
 
-    ### Define client variables [step] [!toc]
+    ### Define client variables \[step] \[!toc]
 
     Create `env/client.ts` importing `@arkenv/core` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
 
@@ -173,7 +173,7 @@ export const env = arkenv(
     );
     ```
 
-    ### Define server variables [step] [!toc]
+    ### Define server variables \[step] \[!toc]
 
     Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
 
@@ -203,7 +203,7 @@ export const env = arkenv(
     );
     ```
 
-    ### Register configuration wrapper [step] [!toc]
+    ### Register configuration wrapper \[step] \[!toc]
 
     To scan your schema directory, build the generated helper file, and automatically watch for changes during development, register ArkEnv in your Next.js configuration.
 

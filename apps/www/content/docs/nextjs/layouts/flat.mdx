@@ -13,7 +13,7 @@ src
 
 To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected.
 
-:::warning[Server logic in client bundle]
+:::warning\[Server logic in client bundle]
 Defining your schemas together means the *server validation logic* is shipped in the client bundle.
 
 | ⚠️ Visible in JS bundle                                                         | 🔒 Secure on server                                  |
@@ -100,7 +100,7 @@ export const env = arkenv({
 
 <Accordions>
   <Accordion title="Manual Setup">
-    ### Install dependencies [step] [!toc]
+    ### Install dependencies \[step] \[!toc]
 
     First, install the Next.js integration package and the core engine:
 
@@ -112,7 +112,7 @@ export const env = arkenv({
     If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
     :::
 
-    ### Configure environment [step] [!toc]
+    ### Configure environment \[step] \[!toc]
 
     Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schema. Import `arkenv` from the auto-generated `@/generated/env.gen.ts` helper file:
 
@@ -140,7 +140,7 @@ export const env = arkenv({
     });
     ```
 
-    ### Register configuration wrapper [step] [!toc]
+    ### Register configuration wrapper \[step] \[!toc]
 
     To scan your schema, build the generated helper file, and automatically watch for changes during development, register ArkEnv in your Next.js configuration.
 
@@ -178,7 +178,7 @@ export const env = arkenv({
     We recommend committing the generated `generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
     :::
 
-    ### Use in your code [step] [!toc]
+    ### Use in your code \[step] \[!toc]
 
     Import `env` throughout your Next.js application:
 

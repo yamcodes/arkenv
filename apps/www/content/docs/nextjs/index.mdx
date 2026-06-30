@@ -18,21 +18,15 @@ npx arkenv@latest init
 
 <Accordions>
   <Accordion title="Manual Installation">
-    To set up `@arkenv/nextjs` manually, you must install both the Next.js integration package and the underlying runtime engine package as a dependency in your project.
+    First, install the Next.js integration package and the core engine:
 
     ```package-install
     @arkenv/core @arkenv/nextjs arktype
     ```
 
     :::note
-    `@arkenv/nextjs` lists `@arkenv/core` as a **peer dependency**. This ensures that the engine resolves to a single root-level instance across your codebase, preventing "dual package hazards" that can break runtime type evaluations and singleton context.
+    If you're using Standard Schema (e.g., Zod, Valibot) without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
     :::
-
-    For a Standard Schema setup (e.g., Zod, Valibot) without ArkType:
-
-    ```package-install
-    @arkenv/standard @arkenv/nextjs zod
-    ```
   </Accordion>
 </Accordions>
 

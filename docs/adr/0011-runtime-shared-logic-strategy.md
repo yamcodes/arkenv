@@ -58,7 +58,7 @@ The standard alternative to peer dependencies is a centralized utility package. 
 This introduces unacceptable friction:
 
 - **Public API Surface Bloat:** We would be forced to publish purely internal implementation details to npm.
-- **Dependency Graph Bloat:** Users must download additional packages, slowing down install times and increasing the overall node_modules footprint.
+- **Dependency Graph Bloat:** Users must download additional packages, slowing down install times and increasing the overall node\_modules footprint.
 - **Cascading Version Bumps:** Updating a single internal helper function would require bumping `@arkenv/utils`, which then requires bumping `arkenv` and all framework plugins, turning minor internal refactors into massive versioning chores.
 
 #### 3. The Power of Inlined Internal Packages

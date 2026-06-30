@@ -15,7 +15,7 @@ Next.js natively strips non-`NEXT_PUBLIC_` values from the client bundle when yo
 1. **Build-time exclusion.** The `withArkEnv` plugin guarantees that only client and shared values are mapped for the browser. Server secrets are deliberately excluded, meaning they are never even shipped to the client-side bundle.
 2. **Runtime misuse guard.** If you try to read a server-only key in a Client Component, the ArkEnv proxy intercepts the read and throws a loud error before returning anything.
 
-:::tip[Mental model]
+:::tip\[Mental model]
 The Next.js bundler and ArkEnv's plugin work together to hide your *values*. ArkEnv validates your *infrastructure* and prevents *runtime misuse*.
 :::
 
