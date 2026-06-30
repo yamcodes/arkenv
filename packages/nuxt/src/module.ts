@@ -1,5 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+import { defineNuxtModule } from "@nuxt/kit";
+import type { NuxtModule } from "@nuxt/schema";
+import { name, peerDependencies, version } from "../package.json";
 import {
 	extractClientKeys,
 	extractKeys,
@@ -7,15 +10,62 @@ import {
 	extractSharedKeys,
 	findSchemaPath,
 	resolveLayout,
-} from "@arkenv/build";
-import { defineNuxtModule } from "@nuxt/kit";
-import type { NuxtModule } from "@nuxt/schema";
-import { name, peerDependencies, version } from "../package.json";
+} from "./config";
 
 export type ModuleOptions = {
 	schemaPath?: string;
-	layout?: "simple" | "strict";
+	layout?:
+		| "flat"
+		| "strict"
+		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
+		| "simple";
 };
+
+let hasWarnedSimpleLayout = false;
+
+const CLIENT_SECURITY_ERROR =
+	"[ArkEnv] Importing server-only environment schema on the client is not allowed!";
+
+/**
+ * Resolve common Nuxt path aliases to absolute paths.
+ *
+ * @param id The module id as seen by Vite's resolveId hook
+ * @param rootDir The Nuxt project root directory
+ * @param srcDir The resolved Nuxt source directory
+ * @returns The absolute path the alias resolves to, or the original id if not a recognized alias
+ */
+function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
+	if (path.isAbsolute(id)) return id;
+
+	if (id.startsWith("~~/")) {
+		return path.resolve(rootDir, id.slice(3));
+	}
+
+	if (id.startsWith("~/") || id.startsWith("@/")) {
+		return path.resolve(srcDir, id.slice(2));
+	}
+
+	return id;
+}
+
+function normalizeLayout(
+	layout: ModuleOptions["layout"],
+): "simple" | "strict" | undefined {
+	if (layout === "simple") {
+		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
+			hasWarnedSimpleLayout = true;
+			// biome-ignore lint/suspicious/noConsole: deprecation warning
+			console.warn(
+				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
+			);
+		}
+		return "simple";
+	}
+	if (layout === "flat") {
+		return "simple";
+	}
+	return layout;
+}
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -36,9 +86,16 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			return;
 		}
 
+		const normalizedLayout = normalizeLayout(options.layout);
+
 		const { layout: resolvedLayout, baseDir } = resolveLayout(
 			schemaPath,
-			options.layout,
+			normalizedLayout,
+		);
+
+		const srcDir = path.resolve(
+			nuxt.options.rootDir,
+			nuxt.options.srcDir ?? nuxt.options.rootDir,
 		);
 
 		// Register schema paths to watch so Nuxt restarts and updates runtimeConfig when they change
@@ -114,7 +171,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 				anyConfig.plugins = anyConfig.plugins || [];
 				anyConfig.plugins.push({
 					name: "arkenv-nuxt-client-security",
-					resolveId(id: string) {
+					resolveId(id: string, importer?: string) {
 						const isServerModule =
 							id === "@arkenv/nuxt/server" ||
 							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\]server(?:\.(?:js|mjs|cjs|ts))?$/.test(
@@ -122,9 +179,34 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 							);
 
 						if (isServerModule) {
-							throw new Error(
-								"[ArkEnv] Importing server-only environment schema on the client is not allowed!",
+							throw new Error(CLIENT_SECURITY_ERROR);
+						}
+
+						if (resolvedLayout === "strict" && baseDir) {
+							let targetId = id;
+							if (id.startsWith(".") && importer) {
+								targetId = path.resolve(path.dirname(importer), id);
+							}
+
+							const resolvedId = resolveNuxtAlias(
+								targetId,
+								nuxt.options.rootDir,
+								srcDir,
 							);
+
+							if (path.isAbsolute(resolvedId)) {
+								const relativePath = path.relative(baseDir, resolvedId);
+								const isUnderBaseDir =
+									!relativePath.startsWith("..") &&
+									!path.isAbsolute(relativePath);
+								const isServerFile = /(^|[/\\])server(?:\.[^./\\]*)?$/.test(
+									relativePath,
+								);
+
+								if (isUnderBaseDir && isServerFile) {
+									throw new Error(CLIENT_SECURITY_ERROR);
+								}
+							}
 						}
 					},
 				});

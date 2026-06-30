@@ -284,8 +284,8 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
 
 ```ts title="src/app/client-component.ts" twoslash
-// @noErrors
-// @filename: /env/internal/shared.ts
+// @errors: 2339
+// @filename: env/internal/shared.ts
 import { type } from "@arkenv/nextjs/shared";
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -293,7 +293,7 @@ import { type } from "@arkenv/nextjs/shared";
  */
 export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
 
-// @filename: /env/client.ts
+// @filename: env/client.ts
 import arkenv from "@arkenv/nextjs/client";
 import { SharedSchema } from "./internal/shared";
 export const env = arkenv(
@@ -301,15 +301,14 @@ export const env = arkenv(
 	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
 );
 
-// @filename: /client-component.ts
+// @filename: client-component.ts
 // ---cut---
 import { env } from "@/env/client";
 
 export function ClientComponent() {
 	const api = env.NEXT_PUBLIC_API_URL;
-	// @ts-expect-error DATABASE_URL is not defined in client env
 	const db = env.DATABASE_URL;
-
+  
 	return `API URL: ${api}`;
 }
 ```

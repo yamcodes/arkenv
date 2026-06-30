@@ -72,6 +72,24 @@ describe("Nuxt config parser & codegen", () => {
 		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
 	});
 
+	it("should extract keys in flat layout", () => {
+		const content = `
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
+				CUSTOM_SHARED: "string",
+			}, {
+				exposeToClient: ["CUSTOM_SHARED"],
+			});
+		`;
+
+		const res = extractKeys(content);
+		expect(res.serverKeys).toEqual(["DATABASE_URL"]);
+		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
+		expect(res.sharedKeys).toEqual(["NODE_ENV", "CUSTOM_SHARED"]);
+	});
+
 	it("should handle parser edge cases with comments, nested objects, and templates", () => {
 		const content = `
 			export const env = arkenv({

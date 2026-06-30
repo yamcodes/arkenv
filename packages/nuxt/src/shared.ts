@@ -6,7 +6,7 @@ import { createEnvInternal } from "./create-env";
 import type { MergeExtends } from "./types";
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Shared entry point).
+ * Create a validated, typesafe environment configuration for Nuxt applications (Shared entry point).
  *
  * @param schema The schema definition containing the shared variables
  * @param options Optional configuration options

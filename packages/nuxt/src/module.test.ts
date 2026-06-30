@@ -125,4 +125,100 @@ describe("Nuxt module integration", () => {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
 	});
+
+	it("should block userland server imports on the client but allow them on the server", async () => {
+		const tempDir = path.resolve(__dirname, "temp-strict-security-test");
+		const envDir = path.join(tempDir, "env");
+		fs.mkdirSync(envDir, { recursive: true });
+		fs.mkdirSync(path.join(envDir, "internal"), { recursive: true });
+
+		try {
+			fs.writeFileSync(path.join(envDir, "client.ts"), "export const env = {}");
+			fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {}");
+			fs.writeFileSync(
+				path.join(envDir, "internal", "shared.ts"),
+				"export const SharedSchema = {}",
+			);
+
+			const mockNuxt: any = {
+				options: {
+					dev: false,
+					rootDir: tempDir,
+					srcDir: tempDir,
+					runtimeConfig: {
+						public: {},
+					},
+				},
+				hook: vi.fn(),
+			};
+
+			await (module as any).setup(
+				{
+					schemaPath: "./env/server.ts",
+					layout: "strict",
+				},
+				mockNuxt,
+			);
+
+			const viteHook = mockNuxt.hook.mock.calls.find(
+				([name]: [string, ...any[]]) => name === "vite:extendConfig",
+			)?.[1];
+
+			expect(viteHook).toBeDefined();
+
+			const clientConfig: any = { plugins: [] };
+			viteHook(clientConfig, { isClient: true });
+
+			const plugin = clientConfig.plugins.find(
+				(p: any) => p.name === "arkenv-nuxt-client-security",
+			);
+			expect(plugin).toBeDefined();
+
+			const errorMessage =
+				"[ArkEnv] Importing server-only environment schema on the client is not allowed!";
+
+			expect(() => plugin.resolveId(path.join(envDir, "server.ts"))).toThrow(
+				errorMessage,
+			);
+
+			expect(() => plugin.resolveId("~/env/server.ts")).toThrow(errorMessage);
+			expect(() => plugin.resolveId("~~/env/server.ts")).toThrow(errorMessage);
+			expect(() => plugin.resolveId("@/env/server.ts")).toThrow(errorMessage);
+
+			expect(() =>
+				plugin.resolveId("./server.ts", path.join(envDir, "client.ts")),
+			).toThrow(errorMessage);
+			expect(() =>
+				plugin.resolveId(
+					"../env/server.ts",
+					path.join(envDir, "internal", "shared.ts"),
+				),
+			).toThrow(errorMessage);
+
+			expect(() => plugin.resolveId("@arkenv/nuxt/server")).toThrow(
+				errorMessage,
+			);
+
+			expect(() =>
+				plugin.resolveId(path.join(envDir, "client.ts")),
+			).not.toThrow();
+
+			expect(() =>
+				plugin.resolveId("./client.ts", path.join(envDir, "server.ts")),
+			).not.toThrow();
+
+			expect(() =>
+				plugin.resolveId(path.join(tempDir, "server.ts")),
+			).not.toThrow();
+
+			const serverConfig: any = { plugins: [] };
+			viteHook(serverConfig, { isClient: false });
+			const serverPlugin = serverConfig.plugins.find(
+				(p: any) => p.name === "arkenv-nuxt-client-security",
+			);
+			expect(serverPlugin).toBeUndefined();
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 });
