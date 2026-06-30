@@ -77,4 +77,4 @@ This allows you to safely swap public configuration values in production without
 
 ## Client-Side Security
 
-The `@arkenv/nuxt` module includes a custom Vite plugin that strictly prevents any server-side environment definitions from leaking into the client bundle. If you attempt to import `@arkenv/nuxt/server` in a client component, the bundler will throw a compile-time error.
+The `@arkenv/nuxt` module includes a custom Vite plugin that strictly prevents any server-side environment definitions from leaking into the client bundle. If you attempt to import `@arkenv/nuxt/server` or a userland server schema file (for example, `~/env/server.ts` in the strict layout) in a client component, the bundler will throw a compile-time error.
