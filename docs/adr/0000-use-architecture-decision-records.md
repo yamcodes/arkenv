@@ -28,3 +28,7 @@ We decided to:
 - **Lower overhead**: No custom CLI commands or agent skills to maintain.
 - **Traceability**: Future developers can read ADRs to understand why key structures (like Bun configurations or the export surface) exist, with direct links to the historical OpenSpec changes for full design details.
 - **Simplicity**: ADRs are written as plain, standard markdown files that do not require any specialized workflow engine.
+
+## Credits
+
+This decision record format is based on the template proposed by Michael Nygard in [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions).
