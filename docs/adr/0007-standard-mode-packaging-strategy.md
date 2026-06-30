@@ -15,7 +15,7 @@ The decision is asymmetric:
 
 ## Decision
 
-We have chosen this asymmetric packaging strategy for three primary reasons:
+We have chosen this asymmetric packaging strategy for five primary reasons:
 
 ### 1. The N-Multiplier Effect
 
