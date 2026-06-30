@@ -448,12 +448,10 @@ function generateRuntimeEnvLines(
 ): string {
 	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
 	return allKeys
-		.map(
-			(key) => {
-				const propStr = JSON.stringify(key);
-				return `\t\t\t${propStr}: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.[${propStr}] ?? process.env[${propStr}] : process.env[${propStr}],`;
-			}
-		)
+		.map((key) => {
+			const propStr = JSON.stringify(key);
+			return `\t\t\t${propStr}: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.[${propStr}] ?? process.env[${propStr}] : process.env[${propStr}],`;
+		})
 		.join("\n");
 }
 

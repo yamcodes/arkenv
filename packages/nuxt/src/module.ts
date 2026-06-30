@@ -25,8 +25,6 @@ export type ModuleOptions = {
 	codegen?: boolean;
 };
 
-let hasWarnedSimpleLayout = false;
-
 const CLIENT_SECURITY_ERROR =
 	"[ArkEnv] Importing server-only environment schema on the client is not allowed!";
 
@@ -50,25 +48,6 @@ function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
 	}
 
 	return id;
-}
-
-function normalizeLayout(
-	layout: ModuleOptions["layout"],
-): "simple" | "strict" | undefined {
-	if (layout === "simple") {
-		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
-			hasWarnedSimpleLayout = true;
-			// biome-ignore lint/suspicious/noConsole: deprecation warning
-			console.warn(
-				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
-			);
-		}
-		return "simple";
-	}
-	if (layout === "flat") {
-		return "simple";
-	}
-	return layout;
 }
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
