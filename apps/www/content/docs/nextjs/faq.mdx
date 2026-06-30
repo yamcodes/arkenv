@@ -197,9 +197,9 @@ This asymmetry causes React hydration mismatches and corrupts client-side state.
 
 ## Why do I need to install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nextjs`?
 
-Framework integration packages (like `@arkenv/nextjs` or `@arkenv/nuxt`) do not bundle the validation engine directly. They list `@arkenv/core` and `@arkenv/standard` as **optional peer dependencies**. 
+Framework integration packages (like `@arkenv/nextjs` or `@arkenv/nuxt`) do not bundle the validation engine directly. They list `@arkenv/core` and `@arkenv/standard` as **optional peer dependencies**.
 
 This is crucial for two reasons:
+
 1. **Engine Selection (No Bloat)**: It lets you choose whether to run the ArkType engine (`@arkenv/core`) or a Standard Schema engine (`@arkenv/standard` for Zod/Valibot) without forcing Zod users to download ArkType's compiler and packages.
 2. **Preventing Dual Package Hazards**: If the integration included the engine as a direct dependency, package managers could install multiple copies of the validator engine at different nested paths in `node_modules` on minor version mismatches. At runtime, having duplicate engine instances breaks strict object identity, global singleton contexts, and `instanceof` evaluations.
-
