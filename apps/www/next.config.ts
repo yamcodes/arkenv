@@ -51,6 +51,11 @@ const config = {
 				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
 				permanent: true,
 			},
+			{
+				source: "/docs/nuxt/layouts/simple",
+				destination: "/docs/nuxt/layouts/flat",
+				permanent: true,
+			},
 		];
 	},
 	async rewrites() {
