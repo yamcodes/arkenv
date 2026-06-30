@@ -1,6 +1,6 @@
 import type { Dict, SchemaShape } from "@repo/types";
 import { createEnv as coreCreateEnv, getSchemaKeys } from "arkenv";
-// @ts-ignore
+// @ts-expect-error
 import { useRuntimeConfig } from "#imports";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
@@ -93,7 +93,7 @@ export function createEnvInternal(
 		}
 	}
 
-	let serverRuntimeConfig: any = undefined;
+	let serverRuntimeConfig: any;
 	if (isServer) {
 		try {
 			serverRuntimeConfig = useRuntimeConfig();
@@ -101,7 +101,10 @@ export function createEnvInternal(
 	}
 
 	const sourceEnv: Record<string, unknown> = isServer
-		? { ...((typeof process !== "undefined" ? process.env : undefined) || {}), ...serverRuntimeConfig }
+		? {
+				...((typeof process !== "undefined" ? process.env : undefined) || {}),
+				...serverRuntimeConfig,
+			}
 		: globalConfig ||
 			(typeof process !== "undefined" ? process.env : undefined) ||
 			{};
@@ -355,7 +358,11 @@ function createSecurityProxy(
 						if (runtimeEnv && prop in runtimeEnv) {
 							return Reflect.get(target, prop, receiver);
 						}
-						if (typeof process !== "undefined" && process.env && prop in process.env) {
+						if (
+							typeof process !== "undefined" &&
+							process.env &&
+							prop in process.env
+						) {
 							return process.env[prop];
 						}
 					}

@@ -167,8 +167,6 @@ export function setupArkEnv(
 	}
 }
 
-
-
 /**
  * Validate the resolved schema against the current process environment.
  *
@@ -333,5 +331,3 @@ export function extractKeys(content: string): {
 } {
 	return coreExtractKeys(content, "NUXT_PUBLIC_");
 }
-
-

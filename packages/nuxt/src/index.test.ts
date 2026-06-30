@@ -304,7 +304,7 @@ describe("createEnv (Nuxt runtime)", () => {
 				},
 				{
 					isServer: true,
-				} as any
+				} as any,
 			);
 
 			expect(env.DATABASE_URL).toBe("postgres://dynamic-server/db");
