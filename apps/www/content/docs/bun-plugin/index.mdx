@@ -29,7 +29,16 @@ npx arkenv@latest init
     ### Installation [step] [!toc]
 
     ```package-install
-    @arkenv/bun-plugin @arkenv/core arktype
+    @arkenv/core @arkenv/bun-plugin arktype
+    ```
+
+    :::note
+    `@arkenv/bun-plugin` lists `@arkenv/core` as a **peer dependency**. This ensures that the engine resolves to a single root-level instance across your codebase, preventing "dual package hazards" that can break runtime type evaluations and singleton context.
+    :::
+
+    For a Standard Schema setup (e.g., Zod, Valibot) without ArkType:
+    ```package-install
+    @arkenv/standard @arkenv/bun-plugin zod
     ```
 
     ### Configure plugin [step] [!toc]

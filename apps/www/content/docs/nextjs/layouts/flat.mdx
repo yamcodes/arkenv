@@ -100,6 +100,18 @@ export const env = arkenv({
 
 <Accordions>
   <Accordion title="Manual Setup">
+    ### Install dependencies [step] [!toc]
+
+    First, install the Next.js integration package and the core engine:
+
+    ```package-install
+    @arkenv/core @arkenv/nextjs arktype
+    ```
+
+    :::note
+    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
+    :::
+
     ### Configure environment [step] [!toc]
 
     Create an `env.ts` file (typically in `src/` or at the root of your project) to define your schema. Import `arkenv` from the auto-generated `@/generated/env.gen.ts` helper file:

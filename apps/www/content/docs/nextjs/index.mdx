@@ -10,13 +10,30 @@ This integration requires [ArkType](https://arktype.io) to be installed.
 
 The `@arkenv/nextjs` integration provides end-to-end environment validation for both the server and the browser. It catches configuration bugs early in your build pipeline and prevents sensitive server-side variables from ever reaching client components.
 
-## Quickstart
-
-The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project.
+The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project:
 
 ```npm
 npx arkenv@latest init
 ```
+
+<Accordions>
+  <Accordion title="Manual Installation">
+    To set up `@arkenv/nextjs` manually, you must install both the Next.js integration package and the underlying runtime engine package as a dependency in your project.
+
+    ```package-install
+    @arkenv/core @arkenv/nextjs arktype
+    ```
+
+    :::note
+    `@arkenv/nextjs` lists `@arkenv/core` as a **peer dependency**. This ensures that the engine resolves to a single root-level instance across your codebase, preventing "dual package hazards" that can break runtime type evaluations and singleton context.
+    :::
+
+    For a Standard Schema setup (e.g., Zod, Valibot) without ArkType:
+    ```package-install
+    @arkenv/standard @arkenv/nextjs zod
+    ```
+  </Accordion>
+</Accordions>
 
 ## Layout strategies
 

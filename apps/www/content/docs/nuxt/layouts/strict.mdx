@@ -91,6 +91,18 @@ export const env = arkenv(
 
 <Accordions>
   <Accordion title="Manual setup">
+    ### Install dependencies [step] [!toc]
+
+    First, install the Nuxt integration package and the core engine:
+
+    ```package-install
+    @arkenv/core @arkenv/nuxt arktype
+    ```
+
+    :::note
+    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
+    :::
+
     ### Define shared variables [step] [!toc]
 
     Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
