@@ -298,7 +298,8 @@ export function validateSchema(
 ): void {
 	try {
 		const g = globalThis as any;
-		g.__arkenv_force_server_count__ = (g.__arkenv_force_server_count__ || 0) + 1;
+		g.__arkenv_force_server_count__ =
+			(g.__arkenv_force_server_count__ || 0) + 1;
 		g.__arkenv_force_server__ = true;
 		const fileToEvaluate =
 			resolvedLayout === "strict" && baseDir
@@ -323,7 +324,10 @@ export function validateSchema(
 		}
 
 		// Helper to resolve the correct local path for a given export subpath
-		const resolveExportPath = (subpath: string, fallbackFile: string): string => {
+		const resolveExportPath = (
+			subpath: string,
+			fallbackFile: string,
+		): string => {
 			const entry = pkgExports[subpath];
 			if (entry) {
 				// Prioritize modern import mapping
@@ -346,10 +350,30 @@ export function validateSchema(
 			return fallbackFile;
 		};
 
-		const sharedPath = resolveExportPath("./shared", fs.existsSync(path.join(dir, "shared.ts")) ? path.join(dir, "shared.ts") : path.join(dir, "shared.js"));
-		const indexPath = resolveExportPath(".", fs.existsSync(path.join(dir, "index.ts")) ? path.join(dir, "index.ts") : path.join(dir, "index.js"));
-		const clientPath = resolveExportPath("./client", fs.existsSync(path.join(dir, "client.ts")) ? path.join(dir, "client.ts") : path.join(dir, "client.js"));
-		const serverPath = resolveExportPath("./server", fs.existsSync(path.join(dir, "server.ts")) ? path.join(dir, "server.ts") : path.join(dir, "server.js"));
+		const sharedPath = resolveExportPath(
+			"./shared",
+			fs.existsSync(path.join(dir, "shared.ts"))
+				? path.join(dir, "shared.ts")
+				: path.join(dir, "shared.js"),
+		);
+		const indexPath = resolveExportPath(
+			".",
+			fs.existsSync(path.join(dir, "index.ts"))
+				? path.join(dir, "index.ts")
+				: path.join(dir, "index.js"),
+		);
+		const clientPath = resolveExportPath(
+			"./client",
+			fs.existsSync(path.join(dir, "client.ts"))
+				? path.join(dir, "client.ts")
+				: path.join(dir, "client.js"),
+		);
+		const serverPath = resolveExportPath(
+			"./server",
+			fs.existsSync(path.join(dir, "server.ts"))
+				? path.join(dir, "server.ts")
+				: path.join(dir, "server.js"),
+		);
 
 		const aliases: Record<string, string> = {
 			"@arkenv/nuxt/shared": sharedPath,
@@ -389,7 +413,10 @@ export function validateSchema(
 		}
 	} finally {
 		const g = globalThis as any;
-		g.__arkenv_force_server_count__ = Math.max(0, (g.__arkenv_force_server_count__ || 0) - 1);
+		g.__arkenv_force_server_count__ = Math.max(
+			0,
+			(g.__arkenv_force_server_count__ || 0) - 1,
+		);
 		if (g.__arkenv_force_server_count__ === 0) {
 			delete g.__arkenv_force_server__;
 			delete g.__arkenv_force_server_count__;
