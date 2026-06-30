@@ -172,6 +172,87 @@ describe("Nuxt module integration", () => {
 		}
 	});
 
+	it("should NOT throw when validate is true and all required vars are present", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-validation-pass-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import { createEnv } from "@arkenv/nuxt";
+			export const env = createEnv({
+				DATABASE_URL: "string",
+			});
+			`,
+		);
+
+		const originalEnv = process.env.DATABASE_URL;
+		process.env.DATABASE_URL = "postgresql://localhost/test";
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: { public: {} },
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			expect(() =>
+				(module as any).setup(
+					{ schemaPath: "./env.ts", validate: true },
+					mockNuxt,
+				),
+			).not.toThrow();
+		} finally {
+			if (originalEnv === undefined) delete process.env.DATABASE_URL;
+			else process.env.DATABASE_URL = originalEnv;
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should NOT throw when validate is false even if required vars are missing", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-validation-skip-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import { createEnv } from "@arkenv/nuxt";
+			export const env = createEnv({
+				DATABASE_URL: "string",
+			});
+			`,
+		);
+
+		const originalEnv = process.env.DATABASE_URL;
+		delete process.env.DATABASE_URL;
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: { public: {} },
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			expect(() =>
+				(module as any).setup(
+					{ schemaPath: "./env.ts", validate: false },
+					mockNuxt,
+				),
+			).not.toThrow();
+		} finally {
+			if (originalEnv !== undefined) process.env.DATABASE_URL = originalEnv;
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
 	it("should block userland server imports on the client but allow them on the server", async () => {
 		const tempDir = path.resolve(__dirname, "temp-strict-security-test");
 		const envDir = path.join(tempDir, "env");
