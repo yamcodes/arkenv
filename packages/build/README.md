@@ -21,4 +21,4 @@ The API surface of `@arkenv/build` is **unstable** and may change without a majo
 ## Related
 
 - [ADR 0009: Shared Build Package](../../docs/adr/0009-shared-build-package.md)
-- [ADR 0010: Runtime Shared Logic Strategy](../../docs/adr/0010-runtime-shared-logic-strategy.md)
+- [ADR 0011: Runtime Shared Logic Strategy](../../docs/adr/0011-runtime-shared-logic-strategy.md)

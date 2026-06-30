@@ -612,9 +612,8 @@ ${GENERATED_FOOTER}`;
  *   flawless Server Component autocomplete.
  * - **Security boundary:** Client-side protection is deliberately deferred to
  *   the runtime Proxy in `@arkenv/nextjs`, which throws on unauthorized access.
- *
- * 📖 See ADR-0010: Flat layout codegen and type inference strategy
- * (`docs/adr/0010-flat-layout-codegen-type-strategy.md`).
+ * 📖 See ADR-0013: Flat layout codegen and type inference strategy
+ * (`docs/adr/0013-flat-layout-codegen-type-strategy.md`).
  */
 function generateFlatFactoryCode(
 	clientKeys: string[],
