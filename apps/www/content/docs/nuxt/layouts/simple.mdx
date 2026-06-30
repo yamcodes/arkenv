@@ -12,7 +12,7 @@ env.ts
 
 To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected.
 
-:::warning\[Server logic in client bundle]
+:::warning[Server logic in client bundle]
 Defining your schemas together means the *server validation logic* is shipped in the client bundle.
 
 | ⚠️ Visible in JS bundle                                                         | 🔒 Secure on server                                  |
@@ -52,7 +52,7 @@ export const env = arkenv({
 
 <Accordions>
   <Accordion title="Manual setup">
-    ### Install dependencies \[step] \[!toc]
+    ### Install dependencies [step] [!toc]
 
     First, install the Nuxt integration package and the core engine:
 
@@ -64,7 +64,7 @@ export const env = arkenv({
     If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
     :::
 
-    ### Configure environment \[step] \[!toc]
+    ### Configure environment [step] [!toc]
 
     Create an `env.ts` file at the root of your project to define your schemas. Import `@arkenv/core` from `@arkenv/nuxt`:
 
@@ -84,7 +84,7 @@ export const env = arkenv({
     });
     ```
 
-    ### Register module in Nuxt config \[step] \[!toc]
+    ### Register module in Nuxt config [step] [!toc]
 
     Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema and registers environment variables to Nuxt's `runtimeConfig`:
 
@@ -105,7 +105,7 @@ export const env = arkenv({
     });
     ```
 
-    ### Use in your code \[step] \[!toc]
+    ### Use in your code [step] [!toc]
 
     Import `env` throughout your Nuxt application:
 
