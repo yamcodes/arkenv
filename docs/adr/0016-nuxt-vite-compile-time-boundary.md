@@ -1,8 +1,10 @@
-# Nuxt strict-layout compile-time boundary via Vite plugin
+# ADR 0016: Nuxt strict-layout compile-time boundary via Vite plugin
 
+## Status
+Accepted
+
+## Context
 To decide how `@arkenv/nuxt` enforces compile-time isolation between server and client schemas in the strict layout, preventing server-only environment files from being imported into browser bundles.
-
-## Context & problem
 
 Nuxt applications can run code in two distinct contexts:
 
@@ -19,7 +21,6 @@ We evaluated two approaches:
 - **Option 2: Custom Vite plugin that blocks client-side imports (chosen).** Register a Vite plugin inside `@arkenv/nuxt/module` that intercepts module resolution during the client build. If any client-side module attempts to resolve `@arkenv/nuxt/server` or a `/server` file inside the configured schema directory, the plugin throws a compile-time error and fails the build.
 
 ## Decision
-
 We adopt **Option 2**: the strict layout's compile-time boundary is enforced by a Vite plugin registered by `@arkenv/nuxt/module`.
 
 1. **Build-time interception.** The plugin runs during Nuxt's Vite bundling phase. It watches module resolution requests that originate from the client graph.
@@ -28,7 +29,6 @@ We adopt **Option 2**: the strict layout's compile-time boundary is enforced by 
 4. **No runtime overhead.** Because the check happens at build time, there is no extra runtime code or proxy cost in the strict layout beyond the existing validation layer.
 
 ## Consequences
-
 - **Compile-time guarantee in strict layout.** Server-only schemas cannot accidentally ship to the browser via a wrong import.
 - **Simple layout behavior is unchanged.** The simple layout continues to use the runtime proxy as its only boundary, keeping its single-file DX.
 - **Plugin maintenance.** The Vite plugin must stay aligned with Nuxt's module/Vite API and the strict layout's file conventions.
