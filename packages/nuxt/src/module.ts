@@ -171,7 +171,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 				anyConfig.plugins = anyConfig.plugins || [];
 				anyConfig.plugins.push({
 					name: "arkenv-nuxt-client-security",
-					resolveId(id: string) {
+					resolveId(id: string, importer?: string) {
 						const isServerModule =
 							id === "@arkenv/nuxt/server" ||
 							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\]server(?:\.(?:js|mjs|cjs|ts))?$/.test(
@@ -183,8 +183,13 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 						}
 
 						if (resolvedLayout === "strict" && baseDir) {
+							let targetId = id;
+							if (id.startsWith(".") && importer) {
+								targetId = path.resolve(path.dirname(importer), id);
+							}
+
 							const resolvedId = resolveNuxtAlias(
-								id,
+								targetId,
 								nuxt.options.rootDir,
 								srcDir,
 							);

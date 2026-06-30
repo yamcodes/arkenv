@@ -185,12 +185,26 @@ describe("Nuxt module integration", () => {
 			expect(() => plugin.resolveId("~~/env/server.ts")).toThrow(errorMessage);
 			expect(() => plugin.resolveId("@/env/server.ts")).toThrow(errorMessage);
 
+			expect(() =>
+				plugin.resolveId("./server.ts", path.join(envDir, "client.ts")),
+			).toThrow(errorMessage);
+			expect(() =>
+				plugin.resolveId(
+					"../env/server.ts",
+					path.join(envDir, "internal", "shared.ts"),
+				),
+			).toThrow(errorMessage);
+
 			expect(() => plugin.resolveId("@arkenv/nuxt/server")).toThrow(
 				errorMessage,
 			);
 
 			expect(() =>
 				plugin.resolveId(path.join(envDir, "client.ts")),
+			).not.toThrow();
+
+			expect(() =>
+				plugin.resolveId("./client.ts", path.join(envDir, "server.ts")),
 			).not.toThrow();
 
 			expect(() =>
