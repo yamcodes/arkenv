@@ -4,7 +4,7 @@ Date: 2026-06-21
 
 ## Status
 
-Accepted
+Partially Superseded / Refined by [ADR 0010: Runtime Shared Logic Strategy](0010-runtime-shared-logic-strategy.md) (The core principle of bundle isolation remains 100% active, but the code-duplication mechanics have been replaced with build-time inlining of `@repo/utils`).
 
 ## Context
 
