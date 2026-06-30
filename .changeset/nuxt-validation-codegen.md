@@ -11,7 +11,7 @@ Usage:
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ["@arkenv/nuxt"],
+  modules: ["@arkenv/nuxt/module"],
   arkenv: {
     schemaPath: "./env.ts",
     validate: true,

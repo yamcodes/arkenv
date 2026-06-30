@@ -201,12 +201,11 @@ describe("codegen process", () => {
 			'import { createEnv as coreCreateEnv } from "@arkenv/nuxt";',
 		);
 
-		// Check destructured runtimeEnv keys
 		expect(generatedContent).toContain(
-			'NUXT_PUBLIC_API_URL: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.NUXT_PUBLIC_API_URL ?? process.env.NUXT_PUBLIC_API_URL : process.env.NUXT_PUBLIC_API_URL,',
+			'"NUXT_PUBLIC_API_URL": typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.["NUXT_PUBLIC_API_URL"] ?? process.env["NUXT_PUBLIC_API_URL"] : process.env["NUXT_PUBLIC_API_URL"],',
 		);
 		expect(generatedContent).toContain(
-			'NODE_ENV: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,',
+			'"NODE_ENV": typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.["NODE_ENV"] ?? process.env["NODE_ENV"] : process.env["NODE_ENV"],',
 		);
 
 		// Server-only keys should not appear in runtimeEnv
@@ -302,10 +301,10 @@ describe("codegen process", () => {
 			'import { createEnv as coreCreateEnv } from "@arkenv/nuxt/client";',
 		);
 		expect(generatedContent).toContain(
-			'NUXT_PUBLIC_API_URL: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.NUXT_PUBLIC_API_URL ?? process.env.NUXT_PUBLIC_API_URL : process.env.NUXT_PUBLIC_API_URL,',
+			'"NUXT_PUBLIC_API_URL": typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.["NUXT_PUBLIC_API_URL"] ?? process.env["NUXT_PUBLIC_API_URL"] : process.env["NUXT_PUBLIC_API_URL"],',
 		);
 		expect(generatedContent).toContain(
-			'NODE_ENV: typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,',
+			'"NODE_ENV": typeof window !== "undefined" ? (window as any).__NUXT__?.config?.public?.["NODE_ENV"] ?? process.env["NODE_ENV"] : process.env["NODE_ENV"],',
 		);
 		expect(generatedContent).not.toContain("DATABASE_URL");
 	});
