@@ -13,13 +13,11 @@ Usage:
 export default defineNuxtConfig({
   modules: ["@arkenv/nuxt"],
   arkenv: {
-    schema: "./env.ts",
+    schemaPath: "./env.ts",
     validate: true,
-    codegen: {
-      enabled: true,
-      path: "./generated/env.gen.ts",
-      layout: "flat"
-    }
+    codegen: true,
+    outputPath: "./generated/env.gen.ts",
+    layout: "flat"
   }
 })
 ```
@@ -34,3 +32,4 @@ export const env = createEnv({
   NUXT_PUBLIC_API_URL: "string"
 })
 ```
+

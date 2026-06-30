@@ -194,7 +194,7 @@ export function setupArkEnv(
 			console.error("\n❌ [ArkEnv] Environment validation failed:");
 			console.error(error instanceof Error ? error.message : String(error));
 			console.error("");
-			process.exit(1);
+			throw error;
 		}
 	}
 
@@ -297,7 +297,9 @@ export function validateSchema(
 	internalOptions?: { _jitiAliases?: Record<string, string> },
 ): void {
 	try {
-		(globalThis as any).__arkenv_force_server__ = true;
+		const g = globalThis as any;
+		g.__arkenv_force_server_count__ = (g.__arkenv_force_server_count__ || 0) + 1;
+		g.__arkenv_force_server__ = true;
 		const fileToEvaluate =
 			resolvedLayout === "strict" && baseDir
 				? path.join(baseDir, "server.ts")
@@ -310,18 +312,44 @@ export function validateSchema(
 					? fileURLToPath(import.meta.url)
 					: "";
 		const dir = path.dirname(filenameForJiti);
-		const sharedPath = fs.existsSync(path.join(dir, "shared.ts"))
-			? path.join(dir, "shared.ts")
-			: path.join(dir, "shared.js");
-		const indexPath = fs.existsSync(path.join(dir, "index.ts"))
-			? path.join(dir, "index.ts")
-			: path.join(dir, "index.js");
-		const clientPath = fs.existsSync(path.join(dir, "client.ts"))
-			? path.join(dir, "client.ts")
-			: path.join(dir, "client.js");
-		const serverPath = fs.existsSync(path.join(dir, "server.ts"))
-			? path.join(dir, "server.ts")
-			: path.join(dir, "server.js");
+
+		const packageJsonPath = path.resolve(dir, "../package.json");
+		let pkgExports: Record<string, any> = {};
+		try {
+			const pkgContent = fs.readFileSync(packageJsonPath, "utf-8");
+			pkgExports = JSON.parse(pkgContent).exports || {};
+		} catch {
+			// fallback if package.json isn't adjacent/found
+		}
+
+		// Helper to resolve the correct local path for a given export subpath
+		const resolveExportPath = (subpath: string, fallbackFile: string): string => {
+			const entry = pkgExports[subpath];
+			if (entry) {
+				// Prioritize modern import mapping
+				const target = entry.import || entry.default || entry;
+				if (typeof target === "string") {
+					// Map built dist path (e.g. ./dist/shared.js) back to source (e.g. ./src/shared.ts)
+					// or resolve it directly if the source is already mapped.
+					const fileBasename = path.basename(target).replace(/\.m?[jt]s$/, "");
+					// Look in the same directory first
+					const tsPath = path.join(dir, `${fileBasename}.ts`);
+					if (fs.existsSync(tsPath)) {
+						return tsPath;
+					}
+					const jsPath = path.join(dir, `${fileBasename}.js`);
+					if (fs.existsSync(jsPath)) {
+						return jsPath;
+					}
+				}
+			}
+			return fallbackFile;
+		};
+
+		const sharedPath = resolveExportPath("./shared", fs.existsSync(path.join(dir, "shared.ts")) ? path.join(dir, "shared.ts") : path.join(dir, "shared.js"));
+		const indexPath = resolveExportPath(".", fs.existsSync(path.join(dir, "index.ts")) ? path.join(dir, "index.ts") : path.join(dir, "index.js"));
+		const clientPath = resolveExportPath("./client", fs.existsSync(path.join(dir, "client.ts")) ? path.join(dir, "client.ts") : path.join(dir, "client.js"));
+		const serverPath = resolveExportPath("./server", fs.existsSync(path.join(dir, "server.ts")) ? path.join(dir, "server.ts") : path.join(dir, "server.js"));
 
 		const aliases: Record<string, string> = {
 			"@arkenv/nuxt/shared": sharedPath,
@@ -360,7 +388,12 @@ export function validateSchema(
 			throw error;
 		}
 	} finally {
-		delete (globalThis as any).__arkenv_force_server__;
+		const g = globalThis as any;
+		g.__arkenv_force_server_count__ = Math.max(0, (g.__arkenv_force_server_count__ || 0) - 1);
+		if (g.__arkenv_force_server_count__ === 0) {
+			delete g.__arkenv_force_server__;
+			delete g.__arkenv_force_server_count__;
+		}
 	}
 }
 

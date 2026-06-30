@@ -109,7 +109,7 @@ describe("build-time environment validation", () => {
 			expect(fs.existsSync(outputPath)).toBe(true);
 		});
 
-		it("should exit build when a required environment variable is missing", () => {
+		it("should throw error when a required environment variable is missing", () => {
 			fs.writeFileSync(
 				schemaPath,
 				`
@@ -141,13 +141,13 @@ describe("build-time environment validation", () => {
 					layout: "flat",
 					validate: true,
 				});
-			}).toThrow("process.exit called with 1");
+			}).toThrow(/Errors found while validating/);
 
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 			expect(consoleErrorSpy).toHaveBeenCalled();
 		});
 
-		it("should exit build when an environment variable has an invalid type", () => {
+		it("should throw error when an environment variable has an invalid type", () => {
 			fs.writeFileSync(
 				schemaPath,
 				`
@@ -177,9 +177,9 @@ describe("build-time environment validation", () => {
 					layout: "flat",
 					validate: true,
 				});
-			}).toThrow("process.exit called with 1");
+			}).toThrow(/Errors found while validating/);
 
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 			expect(consoleErrorSpy).toHaveBeenCalled();
 		});
 	});
@@ -269,7 +269,7 @@ describe("build-time environment validation", () => {
 			expect(exitSpy).not.toHaveBeenCalled();
 		});
 
-		it("should exit build when a server variable is missing in strict layout", () => {
+		it("should throw error when a server variable is missing in strict layout", () => {
 			fs.writeFileSync(
 				sharedPath,
 				`
@@ -333,9 +333,9 @@ describe("build-time environment validation", () => {
 					layout: "strict",
 					validate: true,
 				});
-			}).toThrow("process.exit called with 1");
+			}).toThrow(/Errors found while validating/);
 
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 		});
 	});
 
@@ -356,7 +356,7 @@ describe("build-time environment validation", () => {
 				"utf-8",
 			);
 
-			// Missing DATABASE_URL, should exit build
+			// Missing DATABASE_URL, should throw error
 			expect(() => {
 				setupArkEnv({
 					schemaPath,
@@ -365,9 +365,9 @@ describe("build-time environment validation", () => {
 					codegen: false,
 					validate: true,
 				});
-			}).toThrow("process.exit called with 1");
+			}).toThrow(/Errors found while validating/);
 
-			expect(exitSpy).toHaveBeenCalledWith(1);
+			expect(exitSpy).not.toHaveBeenCalled();
 			expect(fs.existsSync(outputPath)).toBe(false);
 
 			// Provide DATABASE_URL, should pass
