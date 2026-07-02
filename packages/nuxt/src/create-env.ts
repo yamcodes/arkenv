@@ -1,5 +1,7 @@
 import type { Dict, SchemaShape } from "@repo/types";
 import { createEnv as coreCreateEnv, getSchemaKeys } from "arkenv";
+// @ts-expect-error
+import { useRuntimeConfig } from "#imports";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -33,10 +35,16 @@ export function createEnvInternal(
 	let runtimeEnv: Record<string, unknown> = {};
 	let isServer = false;
 
-	const globalConfig =
+	let globalConfig =
 		typeof window !== "undefined"
 			? (window as any).__NUXT__?.config?.public
 			: undefined;
+
+	if (!globalConfig && typeof window !== "undefined") {
+		try {
+			globalConfig = useRuntimeConfig()?.public;
+		} catch {}
+	}
 
 	if (typeof optionsOrIsServer === "boolean") {
 		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
@@ -85,8 +93,18 @@ export function createEnvInternal(
 		}
 	}
 
+	let serverRuntimeConfig: any;
+	if (isServer) {
+		try {
+			serverRuntimeConfig = useRuntimeConfig();
+		} catch {}
+	}
+
 	const sourceEnv: Record<string, unknown> = isServer
-		? (typeof process !== "undefined" ? process.env : undefined) || {}
+		? {
+				...((typeof process !== "undefined" ? process.env : undefined) || {}),
+				...serverRuntimeConfig,
+			}
 		: globalConfig ||
 			(typeof process !== "undefined" ? process.env : undefined) ||
 			{};
@@ -251,6 +269,7 @@ export function createEnvInternal(
 		allKeys,
 		serverOnlyKeys,
 		isServer,
+		runtimeEnv,
 	);
 }
 
@@ -262,6 +281,7 @@ function createSecurityProxy(
 	allKeys: Set<string>,
 	serverOnlyKeys: Set<string>,
 	isServer: boolean,
+	runtimeEnv: Record<string, unknown> = {},
 ): unknown {
 	return new Proxy(target, {
 		get(target, prop, receiver) {
@@ -301,6 +321,50 @@ function createSecurityProxy(
 						throw new Error(
 							`Environment variable '${prop}' is not defined in the schema.`,
 						);
+					}
+				}
+
+				if (allKeys.has(prop)) {
+					if (typeof window !== "undefined") {
+						try {
+							const runtimeConfig = useRuntimeConfig();
+							if (runtimeConfig?.public && prop in runtimeConfig.public) {
+								return runtimeConfig.public[prop];
+							}
+						} catch {
+							// fallback if useRuntimeConfig is not available yet
+						}
+						if (runtimeEnv && prop in runtimeEnv) {
+							return Reflect.get(target, prop, receiver);
+						}
+						const globalPublic = (window as any).__NUXT__?.config?.public;
+						if (globalPublic && prop in globalPublic) {
+							return globalPublic[prop];
+						}
+					} else {
+						try {
+							const runtimeConfig = useRuntimeConfig();
+							if (runtimeConfig) {
+								if (prop in runtimeConfig) {
+									return runtimeConfig[prop];
+								}
+								if (runtimeConfig.public && prop in runtimeConfig.public) {
+									return runtimeConfig.public[prop];
+								}
+							}
+						} catch {
+							// fallback
+						}
+						if (runtimeEnv && prop in runtimeEnv) {
+							return Reflect.get(target, prop, receiver);
+						}
+						if (
+							typeof process !== "undefined" &&
+							process.env &&
+							prop in process.env
+						) {
+							return process.env[prop];
+						}
 					}
 				}
 			}
