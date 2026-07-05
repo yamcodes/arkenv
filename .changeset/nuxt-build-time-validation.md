@@ -1,12 +1,20 @@
 ---
-"@arkenv/nuxt": minor
+"@arkenv/nuxt": patch
 ---
 
-#### Add build-time validation and dynamic runtime proxy to the Nuxt module
+#### Add build-time validation and dynamic runtime config support
 
-Add `validate` option to the `@arkenv/nuxt` module. When enabled, environment variables are validated at build and dev time using your schema file — invalid or missing variables fail the build with a descriptive error.
-
-Unlike the Next.js integration, the Nuxt module requires **no code generation** and creates no files. Public variables are resolved at runtime through Nuxt's `useRuntimeConfig()`, so the same build artifact can be deployed across multiple environments by simply changing the environment variables — no rebuild needed.
+- **Build-time validation**: Added automatic validation of environment variables against your schema during dev server startup and production build. Missing or invalid variables will now fail the build immediately (previously, validation was not run during build). This behavior can be controlled via the `validate` option (which defaults to `true`):
+  ```ts
+  // nuxt.config.ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      validate: false // Disable build-time validation
+    }
+  })
+  ```
+- **Dynamic runtime overrides**: Environment variables are now resolved dynamically at runtime rather than at import time. This allows you to swap environment variable values at runtime (e.g., in different deployment environments) without needing to rebuild the application.
 
 Usage:
 

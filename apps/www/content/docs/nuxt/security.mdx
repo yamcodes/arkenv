@@ -8,15 +8,17 @@ The primary goal of ArkEnv: **validate your environment variables and make them 
 
 In Nuxt, environment variables are dynamic. Instead of statically inlining values during compilation (like Next.js), Nuxt uses a dynamic `runtimeConfig` model. ArkEnv builds on top of this native architectural pattern to ensure robust safety:
 
-1. **Integration with `runtimeConfig`.** ArkEnv registers client-side and shared variables in `runtimeConfig.public` (making them accessible everywhere) and server-only variables in the private `runtimeConfig` (ensuring they remain strictly on the server).
+1. **Integration with `runtimeConfig`.** ArkEnv registers client-side and shared variables in `runtimeConfig.public` (making them accessible everywhere) and server-only variables in the private `runtimeConfig` (ensuring they remain strictly on the server). During production builds, server-only keys are registered with empty defaults (`""`) so that sensitive build-time environment values are never serialized or baked into the Nitro server bundle output.
 2. **Runtime misuse guard.** In the flat layout, if a client component tries to access a server-only environment variable, the ArkEnv runtime proxy intercepts the access and throws a loud error before returning any values.
+   > [!WARNING]
+   > **SSR Runtime Guard Caveat**: The flat layout's runtime proxy only throws errors in the browser. During Server-Side Rendering (SSR), client-shared code executes on the server first. During this server execution, `createEnv` treats the context as the server and will return the server-only values. If you need compile-time protection against server variables being accessed in shared code during SSR, use the **Strict layout**.
 3. **Compile-time boundary.** In the strict layout, a custom Vite compiler plugin automatically blocks any client-side imports of server environment files (like `~/env/server.ts` or `@arkenv/nuxt/server`), failing the build immediately before a bundle is produced.
 
 ---
 
 ## Leak surface
 
-Depending on the layout layout you choose, here is what is actually exposed in the client-side bundle:
+Depending on the layout you choose, here is what is actually exposed in the client-side bundle:
 
 | Layout                 | Secret **value** in client bundle | Variable **name + type** in client bundle | Compile-time block | Runtime block (Proxy) |
 | :--------------------- | :-------------------------------: | :---------------------------------------: | :----------------: | :-------------------: |

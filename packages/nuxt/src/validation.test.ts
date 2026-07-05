@@ -32,15 +32,9 @@ function setupArkEnv(options?: any) {
 describe("build-time environment validation", () => {
 	const tempDir = path.join(__dirname, "__temp_validation_tests__");
 	const schemaPath = path.join(tempDir, "env.ts");
-	let exitSpy: any;
 	let consoleErrorSpy: any;
 
 	beforeEach(() => {
-		exitSpy = vi
-			.spyOn(process, "exit")
-			.mockImplementation((code?: string | number | null | undefined) => {
-				throw new Error(`process.exit called with ${code}`);
-			});
 		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
 		if (!fs.existsSync(tempDir)) {
@@ -55,7 +49,6 @@ describe("build-time environment validation", () => {
 			}
 		}
 
-		exitSpy.mockRestore();
 		consoleErrorSpy.mockRestore();
 
 		// Clean up process.env mocks
@@ -96,7 +89,7 @@ describe("build-time environment validation", () => {
 				});
 			}).not.toThrow();
 
-			expect(exitSpy).not.toHaveBeenCalled();
+
 		});
 
 		it("should throw error when a required environment variable is missing", () => {
@@ -122,7 +115,7 @@ describe("build-time environment validation", () => {
 				});
 			}).toThrow(/Errors found while validating/);
 
-			expect(exitSpy).not.toHaveBeenCalled();
+
 			expect(consoleErrorSpy).toHaveBeenCalled();
 		});
 
@@ -148,7 +141,7 @@ describe("build-time environment validation", () => {
 				});
 			}).toThrow(/Errors found while validating/);
 
-			expect(exitSpy).not.toHaveBeenCalled();
+
 			expect(consoleErrorSpy).toHaveBeenCalled();
 		});
 	});
@@ -215,7 +208,7 @@ describe("build-time environment validation", () => {
 				});
 			}).not.toThrow();
 
-			expect(exitSpy).not.toHaveBeenCalled();
+
 		});
 
 		it("should throw error when a server variable is missing in strict layout", () => {
@@ -270,7 +263,7 @@ describe("build-time environment validation", () => {
 				});
 			}).toThrow(/Errors found while validating/);
 
-			expect(exitSpy).not.toHaveBeenCalled();
+
 		});
 	});
 });

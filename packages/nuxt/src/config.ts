@@ -255,8 +255,6 @@ export function validateSchema(
 			"@arkenv/nuxt": indexPath,
 			"@arkenv/nuxt/client": clientPath,
 			"@arkenv/nuxt/server": serverPath,
-			"./script": sharedPath,
-			"./script.tsx": sharedPath,
 			"#imports": mockImportsPath,
 			...internalOptions?._jitiAliases,
 		};
@@ -273,17 +271,26 @@ export function validateSchema(
 			jiti(fileToEvaluate);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
-			// Nuxt projects commonly extend `./.nuxt/tsconfig.json`, which does not
-			// exist until Nuxt generates it. Gracefully fall back to loading the
-			// schema without tsconfig path resolution so validation can still run
-			// during the initial build.
-			if (message.includes("tsconfig") && message.includes("not found")) {
-				const jiti = createJiti(fileToEvaluate, {
-					...jitiOptions,
-					tsconfigPaths: false,
-				});
-				jiti(fileToEvaluate);
-				return;
+			const isTsconfigNotFound =
+				error instanceof Error &&
+				/tsconfig/i.test(message) &&
+				(/not found/i.test(message) || (error as any).code === "ENOENT");
+
+			if (isTsconfigNotFound) {
+				// Nuxt projects commonly extend `./.nuxt/tsconfig.json`, which does not
+				// exist until Nuxt generates it. Gracefully fall back to loading the
+				// schema without tsconfig path resolution so validation can still run
+				// during the initial build.
+				try {
+					const fallbackJiti = createJiti(fileToEvaluate, {
+						...jitiOptions,
+						tsconfigPaths: false,
+					});
+					fallbackJiti(fileToEvaluate);
+					return;
+				} catch (fallbackError: unknown) {
+					throw fallbackError;
+				}
 			}
 			throw error;
 		}

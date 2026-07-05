@@ -10,7 +10,7 @@ In this setup, you define all your environment variables in a single flat object
 env.ts
 ```
 
-To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected. See the [Security model](/docs/nuxt/security) page for more details.
+To protect server-side secrets from ever reaching the client bundle in the browser, ArkEnv uses a proxy that throws a runtime error if a server-side variable is accessed in browser code. Note that during Server-Side Rendering (SSR), client-shared code executes on the server first, where this runtime guard is not active. See the [Security model](/docs/nuxt/security) page for more details.
 
 :::warning[Server logic in client bundle]
 Defining your schemas together means the *server validation logic* is shipped in the client bundle.
@@ -115,7 +115,7 @@ export const env = arkenv({
     const apiUrl = env.NUXT_PUBLIC_API_URL;
     ```
 
-    If you accidentally attempt to access a server-side secret in client-side code, it will throw a descriptive runtime exception during browser execution:
+    If you accidentally attempt to access a server-side secret in client-side code, it will throw a descriptive runtime exception during browser execution (note that it will not throw during Server-Side Rendering, only once hydration completes in the browser):
 
     ```ts title="components/ClientOnlyComponent.vue"
     import { env } from "~~/env";
