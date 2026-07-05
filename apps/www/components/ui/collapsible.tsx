@@ -1,36 +1,60 @@
-'use client';
-import * as Primitive from '@radix-ui/react-collapsible';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { cn } from '~/lib/cn';
+// MIT License
+//
+// Copyright (c) 2023 Fuma
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+// Derived from fumadocs-ui (https://fumadocs.dev), used under MIT.
+
+"use client";
+import * as Primitive from "@radix-ui/react-collapsible";
+import type * as React from "react";
+import { useEffect, useState } from "react";
+import { cn } from "~/lib/cn";
 
 export const Collapsible = Primitive.Root;
 
 export const CollapsibleTrigger = Primitive.CollapsibleTrigger;
 
 export function CollapsibleContent({
-  children,
-  ...props
+	children,
+	...props
 }: React.ComponentPropsWithRef<typeof Primitive.CollapsibleContent>) {
-  const [mounted, setMounted] = useState(false);
+	const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
-  return (
-    <Primitive.CollapsibleContent
-      {...props}
-      className={cn(
-        'overflow-hidden',
-        mounted &&
-          'data-[state=closed]:animate-fd-collapsible-up data-[state=open]:animate-fd-collapsible-down',
-        props.className,
-      )}
-    >
-      {children}
-    </Primitive.CollapsibleContent>
-  );
+	return (
+		<Primitive.CollapsibleContent
+			{...props}
+			className={cn(
+				"overflow-hidden",
+				mounted &&
+					"data-[state=closed]:animate-fd-collapsible-up data-[state=open]:animate-fd-collapsible-down",
+				props.className,
+			)}
+		>
+			{children}
+		</Primitive.CollapsibleContent>
+	);
 }
 
 export type CollapsibleProps = Primitive.CollapsibleProps;
