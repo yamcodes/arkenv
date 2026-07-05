@@ -32,10 +32,11 @@ describe("Nuxt module integration", () => {
 		fs.writeFileSync(
 			schemaPath,
 			`
-			export const env = arkenv({
-				server: { DATABASE_URL: "string" },
-				client: { NUXT_PUBLIC_API_URL: "string" },
-				shared: { NODE_ENV: "string" }
+			import { createEnv } from "@arkenv/nuxt";
+			export const env = createEnv({
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string"
 			});
 			`,
 		);
@@ -56,6 +57,7 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
+					validate: false,
 				},
 				mockNuxt,
 			);
@@ -85,10 +87,11 @@ describe("Nuxt module integration", () => {
 		fs.writeFileSync(
 			schemaPath,
 			`
-			export const env = arkenv({
-				server: { DATABASE_URL: "string" },
-				client: { NUXT_PUBLIC_API_URL: "string" },
-				shared: { NODE_ENV: "string" }
+			import { createEnv } from "@arkenv/nuxt";
+			export const env = createEnv({
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string"
 			});
 			`,
 		);
@@ -109,6 +112,7 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
+					validate: false,
 				},
 				mockNuxt,
 			);
@@ -122,6 +126,129 @@ describe("Nuxt module integration", () => {
 			// Check if schemaPath was added to watch paths
 			expect(mockNuxt.options.watch).toContain(schemaPath);
 		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should throw when validation fails and validate is enabled", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-validation-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import { createEnv } from "@arkenv/nuxt";
+			export const env = createEnv({
+				DATABASE_URL: "string",
+			});
+			`,
+		);
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			// Now enable validation; DATABASE_URL is missing
+			expect(() =>
+				(module as any).setup(
+					{
+						schemaPath: "./env.ts",
+						validate: true,
+					},
+					mockNuxt,
+				),
+			).toThrow("[ArkEnv] Environment validation failed");
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should NOT throw when validate is true and all required vars are present", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-validation-pass-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import { createEnv } from "@arkenv/nuxt";
+			export const env = createEnv({
+				DATABASE_URL: "string",
+			});
+			`,
+		);
+
+		const originalEnv = process.env.DATABASE_URL;
+		process.env.DATABASE_URL = "postgresql://localhost/test";
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: { public: {} },
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			expect(() =>
+				(module as any).setup(
+					{ schemaPath: "./env.ts", validate: true },
+					mockNuxt,
+				),
+			).not.toThrow();
+		} finally {
+			if (originalEnv === undefined) delete process.env.DATABASE_URL;
+			else process.env.DATABASE_URL = originalEnv;
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should NOT throw when validate is false even if required vars are missing", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-validation-skip-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import { createEnv } from "@arkenv/nuxt";
+			export const env = createEnv({
+				DATABASE_URL: "string",
+			});
+			`,
+		);
+
+		const originalEnv = process.env.DATABASE_URL;
+		delete process.env.DATABASE_URL;
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: { public: {} },
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			expect(() =>
+				(module as any).setup(
+					{ schemaPath: "./env.ts", validate: false },
+					mockNuxt,
+				),
+			).not.toThrow();
+		} finally {
+			if (originalEnv !== undefined) process.env.DATABASE_URL = originalEnv;
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
 	});
@@ -156,6 +283,7 @@ describe("Nuxt module integration", () => {
 				{
 					schemaPath: "./env/server.ts",
 					layout: "strict",
+					validate: false,
 				},
 				mockNuxt,
 			);

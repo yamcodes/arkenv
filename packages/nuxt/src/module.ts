@@ -4,24 +4,22 @@ import { defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
 import { name, peerDependencies, version } from "../package.json";
 import {
+	type ArkEnvConfigOptions,
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	normalizeLayout,
 	resolveLayout,
+	validateSchema,
 } from "./config";
 
 export type ModuleOptions = {
 	schemaPath?: string;
-	layout?:
-		| "flat"
-		| "strict"
-		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
-		| "simple";
+	layout?: ArkEnvConfigOptions["layout"];
+	validate?: boolean;
 };
-
-let hasWarnedSimpleLayout = false;
 
 const CLIENT_SECURITY_ERROR =
 	"[ArkEnv] Importing server-only environment schema on the client is not allowed!";
@@ -48,25 +46,6 @@ function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
 	return id;
 }
 
-function normalizeLayout(
-	layout: ModuleOptions["layout"],
-): "simple" | "strict" | undefined {
-	if (layout === "simple") {
-		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
-			hasWarnedSimpleLayout = true;
-			// biome-ignore lint/suspicious/noConsole: deprecation warning
-			console.warn(
-				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
-			);
-		}
-		return "simple";
-	}
-	if (layout === "flat") {
-		return "simple";
-	}
-	return layout;
-}
-
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
 		name,
@@ -76,7 +55,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt: peerDependencies?.nuxt,
 		},
 	},
-	defaults: {},
+	defaults: {
+		validate: true,
+	},
 	setup(options, nuxt) {
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
@@ -112,6 +93,18 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt.options.watch = nuxt.options.watch || [];
 			for (const p of watchPaths) {
 				nuxt.options.watch.push(p);
+			}
+		}
+
+		// Run validation via the shared config helpers
+		const validate = options.validate ?? true;
+
+		if (validate) {
+			try {
+				validateSchema(schemaPath, resolvedLayout, baseDir ?? "");
+			} catch (error: unknown) {
+				const message = error instanceof Error ? error.message : String(error);
+				throw new Error(`[ArkEnv] Environment validation failed: ${message}`);
 			}
 		}
 
