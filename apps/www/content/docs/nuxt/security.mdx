@@ -1,0 +1,45 @@
+---
+title: Security model
+icon: ShieldCheck
+description: Understand how @arkenv/nuxt protects secrets, integrates with Nuxt's runtimeConfig, and enforces strict client-server boundaries.
+---
+
+The primary goal of ArkEnv: **validate your environment variables and make them typesafe.**
+
+In Nuxt, environment variables are dynamic. Instead of statically inlining values during compilation (like Next.js), Nuxt uses a dynamic `runtimeConfig` model. ArkEnv builds on top of this native architectural pattern to ensure robust safety:
+
+1. **Integration with `runtimeConfig`.** ArkEnv registers client-side and shared variables in `runtimeConfig.public` (making them accessible everywhere) and server-only variables in the private `runtimeConfig` (ensuring they remain strictly on the server).
+2. **Runtime misuse guard.** In the flat layout, if a client component tries to access a server-only environment variable, the ArkEnv runtime proxy intercepts the access and throws a loud error before returning any values.
+3. **Compile-time boundary.** In the strict layout, a custom Vite compiler plugin automatically blocks any client-side imports of server environment files (like `~/env/server.ts` or `@arkenv/nuxt/server`), failing the build immediately before a bundle is produced.
+
+---
+
+## Leak surface
+
+Depending on the layout layout you choose, here is what is actually exposed in the client-side bundle:
+
+| Layout                 | Secret **value** in client bundle | Variable **name + type** in client bundle | Compile-time block | Runtime block (Proxy) |
+| :--------------------- | :-------------------------------: | :---------------------------------------: | :----------------: | :-------------------: |
+| **Flat** (recommended) |                 ❌                 |                     ✅                     |          ❌         |           ✅           |
+| **Strict** (split)     |                 ❌                 |                     ❌                     |          ✅         |           ✅           |
+
+- **Values are never leaked.** Nuxt handles the actual environment injection dynamically at runtime, so raw values are never bundled.
+- **Flat layout exposes variable names and types** because the single `env.ts` file containing the schema is referenced on the client. For most apps, exposing names like `DATABASE_URL` is completely harmless.
+- **Strict layout achieves absolute isolation.** Since server-only schemas live in separate files (e.g., `env/server.ts`), they are never imported in client files. The Vite compiler plugin enforces this by failing the build if a client-side module imports your server schema.
+
+---
+
+## How compile-time boundaries work
+
+When using the **Strict layout**, the `@arkenv/nuxt` module injects a custom Vite plugin during build time. If Vite detects that a client-side component or helper attempts to import:
+
+1. The server-only runtime package `@arkenv/nuxt/server`
+2. Any userland file ending with `/server` inside your schema directory (e.g. `~/env/server.ts`)
+
+It will halt the compiler and output a build-time error:
+
+```bash
+[ArkEnv] Importing server-only environment schema on the client is not allowed!
+```
+
+This acts as a bulletproof double-lock, protecting your server schemas from ever leaking into client bundles.

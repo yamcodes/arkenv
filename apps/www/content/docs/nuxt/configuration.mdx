@@ -1,0 +1,74 @@
+---
+title: Configuration & API
+icon: Wrench
+description: API reference and configuration options for @arkenv/nuxt.
+---
+
+## Register ArkEnv in your Nuxt config
+
+The idiomatic way to configure ArkEnv in Nuxt is by adding the module to your `nuxt.config.ts` and configuring it under the `arkenv` config key.
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+	modules: ["@arkenv/nuxt/module"],
+	arkenv: {
+		/* config options here */
+	}
+});
+```
+
+By default, ArkEnv looks for your schema in `env.ts` or `src/env.ts` for the flat layout, or in the `env/` or `src/env/` directory for the strict layout.
+
+---
+
+## Configuration options
+
+The `arkenv` configuration block accepts the following options:
+
+| Option       | Type                             | Default                 | Description                                                                                 |
+| :----------- | :------------------------------- | :---------------------- | :------------------------------------------------------------------------------------------ |
+| `schemaPath` | `string`                         | *(Automatic detection)* | The path to your environment schema file or directory.                                      |
+| `layout`     | `'flat' \| 'strict' \| 'simple'` | `'flat'`                | Specify the schema layout. Use `'strict'` for multi-file layouts. `'simple'` is deprecated. |
+| `validate`   | `boolean`                        | `true`                  | Enable or disable build-time and dev-time environment variable validation.                  |
+
+---
+
+## Validation behavior
+
+When `validate: true` (default), `@arkenv/nuxt` evaluates your schema during the Nuxt module setup phase (at both dev startup and build time). If any required environment variables are missing or fail validation constraints, the process will output a descriptive `ArkEnvError` and immediately abort the build.
+
+This prevents misconfigured applications from ever being deployed to staging or production.
+
+### Disabling validation
+
+If you need to skip build-time validation (for example, in a CI environment where build-time secrets are not provided, or when using custom runtime injection), you can set `validate: false`:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+	modules: ["@arkenv/nuxt/module"],
+	arkenv: {
+		validate: false
+	}
+});
+```
+
+---
+
+## Runtime API
+
+### `createEnv(schema, options)`
+
+A factory function to validate and return your environment config. It automatically connects to Nuxt's dynamic `useRuntimeConfig()` payload.
+
+#### Usage (Flat Layout)
+
+```ts title="env.ts" twoslash
+import arkenv from '@arkenv/nuxt';
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+	NUXT_PUBLIC_API_URL: "string",
+}, {
+	exposeToClient: ["NUXT_PUBLIC_API_URL"]
+});
+```

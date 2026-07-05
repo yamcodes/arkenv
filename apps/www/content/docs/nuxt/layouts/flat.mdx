@@ -10,7 +10,7 @@ In this setup, you define all your environment variables in a single flat object
 env.ts
 ```
 
-To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected.
+To protect server-side secrets from ever reaching the client bundle, ArkEnv uses a proxy that throws a runtime error if a server-side variable is detected. See the [Security model](/docs/nuxt/security) page for more details.
 
 :::warning[Server logic in client bundle]
 Defining your schemas together means the *server validation logic* is shipped in the client bundle.
@@ -91,14 +91,15 @@ export const env = arkenv({
     });
     ```
 
-    You can customize the schema path using optional parameters:
+    You can customize the schema path and validation behavior using optional parameters:
 
     ```ts title="nuxt.config.ts"
     export default defineNuxtConfig({
     	modules: ["@arkenv/nuxt/module"],
     	arkenv: {
     		schemaPath: "env.ts",  // Path to your schema (default: env.ts or src/env.ts)
-    		layout: "flat"         // Explicitly specify layout
+    		layout: "flat",        // Explicitly specify layout
+    		validate: true,        // Validate environment variables at build-time (default: true)
     	}
     });
     ```
