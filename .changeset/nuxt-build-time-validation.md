@@ -42,3 +42,4 @@ export const env = arkenv({
 ```
 
 The `env` proxy reads `DATABASE_URL` from `runtimeConfig` on the server and throws a descriptive runtime error if a server-only variable is accessed in client-side code.
+
