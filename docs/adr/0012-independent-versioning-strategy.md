@@ -20,6 +20,7 @@ We will adopt an **independent versioning model** where all packages in the mono
 ### Core Package Split & Lockstep Versioning
 
 The core validation runtime is split into two packages:
+
 - `@arkenv/core` (using ArkType)
 - `@arkenv/standard` (dependency-free, using Standard Schema)
 
