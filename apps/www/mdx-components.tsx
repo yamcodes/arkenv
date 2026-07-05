@@ -1,6 +1,5 @@
 import { arkenvComponents } from "@arkenv/fumadocs-ui/mdx";
 import * as twoslashComponents from "fumadocs-twoslash/ui";
-import { AutoTypeTable } from "~/components/ui/auto-type-table";
 import {
 	CalloutContainer,
 	CalloutDescription,
@@ -9,6 +8,7 @@ import {
 import { Cards } from "fumadocs-ui/components/card";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
+import { AutoTypeTable } from "~/components/ui/auto-type-table";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { cn } from "~/lib/cn";
