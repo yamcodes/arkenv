@@ -1,5 +1,23 @@
 # @arkenv/nuxt
 
+## 0.0.4
+
+### Patch Changes
+
+- #### Add build-time validation and dynamic runtime config support _[`#1256`](https://github.com/yamcodes/arkenv/pull/1256) [`233a8cb`](https://github.com/yamcodes/arkenv/commit/233a8cb7a0bebeaa2fb971bcbbd00787fc350210) [@yamcodes](https://github.com/yamcodes)_
+
+  - **Build-time validation**: Added automatic validation of environment variables against your schema during dev server startup and production build. Missing or invalid variables will now fail the build immediately (previously, validation was not run during build). This behavior can be controlled via the `validate` option (which defaults to `true`):
+    ```ts
+    // nuxt.config.ts
+    export default defineNuxtConfig({
+      modules: ["@arkenv/nuxt/module"],
+      arkenv: {
+        validate: false, // Disable build-time validation
+      },
+    });
+    ```
+  - **Dynamic runtime overrides**: Environment variables are now resolved dynamically at runtime rather than at import time. This allows you to swap environment variable values at runtime (e.g., in different deployment environments) without needing to rebuild the application.
+
 ## 0.0.3
 
 ### Patch Changes
