@@ -88,8 +88,6 @@ describe("build-time environment validation", () => {
 					validate: true,
 				});
 			}).not.toThrow();
-
-
 		});
 
 		it("should throw error when a required environment variable is missing", () => {
@@ -115,7 +113,6 @@ describe("build-time environment validation", () => {
 				});
 			}).toThrow(/Errors found while validating/);
 
-
 			expect(consoleErrorSpy).toHaveBeenCalled();
 		});
 
@@ -140,7 +137,6 @@ describe("build-time environment validation", () => {
 					validate: true,
 				});
 			}).toThrow(/Errors found while validating/);
-
 
 			expect(consoleErrorSpy).toHaveBeenCalled();
 		});
@@ -207,8 +203,6 @@ describe("build-time environment validation", () => {
 					validate: true,
 				});
 			}).not.toThrow();
-
-
 		});
 
 		it("should throw error when a server variable is missing in strict layout", () => {
@@ -262,8 +256,6 @@ describe("build-time environment validation", () => {
 					validate: true,
 				});
 			}).toThrow(/Errors found while validating/);
-
-
 		});
 	});
 });

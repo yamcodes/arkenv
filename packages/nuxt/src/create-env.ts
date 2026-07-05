@@ -351,7 +351,11 @@ function createSecurityProxy(
 								if (prop in runtimeConfig && runtimeConfig[prop] !== "") {
 									return runtimeConfig[prop];
 								}
-								if (runtimeConfig.public && prop in runtimeConfig.public && runtimeConfig.public[prop] !== "") {
+								if (
+									runtimeConfig.public &&
+									prop in runtimeConfig.public &&
+									runtimeConfig.public[prop] !== ""
+								) {
 									return runtimeConfig.public[prop];
 								}
 							}
