@@ -1081,6 +1081,9 @@ importers:
       arkenv:
         specifier: workspace:*
         version: link:../arkenv
+      jiti:
+        specifier: 'catalog:'
+        version: 2.7.0
     devDependencies:
       '@nuxt/kit':
         specifier: ^4.4.8

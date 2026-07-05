@@ -41,3 +41,14 @@ If the flat layout is recommended, why use the strict layout?
 3. Deploy that same artifact to staging, QA, and production - changing only the environment variables at container startup
 
 No application rebuild is required when values change. You can also use Nuxt's native override prefixes (e.g. `NUXT_DATABASE_URL` or `NUXT_PUBLIC_API_URL`) to swap values dynamically across environments.
+
+## Does `@arkenv/nuxt` generate any files I need to commit or `.gitignore`?
+
+**No.** Unlike the Next.js integration (which writes an `env.gen.ts` helper due to webpack's static analysis requirements), the Nuxt integration generates **zero files**.
+
+Nuxt resolves public runtime variables dynamically through `useRuntimeConfig()`, so there is no static `runtimeEnv` mapping to write. The module only:
+
+1. **Validates** your schema at build/dev startup and throws descriptive errors for invalid or missing variables.
+2. **Registers** public keys into Nuxt's `runtimeConfig` so they are available on both server and client.
+
+You do not need to add anything to `.gitignore`, and there is no generated directory to keep in sync with your schema.
