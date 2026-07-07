@@ -1,9 +1,5 @@
 import type { $ } from "@repo/scope";
-import type {
-	CompiledEnvSchema,
-	InferType,
-	SchemaShape,
-} from "@repo/types";
+import type { CompiledEnvSchema, InferType, SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 
