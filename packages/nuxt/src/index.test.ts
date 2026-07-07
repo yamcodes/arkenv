@@ -298,14 +298,9 @@ describe("createEnv (Nuxt runtime)", () => {
 		};
 
 		try {
-			const env = createEnv(
-				{
-					DATABASE_URL: "string",
-				},
-				{
-					isServer: true,
-				} as any,
-			);
+			const env = createEnv({
+				DATABASE_URL: "string",
+			});
 
 			expect(env.DATABASE_URL).toBe("postgres://dynamic-server/db");
 		} finally {

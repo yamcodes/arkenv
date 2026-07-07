@@ -326,6 +326,9 @@ function createSecurityProxy(
 
 				if (allKeys.has(prop)) {
 					if (typeof window !== "undefined") {
+						if (runtimeEnv && prop in runtimeEnv) {
+							return Reflect.get(target, prop, receiver);
+						}
 						try {
 							const runtimeConfig = useRuntimeConfig();
 							if (runtimeConfig?.public && prop in runtimeConfig.public) {
@@ -334,29 +337,30 @@ function createSecurityProxy(
 						} catch {
 							// fallback if useRuntimeConfig is not available yet
 						}
-						if (runtimeEnv && prop in runtimeEnv) {
-							return Reflect.get(target, prop, receiver);
-						}
 						const globalPublic = (window as any).__NUXT__?.config?.public;
 						if (globalPublic && prop in globalPublic) {
 							return globalPublic[prop];
 						}
 					} else {
+						if (runtimeEnv && prop in runtimeEnv) {
+							return Reflect.get(target, prop, receiver);
+						}
 						try {
 							const runtimeConfig = useRuntimeConfig();
 							if (runtimeConfig) {
-								if (prop in runtimeConfig) {
+								if (prop in runtimeConfig && runtimeConfig[prop] !== "") {
 									return runtimeConfig[prop];
 								}
-								if (runtimeConfig.public && prop in runtimeConfig.public) {
+								if (
+									runtimeConfig.public &&
+									prop in runtimeConfig.public &&
+									runtimeConfig.public[prop] !== ""
+								) {
 									return runtimeConfig.public[prop];
 								}
 							}
 						} catch {
 							// fallback
-						}
-						if (runtimeEnv && prop in runtimeEnv) {
-							return Reflect.get(target, prop, receiver);
 						}
 						if (
 							typeof process !== "undefined" &&
