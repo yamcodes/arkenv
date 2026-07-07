@@ -50,6 +50,7 @@
 	},
 	"peerDependencies": {
 		"@fumadocs/ui": "^16.5.0",
+		"@radix-ui/react-collapsible": "^1.1.12",
 		"fumadocs-core": "^16.7.11",
 		"fumadocs-ui": "^16.7.11",
 		"lucide-react": "^1.7.0",
@@ -60,6 +61,7 @@
 	},
 	"devDependencies": {
 		"@fumadocs/ui": "16.5.0",
+		"@radix-ui/react-collapsible": "1.1.12",
 		"@types/mdx": "2.0.13",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
