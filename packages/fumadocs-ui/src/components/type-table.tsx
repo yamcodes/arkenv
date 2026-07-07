@@ -132,7 +132,7 @@ function Item({
 	},
 	defaultOpen = false,
 }: {
-	parentId?: string;
+	parentId?: string | undefined;
 	name: string;
 	item: TypeNode;
 	defaultOpen?: boolean;
