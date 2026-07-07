@@ -1,7 +1,6 @@
 import type { $ } from "@repo/scope";
 import type {
 	CompiledEnvSchema,
-	Dict,
 	InferType,
 	SchemaShape,
 } from "@repo/types";
@@ -36,11 +35,11 @@ export type Infer<T> = T extends SchemaShape
 
 /**
  * The environment variables passed to `createEnv`.
- * Uses `Dict<string>` to enforce
+ * Uses `Record<string, string | undefined>` to enforce
  * compile-time safety: all input environment variables must be strings
  * (or undefined), matching `process.env` semantics.
  */
-type RuntimeEnvironment = Dict<string>;
+export type RuntimeEnvironment = Record<string, string | undefined>;
 
 /**
  * Configuration options for `createEnv`
