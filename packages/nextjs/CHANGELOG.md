@@ -1,4 +1,4 @@
-# @ArkEnv/nextjs
+# @arkenv/nextjs
 
 ## 0.1.3
 
