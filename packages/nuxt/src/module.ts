@@ -145,7 +145,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		// Server keys (private)
 		for (const key of serverKeys) {
 			if (nuxt.options.runtimeConfig[key] === undefined) {
-				nuxt.options.runtimeConfig[key] = process.env[key] || "";
+				// During development, populate with process.env for easier DX.
+				// For production builds, default to "" to avoid baking build-time env values into the Nitro bundle.
+				nuxt.options.runtimeConfig[key] = nuxt.options.dev
+					? process.env[key] || ""
+					: "";
 			}
 		}
 
@@ -192,9 +196,8 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 								const isUnderBaseDir =
 									!relativePath.startsWith("..") &&
 									!path.isAbsolute(relativePath);
-								const isServerFile = /(^|[/\\])server(?:\.[^./\\]*)?$/.test(
-									relativePath,
-								);
+								const isServerFile =
+									/(^|[/\\])server(?:[/\\]|\.[^./\\]*|$)/.test(relativePath);
 
 								if (isUnderBaseDir && isServerFile) {
 									throw new Error(CLIENT_SECURITY_ERROR);

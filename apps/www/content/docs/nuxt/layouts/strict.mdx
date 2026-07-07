@@ -14,7 +14,7 @@ env
 └── server.ts
 ```
 
-By importing `env` from `~/env/client` in client-side code and `~/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `~/env/server` is accidentally imported on the client side, ArkEnv fails the build with a compilation error.
+By importing `env` from `~/env/client` in client-side code and `~/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `~/env/server` is accidentally imported on the client side, ArkEnv fails the build with a compilation error. See the [Security model](/docs/nuxt/security) page for more details.
 
 ## Setup
 
@@ -174,14 +174,15 @@ export const env = arkenv(
     });
     ```
 
-    You can customize the schema path using optional parameters:
+    You can customize the schema path and validation behavior using optional parameters:
 
     ```ts title="nuxt.config.ts"
     export default defineNuxtConfig({
     	modules: ["@arkenv/nuxt/module"],
     	arkenv: {
     		schemaPath: "env",     // Path to your schema directory (default: env or src/env)
-    		layout: "strict"       // Explicitly specify layout
+    		layout: "strict",      // Explicitly specify layout
+    		validate: true,        // Validate environment variables at build-time (default: true)
     	}
     });
     ```
