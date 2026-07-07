@@ -1,4 +1,4 @@
-# @ArkEnv/CLI
+# @arkenv/cli
 
 ## 0.3.1
 

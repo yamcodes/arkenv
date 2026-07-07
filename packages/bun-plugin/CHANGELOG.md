@@ -1,4 +1,4 @@
-# @ArkEnv/Bun-plugin
+# @arkenv/bun-plugin
 
 ## 0.1.10
 

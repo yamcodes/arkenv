@@ -1,4 +1,4 @@
-# @ArkEnv/fumadocs-ui
+# @arkenv/fumadocs-ui
 
 ## 0.0.9
 

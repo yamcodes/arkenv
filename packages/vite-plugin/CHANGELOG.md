@@ -1,4 +1,4 @@
-# @ArkEnv/Vite-plugin
+# @arkenv/vite-plugin
 
 ## 0.1.4
 
