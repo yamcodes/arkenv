@@ -26,7 +26,7 @@
 import * as Primitive from "@radix-ui/react-collapsible";
 import type * as React from "react";
 import { useEffect, useState } from "react";
-import { cn } from "~/lib/cn";
+import { cn } from "@/utils/cn";
 
 export const Collapsible = Primitive.Root;
 

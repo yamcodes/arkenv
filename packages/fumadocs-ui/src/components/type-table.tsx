@@ -24,7 +24,6 @@
 
 "use client";
 
-import { cva } from "class-variance-authority";
 import Link from "fumadocs-core/link";
 import { ChevronDown } from "lucide-react";
 import {
@@ -33,7 +32,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { cn } from "~/lib/cn";
+import { cn } from "@/utils/cn";
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -79,7 +78,7 @@ export type TypeNode = {
 	returns?: ReactNode;
 };
 
-const fieldVariants = cva("text-fd-muted-foreground not-prose pe-2");
+const fieldVariants = "text-fd-muted-foreground not-prose pe-2";
 
 export function TypeTable({
 	id,
@@ -190,19 +189,19 @@ function Item({
 					</div>
 					{typeDescription && (
 						<>
-							<p className={cn(fieldVariants())}>Type</p>
+							<p className={cn(fieldVariants)}>Type</p>
 							<p className="my-auto not-prose">{typeDescription}</p>
 						</>
 					)}
 					{defaultValue && (
 						<>
-							<p className={cn(fieldVariants())}>Default</p>
+							<p className={cn(fieldVariants)}>Default</p>
 							<p className="my-auto not-prose">{defaultValue}</p>
 						</>
 					)}
 					{parameters.length > 0 && (
 						<>
-							<p className={cn(fieldVariants())}>Parameters</p>
+							<p className={cn(fieldVariants)}>Parameters</p>
 							<div className="flex flex-col gap-2">
 								{parameters.map((param) => (
 									<div
@@ -222,7 +221,7 @@ function Item({
 					)}
 					{returns && (
 						<>
-							<p className={cn(fieldVariants())}>Returns</p>
+							<p className={cn(fieldVariants)}>Returns</p>
 							<div className="my-auto text-sm prose prose-no-margin">
 								{returns}
 							</div>

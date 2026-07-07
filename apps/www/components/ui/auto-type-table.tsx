@@ -22,6 +22,7 @@
 //
 // Derived from fumadocs-typescript (https://fumadocs.dev), used under MIT.
 
+import { TypeTable } from "@arkenv/fumadocs-ui/components";
 import { highlightHast } from "fumadocs-core/highlight";
 import { rehypeCode } from "fumadocs-core/mdx-plugins/rehype-code";
 import { remarkGfm } from "fumadocs-core/mdx-plugins/remark-gfm";
@@ -36,7 +37,6 @@ import type { ComponentProps } from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 import { remark } from "remark";
 import remarkRehype from "remark-rehype";
-import { TypeTable } from "./type-table";
 
 const generator = createGenerator({
 	cache: createFileSystemGeneratorCache(".next/fumadocs-typescript"),
