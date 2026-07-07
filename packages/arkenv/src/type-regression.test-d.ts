@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { createEnv, type, type RuntimeEnvironment } from "./index";
+import { createEnv, type RuntimeEnvironment, type } from "./index";
 
 describe("Type Regression (Issue #796)", () => {
 	it("inline and explicit schemas infer the same type", () => {
@@ -64,6 +64,8 @@ describe("Type Regression (Issue #796)", () => {
 	*/
 
 	it("exports RuntimeEnvironment as Record<string, string | undefined>", () => {
-		expectTypeOf<RuntimeEnvironment>().toEqualTypeOf<Record<string, string | undefined>>();
+		expectTypeOf<RuntimeEnvironment>().toEqualTypeOf<
+			Record<string, string | undefined>
+		>();
 	});
 });
