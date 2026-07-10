@@ -4,6 +4,7 @@ import { getEnvTemplate, getStrictEnvTemplates } from "./env-template";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
+import { getFrameworkPrefix, getPresetKeys } from "./templates/presets";
 
 const exampleEnvDefaults: Record<string, Record<string, string>> = {
 	basic: {
@@ -400,13 +401,20 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const hasEnv = existingFiles.includes(envPath);
 	const hasEnvExample = existingFiles.includes(envExamplePath);
 
+	const clientPrefix =
+		options.framework === "nuxt" ? "NUXT_PUBLIC_" : (options.framework === "nextjs" ? "NEXT_PUBLIC_" : getFrameworkPrefix(options.framework));
+	const presetKeys = options.hostPreset ? getPresetKeys(options.hostPreset, clientPrefix) : [];
+	const combinedEnvKeys = options.envKeys || presetKeys.length > 0
+		? Array.from(new Set([...(options.envKeys || []), ...presetKeys]))
+		: undefined;
+
 	if (!hasEnv) {
 		const content =
 			options.envExampleContent !== undefined
 				? options.envExampleContent
 				: (() => {
 						const defaults = getEnvDefaultsFromKeys(
-							options.envKeys,
+							combinedEnvKeys,
 							options.framework,
 						);
 						return (
@@ -429,7 +437,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 				? stripValuesFromEnvContent(options.envContent)
 				: (() => {
 						const defaults = getEnvDefaultsFromKeys(
-							options.envKeys,
+							combinedEnvKeys,
 							options.framework,
 						);
 						return (

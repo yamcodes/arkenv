@@ -1,5 +1,6 @@
 import dedent from "dedent";
 import { buildNextjsTemplate } from "./nextjs-template";
+import { getFrameworkPrefix, getPresetKeys, getFieldDefinition, type HostPreset } from "./presets";
 
 /**
  * Generate a TypeScript template string for a Zod environment configuration.
@@ -7,6 +8,9 @@ import { buildNextjsTemplate } from "./nextjs-template";
  * @param envKeys Optional array of environment variable keys to include in the schema
  * @param framework The framework being used (vite, bun-fullstack, or vanilla)
  * @param nextjsImportPath The optional custom import path for the generated file in Next.js
+ * @param disableCodegen Whether automatic Next.js code generation is disabled
+ * @param layout The layout structure to use (strict, simple, or flat)
+ * @param hostPreset The selected hosting provider preset
  * @returns The generated TypeScript template string
  */
 export const zodTemplate = (
@@ -15,11 +19,20 @@ export const zodTemplate = (
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
 	layout?: "strict" | "simple" | "flat",
+	hostPreset?: HostPreset,
 ) => {
-	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: z.string().optional(),`).join("\n")
-		: `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+	const prefix = getFrameworkPrefix(framework as any);
+	const presetKeys = hostPreset ? getPresetKeys(hostPreset, prefix) : [];
+
+	let schemaFields = "";
+	if (envKeys?.length || presetKeys.length) {
+		const baseKeys = envKeys || [];
+		const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
+		schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldDefinition(key, "zod", prefix)},`).join("\n");
+	} else {
+		schemaFields = `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 		PORT: z.coerce.number().int().min(1).max(65535).default(3000),`;
+	}
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -59,10 +72,10 @@ export const zodTemplate = (
 			envKeys,
 			{
 				extraImports: `import { z } from "zod";`,
-				serverField: (key) => `\t\t${key}: z.string().optional(),`,
-				clientField: (key) => `\t\t${key}: z.string().optional(),`,
+				serverField: (key) => `\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
+				clientField: (key) => `\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
 				sharedField: (key) =>
-					`\t\t${key}: z.enum(["development", "production", "test"]).default("development"),`,
+					`\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
 				defaultServerFields: [
 					`\t\tDATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
 				],
@@ -77,6 +90,7 @@ export const zodTemplate = (
 			disableCodegen,
 			framework,
 			layout,
+			hostPreset,
 		);
 	}
 

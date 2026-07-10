@@ -35,6 +35,8 @@ export type NextjsFieldBuilders = {
 	defaultSharedFields: string[];
 };
 
+import { getPresetKeys, type HostPreset } from "./presets";
+
 /**
  * Generate a Next.js `env.ts` template string for any supported validator.
  *
@@ -46,6 +48,10 @@ export type NextjsFieldBuilders = {
  * @param envKeys Optional array of env keys scanned from the project
  * @param builders Validator-specific field formatters and default field values
  * @param nextjsImportPath The optional custom import path for the generated file
+ * @param disableCodegen Whether automatic Next.js code generation is disabled
+ * @param framework The framework name
+ * @param layout The layout structure
+ * @param hostPreset The selected hosting preset
  * @returns The generated TypeScript source string
  */
 export function buildNextjsTemplate(
@@ -55,6 +61,7 @@ export function buildNextjsTemplate(
 	disableCodegen?: boolean,
 	framework?: string,
 	layout?: "strict" | "simple" | "flat",
+	hostPreset?: HostPreset,
 ): string {
 	const {
 		extraImports,
@@ -88,6 +95,24 @@ export function buildNextjsTemplate(
 		serverFields.push(...defaultServerFields);
 		clientFields.push(...defaultClientFields);
 		sharedFields.push(...defaultSharedFields);
+	}
+
+	const existingKeys = envKeys && envKeys.length > 0
+		? envKeys
+		: (framework === "nuxt" ? ["DATABASE_URL", "NUXT_PUBLIC_API_URL", "NODE_ENV"] : ["DATABASE_URL", "NEXT_PUBLIC_API_URL", "NODE_ENV"]);
+
+	const presetKeys = hostPreset
+		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !existingKeys.includes(k))
+		: [];
+
+	for (const key of presetKeys) {
+		if (key.startsWith(clientPrefix)) {
+			clientFields.push(clientField(key));
+		} else if (key === "NODE_ENV") {
+			sharedFields.push(sharedField(key));
+		} else {
+			serverFields.push(serverField(key));
+		}
 	}
 
 	if (framework === "nextjs" && layout !== "simple") {

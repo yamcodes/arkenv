@@ -37,6 +37,7 @@ export type ProjectOptions = {
 	envExampleContent?: string;
 	envContent?: string;
 	gitignoreContent?: string;
+	hostPreset?: "none" | "vercel" | "netlify";
 };
 
 /**

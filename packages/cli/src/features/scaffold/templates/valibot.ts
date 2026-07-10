@@ -1,5 +1,6 @@
 import dedent from "dedent";
 import { buildNextjsTemplate } from "./nextjs-template";
+import { getFrameworkPrefix, getPresetKeys, getFieldDefinition, type HostPreset } from "./presets";
 
 /**
  * Generate a TypeScript template string for a Valibot environment configuration.
@@ -7,6 +8,9 @@ import { buildNextjsTemplate } from "./nextjs-template";
  * @param envKeys Optional array of environment variable keys to include in the schema
  * @param framework The framework being used (vite, bun-fullstack, or vanilla)
  * @param nextjsImportPath The optional custom import path for the generated file in Next.js
+ * @param disableCodegen Whether automatic Next.js code generation is disabled
+ * @param layout The layout structure to use (strict, simple, or flat)
+ * @param hostPreset The selected hosting provider preset
  * @returns The generated TypeScript template string
  */
 export const valibotTemplate = (
@@ -15,11 +19,20 @@ export const valibotTemplate = (
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
 	layout?: "strict" | "simple" | "flat",
+	hostPreset?: HostPreset,
 ) => {
-	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: v.optional(v.string()),`).join("\n")
-		: `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+	const prefix = getFrameworkPrefix(framework as any);
+	const presetKeys = hostPreset ? getPresetKeys(hostPreset, prefix) : [];
+
+	let schemaFields = "";
+	if (envKeys?.length || presetKeys.length) {
+		const baseKeys = envKeys || [];
+		const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
+		schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldDefinition(key, "valibot", prefix)},`).join("\n");
+	} else {
+		schemaFields = `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
 		PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`;
+	}
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -59,10 +72,10 @@ export const valibotTemplate = (
 			envKeys,
 			{
 				extraImports: `import * as v from "valibot";`,
-				serverField: (key) => `\t\t${key}: v.optional(v.string()),`,
-				clientField: (key) => `\t\t${key}: v.optional(v.string()),`,
+				serverField: (key) => `\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
+				clientField: (key) => `\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
 				sharedField: (key) =>
-					`\t\t${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`,
+					`\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
 				defaultServerFields: [
 					`\t\tDATABASE_URL: v.optional(v.pipe(v.string(), v.url()), "postgres://localhost:5432/mydb"),`,
 				],
@@ -77,6 +90,7 @@ export const valibotTemplate = (
 			disableCodegen,
 			framework,
 			layout,
+			hostPreset,
 		);
 	}
 
