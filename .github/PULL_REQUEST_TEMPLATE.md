@@ -21,6 +21,5 @@ Fixes # (issue)
 - [ ] I have created a changeset using `pnpm changeset` (if this affects a published package).
 
 ### For v0 (dev) PRs:
-- [ ] **Forward-Porting**: Has this change been forward-ported to the `v1` branch?
-  - *Core contributors: Please open a concurrent PR targeting `v1` with your changes adjusted to the new package structure.*
-  - *Community contributors: Mark this checkbox; a maintainer will handle the port during merge.*
+- [ ] **Forward-Porting**: (For maintainers) Has this change been manually forward-ported to the `v1` branch?
+
