@@ -68,6 +68,13 @@ export class Executor {
 					continue;
 				}
 
+				if (
+					file.action === "create" &&
+					(await this.workspace.exists(file.path))
+				) {
+					continue;
+				}
+
 				await this.workspace.mkdir(path.dirname(file.path), true);
 				await this.workspace.writeFile(file.path, file.content);
 

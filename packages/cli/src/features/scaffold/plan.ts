@@ -34,6 +34,9 @@ export type ProjectOptions = {
 	skillDetected?: boolean;
 	disableCodegen?: boolean;
 	wrapNextjsConfig?: boolean;
+	envExampleContent?: string;
+	envContent?: string;
+	gitignoreContent?: string;
 };
 
 /**

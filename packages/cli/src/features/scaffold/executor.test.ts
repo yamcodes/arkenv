@@ -107,6 +107,13 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
+	it("skips files with create action if they already exist", async () => {
+		mockExistingFiles.add("env.ts");
+		await executor.execute(defaultPlan);
+
+		expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith("env.ts", "env");
+	});
+
 	it("executes a plan for a new project (cloned example) into a named subdirectory", async () => {
 		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
 			JSON.stringify({ name: "old-name", packageManager: "npm@11.9.0" }),
@@ -117,7 +124,7 @@ describe("Executor", () => {
 			install: {
 				packageManager: "bun",
 				dependencies: [],
-				cwd: "/some/parent/my-project",
+				cwd: "/some/parent/my-project-success",
 			},
 			metadata: {
 				...defaultPlan.metadata,
@@ -127,8 +134,8 @@ describe("Executor", () => {
 			clone: {
 				repository: "https://github.com/yamcodes/arkenv.git",
 				example: "basic",
-				targetName: "my-project",
-				targetDir: "/some/parent/my-project",
+				targetName: "my-project-success",
+				targetDir: "/some/parent/my-project-success",
 			},
 		};
 		await executor.execute(newProjectPlan);
@@ -152,7 +159,7 @@ describe("Executor", () => {
 
 		// Assert the destination directory was created
 		expect(mockWorkspace.mkdir).toHaveBeenCalledWith(
-			"/some/parent/my-project",
+			"/some/parent/my-project-success",
 			true,
 		);
 
@@ -162,7 +169,7 @@ describe("Executor", () => {
 		);
 		expect(fsp.cp).toHaveBeenCalledWith(
 			expect.stringContaining(".arkenv-temp/examples/basic/package.json"),
-			expect.stringContaining("/some/parent/my-project/package.json"),
+			expect.stringContaining("/some/parent/my-project-success/package.json"),
 			expect.any(Object),
 		);
 		expect(fsp.rm).toHaveBeenCalledWith(
@@ -172,11 +179,11 @@ describe("Executor", () => {
 
 		// Assert package.json rewrite in the subdirectory
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
-			"/some/parent/my-project/package.json",
-			expect.stringContaining('"name": "my-project"'),
+			"/some/parent/my-project-success/package.json",
+			expect.stringContaining('"name": "my-project-success"'),
 		);
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
-			"/some/parent/my-project/package.json",
+			"/some/parent/my-project-success/package.json",
 			expect.not.stringContaining("packageManager"),
 		);
 
@@ -184,7 +191,7 @@ describe("Executor", () => {
 		expect(mockWorkspace.execute).toHaveBeenCalledWith(
 			"bun",
 			["install"],
-			"/some/parent/my-project",
+			"/some/parent/my-project-success",
 		);
 	});
 

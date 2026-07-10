@@ -136,9 +136,13 @@ try {
 
 		// Assertions
 		if (fixture === "basic") {
-			if (!stdout.includes("Hello world!")) {
+			if (
+				!stdout.includes(
+					"Environment variables validated successfully by ArkEnv!",
+				)
+			) {
 				throw new Error(
-					"Fixture 'basic' did not print expected output: 'Hello world!'",
+					"Fixture 'basic' did not print expected output: 'Environment variables validated successfully by ArkEnv!'",
 				);
 			}
 		} else if (fixture === "with-zod") {
