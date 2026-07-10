@@ -1,7 +1,6 @@
 import type { $ } from "@repo/scope";
 import type {
 	CompiledEnvSchema,
-	Dict,
 	InferType,
 	SchemaShape,
 } from "@repo/types";
@@ -39,9 +38,11 @@ export type Infer<T> = T extends SchemaShape
  */
 export type ArkEnvConfig = {
 	/**
-	 * The environment variables to parse. Defaults to `process.env`
+	 * The environment variables to parse. Defaults to `process.env`.
+	 *
+	 * All values must be strings (or `undefined`) to match `process.env` semantics.
 	 */
-	env?: Dict<string>;
+	env?: Record<string, string | undefined>;
 	/**
 	 * Whether to coerce environment variables to their defined types. Defaults to `true`
 	 */
