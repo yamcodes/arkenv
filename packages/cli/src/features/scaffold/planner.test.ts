@@ -18,7 +18,7 @@ describe("Planner", () => {
 		packageManager: "pnpm",
 		tsConfig: { status: "strict", file: "tsconfig.json" },
 		shouldUpdateTsConfig: false,
-		existingFiles: ["/test/.env", "/test/.env.example"],
+		existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
 		isYes: false,
 	};
 
@@ -347,6 +347,7 @@ describe("Planner", () => {
 				serverPath,
 				"/test/.env",
 				"/test/.env.example",
+				"/test/.gitignore",
 			],
 		};
 		const plan = createPlan(state);
