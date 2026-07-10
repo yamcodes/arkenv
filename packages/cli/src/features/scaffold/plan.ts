@@ -36,6 +36,7 @@ export type ProjectOptions = {
 	wrapNextjsConfig?: boolean;
 	envExampleContent?: string;
 	envContent?: string;
+	gitignoreContent?: string;
 };
 
 /**

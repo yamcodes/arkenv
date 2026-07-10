@@ -547,13 +547,16 @@ describe("Planner", () => {
 			expect(envExampleFile).toBeUndefined();
 		});
 
-		it("copies .env to .env.example in existing project mode if .env.example is missing", () => {
+		it("copies .env to .env.example with values stripped in existing project mode if .env.example is missing", () => {
 			const state: CollectedState = {
 				...defaultState,
 				existingFiles: ["/test/.env"],
 				options: {
 					...defaultState.options,
-					envContent: "MY_PUBLIC_VAR=hello\n",
+					envContent: `# Database URL
+DATABASE_URL=postgres://user:pass@localhost:5432/db
+  export API_KEY = "xyz"
+UNRELATED=`,
 				},
 			};
 			const plan = createPlan(state);
@@ -565,7 +568,75 @@ describe("Planner", () => {
 
 			expect(envExampleFile).toBeDefined();
 			expect(envExampleFile?.action).toBe("create");
-			expect(envExampleFile?.content).toBe("MY_PUBLIC_VAR=hello\n");
+			expect(envExampleFile?.content).toBe(`# Database URL
+DATABASE_URL=
+  export API_KEY=
+UNRELATED=`);
+		});
+
+		describe("gitignore checks", () => {
+			it("scaffolds .gitignore if it does not exist in existing project mode", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: ["/test/.env", "/test/.env.example"], // only gitignore is missing
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+
+				expect(gitignoreFile).toBeDefined();
+				expect(gitignoreFile?.action).toBe("create");
+				expect(gitignoreFile?.content).toContain(".env");
+				expect(gitignoreFile?.content).toContain(".env.local");
+			});
+
+			it("appends .env and .env.local to existing .gitignore if not ignored", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+					options: {
+						...defaultState.options,
+						gitignoreContent: "node_modules/\ndist/\n",
+					},
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+
+				expect(gitignoreFile).toBeDefined();
+				expect(gitignoreFile?.action).toBe("overwrite");
+				expect(gitignoreFile?.content).toContain("node_modules/");
+				expect(gitignoreFile?.content).toContain(".env");
+				expect(gitignoreFile?.content).toContain(".env.local");
+			});
+
+			it("does not update .gitignore if .env is already ignored", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+					options: {
+						...defaultState.options,
+						gitignoreContent: "node_modules/\n.env\n",
+					},
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+
+				expect(gitignoreFile).toBeUndefined();
+			});
+
+			it("does not update .gitignore if .env* is already ignored", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+					options: {
+						...defaultState.options,
+						gitignoreContent: "node_modules/\n.env*\n",
+					},
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+
+				expect(gitignoreFile).toBeUndefined();
+			});
 		});
 	});
 });

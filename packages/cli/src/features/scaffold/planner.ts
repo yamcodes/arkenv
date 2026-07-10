@@ -115,6 +115,30 @@ function getEnvDefaultsForExample(example: string, framework?: string): Record<s
 	return getEnvDefaultsFromKeys(undefined, framework);
 }
 
+export function stripValuesFromEnvContent(content: string): string {
+	const lines = content.split(/\r?\n/);
+	const resultLines: string[] = [];
+
+	for (const line of lines) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith("#")) {
+			resultLines.push(line);
+			continue;
+		}
+
+		const match = line.match(/^(\s*(?:export\s+)?)([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i);
+		if (match) {
+			const prefix = match[1];
+			const key = match[2];
+			resultLines.push(`${prefix}${key}=`);
+		} else {
+			resultLines.push(line);
+		}
+	}
+
+	return resultLines.join("\n");
+}
+
 /**
  * Create a ScaffoldingPlan based on the collected workspace state.
  *
@@ -383,7 +407,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 	if (!hasEnvExample) {
 		const content = options.envContent !== undefined
-			? options.envContent
+			? stripValuesFromEnvContent(options.envContent)
 			: (() => {
 					const defaults = getEnvDefaultsFromKeys(options.envKeys, options.framework);
 					return Object.entries(defaults)
@@ -396,6 +420,47 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			action: "create",
 			label: "environment variables template",
 		});
+	}
+
+	// 1c. Gitignore check (only for existing projects to avoid overwriting template gitignores)
+	if (mode === "existing") {
+		const gitignorePath = path.join(cwd, ".gitignore");
+		const hasGitignore = existingFiles.includes(gitignorePath);
+
+		if (hasGitignore && options.gitignoreContent !== undefined) {
+			const lines = options.gitignoreContent.split(/\r?\n/);
+			const ignoresEnv = lines.some((line) => {
+				const trimmed = line.trim();
+				return (
+					trimmed === ".env" ||
+					trimmed === "/.env" ||
+					trimmed === ".env*" ||
+					trimmed === "/.env*" ||
+					trimmed === ".env.local" ||
+					trimmed === "/.env.local"
+				);
+			});
+
+			if (!ignoresEnv) {
+				const suffix = "\n# Environment variables\n.env\n.env.local\n";
+				const newContent = options.gitignoreContent.endsWith("\n")
+					? `${options.gitignoreContent}${suffix.trim()}\n`
+					: `${options.gitignoreContent}\n${suffix.trim()}\n`;
+				plan.files.push({
+					path: gitignorePath,
+					content: newContent,
+					action: "overwrite",
+					label: ".gitignore update",
+				});
+			}
+		} else if (!hasGitignore) {
+			plan.files.push({
+				path: gitignorePath,
+				content: "# Environment variables\n.env\n.env.local\n",
+				action: "create",
+				label: ".gitignore file",
+			});
+		}
 	}
 
 	// 2. dependencies

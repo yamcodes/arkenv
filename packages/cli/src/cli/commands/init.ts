@@ -426,6 +426,12 @@ export class InitUseCase {
 			options.envExampleContent = await this.workspace.readFile(envExamplePath);
 		}
 
+		const gitignorePath = path.join(targetDir, ".gitignore");
+		if (await this.workspace.exists(gitignorePath)) {
+			existingFiles.push(gitignorePath);
+			options.gitignoreContent = await this.workspace.readFile(gitignorePath);
+		}
+
 		return shake({
 			mode: "existing" as const,
 			cwd: targetDir,
