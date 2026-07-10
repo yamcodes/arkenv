@@ -136,7 +136,11 @@ try {
 
 		// Assertions
 		if (fixture === "basic") {
-			if (!stdout.includes("Environment variables validated successfully by ArkEnv!")) {
+			if (
+				!stdout.includes(
+					"Environment variables validated successfully by ArkEnv!",
+				)
+			) {
 				throw new Error(
 					"Fixture 'basic' did not print expected output: 'Environment variables validated successfully by ArkEnv!'",
 				);
