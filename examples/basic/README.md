@@ -62,7 +62,9 @@ Let's see how to add a new environment variable. We will add a new environment v
    ```
 
 4. #### Use the variable in `src/index.ts`
+
    Add the print statement:
+
    ```typescript
    console.log(`MY_ENV_VAR:   ${env.MY_ENV_VAR}`);
    ```
