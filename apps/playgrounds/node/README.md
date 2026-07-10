@@ -1,6 +1,6 @@
-# ArkEnv Node.js Playground
+# ArkEnv basic example
 
-This playground demonstrates how to use ArkEnv in a basic Node.js application to define typesafe, validated environment variables.
+This example demonstrates how to use ArkEnv in a basic Node.js application to define typesafe, validated environment variables.
 
 ## What's inside?
 
