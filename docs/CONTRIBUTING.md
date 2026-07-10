@@ -129,6 +129,7 @@ When working on a massive marketing push, docs facelift, or breaking API changes
    - **Update Changesets**: If the change includes a changeset, copy it to the `v1` branch but **manually update the YAML package name in the frontmatter** to match the renamed package (e.g., change `"cli": patch` to `"arkenv": patch`).
 4. **Previews & Betas:** Vercel will automatically deploy the `v1` branch as a Preview environment for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
 5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
+
 ## Deployment rate limiter
 
 To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
