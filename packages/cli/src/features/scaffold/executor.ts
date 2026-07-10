@@ -1,8 +1,11 @@
 import path from "node:path";
+import { isMap, parseDocument } from "yaml";
 import { code, symbol } from "@/shared/visuals";
 import { cloneExample } from "./cloner";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 import { getInstallCommand, getNextStepsNote } from "./utils";
+
+const APPROVED_PNPM_BUILDS = ["esbuild"];
 
 /**
  * Executes a ScaffoldingPlan by performing workspace modifications,
@@ -90,6 +93,9 @@ export class Executor {
 
 			// 2. Install dependencies
 			if (plan.install && process.env.SKIP_INSTALL !== "true") {
+				if (plan.install.packageManager === "pnpm") {
+					await this.configurePnpmBuilds(plan.install.cwd ?? plan.cwd);
+				}
 				this.reporter.step(
 					`Installing dependencies with ${code(plan.install.packageManager)}...`,
 				);
@@ -294,5 +300,83 @@ export class Executor {
 			s.stop("Scaffolding failed.");
 			throw error;
 		}
+	}
+
+	/**
+	 * Configure pnpm-specific whitelisting for esbuild and other native build dependencies.
+	 *
+	 * @param installCwd The directory where the installation will run
+	 */
+	private async configurePnpmBuilds(installCwd: string): Promise<void> {
+		const packageJsonPath = path.join(installCwd, "package.json");
+		if (await this.workspace.exists(packageJsonPath)) {
+			try {
+				const pkgContent = await this.workspace.readFile(packageJsonPath);
+				const pkg = JSON.parse(pkgContent);
+				pkg.pnpm = pkg.pnpm || {};
+				pkg.pnpm.onlyBuiltDependencies = pkg.pnpm.onlyBuiltDependencies || [];
+				for (const dep of APPROVED_PNPM_BUILDS) {
+					if (!pkg.pnpm.onlyBuiltDependencies.includes(dep)) {
+						pkg.pnpm.onlyBuiltDependencies.push(dep);
+					}
+				}
+				await this.workspace.writeFile(
+					packageJsonPath,
+					JSON.stringify(pkg, null, 2) + "\n",
+				);
+			} catch (e) {
+				this.reporter.warn(
+					`Could not update package.json with pnpm whitelisting: ${e}`,
+				);
+			}
+		}
+
+		const pnpmWorkspacePath = path.join(installCwd, "pnpm-workspace.yaml");
+		let workspaceContent = "";
+		if (await this.workspace.exists(pnpmWorkspacePath)) {
+			try {
+				workspaceContent = await this.workspace.readFile(pnpmWorkspacePath);
+			} catch (e) {
+				// Ignore and treat as empty/non-existent
+			}
+		}
+
+		const updatedContent = this.updatePnpmWorkspaceYaml(workspaceContent);
+		try {
+			await this.workspace.writeFile(pnpmWorkspacePath, updatedContent);
+		} catch (e) {
+			this.reporter.warn(`Could not write pnpm-workspace.yaml: ${e}`);
+		}
+	}
+
+	/**
+	 * Update the content of a pnpm-workspace.yaml file to allow approved builds.
+	 *
+	 * @param content The original content of the pnpm-workspace.yaml file
+	 * @returns The updated content with allowBuilds populated
+	 */
+	private updatePnpmWorkspaceYaml(content: string): string {
+		const doc = parseDocument(content || "");
+
+		if (!doc.has("allowBuilds")) {
+			doc.set("allowBuilds", doc.createNode({}));
+		}
+
+		let allowBuilds = doc.get("allowBuilds");
+
+		if (!isMap(allowBuilds)) {
+			doc.set("allowBuilds", doc.createNode({}));
+			allowBuilds = doc.get("allowBuilds");
+		}
+
+		if (isMap(allowBuilds)) {
+			for (const dep of APPROVED_PNPM_BUILDS) {
+				if (allowBuilds.get(dep) !== true) {
+					allowBuilds.set(dep, true);
+				}
+			}
+		}
+
+		return String(doc);
 	}
 }
