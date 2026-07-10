@@ -165,6 +165,7 @@ export function syncPlayground(
 				// Check if this file is specific to the example (like .gitignore, lockfiles)
 				const exampleSpecificFiles = [
 					".gitignore",
+					".env.example",
 					"bun.lock",
 					"bun.lockb",
 					"pnpm-lock.yaml",
@@ -186,6 +187,7 @@ export function syncPlayground(
 		// Remove existing files except for example-specific files
 		const exampleSpecificFiles = [
 			".gitignore",
+			".env.example",
 			"bun.lock",
 			"bun.lockb",
 			"pnpm-lock.yaml",

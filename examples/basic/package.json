@@ -10,8 +10,7 @@
 	},
 	"dependencies": {
 		"arkenv": "^0.12.2",
-		"arktype": "^2.2.0",
-		"zod": "^4.4.1"
+		"arktype": "^2.2.0"
 	},
 	"devDependencies": {
 		"@types/node": "^24.12.2",
