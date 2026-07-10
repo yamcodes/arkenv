@@ -65,7 +65,10 @@ export class Executor {
 					continue;
 				}
 
-				if (file.action === "create" && await this.workspace.exists(file.path)) {
+				if (
+					file.action === "create" &&
+					(await this.workspace.exists(file.path))
+				) {
 					continue;
 				}
 
