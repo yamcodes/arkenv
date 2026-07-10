@@ -1,5 +1,10 @@
 import type { $ } from "@repo/scope";
-import type { CompiledEnvSchema, InferType, SchemaShape } from "@repo/types";
+import type {
+	CompiledEnvSchema,
+	Dict,
+	InferType,
+	SchemaShape,
+} from "@repo/types";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 
@@ -30,21 +35,13 @@ export type Infer<T> = T extends SchemaShape
 	: InferType<T>;
 
 /**
- * The environment variables passed to `createEnv`.
- * Uses `Record<string, string | undefined>` to enforce
- * compile-time safety: all input environment variables must be strings
- * (or undefined), matching `process.env` semantics.
- */
-export type RuntimeEnvironment = Record<string, string | undefined>;
-
-/**
  * Configuration options for `createEnv`
  */
 export type ArkEnvConfig = {
 	/**
 	 * The environment variables to parse. Defaults to `process.env`
 	 */
-	env?: RuntimeEnvironment;
+	env?: Dict<string>;
 	/**
 	 * Whether to coerce environment variables to their defined types. Defaults to `true`
 	 */

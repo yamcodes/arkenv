@@ -2,6 +2,6 @@
 "arkenv": patch
 ---
 
-#### Export `RuntimeEnvironment` type and define it directly with built-in types
+#### Use `Dict<string>` for the `env` option type
 
-Define `RuntimeEnvironment` directly using built-in `Record<string, string | undefined>` rather than depending on internal monorepo type aliases, and export it as part of the public API surface. This allows the documentation generator to resolve the type correctly without falling back to `any`.
+Replace the public `RuntimeEnvironment` type alias with the internal `Dict<string>` type (`Record<string, string | undefined>`) for the `env` option in `createEnv`. This removes a redundant public export and lets the documentation generator resolve the type correctly without falling back to `any`.

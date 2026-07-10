@@ -17,7 +17,6 @@ export type {
 	ArkEnvConfig,
 	EnvSchema,
 	Infer,
-	RuntimeEnvironment,
 } from "./create-env";
 
 /**
