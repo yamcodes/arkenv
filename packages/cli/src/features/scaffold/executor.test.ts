@@ -107,6 +107,13 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
+	it("skips files with create action if they already exist", async () => {
+		mockExistingFiles.add("env.ts");
+		await executor.execute(defaultPlan);
+
+		expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith("env.ts", "env");
+	});
+
 	it("executes a plan for a new project (cloned example) into a named subdirectory", async () => {
 		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
 			JSON.stringify({ name: "old-name", packageManager: "npm@11.9.0" }),
