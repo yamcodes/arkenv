@@ -123,10 +123,12 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 
 1. **Create a long-lived branch:** Branch off `dev` and name it `next` or `v1`.
 2. **Develop in parallel:** Merge all breaking code and marketing doc updates into `v1`. Meanwhile, you can continue merging normal bug fixes and minor features into `dev` and releasing them to `main` as usual.
-3. **Prevent drift:** Periodically merge `dev` into `v1` (e.g., weekly) to ensure `v1` receives all the hotfixes from production and doesn't suffer a massive merge conflict at the end.
+3. **Immediate Forward-Porting (Dual-Tracking) to Prevent Drift:** Due to structural differences in `v1` (like renaming `packages/cli` to `packages/arkenv` and moving source code around), standard git merges of `dev` into `v1` will cause severe tree conflicts. Instead, we use a **Feature-Driven Forward-Porting** workflow:
+   - **Develop against dev/v0**: All new features and bugfixes are first built and merged into the `dev` branch.
+   - **Immediate manual porting**: Once merged into `dev`, the code must be ported to `v1`. Core contributors should check out `v1` and manually apply the logic to the new directory structure (e.g. under `packages/arkenv/src/` instead of `packages/cli/src/`), opening a concurrent PR against `v1`. For community contributions, a maintainer will handle the forward-porting process during the merge.
+   - **Update Changesets**: If the change includes a changeset, copy it to the `v1` branch but **manually update the YAML package name in the frontmatter** to match the renamed package (e.g., change `"cli": patch` to `"arkenv": patch`).
 4. **Previews & Betas:** Vercel will automatically deploy the `v1` branch as a Preview environment for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
 5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
-
 ## Deployment rate limiter
 
 To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
