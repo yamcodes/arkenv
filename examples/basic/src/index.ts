@@ -51,7 +51,9 @@ console.log(`DEBUGGING:   ${env.DEBUGGING} (${typeof env.DEBUGGING})`);
 console.log(`SHINY:       ${env.SHINY} (${typeof env.SHINY})`);
 console.log(`LLAMA_COUNT: ${env.LLAMA_COUNT} (${typeof env.LLAMA_COUNT})`);
 console.log(`NICKNAME:    ${env.NICKNAME} (${typeof env.NICKNAME})`);
-console.log(`FAVORITE_COLOR: ${env.FAVORITE_COLOR} (${typeof env.FAVORITE_COLOR})`);
+console.log(
+	`FAVORITE_COLOR: ${env.FAVORITE_COLOR} (${typeof env.FAVORITE_COLOR})`,
+);
 console.log(
 	`API_KEY:     ${env.API_KEY ?? "undefined"} (${typeof env.API_KEY})`,
 );
