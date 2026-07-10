@@ -107,6 +107,13 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
+	it("skips files with create action if they already exist", async () => {
+		mockExistingFiles.add("env.ts");
+		await executor.execute(defaultPlan);
+
+		expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith("env.ts", "env");
+	});
+
 	it("executes a plan for a new project (cloned example) into a named subdirectory", async () => {
 		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
 			JSON.stringify({ name: "old-name", packageManager: "npm@11.9.0" }),
@@ -117,7 +124,7 @@ describe("Executor", () => {
 			install: {
 				packageManager: "bun",
 				dependencies: [],
-				cwd: "/some/parent/my-project",
+				cwd: "/some/parent/my-project-success",
 			},
 			metadata: {
 				...defaultPlan.metadata,
@@ -127,8 +134,8 @@ describe("Executor", () => {
 			clone: {
 				repository: "https://github.com/yamcodes/arkenv.git",
 				example: "basic",
-				targetName: "my-project",
-				targetDir: "/some/parent/my-project",
+				targetName: "my-project-success",
+				targetDir: "/some/parent/my-project-success",
 			},
 		};
 		await executor.execute(newProjectPlan);
@@ -152,7 +159,7 @@ describe("Executor", () => {
 
 		// Assert the destination directory was created
 		expect(mockWorkspace.mkdir).toHaveBeenCalledWith(
-			"/some/parent/my-project",
+			"/some/parent/my-project-success",
 			true,
 		);
 
@@ -162,7 +169,7 @@ describe("Executor", () => {
 		);
 		expect(fsp.cp).toHaveBeenCalledWith(
 			expect.stringContaining(".arkenv-temp/examples/basic/package.json"),
-			expect.stringContaining("/some/parent/my-project/package.json"),
+			expect.stringContaining("/some/parent/my-project-success/package.json"),
 			expect.any(Object),
 		);
 		expect(fsp.rm).toHaveBeenCalledWith(
@@ -172,11 +179,11 @@ describe("Executor", () => {
 
 		// Assert package.json rewrite in the subdirectory
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
-			"/some/parent/my-project/package.json",
-			expect.stringContaining('"name": "my-project"'),
+			"/some/parent/my-project-success/package.json",
+			expect.stringContaining('"name": "my-project-success"'),
 		);
 		expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
-			"/some/parent/my-project/package.json",
+			"/some/parent/my-project-success/package.json",
 			expect.not.stringContaining("packageManager"),
 		);
 
@@ -184,7 +191,7 @@ describe("Executor", () => {
 		expect(mockWorkspace.execute).toHaveBeenCalledWith(
 			"bun",
 			["install"],
-			"/some/parent/my-project",
+			"/some/parent/my-project-success",
 		);
 	});
 
@@ -354,5 +361,164 @@ describe("Executor", () => {
 
 		// Verify fsp.cp was NOT called
 		expect(fsp.cp).not.toHaveBeenCalled();
+	});
+
+	describe("pnpm build whitelisting", () => {
+		beforeEach(() => {
+			vi.mocked(mockWorkspace.exists).mockReset();
+			vi.mocked(mockWorkspace.readFile).mockReset();
+			vi.mocked(mockWorkspace.writeFile).mockReset();
+		});
+
+		it("should configure pnpm whitelisting when packageManager is pnpm", async () => {
+			const plan: ScaffoldingPlan = {
+				...defaultPlan,
+				install: { packageManager: "pnpm", dependencies: [] },
+			};
+
+			vi.mocked(mockWorkspace.exists).mockImplementation(async (p) => {
+				if (p.endsWith("package.json")) return true;
+				if (p.endsWith("pnpm-workspace.yaml")) return false;
+				return false;
+			});
+
+			vi.mocked(mockWorkspace.readFile).mockImplementation(async (p) => {
+				if (p.endsWith("package.json")) {
+					return JSON.stringify({ name: "test-pkg" });
+				}
+				return "";
+			});
+
+			await executor.execute(plan);
+
+			// Should update package.json
+			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+				expect.stringContaining("package.json"),
+				expect.stringContaining(
+					'"onlyBuiltDependencies": [\n      "esbuild"\n    ]',
+				),
+			);
+
+			// Should create pnpm-workspace.yaml
+			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+				expect.stringContaining("pnpm-workspace.yaml"),
+				expect.stringContaining("allowBuilds:\n  esbuild: true"),
+			);
+		});
+
+		it("should not configure pnpm whitelisting when packageManager is not pnpm", async () => {
+			const plan: ScaffoldingPlan = {
+				...defaultPlan,
+				install: { packageManager: "npm", dependencies: [] },
+			};
+
+			vi.mocked(mockWorkspace.exists).mockResolvedValue(true);
+			vi.mocked(mockWorkspace.readFile).mockResolvedValue(
+				JSON.stringify({ name: "test-pkg" }),
+			);
+
+			await executor.execute(plan);
+
+			// Should not write to package.json for npm
+			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
+				expect.stringContaining("package.json"),
+				expect.stringContaining("onlyBuiltDependencies"),
+			);
+
+			// Should not write to pnpm-workspace.yaml
+			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
+				expect.stringContaining("pnpm-workspace.yaml"),
+				expect.any(String),
+			);
+		});
+
+		it("should update existing pnpm-workspace.yaml containing allowBuilds", async () => {
+			const plan: ScaffoldingPlan = {
+				...defaultPlan,
+				install: { packageManager: "pnpm", dependencies: [] },
+			};
+
+			vi.mocked(mockWorkspace.exists).mockImplementation(async (p) => {
+				if (p.endsWith("package.json")) return false;
+				if (p.endsWith("pnpm-workspace.yaml")) return true;
+				return false;
+			});
+
+			vi.mocked(mockWorkspace.readFile).mockImplementation(async (p) => {
+				if (p.endsWith("pnpm-workspace.yaml")) {
+					return "allowBuilds:\n  foo: true\n";
+				}
+				return "";
+			});
+
+			await executor.execute(plan);
+
+			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+				expect.stringContaining("pnpm-workspace.yaml"),
+				expect.stringContaining("esbuild: true"),
+			);
+			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+				expect.stringContaining("pnpm-workspace.yaml"),
+				expect.stringContaining("foo: true"),
+			);
+		});
+
+		it("should override existing esbuild: false to true", async () => {
+			const plan: ScaffoldingPlan = {
+				...defaultPlan,
+				install: { packageManager: "pnpm", dependencies: [] },
+			};
+
+			vi.mocked(mockWorkspace.exists).mockImplementation(async (p) => {
+				if (p.endsWith("package.json")) return false;
+				if (p.endsWith("pnpm-workspace.yaml")) return true;
+				return false;
+			});
+
+			vi.mocked(mockWorkspace.readFile).mockImplementation(async (p) => {
+				if (p.endsWith("pnpm-workspace.yaml")) {
+					return "allowBuilds:\n  esbuild: false\n";
+				}
+				return "";
+			});
+
+			await executor.execute(plan);
+
+			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+				expect.stringContaining("pnpm-workspace.yaml"),
+				expect.stringContaining("esbuild: true"),
+			);
+		});
+
+		it("should support existing quoted keys, comments, and allowBuilds: ~ in pnpm-workspace.yaml", async () => {
+			const plan: ScaffoldingPlan = {
+				...defaultPlan,
+				install: { packageManager: "pnpm", dependencies: [] },
+			};
+
+			vi.mocked(mockWorkspace.exists).mockImplementation(async (p) => {
+				if (p.endsWith("package.json")) return false;
+				if (p.endsWith("pnpm-workspace.yaml")) return true;
+				return false;
+			});
+
+			vi.mocked(mockWorkspace.readFile).mockImplementation(async (p) => {
+				if (p.endsWith("pnpm-workspace.yaml")) {
+					return "# Some comments\nallowBuilds: ~\n";
+				}
+				return "";
+			});
+
+			await executor.execute(plan);
+
+			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+				expect.stringContaining("pnpm-workspace.yaml"),
+				expect.stringContaining("esbuild: true"),
+			);
+			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+				expect.stringContaining("pnpm-workspace.yaml"),
+				expect.stringContaining("# Some comments"),
+			);
+		});
 	});
 });

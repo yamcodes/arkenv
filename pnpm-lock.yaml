@@ -385,9 +385,6 @@ importers:
       arktype:
         specifier: 'catalog:'
         version: 2.2.0
-      zod:
-        specifier: 'catalog:'
-        version: 4.4.1
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -928,6 +925,9 @@ importers:
       radashi:
         specifier: ^12.9.1
         version: 12.9.1
+      yaml:
+        specifier: ^2.4.5
+        version: 2.9.0
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -22399,7 +22399,7 @@ snapshots:
       vfile-message: 4.0.3
       vfile-reporter: 8.1.1
       vfile-statistics: 3.0.0
-      yaml: 2.8.4
+      yaml: 2.9.0
     transitivePeerDependencies:
       - bluebird
       - supports-color
