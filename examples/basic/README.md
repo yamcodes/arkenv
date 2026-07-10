@@ -19,18 +19,18 @@ The example demonstrates:
 
 1. #### Install dependencies
    ```bash
-   pnpm install
+   npm install
    ```
 
 2. #### Run the script
    ```bash
-   pnpm start
+   npm start
    ```
    You will see the environment variables parsed and printed in the console with their correct JavaScript types.
 
 3. #### Run in watch mode
    ```bash
-   pnpm dev
+   npm run dev
    ```
 
 ---
@@ -49,7 +49,7 @@ Let's see how to add a new environment variable. We will add a new environment v
    ```
 
 2. #### Notice the validation error
-   If you run `pnpm start` or have `pnpm dev` running, you will see a validation error:
+   If you run `npm start` or have `npm run dev` running, you will see a validation error:
    ```bash
    ArkEnvError: Errors found while validating environment variables
      MY_ENV_VAR must be a string (was missing)
@@ -69,7 +69,7 @@ Let's see how to add a new environment variable. We will add a new environment v
    console.log(`MY_ENV_VAR:   ${env.MY_ENV_VAR}`);
    ```
 
-   Running `pnpm start` will now print the new value successfully.
+   Running `npm start` will now print the new value successfully.
 
 ## Next steps
 
