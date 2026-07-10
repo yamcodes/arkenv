@@ -5,6 +5,116 @@ import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
 import { bunTypesTemplate, viteTypesTemplate } from "./templates";
 
+const exampleEnvDefaults: Record<string, Record<string, string>> = {
+	basic: {
+		HOST: "localhost",
+		PORT: "3000",
+		NODE_ENV: "development",
+	},
+	"basic-js": {
+		HOST: "localhost",
+		PORT: "3000",
+		NODE_ENV: "development",
+	},
+	"with-bun": {
+		HOST: "localhost",
+		PORT: "3000",
+		NODE_ENV: "development",
+	},
+	"with-nextjs": {
+		DATABASE_URL: "postgres://localhost:5432/mydb",
+		NEXT_PUBLIC_API_URL: "https://api.example.com",
+		NODE_ENV: "development",
+	},
+	"with-nextjs-strict": {
+		DATABASE_URL: "postgres://localhost:5432/mydb",
+		NEXT_PUBLIC_API_URL: "https://api.example.com",
+		NODE_ENV: "development",
+	},
+	"with-nuxt": {
+		DATABASE_URL: "postgres://localhost:5432/mydb",
+		NUXT_PUBLIC_API_URL: "https://api.example.com",
+		NODE_ENV: "development",
+	},
+	"with-vite-react": {
+		PORT: "3000",
+		VITE_MY_VAR: "hello",
+		VITE_MY_NUMBER: "42",
+		VITE_MY_BOOLEAN: "true",
+	},
+	"with-bun-react": {
+		BUN_PUBLIC_API_URL: "https://api.example.com",
+		BUN_PUBLIC_DEBUG: "true",
+		NODE_ENV: "development",
+	},
+	"with-zod": {
+		HOST: "localhost",
+		PORT: "3000",
+		NODE_ENV: "development",
+	},
+	"with-standard-schema": {
+		HOST: "localhost",
+		PORT: "3000",
+		NODE_ENV: "development",
+	},
+};
+
+function getEnvDefaultsFromKeys(keys?: string[], framework?: string): Record<string, string> {
+	const defaults: Record<string, string> = {};
+	if (keys && keys.length > 0) {
+		for (const key of keys) {
+			if (key === "NODE_ENV") {
+				defaults[key] = "development";
+			} else if (key === "PORT") {
+				defaults[key] = "3000";
+			} else if (key === "DATABASE_URL") {
+				defaults[key] = "postgres://localhost:5432/mydb";
+			} else {
+				defaults[key] = "";
+			}
+		}
+		return defaults;
+	}
+
+	if (framework === "nextjs") {
+		return {
+			DATABASE_URL: "postgres://localhost:5432/mydb",
+			NEXT_PUBLIC_API_URL: "https://api.example.com",
+			NODE_ENV: "development",
+		};
+	}
+	if (framework === "nuxt") {
+		return {
+			DATABASE_URL: "postgres://localhost:5432/mydb",
+			NUXT_PUBLIC_API_URL: "https://api.example.com",
+			NODE_ENV: "development",
+		};
+	}
+	if (framework === "vite") {
+		return {
+			PORT: "3000",
+			VITE_API_URL: "https://api.example.com",
+		};
+	}
+	if (framework === "bun-fullstack") {
+		return {
+			BUN_PUBLIC_API_URL: "https://api.example.com",
+			NODE_ENV: "development",
+		};
+	}
+	return {
+		PORT: "3000",
+		NODE_ENV: "development",
+	};
+}
+
+function getEnvDefaultsForExample(example: string, framework?: string): Record<string, string> {
+	if (exampleEnvDefaults[example]) {
+		return exampleEnvDefaults[example];
+	}
+	return getEnvDefaultsFromKeys(undefined, framework);
+}
+
 /**
  * Create a ScaffoldingPlan based on the collected workspace state.
  *
@@ -79,6 +189,29 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 				isYes: state.isYes,
 			};
 		}
+
+		const targetDirResolved = targetDir ?? cwd;
+		const envPath = path.join(targetDirResolved, ".env");
+		const envExamplePath = path.join(targetDirResolved, ".env.example");
+
+		const defaults = getEnvDefaultsForExample(options.example, options.framework);
+		const envContent = Object.entries(defaults)
+			.map(([k, v]) => `${k}=${v}`)
+			.join("\n") + "\n";
+
+		plan.files.push({
+			path: envPath,
+			content: envContent,
+			action: "create",
+			label: "local environment variables",
+		});
+
+		plan.files.push({
+			path: envExamplePath,
+			content: envContent,
+			action: "create",
+			label: "environment variables template",
+		});
 
 		// Examples usually have the schema at src/env.ts
 		plan.metadata.displayPath = "./src/env.ts";
@@ -222,6 +355,47 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 				label: "environment schema",
 			});
 		}
+	}
+
+	// 1b. Env / Env.example Files
+	const envPath = path.join(cwd, ".env");
+	const envExamplePath = path.join(cwd, ".env.example");
+
+	const hasEnv = existingFiles.includes(envPath);
+	const hasEnvExample = existingFiles.includes(envExamplePath);
+
+	if (!hasEnv) {
+		const content = options.envExampleContent !== undefined
+			? options.envExampleContent
+			: (() => {
+					const defaults = getEnvDefaultsFromKeys(options.envKeys, options.framework);
+					return Object.entries(defaults)
+						.map(([k, v]) => `${k}=${v}`)
+						.join("\n") + "\n";
+				})();
+		plan.files.push({
+			path: envPath,
+			content,
+			action: "create",
+			label: "local environment variables",
+		});
+	}
+
+	if (!hasEnvExample) {
+		const content = options.envContent !== undefined
+			? options.envContent
+			: (() => {
+					const defaults = getEnvDefaultsFromKeys(options.envKeys, options.framework);
+					return Object.entries(defaults)
+						.map(([k, v]) => `${k}=${v}`)
+						.join("\n") + "\n";
+				})();
+		plan.files.push({
+			path: envExamplePath,
+			content,
+			action: "create",
+			label: "environment variables template",
+		});
 	}
 
 	// 2. dependencies
