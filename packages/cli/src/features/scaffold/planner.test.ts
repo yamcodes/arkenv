@@ -341,7 +341,13 @@ describe("Planner", () => {
 				overwriteEnvSchemaFile: true,
 			},
 			detectedFramework: "nextjs",
-			existingFiles: [sharedPath, clientPath, serverPath, "/test/.env", "/test/.env.example"],
+			existingFiles: [
+				sharedPath,
+				clientPath,
+				serverPath,
+				"/test/.env",
+				"/test/.env.example",
+			],
 		};
 		const plan = createPlan(state);
 		expect(plan.files).toHaveLength(3);
@@ -490,7 +496,9 @@ describe("Planner", () => {
 			};
 			const plan = createPlan(state);
 			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
-			const envExampleFile = plan.files.find((f) => f.path.endsWith("/.env.example"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
 
 			expect(envFile).toBeDefined();
 			expect(envFile?.action).toBe("create");
@@ -515,7 +523,9 @@ describe("Planner", () => {
 			};
 			const plan = createPlan(state);
 			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
-			const envExampleFile = plan.files.find((f) => f.path.endsWith("/.env.example"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
 
 			expect(envFile).toBeDefined();
 			expect(envFile?.content).toContain("API_KEY=");
@@ -537,7 +547,9 @@ describe("Planner", () => {
 			};
 			const plan = createPlan(state);
 			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
-			const envExampleFile = plan.files.find((f) => f.path.endsWith("/.env.example"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
 
 			expect(envFile).toBeDefined();
 			expect(envFile?.action).toBe("create");
@@ -561,7 +573,9 @@ UNRELATED=`,
 			};
 			const plan = createPlan(state);
 			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
-			const envExampleFile = plan.files.find((f) => f.path.endsWith("/.env.example"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
 
 			// .env already exists, so it shouldn't be planned for creation
 			expect(envFile).toBeUndefined();
@@ -581,7 +595,9 @@ UNRELATED=`);
 					existingFiles: ["/test/.env", "/test/.env.example"], // only gitignore is missing
 				};
 				const plan = createPlan(state);
-				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
 
 				expect(gitignoreFile).toBeDefined();
 				expect(gitignoreFile?.action).toBe("create");
@@ -592,14 +608,20 @@ UNRELATED=`);
 			it("appends .env and .env.local to existing .gitignore if not ignored", () => {
 				const state: CollectedState = {
 					...defaultState,
-					existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+					existingFiles: [
+						"/test/.env",
+						"/test/.env.example",
+						"/test/.gitignore",
+					],
 					options: {
 						...defaultState.options,
 						gitignoreContent: "node_modules/\ndist/\n",
 					},
 				};
 				const plan = createPlan(state);
-				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
 
 				expect(gitignoreFile).toBeDefined();
 				expect(gitignoreFile?.action).toBe("overwrite");
@@ -611,14 +633,20 @@ UNRELATED=`);
 			it("does not update .gitignore if .env is already ignored", () => {
 				const state: CollectedState = {
 					...defaultState,
-					existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+					existingFiles: [
+						"/test/.env",
+						"/test/.env.example",
+						"/test/.gitignore",
+					],
 					options: {
 						...defaultState.options,
 						gitignoreContent: "node_modules/\n.env\n",
 					},
 				};
 				const plan = createPlan(state);
-				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
 
 				expect(gitignoreFile).toBeUndefined();
 			});
@@ -626,14 +654,20 @@ UNRELATED=`);
 			it("does not update .gitignore if .env* is already ignored", () => {
 				const state: CollectedState = {
 					...defaultState,
-					existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+					existingFiles: [
+						"/test/.env",
+						"/test/.env.example",
+						"/test/.gitignore",
+					],
 					options: {
 						...defaultState.options,
 						gitignoreContent: "node_modules/\n.env*\n",
 					},
 				};
 				const plan = createPlan(state);
-				const gitignoreFile = plan.files.find((f) => f.path.endsWith("/.gitignore"));
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
 
 				expect(gitignoreFile).toBeUndefined();
 			});

@@ -59,7 +59,10 @@ const exampleEnvDefaults: Record<string, Record<string, string>> = {
 	},
 };
 
-function getEnvDefaultsFromKeys(keys?: string[], framework?: string): Record<string, string> {
+function getEnvDefaultsFromKeys(
+	keys?: string[],
+	framework?: string,
+): Record<string, string> {
 	const defaults: Record<string, string> = {};
 	if (keys && keys.length > 0) {
 		for (const key of keys) {
@@ -108,7 +111,10 @@ function getEnvDefaultsFromKeys(keys?: string[], framework?: string): Record<str
 	};
 }
 
-function getEnvDefaultsForExample(example: string, framework?: string): Record<string, string> {
+function getEnvDefaultsForExample(
+	example: string,
+	framework?: string,
+): Record<string, string> {
 	if (exampleEnvDefaults[example]) {
 		return exampleEnvDefaults[example];
 	}
@@ -126,7 +132,9 @@ export function stripValuesFromEnvContent(content: string): string {
 			continue;
 		}
 
-		const match = line.match(/^(\s*(?:export\s+)?)([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i);
+		const match = line.match(
+			/^(\s*(?:export\s+)?)([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i,
+		);
 		if (match) {
 			const prefix = match[1];
 			const key = match[2];
@@ -218,10 +226,14 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		const envPath = path.join(targetDirResolved, ".env");
 		const envExamplePath = path.join(targetDirResolved, ".env.example");
 
-		const defaults = getEnvDefaultsForExample(options.example, options.framework);
-		const envContent = Object.entries(defaults)
-			.map(([k, v]) => `${k}=${v}`)
-			.join("\n") + "\n";
+		const defaults = getEnvDefaultsForExample(
+			options.example,
+			options.framework,
+		);
+		const envContent =
+			Object.entries(defaults)
+				.map(([k, v]) => `${k}=${v}`)
+				.join("\n") + "\n";
 
 		plan.files.push({
 			path: envPath,
@@ -389,14 +401,20 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const hasEnvExample = existingFiles.includes(envExamplePath);
 
 	if (!hasEnv) {
-		const content = options.envExampleContent !== undefined
-			? options.envExampleContent
-			: (() => {
-					const defaults = getEnvDefaultsFromKeys(options.envKeys, options.framework);
-					return Object.entries(defaults)
-						.map(([k, v]) => `${k}=${v}`)
-						.join("\n") + "\n";
-				})();
+		const content =
+			options.envExampleContent !== undefined
+				? options.envExampleContent
+				: (() => {
+						const defaults = getEnvDefaultsFromKeys(
+							options.envKeys,
+							options.framework,
+						);
+						return (
+							Object.entries(defaults)
+								.map(([k, v]) => `${k}=${v}`)
+								.join("\n") + "\n"
+						);
+					})();
 		plan.files.push({
 			path: envPath,
 			content,
@@ -406,14 +424,20 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	}
 
 	if (!hasEnvExample) {
-		const content = options.envContent !== undefined
-			? stripValuesFromEnvContent(options.envContent)
-			: (() => {
-					const defaults = getEnvDefaultsFromKeys(options.envKeys, options.framework);
-					return Object.entries(defaults)
-						.map(([k, v]) => `${k}=${v}`)
-						.join("\n") + "\n";
-				})();
+		const content =
+			options.envContent !== undefined
+				? stripValuesFromEnvContent(options.envContent)
+				: (() => {
+						const defaults = getEnvDefaultsFromKeys(
+							options.envKeys,
+							options.framework,
+						);
+						return (
+							Object.entries(defaults)
+								.map(([k, v]) => `${k}=${v}`)
+								.join("\n") + "\n"
+						);
+					})();
 		plan.files.push({
 			path: envExamplePath,
 			content,
