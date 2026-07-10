@@ -11,9 +11,11 @@ import { ArkEnvError, type ValidationIssue } from "./core";
  */
 export type ParseStandardConfig = {
 	/**
-	 * The environment variables to parse. Defaults to `process.env`
+	 * The environment variables to parse. Defaults to `process.env`.
+	 *
+	 * All values must be strings (or `undefined`) to match `process.env` semantics.
 	 */
-	env?: Dict<string>;
+	env?: Record<string, string | undefined>;
 	/**
 	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
