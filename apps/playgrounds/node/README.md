@@ -1,81 +1,75 @@
-# ArkEnv basic example
+# ArkEnv Node.js Playground
 
-This example shows how to use ArkEnv in a basic Node.js application.
+This playground demonstrates how to use ArkEnv in a basic Node.js application to define typesafe, validated environment variables.
 
 ## What's inside?
 
 The example demonstrates:
 
-- Setting up environment variables with ArkEnv
-- Using default values
-- Typesafe environment configuration
+- **Declaring a schema**: Using ArkType's powerful DSL via `arkenv` in [src/index.ts](src/index.ts).
+- **Custom network types**: Validating hosts and ports using `string.host` and `number.port`.
+- **Automatic Coercion**: Automatically parsing strings from `.env` into booleans (`DEBUGGING`, `SHINY`) and integers (`LLAMA_COUNT`).
+- **Array Parsing**: Parsing JSON-formatted arrays from `.env` using `arrayFormat: "json"`.
+- **Stripping undeclared keys**: Enforcing schema-only attributes and stripping unrecognized keys (`UNRELATED`) using `onUndeclaredKey: "delete"`.
+- **Default values**: Ensuring fallback values are set correctly.
 
 ## Getting started
-
-### Prerequisites
-
-Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [nvm](https://github.com/nvm-sh/nvm) to install it.
 
 ### Quickstart
 
 1. #### Install dependencies
    ```bash
-   npm install
+   pnpm install
    ```
 
-2. #### Start the development server with hot reloading enabled
+2. #### Run the script
    ```bash
-   npm run dev
+   pnpm start
    ```
-   :white_check_mark: You will see the environment variables printed in the console.
+   You will see the environment variables parsed and printed in the console with their correct JavaScript types.
 
-### Adding environment variables
+3. #### Run in watch mode
+   ```bash
+   pnpm dev
+   ```
 
-With the development server running (if it isn't - just run `npm run dev`), let's see how to add a new environment variable. For this example, we'll add a new environment variable called `MY_ENV_VAR`.
+---
 
-1. #### Define the new environment variable in the schema as a *required* string
+### Adding a new environment variable
+
+Let's see how to add a new environment variable. We will add a new environment variable called `MY_ENV_VAR`.
+
+1. #### Define the new variable in the schema
+   Open [src/index.ts](src/index.ts) and add the variable:
    ```typescript
-   // index.ts
    const env = arkenv({
-       // other definitions...
-       MY_ENV_VAR: "string"
+       // ... other definitions
+       MY_ENV_VAR: "string",
    });
    ```
 
-2. #### Notice the development server will show an error
+2. #### Notice the validation error
+   If you run `pnpm start` or have `pnpm dev` running, you will see a validation error:
    ```bash
    ArkEnvError: Errors found while validating environment variables
      MY_ENV_VAR must be a string (was missing)
    ```
-   This is **good**! It means the environment variable is required and the type is enforced. Let's see how to fix it. For this example, we will define the environment variable [with a `.env` file](https://arkenv.js.org/docs/arkenv/how-to/load-environment-variables#using-env-files).
 
-3. #### Copy the `.env.example` file to `.env`
-
-   To keep the development server running, run this command in a new terminal window:
-
+3. #### Define the environment variable in `.env`
+   Add the variable to your `.env` file:
    ```bash
-   cp .env.example .env
+   echo "MY_ENV_VAR=hello_from_arkenv" >> .env
    ```
 
-4. #### Add a new environment variable to the `.env` file
-
-   ```bash
-   echo "MY_ENV_VAR=new_value" >> .env
-   ```
-
-   Notice the development server will once again print the existing environment variables.
-
-5. #### Add the following line to the `index.ts` file
-
+4. #### Use the variable in `src/index.ts`
+   Add the print statement:
    ```typescript
-   console.log(env.MY_ENV_VAR);
+   console.log(`MY_ENV_VAR:   ${env.MY_ENV_VAR}`);
    ```
 
-   You will see the new environment variable printed in the console.
+   Running `pnpm start` will now print the new value successfully.
 
-   **Congratulations!** :tada: You've just added a new environment variable and printed its value.
+## Next steps
 
-### Next steps
-
-- [ArkEnv docs](https://arkenv.js.org/docs/arkenv)
-- [ArkType docs](https://arktype.io/)
+- [ArkEnv Documentation](https://arkenv.js.org/docs/arkenv)
+- [ArkType Documentation](https://arktype.io/)
