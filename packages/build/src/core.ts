@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { watch as chokidarWatch, type FSWatcher } from "chokidar";
 import { formatBuildError, logWatcherError } from "@repo/utils";
+import { watch as chokidarWatch, type FSWatcher } from "chokidar";
 
 // Global watcher reference isolated to this bundle's scope
 let activeWatcher: FSWatcher | undefined;
