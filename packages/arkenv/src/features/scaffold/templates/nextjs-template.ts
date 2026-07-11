@@ -90,7 +90,12 @@ export function buildNextjsTemplate(
 		sharedFields.push(...defaultSharedFields);
 	}
 
-	if (framework === "nextjs" && layout !== "simple") {
+	const useFlatLayout =
+		(framework === "nextjs" || framework === "nuxt") &&
+		layout !== "simple" &&
+		layout !== "strict";
+
+	if (useFlatLayout) {
 		const allFields = [...serverFields, ...clientFields, ...sharedFields];
 		const flatFields = allFields.map((field) => field.replace(/^\t\t/, "\t"));
 
@@ -112,7 +117,7 @@ export function buildNextjsTemplate(
 			);
 		}
 
-		if (disableCodegen) {
+		if (disableCodegen && framework === "nextjs") {
 			const runtimeEnvFields: string[] = [];
 			if (envKeys && envKeys.length > 0) {
 				for (const key of envKeys) {
@@ -139,16 +144,28 @@ export function buildNextjsTemplate(
 		const optionsStr =
 			optionParts.length > 0 ? `, {\n${optionParts.join(",\n")}\n}` : "";
 
+		const flatImportPath =
+			framework === "nuxt"
+				? pkgName
+				: disableCodegen
+					? "@arkenv/nextjs"
+					: nextjsImportPath || "./generated/env.gen";
+
 		const imports = [
-			`import arkenv from "${disableCodegen ? "@arkenv/nextjs" : nextjsImportPath || "./generated/env.gen"}";`,
+			`import arkenv from "${flatImportPath}";`,
 			...(extraImports ? [extraImports] : []),
 		].join("\n");
+
+		const flatDocsHint =
+			framework === "nuxt"
+				? `In ${frameworkName}, use \`${pkgName}\` to validate variables at build-time and runtime.`
+				: `In ${frameworkName}, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.`;
 
 		return `${imports}
 
 /**
  * Environment variable schema.
- * In ${frameworkName}, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.
+ * ${flatDocsHint}
  * Enforces client/server separation and prevents secret leaks.
  */
 export const env = arkenv({
@@ -168,7 +185,7 @@ ${flatFields.join("\n")}
 		sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
 	}
 
-	if (disableCodegen || framework === "nuxt") {
+	if (disableCodegen || (framework === "nuxt" && layout === "simple")) {
 		const runtimeEnvFields: string[] = [];
 		if (envKeys && envKeys.length > 0) {
 			for (const key of envKeys) {

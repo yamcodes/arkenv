@@ -1,22 +1,42 @@
 import fs from "node:fs";
 import path from "node:path";
+import { defineNuxtModule } from "@nuxt/kit";
+import type { NuxtModule } from "@nuxt/schema";
+import { name, peerDependencies, version } from "../package.json";
 import {
+	type ArkEnvConfigOptions,
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
 	extractSharedKeys,
 	findSchemaPath,
-	formatBuildError,
+	normalizeLayout,
 	resolveLayout,
-} from "@arkenv/build";
-import { defineNuxtModule } from "@nuxt/kit";
-import type { NuxtModule } from "@nuxt/schema";
-import { name, peerDependencies, version } from "../package.json";
+	validateSchema,
+} from "./config";
 
 export type ModuleOptions = {
 	schemaPath?: string;
-	layout?: "simple" | "strict";
+	layout?: ArkEnvConfigOptions["layout"];
+	validate?: boolean;
 };
+
+const CLIENT_SECURITY_ERROR =
+	"[ArkEnv] Importing server-only environment schema on the client is not allowed!";
+
+function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
+	if (path.isAbsolute(id)) return id;
+
+	if (id.startsWith("~~/")) {
+		return path.resolve(rootDir, id.slice(3));
+	}
+
+	if (id.startsWith("~/") || id.startsWith("@/")) {
+		return path.resolve(srcDir, id.slice(2));
+	}
+
+	return id;
+}
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -27,7 +47,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt: peerDependencies?.nuxt,
 		},
 	},
-	defaults: {},
+	defaults: {
+		validate: true,
+	},
 	setup(options, nuxt) {
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
@@ -37,12 +59,18 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			return;
 		}
 
+		const normalizedLayout = normalizeLayout(options.layout);
+
 		const { layout: resolvedLayout, baseDir } = resolveLayout(
 			schemaPath,
-			options.layout,
+			normalizedLayout,
 		);
 
-		// Register schema paths to watch so Nuxt restarts and updates runtimeConfig when they change
+		const srcDir = path.resolve(
+			nuxt.options.rootDir,
+			nuxt.options.srcDir ?? nuxt.options.rootDir,
+		);
+
 		if (nuxt.options.dev) {
 			const watchPaths =
 				resolvedLayout === "strict" && baseDir
@@ -59,7 +87,17 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		}
 
-		// 3. Register env keys to runtimeConfig
+		const validate = options.validate ?? true;
+
+		if (validate) {
+			try {
+				validateSchema(schemaPath, resolvedLayout, baseDir ?? "");
+			} catch (error: unknown) {
+				const message = error instanceof Error ? error.message : String(error);
+				throw new Error(`[ArkEnv] Environment validation failed: ${message}`);
+			}
+		}
+
 		let serverKeys: string[] = [];
 		let clientKeys: string[] = [];
 		let sharedKeys: string[] = [];
@@ -93,29 +131,28 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		nuxt.options.runtimeConfig = nuxt.options.runtimeConfig || {};
 		nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {};
 
-		// Server keys (private)
 		for (const key of serverKeys) {
 			if (nuxt.options.runtimeConfig[key] === undefined) {
-				nuxt.options.runtimeConfig[key] = process.env[key] || "";
+				nuxt.options.runtimeConfig[key] = nuxt.options.dev
+					? process.env[key] || ""
+					: "";
 			}
 		}
 
-		// Client & Shared keys (public)
 		for (const key of [...clientKeys, ...sharedKeys]) {
 			if (nuxt.options.runtimeConfig.public[key] === undefined) {
 				nuxt.options.runtimeConfig.public[key] = process.env[key] || "";
 			}
 		}
 
-		// 4. Vite extendConfig to block server-only imports on client side
 		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
 			if (isClient) {
-				// biome-ignore lint/suspicious/noExplicitAny: bypassed because Nuxt's Vite config type is overly restrictive
+				// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
 				const anyConfig = config as any;
 				anyConfig.plugins = anyConfig.plugins || [];
 				anyConfig.plugins.push({
 					name: "arkenv-nuxt-client-security",
-					resolveId(id: string) {
+					resolveId(id: string, importer?: string) {
 						const isServerModule =
 							id === "@arkenv/nuxt/server" ||
 							id === "@arkenv/nuxt/standard/server" ||
@@ -124,11 +161,33 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 							);
 
 						if (isServerModule) {
-							throw new Error(
-								formatBuildError(
-									"Importing server-only environment schema on the client is not allowed!",
-								),
+							throw new Error(CLIENT_SECURITY_ERROR);
+						}
+
+						if (resolvedLayout === "strict" && baseDir) {
+							let targetId = id;
+							if (id.startsWith(".") && importer) {
+								targetId = path.resolve(path.dirname(importer), id);
+							}
+
+							const resolvedId = resolveNuxtAlias(
+								targetId,
+								nuxt.options.rootDir,
+								srcDir,
 							);
+
+							if (path.isAbsolute(resolvedId)) {
+								const relativePath = path.relative(baseDir, resolvedId);
+								const isUnderBaseDir =
+									!relativePath.startsWith("..") &&
+									!path.isAbsolute(relativePath);
+								const isServerFile =
+									/(^|[/\\])server(?:[/\\]|\.[^./\\]*|$)/.test(relativePath);
+
+								if (isUnderBaseDir && isServerFile) {
+									throw new Error(CLIENT_SECURITY_ERROR);
+								}
+							}
 						}
 					},
 				});
