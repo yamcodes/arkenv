@@ -73,6 +73,19 @@ describe("log helpers", () => {
 		expect(error).toHaveBeenNthCalledWith(2, err.stack);
 	});
 
+	it("logWatcherErrorWithCause writes header and full cause", () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const err = new Error("watch failed");
+
+		logWatcherErrorWithCause("Failed to regenerate env", err);
+
+		expect(error).toHaveBeenNthCalledWith(
+			1,
+			`${WATCHER_PREFIX} Failed to regenerate env`,
+		);
+		expect(error).toHaveBeenNthCalledWith(2, err.stack);
+	});
+
 	it("logErrorWithCauseVia routes header and stack through a logger", () => {
 		const log = vi.fn();
 		const err = new Error("watch failed");
