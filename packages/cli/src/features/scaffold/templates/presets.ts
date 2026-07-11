@@ -1,5 +1,17 @@
-type Validator = "arktype" | "zod" | "valibot";
-type Framework = "vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt";
+import type { Framework, HostPreset, Validator } from "../plan";
+
+export interface PresetField {
+	readonly type: "string" | "enum";
+	readonly values?: readonly string[];
+}
+
+export interface PresetDefinition {
+	readonly label: string;
+	readonly hint: string;
+	readonly serverOnlyKeys: readonly string[];
+	readonly clientExposedKeys: readonly string[];
+	readonly fields: Readonly<Record<string, PresetField>>;
+}
 
 export const PRESETS = {
 	vercel: {
@@ -8,21 +20,12 @@ export const PRESETS = {
 		serverOnlyKeys: ["VERCEL"],
 		clientExposedKeys: ["VERCEL_ENV", "VERCEL_URL"],
 		fields: {
-			VERCEL: {
-				arktype: `"string?"`,
-				zod: `z.string().optional()`,
-				valibot: `v.optional(v.string())`,
-			},
+			VERCEL: { type: "string" },
 			VERCEL_ENV: {
-				arktype: `"'production' | 'preview' | 'development'?"`,
-				zod: `z.enum(["production", "preview", "development"]).optional()`,
-				valibot: `v.optional(v.picklist(["production", "preview", "development"]))`,
+				type: "enum",
+				values: ["production", "preview", "development"],
 			},
-			VERCEL_URL: {
-				arktype: `"string?"`,
-				zod: `z.string().optional()`,
-				valibot: `v.optional(v.string())`,
-			},
+			VERCEL_URL: { type: "string" },
 		},
 	},
 	netlify: {
@@ -31,31 +34,18 @@ export const PRESETS = {
 		serverOnlyKeys: ["NETLIFY", "DEPLOY_URL"],
 		clientExposedKeys: ["CONTEXT", "URL"],
 		fields: {
-			NETLIFY: {
-				arktype: `"string?"`,
-				zod: `z.string().optional()`,
-				valibot: `v.optional(v.string())`,
-			},
-			DEPLOY_URL: {
-				arktype: `"string?"`,
-				zod: `z.string().optional()`,
-				valibot: `v.optional(v.string())`,
-			},
+			NETLIFY: { type: "string" },
+			DEPLOY_URL: { type: "string" },
 			CONTEXT: {
-				arktype: `"'production' | 'deploy-preview' | 'branch-deploy'?"`,
-				zod: `z.enum(["production", "deploy-preview", "branch-deploy"]).optional()`,
-				valibot: `v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"]))`,
+				type: "enum",
+				values: ["production", "deploy-preview", "branch-deploy"],
 			},
-			URL: {
-				arktype: `"string?"`,
-				zod: `z.string().optional()`,
-				valibot: `v.optional(v.string())`,
-			},
+			URL: { type: "string" },
 		},
 	},
-} as const;
+} satisfies Record<string, PresetDefinition>;
 
-export type HostPreset = "none" | keyof typeof PRESETS;
+export type { HostPreset };
 
 /**
  * Get the framework-specific client prefix.
@@ -97,23 +87,51 @@ export function getFieldDefinition(
 
 	// Search all presets for this baseKey definition
 	for (const def of Object.values(PRESETS)) {
-		const fields = def.fields as Record<string, Record<Validator, string>>;
+		const fields = def.fields as Record<string, PresetField>;
 		if (baseKey in fields) {
 			const field = fields[baseKey];
-			if (validator === "arktype") return field.arktype;
-			if (validator === "zod") return field.zod;
-			if (validator === "valibot") return field.valibot;
-			
-			const _exhaustiveCheck: never = validator;
-			throw new Error(`Unsupported validator: ${_exhaustiveCheck}`);
+			if (field.type === "string") {
+				switch (validator) {
+					case "arktype":
+						return `"string?"`;
+					case "zod":
+						return `z.string().optional()`;
+					case "valibot":
+						return `v.optional(v.string())`;
+					default: {
+						const _exhaustiveCheck: never = validator;
+						throw new Error(`Unsupported validator: ${_exhaustiveCheck}`);
+					}
+				}
+			} else if (field.type === "enum") {
+				const values = field.values || [];
+				switch (validator) {
+					case "arktype":
+						return `"'${values.join("' | '")}'?"`;
+					case "zod":
+						return `z.enum([${values.map((v: string) => `"${v}"`).join(", ")}]).optional()`;
+					case "valibot":
+						return `v.optional(v.picklist([${values.map((v: string) => `"${v}"`).join(", ")}]))`;
+					default: {
+						const _exhaustiveCheck: never = validator;
+						throw new Error(`Unsupported validator: ${_exhaustiveCheck}`);
+					}
+				}
+			}
 		}
 	}
 
 	// Fallback to default optional string if not matched by any preset
-	if (validator === "arktype") return `"string?"`;
-	if (validator === "zod") return `z.string().optional()`;
-	if (validator === "valibot") return `v.optional(v.string())`;
-
-	const _exhaustiveCheck: never = validator;
-	throw new Error(`Unsupported validator: ${_exhaustiveCheck}`);
+	switch (validator) {
+		case "arktype":
+			return `"string?"`;
+		case "zod":
+			return `z.string().optional()`;
+		case "valibot":
+			return `v.optional(v.string())`;
+		default: {
+			const _exhaustiveCheck: never = validator;
+			throw new Error(`Unsupported validator: ${_exhaustiveCheck}`);
+		}
+	}
 }

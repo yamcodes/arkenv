@@ -2,9 +2,9 @@ import type { LoggerPort as Reporter } from "@/shared/ports/logger.port";
 import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
 import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
 
-import type { HostPreset } from "./templates/presets";
+export type HostPreset = "none" | "vercel" | "netlify";
 
-export type { Reporter, Workspace, HostPreset };
+export type { Reporter, Workspace };
 
 export type Validator = "arktype" | "zod" | "valibot";
 export type Framework =
