@@ -1,7 +1,7 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
-import dedent from "dedent";
 import { logBuildError } from "@repo/utils";
+import dedent from "dedent";
 import type { LoggerPort } from "@/shared/ports";
 
 const MARKER = "// @arkenv-types";
