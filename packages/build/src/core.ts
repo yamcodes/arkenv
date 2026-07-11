@@ -286,13 +286,28 @@ export function extractKeys(
 			}
 		}
 
-		for (const key of topKeys) {
-			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
-				sharedKeys.push(key);
-			} else if (publicPrefix && key.startsWith(publicPrefix)) {
-				clientKeys.push(key);
-			} else {
-				serverKeys.push(key);
+		const assignFlatKeys = (keys: string[]) => {
+			for (const key of keys) {
+				if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
+					sharedKeys.push(key);
+				} else if (publicPrefix && key.startsWith(publicPrefix)) {
+					clientKeys.push(key);
+				} else {
+					serverKeys.push(key);
+				}
+			}
+		};
+
+		assignFlatKeys(topKeys);
+
+		if (
+			topKeys.length === 0 &&
+			trimmedSchema.length > 0 &&
+			/\b[A-Z][A-Z0-9_]*\s*:/.test(trimmedSchema)
+		) {
+			const fallbackBlock = extractArkenvBlock(content);
+			if (fallbackBlock) {
+				assignFlatKeys(parseBlockKeys(fallbackBlock));
 			}
 		}
 	}

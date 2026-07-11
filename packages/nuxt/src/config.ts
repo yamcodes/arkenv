@@ -9,6 +9,7 @@ import {
 	resolveLayout,
 } from "@arkenv/build";
 import { createJiti } from "jiti";
+import { withForceServer } from "./validate-context";
 
 export type {
 	LayoutInput,
@@ -112,11 +113,7 @@ export function validateSchema(
 	baseDir: string,
 	internalOptions?: { _jitiAliases?: Record<string, string> },
 ): void {
-	try {
-		const g = globalThis as Record<string, unknown>;
-		g.__arkenv_force_server_count__ =
-			((g.__arkenv_force_server_count__ as number) || 0) + 1;
-		g.__arkenv_force_server__ = true;
+	withForceServer(() => {
 		const fileToEvaluate =
 			resolvedLayout === "strict" && baseDir
 				? path.join(baseDir, "server.ts")
@@ -235,17 +232,7 @@ export function validateSchema(
 			}
 			throw error;
 		}
-	} finally {
-		const g = globalThis as Record<string, unknown>;
-		g.__arkenv_force_server_count__ = Math.max(
-			0,
-			((g.__arkenv_force_server_count__ as number) || 0) - 1,
-		);
-		if (g.__arkenv_force_server_count__ === 0) {
-			delete g.__arkenv_force_server__;
-			delete g.__arkenv_force_server_count__;
-		}
-	}
+	});
 }
 
 export function extractKeys(content: string): {

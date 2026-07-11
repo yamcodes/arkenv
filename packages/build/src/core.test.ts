@@ -35,4 +35,17 @@ describe("@arkenv/build layout resolution", () => {
 		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
 		expect(res.sharedKeys).toEqual(["NODE_ENV", "CUSTOM_VAR"]);
 	});
+
+	it("extracts flat keys when schema values contain delimiter-like characters", () => {
+		const content = `
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				DESCRIPTION: "host={localhost},port=5432",
+				NUXT_PUBLIC_API_URL: "string",
+			});
+		`;
+		const res = extractKeys(content, "NUXT_PUBLIC_");
+		expect(res.serverKeys).toEqual(["DATABASE_URL", "DESCRIPTION"]);
+		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
+	});
 });
