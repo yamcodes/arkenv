@@ -12,7 +12,7 @@ The example defines the environment schema across three split files in the `env/
 
 1. **Shared variables**: `env/internal/shared.ts`
    ```ts
-   import { type } from "@arkenv/nextjs/shared";
+   import { type } from "@arkenv/core";
    export const SharedSchema = type({
         NODE_ENV: "'development' | 'production' | 'test' = 'development'",
    });

@@ -211,14 +211,16 @@ export function setupArkEnv(
 						? fileURLToPath(import.meta.url)
 						: "";
 			const dir = path.dirname(filenameForJiti);
-			const sharedPath = fs.existsSync(path.join(dir, "shared.ts"))
-				? path.join(dir, "shared.ts")
-				: path.join(dir, "shared.js");
+			const mockServerOnlyPath = fs.existsSync(
+				path.join(dir, "mock-server-only.ts"),
+			)
+				? path.join(dir, "mock-server-only.ts")
+				: path.join(dir, "mock-server-only.js");
 
 			const aliases: Record<string, string> = {
-				"server-only": sharedPath,
-				"./script": sharedPath,
-				"./script.tsx": sharedPath,
+				"server-only": mockServerOnlyPath,
+				"./script": mockServerOnlyPath,
+				"./script.tsx": mockServerOnlyPath,
 				...internalOptions?._jitiAliases,
 			};
 

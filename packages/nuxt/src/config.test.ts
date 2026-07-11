@@ -164,7 +164,7 @@ describe("Nuxt config parser & codegen", () => {
 			});
 		`;
 		const sharedContent = `
-			import { type } from "@arkenv/nuxt/shared";
+			import { type } from "@arkenv/core";
 			export const SharedSchema = type({
 				NODE_ENV: "string"
 			});

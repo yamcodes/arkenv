@@ -180,8 +180,7 @@ export function arkenvInternal(
 					const extKeys = getSchemaKeysArg(ext);
 					for (const key of extKeys) {
 						allKeys.add(key);
-						// Only classify as server-only if we are on the server, it's not a public key,
-						// and we aren't explicitly inside the shared entry point.
+						// Only classify as server-only when running on the server and the key is not public.
 						if (
 							isServer &&
 							!key.startsWith("NEXT_PUBLIC_") &&

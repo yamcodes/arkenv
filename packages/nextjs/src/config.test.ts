@@ -336,7 +336,7 @@ describe("withArkEnv wrapper", () => {
 		fs.writeFileSync(
 			path.join(strictBaseDir, "internal", "shared.ts"),
 			`
-			import { type } from "@arkenv/nextjs/shared";
+			import { type } from "@arkenv/core";
 			export const SharedSchema = type({
 				NODE_ENV: "string = 'development'",
 			});
@@ -472,7 +472,7 @@ describe("strict config key extraction", () => {
 
 	it("should extract shared keys from SharedSchema", () => {
 		const sharedSource = `
-			import { type } from "@arkenv/nextjs/shared";
+			import { type } from "@arkenv/core";
 			export const SharedSchema = type({
 				NODE_ENV: "string = 'development'",
 				PORT: "number.port = 3000",

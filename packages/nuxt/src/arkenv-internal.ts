@@ -38,7 +38,13 @@ export type FlatSchemaOptions = {
 export function arkenvInternal(
 	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
 	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
-	context: { isServer: boolean; isShared?: boolean } | undefined,
+	context:
+		| {
+				isServer: boolean;
+				isShared?: boolean;
+				strictLayout?: "client" | "server";
+		  }
+		| undefined,
 	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
 	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
 	/** Extracts the declared key names from a schema object. */
@@ -78,6 +84,10 @@ export function arkenvInternal(
 
 		if (context?.isShared) {
 			shared = flatSchema;
+		} else if (context?.strictLayout === "client") {
+			client = flatSchema;
+		} else if (context?.strictLayout === "server") {
+			server = flatSchema;
 		} else {
 			const exposedKeys =
 				options.exposeToClient || options.expose || options.shared || [];
@@ -175,8 +185,7 @@ export function arkenvInternal(
 					const extKeys = getSchemaKeys(ext);
 					for (const key of extKeys) {
 						allKeys.add(key);
-						// Only classify as server-only if we are on the server, it's not a public key,
-						// and we aren't explicitly inside the shared entry point.
+						// Only classify as server-only when running on the server and the key is not public.
 						if (
 							isServer &&
 							!key.startsWith("NUXT_PUBLIC_") &&
