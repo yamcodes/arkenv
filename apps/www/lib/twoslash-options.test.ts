@@ -88,6 +88,7 @@ import { env } from "@/env/client";
 const db = env.DATABASE_URL;
 `,
 			"ts",
+			arktypeTwoslashOptions.twoslashOptions,
 		);
 
 		// Assert we only have the TS2339 error, not TS2307
@@ -115,6 +116,7 @@ import { env } from "~~/env/client";
 const db = env.DATABASE_URL;
 `,
 			"ts",
+			arktypeTwoslashOptions.twoslashOptions,
 		);
 
 		const nuxtErrors = resultNuxt.errors.map((e) => e.code);

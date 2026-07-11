@@ -9,6 +9,7 @@ const require = createRequire(import.meta.url);
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(currentDir, "../../..");
+export const wwwRoot = path.join(root, "apps/www");
 
 export const arkTypePackageJson = JSON.parse(
 	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
@@ -39,10 +40,12 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
+		vfsRoot: wwwRoot,
 		compilerOptions: {
 			module: ts.ModuleKind.ESNext,
 			moduleResolution: ts.ModuleResolutionKind.Bundler,
 			target: ts.ScriptTarget.ES2022,
+			baseUrl: wwwRoot,
 			paths: {
 				"@arkenv/core": [path.join(root, "packages/core/src/index.ts")],
 				"@arkenv/standard": [path.join(root, "packages/standard/src/index.ts")],
@@ -110,6 +113,11 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@repo/keywords": [
 					path.join(root, "packages/internal/keywords/src/index.ts"),
 				],
+				"@/*": [path.join(root, "packages/arkenv/src/*"), "./*"],
+				"@/env/client": ["env/client.ts"],
+				"@/env/server": ["env/server.ts"],
+				"~~/env/client": ["env/client.ts"],
+				"~~/env/server": ["env/server.ts"],
 			},
 			types: ["node"],
 		},
