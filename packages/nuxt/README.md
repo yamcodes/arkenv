@@ -10,7 +10,7 @@ npm install @arkenv/nuxt arktype
 
 ## Setup
 
-The Nuxt module automatically sets up file watchers during development and performs code generation.
+The Nuxt module automatically sets up file watchers during development and performs build-time validation.
 
 ### 1. Configure `nuxt.config.ts`
 
@@ -23,29 +23,22 @@ export default defineNuxtConfig({
 });
 ```
 
-### 2. Define your schema in `env.ts` (Simple Layout)
+### 2. Define your schema in `env.ts` (Flat Layout)
 
-The easiest way to get started is the **simple layout**, which uses a single `env.ts` file in your project root:
+The easiest way to get started is the **flat layout**, which uses a single `env.ts` file in your project root:
 
 ```typescript
 // env.ts
-import arkenv from "./generated/env.gen";
+import arkenv from "@arkenv/nuxt";
 
 export const env = arkenv({
-  server: {
-    DATABASE_URL: "string",
-    STRIPE_API_KEY: "string",
-  },
-  client: {
-    NUXT_PUBLIC_API_URL: "string.host",
-  },
-  shared: {
-    NODE_ENV: "string",
-  },
+  DATABASE_URL: "string",
+  NUXT_PUBLIC_API_URL: "string.host",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
-*Note: For the best DX and CI/CD compatibility, we recommend committing `generated/env.gen.ts` to source control.*
+Variables prefixed with `NUXT_PUBLIC_` and `NODE_ENV` are automatically exposed to the client. Use `exposeToClient` for custom keys that do not follow the prefix convention.
 
 ### 3. Strict Layout (Optional)
 
@@ -77,4 +70,6 @@ This allows you to safely swap public configuration values in production without
 
 ## Client-Side Security
 
-The `@arkenv/nuxt` module includes a custom Vite plugin that strictly prevents any server-side environment definitions from leaking into the client bundle. If you attempt to import `@arkenv/nuxt/server` in a client component, the bundler will throw a compile-time error.
+The `@arkenv/nuxt` module includes a custom Vite plugin that strictly prevents any server-side environment definitions from leaking into the client bundle. If you attempt to import `@arkenv/nuxt/server` or a userland server schema file (for example, `~/env/server.ts` in the strict layout) in a client component, the bundler will throw a compile-time error.
+
+In flat layout, a runtime proxy throws if server-only keys are accessed in browser code.

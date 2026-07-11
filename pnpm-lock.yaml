@@ -1098,6 +1098,9 @@ importers:
       '@arkenv/build':
         specifier: workspace:*
         version: link:../build
+      jiti:
+        specifier: 'catalog:'
+        version: 2.7.0
     devDependencies:
       '@arkenv/core':
         specifier: workspace:*

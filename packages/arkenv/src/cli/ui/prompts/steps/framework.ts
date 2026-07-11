@@ -117,9 +117,9 @@ export async function layoutStep(options?: {
 				]
 			: [
 					{
-						value: "simple",
-						label: "Simple (Recommended)",
-						hint: "A single env.ts file for the best DX",
+						value: "flat",
+						label: "Flat (Recommended)",
+						hint: "A single flat env.ts file for the best DX",
 					},
 					{
 						value: "strict",

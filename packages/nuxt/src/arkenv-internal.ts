@@ -1,4 +1,5 @@
 import type { Dict, SchemaShape } from "@repo/types";
+import { isForceServer } from "./validate-context";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -79,9 +80,7 @@ export function arkenvInternal(
 		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
 		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
-		isServer =
-			(globalThis as any).__arkenv_force_server__ === true ||
-			!!context?.isServer;
+		isServer = isForceServer() || !!context?.isServer;
 
 		if (context?.isShared) {
 			shared = flatSchema;
