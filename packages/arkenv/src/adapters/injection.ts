@@ -1,6 +1,7 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
+import { logBuildError } from "@repo/utils";
 import type { LoggerPort } from "@/shared/ports";
 
 const MARKER = "// @arkenv-types";
@@ -46,8 +47,11 @@ export async function safeAppend(
 		return true;
 	} catch (e) {
 		const message = e instanceof Error ? e.message : String(e);
+		const errorMessage = `Failed to append to ${dtsPath}: ${message}`;
 		if (logger) {
-			logger.error(`Failed to append to ${dtsPath}: ${message}`);
+			logger.error(errorMessage);
+		} else {
+			logBuildError(errorMessage);
 		}
 		return false;
 	}
