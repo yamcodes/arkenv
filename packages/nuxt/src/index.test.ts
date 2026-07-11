@@ -19,7 +19,6 @@ describe("arkenv (Nuxt runtime)", () => {
 		expect(() => {
 			arkenv({
 				client: {
-					// @ts-expect-error - Client keys must be prefixed with NUXT_PUBLIC_
 					API_URL: "string",
 				},
 			});

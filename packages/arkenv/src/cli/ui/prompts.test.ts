@@ -55,6 +55,13 @@ describe("runPromptWizard", () => {
 		expect(result?.layout).toBe("flat");
 	});
 
+	it("should default layout to flat for nuxt in isYes mode", async () => {
+		const result = await runPromptWizard({ framework: "nuxt" }, true);
+
+		expect(result?.framework).toBe("nuxt");
+		expect(result?.layout).toBe("flat");
+	});
+
 	it("should default wrapNextjsConfig to true for nextjs in isYes mode", async () => {
 		const result = await runPromptWizard({ framework: "nextjs" }, true);
 

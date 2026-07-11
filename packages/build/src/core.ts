@@ -8,6 +8,9 @@ let activeWatcher: FSWatcher | undefined;
 
 export type LayoutMode = "simple" | "strict";
 
+/** Public layout values accepted by {@link resolveLayout}. */
+export type LayoutInput = LayoutMode | "flat";
+
 export type ResolvedLayout = {
 	layout: LayoutMode;
 	baseDir: string;
@@ -22,14 +25,15 @@ export type Logger = {
  * Resolve the layout mode and base directory for a given schema file path.
  *
  * @param schemaPath The absolute path to the schema file or directory
- * @param layoutOption An optional explicit layout configuration ("simple" or "strict")
+ * @param layoutOption An optional explicit layout configuration ("flat", "simple", or "strict")
  * @returns An object containing the resolved layout mode and the base directory path
  * @throws An error if explicit "strict" layout is requested but required split files are missing
  */
 export function resolveLayout(
 	schemaPath: string,
-	layoutOption?: LayoutMode,
+	layoutOption?: LayoutInput,
 ): ResolvedLayout {
+	const layout = layoutOption === "flat" ? "simple" : layoutOption;
 	const checkStrict = (dir: string) =>
 		fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
 		fs.existsSync(path.join(dir, "client.ts")) &&
@@ -47,7 +51,7 @@ export function resolveLayout(
 		return p;
 	};
 
-	if (!layoutOption) {
+	if (!layout) {
 		const resolved = resolveBaseDir(schemaPath);
 		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
 			if (checkStrict(resolved)) {
@@ -78,7 +82,7 @@ export function resolveLayout(
 		return { layout: "simple", baseDir: schemaPath };
 	}
 
-	if (layoutOption === "strict") {
+	if (layout === "strict") {
 		let baseDir: string;
 		const resolved = resolveBaseDir(schemaPath);
 		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
@@ -139,36 +143,161 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
 }
 
 /**
+ * Extract the schema and options arguments from an `arkenv` or `createEnv` call.
+ */
+function extractCallArguments(
+	content: string,
+): { schemaArg: string; optionsArg: string | null } | null {
+	const callRegex = /\b(?:arkenv|createEnv)\s*\(/g;
+	let match = callRegex.exec(content);
+
+	while (match !== null) {
+		const start = callRegex.lastIndex;
+		let parenCount = 1;
+		let braceCount = 0;
+		let bracketCount = 0;
+		const args: string[] = [];
+		let lastIndex = start;
+
+		const tokenRegex =
+			/\/\/.*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\$]|\\[\s\S]|\${[\s\S]*?})*`|[(){}[\],]/g;
+		tokenRegex.lastIndex = start;
+
+		let tokenMatch = tokenRegex.exec(content);
+		while (parenCount > 0 && tokenMatch !== null) {
+			const token = tokenMatch[0];
+			const index = tokenMatch.index;
+
+			if (token === "(") {
+				parenCount++;
+			} else if (token === ")") {
+				parenCount--;
+			} else if (token === "{") {
+				braceCount++;
+			} else if (token === "}") {
+				braceCount--;
+			} else if (token === "[") {
+				bracketCount++;
+			} else if (token === "]") {
+				bracketCount--;
+			} else if (
+				token === "," &&
+				parenCount === 1 &&
+				braceCount === 0 &&
+				bracketCount === 0
+			) {
+				args.push(content.slice(lastIndex, index).trim());
+				lastIndex = tokenRegex.lastIndex;
+			}
+			if (parenCount === 0) {
+				break;
+			}
+			tokenMatch = tokenRegex.exec(content);
+		}
+
+		if (parenCount === 0) {
+			args.push(content.slice(lastIndex, tokenRegex.lastIndex - 1).trim());
+			return {
+				schemaArg: args[0] || "",
+				optionsArg: args[1] || null,
+			};
+		}
+		match = callRegex.exec(content);
+	}
+	return null;
+}
+
+/**
  * Extract environment variable keys statically from the schema file content.
+ * Supports both legacy nested layout and flat layout with a parameterizable public prefix.
  *
  * @param content The string content of the schema file
+ * @param publicPrefix An optional framework-specific public prefix (e.g. "NEXT_PUBLIC_" or "NUXT_PUBLIC_")
  * @returns An object containing arrays of server, client, and shared keys
  */
-export function extractKeys(content: string): {
+export function extractKeys(
+	content: string,
+	publicPrefix?: string,
+): {
 	serverKeys: string[];
 	clientKeys: string[];
 	sharedKeys: string[];
+	isLegacy?: boolean;
 } {
 	const serverKeys: string[] = [];
 	const clientKeys: string[] = [];
 	const sharedKeys: string[] = [];
 
-	const serverBlock = extractBlock(content, "server");
-	if (serverBlock) {
-		serverKeys.push(...parseBlockKeys(serverBlock));
+	const args = extractCallArguments(content);
+	if (!args) {
+		const serverBlock = extractBlock(content, "server");
+		if (serverBlock) {
+			serverKeys.push(...parseBlockKeys(serverBlock));
+		}
+
+		const clientBlock = extractBlock(content, "client");
+		if (clientBlock) {
+			clientKeys.push(...parseBlockKeys(clientBlock));
+		}
+
+		const sharedBlock = extractBlock(content, "shared");
+		if (sharedBlock) {
+			sharedKeys.push(...parseBlockKeys(sharedBlock));
+		}
+
+		return { serverKeys, clientKeys, sharedKeys, isLegacy: true };
 	}
 
-	const clientBlock = extractBlock(content, "client");
-	if (clientBlock) {
-		clientKeys.push(...parseBlockKeys(clientBlock));
+	const trimmedSchema = args.schemaArg
+		.replace(/^\{/, "")
+		.replace(/\}$/, "")
+		.trim();
+	const topKeys = parseBlockKeys(trimmedSchema);
+	const isLegacy =
+		topKeys.includes("client") ||
+		topKeys.includes("server") ||
+		topKeys.includes("shared");
+
+	if (isLegacy) {
+		const clientBlock = extractBlock(args.schemaArg, "client");
+		if (clientBlock) {
+			clientKeys.push(...parseBlockKeys(clientBlock));
+		}
+		const sharedBlock = extractBlock(args.schemaArg, "shared");
+		if (sharedBlock) {
+			sharedKeys.push(...parseBlockKeys(sharedBlock));
+		}
+		const serverBlock = extractBlock(args.schemaArg, "server");
+		if (serverBlock) {
+			serverKeys.push(...parseBlockKeys(serverBlock));
+		}
+	} else {
+		const optionExposedKeys: string[] = [];
+		if (args.optionsArg) {
+			const exposeMatch =
+				args.optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
+				args.optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
+				args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
+			if (exposeMatch) {
+				const matches = exposeMatch[1].matchAll(/['"`](.*?)['"`]/g);
+				for (const exposeMatchResult of matches) {
+					optionExposedKeys.push(exposeMatchResult[1]);
+				}
+			}
+		}
+
+		for (const key of topKeys) {
+			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
+				sharedKeys.push(key);
+			} else if (publicPrefix && key.startsWith(publicPrefix)) {
+				clientKeys.push(key);
+			} else {
+				serverKeys.push(key);
+			}
+		}
 	}
 
-	const sharedBlock = extractBlock(content, "shared");
-	if (sharedBlock) {
-		sharedKeys.push(...parseBlockKeys(sharedBlock));
-	}
-
-	return { serverKeys, clientKeys, sharedKeys };
+	return { serverKeys, clientKeys, sharedKeys, isLegacy };
 }
 
 /**

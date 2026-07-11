@@ -1,0 +1,127 @@
+---
+title: Flat layout
+icon: Zap
+description: Get the ultimate DX in Nuxt using a single, unified flat schema file.
+---
+
+In this setup, you define all your environment variables in a single flat object.
+
+```files
+env.ts
+```
+
+To protect server-side secrets from ever reaching the client bundle in the browser, ArkEnv uses a proxy that throws a runtime error if a server-side variable is accessed in browser code. Note that during Server-Side Rendering (SSR), client-shared code executes on the server first, where this runtime guard is not active. See the [Security model](/docs/nuxt/security) page for more details.
+
+:::warning[Server logic in client bundle]
+Defining your schemas together means the *server validation logic* is shipped in the client bundle.
+
+| ⚠️ Visible in JS bundle                                                         | 🔒 Secure on server                                  |
+| :------------------------------------------------------------------------------ | :--------------------------------------------------- |
+| **Schema** (keys, types, and constraints)<br />e.g., `DATABASE_URL: string.url` | **Runtime values**<br />e.g., `"postgresql://db..."` |
+
+The values themselves are *not* shipped to the client! But if exposing your server variable *names*, *types*, or *constraints* is a security concern, use the [strict layout](/docs/nuxt/layouts/strict) instead.
+:::
+
+## Setup
+
+The easiest way to bootstrap the flat layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nuxt` for your existing Nuxt project and generates your `env.ts` file.
+
+```npm
+npx @arkenv/cli@latest init
+```
+
+## Your schema
+
+When bootstrapping with the CLI, it generates a single `env.ts` file where you define your environment variables directly in a flat structure:
+
+```ts title="env.ts" twoslash
+import arkenv from '@arkenv/nuxt';
+// ---cut---
+export const env = arkenv({
+	DATABASE_URL: "string",
+	NUXT_PUBLIC_API_URL: "string",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+### Exposing client variables
+
+By default, ArkEnv automatically identifies and exposes variables to the client based on two criteria:
+
+1. Keys prefixed with `NUXT_PUBLIC_` (e.g. `NUXT_PUBLIC_API_URL`).
+2. The `NODE_ENV` variable (which is implicitly shared to align with Nuxt's runtime config).
+
+If you have custom variables that do not follow the prefix convention but must be exposed to the client, you can specify them using the `exposeToClient` option:
+
+```ts title="env.ts" twoslash
+import arkenv from '@arkenv/nuxt';
+// ---cut---
+export const env = arkenv({
+	DATABASE_URL: "string",
+	NUXT_PUBLIC_API_URL: "string",
+	CUSTOM_VAR: "string",
+}, {
+	exposeToClient: ["CUSTOM_VAR"]
+});
+```
+
+<Accordions>
+  <Accordion title="Manual setup">
+    ### Configure environment [step] [!toc]
+
+    Create an `env.ts` file at the root of your project to define your schema. Import `arkenv` from `@arkenv/nuxt`:
+
+    ```ts twoslash title="env.ts"
+    import arkenv from '@arkenv/nuxt';
+    // ---cut---
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NUXT_PUBLIC_API_URL: "string",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+
+    ### Register module in Nuxt config [step] [!toc]
+
+    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. The module scans your schema at build time for validation and registers the public keys to Nuxt's `runtimeConfig`. At runtime, values are resolved dynamically from `useRuntimeConfig()` — no generated files are created or needed:
+
+    ```ts title="nuxt.config.ts"
+    export default defineNuxtConfig({
+    	modules: ["@arkenv/nuxt/module"]
+    });
+    ```
+
+    You can customize the schema path and validation behavior using optional parameters:
+
+    ```ts title="nuxt.config.ts"
+    export default defineNuxtConfig({
+    	modules: ["@arkenv/nuxt/module"],
+    	arkenv: {
+    		schemaPath: "env.ts",  // Path to your schema (default: env.ts or src/env.ts)
+    		layout: "flat",        // Explicitly specify layout
+    		validate: true,        // Validate environment variables at build-time (default: true)
+    	}
+    });
+    ```
+
+    ### Use in your code [step] [!toc]
+
+    Import `env` throughout your Nuxt application:
+
+    ```ts title="components/MyComponent.vue"
+    import { env } from "~~/env";
+
+    // Access is fully typesafe and autocompleted
+    const apiUrl = env.NUXT_PUBLIC_API_URL;
+    ```
+
+    If you accidentally attempt to access a server-side secret in client-side code, it will throw a descriptive runtime exception during browser execution (note that it will not throw during Server-Side Rendering, only once hydration completes in the browser):
+
+    ```ts title="components/ClientOnlyComponent.vue"
+    import { env } from "~~/env";
+
+    // Throws a runtime error if evaluated in client-side code
+    const dbUrl = env.DATABASE_URL;
+    ```
+  </Accordion>
+</Accordions>

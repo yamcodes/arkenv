@@ -1,15 +1,8 @@
 import type { EnvSchema, Infer } from "@arkenv/core";
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { SchemaShape } from "@repo/types";
-import { arkenvInternal } from "./arkenv-internal";
+import { arkenvInternal, type FlatSchemaOptions } from "./arkenv-internal";
 
-/**
- * Create a validated, type-safe environment configuration for Nuxt applications.
- *
- * @param options The environment validation configuration options
- * @returns A validated, readonly environment variables object wrapped in a security proxy
- * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
- */
 export function arkenv<
 	const TServer extends SchemaShape = {},
 	const TClient extends SchemaShape = {},
@@ -21,18 +14,44 @@ export function arkenv<
 	};
 	shared?: EnvSchema<TShared>;
 	runtimeEnv?: Record<string, unknown>;
-}): Readonly<Infer<TServer & TClient & TShared>> {
-	type ReturnType = Readonly<Infer<TServer & TClient & TShared>>;
-	// In Nuxt, we want to know whether we are in client or server.
-	// We can check if `typeof window === "undefined"` to dynamically detect server runtime.
+}): Readonly<Infer<TServer & TClient & TShared>>;
+
+export function arkenv<const TSchema extends SchemaShape = {}>(
+	schema: EnvSchema<TSchema>,
+	options?: FlatSchemaOptions,
+): Readonly<Infer<TSchema>>;
+
+export function arkenv(
+	schemaOrOptions: SchemaShape | Record<string, unknown>,
+	optionsOrIsServer?: FlatSchemaOptions | boolean,
+): unknown {
+	const isLegacy =
+		schemaOrOptions &&
+		typeof schemaOrOptions === "object" &&
+		("runtimeEnv" in schemaOrOptions ||
+			"server" in schemaOrOptions ||
+			"client" in schemaOrOptions ||
+			"shared" in schemaOrOptions);
+
 	const isServer = typeof window === "undefined";
+
+	if (isLegacy) {
+		return arkenvInternal(
+			schemaOrOptions,
+			isServer,
+			undefined,
+			coreArkenv,
+			getSchemaKeys,
+		);
+	}
+
 	return arkenvInternal(
-		options,
-		isServer,
-		undefined,
+		schemaOrOptions,
+		optionsOrIsServer as FlatSchemaOptions | undefined,
+		{ isServer },
 		coreArkenv,
 		getSchemaKeys,
-	) as ReturnType;
+	);
 }
 
 export type { Infer } from "@arkenv/core";

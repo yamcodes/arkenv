@@ -179,7 +179,7 @@ async function runExistingProjectWizard(
 			} else if (defaults?.isFlat) {
 				layout = "flat";
 			} else {
-				layout = framework === "nextjs" ? "flat" : "simple";
+				layout = "flat";
 			}
 		}
 		const hasTypeFile = await getHasTypeFile(
