@@ -72,6 +72,27 @@ describe("env-template", () => {
 			expect(template).not.toContain("shared:");
 		});
 
+		it("returns nuxt flat layout template when layout is flat", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "nuxt" as any,
+				layout: "flat" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: true,
+			};
+			const template = getEnvTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nuxt"');
+			expect(template).toContain("DATABASE_URL:");
+			expect(template).toContain("NUXT_PUBLIC_API_URL:");
+			expect(template).not.toContain("server:");
+			expect(template).not.toContain("client:");
+			expect(template).not.toContain("shared:");
+			expect(template).not.toContain("runtimeEnv:");
+		});
+
 		it("returns nextjs nested layout template when layout is simple", () => {
 			const options = {
 				validator: "arktype" as any,

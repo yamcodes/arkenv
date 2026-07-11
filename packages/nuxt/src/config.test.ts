@@ -1,16 +1,42 @@
 import fs from "node:fs";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
 	extractSharedKeys,
+	normalizeLayout,
 	resolveLayout,
 } from "./config";
 
 describe("Nuxt config parser & codegen", () => {
+	describe("normalizeLayout", () => {
+		beforeEach(() => {
+			vi.stubEnv("NODE_ENV", "development");
+		});
+
+		afterEach(() => {
+			vi.unstubAllEnvs();
+		});
+
+		it("maps flat to simple internally", () => {
+			expect(normalizeLayout("flat")).toBe("simple");
+		});
+
+		it("maps simple to simple and emits a deprecation warning", () => {
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+			expect(normalizeLayout("simple")).toBe("simple");
+			expect(warnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("'simple' layout option is deprecated"),
+			);
+
+			warnSpy.mockRestore();
+		});
+	});
+
 	it("should resolve simple layout", () => {
 		const tempDir = path.join(__dirname, "temp-simple-test");
 		fs.mkdirSync(tempDir, { recursive: true });
@@ -70,6 +96,24 @@ describe("Nuxt config parser & codegen", () => {
 		expect(res.serverKeys).toEqual(["DATABASE_URL", "ADMIN_KEY"]);
 		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
 		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
+	});
+
+	it("should extract keys in flat layout", () => {
+		const content = `
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
+				CUSTOM_SHARED: "string",
+			}, {
+				exposeToClient: ["CUSTOM_SHARED"],
+			});
+		`;
+
+		const res = extractKeys(content);
+		expect(res.serverKeys).toEqual(["DATABASE_URL"]);
+		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
+		expect(res.sharedKeys).toEqual(["NODE_ENV", "CUSTOM_SHARED"]);
 	});
 
 	it("should handle parser edge cases with comments, nested objects, and templates", () => {

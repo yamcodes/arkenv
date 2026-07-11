@@ -16,7 +16,7 @@
 	"scripts": {
 		"build": "tsdown",
 		"typecheck": "tsc --noEmit",
-		"test": "vitest run",
+		"test": "vitest",
 		"clean": "rimraf dist node_modules",
 		"fix": "pnpm -w run fix"
 	},

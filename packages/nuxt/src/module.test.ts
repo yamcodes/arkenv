@@ -56,6 +56,7 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
+					validate: false,
 				},
 				mockNuxt,
 			);
@@ -109,6 +110,7 @@ describe("Nuxt module integration", () => {
 			await (module as any).setup(
 				{
 					schemaPath: "./env.ts",
+					validate: false,
 				},
 				mockNuxt,
 			);
@@ -121,6 +123,53 @@ describe("Nuxt module integration", () => {
 
 			// Check if schemaPath was added to watch paths
 			expect(mockNuxt.options.watch).toContain(schemaPath);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should register flat layout keys to nuxt.options.runtimeConfig", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-flat-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string"
+			});
+			`,
+		);
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			await (module as any).setup(
+				{
+					schemaPath: "./env.ts",
+					layout: "flat",
+					validate: false,
+				},
+				mockNuxt,
+			);
+
+			expect(mockNuxt.options.runtimeConfig.DATABASE_URL).toBeDefined();
+			expect(
+				mockNuxt.options.runtimeConfig.public.NUXT_PUBLIC_API_URL,
+			).toBeDefined();
+			expect(mockNuxt.options.runtimeConfig.public.NODE_ENV).toBeDefined();
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
