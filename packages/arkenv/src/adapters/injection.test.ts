@@ -119,7 +119,7 @@ type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
 		expect(content).toContain('import("../../src/config/env")');
 	});
 
-	it("logs via logBuildError when append fails without a logger", async () => {
+	it("logs via logBuildErrorWithCause when append fails without a logger", async () => {
 		const logSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 		const dtsPath = path.join(tempDir, "missing", "vite-env.d.ts");
 		const schemaPath = path.join(tempDir, "env.ts");
@@ -127,11 +127,13 @@ type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
 		const result = await safeAppend(dtsPath, schemaPath, "vite");
 
 		expect(result).toBe(false);
-		expect(logSpy).toHaveBeenCalled();
+		expect(logSpy).toHaveBeenCalledTimes(2);
+		expect(logSpy.mock.calls[0][0]).toContain("Failed to append to");
+		expect(logSpy.mock.calls[1][0]).toContain("ENOENT");
 		logSpy.mockRestore();
 	});
 
-	it("routes append failures through the provided logger", async () => {
+	it("routes append failures through the provided logger with full cause", async () => {
 		const logger = { error: vi.fn() };
 		const dtsPath = path.join(tempDir, "missing", "vite-env.d.ts");
 		const schemaPath = path.join(tempDir, "env.ts");
@@ -139,7 +141,8 @@ type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
 		const result = await safeAppend(dtsPath, schemaPath, "vite", logger);
 
 		expect(result).toBe(false);
-		expect(logger.error).toHaveBeenCalledOnce();
+		expect(logger.error).toHaveBeenCalledTimes(2);
 		expect(logger.error.mock.calls[0][0]).toContain(dtsPath);
+		expect(logger.error.mock.calls[1][0]).toContain("ENOENT");
 	});
 });

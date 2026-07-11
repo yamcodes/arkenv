@@ -1,6 +1,6 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { logBuildError } from "@repo/utils";
+import { logBuildErrorWithCause, logErrorWithCauseVia } from "@repo/utils";
 import dedent from "dedent";
 import type { LoggerPort } from "@/shared/ports";
 
@@ -46,12 +46,11 @@ export async function safeAppend(
 		);
 		return true;
 	} catch (e) {
-		const message = e instanceof Error ? e.message : String(e);
-		const errorMessage = `Failed to append to ${dtsPath}: ${message}`;
+		const header = `Failed to append to ${dtsPath}`;
 		if (logger) {
-			logger.error(errorMessage);
+			logErrorWithCauseVia(logger.error.bind(logger), header, e);
 		} else {
-			logBuildError(errorMessage);
+			logBuildErrorWithCause(header, e);
 		}
 		return false;
 	}
