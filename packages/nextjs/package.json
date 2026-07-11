@@ -19,6 +19,7 @@
 		"@arkenv/standard": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
+		"@repo/utils": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/react": "catalog:",
 		"arktype": "catalog:",

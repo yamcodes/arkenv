@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { logBuildError } from "@repo/utils";
 import type { BunPlugin } from "bun";
 import { processEnvSchema, registerLoader } from "./utils";
 
@@ -50,7 +51,8 @@ export function createBunPlugin(coreArkenv: any, pluginName: string) {
 							break;
 						}
 					} catch (e) {
-						console.error(`Failed to load env schema from ${p}:`, e);
+						const message = e instanceof Error ? e.message : String(e);
+						logBuildError(`Failed to load env schema from ${p}: ${message}`);
 					}
 				}
 			}

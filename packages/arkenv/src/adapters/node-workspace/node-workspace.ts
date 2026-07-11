@@ -1,7 +1,11 @@
 import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
 import pc from "picocolors";
-import type { BootstrapResult, WorkspacePort } from "@/shared/ports";
+import type {
+	BootstrapResult,
+	LoggerPort,
+	WorkspacePort,
+} from "@/shared/ports";
 import {
 	bootstrapBunConfig,
 	bootstrapNextjsConfig,
@@ -25,6 +29,7 @@ export class NodeWorkspace implements WorkspacePort {
 			| "ignore"
 			| "pipe"
 			| readonly (object | number | string | null | undefined)[],
+		private logger?: Pick<LoggerPort, "error">,
 	) {}
 
 	async exists(filePath: string): Promise<boolean> {
@@ -144,6 +149,6 @@ export class NodeWorkspace implements WorkspacePort {
 		framework: "vite" | "bun-fullstack",
 	) {
 		const { safeAppend } = await import("../injection");
-		return safeAppend(filePath, schemaPath, framework);
+		return safeAppend(filePath, schemaPath, framework, this.logger);
 	}
 }

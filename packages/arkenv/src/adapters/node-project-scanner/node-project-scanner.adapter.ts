@@ -2,6 +2,7 @@ import { execSync } from "node:child_process";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import type {
+	LoggerPort,
 	ParsedTsConfig,
 	ProjectScannerPort,
 	RequirementCheckResult,
@@ -20,6 +21,7 @@ import { checkTsConfig, findTsConfig, loadTsConfig } from "./utils/tsconfig";
  * Adapter implementation for ProjectScannerPort using Node.js APIs.
  */
 export class NodeProjectScannerAdapter implements ProjectScannerPort {
+	constructor(private logger?: Pick<LoggerPort, "log">) {}
 	/**
 	 * Reports whether a directory has no entries, treating unreadable directories as not empty.
 	 */
@@ -191,7 +193,7 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 		} catch (error) {
 			const err = error as { code?: string; stderr?: string };
 			if (err.code === "ENOENT") {
-				console.debug(
+				this.logger?.log(
 					"Git is not installed on this system. Skipping git status check.",
 				);
 				return { status: "not_a_repo" };

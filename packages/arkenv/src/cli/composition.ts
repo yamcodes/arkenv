@@ -16,9 +16,9 @@ import { HelpUseCase, InitUseCase } from "./commands";
 export function compose(argv: string[]) {
 	const cli = new CLI(argv);
 	const logger = cli.logger; // CLI currently creates the logger, which is fine for now
-	const workspace = new NodeWorkspace(cli.isQuiet, logger.stdio);
+	const workspace = new NodeWorkspace(cli.isQuiet, logger.stdio, logger);
 	const prompt = new ClackPromptAdapter();
-	const scanner = new NodeProjectScannerAdapter();
+	const scanner = new NodeProjectScannerAdapter(logger);
 
 	const initUseCase = new InitUseCase(logger, workspace, prompt, scanner);
 	const helpUseCase = new HelpUseCase(logger);

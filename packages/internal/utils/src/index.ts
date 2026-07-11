@@ -22,6 +22,16 @@ export {
 	safeExecute,
 } from "./utils/errors";
 export { indent } from "./utils/indent";
+export {
+	BUILD_PREFIX,
+	formatBuildError,
+	logBuildError,
+	logBuildErrorBlankLine,
+	logBuildErrorDetail,
+	logBuildWarning,
+	logWatcherError,
+	WATCHER_PREFIX,
+} from "./utils/log-helpers";
 export { isDebugSecrets, safeStringify, shouldRedact } from "./utils/redact";
 export {
 	extractJsonSchema,

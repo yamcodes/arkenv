@@ -1,6 +1,7 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import dedent from "dedent";
+import type { LoggerPort } from "@/shared/ports";
 
 const MARKER = "// @arkenv-types";
 
@@ -8,6 +9,7 @@ export async function safeAppend(
 	dtsPath: string,
 	schemaPath: string,
 	framework: "vite" | "bun-fullstack",
+	logger?: Pick<LoggerPort, "error">,
 ): Promise<boolean> {
 	try {
 		const content = await fsp.readFile(dtsPath, "utf-8");
@@ -43,7 +45,10 @@ export async function safeAppend(
 		);
 		return true;
 	} catch (e) {
-		console.error(`Failed to append to ${dtsPath}:`, e);
+		const message = e instanceof Error ? e.message : String(e);
+		if (logger) {
+			logger.error(`Failed to append to ${dtsPath}: ${message}`);
+		}
 		return false;
 	}
 }

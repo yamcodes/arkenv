@@ -10,6 +10,13 @@ import {
 	resolveLayout,
 	watchSchema,
 } from "@arkenv/build";
+import {
+	formatBuildError,
+	logBuildError,
+	logBuildErrorBlankLine,
+	logBuildErrorDetail,
+	logBuildWarning,
+} from "@repo/utils";
 import { createJiti } from "jiti";
 
 export { extractClientKeys, extractSharedKeys };
@@ -22,8 +29,8 @@ function normalizeLayout(
 	if (layout === "simple") {
 		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
 			hasWarnedSimpleLayout = true;
-			console.warn(
-				"⚠️ [arkenv] The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
+			logBuildWarning(
+				"The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
 			);
 		}
 		return "simple";
@@ -151,9 +158,11 @@ export function setupArkEnv(
 
 	if (!schemaPath || !exists) {
 		throw new Error(
-			`[ArkEnv] Could not find schema file at ${
-				options?.schemaPath || "src/env.ts or env.ts"
-			}. Please specify 'schemaPath' in setupArkEnv options.`,
+			formatBuildError(
+				`Could not find schema file at ${
+					options?.schemaPath || "src/env.ts or env.ts"
+				}. Please specify 'schemaPath' in setupArkEnv options.`,
+			),
 		);
 	}
 
@@ -183,7 +192,9 @@ export function setupArkEnv(
 			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
-			throw new Error(`[ArkEnv] Failed to generate env.gen.ts: ${message}`);
+			throw new Error(
+				formatBuildError(`Failed to generate env.gen.ts: ${message}`),
+			);
 		}
 	}
 
@@ -223,9 +234,11 @@ export function setupArkEnv(
 			});
 			jiti(fileToEvaluate);
 		} catch (error: unknown) {
-			console.error("\n❌ [ArkEnv] Environment validation failed:");
-			console.error(error instanceof Error ? error.message : String(error));
-			console.error("");
+			logBuildError("Environment validation failed:");
+			logBuildErrorDetail(
+				error instanceof Error ? error.message : String(error),
+			);
+			logBuildErrorBlankLine();
 			process.exit(1);
 		} finally {
 			delete (globalThis as any).__arkenv_force_server__;

@@ -19,6 +19,6 @@ export default defineConfig({
 	fixedExtension: false,
 	sourcemap: true,
 	deps: {
-		alwaysBundle: ["@repo/types"],
+		alwaysBundle: ["@repo/types", "@repo/utils"],
 	},
 });

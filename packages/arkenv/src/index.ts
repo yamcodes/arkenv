@@ -1,17 +1,23 @@
 #!/usr/bin/env node
+import { formatBuildError } from "@repo/utils";
 import { shake } from "radashi";
+import { Logger } from "./adapters/logger.adapter";
 import { compose } from "./cli/composition";
 
 // Detect if this file is being imported/required as a library rather than run directly as a CLI.
 if (typeof require !== "undefined" && require.main !== module) {
 	throw new Error(
-		"🚨 [ArkEnv] You imported the 'arkenv' package as a library. " +
-			"Starting with v1.0.0, the 'arkenv' package is exclusively the interactive CLI. " +
-			"If you want to validate environment variables in your code, please install and import '@arkenv/core' instead.",
+		`🚨 ${formatBuildError(
+			"You imported the 'arkenv' package as a library. " +
+				"Starting with v1.0.0, the 'arkenv' package is exclusively the interactive CLI. " +
+				"If you want to validate environment variables in your code, please install and import '@arkenv/core' instead.",
+		)}`,
 	);
 }
 
-let globalLogger: any;
+const fallbackLogger = new Logger({ isQuiet: false, isJson: false });
+
+let globalLogger: Logger | undefined;
 let isShuttingDown = false;
 
 /**
@@ -115,29 +121,23 @@ main();
 
 // Defense-in-depth for unforeseen async rejections
 process.on("unhandledRejection", async (err) => {
-	if (globalLogger) {
-		try {
-			globalLogger.fatal("Unhandled rejection", err);
-		} catch {
-			// Already logged
-		}
-		await globalLogger.flush();
-	} else {
-		console.error("Unhandled rejection", err);
+	const logger = globalLogger ?? fallbackLogger;
+	try {
+		logger.fatal("Unhandled rejection", err);
+	} catch {
+		// Already logged
 	}
+	await logger.flush();
 	process.exit(1);
 });
 
 process.on("uncaughtException", async (err) => {
-	if (globalLogger) {
-		try {
-			globalLogger.fatal("Uncaught exception", err);
-		} catch {
-			// Already logged
-		}
-		await globalLogger.flush();
-	} else {
-		console.error("Uncaught exception", err);
+	const logger = globalLogger ?? fallbackLogger;
+	try {
+		logger.fatal("Uncaught exception", err);
+	} catch {
+		// Already logged
 	}
+	await logger.flush();
 	process.exit(1);
 });
