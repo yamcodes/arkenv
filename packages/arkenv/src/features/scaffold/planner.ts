@@ -124,8 +124,20 @@ function getEnvDefaultsForExample(
 export function stripValuesFromEnvContent(content: string): string {
 	const lines = content.split(/\r?\n/);
 	const resultLines: string[] = [];
+	let inQuote: string | null = null;
 
 	for (const line of lines) {
+		const unescapedLine = line.replace(/\\"/g, "").replace(/\\'/g, "");
+
+		if (inQuote) {
+			const quoteCount = (unescapedLine.match(new RegExp(inQuote, "g")) || [])
+				.length;
+			if (quoteCount % 2 !== 0) {
+				inQuote = null;
+			}
+			continue;
+		}
+
 		const trimmed = line.trim();
 		if (!trimmed || trimmed.startsWith("#")) {
 			resultLines.push(line);
@@ -138,13 +150,52 @@ export function stripValuesFromEnvContent(content: string): string {
 		if (match) {
 			const prefix = match[1];
 			const key = match[2];
+			const val = match[3].trim();
+
 			resultLines.push(`${prefix}${key}=`);
+
+			const unescapedVal = val.replace(/\\"/g, "").replace(/\\'/g, "");
+			if (val.startsWith('"')) {
+				const quoteCount = (unescapedVal.match(/"/g) || []).length;
+				if (quoteCount % 2 !== 0) {
+					inQuote = '"';
+				}
+			} else if (val.startsWith("'")) {
+				const quoteCount = (unescapedVal.match(/'/g) || []).length;
+				if (quoteCount % 2 !== 0) {
+					inQuote = "'";
+				}
+			}
 		} else {
 			resultLines.push(line);
 		}
 	}
 
 	return resultLines.join("\n");
+}
+
+function isIgnored(lines: string[], target: string): boolean {
+	return lines.some((line) => {
+		const commentIndex = line.indexOf("#");
+		const clean = (
+			commentIndex !== -1 ? line.slice(0, commentIndex) : line
+		).trim();
+		if (!clean) return false;
+
+		if (clean === target || clean === `/${target}`) return true;
+
+		if (clean.includes("*")) {
+			const regexStr = `^${clean.replace(/\./g, "\\.").replace(/\*/g, ".*").replace(/^\//, "/?")}$`;
+			try {
+				const regex = new RegExp(regexStr);
+				return regex.test(target) || regex.test(`/${target}`);
+			} catch {
+				return false;
+			}
+		}
+
+		return false;
+	});
 }
 
 /**
@@ -453,20 +504,14 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 
 		if (hasGitignore && options.gitignoreContent !== undefined) {
 			const lines = options.gitignoreContent.split(/\r?\n/);
-			const ignoresEnv = lines.some((line) => {
-				const trimmed = line.trim();
-				return (
-					trimmed === ".env" ||
-					trimmed === "/.env" ||
-					trimmed === ".env*" ||
-					trimmed === "/.env*" ||
-					trimmed === ".env.local" ||
-					trimmed === "/.env.local"
-				);
-			});
+			const hasEnv = isIgnored(lines, ".env");
+			const hasEnvLocal = isIgnored(lines, ".env.local");
 
-			if (!ignoresEnv) {
-				const suffix = "\n# Environment variables\n.env\n.env.local\n";
+			if (!hasEnv || !hasEnvLocal) {
+				let suffix = "\n# Environment variables\n";
+				if (!hasEnv) suffix += ".env\n";
+				if (!hasEnvLocal) suffix += ".env.local\n";
+
 				const newContent = options.gitignoreContent.endsWith("\n")
 					? `${options.gitignoreContent}${suffix.trim()}\n`
 					: `${options.gitignoreContent}\n${suffix.trim()}\n`;
