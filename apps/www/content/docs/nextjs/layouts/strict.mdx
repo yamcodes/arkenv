@@ -17,6 +17,17 @@ src
 
 By importing `@arkenv/core` from `@/env/client` in client-side code and `@/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `@/env/server` is accidentally imported in a Client Component, ArkEnv fails the build with a compilation error.
 
+## Import mental model
+
+- **Flat layout:** import from `@arkenv/nextjs` — one entry point, bundler picks the build.
+- **Strict layout:** import from `@arkenv/nextjs/client` and `@arkenv/nextjs/server`.
+- **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
+- **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+
+:::note Migration
+If you previously used `@arkenv/nextjs/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
+:::
+
 ## Setup
 
 The easiest way to bootstrap the strict layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project using the **strict layout** option.
@@ -34,7 +45,7 @@ By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withA
 :::
 
 ```ts title="src/env/internal/shared.ts" twoslash
-import { type } from "@arkenv/nextjs/shared";
+import { type } from "@arkenv/core";
 
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -47,7 +58,7 @@ export const SharedSchema = type({
 
 ```ts title="src/env/client.ts" twoslash
 // @filename: /env/internal/shared.ts
-import { type } from "@arkenv/nextjs/shared";
+import { type } from "@arkenv/core";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
@@ -121,7 +132,7 @@ export const env = arkenv(
     Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
     ```ts title="src/env/internal/shared.ts" twoslash
-    import { type } from "@arkenv/nextjs/shared";
+    import { type } from "@arkenv/core";
 
     /**
      * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -138,7 +149,7 @@ export const env = arkenv(
 
     ```ts title="src/env/client.ts" twoslash
     // @filename: /env/internal/shared.ts
-    import { type } from "@arkenv/nextjs/shared";
+    import { type } from "@arkenv/core";
     export const SharedSchema = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
     });
@@ -179,7 +190,7 @@ export const env = arkenv(
 
     ```ts title="src/env/server.ts" twoslash
     // @filename: /env/internal/shared.ts
-    import { type } from "@arkenv/nextjs/shared";
+    import { type } from "@arkenv/core";
     export const SharedSchema = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
     });
@@ -254,7 +265,7 @@ Import `env` from the server file. It contains all public, shared, and server-on
 
 ```ts title="src/app/page.ts" twoslash
 // @filename: /env/internal/shared.ts
-import { type } from "@arkenv/nextjs/shared";
+import { type } from "@arkenv/core";
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
  * Do not import this directly. Import `env` from `./client` or `./server` instead.
@@ -296,9 +307,9 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
 
 ```ts title="src/app/client-component.ts" twoslash
-// @noErrors
-// @filename: /env/internal/shared.ts
-import { type } from "@arkenv/nextjs/shared";
+// @errors: 2339
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/core";
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
  * Do not import this directly. Import `env` from `./client` or `./server` instead.

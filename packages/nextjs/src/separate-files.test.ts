@@ -4,9 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
+import { type } from "@arkenv/core";
 import { arkenv as clientArkenv } from "./client";
 import { arkenv as serverArkenv } from "./server";
-import { type } from "./shared";
 
 describe("Separate Files Next.js mode", () => {
 	it("should import server-only in server.ts", () => {

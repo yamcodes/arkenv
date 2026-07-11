@@ -14,13 +14,22 @@ export const arkTypePackageJson = JSON.parse(
 	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
 );
 
-export type TwoslashNode = {
-	type: "hover" | "error" | "tag" | "query" | "completion";
-	text: string;
-	docs?: string;
-	line: number;
-	character: number;
-};
+export type TwoslashNode =
+	| {
+			type: "hover" | "tag" | "query" | "completion";
+			text: string;
+			docs?: string;
+			line: number;
+			character: number;
+	  }
+	| {
+			type: "error";
+			text: string;
+			docs?: string;
+			line: number;
+			character: number;
+			code?: number | string;
+	  };
 
 export type ArkTypeTwoslashOptions = TransformerTwoslashOptions & {
 	filterNode?: (node: TwoslashNode) => boolean;
@@ -43,9 +52,6 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				],
 				"@arkenv/nextjs/client": [
 					path.join(root, "packages/nextjs/src/client.ts"),
-				],
-				"@arkenv/nextjs/shared": [
-					path.join(root, "packages/nextjs/src/shared.ts"),
 				],
 				"@arkenv/nextjs/standard": [
 					path.join(root, "packages/nextjs/src/standard/index.ts"),
@@ -77,7 +83,6 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@arkenv/nuxt": [path.join(root, "packages/nuxt/src/index.ts")],
 				"@arkenv/nuxt/server": [path.join(root, "packages/nuxt/src/server.ts")],
 				"@arkenv/nuxt/client": [path.join(root, "packages/nuxt/src/client.ts")],
-				"@arkenv/nuxt/shared": [path.join(root, "packages/nuxt/src/shared.ts")],
 				"@arkenv/nuxt/standard": [
 					path.join(root, "packages/nuxt/src/standard/index.ts"),
 				],
@@ -244,7 +249,15 @@ declare global {
 
 				return isWhiteListed;
 			}
-			case "error":
+			case "error": {
+				// Filter out module-resolution errors (TS2307)
+				// that occur due to framework-specific path aliases in Twoslash's virtual VFS.
+				// This allows us to display real IDE-like errors (like TS2339) in documentation
+				// without cluttering them with path resolution errors.
+				const errorCode = node.code;
+				if (errorCode === 2307) {
+					return false;
+				}
 				for (const transformation of arkTypePackageJson.contributes
 					.configurationDefaults["errorLens.replace"]) {
 					const regex = new RegExp(transformation.matcher);
@@ -267,6 +280,7 @@ declare global {
 					}
 				}
 				return true;
+			}
 			default:
 				return true;
 		}

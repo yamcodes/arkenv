@@ -178,7 +178,7 @@ export function getStrictEnvTemplates(
 	let server = "";
 
 	if (validator === "arktype") {
-		shared = `import { type } from "${pkgName}/shared";
+		shared = `import { type } from "@arkenv/core";
 
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
