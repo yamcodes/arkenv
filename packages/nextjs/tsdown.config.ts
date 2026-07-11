@@ -7,7 +7,7 @@ export default defineConfig({
 		"src/config.ts",
 		"src/server.ts",
 		"src/client.ts",
-		"src/shared.ts",
+		"src/mock-server-only.ts",
 		"src/standard/index.ts",
 		"src/standard/server.ts",
 		"src/standard/client.ts",

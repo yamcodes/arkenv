@@ -16,6 +16,17 @@ env
 
 By importing `env` from `~/env/client` in client-side code and `~/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `~/env/server` is accidentally imported on the client side, ArkEnv fails the build with a compilation error.
 
+## Import mental model
+
+- **Flat layout:** import from `@arkenv/nuxt` — one entry point, bundler picks the build.
+- **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`.
+- **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
+- **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+
+:::note Migration
+If you previously used `@arkenv/nuxt/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
+:::
+
 ## Setup
 
 The easiest way to bootstrap the strict layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nuxt` for your existing Nuxt project using the **strict layout** option.
@@ -29,7 +40,7 @@ npx arkenv@latest init --strict
 When bootstrapping with the CLI, it generates three separate schema files under `env/`:
 
 ```ts twoslash title="env/internal/shared.ts"
-import { type } from "@arkenv/nuxt/shared";
+import { type } from "@arkenv/core";
 
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -42,7 +53,7 @@ export const SharedSchema = type({
 
 ```ts twoslash title="env/client.ts"
 // @filename: env/internal/shared.ts
-import { type } from "@arkenv/nuxt/shared";
+import { type } from "@arkenv/core";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
@@ -63,7 +74,7 @@ export const env = arkenv(
 
 ```ts twoslash title="env/server.ts"
 // @filename: env/internal/shared.ts
-import { type } from "@arkenv/nuxt/shared";
+import { type } from "@arkenv/core";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
@@ -108,7 +119,7 @@ export const env = arkenv(
     Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
 
     ```ts twoslash title="env/internal/shared.ts"
-    import { type } from "@arkenv/nuxt/shared";
+    import { type } from "@arkenv/core";
 
     /**
      * @internal 🛑 INTERNAL SCHEMA ONLY.
@@ -125,7 +136,7 @@ export const env = arkenv(
 
     ```ts twoslash title="env/client.ts"
     // @filename: env/internal/shared.ts
-    import { type } from "@arkenv/nuxt/shared";
+    import { type } from "@arkenv/core";
     export const SharedSchema = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
     });
@@ -150,7 +161,7 @@ export const env = arkenv(
 
     ```ts twoslash title="env/server.ts"
     // @filename: env/internal/shared.ts
-    import { type } from "@arkenv/nuxt/shared";
+    import { type } from "@arkenv/core";
     export const SharedSchema = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
     });
@@ -211,7 +222,7 @@ Import `env` from the server file. It contains all public, shared, and server-on
 ```ts twoslash title="server/api/my-endpoint.ts"
 // @noErrors
 // @filename: env/internal/shared.ts
-import { type } from "@arkenv/nuxt/shared";
+import { type } from "@arkenv/core";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
@@ -250,7 +261,7 @@ Import `env` from the client file (`env/client.ts`). The boundary protection wor
 ```ts title="pages/index.ts" twoslash
 // @noErrors
 // @filename: env/internal/shared.ts
-import { type } from "@arkenv/nuxt/shared";
+import { type } from "@arkenv/core";
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });

@@ -47,11 +47,6 @@
 		}
 	},
 	"exports": {
-		"./shared": {
-			"types": "./dist/shared.d.ts",
-			"import": "./dist/shared.js",
-			"require": "./dist/shared.cjs"
-		},
 		"./server": {
 			"types": "./dist/server.d.ts",
 			"import": "./dist/server.js",

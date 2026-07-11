@@ -1,4 +1,4 @@
-import { type } from "@arkenv/nextjs/shared";
+import { type } from "@arkenv/core";
 
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.

@@ -7,7 +7,6 @@ const nextjsSrc = path.resolve(__dirname);
 const arkenvSrc = path.resolve(nextjsSrc, "../../arkenv/src");
 
 const testAliases = {
-	"@arkenv/nextjs/shared": path.join(nextjsSrc, "shared.ts"),
 	"@arkenv/nextjs/server": path.join(nextjsSrc, "server.ts"),
 	"@arkenv/nextjs/client": path.join(nextjsSrc, "client.ts"),
 	"@arkenv/nextjs/config": path.join(nextjsSrc, "config.ts"),
@@ -203,7 +202,7 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				sharedPath,
 				`
-				import { type } from "${path.resolve(__dirname, "./shared.ts")}";
+				import { type } from "@arkenv/core";
 				export const SharedSchema = type({
 					NODE_ENV: "'development' | 'production'",
 				});
@@ -273,7 +272,7 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				sharedPath,
 				`
-				import { type } from "${path.resolve(__dirname, "./shared.ts")}";
+				import { type } from "@arkenv/core";
 				export const SharedSchema = type({
 					NODE_ENV: "'development' | 'production'",
 				});

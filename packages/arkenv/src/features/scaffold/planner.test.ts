@@ -321,7 +321,9 @@ describe("Planner", () => {
 		expect(clientFile).toBeDefined();
 		expect(serverFile).toBeDefined();
 
-		expect(sharedFile?.content).toContain("@arkenv/nextjs/shared");
+		expect(sharedFile?.content).toContain(
+			'import { type } from "@arkenv/core"',
+		);
 		expect(clientFile?.content).toContain("./generated/env.gen");
 		expect(serverFile?.content).toContain("@arkenv/nextjs/server");
 	});
