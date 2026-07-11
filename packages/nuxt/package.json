@@ -19,6 +19,7 @@
 		"@nuxt/schema": "^4.4.8",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
+		"@repo/utils": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
 		"nuxt": "^4.4.8",

@@ -16,12 +16,14 @@
 	"scripts": {
 		"build": "tsdown",
 		"typecheck": "tsc --noEmit",
+		"test": "vitest",
 		"clean": "rimraf dist node_modules",
 		"fix": "pnpm -w run fix"
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

@@ -1,6 +1,8 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
+import { logBuildErrorWithCause, logErrorWithCauseVia } from "@repo/utils";
 import dedent from "dedent";
+import type { LoggerPort } from "@/shared/ports";
 
 const MARKER = "// @arkenv-types";
 
@@ -8,6 +10,7 @@ export async function safeAppend(
 	dtsPath: string,
 	schemaPath: string,
 	framework: "vite" | "bun-fullstack",
+	logger?: Pick<LoggerPort, "error">,
 ): Promise<boolean> {
 	try {
 		const content = await fsp.readFile(dtsPath, "utf-8");
@@ -43,7 +46,12 @@ export async function safeAppend(
 		);
 		return true;
 	} catch (e) {
-		console.error(`Failed to append to ${dtsPath}:`, e);
+		const header = `Failed to append to ${dtsPath}`;
+		if (logger) {
+			logErrorWithCauseVia(logger.error.bind(logger), header, e);
+		} else {
+			logBuildErrorWithCause(header, e);
+		}
 		return false;
 	}
 }

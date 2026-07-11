@@ -6,13 +6,17 @@ import {
 	extractClientKeys,
 	extractSharedKeys,
 	findSchemaPath,
-	formatBuildError,
-	logBuildError,
-	logBuildWarning,
 	parseBlockKeys,
 	resolveLayout,
 	watchSchema,
 } from "@arkenv/build";
+import {
+	formatBuildError,
+	logBuildError,
+	logBuildErrorBlankLine,
+	logBuildErrorDetail,
+	logBuildWarning,
+} from "@repo/utils";
 import { createJiti } from "jiti";
 
 export { extractClientKeys, extractSharedKeys };
@@ -233,8 +237,10 @@ export function setupArkEnv(
 			jiti(fileToEvaluate);
 		} catch (error: unknown) {
 			logBuildError("Environment validation failed:");
-			console.error(error instanceof Error ? error.message : String(error));
-			console.error("");
+			logBuildErrorDetail(
+				error instanceof Error ? error.message : String(error),
+			);
+			logBuildErrorBlankLine();
 			process.exit(1);
 		} finally {
 			delete (globalThis as any).__arkenv_force_server__;

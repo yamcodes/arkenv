@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
+import { formatBuildError } from "@repo/utils";
 import { name, peerDependencies, version } from "../package.json";
 import {
 	type ArkEnvConfigOptions,
@@ -21,8 +22,9 @@ export type ModuleOptions = {
 	validate?: boolean;
 };
 
-const CLIENT_SECURITY_ERROR =
-	"[ArkEnv] Importing server-only environment schema on the client is not allowed!";
+const CLIENT_SECURITY_ERROR = formatBuildError(
+	"Importing server-only environment schema on the client is not allowed!",
+);
 
 function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
 	if (path.isAbsolute(id)) return id;
@@ -94,7 +96,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 				validateSchema(schemaPath, resolvedLayout, baseDir ?? "");
 			} catch (error: unknown) {
 				const message = error instanceof Error ? error.message : String(error);
-				throw new Error(`[ArkEnv] Environment validation failed: ${message}`);
+				throw new Error(
+					formatBuildError(`Environment validation failed: ${message}`),
+				);
 			}
 		}
 

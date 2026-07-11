@@ -1,7 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
+import {
+	formatBuildError,
+	logErrorWithCauseVia,
+	logWatcherErrorWithCause,
+} from "@repo/utils";
 import { watch as chokidarWatch, type FSWatcher } from "chokidar";
-import { formatBuildError, logWatcherError } from "./log";
 
 // Global watcher reference isolated to this bundle's scope
 let activeWatcher: FSWatcher | undefined;
@@ -696,31 +700,31 @@ export function watchSchema(
 				try {
 					onTrigger();
 				} catch (err: unknown) {
-					const message = err instanceof Error ? err.message : String(err);
+					const header = "Failed to regenerate env";
 					if (logger) {
-						logger.error(`Failed to regenerate env: ${message}`);
+						logErrorWithCauseVia(logger.error.bind(logger), header, err);
 					} else {
-						logWatcherError(`Failed to regenerate env: ${message}`);
+						logWatcherErrorWithCause(header, err);
 					}
 				}
 			});
 		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : String(err);
+			const header = `Failed to start watch on ${schemaPath}`;
 			if (logger) {
-				logger.error(`Failed to start watch on ${schemaPath}: ${message}`);
+				logErrorWithCauseVia(logger.error.bind(logger), header, err);
 			} else {
-				logWatcherError(`Failed to start watch on ${schemaPath}: ${message}`);
+				logWatcherErrorWithCause(header, err);
 			}
 		}
 	};
 
 	if (previousWatcher && typeof previousWatcher.close === "function") {
 		previousWatcher.close().catch((err: unknown) => {
-			const message = err instanceof Error ? err.message : String(err);
+			const header = "Failed to close previous watcher";
 			if (logger) {
-				logger.error(`Failed to close previous watcher: ${message}`);
+				logErrorWithCauseVia(logger.error.bind(logger), header, err);
 			} else {
-				logWatcherError(`Failed to close previous watcher: ${message}`);
+				logWatcherErrorWithCause(header, err);
 			}
 		});
 	}
@@ -738,11 +742,11 @@ export async function closeWatcher(logger?: Logger): Promise<void> {
 		try {
 			await watcher.close();
 		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : String(err);
+			const header = "Failed to close watcher";
 			if (logger) {
-				logger.error(`Failed to close watcher: ${message}`);
+				logErrorWithCauseVia(logger.error.bind(logger), header, err);
 			} else {
-				logWatcherError(`Failed to close watcher: ${message}`);
+				logWatcherErrorWithCause(header, err);
 			}
 		} finally {
 			activeWatcher = undefined;
