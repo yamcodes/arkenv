@@ -51,10 +51,7 @@ export function createBunPlugin(coreArkenv: any, pluginName: string) {
 							break;
 						}
 					} catch (e) {
-						logBuildErrorWithCause(
-							`Failed to load env schema from ${p}`,
-							e,
-						);
+						logBuildErrorWithCause(`Failed to load env schema from ${p}`, e);
 					}
 				}
 			}
