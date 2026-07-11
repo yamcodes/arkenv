@@ -97,12 +97,8 @@ export function buildNextjsTemplate(
 		sharedFields.push(...defaultSharedFields);
 	}
 
-	const existingKeys = envKeys && envKeys.length > 0
-		? envKeys
-		: (framework === "nuxt" ? ["DATABASE_URL", "NUXT_PUBLIC_API_URL", "NODE_ENV"] : ["DATABASE_URL", "NEXT_PUBLIC_API_URL", "NODE_ENV"]);
-
 	const presetKeys = hostPreset
-		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !existingKeys.includes(k))
+		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !(envKeys || []).includes(k))
 		: [];
 
 	for (const key of presetKeys) {

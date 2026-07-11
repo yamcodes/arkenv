@@ -76,12 +76,8 @@ export function getStrictEnvTemplates(
 	const pkgName =
 		options.framework === "nuxt" ? "@arkenv/nuxt" : "@arkenv/nextjs";
 
-	const existingKeys = envKeys && envKeys.length > 0
-		? envKeys
-		: (options.framework === "nuxt" ? ["DATABASE_URL", "NUXT_PUBLIC_API_URL", "NODE_ENV"] : ["DATABASE_URL", "NEXT_PUBLIC_API_URL", "NODE_ENV"]);
-
 	const presetKeys = hostPreset
-		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !existingKeys.includes(k))
+		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !(envKeys || []).includes(k))
 		: [];
 
 	if (envKeys && envKeys.length > 0) {

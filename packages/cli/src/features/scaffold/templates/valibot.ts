@@ -24,15 +24,32 @@ export const valibotTemplate = (
 	const prefix = getFrameworkPrefix(framework as any);
 	const presetKeys = hostPreset ? getPresetKeys(hostPreset, prefix) : [];
 
-	let schemaFields = "";
-	if (envKeys?.length || presetKeys.length) {
-		const baseKeys = envKeys || [];
-		const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
-		schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldDefinition(key, "valibot", prefix)},`).join("\n");
-	} else {
-		schemaFields = `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
-		PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`;
-	}
+	const getDefaultKeys = (fw?: string, pref?: string): string[] => {
+		if (fw === "vite") {
+			return ["PORT", `${pref}API_URL`, "NODE_ENV"];
+		}
+		if (fw === "bun-fullstack") {
+			return [`${pref}API_URL`, "NODE_ENV"];
+		}
+		return ["NODE_ENV", "PORT"];
+	};
+
+	const defaultKeys = getDefaultKeys(framework, prefix);
+	const baseKeys = envKeys?.length ? envKeys : defaultKeys;
+	const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
+	const getFieldSchema = (key: string) => {
+		if (key === "NODE_ENV") {
+			return `v.optional(v.picklist(["development", "production", "test"]), "development")`;
+		}
+		if (key === "PORT") {
+			return `v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)`;
+		}
+		if (prefix && key === `${prefix}API_URL`) {
+			return `v.optional(v.pipe(v.string(), v.url()), "https://api.example.com")`;
+		}
+		return getFieldDefinition(key, "valibot", prefix);
+	};
+	const schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldSchema(key)},`).join("\n");
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -45,7 +62,7 @@ export const valibotTemplate = (
 	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -61,7 +78,7 @@ export const valibotTemplate = (
 	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -102,7 +119,7 @@ export const valibotTemplate = (
 	 * Environment variable schema for server-side or runtime-only validation.
 	 */
 	export const env = arkenv({
-	${schemaFields}
+${schemaFields}
 	});
 `;
 };

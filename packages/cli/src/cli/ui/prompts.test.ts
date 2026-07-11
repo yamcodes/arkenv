@@ -196,6 +196,19 @@ describe("runPromptWizard", () => {
 		const result = await runPromptWizard({}, true);
 		expect(result?.hostPreset).toBe("none");
 	});
+
+	it("should bypass hostPreset prompt if already provided in defaults", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		// No select mock for hostPreset because it should be bypassed
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ hostPreset: "vercel" });
+
+		expect(result?.hostPreset).toBe("vercel");
+	});
 	it("should abort immediately if user selects No (abort) on overwrite prompt", async () => {
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false);
 

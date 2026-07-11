@@ -24,15 +24,32 @@ export const arktypeTemplate = (
 	const prefix = getFrameworkPrefix(framework as any);
 	const presetKeys = hostPreset ? getPresetKeys(hostPreset, prefix) : [];
 
-	let schemaFields = "";
-	if (envKeys?.length || presetKeys.length) {
-		const baseKeys = envKeys || [];
-		const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
-		schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldDefinition(key, "arktype", prefix)},`).join("\n");
-	} else {
-		schemaFields = `\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",
-		PORT: "number.port = 3000",`;
-	}
+	const getDefaultKeys = (fw?: string, pref?: string): string[] => {
+		if (fw === "vite") {
+			return ["PORT", `${pref}API_URL`, "NODE_ENV"];
+		}
+		if (fw === "bun-fullstack") {
+			return [`${pref}API_URL`, "NODE_ENV"];
+		}
+		return ["NODE_ENV", "PORT"];
+	};
+
+	const defaultKeys = getDefaultKeys(framework, prefix);
+	const baseKeys = envKeys?.length ? envKeys : defaultKeys;
+	const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
+	const getFieldSchema = (key: string) => {
+		if (key === "NODE_ENV") {
+			return `"'development' | 'production' | 'test' = 'development'"`;
+		}
+		if (key === "PORT") {
+			return `"number.port = 3000"`;
+		}
+		if (prefix && key === `${prefix}API_URL`) {
+			return `"string = 'https://api.example.com'"`;
+		}
+		return getFieldDefinition(key, "arktype", prefix);
+	};
+	const schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldSchema(key)},`).join("\n");
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -44,7 +61,7 @@ export const arktypeTemplate = (
 	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -59,7 +76,7 @@ export const arktypeTemplate = (
 	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -98,7 +115,7 @@ export const arktypeTemplate = (
 	 * Environment variable schema for server-side or runtime-only validation.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 
 	export const env = arkenv(Env);

@@ -24,15 +24,32 @@ export const zodTemplate = (
 	const prefix = getFrameworkPrefix(framework as any);
 	const presetKeys = hostPreset ? getPresetKeys(hostPreset, prefix) : [];
 
-	let schemaFields = "";
-	if (envKeys?.length || presetKeys.length) {
-		const baseKeys = envKeys || [];
-		const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
-		schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldDefinition(key, "zod", prefix)},`).join("\n");
-	} else {
-		schemaFields = `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-		PORT: z.coerce.number().int().min(1).max(65535).default(3000),`;
-	}
+	const getDefaultKeys = (fw?: string, pref?: string): string[] => {
+		if (fw === "vite") {
+			return ["PORT", `${pref}API_URL`, "NODE_ENV"];
+		}
+		if (fw === "bun-fullstack") {
+			return [`${pref}API_URL`, "NODE_ENV"];
+		}
+		return ["NODE_ENV", "PORT"];
+	};
+
+	const defaultKeys = getDefaultKeys(framework, prefix);
+	const baseKeys = envKeys?.length ? envKeys : defaultKeys;
+	const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
+	const getFieldSchema = (key: string) => {
+		if (key === "NODE_ENV") {
+			return `z.enum(["development", "production", "test"]).default("development")`;
+		}
+		if (key === "PORT") {
+			return `z.coerce.number().int().min(1).max(65535).default(3000)`;
+		}
+		if (prefix && key === `${prefix}API_URL`) {
+			return `z.string().url().default("https://api.example.com")`;
+		}
+		return getFieldDefinition(key, "zod", prefix);
+	};
+	const schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldSchema(key)},`).join("\n");
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -45,7 +62,7 @@ export const zodTemplate = (
 	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -61,7 +78,7 @@ export const zodTemplate = (
 	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -102,7 +119,7 @@ export const zodTemplate = (
 	 * Environment variable schema for server-side or runtime-only validation.
 	 */
 	export const env = arkenv({
-	${schemaFields}
+${schemaFields}
 	});
 `;
 };

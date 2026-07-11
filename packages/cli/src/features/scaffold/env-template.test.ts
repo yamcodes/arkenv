@@ -197,7 +197,7 @@ describe("env-template", () => {
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
-			expect(template).toContain('PORT: "number.port = 3000"');
+			expect(template).toContain("BUN_PUBLIC_API_URL: \"string = 'https://api.example.com'\"");
 			expect(template).not.toContain("export const env = arkenv(Env)");
 			expect(template).toContain("export const Env = type({");
 			expect(template).toContain(

@@ -324,14 +324,16 @@ async function runExistingProjectWizard(
 		// 8. validator
 		const validator = unwrapPrompt(await steps.validator());
 
-		// 8b. hostPreset
-		const hostPreset = unwrapPrompt(
-			await steps.hostPreset({
-				initialValue: defaults?.hostPreset,
-			}),
-		);
+		// 9. hostPreset
+		const hostPreset = defaults?.hostPreset !== undefined
+			? defaults.hostPreset
+			: unwrapPrompt(
+				await steps.hostPreset({
+					initialValue: defaults?.hostPreset,
+				}),
+			);
 
-		// 9. useEnvExample
+		// 10. useEnvExample
 		const useEnvExample = unwrapPrompt(
 			await steps.useEnvExample({
 				detectedKeys,
