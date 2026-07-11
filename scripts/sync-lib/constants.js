@@ -22,6 +22,10 @@ export const DEFAULT_EXCLUDES = [
 	".output",
 	".vinxi",
 	"next-env.d.ts",
-	".env*",
+	".env",
+	".env.local",
+	".env.development",
+	".env.production",
+	".env.test",
 	"app.config.timestamp_*",
 ];

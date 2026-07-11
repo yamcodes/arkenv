@@ -47,7 +47,8 @@
 		"jsonc-parser": "^3.3.1",
 		"magicast": "^0.5.2",
 		"picocolors": "^1.1.1",
-		"radashi": "^12.9.1"
+		"radashi": "^12.9.1",
+		"yaml": "^2.4.5"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",

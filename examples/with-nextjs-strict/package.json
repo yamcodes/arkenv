@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"@arkenv/core": "1.0.0-alpha.3",
-		"@arkenv/nextjs": "1.0.0-alpha.4",
+		"@arkenv/nextjs": "1.0.0-alpha.5",
 		"arktype": "^2.2.0",
 		"next": "^16.2.6",
 		"react": "^19.2.5",

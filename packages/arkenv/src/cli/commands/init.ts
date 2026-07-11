@@ -414,6 +414,24 @@ export class InitUseCase {
 				existingFiles.push(typeFilePath);
 		}
 
+		const envPath = path.join(targetDir, ".env");
+		const envExamplePath = path.join(targetDir, ".env.example");
+
+		if (await this.workspace.exists(envPath)) {
+			existingFiles.push(envPath);
+			options.envContent = await this.workspace.readFile(envPath);
+		}
+		if (await this.workspace.exists(envExamplePath)) {
+			existingFiles.push(envExamplePath);
+			options.envExampleContent = await this.workspace.readFile(envExamplePath);
+		}
+
+		const gitignorePath = path.join(targetDir, ".gitignore");
+		if (await this.workspace.exists(gitignorePath)) {
+			existingFiles.push(gitignorePath);
+			options.gitignoreContent = await this.workspace.readFile(gitignorePath);
+		}
+
 		return shake({
 			mode: "existing" as const,
 			cwd: targetDir,

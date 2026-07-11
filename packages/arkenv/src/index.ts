@@ -2,6 +2,16 @@
 import { shake } from "radashi";
 import { compose } from "./cli/composition";
 
+// Detect if this file is being imported/required as a library rather than run directly as a CLI.
+if (typeof require !== "undefined" && require.main !== module) {
+	throw new Error(
+		"🚨 [ArkEnv] You imported the 'arkenv' package as a library. " +
+		"Starting with v1.0.0, the 'arkenv' package is exclusively the interactive CLI. " +
+		"If you want to validate environment variables in your code, please install and import '@arkenv/core' instead.",
+	);
+}
+
+
 let globalLogger: any;
 let isShuttingDown = false;
 
