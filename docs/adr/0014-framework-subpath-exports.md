@@ -23,7 +23,7 @@ We adopt **Option 2**: remove `./shared`; keep the default entry, `./client`, an
 | `@arkenv/nextjs` / `@arkenv/nuxt` (default) | **Keep**   | Flat layout entry; bundler resolves server vs client build ([ADR 0012](./0012-nextjs-conditional-exports-boundary.md) / Nuxt proxy)                                                           |
 | `./client`                                  | **Keep**   | Strict layout compile-time boundary + public-prefix type constraints                                                                                                                          |
 | `./server`                                  | **Keep**   | Strict layout compile-time boundary (`server-only` on Next.js; Vite plugin blocklist on Nuxt per [ADR 0013](./0013-nuxt-vite-compile-time-boundary.md)) + framework proxy/`extends` semantics |
-| `./shared`                                  | **Remove** | Documented strict-layout usage is schema-only (`import { type } from "…/shared"`); `@arkenv/core` already exports `type`                                                                       |
+| `./shared`                                  | **Remove** | Documented strict-layout usage is schema-only (`import { type } from "…/shared"`); `@arkenv/core` already exports `type`                                                                      |
 
 ### Mental model
 
