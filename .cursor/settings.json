@@ -1,7 +1,7 @@
 {
-  "plugins": {
-    "superpowers": {
-      "enabled": true
-    }
-  }
+	"plugins": {
+		"superpowers": {
+			"enabled": true
+		}
+	}
 }
