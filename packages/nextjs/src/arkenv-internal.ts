@@ -1,3 +1,4 @@
+import { logBuildWarning } from "@arkenv/build/log";
 import type { Dict, SchemaShape } from "@repo/types";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
@@ -54,8 +55,8 @@ export function arkenvInternal(
 	if (typeof optionsOrIsServer === "boolean") {
 		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
 			hasWarnedLegacy = true;
-			console.warn(
-				"⚠️ [arkenv] Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in arkenv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/nextjs/faq#how-do-i-define-client-side-variables",
+			logBuildWarning(
+				"Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in arkenv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/nextjs/faq#how-do-i-define-client-side-variables",
 			);
 		}
 		// Old nested schema behavior (backward compatible)
