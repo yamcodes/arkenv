@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { CollectedState } from "./plan";
-import { createPlan } from "./planner";
+import { createPlan, stripValuesFromEnvContent } from "./planner";
 
 describe("Planner", () => {
 	const defaultState: CollectedState = {
@@ -18,7 +18,7 @@ describe("Planner", () => {
 		packageManager: "pnpm",
 		tsConfig: { status: "strict", file: "tsconfig.json" },
 		shouldUpdateTsConfig: false,
-		existingFiles: [],
+		existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
 		isYes: false,
 	};
 
@@ -341,7 +341,14 @@ describe("Planner", () => {
 				overwriteEnvSchemaFile: true,
 			},
 			detectedFramework: "nextjs",
-			existingFiles: [sharedPath, clientPath, serverPath],
+			existingFiles: [
+				sharedPath,
+				clientPath,
+				serverPath,
+				"/test/.env",
+				"/test/.env.example",
+				"/test/.gitignore",
+			],
 		};
 		const plan = createPlan(state);
 		expect(plan.files).toHaveLength(3);
@@ -473,5 +480,281 @@ describe("Planner", () => {
 		expect(clientFile?.content).toContain(
 			'import arkenv from "@/env/generated/env.gen"',
 		);
+	});
+
+	describe("env and env.example generation", () => {
+		it("generates .env and .env.example with defaults in new project mode", () => {
+			const state: CollectedState = {
+				...defaultState,
+				mode: "new",
+				existingFiles: [],
+				options: {
+					...defaultState.options,
+					mode: "new",
+					example: "basic",
+					framework: "vanilla",
+				},
+			};
+			const plan = createPlan(state);
+			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
+
+			expect(envFile).toBeDefined();
+			expect(envFile?.action).toBe("create");
+			expect(envFile?.content).toContain("HOST=localhost");
+			expect(envFile?.content).toContain("PORT=3000");
+
+			expect(envExampleFile).toBeDefined();
+			expect(envExampleFile?.action).toBe("create");
+			expect(envExampleFile?.content).toContain("HOST=localhost");
+			expect(envExampleFile?.content).toContain("PORT=3000");
+		});
+
+		it("generates .env and .env.example from keys in existing project mode if both are missing", () => {
+			const state: CollectedState = {
+				...defaultState,
+				existingFiles: [],
+				options: {
+					...defaultState.options,
+					envKeys: ["API_KEY", "PORT"],
+					framework: "vanilla",
+				},
+			};
+			const plan = createPlan(state);
+			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
+
+			expect(envFile).toBeDefined();
+			expect(envFile?.content).toContain("API_KEY=");
+			expect(envFile?.content).toContain("PORT=3000");
+
+			expect(envExampleFile).toBeDefined();
+			expect(envExampleFile?.content).toContain("API_KEY=");
+			expect(envExampleFile?.content).toContain("PORT=3000");
+		});
+
+		it("copies .env.example to .env in existing project mode if .env is missing", () => {
+			const state: CollectedState = {
+				...defaultState,
+				existingFiles: ["/test/.env.example"],
+				options: {
+					...defaultState.options,
+					envExampleContent: "SUPER_SECRET_KEY=12345\n",
+				},
+			};
+			const plan = createPlan(state);
+			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
+
+			expect(envFile).toBeDefined();
+			expect(envFile?.action).toBe("create");
+			expect(envFile?.content).toBe("SUPER_SECRET_KEY=12345\n");
+
+			// .env.example already exists, so it shouldn't be planned for creation
+			expect(envExampleFile).toBeUndefined();
+		});
+
+		it("copies .env to .env.example with values stripped in existing project mode if .env.example is missing", () => {
+			const state: CollectedState = {
+				...defaultState,
+				existingFiles: ["/test/.env"],
+				options: {
+					...defaultState.options,
+					envContent: `# Database URL
+DATABASE_URL=postgres://user:pass@localhost:5432/db
+  export API_KEY = "xyz"
+UNRELATED=`,
+				},
+			};
+			const plan = createPlan(state);
+			const envFile = plan.files.find((f) => f.path.endsWith("/.env"));
+			const envExampleFile = plan.files.find((f) =>
+				f.path.endsWith("/.env.example"),
+			);
+
+			// .env already exists, so it shouldn't be planned for creation
+			expect(envFile).toBeUndefined();
+
+			expect(envExampleFile).toBeDefined();
+			expect(envExampleFile?.action).toBe("create");
+			expect(envExampleFile?.content).toBe(`# Database URL
+DATABASE_URL=
+  export API_KEY=
+UNRELATED=`);
+		});
+
+		describe("gitignore checks", () => {
+			it("scaffolds .gitignore if it does not exist in existing project mode", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: ["/test/.env", "/test/.env.example"], // only gitignore is missing
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
+
+				expect(gitignoreFile).toBeDefined();
+				expect(gitignoreFile?.action).toBe("create");
+				expect(gitignoreFile?.content).toContain(".env");
+				expect(gitignoreFile?.content).toContain(".env.local");
+			});
+
+			it("appends .env and .env.local to existing .gitignore if not ignored", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: [
+						"/test/.env",
+						"/test/.env.example",
+						"/test/.gitignore",
+					],
+					options: {
+						...defaultState.options,
+						gitignoreContent: "node_modules/\ndist/\n",
+					},
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
+
+				expect(gitignoreFile).toBeDefined();
+				expect(gitignoreFile?.action).toBe("overwrite");
+				expect(gitignoreFile?.content).toContain("node_modules/");
+				expect(gitignoreFile?.content).toContain(".env");
+				expect(gitignoreFile?.content).toContain(".env.local");
+			});
+
+			it("does not update .gitignore if both .env and .env.local are ignored", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: [
+						"/test/.env",
+						"/test/.env.example",
+						"/test/.gitignore",
+					],
+					options: {
+						...defaultState.options,
+						gitignoreContent: "node_modules/\n.env\n.env.local\n",
+					},
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
+
+				expect(gitignoreFile).toBeUndefined();
+			});
+
+			it("does not update .gitignore if .env* is already ignored", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: [
+						"/test/.env",
+						"/test/.env.example",
+						"/test/.gitignore",
+					],
+					options: {
+						...defaultState.options,
+						gitignoreContent: "node_modules/\n.env*\n",
+					},
+				};
+				const plan = createPlan(state);
+				const gitignoreFile = plan.files.find((f) =>
+					f.path.endsWith("/.gitignore"),
+				);
+
+				expect(gitignoreFile).toBeUndefined();
+			});
+		});
+	});
+
+	describe("stripValuesFromEnvContent", () => {
+		it("strips standard environment values but leaves keys", () => {
+			const content =
+				"PORT=3000\nHOST=localhost\n# comment\n\nDB_URL=postgresql://user:pass@localhost:5432/db";
+			const result = stripValuesFromEnvContent(content);
+			expect(result).toBe("PORT=\nHOST=\n# comment\n\nDB_URL=");
+		});
+
+		it("strips multiline quoted values securely", () => {
+			const content = `PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----
+MIIEpQIBAAKCAQEA0y...
+-----END RSA PRIVATE KEY-----"
+PORT=3000`;
+			const result = stripValuesFromEnvContent(content);
+			expect(result).toBe("PRIVATE_KEY=\nPORT=");
+		});
+
+		it("strips single quoted multiline values securely", () => {
+			const content = `SECRET='foo
+bar
+baz'
+PORT=3000`;
+			const result = stripValuesFromEnvContent(content);
+			expect(result).toBe("SECRET=\nPORT=");
+		});
+	});
+
+	describe("gitignore check independent matching", () => {
+		it("updates gitignore with .env.local if only .env is ignored", () => {
+			const state: CollectedState = {
+				...defaultState,
+				existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+				options: {
+					...defaultState.options,
+					gitignoreContent: "node_modules/\n.env\n",
+				},
+			};
+			const plan = createPlan(state);
+			const gitignoreFile = plan.files.find((f) =>
+				f.path.endsWith("/.gitignore"),
+			);
+			expect(gitignoreFile).toBeDefined();
+			expect(gitignoreFile?.content).toContain(".env.local");
+			const parts = gitignoreFile?.content.split("\n# Environment variables\n");
+			expect(parts?.[1]).toBe(".env.local\n");
+		});
+
+		it("updates gitignore with .env if only .env.local is ignored", () => {
+			const state: CollectedState = {
+				...defaultState,
+				existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+				options: {
+					...defaultState.options,
+					gitignoreContent: "node_modules/\n.env.local\n",
+				},
+			};
+			const plan = createPlan(state);
+			const gitignoreFile = plan.files.find((f) =>
+				f.path.endsWith("/.gitignore"),
+			);
+			expect(gitignoreFile).toBeDefined();
+			expect(gitignoreFile?.content).toContain(".env\n");
+			const parts = gitignoreFile?.content.split("\n# Environment variables\n");
+			expect(parts?.[1]).toBe(".env\n");
+		});
+
+		it("does not update gitignore if both are matched by wildcard .env*", () => {
+			const state: CollectedState = {
+				...defaultState,
+				existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+				options: {
+					...defaultState.options,
+					gitignoreContent: "node_modules/\n.env*\n",
+				},
+			};
+			const plan = createPlan(state);
+			const gitignoreFile = plan.files.find((f) =>
+				f.path.endsWith("/.gitignore"),
+			);
+			expect(gitignoreFile).toBeUndefined();
+		});
 	});
 });
