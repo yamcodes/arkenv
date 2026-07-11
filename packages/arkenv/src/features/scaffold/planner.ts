@@ -281,10 +281,9 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 			options.example,
 			options.framework,
 		);
-		const envContent =
-			Object.entries(defaults)
-				.map(([k, v]) => `${k}=${v}`)
-				.join("\n") + "\n";
+		const envContent = `${Object.entries(defaults)
+			.map(([k, v]) => `${k}=${v}`)
+			.join("\n")}\n`;
 
 		plan.files.push({
 			path: envPath,
@@ -460,11 +459,9 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 							options.envKeys,
 							options.framework,
 						);
-						return (
-							Object.entries(defaults)
-								.map(([k, v]) => `${k}=${v}`)
-								.join("\n") + "\n"
-						);
+						return `${Object.entries(defaults)
+							.map(([k, v]) => `${k}=${v}`)
+							.join("\n")}\n`;
 					})();
 		plan.files.push({
 			path: envPath,
@@ -483,11 +480,9 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 							options.envKeys,
 							options.framework,
 						);
-						return (
-							Object.entries(defaults)
-								.map(([k, v]) => `${k}=${v}`)
-								.join("\n") + "\n"
-						);
+						return `${Object.entries(defaults)
+							.map(([k, v]) => `${k}=${v}`)
+							.join("\n")}\n`;
 					})();
 		plan.files.push({
 			path: envExamplePath,
