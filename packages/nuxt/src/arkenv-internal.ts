@@ -40,6 +40,7 @@ export function arkenvInternal(
 	context:
 		| {
 				isServer: boolean;
+				isShared?: boolean;
 				strictLayout?: "client" | "server";
 		  }
 		| undefined,
@@ -82,7 +83,9 @@ export function arkenvInternal(
 			(globalThis as any).__arkenv_force_server__ === true ||
 			!!context?.isServer;
 
-		if (context?.strictLayout === "client") {
+		if (context?.isShared) {
+			shared = flatSchema;
+		} else if (context?.strictLayout === "client") {
 			client = flatSchema;
 		} else if (context?.strictLayout === "server") {
 			server = flatSchema;
@@ -184,7 +187,11 @@ export function arkenvInternal(
 					for (const key of extKeys) {
 						allKeys.add(key);
 						// Only classify as server-only when running on the server and the key is not public.
-						if (isServer && !key.startsWith("NUXT_PUBLIC_")) {
+						if (
+							isServer &&
+							!key.startsWith("NUXT_PUBLIC_") &&
+							!context?.isShared
+						) {
 							serverOnlyKeys.add(key);
 						}
 					}
