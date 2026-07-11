@@ -605,4 +605,3 @@ export async function closeWatcher(logger?: Logger): Promise<void> {
 		}
 	}
 }
-
