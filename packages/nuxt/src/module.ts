@@ -6,6 +6,7 @@ import {
 	extractServerKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	formatBuildError,
 	resolveLayout,
 } from "@arkenv/build";
 import { defineNuxtModule } from "@nuxt/kit";
@@ -124,7 +125,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 
 						if (isServerModule) {
 							throw new Error(
-								"[ArkEnv] Importing server-only environment schema on the client is not allowed!",
+								formatBuildError("Importing server-only environment schema on the client is not allowed!"),
 							);
 						}
 					},

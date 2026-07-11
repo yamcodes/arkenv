@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { watch as chokidarWatch, type FSWatcher } from "chokidar";
+import { formatBuildError, logWatcherError } from "./log";
 
 // Global watcher reference isolated to this bundle's scope
 let activeWatcher: FSWatcher | undefined;
@@ -95,8 +96,10 @@ export function resolveLayout(
 		const sharedPath = path.join(baseDir, "internal", "shared.ts");
 		if (!fs.existsSync(clientPath) || !fs.existsSync(sharedPath)) {
 			throw new Error(
-				`[ArkEnv] Strict layout requires "${clientPath}" and "${sharedPath}" to exist. ` +
-					`Ensure both files are present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
+				formatBuildError(
+					`Strict layout requires "${clientPath}" and "${sharedPath}" to exist. ` +
+						`Ensure both files are present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
+				),
 			);
 		}
 
@@ -553,9 +556,7 @@ export function watchSchema(
 					if (logger) {
 						logger.error(`Failed to regenerate env: ${message}`);
 					} else {
-						console.error(
-							`[ArkEnv Watcher] Failed to regenerate env: ${message}`,
-						);
+						logWatcherError(`Failed to regenerate env: ${message}`);
 					}
 				}
 			});
@@ -564,8 +565,8 @@ export function watchSchema(
 			if (logger) {
 				logger.error(`Failed to start watch on ${schemaPath}: ${message}`);
 			} else {
-				console.error(
-					`[ArkEnv Watcher] Failed to start watch on ${schemaPath}: ${message}`,
+				logWatcherError(
+					`Failed to start watch on ${schemaPath}: ${message}`,
 				);
 			}
 		}
@@ -577,8 +578,8 @@ export function watchSchema(
 			if (logger) {
 				logger.error(`Failed to close previous watcher: ${message}`);
 			} else {
-				console.error(
-					`[ArkEnv Watcher] Failed to close previous watcher: ${message}`,
+				logWatcherError(
+					`Failed to close previous watcher: ${message}`,
 				);
 			}
 		});
@@ -601,10 +602,13 @@ export async function closeWatcher(logger?: Logger): Promise<void> {
 			if (logger) {
 				logger.error(`Failed to close watcher: ${message}`);
 			} else {
-				console.error(`[ArkEnv Watcher] Failed to close watcher: ${message}`);
+				logWatcherError(`Failed to close watcher: ${message}`);
 			}
 		} finally {
 			activeWatcher = undefined;
 		}
 	}
 }
+
+export * from "./log";
+
