@@ -188,7 +188,9 @@ export function setupArkEnv(
 			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
-			throw new Error(formatBuildError(`Failed to generate env.gen.ts: ${message}`));
+			throw new Error(
+				formatBuildError(`Failed to generate env.gen.ts: ${message}`),
+			);
 		}
 	}
 

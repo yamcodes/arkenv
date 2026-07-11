@@ -565,9 +565,7 @@ export function watchSchema(
 			if (logger) {
 				logger.error(`Failed to start watch on ${schemaPath}: ${message}`);
 			} else {
-				logWatcherError(
-					`Failed to start watch on ${schemaPath}: ${message}`,
-				);
+				logWatcherError(`Failed to start watch on ${schemaPath}: ${message}`);
 			}
 		}
 	};
@@ -578,9 +576,7 @@ export function watchSchema(
 			if (logger) {
 				logger.error(`Failed to close previous watcher: ${message}`);
 			} else {
-				logWatcherError(
-					`Failed to close previous watcher: ${message}`,
-				);
+				logWatcherError(`Failed to close previous watcher: ${message}`);
 			}
 		});
 	}
@@ -611,4 +607,3 @@ export async function closeWatcher(logger?: Logger): Promise<void> {
 }
 
 export * from "./log";
-

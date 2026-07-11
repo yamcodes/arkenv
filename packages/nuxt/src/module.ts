@@ -125,7 +125,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 
 						if (isServerModule) {
 							throw new Error(
-								formatBuildError("Importing server-only environment schema on the client is not allowed!"),
+								formatBuildError(
+									"Importing server-only environment schema on the client is not allowed!",
+								),
 							);
 						}
 					},
