@@ -1,4 +1,4 @@
-import { logBuildWarning } from "@arkenv/build";
+import { logBuildWarning } from "@arkenv/build/log";
 import type { Dict, SchemaShape } from "@repo/types";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
