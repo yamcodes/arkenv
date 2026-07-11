@@ -72,6 +72,10 @@ export class HelpUseCase {
 				right: "Disable automatic env.gen.ts code generation for Next.js",
 			},
 			{
+				left: "--host-preset <preset>",
+				right: "Specify a hosting provider preset (none, vercel, netlify)",
+			},
+			{
 				left: "--help, -h",
 				right: "Show this help message",
 			},
