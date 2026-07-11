@@ -7,7 +7,6 @@ const nuxtSrc = path.resolve(__dirname);
 const coreSrc = path.resolve(nuxtSrc, "../../core/src");
 
 const testAliases = {
-	"@arkenv/nuxt/shared": path.join(nuxtSrc, "shared.ts"),
 	"@arkenv/nuxt/server": path.join(nuxtSrc, "server.ts"),
 	"@arkenv/nuxt/client": path.join(nuxtSrc, "client.ts"),
 	"@arkenv/nuxt/config": path.join(nuxtSrc, "config.ts"),
@@ -154,7 +153,7 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				sharedPath,
 				`
-				import { type } from "${path.resolve(__dirname, "./shared.ts")}";
+				import { type } from "@arkenv/core";
 				export const SharedSchema = type({
 					NODE_ENV: "'development' | 'production'",
 				});
@@ -207,7 +206,7 @@ describe("build-time environment validation", () => {
 			fs.writeFileSync(
 				sharedPath,
 				`
-				import { type } from "${path.resolve(__dirname, "./shared.ts")}";
+				import { type } from "@arkenv/core";
 				export const SharedSchema = type({
 					NODE_ENV: "'development' | 'production'",
 				});
