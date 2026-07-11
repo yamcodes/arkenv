@@ -36,7 +36,6 @@ export function arkenvInternal(
 	context:
 		| {
 				isServer: boolean;
-				isShared?: boolean;
 				strictLayout?: "client" | "server";
 		  }
 		| undefined,
@@ -82,9 +81,7 @@ export function arkenvInternal(
 			(globalThis as any).__arkenv_force_server__ === true ||
 			!!context?.isServer;
 
-		if (context?.isShared) {
-			shared = flatSchema;
-		} else if (context?.strictLayout === "client") {
+		if (context?.strictLayout === "client") {
 			client = flatSchema;
 		} else if (context?.strictLayout === "server") {
 			server = flatSchema;
@@ -182,11 +179,7 @@ export function arkenvInternal(
 						allKeys.add(key);
 						// Only classify as server-only if we are on the server, it's not a public key,
 						// and we aren't explicitly inside the shared entry point.
-						if (
-							isServer &&
-							!key.startsWith("NEXT_PUBLIC_") &&
-							!context?.isShared
-						) {
+						if (isServer && !key.startsWith("NEXT_PUBLIC_")) {
 							serverOnlyKeys.add(key);
 						}
 					}
