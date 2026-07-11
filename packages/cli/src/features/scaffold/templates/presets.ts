@@ -1,9 +1,8 @@
 import type { Framework, HostPreset, Validator } from "../plan";
 
-export interface PresetField {
-	readonly type: "string" | "enum";
-	readonly values?: readonly string[];
-}
+export type PresetField =
+	| { readonly type: "string" }
+	| { readonly type: "enum"; readonly values: readonly string[] };
 
 export interface PresetDefinition {
 	readonly label: string;
@@ -104,7 +103,7 @@ export function getFieldDefinition(
 					}
 				}
 			} else if (field.type === "enum") {
-				const values = field.values || [];
+				const values = field.values;
 				switch (validator) {
 					case "arktype":
 						return `"'${values.join("' | '")}'?"`;
