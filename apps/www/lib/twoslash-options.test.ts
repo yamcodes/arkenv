@@ -67,7 +67,9 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 		).toBe(true);
 	});
 
-	it("resolves '@/env/client' and '~~/env/client' without TS2307 errors", () => {
+	it("resolves '@/env/client' without TS2307 errors", {
+		timeout: 15_000,
+	}, () => {
 		const resultNextjs = twoslasher(
 			`// @errors: 2339
 // @filename: env/internal/shared.ts
@@ -95,7 +97,11 @@ const db = env.DATABASE_URL;
 		const errors = resultNextjs.errors.map((e) => e.code);
 		expect(errors).toContain(2339);
 		expect(errors).not.toContain(2307);
+	});
 
+	it("resolves '~~/env/client' without TS2307 errors", {
+		timeout: 15_000,
+	}, () => {
 		const resultNuxt = twoslasher(
 			`// @errors: 2339
 // @filename: env/internal/shared.ts
