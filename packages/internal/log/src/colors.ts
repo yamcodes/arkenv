@@ -16,6 +16,8 @@ export function shouldDisableColors(): boolean {
 
 	const env = process.env;
 
+	if (env.FORCE_COLOR === "0") return true;
+
 	if (env.FORCE_COLOR !== undefined && env.FORCE_COLOR !== "0") {
 		return false;
 	}

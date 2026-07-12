@@ -178,6 +178,13 @@ describe("build log helpers", () => {
 });
 
 describe("colors", () => {
+	it("disables colors when FORCE_COLOR is 0", () => {
+		vi.stubEnv("FORCE_COLOR", "0");
+		vi.stubEnv("NO_COLOR", undefined);
+		vi.stubEnv("CI", undefined);
+		expect(shouldDisableColors()).toBe(true);
+	});
+
 	it("disables colors in browser-like environments", () => {
 		const originalProcess = globalThis.process;
 		Object.defineProperty(globalThis, "process", {

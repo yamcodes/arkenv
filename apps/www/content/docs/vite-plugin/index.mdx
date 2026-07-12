@@ -57,6 +57,19 @@ npx arkenv@latest init
     });
     ```
 
+    ### Logging [step] [!toc]
+
+    Pass an optional third argument to configure build-time logging. Use `logLevel: "silent"` to suppress warnings, or provide a custom `logger` object:
+
+    ```ts title="vite.config.ts"
+    export default defineConfig({
+      plugins: [
+        // Pass `undefined` when you only need logging options
+        arkenv(Env, undefined, { logLevel: "warn" }),
+      ],
+    });
+    ```
+
     ### Add typesafety [step] [!toc]
 
     To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:

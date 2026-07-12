@@ -16,8 +16,11 @@ export function createBunPlugin(
 	pluginName: string,
 	logOptions?: ArkEnvLogOptions,
 ) {
-	const buildLog = resolveBuildLog(logOptions);
-	function arkenv(options: any, arkenvConfig?: any): BunPlugin {
+	function arkenv(
+		options: any,
+		arkenvConfig?: any,
+		_pluginLogOptions?: ArkEnvLogOptions,
+	): BunPlugin {
 		const envMap = processEnvSchema(options, arkenvConfig, coreArkenv);
 
 		return {
@@ -36,6 +39,7 @@ export function createBunPlugin(
 	});
 
 	hybrid.setup = (build: any) => {
+		const buildLog = resolveBuildLog(logOptions);
 		const envMap = new Map<string, string>();
 
 		build.onStart(async () => {

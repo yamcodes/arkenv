@@ -16,6 +16,7 @@ import {
 	type Logger,
 	type LogLevel,
 	resolveBuildLog,
+	resolveLoggerFromOptions,
 } from "@repo/log";
 import { createJiti } from "jiti";
 
@@ -280,9 +281,15 @@ export function setupArkEnv(
 		watchSchema(
 			watchPaths,
 			() => {
-				runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
+				runCodegen(
+					schemaPath,
+					outputPath,
+					resolvedLayout,
+					options?.standard,
+					options,
+				);
 			},
-			options?.logger,
+			resolveLoggerFromOptions(options),
 		);
 	}
 }
@@ -314,8 +321,12 @@ export function runCodegen(
 	outputPath: string,
 	layoutOption?: ArkEnvConfigOptions["layout"],
 	forceStandard?: boolean,
+	logOptions?: Pick<ArkEnvConfigOptions, "logger" | "logLevel">,
 ) {
-	const normalizedLayout = normalizeLayout(layoutOption, resolveBuildLog());
+	const normalizedLayout = normalizeLayout(
+		layoutOption,
+		resolveBuildLog(logOptions),
+	);
 
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,

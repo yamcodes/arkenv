@@ -1,7 +1,7 @@
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { configureDefaultLogger } from "@repo/utils";
+import { configureDefaultLogger } from "@repo/log";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { safeAppend } from "./injection";
 

@@ -13,18 +13,23 @@ export type ArkEnvLogOptions = {
 };
 
 /**
- * Resolve build log helpers from optional integration logging options.
+ * Resolve a logger from optional integration logging options.
  */
-export function resolveBuildLog(options?: ArkEnvLogOptions): BuildLogHelpers {
+export function resolveLoggerFromOptions(options?: ArkEnvLogOptions): Logger {
 	if (options?.logger) {
-		return createBuildLogHelpers(options.logger);
+		return options.logger;
 	}
 
 	if (options?.logLevel) {
-		return createBuildLogHelpers(
-			createConsoleLogger({ level: options.logLevel }),
-		);
+		return createConsoleLogger({ level: options.logLevel });
 	}
 
-	return createBuildLogHelpers(resolveLogger());
+	return resolveLogger();
+}
+
+/**
+ * Resolve build log helpers from optional integration logging options.
+ */
+export function resolveBuildLog(options?: ArkEnvLogOptions): BuildLogHelpers {
+	return createBuildLogHelpers(resolveLoggerFromOptions(options));
 }

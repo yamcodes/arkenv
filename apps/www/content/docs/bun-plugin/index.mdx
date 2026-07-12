@@ -217,3 +217,13 @@ await Bun.build({
 [serve.static]
 plugins = ["@arkenv/bun-plugin/standard"]
 ```
+
+## Logging
+
+The Bun plugin accepts an optional third argument for build-time logging. Use `logLevel: "silent"` to suppress warnings, or provide a custom `logger` with `error`, `warn`, `info`, and `debug` methods:
+
+```ts title="build.ts"
+plugins: [arkenv(Env, undefined, { logLevel: "warn" })],
+```
+
+You can also set `ARKENV_LOG_LEVEL` globally when no custom logger is provided.

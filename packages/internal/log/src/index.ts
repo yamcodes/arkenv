@@ -24,6 +24,7 @@ export {
 export {
 	type ArkEnvLogOptions,
 	resolveBuildLog,
+	resolveLoggerFromOptions,
 } from "./integration";
 export {
 	parseLogLevel,

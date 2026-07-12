@@ -1,5 +1,3 @@
-export type { Logger, LoggerConfig, LogLevel } from "@repo/log";
-export { configureDefaultLogger } from "@repo/log";
 export * from "./coercion";
 export {
 	ArkEnvError,
@@ -23,24 +21,8 @@ export {
 	mapStandardCode,
 	safeExecute,
 } from "./utils/errors";
+export { BUILD_PREFIX, formatBuildError } from "./utils/format-build-error";
 export { indent } from "./utils/indent";
-export {
-	type ArkEnvLogOptions,
-	BUILD_PREFIX,
-	type BuildLogHelpers,
-	formatBuildError,
-	formatErrorCause,
-	logBuildError,
-	logBuildErrorBlankLine,
-	logBuildErrorDetail,
-	logBuildErrorWithCause,
-	logBuildWarning,
-	logErrorWithCauseVia,
-	logWatcherError,
-	logWatcherErrorWithCause,
-	resolveBuildLog,
-	WATCHER_PREFIX,
-} from "./utils/log-helpers";
 export { isDebugSecrets, safeStringify, shouldRedact } from "./utils/redact";
 export {
 	extractJsonSchema,
