@@ -12,6 +12,21 @@ import { runCodegen } from "./codegen";
 import { normalizeLayout } from "./layout";
 import type { ArkEnvConfigOptions } from "./types";
 
+function resolveMockServerOnlyPath(moduleDir: string): string {
+	for (const base of [moduleDir, path.join(moduleDir, "..")]) {
+		const tsPath = path.join(base, "mock-server-only.ts");
+		if (fs.existsSync(tsPath)) {
+			return tsPath;
+		}
+		const jsPath = path.join(base, "mock-server-only.js");
+		if (fs.existsSync(jsPath)) {
+			return jsPath;
+		}
+	}
+
+	return path.join(moduleDir, "mock-server-only.js");
+}
+
 /**
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
@@ -100,12 +115,7 @@ export function setupArkEnv(
 						? fileURLToPath(import.meta.url)
 						: "";
 			const dir = path.dirname(filenameForJiti);
-			const srcDir = path.join(dir, "..");
-			const mockServerOnlyPath = fs.existsSync(
-				path.join(srcDir, "mock-server-only.ts"),
-			)
-				? path.join(srcDir, "mock-server-only.ts")
-				: path.join(srcDir, "mock-server-only.js");
+			const mockServerOnlyPath = resolveMockServerOnlyPath(dir);
 
 			const aliases: Record<string, string> = {
 				"server-only": mockServerOnlyPath,
