@@ -72,4 +72,18 @@ describe("Bun Plugin", () => {
 			}),
 		);
 	});
+
+	it("should respect logLevel when validation fails", () => {
+		delete process.env.BUN_PUBLIC_REQUIRED;
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		expect(() => {
+			arkenv({ BUN_PUBLIC_REQUIRED: "string" }, undefined, {
+				logLevel: "silent",
+			});
+		}).toThrow();
+
+		expect(errorSpy).not.toHaveBeenCalled();
+		errorSpy.mockRestore();
+	});
 });

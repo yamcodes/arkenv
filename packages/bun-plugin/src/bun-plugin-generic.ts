@@ -19,9 +19,16 @@ export function createBunPlugin(
 	function arkenv(
 		options: any,
 		arkenvConfig?: any,
-		_pluginLogOptions?: ArkEnvLogOptions,
+		pluginLogOptions?: ArkEnvLogOptions,
 	): BunPlugin {
-		const envMap = processEnvSchema(options, arkenvConfig, coreArkenv);
+		const buildLog = resolveBuildLog(pluginLogOptions ?? logOptions);
+		let envMap: Map<string, string>;
+		try {
+			envMap = processEnvSchema(options, arkenvConfig, coreArkenv);
+		} catch (error: unknown) {
+			buildLog.logBuildErrorWithCause("Environment validation failed", error);
+			throw error;
+		}
 
 		return {
 			name: pluginName,
