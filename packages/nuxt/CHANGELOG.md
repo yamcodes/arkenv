@@ -1,5 +1,76 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.4
+
+### Major Changes
+
+- #### Remove framework `/shared` subpath exports _[`#1297`](https://github.com/yamcodes/arkenv/pull/1297) [`68ed78e`](https://github.com/yamcodes/arkenv/commit/68ed78ec8545b9b8bcc0c867033d6fa15b1caff9) [@yamcodes](https://github.com/yamcodes)_
+
+  Drop the `./shared` export from `@arkenv/nextjs` and `@arkenv/nuxt`. Strict-layout internal schema modules should import `type` from `@arkenv/core` instead. `/client` and `/server` subpath exports are unchanged.
+
+  **BREAKING CHANGE:** Remove `@arkenv/nextjs/shared` and `@arkenv/nuxt/shared` subpath exports.
+
+  Migration:
+
+  ```ts
+  // Before
+  import { type } from "@arkenv/nextjs/shared";
+
+  // After
+  import { type } from "@arkenv/core";
+  ```
+
+  Import mental model:
+
+  - **Flat layout:** `import arkenv from "@arkenv/nextjs"` (or `@arkenv/nuxt`)
+  - **Strict layout:** `@arkenv/nextjs/client` and `@arkenv/nextjs/server` (or Nuxt equivalents)
+  - **Internal schema modules:** `import { type } from "@arkenv/core"`
+
+### Minor Changes
+
+- #### Align Nuxt flat layout across CLI, examples, and build resolution _[`#1299`](https://github.com/yamcodes/arkenv/pull/1299) [`90ac1e1`](https://github.com/yamcodes/arkenv/commit/90ac1e180c6c9e43651313f705b354eb9818d0ce) [@yamcodes](https://github.com/yamcodes)_
+
+  Forward-port flat layout support for Nuxt on v1 by aligning CLI scaffolding, build-time validation, runtime proxy behavior, and `@arkenv/build` layout resolution.
+
+  Usage:
+
+  ```ts
+  // nuxt.config.ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: { layout: "flat" },
+  });
+  ```
+
+  ```ts
+  // env.ts
+  import arkenv from "@arkenv/nuxt";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+    NUXT_PUBLIC_API_URL: "string",
+    NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  });
+  ```
+
+  - `arkenv` init wizard presents "Flat (Recommended)" for Nuxt and scaffolds a flat `env.ts`
+  - `@arkenv/build` `resolveLayout()` accepts `"flat"` as an alias for the single-file layout mode
+  - Nuxt examples and playgrounds use flat layout conventions
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`90ac1e1`](https://github.com/yamcodes/arkenv/commit/90ac1e180c6c9e43651313f705b354eb9818d0ce)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.0`
+
+</details>
+
 ## 1.0.0-alpha.3
 
 ### Minor Changes
