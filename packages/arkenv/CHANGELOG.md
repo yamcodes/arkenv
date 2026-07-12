@@ -1,5 +1,49 @@
 # @arkenv/core
 
+## 1.0.0-alpha.4
+
+### Minor Changes
+
+- #### Align Nuxt flat layout across CLI, examples, and build resolution _[`#1299`](https://github.com/yamcodes/arkenv/pull/1299) [`90ac1e1`](https://github.com/yamcodes/arkenv/commit/90ac1e180c6c9e43651313f705b354eb9818d0ce) [@yamcodes](https://github.com/yamcodes)_
+
+  Forward-port flat layout support for Nuxt on v1 by aligning CLI scaffolding, build-time validation, runtime proxy behavior, and `@arkenv/build` layout resolution.
+
+  Usage:
+
+  ```ts
+  // nuxt.config.ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: { layout: "flat" },
+  });
+  ```
+
+  ```ts
+  // env.ts
+  import arkenv from "@arkenv/nuxt";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+    NUXT_PUBLIC_API_URL: "string",
+    NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  });
+  ```
+
+  - `arkenv` init wizard presents "Flat (Recommended)" for Nuxt and scaffolds a flat `env.ts`
+  - `@arkenv/build` `resolveLayout()` accepts `"flat"` as an alias for the single-file layout mode
+  - Nuxt examples and playgrounds use flat layout conventions
+
+### Patch Changes
+
+- #### Generate `.env` and `.env.example` files and configure pnpm approved builds whitelisting during initialization _[`#1292`](https://github.com/yamcodes/arkenv/pull/1292) [`3cdbac9`](https://github.com/yamcodes/arkenv/commit/3cdbac94e150f98c88ae05af1d8351f29531471f) [@yamcodes](https://github.com/yamcodes)_
+
+  - Generate default `.env` and `.env.example` files during initialization if they do not exist to prevent Node/tsx `--env-file` boot crashes.
+  - Parse existing `.env` file and securely strip all values to generate `.env.example` when `.env.example` is missing to avoid leaking user credentials to source control.
+  - Automatically check and update `.gitignore` in existing projects to ignore `.env` and `.env.local` files.
+  - Skip overwriting pre-existing files when their scaffolding action is set to `"create"`.
+  - Configure pnpm build whitelisting for `esbuild` during project scaffolding if `pnpm` is the detected package manager. This writes the `onlyBuiltDependencies` field to `package.json` and creates or updates a `pnpm-workspace.yaml` file with the `allowBuilds` configuration before running the installation phase.
+  - Add a runtime guardrail to throw a friendly error when the CLI is imported as a library to guide upgrading library users to `@arkenv/core`.
+
 ## 1.0.0-alpha.3
 
 ### Major Changes
@@ -145,7 +189,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 
