@@ -12,7 +12,6 @@
 		"@arkenv/core": "workspace:*",
 		"@arkenv/standard": "workspace:*",
 		"@repo/log": "workspace:*",
-		"@repo/log": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@repo/utils": "workspace:*",
 		"@size-limit/esbuild-why": "catalog:",
