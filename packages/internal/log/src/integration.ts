@@ -12,6 +12,34 @@ export type ArkEnvLogOptions = {
 	logLevel?: LogLevel;
 };
 
+/** Plugin config with optional logging fields alongside ArkEnv options. */
+export type ArkEnvPluginConfig<T extends Record<string, unknown>> = T &
+	ArkEnvLogOptions;
+
+/**
+ * Split combined plugin config into ArkEnv options and logging options.
+ */
+export function splitPluginConfig<T extends Record<string, unknown>>(
+	config?: (T & ArkEnvLogOptions) | undefined,
+): { pluginConfig: T; logOptions: ArkEnvLogOptions } {
+	if (!config) {
+		return { pluginConfig: {} as T, logOptions: {} };
+	}
+
+	const { logger, logLevel, ...pluginConfig } = config;
+	const logOptions: ArkEnvLogOptions = {};
+	if (logger !== undefined) {
+		logOptions.logger = logger;
+	}
+	if (logLevel !== undefined) {
+		logOptions.logLevel = logLevel;
+	}
+	return {
+		pluginConfig: pluginConfig as T,
+		logOptions,
+	};
+}
+
 /**
  * Resolve a logger from optional integration logging options.
  */

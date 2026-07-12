@@ -7,29 +7,27 @@ import { createVitePlugin } from "./vite-plugin-generic";
 
 export type { ImportMetaEnvAugmented } from "./types";
 
+type VitePluginConfig = Omit<ArkEnvConfig, "safe"> & ArkEnvLogOptions;
+
 const arkenvCreator = createVitePlugin(coreArkenv, "@arkenv/vite-plugin");
 
 /**
  * Vite plugin to validate environment variables using ArkEnv and expose them to client code.
  *
  * @param options - The environment variable schema definition.
- * @param arkenvConfig - Optional ArkEnv configuration (e.g. `coerce`, `onUndeclaredKey`).
- * @param logOptions - Optional logger configuration for build-time messages.
+ * @param config - Optional ArkEnv configuration and build-time logging options.
  */
 export default function arkenv(
 	options: CompiledEnvSchema,
-	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
-	logOptions?: ArkEnvLogOptions,
+	config?: VitePluginConfig,
 ): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
-	logOptions?: ArkEnvLogOptions,
+	config?: VitePluginConfig,
 ): Plugin;
 export default function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
-	logOptions?: ArkEnvLogOptions,
+	config?: VitePluginConfig,
 ): Plugin {
-	return arkenvCreator(options, arkenvConfig, logOptions);
+	return arkenvCreator(options, config);
 }

@@ -5,6 +5,8 @@ import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import type { BunPlugin } from "bun";
 import { createBunPlugin } from "./bun-plugin-generic";
 
+type BunPluginConfig = Omit<ArkEnvConfig, "safe"> & ArkEnvLogOptions;
+
 const { arkenv: arkenvFn, hybrid: hybridObj } = createBunPlugin(
 	coreArkenv,
 	"@arkenv/bun-plugin",
@@ -12,20 +14,17 @@ const { arkenv: arkenvFn, hybrid: hybridObj } = createBunPlugin(
 
 export function arkenv(
 	options: CompiledEnvSchema,
-	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
-	logOptions?: ArkEnvLogOptions,
+	config?: BunPluginConfig,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T>,
-	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
-	logOptions?: ArkEnvLogOptions,
+	config?: BunPluginConfig,
 ): BunPlugin;
 export function arkenv<const T extends SchemaShape>(
 	options: EnvSchema<T> | CompiledEnvSchema,
-	arkenvConfig?: Omit<ArkEnvConfig, "safe">,
-	logOptions?: ArkEnvLogOptions,
+	config?: BunPluginConfig,
 ): BunPlugin {
-	return arkenvFn(options, arkenvConfig, logOptions);
+	return arkenvFn(options, config);
 }
 
 export const hybrid = hybridObj as typeof arkenv & BunPlugin;

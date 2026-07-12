@@ -59,14 +59,11 @@ npx arkenv@latest init
 
     ### Logging [step] [!toc]
 
-    Pass an optional third argument to configure build-time logging. Use `logLevel: "silent"` to suppress warnings, or provide a custom `logger` object:
+    Pass `logLevel` or a custom `logger` in the plugin config object:
 
     ```ts title="vite.config.ts"
     export default defineConfig({
-      plugins: [
-        // Pass `undefined` when you only need logging options
-        arkenv(Env, undefined, { logLevel: "warn" }),
-      ],
+      plugins: [arkenv(Env, { logLevel: "warn" })],
     });
     ```
 

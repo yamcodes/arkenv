@@ -78,9 +78,7 @@ describe("Bun Plugin", () => {
 		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
 		expect(() => {
-			arkenv({ BUN_PUBLIC_REQUIRED: "string" }, undefined, {
-				logLevel: "silent",
-			});
+			arkenv({ BUN_PUBLIC_REQUIRED: "string" }, { logLevel: "silent" });
 		}).toThrow();
 
 		expect(errorSpy).not.toHaveBeenCalled();

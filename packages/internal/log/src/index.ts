@@ -23,8 +23,10 @@ export {
 } from "./default-logger";
 export {
 	type ArkEnvLogOptions,
+	type ArkEnvPluginConfig,
 	resolveBuildLog,
 	resolveLoggerFromOptions,
+	splitPluginConfig,
 } from "./integration";
 export {
 	parseLogLevel,

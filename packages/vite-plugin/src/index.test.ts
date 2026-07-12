@@ -648,7 +648,7 @@ describe("logging", () => {
 			throw new Error("validation failed");
 		});
 
-		const plugin = arkenvPlugin(config.Env, undefined, { logger });
+		const plugin = arkenvPlugin(config.Env, { logger });
 		const configHook =
 			typeof plugin.config === "function"
 				? plugin.config

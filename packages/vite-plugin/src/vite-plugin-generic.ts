@@ -1,4 +1,8 @@
-import { type ArkEnvLogOptions, resolveBuildLog } from "@repo/log";
+import {
+	type ArkEnvLogOptions,
+	resolveBuildLog,
+	splitPluginConfig,
+} from "@repo/log";
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 import { loadEnv, type Plugin } from "vite";
@@ -6,14 +10,14 @@ import { loadEnv, type Plugin } from "vite";
 export function createVitePlugin(
 	coreArkenv: any,
 	pluginName: string,
-	logOptions?: ArkEnvLogOptions,
+	factoryLogOptions?: ArkEnvLogOptions,
 ) {
 	return function arkenv(
 		options: CompiledEnvSchema | any,
-		arkenvConfig?: Omit<ArkEnvConfig, "safe">,
-		pluginLogOptions?: ArkEnvLogOptions,
+		config?: Omit<ArkEnvConfig, "safe"> & ArkEnvLogOptions,
 	): Plugin {
-		const buildLog = resolveBuildLog(pluginLogOptions ?? logOptions);
+		const { pluginConfig, logOptions } = splitPluginConfig(config);
+		const buildLog = resolveBuildLog({ ...factoryLogOptions, ...logOptions });
 
 		return {
 			name: pluginName,
@@ -24,8 +28,8 @@ export function createVitePlugin(
 				const envDir = config.envDir ?? config.root ?? process.cwd();
 				try {
 					const env: SchemaShape = coreArkenv(options as any, {
-						...arkenvConfig,
-						env: arkenvConfig?.env ?? loadEnv(mode, envDir, ""),
+						...pluginConfig,
+						env: pluginConfig?.env ?? loadEnv(mode, envDir, ""),
 						safe: false,
 					});
 
