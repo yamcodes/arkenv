@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { resolveBuildLog } from "@repo/log";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -22,13 +23,13 @@ describe("Nuxt config parser & codegen", () => {
 		});
 
 		it("maps flat to simple internally", () => {
-			expect(normalizeLayout("flat")).toBe("simple");
+			expect(normalizeLayout("flat", resolveBuildLog())).toBe("simple");
 		});
 
 		it("maps simple to simple and emits a deprecation warning", () => {
 			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-			expect(normalizeLayout("simple")).toBe("simple");
+			expect(normalizeLayout("simple", resolveBuildLog())).toBe("simple");
 			expect(warnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("'simple' layout option is deprecated"),
 			);

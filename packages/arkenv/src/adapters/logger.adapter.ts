@@ -34,6 +34,10 @@ export class Logger implements LoggerPort {
 		}
 	}
 
+	debug(message: string) {
+		this.reporter.log(message);
+	}
+
 	info(message: string) {
 		this.reporter.info(message);
 	}

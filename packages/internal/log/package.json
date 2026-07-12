@@ -1,11 +1,12 @@
 {
-	"name": "@repo/utils",
+	"name": "@repo/log",
 	"private": true,
 	"type": "module",
-	"version": "0.1.3",
+	"version": "0.1.0",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"description": "Injectable logger for ArkEnv (internal usage)",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
@@ -20,9 +21,22 @@
 		"clean": "rimraf dist node_modules",
 		"fix": "pnpm -w run fix"
 	},
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"log",
+		"logger"
+	],
+	"license": "MIT",
+	"homepage": "https://arkenv.js.org",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"author": "Yam Borodetsky <yam@yam.codes>",
 	"devDependencies": {
-		"@repo/log": "workspace:*",
-		"@repo/types": "workspace:*",
+		"@types/node": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"

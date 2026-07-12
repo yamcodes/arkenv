@@ -48,6 +48,7 @@ describe("Executor", () => {
 		interactiveStdout: vi.fn(),
 		stdio: "inherit",
 		spinner: vi.fn().mockReturnValue({ start: vi.fn(), stop: vi.fn() }),
+		debug: vi.fn(),
 		step: vi.fn(),
 		info: vi.fn(),
 		warn: vi.fn(),

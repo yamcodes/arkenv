@@ -8,6 +8,6 @@ export default defineConfig({
 	fixedExtension: true,
 	shims: true,
 	deps: {
-		alwaysBundle: ["@clack/prompts", "@repo/utils", "picocolors"],
+		alwaysBundle: ["@repo/log", "@clack/prompts", "@repo/utils", "picocolors"],
 	},
 });

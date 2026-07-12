@@ -51,6 +51,7 @@
 		"yaml": "^2.4.5"
 	},
 	"devDependencies": {
+		"@repo/log": "workspace:*",
 		"@repo/utils": "workspace:*",
 		"@types/node": "catalog:",
 		"tsdown": "catalog:",

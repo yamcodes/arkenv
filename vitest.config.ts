@@ -4,6 +4,7 @@ export default defineConfig({
 	test: {
 		projects: [
 			"packages/*",
+			"packages/internal/*",
 			"apps/*",
 			"!packages/cli",
 			"!apps/playwright-www",

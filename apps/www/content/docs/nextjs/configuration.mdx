@@ -50,6 +50,37 @@ The `withArkEnv()` wrapper accepts the following options:
 | `layout`     | `'flat' \| 'strict'` | `'flat'`                           | Specify the schema layout. Use `'strict'` if using the multi-file strict layout. |
 | `codegen`    | `boolean`            | `true`                             | Enable or disable automatic generation of the `env.gen.ts` helper.               |
 | `validate`   | `boolean`            | `true`                             | Enable or disable build-time environment variable validation.                    |
+| `logger`     | `Logger`             | console (level-aware)              | Custom logger for build-time warnings and errors.                                |
+| `logLevel`   | `LogLevel`           | `info` (or `ARKENV_LOG_LEVEL`)     | Minimum log level when no custom `logger` is provided. Use `silent` to suppress. |
+
+### Logging
+
+ArkEnv build integrations accept an optional logger and log level. By default, messages use the `[ArkEnv]` prefix and respect the `ARKENV_LOG_LEVEL` environment variable (`debug`, `info`, `warn`, `error`, or `silent`).
+
+```ts title="next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+export default withArkEnv(nextConfig, {
+	logLevel: "warn", // hide info/debug build messages
+});
+```
+
+Provide a custom logger to redirect output (for example, to your CI reporter):
+
+```ts title="next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const logger = {
+	debug: () => {},
+	info: () => {},
+	warn: (message) => myReporter.warn(message),
+	error: (message) => myReporter.error(message),
+};
+
+export default withArkEnv(nextConfig, { logger });
+```
+
+Thrown validation errors (`ArkEnvError`) are separate from logged diagnostics — the logger only controls warnings and build-time error output.
 
 ---
 

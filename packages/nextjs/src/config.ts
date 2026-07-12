@@ -11,12 +11,12 @@ import {
 	watchSchema,
 } from "@arkenv/build";
 import {
+	type BuildLogHelpers,
 	formatBuildError,
-	logBuildError,
-	logBuildErrorBlankLine,
-	logBuildErrorDetail,
-	logBuildWarning,
-} from "@repo/utils";
+	type Logger,
+	type LogLevel,
+	resolveBuildLog,
+} from "@repo/log";
 import { createJiti } from "jiti";
 
 export { extractClientKeys, extractSharedKeys };
@@ -25,11 +25,12 @@ let hasWarnedSimpleLayout = false;
 
 function normalizeLayout(
 	layout: ArkEnvConfigOptions["layout"],
+	buildLog: BuildLogHelpers,
 ): "simple" | "strict" | undefined {
 	if (layout === "simple") {
 		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
 			hasWarnedSimpleLayout = true;
-			logBuildWarning(
+			buildLog.logBuildWarning(
 				"The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
 			);
 		}
@@ -122,6 +123,20 @@ export type ArkEnvConfigOptions = {
 	 * @default true
 	 */
 	codegen?: boolean;
+
+	/**
+	 * Custom logger instance for build-time messages.
+	 *
+	 * When omitted, ArkEnv uses a console logger respecting `ARKENV_LOG_LEVEL`.
+	 */
+	logger?: Logger;
+
+	/**
+	 * Minimum log level for build-time messages.
+	 *
+	 * Programmatic `logger` takes precedence over `logLevel`.
+	 */
+	logLevel?: LogLevel;
 };
 
 /**
@@ -135,6 +150,8 @@ export function setupArkEnv(
 	options?: ArkEnvConfigOptions,
 	internalOptions?: { _jitiAliases?: Record<string, string> },
 ): void {
+	const buildLog = resolveBuildLog(options);
+
 	// 1. Locate the env.ts schema file or strict schema directory
 	const schemaPath = options?.schemaPath
 		? path.resolve(options.schemaPath)
@@ -166,7 +183,7 @@ export function setupArkEnv(
 		);
 	}
 
-	const normalizedLayout = normalizeLayout(options?.layout);
+	const normalizedLayout = normalizeLayout(options?.layout, buildLog);
 
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
@@ -236,11 +253,11 @@ export function setupArkEnv(
 			});
 			jiti(fileToEvaluate);
 		} catch (error: unknown) {
-			logBuildError("Environment validation failed:");
-			logBuildErrorDetail(
+			buildLog.logBuildError("Environment validation failed:");
+			buildLog.logBuildErrorDetail(
 				error instanceof Error ? error.message : String(error),
 			);
-			logBuildErrorBlankLine();
+			buildLog.logBuildErrorBlankLine();
 			process.exit(1);
 		} finally {
 			delete (globalThis as any).__arkenv_force_server__;
@@ -260,9 +277,13 @@ export function setupArkEnv(
 						path.join(baseDir, "server.ts"),
 					].filter(fs.existsSync)
 				: [schemaPath];
-		watchSchema(watchPaths, () => {
-			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
-		});
+		watchSchema(
+			watchPaths,
+			() => {
+				runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
+			},
+			options?.logger,
+		);
 	}
 }
 
@@ -294,7 +315,7 @@ export function runCodegen(
 	layoutOption?: ArkEnvConfigOptions["layout"],
 	forceStandard?: boolean,
 ) {
-	const normalizedLayout = normalizeLayout(layoutOption);
+	const normalizedLayout = normalizeLayout(layoutOption, resolveBuildLog());
 
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,

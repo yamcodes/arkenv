@@ -6,7 +6,7 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: false,
 	deps: {
-		alwaysBundle: ["@repo/types"],
+		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
 		neverBundle: ["vite"],
 	},
 });

@@ -4,7 +4,4 @@ export default defineConfig({
 	format: ["esm", "cjs"],
 	minify: true,
 	fixedExtension: false,
-	deps: {
-		alwaysBundle: ["@repo/log", "@repo/types"],
-	},
 });
