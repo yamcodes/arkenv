@@ -1,14 +1,16 @@
 import { generateOGImage } from "fumadocs-ui/og";
 import type { NextRequest } from "next/server";
+import { formatOgDescription, formatOgTitle } from "~/lib/og-text";
 
 export const runtime = "edge";
 
 export function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url);
-	const title = searchParams.get("title") || "ArkEnv";
-	const description =
+	const title = formatOgTitle(searchParams.get("title") || "ArkEnv");
+	const description = formatOgDescription(
 		searchParams.get("description") ||
-		"Environment variable validation from editor to runtime";
+			"Environment variable validation from editor to runtime",
+	);
 
 	return generateOGImage({
 		title,
