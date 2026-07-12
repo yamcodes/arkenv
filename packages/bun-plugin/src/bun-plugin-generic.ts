@@ -20,10 +20,7 @@ export function createBunPlugin(
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
 ) {
-	function arkenv(
-		options: any,
-		config?: any,
-	): BunPlugin {
+	function arkenv(options: any, config?: any): BunPlugin {
 		const { pluginConfig, logOptions } = splitPluginConfig(config);
 		const buildLog = resolveBuildLog({
 			...factoryLogOptions,
