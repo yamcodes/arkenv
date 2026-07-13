@@ -72,9 +72,7 @@ export function resolveAliasImportPath(
 		.replace(/\\/g, "/");
 
 	for (const pattern of aliasPatterns) {
-		const normalizedPattern = pattern
-			.replace(/^\.\//, "")
-			.replace(/\*$/, "");
+		const normalizedPattern = pattern.replace(/^\.\//, "").replace(/\*$/, "");
 		if (
 			normalizedPattern === "" ||
 			relGeneratedDir.startsWith(normalizedPattern)
@@ -213,8 +211,14 @@ export function planStrictSchemaFiles(
 		STRICT_INTERNAL_DIR,
 		`${STRICT_SHARED_BASENAME}${ext}`,
 	);
-	const clientPath = path.join(baseWithoutExt, `${STRICT_CLIENT_BASENAME}${ext}`);
-	const serverPath = path.join(baseWithoutExt, `${STRICT_SERVER_BASENAME}${ext}`);
+	const clientPath = path.join(
+		baseWithoutExt,
+		`${STRICT_CLIENT_BASENAME}${ext}`,
+	);
+	const serverPath = path.join(
+		baseWithoutExt,
+		`${STRICT_SERVER_BASENAME}${ext}`,
+	);
 
 	const context = createScaffoldContext(options, importPath);
 	const templates = validator.getStrictTemplates(
