@@ -1,5 +1,5 @@
 ---
-"@arkenv/build": major
+"@arkenv/build": minor
 "@arkenv/nextjs": minor
 "@arkenv/nuxt": minor
 "@arkenv/bun-plugin": minor
@@ -34,4 +34,4 @@ await Bun.build({
 });
 ```
 
-**BREAKING CHANGE**: Remove `@arkenv/build/log`. Configure logging via your framework integration, or import the shared `Logger` type from `@arkenv/build`.
+Note: `@arkenv/build` is an internal package; consumers should configure logging via the framework integrations rather than importing internal helpers.

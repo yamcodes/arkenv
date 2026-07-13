@@ -15,6 +15,14 @@ import {
 import { normalizeLayout } from "./layout";
 import type { ArkEnvConfigOptions } from "./types";
 
+function detectStandard(
+	content: string,
+	forceStandard?: boolean,
+): boolean {
+	if (forceStandard) return true;
+	return content.includes("@arkenv/standard") || content.includes("arkenv/standard");
+}
+
 /**
  * Run code generation to read the schema file and generate the env.gen.ts factory.
  *
@@ -54,11 +62,8 @@ export function runCodegen(
 			: "";
 
 		const isStandard =
-			!!forceStandard ||
-			clientContent.includes("@arkenv/standard") ||
-			clientContent.includes("arkenv/standard") ||
-			sharedContent.includes("@arkenv/standard") ||
-			sharedContent.includes("arkenv/standard");
+			detectStandard(clientContent, forceStandard) ||
+			detectStandard(sharedContent, forceStandard);
 
 		const clientKeys = extractClientKeys(clientContent);
 		const sharedKeys = extractSharedKeys(sharedContent);
@@ -70,10 +75,7 @@ export function runCodegen(
 		);
 	} else {
 		const fileContent = fs.readFileSync(schemaPath, "utf-8");
-		const isStandard =
-			!!forceStandard ||
-			fileContent.includes("@arkenv/standard") ||
-			fileContent.includes("arkenv/standard");
+		const isStandard = detectStandard(fileContent, forceStandard);
 
 		const { clientKeys, sharedKeys, isLegacy } = extractKeys(fileContent);
 		if (isLegacy) {

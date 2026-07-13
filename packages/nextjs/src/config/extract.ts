@@ -1,5 +1,19 @@
 import { extractBlock, parseBlockKeys } from "@arkenv/build";
 
+function parseExposeKeys(optionsArg: string): string[] {
+	const exposeMatch =
+		optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
+		optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
+		optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
+	if (!exposeMatch) return [];
+
+	const keys: string[] = [];
+	for (const match of exposeMatch[1].matchAll(/['"`](.*?)['"`]/g)) {
+		keys.push(match[1]);
+	}
+	return keys;
+}
+
 function extractCallArguments(
 	content: string,
 ): { schemaArg: string; optionsArg: string | null } | null {
@@ -139,34 +153,21 @@ export function extractKeys(content: string): {
 
 	if (isLegacy) {
 		const clientBlock = extractBlock(args.schemaArg, "client");
-		if (clientBlock) {
-			clientKeys.push(...parseBlockKeys(clientBlock));
-		}
+		if (clientBlock) clientKeys.push(...parseBlockKeys(clientBlock));
 		const sharedBlock = extractBlock(args.schemaArg, "shared");
-		if (sharedBlock) {
-			sharedKeys.push(...parseBlockKeys(sharedBlock));
-		}
-	} else {
-		const optionExposedKeys: string[] = [];
-		if (args.optionsArg) {
-			const exposeMatch =
-				args.optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
-				args.optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
-				args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
-			if (exposeMatch) {
-				const matches = exposeMatch[1].matchAll(/['"`](.*?)['"`]/g);
-				for (const match of matches) {
-					optionExposedKeys.push(match[1]);
-				}
-			}
-		}
+		if (sharedBlock) sharedKeys.push(...parseBlockKeys(sharedBlock));
+		return { clientKeys, sharedKeys, isLegacy };
+	}
 
-		for (const key of topKeys) {
-			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
-				sharedKeys.push(key);
-			} else if (key.startsWith("NEXT_PUBLIC_")) {
-				clientKeys.push(key);
-			}
+	const optionExposedKeys = args.optionsArg ? parseExposeKeys(args.optionsArg) : [];
+
+	for (const key of topKeys) {
+		if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
+			sharedKeys.push(key);
+			continue;
+		}
+		if (key.startsWith("NEXT_PUBLIC_")) {
+			clientKeys.push(key);
 		}
 	}
 

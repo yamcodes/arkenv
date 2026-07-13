@@ -55,7 +55,9 @@ The `withArkEnv()` wrapper accepts the following options:
 
 ### Logging
 
-ArkEnv build integrations accept an optional logger and log level. By default, messages use the `[ArkEnv]` prefix and respect the `ARKENV_LOG_LEVEL` environment variable (`debug`, `info`, `warn`, `error`, or `silent`).
+ArkEnv build integrations accept an optional logger and log level. By default, messages use the `[ArkEnv]` prefix.
+
+If you don’t pass `logLevel`, ArkEnv uses `ARKENV_LOG_LEVEL` as a global default (`debug`, `info`, `warn`, `error`, or `silent`). This is useful for CI and shared environments where you want to change verbosity without editing code.
 
 ```ts title="next.config.ts"
 import { withArkEnv } from "@arkenv/nextjs/config";

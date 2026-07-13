@@ -27,6 +27,16 @@ function resolveMockServerOnlyPath(moduleDir: string): string {
 	return path.join(moduleDir, "mock-server-only.js");
 }
 
+function schemaPathExists(schemaPath: string): boolean {
+	if (fs.existsSync(schemaPath)) return true;
+
+	const ext = path.extname(schemaPath);
+	if (!ext) return false;
+
+	const baseWithoutExt = schemaPath.slice(0, -ext.length);
+	return fs.existsSync(baseWithoutExt);
+}
+
 /**
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
@@ -44,22 +54,7 @@ export function setupArkEnv(
 		? path.resolve(options.schemaPath)
 		: findSchemaPath();
 
-	let exists = false;
-	if (schemaPath) {
-		if (fs.existsSync(schemaPath)) {
-			exists = true;
-		} else {
-			const ext = path.extname(schemaPath);
-			if (ext) {
-				const baseWithoutExt = schemaPath.slice(0, -ext.length);
-				if (fs.existsSync(baseWithoutExt)) {
-					exists = true;
-				}
-			}
-		}
-	}
-
-	if (!schemaPath || !exists) {
+	if (!schemaPath || !schemaPathExists(schemaPath)) {
 		throw new Error(
 			formatBuildError(
 				`Could not find schema file at ${
