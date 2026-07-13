@@ -159,7 +159,9 @@ export function extractKeys(content: string): {
 		return { clientKeys, sharedKeys, isLegacy };
 	}
 
-	const optionExposedKeys = args.optionsArg ? parseExposeKeys(args.optionsArg) : [];
+	const optionExposedKeys = args.optionsArg
+		? parseExposeKeys(args.optionsArg)
+		: [];
 
 	for (const key of topKeys) {
 		if (optionExposedKeys.includes(key) || key === "NODE_ENV") {

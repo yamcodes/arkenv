@@ -15,12 +15,11 @@ import {
 import { normalizeLayout } from "./layout";
 import type { ArkEnvConfigOptions } from "./types";
 
-function detectStandard(
-	content: string,
-	forceStandard?: boolean,
-): boolean {
+function detectStandard(content: string, forceStandard?: boolean): boolean {
 	if (forceStandard) return true;
-	return content.includes("@arkenv/standard") || content.includes("arkenv/standard");
+	return (
+		content.includes("@arkenv/standard") || content.includes("arkenv/standard")
+	);
 }
 
 /**
