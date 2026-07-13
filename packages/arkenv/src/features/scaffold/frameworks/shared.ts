@@ -5,6 +5,29 @@ import { createScaffoldContext } from "../scaffold-context";
 import type { ValidatorStrategy } from "../validators/types";
 import type { FrameworkGetFilesParams } from "./types";
 
+const ENV_KEY_DEFAULTS: Record<string, string> = {
+	NODE_ENV: "development",
+	PORT: "3000",
+	DATABASE_URL: "postgres://localhost:5432/mydb",
+};
+
+const TS_CONFIG_ALIAS_KEY = "@/*";
+const PATH_ALIAS_PREFIX = "@/";
+const GENERATED_ENV_DIR = "generated";
+const GENERATED_ENV_MODULE = "env.gen";
+
+const STRICT_INTERNAL_DIR = "internal";
+const STRICT_SHARED_BASENAME = "shared";
+const STRICT_CLIENT_BASENAME = "client";
+const STRICT_SERVER_BASENAME = "server";
+
+const CODEGEN_FRAMEWORKS = new Set<Framework>(["nextjs", "nuxt"]);
+
+const SCHEMA_FILE_LABEL = "environment schema";
+const SHARED_SCHEMA_FILE_LABEL = "shared environment schema";
+const CLIENT_SCHEMA_FILE_LABEL = "client environment schema";
+const SERVER_SCHEMA_FILE_LABEL = "server environment schema";
+
 /**
  * Build default env var values from explicit keys.
  *
@@ -14,15 +37,7 @@ import type { FrameworkGetFilesParams } from "./types";
 export function getEnvDefaultsFromKeys(keys: string[]): Record<string, string> {
 	const defaults: Record<string, string> = {};
 	for (const key of keys) {
-		if (key === "NODE_ENV") {
-			defaults[key] = "development";
-		} else if (key === "PORT") {
-			defaults[key] = "3000";
-		} else if (key === "DATABASE_URL") {
-			defaults[key] = "postgres://localhost:5432/mydb";
-		} else {
-			defaults[key] = "";
-		}
+		defaults[key] = ENV_KEY_DEFAULTS[key] ?? "";
 	}
 	return defaults;
 }
@@ -46,7 +61,8 @@ export function resolveAliasImportPath(
 
 	const compilerOptions = tsConfig.compilerOptions || {};
 	const paths = compilerOptions.paths || {};
-	if (!paths["@/*"]) {
+	const aliasPatterns = paths[TS_CONFIG_ALIAS_KEY];
+	if (!aliasPatterns) {
 		return undefined;
 	}
 
@@ -55,8 +71,10 @@ export function resolveAliasImportPath(
 		.relative(tsConfigDir, generatedDir)
 		.replace(/\\/g, "/");
 
-	for (const pattern of paths["@/*"]) {
-		const normalizedPattern = pattern.replace(/^\.\//, "").replace(/\*$/, "");
+	for (const pattern of aliasPatterns) {
+		const normalizedPattern = pattern
+			.replace(/^\.\//, "")
+			.replace(/\*$/, "");
 		if (
 			normalizedPattern === "" ||
 			relGeneratedDir.startsWith(normalizedPattern)
@@ -69,11 +87,34 @@ export function resolveAliasImportPath(
 				subPath = relGeneratedDir.substring(normalizedPattern.length);
 			}
 			subPath = subPath.replace(/^\/+/, "").replace(/\/+$/, "");
-			return `@/${subPath}/env.gen`.replace(/\/+/g, "/");
+			return `${PATH_ALIAS_PREFIX}${subPath}/${GENERATED_ENV_MODULE}`.replace(
+				/\/+/g,
+				"/",
+			);
 		}
 	}
 
 	return undefined;
+}
+
+function resolveCodegenImportPath(
+	params: FrameworkGetFilesParams,
+	generatedDir: string,
+	options: { framework: Framework; disableCodegen?: boolean },
+): string | undefined {
+	if (
+		!CODEGEN_FRAMEWORKS.has(options.framework) ||
+		options.disableCodegen ||
+		!params.tsConfig?.parsed
+	) {
+		return undefined;
+	}
+
+	return resolveAliasImportPath(
+		params.cwd,
+		generatedDir,
+		params.tsConfig.parsed,
+	);
 }
 
 /**
@@ -87,18 +128,10 @@ export function resolveSimpleImportPath(
 	params: FrameworkGetFilesParams,
 	options: { framework: Framework; disableCodegen?: boolean },
 ): string | undefined {
-	if (
-		(options.framework !== "nextjs" && options.framework !== "nuxt") ||
-		options.disableCodegen ||
-		!params.tsConfig?.parsed
-	) {
-		return undefined;
-	}
-
-	return resolveAliasImportPath(
-		params.cwd,
-		path.join(params.targetDir, "generated"),
-		params.tsConfig.parsed,
+	return resolveCodegenImportPath(
+		params,
+		path.join(params.targetDir, GENERATED_ENV_DIR),
+		options,
 	);
 }
 
@@ -115,18 +148,10 @@ export function resolveStrictImportPath(
 	baseWithoutExt: string,
 	options: { framework: Framework; disableCodegen?: boolean },
 ): string | undefined {
-	if (
-		(options.framework !== "nextjs" && options.framework !== "nuxt") ||
-		options.disableCodegen ||
-		!params.tsConfig?.parsed
-	) {
-		return undefined;
-	}
-
-	return resolveAliasImportPath(
-		params.cwd,
-		path.join(baseWithoutExt, "generated"),
-		params.tsConfig.parsed,
+	return resolveCodegenImportPath(
+		params,
+		path.join(baseWithoutExt, GENERATED_ENV_DIR),
+		options,
 	);
 }
 
@@ -158,7 +183,7 @@ export function planSimpleSchemaFile(
 				path: params.targetPath,
 				content: envContent,
 				action: envFileExists ? ("overwrite" as const) : ("create" as const),
-				label: "environment schema",
+				label: SCHEMA_FILE_LABEL,
 			},
 		];
 	}
@@ -183,9 +208,13 @@ export function planStrictSchemaFiles(
 ) {
 	const ext = path.extname(params.targetPath);
 	const baseWithoutExt = params.targetPath.slice(0, -ext.length);
-	const sharedPath = path.join(baseWithoutExt, "internal", `shared${ext}`);
-	const clientPath = path.join(baseWithoutExt, `client${ext}`);
-	const serverPath = path.join(baseWithoutExt, `server${ext}`);
+	const sharedPath = path.join(
+		baseWithoutExt,
+		STRICT_INTERNAL_DIR,
+		`${STRICT_SHARED_BASENAME}${ext}`,
+	);
+	const clientPath = path.join(baseWithoutExt, `${STRICT_CLIENT_BASENAME}${ext}`);
+	const serverPath = path.join(baseWithoutExt, `${STRICT_SERVER_BASENAME}${ext}`);
 
 	const context = createScaffoldContext(options, importPath);
 	const templates = validator.getStrictTemplates(
@@ -204,7 +233,7 @@ export function planStrictSchemaFiles(
 			path: sharedPath,
 			content: templates.shared,
 			action: sharedExists ? ("overwrite" as const) : ("create" as const),
-			label: "shared environment schema",
+			label: SHARED_SCHEMA_FILE_LABEL,
 		});
 	}
 	if (!clientExists || options.overwriteEnvSchemaFile !== false) {
@@ -212,7 +241,7 @@ export function planStrictSchemaFiles(
 			path: clientPath,
 			content: templates.client,
 			action: clientExists ? ("overwrite" as const) : ("create" as const),
-			label: "client environment schema",
+			label: CLIENT_SCHEMA_FILE_LABEL,
 		});
 	}
 	if (!serverExists || options.overwriteEnvSchemaFile !== false) {
@@ -220,7 +249,7 @@ export function planStrictSchemaFiles(
 			path: serverPath,
 			content: templates.server,
 			action: serverExists ? ("overwrite" as const) : ("create" as const),
-			label: "server environment schema",
+			label: SERVER_SCHEMA_FILE_LABEL,
 		});
 	}
 
