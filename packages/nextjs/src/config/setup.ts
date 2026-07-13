@@ -90,7 +90,13 @@ export function setupArkEnv(
 	const codegen = options?.codegen ?? true;
 	if (codegen) {
 		try {
-			runCodegen(schemaPath, outputPath, resolvedLayout, options?.standard);
+			runCodegen(
+				schemaPath,
+				outputPath,
+				resolvedLayout,
+				options?.standard,
+				options,
+			);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
 			throw new Error(
