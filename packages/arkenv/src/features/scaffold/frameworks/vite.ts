@@ -1,11 +1,14 @@
 import path from "node:path";
 import { shake } from "radashi";
 import { viteTypesTemplate } from "@/features/scaffold/templates";
+import { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";
 import { planDtsFile } from "./dts-planning";
 import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
 import type { FrameworkStrategy } from "./types";
 
 export const viteStrategy: FrameworkStrategy = {
+	clientPrefix: FRAMEWORK_CLIENT_PREFIXES.vite,
+
 	getEnvDefaults(keys) {
 		if (keys && keys.length > 0) {
 			return getEnvDefaultsFromKeys(keys);

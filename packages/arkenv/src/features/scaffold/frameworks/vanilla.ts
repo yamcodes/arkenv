@@ -1,7 +1,10 @@
+import { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";
 import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
 import type { FrameworkStrategy } from "./types";
 
 export const vanillaStrategy: FrameworkStrategy = {
+	clientPrefix: FRAMEWORK_CLIENT_PREFIXES.vanilla,
+
 	getEnvDefaults(keys) {
 		if (keys && keys.length > 0) {
 			return getEnvDefaultsFromKeys(keys);

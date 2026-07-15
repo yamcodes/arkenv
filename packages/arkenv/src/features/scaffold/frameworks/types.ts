@@ -26,6 +26,12 @@ export type FrameworkGetFilesParams = {
  */
 export type FrameworkStrategy = {
 	/**
+	 * Canonical client-exposed env var prefix for this framework
+	 * (e.g. `NEXT_PUBLIC_`, `VITE_`, or `""` for vanilla).
+	 */
+	clientPrefix: string;
+
+	/**
 	 * Default environment variable values for this framework.
 	 *
 	 * @param keys Optional explicit env keys to generate defaults for.
