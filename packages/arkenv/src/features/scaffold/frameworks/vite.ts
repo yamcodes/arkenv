@@ -1,6 +1,7 @@
 import path from "node:path";
 import { shake } from "radashi";
 import { viteTypesTemplate } from "@/features/scaffold/templates";
+import { planDtsFile } from "./dts-planning";
 import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
 import type { FrameworkStrategy } from "./types";
 
@@ -36,34 +37,16 @@ export const viteStrategy: FrameworkStrategy = {
 			return [];
 		}
 
-		const typeFilePath = path.join(params.targetDir, "vite-env.d.ts");
-		const typeFileExists = params.existingFiles.includes(typeFilePath);
-
-		if (options.envDtsHandling === "skip") {
-			return [];
-		}
-
-		if (
-			options.envDtsHandling === "append" ||
-			(!options.envDtsHandling && typeFileExists)
-		) {
-			return [
-				{
-					path: typeFilePath,
-					content: params.targetPath,
-					action: "append",
-					label: `${options.framework} types`,
-				},
-			];
-		}
-
-		return [
-			{
-				path: typeFilePath,
-				content: viteTypesTemplate(options.path),
-				action: typeFileExists ? "overwrite" : "create",
-				label: "vite types",
-			},
-		];
+		return planDtsFile({
+			typeFilePath: path.join(params.targetDir, "vite-env.d.ts"),
+			typeFileExists: params.existingFiles.includes(
+				path.join(params.targetDir, "vite-env.d.ts"),
+			),
+			envDtsHandling: options.envDtsHandling,
+			templateContent: viteTypesTemplate(options.path),
+			appendContent: params.targetPath,
+			overwriteLabel: "vite types",
+			appendLabel: `${options.framework} types`,
+		});
 	},
 };

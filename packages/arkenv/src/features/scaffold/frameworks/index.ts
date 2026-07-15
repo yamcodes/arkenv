@@ -17,3 +17,9 @@ export const FRAMEWORKS = {
 } satisfies FrameworkRegistry;
 
 export type { FrameworkStrategy } from "./types";
+export {
+	CODEGEN_FRAMEWORK_CONFIGS,
+	getCodegenConfig,
+	isCodegenFramework,
+} from "./codegen-config";
+export type { CodegenFrameworkConfig } from "./codegen-config";

@@ -1,3 +1,4 @@
+import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
 import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { StrictEnvTemplates, ValidatorStrategy } from "./types";
 
@@ -90,7 +91,11 @@ export function assembleStrictTemplates(
  * @returns The package import path for the active framework integration.
  */
 export function getFrameworkPackageName(context: ScaffoldContext): string {
-	return context.framework === "nuxt" ? "@arkenv/nuxt" : "@arkenv/nextjs";
+	return (
+		context.packageName ??
+		getCodegenConfig(context.framework)?.packageName ??
+		"@arkenv/nextjs"
+	);
 }
 
 /**
@@ -128,7 +133,7 @@ export function isStrictCodegenDisabled(context: ScaffoldContext): boolean {
  */
 export function getClientImportPath(context: ScaffoldContext): string {
 	if (isStrictCodegenDisabled(context)) {
-		return getFrameworkPackageName(context) + "/client";
+		return `${getFrameworkPackageName(context)}/client`;
 	}
 	return context.nextjsImportPath || "./generated/env.gen";
 }
