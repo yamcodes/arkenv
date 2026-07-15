@@ -1,7 +1,7 @@
 import { assembleSimpleFromDialect } from "./assemble-simple";
 import { assembleStrictFromDialect } from "./assemble-strict";
-import { DIALECTS } from "./dialects";
 import type { Dialect } from "./dialects";
+import { DIALECTS } from "./dialects";
 import type { ValidatorStrategy } from "./types";
 
 /**

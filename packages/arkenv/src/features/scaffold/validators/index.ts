@@ -14,6 +14,6 @@ export const VALIDATORS = {
 	valibot: valibotStrategy,
 } satisfies ValidatorRegistry;
 
-export type { StrictEnvTemplates, ValidatorStrategy } from "./types";
 export type { Dialect } from "./dialects";
 export { DIALECTS } from "./dialects";
+export type { StrictEnvTemplates, ValidatorStrategy } from "./types";

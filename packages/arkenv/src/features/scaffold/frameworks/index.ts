@@ -16,10 +16,10 @@ export const FRAMEWORKS = {
 	vanilla: vanillaStrategy,
 } satisfies FrameworkRegistry;
 
-export type { FrameworkStrategy } from "./types";
+export type { CodegenFrameworkConfig } from "./codegen-config";
 export {
 	CODEGEN_FRAMEWORK_CONFIGS,
 	getCodegenConfig,
 	isCodegenFramework,
 } from "./codegen-config";
-export type { CodegenFrameworkConfig } from "./codegen-config";
+export type { FrameworkStrategy } from "./types";

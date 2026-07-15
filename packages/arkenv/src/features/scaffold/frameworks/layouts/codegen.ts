@@ -1,6 +1,4 @@
-import type {
-	CodegenFrameworkConfig,
-} from "@/features/scaffold/frameworks/codegen-config";
+import type { CodegenFrameworkConfig } from "@/features/scaffold/frameworks/codegen-config";
 import type { Dialect } from "@/features/scaffold/validators/dialects";
 
 /**
@@ -40,8 +38,11 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		layout,
 	} = options;
 
-	const { clientPrefix, packageName: pkgName, displayName: frameworkName } =
-		config;
+	const {
+		clientPrefix,
+		packageName: pkgName,
+		displayName: frameworkName,
+	} = config;
 	const framework = config.id;
 
 	const serverFields: string[] = [];
@@ -116,8 +117,11 @@ function assembleFlatLayout(params: FieldBuckets): string {
 		nextjsImportPath,
 		disableCodegen,
 	} = params;
-	const { clientPrefix, packageName: pkgName, displayName: frameworkName } =
-		config;
+	const {
+		clientPrefix,
+		packageName: pkgName,
+		displayName: frameworkName,
+	} = config;
 	const framework = config.id;
 	const extraImports = dialect.extraImport;
 
@@ -211,8 +215,11 @@ function assembleNestedLayout(params: FieldBuckets): string {
 		disableCodegen,
 		layout,
 	} = params;
-	const { clientPrefix, packageName: pkgName, displayName: frameworkName } =
-		config;
+	const {
+		clientPrefix,
+		packageName: pkgName,
+		displayName: frameworkName,
+	} = config;
 	const framework = config.id;
 	const extraImports = dialect.extraImport;
 

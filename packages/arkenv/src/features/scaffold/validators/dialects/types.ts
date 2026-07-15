@@ -28,10 +28,7 @@ export type Dialect = {
 	 * @param role Field scope within the codegen layout.
 	 * @returns Field line without leading indentation (trailing comma).
 	 */
-	formatCodegenField(
-		key: string,
-		role: "client" | "server" | "shared",
-	): string;
+	formatCodegenField(key: string, role: "client" | "server" | "shared"): string;
 
 	/**
 	 * Default field lines for Env-only / vanilla simple schemas when no keys

@@ -45,7 +45,6 @@ function getStrictTemplates(
 
 describe("validators templates", () => {
 	describe("getSimpleTemplate", () => {
-
 		it("returns arktype template when validator is arktype", () => {
 			const options = {
 				validator: "arktype" as const,
@@ -371,7 +370,6 @@ describe("validators templates", () => {
 			const template = getSimpleTemplate(options);
 			expect(template).toContain("API_KEY: v.optional(v.string())");
 		});
-
 	});
 
 	describe("getStrictTemplates", () => {
