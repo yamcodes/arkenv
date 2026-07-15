@@ -13,6 +13,7 @@ const FLAG_CONFIG = {
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
 	isFlat: { long: "--flat", short: "", kind: "boolean" },
 	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
+	hostPreset: { long: "--host-preset", short: "", kind: "value" },
 } as const;
 
 const knownFlags = new Set<string>(
@@ -100,6 +101,19 @@ export class CLI {
 		}
 
 		if (!this.validationError) {
+			const flag = FLAG_CONFIG.hostPreset;
+			const rawPresetVal = this.getFlagValue(flag.long, flag.short);
+			if (
+				rawPresetVal !== undefined &&
+				rawPresetVal !== "none" &&
+				rawPresetVal !== "vercel" &&
+				rawPresetVal !== "netlify"
+			) {
+				this.validationError = `Invalid host preset: ${rawPresetVal}`;
+			}
+		}
+
+		if (!this.validationError) {
 			if (positionalArgs.length > 1) {
 				this.validationError = `Unknown argument: ${positionalArgs[1]}`;
 			} else {
@@ -161,6 +175,15 @@ export class CLI {
 		return this.hasFlag("noCodegen");
 	}
 
+	get hostPreset(): "none" | "vercel" | "netlify" | undefined {
+		const flag = FLAG_CONFIG.hostPreset;
+		const val = this.getFlagValue(flag.long, flag.short);
+		if (val === "none" || val === "vercel" || val === "netlify") {
+			return val;
+		}
+		return undefined;
+	}
+
 	private hasFlag(prop: keyof typeof FLAG_CONFIG): boolean {
 		const flag = FLAG_CONFIG[prop];
 		return (
@@ -190,6 +213,9 @@ export class CLI {
 		}
 		if (this.noCodegen) {
 			input.noCodegen = true;
+		}
+		if (this.hostPreset !== undefined) {
+			input.hostPreset = this.hostPreset;
 		}
 		return input;
 	}

@@ -13,7 +13,7 @@ type HasTypeFileAtPath = (options: {
 }) => boolean | Promise<boolean>;
 
 type ExistingProjectDefaults = Partial<
-	Pick<ProjectOptions, "framework" | "bunFeatures" | "disableCodegen">
+	Pick<ProjectOptions, "framework" | "bunFeatures" | "disableCodegen" | "hostPreset">
 > & {
 	defaultEnvPath?: string;
 	tsConfig?: ParsedTsConfig | null;
@@ -44,6 +44,7 @@ export async function runPromptWizard(
 			| "framework"
 			| "bunFeatures"
 			| "disableCodegen"
+			| "hostPreset"
 		>
 	> & {
 		examples?: Example[];
@@ -212,6 +213,7 @@ async function runExistingProjectWizard(
 			envKeys: detectedKeys ?? undefined,
 			disableCodegen: defaults?.disableCodegen ?? false,
 			wrapNextjsConfig: framework === "nextjs" ? true : undefined,
+			hostPreset: defaults?.hostPreset || "none",
 		});
 	}
 
@@ -322,7 +324,16 @@ async function runExistingProjectWizard(
 		// 8. validator
 		const validator = unwrapPrompt(await steps.validator());
 
-		// 9. useEnvExample
+		// 9. hostPreset
+		const hostPreset = defaults?.hostPreset !== undefined
+			? defaults.hostPreset
+			: unwrapPrompt(
+				await steps.hostPreset({
+					initialValue: defaults?.hostPreset,
+				}),
+			);
+
+		// 10. useEnvExample
 		const useEnvExample = unwrapPrompt(
 			await steps.useEnvExample({
 				detectedKeys,
@@ -346,6 +357,7 @@ async function runExistingProjectWizard(
 			installTypeDefinitions,
 			envDtsHandling,
 			validator,
+			hostPreset,
 			bunFeatures,
 			language: "ts",
 			installSkill: false,

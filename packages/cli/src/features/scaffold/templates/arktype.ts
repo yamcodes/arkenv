@@ -1,5 +1,6 @@
 import dedent from "dedent";
 import { buildNextjsTemplate } from "./nextjs-template";
+import { getFrameworkPrefix, getPresetKeys, getFieldDefinition, type HostPreset } from "./presets";
 
 /**
  * Generate a TypeScript template string for an ArkType environment configuration.
@@ -7,6 +8,9 @@ import { buildNextjsTemplate } from "./nextjs-template";
  * @param envKeys Optional array of environment variable keys to include in the schema
  * @param framework The framework being used (vite, bun-fullstack, or vanilla)
  * @param nextjsImportPath The optional custom import path for the generated file in Next.js
+ * @param disableCodegen Whether automatic Next.js code generation is disabled
+ * @param layout The layout structure to use (strict, simple, or flat)
+ * @param hostPreset The selected hosting provider preset
  * @returns The generated TypeScript template string
  */
 export const arktypeTemplate = (
@@ -15,11 +19,37 @@ export const arktypeTemplate = (
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
 	layout?: "strict" | "simple" | "flat",
+	hostPreset?: HostPreset,
 ) => {
-	const schemaFields = envKeys?.length
-		? envKeys.map((key) => `\t\t${key}: "string?",`).join("\n")
-		: `\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",
-		PORT: "number.port = 3000",`;
+	const prefix = getFrameworkPrefix(framework as any);
+	const presetKeys = hostPreset ? getPresetKeys(hostPreset, prefix) : [];
+
+	const getDefaultKeys = (fw?: string, pref?: string): string[] => {
+		if (fw === "vite") {
+			return ["PORT", `${pref}API_URL`, "NODE_ENV"];
+		}
+		if (fw === "bun-fullstack") {
+			return [`${pref}API_URL`, "NODE_ENV"];
+		}
+		return ["NODE_ENV", "PORT"];
+	};
+
+	const defaultKeys = getDefaultKeys(framework, prefix);
+	const baseKeys = envKeys?.length ? envKeys : defaultKeys;
+	const uniqueKeys = Array.from(new Set([...baseKeys, ...presetKeys]));
+	const getFieldSchema = (key: string) => {
+		if (key === "NODE_ENV") {
+			return `"'development' | 'production' | 'test' = 'development'"`;
+		}
+		if (key === "PORT") {
+			return `"number.port = 3000"`;
+		}
+		if (prefix && key === `${prefix}API_URL`) {
+			return `"string = 'https://api.example.com'"`;
+		}
+		return getFieldDefinition(key, "arktype", prefix);
+	};
+	const schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldSchema(key)},`).join("\n");
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -31,7 +61,7 @@ export const arktypeTemplate = (
 	 * and provide typesafety for \`import.meta.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -46,7 +76,7 @@ export const arktypeTemplate = (
 	 * and provide typesafety for \`process.env\` on the client-side.
 	 */
 	export const Env = type({
-		${schemaFields}
+${schemaFields}
 	});
 	`;
 	}
@@ -56,10 +86,10 @@ export const arktypeTemplate = (
 		return buildNextjsTemplate(
 			envKeys,
 			{
-				serverField: (key) => `\t\t${key}: "string?",`,
-				clientField: (key) => `\t\t${key}: "string?",`,
+				serverField: (key) => `\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
+				clientField: (key) => `\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
 				sharedField: (key) =>
-					`\t\t${key}: "'development' | 'production' | 'test' = 'development'",`,
+					`\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
 				defaultServerFields: [
 					`\t\tDATABASE_URL: "string = 'postgres://localhost:5432/mydb'",`,
 				],
@@ -74,6 +104,7 @@ export const arktypeTemplate = (
 			disableCodegen,
 			framework,
 			layout,
+			hostPreset,
 		);
 	}
 

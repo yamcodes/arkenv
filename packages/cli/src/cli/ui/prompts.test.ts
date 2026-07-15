@@ -68,6 +68,7 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
 
 		const result = await runPromptWizard({ framework: "bun-fullstack" });
@@ -83,6 +84,7 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // wrapNextjsConfig
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("zod"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
 
 		const result = await runPromptWizard({ framework: "nextjs" });
@@ -100,6 +102,7 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // nextjsCodegen
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
 
 		const result = await runPromptWizard({ framework: "nextjs" });
@@ -116,6 +119,7 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // wrapNextjsConfig
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
 
 		const result = await runPromptWizard({ framework: "nextjs" });
@@ -130,6 +134,7 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
 
 		const result = await runPromptWizard({ envKeys: ["API_KEY"] });
@@ -145,6 +150,7 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.text).mockResolvedValueOnce("./app/env.ts"); // path
 		vi.mocked(prompts.select).mockResolvedValueOnce("append"); // envDtsHandling
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 
 		const result = await runPromptWizard({
 			framework: "vite",
@@ -165,11 +171,43 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // useEnvExample
 
 		const result = await runPromptWizard({ envKeys: ["API_KEY"] });
 
 		expect(result?.envKeys).toBeUndefined();
+	});
+
+	it("should include hostPreset if selected in wizard", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("vercel"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard();
+
+		expect(result?.hostPreset).toBe("vercel");
+	});
+
+	it("should default hostPreset to none in isYes mode", async () => {
+		const result = await runPromptWizard({}, true);
+		expect(result?.hostPreset).toBe("none");
+	});
+
+	it("should bypass hostPreset prompt if already provided in defaults", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		// No select mock for hostPreset because it should be bypassed
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ hostPreset: "vercel" });
+
+		expect(result?.hostPreset).toBe("vercel");
 	});
 	it("should abort immediately if user selects No (abort) on overwrite prompt", async () => {
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false);

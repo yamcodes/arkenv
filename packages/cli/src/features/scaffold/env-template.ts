@@ -1,5 +1,6 @@
 import type { ProjectOptions } from "./plan";
 import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
+import { getPresetKeys, getFieldDefinition } from "./templates/presets";
 
 /**
  * Generate the complete environment configuration template
@@ -13,15 +14,15 @@ export function getEnvTemplate(
 	options: ProjectOptions,
 	nextjsImportPath?: string,
 ): string {
-	const { validator, envKeys, framework, disableCodegen, layout } = options;
+	const { validator, envKeys, framework, disableCodegen, layout, hostPreset } = options;
 
 	switch (validator) {
 		case "arktype":
-			return `${arktypeTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout)}\n`;
+			return `${arktypeTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout, hostPreset)}\n`;
 		case "zod":
-			return `${zodTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout)}\n`;
+			return `${zodTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout, hostPreset)}\n`;
 		case "valibot":
-			return `${valibotTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout)}\n`;
+			return `${valibotTemplate(envKeys, framework, nextjsImportPath, disableCodegen, layout, hostPreset)}\n`;
 		default:
 			throw new Error(`Unsupported validator: ${validator}`);
 	}
@@ -62,7 +63,7 @@ export function getStrictEnvTemplates(
 	options: ProjectOptions,
 	nextjsImportPath?: string,
 ): StrictEnvTemplates {
-	const { validator, envKeys } = options;
+	const { validator, envKeys, hostPreset } = options;
 	const disableCodegen = options.disableCodegen || options.framework === "nuxt";
 
 	const serverFields: string[] = [];
@@ -75,16 +76,15 @@ export function getStrictEnvTemplates(
 	const pkgName =
 		options.framework === "nuxt" ? "@arkenv/nuxt" : "@arkenv/nextjs";
 
+	const presetKeys = hostPreset
+		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !(envKeys || []).includes(k))
+		: [];
+
 	if (envKeys && envKeys.length > 0) {
-		for (const key of envKeys) {
+		const combined = Array.from(new Set([...envKeys, ...presetKeys]));
+		for (const key of combined) {
 			if (key.startsWith(clientPrefix)) {
-				if (validator === "arktype") {
-					clientFields.push(`${key}: "string?",`);
-				} else if (validator === "zod") {
-					clientFields.push(`${key}: z.string().optional(),`);
-				} else if (validator === "valibot") {
-					clientFields.push(`${key}: v.optional(v.string()),`);
-				}
+				clientFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
 				runtimeEnvFields.push(`${key}: process.env.${key},`);
 			} else if (key === "NODE_ENV") {
 				if (validator === "arktype") {
@@ -115,13 +115,7 @@ export function getStrictEnvTemplates(
 						);
 					}
 				} else {
-					if (validator === "arktype") {
-						serverFields.push(`${key}: "string?",`);
-					} else if (validator === "zod") {
-						serverFields.push(`${key}: z.string().optional(),`);
-					} else if (validator === "valibot") {
-						serverFields.push(`${key}: v.optional(v.string()),`);
-					}
+					serverFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
 				}
 			}
 		}
@@ -166,6 +160,15 @@ export function getStrictEnvTemplates(
 			`${defaultClientKey}: process.env.${defaultClientKey},`,
 			"NODE_ENV: process.env.NODE_ENV,",
 		);
+
+		for (const key of presetKeys) {
+			if (key.startsWith(clientPrefix)) {
+				clientFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
+				runtimeEnvFields.push(`${key}: process.env.${key},`);
+			} else {
+				serverFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
+			}
+		}
 	}
 
 	const runtimeEnvOptions =

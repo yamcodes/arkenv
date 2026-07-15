@@ -6,6 +6,7 @@ import {
 	createPlan,
 	Executor,
 	type Framework,
+	type HostPreset,
 } from "@/features/scaffold";
 import { RegistryClient } from "@/shared/clients";
 import type {
@@ -29,6 +30,7 @@ export type InitInput = {
 	example?: string;
 	name?: string;
 	noCodegen?: boolean;
+	hostPreset?: HostPreset;
 };
 
 /**
@@ -294,6 +296,7 @@ export class InitUseCase {
 				isSimple: input.isSimple,
 				isFlat: input.isFlat,
 				disableCodegen: input.noCodegen,
+				hostPreset: input.hostPreset,
 			}),
 			isYes,
 		);
