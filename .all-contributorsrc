@@ -73,6 +73,19 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "abhimanyutiwaribot",
+      "name": "Abhimanyu Tiwari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/181746977?v=4",
+      "profile": "https://abhimanyutiwaribot.vercel.app",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "test",
+        "tool"
+      ]
     }
   ]
 }
