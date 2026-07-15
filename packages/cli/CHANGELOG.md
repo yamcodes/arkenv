@@ -1,5 +1,22 @@
 # @arkenv/cli
 
+## 0.3.3
+
+### Patch Changes
+
+- #### Add hosting presets option to init CLI _[`#1288`](https://github.com/yamcodes/arkenv/pull/1288) [`8ffc40c`](https://github.com/yamcodes/arkenv/commit/8ffc40c9fb9582cb7ca6c98c54f004941c5213b2) [@abhimanyutiwaribot](https://github.com/abhimanyutiwaribot)_
+
+  Support Vercel and Netlify presets when initializing a project via `arkenv init`.
+
+  Usage:
+
+  1.  Run initialization in an existing project:
+      ```bash
+      npx @arkenv/cli@latest init
+      ```
+  2.  Select Vercel or Netlify from the "Select a hosting provider preset (optional)" prompt.
+  3.  The generated environment configuration file (`env.ts`) will contain pre-typed environment variables, automatically prefixing them based on the active framework (e.g. `NEXT_PUBLIC_VERCEL_ENV` and `NEXT_PUBLIC_VERCEL_URL` for Next.js).
+
 ## 0.3.2
 
 ### Patch Changes
