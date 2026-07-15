@@ -16,6 +16,7 @@ export const FRAMEWORKS = {
 	vanilla: vanillaStrategy,
 } satisfies FrameworkRegistry;
 
+export { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";
 export type { CodegenFrameworkConfig } from "./codegen-config";
 export {
 	CODEGEN_FRAMEWORK_CONFIGS,

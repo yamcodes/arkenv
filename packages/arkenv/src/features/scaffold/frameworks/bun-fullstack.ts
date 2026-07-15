@@ -1,11 +1,14 @@
 import path from "node:path";
 import { shake } from "radashi";
 import { bunTypesTemplate } from "@/features/scaffold/templates";
+import { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";
 import { planDtsFile } from "./dts-planning";
 import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
 import type { FrameworkStrategy } from "./types";
 
 export const bunFullstackStrategy: FrameworkStrategy = {
+	clientPrefix: FRAMEWORK_CLIENT_PREFIXES["bun-fullstack"],
+
 	getEnvDefaults(keys) {
 		if (keys && keys.length > 0) {
 			return getEnvDefaultsFromKeys(keys);

@@ -1,3 +1,4 @@
+import { FRAMEWORK_CLIENT_PREFIXES } from "@/features/scaffold/frameworks/client-prefixes";
 import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
 import type { Framework, ProjectOptions } from "./plan";
 
@@ -6,7 +7,7 @@ import type { Framework, ProjectOptions } from "./plan";
  */
 export type ScaffoldContext = {
 	framework: Framework;
-	/** Client env prefix from the codegen framework config (e.g. `NEXT_PUBLIC_`). */
+	/** Client env prefix from the active framework strategy (e.g. `NEXT_PUBLIC_`, `VITE_`). */
 	clientPrefix: string;
 	/** Integration package name when the framework is codegen-aware. */
 	packageName?: string;
@@ -18,8 +19,9 @@ export type ScaffoldContext = {
 /**
  * Build a {@link ScaffoldContext} from project options and optional import path.
  *
- * Client prefix and package name come from the centralized codegen framework
- * config so Next/Nuxt values are not re-derived elsewhere.
+ * Client prefix comes from {@link FRAMEWORK_CLIENT_PREFIXES}, the same source
+ * each framework strategy exposes as `clientPrefix`. Package name still comes
+ * from codegen framework config for Next/Nuxt.
  *
  * @param options The selected project options.
  * @param nextjsImportPath The optional custom import path for generated env files.
@@ -33,7 +35,7 @@ export function createScaffoldContext(
 
 	return {
 		framework: options.framework,
-		clientPrefix: codegen?.clientPrefix ?? "NEXT_PUBLIC_",
+		clientPrefix: FRAMEWORK_CLIENT_PREFIXES[options.framework],
 		...(codegen?.packageName !== undefined && {
 			packageName: codegen.packageName,
 		}),

@@ -27,6 +27,8 @@ export function createCodegenFrameworkStrategy(
 	const defaultApiUrlKey = `${clientPrefix}API_URL`;
 
 	return {
+		clientPrefix,
+
 		getEnvDefaults(keys) {
 			if (keys && keys.length > 0) {
 				return getEnvDefaultsFromKeys(keys);
