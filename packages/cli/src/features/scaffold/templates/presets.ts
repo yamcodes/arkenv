@@ -4,13 +4,13 @@ export type PresetField =
 	| { readonly type: "string" }
 	| { readonly type: "enum"; readonly values: readonly string[] };
 
-export interface PresetDefinition {
+export type PresetDefinition = {
 	readonly label: string;
 	readonly hint: string;
 	readonly serverOnlyKeys: readonly string[];
 	readonly clientExposedKeys: readonly string[];
 	readonly fields: Readonly<Record<string, PresetField>>;
-}
+};
 
 export const PRESETS = {
 	vercel: {
