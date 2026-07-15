@@ -1,3 +1,4 @@
+import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
 import type { Framework, ProjectOptions } from "./plan";
 
 /**
@@ -5,7 +6,10 @@ import type { Framework, ProjectOptions } from "./plan";
  */
 export type ScaffoldContext = {
 	framework: Framework;
+	/** Client env prefix from the codegen framework config (e.g. `NEXT_PUBLIC_`). */
 	clientPrefix: string;
+	/** Integration package name when the framework is codegen-aware. */
+	packageName?: string;
 	disableCodegen: boolean;
 	layout?: "strict" | "simple" | "flat";
 	nextjsImportPath?: string;
@@ -13,6 +17,9 @@ export type ScaffoldContext = {
 
 /**
  * Build a {@link ScaffoldContext} from project options and optional import path.
+ *
+ * Client prefix and package name come from the centralized codegen framework
+ * config so Next/Nuxt values are not re-derived elsewhere.
  *
  * @param options The selected project options.
  * @param nextjsImportPath The optional custom import path for generated env files.
@@ -22,12 +29,14 @@ export function createScaffoldContext(
 	options: ProjectOptions,
 	nextjsImportPath?: string,
 ): ScaffoldContext {
-	const clientPrefix =
-		options.framework === "nuxt" ? "NUXT_PUBLIC_" : "NEXT_PUBLIC_";
+	const codegen = getCodegenConfig(options.framework);
 
 	return {
 		framework: options.framework,
-		clientPrefix,
+		clientPrefix: codegen?.clientPrefix ?? "NEXT_PUBLIC_",
+		...(codegen?.packageName !== undefined && {
+			packageName: codegen.packageName,
+		}),
 		disableCodegen: options.disableCodegen === true,
 		...(options.layout !== undefined && { layout: options.layout }),
 		...(nextjsImportPath !== undefined && { nextjsImportPath }),

@@ -1,6 +1,7 @@
 import path from "node:path";
 import { shake } from "radashi";
 import { bunTypesTemplate } from "@/features/scaffold/templates";
+import { planDtsFile } from "./dts-planning";
 import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
 import type { FrameworkStrategy } from "./types";
 
@@ -43,33 +44,15 @@ export const bunFullstackStrategy: FrameworkStrategy = {
 		}
 
 		const typeFilePath = path.join(params.targetDir, "bun-env.d.ts");
-		const typeFileExists = params.existingFiles.includes(typeFilePath);
 
-		if (options.envDtsHandling === "skip") {
-			return [];
-		}
-
-		if (
-			options.envDtsHandling === "append" ||
-			(!options.envDtsHandling && typeFileExists)
-		) {
-			return [
-				{
-					path: typeFilePath,
-					content: params.targetPath,
-					action: "append",
-					label: `${options.framework} types`,
-				},
-			];
-		}
-
-		return [
-			{
-				path: typeFilePath,
-				content: bunTypesTemplate(options.path),
-				action: typeFileExists ? "overwrite" : "create",
-				label: "bun-fullstack types",
-			},
-		];
+		return planDtsFile({
+			typeFilePath,
+			typeFileExists: params.existingFiles.includes(typeFilePath),
+			envDtsHandling: options.envDtsHandling,
+			templateContent: bunTypesTemplate(options.path),
+			appendContent: params.targetPath,
+			overwriteLabel: "bun-fullstack types",
+			appendLabel: `${options.framework} types`,
+		});
 	},
 };

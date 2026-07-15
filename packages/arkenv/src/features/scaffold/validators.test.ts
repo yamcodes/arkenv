@@ -1,18 +1,60 @@
 import { describe, expect, it } from "vitest";
-import { getEnvTemplate, getStrictEnvTemplates } from "./env-template";
+import type { Framework, ProjectOptions, Validator } from "./plan";
+import { createScaffoldContext } from "./scaffold-context";
+import { VALIDATORS } from "./validators";
 
-describe("env-template", () => {
-	describe("getEnvTemplate", () => {
+type TemplateOptions = {
+	validator: Validator;
+	framework: Framework;
+	path?: string;
+	language?: "ts";
+	envKeys?: string[];
+	layout?: ProjectOptions["layout"];
+	disableCodegen?: boolean;
+};
+
+/**
+ * Exercise template generation through the production VALIDATORS seam.
+ */
+function getSimpleTemplate(
+	options: TemplateOptions,
+	nextjsImportPath?: string,
+): string {
+	const validator = VALIDATORS[options.validator];
+	const context = createScaffoldContext(
+		options as ProjectOptions,
+		nextjsImportPath,
+	);
+	return validator.getSimpleTemplate(options.envKeys ?? [], context);
+}
+
+/**
+ * Exercise strict template generation through the production VALIDATORS seam.
+ */
+function getStrictTemplates(
+	options: TemplateOptions,
+	nextjsImportPath?: string,
+) {
+	const validator = VALIDATORS[options.validator];
+	const context = createScaffoldContext(
+		options as ProjectOptions,
+		nextjsImportPath,
+	);
+	return validator.getStrictTemplates(options.envKeys ?? [], context);
+}
+
+describe("validators templates", () => {
+	describe("getSimpleTemplate", () => {
 		it("returns arktype template when validator is arktype", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "vanilla" as any,
+				validator: "arktype" as const,
+				framework: "vanilla" as const,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv, { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
@@ -23,29 +65,29 @@ describe("env-template", () => {
 
 		it("returns arktype template with envKeys and defaults", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "vanilla" as any,
+				validator: "arktype" as const,
+				framework: "vanilla" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 				envKeys: ["API_KEY"],
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('API_KEY: "string?"');
 			expect(template).not.toContain("NODE_ENV");
 		});
 
 		it("returns nextjs template with defaults", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "nextjs" as any,
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("NEXT_PUBLIC_API_URL:");
@@ -56,15 +98,15 @@ describe("env-template", () => {
 
 		it("returns nextjs flat layout template when layout is flat", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "nextjs" as any,
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
 				layout: "flat" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).not.toContain("server:");
@@ -74,8 +116,8 @@ describe("env-template", () => {
 
 		it("returns nuxt flat layout template when layout is flat", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "nuxt" as any,
+				validator: "arktype" as const,
+				framework: "nuxt" as const,
 				layout: "flat" as const,
 				path: "env.ts",
 				language: "ts" as const,
@@ -83,7 +125,7 @@ describe("env-template", () => {
 				shouldInstall: false,
 				disableCodegen: true,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@arkenv/nuxt"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("NUXT_PUBLIC_API_URL:");
@@ -95,15 +137,15 @@ describe("env-template", () => {
 
 		it("returns nextjs nested layout template when layout is simple", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "nextjs" as any,
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
 				layout: "simple" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain("server:");
 			expect(template).toContain("client:");
@@ -112,21 +154,21 @@ describe("env-template", () => {
 
 		it("returns nextjs template with custom nextjsImportPath", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "nextjs" as any,
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options, "@/generated/env.gen");
+			const template = getSimpleTemplate(options, "@/generated/env.gen");
 			expect(template).toContain('import arkenv from "@/generated/env.gen"');
 		});
 
 		it("returns nextjs template with custom envKeys split correctly", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "nextjs" as any,
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -139,7 +181,7 @@ describe("env-template", () => {
 					"CUSTOM_VAR",
 				],
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("CUSTOM_VAR:");
@@ -151,14 +193,14 @@ describe("env-template", () => {
 
 		it("returns nextjs template for zod when validator is zod", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "nextjs" as any,
+				validator: "zod" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("DATABASE_URL: z.string().url().default(");
@@ -166,14 +208,14 @@ describe("env-template", () => {
 
 		it("returns nextjs template for valibot when validator is valibot", () => {
 			const options = {
-				validator: "valibot" as any,
-				framework: "nextjs" as any,
+				validator: "valibot" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "./generated/env.gen"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain(
@@ -183,14 +225,14 @@ describe("env-template", () => {
 
 		it("returns arktype template for vite when validator is arktype", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "vite" as any,
+				validator: "arktype" as const,
+				framework: "vite" as const,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
@@ -206,14 +248,14 @@ describe("env-template", () => {
 
 		it("returns arktype template for bun-fullstack when validator is arktype", () => {
 			const options = {
-				validator: "arktype" as any,
-				framework: "bun-fullstack" as any,
+				validator: "arktype" as const,
+				framework: "bun-fullstack" as const,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
@@ -232,14 +274,14 @@ describe("env-template", () => {
 
 		it("returns zod template when validator is zod", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "vanilla" as any,
+				validator: "zod" as const,
+				framework: "vanilla" as const,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@arkenv/standard"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain('.default("development")');
@@ -250,14 +292,14 @@ describe("env-template", () => {
 
 		it("returns zod template for vite when validator is zod", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "vite" as any,
+				validator: "zod" as const,
+				framework: "vite" as const,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("export const Env = type({");
@@ -265,28 +307,28 @@ describe("env-template", () => {
 
 		it("returns zod template with envKeys and defaults", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "vanilla" as any,
+				validator: "zod" as const,
+				framework: "vanilla" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 				envKeys: ["API_KEY"],
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain("API_KEY: z.string().optional()");
 		});
 
 		it("returns valibot template when validator is valibot", () => {
 			const options = {
-				validator: "valibot" as any,
-				framework: "vanilla" as any,
+				validator: "valibot" as const,
+				framework: "vanilla" as const,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@arkenv/standard"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("v.integer()");
@@ -302,14 +344,14 @@ describe("env-template", () => {
 
 		it("returns valibot template for vite when validator is valibot", () => {
 			const options = {
-				validator: "valibot" as any,
-				framework: "vite" as any,
+				validator: "valibot" as const,
+				framework: "vite" as const,
 				path: ".env.config.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain('import { type } from "@arkenv/core"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("export const Env = type({");
@@ -317,45 +359,31 @@ describe("env-template", () => {
 
 		it("returns valibot template with envKeys and defaults", () => {
 			const options = {
-				validator: "valibot" as any,
-				framework: "vanilla" as any,
+				validator: "valibot" as const,
+				framework: "vanilla" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 				envKeys: ["API_KEY"],
 			};
-			const template = getEnvTemplate(options);
+			const template = getSimpleTemplate(options);
 			expect(template).toContain("API_KEY: v.optional(v.string())");
-		});
-
-		it("throws error for unsupported validator", () => {
-			const options = {
-				validator: "unknown" as any,
-				framework: "vanilla" as any,
-				path: ".env.config.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-			};
-			expect(() => getEnvTemplate(options)).toThrow(
-				"Unsupported validator: unknown",
-			);
 		});
 	});
 
-	describe("getStrictEnvTemplates", () => {
+	describe("getStrictTemplates", () => {
 		it("returns strict templates with codegen enabled", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "nextjs" as any,
+				validator: "zod" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 				disableCodegen: false,
 			};
-			const templates = getStrictEnvTemplates(options);
+			const templates = getStrictTemplates(options);
 			expect(templates.shared).toContain(
 				"export const SharedSchema = z.object({",
 			);
@@ -371,15 +399,15 @@ describe("env-template", () => {
 
 		it("returns strict templates with custom nextjsImportPath", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "nextjs" as any,
+				validator: "zod" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 				disableCodegen: false,
 			};
-			const templates = getStrictEnvTemplates(options, "@/generated/env.gen");
+			const templates = getStrictTemplates(options, "@/generated/env.gen");
 			expect(templates.client).toContain(
 				'import arkenv from "@/generated/env.gen";',
 			);
@@ -387,15 +415,15 @@ describe("env-template", () => {
 
 		it("returns strict templates with codegen disabled", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "nextjs" as any,
+				validator: "zod" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 				disableCodegen: true,
 			};
-			const templates = getStrictEnvTemplates(options);
+			const templates = getStrictTemplates(options);
 			expect(templates.shared).toContain(
 				"export const SharedSchema = z.object({",
 			);
@@ -411,8 +439,8 @@ describe("env-template", () => {
 
 		it("generates cleanly formatted empty objects when no client keys are present", () => {
 			const options = {
-				validator: "zod" as any,
-				framework: "nextjs" as any,
+				validator: "zod" as const,
+				framework: "nextjs" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -420,7 +448,7 @@ describe("env-template", () => {
 				disableCodegen: false,
 				envKeys: ["DATABASE_URL"], // Only a server key, no client keys, no shared keys
 			};
-			const templates = getStrictEnvTemplates(options);
+			const templates = getStrictTemplates(options);
 			expect(templates.client).toContain(
 				"arkenv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
 			);

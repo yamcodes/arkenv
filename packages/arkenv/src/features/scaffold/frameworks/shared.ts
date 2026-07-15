@@ -3,6 +3,7 @@ import type { Framework, ProjectOptions } from "@/features/scaffold/plan";
 import { createScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { ValidatorStrategy } from "@/features/scaffold/validators/types";
 import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
+import { isCodegenFramework } from "./codegen-config";
 import type { FrameworkGetFilesParams } from "./types";
 
 const ENV_KEY_DEFAULTS: Record<string, string> = {
@@ -20,8 +21,6 @@ const STRICT_INTERNAL_DIR = "internal";
 const STRICT_SHARED_BASENAME = "shared";
 const STRICT_CLIENT_BASENAME = "client";
 const STRICT_SERVER_BASENAME = "server";
-
-const CODEGEN_FRAMEWORKS = new Set<Framework>(["nextjs", "nuxt"]);
 
 const SCHEMA_FILE_LABEL = "environment schema";
 const SHARED_SCHEMA_FILE_LABEL = "shared environment schema";
@@ -101,7 +100,7 @@ function resolveCodegenImportPath(
 	options: { framework: Framework; disableCodegen?: boolean },
 ): string | undefined {
 	if (
-		!CODEGEN_FRAMEWORKS.has(options.framework) ||
+		!isCodegenFramework(options.framework) ||
 		options.disableCodegen ||
 		!params.tsConfig?.parsed
 	) {

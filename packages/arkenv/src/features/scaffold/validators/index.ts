@@ -1,7 +1,9 @@
-import { arktypeStrategy } from "./arktype";
+import {
+	arktypeStrategy,
+	valibotStrategy,
+	zodStrategy,
+} from "./create-strategy";
 import type { ValidatorRegistry } from "./types";
-import { valibotStrategy } from "./valibot";
-import { zodStrategy } from "./zod";
 
 /**
  * Exhaustive registry of validator strategies.
@@ -12,4 +14,6 @@ export const VALIDATORS = {
 	valibot: valibotStrategy,
 } satisfies ValidatorRegistry;
 
+export type { Dialect } from "./dialects";
+export { DIALECTS } from "./dialects";
 export type { StrictEnvTemplates, ValidatorStrategy } from "./types";
