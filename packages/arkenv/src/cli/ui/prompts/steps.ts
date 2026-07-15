@@ -14,6 +14,7 @@ import {
 	nextjsCodegenStep,
 	validatorStep,
 } from "./steps/framework";
+import { hostPresetStep } from "./steps/host-preset";
 import { pathStep, useDefaultPathStep } from "./steps/path";
 
 /**
@@ -31,5 +32,6 @@ export const steps = {
 	installTypeDefinitions: installTypeDefinitionsStep,
 	envDtsHandling: envDtsHandlingStep,
 	validator: validatorStep,
+	hostPreset: hostPresetStep,
 	useEnvExample: useEnvExampleStep,
 };

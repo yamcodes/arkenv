@@ -1,6 +1,7 @@
 import { FRAMEWORK_CLIENT_PREFIXES } from "@/features/scaffold/frameworks/client-prefixes";
 import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
 import type { Framework, ProjectOptions } from "./plan";
+import type { HostPreset } from "./presets";
 
 /**
  * Shared context passed to validator strategies during template generation.
@@ -14,6 +15,8 @@ export type ScaffoldContext = {
 	disableCodegen: boolean;
 	layout?: "strict" | "simple" | "flat";
 	nextjsImportPath?: string;
+	/** Hosting provider preset for schema field enrichment. */
+	hostPreset?: HostPreset;
 };
 
 /**
@@ -23,9 +26,9 @@ export type ScaffoldContext = {
  * each framework strategy exposes as `clientPrefix`. Package name still comes
  * from codegen framework config for Next/Nuxt.
  *
- * @param options The selected project options.
- * @param nextjsImportPath The optional custom import path for generated env files.
- * @returns A scaffold context for validator strategies.
+ * @param options The selected project options
+ * @param nextjsImportPath The optional custom import path for generated env files
+ * @returns A scaffold context for validator strategies
  */
 export function createScaffoldContext(
 	options: ProjectOptions,
@@ -42,5 +45,8 @@ export function createScaffoldContext(
 		disableCodegen: options.disableCodegen === true,
 		...(options.layout !== undefined && { layout: options.layout }),
 		...(nextjsImportPath !== undefined && { nextjsImportPath }),
+		...(options.hostPreset !== undefined && {
+			hostPreset: options.hostPreset,
+		}),
 	};
 }

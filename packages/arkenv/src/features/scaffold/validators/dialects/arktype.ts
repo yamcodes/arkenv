@@ -1,29 +1,51 @@
 import dedent from "dedent";
 import type { Dialect } from "./types";
+import { tryFormatPresetFieldValue } from "./types";
 
 export const arktypeDialect: Dialect = {
-	formatStrictField(key, role) {
+	formatOptionalString() {
+		return `"string?"`;
+	},
+
+	formatOptionalEnum(values) {
+		return `"'${values.join("' | '")}'?"`;
+	},
+
+	formatStrictField(key, role, clientPrefix = "") {
 		if (role === "shared") {
 			return `${key}: "'development' | 'production' | 'test' = 'development'",`;
 		}
 		if (role === "server" && key === "PORT") {
 			return `PORT: "number.port = 3000",`;
 		}
+		const preset = tryFormatPresetFieldValue(arktypeDialect, key, clientPrefix);
+		if (preset) return `${key}: ${preset},`;
 		return `${key}: "string?",`;
 	},
 
-	formatCodegenField(key, role) {
+	formatCodegenField(key, role, clientPrefix = "") {
 		if (role === "shared") {
 			return `${key}: "'development' | 'production' | 'test' = 'development'",`;
 		}
+		const preset = tryFormatPresetFieldValue(arktypeDialect, key, clientPrefix);
+		if (preset) return `${key}: ${preset},`;
 		return `${key}: "string?",`;
 	},
 
 	defaultSimpleSchemaFields: `\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",
 		PORT: "number.port = 3000",`,
 
-	formatSimpleSchemaFields(keys) {
-		return keys.map((key) => `\t\t${key}: "string?",`).join("\n");
+	formatSimpleSchemaFields(keys, clientPrefix = "") {
+		return keys
+			.map((key) => {
+				const preset = tryFormatPresetFieldValue(
+					arktypeDialect,
+					key,
+					clientPrefix,
+				);
+				return `\t\t${key}: ${preset ?? `"string?"`},`;
+			})
+			.join("\n");
 	},
 
 	getDefaultStrictFields(clientPrefix) {

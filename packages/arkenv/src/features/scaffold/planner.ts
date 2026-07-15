@@ -3,6 +3,7 @@ import { shake } from "radashi";
 import { FRAMEWORKS } from "./frameworks";
 import { getEnvDefaultsForExample } from "./frameworks/example-env-defaults";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
+import { mergeEnvKeysWithPreset } from "./presets";
 import { getDlxCommand } from "./scaffold";
 import { VALIDATORS } from "./validators";
 
@@ -133,11 +134,17 @@ export function planEnvFiles(
 	const hasEnv = existingFiles.includes(envPath);
 	const hasEnvExample = existingFiles.includes(envExamplePath);
 
+	const combinedEnvKeys = mergeEnvKeysWithPreset(
+		options.envKeys,
+		options.hostPreset,
+		frameworkStrategy.clientPrefix,
+	);
+
 	if (!hasEnv) {
 		const content =
 			options.envExampleContent !== undefined
 				? options.envExampleContent
-				: formatEnvContent(frameworkStrategy.getEnvDefaults(options.envKeys));
+				: formatEnvContent(frameworkStrategy.getEnvDefaults(combinedEnvKeys));
 		plan.files.push({
 			path: envPath,
 			content,
@@ -150,7 +157,7 @@ export function planEnvFiles(
 		const content =
 			options.envContent !== undefined
 				? stripValuesFromEnvContent(options.envContent)
-				: formatEnvContent(frameworkStrategy.getEnvDefaults(options.envKeys));
+				: formatEnvContent(frameworkStrategy.getEnvDefaults(combinedEnvKeys));
 		plan.files.push({
 			path: envExamplePath,
 			content,

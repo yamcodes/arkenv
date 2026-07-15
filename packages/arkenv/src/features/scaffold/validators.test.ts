@@ -11,6 +11,7 @@ type TemplateOptions = {
 	envKeys?: string[];
 	layout?: ProjectOptions["layout"];
 	disableCodegen?: boolean;
+	hostPreset?: ProjectOptions["hostPreset"];
 };
 
 /**
@@ -455,6 +456,83 @@ describe("validators templates", () => {
 			expect(templates.shared).toContain(
 				"export const SharedSchema = z.object({});",
 			);
+		});
+	});
+
+	describe("hosting presets", () => {
+		it("includes Vercel preset with ArkType validator", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "vanilla" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				hostPreset: "vercel" as const,
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain('VERCEL: "string?"');
+			expect(template).toContain(
+				"VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
+			expect(template).toContain('VERCEL_URL: "string?"');
+		});
+
+		it("includes Vercel preset with Zod validator in flat Next.js layout", () => {
+			const options = {
+				validator: "zod" as const,
+				framework: "nextjs" as const,
+				layout: "flat" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				hostPreset: "vercel" as const,
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain("VERCEL: z.string().optional()");
+			expect(template).toContain(
+				'VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
+			expect(template).toContain(
+				'NEXT_PUBLIC_VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
+			expect(template).toContain(
+				"NEXT_PUBLIC_VERCEL_URL: z.string().optional()",
+			);
+		});
+
+		it("includes Netlify preset with Valibot in strict Next.js layout", () => {
+			const options = {
+				validator: "valibot" as const,
+				framework: "nextjs" as const,
+				layout: "strict" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				disableCodegen: true,
+				hostPreset: "netlify" as const,
+			};
+			const templates = getStrictTemplates(options);
+			expect(templates.server).toContain("NETLIFY: v.optional(v.string())");
+			expect(templates.server).toContain(
+				'CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"]))',
+			);
+			expect(templates.client).toContain(
+				'NEXT_PUBLIC_CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"]))',
+			);
+			expect(templates.client).toContain(
+				"NEXT_PUBLIC_URL: v.optional(v.string())",
+			);
+		});
+
+		it("prefixes Vite client keys via framework clientPrefix", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "vite" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				hostPreset: "vercel" as const,
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain('VERCEL: "string?"');
+			expect(template).toContain("VITE_VERCEL_ENV:");
+			expect(template).toContain('VITE_VERCEL_URL: "string?"');
 		});
 	});
 });

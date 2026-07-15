@@ -22,7 +22,7 @@ export type PromptPort = {
 		defaults?: Partial<
 			Pick<
 				ProjectOptions,
-				"mode" | "example" | "name" | "framework" | "bunFeatures"
+				"mode" | "example" | "name" | "framework" | "bunFeatures" | "hostPreset"
 			>
 		> & {
 			examples?: Example[];

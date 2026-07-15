@@ -1,31 +1,53 @@
 import dedent from "dedent";
 import type { Dialect } from "./types";
+import { tryFormatPresetFieldValue } from "./types";
 
 export const valibotDialect: Dialect = {
 	extraImport: `import * as v from "valibot";`,
 
-	formatStrictField(key, role) {
+	formatOptionalString() {
+		return "v.optional(v.string())";
+	},
+
+	formatOptionalEnum(values) {
+		return `v.optional(v.picklist([${values.map((v) => `"${v}"`).join(", ")}]))`;
+	},
+
+	formatStrictField(key, role, clientPrefix = "") {
 		if (role === "shared") {
 			return `${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`;
 		}
 		if (role === "server" && key === "PORT") {
 			return "PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),";
 		}
+		const preset = tryFormatPresetFieldValue(valibotDialect, key, clientPrefix);
+		if (preset) return `${key}: ${preset},`;
 		return `${key}: v.optional(v.string()),`;
 	},
 
-	formatCodegenField(key, role) {
+	formatCodegenField(key, role, clientPrefix = "") {
 		if (role === "shared") {
 			return `${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`;
 		}
+		const preset = tryFormatPresetFieldValue(valibotDialect, key, clientPrefix);
+		if (preset) return `${key}: ${preset},`;
 		return `${key}: v.optional(v.string()),`;
 	},
 
 	defaultSimpleSchemaFields: `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
 		PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`,
 
-	formatSimpleSchemaFields(keys) {
-		return keys.map((key) => `\t\t${key}: v.optional(v.string()),`).join("\n");
+	formatSimpleSchemaFields(keys, clientPrefix = "") {
+		return keys
+			.map((key) => {
+				const preset = tryFormatPresetFieldValue(
+					valibotDialect,
+					key,
+					clientPrefix,
+				);
+				return `\t\t${key}: ${preset ?? "v.optional(v.string())"},`;
+			})
+			.join("\n");
 	},
 
 	getDefaultStrictFields(clientPrefix) {

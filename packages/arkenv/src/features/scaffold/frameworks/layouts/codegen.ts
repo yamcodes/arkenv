@@ -1,4 +1,5 @@
 import type { CodegenFrameworkConfig } from "@/features/scaffold/frameworks/codegen-config";
+import { getPresetKeys, type HostPreset } from "@/features/scaffold/presets";
 import type { Dialect } from "@/features/scaffold/validators/dialects";
 
 /**
@@ -16,7 +17,40 @@ export type CodegenLayoutOptions = {
 	 * path kept for test parity; primary codegen path is flat when unset/flat.
 	 */
 	layout?: "strict" | "simple" | "flat" | undefined;
+	/** Hosting provider preset — appended to defaults when `envKeys` is empty. */
+	hostPreset?: HostPreset | undefined;
 };
+
+/**
+ * Append hosting-preset field lines onto codegen field buckets.
+ *
+ * @param buckets Mutable server/client/shared field lines
+ * @param dialect Validator dialect
+ * @param clientPrefix Framework client prefix
+ * @param hostPreset Selected hosting preset
+ */
+function appendPresetCodegenFields(
+	buckets: {
+		serverFields: string[];
+		clientFields: string[];
+	},
+	dialect: Dialect,
+	clientPrefix: string,
+	hostPreset: HostPreset | undefined,
+): void {
+	const presetKeys = getPresetKeys(hostPreset ?? "none", clientPrefix);
+	for (const key of presetKeys) {
+		if (clientPrefix && key.startsWith(clientPrefix)) {
+			buckets.clientFields.push(
+				`\t\t${dialect.formatCodegenField(key, "client", clientPrefix)}`,
+			);
+		} else {
+			buckets.serverFields.push(
+				`\t\t${dialect.formatCodegenField(key, "server", clientPrefix)}`,
+			);
+		}
+	}
+}
 
 /**
  * Assemble a Next.js / Nuxt env schema template (flat or nested).
@@ -25,8 +59,8 @@ export type CodegenLayoutOptions = {
  * (`layout === "simple"`), and runtimeEnv injection. The dialect supplies only
  * field lines and extra imports.
  *
- * @param options Layout and dialect inputs.
- * @returns Generated TypeScript source.
+ * @param options Layout and dialect inputs
+ * @returns Generated TypeScript source
  */
 export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 	const {
@@ -36,6 +70,7 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		importPath: nextjsImportPath,
 		disableCodegen,
 		layout,
+		hostPreset,
 	} = options;
 
 	const {
@@ -52,11 +87,17 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 	if (envKeys && envKeys.length > 0) {
 		for (const key of envKeys) {
 			if (key.startsWith(clientPrefix)) {
-				clientFields.push(`\t\t${dialect.formatCodegenField(key, "client")}`);
+				clientFields.push(
+					`\t\t${dialect.formatCodegenField(key, "client", clientPrefix)}`,
+				);
 			} else if (key === "NODE_ENV") {
-				sharedFields.push(`\t\t${dialect.formatCodegenField(key, "shared")}`);
+				sharedFields.push(
+					`\t\t${dialect.formatCodegenField(key, "shared", clientPrefix)}`,
+				);
 			} else {
-				serverFields.push(`\t\t${dialect.formatCodegenField(key, "server")}`);
+				serverFields.push(
+					`\t\t${dialect.formatCodegenField(key, "server", clientPrefix)}`,
+				);
 			}
 		}
 	} else {
@@ -64,6 +105,12 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		serverFields.push(...defaults.serverFields);
 		clientFields.push(...defaults.clientFields);
 		sharedFields.push(...defaults.sharedFields);
+		appendPresetCodegenFields(
+			{ serverFields, clientFields },
+			dialect,
+			clientPrefix,
+			hostPreset,
+		);
 	}
 
 	const useFlatLayout = layout !== "simple" && layout !== "strict";
