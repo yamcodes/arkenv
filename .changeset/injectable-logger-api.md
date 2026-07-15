@@ -1,5 +1,5 @@
 ---
-"@arkenv/build": minor
+"@arkenv/build": patch
 "@arkenv/nextjs": minor
 "@arkenv/nuxt": minor
 "@arkenv/bun-plugin": minor
