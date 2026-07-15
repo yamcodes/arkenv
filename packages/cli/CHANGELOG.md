@@ -1,5 +1,22 @@
 # @arkenv/cli
 
+## 0.3.3
+
+### Patch Changes
+
+- #### Add hosting presets option to init CLI _[`#1288`](https://github.com/yamcodes/arkenv/pull/1288) [`8ffc40c`](https://github.com/yamcodes/arkenv/commit/8ffc40c9fb9582cb7ca6c98c54f004941c5213b2) [@abhimanyutiwaribot](https://github.com/abhimanyutiwaribot)_
+
+  Support Vercel and Netlify presets when initializing a project via `arkenv init`.
+
+  Usage:
+
+  1.  Run initialization in an existing project:
+      ```bash
+      npx @arkenv/cli@latest init
+      ```
+  2.  Select Vercel or Netlify from the "Select a hosting provider preset (optional)" prompt.
+  3.  The generated environment configuration file (`env.ts`) will contain pre-typed environment variables, automatically prefixing them based on the active framework (e.g. `NEXT_PUBLIC_VERCEL_ENV` and `NEXT_PUBLIC_VERCEL_URL` for Next.js).
+
 ## 0.3.2
 
 ### Patch Changes
@@ -129,7 +146,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 
