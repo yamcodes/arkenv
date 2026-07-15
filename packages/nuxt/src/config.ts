@@ -9,12 +9,12 @@ import {
 	resolveLayout,
 } from "@arkenv/build";
 import {
+	type BuildLogHelpers,
 	formatBuildError,
-	logBuildError,
-	logBuildErrorBlankLine,
-	logBuildErrorDetail,
-	logBuildWarning,
-} from "@repo/utils";
+	type Logger,
+	type LogLevel,
+	resolveBuildLog,
+} from "@repo/log";
 import { createJiti } from "jiti";
 import { withForceServer } from "./validate-context";
 
@@ -36,11 +36,12 @@ let hasWarnedSimpleLayout = false;
 
 export function normalizeLayout(
 	layout: ArkEnvConfigOptions["layout"],
+	buildLog: BuildLogHelpers,
 ): "simple" | "strict" | undefined {
 	if (layout === "simple") {
 		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
 			hasWarnedSimpleLayout = true;
-			logBuildWarning(
+			buildLog.logBuildWarning(
 				"The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
 			);
 		}
@@ -60,12 +61,16 @@ export type ArkEnvConfigOptions = {
 		/** @deprecated Use `"flat"` instead. */
 		| "simple";
 	validate?: boolean;
+	logger?: Logger;
+	logLevel?: LogLevel;
 };
 
 export function setupArkEnv(
 	options?: ArkEnvConfigOptions,
 	internalOptions?: { _jitiAliases?: Record<string, string> },
 ): void {
+	const buildLog = resolveBuildLog(options);
+
 	const schemaPath = options?.schemaPath
 		? path.resolve(options.schemaPath)
 		: findSchemaPath();
@@ -95,7 +100,7 @@ export function setupArkEnv(
 		);
 	}
 
-	const normalizedLayout = normalizeLayout(options?.layout);
+	const normalizedLayout = normalizeLayout(options?.layout, buildLog);
 
 	const { layout: resolvedLayout, baseDir } = resolveLayout(
 		schemaPath,
@@ -107,11 +112,11 @@ export function setupArkEnv(
 		try {
 			validateSchema(schemaPath, resolvedLayout, baseDir, internalOptions);
 		} catch (error: unknown) {
-			logBuildError("Environment validation failed:");
-			logBuildErrorDetail(
+			buildLog.logBuildError("Environment validation failed:");
+			buildLog.logBuildErrorDetail(
 				error instanceof Error ? error.message : String(error),
 			);
-			logBuildErrorBlankLine();
+			buildLog.logBuildErrorBlankLine();
 			throw error;
 		}
 	}

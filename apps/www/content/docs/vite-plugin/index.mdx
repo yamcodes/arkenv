@@ -57,6 +57,16 @@ npx arkenv@latest init
     });
     ```
 
+    ### Logging [step] [!toc]
+
+    Pass `logLevel` or a custom `logger` in the plugin config object:
+
+    ```ts title="vite.config.ts"
+    export default defineConfig({
+      plugins: [arkenv(Env, { logLevel: "warn" })],
+    });
+    ```
+
     ### Add typesafety [step] [!toc]
 
     To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:

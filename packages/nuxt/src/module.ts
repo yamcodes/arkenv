@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
-import { formatBuildError } from "@repo/utils";
+import { formatBuildError, resolveBuildLog } from "@repo/log";
 import { name, peerDependencies, version } from "../package.json";
 import {
 	type ArkEnvConfigOptions,
@@ -20,6 +20,8 @@ export type ModuleOptions = {
 	schemaPath?: string;
 	layout?: ArkEnvConfigOptions["layout"];
 	validate?: boolean;
+	logger?: ArkEnvConfigOptions["logger"];
+	logLevel?: ArkEnvConfigOptions["logLevel"];
 };
 
 const CLIENT_SECURITY_ERROR = formatBuildError(
@@ -53,6 +55,8 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		validate: true,
 	},
 	setup(options, nuxt) {
+		const buildLog = resolveBuildLog(options);
+
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
 			: findSchemaPath(nuxt.options.rootDir);
@@ -61,7 +65,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			return;
 		}
 
-		const normalizedLayout = normalizeLayout(options.layout);
+		const normalizedLayout = normalizeLayout(options.layout, buildLog);
 
 		const { layout: resolvedLayout, baseDir } = resolveLayout(
 			schemaPath,

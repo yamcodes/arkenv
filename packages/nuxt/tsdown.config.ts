@@ -19,7 +19,7 @@ export default defineConfig({
 	fixedExtension: false,
 	sourcemap: true,
 	deps: {
-		alwaysBundle: ["@repo/types", "@repo/utils"],
+		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
 		neverBundle: ["@nuxt/kit", "@nuxt/schema"],
 	},
 });

@@ -2,9 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import {
 	formatBuildError,
+	type Logger,
 	logErrorWithCauseVia,
 	logWatcherErrorWithCause,
-} from "@repo/utils";
+} from "@repo/log";
 import { watch as chokidarWatch, type FSWatcher } from "chokidar";
 
 // Global watcher reference isolated to this bundle's scope
@@ -18,11 +19,6 @@ export type LayoutInput = LayoutMode | "flat";
 export type ResolvedLayout = {
 	layout: LayoutMode;
 	baseDir: string;
-};
-
-export type Logger = {
-	error: (msg: string) => void;
-	info?: (msg: string) => void;
 };
 
 /**

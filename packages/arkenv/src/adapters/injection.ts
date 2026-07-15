@@ -1,6 +1,6 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { logBuildErrorWithCause, logErrorWithCauseVia } from "@repo/utils";
+import { logBuildErrorWithCause, logErrorWithCauseVia } from "@repo/log";
 import dedent from "dedent";
 import type { LoggerPort } from "@/shared/ports";
 

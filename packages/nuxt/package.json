@@ -17,6 +17,7 @@
 		"@arkenv/standard": "workspace:*",
 		"@nuxt/kit": "^4.4.8",
 		"@nuxt/schema": "^4.4.8",
+		"@repo/log": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@repo/utils": "workspace:*",

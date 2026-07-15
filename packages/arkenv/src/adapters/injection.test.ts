@@ -1,6 +1,7 @@
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { configureDefaultLogger } from "@repo/log";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { safeAppend } from "./injection";
 
@@ -8,12 +9,14 @@ describe("safeAppend", () => {
 	let tempDir: string;
 
 	beforeEach(async () => {
+		configureDefaultLogger({ level: "info" });
 		tempDir = await fsp.mkdtemp(
 			path.join(os.tmpdir(), "arkenv-injection-test-"),
 		);
 	});
 
 	afterEach(async () => {
+		configureDefaultLogger({ level: "info" });
 		await fsp.rm(tempDir, { recursive: true, force: true });
 	});
 

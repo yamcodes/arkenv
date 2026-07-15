@@ -17,6 +17,7 @@
 	"devDependencies": {
 		"@arkenv/core": "workspace:*",
 		"@arkenv/standard": "workspace:*",
+		"@repo/log": "workspace:*",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@repo/utils": "workspace:*",
@@ -73,9 +74,9 @@
 			}
 		},
 		"./config": {
-			"types": "./dist/config.d.ts",
-			"import": "./dist/config.js",
-			"require": "./dist/config.cjs"
+			"types": "./dist/config/index.d.ts",
+			"import": "./dist/config/index.js",
+			"require": "./dist/config/index.cjs"
 		},
 		"./standard/shared": {
 			"types": "./dist/standard/shared.d.ts",
@@ -166,7 +167,7 @@
 		},
 		{
 			"name": "@arkenv/nextjs/config",
-			"path": "dist/config.js",
+			"path": "dist/config/index.js",
 			"limit": "4 kB",
 			"import": "*",
 			"ignore": [
