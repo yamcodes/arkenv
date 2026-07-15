@@ -1,4 +1,5 @@
 import dedent from "dedent";
+import type { Framework } from "../plan";
 import { buildNextjsTemplate } from "./nextjs-template";
 import {
 	getFieldDefinition,
@@ -20,13 +21,13 @@ import {
  */
 export const arktypeTemplate = (
 	envKeys?: string[],
-	framework?: string,
+	framework?: Framework,
 	nextjsImportPath?: string,
 	disableCodegen?: boolean,
 	layout?: "strict" | "simple" | "flat",
 	hostPreset?: HostPreset,
 ) => {
-	const prefix = getFrameworkPrefix(framework as any);
+	const prefix = getFrameworkPrefix(framework);
 	const presetKeys = hostPreset ? getPresetKeys(hostPreset, prefix) : [];
 
 	const getDefaultKeys = (fw?: string, pref?: string): string[] => {
