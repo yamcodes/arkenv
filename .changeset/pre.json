@@ -25,6 +25,9 @@
 	"changesets": [
 		"epg3nspi",
 		"init-v1",
+		"nuxt-flat-layout-cli-alignment",
+		"reconcile-v0-features",
+		"remove-framework-shared-exports",
 		"rename-create-env-to-arkenv",
 		"standard-mode-flat-layout",
 		"standard-mode-packaging",

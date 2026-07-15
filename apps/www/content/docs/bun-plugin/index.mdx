@@ -217,3 +217,13 @@ await Bun.build({
 [serve.static]
 plugins = ["@arkenv/bun-plugin/standard"]
 ```
+
+## Logging
+
+Pass `logLevel` or a custom `logger` in the plugin config object:
+
+```ts title="build.ts"
+plugins: [arkenv(Env, { logLevel: "warn" })],
+```
+
+You can also set `ARKENV_LOG_LEVEL` globally when no custom logger is provided.

@@ -4,7 +4,7 @@ export default defineConfig({
 	entry: [
 		"src/index.ts",
 		"src/react-server.ts",
-		"src/config.ts",
+		"src/config/index.ts",
 		"src/server.ts",
 		"src/client.ts",
 		"src/mock-server-only.ts",
@@ -19,6 +19,6 @@ export default defineConfig({
 	fixedExtension: false,
 	sourcemap: true,
 	deps: {
-		alwaysBundle: ["@repo/types", "@repo/utils"],
+		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
 	},
 });

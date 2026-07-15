@@ -1,5 +1,9 @@
 import { join } from "node:path";
-import { logBuildErrorWithCause } from "@repo/utils";
+import {
+	type ArkEnvLogOptions,
+	resolveBuildLog,
+	splitPluginConfig,
+} from "@repo/log";
 import type { BunPlugin } from "bun";
 import { processEnvSchema, registerLoader } from "./utils";
 
@@ -8,11 +12,27 @@ import { processEnvSchema, registerLoader } from "./utils";
  *
  * @param coreArkenv The arkenv validation function to use
  * @param pluginName The display name of the plugin
+ * @param factoryLogOptions Optional logger configuration for build-time messages
  * @returns An object containing the configured arkenv plugin creator and the hybrid plugin instance
  */
-export function createBunPlugin(coreArkenv: any, pluginName: string) {
-	function arkenv(options: any, arkenvConfig?: any): BunPlugin {
-		const envMap = processEnvSchema(options, arkenvConfig, coreArkenv);
+export function createBunPlugin(
+	coreArkenv: any,
+	pluginName: string,
+	factoryLogOptions?: ArkEnvLogOptions,
+) {
+	function arkenv(options: any, config?: any): BunPlugin {
+		const { pluginConfig, logOptions } = splitPluginConfig(config);
+		const buildLog = resolveBuildLog({
+			...factoryLogOptions,
+			...logOptions,
+		});
+		let envMap: Map<string, string>;
+		try {
+			envMap = processEnvSchema(options, pluginConfig, coreArkenv);
+		} catch (error: unknown) {
+			buildLog.logBuildErrorWithCause("Environment validation failed", error);
+			throw error;
+		}
 
 		return {
 			name: pluginName,
@@ -30,6 +50,7 @@ export function createBunPlugin(coreArkenv: any, pluginName: string) {
 	});
 
 	hybrid.setup = (build: any) => {
+		const buildLog = resolveBuildLog(factoryLogOptions);
 		const envMap = new Map<string, string>();
 
 		build.onStart(async () => {
@@ -51,7 +72,10 @@ export function createBunPlugin(coreArkenv: any, pluginName: string) {
 							break;
 						}
 					} catch (e) {
-						logBuildErrorWithCause(`Failed to load env schema from ${p}`, e);
+						buildLog.logBuildErrorWithCause(
+							`Failed to load env schema from ${p}`,
+							e,
+						);
 					}
 				}
 			}

@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "1.0.0-alpha.3",
+	"version": "1.0.0-alpha.4",
 	"description": "Interactive CLI for scaffolding ArkEnv projects",
 	"bin": {
 		"arkenv": "./dist/index.cjs"
@@ -51,6 +51,7 @@
 		"yaml": "^2.4.5"
 	},
 	"devDependencies": {
+		"@repo/log": "workspace:*",
 		"@repo/utils": "workspace:*",
 		"@types/node": "catalog:",
 		"tsdown": "catalog:",

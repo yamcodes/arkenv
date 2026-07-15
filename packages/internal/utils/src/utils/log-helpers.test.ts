@@ -1,4 +1,5 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { configureDefaultLogger } from "@repo/log";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	BUILD_PREFIX,
 	formatBuildError,
@@ -15,8 +16,13 @@ import {
 } from "./log-helpers";
 
 describe("log helpers", () => {
+	beforeEach(() => {
+		configureDefaultLogger({ level: "info" });
+	});
+
 	afterEach(() => {
 		vi.restoreAllMocks();
+		configureDefaultLogger({ level: "info" });
 	});
 
 	it("formatBuildError prefixes messages with BUILD_PREFIX", () => {

@@ -11,6 +11,11 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
+		},
+		"./log": {
+			"types": "./dist/log.d.ts",
+			"import": "./dist/log.js",
+			"require": "./dist/log.cjs"
 		}
 	},
 	"scripts": {
@@ -21,6 +26,7 @@
 		"fix": "pnpm -w run fix"
 	},
 	"devDependencies": {
+		"@repo/log": "workspace:*",
 		"@repo/types": "workspace:*",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

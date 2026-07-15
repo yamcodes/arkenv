@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/build",
-	"version": "0.0.1",
+	"version": "0.0.2-alpha.0",
 	"description": "Shared build and codegen utilities for ArkEnv framework plugins",
 	"type": "module",
 	"main": "./dist/index.cjs",
@@ -11,11 +11,6 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
-		},
-		"./log": {
-			"types": "./dist/log.d.ts",
-			"import": "./dist/log.js",
-			"require": "./dist/log.cjs"
 		}
 	},
 	"scripts": {
@@ -30,7 +25,7 @@
 		"chokidar": "^4.0.3"
 	},
 	"devDependencies": {
-		"@repo/utils": "workspace:*",
+		"@repo/log": "workspace:*",
 		"@types/node": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:"

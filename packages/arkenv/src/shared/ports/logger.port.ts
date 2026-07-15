@@ -11,6 +11,7 @@ export type Spinner = {
  * Port interface for CLI logging operations.
  */
 export type LoggerPort = {
+	debug(message: string): void;
 	info(message: string): void;
 	warn(message: string): void;
 	error(message: string): void;

@@ -100,6 +100,7 @@ export const env = arkenv({
     		schemaPath: "env.ts",  // Path to your schema (default: env.ts or src/env.ts)
     		layout: "flat",        // Explicitly specify layout
     		validate: true,        // Validate environment variables at build-time (default: true)
+    		logLevel: "warn",      // Optional: debug | info | warn | error | silent
     	}
     });
     ```

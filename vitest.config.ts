@@ -2,8 +2,10 @@ import { coverageConfigDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
+		setupFiles: ["packages/internal/log/vitest.setup.ts"],
 		projects: [
 			"packages/*",
+			"packages/internal/*",
 			"apps/*",
 			"!packages/cli",
 			"!apps/playwright-www",

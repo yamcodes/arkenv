@@ -9,7 +9,7 @@ const arkenvSrc = path.resolve(nextjsSrc, "../../arkenv/src");
 const testAliases = {
 	"@arkenv/nextjs/server": path.join(nextjsSrc, "server.ts"),
 	"@arkenv/nextjs/client": path.join(nextjsSrc, "client.ts"),
-	"@arkenv/nextjs/config": path.join(nextjsSrc, "config.ts"),
+	"@arkenv/nextjs/config": path.join(nextjsSrc, "config/index.ts"),
 	"@arkenv/nextjs": path.join(nextjsSrc, "index.ts"),
 	"arkenv/standard": path.join(arkenvSrc, "standard.ts"),
 	"arkenv/core": path.join(arkenvSrc, "core.ts"),

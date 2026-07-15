@@ -633,6 +633,39 @@ describe("Custom envDir Configuration (with-env-dir fixture)", () => {
 	});
 });
 
+describe("logging", () => {
+	it("routes validation failures through a custom logger", async () => {
+		const fixtureDir = join(fixturesDir, "basic");
+		const config = await readTestConfig(fixtureDir);
+		const logger = {
+			debug: vi.fn(),
+			info: vi.fn(),
+			warn: vi.fn(),
+			error: vi.fn(),
+		};
+
+		mockArkenv.mockImplementationOnce(() => {
+			throw new Error("validation failed");
+		});
+
+		const plugin = arkenvPlugin(config.Env, { logger });
+		const configHook =
+			typeof plugin.config === "function"
+				? plugin.config
+				: plugin.config?.handler;
+		const context = createMockContext();
+
+		expect(() =>
+			configHook?.call(
+				context,
+				{ root: fixtureDir },
+				{ mode: "development", command: "serve" },
+			),
+		).toThrow("validation failed");
+		expect(logger.error).toHaveBeenCalled();
+	});
+});
+
 async function readTestConfig(fixtureDir: string) {
 	// Import the env schema from the TypeScript config file
 	let Env: Record<string, string> = {};
