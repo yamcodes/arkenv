@@ -1,8 +1,8 @@
 import path from "node:path";
-import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
 import type { Framework, ProjectOptions } from "@/features/scaffold/plan";
 import { createScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { ValidatorStrategy } from "@/features/scaffold/validators/types";
+import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
 import type { FrameworkGetFilesParams } from "./types";
 
 const ENV_KEY_DEFAULTS: Record<string, string> = {
