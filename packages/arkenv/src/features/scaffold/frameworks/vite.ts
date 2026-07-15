@@ -1,6 +1,6 @@
 import path from "node:path";
 import { shake } from "radashi";
-import { viteTypesTemplate } from "../templates";
+import { viteTypesTemplate } from "@/features/scaffold/templates";
 import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
 import type { FrameworkStrategy } from "./types";
 

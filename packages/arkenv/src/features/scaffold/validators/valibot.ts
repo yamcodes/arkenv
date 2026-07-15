@@ -1,5 +1,5 @@
-import type { ScaffoldContext } from "../scaffold-context";
-import { valibotTemplate } from "../templates";
+import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
+import { valibotTemplate } from "@/features/scaffold/templates";
 import {
 	assembleStrictTemplates,
 	buildRuntimeEnvOptions,

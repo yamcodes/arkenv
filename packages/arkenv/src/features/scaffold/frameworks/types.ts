@@ -1,6 +1,6 @@
 import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
-import type { Framework, ProjectOptions, ScaffoldingPlan } from "../plan";
-import type { ValidatorStrategy } from "../validators/types";
+import type { Framework, ProjectOptions, ScaffoldingPlan } from "@/features/scaffold/plan";
+import type { ValidatorStrategy } from "@/features/scaffold/validators/types";
 
 export type FrameworkGetFilesParams = {
 	targetPath: string;

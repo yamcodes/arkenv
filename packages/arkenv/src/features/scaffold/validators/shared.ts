@@ -1,4 +1,4 @@
-import type { ScaffoldContext } from "../scaffold-context";
+import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { StrictEnvTemplates, ValidatorStrategy } from "./types";
 
 /**

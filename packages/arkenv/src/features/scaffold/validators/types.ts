@@ -1,5 +1,5 @@
-import type { Validator } from "../plan";
-import type { ScaffoldContext } from "../scaffold-context";
+import type { Validator } from "@/features/scaffold/plan";
+import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
 
 export type StrictEnvTemplates = {
 	shared: string;

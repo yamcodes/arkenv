@@ -1,5 +1,5 @@
-import type { ScaffoldContext } from "../scaffold-context";
-import { zodTemplate } from "../templates";
+import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
+import { zodTemplate } from "@/features/scaffold/templates";
 import {
 	assembleStrictTemplates,
 	buildRuntimeEnvOptions,
