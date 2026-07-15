@@ -1,6 +1,11 @@
 import dedent from "dedent";
 import { buildNextjsTemplate } from "./nextjs-template";
-import { getFrameworkPrefix, getPresetKeys, getFieldDefinition, type HostPreset } from "./presets";
+import {
+	getFieldDefinition,
+	getFrameworkPrefix,
+	getPresetKeys,
+	type HostPreset,
+} from "./presets";
 
 /**
  * Generate a TypeScript template string for a Valibot environment configuration.
@@ -42,14 +47,16 @@ export const valibotTemplate = (
 			return `v.optional(v.picklist(["development", "production", "test"]), "development")`;
 		}
 		if (key === "PORT") {
-			return `v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)`;
+			return "v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)";
 		}
 		if (prefix && key === `${prefix}API_URL`) {
 			return `v.optional(v.pipe(v.string(), v.url()), "https://api.example.com")`;
 		}
 		return getFieldDefinition(key, "valibot", prefix);
 	};
-	const schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldSchema(key)},`).join("\n");
+	const schemaFields = uniqueKeys
+		.map((key) => `\t\t${key}: ${getFieldSchema(key)},`)
+		.join("\n");
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -89,8 +96,10 @@ ${schemaFields}
 			envKeys,
 			{
 				extraImports: `import * as v from "valibot";`,
-				serverField: (key) => `\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
-				clientField: (key) => `\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
+				serverField: (key) =>
+					`\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
+				clientField: (key) =>
+					`\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
 				sharedField: (key) =>
 					`\t\t${key}: ${getFieldDefinition(key, "valibot", clientPrefix)},`,
 				defaultServerFields: [

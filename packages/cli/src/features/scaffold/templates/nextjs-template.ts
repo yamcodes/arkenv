@@ -98,7 +98,9 @@ export function buildNextjsTemplate(
 	}
 
 	const presetKeys = hostPreset
-		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !(envKeys || []).includes(k))
+		? getPresetKeys(hostPreset, clientPrefix).filter(
+				(k) => !(envKeys || []).includes(k),
+			)
 		: [];
 
 	for (const key of presetKeys) {

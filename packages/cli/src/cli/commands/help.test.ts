@@ -55,7 +55,9 @@ describe("HelpUseCase", () => {
 			"  --no-codegen, -C          Disable automatic env.gen.ts code generation for Next.js",
 		);
 
-		const hostPresetOptionLog = logs.find((l) => l.includes("--host-preset <preset>"));
+		const hostPresetOptionLog = logs.find((l) =>
+			l.includes("--host-preset <preset>"),
+		);
 		expect(hostPresetOptionLog).toBeDefined();
 		// "--host-preset <preset>" is 22 chars. max (22) - 22 + colGap (4) = 4 spaces padding.
 		expect(hostPresetOptionLog).toBe(
@@ -65,6 +67,8 @@ describe("HelpUseCase", () => {
 		const helpOptionLog = logs.find((l) => l.includes("--help, -h"));
 		expect(helpOptionLog).toBeDefined();
 		// "--help, -h" is 10 chars. max (22) - 10 + colGap (4) = 16 spaces padding.
-		expect(helpOptionLog).toBe("  --help, -h                Show this help message");
+		expect(helpOptionLog).toBe(
+			"  --help, -h                Show this help message",
+		);
 	});
 });

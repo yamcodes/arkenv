@@ -13,7 +13,10 @@ type HasTypeFileAtPath = (options: {
 }) => boolean | Promise<boolean>;
 
 type ExistingProjectDefaults = Partial<
-	Pick<ProjectOptions, "framework" | "bunFeatures" | "disableCodegen" | "hostPreset">
+	Pick<
+		ProjectOptions,
+		"framework" | "bunFeatures" | "disableCodegen" | "hostPreset"
+	>
 > & {
 	defaultEnvPath?: string;
 	tsConfig?: ParsedTsConfig | null;
@@ -325,13 +328,14 @@ async function runExistingProjectWizard(
 		const validator = unwrapPrompt(await steps.validator());
 
 		// 9. hostPreset
-		const hostPreset = defaults?.hostPreset !== undefined
-			? defaults.hostPreset
-			: unwrapPrompt(
-				await steps.hostPreset({
-					initialValue: defaults?.hostPreset,
-				}),
-			);
+		const hostPreset =
+			defaults?.hostPreset !== undefined
+				? defaults.hostPreset
+				: unwrapPrompt(
+						await steps.hostPreset({
+							initialValue: defaults?.hostPreset,
+						}),
+					);
 
 		// 10. useEnvExample
 		const useEnvExample = unwrapPrompt(

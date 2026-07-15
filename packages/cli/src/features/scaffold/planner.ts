@@ -297,10 +297,13 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	const hasEnvExample = existingFiles.includes(envExamplePath);
 
 	const clientPrefix = getFrameworkPrefix(options.framework);
-	const presetKeys = options.hostPreset ? getPresetKeys(options.hostPreset, clientPrefix) : [];
-	const combinedEnvKeys = options.envKeys || presetKeys.length > 0
-		? Array.from(new Set([...(options.envKeys || []), ...presetKeys]))
-		: undefined;
+	const presetKeys = options.hostPreset
+		? getPresetKeys(options.hostPreset, clientPrefix)
+		: [];
+	const combinedEnvKeys =
+		options.envKeys || presetKeys.length > 0
+			? Array.from(new Set([...(options.envKeys || []), ...presetKeys]))
+			: undefined;
 
 	if (!hasEnv) {
 		const content =

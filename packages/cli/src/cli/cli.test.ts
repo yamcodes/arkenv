@@ -209,12 +209,24 @@ describe("CLI parser", () => {
 		});
 
 		it("should parse --host-preset flag", () => {
-			const cli1 = new CLI(["node", "arkenv", "init", "--host-preset", "vercel"]);
+			const cli1 = new CLI([
+				"node",
+				"arkenv",
+				"init",
+				"--host-preset",
+				"vercel",
+			]);
 			expect(cli1.hostPreset).toBe("vercel");
 			expect(cli1.initInput.hostPreset).toBe("vercel");
 			expect(cli1.validationError).toBeUndefined();
 
-			const cli2 = new CLI(["node", "arkenv", "init", "--host-preset", "netlify"]);
+			const cli2 = new CLI([
+				"node",
+				"arkenv",
+				"init",
+				"--host-preset",
+				"netlify",
+			]);
 			expect(cli2.hostPreset).toBe("netlify");
 			expect(cli2.initInput.hostPreset).toBe("netlify");
 			expect(cli2.validationError).toBeUndefined();
@@ -224,7 +236,13 @@ describe("CLI parser", () => {
 			expect(cli3.initInput.hostPreset).toBe("none");
 			expect(cli3.validationError).toBeUndefined();
 
-			const cli4 = new CLI(["node", "arkenv", "init", "--host-preset", "vercle"]);
+			const cli4 = new CLI([
+				"node",
+				"arkenv",
+				"init",
+				"--host-preset",
+				"vercle",
+			]);
 			expect(cli4.validationError).toBe("Invalid host preset: vercle");
 		});
 	});

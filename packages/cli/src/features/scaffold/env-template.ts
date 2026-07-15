@@ -1,6 +1,6 @@
 import type { ProjectOptions } from "./plan";
 import { arktypeTemplate, valibotTemplate, zodTemplate } from "./templates";
-import { getPresetKeys, getFieldDefinition } from "./templates/presets";
+import { getFieldDefinition, getPresetKeys } from "./templates/presets";
 
 /**
  * Generate the complete environment configuration template
@@ -14,7 +14,8 @@ export function getEnvTemplate(
 	options: ProjectOptions,
 	nextjsImportPath?: string,
 ): string {
-	const { validator, envKeys, framework, disableCodegen, layout, hostPreset } = options;
+	const { validator, envKeys, framework, disableCodegen, layout, hostPreset } =
+		options;
 
 	switch (validator) {
 		case "arktype":
@@ -77,14 +78,18 @@ export function getStrictEnvTemplates(
 		options.framework === "nuxt" ? "@arkenv/nuxt" : "@arkenv/nextjs";
 
 	const presetKeys = hostPreset
-		? getPresetKeys(hostPreset, clientPrefix).filter((k) => !(envKeys || []).includes(k))
+		? getPresetKeys(hostPreset, clientPrefix).filter(
+				(k) => !(envKeys || []).includes(k),
+			)
 		: [];
 
 	if (envKeys && envKeys.length > 0) {
 		const combined = Array.from(new Set([...envKeys, ...presetKeys]));
 		for (const key of combined) {
 			if (key.startsWith(clientPrefix)) {
-				clientFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
+				clientFields.push(
+					`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`,
+				);
 				runtimeEnvFields.push(`${key}: process.env.${key},`);
 			} else if (key === "NODE_ENV") {
 				if (validator === "arktype") {
@@ -115,7 +120,9 @@ export function getStrictEnvTemplates(
 						);
 					}
 				} else {
-					serverFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
+					serverFields.push(
+						`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`,
+					);
 				}
 			}
 		}
@@ -163,10 +170,14 @@ export function getStrictEnvTemplates(
 
 		for (const key of presetKeys) {
 			if (key.startsWith(clientPrefix)) {
-				clientFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
+				clientFields.push(
+					`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`,
+				);
 				runtimeEnvFields.push(`${key}: process.env.${key},`);
 			} else {
-				serverFields.push(`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`);
+				serverFields.push(
+					`${key}: ${getFieldDefinition(key, validator, clientPrefix)},`,
+				);
 			}
 		}
 	}

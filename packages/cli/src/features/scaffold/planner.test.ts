@@ -685,10 +685,12 @@ UNRELATED=`);
 					},
 				};
 				const plan = createPlan(state);
-				
+
 				const envTs = plan.files.find((f) => f.path.endsWith("env.ts"));
 				const dotenv = plan.files.find((f) => f.path.endsWith(".env"));
-				const dotenvExample = plan.files.find((f) => f.path.endsWith(".env.example"));
+				const dotenvExample = plan.files.find((f) =>
+					f.path.endsWith(".env.example"),
+				);
 
 				expect(envTs).toBeDefined();
 				expect(envTs?.content).toContain("VERCEL_URL");

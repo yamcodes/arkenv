@@ -1,6 +1,11 @@
 import dedent from "dedent";
 import { buildNextjsTemplate } from "./nextjs-template";
-import { getFrameworkPrefix, getPresetKeys, getFieldDefinition, type HostPreset } from "./presets";
+import {
+	getFieldDefinition,
+	getFrameworkPrefix,
+	getPresetKeys,
+	type HostPreset,
+} from "./presets";
 
 /**
  * Generate a TypeScript template string for a Zod environment configuration.
@@ -42,14 +47,16 @@ export const zodTemplate = (
 			return `z.enum(["development", "production", "test"]).default("development")`;
 		}
 		if (key === "PORT") {
-			return `z.coerce.number().int().min(1).max(65535).default(3000)`;
+			return "z.coerce.number().int().min(1).max(65535).default(3000)";
 		}
 		if (prefix && key === `${prefix}API_URL`) {
 			return `z.string().url().default("https://api.example.com")`;
 		}
 		return getFieldDefinition(key, "zod", prefix);
 	};
-	const schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldSchema(key)},`).join("\n");
+	const schemaFields = uniqueKeys
+		.map((key) => `\t\t${key}: ${getFieldSchema(key)},`)
+		.join("\n");
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -89,8 +96,10 @@ ${schemaFields}
 			envKeys,
 			{
 				extraImports: `import { z } from "zod";`,
-				serverField: (key) => `\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
-				clientField: (key) => `\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
+				serverField: (key) =>
+					`\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
+				clientField: (key) =>
+					`\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
 				sharedField: (key) =>
 					`\t\t${key}: ${getFieldDefinition(key, "zod", clientPrefix)},`,
 				defaultServerFields: [

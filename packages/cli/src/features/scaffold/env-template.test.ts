@@ -197,7 +197,9 @@ describe("env-template", () => {
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
-			expect(template).toContain("BUN_PUBLIC_API_URL: \"string = 'https://api.example.com'\"");
+			expect(template).toContain(
+				"BUN_PUBLIC_API_URL: \"string = 'https://api.example.com'\"",
+			);
 			expect(template).not.toContain("export const env = arkenv(Env)");
 			expect(template).toContain("export const Env = type({");
 			expect(template).toContain(
@@ -422,10 +424,16 @@ describe("env-template", () => {
 			const templates = getStrictEnvTemplates(options);
 			// Check that standard Netlify keys are present and mapped with correct Valibot validators
 			expect(templates.server).toContain("NETLIFY: v.optional(v.string())");
-			expect(templates.server).toContain("CONTEXT: v.optional(v.picklist([\"production\", \"deploy-preview\", \"branch-deploy\"]))");
+			expect(templates.server).toContain(
+				'CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"]))',
+			);
 			expect(templates.server).toContain("DEPLOY_URL: v.optional(v.string())");
-			expect(templates.client).toContain("NEXT_PUBLIC_CONTEXT: v.optional(v.picklist([\"production\", \"deploy-preview\", \"branch-deploy\"]))");
-			expect(templates.client).toContain("NEXT_PUBLIC_URL: v.optional(v.string())");
+			expect(templates.client).toContain(
+				'NEXT_PUBLIC_CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"]))',
+			);
+			expect(templates.client).toContain(
+				"NEXT_PUBLIC_URL: v.optional(v.string())",
+			);
 		});
 	});
 
@@ -441,9 +449,11 @@ describe("env-template", () => {
 				hostPreset: "vercel" as const,
 			};
 			const template = getEnvTemplate(options);
-			expect(template).toContain("VERCEL: \"string?\"");
-			expect(template).toContain("VERCEL_ENV: \"'production' | 'preview' | 'development'?\"");
-			expect(template).toContain("VERCEL_URL: \"string?\"");
+			expect(template).toContain('VERCEL: "string?"');
+			expect(template).toContain(
+				"VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
+			expect(template).toContain('VERCEL_URL: "string?"');
 		});
 
 		it("includes Vercel preset with Zod validator in flat Next.js layout", () => {
@@ -459,9 +469,15 @@ describe("env-template", () => {
 			};
 			const template = getEnvTemplate(options);
 			expect(template).toContain("VERCEL: z.string().optional()");
-			expect(template).toContain("VERCEL_ENV: z.enum([\"production\", \"preview\", \"development\"]).optional()");
-			expect(template).toContain("NEXT_PUBLIC_VERCEL_ENV: z.enum([\"production\", \"preview\", \"development\"]).optional()");
-			expect(template).toContain("NEXT_PUBLIC_VERCEL_URL: z.string().optional()");
+			expect(template).toContain(
+				'VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
+			expect(template).toContain(
+				'NEXT_PUBLIC_VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
+			expect(template).toContain(
+				"NEXT_PUBLIC_VERCEL_URL: z.string().optional()",
+			);
 		});
 	});
 });

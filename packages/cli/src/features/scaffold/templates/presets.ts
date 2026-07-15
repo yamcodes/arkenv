@@ -82,7 +82,8 @@ export function getFieldDefinition(
 	prefix: string,
 ): string {
 	// Strip prefix if the key is a client exposed key
-	const baseKey = prefix && key.startsWith(prefix) ? key.slice(prefix.length) : key;
+	const baseKey =
+		prefix && key.startsWith(prefix) ? key.slice(prefix.length) : key;
 
 	// Search all presets for this baseKey definition
 	for (const def of Object.values(PRESETS)) {
@@ -94,15 +95,16 @@ export function getFieldDefinition(
 					case "arktype":
 						return `"string?"`;
 					case "zod":
-						return `z.string().optional()`;
+						return "z.string().optional()";
 					case "valibot":
-						return `v.optional(v.string())`;
+						return "v.optional(v.string())";
 					default: {
 						const _exhaustiveCheck: never = validator;
 						throw new Error(`Unsupported validator: ${_exhaustiveCheck}`);
 					}
 				}
-			} else if (field.type === "enum") {
+			}
+			if (field.type === "enum") {
 				const values = field.values;
 				switch (validator) {
 					case "arktype":
@@ -125,9 +127,9 @@ export function getFieldDefinition(
 		case "arktype":
 			return `"string?"`;
 		case "zod":
-			return `z.string().optional()`;
+			return "z.string().optional()";
 		case "valibot":
-			return `v.optional(v.string())`;
+			return "v.optional(v.string())";
 		default: {
 			const _exhaustiveCheck: never = validator;
 			throw new Error(`Unsupported validator: ${_exhaustiveCheck}`);

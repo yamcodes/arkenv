@@ -1,6 +1,11 @@
 import dedent from "dedent";
 import { buildNextjsTemplate } from "./nextjs-template";
-import { getFrameworkPrefix, getPresetKeys, getFieldDefinition, type HostPreset } from "./presets";
+import {
+	getFieldDefinition,
+	getFrameworkPrefix,
+	getPresetKeys,
+	type HostPreset,
+} from "./presets";
 
 /**
  * Generate a TypeScript template string for an ArkType environment configuration.
@@ -49,7 +54,9 @@ export const arktypeTemplate = (
 		}
 		return getFieldDefinition(key, "arktype", prefix);
 	};
-	const schemaFields = uniqueKeys.map((key) => `\t\t${key}: ${getFieldSchema(key)},`).join("\n");
+	const schemaFields = uniqueKeys
+		.map((key) => `\t\t${key}: ${getFieldSchema(key)},`)
+		.join("\n");
 
 	if (framework === "vite") {
 		return dedent /* ts */`
@@ -86,8 +93,10 @@ ${schemaFields}
 		return buildNextjsTemplate(
 			envKeys,
 			{
-				serverField: (key) => `\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
-				clientField: (key) => `\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
+				serverField: (key) =>
+					`\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
+				clientField: (key) =>
+					`\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
 				sharedField: (key) =>
 					`\t\t${key}: ${getFieldDefinition(key, "arktype", clientPrefix)},`,
 				defaultServerFields: [
