@@ -33,17 +33,31 @@ A changeset is a markdown file in the `.changeset/` directory that describes:
 
 ## Changeset types
 
-| Type    | When to Use                               | v0 Version Change (Current) | v1+ Version Change |
-| ------- | ----------------------------------------- | --------------------------- | ------------------ |
-| `patch` | Any non-breaking change (fixes, features) | 0.0.1 → 0.0.2               | 1.0.0 → 1.0.1      |
-| `minor` | **Breaking changes**                      | 0.0.1 → 0.1.0               | 1.0.0 → 1.1.0      |
-| `major` | Switch to v1 (only when instructed)       | 0.0.1 → 1.0.0               | 1.0.0 → 2.0.0      |
+The **"When to Use"** rule depends on whether the package is still in v0 (`0.y.z`) or has reached v1+. v0 packages use a non-standard convention (`minor` is reserved for breaking changes); v1+ packages follow **standard SemVer**.
 
-## Decision guide (v0 rules)
+| Type    | When to Use in v0 (default)               | When to Use in v1+ (standard SemVer) |
+| ------- | ----------------------------------------- | ------------------------------------ |
+| `patch` | Any non-breaking change (fixes, features) | Non-breaking bug fixes               |
+| `minor` | **Breaking changes**                      | Non-breaking new features            |
+| `major` | Switch to v1 (only when instructed)       | **Breaking changes**                 |
 
-Most packages in this repo are currently in **v0** (0.y.z). For these packages:
+> **Forward-porting note:** the `dev` branch ships **v0** packages (e.g. `@arkenv/cli`), but the `v1` branch ships **v1+** packages (e.g. `arkenv`, `@arkenv/core`) in prerelease. A change that is `patch` on `dev` (a new feature) is usually `minor` when forward-ported to `v1`. Never blindly copy the bump type across branches.
 
-### Use `patch` for:
+## Decision guide
+
+### v1+ packages (standard SemVer)
+
+Applies to packages at `1.0.0` or higher, including the `v1` branch's prerelease packages (`arkenv`, `@arkenv/core`, `@arkenv/standard`, …).
+
+- **`patch`** — non-breaking bug fixes, dependency updates, performance improvements, small doc corrections.
+- **`minor`** — **new features** (new CLI commands/options, enhanced functionality, non-breaking API/exports additions).
+- **`major`** — **breaking changes** (require consumers to change code). Include a `**BREAKING CHANGE**:` note with migration instructions.
+
+### v0 packages (legacy convention)
+
+Most packages on the `dev` branch are still in **v0** (0.y.z). For these packages:
+
+#### Use `patch` for:
 
 - **Any non-breaking change** (including new features, new CLI commands, new configuration options, enhanced functionality, non-breaking API additions, etc.)
 - Bug fixes
@@ -54,11 +68,11 @@ Most packages in this repo are currently in **v0** (0.y.z). For these packages:
 
 **Note**: Purely internal refactorings (e.g., library switches, internal type cleanup) that offer no tangible benefit or change to the consumer should NOT be documented in a changeset. Do not clutter the changelog with changes that are meaningless to the end user.
 
-### Use `minor` ONLY for:
+#### Use `minor` ONLY for:
 
 - **Breaking changes** (Required in v0 for any breaking modification. You MUST prefix the description with `**BREAKING CHANGE**:`).
 
-### Use `major` ONLY for:
+#### Use `major` ONLY for:
 
 - Explicitly transitioning the project from v0.x.y to v1.0.0. **Only use major when explicitly instructed to switch/transition to v1.** Do not use major for breaking changes in v0.
 
