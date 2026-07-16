@@ -1,5 +1,5 @@
 ---
-"arkenv": patch
+"arkenv": minor
 ---
 
 #### Add machine-actionable error codes to `init` JSON output
