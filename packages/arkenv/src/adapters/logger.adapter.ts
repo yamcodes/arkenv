@@ -1,3 +1,4 @@
+import type { Refusal } from "@/shared/errors";
 import type { LoggerPort } from "@/shared/ports";
 import {
 	JsonReporter,
@@ -96,6 +97,10 @@ export class Logger implements LoggerPort {
 
 	fatal(message: string, error?: unknown): never {
 		this.reporter.fatal(message, error);
+	}
+
+	refuse(refusal: Refusal) {
+		this.reporter.refuse(refusal);
 	}
 
 	finish(message: string, details?: Record<string, unknown>) {
