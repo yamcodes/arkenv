@@ -3,7 +3,7 @@
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">
-      Validate environment variables with your favorite validator <br/> on <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
+      Validate environment variables from editor to runtime with your favorite library <br/> for <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
     </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
@@ -26,7 +26,7 @@
 
 
 <h3 align="center">
-  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv.js.org/docs/arkenv/integrations/standard-schema">any Standard Schema validator</a>
+  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv.js.org/docs/arkenv/integrations/standard-schema">any Standard Schema library</a>
 </h3>
 
 <br />
