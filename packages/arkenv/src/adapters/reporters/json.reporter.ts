@@ -81,9 +81,7 @@ export class JsonReporter implements Reporter {
 			code: refusal.code,
 			message: refusal.message,
 			retryWith: refusal.retryWith,
-			...(refusal.details !== undefined
-				? { details: refusal.details }
-				: {}),
+			...(refusal.details !== undefined ? { details: refusal.details } : {}),
 		});
 	}
 
