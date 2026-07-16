@@ -44,6 +44,15 @@ The imported `env` object is the canonical surface for **all** integrations. For
 6. **Native accessors + `.d.ts` remain documented as SPA mode.** For client-only projects, "add the plugin, augment `ImportMetaEnv`" stays a supported, honest-for-static-access path with zero migration cost. It is positioned as a mode, not a second canonical surface.
 7. **The Nuxt proxy preference-order defect is fixed in the same milestone.** The security proxy currently prefers raw `useRuntimeConfig()` / `__NUXT__.config.public` / `process.env` strings over the coerced validation target on *both* the client and server branches — and on the server, `prop in process.env` is almost always true for schema keys, making coerced values near-unreachable in the common path. The aligned model's honesty claim is only as good as its weakest integration. Because Nitro applies `NUXT_PUBLIC_*` overrides as strings at boot, the fix requires a boot-time coercion pass (e.g. a Nitro plugin), not just build-time injection.
 
+## Landing strategy
+
+The implementation is **v1-native**; it does not land on `dev` first.
+
+1. **The transform design ships on the `v1` branch only**, where it can land whole: defaults flipped, CLI scaffold collapsed to one family, and the held-back Next/Nuxt build-tool changes included — one migration story, no compatibility shims. Implementing on `dev` first would build the hardest plumbing (client-graph discrimination, HMR invalidation, alias handling) on a foundation `v1` replaces, forcing a re-implementation disguised as a forward-port and risking behavioral drift between generations.
+2. **No soft-landing preview on `dev`.** Because plugin + `.d.ts` survives permanently as SPA mode, v0 users are never forced to migrate — which removes most of a soft-landing's value while keeping its costs (docs describing a surface v0 only partially delivers; a two-step migration for v0 → v1 users). Early-adopter feedback is gathered through `v1` prereleases instead.
+3. **The Nuxt proxy preference-order fix is the exception**: it is a bug affecting current users, so it lands on `dev` first and is forward-ported to `v1` per the standard dual-tracking flow.
+4. **This ADR lands on `dev`**, since `docs/adr/` is the central decision log on the default branch (precedent: ADR 0014 recording v1 forward-port plans from `dev`).
+
 ## Consequences
 
 - **One mental model.** `import { env } from "./env"` works identically in Next, Nuxt, Vite, and Bun apps, on both sides of the network boundary. Docs, the arkenv skill, hosting presets, and the CLI scaffold converge on one family (the #1316 codegen-vs-plugin-env scaffold seam dissolves rather than hardens).
