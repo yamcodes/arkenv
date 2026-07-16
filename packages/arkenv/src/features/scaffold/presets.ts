@@ -69,7 +69,8 @@ export type HostPreset = "none" | keyof typeof PRESETS;
  * @returns Whether `value` is a known host preset id
  */
 export function isHostPreset(value: string): value is HostPreset {
-	return value === "none" || Object.hasOwn(PRESETS, value);
+	// Own-key check compatible with es2020 (no Object.hasOwn) and noPrototypeBuiltins.
+	return value === "none" || Object.keys(PRESETS).includes(value);
 }
 
 /**
