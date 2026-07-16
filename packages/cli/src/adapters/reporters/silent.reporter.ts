@@ -1,3 +1,4 @@
+import type { Refusal } from "@/shared/errors";
 import type { Reporter, Spinner } from "./types";
 
 /**
@@ -45,6 +46,8 @@ export class SilentReporter implements Reporter {
 		}
 		throw error instanceof Error ? error : new Error(message);
 	}
+
+	refuse(_refusal: Refusal) {}
 
 	finish(_message: string, _details?: Record<string, unknown>) {}
 

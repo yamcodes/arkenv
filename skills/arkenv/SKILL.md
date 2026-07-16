@@ -42,6 +42,24 @@ AI agents SHOULD always use the CLI for project initialization to ensure consist
   - **`--json`**: Emits a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).
 - **Success Verification**: Parse the JSON output to verify `status: "success"` and retrieve details like the scaffolded file path.
 
+#### Handling refusals (`status: "error"`)
+
+`--agent` **never** implies `--force`. When a safety check trips, the CLI refuses and emits a machine-actionable JSON payload to `stdout`:
+
+```json
+{
+  "status": "error",
+  "code": "GIT_TREE_DIRTY",
+  "message": "Git working tree is not clean.",
+  "retryWith": ["--force"]
+}
+```
+
+- **`code`**: a stable identifier you can branch on. Refusal codes: `REQUIREMENTS_NOT_MET`, `GIT_TREE_DIRTY`, `NON_EMPTY_DIR`. A `code` of `INTERNAL` means the CLI *broke* rather than *refused* — retrying with flags will not help.
+- **`retryWith`**: the flag(s) that would bypass the check (e.g. `["--force"]`). Empty (`[]`) means the refusal is not bypassable.
+
+**Escalation pattern**: always run `init --agent` **without** `--force` first. If you get `status: "error"`, inspect `code` and `retryWith`. Only re-run with the flag(s) from `retryWith` (e.g. append `--force`) once you have deliberately decided the refusal is safe to bypass — do not add `--force` pre-emptively.
+
 ## Operational logic
 
 1. **Detection**:

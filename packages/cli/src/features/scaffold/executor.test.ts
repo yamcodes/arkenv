@@ -60,6 +60,7 @@ describe("Executor", () => {
 		fatal: vi.fn(() => {
 			throw new Error("fatal");
 		}),
+		refuse: vi.fn(),
 		finish: vi.fn(),
 		flush: vi.fn().mockResolvedValue(undefined),
 	};
