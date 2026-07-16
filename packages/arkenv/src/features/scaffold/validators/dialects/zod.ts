@@ -13,23 +13,33 @@ export const zodDialect: Dialect = {
 		return `z.enum([${values.map((v) => `"${v}"`).join(", ")}]).optional()`;
 	},
 
-	formatStrictField(key, role, clientPrefix = "") {
+	formatStrictField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: z.enum(["development", "production", "test"]).default("development"),`;
 		}
 		if (role === "server" && key === "PORT") {
 			return "PORT: z.coerce.number().int().min(1).max(65535).default(3000),";
 		}
-		const preset = tryFormatPresetFieldValue(zodDialect, key, clientPrefix);
+		const preset = tryFormatPresetFieldValue(
+			zodDialect,
+			key,
+			clientPrefix,
+			hostPreset,
+		);
 		if (preset) return `${key}: ${preset},`;
 		return `${key}: z.string().optional(),`;
 	},
 
-	formatCodegenField(key, role, clientPrefix = "") {
+	formatCodegenField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: z.enum(["development", "production", "test"]).default("development"),`;
 		}
-		const preset = tryFormatPresetFieldValue(zodDialect, key, clientPrefix);
+		const preset = tryFormatPresetFieldValue(
+			zodDialect,
+			key,
+			clientPrefix,
+			hostPreset,
+		);
 		if (preset) return `${key}: ${preset},`;
 		return `${key}: z.string().optional(),`;
 	},
@@ -37,10 +47,15 @@ export const zodDialect: Dialect = {
 	defaultSimpleSchemaFields: `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 		PORT: z.coerce.number().int().min(1).max(65535).default(3000),`,
 
-	formatSimpleSchemaFields(keys, clientPrefix = "") {
+	formatSimpleSchemaFields(keys, clientPrefix = "", hostPreset = undefined) {
 		return keys
 			.map((key) => {
-				const preset = tryFormatPresetFieldValue(zodDialect, key, clientPrefix);
+				const preset = tryFormatPresetFieldValue(
+					zodDialect,
+					key,
+					clientPrefix,
+					hostPreset,
+				);
 				return `\t\t${key}: ${preset ?? "z.string().optional()"},`;
 			})
 			.join("\n");

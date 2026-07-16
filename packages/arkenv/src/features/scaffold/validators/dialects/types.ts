@@ -21,12 +21,14 @@ export type Dialect = {
 	 * @param key Environment variable name
 	 * @param role Field scope within the strict layout
 	 * @param clientPrefix Framework client prefix for preset field lookup
+	 * @param hostPreset Active hosting preset for scoped field metadata lookup
 	 * @returns Field line without leading indentation (trailing comma)
 	 */
 	formatStrictField(
 		key: string,
 		role: "client" | "server" | "shared",
 		clientPrefix?: string,
+		hostPreset?: HostPreset,
 	): string;
 
 	/**
@@ -38,12 +40,14 @@ export type Dialect = {
 	 * @param key Environment variable name
 	 * @param role Field scope within the codegen layout
 	 * @param clientPrefix Framework client prefix for preset field lookup
+	 * @param hostPreset Active hosting preset for scoped field metadata lookup
 	 * @returns Field line without leading indentation (trailing comma)
 	 */
 	formatCodegenField(
 		key: string,
 		role: "client" | "server" | "shared",
 		clientPrefix?: string,
+		hostPreset?: HostPreset,
 	): string;
 
 	/**
@@ -57,9 +61,14 @@ export type Dialect = {
 	 *
 	 * @param keys Environment variable keys
 	 * @param clientPrefix Framework client prefix for preset field lookup
+	 * @param hostPreset Active hosting preset for scoped field metadata lookup
 	 * @returns Joined field lines
 	 */
-	formatSimpleSchemaFields(keys: string[], clientPrefix?: string): string;
+	formatSimpleSchemaFields(
+		keys: string[],
+		clientPrefix?: string,
+		hostPreset?: HostPreset,
+	): string;
 
 	/**
 	 * Render an optional string field value (no key, no trailing comma).
@@ -156,14 +165,16 @@ export function formatPresetFieldValue(
  * @param dialect Dialect providing optional string/enum renderers
  * @param key Environment variable name
  * @param clientPrefix Framework client prefix
+ * @param hostPreset Active hosting preset for scoped field metadata lookup
  * @returns Schema value fragment, or `undefined` when the key is not a preset field
  */
 export function tryFormatPresetFieldValue(
 	dialect: Pick<Dialect, "formatOptionalString" | "formatOptionalEnum">,
 	key: string,
 	clientPrefix: string,
+	hostPreset?: HostPreset,
 ): string | undefined {
-	const field = lookupPresetField(key, clientPrefix);
+	const field = lookupPresetField(key, clientPrefix, hostPreset);
 	if (!field) return undefined;
 	return formatPresetFieldValue(dialect, field);
 }

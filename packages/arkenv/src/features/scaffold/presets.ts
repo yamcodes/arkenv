@@ -97,26 +97,32 @@ export function getPresetKeys(
 /**
  * Look up preset field metadata for a schema key, stripping the client prefix when present.
  *
+ * Scoped to the active {@link hostPreset} so unrelated presets cannot influence
+ * how user-provided env keys are rendered.
+ *
  * @param key Environment variable name (possibly prefixed)
  * @param clientPrefix Framework client prefix used to recover the base key
- * @returns Matching {@link PresetField}, or `undefined` when the key is not from a preset
+ * @param hostPreset Active hosting preset; `"none"` / omitted yields no match
+ * @returns Matching {@link PresetField}, or `undefined` when not a preset field
  */
 export function lookupPresetField(
 	key: string,
 	clientPrefix: string,
+	hostPreset?: HostPreset,
 ): PresetField | undefined {
+	if (!hostPreset || hostPreset === "none") {
+		return undefined;
+	}
+
 	const baseKey =
 		clientPrefix && key.startsWith(clientPrefix)
 			? key.slice(clientPrefix.length)
 			: key;
 
-	for (const def of Object.values(PRESETS)) {
-		const fields = def.fields as Readonly<Record<string, PresetField>>;
-		if (baseKey in fields) {
-			return fields[baseKey];
-		}
-	}
-	return undefined;
+	const fields = PRESETS[hostPreset].fields as Readonly<
+		Record<string, PresetField>
+	>;
+	return baseKey in fields ? fields[baseKey] : undefined;
 }
 
 /**

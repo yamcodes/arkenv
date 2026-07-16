@@ -56,9 +56,10 @@ export function assembleSimpleFromDialect(
 		schemaFields = dialect.formatSimpleSchemaFields(
 			combined,
 			context.clientPrefix,
+			context.hostPreset,
 		);
 	} else if (presetKeys.length > 0) {
-		schemaFields = `${dialect.defaultSimpleSchemaFields}\n${dialect.formatSimpleSchemaFields(presetKeys, context.clientPrefix)}`;
+		schemaFields = `${dialect.defaultSimpleSchemaFields}\n${dialect.formatSimpleSchemaFields(presetKeys, context.clientPrefix, context.hostPreset)}`;
 	} else {
 		schemaFields = dialect.defaultSimpleSchemaFields;
 	}

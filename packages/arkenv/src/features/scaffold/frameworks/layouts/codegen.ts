@@ -42,14 +42,83 @@ function appendPresetCodegenFields(
 	for (const key of presetKeys) {
 		if (clientPrefix && key.startsWith(clientPrefix)) {
 			buckets.clientFields.push(
-				`\t\t${dialect.formatCodegenField(key, "client", clientPrefix)}`,
+				`\t\t${dialect.formatCodegenField(key, "client", clientPrefix, hostPreset)}`,
 			);
 		} else {
 			buckets.serverFields.push(
-				`\t\t${dialect.formatCodegenField(key, "server", clientPrefix)}`,
+				`\t\t${dialect.formatCodegenField(key, "server", clientPrefix, hostPreset)}`,
 			);
 		}
 	}
+}
+
+/**
+ * Extract env key names from dialect field lines (`KEY: ...`).
+ *
+ * @param fields Schema field source lines
+ * @returns Key names in declaration order
+ */
+function extractFieldKeyNames(fields: string[]): string[] {
+	const keys: string[] = [];
+	for (const field of fields) {
+		const match = field.trim().match(/^([a-zA-Z0-9_]+)\s*:/);
+		if (match) {
+			keys.push(match[1]);
+		}
+	}
+	return keys;
+}
+
+/**
+ * Build `runtimeEnv` field lines for `--no-codegen` Next.js / Nuxt templates.
+ *
+ * When explicit `envKeys` are absent, includes default client/`NODE_ENV` entries
+ * plus any client-prefixed keys present in {@link clientFields} (e.g. hosting
+ * preset keys appended after defaults).
+ *
+ * @param envKeys Explicit env keys when provided
+ * @param clientPrefix Framework client prefix
+ * @param clientFields Populated client schema field lines
+ * @param extraKeys Additional keys to include (e.g. flat-layout exposed shared keys)
+ * @returns Indented `key: process.env.key,` lines
+ */
+function buildNoCodegenRuntimeEnvFields(
+	envKeys: string[] | undefined,
+	clientPrefix: string,
+	clientFields: string[],
+	extraKeys: string[] = [],
+): string[] {
+	const runtimeEnvFields: string[] = [];
+	const seen = new Set<string>();
+
+	const push = (key: string) => {
+		if (seen.has(key)) return;
+		seen.add(key);
+		runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
+	};
+
+	if (envKeys && envKeys.length > 0) {
+		for (const key of envKeys) {
+			if (
+				key.startsWith(clientPrefix) ||
+				key === "NODE_ENV" ||
+				extraKeys.includes(key)
+			) {
+				push(key);
+			}
+		}
+		return runtimeEnvFields;
+	}
+
+	push(`${clientPrefix}API_URL`);
+	push("NODE_ENV");
+	for (const key of extractFieldKeyNames(clientFields)) {
+		push(key);
+	}
+	for (const key of extraKeys) {
+		push(key);
+	}
+	return runtimeEnvFields;
 }
 
 /**
@@ -73,12 +142,7 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		hostPreset,
 	} = options;
 
-	const {
-		clientPrefix,
-		packageName: pkgName,
-		displayName: frameworkName,
-	} = config;
-	const framework = config.id;
+	const { clientPrefix } = config;
 
 	const serverFields: string[] = [];
 	const clientFields: string[] = [];
@@ -88,15 +152,15 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		for (const key of envKeys) {
 			if (key.startsWith(clientPrefix)) {
 				clientFields.push(
-					`\t\t${dialect.formatCodegenField(key, "client", clientPrefix)}`,
+					`\t\t${dialect.formatCodegenField(key, "client", clientPrefix, hostPreset)}`,
 				);
 			} else if (key === "NODE_ENV") {
 				sharedFields.push(
-					`\t\t${dialect.formatCodegenField(key, "shared", clientPrefix)}`,
+					`\t\t${dialect.formatCodegenField(key, "shared", clientPrefix, hostPreset)}`,
 				);
 			} else {
 				serverFields.push(
-					`\t\t${dialect.formatCodegenField(key, "server", clientPrefix)}`,
+					`\t\t${dialect.formatCodegenField(key, "server", clientPrefix, hostPreset)}`,
 				);
 			}
 		}
@@ -194,26 +258,12 @@ function assembleFlatLayout(params: FieldBuckets): string {
 	}
 
 	if (disableCodegen && framework === "nextjs") {
-		const runtimeEnvFields: string[] = [];
-		if (envKeys && envKeys.length > 0) {
-			for (const key of envKeys) {
-				if (
-					key.startsWith(clientPrefix) ||
-					key === "NODE_ENV" ||
-					exposedKeyNames.includes(key)
-				) {
-					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
-				}
-			}
-		} else {
-			runtimeEnvFields.push(
-				`\t\t${clientPrefix}API_URL: process.env.${clientPrefix}API_URL,`,
-				"\t\tNODE_ENV: process.env.NODE_ENV,",
-			);
-			for (const key of exposedKeyNames) {
-				runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
-			}
-		}
+		const runtimeEnvFields = buildNoCodegenRuntimeEnvFields(
+			envKeys,
+			clientPrefix,
+			clientFields,
+			exposedKeyNames,
+		);
 		optionParts.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 	}
 
@@ -282,19 +332,11 @@ function assembleNestedLayout(params: FieldBuckets): string {
 	}
 
 	if (disableCodegen || (framework === "nuxt" && layout === "simple")) {
-		const runtimeEnvFields: string[] = [];
-		if (envKeys && envKeys.length > 0) {
-			for (const key of envKeys) {
-				if (key.startsWith(clientPrefix) || key === "NODE_ENV") {
-					runtimeEnvFields.push(`\t\t${key}: process.env.${key},`);
-				}
-			}
-		} else {
-			runtimeEnvFields.push(
-				`\t\t${clientPrefix}API_URL: process.env.${clientPrefix}API_URL,`,
-				"\t\tNODE_ENV: process.env.NODE_ENV,",
-			);
-		}
+		const runtimeEnvFields = buildNoCodegenRuntimeEnvFields(
+			envKeys,
+			clientPrefix,
+			clientFields,
+		);
 		if (framework !== "nuxt") {
 			sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
 		}

@@ -534,5 +534,61 @@ describe("validators templates", () => {
 			expect(template).toContain("VITE_VERCEL_ENV:");
 			expect(template).toContain('VITE_VERCEL_URL: "string?"');
 		});
+
+		it("includes preset client keys in no-codegen runtimeEnv for flat Next.js", () => {
+			const options = {
+				validator: "zod" as const,
+				framework: "nextjs" as const,
+				layout: "flat" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				disableCodegen: true,
+				hostPreset: "vercel" as const,
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain("runtimeEnv: {");
+			expect(template).toContain(
+				"NEXT_PUBLIC_VERCEL_ENV: process.env.NEXT_PUBLIC_VERCEL_ENV,",
+			);
+			expect(template).toContain(
+				"NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,",
+			);
+			expect(template).toContain(
+				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
+			);
+		});
+
+		it("includes preset client keys in no-codegen runtimeEnv for nested Next.js", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
+				layout: "simple" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				disableCodegen: true,
+				hostPreset: "vercel" as const,
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain("runtimeEnv: {");
+			expect(template).toContain(
+				"NEXT_PUBLIC_VERCEL_ENV: process.env.NEXT_PUBLIC_VERCEL_ENV,",
+			);
+			expect(template).toContain(
+				"NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,",
+			);
+		});
+
+		it("does not apply preset field kinds when no hostPreset is selected", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "vanilla" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				envKeys: ["VERCEL_ENV"],
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain('VERCEL_ENV: "string?"');
+			expect(template).not.toContain("production' | 'preview");
+		});
 	});
 });

@@ -13,7 +13,12 @@ import type { ValidatorStrategy } from "./types";
 export function createValidatorStrategy(dialect: Dialect): ValidatorStrategy {
 	return {
 		formatField(key, role, context) {
-			return dialect.formatStrictField(key, role, context.clientPrefix);
+			return dialect.formatStrictField(
+				key,
+				role,
+				context.clientPrefix,
+				context.hostPreset,
+			);
 		},
 
 		getSimpleTemplate(keys, context) {

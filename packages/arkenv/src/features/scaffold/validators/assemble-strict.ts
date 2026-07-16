@@ -35,12 +35,22 @@ function appendPresetStrictFields(
 	for (const key of presetKeys) {
 		if (context.clientPrefix && key.startsWith(context.clientPrefix)) {
 			fields.clientFields.push(
-				dialect.formatStrictField(key, "client", context.clientPrefix),
+				dialect.formatStrictField(
+					key,
+					"client",
+					context.clientPrefix,
+					context.hostPreset,
+				),
 			);
 			fields.runtimeEnvFields.push(`${key}: process.env.${key},`);
 		} else {
 			fields.serverFields.push(
-				dialect.formatStrictField(key, "server", context.clientPrefix),
+				dialect.formatStrictField(
+					key,
+					"server",
+					context.clientPrefix,
+					context.hostPreset,
+				),
 			);
 		}
 	}
@@ -76,7 +86,12 @@ export function assembleStrictFromDialect(
 					Array.from(new Set([...keys, ...presetKeys])),
 					context,
 					(key, role) =>
-						dialect.formatStrictField(key, role, context.clientPrefix),
+						dialect.formatStrictField(
+							key,
+							role,
+							context.clientPrefix,
+							context.hostPreset,
+						),
 				)
 			: (() => {
 					const defaults = dialect.getDefaultStrictFields(context.clientPrefix);

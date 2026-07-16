@@ -13,23 +13,33 @@ export const valibotDialect: Dialect = {
 		return `v.optional(v.picklist([${values.map((v) => `"${v}"`).join(", ")}]))`;
 	},
 
-	formatStrictField(key, role, clientPrefix = "") {
+	formatStrictField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`;
 		}
 		if (role === "server" && key === "PORT") {
 			return "PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),";
 		}
-		const preset = tryFormatPresetFieldValue(valibotDialect, key, clientPrefix);
+		const preset = tryFormatPresetFieldValue(
+			valibotDialect,
+			key,
+			clientPrefix,
+			hostPreset,
+		);
 		if (preset) return `${key}: ${preset},`;
 		return `${key}: v.optional(v.string()),`;
 	},
 
-	formatCodegenField(key, role, clientPrefix = "") {
+	formatCodegenField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`;
 		}
-		const preset = tryFormatPresetFieldValue(valibotDialect, key, clientPrefix);
+		const preset = tryFormatPresetFieldValue(
+			valibotDialect,
+			key,
+			clientPrefix,
+			hostPreset,
+		);
 		if (preset) return `${key}: ${preset},`;
 		return `${key}: v.optional(v.string()),`;
 	},
@@ -37,13 +47,14 @@ export const valibotDialect: Dialect = {
 	defaultSimpleSchemaFields: `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
 		PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`,
 
-	formatSimpleSchemaFields(keys, clientPrefix = "") {
+	formatSimpleSchemaFields(keys, clientPrefix = "", hostPreset = undefined) {
 		return keys
 			.map((key) => {
 				const preset = tryFormatPresetFieldValue(
 					valibotDialect,
 					key,
 					clientPrefix,
+					hostPreset,
 				);
 				return `\t\t${key}: ${preset ?? "v.optional(v.string())"},`;
 			})

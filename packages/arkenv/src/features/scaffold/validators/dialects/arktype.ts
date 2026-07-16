@@ -11,23 +11,33 @@ export const arktypeDialect: Dialect = {
 		return `"'${values.join("' | '")}'?"`;
 	},
 
-	formatStrictField(key, role, clientPrefix = "") {
+	formatStrictField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: "'development' | 'production' | 'test' = 'development'",`;
 		}
 		if (role === "server" && key === "PORT") {
 			return `PORT: "number.port = 3000",`;
 		}
-		const preset = tryFormatPresetFieldValue(arktypeDialect, key, clientPrefix);
+		const preset = tryFormatPresetFieldValue(
+			arktypeDialect,
+			key,
+			clientPrefix,
+			hostPreset,
+		);
 		if (preset) return `${key}: ${preset},`;
 		return `${key}: "string?",`;
 	},
 
-	formatCodegenField(key, role, clientPrefix = "") {
+	formatCodegenField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: "'development' | 'production' | 'test' = 'development'",`;
 		}
-		const preset = tryFormatPresetFieldValue(arktypeDialect, key, clientPrefix);
+		const preset = tryFormatPresetFieldValue(
+			arktypeDialect,
+			key,
+			clientPrefix,
+			hostPreset,
+		);
 		if (preset) return `${key}: ${preset},`;
 		return `${key}: "string?",`;
 	},
@@ -35,13 +45,14 @@ export const arktypeDialect: Dialect = {
 	defaultSimpleSchemaFields: `\t\tNODE_ENV: "'development' | 'production' | 'test' = 'development'",
 		PORT: "number.port = 3000",`,
 
-	formatSimpleSchemaFields(keys, clientPrefix = "") {
+	formatSimpleSchemaFields(keys, clientPrefix = "", hostPreset = undefined) {
 		return keys
 			.map((key) => {
 				const preset = tryFormatPresetFieldValue(
 					arktypeDialect,
 					key,
 					clientPrefix,
+					hostPreset,
 				);
 				return `\t\t${key}: ${preset ?? `"string?"`},`;
 			})
