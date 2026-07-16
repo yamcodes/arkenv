@@ -1,4 +1,4 @@
-# Architecture decision records (adrs)
+# Architecture decision records (ADRs)
 
 This directory contains records of design and architectural decisions made for the ArkEnv project.
 
