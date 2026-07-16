@@ -9,6 +9,7 @@ import {
 } from "@/features/scaffold";
 import type { HostPreset } from "@/features/scaffold/presets";
 import { RegistryClient } from "@/shared/clients";
+import { ERROR_CODES } from "@/shared/errors";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
@@ -119,6 +120,11 @@ export class InitUseCase {
 			this.logger.info(
 				`To scaffold a new project, run ${code("arkenv init")} in an empty directory or use ${code("--force")} to proceed anyway.`,
 			);
+			this.logger.refuse({
+				code: ERROR_CODES.NON_EMPTY_DIR,
+				message: "Directory is not empty and no package.json was found.",
+				retryWith: ["--force"],
+			});
 			return null;
 		} finally {
 			this.logger.interactiveStdout(false);
@@ -158,6 +164,21 @@ export class InitUseCase {
 					);
 				}
 				this.logger.info("Use --force to bypass these checks.");
+				this.logger.refuse({
+					code: ERROR_CODES.REQUIREMENTS_NOT_MET,
+					message: "Technical requirements not met.",
+					retryWith: ["--force"],
+					details: {
+						requirements: failures.map((fail) =>
+							shake({
+								requirement: fail.requirement,
+								message: fail.message,
+								current: fail.current,
+								expected: fail.expected,
+							}),
+						),
+					},
+				});
 				return null;
 			}
 		}
@@ -173,6 +194,11 @@ export class InitUseCase {
 					"Git working tree is not clean. Commit or stash your changes (use 'git stash -u' for untracked files) before running arkenv init.",
 				);
 				this.logger.info("Use --force to bypass this check.");
+				this.logger.refuse({
+					code: ERROR_CODES.GIT_TREE_DIRTY,
+					message: "Git working tree is not clean.",
+					retryWith: ["--force"],
+				});
 				return null;
 			}
 		}
@@ -483,6 +509,12 @@ export class InitUseCase {
 			this.logger.info(
 				`Run ${code("arkenv init")} in an empty directory or choose a sub-directory name instead.`,
 			);
+			this.logger.refuse({
+				code: ERROR_CODES.NON_EMPTY_DIR,
+				message:
+					"Cannot scaffold into the current directory because it is not empty.",
+				retryWith: ["--force"],
+			});
 			return null;
 		}
 
