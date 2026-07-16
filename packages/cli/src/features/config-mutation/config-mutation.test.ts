@@ -1,6 +1,10 @@
 import dedent from "dedent";
 import { describe, expect, it } from "vitest";
-import { transformNextjsConfig, transformViteConfig, mutateEnvConfig } from "./config-mutation";
+import {
+	mutateEnvConfig,
+	transformNextjsConfig,
+	transformViteConfig,
+} from "./config-mutation";
 
 describe("config-mutation", () => {
 	describe("transformViteConfig", () => {
@@ -262,12 +266,21 @@ describe("config-mutation", () => {
 				});
 			`;
 
-			const result = mutateEnvConfig(initialContent, "vercel", "nextjs", "arktype");
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+			);
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
 			expect(result.code).toContain('VERCEL: "string?"');
-			expect(result.code).toContain('VERCEL_ENV: "\'production\' | \'preview\' | \'development\'?"');
-			expect(result.code).toContain('NEXT_PUBLIC_VERCEL_ENV: "\'production\' | \'preview\' | \'development\'?"');
+			expect(result.code).toContain(
+				"VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
+			expect(result.code).toContain(
+				"NEXT_PUBLIC_VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
 		});
 
 		it("mutates flat env.ts with Zod correctly", () => {
@@ -283,8 +296,10 @@ describe("config-mutation", () => {
 			const result = mutateEnvConfig(initialContent, "vercel", "nextjs", "zod");
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
-			expect(result.code).toContain('VERCEL: z.string().optional()');
-			expect(result.code).toContain('VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()');
+			expect(result.code).toContain("VERCEL: z.string().optional()");
+			expect(result.code).toContain(
+				'VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
 		});
 
 		it("mutates flat env.ts with Valibot correctly", () => {
@@ -297,11 +312,18 @@ describe("config-mutation", () => {
 				});
 			`;
 
-			const result = mutateEnvConfig(initialContent, "vercel", "nextjs", "valibot");
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"valibot",
+			);
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
-			expect(result.code).toContain('VERCEL: v.optional(v.string())');
-			expect(result.code).toContain('VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"]))');
+			expect(result.code).toContain("VERCEL: v.optional(v.string())");
+			expect(result.code).toContain(
+				'VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"]))',
+			);
 		});
 
 		it("returns updated: false if keys are already present", () => {
@@ -318,14 +340,24 @@ describe("config-mutation", () => {
 				});
 			`;
 
-			const result = mutateEnvConfig(initialContent, "vercel", "nextjs", "arktype");
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+			);
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(false);
 		});
 
 		it("returns success: false and proposedFields when schema is not found", () => {
 			const initialContent = "export const x = 123;";
-			const result = mutateEnvConfig(initialContent, "vercel", "nextjs", "arktype");
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+			);
 			expect(result.success).toBe(false);
 			expect(result.updated).toBe(false);
 			expect(result.proposedFields).toHaveProperty("VERCEL");

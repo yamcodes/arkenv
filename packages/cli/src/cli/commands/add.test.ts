@@ -1,3 +1,4 @@
+import dedent from "dedent";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type {
 	LoggerPort,
@@ -6,7 +7,6 @@ import type {
 	WorkspacePort,
 } from "@/shared/ports";
 import { AddUseCase } from "./add";
-import dedent from "dedent";
 
 describe("AddUseCase", () => {
 	let logger: LoggerPort;
@@ -52,7 +52,9 @@ describe("AddUseCase", () => {
 			hasPackageJson: vi.fn().mockResolvedValue(true),
 			isEmptyDirectory: vi.fn().mockResolvedValue(false),
 			checkRequirements: vi.fn().mockResolvedValue([]),
-			checkTsConfig: vi.fn().mockResolvedValue({ status: "strict", parsed: null }),
+			checkTsConfig: vi
+				.fn()
+				.mockResolvedValue({ status: "strict", parsed: null }),
 			detectFramework: vi.fn().mockResolvedValue("vanilla"),
 			suggestDefaultEnvPath: vi.fn().mockResolvedValue("./env.ts"),
 			getEnvExampleKeys: vi.fn().mockResolvedValue(null),
@@ -78,7 +80,9 @@ describe("AddUseCase", () => {
 		expect(result).toBe(true);
 		expect(prompt.select).toHaveBeenCalled();
 		expect(workspace.writeFile).toHaveBeenCalled();
-		expect(logger.success).toHaveBeenCalledWith(expect.stringContaining("Added Vercel"));
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("Added Vercel"),
+		);
 	});
 
 	it("mutates env.ts with preset keys", async () => {
@@ -96,7 +100,9 @@ describe("AddUseCase", () => {
 			expect.stringContaining("env.ts"),
 			expect.stringContaining('VERCEL: "string?"'),
 		);
-		expect(logger.success).toHaveBeenCalledWith(expect.stringContaining("Added Vercel"));
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("Added Vercel"),
+		);
 	});
 
 	it("does not mutate if keys are already present", async () => {
@@ -114,7 +120,9 @@ describe("AddUseCase", () => {
 		const result = await useCase.execute({ provider: "vercel" });
 		expect(result).toBe(true);
 		expect(workspace.writeFile).not.toHaveBeenCalled();
-		expect(logger.info).toHaveBeenCalledWith(expect.stringContaining("already present"));
+		expect(logger.info).toHaveBeenCalledWith(
+			expect.stringContaining("already present"),
+		);
 	});
 
 	it("logs proposed keys to stdout if env.ts does not exist", async () => {
@@ -122,7 +130,9 @@ describe("AddUseCase", () => {
 
 		const result = await useCase.execute({ provider: "vercel" });
 		expect(result).toBe(true);
-		expect(logger.error).toHaveBeenCalledWith(expect.stringContaining("Could not locate"));
+		expect(logger.error).toHaveBeenCalledWith(
+			expect.stringContaining("Could not locate"),
+		);
 		expect(logger.log).toHaveBeenCalledWith(expect.stringContaining("VERCEL:"));
 	});
 
@@ -132,7 +142,9 @@ describe("AddUseCase", () => {
 
 		const result = await useCase.execute({ provider: "vercel" });
 		expect(result).toBe(true);
-		expect(logger.error).toHaveBeenCalledWith(expect.stringContaining("Could not find arkenv or type schema call"));
+		expect(logger.error).toHaveBeenCalledWith(
+			expect.stringContaining("Could not find arkenv or type schema call"),
+		);
 		expect(logger.log).toHaveBeenCalledWith(expect.stringContaining("VERCEL:"));
 	});
 });

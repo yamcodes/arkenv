@@ -17,7 +17,9 @@ async function main() {
 		}
 	}
 
-	const { cli, logger, initUseCase, addUseCase, helpUseCase } = compose(process.argv);
+	const { cli, logger, initUseCase, addUseCase, helpUseCase } = compose(
+		process.argv,
+	);
 	globalLogger = logger;
 
 	setupGracefulShutdown(logger);

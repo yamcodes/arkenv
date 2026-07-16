@@ -5,13 +5,13 @@ import {
 	parseModule,
 } from "magicast";
 import type { BootstrapResult } from "@/shared/ports";
+import type { Framework, Validator } from "../scaffold/plan";
 import {
+	getFieldDefinition,
 	getFrameworkPrefix,
 	getPresetKeys,
-	getFieldDefinition,
 	type HostPreset,
 } from "../scaffold/templates/presets";
-import type { Framework, Validator } from "../scaffold/plan";
 
 /**
  * Input for transforming a configuration file.
@@ -408,7 +408,12 @@ export function mutateEnvConfig(
 		generatedCode = normalizeImportSpacing(generatedCode);
 		generatedCode = preserveTrailingNewline(generatedCode, code);
 
-		return { success: true, updated: true, code: generatedCode, proposedFields };
+		return {
+			success: true,
+			updated: true,
+			code: generatedCode,
+			proposedFields,
+		};
 	} catch (e: unknown) {
 		const error = e instanceof Error ? e.message : String(e);
 		return {

@@ -1,4 +1,8 @@
-import { confirm as clackConfirm, isCancel, select as clackSelect } from "@clack/prompts";
+import {
+	confirm as clackConfirm,
+	select as clackSelect,
+	isCancel,
+} from "@clack/prompts";
 import { shake } from "radashi";
 import { runPromptWizard } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";

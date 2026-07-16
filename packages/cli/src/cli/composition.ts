@@ -4,7 +4,7 @@ import {
 	NodeWorkspace,
 } from "@/adapters";
 import { CLI } from "./cli";
-import { HelpUseCase, InitUseCase, AddUseCase } from "./commands";
+import { AddUseCase, HelpUseCase, InitUseCase } from "./commands";
 
 /**
  * Bootstraps the application's dependency graph by composing
