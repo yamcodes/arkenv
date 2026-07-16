@@ -1,6 +1,7 @@
 import type { LoggerPort as Reporter } from "@/shared/ports/logger.port";
 import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
 import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
+import type { HostPreset } from "./presets";
 
 export type { Reporter, Workspace };
 
@@ -37,6 +38,8 @@ export type ProjectOptions = {
 	envExampleContent?: string;
 	envContent?: string;
 	gitignoreContent?: string;
+	/** Hosting provider preset selected during init (`none` / Vercel / Netlify). */
+	hostPreset?: HostPreset;
 };
 
 /**

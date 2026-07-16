@@ -759,4 +759,36 @@ PORT=3000`;
 			expect(gitignoreFile).toBeUndefined();
 		});
 	});
+
+	describe("hostPresets planning", () => {
+		it("includes hosting preset keys in generated config and .env templates", () => {
+			const state: CollectedState = {
+				...defaultState,
+				existingFiles: [],
+				options: {
+					...defaultState.options,
+					hostPreset: "vercel",
+				},
+			};
+			const plan = createPlan(state);
+
+			const envTs = plan.files.find((f) => f.path.endsWith("env.ts"));
+			const dotenv = plan.files.find((f) => f.path.endsWith(".env"));
+			const dotenvExample = plan.files.find((f) =>
+				f.path.endsWith(".env.example"),
+			);
+
+			expect(envTs).toBeDefined();
+			expect(envTs?.content).toContain("VERCEL_URL");
+			expect(envTs?.content).toContain("VERCEL_ENV");
+
+			expect(dotenv).toBeDefined();
+			expect(dotenv?.content).toContain("VERCEL_ENV=");
+			expect(dotenv?.content).toContain("VERCEL_URL=");
+
+			expect(dotenvExample).toBeDefined();
+			expect(dotenvExample?.content).toContain("VERCEL_ENV=");
+			expect(dotenvExample?.content).toContain("VERCEL_URL=");
+		});
+	});
 });

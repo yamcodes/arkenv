@@ -1,4 +1,5 @@
 import { Logger } from "@/adapters";
+import { type HostPreset, isHostPreset } from "@/features/scaffold/presets";
 import type { InitInput } from "./commands/init";
 
 const FLAG_CONFIG = {
@@ -13,6 +14,7 @@ const FLAG_CONFIG = {
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
 	isFlat: { long: "--flat", short: "", kind: "boolean" },
 	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
+	hostPreset: { long: "--host-preset", short: "", kind: "value" },
 } as const;
 
 const knownFlags = new Set<string>(
@@ -100,6 +102,14 @@ export class CLI {
 		}
 
 		if (!this.validationError) {
+			const flag = FLAG_CONFIG.hostPreset;
+			const rawPresetVal = this.getFlagValue(flag.long, flag.short);
+			if (rawPresetVal !== undefined && !isHostPreset(rawPresetVal)) {
+				this.validationError = `Invalid host preset: ${rawPresetVal}`;
+			}
+		}
+
+		if (!this.validationError) {
 			if (positionalArgs.length > 1) {
 				this.validationError = `Unknown argument: ${positionalArgs[1]}`;
 			} else {
@@ -161,6 +171,15 @@ export class CLI {
 		return this.hasFlag("noCodegen");
 	}
 
+	get hostPreset(): HostPreset | undefined {
+		const flag = FLAG_CONFIG.hostPreset;
+		const val = this.getFlagValue(flag.long, flag.short);
+		if (val !== undefined && isHostPreset(val)) {
+			return val;
+		}
+		return undefined;
+	}
+
 	private hasFlag(prop: keyof typeof FLAG_CONFIG): boolean {
 		const flag = FLAG_CONFIG[prop];
 		return (
@@ -190,6 +209,9 @@ export class CLI {
 		}
 		if (this.noCodegen) {
 			input.noCodegen = true;
+		}
+		if (this.hostPreset !== undefined) {
+			input.hostPreset = this.hostPreset;
 		}
 		return input;
 	}
