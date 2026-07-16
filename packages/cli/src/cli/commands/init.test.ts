@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ERROR_CODES } from "@/shared/errors";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
@@ -20,6 +21,7 @@ describe("InitUseCase", () => {
 			warn: vi.fn(),
 			error: vi.fn(),
 			fatal: vi.fn(),
+			refuse: vi.fn(),
 			step: vi.fn(),
 			success: vi.fn(),
 			cancel: vi.fn(),
@@ -113,6 +115,12 @@ describe("InitUseCase", () => {
 		);
 		expect(logger.info).toHaveBeenCalledWith(
 			expect.stringContaining("--force"),
+		);
+		expect(logger.refuse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				code: ERROR_CODES.NON_EMPTY_DIR,
+				retryWith: ["--force"],
+			}),
 		);
 	});
 
@@ -221,6 +229,12 @@ describe("InitUseCase", () => {
 		expect(logger.error).toHaveBeenCalledWith(
 			expect.stringContaining("Cannot scaffold into"),
 		);
+		expect(logger.refuse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				code: ERROR_CODES.NON_EMPTY_DIR,
+				retryWith: ["--force"],
+			}),
+		);
 	});
 
 	it("should allow scaffolding when --example, project-name '.', and --force are used in a non-empty directory", async () => {
@@ -275,6 +289,21 @@ describe("InitUseCase", () => {
 		expect(logger.info).toHaveBeenCalledWith(
 			"Use --force to bypass these checks.",
 		);
+		expect(logger.refuse).toHaveBeenCalledWith({
+			code: ERROR_CODES.REQUIREMENTS_NOT_MET,
+			message: "Technical requirements not met.",
+			retryWith: ["--force"],
+			details: {
+				requirements: [
+					{
+						requirement: "Node.js Version",
+						message: "Node.js version must be >= 22.0.0",
+						current: "20.0.0",
+						expected: ">= 22.0.0",
+					},
+				],
+			},
+		});
 	});
 
 	it("should continue if requirements fail but --force is used", async () => {
@@ -303,6 +332,7 @@ describe("InitUseCase", () => {
 		expect(logger.warn).toHaveBeenCalledWith(
 			"Technical requirements not met, but continuing due to --force flag.",
 		);
+		expect(logger.refuse).not.toHaveBeenCalled();
 	});
 
 	it("should display warnings if requirements have warnings", async () => {
@@ -426,6 +456,11 @@ describe("InitUseCase", () => {
 		expect(logger.error).toHaveBeenCalledWith(
 			expect.stringContaining("Git working tree is not clean"),
 		);
+		expect(logger.refuse).toHaveBeenCalledWith({
+			code: ERROR_CODES.GIT_TREE_DIRTY,
+			message: "Git working tree is not clean.",
+			retryWith: ["--force"],
+		});
 	});
 
 	it("should continue with a warning when git working tree is dirty and --force is set", async () => {
@@ -450,6 +485,7 @@ describe("InitUseCase", () => {
 		expect(logger.warn).toHaveBeenCalledWith(
 			expect.stringContaining("Git working tree is not clean"),
 		);
+		expect(logger.refuse).not.toHaveBeenCalled();
 	});
 
 	it("should proceed normally when git status is not_a_repo", async () => {

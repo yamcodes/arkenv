@@ -1,5 +1,6 @@
 import { spinner as clackSpinner, note, outro } from "@clack/prompts";
 import pc from "picocolors";
+import type { Refusal } from "@/shared/errors";
 import type { Reporter, Spinner } from "./types";
 
 /**
@@ -54,6 +55,11 @@ export class TextReporter implements Reporter {
 			process.stderr.write(detail);
 		}
 		throw error instanceof Error ? error : new Error(message);
+	}
+
+	refuse(_refusal: Refusal) {
+		// Human-oriented refusal guidance is emitted via error()/info();
+		// the structured payload is reserved for JSON output.
 	}
 
 	finish(message: string, _details?: Record<string, unknown>) {

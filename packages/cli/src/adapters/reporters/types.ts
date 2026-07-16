@@ -1,3 +1,5 @@
+import type { Refusal } from "@/shared/errors";
+
 /**
  * Defines a long-running progress indicator.
  */
@@ -22,6 +24,15 @@ export type Reporter = {
 	json(data: unknown): void;
 	cancel(message: string): void;
 	fatal(message: string, error?: unknown): never;
+	/**
+	 * Reports a deliberate, machine-readable refusal (a tripped safety check).
+	 *
+	 * In JSON mode this emits a structured `status: "error"` payload carrying the
+	 * refusal's stable `code` and `retryWith` hint to `stdout`; human-oriented
+	 * reporters treat it as a no-op since the equivalent guidance is already
+	 * surfaced via {@link Reporter.error}/{@link Reporter.info}.
+	 */
+	refuse(refusal: Refusal): void;
 	finish(message: string, details?: Record<string, unknown>): void;
 	flush(): Promise<void>;
 };

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ERROR_CODES } from "@/shared/errors";
 import {
 	JsonReporter,
 	MemoryReporter,
@@ -82,6 +83,16 @@ describe("Reporters", () => {
 				expect.stringContaining("✘ fatal error"),
 			);
 		});
+
+		it("refuse is a no-op for human output (no stdout/stderr writes)", () => {
+			reporter.refuse({
+				code: ERROR_CODES.GIT_TREE_DIRTY,
+				message: "Git working tree is not clean.",
+				retryWith: ["--force"],
+			});
+			expect(stdoutSpy).not.toHaveBeenCalled();
+			expect(stderrSpy).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("JsonReporter", () => {
@@ -114,6 +125,71 @@ describe("Reporters", () => {
 			expect(stdoutSpy).toHaveBeenCalledWith(
 				expect.stringContaining('"message": "fatal error"'),
 			);
+		});
+
+		it("fatal carries the generic INTERNAL code and empty retryWith", () => {
+			expect(() => reporter.fatal("boom", new Error("kaboom"))).toThrow(
+				"kaboom",
+			);
+			const payload = JSON.parse(stdoutSpy.mock.calls.at(-1)?.[0] as string);
+			expect(payload).toEqual({
+				status: "error",
+				code: ERROR_CODES.INTERNAL,
+				message: "boom",
+				retryWith: [],
+				details: { error: "kaboom" },
+			});
+		});
+
+		it("refuse logs a structured, coded error payload to stdout", () => {
+			reporter.refuse({
+				code: ERROR_CODES.REQUIREMENTS_NOT_MET,
+				message: "Technical requirements not met.",
+				retryWith: ["--force"],
+				details: {
+					requirements: [
+						{
+							requirement: "Node.js Version",
+							message: "Node.js version must be >= 22.0.0",
+							current: "20.0.0",
+							expected: ">= 22.0.0",
+						},
+					],
+				},
+			});
+			const payload = JSON.parse(stdoutSpy.mock.calls.at(-1)?.[0] as string);
+			expect(payload).toEqual({
+				status: "error",
+				code: ERROR_CODES.REQUIREMENTS_NOT_MET,
+				message: "Technical requirements not met.",
+				retryWith: ["--force"],
+				details: {
+					requirements: [
+						{
+							requirement: "Node.js Version",
+							message: "Node.js version must be >= 22.0.0",
+							current: "20.0.0",
+							expected: ">= 22.0.0",
+						},
+					],
+				},
+			});
+		});
+
+		it("refuse omits details when none are provided", () => {
+			reporter.refuse({
+				code: ERROR_CODES.GIT_TREE_DIRTY,
+				message: "Git working tree is not clean.",
+				retryWith: ["--force"],
+			});
+			const payload = JSON.parse(stdoutSpy.mock.calls.at(-1)?.[0] as string);
+			expect(payload).toEqual({
+				status: "error",
+				code: ERROR_CODES.GIT_TREE_DIRTY,
+				message: "Git working tree is not clean.",
+				retryWith: ["--force"],
+			});
+			expect(payload).not.toHaveProperty("details");
 		});
 
 		it("cancel logs json to stdout", () => {
@@ -173,6 +249,22 @@ describe("Reporters", () => {
 				type: "json",
 				message: JSON.stringify({ foo: "bar" }),
 				data: { foo: "bar" },
+			});
+		});
+
+		it("records refusals with their structured payload", () => {
+			const refusal = {
+				code: ERROR_CODES.NON_EMPTY_DIR,
+				message: "Directory is not empty and no package.json was found.",
+				retryWith: ["--force"],
+			};
+			reporter.refuse(refusal);
+
+			expect(reporter.logs).toHaveLength(1);
+			expect(reporter.logs[0]).toEqual({
+				type: "refuse",
+				message: refusal.message,
+				data: refusal,
 			});
 		});
 	});

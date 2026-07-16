@@ -1,3 +1,4 @@
+import type { Refusal } from "@/shared/errors";
 import type { Reporter, Spinner } from "./types";
 
 /**
@@ -54,6 +55,14 @@ export class MemoryReporter implements Reporter {
 	fatal(message: string, error?: unknown): never {
 		this.logs.push({ type: "fatal", message, data: error });
 		throw error instanceof Error ? error : new Error(message);
+	}
+
+	refuse(refusal: Refusal) {
+		this.logs.push({
+			type: "refuse",
+			message: refusal.message,
+			data: refusal,
+		});
 	}
 
 	finish(message: string, details?: Record<string, unknown>) {

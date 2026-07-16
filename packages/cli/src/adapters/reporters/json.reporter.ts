@@ -1,4 +1,5 @@
 import pc from "picocolors";
+import { ERROR_CODES, type Refusal } from "@/shared/errors";
 import type { Reporter, Spinner } from "./types";
 
 /**
@@ -58,19 +59,30 @@ export class JsonReporter implements Reporter {
 	}
 
 	fatal(message: string, error?: unknown): never {
+		const errorText =
+			error instanceof Error
+				? error.message
+				: error
+					? String(error)
+					: undefined;
 		this.json({
 			status: "error",
-			details: {
-				message,
-				error:
-					error instanceof Error
-						? error.message
-						: error
-							? String(error)
-							: undefined,
-			},
+			code: ERROR_CODES.INTERNAL,
+			message,
+			retryWith: [],
+			...(errorText !== undefined ? { details: { error: errorText } } : {}),
 		});
 		throw error instanceof Error ? error : new Error(message);
+	}
+
+	refuse(refusal: Refusal) {
+		this.json({
+			status: "error",
+			code: refusal.code,
+			message: refusal.message,
+			retryWith: refusal.retryWith,
+			...(refusal.details !== undefined ? { details: refusal.details } : {}),
+		});
 	}
 
 	finish(message: string, details?: Record<string, unknown>) {
