@@ -1,8 +1,10 @@
 ---
-"@arkenv/cli": patch
+"@arkenv/cli": minor
 ---
 
 #### Add machine-actionable error codes to `init` JSON output
+
+**BREAKING CHANGE**: The `--json` / `--agent` terminal error payload now always carries top-level `code`, `message`, and `retryWith` fields. For unexpected failures, `message` moved out of `details` to the top level: the shape changed from `{ status: "error", details: { message, error } }` to `{ status: "error", code: "INTERNAL", message, retryWith: [], details: { error } }`. Consumers that read `details.message` must now read the top-level `message`.
 
 In `--json` / `--agent` mode, every deliberate safety-check refusal now emits a stable, documented error `code` alongside a `retryWith` hint, so agents no longer have to pattern-match on prose to decide how to escalate. Human-readable (non-JSON) output is unchanged.
 
