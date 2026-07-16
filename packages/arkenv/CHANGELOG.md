@@ -1,5 +1,43 @@
 # @arkenv/core
 
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add hosting presets to `arkenv init` _[`#1323`](https://github.com/yamcodes/arkenv/pull/1323) [`6aa4262`](https://github.com/yamcodes/arkenv/commit/6aa4262eac97368ed87bb1fae6818e6e781e17be) [@yamcodes](https://github.com/yamcodes)_
+
+  Support optional Vercel and Netlify presets when initializing a project. Preset fields render through validator dialects and client keys use each framework strategy's `clientPrefix`.
+
+  Usage:
+
+  ```bash
+  npx arkenv@alpha init --host-preset vercel
+  ```
+
+  Or select **Vercel** / **Netlify** in the interactive hosting-preset step. Generated schemas include typed keys such as `VERCEL_ENV` (and `NEXT_PUBLIC_VERCEL_ENV` on Next.js).
+
+- #### Add machine-actionable error codes to `init` JSON output _[`#1336`](https://github.com/yamcodes/arkenv/pull/1336) [`cf74ee1`](https://github.com/yamcodes/arkenv/commit/cf74ee1db30f5865a0ae8a26a3e65a5dadc17345) [@yamcodes](https://github.com/yamcodes)_
+
+  In `--json` / `--agent` mode, every deliberate safety-check refusal now emits a stable, documented error `code` alongside a `retryWith` hint, so agents no longer have to pattern-match on prose to decide how to escalate. Human-readable (non-JSON) output is unchanged.
+
+  - **`REQUIREMENTS_NOT_MET`** — a technical requirement failed. Includes per-requirement `details` with `current`/`expected`. `retryWith: ["--force"]`.
+  - **`GIT_TREE_DIRTY`** — the git working tree is not clean. `retryWith: ["--force"]`.
+  - **`NON_EMPTY_DIR`** — the target directory is not empty. `retryWith: ["--force"]`.
+  - **`INTERNAL`** — an unexpected failure (the CLI broke rather than refused). `retryWith: []`.
+
+  An empty `retryWith` means the refusal cannot be bypassed; a non-empty `retryWith` names the flag(s) to re-run with. Escalation pattern: run without `--force`, inspect `code`/`retryWith`, then retry deliberately.
+
+  Example refusal payload written to `stdout`:
+
+  ```json
+  {
+    "status": "error",
+    "code": "GIT_TREE_DIRTY",
+    "message": "Git working tree is not clean.",
+    "retryWith": ["--force"]
+  }
+  ```
+
 ## 1.0.0-alpha.4
 
 ### Minor Changes

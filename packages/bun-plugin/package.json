@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/bun-plugin",
-	"version": "1.0.0-alpha.4",
+	"version": "1.0.0-alpha.5",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",

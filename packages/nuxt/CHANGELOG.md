@@ -1,5 +1,53 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add configurable build logging to framework integrations _[`#1312`](https://github.com/yamcodes/arkenv/pull/1312) [`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb) [@yamcodes](https://github.com/yamcodes)_
+
+  Add optional `logger` and `logLevel` to Next.js, Nuxt, Vite, and Bun integrations. Set `ARKENV_LOG_LEVEL` when no custom logger is provided.
+
+  ```ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+
+  export default withArkEnv(nextConfig, {
+    logLevel: "warn",
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin";
+
+  export default defineConfig({
+    plugins: [arkenv(Env, { logLevel: "silent" })],
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    plugins: [arkenv(Env, { logLevel: "warn" })],
+  });
+  ```
+
+  Note: `@arkenv/build` is an internal package; consumers should configure logging via the framework integrations rather than importing internal helpers.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.1`
+
+</details>
+
 ## 1.0.0-alpha.4
 
 ### Major Changes

@@ -20,11 +20,15 @@
 		"@arkenv/nuxt": "0.0.1",
 		"@arkenv/core": "1.0.0-alpha.2",
 		"@repo/utils": "0.1.3",
-		"@arkenv/standard": "1.0.0-alpha.2"
+		"@arkenv/standard": "1.0.0-alpha.2",
+		"@repo/log": "0.0.1"
 	},
 	"changesets": [
 		"epg3nspi",
+		"forward-port-hosting-presets",
 		"init-v1",
+		"injectable-logger-api",
+		"machine-actionable-error-codes",
 		"nuxt-flat-layout-cli-alignment",
 		"reconcile-v0-features",
 		"remove-framework-shared-exports",
