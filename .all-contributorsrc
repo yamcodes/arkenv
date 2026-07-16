@@ -22,6 +22,8 @@
         "bug",
         "example",
         "infra",
+        "plugin",
+        "tool",
         "test"
       ]
     },
@@ -52,6 +54,7 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/44430251?v=4",
       "profile": "https://github.com/danciudev",
       "contributions": [
+        "plugin",
         "code"
       ]
     },
@@ -62,6 +65,7 @@
       "profile": "https://joakim.beng.se",
       "contributions": [
         "code",
+        "plugin",
         "doc"
       ]
     },
