@@ -37,11 +37,11 @@ Every `"error"` payload is machine-actionable and shaped as follows:
 }
 ```
 
-- **`code`** — a stable identifier for the failure. Treat it as a public contract:
+- **`code`** - a stable identifier for the failure. Treat it as a public contract:
   it will not be renamed casually, so you can safely branch on it.
-- **`retryWith`** — the flag(s) that would bypass the check if you re-run the
+- **`retryWith`** - the flag(s) that would bypass the check if you re-run the
   command. Empty (`[]`) when the failure is not bypassable.
-- **`details`** — optional structured context for reporting the problem.
+- **`details`** - optional structured context for reporting the problem.
 
 The `code` values are:
 
@@ -50,7 +50,7 @@ The `code` values are:
 | `REQUIREMENTS_NOT_MET` | A technical requirement (e.g. Node.js version) failed. | `["--force"]` |
 | `GIT_TREE_DIRTY`       | The git working tree has uncommitted changes.          | `["--force"]` |
 | `NON_EMPTY_DIR`        | The target directory is not empty and unsafe to touch. | `["--force"]` |
-| `INTERNAL`             | An unexpected failure — the CLI broke, not refused.    | `[]`          |
+| `INTERNAL`             | An unexpected failure - the CLI broke, not refused.    | `[]`          |
 
 A non-empty `retryWith` means the CLI *deliberately refused*; a `code` of
 `INTERNAL` means the CLI *broke* and retrying with flags will not help.

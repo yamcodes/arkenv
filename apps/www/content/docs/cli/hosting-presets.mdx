@@ -27,7 +27,7 @@ Choosing **None** (the default) leaves your schema untouched.
 
 ### `--host-preset` flag
 
-To skip the prompt — for example in scripts or with `--agent` — pass the `--host-preset` flag (or its `-H` alias):
+To skip the prompt - for example in scripts or with `--agent` - pass the `--host-preset` flag (or its `-H` alias):
 
 ```npm
 npx @arkenv/cli@latest init --host-preset vercel
@@ -43,8 +43,8 @@ npx @arkenv/cli@latest init -H vercel
 
 Selecting a preset adds the provider's system variables to your schema. Every variable is **optional**, since it's only present in the provider's own environment. Variables are split into two groups:
 
-- **Server-only** — never exposed to the client, and never prefixed.
-- **Client-exposed** — safe to read on the client. These also get a [framework-prefixed](#framework-prefixes) copy when a prefix applies.
+- **Server-only** - never exposed to the client, and never prefixed.
+- **Client-exposed** - safe to read on the client. These also get a [framework-prefixed](#framework-prefixes) copy when a prefix applies.
 
 ### Vercel
 
@@ -205,8 +205,8 @@ The examples below show the schema generated for a plain Node.js project (no fra
 
 Presets adapt to whichever layout you scaffold:
 
-- **Flat / simple layout** — all preset variables land in your single schema, alongside your own variables.
-- **Strict layout** — server-only variables (e.g. `VERCEL`, `NETLIFY`, `DEPLOY_URL`) go into the server schema. The **unprefixed** client-exposed variables (e.g. `VERCEL_ENV`, `URL`) also go into the server schema, since they're only readable server-side; it's their **framework-prefixed copies** (e.g. `NEXT_PUBLIC_VERCEL_ENV`, `VITE_URL`) that go into the client schema.
+- **Flat / simple layout** - all preset variables land in your single schema, alongside your own variables.
+- **Strict layout** - server-only variables (e.g. `VERCEL`, `NETLIFY`, `DEPLOY_URL`) go into the server schema. The **unprefixed** client-exposed variables (e.g. `VERCEL_ENV`, `URL`) also go into the server schema, since they're only readable server-side; it's their **framework-prefixed copies** (e.g. `NEXT_PUBLIC_VERCEL_ENV`, `VITE_URL`) that go into the client schema.
 
 :::note
 Presets only add variables; they never remove or overwrite variables scanned from your existing `.env` files. Refine the generated types afterward to match your app's needs.
