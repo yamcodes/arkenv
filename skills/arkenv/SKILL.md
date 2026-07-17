@@ -28,7 +28,7 @@ ArkEnv is a typesafe environment variable validator for modern JavaScript runtim
 - Initialize ArkEnv in new or existing projects using `pnpm dlx arkenv@latest init`.
 - Scaffold schema files and detect framework-specific configurations (`Next.js`, `Vite`, `Bun`, etc.).
 - Support layout selection (`--strict` for 3-file split vs `--simple` for a single file).
-- Support option to skip codegen (`--no-codegen` / `-C`).
+- Support option to skip codegen (`--no-codegen`).
 - Automatically configure `tsconfig.json` and environment types for optimal typesafety.
 
 ### Agent setup (machine-readable)
@@ -233,7 +233,7 @@ pnpm dlx arkenv@latest init [options]
 
 - `--strict`: Use strict 3-file split layout.
 - `--simple`: Use simple 1-file layout (default).
-- `--no-codegen`, `-C`: Disable Next.js codegen/`withArkEnv` configuration setup.
+- `--no-codegen`: Disable Next.js codegen/`withArkEnv` configuration setup.
 
 ## Best practices
 
