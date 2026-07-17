@@ -8,7 +8,10 @@ const FLAG_CONFIG = {
 	isJson: { long: "--json", short: "-j", kind: "boolean" },
 	isAgent: { long: "--agent", short: "", kind: "boolean" },
 	helpRequested: { long: "--help", short: "-h", kind: "boolean" },
-	example: { long: "--example", short: "-e", kind: "value" },
+	// `-e` is intentionally reserved: it universally means `--env`/`--environment`
+	// elsewhere, so it must never be aliased to `--example` (or any other flag).
+	// Keeping it unassigned makes `-e` fail fast as an unknown argument.
+	example: { long: "--example", short: "", kind: "value" },
 	isStrict: { long: "--strict", short: "", kind: "boolean" },
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
 	isFlat: { long: "--flat", short: "", kind: "boolean" },
