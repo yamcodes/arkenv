@@ -20,6 +20,9 @@ import {
  *
  * Provide these under the `arkenv` key in your `nuxt.config.ts`.
  *
+ * Aliased to {@link ArkEnvConfigOptions} so the documented options remain the
+ * single source of truth (field-level JSDoc, `@default` tags, and so on).
+ *
  * @example
  * ```ts
  * export default defineNuxtConfig({
@@ -30,36 +33,18 @@ import {
  * });
  * ```
  */
-export type ModuleOptions = {
-	/**
-	 * Specify the path to the schema definition file or directory.
-	 *
-	 * When omitted, ArkEnv auto-discovers the schema, searching for `"env.ts"` or
-	 * `"src/env.ts"` (flat layout) or the `"env/"` / `"src/env/"` directory
-	 * (strict layout) in the project root.
-	 */
-	schemaPath?: string;
+export type ModuleOptions = ArkEnvConfigOptions;
 
-	/**
-	 * Specify the configuration layout.
-	 *
-	 * When omitted, the layout is auto-detected from the schema structure: it is
-	 * `"strict"` when the split files (`env/internal/shared.ts`, `env/client.ts`,
-	 * `env/server.ts`) are present, and falls back to `"flat"` (a single
-	 * `env.ts`) otherwise.
-	 *
-	 * - `"flat"`: A single `env.ts` schema file.
-	 * - `"strict"`: A multi-file split schema layout.
-	 */
-	layout?: ArkEnvConfigOptions["layout"];
-
-	/**
-	 * Enable or disable environment variable validation during dev startup and build.
-	 *
-	 * @default true
-	 */
-	validate?: boolean;
-};
+declare module "@nuxt/schema" {
+	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
+	interface NuxtConfig {
+		arkenv?: ModuleOptions;
+	}
+	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
+	interface NuxtOptions {
+		arkenv?: ModuleOptions;
+	}
+}
 
 const CLIENT_SECURITY_ERROR =
 	"[ArkEnv] Importing server-only environment schema on the client is not allowed!";

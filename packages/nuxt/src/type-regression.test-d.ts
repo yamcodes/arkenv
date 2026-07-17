@@ -1,5 +1,8 @@
+import type { NuxtConfig, NuxtOptions } from "@nuxt/schema";
 import { describe, expectTypeOf, it } from "vitest";
+import type { ArkEnvConfigOptions } from "./config";
 import { createEnv } from "./index";
+import type { ModuleOptions } from "./module";
 
 describe("@arkenv/nuxt type regression", () => {
 	it("infers client variables as their validated type", () => {
@@ -108,5 +111,43 @@ describe("@arkenv/nuxt type regression", () => {
 		expectTypeOf(env.NUXT_PUBLIC_API_URL).toBeString();
 		expectTypeOf(env.NODE_ENV).toBeString();
 		expectTypeOf(env.CUSTOM_VAR).toBeString();
+	});
+});
+
+describe("@arkenv/nuxt module options augmentation", () => {
+	it("aliases ModuleOptions to the documented ArkEnvConfigOptions", () => {
+		expectTypeOf<ModuleOptions>().toEqualTypeOf<ArkEnvConfigOptions>();
+	});
+
+	it("types the arkenv config key on NuxtConfig and NuxtOptions", () => {
+		expectTypeOf<NuxtConfig["arkenv"]>().toEqualTypeOf<
+			ModuleOptions | undefined
+		>();
+		expectTypeOf<NuxtOptions["arkenv"]>().toEqualTypeOf<
+			ModuleOptions | undefined
+		>();
+	});
+
+	it("accepts known arkenv options in a nuxt config", () => {
+		const config = {
+			arkenv: {
+				schemaPath: "src/env.ts",
+				layout: "flat",
+				validate: true,
+			},
+		} satisfies NuxtConfig;
+
+		expectTypeOf(config.arkenv).toMatchTypeOf<ModuleOptions>();
+	});
+
+	it("rejects unknown keys in the arkenv config block", () => {
+		const config: NuxtConfig = {
+			arkenv: {
+				// @ts-expect-error unknown option is not part of ModuleOptions
+				unknownOption: true,
+			},
+		};
+
+		expectTypeOf(config.arkenv).toEqualTypeOf<ModuleOptions | undefined>();
 	});
 });
