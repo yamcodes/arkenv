@@ -141,14 +141,9 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 4. **Previews & Betas:** Vercel will automatically deploy the `v1` branch as a Preview environment for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
 5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
-## Deployment rate limiter
+## Preview deployments
 
-To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
-
-- **Daily Limit**: 72 preview deployments per 24 hours.
-- **Cooldown**: 20 minutes between deployments on the same PR.
-
-If the limit or cooldown is reached, the deployment step in the GitHub Action will be skipped. This is a "soft" limit - it doesn't fail the build, it just pauses deployments. Production deployments are not gated but will trigger an alert if frequency exceeds 24/day.
+PR previews for the `www` app are opt-in. Apply the `preview` label to a PR to trigger a Vercel preview deployment on `opened`, `synchronize`, and `ready_for_review` events (a preview is only produced when the `www` app is actually affected). Pushes to `dev` or `v1` continue to deploy rolling branch previews automatically.
 
 ## Changesets
 
