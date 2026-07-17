@@ -20,4 +20,4 @@ arkenv init --no-codegen
 arkenv init --agent
 ```
 
-All other aliases (`-y`, `-f`, `-q`, `-j`, `-e`, `-h`) are unchanged.
+All other aliases (`-y`, `-f`, `-q`, `-j`, `-h`) are unchanged.
