@@ -16,11 +16,59 @@ import {
 	validateSchema,
 } from "./config";
 
+/**
+ * Configuration options for the ArkEnv Nuxt module.
+ *
+ * Provide these under the `arkenv` key in your `nuxt.config.ts`.
+ *
+ * @example
+ * ```ts
+ * export default defineNuxtConfig({
+ *   modules: ["@arkenv/nuxt/module"],
+ *   arkenv: {
+ *     schemaPath: "src/env.ts"
+ *   }
+ * });
+ * ```
+ */
 export type ModuleOptions = {
+	/**
+	 * Specify the path to the schema definition file or directory.
+	 *
+	 * When omitted, ArkEnv auto-discovers the schema, searching for `"env.ts"` or
+	 * `"src/env.ts"` (flat layout) or the `"env/"` / `"src/env/"` directory
+	 * (strict layout) in the project root.
+	 */
 	schemaPath?: string;
+
+	/**
+	 * Specify the configuration layout.
+	 *
+	 * When omitted, the layout is auto-detected from the schema structure: it is
+	 * `"strict"` when the split files (`env/internal/shared.ts`, `env/client.ts`,
+	 * `env/server.ts`) are present, and falls back to `"flat"` (a single
+	 * `env.ts`) otherwise.
+	 *
+	 * - `"flat"`: A single `env.ts` schema file.
+	 * - `"strict"`: A multi-file split schema layout.
+	 */
 	layout?: ArkEnvConfigOptions["layout"];
+
+	/**
+	 * Enable or disable environment variable validation during dev startup and build.
+	 *
+	 * @default true
+	 */
 	validate?: boolean;
+
+	/**
+	 * Provide a custom logger to receive ArkEnv's build-time diagnostics.
+	 */
 	logger?: ArkEnvConfigOptions["logger"];
+
+	/**
+	 * Control the verbosity of ArkEnv's build-time logging.
+	 */
 	logLevel?: ArkEnvConfigOptions["logLevel"];
 };
 
