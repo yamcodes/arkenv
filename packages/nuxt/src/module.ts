@@ -34,20 +34,22 @@ export type ModuleOptions = {
 	/**
 	 * Specify the path to the schema definition file or directory.
 	 *
-	 * Defaults to searching for `"env.ts"` or `"src/env.ts"` (flat layout), or the
-	 * `"env/"` or `"src/env/"` directory (strict layout) in the project root.
-	 *
-	 * @default "src/env.ts"
+	 * When omitted, ArkEnv auto-discovers the schema, searching for `"env.ts"` or
+	 * `"src/env.ts"` (flat layout) or the `"env/"` / `"src/env/"` directory
+	 * (strict layout) in the project root.
 	 */
 	schemaPath?: string;
 
 	/**
 	 * Specify the configuration layout.
 	 *
-	 * - `"flat"` (default): A single `env.ts` schema file.
-	 * - `"strict"`: A multi-file split schema layout (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`).
+	 * When omitted, the layout is auto-detected from the schema structure: it is
+	 * `"strict"` when the split files (`env/internal/shared.ts`, `env/client.ts`,
+	 * `env/server.ts`) are present, and falls back to `"flat"` (a single
+	 * `env.ts`) otherwise.
 	 *
-	 * @default "flat"
+	 * - `"flat"`: A single `env.ts` schema file.
+	 * - `"strict"`: A multi-file split schema layout.
 	 */
 	layout?: ArkEnvConfigOptions["layout"];
 
