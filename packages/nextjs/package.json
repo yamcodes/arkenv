@@ -111,10 +111,15 @@
 	],
 	"homepage": "https://arkenv.js.org",
 	"keywords": [
-		"arktype",
 		"arkenv",
-		"environment",
-		"variables",
+		"arktype",
+		"env",
+		"environment-variables",
+		"dotenv",
+		"config",
+		"validation",
+		"typesafe",
+		"standard-schema",
 		"next",
 		"nextjs"
 	],
