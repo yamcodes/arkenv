@@ -49,9 +49,9 @@ The **"When to Use"** rule depends on whether the package is still in v0 (`0.y.z
 
 Applies to packages at `1.0.0` or higher, including the `v1` branch's prerelease packages (`arkenv`, `@arkenv/core`, `@arkenv/standard`, …).
 
-- **`patch`** — non-breaking bug fixes, dependency updates, performance improvements, small doc corrections.
-- **`minor`** — **new features** (new CLI commands/options, enhanced functionality, non-breaking API/exports additions).
-- **`major`** — **breaking changes** (require consumers to change code). Include a `**BREAKING CHANGE**:` note with migration instructions.
+- **`patch`** - non-breaking bug fixes, dependency updates, performance improvements, small doc corrections.
+- **`minor`** - **new features** (new CLI commands/options, enhanced functionality, non-breaking API/exports additions).
+- **`major`** - **breaking changes** (require consumers to change code). Include a `**BREAKING CHANGE**:` note with migration instructions.
 
 ### v0 packages (legacy convention)
 

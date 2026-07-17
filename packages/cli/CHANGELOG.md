@@ -19,10 +19,10 @@
 
   Codes:
 
-  - `REQUIREMENTS_NOT_MET` — a technical requirement (e.g. Node.js version) failed; `details.requirements` lists each failure with its `current`/`expected` values. `retryWith: ["--force"]`.
-  - `GIT_TREE_DIRTY` — the git working tree has uncommitted changes. `retryWith: ["--force"]`.
-  - `NON_EMPTY_DIR` — the target directory is not empty. `retryWith: ["--force"]`.
-  - `INTERNAL` — an unexpected failure (the CLI broke rather than refused). `retryWith: []`.
+  - `REQUIREMENTS_NOT_MET` - a technical requirement (e.g. Node.js version) failed; `details.requirements` lists each failure with its `current`/`expected` values. `retryWith: ["--force"]`.
+  - `GIT_TREE_DIRTY` - the git working tree has uncommitted changes. `retryWith: ["--force"]`.
+  - `NON_EMPTY_DIR` - the target directory is not empty. `retryWith: ["--force"]`.
+  - `INTERNAL` - an unexpected failure (the CLI broke rather than refused). `retryWith: []`.
 
   A non-empty `retryWith` names the flag(s) to re-run with; an empty array means the refusal can't be bypassed. Recommended flow: run without `--force`, inspect `code`/`retryWith`, then retry deliberately.
 

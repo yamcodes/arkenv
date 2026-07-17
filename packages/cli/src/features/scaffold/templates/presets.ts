@@ -4,7 +4,7 @@ import type { Framework, HostPreset, Validator } from "../plan";
  * Codegen IR for a single hosting-preset field.
  *
  * @remarks See `docs/adr/0014-cli-hosting-preset-field-metadata.md` (ADR 0014).
- * Do not grow this union without an explicit decision — prefer JSON Schema subset
+ * Do not grow this union without an explicit decision - prefer JSON Schema subset
  * or v1 dialect rendering if more field kinds are needed.
  */
 export type PresetField =

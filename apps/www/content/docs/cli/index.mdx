@@ -25,73 +25,16 @@ The CLI automatically adjusts its workflow depending on where it is executed:
 
 Configure the CLI behavior using the following command-line flags:
 
-| Flag           | Alias | Description                                                                                                                                      |
-| -------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--yes`        | `-y`  | Skip all prompts and use the default configuration.                                                                                              |
-| `--quiet`      | `-q`  | Suppress all output logs unless an error occurs.                                                                                                 |
-| `--json`       | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                     |
-| `--agent`      |       | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`. |
-| `--example`    | `-e`  | Specify an example name when creating a new project.                                                                                             |
-| `--force`      | `-f`  | Bypass checks and force initialization.                                                                                                          |
-| `--no-codegen` |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                        |
-| `--help`       | `-h`  | Display the CLI help information.                                                                                                                |
+| Flag            | Alias | Description                                                                                                                                        |
+| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`         | `-y`  | Skip all prompts and use the default configuration.                                                                                                |
+| `--quiet`       | `-q`  | Suppress all output logs unless an error occurs.                                                                                                   |
+| `--json`        | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                       |
+| `--agent`       |       | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`.   |
+| `--example`     | `-e`  | Specify an example name when creating a new project.                                                                                               |
+| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
+| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
+| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
+| `--help`        | `-h`  | Display the CLI help information.                                                                                                                  |
 
-## Machine-readable output
-
-In `--json` mode (implied by `--agent`), the CLI writes a single structured JSON
-object to `stdout`. All human-oriented logs go to `stderr`, so `stdout` is safe to
-parse. The `status` field tells you what happened:
-
-| `status`      | Meaning                                                            |
-| ------------- | ------------------------------------------------------------------ |
-| `"success"`   | Initialization completed. `details` describes what was scaffolded. |
-| `"cancelled"` | The operation was cancelled (e.g. an interrupt signal).            |
-| `"error"`     | The CLI refused to proceed, or an unexpected failure occurred.     |
-
-### Error payloads
-
-Every `"error"` payload is machine-actionable and shaped as follows:
-
-```json
-{
-  "status": "error",
-  "code": "REQUIREMENTS_NOT_MET",
-  "message": "Technical requirements not met.",
-  "retryWith": ["--force"],
-  "details": {
-    "requirements": [
-      {
-        "requirement": "Node.js Version",
-        "message": "Node.js version must be >= 22.0.0",
-        "current": "20.0.0",
-        "expected": ">= 22.0.0"
-      }
-    ]
-  }
-}
-```
-
-- **`code`** — a stable identifier for the failure. Treat it as a public contract:
-  it will not be renamed casually, so you can safely branch on it.
-- **`retryWith`** — the flag(s) that would bypass the check if you re-run the
-  command. Empty (`[]`) when the failure is not bypassable.
-- **`details`** — optional structured context for reporting the problem.
-
-The `code` values are:
-
-| `code`                 | When it happens                                        | `retryWith`   |
-| ---------------------- | ------------------------------------------------------ | ------------- |
-| `REQUIREMENTS_NOT_MET` | A technical requirement (e.g. Node.js version) failed. | `["--force"]` |
-| `GIT_TREE_DIRTY`       | The git working tree has uncommitted changes.          | `["--force"]` |
-| `NON_EMPTY_DIR`        | The target directory is not empty and unsafe to touch. | `["--force"]` |
-| `INTERNAL`             | An unexpected failure — the CLI broke, not refused.    | `[]`          |
-
-A non-empty `retryWith` means the CLI *deliberately refused*; a `code` of
-`INTERNAL` means the CLI *broke* and retrying with flags will not help.
-
-:::warning
-`--agent` never implies `--force`. This is intentional: an agent must escalate
-deliberately. The recommended pattern is to run the command **without** `--force`
-first, inspect the `code` and `retryWith` fields, and only re-run with the
-suggested flag(s) once you have decided the refusal is safe to bypass.
-:::
+When running with `--json` or `--agent`, the CLI emits a structured JSON summary you can parse programmatically. See [Machine-readable output](/docs/cli/machine-readable-output) for the full schema and error codes.

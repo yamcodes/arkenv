@@ -4,15 +4,15 @@
 
 | Branch | Role | npm tag |
 |--------|------|---------|
-| `dev` | v0 maintenance — features and fixes land here first | `latest` |
-| `v1` | Upcoming breaking release — long-lived alpha branch | `next` (pre-release) |
-| `main` | Production docs; fast-forwarded from `dev` after publish | — |
+| `dev` | v0 maintenance - features and fixes land here first | `latest` |
+| `v1` | Upcoming breaking release - long-lived alpha branch | `next` (pre-release) |
+| `main` | Production docs; fast-forwarded from `dev` after publish | - |
 
 Workflow source: `docs/CONTRIBUTING.md` Use Case 4.
 
 ## Package path map (dev → v1)
 
-The biggest structural difference: on **dev**, the CLI and core library are separate packages. On **v1**, they swap names — `packages/arkenv` is the CLI and the core library moves to `packages/core`.
+The biggest structural difference: on **dev**, the CLI and core library are separate packages. On **v1**, they swap names - `packages/arkenv` is the CLI and the core library moves to `packages/core`.
 
 | Concern | dev (v0) path | dev npm name | v1 path | v1 npm name |
 |---------|---------------|--------------|---------|-------------|
@@ -26,7 +26,7 @@ The biggest structural difference: on **dev**, the CLI and core library are sepa
 | Standard mode | `packages/standard/` | `@arkenv/standard` | `packages/standard/` | `@arkenv/standard` |
 | Internal utils | `packages/internal/` | `@arkenv/internal` | `packages/internal/` | `@arkenv/internal` |
 
-**Absent on v1:** `packages/cli/` — all CLI code lives under `packages/arkenv/src/`.
+**Absent on v1:** `packages/cli/` - all CLI code lives under `packages/arkenv/src/`.
 
 ### CLI subpath hints (dev → v1)
 
@@ -72,12 +72,12 @@ becomes on v1:
 
 When forward-porting, do **not** revert v1 decisions already merged:
 
-- Framework `./shared` exports removed — use `import { type } from "arkenv"` / `@arkenv/core`
+- Framework `./shared` exports removed - use `import { type } from "arkenv"` / `@arkenv/core`
 - Core library split into `@arkenv/core`; CLI published as `arkenv`
 - Logging helpers may live in different packages than on dev (check latest v1 before porting)
 - Pre-release versioning (`1.0.0-alpha.x`) and `next` npm tag
 
-Always read the current v1 tree before porting — v1-only refactors land independently of dev.
+Always read the current v1 tree before porting - v1-only refactors land independently of dev.
 
 ## Issue triage: v0 vs v1
 

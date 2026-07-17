@@ -29,53 +29,50 @@ describe("HelpUseCase", () => {
 			"  arkenv init [project-name]    Set up ArkEnv in your project",
 		);
 
-		// Options should be aligned based on the longest option (--host-preset <preset>) which is 22 chars
-		// leftPad (2) + longest flag (22) + colGap (4) = 28 characters start index for descriptions.
+		// Options should be aligned based on the longest option (--host-preset, -H <preset>) which is 26 chars
+		// leftPad (2) + longest flag (26) + colGap (4) = 32 characters start index for descriptions.
 		const yesOptionLog = logs.find((l) => l.includes("--yes, -y"));
 		expect(yesOptionLog).toBeDefined();
-		// "--yes, -y" is 9 chars. max (22) - 9 + colGap (4) = 17 spaces padding.
-		// "  " (2) + "--yes, -y" (9) + "                 " (17) + "Skip prompts..."
+		// "--yes, -y" is 9 chars. max (26) - 9 + colGap (4) = 21 spaces padding.
 		expect(yesOptionLog).toBe(
-			"  --yes, -y                 Skip prompts and use defaults (also passed to subprocesses)",
+			"  --yes, -y                     Skip prompts and use defaults (also passed to subprocesses)",
 		);
 
 		const exampleOptionLog = logs.find((l) => l.includes("--example, -e"));
 		expect(exampleOptionLog).toBeDefined();
-		// "--example, -e" is 13 chars. max (22) - 13 + colGap (4) = 13 spaces padding.
-		// "  " (2) + "--example, -e" (13) + "             " (13) + "Specify..."
+		// "--example, -e" is 13 chars. max (26) - 13 + colGap (4) = 17 spaces padding.
 		expect(exampleOptionLog).toBe(
-			"  --example, -e             Specify an example name when creating a new project",
+			"  --example, -e                 Specify an example name when creating a new project",
 		);
 
 		const agentOptionLog = logs.find((l) => l.includes("--agent"));
 		expect(agentOptionLog).toBeDefined();
-		// "--agent" is 7 chars. max (22) - 7 + colGap (4) = 19 spaces padding.
+		// "--agent" is 7 chars. max (26) - 7 + colGap (4) = 23 spaces padding.
 		expect(agentOptionLog).toBe(
-			"  --agent                   Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
+			"  --agent                       Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
 		);
 
 		const noCodegenOptionLog = logs.find((l) => l.includes("--no-codegen"));
 		expect(noCodegenOptionLog).toBeDefined();
-		// "--no-codegen" is 12 chars. max (22) - 12 + colGap (4) = 14 spaces padding.
-		// "  " (2) + "--no-codegen" (12) + "              " (14) + "Disable..."
+		// "--no-codegen" is 12 chars. max (26) - 12 + colGap (4) = 18 spaces padding.
 		expect(noCodegenOptionLog).toBe(
-			"  --no-codegen              Disable automatic env.gen.ts code generation for Next.js",
+			"  --no-codegen                  Disable automatic env.gen.ts code generation for Next.js",
 		);
 
 		const hostPresetOptionLog = logs.find((l) =>
-			l.includes("--host-preset <preset>"),
+			l.includes("--host-preset, -H <preset>"),
 		);
 		expect(hostPresetOptionLog).toBeDefined();
-		// "--host-preset <preset>" is 22 chars. max (22) - 22 + colGap (4) = 4 spaces padding.
+		// "--host-preset, -H <preset>" is 26 chars. max (26) - 26 + colGap (4) = 4 spaces padding.
 		expect(hostPresetOptionLog).toBe(
-			"  --host-preset <preset>    Specify a hosting provider preset (none, vercel, netlify)",
+			"  --host-preset, -H <preset>    Specify a hosting provider preset (none, vercel, netlify)",
 		);
 
 		const helpOptionLog = logs.find((l) => l.includes("--help, -h"));
 		expect(helpOptionLog).toBeDefined();
-		// "--help, -h" is 10 chars. max (22) - 10 + colGap (4) = 16 spaces padding.
+		// "--help, -h" is 10 chars. max (26) - 10 + colGap (4) = 20 spaces padding.
 		expect(helpOptionLog).toBe(
-			"  --help, -h                Show this help message",
+			"  --help, -h                    Show this help message",
 		);
 	});
 });
