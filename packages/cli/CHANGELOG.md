@@ -14,12 +14,12 @@
 
   ```bash
   # Before
-  arkenv init -C
-  arkenv init -a
+  npx @arkenv/latest init -C
+  npx @arkenv/latest init -a
 
   # After
-  arkenv init --no-codegen
-  arkenv init --agent
+  npx @arkenv/latest init --no-codegen
+  npx @arkenv/latest init --agent
   ```
 
   All other aliases (`-y`, `-f`, `-q`, `-j`, `-e`, `-h`) are unchanged.
