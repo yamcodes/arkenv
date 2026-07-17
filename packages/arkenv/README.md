@@ -78,7 +78,7 @@ bunx @arkenv/cli@latest init
 
 <br />
 
-### [Read the docs →](https://arkenv.js.org/docs/ArkEnv/quickstart)
+### [Read the docs →](https://arkenv.js.org/docs/arkenv/quickstart)
 
 <br />
 
