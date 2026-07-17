@@ -24,14 +24,17 @@
 		"dist"
 	],
 	"keywords": [
-		"pnpm",
-		"standard-schema",
-		"zod",
-		"valibot",
+		"env",
+		"environment-variables",
 		"environment",
 		"variables",
+		"dotenv",
+		"config",
+		"validation",
 		"typesafe",
-		"validation"
+		"standard-schema",
+		"zod",
+		"valibot"
 	],
 	"license": "MIT",
 	"homepage": "https://arkenv.js.org",
