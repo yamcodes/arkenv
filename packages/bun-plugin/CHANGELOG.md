@@ -1,5 +1,30 @@
 # @arkenv/bun-plugin
 
+## 0.1.11
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1383`](https://github.com/yamcodes/arkenv/pull/1383) [`bf60ab2`](https://github.com/yamcodes/arkenv/commit/bf60ab27205f39643745c7193a3755ffe96d4177) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `arkenv` and add `env`, `environment-variables`, `dotenv`, `config`, `standard-schema`, and the supported validators `zod` and `valibot`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`bf60ab2`](https://github.com/yamcodes/arkenv/commit/bf60ab27205f39643745c7193a3755ffe96d4177)
+
+</small>
+
+- `arkenv@0.12.3`
+
+</details>
+
 ## 0.1.10
 
 ### Patch Changes

@@ -1,5 +1,47 @@
 # @arkenv/nuxt
 
+## 0.0.6
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1383`](https://github.com/yamcodes/arkenv/pull/1383) [`bf60ab2`](https://github.com/yamcodes/arkenv/commit/bf60ab27205f39643745c7193a3755ffe96d4177) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `arkenv` and add `env`, `environment-variables`, `dotenv`, `config`, `standard-schema`, and the supported validators `zod` and `valibot`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+- #### Type the `arkenv` key in `nuxt.config.ts` via `@nuxt/schema` augmentation _[`#1371`](https://github.com/yamcodes/arkenv/pull/1371) [`7d541b4`](https://github.com/yamcodes/arkenv/commit/7d541b4e7662cdea0fcd3fb7f70504ab86c4dd9b) [@yamcodes](https://github.com/yamcodes)_
+
+  Augment `@nuxt/schema`'s `NuxtConfig` and `NuxtOptions` so the `arkenv` module options key is fully typed. Consumers now get autocomplete, type-checking, and JSDoc hovers for `arkenv` options directly in `nuxt.config.ts`, instead of falling back to a loose index signature.
+
+  `ModuleOptions` is now an alias of the documented `ArkEnvConfigOptions`, so option hovers surface the existing JSDoc / `@default` tags from a single source of truth.
+
+  ```ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      schemaPath: "src/env.ts", // autocompleted & type-checked
+      layout: "flat",
+      validate: true,
+    },
+  });
+  ```
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`bf60ab2`](https://github.com/yamcodes/arkenv/commit/bf60ab27205f39643745c7193a3755ffe96d4177)
+
+</small>
+
+- `arkenv@0.12.3`
+
+</details>
+
 ## 0.0.5
 
 ### Patch Changes
