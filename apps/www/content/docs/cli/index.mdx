@@ -25,16 +25,17 @@ The CLI automatically adjusts its workflow depending on where it is executed:
 
 Configure the CLI behavior using the following command-line flags:
 
-| Flag           | Alias | Description                                                                                                                                      |
-| -------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--yes`        | `-y`  | Skip all prompts and use the default configuration.                                                                                              |
-| `--quiet`      | `-q`  | Suppress all output logs unless an error occurs.                                                                                                 |
-| `--json`       | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                     |
-| `--agent`      | `-a`  | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`. |
-| `--example`    | `-e`  | Specify an example name when creating a new project.                                                                                             |
-| `--force`      | `-f`  | Bypass checks and force initialization.                                                                                                          |
-| `--no-codegen` | `-C`  | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                        |
-| `--help`       | `-h`  | Display the CLI help information.                                                                                                                |
+| Flag            | Alias | Description                                                                                                                                        |
+| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`         | `-y`  | Skip all prompts and use the default configuration.                                                                                                |
+| `--quiet`       | `-q`  | Suppress all output logs unless an error occurs.                                                                                                   |
+| `--json`        | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                       |
+| `--agent`       | `-a`  | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`.   |
+| `--example`     | `-e`  | Specify an example name when creating a new project.                                                                                               |
+| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
+| `--no-codegen`  | `-C`  | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
+| `--host-preset` |       | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
+| `--help`        | `-h`  | Display the CLI help information.                                                                                                                  |
 
 ## Machine-readable output
 

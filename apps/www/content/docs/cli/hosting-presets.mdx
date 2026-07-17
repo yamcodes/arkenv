@@ -1,0 +1,217 @@
+---
+title: Hosting presets
+icon: Cloud
+description: Pre-populate your schema with Vercel or Netlify system environment variables during arkenv init.
+---
+
+Most hosting providers inject their own **system environment variables** at build and runtime (for example, Vercel sets `VERCEL_ENV` and `VERCEL_URL`, Netlify sets `CONTEXT` and `URL`). Hosting presets let `arkenv init` pre-populate your generated schema with the correct variables for your provider, already typed and marked optional, so you don't have to look them up by hand.
+
+Presets work with every validator (ArkType, Zod, Valibot) and both the [flat](#layouts) and [strict](#layouts) layouts.
+
+## Selecting a preset
+
+There are two ways to pick a preset.
+
+### Interactive prompt
+
+When you run `init` interactively, the CLI shows a dedicated step:
+
+```txt
+Select a hosting provider preset (optional):
+❯ None      Do not add any hosting-specific environment variables
+  Vercel    Add VERCEL, VERCEL_ENV, VERCEL_URL, etc.
+  Netlify   Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.
+```
+
+Choosing **None** (the default) leaves your schema untouched.
+
+### `--host-preset` flag
+
+To skip the prompt — for example in scripts or with `--agent` — pass the `--host-preset` flag:
+
+```npm
+npx @arkenv/cli@latest init --host-preset vercel
+```
+
+The flag accepts `none`, `vercel`, or `netlify`.
+
+## What each preset adds
+
+Selecting a preset adds the provider's system variables to your schema. Every variable is **optional**, since it's only present in the provider's own environment. Variables are split into two groups:
+
+- **Server-only** — never exposed to the client, and never prefixed.
+- **Client-exposed** — safe to read on the client. These also get a [framework-prefixed](#framework-prefixes) copy when a prefix applies.
+
+### Vercel
+
+| Variable     | Type                                                    | Exposure       |
+| ------------ | ------------------------------------------------------- | -------------- |
+| `VERCEL`     | `string` (optional)                                     | Server-only    |
+| `VERCEL_ENV` | `"production" \| "preview" \| "development"` (optional) | Client-exposed |
+| `VERCEL_URL` | `string` (optional)                                     | Client-exposed |
+
+### Netlify
+
+| Variable     | Type                                                             | Exposure       |
+| ------------ | ---------------------------------------------------------------- | -------------- |
+| `NETLIFY`    | `string` (optional)                                              | Server-only    |
+| `DEPLOY_URL` | `string` (optional)                                              | Server-only    |
+| `CONTEXT`    | `"production" \| "deploy-preview" \| "branch-deploy"` (optional) | Client-exposed |
+| `URL`        | `string` (optional)                                              | Client-exposed |
+
+## Framework prefixes
+
+Client-side frameworks only expose environment variables to the browser when they carry a specific prefix. When the CLI detects one of these frameworks, each **client-exposed** preset variable is emitted a second time with the framework's prefix, so the value is available both server-side (unprefixed) and client-side (prefixed). **Server-only** variables are never prefixed.
+
+| Framework       | Client prefix  |
+| --------------- | -------------- |
+| Next.js         | `NEXT_PUBLIC_` |
+| Nuxt            | `NUXT_PUBLIC_` |
+| Vite            | `VITE_`        |
+| Bun (fullstack) | `BUN_PUBLIC_`  |
+| Other / none    | *(no prefix)*  |
+
+For example, initializing a **Vite** project with the Vercel preset produces both the raw variables and their `VITE_`-prefixed client copies:
+
+```ts title="env.ts"
+import { type } from "arkenv";
+
+export const Env = type({
+	PORT: "number.port = 3000",
+	VITE_API_URL: "string = 'https://api.example.com'",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+	VERCEL: "string?",
+	VERCEL_ENV: "'production' | 'preview' | 'development'?",
+	VERCEL_URL: "string?",
+	VITE_VERCEL_ENV: "'production' | 'preview' | 'development'?",
+	VITE_VERCEL_URL: "string?",
+});
+```
+
+Notice that `VERCEL` (server-only) has no prefixed copy, while `VERCEL_ENV` and `VERCEL_URL` (client-exposed) each gain a `VITE_` counterpart.
+
+## Generated schema examples
+
+The examples below show the schema generated for a plain Node.js project (no framework prefix) across each validator.
+
+### Vercel
+
+<Tabs items={['ArkType', 'Zod', 'Valibot']}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv, { type } from "arkenv";
+
+    export const Env = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	PORT: "number.port = 3000",
+    	VERCEL: "string?",
+    	VERCEL_ENV: "'production' | 'preview' | 'development'?",
+    	VERCEL_URL: "string?",
+    });
+
+    export const env = arkenv(Env);
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    	PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    	VERCEL: z.string().optional(),
+    	VERCEL_ENV: z.enum(["production", "preview", "development"]).optional(),
+    	VERCEL_URL: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    	PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),
+    	VERCEL: v.optional(v.string()),
+    	VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"])),
+    	VERCEL_URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Netlify
+
+<Tabs items={['ArkType', 'Zod', 'Valibot']}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv, { type } from "arkenv";
+
+    export const Env = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	PORT: "number.port = 3000",
+    	NETLIFY: "string?",
+    	DEPLOY_URL: "string?",
+    	CONTEXT: "'production' | 'deploy-preview' | 'branch-deploy'?",
+    	URL: "string?",
+    });
+
+    export const env = arkenv(Env);
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    	PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    	NETLIFY: z.string().optional(),
+    	DEPLOY_URL: z.string().optional(),
+    	CONTEXT: z.enum(["production", "deploy-preview", "branch-deploy"]).optional(),
+    	URL: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    	PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),
+    	NETLIFY: v.optional(v.string()),
+    	DEPLOY_URL: v.optional(v.string()),
+    	CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"])),
+    	URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Layouts
+
+Presets adapt to whichever layout you scaffold:
+
+- **Flat / simple layout** — all preset variables land in your single schema, alongside your own variables.
+- **Strict layout** — server-only variables go into the server schema, while client-exposed (and their prefixed copies) go into the client schema, preserving ArkEnv's client/server separation.
+
+:::note
+Presets only add variables; they never remove or overwrite variables scanned from your existing `.env` files. Refine the generated types afterward to match your app's needs.
+:::
+
+## Next steps
+
+<Cards>
+  <Card title="CLI Introduction" href="/docs/cli" description="See every init flag, including --host-preset." />
+
+  <Card title="Zod, Valibot, and other validators" href="/docs/nextjs/using-other-validators" description="Mix and match Standard Schema validators with ArkEnv." />
+</Cards>
