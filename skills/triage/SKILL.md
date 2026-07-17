@@ -31,8 +31,8 @@ Five **state** roles:
 
 - `needs-triage` - maintainer needs to evaluate
 - `needs-info` - waiting on reporter for more information
-- `ready-for-agent` - fully specified, ready for an AFK agent
-- `ready-for-human` - needs human implementation
+- `ready-for-agent` - fully specified, ready for immediate implementation
+- `ready-for-human` - needs a judgment call or design decision before implementation
 - `wontfix` - will not be actioned
 
 One **exempt** role:
