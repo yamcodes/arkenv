@@ -54,9 +54,9 @@ export type ArkEnvConfigOptions = {
 	/**
 	 * Specify the path to the schema definition file.
 	 *
-	 * Defaults to searching for `"src/env.ts"` or `"env.ts"` in the project root.
+	 * When omitted, ArkEnv auto-discovers the schema, searching for `"src/env.ts"`
+	 * or `"env.ts"` in the project root.
 	 *
-	 * @default "src/env.ts"
 	 * @example
 	 * ```ts
 	 * export default defineNuxtConfig({
@@ -70,10 +70,13 @@ export type ArkEnvConfigOptions = {
 	/**
 	 * Specify the configuration layout.
 	 *
-	 * - `"flat"` (default): A single `env.ts` schema file.
-	 * - `"strict"`: A 3-file split schema layout (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`).
+	 * When omitted, the layout is auto-detected from the schema structure: it is
+	 * `"strict"` when the split files (`env/internal/shared.ts`, `env/client.ts`,
+	 * `env/server.ts`) are present, and falls back to `"flat"` (a single
+	 * `env.ts`) otherwise.
 	 *
-	 * @default "flat"
+	 * - `"flat"`: A single `env.ts` schema file.
+	 * - `"strict"`: A 3-file split schema layout (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`).
 	 */
 	layout?:
 		| "flat"
