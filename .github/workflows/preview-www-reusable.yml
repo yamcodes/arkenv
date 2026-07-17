@@ -45,27 +45,17 @@ jobs:
             echo "www IS affected."
             echo "is_affected=true" >> $GITHUB_OUTPUT
           fi
-      - name: Restore deploy metrics
-        if: steps.affected.outputs.is_affected == 'true'
-        uses: actions/cache@v5
-        with:
-          path: .github/deploy-metrics.json
-          key: deploy-metrics-v1
-      - name: Check preview deploy budget
-        id: budget
-        if: steps.affected.outputs.is_affected == 'true'
-        run: node scripts/check-deploy-budget.cjs preview
       - name: Install Vercel CLI
         # Pin the CLI to avoid upstream breakage from newly published majors.
         run: npm install --global vercel@54.7.1
       - name: Pull Vercel Environment Information
-        if: steps.affected.outputs.is_affected == 'true' && steps.budget.outputs.should_deploy == 'true'
+        if: steps.affected.outputs.is_affected == 'true'
         run: node scripts/vercel-wrapper.cjs pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
-        if: steps.affected.outputs.is_affected == 'true' && steps.budget.outputs.should_deploy == 'true'
+        if: steps.affected.outputs.is_affected == 'true'
         run: node scripts/vercel-wrapper.cjs build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        if: steps.affected.outputs.is_affected == 'true' && steps.budget.outputs.should_deploy == 'true'
+        if: steps.affected.outputs.is_affected == 'true'
         id: deploy
         run: |
           set -o pipefail
@@ -84,13 +74,15 @@ jobs:
         with:
           github-token: ${{ steps.generate-token.outputs.token || secrets.GITHUB_TOKEN }}
           script: |
-            const shouldDeploy = '${{ steps.budget.outputs.should_deploy }}' === 'true';
-            const reason = '${{ steps.budget.outputs.reason }}';
-            const remainingTime = '${{ steps.budget.outputs.remaining_time }}';
             const previewUrl = '${{ steps.deploy.outputs.DEPLOYMENT_URL }}';
 
             const metadataMarker = '[vc]: #DZOavKtcupv5eYfsJ0J5gTvtYR/BkSkF1UhfIwiSRtA=:eyJpc01vbm9yZXBvIjp0cnVlLCJ0eXBlIjoiZ2l0aHViIiwicHJvamVjdHMiOlt7Im5hbWUiOiJhcmtlbnYiLCJyb290RGlyZWN0b3J5IjoiYXBwcy93d3ciLCJsaXZlRmVlZGJhY2siOnsicmVzb2x2ZWQiOjAsInVucmVzb2x2ZWQiOjAsInRvdGFsIjowLCJsaW5rIjoiYXJrZW52LWdpdC1jb3BpbG90LXVwZGF0ZS1mb290ZXItY29weXJpZ2h0LXlhbWNvZGVzLnZlcmNlbC5hcHAifSwiaW5zcGVjdG9yVXJsIjoiaHR0cHM6Ly92ZXJjZWwuY29tL3lhbWNvZGVzL2Fya2Vudi8yN3dwSnY5RHBoQjZEQlNLOWVwc2NVQUh5Umd1IiwicHJldmlld1VybCI6ImFya2Vudi1naXQtY29waWxvdC11cGRhdGUtZm9vdGVyLWNvcHlyaWdodC15YW1jb2Rlcy12ZXJjZWwuYXBwIiwibmV4dENvbW1pdFN0YXR1cyI6IkRFUExPWUVEIn1dfQ==';
             const introText = 'The latest updates on your projects. Learn more about [Vercel for GitHub](https://vercel.link/github-learn-more).';
+
+            if (!previewUrl) {
+              console.log('No deployment URL produced; skipping PR comment.');
+              return;
+            }
 
             const now = new Date();
             const dateStr = now.toLocaleString('en-US', { 
@@ -114,57 +106,14 @@ jobs:
               c.body?.includes(introText)
             );
 
-            let table = '';
-            if (shouldDeploy) {
-              const feedbackUrl = 'https://vercel.live/open-feedback/' + new URL(previewUrl).hostname + '?via=pr-comment-feedback-link';
-              table = [
-                '| Project | Deployment | Review | Updated (' + process.env.TZ + ') |',
-                '| :--- | :----- | :------ | :------ |',
-                '| [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](' + previewUrl + ') | [Preview](' + previewUrl + '), [Comment](' + feedbackUrl + ') | ' + dateStr + ' |'
-              ].join('\n');
-            } else if (botComment) {
-              const tableMatch = botComment.body.match(/\| Project \| Deployment \| Review \| Updated .*\n\| :--- \| :----- \| :------ \| :------ \|\n\| .*/);
-              if (tableMatch) {
-                table = tableMatch[0];
-              }
-            }
+            const feedbackUrl = 'https://vercel.live/open-feedback/' + new URL(previewUrl).hostname + '?via=pr-comment-feedback-link';
+            const table = [
+              '| Project | Deployment | Review | Updated (' + process.env.TZ + ') |',
+              '| :--- | :----- | :------ | :------ |',
+              '| [arkenv](https://vercel.com/yamcodes/arkenv) | ![Ready](https://vercel.com/static/status/ready.svg) [Ready](' + previewUrl + ') | [Preview](' + previewUrl + '), [Comment](' + feedbackUrl + ') | ' + dateStr + ' |'
+            ].join('\n');
 
-            let warningBlock = '';
-            if (!shouldDeploy) {
-              const warningTitle = reason === 'limit' ? 'Daily deployment limit reached' : 'Deployment cooldown active';
-              const warningDesc = reason === 'limit' 
-                ? `@${context.actor} has reached the daily limit for preview deployments. Please wait **${remainingTime}** before the quota resets.`
-                : `@${context.actor} has triggered deployments too frequently. Please wait **${remainingTime}** before the next automated deployment.`;
-
-              warningBlock = [
-                '> [!WARNING]',
-                `> ## ${warningTitle}`,
-                '>',
-                `> ${warningDesc}`,
-                '>',
-                '> <details>',
-                '> <summary>⌛ How to resolve this issue?</summary>',
-                '>',
-                '> After the wait time has elapsed, a deployment can be triggered by pushing new commits to this PR or by re-running the workflow.',
-                '>',
-                '> We recommend that you space out your commits to avoid hitting the rate limit.',
-                '>',
-                '> </details>',
-                '>',
-                '> <details>',
-                '> <summary>🚦 How do rate limits work?</summary>',
-                '>',
-                '> We enforce rate limits to ensure stability and fair usage of resources for all contributors.',
-                '>',
-                '> </details>',
-                ''
-              ].join('\n');
-            }
-
-            const bodyParts = [metadataMarker, introText, ''];
-            if (warningBlock) bodyParts.push(warningBlock);
-            if (table) bodyParts.push(table);
-            const body = bodyParts.join('\n');
+            const body = [metadataMarker, introText, '', table].join('\n');
 
             try {
               if (botComment) {
@@ -185,9 +134,3 @@ jobs:
             } catch (error) {
               console.error('Failed to post PR comment:', error);
             }
-      - name: Save deploy metrics
-        if: always() && steps.affected.outputs.is_affected == 'true' && steps.budget.outputs.should_deploy == 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: .github/deploy-metrics.json
-          key: deploy-metrics-v1

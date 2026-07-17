@@ -146,14 +146,9 @@ When working on a massive marketing push, docs facelift, or breaking API changes
    > Always use dot-separated pre-release identifiers (e.g., `1.0.0-alpha.0`, `1.0.0-alpha.1`) to track sequential builds. Do NOT use build metadata with a plus sign (e.g., `1.0.0-alpha.0+build.1`), because the SemVer specification and npm ignore build metadata when determining version precedence. Npm will not allow publishing multiple packages with versions that differ only by build metadata.
 5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
-## Deployment rate limiter
+## Preview deployments
 
-To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
-
-- **Daily Limit**: 72 preview deployments per 24 hours.
-- **Cooldown**: 20 minutes between deployments on the same PR.
-
-If the limit or cooldown is reached, the deployment step in the GitHub Action will be skipped. This is a "soft" limit - it doesn't fail the build, it just pauses deployments. Production deployments are not gated but will trigger an alert if frequency exceeds 24/day.
+PR previews for the `www` app are opt-in. Apply the `preview` label to a PR to trigger a Vercel preview deployment on `opened`, `synchronize`, and `ready_for_review` events (a preview is only produced when the `www` app is actually affected). Pushes to `dev` or `v1` continue to deploy rolling branch previews automatically.
 
 ## Changesets
 
