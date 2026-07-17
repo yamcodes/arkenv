@@ -56,7 +56,7 @@ export class HelpUseCase {
 					"Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
 			},
 			{
-				left: "--example, -e",
+				left: "--example",
 				right: "Specify an example name when creating a new project",
 			},
 			{

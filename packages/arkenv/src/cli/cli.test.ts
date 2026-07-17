@@ -80,6 +80,24 @@ describe("CLI parser", () => {
 		expect(cli.validationError).toBe("Unknown argument: -C");
 	});
 
+	it("should still accept --example in long form", () => {
+		const cli = new CLI([
+			"node",
+			"arkenv",
+			"init",
+			"--example",
+			"with-vite-react",
+		]);
+		expect(cli.example).toBe("with-vite-react");
+		expect(cli.validationError).toBeUndefined();
+	});
+
+	it("should reject the reserved -e alias as an unknown argument", () => {
+		const cli = new CLI(["node", "arkenv", "init", "-e", "with-vite-react"]);
+		expect(cli.example).toBeUndefined();
+		expect(cli.validationError).toBe("Unknown argument: -e");
+	});
+
 	describe("Agent presets override", () => {
 		it("should set isYes, isQuiet, and isJson to true when --agent is passed", () => {
 			const cli = new CLI(["node", "arkenv", "init", "--agent"]);
@@ -123,6 +141,12 @@ describe("CLI parser", () => {
 			expect(cli2.validationError).toBe("Unknown argument: -C");
 		});
 
+		it("should reject the reserved -e alias when bundled with other short flags", () => {
+			const cli = new CLI(["node", "arkenv", "init", "-ye"]);
+			expect(cli.example).toBeUndefined();
+			expect(cli.validationError).toBe("Unknown argument: -e");
+		});
+
 		it("should expand a bundle of multiple short flags including force", () => {
 			const cli = new CLI(["node", "arkenv", "init", "-yfq"]);
 			expect(cli.isYes).toBe(true);
@@ -139,12 +163,12 @@ describe("CLI parser", () => {
 			expect(cli.validationError).toBeUndefined();
 		});
 
-		it("should not expand flag values immediately following value-taking flags (e.g. -e / --example)", () => {
-			const cli1 = new CLI(["node", "arkenv", "init", "-e", "-yq"]);
-			expect(cli1.args).toEqual(["init", "-e", "-yq"]);
+		it("should not expand flag values immediately following value-taking flags (e.g. -H / --example)", () => {
+			const cli1 = new CLI(["node", "arkenv", "init", "-H", "-yq"]);
+			expect(cli1.args).toEqual(["init", "-H", "-yq"]);
 			expect(cli1.isYes).toBe(false);
 			expect(cli1.isQuiet).toBe(false);
-			expect(cli1.validationError).toBe("Missing value for option: -e");
+			expect(cli1.validationError).toBe("Missing value for option: -H");
 
 			const cli2 = new CLI(["node", "arkenv", "init", "--example", "-abc"]);
 			expect(cli2.args).toEqual(["init", "--example", "-abc"]);
@@ -153,20 +177,20 @@ describe("CLI parser", () => {
 		});
 
 		it("should expand a bundle ending in a value-taking flag and parse its value correctly", () => {
-			const cli = new CLI(["node", "arkenv", "init", "-yqe", "my-example"]);
+			const cli = new CLI(["node", "arkenv", "init", "-yqH", "netlify"]);
 			expect(cli.isYes).toBe(true);
 			expect(cli.isQuiet).toBe(true);
-			expect(cli.example).toBe("my-example");
+			expect(cli.hostPreset).toBe("netlify");
 			expect(cli.validationError).toBeUndefined();
 		});
 
 		it("should not expand dash-prefixed values after bundled value-taking flags", () => {
-			const cli = new CLI(["node", "arkenv", "init", "-yqe", "-abc"]);
-			expect(cli.args).toEqual(["init", "-y", "-q", "-e", "-abc"]);
+			const cli = new CLI(["node", "arkenv", "init", "-yqH", "-abc"]);
+			expect(cli.args).toEqual(["init", "-y", "-q", "-H", "-abc"]);
 			expect(cli.isYes).toBe(true);
 			expect(cli.isQuiet).toBe(true);
 			expect(cli.isAgent).toBe(false);
-			expect(cli.validationError).toBe("Missing value for option: -e");
+			expect(cli.validationError).toBe("Missing value for option: -H");
 		});
 
 		it("should ignore single-letter flags with dash or long flags", () => {
@@ -183,14 +207,16 @@ describe("CLI parser", () => {
 			const cli1 = new CLI(["node", "arkenv", "init", "--example"]);
 			expect(cli1.validationError).toBe("Missing value for option: --example");
 
-			const cli2 = new CLI(["node", "arkenv", "init", "-e"]);
-			expect(cli2.validationError).toBe("Missing value for option: -e");
+			const cli2 = new CLI(["node", "arkenv", "init", "--host-preset"]);
+			expect(cli2.validationError).toBe(
+				"Missing value for option: --host-preset",
+			);
 
 			const cli3 = new CLI(["node", "arkenv", "init", "--example", "--yes"]);
 			expect(cli3.validationError).toBe("Missing value for option: --example");
 
-			const cli4 = new CLI(["node", "arkenv", "init", "-yqe"]);
-			expect(cli4.validationError).toBe("Missing value for option: -e");
+			const cli4 = new CLI(["node", "arkenv", "init", "-yqH"]);
+			expect(cli4.validationError).toBe("Missing value for option: -H");
 		});
 	});
 

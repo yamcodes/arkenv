@@ -38,11 +38,11 @@ describe("HelpUseCase", () => {
 			"  --yes, -y                     Skip prompts and use defaults (also passed to subprocesses)",
 		);
 
-		const exampleOptionLog = logs.find((l) => l.includes("--example, -e"));
+		const exampleOptionLog = logs.find((l) => l.includes("--example"));
 		expect(exampleOptionLog).toBeDefined();
-		// "--example, -e" is 13 chars. max (26) - 13 + colGap (4) = 17 spaces padding.
+		// "--example" is 9 chars. max (26) - 9 + colGap (4) = 21 spaces padding.
 		expect(exampleOptionLog).toBe(
-			"  --example, -e                 Specify an example name when creating a new project",
+			"  --example                     Specify an example name when creating a new project",
 		);
 
 		const agentOptionLog = logs.find((l) => l.includes("--agent"));
