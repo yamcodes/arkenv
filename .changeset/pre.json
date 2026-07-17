@@ -24,12 +24,15 @@
 		"@repo/log": "0.0.1"
 	},
 	"changesets": [
+		"drop-example-e-alias",
 		"epg3nspi",
 		"forward-port-hosting-presets",
 		"host-preset-alias",
+		"improve-npm-keywords",
 		"init-v1",
 		"injectable-logger-api",
 		"machine-actionable-error-codes",
+		"nuxt-augment-config-key",
 		"nuxt-flat-layout-cli-alignment",
 		"nuxt-module-options-jsdoc-v1",
 		"reconcile-v0-features",
@@ -39,6 +42,7 @@
 		"standard-mode-packaging",
 		"trim-short-flag-aliases",
 		"unified-error-normalization",
-		"unify-coercion"
+		"unify-coercion",
+		"valibot-example-registry"
 	]
 }
