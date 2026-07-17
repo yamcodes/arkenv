@@ -14,12 +14,12 @@
 
   ```bash
   # Before
-  arkenv init -C
-  arkenv init -a
+  npx arkenv@alpha init -C
+  npx arkenv@alpha init -a
 
   # After
-  arkenv init --no-codegen
-  arkenv init --agent
+  npx arkenv@alpha init --no-codegen
+  npx arkenv@alpha init --agent
   ```
 
   All other aliases (`-y`, `-f`, `-q`, `-j`, `-e`, `-h`) are unchanged.
@@ -32,8 +32,8 @@
 
   ```bash
   # These are equivalent
-  npx arkenv@latest init --host-preset vercel
-  npx arkenv@latest init -H vercel
+  npx arkenv@alpha init --host-preset vercel
+  npx arkenv@alpha init -H vercel
   ```
 
 ## 1.0.0-alpha.5
