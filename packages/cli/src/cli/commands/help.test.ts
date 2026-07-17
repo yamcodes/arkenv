@@ -29,7 +29,7 @@ describe("HelpUseCase", () => {
 			"  arkenv init [project-name]    Set up ArkEnv in your project",
 		);
 
-		// Options should be aligned based on the longest option (--host-preset, -p <preset>) which is 26 chars
+		// Options should be aligned based on the longest option (--host-preset, -H <preset>) which is 26 chars
 		// leftPad (2) + longest flag (26) + colGap (4) = 32 characters start index for descriptions.
 		const yesOptionLog = logs.find((l) => l.includes("--yes, -y"));
 		expect(yesOptionLog).toBeDefined();
@@ -53,12 +53,12 @@ describe("HelpUseCase", () => {
 		);
 
 		const hostPresetOptionLog = logs.find((l) =>
-			l.includes("--host-preset, -p <preset>"),
+			l.includes("--host-preset, -H <preset>"),
 		);
 		expect(hostPresetOptionLog).toBeDefined();
-		// "--host-preset, -p <preset>" is 26 chars. max (26) - 26 + colGap (4) = 4 spaces padding.
+		// "--host-preset, -H <preset>" is 26 chars. max (26) - 26 + colGap (4) = 4 spaces padding.
 		expect(hostPresetOptionLog).toBe(
-			"  --host-preset, -p <preset>    Specify a hosting provider preset (none, vercel, netlify)",
+			"  --host-preset, -H <preset>    Specify a hosting provider preset (none, vercel, netlify)",
 		);
 
 		const helpOptionLog = logs.find((l) => l.includes("--help, -h"));
