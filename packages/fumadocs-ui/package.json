@@ -37,6 +37,14 @@
 		"css/*",
 		"dist/*"
 	],
+	"keywords": [
+		"arkenv",
+		"fumadocs",
+		"fumadocs-ui",
+		"theme",
+		"docs",
+		"documentation"
+	],
 	"scripts": {
 		"dev": "tsdown --watch",
 		"build": "tsdown",

@@ -47,12 +47,18 @@
 		"dist"
 	],
 	"keywords": [
-		"pnpm",
-		"arktype",
+		"env",
+		"environment-variables",
 		"environment",
 		"variables",
+		"dotenv",
+		"config",
+		"validation",
 		"typesafe",
-		"validation"
+		"standard-schema",
+		"arktype",
+		"zod",
+		"valibot"
 	],
 	"license": "MIT",
 	"homepage": "https://arkenv.js.org",
