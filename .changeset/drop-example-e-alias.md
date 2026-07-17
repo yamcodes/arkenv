@@ -1,5 +1,5 @@
 ---
-"arkenv": minor
+"arkenv": major
 ---
 
 #### Drop the `-e` short alias for `init --example`
