@@ -2,7 +2,18 @@ import { coverageConfigDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-		projects: ["packages/*", "apps/*", "!apps/playwright-www", "!**/*.md"],
+		projects: [
+			"packages/*",
+			"apps/*",
+			"!apps/playwright-www",
+			"!**/*.md",
+			{
+				test: {
+					name: "scripts",
+					include: ["scripts/**/*.test.js"],
+				},
+			},
+		],
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "json", "html"],
