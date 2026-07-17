@@ -202,7 +202,7 @@ The examples below show the schema generated for a plain Node.js project (no fra
 Presets adapt to whichever layout you scaffold:
 
 - **Flat / simple layout** — all preset variables land in your single schema, alongside your own variables.
-- **Strict layout** — server-only variables go into the server schema, while client-exposed (and their prefixed copies) go into the client schema, preserving ArkEnv's client/server separation.
+- **Strict layout** — server-only variables (e.g. `VERCEL`, `NETLIFY`, `DEPLOY_URL`) go into the server schema. The **unprefixed** client-exposed variables (e.g. `VERCEL_ENV`, `URL`) also go into the server schema, since they're only readable server-side; it's their **framework-prefixed copies** (e.g. `NEXT_PUBLIC_VERCEL_ENV`, `VITE_URL`) that go into the client schema.
 
 :::note
 Presets only add variables; they never remove or overwrite variables scanned from your existing `.env` files. Refine the generated types afterward to match your app's needs.
