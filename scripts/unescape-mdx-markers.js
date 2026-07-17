@@ -10,20 +10,15 @@ const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".next", ".source"]);
  * Skips build/VCS/deps trees and generated changelogs so Changesets'
  * intentional escapes (e.g. `\_` closing an italic span) are preserved.
  *
- * @param fullPath Absolute or relative path to a file or directory
  * @param entryName Basename of the entry
  * @param isDirectory Whether the entry is a directory
  * @returns `true` when the entry must not be processed
  */
-export function shouldSkipUnescapePath(fullPath, entryName, isDirectory) {
+export function shouldSkipUnescapePath(entryName, isDirectory) {
 	if (isDirectory && SKIP_DIRS.has(entryName)) {
 		return true;
 	}
 	if (!isDirectory && entryName === "CHANGELOG.md") {
-		return true;
-	}
-	// Also skip nested changelogs matched by path segment (defensive).
-	if (!isDirectory && /(^|[/\\])CHANGELOG\.md$/.test(fullPath)) {
 		return true;
 	}
 	return false;
@@ -43,7 +38,7 @@ export function unescapeMdxMarkers(dir) {
 	const entries = fs.readdirSync(dir, { withFileTypes: true });
 	for (const entry of entries) {
 		const fullPath = path.join(dir, entry.name);
-		if (shouldSkipUnescapePath(fullPath, entry.name, entry.isDirectory())) {
+		if (shouldSkipUnescapePath(entry.name, entry.isDirectory())) {
 			continue;
 		}
 		if (entry.isDirectory()) {

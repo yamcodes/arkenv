@@ -25,29 +25,17 @@ afterEach(() => {
 describe("shouldSkipUnescapePath", () => {
 	it("skips node_modules, .git, dist, and similar directories", () => {
 		for (const name of ["node_modules", ".git", "dist", ".next", ".source"]) {
-			expect(shouldSkipUnescapePath(`/repo/${name}`, name, true)).toBe(true);
+			expect(shouldSkipUnescapePath(name, true)).toBe(true);
 		}
 	});
 
 	it("skips CHANGELOG.md files", () => {
-		expect(
-			shouldSkipUnescapePath(
-				"/repo/packages/cli/CHANGELOG.md",
-				"CHANGELOG.md",
-				false,
-			),
-		).toBe(true);
+		expect(shouldSkipUnescapePath("CHANGELOG.md", false)).toBe(true);
 	});
 
 	it("does not skip ordinary docs markdown", () => {
-		expect(
-			shouldSkipUnescapePath(
-				"/repo/apps/www/content/docs/guide.mdx",
-				"guide.mdx",
-				false,
-			),
-		).toBe(false);
-		expect(shouldSkipUnescapePath("/repo/docs", "docs", true)).toBe(false);
+		expect(shouldSkipUnescapePath("guide.mdx", false)).toBe(false);
+		expect(shouldSkipUnescapePath("docs", true)).toBe(false);
 	});
 });
 
