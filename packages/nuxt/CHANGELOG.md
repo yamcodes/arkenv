@@ -1,5 +1,25 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- #### Document `ModuleOptions` with JSDoc for better editor DX _[`#1361`](https://github.com/yamcodes/arkenv/pull/1361) [`e55697e`](https://github.com/yamcodes/arkenv/commit/e55697e24976a5b8a56f43f999374fee2d1d3a84) [@yamcodes](https://github.com/yamcodes)_
+
+  Add descriptions and `@default` tags to the `ModuleOptions` type so hovering `schemaPath`, `layout`, `validate`, `logger`, and `logLevel` in `nuxt.config.ts` surfaces inline documentation.
+
+  ```ts title="nuxt.config.ts"
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      // Hovering these keys now shows their description and default value
+      schemaPath: "src/env.ts",
+      layout: "flat",
+      validate: true,
+    },
+  });
+  ```
+
 ## 1.0.0-alpha.5
 
 ### Minor Changes
