@@ -78,7 +78,7 @@ Client-side frameworks only expose environment variables to the browser when the
 For example, initializing a **Vite** project with the Vercel preset produces both the raw variables and their `VITE_`-prefixed client copies:
 
 ```ts title="env.ts"
-import { type } from "arkenv";
+import { type } from "@arkenv/core";
 
 export const Env = type({
 	PORT: "number.port = 3000",
@@ -103,7 +103,7 @@ The examples below show the schema generated for a plain Node.js project (no fra
 <Tabs items={['ArkType', 'Zod', 'Valibot']}>
   <Tab value="ArkType">
     ```ts title="env.ts"
-    import arkenv, { type } from "arkenv";
+    import arkenv, { type } from "@arkenv/core";
 
     export const Env = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
@@ -119,7 +119,7 @@ The examples below show the schema generated for a plain Node.js project (no fra
 
   <Tab value="Zod">
     ```ts title="env.ts"
-    import arkenv from "arkenv/standard";
+    import arkenv from "@arkenv/standard";
     import { z } from "zod";
 
     export const env = arkenv({
@@ -134,7 +134,7 @@ The examples below show the schema generated for a plain Node.js project (no fra
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "arkenv/standard";
+    import arkenv from "@arkenv/standard";
     import * as v from "valibot";
 
     export const env = arkenv({
@@ -153,7 +153,7 @@ The examples below show the schema generated for a plain Node.js project (no fra
 <Tabs items={['ArkType', 'Zod', 'Valibot']}>
   <Tab value="ArkType">
     ```ts title="env.ts"
-    import arkenv, { type } from "arkenv";
+    import arkenv, { type } from "@arkenv/core";
 
     export const Env = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
@@ -170,7 +170,7 @@ The examples below show the schema generated for a plain Node.js project (no fra
 
   <Tab value="Zod">
     ```ts title="env.ts"
-    import arkenv from "arkenv/standard";
+    import arkenv from "@arkenv/standard";
     import { z } from "zod";
 
     export const env = arkenv({
@@ -186,7 +186,7 @@ The examples below show the schema generated for a plain Node.js project (no fra
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "arkenv/standard";
+    import arkenv from "@arkenv/standard";
     import * as v from "valibot";
 
     export const env = arkenv({
