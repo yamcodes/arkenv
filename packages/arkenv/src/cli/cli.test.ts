@@ -69,13 +69,15 @@ describe("CLI parser", () => {
 		expect(cli1.noCodegen).toBe(true);
 		expect(cli1.initInput.noCodegen).toBe(true);
 
-		const cli2 = new CLI(["node", "arkenv", "init", "-C"]);
-		expect(cli2.noCodegen).toBe(true);
-		expect(cli2.initInput.noCodegen).toBe(true);
-
 		const cli3 = new CLI(["node", "arkenv", "init"]);
 		expect(cli3.noCodegen).toBe(false);
 		expect(cli3.initInput.noCodegen).toBeUndefined();
+	});
+
+	it("should reject the removed -C alias as an unknown argument", () => {
+		const cli = new CLI(["node", "arkenv", "init", "-C"]);
+		expect(cli.noCodegen).toBe(false);
+		expect(cli.validationError).toBe("Unknown argument: -C");
 	});
 
 	describe("Agent presets override", () => {
@@ -88,13 +90,10 @@ describe("CLI parser", () => {
 			expect(cli.isForce).toBe(false);
 		});
 
-		it("should set isYes, isQuiet, and isJson to true when -a is passed", () => {
+		it("should reject the removed -a alias as an unknown argument", () => {
 			const cli = new CLI(["node", "arkenv", "init", "-a"]);
-			expect(cli.isAgent).toBe(true);
-			expect(cli.isYes).toBe(true);
-			expect(cli.isQuiet).toBe(true);
-			expect(cli.isJson).toBe(true);
-			expect(cli.isForce).toBe(false);
+			expect(cli.isAgent).toBe(false);
+			expect(cli.validationError).toBe("Unknown argument: -a");
 		});
 
 		it("should evaluate isYes, isQuiet, and isJson normally when --agent is not passed", () => {
@@ -112,6 +111,16 @@ describe("CLI parser", () => {
 			expect(cli.isYes).toBe(true);
 			expect(cli.isQuiet).toBe(true);
 			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should reject bundles containing removed aliases (-a, -C)", () => {
+			const cli1 = new CLI(["node", "arkenv", "init", "-ya"]);
+			expect(cli1.isAgent).toBe(false);
+			expect(cli1.validationError).toBe("Unknown argument: -a");
+
+			const cli2 = new CLI(["node", "arkenv", "init", "-yC"]);
+			expect(cli2.noCodegen).toBe(false);
+			expect(cli2.validationError).toBe("Unknown argument: -C");
 		});
 
 		it("should expand a bundle of multiple short flags including force", () => {
