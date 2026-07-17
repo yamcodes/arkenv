@@ -17,6 +17,8 @@ concurrency:
 
 jobs:
   Deploy-Preview:
-    if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'preview')
+    # Branch previews (push to dev/v1) always deploy. PR previews are opt-in:
+    # they only deploy when the PR carries the `preview` label, regardless of draft state.
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'preview')
     uses: ./.github/workflows/preview-www-reusable.yml
     secrets: inherit
