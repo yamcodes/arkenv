@@ -99,6 +99,9 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"~~/env/client": ["env/client.ts"],
 				"~~/env/server": ["env/server.ts"],
 				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
+				"@arkenv/nextjs/config": [
+					path.join(root, "packages/nextjs/src/config.ts"),
+				],
 				"@arkenv/nextjs/server": [
 					path.join(root, "packages/nextjs/src/server.ts"),
 				],

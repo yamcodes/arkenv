@@ -34,7 +34,7 @@ Yes. If you prefer to maintain the `runtimeEnv` mapping manually (or if your bui
 
 Pass `{ codegen: false }` to `withArkEnv` to keep build-time environment variable validation active without generating `env.gen.ts`:
 
-```ts title="next.config.ts"
+```ts title="next.config.ts" twoslash
 import { withArkEnv } from "@arkenv/nextjs/config";
 import type { NextConfig } from "next";
 
@@ -44,7 +44,7 @@ export default withArkEnv(nextConfig, { codegen: false });
 
 When codegen is disabled, import `createEnv` directly from `@arkenv/nextjs` in your schema file and provide a manual `runtimeEnv` mapping:
 
-```ts title="src/env.ts"
+```ts title="src/env.ts" twoslash
 import { createEnv } from "@arkenv/nextjs";
 
 export const env = createEnv({

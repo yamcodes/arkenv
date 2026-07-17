@@ -8,7 +8,7 @@ description: API reference and configuration options for @arkenv/nextjs.
 
 The idiomatic way to use ArkEnv in Next.js is the `withArkEnv` config wrapper. It runs ArkEnv's codegen and validation as part of the Next.js build lifecycle and returns your config object unchanged.
 
-```ts title="next.config.ts"
+```ts title="next.config.ts" twoslash
 import { withArkEnv } from "@arkenv/nextjs/config";
 import type { NextConfig } from "next";
 
@@ -25,7 +25,7 @@ By default, ArkEnv looks for your schema in `src/env.ts` or `env.ts` and writes 
 
 Pass options as the second argument:
 
-```ts title="next.config.ts"
+```ts title="next.config.ts" twoslash
 import { withArkEnv } from "@arkenv/nextjs/config";
 import type { NextConfig } from "next";
 
@@ -43,13 +43,7 @@ export default withArkEnv(nextConfig, {
 
 The `withArkEnv()` wrapper accepts the following options:
 
-| Option       | Type                 | Default                            | Description                                                                      |
-| :----------- | :------------------- | :--------------------------------- | :------------------------------------------------------------------------------- |
-| `schemaPath` | `string`             | `src/env.ts` or `env.ts`           | The path to your environment schema file or directory.                           |
-| `outputPath` | `string`             | `[schemaDir]/generated/env.gen.ts` | The path where the generated helper (`env.gen.ts`) will be written.              |
-| `layout`     | `'flat' \| 'strict'` | `'flat'`                           | Specify the schema layout. Use `'strict'` if using the multi-file strict layout. |
-| `codegen`    | `boolean`            | `true`                             | Enable or disable automatic generation of the `env.gen.ts` helper.               |
-| `validate`   | `boolean`            | `true`                             | Enable or disable build-time environment variable validation.                    |
+<AutoTypeTable path="../../packages/nextjs/src/config.ts" name="ArkEnvConfigOptions" />
 
 ---
 
@@ -61,7 +55,7 @@ The `withArkEnv()` wrapper accepts the following options:
 
     `withArkEnv` is just a thin wrapper around `setupArkEnv` that calls it and returns your config object unchanged:
 
-    ```ts title="next.config.ts"
+    ```ts title="next.config.ts" twoslash
     import { setupArkEnv } from "@arkenv/nextjs/config";
     import type { NextConfig } from "next";
 
@@ -97,7 +91,7 @@ Or set it up manually by passing the `{ codegen: false }` option to `withArkEnv`
 > **Build-time validation without codegen:**
 > When using `{ codegen: false }`, `withArkEnv` will skip compiling and generating `env.gen.ts` but will still execute build-time environment variable validation, ensuring invalid variables fail the build:
 >
-> ```ts title="next.config.ts"
+> ```ts title="next.config.ts" twoslash
 > import { withArkEnv } from "@arkenv/nextjs/config";
 > import type { NextConfig } from "next";
 >
