@@ -35,6 +35,6 @@ We adopt **metadata descriptors** as the Phase 1 codegen IR for hosting preset f
 
 - **Lean CLI.** No Zod/Valibot/ArkType runtime deps for preset codegen; no schema-to-source serialization pipeline.
 - **Clear Phase 1 scope.** Two field kinds are sufficient for Vercel/Netlify keys today and are easier to review than full JSON Schema for this narrow use case.
-- **Watch the IR boundary.** If a third field kind is requested, treat it as a design review trigger — not an incremental `PresetField` extension — per escape hatches (a) or (b) above.
+- **Watch the IR boundary.** If a third field kind is requested, treat it as a design review trigger - not an incremental `PresetField` extension - per escape hatches (a) or (b) above.
 - **`v1` alignment.** Forward-porting presets should plug into dialect + framework strategy seams rather than copying `getFieldDefinition` switches verbatim; framework `clientPrefix` should become first-class for all frameworks (including Vite/Bun), not only Next/Nuxt codegen config.
 - **Maintenance tripwire.** A `@remarks` note on `PresetField` / `getFieldDefinition` references this ADR so contributors do not add field kinds or adopt runtime schemas without revisiting the decision.

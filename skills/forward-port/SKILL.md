@@ -7,7 +7,7 @@ metadata:
 
 # Forward-port (dev → v1)
 
-ArkEnv runs **dual-tracking**: non-breaking work lands on `dev` (v0) first, then is manually adapted onto `v1`. Never merge `dev` into `v1` wholesale — structural differences cause severe tree conflicts.
+ArkEnv runs **dual-tracking**: non-breaking work lands on `dev` (v0) first, then is manually adapted onto `v1`. Never merge `dev` into `v1` wholesale - structural differences cause severe tree conflicts.
 
 See [REFERENCE.md](REFERENCE.md) for the full path/package map, changeset rename table, and real port examples.
 
@@ -33,17 +33,17 @@ gh pr create --base v1 --title "fix: Forward-port <summary> from dev"
 
 If the user did **not** name a PR, issue, or commit, **stop and ask** before writing code.
 
-1. Discover candidates — recently merged dev PRs that touch published packages and likely need v1 parity (see [REFERENCE.md — discovery commands](REFERENCE.md#discover-candidates)).
+1. Discover candidates - recently merged dev PRs that touch published packages and likely need v1 parity (see [REFERENCE.md - discovery commands](REFERENCE.md#discover-candidates)).
 2. Filter out PRs already forward-ported (v1 PR title/body mentions the dev PR, or commit message contains `Forward-port`).
-3. Present **multiple choice** via `AskQuestion` with up to 4 candidates. Label each option as `#1234 — short title (packages touched)`.
-4. Always include **"Other — I'll specify"** as the last option so the user can paste a PR/issue number.
+3. Present **multiple choice** via `AskQuestion` with up to 4 candidates. Label each option as `#1234 - short title (packages touched)`.
+4. Always include **"Other - I'll specify"** as the last option so the user can paste a PR/issue number.
 5. If no candidates remain, say so and ask whether to port a specific PR/issue the user has in mind.
 
 Do **not** guess or auto-pick when multiple candidates exist.
 
 ### 1. Gather source context
 
-Read the merged dev PR: files, tests, changeset, linked issue. Note **behavior** — re-implement, don't blind cherry-pick. Map each touched package using [REFERENCE.md](REFERENCE.md).
+Read the merged dev PR: files, tests, changeset, linked issue. Note **behavior** - re-implement, don't blind cherry-pick. Map each touched package using [REFERENCE.md](REFERENCE.md).
 
 ### 2. Adapt the implementation
 
@@ -53,7 +53,7 @@ Key path map:
 |-----|-----|
 | `packages/cli/src/**` | `packages/arkenv/src/**` |
 | `packages/arkenv/src/**` (core) | `packages/core/src/**` |
-| `nextjs`, `nuxt`, `build`, … | Same paths — verify imports |
+| `nextjs`, `nuxt`, `build`, … | Same paths - verify imports |
 
 Checklist:
 
@@ -87,6 +87,6 @@ Run `pnpm run typecheck`, `pnpm run test`, and package-scoped tests if localized
 
 ## Related
 
-- [REFERENCE.md](REFERENCE.md) — path map, changeset table, examples
+- [REFERENCE.md](REFERENCE.md) - path map, changeset table, examples
 - [changeset skill](../changeset/SKILL.md)
 - [CONTRIBUTING.md Use Case 4](../../../docs/CONTRIBUTING.md)
