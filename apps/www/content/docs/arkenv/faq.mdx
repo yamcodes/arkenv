@@ -140,6 +140,6 @@ Yes. ArkEnv is optimized for modern development workflows and features a **dedic
 
 ## Is it safe to use in production?
 
-Yes. ArkEnv is tested rigorously and carries **zero external dependencies**, eliminating supply-chain vulnerabilities. The core runtime is a tiny \~2 kB gzipped. The actual parsing mechanism is handled by your chosen validation library and ArkEnv will **safely shut down the process** if a configuration error is detected or if a server-side variable leaks to the client.
+Yes. ArkEnv is tested rigorously and carries **zero external dependencies**, eliminating supply-chain vulnerabilities. The core runtime is a tiny \~2 kB gzipped. The actual parsing mechanism is handled by your chosen validation library, and ArkEnv is designed to [**fail fast**](/docs/arkenv#fail-fast) — validating **early, at build time and startup**. This means a misconfiguration (or a server-side variable leaking to the client) is caught **before** your app ever serves traffic, so a broken build never ships to production in the first place.
 
 ArkEnv is currently in v0 (roadmap towards v1 [here](https://github.com/yamcodes/arkenv/issues/683)), and fully compliant with [Semantic Versioning 2.0.0](https://semver.org/). The core library is used in production and not expected to change meaningfully.
