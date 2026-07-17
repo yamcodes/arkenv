@@ -1,5 +1,32 @@
 # @arkenv/vite-plugin
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.4`
+- `@arkenv/standard@1.0.0-alpha.4`
+
+</details>
+
 ## 1.0.0-alpha.5
 
 ### Minor Changes

@@ -1,5 +1,46 @@
 # @arkenv/core
 
+## 1.0.0-alpha.7
+
+### Major Changes
+
+- #### Drop the `-e` short alias for `init --example` _[`#1378`](https://github.com/yamcodes/arkenv/pull/1378) [`96411dc`](https://github.com/yamcodes/arkenv/commit/96411dc132b86992e4f800bdf60767581429ab25) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `-e` short alias is no longer recognized. Its long form, `--example`, continues to work exactly as before.
+
+  Across the broader CLI ecosystem, `-e` almost universally means `--env` / `--environment`. For a type-safe environment variable library, mapping `-e` to `--example` is a sharp trap: AI agents instinctively reach for `arkenv init -e NODE_ENV=production`, which silently bound to `--example` and consumed the next token as the example name. `-e` is now permanently reserved so it stays free for a future `--env` / `--environment` option. Passing `-e` — standalone or inside a bundle like `-ye` — now fails fast with the standard `Unknown argument: -e` error.
+
+  Migration: replace the short alias with its long form.
+
+  ```bash
+  # Before
+  arkenv init -e with-vite-react
+
+  # After
+  arkenv init --example with-vite-react
+  ```
+
+### Minor Changes
+
+- #### Add `with-valibot` to the bundled example registry and scaffold defaults _[`#1389`](https://github.com/yamcodes/arkenv/pull/1389) [`45c7050`](https://github.com/yamcodes/arkenv/commit/45c70509013f639e462da26002419ea435949bef) [@yamcodes](https://github.com/yamcodes)_
+
+  Register the new standalone `with-valibot` example so it is offered alongside `with-zod` when scaffolding, including in the offline fallback registry used when the remote registry fetch fails.
+
+  - Add a `with-valibot` entry to the bundled fallback example registry.
+  - Add `with-valibot` env defaults (`HOST`, `PORT`, `NODE_ENV`) to the scaffold defaults map.
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
 ## 1.0.0-alpha.6
 
 ### Major Changes
@@ -263,7 +304,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 
