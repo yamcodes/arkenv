@@ -1,5 +1,25 @@
 # @arkenv/nuxt
 
+## 0.0.5
+
+### Patch Changes
+
+- #### Document `ModuleOptions` with JSDoc for better editor DX _[`#1352`](https://github.com/yamcodes/arkenv/pull/1352) [`29be295`](https://github.com/yamcodes/arkenv/commit/29be29514c2ad60f2cc54a33565b83bb2f37c56a) [@yamcodes](https://github.com/yamcodes)_
+
+  Add JSDoc to the `ModuleOptions` type so hovering `schemaPath`, `layout`, and `validate` in `nuxt.config.ts` surfaces inline documentation. The docs describe auto-detection accurately: `schemaPath` is auto-discovered via `findSchemaPath`, and `layout` is auto-detected from the schema structure (`"strict"` when the split files are present, `"flat"` as the fallback).
+
+  ```ts title="nuxt.config.ts"
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      // Hovering these keys now shows their description
+      schemaPath: "src/env.ts",
+      layout: "flat",
+      validate: true,
+    },
+  });
+  ```
+
 ## 0.0.4
 
 ### Patch Changes

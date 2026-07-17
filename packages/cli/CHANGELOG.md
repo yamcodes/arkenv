@@ -1,5 +1,41 @@
 # @arkenv/cli
 
+## 0.4.0
+
+### Minor Changes
+
+- #### Remove the `-C` (`--no-codegen`) and `-a` (`--agent`) short-flag aliases _[`#1353`](https://github.com/yamcodes/arkenv/pull/1353) [`c0d1977`](https://github.com/yamcodes/arkenv/commit/c0d1977cf2796f0f1ba6f5d9e55c4f55606cc9e4) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `-C` and `-a` short aliases are no longer recognized. Their long forms, `--no-codegen` and `--agent`, continue to work exactly as before (`--agent` still implies `--yes --quiet --json`).
+
+  Short flags for an inverted boolean (`-C`) invite misreading as "enable codegen", and `--agent` targets machines and scripts that gain nothing from a keystroke shortcut. Passing `-C` or `-a` — standalone or inside a bundle like `-ya` — now fails with the standard `Unknown argument` error.
+
+  Migration: replace the short aliases with their long forms.
+
+  ```bash
+  # Before
+  arkenv init -C
+  arkenv init -a
+
+  # After
+  arkenv init --no-codegen
+  arkenv init --agent
+  ```
+
+  All other aliases (`-y`, `-f`, `-q`, `-j`, `-e`, `-h`) are unchanged.
+
+### Patch Changes
+
+- #### Add `-H` alias for the `init --host-preset` flag _[`#1347`](https://github.com/yamcodes/arkenv/pull/1347) [`e4f1315`](https://github.com/yamcodes/arkenv/commit/e4f13159b99437fb40a282f8d0f63ef96cec6b1e) [@yamcodes](https://github.com/yamcodes)_
+
+  `--host-preset` now accepts a short `-H` alias, matching the other CLI flags.
+
+  ```bash
+  # These are equivalent
+  npx @arkenv/cli@latest init --host-preset vercel
+  npx @arkenv/cli@latest init -H vercel
+  ```
+
 ## 0.3.4
 
 ### Patch Changes
@@ -174,7 +210,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 
