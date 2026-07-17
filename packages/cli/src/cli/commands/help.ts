@@ -51,7 +51,7 @@ export class HelpUseCase {
 					"Bypass technical requirement checks and dirty git working tree check, then force scaffolding",
 			},
 			{
-				left: "--agent, -a",
+				left: "--agent",
 				right:
 					"Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
 			},
@@ -68,7 +68,7 @@ export class HelpUseCase {
 				right: "Output structured JSON to stdout",
 			},
 			{
-				left: "--no-codegen, -C",
+				left: "--no-codegen",
 				right: "Disable automatic env.gen.ts code generation for Next.js",
 			},
 			{
