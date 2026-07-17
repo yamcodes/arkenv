@@ -61,6 +61,12 @@ export class RegistryClient {
 						description: "ArkEnv with Zod in Node.js",
 						framework: "vanilla",
 					},
+					{
+						id: "with-valibot",
+						name: "Valibot",
+						description: "ArkEnv with Valibot in Node.js",
+						framework: "vanilla",
+					},
 				],
 			};
 		}

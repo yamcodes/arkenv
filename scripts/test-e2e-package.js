@@ -44,8 +44,12 @@ try {
 	const normalizedTarballPath = path.resolve(tarballPath).replace(/\\/g, "/");
 	const tarballDependency = `file:${normalizedTarballPath}`;
 
-	// We will run tests against examples/basic and examples/with-zod
-	const fixtures = ["basic", "with-zod"];
+	// We will run tests against examples/basic and the standard-only examples
+	const fixtures = ["basic", "with-zod", "with-valibot"];
+
+	// Standard-only fixtures use a Standard Schema validator (e.g. Zod, Valibot)
+	// via `arkenv/standard` and must NOT pull in the optional `arktype` peer.
+	const standardOnlyFixtures = new Set(["with-zod", "with-valibot"]);
 
 	for (const fixture of fixtures) {
 		console.log(`\n=== Testing fixture: examples/${fixture} ===`);
@@ -88,8 +92,8 @@ try {
 		}
 		fs.writeFileSync(pkgJsonPath, JSON.stringify(pkg, null, 2));
 
-		// Remove lockfile for with-zod to ensure npm installs all dependencies fresh based on the modified package.json
-		if (fixture === "with-zod") {
+		// Remove lockfile for standard-only fixtures to ensure npm installs all dependencies fresh based on the modified package.json
+		if (standardOnlyFixtures.has(fixture)) {
 			const lockfilePath = path.join(fixtureDestDir, "package-lock.json");
 			if (fs.existsSync(lockfilePath)) {
 				fs.rmSync(lockfilePath, { force: true });
@@ -111,16 +115,16 @@ try {
 			},
 		);
 
-		// For with-zod, assert that arktype is NOT installed
-		if (fixture === "with-zod") {
+		// For standard-only fixtures, assert that arktype is NOT installed
+		if (standardOnlyFixtures.has(fixture)) {
 			const arktypePath = path.join(fixtureDestDir, "node_modules", "arktype");
 			if (fs.existsSync(arktypePath)) {
 				throw new Error(
-					"Optional peer dependency 'arktype' was mistakenly installed in clean-room standard-only fixture.",
+					`Optional peer dependency 'arktype' was mistakenly installed in clean-room standard-only fixture '${fixture}'.`,
 				);
 			}
 			console.log(
-				"✅ Verified: 'arktype' is NOT present in standard-schema fixture node_modules",
+				`✅ Verified: 'arktype' is NOT present in ${fixture} fixture node_modules`,
 			);
 		}
 
@@ -145,10 +149,10 @@ try {
 					"Fixture 'basic' did not print expected output: 'Environment variables validated successfully by ArkEnv!'",
 				);
 			}
-		} else if (fixture === "with-zod") {
+		} else if (standardOnlyFixtures.has(fixture)) {
 			if (!stdout.includes("Value: https://example.com")) {
 				throw new Error(
-					"Fixture 'with-zod' did not print expected output: 'Value: https://example.com'",
+					`Fixture '${fixture}' did not print expected output: 'Value: https://example.com'`,
 				);
 			}
 		}
