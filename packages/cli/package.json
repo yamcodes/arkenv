@@ -31,7 +31,12 @@
 		"arkenv",
 		"cli",
 		"scaffold",
-		"init"
+		"init",
+		"create",
+		"generator",
+		"env",
+		"environment-variables",
+		"config"
 	],
 	"license": "MIT",
 	"homepage": "https://arkenv.js.org",
