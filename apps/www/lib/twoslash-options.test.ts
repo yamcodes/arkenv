@@ -1,6 +1,6 @@
 import { createTwoslasher } from "twoslash";
 import { describe, expect, it } from "vitest";
-import { arktypeTwoslashOptions } from "./twoslash-options";
+import { arktypeTwoslashOptions, transformDocs } from "./twoslash-options";
 
 // Use createTwoslasher so vfsRoot is applied at factory time.
 // The standalone twoslasher() only reads compilerOptions/handbookOptions per-call
@@ -36,6 +36,53 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 				target: "apiUrl",
 			}),
 		);
+	});
+
+	describe("transformDocs", () => {
+		it("renders a {@link symbol} tag inline as a code reference", () => {
+			expect(transformDocs("An alias for {@link createEnv}.")).toBe(
+				"An alias for `createEnv`.",
+			);
+		});
+
+		it("renders a {@link url | label} tag as a single inline anchor", () => {
+			expect(
+				transformDocs("See {@link https://arkenv.js.org | ArkEnv} for docs."),
+			).toBe("See [ArkEnv](https://arkenv.js.org) for docs.");
+		});
+
+		it("falls back to the raw URL as link text when no label is given", () => {
+			expect(transformDocs("See {@link https://arkenv.js.org}.")).toBe(
+				"See [https://arkenv.js.org](https://arkenv.js.org).",
+			);
+		});
+
+		it("handles TypeScript's serialized {@link} form (newlines, no pipe)", () => {
+			// This is the exact shape Twoslash yields for the `arkenv` default export:
+			// tags are wrapped in newlines and the `|` label separator is dropped.
+			const raw =
+				"ArkEnv's main export, an alias for \n{@link \ncreateEnv\n}\n\n\n\n{@link \nhttps://arkenv.js.org ArkEnv\n}\n is a typesafe environment variables validator from editor to runtime.";
+
+			const result = transformDocs(raw);
+
+			// {@link symbol} flows inline as a code reference.
+			expect(result).toContain("`createEnv`");
+			// {@link url | label} becomes a single inline anchor with the label as text.
+			expect(result).toContain("[ArkEnv](https://arkenv.js.org)");
+			// No dangling raw URL text is left outside the anchor.
+			expect(result).not.toMatch(/https:\/\/arkenv\.js\.org(?!\))/);
+			// The genuine paragraph break is preserved as exactly one blank line...
+			expect(result).toContain("\n\n");
+			expect(result).not.toContain("\n\n\n");
+			// ...and no line breaks are introduced within a sentence.
+			expect(result.split("\n\n")[1]).not.toContain("\n");
+		});
+
+		it("collapses single newlines to spaces but preserves paragraph breaks", () => {
+			expect(
+				transformDocs("line one\nstill line one\n\nsecond paragraph"),
+			).toBe("line one still line one\n\nsecond paragraph");
+		});
 	});
 
 	it("filters out module resolution errors in filterNode", () => {
