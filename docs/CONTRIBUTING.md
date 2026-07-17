@@ -8,8 +8,8 @@ Human and agent-assisted contributions are equally welcome here. Whether you wri
 
 To help you find work, triaged issues carry a readiness label:
 
-- **`ready for agent`** — Fully specified and ready for immediate implementation. Pick it up yourself or hand it to an agent; the requirements are clear enough to start coding right away.
-- **`ready for human`** — Needs a judgment call or design decision before implementation. These aren't off-limits, they just want a person to weigh in on direction first.
+- **`ready for agent`** - Fully specified and ready for immediate implementation. Pick it up yourself or hand it to an agent; the requirements are clear enough to start coding right away.
+- **`ready for human`** - Needs a judgment call or design decision before implementation. These aren't off-limits, they just want a person to weigh in on direction first.
 
 Don't let the label names give you the wrong impression: `ready for agent` simply means "ready to build," not "reserved for bots." Feel free to grab either kind of issue.
 
