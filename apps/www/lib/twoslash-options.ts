@@ -39,9 +39,49 @@ export type ArkTypeTwoslashOptions = Omit<
 	filterNode?: (node: TwoslashNode) => boolean;
 };
 
+/**
+ * Normalizes a JSDoc docs string so it renders as inline prose in the
+ * Twoslash hover popover, matching the IDE hover experience.
+ *
+ * TypeScript serializes `{@link}` tags with surrounding newlines (and drops the
+ * `|` label separator), e.g. `{@link \nhttps://arkenv.js.org ArkEnv\n}`. Left
+ * untouched, `fumadocs-twoslash` strips the tag to its raw contents, producing a
+ * bare autolinked URL with a dangling label and spurious line breaks.
+ *
+ * This converts each tag into Markdown and collapses accidental line breaks:
+ * - `{@link url | label}` → `[label](url)` (a single inline anchor)
+ * - `{@link symbol}` → `` `symbol` `` (inline code reference)
+ * - single newlines become spaces (inline prose), while genuine paragraph
+ *   breaks (blank lines) are preserved.
+ *
+ * @param docs - The raw JSDoc docs string from Twoslash.
+ * @returns The transformed Markdown string.
+ */
+export function transformDocs(docs: string): string {
+	return docs
+		.replace(/{@link\s+([\s\S]*?)}/g, (_raw: string, content: string) => {
+			const cleaned = content.replace(/\s+/g, " ").trim();
+			const parts = cleaned.split(/\s*(?:\||\s)\s*/);
+			const target = parts[0] ?? cleaned;
+			const text = parts.slice(1).join(" ") || target;
+
+			return target.startsWith("http") ? `[${text}](${target})` : `\`${text}\``;
+		})
+		.replace(/(?<!\n)\n(?!\n)/g, " ")
+		.replace(/\n{2,}/g, "\n\n")
+		.trim();
+}
+
 export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
 	langs: ["ts", "tsx", "js", "jsx"],
+	// `processHoverDocs` is the hook `fumadocs-twoslash`'s rich renderer actually
+	// invokes on a hover's JSDoc before rendering it to Markdown. `filterNode`
+	// (below) is only applied in isolated tooling, so the popover transform must
+	// live here to take effect on the docs site.
+	rendererRich: {
+		processHoverDocs: (docs) => transformDocs(docs),
+	},
 	twoslashOptions: {
 		vfsRoot: wwwRoot,
 		compilerOptions: {
@@ -161,23 +201,7 @@ declare global {
 				}
 
 				if (node.docs) {
-					node.docs = node.docs
-						.replace(
-							/{@link\s+([\s\S]*?)}/g,
-							(_raw: string, content: string) => {
-								const cleaned = content.replace(/\s+/g, " ").trim();
-								const parts = cleaned.split(/\s*(?:\||\s)\s*/);
-								const target = parts[0];
-								const text = parts.slice(1).join(" ") || target;
-
-								return target.startsWith("http")
-									? `[${text}](${target})`
-									: `\`${text}\``;
-							},
-						)
-						.replace(/(?<!\n)\n(?!\n)/g, " ")
-						.replace(/\n{2,}/g, "\n\n")
-						.trim();
+					node.docs = transformDocs(node.docs);
 				}
 
 				const text = node.text.toLowerCase();
