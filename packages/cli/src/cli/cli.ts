@@ -6,13 +6,13 @@ const FLAG_CONFIG = {
 	isForce: { long: "--force", short: "-f", kind: "boolean" },
 	isQuiet: { long: "--quiet", short: "-q", kind: "boolean" },
 	isJson: { long: "--json", short: "-j", kind: "boolean" },
-	isAgent: { long: "--agent", short: "-a", kind: "boolean" },
+	isAgent: { long: "--agent", short: "", kind: "boolean" },
 	helpRequested: { long: "--help", short: "-h", kind: "boolean" },
 	example: { long: "--example", short: "-e", kind: "value" },
 	isStrict: { long: "--strict", short: "", kind: "boolean" },
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
 	isFlat: { long: "--flat", short: "", kind: "boolean" },
-	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
+	noCodegen: { long: "--no-codegen", short: "", kind: "boolean" },
 	hostPreset: { long: "--host-preset", short: "", kind: "value" },
 } as const;
 

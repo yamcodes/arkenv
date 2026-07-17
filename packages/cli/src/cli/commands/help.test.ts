@@ -47,12 +47,19 @@ describe("HelpUseCase", () => {
 			"  --example, -e             Specify an example name when creating a new project",
 		);
 
-		const noCodegenOptionLog = logs.find((l) => l.includes("--no-codegen, -C"));
+		const agentOptionLog = logs.find((l) => l.includes("--agent"));
+		expect(agentOptionLog).toBeDefined();
+		// "--agent" is 7 chars. max (22) - 7 + colGap (4) = 19 spaces padding.
+		expect(agentOptionLog).toBe(
+			"  --agent                   Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
+		);
+
+		const noCodegenOptionLog = logs.find((l) => l.includes("--no-codegen"));
 		expect(noCodegenOptionLog).toBeDefined();
-		// "--no-codegen, -C" is 16 chars. max (22) - 16 + colGap (4) = 10 spaces padding.
-		// "  " (2) + "--no-codegen, -C" (16) + "          " (10) + "Disable..."
+		// "--no-codegen" is 12 chars. max (22) - 12 + colGap (4) = 14 spaces padding.
+		// "  " (2) + "--no-codegen" (12) + "              " (14) + "Disable..."
 		expect(noCodegenOptionLog).toBe(
-			"  --no-codegen, -C          Disable automatic env.gen.ts code generation for Next.js",
+			"  --no-codegen              Disable automatic env.gen.ts code generation for Next.js",
 		);
 
 		const hostPresetOptionLog = logs.find((l) =>
