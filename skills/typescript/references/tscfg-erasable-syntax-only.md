@@ -7,7 +7,7 @@ tags: tscfg, erasableSyntaxOnly, node, type-stripping, enums
 
 ## Use erasableSyntaxOnly for Node.js native TypeScript
 
-The `erasableSyntaxOnly` flag (TypeScript 5.8+) ensures your code only uses TypeScript syntax that can be removed by erasing type annotations — no code generation required. This is mandatory for Node.js `--experimental-strip-types` which strips types but cannot transform enums, namespaces, or parameter properties.
+The `erasableSyntaxOnly` flag (TypeScript 5.8+) ensures your code only uses TypeScript syntax that can be removed by erasing type annotations - no code generation required. This is mandatory for Node.js `--experimental-strip-types` which strips types but cannot transform enums, namespaces, or parameter properties.
 
 **Incorrect (non-erasable syntax fails with Node.js type-stripping):**
 

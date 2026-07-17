@@ -22,7 +22,7 @@ Define environment variable schemas using ArkType syntax:
 ```typescript
 import { type } from "arktype";
 
-const env = createEnv({
+const env = arkenv({
   HOST: "string.host", // Custom host type
   PORT: "number.port", // Custom port type
   NODE_ENV: "'development' | 'production' | 'test'", // Union type
@@ -49,7 +49,7 @@ import { $ } from "./scope";
 ## Type Inference
 
 - Use `type.infer` to extract TypeScript types from schemas
-- The return type of `createEnv` is inferred from the schema
+- The return type of `arkenv` is inferred from the schema
 - No manual type definitions needed
 
 ## Error Handling

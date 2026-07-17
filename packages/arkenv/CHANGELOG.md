@@ -1,836 +1,802 @@
-# ArkEnv
+# @arkenv/core
 
-## 0.11.1
+## 1.0.0-alpha.7
+
+### Major Changes
+
+- #### Drop the `-e` short alias for `init --example` _[`#1378`](https://github.com/yamcodes/arkenv/pull/1378) [`96411dc`](https://github.com/yamcodes/arkenv/commit/96411dc132b86992e4f800bdf60767581429ab25) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `-e` short alias is no longer recognized. Its long form, `--example`, continues to work exactly as before.
+
+  Across the broader CLI ecosystem, `-e` almost universally means `--env` / `--environment`. For a type-safe environment variable library, mapping `-e` to `--example` is a sharp trap: AI agents instinctively reach for `arkenv init -e NODE_ENV=production`, which silently bound to `--example` and consumed the next token as the example name. `-e` is now permanently reserved so it stays free for a future `--env` / `--environment` option. Passing `-e` — standalone or inside a bundle like `-ye` — now fails fast with the standard `Unknown argument: -e` error.
+
+  Migration: replace the short alias with its long form.
+
+  ```bash
+  # Before
+  arkenv init -e with-vite-react
+
+  # After
+  arkenv init --example with-vite-react
+  ```
+
+### Minor Changes
+
+- #### Add `with-valibot` to the bundled example registry and scaffold defaults _[`#1389`](https://github.com/yamcodes/arkenv/pull/1389) [`45c7050`](https://github.com/yamcodes/arkenv/commit/45c70509013f639e462da26002419ea435949bef) [@yamcodes](https://github.com/yamcodes)_
+
+  Register the new standalone `with-valibot` example so it is offered alongside `with-zod` when scaffolding, including in the offline fallback registry used when the remote registry fetch fails.
+
+  - Add a `with-valibot` entry to the bundled fallback example registry.
+  - Add `with-valibot` env defaults (`HOST`, `PORT`, `NODE_ENV`) to the scaffold defaults map.
 
 ### Patch Changes
 
-- #### Add `Infer<T>` helper to resolve environment variable types *[`#1092`](https://github.com/yamcodes/arkenv/pull/1092) [`c6c30ab`](https://github.com/yamcodes/arkenv/commit/c6c30abbc1df4bb74b2ab5c6f689fcae557ffb05) [@yamcodes](https://github.com/yamcodes)*
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
 
-  Introduce the `Infer<T>` type helper, allowing developers to extract the inferred output types of their environment schemas. It supports both declarative schema shapes and compiled schemas (like Zod or ArkType types).
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+## 1.0.0-alpha.6
+
+### Major Changes
+
+- #### Remove the `-C` (`--no-codegen`) and `-a` (`--agent`) short-flag aliases _[`#1355`](https://github.com/yamcodes/arkenv/pull/1355) [`e5f5914`](https://github.com/yamcodes/arkenv/commit/e5f59146a571dcfc595834ce632e7f15604a1932) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `-C` and `-a` short aliases are no longer recognized. Their long forms, `--no-codegen` and `--agent`, continue to work exactly as before (`--agent` still implies `--yes --quiet --json`).
+
+  Short flags for an inverted boolean (`-C`) invite misreading as "enable codegen", and `--agent` targets machines and scripts that gain nothing from a keystroke shortcut. Passing `-C` or `-a` — standalone or inside a bundle like `-ya` — now fails with the standard `Unknown argument` error.
+
+  Migration: replace the short aliases with their long forms.
+
+  ```bash
+  # Before
+  npx arkenv@alpha init -C
+  npx arkenv@alpha init -a
+
+  # After
+  npx arkenv@alpha init --no-codegen
+  npx arkenv@alpha init --agent
+  ```
+
+  All other aliases (`-y`, `-f`, `-q`, `-j`, `-e`, `-h`) are unchanged.
+
+### Minor Changes
+
+- #### Add `-H` alias for the `init --host-preset` flag _[`#1362`](https://github.com/yamcodes/arkenv/pull/1362) [`a2de7b9`](https://github.com/yamcodes/arkenv/commit/a2de7b9ff3be6cb73fefc434d1cd9581262f81e0) [@yamcodes](https://github.com/yamcodes)_
+
+  `--host-preset` now accepts a short `-H` alias, matching the other CLI flags.
+
+  ```bash
+  # These are equivalent
+  npx arkenv@alpha init --host-preset vercel
+  npx arkenv@alpha init -H vercel
+  ```
+
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add hosting presets to `arkenv init` _[`#1323`](https://github.com/yamcodes/arkenv/pull/1323) [`6aa4262`](https://github.com/yamcodes/arkenv/commit/6aa4262eac97368ed87bb1fae6818e6e781e17be) [@yamcodes](https://github.com/yamcodes)_
+
+  Support optional Vercel and Netlify presets when initializing a project. Preset fields render through validator dialects and client keys use each framework strategy's `clientPrefix`.
+
+  Usage:
+
+  ```bash
+  npx arkenv@alpha init --host-preset vercel
+  ```
+
+  Or select **Vercel** / **Netlify** in the interactive hosting-preset step. Generated schemas include typed keys such as `VERCEL_ENV` (and `NEXT_PUBLIC_VERCEL_ENV` on Next.js).
+
+- #### Add machine-actionable error codes to `init` JSON output _[`#1336`](https://github.com/yamcodes/arkenv/pull/1336) [`cf74ee1`](https://github.com/yamcodes/arkenv/commit/cf74ee1db30f5865a0ae8a26a3e65a5dadc17345) [@yamcodes](https://github.com/yamcodes)_
+
+  In `--json` / `--agent` mode, every deliberate safety-check refusal now emits a stable, documented error `code` alongside a `retryWith` hint, so agents no longer have to pattern-match on prose to decide how to escalate. Human-readable (non-JSON) output is unchanged.
+
+  - **`REQUIREMENTS_NOT_MET`** - a technical requirement failed. Includes per-requirement `details` with `current`/`expected`. `retryWith: ["--force"]`.
+  - **`GIT_TREE_DIRTY`** - the git working tree is not clean. `retryWith: ["--force"]`.
+  - **`NON_EMPTY_DIR`** - the target directory is not empty. `retryWith: ["--force"]`.
+  - **`INTERNAL`** - an unexpected failure (the CLI broke rather than refused). `retryWith: []`.
+
+  An empty `retryWith` means the refusal cannot be bypassed; a non-empty `retryWith` names the flag(s) to re-run with. Escalation pattern: run without `--force`, inspect `code`/`retryWith`, then retry deliberately.
+
+  Example refusal payload written to `stdout`:
+
+  ```json
+  {
+    "status": "error",
+    "code": "GIT_TREE_DIRTY",
+    "message": "Git working tree is not clean.",
+    "retryWith": ["--force"]
+  }
+  ```
+
+## 1.0.0-alpha.4
+
+### Minor Changes
+
+- #### Align Nuxt flat layout across CLI, examples, and build resolution _[`#1299`](https://github.com/yamcodes/arkenv/pull/1299) [`90ac1e1`](https://github.com/yamcodes/arkenv/commit/90ac1e180c6c9e43651313f705b354eb9818d0ce) [@yamcodes](https://github.com/yamcodes)_
+
+  Forward-port flat layout support for Nuxt on v1 by aligning CLI scaffolding, build-time validation, runtime proxy behavior, and `@arkenv/build` layout resolution.
 
   Usage:
 
   ```ts
-  import { createEnv, type Infer } from "arkenv";
-  import { type } from "arktype";
+  // nuxt.config.ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: { layout: "flat" },
+  });
+  ```
 
-  const schema = {
-    PORT: type.number,
+  ```ts
+  // env.ts
+  import arkenv from "@arkenv/nuxt";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+    NUXT_PUBLIC_API_URL: "string",
+    NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  });
+  ```
+
+  - `arkenv` init wizard presents "Flat (Recommended)" for Nuxt and scaffolds a flat `env.ts`
+  - `@arkenv/build` `resolveLayout()` accepts `"flat"` as an alias for the single-file layout mode
+  - Nuxt examples and playgrounds use flat layout conventions
+
+### Patch Changes
+
+- #### Generate `.env` and `.env.example` files and configure pnpm approved builds whitelisting during initialization _[`#1292`](https://github.com/yamcodes/arkenv/pull/1292) [`3cdbac9`](https://github.com/yamcodes/arkenv/commit/3cdbac94e150f98c88ae05af1d8351f29531471f) [@yamcodes](https://github.com/yamcodes)_
+
+  - Generate default `.env` and `.env.example` files during initialization if they do not exist to prevent Node/tsx `--env-file` boot crashes.
+  - Parse existing `.env` file and securely strip all values to generate `.env.example` when `.env.example` is missing to avoid leaking user credentials to source control.
+  - Automatically check and update `.gitignore` in existing projects to ignore `.env` and `.env.local` files.
+  - Skip overwriting pre-existing files when their scaffolding action is set to `"create"`.
+  - Configure pnpm build whitelisting for `esbuild` during project scaffolding if `pnpm` is the detected package manager. This writes the `onlyBuiltDependencies` field to `package.json` and creates or updates a `pnpm-workspace.yaml` file with the `allowBuilds` configuration before running the installation phase.
+  - Add a runtime guardrail to throw a friendly error when the CLI is imported as a library to guide upgrading library users to `@arkenv/core`.
+
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- #### Split core engine into `@arkenv/core` and `@arkenv/standard` and add standard subpath exports to framework plugins _[`#1225`](https://github.com/yamcodes/arkenv/pull/1225) [`44c840f`](https://github.com/yamcodes/arkenv/commit/44c840ff95931310be965262b0c7c3e94c80f8d8) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce `@arkenv/standard` as a dependency-free validation engine for Standard Schema validators (e.g., Zod, Valibot), and rename the main `arkenv` package to `@arkenv/core` (with `arktype` as a required peer dependency).
+
+  Framework plugins (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`) now export a `/standard` subpath to allow using Standard Schema mode without any dependency on `arktype`.
+
+  Example using `@arkenv/standard`:
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.coerce.number().default(3000),
+  });
+  ```
+
+  Example of Vite plugin configuration in Standard Mode:
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin/standard";
+  import { defineConfig } from "vite";
+
+  export default defineConfig({
+    plugins: [arkenv()],
+  });
+  ```
+
+  **BREAKING CHANGE:** The package `arkenv` has been renamed to `@arkenv/core`. Framework plugins now list `@arkenv/core` and `@arkenv/standard` as optional peer dependencies. You must install either `@arkenv/core` (if using ArkType) or `@arkenv/standard` (if using Standard Schema).
+
+## 1.0.0-alpha.2
+
+### Major Changes
+
+- #### Refactor error system to use normalized `EnvIssue` and add `{ safe: true }` API _[`#1157`](https://github.com/yamcodes/arkenv/pull/1157) [`427ced6`](https://github.com/yamcodes/arkenv/commit/427ced6bd9af4589c5fd696906bdf712104870bb) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce a unified `EnvIssue` type for programmatic access to validation issues via `ArkEnvError.issues`, and add the non-throwing `{ safe: true }` configuration option to `arkenv`.
+
+  Error messages now use ANSI colors instead of a bullet-point prefix:
+
+  ```diff
+  - - [PORT] must be a valid port number (was "invalid-port")
+  + PORT must be a valid port number (was "invalid-port")
+  ```
+
+  Note: Header (red), variable path (yellow), and received value (cyan) are now styled with ANSI escape codes. Update any test suites asserting on exact error text.
+
+  **BREAKING CHANGE**: `ValidationIssue` and `formatInternalErrors` removed. Use `EnvIssue` and `formatIssues` instead.
+
+## 1.0.0-alpha.1
+
+### Major Changes
+
+- #### Rename `createEnv` function to `arkenv` _[`#1203`](https://github.com/yamcodes/arkenv/pull/1203) [`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: Rename the primary environment variable validation function from `createEnv` to `arkenv` across all packages in the ecosystem, and expose it as both the default export and a named export.
+
+  Update all usages:
+
+  ```ts
+  // Before
+  import { createEnv } from "arkenv";
+
+  export const env = createEnv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+
+  // After
+  import arkenv from "arkenv";
+  // or: import { arkenv } from "arkenv";
+
+  export const env = arkenv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  Migration Steps:
+
+  - Replace all imports and invocations of `createEnv` with `arkenv`.
+  - Update config generators and plugins (Next.js config templates, Vite plugin, Bun plugin) to use `arkenv`.
+
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
+## 0.2.11
+
+### Patch Changes
+
+- #### Introduce Nuxt support _[`#1191`](https://github.com/yamcodes/arkenv/pull/1191) [`a3e32db`](https://github.com/yamcodes/arkenv/commit/a3e32db63b0b694e11487950507c06fa7b1466b0) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce `@arkenv/nuxt` integration package providing a Nuxt module for automatic environment variable validation and runtimeConfig mapping, and add Nuxt support to the CLI scaffold wizard. The Nuxt adapter elegantly embraces Nuxt's native configuration exposure by automatically reading from `window.__NUXT__.config.public`, eliminating the need for developers to manually pass a `runtimeEnv` or `useRuntimeConfig()` map.
+
+## 0.2.10
+
+### Patch Changes
+
+- #### Check git working tree is clean before `arkenv init` _[`#1151`](https://github.com/yamcodes/arkenv/pull/1151) [`4e6300c`](https://github.com/yamcodes/arkenv/commit/4e6300cb769efd626a69edbf7a38f520e796f386) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now verifies the git working tree is clean before modifying files in the existing-project flow. If the working tree is dirty and `--force` is not provided, the command aborts with a clear error message. Use `--force` to bypass this check.
+
+  Non-git repositories and clean working trees proceed normally without any extra prompts.
+
+- #### Automatically wrap Next.js config with `withArkEnv` during `arkenv init` _[`#1150`](https://github.com/yamcodes/arkenv/pull/1150) [`4a267e5`](https://github.com/yamcodes/arkenv/commit/4a267e5c1ca18fc2ac7ba720decb6681834f9ebf) [@yamcodes](https://github.com/yamcodes)_
+
+  Running `arkenv init` in a Next.js project now auto-detects `next.config.ts` (or `.js`/`.mts`/`.mjs`) and wraps the default export with `withArkEnv`:
+
+  ```ts
+  // next.config.ts - before
+  export default {
+    experimental: {},
   };
 
-  export type Env = Infer<typeof schema>;
-  ```
-
-## 0.11.0
-
-### Minor changes
-
-- #### Remove `ArkEnvError` import from "arkenv" *[`#815`](https://github.com/yamcodes/arkenv/pull/815) [`5e8025f`](https://github.com/yamcodes/arkenv/commit/5e8025fd53e5637cd326848f6e0e0d3a20fc1a8b) [@yamcodes](https://github.com/yamcodes)*
-
-  The `ArkEnvError` class is now only available via:
-
-  ```ts
-  import { ArkEnvError } from "arkenv/core";
-  ```
-
-## 0.10.0
-
-### Minor changes
-
-- #### `arkenv/standard` import *[`#806`](https://github.com/yamcodes/arkenv/pull/806) [`f9010d0`](https://github.com/yamcodes/arkenv/commit/f9010d00c3f05dbd9862e4aeafab099a9dea4d25) [@yamcodes](https://github.com/yamcodes)*
-
-  `arkenv` now ships three separate entry points:
-
-  - **`arkenv`** (main): ArkType-first. Includes `createEnv` (aliased to `arkenv` default import), `type`, and `ArkEnvError`. Importing from this entry requires you to have ArkType installed.
-  - **`arkenv/standard`**: ArkType-free. A standalone `createEnv` (aliased to `arkenv` default import) for Standard Schema validators (Zod, Valibot, etc.), not requiring ArkType.
-  - **`arkenv/core`**: Mode-agnostic primitives - `ArkEnvError` and `ValidationIssue`.
-
-  #### Breaking changes
-
-  **1. `validator: "standard"` option removed; `arkenv` now statically requires ArkType.**
-  The `validator` config option has been removed - ArkType is now always required when importing from `arkenv`. For a zero-ArkType bundle, use `arkenv/standard`:
-
-  ```ts
-  // ❌ Before
-  import arkenv from "arkenv";
-  import { z } from "zod";
-
-  const env = arkenv({ PORT: z.coerce.number() }, { validator: "standard" });
-
-  // ✅ After
-  import arkenv from "arkenv/standard";
-  import { z } from "zod";
-
-  const env = arkenv({ PORT: z.coerce.number() });
-  ```
-
-  **2. `type` moved from `arkenv/arktype` to `arkenv`.**
-  The `type` helper is now exported from the main entry. The `arkenv/arktype` sub-path is no longer public:
-
-  ```ts
-  // ❌ Before
-  import { type } from "arkenv/arktype";
-
-  // ✅ After
-  import { type } from "arkenv"; // 'type' is the ArkEnv helper, not a TS type modifier
-  ```
-
-## 0.9.3
-
-### Patch changes
-
-- #### Fix inline schema autocompletion *[`#797`](https://github.com/yamcodes/arkenv/pull/797) [`8f1b0dd`](https://github.com/yamcodes/arkenv/commit/8f1b0dd1c10773da60ea12362f162136c23ddac0) [@yamcodes](https://github.com/yamcodes)*
-
-  Fixed a regression where editor autocompletion for ArkType DSL strings (e.g. `"string"`, `"number.port"`) stopped working when using `arkenv()` with an inline schema object. The `createEnv` overloads are now narrowed by `validator` config type, making them mutually exclusive and order-independent.
-
-## 0.9.2
-
-### Patch changes
-
-- #### Fix CommonJS bundling compatibility *[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)*
-
-  Fixed a crash when ArkEnv is bundled into a CommonJS format using tools like esbuild. This improves compatibility with environments like AWS Lambda and ensures correct interoperability when ArkEnv is used as an external dependency in CommonJS bundles.
-
-- #### Improve internal error handling types *[`#756`](https://github.com/yamcodes/arkenv/pull/756) [`1901321`](https://github.com/yamcodes/arkenv/commit/1901321cb78c26a2e8c5ebde3dccd87941ac47bf) [@yamcodes](https://github.com/yamcodes)*
-
-  Refined internal error handling logic with better TypeScript typesafety and guards.
-
-## 0.9.1
-
-### Patch changes
-
-- #### Fix Standard Schema type inference *[`#758`](https://github.com/yamcodes/arkenv/pull/758) [`3b747b0`](https://github.com/yamcodes/arkenv/commit/3b747b07660e035fda4a40ca90c630e283d6ba1c) [@yamcodes](https://github.com/yamcodes)*
-
-  Fixed type inference when using `validator: "standard"` mode. The `env` object now correctly infers types from Standard Schema validators like Zod or Valibot.
-
-## 0.9.0
-
-### Minor changes
-
-- #### ArkType is now an optional peer dependency *[`#723`](https://github.com/yamcodes/arkenv/pull/723) [`6bd0741`](https://github.com/yamcodes/arkenv/commit/6bd07410f97a8756366b9432be8504a8507d0876) [@yamcodes](https://github.com/yamcodes)*
-
-  To achieve a true zero-dependency core, ArkType is now an optional peer dependency.
-
-  - **Breaking Change**: The `type` export has been moved from the main `arkenv` entry point to `arkenv/arktype`.
-
-  ```ts
-  // ❌ Before
-  import { type } from "arkenv";
-
-  // ✅ After
-  import { type } from "arkenv/arktype";
-  ```
-
-  - **Explicit Validator Modes**: ArkEnv now supports an explicit `validator` option.
-
-    - **`validator: "arktype"` (default)**: Uses ArkType for validation and coercion. Requires `arktype` to be installed.
-    - **`validator: "standard"`**: Uses Standard Schema validators directly (e.g., Zod, Valibot). Works without ArkType.
-
-  Existing usage of `arkenv()` remains unchanged when ArkType is installed. Projects using ArkType features must now explicitly install `arktype` and import ArkType-land helpers from `arkenv/arktype`.
-
-### Patch changes
-
-- #### Remove internal `@repo/keywords` package *[`#726`](https://github.com/yamcodes/arkenv/pull/726) [`926ef9b`](https://github.com/yamcodes/arkenv/commit/926ef9b5a322187feef7fce3a842b04d5ec197fa) [@yamcodes](https://github.com/yamcodes)*
-
-  The internal `@repo/keywords` package, which was compiled into the `arkenv` package, has been removed. The keywords are now either defined directly in the `arkenv` package or changed to pure functions.
-
-  This change was made to simplify the package structure for the validator mode.
-
-## 0.8.3
-
-### Patch changes
-
-- #### Object coercion *[`#694`](https://github.com/yamcodes/arkenv/pull/694) [`01c1704`](https://github.com/yamcodes/arkenv/commit/01c17041029a41f2dfcacd7dd7ed2d1cd5a8c058) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)*
-
-  ArkEnv now coerces objects when the `coerce` option is enabled (true by default).
-  Objects are parsed from JSON strings, allowing for nested typesafe configuration.
-
-  Example:
-
-  ```dotenv
-  DATABASE={"HOST": "localhost", "PORT": "5432"}
-  ```
-
-  ```ts
-  const env = arkenv({
-    DATABASE: {
-      HOST: "string",
-      PORT: "number",
-    },
+  // next.config.ts - after
+  import { withArkEnv } from "@arkenv/nextjs/config";
+  export default withArkEnv({
+    experimental: {},
   });
-
-  console.log(env.DATABASE.PORT); // 5432 (number)
   ```
 
-## 0.8.2
+  - Add `transformNextjsConfig` AST transformer to wrap default exports with `withArkEnv` using magicast
+  - Add `findNextjsConfig` and `bootstrapNextjsConfig` utilities for Next.js config discovery and mutation
+  - Integrate Next.js config bootstrapping into the CLI executor during `arkenv init`
+  - Fix next-steps suppression: show manual `withArkEnv` instructions even when the AI skill is detected if auto-bootstrapping failed
 
-### Patch changes
+## 0.2.9
 
-- #### Array coercion *[`#693`](https://github.com/yamcodes/arkenv/pull/693) [`7919b6d`](https://github.com/yamcodes/arkenv/commit/7919b6dcd171553d0e6e6e819a862408284e1f71) [@yamcodes](https://github.com/yamcodes)*
+### Patch Changes
 
-  ArkEnv now coerces arrays when the `coerce` option is enabled (true by default).
-  Arrays are parsed using trimmed, comma-separated values by default.
+- #### Update Next.js scaffold templates to use default import `arkenv` _[`#1140`](https://github.com/yamcodes/arkenv/pull/1140) [`befcefa`](https://github.com/yamcodes/arkenv/commit/befcefa83f6823f4c3f5e54a83ee5ae1112e1e55) [@yamcodes](https://github.com/yamcodes)_
 
-  You can customize this behavior with the `arrayFormat` option:
+  Change the generated `env.ts` templates to import the default `arkenv` factory from the generated config helper instead of the named `createEnv` import, ensuring compatibility with the ArkType IDE extension.
 
-  - `comma` (default): Strings are split by comma-separated values and trimmed.
-  - `json`: Strings are parsed as JSON.
+- #### Improve readability of recommended framework option in init wizard _[`2bd5cd4`](https://github.com/yamcodes/arkenv/commit/2bd5cd4f71fc091348df2fde2c3ccddd6d89d9d9) [@yamcodes](https://github.com/yamcodes)_
 
-  Example:
+  Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-  ```dotenv
-  MY_ARRAY=one,two,three
-  MY_JSON_ARRAY=["a", "b"]
-  ```
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+
+  Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
+
+## 0.2.8
+
+### Patch Changes
+
+- #### Default Next.js layout selection to Simple (1-file) layout _[`#1120`](https://github.com/yamcodes/arkenv/pull/1120) [`9563b47`](https://github.com/yamcodes/arkenv/commit/9563b47a69f376f5d91c84116c4ff36c50133837) [@yamcodes](https://github.com/yamcodes)_
+
+  Change the CLI prompt layout selection ordering to present "Simple" as the recommended first choice and "Strict" as the second choice. Update the non-interactive wizard flow to default to the simple (Unified) layout.
+
+- #### Fix env.gen import path in strict layout and export default alias _[`#1121`](https://github.com/yamcodes/arkenv/pull/1121) [`e75194e`](https://github.com/yamcodes/arkenv/commit/e75194e8883abea2ca2dd1b598b880977052d14f) [@yamcodes](https://github.com/yamcodes)_
+
+  Correct the hardcoded import path to generated factory in Next.js 3-file strict mode client template. Also export `createEnv` as default export (aliased as `arkenv`) in the generated `env.gen.ts` file.
+
+## 0.2.7
+
+### Patch Changes
+
+- #### Format empty schema objects cleanly in scaffolding _[`#1116`](https://github.com/yamcodes/arkenv/pull/1116) [`b62ebbd`](https://github.com/yamcodes/arkenv/commit/b62ebbd316db239295884a32348d1a496e8cd49b) [@yamcodes](https://github.com/yamcodes)_
+
+  Format empty schema objects cleanly as `{}` on a single line (instead of multi-line empty blocks with trailing whitespace) during project scaffolding.
+
+- #### Generate tailored `createEnv` factory in Next.js strict layout _[`#1116`](https://github.com/yamcodes/arkenv/pull/1116) [`b62ebbd`](https://github.com/yamcodes/arkenv/commit/b62ebbd316db239295884a32348d1a496e8cd49b) [@yamcodes](https://github.com/yamcodes)_
+
+  Generate a tailored `createEnv` factory helper in `env.gen.ts` when using the strict split-schema layout (instead of exporting a raw `runtimeEnv` object).
+
+  This eliminates the need to manually declare or reference the `runtimeEnv` object inside the client schema `client.ts` file, aligning it closer to the core `arkenv` experience of simply calling `createEnv(schema, options)`.
+
+  Example usage in `client.ts`:
 
   ```ts
-  const env = arkenv(
+  import { createEnv } from "./generated/env.gen";
+  import { SharedSchema } from "./internal/shared";
+
+  export const env = createEnv(
     {
-      MY_ARRAY: "string[]",
+      NEXT_PUBLIC_API_URL: "string",
     },
     {
-      // optional, 'comma' is default
-      arrayFormat: "comma",
+      extends: [SharedSchema],
     }
   );
+  ```
 
-  console.log(env.MY_ARRAY); // ["one", "two", "three"]
+- #### Support split schema layout in Next.js config wrapper _[`#1116`](https://github.com/yamcodes/arkenv/pull/1116) [`b62ebbd`](https://github.com/yamcodes/arkenv/commit/b62ebbd316db239295884a32348d1a496e8cd49b) [@yamcodes](https://github.com/yamcodes)_
 
-  // Using JSON format
-  const jsonEnv = arkenv(
+  Add support for the strict split schema layout in the Next.js `withArkEnv` configuration wrapper and update CLI scaffolding instructions:
+
+  - Add a `layout` option (`"simple" | "strict"`) to `withArkEnv` configuration, which defaults to auto-detecting the strict layout if split files (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`) exist.
+  - Implement key extraction from strict client and shared schema files.
+  - Update CLI next-steps messages to include `withArkEnv` wrapping instructions for strict layout nextjs projects.
+
+## 0.2.6
+
+### Patch Changes
+
+- #### Implement Next.js separate files mode, shared entry point, and native extends API _[`#1084`](https://github.com/yamcodes/arkenv/pull/1084) [`d921785`](https://github.com/yamcodes/arkenv/commit/d92178567ed4cdd5227cc107bf98d148e5fae0c1) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce dedicated entry points for `@arkenv/nextjs/server`, `@arkenv/nextjs/client`, and `@arkenv/nextjs/shared` to prevent metadata leakage and support compile-time bundler-enforced isolation. Add a native `extends` API to merge validated outputs of extended proxies while maintaining proxy-level protections.
+
+  Also update the CLI `init` wizard to support interactive layout selection (Strict 3-file vs Simple 1-file) and `--strict` / `--simple` flags to bypass interactive selection.
+
+  Example server usage:
+
+  ```ts
+  import { createEnv } from "@arkenv/nextjs/server";
+  import { env as clientEnv } from "./env.client";
+
+  export const env = createEnv(
+    { DATABASE_URL: "string" },
+    { extends: [clientEnv] }
+  );
+  ```
+
+  Example client usage:
+
+  ```ts
+  import { createEnv } from "@arkenv/nextjs/client";
+
+  export const env = createEnv(
+    { NEXT_PUBLIC_API_URL: "string" },
     {
-      MY_JSON_ARRAY: "string[]",
-    },
-    {
-      arrayFormat: "json",
+      runtimeEnv: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+      },
     }
   );
-
-  console.log(jsonEnv.MY_JSON_ARRAY); // ["a", "b"]
   ```
 
-## 0.8.1
+- #### Update Next.js scaffolding template to use codegen workflow _[`#1092`](https://github.com/yamcodes/arkenv/pull/1092) [`c6c30ab`](https://github.com/yamcodes/arkenv/commit/c6c30abbc1df4bb74b2ab5c6f689fcae557ffb05) [@yamcodes](https://github.com/yamcodes)_
+
+  Update the CLI `nextjs` scaffolding template to adopt the new `@arkenv/nextjs/config` codegen workflow. The generated `env.ts` file now imports the auto-generated `createEnv` factory from `env.gen.ts` instead of directly importing from `@arkenv/nextjs`, which eliminates the need to manually destructure `runtimeEnv` variables.
+
+  Additionally, update the CLI usage instructions to guide developers on wrapping their Next.js configuration using the `withArkEnv` helper inside `next.config.ts`.
+
+  #### Add `--no-codegen` CLI option and dedicated prompt for Next.js scaffolding
+
+  Introduce a `--no-codegen` (or `-C`) option and an interactive prompt to allow developers to opt out of the Next.js automatic environment variable code generation workflow. When opted out, the CLI scaffolds the project to use standard runtimeEnv destructuring and skips post-scaffold code generation bootstrapping.
+
+## 0.2.5
+
+### Patch Changes
+
+- #### Automatically detect installed ArkEnv agent skill _[`#1090`](https://github.com/yamcodes/arkenv/pull/1090) [`00f504f`](https://github.com/yamcodes/arkenv/commit/00f504f133e38b039cb2802a12162cee5efa1f23) [@yamcodes](https://github.com/yamcodes)_
+
+  During initialization, check if the `arkenv` agent skill is already present in the workspace. If detected, the installation prompt and setup are bypassed, defaulting to `false`, and an informational message confirming the detection is logged.
+
+- #### Scaffold scanned environment variables as optional types during bootstrap _[`#1083`](https://github.com/yamcodes/arkenv/pull/1083) [`182d1af`](https://github.com/yamcodes/arkenv/commit/182d1af57df5761adb217b0b823b0ddb6d2b5181) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now generates optional schemas without default fallback values for custom/scanned environment keys during bootstrap:
+
+  - **ArkType**: Scaffolds fields with `"string?"` instead of `"string = ''"`
+  - **Zod**: Scaffolds fields with `z.string().optional()` instead of `z.string().default("")`
+  - **Valibot**: Scaffolds fields with `v.optional(v.string())` instead of `v.optional(v.string(), "")`
+
+## 0.2.4
 
 ### Patch changes
 
-- #### Strip undeclared keys from output by default *[`#662`](https://github.com/yamcodes/arkenv/pull/662) [`d83d746`](https://github.com/yamcodes/arkenv/commit/d83d746e5f3672b97dea1d3eff0515a04af1d0e2) [@yamcodes](https://github.com/yamcodes)*
+- #### Fix empty sections in Next.js scaffolded schema _[`7756fcf`](https://github.com/yamcodes/arkenv/commit/7756fcf2bb5012c65d61783d6dda96976fbffe11) [@yamcodes](https://github.com/yamcodes)_
 
-  Environment variables not defined in your schema are now stripped from the output object by default.
+  The CLI no longer emits empty `server: {}`, `client: {}`, or `shared: {}` blocks when no variables belong to that section. Previously, scaffolding a project with no `NEXT_PUBLIC_*` variables produced `client: {}`, which caused a TypeScript error:
 
-  You can customize this behavior using the new `onUndeclaredKey` option.
-
-  For example, assuming this is your `.env` file:
-
-  ```env
-  MY_VAR=hello
-  UNDECLARED_VAR=world
+  ```
+  Type '{}' is missing the following properties from type '{ PORT: never; NODE_ENV: never; }': PORT, NODE_ENV
   ```
 
-  And this is your schema:
+  `server`, `client`, and `shared` sections are now conditionally omitted when empty. `runtimeEnv` is always emitted as it is required by `@arkenv/nextjs`. This applies across all three validator templates (ArkType, Zod, Valibot).
 
-  ```ts
-  const env = arkenv({
-    MY_VAR: type.string(),
-  });
-
-  console.log(env);
-  ```
-
-  Current output:
-
-  ```ts
-  {
-    MY_VAR: "hello";
-  }
-  ```
-
-  Previous output:
-
-  ```ts
-  {
-  	MY_VAR: "hello",
-  	UNDECLARED_VAR: "world"
-  }
-  ```
-
-## 0.8.0
-
-### Minor changes
-
-- ### Coercion *[`#569`](https://github.com/yamcodes/arkenv/pull/569) [`adaada4`](https://github.com/yamcodes/arkenv/commit/adaada4d214c152e8d23c983aea1747d81a0e539) [@yamcodes](https://github.com/yamcodes)*
-
-  Introduced **Schema-Directed Coercion**: now, environment variables defined as `number` or `boolean` in your schema are automatically parsed to their correct types.
-
-  If you want to opt-out of this feature, pass `config.coerce: false` to `createEnv()` (`arkenv()`). Example:
-
-  ```ts
-  arkenv(schema, { coerce: false });
-  ```
-
-  To learn more about the new coercion system, read [the docs](https://arkenv.js.org/docs/arkenv/coercion).
-
-  - **BREAKING**: The `createEnv()` function signature has changed to support a configuration object.
-    Instead of `createEnv(schema, env)`, use `createEnv(schema, config)` where `config` includes `env` (`process.env` by default, like before) and the newly added `coerce` option (`true` by default).
-    For example, Vite users might need to update their `vite.config.ts`:
-    ```ts
-    const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
-    ```
-  - **BREAKING**: The custom `boolean` morph has been removed. We now use `arktype`'s standard `boolean` instead, which is coerced when used within `createEnv` / `arkenv`. This is only breaking if you specifically use `boolean` unrelated to `createEnv` / `arkenv` / our plugins and expect it to be coerced.
-  - **BREAKING**: `number.port` is now a strict numeric refinement (0-65535). It no longer parses strings automatically outside of `createEnv` / `arkenv`. This is only breaking if you specifically use `port` unrelated to `createEnv` / `arkenv` / our plugins and expect it to be parsed as a number.
+## 0.2.3
 
 ### Patch changes
 
-- #### Fix error formatting *[`#582`](https://github.com/yamcodes/arkenv/pull/582) [`674a2ad`](https://github.com/yamcodes/arkenv/commit/674a2adfe8ffbb9bc3235f76c5d9d00e55ee37a4) [@aruaycodes](https://github.com/aruaycodes)*
+- #### Add Next.js support to ArkEnv CLI _[`97f4c17`](https://github.com/yamcodes/arkenv/commit/97f4c17088cfe8e5554ebc232d3faedb71492049) [@yamcodes](https://github.com/yamcodes)_
 
-  The ArkEnv error message is now formatted better, using correct spacing and removing the `f` prefix.
+  ArkEnv CLI now fully supports initializing ArkEnv in Next.js projects.
 
-  Before:
+  - Automatically detect Next.js projects via `package.json` dependencies or config files (`next.config.ts`, `next.config.js`, etc.).
+  - Configure framework settings, skip redundant type definition scaffolding, and install `@arkenv/nextjs` along with `arktype` (which is required by the integration, even when selecting a different validator like Zod or Valibot).
+  - Dynamically split detected variables into `server`, `client`, and `shared` fields based on the selected validator (ArkType, Zod, or Valibot), mapping browser/shared variables in the `runtimeEnv` block to prevent server secrets from leaking.
 
-  ```
-  apps/playgrounds/node on  main [$] via 🤖 v24.11.1
-  ❯ ns
-
-  > node-playground@ start /Users/yamcodes/code/arkenv/apps/playgrounds/node
-  > tsx --env-file .env index.ts
-
-  /Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49
-                  throw new ArkEnvError(validatedEnv);
-                        ^
-
-  f [ArkEnvError]: Errors found while validating environment variables
-    ZED_ENV must be present (was missing)
-
-      at m (/Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49:9)
-      at <anonymous> (/Users/yamcodes/code/arkenv/apps/playgrounds/node/index.ts:4:13)
-      at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
-      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)
-      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
-
-  Node.js v24.11.1
-   ELIFECYCLE  Command failed with exit code 1.
-  ```
-
-  After:
-
-  ```
-  apps/playgrounds/node on  improve-error-formatting [$?] via 🤖 v24.11.1
-  ❯ ns
-
-  > node-playground@ start /Users/yamcodes/code/arkenv/apps/playgrounds/node
-  > tsx --env-file .env index.ts
-
-  /Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49
-                  throw new ArkEnvError(validatedEnv);
-                        ^
-
-  ArkEnvError: Errors found while validating environment variables
-    ZED_ENV must be present (was missing)
-
-      at m (/Users/yamcodes/code/arkenv/packages/arkenv/src/create-env.ts:49:9)
-      at <anonymous> (/Users/yamcodes/code/arkenv/apps/playgrounds/node/index.ts:4:13)
-      at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
-      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)
-      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
-
-  Node.js v24.11.1
-   ELIFECYCLE  Command failed with exit code 1.
-  ```
-
-## 0.7.8
+## 0.2.2
 
 ### Patch changes
 
-- #### Fix editor autocomplete for `createEnv` (`arkenv`) function *[`#531`](https://github.com/yamcodes/arkenv/pull/531) [`e91a804`](https://github.com/yamcodes/arkenv/commit/e91a804dc6ec7d4a80d9bee94e87d3892f013729) [@yamcodes](https://github.com/yamcodes)*
+- #### Allow scaffolding into non-empty directory when `--force` is used _[`#1061`](https://github.com/yamcodes/arkenv/pull/1061) [`3a08754`](https://github.com/yamcodes/arkenv/commit/3a08754d39dd36a5e1715bd7ffcc6135e91371ef) [@yamcodes](https://github.com/yamcodes)_
 
-  Fix a signature issue where editor autocomplete was not working for the `createEnv` function.
+  Ensure `--force` permits new-project scaffolding into a non-empty directory (e.g. `.`) while preventing silent overwrites of user files via a preflight collision check.
 
-## 0.7.7
+- #### Refactor prompt wizard and steps to be pure and typesafe _[`#1060`](https://github.com/yamcodes/arkenv/pull/1060) [`85380d6`](https://github.com/yamcodes/arkenv/commit/85380d624c09d473e04cc14382074bbfc06dbf11) [@yamcodes](https://github.com/yamcodes)_
 
-### Patch changes
+  Refactored the interactive prompt wizard and individual steps to be pure, modular, and typesafe. Steps now accept explicit configuration options and return normalized results instead of reading the filesystem directly or relying on global mock state.
 
-- #### Fix "Type instantiation is excessively deep" error *[`1d86d18`](https://github.com/yamcodes/arkenv/commit/1d86d187b08aba7c6b83f7bdce2d47bae47c7eb9) [@yamcodes](https://github.com/yamcodes)*
+- #### Strip example `packageManager` fields during scaffolding _[`#1055`](https://github.com/yamcodes/arkenv/pull/1055) [`a30c9ae`](https://github.com/yamcodes/arkenv/commit/a30c9ae949c11f7a1d859c26f2049cda1a7b33f0) [@pullfrog](https://github.com/apps/pullfrog)_
 
-  Fixed "Type instantiation is excessively deep and possibly infinite" errors when using ArkEnv with complex ArkType schemas. This was [reported](https://github.com/yamcodes/arkenv/issues/497) in the ArkEnv Vite Plugin along with [ArkType 2.1.28](https://github.com/arktypeio/arktype/blob/HEAD/ark/type/CHANGELOG.md#2128), and was fixed by an overall improvement of type stability including optimizing how generics are passed to the validation logic.
+  Remove copied example `packageManager` fields during new project scaffolding so installs use the package manager selected by the CLI.
 
-## 0.7.6
-
-### Patch changes
-
-- #### Support type definitions for schema reuse *[`2424391`](https://github.com/yamcodes/arkenv/commit/24243912101b8a1ef944a3d4d15747196a1a2215) [@yamcodes](https://github.com/yamcodes)*
-
-  `arkenv()` and `@arkenv/vite-plugin` now accept both raw schema objects and type definitions created with ArkType's `type()` function. This allows you to define your schema once and reuse it across your application, which is especially useful for multi-runtime setups like Vite where you need the same schema in both `vite.config.ts` and client code.
-
-  ```ts
-  import arkenv, { type } from "arkenv";
-
-  // Define schema once
-  const Env = type({
-    PORT: "number.port",
-    HOST: "string.host",
-  });
-
-  // Reuse it in multiple places
-  const configEnv = arkenv(Env, process.env);
-  const testEnv = arkenv(Env, { PORT: "3000", HOST: "localhost" });
-  ```
-
-## 0.7.5
+## 0.2.1
 
 ### Patch changes
 
-- #### Add declaration maps for better IDE experience *[`#360`](https://github.com/yamcodes/arkenv/pull/360) [`17c970f`](https://github.com/yamcodes/arkenv/commit/17c970fb6d8ac433669e9d42c21b5ce6002066dd) [@yamcodes](https://github.com/yamcodes)*
+- #### Fix --help table alignment _[`#1052`](https://github.com/yamcodes/arkenv/pull/1052) [`cf7bd02`](https://github.com/yamcodes/arkenv/commit/cf7bd022ab5477cf5bfbb2132b4d09fac703b9cf) [@yamcodes](https://github.com/yamcodes)_
 
-  Enable TypeScript declaration maps so that when you use "Go to Definition" in your IDE, it navigates directly to the original source code instead of the generated type definition files. This makes it easier to explore and understand how the packages work.
+- #### Support POSIX-style short-flag bundling in CLI parser _[`#1047`](https://github.com/yamcodes/arkenv/pull/1047) [`b2e4865`](https://github.com/yamcodes/arkenv/commit/b2e4865dfa5cd84370781899d7f0862dbff544d5) [@yamcodes](https://github.com/yamcodes)_
 
-## 0.7.4
+  Enables combining multiple short flags (e.g. `-yq` instead of `-y -q` or `-yfq` instead of `-y -f -q`) in CLI commands. Flag values starting with `-` (e.g. `init -e -abc`) are preserved without expansion.
 
-### Patch changes
+- #### Validate valued CLI flags and reject missing values _[`#1051`](https://github.com/yamcodes/arkenv/pull/1051) [`dec2581`](https://github.com/yamcodes/arkenv/commit/dec2581e87d10fd45835f9bad1666a62068975b2) [@yamcodes](https://github.com/yamcodes)_
 
-- #### Enable minification to reduce bundle size *[`#336`](https://github.com/yamcodes/arkenv/pull/336) [`7236cb2`](https://github.com/yamcodes/arkenv/commit/7236cb25de07f7afcc571dd3364b1507544de523) [@yamcodes](https://github.com/yamcodes)*
-
-  Enable minification in build output. Reduces bundle size from 711 B to 708 B. Comments are removed from the bundle but remain in source files.
-
-- #### Fix browser compatibility by replacing `util.styleText` with cross-platform ANSI codes *[`#290`](https://github.com/yamcodes/arkenv/pull/290) [`bf465de`](https://github.com/yamcodes/arkenv/commit/bf465dee26cd20619455bcc77f66424ca48da0fe) [@yamcodes](https://github.com/yamcodes)*
-
-  Replace Node.js `util.styleText` with cross-platform ANSI color codes to fix the "Module 'node:util' has been externalized for browser compatibility" error in browser environments. The library still maintains zero dependencies!
-
-  **Changes:**
-
-  - Replaced `node:util.styleText` with custom ANSI implementation
-  - Added environment detection (uses ANSI in Node, plain text in browsers)
-  - Respects `NO_COLOR`, `CI` environment variables, and TTY detection
-  - Organized utilities into `lib/` folder with comprehensive tests
-
-  ```ts
-  // No longer throws "node:util has been externalized" error
-  import { createEnv } from "arkenv";
-
-  const env = createEnv({
-    VITE_API_URL: "string",
-    VITE_PORT: "number.port",
-  });
-  ```
-
-## 0.7.3
-
-### Patch changes
-
-- #### Automatic boolean string conversion *[`#218`](https://github.com/yamcodes/arkenv/pull/218) [`e554e2b`](https://github.com/yamcodes/arkenv/commit/e554e2b41aab1b8e29d873982ea587c069f4732d) [@yamcodes](https://github.com/yamcodes)*
-
-  The `boolean` type now accepts `"true"`/`"false"` strings from environment variables and converts them to actual boolean values. This also works with boolean defaults.
-
-  Example:
-
-  ```ts
-  import arkenv from "arkenv";
-
-  const env = arkenv({
-    DEBUG: "boolean",
-    ENABLE_FEATURE: "boolean = true",
-  });
-
-  console.log(env.DEBUG);
-  console.log(env.ENABLE_FEATURE);
-  ```
-
-  Result:
-
-  ```sh
-  ❯ DEBUG=true npx tsx index.ts
-  true
-  true
-  ```
-
-## 0.7.2
-
-### Patch changes
-
-- #### Support array defaults using type().default() syntax *[`#199`](https://github.com/yamcodes/arkenv/pull/199) [`e50dba1`](https://github.com/yamcodes/arkenv/commit/e50dba1f19418f8fc007dc786df1172067e3d07c) [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)*
-
-  Fix to an issue where `type("array[]").default(() => [...])` syntax was not accepted by `createEnv` due to overly restrictive type constraints. The function now accepts any string-keyed record while still maintaining typesafety through ArkType's validation system.
-
-  ##### New features
-
-  - Array defaults to empty using `type("string[]").default(() => [])` syntax
-  - Support for complex array types with defaults
-  - Mixed schemas combining string-based and type-based defaults
-
-  ##### Example
-
-  ```typescript
-  const env = arkenv({
-    ALLOWED_ORIGINS: type("string[]").default(() => ["localhost"]),
-    FEATURE_FLAGS: type("string[]").default(() => []),
-    PORT: "number.port",
-  });
-  ```
-
-## 0.7.1
-
-### Patch changes
-
-- Export `ArkEnvError` *[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)*
-
-  You can now import `ArkEnvError` from `arkenv`:
-
-  ```ts
-  import { ArkEnvError } from "arkenv";
-  ```
-
-- Improve JSDoc *[`#161`](https://github.com/yamcodes/arkenv/pull/161) [`221f9ef`](https://github.com/yamcodes/arkenv/commit/221f9efdef65691b0c5155b12ec460404dddbe82) [@yamcodes](https://github.com/yamcodes)*
-
-  The JSDoc for `arkenv` and `createEnv` is now more descriptive.
-
-## 0.7.0
-
-### Minor changes
-
-- #### `EnvSchema` type now always uses ArkEnv scope *[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)*
-
-  The `EnvSchema` type has been simplified and fixed to include the ArkEnv scope.
-
-  Before:
-
-  ```
-  export type EnvSchema<def, $ = {}> = type.validate<def, $>;
-  ```
-
-  After:
-
-  ```
-  export type EnvSchema<def> = type.validate<def, (typeof $)["t"]>; // (Whereas $ is the ArkEnv scope)
-  ```
-
-  BREAKING CHANGE:
-
-  We no longer allow specifying a custom scope in the `EnvSchema` type.
-
-- #### `createEnv` signature simplified *[`#149`](https://github.com/yamcodes/arkenv/pull/149) [`02698db`](https://github.com/yamcodes/arkenv/commit/02698db49d383c77e7356419e62e66b54c237b7e) [@yamcodes](https://github.com/yamcodes)*
-
-  The `createEnv` function now has a simpler signature:
-
-  - No longer uses multiple overloads. Return type now always uses the ArkEnv scope
-
-  BREAKING CHANGE:
-
-  You can no longer rely on `EnvSchema` to type `createEnv` with a custom scope. Only the ArkEnv scope is supported.
-
-### Patch changes
-
-- #### Fix default export autocomplete for better developer experience *[`#147`](https://github.com/yamcodes/arkenv/pull/147) [`2ec4daa`](https://github.com/yamcodes/arkenv/commit/2ec4daae714f6fde09e75d9fae417015111ee007) [@yamcodes](https://github.com/yamcodes)*
-
-  The default export now properly aliases as `arkenv` instead of `createEnv`, providing better autocomplete when importing.
-
-  For example, in VS Code (and other IDEs that support autocomplete), when writing the following code:
-
-  ```ts
-  // top of file
-
-  const env = arke;
-  ```
-
-  Your IDE will now show completion for `arkenv`, resulting in:
-
-  ```ts
-  // top of file
-  import arkenv from "arkenv";
-
-  const env = arkenv();
-  ```
-
-  This change maintains full backward compatibility - all existing imports continue to work unchanged (like `import { createEnv } from "arkenv";`).
-
-- #### Replace Chalk dependency with Node.js built-in `util.styleText` *[`e6eca4f`](https://github.com/yamcodes/arkenv/commit/e6eca4f34eeed2bc2249c3a5a2fced9880bee081) [@yamcodes](https://github.com/yamcodes)*
-
-  Remove the external `chalk` dependency and replace it with Node.js built-in `util.styleText`, available [from Node.js v20.12.0](https://nodejs.org/api/util.html#utilstyletextformat-text-options). This makes ArkEnv zero-dependency.
-
-## 0.6.0
-
-### Minor changes
-
-- #### Expose `type` function *[`#139`](https://github.com/yamcodes/arkenv/pull/139) [`721c014`](https://github.com/yamcodes/arkenv/commit/721c014679983d18a235cece0259fe6940269b07) [@yamcodes](https://github.com/yamcodes)*
-
-  ArkEnv now exposes a `type` function with built-in ArkEnv scope, providing access to environment-specific types like `string.host` and `number.port`.
-
-  ```ts
-  import { type } from "arkenv";
-
-  const env = type({
-    NODE_ENV: "string",
-    HOST: "string.host",
-    PORT: "number.port",
-  });
-
-  const result = env.assert({
-    NODE_ENV: "development",
-    HOST: "localhost",
-    PORT: "3000",
-  });
-  ```
-
-  This extends ArkType's `type` function with ArkEnv-specific validations for common environment variable patterns.
-
-## 0.5.0
-
-### Minor changes
-
-- #### Export `createEnv` as the default export *[`#136`](https://github.com/yamcodes/arkenv/pull/136) [`2b06c4c`](https://github.com/yamcodes/arkenv/commit/2b06c4c09f3be7192dbd0e23a1bc78506a4d7293) [@yamcodes](https://github.com/yamcodes)*
-
-  You can now import `createEnv` as the default export:
-
-  ```ts
-  import arkenv from "arkenv";
-  ```
-
-  This enables syntax highlighting along with the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark):
-
-  ![ArkType syntax highlighting in VS Code](https://arkenv.js.org/assets/dx.png)
-
-  Note that named imports still work:
-
-  ```ts
-  import { createEnv } from "arkenv";
-  ```
-
-  **BREAKING CHANGE:** The default export now directly exports `createEnv` instead of an object containing all exports. If you previously used:
-
-  ```ts
-  import arkenv from "arkenv";
-  const env = arkenv.createEnv({ ... });
-  ```
-
-  Update to:
-
-  ```ts
-  import arkenv from "arkenv";
-  const env = arkenv({ ... });
-  ```
-
-## 0.4.0
-
-### Minor changes
-
-- ## Improved type inference and scope-based validation *[`#129`](https://github.com/yamcodes/arkenv/pull/129) [`dd15b60`](https://github.com/yamcodes/arkenv/commit/dd15b608281b04eaac1bf93d3911a234e7e7565d) [@yamcodes](https://github.com/yamcodes)*
-
-  The `createEnv` function got a facelift with better TypeScript inference and introduced a new scope-based validation system.
-
-  **Key improvements:**
-
-  - **Better ecosystem integration**: Use `string.host` and `number.port` in your schemas, as if they were native ArkType keywords
-  - **Cleaner API**: No need to awkwardly import `host` and `port` types anymore
-
-  ### Before:
-
-  `host` and `port` had to be manually imported from the `arkenv` package, and used as arguments to the `createEnv` function.
-
-  ```ts
-  import { createEnv, host, port } from "arkenv";
-
-  const env = createEnv({
-    HOST: host, // Validates IP addresses or "localhost"
-    PORT: port, // Validates port numbers (0-65535)
-    NODE_ENV: "string", // Standard string validation
-  });
-  ```
-
-  ### After:
-
-  Now you can use `string.host` and `number.port` in your schemas, in a way that is much more natural and idiomatic within the ArkType ecosystem.
-
-  ```ts
-  import { createEnv } from "arkenv";
-
-  const env = createEnv({
-    HOST: "string.host", // Validates IP addresses or "localhost"
-    PORT: "number.port", // Validates port numbers (0-65535)
-    NODE_ENV: "string", // Standard string validation
-  });
-  ```
-
-  ### BREAKING CHANGE:
-
-  - We are no longer exporting `host` and `port` types. Use `string.host` and `number.port` instead.
-
-## 0.3.0
-
-### Minor changes
-
-- Rename `defineEnv` to `createEnv` *[`d46b233`](https://github.com/yamcodes/arkenv/commit/d46b23355546fd0531123cfaaffab95f74a472da) [@yamcodes](https://github.com/yamcodes)*
-
-  The main API for building a validated env object is now `createEnv`.
-
-  **Before**
-
-  ```ts
-  import { defineEnv } from "arkenv";
-
-  const env = defineEnv({
-    NODE_ENV: "'development' | 'production' | 'test'",
-  });
-  ```
-
-  **After**
-
-  ```ts
-  import { createEnv } from "arkenv";
-
-  const env = createEnv({
-    NODE_ENV: "'development' | 'production' | 'test'",
-  });
-  ```
-
-  This aligns better with the actual behavior: ArkEnv creates, validates, and returns a typesafe env object.
-
-  BREAKING CHANGE: `defineEnv` has been removed in favor of `createEnv`.
+  Add parser-level validation to reject flags that require a value (e.g. `--example` or `-e`) when they are passed without one. A validation error message is set, and the CLI exits with status code 1.
 
 ## 0.2.0
 
 ### Minor changes
 
-- Rename from `ark.env` to `arkenv` *[`#102`](https://github.com/yamcodes/arkenv/pull/102) [`dfdc17f`](https://github.com/yamcodes/arkenv/commit/dfdc17f3510a9c07586201ecaf310cba3b22d67f) [@yamcodes](https://github.com/yamcodes)*
+- #### Replace `--name`/`-n` flag with `[project-name]` positional argument on `init` command _[`#1041`](https://github.com/yamcodes/arkenv/pull/1041) [`3c1c462`](https://github.com/yamcodes/arkenv/commit/3c1c462b3ac763dbe405a507fee71ef01a5a1e1c) [@yamcodes](https://github.com/yamcodes)_
 
-  BREAKING CHANGE:
+  The `init` command now accepts an optional `[project-name]` positional argument (e.g., `arkenv init my-new-project` or `arkenv init .`).
 
-  Package renamed from `ark.env` to `arkenv`, main export renamed from `env` to `defineEnv`.
+  The `--name` and `-n` flags have been removed.
 
-  Before:
+  **BREAKING CHANGE**: The `--name` / `-n` flags are no longer supported and will result in a parsing error. Use the positional `[project-name]` argument instead.
+
+### Patch changes
+
+- #### Fix working directory resolution when executing via monorepo scripts _[`169d9bf`](https://github.com/yamcodes/arkenv/commit/169d9bf3028a4ec50a8938742f635bae63286a3e) [@yamcodes](https://github.com/yamcodes)_
+
+  Ensure that the CLI processes paths and directory status checks relative to the directory where the command was initiated (`INIT_CWD`), rather than the monorepo root.
+
+  This fixes issues where running the CLI locally via workspace runners like `pnpm arkenv` from outside the workspace root failed with empty-directory checks.
+
+- #### Fix scaffolding templates for Zod and Valibot validators _[`#1034`](https://github.com/yamcodes/arkenv/pull/1034) [`1c0dbb9`](https://github.com/yamcodes/arkenv/commit/1c0dbb9d9fa8ca1e8b289b895ca8b3d0838a4ecd) [@yamcodes](https://github.com/yamcodes)_
+
+  Vite and Bun fullstack templates now wrap schemas in `type({...})`:
 
   ```ts
-  import ark, { host, port } from "ark.env";
-  const env = ark.env({
-    HOST: host,
-    PORT: port,
+  import { type } from "arkenv";
+  import { z } from "zod";
+
+  export const Env = type({
+    PORT: z.coerce.number(),
   });
   ```
 
-  After:
+  Vanilla templates now call `arkenv({...})` directly without wrapping:
 
   ```ts
-  import { defineEnv, host, port } from "arkenv";
-  const env = defineEnv({
-    HOST: host,
-    PORT: port,
+  import arkenv from "arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.coerce.number(),
   });
   ```
 
-## 0.1.5
+- #### `--example` now forces the new-project wizard regardless of the current directory _[`#1042`](https://github.com/yamcodes/arkenv/pull/1042) [`9116f33`](https://github.com/yamcodes/arkenv/commit/9116f3329ddf0203df046980afa13b2a218ccd1a) [@yamcodes](https://github.com/yamcodes)_
 
-### Patch changes
+  Previously, passing `--example` in a non-empty directory (or one that already has a
+  `package.json`) would silently fall through to the existing-project flow, ignoring the
+  flag entirely. The flag now always triggers the new-project wizard:
 
-- Switch from picocolors to Chalk *[`f7c6501`](https://github.com/yamcodes/arkenv/commit/f7c6501272064d13a6f048d68ba826d58eb2eee7) [@yamcodes](https://github.com/yamcodes)*
+  ```sh
+  # Works even in a non-empty directory or one with package.json
+  arkenv init --example basic
+  ```
 
-  Switch the CLI coloring tool from [picocolors](https://github.com/alexeyraspopov/picocolors) to [Chalk](https://github.com/chalk/chalk). Chalk is a much more popular library that is already included in our lockfile, and is more modern [by being ESM](https://github.com/chalk/chalk#install).
-
-## 0.1.4
-
-### Patch changes
-
-- Fix badges in README *[`9e07e48`](https://github.com/yamcodes/arkenv/commit/9e07e4872ece404fe2075af55c4d14dd1944bd93) [@yamcodes](https://github.com/yamcodes)*
-
-## 0.1.3
-
-### Patch changes
-
-- Fix Node 18 build issue *[`97424ef`](https://github.com/yamcodes/arkenv/commit/97424ef331d6ce1a9f26c9b50c5cc43d7d0547bb) [@yamcodes](https://github.com/yamcodes)*
-
-  Fix picocolors imports causing arkenv to not work in Node 18
-
-## 0.1.2
-
-### Patch changes
-
-- Fix npm README *[`cddd970`](https://github.com/yamcodes/arkenv/commit/cddd970e9d8f0213ece7b8b8cb3d6cf47fbbeecd) [@yamcodes](https://github.com/yamcodes)*
-
-  This is just a documentation fix to display the correct README.md file in the npm registry.
-
-## 0.1.1
-
-### Patch changes
-
-- Fix build exports *[`05f60dd`](https://github.com/yamcodes/arkenv/commit/05f60ddb4f2869f2a6a771dd6aa4b79d4b4cb738) [@yamcodes](https://github.com/yamcodes)*
-
-  Fix the built package by modifying the exports to the correct path.
+  **Special case – `arkenv init . --example basic`**: If you explicitly pass `.` as the
+  project name (or type it at the prompt) and the current directory is **not empty**, the
+  CLI aborts with a clear error instead of scaffolding into the dirty directory. When the
+  directory **is** empty, `.` is used for the current directory while the package name is
+  normalized to the current directory's basename as before.
 
 ## 0.1.0
 
 ### Minor changes
 
-- Rename main function to `env` and use support a default export *[`ba5bee4`](https://github.com/yamcodes/arkenv/commit/ba5bee435154b183e0973ec1e17e5739473af866) [@yamcodes](https://github.com/yamcodes)*
+- #### Enforce technical requirements during `arkenv init` _[`#1028`](https://github.com/yamcodes/arkenv/pull/1028) [`77e7235`](https://github.com/yamcodes/arkenv/commit/77e7235f082d3a8006694eb7a4c2ad4535427655) [@yamcodes](https://github.com/yamcodes)_
 
-  This change allows importing and using the library in the following way:
+  **BREAKING CHANGE**: The CLI now performs early checks for technical requirements and will exit with an error if they are not met.
 
-  ```ts
-  import ark from "arkenv";
+  The following requirements are now enforced:
 
-  const env = arkenv({
-    HOST: host,
-    PORT: port,
-  });
+  - Node.js version >= 22
+  - TypeScript version >= 5.1
+  - `strict: true` in `tsconfig.json`
+  - `moduleResolution` set to `bundler`, `node16`, or `nodenext` in `tsconfig.json`
+  - Existence of `package.json`
+
+  **Migration**: Ensure your environment and configuration meet these requirements before running `arkenv init`. If you need to bypass these checks, or force scaffolding in a non-empty directory, use the `--force` (or `-f`) flag.
+
+### Patch changes
+
+- #### Fix pluralization and 0-case in environment variable detection messages _[`1c4f566`](https://github.com/yamcodes/arkenv/commit/1c4f566d4812c4eaaef03f6cb3ec2598bb39d372) [@yamcodes](https://github.com/yamcodes)_
+
+  The CLI now correctly handles singular and plural cases for detected environment variables (e.g., "1 key" vs "2 keys"). It also correctly suppresses the prompt when no variables are detected.
+
+- #### Add "New Project Flow" into `arkenv init` _[`#1030`](https://github.com/yamcodes/arkenv/pull/1030) [`216d232`](https://github.com/yamcodes/arkenv/commit/216d232d92eb0e777605766572a7898bcf283c2e) [@yamcodes](https://github.com/yamcodes)_
+
+  The `arkenv init` command now supports scaffolding complete projects from verified examples when run in an empty directory.
+
+  - **Smart Detection**: Automatically enters "New Project Flow" in empty directories or when `--force` is used.
+  - **Example Selection**: Interactive prompt to choose from curated examples (Vite, Bun, Zod, etc.).
+  - **New Flags**:
+    - `--example`, `-e`: Skip the prompt and specify an example name (e.g., `with-vite-react`).
+    - `--name`, `-n`: Specify the project name for the scaffolded project.
+  - **Auto-Install**: Automatically detects and runs the package manager's installation command.
+
+  Usage:
+
+  ```bash
+  # Interactive flow in an empty directory
+  arkenv init
+
+  # Non-interactive scaffolding
+  arkenv init --example with-vite-react --name my-new-app
   ```
 
-  You can also import the `env` function (and any other exports) directly:
+## 0.0.10
 
-  ```ts
-  import { env } from "arkenv";
-  ```
+### Patch changes
+
+- #### Add "(Recommended)" label to various prompts for consistency _[`da77efb`](https://github.com/yamcodes/arkenv/commit/da77efb0ff22a998848f94f357cb5e3ced325b98) [@yamcodes](https://github.com/yamcodes)_
+- #### Fix init wizard for Ctrl+C _[`#1024`](https://github.com/yamcodes/arkenv/pull/1024) [`f829e54`](https://github.com/yamcodes/arkenv/commit/f829e543c7e9811b116211c0208a2bd99ab0c840) [@yamcodes](https://github.com/yamcodes)_
+
+  Fix the init wizard to abort immediately when prompts are canceled or overwrite is declined.
+
+## 0.0.9
+
+### Patch changes
+
+- #### Refined setup experience in `arkenv init` _[`#1016`](https://github.com/yamcodes/arkenv/pull/1016) [`d536ed7`](https://github.com/yamcodes/arkenv/commit/d536ed7f481f5b81df75329e2eee46c3f9ce1b91) [@yamcodes](https://github.com/yamcodes)_
+
+  - **Clearer Framework Options**: Updated terminology to better distinguish between server-side runtime validation and client-side bundling integrations.
+  - **Architecture Detection**: Improved detection logic recommends the most efficient configuration based on your project's features.
+  - **Better In-File Guidance**: Generated templates now include comments clarifying validation behavior for your specific environment.
+
+- #### Add keyboard navigation hints _[`ac3adcc`](https://github.com/yamcodes/arkenv/commit/ac3adcc26a121975981655fb5c339e95084328bf) [@yamcodes](https://github.com/yamcodes)_
+
+- #### Improve Ctrl+C handling and implement graceful shutdown _[`#1019`](https://github.com/yamcodes/arkenv/pull/1019) [`102ce4a`](https://github.com/yamcodes/arkenv/commit/102ce4a60b82b88734d3d7c81d4ae430738bc277) [@yamcodes](https://github.com/yamcodes)_
+
+  - Implemented graceful shutdown for `SIGINT` (Ctrl+C) to flush logs and JSON data, with a 2-second safety timeout and support for immediate exit on a second Ctrl+C.
+  - Corrected exit code (130) for `SIGINT` terminations.
+  - Fixed a bug where the `init` wizard would continue after a prompt was cancelled.
+
+- #### Respect `tsconfig.json` for path resolution and scaffolding _[`#1013`](https://github.com/yamcodes/arkenv/pull/1013) [`0a18edd`](https://github.com/yamcodes/arkenv/commit/0a18edd97564b5b178bd20235a1bb0c20ed375ab) [@yamcodes](https://github.com/yamcodes)_
+
+  The ArkEnv CLI now dynamically resolves configuration paths and scans project files by respecting `tsconfig.json` settings (`rootDir`, `paths`, `baseUrl`).
+
+  Key improvements include:
+
+  - **Robust `tsconfig` Parser**: Added support for parsing `tsconfig.json` files with comments (`jsonc-parser`), handling `extends`, `rootDir`, `baseUrl`, and `paths` alias resolution.
+  - **Dynamic Scaffolding Defaults**: Updated `init` scaffolding logic to suggest project-appropriate default paths based on `compilerOptions.rootDir` rather than hardcoding `./src/env.ts`.
+  - **Advanced Environment Scanning**: Enhanced `getEnvExampleKeys` to scan project source files for `process.env` and `import.meta.env` usages, correctly resolving aliased imports (e.g. `@/env`).
+  - **Framework & Package Manager Detection**: Leveraged parsed `tsconfig.json` context to accurately identify project frameworks and package managers.
+
+## 0.0.8
+
+### Patch changes
+
+- #### Fix JSON output routing and improve CLI reliability _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
+
+  Fixed several inconsistencies in how the CLI reports its progress and errors:
+
+  - **Correct JSON Stream Routing**: When using `--json`, interactive logs and progress updates are now correctly routed to `stderr`. This ensures that `stdout` contains only valid, pipeable JSON data.
+  - **Improved Silent Mode**: Fixed a bug where some ANSI escape codes could leak into the output when running in `--quiet` mode.
+  - **Accurate Exit Codes**: The CLI now consistently exits with a non-zero status code when a process is cancelled or fails, improving compatibility with CI/CD pipelines.
+  - **Safer Error Logging**: Error stacks and crash details are now routed exclusively to `stderr`, preventing them from corrupting structured output.
+
+- #### Improve CLI output formatting and visual consistency _[`#1008`](https://github.com/yamcodes/arkenv/pull/1008) [`7228020`](https://github.com/yamcodes/arkenv/commit/722802003cc0425db73add2937403ba57d8b2efa) [@yamcodes](https://github.com/yamcodes)_
+
+  - Standardized formatting of paths, filenames, and commands using a light blue color.
+  - Updated all interactive prompts and instruction messages to use consistent code styling.
+
+- #### Improve reliability and transparency of initialization process _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
+
+  Improved the `init` command to be more robust and informative:
+
+  - **Resilient Scaffolding**: The initialization process is now more atomic, validating the plan before applying changes to minimize partial configurations on failure.
+  - **Enhanced Debugging in Quiet Mode**: When running with `--quiet` (common in CI), output from dependency installation is now buffered and only displayed if the installation fails, providing critical context without cluttering successful runs.
+  - **Improved Framework Detection**: Auto-detection of Bun environments is now more reliable, correctly identifying the runtime even when dependencies are not yet installed.
+  - **Clearer Error Reporting**: Provides more specific error messages and instructions when individual scaffolding steps fail.
+
+- #### Robust project configuration and comment preservation _[`#1000`](https://github.com/yamcodes/arkenv/pull/1000) [`ce1a849`](https://github.com/yamcodes/arkenv/commit/ce1a8496be36960078cdae87b9ae980e1d7dfd79) [@yamcodes](https://github.com/yamcodes)_
+
+  Improved how the CLI modifies project files to be more respectful of user configuration:
+
+  - **Preserve Comments and Formatting**: Updating `tsconfig.json` now uses a non-destructive parser that preserves your comments, indentation, and existing formatting.
+  - **Reliable Plugin Injection**: Injection of ArkEnv plugins into `vite.config.ts` and `bun.config.ts` now uses AST-based manipulation, making it much more robust against varied coding styles and existing configurations.
+  - **Improved Atomic Writes**: File system operations now use a more centralized and tested abstraction, reducing the risk of file corruption during scaffolding.
+
+## 0.0.7
+
+### Patch changes
+
+- #### Prevent duplicate ArkEnv type injections in `env.d.ts` _[`#987`](https://github.com/yamcodes/arkenv/pull/987) [`6403a08`](https://github.com/yamcodes/arkenv/commit/6403a080178f1ccd58519e65ed4e6f69b9af0aff) [@yamcodes](https://github.com/yamcodes)_
+
+  Fixed an issue where the CLI would append ArkEnv type definitions multiple times if the `// @arkenv-types` marker was missing but the types were already present. The CLI now detects existing `ImportMetaEnvAugmented` (Vite) and `ProcessEnvAugmented` (Bun) definitions to avoid duplication.
+
+- #### Improve CLI feedback for Vite config and type definitions _[`#992`](https://github.com/yamcodes/arkenv/pull/992) [`b89a7e8`](https://github.com/yamcodes/arkenv/commit/b89a7e88effa6705c6de41a6238342140ac30692) [@yamcodes](https://github.com/yamcodes)_
+
+  - Only log "Updated vite.config.ts" if the file was actually modified.
+  - Clarify the type definition append step and provide feedback if the update was skipped.
+
+## 0.0.6
+
+### Patch changes
+
+- #### Generate `env.d.ts` file for plugins _[`#969`](https://github.com/yamcodes/arkenv/pull/969) [`93389bd`](https://github.com/yamcodes/arkenv/commit/93389bd185e47c1bc62383f666e14afd244128a8) [@yamcodes](https://github.com/yamcodes)_
+
+  When installing the Vite plugin or the Bun plugin, a matching `env.d.ts` will be generated if one is not present.
+
+  If one _is_ present, the CLI will offer to append the necessary types to it.
+
+  This allows for typesafety when calling via `process.env` or `import.meta.env`, see: [https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
+
+- #### Add default values to the initial env keys _[`07eed0f`](https://github.com/yamcodes/arkenv/commit/07eed0f8a7288f8e31f5e2e22a6d37648e82b84e) [@yamcodes](https://github.com/yamcodes)_
+
+  The initial env keys (`NODE_ENV`, `PORT`) now recieve default values so the code runs even if the user didn't set them up in their `.env` file.
 
 ## 0.0.5
 
 ### Patch changes
 
-- Throw custom ArkEnvError *[`f6e4856`](https://github.com/yamcodes/arkenv/commit/f6e485620aa7f27d6674e1828afd61be023cea99) [@yamcodes](https://github.com/yamcodes)*
+- #### Add agent skill support _[`#945`](https://github.com/yamcodes/arkenv/pull/945) [`63d6237`](https://github.com/yamcodes/arkenv/commit/63d6237d5d928e965aca64e473e7940eedc019cf) [@yamcodes](https://github.com/yamcodes)_
 
-  Improve error handling by throwing ArkEnvError when environment validation fails
+  The CLI now has a new `--agent` flag that lets the ArkEnv agent skill interact with it in a token-sensitive way. The skill has been updated to support this new mode.
+
+  Also, the CLI will now suggest to install the agent skill for you when in non-`--agent` mode.
+
+  Read more in the [ArkEnv CLI docs](https://arkenv.js.org/docs/cli).
+
+- #### Improve "done" message text _[`#954`](https://github.com/yamcodes/arkenv/pull/954) [`fe10ef4`](https://github.com/yamcodes/arkenv/commit/fe10ef416d4605a3f0486d2dd32a68c7a6521d95) [@yamcodes](https://github.com/yamcodes)_
+
+  The output now clearly distinguishes between the local scaffolding and the AI-powered refinement:
+
+  ```
+      1 │
+      2 ◇  Next steps ─────────────────────────────────────────────────────────────────╮
+      3 │                                                                              │
+      4 │  1. Check ./src/env.ts and refine your environment schema.                   │
+      5 │  2. Import and use: import { env } from "./src/env"                          │
+      6 │  3. (Recommended) Install the AI skill: pnpm dlx skills add yamcodes/arkenv  │
+      7 │     Then run /arkenv inside your AI assistant to finish.                     │
+      8 │                                                                              │
+      9 ├──────────────────────────────────────────────────────────────────────────────╯
+     10 │
+     11 └  ⛯ ArkEnv scaffolding complete. Happy coding!
+  ```
+
+- #### Install framework plugins _[`#948`](https://github.com/yamcodes/arkenv/pull/948) [`1dca74c`](https://github.com/yamcodes/arkenv/commit/1dca74c26a00681794943526ada6923a5aee6330) [@yamcodes](https://github.com/yamcodes)_
+
+  The ArkEnv CLI now installs framework plugins as part of the scaffolding process if a relevant runtime/framework is selected.
+
+- #### Passthrough `--yes` and `--quiet` to underlying process _[`#952`](https://github.com/yamcodes/arkenv/pull/952) [`10cbb7d`](https://github.com/yamcodes/arkenv/commit/10cbb7d4061ad868f313660709db39e35260c94e) [@yamcodes](https://github.com/yamcodes)_
+
+  The ArkEnv CLI will now pass the flags `--yes` and `--quiet` to underlying processes.
+
+  This means that if you run:
+
+  ```sh
+  pnx @arkenv/cli init --yes
+  ```
+
+  It would now use the recommended settings and avoid prompts even in sub-processes like the Vercel Skills process to add the ArkEnv skill.
+
+  Similarly, if you run:
+
+  ```sh
+  pnx @arkenv/cli init --quiet
+  ```
+
+  You will not be exposed to the underlying Vercel Skills output, except for errors which are buffered in memory. (Resolves on exit code 0, discarding buffered output on success)
 
 ## 0.0.4
 
 ### Patch changes
 
-- Fix `port` type *[`6be6305`](https://github.com/yamcodes/arkenv/commit/6be630501af6b69bfaebd438814dfe5ab4dcacd3) [@yamcodes](https://github.com/yamcodes)*
-
-  Fix the `port` type to be a `number`.
-
-- Better error handling *[`80052dd`](https://github.com/yamcodes/arkenv/commit/80052dd9ba5e46ac8233d37cb47d40b5177b521f) [@yamcodes](https://github.com/yamcodes)*
-
-  Error handling has been overhauled. Now, errors are thrown (instead of crashing the process) when the environment variables are invalid. The errors are formatted with colors and indentation for better readability.
+- #### Add ArkEnv Agent Skill as recommended next step _[`#944`](https://github.com/yamcodes/arkenv/pull/944) [`718fb4b`](https://github.com/yamcodes/arkenv/commit/718fb4bdfbefca9cbf4da32abf252642f5f19377) [@yamcodes](https://github.com/yamcodes)_
+- #### Adapt CLI templates for framework plugins (Vite/Bun) _[`#943`](https://github.com/yamcodes/arkenv/pull/943) [`eba2f83`](https://github.com/yamcodes/arkenv/commit/eba2f83090bec585961da834473af2647837d5e1) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.3
 
 ### Patch changes
 
-- Support custom user environments *[`dfa942b`](https://github.com/yamcodes/arkenv/commit/dfa942b7eaa9f49dae2a968c4cb24f6c90bfa3f4) [@yamcodes](https://github.com/yamcodes)*
+- #### Improve CLI UI and fix installation output _[`#904`](https://github.com/yamcodes/arkenv/pull/904) [`ef17a38`](https://github.com/yamcodes/arkenv/commit/ef17a38983aac4a167883f6855e22fecfc797ee2) [@yamcodes](https://github.com/yamcodes)_
 
-  We've added a new optional parameter to `env` to allow for custom environment variables. This can be used for example in Vite apps by passing `import.meta.env` as the second parameter.
+  - Display CLI version on the help page and at startup
+  - Fix "doubling up" of terminal output during dependency installation by piping process output
+  - Resolve Node.js DEP0190 deprecation warning in scaffolding logic
+
+- #### Auto-detect `.env.example` keys during init and suggest schema _[`#904`](https://github.com/yamcodes/arkenv/pull/904) [`ef17a38`](https://github.com/yamcodes/arkenv/commit/ef17a38983aac4a167883f6855e22fecfc797ee2) [@yamcodes](https://github.com/yamcodes)_
+
+  - Robust parsing of `.env.example` to extract variable keys
+  - Integration with the `init` wizard to suggest keys for scaffolding
+  - Minimal scaffolding templates without introductory comments or platform notes
+  - Simplified CLI output with live dependency installation progress
+  - Updated CLI documentation and added post-scaffold guidance to refine types
 
 ## 0.0.2
 
 ### Patch changes
 
-- Add `host` and `port` utility types *[`e41bf8e`](https://github.com/yamcodes/arkenv/commit/e41bf8ee3d95c9c96105d53aa19d7b77c3e4dd28) [@yamcodes](https://github.com/yamcodes)*
+- #### Ctrl+C now quits the CLI _[`0781031`](https://github.com/yamcodes/arkenv/commit/07810318a75f74d9c57b90f665ef1e5b2117b5fc) [@yamcodes](https://github.com/yamcodes)_
+- #### Detect existing setups _[`0781031`](https://github.com/yamcodes/arkenv/commit/07810318a75f74d9c57b90f665ef1e5b2117b5fc) [@yamcodes](https://github.com/yamcodes)_
 
-  We're adding utility types with this feature, the first are `host` and `port`.
-
-  `host`: An IP address or `localhost`
-
-  `port`: A `string` that can be parsed into a `number` between 0 and 65535
-
-- TypeScript inference *[`f9297e0`](https://github.com/yamcodes/arkenv/commit/f9297e05438f2a43c0a5855567b5fbf3d529cfd6) [@yamcodes](https://github.com/yamcodes)*
-
-  \*\* ArkEnv now supports TypeScript inference\*\* - check out this quick example:
-
-  ```ts
-  const { HOST } = env({
-    HOST: "string.ip",
-  });
-  console.log(HOST); // <-- the type is "string"!
-  ```
-
-  The above program will error out if the environment variable is set to anything other than a valid IP address.
+  The CLI now checks for an existing ArkEnv setup and offers to abort or override accordingly.
 
 ## 0.0.1
 
 ### Patch changes
 
-- 207971d: Basic env validation
+- #### ArkEnv CLI _[`#897`](https://github.com/yamcodes/arkenv/pull/897) [`bd77362`](https://github.com/yamcodes/arkenv/commit/bd773620ed4b3391deb311e9efd2a5284cb30b4a) [@yamcodes](https://github.com/yamcodes)_
 
-  This release brings the ability to validate environment variables against a schema.
+  Introducing the `@arkenv/cli` tool to easily scaffold ArkEnv inside your project.
+
+  The CLI provides an interactive wizard to onboard your project to ArkEnv with optimal configuration for your specific framework and schema validator.
+
+  **Features:**
+
+  - **Framework Detection**: Automatically detects if you are using Vite, Bun, or Node.js to provide the correct installation instructions.
+  - **Validator Selection**: Supports scaffolding environment templates using ArkType (recommended), Zod, or Valibot.
+  - **Strict Mode Enforcement**: Checks and prompts to enforce `strict: true` in your `tsconfig.json` for proper type safety.
+
+  **Usage:**
+
+  Run the CLI in your project root using your preferred package manager:
+
+  ```bash
+  pnx @arkenv/cli init
+  # or
+  npx @arkenv/cli init
+  # or
+  bunx @arkenv/cli init
+  ```

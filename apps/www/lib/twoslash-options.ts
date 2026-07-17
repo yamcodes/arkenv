@@ -3,23 +3,34 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
+import ts from "typescript";
 
 const require = createRequire(import.meta.url);
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(currentDir, "../../..");
+export const wwwRoot = path.join(root, "apps/www");
 
 export const arkTypePackageJson = JSON.parse(
 	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
 );
 
-export type TwoslashNode = {
-	type: "hover" | "error" | "tag" | "query" | "completion";
-	text: string;
-	docs?: string;
-	line: number;
-	character: number;
-};
+export type TwoslashNode =
+	| {
+			type: "hover" | "tag" | "query" | "completion";
+			text: string;
+			docs?: string;
+			line: number;
+			character: number;
+	  }
+	| {
+			type: "error";
+			text: string;
+			docs?: string;
+			line: number;
+			character: number;
+			code?: number | string;
+	  };
 
 export type ArkTypeTwoslashOptions = TransformerTwoslashOptions & {
 	filterNode?: (node: TwoslashNode) => boolean;
@@ -29,11 +40,15 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
+		vfsRoot: wwwRoot,
 		compilerOptions: {
+			module: ts.ModuleKind.ESNext,
+			moduleResolution: ts.ModuleResolutionKind.Bundler,
+			target: ts.ScriptTarget.ES2022,
+			baseUrl: wwwRoot,
 			paths: {
-				arkenv: [path.join(root, "packages/arkenv/src/index.ts")],
-				"arkenv/standard": [path.join(root, "packages/arkenv/src/standard.ts")],
-				"arkenv/core": [path.join(root, "packages/arkenv/src/core.ts")],
+				"@arkenv/core": [path.join(root, "packages/core/src/index.ts")],
+				"@arkenv/standard": [path.join(root, "packages/standard/src/index.ts")],
 				"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
 				"@arkenv/nextjs/server": [
 					path.join(root, "packages/nextjs/src/server.ts"),
@@ -41,14 +56,53 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@arkenv/nextjs/client": [
 					path.join(root, "packages/nextjs/src/client.ts"),
 				],
-				"@arkenv/nextjs/shared": [
-					path.join(root, "packages/nextjs/src/shared.ts"),
+				"@arkenv/nextjs/standard": [
+					path.join(root, "packages/nextjs/src/standard/index.ts"),
+				],
+				"@arkenv/nextjs/standard/server": [
+					path.join(root, "packages/nextjs/src/standard/server.ts"),
+				],
+				"@arkenv/nextjs/standard/client": [
+					path.join(root, "packages/nextjs/src/standard/client.ts"),
+				],
+				"@arkenv/nextjs/standard/shared": [
+					path.join(root, "packages/nextjs/src/standard/shared.ts"),
+				],
+				"@arkenv/nextjs/standard/config": [
+					path.join(root, "packages/nextjs/src/standard/config.ts"),
 				],
 				"@arkenv/vite-plugin": [
 					path.join(root, "packages/vite-plugin/src/index.ts"),
 				],
+				"@arkenv/vite-plugin/standard": [
+					path.join(root, "packages/vite-plugin/src/standard.ts"),
+				],
 				"@arkenv/bun-plugin": [
 					path.join(root, "packages/bun-plugin/src/index.ts"),
+				],
+				"@arkenv/bun-plugin/standard": [
+					path.join(root, "packages/bun-plugin/src/standard.ts"),
+				],
+				"@arkenv/nuxt": [path.join(root, "packages/nuxt/src/index.ts")],
+				"@arkenv/nuxt/server": [path.join(root, "packages/nuxt/src/server.ts")],
+				"@arkenv/nuxt/client": [path.join(root, "packages/nuxt/src/client.ts")],
+				"@arkenv/nuxt/standard": [
+					path.join(root, "packages/nuxt/src/standard/index.ts"),
+				],
+				"@arkenv/nuxt/standard/server": [
+					path.join(root, "packages/nuxt/src/standard/server.ts"),
+				],
+				"@arkenv/nuxt/standard/client": [
+					path.join(root, "packages/nuxt/src/standard/client.ts"),
+				],
+				"@arkenv/nuxt/standard/shared": [
+					path.join(root, "packages/nuxt/src/standard/shared.ts"),
+				],
+				"@arkenv/nuxt/standard/module": [
+					path.join(root, "packages/nuxt/src/standard/module.ts"),
+				],
+				"@arkenv/nuxt/standard/config": [
+					path.join(root, "packages/nuxt/src/standard/config.ts"),
 				],
 				"@repo/types": [
 					path.join(root, "packages/internal/types/src/index.ts"),
@@ -59,6 +113,11 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@repo/keywords": [
 					path.join(root, "packages/internal/keywords/src/index.ts"),
 				],
+				"@/*": [path.join(root, "packages/arkenv/src/*"), "./*"],
+				"@/env/client": ["env/client.ts"],
+				"@/env/server": ["env/server.ts"],
+				"~~/env/client": ["env/client.ts"],
+				"~~/env/server": ["env/server.ts"],
 			},
 			types: ["node"],
 		},
@@ -198,7 +257,15 @@ declare global {
 
 				return isWhiteListed;
 			}
-			case "error":
+			case "error": {
+				// Filter out module-resolution errors (TS2307)
+				// that occur due to framework-specific path aliases in Twoslash's virtual VFS.
+				// This allows us to display real IDE-like errors (like TS2339) in documentation
+				// without cluttering them with path resolution errors.
+				const errorCode = node.code;
+				if (errorCode === 2307) {
+					return false;
+				}
 				for (const transformation of arkTypePackageJson.contributes
 					.configurationDefaults["errorLens.replace"]) {
 					const regex = new RegExp(transformation.matcher);
@@ -221,6 +288,7 @@ declare global {
 					}
 				}
 				return true;
+			}
 			default:
 				return true;
 		}

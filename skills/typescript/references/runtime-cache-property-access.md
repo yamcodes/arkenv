@@ -7,7 +7,7 @@ tags: runtime, loops, caching, property-access, optimization
 
 ## Cache property access in loops
 
-Cache deeply nested or polymorphic property access before hot loops. **Note:** Modern V8's inline caches optimize monomorphic access efficiently — this optimization is only meaningful for 10,000+ iterations with deeply nested or polymorphic properties.
+Cache deeply nested or polymorphic property access before hot loops. **Note:** Modern V8's inline caches optimize monomorphic access efficiently - this optimization is only meaningful for 10,000+ iterations with deeply nested or polymorphic properties.
 
 **Incorrect (repeated nested access in hot loop):**
 
@@ -46,7 +46,7 @@ function processOrders(orders: Order[], config: AppConfig): ProcessedOrder[] {
 **When V8 handles it automatically (no caching needed):**
 
 ```typescript
-// Monomorphic — all objects have same shape, V8 ICs optimize this
+// Monomorphic - all objects have same shape, V8 ICs optimize this
 function sumOrders(orders: Order[]): number {
   let total = 0
   for (let i = 0; i < orders.length; i++) {  // orders.length is fine

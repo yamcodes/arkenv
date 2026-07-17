@@ -1,9 +1,9 @@
-import arkenv from "arkenv/standard";
+import arkenv from "@arkenv/standard";
 import * as z from "zod";
 
 const env = arkenv({
 	// Zod validators (great for complex validation and transformations)
-	DATABASE_URL: z.url(),
+	DATABASE_URL: z.string().url(),
 	API_KEY: z
 		.string()
 		.min(32)
@@ -17,7 +17,7 @@ const env = arkenv({
 	ALLOWED_ORIGINS: z
 		.string()
 		.transform((str: string) => str.split(","))
-		.pipe(z.array(z.url())),
+		.pipe(z.array(z.string().url())),
 
 	NODE_ENV: z
 		.enum(["development", "production", "test"])
@@ -26,6 +26,7 @@ const env = arkenv({
 		.union([z.boolean(), z.enum(["true", "false", "1", "0"])])
 		.transform((v) => v === true || v === "true" || v === "1")
 		.default(false),
+	PORT: z.number().min(0).max(65535).default(3000),
 });
 
 // All validators work together seamlessly with full type inference
@@ -37,6 +38,7 @@ console.log({
 	maxRetries: env.MAX_RETRIES,
 	timeoutMs: env.TIMEOUT_MS,
 	allowedOrigins: env.ALLOWED_ORIGINS,
+	port: env.PORT,
 });
 
 export default env;

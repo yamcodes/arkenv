@@ -1,0 +1,138 @@
+{
+	"name": "@arkenv/nuxt",
+	"version": "1.0.0-alpha.7",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"dependencies": {
+		"@arkenv/build": "workspace:*",
+		"jiti": "catalog:"
+	},
+	"devDependencies": {
+		"@arkenv/core": "workspace:*",
+		"@arkenv/standard": "workspace:*",
+		"@nuxt/kit": "^4.4.8",
+		"@nuxt/schema": "^4.4.8",
+		"@repo/log": "workspace:*",
+		"@repo/scope": "workspace:*",
+		"@repo/types": "workspace:*",
+		"@repo/utils": "workspace:*",
+		"@size-limit/preset-small-lib": "catalog:",
+		"arktype": "catalog:",
+		"nuxt": "^4.4.8",
+		"rimraf": "catalog:",
+		"size-limit": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"@arkenv/core": "^1.0.0",
+		"@arkenv/standard": "^1.0.0",
+		"arktype": "^2.1.22",
+		"nuxt": "^3.0.0 || ^4.0.0-0"
+	},
+	"peerDependenciesMeta": {
+		"@arkenv/core": {
+			"optional": true
+		},
+		"@arkenv/standard": {
+			"optional": true
+		},
+		"arktype": {
+			"optional": true
+		}
+	},
+	"exports": {
+		"./server": {
+			"types": "./dist/server.d.ts",
+			"import": "./dist/server.js",
+			"require": "./dist/server.cjs"
+		},
+		"./client": {
+			"types": "./dist/client.d.ts",
+			"import": "./dist/client.js",
+			"require": "./dist/client.cjs"
+		},
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./module": {
+			"types": "./dist/module.d.ts",
+			"import": "./dist/module.js",
+			"require": "./dist/module.cjs"
+		},
+		"./config": {
+			"types": "./dist/config.d.ts",
+			"import": "./dist/config.js",
+			"require": "./dist/config.cjs"
+		},
+		"./standard/shared": {
+			"types": "./dist/standard/shared.d.ts",
+			"import": "./dist/standard/shared.js",
+			"require": "./dist/standard/shared.cjs"
+		},
+		"./standard/server": {
+			"types": "./dist/standard/server.d.ts",
+			"import": "./dist/standard/server.js",
+			"require": "./dist/standard/server.cjs"
+		},
+		"./standard/client": {
+			"types": "./dist/standard/client.d.ts",
+			"import": "./dist/standard/client.js",
+			"require": "./dist/standard/client.cjs"
+		},
+		"./standard": {
+			"types": "./dist/standard/index.d.ts",
+			"import": "./dist/standard/index.js",
+			"require": "./dist/standard/index.cjs"
+		},
+		"./standard/module": {
+			"types": "./dist/standard/module.d.ts",
+			"import": "./dist/standard/module.js",
+			"require": "./dist/standard/module.cjs"
+		},
+		"./standard/config": {
+			"types": "./dist/standard/config.d.ts",
+			"import": "./dist/standard/config.js",
+			"require": "./dist/standard/config.cjs"
+		}
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnuxt",
+	"description": "ArkEnv integration for Nuxt",
+	"files": [
+		"dist"
+	],
+	"homepage": "https://arkenv.js.org",
+	"keywords": [
+		"arkenv",
+		"arktype",
+		"env",
+		"environment-variables",
+		"dotenv",
+		"config",
+		"validation",
+		"typesafe",
+		"standard-schema",
+		"nuxt",
+		"nuxt3",
+		"nuxt4"
+	],
+	"license": "MIT",
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"fix": "pnpm -w run fix",
+		"changeset": "pnpm -w run changeset"
+	},
+	"type": "module",
+	"types": "./dist/index.d.ts"
+}

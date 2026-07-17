@@ -1,34 +1,56 @@
-# @ArkEnv/fumadocs-ui
+# @arkenv/fumadocs-ui
+
+## 1.0.0-alpha.1
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
 
 ## 0.0.8
 
 ### Patch changes
 
-- #### Fix hamburger menu fade-in behavior on mobile *[`#935`](https://github.com/yamcodes/arkenv/pull/935) [`f1ee3de`](https://github.com/yamcodes/arkenv/commit/f1ee3de8c9cece2669ab4091aa992b25579a6b4e) [@yamcodes](https://github.com/yamcodes)*
+- #### Fix hamburger menu fade-in behavior on mobile _[`#935`](https://github.com/yamcodes/arkenv/pull/935) [`f1ee3de`](https://github.com/yamcodes/arkenv/commit/f1ee3de8c9cece2669ab4091aa992b25579a6b4e) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.7
 
 ### Patch changes
 
-- Fix `arkenvComponents` typesafety issue when used in getMDXComponents *[`#835`](https://github.com/yamcodes/arkenv/pull/835) [`2b41340`](https://github.com/yamcodes/arkenv/commit/2b41340990cee90e7cc4a81b189d0be71706c847) [@renovate](https://github.com/apps/renovate)*
+- Fix `arkenvComponents` typesafety issue when used in getMDXComponents _[`#835`](https://github.com/yamcodes/arkenv/pull/835) [`2b41340`](https://github.com/yamcodes/arkenv/commit/2b41340990cee90e7cc4a81b189d0be71706c847) [@renovate](https://github.com/apps/renovate)_
 
 ## 0.0.6
 
 ### Patch changes
 
-- #### Fix transparent hamburger menu background issue on mobile *[`9237bf5`](https://github.com/yamcodes/arkenv/commit/9237bf5bc4ded6020078ffa9e231af8be9581fba) [@yamcodes](https://github.com/yamcodes)*
+- #### Fix transparent hamburger menu background issue on mobile _[`9237bf5`](https://github.com/yamcodes/arkenv/commit/9237bf5bc4ded6020078ffa9e231af8be9581fba) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.5
 
 ### Patch changes
 
-- #### Hide esc button hint for search on mobile *[`34cf4fb`](https://github.com/yamcodes/arkenv/commit/34cf4fb9d8d97383661f85d255e4ee233d7dff96) [@yamcodes](https://github.com/yamcodes)*
+- #### Hide esc button hint for search on mobile _[`34cf4fb`](https://github.com/yamcodes/arkenv/commit/34cf4fb9d8d97383661f85d255e4ee233d7dff96) [@yamcodes](https://github.com/yamcodes)_
 
 ## 0.0.4
 
 ### Patch changes
 
-- #### Add `Header` component *[`#828`](https://github.com/yamcodes/arkenv/pull/828) [`e1f3183`](https://github.com/yamcodes/arkenv/commit/e1f3183f0fbdf5ea4fe5f529a061fdf451fba31c) [@yamcodes](https://github.com/yamcodes)*
+- #### Add `Header` component _[`#828`](https://github.com/yamcodes/arkenv/pull/828) [`e1f3183`](https://github.com/yamcodes/arkenv/commit/e1f3183f0fbdf5ea4fe5f529a061fdf451fba31c) [@yamcodes](https://github.com/yamcodes)_
 
   `@arkenv/fumadocs-ui` now exports a `Header` component for building site-wide navigation headers.
 
@@ -48,11 +70,11 @@
   />;
   ```
 
-  The header is fixed to the top of the viewport and adapts its appearance as the user scrolls — transparent when at the top of the page, blurred with a semi-transparent background once the user scrolls down.
+  The header is fixed to the top of the viewport and adapts its appearance as the user scrolls - transparent when at the top of the page, blurred with a semi-transparent background once the user scrolls down.
 
   On mobile the header renders a full-screen dropdown menu. Nav links are stacked at the top, an "Appearance" row (label + `menuActions`) sits above a centered row of `menuSocialActions`. An optional `sidebarTrigger` slot renders left of the logo for layouts that have a docs sidebar.
 
-- #### Expand `css/theme.css` *[`#828`](https://github.com/yamcodes/arkenv/pull/828) [`e1f3183`](https://github.com/yamcodes/arkenv/commit/e1f3183f0fbdf5ea4fe5f529a061fdf451fba31c) [@yamcodes](https://github.com/yamcodes)*
+- #### Expand `css/theme.css` _[`#828`](https://github.com/yamcodes/arkenv/pull/828) [`e1f3183`](https://github.com/yamcodes/arkenv/commit/e1f3183f0fbdf5ea4fe5f529a061fdf451fba31c) [@yamcodes](https://github.com/yamcodes)_
 
   `@arkenv/fumadocs-ui/css/theme.css` now includes a complete set of fumadocs override styles so any app importing the theme gets correct defaults out of the box: nav/header height variables, sidebar drawer positioning (left-side on mobile), z-index stack (header → backdrop → sidebar drawer → search dialog → Radix poppers), search bar colors, external link icons, link underline styles, and heading anchor alignment.
 
@@ -60,7 +82,7 @@
 
 ### Patch changes
 
-- #### Fix misconfigured package.json *[`a23997c`](https://github.com/yamcodes/arkenv/commit/a23997cb01b86a1e6ffd29df8279e22601864ced) [@yamcodes](https://github.com/yamcodes)*
+- #### Fix misconfigured package.json _[`a23997c`](https://github.com/yamcodes/arkenv/commit/a23997cb01b86a1e6ffd29df8279e22601864ced) [@yamcodes](https://github.com/yamcodes)_
 
   Fix misconfigured package.json by adding the `repository.url` field. This fixes an issue with pkg-pr-new and adheres to best practices.
 
@@ -68,6 +90,6 @@
 
 ### Patch changes
 
-- #### First release *[`#775`](https://github.com/yamcodes/arkenv/pull/775) [`bb34860`](https://github.com/yamcodes/arkenv/commit/bb34860193dcb9a29026d84921b35e16a92f409b) [@yamcodes](https://github.com/yamcodes)*
+- #### First release _[`#775`](https://github.com/yamcodes/arkenv/pull/775) [`bb34860`](https://github.com/yamcodes/arkenv/commit/bb34860193dcb9a29026d84921b35e16a92f409b) [@yamcodes](https://github.com/yamcodes)_
 
   `@arkenv/fumadocs-ui` provides a theme, and components, for `fumadocs-ui` to replicate the "ArkEnv" website look.

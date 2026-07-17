@@ -1,0 +1,340 @@
+---
+title: Strict layout
+icon: ShieldCheck
+description: Get the best security in Next.js using strictly separated client and server schemas.
+---
+
+In this setup, you define your client, server, and shared schemas in separate files.
+
+```files
+src
+└── env
+    ├── internal
+    │   └── shared.ts
+    ├── client.ts
+    └── server.ts
+```
+
+By importing `@arkenv/core` from `@/env/client` in client-side code and `@/env/server` in server-side code, you enforce a strict boundary where server variables and schemas never leak to the browser. If `@/env/server` is accidentally imported in a Client Component, ArkEnv fails the build with a compilation error.
+
+## Import mental model
+
+- **Flat layout:** import from `@arkenv/nextjs` - one entry point, bundler picks the build.
+- **Strict layout:** import from `@arkenv/nextjs/client` and `@arkenv/nextjs/server`.
+- **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
+- **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+
+:::note Migration
+If you previously used `@arkenv/nextjs/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
+:::
+
+## Setup
+
+The easiest way to bootstrap the strict layout is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project using the **strict layout** option.
+
+```npm
+npx arkenv@latest init --strict
+```
+
+## Your schema
+
+When bootstrapping with the CLI, it generates three separate schema files under `src/env/`:
+
+:::note
+By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to compile your `runtimeEnv` block. This is why the client-side schema imports from `./generated/env.gen` rather than `@arkenv/nextjs/client`. To opt out, simply import from `@arkenv/nextjs/client` directly and provide your own `runtimeEnv` mapping.
+:::
+
+```ts title="src/env/internal/shared.ts" twoslash
+import { type } from "@arkenv/core";
+
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+```ts title="src/env/client.ts" twoslash
+// @filename: /env/internal/shared.ts
+import { type } from "@arkenv/core";
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+// @filename: /env/generated/env.gen.ts
+import type { type as at, distill } from "arktype";
+export { type } from "@arkenv/nextjs/client";
+export default function arkenv<
+	const TSchema extends Record<string, any> = {},
+	const TExtends extends readonly unknown[] = [],
+>(
+	schema: TSchema,
+	options?: {
+		extends?: [...TExtends];
+	},
+): Readonly<distill.Out<at.infer<TSchema>>> {
+	return {} as any;
+}
+
+// @filename: /env/client.ts
+// ---cut---
+import arkenv from "./generated/env.gen";
+import { SharedSchema } from "./internal/shared";
+
+export const env = arkenv(
+	{
+		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	},
+	{
+		extends: [SharedSchema],
+	},
+);
+```
+
+```ts title="src/env/server.ts" twoslash
+// @filename: /env/client.ts
+import type { type as at, distill } from "arktype";
+export const env = {} as Readonly<distill.Out<at.infer<{ NEXT_PUBLIC_API_URL: "string" }>>>;
+
+// @filename: /env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+	{
+		DATABASE_URL: "string",
+	},
+	{
+		extends: [clientEnv],
+	},
+);
+```
+
+<Accordions>
+  <Accordion title="Manual Setup">
+    ### Install dependencies [step] [!toc]
+
+    First, install the Next.js integration package and the core engine:
+
+    ```package-install
+    @arkenv/core @arkenv/nextjs arktype
+    ```
+
+    :::note
+    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
+    :::
+
+    ### Define shared variables [step] [!toc]
+
+    Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+
+    ```ts title="src/env/internal/shared.ts" twoslash
+    import { type } from "@arkenv/core";
+
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     */
+    export const SharedSchema = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+
+    ### Define client variables [step] [!toc]
+
+    Create `env/client.ts` importing `@arkenv/core` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
+
+    ```ts title="src/env/client.ts" twoslash
+    // @filename: /env/internal/shared.ts
+    import { type } from "@arkenv/core";
+    export const SharedSchema = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+
+    // @filename: /env/generated/env.gen.ts
+    import type { type as at, distill } from "arktype";
+    export { type } from "@arkenv/nextjs/client";
+    export default function arkenv<
+    	const TSchema extends Record<string, any> = {},
+    	const TExtends extends readonly unknown[] = [],
+    >(
+    	schema: TSchema,
+    	options?: {
+    		extends?: [...TExtends];
+    	},
+    ): Readonly<distill.Out<at.infer<TSchema>>> {
+    	return {} as any;
+    }
+
+    // @filename: /env/client.ts
+    // ---cut---
+    import arkenv from "./generated/env.gen";
+    import { SharedSchema } from "./internal/shared";
+
+    export const env = arkenv(
+    	{
+    		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    	},
+    	{
+    		extends: [SharedSchema],
+    	},
+    );
+    ```
+
+    ### Define server variables [step] [!toc]
+
+    Create `env/server.ts` using `@arkenv/nextjs/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+
+    ```ts title="src/env/server.ts" twoslash
+    // @filename: /env/internal/shared.ts
+    import { type } from "@arkenv/core";
+    export const SharedSchema = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+
+    // @filename: /env/client.ts
+    import type { type as at, distill } from "arktype";
+    export const env = {} as Readonly<distill.Out<at.infer<{ NEXT_PUBLIC_API_URL: "string" }>>>;
+
+    // @filename: /env/server.ts
+    // ---cut---
+    import arkenv from "@arkenv/nextjs/server";
+    import { env as clientEnv } from "./client";
+
+    export const env = arkenv(
+    	{
+    		DATABASE_URL: "string",
+    	},
+    	{
+    		extends: [clientEnv],
+    	},
+    );
+    ```
+
+    ### Register configuration wrapper [step] [!toc]
+
+    To scan your schema directory, build the generated helper file, and automatically watch for changes during development, register ArkEnv in your Next.js configuration.
+
+    Wrap your Next.js configuration using the `withArkEnv` helper:
+
+    ```ts title="next.config.ts"
+    import { withArkEnv } from "@arkenv/nextjs/config";
+    import type { NextConfig } from "next";
+
+    const nextConfig: NextConfig = {
+    	/* config options here */
+    };
+
+    export default withArkEnv(nextConfig);
+    ```
+
+    You can customize the schema and output paths using optional parameters:
+
+    ```ts
+    export default withArkEnv(nextConfig, {
+    	schemaPath: "src/env",              // Path to your schema directory (default: src/env or env)
+    	outputPath: "src/env/generated/env.gen.ts", // Custom output path
+    	layout: "strict",                   // Explicitly specify layout
+    });
+    ```
+
+    :::note
+    If you are already using multiple config wrappers and want to avoid another `withX(...)` layer, you can call [`setupArkEnv`](/docs/nextjs/configuration#avoiding-wrapper-bloat) directly.
+    :::
+
+    :::note
+    If you scaffolded your project using the `--no-codegen` CLI option, your `next.config.ts` will already be wrapped with `withArkEnv(nextConfig, { codegen: false })`. This skips `env/generated/env.gen.ts` generation while keeping build-time validation active, and you become responsible for manually destructuring `runtimeEnv` in `env/client.ts`.
+    :::
+
+    :::tip
+    We recommend committing the generated `env/generated/env.gen.ts` file to Git. This ensures TypeScript types are immediately available on a clean clone or inside CI pipelines without requiring a build step first.
+    :::
+  </Accordion>
+</Accordions>
+
+## Usage
+
+Both `env/client.ts` and `env/server.ts` export the resolved environment as `env`. This lets you use consistent `env.MY_VAR` imports depending on where the component executes.
+
+### In Server Components / Routes
+
+Import `env` from the server file. It contains all public, shared, and server-only variables:
+
+```ts title="src/app/page.ts" twoslash
+// @filename: /env/internal/shared.ts
+import { type } from "@arkenv/core";
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
+
+// @filename: /env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedSchema } from "./internal/shared";
+export const env = arkenv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
+);
+
+// @filename: /env/server.ts
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+export const env = arkenv(
+	{ DATABASE_URL: "string" },
+	{ extends: [clientEnv] }
+);
+
+// @filename: /page.ts
+// ---cut---
+import { env } from "@/env/server";
+
+export function Page() {
+	// Access database URL and client API URL safely
+	const db = env.DATABASE_URL;
+	const api = env.NEXT_PUBLIC_API_URL;
+	return `API: ${api}`;
+}
+```
+
+### In Client Components
+
+Import `env` from the client file (`env/client.ts`). The boundary protection works at two levels:
+
+1. **TypeScript Type Safety**: If you import `env` from the client file and try to access a server-side variable (like `DATABASE_URL`), you will get a TypeScript compilation error because it is not defined in the client-safe schema:
+
+```ts title="src/app/client-component.ts" twoslash
+// @errors: 2339
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/core";
+/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ */
+export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
+
+// @filename: /env/client.ts
+import arkenv from "@arkenv/nextjs/client";
+import { SharedSchema } from "./internal/shared";
+export const env = arkenv(
+	{ NEXT_PUBLIC_API_URL: "string" },
+	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
+);
+
+// @filename: /client-component.ts
+// ---cut---
+import { env } from "@/env/client";
+
+export function ClientComponent() {
+	const api = env.NEXT_PUBLIC_API_URL;
+	// @ts-expect-error DATABASE_URL is not defined in client env
+	const db = env.DATABASE_URL;
+
+	return `API URL: ${api}`;
+}
+```
+
+2. **Compile-Time Isolation**: If you accidentally import `env` from the server file (`env/server.ts`) in a Client Component (or any file imported by one), Next.js's bundler will fail the build with a compilation error. This is because `@arkenv/nextjs/server` imports Next.js's native `server-only` package to block browser compilation of server code.

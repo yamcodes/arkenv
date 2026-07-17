@@ -20,12 +20,20 @@
 		},
 		{
 			"path": "packages/arkenv",
-
 			"name": "🎁 arkenv"
+		},
+		{
+			"path": "packages/core",
+
+			"name": "🎁 @arkenv/core"
 		},
 		{
 			"path": "packages/nextjs",
 			"name": "🎁 @arkenv/nextjs"
+		},
+		{
+			"path": "packages/nuxt",
+			"name": "🎁 @arkenv/nuxt"
 		},
 		{
 			"path": "packages/vite-plugin",
@@ -36,12 +44,12 @@
 			"name": "🎁 @arkenv/bun-plugin"
 		},
 		{
-			"path": "packages/cli",
-			"name": "🎁 @arkenv/cli"
-		},
-		{
 			"path": "packages/fumadocs-ui",
 			"name": "🎁 @arkenv/fumadocs-ui"
+		},
+		{
+			"path": "packages/build",
+			"name": "🎁 @arkenv/build"
 		},
 		{
 			"path": "packages/internal/types",
@@ -66,6 +74,10 @@
 		{
 			"path": "apps/playgrounds/nextjs",
 			"name": "🛝 next.js"
+		},
+		{
+			"path": "apps/playgrounds/nuxt",
+			"name": "🛝 nuxt"
 		},
 		{
 			"path": "apps/playgrounds/vite",
@@ -120,6 +132,10 @@
 			"name": "💡 with-nextjs"
 		},
 		{
+			"path": "examples/with-nuxt",
+			"name": "💡 with-nuxt"
+		},
+		{
 			"path": "examples/with-vite-react",
 			"name": "💡 with-vite-react"
 		},
@@ -138,6 +154,10 @@
 		{
 			"path": "examples/with-zod",
 			"name": "💡 with-zod"
+		},
+		{
+			"path": "examples/with-valibot",
+			"name": "💡 with-valibot"
 		},
 		{
 			"path": "examples/with-standard-schema",

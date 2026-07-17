@@ -22,7 +22,7 @@ The `isolatedDeclarations` flag (TypeScript 5.5+) ensures each file's exports ar
 ```typescript
 // utils.ts
 export function calculateTotal(items: CartItem[]) {
-  // Return type inferred — requires type-checker to generate .d.ts
+  // Return type inferred - requires type-checker to generate .d.ts
   return items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 }
 ```
@@ -41,7 +41,7 @@ export function calculateTotal(items: CartItem[]) {
 ```typescript
 // utils.ts
 export function calculateTotal(items: CartItem[]): number {
-  // Explicit return type — .d.ts can be generated per-file, in parallel
+  // Explicit return type - .d.ts can be generated per-file, in parallel
   return items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 }
 ```

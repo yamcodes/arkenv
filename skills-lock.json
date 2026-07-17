@@ -25,6 +25,12 @@
 			"skillPath": "skills/engineering/diagnose/SKILL.md",
 			"computedHash": "15939a26f86edec2d4862042b8564e5a062cb81d04e047a0cea6305c8830b5f5"
 		},
+		"excalidraw": {
+			"source": "github/awesome-copilot",
+			"sourceType": "github",
+			"skillPath": "skills/excalidraw/SKILL.md",
+			"computedHash": "cba18fc5e51e9c9c33a6a8e3c21aca7df84f6fc06643f9e90d8c36867c858441"
+		},
 		"grill-me": {
 			"source": "mattpocock/skills",
 			"sourceType": "github",
@@ -61,6 +67,12 @@
 			"skillPath": "skills/next-best-practices/SKILL.md",
 			"computedHash": "f4678aef4ffc10a5ea64a91e57abe5a5081af813b06d58d565caf3e8ef56e26c"
 		},
+		"nuxt": {
+			"source": "antfu/skills",
+			"sourceType": "github",
+			"skillPath": "skills/nuxt/SKILL.md",
+			"computedHash": "9e8237ec92083db9a6f4c77d5e5bf4b1d9873d670671235bc75455ee1ca39c74"
+		},
 		"pnpm": {
 			"source": "antfu/skills",
 			"sourceType": "github",
@@ -90,6 +102,12 @@
 			"sourceType": "github",
 			"skillPath": "skills/engineering/triage/SKILL.md",
 			"computedHash": "2b6efb6da12d92551772fcc04acf331f4e0e6f7bd9d4cb23ce0b301e0b128feb"
+		},
+		"turborepo": {
+			"source": "vercel/turborepo",
+			"sourceType": "github",
+			"skillPath": "skills/turborepo/SKILL.md",
+			"computedHash": "b7c3165ae67a2892d6195a5b2cba15c8d96341f5c64ddd0d3ce4225c94a2ae83"
 		},
 		"typescript": {
 			"source": "pproenca/dot-skills",

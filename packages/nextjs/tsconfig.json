@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "es2020",
+		"jsx": "react-jsx",
 		"module": "esnext",
 		"strict": true,
 		"esModuleInterop": true,
@@ -12,6 +13,10 @@
 		"outDir": "dist",
 		"resolveJsonModule": true,
 		"declaration": true,
-		"declarationMap": true
+		"declarationMap": true,
+		"paths": {
+			"@/*": ["./src/*"],
+			"@": ["./src/index.ts"]
+		}
 	}
 }

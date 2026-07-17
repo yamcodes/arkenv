@@ -15,10 +15,10 @@ Avoid for new products without real testimonials. Fake quotes destroy trust on i
 
 Reference: many B2B SaaS landings, agency homepages, university development pages.
 
-**Sample opening lines** (imitate the *specificity* — quote-led pages let someone else say it, then attribute):
-> *"I started listening on a long bus ride. By the third episode I'd missed my stop, and I didn't mind."* — Tide (test 01) — story-shaped, attributed to a listener
-> *"Restraint, repeated, becomes a signature."* — Hallmark Atelier — short, philosophical, signed by the studio
-> *"It told me the span that regressed, the deploy that caused it, and the engineer to ask. We rolled back in eight minutes."* — Tracejam-style — names the outcome with a number
+**Sample opening lines** (imitate the *specificity* - quote-led pages let someone else say it, then attribute):
+> *"I started listening on a long bus ride. By the third episode I'd missed my stop, and I didn't mind."* - Tide (test 01) - story-shaped, attributed to a listener
+> *"Restraint, repeated, becomes a signature."* - Hallmark Atelier - short, philosophical, signed by the studio
+> *"It told me the span that regressed, the deploy that caused it, and the engineer to ask. We rolled back in eight minutes."* - Tracejam-style - names the outcome with a number
 
 ```html
 <section class="quote-hero">

@@ -1,0 +1,26 @@
+{
+	"name": "arkenv-example-with-nuxt",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"build": "nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare"
+	},
+	"dependencies": {
+		"@arkenv/core": "1.0.0-alpha.6",
+		"@arkenv/nuxt": "1.0.0-alpha.6",
+		"arktype": "^2.2.0",
+		"nuxt": "^4.4.8"
+	},
+	"devDependencies": {
+		"@types/node": "^24.12.2",
+		"typescript": "^6.0.3"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"packageManager": "npm@11.9.0"
+}

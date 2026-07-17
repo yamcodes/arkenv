@@ -1,0 +1,177 @@
+import fs from "node:fs";
+import path from "node:path";
+import { describe, expect, it, vi } from "vitest";
+import module from "./module";
+
+vi.mock("@nuxt/kit", () => {
+	return {
+		defineNuxtModule: (config: any) => {
+			return {
+				...config,
+				// expose setup directly for tests
+				setup: config.setup,
+			};
+		},
+		useLogger: () => {
+			return {
+				info: vi.fn(),
+				warn: vi.fn(),
+				error: vi.fn(),
+				success: vi.fn(),
+			};
+		},
+	};
+});
+
+describe("Nuxt module integration", () => {
+	it("should parse and register variables to nuxt.options.runtimeConfig", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				server: { DATABASE_URL: "string" },
+				client: { NUXT_PUBLIC_API_URL: "string" },
+				shared: { NODE_ENV: "string" }
+			});
+			`,
+		);
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			// Run module setup
+			await (module as any).setup(
+				{
+					schemaPath: "./env.ts",
+					validate: false,
+				},
+				mockNuxt,
+			);
+
+			// Check if runtimeConfig was populated
+			expect(mockNuxt.options.runtimeConfig.DATABASE_URL).toBeDefined();
+			expect(
+				mockNuxt.options.runtimeConfig.public.NUXT_PUBLIC_API_URL,
+			).toBeDefined();
+			expect(mockNuxt.options.runtimeConfig.public.NODE_ENV).toBeDefined();
+
+			// Check if vite hook was registered
+			expect(mockNuxt.hook).toHaveBeenCalledWith(
+				"vite:extendConfig",
+				expect.any(Function),
+			);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should add schema path to nuxt.options.watch in dev mode", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-dev-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				server: { DATABASE_URL: "string" },
+				client: { NUXT_PUBLIC_API_URL: "string" },
+				shared: { NODE_ENV: "string" }
+			});
+			`,
+		);
+
+		const mockNuxt: any = {
+			options: {
+				dev: true,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			// Run module setup
+			await (module as any).setup(
+				{
+					schemaPath: "./env.ts",
+					validate: false,
+				},
+				mockNuxt,
+			);
+
+			// Check if vite hook was registered
+			expect(mockNuxt.hook).toHaveBeenCalledWith(
+				"vite:extendConfig",
+				expect.any(Function),
+			);
+
+			// Check if schemaPath was added to watch paths
+			expect(mockNuxt.options.watch).toContain(schemaPath);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should register flat layout keys to nuxt.options.runtimeConfig", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-flat-test");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const schemaPath = path.join(tempDir, "env.ts");
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string"
+			});
+			`,
+		);
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			await (module as any).setup(
+				{
+					schemaPath: "./env.ts",
+					layout: "flat",
+					validate: false,
+				},
+				mockNuxt,
+			);
+
+			expect(mockNuxt.options.runtimeConfig.DATABASE_URL).toBeDefined();
+			expect(
+				mockNuxt.options.runtimeConfig.public.NUXT_PUBLIC_API_URL,
+			).toBeDefined();
+			expect(mockNuxt.options.runtimeConfig.public.NODE_ENV).toBeDefined();
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+});

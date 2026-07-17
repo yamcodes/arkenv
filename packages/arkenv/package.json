@@ -1,57 +1,42 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "0.11.1",
-	"description": "Typesafe environment variables parsing and validation with ArkType",
+	"version": "1.0.0-alpha.7",
+	"description": "Interactive CLI for scaffolding ArkEnv projects",
+	"bin": {
+		"arkenv": "./dist/index.cjs"
+	},
 	"main": "./dist/index.cjs",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.mts",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": {
-				"import": "./dist/index.d.mts",
-				"require": "./dist/index.d.cts"
-			},
-			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
 		},
-		"./standard": {
-			"types": {
-				"import": "./dist/standard.d.mts",
-				"require": "./dist/standard.d.cts"
-			},
-			"import": "./dist/standard.mjs",
-			"require": "./dist/standard.cjs"
-		},
-		"./core": {
-			"types": {
-				"import": "./dist/core.d.mts",
-				"require": "./dist/core.d.cts"
-			},
-			"import": "./dist/core.mjs",
-			"require": "./dist/core.cjs"
-		}
-	},
-	"scripts": {
-		"build": "tsdown",
-		"size": "size-limit --json > .size-limit.json",
-		"test:once": "vitest run",
-		"typecheck": "tsc --noEmit",
-		"clean": "rimraf dist node_modules",
-		"test": "vitest",
-		"test:types": "vitest run --typecheck.only",
-		"fix": "pnpm -w run fix"
+		"./*": "./dist/*"
 	},
 	"files": [
 		"dist"
 	],
+	"scripts": {
+		"build": "tsdown",
+		"start": "node ./dist/index.cjs init",
+		"dev": "tsdown --watch",
+		"test": "vitest",
+		"test:run": "vitest run",
+		"typecheck": "tsc --noEmit"
+	},
 	"keywords": [
-		"pnpm",
-		"arktype",
-		"environment",
-		"variables",
-		"typesafe",
-		"validation"
+		"arkenv",
+		"cli",
+		"scaffold",
+		"init",
+		"create",
+		"generator",
+		"env",
+		"environment-variables",
+		"config"
 	],
 	"license": "MIT",
 	"homepage": "https://arkenv.js.org",
@@ -59,52 +44,23 @@
 		"type": "git",
 		"url": "git+https://github.com/yamcodes/arkenv.git"
 	},
-	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv",
+	"bugs": "https://github.com/yamcodes/arkenv/labels/arkenv-cli",
 	"author": "Yam Borodetsky <yam@yam.codes>",
+	"dependencies": {
+		"@clack/prompts": "^1.3.0",
+		"dedent": "^1.7.2",
+		"jsonc-parser": "^3.3.1",
+		"magicast": "^0.5.2",
+		"picocolors": "^1.1.1",
+		"radashi": "^12.9.1",
+		"yaml": "^2.4.5"
+	},
 	"devDependencies": {
-		"@ark/attest": "catalog:",
-		"@repo/scope": "workspace:*",
-		"@repo/types": "workspace:*",
-		"@size-limit/esbuild-why": "catalog:",
-		"@size-limit/preset-small-lib": "catalog:",
+		"@repo/log": "workspace:*",
+		"@repo/utils": "workspace:*",
 		"@types/node": "catalog:",
-		"arktype": "catalog:",
-		"rimraf": "catalog:",
-		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:",
-		"zod": "catalog:"
-	},
-	"peerDependencies": {
-		"arktype": "^2.1.22"
-	},
-	"peerDependenciesMeta": {
-		"arktype": {
-			"optional": true
-		}
-	},
-	"size-limit": [
-		{
-			"name": "arkenv",
-			"path": "dist/index.mjs",
-			"limit": "2 kB",
-			"import": "*",
-			"ignore": [
-				"arktype"
-			]
-		},
-		{
-			"name": "arkenv/standard",
-			"path": "dist/standard.mjs",
-			"limit": "1.1 kB",
-			"import": "*"
-		},
-		{
-			"name": "arkenv/core",
-			"path": "dist/core.mjs",
-			"limit": "500 B",
-			"import": "*"
-		}
-	]
+		"vitest": "catalog:"
+	}
 }

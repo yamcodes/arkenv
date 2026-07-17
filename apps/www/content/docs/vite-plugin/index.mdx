@@ -16,111 +16,104 @@ By matching Vite's default security model, only variables prefixed with `VITE_` 
 
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/vite-plugin` for your existing Vite project, or spins up a new one from a template.
 
-<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
-  <Tab value="npm">
-    ```bash
-    npx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="pnpm">
-    ```bash
-    pnx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="yarn">
-    ```bash
-    yarn dlx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="bun">
-    ```bash
-    bunx @arkenv/cli@latest init
-    ```
-  </Tab>
-</Tabs>
+```npm
+npx arkenv@latest init
+```
 
 <Accordions>
   <Accordion title="Manual Installation">
-    <Steps>
-      <Step>
-        ### Installation
+    ### Installation [step] [!toc]
 
-        ```package-install
-        @arkenv/vite-plugin arkenv arktype
-        ```
-      </Step>
+    ```package-install
+    @arkenv/core @arkenv/vite-plugin arktype
+    ```
 
-      <Step>
-        ### Configure plugin
+    :::note
+    `@arkenv/vite-plugin` lists `@arkenv/core` as a **peer dependency**. This ensures that the engine resolves to a single root-level instance across your codebase, preventing "dual package hazards" that can break runtime type evaluations and singleton context.
+    :::
 
-        Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
+    For a Standard Schema setup (e.g., Zod, Valibot) without ArkType:
 
-        ```ts title="vite.config.ts" twoslash
-        import arkenv from "@arkenv/vite-plugin";
-        import { type } from "arkenv";
-        import { defineConfig } from "vite";
+    ```package-install
+    @arkenv/standard @arkenv/vite-plugin zod
+    ```
 
-        export const Env = type({
-        	PORT: "number.port",
-        	VITE_MY_VAR: "string"
-        });
+    ### Configure plugin [step] [!toc]
 
-        export default defineConfig({
-        	plugins: [arkenv(Env)]
-        });
-        ```
-      </Step>
+    Define your schema as an exported constant in `vite.config.ts`. This allows the schema to be imported for typesafety in other files.
 
-      <Step>
-        ### Add typesafety
+    ```ts title="vite.config.ts" twoslash
+    import arkenv from "@arkenv/vite-plugin";
+    import { type } from '@arkenv/core';
+    import { defineConfig } from "vite";
 
-        To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
+    export const Env = type({
+    	PORT: "number.port",
+    	VITE_MY_VAR: "string"
+    });
 
-        ```ts title="src/vite-env.d.ts"
-        /// <reference types="vite/client" />
+    export default defineConfig({
+    	plugins: [arkenv(Env)]
+    });
+    ```
 
-        type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
-        	typeof import("../vite.config").Env
-        >;
+    ### Logging [step] [!toc]
 
-        interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+    Pass `logLevel` or a custom `logger` in the plugin config object:
 
-        interface ImportMeta {
-        	readonly env: ImportMetaEnv;
-        }
-        ```
+    ```ts title="vite.config.ts"
+    export default defineConfig({
+      plugins: [arkenv(Env, { logLevel: "warn" })],
+    });
+    ```
 
-        :::tip
-        For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
-        :::
-      </Step>
+    ### Add typesafety [step] [!toc]
 
-      <Step>
-        ### Use in your code
+    To make `import.meta.env` fully typesafe, add the following to `src/vite-env.d.ts`:
 
-        You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
+    ```ts title="src/vite-env.d.ts"
+    /// <reference types="vite/client" />
 
-        ```tsx title="src/App.tsx" twoslash
-        // @filename: vite-env.d.ts
-        /// <reference types="vite/client" />
-        type ImportMetaEnvAugmented = {
-        	VITE_MY_VAR: string
-        }
-        interface ImportMetaEnv extends ImportMetaEnvAugmented {}
-        interface ImportMeta {
-        	readonly env: ImportMetaEnv
-        }
+    type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+    	typeof import("../vite.config").Env
+    >;
 
-        // @filename: App.tsx
-        // ---cut---
-        const apiUrl = import.meta.env.VITE_MY_VAR;
-        //      ^?
-        ```
-      </Step>
-    </Steps>
+    interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+
+    interface ImportMeta {
+    	readonly env: ImportMetaEnv;
+    }
+    ```
+
+    :::tip
+    For more details on advanced typing options, see [Typing import.meta.env](/docs/vite-plugin/typing-import-meta-env).
+    :::
+
+    ### Use in your code [step] [!toc]
+
+    You can now use `import.meta.env` with full typesafety and autocompletion throughout your application.
+
+    ```tsx title="src/App.tsx" twoslash
+    // @noErrors
+    // @filename: vite-env.d.ts
+    /// <reference types="vite/client" />
+    type ImportMetaEnvAugmented = {
+    	VITE_MY_VAR: string
+    }
+    interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+    interface ImportMeta {
+    	readonly env: ImportMetaEnv
+    }
+
+    // @filename: App.tsx
+    // ---cut---
+    const apiUrl = import.meta.env.VITE_MY_VAR;
+    //      ^?
+
+    // Autocomplete works out-of-the-box!
+    const typing = import.meta.env.
+    //                             ^|
+    ```
   </Accordion>
 </Accordions>
 
@@ -132,13 +125,13 @@ ArkEnvError: Errors found while validating environment variables
   PORT must be an integer between 0 and 65535 (was "hello")
 ```
 
-## Using Standard Schema validators (Zod, Valibot)
+## Using Standard Schema validators (Zod, Valibot, etc.)
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
 ```ts title="vite.config.ts" twoslash
 import arkenv from "@arkenv/vite-plugin";
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 import { defineConfig } from "vite";
 import { z } from "zod";
 
@@ -154,6 +147,7 @@ export default defineConfig({
 ```
 
 ```tsx title="src/App.tsx" twoslash
+// @noErrors
 // @filename: vite-env.d.ts
 /// <reference types="vite/client" />
 type ImportMetaEnvAugmented = {
@@ -170,6 +164,53 @@ interface ImportMeta {
 // ---cut---
 const apiUrl = import.meta.env.VITE_API_URL;
 //      ^?
+
+// Autocomplete works out-of-the-box!
+const typing = import.meta.env.
+//                             ^|
+```
+
+### ArkType-free mode (Standard Mode)
+
+If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` in your Vite project:
+
+1. Install `@arkenv/standard` and `@arkenv/vite-plugin`:
+
+```package-install
+@arkenv/standard @arkenv/vite-plugin zod
+```
+
+2. Configure the plugin and schema in your Vite config using `@arkenv/vite-plugin/standard`:
+
+```ts title="vite.config.ts"
+import arkenv from "@arkenv/vite-plugin/standard";
+import { defineConfig } from "vite";
+import { z } from "zod";
+
+export const Env = {
+  VITE_API_URL: z.string().url(),
+  VITE_API_KEY: z.string().min(1),
+};
+
+export default defineConfig({
+  plugins: [arkenv(Env)]
+});
+```
+
+3. Augment your types using `@arkenv/vite-plugin/standard` in `src/vite-env.d.ts`:
+
+```ts title="src/vite-env.d.ts"
+/// <reference types="vite/client" />
+
+type ImportMetaEnvAugmented = import("@arkenv/vite-plugin/standard").ImportMetaEnvAugmented<
+  typeof import("../vite.config").Env
+>;
+
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
 ```
 
 For advanced workflows, see [using ArkEnv in Vite config](/docs/vite-plugin/arkenv-in-viteconfig).

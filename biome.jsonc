@@ -17,7 +17,11 @@
 			"!**/dist-test",
 			"!**/.gitignore",
 			"!**/.next",
-			"!**/.source"
+			"!**/.nuxt",
+			"!**/.output",
+			"!**/.source",
+			"!**/generated/**/*",
+			"!**/env.gen.ts"
 		]
 	},
 	"formatter": {
@@ -121,7 +125,7 @@
 			"includes": [
 				"**/scripts/**/*",
 				".github/actions/**/*",
-				"packages/cli/**/*",
+				"packages/arkenv/**/*",
 				"packages/bun-plugin/**/*",
 				"packages/vite-plugin/**/*"
 			],

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createEnv as clientCreateEnv } from "./index";
-import { createEnv as serverCreateEnv } from "./react-server";
+import { arkenv as clientArkenv } from "./index";
+import { arkenv as serverArkenv } from "./react-server";
 
-describe("createEnv (RSC / Server Entrypoint)", () => {
+describe("arkenv (RSC / Server Entrypoint)", () => {
 	it("should parse a basic environment variable", () => {
-		const env = serverCreateEnv({
+		const env = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -18,9 +18,9 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 
 	it("should enforce NEXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
 		expect(() => {
-			serverCreateEnv({
+			// @ts-expect-error - Client keys must be prefixed with NEXT_PUBLIC_
+			serverArkenv({
 				client: {
-					// @ts-expect-error - Client keys must be prefixed with NEXT_PUBLIC_
 					API_URL: "string",
 				},
 				runtimeEnv: {
@@ -34,7 +34,7 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 
 	it("should enforce that runtimeEnv contains all client and shared keys at compile-time and runtime", () => {
 		expect(() => {
-			serverCreateEnv({
+			serverArkenv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
@@ -50,7 +50,7 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 	});
 
 	it("should allow accessing server-only, client, and shared variables on the server", () => {
-		const env = serverCreateEnv({
+		const env = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -77,7 +77,7 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/fallback_db";
 
 		try {
-			const env = serverCreateEnv({
+			const env = serverArkenv({
 				server: {
 					DATABASE_URL: "string",
 				},
@@ -95,12 +95,12 @@ describe("createEnv (RSC / Server Entrypoint)", () => {
 	});
 });
 
-describe("createEnv (Client / SSR Entrypoint)", () => {
+describe("arkenv (Client / SSR Entrypoint)", () => {
 	it("should only validate client and shared schemas, skipping server schema validation", () => {
 		// Even if DATABASE_URL is required in server schema,
-		// and missing from runtimeEnv, clientCreateEnv should not throw validation errors
+		// and missing from runtimeEnv, clientArkenv should not throw validation errors
 		// because server validation is skipped in client mode.
-		const env = clientCreateEnv({
+		const env = clientArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -121,7 +121,7 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 	});
 
 	it("should throw an error when accessing a server-side variable (simulating SSR / pre-rendering)", () => {
-		const env = clientCreateEnv({
+		const env = clientArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -141,12 +141,12 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 		expect(() => {
 			env.DATABASE_URL;
 		}).toThrow(
-			"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
+			"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
 		);
 	});
 
 	it("should support default values in schema when omitted or undefined in runtimeEnv", () => {
-		const env = clientCreateEnv({
+		const env = clientArkenv({
 			server: {
 				DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
 			},
@@ -155,10 +155,87 @@ describe("createEnv (Client / SSR Entrypoint)", () => {
 			},
 			runtimeEnv: {
 				NEXT_PUBLIC_API_URL: undefined,
-			} as any,
+			},
 		});
 
 		// Client variables defaults still resolve
 		expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+	});
+
+	describe("Flat Mode", () => {
+		it("should validate and allow access to client and exposed variables, but throw for server-only variables on client", () => {
+			const env = clientArkenv(
+				{
+					DATABASE_URL: "string",
+					NEXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
+				},
+				{
+					exposeToClient: ["CUSTOM_VAR"],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						CUSTOM_VAR: "custom_val",
+					},
+				},
+			);
+
+			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+			expect(env.NODE_ENV).toBe("test");
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
+
+			expect(() => {
+				(env as any).DATABASE_URL;
+			}).toThrow(
+				"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
+			);
+		});
+
+		it("should allow accessing all variables on the server in Flat Mode", () => {
+			const env = serverArkenv(
+				{
+					DATABASE_URL: "string",
+					NEXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
+				},
+				{
+					exposeToClient: ["CUSTOM_VAR"],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						DATABASE_URL: "postgres://localhost:5432/db",
+						CUSTOM_VAR: "custom_val",
+					},
+				},
+			);
+
+			expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
+			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
+			expect(env.NODE_ENV).toBe("test");
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
+		});
+
+		it("should support deprecated expose and shared options as fallbacks in Flat Mode", () => {
+			const env = clientArkenv(
+				{
+					DATABASE_URL: "string",
+					NEXT_PUBLIC_API_URL: "string",
+					NODE_ENV: "string",
+					CUSTOM_VAR: "string",
+				},
+				{
+					expose: ["CUSTOM_VAR"],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: "https://api.example.com",
+						NODE_ENV: "test",
+						CUSTOM_VAR: "custom_val",
+					},
+				},
+			);
+
+			expect((env as any).CUSTOM_VAR).toBe("custom_val");
+		});
 	});
 });

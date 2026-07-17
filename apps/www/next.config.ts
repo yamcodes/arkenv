@@ -23,6 +23,11 @@ const config = {
 		// We check typesafety on ci
 		ignoreBuildErrors: true,
 	},
+	experimental: {
+		// Aggressively reclaim memory during Webpack builds in dev mode.
+		// Can be reverted if any instability is observed in Next.js 16.
+		webpackMemoryOptimizations: true,
+	},
 	// Redirect /docs to /docs/arkenv
 	async redirects() {
 		return [
@@ -34,6 +39,21 @@ const config = {
 			{
 				source: "/docs/llms.txt",
 				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/layouts/simple",
+				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/migration/nested-to-flat",
+				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				permanent: true,
+			},
+			{
+				source: "/docs/nuxt/layouts/simple",
+				destination: "/docs/nuxt/layouts/flat",
 				permanent: true,
 			},
 		];
@@ -63,6 +83,25 @@ const config = {
 	},
 	// This is required to support PostHog trailing slash API requests
 	skipTrailingSlashRedirect: true,
+	async headers() {
+		const isPreview =
+			process.env.NEXT_PUBLIC_VERCEL_ENV === "preview" ||
+			process.env.VERCEL_ENV === "preview";
+		if (isPreview) {
+			return [
+				{
+					source: "/:path*",
+					headers: [
+						{
+							key: "X-Robots-Tag",
+							value: "noindex, nofollow",
+						},
+					],
+				},
+			];
+		}
+		return [];
+	},
 } as const satisfies NextConfig;
 
 const sentryConfig = {

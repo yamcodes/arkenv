@@ -6,7 +6,7 @@ ArkEnv is a typesafe environment variable parser powered by [ArkType](https://ar
 
 - **Zero external dependencies** (except peer dependencies)
 - **Typesafe environment variables** with build-time and runtime validation
-- **Tiny bundle size** (\<2kB gzipped goal)
+- **Tiny bundle size** (\~2 kB gzipped goal)
 - **Cross-platform support** for Node.js, Bun, and browser environments
 - **Vite plugin** for build-time validation
 - **Single import, zero config** for most projects
@@ -63,8 +63,8 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 **Naming Conventions:**
 
-- **Files**: kebab-case (`create-env.ts`)
-- **Functions**: camelCase (`createEnv`)
+- **Files**: kebab-case (`arkenv.ts`)
+- **Functions**: camelCase (`arkenvInternal`, `myFunction`)
 - **Types**: PascalCase (`ArkEnvError`)
 - **Constants**: UPPER_SNAKE_CASE for environment variables
 
@@ -83,9 +83,9 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 **Monorepo Structure:**
 
 - **Packages** (`packages/`) - Published npm packages
-  - `arkenv` - Core library package
+  - `@arkenv/core` - Core library package
   - `@arkenv/vite-plugin` - Vite plugin package
-  - `@arkenv/cli` - Interactive CLI for scaffolding and project mutation
+  - `arkenv` - Interactive CLI for scaffolding and project mutation
 - **Apps** (`apps/`) - Applications and testing suites (not published)
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes
@@ -95,7 +95,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 **Package Architecture:**
 
 - **Core Package** (`arkenv`):
-  - Main export: `createEnv` function (also exported as default `arkenv`)
+  - Main export: `arkenv` function (also exported as default export)
   - Uses ArkType's `scope` system for type validation
   - Custom types: `string.host`, `number.port`, `boolean`
   - Error handling via `ArkEnvError` class
@@ -105,7 +105,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 - Turborepo for task orchestration and caching
 - `tsdown` for building packages (generates ESM + CJS + types)
-- Size limits enforced via `size-limit` (\<2kB per package)
+- Size limits enforced via `size-limit` (\~2 kB per package)
 - Workspace protocol (`workspace:*`) for internal dependencies
 
 **Module Resolution:**
@@ -160,10 +160,16 @@ pnpm run test:e2e                     # E2E tests
 - Only published packages (`packages/*`) require changesets
 - Examples and private applications don't need changesets
 
-**Commits:**
+**Commits & PR titles:**
 
-- Commit changeset file along with code changes
-- Changesets automatically generate changelogs and version bumps
+- This project does **not** use Conventional Commits (`feat:`, `fix:`, `chore:`, etc.)
+- Use plain **sentence-case imperative** style instead:
+  - Start with a capital letter
+  - Imperative mood: "Add", "Fix", "Update" (not "Added" or "Adds")
+  - Rest of the message in normal sentence case
+  - No trailing period
+- Examples: `Add support for custom error messages`, `Fix type inference for optional variables`
+- Wrong: `feat: add support`, `Added support`, `Add Support For Custom Error Messages`
 
 **Publishing:**
 
@@ -194,7 +200,7 @@ pnpm run test:e2e                     # E2E tests
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
 - **Next.js**: Integrated via `@arkenv/nextjs`. Provides two layout patterns:
   - **3-File Layout (Strict)**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
-  - **Unified 1-File Layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `createEnv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
+  - **Unified 1-File Layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
 - **Bun fullstack dev server**:
   - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.
   - **Bun.build**: Bun's programmatic bundling API. Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.
@@ -212,7 +218,7 @@ pnpm run test:e2e                     # E2E tests
 
 - Uses `const` type parameters for better type inference
 - Leverages ArkType's `type.infer` and `type.validate` utilities
-- Typesafe environment object returned from `createEnv`
+- Typesafe environment object returned from `arkenv`
 
 **Error Handling:**
 
@@ -224,8 +230,8 @@ pnpm run test:e2e                     # E2E tests
 
 **Bundle Size:**
 
-- Core package must be \<2kB gzipped (enforced via `size-limit`)
-- Vite plugin must be \<2kB (enforced via `size-limit`)
+- Core package must be \~2 kB gzipped (enforced via `size-limit`)
+- Vite plugin must be \~2 kB (enforced via `size-limit`)
 - Zero external dependencies (except peer dependencies). Internal workspace packages are permitted.
 
 **TypeScript Requirements:**

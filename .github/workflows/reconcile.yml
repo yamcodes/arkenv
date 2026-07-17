@@ -1,0 +1,70 @@
+name: Reconcile Branch History
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  reconcile:
+    name: Reconcile main back to dev
+    if: github.event.sender.login != 'autofix-ci[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Reconcile branches
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          echo "Fetching latest dev and main branches..."
+          git fetch origin dev:dev
+          git fetch origin main
+
+          # Check if origin/main is already merged into origin/dev
+          if git merge-base --is-ancestor origin/main origin/dev; then
+            echo "✅ main is already merged into dev. No reconciliation needed."
+            exit 0
+          fi
+
+          echo "🔄 main is not merged into dev. Attempting automatic reconciliation..."
+          git checkout dev
+
+          if git merge origin/main --no-edit; then
+            git push origin dev
+            echo "✅ Success! dev branch reconciled with main."
+          else
+            echo "❌ Merge conflict detected during reconciliation. Creating a PR to reconcile main into dev."
+            git merge --abort
+            
+            # Check if a PR already exists from main to dev
+            EXISTING_PR=$(gh pr list --base dev --head main --state open --json number --jq '.[0].number')
+            if [ -n "$EXISTING_PR" ]; then
+              echo "⚠️ A PR from main to dev already exists: #$EXISTING_PR. Skipping PR creation."
+            else
+              gh pr create \
+                --base dev \
+                --head main \
+                --title "chore: reconcile main into dev (conflicts detected)" \
+                --body "A hotfix was merged into main, but merging main back into dev failed due to conflicts. Please resolve conflicts and merge this PR to reconcile the branches."
+            fi
+            exit 1
+          fi

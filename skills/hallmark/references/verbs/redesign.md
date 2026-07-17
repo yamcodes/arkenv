@@ -1,6 +1,6 @@
 # `hallmark redesign`
 
-The user wants a different page from the same content. They are not happy with the current visual structure — typically because it reads as templated, generic, or AI-shaped. Your job is to redesign the page's structure, rhythm, and component voice while respecting the existing implementation boundaries unless the user explicitly confirms a full rebuild.
+The user wants a different page from the same content. They are not happy with the current visual structure - typically because it reads as templated, generic, or AI-shaped. Your job is to redesign the page's structure, rhythm, and component voice while respecting the existing implementation boundaries unless the user explicitly confirms a full rebuild.
 
 ## Non-destructive implementation rule
 
@@ -28,7 +28,7 @@ If none fires → **single-page redesign**. Go to § Single-page flow.
 
 ---
 
-## § Multi-page flow — design.md first, then redesign
+## § Multi-page flow - design.md first, then redesign
 
 A web app needs a *design system*, not seventeen unrelated theme pickings. Hallmark's diversification rule is wrong here: across pages of the same product, **consistency is the goal, not variety**. If you redesign every page with a different macrostructure / theme / accent, you've shipped a slop split-personality app, even if each individual page is fine.
 
@@ -40,17 +40,17 @@ Before redesigning a single file:
 
 - Walk the target directory. List every page-level file you found, with a one-line description of what it does. (Hero / pricing / docs / dashboard / etc.)
 - Note any existing design assets: a `tokens.css`, a tailwind config with brand values, a logo, brand colours mentioned in `README`, a marketing screenshot.
-- Check for an existing `.hallmark/log.json` — if it has prior runs, read the most recent stamp; if all those entries are different macrostructures / themes, it confirms the user's complaint.
+- Check for an existing `.hallmark/log.json` - if it has prior runs, read the most recent stamp; if all those entries are different macrostructures / themes, it confirms the user's complaint.
 
 ### 2. Produce `design.md` at the project root
 
-Write a single file at the project root: `design.md` (or `DESIGN.md` — match the project's existing case convention). This file is the **one source of truth** every subsequent page redesign reads. Format:
+Write a single file at the project root: `design.md` (or `DESIGN.md` - match the project's existing case convention). This file is the **one source of truth** every subsequent page redesign reads. Format:
 
 ````markdown
-# Design — <Project name>
+# Design - <Project name>
 
 A locked design system for this app. Every page redesign reads this file before
-emitting code. Do not regenerate per page — extend or amend this file when the
+emitting code. Do not regenerate per page - extend or amend this file when the
 system needs to grow.
 
 ## Genre
@@ -101,7 +101,7 @@ tokens (`var(--space-md)`), never raw values.
 
 ## Per-page allowances
 - Marketing pages MAY use enrichment (Tier-A CSS art, Tier-B SVG, etc.).
-- App pages MUST NOT use enrichment — function carries the page.
+- App pages MUST NOT use enrichment - function carries the page.
 - Content pages: typography only.
 
 ## What pages MUST share
@@ -113,10 +113,10 @@ tokens (`var(--space-md)`), never raw values.
 
 ## What pages MAY differ on
 - Macrostructure within the page-type family (a marketing page can be Marquee
-  Hero on one route and Long Document on another — both still use the system's
+  Hero on one route and Long Document on another - both still use the system's
   type, colour, and CTA voice).
 - Hero archetype (within the family's allowance).
-- Enrichment — only on marketing pages, only Tier-A or Tier-B.
+- Enrichment - only on marketing pages, only Tier-A or Tier-B.
 
 ## Exports
 
@@ -211,15 +211,15 @@ Wait for confirmation. Only after the user confirms (or says "go ahead") do you 
 For each target page:
 
 - **Read `design.md` first.** It is now the rule of the project; the per-build references in [`references/`](../) defer to it. Where `design.md` and the references conflict, `design.md` wins.
-- Pick the macrostructure from the family declared in `design.md` for this page's type (marketing / app / content). Within the family, you may vary archetypes — but only those `design.md` allows.
+- Pick the macrostructure from the family declared in `design.md` for this page's type (marketing / app / content). Within the family, you may vary archetypes - but only those `design.md` allows.
 - Apply the locked theme. Do **not** swap to a different theme to "add variety". The variety lives in macrostructure / archetype choice, not theme.
 - Apply the locked typography, spacing, motion, microinteractions stance.
 - Stamp every page's CSS with: `/* Hallmark · genre: <genre> · macrostructure: <name> · design-system: design.md · designed-as-app */`. The `designed-as-app` flag tells future Hallmark runs to read `design.md`, not invent a new system.
 - Write a single combined `.hallmark/log.json` entry for the multi-page redesign, with `"scope": "app"` instead of one entry per page.
 
-### 4. Diversification rule — INVERTED for multi-page
+### 4. Diversification rule - INVERTED for multi-page
 
-Across pages of the same app, the diversification rule is *inverted*: consecutive pages MUST share theme, accent, type pairing. They may differ on macrostructure within the family. The 58 slop-test gates that check "differs from previous Hallmark run" are skipped for `designed-as-app` outputs — the system overrides the catalog rotation here.
+Across pages of the same app, the diversification rule is *inverted*: consecutive pages MUST share theme, accent, type pairing. They may differ on macrostructure within the family. The 58 slop-test gates that check "differs from previous Hallmark run" are skipped for `designed-as-app` outputs - the system overrides the catalog rotation here.
 
 Pages that drift from `design.md` are slop. The audit verb flags `design.md` drift as a critical structural finding (`stamp-vs-design.md disagreement`).
 
@@ -231,7 +231,7 @@ If a page genuinely needs something `design.md` doesn't allow (e.g. a marketing 
 
 ## § Single-page flow
 
-(The classic redesign behaviour — unchanged.)
+(The classic redesign behaviour - unchanged.)
 
 **What to preserve:**
 - The copy intent, factual claims, product names, and primary message. Preserve exact wording only when it already lives in the target UI or the user explicitly asks for verbatim copy.
@@ -241,10 +241,10 @@ If a page genuinely needs something `design.md` doesn't allow (e.g. a marketing 
 - The existing route/component ownership boundaries, unless the user has approved a full rebuild
 
 **What to replace:**
-- The structural fingerprint — pick a **different** combination from [`structure.md`](../structure.md) than the source had.
-- The component voice — different button style, different divider language, different image treatment.
-- The reveal pattern — if the original faded everything in on scroll, the new one might have no reveals at all.
-- The visual rhythm — different sections having different padding, different alignments, deliberate breaks.
+- The structural fingerprint - pick a **different** combination from [`structure.md`](../structure.md) than the source had.
+- The component voice - different button style, different divider language, different image treatment.
+- The reveal pattern - if the original faded everything in on scroll, the new one might have no reveals at all.
+- The visual rhythm - different sections having different padding, different alignments, deliberate breaks.
 
 **What not to replace without confirmation:**
 - Route trees, production component directories, or the old website's file structure.
@@ -253,11 +253,11 @@ If a page genuinely needs something `design.md` doesn't allow (e.g. a marketing 
 
 **Optional `--mood <name>` argument:**
 
-If the user specifies a mood (`hallmark redesign ./hero.tsx --mood luxury`), pick a tone aligned to that mood and let it drive the structural fingerprint. Mood names map to tones from [`typography.md`](../typography.md) and [`structure.md`](../structure.md). If no mood is given, ask the user what *feeling* they want — one word — and proceed.
+If the user specifies a mood (`hallmark redesign ./hero.tsx --mood luxury`), pick a tone aligned to that mood and let it drive the structural fingerprint. Mood names map to tones from [`typography.md`](../typography.md) and [`structure.md`](../structure.md). If no mood is given, ask the user what *feeling* they want - one word - and proceed.
 
 **Genre escape hatch.** If the user explicitly asks for a *kind* of design that the current genre doesn't fit (e.g. "redesign this editorial page as a modern SaaS hero"), switch genre too. Load [`genres/<new-genre>.md`](../genres/) and apply its rule overlay. Stamp the new genre into the output so future runs respect it.
 
-**Project-level check.** Before treating this as a true single-page redesign, look for `design.md` at the project root. If it exists, the project is being designed as an app and **the single-page rules don't apply** — read `design.md` and follow it instead. The diversification rule reverses (consistency wins). If you actually want to break from the locked system, *update `design.md` first*, then redesign.
+**Project-level check.** Before treating this as a true single-page redesign, look for `design.md` at the project root. If it exists, the project is being designed as an app and **the single-page rules don't apply** - read `design.md` and follow it instead. The diversification rule reverses (consistency wins). If you actually want to break from the locked system, *update `design.md` first*, then redesign.
 
 **Output:**
 

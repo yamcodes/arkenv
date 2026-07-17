@@ -19,6 +19,12 @@
 			"framework": "nextjs"
 		},
 		{
+			"id": "with-nuxt",
+			"name": "Nuxt",
+			"description": "Minimal Nuxt project with ArkType",
+			"framework": "nuxt"
+		},
+		{
 			"id": "with-vite-react",
 			"name": "React + Vite",
 			"description": "React + Vite + ArkType (Client-side inlining)",
@@ -40,6 +46,12 @@
 			"id": "with-zod",
 			"name": "Zod",
 			"description": "Minimal Node.js project using Zod instead of ArkType",
+			"framework": "vanilla"
+		},
+		{
+			"id": "with-valibot",
+			"name": "Valibot",
+			"description": "Minimal Node.js project using Valibot instead of ArkType",
 			"framework": "vanilla"
 		}
 	]

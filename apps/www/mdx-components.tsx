@@ -1,15 +1,25 @@
 import { arkenvComponents } from "@arkenv/fumadocs-ui/mdx";
 import * as twoslashComponents from "fumadocs-twoslash/ui";
 import {
+	createFileSystemGeneratorCache,
+	createGenerator,
+} from "fumadocs-typescript";
+import { AutoTypeTable } from "fumadocs-typescript/ui";
+import {
 	CalloutContainer,
 	CalloutDescription,
 	CalloutTitle,
 } from "fumadocs-ui/components/callout";
 import { Cards } from "fumadocs-ui/components/card";
+import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { cn } from "~/lib/cn";
+
+const generator = createGenerator({
+	cache: createFileSystemGeneratorCache(".next/fumadocs-typescript"),
+});
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
 	// biome-ignore lint/suspicious/noExplicitAny: arkenvComponents type is complex but we know it might have table
@@ -22,7 +32,13 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		CalloutDescription,
 		CalloutTitle,
 		Card,
+		AutoTypeTable: (props: any) => (
+			<AutoTypeTable {...props} generator={generator} />
+		),
 		Cards,
+		Files,
+		Folder,
+		File,
 		...components,
 		table: (props) => (
 			<Table

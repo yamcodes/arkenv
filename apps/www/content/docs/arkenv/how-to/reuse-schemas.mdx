@@ -8,7 +8,7 @@ ArkEnv supports both raw schema objects and type definitions created with ArkTyp
 Recall that with ArkEnv, defining your schema is done at the same time as you parse the environment variables:
 
 ```ts twoslash
-import arkenv from 'arkenv';
+import arkenv from '@arkenv/core';
 
 const env = arkenv({
   HOST: "string.host",
@@ -24,7 +24,7 @@ This might sound like a niche use-case, but it comes up more often than you'd th
 That's where type definitions start making sense: define your schema once with `type()`, and reuse it wherever you need.
 
 ```ts twoslash
-import arkenv, { type } from 'arkenv';
+import arkenv, { type } from '@arkenv/core';
 
 const Env = type({
   HOST: "string.host",

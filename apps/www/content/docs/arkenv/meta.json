@@ -1,5 +1,5 @@
 {
-	"title": "arkenv",
+	"title": "@arkenv/core",
 	"description": "Agnostic core",
 	"root": true,
 	"icon": "Box",
@@ -13,10 +13,12 @@
 		"---Integrations---",
 		"...integrations",
 		"---API---",
-		"[arkenv/standard](/docs/arkenv/standard)",
+		"[@arkenv/standard](/docs/arkenv/standard)",
 		"coercion",
+		"options",
 		"---How-to---",
 		"[Load environment variables](/docs/arkenv/how-to/load-environment-variables)",
-		"[Reuse your schema](/docs/arkenv/how-to/reuse-schemas)"
+		"[Reuse your schema](/docs/arkenv/how-to/reuse-schemas)",
+		"[Add hosting provider variables](/docs/cli/hosting-presets)"
 	]
 }

@@ -10,7 +10,7 @@ Enable "format on save" in your IDE. Code is automatically formatted according t
 
 ## TypeScript
 
-Use TypeScript for catching issues during large refactoring that ESLint may miss. When refactoring, update type declarations first, then resolve TypeScript errors throughout the project. TypeScript checks types at build time — it does not prevent runtime failures.
+Use TypeScript for catching issues during large refactoring that ESLint may miss. When refactoring, update type declarations first, then resolve TypeScript errors throughout the project. TypeScript checks types at build time - it does not prevent runtime failures.
 
 Resource: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
 
@@ -49,7 +49,7 @@ Always configure absolute imports to avoid messy relative paths like `../../../c
 }
 ```
 
-Use `@/*` as the single alias — it's short, unambiguous, and clearly distinguishes source imports from `node_modules`.
+Use `@/*` as the single alias - it's short, unambiguous, and clearly distinguishes source imports from `node_modules`.
 
 ```typescript
 // Instead of this:
@@ -83,6 +83,6 @@ Enforce kebab-case for files and folders using ESLint:
 | Hooks       | camelCase, `use` prefix | `useUsers.ts`             |
 | Utilities   | camelCase               | `formatDate.ts`           |
 | Types       | PascalCase              | `User`, `CreateUserInput` |
-| Constants   | UPPER_SNAKE_CASE      | `MAX_RETRIES`             |
+| Constants   | UPPER_SNAKE_CASE        | `MAX_RETRIES`             |
 | Directories | kebab-case              | `user-settings/`          |
 | Files       | kebab-case              | `user-card.tsx`           |

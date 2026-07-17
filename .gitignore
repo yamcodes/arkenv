@@ -52,12 +52,11 @@ esbuild-why*.html
 
 # arktype clone
 /arktype/
+/nestjs-clone/
 
 # explicitly ignored folder
 ignore-me/
-
-# deploy metrics
-.github/deploy-metrics.json
+/repos/
 
 # JetBrains
 .idea/
@@ -84,6 +83,11 @@ gha-creds-*.json
 
 # Skill workspace (eval outputs, grading, review artifacts)
 .agent/skills/*-workspace/
+.agents/scratch/
 skills/*-workspace/
 skills/create-skill/scripts/__pycache__/
 tooling/
+job_logs.txt
+
+# Temporary test folders from bundling-interop tests
+packages/arkenv/test/temp-interop-*

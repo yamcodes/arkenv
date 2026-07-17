@@ -9,13 +9,13 @@ import {
 } from "@icons-pack/react-simple-icons";
 import { Square } from "lucide-react";
 import type { JSX } from "react";
+import { ArkTypeIcon } from "~/components/icons/arktype-icon";
+import { JoiIcon } from "~/components/icons/joi-icon";
+import { SolidStartIcon } from "~/components/icons/solid-start-icon";
+import { TypiaIcon } from "~/components/icons/typia-icon";
+import { ValibotIcon } from "~/components/icons/valibot-icon";
+import { VinxiIcon } from "~/components/icons/vinxi-icon";
 import { cn } from "~/lib/utils";
-import { ArkTypeIcon } from "../icons/arktype-icon";
-import { JoiIcon } from "../icons/joi-icon";
-import { SolidStartIcon } from "../icons/solid-start-icon";
-import { TypiaIcon } from "../icons/typia-icon";
-import { ValibotIcon } from "../icons/valibot-icon";
-import { VinxiIcon } from "../icons/vinxi-icon";
 
 type RailItem = {
 	name: string;

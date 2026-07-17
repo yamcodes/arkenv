@@ -12,7 +12,10 @@ export function transformDependencies(deps, catalog) {
 		if (version === "workspace:*" || version.startsWith("workspace:")) {
 			const publishedVersion = getWorkspacePackageVersion(name);
 			if (publishedVersion) {
-				transformed[name] = `^${publishedVersion}`;
+				const hasCaret = !publishedVersion.includes("-");
+				transformed[name] = hasCaret
+					? `^${publishedVersion}`
+					: publishedVersion;
 			} else {
 				// Keep as-is if we can't find the version
 				transformed[name] = version;
@@ -20,7 +23,8 @@ export function transformDependencies(deps, catalog) {
 		} else if (version === "catalog:" || version.startsWith("catalog:")) {
 			const catalogVersion = catalog[name];
 			if (catalogVersion) {
-				transformed[name] = `^${catalogVersion}`;
+				const hasCaret = !catalogVersion.includes("-");
+				transformed[name] = hasCaret ? `^${catalogVersion}` : catalogVersion;
 			} else {
 				// Keep as-is if not in catalog
 				transformed[name] = version;
@@ -81,6 +85,11 @@ export function transformPackageJson(pkg, exampleConfig, catalog) {
 			if (typeof scriptCmd === "string" && scriptCmd.includes("pnpm -w")) {
 				delete transformed.scripts[scriptName];
 			}
+		}
+		// Nuxt examples require 'postinstall': 'nuxt prepare' per official templates,
+		// but we omit it in the monorepo playground to prevent CI/bootstrap cycles.
+		if (exampleConfig.name === "with-nuxt") {
+			transformed.scripts.postinstall = "nuxt prepare";
 		}
 	}
 

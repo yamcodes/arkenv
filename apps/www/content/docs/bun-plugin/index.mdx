@@ -20,107 +20,90 @@ To keep client bundles secure, only variables prefixed with `BUN_PUBLIC_` (and `
 
 The easiest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/bun-plugin` for your existing Bun project, or spins up a new one from a template.
 
-<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
-  <Tab value="npm">
-    ```bash
-    npx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="pnpm">
-    ```bash
-    pnx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="yarn">
-    ```bash
-    yarn dlx @arkenv/cli@latest init
-    ```
-  </Tab>
-
-  <Tab value="bun">
-    ```bash
-    bunx @arkenv/cli@latest init
-    ```
-  </Tab>
-</Tabs>
+```npm
+npx arkenv@latest init
+```
 
 <Accordions>
   <Accordion title="Manual Installation">
-    <Steps>
-      <Step>
-        ### Installation
+    ### Installation [step] [!toc]
 
-        ```package-install
-        @arkenv/bun-plugin arkenv arktype
-        ```
-      </Step>
+    ```package-install
+    @arkenv/core @arkenv/bun-plugin arktype
+    ```
 
-      <Step>
-        ### Configure plugin
+    :::note
+    `@arkenv/bun-plugin` lists `@arkenv/core` as a **peer dependency**. This ensures that the engine resolves to a single root-level instance across your codebase, preventing "dual package hazards" that can break runtime type evaluations and singleton context.
+    :::
 
-        The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `Bun.serve`) and your build script (for `Bun.build`).
+    For a Standard Schema setup (e.g., Zod, Valibot) without ArkType:
 
-        #### Create your schema
+    ```package-install
+    @arkenv/standard @arkenv/bun-plugin zod
+    ```
 
-        ```ts title="src/env.ts" twoslash
-        import { type } from "arkenv";
+    ### Configure plugin [step] [!toc]
 
-        export default type({
-          BUN_PUBLIC_API_URL: "string",
-          BUN_PUBLIC_DEBUG: "boolean",
-        });
-        ```
+    The simple setup automatically discovers your schema from `src/env.ts` or `env.ts`. This requires configuration in **both** `bunfig.toml` (for `Bun.serve`) and your build script (for `Bun.build`).
 
-        #### Configure for Bun.serve (dev mode)
+    #### Create your schema
 
-        ```toml title="bunfig.toml"
-        [serve.static]
-        plugins = ["@arkenv/bun-plugin"]
-        ```
+    ```ts title="src/env.ts" twoslash
+    import { type } from '@arkenv/core';
 
-        #### Configure for Bun.build (build mode)
+    export default type({
+      BUN_PUBLIC_API_URL: "string",
+      BUN_PUBLIC_DEBUG: "boolean",
+    });
+    ```
 
-        ```ts title="build.ts"
-        import arkenv from "@arkenv/bun-plugin";
+    #### Configure for Bun.serve (dev mode)
 
-        await Bun.build({
-          entrypoints: ["./app.tsx"],
-          outdir: "./dist",
-          plugins: [arkenv],
-        });
-        ```
-      </Step>
+    ```toml title="bunfig.toml"
+    [serve.static]
+    plugins = ["@arkenv/bun-plugin"]
+    ```
 
-      <Step>
-        ### Add typesafety
+    #### Configure for Bun.build (build mode)
 
-        To make `process.env` fully typesafe, see the [Typing process.env](/docs/bun-plugin/typing-process-env) guide to complete your setup.
-      </Step>
+    ```ts title="build.ts"
+    import arkenv from "@arkenv/bun-plugin";
 
-      <Step>
-        ### Use in your code
+    await Bun.build({
+      entrypoints: ["./app.tsx"],
+      outdir: "./dist",
+      plugins: [arkenv],
+    });
+    ```
 
-        You can now use `process.env` with full typesafety and autocompletion throughout your application.
+    ### Add typesafety [step] [!toc]
 
-        ```tsx title="src/App.tsx" twoslash
-        // @filename: bun-env.d.ts
-        /// <reference types="bun-types" />
-        type ProcessEnvAugmented = {
-        	BUN_PUBLIC_API_URL: string
-        }
-        declare namespace NodeJS {
-        	interface ProcessEnv extends ProcessEnvAugmented {}
-        }
+    To make `process.env` fully typesafe, see the [Typing process.env](/docs/bun-plugin/typing-process-env) guide to complete your setup.
 
-        // @filename: App.tsx
-        // ---cut---
-        const apiUrl = process.env.BUN_PUBLIC_API_URL;
-        //      ^?
-        ```
-      </Step>
-    </Steps>
+    ### Use in your code [step] [!toc]
+
+    You can now use `process.env` with full typesafety and autocompletion throughout your application.
+
+    ```tsx title="src/App.tsx" twoslash
+    // @noErrors
+    // @filename: bun-env.d.ts
+    /// <reference types="bun-types" />
+    type ProcessEnvAugmented = {
+    	BUN_PUBLIC_API_URL: string
+    }
+    declare namespace NodeJS {
+    	interface ProcessEnv extends ProcessEnvAugmented {}
+    }
+
+    // @filename: App.tsx
+    // ---cut---
+    const apiUrl = process.env.BUN_PUBLIC_API_URL;
+    //      ^?
+
+    // Autocomplete works out-of-the-box!
+    const typing = process.env.
+    //                         ^|
+    ```
   </Accordion>
 </Accordions>
 
@@ -134,7 +117,7 @@ Pass your schema directly to the plugin function:
 
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 
 const Env = type({
   BUN_PUBLIC_API_URL: "string",
@@ -154,7 +137,7 @@ Create a custom plugin file and reference it in `bunfig.toml`:
 
 ```ts title="plugins/arkenv.ts"
 import arkenv from "@arkenv/bun-plugin";
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 
 const Env = type({
   BUN_PUBLIC_API_URL: "string",
@@ -169,16 +152,12 @@ export default arkenv(Env);
 plugins = ["./plugins/arkenv.ts"]
 ```
 
-## Using Standard Schema validators (Zod, Valibot)
+## Using Standard Schema validators (Zod, Valibot, etc.)
 
 This plugin uses ArkType for validation, which natively supports Standard Schema. You can freely mix ArkType DSL strings with Zod or Valibot validators in the same schema - no extra configuration needed.
 
-:::note
-When using external validators like Zod or Valibot, you must install them separately. For example, to use the `z` symbol from `"zod"` shown below, run `npm install zod` (or use `valibot` instead).
-:::
-
 ```ts title="src/env.ts" twoslash
-import { type } from "arkenv";
+import { type } from '@arkenv/core';
 import { z } from "zod";
 
 export default type({
@@ -203,3 +182,48 @@ declare namespace NodeJS {
 const apiUrl = process.env.BUN_PUBLIC_API_URL;
 //      ^?
 ```
+
+### ArkType-free mode (Standard Mode)
+
+If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` in your Bun project:
+
+1. Install `@arkenv/standard` and `@arkenv/bun-plugin`:
+
+```package-install
+@arkenv/standard @arkenv/bun-plugin zod
+```
+
+2. Register the plugin programmatically in your build script using `@arkenv/bun-plugin/standard`:
+
+```ts title="build.ts"
+import arkenv from "@arkenv/bun-plugin/standard";
+import { z } from "zod";
+
+const Env = {
+  BUN_PUBLIC_API_URL: z.string().url(),
+  BUN_PUBLIC_DEBUG: z.boolean(),
+};
+
+await Bun.build({
+  entrypoints: ["./app.tsx"],
+  outdir: "./dist",
+  plugins: [arkenv(Env)],
+});
+```
+
+3. To use the static dev server plugin with auto-discovery, update `bunfig.toml` to reference `@arkenv/bun-plugin/standard`:
+
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["@arkenv/bun-plugin/standard"]
+```
+
+## Logging
+
+Pass `logLevel` or a custom `logger` in the plugin config object:
+
+```ts title="build.ts"
+plugins: [arkenv(Env, { logLevel: "warn" })],
+```
+
+You can also set `ARKENV_LOG_LEVEL` globally when no custom logger is provided.

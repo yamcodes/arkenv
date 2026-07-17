@@ -3,5 +3,13 @@
 	"description": "Integration for Next.js",
 	"root": true,
 	"icon": "Nextdotjs",
-	"pages": ["---Guide---", "index", "faq"]
+	"pages": [
+		"---Guide---",
+		"index",
+		"layouts",
+		"security",
+		"configuration",
+		"using-other-validators",
+		"faq"
+	]
 }

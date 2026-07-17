@@ -10,31 +10,9 @@ The ArkEnv CLI is the command-line interface used to initialize and configure Ar
 
 Run the CLI using your package manager of choice. The CLI will guide you through the setup process interactively.
 
-<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
-  <Tab value="npm">
-    ```bash
-    npx @arkenv/cli@latest init [project-name] [options]
-    ```
-  </Tab>
-
-  <Tab value="pnpm">
-    ```bash
-    pnx @arkenv/cli@latest init [project-name] [options]
-    ```
-  </Tab>
-
-  <Tab value="yarn">
-    ```bash
-    yarn dlx @arkenv/cli@latest init [project-name] [options]
-    ```
-  </Tab>
-
-  <Tab value="bun">
-    ```bash
-    bunx @arkenv/cli@latest init [project-name] [options]
-    ```
-  </Tab>
-</Tabs>
+```npm
+npx arkenv@latest init [project-name] [options]
+```
 
 ## Behavior
 
@@ -47,13 +25,16 @@ The CLI automatically adjusts its workflow depending on where it is executed:
 
 Configure the CLI behavior using the following command-line flags:
 
-| Flag           | Alias | Description                                                                                                                                      |
-| -------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--yes`        | `-y`  | Skip all prompts and use the default configuration.                                                                                              |
-| `--quiet`      | `-q`  | Suppress all output logs unless an error occurs.                                                                                                 |
-| `--json`       | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                     |
-| `--agent`      | `-a`  | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`. |
-| `--example`    | `-e`  | Specify an example name when creating a new project.                                                                                             |
-| `--force`      | `-f`  | Bypass checks and force initialization.                                                                                                          |
-| `--no-codegen` | `-C`  | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                        |
-| `--help`       | `-h`  | Display the CLI help information.                                                                                                                |
+| Flag            | Alias | Description                                                                                                                                        |
+| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`         | `-y`  | Skip all prompts and use the default configuration.                                                                                                |
+| `--quiet`       | `-q`  | Suppress all output logs unless an error occurs.                                                                                                   |
+| `--json`        | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                       |
+| `--agent`       |       | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`.   |
+| `--example`     |       | Specify an example name when creating a new project.                                                                                               |
+| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
+| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
+| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
+| `--help`        | `-h`  | Display the CLI help information.                                                                                                                  |
+
+When running with `--json` or `--agent`, the CLI emits a structured JSON summary you can parse programmatically. See [Machine-readable output](/docs/cli/machine-readable-output) for the full schema and error codes.

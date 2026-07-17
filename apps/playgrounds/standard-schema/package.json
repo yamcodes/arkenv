@@ -10,8 +10,7 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"arkenv": "workspace:*",
-		"arktype": "catalog:",
+		"@arkenv/standard": "workspace:*",
 		"zod": "catalog:"
 	},
 	"devDependencies": {

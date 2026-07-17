@@ -1,0 +1,49 @@
+---
+title: Introduction
+icon: Album
+description: Validate and secure environment variables in Nuxt applications.
+---
+
+:::important
+This integration requires [ArkType](https://arktype.io) to be installed.
+:::
+
+The `@arkenv/nuxt` integration provides end-to-end environment validation for both the server and the browser. It automatically injects your configuration into Nuxt's `runtimeConfig`, catching configuration bugs early and preventing sensitive server-side variables from ever reaching the client via a custom Vite plugin.
+
+The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nuxt` for your existing Nuxt project:
+
+```npm
+npx arkenv@latest init
+```
+
+<Accordions>
+  <Accordion title="Manual Installation">
+    First, install the Nuxt integration package and the core engine:
+
+    ```package-install
+    @arkenv/core @arkenv/nuxt arktype
+    ```
+
+    :::note
+    If you're using Standard Schema (e.g., Zod, Valibot) without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
+    :::
+  </Accordion>
+</Accordions>
+
+## Layout strategies
+
+ArkEnv supports two layout structures to match your security and developer experience preferences:
+
+<Cards>
+  <Card title="Simple layout (recommended)" href="/docs/nuxt/layouts/simple" description="Define client and server schemas in a single file (env.ts) to prioritize developer experience (DX)." />
+
+  <Card title="Strict layout" href="/docs/nuxt/layouts/strict" description="Separate client and server schemas into different files to prioritize strict compile-time security." />
+</Cards>
+
+## Next steps
+
+<Cards>
+  <Card title="Zod, Valibot, and other Standard Schema validators" href="/docs/nuxt/using-other-validators" description="Mix and match ArkType with Zod, Valibot, or other Standard Schema compatible libraries." />
+
+  <Card title="Nuxt configuration guide" href="https://nuxt.com/docs/getting-started/configuration" description="Read the official Nuxt documentation on how environment variables and runtime configuration work." />
+</Cards>

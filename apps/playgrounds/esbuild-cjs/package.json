@@ -7,7 +7,7 @@
 		"test": "pnpm build && pnpm start"
 	},
 	"dependencies": {
-		"arkenv": "workspace:*",
+		"@arkenv/core": "workspace:*",
 		"arktype": "catalog:"
 	},
 	"devDependencies": {

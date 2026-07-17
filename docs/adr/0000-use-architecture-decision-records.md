@@ -1,8 +1,10 @@
-# Use architecture decision records (adrs)
+# ADR 0000: Use architecture decision records (ADRs)
 
-To document significant architectural design decisions and transition away from the tool-heavy, active OpenSpec workflow.
+## Status
 
-## Context & problem
+Accepted
+
+## Context
 
 Previously, the project used the active Spec-Driven Development workflow (OpenSpec) with custom tooling, commands, workflows, and platform-specific configurations. While this provided detailed specifications, maintaining custom developer-facing platform scripts and agent-specific workspace tools added significant overhead and increased repository complexity.
 
@@ -26,3 +28,7 @@ We decided to:
 - **Lower overhead**: No custom CLI commands or agent skills to maintain.
 - **Traceability**: Future developers can read ADRs to understand why key structures (like Bun configurations or the export surface) exist, with direct links to the historical OpenSpec changes for full design details.
 - **Simplicity**: ADRs are written as plain, standard markdown files that do not require any specialized workflow engine.
+
+## Credits
+
+This decision record format is based on the template proposed by Michael Nygard in [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions).

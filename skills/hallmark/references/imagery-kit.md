@@ -1,4 +1,4 @@
-# Imagery kit — curated abstract assets, hosted, ready
+# Imagery kit - curated abstract assets, hosted, ready
 
 A small set of pre-generated abstract / decorative imagery that any Hallmark output can pull from when a brief allows non-photographic imagery. The kit lives at:
 
@@ -6,24 +6,24 @@ A small set of pre-generated abstract / decorative imagery that any Hallmark out
 https://www.usehallmark.com/imagery/<category>/<file>
 ```
 
-The skill doesn't ship the binaries — it ships the manifest. References are absolute URLs. If the asset is missing (404), the skill falls back to source canon #2 in [`assets.md` § Placeholder strategy](assets.md) (hand-built SVG) without erroring.
+The skill doesn't ship the binaries - it ships the manifest. References are absolute URLs. If the asset is missing (404), the skill falls back to source canon #2 in [`assets.md` § Placeholder strategy](assets.md) (hand-built SVG) without erroring.
 
-**Why this exists.** The v0.9.0 watercolor sprinkle was generated per-emit and was inconsistent. The kit recovers that aesthetic but as discrete, swappable, deliberately-composed assets. Compose with them like a senior frontend engineer: layered transparent PNG behind text, biased off-centre, intentionally large, mix-blend-mode where it earns its place. Not "abstract gradient on top of headline" — that's the AI default.
+**Why this exists.** The v0.9.0 watercolor sprinkle was generated per-emit and was inconsistent. The kit recovers that aesthetic but as discrete, swappable, deliberately-composed assets. Compose with them like a senior frontend engineer: layered transparent PNG behind text, biased off-centre, intentionally large, mix-blend-mode where it earns its place. Not "abstract gradient on top of headline" - that's the AI default.
 
 ---
 
 ## Categories
 
-| Category | What | Format | Example uses |
-| --- | --- | --- | --- |
-| **watercolor** | Full-bleed soft-edge painterly fields. Warm + cool variants per palette family. | WebP | Section background accent; hero-half flood; behind-quote wash. |
-| **transparent** | Organic blob / brushstroke / stylized mark on transparent background. | PNG | Layered hero composition (large, off-centre, behind text). The masterclass move. |
-| **ornament** | Small hand-drawn stamps, plates, roman numerals, decorative flourishes. | SVG | Beside a quote; in the section-label gutter; closing a letter. |
-| **texture** | Subtle paper, weave, riso-dot, cross-hatch fields. Tile-able. | WebP | Body grain via `mix-blend-mode: multiply`; section-divider banding. |
-| **silhouette** | Abstract bottle / box / device / book / mug / card shapes. | PNG | Empty product slots before user uploads photos; comparison rows. |
-| **pattern** | Repeating motifs that read as fabric / paper / printed material. | WebP | Section-band texture; full-bleed fills behind decorative text. |
+| Category        | What                                                                            | Format | Example uses                                                                     |
+| --------------- | ------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------- |
+| **watercolor**  | Full-bleed soft-edge painterly fields. Warm + cool variants per palette family. | WebP   | Section background accent; hero-half flood; behind-quote wash.                   |
+| **transparent** | Organic blob / brushstroke / stylized mark on transparent background.           | PNG    | Layered hero composition (large, off-centre, behind text). The masterclass move. |
+| **ornament**    | Small hand-drawn stamps, plates, roman numerals, decorative flourishes.         | SVG    | Beside a quote; in the section-label gutter; closing a letter.                   |
+| **texture**     | Subtle paper, weave, riso-dot, cross-hatch fields. Tile-able.                   | WebP   | Body grain via `mix-blend-mode: multiply`; section-divider banding.              |
+| **silhouette**  | Abstract bottle / box / device / book / mug / card shapes.                      | PNG    | Empty product slots before user uploads photos; comparison rows.                 |
+| **pattern**     | Repeating motifs that read as fabric / paper / printed material.                | WebP   | Section-band texture; full-bleed fills behind decorative text.                   |
 
-**Naming:** `<category>-<palette-family>-<variant>.<ext>` — e.g. `watercolor-warm-01.webp`, `transparent-brush-cool-03.png`, `ornament-stamp-01.svg`, `texture-grain-paper-02.webp`. Palette families: `warm` · `cool` · `neutral` · `chromatic`.
+**Naming:** `<category>-<palette-family>-<variant>.<ext>` - e.g. `watercolor-warm-01.webp`, `transparent-brush-cool-03.png`, `ornament-stamp-01.svg`, `texture-grain-paper-02.webp`. Palette families: `warm` · `cool` · `neutral` · `chromatic`.
 
 ---
 
@@ -43,15 +43,15 @@ silhouette-card-01.png      900×600    abstract product card          compariso
 pattern-cross-warm-01       400×400    cross-hatch warm (tileable)    section-band texture
 ```
 
-The skill picks an asset by matching the active theme's palette family + the brief's tone, then references it by absolute URL. Picking logic lives in Step 4 of [SKILL.md](../SKILL.md) — eyeball the manifest, choose the closest match, fall back if the file 404s.
+The skill picks an asset by matching the active theme's palette family + the brief's tone, then references it by absolute URL. Picking logic lives in Step 4 of [SKILL.md](../SKILL.md) - eyeball the manifest, choose the closest match, fall back if the file 404s.
 
 ---
 
-## Usage patterns — how a senior engineer would compose these
+## Usage patterns - how a senior engineer would compose these
 
 ### Layered hero composition (the masterclass move)
 
-A transparent abstract object behind hero text. The image is bigger than you think it should be — that's what makes it feel intentional, not decorative.
+A transparent abstract object behind hero text. The image is bigger than you think it should be - that's what makes it feel intentional, not decorative.
 
 ```css
 .hero { position: relative; isolation: isolate; }
@@ -138,7 +138,7 @@ Generic silhouette in unfilled data slots, greyscale-tinted, with a "Replace wit
 
 ## Anti-patterns
 
-- **Don't use kit imagery as the literal subject.** An abstract bottle is *not* a stand-in for an actual coffee-shop hero — those need photographic placeholders (Picsum / Unsplash). The kit is for atmosphere / composition / decoration, not subject replacement.
+- **Don't use kit imagery as the literal subject.** An abstract bottle is *not* a stand-in for an actual coffee-shop hero - those need photographic placeholders (Picsum / Unsplash). The kit is for atmosphere / composition / decoration, not subject replacement.
 - **Don't layer 3+ kit pieces on one page.** Restraint. One transparent object in the hero + one wash in a later section is the cap.
 - **Don't apply the same watercolor wash to multiple sections.** It's a section accent, not a global treatment.
 - **Don't use kit imagery in modern-minimal genre** (Stripe / Linear / ElevenLabs school). That genre's whole point is the absence of decorative imagery.

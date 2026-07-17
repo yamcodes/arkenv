@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Toaster } from "~/components/ui/toaster";
 import { CLICommand } from "./cli-command";
 
@@ -19,14 +19,10 @@ describe("CLICommand", () => {
 		});
 	});
 
-	afterEach(() => {
-		vi.unstubAllGlobals();
-	});
-
 	it("should render with syntax highlighting spans", () => {
 		render(<CLICommand />);
 		expect(screen.getByText("npx")).toBeInTheDocument();
-		expect(screen.getByText("@arkenv/cli@latest init")).toBeInTheDocument();
+		expect(screen.getByText("arkenv@latest init")).toBeInTheDocument();
 	});
 
 	it("should copy command when clicking the container", async () => {

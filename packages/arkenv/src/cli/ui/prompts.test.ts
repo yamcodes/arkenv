@@ -1,0 +1,342 @@
+import fsp from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import * as prompts from "@clack/prompts";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { runPromptWizard } from "./prompts";
+
+vi.mock("@clack/prompts", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@clack/prompts")>();
+	return {
+		...actual,
+		group: vi.fn(),
+		confirm: vi.fn(),
+		select: vi.fn(),
+		text: vi.fn(),
+		cancel: vi.fn(),
+		isCancel: vi.fn().mockReturnValue(false),
+	};
+});
+
+describe("runPromptWizard", () => {
+	let tempDir: string;
+
+	beforeEach(async () => {
+		tempDir = await fsp.mkdtemp(path.join(os.tmpdir(), "prompts-test-"));
+		vi.spyOn(process, "cwd").mockReturnValue(tempDir);
+		vi.resetAllMocks();
+		vi.mocked(prompts.isCancel).mockReturnValue(false);
+	});
+
+	afterEach(async () => {
+		await fsp.rm(tempDir, { recursive: true, force: true });
+	});
+
+	it("should detect .env.example keys in isYes mode", async () => {
+		const result = await runPromptWizard({ envKeys: ["API_KEY"] }, true);
+
+		expect(result?.envKeys).toEqual(["API_KEY"]);
+	});
+
+	it("should include bunFeatures in isYes mode if detected", async () => {
+		const result = await runPromptWizard(
+			{ framework: "bun-fullstack", bunFeatures: ["serve"] },
+			true,
+		);
+
+		expect(result?.framework).toBe("bun-fullstack");
+		expect(result?.bunFeatures).toEqual(["serve"]);
+	});
+
+	it("should default layout to flat for nextjs in isYes mode", async () => {
+		const result = await runPromptWizard({ framework: "nextjs" }, true);
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.layout).toBe("flat");
+	});
+
+	it("should default layout to flat for nuxt in isYes mode", async () => {
+		const result = await runPromptWizard({ framework: "nuxt" }, true);
+
+		expect(result?.framework).toBe("nuxt");
+		expect(result?.layout).toBe("flat");
+	});
+
+	it("should default wrapNextjsConfig to true for nextjs in isYes mode", async () => {
+		const result = await runPromptWizard({ framework: "nextjs" }, true);
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.wrapNextjsConfig).toBe(true);
+	});
+
+	it("should include bunFeatures if user selects them in wizard", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("bun-fullstack"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // bunBuild
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ framework: "bun-fullstack" });
+
+		expect(result?.framework).toBe("bun-fullstack");
+		expect(result?.bunFeatures).toEqual(["serve", "build"]);
+	});
+
+	it("should allow validator selection for nextjs", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
+		vi.mocked(prompts.select).mockResolvedValueOnce("strict"); // layout
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // nextjsCodegen
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // wrapNextjsConfig
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.select).mockResolvedValueOnce("zod"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ framework: "nextjs" });
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.layout).toBe("strict");
+		expect(result?.validator).toBe("zod");
+		expect(result?.wrapNextjsConfig).toBe(true);
+		expect(result?.disableCodegen).toBe(false);
+	});
+
+	it("should skip wrapNextjsConfig when user disables codegen", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
+		vi.mocked(prompts.select).mockResolvedValueOnce("simple"); // layout
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // nextjsCodegen
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ framework: "nextjs" });
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.disableCodegen).toBe(true);
+		expect(result?.wrapNextjsConfig).toBeUndefined();
+	});
+
+	it("should set wrapNextjsConfig to false when user declines", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
+		vi.mocked(prompts.select).mockResolvedValueOnce("simple"); // layout
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // nextjsCodegen
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // wrapNextjsConfig
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ framework: "nextjs" });
+
+		expect(result?.framework).toBe("nextjs");
+		expect(result?.disableCodegen).toBe(false);
+		expect(result?.wrapNextjsConfig).toBe(false);
+	});
+
+	it("should include envKeys if user accepts prompt", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ envKeys: ["API_KEY"] });
+
+		expect(result?.envKeys).toEqual(["API_KEY"]);
+	});
+
+	it("should check type definitions beside the selected custom path", async () => {
+		const hasTypeFileAtPath = vi.fn().mockResolvedValue(true);
+
+		vi.mocked(prompts.select).mockResolvedValueOnce("vite"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // useDefaultPath
+		vi.mocked(prompts.text).mockResolvedValueOnce("./app/env.ts"); // path
+		vi.mocked(prompts.select).mockResolvedValueOnce("append"); // envDtsHandling
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+
+		const result = await runPromptWizard({
+			framework: "vite",
+			defaultEnvPath: "./src/env.ts",
+			hasTypeFile: false,
+			hasTypeFileAtPath,
+		});
+
+		expect(hasTypeFileAtPath).toHaveBeenCalledWith({
+			framework: "vite",
+			envPath: "./app/env.ts",
+		});
+		expect(result?.path).toBe("./app/env.ts");
+		expect(result?.envDtsHandling).toBe("append");
+	});
+
+	it("should NOT include envKeys if user declines prompt", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // useEnvExample
+
+		const result = await runPromptWizard({ envKeys: ["API_KEY"] });
+
+		expect(result?.envKeys).toBeUndefined();
+	});
+
+	it("should include hostPreset if selected in wizard", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("vercel"); // hostPreset
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard();
+
+		expect(result?.hostPreset).toBe("vercel");
+	});
+
+	it("should default hostPreset to none in isYes mode", async () => {
+		const result = await runPromptWizard({}, true);
+		expect(result?.hostPreset).toBe("none");
+	});
+
+	it("should bypass hostPreset prompt if already provided in defaults", async () => {
+		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
+
+		const result = await runPromptWizard({ hostPreset: "vercel" });
+
+		expect(result?.hostPreset).toBe("vercel");
+	});
+
+	it("should abort immediately if user selects No (abort) on overwrite prompt", async () => {
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false);
+
+		const result = await runPromptWizard({ hasEnvSchemaFile: true });
+
+		expect(result).toBeNull();
+		expect(prompts.select).not.toHaveBeenCalled();
+		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled");
+	});
+
+	it("should abort immediately if user cancels a prompt (Ctrl+C)", async () => {
+		const cancelSymbol = Symbol("clack-cancel");
+		vi.mocked(prompts.isCancel).mockImplementation((v) => v === cancelSymbol);
+		vi.mocked(prompts.select).mockResolvedValueOnce(cancelSymbol); // framework
+
+		const result = await runPromptWizard();
+
+		expect(result).toBeNull();
+		expect(prompts.confirm).not.toHaveBeenCalled();
+		expect(prompts.cancel).toHaveBeenCalledWith("Operation cancelled");
+	});
+
+	it("should reject unknown example defaults", async () => {
+		await expect(
+			runPromptWizard(
+				{
+					mode: "new",
+					example: "with-vite-recat",
+					examples: [
+						{
+							id: "basic",
+							name: "Basic",
+							description: "A minimal ArkEnv setup in Node.js",
+							framework: "vanilla",
+						},
+					],
+					name: "example",
+				},
+				true,
+			),
+		).rejects.toThrow("Unknown example with-vite-recat");
+	});
+
+	it("should handle new project wizard with default name", async () => {
+		const mockCwd = path.join(os.tmpdir(), "my-cool-project");
+		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
+
+		const examples = [
+			{
+				id: "basic",
+				name: "Basic",
+				description: "A minimal ArkEnv setup in Node.js",
+				framework: "vanilla" as const,
+			},
+		];
+
+		vi.mocked(prompts.text).mockResolvedValueOnce(""); // Empty input, should use placeholder/default
+		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
+
+		const result = await runPromptWizard({
+			mode: "new",
+			examples,
+		});
+
+		expect(result?.mode).toBe("new");
+		expect(result?.name).toBe("arkenv-project");
+		expect(result?.example).toBe("basic");
+		expect(prompts.text).toHaveBeenCalledWith(
+			expect.objectContaining({
+				defaultValue: "arkenv-project",
+				placeholder: "arkenv-project",
+			}),
+		);
+	});
+
+	it("should preserve '.' as the project name when the user explicitly types it", async () => {
+		const mockCwd = path.join(os.tmpdir(), "my-project");
+		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
+
+		const examples = [
+			{
+				id: "basic",
+				name: "Basic",
+				description: "A minimal ArkEnv setup in Node.js",
+				framework: "vanilla" as const,
+			},
+		];
+
+		vi.mocked(prompts.text).mockResolvedValueOnce("."); // User types "."
+		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
+
+		const result = await runPromptWizard({
+			mode: "new",
+			examples,
+		});
+
+		// "." should be preserved; normalization is the caller's responsibility.
+		expect(result?.name).toBe(".");
+	});
+
+	it("should normalize inputs resolving to the current directory (like './') to '.'", async () => {
+		const mockCwd = path.join(os.tmpdir(), "my-project");
+		vi.spyOn(process, "cwd").mockReturnValue(mockCwd);
+
+		const examples = [
+			{
+				id: "basic",
+				name: "Basic",
+				description: "A minimal ArkEnv setup in Node.js",
+				framework: "vanilla" as const,
+			},
+		];
+
+		vi.mocked(prompts.text).mockResolvedValueOnce("./"); // User types "./"
+		vi.mocked(prompts.select).mockResolvedValueOnce("basic");
+
+		const result = await runPromptWizard({
+			mode: "new",
+			examples,
+		});
+
+		expect(result?.name).toBe(".");
+	});
+});

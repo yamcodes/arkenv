@@ -3,18 +3,22 @@ name: autofix.ci # needed to securely identify the workflow
 on:
   pull_request:
   push:
-    branches: ["dev"]
+    branches: ["dev", "v1"]
 permissions:
   contents: read
 
 jobs:
   autofix:
     runs-on: ubuntu-latest
-    # Skip autofix for bot commits to avoid race conditions
-    # where manypkg fix updates to unpublished versions
+    # Skip autofix for bot commits and Version Packages release pushes.
+    # Release pushes race with `release.yml`: if autofix pushes a fixup, the
+    # service cancels the in-flight release run and the re-triggered release
+    # is then skipped by the autofix-ci[bot] sender guard — zero publishes.
+    # Autofix on those commits has no value anyway (already autofixed on the
+    # changeset-release/* PR).
     if: |
       github.event_name == 'pull_request' ||
-      (github.event_name == 'push' && github.event.sender.type != 'Bot' && github.event.head_commit != null)
+      (github.event_name == 'push' && github.event.sender.type != 'Bot' && github.event.head_commit != null && !contains(github.event.head_commit.message, 'Version Packages'))
     steps:
       - uses: actions/checkout@v6
 
@@ -33,19 +37,17 @@ jobs:
       # Note: We only skip manypkg for Changesets-driven version bumps.
       # This avoids touching versions that haven't been published yet,
       # while still letting autofix handle normal PRs and pushes.
+      # (Version Packages pushes never reach this job — see job-level `if`.)
       - name: Decide if manypkg should be skipped
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           SKIP_MANYPKG=false
 
-          if [ "${{ github.event_name }}" = "pull_request" ] && [ "$HEAD_REF" = "changeset-release/dev" ]; then
+          # Skip manypkg for Changesets PRs and automated Sync PRs
+          if [ "${{ github.event_name }}" = "pull_request" ] && \
+             ([ "$HEAD_REF" = "changeset-release/dev" ] || [ "$HEAD_REF" = "dev" ] || [ "$HEAD_REF" = "changeset-release/v1" ] || [ "$HEAD_REF" = "v1" ]); then
             SKIP_MANYPKG=true
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            if echo "$COMMIT_MESSAGE" | grep -qi "Version Packages"; then
-              SKIP_MANYPKG=true
-            fi
           fi
 
           echo "SKIP_MANYPKG=$SKIP_MANYPKG" >> "$GITHUB_ENV"

@@ -20,6 +20,6 @@ A horizontal infinite-scroll line of repeating tagline + dot separator: `STUDIO 
 @media (prefers-reduced-motion: reduce) { .foot-marquee__track { animation: none; } }
 ```
 
-*Anti-pattern:* using Ft8 on editorial / quiet contexts — the motion reads as loud. Pair only with playful / sport / manifesto voices, and always honour `prefers-reduced-motion: reduce`.
+*Anti-pattern:* using Ft8 on editorial / quiet contexts - the motion reads as loud. Pair only with playful / sport / manifesto voices, and always honour `prefers-reduced-motion: reduce`.
 
 ---

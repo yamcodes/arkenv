@@ -50,8 +50,8 @@ const tempDirName = isNew ? `new-${suffix}` : `existing-${suffix}`;
 const tempDir = path.resolve(rootDir, "tmp", tempDirName);
 
 // 1. Build the CLI
-console.log("Building @arkenv/cli...");
-execSync("pnpm --filter=@arkenv/cli build", { cwd: rootDir, stdio: "inherit" });
+console.log("Building arkenv (CLI)...");
+execSync("pnpm --filter=arkenv build", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Prepare the directory
 console.log(`Preparing temporary directory: ${tempDir}`);
@@ -135,7 +135,7 @@ const extraArgs = process.argv.slice(process.argv[2] === mode ? 3 : 2);
 console.log(`Running arkenv init inside ${tempDir}...\n`);
 try {
 	execSync(
-		`node ${path.resolve(rootDir, "packages/cli/dist/index.cjs")} init ${extraArgs.join(" ")}`,
+		`node ${path.resolve(rootDir, "packages/arkenv/dist/index.cjs")} init ${extraArgs.join(" ")}`,
 		{
 			cwd: tempDir,
 			stdio: "inherit",

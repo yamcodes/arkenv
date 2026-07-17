@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/fumadocs-ui",
-	"version": "0.0.8",
+	"version": "1.0.0-alpha.1",
 	"type": "module",
 	"repository": {
 		"type": "git",
@@ -36,6 +36,14 @@
 	"files": [
 		"css/*",
 		"dist/*"
+	],
+	"keywords": [
+		"arkenv",
+		"fumadocs",
+		"fumadocs-ui",
+		"theme",
+		"docs",
+		"documentation"
 	],
 	"scripts": {
 		"dev": "tsdown --watch",

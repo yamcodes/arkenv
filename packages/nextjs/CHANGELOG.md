@@ -1,4 +1,484 @@
-# @ArkEnv/nextjs
+# @arkenv/nextjs
+
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.4`
+- `@arkenv/standard@1.0.0-alpha.4`
+
+</details>
+
+## 1.0.0-alpha.7
+
+### Minor Changes
+
+- #### Add configurable build logging to framework integrations _[`#1312`](https://github.com/yamcodes/arkenv/pull/1312) [`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb) [@yamcodes](https://github.com/yamcodes)_
+
+  Add optional `logger` and `logLevel` to Next.js, Nuxt, Vite, and Bun integrations. Set `ARKENV_LOG_LEVEL` when no custom logger is provided.
+
+  ```ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+
+  export default withArkEnv(nextConfig, {
+    logLevel: "warn",
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin";
+
+  export default defineConfig({
+    plugins: [arkenv(Env, { logLevel: "silent" })],
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    plugins: [arkenv(Env, { logLevel: "warn" })],
+  });
+  ```
+
+  Note: `@arkenv/build` is an internal package; consumers should configure logging via the framework integrations rather than importing internal helpers.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.1`
+
+</details>
+
+## 1.0.0-alpha.6
+
+### Major Changes
+
+- #### Remove framework `/shared` subpath exports _[`#1297`](https://github.com/yamcodes/arkenv/pull/1297) [`68ed78e`](https://github.com/yamcodes/arkenv/commit/68ed78ec8545b9b8bcc0c867033d6fa15b1caff9) [@yamcodes](https://github.com/yamcodes)_
+
+  Drop the `./shared` export from `@arkenv/nextjs` and `@arkenv/nuxt`. Strict-layout internal schema modules should import `type` from `@arkenv/core` instead. `/client` and `/server` subpath exports are unchanged.
+
+  **BREAKING CHANGE:** Remove `@arkenv/nextjs/shared` and `@arkenv/nuxt/shared` subpath exports.
+
+  Migration:
+
+  ```ts
+  // Before
+  import { type } from "@arkenv/nextjs/shared";
+
+  // After
+  import { type } from "@arkenv/core";
+  ```
+
+  Import mental model:
+
+  - **Flat layout:** `import arkenv from "@arkenv/nextjs"` (or `@arkenv/nuxt`)
+  - **Strict layout:** `@arkenv/nextjs/client` and `@arkenv/nextjs/server` (or Nuxt equivalents)
+  - **Internal schema modules:** `import { type } from "@arkenv/core"`
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`90ac1e1`](https://github.com/yamcodes/arkenv/commit/90ac1e180c6c9e43651313f705b354eb9818d0ce)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.0`
+
+</details>
+
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add flat-layout overload to standard mode integrations _[`#1249`](https://github.com/yamcodes/arkenv/pull/1249) [`a6ed115`](https://github.com/yamcodes/arkenv/commit/a6ed11524629bc1620b364c4cf5931b99820b0b4) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce flat-layout signature overloads to `@arkenv/nextjs/standard` and `@arkenv/nuxt/standard`, enabling Standard Schema users (e.g., Zod, Valibot) to use the same flat environment structure as the core ArkType mode.
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nextjs/standard";
+  import { z } from "zod";
+
+  export const env = arkenv(
+    {
+      DATABASE_URL: z.string().url(),
+      NEXT_PUBLIC_API_URL: z.string().url(),
+    },
+    {
+      runtimeEnv: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+      },
+    }
+  );
+  ```
+
+## 1.0.0-alpha.4
+
+### Major Changes
+
+- #### Split core engine into `@arkenv/core` and `@arkenv/standard` and add standard subpath exports to framework plugins _[`#1225`](https://github.com/yamcodes/arkenv/pull/1225) [`44c840f`](https://github.com/yamcodes/arkenv/commit/44c840ff95931310be965262b0c7c3e94c80f8d8) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce `@arkenv/standard` as a dependency-free validation engine for Standard Schema validators (e.g., Zod, Valibot), and rename the main `arkenv` package to `@arkenv/core` (with `arktype` as a required peer dependency).
+
+  Framework plugins (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`) now export a `/standard` subpath to allow using Standard Schema mode without any dependency on `arktype`.
+
+  Example using `@arkenv/standard`:
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.coerce.number().default(3000),
+  });
+  ```
+
+  Example of Vite plugin configuration in Standard Mode:
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin/standard";
+  import { defineConfig } from "vite";
+
+  export default defineConfig({
+    plugins: [arkenv()],
+  });
+  ```
+
+  **BREAKING CHANGE:** The package `arkenv` has been renamed to `@arkenv/core`. Framework plugins now list `@arkenv/core` and `@arkenv/standard` as optional peer dependencies. You must install either `@arkenv/core` (if using ArkType) or `@arkenv/standard` (if using Standard Schema).
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`44c840f`](https://github.com/yamcodes/arkenv/commit/44c840ff95931310be965262b0c7c3e94c80f8d8)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.3`
+- `@arkenv/standard@1.0.0-alpha.3`
+
+</details>
+
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- #### Move `arkenv` to peer dependencies in framework plugins _[`#1202`](https://github.com/yamcodes/arkenv/pull/1202) [`763270c`](https://github.com/yamcodes/arkenv/commit/763270c473767c144509fb5628327635274f4611) [@yamcodes](https://github.com/yamcodes)_
+
+  Framework plugins no longer declare `arkenv` as a regular dependency. `arkenv` is now declared as a `peerDependency` with a caret range (`^1.0.0`), ensuring a single shared instance across all plugins and the host application.
+
+  This change prevents duplicate instances of `arkenv` in `node_modules`, which could break ArkType structural typing and schema validation at runtime.
+
+  Plugins affected:
+
+  - `@arkenv/nextjs`
+  - `@arkenv/nuxt`
+  - `@arkenv/vite-plugin`
+  - `@arkenv/bun-plugin`
+
+  Before:
+
+  ```bash
+  npm install @arkenv/nextjs
+  ```
+
+  After:
+
+  ```bash
+  npm install arkenv @arkenv/nextjs
+  ```
+
+  **BREAKING CHANGE:** Users must now install `arkenv` alongside the plugin. Previously, `arkenv` was automatically pulled in as a regular dependency.
+
+## 1.0.0-alpha.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`427ced6`](https://github.com/yamcodes/arkenv/commit/427ced6bd9af4589c5fd696906bdf712104870bb)
+
+</small>
+
+- `arkenv@1.0.0-alpha.2`
+
+</details>
+
+## 1.0.0-alpha.1
+
+### Major Changes
+
+- #### Rename `createEnv` function to `arkenv` _[`#1203`](https://github.com/yamcodes/arkenv/pull/1203) [`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: Rename the primary environment variable validation function from `createEnv` to `arkenv` across all packages in the ecosystem, and expose it as both the default export and a named export.
+
+  Update all usages:
+
+  ```ts
+  // Before
+  import { createEnv } from "arkenv";
+
+  export const env = createEnv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+
+  // After
+  import arkenv from "arkenv";
+  // or: import { arkenv } from "arkenv";
+
+  export const env = arkenv({
+    NODE_ENV: "'development' | 'production' | 'test'",
+  });
+  ```
+
+  Migration Steps:
+
+  - Replace all imports and invocations of `createEnv` with `arkenv`.
+  - Update config generators and plugins (Next.js config templates, Vite plugin, Bun plugin) to use `arkenv`.
+
+## 0.1.2
+
+### Patch Changes
+
+- #### Add build-time environment variable validation _[`#1233`](https://github.com/yamcodes/arkenv/pull/1233) [`6386076`](https://github.com/yamcodes/arkenv/commit/63860766932ad9a7fd7e754e52b55faa5ab92f8c) [@yamcodes](https://github.com/yamcodes)_
+
+  Automatically validate all required environment variables at build time (e.g. during `next build`) inside the config plugin. Missing or malformed environment variables will cause the build to fail immediately with a clear, actionable ArkEnv error, preventing runtime failures.
+
+- #### Add `codegen: false` option to `@arkenv/nextjs/config` _[`#1236`](https://github.com/yamcodes/arkenv/pull/1236) [`062034f`](https://github.com/yamcodes/arkenv/commit/062034f17fa63393a2943fa176975e8096be9efd) [@yamcodes](https://github.com/yamcodes)_
+
+  Add a `codegen` option to `withArkEnv` and `setupArkEnv` that disables automatic `env.gen.ts` generation while keeping build-time environment validation active.
+
+  Usage:
+
+  ```ts title="next.config.ts"
+  import { withArkEnv } from "@arkenv/nextjs/config";
+  import type { NextConfig } from "next";
+
+  const nextConfig: NextConfig = {};
+  export default withArkEnv(nextConfig, { codegen: false });
+  ```
+
+  When `codegen` is `false`, provide a manual `runtimeEnv` mapping in your schema file. The CLI's `--no-codegen` flag now also skips generating `env.gen.ts` during scaffolding while still wrapping `next.config.ts` with `withArkEnv(nextConfig, { codegen: false })`.
+
+## 0.1.1
+
+### Patch Changes
+
+- #### Add Flat Layout Mode for Next.js integration _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
+
+  Introduce a new "Flat" layout mode for `@arkenv/nextjs`. The Flat API allows developers to define a flat schema mapping directly to their `.env` file structure:
+
+  ```ts
+  import arkenv from "./generated/env.gen";
+
+  export const env = arkenv(
+    {
+      DATABASE_URL: "string",
+      NEXT_PUBLIC_API_URL: "string",
+      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+      CUSTOM_VAR: "string",
+    },
+    {
+      exposeToClient: ["CUSTOM_VAR"],
+    }
+  );
+  ```
+
+  - Automatically expose `NEXT_PUBLIC_` variables and custom keys specified in `options.exposeToClient` to the client.
+  - Secure server-only variables at runtime via a Proxy that throws on unauthorized client access.
+  - Share `NODE_ENV` implicitly to match [standard Next.js build-time inlining behavior.](https://nextjs.org/docs/app/guides/environment-variables)
+  - Rename the configuration `layout` option value from `"simple"` to `"flat"`. `"simple"` is kept as a deprecated runtime alias and will be removed in the next major version.
+  - Update CLI scaffolding to generate the Flat layout by default.
+  - Update documentation and playground/example apps to use and recommend the Flat layout strategy.
+
+- #### Deprecate Next.js nested layout and add CLI `--flat` flag _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
+
+  - Deprecate the legacy nested options overload signature of `createEnv` in `@arkenv/nextjs`.
+  - Add a one-time development-only runtime warning nudge when the legacy nested layout format is detected.
+  - Add the `--flat` flag to `@arkenv/cli` to scaffold the recommended flat layout for Next.js.
+  - **BREAKING CHANGE**: Drop support for the `@arkenv/cli` `--simple` flag on Next.js projects; passing it now hard-fails with an error. Run `npx arkenv init` instead (the flat layout is now the default).
+  - Remove the nested layout choice from the Next.js interactive CLI prompt, defaulting to flat.
+  - Remove the standalone nested layout documentation page and redirect its URL to the FAQ.
+  - Update the documentation to guide users from the legacy nested layout to the recommended flat layout.
+
+- #### Add standalone setup API and dynamic client environment variables support _[`#1218`](https://github.com/yamcodes/arkenv/pull/1218) [`2343378`](https://github.com/yamcodes/arkenv/commit/234337898e2bca93a3a326a0daaa4d2dd5306b08) [@yamcodes](https://github.com/yamcodes)_
+
+  Improve the Next.js developer experience with the following enhancements:
+
+  - Expose `setupArkEnv` from `@arkenv/nextjs/config` as a non-wrapping alternative to `withArkEnv`. Use it directly when you are already juggling multiple config wrappers and want to avoid another `withX(...)` layer.
+  - Remove the `@arkenv/nextjs/register` side-effect import; use `withArkEnv` for the idiomatic wrapper path or `setupArkEnv` for the non-wrapping path.
+  - Support runtime-injectable client-side variables via a new `<ArkEnvScript />` component, enabling containerized deployments to configure public client-side variables dynamically without rebuilds.
+  - Fix typesafety for the flat layout so that `env` returns a strongly-typed schema (rather than resolving to `any`) and server-side variables can be accessed in server components without TypeScript compile errors.
+
+  Usage:
+
+  ```ts
+  // next.config.ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+  import type { NextConfig } from "next";
+
+  const nextConfig: NextConfig = {};
+  export default withArkEnv(nextConfig);
+  ```
+
+  ```tsx
+  // app/layout.tsx
+  import { ArkEnvScript } from "@arkenv/nextjs";
+
+  export default function RootLayout({ children }) {
+    return (
+      <html lang="en">
+        <body>
+          <ArkEnvScript />
+          {children}
+        </body>
+      </html>
+    );
+  }
+  ```
+
+## 0.1.0
+
+### Minor Changes
+
+- #### Enforce strict intersection typing on `runtimeEnv` and reject legacy configs _[`#1206`](https://github.com/yamcodes/arkenv/pull/1206) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1) [@yamcodes](https://github.com/yamcodes)_
+
+  Restored strict intersection types (`Record<RequiredKeys, unknown> & Record<string, unknown>`) on the Next.js `createEnv` adapter to guarantee compile-time enforcement of required schema keys. Additionally, narrowed the accepted `runtimeEnv` record value type to `string | undefined` to actively reject invalid configurations.
+
+  **BREAKING CHANGE**: If you were using the legacy Next.js `env` object configuration (e.g., passing a nested object to `runtimeEnv`), or if you were failing to explicitly map all required keys into `runtimeEnv`, your build will now fail with a TypeScript error. You must explicitly map all variables referenced in your schema as `string | undefined`.
+
+  Usage:
+
+  ```ts
+  import { createEnv } from "@arkenv/nextjs";
+
+  export const env = createEnv({
+    client: { NEXT_PUBLIC_API: "string" },
+    runtimeEnv: {
+      // TypeScript will error if NEXT_PUBLIC_API is missing,
+      // and will also error if you try to pass an object or array.
+      NEXT_PUBLIC_API: process.env.NEXT_PUBLIC_API,
+    },
+  });
+  ```
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`235ad48`](https://github.com/yamcodes/arkenv/commit/235ad482270f2078ed7a166e863edfb6908a8adf)
+
+</small>
+
+- `arkenv@1.0.0-alpha.1`
+
+</details>
+
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- #### Initialize v1.0.0-alpha pre-releases _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [@yamcodes](https://github.com/yamcodes)_
+
+  Start the pre-release track for the official v1.0.0 release.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`0e86f0d`](https://github.com/yamcodes/arkenv/commit/0e86f0d511b4f9e647da0123025f45687d89a4ed) [`b666698`](https://github.com/yamcodes/arkenv/commit/b66669888cf2f8c756cce12fd6210c492146cd87)
+
+</small>
+
+- `arkenv@1.0.0-alpha.0`
+
+</details>
+
+## 0.1.0
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a3e32db`](https://github.com/yamcodes/arkenv/commit/a3e32db63b0b694e11487950507c06fa7b1466b0) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1) [`12ed4f3`](https://github.com/yamcodes/arkenv/commit/12ed4f3a6c056401404c543c5157011472771bf1)
+
+</small>
+
+- `arkenv@0.12.2`
+
+</details>
+
+## 0.0.9
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3bfbcb7`](https://github.com/yamcodes/arkenv/commit/3bfbcb7ee48439f0cfa71cc2f23c9555660cd905)
+
+</small>
+
+- `arkenv@0.12.1`
+
+</details>
+
+## 0.0.8
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`88b0eee`](https://github.com/yamcodes/arkenv/commit/88b0eee7a87ffaf249d69035a747f1bb55f7079b)
+
+</small>
+
+- `arkenv@0.12.0`
+
+</details>
 
 ## 0.0.7
 

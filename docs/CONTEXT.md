@@ -6,7 +6,7 @@ ArkEnv is a typesafe environment variable parser powered by [ArkType](https://ar
 
 - **Zero external dependencies** (except peer dependencies)
 - **Typesafe environment variables** with build-time and runtime validation
-- **Tiny bundle size** (\<2kB gzipped goal)
+- **Tiny bundle size** (\~2 kB gzipped goal)
 - **Cross-platform support** for Node.js, Bun, and browser environments
 - **Vite plugin** for build-time validation
 - **Single import, zero config** for most projects
@@ -63,8 +63,8 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 **Naming Conventions:**
 
-- **Files**: kebab-case (`create-env.ts`)
-- **Functions**: camelCase (`createEnv`)
+- **Files**: kebab-case (`arkenv.ts`)
+- **Functions**: camelCase
 - **Types**: PascalCase (`ArkEnvError`)
 - **Constants**: UPPER_SNAKE_CASE for environment variables
 
@@ -83,9 +83,13 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 **Monorepo Structure:**
 
 - **Packages** (`packages/`) - Published npm packages
-  - `arkenv` - Core library package
+  - `@arkenv/core` - Core library package with native ArkType support
+  - `@arkenv/standard` - ArkType-free Standard Schema entrypoint
   - `@arkenv/vite-plugin` - Vite plugin package
-  - `@arkenv/cli` - Interactive CLI for scaffolding and project mutation
+  - `@arkenv/bun-plugin` - Bun plugin package
+  - `@arkenv/nextjs` - Next.js integration package
+  - `@arkenv/nuxt` - Nuxt integration package
+  - `arkenv` - Interactive CLI for scaffolding and project mutation
 - **Apps** (`apps/`) - Applications and testing suites (not published)
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes
@@ -94,18 +98,22 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 **Package Architecture:**
 
-- **Core Package** (`arkenv`):
-  - Main export: `createEnv` function (also exported as default `arkenv`)
-  - Uses ArkType's `scope` system for type validation
-  - Custom types: `string.host`, `number.port`, `boolean`
-  - Error handling via `ArkEnvError` class
-  - Zero external dependencies (except `arktype` as peer dependency)
+- **Core Packages**:
+  - **`@arkenv/core`**:
+    - Main export: `arkenv` function (also exported as default export)
+    - Uses ArkType's `scope` system for type validation
+    - Custom types: `string.host`, `number.port`, `boolean`
+    - Error handling via `ArkEnvError` class
+    - Zero external dependencies (except `arktype` as peer dependency)
+  - **`@arkenv/standard`**:
+    - Main export: `arkenv` function (also exported as default export)
+    - Zero external dependencies; validates environment variables using Standard Schema (Zod, Valibot, etc.)
 
 **Build System:**
 
 - Turborepo for task orchestration and caching
 - `tsdown` for building packages (generates ESM + CJS + types)
-- Size limits enforced via `size-limit` (\<2kB per package)
+- Size limits enforced via `size-limit` (\~2 kB per package)
 - Workspace protocol (`workspace:*`) for internal dependencies
 
 **Module Resolution:**
@@ -151,7 +159,11 @@ pnpm run test:e2e                     # E2E tests
 
 - Create feature branches from `dev`
 - `dev` is the default branch and continuous integration target
+- **Base Branch & Comparisons**: Always use `origin/dev` (not `main` or `origin/main`) for any `git diff` checks, branch bases, or code comparisons unless explicitly instructed otherwise.
+- **PR Target Branch**: When opening a Pull Request (via `gh pr create` or the GitHub UI), always ensure the target base branch is set to `dev` (which is the default on GitHub), unless you are specifically applying a documentation hotfix directly to `main`.
 - `main` is the production release branch, updated only after a successful npm publish
+- The documentation site (`apps/www`) deploys strictly from `main` to prevent unreleased features from appearing live
+- To make immediate typo or cosmetic fixes to the live docs without a package release, push directly to `main` and use the `sync-main` workflow/skill to cherry-pick and reconcile those changes back into `dev`
 - Use descriptive branch names
 
 **Versioning:**
@@ -171,6 +183,15 @@ pnpm run test:e2e                     # E2E tests
 
 - Run `pnpm release` after merging PRs to publish packages
 - Only packages in `packages/` are published to npm
+
+## Design Decisions
+
+**Split Parsing Engines (ArkType vs Standard Schema):**
+
+- ArkEnv maintains two distinct parsing engines: `src/arktype/index.ts` and `src/parse-standard.ts`.
+- Despite visual similarities, they are strictly isolated to guarantee the `arkenv/standard` module boundary remains "ArkType-free".
+- Unifying them would force bundlers to trace static imports and drag ArkType into the dependency tree of Standard Schema users, violating the zero-dependency goal.
+- We prioritize optimal tree-shaking, bundle size isolation, and decoupling over dogmatic DRYness.
 
 ## Domain context
 
@@ -195,8 +216,13 @@ pnpm run test:e2e                     # E2E tests
 - **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
 - **Next.js**: Integrated via `@arkenv/nextjs`. Provides two layout patterns:
-  - **3-File Layout (Strict)**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
-  - **Unified 1-File Layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `createEnv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
+  - **Strict layout**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
+  - **Simple layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
+- **Nuxt**: Integrated via `@arkenv/nuxt`. Exposes a Nuxt module (`@arkenv/nuxt/module`) that:
+  - Automates environment variable validation and codegen (for both simple and strict layouts) during development (with file watching) and build.
+  - Dynamically populates Nuxt's `runtimeConfig` with environment variable keys defined in the schema.
+  - Registers a Vite plugin during client bundling to prevent client-side code from importing `@arkenv/nuxt/server` (compile-time security).
+  - Enforces client-side environment variable prefixing (`NUXT_PUBLIC_`).
 - **Bun fullstack dev server**:
   - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.
   - **Bun.build**: Bun's programmatic bundling API. Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.
@@ -214,10 +240,14 @@ pnpm run test:e2e                     # E2E tests
 
 - Uses `const` type parameters for better type inference
 - Leverages ArkType's `type.infer` and `type.validate` utilities
-- Typesafe environment object returned from `createEnv`
+- Typesafe environment object returned from `arkenv`
 
-**Error Handling:**
+**Error Handling & Vocabulary:**
 
+- **Issue vs. Error Distinction**: ArkEnv strictly differentiates between an "Issue" and an "Error".
+  - **Issue (`EnvIssue`)**: A single, isolated validation failure on a specific environment variable.
+  - **Error (`ArkEnvError`)**: The overarching runtime exception that is thrown when validation fails. It contains an array of `EnvIssue`s.
+- Functions dealing with individual failures should use "Issue" (e.g., `formatIssues`), while functions dealing with the final halting exception should use "Error" (e.g., `ArkEnvError`).
 - `ArkEnvError` extends `Error` and formats ArkType validation errors
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails
@@ -226,8 +256,8 @@ pnpm run test:e2e                     # E2E tests
 
 **Bundle Size:**
 
-- Core package must be \<2kB gzipped (enforced via `size-limit`)
-- Vite plugin must be \<2kB (enforced via `size-limit`)
+- Core package must be \~2 kB gzipped (enforced via `size-limit`)
+- Vite plugin must be \~2 kB (enforced via `size-limit`)
 - Zero external dependencies (except peer dependencies). Internal workspace packages are permitted.
 
 **TypeScript Requirements:**

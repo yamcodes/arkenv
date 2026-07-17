@@ -1,0 +1,44 @@
+import { arkenv } from "@arkenv/standard";
+import { describe, expect, it } from "vitest";
+
+const mockStandardSchema = {
+	"~standard": {
+		version: 1,
+		validate: (val: any) => ({ value: Number(val) }),
+	},
+} as any;
+
+describe("validator isolation (standard entry)", () => {
+	it("parses standard schemas without ArkType", () => {
+		const result = arkenv(
+			{ PORT: mockStandardSchema },
+			{ env: { PORT: "3000" } },
+		);
+
+		expect(result.PORT).toBe(3000);
+	});
+
+	it("throws on ArkType DSL strings", () => {
+		expect(() =>
+			arkenv({ PORT: "number.port" } as any, { env: { PORT: "3000" } }),
+		).toThrow('ArkType DSL strings are not supported in "standard" mode');
+	});
+
+	it("throws on validators without ~standard property", () => {
+		expect(() =>
+			arkenv({ PORT: { someArktypeThing: true } } as any, {
+				env: { PORT: "3000" },
+			}),
+		).toThrow('"~standard" property');
+	});
+});
+
+describe("ArkType loading", () => {
+	it("loads ArkType statically when importing from index.ts", async () => {
+		// Importing from index.ts SHOULD load arktype statically
+		// (index.ts imports $ which imports arktype)
+		const mod = await import("@");
+		expect(mod.type).toBeDefined();
+		expect(typeof mod.type).toBe("function");
+	});
+});

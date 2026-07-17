@@ -1,4 +1,4 @@
-# Anti-patterns — the named tells
+# Anti-patterns - the named tells
 
 The `hallmark audit` verb flags these by name. Every one of these is a signature of AI-generated UI. Seeing one is a problem; seeing two in the same view is a confirmation.
 
@@ -36,7 +36,7 @@ A bordered container with cards inside it. Or: a card containing another card co
 
 A headline with `background-clip: text` fill set to a linear gradient (usually purple-to-pink or blue-to-cyan). Signals "AI generated" faster than almost anything else.
 
-**Fix.** Solid ink. If you want the headline to feel alive, use weight or italic or a display face — not a gradient fill.
+**Fix.** Solid ink. If you want the headline to feel alive, use weight or italic or a display face - not a gradient fill.
 
 ### The side-stripe card
 
@@ -62,19 +62,19 @@ Two consecutive Hallmark outputs in the same project use the same macrostructure
 
 **Why it fails.** Hallmark's whole point is that two pages for two briefs feel like *different sites*, not colour-swaps of one template. Repeating a macrostructure across outputs is the structural fingerprint of templating, which is the AI tell Hallmark exists to defeat.
 
-**Fix.** Before writing code, look in the project's CSS for a `/* Hallmark · macrostructure: <name> · ... */` stamp. If one exists, your pick must be a different macrostructure — categorically different where possible (a serif-led editorial macrostructure paired with a sans-led grid one, not two editorial variants). See [`macrostructures.md`](macrostructures.md) for the twenty-one named choices.
+**Fix.** Before writing code, look in the project's CSS for a `/* Hallmark · macrostructure: <name> · ... */` stamp. If one exists, your pick must be a different macrostructure - categorically different where possible (a serif-led editorial macrostructure paired with a sans-led grid one, not two editorial variants). See [`macrostructures.md`](macrostructures.md) for the twenty-one named choices.
 
 ### Specimen fall-through
 
-Producing the Specimen macrostructure (numbered left-margin labels like `01 — HELLO.` + huge serif display + asymmetric spans + hairline rules + typographic-only CTA + sometimes a hand-drawn SVG accent) when the brief did not explicitly request editorial / foundry / specimen energy. This is the single most-repeated Hallmark output, and it's the reason the skill felt like it had one shape.
+Producing the Specimen macrostructure (numbered left-margin labels like `01 - HELLO.` + huge serif display + asymmetric spans + hairline rules + typographic-only CTA + sometimes a hand-drawn SVG accent) when the brief did not explicitly request editorial / foundry / specimen energy. This is the single most-repeated Hallmark output, and it's the reason the skill felt like it had one shape.
 
-**Why it fails.** Specimen is a beautiful pattern when the brief is editorial. Applied to a SaaS pricing page, a developer tool, an e-commerce site, or a personal app, it looks like the AI defaulted — because it did.
+**Why it fails.** Specimen is a beautiful pattern when the brief is editorial. Applied to a SaaS pricing page, a developer tool, an e-commerce site, or a personal app, it looks like the AI defaulted - because it did.
 
 **Fix.** The Specimen macrostructure is one of twenty-one in [`macrostructures.md`](macrostructures.md), not a default. If the brief is vague, pick from the first ten in that file (Bento Grid, Long Document, Marquee Hero, Stat-Led, Workbench, Conversational FAQ, Manifesto, Photographic, Quote-Led, then Specimen). Reach for Specimen only when the brief explicitly says "editorial", "specimen sheet", "type foundry", or names the Specimen theme.
 
 ### The AI nav
 
-Wordmark hard-left, 4–5 inline text links (`Features · Pricing · Docs · Blog · About`) centred or right-grouped, a CTA button hard-right, full viewport width, sticky on scroll, white background, 1 px hairline border-bottom. This is the most-recognised AI nav fingerprint — every LLM emits it because every SaaS site that fed the training data shipped it.
+Wordmark hard-left, 4–5 inline text links (`Features · Pricing · Docs · Blog · About`) centred or right-grouped, a CTA button hard-right, full viewport width, sticky on scroll, white background, 1 px hairline border-bottom. This is the most-recognised AI nav fingerprint - every LLM emits it because every SaaS site that fed the training data shipped it.
 
 **Why it fails.** The shape is genre-blind: it lands the same on a wedding photographer's portfolio, a bakery, a B2B SaaS, and a manifesto. When the nav can't tell you what kind of site you're on, the page is templated.
 
@@ -84,9 +84,9 @@ Wordmark hard-left, 4–5 inline text links (`Features · Pricing · Docs · Blo
 
 4 columns of links (Product · Company · Resources · Legal), social-icon row beneath, copyright line at the very bottom, faint 1 px top-border, neutral grey background. Standard SaaS footer, identical across thousands of pages.
 
-**Why it fails.** Same as the AI nav — the shape is genre-blind. A bakery doesn't have a "Resources" column. An editorial page doesn't have a four-link "Legal". The footer should *close the page*, not catalogue its absent sitemap.
+**Why it fails.** Same as the AI nav - the shape is genre-blind. A bakery doesn't have a "Resources" column. An editorial page doesn't have a four-link "Legal". The footer should *close the page*, not catalogue its absent sitemap.
 
-**Fix.** Pick from the routing table in [`component-cookbook.md`](component-cookbook.md) § Footers. Default to Ft1 Mast-headed, Ft2 Inline single line, Ft4 Dense colophon, Ft5 Statement, Ft6 Letter close, Ft7 Newsletter-first, or Ft8 Marquee scroll. Use Ft3 Index columns *only* on a genuine hub or docs root with a real sitemap — and even then, never with the social-icon row + tiny copyright tail.
+**Fix.** Pick from the routing table in [`component-cookbook.md`](component-cookbook.md) § Footers. Default to Ft1 Mast-headed, Ft2 Inline single line, Ft4 Dense colophon, Ft5 Statement, Ft6 Letter close, Ft7 Newsletter-first, or Ft8 Marquee scroll. Use Ft3 Index columns *only* on a genuine hub or docs root with a real sitemap - and even then, never with the social-icon row + tiny copyright tail.
 
 ### Aurora-blob background
 
@@ -110,13 +110,13 @@ A hero video that auto-plays with audio. Browsers block it anyway, but intent ma
 
 **Why it fails.** Hostile to the audience. Accessibility fail. SEO penalty. Browser blocked.
 
-**Fix.** `<video autoplay muted loop playsinline>` — always all four. A separate audio toggle button if sound is genuinely useful.
+**Fix.** `<video autoplay muted loop playsinline>` - always all four. A separate audio toggle button if sound is genuinely useful.
 
 ### Lazy-loaded LCP
 
-`loading="lazy"` on the hero image or hero video — the LCP element. The page waits to start downloading until the user scrolls to it, except they're already looking at it, so the page just sits there blank.
+`loading="lazy"` on the hero image or hero video - the LCP element. The page waits to start downloading until the user scrolls to it, except they're already looking at it, so the page just sits there blank.
 
-**Why it fails.** Tanks Largest Contentful Paint. Real-world data: lazy-loaded LCP images show p75 of 720 ms vs. 364 ms for preloaded — 2× slower, 4× more "poor" experiences.
+**Why it fails.** Tanks Largest Contentful Paint. Real-world data: lazy-loaded LCP images show p75 of 720 ms vs. 364 ms for preloaded - 2× slower, 4× more "poor" experiences.
 
 **Fix.** `fetchpriority="high"` and `preload="metadata"` on the LCP element. Lazy-load only below-the-fold media.
 
@@ -138,21 +138,21 @@ Headline centred, body centred, button centred, section after section of centred
 
 ### Italic headers
 
-A roman headline with one word flipped to italic — *"Built to think in real time"* — or an all-italic display face used on every heading. The italicised emphasis-word-in-a-header is among the most reliable AI tells: it reads as "trying to look editorial" and appears on a huge share of generated pages.
+A roman headline with one word flipped to italic - *"Built to think in real time"* - or an all-italic display face used on every heading. The italicised emphasis-word-in-a-header is among the most reliable AI tells: it reads as "trying to look editorial" and appears on a huge share of generated pages.
 
 **Fix.** Headers are roman (`font-style: normal`). Carry emphasis with weight, an accent colour, or a drawn underline beneath the word. Keep italic for body-copy emphasis inside running paragraphs only.
 
 ### Eyebrow on every section
 
-Every section starts with an uppercase mono-cap eyebrow — `01 / EXAMPLES`, `02 / WHAT'S INSIDE`, `03 / INSTALL`, `01 · THE TOUR` — above (or worse, *beside*) its heading. The labels look like editorial chapters but read as a tic. The page becomes a list of *labelled lists.*
+Every section starts with an uppercase mono-cap eyebrow - `01 / EXAMPLES`, `02 / WHAT'S INSIDE`, `03 / INSTALL`, `01 · THE TOUR` - above (or worse, *beside*) its heading. The labels look like editorial chapters but read as a tic. The page becomes a list of *labelled lists.*
 
-Eyebrows are **default OFF**. They are not a stylistic flourish you reach for to look editorial — they are an ordinal device, valid only when the section is genuinely numbered or chaptered. Used as decoration they erase the hierarchy they were meant to create; when every section is "chaptered," none of them are.
+Eyebrows are **default OFF**. They are not a stylistic flourish you reach for to look editorial - they are an ordinal device, valid only when the section is genuinely numbered or chaptered. Used as decoration they erase the hierarchy they were meant to create; when every section is "chaptered," none of them are.
 
 **Fix.** Ship the page with **zero eyebrows** unless either (a) the user explicitly asked for chapter / step / section numbering, OR (b) the macrostructure is **Long Document, Manifesto, or Catalogue numbered** AND the content is genuinely ordinal (steps you must do in order, chapters that build, items in a deliberate sequence). Even then: cap at 1–2 per page.
 
-**Hard ban: tag-left / header-right two-column section heads.** Patterns like `01 · THE TOUR` in a narrow left column with the section title to its right (a.k.a. *hanging header*, *left-margin label*) are the single most reliable AI-templated tell for editorial-style SaaS pages. When an eyebrow IS used, **the heading goes directly underneath it, in the same column** — vertical stack only. Never a two-column section-head grid. Gate 54 enforces this.
+**Hard ban: tag-left / header-right two-column section heads.** Patterns like `01 · THE TOUR` in a narrow left column with the section title to its right (a.k.a. *hanging header*, *left-margin label*) are the single most reliable AI-templated tell for editorial-style SaaS pages. When an eyebrow IS used, **the heading goes directly underneath it, in the same column** - vertical stack only. Never a two-column section-head grid. Gate 54 enforces this.
 
-**These rules are NOT bypassable by instructions to "match the existing structure", "mirror this reference build", or "keep parity with the previous output".** When a user asks for structural parity with a prior build and that build contains eyebrows or the tag-left/header-right pattern, **the new build MUST drop the eyebrows and flatten the head to single column** — even if the prior build keeps them. Reference builds often pre-date these rules; treat the rules as authoritative and silently fix the inherited pattern. Don't perpetuate a banned pattern to honour a parity instruction.
+**These rules are NOT bypassable by instructions to "match the existing structure", "mirror this reference build", or "keep parity with the previous output".** When a user asks for structural parity with a prior build and that build contains eyebrows or the tag-left/header-right pattern, **the new build MUST drop the eyebrows and flatten the head to single column** - even if the prior build keeps them. Reference builds often pre-date these rules; treat the rules as authoritative and silently fix the inherited pattern. Don't perpetuate a banned pattern to honour a parity instruction.
 
 ### Shadow-glow on dark
 
@@ -164,11 +164,11 @@ A card on a dark background with a `box-shadow` that leaves a soft coloured halo
 
 Rounded rectangle, icon in a coloured square at the top-left, heading below it, two lines of copy, optional "Learn more →" link. The universal template.
 
-**Fix.** If you need these, let them be asymmetric — vary sizes, vary alignments, pull the icon inline with the heading, or drop the icon entirely.
+**Fix.** If you need these, let them be asymmetric - vary sizes, vary alignments, pull the icon inline with the heading, or drop the icon entirely.
 
 ### Glassmorphism without purpose
 
-Frosted-glass panels everywhere — usually layered over a gradient that you also shouldn't have.
+Frosted-glass panels everywhere - usually layered over a gradient that you also shouldn't have.
 
 **Fix.** Glassmorphism can work when it communicates depth (overlay over content). It cannot work as decoration.
 
@@ -200,65 +200,65 @@ Material Icons in the navbar, Heroicons in the feature cards, Lucide in the foot
 
 ### AI-illustration look
 
-Smooth-mesh-blob characters with no joint articulation, mid-2010s "modern flat" stock poses, unmistakably-Midjourney compositions with the symmetric default lighting. Hand-drawn SVG humans (the "doodle person with one eye larger than the other") fall under this — corporate-doodle is the late-2010s Slack/Figma marketing template, and the audience reads it as AI immediately.
+Smooth-mesh-blob characters with no joint articulation, mid-2010s "modern flat" stock poses, unmistakably-Midjourney compositions with the symmetric default lighting. Hand-drawn SVG humans (the "doodle person with one eye larger than the other") fall under this - corporate-doodle is the late-2010s Slack/Figma marketing template, and the audience reads it as AI immediately.
 
 **Why it fails.** It reads as AI in milliseconds. The 2026 audience pattern-matches this faster than any other tell.
 
-**Fix.** Hand-build the illustration in pure CSS or SVG (Tier A or B in [`hero-enrichment.md`](hero-enrichment.md)). If you must generate, use Nanobanana 2 or Recraft V4 with reference images, asymmetric crop, and grain post-processing — never raw output. See [`custom-craft.md`](custom-craft.md) Tier E.
+**Fix.** Hand-build the illustration in pure CSS or SVG (Tier A or B in [`hero-enrichment.md`](hero-enrichment.md)). If you must generate, use Nanobanana 2 or Recraft V4 with reference images, asymmetric crop, and grain post-processing - never raw output. See [`custom-craft.md`](custom-craft.md) Tier E.
 
 ### Invented metrics
 
-A stat-led layout, comparison row, or proof bar carrying numbers the user never supplied — "10× faster", "saves 5 hours per week", "trusted by 50,000+ teams", "99.9 % uptime", "+47 % conversion". The model reached for a stat to fill a stat slot and made one up.
+A stat-led layout, comparison row, or proof bar carrying numbers the user never supplied - "10× faster", "saves 5 hours per week", "trusted by 50,000+ teams", "99.9 % uptime", "+47 % conversion". The model reached for a stat to fill a stat slot and made one up.
 
 **Why it fails.** Audiences read invented stats as fast as they read invented testimonials. A page that lies on its proof bar can't be trusted on its claims either, and the AI tell is unmistakable: every fabricated number reads "this was generated, not written".
 
-**Fix.** Three options, in order of preference: (1) replace the number with `—` and a labelled grey block ("metric to confirm" or "stat pending"); (2) ask the user for the real number and pause the run; (3) rebuild the section without the proof slot — a stat-led macrostructure with no real stats is the wrong macrostructure. The number-shaped hole is honest; the fabricated number is slop. *(Slop-test gate 46.)*
+**Fix.** Three options, in order of preference: (1) replace the number with `—` and a labelled grey block ("metric to confirm" or "stat pending"); (2) ask the user for the real number and pause the run; (3) rebuild the section without the proof slot - a stat-led macrostructure with no real stats is the wrong macrostructure. The number-shaped hole is honest; the fabricated number is slop. *(Slop-test gate 46.)*
 
 ### Generic emoji as feature icon
 
 A feature card, value prop, step number, or pricing tier with `✨` `🚀` `⚡` `🔥` `🎯` `✅` rendered as the primary icon. The "sparkle hero" badge with a `✨` glyph beside the eyebrow. Emoji standing in for an icon library because the model didn't pick one.
 
-**Why it fails.** Emoji are typography of a sort, but they are not part of the page's typographic system — they're rendered by the OS and look different on every device, they break the icon's stroke voice (you've now mixed a Phosphor-style line icon with a Twemoji blob), and the choice is recognisably the AI default. Sparkle-emoji-as-AI-shortcut is the cliché of the 2024–2025 era.
+**Why it fails.** Emoji are typography of a sort, but they are not part of the page's typographic system - they're rendered by the OS and look different on every device, they break the icon's stroke voice (you've now mixed a Phosphor-style line icon with a Twemoji blob), and the choice is recognisably the AI default. Sparkle-emoji-as-AI-shortcut is the cliché of the 2024–2025 era.
 
-**Fix.** Pick a single icon library and ship it ([assets.md](assets.md) names the canon). Or build a custom SVG mark. Or omit the icon entirely and lead with typography — most feature lists don't need icons. *(Slop-test gate 30.)*
+**Fix.** Pick a single icon library and ship it ([assets.md](assets.md) names the canon). Or build a custom SVG mark. Or omit the icon entirely and lead with typography - most feature lists don't need icons. *(Slop-test gate 30.)*
 
 ### Re-drawn UI chrome
 
 A fake browser bar (URL pill + traffic-light dots) wrapping a screenshot. A fake phone frame (rounded rectangle + notch + speaker slit) around a mobile mockup. A fake code-block window (mock title bar + close/minimise dots) wrapping a `<pre>`. A fake IDE chrome (file tabs + activity bar) around an editor screenshot. All hand-built in HTML/CSS or SVG.
 
-**Why it fails.** The user already has the chrome — their browser, their phone, their IDE all *are* chrome. Redrawing it in a page is like printing a photograph of a picture frame inside a real picture frame. The fakery is also bad: the URL is wrong, the dots aren't macOS dots, the notch is the wrong shape. Audiences pattern-match re-drawn chrome as "AI invented a UI that already exists" within a glance.
+**Why it fails.** The user already has the chrome - their browser, their phone, their IDE all *are* chrome. Redrawing it in a page is like printing a photograph of a picture frame inside a real picture frame. The fakery is also bad: the URL is wrong, the dots aren't macOS dots, the notch is the wrong shape. Audiences pattern-match re-drawn chrome as "AI invented a UI that already exists" within a glance.
 
-**Fix.** Use a real screenshot wrapped in `<figure>` (with a hairline border at most). For phone mockups, use a transparent-PNG device frame from a vendor or a real product photograph — never a CSS-drawn one. For code blocks, use the system `<pre>` with a typographic frame (top rule + label + bottom rule), not a faked window-chrome. The page's job is to show content, not to imitate the OS. *(Slop-test gate 47.)*
+**Fix.** Use a real screenshot wrapped in `<figure>` (with a hairline border at most). For phone mockups, use a transparent-PNG device frame from a vendor or a real product photograph - never a CSS-drawn one. For code blocks, use the system `<pre>` with a typographic frame (top rule + label + bottom rule), not a faked window-chrome. The page's job is to show content, not to imitate the OS. *(Slop-test gate 47.)*
 
 ### Mid-render token improvisation
 
 A theme is selected at the top of the run, but the artifact contains inline colour values (`#5b6cff`, `oklch(74% 0.18 245)`, `rgb(...)`) or `font-family` declarations that aren't drawn from the token block. Or: the artifact ships with the theme's token set *plus* one extra hex tucked into a hover state, a focus ring, or a single border. The model picked the theme, then drifted.
 
-**Why it fails.** Token discipline is the difference between a system and a freestyle. Once a theme is locked, every colour and every font in the file must reference a named token (`var(--color-accent)`, `font-family: var(--font-display)`). Inline values are how cohesion erodes — by the third edit pass, the page has eight colours instead of three, and the editorial restraint that made the theme work is gone. Audiences don't see the inline value, but they feel the looseness.
+**Why it fails.** Token discipline is the difference between a system and a freestyle. Once a theme is locked, every colour and every font in the file must reference a named token (`var(--color-accent)`, `font-family: var(--font-display)`). Inline values are how cohesion erodes - by the third edit pass, the page has eight colours instead of three, and the editorial restraint that made the theme work is gone. Audiences don't see the inline value, but they feel the looseness.
 
 **Fix.** Every colour and every font in the artifact must come through `var(--token-name)`. If you need a value that doesn't exist as a token, add it to the token block first (`--color-accent-warm: oklch(...)`) and then reference it. Inline OKLCH or one-off hex values mid-render are not allowed. *(Slop-test gate 48. See also [SKILL.md § Locked tokens](../SKILL.md).)*
 
 ### Wrap-to-two-lines clickable text
 
-A button label, nav link, footer link, breadcrumb, or CTA reads on two lines because the viewport got narrow and the label was long. Visually, the affordance now looks broken — readers can't tell whether the line break is intentional. Worst case: the second line is one word ("free", "more", "started"), which reads as a styling error.
+A button label, nav link, footer link, breadcrumb, or CTA reads on two lines because the viewport got narrow and the label was long. Visually, the affordance now looks broken - readers can't tell whether the line break is intentional. Worst case: the second line is one word ("free", "more", "started"), which reads as a styling error.
 
 **Why it fails.** Clickable affordances are one-line objects. The reader scans the label, decides whether to click, moves on. A two-line label slows the scan, breaks the row's vertical rhythm (button height grows, sibling buttons stay the same), and signals "this page wasn't tested at this width". It's a responsive-discipline tell.
 
-**Fix.** In order of preference: (1) shorten the label — *"Get started free" → "Start free"*; *"Read the documentation" → "Read docs"*. Most CTA labels are too long. (2) Set `white-space: nowrap` on the affordance and let the parent flex container reflow. (3) Drop a non-essential nav item at narrow widths via `hidden=until-found` or `display: none`. (4) Collapse the nav into a sheet/menu under a threshold. *Never* let a primary CTA or nav link wrap. *(Slop-test gate 49. See [responsive.md § Clickable text — never wraps](responsive.md).)*
+**Fix.** In order of preference: (1) shorten the label - *"Get started free" → "Start free"*; *"Read the documentation" → "Read docs"*. Most CTA labels are too long. (2) Set `white-space: nowrap` on the affordance and let the parent flex container reflow. (3) Drop a non-essential nav item at narrow widths via `hidden=until-found` or `display: none`. (4) Collapse the nav into a sheet/menu under a threshold. *Never* let a primary CTA or nav link wrap. *(Slop-test gate 49. See [responsive.md § Clickable text - never wraps](responsive.md).)*
 
 ### Lottie shortcut
 
-Reaching for a LottieFiles community animation — the spinning logo, the checkmark draw, the loading spinner, the "loading dots" loop — when pure CSS or hand-built SVG would have produced it stronger and lighter.
+Reaching for a LottieFiles community animation - the spinning logo, the checkmark draw, the loading spinner, the "loading dots" loop - when pure CSS or hand-built SVG would have produced it stronger and lighter.
 
 **Why it fails.** Lottie pulls were an AI-tool shortcut throughout 2023–2024; the audience now reads them as one. The 50–500 KB JSON file plus the runtime cost is a tax on a job CSS does in zero bytes.
 
-**Fix.** Build it custom. Spinning logo → CSS `@keyframes rotate`. Checkmark → SVG `stroke-dasharray` animated. Loading dots → CSS `@property` + `animation-delay`. Lottie is Tier F in the enrichment hierarchy — last resort, only for genuinely articulated character motion.
+**Fix.** Build it custom. Spinning logo → CSS `@keyframes rotate`. Checkmark → SVG `stroke-dasharray` animated. Loading dots → CSS `@property` + `animation-delay`. Lottie is Tier F in the enrichment hierarchy - last resort, only for genuinely articulated character motion.
 
 ### Three.js for a still object
 
-A WebGL hero where the 3D doesn't earn its place by being interactive. A stationary spinning thing the user can't touch, can't reorient, can't customise — just a model rotating because someone wanted "3D".
+A WebGL hero where the 3D doesn't earn its place by being interactive. A stationary spinning thing the user can't touch, can't reorient, can't customise - just a model rotating because someone wanted "3D".
 
-**Why it fails.** The 100–300 KB Three.js bundle, the model, the textures, the GPU work — all for a thing that could be a static photograph or an SVG.
+**Why it fails.** The 100–300 KB Three.js bundle, the model, the textures, the GPU work - all for a thing that could be a static photograph or an SVG.
 
 **Fix.** If the user can't manipulate it, it doesn't justify Three.js. Use a still photograph or a hand-built SVG.
 
@@ -278,7 +278,7 @@ Every property animating, including ones that should be instant (visibility, foc
 
 Every card lifts on hover, with no shadow change, no easing specified, no purpose.
 
-**Fix.** Pick one signal per element. A 1px translate, or a colour shift, or an underline thickening — never all four.
+**Fix.** Pick one signal per element. A 1px translate, or a colour shift, or an underline thickening - never all four.
 
 ### Bouncy overshoot easings on UI
 
@@ -324,7 +324,7 @@ Both delay 800ms.
 
 ### Focus rings that animate in
 
-The ring fades in over 200ms — keyboard users have no indicator at the start of the transition.
+The ring fades in over 200ms - keyboard users have no indicator at the start of the transition.
 
 **Fix.** Focus rings appear instantly. Always. Don't transition `outline` or `box-shadow` when the element gains focus.
 
@@ -378,7 +378,7 @@ A spinner appears for 50ms while a fast action completes.
 
 "Acme", "Nexus", "Pulse", "Unleash", "Seamless", "Supercharge".
 
-**Fix.** Name the thing concretely. If it's a demo, use a domain-specific placeholder — "Maple Weekly", "Ridgeline Inventory" — not abstract startup bingo.
+**Fix.** Name the thing concretely. If it's a demo, use a domain-specific placeholder - "Maple Weekly", "Ridgeline Inventory" - not abstract startup bingo.
 
 ### `z-index: 9999`
 
@@ -388,7 +388,7 @@ Arbitrary large z-values.
 
 ### Every section padded the same
 
-Top padding, bottom padding, horizontal padding — all equal across every section.
+Top padding, bottom padding, horizontal padding - all equal across every section.
 
 **Fix.** Vary. Tighten one, expand another.
 
@@ -405,7 +405,7 @@ Top padding, bottom padding, horizontal padding — all equal across every secti
 For each finding:
 
 ```
-[severity] Tell name — file:line
+[severity] Tell name - file:line
   why it's a tell (one line)
   → fix (one line)
 ```
@@ -413,6 +413,6 @@ For each finding:
 Then:
 
 ```
-Summary — N critical · M major · K minor
-Verdict — [ships as slop | reads as AI-generated | close, fix the minors]
+Summary - N critical · M major · K minor
+Verdict - [ships as slop | reads as AI-generated | close, fix the minors]
 ```

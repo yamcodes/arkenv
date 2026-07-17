@@ -4,9 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { createEnv as clientCreateEnv } from "./client";
-import { createEnv as serverCreateEnv } from "./server";
-import { type } from "./shared";
+import { type } from "@arkenv/core";
+import { arkenv as clientArkenv } from "./client";
+import { arkenv as serverArkenv } from "./server";
 
 describe("Separate Files Next.js mode", () => {
 	it("should import server-only in server.ts", () => {
@@ -19,7 +19,7 @@ describe("Separate Files Next.js mode", () => {
 
 	it("should disallow client schema in server entry point at runtime", () => {
 		expect(() => {
-			serverCreateEnv({
+			serverArkenv({
 				client: {
 					NEXT_PUBLIC_API_URL: "string",
 				},
@@ -32,7 +32,7 @@ describe("Separate Files Next.js mode", () => {
 
 	it("should disallow server schema in client entry point at runtime", () => {
 		expect(() => {
-			clientCreateEnv({
+			clientArkenv({
 				// @ts-expect-error server schema not allowed
 				server: {
 					DATABASE_URL: "string",
@@ -45,7 +45,7 @@ describe("Separate Files Next.js mode", () => {
 	});
 
 	it("should support extends to merge validated outputs", () => {
-		const clientEnv = clientCreateEnv({
+		const clientEnv = clientArkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string",
 			},
@@ -54,7 +54,7 @@ describe("Separate Files Next.js mode", () => {
 			},
 		});
 
-		const serverEnv = serverCreateEnv({
+		const serverEnv = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -69,7 +69,7 @@ describe("Separate Files Next.js mode", () => {
 	});
 
 	it("should throw for server-only variables on the client with extends", () => {
-		const clientEnv = clientCreateEnv({
+		const clientEnv = clientArkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string",
 			},
@@ -78,7 +78,7 @@ describe("Separate Files Next.js mode", () => {
 			},
 		});
 
-		const serverEnv = serverCreateEnv({
+		const serverEnv = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -88,7 +88,7 @@ describe("Separate Files Next.js mode", () => {
 			},
 		});
 
-		const clientExtendingServer = clientCreateEnv({
+		const clientExtendingServer = clientArkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string",
 			},
@@ -106,12 +106,12 @@ describe("Separate Files Next.js mode", () => {
 			// @ts-expect-error DATABASE_URL is not allowed on client
 			clientExtendingServer.DATABASE_URL;
 		}).toThrow(
-			"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
+			"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
 		);
 	});
 
 	it("should throw typo/unknown key errors", () => {
-		const env = clientCreateEnv({
+		const env = clientArkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string",
 			},
@@ -128,7 +128,7 @@ describe("Separate Files Next.js mode", () => {
 	});
 
 	it("should support shared schema with extends", () => {
-		const sharedEnv = clientCreateEnv({
+		const sharedEnv = clientArkenv({
 			shared: {
 				NODE_ENV: "string",
 			},
@@ -137,7 +137,7 @@ describe("Separate Files Next.js mode", () => {
 			},
 		});
 
-		const serverEnv = serverCreateEnv({
+		const serverEnv = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -158,7 +158,7 @@ describe("Separate Files Next.js mode", () => {
 	});
 
 	it("should support multiple extends arrays", () => {
-		const clientEnv = clientCreateEnv({
+		const clientEnv = clientArkenv({
 			client: {
 				NEXT_PUBLIC_API_URL: "string",
 			},
@@ -167,7 +167,7 @@ describe("Separate Files Next.js mode", () => {
 			},
 		});
 
-		const sharedEnv = clientCreateEnv({
+		const sharedEnv = clientArkenv({
 			shared: {
 				NODE_ENV: "string",
 			},
@@ -176,7 +176,7 @@ describe("Separate Files Next.js mode", () => {
 			},
 		});
 
-		const serverEnv = serverCreateEnv({
+		const serverEnv = serverArkenv({
 			server: {
 				DATABASE_URL: "string",
 			},
@@ -198,7 +198,7 @@ describe("Separate Files Next.js mode", () => {
 			NODE_ENV: "'development' | 'production' | 'test'",
 		});
 
-		const clientEnv = clientCreateEnv(
+		const clientEnv = clientArkenv(
 			{
 				NEXT_PUBLIC_API_URL: "string",
 			},
@@ -211,7 +211,7 @@ describe("Separate Files Next.js mode", () => {
 			},
 		);
 
-		const serverEnv = serverCreateEnv(
+		const serverEnv = serverArkenv(
 			{
 				DATABASE_URL: "string",
 			},
@@ -236,7 +236,7 @@ describe("Separate Files Next.js mode", () => {
 
 	it("should reject client-side flat schema with non-NEXT_PUBLIC_ prefix at runtime", () => {
 		expect(() => {
-			clientCreateEnv(
+			clientArkenv(
 				{
 					API_URL: "string",
 				} as any,
@@ -253,7 +253,7 @@ describe("Separate Files Next.js mode", () => {
 
 	it("should reject extra keys in runtimeEnv not defined in the schema", () => {
 		expect(() => {
-			clientCreateEnv(
+			clientArkenv(
 				{
 					NEXT_PUBLIC_API_URL: "string",
 				},

@@ -1,22 +1,28 @@
-import { defineConfig } from "vitest/config";
+import { coverageConfigDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-		projects: ["packages/*", "apps/*", "!apps/playwright-www", "!**/*.md"],
+		setupFiles: ["packages/internal/log/vitest.setup.ts"],
+		projects: [
+			"packages/*",
+			"packages/internal/*",
+			"apps/*",
+			"!packages/cli",
+			"!apps/playwright-www",
+			"!**/*.md",
+		],
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "json", "html"],
 			exclude: [
-				"**/node_modules/",
-				"**/.next/",
+				...coverageConfigDefaults.exclude,
 				"**/dist/",
-				"**/dist-test/",
-				"**/*.test.*",
-				"**/*.config.*",
 				"**/coverage/**",
+				"**/*.d.ts",
+				"**/.next/",
+				"**/dist-test/",
 				"**/build/**",
 				"**/examples/**",
-				"**/*.d.ts",
 				"**/types/**",
 				"**/static/**",
 				"**/chunks/**",
@@ -29,5 +35,7 @@ export default defineConfig({
 			],
 		},
 		unstubEnvs: true,
+		restoreMocks: true,
+		unstubGlobals: true,
 	},
 });
