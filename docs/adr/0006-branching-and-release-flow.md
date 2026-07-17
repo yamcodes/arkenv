@@ -43,3 +43,12 @@ This architecture enforces synchronization at the Git/Infrastructure layer rathe
 To satisfy the third requirement (doc hotfixes without package releases), we are pairing this architecture with the `sync-main` workflow. If a typo needs fixing immediately, contributors can merge the fix directly into `main` (triggering a doc deploy) and the `sync-main` script will automatically cherry-pick and reconcile that commit back into `dev` to prevent Git history drift.
 
 This provides the exact guarantees of Astro's separated repositories, but kept within our unified monorepo.
+
+### Autofix ↔ release safeguards
+
+Two workflow guards must coexist so a `Version Packages` merge publishes **exactly once** (never zero times, never twice):
+
+1. **`autofix.yml`** skips push events whose head commit message contains `Version Packages`. Without this, autofix can push a fixup that cancels the concurrent `release` run; the re-triggered release is then skipped by guard (2), stranding the release with zero publishes.
+2. **`release.yml`** skips pushes whose sender is `autofix-ci[bot]`. Without this, an autofix fixup push could trigger a second publish.
+
+Removing either guard reintroduces a race. Both are documented inline next to the job-level `if` conditions in `.github/workflows/autofix.yml` and `.github/workflows/release.yml`.

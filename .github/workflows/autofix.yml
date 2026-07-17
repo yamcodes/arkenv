@@ -11,11 +11,13 @@ jobs:
   autofix:
     runs-on: ubuntu-latest
     # Skip autofix for bot commits and Version Packages release pushes.
-    # Release pushes race with `release.yml`: if autofix pushes a fixup, the
-    # service cancels the in-flight release run and the re-triggered release
-    # is then skipped by the autofix-ci[bot] sender guard — zero publishes.
-    # Autofix on those commits has no value anyway (already autofixed on the
-    # changeset-release/* PR).
+    # Paired with release.yml's autofix-ci[bot] sender guard: if autofix runs on
+    # a Version Packages push and produces a fixup, the autofix.ci service
+    # cancels the in-flight release; the re-triggered release is then skipped
+    # by that guard — zero publishes. Removing either guard reopens a race
+    # (stranding or double-publish). Autofix on those commits has no value
+    # anyway (already autofixed on the changeset-release/* PR).
+    # See docs/adr/0006-branching-and-release-flow.md.
     if: |
       github.event_name == 'pull_request' ||
       (github.event_name == 'push' && github.event.sender.type != 'Bot' && github.event.head_commit != null && !contains(github.event.head_commit.message, 'Version Packages'))
