@@ -18,6 +18,7 @@
 		"options",
 		"---How-to---",
 		"[Load environment variables](/docs/arkenv/how-to/load-environment-variables)",
-		"[Reuse your schema](/docs/arkenv/how-to/reuse-schemas)"
+		"[Reuse your schema](/docs/arkenv/how-to/reuse-schemas)",
+		"[Add hosting provider variables](/docs/cli/hosting-presets)"
 	]
 }

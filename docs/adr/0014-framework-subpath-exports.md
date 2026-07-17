@@ -6,7 +6,7 @@ To decide which `@arkenv/nextjs` and `@arkenv/nuxt` subpath exports remain publi
 
 Framework integrations expose multiple entry points so bundlers can enforce server/client boundaries in strict layout. Over time, a `./shared` subpath was added for internal schema modules (`env/internal/shared.ts`) that only need `import { type } from "…"`.
 
-`@arkenv/core` already exports `type`. The `./shared` subpath therefore duplicates a capability available from the core package without adding boundary semantics — unlike `./client` and `./server`, which carry compile-time routing, `server-only`, proxy/`extends` behavior, and `strictLayout` routing.
+`@arkenv/core` already exports `type`. The `./shared` subpath therefore duplicates a capability available from the core package without adding boundary semantics - unlike `./client` and `./server`, which carry compile-time routing, `server-only`, proxy/`extends` behavior, and `strictLayout` routing.
 
 We evaluated three postures for the export surface:
 
@@ -27,7 +27,7 @@ We adopt **Option 2**: remove `./shared`; keep the default entry, `./client`, an
 
 ### Mental model
 
-- **Flat layout:** import from `@arkenv/nextjs` or `@arkenv/nuxt` — one entry point, bundler picks the build.
+- **Flat layout:** import from `@arkenv/nextjs` or `@arkenv/nuxt` - one entry point, bundler picks the build.
 - **Strict layout:** import from `@arkenv/nextjs/client` and `@arkenv/nextjs/server` (or Nuxt equivalents).
 - **Standalone server code** (scripts, one-off Node entry points outside the env module graph): `import { arkenv } from "@arkenv/core"`.
 - **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.

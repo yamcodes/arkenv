@@ -17,7 +17,7 @@ export type CodegenLayoutOptions = {
 	 * path kept for test parity; primary codegen path is flat when unset/flat.
 	 */
 	layout?: "strict" | "simple" | "flat" | undefined;
-	/** Hosting provider preset — appended to defaults when `envKeys` is empty. */
+	/** Hosting provider preset - appended to defaults when `envKeys` is empty. */
 	hostPreset?: HostPreset | undefined;
 };
 
@@ -124,7 +124,7 @@ function buildNoCodegenRuntimeEnvFields(
 /**
  * Assemble a Next.js / Nuxt env schema template (flat or nested).
  *
- * Owns structural assembly — key categorisation, imports, JSDoc, flat vs nested
+ * Owns structural assembly - key categorisation, imports, JSDoc, flat vs nested
  * (`layout === "simple"`), and runtimeEnv injection. The dialect supplies only
  * field lines and extra imports.
  *

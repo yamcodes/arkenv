@@ -35,7 +35,7 @@ export type Dialect = {
 	 * Format a field for codegen flat/nested layouts (single-file Next/Nuxt).
 	 *
 	 * Unlike {@link formatStrictField}, PORT and similar keys stay as optional
-	 * strings — only `shared` (NODE_ENV) uses a richer type.
+	 * strings - only `shared` (NODE_ENV) uses a richer type.
 	 *
 	 * @param key Environment variable name
 	 * @param role Field scope within the codegen layout

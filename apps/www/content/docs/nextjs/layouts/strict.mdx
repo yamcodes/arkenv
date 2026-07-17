@@ -19,7 +19,7 @@ By importing `@arkenv/core` from `@/env/client` in client-side code and `@/env/s
 
 ## Import mental model
 
-- **Flat layout:** import from `@arkenv/nextjs` — one entry point, bundler picks the build.
+- **Flat layout:** import from `@arkenv/nextjs` - one entry point, bundler picks the build.
 - **Strict layout:** import from `@arkenv/nextjs/client` and `@arkenv/nextjs/server`.
 - **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
 - **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.

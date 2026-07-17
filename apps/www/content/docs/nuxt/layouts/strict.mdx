@@ -18,7 +18,7 @@ By importing `env` from `~/env/client` in client-side code and `~/env/server` in
 
 ## Import mental model
 
-- **Flat layout:** import from `@arkenv/nuxt` — one entry point, bundler picks the build.
+- **Flat layout:** import from `@arkenv/nuxt` - one entry point, bundler picks the build.
 - **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`.
 - **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
 - **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
