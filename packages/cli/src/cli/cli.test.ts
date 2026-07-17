@@ -245,5 +245,15 @@ describe("CLI parser", () => {
 			]);
 			expect(cli4.validationError).toBe("Invalid host preset: vercle");
 		});
+
+		it("should parse the -p alias for --host-preset", () => {
+			const cli = new CLI(["node", "arkenv", "init", "-p", "netlify"]);
+			expect(cli.hostPreset).toBe("netlify");
+			expect(cli.initInput.hostPreset).toBe("netlify");
+			expect(cli.validationError).toBeUndefined();
+
+			const invalid = new CLI(["node", "arkenv", "init", "-p", "vercle"]);
+			expect(invalid.validationError).toBe("Invalid host preset: vercle");
+		});
 	});
 });

@@ -27,13 +27,17 @@ Choosing **None** (the default) leaves your schema untouched.
 
 ### `--host-preset` flag
 
-To skip the prompt — for example in scripts or with `--agent` — pass the `--host-preset` flag:
+To skip the prompt — for example in scripts or with `--agent` — pass the `--host-preset` flag (or its `-p` alias):
 
 ```npm
 npx @arkenv/cli@latest init --host-preset vercel
 ```
 
-The flag accepts `none`, `vercel`, or `netlify`.
+The flag accepts `none`, `vercel`, or `netlify`. The following is equivalent:
+
+```npm
+npx @arkenv/cli@latest init -p vercel
+```
 
 ## What each preset adds
 
