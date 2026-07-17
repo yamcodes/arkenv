@@ -47,13 +47,42 @@ The `interface ImportMeta` block is required in some TypeScript configurations t
 
 Once set up, `import.meta.env` is fully typesafe:
 
-```ts title="src/app.tsx"
+```ts twoslash title="src/app.tsx"
+// @errors: 2339
+// @filename: src/env.ts
+import { type } from "arkenv";
+export const Env = type({
+	PORT: "number.port",
+	VITE_API_URL: "string",
+	VITE_API_KEY: "string",
+	VITE_MY_NUMBER: "number",
+	VITE_MY_BOOLEAN: "boolean",
+});
+export type Env = typeof Env.infer;
+
+// @filename: src/vite-env.d.ts
+/// <reference types="vite/client" />
+type ImportMetaEnvAugmented =
+	import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+		typeof import("./env").Env
+	>;
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+interface ImportMeta {
+	readonly env: ImportMetaEnv;
+}
+interface ViteTypeOptions {
+	strictImportMetaEnv: unknown;
+}
+
+// @filename: src/app.tsx
+// ---cut---
 // TypeScript knows about your VITE_* variables
 const apiUrl = import.meta.env.VITE_API_URL; // ✅ Typesafe
-const port = import.meta.env.PORT; // ❌ Error: PORT is not in ImportMetaEnv
+const port = import.meta.env.PORT; // ❌ PORT is not in ImportMetaEnv
 
 // Autocomplete works too!
-import.meta.env.VITE_ // Shows all your VITE_* variables
+import.meta.env.VITE_MY_NUMBER;
+//              ^|
 ```
 
 ## How it works
@@ -86,7 +115,20 @@ export const Env = type({
 export type Env = typeof Env.infer;
 ```
 
-```ts title="vite.config.ts"
+```ts twoslash title="vite.config.ts"
+// @filename: src/env.ts
+import { type } from "arkenv";
+export const Env = type({
+	PORT: "number.port",
+	VITE_API_URL: "string",
+	VITE_API_KEY: "string",
+	VITE_MY_NUMBER: "number",
+	VITE_MY_BOOLEAN: "boolean",
+});
+export type Env = typeof Env.infer;
+
+// @filename: vite.config.ts
+// ---cut---
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import { defineConfig } from "vite";
 import { Env } from "./src/env";

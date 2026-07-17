@@ -39,7 +39,24 @@ Notice the line that references `"./src/env"` - if your `env.ts` file is somewhe
 
 Once set up, `process.env` is fully typesafe for your `BUN_PUBLIC_*` variables:
 
-```ts title="src/app.tsx"
+```ts twoslash title="src/app.tsx"
+// @filename: src/env.ts
+import { type } from "arkenv";
+export default type({
+	BUN_PUBLIC_API_URL: "string.url",
+	BUN_PUBLIC_DEBUG: "boolean",
+});
+
+// @filename: bun-env.d.ts
+type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+	typeof import("./src/env").default
+>;
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented {}
+}
+
+// @filename: src/app.tsx
+// ---cut---
 // TypeScript knows about your BUN_PUBLIC_* variables
 const apiUrl = process.env.BUN_PUBLIC_API_URL; // ✅ Typesafe
 const debug = process.env.BUN_PUBLIC_DEBUG; // ✅ Typesafe
@@ -47,7 +64,7 @@ const debug = process.env.BUN_PUBLIC_DEBUG; // ✅ Typesafe
 
 `NODE_ENV` is also supported - when defined in your schema, it is validated and correctly typed:
 
-```ts title="src/env.ts"
+```ts twoslash title="src/env.ts"
 import { type } from "arkenv";
 
 export default type({
@@ -56,8 +73,25 @@ export default type({
 });
 ```
 
-```ts title="src/app.tsx"
-process.env.NODE_ENV; // ✅ "development" | "production" | "test"
+```ts twoslash title="src/app.tsx"
+// @filename: src/env.ts
+import { type } from "arkenv";
+export default type({
+	BUN_PUBLIC_API_URL: "string.url",
+	NODE_ENV: "'development' | 'production' | 'test'",
+});
+
+// @filename: bun-env.d.ts
+type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+	typeof import("./src/env").default
+>;
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented {}
+}
+
+// @filename: src/app.tsx
+// ---cut---
+const nodeEnv = process.env.NODE_ENV; // ✅ "development" | "production" | "test"
 ```
 
 ## How it works
