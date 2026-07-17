@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-> **Originating RFC:** [Issue #1197 — Internal vs. Published Packages Strategy](https://github.com/yamcodes/arkenv/issues/1197)
+> **Originating RFC:** [Issue #1197 - Internal vs. Published Packages Strategy](https://github.com/yamcodes/arkenv/issues/1197)
 
 ArkEnv relies on several internal utility functions and runtime configurations that must be shared across our core engine (`arkenv`) as well as framework plugins (e.g., `@arkenv/nextjs`, `@arkenv/nuxt`). This creates an architectural decision regarding how to distribute and share this logic effectively without compromising developer experience, type safety, or build environments.
 

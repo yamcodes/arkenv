@@ -14,7 +14,7 @@ const FLAG_CONFIG = {
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
 	isFlat: { long: "--flat", short: "", kind: "boolean" },
 	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
-	hostPreset: { long: "--host-preset", short: "", kind: "value" },
+	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
 } as const;
 
 const knownFlags = new Set<string>(

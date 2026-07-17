@@ -3,5 +3,5 @@
 	"description": "CLI tools for ArkEnv",
 	"root": true,
 	"icon": "Terminal",
-	"pages": ["---Guide---", "index", "faq"]
+	"pages": ["---Guide---", "index", "hosting-presets", "machine-readable-output", "faq"]
 }

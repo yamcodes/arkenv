@@ -59,7 +59,7 @@ function appendPresetStrictFields(
 /**
  * Build strict-layout templates from a validator dialect and scaffold context.
  *
- * Shared assembler for all dialects — only field formatting and import/wrapper
+ * Shared assembler for all dialects - only field formatting and import/wrapper
  * differences come from the dialect. Preset keys merge with defaults rather
  * than replacing them.
  *
