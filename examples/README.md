@@ -15,6 +15,7 @@ This directory contains a collection of example projects that demonstrate variou
 | [with-bun-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react)             | Minimal example of *using ArkEnv in a [Bun + React](https://bun.com/docs/guides/ecosystem/react) full-stack app*.        |
 | [with-solid-start](https://github.com/yamcodes/arkenv/tree/main/examples/with-solid-start)         | Minimal example of *using ArkEnv in a [SolidStart](https://start.solidjs.com) app*.                                      |
 | [with-zod](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod)                         | Example of *using ArkEnv with [Zod](https://zod.dev/)* for validation (without ArkType).                                 |
+| [with-valibot](https://github.com/yamcodes/arkenv/tree/main/examples/with-valibot)                 | Example of *using ArkEnv with [Valibot](https://valibot.dev/)* for validation (without ArkType).                         |
 | [with-standard-schema](https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema) | Example of *mixing ArkType with [Standard Schema](https://standardschema.dev/) validators like [Zod](https://zod.dev/)*. |
 
 > These examples are written in TypeScript, [the recommended way to work with ArkEnv](https://arkenv.js.org/docs/arkenv/quickstart#configure-typescript). That said, ArkEnv works with plain JavaScript. See the [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) example for details and tradeoffs.
