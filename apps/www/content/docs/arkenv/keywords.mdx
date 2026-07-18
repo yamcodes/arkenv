@@ -3,36 +3,41 @@ title: Keywords
 description: ArkEnv keywords that extend ArkType for common environment-variable shapes.
 ---
 
-ArkEnv adds a small set of env-oriented keywords on top of ArkType. You can reference them in any ArkEnv schema or `type` definition:
+<Callout title="Only works with ArkType">
+  This feature is only available with ArkEnv + ArkType and is *not* a part of [arkenv/standard](/docs/arkenv/standard).
+</Callout>
 
-:::note
-**Only works with ArkType.** Keywords are not available from [`arkenv/standard`](/docs/arkenv/standard) - import from `arkenv` when you need `string.host` or `number.port`.
-:::
-
-```ts twoslash
-import arkenv, { type } from "arkenv";
-
-const env = arkenv({
-  HOST: "string.host",
-  PORT: "number.port = 3000",
-});
-
-// Hover Host / Port to see the inferred types
-const Host = type("string.host");
-type Host = typeof Host.infer;
-const Port = type("number.port");
-type Port = typeof Port.infer;
-```
-
-:::note
-The full [ArkType primitives](https://arktype.io/docs/primitives) keyword set still works in ArkEnv schemas. This page documents only the keywords ArkEnv adds.
-:::
+ArkEnv adds a small set of env-oriented keywords on top of [ArkType's keyword set](https://arktype.io/docs/primitives). You can reference them in any ArkEnv schema or `type` definition.
 
 ## string
 
 ### keywords
 
-The following aliases can be referenced in any definition:
+The following aliases can be referenced in any definition, e.g.:
+
+<Tabs items={['arkenv', 'type']}>
+  <Tab value="arkenv">
+    ```ts twoslash
+    import arkenv from "arkenv";
+
+    // Hover to see the inferred type
+    const env = arkenv({
+      HOST: "string.host",
+    });
+    ```
+  </Tab>
+
+  <Tab value="type">
+    ```ts twoslash
+    import { type } from "arkenv";
+
+    const Host = type("string.host");
+
+    // Hover to see the inferred type
+    type Host = typeof Host.infer;
+    ```
+  </Tab>
+</Tabs>
 
 <TypeTable expandAll type={{ "string.host": { type: "string.ip | 'localhost'", description: 'An IP address (string.ip) or "localhost".' } }} />
 
@@ -40,6 +45,30 @@ The following aliases can be referenced in any definition:
 
 ### keywords
 
-The following aliases can be referenced in any definition:
+The following aliases can be referenced in any definition, e.g.:
+
+<Tabs items={['arkenv', 'type']}>
+  <Tab value="arkenv">
+    ```ts twoslash
+    import arkenv from "arkenv";
+
+    // Hover to see the inferred type
+    const env = arkenv({
+      PORT: "number.port",
+    });
+    ```
+  </Tab>
+
+  <Tab value="type">
+    ```ts twoslash
+    import { type } from "arkenv";
+
+    const Port = type("number.port");
+
+    // Hover to see the inferred type
+    type Port = typeof Port.infer;
+    ```
+  </Tab>
+</Tabs>
 
 <TypeTable expandAll type={{ "number.port": { type: "0 <= number.integer <= 65535", description: "An integer port in the range 0–65535." } }} />
