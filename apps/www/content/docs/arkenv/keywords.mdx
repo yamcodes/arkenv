@@ -1,0 +1,59 @@
+---
+title: Keywords
+description: ArkEnv keywords that extend ArkType for common environment-variable shapes.
+---
+
+ArkEnv adds a small set of env-oriented keywords on top of ArkType. You can reference them in any ArkEnv schema or `type` definition:
+
+```ts twoslash
+import arkenv, { type } from "arkenv";
+
+const env = arkenv({
+  HOST: "string.host",
+  PORT: "number.port = 3000",
+});
+
+// The same keywords work with ArkEnv's scoped `type`
+const Host = type("string.host");
+const Port = type("number.port");
+```
+
+:::note
+The full [ArkType primitives](https://arktype.io/docs/primitives) keyword set still works in ArkEnv schemas. These pages document only the keywords ArkEnv adds.
+
+[`arkenv/standard`](/docs/arkenv/standard) does **not** include ArkEnv keywords — use `arkenv` (with ArkType) when you need `string.host` or `number.port`.
+:::
+
+## string
+
+### keywords
+
+The following aliases can be referenced in any definition:
+
+<TypeTable
+  expandAll
+  type={{
+  	"string.host": {
+  		type: "string.ip | 'localhost'",
+  		description:
+  			'An IP address (string.ip) or "localhost" — equivalent to the type shown above.',
+  	},
+  }}
+/>
+
+## number
+
+### keywords
+
+The following aliases can be referenced in any definition:
+
+<TypeTable
+  expandAll
+  type={{
+  	"number.port": {
+  		type: "0 <= number.integer <= 65535",
+  		description:
+  			"An integer port in the range 0–65535 — equivalent to the type shown above.",
+  	},
+  }}
+/>
