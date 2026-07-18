@@ -57,9 +57,26 @@ function withAutoExtend(
 /**
  * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point).
  *
- * In Nuxt strict layout, omitting `extends` auto-merges the client env from
- * `#arkenv/client-env`. Any explicit `extends` (including `[]`) opts out of
- * that auto-merge and is used as-is.
+ * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
+ * client and shared env by default. Any explicit `extends` is used as-is and
+ * opts out of that default; pass `extends: []` to include no extended env.
+ *
+ * @example Default strict-layout behavior
+ * ```ts
+ * import arkenv from "@arkenv/nuxt/server";
+ *
+ * export const env = arkenv({
+ *   DATABASE_URL: "string",
+ * });
+ * ```
+ *
+ * @example Opt out of the default client merge
+ * ```ts
+ * export const env = arkenv(
+ *   { DATABASE_URL: "string" },
+ *   { extends: [] },
+ * );
+ * ```
  *
  * @param schemaOrOptions The schema definition or configuration options containing server/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status
@@ -72,6 +89,10 @@ export function arkenv<
 >(
 	schema: EnvSchema<TSchema>,
 	options: {
+		/**
+		 * Explicit envs to extend. Providing this option opts out of the default
+		 * strict-layout client merge; use `[]` to include no extended env.
+		 */
 		extends: [...TExtends];
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
