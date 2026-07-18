@@ -7,7 +7,22 @@ import { arkenvInternal } from "./arkenv-internal";
 import type { MergeExtends } from "./types";
 
 /**
+ * Client env type auto-merged in Nuxt strict layout when `extends` is omitted.
+ *
+ * Resolved via the `#arkenv/client-env` virtual module alias registered by
+ * `@arkenv/nuxt/module`.
+ */
+type AutoClientEnv = typeof import("#arkenv/client-env") extends {
+	env: infer E;
+}
+	? E
+	: {};
+
+/**
  * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point).
+ *
+ * In Nuxt strict layout, omitting `extends` auto-merges the client env from
+ * `#arkenv/client-env`. Pass `extends` explicitly to override that behavior.
  *
  * @param schemaOrOptions The schema definition or configuration options containing server/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status
@@ -19,10 +34,17 @@ export function arkenv<
 	const TExtends extends readonly unknown[] = [],
 >(
 	schema: EnvSchema<TSchema>,
-	options?: {
-		extends?: [...TExtends];
+	options: {
+		extends: [...TExtends];
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
+
+export function arkenv<const TSchema extends SchemaShape = {}>(
+	schema: EnvSchema<TSchema>,
+	options?: {
+		extends?: undefined;
+	},
+): Readonly<distill.Out<at.infer<TSchema, $>> & AutoClientEnv>;
 
 export function arkenv<
 	const TServer extends SchemaShape = {},
@@ -62,7 +84,7 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	return arkenvInternal(
 		schemaOrOptions,
 		optionsOrIsServer,
-		{ isServer: true },
+		{ isServer: true, strictLayout: "server" },
 		coreArkenv,
 		getSchemaKeys,
 	);

@@ -1,4 +1,5 @@
 import type { Dict, SchemaShape } from "@repo/types";
+import { isStrictLayoutActive, loadStrictClientEnv } from "./strict-client-env";
 import { isForceServer } from "./validate-context";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
@@ -22,6 +23,37 @@ export type FlatSchemaOptions = {
 	shared?: readonly string[];
 	exposeToClient?: readonly string[];
 };
+
+/**
+ * Resolve the `extends` list for flat server schemas.
+ *
+ * Explicit `extends` always wins. When omitted in Nuxt strict layout, auto-load
+ * the client env from `#arkenv/client-env`.
+ *
+ * @param options The optional flat-schema options object
+ * @param context The optional execution context for the entrypoint
+ * @returns The extends list to merge
+ */
+function resolveExtendsList(
+	options: FlatSchemaOptions,
+	context:
+		| {
+				isServer: boolean;
+				isShared?: boolean;
+				strictLayout?: "client" | "server";
+		  }
+		| undefined,
+): readonly unknown[] {
+	if ("extends" in options) {
+		return options.extends || [];
+	}
+
+	if (context?.isServer && isStrictLayoutActive()) {
+		return [loadStrictClientEnv()];
+	}
+
+	return [];
+}
 
 /**
  * Validate and wrap environment variables in a security proxy.
@@ -77,8 +109,8 @@ export function arkenvInternal(
 	} else {
 		// New flat schema behavior
 		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
-		const options = optionsOrIsServer || {};
-		extendsList = options.extends || [];
+		const options = (optionsOrIsServer || {}) as FlatSchemaOptions;
+		extendsList = resolveExtendsList(options, context);
 		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
 		isServer = isForceServer() || !!context?.isServer;
 

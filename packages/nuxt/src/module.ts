@@ -15,6 +15,11 @@ import {
 	resolveLayout,
 	validateSchema,
 } from "./config";
+import {
+	CLIENT_ENV_SPECIFIER,
+	missingClientTsError,
+	UNRESOLVED_CLIENT_ENV_ERROR,
+} from "./strict-client-env";
 
 /**
  * Configuration options for the ArkEnv Nuxt module.
@@ -51,6 +56,14 @@ const CLIENT_SECURITY_ERROR = formatBuildError(
 	"Importing server-only environment schema on the client is not allowed!",
 );
 
+/**
+ * Resolve common Nuxt path aliases to absolute paths.
+ *
+ * @param id The module id as seen by Vite's resolveId hook
+ * @param rootDir The Nuxt project root directory
+ * @param srcDir The resolved Nuxt source directory
+ * @returns The absolute path the alias resolves to, or the original id if not a recognized alias
+ */
 function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
 	if (path.isAbsolute(id)) return id;
 
@@ -100,6 +113,15 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt.options.srcDir ?? nuxt.options.rootDir,
 		);
 
+		let strictClientPath: string | undefined;
+		if (resolvedLayout === "strict" && baseDir) {
+			const clientPath = path.join(baseDir, "client.ts");
+			if (!fs.existsSync(clientPath)) {
+				throw new Error(missingClientTsError(clientPath, baseDir));
+			}
+			strictClientPath = clientPath;
+		}
+
 		if (nuxt.options.dev) {
 			const watchPaths =
 				resolvedLayout === "strict" && baseDir
@@ -133,14 +155,12 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		let clientKeys: string[] = [];
 		let sharedKeys: string[] = [];
 
-		if (resolvedLayout === "strict" && baseDir) {
-			const clientPath = path.join(baseDir, "client.ts");
+		if (resolvedLayout === "strict" && baseDir && strictClientPath) {
+			const clientPath = strictClientPath;
 			const sharedPath = path.join(baseDir, "internal", "shared.ts");
 			const serverPath = path.join(baseDir, "server.ts");
 
-			const clientContent = fs.existsSync(clientPath)
-				? fs.readFileSync(clientPath, "utf-8")
-				: "";
+			const clientContent = fs.readFileSync(clientPath, "utf-8");
 			const sharedContent = fs.existsSync(sharedPath)
 				? fs.readFileSync(sharedPath, "utf-8")
 				: "";
@@ -151,6 +171,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			clientKeys = extractClientKeys(clientContent);
 			sharedKeys = extractSharedKeys(sharedContent);
 			serverKeys = extractServerKeys(serverContent);
+
+			nuxt.options.alias = nuxt.options.alias || {};
+			nuxt.options.alias[CLIENT_ENV_SPECIFIER] = clientPath;
 		} else {
 			const fileContent = fs.readFileSync(schemaPath, "utf-8");
 			const extracted = extractKeys(fileContent);
@@ -177,10 +200,44 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		}
 
 		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
+			// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
+			const anyConfig = config as any;
+			anyConfig.plugins = anyConfig.plugins || [];
+
+			if (resolvedLayout === "strict" && strictClientPath) {
+				anyConfig.define = {
+					...anyConfig.define,
+					__ARKENV_STRICT_LAYOUT__: JSON.stringify(true),
+				};
+
+				anyConfig.resolve = anyConfig.resolve || {};
+				anyConfig.resolve.alias = anyConfig.resolve.alias || {};
+				if (Array.isArray(anyConfig.resolve.alias)) {
+					anyConfig.resolve.alias.push({
+						find: CLIENT_ENV_SPECIFIER,
+						replacement: strictClientPath,
+					});
+				} else {
+					anyConfig.resolve.alias[CLIENT_ENV_SPECIFIER] = strictClientPath;
+				}
+
+				anyConfig.plugins.push({
+					name: "arkenv-nuxt-client-env",
+					resolveId(id: string) {
+						if (
+							id === CLIENT_ENV_SPECIFIER ||
+							id === `\0${CLIENT_ENV_SPECIFIER}`
+						) {
+							if (strictClientPath && fs.existsSync(strictClientPath)) {
+								return strictClientPath;
+							}
+							throw new Error(UNRESOLVED_CLIENT_ENV_ERROR);
+						}
+					},
+				});
+			}
+
 			if (isClient) {
-				// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
-				const anyConfig = config as any;
-				anyConfig.plugins = anyConfig.plugins || [];
 				anyConfig.plugins.push({
 					name: "arkenv-nuxt-client-security",
 					resolveId(id: string, importer?: string) {

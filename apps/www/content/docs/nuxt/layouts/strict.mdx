@@ -88,17 +88,13 @@ export const env = arkenv(
 // @filename: env/server.ts
 // ---cut---
 import arkenv from "@arkenv/nuxt/server";
-import { env as clientEnv } from "./client";
 
-export const env = arkenv(
-	{
-		DATABASE_URL: "string",
-	},
-	{
-		extends: [clientEnv],
-	},
-);
+export const env = arkenv({
+	DATABASE_URL: "string",
+});
 ```
+
+When `@arkenv/nuxt/module` runs in strict layout, the server entry auto-merges client and shared variables via the `#arkenv/client-env` virtual alias. You do not need to import `./client` or pass `extends: [clientEnv]` unless you want an explicit override.
 
 <Accordions>
   <Accordion title="Manual setup">
@@ -157,7 +153,31 @@ export const env = arkenv(
 
     ### Define server variables [step] [!toc]
 
-    Create `env/server.ts` using `@arkenv/nuxt/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+    Create `env/server.ts` using `@arkenv/nuxt/server`. With the module registered, omitting `extends` auto-merges the client env (including shared keys):
+
+    ```ts twoslash title="env/server.ts"
+    // @filename: env/internal/shared.ts
+    import { type } from "@arkenv/core";
+    export const SharedSchema = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    // @filename: env/client.ts
+    import arkenv from "@arkenv/nuxt/client";
+    import { SharedSchema } from "./internal/shared";
+    export const env = arkenv(
+    	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
+    	{ extends: [SharedSchema] },
+    );
+    // @filename: env/server.ts
+    // ---cut---
+    import arkenv from "@arkenv/nuxt/server";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    });
+    ```
+
+    Manual `extends: [clientEnv]` remains supported as an escape hatch when you need to override the auto-merge:
 
     ```ts twoslash title="env/server.ts"
     // @filename: env/internal/shared.ts
@@ -189,7 +209,7 @@ export const env = arkenv(
 
     ### Register module in Nuxt config [step] [!toc]
 
-    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory and registers environment variables to Nuxt's `runtimeConfig`:
+    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory, registers environment variables to Nuxt's `runtimeConfig`, and wires `#arkenv/client-env` for server auto-extend. No generated files are written to disk:
 
     ```ts title="nuxt.config.ts"
     export default defineNuxtConfig({
@@ -235,11 +255,7 @@ export const env = arkenv(
 );
 // @filename: env/server.ts
 import arkenvServer from "@arkenv/nuxt/server";
-import { env as clientEnv } from "./client";
-export const env = arkenvServer(
-	{ DATABASE_URL: "string" },
-	{ extends: [clientEnv] },
-);
+export const env = arkenvServer({ DATABASE_URL: "string" });
 // @filename: server/api/my-endpoint.ts
 // ---cut---
 import { env } from "~~/env/server";

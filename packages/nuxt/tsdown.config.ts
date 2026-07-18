@@ -20,6 +20,6 @@ export default defineConfig({
 	sourcemap: true,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
-		neverBundle: ["@nuxt/kit", "@nuxt/schema"],
+		neverBundle: ["@nuxt/kit", "@nuxt/schema", "#arkenv/client-env"],
 	},
 });
