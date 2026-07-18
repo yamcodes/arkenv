@@ -23,14 +23,20 @@ We will avoid peer dependencies for **runtime** code sharing and avoid publishin
 
 Instead, we will adopt an **Inlined Internal Packages Strategy** (`@repo/*`) combined with **Subpath Exports** for sharing runtime logic.
 
+### Bundle isolation across engine boundaries
+
+**Bundle isolation strictly trumps DRYness** across the ArkType (`@arkenv/core`) and Standard Schema (`@arkenv/standard`) engines. A shared source module imported by both entry points can trick bundlers into tracing ArkType into Standard Schema user bundles.
+
+This principle originated in [ADR 0010](./0010-bundle-isolation-over-dryness.md) (now superseded). We preserve isolation by inlining `@repo/*` helpers into each published engine at build time — not by importing shared runtime modules across the core/standard boundary, and not by publishing a public `@arkenv/utils` package that both engines depend on.
+
 We distinguish between two categories of shared logic:
 
 ### Runtime Shared Logic
 
 Runtime logic must remain 100% dependency-free and must not suffer from version or singleton skew.
 
-1. **Stateless Logic (Helpers/Parsers):** Shared stateless logic will live in an internal monorepo package (e.g., `@repo/utils`). Using our bundler (`tsdown`), this logic will be physically inlined into the distributables of the consuming published packages (`arkenv`, `@arkenv/core`).
-2. **Stateful Logic (Singletons/Schemas):** Any stateful logic or singleton configuration will be managed via Subpath Exports directly from the core `arkenv` package, rather than using peer dependencies to enforce a single instance. The core package exposes named entry points such as `arkenv/standard` and `arkenv/core` via its `exports` field. Future stateful internals (e.g., shared ArkType scopes) may be exposed through additional subpaths like `arkenv/internal` if needed.
+1. **Stateless Logic (Helpers/Parsers):** Shared stateless logic will live in an internal monorepo package (e.g., `@repo/utils`). Using our bundler (`tsdown`), this logic will be physically inlined into the distributables of the consuming published packages (`@arkenv/core`, `@arkenv/standard`). Each engine gets its own copy in the published artifact, so the module graphs stay isolated.
+2. **Stateful Logic (Singletons/Schemas):** Any stateful logic or singleton configuration will be managed via Subpath Exports directly from the core package, rather than using peer dependencies to enforce a single instance. Future stateful internals (e.g., shared ArkType scopes) may be exposed through additional subpaths if needed.
 
 ### Build-Time Shared Logic
 
@@ -83,4 +89,6 @@ By routing build-time shared logic through `@arkenv/build` (a published but inte
 - **Positive:** Faster user installs with fewer runtime packages.
 - **Positive:** Reduced version bump cascading for internal runtime helpers.
 - **Positive:** Clean separation between runtime and build-time concerns.
+- **Positive:** `@arkenv/standard` stays fully decoupled from ArkType; isolation reviews should point here (not at hand-duplicated source files).
 - **Negative:** The compiled bundle size of the core packages might be trivially larger due to inlined helpers, but this is mitigated by tree-shaking and the lightweight nature of the utilities.
+- **Negative:** Contributors still must treat core/standard as separate publish graphs — a helper that accidentally imports `arktype` into `@repo/utils` would reintroduce the leak ADR 0010 warned about.
