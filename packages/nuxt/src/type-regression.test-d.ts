@@ -150,6 +150,44 @@ describe("@arkenv/nuxt type regression", () => {
 	});
 });
 
+declare module "#arkenv/client-env" {
+	// biome-ignore lint/style/useConsistentTypeDefinitions: declaration merging requires an interface
+	interface ClientEnv {
+		NUXT_PUBLIC_API_URL: string;
+		NODE_ENV: string;
+	}
+}
+
+describe("@arkenv/nuxt server auto-extend types", () => {
+	it("includes auto-extended client keys when extends is omitted", async () => {
+		const { arkenv: serverArkenv } = await import("./server");
+		const env = serverArkenv({
+			DATABASE_URL: "string",
+		});
+
+		expectTypeOf(env.DATABASE_URL).toBeString();
+		expectTypeOf(env.NUXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.NODE_ENV).toBeString();
+	});
+
+	it("keeps explicit extends override types", async () => {
+		const { arkenv: serverArkenv } = await import("./server");
+		const clientEnv = {
+			NUXT_PUBLIC_API_URL: "https://api.example.com",
+			CUSTOM_CLIENT: "value",
+		};
+
+		const env = serverArkenv(
+			{ DATABASE_URL: "string" },
+			{ extends: [clientEnv] },
+		);
+
+		expectTypeOf(env.DATABASE_URL).toBeString();
+		expectTypeOf(env.NUXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.CUSTOM_CLIENT).toBeString();
+	});
+});
+
 describe("@arkenv/nuxt module options augmentation", () => {
 	it("aliases ModuleOptions to the documented ArkEnvConfigOptions", () => {
 		expectTypeOf<ModuleOptions>().toEqualTypeOf<ArkEnvConfigOptions>();

@@ -137,7 +137,14 @@ export const env = arkenv(
 	},
 );`,
 
-			server: `import arkenv from "${pkgName}/server";
+			server:
+				context.framework === "nuxt"
+					? `import arkenv from "${pkgName}/server";
+${extra}
+export const env = arkenv(
+	${serverObject},
+);`
+					: `import arkenv from "${pkgName}/server";
 ${extra}import { env as clientEnv } from "./client";
 
 export const env = arkenv(
