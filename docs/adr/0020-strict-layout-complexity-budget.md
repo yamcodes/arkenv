@@ -1,8 +1,12 @@
-# Strict layout is a security boundary with a complexity budget
+# ADR 0020: Strict layout is a security boundary with a complexity budget
 
-To decide how much DX investment ArkEnv puts into the strict (split-file) layout versus the flat/simple layout — and which classes of strict-mode features are in or out of scope.
+## Status
+
+Accepted
 
 ## Context & problem
+
+To decide how much DX investment ArkEnv puts into the strict (split-file) layout versus the flat/simple layout — and which classes of strict-mode features are in or out of scope.
 
 Flat/simple layout is the default and the best DX: one schema file, API aligned with core `@arkenv/core`, and (on Next.js) codegen that removes `runtimeEnv` boilerplate so the experience can match non-Next hosts.
 
@@ -35,7 +39,7 @@ We also compared to t3-env: split mode uses the same `createEnv` in `client.ts` 
 ## Consequences
 
 - **[#1304](https://github.com/yamcodes/arkenv/issues/1304) is superseded** as an end-state design (in-tree server factory). Server DX should follow the #1307 pattern on Next if feasible.
-- **[#1307](https://github.com/yamcodes/arkenv/issues/1307) / [#1401](https://github.com/yamcodes/arkenv/pull/1401) fit this ADR** and should ship as additive work on `dev` when non-breaking.
+- **[#1307](https://github.com/yamcodes/arkenv/issues/1307) / [#1401](https://github.com/yamcodes/arkenv/pull/1401) fit this ADR** and should ship as additive work on `v1` when non-breaking.
 - **[#1402](https://github.com/yamcodes/arkenv/issues/1402) narrows:** pursue client-factory virtualization / keeping `env/` clean if warranted; do not center the RFC on a generated server factory.
 - **Docs and scaffolds** should describe strict as a security layout with targeted ergonomics, not as a second primary onboarding path equal to flat.
 - **Future strict features** must answer: does this remove boundary-induced pain at low surface-area cost? If not, decline or defer.
