@@ -1,5 +1,30 @@
 # @arkenv/fumadocs-ui
 
+## 1.0.0-alpha.2
+
+### Minor Changes
+
+- #### Export `TypeTable` and `Collapsible` components _[`#1415`](https://github.com/yamcodes/arkenv/pull/1415) [`db45891`](https://github.com/yamcodes/arkenv/commit/db458917c651a6ea318b48900bfd281b9cf7a41c) [@yamcodes](https://github.com/yamcodes)_
+
+  Export `TypeTable` and `Collapsible` from `@arkenv/fumadocs-ui/components`. The custom `TypeTable` supports `expandAll` to render all properties expanded by default.
+
+  Usage:
+
+  ```tsx
+  import { TypeTable } from "@arkenv/fumadocs-ui/components";
+
+  <TypeTable
+    type={{
+      port: {
+        type: "number",
+        description: "The port to run the server on",
+        default: "3000",
+      },
+    }}
+    expandAll
+  />;
+  ```
+
 ## 1.0.0-alpha.1
 
 ### Patch Changes
