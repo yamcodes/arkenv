@@ -13,9 +13,11 @@ const env = arkenv({
   PORT: "number.port = 3000",
 });
 
-// The same keywords work with ArkEnv's scoped `type`
+// Hover Host / Port to see the inferred types
 const Host = type("string.host");
+type Host = typeof Host.infer;
 const Port = type("number.port");
+type Port = typeof Port.infer;
 ```
 
 :::note
