@@ -5,6 +5,10 @@ description: ArkEnv keywords that extend ArkType for common environment-variable
 
 ArkEnv adds a small set of env-oriented keywords on top of ArkType. You can reference them in any ArkEnv schema or `type` definition:
 
+:::note
+**Only works with ArkType.** Keywords are not available from [`arkenv/standard`](/docs/arkenv/standard) - import from `arkenv` when you need `string.host` or `number.port`.
+:::
+
 ```ts twoslash
 import arkenv, { type } from "arkenv";
 
@@ -21,9 +25,7 @@ type Port = typeof Port.infer;
 ```
 
 :::note
-The full [ArkType primitives](https://arktype.io/docs/primitives) keyword set still works in ArkEnv schemas. These pages document only the keywords ArkEnv adds.
-
-[`arkenv/standard`](/docs/arkenv/standard) does **not** include ArkEnv keywords - use `arkenv` (with ArkType) when you need `string.host` or `number.port`.
+The full [ArkType primitives](https://arktype.io/docs/primitives) keyword set still works in ArkEnv schemas. This page documents only the keywords ArkEnv adds.
 :::
 
 ## string
@@ -32,7 +34,7 @@ The full [ArkType primitives](https://arktype.io/docs/primitives) keyword set st
 
 The following aliases can be referenced in any definition:
 
-<TypeTable expandAll type={{ "string.host": { type: "string.ip | 'localhost'", description: 'An IP address (string.ip) or "localhost" - equivalent to the type shown above.' } }} />
+<TypeTable expandAll type={{ "string.host": { type: "string.ip | 'localhost'", description: 'An IP address (string.ip) or "localhost".' } }} />
 
 ## number
 
@@ -40,4 +42,4 @@ The following aliases can be referenced in any definition:
 
 The following aliases can be referenced in any definition:
 
-<TypeTable expandAll type={{ "number.port": { type: "0 <= number.integer <= 65535", description: "An integer port in the range 0–65535 - equivalent to the type shown above." } }} />
+<TypeTable expandAll type={{ "number.port": { type: "0 <= number.integer <= 65535", description: "An integer port in the range 0–65535." } }} />
