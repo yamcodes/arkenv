@@ -31,40 +31,40 @@ An ADR should be written when a decision is:
 
 These groups share a theme. They remain separate ADRs (no nesting or history rewrites) — use the links when reviewing related decisions:
 
-| Cluster | Slugs (numbers differ by branch — see [Index](#index)) |
-| :------ | :----------------------------------------------------- |
+| Cluster                            | Slugs (numbers differ by branch — see [Index](#index))                                                                                                                                              |
+| :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Framework server/client boundaries | `nextjs-runtime-env`, `nextjs-conditional-exports-boundary`, `nuxt-vite-compile-time-boundary`, `flat-layout-codegen-type-strategy`, `framework-subpath-exports`, `strict-layout-complexity-budget` |
-| Packaging & module graph | `export-surface-tiers`, `standard-mode-packaging-strategy`, `bundle-isolation-over-dryness`, `runtime-shared-logic-strategy`, `shared-build-package` |
-| CLI / scaffold IR | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy` |
+| Packaging & module graph           | `export-surface-tiers`, `standard-mode-packaging-strategy`, `bundle-isolation-over-dryness`, `runtime-shared-logic-strategy`, `shared-build-package`                                                |
+| CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`                                                                                                                         |
 
 ## Index
 
 Numbers are per branch. A blank cell means the ADR is not present on that line.
 
-| Slug | `dev` | `v1` |
-| :--- | :---: | :---: |
-| `use-architecture-decision-records` | 0000 | 0000 |
-| `bun-plugin-config-patterns` | 0001 | 0001 |
-| `coercion-schema-transformer` | 0002 | 0002 |
-| `explicit-validator-mode` | 0003 | 0003 |
-| `export-surface-tiers` | 0004 | 0004 |
-| `nextjs-runtime-env` | 0005 | 0005 |
-| `branching-and-release-flow` | 0006 | 0006 |
-| `standard-mode-packaging-strategy` | — | 0007 |
-| `default-export-and-function-naming` | — | 0008 |
-| `shared-build-package` | 0009 | 0009 |
-| `bundle-isolation-over-dryness` | — | 0010 |
-| `flat-layout-codegen-type-strategy` | 0010 | 0013 |
-| `runtime-shared-logic-strategy` | — | 0011 |
-| `nextjs-jiti-build-time-validation` | 0011 | 0014 |
-| `independent-versioning-strategy` | — | 0012 |
-| `nextjs-conditional-exports-boundary` | 0012 | 0015 |
-| `nuxt-vite-compile-time-boundary` | 0013 | 0016 |
-| `cli-hosting-preset-field-metadata` | 0014 | 0018 |
-| `env-object-canonical-surface` | 0015 | — |
-| `strict-layout-complexity-budget` | 0016 | — |
-| `dotenv-linter-custom-parser-strategy` | — | 0017 |
-| `framework-subpath-exports` | — | 0019 |
+| Slug                                   | `dev` | `v1` |
+| :------------------------------------- | :---: | :--: |
+| `use-architecture-decision-records`    |  0000 | 0000 |
+| `bun-plugin-config-patterns`           |  0001 | 0001 |
+| `coercion-schema-transformer`          |  0002 | 0002 |
+| `explicit-validator-mode`              |  0003 | 0003 |
+| `export-surface-tiers`                 |  0004 | 0004 |
+| `nextjs-runtime-env`                   |  0005 | 0005 |
+| `branching-and-release-flow`           |  0006 | 0006 |
+| `standard-mode-packaging-strategy`     |   —   | 0007 |
+| `default-export-and-function-naming`   |   —   | 0008 |
+| `shared-build-package`                 |  0009 | 0009 |
+| `bundle-isolation-over-dryness`        |   —   | 0010 |
+| `flat-layout-codegen-type-strategy`    |  0010 | 0013 |
+| `runtime-shared-logic-strategy`        |   —   | 0011 |
+| `nextjs-jiti-build-time-validation`    |  0011 | 0014 |
+| `independent-versioning-strategy`      |   —   | 0012 |
+| `nextjs-conditional-exports-boundary`  |  0012 | 0015 |
+| `nuxt-vite-compile-time-boundary`      |  0013 | 0016 |
+| `cli-hosting-preset-field-metadata`    |  0014 | 0018 |
+| `env-object-canonical-surface`         |  0015 |   —  |
+| `strict-layout-complexity-budget`      |  0016 |   —  |
+| `dotenv-linter-custom-parser-strategy` |   —   | 0017 |
+| `framework-subpath-exports`            |   —   | 0019 |
 
 ## Tooling & agent skills
 
