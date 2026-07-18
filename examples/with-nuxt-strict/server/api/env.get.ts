@@ -1,15 +1,10 @@
 /**
- * Nitro fixture for strict-layout auto-extend.
+ * Playground-only Nitro smoke route.
  *
- * Imports `~~/env/server` so the playground build exercises the Nitro alias /
- * `__ARKENV_STRICT_LAYOUT__` wiring (Vite alone is not enough).
+ * Not part of ArkEnv setup. Any real server file that imports `~~/env/server`
+ * would exercise the same Nitro alias wiring; this exists so the fixture app
+ * has one such import without needing a full feature surface.
  */
 import { env } from "~~/env/server";
 
-export default defineEventHandler(() => {
-	return {
-		DATABASE_URL: env.DATABASE_URL,
-		NUXT_PUBLIC_API_URL: env.NUXT_PUBLIC_API_URL,
-		NODE_ENV: env.NODE_ENV,
-	};
-});
+export default defineEventHandler(() => env);
