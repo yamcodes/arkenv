@@ -55,7 +55,8 @@ function withAutoExtend(
  * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point, Standard Mode).
  *
  * In Nuxt strict layout, omitting `extends` auto-merges the client env from
- * `#arkenv/client-env`. Pass `extends` explicitly to override that behavior.
+ * `#arkenv/client-env`. Any explicit `extends` (including `[]`) opts out of
+ * that auto-merge and is used as-is.
  *
  * @param schemaOrOptions The schema definition or configuration options containing server/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status

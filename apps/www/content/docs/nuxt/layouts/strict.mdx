@@ -96,6 +96,8 @@ export const env = arkenv({
 
 When `@arkenv/nuxt/module` runs in strict layout, the server entry auto-merges client and shared variables via the `#arkenv/client-env` virtual alias. You do not need to import `./client` or pass `extends: [clientEnv]` unless you want an explicit override.
 
+Auto-merge only applies when the `extends` key is **omitted**. Passing `extends` at all — including `extends: []` or a list that does not include `clientEnv` — opts out and uses your list as-is.
+
 <Accordions>
   <Accordion title="Manual setup">
     ### Install dependencies [step] [!toc]
@@ -177,7 +179,7 @@ When `@arkenv/nuxt/module` runs in strict layout, the server entry auto-merges c
     });
     ```
 
-    Manual `extends: [clientEnv]` remains supported as an escape hatch when you need to override the auto-merge:
+    Any explicit `extends` is an escape hatch that disables auto-merge. Use it to pass a custom list (for example `extends: [clientEnv]`), or `extends: []` if you intentionally want no client merge:
 
     ```ts twoslash title="env/server.ts"
     // @filename: env/internal/shared.ts

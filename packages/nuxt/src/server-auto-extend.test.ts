@@ -99,6 +99,27 @@ describe("server auto-extend in strict layout", () => {
 		expect(env.NODE_ENV).toBe("test");
 	});
 
+	it("treats extends: [] as an opt-out of auto-extend", () => {
+		(
+			globalThis as { __ARKENV_STRICT_LAYOUT__?: boolean }
+		).__ARKENV_STRICT_LAYOUT__ = true;
+		(globalThis as { __ARKENV_CLIENT_ENV__?: unknown }).__ARKENV_CLIENT_ENV__ =
+			createMockClientEnv({
+				NUXT_PUBLIC_API_URL: "https://auto.example.com",
+			});
+		process.env.DATABASE_URL = "postgres://localhost/db";
+
+		const env = serverArkenv(
+			{ DATABASE_URL: "string" },
+			{ extends: [] },
+		);
+
+		expect(env.DATABASE_URL).toBe("postgres://localhost/db");
+		expect(
+			() => (env as { NUXT_PUBLIC_API_URL?: string }).NUXT_PUBLIC_API_URL,
+		).toThrow(/not defined in the schema/);
+	});
+
 	it("has parity auto-extend on @arkenv/nuxt/standard/server", () => {
 		(
 			globalThis as { __ARKENV_STRICT_LAYOUT__?: boolean }

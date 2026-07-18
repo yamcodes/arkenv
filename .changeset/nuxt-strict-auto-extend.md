@@ -5,9 +5,9 @@
 
 #### Auto-extend client env in Nuxt strict layout via `#arkenv/client-env`
 
-Omit `extends: [clientEnv]` in `env/server.ts` when using `@arkenv/nuxt/module` with the strict layout. The module registers a `#arkenv/client-env` alias and injects `__ARKENV_STRICT_LAYOUT__`, so both `@arkenv/nuxt/server` and `@arkenv/nuxt/standard/server` merge the client env automatically.
+**`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/server.ts` auto-merges the client env via `#arkenv/client-env`. Applies to both `@arkenv/nuxt/server` and `@arkenv/nuxt/standard/server`.
 
-The CLI strict scaffold for Nuxt emits the simplified server template (no manual `extends`).
+**`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified server template (no manual `import ./client` or `extends: [clientEnv]`).
 
 Usage:
 
@@ -19,4 +19,4 @@ export const env = arkenv({
 });
 ```
 
-Pass `extends` explicitly to override the auto-merge. Existing manual `extends: [clientEnv]` wiring continues to work unchanged.
+Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` — including `extends: []` or a list that does not include `clientEnv` — is used as-is and opts out of auto-merge. Existing manual `extends: [clientEnv]` wiring continues to work unchanged.
