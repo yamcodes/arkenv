@@ -15,11 +15,11 @@ import {
 	resolveLayout,
 	validateSchema,
 } from "./config";
+import { missingClientTsError } from "./strict-client-env";
 import {
-	CLIENT_ENV_SPECIFIER,
-	missingClientTsError,
-	UNRESOLVED_CLIENT_ENV_ERROR,
-} from "./strict-client-env";
+	registerStrictLayoutHooks,
+	registerViteExtendHook,
+} from "./strict-layout-hooks";
 
 /**
  * Configuration options for the ArkEnv Nuxt module.
@@ -41,11 +41,6 @@ import {
  */
 export type ModuleOptions = ArkEnvConfigOptions;
 
-type NitroConfigHook = {
-	alias?: Record<string, string>;
-	replace?: Record<string, string>;
-};
-
 declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtConfig {
@@ -55,37 +50,11 @@ declare module "@nuxt/schema" {
 	interface NuxtOptions {
 		arkenv?: ModuleOptions;
 	}
-	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
-	interface NuxtHooks {
-		"nitro:config": (nitroConfig: NitroConfigHook) => void;
-	}
 }
 
 const CLIENT_SECURITY_ERROR = formatBuildError(
 	"Importing server-only environment schema on the client is not allowed!",
 );
-
-/**
- * Resolve common Nuxt path aliases to absolute paths.
- *
- * @param id The module id as seen by Vite's resolveId hook
- * @param rootDir The Nuxt project root directory
- * @param srcDir The resolved Nuxt source directory
- * @returns The absolute path the alias resolves to, or the original id if not a recognized alias
- */
-function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
-	if (path.isAbsolute(id)) return id;
-
-	if (id.startsWith("~~/")) {
-		return path.resolve(rootDir, id.slice(3));
-	}
-
-	if (id.startsWith("~/") || id.startsWith("@/")) {
-		return path.resolve(srcDir, id.slice(2));
-	}
-
-	return id;
-}
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -165,11 +134,10 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		let sharedKeys: string[] = [];
 
 		if (resolvedLayout === "strict" && baseDir && strictClientPath) {
-			const clientPath = strictClientPath;
 			const sharedPath = path.join(baseDir, "internal", "shared.ts");
 			const serverPath = path.join(baseDir, "server.ts");
 
-			const clientContent = fs.readFileSync(clientPath, "utf-8");
+			const clientContent = fs.readFileSync(strictClientPath, "utf-8");
 			const sharedContent = fs.existsSync(sharedPath)
 				? fs.readFileSync(sharedPath, "utf-8")
 				: "";
@@ -181,8 +149,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			sharedKeys = extractSharedKeys(sharedContent);
 			serverKeys = extractServerKeys(serverContent);
 
-			nuxt.options.alias = nuxt.options.alias || {};
-			nuxt.options.alias[CLIENT_ENV_SPECIFIER] = clientPath;
+			registerStrictLayoutHooks(nuxt, strictClientPath);
 		} else {
 			const fileContent = fs.readFileSync(schemaPath, "utf-8");
 			const extracted = extractKeys(fileContent);
@@ -208,108 +175,13 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		}
 
-		if (resolvedLayout === "strict" && strictClientPath) {
-			// Mirror the runtime alias into generated tsconfig paths so AutoClientEnv
-			// resolves to the project's env/client.ts (not the empty package fallback).
-			nuxt.hook("prepare:types", ({ tsConfig }) => {
-				tsConfig.compilerOptions ??= {};
-				tsConfig.compilerOptions.paths ??= {};
-				tsConfig.compilerOptions.paths[CLIENT_ENV_SPECIFIER] = [
-					strictClientPath,
-				];
-			});
-
-			// Nitro uses its own bundler; Vite alias/define alone does not cover
-			// server/api routes that import ~~/env/server.
-			nuxt.hook("nitro:config", (nitroConfig) => {
-				nitroConfig.alias ??= {};
-				nitroConfig.alias[CLIENT_ENV_SPECIFIER] = strictClientPath;
-				nitroConfig.replace ??= {};
-				nitroConfig.replace.__ARKENV_STRICT_LAYOUT__ = JSON.stringify(true);
-			});
-		}
-
-		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
-			// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
-			const anyConfig = config as any;
-			anyConfig.plugins = anyConfig.plugins || [];
-
-			if (resolvedLayout === "strict" && strictClientPath) {
-				anyConfig.define = {
-					...anyConfig.define,
-					__ARKENV_STRICT_LAYOUT__: JSON.stringify(true),
-				};
-
-				anyConfig.resolve = anyConfig.resolve || {};
-				anyConfig.resolve.alias = anyConfig.resolve.alias || {};
-				if (Array.isArray(anyConfig.resolve.alias)) {
-					anyConfig.resolve.alias.push({
-						find: CLIENT_ENV_SPECIFIER,
-						replacement: strictClientPath,
-					});
-				} else {
-					anyConfig.resolve.alias[CLIENT_ENV_SPECIFIER] = strictClientPath;
-				}
-
-				anyConfig.plugins.push({
-					name: "arkenv-nuxt-client-env",
-					resolveId(id: string) {
-						if (
-							id === CLIENT_ENV_SPECIFIER ||
-							id === `\0${CLIENT_ENV_SPECIFIER}`
-						) {
-							if (strictClientPath && fs.existsSync(strictClientPath)) {
-								return strictClientPath;
-							}
-							throw new Error(UNRESOLVED_CLIENT_ENV_ERROR);
-						}
-					},
-				});
-			}
-
-			if (isClient) {
-				anyConfig.plugins.push({
-					name: "arkenv-nuxt-client-security",
-					resolveId(id: string, importer?: string) {
-						const isServerModule =
-							id === "@arkenv/nuxt/server" ||
-							id === "@arkenv/nuxt/standard/server" ||
-							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.(?:js|mjs|cjs|ts))?$/.test(
-								id,
-							);
-
-						if (isServerModule) {
-							throw new Error(CLIENT_SECURITY_ERROR);
-						}
-
-						if (resolvedLayout === "strict" && baseDir) {
-							let targetId = id;
-							if (id.startsWith(".") && importer) {
-								targetId = path.resolve(path.dirname(importer), id);
-							}
-
-							const resolvedId = resolveNuxtAlias(
-								targetId,
-								nuxt.options.rootDir,
-								srcDir,
-							);
-
-							if (path.isAbsolute(resolvedId)) {
-								const relativePath = path.relative(baseDir, resolvedId);
-								const isUnderBaseDir =
-									!relativePath.startsWith("..") &&
-									!path.isAbsolute(relativePath);
-								const isServerFile =
-									/(^|[/\\])server(?:[/\\]|\.[^./\\]*|$)/.test(relativePath);
-
-								if (isUnderBaseDir && isServerFile) {
-									throw new Error(CLIENT_SECURITY_ERROR);
-								}
-							}
-						}
-					},
-				});
-			}
+		registerViteExtendHook(nuxt, {
+			resolvedLayout,
+			baseDir,
+			strictClientPath,
+			rootDir: nuxt.options.rootDir,
+			srcDir,
+			clientSecurityError: CLIENT_SECURITY_ERROR,
 		});
 	},
 });

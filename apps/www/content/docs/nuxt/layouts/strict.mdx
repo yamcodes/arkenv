@@ -96,6 +96,8 @@ export const env = arkenv({
 
 When `@arkenv/nuxt/module` runs in strict layout, the server entry auto-merges client and shared variables. You do not need to import `./client` or pass `extends: [clientEnv]` unless you want an explicit override.
 
+The client entry still extends `SharedSchema` explicitly because automatic merging currently applies only to the server entry. The resulting chain is `SharedSchema` → client env → server env, so the server receives shared variables transitively through the client env.
+
 Auto-merge only applies when the `extends` key is **omitted**. Passing `extends` at all - including `extends: []` or a list that does not include `clientEnv` - opts out and uses your list as-is.
 
 <Accordions>
