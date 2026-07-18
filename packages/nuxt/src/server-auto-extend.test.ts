@@ -109,10 +109,7 @@ describe("server auto-extend in strict layout", () => {
 			});
 		process.env.DATABASE_URL = "postgres://localhost/db";
 
-		const env = serverArkenv(
-			{ DATABASE_URL: "string" },
-			{ extends: [] },
-		);
+		const env = serverArkenv({ DATABASE_URL: "string" }, { extends: [] });
 
 		expect(env.DATABASE_URL).toBe("postgres://localhost/db");
 		expect(
