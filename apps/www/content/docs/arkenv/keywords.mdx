@@ -30,7 +30,7 @@ The full [ArkType primitives](https://arktype.io/docs/primitives) keyword set st
 
 The following aliases can be referenced in any definition:
 
-<StringKeywordsTable />
+<TypeTable expandAll type={{ "string.host": { type: "string.ip | 'localhost'", description: 'An IP address (string.ip) or "localhost" — equivalent to the type shown above.' } }} />
 
 ## number
 
@@ -38,4 +38,4 @@ The following aliases can be referenced in any definition:
 
 The following aliases can be referenced in any definition:
 
-<NumberKeywordsTable />
+<TypeTable expandAll type={{ "number.port": { type: "0 <= number.integer <= 65535", description: "An integer port in the range 0–65535 — equivalent to the type shown above." } }} />

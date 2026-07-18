@@ -9,10 +9,6 @@ import {
 import { Cards } from "fumadocs-ui/components/card";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
-import {
-	NumberKeywordsTable,
-	StringKeywordsTable,
-} from "~/components/docs/keyword-type-tables";
 import { AutoTypeTable } from "~/components/ui/auto-type-table";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -31,8 +27,6 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		Card,
 		AutoTypeTable,
 		TypeTable,
-		StringKeywordsTable,
-		NumberKeywordsTable,
 		Cards,
 		Files,
 		Folder,
