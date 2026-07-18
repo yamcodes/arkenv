@@ -75,6 +75,8 @@ npx @arkenv/cli@latest init
 
 Your `env.ts` file is where the ✨magic✨ happens – variables referenced from this object are guaranteed to match the schema defined here.
 
+ArkEnv extends ArkType with env-oriented [Keywords](/docs/arkenv/keywords) such as `string.host` and `number.port`:
+
 ```ts title="env.ts" twoslash
 import arkenv, { type } from 'arkenv';
 
