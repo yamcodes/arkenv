@@ -41,29 +41,29 @@ These groups share a theme. They remain separate ADRs (no nesting or history rew
 
 Numbers are per branch. A blank cell means the ADR is not present on that line.
 
-| Slug                                   | `dev` | `v1` |
-| :------------------------------------- | :---: | :--: |
-| `use-architecture-decision-records`    |  0000 | 0000 |
-| `bun-plugin-config-patterns`           |  0001 | 0001 |
-| `coercion-schema-transformer`          |  0002 | 0002 |
-| `explicit-validator-mode`              |  0003 | 0003 |
-| `export-surface-tiers`                 |  0004 | 0004 |
-| `nextjs-runtime-env`                   |  0005 | 0005 |
-| `branching-and-release-flow`           |  0006 | 0006 |
-| `standard-mode-packaging-strategy`     |   —   | 0007 |
-| `default-export-and-function-naming`   |   —   | 0008 |
-| `shared-build-package`                 |  0009 | 0009 |
-| `bundle-isolation-over-dryness`        |   —   | 0010 |
-| `flat-layout-codegen-type-strategy`    |  0010 | 0013 |
-| `runtime-shared-logic-strategy`        |   —   | 0011 |
-| `nextjs-jiti-build-time-validation`    |  0011 | 0014 |
-| `independent-versioning-strategy`      |   —   | 0012 |
-| `nextjs-conditional-exports-boundary`  |  0012 | 0015 |
-| `nuxt-vite-compile-time-boundary`      |  0013 | 0016 |
-| `cli-hosting-preset-field-metadata`    |  0014 | 0018 |
-| `env-object-canonical-surface`         |  0015 |   —  |
-| `strict-layout-complexity-budget`      |  0016 |   —  |
-| `dotenv-linter-custom-parser-strategy` |   —   | 0017 |
+| Slug                                   | `dev` |           `v1`           |
+| :------------------------------------- | :---: | :----------------------: |
+| `use-architecture-decision-records`    |  0000 |           0000           |
+| `bun-plugin-config-patterns`           |  0001 |           0001           |
+| `coercion-schema-transformer`          |  0002 |           0002           |
+| `explicit-validator-mode`              |  0003 |           0003           |
+| `export-surface-tiers`                 |  0004 |           0004           |
+| `nextjs-runtime-env`                   |  0005 |           0005           |
+| `branching-and-release-flow`           |  0006 |           0006           |
+| `standard-mode-packaging-strategy`     |   —   |           0007           |
+| `default-export-and-function-naming`   |   —   |           0008           |
+| `shared-build-package`                 |  0009 |           0009           |
+| `bundle-isolation-over-dryness`        |   —   |           0010           |
+| `flat-layout-codegen-type-strategy`    |  0010 |           0013           |
+| `runtime-shared-logic-strategy`        |   —   |           0011           |
+| `nextjs-jiti-build-time-validation`    |  0011 |           0014           |
+| `independent-versioning-strategy`      |   —   |           0012           |
+| `nextjs-conditional-exports-boundary`  |  0012 |           0015           |
+| `nuxt-vite-compile-time-boundary`      |  0013 |           0016           |
+| `cli-hosting-preset-field-metadata`    |  0014 |           0018           |
+| `env-object-canonical-surface`         |  0015 |             —            |
+| `strict-layout-complexity-budget`      |  0016 |             —            |
+| `dotenv-linter-custom-parser-strategy` |   —   |           0017           |
 | `framework-subpath-exports`            |   —   | 0019[^framework-subpath] |
 
 [^framework-subpath]: Pending [#1408](https://github.com/yamcodes/arkenv/pull/1408). Until that merges, `origin/v1` still has `0014-framework-subpath-exports.md` (number collision with `nextjs-jiti-build-time-validation`).
