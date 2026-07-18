@@ -7,6 +7,7 @@ export default defineConfig({
 		"src/module.ts",
 		"src/server.ts",
 		"src/client.ts",
+		"src/empty-client-env.ts",
 		"src/standard/index.ts",
 		"src/standard/module.ts",
 		"src/standard/server.ts",

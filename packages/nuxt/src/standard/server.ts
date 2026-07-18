@@ -1,6 +1,13 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
-import { arkenvInternal } from "@/arkenv-internal";
+// Static import so Vite/Nitro can resolve the alias at bundle time.
+// Outside strict layout the module aliases this to `empty-client-env.ts`.
+import { env as importedClientEnv } from "#arkenv/client-env";
+import { arkenvInternal, type FlatSchemaOptions } from "@/arkenv-internal";
+import {
+	isStrictLayoutActive,
+	resolveStrictClientEnv,
+} from "@/strict-client-env";
 import type { MergeExtends } from "@/types";
 
 /**
@@ -14,6 +21,35 @@ type AutoClientEnv = typeof import("#arkenv/client-env") extends {
 }
 	? E
 	: {};
+
+/**
+ * Apply strict-layout auto-extend when `extends` is omitted.
+ *
+ * Kept in the server entry so client bundles never import this module graph.
+ *
+ * @param optionsOrIsServer Flat options, legacy boolean, or undefined
+ * @returns Options with auto-extend applied when appropriate
+ */
+function withAutoExtend(
+	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+): FlatSchemaOptions | boolean | null | undefined {
+	if (typeof optionsOrIsServer === "boolean") {
+		return optionsOrIsServer;
+	}
+
+	if (optionsOrIsServer != null && "extends" in optionsOrIsServer) {
+		return optionsOrIsServer;
+	}
+
+	if (!isStrictLayoutActive()) {
+		return optionsOrIsServer;
+	}
+
+	return {
+		...(optionsOrIsServer ?? {}),
+		extends: [resolveStrictClientEnv(importedClientEnv)],
+	};
+}
 
 /**
  * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point, Standard Mode).
@@ -94,7 +130,7 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 
 	return arkenvInternal(
 		schemaOrOptions,
-		optionsOrIsServer,
+		withAutoExtend(optionsOrIsServer),
 		{ isServer: true, strictLayout: "server" },
 		coreArkenv,
 		getSchemaKeys,

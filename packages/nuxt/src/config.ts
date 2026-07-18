@@ -258,6 +258,12 @@ export function validateSchema(
 					? path.join(dir, "mock-imports.js")
 					: path.join(dir, "mock-imports.cjs");
 
+			const emptyClientEnvPath = fs.existsSync(
+				path.join(dir, "empty-client-env.ts"),
+			)
+				? path.join(dir, "empty-client-env.ts")
+				: path.join(dir, "empty-client-env.js");
+
 			const strictUserClientPath =
 				resolvedLayout === "strict" && baseDir
 					? path.join(baseDir, "client.ts")
@@ -269,12 +275,12 @@ export function validateSchema(
 				"@arkenv/nuxt/client": clientPath,
 				"@arkenv/nuxt/server": serverPath,
 				"#imports": mockImportsPath,
+				"#arkenv/client-env":
+					strictUserClientPath && fs.existsSync(strictUserClientPath)
+						? strictUserClientPath
+						: emptyClientEnvPath,
 				...internalOptions?._jitiAliases,
 			};
-
-			if (strictUserClientPath && fs.existsSync(strictUserClientPath)) {
-				aliases["#arkenv/client-env"] = strictUserClientPath;
-			}
 
 			const jitiOptions = {
 				moduleCache: false,

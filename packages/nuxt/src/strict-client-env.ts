@@ -1,4 +1,3 @@
-import { createRequire } from "node:module";
 import { formatBuildError } from "@repo/log";
 
 export const CLIENT_ENV_SPECIFIER = "#arkenv/client-env";
@@ -34,52 +33,27 @@ export function isStrictLayoutActive(): boolean {
 }
 
 /**
- * Extract the `env` export from a `#arkenv/client-env` module namespace.
+ * Resolve the auto-extend client env for strict layout.
  *
- * @param mod The loaded module namespace or default export
- * @returns The client env object when present, otherwise the module itself
- */
-function unwrapClientEnv(mod: unknown): unknown {
-	if (mod && typeof mod === "object") {
-		if ("env" in mod && (mod as { env: unknown }).env !== undefined) {
-			return (mod as { env: unknown }).env;
-		}
-		const defaultExport = (mod as { default?: unknown }).default;
-		if (
-			defaultExport &&
-			typeof defaultExport === "object" &&
-			"env" in defaultExport &&
-			(defaultExport as { env: unknown }).env !== undefined
-		) {
-			return (defaultExport as { env: unknown }).env;
-		}
-	}
-	return mod;
-}
-
-/**
- * Load the strict-layout client env for auto-extend.
+ * Prefers the Jiti validation injection on `globalThis`, then falls back to
+ * the statically imported `#arkenv/client-env` module (aliased by the Nuxt
+ * module). Never uses `node:module` / `createRequire`.
  *
- * Resolution order:
- * 1. `globalThis.__ARKENV_CLIENT_ENV__` (Jiti validation injection)
- * 2. Synchronous `require("#arkenv/client-env")` (Vite/Nitro alias)
- *
+ * @param importedClientEnv The `env` export from `#arkenv/client-env`
  * @returns The client env object to pass through `extends`
- * @throws An arkenv-specific error when the virtual module cannot be resolved
+ * @throws An arkenv-specific error when no client env is available in strict mode
  */
-export function loadStrictClientEnv(): unknown {
+export function resolveStrictClientEnv(importedClientEnv: unknown): unknown {
 	const injected = (globalThis as GlobalStrictState).__ARKENV_CLIENT_ENV__;
 	if (injected !== undefined) {
 		return injected;
 	}
 
-	try {
-		const req =
-			typeof require === "function" ? require : createRequire(import.meta.url);
-		return unwrapClientEnv(req(CLIENT_ENV_SPECIFIER));
-	} catch {
-		throw new Error(UNRESOLVED_CLIENT_ENV_ERROR);
+	if (importedClientEnv !== undefined && importedClientEnv !== null) {
+		return importedClientEnv;
 	}
+
+	throw new Error(UNRESOLVED_CLIENT_ENV_ERROR);
 }
 
 /**

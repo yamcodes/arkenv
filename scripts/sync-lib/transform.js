@@ -88,7 +88,10 @@ export function transformPackageJson(pkg, exampleConfig, catalog) {
 		}
 		// Nuxt examples require 'postinstall': 'nuxt prepare' per official templates,
 		// but we omit it in the monorepo playground to prevent CI/bootstrap cycles.
-		if (exampleConfig.name === "with-nuxt") {
+		if (
+			exampleConfig.name === "with-nuxt" ||
+			exampleConfig.name === "with-nuxt-strict"
+		) {
 			transformed.scripts.postinstall = "nuxt prepare";
 		}
 	}
