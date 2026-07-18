@@ -211,6 +211,25 @@ describe("Nuxt module integration", () => {
 
 			expect(mockNuxt.options.alias["#arkenv/client-env"]).toBe(clientPath);
 
+			const prepareTypesHook = mockNuxt.hook.mock.calls.find(
+				([name]: [string, ...any[]]) => name === "prepare:types",
+			)?.[1];
+			expect(prepareTypesHook).toBeDefined();
+			const tsConfig: any = { compilerOptions: {} };
+			prepareTypesHook({ tsConfig });
+			expect(tsConfig.compilerOptions.paths["#arkenv/client-env"]).toEqual([
+				clientPath,
+			]);
+
+			const nitroHook = mockNuxt.hook.mock.calls.find(
+				([name]: [string, ...any[]]) => name === "nitro:config",
+			)?.[1];
+			expect(nitroHook).toBeDefined();
+			const nitroConfig: any = {};
+			nitroHook(nitroConfig);
+			expect(nitroConfig.alias["#arkenv/client-env"]).toBe(clientPath);
+			expect(nitroConfig.replace.__ARKENV_STRICT_LAYOUT__).toBe("true");
+
 			const viteHook = mockNuxt.hook.mock.calls.find(
 				([name]: [string, ...any[]]) => name === "vite:extendConfig",
 			)?.[1];
@@ -304,6 +323,17 @@ describe("Nuxt module integration", () => {
 			);
 
 			expect(mockNuxt.options.alias["#arkenv/client-env"]).toBeUndefined();
+
+			expect(
+				mockNuxt.hook.mock.calls.find(
+					([name]: [string, ...any[]]) => name === "prepare:types",
+				),
+			).toBeUndefined();
+			expect(
+				mockNuxt.hook.mock.calls.find(
+					([name]: [string, ...any[]]) => name === "nitro:config",
+				),
+			).toBeUndefined();
 
 			const viteHook = mockNuxt.hook.mock.calls.find(
 				([name]: [string, ...any[]]) => name === "vite:extendConfig",

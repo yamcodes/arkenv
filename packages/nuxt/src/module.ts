@@ -199,6 +199,27 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		}
 
+		if (resolvedLayout === "strict" && strictClientPath) {
+			// Mirror the runtime alias into generated tsconfig paths so AutoClientEnv
+			// resolves to the project's env/client.ts (not the empty package fallback).
+			nuxt.hook("prepare:types", ({ tsConfig }) => {
+				tsConfig.compilerOptions ??= {};
+				tsConfig.compilerOptions.paths ??= {};
+				tsConfig.compilerOptions.paths[CLIENT_ENV_SPECIFIER] = [
+					strictClientPath,
+				];
+			});
+
+			// Nitro uses its own bundler; Vite alias/define alone does not cover
+			// server/api routes that import ~~/env/server.
+			nuxt.hook("nitro:config", (nitroConfig) => {
+				nitroConfig.alias ??= {};
+				nitroConfig.alias[CLIENT_ENV_SPECIFIER] = strictClientPath;
+				nitroConfig.replace ??= {};
+				nitroConfig.replace.__ARKENV_STRICT_LAYOUT__ = JSON.stringify(true);
+			});
+		}
+
 		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
 			// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
 			const anyConfig = config as any;
