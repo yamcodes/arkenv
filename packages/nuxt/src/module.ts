@@ -41,6 +41,11 @@ import {
  */
 export type ModuleOptions = ArkEnvConfigOptions;
 
+type NitroConfigHook = {
+	alias?: Record<string, string>;
+	replace?: Record<string, string>;
+};
+
 declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtConfig {
@@ -49,6 +54,10 @@ declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtOptions {
 		arkenv?: ModuleOptions;
+	}
+	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
+	interface NuxtHooks {
+		"nitro:config": (nitroConfig: NitroConfigHook) => void;
 	}
 }
 
