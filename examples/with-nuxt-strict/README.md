@@ -1,5 +1,5 @@
 # Nuxt strict layout playground
 
-Fixture for Nuxt strict layout with server auto-extend via `#arkenv/client-env`.
+Fixture for Nuxt strict layout with server auto-extend.
 
-`env/server.ts` intentionally omits `extends: [clientEnv]` — the module wires the merge.
+`env/server.ts` intentionally omits `extends: [clientEnv]` - the module wires the merge.

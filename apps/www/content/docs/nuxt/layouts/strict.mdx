@@ -94,9 +94,9 @@ export const env = arkenv({
 });
 ```
 
-When `@arkenv/nuxt/module` runs in strict layout, the server entry auto-merges client and shared variables via the `#arkenv/client-env` virtual alias. You do not need to import `./client` or pass `extends: [clientEnv]` unless you want an explicit override.
+When `@arkenv/nuxt/module` runs in strict layout, the server entry auto-merges client and shared variables. You do not need to import `./client` or pass `extends: [clientEnv]` unless you want an explicit override.
 
-Auto-merge only applies when the `extends` key is **omitted**. Passing `extends` at all — including `extends: []` or a list that does not include `clientEnv` — opts out and uses your list as-is.
+Auto-merge only applies when the `extends` key is **omitted**. Passing `extends` at all - including `extends: []` or a list that does not include `clientEnv` - opts out and uses your list as-is.
 
 <Accordions>
   <Accordion title="Manual setup">
@@ -211,7 +211,7 @@ Auto-merge only applies when the `extends` key is **omitted**. Passing `extends`
 
     ### Register module in Nuxt config [step] [!toc]
 
-    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory, registers environment variables to Nuxt's `runtimeConfig`, and wires `#arkenv/client-env` for server auto-extend. No generated files are written to disk:
+    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory, registers environment variables to Nuxt's `runtimeConfig`, and enables server auto-extend. No generated files are written to disk:
 
     ```ts title="nuxt.config.ts"
     export default defineNuxtConfig({
