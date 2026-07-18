@@ -4,4 +4,6 @@ Fixture for Nuxt strict layout with server auto-extend.
 
 `env/server.ts` intentionally omits `extends: [clientEnv]` - the module wires the merge.
 
-`server/api/env.get.ts` is a playground-only smoke route (not part of ArkEnv setup). It imports `~~/env/server` so the fixture build exercises Nitro's alias wiring; any real server file that imports server env would do the same.
+`server/api/health.get.ts` uses the server env in a minimal health endpoint. It
+reads the shared `NODE_ENV` value through the auto-extended server env, while
+keeping `DATABASE_URL` server-only.
