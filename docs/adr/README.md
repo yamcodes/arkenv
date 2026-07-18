@@ -64,7 +64,9 @@ Numbers are per branch. A blank cell means the ADR is not present on that line.
 | `env-object-canonical-surface`         |  0015 |   —  |
 | `strict-layout-complexity-budget`      |  0016 |   —  |
 | `dotenv-linter-custom-parser-strategy` |   —   | 0017 |
-| `framework-subpath-exports`            |   —   | 0019 |
+| `framework-subpath-exports`            |   —   | 0019[^framework-subpath] |
+
+[^framework-subpath]: Pending [#1408](https://github.com/yamcodes/arkenv/pull/1408). Until that merges, `origin/v1` still has `0014-framework-subpath-exports.md` (number collision with `nextjs-jiti-build-time-validation`).
 
 ## Tooling & agent skills
 
