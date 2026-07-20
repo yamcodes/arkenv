@@ -77,7 +77,7 @@ export function arkenvInternal(
 	} else {
 		// New flat schema behavior
 		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
-		const options = optionsOrIsServer || {};
+		const options = (optionsOrIsServer || {}) as FlatSchemaOptions;
 		extendsList = options.extends || [];
 		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
 		isServer = isForceServer() || !!context?.isServer;

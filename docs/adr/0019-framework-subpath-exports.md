@@ -1,6 +1,10 @@
-# Framework subpath exports for strict layout
+# ADR 0019: Framework subpath exports for strict layout
 
 To decide which `@arkenv/nextjs` and `@arkenv/nuxt` subpath exports remain published, and to document the import mental model for flat versus strict layout.
+
+## Status
+
+Accepted
 
 ## Context & problem
 
@@ -12,7 +16,7 @@ We evaluated three postures for the export surface:
 
 - **Option 1: Keep all subpaths including `./shared` (rejected).** Preserves backward compatibility but maintains a redundant export that confuses the mental model and suggests framework-specific schema tooling where core `@arkenv/core` suffices.
 - **Option 2: Remove `./shared`; keep `./client` and `./server` (chosen).** Strict-layout internal schema modules import `type` from `@arkenv/core`. Flat layout continues to use the default package entry. `/client` and `/server` retain their boundary guarantees.
-- **Option 3: Remove all subpaths (rejected).** Would break strict layout compile-time boundaries documented in [ADR 0012](./0012-nextjs-conditional-exports-boundary.md) and [ADR 0013](./0013-nuxt-vite-compile-time-boundary.md).
+- **Option 3: Remove all subpaths (rejected).** Would break strict layout compile-time boundaries documented in [ADR 0015](./0015-nextjs-conditional-exports-boundary.md) and [ADR 0016](./0016-nuxt-vite-compile-time-boundary.md).
 
 ## Decision
 
@@ -20,9 +24,9 @@ We adopt **Option 2**: remove `./shared`; keep the default entry, `./client`, an
 
 | Export                                      | Verdict    | Rationale                                                                                                                                                                                     |
 | :------------------------------------------ | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@arkenv/nextjs` / `@arkenv/nuxt` (default) | **Keep**   | Flat layout entry; bundler resolves server vs client build ([ADR 0012](./0012-nextjs-conditional-exports-boundary.md) / Nuxt proxy)                                                           |
+| `@arkenv/nextjs` / `@arkenv/nuxt` (default) | **Keep**   | Flat layout entry; bundler resolves server vs client build ([ADR 0015](./0015-nextjs-conditional-exports-boundary.md) / Nuxt proxy)                                                           |
 | `./client`                                  | **Keep**   | Strict layout compile-time boundary + public-prefix type constraints                                                                                                                          |
-| `./server`                                  | **Keep**   | Strict layout compile-time boundary (`server-only` on Next.js; Vite plugin blocklist on Nuxt per [ADR 0013](./0013-nuxt-vite-compile-time-boundary.md)) + framework proxy/`extends` semantics |
+| `./server`                                  | **Keep**   | Strict layout compile-time boundary (`server-only` on Next.js; Vite plugin blocklist on Nuxt per [ADR 0016](./0016-nuxt-vite-compile-time-boundary.md)) + framework proxy/`extends` semantics |
 | `./shared`                                  | **Remove** | Documented strict-layout usage is schema-only (`import { type } from "…/shared"`); `@arkenv/core` already exports `type`                                                                      |
 
 ### Mental model
@@ -44,4 +48,4 @@ Replace `@arkenv/nextjs/shared` and `@arkenv/nuxt/shared` with `import { type } 
 - **Simpler mental model.** Strict layout has two boundary entry points plus `@arkenv/core` for schema-only modules.
 - **Lower maintenance.** One fewer conditional build artifact per framework package.
 - **Docs and scaffolding updated.** CLI output, examples, playgrounds, and layout guides reflect the new import path.
-- **`/client` and `/server` unchanged.** Compile-time boundary guarantees from ADR 0012 and ADR 0013 are preserved.
+- **`/client` and `/server` unchanged.** Compile-time boundary guarantees from ADR 0015 and ADR 0016 are preserved.

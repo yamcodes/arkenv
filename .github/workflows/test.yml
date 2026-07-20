@@ -99,37 +99,13 @@ jobs:
       - name: Build vite-legacy playground
         run: pnpm run build --filter=vite-legacy-playground
 
-  resolve-playwright-version:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.out.outputs.version }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - name: Install dependencies
-        env:
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-        run: pnpm install --frozen-lockfile
-      - name: Read @playwright/test version
-        id: out
-        run: |
-          VER=$(awk '/overrides:/{flag=1; next} flag && /@playwright\/test/{print $2; exit}' pnpm-workspace.yaml | tr -d '",^')
-          echo "version=$VER" >> "$GITHUB_OUTPUT"
   test-e2e:
-    needs: resolve-playwright-version
     runs-on: ubuntu-latest
     timeout-minutes: 16
     strategy:
       matrix:
         suite: [e2e]
       fail-fast: false
-    container:
-      image: mcr.microsoft.com/playwright:v${{ needs.resolve-playwright-version.outputs.version }}-noble
-      options: --user 1001
     steps:
       - uses: actions/checkout@v6
         with:
@@ -145,6 +121,15 @@ jobs:
           node-version: lts/*
           cache: pnpm
       - run: pnpm install
+      - uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ubuntu-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ubuntu-latest-pw-
+      - name: Install Playwright browsers
+        # Chromium + Firefox only — matches playwright-www projects on Linux (webkit is macOS-only)
+        run: pnpm exec playwright install --with-deps chromium firefox
       - name: Build www and dependencies
         run: pnpm run build --filter=www...
       - name: Run ${{ matrix.suite }} tests (PR)

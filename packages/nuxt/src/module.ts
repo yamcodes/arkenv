@@ -15,6 +15,11 @@ import {
 	resolveLayout,
 	validateSchema,
 } from "./config";
+import { missingClientTsError } from "./strict-client-env";
+import {
+	registerStrictLayoutHooks,
+	registerViteExtendHook,
+} from "./strict-layout-hooks";
 
 /**
  * Configuration options for the ArkEnv Nuxt module.
@@ -51,20 +56,6 @@ const CLIENT_SECURITY_ERROR = formatBuildError(
 	"Importing server-only environment schema on the client is not allowed!",
 );
 
-function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
-	if (path.isAbsolute(id)) return id;
-
-	if (id.startsWith("~~/")) {
-		return path.resolve(rootDir, id.slice(3));
-	}
-
-	if (id.startsWith("~/") || id.startsWith("@/")) {
-		return path.resolve(srcDir, id.slice(2));
-	}
-
-	return id;
-}
-
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
 		name,
@@ -100,6 +91,15 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt.options.srcDir ?? nuxt.options.rootDir,
 		);
 
+		let strictClientPath: string | undefined;
+		if (resolvedLayout === "strict" && baseDir) {
+			const clientPath = path.join(baseDir, "client.ts");
+			if (!fs.existsSync(clientPath)) {
+				throw new Error(missingClientTsError(clientPath, baseDir));
+			}
+			strictClientPath = clientPath;
+		}
+
 		if (nuxt.options.dev) {
 			const watchPaths =
 				resolvedLayout === "strict" && baseDir
@@ -133,14 +133,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		let clientKeys: string[] = [];
 		let sharedKeys: string[] = [];
 
-		if (resolvedLayout === "strict" && baseDir) {
-			const clientPath = path.join(baseDir, "client.ts");
+		if (resolvedLayout === "strict" && baseDir && strictClientPath) {
 			const sharedPath = path.join(baseDir, "internal", "shared.ts");
 			const serverPath = path.join(baseDir, "server.ts");
 
-			const clientContent = fs.existsSync(clientPath)
-				? fs.readFileSync(clientPath, "utf-8")
-				: "";
+			const clientContent = fs.readFileSync(strictClientPath, "utf-8");
 			const sharedContent = fs.existsSync(sharedPath)
 				? fs.readFileSync(sharedPath, "utf-8")
 				: "";
@@ -151,6 +148,8 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			clientKeys = extractClientKeys(clientContent);
 			sharedKeys = extractSharedKeys(sharedContent);
 			serverKeys = extractServerKeys(serverContent);
+
+			registerStrictLayoutHooks(nuxt, strictClientPath);
 		} else {
 			const fileContent = fs.readFileSync(schemaPath, "utf-8");
 			const extracted = extractKeys(fileContent);
@@ -176,53 +175,13 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		}
 
-		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
-			if (isClient) {
-				// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
-				const anyConfig = config as any;
-				anyConfig.plugins = anyConfig.plugins || [];
-				anyConfig.plugins.push({
-					name: "arkenv-nuxt-client-security",
-					resolveId(id: string, importer?: string) {
-						const isServerModule =
-							id === "@arkenv/nuxt/server" ||
-							id === "@arkenv/nuxt/standard/server" ||
-							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.(?:js|mjs|cjs|ts))?$/.test(
-								id,
-							);
-
-						if (isServerModule) {
-							throw new Error(CLIENT_SECURITY_ERROR);
-						}
-
-						if (resolvedLayout === "strict" && baseDir) {
-							let targetId = id;
-							if (id.startsWith(".") && importer) {
-								targetId = path.resolve(path.dirname(importer), id);
-							}
-
-							const resolvedId = resolveNuxtAlias(
-								targetId,
-								nuxt.options.rootDir,
-								srcDir,
-							);
-
-							if (path.isAbsolute(resolvedId)) {
-								const relativePath = path.relative(baseDir, resolvedId);
-								const isUnderBaseDir =
-									!relativePath.startsWith("..") &&
-									!path.isAbsolute(relativePath);
-								const isServerFile =
-									/(^|[/\\])server(?:[/\\]|\.[^./\\]*|$)/.test(relativePath);
-
-								if (isUnderBaseDir && isServerFile) {
-									throw new Error(CLIENT_SECURITY_ERROR);
-								}
-							}
-						}
-					},
-				});
-			}
+		registerViteExtendHook(nuxt, {
+			resolvedLayout,
+			baseDir,
+			strictClientPath,
+			rootDir: nuxt.options.rootDir,
+			srcDir,
+			clientSecurityError: CLIENT_SECURITY_ERROR,
 		});
 	},
 });

@@ -10,6 +10,12 @@ export default defineConfig({
 			"!packages/cli",
 			"!apps/playwright-www",
 			"!**/*.md",
+			{
+				test: {
+					name: "scripts",
+					include: ["scripts/**/*.test.js"],
+				},
+			},
 		],
 		coverage: {
 			provider: "v8",

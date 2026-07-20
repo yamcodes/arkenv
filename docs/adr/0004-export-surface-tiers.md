@@ -1,16 +1,16 @@
-# Three-tier export surface
+# ADR 0004: Three-tier export surface
 
 ## Status
 
 Superseded by [ADR 0007: Standard Mode Packaging Strategy](0007-standard-mode-packaging-strategy.md)
 
-## Context
+## Summary
 
-To clean up the ad-hoc package exports and provide an explicitly ArkType-free entry point for Standard Schema users. We reorganize the exports into three distinct tiers:
+Historical decision to organize package exports into three tiers (`arkenv`, `arkenv/standard`, and `arkenv/core`) so Standard Schema users had an explicitly ArkType-free entry point.
 
-1. `arkenv` (main): The default, ArkType-dependent entry point exposing `arkenv` and `type`.
-2. `arkenv/standard`: A clean, ArkType-free entry point for Standard Schema users.
-3. `arkenv/core`: Mode-agnostic types and primitives (like `ArkEnvError` and `ValidationIssue`).
+On `v1`, that packaging model was replaced by the asymmetric strategy in ADR 0007: separate `@arkenv/core` / `@arkenv/standard` packages, with framework plugins exposing both engines via subpath exports rather than a three-tier surface on a single package.
+
+Read [ADR 0007](0007-standard-mode-packaging-strategy.md) for the current decision.
 
 ---
 

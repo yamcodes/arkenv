@@ -1,5 +1,27 @@
 # @arkenv/core
 
+## 1.0.0-alpha.8
+
+### Minor Changes
+
+- #### Auto-extend client env in Nuxt strict layout _[`#1401`](https://github.com/yamcodes/arkenv/pull/1401) [`e306798`](https://github.com/yamcodes/arkenv/commit/e3067980e80adce174e5591febe43164c7960a97) [@yamcodes](https://github.com/yamcodes)_
+
+  **`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/server.ts` auto-merges the client env via `#arkenv/client-env`. Applies to both `@arkenv/nuxt/server` and `@arkenv/nuxt/standard/server`.
+
+  **`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified server template (no manual `import ./client` or `extends: [clientEnv]`).
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nuxt/server";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+  });
+  ```
+
+  Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a list that does not include `clientEnv` - is used as-is and opts out of auto-merge. Existing manual `extends: [clientEnv]` wiring continues to work unchanged.
+
 ## 1.0.0-alpha.7
 
 ### Major Changes
@@ -304,7 +326,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 

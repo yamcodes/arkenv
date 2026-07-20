@@ -438,6 +438,26 @@ describe("validators templates", () => {
 			expect(templates.server).toContain("extends: [clientEnv],");
 		});
 
+		it("returns simplified Nuxt strict server template without manual extends", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "nuxt" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const templates = getStrictTemplates(options);
+			expect(templates.server).toContain(
+				'import arkenv from "@arkenv/nuxt/server"',
+			);
+			expect(templates.server).not.toContain("extends: [clientEnv]");
+			expect(templates.server).not.toContain(
+				'import { env as clientEnv } from "./client"',
+			);
+			expect(templates.server).toContain("export const env = arkenv(");
+		});
+
 		it("generates cleanly formatted empty objects when no client keys are present", () => {
 			const options = {
 				validator: "zod" as const,

@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/nuxt",
-	"version": "1.0.0-alpha.7",
+	"version": "1.0.0-alpha.8",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -134,5 +134,12 @@
 		"changeset": "pnpm -w run changeset"
 	},
 	"type": "module",
-	"types": "./dist/index.d.ts"
+	"types": "./dist/index.d.ts",
+	"imports": {
+		"#arkenv/client-env": {
+			"types": "./dist/empty-client-env.d.ts",
+			"import": "./dist/empty-client-env.js",
+			"require": "./dist/empty-client-env.cjs"
+		}
+	}
 }

@@ -1,10 +1,79 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
-import { arkenvInternal } from "@/arkenv-internal";
+// Static import so Vite/Nitro can resolve the alias at bundle time.
+// Outside strict layout the module aliases this to `empty-client-env.ts`.
+import { env as importedClientEnv } from "#arkenv/client-env";
+import { arkenvInternal, type FlatSchemaOptions } from "@/arkenv-internal";
+import {
+	isStrictLayoutActive,
+	resolveStrictClientEnv,
+} from "@/strict-client-env";
 import type { MergeExtends } from "@/types";
 
 /**
+ * Client env type auto-merged in Nuxt strict layout when `extends` is omitted.
+ *
+ * Resolved via the `#arkenv/client-env` virtual module alias registered by
+ * `@arkenv/nuxt/module`.
+ */
+type AutoClientEnv = typeof import("#arkenv/client-env") extends {
+	env: infer E;
+}
+	? E
+	: {};
+
+/**
+ * Apply strict-layout auto-extend when `extends` is omitted.
+ *
+ * Kept in the server entry so client bundles never import this module graph.
+ *
+ * @param optionsOrIsServer Flat options, legacy boolean, or undefined
+ * @returns Options with auto-extend applied when appropriate
+ */
+function withAutoExtend(
+	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+): FlatSchemaOptions | boolean | null | undefined {
+	if (typeof optionsOrIsServer === "boolean") {
+		return optionsOrIsServer;
+	}
+
+	if (optionsOrIsServer != null && "extends" in optionsOrIsServer) {
+		return optionsOrIsServer;
+	}
+
+	if (!isStrictLayoutActive()) {
+		return optionsOrIsServer;
+	}
+
+	return {
+		...(optionsOrIsServer ?? {}),
+		extends: [resolveStrictClientEnv(importedClientEnv)],
+	};
+}
+
+/**
  * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point, Standard Mode).
+ *
+ * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
+ * client and shared env by default. Any explicit `extends` is used as-is and
+ * opts out of that default; pass `extends: []` to include no extended env.
+ *
+ * @example Default strict-layout behavior
+ * ```ts
+ * import arkenv from "@arkenv/nuxt/standard/server";
+ *
+ * export const env = arkenv({
+ *   DATABASE_URL: databaseUrlSchema,
+ * });
+ * ```
+ *
+ * @example Opt out of the default client merge
+ * ```ts
+ * export const env = arkenv(
+ *   { DATABASE_URL: databaseUrlSchema },
+ *   { extends: [] },
+ * );
+ * ```
  *
  * @param schemaOrOptions The schema definition or configuration options containing server/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status
@@ -16,13 +85,30 @@ export function arkenv<
 	const TExtends extends readonly unknown[] = [],
 >(
 	schema: TSchema,
-	options?: {
-		extends?: [...TExtends];
+	options: {
+		/**
+		 * Explicit envs to extend. Providing this option opts out of the default
+		 * strict-layout client merge; use `[]` to include no extended env.
+		 */
+		extends: [...TExtends];
 	},
 ): Readonly<
 	{
 		[K in keyof TSchema]: StandardSchemaV1.InferOutput<TSchema[K]>;
 	} & MergeExtends<TExtends>
+>;
+
+export function arkenv<
+	const TSchema extends Record<string, StandardSchemaV1> = {},
+>(
+	schema: TSchema,
+	options?: {
+		extends?: undefined;
+	},
+): Readonly<
+	{
+		[K in keyof TSchema]: StandardSchemaV1.InferOutput<TSchema[K]>;
+	} & AutoClientEnv
 >;
 
 export function arkenv<
@@ -66,8 +152,8 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 
 	return arkenvInternal(
 		schemaOrOptions,
-		optionsOrIsServer,
-		{ isServer: true },
+		withAutoExtend(optionsOrIsServer),
+		{ isServer: true, strictLayout: "server" },
 		coreArkenv,
 		getSchemaKeys,
 	);
