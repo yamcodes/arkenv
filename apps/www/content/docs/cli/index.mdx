@@ -23,6 +23,15 @@ The command adjusts its workflow depending on where it is executed:
 - **Existing project**: If a `package.json` exists in the target directory, the CLI configures ArkEnv directly in the project. It scans for any `.env` or `.env.example` files to automatically pre-populate the schema fields, installs the selected validator dependencies, and generates the `env.ts` file.
 - **New project**: If the target directory does not contain a `package.json` and is empty, the CLI guides you through creating a new project from an ArkEnv starter template. See our [official examples](/docs/arkenv/examples#examples) for a list of available templates.
 
+#### Options
+
+| Flag            | Alias | Description                                                                                                                                        |
+| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--example`     |       | Specify an example name when creating a new project.                                                                                               |
+| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
+| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
+| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
+
 ### `add host`
 
 Add a hosting provider preset (Vercel or Netlify) to an existing flat `env.ts`.
@@ -46,14 +55,3 @@ These flags apply across commands:
 | `--help`  | `-h`  | Display the CLI help information.                                                                                                            |
 
 When running with `--json` or `--agent`, the CLI emits a structured JSON summary you can parse programmatically. See [Machine-readable output](/docs/cli/machine-readable-output) for the full schema and error codes.
-
-## `init` options
-
-These flags only affect `init`:
-
-| Flag            | Alias | Description                                                                                                                                        |
-| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--example`     |       | Specify an example name when creating a new project.                                                                                               |
-| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
-| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
-| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
