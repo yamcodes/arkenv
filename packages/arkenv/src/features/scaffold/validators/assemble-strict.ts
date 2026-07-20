@@ -107,6 +107,32 @@ export function assembleStrictFromDialect(
 	const serverObject = formatSchemaObject(serverFields, "\t\t");
 	const extra = dialect.strictExtraImports;
 
+	const nuxtClientTemplate = `import arkenv from "${clientImportPath}";
+${extra}
+export const env = arkenv(
+	${clientObject},
+);`;
+
+	const manualClientCodegen = `import arkenv from "${clientImportPath}";
+${extra}import { SharedSchema } from "./internal/shared";
+
+export const env = arkenv(
+	${clientObject},
+	{
+		extends: [SharedSchema],
+	},
+);`;
+
+	const manualClientNoCodegen = `import arkenv from "${clientImportPath}";
+${extra}import { SharedSchema } from "./internal/shared";
+
+export const env = arkenv(
+	${clientObject},
+	{
+		extends: [SharedSchema]${runtimeEnvOptions}
+	},
+);`;
+
 	return assembleStrictTemplates(
 		{
 			shared: `${dialect.sharedImports}
@@ -117,25 +143,13 @@ export function assembleStrictFromDialect(
  */
 export const SharedSchema = ${dialect.wrapSharedSchema(sharedObject)};`,
 
-			clientCodegen: `import arkenv from "${clientImportPath}";
-${extra}import { SharedSchema } from "./internal/shared";
+			clientCodegen:
+				context.framework === "nuxt" ? nuxtClientTemplate : manualClientCodegen,
 
-export const env = arkenv(
-	${clientObject},
-	{
-		extends: [SharedSchema],
-	},
-);`,
-
-			clientNoCodegen: `import arkenv from "${clientImportPath}";
-${extra}import { SharedSchema } from "./internal/shared";
-
-export const env = arkenv(
-	${clientObject},
-	{
-		extends: [SharedSchema]${runtimeEnvOptions}
-	},
-);`,
+			clientNoCodegen:
+				context.framework === "nuxt"
+					? nuxtClientTemplate
+					: manualClientNoCodegen,
 
 			server:
 				context.framework === "nuxt"

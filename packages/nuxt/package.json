@@ -140,6 +140,11 @@
 			"types": "./dist/empty-client-env.d.ts",
 			"import": "./dist/empty-client-env.js",
 			"require": "./dist/empty-client-env.cjs"
+		},
+		"#arkenv/shared-schema": {
+			"types": "./dist/empty-shared-schema.d.ts",
+			"import": "./dist/empty-shared-schema.js",
+			"require": "./dist/empty-shared-schema.cjs"
 		}
 	}
 }

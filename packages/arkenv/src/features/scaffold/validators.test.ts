@@ -458,6 +458,42 @@ describe("validators templates", () => {
 			expect(templates.server).toContain("export const env = arkenv(");
 		});
 
+		it("returns simplified Nuxt strict client template without SharedSchema extends", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "nuxt" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const templates = getStrictTemplates(options);
+			expect(templates.client).toContain(
+				'import arkenv from "@arkenv/nuxt/client"',
+			);
+			expect(templates.client).not.toContain("SharedSchema");
+			expect(templates.client).not.toContain("extends:");
+			expect(templates.client).toContain("export const env = arkenv(");
+			expect(templates.shared).toContain("export const SharedSchema");
+		});
+
+		it("keeps Next.js strict client SharedSchema extends unchanged", () => {
+			const options = {
+				validator: "zod" as const,
+				framework: "nextjs" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				disableCodegen: false,
+			};
+			const templates = getStrictTemplates(options);
+			expect(templates.client).toContain(
+				'import { SharedSchema } from "./internal/shared"',
+			);
+			expect(templates.client).toContain("extends: [SharedSchema]");
+		});
+
 		it("generates cleanly formatted empty objects when no client keys are present", () => {
 			const options = {
 				validator: "zod" as const,
