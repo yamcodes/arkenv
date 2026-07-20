@@ -2,9 +2,9 @@
 "@arkenv/nuxt": patch
 ---
 
-#### Fix security proxy returning raw strings instead of coerced values
+#### Fix number and boolean env values returning as strings
 
-Prefer the coerced validation target for schema-key reads instead of re-reading raw `useRuntimeConfig()`, `process.env`, or `__NUXT__.config.public` strings. Those sources still feed validation at create time, but serving them again on get silently undid coercion (for example a `number` key returning a `string`).
+Keep coerced types when reading from `env`. A key declared as `"number"` or `"boolean"` now returns a number or boolean at runtime, not the raw string from Nuxt runtime config.
 
 ```ts
 import { createEnv } from "@arkenv/nuxt";
@@ -14,5 +14,6 @@ export const env = createEnv({
   PORT: "number",
 });
 
-// env.NUXT_PUBLIC_PORT and env.PORT are numbers, not "3000"
-```
+// Was "3000" (string) — now 3000 (number)
+env.NUXT_PUBLIC_PORT;
+env.PORT;
