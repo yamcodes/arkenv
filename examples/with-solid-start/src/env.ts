@@ -1,7 +1,7 @@
 import arkenv from "@arkenv/core";
 
 /**
- * Canonical env object for the SolidStart example.
+ * Canonical env object for the SolidStart playground.
  * Client (`VITE_*`) keys are inlined by `@arkenv/vite-plugin` in the browser graph;
  * server-only keys validate at boot in the SSR graph.
  */
