@@ -1,5 +1,21 @@
 # @arkenv/core
 
+## 1.0.0-alpha.9
+
+### Minor Changes
+
+- #### Add `add host` command to CLI for adding hosting presets to existing schemas _[`#1419`](https://github.com/yamcodes/arkenv/pull/1419) [`0a559ce`](https://github.com/yamcodes/arkenv/commit/0a559ceaf2f2fcb09bd7026cd07a87a785985766) [@yamcodes](https://github.com/yamcodes)_
+
+  Support adding a hosting provider preset (Vercel or Netlify) to an existing `env.ts` configuration file:
+
+  ```bash
+  npx arkenv@alpha add host [provider]
+  ```
+
+  - Prompts interactively to select Vercel or Netlify if the provider is omitted.
+  - Auto-detects the framework (Next.js, Nuxt, Vite, Bun) and the validator engine (Zod, Valibot, or ArkType) to inject the preset fields with the correct syntax.
+  - Fallback to logging the generated variable schemas to stdout with manual configuration instructions if `env.ts` is missing or unparseable.
+
 ## 1.0.0-alpha.8
 
 ### Minor Changes
