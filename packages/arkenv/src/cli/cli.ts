@@ -117,8 +117,10 @@ export class CLI {
 
 		if (!this.validationError) {
 			if (this.command === "add") {
-				if (positionalArgs[0] !== "host") {
-					this.validationError = `Unknown argument: ${positionalArgs[0] || ""}`;
+				if (!positionalArgs[0]) {
+					this.validationError = "Missing subcommand";
+				} else if (positionalArgs[0] !== "host") {
+					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
 				} else if (positionalArgs.length > 2) {
 					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
 				} else {

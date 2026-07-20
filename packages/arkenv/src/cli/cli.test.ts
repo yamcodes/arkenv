@@ -330,6 +330,11 @@ describe("CLI parser", () => {
 				expect(cli.validationError).toBe("Invalid host preset: vercle");
 			});
 
+			it("should reject bare add without a subcommand", () => {
+				const cli = new CLI(["node", "arkenv", "add"]);
+				expect(cli.validationError).toBe("Missing subcommand");
+			});
+
 			it("should reject non-host subcommand", () => {
 				const cli = new CLI(["node", "arkenv", "add", "client"]);
 				expect(cli.validationError).toBe("Unknown argument: client");

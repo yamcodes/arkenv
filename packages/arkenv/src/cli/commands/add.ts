@@ -1,12 +1,11 @@
 import path from "node:path";
-import { mutateEnvConfig } from "@/features/config-mutation";
+import {
+	getFieldDefinition,
+	mutateEnvConfig,
+} from "@/features/config-mutation";
 import { FRAMEWORK_CLIENT_PREFIXES } from "@/features/scaffold/frameworks";
 import type { Validator } from "@/features/scaffold/plan";
 import { getPresetKeys } from "@/features/scaffold/presets";
-import {
-	DIALECTS,
-	tryFormatPresetFieldValue,
-} from "@/features/scaffold/validators/dialects";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
@@ -18,25 +17,6 @@ export type AddInput = {
 	provider?: "vercel" | "netlify";
 	isYes?: boolean;
 };
-
-/**
- * Resolve a hosting-preset key to a validator-specific schema fragment.
- *
- * Uses v1 dialect renderers (same as scaffold codegen) so add-host output
- * stays aligned with `arkenv init` field syntax.
- */
-function getFieldDefinition(
-	key: string,
-	validator: Validator,
-	prefix: string,
-	provider: "vercel" | "netlify",
-): string {
-	const dialect = DIALECTS[validator];
-	return (
-		tryFormatPresetFieldValue(dialect, key, prefix, provider) ??
-		dialect.formatOptionalString()
-	);
-}
 
 /**
  * Use case for adding a hosting preset (Vercel/Netlify) to an existing env.ts schema.

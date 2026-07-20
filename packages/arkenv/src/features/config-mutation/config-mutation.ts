@@ -323,8 +323,11 @@ export function transformNuxtConfig(
 
 /**
  * Resolve a hosting-preset key to a validator-specific schema fragment.
+ *
+ * Uses v1 dialect renderers (same as scaffold codegen) so add-host and
+ * mutateEnvConfig output stay aligned with `arkenv init` field syntax.
  */
-function getFieldDefinition(
+export function getFieldDefinition(
 	key: string,
 	validator: Validator,
 	prefix: string,

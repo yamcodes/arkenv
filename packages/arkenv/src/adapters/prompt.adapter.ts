@@ -73,7 +73,11 @@ export class ClackPromptAdapter implements PromptPort {
 	): Promise<T | null> {
 		const result = await clackSelect({
 			message,
-			options: options as any,
+			// Clack's Option<T> is a conditional type incompatible with our port
+			// shape under exactOptionalPropertyTypes; cast via unknown.
+			options: options as unknown as Parameters<
+				typeof clackSelect
+			>[0]["options"],
 			initialValue,
 		});
 		if (isCancel(result)) return null;
