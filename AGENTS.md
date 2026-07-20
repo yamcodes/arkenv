@@ -4,7 +4,7 @@
 
 ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation library. There are no databases or external services; the only long-running process is the `www` docs site (Next.js). Standard commands live in `package.json`, `docs/CONTRIBUTING.md`, and `docs/TESTING.md` — prefer those.
 
-> This is the `v1` branch. Its package layout differs from `dev` (v0): here `packages/arkenv` is the **CLI** (published as `arkenv`) and the **core runtime** lives in `packages/core` (published as `@arkenv/core`). There is no `packages/cli` on `v1`. `v1` publishes pre-release versions (`1.0.0-alpha.x`) under the `next` npm tag.
+> This is the `v1` branch. Its package layout differs from `dev` (v0): here `packages/arkenv` is the **CLI** (published as `arkenv`) and the **core runtime** lives in `packages/core` (published as `@arkenv/core`). There is no `packages/cli` on `v1`. `v1` publishes pre-release versions (`1.0.0-alpha.x`) under the `alpha` npm tag.
 
 ### Services / apps
 
