@@ -16,4 +16,5 @@ export const env = createEnv({
 
 // Was "3000" (string) — now 3000 (number)
 env.NUXT_PUBLIC_PORT;
+env.NUXT_PUBLIC_PORT;
 env.PORT;
