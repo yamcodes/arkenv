@@ -246,12 +246,13 @@ export class CLI {
 	/**
 	 * Returns the parsed input consumed by the add command.
 	 */
-	get addInput(): { provider?: "vercel" | "netlify" } {
+	get addInput(): { provider?: "vercel" | "netlify"; isYes?: boolean } {
 		const provider = this.positionalArgs[1];
+		const isYes = this.isYes;
 		if (provider === "vercel" || provider === "netlify") {
-			return { provider };
+			return { provider, isYes };
 		}
-		return {};
+		return { isYes };
 	}
 
 	/**

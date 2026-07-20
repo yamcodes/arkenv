@@ -14,6 +14,7 @@ import type {
 
 export type AddInput = {
 	provider?: "vercel" | "netlify";
+	isYes?: boolean;
 };
 
 /**
@@ -37,26 +38,30 @@ export class AddUseCase {
 			let provider = input.provider;
 
 			if (!provider) {
-				const selected = await this.prompt.select(
-					"Select a hosting provider preset:",
-					[
-						{
-							value: "vercel",
-							label: "Vercel",
-							hint: "Add VERCEL, VERCEL_ENV, VERCEL_URL, etc.",
-						},
-						{
-							value: "netlify",
-							label: "Netlify",
-							hint: "Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.",
-						},
-					],
-					"vercel",
-				);
-				if (selected === "vercel" || selected === "netlify") {
-					provider = selected;
+				if (input.isYes) {
+					provider = "vercel";
 				} else {
-					return false;
+					const selected = await this.prompt.select(
+						"Select a hosting provider preset:",
+						[
+							{
+								value: "vercel",
+								label: "Vercel",
+								hint: "Add VERCEL, VERCEL_ENV, VERCEL_URL, etc.",
+							},
+							{
+								value: "netlify",
+								label: "Netlify",
+								hint: "Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.",
+							},
+						],
+						"vercel",
+					);
+					if (selected === "vercel" || selected === "netlify") {
+						provider = selected;
+					} else {
+						return false;
+					}
 				}
 			}
 
@@ -65,8 +70,23 @@ export class AddUseCase {
 			const tsConfig = tsConfigResult.parsed || null;
 			const framework = await this.scanner.detectFramework(cwd, tsConfig);
 
-			const envPath = path.resolve(cwd, "env.ts");
-			const envExists = await this.workspace.exists(envPath);
+			const suggestedPath = await this.scanner.suggestDefaultEnvPath(
+				cwd,
+				tsConfig,
+			);
+			const candidatePaths = [
+				path.resolve(cwd, "env.ts"),
+				path.resolve(cwd, "src/env.ts"),
+				path.resolve(cwd, suggestedPath),
+			];
+
+			let envPath: string | null = null;
+			for (const candidate of candidatePaths) {
+				if (await this.workspace.exists(candidate)) {
+					envPath = candidate;
+					break;
+				}
+			}
 
 			const prefix = getFrameworkPrefix(framework);
 			const keys = getPresetKeys(provider, prefix);
@@ -81,7 +101,7 @@ export class AddUseCase {
 					.join("\n");
 			};
 
-			if (!envExists) {
+			if (!envPath) {
 				this.logger.error("Could not locate your env.ts file.");
 				this.logger.log(
 					"\nPlease add the following environment variables to your schema manually:\n",
@@ -91,22 +111,15 @@ export class AddUseCase {
 			}
 
 			const code = await this.workspace.readFile(envPath);
-
-			// Detect validator
-			let validator: "zod" | "valibot" | "arktype" = "arktype";
-			if (code.includes('from "zod"') || code.includes("from 'zod'")) {
-				validator = "zod";
-			} else if (
-				code.includes('from "valibot"') ||
-				code.includes("from 'valibot'")
-			) {
-				validator = "valibot";
-			}
-
+			const validator = detectValidator(code);
 			const result = mutateEnvConfig(code, provider, framework, validator);
 
+			const relativeEnvPath = path.relative(cwd, envPath);
+
 			if (!result.success || !result.code) {
-				this.logger.error(result.error || "Failed to mutate env.ts.");
+				this.logger.error(
+					result.error || `Failed to mutate ${relativeEnvPath}.`,
+				);
 				this.logger.log(
 					"\nPlease add the following environment variables to your schema manually:\n",
 				);
@@ -117,11 +130,11 @@ export class AddUseCase {
 			if (result.updated) {
 				await this.workspace.writeFile(envPath, result.code);
 				this.logger.success(
-					`Added ${provider === "vercel" ? "Vercel" : "Netlify"} environment variables to env.ts`,
+					`Added ${provider === "vercel" ? "Vercel" : "Netlify"} environment variables to ${relativeEnvPath}`,
 				);
 			} else {
 				this.logger.info(
-					`All ${provider === "vercel" ? "Vercel" : "Netlify"} environment variables are already present in env.ts`,
+					`All ${provider === "vercel" ? "Vercel" : "Netlify"} environment variables are already present in ${relativeEnvPath}`,
 				);
 			}
 
@@ -130,4 +143,25 @@ export class AddUseCase {
 			this.logger.interactiveStdout(false);
 		}
 	}
+}
+
+/**
+ * Detects the validator engine (Zod, Valibot, or ArkType) used in an env.ts schema file.
+ * Strips single-line and multi-line comments to avoid misclassifying commented-out code or string literals.
+ *
+ * @param code The source code of env.ts.
+ * @returns The detected validator engine.
+ */
+export function detectValidator(code: string): "zod" | "valibot" | "arktype" {
+	const cleanedCode = code
+		.replace(/\/\/.*/g, "")
+		.replace(/\/\*[\s\S]*?\*\//g, "");
+
+	if (/(?:^|\n)\s*import\s+.*?from\s+['"]zod['"]/.test(cleanedCode)) {
+		return "zod";
+	}
+	if (/(?:^|\n)\s*import\s+.*?from\s+['"]valibot['"]/.test(cleanedCode)) {
+		return "valibot";
+	}
+	return "arktype";
 }

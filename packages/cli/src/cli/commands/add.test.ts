@@ -6,7 +6,7 @@ import type {
 	PromptPort,
 	WorkspacePort,
 } from "@/shared/ports";
-import { AddUseCase } from "./add";
+import { AddUseCase, detectValidator } from "./add";
 
 describe("AddUseCase", () => {
 	let logger: LoggerPort;
@@ -85,6 +85,27 @@ describe("AddUseCase", () => {
 		);
 	});
 
+	it("defaults provider to vercel when isYes is true and provider is omitted", async () => {
+		vi.mocked(workspace.exists).mockResolvedValue(true);
+		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+			import { type } from "arkenv";
+			export const Env = type({
+				DATABASE_URL: "string",
+			});
+		`);
+
+		const result = await useCase.execute({ isYes: true });
+		expect(result).toBe(true);
+		expect(prompt.select).not.toHaveBeenCalled();
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("env.ts"),
+			expect.stringContaining('VERCEL: "string?"'),
+		);
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("Added Vercel"),
+		);
+	});
+
 	it("mutates env.ts with preset keys", async () => {
 		vi.mocked(workspace.exists).mockResolvedValue(true);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
@@ -102,6 +123,28 @@ describe("AddUseCase", () => {
 		);
 		expect(logger.success).toHaveBeenCalledWith(
 			expect.stringContaining("Added Vercel"),
+		);
+	});
+
+	it("locates and mutates src/env.ts in nested layouts", async () => {
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) => {
+			return p.endsWith("src/env.ts");
+		});
+		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+			import { type } from "arkenv";
+			export const Env = type({
+				DATABASE_URL: "string",
+			});
+		`);
+
+		const result = await useCase.execute({ provider: "vercel" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("src/env.ts"),
+			expect.stringContaining('VERCEL: "string?"'),
+		);
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("src/env.ts"),
 		);
 	});
 
@@ -146,5 +189,32 @@ describe("AddUseCase", () => {
 			expect.stringContaining("Could not find arkenv or type schema call"),
 		);
 		expect(logger.log).toHaveBeenCalledWith(expect.stringContaining("VERCEL:"));
+	});
+
+	describe("detectValidator", () => {
+		it("detects zod from import statements", () => {
+			const code = 'import { z } from "zod";\nexport const env = arkenv({});';
+			expect(detectValidator(code)).toBe("zod");
+		});
+
+		it("detects valibot from import statements", () => {
+			const code = 'import * as v from "valibot";\nexport const env = arkenv({});';
+			expect(detectValidator(code)).toBe("valibot");
+		});
+
+		it("defaults to arktype when no zod or valibot import is present", () => {
+			const code = 'import arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
+			expect(detectValidator(code)).toBe("arktype");
+		});
+
+		it("ignores commented-out zod imports", () => {
+			const code = '// import { z } from "zod"\nimport arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
+			expect(detectValidator(code)).toBe("arktype");
+		});
+
+		it("ignores multi-line commented-out valibot imports", () => {
+			const code = '/*\n import * as v from "valibot"\n*/\nimport arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
+			expect(detectValidator(code)).toBe("arktype");
+		});
 	});
 });

@@ -37,45 +37,37 @@ async function main() {
 		process.exit(0);
 	}
 
-	if (cli.command === "add") {
-		try {
-			const success = await addUseCase.execute(cli.addInput);
-			if (!success) {
-				await logger.flush();
-				process.exit(1);
-			}
-		} catch (error) {
-			try {
-				logger.fatal("An unexpected error occurred", error);
-			} catch {
-				// Ignore
-			}
-			await logger.flush();
-			process.exit(1);
-		}
-	} else if (cli.command === "init") {
-		try {
-			const success = await initUseCase.execute(shake(cli.initInput));
-			if (!success) {
-				await logger.flush();
-				process.exit(1);
-			}
-		} catch (error) {
-			try {
-				logger.fatal("An unexpected error occurred", error);
-			} catch {
-				// Ignore throw from fatal as we are already handling the error
-			}
-			await logger.flush();
-			process.exit(1);
-		}
-	} else {
+	const commands = {
+		init: () => initUseCase.execute(shake(cli.initInput)),
+		add: () => addUseCase.execute(cli.addInput),
+	} as const;
+
+	const handler =
+		cli.command ? commands[cli.command as keyof typeof commands] : undefined;
+
+	if (!handler) {
 		if (cli.command) {
 			logger.error(`Unknown command: ${cli.command}`);
 		} else {
 			logger.error("Missing command.");
 		}
 		await helpUseCase.execute();
+		await logger.flush();
+		process.exit(1);
+	}
+
+	try {
+		const success = await handler();
+		if (!success) {
+			await logger.flush();
+			process.exit(1);
+		}
+	} catch (error) {
+		try {
+			logger.fatal("An unexpected error occurred", error);
+		} catch {
+			// Ignore throw from fatal as we are already handling the error
+		}
 		await logger.flush();
 		process.exit(1);
 	}

@@ -5,13 +5,14 @@ import {
 	parseModule,
 } from "magicast";
 import type { BootstrapResult } from "@/shared/ports";
-import type { Framework, Validator } from "../scaffold/plan";
 import {
 	getFieldDefinition,
 	getFrameworkPrefix,
 	getPresetKeys,
+	type Framework,
 	type HostPreset,
-} from "../scaffold/templates/presets";
+	type Validator,
+} from "@/features/scaffold";
 
 /**
  * Input for transforming a configuration file.
@@ -322,7 +323,7 @@ export function transformNuxtConfig(
 }
 
 /**
- * Transforms an env.ts schema file by merging host preset keys.
+ * Transform an env.ts schema file by merging host preset keys.
  *
  * @param code The environment configuration code.
  * @param preset The selected hosting provider preset.

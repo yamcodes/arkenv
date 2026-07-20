@@ -64,7 +64,7 @@ export class ClackPromptAdapter implements PromptPort {
 	}
 
 	/**
-	 * Prompts the user to select one option from a list.
+	 * Prompt the user to select one option from a list.
 	 */
 	async select<T extends string>(
 		message: string,
