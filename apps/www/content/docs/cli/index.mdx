@@ -16,8 +16,6 @@ Set up ArkEnv in a project (or create a new one from an example).
 npx @arkenv/cli@latest init [project-name] [options]
 ```
 
-#### How `init` chooses a workflow
-
 The command adjusts its workflow depending on where it is executed:
 
 - **Existing project**: If a `package.json` exists in the target directory, the CLI configures ArkEnv directly in the project. It scans for any `.env` or `.env.example` files to automatically pre-populate the schema fields, installs the selected validator dependencies, and generates the `env.ts` file.
