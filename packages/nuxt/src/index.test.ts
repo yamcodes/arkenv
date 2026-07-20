@@ -257,7 +257,7 @@ describe("createEnv (Nuxt runtime)", () => {
 		}
 	});
 
-	it("should dynamically resolve client keys from useRuntimeConfig on the client", () => {
+	it("should keep coerced client types when values are sourced from useRuntimeConfig", () => {
 		const originalWindow = globalThis.window;
 		(globalThis as any).window = {};
 
@@ -288,7 +288,7 @@ describe("createEnv (Nuxt runtime)", () => {
 		}
 	});
 
-	it("should dynamically resolve server keys from useRuntimeConfig on the server", () => {
+	it("should keep coerced server types when values are sourced from useRuntimeConfig", () => {
 		(globalThis as any).__mockRuntimeConfig = {
 			DATABASE_URL: "postgres://dynamic-server/db",
 			PORT: "8080",
@@ -309,8 +309,8 @@ describe("createEnv (Nuxt runtime)", () => {
 		}
 	});
 
-	it("should return coerced values from the process.env fallback path on the server", () => {
-		// No runtimeConfig mock — forces the former process.env preference path
+	it("should keep coerced server types when values are sourced from process.env", () => {
+		// No runtimeConfig mock — values come from process.env at create time
 		delete (globalThis as any).__mockRuntimeConfig;
 		process.env.PORT = "9090";
 		process.env.DEBUG = "true";
@@ -331,7 +331,7 @@ describe("createEnv (Nuxt runtime)", () => {
 		}
 	});
 
-	it("should return coerced client values from __NUXT__.config.public without preferring raw strings", () => {
+	it("should keep coerced client types when values are sourced from __NUXT__.config.public", () => {
 		const originalWindow = globalThis.window;
 		(globalThis as any).window = {
 			__NUXT__: {
