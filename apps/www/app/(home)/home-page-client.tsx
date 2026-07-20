@@ -203,7 +203,7 @@ export function HomePageClient() {
 										<span className="text-foreground">./next.config.ts</span>...
 									</p>
 								</div>
-								<div className="flex items-center gap-2 text-green-400 font-semibold pt-2">
+								<div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-semibold pt-2">
 									<span>⛵</span>
 									<span>
 										Successfully bootstrapped typesafe environment variables!
@@ -255,11 +255,11 @@ export const env = createEnv({
 									<p>Starting compilation server...</p>
 								</div>
 								<div className="p-3 border border-red-500/20 bg-red-950/10 rounded-md space-y-2">
-									<div className="flex items-center gap-2 text-red-400 font-semibold">
+									<div className="flex items-center gap-2 text-red-700 dark:text-red-400 font-semibold">
 										<ShieldAlert className="w-4 h-4" />
 										<span>[arkenv] Validation failed:</span>
 									</div>
-									<ul className="list-disc list-inside pl-2 text-red-300 space-y-1">
+									<ul className="list-disc list-inside pl-2 text-red-800 dark:text-red-300 space-y-1">
 										<li>
 											PORT: Must be number.port (received{" "}
 											<span className="underline">"not-a-port"</span>)
@@ -272,7 +272,9 @@ export const env = createEnv({
 								</div>
 								<div className="text-muted-foreground">
 									<p>Please fix validation errors to continue.</p>
-									<p className="text-red-400">Process exited with code 1.</p>
+									<p className="text-red-700 dark:text-red-400">
+										Process exited with code 1.
+									</p>
 								</div>
 							</div>
 						)}

@@ -1,26 +1,28 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Homepage Interactivity", () => {
-	test("should have functional 'Quickstart' button", async ({ page }) => {
+	test("should have functional docs link", async ({ page }) => {
 		await page.goto("/");
-		const sailButton = page.locator("a[href='/docs/arkenv/quickstart']");
-		await expect(sailButton).toBeVisible();
+		const docsLink = page.locator("a[href='/docs/arkenv']").first();
+		await expect(docsLink).toBeVisible();
 
 		await Promise.all([
-			page.waitForURL("**/docs/arkenv/quickstart", { timeout: 30000 }),
-			sailButton.click(),
+			page.waitForURL("**/docs/arkenv", { timeout: 30000 }),
+			docsLink.click(),
 		]);
-		await expect(page).toHaveURL("/docs/arkenv/quickstart");
+		await expect(page).toHaveURL("/docs/arkenv");
 	});
 
-	test("should have GitHub star link with correct security attributes", async ({
+	test("should have GitHub link with correct security attributes", async ({
 		page,
 	}) => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// On desktop, the header GitHub action is visible; mobile CTA is hidden (`sm:hidden`).
-		const githubLink = page.getByRole("link", { name: /^GitHub$/i });
+		// Header has desktop + menu GitHub actions; assert the first visible one.
+		const githubLink = page
+			.getByRole("link", { name: "GitHub", exact: true })
+			.first();
 
 		await expect(githubLink).toBeVisible();
 		await expect(githubLink).toHaveAttribute("target", "_blank");

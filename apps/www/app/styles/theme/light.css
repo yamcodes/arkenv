@@ -5,7 +5,8 @@
 	--card-foreground: oklch(18% 0.012 210);
 	--popover: oklch(91% 0.008 210);
 	--popover-foreground: oklch(18% 0.012 210);
-	--primary: oklch(52% 0.18 210);
+	/* L=42% keeps WCAG AA (≥4.5:1) on background/card and primary/10 tints */
+	--primary: oklch(42% 0.18 210);
 	--primary-foreground: oklch(98% 0.005 210);
 	--fd-primary: var(--primary);
 	--color-fd-primary: var(--primary);
@@ -19,7 +20,7 @@
 	--destructive-foreground: hsl(0 0% 98%);
 	--border: oklch(88% 0.008 210);
 	--input: oklch(88% 0.008 210);
-	--ring: oklch(56% 0.2 210);
+	--ring: oklch(42% 0.2 210);
 	--chart-1: hsl(12 76% 61%);
 	--chart-2: hsl(173 58% 39%);
 	--chart-3: hsl(197 37% 24%);
