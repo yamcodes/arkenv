@@ -263,25 +263,35 @@ export function createEnvInternal(
 		unknown
 	>;
 
-	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client
+	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client.
+	// Always serve the coerced validation target — never re-read raw runtimeConfig / process.env /
+	// __NUXT__ strings, which would silently undo ADR 0002 coercion (see ADR 0015).
 	return createSecurityProxy(
 		mergedValidated,
 		allKeys,
 		serverOnlyKeys,
 		isServer,
-		runtimeEnv,
 	);
 }
 
 /**
- * Wraps the validated environment object in a Proxy to enforce client/server security access rules.
+ * Wrap the validated environment object in a Proxy to enforce client/server security access rules.
+ *
+ * Schema-key reads always return the coerced validation target. Raw `useRuntimeConfig()` /
+ * `process.env` / `__NUXT__.config.public` strings are intentionally not preferred on get —
+ * those sources feed validation at create time, but serving them again would bypass coercion.
+ *
+ * @param target The validated and coerced environment object
+ * @param allKeys The set of all keys defined in the schema (including extended schemas)
+ * @param serverOnlyKeys The set of keys that must not be accessed on the client
+ * @param isServer Whether the proxy is running in a server context
+ * @returns A Proxy that enforces access rules while preserving coerced value types
  */
 function createSecurityProxy(
 	target: Record<string, unknown>,
 	allKeys: Set<string>,
 	serverOnlyKeys: Set<string>,
 	isServer: boolean,
-	runtimeEnv: Record<string, unknown> = {},
 ): unknown {
 	return new Proxy(target, {
 		get(target, prop, receiver) {
@@ -321,54 +331,6 @@ function createSecurityProxy(
 						throw new Error(
 							`Environment variable '${prop}' is not defined in the schema.`,
 						);
-					}
-				}
-
-				if (allKeys.has(prop)) {
-					if (typeof window !== "undefined") {
-						if (runtimeEnv && prop in runtimeEnv) {
-							return Reflect.get(target, prop, receiver);
-						}
-						try {
-							const runtimeConfig = useRuntimeConfig();
-							if (runtimeConfig?.public && prop in runtimeConfig.public) {
-								return runtimeConfig.public[prop];
-							}
-						} catch {
-							// fallback if useRuntimeConfig is not available yet
-						}
-						const globalPublic = (window as any).__NUXT__?.config?.public;
-						if (globalPublic && prop in globalPublic) {
-							return globalPublic[prop];
-						}
-					} else {
-						if (runtimeEnv && prop in runtimeEnv) {
-							return Reflect.get(target, prop, receiver);
-						}
-						try {
-							const runtimeConfig = useRuntimeConfig();
-							if (runtimeConfig) {
-								if (prop in runtimeConfig && runtimeConfig[prop] !== "") {
-									return runtimeConfig[prop];
-								}
-								if (
-									runtimeConfig.public &&
-									prop in runtimeConfig.public &&
-									runtimeConfig.public[prop] !== ""
-								) {
-									return runtimeConfig.public[prop];
-								}
-							}
-						} catch {
-							// fallback
-						}
-						if (
-							typeof process !== "undefined" &&
-							process.env &&
-							prop in process.env
-						) {
-							return process.env[prop];
-						}
 					}
 				}
 			}

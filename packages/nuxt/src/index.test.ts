@@ -1,16 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
-
-vi.mock("#imports", () => {
-	return {
-		useRuntimeConfig: () => {
-			if ((globalThis as any).__mockRuntimeConfig) {
-				return (globalThis as any).__mockRuntimeConfig;
-			}
-			throw new Error("Nuxt instance not found");
-		},
-	};
-});
-
+import { describe, expect, it } from "vitest";
 import { createEnv } from "./index";
 
 describe("createEnv (Nuxt runtime)", () => {
@@ -269,42 +257,105 @@ describe("createEnv (Nuxt runtime)", () => {
 		}
 	});
 
-	it("should dynamically resolve client keys from useRuntimeConfig on the client", () => {
+	it("should keep coerced client types when values are sourced from useRuntimeConfig", () => {
 		const originalWindow = globalThis.window;
 		(globalThis as any).window = {};
 
 		(globalThis as any).__mockRuntimeConfig = {
 			public: {
 				NUXT_PUBLIC_API_URL: "https://dynamic-config.api.com",
+				NUXT_PUBLIC_PORT: "3000",
+				NUXT_PUBLIC_FEATURE_FLAG: "true",
 			},
 		};
 
 		try {
 			const env = createEnv({
 				NUXT_PUBLIC_API_URL: "string",
+				NUXT_PUBLIC_PORT: "number",
+				NUXT_PUBLIC_FEATURE_FLAG: "boolean",
 			});
 
 			expect(env.NUXT_PUBLIC_API_URL).toBe("https://dynamic-config.api.com");
+			// Coercion must survive the security proxy (raw runtimeConfig strings are not preferred)
+			expect(env.NUXT_PUBLIC_PORT).toBe(3000);
+			expect(typeof env.NUXT_PUBLIC_PORT).toBe("number");
+			expect(env.NUXT_PUBLIC_FEATURE_FLAG).toBe(true);
+			expect(typeof env.NUXT_PUBLIC_FEATURE_FLAG).toBe("boolean");
 		} finally {
 			(globalThis as any).window = originalWindow;
 			delete (globalThis as any).__mockRuntimeConfig;
 		}
 	});
 
-	it("should dynamically resolve server keys from useRuntimeConfig on the server", () => {
+	it("should keep coerced server types when values are sourced from useRuntimeConfig", () => {
 		(globalThis as any).__mockRuntimeConfig = {
 			DATABASE_URL: "postgres://dynamic-server/db",
+			PORT: "8080",
 			public: {},
 		};
 
 		try {
 			const env = createEnv({
 				DATABASE_URL: "string",
+				PORT: "number",
 			});
 
 			expect(env.DATABASE_URL).toBe("postgres://dynamic-server/db");
+			expect(env.PORT).toBe(8080);
+			expect(typeof env.PORT).toBe("number");
 		} finally {
 			delete (globalThis as any).__mockRuntimeConfig;
+		}
+	});
+
+	it("should keep coerced server types when values are sourced from process.env", () => {
+		// No runtimeConfig mock — values come from process.env at create time
+		delete (globalThis as any).__mockRuntimeConfig;
+		process.env.PORT = "9090";
+		process.env.DEBUG = "true";
+
+		try {
+			const env = createEnv({
+				PORT: "number",
+				DEBUG: "boolean",
+			});
+
+			expect(env.PORT).toBe(9090);
+			expect(typeof env.PORT).toBe("number");
+			expect(env.DEBUG).toBe(true);
+			expect(typeof env.DEBUG).toBe("boolean");
+		} finally {
+			delete process.env.PORT;
+			delete process.env.DEBUG;
+		}
+	});
+
+	it("should keep coerced client types when values are sourced from __NUXT__.config.public", () => {
+		const originalWindow = globalThis.window;
+		(globalThis as any).window = {
+			__NUXT__: {
+				config: {
+					public: {
+						NUXT_PUBLIC_PORT: "4000",
+						NUXT_PUBLIC_ENABLED: "false",
+					},
+				},
+			},
+		};
+
+		try {
+			const env = createEnv({
+				NUXT_PUBLIC_PORT: "number",
+				NUXT_PUBLIC_ENABLED: "boolean",
+			});
+
+			expect(env.NUXT_PUBLIC_PORT).toBe(4000);
+			expect(typeof env.NUXT_PUBLIC_PORT).toBe("number");
+			expect(env.NUXT_PUBLIC_ENABLED).toBe(false);
+			expect(typeof env.NUXT_PUBLIC_ENABLED).toBe("boolean");
+		} finally {
+			(globalThis as any).window = originalWindow;
 		}
 	});
 });
