@@ -29,6 +29,14 @@ describe("HelpUseCase", () => {
 			"  arkenv init [project-name]    Set up ArkEnv in your project",
 		);
 
+		const addCommandLog = logs.find((l) =>
+			l.includes("arkenv add host [provider]"),
+		);
+		expect(addCommandLog).toBeDefined();
+		expect(addCommandLog).toBe(
+			"  arkenv add host [provider]    Add hosting provider preset (vercel, netlify) to env.ts",
+		);
+
 		// Options should be aligned based on the longest option (--host-preset, -H <preset>) which is 26 chars
 		// leftPad (2) + longest flag (26) + colGap (4) = 32 characters start index for descriptions.
 		const yesOptionLog = logs.find((l) => l.includes("--yes, -y"));
