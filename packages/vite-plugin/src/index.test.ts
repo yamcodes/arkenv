@@ -49,7 +49,7 @@ const createMockContext = () =>
 // Run fixture-based tests for standard fixtures
 // (Specialized fixtures like 'with-env-dir' are handled by dedicated integration tests below)
 for (const name of readdirSync(fixturesDir).filter(
-	(n) => n !== "with-env-dir",
+	(n) => n !== "with-env-dir" && n !== "transform-env",
 )) {
 	const fixtureDir = join(fixturesDir, name);
 

@@ -7,6 +7,6 @@ export default defineConfig({
 	fixedExtension: false,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
-		neverBundle: ["vite"],
+		neverBundle: ["vite", "@arkenv/build", "jiti"],
 	},
 });
