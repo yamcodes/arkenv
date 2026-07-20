@@ -1,5 +1,21 @@
 # @arkenv/cli
 
+## 0.5.1
+
+### Patch Changes
+
+- #### Add `add host` command to CLI for adding hosting presets to existing schemas _[`#1324`](https://github.com/yamcodes/arkenv/pull/1324) [`eed3cce`](https://github.com/yamcodes/arkenv/commit/eed3cce4db2eef336a495a69d6d138163b8a0412) [@abhimanyutiwaribot](https://github.com/abhimanyutiwaribot)_
+
+  Support adding a hosting provider preset (Vercel or Netlify) to an existing `env.ts` configuration file:
+
+  ```bash
+  npx @arkenv/cli@latest add host [provider]
+  ```
+
+  - Prompts interactively to select Vercel or Netlify if the provider is omitted.
+  - Auto-detects the framework (Next.js, Nuxt, Vite, Bun) and the validator engine (Zod, Valibot, or ArkType) to inject the preset fields with the correct syntax.
+  - Fallback to logging the generated variable schemas to stdout with manual configuration instructions if `env.ts` is missing or unparseable.
+
 ## 0.5.0
 
 ### Minor Changes
@@ -248,7 +264,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 

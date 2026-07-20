@@ -1,5 +1,26 @@
 # @arkenv/nuxt
 
+## 0.0.7
+
+### Patch Changes
+
+- #### Fix number and boolean env values returning as strings _[`#1420`](https://github.com/yamcodes/arkenv/pull/1420) [`aecac94`](https://github.com/yamcodes/arkenv/commit/aecac944c66d337b5fd2f61ff18135c66718e85c) [@yamcodes](https://github.com/yamcodes)_
+
+  Keep coerced types when reading from `env`. A key declared as `"number"` or `"boolean"` now returns a number or boolean at runtime, not the raw string from Nuxt runtime config.
+
+  ```ts
+  import { createEnv } from "@arkenv/nuxt";
+
+  export const env = createEnv({
+    NUXT_PUBLIC_PORT: "number",
+    PORT: "number",
+  });
+
+  // Was "3000" (string) — now 3000 (number)
+  env.NUXT_PUBLIC_PORT;
+  env.PORT;
+  ```
+
 ## 0.0.6
 
 ### Patch Changes
