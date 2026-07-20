@@ -38,6 +38,10 @@ export class HelpUseCase {
 				left: "arkenv init [project-name]",
 				right: "Set up ArkEnv in your project",
 			},
+			{
+				left: "arkenv add host [provider]",
+				right: "Add hosting provider preset (vercel, netlify) to env.ts",
+			},
 		];
 
 		const options: HelpItem[] = [

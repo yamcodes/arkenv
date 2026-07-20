@@ -41,4 +41,12 @@ export type PromptPort = {
 		},
 		isYes?: boolean,
 	): Promise<ProjectOptions | null>;
+	/**
+	 * Prompt the user to select one option from a list.
+	 */
+	select<T extends string>(
+		message: string,
+		options: { value: T; label: string; hint?: string }[],
+		initialValue?: T,
+	): Promise<T | null>;
 };

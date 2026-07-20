@@ -292,5 +292,60 @@ describe("CLI parser", () => {
 			const invalid = new CLI(["node", "arkenv", "init", "-H", "vercle"]);
 			expect(invalid.validationError).toBe("Invalid host preset: vercle");
 		});
+
+		describe("add command", () => {
+			it("should parse valid add host vercel command", () => {
+				const cli = new CLI(["node", "arkenv", "add", "host", "vercel"]);
+				expect(cli.command).toBe("add");
+				expect(cli.addInput.provider).toBe("vercel");
+				expect(cli.validationError).toBeUndefined();
+			});
+
+			it("should parse valid add host netlify command", () => {
+				const cli = new CLI(["node", "arkenv", "add", "host", "netlify"]);
+				expect(cli.command).toBe("add");
+				expect(cli.addInput.provider).toBe("netlify");
+				expect(cli.validationError).toBeUndefined();
+			});
+
+			it("should parse valid add host command with omitted provider", () => {
+				const cli = new CLI(["node", "arkenv", "add", "host"]);
+				expect(cli.command).toBe("add");
+				expect(cli.addInput.provider).toBeUndefined();
+				expect(cli.validationError).toBeUndefined();
+			});
+
+			it("should parse isYes in addInput when --yes or --agent flag is passed", () => {
+				const cli1 = new CLI(["node", "arkenv", "add", "host", "--yes"]);
+				expect(cli1.command).toBe("add");
+				expect(cli1.addInput.isYes).toBe(true);
+
+				const cli2 = new CLI(["node", "arkenv", "add", "host", "--agent"]);
+				expect(cli2.command).toBe("add");
+				expect(cli2.addInput.isYes).toBe(true);
+			});
+
+			it("should reject invalid provider", () => {
+				const cli = new CLI(["node", "arkenv", "add", "host", "vercle"]);
+				expect(cli.validationError).toBe("Invalid host preset: vercle");
+			});
+
+			it("should reject non-host subcommand", () => {
+				const cli = new CLI(["node", "arkenv", "add", "client"]);
+				expect(cli.validationError).toBe("Unknown argument: client");
+			});
+
+			it("should reject extra positional arguments", () => {
+				const cli = new CLI([
+					"node",
+					"arkenv",
+					"add",
+					"host",
+					"vercel",
+					"extra",
+				]);
+				expect(cli.validationError).toBe("Unknown argument: extra");
+			});
+		});
 	});
 });

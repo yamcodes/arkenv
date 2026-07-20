@@ -39,6 +39,7 @@ export class CLI {
 	public name: string | undefined;
 	public validationError: string | undefined;
 	public logger: Logger;
+	public positionalArgs: string[];
 
 	/**
 	 * Creates a CLI context from process arguments and optional adapters.
@@ -112,11 +113,30 @@ export class CLI {
 			}
 		}
 
+		this.positionalArgs = positionalArgs;
+
 		if (!this.validationError) {
-			if (positionalArgs.length > 1) {
-				this.validationError = `Unknown argument: ${positionalArgs[1]}`;
+			if (this.command === "add") {
+				if (positionalArgs[0] !== "host") {
+					this.validationError = `Unknown argument: ${positionalArgs[0] || ""}`;
+				} else if (positionalArgs.length > 2) {
+					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
+				} else {
+					const provider = positionalArgs[1];
+					if (
+						provider !== undefined &&
+						provider !== "vercel" &&
+						provider !== "netlify"
+					) {
+						this.validationError = `Invalid host preset: ${provider}`;
+					}
+				}
 			} else {
-				this.name = positionalArgs[0];
+				if (positionalArgs.length > 1) {
+					this.validationError = `Unknown argument: ${positionalArgs[1]}`;
+				} else {
+					this.name = positionalArgs[0];
+				}
 			}
 		}
 
@@ -217,6 +237,18 @@ export class CLI {
 			input.hostPreset = this.hostPreset;
 		}
 		return input;
+	}
+
+	/**
+	 * Returns the parsed input consumed by the add command.
+	 */
+	get addInput(): { provider?: "vercel" | "netlify"; isYes?: boolean } {
+		const provider = this.positionalArgs[1];
+		const isYes = this.isYes;
+		if (provider === "vercel" || provider === "netlify") {
+			return { provider, isYes };
+		}
+		return { isYes };
 	}
 
 	/**
