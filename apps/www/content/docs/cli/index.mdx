@@ -1,48 +1,55 @@
 ---
 title: Introduction
 icon: Album
-description: Quickly scaffold ArkEnv projects with an interactive CLI.
+description: Commands for scaffolding and mutating ArkEnv setup with an interactive CLI.
 ---
 
-The ArkEnv CLI is the command-line interface used to initialize and configure ArkEnv in your project.
+The ArkEnv CLI provides commands to scaffold a new ArkEnv setup and to mutate an existing one (for example, adding a hosting preset to `env.ts`).
 
-## Usage
+## Commands
 
-Run the CLI using your package manager of choice. The CLI will guide you through the setup process interactively.
+### `init`
+
+Set up ArkEnv in a project (or create a new one from an example).
 
 ```npm
 npx arkenv@latest init [project-name] [options]
 ```
 
-To add a hosting preset to an existing flat `env.ts` later:
+The command adjusts its workflow depending on where it is executed:
+
+- **Existing project**: If a `package.json` exists in the target directory, the CLI configures ArkEnv directly in the project. It scans for any `.env` or `.env.example` files to automatically pre-populate the schema fields, installs the selected validator dependencies, and generates the `env.ts` file.
+- **New project**: If the target directory does not contain a `package.json` and is empty, the CLI guides you through creating a new project from an ArkEnv starter template. See our [official examples](/docs/arkenv/examples#examples) for a list of available templates.
+
+#### Options [!toc]
+
+| Flag            | Alias | Description                                                                                                                                        |
+| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--example`     |       | Specify an example name when creating a new project.                                                                                               |
+| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
+| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
+| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
+
+### `add host`
+
+Add a hosting provider preset (Vercel or Netlify) to an existing flat `env.ts`.
 
 ```npm
 npx arkenv@latest add host [provider]
 ```
 
-See [Hosting presets](/docs/cli/hosting-presets#add-host-to-an-existing-schema) for details.
+See [Hosting presets](/docs/cli/hosting-presets#add-host-to-an-existing-schema) for behavior, interactive selection, and fallbacks when `env.ts` is missing or unparseable.
 
-## Behavior
+## Global options
 
-The CLI automatically adjusts its workflow depending on where it is executed:
+These flags apply across commands:
 
-- **Existing project**: If a `package.json` exists in the target directory, the CLI configures ArkEnv directly in the project. It scans for any `.env` or `.env.example` files to automatically pre-populate the schema fields, installs the selected validator dependencies, and generates the `env.ts` file.
-- **New project**: If the target directory does not contain a `package.json` and is empty, the CLI guides you through creating a new project from an ArkEnv starter template. See our [official examples](/docs/arkenv/examples#examples) for a list of available templates.
-
-## Options
-
-Configure the CLI behavior using the following command-line flags:
-
-| Flag            | Alias | Description                                                                                                                                        |
-| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--yes`         | `-y`  | Skip all prompts and use the default configuration.                                                                                                |
-| `--quiet`       | `-q`  | Suppress all output logs unless an error occurs.                                                                                                   |
-| `--json`        | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                       |
-| `--agent`       |       | Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for `--yes --quiet --json`.   |
-| `--example`     |       | Specify an example name when creating a new project.                                                                                               |
-| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
-| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
-| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
-| `--help`        | `-h`  | Display the CLI help information.                                                                                                                  |
+| Flag      | Alias | Description                                                                                                                                  |
+| --------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`   | `-y`  | Skip prompts and use defaults (also passed to subprocesses). For `add host`, an omitted provider defaults to `vercel`.                       |
+| `--quiet` | `-q`  | Suppress output logs unless an error occurs.                                                                                                 |
+| `--json`  | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                 |
+| `--agent` |       | Enable non-interactive, machine-readable mode for AI agents. Bypasses prompts and outputs structured JSON. Macro for `--yes --quiet --json`. |
+| `--help`  | `-h`  | Display the CLI help information.                                                                                                            |
 
 When running with `--json` or `--agent`, the CLI emits a structured JSON summary you can parse programmatically. See [Machine-readable output](/docs/cli/machine-readable-output) for the full schema and error codes.
