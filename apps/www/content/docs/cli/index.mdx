@@ -37,13 +37,13 @@ See [Hosting presets](/docs/cli/hosting-presets#add-host-to-an-existing-schema) 
 
 These flags apply across commands:
 
-| Flag      | Alias | Description                                                                                                                                      |
-| --------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--yes`   | `-y`  | Skip prompts and use defaults (also passed to subprocesses). For `add host`, an omitted provider defaults to `vercel`.                            |
-| `--quiet` | `-q`  | Suppress output logs unless an error occurs.                                                                                                      |
-| `--json`  | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                     |
-| `--agent` |       | Enable non-interactive, machine-readable mode for AI agents. Bypasses prompts and outputs structured JSON. Macro for `--yes --quiet --json`.     |
-| `--help`  | `-h`  | Display the CLI help information.                                                                                                                |
+| Flag      | Alias | Description                                                                                                                                  |
+| --------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`   | `-y`  | Skip prompts and use defaults (also passed to subprocesses). For `add host`, an omitted provider defaults to `vercel`.                       |
+| `--quiet` | `-q`  | Suppress output logs unless an error occurs.                                                                                                 |
+| `--json`  | `-j`  | Print a structured JSON summary to `stdout` upon completion.                                                                                 |
+| `--agent` |       | Enable non-interactive, machine-readable mode for AI agents. Bypasses prompts and outputs structured JSON. Macro for `--yes --quiet --json`. |
+| `--help`  | `-h`  | Display the CLI help information.                                                                                                            |
 
 When running with `--json` or `--agent`, the CLI emits a structured JSON summary you can parse programmatically. See [Machine-readable output](/docs/cli/machine-readable-output) for the full schema and error codes.
 
