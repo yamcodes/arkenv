@@ -263,7 +263,7 @@ export function arkenvInternal(
 
 	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client.
 	// Always serve the coerced validation target — never re-read raw runtimeConfig / process.env /
-	// __NUXT__ strings, which would silently undo ADR 0002 coercion (see ADR 0015).
+	// __NUXT__ strings, which would silently undo ADR 0002 coercion.
 	return createSecurityProxy(
 		mergedValidated,
 		allKeys,
