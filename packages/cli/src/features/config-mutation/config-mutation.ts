@@ -4,6 +4,14 @@ import {
 	generateCode,
 	parseModule,
 } from "magicast";
+import {
+	type Framework,
+	getFieldDefinition,
+	getFrameworkPrefix,
+	getPresetKeys,
+	type HostPreset,
+	type Validator,
+} from "@/features/scaffold";
 import type { BootstrapResult } from "@/shared/ports";
 
 /**
@@ -310,6 +318,110 @@ export function transformNuxtConfig(
 			success: false,
 			updated: false,
 			error: `Failed to parse Nuxt config: ${error}`,
+		};
+	}
+}
+
+/**
+ * Transform an env.ts schema file by merging host preset keys.
+ *
+ * @param code The environment configuration code.
+ * @param preset The selected hosting provider preset.
+ * @param framework The active framework.
+ * @param validator The active validator.
+ * @returns The result of the mutation operation.
+ */
+export function mutateEnvConfig(
+	code: string,
+	preset: HostPreset,
+	framework: Framework,
+	validator: Validator,
+): {
+	success: boolean;
+	updated: boolean;
+	code?: string;
+	error?: string;
+	proposedFields: Record<string, string>;
+} {
+	const prefix = getFrameworkPrefix(framework);
+	const presetKeys = getPresetKeys(preset, prefix);
+	const proposedFields: Record<string, string> = {};
+
+	for (const key of presetKeys) {
+		proposedFields[key] = getFieldDefinition(key, validator, prefix);
+	}
+
+	try {
+		const mod = parseModule(code);
+		const envExport = mod.exports.env || mod.exports.Env;
+		if (
+			!envExport ||
+			envExport.$type !== "function-call" ||
+			(envExport.$callee !== "arkenv" && envExport.$callee !== "type")
+		) {
+			return {
+				success: false,
+				updated: false,
+				error: "Could not find arkenv or type schema call in env.ts",
+				proposedFields,
+			};
+		}
+
+		const obj = envExport.$args[0];
+		if (!obj || typeof obj !== "object" || "$type" in obj) {
+			return {
+				success: false,
+				updated: false,
+				error: "Could not find schema object literal inside arkenv/type call",
+				proposedFields,
+			};
+		}
+
+		let updated = false;
+		const replacements: Record<string, string> = {};
+
+		for (const key of presetKeys) {
+			// Only add if the key doesn't already exist in the schema
+			if (!(key in obj)) {
+				const placeholder = `__ARK_PRESET_PLACEHOLDER_${key}__`;
+				obj[key] = placeholder;
+				replacements[placeholder] = proposedFields[key];
+				updated = true;
+			}
+		}
+
+		if (!updated) {
+			return { success: true, updated: false, code, proposedFields };
+		}
+
+		let generatedCode = generateCode(mod, {
+			format: detectCodeFormat(code),
+		}).code;
+
+		// Replace placeholders
+		for (const [placeholder, rawVal] of Object.entries(replacements)) {
+			generatedCode = generatedCode.replace(
+				new RegExp(`['"]${placeholder}['"]`, "g"),
+				rawVal,
+			);
+		}
+
+		generatedCode = normalizeImportSpacing(generatedCode);
+		generatedCode = preserveTrailingNewline(generatedCode, code);
+
+		return {
+			success: true,
+			updated: true,
+			code: generatedCode,
+			proposedFields,
+		};
+	} catch (e: unknown) {
+		const error = e instanceof Error ? e.message : String(e);
+		return {
+			success: false,
+			updated: false,
+			error: `Failed to parse env.ts: ${error}`,
+			proposedFields,
 		};
 	}
 }

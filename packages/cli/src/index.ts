@@ -17,7 +17,9 @@ async function main() {
 		}
 	}
 
-	const { cli, logger, initUseCase, helpUseCase } = compose(process.argv);
+	const { cli, logger, initUseCase, addUseCase, helpUseCase } = compose(
+		process.argv,
+	);
 	globalLogger = logger;
 
 	setupGracefulShutdown(logger);
@@ -35,7 +37,16 @@ async function main() {
 		process.exit(0);
 	}
 
-	if (cli.command !== "init") {
+	const commands = {
+		init: () => initUseCase.execute(shake(cli.initInput)),
+		add: () => addUseCase.execute(cli.addInput),
+	} as const;
+
+	const handler = cli.command
+		? commands[cli.command as keyof typeof commands]
+		: undefined;
+
+	if (!handler) {
 		if (cli.command) {
 			logger.error(`Unknown command: ${cli.command}`);
 		} else {
@@ -45,8 +56,9 @@ async function main() {
 		await logger.flush();
 		process.exit(1);
 	}
+
 	try {
-		const success = await initUseCase.execute(shake(cli.initInput));
+		const success = await handler();
 		if (!success) {
 			await logger.flush();
 			process.exit(1);
