@@ -198,22 +198,26 @@ describe("AddUseCase", () => {
 		});
 
 		it("detects valibot from import statements", () => {
-			const code = 'import * as v from "valibot";\nexport const env = arkenv({});';
+			const code =
+				'import * as v from "valibot";\nexport const env = arkenv({});';
 			expect(detectValidator(code)).toBe("valibot");
 		});
 
 		it("defaults to arktype when no zod or valibot import is present", () => {
-			const code = 'import arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
+			const code =
+				'import arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
 			expect(detectValidator(code)).toBe("arktype");
 		});
 
 		it("ignores commented-out zod imports", () => {
-			const code = '// import { z } from "zod"\nimport arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
+			const code =
+				'// import { z } from "zod"\nimport arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
 			expect(detectValidator(code)).toBe("arktype");
 		});
 
 		it("ignores multi-line commented-out valibot imports", () => {
-			const code = '/*\n import * as v from "valibot"\n*/\nimport arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
+			const code =
+				'/*\n import * as v from "valibot"\n*/\nimport arkenv from "./generated/env.gen";\nexport const env = arkenv({});';
 			expect(detectValidator(code)).toBe("arktype");
 		});
 	});

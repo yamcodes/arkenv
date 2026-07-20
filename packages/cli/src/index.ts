@@ -42,8 +42,9 @@ async function main() {
 		add: () => addUseCase.execute(cli.addInput),
 	} as const;
 
-	const handler =
-		cli.command ? commands[cli.command as keyof typeof commands] : undefined;
+	const handler = cli.command
+		? commands[cli.command as keyof typeof commands]
+		: undefined;
 
 	if (!handler) {
 		if (cli.command) {

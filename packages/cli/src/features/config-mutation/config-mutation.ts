@@ -4,15 +4,15 @@ import {
 	generateCode,
 	parseModule,
 } from "magicast";
-import type { BootstrapResult } from "@/shared/ports";
 import {
+	type Framework,
 	getFieldDefinition,
 	getFrameworkPrefix,
 	getPresetKeys,
-	type Framework,
 	type HostPreset,
 	type Validator,
 } from "@/features/scaffold";
+import type { BootstrapResult } from "@/shared/ports";
 
 /**
  * Input for transforming a configuration file.
