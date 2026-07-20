@@ -7,7 +7,7 @@
 Support adding a hosting provider preset (Vercel or Netlify) to an existing `env.ts` configuration file:
 
 ```bash
-npx arkenv@next add host [provider]
+npx arkenv@alpha add host [provider]
 ```
 
 - Prompts interactively to select Vercel or Netlify if the provider is omitted.
