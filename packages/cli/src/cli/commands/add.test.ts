@@ -215,6 +215,16 @@ describe("AddUseCase", () => {
 			expect(detectValidator(code)).toBe("arktype");
 		});
 
+		it("detects zod from multi-line import statements", () => {
+			const code = 'import {\n  z,\n} from "zod";\nexport const env = arkenv({});';
+			expect(detectValidator(code)).toBe("zod");
+		});
+
+		it("detects valibot from multi-line import statements", () => {
+			const code = 'import {\n  string,\n  optional,\n} from "valibot";\nexport const env = arkenv({});';
+			expect(detectValidator(code)).toBe("valibot");
+		});
+
 		it("ignores multi-line commented-out valibot imports", () => {
 			const code =
 				'/*\n import * as v from "valibot"\n*/\nimport arkenv from "./generated/env.gen";\nexport const env = arkenv({});';

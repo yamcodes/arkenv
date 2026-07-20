@@ -157,10 +157,10 @@ export function detectValidator(code: string): "zod" | "valibot" | "arktype" {
 		.replace(/\/\/.*/g, "")
 		.replace(/\/\*[\s\S]*?\*\//g, "");
 
-	if (/(?:^|\n)\s*import\s+.*?from\s+['"]zod['"]/.test(cleanedCode)) {
+	if (/(?:^|\n)\s*import\s+[\s\S]*?from\s+['"]zod['"]/.test(cleanedCode)) {
 		return "zod";
 	}
-	if (/(?:^|\n)\s*import\s+.*?from\s+['"]valibot['"]/.test(cleanedCode)) {
+	if (/(?:^|\n)\s*import\s+[\s\S]*?from\s+['"]valibot['"]/.test(cleanedCode)) {
 		return "valibot";
 	}
 	return "arktype";
