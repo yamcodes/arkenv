@@ -1,6 +1,6 @@
-# Nuxt strict layout example
+# Nuxt strict layout playground
 
-Example for Nuxt strict layout with client and server auto-extend.
+Fixture for Nuxt strict layout with client and server auto-extend.
 
 `env/client.ts` intentionally omits `extends: [SharedSchema]`, and `env/server.ts`
 omits `extends: [clientEnv]` - the module wires both merges.
