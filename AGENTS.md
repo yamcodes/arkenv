@@ -6,7 +6,7 @@ ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation librar
 
 ### Services / apps
 
-- `packages/*` — the publishable library packages (`arkenv`, `@arkenv/cli`, `nextjs`, `nuxt`, `vite-plugin`, `bun-plugin`, `build`, `fumadocs-ui`) plus internal helpers under `packages/internal/*`. These are the core product.
+- `packages/*` — the publishable library packages (`arkenv`, plus `@arkenv/cli`, `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`, `@arkenv/build`, and `@arkenv/fumadocs-ui`, which live in the `cli/`, `nextjs/`, `nuxt/`, `vite-plugin/`, `bun-plugin/`, `build/`, and `fumadocs-ui/` directories) plus internal helpers under `packages/internal/*`. These are the core product.
 - `apps/www` — the documentation website (Next.js 16 + Fumadocs). This is the only runnable app.
 - `apps/playwright-www` — Playwright e2e suite targeting `www`.
 - `apps/playgrounds/*` and `examples/*` — framework sandboxes / fixtures (optional).
