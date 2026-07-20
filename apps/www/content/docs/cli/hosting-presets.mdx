@@ -1,16 +1,16 @@
 ---
 title: Hosting presets
 icon: Cloud
-description: Pre-populate your schema with Vercel or Netlify system environment variables during arkenv init.
+description: Pre-populate your schema with Vercel or Netlify system environment variables during arkenv init, or add them later with arkenv add host.
 ---
 
-Most hosting providers inject their own **system environment variables** at build and runtime (for example, Vercel sets `VERCEL_ENV` and `VERCEL_URL`, Netlify sets `CONTEXT` and `URL`). Hosting presets let `arkenv init` pre-populate your generated schema with the correct variables for your provider, already typed and marked optional, so you don't have to look them up by hand.
+Most hosting providers inject their own **system environment variables** at build and runtime (for example, Vercel sets `VERCEL_ENV` and `VERCEL_URL`, Netlify sets `CONTEXT` and `URL`). Hosting presets let `arkenv init` pre-populate your generated schema with the correct variables for your provider, already typed and marked optional, so you don't have to look them up by hand. If you already have an `env.ts`, use [`arkenv add host`](#add-host-to-an-existing-schema) to inject the same fields later.
 
 Presets work with every validator (ArkType, Zod, Valibot) and both the [flat](#layouts) and [strict](#layouts) layouts.
 
-## Selecting a preset
+## Selecting a preset during init
 
-There are two ways to pick a preset.
+There are two ways to pick a preset when scaffolding a new project.
 
 ### Interactive prompt
 
@@ -38,6 +38,24 @@ The flag accepts `none`, `vercel`, or `netlify`. The following is equivalent:
 ```npm
 npx @arkenv/cli@latest init -H vercel
 ```
+
+## Add host to an existing schema
+
+If you already ran `init` (or hand-wrote an `env.ts`) and want to add a hosting preset later, use `add host`:
+
+```npm
+npx @arkenv/cli@latest add host vercel
+```
+
+Omit the provider to pick interactively:
+
+```npm
+npx @arkenv/cli@latest add host
+```
+
+The command auto-detects your framework prefix and validator (ArkType, Zod, or Valibot), then merges the preset fields into a flat `env.ts` (or `src/env.ts`). If the file is missing or unparseable, it prints the proposed fields so you can paste them in manually. Keys that are already present are left unchanged.
+
+With `--yes` or `--agent`, an omitted provider defaults to `vercel`.
 
 ## What each preset adds
 
@@ -215,7 +233,7 @@ Presets only add variables; they never remove or overwrite variables scanned fro
 ## Next steps
 
 <Cards>
-  <Card title="CLI Introduction" href="/docs/cli" description="See every init flag, including --host-preset." />
+  <Card title="CLI Introduction" href="/docs/cli" description="See every command and flag, including init --host-preset and add host." />
 
   <Card title="Zod, Valibot, and other validators" href="/docs/nextjs/using-other-validators" description="Mix and match Standard Schema validators with ArkEnv." />
 </Cards>
