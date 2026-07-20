@@ -216,12 +216,14 @@ describe("AddUseCase", () => {
 		});
 
 		it("detects zod from multi-line import statements", () => {
-			const code = 'import {\n  z,\n} from "zod";\nexport const env = arkenv({});';
+			const code =
+				'import {\n  z,\n} from "zod";\nexport const env = arkenv({});';
 			expect(detectValidator(code)).toBe("zod");
 		});
 
 		it("detects valibot from multi-line import statements", () => {
-			const code = 'import {\n  string,\n  optional,\n} from "valibot";\nexport const env = arkenv({});';
+			const code =
+				'import {\n  string,\n  optional,\n} from "valibot";\nexport const env = arkenv({});';
 			expect(detectValidator(code)).toBe("valibot");
 		});
 
