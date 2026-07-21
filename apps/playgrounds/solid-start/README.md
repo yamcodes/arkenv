@@ -1,13 +1,11 @@
 # ArkEnv + SolidStart Example
 
-This example demonstrates `@arkenv/vite-plugin` **transform mode** with [SolidStart](https://start.solidjs.com):
+This example demonstrates `@arkenv/vite-plugin` with [SolidStart](https://start.solidjs.com):
 
 - A single `src/env.ts` is the typed source of truth (`import { env } from "./env"`)
 - **Client graph**: plugin inlines coerced `VITE_*` literals and guards server-only keys
 - **SSR graph**: `env.ts` runs as-is → boot-time validation against the real environment
-- Reading `env.DATABASE_URL` in the browser throws (trust-the-proxy)
-
-SPA mode (`arkenv(schema)` + `ImportMetaEnvAugmented` for `import.meta.env`) remains supported for client-only apps — see the [Vite plugin docs](https://arkenv.js.org/docs/vite-plugin).
+- Reading `env.DATABASE_URL` in the browser throws
 
 ## Setup
 
@@ -61,6 +59,6 @@ pnpm start
 ## Documentation
 
 - [Vite plugin docs](https://arkenv.js.org/docs/vite-plugin)
-- [Typing import.meta.env (SPA mode)](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
+- [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
 
 ## this project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)

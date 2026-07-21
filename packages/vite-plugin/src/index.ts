@@ -17,7 +17,7 @@ type VitePluginConfig = Omit<ArkEnvConfig, "safe"> & ArkEnvLogOptions;
 const arkenvCreator = createVitePlugin(coreArkenv, "@arkenv/vite-plugin");
 
 /**
- * Vite plugin — **transform mode**: rewrite `env.ts` in the client graph.
+ * Vite plugin — transform path: rewrite `env.ts` in the client graph.
  *
  * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
  * @returns The Vite plugin instance
@@ -28,7 +28,7 @@ const arkenvCreator = createVitePlugin(coreArkenv, "@arkenv/vite-plugin");
  */
 export default function arkenv(options?: VitePluginFactoryConfig): Plugin;
 /**
- * Vite plugin — **SPA mode**: validate and inline `import.meta.env` via `define`.
+ * Vite plugin — schema/`define` path: validate and inline `import.meta.env`.
  *
  * @param options The environment variable schema definition
  * @param config Optional ArkEnv configuration and build-time logging options
@@ -39,7 +39,7 @@ export default function arkenv(
 	config?: VitePluginConfig,
 ): Plugin;
 /**
- * Vite plugin — **SPA mode**: validate and inline `import.meta.env` via `define`.
+ * Vite plugin — schema/`define` path: validate and inline `import.meta.env`.
  *
  * @param options The environment variable schema definition
  * @param config Optional ArkEnv configuration and build-time logging options

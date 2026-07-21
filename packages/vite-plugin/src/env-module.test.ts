@@ -191,7 +191,7 @@ describe("transform mode plugin", () => {
 		expect(result).toBeNull();
 	});
 
-	it("keeps SPA define mode working alongside transform helpers", async () => {
+	it("keeps schema/define path working alongside transform helpers", async () => {
 		const plugin = arkenvPlugin({ VITE_TEST: "string" });
 		expect(plugin).toHaveProperty("config");
 		expect(plugin).not.toHaveProperty("transform");

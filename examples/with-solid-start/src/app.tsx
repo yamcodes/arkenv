@@ -1,9 +1,9 @@
 import { createSignal } from "solid-js";
+import { isServer } from "solid-js/web";
 import { env } from "./env";
 import "./app.css";
 
-const serverDatabaseUrl =
-	typeof window === "undefined" ? env.DATABASE_URL : null;
+const serverDatabaseUrl = isServer ? env.DATABASE_URL : null;
 
 export default function App() {
 	const [count, setCount] = createSignal(0);

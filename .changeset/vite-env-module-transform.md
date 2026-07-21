@@ -4,15 +4,23 @@
 
 #### Add env-module transform for fullstack Vite apps
 
-Enable `import { env } from "./env"` as the canonical surface: the plugin rewrites `env.ts` in the client graph (inlined coerced literals + server-key guards) and leaves it untouched in the SSR graph for boot-time validation.
+Make `import { env } from "./env"` the recommended surface for Vite apps that have both client and server code.
+
+With no schema argument, the plugin finds `src/env.ts` / `env.ts` (or `schemaPath`) and:
+
+- **Browser build**: replaces that module with an object of build-validated, coerced literals for client-prefixed keys, plus getters that throw for server-only keys — no `@arkenv/core` / validator code in the client bundle
+- **SSR / server build**: leaves the module alone so `createEnv`/`arkenv` still validates against the real deployment environment at boot
+
+Works for both `@arkenv/vite-plugin` (ArkType / `@arkenv/core`) and `@arkenv/vite-plugin/standard`.
 
 ```ts
-// vite.config.ts / app.config.ts
+// vite.config.ts / app.config.ts — no schema argument
 import arkenv from "@arkenv/vite-plugin";
 
 export default {
   plugins: [
-    arkenv(), // or arkenv({ schemaPath: "src/env.ts", clientPrefix: "VITE_" })
+    arkenv(), // auto-discovers src/env.ts or env.ts
+    // or: arkenv({ schemaPath: "src/env.ts", clientPrefix: "VITE_" })
   ],
 };
 ```
@@ -27,4 +35,4 @@ export const env = arkenv({
 });
 ```
 
-SPA mode (`arkenv(schema)` + `ImportMetaEnvAugmented` for `import.meta.env`) remains supported.
+The existing `arkenv(schema)` call (validate + Vite `define` for `import.meta.env`) is unchanged and remains available for apps that already use that API.
