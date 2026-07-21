@@ -1,125 +1,72 @@
 ---
 title: Zod, Valibot, and other Standard Schema validators
 icon: Blocks
-description: Mix and match ArkType with Zod, Valibot, or other Standard Schema compatible libraries.
+description: Use Zod, Valibot, or any Standard Schema validator — with or without ArkType.
 ---
 
-ArkEnv for Nuxt supports any Standard Schema validator. That includes Zod, Valibot, Typia, and any validator listed here:
+ArkEnv for Nuxt supports any validator that implements the [Standard Schema](https://standardschema.dev/) specification — including Zod, Valibot, Typia, and others listed here:
 
 <Cards>
   <Card title="Which schema libraries implement the spec?" href="https://standardschema.dev/schema#what-schema-libraries-implement-the-spec" description="Standard Schema" />
 </Cards>
 
-## Simple layout
+## Standard Mode (no ArkType)
 
-Here is an example using Zod or Valibot with the simple layout:
+Use `@arkenv/standard` and the `@arkenv/nuxt/standard` subpaths when you want Zod, Valibot, or another Standard Schema validator **without** installing `arktype`.
 
-<Tabs items={['Zod', 'Valibot']}>
-  <Tab value="Zod">
-    ```ts twoslash title="env.ts"
-    import arkenv from '@arkenv/nuxt';
-    import { z } from 'zod';
-    // ---cut---
-    export const env = arkenv({
-    	server: {
-    		DATABASE_URL: z.string().url(),
-    	},
-    	client: {
-    		NUXT_PUBLIC_API_URL: z.string().url(),
-    	},
-    	shared: {
-    		NODE_ENV: z.enum(["development", "production", "test"]),
-    	},
-    });
-    ```
-  </Tab>
-
-  <Tab value="Valibot">
-    ```ts twoslash title="env.ts"
-    import arkenv from '@arkenv/nuxt';
-    import * as v from 'valibot';
-    // ---cut---
-    export const env = arkenv({
-    	server: {
-    		DATABASE_URL: v.pipe(v.string(), v.url()),
-    	},
-    	client: {
-    		NUXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
-    	},
-    	shared: {
-    		NODE_ENV: v.picklist(["development", "production", "test"]),
-    	},
-    });
-    ```
-  </Tab>
-</Tabs>
-
-## Strict layout
-
-You can freely mix Zod or Valibot schemas with the strict layout:
-
-<Tabs items={['Zod', 'Valibot']}>
-  <Tab value="Zod">
-    ```ts twoslash title="env/internal/shared.ts"
-    import { z } from "zod";
-
-    /**
-     * @internal 🛑 INTERNAL SCHEMA ONLY.
-     * Do not import this directly. Import `env` from `./client` or `./server` instead.
-     */
-    export const SharedSchema = z.object({
-    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-    });
-    ```
-  </Tab>
-
-  <Tab value="Valibot">
-    ```ts twoslash title="env/internal/shared.ts"
-    import * as v from "valibot";
-
-    /**
-     * @internal 🛑 INTERNAL SCHEMA ONLY.
-     * Do not import this directly. Import `env` from `./client` or `./server` instead.
-     */
-    export const SharedSchema = v.object({
-    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
-    });
-    ```
-  </Tab>
-</Tabs>
-
-## ArkType-free mode (Standard Mode)
-
-If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` as a dependency in your Nuxt project:
-
-1. Install `@arkenv/standard` and `@arkenv/nuxt` (along with your validator):
+### Install
 
 ```package-install
 @arkenv/standard @arkenv/nuxt zod
 ```
 
-2. Register the module in your Nuxt configuration using `@arkenv/nuxt/standard/module` (instead of `@arkenv/nuxt/module`):
+### Register the Standard Mode module
+
+Use `@arkenv/nuxt/standard/module` instead of `@arkenv/nuxt/module`:
 
 ```ts title="nuxt.config.ts"
 export default defineNuxtConfig({
-  modules: [
-    '@arkenv/nuxt/standard/module'
-  ]
-})
-```
-
-3. Import from `@arkenv/nuxt/standard` in your environment schema file:
-
-```ts title="env.ts" twoslash
-import arkenv from '@arkenv/nuxt/standard';
-import { z } from 'zod';
-
-export const env = arkenv({
-  DATABASE_URL: z.string().url(),
-  NUXT_PUBLIC_API_URL: z.string().url(),
+	modules: ["@arkenv/nuxt/standard/module"],
 });
 ```
 
-:::note
-Legacy nested layout `arkenv({ server, client, shared })` is still supported but deprecated.
+### Define a flat schema
+
+Import from `@arkenv/nuxt/standard` and use a flat object (same shape as the [flat layout](/docs/nuxt/layouts/flat)):
+
+```ts title="env.ts" twoslash
+import arkenv from "@arkenv/nuxt/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+	DATABASE_URL: z.string().url(),
+	NUXT_PUBLIC_API_URL: z.string().url(),
+	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+});
+```
+
+:::tip
+Prefer the [ArkEnv CLI](/docs/cli) (`npx arkenv@latest init`) and pick Zod or Valibot — it scaffolds Standard Mode for you.
 :::
+
+:::note
+Legacy nested layout `arkenv({ server, client, shared })` is still supported but deprecated. Prefer the [flat layout](/docs/nuxt/layouts/flat).
+:::
+
+## Mixing with ArkType
+
+Already on `@arkenv/core`? You can mix ArkType DSL strings with Zod (or any Standard Schema validator) in the same schema — ArkType is still required as a peer dependency:
+
+```ts title="env.ts" twoslash
+import arkenv from "@arkenv/nuxt";
+import { z } from "zod";
+
+export const env = arkenv({
+	HOST: "string.host",
+	PORT: "number.port",
+	DATABASE_URL: z.string().url(),
+	NUXT_PUBLIC_API_URL: z.string().url(),
+});
+```
+
+For the ArkType-free path, stay on [Standard Mode](#standard-mode-no-arktype) above. For core (non-Nuxt) mixing examples, see [Standard Schema validators](/docs/arkenv/integrations/standard-schema).

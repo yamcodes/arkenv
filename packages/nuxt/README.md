@@ -5,8 +5,10 @@ ArkEnv integration for Nuxt. Provides a typesafe, minimal-dependency environment
 ## Installation
 
 ```bash
-npm install @arkenv/nuxt arktype
+npm install @arkenv/nuxt @arkenv/core arktype
 ```
+
+For Zod, Valibot, or other Standard Schema validators **without** ArkType, install `@arkenv/standard` instead of `@arkenv/core`/`arktype`, register `@arkenv/nuxt/standard/module`, and import from `@arkenv/nuxt/standard`. See the [Standard Schema docs](https://arkenv.dev/docs/nuxt/using-other-validators).
 
 ## Setup
 

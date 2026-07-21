@@ -207,6 +207,20 @@ pnpm run test:e2e                     # E2E tests
 - Unifying them would force bundlers to trace static imports and drag ArkType into the dependency tree of Standard Schema users, violating the zero-dependency goal.
 - We prioritize optimal tree-shaking, bundle size isolation, and decoupling over dogmatic DRYness.
 
+**Docs framing for Standard Mode:**
+
+- Framework intros must not say the integration "requires ArkType". Users install either `@arkenv/core` (+ `arktype`) or `@arkenv/standard` (+ their validator).
+- "Zod, Valibot, and other Standard Schema validators" pages lead with Standard Mode (`@arkenv/*/standard`); mixing validators into the ArkType path is secondary.
+- FAQ coverage: sharpen the core FAQ (“Do I have to use ArkType?”) and add matching Next/Nuxt FAQ entries that point at `/standard` install + the validators pages.
+- Nuxt docs treat **flat layout** as the canonical DX layout (not “simple”). Validators examples and the Nuxt intro card should point at flat. The leftover `layouts/simple.mdx` page was removed; `/docs/nuxt/layouts/simple` redirects to flat.
+- Next.js Standard Mode docs lead with the **codegen** happy path (`import arkenv from "./generated/env.gen"`); direct `@arkenv/nextjs/standard` + manual `runtimeEnv` is documented as the no-codegen alternative.
+- Same “does not require ArkType” framing applies lightly to Vite and Bun intros (remove the requires-ArkType callout; keep Standard install path). Fumadocs titled callouts use `:::important[Title]` / `:::tip[Title]`, not a bare `:::important` with the title as body text.
+- Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
+- On validators pages, the secondary “Mixing with ArkType” section is short: one flat-layout mixed schema example; no full Zod/Valibot × flat/strict tab matrix.
+- Core FAQ: keep “Do I have to use ArkType?” for validator choice; add a dedicated “Do I need to install `arktype`?” for the `@arkenv/standard` / `/standard` packaging story.
+- Validators page descriptions (and intro cards): “Use Zod, Valibot, or any Standard Schema validator — with or without ArkType.” Title stays “Zod, Valibot, and other Standard Schema validators.” Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
+- Nuxt FAQ gets peer-engine parity with Next (“Why install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nuxt`?”) plus the dedicated arktype-install FAQ on both framework FAQs.
+
 ## Domain context
 
 ### Language (env surfaces & Nuxt transport)
@@ -304,12 +318,14 @@ Module setup / `nuxt build` may still run core validation against the build envi
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
 - **Next.js**: Integrated via `@arkenv/nextjs`. Provides two layout patterns:
   - **Strict layout**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
-  - **Simple layout**: Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
+  - **Flat layout** (also called simple layout in older docs): Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
+  - **Standard Mode**: Import from `@arkenv/nextjs/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat and strict layouts are both supported.
 - **Nuxt**: Integrated via `@arkenv/nuxt`. Exposes a Nuxt module (`@arkenv/nuxt/module`) that:
-  - Automates environment variable validation and codegen (for both simple and strict layouts) during development (with file watching) and build.
+  - Automates environment variable validation and codegen (for both simple/flat and strict layouts) during development (with file watching) and build.
   - Dynamically populates Nuxt's `runtimeConfig` with environment variable keys defined in the schema.
   - Registers a Vite plugin during client bundling to prevent client-side code from importing `@arkenv/nuxt/server` (compile-time security).
   - Enforces client-side environment variable prefixing (`NUXT_PUBLIC_`).
+  - **Standard Mode**: Register `@arkenv/nuxt/standard/module` and import from `@arkenv/nuxt/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat and strict layouts are both supported.
 - **Bun fullstack dev server**:
   - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.
   - **Bun.build**: Bun's programmatic bundling API. Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.
@@ -377,7 +393,8 @@ Module setup / `nuxt build` may still run core validation against the build envi
 
 **Peer Dependencies:**
 
-- **arktype** (^2.1.22) - Required by both `arkenv` and `@arkenv/vite-plugin`
+- **arktype** (^2.1.22) - Required peer of `@arkenv/core` (ArkType engine). Not required when using `@arkenv/standard`.
+- **@arkenv/core** or **@arkenv/standard** - Optional peers of framework plugins (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`); install exactly one engine.
 - **vite** (^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0) - Required by `@arkenv/vite-plugin`
 
 **External Services (www app only):**
