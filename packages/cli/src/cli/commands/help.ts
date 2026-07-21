@@ -40,7 +40,7 @@ export class HelpUseCase {
 			},
 			{
 				left: "arkenv add host [provider]",
-				right: "Add hosting provider preset (vercel, netlify) to env.ts",
+				right: "Add hosting provider preset (vercel, netlify) to schema",
 			},
 		];
 

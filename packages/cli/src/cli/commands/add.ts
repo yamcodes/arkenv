@@ -19,7 +19,7 @@ export type AddInput = {
 };
 
 /**
- * Use case for adding a hosting preset (Vercel/Netlify) to an existing env.ts schema.
+ * Use case for adding a hosting preset (Vercel/Netlify) to an existing schema.
  */
 export class AddUseCase {
 	constructor(
