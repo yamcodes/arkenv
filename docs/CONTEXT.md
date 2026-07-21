@@ -25,7 +25,7 @@ The Vite plugin call shape `arkenv(schema)` that validates at build time and inl
 
 ## Flagged ambiguities
 
-- **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (On `dev` that ADR is `0015-env-object-canonical-surface`; on `v1` ADR **0015** is a different document — Next.js conditional exports.)
+- **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (Ported to `v1` as **ADR 0021** / `0021-env-object-canonical-surface`; on `dev` it remains `0015-env-object-canonical-surface`. On `v1`, ADR **0015** is still Next.js conditional exports.)
 
 ## Tech stack
 
@@ -209,7 +209,80 @@ pnpm run test:e2e                     # E2E tests
 
 ## Domain context
 
-**Environment Variable Validation:**
+### Language (env surfaces & Nuxt transport)
+
+**Canonical env object**:
+The imported `env` object (`import { env } from "./env"`) is the one supported way to read validated env across Next, Nuxt, Vite, and Bun.
+*Avoid*: treating `import.meta.env` / ambient `.d.ts` as a second canonical surface (that is **SPA mode** only)
+
+**SPA mode**:
+Vite/Bun-only path that keeps plugin + native accessors + `.d.ts`; honest for static access, not the default fullstack surface.
+*Avoid*: “plugin-env as equal peer to the object surface”
+
+**Vite transform mode**:
+Client-graph rewrite of `env.ts` that inlines build-validated coerced literals and strips the validator (Solid Start / `#1328` shape). Values are fixed at **build time**.
+*Avoid*: calling this “boot-time validation”
+
+**Nitro boot override**:
+A `NUXT_PUBLIC_*` / `NUXT_*` value applied by Nitro as a string when the server starts, after the Vite build, which can differ from build-time env.
+*Avoid*: “runtimeConfig default”, “build-time public env” (those are earlier stages)
+
+**Deploy-time override honesty** (resolved):
+For `@arkenv/nuxt`, coerced values after **Nitro boot overrides** are the source of truth on both server and client. A pure **Vite transform mode** cannot be Nuxt’s sole public-value transport, because it would freeze build-time literals and lie when overrides differ.
+
+**Nuxt honesty transport** (resolved — direction A):
+Nitro boot-time coercion writes coerced schema values into `runtimeConfig` (including `public`) after **Nitro boot overrides**; the client **Canonical env object** is a thin reader of that payload with no validator. No Solid-Start-style client-graph literal inlining for Nuxt.
+*Avoid*: hybrid Vite-literal + Nitro dual sources of truth; “make Nuxt like #1328”
+
+**Thin client path** (resolved):
+Same userland import (`./env` / `@arkenv/nuxt` client entries). On the client, `arkenv` does not run `createEnv` / ship the validator; it reads the already-coerced public payload and keeps server-key guards. No separate virtual client module for users to import.
+*Avoid*: “client imports `arkenv/gen/...`”; second client specifier as the default DX
+
+**Nuxt boot gate** (resolved):
+A Nitro plugin registered by `@arkenv/nuxt/module` is the single validation/coercion gate after **Nitro boot overrides**. It writes coerced values into `runtimeConfig` (including `public`). Server and client **Canonical env object** accessors then read that coerced config; they must not re-validate from raw `process.env` / string overrides in a way that can disagree with the gate.
+*Avoid*: dual `createEnv` (import-time + Nitro); “validate in `env.ts` then hope it runs after overrides”
+
+**Symmetric thin accessors** (resolved):
+On Nuxt, both server and client `arkenv()` paths are thin readers of the coerced `runtimeConfig` / payload after the **Nuxt boot gate**. `createEnv` runs in the gate, not in userland `env` imports on either side.
+*Avoid*: “server still validates on import, client is thin”; asymmetric honesty
+
+**Boot gate schema load** (resolved):
+The module loads the configured `schemaPath` / strict layout files and the **Nuxt boot gate** (and build-time validate) call **core** validation against that schema. Public thin `arkenv()` is never used as the validator entry.
+*Avoid*: requiring a user-exported `schema`; validating by side-effect of executing fat `arkenv()` in `env.ts`
+
+**Boot gate scheduling** (resolved):
+Eager Nitro plugin at server startup for fail-fast, plus idempotent `ensureBootGate()` that thin *server* `arkenv()` may call if it runs first. Single `createEnv` (once). Client never runs the gate — it only reads the post-gate payload.
+*Avoid*: lazy-only gate; dual independent `createEnv` calls
+
+**Client validator isolation** (resolved):
+`@arkenv/nuxt` client entries must not import `@arkenv/core` / `arktype`. Default ArkType string schemas are plain data. No Vite transform for stripping or inlining. Userland imports of `type` / Zod / other validators into a client-imported env module are the user’s bundle cost.
+*Avoid*: “rewrite env.ts to guarantee a validator-free graph”; blaming the integration for user-imported validators
+
+**Build-time schema check** (resolved):
+Module setup / `nuxt build` may still run core validation against the build environment when `validate: true` (opt out with `validate: false`). This is an early CI/dev check only. Deploy-time honesty — including **Nitro boot overrides** — remains the **Nuxt boot gate**. Implementation must call core directly, not thin `arkenv()` side effects.
+*Avoid*: treating build-time validate as proof of production env; removing the check because the boot gate exists
+
+**Flagged ambiguities**
+
+- “Completely Vite-plugin-based like Solid Start” for Nuxt — **resolved: no** as the sole public-value transport. Nuxt keeps a Nuxt module + **Nuxt boot gate** + **symmetric thin accessors**; Vite is only for the compile-time import boundary (ADR 0016), not Solid-Start-style value inlining. See [#1424 design call](https://github.com/yamcodes/arkenv/issues/1424#issuecomment-5038256349).
+
+**Relationships**:
+
+- A **Nitro boot override** happens after Vite build and before the `__NUXT__` / `runtimeConfig` payload is served to the client
+- **Vite transform mode** is appropriate for hosts whose public env is build-time (e.g. Solid Start); it is not sufficient alone for Nuxt
+- **Canonical env object** is shared; the *transport* that materializes client values is host-specific
+- On Nuxt, the **Nuxt honesty transport** owns public client values; the existing Vite plugin remains for the compile-time import boundary only (not value transport)
+- The **Nuxt boot gate** runs after **Nitro boot overrides** and before honest **Canonical env object** reads on either side
+- **Boot gate scheduling** ensures the gate precedes thin server reads; the serialized public payload then precedes thin client reads
+- **Client validator isolation** is a package-entry concern, not a transform-mode concern, on Nuxt
+- The **Build-time schema check** is optional early feedback; it does not replace the **Nuxt boot gate**
+
+**Example dialogue**:
+
+> **Dev:** “Can we make Nuxt completely Vite-plugin-based like Solid Start?”
+> **Domain expert:** “Not as the only transport. Solid Start’s public keys are build-time; Nuxt’s can change via a **Nitro boot override**. Honesty requires the **Nuxt honesty transport** — the **Nuxt boot gate** (module-loaded schema, **boot gate scheduling**) coerces into `runtimeConfig` after that override, then **symmetric thin accessors**. The Vite plugin stays for import blocking; **client validator isolation** is a thin package entry, not a #1328-style rewrite. Keep the **Build-time schema check** for CI, but don’t confuse it with deploy honesty.”
+
+### Environment Variable Validation
 
 - ArkEnv uses ArkType's type system to validate environment variables
 - Schema is defined using TypeScript-like syntax (e.g., `"string.host"`, `"number.port"`)
