@@ -43,9 +43,7 @@ An empty value (e.g., `PORT=` in a `.env` file) is passed to ArkEnv as an empty 
 
 If you want empty values to be treated as missing (so defaults apply), enable the `emptyAsUndefined` option:
 
-```ts twoslash
-import arkenv from "arkenv";
-// ---cut---
+```ts
 const env = arkenv(
   { PORT: "number = 3000" },
   { emptyAsUndefined: true }
@@ -92,7 +90,7 @@ That's a great question! We're big ArkType nerds because it's a revolutionary va
 Look at how concise an ArkEnv schema can be:
 
 ```typescript title="env.ts" twoslash
-import arkenv from "arkenv";
+import arkenv from "@arkenv/core";
 
 export const env = arkenv({
   PORT: "0 <= number <= 65535",
