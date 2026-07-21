@@ -34,13 +34,13 @@ export default defineNuxtConfig({
 
 ## Configuration options
 
-| Option       | Type                 | Default                          | Description                                                                                          |
-| :----------- | :------------------- | :------------------------------- | :--------------------------------------------------------------------------------------------------- |
-| `schemaPath` | `string`             | `env.ts` / `env/` (auto-detect)  | Path to your schema file (flat) or schema directory (strict).                                        |
-| `layout`     | `'flat' \| 'strict'` | auto-detected                    | Force a layout. Prefer omitting this and letting ArkEnv detect from the schema structure.            |
-| `validate`   | `boolean`            | `true`                           | Enable or disable build-time and dev-startup environment variable validation.                        |
-| `logger`     | `Logger`             | console (level-aware)            | Custom logger for build-time warnings and errors.                                                    |
-| `logLevel`   | `LogLevel`           | `info` (or `ARKENV_LOG_LEVEL`)   | Minimum log level when no custom `logger` is provided. Use `silent` to suppress.                     |
+| Option       | Type                 | Default                         | Description                                                                               |
+| :----------- | :------------------- | :------------------------------ | :---------------------------------------------------------------------------------------- |
+| `schemaPath` | `string`             | `env.ts` / `env/` (auto-detect) | Path to your schema file (flat) or schema directory (strict).                             |
+| `layout`     | `'flat' \| 'strict'` | auto-detected                   | Force a layout. Prefer omitting this and letting ArkEnv detect from the schema structure. |
+| `validate`   | `boolean`            | `true`                          | Enable or disable build-time and dev-startup environment variable validation.             |
+| `logger`     | `Logger`             | console (level-aware)           | Custom logger for build-time warnings and errors.                                         |
+| `logLevel`   | `LogLevel`           | `info` (or `ARKENV_LOG_LEVEL`)  | Minimum log level when no custom `logger` is provided. Use `silent` to suppress.          |
 
 ### Logging
 
