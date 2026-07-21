@@ -86,6 +86,8 @@ With `@arkenv/nuxt/module` registered:
 - The **client** entry includes `SharedSchema` from `env/internal/shared.ts`
 - The **server** entry includes the composed client env (and therefore shared variables)
 
+`env/internal/shared.ts` is always part of the strict layout, even when you only define client and server variables. If nothing is shared, export an empty schema (`type({})`) — do not omit the file or the `SharedSchema` export.
+
 The shared schema path is fixed relative to your schema directory: `internal/shared.ts`. There is no module option to relocate it (for example to `env/hidden/shared.ts`). To compose different schemas — or to opt out of the default merge — pass an explicit `extends` list:
 
 ```ts twoslash title="env/client.ts"

@@ -19,4 +19,4 @@ export const env = arkenv({
 });
 ```
 
-Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a custom list - is used as-is and opts out of auto-merge. Missing `env/internal/shared.ts` or a missing usable `SharedSchema` export fails with a clear strict-layout diagnostic.
+Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a custom list - is used as-is and opts out of auto-merge. Strict layout still requires `env/internal/shared.ts` with a `SharedSchema` export — that schema may be empty (`type({})`) when you have no shared variables. A missing file or unusable export fails with a clear diagnostic (rather than silently treating shared as empty).
