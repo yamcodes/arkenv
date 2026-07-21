@@ -18,12 +18,12 @@ By importing `env` from `~/env/client` in client-side code and `~/env/server` in
 
 ## Import mental model
 
-- **Flat layout:** import from `@arkenv/nuxt` - one entry point, bundler picks the build.
-- **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`.
-- **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
-- **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+Choose a layout, then import from the matching entry points:
 
-:::note Migration
+- **Flat layout:** import from `@arkenv/nuxt`.
+- **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. For the internal shared schema (`env/internal/shared.ts`), import `{ type }` from `@arkenv/core`. Outside the env module graph (standalone scripts), import `{ arkenv }` from `@arkenv/core`.
+
+:::note[Migration]
 If you previously used `@arkenv/nuxt/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
 :::
 
@@ -79,14 +79,65 @@ export const env = arkenv({
 });
 ```
 
-When `@arkenv/nuxt/module` runs in strict layout, omitting `extends` auto-merges:
+### Extending your schema
 
-- **Client entry** includes `SharedSchema` from `env/internal/shared.ts`
-- **Server entry** includes the composed client env (and therefore shared variables)
+With `@arkenv/nuxt/module` registered:
 
-You do not need to import `SharedSchema` or `./client`, or pass `extends`, unless you want an explicit override.
+- The **client** entry includes `SharedSchema` from `env/internal/shared.ts`
+- The **server** entry includes the composed client env (and therefore shared variables)
 
-Auto-merge only applies when the `extends` key is **omitted**. Passing `extends` at all - including `extends: []` or a custom list - opts out and uses your list as-is. Explicit lists are not silently augmented with `SharedSchema` or `clientEnv`.
+The shared schema path is fixed relative to your schema directory: `internal/shared.ts`. There is no module option to relocate it (for example to `env/hidden/shared.ts`). To compose different schemas — or to opt out of the default merge — pass an explicit `extends` list:
+
+```ts twoslash title="env/client.ts"
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/core";
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+// @filename: env/client.ts
+// ---cut---
+import arkenv from "@arkenv/nuxt/client";
+import { SharedSchema } from "./internal/shared";
+
+export const env = arkenv(
+	{
+		NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	},
+	{
+		extends: [SharedSchema],
+	},
+);
+```
+
+```ts twoslash title="env/server.ts"
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/core";
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+// @filename: env/client.ts
+import arkenv from "@arkenv/nuxt/client";
+export const env = arkenv({
+	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+});
+// @filename: env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nuxt/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+	{
+		DATABASE_URL: "string",
+	},
+	{
+		extends: [clientEnv],
+	},
+);
+```
+
+Passing `extends` at all — including `extends: []` — opts out of the default merge and uses your list as-is. Explicit lists are not silently augmented with `SharedSchema` or `clientEnv`.
+
+See [Configuration & API](/docs/nuxt/configuration) for module options such as `schemaPath` and `layout`.
 
 <Accordions>
   <Accordion title="Manual setup">
@@ -120,7 +171,7 @@ Auto-merge only applies when the `extends` key is **omitted**. Passing `extends`
 
     ### Define client variables [step] [!toc]
 
-    Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_`. With the module registered, omitting `extends` auto-merges `SharedSchema`:
+    Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_`:
 
     ```ts twoslash title="env/client.ts"
     import arkenv from "@arkenv/nuxt/client";
@@ -132,7 +183,7 @@ Auto-merge only applies when the `extends` key is **omitted**. Passing `extends`
 
     ### Define server variables [step] [!toc]
 
-    Create `env/server.ts` using `@arkenv/nuxt/server`. With the module registered, omitting `extends` auto-merges the client env (including shared keys):
+    Create `env/server.ts` using `@arkenv/nuxt/server`:
 
     ```ts twoslash title="env/server.ts"
     // @filename: env/internal/shared.ts
@@ -154,37 +205,9 @@ Auto-merge only applies when the `extends` key is **omitted**. Passing `extends`
     });
     ```
 
-    Any explicit `extends` is an escape hatch that disables auto-merge. Use it to pass a custom list (for example `extends: [clientEnv]`), or `extends: []` if you intentionally want no client merge:
-
-    ```ts twoslash title="env/server.ts"
-    // @filename: env/internal/shared.ts
-    import { type } from "@arkenv/core";
-    export const SharedSchema = type({
-    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-    });
-    // @filename: env/client.ts
-    import arkenv from "@arkenv/nuxt/client";
-    export const env = arkenv({
-    	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-    });
-    // @filename: env/server.ts
-    // ---cut---
-    import arkenv from "@arkenv/nuxt/server";
-    import { env as clientEnv } from "./client";
-
-    export const env = arkenv(
-    	{
-    		DATABASE_URL: "string",
-    	},
-    	{
-    		extends: [clientEnv],
-    	},
-    );
-    ```
-
     ### Register module in Nuxt config [step] [!toc]
 
-    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory, registers environment variables to Nuxt's `runtimeConfig`, and enables client/server auto-extend. No generated files are written to disk:
+    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory, registers environment variables to Nuxt's `runtimeConfig`, and wires strict-layout composition. No generated files are written to disk:
 
     ```ts title="nuxt.config.ts"
     export default defineNuxtConfig({
@@ -192,17 +215,7 @@ Auto-merge only applies when the `extends` key is **omitted**. Passing `extends`
     });
     ```
 
-    You can customize the schema path using optional parameters:
-
-    ```ts title="nuxt.config.ts"
-    export default defineNuxtConfig({
-    	modules: ["@arkenv/nuxt/module"],
-    	arkenv: {
-    		schemaPath: "env",     // Path to your schema directory (default: env or src/env)
-    		layout: "strict"       // Explicitly specify layout
-    	}
-    });
-    ```
+    You can customize the schema path and other options under the `arkenv` key — see [Configuration & API](/docs/nuxt/configuration).
   </Accordion>
 </Accordions>
 

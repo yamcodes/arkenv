@@ -1,0 +1,103 @@
+---
+title: Configuration & API
+icon: Wrench
+description: API reference and configuration options for @arkenv/nuxt.
+---
+
+## Register the ArkEnv module
+
+Add `@arkenv/nuxt/module` to your Nuxt modules. The module scans your schema at build time, validates environment variables, registers keys on Nuxt's `runtimeConfig`, and (in strict layout) wires client/server schema composition.
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+	modules: ["@arkenv/nuxt/module"],
+});
+```
+
+By default, ArkEnv looks for a flat schema in `env.ts` or `src/env.ts`, or a strict-layout directory in `env/` or `src/env/`.
+
+### Custom paths
+
+Pass options under the `arkenv` key:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+	modules: ["@arkenv/nuxt/module"],
+	arkenv: {
+		schemaPath: "src/env",
+		layout: "strict",
+	},
+});
+```
+
+---
+
+## Configuration options
+
+| Option       | Type                 | Default                          | Description                                                                                          |
+| :----------- | :------------------- | :------------------------------- | :--------------------------------------------------------------------------------------------------- |
+| `schemaPath` | `string`             | `env.ts` / `env/` (auto-detect)  | Path to your schema file (flat) or schema directory (strict).                                        |
+| `layout`     | `'flat' \| 'strict'` | auto-detected                    | Force a layout. Prefer omitting this and letting ArkEnv detect from the schema structure.            |
+| `validate`   | `boolean`            | `true`                           | Enable or disable build-time and dev-startup environment variable validation.                        |
+| `logger`     | `Logger`             | console (level-aware)            | Custom logger for build-time warnings and errors.                                                    |
+| `logLevel`   | `LogLevel`           | `info` (or `ARKENV_LOG_LEVEL`)   | Minimum log level when no custom `logger` is provided. Use `silent` to suppress.                     |
+
+### Logging
+
+ArkEnv build integrations accept an optional logger and log level. By default, messages use the `[ArkEnv]` prefix.
+
+If you don't pass `logLevel`, ArkEnv uses `ARKENV_LOG_LEVEL` as a global default (`debug`, `info`, `warn`, `error`, or `silent`). This is useful for CI and shared environments where you want to change verbosity without editing code.
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+	modules: ["@arkenv/nuxt/module"],
+	arkenv: {
+		logLevel: "warn", // hide info/debug build messages
+	},
+});
+```
+
+Provide a custom logger to redirect output (for example, to your CI reporter):
+
+```ts title="nuxt.config.ts"
+const logger = {
+	debug: () => {},
+	info: () => {},
+	warn: (message: string) => myReporter.warn(message),
+	error: (message: string) => myReporter.error(message),
+};
+
+export default defineNuxtConfig({
+	modules: ["@arkenv/nuxt/module"],
+	arkenv: { logger },
+});
+```
+
+Thrown validation errors are separate from logged diagnostics — the logger only controls warnings and build-time error output.
+
+---
+
+## Strict layout composition
+
+In strict layout, the module automatically composes:
+
+1. `env/internal/shared.ts` → client entry (as `SharedSchema`)
+2. Client env → server entry
+
+The shared file must live at `internal/shared.ts` under your schema directory and export `SharedSchema`. That relative path is not configurable. To change composition — for example to extend additional schemas, or to skip the default merge — pass an explicit `extends` option in your client or server entry. See [Extending your schema](/docs/nuxt/layouts/strict#extending-your-schema).
+
+`schemaPath` only relocates the schema directory as a whole (for example `src/env` instead of `env`). It does not rename `internal/shared.ts` inside that directory.
+
+---
+
+## Standard Schema mode
+
+If you use Zod, Valibot, or another Standard Schema validator without ArkType, register `@arkenv/nuxt/standard/module` instead of `@arkenv/nuxt/module`, and import from `@arkenv/nuxt/standard` (or `/standard/client` and `/standard/server` in strict layout). Configuration options under `arkenv` are the same.
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+	modules: ["@arkenv/nuxt/standard/module"],
+});
+```
+
+See [Using other validators](/docs/nuxt/using-other-validators) for examples.
