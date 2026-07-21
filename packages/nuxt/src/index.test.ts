@@ -145,4 +145,52 @@ describe("arkenv (Nuxt runtime)", () => {
 			(globalThis as any).window = originalWindow;
 		}
 	});
+
+	it("should keep coerced server types when values are sourced from process.env", () => {
+		process.env.PORT = "9090";
+		process.env.DEBUG = "true";
+
+		try {
+			const env = arkenv({
+				PORT: "number",
+				DEBUG: "boolean",
+			});
+
+			expect(env.PORT).toBe(9090);
+			expect(typeof env.PORT).toBe("number");
+			expect(env.DEBUG).toBe(true);
+			expect(typeof env.DEBUG).toBe("boolean");
+		} finally {
+			delete process.env.PORT;
+			delete process.env.DEBUG;
+		}
+	});
+
+	it("should keep coerced client types when values are sourced from __NUXT__.config.public", () => {
+		const originalWindow = globalThis.window;
+		(globalThis as any).window = {
+			__NUXT__: {
+				config: {
+					public: {
+						NUXT_PUBLIC_PORT: "4000",
+						NUXT_PUBLIC_ENABLED: "false",
+					},
+				},
+			},
+		};
+
+		try {
+			const env = arkenv({
+				NUXT_PUBLIC_PORT: "number",
+				NUXT_PUBLIC_ENABLED: "boolean",
+			});
+
+			expect(env.NUXT_PUBLIC_PORT).toBe(4000);
+			expect(typeof env.NUXT_PUBLIC_PORT).toBe("number");
+			expect(env.NUXT_PUBLIC_ENABLED).toBe(false);
+			expect(typeof env.NUXT_PUBLIC_ENABLED).toBe("boolean");
+		} finally {
+			(globalThis as any).window = originalWindow;
+		}
+	});
 });

@@ -5,7 +5,10 @@ import {
 } from "@/features/config-mutation";
 import { FRAMEWORK_CLIENT_PREFIXES } from "@/features/scaffold/frameworks";
 import type { Validator } from "@/features/scaffold/plan";
-import { getPresetKeys } from "@/features/scaffold/presets";
+import {
+	getPresetKeys,
+	partitionPresetKeys,
+} from "@/features/scaffold/presets";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
@@ -19,7 +22,7 @@ export type AddInput = {
 };
 
 /**
- * Use case for adding a hosting preset (Vercel/Netlify) to an existing env.ts schema.
+ * Use case for adding a hosting preset (Vercel/Netlify) to an existing schema.
  */
 export class AddUseCase {
 	constructor(
@@ -30,7 +33,7 @@ export class AddUseCase {
 	) {}
 
 	/**
-	 * Executes the add command by finding/mutating env.ts.
+	 * Executes the add command by finding/mutating the env schema.
 	 */
 	async execute(input: AddInput): Promise<boolean> {
 		this.logger.interactiveStdout(true);
@@ -70,11 +73,124 @@ export class AddUseCase {
 			const tsConfigResult = await this.scanner.checkTsConfig(cwd);
 			const tsConfig = tsConfigResult.parsed || null;
 			const framework = await this.scanner.detectFramework(cwd, tsConfig);
-
 			const suggestedPath = await this.scanner.suggestDefaultEnvPath(
 				cwd,
 				tsConfig,
 			);
+			const prefix = FRAMEWORK_CLIENT_PREFIXES[framework];
+
+			const suggestedStrictDir = path.resolve(
+				cwd,
+				path.dirname(suggestedPath),
+				"env",
+			);
+			const strictDirCandidates = [
+				...new Set([
+					suggestedStrictDir,
+					path.resolve(cwd, "env"),
+					path.resolve(cwd, "src/env"),
+				]),
+			];
+
+			let strictDir: string | null = null;
+			for (const dir of strictDirCandidates) {
+				const clientFile = path.join(dir, "client.ts");
+				const serverFile = path.join(dir, "server.ts");
+				if (
+					(await this.workspace.exists(clientFile)) &&
+					(await this.workspace.exists(serverFile))
+				) {
+					strictDir = dir;
+					break;
+				}
+			}
+
+			if (strictDir) {
+				const clientPath = path.join(strictDir, "client.ts");
+				const serverPath = path.join(strictDir, "server.ts");
+				const relClientPath = path.relative(cwd, clientPath);
+				const relServerPath = path.relative(cwd, serverPath);
+
+				const { clientKeys, serverKeys } = partitionPresetKeys(
+					provider,
+					prefix,
+				);
+
+				const clientCode = await this.workspace.readFile(clientPath);
+				const serverCode = await this.workspace.readFile(serverPath);
+
+				const clientValidator = detectValidator(clientCode);
+				const serverValidator = detectValidator(serverCode);
+
+				const clientResult = mutateEnvConfig(
+					clientCode,
+					provider,
+					framework,
+					clientValidator,
+					clientKeys,
+				);
+				const serverResult = mutateEnvConfig(
+					serverCode,
+					provider,
+					framework,
+					serverValidator,
+					serverKeys,
+				);
+
+				const getStrictManualText = (): string => {
+					const clientText = clientKeys
+						.map(
+							(key) =>
+								`\t${key}: ${getFieldDefinition(key, clientValidator, prefix, provider)},`,
+						)
+						.join("\n");
+					const serverText = serverKeys
+						.map(
+							(key) =>
+								`\t${key}: ${getFieldDefinition(key, serverValidator, prefix, provider)},`,
+						)
+						.join("\n");
+					return `// ${relClientPath}\n{\n${clientText}\n}\n\n// ${relServerPath}\n{\n${serverText}\n}`;
+				};
+
+				if (
+					!clientResult.success ||
+					!clientResult.code ||
+					!serverResult.success ||
+					!serverResult.code
+				) {
+					this.logger.error("Failed to mutate strict layout schema files.");
+					this.logger.log(
+						"\nPlease add the following environment variables to your schemas manually:\n",
+					);
+					this.logger.log(getStrictManualText());
+					return true;
+				}
+
+				let anyUpdated = false;
+				if (clientResult.updated) {
+					await this.workspace.writeFile(clientPath, clientResult.code);
+					anyUpdated = true;
+				}
+				if (serverResult.updated) {
+					await this.workspace.writeFile(serverPath, serverResult.code);
+					anyUpdated = true;
+				}
+
+				const providerName = provider === "vercel" ? "Vercel" : "Netlify";
+				if (anyUpdated) {
+					this.logger.success(
+						`Added ${providerName} environment variables to ${relClientPath} and ${relServerPath}`,
+					);
+				} else {
+					this.logger.info(
+						`All ${providerName} environment variables are already present in ${relClientPath} and ${relServerPath}`,
+					);
+				}
+
+				return true;
+			}
+
 			const candidatePaths = [
 				path.resolve(cwd, "env.ts"),
 				path.resolve(cwd, "src/env.ts"),
@@ -89,7 +205,6 @@ export class AddUseCase {
 				}
 			}
 
-			const prefix = FRAMEWORK_CLIENT_PREFIXES[framework];
 			const keys = getPresetKeys(provider, prefix);
 
 			const getManualFieldsText = (validator: Validator): string => {

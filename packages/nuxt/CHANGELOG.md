@@ -1,5 +1,26 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.9
+
+### Patch Changes
+
+- #### Keep coerced number and boolean env values through the security proxy _[`#1429`](https://github.com/yamcodes/arkenv/pull/1429) [`6be63f7`](https://github.com/yamcodes/arkenv/commit/6be63f78f1f8517a64a32d003e0ea6b1ae78f4be) [@yamcodes](https://github.com/yamcodes)_
+
+  Lock the Nuxt security proxy so schema-key reads return the coerced validation target. A key declared as `"number"` or `"boolean"` returns a number or boolean at runtime, not a raw string from Nuxt runtime config / `__NUXT__`.
+
+  ```ts
+  import { arkenv } from "@arkenv/nuxt";
+
+  export const env = arkenv({
+    NUXT_PUBLIC_PORT: "number",
+    PORT: "number",
+  });
+
+  // 3000 (number), not "3000" (string)
+  env.NUXT_PUBLIC_PORT;
+  env.PORT;
+  ```
+
 ## 1.0.0-alpha.8
 
 ### Minor Changes
