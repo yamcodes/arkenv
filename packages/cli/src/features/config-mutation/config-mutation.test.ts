@@ -363,5 +363,30 @@ describe("config-mutation", () => {
 			expect(result.proposedFields).toHaveProperty("VERCEL");
 			expect(result.proposedFields).toHaveProperty("VERCEL_ENV");
 		});
+
+		it("mutates env schema with specific targetKeys subset", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+				["NEXT_PUBLIC_VERCEL_ENV", "NEXT_PUBLIC_VERCEL_URL"],
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'NEXT_PUBLIC_VERCEL_ENV: "\'production\' | \'preview\' | \'development\'?"',
+			);
+			expect(result.code).toContain('NEXT_PUBLIC_VERCEL_URL: "string?"');
+			expect(result.code).not.toContain('VERCEL: "string?"');
+		});
 	});
 });
