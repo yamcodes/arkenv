@@ -11,7 +11,7 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"@arkenv/core": "1.0.0-alpha.8",
+		"@arkenv/core": "1.0.0-alpha.9",
 		"@arkenv/vite-plugin": "1.0.0-alpha.6",
 		"arktype": "^2.2.0",
 		"react": "^19.2.5",
