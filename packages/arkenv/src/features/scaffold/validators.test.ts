@@ -475,6 +475,9 @@ describe("validators templates", () => {
 			expect(templates.client).not.toContain("extends:");
 			expect(templates.client).toContain("export const env = arkenv(");
 			expect(templates.shared).toContain("export const SharedSchema");
+			expect(templates.shared).toContain(
+				"Automatically picked up by `@arkenv/nuxt/client`",
+			);
 		});
 
 		it("keeps Next.js strict client SharedSchema extends unchanged", () => {

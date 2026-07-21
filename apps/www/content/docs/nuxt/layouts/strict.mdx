@@ -21,7 +21,7 @@ By importing `env` from `~/env/client` in client-side code and `~/env/server` in
 Choose a layout, then import from the matching entry points:
 
 - **Flat layout:** import from `@arkenv/nuxt`.
-- **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. For the internal shared schema (`env/internal/shared.ts`), import `{ type }` from `@arkenv/core`. Outside the env module graph (standalone scripts), import `{ arkenv }` from `@arkenv/core`.
+- **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. For the internal shared schema (`env/internal/shared.ts`), import `{ type }` from `@arkenv/core`. Outside the env module graph (standalone scripts), `import arkenv from "@arkenv/core"`.
 
 :::note[Migration]
 If you previously used `@arkenv/nuxt/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
@@ -45,6 +45,8 @@ import { type } from "@arkenv/core";
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
  * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+ * `@arkenv/nuxt/server` includes it through the composed client env.
  */
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
@@ -165,6 +167,8 @@ See [Configuration & API](/docs/nuxt/configuration) for module options such as `
     /**
      * @internal 🛑 INTERNAL SCHEMA ONLY.
      * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+     * `@arkenv/nuxt/server` includes it through the composed client env.
      */
     export const SharedSchema = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",

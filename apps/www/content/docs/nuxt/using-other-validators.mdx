@@ -66,6 +66,8 @@ You can freely mix Zod or Valibot schemas with the strict layout:
     /**
      * @internal 🛑 INTERNAL SCHEMA ONLY.
      * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+     * `@arkenv/nuxt/server` includes it through the composed client env.
      */
     export const SharedSchema = z.object({
     	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
@@ -80,6 +82,8 @@ You can freely mix Zod or Valibot schemas with the strict layout:
     /**
      * @internal 🛑 INTERNAL SCHEMA ONLY.
      * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+     * `@arkenv/nuxt/server` includes it through the composed client env.
      */
     export const SharedSchema = v.object({
     	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),

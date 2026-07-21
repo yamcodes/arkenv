@@ -133,14 +133,24 @@ export const env = arkenv(
 	},
 );`;
 
+	const sharedDocComment =
+		context.framework === "nuxt"
+			? `/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
+ * Automatically picked up by \`@arkenv/nuxt/client\` when \`extends\` is omitted;
+ * \`@arkenv/nuxt/server\` includes it through the composed client env.
+ */`
+			: `/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
+ */`;
+
 	return assembleStrictTemplates(
 		{
 			shared: `${dialect.sharedImports}
 
-/**
- * @internal 🛑 INTERNAL SCHEMA ONLY.
- * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
- */
+${sharedDocComment}
 export const SharedSchema = ${dialect.wrapSharedSchema(sharedObject)};`,
 
 			clientCodegen:
