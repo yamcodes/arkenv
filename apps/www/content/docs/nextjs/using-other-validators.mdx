@@ -132,5 +132,6 @@ export const env = arkenv({
 Legacy nested layout `arkenv({ server, client, shared, runtimeEnv })` is still supported but deprecated.
 :::
 
-> [!NOTE]
-> If you are using the default Simple layout with codegen, the CLI will automatically generate `generated/env.gen.ts` importing from `@arkenv/nextjs/standard` if your schema file imports from `@arkenv/standard` or `@arkenv/nextjs/standard`.
+:::note
+If you are using the default Simple layout with codegen, the CLI will automatically generate `generated/env.gen.ts` importing from `@arkenv/nextjs/standard` if your schema file imports from `@arkenv/standard` or `@arkenv/nextjs/standard`.
+:::
