@@ -23,7 +23,7 @@ By importing `env` from `~/env/client` in client-side code and `~/env/server` in
 - **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
 - **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
 
-:::note Migration
+:::note[Migration]
 If you previously used `@arkenv/nuxt/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
 :::
 
