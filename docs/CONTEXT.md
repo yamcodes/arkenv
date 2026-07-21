@@ -25,7 +25,7 @@ The Vite plugin call shape `arkenv(schema)` that validates at build time and inl
 
 ## Flagged ambiguities
 
-- **"SPA mode"** (ADR 0015 / #1105): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. ADR 0015's "SPA mode forever" / soft-landing rationale may need an amendment after that decision.
+- **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (On `dev` that ADR is `0015-env-object-canonical-surface`; on `v1` ADR **0015** is a different document — Next.js conditional exports.)
 
 ## Tech stack
 
