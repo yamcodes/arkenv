@@ -383,7 +383,7 @@ describe("config-mutation", () => {
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
 			expect(result.code).toContain(
-				'NEXT_PUBLIC_VERCEL_ENV: "\'production\' | \'preview\' | \'development\'?"',
+				"NEXT_PUBLIC_VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
 			);
 			expect(result.code).toContain('NEXT_PUBLIC_VERCEL_URL: "string?"');
 			expect(result.code).not.toContain('VERCEL: "string?"');

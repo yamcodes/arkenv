@@ -100,7 +100,10 @@ export function partitionPresetKeys(
 			? frameworkOrPrefix
 			: getFrameworkPrefix(frameworkOrPrefix as Framework);
 
-	const serverKeys: string[] = [...def.serverOnlyKeys, ...def.clientExposedKeys];
+	const serverKeys: string[] = [
+		...def.serverOnlyKeys,
+		...def.clientExposedKeys,
+	];
 	const clientKeys: string[] = [];
 
 	if (prefix) {

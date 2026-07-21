@@ -93,7 +93,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("defaults provider to vercel when isYes is true and provider is omitted", async () => {
-		vi.mocked(workspace.exists).mockImplementation(async (p: string) => p.endsWith("env.ts"));
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
 			import { type } from "arkenv";
 			export const Env = type({
@@ -114,7 +116,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("mutates env.ts with preset keys", async () => {
-		vi.mocked(workspace.exists).mockImplementation(async (p: string) => p.endsWith("env.ts"));
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
 			import { type } from "arkenv";
 			export const Env = type({
@@ -156,7 +160,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("does not mutate if keys are already present", async () => {
-		vi.mocked(workspace.exists).mockImplementation(async (p: string) => p.endsWith("env.ts"));
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
 			import { type } from "arkenv";
 			export const Env = type({
@@ -187,7 +193,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("logs proposed keys to stdout if env.ts is not parseable", async () => {
-		vi.mocked(workspace.exists).mockImplementation(async (p: string) => p.endsWith("env.ts"));
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue("export const x = 123;");
 
 		const result = await useCase.execute({ provider: "vercel" });
@@ -293,7 +301,9 @@ describe("AddUseCase", () => {
 			return p === clientPath || p === serverPath;
 		});
 
-		vi.mocked(workspace.readFile).mockResolvedValue("export const invalid = 123;");
+		vi.mocked(workspace.readFile).mockResolvedValue(
+			"export const invalid = 123;",
+		);
 		scanner.detectFramework = vi.fn().mockResolvedValue("nextjs");
 
 		const result = await useCase.execute({ provider: "vercel" });
@@ -309,7 +319,10 @@ describe("AddUseCase", () => {
 
 	describe("partitionPresetKeys", () => {
 		it("partitions vercel keys for nextjs framework", () => {
-			const { clientKeys, serverKeys } = partitionPresetKeys("vercel", "nextjs");
+			const { clientKeys, serverKeys } = partitionPresetKeys(
+				"vercel",
+				"nextjs",
+			);
 			expect(clientKeys).toEqual([
 				"NEXT_PUBLIC_VERCEL_ENV",
 				"NEXT_PUBLIC_VERCEL_URL",
