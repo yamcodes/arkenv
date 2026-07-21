@@ -13,6 +13,20 @@ ArkEnv is a typesafe environment variable parser powered by [ArkType](https://ar
 
 The main goal is to provide a developer-friendly way to validate and type-check environment variables using familiar TypeScript-like syntax, ensuring applications fail fast with clear error messages when environment variables are missing or invalid.
 
+## Language
+
+**Env object**:
+The imported validated environment object (`import { env } from "./env"`). This is the **canonical surface** across Next, Nuxt, Vite, and Bun — client and server.
+*Avoid*: treating `import.meta.env` / `process.env` as the recommended ArkEnv API
+
+**Schema/define path**:
+The Vite plugin call shape `arkenv(schema)` that validates at build time and inlines via Vite `define` into `import.meta.env.*`, with types from `ImportMetaEnvAugmented`. Still supported so existing apps keep working (#1328 acceptance). Lasting product stance is the open call on **#1333** (gates CLI #1332 and related SPA-mode work).
+*Avoid*: **SPA mode** as the product name in examples, changelogs, or new docs for this path until #1333 decides
+
+## Flagged ambiguities
+
+- **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (On `dev` that ADR is `0015-env-object-canonical-surface`; on `v1` ADR **0015** is a different document — Next.js conditional exports.)
+
 ## Tech stack
 
 ### Core technologies

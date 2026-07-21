@@ -1,60 +1,51 @@
-import {
-	type ArkEnvLogOptions,
-	resolveBuildLog,
-	splitPluginConfig,
-} from "@repo/log";
+import type { ArkEnvLogOptions } from "@repo/log";
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
-import { loadEnv, type Plugin } from "vite";
+import type { Plugin } from "vite";
+import { createDefinePlugin } from "./define-plugin";
+import { isTransformModeCall, type ViteTransformOptions } from "./env-module";
+import type { VitePluginFactoryConfig } from "./plugin-config";
+import { createTransformPlugin } from "./transform-plugin";
 
+export type { VitePluginFactoryConfig } from "./plugin-config";
+export type { ViteTransformOptions };
+
+/**
+ * Create a Vite plugin factory bound to a specific ArkEnv runtime (`core` or `standard`).
+ *
+ * - **Transform** — `arkenv()` / `arkenv({ schemaPath, clientPrefix })`: rewrite the user's
+ *   `env.ts` in the client graph (ADR 0015). Server/SSR graphs execute `env.ts` as-is.
+ * - **Schema/`define`** — `arkenv(schema, config?)`: build-time validation + `import.meta.env`
+ *   define inlining (existing API, unchanged).
+ *
+ * @param coreArkenv The ArkEnv runtime function used for schema/`define` validation
+ * @param pluginName The Vite plugin name
+ * @param factoryLogOptions Optional default logging options for the factory
+ * @returns A plugin factory function
+ */
 export function createVitePlugin(
 	coreArkenv: any,
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
 ) {
 	return function arkenv(
-		options: CompiledEnvSchema | any,
+		schemaOrOptions?: CompiledEnvSchema | SchemaShape | VitePluginFactoryConfig,
 		config?: Omit<ArkEnvConfig, "safe"> & ArkEnvLogOptions,
 	): Plugin {
-		const { pluginConfig, logOptions } = splitPluginConfig(config);
-		const buildLog = resolveBuildLog({ ...factoryLogOptions, ...logOptions });
+		if (isTransformModeCall(schemaOrOptions, config)) {
+			return createTransformPlugin(
+				pluginName,
+				(schemaOrOptions ?? {}) as VitePluginFactoryConfig,
+				factoryLogOptions,
+			);
+		}
 
-		return {
-			name: pluginName,
-			config(config, { mode }) {
-				const envPrefix = config.envPrefix ?? "VITE_";
-				const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix];
-
-				const envDir = config.envDir ?? config.root ?? process.cwd();
-				try {
-					const env: SchemaShape = coreArkenv(options as any, {
-						...pluginConfig,
-						env: pluginConfig?.env ?? loadEnv(mode, envDir, ""),
-						safe: false,
-					});
-
-					const filteredEnv = Object.fromEntries(
-						Object.entries(env).filter(([key]) =>
-							prefixes.some((prefix) => key.startsWith(prefix)),
-						),
-					);
-
-					const define = Object.fromEntries(
-						Object.entries(filteredEnv).map(([key, value]) => [
-							`import.meta.env.${key}`,
-							JSON.stringify(value),
-						]),
-					);
-
-					return { define };
-				} catch (error: unknown) {
-					buildLog.logBuildErrorWithCause(
-						"Environment validation failed",
-						error,
-					);
-					throw error;
-				}
-			},
-		};
+		return createDefinePlugin(
+			coreArkenv,
+			pluginName,
+			schemaOrOptions as CompiledEnvSchema | SchemaShape | undefined,
+			config,
+			factoryLogOptions,
+		);
 	};
 }
