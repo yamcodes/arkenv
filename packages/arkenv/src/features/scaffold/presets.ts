@@ -96,6 +96,37 @@ export function getPresetKeys(
 }
 
 /**
+ * Partitions hosting preset keys into client-facing (prefixed) vs server-only keys for strict layouts.
+ *
+ * @param preset Selected hosting preset (`"none"` yields empty lists)
+ * @param clientPrefix Framework client prefix (e.g. `NEXT_PUBLIC_`); empty skips client keys
+ * @returns Client-prefixed keys for `client.ts` and unprefixed keys for `server.ts`
+ */
+export function partitionPresetKeys(
+	preset: HostPreset,
+	clientPrefix: string,
+): { clientKeys: string[]; serverKeys: string[] } {
+	if (preset === "none") {
+		return { clientKeys: [], serverKeys: [] };
+	}
+	const def = PRESETS[preset];
+
+	const serverKeys: string[] = [
+		...def.serverOnlyKeys,
+		...def.clientExposedKeys,
+	];
+	const clientKeys: string[] = [];
+
+	if (clientPrefix) {
+		for (const key of def.clientExposedKeys) {
+			clientKeys.push(`${clientPrefix}${key}`);
+		}
+	}
+
+	return { clientKeys, serverKeys };
+}
+
+/**
  * Look up preset field metadata for a schema key, stripping the client prefix when present.
  *
  * Scoped to the active {@link hostPreset} so unrelated presets cannot influence
