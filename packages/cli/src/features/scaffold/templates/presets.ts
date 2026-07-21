@@ -81,6 +81,41 @@ export function getPresetKeys(preset: HostPreset, prefix: string): string[] {
 }
 
 /**
+ * Partitions hosting preset keys into client-facing (prefixed) vs server-only keys for strict layouts.
+ */
+export function partitionPresetKeys(
+	preset: HostPreset,
+	frameworkOrPrefix: Framework | string,
+): { clientKeys: string[]; serverKeys: string[] } {
+	if (preset === "none") {
+		return { clientKeys: [], serverKeys: [] };
+	}
+	const def = PRESETS[preset];
+	if (!def) {
+		return { clientKeys: [], serverKeys: [] };
+	}
+
+	const prefix =
+		frameworkOrPrefix.endsWith("_") || frameworkOrPrefix === ""
+			? frameworkOrPrefix
+			: getFrameworkPrefix(frameworkOrPrefix as Framework);
+
+	const serverKeys: string[] = [
+		...def.serverOnlyKeys,
+		...def.clientExposedKeys,
+	];
+	const clientKeys: string[] = [];
+
+	if (prefix) {
+		for (const key of def.clientExposedKeys) {
+			clientKeys.push(`${prefix}${key}`);
+		}
+	}
+
+	return { clientKeys, serverKeys };
+}
+
+/**
  * Returns validator-specific schema fields for preset keys, falling back to a default optional string.
  */
 export function getFieldDefinition(
