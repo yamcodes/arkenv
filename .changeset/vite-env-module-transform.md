@@ -2,26 +2,21 @@
 "@arkenv/vite-plugin": minor
 ---
 
-#### Add env-module transform for fullstack Vite apps
+#### Add `env.ts` transform for Vite fullstack apps
 
-Make `import { env } from "./env"` the recommended surface for Vite apps that have both client and server code.
+Let the Vite plugin discover your `env.ts` and expose a shared `env` object that works in both client and server code. On the client, public (`VITE_*`) values are inlined at build time and server-only keys throw if read; on the server/SSR, `env.ts` still runs normally and validates against the real environment at boot. The plugin does not rewrite your `env.ts` file on disk.
 
-With no schema argument, the plugin finds `src/env.ts` / `env.ts` (or `schemaPath`) and:
+Works with `@arkenv/vite-plugin` and `@arkenv/vite-plugin/standard`.
 
-- **Browser build**: replaces that module with an object of build-validated, coerced literals for client-prefixed keys, plus getters that throw for server-only keys — no `@arkenv/core` / validator code in the client bundle
-- **SSR / server build**: leaves the module alone so `createEnv`/`arkenv` still validates against the real deployment environment at boot
-
-Works for both `@arkenv/vite-plugin` (ArkType / `@arkenv/core`) and `@arkenv/vite-plugin/standard`.
+Usage:
 
 ```ts
-// vite.config.ts / app.config.ts — no schema argument
+// vite.config.ts
 import arkenv from "@arkenv/vite-plugin";
 
 export default {
-  plugins: [
-    arkenv(), // auto-discovers src/env.ts or env.ts
-    // or: arkenv({ schemaPath: "src/env.ts", clientPrefix: "VITE_" })
-  ],
+  plugins: [arkenv()], // finds src/env.ts or env.ts
+  // or: arkenv({ schemaPath: "src/env.ts", clientPrefix: "VITE_" })
 };
 ```
 
@@ -35,4 +30,11 @@ export const env = arkenv({
 });
 ```
 
-The existing `arkenv(schema)` call (validate + Vite `define` for `import.meta.env`) is unchanged and remains available for apps that already use that API.
+```ts
+import { env } from "./env";
+
+env.VITE_API_URL; // available on client and server
+env.DATABASE_URL; // server only — throws if read in the browser
+```
+
+Passing a schema to `arkenv(schema)` (the previous `import.meta.env` define API) continues to work unchanged.
