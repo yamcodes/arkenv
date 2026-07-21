@@ -4,10 +4,6 @@ icon: Album
 description: Validate and secure your Next.js environment variables with zero-boilerplate scaffolding and a seamless developer experience.
 ---
 
-:::important
-This integration requires [ArkType](https://arktype.io) to be installed.
-:::
-
 The `@arkenv/nextjs` integration provides end-to-end environment validation for both the server and the browser. It catches configuration bugs early in your build pipeline and prevents sensitive server-side variables from ever reaching client components.
 
 The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nextjs` for your existing Next.js project:
@@ -18,15 +14,21 @@ npx arkenv@latest init
 
 <Accordions>
   <Accordion title="Manual Installation">
-    First, install the Next.js integration package and the core engine:
+    Install the Next.js integration and a validation engine. Choose **one**:
+
+    **ArkType (default):**
 
     ```package-install
     @arkenv/core @arkenv/nextjs arktype
     ```
 
-    :::note
-    If you're using Standard Schema (e.g., Zod, Valibot) without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
-    :::
+    **Standard Schema (Zod, Valibot, etc. — no ArkType):**
+
+    ```package-install
+    @arkenv/standard @arkenv/nextjs zod
+    ```
+
+    See [Zod, Valibot, and other Standard Schema validators](/docs/nextjs/using-other-validators) for the Standard Mode setup.
   </Accordion>
 </Accordions>
 
@@ -43,7 +45,7 @@ ArkEnv supports two layout structures to match your security and developer exper
 ## Next steps
 
 <Cards>
-  <Card title="Zod, Valibot, and other Standard Schema validators" href="/docs/nextjs/using-other-validators" description="Learn how to mix and match ArkType with other Standard Schema validators in Next.js." />
+  <Card title="Zod, Valibot, and other Standard Schema validators" href="/docs/nextjs/using-other-validators" description="Use Zod, Valibot, or any Standard Schema validator — with or without ArkType." />
 
   <Card title="FAQ" href="/docs/nextjs/faq" description="Find answers to frequently asked questions about @arkenv/nextjs, including the danger of custom shared variables." />
 
