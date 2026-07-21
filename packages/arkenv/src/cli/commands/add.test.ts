@@ -1,5 +1,7 @@
+import path from "node:path";
 import dedent from "dedent";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { partitionPresetKeys } from "@/features/scaffold/presets";
 import type {
 	LoggerPort,
 	ProjectScannerPort,
@@ -35,7 +37,12 @@ describe("AddUseCase", () => {
 		} as unknown as LoggerPort;
 
 		workspace = {
-			exists: vi.fn().mockResolvedValue(true),
+			exists: vi.fn().mockImplementation(async (p: string) => {
+				if (p.endsWith("client.ts") || p.endsWith("server.ts")) {
+					return false;
+				}
+				return true;
+			}),
 			readFile: vi.fn(),
 			writeFile: vi.fn(),
 			mkdir: vi.fn(),
@@ -68,7 +75,9 @@ describe("AddUseCase", () => {
 
 	it("prompts for provider if omitted", async () => {
 		vi.mocked(prompt.select).mockResolvedValue("vercel");
-		vi.mocked(workspace.exists).mockResolvedValue(true);
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
 			import { type } from "@arkenv/core";
 			export const Env = type({
@@ -86,7 +95,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("defaults provider to vercel when isYes is true and provider is omitted", async () => {
-		vi.mocked(workspace.exists).mockResolvedValue(true);
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
 			import { type } from "@arkenv/core";
 			export const Env = type({
@@ -107,7 +118,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("mutates env.ts with preset keys", async () => {
-		vi.mocked(workspace.exists).mockResolvedValue(true);
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
 			import { type } from "@arkenv/core";
 			export const Env = type({
@@ -149,7 +162,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("does not mutate if keys are already present", async () => {
-		vi.mocked(workspace.exists).mockResolvedValue(true);
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
 			import { type } from "@arkenv/core";
 			export const Env = type({
@@ -180,7 +195,9 @@ describe("AddUseCase", () => {
 	});
 
 	it("logs proposed keys to stdout if env.ts is not parseable", async () => {
-		vi.mocked(workspace.exists).mockResolvedValue(true);
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
 		vi.mocked(workspace.readFile).mockResolvedValue("export const x = 123;");
 
 		const result = await useCase.execute({ provider: "vercel" });
@@ -189,6 +206,94 @@ describe("AddUseCase", () => {
 			expect.stringContaining("Could not find arkenv or type schema call"),
 		);
 		expect(logger.log).toHaveBeenCalledWith(expect.stringContaining("VERCEL:"));
+	});
+
+	it("detects strict layout (env/client.ts and env/server.ts) and merges client/server keys", async () => {
+		const clientPath = path.resolve(process.cwd(), "env/client.ts");
+		const serverPath = path.resolve(process.cwd(), "env/server.ts");
+
+		vi.mocked(workspace.exists).mockImplementation(async (p) => {
+			return p === clientPath || p === serverPath;
+		});
+
+		vi.mocked(workspace.readFile).mockImplementation(async (p) => {
+			if (p === clientPath) {
+				return dedent`
+					import arkenv from "./generated/env.gen";
+					export const env = arkenv({});
+				`;
+			}
+			if (p === serverPath) {
+				return dedent`
+					import arkenv from "./generated/env.gen";
+					export const env = arkenv({});
+				`;
+			}
+			return "";
+		});
+
+		scanner.detectFramework = vi.fn().mockResolvedValue("nextjs");
+
+		const result = await useCase.execute({ provider: "vercel" });
+		expect(result).toBe(true);
+
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			clientPath,
+			expect.stringContaining("NEXT_PUBLIC_VERCEL_ENV"),
+		);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			serverPath,
+			expect.stringContaining("VERCEL:"),
+		);
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining(
+				"Added Vercel environment variables to env/client.ts and env/server.ts",
+			),
+		);
+	});
+
+	it("logs partitioned manual instructions if strict layout mutation fails", async () => {
+		const clientPath = path.resolve(process.cwd(), "env/client.ts");
+		const serverPath = path.resolve(process.cwd(), "env/server.ts");
+
+		vi.mocked(workspace.exists).mockImplementation(async (p) => {
+			return p === clientPath || p === serverPath;
+		});
+
+		vi.mocked(workspace.readFile).mockResolvedValue(
+			"export const invalid = 123;",
+		);
+		scanner.detectFramework = vi.fn().mockResolvedValue("nextjs");
+
+		const result = await useCase.execute({ provider: "vercel" });
+		expect(result).toBe(true);
+		expect(logger.error).toHaveBeenCalledWith(
+			"Failed to mutate strict layout schema files.",
+		);
+		expect(logger.log).toHaveBeenCalledWith(
+			expect.stringContaining("NEXT_PUBLIC_VERCEL_ENV"),
+		);
+		expect(logger.log).toHaveBeenCalledWith(expect.stringContaining("VERCEL:"));
+	});
+
+	describe("partitionPresetKeys", () => {
+		it("partitions vercel keys for nextjs framework", () => {
+			const { clientKeys, serverKeys } = partitionPresetKeys(
+				"vercel",
+				"nextjs",
+			);
+			expect(clientKeys).toEqual([
+				"NEXT_PUBLIC_VERCEL_ENV",
+				"NEXT_PUBLIC_VERCEL_URL",
+			]);
+			expect(serverKeys).toEqual(["VERCEL", "VERCEL_ENV", "VERCEL_URL"]);
+		});
+
+		it("partitions netlify keys for nuxt framework", () => {
+			const { clientKeys, serverKeys } = partitionPresetKeys("netlify", "nuxt");
+			expect(clientKeys).toEqual(["NUXT_PUBLIC_CONTEXT", "NUXT_PUBLIC_URL"]);
+			expect(serverKeys).toEqual(["NETLIFY", "DEPLOY_URL", "CONTEXT", "URL"]);
+		});
 	});
 
 	describe("detectValidator", () => {
