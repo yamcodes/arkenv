@@ -23,6 +23,10 @@ export default defineProject({
 				find: "#arkenv/client-env",
 				replacement: path.resolve(__dirname, "./src/empty-client-env.ts"),
 			},
+			{
+				find: "#arkenv/shared-schema",
+				replacement: path.resolve(__dirname, "./src/empty-shared-schema.ts"),
+			},
 		],
 	},
 });

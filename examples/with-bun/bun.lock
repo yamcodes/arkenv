@@ -5,7 +5,7 @@
     "": {
       "name": "arkenv-example-with-bun",
       "dependencies": {
-        "@arkenv/core": "1.0.0-alpha.3",
+        "@arkenv/core": "1.0.0-alpha.4",
         "arktype": "^2.2.0",
       },
       "devDependencies": {
@@ -20,7 +20,7 @@
 
     "@ark/util": ["@ark/util@0.56.0", "", {}, "sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA=="],
 
-    "@arkenv/core": ["@arkenv/core@1.0.0-alpha.3", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-YQP13O/2V6YSdtHU70zO4lLmdd8CtRKbtlHLVCrsV7r+nF2yk/8uYVBfUSC8/n8xmGzsmVq37qsyQHIEbbkifg=="],
+    "@arkenv/core": ["@arkenv/core@1.0.0-alpha.4", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-r2LsGp0oIm2E7ahsFpArP02GdxLZMWLE3y3RaYNTdMTYOtxRsmGOxXKTzy4NW8kRFA28Pr+ddyHgQ94Kt86BMQ=="],
 
     "@types/bun": ["@types/bun@1.3.13", "", { "dependencies": { "bun-types": "1.3.13" } }, "sha512-9fqXWk5YIHGGnUau9TEi+qdlTYDAnOj+xLCmSTwXfAIqXr2x4tytJb43E9uCvt09zJURKXwAtkoH4nLQfzeTXw=="],
 

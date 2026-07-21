@@ -8,6 +8,7 @@ export default defineConfig({
 		"src/server.ts",
 		"src/client.ts",
 		"src/empty-client-env.ts",
+		"src/empty-shared-schema.ts",
 		"src/standard/index.ts",
 		"src/standard/module.ts",
 		"src/standard/server.ts",
@@ -21,6 +22,11 @@ export default defineConfig({
 	sourcemap: true,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
-		neverBundle: ["@nuxt/kit", "@nuxt/schema", "#arkenv/client-env"],
+		neverBundle: [
+			"@nuxt/kit",
+			"@nuxt/schema",
+			"#arkenv/client-env",
+			"#arkenv/shared-schema",
+		],
 	},
 });

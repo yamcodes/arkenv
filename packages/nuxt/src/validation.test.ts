@@ -165,11 +165,8 @@ describe("build-time environment validation", () => {
 				clientPath,
 				`
 				import arkenv from "@arkenv/nuxt/client";
-				import { SharedSchema } from "./internal/shared";
 				export const env = arkenv({
 					NUXT_PUBLIC_API_URL: "string",
-				}, {
-					extends: [SharedSchema]
 				});
 				`,
 				"utf-8",
@@ -197,7 +194,7 @@ describe("build-time environment validation", () => {
 					validate: true,
 				});
 			}).not.toThrow();
-		});
+		}, 15_000);
 
 		it("should throw error when a server variable is missing in strict layout", () => {
 			fs.writeFileSync(
@@ -215,11 +212,8 @@ describe("build-time environment validation", () => {
 				clientPath,
 				`
 				import arkenv from "@arkenv/nuxt/client";
-				import { SharedSchema } from "./internal/shared";
 				export const env = arkenv({
 					NUXT_PUBLIC_API_URL: "string",
-				}, {
-					extends: [SharedSchema]
 				});
 				`,
 				"utf-8",
@@ -247,6 +241,50 @@ describe("build-time environment validation", () => {
 					validate: true,
 				});
 			}).toThrow(/Errors found while validating/);
+		}, 15_000);
+
+		it("should fail when SharedSchema export is missing", () => {
+			fs.writeFileSync(
+				sharedPath,
+				`
+				export const NotShared = {};
+				`,
+				"utf-8",
+			);
+
+			fs.writeFileSync(
+				clientPath,
+				`
+				import arkenv from "@arkenv/nuxt/client";
+				export const env = arkenv({
+					NUXT_PUBLIC_API_URL: "string",
+				});
+				`,
+				"utf-8",
+			);
+
+			fs.writeFileSync(
+				serverPath,
+				`
+				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				});
+				`,
+				"utf-8",
+			);
+
+			process.env.DATABASE_URL = "postgres://localhost/db";
+			process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
+			process.env.NODE_ENV = "development";
+
+			expect(() => {
+				setupArkEnv({
+					schemaPath: strictBaseDir,
+					layout: "strict",
+					validate: true,
+				});
+			}).toThrow(/SharedSchema/);
 		});
 
 		it("should still honor explicit extends in strict layout validation", () => {
@@ -300,6 +338,6 @@ describe("build-time environment validation", () => {
 					validate: true,
 				});
 			}).not.toThrow();
-		});
+		}, 15_000);
 	});
 });

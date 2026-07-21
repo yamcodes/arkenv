@@ -53,6 +53,62 @@ Prefer the [ArkEnv CLI](/docs/cli) (`npx arkenv@latest init`) and pick Zod or Va
 Legacy nested layout `arkenv({ server, client, shared })` is still supported but deprecated. Prefer the [flat layout](/docs/nuxt/layouts/flat).
 :::
 
+## Strict layout
+
+You can freely mix Zod or Valibot schemas with the [strict layout](/docs/nuxt/layouts/strict). Shared schema is auto-merged into the client entry when `extends` is omitted:
+
+<Tabs items={['Zod', 'Valibot']}>
+  <Tab value="Zod">
+    ```ts twoslash title="env/internal/shared.ts"
+    import { z } from "zod";
+
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+     * `@arkenv/nuxt/server` includes it through the composed client env.
+     */
+    export const SharedSchema = z.object({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    });
+    ```
+
+    ```ts twoslash title="env/client.ts"
+    import arkenv from "@arkenv/nuxt/standard/client";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	NUXT_PUBLIC_API_URL: z.string().url(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts twoslash title="env/internal/shared.ts"
+    import * as v from "valibot";
+
+    /**
+     * @internal 🛑 INTERNAL SCHEMA ONLY.
+     * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+     * `@arkenv/nuxt/server` includes it through the composed client env.
+     */
+    export const SharedSchema = v.object({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    });
+    ```
+
+    ```ts twoslash title="env/client.ts"
+    import arkenv from "@arkenv/nuxt/standard/client";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NUXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
 ## Mixing with ArkType
 
 Already on `@arkenv/core`? You can mix ArkType DSL strings with Zod (or any Standard Schema validator) in the same schema — ArkType is still required as a peer dependency:

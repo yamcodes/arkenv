@@ -33,7 +33,7 @@ We adopt **Option 2**: remove `./shared`; keep the default entry, `./client`, an
 
 - **Flat layout:** import from `@arkenv/nextjs` or `@arkenv/nuxt` - one entry point, bundler picks the build.
 - **Strict layout:** import from `@arkenv/nextjs/client` and `@arkenv/nextjs/server` (or Nuxt equivalents).
-- **Standalone server code** (scripts, one-off Node entry points outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+- **Standalone server code** (scripts, one-off Node entry points outside the env module graph): `import arkenv from "@arkenv/core"`.
 - **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
 
 Do **not** present `/server` as a thin re-export of core `@arkenv/core`. It carries `server-only`, proxy/`extends` behavior, and `strictLayout: "server"` routing.

@@ -8,7 +8,8 @@ import { withForceServer } from "./validate-context";
  * Evaluate the project schema under Jiti so validation runs at build/dev time.
  *
  * In strict layout this loads `server.ts` with `#arkenv/client-env` aliased to
- * the project's `client.ts`, mirroring the Nuxt module's auto-extend wiring.
+ * the project's `client.ts` and `#arkenv/shared-schema` aliased to
+ * `internal/shared.ts`, mirroring the Nuxt module's auto-extend wiring.
  *
  * @param schemaPath Absolute path to the schema file or directory
  * @param resolvedLayout Detected or configured layout mode
@@ -25,6 +26,7 @@ export function validateSchema(
 		const g = globalThis as {
 			__ARKENV_STRICT_LAYOUT__?: boolean;
 			__ARKENV_CLIENT_ENV__?: unknown;
+			__ARKENV_SHARED_SCHEMA__?: unknown;
 		};
 
 		try {
@@ -117,9 +119,20 @@ export function validateSchema(
 				? path.join(dir, "empty-client-env.ts")
 				: path.join(dir, "empty-client-env.js");
 
+			const emptySharedSchemaPath = fs.existsSync(
+				path.join(dir, "empty-shared-schema.ts"),
+			)
+				? path.join(dir, "empty-shared-schema.ts")
+				: path.join(dir, "empty-shared-schema.js");
+
 			const strictUserClientPath =
 				resolvedLayout === "strict" && baseDir
 					? path.join(baseDir, "client.ts")
+					: undefined;
+
+			const strictUserSharedPath =
+				resolvedLayout === "strict" && baseDir
+					? path.join(baseDir, "internal", "shared.ts")
 					: undefined;
 
 			const aliases: Record<string, string> = {
@@ -132,6 +145,10 @@ export function validateSchema(
 					strictUserClientPath && fs.existsSync(strictUserClientPath)
 						? strictUserClientPath
 						: emptyClientEnvPath,
+				"#arkenv/shared-schema":
+					strictUserSharedPath && fs.existsSync(strictUserSharedPath)
+						? strictUserSharedPath
+						: emptySharedSchemaPath,
 				...internalOptions?._jitiAliases,
 			};
 
@@ -148,6 +165,27 @@ export function validateSchema(
 			 * @param jiti The configured Jiti loader instance
 			 */
 			const evaluateSchema = (jiti: ReturnType<typeof createJiti>) => {
+				if (resolvedLayout === "strict" && baseDir) {
+					if (!strictUserSharedPath || !fs.existsSync(strictUserSharedPath)) {
+						throw new Error(
+							`[arkenv] Strict layout requires "internal/shared.ts" with a usable SharedSchema export under "${baseDir}".`,
+						);
+					}
+
+					const sharedMod = jiti(strictUserSharedPath) as {
+						SharedSchema?: unknown;
+						default?: { SharedSchema?: unknown };
+					};
+					const sharedSchema =
+						sharedMod.SharedSchema ?? sharedMod.default?.SharedSchema;
+					if (sharedSchema === undefined || sharedSchema === null) {
+						throw new Error(
+							`[arkenv] Strict layout requires a usable SharedSchema export from "${strictUserSharedPath}".`,
+						);
+					}
+					g.__ARKENV_SHARED_SCHEMA__ = sharedSchema;
+				}
+
 				if (strictUserClientPath && fs.existsSync(strictUserClientPath)) {
 					g.__ARKENV_STRICT_LAYOUT__ = true;
 					const clientMod = jiti(strictUserClientPath) as {
@@ -184,6 +222,7 @@ export function validateSchema(
 		} finally {
 			delete g.__ARKENV_STRICT_LAYOUT__;
 			delete g.__ARKENV_CLIENT_ENV__;
+			delete g.__ARKENV_SHARED_SCHEMA__;
 		}
 	});
 }

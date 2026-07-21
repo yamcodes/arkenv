@@ -175,19 +175,17 @@ describe("Nuxt module integration", () => {
 		}
 	});
 
-	it("registers #arkenv/client-env alias and __ARKENV_STRICT_LAYOUT__ in strict layout", async () => {
+	it("registers #arkenv/client-env and #arkenv/shared-schema aliases in strict layout", async () => {
 		const tempDir = path.resolve(__dirname, "temp-strict-alias-test");
 		const envDir = path.join(tempDir, "env");
 		fs.mkdirSync(path.join(envDir, "internal"), { recursive: true });
 
 		try {
 			const clientPath = path.join(envDir, "client.ts");
+			const sharedPath = path.join(envDir, "internal", "shared.ts");
 			fs.writeFileSync(clientPath, "export const env = {}");
 			fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {}");
-			fs.writeFileSync(
-				path.join(envDir, "internal", "shared.ts"),
-				"export const SharedSchema = {}",
-			);
+			fs.writeFileSync(sharedPath, "export const SharedSchema = {}");
 
 			const mockNuxt: any = {
 				options: {
@@ -210,6 +208,7 @@ describe("Nuxt module integration", () => {
 			);
 
 			expect(mockNuxt.options.alias["#arkenv/client-env"]).toBe(clientPath);
+			expect(mockNuxt.options.alias["#arkenv/shared-schema"]).toBe(sharedPath);
 
 			const prepareTypesHook = mockNuxt.hook.mock.calls.find(
 				([name]: [string, ...any[]]) => name === "prepare:types",
@@ -220,6 +219,9 @@ describe("Nuxt module integration", () => {
 			expect(tsConfig.compilerOptions.paths["#arkenv/client-env"]).toEqual([
 				clientPath,
 			]);
+			expect(tsConfig.compilerOptions.paths["#arkenv/shared-schema"]).toEqual([
+				sharedPath,
+			]);
 
 			const nitroHook = mockNuxt.hook.mock.calls.find(
 				([name]: [string, ...any[]]) => name === "nitro:config",
@@ -228,6 +230,7 @@ describe("Nuxt module integration", () => {
 			const nitroConfig: any = {};
 			nitroHook(nitroConfig);
 			expect(nitroConfig.alias["#arkenv/client-env"]).toBe(clientPath);
+			expect(nitroConfig.alias["#arkenv/shared-schema"]).toBe(sharedPath);
 			expect(nitroConfig.replace.__ARKENV_STRICT_LAYOUT__).toBe("true");
 
 			const viteHook = mockNuxt.hook.mock.calls.find(
@@ -240,12 +243,23 @@ describe("Nuxt module integration", () => {
 
 			expect(serverConfig.define.__ARKENV_STRICT_LAYOUT__).toBe("true");
 			expect(serverConfig.resolve.alias["#arkenv/client-env"]).toBe(clientPath);
+			expect(serverConfig.resolve.alias["#arkenv/shared-schema"]).toBe(
+				sharedPath,
+			);
 
 			const clientEnvPlugin = serverConfig.plugins.find(
 				(p: any) => p.name === "arkenv-nuxt-client-env",
 			);
 			expect(clientEnvPlugin).toBeDefined();
 			expect(clientEnvPlugin.resolveId("#arkenv/client-env")).toBe(clientPath);
+
+			const sharedSchemaPlugin = serverConfig.plugins.find(
+				(p: any) => p.name === "arkenv-nuxt-shared-schema",
+			);
+			expect(sharedSchemaPlugin).toBeDefined();
+			expect(sharedSchemaPlugin.resolveId("#arkenv/shared-schema")).toBe(
+				sharedPath,
+			);
 
 			const clientConfig: any = { plugins: [] };
 			viteHook(clientConfig, { isClient: true });
@@ -297,6 +311,40 @@ describe("Nuxt module integration", () => {
 		}
 	});
 
+	it("throws when strict layout is missing internal/shared.ts", async () => {
+		const tempDir = path.resolve(__dirname, "temp-strict-missing-shared");
+		const envDir = path.join(tempDir, "env");
+		fs.mkdirSync(envDir, { recursive: true });
+
+		try {
+			fs.writeFileSync(path.join(envDir, "client.ts"), "export const env = {}");
+			fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {}");
+
+			const mockNuxt: any = {
+				options: {
+					dev: false,
+					rootDir: tempDir,
+					srcDir: tempDir,
+					runtimeConfig: { public: {} },
+				},
+				hook: vi.fn(),
+			};
+
+			expect(() =>
+				(module as any).setup(
+					{
+						schemaPath: "./env",
+						layout: "strict",
+						validate: false,
+					},
+					mockNuxt,
+				),
+			).toThrow(/internal\/shared\.ts/);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
 	it("does not register alias or define flag in simple layout", async () => {
 		const tempDir = path.resolve(__dirname, "temp-simple-no-alias");
 		fs.mkdirSync(tempDir, { recursive: true });
@@ -323,6 +371,7 @@ describe("Nuxt module integration", () => {
 			);
 
 			expect(mockNuxt.options.alias["#arkenv/client-env"]).toBeUndefined();
+			expect(mockNuxt.options.alias["#arkenv/shared-schema"]).toBeUndefined();
 
 			expect(
 				mockNuxt.hook.mock.calls.find(
@@ -344,6 +393,9 @@ describe("Nuxt module integration", () => {
 			expect(config.define?.__ARKENV_STRICT_LAYOUT__).toBeUndefined();
 			expect(
 				config.plugins.find((p: any) => p.name === "arkenv-nuxt-client-env"),
+			).toBeUndefined();
+			expect(
+				config.plugins.find((p: any) => p.name === "arkenv-nuxt-shared-schema"),
 			).toBeUndefined();
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
@@ -398,6 +450,57 @@ describe("Nuxt module integration", () => {
 
 			expect(() => plugin.resolveId("#arkenv/client-env")).toThrow(
 				/Could not resolve #arkenv\/client-env/,
+			);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("emits arkenv-specific error when #arkenv/shared-schema cannot be resolved", async () => {
+		const tempDir = path.resolve(__dirname, "temp-unresolved-shared-schema");
+		const envDir = path.join(tempDir, "env");
+		fs.mkdirSync(path.join(envDir, "internal"), { recursive: true });
+
+		try {
+			const sharedPath = path.join(envDir, "internal", "shared.ts");
+			fs.writeFileSync(path.join(envDir, "client.ts"), "export const env = {}");
+			fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {}");
+			fs.writeFileSync(sharedPath, "export const SharedSchema = {}");
+
+			const mockNuxt: any = {
+				options: {
+					dev: false,
+					rootDir: tempDir,
+					srcDir: tempDir,
+					runtimeConfig: { public: {} },
+					alias: {},
+				},
+				hook: vi.fn(),
+			};
+
+			await (module as any).setup(
+				{
+					schemaPath: "./env/server.ts",
+					layout: "strict",
+					validate: false,
+				},
+				mockNuxt,
+			);
+
+			const viteHook = mockNuxt.hook.mock.calls.find(
+				([name]: [string, ...any[]]) => name === "vite:extendConfig",
+			)?.[1];
+			const config: any = { plugins: [] };
+			viteHook(config, { isClient: false });
+
+			const plugin = config.plugins.find(
+				(p: any) => p.name === "arkenv-nuxt-shared-schema",
+			);
+
+			fs.unlinkSync(sharedPath);
+
+			expect(() => plugin.resolveId("#arkenv/shared-schema")).toThrow(
+				/Could not resolve #arkenv\/shared-schema/,
 			);
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
