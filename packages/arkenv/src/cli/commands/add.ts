@@ -73,10 +73,23 @@ export class AddUseCase {
 			const tsConfigResult = await this.scanner.checkTsConfig(cwd);
 			const tsConfig = tsConfigResult.parsed || null;
 			const framework = await this.scanner.detectFramework(cwd, tsConfig);
+			const suggestedPath = await this.scanner.suggestDefaultEnvPath(
+				cwd,
+				tsConfig,
+			);
+			const prefix = FRAMEWORK_CLIENT_PREFIXES[framework];
 
+			const suggestedStrictDir = path.resolve(
+				cwd,
+				path.dirname(suggestedPath),
+				"env",
+			);
 			const strictDirCandidates = [
-				path.resolve(cwd, "env"),
-				path.resolve(cwd, "src/env"),
+				...new Set([
+					suggestedStrictDir,
+					path.resolve(cwd, "env"),
+					path.resolve(cwd, "src/env"),
+				]),
 			];
 
 			let strictDir: string | null = null;
@@ -92,8 +105,6 @@ export class AddUseCase {
 				}
 			}
 
-			const prefix = FRAMEWORK_CLIENT_PREFIXES[framework];
-
 			if (strictDir) {
 				const clientPath = path.join(strictDir, "client.ts");
 				const serverPath = path.join(strictDir, "server.ts");
@@ -102,7 +113,7 @@ export class AddUseCase {
 
 				const { clientKeys, serverKeys } = partitionPresetKeys(
 					provider,
-					framework,
+					prefix,
 				);
 
 				const clientCode = await this.workspace.readFile(clientPath);
@@ -180,10 +191,6 @@ export class AddUseCase {
 				return true;
 			}
 
-			const suggestedPath = await this.scanner.suggestDefaultEnvPath(
-				cwd,
-				tsConfig,
-			);
 			const candidatePaths = [
 				path.resolve(cwd, "env.ts"),
 				path.resolve(cwd, "src/env.ts"),

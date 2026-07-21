@@ -252,6 +252,109 @@ describe("AddUseCase", () => {
 		);
 	});
 
+	it("detects strict layout under a custom rootDir from suggestDefaultEnvPath", async () => {
+		const clientPath = path.resolve(process.cwd(), "lib/env/client.ts");
+		const serverPath = path.resolve(process.cwd(), "lib/env/server.ts");
+
+		vi.mocked(scanner.suggestDefaultEnvPath).mockResolvedValue("./lib/env.ts");
+		vi.mocked(workspace.exists).mockImplementation(async (p) => {
+			return p === clientPath || p === serverPath;
+		});
+		vi.mocked(workspace.readFile).mockImplementation(async (p) => {
+			if (p === clientPath || p === serverPath) {
+				return dedent`
+					import arkenv from "./generated/env.gen";
+					export const env = arkenv({});
+				`;
+			}
+			return "";
+		});
+		scanner.detectFramework = vi.fn().mockResolvedValue("nextjs");
+
+		const result = await useCase.execute({ provider: "vercel" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			clientPath,
+			expect.stringContaining("NEXT_PUBLIC_VERCEL_ENV"),
+		);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			serverPath,
+			expect.stringContaining("VERCEL:"),
+		);
+	});
+
+	it("mutates strict layout Zod schemas via z.object SharedSchema", async () => {
+		const clientPath = path.resolve(process.cwd(), "env/client.ts");
+		const serverPath = path.resolve(process.cwd(), "env/server.ts");
+
+		vi.mocked(workspace.exists).mockImplementation(async (p) => {
+			return p === clientPath || p === serverPath;
+		});
+		vi.mocked(workspace.readFile).mockImplementation(async (p) => {
+			if (p === clientPath) {
+				return dedent`
+					import { z } from "zod";
+					export const SharedSchema = z.object({});
+				`;
+			}
+			if (p === serverPath) {
+				return dedent`
+					import { z } from "zod";
+					export const SharedSchema = z.object({});
+				`;
+			}
+			return "";
+		});
+		scanner.detectFramework = vi.fn().mockResolvedValue("nextjs");
+
+		const result = await useCase.execute({ provider: "vercel" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			clientPath,
+			expect.stringContaining("NEXT_PUBLIC_VERCEL_ENV"),
+		);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			serverPath,
+			expect.stringContaining("VERCEL:"),
+		);
+	});
+
+	it("mutates strict layout Valibot schemas via v.object SharedSchema", async () => {
+		const clientPath = path.resolve(process.cwd(), "env/client.ts");
+		const serverPath = path.resolve(process.cwd(), "env/server.ts");
+
+		vi.mocked(workspace.exists).mockImplementation(async (p) => {
+			return p === clientPath || p === serverPath;
+		});
+		vi.mocked(workspace.readFile).mockImplementation(async (p) => {
+			if (p === clientPath) {
+				return dedent`
+					import * as v from "valibot";
+					export const SharedSchema = v.object({});
+				`;
+			}
+			if (p === serverPath) {
+				return dedent`
+					import * as v from "valibot";
+					export const SharedSchema = v.object({});
+				`;
+			}
+			return "";
+		});
+		scanner.detectFramework = vi.fn().mockResolvedValue("nextjs");
+
+		const result = await useCase.execute({ provider: "vercel" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			clientPath,
+			expect.stringContaining("NEXT_PUBLIC_VERCEL_ENV"),
+		);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			serverPath,
+			expect.stringContaining("VERCEL:"),
+		);
+	});
+
 	it("logs partitioned manual instructions if strict layout mutation fails", async () => {
 		const clientPath = path.resolve(process.cwd(), "env/client.ts");
 		const serverPath = path.resolve(process.cwd(), "env/server.ts");
@@ -277,10 +380,10 @@ describe("AddUseCase", () => {
 	});
 
 	describe("partitionPresetKeys", () => {
-		it("partitions vercel keys for nextjs framework", () => {
+		it("partitions vercel keys for NEXT_PUBLIC_ prefix", () => {
 			const { clientKeys, serverKeys } = partitionPresetKeys(
 				"vercel",
-				"nextjs",
+				"NEXT_PUBLIC_",
 			);
 			expect(clientKeys).toEqual([
 				"NEXT_PUBLIC_VERCEL_ENV",
@@ -289,8 +392,11 @@ describe("AddUseCase", () => {
 			expect(serverKeys).toEqual(["VERCEL", "VERCEL_ENV", "VERCEL_URL"]);
 		});
 
-		it("partitions netlify keys for nuxt framework", () => {
-			const { clientKeys, serverKeys } = partitionPresetKeys("netlify", "nuxt");
+		it("partitions netlify keys for NUXT_PUBLIC_ prefix", () => {
+			const { clientKeys, serverKeys } = partitionPresetKeys(
+				"netlify",
+				"NUXT_PUBLIC_",
+			);
 			expect(clientKeys).toEqual(["NUXT_PUBLIC_CONTEXT", "NUXT_PUBLIC_URL"]);
 			expect(serverKeys).toEqual(["NETLIFY", "DEPLOY_URL", "CONTEXT", "URL"]);
 		});

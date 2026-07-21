@@ -1,6 +1,3 @@
-import { FRAMEWORK_CLIENT_PREFIXES } from "@/features/scaffold/frameworks/client-prefixes";
-import type { Framework } from "@/features/scaffold/plan";
-
 /**
  * Codegen IR for a single hosting-preset field.
  *
@@ -102,22 +99,17 @@ export function getPresetKeys(
  * Partitions hosting preset keys into client-facing (prefixed) vs server-only keys for strict layouts.
  *
  * @param preset Selected hosting preset (`"none"` yields empty lists)
- * @param frameworkOrPrefix Framework id or an explicit client prefix string
+ * @param clientPrefix Framework client prefix (e.g. `NEXT_PUBLIC_`); empty skips client keys
  * @returns Client-prefixed keys for `client.ts` and unprefixed keys for `server.ts`
  */
 export function partitionPresetKeys(
 	preset: HostPreset,
-	frameworkOrPrefix: Framework | string,
+	clientPrefix: string,
 ): { clientKeys: string[]; serverKeys: string[] } {
 	if (preset === "none") {
 		return { clientKeys: [], serverKeys: [] };
 	}
 	const def = PRESETS[preset];
-
-	const prefix =
-		frameworkOrPrefix.endsWith("_") || frameworkOrPrefix === ""
-			? frameworkOrPrefix
-			: FRAMEWORK_CLIENT_PREFIXES[frameworkOrPrefix as Framework];
 
 	const serverKeys: string[] = [
 		...def.serverOnlyKeys,
@@ -125,9 +117,9 @@ export function partitionPresetKeys(
 	];
 	const clientKeys: string[] = [];
 
-	if (prefix) {
+	if (clientPrefix) {
 		for (const key of def.clientExposedKeys) {
-			clientKeys.push(`${prefix}${key}`);
+			clientKeys.push(`${clientPrefix}${key}`);
 		}
 	}
 
