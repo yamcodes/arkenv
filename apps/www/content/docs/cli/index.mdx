@@ -4,7 +4,7 @@ icon: Album
 description: Commands for scaffolding and mutating ArkEnv setup with an interactive CLI.
 ---
 
-The ArkEnv CLI provides commands to scaffold a new ArkEnv setup and to mutate an existing one (for example, adding a hosting preset to `env.ts`).
+The ArkEnv CLI provides commands to scaffold a new ArkEnv setup and to mutate an existing one (for example, adding a hosting preset to your schema).
 
 ## Commands
 
@@ -32,13 +32,13 @@ The command adjusts its workflow depending on where it is executed:
 
 ### `add host`
 
-Add a hosting provider preset (Vercel or Netlify) to an existing flat `env.ts`.
+Add a hosting provider preset (Vercel or Netlify) to an existing schema (flat or strict).
 
 ```npm
 npx @arkenv/cli@latest add host [provider]
 ```
 
-See [Hosting presets](/docs/cli/hosting-presets#add-host-to-an-existing-schema) for behavior, interactive selection, and fallbacks when `env.ts` is missing or unparseable.
+See [Hosting presets](/docs/cli/hosting-presets#add-host-to-an-existing-schema) for behavior, interactive selection, and fallbacks when the schema is missing or unparseable.
 
 ## Global options
 
