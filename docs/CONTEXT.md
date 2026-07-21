@@ -17,11 +17,11 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 **Env object**:
 The imported validated environment object (`import { env } from "./env"`). This is the **canonical surface** across Next, Nuxt, Vite, and Bun — client and server.
-_Avoid_: treating `import.meta.env` / `process.env` as the recommended ArkEnv API
+*Avoid*: treating `import.meta.env` / `process.env` as the recommended ArkEnv API
 
 **Schema/define path**:
 The Vite plugin call shape `arkenv(schema)` that validates at build time and inlines via Vite `define` into `import.meta.env.*`, with types from `ImportMetaEnvAugmented`. Still supported so existing apps keep working (#1328 acceptance). Lasting product stance is the open call on **#1333** (gates CLI #1332 and related SPA-mode work).
-_Avoid_: **SPA mode** as the product name in examples, changelogs, or new docs for this path until #1333 decides
+*Avoid*: **SPA mode** as the product name in examples, changelogs, or new docs for this path until #1333 decides
 
 ## Flagged ambiguities
 
