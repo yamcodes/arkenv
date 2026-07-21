@@ -24,8 +24,10 @@
 		"@repo/log": "0.0.1"
 	},
 	"changesets": [
+		"add-host-preset-add-command",
 		"drop-example-e-alias",
 		"epg3nspi",
+		"fix-nuxt-proxy-coercion",
 		"forward-port-hosting-presets",
 		"forward-port-keywords-typetable",
 		"host-preset-alias",

@@ -34,7 +34,7 @@ describe("HelpUseCase", () => {
 		);
 		expect(addCommandLog).toBeDefined();
 		expect(addCommandLog).toBe(
-			"  arkenv add host [provider]    Add hosting provider preset (vercel, netlify) to env.ts",
+			"  arkenv add host [provider]    Add hosting provider preset (vercel, netlify) to schema",
 		);
 
 		// Options should be aligned based on the longest option (--host-preset, -H <preset>) which is 26 chars

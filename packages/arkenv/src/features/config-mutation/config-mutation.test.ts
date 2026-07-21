@@ -363,5 +363,78 @@ describe("config-mutation", () => {
 			expect(result.proposedFields).toHaveProperty("VERCEL");
 			expect(result.proposedFields).toHaveProperty("VERCEL_ENV");
 		});
+
+		it("mutates env schema with specific targetKeys subset", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+				["NEXT_PUBLIC_VERCEL_ENV", "NEXT_PUBLIC_VERCEL_URL"],
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				"NEXT_PUBLIC_VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
+			expect(result.code).toContain('NEXT_PUBLIC_VERCEL_URL: "string?"');
+			expect(result.code).not.toContain('VERCEL: "string?"');
+		});
+
+		it("mutates SharedSchema exported as z.object", () => {
+			const initialContent = dedent`
+				import { z } from "zod";
+
+				export const SharedSchema = z.object({
+					DATABASE_URL: z.string(),
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"zod",
+				["NEXT_PUBLIC_VERCEL_ENV"],
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'NEXT_PUBLIC_VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
+			expect(result.code).not.toContain("VERCEL: z.string().optional()");
+		});
+
+		it("mutates SharedSchema exported as v.object", () => {
+			const initialContent = dedent`
+				import * as v from "valibot";
+
+				export const SharedSchema = v.object({
+					DATABASE_URL: v.string(),
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"valibot",
+				["NEXT_PUBLIC_VERCEL_ENV"],
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'NEXT_PUBLIC_VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"]))',
+			);
+			expect(result.code).not.toContain("VERCEL: v.optional(v.string())");
+		});
 	});
 });

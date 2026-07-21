@@ -261,7 +261,9 @@ export function arkenvInternal(
 		unknown
 	>;
 
-	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client
+	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client.
+	// Always serve the coerced validation target — never re-read raw runtimeConfig / process.env /
+	// __NUXT__ strings, which would silently undo ADR 0002 coercion.
 	return createSecurityProxy(
 		mergedValidated,
 		allKeys,
@@ -271,7 +273,17 @@ export function arkenvInternal(
 }
 
 /**
- * Wraps the validated environment object in a Proxy to enforce client/server security access rules.
+ * Wrap the validated environment object in a Proxy to enforce client/server security access rules.
+ *
+ * Schema-key reads always return the coerced validation target. Raw `useRuntimeConfig()` /
+ * `process.env` / `__NUXT__.config.public` strings are intentionally not preferred on get —
+ * those sources feed validation at create time, but serving them again would bypass coercion.
+ *
+ * @param target The validated and coerced environment object
+ * @param allKeys The set of all keys defined in the schema (including extended schemas)
+ * @param serverOnlyKeys The set of keys that must not be accessed on the client
+ * @param isServer Whether the proxy is running in a server context
+ * @returns A Proxy that enforces access rules while preserving coerced value types
  */
 function createSecurityProxy(
 	target: Record<string, unknown>,

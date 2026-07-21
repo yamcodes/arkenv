@@ -347,6 +347,7 @@ export function getFieldDefinition(
  * @param preset The selected hosting provider preset.
  * @param framework The active framework.
  * @param validator The active validator.
+ * @param targetKeys Optional specific keys to mutate (defaults to all preset keys).
  * @returns The result of the mutation operation.
  */
 export function mutateEnvConfig(
@@ -354,6 +355,7 @@ export function mutateEnvConfig(
 	preset: HostPreset,
 	framework: Framework,
 	validator: Validator,
+	targetKeys?: string[],
 ): {
 	success: boolean;
 	updated: boolean;
@@ -362,20 +364,24 @@ export function mutateEnvConfig(
 	proposedFields: Record<string, string>;
 } {
 	const prefix = FRAMEWORK_CLIENT_PREFIXES[framework];
-	const presetKeys = getPresetKeys(preset, prefix);
+	const keysToMutate = targetKeys ?? getPresetKeys(preset, prefix);
 	const proposedFields: Record<string, string> = {};
 
-	for (const key of presetKeys) {
+	for (const key of keysToMutate) {
 		proposedFields[key] = getFieldDefinition(key, validator, prefix, preset);
 	}
 
 	try {
 		const mod = parseModule(code);
-		const envExport = mod.exports.env || mod.exports.Env;
+		const envExport =
+			mod.exports.env || mod.exports.Env || mod.exports.SharedSchema;
 		if (
 			!envExport ||
 			envExport.$type !== "function-call" ||
-			(envExport.$callee !== "arkenv" && envExport.$callee !== "type")
+			(envExport.$callee !== "arkenv" &&
+				envExport.$callee !== "type" &&
+				envExport.$callee !== "z.object" &&
+				envExport.$callee !== "v.object")
 		) {
 			return {
 				success: false,
@@ -398,7 +404,7 @@ export function mutateEnvConfig(
 		let updated = false;
 		const replacements: Record<string, string> = {};
 
-		for (const key of presetKeys) {
+		for (const key of keysToMutate) {
 			// Only add if the key doesn't already exist in the schema
 			if (!(key in obj)) {
 				const placeholder = `__ARK_PRESET_PLACEHOLDER_${key}__`;
