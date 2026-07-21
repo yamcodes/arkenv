@@ -1,5 +1,19 @@
 # @arkenv/cli
 
+## 0.5.2
+
+### Patch Changes
+
+- #### Support `arkenv add host` for strict multi-file layouts _[`#1430`](https://github.com/yamcodes/arkenv/pull/1430) [`4eb2e6c`](https://github.com/yamcodes/arkenv/commit/4eb2e6ccd8cebb3dd94716e156450ee4572c7b89) [@abhimanyutiwaribot](https://github.com/abhimanyutiwaribot)_
+
+  Support `arkenv add host [provider]` in projects with strict multi-file layouts (`client.ts` and `server.ts`). Automatically partition preset variables into client-prefixed keys for `client.ts` and server-only keys for `server.ts`.
+
+  Usage:
+
+  ```bash
+  npx @arkenv/cli@latest add host [provider]
+  ```
+
 ## 0.5.1
 
 ### Patch Changes
