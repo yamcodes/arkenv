@@ -23,16 +23,16 @@ The command adjusts its workflow depending on where it is executed:
 
 #### Options [!toc]
 
-| Flag            | Alias | Description                                                                                                                                        |
-| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--example`     |       | Specify an example name when creating a new project.                                                                                               |
-| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                            |
-| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                          |
-| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`). See [Hosting presets](/docs/cli/hosting-presets). |
+| Flag            | Alias | Description                                                                                                                                                                                  |
+| --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--example`     |       | Specify an example name when creating a new project.                                                                                                                                         |
+| `--force`       | `-f`  | Bypass checks and force initialization.                                                                                                                                                      |
+| `--no-codegen`  |       | Disable automatic env.gen.ts code generation for Next.js (falls back to manual runtimeEnv destructuring).                                                                                    |
+| `--host-preset` | `-H`  | Pre-populate the schema with a hosting provider's system env vars (`none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`). See [Hosting presets](/docs/cli/hosting-presets). |
 
 ### `add host`
 
-Add a hosting provider preset (Vercel or Netlify) to an existing schema.
+Add a hosting provider preset (Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io) to an existing schema.
 
 ```npm
 npx arkenv@latest add host [provider]

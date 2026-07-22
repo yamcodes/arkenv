@@ -139,6 +139,98 @@ describe("AddUseCase", () => {
 		);
 	});
 
+	it("mutates env.ts with cloudflare preset keys", async () => {
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
+		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+			import { type } from "@arkenv/core";
+			export const Env = type({
+				DATABASE_URL: "string",
+			});
+		`);
+
+		const result = await useCase.execute({ provider: "cloudflare" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("env.ts"),
+			expect.stringContaining('CF_PAGES: "string?"'),
+		);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("env.ts"),
+			expect.stringContaining('CF_PAGES_URL: "string?"'),
+		);
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("Added Cloudflare"),
+		);
+	});
+
+	it("mutates env.ts with railway preset keys", async () => {
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
+		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+			import { type } from "@arkenv/core";
+			export const Env = type({
+				DATABASE_URL: "string",
+			});
+		`);
+
+		const result = await useCase.execute({ provider: "railway" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("env.ts"),
+			expect.stringContaining('RAILWAY_ENVIRONMENT_NAME: "string?"'),
+		);
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("Added Railway"),
+		);
+	});
+
+	it("mutates env.ts with render preset keys", async () => {
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
+		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+			import { type } from "@arkenv/core";
+			export const Env = type({
+				DATABASE_URL: "string",
+			});
+		`);
+
+		const result = await useCase.execute({ provider: "render" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("env.ts"),
+			expect.stringContaining('RENDER: "string?"'),
+		);
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("Added Render"),
+		);
+	});
+
+	it("mutates env.ts with fly preset keys", async () => {
+		vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+			p.endsWith("env.ts"),
+		);
+		vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+			import { type } from "@arkenv/core";
+			export const Env = type({
+				DATABASE_URL: "string",
+			});
+		`);
+
+		const result = await useCase.execute({ provider: "fly" });
+		expect(result).toBe(true);
+		expect(workspace.writeFile).toHaveBeenCalledWith(
+			expect.stringContaining("env.ts"),
+			expect.stringContaining('FLY_APP_NAME: "string?"'),
+		);
+		expect(logger.success).toHaveBeenCalledWith(
+			expect.stringContaining("Added Fly.io"),
+		);
+	});
+
 	it("locates and mutates src/env.ts in nested layouts", async () => {
 		vi.mocked(workspace.exists).mockImplementation(async (p: string) => {
 			return p.endsWith("src/env.ts");

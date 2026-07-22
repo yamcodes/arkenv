@@ -1,7 +1,7 @@
 ---
 title: Hosting presets
 icon: Cloud
-description: Pre-populate your schema with Vercel or Netlify system environment variables during arkenv init, or add them later with arkenv add host.
+description: Pre-populate your schema with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io system environment variables during arkenv init, or add them later with arkenv add host.
 ---
 
 Most hosting providers inject their own **system environment variables** at build and runtime (for example, Vercel sets `VERCEL_ENV` and `VERCEL_URL`, Netlify sets `CONTEXT` and `URL`). Hosting presets let `arkenv init` pre-populate your generated schema with the correct variables for your provider, already typed and marked optional, so you don't have to look them up by hand. If you already have a schema, use [`arkenv add host`](#add-host-to-an-existing-schema) to inject the same fields later.
@@ -18,9 +18,13 @@ When you run `init` interactively, the CLI shows a dedicated step:
 
 ```txt
 Select a hosting provider preset (optional):
-❯ None      Do not add any hosting-specific environment variables
-  Vercel    Add VERCEL, VERCEL_ENV, VERCEL_URL, etc.
-  Netlify   Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.
+❯ None                          Do not add any hosting-specific environment variables
+  Vercel                        Add VERCEL, VERCEL_ENV, VERCEL_URL, etc.
+  Netlify                       Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.
+  Cloudflare Pages/Workers      Add CF_PAGES, CF_PAGES_COMMIT_SHA, CF_PAGES_BRANCH, CF_PAGES_URL, etc.
+  Railway                       Add RAILWAY_ENVIRONMENT_NAME, RAILWAY_PUBLIC_DOMAIN, RAILWAY_GIT_COMMIT_SHA, etc.
+  Render                        Add RENDER, RENDER_SERVICE_ID, RENDER_SERVICE_TYPE, RENDER_EXTERNAL_URL, etc.
+  Fly.io                        Add FLY_APP_NAME, FLY_REGION, FLY_ALLOC_ID, etc.
 ```
 
 Choosing **None** (the default) leaves your schema untouched.
@@ -33,7 +37,7 @@ To skip the prompt - for example in scripts or with `--agent` - pass the `--host
 npx arkenv@latest init --host-preset vercel
 ```
 
-The flag accepts `none`, `vercel`, or `netlify`. The following is equivalent:
+The flag accepts `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, or `fly`. The following is equivalent:
 
 ```npm
 npx arkenv@latest init -H vercel
@@ -80,6 +84,41 @@ Selecting a preset adds the provider's system variables to your schema. Every va
 | `DEPLOY_URL` | `string` (optional)                                              | Server-only    |
 | `CONTEXT`    | `"production" \| "deploy-preview" \| "branch-deploy"` (optional) | Client-exposed |
 | `URL`        | `string` (optional)                                              | Client-exposed |
+
+### Cloudflare Pages/Workers
+
+| Variable              | Type                | Exposure       |
+| --------------------- | ------------------- | -------------- |
+| `CF_PAGES`            | `string` (optional) | Server-only    |
+| `CF_PAGES_COMMIT_SHA` | `string` (optional) | Server-only    |
+| `CF_PAGES_BRANCH`     | `string` (optional) | Client-exposed |
+| `CF_PAGES_URL`        | `string` (optional) | Client-exposed |
+
+### Railway
+
+| Variable                   | Type                | Exposure    |
+| -------------------------- | ------------------- | ----------- |
+| `RAILWAY_ENVIRONMENT_NAME` | `string` (optional) | Server-only |
+| `RAILWAY_PUBLIC_DOMAIN`    | `string` (optional) | Server-only |
+| `RAILWAY_SERVICE_NAME`     | `string` (optional) | Server-only |
+| `RAILWAY_GIT_COMMIT_SHA`   | `string` (optional) | Server-only |
+
+### Render
+
+| Variable              | Type                | Exposure    |
+| --------------------- | ------------------- | ----------- |
+| `RENDER`              | `string` (optional) | Server-only |
+| `RENDER_SERVICE_ID`   | `string` (optional) | Server-only |
+| `RENDER_SERVICE_TYPE` | `string` (optional) | Server-only |
+| `RENDER_EXTERNAL_URL` | `string` (optional) | Server-only |
+
+### Fly.io
+
+| Variable       | Type                | Exposure    |
+| -------------- | ------------------- | ----------- |
+| `FLY_APP_NAME` | `string` (optional) | Server-only |
+| `FLY_REGION`   | `string` (optional) | Server-only |
+| `FLY_ALLOC_ID` | `string` (optional) | Server-only |
 
 ## Framework prefixes
 
@@ -214,6 +253,215 @@ The examples below show the schema generated for a plain Node.js project (no fra
     	DEPLOY_URL: v.optional(v.string()),
     	CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"])),
     	URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Cloudflare Pages/Workers
+
+<Tabs items={['ArkType', 'Zod', 'Valibot']}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv, { type } from "@arkenv/core";
+
+    export const Env = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	PORT: "number.port = 3000",
+    	CF_PAGES: "string?",
+    	CF_PAGES_COMMIT_SHA: "string?",
+    	CF_PAGES_BRANCH: "string?",
+    	CF_PAGES_URL: "string?",
+    });
+
+    export const env = arkenv(Env);
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    	PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    	CF_PAGES: z.string().optional(),
+    	CF_PAGES_COMMIT_SHA: z.string().optional(),
+    	CF_PAGES_BRANCH: z.string().optional(),
+    	CF_PAGES_URL: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    	PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),
+    	CF_PAGES: v.optional(v.string()),
+    	CF_PAGES_COMMIT_SHA: v.optional(v.string()),
+    	CF_PAGES_BRANCH: v.optional(v.string()),
+    	CF_PAGES_URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Railway
+
+<Tabs items={['ArkType', 'Zod', 'Valibot']}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv, { type } from "@arkenv/core";
+
+    export const Env = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	PORT: "number.port = 3000",
+    	RAILWAY_ENVIRONMENT_NAME: "string?",
+    	RAILWAY_PUBLIC_DOMAIN: "string?",
+    	RAILWAY_SERVICE_NAME: "string?",
+    	RAILWAY_GIT_COMMIT_SHA: "string?",
+    });
+
+    export const env = arkenv(Env);
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    	PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    	RAILWAY_ENVIRONMENT_NAME: z.string().optional(),
+    	RAILWAY_PUBLIC_DOMAIN: z.string().optional(),
+    	RAILWAY_SERVICE_NAME: z.string().optional(),
+    	RAILWAY_GIT_COMMIT_SHA: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    	PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),
+    	RAILWAY_ENVIRONMENT_NAME: v.optional(v.string()),
+    	RAILWAY_PUBLIC_DOMAIN: v.optional(v.string()),
+    	RAILWAY_SERVICE_NAME: v.optional(v.string()),
+    	RAILWAY_GIT_COMMIT_SHA: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Render
+
+<Tabs items={['ArkType', 'Zod', 'Valibot']}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv, { type } from "@arkenv/core";
+
+    export const Env = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	PORT: "number.port = 3000",
+    	RENDER: "string?",
+    	RENDER_SERVICE_ID: "string?",
+    	RENDER_SERVICE_TYPE: "string?",
+    	RENDER_EXTERNAL_URL: "string?",
+    });
+
+    export const env = arkenv(Env);
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    	PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    	RENDER: z.string().optional(),
+    	RENDER_SERVICE_ID: z.string().optional(),
+    	RENDER_SERVICE_TYPE: z.string().optional(),
+    	RENDER_EXTERNAL_URL: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    	PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),
+    	RENDER: v.optional(v.string()),
+    	RENDER_SERVICE_ID: v.optional(v.string()),
+    	RENDER_SERVICE_TYPE: v.optional(v.string()),
+    	RENDER_EXTERNAL_URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Fly.io
+
+<Tabs items={['ArkType', 'Zod', 'Valibot']}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv, { type } from "@arkenv/core";
+
+    export const Env = type({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	PORT: "number.port = 3000",
+    	FLY_APP_NAME: "string?",
+    	FLY_REGION: "string?",
+    	FLY_ALLOC_ID: "string?",
+    });
+
+    export const env = arkenv(Env);
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    	PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    	FLY_APP_NAME: z.string().optional(),
+    	FLY_REGION: z.string().optional(),
+    	FLY_ALLOC_ID: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
+    	PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),
+    	FLY_APP_NAME: v.optional(v.string()),
+    	FLY_REGION: v.optional(v.string()),
+    	FLY_ALLOC_ID: v.optional(v.string()),
     });
     ```
   </Tab>
