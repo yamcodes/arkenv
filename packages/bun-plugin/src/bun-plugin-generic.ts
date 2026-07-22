@@ -14,7 +14,7 @@ import { processEnvSchema, registerLoader } from "./utils";
  * @param pluginName The display name of the plugin
  * @param factoryLogOptions Optional logger configuration for build-time messages
  * @param options Optional factory options
- * @param options.isStandard When true, missing-schema examples use `@arkenv/standard`
+ * @param options.isStandard When true, missing-schema examples use `@arkenv/standard` with Zod
  * @returns An object containing the configured arkenv plugin creator and the hybrid plugin instance
  */
 export function createBunPlugin(
@@ -25,9 +25,11 @@ export function createBunPlugin(
 ) {
 	const schemaExample = options?.isStandard
 		? `import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
 export default arkenv({
-  BUN_PUBLIC_API_URL: { "~standard": { version: 1, validate: (v) => ({ value: v }) } },
-  BUN_PUBLIC_DEBUG: { "~standard": { version: 1, validate: (v) => ({ value: v }) } }
+  BUN_PUBLIC_API_URL: z.string(),
+  BUN_PUBLIC_DEBUG: z.boolean(),
 });`
 		: `import { type } from "@arkenv/core";
 export default type({

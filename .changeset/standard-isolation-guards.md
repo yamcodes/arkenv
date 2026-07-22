@@ -2,6 +2,16 @@
 "@arkenv/bun-plugin": patch
 ---
 
-#### Use engine-specific schema examples in hybrid missing-schema errors
+#### Show a Zod example when Standard Mode cannot find `env.ts`
 
-Point Standard Mode (`@arkenv/bun-plugin/standard`) error examples at `@arkenv/standard` instead of `@arkenv/core`, so missing-schema guidance matches the active engine.
+When `@arkenv/bun-plugin/standard` fails because no schema file exists, the error now shows an `@arkenv/standard` + Zod starter instead of an ArkType one:
+
+```ts
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export default arkenv({
+  BUN_PUBLIC_API_URL: z.string(),
+  BUN_PUBLIC_DEBUG: z.boolean(),
+});
+```

@@ -2,12 +2,21 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+	assertPackagesStandardIsolation,
 	FORBIDDEN_STANDARD_DEPS,
 	getStandardExportEntries,
 	isForbiddenStandardDep,
+	resolvePackageDirs,
 } from "./standard-isolation.js";
 
 const rootDir = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+const integrationPackages = resolvePackageDirs(rootDir, [
+	"packages/vite-plugin",
+	"packages/bun-plugin",
+	"packages/nextjs",
+	"packages/nuxt",
+]);
 
 describe("standard-isolation helpers", () => {
 	it("treats arktype and @arkenv/core as forbidden", () => {
@@ -32,4 +41,10 @@ describe("standard-isolation helpers", () => {
 			"./standard/shared",
 		]);
 	});
+});
+
+describe("integration /standard isolation", () => {
+	it("keeps every published /standard export free of arktype and @arkenv/core", async () => {
+		await assertPackagesStandardIsolation(integrationPackages);
+	}, 60_000);
 });
