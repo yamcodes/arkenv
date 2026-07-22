@@ -1,5 +1,25 @@
 # @arkenv/cli
 
+## 0.5.3
+
+### Patch Changes
+
+- #### Add hosting presets for Cloudflare, Railway, Render, and Fly.io _[`#1450`](https://github.com/yamcodes/arkenv/pull/1450) [`74ebc63`](https://github.com/yamcodes/arkenv/commit/74ebc63e40212b6786cbca52254cc8f6d19decc2) [@abhimanyutiwaribot](https://github.com/abhimanyutiwaribot)_
+
+  Add hosting presets for Cloudflare, Railway, Render, and Fly.io to the interactive prompt selections in both `arkenv init` and `arkenv add host`.
+
+  Usage:
+
+  ```bash
+  npx @arkenv/cli@latest add host cloudflare
+  ```
+
+  or
+
+  ```bash
+  npx @arkenv/cli@latest init --host-preset cloudflare
+  ```
+
 ## 0.5.2
 
 ### Patch Changes

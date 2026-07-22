@@ -1,7 +1,7 @@
 {
 	"name": "@arkenv/cli",
 	"type": "module",
-	"version": "0.5.2",
+	"version": "0.5.3",
 	"description": "Interactive CLI for scaffolding ArkEnv projects",
 	"bin": {
 		"arkenv": "./dist/index.cjs"
