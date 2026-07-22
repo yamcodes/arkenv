@@ -1,4 +1,4 @@
-import type { Framework, HostPreset, Validator } from "../plan";
+import type { Framework, HostPreset, HostProvider, Validator } from "../plan";
 
 /**
  * Codegen IR for a single hosting-preset field.
@@ -108,9 +108,9 @@ export const PRESETS = {
 	},
 } satisfies Record<string, PresetDefinition>;
 
-export const PROVIDERS = Object.keys(PRESETS) as Exclude<HostPreset, "none">[];
+export const PROVIDERS = Object.keys(PRESETS) as HostProvider[];
 
-export type { HostPreset };
+export type { HostPreset, HostProvider };
 
 /**
  * Get the framework-specific client prefix.

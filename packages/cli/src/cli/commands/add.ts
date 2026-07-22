@@ -5,6 +5,7 @@ import {
 	getFrameworkPrefix,
 	getPresetKeys,
 	type HostPreset,
+	type HostProvider,
 	PRESETS,
 	partitionPresetKeys,
 } from "@/features/scaffold";
@@ -16,7 +17,7 @@ import type {
 } from "@/shared/ports";
 
 export type AddInput = {
-	provider?: Exclude<HostPreset, "none">;
+	provider?: HostProvider;
 	isYes?: boolean;
 };
 

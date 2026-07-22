@@ -1,6 +1,16 @@
 import { Logger } from "@/adapters";
-import { type HostPreset, PROVIDERS } from "@/features/scaffold";
+import { type HostPreset, type HostProvider, PROVIDERS } from "@/features/scaffold";
 import type { InitInput } from "./commands/init";
+
+const PROVIDER_SET = new Set<string>(PROVIDERS);
+const HOST_PRESET_SET = new Set<string>(["none", ...PROVIDERS]);
+
+const isProvider = (val: string): val is HostProvider =>
+	PROVIDER_SET.has(val);
+
+const isHostPreset = (val: string): val is HostPreset =>
+	HOST_PRESET_SET.has(val);
+
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
@@ -110,8 +120,7 @@ export class CLI {
 		if (!this.validationError) {
 			const flag = FLAG_CONFIG.hostPreset;
 			const rawPresetVal = this.getFlagValue(flag.long, flag.short);
-			const validPresets = ["none", ...PROVIDERS];
-			if (rawPresetVal !== undefined && !validPresets.includes(rawPresetVal)) {
+			if (rawPresetVal !== undefined && !isHostPreset(rawPresetVal)) {
 				this.validationError = `Invalid host preset: ${rawPresetVal}`;
 			}
 		}
@@ -124,7 +133,7 @@ export class CLI {
 					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
 				} else {
 					const provider = positionalArgs[1];
-					if (provider !== undefined && !PROVIDERS.includes(provider as any)) {
+					if (provider !== undefined && !isProvider(provider)) {
 						this.validationError = `Invalid host preset: ${provider}`;
 					}
 				}
@@ -194,9 +203,8 @@ export class CLI {
 	get hostPreset(): HostPreset | undefined {
 		const flag = FLAG_CONFIG.hostPreset;
 		const val = this.getFlagValue(flag.long, flag.short);
-		const validPresets = ["none", ...PROVIDERS];
-		if (val && validPresets.includes(val)) {
-			return val as HostPreset;
+		if (val && isHostPreset(val)) {
+			return val;
 		}
 		return undefined;
 	}
@@ -238,13 +246,13 @@ export class CLI {
 	}
 
 	get addInput(): {
-		provider?: Exclude<HostPreset, "none">;
+		provider?: HostProvider;
 		isYes?: boolean;
 	} {
 		const provider = this.positionalArgs[1];
 		const isYes = this.isYes;
-		if (provider && PROVIDERS.includes(provider as any)) {
-			return { provider: provider as Exclude<HostPreset, "none">, isYes };
+		if (provider && isProvider(provider)) {
+			return { provider, isYes };
 		}
 		return { isYes };
 	}

@@ -2,14 +2,15 @@ import type { LoggerPort as Reporter } from "@/shared/ports/logger.port";
 import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
 import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
 
-export type HostPreset =
-	| "none"
+export type HostProvider =
 	| "vercel"
 	| "netlify"
 	| "cloudflare"
 	| "railway"
 	| "render"
 	| "fly";
+
+export type HostPreset = "none" | HostProvider;
 
 export type { Reporter, Workspace };
 
