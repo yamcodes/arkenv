@@ -194,15 +194,7 @@ export class CLI {
 	get hostPreset(): HostPreset | undefined {
 		const flag = FLAG_CONFIG.hostPreset;
 		const val = this.getFlagValue(flag.long, flag.short);
-		const validPresets = [
-			"none",
-			"vercel",
-			"netlify",
-			"cloudflare",
-			"railway",
-			"render",
-			"fly",
-		];
+		const validPresets = ["none", ...PROVIDERS];
 		if (val && validPresets.includes(val)) {
 			return val as HostPreset;
 		}
