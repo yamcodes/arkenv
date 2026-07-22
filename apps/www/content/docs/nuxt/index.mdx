@@ -4,7 +4,7 @@ icon: Album
 description: Validate and secure environment variables in Nuxt applications.
 ---
 
-The `@arkenv/nuxt` integration provides end-to-end environment validation for both the server and the browser. It automatically injects your configuration into Nuxt's `runtimeConfig`, catching configuration bugs early and preventing sensitive server-side variables from ever reaching the client via a custom Vite plugin.
+The `@arkenv/nuxt` integration validates environment variables for both the server and the browser, keeps public values correctly typed after deploy-time overrides, and blocks server-only secrets from reaching the client.
 
 The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nuxt` for your existing Nuxt project:
 

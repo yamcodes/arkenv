@@ -1,10 +1,19 @@
 import type { Dict, SchemaShape } from "@repo/types";
+import { getSchemaKeys } from "@repo/utils";
+import { getBootGateResult } from "./boot-gate-state";
+import { createCaptureStub, isCapturing, recordCapture } from "./capture";
 import { isForceServer } from "./validate-context";
 
+/** Symbol key for the raw extended env values object on an env proxy. */
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
+/** Symbol key for the set of declared schema keys on an env proxy. */
 export const ENV_KEYS = Symbol.for("arkenv.keys");
+/** Symbol key for server-only keys that must not be readable on the client. */
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
+/**
+ * Legacy nested schema shape (`server` / `client` / `shared` buckets).
+ */
 export type LegacyNestedSchema = {
 	server?: SchemaShape;
 	client?: SchemaShape;
@@ -13,6 +22,9 @@ export type LegacyNestedSchema = {
 	runtimeEnv?: Dict<string>;
 };
 
+/**
+ * Options for the flat (unified) schema form of {@link arkenvInternal}.
+ */
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
@@ -24,15 +36,29 @@ export type FlatSchemaOptions = {
 };
 
 /**
- * Validate and wrap environment variables in a security proxy.
+ * Optional server hooks for the thin Nuxt accessor path.
+ */
+export type ArkenvInternalHooks = {
+	/**
+	 * Run the Nuxt boot gate before reading values (server thin path only).
+	 */
+	ensureBootGate?: () => void;
+};
+
+/**
+ * Partition a schema into server/client/shared buckets and wrap coerced values
+ * in a security proxy — without running core validation.
+ *
+ * On Nuxt, `createEnv` / core validation runs in the Nitro boot gate. This
+ * function is the symmetric thin accessor: server and client both read the
+ * already-coerced `runtimeConfig` / `__NUXT__` payload.
  *
  * @param schemaOrOptions The schema definition or the unified options object
  * @param optionsOrIsServer The options object or a boolean indicating if running on the server
  * @param context The optional execution context containing server and entrypoint flags
- * @param coreArkenv The arkenv function to use for validation
- * @param getSchemaKeys The getSchemaKeys function to extract schema keys
- * @returns The wrapped and validated environment proxy object
- * @throws An error if a required key is missing or invalid
+ * @param hooks Optional server hooks (boot gate)
+ * @returns The wrapped environment proxy object
+ * @throws An error if a required key is missing from the payload or a server key is read on the client
  * @internal
  */
 export function arkenvInternal(
@@ -45,11 +71,18 @@ export function arkenvInternal(
 				strictLayout?: "client" | "server";
 		  }
 		| undefined,
-	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
-	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
-	/** Extracts the declared key names from a schema object. */
-	getSchemaKeys: (schema: SchemaShape) => string[],
+	hooks?: ArkenvInternalHooks,
 ): unknown {
+	if (isCapturing()) {
+		recordCapture(schemaOrOptions, optionsOrIsServer, context);
+		const keys = collectDeclaredKeys(
+			schemaOrOptions,
+			optionsOrIsServer,
+			context,
+		);
+		return createCaptureStub(keys);
+	}
+
 	let server: SchemaShape = {};
 	let client: Record<string, unknown> = {};
 	let shared: SchemaShape = {};
@@ -57,13 +90,7 @@ export function arkenvInternal(
 	let runtimeEnv: Dict<string> = {};
 	let isServer = false;
 
-	const globalConfig =
-		typeof window !== "undefined"
-			? (window as any).__NUXT__?.config?.public
-			: undefined;
-
 	if (typeof optionsOrIsServer === "boolean") {
-		// Old nested schema behavior (backward compatible)
 		const legacySchema = schemaOrOptions as
 			| LegacyNestedSchema
 			| null
@@ -75,9 +102,8 @@ export function arkenvInternal(
 		runtimeEnv = (legacySchema?.runtimeEnv || {}) as Dict<string>;
 		isServer = optionsOrIsServer;
 	} else {
-		// New flat schema behavior
 		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
-		const options = (optionsOrIsServer || {}) as FlatSchemaOptions;
+		const options = optionsOrIsServer || {};
 		extendsList = options.extends || [];
 		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
 		isServer = isForceServer() || !!context?.isServer;
@@ -92,7 +118,6 @@ export function arkenvInternal(
 			const exposedKeys =
 				options.exposeToClient || options.expose || options.shared || [];
 			for (const key of Object.keys(flatSchema)) {
-				// NODE_ENV is implicitly shared
 				if (exposedKeys.includes(key) || key === "NODE_ENV") {
 					shared[key] = flatSchema[key];
 				} else if (key.startsWith("NUXT_PUBLIC_")) {
@@ -104,17 +129,16 @@ export function arkenvInternal(
 		}
 	}
 
-	const sourceEnv: Record<string, unknown> = isServer
-		? (typeof process !== "undefined" ? process.env : undefined) || {}
-		: globalConfig ||
-			(typeof process !== "undefined" ? process.env : undefined) ||
-			{};
+	if (isServer) {
+		hooks?.ensureBootGate?.();
+	}
+
+	const sourceEnv = readThinSourceEnv(isServer);
 
 	let extendedEnvValues: Record<string, unknown> = {};
 	const allKeys = new Set<string>();
 	const serverOnlyKeys = new Set<string>();
 
-	// Add local keys
 	for (const key of Object.keys(server)) {
 		allKeys.add(key);
 		if (!(key in client) && !(key in shared)) {
@@ -128,10 +152,6 @@ export function arkenvInternal(
 		allKeys.add(key);
 	}
 
-	// Prepare combined environment for core validation
-	const combinedEnv: Record<string, unknown> = {};
-
-	// Process extended environments
 	if (extendsList && Array.isArray(extendsList)) {
 		for (const ext of extendsList) {
 			if (ext && (typeof ext === "object" || typeof ext === "function")) {
@@ -153,39 +173,15 @@ export function arkenvInternal(
 					if (extServerOnly instanceof Set) {
 						for (const key of extServerOnly) serverOnlyKeys.add(key);
 					}
-				} else {
-					// Prepare what we have so far for validating the extended schema
-					for (const key of Object.keys(extendedEnvValues)) {
-						if (extendedEnvValues[key] !== undefined) {
-							combinedEnv[key] = extendedEnvValues[key];
-						}
-					}
-					for (const key of Object.keys(sourceEnv)) {
-						if (sourceEnv[key] !== undefined) {
-							combinedEnv[key] = sourceEnv[key];
-						}
-					}
-					if (isServer) {
-						for (const key of Object.keys(server)) {
-							if (
-								combinedEnv[key] === undefined &&
-								process.env[key] !== undefined
-							) {
-								combinedEnv[key] = process.env[key];
-							}
-						}
-					}
-
-					const validated = coreArkenv(ext as SchemaShape, {
-						env: combinedEnv as Dict<string>,
-						safe: false,
-					});
-					extendedEnvValues = { ...extendedEnvValues, ...validated };
-
-					const extKeys = getSchemaKeys(ext);
+				} else if (
+					typeof ext === "object" &&
+					ext !== null &&
+					!Array.isArray(ext)
+				) {
+					// Raw schema in extends (e.g. SharedSchema) — keys only; values from source
+					const extKeys = getSchemaKeys(ext as SchemaShape);
 					for (const key of extKeys) {
 						allKeys.add(key);
-						// Only classify as server-only when running on the server and the key is not public.
 						if (
 							isServer &&
 							!key.startsWith("NUXT_PUBLIC_") &&
@@ -199,7 +195,6 @@ export function arkenvInternal(
 		}
 	}
 
-	// Remove keys from serverOnlyKeys if they are defined as client or shared locally
 	for (const key of Object.keys(client)) {
 		serverOnlyKeys.delete(key);
 	}
@@ -207,8 +202,6 @@ export function arkenvInternal(
 		serverOnlyKeys.delete(key);
 	}
 
-	// Validate options
-	// For client keys, check prefix
 	for (const key of Object.keys(client)) {
 		if (!key.startsWith("NUXT_PUBLIC_")) {
 			throw new Error(
@@ -217,73 +210,122 @@ export function arkenvInternal(
 		}
 	}
 
-	// Build final combinedEnv
-	for (const key of Object.keys(extendedEnvValues)) {
-		if (extendedEnvValues[key] !== undefined) {
-			combinedEnv[key] = extendedEnvValues[key];
-		}
-	}
+	const values: Record<string, unknown> = {};
 
-	for (const key of Object.keys(sourceEnv)) {
-		if (sourceEnv[key] !== undefined) {
-			combinedEnv[key] = sourceEnv[key];
-		}
-	}
-
-	for (const key of Object.keys(runtimeEnv)) {
+	for (const key of allKeys) {
 		if (runtimeEnv[key] !== undefined) {
-			combinedEnv[key] = runtimeEnv[key];
+			values[key] = runtimeEnv[key];
+		} else if (extendedEnvValues[key] !== undefined) {
+			values[key] = extendedEnvValues[key];
+		} else if (sourceEnv[key] !== undefined) {
+			values[key] = sourceEnv[key];
 		}
 	}
 
-	if (isServer) {
-		// Fallback server keys to process.env if omitted or undefined
-		for (const key of Object.keys(server)) {
-			if (combinedEnv[key] === undefined && process.env[key] !== undefined) {
-				combinedEnv[key] = process.env[key];
-			}
-		}
-	}
-
-	// Select schema based on environment
-	const schema = isServer
-		? { ...server, ...client, ...shared }
-		: { ...client, ...shared };
-
-	// Run core validation
-	const validated = coreArkenv(schema as SchemaShape, {
-		env: combinedEnv as Dict<string>,
-		safe: false,
-	});
-
-	const mergedValidated = { ...extendedEnvValues, ...validated } as Record<
-		string,
-		unknown
-	>;
-
-	// Return a Proxy wrapper with strict access rules to prevent server variable leakage on the client.
-	// Always serve the coerced validation target — never re-read raw runtimeConfig / process.env /
-	// __NUXT__ strings, which would silently undo ADR 0002 coercion.
-	return createSecurityProxy(
-		mergedValidated,
-		allKeys,
-		serverOnlyKeys,
-		isServer,
-	);
+	return createSecurityProxy(values, allKeys, serverOnlyKeys, isServer);
 }
 
 /**
- * Wrap the validated environment object in a Proxy to enforce client/server security access rules.
+ * Read the thin env source: boot-gate result / process.env on server, `__NUXT__` on client.
  *
- * Schema-key reads always return the coerced validation target. Raw `useRuntimeConfig()` /
- * `process.env` / `__NUXT__.config.public` strings are intentionally not preferred on get —
- * those sources feed validation at create time, but serving them again would bypass coercion.
+ * @param isServer Whether this accessor is on the server
+ * @returns Flat key→value map of already-coerced (or raw test) values
+ */
+function readThinSourceEnv(isServer: boolean): Record<string, unknown> {
+	if (!isServer) {
+		const globalConfig =
+			typeof window !== "undefined"
+				? (
+						window as {
+							__NUXT__?: { config?: { public?: Record<string, unknown> } };
+						}
+					).__NUXT__?.config?.public
+				: undefined;
+		return (
+			globalConfig ||
+			(typeof process !== "undefined" ? process.env : undefined) ||
+			{}
+		);
+	}
+
+	const gated = getBootGateResult();
+	if (gated) {
+		return gated;
+	}
+
+	if (
+		typeof process !== "undefined" &&
+		process.env.NODE_ENV !== "production" &&
+		!(globalThis as { __ARKENV_BOOT_GATE_FALLBACK_WARNED__?: boolean })
+			.__ARKENV_BOOT_GATE_FALLBACK_WARNED__
+	) {
+		(
+			globalThis as { __ARKENV_BOOT_GATE_FALLBACK_WARNED__?: boolean }
+		).__ARKENV_BOOT_GATE_FALLBACK_WARNED__ = true;
+		console.warn(
+			"[arkenv] Nuxt boot gate has not run; falling back to raw process.env. Register `@arkenv/nuxt/module` (or `@arkenv/nuxt/standard/module`) so values are validated and coerced at Nitro boot.",
+		);
+	}
+
+	return (typeof process !== "undefined" ? process.env : undefined) || {};
+}
+
+/**
+ * Collect declared schema key names for capture stubs.
  *
- * @param target The validated and coerced environment object
- * @param allKeys The set of all keys defined in the schema (including extended schemas)
- * @param serverOnlyKeys The set of keys that must not be accessed on the client
- * @param isServer Whether the proxy is running in a server context
- * @returns A Proxy that enforces access rules while preserving coerced value types
+ * @param schemaOrOptions Schema or nested options
+ * @param optionsOrIsServer Flat options or legacy boolean
+ * @param context Optional layout context
+ * @returns Declared key names
+ */
+function collectDeclaredKeys(
+	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
+	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+	_context:
+		| {
+				isServer: boolean;
+				isShared?: boolean;
+				strictLayout?: "client" | "server";
+		  }
+		| undefined,
+): string[] {
+	if (typeof optionsOrIsServer === "boolean") {
+		const legacy = schemaOrOptions as LegacyNestedSchema;
+		return [
+			...Object.keys(legacy?.server || {}),
+			...Object.keys(legacy?.client || {}),
+			...Object.keys(legacy?.shared || {}),
+		];
+	}
+
+	const isLegacy =
+		schemaOrOptions &&
+		typeof schemaOrOptions === "object" &&
+		("runtimeEnv" in schemaOrOptions ||
+			"server" in schemaOrOptions ||
+			"client" in schemaOrOptions ||
+			"shared" in schemaOrOptions);
+
+	if (isLegacy) {
+		const legacy = schemaOrOptions as LegacyNestedSchema;
+		return [
+			...Object.keys(legacy.server || {}),
+			...Object.keys(legacy.client || {}),
+			...Object.keys(legacy.shared || {}),
+		];
+	}
+
+	return Object.keys((schemaOrOptions || {}) as SchemaShape);
+}
+
+/**
+ * Wrap the env object in a Proxy to enforce client/server security access rules.
+ *
+ * @param target Coerced env values
+ * @param allKeys All schema keys
+ * @param serverOnlyKeys Keys that must not be readable on the client
+ * @param isServer Whether this proxy is on the server
+ * @returns The security proxy
  */
 function createSecurityProxy(
 	target: Record<string, unknown>,
@@ -303,7 +345,6 @@ function createSecurityProxy(
 				return serverOnlyKeys;
 			}
 
-			// Always allow symbol properties (Symbol.iterator, Symbol.toStringTag, etc.)
 			if (typeof prop === "symbol") {
 				return Reflect.get(target, prop, receiver);
 			}
@@ -315,9 +356,7 @@ function createSecurityProxy(
 					);
 				}
 
-				// Allow schema keys and standard Object prototype properties
 				if (!allKeys.has(prop) && !(prop in Object.prototype)) {
-					// Fallback for bundler/framework-specific properties that bypass the prototype
 					const isCommonKey =
 						prop === "__esModule" ||
 						prop === "$$typeof" ||
@@ -334,8 +373,6 @@ function createSecurityProxy(
 			}
 			return Reflect.get(target, prop, receiver);
 		},
-		// Intercept Object.keys(), Object.getOwnPropertyNames(), Reflect.ownKeys()
-		// to prevent enumerating server-only keys on the client
 		ownKeys(target) {
 			const keys = Reflect.ownKeys(target);
 			if (!isServer) {
@@ -345,14 +382,12 @@ function createSecurityProxy(
 			}
 			return keys;
 		},
-		// Intercept Object.getOwnPropertyDescriptor() to hide server-only properties on the client
 		getOwnPropertyDescriptor(target, prop) {
 			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
 				return undefined;
 			}
 			return Reflect.getOwnPropertyDescriptor(target, prop);
 		},
-		// Intercept "key in obj" existence checks to hide server-only keys on the client
 		has(target, prop) {
 			if (!isServer && typeof prop === "string" && serverOnlyKeys.has(prop)) {
 				return false;

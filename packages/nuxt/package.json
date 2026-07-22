@@ -23,6 +23,7 @@
 		"@repo/utils": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
+		"nitropack": "^2.13.1",
 		"nuxt": "^4.4.8",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
@@ -34,6 +35,7 @@
 		"@arkenv/core": "^1.0.0",
 		"@arkenv/standard": "^1.0.0",
 		"arktype": "^2.1.22",
+		"nitropack": "^2.0.0",
 		"nuxt": "^3.0.0 || ^4.0.0-0"
 	},
 	"peerDependenciesMeta": {
@@ -44,6 +46,9 @@
 			"optional": true
 		},
 		"arktype": {
+			"optional": true
+		},
+		"nitropack": {
 			"optional": true
 		}
 	},
@@ -145,6 +150,11 @@
 			"types": "./dist/empty-shared-schema.d.ts",
 			"import": "./dist/empty-shared-schema.js",
 			"require": "./dist/empty-shared-schema.cjs"
+		},
+		"#arkenv/server-boot": {
+			"types": "./dist/empty-server-boot.d.ts",
+			"import": "./dist/empty-server-boot.js",
+			"require": "./dist/empty-server-boot.cjs"
 		}
 	}
 }

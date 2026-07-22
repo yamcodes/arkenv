@@ -1,9 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { defineNuxtModule } from "@nuxt/kit";
+import { addServerPlugin, createResolver, defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
 import { formatBuildError, resolveBuildLog } from "@repo/log";
 import { name, peerDependencies, version } from "../package.json";
+import type { BootGateEngine } from "./boot-gate";
 import {
 	type ArkEnvConfigOptions,
 	extractClientKeys,
@@ -15,6 +16,7 @@ import {
 	resolveLayout,
 	validateSchema,
 } from "./config";
+import { getDefaultBootGateEngine } from "./module-engine";
 import { missingClientTsError } from "./strict-client-env";
 import {
 	registerStrictLayoutHooks,
@@ -71,6 +73,36 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	},
 	setup(options, nuxt) {
 		const buildLog = resolveBuildLog(options);
+		const resolver = createResolver(import.meta.url);
+		const engine: BootGateEngine = getDefaultBootGateEngine();
+
+		const emptyServerBoot = resolver.resolve("./empty-server-boot");
+		const realServerBoot = resolver.resolve("./server-boot");
+
+		// Default to the empty stub; Vite SSR + Nitro overwrite with the real gate.
+		nuxt.options.alias = nuxt.options.alias || {};
+		nuxt.options.alias["#arkenv/server-boot"] = emptyServerBoot;
+
+		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
+			// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
+			const anyConfig = config as any;
+			anyConfig.resolve = anyConfig.resolve || {};
+			anyConfig.resolve.alias = anyConfig.resolve.alias || {};
+			const aliasTarget = isClient ? emptyServerBoot : realServerBoot;
+			if (Array.isArray(anyConfig.resolve.alias)) {
+				anyConfig.resolve.alias.push({
+					find: "#arkenv/server-boot",
+					replacement: aliasTarget,
+				});
+			} else {
+				anyConfig.resolve.alias["#arkenv/server-boot"] = aliasTarget;
+			}
+		});
+
+		nuxt.hook("nitro:config", (nitroConfig) => {
+			nitroConfig.alias = nitroConfig.alias || {};
+			nitroConfig.alias["#arkenv/server-boot"] = realServerBoot;
+		});
 
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
@@ -132,7 +164,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 
 		if (validate) {
 			try {
-				validateSchema(schemaPath, resolvedLayout, baseDir ?? "");
+				validateSchema(schemaPath, resolvedLayout, baseDir ?? "", {
+					engine,
+				});
 			} catch (error: unknown) {
 				const message = error instanceof Error ? error.message : String(error);
 				throw new Error(
@@ -188,6 +222,15 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 				nuxt.options.runtimeConfig.public[key] = process.env[key] || "";
 			}
 		}
+
+		(nuxt.options.runtimeConfig as { arkenvGate?: unknown }).arkenvGate = {
+			schemaPath,
+			layout: resolvedLayout,
+			baseDir: baseDir ?? "",
+			engine,
+		};
+
+		addServerPlugin(resolver.resolve("./runtime/nitro-boot-plugin"));
 
 		registerViteExtendHook(nuxt, {
 			resolvedLayout,

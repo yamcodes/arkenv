@@ -27,6 +27,10 @@ export default defineProject({
 				find: "#arkenv/shared-schema",
 				replacement: path.resolve(__dirname, "./src/empty-shared-schema.ts"),
 			},
+			{
+				find: "#arkenv/server-boot",
+				replacement: path.resolve(__dirname, "./src/server-boot.ts"),
+			},
 		],
 	},
 });
