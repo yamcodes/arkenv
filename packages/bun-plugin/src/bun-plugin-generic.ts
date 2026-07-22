@@ -54,7 +54,7 @@ export function createBunPlugin(
 		return createDefinePlugin(
 			coreArkenv,
 			pluginName,
-			schemaOrOptions as CompiledEnvSchema | SchemaShape,
+			schemaOrOptions as Record<string, unknown>,
 			config,
 			factoryLogOptions,
 		);

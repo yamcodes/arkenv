@@ -98,6 +98,12 @@ export function createTransformPlugin(
 			 * @remarks
 			 * ADR 0021 (canonical env object surface): do not reintroduce `env.gen.ts`
 			 * codegen, client-side re-validation, or `runtimeEnv` wiring here.
+			 *
+			 * Dev-server refresh: `onStart` re-validates on each `Bun.build` /
+			 * `[serve.static]` rebuild. Bun does not expose a Vite-style
+			 * `handleHotUpdate` hook, so editing `.env` / `env.ts` during an
+			 * already-running `Bun.serve` requires a server restart (or a rebuild
+			 * that re-invokes `onStart`) to refresh inlined client values.
 			 */
 			build.onStart(() => {
 				try {

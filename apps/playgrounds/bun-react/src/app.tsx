@@ -1,4 +1,5 @@
 import { APITester } from "./api-tester";
+import { env } from "./env";
 import "./index.css";
 
 import logo from "./logo.svg";
@@ -28,18 +29,18 @@ export function App() {
 				<tbody>
 					<tr>
 						<td>BUN_PUBLIC_API_URL</td>
-						<td>{process.env.BUN_PUBLIC_API_URL}</td>
-						<td>{typeof process.env.BUN_PUBLIC_API_URL}</td>
+						<td>{env.BUN_PUBLIC_API_URL}</td>
+						<td>{typeof env.BUN_PUBLIC_API_URL}</td>
 					</tr>
 					<tr>
 						<td>BUN_PUBLIC_DEBUG</td>
-						<td>{String(process.env.BUN_PUBLIC_DEBUG)}</td>
-						<td>{typeof process.env.BUN_PUBLIC_DEBUG}</td>
+						<td>{String(env.BUN_PUBLIC_DEBUG)}</td>
+						<td>{typeof env.BUN_PUBLIC_DEBUG}</td>
 					</tr>
 				</tbody>
 			</table>
 			{/* Print whether we are in "build" or in the dev server */}
-			<p>Mode: {process.env.NODE_ENV}</p>
+			<p>Mode: {env.NODE_ENV}</p>
 		</div>
 	);
 }
