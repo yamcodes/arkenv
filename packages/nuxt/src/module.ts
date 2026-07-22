@@ -73,6 +73,20 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	},
 	setup(options, nuxt) {
 		const buildLog = resolveBuildLog(options);
+
+		const schemaPath = options.schemaPath
+			? path.resolve(nuxt.options.rootDir, options.schemaPath)
+			: findSchemaPath(nuxt.options.rootDir);
+
+		if (!schemaPath || !fs.existsSync(schemaPath)) {
+			buildLog.logBuildWarning(
+				`No environment schema found at ${
+					options.schemaPath || "src/env.ts or env.ts"
+				}. Skipping ArkEnv Nuxt module setup. Create a schema file or set \`arkenv.schemaPath\` in your Nuxt config.`,
+			);
+			return;
+		}
+
 		const resolver = createResolver(import.meta.url);
 		const engine: BootGateEngine = getDefaultBootGateEngine();
 
@@ -103,19 +117,6 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nitroConfig.alias = nitroConfig.alias || {};
 			nitroConfig.alias["#arkenv/server-boot"] = realServerBoot;
 		});
-
-		const schemaPath = options.schemaPath
-			? path.resolve(nuxt.options.rootDir, options.schemaPath)
-			: findSchemaPath(nuxt.options.rootDir);
-
-		if (!schemaPath || !fs.existsSync(schemaPath)) {
-			buildLog.logBuildWarning(
-				`No environment schema found at ${
-					options.schemaPath || "src/env.ts or env.ts"
-				}. Skipping ArkEnv Nuxt module setup. Create a schema file or set \`arkenv.schemaPath\` in your Nuxt config.`,
-			);
-			return;
-		}
 
 		const normalizedLayout = normalizeLayout(options.layout, buildLog);
 
