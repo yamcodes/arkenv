@@ -1,4 +1,5 @@
 import { serve } from "bun";
+import { env } from "./env";
 import index from "./index.html";
 
 const server = serve({
@@ -11,6 +12,8 @@ const server = serve({
 				return Response.json({
 					message: "Hello, world!",
 					method: "GET",
+					// Server-only key — validated at boot against the real environment.
+					databaseConfigured: Boolean(env.DATABASE_URL),
 				});
 			},
 			async PUT() {
@@ -29,7 +32,7 @@ const server = serve({
 		},
 	},
 
-	development: process.env.NODE_ENV !== "production" && {
+	development: env.NODE_ENV !== "production" && {
 		// Enable browser hot reloading in development
 		hmr: true,
 
@@ -39,3 +42,4 @@ const server = serve({
 });
 
 console.log(`🚀 Server running at ${server.url}`);
+console.log(`🗄️  DATABASE_URL configured (${env.DATABASE_URL.length} chars)`);
