@@ -89,7 +89,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			: findSchemaPath(nuxt.options.rootDir);
 
 		if (!schemaPath || !fs.existsSync(schemaPath)) {
-			return;
+			throw new Error(
+				`[ArkEnv] Could not find schema file at ${
+					options.schemaPath || "src/env.ts or env.ts"
+				}. Please specify 'schemaPath' in ArkEnv options.`,
+			);
 		}
 
 		const normalizedLayout = normalizeLayout(options.layout);
