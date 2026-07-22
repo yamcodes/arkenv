@@ -1,7 +1,4 @@
-import {
-	arkenvInternal,
-	type ArkenvInternalHooks,
-} from "./arkenv-internal";
+import { type ArkenvInternalHooks, arkenvInternal } from "./arkenv-internal";
 import { withAutoExtend } from "./auto-extend";
 
 export type ThinStrictLayout = "client" | "server";
@@ -58,10 +55,7 @@ export function dispatchStrictThinArkenv(
 
 	return arkenvInternal(
 		schemaOrOptions as never,
-		withAutoExtend(
-			optionsOrIsServer as never,
-			options.resolveAutoExtendTarget,
-		),
+		withAutoExtend(optionsOrIsServer as never, options.resolveAutoExtendTarget),
 		{ isServer, strictLayout: options.strictLayout },
 		hooks,
 	);
