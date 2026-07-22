@@ -8,6 +8,10 @@
 	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
+	"dependencies": {
+		"@arkenv/build": "workspace:*",
+		"jiti": "catalog:"
+	},
 	"devDependencies": {
 		"@arkenv/core": "workspace:*",
 		"@arkenv/standard": "workspace:*",
@@ -89,11 +93,13 @@
 	"size-limit": [
 		{
 			"path": "dist/index.js",
-			"limit": "3.2 kB",
+			"limit": "8 kB",
 			"import": "*",
 			"ignore": [
 				"bun",
 				"arktype",
+				"jiti",
+				"@arkenv/build",
 				"node:path",
 				"node:fs",
 				"node:process"

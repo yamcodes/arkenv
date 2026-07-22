@@ -18,4 +18,4 @@ To run for production:
 bun start
 ```
 
-This project was created using `bun init` in bun v1.2.22. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+This example uses the canonical `env` object surface: one `import { env } from "./env"` serves both the `Bun.build` client bundle (inlined `BUN_PUBLIC_*` values + server-key guards) and `Bun.serve` server code (boot-time validation against the real environment).
