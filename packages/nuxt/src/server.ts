@@ -6,11 +6,8 @@ import type { type as at, distill } from "arktype";
 // Outside strict layout the module aliases this to `empty-client-env.ts`.
 import { env as importedClientEnv } from "#arkenv/client-env";
 import { ensureBootGate } from "#arkenv/server-boot";
-import { arkenvInternal, type FlatSchemaOptions } from "./arkenv-internal";
-import {
-	isStrictLayoutActive,
-	resolveStrictClientEnv,
-} from "./strict-client-env";
+import { resolveStrictClientEnv } from "./strict-client-env";
+import { dispatchStrictThinArkenv } from "./thin-accessor";
 import type { MergeExtends } from "./types";
 
 /**
@@ -24,35 +21,6 @@ type AutoClientEnv = typeof import("#arkenv/client-env") extends {
 }
 	? E
 	: {};
-
-/**
- * Apply strict-layout auto-extend when `extends` is omitted.
- *
- * Kept in the server entry so client bundles never import this module graph.
- *
- * @param optionsOrIsServer Flat options, legacy boolean, or undefined
- * @returns Options with auto-extend applied when appropriate
- */
-function withAutoExtend(
-	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
-): FlatSchemaOptions | boolean | null | undefined {
-	if (typeof optionsOrIsServer === "boolean") {
-		return optionsOrIsServer;
-	}
-
-	if (optionsOrIsServer != null && "extends" in optionsOrIsServer) {
-		return optionsOrIsServer;
-	}
-
-	if (!isStrictLayoutActive()) {
-		return optionsOrIsServer;
-	}
-
-	return {
-		...(optionsOrIsServer ?? {}),
-		extends: [resolveStrictClientEnv(importedClientEnv)],
-	};
-}
 
 /**
  * Create a typesafe environment configuration for Nuxt (server entry).
@@ -102,30 +70,11 @@ export function arkenv<
 >;
 
 export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("runtimeEnv" in schemaOrOptions ||
-			"server" in schemaOrOptions ||
-			"shared" in schemaOrOptions);
-
-	const hooks = { ensureBootGate };
-
-	if (isLegacy) {
-		if ("client" in schemaOrOptions) {
-			throw new Error(
-				"server entry point only accepts 'server' and 'shared' schemas.",
-			);
-		}
-		return arkenvInternal(schemaOrOptions, true, undefined, hooks);
-	}
-
-	return arkenvInternal(
-		schemaOrOptions,
-		withAutoExtend(optionsOrIsServer),
-		{ isServer: true, strictLayout: "server" },
-		hooks,
-	);
+	return dispatchStrictThinArkenv(schemaOrOptions, optionsOrIsServer, {
+		strictLayout: "server",
+		resolveAutoExtendTarget: () => resolveStrictClientEnv(importedClientEnv),
+		ensureBootGate,
+	});
 }
 
 export default arkenv;

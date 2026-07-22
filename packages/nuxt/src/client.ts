@@ -5,9 +5,8 @@ import type { type as at, distill } from "arktype";
 // Static import so Vite/Nitro can resolve the alias at bundle time.
 // Outside strict layout the module aliases this to `empty-shared-schema.ts`.
 import { SharedSchema as importedSharedSchema } from "#arkenv/shared-schema";
-import { arkenvInternal, type FlatSchemaOptions } from "./arkenv-internal";
-import { isStrictLayoutActive } from "./strict-client-env";
 import { resolveStrictSharedSchema } from "./strict-shared-schema";
+import { dispatchStrictThinArkenv } from "./thin-accessor";
 import type { MergeExtends, ResolveExtendsElement } from "./types";
 
 /**
@@ -21,33 +20,6 @@ type AutoSharedSchema = typeof import("#arkenv/shared-schema") extends {
 }
 	? ResolveExtendsElement<S>
 	: {};
-
-/**
- * Apply strict-layout auto-extend when `extends` is omitted.
- *
- * @param optionsOrIsServer Flat options, legacy boolean, or undefined
- * @returns Options with auto-extend applied when appropriate
- */
-function withAutoExtend(
-	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
-): FlatSchemaOptions | boolean | null | undefined {
-	if (typeof optionsOrIsServer === "boolean") {
-		return optionsOrIsServer;
-	}
-
-	if (optionsOrIsServer != null && "extends" in optionsOrIsServer) {
-		return optionsOrIsServer;
-	}
-
-	if (!isStrictLayoutActive()) {
-		return optionsOrIsServer;
-	}
-
-	return {
-		...(optionsOrIsServer ?? {}),
-		extends: [resolveStrictSharedSchema(importedSharedSchema)],
-	};
-}
 
 /**
  * Create a typesafe environment configuration for Nuxt (client entry).
@@ -104,23 +76,10 @@ export function arkenv<
 >;
 
 export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("client" in schemaOrOptions || "shared" in schemaOrOptions);
-
-	if (isLegacy) {
-		if ("server" in schemaOrOptions) {
-			throw new Error(
-				"client entry point only accepts 'client' and 'shared' schemas.",
-			);
-		}
-		return arkenvInternal(schemaOrOptions, false, undefined);
-	}
-
-	return arkenvInternal(schemaOrOptions, withAutoExtend(optionsOrIsServer), {
-		isServer: false,
+	return dispatchStrictThinArkenv(schemaOrOptions, optionsOrIsServer, {
 		strictLayout: "client",
+		resolveAutoExtendTarget: () =>
+			resolveStrictSharedSchema(importedSharedSchema),
 	});
 }
 
