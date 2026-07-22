@@ -17,7 +17,7 @@ type ClientVisibleKeys<
 }[keyof TSchema];
 
 /**
- * Create a type-safe environment configuration for Nuxt (Standard Mode).
+ * Create a typesafe environment configuration for Nuxt (Standard Mode).
  *
  * Values are read from the Nitro boot-gate coerced payload — this entry does
  * not run core validation.
@@ -48,7 +48,7 @@ export function arkenv<
 >;
 
 /**
- * Create a type-safe environment configuration for Nuxt (Standard Mode).
+ * Create a typesafe environment configuration for Nuxt (Standard Mode).
  *
  * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
  * @param options The environment validation configuration options

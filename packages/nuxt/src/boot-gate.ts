@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Dict, SchemaShape } from "@repo/types";
@@ -16,9 +15,9 @@ import {
 	endCapture,
 	publicKeysFromCaptures,
 } from "./capture";
+import { resolveCoreArkenv } from "./resolve-core-arkenv";
 import { withForceServer } from "./validate-context";
 
-const require = createRequire(import.meta.url);
 export type BootGateEngine = "arktype" | "standard";
 
 export type BootGateConfig = {
@@ -65,27 +64,6 @@ export function getBootGateConfig(): BootGateConfig | null {
 export function resetBootGateForTests(): void {
 	gateConfig = null;
 	resetBootGateResultForTests();
-}
-
-type CoreArkenv = (
-	schema: SchemaShape,
-	config?: { env?: Dict<string>; safe?: boolean },
-) => Record<string, unknown>;
-
-/**
- * Resolve the core validation function for the configured engine.
- *
- * @param engine ArkType (`@arkenv/core`) or Standard Schema (`@arkenv/standard`)
- * @returns The engine's `arkenv` function
- */
-function resolveCoreArkenv(engine: BootGateEngine): CoreArkenv {
-	if (engine === "standard") {
-		// Lazy require keeps `@arkenv/standard` out of ArkType-only graphs.
-		// eslint-disable-next-line @typescript-eslint/no-require-imports
-		return require("@arkenv/standard").arkenv as CoreArkenv;
-	}
-	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	return require("@arkenv/core").arkenv as CoreArkenv;
 }
 
 /**

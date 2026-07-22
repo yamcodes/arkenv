@@ -4,10 +4,16 @@ import { getBootGateResult } from "./boot-gate-state";
 import { createCaptureStub, isCapturing, recordCapture } from "./capture";
 import { isForceServer } from "./validate-context";
 
+/** Symbol key for the raw extended env values object on an env proxy. */
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
+/** Symbol key for the set of declared schema keys on an env proxy. */
 export const ENV_KEYS = Symbol.for("arkenv.keys");
+/** Symbol key for server-only keys that must not be readable on the client. */
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
+/**
+ * Legacy nested schema shape (`server` / `client` / `shared` buckets).
+ */
 export type LegacyNestedSchema = {
 	server?: SchemaShape;
 	client?: SchemaShape;
@@ -16,6 +22,9 @@ export type LegacyNestedSchema = {
 	runtimeEnv?: Dict<string>;
 };
 
+/**
+ * Options for the flat (unified) schema form of {@link arkenvInternal}.
+ */
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
@@ -26,6 +35,9 @@ export type FlatSchemaOptions = {
 	exposeToClient?: readonly string[];
 };
 
+/**
+ * Optional server hooks for the thin Nuxt accessor path.
+ */
 export type ArkenvInternalHooks = {
 	/**
 	 * Run the Nuxt boot gate before reading values (server thin path only).

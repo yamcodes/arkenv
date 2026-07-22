@@ -50,7 +50,7 @@ function withAutoExtend(
 }
 
 /**
- * Create a type-safe environment configuration for Nuxt (client entry).
+ * Create a typesafe environment configuration for Nuxt (client entry).
  *
  * Reads the already-coerced public payload — does not import or run the validator.
  *

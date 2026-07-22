@@ -47,7 +47,7 @@ function withAutoExtend(
 }
 
 /**
- * Create a type-safe environment configuration for Nuxt (client entry, Standard Mode).
+ * Create a typesafe environment configuration for Nuxt (client entry, Standard Mode).
  *
  * Reads the already-coerced public payload — does not import or run the validator.
  *

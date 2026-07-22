@@ -5,7 +5,7 @@ import { ensureBootGate } from "#arkenv/server-boot";
 import { arkenvInternal, type FlatSchemaOptions } from "./arkenv-internal";
 
 /**
- * Create a type-safe environment configuration for Nuxt (flat / unified entry).
+ * Create a typesafe environment configuration for Nuxt (flat / unified entry).
  *
  * Values are read from the Nitro boot-gate coerced `runtimeConfig` / `__NUXT__`
  * payload — this entry does not run core validation.
@@ -27,7 +27,7 @@ export function arkenv<
 }): Readonly<Infer<TServer & TClient & TShared>>;
 
 /**
- * Create a type-safe environment configuration for Nuxt (flat schema).
+ * Create a typesafe environment configuration for Nuxt (flat schema).
  *
  * @param schema Flat schema definition
  * @param options Optional extends / exposeToClient / runtimeEnv

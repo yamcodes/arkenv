@@ -52,7 +52,7 @@ function withAutoExtend(
 }
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point, Standard Mode).
+ * Create a validated, typesafe environment configuration for Nuxt applications (Server entry point, Standard Mode).
  *
  * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
  * client and shared env by default. Any explicit `extends` is used as-is and

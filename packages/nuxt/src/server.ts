@@ -55,7 +55,7 @@ function withAutoExtend(
 }
 
 /**
- * Create a type-safe environment configuration for Nuxt (server entry).
+ * Create a typesafe environment configuration for Nuxt (server entry).
  *
  * Calls {@link ensureBootGate} then reads coerced `runtimeConfig` values —
  * does not re-validate with core in this entry.

@@ -4,7 +4,7 @@ import { arkenvInternal } from "@/arkenv-internal";
 import type { MergeExtends } from "@/types";
 
 /**
- * Create a type-safe shared environment configuration for Nuxt (Standard Mode).
+ * Create a typesafe shared environment configuration for Nuxt (Standard Mode).
  *
  * @param schema The schema definition containing the shared variables
  * @param options Optional configuration options
