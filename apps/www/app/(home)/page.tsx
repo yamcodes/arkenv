@@ -27,7 +27,7 @@ export default function HomePage() {
 				<div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:flex-[1.4] relative z-20 mt-12 w-full max-w-full">
 					<div className="lg:mb-6 mb-0">
 						<AnnouncementBadge href="docs/cli/hosting-presets" new>
-							Next.js, Netlify presets
+							Presets: Vercel, Netlify and more
 						</AnnouncementBadge>
 					</div>
 					<h1 className="mb-4 mt-6 lg:mt-0 w-full max-w-2xl">
