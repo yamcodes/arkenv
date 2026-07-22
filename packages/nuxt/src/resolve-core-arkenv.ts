@@ -15,9 +15,7 @@ type CoreArkenv = (
  * @param engine ArkType (`@arkenv/core`) or Standard Schema (`@arkenv/standard`)
  * @returns The engine's `arkenv` function
  */
-export function resolveCoreArkenv(
-	engine: "arktype" | "standard",
-): CoreArkenv {
+export function resolveCoreArkenv(engine: "arktype" | "standard"): CoreArkenv {
 	const jiti = createJiti(import.meta.url);
 	if (engine === "standard") {
 		return (jiti("@arkenv/standard") as { arkenv: CoreArkenv }).arkenv;
