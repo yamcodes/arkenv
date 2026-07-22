@@ -24,12 +24,14 @@ import type { BunPluginFactoryConfig } from "./plugin-config";
  * @param pluginName The Bun plugin name
  * @param transformOptions Plugin options including `schemaPath` / `clientPrefix`
  * @param factoryLogOptions Default logging options from the factory
+ * @param factoryOptions Optional factory options (e.g. `isStandard` for error examples)
  * @returns A Bun plugin that rewrites `env.ts` in browser bundles
  */
 export function createTransformPlugin(
 	pluginName: string,
 	transformOptions: BunPluginFactoryConfig,
 	factoryLogOptions?: ArkEnvLogOptions,
+	factoryOptions?: { isStandard?: boolean },
 ): BunPlugin {
 	const {
 		schemaPath: schemaPathOption,
@@ -110,6 +112,7 @@ export function createTransformPlugin(
 					state.schemaPath = resolveEnvModulePath(
 						process.cwd(),
 						schemaPathOption,
+						factoryOptions,
 					);
 					state.prefixes = normalizePrefixes(clientPrefixOption);
 					refreshTransformState();
