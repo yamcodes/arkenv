@@ -29,7 +29,7 @@ import { z } from "zod";
 
 export default arkenv({
   BUN_PUBLIC_API_URL: z.string(),
-  BUN_PUBLIC_DEBUG: z.boolean(),
+  BUN_PUBLIC_DEBUG: z.enum(["true", "false"]),
 });`
 		: `import { type } from "@arkenv/core";
 export default type({
