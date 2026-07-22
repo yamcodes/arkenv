@@ -2,9 +2,9 @@
 "@arkenv/bun-plugin": patch
 ---
 
-#### Show a Zod example when Standard Mode cannot find `env.ts`
+#### Clarify Standard Mode missing-schema guidance with a Zod example
 
-When `@arkenv/bun-plugin/standard` fails because no schema file exists, the error now shows an `@arkenv/standard` + Zod starter instead of an ArkType one:
+When `@arkenv/bun-plugin/standard` cannot find `env.ts`, show an illustrative Zod starter (any Standard Schema validator works — Zod is just the most common):
 
 ```ts
 import arkenv from "@arkenv/standard";

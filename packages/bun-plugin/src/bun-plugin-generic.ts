@@ -98,8 +98,11 @@ export default type({
 
 			if (!schema) {
 				const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
+				const exampleIntro = options?.isStandard
+					? "Example `src/env.ts` (Zod shown — any Standard Schema validator works, e.g. Valibot):"
+					: "Example `src/env.ts`:";
 				const example = `
-Example \`src/env.ts\`:
+${exampleIntro}
 \`\`\`ts
 ${schemaExample}
 \`\`\`
