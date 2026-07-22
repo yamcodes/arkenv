@@ -1,13 +1,13 @@
 ---
-"@arkenv/nuxt": minor
+"@arkenv/nuxt": patch
 ---
 
-#### Deliver coerced Nuxt public env on the client without shipping the validator
+#### Keep coerced Nuxt public env types after deploy-time overrides
 
-Public/shared keys (for example `NUXT_PUBLIC_PORT: "number"`) now keep their coerced types on both server and client after deploy-time `NUXT_PUBLIC_*` overrides, and client bundles that import `@arkenv/nuxt` / `@arkenv/nuxt/client` no longer pull in `@arkenv/core` or `arktype`.
+Deploy-time `NUXT_PUBLIC_*` overrides used to leave public values as strings in the browser (for example `env.NUXT_PUBLIC_PORT === "4000"`). Those values now stay coerced on both server and client (`4000` as a `number`), and importing `@arkenv/nuxt` / `@arkenv/nuxt/client` no longer ships the validator into the client bundle.
 
 ```ts
-// env.ts — same import as before
+// env.ts — same API as before
 import arkenv from "@arkenv/nuxt";
 
 export const env = arkenv({
@@ -15,8 +15,6 @@ export const env = arkenv({
   NUXT_PUBLIC_PORT: "number",
 });
 
-// After `NUXT_PUBLIC_PORT=4000` at Nitro boot:
-env.NUXT_PUBLIC_PORT; // 4000 (number) on server and in the browser
+// After NUXT_PUBLIC_PORT=4000 at Nitro boot:
+typeof env.NUXT_PUBLIC_PORT; // "number" on server and in the browser
 ```
-
-Requires `@arkenv/nuxt/module` (or `@arkenv/nuxt/standard/module`) so the Nitro boot gate can validate and coerce before the payload is sent to the client. Import `type` from `arktype` or `@arkenv/core` when you need ArkType helpers in schema files.
