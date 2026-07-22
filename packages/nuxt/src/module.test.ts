@@ -24,6 +24,61 @@ vi.mock("@nuxt/kit", () => {
 });
 
 describe("Nuxt module integration", () => {
+	it("should throw when no schema file is found", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-missing-schema");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			expect(() =>
+				(module as any).setup({ validate: false }, mockNuxt),
+			).toThrow(
+				/\[ArkEnv\] Could not find schema file at src\/env\.ts or env\.ts/,
+			);
+			expect(mockNuxt.hook).not.toHaveBeenCalled();
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("should throw when schemaPath points to a missing file", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-missing-schema-path");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			expect(() =>
+				(module as any).setup(
+					{ schemaPath: "./missing-env.ts", validate: false },
+					mockNuxt,
+				),
+			).toThrow(/\[ArkEnv\] Could not find schema file at \.\/missing-env\.ts/);
+			expect(mockNuxt.hook).not.toHaveBeenCalled();
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
 	it("should parse and register variables to nuxt.options.runtimeConfig", async () => {
 		const tempDir = path.resolve(__dirname, "temp-module-test");
 		fs.mkdirSync(tempDir, { recursive: true });
