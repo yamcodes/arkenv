@@ -1,5 +1,88 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.10
+
+### Major Changes
+
+- #### Throw when the Nuxt module cannot resolve an env schema _[`#1473`](https://github.com/yamcodes/arkenv/pull/1473) [`0763a92`](https://github.com/yamcodes/arkenv/commit/0763a92db0bd88609cc70ec29663e127183328e9) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `@arkenv/nuxt` module now throws when no schema file is found (auto-discovery or `schemaPath`), instead of warning and skipping setup. Create an `env.ts` (or `src/env.ts`) schema, or set `arkenv.schemaPath` in `nuxt.config.ts`.
+
+  ```ts
+  // nuxt.config.ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      schemaPath: "./env.ts", // required if auto-discovery cannot find a schema
+    },
+  });
+  ```
+
+### Minor Changes
+
+- #### Auto-extend shared schema in Nuxt strict-layout client entry _[`#1422`](https://github.com/yamcodes/arkenv/pull/1422) [`b1d8bad`](https://github.com/yamcodes/arkenv/commit/b1d8badc33523ea80a5d54683d503ad214337e80) [@yamcodes](https://github.com/yamcodes)_
+
+  **`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/client.ts` auto-merges `SharedSchema` from `env/internal/shared.ts` via `#arkenv/shared-schema`. Applies to both `@arkenv/nuxt/client` and `@arkenv/nuxt/standard/client`. The server entry continues to auto-merge the composed client env.
+
+  **`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified client template (no manual `SharedSchema` import or `extends` block). Next.js scaffolds remain unchanged.
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nuxt/client";
+
+  export const env = arkenv({
+    NUXT_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a custom list - is used as-is and opts out of auto-merge. Strict layout still requires `env/internal/shared.ts` with a `SharedSchema` export — that schema may be empty (`type({})`) when you have no shared variables. A missing file or unusable export fails with a clear diagnostic (rather than silently treating shared as empty).
+
+### Patch Changes
+
+- #### Coerce Nuxt public env overrides instead of leaving them as strings _[`#1458`](https://github.com/yamcodes/arkenv/pull/1458) [`3667b7e`](https://github.com/yamcodes/arkenv/commit/3667b7e9a1bc4547e247a9f4783d7a4e6c12782f) [@yamcodes](https://github.com/yamcodes)_
+
+  **Bug:** With a numeric (or boolean) public schema key, setting a deploy-time override made Nitro put a _string_ into `runtimeConfig.public`. That string won, so `env` lied about the type on server and client.
+
+  ```diff
+    // env.ts
+    export const env = arkenv({
+      NUXT_PUBLIC_PORT: "number",
+    });
+
+    // Deploy / Nitro boot: NUXT_PUBLIC_PORT=4000
+  - env.NUXT_PUBLIC_PORT; // "4000" (string) — schema said number
+  + env.NUXT_PUBLIC_PORT; // 4000 (number) — coerced after the override
+  ```
+
+  Same import surface. As a side effect, `@arkenv/nuxt` / `@arkenv/nuxt/client` no longer ship the validator into the browser bundle.
+
+- Skip all Nuxt module setup (including boot-gate hooks) when no schema file is found, matching the warn-and-bail contract. _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`882c0ce`](https://github.com/yamcodes/arkenv/commit/882c0ce0d62ffa3922816ad83a4a92c89f0ef764) [@yamcodes](https://github.com/yamcodes)_
+- #### Drop embedded env.ts starters and warn when the Nuxt module finds no schema _[`#1468`](https://github.com/yamcodes/arkenv/pull/1468) [`0150e73`](https://github.com/yamcodes/arkenv/commit/0150e73713facc58e05508a19f72042ac40c90e6) [@yamcodes](https://github.com/yamcodes)_
+
+  Keep missing-schema guidance short and host-parity consistent: Bun no longer embeds ArkType/Zod starters in the hybrid discovery error (prefer `arkenv init` / docs). When the Nuxt module is registered but no schema file is found, log a build warning and skip setup instead of failing silently.
+
+## 1.0.0-alpha.9
+
+### Patch Changes
+
+- #### Keep coerced number and boolean env values through the security proxy _[`#1429`](https://github.com/yamcodes/arkenv/pull/1429) [`6be63f7`](https://github.com/yamcodes/arkenv/commit/6be63f78f1f8517a64a32d003e0ea6b1ae78f4be) [@yamcodes](https://github.com/yamcodes)_
+
+  Lock the Nuxt security proxy so schema-key reads return the coerced validation target. A key declared as `"number"` or `"boolean"` returns a number or boolean at runtime, not a raw string from Nuxt runtime config / `__NUXT__`.
+
+  ```ts
+  import { arkenv } from "@arkenv/nuxt";
+
+  export const env = arkenv({
+    NUXT_PUBLIC_PORT: "number",
+    PORT: "number",
+  });
+
+  // 3000 (number), not "3000" (string)
+  env.NUXT_PUBLIC_PORT;
+  env.PORT;
+  ```
+
 ## 1.0.0-alpha.8
 
 ### Minor Changes

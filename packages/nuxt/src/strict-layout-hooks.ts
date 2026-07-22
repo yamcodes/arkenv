@@ -5,6 +5,10 @@ import {
 	CLIENT_ENV_SPECIFIER,
 	UNRESOLVED_CLIENT_ENV_ERROR,
 } from "./strict-client-env";
+import {
+	SHARED_SCHEMA_SPECIFIER,
+	UNRESOLVED_SHARED_SCHEMA_ERROR,
+} from "./strict-shared-schema";
 
 type NitroConfigHook = {
 	alias?: Record<string, string>;
@@ -20,24 +24,30 @@ declare module "@nuxt/schema" {
 
 /**
  * Register TypeScript path and Nitro alias/define wiring for strict-layout
- * `#arkenv/client-env` auto-extend.
+ * `#arkenv/client-env` and `#arkenv/shared-schema` auto-extend.
  *
  * @param nuxt The Nuxt instance
  * @param strictClientPath Absolute path to the project's `env/client.ts`
+ * @param strictSharedPath Absolute path to the project's `env/internal/shared.ts`
  */
 export function registerStrictLayoutHooks(
 	nuxt: Nuxt,
 	strictClientPath: string,
+	strictSharedPath: string,
 ): void {
 	nuxt.options.alias = nuxt.options.alias || {};
 	nuxt.options.alias[CLIENT_ENV_SPECIFIER] = strictClientPath;
+	nuxt.options.alias[SHARED_SCHEMA_SPECIFIER] = strictSharedPath;
 
-	// Mirror the runtime alias into generated tsconfig paths so AutoClientEnv
-	// resolves to the project's env/client.ts (not the empty package fallback).
+	// Mirror the runtime aliases into generated tsconfig paths so AutoClientEnv /
+	// AutoSharedSchema resolve to project files (not the empty package fallbacks).
 	nuxt.hook("prepare:types", ({ tsConfig }) => {
 		tsConfig.compilerOptions ??= {};
 		tsConfig.compilerOptions.paths ??= {};
 		tsConfig.compilerOptions.paths[CLIENT_ENV_SPECIFIER] = [strictClientPath];
+		tsConfig.compilerOptions.paths[SHARED_SCHEMA_SPECIFIER] = [
+			strictSharedPath,
+		];
 	});
 
 	// Nitro uses its own bundler; Vite alias/define alone does not cover
@@ -45,6 +55,7 @@ export function registerStrictLayoutHooks(
 	nuxt.hook("nitro:config", (nitroConfig) => {
 		nitroConfig.alias ??= {};
 		nitroConfig.alias[CLIENT_ENV_SPECIFIER] = strictClientPath;
+		nitroConfig.alias[SHARED_SCHEMA_SPECIFIER] = strictSharedPath;
 		nitroConfig.replace ??= {};
 		nitroConfig.replace.__ARKENV_STRICT_LAYOUT__ = JSON.stringify(true);
 	});
@@ -54,6 +65,7 @@ type ViteExtendContext = {
 	resolvedLayout: "simple" | "strict";
 	baseDir: string | undefined;
 	strictClientPath: string | undefined;
+	strictSharedPath: string | undefined;
 	rootDir: string;
 	srcDir: string;
 	clientSecurityError: string;
@@ -82,8 +94,8 @@ function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
 }
 
 /**
- * Register the Vite `extendConfig` hook that wires `#arkenv/client-env` and
- * blocks client imports of server-only schemas.
+ * Register the Vite `extendConfig` hook that wires `#arkenv/client-env` /
+ * `#arkenv/shared-schema` and blocks client imports of server-only schemas.
  *
  * @param nuxt The Nuxt instance
  * @param context Layout paths and security error message
@@ -96,6 +108,7 @@ export function registerViteExtendHook(
 		resolvedLayout,
 		baseDir,
 		strictClientPath,
+		strictSharedPath,
 		rootDir,
 		srcDir,
 		clientSecurityError,
@@ -106,7 +119,7 @@ export function registerViteExtendHook(
 		const anyConfig = config as any;
 		anyConfig.plugins = anyConfig.plugins || [];
 
-		if (resolvedLayout === "strict" && strictClientPath) {
+		if (resolvedLayout === "strict" && strictClientPath && strictSharedPath) {
 			anyConfig.define = {
 				...anyConfig.define,
 				__ARKENV_STRICT_LAYOUT__: JSON.stringify(true),
@@ -115,12 +128,19 @@ export function registerViteExtendHook(
 			anyConfig.resolve = anyConfig.resolve || {};
 			anyConfig.resolve.alias = anyConfig.resolve.alias || {};
 			if (Array.isArray(anyConfig.resolve.alias)) {
-				anyConfig.resolve.alias.push({
-					find: CLIENT_ENV_SPECIFIER,
-					replacement: strictClientPath,
-				});
+				anyConfig.resolve.alias.push(
+					{
+						find: CLIENT_ENV_SPECIFIER,
+						replacement: strictClientPath,
+					},
+					{
+						find: SHARED_SCHEMA_SPECIFIER,
+						replacement: strictSharedPath,
+					},
+				);
 			} else {
 				anyConfig.resolve.alias[CLIENT_ENV_SPECIFIER] = strictClientPath;
+				anyConfig.resolve.alias[SHARED_SCHEMA_SPECIFIER] = strictSharedPath;
 			}
 
 			anyConfig.plugins.push({
@@ -134,6 +154,21 @@ export function registerViteExtendHook(
 							return strictClientPath;
 						}
 						throw new Error(UNRESOLVED_CLIENT_ENV_ERROR);
+					}
+				},
+			});
+
+			anyConfig.plugins.push({
+				name: "arkenv-nuxt-shared-schema",
+				resolveId(id: string) {
+					if (
+						id === SHARED_SCHEMA_SPECIFIER ||
+						id === `\0${SHARED_SCHEMA_SPECIFIER}`
+					) {
+						if (strictSharedPath && fs.existsSync(strictSharedPath)) {
+							return strictSharedPath;
+						}
+						throw new Error(UNRESOLVED_SHARED_SCHEMA_ERROR);
 					}
 				},
 			});

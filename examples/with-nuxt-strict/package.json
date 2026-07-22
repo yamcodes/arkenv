@@ -10,8 +10,8 @@
 		"postinstall": "nuxt prepare"
 	},
 	"dependencies": {
-		"@arkenv/core": "1.0.0-alpha.7",
-		"@arkenv/nuxt": "1.0.0-alpha.7",
+		"@arkenv/core": "1.0.0-alpha.4",
+		"@arkenv/nuxt": "1.0.0-alpha.9",
 		"arktype": "^2.2.0",
 		"nuxt": "^4.4.8"
 	},

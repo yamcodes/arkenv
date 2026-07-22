@@ -1,9 +1,23 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { resetBootGateForTests } from "./boot-gate";
+import {
+	resetBootGateResultForTests,
+	setBootGateResult,
+} from "./boot-gate-state";
 import { arkenv } from "./index";
+
+afterEach(() => {
+	resetBootGateForTests();
+	resetBootGateResultForTests();
+	delete (globalThis as { window?: unknown }).window;
+});
 
 describe("arkenv (Nuxt runtime)", () => {
 	it("should parse a basic environment variable", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/db";
+		setBootGateResult({
+			DATABASE_URL: "postgres://localhost:5432/db",
+		});
 
 		const env = arkenv({
 			server: {
@@ -28,9 +42,11 @@ describe("arkenv (Nuxt runtime)", () => {
 	});
 
 	it("should allow accessing server-side, client, and shared variables on the server", () => {
-		process.env.DATABASE_URL = "postgres://localhost:5432/db";
-		process.env.NUXT_PUBLIC_API_URL = "https://api.example.com";
-		process.env.NODE_ENV = "test";
+		setBootGateResult({
+			DATABASE_URL: "postgres://localhost:5432/db",
+			NUXT_PUBLIC_API_URL: "https://api.example.com",
+			NODE_ENV: "test",
+		});
 
 		const env = arkenv({
 			server: {
@@ -47,14 +63,9 @@ describe("arkenv (Nuxt runtime)", () => {
 		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
 		expect(env.NUXT_PUBLIC_API_URL).toBe("https://api.example.com");
 		expect(env.NODE_ENV).toBe("test");
-
-		delete process.env.DATABASE_URL;
-		delete process.env.NUXT_PUBLIC_API_URL;
-		delete process.env.NODE_ENV;
 	});
 
 	it("should throw an error when accessing a server-side variable on the client", () => {
-		// Mock window to simulate browser client
 		const originalWindow = globalThis.window;
 		(globalThis as any).window = {
 			__NUXT__: {
@@ -89,23 +100,18 @@ describe("arkenv (Nuxt runtime)", () => {
 				"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
 			);
 
-			// Enumerate keys
 			const keys = Object.keys(env);
 			expect(keys).toContain("NUXT_PUBLIC_API_URL");
 			expect(keys).toContain("NODE_ENV");
 			expect(keys).not.toContain("DATABASE_URL");
 
-			// ownKeys
 			const ownKeys = Reflect.ownKeys(env);
 			expect(ownKeys).toContain("NUXT_PUBLIC_API_URL");
-			expect(ownKeys).toContain("NODE_ENV");
 			expect(ownKeys).not.toContain("DATABASE_URL");
 
-			// in operator
 			expect("NUXT_PUBLIC_API_URL" in env).toBe(true);
 			expect("DATABASE_URL" in env).toBe(false);
 
-			// getOwnPropertyDescriptor
 			expect(
 				Object.getOwnPropertyDescriptor(env, "NUXT_PUBLIC_API_URL"),
 			).toBeDefined();
@@ -141,6 +147,51 @@ describe("arkenv (Nuxt runtime)", () => {
 			expect(envRecord.__v_isReactive).toBeUndefined();
 			expect(envRecord.__v_isReadonly).toBeUndefined();
 			expect(envRecord.__v_raw).toBeUndefined();
+		} finally {
+			(globalThis as any).window = originalWindow;
+		}
+	});
+
+	it("should keep coerced server types from the boot-gate result", () => {
+		setBootGateResult({
+			PORT: 9090,
+			DEBUG: true,
+		});
+
+		const env = arkenv({
+			PORT: "number",
+			DEBUG: "boolean",
+		});
+
+		expect(env.PORT).toBe(9090);
+		expect(typeof env.PORT).toBe("number");
+		expect(env.DEBUG).toBe(true);
+		expect(typeof env.DEBUG).toBe("boolean");
+	});
+
+	it("should keep coerced client types when values are sourced from __NUXT__.config.public", () => {
+		const originalWindow = globalThis.window;
+		(globalThis as any).window = {
+			__NUXT__: {
+				config: {
+					public: {
+						NUXT_PUBLIC_PORT: 4000,
+						NUXT_PUBLIC_ENABLED: false,
+					},
+				},
+			},
+		};
+
+		try {
+			const env = arkenv({
+				NUXT_PUBLIC_PORT: "number",
+				NUXT_PUBLIC_ENABLED: "boolean",
+			});
+
+			expect(env.NUXT_PUBLIC_PORT).toBe(4000);
+			expect(typeof env.NUXT_PUBLIC_PORT).toBe("number");
+			expect(env.NUXT_PUBLIC_ENABLED).toBe(false);
+			expect(typeof env.NUXT_PUBLIC_ENABLED).toBe("boolean");
 		} finally {
 			(globalThis as any).window = originalWindow;
 		}

@@ -107,17 +107,13 @@ export function assembleStrictFromDialect(
 	const serverObject = formatSchemaObject(serverFields, "\t\t");
 	const extra = dialect.strictExtraImports;
 
-	return assembleStrictTemplates(
-		{
-			shared: `${dialect.sharedImports}
+	const nuxtClientTemplate = `import arkenv from "${clientImportPath}";
+${extra}
+export const env = arkenv(
+	${clientObject},
+);`;
 
-/**
- * @internal 🛑 INTERNAL SCHEMA ONLY.
- * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
- */
-export const SharedSchema = ${dialect.wrapSharedSchema(sharedObject)};`,
-
-			clientCodegen: `import arkenv from "${clientImportPath}";
+	const manualClientCodegen = `import arkenv from "${clientImportPath}";
 ${extra}import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
@@ -125,9 +121,9 @@ export const env = arkenv(
 	{
 		extends: [SharedSchema],
 	},
-);`,
+);`;
 
-			clientNoCodegen: `import arkenv from "${clientImportPath}";
+	const manualClientNoCodegen = `import arkenv from "${clientImportPath}";
 ${extra}import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
@@ -135,7 +131,35 @@ export const env = arkenv(
 	{
 		extends: [SharedSchema]${runtimeEnvOptions}
 	},
-);`,
+);`;
+
+	const sharedDocComment =
+		context.framework === "nuxt"
+			? `/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
+ * Automatically picked up by \`@arkenv/nuxt/client\` when \`extends\` is omitted;
+ * \`@arkenv/nuxt/server\` includes it through the composed client env.
+ */`
+			: `/**
+ * @internal 🛑 INTERNAL SCHEMA ONLY.
+ * Do not import this directly. Import \`env\` from \`./client\` or \`./server\` instead.
+ */`;
+
+	return assembleStrictTemplates(
+		{
+			shared: `${dialect.sharedImports}
+
+${sharedDocComment}
+export const SharedSchema = ${dialect.wrapSharedSchema(sharedObject)};`,
+
+			clientCodegen:
+				context.framework === "nuxt" ? nuxtClientTemplate : manualClientCodegen,
+
+			clientNoCodegen:
+				context.framework === "nuxt"
+					? nuxtClientTemplate
+					: manualClientNoCodegen,
 
 			server:
 				context.framework === "nuxt"

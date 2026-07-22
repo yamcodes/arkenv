@@ -2,6 +2,10 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+	assertPackagesStandardIsolation,
+	resolvePackageDirs,
+} from "./standard-isolation.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +21,9 @@ const patterns = [
 	/import\s+(?:.*?\s+from\s+)?['"]arktype['"]/i,
 	/export\s+(?:.*?\s+from\s+)?['"]arktype['"]/i,
 	/(?:import|require)\s*\(\s*['"]arktype['"]\s*\)/i,
+	/import\s+(?:.*?\s+from\s+)?['"]@arkenv\/core['"]/i,
+	/export\s+(?:.*?\s+from\s+)?['"]@arkenv\/core['"]/i,
+	/(?:import|require)\s*\(\s*['"]@arkenv\/core['"]\s*\)/i,
 ];
 
 const failures = [];
@@ -37,7 +44,7 @@ function checkFile(filePath) {
 		if (pattern.test(content)) {
 			failures.push({
 				filePath,
-				error: `Forbidden reference to 'arktype' found. Matched pattern: ${pattern.toString()}`,
+				error: `Forbidden reference found. Matched pattern: ${pattern.toString()}`,
 			});
 		}
 	}
@@ -45,7 +52,7 @@ function checkFile(filePath) {
 
 console.log("🔍 Running Static Analysis Verification on built artifacts...");
 
-// 1. Check for forbidden references
+// 1. Check @arkenv/standard for forbidden references
 for (const target of targets) {
 	checkFile(target);
 	if (!failures.some((f) => f.filePath === target)) {
@@ -63,7 +70,25 @@ if (failures.length > 0) {
 	process.exit(1);
 }
 
-// 2. Check bundle size limits
+// 2. Guard integration `/standard` entries (import graph isolation)
+console.log(
+	"\n🔒 Verifying integration /standard entries never import arktype or @arkenv/core...",
+);
+try {
+	await assertPackagesStandardIsolation(
+		resolvePackageDirs(rootDir, [
+			"packages/vite-plugin",
+			"packages/bun-plugin",
+			"packages/nextjs",
+			"packages/nuxt",
+		]),
+	);
+} catch (error) {
+	console.error(`❌ ${error instanceof Error ? error.message : String(error)}`);
+	process.exit(1);
+}
+
+// 3. Check bundle size limits
 console.log("\n📦 Running size-limit validation...");
 try {
 	execSync("pnpm --filter @arkenv/core --filter @arkenv/standard run size", {
@@ -71,7 +96,7 @@ try {
 		stdio: "inherit",
 	});
 	console.log("✅ Passed: size-limit validation");
-} catch (error) {
+} catch {
 	console.error("❌ Error: size-limit validation failed");
 	process.exit(1);
 }
