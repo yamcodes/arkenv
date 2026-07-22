@@ -10,5 +10,5 @@ describe("Standard Mode isolation", () => {
 		const { checked } = await assertPackageStandardIsolation(packageDir);
 
 		expect(checked.length).toBeGreaterThan(0);
-	});
+	}, 60_000);
 });

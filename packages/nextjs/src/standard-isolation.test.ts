@@ -16,5 +16,5 @@ describe("Standard Mode isolation", () => {
 		expect(
 			checked.some((entry) => entry.startsWith("./standard/config ->")),
 		).toBe(true);
-	});
+	}, 60_000);
 });

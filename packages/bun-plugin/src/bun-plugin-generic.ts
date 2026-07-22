@@ -13,14 +13,17 @@ import { processEnvSchema, registerLoader } from "./utils";
  * @param coreArkenv The arkenv validation function to use
  * @param pluginName The display name of the plugin
  * @param factoryLogOptions Optional logger configuration for build-time messages
+ * @param options Optional factory options
+ * @param options.isStandard When true, missing-schema examples use `@arkenv/standard`
  * @returns An object containing the configured arkenv plugin creator and the hybrid plugin instance
  */
 export function createBunPlugin(
 	coreArkenv: any,
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
+	options?: { isStandard?: boolean },
 ) {
-	const schemaExample = pluginName.includes("/standard")
+	const schemaExample = options?.isStandard
 		? `import arkenv from "@arkenv/standard";
 export default arkenv({
   BUN_PUBLIC_API_URL: { "~standard": { version: 1, validate: (v) => ({ value: v }) } },
