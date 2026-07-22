@@ -16,12 +16,12 @@ Usage:
 // plugins = ["@arkenv/bun-plugin"]
 
 // or explicitly in Bun.build:
-import { arkenv } from "@arkenv/bun-plugin";
+import arkenv from "@arkenv/bun-plugin";
 
 await Bun.build({
   entrypoints: ["./src/index.html"],
   target: "browser",
-  plugins: [arkenv()], // finds src/env.ts or env.ts
+  plugins: [arkenv], // finds src/env.ts or env.ts
   // or: arkenv({ schemaPath: "src/env.ts", clientPrefix: "BUN_PUBLIC_" })
 });
 ```

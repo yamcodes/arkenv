@@ -1,5 +1,5 @@
 import { serve } from "bun";
-import { env } from "./env";
+import { env } from "@/env";
 import index from "./index.html";
 
 const server = serve({
