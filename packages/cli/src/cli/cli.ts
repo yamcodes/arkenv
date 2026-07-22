@@ -1,6 +1,6 @@
 import { Logger } from "@/adapters";
-import type { InitInput } from "./commands/init";
 import { type HostPreset, PROVIDERS } from "@/features/scaffold";
+import type { InitInput } from "./commands/init";
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
