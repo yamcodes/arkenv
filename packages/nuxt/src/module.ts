@@ -79,12 +79,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			: findSchemaPath(nuxt.options.rootDir);
 
 		if (!schemaPath || !fs.existsSync(schemaPath)) {
-			buildLog.logBuildWarning(
-				`No environment schema found at ${
+			throw new Error(
+				`[ArkEnv] Could not find schema file at ${
 					options.schemaPath || "src/env.ts or env.ts"
-				}. Skipping ArkEnv Nuxt module setup. Create a schema file or set \`arkenv.schemaPath\` in your Nuxt config.`,
+				}. Please specify 'schemaPath' in ArkEnv options.`,
 			);
-			return;
 		}
 
 		const resolver = createResolver(import.meta.url);
