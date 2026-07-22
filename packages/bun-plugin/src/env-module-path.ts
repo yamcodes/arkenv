@@ -39,15 +39,12 @@ export function isEnvModuleId(id: string, schemaPath: string): boolean {
  *
  * @param root The project root (typically `process.cwd()`)
  * @param schemaPath An optional relative or absolute schema path from plugin config
- * @param resolveOptions Optional messaging options for missing-module errors
- * @param resolveOptions.isStandard When true, missing-env examples use `@arkenv/standard`
  * @returns The absolute path to the env module
  * @throws If no env module can be found
  */
 export function resolveEnvModulePath(
 	root: string,
 	schemaPath?: string,
-	resolveOptions?: { isStandard?: boolean },
 ): string {
 	if (schemaPath) {
 		const resolved = path.isAbsolute(schemaPath)
@@ -63,25 +60,8 @@ export function resolveEnvModulePath(
 
 	const discovered = findSchemaPath(root);
 	if (!discovered) {
-		const exampleIntro = resolveOptions?.isStandard
-			? "Example `src/env.ts` (Zod shown — any Standard Schema validator works, e.g. Valibot):"
-			: "Example `src/env.ts`:";
-		const schemaExample = resolveOptions?.isStandard
-			? `import arkenv from "@arkenv/standard";
-import { z } from "zod";
-
-export const env = arkenv({
-  BUN_PUBLIC_API_URL: z.string(),
-  BUN_PUBLIC_DEBUG: z.enum(["true", "false"]),
-});`
-			: `import arkenv from "@arkenv/core";
-
-export const env = arkenv({
-  BUN_PUBLIC_API_URL: "string",
-  BUN_PUBLIC_DEBUG: "boolean",
-});`;
 		throw new Error(
-			`ArkEnv Bun plugin: could not find an env module. Expected "src/env.ts" or "env.ts" under "${root}", or pass schemaPath.\n\n${exampleIntro}\n\`\`\`ts\n${schemaExample}\n\`\`\`\n`,
+			`ArkEnv Bun plugin: could not find an env module. Expected "src/env.ts" or "env.ts" under "${root}", or pass schemaPath (or run \`arkenv init\`).`,
 		);
 	}
 	return discovered;

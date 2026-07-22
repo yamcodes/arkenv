@@ -16,8 +16,6 @@ type BunPluginConfig = Omit<StandardEnvConfig, "safe"> & ArkEnvLogOptions;
 const { arkenv: arkenvFn, hybrid: hybridObj } = createBunPlugin(
 	coreArkenv,
 	"@arkenv/bun-plugin/standard",
-	undefined,
-	{ isStandard: true },
 );
 
 /**

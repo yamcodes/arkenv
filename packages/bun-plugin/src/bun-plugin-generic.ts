@@ -25,15 +25,12 @@ export type { BunTransformOptions };
  * @param coreArkenv The ArkEnv runtime function used for schema/SPA validation
  * @param pluginName The Bun plugin name
  * @param factoryLogOptions Optional default logging options for the factory
- * @param options Optional factory options
- * @param options.isStandard When true, missing-env examples use `@arkenv/standard` with Zod
  * @returns An object containing the configured arkenv factory and the hybrid plugin
  */
 export function createBunPlugin(
 	coreArkenv: any,
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
-	options?: { isStandard?: boolean },
 ) {
 	/**
 	 * Create a Bun plugin in transform or SPA mode based on the call shape.
@@ -51,7 +48,6 @@ export function createBunPlugin(
 				pluginName,
 				(schemaOrOptions ?? {}) as BunPluginFactoryConfig,
 				factoryLogOptions,
-				options,
 			);
 		}
 
@@ -68,7 +64,6 @@ export function createBunPlugin(
 		pluginName,
 		{},
 		factoryLogOptions,
-		options,
 	);
 
 	const hybrid = arkenv as typeof arkenv & BunPlugin;

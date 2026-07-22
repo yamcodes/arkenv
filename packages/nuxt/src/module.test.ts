@@ -506,4 +506,44 @@ describe("Nuxt module integration", () => {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
 	});
+
+	it("warns and skips setup when no schema file is found", async () => {
+		const tempDir = path.resolve(__dirname, "temp-module-missing-schema");
+		fs.mkdirSync(tempDir, { recursive: true });
+
+		const warn = vi.fn();
+		const mockNuxt: any = {
+			options: {
+				dev: false,
+				rootDir: tempDir,
+				runtimeConfig: {
+					public: {},
+				},
+			},
+			hook: vi.fn(),
+		};
+
+		try {
+			await (module as any).setup(
+				{
+					validate: false,
+					logger: {
+						debug: vi.fn(),
+						info: vi.fn(),
+						warn,
+						error: vi.fn(),
+					},
+				},
+				mockNuxt,
+			);
+
+			expect(warn).toHaveBeenCalledWith(
+				expect.stringContaining("No environment schema found"),
+			);
+			expect(mockNuxt.hook).not.toHaveBeenCalled();
+			expect(mockNuxt.options.runtimeConfig.DATABASE_URL).toBeUndefined();
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 });
