@@ -2,19 +2,19 @@
 "@arkenv/nuxt": patch
 ---
 
-#### Keep coerced Nuxt public env types after deploy-time overrides
+#### Coerce Nuxt public env overrides instead of leaving them as strings
 
-Deploy-time `NUXT_PUBLIC_*` overrides used to leave public values as strings in the browser (for example `env.NUXT_PUBLIC_PORT === "4000"`). Those values now stay coerced on both server and client (`4000` as a `number`), and importing `@arkenv/nuxt` / `@arkenv/nuxt/client` no longer ships the validator into the client bundle.
+**Bug:** With a numeric (or boolean) public schema key, setting a deploy-time override made Nitro put a *string* into `runtimeConfig.public`. That string won, so `env` lied about the type on server and client.
 
-```ts
-// env.ts — same API as before
-import arkenv from "@arkenv/nuxt";
+```diff
+  // env.ts
+  export const env = arkenv({
+    NUXT_PUBLIC_PORT: "number",
+  });
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  NUXT_PUBLIC_PORT: "number",
-});
-
-// After NUXT_PUBLIC_PORT=4000 at Nitro boot:
-typeof env.NUXT_PUBLIC_PORT; // "number" on server and in the browser
+  // Deploy / Nitro boot: NUXT_PUBLIC_PORT=4000
+- env.NUXT_PUBLIC_PORT; // "4000" (string) — schema said number
++ env.NUXT_PUBLIC_PORT; // 4000 (number) — coerced after the override
 ```
+
+Same import surface. As a side effect, `@arkenv/nuxt` / `@arkenv/nuxt/client` no longer ship the validator into the browser bundle.
