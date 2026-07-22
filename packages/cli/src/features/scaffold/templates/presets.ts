@@ -63,16 +63,18 @@ export const PRESETS = {
 	},
 	railway: {
 		label: "Railway",
-		hint: "Add RAILWAY_ENVIRONMENT, RAILWAY_STATIC_URL, RAILWAY_GIT_COMMIT_SHA, etc.",
+		hint: "Add RAILWAY_ENVIRONMENT_NAME, RAILWAY_PUBLIC_DOMAIN, RAILWAY_GIT_COMMIT_SHA, etc.",
 		serverOnlyKeys: [
-			"RAILWAY_ENVIRONMENT",
-			"RAILWAY_STATIC_URL",
+			"RAILWAY_ENVIRONMENT_NAME",
+			"RAILWAY_PUBLIC_DOMAIN",
+			"RAILWAY_SERVICE_NAME",
 			"RAILWAY_GIT_COMMIT_SHA",
 		],
 		clientExposedKeys: [],
 		fields: {
-			RAILWAY_ENVIRONMENT: { type: "string" },
-			RAILWAY_STATIC_URL: { type: "string" },
+			RAILWAY_ENVIRONMENT_NAME: { type: "string" },
+			RAILWAY_PUBLIC_DOMAIN: { type: "string" },
+			RAILWAY_SERVICE_NAME: { type: "string" },
 			RAILWAY_GIT_COMMIT_SHA: { type: "string" },
 		},
 	},
@@ -105,6 +107,8 @@ export const PRESETS = {
 		},
 	},
 } satisfies Record<string, PresetDefinition>;
+
+export const PROVIDERS = Object.keys(PRESETS) as Exclude<HostPreset, "none">[];
 
 export type { HostPreset };
 

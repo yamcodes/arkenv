@@ -178,7 +178,7 @@ describe("AddUseCase", () => {
 		expect(result).toBe(true);
 		expect(workspace.writeFile).toHaveBeenCalledWith(
 			expect.stringContaining("env.ts"),
-			expect.stringContaining('RAILWAY_ENVIRONMENT: "string?"'),
+			expect.stringContaining('RAILWAY_ENVIRONMENT_NAME: "string?"'),
 		);
 		expect(logger.success).toHaveBeenCalledWith(
 			expect.stringContaining("Added Railway"),

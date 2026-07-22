@@ -1,6 +1,6 @@
 import { Logger } from "@/adapters";
-import type { HostPreset } from "@/features/scaffold";
 import type { InitInput } from "./commands/init";
+import { type HostPreset, PROVIDERS } from "@/features/scaffold";
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
@@ -110,15 +110,7 @@ export class CLI {
 		if (!this.validationError) {
 			const flag = FLAG_CONFIG.hostPreset;
 			const rawPresetVal = this.getFlagValue(flag.long, flag.short);
-			const validPresets = [
-				"none",
-				"vercel",
-				"netlify",
-				"cloudflare",
-				"railway",
-				"render",
-				"fly",
-			];
+			const validPresets = ["none", ...PROVIDERS];
 			if (rawPresetVal !== undefined && !validPresets.includes(rawPresetVal)) {
 				this.validationError = `Invalid host preset: ${rawPresetVal}`;
 			}
@@ -132,15 +124,7 @@ export class CLI {
 					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
 				} else {
 					const provider = positionalArgs[1];
-					const validProviders = [
-						"vercel",
-						"netlify",
-						"cloudflare",
-						"railway",
-						"render",
-						"fly",
-					];
-					if (provider !== undefined && !validProviders.includes(provider)) {
+					if (provider !== undefined && !PROVIDERS.includes(provider as any)) {
 						this.validationError = `Invalid host preset: ${provider}`;
 					}
 				}
@@ -267,15 +251,7 @@ export class CLI {
 	} {
 		const provider = this.positionalArgs[1];
 		const isYes = this.isYes;
-		const validProviders = [
-			"vercel",
-			"netlify",
-			"cloudflare",
-			"railway",
-			"render",
-			"fly",
-		];
-		if (provider && validProviders.includes(provider)) {
+		if (provider && PROVIDERS.includes(provider as any)) {
 			return { provider: provider as Exclude<HostPreset, "none">, isYes };
 		}
 		return { isYes };

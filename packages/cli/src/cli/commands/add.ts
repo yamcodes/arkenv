@@ -46,38 +46,11 @@ export class AddUseCase {
 				} else {
 					const selected = (await this.prompt.select(
 						"Select a hosting provider preset:",
-						[
-							{
-								value: "vercel",
-								label: "Vercel",
-								hint: "Add VERCEL, VERCEL_ENV, VERCEL_URL, etc.",
-							},
-							{
-								value: "netlify",
-								label: "Netlify",
-								hint: "Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.",
-							},
-							{
-								value: "cloudflare",
-								label: "Cloudflare Pages/Workers",
-								hint: "Add CF_PAGES, CF_PAGES_COMMIT_SHA, CF_PAGES_BRANCH, CF_PAGES_URL, etc.",
-							},
-							{
-								value: "railway",
-								label: "Railway",
-								hint: "Add RAILWAY_ENVIRONMENT, RAILWAY_STATIC_URL, RAILWAY_GIT_COMMIT_SHA, etc.",
-							},
-							{
-								value: "render",
-								label: "Render",
-								hint: "Add RENDER, RENDER_SERVICE_ID, RENDER_SERVICE_TYPE, RENDER_EXTERNAL_URL, etc.",
-							},
-							{
-								value: "fly",
-								label: "Fly.io",
-								hint: "Add FLY_APP_NAME, FLY_REGION, FLY_ALLOC_ID, etc.",
-							},
-						],
+						Object.entries(PRESETS).map(([value, def]) => ({
+							value,
+							label: def.label,
+							hint: def.hint,
+						})),
 						"vercel",
 					)) as HostPreset;
 					if (selected && selected !== "none") {
