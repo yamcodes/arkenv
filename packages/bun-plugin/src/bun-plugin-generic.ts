@@ -1,101 +1,82 @@
-import { join } from "node:path";
-import {
-	type ArkEnvLogOptions,
-	resolveBuildLog,
-	splitPluginConfig,
-} from "@repo/log";
+import type { ArkEnvLogOptions } from "@repo/log";
+import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
+import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 import type { BunPlugin } from "bun";
-import { processEnvSchema, registerLoader } from "./utils";
+import { createDefinePlugin } from "./define-plugin";
+import { type BunTransformOptions, isTransformModeCall } from "./env-module";
+import type { BunPluginFactoryConfig } from "./plugin-config";
+import { createTransformPlugin } from "./transform-plugin";
+
+export type { BunPluginFactoryConfig } from "./plugin-config";
+export type { BunTransformOptions };
 
 /**
- * Create a generic Bun plugin instance parameterized with a validator and name.
+ * Create a Bun plugin factory bound to a specific ArkEnv runtime (`core` or `standard`).
  *
- * @param coreArkenv The arkenv validation function to use
- * @param pluginName The display name of the plugin
- * @param factoryLogOptions Optional logger configuration for build-time messages
- * @returns An object containing the configured arkenv plugin creator and the hybrid plugin instance
+ * - **Transform** — `arkenv()` / `arkenv({ schemaPath, clientPrefix })`: rewrite the user's
+ *   `env.ts` in browser bundles (ADR 0021). Server graphs execute `env.ts` as-is.
+ * - **Schema/SPA** — `arkenv(schema, config?)`: build-time validation + `process.env`
+ *   rewriting (existing API, unchanged).
+ *
+ * The returned `hybrid` is the factory with transform `setup`/`target` attached so
+ * `bunfig.toml` / default-import usage (`plugins = ["@arkenv/bun-plugin"]`) enables
+ * zero-config transform mode.
+ *
+ * @param coreArkenv The ArkEnv runtime function used for schema/SPA validation
+ * @param pluginName The Bun plugin name
+ * @param factoryLogOptions Optional default logging options for the factory
+ * @returns An object containing the configured arkenv factory and the hybrid plugin
  */
 export function createBunPlugin(
 	coreArkenv: any,
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
 ) {
-	function arkenv(options: any, config?: any): BunPlugin {
-		const { pluginConfig, logOptions } = splitPluginConfig(config);
-		const buildLog = resolveBuildLog({
-			...factoryLogOptions,
-			...logOptions,
-		});
-		let envMap: Map<string, string>;
-		try {
-			envMap = processEnvSchema(options, pluginConfig, coreArkenv);
-		} catch (error: unknown) {
-			buildLog.logBuildErrorWithCause("Environment validation failed", error);
-			throw error;
+	/**
+	 * Create a Bun plugin in transform or SPA mode based on the call shape.
+	 *
+	 * @param schemaOrOptions Transform options, or a schema for SPA mode
+	 * @param config Optional ArkEnv config (SPA mode only)
+	 * @returns A configured Bun plugin
+	 */
+	function arkenv(
+		schemaOrOptions?: CompiledEnvSchema | SchemaShape | BunPluginFactoryConfig,
+		config?: Omit<ArkEnvConfig, "safe"> & ArkEnvLogOptions,
+	): BunPlugin {
+		if (isTransformModeCall(schemaOrOptions, config)) {
+			return createTransformPlugin(
+				pluginName,
+				(schemaOrOptions ?? {}) as BunPluginFactoryConfig,
+				factoryLogOptions,
+			);
 		}
 
-		return {
-			name: pluginName,
-			setup(build) {
-				registerLoader(build, envMap);
-			},
-		} satisfies BunPlugin;
+		return createDefinePlugin(
+			coreArkenv,
+			pluginName,
+			schemaOrOptions as Record<string, unknown>,
+			config,
+			factoryLogOptions,
+		);
 	}
 
-	const hybrid = arkenv as any & BunPlugin;
+	const zeroConfigTransform = createTransformPlugin(
+		pluginName,
+		{},
+		factoryLogOptions,
+	);
+
+	const hybrid = arkenv as typeof arkenv & BunPlugin;
 
 	Object.defineProperty(hybrid, "name", {
 		value: pluginName,
 		writable: false,
 	});
-
-	hybrid.setup = (build: any) => {
-		const buildLog = resolveBuildLog(factoryLogOptions);
-		const envMap = new Map<string, string>();
-
-		build.onStart(async () => {
-			const cwd = process.cwd();
-			let schema: any;
-
-			const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
-
-			for (const p of possiblePaths) {
-				if (await Bun.file(p).exists()) {
-					try {
-						const mod = await import(p);
-						if (mod.default) {
-							schema = mod.default;
-							break;
-						}
-						if (mod.env) {
-							schema = mod.env;
-							break;
-						}
-					} catch (e) {
-						buildLog.logBuildErrorWithCause(
-							`Failed to load env schema from ${p}`,
-							e,
-						);
-					}
-				}
-			}
-
-			if (!schema) {
-				const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
-				throw new Error(
-					`${pluginName}: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations (or run \`arkenv init\`) exporting your environment definition.`,
-				);
-			}
-
-			const newEnvMap = processEnvSchema(schema, undefined, coreArkenv);
-			envMap.clear();
-			for (const [k, v] of newEnvMap) {
-				envMap.set(k, v);
-			}
-		});
-
-		registerLoader(build, envMap);
-	};
+	Object.defineProperty(hybrid, "target", {
+		value: "browser",
+		writable: false,
+	});
+	hybrid.setup = zeroConfigTransform.setup;
 
 	return { arkenv, hybrid };
 }
