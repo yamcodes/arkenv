@@ -1,4 +1,4 @@
-import type { Framework, HostPreset, Validator } from "../plan";
+import type { Framework, HostPreset, HostProvider, Validator } from "../plan";
 
 /**
  * Codegen IR for a single hosting-preset field.
@@ -49,9 +49,68 @@ export const PRESETS = {
 			URL: { type: "string" },
 		},
 	},
+	cloudflare: {
+		label: "Cloudflare Pages/Workers",
+		hint: "Add CF_PAGES, CF_PAGES_COMMIT_SHA, CF_PAGES_BRANCH, CF_PAGES_URL, etc.",
+		serverOnlyKeys: ["CF_PAGES", "CF_PAGES_COMMIT_SHA"],
+		clientExposedKeys: ["CF_PAGES_BRANCH", "CF_PAGES_URL"],
+		fields: {
+			CF_PAGES: { type: "string" },
+			CF_PAGES_COMMIT_SHA: { type: "string" },
+			CF_PAGES_BRANCH: { type: "string" },
+			CF_PAGES_URL: { type: "string" },
+		},
+	},
+	railway: {
+		label: "Railway",
+		hint: "Add RAILWAY_ENVIRONMENT_NAME, RAILWAY_PUBLIC_DOMAIN, RAILWAY_GIT_COMMIT_SHA, etc.",
+		serverOnlyKeys: [
+			"RAILWAY_ENVIRONMENT_NAME",
+			"RAILWAY_PUBLIC_DOMAIN",
+			"RAILWAY_SERVICE_NAME",
+			"RAILWAY_GIT_COMMIT_SHA",
+		],
+		clientExposedKeys: [],
+		fields: {
+			RAILWAY_ENVIRONMENT_NAME: { type: "string" },
+			RAILWAY_PUBLIC_DOMAIN: { type: "string" },
+			RAILWAY_SERVICE_NAME: { type: "string" },
+			RAILWAY_GIT_COMMIT_SHA: { type: "string" },
+		},
+	},
+	render: {
+		label: "Render",
+		hint: "Add RENDER, RENDER_SERVICE_ID, RENDER_SERVICE_TYPE, RENDER_EXTERNAL_URL, etc.",
+		serverOnlyKeys: [
+			"RENDER",
+			"RENDER_SERVICE_ID",
+			"RENDER_SERVICE_TYPE",
+			"RENDER_EXTERNAL_URL",
+		],
+		clientExposedKeys: [],
+		fields: {
+			RENDER: { type: "string" },
+			RENDER_SERVICE_ID: { type: "string" },
+			RENDER_SERVICE_TYPE: { type: "string" },
+			RENDER_EXTERNAL_URL: { type: "string" },
+		},
+	},
+	fly: {
+		label: "Fly.io",
+		hint: "Add FLY_APP_NAME, FLY_REGION, FLY_ALLOC_ID, etc.",
+		serverOnlyKeys: ["FLY_APP_NAME", "FLY_REGION", "FLY_ALLOC_ID"],
+		clientExposedKeys: [],
+		fields: {
+			FLY_APP_NAME: { type: "string" },
+			FLY_REGION: { type: "string" },
+			FLY_ALLOC_ID: { type: "string" },
+		},
+	},
 } satisfies Record<string, PresetDefinition>;
 
-export type { HostPreset };
+export const PROVIDERS = Object.keys(PRESETS) as HostProvider[];
+
+export type { HostPreset, HostProvider };
 
 /**
  * Get the framework-specific client prefix.

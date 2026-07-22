@@ -1,5 +1,18 @@
 import { Logger } from "@/adapters";
+import {
+	type HostPreset,
+	type HostProvider,
+	PROVIDERS,
+} from "@/features/scaffold";
 import type { InitInput } from "./commands/init";
+
+const PROVIDER_SET = new Set<string>(PROVIDERS);
+const HOST_PRESET_SET = new Set<string>(["none", ...PROVIDERS]);
+
+const isProvider = (val: string): val is HostProvider => PROVIDER_SET.has(val);
+
+const isHostPreset = (val: string): val is HostPreset =>
+	HOST_PRESET_SET.has(val);
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
@@ -109,12 +122,7 @@ export class CLI {
 		if (!this.validationError) {
 			const flag = FLAG_CONFIG.hostPreset;
 			const rawPresetVal = this.getFlagValue(flag.long, flag.short);
-			if (
-				rawPresetVal !== undefined &&
-				rawPresetVal !== "none" &&
-				rawPresetVal !== "vercel" &&
-				rawPresetVal !== "netlify"
-			) {
+			if (rawPresetVal !== undefined && !isHostPreset(rawPresetVal)) {
 				this.validationError = `Invalid host preset: ${rawPresetVal}`;
 			}
 		}
@@ -127,11 +135,7 @@ export class CLI {
 					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
 				} else {
 					const provider = positionalArgs[1];
-					if (
-						provider !== undefined &&
-						provider !== "vercel" &&
-						provider !== "netlify"
-					) {
+					if (provider !== undefined && !isProvider(provider)) {
 						this.validationError = `Invalid host preset: ${provider}`;
 					}
 				}
@@ -198,10 +202,10 @@ export class CLI {
 		return this.hasFlag("noCodegen");
 	}
 
-	get hostPreset(): "none" | "vercel" | "netlify" | undefined {
+	get hostPreset(): HostPreset | undefined {
 		const flag = FLAG_CONFIG.hostPreset;
 		const val = this.getFlagValue(flag.long, flag.short);
-		if (val === "none" || val === "vercel" || val === "netlify") {
+		if (val && isHostPreset(val)) {
 			return val;
 		}
 		return undefined;
@@ -243,13 +247,13 @@ export class CLI {
 		return input;
 	}
 
-	/**
-	 * Returns the parsed input consumed by the add command.
-	 */
-	get addInput(): { provider?: "vercel" | "netlify"; isYes?: boolean } {
+	get addInput(): {
+		provider?: HostProvider;
+		isYes?: boolean;
+	} {
 		const provider = this.positionalArgs[1];
 		const isYes = this.isYes;
-		if (provider === "vercel" || provider === "netlify") {
+		if (provider && isProvider(provider)) {
 			return { provider, isYes };
 		}
 		return { isYes };
