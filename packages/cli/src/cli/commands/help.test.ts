@@ -73,7 +73,7 @@ describe("HelpUseCase", () => {
 		expect(hostPresetOptionLog).toBeDefined();
 		// "--host-preset, -H <preset>" is 26 chars. max (26) - 26 + colGap (4) = 4 spaces padding.
 		expect(hostPresetOptionLog).toBe(
-			"  --host-preset, -H <preset>    Specify a hosting provider preset (none, vercel, netlify)",
+			"  --host-preset, -H <preset>    Specify a hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly)",
 		);
 
 		const helpOptionLog = logs.find((l) => l.includes("--help, -h"));

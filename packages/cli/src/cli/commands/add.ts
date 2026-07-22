@@ -5,6 +5,8 @@ import {
 	getFrameworkPrefix,
 	getPresetKeys,
 	partitionPresetKeys,
+	PRESETS,
+	type HostPreset,
 } from "@/features/scaffold";
 import type {
 	LoggerPort,
@@ -14,12 +16,12 @@ import type {
 } from "@/shared/ports";
 
 export type AddInput = {
-	provider?: "vercel" | "netlify";
+	provider?: Exclude<HostPreset, "none">;
 	isYes?: boolean;
 };
 
 /**
- * Use case for adding a hosting preset (Vercel/Netlify) to an existing schema.
+ * Use case for adding a hosting preset (Vercel/Netlify/Cloudflare/etc.) to an existing schema.
  */
 export class AddUseCase {
 	constructor(
@@ -42,7 +44,7 @@ export class AddUseCase {
 				if (input.isYes) {
 					provider = "vercel";
 				} else {
-					const selected = await this.prompt.select(
+					const selected = (await this.prompt.select(
 						"Select a hosting provider preset:",
 						[
 							{
@@ -55,10 +57,30 @@ export class AddUseCase {
 								label: "Netlify",
 								hint: "Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.",
 							},
+							{
+								value: "cloudflare",
+								label: "Cloudflare Pages/Workers",
+								hint: "Add CF_PAGES, CF_PAGES_COMMIT_SHA, CF_PAGES_BRANCH, CF_PAGES_URL, etc.",
+							},
+							{
+								value: "railway",
+								label: "Railway",
+								hint: "Add RAILWAY_ENVIRONMENT, RAILWAY_STATIC_URL, RAILWAY_GIT_COMMIT_SHA, etc.",
+							},
+							{
+								value: "render",
+								label: "Render",
+								hint: "Add RENDER, RENDER_SERVICE_ID, RENDER_SERVICE_TYPE, RENDER_EXTERNAL_URL, etc.",
+							},
+							{
+								value: "fly",
+								label: "Fly.io",
+								hint: "Add FLY_APP_NAME, FLY_REGION, FLY_ALLOC_ID, etc.",
+							},
 						],
 						"vercel",
-					);
-					if (selected === "vercel" || selected === "netlify") {
+					)) as HostPreset;
+					if (selected && selected !== "none") {
 						provider = selected;
 					} else {
 						return false;
@@ -163,7 +185,7 @@ export class AddUseCase {
 					anyUpdated = true;
 				}
 
-				const providerName = provider === "vercel" ? "Vercel" : "Netlify";
+				const providerName = PRESETS[provider].label;
 				if (anyUpdated) {
 					this.logger.success(
 						`Added ${providerName} environment variables to ${relClientPath} and ${relServerPath}`,
@@ -235,11 +257,11 @@ export class AddUseCase {
 			if (result.updated) {
 				await this.workspace.writeFile(envPath, result.code);
 				this.logger.success(
-					`Added ${provider === "vercel" ? "Vercel" : "Netlify"} environment variables to ${relativeEnvPath}`,
+					`Added ${PRESETS[provider].label} environment variables to ${relativeEnvPath}`,
 				);
 			} else {
 				this.logger.info(
-					`All ${provider === "vercel" ? "Vercel" : "Netlify"} environment variables are already present in ${relativeEnvPath}`,
+					`All ${PRESETS[provider].label} environment variables are already present in ${relativeEnvPath}`,
 				);
 			}
 

@@ -704,6 +704,36 @@ UNRELATED=`);
 				expect(dotenvExample?.content).toContain("VERCEL_ENV=");
 				expect(dotenvExample?.content).toContain("VERCEL_URL=");
 			});
+
+			it("includes cloudflare preset keys in generated config and .env templates", () => {
+				const state: CollectedState = {
+					...defaultState,
+					existingFiles: [],
+					options: {
+						...defaultState.options,
+						hostPreset: "cloudflare",
+					},
+				};
+				const plan = createPlan(state);
+
+				const envTs = plan.files.find((f) => f.path.endsWith("env.ts"));
+				const dotenv = plan.files.find((f) => f.path.endsWith(".env"));
+				const dotenvExample = plan.files.find((f) =>
+					f.path.endsWith(".env.example"),
+				);
+
+				expect(envTs).toBeDefined();
+				expect(envTs?.content).toContain("CF_PAGES");
+				expect(envTs?.content).toContain("CF_PAGES_URL");
+
+				expect(dotenv).toBeDefined();
+				expect(dotenv?.content).toContain("CF_PAGES=");
+				expect(dotenv?.content).toContain("CF_PAGES_URL=");
+
+				expect(dotenvExample).toBeDefined();
+				expect(dotenvExample?.content).toContain("CF_PAGES=");
+				expect(dotenvExample?.content).toContain("CF_PAGES_URL=");
+			});
 		});
 	});
 });

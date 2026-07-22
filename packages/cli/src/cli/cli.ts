@@ -1,4 +1,5 @@
 import { Logger } from "@/adapters";
+import type { HostPreset } from "@/features/scaffold";
 import type { InitInput } from "./commands/init";
 
 const FLAG_CONFIG = {
@@ -109,11 +110,18 @@ export class CLI {
 		if (!this.validationError) {
 			const flag = FLAG_CONFIG.hostPreset;
 			const rawPresetVal = this.getFlagValue(flag.long, flag.short);
+			const validPresets = [
+				"none",
+				"vercel",
+				"netlify",
+				"cloudflare",
+				"railway",
+				"render",
+				"fly",
+			];
 			if (
 				rawPresetVal !== undefined &&
-				rawPresetVal !== "none" &&
-				rawPresetVal !== "vercel" &&
-				rawPresetVal !== "netlify"
+				!validPresets.includes(rawPresetVal)
 			) {
 				this.validationError = `Invalid host preset: ${rawPresetVal}`;
 			}
@@ -127,10 +135,17 @@ export class CLI {
 					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
 				} else {
 					const provider = positionalArgs[1];
+					const validProviders = [
+						"vercel",
+						"netlify",
+						"cloudflare",
+						"railway",
+						"render",
+						"fly",
+					];
 					if (
 						provider !== undefined &&
-						provider !== "vercel" &&
-						provider !== "netlify"
+						!validProviders.includes(provider)
 					) {
 						this.validationError = `Invalid host preset: ${provider}`;
 					}
@@ -198,11 +213,20 @@ export class CLI {
 		return this.hasFlag("noCodegen");
 	}
 
-	get hostPreset(): "none" | "vercel" | "netlify" | undefined {
+	get hostPreset(): HostPreset | undefined {
 		const flag = FLAG_CONFIG.hostPreset;
 		const val = this.getFlagValue(flag.long, flag.short);
-		if (val === "none" || val === "vercel" || val === "netlify") {
-			return val;
+		const validPresets = [
+			"none",
+			"vercel",
+			"netlify",
+			"cloudflare",
+			"railway",
+			"render",
+			"fly",
+		];
+		if (val && validPresets.includes(val)) {
+			return val as HostPreset;
 		}
 		return undefined;
 	}
@@ -243,14 +267,22 @@ export class CLI {
 		return input;
 	}
 
-	/**
-	 * Returns the parsed input consumed by the add command.
-	 */
-	get addInput(): { provider?: "vercel" | "netlify"; isYes?: boolean } {
+	get addInput(): {
+		provider?: Exclude<HostPreset, "none">;
+		isYes?: boolean;
+	} {
 		const provider = this.positionalArgs[1];
 		const isYes = this.isYes;
-		if (provider === "vercel" || provider === "netlify") {
-			return { provider, isYes };
+		const validProviders = [
+			"vercel",
+			"netlify",
+			"cloudflare",
+			"railway",
+			"render",
+			"fly",
+		];
+		if (provider && validProviders.includes(provider)) {
+			return { provider: provider as Exclude<HostPreset, "none">, isYes };
 		}
 		return { isYes };
 	}
