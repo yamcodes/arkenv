@@ -436,9 +436,12 @@ export function runBootGate(
 	const processEnv =
 		typeof process !== "undefined" ? (process.env as Dict<string>) : {};
 
+	// `runtimeConfig` after Nitro boot is authoritative — including deliberate empty
+	// string overrides (`NUXT_PUBLIC_FOO=""`). Spread `process.env` first as a
+	// fallback for keys Nitro has not projected into config yet.
 	const combinedEnv: Record<string, unknown> = { ...processEnv };
 	for (const [key, value] of Object.entries(sourceValues)) {
-		if (value !== undefined && value !== "") {
+		if (value !== undefined) {
 			combinedEnv[key] = value;
 		}
 	}

@@ -105,4 +105,99 @@ describe("Nuxt boot gate", () => {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
 	});
+
+	it("keeps deliberate empty-string runtimeConfig overrides over process.env", () => {
+		const tempDir = path.resolve(__dirname, "temp-boot-gate-empty");
+		fs.mkdirSync(tempDir, { recursive: true });
+		const schemaPath = path.join(tempDir, "env.ts");
+
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import arkenv from "@arkenv/nuxt";
+			export const env = arkenv({
+				NUXT_PUBLIC_LABEL: "string",
+			});
+			`,
+		);
+
+		process.env.NUXT_PUBLIC_LABEL = "from-process-env";
+		const runtimeConfig = {
+			public: {
+				NUXT_PUBLIC_LABEL: "",
+			},
+		};
+
+		try {
+			runBootGate(
+				{
+					schemaPath,
+					layout: "simple",
+					baseDir: "",
+					engine: "arktype",
+				},
+				runtimeConfig,
+			);
+
+			expect(runtimeConfig.public.NUXT_PUBLIC_LABEL).toBe("");
+			expect(getBootGateResult()?.NUXT_PUBLIC_LABEL).toBe("");
+		} finally {
+			delete process.env.NUXT_PUBLIC_LABEL;
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("coerces overrides with the standard engine", () => {
+		const tempDir = path.resolve(__dirname, "temp-boot-gate-standard");
+		fs.mkdirSync(tempDir, { recursive: true });
+		const schemaPath = path.join(tempDir, "env.ts");
+
+		fs.writeFileSync(
+			schemaPath,
+			`
+			import arkenv from "@arkenv/nuxt/standard";
+
+			const numberSchema = {
+				"~standard": {
+					version: 1,
+					vendor: "mock",
+					validate: (value) => {
+						const n = Number(value);
+						if (value === undefined || value === "" || Number.isNaN(n)) {
+							return { issues: [{ message: "expected number" }] };
+						}
+						return { value: n };
+					},
+				},
+			};
+
+			export const env = arkenv({
+				NUXT_PUBLIC_PORT: numberSchema,
+			});
+			`,
+		);
+
+		const runtimeConfig = {
+			public: {
+				NUXT_PUBLIC_PORT: "8080",
+			},
+		};
+
+		try {
+			runBootGate(
+				{
+					schemaPath,
+					layout: "simple",
+					baseDir: "",
+					engine: "standard",
+				},
+				runtimeConfig,
+			);
+
+			expect(runtimeConfig.public.NUXT_PUBLIC_PORT).toBe(8080);
+			expect(typeof runtimeConfig.public.NUXT_PUBLIC_PORT).toBe("number");
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 });

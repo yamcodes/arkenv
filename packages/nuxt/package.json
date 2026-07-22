@@ -35,6 +35,7 @@
 		"@arkenv/core": "^1.0.0",
 		"@arkenv/standard": "^1.0.0",
 		"arktype": "^2.1.22",
+		"nitropack": "^2.0.0",
 		"nuxt": "^3.0.0 || ^4.0.0-0"
 	},
 	"peerDependenciesMeta": {
@@ -45,6 +46,9 @@
 			"optional": true
 		},
 		"arktype": {
+			"optional": true
+		},
+		"nitropack": {
 			"optional": true
 		}
 	},

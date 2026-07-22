@@ -4,7 +4,7 @@ icon: Album
 description: Validate and secure environment variables in Nuxt applications.
 ---
 
-The `@arkenv/nuxt` integration provides end-to-end environment validation for both the server and the browser. A Nitro boot gate coerces schema values into Nuxt's `runtimeConfig` after deploy-time `NUXT_*` / `NUXT_PUBLIC_*` overrides, and thin `env` accessors read that payload on both sides — without shipping the validator to the client. A Vite plugin still blocks server-only schema imports from the browser.
+The `@arkenv/nuxt` integration validates environment variables for both the server and the browser, keeps public values correctly typed after deploy-time overrides, and blocks server-only secrets from reaching the client.
 
 The fastest way to get started is with the [ArkEnv CLI](/docs/cli). It automatically configures `@arkenv/nuxt` for your existing Nuxt project:
 

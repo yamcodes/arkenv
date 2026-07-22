@@ -136,7 +136,7 @@ export function combineCapturedSchemas(
  * @returns Schema keys contributed by that call
  */
 function schemaFromCapture(call: CapturedSchemaCall): SchemaShape {
-	const { schemaOrOptions, optionsOrIsServer, context } = call;
+	const { schemaOrOptions, optionsOrIsServer } = call;
 
 	if (typeof optionsOrIsServer === "boolean") {
 		const legacy = schemaOrOptions as CaptureLegacyNested;
@@ -164,19 +164,7 @@ function schemaFromCapture(call: CapturedSchemaCall): SchemaShape {
 		} as SchemaShape;
 	}
 
-	const flat = (schemaOrOptions || {}) as SchemaShape;
-
-	if (context?.isShared) {
-		return flat;
-	}
-	if (
-		context?.strictLayout === "client" ||
-		context?.strictLayout === "server"
-	) {
-		return flat;
-	}
-
-	return flat;
+	return (schemaOrOptions || {}) as SchemaShape;
 }
 
 /**

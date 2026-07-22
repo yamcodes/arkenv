@@ -241,6 +241,20 @@ function readThinSourceEnv(isServer: boolean): Record<string, unknown> {
 		return gated;
 	}
 
+	if (
+		typeof process !== "undefined" &&
+		process.env.NODE_ENV !== "production" &&
+		!(globalThis as { __ARKENV_BOOT_GATE_FALLBACK_WARNED__?: boolean })
+			.__ARKENV_BOOT_GATE_FALLBACK_WARNED__
+	) {
+		(
+			globalThis as { __ARKENV_BOOT_GATE_FALLBACK_WARNED__?: boolean }
+		).__ARKENV_BOOT_GATE_FALLBACK_WARNED__ = true;
+		console.warn(
+			"[arkenv] Nuxt boot gate has not run; falling back to raw process.env. Register `@arkenv/nuxt/module` (or `@arkenv/nuxt/standard/module`) so values are validated and coerced at Nitro boot.",
+		);
+	}
+
 	return (typeof process !== "undefined" ? process.env : undefined) || {};
 }
 
