@@ -89,7 +89,8 @@
         "doc",
         "example",
         "test",
-        "tool"
+        "tool",
+        "content"
       ]
     }
   ]
