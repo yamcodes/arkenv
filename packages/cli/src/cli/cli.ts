@@ -1,16 +1,18 @@
 import { Logger } from "@/adapters";
-import { type HostPreset, type HostProvider, PROVIDERS } from "@/features/scaffold";
+import {
+	type HostPreset,
+	type HostProvider,
+	PROVIDERS,
+} from "@/features/scaffold";
 import type { InitInput } from "./commands/init";
 
 const PROVIDER_SET = new Set<string>(PROVIDERS);
 const HOST_PRESET_SET = new Set<string>(["none", ...PROVIDERS]);
 
-const isProvider = (val: string): val is HostProvider =>
-	PROVIDER_SET.has(val);
+const isProvider = (val: string): val is HostProvider => PROVIDER_SET.has(val);
 
 const isHostPreset = (val: string): val is HostPreset =>
 	HOST_PRESET_SET.has(val);
-
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
