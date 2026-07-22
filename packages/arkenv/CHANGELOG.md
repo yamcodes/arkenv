@@ -1,5 +1,69 @@
 # @arkenv/core
 
+## 1.0.0-alpha.10
+
+### Minor Changes
+
+- #### Add hosting presets for Cloudflare, Railway, Render, and Fly.io _[`#1469`](https://github.com/yamcodes/arkenv/pull/1469) [`a64bd57`](https://github.com/yamcodes/arkenv/commit/a64bd5752a29dcce66fcc0b507320a700a0a5b6e) [@yamcodes](https://github.com/yamcodes)_
+
+  Add hosting presets for Cloudflare, Railway, Render, and Fly.io to the interactive prompt selections in both `arkenv init` and `arkenv add host`.
+
+  Usage:
+
+  ```bash
+  npx arkenv@latest add host cloudflare
+  ```
+
+  or
+
+  ```bash
+  npx arkenv@latest init --host-preset cloudflare
+  ```
+
+- #### Support `arkenv add host` for strict multi-file layouts _[`#1434`](https://github.com/yamcodes/arkenv/pull/1434) [`a3d93be`](https://github.com/yamcodes/arkenv/commit/a3d93bedf30fcc46bdaad5966486345dd8f9d75b) [@yamcodes](https://github.com/yamcodes)_
+
+  Support `arkenv add host [provider]` in projects with strict multi-file layouts (`client.ts` and `server.ts`). Automatically partition preset variables into client-prefixed keys for `client.ts` and server-only keys for `server.ts`. Align help text and docs so `add host` is not described as flat-`env.ts`-only.
+
+  Usage:
+
+  ```bash
+  npx arkenv@latest add host [provider]
+  ```
+
+- #### Auto-extend shared schema in Nuxt strict-layout client entry _[`#1422`](https://github.com/yamcodes/arkenv/pull/1422) [`b1d8bad`](https://github.com/yamcodes/arkenv/commit/b1d8badc33523ea80a5d54683d503ad214337e80) [@yamcodes](https://github.com/yamcodes)_
+
+  **`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/client.ts` auto-merges `SharedSchema` from `env/internal/shared.ts` via `#arkenv/shared-schema`. Applies to both `@arkenv/nuxt/client` and `@arkenv/nuxt/standard/client`. The server entry continues to auto-merge the composed client env.
+
+  **`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified client template (no manual `SharedSchema` import or `extends` block). Next.js scaffolds remain unchanged.
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nuxt/client";
+
+  export const env = arkenv({
+    NUXT_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a custom list - is used as-is and opts out of auto-merge. Strict layout still requires `env/internal/shared.ts` with a `SharedSchema` export — that schema may be empty (`type({})`) when you have no shared variables. A missing file or unusable export fails with a clear diagnostic (rather than silently treating shared as empty).
+
+## 1.0.0-alpha.9
+
+### Minor Changes
+
+- #### Add `add host` command to CLI for adding hosting presets to existing schemas _[`#1419`](https://github.com/yamcodes/arkenv/pull/1419) [`0a559ce`](https://github.com/yamcodes/arkenv/commit/0a559ceaf2f2fcb09bd7026cd07a87a785985766) [@yamcodes](https://github.com/yamcodes)_
+
+  Support adding a hosting provider preset (Vercel or Netlify) to an existing `env.ts` configuration file:
+
+  ```bash
+  npx arkenv@alpha add host [provider]
+  ```
+
+  - Prompts interactively to select Vercel or Netlify if the provider is omitted.
+  - Auto-detects the framework (Next.js, Nuxt, Vite, Bun) and the validator engine (Zod, Valibot, or ArkType) to inject the preset fields with the correct syntax.
+  - Fallback to logging the generated variable schemas to stdout with manual configuration instructions if `env.ts` is missing or unparseable.
+
 ## 1.0.0-alpha.8
 
 ### Minor Changes

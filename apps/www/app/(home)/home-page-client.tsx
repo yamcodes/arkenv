@@ -82,8 +82,8 @@ export function HomePageClient() {
 			{/* Main Hero & Lede */}
 			<main className="w-full max-w-5xl mx-auto px-4 mt-8 md:mt-12 z-20 flex flex-col items-center text-center">
 				<div className="mb-4">
-					<AnnouncementBadge href="/docs/nextjs" new>
-						Official Next.js integration!
+					<AnnouncementBadge href="/docs/cli/hosting-presets" new>
+						Next.js, Netlify presets
 					</AnnouncementBadge>
 				</div>
 

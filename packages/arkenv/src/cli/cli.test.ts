@@ -281,6 +281,28 @@ describe("CLI parser", () => {
 				"vercle",
 			]);
 			expect(cli4.validationError).toBe("Invalid host preset: vercle");
+
+			const cli5 = new CLI([
+				"node",
+				"arkenv",
+				"init",
+				"--host-preset",
+				"cloudflare",
+			]);
+			expect(cli5.hostPreset).toBe("cloudflare");
+			expect(cli5.initInput.hostPreset).toBe("cloudflare");
+			expect(cli5.validationError).toBeUndefined();
+
+			const cli6 = new CLI([
+				"node",
+				"arkenv",
+				"init",
+				"--host-preset",
+				"railway",
+			]);
+			expect(cli6.hostPreset).toBe("railway");
+			expect(cli6.initInput.hostPreset).toBe("railway");
+			expect(cli6.validationError).toBeUndefined();
 		});
 
 		it("should parse the -H alias for --host-preset", () => {
@@ -305,6 +327,20 @@ describe("CLI parser", () => {
 				const cli = new CLI(["node", "arkenv", "add", "host", "netlify"]);
 				expect(cli.command).toBe("add");
 				expect(cli.addInput.provider).toBe("netlify");
+				expect(cli.validationError).toBeUndefined();
+			});
+
+			it("should parse valid add host cloudflare command", () => {
+				const cli = new CLI(["node", "arkenv", "add", "host", "cloudflare"]);
+				expect(cli.command).toBe("add");
+				expect(cli.addInput.provider).toBe("cloudflare");
+				expect(cli.validationError).toBeUndefined();
+			});
+
+			it("should parse valid add host railway command", () => {
+				const cli = new CLI(["node", "arkenv", "add", "host", "railway"]);
+				expect(cli.command).toBe("add");
+				expect(cli.addInput.provider).toBe("railway");
 				expect(cli.validationError).toBeUndefined();
 			});
 

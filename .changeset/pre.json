@@ -24,8 +24,14 @@
 		"@repo/log": "0.0.1"
 	},
 	"changesets": [
+		"add-host-preset-add-command",
+		"add-host-presets-phase-4",
+		"add-host-strict-layouts-forward-port",
+		"align-missing-schema-throw",
+		"bun-env-module-transform",
 		"drop-example-e-alias",
 		"epg3nspi",
+		"fix-nuxt-proxy-coercion",
 		"forward-port-hosting-presets",
 		"forward-port-keywords-typetable",
 		"host-preset-alias",
@@ -34,17 +40,23 @@
 		"injectable-logger-api",
 		"machine-actionable-error-codes",
 		"nuxt-augment-config-key",
+		"nuxt-boot-gate-thin-accessors",
 		"nuxt-flat-layout-cli-alignment",
 		"nuxt-module-options-jsdoc-v1",
+		"nuxt-skip-setup-before-boot-gate",
 		"nuxt-strict-auto-extend",
+		"nuxt-strict-client-shared-auto-extend",
 		"reconcile-v0-features",
 		"remove-framework-shared-exports",
 		"rename-create-env-to-arkenv",
+		"standard-isolation-guards",
 		"standard-mode-flat-layout",
 		"standard-mode-packaging",
 		"trim-short-flag-aliases",
 		"unified-error-normalization",
 		"unify-coercion",
-		"valibot-example-registry"
+		"valibot-example-registry",
+		"vite-env-module-transform",
+		"walk-back-env-starters"
 	]
 }

@@ -18,7 +18,7 @@ Every comment or issue posted to the issue tracker during triage **must** start 
 ## Reference docs
 
 - [AGENT-BRIEF.md](AGENT-BRIEF.md) - how to write durable agent briefs
-- [OUT-OF-SCOPE.md](OUT-OF-SCOPE.md) - how the `.out-of-scope/` knowledge base works
+- [OUT-OF-SCOPE.md](OUT-OF-SCOPE.md) - how rejected enhancements are recorded (**ArkEnv: use `docs/adr/`, not a root `.out-of-scope/` folder**)
 
 ## Roles
 
@@ -66,7 +66,7 @@ Show counts and a one-line summary per issue. Let the maintainer pick.
 
 ## Triage a specific issue
 
-1. **Gather context.** Read the full issue (body, comments, labels, reporter, dates). Parse any prior triage notes so you don't re-ask resolved questions. Explore the codebase using the project's domain glossary, respecting ADRs in the area. Read `.out-of-scope/*.md` and surface any prior rejection that resembles this issue.
+1. **Gather context.** Read the full issue (body, comments, labels, reporter, dates). Parse any prior triage notes so you don't re-ask resolved questions. Explore the codebase using the project's domain glossary, respecting ADRs in the area. Check `docs/adr/` (and related closed issues) for prior rejections that resemble this issue — **do not** look for or create a root `.out-of-scope/` directory in this repo (see [OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
 
 2. **Recommend.** Tell the maintainer your category and state recommendation with reasoning, plus a brief codebase summary relevant to the issue. Wait for direction.
 
@@ -79,7 +79,7 @@ Show counts and a one-line summary per issue. Let the maintainer pick.
    - `ready-for-human` - same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info` - post triage notes (template below).
    - `wontfix` (bug) - polite explanation, then close.
-   - `wontfix` (enhancement) - write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
+   - `wontfix` (enhancement) - record in `docs/adr/` when architectural; otherwise a closing comment is enough. Link the record from the issue, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)). **Never** create `.out-of-scope/` in ArkEnv.
    - `needs-triage` - apply the role. Optional comment if there's partial progress.
 
 ## Quick state override

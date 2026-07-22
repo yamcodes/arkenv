@@ -4,10 +4,6 @@ icon: Album
 description: The ArkEnv plugin for Bun's fullstack dev server lets you validate environment variables at build-time and runtime.
 ---
 
-:::important
-This plugin requires [ArkType](https://arktype.io) to be installed.
-:::
-
 :::note
 For standard backend applications running on Bun, you likely don't need this plugin. Instead, use the agnostic [core arkenv package](/docs/arkenv) directly. This plugin is specifically designed to handle client-side environment variable inlining when using Bun as a bundler and fullstack server.
 :::
@@ -33,7 +29,7 @@ npx arkenv@latest init
     ```
 
     :::note
-    `@arkenv/bun-plugin` lists `@arkenv/core` as a **peer dependency**. This ensures that the engine resolves to a single root-level instance across your codebase, preventing "dual package hazards" that can break runtime type evaluations and singleton context.
+    `@arkenv/bun-plugin` lists `@arkenv/core` and `@arkenv/standard` as **optional peer dependencies**. Install one engine so it resolves to a single root-level instance and avoids dual-package hazards.
     :::
 
     For a Standard Schema setup (e.g., Zod, Valibot) without ArkType:

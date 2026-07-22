@@ -22,9 +22,9 @@ By importing `@arkenv/core` from `@/env/client` in client-side code and `@/env/s
 - **Flat layout:** import from `@arkenv/nextjs` - one entry point, bundler picks the build.
 - **Strict layout:** import from `@arkenv/nextjs/client` and `@arkenv/nextjs/server`.
 - **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
-- **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+- **Standalone server scripts** (outside the env module graph): `import arkenv from "@arkenv/core"`.
 
-:::note Migration
+:::note[Migration]
 If you previously used `@arkenv/nextjs/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
 :::
 
@@ -124,7 +124,7 @@ export const env = arkenv(
     ```
 
     :::note
-    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
+    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core` — see [Zod, Valibot, and other Standard Schema validators](/docs/nextjs/using-other-validators).
     :::
 
     ### Define shared variables [step] [!toc]

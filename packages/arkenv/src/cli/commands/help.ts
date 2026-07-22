@@ -40,7 +40,8 @@ export class HelpUseCase {
 			},
 			{
 				left: "arkenv add host [provider]",
-				right: "Add hosting provider preset (vercel, netlify) to env.ts",
+				right:
+					"Add hosting provider preset (vercel, netlify, cloudflare, railway, render, fly) to schema",
 			},
 		];
 
@@ -77,7 +78,8 @@ export class HelpUseCase {
 			},
 			{
 				left: "--host-preset, -H <preset>",
-				right: "Specify a hosting provider preset (none, vercel, netlify)",
+				right:
+					"Specify a hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly)",
 			},
 			{
 				left: "--help, -h",

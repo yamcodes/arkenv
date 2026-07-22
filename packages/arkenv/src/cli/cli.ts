@@ -1,5 +1,10 @@
 import { Logger } from "@/adapters";
-import { type HostPreset, isHostPreset } from "@/features/scaffold/presets";
+import {
+	type HostPreset,
+	type HostProvider,
+	isHostPreset,
+	isHostProvider,
+} from "@/features/scaffold/presets";
 import type { InitInput } from "./commands/init";
 
 const FLAG_CONFIG = {
@@ -125,11 +130,7 @@ export class CLI {
 					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
 				} else {
 					const provider = positionalArgs[1];
-					if (
-						provider !== undefined &&
-						provider !== "vercel" &&
-						provider !== "netlify"
-					) {
+					if (provider !== undefined && !isHostProvider(provider)) {
 						this.validationError = `Invalid host preset: ${provider}`;
 					}
 				}
@@ -244,10 +245,10 @@ export class CLI {
 	/**
 	 * Returns the parsed input consumed by the add command.
 	 */
-	get addInput(): { provider?: "vercel" | "netlify"; isYes?: boolean } {
+	get addInput(): { provider?: HostProvider; isYes?: boolean } {
 		const provider = this.positionalArgs[1];
 		const isYes = this.isYes;
-		if (provider === "vercel" || provider === "netlify") {
+		if (provider !== undefined && isHostProvider(provider)) {
 			return { provider, isYes };
 		}
 		return { isYes };

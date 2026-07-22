@@ -195,6 +195,14 @@ In the flat layout, the only variable ArkEnv exposes to both environments by def
 
 This asymmetry causes React hydration mismatches and corrupts client-side state. Only real public values (prefixed with `NEXT_PUBLIC_`) and `NODE_ENV` belong in the shared/client surface. If a value is server-only, leave it out of `exposeToClient` so it stays strictly server-only.
 
+## Do I need to install `arktype` with `@arkenv/nextjs`?
+
+**Only if you use the default ArkType engine (`@arkenv/core`).** For Zod, Valibot, or other Standard Schema validators without ArkType:
+
+1. Install `@arkenv/standard` (not `@arkenv/core` / `arktype`)
+2. Wrap config with `withArkEnv` from `@arkenv/nextjs/standard/config`
+3. Define schemas with your validator (see [Zod, Valibot, and other Standard Schema validators](/docs/nextjs/using-other-validators))
+
 ## Why do I need to install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nextjs`?
 
 Framework integration packages (like `@arkenv/nextjs` or `@arkenv/nuxt`) do not bundle the validation engine directly. They list `@arkenv/core` and `@arkenv/standard` as **optional peer dependencies**.

@@ -53,14 +53,78 @@ export const PRESETS = {
 			URL: { type: "string" },
 		},
 	},
+	cloudflare: {
+		label: "Cloudflare Pages/Workers",
+		hint: "Add CF_PAGES, CF_PAGES_COMMIT_SHA, CF_PAGES_BRANCH, CF_PAGES_URL, etc.",
+		serverOnlyKeys: ["CF_PAGES", "CF_PAGES_COMMIT_SHA"],
+		clientExposedKeys: ["CF_PAGES_BRANCH", "CF_PAGES_URL"],
+		fields: {
+			CF_PAGES: { type: "string" },
+			CF_PAGES_COMMIT_SHA: { type: "string" },
+			CF_PAGES_BRANCH: { type: "string" },
+			CF_PAGES_URL: { type: "string" },
+		},
+	},
+	railway: {
+		label: "Railway",
+		hint: "Add RAILWAY_ENVIRONMENT_NAME, RAILWAY_PUBLIC_DOMAIN, RAILWAY_GIT_COMMIT_SHA, etc.",
+		serverOnlyKeys: [
+			"RAILWAY_ENVIRONMENT_NAME",
+			"RAILWAY_PUBLIC_DOMAIN",
+			"RAILWAY_SERVICE_NAME",
+			"RAILWAY_GIT_COMMIT_SHA",
+		],
+		clientExposedKeys: [],
+		fields: {
+			RAILWAY_ENVIRONMENT_NAME: { type: "string" },
+			RAILWAY_PUBLIC_DOMAIN: { type: "string" },
+			RAILWAY_SERVICE_NAME: { type: "string" },
+			RAILWAY_GIT_COMMIT_SHA: { type: "string" },
+		},
+	},
+	render: {
+		label: "Render",
+		hint: "Add RENDER, RENDER_SERVICE_ID, RENDER_SERVICE_TYPE, RENDER_EXTERNAL_URL, etc.",
+		serverOnlyKeys: [
+			"RENDER",
+			"RENDER_SERVICE_ID",
+			"RENDER_SERVICE_TYPE",
+			"RENDER_EXTERNAL_URL",
+		],
+		clientExposedKeys: [],
+		fields: {
+			RENDER: { type: "string" },
+			RENDER_SERVICE_ID: { type: "string" },
+			RENDER_SERVICE_TYPE: { type: "string" },
+			RENDER_EXTERNAL_URL: { type: "string" },
+		},
+	},
+	fly: {
+		label: "Fly.io",
+		hint: "Add FLY_APP_NAME, FLY_REGION, FLY_ALLOC_ID, etc.",
+		serverOnlyKeys: ["FLY_APP_NAME", "FLY_REGION", "FLY_ALLOC_ID"],
+		clientExposedKeys: [],
+		fields: {
+			FLY_APP_NAME: { type: "string" },
+			FLY_REGION: { type: "string" },
+			FLY_ALLOC_ID: { type: "string" },
+		},
+	},
 } as const satisfies Record<string, PresetDefinition>;
+
+/**
+ * Hosting provider id (excludes the explicit opt-out `"none"`).
+ *
+ * Derived from {@link PRESETS} so adding a host stays a single registry edit.
+ */
+export type HostProvider = keyof typeof PRESETS;
 
 /**
  * Hosting preset id including the explicit opt-out (`"none"`).
  *
  * Derived from {@link PRESETS} so adding a host stays a single registry edit.
  */
-export type HostPreset = "none" | keyof typeof PRESETS;
+export type HostPreset = "none" | HostProvider;
 
 /**
  * Type-guard for CLI / flag values against {@link HostPreset}.
@@ -71,6 +135,17 @@ export type HostPreset = "none" | keyof typeof PRESETS;
 export function isHostPreset(value: string): value is HostPreset {
 	// Own-key check compatible with es2020 (no Object.hasOwn) and noPrototypeBuiltins.
 	return value === "none" || Object.keys(PRESETS).includes(value);
+}
+
+/**
+ * Type-guard for `add host` provider values against {@link HostProvider}.
+ *
+ * @param value Raw CLI string
+ * @returns Whether `value` is a known hosting provider id
+ */
+export function isHostProvider(value: string): value is HostProvider {
+	// Own-key check compatible with es2020 (no Object.hasOwn) and noPrototypeBuiltins.
+	return Object.keys(PRESETS).includes(value);
 }
 
 /**
@@ -93,6 +168,37 @@ export function getPresetKeys(
 		}
 	}
 	return keys;
+}
+
+/**
+ * Partitions hosting preset keys into client-facing (prefixed) vs server-only keys for strict layouts.
+ *
+ * @param preset Selected hosting preset (`"none"` yields empty lists)
+ * @param clientPrefix Framework client prefix (e.g. `NEXT_PUBLIC_`); empty skips client keys
+ * @returns Client-prefixed keys for `client.ts` and unprefixed keys for `server.ts`
+ */
+export function partitionPresetKeys(
+	preset: HostPreset,
+	clientPrefix: string,
+): { clientKeys: string[]; serverKeys: string[] } {
+	if (preset === "none") {
+		return { clientKeys: [], serverKeys: [] };
+	}
+	const def = PRESETS[preset];
+
+	const serverKeys: string[] = [
+		...def.serverOnlyKeys,
+		...def.clientExposedKeys,
+	];
+	const clientKeys: string[] = [];
+
+	if (clientPrefix) {
+		for (const key of def.clientExposedKeys) {
+			clientKeys.push(`${clientPrefix}${key}`);
+		}
+	}
+
+	return { clientKeys, serverKeys };
 }
 
 /**

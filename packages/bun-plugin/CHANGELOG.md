@@ -1,5 +1,72 @@
 # @arkenv/bun-plugin
 
+## 1.0.0-alpha.7
+
+### Minor Changes
+
+- #### Add `env.ts` transform for Bun fullstack apps _[`#1459`](https://github.com/yamcodes/arkenv/pull/1459) [`5fc1c6a`](https://github.com/yamcodes/arkenv/commit/5fc1c6a95a3d2a96ef7302750b1104188b230048) [@yamcodes](https://github.com/yamcodes)_
+
+  Let the Bun plugin discover your `env.ts` and expose a shared `env` object that works in both client and server code. On the client (`Bun.build` / `[serve.static]`), public (`BUN_PUBLIC_*`) values are inlined at build time and server-only keys throw if read; on the server (`bun run` / `Bun.serve`), `env.ts` still runs normally and validates against the real environment at boot. The plugin does not rewrite your `env.ts` file on disk.
+
+  Works with `@arkenv/bun-plugin` and `@arkenv/bun-plugin/standard`.
+
+  Usage:
+
+  ```ts
+  // bunfig.toml — zero-config browser transform
+  // [serve.static]
+  // plugins = ["@arkenv/bun-plugin"]
+
+  // or explicitly in Bun.build:
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    entrypoints: ["./src/index.html"],
+    target: "browser",
+    plugins: [arkenv], // finds src/env.ts or env.ts
+    // or: arkenv({ schemaPath: "src/env.ts", clientPrefix: "BUN_PUBLIC_" })
+  });
+  ```
+
+  ```ts
+  // src/env.ts
+  import arkenv from "@arkenv/core";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+    BUN_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  ```ts
+  import { env } from "./env";
+
+  env.BUN_PUBLIC_API_URL; // available on client and server
+  env.DATABASE_URL; // server only — throws if read in the browser
+  ```
+
+  Passing a schema to `arkenv(schema)` (the previous `process.env` rewrite API) continues to work unchanged as SPA mode.
+
+### Patch Changes
+
+- #### Clarify Standard Mode missing-schema guidance with a Zod example _[`#1457`](https://github.com/yamcodes/arkenv/pull/1457) [`6cca0cf`](https://github.com/yamcodes/arkenv/commit/6cca0cf8459d6b2e75bd7b163388ab9d0a8bb782) [@yamcodes](https://github.com/yamcodes)_
+
+  When `@arkenv/bun-plugin/standard` cannot find `env.ts`, show an illustrative Zod starter (any Standard Schema validator works — Zod is just the most common):
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export default arkenv({
+    BUN_PUBLIC_API_URL: z.string(),
+    BUN_PUBLIC_DEBUG: z.enum(["true", "false"]),
+  });
+  ```
+
+- #### Drop embedded env.ts starters and warn when the Nuxt module finds no schema _[`#1468`](https://github.com/yamcodes/arkenv/pull/1468) [`0150e73`](https://github.com/yamcodes/arkenv/commit/0150e73713facc58e05508a19f72042ac40c90e6) [@yamcodes](https://github.com/yamcodes)_
+
+  Keep missing-schema guidance short and host-parity consistent: Bun no longer embeds ArkType/Zod starters in the hybrid discovery error (prefer `arkenv init` / docs). When the Nuxt module is registered but no schema file is found, log a build warning and skip setup instead of failing silently.
+
 ## 1.0.0-alpha.6
 
 ### Patch Changes

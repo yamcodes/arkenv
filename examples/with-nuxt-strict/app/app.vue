@@ -8,16 +8,26 @@ const { data: health } = await useFetch("/api/health");
   <main style="padding: 40px; font-family: sans-serif; max-width: 600px; margin: 0 auto;">
     <h1>ArkEnv Nuxt Playground (Strict Mode)</h1>
     <p>
-      Demonstrating strict-layout auto-extend: <code>env/server.ts</code> omits
-      manual <code>extends: [clientEnv]</code>. Server validation runs at build
-      time via the module, and the health endpoint reads shared env through the
-      auto-extended server env.
+      Demonstrating strict-layout auto-extend: <code>env/client.ts</code> and
+      <code>env/server.ts</code> omit manual <code>extends</code>. Server
+      validation runs at build time via the module, and the health endpoint
+      reads shared env through the auto-extended server env.
     </p>
 
     <div style="padding: 16px; border: 1px solid #cbd5e1; border-radius: 8px;">
       <h3>Client Context</h3>
       <p>
         <strong>API URL:</strong> <code>{{ clientEnv.NUXT_PUBLIC_API_URL }}</code>
+      </p>
+      <p>
+        <strong>Public port (coerced number):</strong>
+        <code>{{ clientEnv.NUXT_PUBLIC_PORT }}</code>
+        <span>(typeof {{ typeof clientEnv.NUXT_PUBLIC_PORT }})</span>
+      </p>
+      <p>
+        <strong>Feature flag (coerced boolean):</strong>
+        <code>{{ clientEnv.NUXT_PUBLIC_FEATURE_FLAG }}</code>
+        <span>(typeof {{ typeof clientEnv.NUXT_PUBLIC_FEATURE_FLAG }})</span>
       </p>
       <p>
         <strong>Node Env:</strong> <code>{{ clientEnv.NODE_ENV }}</code>

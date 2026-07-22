@@ -1,11 +1,7 @@
 import arkenv from "@arkenv/nuxt/client";
-import { SharedSchema } from "./internal/shared";
 
-export const env = arkenv(
-	{
-		NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-	},
-	{
-		extends: [SharedSchema],
-	},
-);
+export const env = arkenv({
+	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	NUXT_PUBLIC_PORT: "number = 3000",
+	NUXT_PUBLIC_FEATURE_FLAG: "boolean = false",
+});
