@@ -1,5 +1,5 @@
-import { APITester } from "./api-tester";
 import { env } from "@/env";
+import { APITester } from "./api-tester";
 import "./index.css";
 
 import logo from "./logo.svg";
