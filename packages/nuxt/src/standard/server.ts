@@ -1,8 +1,8 @@
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
 // Static import so Vite/Nitro can resolve the alias at bundle time.
 // Outside strict layout the module aliases this to `empty-client-env.ts`.
 import { env as importedClientEnv } from "#arkenv/client-env";
+import { ensureBootGate } from "#arkenv/server-boot";
 import { arkenvInternal, type FlatSchemaOptions } from "@/arkenv-internal";
 import {
 	isStrictLayoutActive,
@@ -135,27 +135,22 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 			"server" in schemaOrOptions ||
 			"shared" in schemaOrOptions);
 
+	const hooks = { ensureBootGate };
+
 	if (isLegacy) {
 		if ("client" in schemaOrOptions) {
 			throw new Error(
 				"server entry point only accepts 'server' and 'shared' schemas.",
 			);
 		}
-		return arkenvInternal(
-			schemaOrOptions,
-			true,
-			undefined,
-			coreArkenv,
-			getSchemaKeys,
-		);
+		return arkenvInternal(schemaOrOptions, true, undefined, hooks);
 	}
 
 	return arkenvInternal(
 		schemaOrOptions,
 		withAutoExtend(optionsOrIsServer),
 		{ isServer: true, strictLayout: "server" },
-		coreArkenv,
-		getSchemaKeys,
+		hooks,
 	);
 }
 

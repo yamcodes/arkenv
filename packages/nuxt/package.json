@@ -23,6 +23,7 @@
 		"@repo/utils": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
+		"nitropack": "^2.13.1",
 		"nuxt": "^4.4.8",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
@@ -145,6 +146,11 @@
 			"types": "./dist/empty-shared-schema.d.ts",
 			"import": "./dist/empty-shared-schema.js",
 			"require": "./dist/empty-shared-schema.cjs"
+		},
+		"#arkenv/server-boot": {
+			"types": "./dist/empty-server-boot.d.ts",
+			"import": "./dist/empty-server-boot.js",
+			"require": "./dist/empty-server-boot.cjs"
 		}
 	}
 }

@@ -1,6 +1,6 @@
 # @arkenv/nuxt
 
-ArkEnv integration for Nuxt. Provides a typesafe, minimal-dependency environment variable parser and validator for Nuxt applications. It automatically injects your schema into Nuxt's `runtimeConfig` and prevents server secrets from leaking to the client via a custom Vite plugin.
+ArkEnv integration for Nuxt. Provides a typesafe, minimal-dependency environment variable parser and validator for Nuxt applications. It injects your schema into Nuxt's `runtimeConfig`, coerces values at Nitro boot (including `NUXT_PUBLIC_*` overrides), exposes thin server/client `env` accessors without shipping the validator to the browser, and blocks server secrets from leaking to the client via a Vite plugin.
 
 ## Installation
 

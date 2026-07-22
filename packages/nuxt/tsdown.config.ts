@@ -9,6 +9,10 @@ export default defineConfig({
 		"src/client.ts",
 		"src/empty-client-env.ts",
 		"src/empty-shared-schema.ts",
+		"src/empty-server-boot.ts",
+		"src/server-boot.ts",
+		"src/boot-gate.ts",
+		"src/runtime/nitro-boot-plugin.ts",
 		"src/standard/index.ts",
 		"src/standard/module.ts",
 		"src/standard/server.ts",
@@ -25,8 +29,10 @@ export default defineConfig({
 		neverBundle: [
 			"@nuxt/kit",
 			"@nuxt/schema",
+			"nitropack",
 			"#arkenv/client-env",
 			"#arkenv/shared-schema",
+			"#arkenv/server-boot",
 		],
 	},
 });

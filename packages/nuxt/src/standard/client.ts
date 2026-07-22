@@ -1,4 +1,3 @@
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
 // Static import so Vite/Nitro can resolve the alias at bundle time.
 // Outside strict layout the module aliases this to `empty-shared-schema.ts`.
@@ -48,32 +47,17 @@ function withAutoExtend(
 }
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Client entry point, Standard Mode).
+ * Create a type-safe environment configuration for Nuxt (client entry, Standard Mode).
+ *
+ * Reads the already-coerced public payload — does not import or run the validator.
  *
  * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
  * shared schema by default. Any explicit `extends` is used as-is and opts out
  * of that default; pass `extends: []` to include no extended env.
  *
- * @example Default strict-layout behavior
- * ```ts
- * import arkenv from "@arkenv/nuxt/standard/client";
- *
- * export const env = arkenv({
- *   NUXT_PUBLIC_API_URL: apiUrlSchema,
- * });
- * ```
- *
- * @example Opt out of the default shared merge
- * ```ts
- * export const env = arkenv(
- *   { NUXT_PUBLIC_API_URL: apiUrlSchema },
- *   { extends: [] },
- * );
- * ```
- *
  * @param schemaOrOptions The schema definition or configuration options containing client/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status
- * @returns A validated, readonly environment variables object wrapped in a security proxy
+ * @returns A readonly environment variables object wrapped in a security proxy
  * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
  * @throws An error if a server-only variable is accessed on the client side
  */
@@ -142,22 +126,13 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 				"client entry point only accepts 'client' and 'shared' schemas.",
 			);
 		}
-		return arkenvInternal(
-			schemaOrOptions,
-			false,
-			undefined,
-			coreArkenv,
-			getSchemaKeys,
-		);
+		return arkenvInternal(schemaOrOptions, false, undefined);
 	}
 
-	return arkenvInternal(
-		schemaOrOptions,
-		withAutoExtend(optionsOrIsServer),
-		{ isServer: false, strictLayout: "client" },
-		coreArkenv,
-		getSchemaKeys,
-	);
+	return arkenvInternal(schemaOrOptions, withAutoExtend(optionsOrIsServer), {
+		isServer: false,
+		strictLayout: "client",
+	});
 }
 
 export default arkenv;

@@ -1,5 +1,5 @@
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
+import { ensureBootGate } from "#arkenv/server-boot";
 import { arkenvInternal } from "@/arkenv-internal";
 import type { MergeExtends } from "../types";
 
@@ -17,11 +17,14 @@ type ClientVisibleKeys<
 }[keyof TSchema];
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Standard Mode).
+ * Create a type-safe environment configuration for Nuxt (Standard Mode).
+ *
+ * Values are read from the Nitro boot-gate coerced payload — this entry does
+ * not run core validation.
  *
  * @param schema A flat schema of environment variable Standard Schema validators
  * @param options Optional configuration including client-side variables and extends
- * @returns A validated, readonly environment variables object wrapped in a security proxy
+ * @returns A readonly environment variables object wrapped in a security proxy
  */
 export function arkenv<
 	const TSchema extends Record<string, StandardSchemaV1> = {},
@@ -45,11 +48,11 @@ export function arkenv<
 >;
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Standard Mode).
+ * Create a type-safe environment configuration for Nuxt (Standard Mode).
  *
  * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
  * @param options The environment validation configuration options
- * @returns A validated, readonly environment variables object wrapped in a security proxy
+ * @returns A readonly environment variables object wrapped in a security proxy
  * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
  */
 export function arkenv<
@@ -79,23 +82,17 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 			"shared" in schemaOrOptions);
 
 	const isServer = typeof window === "undefined";
+	const hooks = isServer ? { ensureBootGate } : undefined;
 
 	if (isLegacy) {
-		return arkenvInternal(
-			schemaOrOptions,
-			isServer,
-			undefined,
-			coreArkenv,
-			getSchemaKeys,
-		);
+		return arkenvInternal(schemaOrOptions, isServer, undefined, hooks);
 	}
 
 	return arkenvInternal(
 		schemaOrOptions,
 		optionsOrIsServer,
 		{ isServer },
-		coreArkenv,
-		getSchemaKeys,
+		hooks,
 	);
 }
 

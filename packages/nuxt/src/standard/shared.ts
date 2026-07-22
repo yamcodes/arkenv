@@ -1,14 +1,14 @@
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
+import { ensureBootGate } from "#arkenv/server-boot";
 import { arkenvInternal } from "@/arkenv-internal";
 import type { MergeExtends } from "@/types";
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Shared entry point, Standard Mode).
+ * Create a type-safe shared environment configuration for Nuxt (Standard Mode).
  *
  * @param schema The schema definition containing the shared variables
  * @param options Optional configuration options
- * @returns A validated, readonly environment variables object wrapped in a security proxy
+ * @returns A readonly environment variables object wrapped in a security proxy
  */
 export function arkenv<
 	const TSchema extends Record<string, StandardSchemaV1> = {},
@@ -31,8 +31,7 @@ export function arkenv<
 			isServer,
 			isShared: true,
 		},
-		coreArkenv,
-		getSchemaKeys,
+		isServer ? { ensureBootGate } : undefined,
 	) as any;
 }
 

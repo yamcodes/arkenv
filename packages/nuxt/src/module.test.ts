@@ -12,6 +12,10 @@ vi.mock("@nuxt/kit", () => {
 				setup: config.setup,
 			};
 		},
+		createResolver: () => ({
+			resolve: (p: string) => path.resolve(__dirname, p),
+		}),
+		addServerPlugin: vi.fn(),
 		useLogger: () => {
 			return {
 				info: vi.fn(),
@@ -22,6 +26,25 @@ vi.mock("@nuxt/kit", () => {
 		},
 	};
 });
+
+/**
+ * Invoke every Nuxt hook registered under `name` (module may register several).
+ *
+ * @param mockNuxt The mock Nuxt instance with a vi.fn hook
+ * @param name Hook name
+ * @param args Arguments forwarded to each handler
+ */
+function runHooks(
+	mockNuxt: { hook: { mock: { calls: unknown[][] } } },
+	name: string,
+	...args: unknown[]
+) {
+	for (const [hookName, handler] of mockNuxt.hook.mock.calls) {
+		if (hookName === name && typeof handler === "function") {
+			(handler as (...a: unknown[]) => void)(...args);
+		}
+	}
+}
 
 describe("Nuxt module integration", () => {
 	it("should parse and register variables to nuxt.options.runtimeConfig", async () => {
@@ -67,6 +90,10 @@ describe("Nuxt module integration", () => {
 				mockNuxt.options.runtimeConfig.public.NUXT_PUBLIC_API_URL,
 			).toBeDefined();
 			expect(mockNuxt.options.runtimeConfig.public.NODE_ENV).toBeDefined();
+			expect(mockNuxt.options.runtimeConfig.arkenvGate).toMatchObject({
+				layout: "simple",
+				engine: "arktype",
+			});
 
 			// Check if vite hook was registered
 			expect(mockNuxt.hook).toHaveBeenCalledWith(
@@ -223,23 +250,21 @@ describe("Nuxt module integration", () => {
 				sharedPath,
 			]);
 
-			const nitroHook = mockNuxt.hook.mock.calls.find(
-				([name]: [string, ...any[]]) => name === "nitro:config",
-			)?.[1];
-			expect(nitroHook).toBeDefined();
 			const nitroConfig: any = {};
-			nitroHook(nitroConfig);
+			runHooks(mockNuxt, "nitro:config", nitroConfig);
 			expect(nitroConfig.alias["#arkenv/client-env"]).toBe(clientPath);
 			expect(nitroConfig.alias["#arkenv/shared-schema"]).toBe(sharedPath);
 			expect(nitroConfig.replace.__ARKENV_STRICT_LAYOUT__).toBe("true");
+			expect(nitroConfig.alias["#arkenv/server-boot"]).toBeDefined();
 
-			const viteHook = mockNuxt.hook.mock.calls.find(
-				([name]: [string, ...any[]]) => name === "vite:extendConfig",
-			)?.[1];
-			expect(viteHook).toBeDefined();
-
-			const serverConfig: any = { plugins: [] };
-			viteHook(serverConfig, { isClient: false });
+			const serverConfig: any = {
+				plugins: [],
+				resolve: { alias: {} },
+				define: {},
+			};
+			runHooks(mockNuxt, "vite:extendConfig", serverConfig, {
+				isClient: false,
+			});
 
 			expect(serverConfig.define.__ARKENV_STRICT_LAYOUT__).toBe("true");
 			expect(serverConfig.resolve.alias["#arkenv/client-env"]).toBe(clientPath);
@@ -261,8 +286,12 @@ describe("Nuxt module integration", () => {
 				sharedPath,
 			);
 
-			const clientConfig: any = { plugins: [] };
-			viteHook(clientConfig, { isClient: true });
+			const clientConfig: any = {
+				plugins: [],
+				resolve: { alias: {} },
+				define: {},
+			};
+			runHooks(mockNuxt, "vite:extendConfig", clientConfig, { isClient: true });
 			expect(clientConfig.define.__ARKENV_STRICT_LAYOUT__).toBe("true");
 			expect(
 				clientConfig.plugins.find(
@@ -372,23 +401,22 @@ describe("Nuxt module integration", () => {
 
 			expect(mockNuxt.options.alias["#arkenv/client-env"]).toBeUndefined();
 			expect(mockNuxt.options.alias["#arkenv/shared-schema"]).toBeUndefined();
+			expect(mockNuxt.options.alias["#arkenv/server-boot"]).toBeDefined();
 
 			expect(
 				mockNuxt.hook.mock.calls.find(
 					([name]: [string, ...any[]]) => name === "prepare:types",
 				),
 			).toBeUndefined();
-			expect(
-				mockNuxt.hook.mock.calls.find(
-					([name]: [string, ...any[]]) => name === "nitro:config",
-				),
-			).toBeUndefined();
 
-			const viteHook = mockNuxt.hook.mock.calls.find(
-				([name]: [string, ...any[]]) => name === "vite:extendConfig",
-			)?.[1];
-			const config: any = { plugins: [] };
-			viteHook(config, { isClient: false });
+			const nitroConfig: any = { alias: {} };
+			runHooks(mockNuxt, "nitro:config", nitroConfig);
+			expect(nitroConfig.alias["#arkenv/client-env"]).toBeUndefined();
+			expect(nitroConfig.alias["#arkenv/shared-schema"]).toBeUndefined();
+			expect(nitroConfig.alias["#arkenv/server-boot"]).toBeDefined();
+
+			const config: any = { plugins: [], resolve: { alias: {} } };
+			runHooks(mockNuxt, "vite:extendConfig", config, { isClient: false });
 
 			expect(config.define?.__ARKENV_STRICT_LAYOUT__).toBeUndefined();
 			expect(
@@ -436,11 +464,8 @@ describe("Nuxt module integration", () => {
 				mockNuxt,
 			);
 
-			const viteHook = mockNuxt.hook.mock.calls.find(
-				([name]: [string, ...any[]]) => name === "vite:extendConfig",
-			)?.[1];
-			const config: any = { plugins: [] };
-			viteHook(config, { isClient: false });
+			const config: any = { plugins: [], resolve: { alias: {} } };
+			runHooks(mockNuxt, "vite:extendConfig", config, { isClient: false });
 
 			const plugin = config.plugins.find(
 				(p: any) => p.name === "arkenv-nuxt-client-env",
@@ -487,11 +512,8 @@ describe("Nuxt module integration", () => {
 				mockNuxt,
 			);
 
-			const viteHook = mockNuxt.hook.mock.calls.find(
-				([name]: [string, ...any[]]) => name === "vite:extendConfig",
-			)?.[1];
-			const config: any = { plugins: [] };
-			viteHook(config, { isClient: false });
+			const config: any = { plugins: [], resolve: { alias: {} } };
+			runHooks(mockNuxt, "vite:extendConfig", config, { isClient: false });
 
 			const plugin = config.plugins.find(
 				(p: any) => p.name === "arkenv-nuxt-shared-schema",

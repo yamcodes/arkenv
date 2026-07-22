@@ -1,11 +1,11 @@
 import type { EnvSchema } from "@arkenv/core";
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
 // Static import so Vite/Nitro can resolve the alias at bundle time.
 // Outside strict layout the module aliases this to `empty-client-env.ts`.
 import { env as importedClientEnv } from "#arkenv/client-env";
+import { ensureBootGate } from "#arkenv/server-boot";
 import { arkenvInternal, type FlatSchemaOptions } from "./arkenv-internal";
 import {
 	isStrictLayoutActive,
@@ -55,33 +55,18 @@ function withAutoExtend(
 }
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Server entry point).
+ * Create a type-safe environment configuration for Nuxt (server entry).
+ *
+ * Calls {@link ensureBootGate} then reads coerced `runtimeConfig` values —
+ * does not re-validate with core in this entry.
  *
  * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
  * client and shared env by default. Any explicit `extends` is used as-is and
  * opts out of that default; pass `extends: []` to include no extended env.
  *
- * @example Default strict-layout behavior
- * ```ts
- * import arkenv from "@arkenv/nuxt/server";
- *
- * export const env = arkenv({
- *   DATABASE_URL: "string",
- * });
- * ```
- *
- * @example Opt out of the default client merge
- * ```ts
- * export const env = arkenv(
- *   { DATABASE_URL: "string" },
- *   { extends: [] },
- * );
- * ```
- *
  * @param schemaOrOptions The schema definition or configuration options containing server/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status
- * @returns A validated, readonly environment variables object wrapped in a security proxy
- * @throws An error if a client-side variable is missing from `runtimeEnv`
+ * @returns A readonly environment variables object wrapped in a security proxy
  */
 export function arkenv<
 	const TSchema extends SchemaShape = {},
@@ -124,30 +109,23 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 			"server" in schemaOrOptions ||
 			"shared" in schemaOrOptions);
 
+	const hooks = { ensureBootGate };
+
 	if (isLegacy) {
 		if ("client" in schemaOrOptions) {
 			throw new Error(
 				"server entry point only accepts 'server' and 'shared' schemas.",
 			);
 		}
-		return arkenvInternal(
-			schemaOrOptions,
-			true,
-			undefined,
-			coreArkenv,
-			getSchemaKeys,
-		);
+		return arkenvInternal(schemaOrOptions, true, undefined, hooks);
 	}
 
 	return arkenvInternal(
 		schemaOrOptions,
 		withAutoExtend(optionsOrIsServer),
 		{ isServer: true, strictLayout: "server" },
-		coreArkenv,
-		getSchemaKeys,
+		hooks,
 	);
 }
-
-export { type } from "@arkenv/core";
 
 export default arkenv;
