@@ -13,13 +13,29 @@ import { processEnvSchema, registerLoader } from "./utils";
  * @param coreArkenv The arkenv validation function to use
  * @param pluginName The display name of the plugin
  * @param factoryLogOptions Optional logger configuration for build-time messages
+ * @param options Optional factory options
+ * @param options.isStandard When true, missing-schema examples use `@arkenv/standard` with Zod
  * @returns An object containing the configured arkenv plugin creator and the hybrid plugin instance
  */
 export function createBunPlugin(
 	coreArkenv: any,
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
+	options?: { isStandard?: boolean },
 ) {
+	const schemaExample = options?.isStandard
+		? `import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export default arkenv({
+  BUN_PUBLIC_API_URL: z.string(),
+  BUN_PUBLIC_DEBUG: z.enum(["true", "false"]),
+});`
+		: `import { type } from "@arkenv/core";
+export default type({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean"
+});`;
 	function arkenv(options: any, config?: any): BunPlugin {
 		const { pluginConfig, logOptions } = splitPluginConfig(config);
 		const buildLog = resolveBuildLog({
@@ -82,14 +98,13 @@ export function createBunPlugin(
 
 			if (!schema) {
 				const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
+				const exampleIntro = options?.isStandard
+					? "Example `src/env.ts` (Zod shown — any Standard Schema validator works, e.g. Valibot):"
+					: "Example `src/env.ts`:";
 				const example = `
-Example \`src/env.ts\`:
+${exampleIntro}
 \`\`\`ts
-import { type } from "@arkenv/core"; // or "@arkenv/standard" / "@arkenv/core"
-export default type({
-  BUN_PUBLIC_API_URL: "string",
-  BUN_PUBLIC_DEBUG: "boolean"
-});
+${schemaExample}
 \`\`\`
 `;
 				throw new Error(
