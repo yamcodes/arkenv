@@ -20,6 +20,17 @@ export function createBunPlugin(
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
 ) {
+	const schemaExample = pluginName.includes("/standard")
+		? `import arkenv from "@arkenv/standard";
+export default arkenv({
+  BUN_PUBLIC_API_URL: { "~standard": { version: 1, validate: (v) => ({ value: v }) } },
+  BUN_PUBLIC_DEBUG: { "~standard": { version: 1, validate: (v) => ({ value: v }) } }
+});`
+		: `import { type } from "@arkenv/core";
+export default type({
+  BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_DEBUG: "boolean"
+});`;
 	function arkenv(options: any, config?: any): BunPlugin {
 		const { pluginConfig, logOptions } = splitPluginConfig(config);
 		const buildLog = resolveBuildLog({
@@ -85,11 +96,7 @@ export function createBunPlugin(
 				const example = `
 Example \`src/env.ts\`:
 \`\`\`ts
-import { type } from "@arkenv/core"; // or "@arkenv/standard" / "@arkenv/core"
-export default type({
-  BUN_PUBLIC_API_URL: "string",
-  BUN_PUBLIC_DEBUG: "boolean"
-});
+${schemaExample}
 \`\`\`
 `;
 				throw new Error(
