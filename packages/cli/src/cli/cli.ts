@@ -119,10 +119,7 @@ export class CLI {
 				"render",
 				"fly",
 			];
-			if (
-				rawPresetVal !== undefined &&
-				!validPresets.includes(rawPresetVal)
-			) {
+			if (rawPresetVal !== undefined && !validPresets.includes(rawPresetVal)) {
 				this.validationError = `Invalid host preset: ${rawPresetVal}`;
 			}
 		}
@@ -143,10 +140,7 @@ export class CLI {
 						"render",
 						"fly",
 					];
-					if (
-						provider !== undefined &&
-						!validProviders.includes(provider)
-					) {
+					if (provider !== undefined && !validProviders.includes(provider)) {
 						this.validationError = `Invalid host preset: ${provider}`;
 					}
 				}

@@ -4,9 +4,9 @@ import {
 	getFieldDefinition,
 	getFrameworkPrefix,
 	getPresetKeys,
-	partitionPresetKeys,
-	PRESETS,
 	type HostPreset,
+	PRESETS,
+	partitionPresetKeys,
 } from "@/features/scaffold";
 import type {
 	LoggerPort,

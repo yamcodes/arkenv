@@ -280,12 +280,24 @@ describe("CLI parser", () => {
 			]);
 			expect(cli4.validationError).toBe("Invalid host preset: vercle");
 
-			const cli5 = new CLI(["node", "arkenv", "init", "--host-preset", "cloudflare"]);
+			const cli5 = new CLI([
+				"node",
+				"arkenv",
+				"init",
+				"--host-preset",
+				"cloudflare",
+			]);
 			expect(cli5.hostPreset).toBe("cloudflare");
 			expect(cli5.initInput.hostPreset).toBe("cloudflare");
 			expect(cli5.validationError).toBeUndefined();
 
-			const cli6 = new CLI(["node", "arkenv", "init", "--host-preset", "railway"]);
+			const cli6 = new CLI([
+				"node",
+				"arkenv",
+				"init",
+				"--host-preset",
+				"railway",
+			]);
 			expect(cli6.hostPreset).toBe("railway");
 			expect(cli6.initInput.hostPreset).toBe("railway");
 			expect(cli6.validationError).toBeUndefined();
