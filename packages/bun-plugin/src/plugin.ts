@@ -100,19 +100,8 @@ hybrid.setup = (build) => {
 
 		if (!schema) {
 			const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
-			const example = `
-Example \`src/env.ts\`:
-\`\`\`ts
-import { type } from "arktype";
-
-export default type({
-  BUN_PUBLIC_API_URL: "string",
-  BUN_PUBLIC_DEBUG: "boolean"
-});
-\`\`\`
-`;
 			throw new Error(
-				`@arkenv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition.\n${example}`,
+				`@arkenv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition (or run \`arkenv init\`).`,
 			);
 		}
 
