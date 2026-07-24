@@ -128,7 +128,7 @@ export function setupArkEnv(
 		throw new Error(
 			`[ArkEnv] Could not find schema file at ${
 				options?.schemaPath || "src/env.ts or env.ts"
-			}. Please specify 'schemaPath' in ArkEnv options.`,
+			}. Please specify 'schemaPath' in ArkEnv options (or run \`arkenv init\`).`,
 		);
 	}
 
