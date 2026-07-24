@@ -1,5 +1,13 @@
 # @arkenv/bun-plugin
 
+## 0.1.12
+
+### Patch Changes
+
+- #### Align Bun missing-schema errors with other hosts _[`#1482`](https://github.com/yamcodes/arkenv/pull/1482) [`9e37eaa`](https://github.com/yamcodes/arkenv/commit/9e37eaaf7db8916c282c00e205511df11cd987ee) [@yamcodes](https://github.com/yamcodes)_
+
+  Use the same short, actionable missing-schema style as Next, Nuxt, and Vite: list the checked paths and point to `arkenv init`, without embedding a starter `env.ts` module in the thrown error.
+
 ## 0.1.11
 
 ### Patch Changes
