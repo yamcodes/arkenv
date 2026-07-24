@@ -20,7 +20,7 @@ const config = {
 	],
 	// cacheComponents: true, // TODO: Uncomment this once https://github.com/getsentry/sentry-javascript/issues/17895 is fixed
 	typescript: {
-		// We check typesafety on ci
+		// Typecheck runs in CI (`pnpm typecheck`); skip during next build.
 		ignoreBuildErrors: true,
 	},
 	experimental: {
