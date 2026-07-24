@@ -7,7 +7,7 @@
 List shared flags under **Global options** and scaffolding flags under **init options**, matching the multi-command `/docs/cli` taxonomy.
 
 ```bash
-npx arkenv@next --help
+npx arkenv@alpha --help
 ```
 
 ```text
