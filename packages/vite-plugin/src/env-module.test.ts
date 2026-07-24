@@ -244,3 +244,33 @@ describe("transform mode plugin", () => {
 		expect(result?.code).not.toContain("@arkenv/core");
 	});
 });
+
+describe("missing-schema errors", () => {
+	const temps: string[] = [];
+
+	afterEach(() => {
+		for (const dir of temps.splice(0)) {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
+	it("throws a short discovery error without an env.ts starter", async () => {
+		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-missing-schema-"));
+		temps.push(root);
+
+		let message = "";
+		try {
+			resolveEnvModulePath(root);
+		} catch (error) {
+			message = error instanceof Error ? error.message : String(error);
+		}
+
+		expect(message).toMatch(/could not find an env module/);
+		expect(message).toMatch(/arkenv init/);
+		expect(message).not.toMatch(/Example `src\/env\.ts`/);
+		expect(message).not.toMatch(/```/);
+		expect(message).not.toMatch(/import \{ type \} from "arktype"/);
+		expect(message).not.toMatch(/from "zod"/);
+	});
+});
