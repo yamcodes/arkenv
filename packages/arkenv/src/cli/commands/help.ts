@@ -45,24 +45,10 @@ export class HelpUseCase {
 			},
 		];
 
-		const options: HelpItem[] = [
+		const globalOptions: HelpItem[] = [
 			{
 				left: "--yes, -y",
 				right: "Skip prompts and use defaults (also passed to subprocesses)",
-			},
-			{
-				left: "--force, -f",
-				right:
-					"Bypass technical requirement checks and dirty git working tree check, then force scaffolding",
-			},
-			{
-				left: "--agent",
-				right:
-					"Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
-			},
-			{
-				left: "--example",
-				right: "Specify an example name when creating a new project",
 			},
 			{
 				left: "--quiet, -q",
@@ -73,6 +59,27 @@ export class HelpUseCase {
 				right: "Output structured JSON to stdout",
 			},
 			{
+				left: "--agent",
+				right:
+					"Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
+			},
+			{
+				left: "--help, -h",
+				right: "Show this help message",
+			},
+		];
+
+		const initOptions: HelpItem[] = [
+			{
+				left: "--example",
+				right: "Specify an example name when creating a new project",
+			},
+			{
+				left: "--force, -f",
+				right:
+					"Bypass technical requirement checks and dirty git working tree check, then force scaffolding",
+			},
+			{
 				left: "--no-codegen",
 				right: "Disable automatic env.gen.ts code generation for Next.js",
 			},
@@ -81,10 +88,6 @@ export class HelpUseCase {
 				right:
 					"Specify a hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly)",
 			},
-			{
-				left: "--help, -h",
-				right: "Show this help message",
-			},
 		];
 
 		this.logger.log(`ArkEnv CLI v${version}`);
@@ -92,8 +95,12 @@ export class HelpUseCase {
 		for (const line of formatColumns(commands)) {
 			this.logger.log(line);
 		}
-		this.logger.log(`\n${pc.bold("Options:")}`);
-		for (const line of formatColumns(options)) {
+		this.logger.log(`\n${pc.bold("Global options:")}`);
+		for (const line of formatColumns(globalOptions)) {
+			this.logger.log(line);
+		}
+		this.logger.log(`\n${pc.bold("init options:")}`);
+		for (const line of formatColumns(initOptions)) {
 			this.logger.log(line);
 		}
 	}
