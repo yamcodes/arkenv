@@ -49,6 +49,13 @@ jobs:
           fi
           echo "Comparing base ref: $BASE_SHA with head: $HEAD_SHA"
 
+          # Deploy-path edits must still rebuild/alias branch domains (turbo won't mark www).
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -qE '^(\.github/workflows/preview-www|scripts/vercel-wrapper\.cjs)'; then
+            echo "Preview deploy path changed; forcing www deploy."
+            echo "is_affected=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           if pnpm exec turbo query affected --packages=www --base="$BASE_SHA" --head="$HEAD_SHA" --exit-code; then
             echo "www is NOT affected."
             echo "is_affected=false" >> "$GITHUB_OUTPUT"
@@ -81,10 +88,59 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          # Git meta so CLI deploys associate with the correct branch (branch domains / env).
+          # See https://vercel.com/kb/guide/branch-variables-and-domains-not-linked-to-cli-deployments
+          GIT_ORG: ${{ github.repository_owner }}
+          GIT_REPO: ${{ github.event.repository.name }}
+          GIT_REF: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          GIT_ACTOR: ${{ github.event.pull_request.head.user.login || github.actor }}
+          GIT_COMMIT_MESSAGE: ${{ github.event.pull_request.title || github.event.head_commit.message || github.sha }}
+          GIT_COMMIT_AUTHOR_NAME: ${{ github.event.head_commit.author.name || github.actor }}
         run: |
           set -o pipefail
-          DEPLOYMENT_URL=$(node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" | tail -n 1)
+          SHORT_MSG="$(printf '%s\n' "$GIT_COMMIT_MESSAGE" | head -n1)"
+          DEPLOYMENT_URL=$(node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" \
+            -m githubDeployment=1 \
+            -m githubOrg="$GIT_ORG" \
+            -m githubRepo="$GIT_REPO" \
+            -m githubCommitOrg="$GIT_ORG" \
+            -m githubCommitRepo="$GIT_REPO" \
+            -m githubCommitRef="$GIT_REF" \
+            -m githubCommitSha="$GIT_SHA" \
+            -m githubCommitMessage="$SHORT_MSG" \
+            -m githubCommitAuthorName="$GIT_COMMIT_AUTHOR_NAME" \
+            -m githubCommitAuthorLogin="$GIT_ACTOR" \
+            | tail -n 1)
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
+      # Explicit alias so branch domains stay current without native Vercel Git builds (#1460).
+      # Only on push to dev/v1 — labeled PR previews keep ephemeral URLs and must not steal these.
+      - name: Alias branch preview domain
+        if: >-
+          github.event_name == 'push' &&
+          (github.ref_name == 'dev' || github.ref_name == 'v1') &&
+          steps.affected.outputs.is_affected == 'true'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.DEPLOYMENT_URL }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          case "$BRANCH" in
+            dev) DOMAIN="arkenv-dev.vercel.app" ;;
+            v1) DOMAIN="arkenv-v1.vercel.app" ;;
+            *)
+              echo "No branch domain mapping for $BRANCH; skipping alias."
+              exit 0
+              ;;
+          esac
+          if [ -z "$DEPLOYMENT_URL" ]; then
+            echo "No deployment URL; skipping alias."
+            exit 0
+          fi
+          echo "Aliasing $DEPLOYMENT_URL -> $DOMAIN"
+          node scripts/vercel-wrapper.cjs alias set "$DEPLOYMENT_URL" "$DOMAIN" --token="$VERCEL_TOKEN"
       - name: Generate GitHub App Token
         id: generate-token
         uses: actions/create-github-app-token@v3
