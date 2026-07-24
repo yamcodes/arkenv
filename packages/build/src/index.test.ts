@@ -3,6 +3,7 @@ import {
 	extractArkenvBlock,
 	extractBlock,
 	extractKeys,
+	formatMissingSchemaError,
 	parseBlockKeys,
 } from "./index";
 
@@ -130,5 +131,35 @@ describe("@arkenv/build extractors", () => {
 				'DATABASE_URL: "string",\n\t\t\t\t\tPORT: "number"',
 			);
 		});
+	});
+});
+
+describe("formatMissingSchemaError", () => {
+	it("formats a short host error with arkenv init and no starter", () => {
+		const message = formatMissingSchemaError({
+			optionsHint: "setupArkEnv options",
+		});
+
+		expect(message).toBe(
+			"[ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in setupArkEnv options (or run `arkenv init`).",
+		);
+		expect(message).not.toMatch(/```/);
+		expect(message).not.toMatch(/Example/);
+	});
+
+	it("includes an explicit schemaPath and checked paths when provided", () => {
+		const message = formatMissingSchemaError({
+			prefix: "@arkenv/bun-plugin:",
+			schemaPath: "./missing-env.ts",
+			optionsHint: "plugin options",
+			checkedPaths: ["/proj/src/env.ts", "/proj/env.ts"],
+		});
+
+		expect(message).toContain(
+			"@arkenv/bun-plugin: Could not find schema file at ./missing-env.ts. Please specify 'schemaPath' in plugin options (or run `arkenv init`).",
+		);
+		expect(message).toContain("Checked paths:");
+		expect(message).toContain(" - /proj/src/env.ts");
+		expect(message).toContain(" - /proj/env.ts");
 	});
 });

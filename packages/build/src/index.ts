@@ -2,6 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { watch as chokidarWatch, type FSWatcher } from "chokidar";
 
+export {
+	DEFAULT_SCHEMA_LOCATIONS,
+	type FormatMissingSchemaErrorOptions,
+	formatMissingSchemaError,
+} from "./missing-schema-error";
+
 // Global watcher reference isolated to this bundle's scope
 let activeWatcher: FSWatcher | undefined;
 
@@ -107,17 +113,23 @@ export function resolveLayout(
 }
 
 /**
+ * Return the default absolute schema file candidates for a project root.
+ *
+ * @param cwd The working directory to search from (defaults to process.cwd())
+ * @returns Absolute paths for `src/env.ts` and `env.ts`
+ */
+export function getDefaultSchemaFileCandidates(cwd = process.cwd()): string[] {
+	return [path.join(cwd, "src", "env.ts"), path.join(cwd, "env.ts")];
+}
+
+/**
  * Find the path to the schema file or directory in the project.
  *
  * @param cwd The working directory to search from (defaults to process.cwd())
  * @returns The absolute path to the schema file/directory, or null if not found
  */
 export function findSchemaPath(cwd = process.cwd()): string | null {
-	const possiblePaths = [
-		path.join(cwd, "src", "env.ts"),
-		path.join(cwd, "env.ts"),
-	];
-	for (const p of possiblePaths) {
+	for (const p of getDefaultSchemaFileCandidates(cwd)) {
 		if (fs.existsSync(p)) return p;
 	}
 

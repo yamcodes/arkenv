@@ -6,6 +6,7 @@ import {
 	extractClientKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	resolveLayout,
 } from "@arkenv/build";
 import { createJiti } from "jiti";
@@ -15,6 +16,7 @@ export {
 	extractArkenvBlock,
 	extractServerKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	resolveLayout,
 } from "@arkenv/build";
 export { extractClientKeys, extractSharedKeys };
@@ -126,9 +128,10 @@ export function setupArkEnv(
 
 	if (!schemaPath || !exists) {
 		throw new Error(
-			`[ArkEnv] Could not find schema file at ${
-				options?.schemaPath || "src/env.ts or env.ts"
-			}. Please specify 'schemaPath' in ArkEnv options (or run \`arkenv init\`).`,
+			formatMissingSchemaError({
+				schemaPath: options?.schemaPath,
+				optionsHint: "ArkEnv options",
+			}),
 		);
 	}
 

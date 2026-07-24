@@ -1,8 +1,10 @@
 ---
+"@arkenv/build": patch
+"@arkenv/bun-plugin": patch
 "@arkenv/nextjs": patch
 "@arkenv/nuxt": patch
 ---
 
-#### Align Next and Nuxt missing-schema errors with Bun
+#### Align missing-schema errors via a shared `@arkenv/build` helper
 
-Point missing-schema errors at `schemaPath` and `arkenv init`, matching the Bun plugin style, without embedding starter `env.ts` modules.
+Centralize missing-schema message text in `formatMissingSchemaError` so Bun, Next, and Nuxt stay aligned: short actionable guidance (`schemaPath` + `arkenv init`), no embedded starter `env.ts` modules.
