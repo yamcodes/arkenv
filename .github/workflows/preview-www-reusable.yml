@@ -49,6 +49,13 @@ jobs:
           fi
           echo "Comparing base ref: $BASE_SHA with head: $HEAD_SHA"
 
+          # Deploy-path edits must still rebuild/alias branch domains (turbo won't mark www).
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -qE '^(\.github/workflows/preview-www|scripts/vercel-wrapper\.cjs)'; then
+            echo "Preview deploy path changed; forcing www deploy."
+            echo "is_affected=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           if pnpm exec turbo query affected --packages=www --base="$BASE_SHA" --head="$HEAD_SHA" --exit-code; then
             echo "www is NOT affected."
             echo "is_affected=false" >> "$GITHUB_OUTPUT"
