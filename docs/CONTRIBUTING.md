@@ -148,7 +148,7 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 
 ## Preview deployments
 
-PR previews for the `www` app are opt-in. Apply the `preview` label to a PR to trigger a Vercel preview deployment on `opened`, `synchronize`, and `ready_for_review` events (a preview is only produced when the `www` app is actually affected). Pushes to `dev` or `v1` continue to deploy rolling branch previews automatically.
+PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `preview` label to trigger a Vercel preview deployment when the label is added, and again on subsequent `synchronize` / `ready_for_review` events while the label remains (a preview is only produced when the `www` app is actually affected). This works for same-repo and fork PRs; fork authors cannot self-serve the label. Pushes to `dev` or `v1` continue to deploy rolling branch previews automatically.
 
 ## Changesets
 
