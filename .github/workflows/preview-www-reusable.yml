@@ -3,25 +3,33 @@ name: Preview www Reusable
 on:
   workflow_call:
 
+# Non-secret defaults only. Vercel credentials are injected solely on Vercel CLI steps
+# so untrusted PR HEAD install/build scripts do not see them ambiently.
 env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
   TZ: ${{ vars.TIMEZONE || 'Asia/Almaty' }}
 
 jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          # pull_request_target defaults to the base ref; use the base repo's pull head
+          # ref so fork commits resolve and base history remains available for turbo.
+          ref: ${{ github.event.pull_request.number && format('refs/pull/{0}/head', github.event.pull_request.number) || github.sha }}
+          persist-credentials: false
       - name: Set Turbo base/head for PRs
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
-          echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
+          echo "TURBO_SCM_BASE=${PR_BASE_SHA}" >> "$GITHUB_ENV"
+          echo "TURBO_SCM_HEAD=${PR_HEAD_SHA}" >> "$GITHUB_ENV"
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
@@ -31,45 +39,61 @@ jobs:
         run: pnpm install
       - name: Check if www is affected
         id: affected
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          BASE_SHA="${{ github.event.pull_request.base.sha || github.event.before }}"
           if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
             BASE_SHA="HEAD~1"
           fi
-          echo "Comparing base ref: $BASE_SHA with head: ${{ github.sha }}"
-          
-          if pnpm exec turbo query affected --packages=www --base="$BASE_SHA" --head="${{ github.sha }}" --exit-code; then
+          echo "Comparing base ref: $BASE_SHA with head: $HEAD_SHA"
+
+          if pnpm exec turbo query affected --packages=www --base="$BASE_SHA" --head="$HEAD_SHA" --exit-code; then
             echo "www is NOT affected."
-            echo "is_affected=false" >> $GITHUB_OUTPUT
+            echo "is_affected=false" >> "$GITHUB_OUTPUT"
           else
             echo "www IS affected."
-            echo "is_affected=true" >> $GITHUB_OUTPUT
+            echo "is_affected=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Install Vercel CLI
         # Pin the CLI to avoid upstream breakage from newly published majors.
         run: npm install --global vercel@54.7.1
       - name: Pull Vercel Environment Information
         if: steps.affected.outputs.is_affected == 'true'
-        run: node scripts/vercel-wrapper.cjs pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: node scripts/vercel-wrapper.cjs pull --yes --environment=preview --token="$VERCEL_TOKEN"
       - name: Build Project Artifacts
         if: steps.affected.outputs.is_affected == 'true'
-        run: node scripts/vercel-wrapper.cjs build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+        run: node scripts/vercel-wrapper.cjs build --token="$VERCEL_TOKEN"
       - name: Deploy Project Artifacts to Vercel
         if: steps.affected.outputs.is_affected == 'true'
         id: deploy
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -o pipefail
-          DEPLOYMENT_URL=$(node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }} | tail -n 1)
-          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          DEPLOYMENT_URL=$(node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" | tail -n 1)
+          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
       - name: Generate GitHub App Token
         id: generate-token
         uses: actions/create-github-app-token@v3
-        if: env.APP_PRIVATE_KEY != ''
+        if: vars.APP_ID != ''
         with:
           client-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Comment PR
-        if: github.event_name == 'pull_request' && steps.affected.outputs.is_affected == 'true'
+        if: github.event_name != 'push' && steps.affected.outputs.is_affected == 'true'
         uses: actions/github-script@v9
         with:
           github-token: ${{ steps.generate-token.outputs.token || secrets.GITHUB_TOKEN }}
