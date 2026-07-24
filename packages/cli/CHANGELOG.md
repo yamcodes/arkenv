@@ -1,5 +1,36 @@
 # @arkenv/cli
 
+## 0.5.4
+
+### Patch Changes
+
+- #### Split `--help` options into Global and `init` sections _[`#1483`](https://github.com/yamcodes/arkenv/pull/1483) [`a05a46f`](https://github.com/yamcodes/arkenv/commit/a05a46fd8b41cc9005597082fa2cb560c688e183) [@yamcodes](https://github.com/yamcodes)_
+
+  List shared flags under **Global options** and scaffolding flags under **init options**, matching the multi-command `/docs/cli` taxonomy.
+
+  ```bash
+  npx @arkenv/cli@latest --help
+  ```
+
+  ```text
+  Usage:
+    arkenv init [project-name]    ...
+    arkenv add host [provider]    ...
+
+  Global options:
+    --yes, -y      Skip prompts and use defaults ...
+    --quiet, -q    Quiet mode ...
+    --json, -j     Output structured JSON ...
+    --agent        Enable non-interactive, machine-readable mode ...
+    --help, -h     Show this help message
+
+  init options:
+    --example                     Specify an example name ...
+    --force, -f                   Bypass checks and force scaffolding
+    --no-codegen                  Disable automatic env.gen.ts code generation ...
+    --host-preset, -H <preset>    Specify a hosting provider preset ...
+  ```
+
 ## 0.5.3
 
 ### Patch Changes
