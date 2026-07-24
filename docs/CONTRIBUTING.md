@@ -138,12 +138,14 @@ When working on a massive marketing push, docs facelift, or breaking API changes
    - **Develop against dev/v0**: All new features and bugfixes are first built and merged into the `dev` branch.
    - **Immediate manual porting**: Once a PR is merged into `dev`, the maintainer will manually forward-port the changes to `v1`, adapting the code to the new directory structure (e.g. under `packages/arkenv/src/` instead of `packages/cli/src/`).
    - **Update Changesets**: During the porting process, the maintainer will copy the changeset to the `v1` branch and manually update the YAML package name in the frontmatter to match the renamed package (e.g., change `"cli": patch` to `"arkenv": patch`).
-4. **Previews & Betas:** Vercel will automatically deploy the `v1` branch as a Preview environment for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
+4. **Previews & Betas:** Pushes to `v1` deploy the docs via GitHub Actions (Vercel CLI) and alias `https://arkenv-v1.vercel.app` for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
 5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
 ## Preview deployments
 
-PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `preview` label to trigger a Vercel preview deployment when the label is added, and again on subsequent `synchronize` / `ready_for_review` events while the label remains (a preview is only produced when the `www` app is actually affected). This works for same-repo and fork PRs; fork authors cannot self-serve the label. Pushes to `dev` or `v1` continue to deploy rolling branch previews automatically.
+PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `preview` label to trigger a Vercel preview deployment when the label is added, and again on subsequent `synchronize` / `ready_for_review` events while the label remains (a preview is only produced when the `www` app is actually affected). This works for same-repo and fork PRs; fork authors cannot self-serve the label.
+
+Pushes to `dev` or `v1` always deploy via GitHub Actions (Vercel CLI). Those deploys pass git metadata and alias the rolling branch domains (`https://arkenv-dev.vercel.app`, `https://arkenv-v1.vercel.app`) so the domains stay current without relying on native Vercel Git builds. Labeled PR previews keep ephemeral deployment URLs and do not take over those branch domains.
 
 ## Changesets
 
