@@ -1,5 +1,13 @@
 # @arkenv/nextjs
 
+## 1.0.0-alpha.9
+
+### Patch Changes
+
+- #### Align missing-schema errors with short, actionable host guidance _[`#1488`](https://github.com/yamcodes/arkenv/pull/1488) [`9d5bdbb`](https://github.com/yamcodes/arkenv/commit/9d5bdbbeaf2fdddf69f5bcc47a7d79b15a51ece3) [@yamcodes](https://github.com/yamcodes)_
+
+  Point missing-schema errors at checked paths / `schemaPath` and `arkenv init`, matching the Bun plugin style, without embedding starter `env.ts` modules.
+
 ## 1.0.0-alpha.8
 
 ### Patch Changes
