@@ -64,7 +64,7 @@ export function resolveEnvModulePath(
 	const discovered = findSchemaPath(root);
 	if (!discovered) {
 		throw new Error(
-			`ArkEnv Vite plugin: could not find an env module. Expected "src/env.ts" or "env.ts" under "${root}", or pass schemaPath.`,
+			`ArkEnv Vite plugin: could not find an env module. Expected "src/env.ts" or "env.ts" under "${root}", or pass schemaPath (or run \`arkenv init\`).`,
 		);
 	}
 	return discovered;
