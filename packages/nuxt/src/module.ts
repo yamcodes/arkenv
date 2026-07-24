@@ -10,6 +10,7 @@ import {
 	extractServerKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	normalizeLayout,
 	resolveLayout,
 	validateSchema,
@@ -90,9 +91,10 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 
 		if (!schemaPath || !fs.existsSync(schemaPath)) {
 			throw new Error(
-				`[ArkEnv] Could not find schema file at ${
-					options.schemaPath || "src/env.ts or env.ts"
-				}. Please specify 'schemaPath' in ArkEnv options.`,
+				formatMissingSchemaError({
+					schemaPath: options.schemaPath,
+					optionsHint: "ArkEnv options",
+				}),
 			);
 		}
 

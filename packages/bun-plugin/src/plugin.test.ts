@@ -99,7 +99,7 @@ describe("Bun Plugin", () => {
 			message = error instanceof Error ? error.message : String(error);
 		}
 
-		expect(message).toMatch(/@arkenv\/bun-plugin: No environment schema found/);
+		expect(message).toMatch(/@arkenv\/bun-plugin: Could not find schema file/);
 		expect(message).toMatch(/Checked paths:/);
 		expect(message).toMatch(/arkenv init/);
 		expect(message).not.toMatch(/Example `src\/env\.ts`/);
