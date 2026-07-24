@@ -1,7 +1,8 @@
 name: Preview www (Label Triggered)
 
 on:
-  pull_request:
+  # pull_request_target so fork PRs receive repository secrets when a maintainer applies `preview`.
+  pull_request_target:
     types: [labeled]
     branches:
       - dev

@@ -1,7 +1,9 @@
 name: Preview www (Default Events)
 
 on:
-  pull_request:
+  # pull_request_target so fork PRs receive repository secrets (VERCEL_*).
+  # Workflow YAML is taken from the base branch; we checkout PR HEAD in the reusable job.
+  pull_request_target:
     types: [opened, synchronize, ready_for_review]
     branches:
       - dev
@@ -19,6 +21,7 @@ jobs:
   Deploy-Preview:
     # Branch previews (push to dev/v1) always deploy. PR previews are opt-in:
     # they only deploy when the PR carries the `preview` label, regardless of draft state.
+    # Fork authors cannot apply labels (triage+ required), so this is not self-serve spamable.
     if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'preview')
     uses: ./.github/workflows/preview-www-reusable.yml
     secrets: inherit
