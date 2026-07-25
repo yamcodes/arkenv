@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import * as vite from "vite";
@@ -273,5 +273,19 @@ describe("missing-schema errors", () => {
 		expect(message).not.toMatch(/```/);
 		expect(message).not.toMatch(/import \{ type \} from "arktype"/);
 		expect(message).not.toMatch(/from "zod"/);
+	});
+
+	it("rejects a discovered strict layout directory", async () => {
+		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-strict-dir-"));
+		temps.push(root);
+		const envDir = join(root, "env");
+		mkdirSync(envDir, { recursive: true });
+		writeFileSync(join(envDir, "client.ts"), "export const env = {}");
+		writeFileSync(join(envDir, "server.ts"), "export const env = {}");
+
+		expect(() => resolveEnvModulePath(root)).toThrow(
+			/only supports a flat env module file/,
+		);
 	});
 });

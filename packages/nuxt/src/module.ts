@@ -23,7 +23,6 @@ import {
 	registerStrictLayoutHooks,
 	registerViteExtendHook,
 } from "./strict-layout-hooks";
-import { missingSharedTsError } from "./strict-shared-schema";
 
 /**
  * Configuration options for the ArkEnv Nuxt module.
@@ -131,19 +130,21 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt.options.srcDir ?? nuxt.options.rootDir,
 		);
 
+		const emptySharedSchema = resolver.resolve("./empty-shared-schema");
+
 		let strictClientPath: string | undefined;
 		let strictSharedPath: string | undefined;
+		let userSharedPath: string | undefined;
 		if (resolvedLayout === "strict" && baseDir) {
 			const clientPath = path.join(baseDir, "client.ts");
 			if (!fs.existsSync(clientPath)) {
 				throw new Error(missingClientTsError(clientPath, baseDir));
 			}
 			const sharedPath = path.join(baseDir, "internal", "shared.ts");
-			if (!fs.existsSync(sharedPath)) {
-				throw new Error(missingSharedTsError(sharedPath, baseDir));
-			}
+			userSharedPath = fs.existsSync(sharedPath) ? sharedPath : undefined;
 			strictClientPath = clientPath;
-			strictSharedPath = sharedPath;
+			// Missing shared.ts is intentional empty; alias to the package stub.
+			strictSharedPath = userSharedPath ?? emptySharedSchema;
 		}
 
 		if (nuxt.options.dev) {
@@ -181,16 +182,13 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		let clientKeys: string[] = [];
 		let sharedKeys: string[] = [];
 
-		if (
-			resolvedLayout === "strict" &&
-			baseDir &&
-			strictClientPath &&
-			strictSharedPath
-		) {
+		if (resolvedLayout === "strict" && baseDir && strictClientPath) {
 			const serverPath = path.join(baseDir, "server.ts");
 
 			const clientContent = fs.readFileSync(strictClientPath, "utf-8");
-			const sharedContent = fs.readFileSync(strictSharedPath, "utf-8");
+			const sharedContent = userSharedPath
+				? fs.readFileSync(userSharedPath, "utf-8")
+				: "";
 			const serverContent = fs.existsSync(serverPath)
 				? fs.readFileSync(serverPath, "utf-8")
 				: "";
@@ -199,7 +197,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			sharedKeys = extractSharedKeys(sharedContent);
 			serverKeys = extractServerKeys(serverContent);
 
-			registerStrictLayoutHooks(nuxt, strictClientPath, strictSharedPath);
+			registerStrictLayoutHooks(
+				nuxt,
+				strictClientPath,
+				strictSharedPath ?? emptySharedSchema,
+			);
 		} else {
 			const fileContent = fs.readFileSync(schemaPath, "utf-8");
 			const extracted = extractKeys(fileContent);

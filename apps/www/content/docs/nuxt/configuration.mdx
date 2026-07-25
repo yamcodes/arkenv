@@ -81,10 +81,10 @@ Thrown validation errors are separate from logged diagnostics — the logger onl
 
 In strict layout, the module automatically composes:
 
-1. `env/internal/shared.ts` → client entry (as `SharedSchema`)
+1. `env/internal/shared.ts` → client entry (as `SharedSchema`), when the file exists
 2. Client env → server entry
 
-The shared file must live at `internal/shared.ts` under your schema directory and export `SharedSchema`. That relative path is not configurable. To change composition — for example to extend additional schemas, or to skip the default merge — pass an explicit `extends` option in your client or server entry. See [Extending your schema](/docs/nuxt/layouts/strict#extending-your-schema).
+Shared is optional: omit `internal/shared.ts` when you have nothing to share (empty merge). When present, the file must live at `internal/shared.ts` under your schema directory and export `SharedSchema`. That relative path is not configurable. To change composition — for example to extend additional schemas, or to skip the default merge — pass an explicit `extends` option in your client or server entry. See [Extending your schema](/docs/nuxt/layouts/strict#extending-your-schema).
 
 `schemaPath` only relocates the schema directory as a whole (for example `src/env` instead of `env`). It does not rename `internal/shared.ts` inside that directory.
 
