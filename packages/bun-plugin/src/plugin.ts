@@ -1,4 +1,7 @@
-import { join } from "node:path";
+import {
+	formatMissingSchemaError,
+	getDefaultSchemaFileCandidates,
+} from "@arkenv/build";
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import type { ArkEnvConfig, EnvSchema } from "arkenv";
 import type { BunPlugin } from "bun";
@@ -78,7 +81,7 @@ hybrid.setup = (build) => {
 		const cwd = process.cwd();
 		let schema: any;
 
-		const possiblePaths = [join(cwd, "src", "env.ts"), join(cwd, "env.ts")];
+		const possiblePaths = getDefaultSchemaFileCandidates(cwd);
 
 		for (const p of possiblePaths) {
 			if (await Bun.file(p).exists()) {
@@ -99,9 +102,12 @@ hybrid.setup = (build) => {
 		}
 
 		if (!schema) {
-			const pathsList = possiblePaths.map((p) => ` - ${p}`).join("\n");
 			throw new Error(
-				`@arkenv/bun-plugin: No environment schema found.\n\nChecked paths:\n${pathsList}\n\nPlease create a schema file at one of these locations exporting your environment definition (or run \`arkenv init\`).`,
+				formatMissingSchemaError({
+					prefix: "@arkenv/bun-plugin:",
+					optionsHint: "plugin options",
+					checkedPaths: possiblePaths,
+				}),
 			);
 		}
 

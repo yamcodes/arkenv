@@ -40,11 +40,19 @@ describe("Nuxt module integration", () => {
 		};
 
 		try {
-			expect(() =>
-				(module as any).setup({ validate: false }, mockNuxt),
-			).toThrow(
+			let message = "";
+			try {
+				(module as any).setup({ validate: false }, mockNuxt);
+			} catch (error) {
+				message = error instanceof Error ? error.message : String(error);
+			}
+
+			expect(message).toMatch(
 				/\[ArkEnv\] Could not find schema file at src\/env\.ts or env\.ts/,
 			);
+			expect(message).toMatch(/arkenv init/);
+			expect(message).not.toMatch(/Example `src\/env\.ts`/);
+			expect(message).not.toMatch(/```/);
 			expect(mockNuxt.hook).not.toHaveBeenCalled();
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });

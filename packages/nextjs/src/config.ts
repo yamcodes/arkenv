@@ -6,6 +6,7 @@ import {
 	extractClientKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	resolveLayout,
 	watchSchema,
 } from "@arkenv/build";
@@ -138,9 +139,10 @@ export function setupArkEnv(
 
 	if (!schemaPath || !exists) {
 		throw new Error(
-			`[ArkEnv] Could not find schema file at ${
-				options?.schemaPath || "src/env.ts or env.ts"
-			}. Please specify 'schemaPath' in setupArkEnv options.`,
+			formatMissingSchemaError({
+				schemaPath: options?.schemaPath,
+				optionsHint: "setupArkEnv options",
+			}),
 		);
 	}
 

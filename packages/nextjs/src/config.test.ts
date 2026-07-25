@@ -29,6 +29,7 @@ import {
 	extractKeys,
 	extractSharedKeys,
 	runCodegen,
+	setupArkEnv,
 	withArkEnv,
 } from "./config";
 
@@ -295,6 +296,27 @@ describe("withArkEnv wrapper", () => {
 		if (fs.existsSync(tempDir)) {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
+	});
+
+	it("should throw a short missing-schema error without an env.ts starter", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		let message = "";
+		try {
+			setupArkEnv({
+				schemaPath: path.join(tempDir, "missing-env.ts"),
+				validate: false,
+			});
+		} catch (error) {
+			message = error instanceof Error ? error.message : String(error);
+		}
+
+		expect(message).toMatch(/\[ArkEnv\] Could not find schema file/);
+		expect(message).toMatch(/arkenv init/);
+		expect(message).not.toMatch(/Example `src\/env\.ts`/);
+		expect(message).not.toMatch(/```/);
 	});
 
 	it("should pass nextConfig through unchanged", () => {
