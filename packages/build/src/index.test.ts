@@ -135,13 +135,13 @@ describe("@arkenv/build extractors", () => {
 });
 
 describe("formatMissingSchemaError", () => {
-	it("formats a short host error with arkenv init and no starter", () => {
+	it("formats a short host error with CLI init and no starter", () => {
 		const message = formatMissingSchemaError({
 			optionsHint: "setupArkEnv options",
 		});
 
 		expect(message).toBe(
-			"[ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in setupArkEnv options (or run `arkenv init`).",
+			"[ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in setupArkEnv options (or run `npx @arkenv/cli@latest init`).",
 		);
 		expect(message).not.toMatch(/```/);
 		expect(message).not.toMatch(/Example/);
@@ -156,7 +156,7 @@ describe("formatMissingSchemaError", () => {
 		});
 
 		expect(message).toContain(
-			"@arkenv/bun-plugin: Could not find schema file at ./missing-env.ts. Please specify 'schemaPath' in plugin options (or run `arkenv init`).",
+			"@arkenv/bun-plugin: Could not find schema file at ./missing-env.ts. Please specify 'schemaPath' in plugin options (or run `npx @arkenv/cli@latest init`).",
 		);
 		expect(message).toContain("Checked paths:");
 		expect(message).toContain(" - /proj/src/env.ts");
