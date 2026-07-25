@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { findSchemaPath } from "@arkenv/build";
+import {
+	findSchemaPath,
+	formatMissingSchemaError,
+	getDefaultSchemaFileCandidates,
+} from "@arkenv/build";
 
 /**
  * Strip query suffixes from a module path.
@@ -61,7 +65,11 @@ export function resolveEnvModulePath(
 	const discovered = findSchemaPath(root);
 	if (!discovered) {
 		throw new Error(
-			`ArkEnv Bun plugin: could not find an env module. Expected "src/env.ts" or "env.ts" under "${root}", or pass schemaPath (or run \`arkenv init\`).`,
+			formatMissingSchemaError({
+				prefix: "ArkEnv Bun plugin:",
+				optionsHint: "plugin options",
+				checkedPaths: getDefaultSchemaFileCandidates(root),
+			}),
 		);
 	}
 	return discovered;

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { extractKeys, resolveLayout } from "./core";
+import { extractKeys, formatMissingSchemaError, resolveLayout } from "./core";
 
 describe("@arkenv/build layout resolution", () => {
 	it("treats flat as simple layout", () => {
@@ -47,5 +47,32 @@ describe("@arkenv/build layout resolution", () => {
 		const res = extractKeys(content, "NUXT_PUBLIC_");
 		expect(res.serverKeys).toEqual(["DATABASE_URL", "DESCRIPTION"]);
 		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
+	});
+});
+
+describe("formatMissingSchemaError", () => {
+	it("formats a short host error with npx arkenv@latest init and no starter", () => {
+		const message = formatMissingSchemaError({
+			optionsHint: "setupArkEnv options",
+		});
+
+		expect(message).toBe(
+			"[ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in setupArkEnv options (or run `npx arkenv@latest init`).",
+		);
+		expect(message).not.toMatch(/```/);
+		expect(message).not.toMatch(/Example/);
+	});
+
+	it("includes checked paths when provided", () => {
+		const message = formatMissingSchemaError({
+			prefix: "ArkEnv Vite plugin:",
+			optionsHint: "plugin options",
+			checkedPaths: ["/proj/src/env.ts", "/proj/env.ts"],
+		});
+
+		expect(message).toContain("ArkEnv Vite plugin: Could not find schema file");
+		expect(message).toContain("Checked paths:");
+		expect(message).toContain(" - /proj/src/env.ts");
+		expect(message).toContain("npx arkenv@latest init");
 	});
 });

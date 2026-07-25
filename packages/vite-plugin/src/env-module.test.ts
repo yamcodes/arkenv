@@ -266,8 +266,9 @@ describe("missing-schema errors", () => {
 			message = error instanceof Error ? error.message : String(error);
 		}
 
-		expect(message).toMatch(/could not find an env module/);
-		expect(message).toMatch(/arkenv init/);
+		expect(message).toMatch(/Could not find schema file/);
+		expect(message).toMatch(/npx arkenv@latest init/);
+		expect(message).toMatch(/Checked paths:/);
 		expect(message).not.toMatch(/Example `src\/env\.ts`/);
 		expect(message).not.toMatch(/```/);
 		expect(message).not.toMatch(/import \{ type \} from "arktype"/);

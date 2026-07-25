@@ -65,7 +65,20 @@ describe("InitUseCase", () => {
 			checkGitStatus: vi.fn().mockResolvedValue({ status: "clean" }),
 		} as unknown as ProjectScannerPort;
 
-		useCase = new InitUseCase(logger, workspace, prompt, scanner);
+		const registry = {
+			fetchRegistry: vi.fn().mockResolvedValue({
+				examples: [
+					{
+						id: "basic",
+						name: "Basic",
+						description: "A minimal ArkEnv setup in Node.js",
+						framework: "vanilla",
+					},
+				],
+			}),
+		};
+
+		useCase = new InitUseCase(logger, workspace, prompt, scanner, registry);
 	});
 
 	it("should enter new project flow if no package.json and empty directory", async () => {
