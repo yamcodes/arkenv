@@ -555,7 +555,7 @@ describe("Nuxt module integration", () => {
 			expect(message).toMatch(
 				/\[ArkEnv\] Could not find schema file at src\/env\.ts or env\.ts/,
 			);
-			expect(message).toMatch(/arkenv init/);
+			expect(message).toMatch(/npx arkenv@latest init/);
 			expect(message).not.toMatch(/Example `src\/env\.ts`/);
 			expect(message).not.toMatch(/```/);
 			expect(mockNuxt.hook).not.toHaveBeenCalled();
