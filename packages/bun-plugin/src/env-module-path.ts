@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+	assertFlatSchemaFile,
 	findSchemaPath,
 	formatMissingSchemaError,
 	getDefaultSchemaFileCandidates,
@@ -59,7 +60,7 @@ export function resolveEnvModulePath(
 				`ArkEnv Bun plugin: schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
 			);
 		}
-		return resolved;
+		return assertFlatSchemaFile(resolved, "ArkEnv Bun plugin:");
 	}
 
 	const discovered = findSchemaPath(root);
@@ -72,7 +73,7 @@ export function resolveEnvModulePath(
 			}),
 		);
 	}
-	return discovered;
+	return assertFlatSchemaFile(discovered, "ArkEnv Bun plugin:");
 }
 
 /**
