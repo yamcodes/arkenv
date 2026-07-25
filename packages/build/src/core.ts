@@ -180,8 +180,8 @@ export function assertFlatSchemaFile(
 		throw new Error(
 			formatBuildError(
 				`${hostLabel}: discovered a schema directory at "${schemaPath}". ` +
-					`This integration only supports a flat env module file (env.ts). ` +
-					`Point schemaPath at that file, or use @arkenv/nextjs / @arkenv/nuxt for strict layout.`,
+					"This integration only supports a flat env module file (env.ts). " +
+					"Point schemaPath at that file, or use @arkenv/nextjs / @arkenv/nuxt for strict layout.",
 			),
 		);
 	}

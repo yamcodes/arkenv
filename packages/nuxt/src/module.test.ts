@@ -371,12 +371,14 @@ describe("Nuxt module integration", () => {
 			);
 
 			expect(mockNuxt.options.alias["#arkenv/client-env"]).toBe(clientPath);
-			const sharedAlias = mockNuxt.options.alias["#arkenv/shared-schema"] as string;
+			const sharedAlias = mockNuxt.options.alias[
+				"#arkenv/shared-schema"
+			] as string;
 			expect(sharedAlias).toBeDefined();
 			expect(sharedAlias).toMatch(/empty-shared-schema/);
-			expect(
-				fs.existsSync(path.join(envDir, "internal", "shared.ts")),
-			).toBe(false);
+			expect(fs.existsSync(path.join(envDir, "internal", "shared.ts"))).toBe(
+				false,
+			);
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
