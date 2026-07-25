@@ -24,22 +24,33 @@ export type Logger = {
 };
 
 /**
+ * Return whether a directory looks like a strict split layout.
+ *
+ * Strict auto-detection requires `client.ts` and `server.ts`.
+ * `internal/shared.ts` is optional and treated as empty when absent.
+ *
+ * @param dir Absolute path to a candidate env directory
+ * @returns `true` when both `client.ts` and `server.ts` exist
+ */
+export function isStrictLayoutDir(dir: string): boolean {
+	return (
+		fs.existsSync(path.join(dir, "client.ts")) &&
+		fs.existsSync(path.join(dir, "server.ts"))
+	);
+}
+
+/**
  * Resolve the layout mode and base directory for a given schema file path.
  *
  * @param schemaPath The absolute path to the schema file or directory
  * @param layoutOption An optional explicit layout configuration ("simple" or "strict")
  * @returns An object containing the resolved layout mode and the base directory path
- * @throws An error if explicit "strict" layout is requested but required split files are missing
+ * @throws An error if explicit "strict" layout is requested but `client.ts` is missing
  */
 export function resolveLayout(
 	schemaPath: string,
 	layoutOption?: LayoutMode,
 ): ResolvedLayout {
-	const checkStrict = (dir: string) =>
-		fs.existsSync(path.join(dir, "internal", "shared.ts")) &&
-		fs.existsSync(path.join(dir, "client.ts")) &&
-		fs.existsSync(path.join(dir, "server.ts"));
-
 	const resolveBaseDir = (p: string): string => {
 		const ext = path.extname(p);
 		const baseWithoutExt = ext ? p.slice(0, -ext.length) : p;
@@ -55,7 +66,7 @@ export function resolveLayout(
 	if (!layoutOption) {
 		const resolved = resolveBaseDir(schemaPath);
 		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
-			if (checkStrict(resolved)) {
+			if (isStrictLayoutDir(resolved)) {
 				return { layout: "strict", baseDir: resolved };
 			}
 			return { layout: "simple", baseDir: resolved };
@@ -67,16 +78,16 @@ export function resolveLayout(
 		if (
 			fs.existsSync(baseWithoutExt) &&
 			fs.statSync(baseWithoutExt).isDirectory() &&
-			checkStrict(baseWithoutExt)
+			isStrictLayoutDir(baseWithoutExt)
 		) {
 			return { layout: "strict", baseDir: baseWithoutExt };
 		}
-		if (checkStrict(parent)) {
+		if (isStrictLayoutDir(parent)) {
 			return { layout: "strict", baseDir: parent };
 		}
 		if (
 			path.basename(parent) === "internal" &&
-			checkStrict(path.dirname(parent))
+			isStrictLayoutDir(path.dirname(parent))
 		) {
 			return { layout: "strict", baseDir: path.dirname(parent) };
 		}
@@ -98,11 +109,10 @@ export function resolveLayout(
 		}
 
 		const clientPath = path.join(baseDir, "client.ts");
-		const sharedPath = path.join(baseDir, "internal", "shared.ts");
-		if (!fs.existsSync(clientPath) || !fs.existsSync(sharedPath)) {
+		if (!fs.existsSync(clientPath)) {
 			throw new Error(
-				`[ArkEnv] Strict layout requires "${clientPath}" and "${sharedPath}" to exist. ` +
-					`Ensure both files are present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
+				`[ArkEnv] Strict layout requires "${clientPath}" to exist. ` +
+					`Ensure it is present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
 			);
 		}
 
@@ -135,12 +145,7 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
 
 	const possibleDirs = [path.join(cwd, "src", "env"), path.join(cwd, "env")];
 	for (const d of possibleDirs) {
-		if (
-			fs.existsSync(d) &&
-			fs.existsSync(path.join(d, "internal", "shared.ts")) &&
-			fs.existsSync(path.join(d, "client.ts")) &&
-			fs.existsSync(path.join(d, "server.ts"))
-		) {
+		if (fs.existsSync(d) && isStrictLayoutDir(d)) {
 			return d;
 		}
 	}

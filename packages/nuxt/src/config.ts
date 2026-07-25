@@ -73,12 +73,12 @@ export type ArkEnvConfigOptions = {
 	 * Specify the configuration layout.
 	 *
 	 * When omitted, the layout is auto-detected from the schema structure: it is
-	 * `"strict"` when the split files (`env/internal/shared.ts`, `env/client.ts`,
-	 * `env/server.ts`) are present, and falls back to `"flat"` (a single
+	 * `"strict"` when `env/client.ts` and `env/server.ts` are present (with
+	 * optional `env/internal/shared.ts`), and falls back to `"flat"` (a single
 	 * `env.ts`) otherwise.
 	 *
 	 * - `"flat"`: A single `env.ts` schema file.
-	 * - `"strict"`: A 3-file split schema layout (`env/internal/shared.ts`, `env/client.ts`, `env/server.ts`).
+	 * - `"strict"`: A split schema layout (`env/client.ts`, `env/server.ts`, and optionally `env/internal/shared.ts`).
 	 */
 	layout?:
 		| "flat"

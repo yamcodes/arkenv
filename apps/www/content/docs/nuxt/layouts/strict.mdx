@@ -4,12 +4,12 @@ icon: ShieldCheck
 description: Get the best security in Nuxt using strictly separated client and server schemas.
 ---
 
-In this setup, you define your client, server, and shared schemas in separate files.
+In this setup, you define your client and server schemas in separate files. An optional `internal/shared.ts` holds variables shared by both.
 
 ```files
 env
 ├── internal
-│   └── shared.ts
+│   └── shared.ts   # optional
 ├── client.ts
 └── server.ts
 ```
@@ -26,7 +26,7 @@ npx @arkenv/cli@latest init --strict
 
 ## Your schema
 
-When bootstrapping with the CLI, it generates three separate schema files under `env/`:
+When bootstrapping with the CLI, it generates separate schema files under `env/` (including an optional `internal/shared.ts` with `NODE_ENV` for convenience):
 
 ```ts twoslash title="env/internal/shared.ts"
 import { type } from "@arkenv/nuxt/shared";
@@ -91,9 +91,9 @@ export const env = arkenv(
 
 <Accordions>
   <Accordion title="Manual setup">
-    ### Define shared variables [step] [!toc]
+    ### Define shared variables (optional) [step] [!toc]
 
-    Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+    Optionally create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. Shared is not required for strict layout—omit the file when you have nothing to share. When present, we treat it as a runtime type, so it is defined using PascalCase:
 
     ```ts twoslash title="env/internal/shared.ts"
     import { type } from "@arkenv/nuxt/shared";
@@ -109,7 +109,7 @@ export const env = arkenv(
 
     ### Define client variables [step] [!toc]
 
-    Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_` and you must extend `SharedSchema`:
+    Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_`. When you define `SharedSchema`, extend it here:
 
     ```ts twoslash title="env/client.ts"
     // @filename: env/internal/shared.ts
