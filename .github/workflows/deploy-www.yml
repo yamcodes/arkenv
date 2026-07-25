@@ -42,4 +42,28 @@ jobs:
       - name: Build Project Artifacts
         run: node scripts/vercel-wrapper.cjs build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        run: node scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          GIT_ORG: ${{ github.repository_owner }}
+          GIT_REPO: ${{ github.event.repository.name }}
+          GIT_REF: ${{ github.ref_name }}
+          GIT_SHA: ${{ github.sha }}
+          GIT_ACTOR: ${{ github.actor }}
+          GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message || github.sha }}
+          GIT_COMMIT_AUTHOR_NAME: ${{ github.event.head_commit.author.name || github.actor }}
+        run: |
+          set -o pipefail
+          SHORT_MSG="$(printf '%s\n' "$GIT_COMMIT_MESSAGE" | head -n1)"
+          # --prod already assigns production domains (arkenv.js.org / arkenv.vercel.app).
+          # Git meta keeps the deployment linked to main in the Vercel dashboard.
+          node scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN" \
+            -m githubDeployment=1 \
+            -m githubOrg="$GIT_ORG" \
+            -m githubRepo="$GIT_REPO" \
+            -m githubCommitOrg="$GIT_ORG" \
+            -m githubCommitRepo="$GIT_REPO" \
+            -m githubCommitRef="$GIT_REF" \
+            -m githubCommitSha="$GIT_SHA" \
+            -m githubCommitMessage="$SHORT_MSG" \
+            -m githubCommitAuthorName="$GIT_COMMIT_AUTHOR_NAME" \
+            -m githubCommitAuthorLogin="$GIT_ACTOR"
