@@ -131,7 +131,7 @@ describe("@arkenv/build layout resolution", () => {
 					"export const env = {}",
 				);
 				expect(() =>
-					assertFlatSchemaFile(tempDir, "ArkEnv Vite plugin"),
+					assertFlatSchemaFile(tempDir, "ArkEnv Vite plugin:"),
 				).toThrow(/only supports a flat env module file/);
 			} finally {
 				fs.rmSync(tempDir, { recursive: true, force: true });

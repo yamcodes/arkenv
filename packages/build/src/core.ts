@@ -168,21 +168,19 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
  * host-specific diagnostic.
  *
  * @param schemaPath Absolute path returned by discovery or plugin options
- * @param hostLabel Short host name for the error prefix (e.g. `"ArkEnv Vite plugin"`)
+ * @param prefix Brand prefix for the error (e.g. `"ArkEnv Vite plugin:"`)
  * @returns The same `schemaPath` when it is an existing file
  * @throws When `schemaPath` is a directory (typically a strict layout)
  */
 export function assertFlatSchemaFile(
 	schemaPath: string,
-	hostLabel: string,
+	prefix: string,
 ): string {
 	if (fs.existsSync(schemaPath) && fs.statSync(schemaPath).isDirectory()) {
 		throw new Error(
-			formatBuildError(
-				`${hostLabel}: discovered a schema directory at "${schemaPath}". ` +
-					"This integration only supports a flat env module file (env.ts). " +
-					"Point schemaPath at that file, or use @arkenv/nextjs / @arkenv/nuxt for strict layout.",
-			),
+			`${prefix} discovered a schema directory at "${schemaPath}". ` +
+				"This integration only supports a flat env module file (env.ts). " +
+				"Point schemaPath at that file, or use @arkenv/nextjs / @arkenv/nuxt for strict layout.",
 		);
 	}
 	return schemaPath;

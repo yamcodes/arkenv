@@ -63,7 +63,7 @@ export function resolveEnvModulePath(
 				`ArkEnv Vite plugin: schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
 			);
 		}
-		return assertFlatSchemaFile(resolved, "ArkEnv Vite plugin");
+		return assertFlatSchemaFile(resolved, "ArkEnv Vite plugin:");
 	}
 
 	const discovered = findSchemaPath(root);
@@ -76,7 +76,7 @@ export function resolveEnvModulePath(
 			}),
 		);
 	}
-	return assertFlatSchemaFile(discovered, "ArkEnv Vite plugin");
+	return assertFlatSchemaFile(discovered, "ArkEnv Vite plugin:");
 }
 
 /**

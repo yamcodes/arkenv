@@ -60,7 +60,7 @@ export function resolveEnvModulePath(
 				`ArkEnv Bun plugin: schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
 			);
 		}
-		return assertFlatSchemaFile(resolved, "ArkEnv Bun plugin");
+		return assertFlatSchemaFile(resolved, "ArkEnv Bun plugin:");
 	}
 
 	const discovered = findSchemaPath(root);
@@ -73,7 +73,7 @@ export function resolveEnvModulePath(
 			}),
 		);
 	}
-	return assertFlatSchemaFile(discovered, "ArkEnv Bun plugin");
+	return assertFlatSchemaFile(discovered, "ArkEnv Bun plugin:");
 }
 
 /**

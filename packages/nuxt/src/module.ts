@@ -182,7 +182,12 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		let clientKeys: string[] = [];
 		let sharedKeys: string[] = [];
 
-		if (resolvedLayout === "strict" && baseDir && strictClientPath) {
+		if (
+			resolvedLayout === "strict" &&
+			baseDir &&
+			strictClientPath &&
+			strictSharedPath
+		) {
 			const serverPath = path.join(baseDir, "server.ts");
 
 			const clientContent = fs.readFileSync(strictClientPath, "utf-8");
@@ -197,11 +202,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			sharedKeys = extractSharedKeys(sharedContent);
 			serverKeys = extractServerKeys(serverContent);
 
-			registerStrictLayoutHooks(
-				nuxt,
-				strictClientPath,
-				strictSharedPath ?? emptySharedSchema,
-			);
+			registerStrictLayoutHooks(nuxt, strictClientPath, strictSharedPath);
 		} else {
 			const fileContent = fs.readFileSync(schemaPath, "utf-8");
 			const extracted = extractKeys(fileContent);
