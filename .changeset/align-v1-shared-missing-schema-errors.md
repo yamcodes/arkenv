@@ -6,6 +6,12 @@
 "@arkenv/nuxt": patch
 ---
 
-#### Align missing-schema errors via a shared `@arkenv/build` helper
+#### Make missing-schema errors short and actionable across hosts
 
-Centralize missing-schema message text in `formatMissingSchemaError` so Bun, Vite, Next, and Nuxt stay aligned: short actionable guidance (`schemaPath` + `arkenv init`), no embedded starter `env.ts` modules.
+When a host cannot find an env schema, throw a consistent message that names the expected path / `schemaPath` and points to `arkenv init`, without embedding a starter `env.ts` module.
+
+Example:
+
+```text
+[ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in ArkEnv options (or run `arkenv init`).
+```
