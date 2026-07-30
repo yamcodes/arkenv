@@ -11,9 +11,14 @@ import { useToast } from "./use-toast";
  * @param command - The string command to be copied.
  * @returns An object containing the `copied` state and the `copy` function.
  */
-export function useCopyCommand(command: string) {
+export function useCopyCommand(
+	command: string,
+	options?: { successDescription?: string },
+) {
 	const [copied, setCopied] = useState(false);
 	const { toast } = useToast();
+	const successDescription =
+		options?.successDescription ?? "Command copied to clipboard!";
 
 	const copy = async () => {
 		try {
@@ -21,7 +26,7 @@ export function useCopyCommand(command: string) {
 			setCopied(true);
 			setTimeout(() => setCopied(false), 2000);
 			toast({
-				description: "Command copied to clipboard!",
+				description: successDescription,
 				duration: 2000,
 			});
 		} catch (error) {

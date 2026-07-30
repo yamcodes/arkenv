@@ -4,9 +4,16 @@ import { cn } from "~/lib/utils";
  * Logo component
  *
  * @param className - Optional className for custom styling
+ * @param wordmark - When false, renders the icon only (default true)
  * @returns Logo component
  */
-export function Logo({ className }: { className?: string }) {
+export function Logo({
+	className,
+	wordmark = true,
+}: {
+	className?: string;
+	wordmark?: boolean;
+}) {
 	return (
 		<div className={cn("flex items-center gap-2", className)}>
 			<svg
@@ -41,7 +48,9 @@ export function Logo({ className }: { className?: string }) {
 					d="M6 5.102a.899.899 0 1 0 0 1.797.899.899 0 0 0 0-1.797Z"
 				/>
 			</svg>
-			<span className="text-fd-foreground font-semibold text-lg">ArkEnv</span>
+			{wordmark ? (
+				<span className="text-fd-foreground font-semibold text-lg">ArkEnv</span>
+			) : null}
 		</div>
 	);
 }

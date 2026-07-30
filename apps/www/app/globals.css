@@ -18,6 +18,11 @@
 	background-image: none !important;
 }
 
+html,
+body {
+	overflow-x: clip;
+}
+
 @theme {
 	@keyframes spin-slow {
 		from {
