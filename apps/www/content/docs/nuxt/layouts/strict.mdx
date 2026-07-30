@@ -4,12 +4,12 @@ icon: ShieldCheck
 description: Get the best security in Nuxt using strictly separated client and server schemas.
 ---
 
-In this setup, you define your client, server, and shared schemas in separate files.
+In this setup, you define your client and server schemas in separate files. An optional `internal/shared.ts` holds variables shared by both.
 
 ```files
 env
 ├── internal
-│   └── shared.ts
+│   └── shared.ts   # optional
 ├── client.ts
 └── server.ts
 ```
@@ -18,12 +18,12 @@ By importing `env` from `~/env/client` in client-side code and `~/env/server` in
 
 ## Import mental model
 
-- **Flat layout:** import from `@arkenv/nuxt` — one entry point, bundler picks the build.
-- **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`.
-- **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
-- **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+Choose a layout, then import from the matching entry points:
 
-:::note Migration
+- **Flat layout:** import from `@arkenv/nuxt`.
+- **Strict layout:** import from `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. For the internal shared schema (`env/internal/shared.ts`), import `{ type }` from `@arkenv/core`. Outside the env module graph (standalone scripts), `import arkenv from "@arkenv/core"`.
+
+:::note[Migration]
 If you previously used `@arkenv/nuxt/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
 :::
 
@@ -37,7 +37,7 @@ npx arkenv@latest init --strict
 
 ## Your schema
 
-When bootstrapping with the CLI, it generates three separate schema files under `env/`:
+When bootstrapping with the CLI, it generates separate schema files under `env/` (including an optional `internal/shared.ts` with `NODE_ENV` for convenience):
 
 ```ts twoslash title="env/internal/shared.ts"
 import { type } from "@arkenv/core";
@@ -45,11 +45,52 @@ import { type } from "@arkenv/core";
 /**
  * @internal 🛑 INTERNAL SCHEMA ONLY.
  * Do not import this directly. Import `env` from `./client` or `./server` instead.
+ * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+ * `@arkenv/nuxt/server` includes it through the composed client env.
  */
 export const SharedSchema = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
+
+```ts twoslash title="env/client.ts"
+import arkenv from "@arkenv/nuxt/client";
+
+export const env = arkenv({
+	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+});
+```
+
+```ts twoslash title="env/server.ts"
+// @filename: env/internal/shared.ts
+import { type } from "@arkenv/core";
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+// @filename: env/client.ts
+import arkenv from "@arkenv/nuxt/client";
+export const env = arkenv({
+	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+});
+// @filename: env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nuxt/server";
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+});
+```
+
+### Extending your schema
+
+With `@arkenv/nuxt/module` registered:
+
+- The **client** entry includes `SharedSchema` from `env/internal/shared.ts` when that file exists (otherwise shared is empty)
+- The **server** entry includes the composed client env (and therefore any shared variables)
+
+Shared is not required for strict layout—omit `env/internal/shared.ts` when you have nothing to share. When the file is present, it must export `SharedSchema`.
+
+The shared schema path is fixed relative to your schema directory: `internal/shared.ts`. There is no module option to relocate it (for example to `env/hidden/shared.ts`). To compose different schemas — or to opt out of the default merge — pass an explicit `extends` list:
 
 ```ts twoslash title="env/client.ts"
 // @filename: env/internal/shared.ts
@@ -80,11 +121,9 @@ export const SharedSchema = type({
 });
 // @filename: env/client.ts
 import arkenv from "@arkenv/nuxt/client";
-import { SharedSchema } from "./internal/shared";
-export const env = arkenv(
-	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
-	{ extends: [SharedSchema] },
-);
+export const env = arkenv({
+	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+});
 // @filename: env/server.ts
 // ---cut---
 import arkenv from "@arkenv/nuxt/server";
@@ -100,6 +139,10 @@ export const env = arkenv(
 );
 ```
 
+Passing `extends` at all — including `extends: []` — opts out of the default merge and uses your list as-is. Explicit lists are not silently augmented with `SharedSchema` or `clientEnv`.
+
+See [Configuration & API](/docs/nuxt/configuration) for module options such as `schemaPath` and `layout`.
+
 <Accordions>
   <Accordion title="Manual setup">
     ### Install dependencies [step] [!toc]
@@ -111,12 +154,12 @@ export const env = arkenv(
     ```
 
     :::note
-    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
+    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core` — see [Zod, Valibot, and other Standard Schema validators](/docs/nuxt/using-other-validators).
     :::
 
-    ### Define shared variables [step] [!toc]
+    ### Define shared variables (optional) [step] [!toc]
 
-    Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+    Optionally create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. Shared is not required for strict layout—omit the file when you have nothing to share. When present, we treat it as a runtime type, so it is defined using PascalCase:
 
     ```ts twoslash title="env/internal/shared.ts"
     import { type } from "@arkenv/core";
@@ -124,6 +167,8 @@ export const env = arkenv(
     /**
      * @internal 🛑 INTERNAL SCHEMA ONLY.
      * Do not import this directly. Import `env` from `./client` or `./server` instead.
+     * Automatically picked up by `@arkenv/nuxt/client` when `extends` is omitted;
+     * `@arkenv/nuxt/server` includes it through the composed client env.
      */
     export const SharedSchema = type({
     	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
@@ -132,32 +177,19 @@ export const env = arkenv(
 
     ### Define client variables [step] [!toc]
 
-    Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_` and you must extend `SharedSchema`:
+    Create `env/client.ts` importing from `@arkenv/nuxt/client`. All local keys **must** be prefixed with `NUXT_PUBLIC_`:
 
     ```ts twoslash title="env/client.ts"
-    // @filename: env/internal/shared.ts
-    import { type } from "@arkenv/core";
-    export const SharedSchema = type({
-    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-    });
-    // @filename: env/client.ts
-    // ---cut---
     import arkenv from "@arkenv/nuxt/client";
-    import { SharedSchema } from "./internal/shared";
 
-    export const env = arkenv(
-    	{
-    		NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-    	},
-    	{
-    		extends: [SharedSchema],
-    	},
-    );
+    export const env = arkenv({
+    	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    });
     ```
 
     ### Define server variables [step] [!toc]
 
-    Create `env/server.ts` using `@arkenv/nuxt/server`. It extends the client `env` to merge all client, shared, and server variables into a single output:
+    Create `env/server.ts` using `@arkenv/nuxt/server`:
 
     ```ts twoslash title="env/server.ts"
     // @filename: env/internal/shared.ts
@@ -167,29 +199,21 @@ export const env = arkenv(
     });
     // @filename: env/client.ts
     import arkenv from "@arkenv/nuxt/client";
-    import { SharedSchema } from "./internal/shared";
-    export const env = arkenv(
-    	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
-    	{ extends: [SharedSchema] },
-    );
+    export const env = arkenv({
+    	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    });
     // @filename: env/server.ts
     // ---cut---
     import arkenv from "@arkenv/nuxt/server";
-    import { env as clientEnv } from "./client";
 
-    export const env = arkenv(
-    	{
-    		DATABASE_URL: "string",
-    	},
-    	{
-    		extends: [clientEnv],
-    	},
-    );
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    });
     ```
 
     ### Register module in Nuxt config [step] [!toc]
 
-    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory and registers environment variables to Nuxt's `runtimeConfig`:
+    Add `@arkenv/nuxt/module` to your modules array in `nuxt.config.ts`. This statically scans your schema directory, registers environment variables to Nuxt's `runtimeConfig`, and wires strict-layout composition. No generated files are written to disk:
 
     ```ts title="nuxt.config.ts"
     export default defineNuxtConfig({
@@ -197,17 +221,7 @@ export const env = arkenv(
     });
     ```
 
-    You can customize the schema path using optional parameters:
-
-    ```ts title="nuxt.config.ts"
-    export default defineNuxtConfig({
-    	modules: ["@arkenv/nuxt/module"],
-    	arkenv: {
-    		schemaPath: "env",     // Path to your schema directory (default: env or src/env)
-    		layout: "strict"       // Explicitly specify layout
-    	}
-    });
-    ```
+    You can customize the schema path and other options under the `arkenv` key — see [Configuration & API](/docs/nuxt/configuration).
   </Accordion>
 </Accordions>
 
@@ -228,18 +242,12 @@ export const SharedSchema = type({
 });
 // @filename: env/client.ts
 import arkenv from "@arkenv/nuxt/client";
-import { SharedSchema } from "./internal/shared";
-export const env = arkenv(
-	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
-	{ extends: [SharedSchema] },
-);
+export const env = arkenv({
+	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+});
 // @filename: env/server.ts
 import arkenvServer from "@arkenv/nuxt/server";
-import { env as clientEnv } from "./client";
-export const env = arkenvServer(
-	{ DATABASE_URL: "string" },
-	{ extends: [clientEnv] },
-);
+export const env = arkenvServer({ DATABASE_URL: "string" });
 // @filename: server/api/my-endpoint.ts
 // ---cut---
 import { env } from "~~/env/server";
@@ -267,11 +275,9 @@ export const SharedSchema = type({
 });
 // @filename: env/client.ts
 import arkenv from "@arkenv/nuxt/client";
-import { SharedSchema } from "./internal/shared";
-export const env = arkenv(
-	{ NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
-	{ extends: [SharedSchema] },
-);
+export const env = arkenv({
+	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+});
 // @filename: pages/index.ts
 // ---cut---
 import { env } from "~~/env/client";

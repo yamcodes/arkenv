@@ -1,6 +1,6 @@
 # @arkenv/build
 
-> **Internal Package — Not for direct use.**
+> **Internal Package - Not for direct use.**
 
 This package is published to npm solely to support the ArkEnv framework plugins (`@arkenv/nextjs`, `@arkenv/nuxt`, etc.). It contains build-time utilities that are not suitable for runtime or Edge environments.
 

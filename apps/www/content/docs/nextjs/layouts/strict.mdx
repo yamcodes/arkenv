@@ -4,13 +4,13 @@ icon: ShieldCheck
 description: Get the best security in Next.js using strictly separated client and server schemas.
 ---
 
-In this setup, you define your client, server, and shared schemas in separate files.
+In this setup, you define your client and server schemas in separate files. An optional `internal/shared.ts` holds variables shared by both.
 
 ```files
 src
 └── env
     ├── internal
-    │   └── shared.ts
+    │   └── shared.ts   # optional
     ├── client.ts
     └── server.ts
 ```
@@ -19,12 +19,12 @@ By importing `@arkenv/core` from `@/env/client` in client-side code and `@/env/s
 
 ## Import mental model
 
-- **Flat layout:** import from `@arkenv/nextjs` — one entry point, bundler picks the build.
+- **Flat layout:** import from `@arkenv/nextjs` - one entry point, bundler picks the build.
 - **Strict layout:** import from `@arkenv/nextjs/client` and `@arkenv/nextjs/server`.
 - **Internal schema modules** (`env/internal/shared.ts`): `import { type } from "@arkenv/core"`.
-- **Standalone server scripts** (outside the env module graph): `import { arkenv } from "@arkenv/core"`.
+- **Standalone server scripts** (outside the env module graph): `import arkenv from "@arkenv/core"`.
 
-:::note Migration
+:::note[Migration]
 If you previously used `@arkenv/nextjs/shared` in `env/internal/shared.ts`, replace it with `import { type } from "@arkenv/core"`. The `/client` and `/server` subpath exports are unchanged.
 :::
 
@@ -38,7 +38,7 @@ npx arkenv@latest init --strict
 
 ## Your schema
 
-When bootstrapping with the CLI, it generates three separate schema files under `src/env/`:
+When bootstrapping with the CLI, it generates separate schema files under `src/env/` (including an optional `internal/shared.ts` with `NODE_ENV` for convenience):
 
 :::note
 By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withArkEnv`) in your Next.js config to compile your `runtimeEnv` block. This is why the client-side schema imports from `./generated/env.gen` rather than `@arkenv/nextjs/client`. To opt out, simply import from `@arkenv/nextjs/client` directly and provide your own `runtimeEnv` mapping.
@@ -124,12 +124,12 @@ export const env = arkenv(
     ```
 
     :::note
-    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core`.
+    If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core` — see [Zod, Valibot, and other Standard Schema validators](/docs/nextjs/using-other-validators).
     :::
 
-    ### Define shared variables [step] [!toc]
+    ### Define shared variables (optional) [step] [!toc]
 
-    Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+    Optionally create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. Shared is not required for strict layout—omit the file when you have nothing to share. When present, we treat it as a runtime type, so it is defined using PascalCase:
 
     ```ts title="src/env/internal/shared.ts" twoslash
     import { type } from "@arkenv/core";
@@ -145,7 +145,7 @@ export const env = arkenv(
 
     ### Define client variables [step] [!toc]
 
-    Create `env/client.ts` importing `@arkenv/core` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_` and you must extend `SharedSchema`:
+    Create `env/client.ts` importing `@arkenv/core` from the auto-generated `./generated/env.gen.ts` helper file. All local keys **must** be prefixed with `NEXT_PUBLIC_`. When you define `SharedSchema`, extend it here:
 
     ```ts title="src/env/client.ts" twoslash
     // @filename: /env/internal/shared.ts

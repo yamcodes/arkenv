@@ -1,5 +1,44 @@
 # @arkenv/fumadocs-ui
 
+## 1.0.0-alpha.2
+
+### Minor Changes
+
+- #### Export `TypeTable` and `Collapsible` components _[`#1415`](https://github.com/yamcodes/arkenv/pull/1415) [`db45891`](https://github.com/yamcodes/arkenv/commit/db458917c651a6ea318b48900bfd281b9cf7a41c) [@yamcodes](https://github.com/yamcodes)_
+
+  Export `TypeTable` and `Collapsible` from `@arkenv/fumadocs-ui/components`. The custom `TypeTable` supports `expandAll` to render all properties expanded by default.
+
+  Usage:
+
+  ```tsx
+  import { TypeTable } from "@arkenv/fumadocs-ui/components";
+
+  <TypeTable
+    type={{
+      port: {
+        type: "number",
+        description: "The port to run the server on",
+        default: "3000",
+      },
+    }}
+    expandAll
+  />;
+  ```
+
+## 1.0.0-alpha.1
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
 ## 1.0.0-alpha.0
 
 ### Major Changes

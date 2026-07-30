@@ -18,8 +18,8 @@ export default function HomePage() {
 		<div className="home-aurora__shell">
 			<section className="home-aurora__intro" aria-labelledby="home-hero">
 				<div className="home-aurora__badge">
-					<AnnouncementBadge href="docs/nextjs/layouts/flat" new>
-						Flat layout for Next.js
+					<AnnouncementBadge href="docs/cli/hosting-presets" new>
+						Next.js, Netlify presets
 					</AnnouncementBadge>
 				</div>
 				<h1 id="home-hero" className="home-aurora__tagline">

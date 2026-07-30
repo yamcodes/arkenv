@@ -1,5 +1,265 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.11
+
+### Patch Changes
+
+- #### Align missing-schema errors with short, actionable host guidance _[`#1488`](https://github.com/yamcodes/arkenv/pull/1488) [`9d5bdbb`](https://github.com/yamcodes/arkenv/commit/9d5bdbbeaf2fdddf69f5bcc47a7d79b15a51ece3) [@yamcodes](https://github.com/yamcodes)_
+
+  Point missing-schema errors at checked paths / `schemaPath` and `arkenv init`, matching the Bun plugin style, without embedding starter `env.ts` modules.
+
+- #### Make missing-schema errors short and actionable across hosts _[`#1495`](https://github.com/yamcodes/arkenv/pull/1495) [`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [@yamcodes](https://github.com/yamcodes)_
+
+  When a host cannot find an env schema, throw a consistent message that names the expected path / `schemaPath` and points to `npx arkenv@latest init`, without embedding a starter `env.ts` module.
+
+  Example:
+
+  ```text
+  [ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in ArkEnv options (or run `npx arkenv@latest init`).
+  ```
+
+- #### Make `env/internal/shared.ts` optional in strict layout _[`#1505`](https://github.com/yamcodes/arkenv/pull/1505) [`9bfe1c4`](https://github.com/yamcodes/arkenv/commit/9bfe1c4a6e278966ff2c0b2219d95e319888fb98) [@yamcodes](https://github.com/yamcodes)_
+
+  Strict layout now works with just `client.ts` and `server.ts`. Omit `internal/shared.ts` when you have nothing to share — shared keys are treated as empty.
+
+  ```ts
+  // env/client.ts + env/server.ts alone is enough
+  export default withArkEnv(nextConfig, {
+    layout: "strict",
+  });
+  ```
+
+  The CLI still scaffolds `shared.ts` by default for convenience.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [`9bfe1c4`](https://github.com/yamcodes/arkenv/commit/9bfe1c4a6e278966ff2c0b2219d95e319888fb98)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.2`
+
+</details>
+
+## 1.0.0-alpha.10
+
+### Major Changes
+
+- #### Throw when the Nuxt module cannot resolve an env schema _[`#1473`](https://github.com/yamcodes/arkenv/pull/1473) [`0763a92`](https://github.com/yamcodes/arkenv/commit/0763a92db0bd88609cc70ec29663e127183328e9) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `@arkenv/nuxt` module now throws when no schema file is found (auto-discovery or `schemaPath`), instead of warning and skipping setup. Create an `env.ts` (or `src/env.ts`) schema, or set `arkenv.schemaPath` in `nuxt.config.ts`.
+
+  ```ts
+  // nuxt.config.ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      schemaPath: "./env.ts", // required if auto-discovery cannot find a schema
+    },
+  });
+  ```
+
+### Minor Changes
+
+- #### Auto-extend shared schema in Nuxt strict-layout client entry _[`#1422`](https://github.com/yamcodes/arkenv/pull/1422) [`b1d8bad`](https://github.com/yamcodes/arkenv/commit/b1d8badc33523ea80a5d54683d503ad214337e80) [@yamcodes](https://github.com/yamcodes)_
+
+  **`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/client.ts` auto-merges `SharedSchema` from `env/internal/shared.ts` via `#arkenv/shared-schema`. Applies to both `@arkenv/nuxt/client` and `@arkenv/nuxt/standard/client`. The server entry continues to auto-merge the composed client env.
+
+  **`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified client template (no manual `SharedSchema` import or `extends` block). Next.js scaffolds remain unchanged.
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nuxt/client";
+
+  export const env = arkenv({
+    NUXT_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a custom list - is used as-is and opts out of auto-merge. Strict layout still requires `env/internal/shared.ts` with a `SharedSchema` export — that schema may be empty (`type({})`) when you have no shared variables. A missing file or unusable export fails with a clear diagnostic (rather than silently treating shared as empty).
+
+### Patch Changes
+
+- #### Coerce Nuxt public env overrides instead of leaving them as strings _[`#1458`](https://github.com/yamcodes/arkenv/pull/1458) [`3667b7e`](https://github.com/yamcodes/arkenv/commit/3667b7e9a1bc4547e247a9f4783d7a4e6c12782f) [@yamcodes](https://github.com/yamcodes)_
+
+  **Bug:** With a numeric (or boolean) public schema key, setting a deploy-time override made Nitro put a _string_ into `runtimeConfig.public`. That string won, so `env` lied about the type on server and client.
+
+  ```diff
+    // env.ts
+    export const env = arkenv({
+      NUXT_PUBLIC_PORT: "number",
+    });
+
+    // Deploy / Nitro boot: NUXT_PUBLIC_PORT=4000
+  - env.NUXT_PUBLIC_PORT; // "4000" (string) — schema said number
+  + env.NUXT_PUBLIC_PORT; // 4000 (number) — coerced after the override
+  ```
+
+  Same import surface. As a side effect, `@arkenv/nuxt` / `@arkenv/nuxt/client` no longer ship the validator into the browser bundle.
+
+- Skip all Nuxt module setup (including boot-gate hooks) when no schema file is found, matching the warn-and-bail contract. _[`#1165`](https://github.com/yamcodes/arkenv/pull/1165) [`882c0ce`](https://github.com/yamcodes/arkenv/commit/882c0ce0d62ffa3922816ad83a4a92c89f0ef764) [@yamcodes](https://github.com/yamcodes)_
+- #### Drop embedded env.ts starters and warn when the Nuxt module finds no schema _[`#1468`](https://github.com/yamcodes/arkenv/pull/1468) [`0150e73`](https://github.com/yamcodes/arkenv/commit/0150e73713facc58e05508a19f72042ac40c90e6) [@yamcodes](https://github.com/yamcodes)_
+
+  Keep missing-schema guidance short and host-parity consistent: Bun no longer embeds ArkType/Zod starters in the hybrid discovery error (prefer `arkenv init` / docs). When the Nuxt module is registered but no schema file is found, log a build warning and skip setup instead of failing silently.
+
+## 1.0.0-alpha.9
+
+### Patch Changes
+
+- #### Keep coerced number and boolean env values through the security proxy _[`#1429`](https://github.com/yamcodes/arkenv/pull/1429) [`6be63f7`](https://github.com/yamcodes/arkenv/commit/6be63f78f1f8517a64a32d003e0ea6b1ae78f4be) [@yamcodes](https://github.com/yamcodes)_
+
+  Lock the Nuxt security proxy so schema-key reads return the coerced validation target. A key declared as `"number"` or `"boolean"` returns a number or boolean at runtime, not a raw string from Nuxt runtime config / `__NUXT__`.
+
+  ```ts
+  import { arkenv } from "@arkenv/nuxt";
+
+  export const env = arkenv({
+    NUXT_PUBLIC_PORT: "number",
+    PORT: "number",
+  });
+
+  // 3000 (number), not "3000" (string)
+  env.NUXT_PUBLIC_PORT;
+  env.PORT;
+  ```
+
+## 1.0.0-alpha.8
+
+### Minor Changes
+
+- #### Auto-extend client env in Nuxt strict layout _[`#1401`](https://github.com/yamcodes/arkenv/pull/1401) [`e306798`](https://github.com/yamcodes/arkenv/commit/e3067980e80adce174e5591febe43164c7960a97) [@yamcodes](https://github.com/yamcodes)_
+
+  **`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/server.ts` auto-merges the client env via `#arkenv/client-env`. Applies to both `@arkenv/nuxt/server` and `@arkenv/nuxt/standard/server`.
+
+  **`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified server template (no manual `import ./client` or `extends: [clientEnv]`).
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nuxt/server";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+  });
+  ```
+
+  Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a list that does not include `clientEnv` - is used as-is and opts out of auto-merge. Existing manual `extends: [clientEnv]` wiring continues to work unchanged.
+
+## 1.0.0-alpha.7
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+- #### Type the `arkenv` key in `nuxt.config.ts` via `@nuxt/schema` augmentation _[`#1385`](https://github.com/yamcodes/arkenv/pull/1385) [`8725d78`](https://github.com/yamcodes/arkenv/commit/8725d78d65618dfc46cd971ce2a4098ec9a77b39) [@yamcodes](https://github.com/yamcodes)_
+
+  Augment `@nuxt/schema`'s `NuxtConfig` and `NuxtOptions` so the `arkenv` module options key is fully typed. Consumers now get autocomplete, type-checking, and JSDoc hovers for `arkenv` options directly in `nuxt.config.ts`, instead of falling back to a loose index signature.
+
+  `ModuleOptions` is now an alias of the documented `ArkEnvConfigOptions`, so option hovers surface the existing JSDoc / `@default` tags from a single source of truth.
+
+  ```ts
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      schemaPath: "src/env.ts", // autocompleted & type-checked
+      layout: "flat",
+      validate: true,
+    },
+  });
+  ```
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.4`
+- `@arkenv/standard@1.0.0-alpha.4`
+
+</details>
+
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- #### Document `ModuleOptions` with JSDoc for better editor DX _[`#1361`](https://github.com/yamcodes/arkenv/pull/1361) [`e55697e`](https://github.com/yamcodes/arkenv/commit/e55697e24976a5b8a56f43f999374fee2d1d3a84) [@yamcodes](https://github.com/yamcodes)_
+
+  Add descriptions and `@default` tags to the `ModuleOptions` type so hovering `schemaPath`, `layout`, `validate`, `logger`, and `logLevel` in `nuxt.config.ts` surfaces inline documentation.
+
+  ```ts title="nuxt.config.ts"
+  export default defineNuxtConfig({
+    modules: ["@arkenv/nuxt/module"],
+    arkenv: {
+      // Hovering these keys now shows their description and default value
+      schemaPath: "src/env.ts",
+      layout: "flat",
+      validate: true,
+    },
+  });
+  ```
+
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add configurable build logging to framework integrations _[`#1312`](https://github.com/yamcodes/arkenv/pull/1312) [`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb) [@yamcodes](https://github.com/yamcodes)_
+
+  Add optional `logger` and `logLevel` to Next.js, Nuxt, Vite, and Bun integrations. Set `ARKENV_LOG_LEVEL` when no custom logger is provided.
+
+  ```ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+
+  export default withArkEnv(nextConfig, {
+    logLevel: "warn",
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin";
+
+  export default defineConfig({
+    plugins: [arkenv(Env, { logLevel: "silent" })],
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    plugins: [arkenv(Env, { logLevel: "warn" })],
+  });
+  ```
+
+  Note: `@arkenv/build` is an internal package; consumers should configure logging via the framework integrations rather than importing internal helpers.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.1`
+
+</details>
+
 ## 1.0.0-alpha.4
 
 ### Major Changes

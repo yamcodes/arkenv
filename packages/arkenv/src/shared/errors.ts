@@ -6,10 +6,10 @@
  * agents and scripts may branch on them to decide how to escalate, so they must
  * never be renamed casually. Codes fall into two groups:
  *
- * - **Refusals** — deliberate safety-check refusals. When bypassable, the emitted
+ * - **Refusals** - deliberate safety-check refusals. When bypassable, the emitted
  *   payload includes a `retryWith` array naming the flag(s) that would proceed
  *   anyway (e.g. `["--force"]`).
- * - **`INTERNAL`** — an unexpected failure (the CLI *broke* rather than *refused*).
+ * - **`INTERNAL`** - an unexpected failure (the CLI *broke* rather than *refused*).
  *   This lets consumers distinguish a deliberate refusal from a crash.
  */
 export const ERROR_CODES = {

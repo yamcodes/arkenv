@@ -58,9 +58,6 @@ esbuild-why*.html
 ignore-me/
 /repos/
 
-# deploy metrics
-.github/deploy-metrics.json
-
 # JetBrains
 .idea/
 

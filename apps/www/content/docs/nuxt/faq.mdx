@@ -41,3 +41,20 @@ If the flat layout is recommended, why use the strict layout?
 3. Deploy that same artifact to staging, QA, and production - changing only the environment variables at container startup
 
 No application rebuild is required when values change. You can also use Nuxt's native override prefixes (e.g. `NUXT_DATABASE_URL` or `NUXT_PUBLIC_API_URL`) to swap values dynamically across environments.
+
+## Do I need to install `arktype` with `@arkenv/nuxt`?
+
+**Only if you use the default ArkType engine (`@arkenv/core`).** For Zod, Valibot, or other Standard Schema validators without ArkType:
+
+1. Install `@arkenv/standard` (not `@arkenv/core` / `arktype`)
+2. Register `@arkenv/nuxt/standard/module` in `nuxt.config.ts`
+3. Import from `@arkenv/nuxt/standard` in your schema (see [Zod, Valibot, and other Standard Schema validators](/docs/nuxt/using-other-validators))
+
+## Why do I need to install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nuxt`?
+
+Framework integration packages (like `@arkenv/nuxt` or `@arkenv/nextjs`) do not bundle the validation engine directly. They list `@arkenv/core` and `@arkenv/standard` as **optional peer dependencies**.
+
+This is crucial for two reasons:
+
+1. **Engine Selection (No Bloat)**: It lets you choose whether to run the ArkType engine (`@arkenv/core`) or a Standard Schema engine (`@arkenv/standard` for Zod/Valibot) without forcing Zod users to download ArkType's compiler and packages.
+2. **Preventing Dual Package Hazards**: If the integration included the engine as a direct dependency, package managers could install multiple copies of the validator engine at different nested paths in `node_modules` on minor version mismatches. At runtime, having duplicate engine instances breaks strict object identity, global singleton contexts, and `instanceof` evaluations.

@@ -1,9 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { defineNuxtModule } from "@nuxt/kit";
+import { addServerPlugin, createResolver, defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
 import { formatBuildError, resolveBuildLog } from "@repo/log";
 import { name, peerDependencies, version } from "../package.json";
+import type { BootGateEngine } from "./boot-gate";
 import {
 	type ArkEnvConfigOptions,
 	extractClientKeys,
@@ -11,36 +12,52 @@ import {
 	extractServerKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	normalizeLayout,
 	resolveLayout,
 	validateSchema,
 } from "./config";
+import { getDefaultBootGateEngine } from "./module-engine";
+import { missingClientTsError } from "./strict-client-env";
+import {
+	registerStrictLayoutHooks,
+	registerViteExtendHook,
+} from "./strict-layout-hooks";
 
-export type ModuleOptions = {
-	schemaPath?: string;
-	layout?: ArkEnvConfigOptions["layout"];
-	validate?: boolean;
-	logger?: ArkEnvConfigOptions["logger"];
-	logLevel?: ArkEnvConfigOptions["logLevel"];
-};
+/**
+ * Configuration options for the ArkEnv Nuxt module.
+ *
+ * Provide these under the `arkenv` key in your `nuxt.config.ts`.
+ *
+ * Aliased to {@link ArkEnvConfigOptions} so the documented options remain the
+ * single source of truth (field-level JSDoc, `@default` tags, and so on).
+ *
+ * @example
+ * ```ts
+ * export default defineNuxtConfig({
+ *   modules: ["@arkenv/nuxt/module"],
+ *   arkenv: {
+ *     schemaPath: "src/env.ts"
+ *   }
+ * });
+ * ```
+ */
+export type ModuleOptions = ArkEnvConfigOptions;
+
+declare module "@nuxt/schema" {
+	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
+	interface NuxtConfig {
+		arkenv?: ModuleOptions;
+	}
+	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
+	interface NuxtOptions {
+		arkenv?: ModuleOptions;
+	}
+}
 
 const CLIENT_SECURITY_ERROR = formatBuildError(
 	"Importing server-only environment schema on the client is not allowed!",
 );
-
-function resolveNuxtAlias(id: string, rootDir: string, srcDir: string): string {
-	if (path.isAbsolute(id)) return id;
-
-	if (id.startsWith("~~/")) {
-		return path.resolve(rootDir, id.slice(3));
-	}
-
-	if (id.startsWith("~/") || id.startsWith("@/")) {
-		return path.resolve(srcDir, id.slice(2));
-	}
-
-	return id;
-}
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -62,8 +79,44 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			: findSchemaPath(nuxt.options.rootDir);
 
 		if (!schemaPath || !fs.existsSync(schemaPath)) {
-			return;
+			throw new Error(
+				formatMissingSchemaError({
+					schemaPath: options.schemaPath,
+					optionsHint: "ArkEnv options",
+				}),
+			);
 		}
+
+		const resolver = createResolver(import.meta.url);
+		const engine: BootGateEngine = getDefaultBootGateEngine();
+
+		const emptyServerBoot = resolver.resolve("./empty-server-boot");
+		const realServerBoot = resolver.resolve("./server-boot");
+
+		// Default to the empty stub; Vite SSR + Nitro overwrite with the real gate.
+		nuxt.options.alias = nuxt.options.alias || {};
+		nuxt.options.alias["#arkenv/server-boot"] = emptyServerBoot;
+
+		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
+			// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
+			const anyConfig = config as any;
+			anyConfig.resolve = anyConfig.resolve || {};
+			anyConfig.resolve.alias = anyConfig.resolve.alias || {};
+			const aliasTarget = isClient ? emptyServerBoot : realServerBoot;
+			if (Array.isArray(anyConfig.resolve.alias)) {
+				anyConfig.resolve.alias.push({
+					find: "#arkenv/server-boot",
+					replacement: aliasTarget,
+				});
+			} else {
+				anyConfig.resolve.alias["#arkenv/server-boot"] = aliasTarget;
+			}
+		});
+
+		nuxt.hook("nitro:config", (nitroConfig) => {
+			nitroConfig.alias = nitroConfig.alias || {};
+			nitroConfig.alias["#arkenv/server-boot"] = realServerBoot;
+		});
 
 		const normalizedLayout = normalizeLayout(options.layout, buildLog);
 
@@ -76,6 +129,23 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nuxt.options.rootDir,
 			nuxt.options.srcDir ?? nuxt.options.rootDir,
 		);
+
+		const emptySharedSchema = resolver.resolve("./empty-shared-schema");
+
+		let strictClientPath: string | undefined;
+		let strictSharedPath: string | undefined;
+		let userSharedPath: string | undefined;
+		if (resolvedLayout === "strict" && baseDir) {
+			const clientPath = path.join(baseDir, "client.ts");
+			if (!fs.existsSync(clientPath)) {
+				throw new Error(missingClientTsError(clientPath, baseDir));
+			}
+			const sharedPath = path.join(baseDir, "internal", "shared.ts");
+			userSharedPath = fs.existsSync(sharedPath) ? sharedPath : undefined;
+			strictClientPath = clientPath;
+			// Missing shared.ts is intentional empty; alias to the package stub.
+			strictSharedPath = userSharedPath ?? emptySharedSchema;
+		}
 
 		if (nuxt.options.dev) {
 			const watchPaths =
@@ -97,7 +167,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 
 		if (validate) {
 			try {
-				validateSchema(schemaPath, resolvedLayout, baseDir ?? "");
+				validateSchema(schemaPath, resolvedLayout, baseDir ?? "", {
+					engine,
+				});
 			} catch (error: unknown) {
 				const message = error instanceof Error ? error.message : String(error);
 				throw new Error(
@@ -110,16 +182,17 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		let clientKeys: string[] = [];
 		let sharedKeys: string[] = [];
 
-		if (resolvedLayout === "strict" && baseDir) {
-			const clientPath = path.join(baseDir, "client.ts");
-			const sharedPath = path.join(baseDir, "internal", "shared.ts");
+		if (
+			resolvedLayout === "strict" &&
+			baseDir &&
+			strictClientPath &&
+			strictSharedPath
+		) {
 			const serverPath = path.join(baseDir, "server.ts");
 
-			const clientContent = fs.existsSync(clientPath)
-				? fs.readFileSync(clientPath, "utf-8")
-				: "";
-			const sharedContent = fs.existsSync(sharedPath)
-				? fs.readFileSync(sharedPath, "utf-8")
+			const clientContent = fs.readFileSync(strictClientPath, "utf-8");
+			const sharedContent = userSharedPath
+				? fs.readFileSync(userSharedPath, "utf-8")
 				: "";
 			const serverContent = fs.existsSync(serverPath)
 				? fs.readFileSync(serverPath, "utf-8")
@@ -128,6 +201,8 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			clientKeys = extractClientKeys(clientContent);
 			sharedKeys = extractSharedKeys(sharedContent);
 			serverKeys = extractServerKeys(serverContent);
+
+			registerStrictLayoutHooks(nuxt, strictClientPath, strictSharedPath);
 		} else {
 			const fileContent = fs.readFileSync(schemaPath, "utf-8");
 			const extracted = extractKeys(fileContent);
@@ -153,53 +228,23 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		}
 
-		nuxt.hook("vite:extendConfig", (config, { isClient }) => {
-			if (isClient) {
-				// biome-ignore lint/suspicious/noExplicitAny: Nuxt's Vite config type is overly restrictive
-				const anyConfig = config as any;
-				anyConfig.plugins = anyConfig.plugins || [];
-				anyConfig.plugins.push({
-					name: "arkenv-nuxt-client-security",
-					resolveId(id: string, importer?: string) {
-						const isServerModule =
-							id === "@arkenv/nuxt/server" ||
-							id === "@arkenv/nuxt/standard/server" ||
-							/[/\\]@arkenv[/\\]nuxt[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.(?:js|mjs|cjs|ts))?$/.test(
-								id,
-							);
+		(nuxt.options.runtimeConfig as { arkenvGate?: unknown }).arkenvGate = {
+			schemaPath,
+			layout: resolvedLayout,
+			baseDir: baseDir ?? "",
+			engine,
+		};
 
-						if (isServerModule) {
-							throw new Error(CLIENT_SECURITY_ERROR);
-						}
+		addServerPlugin(resolver.resolve("./runtime/nitro-boot-plugin"));
 
-						if (resolvedLayout === "strict" && baseDir) {
-							let targetId = id;
-							if (id.startsWith(".") && importer) {
-								targetId = path.resolve(path.dirname(importer), id);
-							}
-
-							const resolvedId = resolveNuxtAlias(
-								targetId,
-								nuxt.options.rootDir,
-								srcDir,
-							);
-
-							if (path.isAbsolute(resolvedId)) {
-								const relativePath = path.relative(baseDir, resolvedId);
-								const isUnderBaseDir =
-									!relativePath.startsWith("..") &&
-									!path.isAbsolute(relativePath);
-								const isServerFile =
-									/(^|[/\\])server(?:[/\\]|\.[^./\\]*|$)/.test(relativePath);
-
-								if (isUnderBaseDir && isServerFile) {
-									throw new Error(CLIENT_SECURITY_ERROR);
-								}
-							}
-						}
-					},
-				});
-			}
+		registerViteExtendHook(nuxt, {
+			resolvedLayout,
+			baseDir,
+			strictClientPath,
+			strictSharedPath,
+			rootDir: nuxt.options.rootDir,
+			srcDir,
+			clientSecurityError: CLIENT_SECURITY_ERROR,
 		});
 	},
 });

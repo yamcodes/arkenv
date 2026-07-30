@@ -1,0 +1,27 @@
+{
+	"name": "arkenv-example-with-valibot",
+	"version": "0.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch --env-file .env src/index.ts",
+		"start": "tsx --env-file .env src",
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"tsx": "^4.21.0"
+	},
+	"dependencies": {
+		"@arkenv/standard": "^1.0.0-alpha.2",
+		"valibot": "^1.3.1"
+	},
+	"engines": {
+		"node": "24"
+	},
+	"packageManager": "npm@11.13.0"
+}

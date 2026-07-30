@@ -1,7 +1,7 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "1.0.0-alpha.4",
+	"version": "1.0.0-alpha.11",
 	"description": "Interactive CLI for scaffolding ArkEnv projects",
 	"bin": {
 		"arkenv": "./dist/index.cjs"
@@ -31,7 +31,12 @@
 		"arkenv",
 		"cli",
 		"scaffold",
-		"init"
+		"init",
+		"create",
+		"generator",
+		"env",
+		"environment-variables",
+		"config"
 	],
 	"license": "MIT",
 	"homepage": "https://arkenv.js.org",

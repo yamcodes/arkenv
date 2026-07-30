@@ -1,6 +1,10 @@
 import dedent from "dedent";
 import { describe, expect, it } from "vitest";
-import { transformNextjsConfig, transformViteConfig } from "./config-mutation";
+import {
+	mutateEnvConfig,
+	transformNextjsConfig,
+	transformViteConfig,
+} from "./config-mutation";
 
 describe("config-mutation", () => {
 	describe("transformViteConfig", () => {
@@ -249,6 +253,188 @@ describe("config-mutation", () => {
 			expect(result.code).toContain('from "@arkenv/nextjs/config"');
 			expect(result.code).toContain("withArkEnv({");
 			expect(result.code).toContain("codegen: false");
+		});
+	});
+
+	describe("mutateEnvConfig", () => {
+		it("mutates flat env.ts with ArkType correctly", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('VERCEL: "string?"');
+			expect(result.code).toContain(
+				"VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
+			expect(result.code).toContain(
+				"NEXT_PUBLIC_VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
+		});
+
+		it("mutates flat env.ts with Zod correctly", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+				import { z } from "zod";
+
+				export const env = arkenv({
+					DATABASE_URL: z.string(),
+				});
+			`;
+
+			const result = mutateEnvConfig(initialContent, "vercel", "nextjs", "zod");
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain("VERCEL: z.string().optional()");
+			expect(result.code).toContain(
+				'VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
+		});
+
+		it("mutates flat env.ts with Valibot correctly", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+				import * as v from "valibot";
+
+				export const env = arkenv({
+					DATABASE_URL: v.string(),
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"valibot",
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain("VERCEL: v.optional(v.string())");
+			expect(result.code).toContain(
+				'VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"]))',
+			);
+		});
+
+		it("returns updated: false if keys are already present", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					DATABASE_URL: "string",
+					VERCEL: "string?",
+					VERCEL_ENV: "'production' | 'preview' | 'development'?",
+					VERCEL_URL: "string?",
+					NEXT_PUBLIC_VERCEL_ENV: "'production' | 'preview' | 'development'?",
+					NEXT_PUBLIC_VERCEL_URL: "string?",
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(false);
+		});
+
+		it("returns success: false and proposedFields when schema is not found", () => {
+			const initialContent = "export const x = 123;";
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+			);
+			expect(result.success).toBe(false);
+			expect(result.updated).toBe(false);
+			expect(result.proposedFields).toHaveProperty("VERCEL");
+			expect(result.proposedFields).toHaveProperty("VERCEL_ENV");
+		});
+
+		it("mutates env schema with specific targetKeys subset", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"arktype",
+				["NEXT_PUBLIC_VERCEL_ENV", "NEXT_PUBLIC_VERCEL_URL"],
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				"NEXT_PUBLIC_VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
+			);
+			expect(result.code).toContain('NEXT_PUBLIC_VERCEL_URL: "string?"');
+			expect(result.code).not.toContain('VERCEL: "string?"');
+		});
+
+		it("mutates SharedSchema exported as z.object", () => {
+			const initialContent = dedent`
+				import { z } from "zod";
+
+				export const SharedSchema = z.object({
+					DATABASE_URL: z.string(),
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"zod",
+				["NEXT_PUBLIC_VERCEL_ENV"],
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'NEXT_PUBLIC_VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
+			);
+			expect(result.code).not.toContain("VERCEL: z.string().optional()");
+		});
+
+		it("mutates SharedSchema exported as v.object", () => {
+			const initialContent = dedent`
+				import * as v from "valibot";
+
+				export const SharedSchema = v.object({
+					DATABASE_URL: v.string(),
+				});
+			`;
+
+			const result = mutateEnvConfig(
+				initialContent,
+				"vercel",
+				"nextjs",
+				"valibot",
+				["NEXT_PUBLIC_VERCEL_ENV"],
+			);
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'NEXT_PUBLIC_VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"]))',
+			);
+			expect(result.code).not.toContain("VERCEL: v.optional(v.string())");
 		});
 	});
 });

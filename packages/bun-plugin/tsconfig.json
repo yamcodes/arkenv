@@ -13,5 +13,6 @@
 		"resolveJsonModule": true,
 		"declaration": true,
 		"declarationMap": true
-	}
+	},
+	"exclude": ["src/__fixtures__", "dist", "node_modules"]
 }

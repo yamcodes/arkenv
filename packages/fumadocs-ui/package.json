@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/fumadocs-ui",
-	"version": "1.0.0-alpha.0",
+	"version": "1.0.0-alpha.2",
 	"type": "module",
 	"repository": {
 		"type": "git",
@@ -37,6 +37,14 @@
 		"css/*",
 		"dist/*"
 	],
+	"keywords": [
+		"arkenv",
+		"fumadocs",
+		"fumadocs-ui",
+		"theme",
+		"docs",
+		"documentation"
+	],
 	"scripts": {
 		"dev": "tsdown --watch",
 		"build": "tsdown",
@@ -50,6 +58,7 @@
 	},
 	"peerDependencies": {
 		"@fumadocs/ui": "^16.5.0",
+		"@radix-ui/react-collapsible": "^1.1.12",
 		"fumadocs-core": "^16.7.11",
 		"fumadocs-ui": "^16.7.11",
 		"lucide-react": "^1.7.0",
@@ -60,6 +69,7 @@
 	},
 	"devDependencies": {
 		"@fumadocs/ui": "16.5.0",
+		"@radix-ui/react-collapsible": "1.1.12",
 		"@types/mdx": "2.0.13",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",

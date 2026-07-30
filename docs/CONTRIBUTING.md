@@ -2,6 +2,17 @@
 
 Thank you for considering a contribution to ArkEnv! As an open source project, ArkEnv welcomes contributions of all kinds.
 
+## Who can contribute
+
+Human and agent-assisted contributions are equally welcome here. Whether you write every line by hand or lean on an AI agent, you're a first-class contributor, and a human maintainer reviews every pull request before it lands.
+
+To help you find work, triaged issues carry a readiness label:
+
+- **`ready for agent`** - Fully specified and ready for immediate implementation. Pick it up yourself or hand it to an agent; the requirements are clear enough to start coding right away.
+- **`ready for human`** - Needs a judgment call or design decision before implementation. These aren't off-limits, they just want a person to weigh in on direction first.
+
+Don't let the label names give you the wrong impression: `ready for agent` simply means "ready to build," not "reserved for bots." Feel free to grab either kind of issue.
+
 ## Development setup
 
 1. ### Install pnpm
@@ -135,14 +146,13 @@ When working on a massive marketing push, docs facelift, or breaking API changes
    > Always use dot-separated pre-release identifiers (e.g., `1.0.0-alpha.0`, `1.0.0-alpha.1`) to track sequential builds. Do NOT use build metadata with a plus sign (e.g., `1.0.0-alpha.0+build.1`), because the SemVer specification and npm ignore build metadata when determining version precedence. Npm will not allow publishing multiple packages with versions that differ only by build metadata.
 5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
-## Deployment rate limiter
+## Preview deployments
 
-To manage Vercel resource usage, we implement a soft rate limiter for preview deployments:
+PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `preview` label to trigger a Vercel preview deployment when the label is added, and again on subsequent `synchronize` / `ready_for_review` events while the label remains (a preview is only produced when the `www` app is actually affected). This works for same-repo and fork PRs; fork authors cannot self-serve the label.
 
-- **Daily Limit**: 72 preview deployments per 24 hours.
-- **Cooldown**: 20 minutes between deployments on the same PR.
+Pushes to `dev` or `v1` always deploy via GitHub Actions (Vercel CLI). Those deploys pass git metadata and alias the rolling branch domains (`https://arkenv-dev.vercel.app`, `https://arkenv-v1.vercel.app`) so the domains stay current without relying on native Vercel Git builds. Labeled PR previews keep ephemeral deployment URLs and do not take over those branch domains.
 
-If the limit or cooldown is reached, the deployment step in the GitHub Action will be skipped. This is a "soft" limit - it doesn't fail the build, it just pauses deployments. Production deployments are not gated but will trigger an alert if frequency exceeds 24/day.
+To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
 
 ## Changesets
 

@@ -1,136 +1,119 @@
 ---
 title: Zod, Valibot, and other Standard Schema validators
 icon: Blocks
-description: Mix and match ArkType with Zod, Valibot, or other Standard Schema compatible libraries.
+description: Use Zod, Valibot, or any Standard Schema validator — with or without ArkType.
 ---
 
-ArkEnv for Next.js supports any Standard Schema validator. That includes Zod, Valibot, Typia, and any validator listed here:
+ArkEnv for Next.js supports any validator that implements the [Standard Schema](https://standardschema.dev/) specification — including Zod, Valibot, Typia, and others listed here:
 
 <Cards>
   <Card title="Which schema libraries implement the spec?" href="https://standardschema.dev/schema#what-schema-libraries-implement-the-spec" description="Standard Schema" />
 </Cards>
 
-### Flat layout
+## Standard Mode (no ArkType)
 
-Here is an example using Zod or Valibot with the flat layout:
+Use `@arkenv/standard` and the `@arkenv/nextjs/standard` subpaths when you want Zod, Valibot, or another Standard Schema validator **without** installing `arktype`.
 
-<Tabs items={['Zod', 'Valibot']}>
-  <Tab value="Zod">
-    ```ts title="src/env.ts" twoslash
-    // @filename: generated/env.gen.ts
-    import { arkenv as coreArkenv } from "@arkenv/nextjs";
-    import type { type as at, distill } from "arktype";
-    export { type } from "@arkenv/nextjs";
-    export default function arkenv<const T extends {}>(
-    	schema: T,
-    	options?: any
-    ): Readonly<distill.Out<at.infer<T>>> {
-    	return {} as any;
-    }
-
-    // @filename: env.ts
-    // ---cut---
-    import arkenv from "./generated/env.gen";
-    import { z } from "zod";
-
-    export const env = arkenv({
-    	DATABASE_URL: z.string().url(),
-    	NEXT_PUBLIC_API_URL: z.string().url(),
-    	NODE_ENV: z.enum(["development", "production", "test"]),
-    });
-    ```
-  </Tab>
-
-  <Tab value="Valibot">
-    ```ts title="src/env.ts" twoslash
-    // @filename: generated/env.gen.ts
-    import { arkenv as coreArkenv } from "@arkenv/nextjs";
-    import type { type as at, distill } from "arktype";
-    export { type } from "@arkenv/nextjs";
-    export default function arkenv<const T extends {}>(
-    	schema: T,
-    	options?: any
-    ): Readonly<distill.Out<at.infer<T>>> {
-    	return {} as any;
-    }
-
-    // @filename: env.ts
-    // ---cut---
-    import arkenv from "./generated/env.gen";
-    import * as v from "valibot";
-
-    export const env = arkenv({
-    	DATABASE_URL: v.pipe(v.string(), v.url()),
-    	NEXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
-    	NODE_ENV: v.picklist(["development", "production", "test"]),
-    });
-    ```
-  </Tab>
-</Tabs>
-
-### Strict layout
-
-You can freely mix Zod or Valibot schemas with the strict layout:
-
-<Tabs items={['Zod', 'Valibot']}>
-  <Tab value="Zod">
-    ```ts title="src/env/internal/shared.ts" twoslash
-    import { z } from "zod";
-
-    /**
-     * @internal 🛑 INTERNAL SCHEMA ONLY.
-     * Do not import this directly. Import `env` from `./client` or `./server` instead.
-     */
-    export const SharedSchema = z.object({
-    	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-    });
-    ```
-  </Tab>
-
-  <Tab value="Valibot">
-    ```ts title="src/env/internal/shared.ts" twoslash
-    import * as v from "valibot";
-
-    /**
-     * @internal 🛑 INTERNAL SCHEMA ONLY.
-     * Do not import this directly. Import `env` from `./client` or `./server` instead.
-     */
-    export const SharedSchema = v.object({
-    	NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
-    });
-    ```
-  </Tab>
-</Tabs>
-
-## ArkType-free mode (Standard Mode)
-
-If you want to use Zod, Valibot, or other Standard Schema validators **without** installing `arktype` as a dependency in your Next.js project:
-
-1. Install `@arkenv/standard` and `@arkenv/nextjs` (along with your validator):
+### Install
 
 ```package-install
 @arkenv/standard @arkenv/nextjs zod
 ```
 
-2. Import from `@arkenv/nextjs/standard` in your environment schema file:
+### Configure with codegen (recommended)
 
-```ts title="env.ts" twoslash
-import arkenv from '@arkenv/nextjs/standard';
-import { z } from 'zod';
+Wrap your Next.js config with `withArkEnv` from `@arkenv/nextjs/standard/config` so the generated helper imports the Standard Schema engine:
+
+```ts title="next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/standard/config";
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+Define a flat schema and import `arkenv` from the generated helper — no manual `runtimeEnv` mapping:
+
+```ts title="src/env.ts" twoslash
+// @filename: generated/env.gen.ts
+export default function arkenv<const TSchema extends Record<string, unknown>>(
+	schema: TSchema,
+	options?: any,
+): Readonly<TSchema> {
+	return {} as any;
+}
+
+// @filename: env.ts
+// ---cut---
+import arkenv from "./generated/env.gen";
+import { z } from "zod";
 
 export const env = arkenv({
-  DATABASE_URL: z.string().url(),
-  NEXT_PUBLIC_API_URL: z.string().url(),
-}, {
-  runtimeEnv: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-  },
+	DATABASE_URL: z.string().url(),
+	NEXT_PUBLIC_API_URL: z.string().url(),
+	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
 ```
 
-:::note
-Legacy nested layout `arkenv({ server, client, shared, runtimeEnv })` is still supported but deprecated.
+:::tip
+Prefer the [ArkEnv CLI](/docs/cli) (`npx arkenv@latest init`) and pick Zod or Valibot — it scaffolds Standard Mode for you.
 :::
 
-> [!NOTE]
-> If you are using the default Simple layout with codegen, the CLI will automatically generate `generated/env.gen.ts` importing from `@arkenv/nextjs/standard` if your schema file imports from `@arkenv/standard` or `@arkenv/nextjs/standard`.
+### Without codegen
+
+If you disable codegen (`withArkEnv(nextConfig, { codegen: false })`), import from `@arkenv/nextjs/standard` and map client/`NODE_ENV` keys in `runtimeEnv` yourself:
+
+```ts title="src/env.ts" twoslash
+import arkenv from "@arkenv/nextjs/standard";
+import { z } from "zod";
+
+export const env = arkenv(
+	{
+		DATABASE_URL: z.string().url(),
+		NEXT_PUBLIC_API_URL: z.string().url(),
+		NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+	},
+	{
+		runtimeEnv: {
+			NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+			NODE_ENV: process.env.NODE_ENV,
+		},
+	},
+);
+```
+
+See [Can I disable code generation?](/docs/nextjs/faq#can-i-disable-code-generation) for details.
+
+:::note
+Legacy nested layout `arkenv({ server, client, shared, runtimeEnv })` is still supported but deprecated. Prefer the [flat layout](/docs/nextjs/layouts/flat).
+:::
+
+## Mixing with ArkType
+
+Already on `@arkenv/core`? You can mix ArkType DSL strings with Zod (or any Standard Schema validator) in the same schema — ArkType is still required as a peer dependency:
+
+```ts title="src/env.ts" twoslash
+// @filename: generated/env.gen.ts
+import type { type as at, distill } from "arktype";
+export default function arkenv<const T extends {}>(
+	schema: T,
+	options?: any,
+): Readonly<distill.Out<at.infer<T>>> {
+	return {} as any;
+}
+
+// @filename: env.ts
+// ---cut---
+import arkenv from "./generated/env.gen";
+import { z } from "zod";
+
+export const env = arkenv({
+	HOST: "string.host",
+	PORT: "number.port",
+	DATABASE_URL: z.string().url(),
+	NEXT_PUBLIC_API_URL: z.string().url(),
+});
+```
+
+For the ArkType-free path, stay on [Standard Mode](#standard-mode-no-arktype) above. For core (non-Next) mixing examples, see [Standard Schema validators](/docs/arkenv/integrations/standard-schema).

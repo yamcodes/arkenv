@@ -38,7 +38,7 @@ export type ProjectOptions = {
 	envExampleContent?: string;
 	envContent?: string;
 	gitignoreContent?: string;
-	/** Hosting provider preset selected during init (`none` / Vercel / Netlify). */
+	/** Hosting provider preset selected during init (`none` / Vercel / Netlify / Cloudflare / etc.). */
 	hostPreset?: HostPreset;
 };
 

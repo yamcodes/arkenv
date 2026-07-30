@@ -1,12 +1,14 @@
 # @arkenv/nuxt
 
-ArkEnv integration for Nuxt. Provides a typesafe, minimal-dependency environment variable parser and validator for Nuxt applications. It automatically injects your schema into Nuxt's `runtimeConfig` and prevents server secrets from leaking to the client via a custom Vite plugin.
+ArkEnv integration for Nuxt. Provides a typesafe environment variable parser and validator for Nuxt applications. It keeps public values correctly typed after deploy-time overrides, integrates with Nuxt's `runtimeConfig`, and blocks server-only secrets from reaching the client.
 
 ## Installation
 
 ```bash
-npm install @arkenv/nuxt arktype
+npm install @arkenv/nuxt @arkenv/core arktype
 ```
+
+For Zod, Valibot, or other Standard Schema validators **without** ArkType, install `@arkenv/standard` instead of `@arkenv/core`/`arktype`, register `@arkenv/nuxt/standard/module`, and import from `@arkenv/nuxt/standard`. See the [Standard Schema docs](https://arkenv.dev/docs/nuxt/using-other-validators).
 
 ## Setup
 

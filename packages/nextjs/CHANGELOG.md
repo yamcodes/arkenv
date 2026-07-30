@@ -1,5 +1,123 @@
 # @arkenv/nextjs
 
+## 1.0.0-alpha.9
+
+### Patch Changes
+
+- #### Align missing-schema errors with short, actionable host guidance _[`#1488`](https://github.com/yamcodes/arkenv/pull/1488) [`9d5bdbb`](https://github.com/yamcodes/arkenv/commit/9d5bdbbeaf2fdddf69f5bcc47a7d79b15a51ece3) [@yamcodes](https://github.com/yamcodes)_
+
+  Point missing-schema errors at checked paths / `schemaPath` and `arkenv init`, matching the Bun plugin style, without embedding starter `env.ts` modules.
+
+- #### Make missing-schema errors short and actionable across hosts _[`#1495`](https://github.com/yamcodes/arkenv/pull/1495) [`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [@yamcodes](https://github.com/yamcodes)_
+
+  When a host cannot find an env schema, throw a consistent message that names the expected path / `schemaPath` and points to `npx arkenv@latest init`, without embedding a starter `env.ts` module.
+
+  Example:
+
+  ```text
+  [ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in ArkEnv options (or run `npx arkenv@latest init`).
+  ```
+
+- #### Make `env/internal/shared.ts` optional in strict layout _[`#1505`](https://github.com/yamcodes/arkenv/pull/1505) [`9bfe1c4`](https://github.com/yamcodes/arkenv/commit/9bfe1c4a6e278966ff2c0b2219d95e319888fb98) [@yamcodes](https://github.com/yamcodes)_
+
+  Strict layout now works with just `client.ts` and `server.ts`. Omit `internal/shared.ts` when you have nothing to share — shared keys are treated as empty.
+
+  ```ts
+  // env/client.ts + env/server.ts alone is enough
+  export default withArkEnv(nextConfig, {
+    layout: "strict",
+  });
+  ```
+
+  The CLI still scaffolds `shared.ts` by default for convenience.
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [`9bfe1c4`](https://github.com/yamcodes/arkenv/commit/9bfe1c4a6e278966ff2c0b2219d95e319888fb98)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.2`
+
+</details>
+
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.4`
+- `@arkenv/standard@1.0.0-alpha.4`
+
+</details>
+
+## 1.0.0-alpha.7
+
+### Minor Changes
+
+- #### Add configurable build logging to framework integrations _[`#1312`](https://github.com/yamcodes/arkenv/pull/1312) [`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb) [@yamcodes](https://github.com/yamcodes)_
+
+  Add optional `logger` and `logLevel` to Next.js, Nuxt, Vite, and Bun integrations. Set `ARKENV_LOG_LEVEL` when no custom logger is provided.
+
+  ```ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+
+  export default withArkEnv(nextConfig, {
+    logLevel: "warn",
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin";
+
+  export default defineConfig({
+    plugins: [arkenv(Env, { logLevel: "silent" })],
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    plugins: [arkenv(Env, { logLevel: "warn" })],
+  });
+  ```
+
+  Note: `@arkenv/build` is an internal package; consumers should configure logging via the framework integrations rather than importing internal helpers.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.1`
+
+</details>
+
 ## 1.0.0-alpha.6
 
 ### Major Changes

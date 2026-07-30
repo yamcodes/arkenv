@@ -1,4 +1,8 @@
-import { confirm as clackConfirm, isCancel } from "@clack/prompts";
+import {
+	confirm as clackConfirm,
+	select as clackSelect,
+	isCancel,
+} from "@clack/prompts";
 import { shake } from "radashi";
 import { runPromptWizard } from "@/cli/ui";
 import type { ProjectOptions } from "@/features/scaffold";
@@ -57,5 +61,26 @@ export class ClackPromptAdapter implements PromptPort {
 		isYes = false,
 	): Promise<ProjectOptions | null> {
 		return runPromptWizard(defaults, isYes);
+	}
+
+	/**
+	 * Prompt the user to select one option from a list.
+	 */
+	async select<T extends string>(
+		message: string,
+		options: { value: T; label: string; hint?: string }[],
+		initialValue?: T,
+	): Promise<T | null> {
+		const result = await clackSelect({
+			message,
+			// Clack's Option<T> is a conditional type incompatible with our port
+			// shape under exactOptionalPropertyTypes; cast via unknown.
+			options: options as unknown as Parameters<
+				typeof clackSelect
+			>[0]["options"],
+			initialValue,
+		});
+		if (isCancel(result)) return null;
+		return result as T;
 	}
 }

@@ -1,3 +1,4 @@
+import { TypeTable } from "@arkenv/fumadocs-ui/components";
 import { arkenvComponents } from "@arkenv/fumadocs-ui/mdx";
 import * as twoslashComponents from "fumadocs-twoslash/ui";
 import {
@@ -6,6 +7,7 @@ import {
 } from "fumadocs-typescript";
 import { AutoTypeTable } from "fumadocs-typescript/ui";
 import {
+	Callout,
 	CalloutContainer,
 	CalloutDescription,
 	CalloutTitle,
@@ -28,6 +30,7 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		...arkenvComponents,
 		...twoslashComponents,
 		Button,
+		Callout,
 		CalloutContainer,
 		CalloutDescription,
 		CalloutTitle,
@@ -35,6 +38,7 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		AutoTypeTable: (props: any) => (
 			<AutoTypeTable {...props} generator={generator} />
 		),
+		TypeTable,
 		Cards,
 		Files,
 		Folder,

@@ -1,17 +1,38 @@
 import type { EnvSchema } from "@arkenv/core";
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
 import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";
-import { arkenvInternal } from "./arkenv-internal";
-import type { MergeExtends } from "./types";
+// Static import so Vite/Nitro can resolve the alias at bundle time.
+// Outside strict layout the module aliases this to `empty-shared-schema.ts`.
+import { SharedSchema as importedSharedSchema } from "#arkenv/shared-schema";
+import { resolveStrictSharedSchema } from "./strict-shared-schema";
+import { dispatchStrictThinArkenv } from "./thin-accessor";
+import type { MergeExtends, ResolveExtendsElement } from "./types";
 
 /**
- * Create a validated, type-safe environment configuration for Nuxt applications (Client entry point).
+ * Shared schema type auto-merged in Nuxt strict layout when `extends` is omitted.
+ *
+ * Resolved via the `#arkenv/shared-schema` virtual module alias registered by
+ * `@arkenv/nuxt/module`.
+ */
+type AutoSharedSchema = typeof import("#arkenv/shared-schema") extends {
+	SharedSchema: infer S;
+}
+	? ResolveExtendsElement<S>
+	: {};
+
+/**
+ * Create a typesafe environment configuration for Nuxt (client entry).
+ *
+ * Reads the already-coerced public payload — does not import or run the validator.
+ *
+ * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
+ * shared schema by default. Any explicit `extends` is used as-is and opts out
+ * of that default; pass `extends: []` to include no extended env.
  *
  * @param schemaOrOptions The schema definition or configuration options containing client/shared schemas
  * @param optionsOrIsServer Optional configuration paths or a boolean indicating server status
- * @returns A validated, readonly environment variables object wrapped in a security proxy
+ * @returns A readonly environment variables object wrapped in a security proxy
  * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
  * @throws An error if a server-only variable is accessed on the client side
  */
@@ -22,10 +43,23 @@ export function arkenv<
 	schema: EnvSchema<TSchema> & {
 		[K in keyof TSchema]: K extends `NUXT_PUBLIC_${string}` ? unknown : never;
 	},
-	options?: {
-		extends?: [...TExtends];
+	options: {
+		/**
+		 * Explicit envs/schemas to extend. Providing this option opts out of the
+		 * default strict-layout shared merge; use `[]` to include no extended env.
+		 */
+		extends: [...TExtends];
 	},
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
+
+export function arkenv<const TSchema extends SchemaShape = {}>(
+	schema: EnvSchema<TSchema> & {
+		[K in keyof TSchema]: K extends `NUXT_PUBLIC_${string}` ? unknown : never;
+	},
+	options?: {
+		extends?: undefined;
+	},
+): Readonly<distill.Out<at.infer<TSchema, $>> & AutoSharedSchema>;
 
 export function arkenv<
 	const TClient extends SchemaShape = {},
@@ -42,35 +76,11 @@ export function arkenv<
 >;
 
 export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("client" in schemaOrOptions || "shared" in schemaOrOptions);
-
-	if (isLegacy) {
-		if ("server" in schemaOrOptions) {
-			throw new Error(
-				"client entry point only accepts 'client' and 'shared' schemas.",
-			);
-		}
-		return arkenvInternal(
-			schemaOrOptions,
-			false,
-			undefined,
-			coreArkenv,
-			getSchemaKeys,
-		);
-	}
-
-	return arkenvInternal(
-		schemaOrOptions,
-		optionsOrIsServer,
-		{ isServer: false },
-		coreArkenv,
-		getSchemaKeys,
-	);
+	return dispatchStrictThinArkenv(schemaOrOptions, optionsOrIsServer, {
+		strictLayout: "client",
+		resolveAutoExtendTarget: () =>
+			resolveStrictSharedSchema(importedSharedSchema),
+	});
 }
-
-export { type } from "@arkenv/core";
 
 export default arkenv;

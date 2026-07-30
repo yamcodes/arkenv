@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/vite-plugin",
-	"version": "1.0.0-alpha.4",
+	"version": "1.0.0-alpha.8",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -8,6 +8,10 @@
 	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
+	"dependencies": {
+		"@arkenv/build": "workspace:*",
+		"jiti": "catalog:"
+	},
 	"devDependencies": {
 		"@arkenv/core": "workspace:*",
 		"@arkenv/standard": "workspace:*",
@@ -60,11 +64,15 @@
 	],
 	"homepage": "https://arkenv.js.org",
 	"keywords": [
+		"arkenv",
 		"arktype",
-		"arkenv",
-		"arkenv",
-		"environment",
-		"variables",
+		"env",
+		"environment-variables",
+		"dotenv",
+		"config",
+		"validation",
+		"typesafe",
+		"standard-schema",
 		"vite",
 		"plugin",
 		"vite-plugin"
@@ -84,11 +92,13 @@
 	"size-limit": [
 		{
 			"path": "dist/index.js",
-			"limit": "3 kB",
+			"limit": "8 kB",
 			"import": "*",
 			"ignore": [
 				"vite",
-				"arktype"
+				"arktype",
+				"jiti",
+				"@arkenv/build"
 			]
 		}
 	]

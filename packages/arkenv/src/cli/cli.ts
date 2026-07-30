@@ -1,5 +1,10 @@
 import { Logger } from "@/adapters";
-import { type HostPreset, isHostPreset } from "@/features/scaffold/presets";
+import {
+	type HostPreset,
+	type HostProvider,
+	isHostPreset,
+	isHostProvider,
+} from "@/features/scaffold/presets";
 import type { InitInput } from "./commands/init";
 
 const FLAG_CONFIG = {
@@ -7,14 +12,17 @@ const FLAG_CONFIG = {
 	isForce: { long: "--force", short: "-f", kind: "boolean" },
 	isQuiet: { long: "--quiet", short: "-q", kind: "boolean" },
 	isJson: { long: "--json", short: "-j", kind: "boolean" },
-	isAgent: { long: "--agent", short: "-a", kind: "boolean" },
+	isAgent: { long: "--agent", short: "", kind: "boolean" },
 	helpRequested: { long: "--help", short: "-h", kind: "boolean" },
-	example: { long: "--example", short: "-e", kind: "value" },
+	// `-e` is intentionally reserved: it universally means `--env`/`--environment`
+	// elsewhere, so it must never be aliased to `--example` (or any other flag).
+	// Keeping it unassigned makes `-e` fail fast as an unknown argument.
+	example: { long: "--example", short: "", kind: "value" },
 	isStrict: { long: "--strict", short: "", kind: "boolean" },
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
 	isFlat: { long: "--flat", short: "", kind: "boolean" },
-	noCodegen: { long: "--no-codegen", short: "-C", kind: "boolean" },
-	hostPreset: { long: "--host-preset", short: "", kind: "value" },
+	noCodegen: { long: "--no-codegen", short: "", kind: "boolean" },
+	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
 } as const;
 
 const knownFlags = new Set<string>(
@@ -36,6 +44,7 @@ export class CLI {
 	public name: string | undefined;
 	public validationError: string | undefined;
 	public logger: Logger;
+	public positionalArgs: string[];
 
 	/**
 	 * Creates a CLI context from process arguments and optional adapters.
@@ -109,11 +118,28 @@ export class CLI {
 			}
 		}
 
+		this.positionalArgs = positionalArgs;
+
 		if (!this.validationError) {
-			if (positionalArgs.length > 1) {
-				this.validationError = `Unknown argument: ${positionalArgs[1]}`;
+			if (this.command === "add") {
+				if (!positionalArgs[0]) {
+					this.validationError = "Missing subcommand";
+				} else if (positionalArgs[0] !== "host") {
+					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
+				} else if (positionalArgs.length > 2) {
+					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
+				} else {
+					const provider = positionalArgs[1];
+					if (provider !== undefined && !isHostProvider(provider)) {
+						this.validationError = `Invalid host preset: ${provider}`;
+					}
+				}
 			} else {
-				this.name = positionalArgs[0];
+				if (positionalArgs.length > 1) {
+					this.validationError = `Unknown argument: ${positionalArgs[1]}`;
+				} else {
+					this.name = positionalArgs[0];
+				}
 			}
 		}
 
@@ -214,6 +240,18 @@ export class CLI {
 			input.hostPreset = this.hostPreset;
 		}
 		return input;
+	}
+
+	/**
+	 * Returns the parsed input consumed by the add command.
+	 */
+	get addInput(): { provider?: HostProvider; isYes?: boolean } {
+		const provider = this.positionalArgs[1];
+		const isYes = this.isYes;
+		if (provider !== undefined && isHostProvider(provider)) {
+			return { provider, isYes };
+		}
+		return { isYes };
 	}
 
 	/**

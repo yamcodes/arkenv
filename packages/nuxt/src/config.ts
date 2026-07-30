@@ -1,22 +1,20 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import {
 	extractKeys as coreExtractKeys,
 	extractClientKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	resolveLayout,
 } from "@arkenv/build";
 import {
 	type BuildLogHelpers,
-	formatBuildError,
 	type Logger,
 	type LogLevel,
 	resolveBuildLog,
 } from "@repo/log";
-import { createJiti } from "jiti";
-import { withForceServer } from "./validate-context";
+import { validateSchema } from "./validate-schema";
 
 export type {
 	LayoutInput,
@@ -28,9 +26,10 @@ export {
 	extractArkenvBlock,
 	extractServerKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	resolveLayout,
 } from "@arkenv/build";
-export { extractClientKeys, extractSharedKeys };
+export { extractClientKeys, extractSharedKeys, validateSchema };
 
 let hasWarnedSimpleLayout = false;
 
@@ -53,15 +52,55 @@ export function normalizeLayout(
 	return layout;
 }
 
+/**
+ * Configuration options for ArkEnv's build-time integration.
+ *
+ * This is the single source of truth for the options exposed under the `arkenv`
+ * key in framework configs (e.g. `nuxt.config.ts`), which is why the field-level
+ * JSDoc and `@default` tags live here.
+ */
 export type ArkEnvConfigOptions = {
+	/**
+	 * Specify the path to the schema definition file or directory.
+	 *
+	 * When omitted, ArkEnv auto-discovers the schema, searching for `"env.ts"` or
+	 * `"src/env.ts"` (flat layout) or the `"env/"` / `"src/env/"` directory
+	 * (strict layout) in the project root.
+	 */
 	schemaPath?: string;
+
+	/**
+	 * Specify the configuration layout.
+	 *
+	 * When omitted, the layout is auto-detected from the schema structure: it is
+	 * `"strict"` when `env/client.ts` and `env/server.ts` are present (with
+	 * optional `env/internal/shared.ts`), and falls back to `"flat"` (a single
+	 * `env.ts`) otherwise.
+	 *
+	 * - `"flat"`: A single `env.ts` schema file.
+	 * - `"strict"`: A split schema layout (`env/client.ts`, `env/server.ts`, and optionally `env/internal/shared.ts`).
+	 */
 	layout?:
 		| "flat"
 		| "strict"
 		/** @deprecated Use `"flat"` instead. */
 		| "simple";
+
+	/**
+	 * Enable or disable environment variable validation during dev startup and build.
+	 *
+	 * @default true
+	 */
 	validate?: boolean;
+
+	/**
+	 * Provide a custom logger to receive ArkEnv's build-time diagnostics.
+	 */
 	logger?: Logger;
+
+	/**
+	 * Control the verbosity of ArkEnv's build-time logging.
+	 */
 	logLevel?: LogLevel;
 };
 
@@ -92,11 +131,10 @@ export function setupArkEnv(
 
 	if (!schemaPath || !exists) {
 		throw new Error(
-			formatBuildError(
-				`Could not find schema file at ${
-					options?.schemaPath || "src/env.ts or env.ts"
-				}. Please specify 'schemaPath' in ArkEnv options.`,
-			),
+			formatMissingSchemaError({
+				schemaPath: options?.schemaPath,
+				optionsHint: "ArkEnv options",
+			}),
 		);
 	}
 
@@ -120,134 +158,6 @@ export function setupArkEnv(
 			throw error;
 		}
 	}
-}
-
-export function validateSchema(
-	schemaPath: string,
-	resolvedLayout: "simple" | "strict",
-	baseDir: string,
-	internalOptions?: { _jitiAliases?: Record<string, string> },
-): void {
-	withForceServer(() => {
-		const fileToEvaluate =
-			resolvedLayout === "strict" && baseDir
-				? path.join(baseDir, "server.ts")
-				: schemaPath;
-
-		const filenameForJiti =
-			typeof __filename !== "undefined"
-				? __filename
-				: typeof import.meta !== "undefined" && import.meta.url
-					? fileURLToPath(import.meta.url)
-					: "";
-		const dir = path.dirname(filenameForJiti);
-
-		const packageJsonPath = path.resolve(dir, "../package.json");
-		let pkgExports: Record<string, unknown> = {};
-		try {
-			const pkgContent = fs.readFileSync(packageJsonPath, "utf-8");
-			pkgExports = JSON.parse(pkgContent).exports || {};
-		} catch {
-			// fallback if package.json isn't adjacent/found
-		}
-
-		const resolveExportPath = (
-			subpath: string,
-			fallbackFile: string,
-		): string => {
-			const entry = pkgExports[subpath] as
-				| { import?: string; default?: string }
-				| string
-				| undefined;
-			if (entry) {
-				const target =
-					typeof entry === "string"
-						? entry
-						: entry.import || entry.default || entry;
-				if (typeof target === "string") {
-					const fileBasename = path.basename(target).replace(/\.m?[jt]s$/, "");
-					const tsPath = path.join(dir, `${fileBasename}.ts`);
-					if (fs.existsSync(tsPath)) {
-						return tsPath;
-					}
-					const jsPath = path.join(dir, `${fileBasename}.js`);
-					if (fs.existsSync(jsPath)) {
-						return jsPath;
-					}
-				}
-			}
-			return fallbackFile;
-		};
-
-		const sharedPath = resolveExportPath(
-			"./shared",
-			fs.existsSync(path.join(dir, "shared.ts"))
-				? path.join(dir, "shared.ts")
-				: path.join(dir, "shared.js"),
-		);
-		const indexPath = resolveExportPath(
-			".",
-			fs.existsSync(path.join(dir, "index.ts"))
-				? path.join(dir, "index.ts")
-				: path.join(dir, "index.js"),
-		);
-		const clientPath = resolveExportPath(
-			"./client",
-			fs.existsSync(path.join(dir, "client.ts"))
-				? path.join(dir, "client.ts")
-				: path.join(dir, "client.js"),
-		);
-		const serverPath = resolveExportPath(
-			"./server",
-			fs.existsSync(path.join(dir, "server.ts"))
-				? path.join(dir, "server.ts")
-				: path.join(dir, "server.js"),
-		);
-
-		const mockImportsPath = fs.existsSync(path.join(dir, "mock-imports.ts"))
-			? path.join(dir, "mock-imports.ts")
-			: fs.existsSync(path.join(dir, "mock-imports.js"))
-				? path.join(dir, "mock-imports.js")
-				: path.join(dir, "mock-imports.cjs");
-
-		const aliases: Record<string, string> = {
-			"@arkenv/nuxt/shared": sharedPath,
-			"@arkenv/nuxt": indexPath,
-			"@arkenv/nuxt/client": clientPath,
-			"@arkenv/nuxt/server": serverPath,
-			"#imports": mockImportsPath,
-			...internalOptions?._jitiAliases,
-		};
-
-		const jitiOptions = {
-			moduleCache: false,
-			fsCache: false,
-			tsconfigPaths: true,
-			alias: aliases,
-		} as const;
-
-		try {
-			const jiti = createJiti(fileToEvaluate, jitiOptions);
-			jiti(fileToEvaluate);
-		} catch (error: unknown) {
-			const message = error instanceof Error ? error.message : String(error);
-			const isTsconfigNotFound =
-				error instanceof Error &&
-				/tsconfig/i.test(message) &&
-				(/not found/i.test(message) ||
-					(error as NodeJS.ErrnoException).code === "ENOENT");
-
-			if (isTsconfigNotFound) {
-				const fallbackJiti = createJiti(fileToEvaluate, {
-					...jitiOptions,
-					tsconfigPaths: false,
-				});
-				fallbackJiti(fileToEvaluate);
-				return;
-			}
-			throw error;
-		}
-	});
 }
 
 export function extractKeys(content: string): {

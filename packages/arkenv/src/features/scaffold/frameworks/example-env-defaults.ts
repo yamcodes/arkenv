@@ -50,6 +50,11 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		PORT: "3000",
 		NODE_ENV: "development",
 	},
+	"with-valibot": {
+		HOST: "localhost",
+		PORT: "3000",
+		NODE_ENV: "development",
+	},
 	"with-standard-schema": {
 		HOST: "localhost",
 		PORT: "3000",

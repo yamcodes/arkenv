@@ -10,9 +10,8 @@
  */
 
 import { execSync } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
 import { argv, env } from "node:process";
+import { unescapeMdxMarkers } from "./unescape-mdx-markers.js";
 
 const args = argv.slice(2);
 
@@ -32,46 +31,11 @@ execSync(`pnpm exec biome check ${biomeArgs.join(" ")}`, { stdio: "inherit" });
 console.log("Running mdxlint fix...");
 execSync("pnpm run fix:mdx", { stdio: "inherit" });
 
-// Post-process mdxlint output to fix over-aggressive escaping
+// Post-process mdxlint output to fix over-aggressive escaping.
+// Walks the repo but skips node_modules/.git/dist and CHANGELOG.md so
+// Changesets' intentional escapes are not corrupted.
 console.log("Unescaping MDX markers...");
-const docsDir = path.join(process.cwd(), "apps/www/content/docs");
-if (fs.existsSync(docsDir)) {
-	const unescapeMarkers = (dir) => {
-		const entries = fs.readdirSync(dir, { withFileTypes: true });
-		for (const entry of entries) {
-			const fullPath = path.join(dir, entry.name);
-			if (entry.isDirectory()) {
-				unescapeMarkers(fullPath);
-			} else if (
-				entry.isFile() &&
-				(entry.name.endsWith(".mdx") || entry.name.endsWith(".md"))
-			) {
-				let content = fs.readFileSync(fullPath, "utf8");
-				let changed = false;
-				if (content.includes("\\[!")) {
-					content = content.replace(/\\\[!/g, "[!");
-					changed = true;
-				}
-				if (content.includes("\\[step]")) {
-					content = content.replace(/\\\[step\]/g, "[step]");
-					changed = true;
-				}
-				if (content.includes("\\_")) {
-					content = content.replace(/\\_/g, "_");
-					changed = true;
-				}
-				if (/:::[a-z]+\\\[/.test(content)) {
-					content = content.replace(/(:::[a-z]+)\\\[/g, "$1[");
-					changed = true;
-				}
-				if (changed) {
-					fs.writeFileSync(fullPath, content);
-				}
-			}
-		}
-	};
-	unescapeMarkers(process.cwd()); // Apply to whole project for underscores, specific for markers
-}
+unescapeMdxMarkers(process.cwd());
 
 // Conditionally run manypkg fix
 if (!skipManypkg) {

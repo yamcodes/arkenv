@@ -47,3 +47,12 @@ To satisfy the third requirement (doc hotfixes without package releases), we are
 - **Strict Sync**: Unreleased features physically cannot hit the production docs because they are quarantined in `dev` until released.
 - **Independent Doc Hotfixes**: Contributors can merge documentation-only hotfixes directly to `main` without triggering package releases, keeping docs accurate in real-time.
 - **Clean Branch History**: The `sync-main` workflow automatically reconciles hotfixes back to `dev` to prevent Git history drift.
+
+### Autofix ↔ release safeguards
+
+Two workflow guards must coexist so a `Version Packages` merge publishes **exactly once** (never zero times, never twice):
+
+1. **`autofix.yml`** skips push events whose head commit message contains `Version Packages`. Without this, autofix can push a fixup that cancels the concurrent `release` run; the re-triggered release is then skipped by guard (2), stranding the release with zero publishes.
+2. **`release.yml`** skips pushes whose sender is `autofix-ci[bot]`. Without this, an autofix fixup push could trigger a second publish.
+
+Removing either guard reintroduces a race. Both are documented inline next to the job-level `if` conditions in `.github/workflows/autofix.yml` and `.github/workflows/release.yml`.

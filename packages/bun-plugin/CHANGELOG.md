@@ -1,5 +1,159 @@
 # @arkenv/bun-plugin
 
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- #### Make missing-schema errors short and actionable across hosts _[`#1495`](https://github.com/yamcodes/arkenv/pull/1495) [`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [@yamcodes](https://github.com/yamcodes)_
+
+  When a host cannot find an env schema, throw a consistent message that names the expected path / `schemaPath` and points to `npx arkenv@latest init`, without embedding a starter `env.ts` module.
+
+  Example:
+
+  ```text
+  [ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in ArkEnv options (or run `npx arkenv@latest init`).
+  ```
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [`9bfe1c4`](https://github.com/yamcodes/arkenv/commit/9bfe1c4a6e278966ff2c0b2219d95e319888fb98)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.2`
+
+</details>
+
+## 1.0.0-alpha.7
+
+### Minor Changes
+
+- #### Add `env.ts` transform for Bun fullstack apps _[`#1459`](https://github.com/yamcodes/arkenv/pull/1459) [`5fc1c6a`](https://github.com/yamcodes/arkenv/commit/5fc1c6a95a3d2a96ef7302750b1104188b230048) [@yamcodes](https://github.com/yamcodes)_
+
+  Let the Bun plugin discover your `env.ts` and expose a shared `env` object that works in both client and server code. On the client (`Bun.build` / `[serve.static]`), public (`BUN_PUBLIC_*`) values are inlined at build time and server-only keys throw if read; on the server (`bun run` / `Bun.serve`), `env.ts` still runs normally and validates against the real environment at boot. The plugin does not rewrite your `env.ts` file on disk.
+
+  Works with `@arkenv/bun-plugin` and `@arkenv/bun-plugin/standard`.
+
+  Usage:
+
+  ```ts
+  // bunfig.toml — zero-config browser transform
+  // [serve.static]
+  // plugins = ["@arkenv/bun-plugin"]
+
+  // or explicitly in Bun.build:
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    entrypoints: ["./src/index.html"],
+    target: "browser",
+    plugins: [arkenv], // finds src/env.ts or env.ts
+    // or: arkenv({ schemaPath: "src/env.ts", clientPrefix: "BUN_PUBLIC_" })
+  });
+  ```
+
+  ```ts
+  // src/env.ts
+  import arkenv from "@arkenv/core";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+    BUN_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  ```ts
+  import { env } from "./env";
+
+  env.BUN_PUBLIC_API_URL; // available on client and server
+  env.DATABASE_URL; // server only — throws if read in the browser
+  ```
+
+  Passing a schema to `arkenv(schema)` (the previous `process.env` rewrite API) continues to work unchanged as SPA mode.
+
+### Patch Changes
+
+- #### Clarify Standard Mode missing-schema guidance with a Zod example _[`#1457`](https://github.com/yamcodes/arkenv/pull/1457) [`6cca0cf`](https://github.com/yamcodes/arkenv/commit/6cca0cf8459d6b2e75bd7b163388ab9d0a8bb782) [@yamcodes](https://github.com/yamcodes)_
+
+  When `@arkenv/bun-plugin/standard` cannot find `env.ts`, show an illustrative Zod starter (any Standard Schema validator works — Zod is just the most common):
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export default arkenv({
+    BUN_PUBLIC_API_URL: z.string(),
+    BUN_PUBLIC_DEBUG: z.enum(["true", "false"]),
+  });
+  ```
+
+- #### Drop embedded env.ts starters and warn when the Nuxt module finds no schema _[`#1468`](https://github.com/yamcodes/arkenv/pull/1468) [`0150e73`](https://github.com/yamcodes/arkenv/commit/0150e73713facc58e05508a19f72042ac40c90e6) [@yamcodes](https://github.com/yamcodes)_
+
+  Keep missing-schema guidance short and host-parity consistent: Bun no longer embeds ArkType/Zod starters in the hybrid discovery error (prefer `arkenv init` / docs). When the Nuxt module is registered but no schema file is found, log a build warning and skip setup instead of failing silently.
+
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.4`
+- `@arkenv/standard@1.0.0-alpha.4`
+
+</details>
+
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add configurable build logging to framework integrations _[`#1312`](https://github.com/yamcodes/arkenv/pull/1312) [`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb) [@yamcodes](https://github.com/yamcodes)_
+
+  Add optional `logger` and `logLevel` to Next.js, Nuxt, Vite, and Bun integrations. Set `ARKENV_LOG_LEVEL` when no custom logger is provided.
+
+  ```ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+
+  export default withArkEnv(nextConfig, {
+    logLevel: "warn",
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin";
+
+  export default defineConfig({
+    plugins: [arkenv(Env, { logLevel: "silent" })],
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    plugins: [arkenv(Env, { logLevel: "warn" })],
+  });
+  ```
+
+  Note: `@arkenv/build` is an internal package; consumers should configure logging via the framework integrations rather than importing internal helpers.
+
 ## 1.0.0-alpha.4
 
 ### Major Changes

@@ -1,5 +1,66 @@
 # @arkenv/build
 
+## 0.0.2-alpha.2
+
+### Patch Changes
+
+- #### Make missing-schema errors short and actionable across hosts _[`#1495`](https://github.com/yamcodes/arkenv/pull/1495) [`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [@yamcodes](https://github.com/yamcodes)_
+
+  When a host cannot find an env schema, throw a consistent message that names the expected path / `schemaPath` and points to `npx arkenv@latest init`, without embedding a starter `env.ts` module.
+
+  Example:
+
+  ```text
+  [ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in ArkEnv options (or run `npx arkenv@latest init`).
+  ```
+
+- #### Make `env/internal/shared.ts` optional in strict layout _[`#1505`](https://github.com/yamcodes/arkenv/pull/1505) [`9bfe1c4`](https://github.com/yamcodes/arkenv/commit/9bfe1c4a6e278966ff2c0b2219d95e319888fb98) [@yamcodes](https://github.com/yamcodes)_
+
+  Strict layout now works with just `client.ts` and `server.ts`. Omit `internal/shared.ts` when you have nothing to share — shared keys are treated as empty.
+
+  ```ts
+  // env/client.ts + env/server.ts alone is enough
+  export default withArkEnv(nextConfig, {
+    layout: "strict",
+  });
+  ```
+
+  The CLI still scaffolds `shared.ts` by default for convenience.
+
+## 0.0.2-alpha.1
+
+### Patch Changes
+
+- #### Add configurable build logging to framework integrations _[`#1312`](https://github.com/yamcodes/arkenv/pull/1312) [`a16e2ec`](https://github.com/yamcodes/arkenv/commit/a16e2eca0a263c2bb9006c0d869ee20608a16ccb) [@yamcodes](https://github.com/yamcodes)_
+
+  Add optional `logger` and `logLevel` to Next.js, Nuxt, Vite, and Bun integrations. Set `ARKENV_LOG_LEVEL` when no custom logger is provided.
+
+  ```ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+
+  export default withArkEnv(nextConfig, {
+    logLevel: "warn",
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/vite-plugin";
+
+  export default defineConfig({
+    plugins: [arkenv(Env, { logLevel: "silent" })],
+  });
+  ```
+
+  ```ts
+  import arkenv from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    plugins: [arkenv(Env, { logLevel: "warn" })],
+  });
+  ```
+
+  Note: `@arkenv/build` is an internal package; consumers should configure logging via the framework integrations rather than importing internal helpers.
+
 ## 0.0.2-alpha.0
 
 ### Patch Changes

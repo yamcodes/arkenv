@@ -54,8 +54,8 @@ The five canonical roles:
 
 - `needs-triage` - maintainer needs to evaluate
 - `needs-info` - waiting on reporter
-- `ready-for-agent` - fully specified, AFK-ready (an agent can pick it up with no human context)
-- `ready-for-human` - needs human implementation
+- `ready-for-agent` - fully specified, ready for immediate implementation (pick it up yourself or with an agent)
+- `ready-for-human` - needs a judgment call or design decision before implementation
 - `wontfix` - will not be actioned
 
 Default: each role's string equals its name. Ask the user if they want to override any. If their issue tracker has no existing labels, the defaults are fine.

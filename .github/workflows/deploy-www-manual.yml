@@ -1,0 +1,111 @@
+name: Deploy www (manual SHA)
+
+# Maintainer escape hatch: deploy any commit to a stable www URL without
+# pushing that commit to the target branch. Requires write access to run.
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Full commit SHA to build and deploy
+        required: true
+        type: string
+      target:
+        description: Stable URL to update
+        required: true
+        type: choice
+        options:
+          - arkenv-dev.vercel.app
+          - arkenv-v1.vercel.app
+          - arkenv.js.org
+
+concurrency:
+  group: deploy-www-manual-${{ inputs.target }}
+  cancel-in-progress: true
+
+jobs:
+  Deploy-Manual:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      TARGET: ${{ inputs.target }}
+      DEPLOY_SHA: ${{ inputs.sha }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.sha }}
+          fetch-depth: 0
+      - name: Resolve git metadata for the deployed commit
+        id: meta
+        run: |
+          set -euo pipefail
+          case "$TARGET" in
+            arkenv-dev.vercel.app) echo "git_ref=dev" >> "$GITHUB_OUTPUT" ;;
+            arkenv-v1.vercel.app) echo "git_ref=v1" >> "$GITHUB_OUTPUT" ;;
+            arkenv.js.org) echo "git_ref=main" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "Unknown target: $TARGET" >&2
+              exit 1
+              ;;
+          esac
+          echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA" | head -n1)" >> "$GITHUB_OUTPUT"
+          echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install Vercel CLI
+        # Pin the CLI to avoid upstream breakage from newly published majors.
+        run: npm install --global vercel@54.7.1
+      - name: Pull Vercel Environment Information
+        run: |
+          if [ "$TARGET" = "arkenv.js.org" ]; then
+            node scripts/vercel-wrapper.cjs pull --yes --environment=production --token="$VERCEL_TOKEN"
+          else
+            node scripts/vercel-wrapper.cjs pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          fi
+      - name: Build Project Artifacts
+        run: |
+          if [ "$TARGET" = "arkenv.js.org" ]; then
+            node scripts/vercel-wrapper.cjs build --prod --token="$VERCEL_TOKEN"
+          else
+            node scripts/vercel-wrapper.cjs build --token="$VERCEL_TOKEN"
+          fi
+      - name: Deploy and attach to stable URL
+        env:
+          GIT_ORG: ${{ github.repository_owner }}
+          GIT_REPO: ${{ github.event.repository.name }}
+          GIT_REF: ${{ steps.meta.outputs.git_ref }}
+          GIT_SHA: ${{ inputs.sha }}
+          GIT_COMMIT_MESSAGE: ${{ steps.meta.outputs.short_msg }}
+          GIT_COMMIT_AUTHOR_NAME: ${{ steps.meta.outputs.author_name }}
+          GIT_COMMIT_AUTHOR_LOGIN: ${{ github.actor }}
+        run: |
+          set -o pipefail
+          META_ARGS=(
+            -m githubDeployment=1
+            -m githubOrg="$GIT_ORG"
+            -m githubRepo="$GIT_REPO"
+            -m githubCommitOrg="$GIT_ORG"
+            -m githubCommitRepo="$GIT_REPO"
+            -m githubCommitRef="$GIT_REF"
+            -m githubCommitSha="$GIT_SHA"
+            -m githubCommitMessage="$GIT_COMMIT_MESSAGE"
+            -m githubCommitAuthorName="$GIT_COMMIT_AUTHOR_NAME"
+            -m githubCommitAuthorLogin="$GIT_COMMIT_AUTHOR_LOGIN"
+          )
+          if [ "$TARGET" = "arkenv.js.org" ]; then
+            node scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN" "${META_ARGS[@]}"
+            echo "Deployed $GIT_SHA to production (arkenv.js.org)."
+          else
+            DEPLOYMENT_URL=$(node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" "${META_ARGS[@]}" | tail -n 1)
+            echo "Deployment URL: $DEPLOYMENT_URL"
+            echo "Aliasing $DEPLOYMENT_URL -> $TARGET"
+            node scripts/vercel-wrapper.cjs alias set "$DEPLOYMENT_URL" "$TARGET" --token="$VERCEL_TOKEN"
+          fi

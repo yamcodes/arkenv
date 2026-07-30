@@ -5,8 +5,10 @@ ArkEnv integration for Next.js. Provides a typesafe, zero-dependency (except pee
 ## Installation
 
 ```bash
-pnpm add @arkenv/nextjs arktype
+pnpm add @arkenv/nextjs @arkenv/core arktype
 ```
+
+For Zod, Valibot, or other Standard Schema validators **without** ArkType, install `@arkenv/standard` instead of `@arkenv/core`/`arktype`, and use `@arkenv/nextjs/standard` (and `@arkenv/nextjs/standard/config` for `withArkEnv`). See the [Standard Schema docs](https://arkenv.dev/docs/nextjs/using-other-validators).
 
 ## Setup & Codegen
 

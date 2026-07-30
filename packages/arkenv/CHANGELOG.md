@@ -1,5 +1,237 @@
 # @arkenv/core
 
+## 1.0.0-alpha.11
+
+### Patch Changes
+
+- #### Split `--help` options into Global and `init` sections _[`#1487`](https://github.com/yamcodes/arkenv/pull/1487) [`f86887c`](https://github.com/yamcodes/arkenv/commit/f86887c55c13c979451ff85d6d4ec5d3d69113dd) [@yamcodes](https://github.com/yamcodes)_
+
+  List shared flags under **Global options** and scaffolding flags under **init options**, matching the multi-command `/docs/cli` taxonomy.
+
+  ```bash
+  npx arkenv@alpha --help
+  ```
+
+  ```text
+  Usage:
+    arkenv init [project-name]    ...
+    arkenv add host [provider]    ...
+
+  Global options:
+    --yes, -y      Skip prompts and use defaults ...
+    --quiet, -q    Quiet mode ...
+    --json, -j     Output structured JSON ...
+    --agent        Enable non-interactive, machine-readable mode ...
+    --help, -h     Show this help message
+
+  init options:
+    --example                     Specify an example name ...
+    --force, -f                   Bypass checks and force scaffolding
+    --no-codegen                  Disable automatic env.gen.ts code generation ...
+    --host-preset, -H <preset>    Specify a hosting provider preset ...
+  ```
+
+## 1.0.0-alpha.10
+
+### Minor Changes
+
+- #### Add hosting presets for Cloudflare, Railway, Render, and Fly.io _[`#1469`](https://github.com/yamcodes/arkenv/pull/1469) [`a64bd57`](https://github.com/yamcodes/arkenv/commit/a64bd5752a29dcce66fcc0b507320a700a0a5b6e) [@yamcodes](https://github.com/yamcodes)_
+
+  Add hosting presets for Cloudflare, Railway, Render, and Fly.io to the interactive prompt selections in both `arkenv init` and `arkenv add host`.
+
+  Usage:
+
+  ```bash
+  npx arkenv@latest add host cloudflare
+  ```
+
+  or
+
+  ```bash
+  npx arkenv@latest init --host-preset cloudflare
+  ```
+
+- #### Support `arkenv add host` for strict multi-file layouts _[`#1434`](https://github.com/yamcodes/arkenv/pull/1434) [`a3d93be`](https://github.com/yamcodes/arkenv/commit/a3d93bedf30fcc46bdaad5966486345dd8f9d75b) [@yamcodes](https://github.com/yamcodes)_
+
+  Support `arkenv add host [provider]` in projects with strict multi-file layouts (`client.ts` and `server.ts`). Automatically partition preset variables into client-prefixed keys for `client.ts` and server-only keys for `server.ts`. Align help text and docs so `add host` is not described as flat-`env.ts`-only.
+
+  Usage:
+
+  ```bash
+  npx arkenv@latest add host [provider]
+  ```
+
+- #### Auto-extend shared schema in Nuxt strict-layout client entry _[`#1422`](https://github.com/yamcodes/arkenv/pull/1422) [`b1d8bad`](https://github.com/yamcodes/arkenv/commit/b1d8badc33523ea80a5d54683d503ad214337e80) [@yamcodes](https://github.com/yamcodes)_
+
+  **`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/client.ts` auto-merges `SharedSchema` from `env/internal/shared.ts` via `#arkenv/shared-schema`. Applies to both `@arkenv/nuxt/client` and `@arkenv/nuxt/standard/client`. The server entry continues to auto-merge the composed client env.
+
+  **`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified client template (no manual `SharedSchema` import or `extends` block). Next.js scaffolds remain unchanged.
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nuxt/client";
+
+  export const env = arkenv({
+    NUXT_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a custom list - is used as-is and opts out of auto-merge. Strict layout still requires `env/internal/shared.ts` with a `SharedSchema` export — that schema may be empty (`type({})`) when you have no shared variables. A missing file or unusable export fails with a clear diagnostic (rather than silently treating shared as empty).
+
+## 1.0.0-alpha.9
+
+### Minor Changes
+
+- #### Add `add host` command to CLI for adding hosting presets to existing schemas _[`#1419`](https://github.com/yamcodes/arkenv/pull/1419) [`0a559ce`](https://github.com/yamcodes/arkenv/commit/0a559ceaf2f2fcb09bd7026cd07a87a785985766) [@yamcodes](https://github.com/yamcodes)_
+
+  Support adding a hosting provider preset (Vercel or Netlify) to an existing `env.ts` configuration file:
+
+  ```bash
+  npx arkenv@alpha add host [provider]
+  ```
+
+  - Prompts interactively to select Vercel or Netlify if the provider is omitted.
+  - Auto-detects the framework (Next.js, Nuxt, Vite, Bun) and the validator engine (Zod, Valibot, or ArkType) to inject the preset fields with the correct syntax.
+  - Fallback to logging the generated variable schemas to stdout with manual configuration instructions if `env.ts` is missing or unparseable.
+
+## 1.0.0-alpha.8
+
+### Minor Changes
+
+- #### Auto-extend client env in Nuxt strict layout _[`#1401`](https://github.com/yamcodes/arkenv/pull/1401) [`e306798`](https://github.com/yamcodes/arkenv/commit/e3067980e80adce174e5591febe43164c7960a97) [@yamcodes](https://github.com/yamcodes)_
+
+  **`@arkenv/nuxt`:** When the module runs in strict layout, omitting `extends` in `env/server.ts` auto-merges the client env via `#arkenv/client-env`. Applies to both `@arkenv/nuxt/server` and `@arkenv/nuxt/standard/server`.
+
+  **`arkenv` (CLI):** The Nuxt strict scaffold now emits that simplified server template (no manual `import ./client` or `extends: [clientEnv]`).
+
+  Usage:
+
+  ```ts
+  import arkenv from "@arkenv/nuxt/server";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+  });
+  ```
+
+  Auto-merge only runs when the `extends` key is omitted. Any explicit `extends` - including `extends: []` or a list that does not include `clientEnv` - is used as-is and opts out of auto-merge. Existing manual `extends: [clientEnv]` wiring continues to work unchanged.
+
+## 1.0.0-alpha.7
+
+### Major Changes
+
+- #### Drop the `-e` short alias for `init --example` _[`#1378`](https://github.com/yamcodes/arkenv/pull/1378) [`96411dc`](https://github.com/yamcodes/arkenv/commit/96411dc132b86992e4f800bdf60767581429ab25) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `-e` short alias is no longer recognized. Its long form, `--example`, continues to work exactly as before.
+
+  Across the broader CLI ecosystem, `-e` almost universally means `--env` / `--environment`. For a type-safe environment variable library, mapping `-e` to `--example` is a sharp trap: AI agents instinctively reach for `arkenv init -e NODE_ENV=production`, which silently bound to `--example` and consumed the next token as the example name. `-e` is now permanently reserved so it stays free for a future `--env` / `--environment` option. Passing `-e` — standalone or inside a bundle like `-ye` — now fails fast with the standard `Unknown argument: -e` error.
+
+  Migration: replace the short alias with its long form.
+
+  ```bash
+  # Before
+  arkenv init -e with-vite-react
+
+  # After
+  arkenv init --example with-vite-react
+  ```
+
+### Minor Changes
+
+- #### Add `with-valibot` to the bundled example registry and scaffold defaults _[`#1389`](https://github.com/yamcodes/arkenv/pull/1389) [`45c7050`](https://github.com/yamcodes/arkenv/commit/45c70509013f639e462da26002419ea435949bef) [@yamcodes](https://github.com/yamcodes)_
+
+  Register the new standalone `with-valibot` example so it is offered alongside `with-zod` when scaffolding, including in the offline fallback registry used when the remote registry fetch fails.
+
+  - Add a `with-valibot` entry to the bundled fallback example registry.
+  - Add `with-valibot` env defaults (`HOST`, `PORT`, `NODE_ENV`) to the scaffold defaults map.
+
+### Patch Changes
+
+- #### Improve npm keywords across published packages for discoverability _[`#1387`](https://github.com/yamcodes/arkenv/pull/1387) [`73e508b`](https://github.com/yamcodes/arkenv/commit/73e508ba6a7ac60d0761bcedcdbde1edfa125ad7) [@yamcodes](https://github.com/yamcodes)_
+
+  Clean up and extend the `keywords` field of every published package so npm search, aggregators, and LLM-powered package discovery surface ArkEnv for the terms users actually search for.
+
+  - Remove the misleading `pnpm` keyword from `@arkenv/core` and `@arkenv/standard`, and give every env-related package a shared baseline (`env`, `environment-variables`, `dotenv`, `config`, `validation`, `typesafe`, `standard-schema`) alongside their integration-specific terms.
+  - Keep validator-specific terms where they belong: `arktype` on `@arkenv/core`, and `zod` + `valibot` on `@arkenv/standard`.
+  - Deduplicate the repeated `arkenv` keyword in `@arkenv/vite-plugin`.
+  - Extend the `arkenv` CLI keywords with `create`, `generator`, `env`, `environment-variables`, and `config`.
+  - Add a keyword set to `@arkenv/fumadocs-ui`, which previously had none.
+
+## 1.0.0-alpha.6
+
+### Major Changes
+
+- #### Remove the `-C` (`--no-codegen`) and `-a` (`--agent`) short-flag aliases _[`#1355`](https://github.com/yamcodes/arkenv/pull/1355) [`e5f5914`](https://github.com/yamcodes/arkenv/commit/e5f59146a571dcfc595834ce632e7f15604a1932) [@yamcodes](https://github.com/yamcodes)_
+
+  **BREAKING CHANGE**: The `-C` and `-a` short aliases are no longer recognized. Their long forms, `--no-codegen` and `--agent`, continue to work exactly as before (`--agent` still implies `--yes --quiet --json`).
+
+  Short flags for an inverted boolean (`-C`) invite misreading as "enable codegen", and `--agent` targets machines and scripts that gain nothing from a keystroke shortcut. Passing `-C` or `-a` — standalone or inside a bundle like `-ya` — now fails with the standard `Unknown argument` error.
+
+  Migration: replace the short aliases with their long forms.
+
+  ```bash
+  # Before
+  npx arkenv@alpha init -C
+  npx arkenv@alpha init -a
+
+  # After
+  npx arkenv@alpha init --no-codegen
+  npx arkenv@alpha init --agent
+  ```
+
+  All other aliases (`-y`, `-f`, `-q`, `-j`, `-e`, `-h`) are unchanged.
+
+### Minor Changes
+
+- #### Add `-H` alias for the `init --host-preset` flag _[`#1362`](https://github.com/yamcodes/arkenv/pull/1362) [`a2de7b9`](https://github.com/yamcodes/arkenv/commit/a2de7b9ff3be6cb73fefc434d1cd9581262f81e0) [@yamcodes](https://github.com/yamcodes)_
+
+  `--host-preset` now accepts a short `-H` alias, matching the other CLI flags.
+
+  ```bash
+  # These are equivalent
+  npx arkenv@alpha init --host-preset vercel
+  npx arkenv@alpha init -H vercel
+  ```
+
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- #### Add hosting presets to `arkenv init` _[`#1323`](https://github.com/yamcodes/arkenv/pull/1323) [`6aa4262`](https://github.com/yamcodes/arkenv/commit/6aa4262eac97368ed87bb1fae6818e6e781e17be) [@yamcodes](https://github.com/yamcodes)_
+
+  Support optional Vercel and Netlify presets when initializing a project. Preset fields render through validator dialects and client keys use each framework strategy's `clientPrefix`.
+
+  Usage:
+
+  ```bash
+  npx arkenv@alpha init --host-preset vercel
+  ```
+
+  Or select **Vercel** / **Netlify** in the interactive hosting-preset step. Generated schemas include typed keys such as `VERCEL_ENV` (and `NEXT_PUBLIC_VERCEL_ENV` on Next.js).
+
+- #### Add machine-actionable error codes to `init` JSON output _[`#1336`](https://github.com/yamcodes/arkenv/pull/1336) [`cf74ee1`](https://github.com/yamcodes/arkenv/commit/cf74ee1db30f5865a0ae8a26a3e65a5dadc17345) [@yamcodes](https://github.com/yamcodes)_
+
+  In `--json` / `--agent` mode, every deliberate safety-check refusal now emits a stable, documented error `code` alongside a `retryWith` hint, so agents no longer have to pattern-match on prose to decide how to escalate. Human-readable (non-JSON) output is unchanged.
+
+  - **`REQUIREMENTS_NOT_MET`** - a technical requirement failed. Includes per-requirement `details` with `current`/`expected`. `retryWith: ["--force"]`.
+  - **`GIT_TREE_DIRTY`** - the git working tree is not clean. `retryWith: ["--force"]`.
+  - **`NON_EMPTY_DIR`** - the target directory is not empty. `retryWith: ["--force"]`.
+  - **`INTERNAL`** - an unexpected failure (the CLI broke rather than refused). `retryWith: []`.
+
+  An empty `retryWith` means the refusal cannot be bypassed; a non-empty `retryWith` names the flag(s) to re-run with. Escalation pattern: run without `--force`, inspect `code`/`retryWith`, then retry deliberately.
+
+  Example refusal payload written to `stdout`:
+
+  ```json
+  {
+    "status": "error",
+    "code": "GIT_TREE_DIRTY",
+    "message": "Git working tree is not clean.",
+    "retryWith": ["--force"]
+  }
+  ```
+
 ## 1.0.0-alpha.4
 
 ### Minor Changes
@@ -189,7 +421,7 @@
 
   Move the "(Recommended)" text from the framework selection hint to the option label to make the recommendation more prominent during initialization.
 
-- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)_
+- #### Restrict Next.js shared scaffold templates to NODE*ENV *[`#1135`](https://github.com/yamcodes/arkenv/pull/1135) [`2ab778e`](https://github.com/yamcodes/arkenv/commit/2ab778eda2c3920009ad577e091ee0cfd68d71b7) [@yamcodes](https://github.com/yamcodes)\_
 
   Treat `PORT` as a server-only variable instead of a shared variable in scaffold templates and strict layout generators. This ensures that custom variables or variables like `PORT` are not placed in `shared` sections, avoiding potential client-side hydration mismatches in Next.js applications.
 

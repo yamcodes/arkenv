@@ -36,6 +36,16 @@ const tryAccessSecret = () => {
         <strong>API URL:</strong> <code>{{ env.NUXT_PUBLIC_API_URL }}</code>
       </p>
       <p>
+        <strong>Public port (coerced number):</strong>
+        <code>{{ env.NUXT_PUBLIC_PORT }}</code>
+        <span>(typeof {{ typeof env.NUXT_PUBLIC_PORT }})</span>
+      </p>
+      <p>
+        <strong>Feature flag (coerced boolean):</strong>
+        <code>{{ env.NUXT_PUBLIC_FEATURE_FLAG }}</code>
+        <span>(typeof {{ typeof env.NUXT_PUBLIC_FEATURE_FLAG }})</span>
+      </p>
+      <p>
         <strong>Node Env:</strong> <code>{{ env.NODE_ENV }}</code>
       </p>
     </div>

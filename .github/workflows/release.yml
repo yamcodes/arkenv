@@ -13,7 +13,12 @@ permissions:
 jobs:
   release:
     name: Release
-    # Skip release for autofix commits to avoid race conditions
+    # Skip release for autofix-ci[bot] pushes to preserve "publish exactly once".
+    # Paired with autofix.yml's Version Packages skip: that guard stops autofix
+    # from cancelling an in-flight release; this guard stops a re-triggered
+    # release on an autofix fixup from double-publishing. Removing either
+    # guard reopens a race (stranding or double-publish).
+    # See docs/adr/0006-branching-and-release-flow.md.
     if: github.event.sender.login != 'autofix-ci[bot]'
     runs-on: ubuntu-latest
     env:

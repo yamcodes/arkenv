@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/nextjs",
-	"version": "1.0.0-alpha.6",
+	"version": "1.0.0-alpha.9",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -111,10 +111,15 @@
 	],
 	"homepage": "https://arkenv.js.org",
 	"keywords": [
-		"arktype",
 		"arkenv",
-		"environment",
-		"variables",
+		"arktype",
+		"env",
+		"environment-variables",
+		"dotenv",
+		"config",
+		"validation",
+		"typesafe",
+		"standard-schema",
 		"next",
 		"nextjs"
 	],

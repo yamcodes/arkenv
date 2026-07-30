@@ -1,6 +1,16 @@
 # Out-of-scope knowledge base
 
-The `.out-of-scope/` directory in a repo stores persistent records of rejected feature requests. It serves two purposes:
+> **ArkEnv override:** This repo does **not** use a root `.out-of-scope/` directory. That convention came from the generic triage skill and has no precedent here (see closed PR #1462). For ArkEnv:
+>
+> - **Architectural / product rejects** → record in `docs/adr/` (amend the relevant ADR, or add one if the reject is itself a hard-to-reverse decision). Example: #1440’s ambient SPA augment types belong in the ADR 0015 amendment on #1333.
+> - **Simple wontfix with no ADR-worthy trade-off** → a closing issue comment is enough; do not invent a new top-level folder.
+> - During triage, check `docs/adr/` (and closed related issues) instead of `.out-of-scope/*.md`.
+>
+> The remainder of this file documents the generic `.out-of-scope/` pattern for reference only — **do not create that directory in ArkEnv**.
+
+---
+
+The (generic) `.out-of-scope/` directory stores persistent records of rejected feature requests. It serves two purposes:
 
 1. **Institutional memory** - why a feature was rejected, so the reasoning isn't lost when the issue is closed
 2. **Deduplication** - when a new issue comes in that matches a prior rejection, the skill can surface the previous decision instead of re-litigating it

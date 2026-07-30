@@ -156,6 +156,10 @@
 			"name": "💡 with-zod"
 		},
 		{
+			"path": "examples/with-valibot",
+			"name": "💡 with-valibot"
+		},
+		{
 			"path": "examples/with-standard-schema",
 			"name": "💡 with-standard-schema"
 		},
