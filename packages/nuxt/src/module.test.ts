@@ -340,13 +340,14 @@ describe("Nuxt module integration", () => {
 		}
 	});
 
-	it("throws when strict layout is missing internal/shared.ts", async () => {
+	it("aliases #arkenv/shared-schema to empty stub when internal/shared.ts is omitted", async () => {
 		const tempDir = path.resolve(__dirname, "temp-strict-missing-shared");
 		const envDir = path.join(tempDir, "env");
 		fs.mkdirSync(envDir, { recursive: true });
 
 		try {
-			fs.writeFileSync(path.join(envDir, "client.ts"), "export const env = {}");
+			const clientPath = path.join(envDir, "client.ts");
+			fs.writeFileSync(clientPath, "export const env = {}");
 			fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {}");
 
 			const mockNuxt: any = {
@@ -355,20 +356,29 @@ describe("Nuxt module integration", () => {
 					rootDir: tempDir,
 					srcDir: tempDir,
 					runtimeConfig: { public: {} },
+					alias: {},
 				},
 				hook: vi.fn(),
 			};
 
-			expect(() =>
-				(module as any).setup(
-					{
-						schemaPath: "./env",
-						layout: "strict",
-						validate: false,
-					},
-					mockNuxt,
-				),
-			).toThrow(/internal\/shared\.ts/);
+			await (module as any).setup(
+				{
+					schemaPath: "./env",
+					layout: "strict",
+					validate: false,
+				},
+				mockNuxt,
+			);
+
+			expect(mockNuxt.options.alias["#arkenv/client-env"]).toBe(clientPath);
+			const sharedAlias = mockNuxt.options.alias[
+				"#arkenv/shared-schema"
+			] as string;
+			expect(sharedAlias).toBeDefined();
+			expect(sharedAlias).toMatch(/empty-shared-schema/);
+			expect(fs.existsSync(path.join(envDir, "internal", "shared.ts"))).toBe(
+				false,
+			);
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
@@ -545,11 +555,19 @@ describe("Nuxt module integration", () => {
 		};
 
 		try {
-			expect(() =>
-				(module as any).setup({ validate: false }, mockNuxt),
-			).toThrow(
+			let message = "";
+			try {
+				(module as any).setup({ validate: false }, mockNuxt);
+			} catch (error) {
+				message = error instanceof Error ? error.message : String(error);
+			}
+
+			expect(message).toMatch(
 				/\[ArkEnv\] Could not find schema file at src\/env\.ts or env\.ts/,
 			);
+			expect(message).toMatch(/npx arkenv@latest init/);
+			expect(message).not.toMatch(/Example `src\/env\.ts`/);
+			expect(message).not.toMatch(/```/);
 			expect(mockNuxt.hook).not.toHaveBeenCalled();
 			expect(mockNuxt.options.runtimeConfig.DATABASE_URL).toBeUndefined();
 		} finally {

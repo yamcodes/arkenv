@@ -1,7 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { findSchemaPath, resolveLayout, watchSchema } from "@arkenv/build";
+import {
+	findSchemaPath,
+	formatMissingSchemaError,
+	resolveLayout,
+	watchSchema,
+} from "@arkenv/build";
 import {
 	formatBuildError,
 	resolveBuildLog,
@@ -56,11 +61,10 @@ export function setupArkEnv(
 
 	if (!schemaPath || !schemaPathExists(schemaPath)) {
 		throw new Error(
-			formatBuildError(
-				`Could not find schema file at ${
-					options?.schemaPath || "src/env.ts or env.ts"
-				}. Please specify 'schemaPath' in setupArkEnv options.`,
-			),
+			formatMissingSchemaError({
+				schemaPath: options?.schemaPath,
+				optionsHint: "setupArkEnv options",
+			}),
 		);
 	}
 

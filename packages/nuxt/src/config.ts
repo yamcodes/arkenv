@@ -5,11 +5,11 @@ import {
 	extractClientKeys,
 	extractSharedKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	resolveLayout,
 } from "@arkenv/build";
 import {
 	type BuildLogHelpers,
-	formatBuildError,
 	type Logger,
 	type LogLevel,
 	resolveBuildLog,
@@ -26,6 +26,7 @@ export {
 	extractArkenvBlock,
 	extractServerKeys,
 	findSchemaPath,
+	formatMissingSchemaError,
 	resolveLayout,
 } from "@arkenv/build";
 export { extractClientKeys, extractSharedKeys, validateSchema };
@@ -72,12 +73,12 @@ export type ArkEnvConfigOptions = {
 	 * Specify the configuration layout.
 	 *
 	 * When omitted, the layout is auto-detected from the schema structure: it is
-	 * `"strict"` when the split files (`env/internal/shared.ts`, `env/client.ts`,
-	 * `env/server.ts`) are present, and falls back to `"flat"` (a single
+	 * `"strict"` when `env/client.ts` and `env/server.ts` are present (with
+	 * optional `env/internal/shared.ts`), and falls back to `"flat"` (a single
 	 * `env.ts`) otherwise.
 	 *
 	 * - `"flat"`: A single `env.ts` schema file.
-	 * - `"strict"`: A multi-file split schema layout.
+	 * - `"strict"`: A split schema layout (`env/client.ts`, `env/server.ts`, and optionally `env/internal/shared.ts`).
 	 */
 	layout?:
 		| "flat"
@@ -130,11 +131,10 @@ export function setupArkEnv(
 
 	if (!schemaPath || !exists) {
 		throw new Error(
-			formatBuildError(
-				`Could not find schema file at ${
-					options?.schemaPath || "src/env.ts or env.ts"
-				}. Please specify 'schemaPath' in ArkEnv options.`,
-			),
+			formatMissingSchemaError({
+				schemaPath: options?.schemaPath,
+				optionsHint: "ArkEnv options",
+			}),
 		);
 	}
 

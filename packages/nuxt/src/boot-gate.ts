@@ -278,24 +278,22 @@ export function loadSchemaViaCapture(
 						"internal",
 						"shared.ts",
 					);
-					if (!fs.existsSync(strictUserSharedPath)) {
-						throw new Error(
-							`[arkenv] Strict layout requires "internal/shared.ts" with a usable SharedSchema export under "${config.baseDir}".`,
-						);
+					// Absent shared.ts → empty merge (aliases already point at
+					// empty-shared-schema). A present file must export SharedSchema.
+					if (fs.existsSync(strictUserSharedPath)) {
+						const sharedMod = jiti(strictUserSharedPath) as {
+							SharedSchema?: SchemaShape;
+							default?: { SharedSchema?: SchemaShape };
+						};
+						const sharedSchema =
+							sharedMod.SharedSchema ?? sharedMod.default?.SharedSchema;
+						if (sharedSchema === undefined || sharedSchema === null) {
+							throw new Error(
+								`[arkenv] Strict layout requires a usable SharedSchema export from "${strictUserSharedPath}".`,
+							);
+						}
+						g.__ARKENV_SHARED_SCHEMA__ = sharedSchema;
 					}
-
-					const sharedMod = jiti(strictUserSharedPath) as {
-						SharedSchema?: SchemaShape;
-						default?: { SharedSchema?: SchemaShape };
-					};
-					const sharedSchema =
-						sharedMod.SharedSchema ?? sharedMod.default?.SharedSchema;
-					if (sharedSchema === undefined || sharedSchema === null) {
-						throw new Error(
-							`[arkenv] Strict layout requires a usable SharedSchema export from "${strictUserSharedPath}".`,
-						);
-					}
-					g.__ARKENV_SHARED_SCHEMA__ = sharedSchema;
 
 					const strictUserClientPath = path.join(config.baseDir, "client.ts");
 					if (fs.existsSync(strictUserClientPath)) {

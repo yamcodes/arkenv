@@ -28,7 +28,8 @@ declare module "@nuxt/schema" {
  *
  * @param nuxt The Nuxt instance
  * @param strictClientPath Absolute path to the project's `env/client.ts`
- * @param strictSharedPath Absolute path to the project's `env/internal/shared.ts`
+ * @param strictSharedPath Absolute path to the project's `env/internal/shared.ts`,
+ *   or the package `empty-shared-schema` stub when that file is omitted
  */
 export function registerStrictLayoutHooks(
 	nuxt: Nuxt,
@@ -150,7 +151,7 @@ export function registerViteExtendHook(
 						id === CLIENT_ENV_SPECIFIER ||
 						id === `\0${CLIENT_ENV_SPECIFIER}`
 					) {
-						if (strictClientPath && fs.existsSync(strictClientPath)) {
+						if (fs.existsSync(strictClientPath)) {
 							return strictClientPath;
 						}
 						throw new Error(UNRESOLVED_CLIENT_ENV_ERROR);
@@ -165,7 +166,8 @@ export function registerViteExtendHook(
 						id === SHARED_SCHEMA_SPECIFIER ||
 						id === `\0${SHARED_SCHEMA_SPECIFIER}`
 					) {
-						if (strictSharedPath && fs.existsSync(strictSharedPath)) {
+						// `strictSharedPath` is either the user file or empty-shared-schema.
+						if (fs.existsSync(strictSharedPath)) {
 							return strictSharedPath;
 						}
 						throw new Error(UNRESOLVED_SHARED_SCHEMA_ERROR);

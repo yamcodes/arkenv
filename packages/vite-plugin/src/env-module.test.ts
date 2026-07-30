@@ -1,4 +1,10 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import {
+	mkdirSync,
+	mkdtempSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import * as vite from "vite";
@@ -242,5 +248,50 @@ describe("transform mode plugin", () => {
 		expect(result?.code).toContain("VITE_API_URL");
 		expect(result?.code).toContain('get ["DATABASE_URL"]()');
 		expect(result?.code).not.toContain("@arkenv/core");
+	});
+});
+
+describe("missing-schema errors", () => {
+	const temps: string[] = [];
+
+	afterEach(() => {
+		for (const dir of temps.splice(0)) {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
+	it("throws a short discovery error without an env.ts starter", async () => {
+		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-missing-schema-"));
+		temps.push(root);
+
+		let message = "";
+		try {
+			resolveEnvModulePath(root);
+		} catch (error) {
+			message = error instanceof Error ? error.message : String(error);
+		}
+
+		expect(message).toMatch(/Could not find schema file/);
+		expect(message).toMatch(/npx arkenv@latest init/);
+		expect(message).toMatch(/Checked paths:/);
+		expect(message).not.toMatch(/Example `src\/env\.ts`/);
+		expect(message).not.toMatch(/```/);
+		expect(message).not.toMatch(/import \{ type \} from "arktype"/);
+		expect(message).not.toMatch(/from "zod"/);
+	});
+
+	it("rejects a discovered strict layout directory", async () => {
+		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-strict-dir-"));
+		temps.push(root);
+		const envDir = join(root, "env");
+		mkdirSync(envDir, { recursive: true });
+		writeFileSync(join(envDir, "client.ts"), "export const env = {}");
+		writeFileSync(join(envDir, "server.ts"), "export const env = {}");
+
+		expect(() => resolveEnvModulePath(root)).toThrow(
+			/only supports a flat env module file/,
+		);
 	});
 });
