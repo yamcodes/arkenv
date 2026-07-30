@@ -6,7 +6,8 @@ import { useCopyCommand } from "~/hooks/use-copy-command";
 
 const INSTALL_COMMAND = "npx arkenv@latest init";
 
-const INSTALL_PROMPT = `Set up ArkEnv with \`npx arkenv@latest init --agent\`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.`;
+const INSTALL_PROMPT =
+	"Set up ArkEnv with `npx arkenv@latest init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.";
 
 type Tab = "command" | "prompt";
 
@@ -69,9 +70,7 @@ export function InstallPanel() {
 				>
 					<button
 						type="button"
-						aria-label={
-							commandCopy.copied ? "Copied" : "Copy install command"
-						}
+						aria-label={commandCopy.copied ? "Copied" : "Copy install command"}
 						onClick={commandCopy.copy}
 						className="home-aurora__install-copy"
 						data-state={commandCopy.copied ? "success" : undefined}

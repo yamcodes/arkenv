@@ -1,10 +1,22 @@
 {
-  "scannedAt": "2026-07-31",
-  "fontStack": "Geist + JetBrains Mono (next/font)",
-  "palette": "fumadocs ocean + custom light/dark theme CSS",
-  "motion": "CSS keyframes only (marquee, spin) — no framer-motion",
-  "spacing": "Tailwind 4 defaults",
-  "framework": "Next.js app router (apps/www)",
-  "preserve": ["Geist display", "JetBrains Mono", "fumadocs docs theming", "home route ownership", "product copy"],
-  "introduce": ["Aurora tokens scoped to home", "Sentient body", "Workbench macrostructure", "N5/Ft5", "microinteraction discipline"]
+	"scannedAt": "2026-07-31",
+	"fontStack": "Geist + JetBrains Mono (next/font)",
+	"palette": "fumadocs ocean + custom light/dark theme CSS",
+	"motion": "CSS keyframes only (marquee, spin) — no framer-motion",
+	"spacing": "Tailwind 4 defaults",
+	"framework": "Next.js app router (apps/www)",
+	"preserve": [
+		"Geist display",
+		"JetBrains Mono",
+		"fumadocs docs theming",
+		"home route ownership",
+		"product copy"
+	],
+	"introduce": [
+		"Aurora tokens scoped to home",
+		"Sentient body",
+		"Workbench macrostructure",
+		"N5/Ft5",
+		"microinteraction discipline"
+	]
 }

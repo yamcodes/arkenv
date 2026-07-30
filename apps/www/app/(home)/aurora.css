@@ -23,17 +23,7 @@
 	min-height: 100dvh;
 	color: var(--color-ink);
 	background-color: var(--color-paper);
-	background-image:
-		radial-gradient(
-			ellipse 42% 36% at 12% 18%,
-			var(--color-bloom-a),
-			transparent 70%
-		),
-		radial-gradient(
-			ellipse 38% 32% at 88% 8%,
-			var(--color-bloom-b),
-			transparent 72%
-		);
+	background-image: radial-gradient(ellipse 42% 36% at 12% 18%, var(--color-bloom-a), transparent 70%), radial-gradient(ellipse 38% 32% at 88% 8%, var(--color-bloom-b), transparent 72%);
 	background-attachment: fixed;
 	font-family: var(--font-body);
 	overflow-x: clip;
@@ -196,8 +186,7 @@
 .home-aurora__shell {
 	width: min(72rem, 100%);
 	margin-inline: auto;
-	padding: calc(var(--space-3xl) + var(--space-sm)) var(--page-gutter)
-		var(--space-2xl);
+	padding: calc(var(--space-3xl) + var(--space-sm)) var(--page-gutter) var(--space-2xl);
 }
 
 /* Workbench · hanging intro */
@@ -687,4 +676,3 @@
 .home-aurora .dark\:fill-blue-400 {
 	fill: var(--color-accent);
 }
-
