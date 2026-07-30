@@ -4,12 +4,12 @@ icon: ShieldCheck
 description: Get the best security in Nuxt using strictly separated client and server schemas.
 ---
 
-In this setup, you define your client, server, and shared schemas in separate files.
+In this setup, you define your client and server schemas in separate files. An optional `internal/shared.ts` holds variables shared by both.
 
 ```files
 env
 ├── internal
-│   └── shared.ts
+│   └── shared.ts   # optional
 ├── client.ts
 └── server.ts
 ```
@@ -37,7 +37,7 @@ npx arkenv@latest init --strict
 
 ## Your schema
 
-When bootstrapping with the CLI, it generates three separate schema files under `env/`:
+When bootstrapping with the CLI, it generates separate schema files under `env/` (including an optional `internal/shared.ts` with `NODE_ENV` for convenience):
 
 ```ts twoslash title="env/internal/shared.ts"
 import { type } from "@arkenv/core";
@@ -85,10 +85,10 @@ export const env = arkenv({
 
 With `@arkenv/nuxt/module` registered:
 
-- The **client** entry includes `SharedSchema` from `env/internal/shared.ts`
-- The **server** entry includes the composed client env (and therefore shared variables)
+- The **client** entry includes `SharedSchema` from `env/internal/shared.ts` when that file exists (otherwise shared is empty)
+- The **server** entry includes the composed client env (and therefore any shared variables)
 
-`env/internal/shared.ts` is always part of the strict layout, even when you only define client and server variables. If nothing is shared, export an empty schema (`type({})`) — do not omit the file or the `SharedSchema` export.
+Shared is not required for strict layout—omit `env/internal/shared.ts` when you have nothing to share. When the file is present, it must export `SharedSchema`.
 
 The shared schema path is fixed relative to your schema directory: `internal/shared.ts`. There is no module option to relocate it (for example to `env/hidden/shared.ts`). To compose different schemas — or to opt out of the default merge — pass an explicit `extends` list:
 
@@ -157,9 +157,9 @@ See [Configuration & API](/docs/nuxt/configuration) for module options such as `
     If you're using Standard Schema without ArkType, install `@arkenv/standard` instead of `@arkenv/core` — see [Zod, Valibot, and other Standard Schema validators](/docs/nuxt/using-other-validators).
     :::
 
-    ### Define shared variables [step] [!toc]
+    ### Define shared variables (optional) [step] [!toc]
 
-    Create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. We treat this as a runtime type, so it is defined using PascalCase:
+    Optionally create `env/internal/shared.ts` to define schema variables that are shared across both the client and the server. Shared is not required for strict layout—omit the file when you have nothing to share. When present, we treat it as a runtime type, so it is defined using PascalCase:
 
     ```ts twoslash title="env/internal/shared.ts"
     import { type } from "@arkenv/core";

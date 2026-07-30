@@ -1,5 +1,31 @@
 # @arkenv/bun-plugin
 
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- #### Make missing-schema errors short and actionable across hosts _[`#1495`](https://github.com/yamcodes/arkenv/pull/1495) [`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [@yamcodes](https://github.com/yamcodes)_
+
+  When a host cannot find an env schema, throw a consistent message that names the expected path / `schemaPath` and points to `npx arkenv@latest init`, without embedding a starter `env.ts` module.
+
+  Example:
+
+  ```text
+  [ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in ArkEnv options (or run `npx arkenv@latest init`).
+  ```
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`3785c6b`](https://github.com/yamcodes/arkenv/commit/3785c6bfa27888a669900045b5b326e7baa1558b) [`9bfe1c4`](https://github.com/yamcodes/arkenv/commit/9bfe1c4a6e278966ff2c0b2219d95e319888fb98)
+
+</small>
+
+- `@arkenv/build@0.0.2-alpha.2`
+
+</details>
+
 ## 1.0.0-alpha.7
 
 ### Minor Changes

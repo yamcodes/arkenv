@@ -1,6 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import { findSchemaPath } from "@arkenv/build";
+import {
+	assertFlatSchemaFile,
+	findSchemaPath,
+	formatMissingSchemaError,
+	getDefaultSchemaFileCandidates,
+} from "@arkenv/build";
 
 /**
  * Strip Vite virtual-module and query suffixes from a module id.
@@ -58,16 +63,20 @@ export function resolveEnvModulePath(
 				`ArkEnv Vite plugin: schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
 			);
 		}
-		return resolved;
+		return assertFlatSchemaFile(resolved, "ArkEnv Vite plugin:");
 	}
 
 	const discovered = findSchemaPath(root);
 	if (!discovered) {
 		throw new Error(
-			`ArkEnv Vite plugin: could not find an env module. Expected "src/env.ts" or "env.ts" under "${root}", or pass schemaPath.`,
+			formatMissingSchemaError({
+				prefix: "ArkEnv Vite plugin:",
+				optionsHint: "plugin options",
+				checkedPaths: getDefaultSchemaFileCandidates(root),
+			}),
 		);
 	}
-	return discovered;
+	return assertFlatSchemaFile(discovered, "ArkEnv Vite plugin:");
 }
 
 /**
