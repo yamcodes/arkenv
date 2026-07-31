@@ -184,16 +184,17 @@
 }
 
 .home-aurora__shell {
-	width: min(72rem, 100%);
+	width: min(90rem, 100%);
 	margin-inline: auto;
-	padding: calc(var(--space-3xl) + var(--space-sm)) var(--page-gutter) var(--space-2xl);
+	padding: calc(var(--space-3xl) + var(--space-sm))
+		clamp(0.75rem, 2.5vw, 1.75rem) var(--space-2xl);
 }
 
 /* Workbench · hanging intro */
 .home-aurora__intro {
 	display: grid;
 	gap: var(--space-md);
-	max-width: 48rem;
+	max-width: none;
 	padding-block: var(--space-xl) var(--space-lg);
 }
 
@@ -211,7 +212,7 @@
 .home-aurora__intro h1,
 .home-aurora__tagline {
 	margin: 0;
-	max-width: 20ch;
+	max-width: none;
 	font-family: var(--font-display);
 	font-size: clamp(2.75rem, 6.5vw + 1rem, 5rem);
 	line-height: 1.05;
@@ -219,6 +220,13 @@
 	color: var(--color-ink);
 	font-weight: 500;
 	overflow-wrap: normal;
+}
+
+/* Keep the Geist lead on one line once the viewport can host it */
+@media (min-width: 75rem) {
+	.home-aurora__lead {
+		white-space: nowrap;
+	}
 }
 
 .home-aurora__digital {
