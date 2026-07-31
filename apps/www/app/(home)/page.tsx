@@ -23,9 +23,7 @@ export default function HomePage() {
 					</AnnouncementBadge>
 				</div>
 				<h1 id="home-hero" className="home-aurora__tagline">
-					<span className="home-aurora__lead">
-						The simple way to validate
-					</span>{" "}
+					<span className="home-aurora__lead">The simple way to validate</span>{" "}
 					<span className="home-aurora__digital home-aurora__digital-accent">
 						environment variables
 					</span>

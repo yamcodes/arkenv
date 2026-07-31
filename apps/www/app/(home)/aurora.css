@@ -186,8 +186,7 @@
 .home-aurora__shell {
 	width: min(90rem, 100%);
 	margin-inline: auto;
-	padding: calc(var(--space-3xl) + var(--space-sm))
-		clamp(0.75rem, 2.5vw, 1.75rem) var(--space-2xl);
+	padding: calc(var(--space-3xl) + var(--space-sm)) clamp(0.75rem, 2.5vw, 1.75rem) var(--space-2xl);
 }
 
 /* Workbench · hanging intro */
