@@ -1,5 +1,6 @@
 /* Hallmark · genre: atmospheric · macrostructure: Workbench · tone: atmospheric
- * theme: Aurora · anchor hue: 200 · nav: N5 · footer: Ft5 · enrichment: product-demo
+ * theme: Aurora · anchor hue: 200 · nav: N5 · footer: Ft5
+ * enrichment: product-demo + interactive-dot-field (open-slide DNA)
  * axes: dark / geist-sans + geist-mono + geist-pixel-grid / cool-cyan
  * fonts: Geist · Geist Mono · Geist Pixel Grid
  * Pre-emit critique: P4 H4 E4 S4 R4 V5
@@ -23,10 +24,65 @@
 	min-height: 100dvh;
 	color: var(--color-ink);
 	background-color: var(--color-paper);
-	background-image: radial-gradient(ellipse 42% 36% at 12% 18%, var(--color-bloom-a), transparent 70%), radial-gradient(ellipse 38% 32% at 88% 8%, var(--color-bloom-b), transparent 72%);
-	background-attachment: fixed;
 	font-family: var(--font-body);
 	overflow-x: clip;
+}
+
+.home-aurora__atmosphere {
+	position: absolute;
+	inset: 0 0 auto;
+	height: min(48rem, 85vh);
+	z-index: 0;
+	pointer-events: none;
+	overflow: hidden;
+	background-image:
+		radial-gradient(
+			ellipse 42% 36% at 12% 18%,
+			var(--color-bloom-a),
+			transparent 70%
+		),
+		radial-gradient(
+			ellipse 38% 32% at 88% 8%,
+			var(--color-bloom-b),
+			transparent 72%
+		);
+	/* Strong near the header, gone by the workbench */
+	mask-image: linear-gradient(
+		to bottom,
+		#000 0%,
+		#000 28%,
+		rgb(0 0 0 / 0.55) 48%,
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		#000 0%,
+		#000 28%,
+		rgb(0 0 0 / 0.55) 48%,
+		transparent 100%
+	);
+}
+
+.home-aurora > :not(.home-aurora__atmosphere) {
+	position: relative;
+	z-index: 1;
+}
+
+/* Static CSS dots until the canvas hydrates and clears the image */
+.home-aurora__dot-grid {
+	display: block;
+	width: 100%;
+	height: 100%;
+	color: color-mix(in oklch, var(--color-ink) 14%, transparent);
+	background-image: radial-gradient(currentColor 1px, transparent 1.5px);
+	background-size: 24px 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home-aurora__dot-grid {
+		/* Keep the static field; physics stays off in the component */
+		opacity: 0.85;
+	}
 }
 
 .home-aurora :is(h1, h2, h3) {

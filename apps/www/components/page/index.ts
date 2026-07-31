@@ -1,6 +1,7 @@
 export * from "./cli-command";
 export * from "./compatibility-rails";
 export * from "./copy-button";
+export * from "./dot-grid";
 export * from "./install-panel";
 export * from "./logo";
 export * from "./quickstart-button";

@@ -1,11 +1,15 @@
 import "./aurora.css";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import type { CSSProperties, ReactNode } from "react";
+import { DotGrid } from "~/components/page";
 import { HomeNav } from "./home-nav";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<div className="home-aurora">
+			<div className="home-aurora__atmosphere" aria-hidden="true">
+				<DotGrid />
+			</div>
 			<HomeLayout
 				style={
 					{
