@@ -14,7 +14,7 @@ import { Logo } from "~/components/page/logo";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
-	description: "The simple way to validate environment variables.",
+	description: "The happy path for environment variables.",
 };
 
 export default function HomePage() {
@@ -27,16 +27,16 @@ export default function HomePage() {
 					</AnnouncementBadge>
 				</div>
 				<h1 id="home-hero" className="home-aurora__tagline">
-					<span className="home-aurora__lead">The simple way to validate</span>{" "}
+					<span className="home-aurora__lead">The happy path for</span>{" "}
 					<span className="home-aurora__digital home-aurora__digital-accent">
 						environment{" "}
 						<span className="home-aurora__digital-word">variables</span>
 					</span>
 				</h1>
 				<p className="home-aurora__summary">
-					One function for validated, parsed, and typesafe env vars. Works with
-					ArkType, Zod, Valibot, or any Standard Schema. Start from the CLI, or
-					let your agent handle it.
+					One function to validate, parse, and keep your <code>env</code> vars
+					typesafe. Works with ArkType, Zod, or any Standard Schema. Start from
+					the CLI, or let your agent handle it.
 				</p>
 				<CompatibilityRails className="home-aurora__rails-host" />
 				<div className="home-aurora__install-row">
@@ -68,7 +68,7 @@ export default function HomePage() {
 						>
 							<Logo />
 						</a>
-						<p>The simple way to validate environment variables.</p>
+						<p>The happy path for environment variables.</p>
 						<p className="home-aurora__footer-license">
 							MIT License · Open Source
 						</p>
