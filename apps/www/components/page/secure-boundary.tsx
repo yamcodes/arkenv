@@ -33,8 +33,8 @@ export async function SecureBoundary() {
 					Keep secrets off the client.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					ArkEnv isolates your frontend and backend variables. Server schemas
-					stay walled off, so private keys never enter the browser bundle.
+					ArkEnv isolates frontend and backend variables. You keep private keys
+					out of the browser bundle.
 				</p>
 			</header>
 

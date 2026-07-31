@@ -48,9 +48,9 @@ export default function HomePage() {
 					className="home-aurora__summary rise-blur"
 					style={{ animationDelay: "240ms" }}
 				>
-					One function to validate, parse, and keep your <code>env</code> vars
-					typesafe. Use ArkType, Zod, or any Standard Schema. Run the CLI, or
-					let your agent handle the setup.
+					One function validates and types your <code>env</code> vars. Use
+					ArkType, Zod, or any Standard Schema. Run the CLI, or hand setup to
+					your agent.
 				</p>
 				<div className="rise" style={{ animationDelay: "320ms" }}>
 					<CompatibilityRails className="home-aurora__rails-host" />
@@ -77,7 +77,7 @@ export default function HomePage() {
 						Try it live!
 					</h2>
 					<p data-reveal style={{ ["--reveal-delay" as string]: "100ms" }}>
-						Click the demo to open a fully interactive playground.
+						Click the demo to open the playground.
 					</p>
 				</header>
 				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>

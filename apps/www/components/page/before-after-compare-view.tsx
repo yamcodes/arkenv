@@ -82,15 +82,15 @@ export function BeforeAfterCompareView({
 					</a>
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					ArkEnv replaces your manual <code>process.env</code> checks with one
-					schema. Drop the separate interfaces, consts, and error handling.
+					Replace your manual <code>process.env</code> checks with one schema.
+					Skip the separate interfaces and error handling.
 				</p>
 				<p
 					className="home-aurora__compare-stat"
 					data-reveal
 					style={{ ["--reveal-delay" as string]: "140ms" }}
 				>
-					<span>{reduction}%</span> less code for the same guarantees
+					<span>{reduction}%</span> less code, same checks
 				</p>
 			</header>
 

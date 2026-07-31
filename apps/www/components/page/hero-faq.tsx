@@ -41,7 +41,7 @@ const FAQ = [
 		question:
 			"Does ArkEnv support AI development tools like Claude Code or Cursor?",
 		teaser:
-			"Yes. Grab the agent skill and your assistant keeps env schemas in sync as the code changes.",
+			"Yes. Install the agent skill and your assistant updates env schemas as the code changes.",
 	},
 ] as const;
 

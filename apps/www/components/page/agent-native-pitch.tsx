@@ -15,13 +15,12 @@ export function AgentNativePitch() {
 					05 - AGENTIC
 				</p>
 				<h2 id="home-agent" data-reveal="blur">
-					Built for humans.{" "}
-					<span className="home-aurora__digital">And their agents.</span>
+					For humans and{" "}
+					<span className="home-aurora__digital">their agents</span>.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Run the interactive CLI, or supercharge Cursor, Claude Code, or Codex
-					with our agent skill to set up your schema intelligently from your
-					existing <code>.env</code> file.
+					Run the interactive CLI, or point the agent skill at your{" "}
+					<code>.env</code> in Cursor, Claude Code, or Codex.
 				</p>
 			</header>
 

@@ -11,12 +11,11 @@ export function TypeSafetyShowcase() {
 					02 - TYPESAFE
 				</p>
 				<h2 id="home-dx" data-reveal="blur">
-					Editor autocomplete. Runtime fail-fast.
+					Editor autocomplete with fail-fast at runtime.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Get types in your IDE. Whether you validate at build time or inject
-					variables at startup, ArkEnv catches missing keys immediately, long
-					before they cause a crash deep in production.
+					Your editor gets the types. ArkEnv rejects missing keys at build or
+					startup, before they reach production.
 				</p>
 			</header>
 
