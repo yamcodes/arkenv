@@ -10,7 +10,7 @@ import {
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
-	description: "Environment variables toolkit built for agents",
+	description: "The simple way to validate environment variables.",
 };
 
 export default function HomePage() {
@@ -23,16 +23,15 @@ export default function HomePage() {
 					</AnnouncementBadge>
 				</div>
 				<h1 id="home-hero" className="home-aurora__tagline">
-					Environment variables toolkit{" "}
-					<span className="home-aurora__digital">
-						built for{" "}
-						<span className="home-aurora__digital-accent">agents</span>
+					The simple way to validate{" "}
+					<span className="home-aurora__digital home-aurora__digital-accent">
+						environment variables
 					</span>
-					.
 				</h1>
 				<p className="home-aurora__summary">
-					Validate, parse, and transform environment variables with your
-					favorite library. Works anywhere.
+					One function for validated, parsed, and typesafe <code>env</code> vars.
+					Works with ArkType, Zod, Valibot, or any Standard Schema. Ready for
+					your agent, managed from the CLI.
 				</p>
 				<CompatibilityRails className="home-aurora__rails-host" />
 				<div className="home-aurora__install-row">

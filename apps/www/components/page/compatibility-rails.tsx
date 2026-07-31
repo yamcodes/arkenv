@@ -143,8 +143,8 @@ export function CompatibilityRails({ className }: { className?: string }) {
 				className,
 			)}
 		>
-			<MarqueeRow label="Works with" items={validators} />
-			<MarqueeRow label="Built for" items={platforms} reverse />
+			<MarqueeRow label="Runs on" items={platforms} />
+			<MarqueeRow label="Works with" items={validators} reverse />
 		</div>
 	);
 }
