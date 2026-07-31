@@ -8,7 +8,6 @@ import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Toaster } from "~/components/ui/toaster";
-import { sentient } from "./fonts/sentient";
 
 export const metadata: Metadata = {
 	metadataBase: new URL("https://arkenv.js.org"),
@@ -34,7 +33,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<html
 			lang="en"
-			className={`${GeistSans.className} ${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable} ${sentient.variable}`}
+			className={`${GeistSans.className} ${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable}`}
 			suppressHydrationWarning
 			data-scroll-behavior="smooth"
 		>
