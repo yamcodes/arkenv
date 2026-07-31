@@ -48,6 +48,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 					theme={{
 						enableColorScheme: true,
 						enableSystem: true,
+						defaultTheme: "dark",
 						themes: ["system", "light", "dark"],
 					}}
 				>
