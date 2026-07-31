@@ -9,7 +9,7 @@ export function HomeNav() {
 	return (
 		<nav className="home-aurora__nav" aria-label="Primary">
 			<a href="/" className="home-aurora__wordmark" aria-label="ArkEnv home">
-				<Logo wordmark={false} />
+				<Logo />
 			</a>
 			<ul className="home-aurora__nav-links">
 				<li>

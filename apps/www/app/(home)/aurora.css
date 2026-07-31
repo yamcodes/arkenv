@@ -76,7 +76,7 @@
 	display: inline-flex;
 	align-items: center;
 	flex-shrink: 0;
-	font-family: var(--font-body);
+	font-family: var(--font-wordmark);
 	font-weight: 500;
 	font-style: normal;
 	letter-spacing: -0.01em;
@@ -86,8 +86,10 @@
 }
 
 .home-aurora__wordmark span {
-	font-family: var(--font-body);
+	font-family: var(--font-wordmark);
 	font-weight: 500;
+	font-size: var(--text-md);
+	letter-spacing: -0.02em;
 	white-space: nowrap;
 }
 
