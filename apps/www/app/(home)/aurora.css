@@ -35,32 +35,10 @@
 	z-index: 0;
 	pointer-events: none;
 	overflow: hidden;
-	background-image:
-		radial-gradient(
-			ellipse 42% 36% at 12% 18%,
-			var(--color-bloom-a),
-			transparent 70%
-		),
-		radial-gradient(
-			ellipse 38% 32% at 88% 8%,
-			var(--color-bloom-b),
-			transparent 72%
-		);
+	background-image: radial-gradient(ellipse 42% 36% at 12% 18%, var(--color-bloom-a), transparent 70%), radial-gradient(ellipse 38% 32% at 88% 8%, var(--color-bloom-b), transparent 72%);
 	/* Strong near the header, gone by the workbench */
-	mask-image: linear-gradient(
-		to bottom,
-		#000 0%,
-		#000 28%,
-		rgb(0 0 0 / 0.55) 48%,
-		transparent 100%
-	);
-	-webkit-mask-image: linear-gradient(
-		to bottom,
-		#000 0%,
-		#000 28%,
-		rgb(0 0 0 / 0.55) 48%,
-		transparent 100%
-	);
+	mask-image: linear-gradient(to bottom, #000 0%, #000 28%, rgb(0 0 0 / 0.55) 48%, transparent 100%);
+	-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 28%, rgb(0 0 0 / 0.55) 48%, transparent 100%);
 }
 
 .home-aurora > :not(.home-aurora__atmosphere) {

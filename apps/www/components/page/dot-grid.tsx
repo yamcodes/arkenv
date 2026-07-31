@@ -109,10 +109,7 @@ export function DotGrid() {
 						oy *= scale;
 					}
 
-					if (
-						offsetSq > REST_THRESHOLD ||
-						vx * vx + vy * vy > REST_THRESHOLD
-					) {
+					if (offsetSq > REST_THRESHOLD || vx * vx + vy * vy > REST_THRESHOLD) {
 						moving = true;
 					} else {
 						ox = 0;
@@ -264,10 +261,6 @@ export function DotGrid() {
 	}, []);
 
 	return (
-		<canvas
-			ref={canvasRef}
-			aria-hidden
-			className="home-aurora__dot-grid"
-		/>
+		<canvas ref={canvasRef} aria-hidden className="home-aurora__dot-grid" />
 	);
 }
