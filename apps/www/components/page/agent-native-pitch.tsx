@@ -56,8 +56,8 @@ export function AgentNativePitch() {
 
 				<div className="home-aurora__transcript">
 					<p className="home-aurora__transcript-prompt">
-						Set up{" "}
-						<span className="home-aurora__tok-cmd">/arkenv</span> for my .env
+						Set up <span className="home-aurora__tok-cmd">/arkenv</span> for my
+						.env
 					</p>
 					<p className="home-aurora__transcript-status">Worked for 2.4s</p>
 					<div className="home-aurora__transcript-reply">

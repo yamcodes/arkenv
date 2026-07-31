@@ -343,8 +343,7 @@
 	width: min(90rem, 100%);
 	margin-inline: auto;
 	/* Mobile: clear the floating pill without a tall empty band */
-	padding: calc(3.75rem + var(--space-xs)) clamp(0.75rem, 2.5vw, 1.75rem)
-		var(--space-md);
+	padding: calc(3.75rem + var(--space-xs)) clamp(0.75rem, 2.5vw, 1.75rem) var(--space-md);
 }
 
 @media (min-width: 40rem) {
@@ -378,8 +377,7 @@
 	gap: 0.4rem;
 	padding: 0.25rem 0.25rem 0.25rem 0.25rem;
 	border-radius: var(--radius-pill);
-	border: var(--rule-hair) solid
-		color-mix(in oklch, var(--color-accent) 35%, transparent);
+	border: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 35%, transparent);
 	background: color-mix(in oklch, var(--color-accent) 10%, transparent);
 	color: var(--color-ink);
 	font-family: var(--font-display);
@@ -406,8 +404,7 @@
 	height: 1.25rem;
 	padding-inline: 0.45rem;
 	border-radius: var(--radius-pill);
-	border: var(--rule-hair) solid
-		color-mix(in oklch, var(--color-accent) 30%, transparent);
+	border: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 30%, transparent);
 	background: color-mix(in oklch, var(--color-accent) 22%, transparent);
 	color: var(--color-accent);
 	font-size: var(--text-xs);
@@ -557,8 +554,7 @@
 .home-aurora__faq-more a {
 	color: var(--color-accent);
 	text-decoration: none;
-	border-bottom: var(--rule-hair) solid
-		color-mix(in oklch, var(--color-accent) 45%, transparent);
+	border-bottom: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 45%, transparent);
 	transition:
 		color var(--dur-micro) var(--ease-out),
 		border-color var(--dur-micro) var(--ease-out);
@@ -1059,8 +1055,7 @@
 .home-aurora__pitch-head h2 a {
 	color: inherit;
 	text-decoration: none;
-	border-bottom: var(--rule-hair) solid
-		color-mix(in oklch, var(--color-ink) 28%, transparent);
+	border-bottom: var(--rule-hair) solid color-mix(in oklch, var(--color-ink) 28%, transparent);
 	transition:
 		color var(--dur-micro) var(--ease-out),
 		border-color var(--dur-micro) var(--ease-out);
@@ -1097,8 +1092,7 @@
 .home-aurora__pitch-head p a {
 	color: var(--color-accent);
 	text-decoration: none;
-	border-bottom: var(--rule-hair) solid
-		color-mix(in oklch, var(--color-accent) 45%, transparent);
+	border-bottom: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 45%, transparent);
 	transition:
 		color var(--dur-micro) var(--ease-out),
 		border-color var(--dur-micro) var(--ease-out);
@@ -1634,8 +1628,7 @@
 .home-aurora__validator-note a {
 	color: var(--color-accent);
 	text-decoration: none;
-	border-bottom: var(--rule-hair) solid
-		color-mix(in oklch, var(--color-accent) 45%, transparent);
+	border-bottom: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 45%, transparent);
 	transition:
 		color var(--dur-micro) var(--ease-out),
 		border-color var(--dur-micro) var(--ease-out);
@@ -1696,11 +1689,7 @@
 
 .home-aurora__secure-pane[data-side="server"] .home-aurora__secure-badge {
 	color: var(--color-success);
-	border-bottom-color: color-mix(
-		in oklch,
-		var(--color-success) 30%,
-		var(--color-rule)
-	);
+	border-bottom-color: color-mix(in oklch, var(--color-success) 30%, var(--color-rule));
 }
 
 .home-aurora__terminal {

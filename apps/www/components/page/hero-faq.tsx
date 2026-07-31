@@ -106,8 +106,7 @@ export function HeroFaq() {
 					Frequently asked questions.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Picked from the docs.{" "}
-					<a href={DOCS_FAQ_HREF}>Read the full FAQ →</a>
+					Picked from the docs. <a href={DOCS_FAQ_HREF}>Read the full FAQ →</a>
 				</p>
 			</header>
 

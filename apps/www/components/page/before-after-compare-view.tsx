@@ -1,12 +1,6 @@
 "use client";
 
-import {
-	useEffect,
-	useId,
-	useRef,
-	useState,
-	type CSSProperties,
-} from "react";
+import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import { WindowChrome } from "./window-chrome";
 
 type BeforeAfterCompareViewProps = {

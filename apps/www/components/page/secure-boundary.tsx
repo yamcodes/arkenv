@@ -1,5 +1,5 @@
-import { WindowChrome } from "./window-chrome";
 import { highlightTs } from "./highlight-ts";
+import { WindowChrome } from "./window-chrome";
 
 const CLIENT = `export const env = arkenv({
   NEXT_PUBLIC_API_URL: "string",

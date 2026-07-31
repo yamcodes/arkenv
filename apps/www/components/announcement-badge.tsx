@@ -24,14 +24,8 @@ export function AnnouncementBadge({
 	href: ArkenvUrl;
 }>) {
 	return (
-		<Link
-			href={href}
-			data-no-underline
-			className="home-aurora__announce"
-		>
-			{newBadge ? (
-				<NewBadge className="home-aurora__announce-new" />
-			) : null}
+		<Link href={href} data-no-underline className="home-aurora__announce">
+			{newBadge ? <NewBadge className="home-aurora__announce-new" /> : null}
 			<span
 				className={`home-aurora__announce-label${!newBadge ? " home-aurora__announce-label--solo" : ""}`}
 			>

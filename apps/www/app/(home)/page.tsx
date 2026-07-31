@@ -88,7 +88,11 @@ export default function HomePage() {
 			<HeroFaq />
 
 			<section className="home-aurora__outro" aria-labelledby="home-outro">
-				<h2 id="home-outro" className="home-aurora__outro-title" data-reveal="blur">
+				<h2
+					id="home-outro"
+					className="home-aurora__outro-title"
+					data-reveal="blur"
+				>
 					Try ArkEnv now.
 				</h2>
 				<div
@@ -97,10 +101,7 @@ export default function HomePage() {
 					style={{ ["--reveal-delay" as string]: "80ms" }}
 				>
 					<InstallPanel />
-					<a
-						href="/docs/arkenv/quickstart"
-						className="home-aurora__outro-docs"
-					>
+					<a href="/docs/arkenv/quickstart" className="home-aurora__outro-docs">
 						Read the docs
 						<span aria-hidden="true">→</span>
 					</a>
@@ -194,13 +195,13 @@ export default function HomePage() {
 								</a>
 							</li>
 							<li>
-						<a
-							href="https://yam.codes"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							@yamcodes
-						</a>
+								<a
+									href="https://yam.codes"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									@yamcodes
+								</a>
 							</li>
 							<li>
 								<a

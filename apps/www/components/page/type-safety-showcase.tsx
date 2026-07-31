@@ -35,7 +35,7 @@ export function TypeSafetyShowcase() {
 						{" } "}
 						<span className="home-aurora__tok-kw">from</span>
 						<span className="home-aurora__tok-str">{` "./env"`}</span>
-						{`;\n\n`}
+						{";\n\n"}
 						<span className="home-aurora__tok-kw">const</span>
 						{" db = "}
 						<span className="home-aurora__tok-id">env</span>

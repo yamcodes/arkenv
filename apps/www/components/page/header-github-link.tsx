@@ -3,8 +3,8 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
-import { breakDownGithubUrl } from "~/lib/utils/github";
 import { cn } from "~/lib/utils";
+import { breakDownGithubUrl } from "~/lib/utils/github";
 
 /**
  * Single GitHub badge: icon + star count in one hit target.
