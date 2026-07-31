@@ -63,27 +63,34 @@ export function BeforeAfterCompareView({
 		<section
 			className="home-aurora__pitch"
 			aria-labelledby="home-before-after"
-			id="fail-fast"
+			id="declarative"
 		>
 			<header className="home-aurora__pitch-head">
 				<p className="home-aurora__pitch-label" data-reveal="fade">
-					01 - FAIL-FAST
+					01 - DECLARATIVE
 				</p>
 				<h2 id="home-before-after" data-reveal="blur">
-					Catch bad configs before you boot.
+					<a
+						href="https://blog.ramonvullings.com/post/77099512035/simplify-simplify-simplify-message-on-the-wall-of"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<span className="home-aurora__pitch-struck">
+							<s>Simplify</s>, <s>simplify</s>,
+						</span>{" "}
+						simplify.
+					</a>
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					ArkEnv replaces your manual <code>process.env</code> checks with one
-					schema that validates at startup. Drop the separate interfaces, consts,
-					and error handling, and guarantee your app never crashes at runtime due
-					to a missing key.
+					schema. Drop the separate interfaces, consts, and error handling.
 				</p>
 				<p
 					className="home-aurora__compare-stat"
 					data-reveal
 					style={{ ["--reveal-delay" as string]: "140ms" }}
 				>
-					<span>{reduction}%</span> less code. 100% runtime safety.
+					<span>{reduction}%</span> less code for the same guarantees
 				</p>
 			</header>
 

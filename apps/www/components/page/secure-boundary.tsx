@@ -10,7 +10,7 @@ const SERVER = `export const env = arkenv({
 });`;
 
 /**
- * Strict-layout pitch: client vs server env boundary.
+ * Client / server env boundary pitch.
  * Examples mirror /docs/nextjs/layouts/strict.
  */
 export async function SecureBoundary() {
@@ -33,8 +33,8 @@ export async function SecureBoundary() {
 					Keep secrets off the client.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					<a href="/docs/nextjs/layouts/strict">Strict layout</a> splits client
-					and server schemas. Server keys never enter the client module graph.
+					ArkEnv isolates your frontend and backend variables. Server schemas
+					stay walled off, so private keys never enter the browser bundle.
 				</p>
 			</header>
 
