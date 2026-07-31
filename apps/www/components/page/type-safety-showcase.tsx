@@ -3,11 +3,7 @@
  */
 export function TypeSafetyShowcase() {
 	return (
-		<section
-			className="home-aurora__pitch"
-			aria-labelledby="home-dx"
-			id="dx"
-		>
+		<section className="home-aurora__pitch" aria-labelledby="home-dx" id="dx">
 			<header className="home-aurora__pitch-head">
 				<p className="home-aurora__pitch-label">02 — Typesafety</p>
 				<h2 id="home-dx">Stop guessing your env vars</h2>
@@ -17,7 +13,11 @@ export function TypeSafetyShowcase() {
 				</p>
 			</header>
 
-			<div className="home-aurora__ide" role="img" aria-label="IDE showing env autocomplete for DATABASE_URL and PORT">
+			<div
+				className="home-aurora__ide"
+				role="img"
+				aria-label="IDE showing env autocomplete for DATABASE_URL and PORT"
+			>
 				<div className="home-aurora__ide-chrome">
 					<span className="home-aurora__ide-dot" />
 					<span className="home-aurora__ide-dot" />
@@ -27,11 +27,11 @@ export function TypeSafetyShowcase() {
 				<pre className="home-aurora__ide-body">
 					<code>
 						<span className="home-aurora__tok-kw">import</span>
-						{` { env } `}
+						{" { env } "}
 						<span className="home-aurora__tok-kw">from</span>
 						{` "./env";\n\n`}
 						<span className="home-aurora__tok-kw">const</span>
-						{` db = `}
+						{" db = "}
 						<span className="home-aurora__tok-id">env</span>
 						<span className="home-aurora__tok-punct">.</span>
 						<span className="home-aurora__tok-caret" aria-hidden="true" />

@@ -22,8 +22,8 @@ export function AgentNativePitch() {
 					<figcaption>CLI</figcaption>
 					<pre>
 						<code>
-							<span className="home-aurora__tok-muted">$</span> npx arkenv@latest
-							init{"\n"}
+							<span className="home-aurora__tok-muted">$</span> npx
+							arkenv@latest init{"\n"}
 							<span className="home-aurora__tok-ok">✔</span> Detected Next.js
 							{"\n"}
 							<span className="home-aurora__tok-ok">✔</span> Wrote{" "}
@@ -43,9 +43,8 @@ export function AgentNativePitch() {
 						Set up ArkEnv from my .env — use --agent
 					</div>
 					<div className="home-aurora__chat-bubble home-aurora__chat-bubble--agent">
-						Running{" "}
-						<code>npx arkenv@latest init --agent</code>. Schema matches your
-						.env keys; validation works from editor to runtime.
+						Running <code>npx arkenv@latest init --agent</code>. Schema matches
+						your .env keys; validation works from editor to runtime.
 					</div>
 				</figure>
 			</div>
