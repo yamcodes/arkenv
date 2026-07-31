@@ -13,16 +13,13 @@ export function HomeNav() {
 			</a>
 			<ul className="home-aurora__nav-links">
 				<li>
-					<a href="/docs/arkenv">Documentation</a>
+					<a href="/docs/arkenv">Docs</a>
 				</li>
 				<li>
-					<a
-						href="https://github.com/yamcodes/arkenv/issues/683"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Roadmap
-					</a>
+					<a href="/docs/cli/hosting-presets">Presets</a>
+				</li>
+				<li>
+					<a href="/#why">Why ArkEnv?</a>
 				</li>
 			</ul>
 			<div className="home-aurora__nav-actions">

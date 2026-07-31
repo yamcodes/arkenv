@@ -1,3 +1,5 @@
+export * from "./agent-native-pitch";
+export * from "./before-after-compare";
 export * from "./cli-command";
 export * from "./compatibility-rails";
 export * from "./copy-button";
@@ -6,4 +8,5 @@ export * from "./install-panel";
 export * from "./logo";
 export * from "./quickstart-button";
 export * from "./star-us-button";
+export * from "./type-safety-showcase";
 export * from "./video-demo";
