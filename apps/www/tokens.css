@@ -1,7 +1,7 @@
 /* Hallmark · genre: atmospheric · macrostructure: Workbench · tone: atmospheric
  * theme: Aurora · anchor hue: 200 · nav: N5 · footer: Ft5 · enrichment: product-demo
- * axes: dark / geist-sans + geist-mono + geist-pixel-grid / cool-cyan
- * fonts: Geist · Geist Mono · Geist Pixel Grid
+ * axes: dark / geist-sans + geist-mono + geist-pixel-grid + sentient / cool-cyan
+ * fonts: Geist · Geist Mono · Geist Pixel Grid · Sentient (wordmark)
  */
 
 :root {
@@ -26,6 +26,8 @@
 	--font-outlier: var(--font-geist-mono), ui-monospace, monospace;
 	--font-mono: var(--font-geist-mono), ui-monospace, monospace;
 	/* --font-geist-pixel-grid is provided by geist/font/pixel (GeistPixelGrid) */
+	/* --font-sentient is provided by next/font/local (Sentient variable) */
+	--font-wordmark: var(--font-sentient), ui-serif, Georgia, serif;
 
 	--space-3xs: 0.25rem;
 	--space-2xs: 0.5rem;
