@@ -610,6 +610,9 @@
 	display: grid;
 	gap: var(--space-md);
 	scroll-margin-top: 6rem;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
 }
 
 .home-aurora__pitch-head {
@@ -654,7 +657,8 @@
 	position: relative;
 	isolation: isolate;
 	width: 100%;
-	max-width: 56rem;
+	max-width: min(56rem, 100%);
+	min-width: 0;
 	min-height: 22rem;
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: var(--radius-frame);
@@ -670,6 +674,7 @@
 	display: grid;
 	align-content: start;
 	gap: var(--space-xs);
+	min-width: 0;
 }
 
 .home-aurora__compare-pane--before {
@@ -703,6 +708,8 @@
 	line-height: 1.55;
 	color: var(--color-ink-2);
 	white-space: pre;
+	max-width: 100%;
+	min-width: 0;
 }
 
 .home-aurora__compare-handle {
@@ -750,11 +757,54 @@
 	outline-offset: -2px;
 }
 
-/* IDE autocomplete mock */
+@media (max-width: 39.99rem) {
+	/* Stack both panes — clip slider cuts mid-token on narrow screens */
+	.home-aurora__compare {
+		--compare: 100%;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.home-aurora__compare-pane {
+		position: relative;
+		inset: auto;
+		clip-path: none;
+		flex: 0 0 auto;
+	}
+
+	.home-aurora__compare-pane--before {
+		order: 1;
+		z-index: auto;
+		border-bottom: var(--rule-hair) solid var(--color-rule);
+		background: color-mix(in oklch, var(--color-paper) 92%, transparent);
+	}
+
+	.home-aurora__compare-pane--after {
+		order: 2;
+		z-index: auto;
+	}
+
+	.home-aurora__compare-handle,
+	.home-aurora__compare-range {
+		display: none;
+	}
+
+	.home-aurora__code {
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		overflow: visible;
+	}
+}
+
+/* IDE autocomplete mock — stacked chrome / code / menu (no absolute overlay) */
 .home-aurora__ide {
 	position: relative;
+	display: grid;
+	grid-template-rows: auto auto auto;
 	width: 100%;
-	max-width: 40rem;
+	max-width: min(40rem, 100%);
+	min-width: 0;
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: var(--radius-frame);
 	background: var(--color-paper-2);
@@ -767,6 +817,7 @@
 	gap: 0.4rem;
 	padding: 0.65rem 0.85rem;
 	border-bottom: var(--rule-hair) solid var(--color-rule);
+	min-width: 0;
 }
 
 .home-aurora__ide-dot {
@@ -774,6 +825,7 @@
 	height: 0.55rem;
 	border-radius: 999px;
 	background: var(--color-rule);
+	flex-shrink: 0;
 }
 
 .home-aurora__ide-tab {
@@ -781,16 +833,22 @@
 	font-family: var(--font-outlier);
 	font-size: var(--text-xs);
 	color: var(--color-muted);
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .home-aurora__ide-body {
 	margin: 0;
-	padding: var(--space-md);
+	padding: var(--space-sm) var(--space-md);
 	font-family: var(--font-outlier);
-	font-size: clamp(0.85rem, 0.2vw + 0.8rem, 0.98rem);
+	font-size: clamp(0.8rem, 0.2vw + 0.75rem, 0.98rem);
 	line-height: 1.6;
 	color: var(--color-ink-2);
-	min-height: 8.5rem;
+	min-width: 0;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 .home-aurora__tok-kw {
@@ -830,13 +888,14 @@
 }
 
 .home-aurora__ide-menu {
-	position: absolute;
-	left: var(--space-md);
-	bottom: var(--space-md);
-	margin: 0;
+	position: relative;
+	z-index: 1;
+	margin: 0 var(--space-sm) var(--space-sm);
 	padding: 0.35rem;
 	list-style: none;
-	min-width: min(100% - 2 * var(--space-md), 22rem);
+	width: auto;
+	max-width: 100%;
+	min-width: 0;
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: 0.5rem;
 	background: color-mix(in oklch, var(--color-paper) 94%, transparent);
@@ -849,24 +908,37 @@
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
-	gap: var(--space-sm);
+	gap: var(--space-xs);
 	padding: 0.4rem 0.55rem;
 	border-radius: 0.3rem;
 	font-family: var(--font-outlier);
 	font-size: var(--text-sm);
 	color: var(--color-ink);
+	min-width: 0;
 }
 
 .home-aurora__ide-menu li[data-active="true"] {
 	background: color-mix(in oklch, var(--color-accent) 18%, transparent);
 }
 
+.home-aurora__ide-name {
+	flex: 0 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .home-aurora__ide-type {
+	flex: 0 1 auto;
+	min-width: 0;
+	max-width: 55%;
 	color: var(--color-muted);
 	font-size: var(--text-xs);
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	text-align: right;
 }
 
 @keyframes home-aurora-menu-in {

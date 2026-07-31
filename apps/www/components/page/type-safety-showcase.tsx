@@ -39,15 +39,15 @@ export function TypeSafetyShowcase() {
 				</pre>
 				<ul className="home-aurora__ide-menu" aria-hidden="true">
 					<li data-active="true">
-						<span>DATABASE_URL</span>
+						<span className="home-aurora__ide-name">DATABASE_URL</span>
 						<span className="home-aurora__ide-type">string</span>
 					</li>
 					<li>
-						<span>PORT</span>
+						<span className="home-aurora__ide-name">PORT</span>
 						<span className="home-aurora__ide-type">number</span>
 					</li>
 					<li>
-						<span>NODE_ENV</span>
+						<span className="home-aurora__ide-name">NODE_ENV</span>
 						<span className="home-aurora__ide-type">
 							&quot;development&quot; | &quot;production&quot;
 						</span>

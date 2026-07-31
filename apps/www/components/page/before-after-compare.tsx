@@ -50,10 +50,7 @@ export const env = arkenv({
 // env.PORT is number — validated at boot`}</code>
 					</pre>
 				</div>
-				<div
-					className="home-aurora__compare-pane home-aurora__compare-pane--before"
-					aria-hidden="true"
-				>
+				<div className="home-aurora__compare-pane home-aurora__compare-pane--before">
 					<p className="home-aurora__compare-eyebrow">The old way</p>
 					<pre className="home-aurora__code">
 						<code>{`const url = process.env.DATABASE_URL;
