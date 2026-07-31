@@ -14,8 +14,7 @@ type Tab = "command" | "prompt";
 export function InstallPanel() {
 	const [tab, setTab] = useState<Tab>("command");
 	const baseId = useId();
-	const commandPanelId = `${baseId}-command`;
-	const promptPanelId = `${baseId}-prompt`;
+	const panelId = `${baseId}-panel`;
 	const commandTabId = `${baseId}-tab-command`;
 	const promptTabId = `${baseId}-tab-prompt`;
 
@@ -25,6 +24,16 @@ export function InstallPanel() {
 	const promptCopy = useCopyCommand(INSTALL_PROMPT, {
 		successDescription: "Prompt copied to clipboard!",
 	});
+
+	const active = tab === "command" ? commandCopy : promptCopy;
+	const ariaLabel =
+		tab === "command"
+			? active.copied
+				? "Copied"
+				: "Copy install command"
+			: active.copied
+				? "Copied"
+				: "Copy prompt";
 
 	return (
 		<div className="home-aurora__install">
@@ -38,7 +47,7 @@ export function InstallPanel() {
 					role="tab"
 					id={commandTabId}
 					aria-selected={tab === "command"}
-					aria-controls={commandPanelId}
+					aria-controls={panelId}
 					tabIndex={tab === "command" ? 0 : -1}
 					className="home-aurora__install-tab"
 					data-active={tab === "command" ? "true" : undefined}
@@ -51,7 +60,7 @@ export function InstallPanel() {
 					role="tab"
 					id={promptTabId}
 					aria-selected={tab === "prompt"}
-					aria-controls={promptPanelId}
+					aria-controls={panelId}
 					tabIndex={tab === "prompt" ? 0 : -1}
 					className="home-aurora__install-tab"
 					data-active={tab === "prompt" ? "true" : undefined}
@@ -61,66 +70,58 @@ export function InstallPanel() {
 				</button>
 			</div>
 
-			{tab === "command" ? (
-				<div
-					role="tabpanel"
-					id={commandPanelId}
-					aria-labelledby={commandTabId}
-					className="home-aurora__install-panel"
+			<div
+				role="tabpanel"
+				id={panelId}
+				aria-labelledby={tab === "command" ? commandTabId : promptTabId}
+			>
+				<button
+					type="button"
+					aria-label={ariaLabel}
+					onClick={active.copy}
+					className="home-aurora__install-copy"
+					data-state={active.copied ? "success" : undefined}
+					data-tab={tab}
 				>
-					<button
-						type="button"
-						aria-label={commandCopy.copied ? "Copied" : "Copy install command"}
-						onClick={commandCopy.copy}
-						className="home-aurora__install-copy"
-						data-state={commandCopy.copied ? "success" : undefined}
-					>
-						<Terminal
-							className="home-aurora__install-icon"
-							aria-hidden="true"
-						/>
-						<code className="home-aurora__install-code">
-							<span className="home-aurora__install-prompt-token">npx </span>
-							<span>arkenv@latest init</span>
-						</code>
-						<span className="home-aurora__install-copy-affordance">
-							{commandCopy.copied ? (
-								<Check className="size-5 text-[var(--color-success)]" />
-							) : (
-								<Copy className="size-5" />
-							)}
+					<span className="home-aurora__install-swap">
+						<span
+							className="home-aurora__install-swap-item"
+							data-active={tab === "command" ? "true" : undefined}
+							aria-hidden={tab !== "command"}
+						>
+							<Terminal
+								className="home-aurora__install-icon"
+								aria-hidden="true"
+							/>
+							<code className="home-aurora__install-code">
+								<span className="home-aurora__install-prompt-token">npx </span>
+								<span>arkenv@latest init</span>
+							</code>
 						</span>
-					</button>
-				</div>
-			) : (
-				<div
-					role="tabpanel"
-					id={promptPanelId}
-					aria-labelledby={promptTabId}
-					className="home-aurora__install-panel"
-				>
-					<button
-						type="button"
-						aria-label={promptCopy.copied ? "Copied" : "Copy prompt"}
-						onClick={promptCopy.copy}
-						className="home-aurora__install-copy"
-						data-state={promptCopy.copied ? "success" : undefined}
-					>
-						<Sparkles
-							className="home-aurora__install-icon"
-							aria-hidden="true"
-						/>
-						<span className="home-aurora__install-label">Copy prompt</span>
-						<span className="home-aurora__install-copy-affordance">
-							{promptCopy.copied ? (
-								<Check className="size-5 text-[var(--color-success)]" />
-							) : (
-								<Copy className="size-5" />
-							)}
+						<span
+							className="home-aurora__install-swap-item"
+							data-active={tab === "prompt" ? "true" : undefined}
+							aria-hidden={tab !== "prompt"}
+						>
+							<Sparkles
+								className="home-aurora__install-icon"
+								aria-hidden="true"
+							/>
+							<span className="home-aurora__install-label">Copy prompt</span>
 						</span>
-					</button>
-				</div>
-			)}
+					</span>
+					<span
+						className="home-aurora__install-copy-affordance"
+						aria-hidden="true"
+					>
+						{active.copied ? (
+							<Check className="size-5 text-[var(--color-success)]" />
+						) : (
+							<Copy className="size-5" />
+						)}
+					</span>
+				</button>
+			</div>
 		</div>
 	);
 }

@@ -3,9 +3,12 @@ import { AnnouncementBadge } from "~/components/announcement-badge";
 import {
 	AgentNativePitch,
 	BeforeAfterCompare,
+	BringYourOwnValidator,
 	CompatibilityRails,
+	HeroFaq,
 	InstallPanel,
 	QuickstartButton,
+	SecureBoundary,
 	StarUsButton,
 	TypeSafetyShowcase,
 	VideoDemo,
@@ -21,25 +24,41 @@ export default function HomePage() {
 	return (
 		<div className="home-aurora__shell">
 			<section className="home-aurora__intro" aria-labelledby="home-hero">
-				<div className="home-aurora__badge">
+				<div
+					className="home-aurora__badge rise"
+					style={{ animationDelay: "40ms" }}
+				>
 					<AnnouncementBadge href="docs/cli/hosting-presets" new>
 						Next.js, Netlify presets
 					</AnnouncementBadge>
 				</div>
-				<h1 id="home-hero" className="home-aurora__tagline">
+				<h1
+					id="home-hero"
+					className="home-aurora__tagline rise-blur"
+					style={{ animationDelay: "120ms" }}
+				>
 					<span className="home-aurora__lead">The happy path for</span>{" "}
 					<span className="home-aurora__digital home-aurora__digital-accent">
 						environment{" "}
 						<span className="home-aurora__digital-word">variables</span>
 					</span>
+					.
 				</h1>
-				<p className="home-aurora__summary">
+				<p
+					className="home-aurora__summary rise-blur"
+					style={{ animationDelay: "240ms" }}
+				>
 					One function to validate, parse, and keep your <code>env</code> vars
-					typesafe. Works with ArkType, Zod, or any Standard Schema. Start from
-					the CLI, or let your agent handle it.
+					typesafe. Use ArkType, Zod, or any Standard Schema. Run the CLI, or
+					let your agent handle the setup.
 				</p>
-				<CompatibilityRails className="home-aurora__rails-host" />
-				<div className="home-aurora__install-row">
+				<div className="rise" style={{ animationDelay: "320ms" }}>
+					<CompatibilityRails className="home-aurora__rails-host" />
+				</div>
+				<div
+					className="home-aurora__install-row rise"
+					style={{ animationDelay: "400ms" }}
+				>
 					<InstallPanel />
 					<StarUsButton />
 					<QuickstartButton />
@@ -48,17 +67,47 @@ export default function HomePage() {
 
 			<BeforeAfterCompare />
 			<TypeSafetyShowcase />
+			<SecureBoundary />
+			<BringYourOwnValidator />
 			<AgentNativePitch />
 
 			<section className="home-aurora__bench" aria-labelledby="home-bench">
 				<header className="home-aurora__bench-head">
-					<h2 id="home-bench">Try it live</h2>
-					<p>Open the playground from the demo below.</p>
+					<h2 id="home-bench" data-reveal="blur">
+						Try it live!
+					</h2>
+					<p data-reveal style={{ ["--reveal-delay" as string]: "100ms" }}>
+						Click the demo to open a fully interactive playground.
+					</p>
 				</header>
-				<VideoDemo />
+				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
+					<VideoDemo />
+				</div>
 			</section>
 
-			<footer className="home-aurora__footer">
+			<HeroFaq />
+
+			<section className="home-aurora__outro" aria-labelledby="home-outro">
+				<h2 id="home-outro" className="home-aurora__outro-title" data-reveal="blur">
+					Try ArkEnv now.
+				</h2>
+				<div
+					className="home-aurora__install-row home-aurora__install-row--outro"
+					data-reveal
+					style={{ ["--reveal-delay" as string]: "80ms" }}
+				>
+					<InstallPanel />
+					<a
+						href="/docs/arkenv/quickstart"
+						className="home-aurora__outro-docs"
+					>
+						Read the docs
+						<span aria-hidden="true">→</span>
+					</a>
+				</div>
+			</section>
+
+			<footer className="home-aurora__footer" data-reveal="fade">
 				<div className="home-aurora__footer-grid">
 					<div className="home-aurora__footer-brand">
 						<a
@@ -69,9 +118,7 @@ export default function HomePage() {
 							<Logo />
 						</a>
 						<p>The happy path for environment variables.</p>
-						<p className="home-aurora__footer-license">
-							MIT License · Open Source
-						</p>
+						<p className="home-aurora__footer-license">MIT License</p>
 					</div>
 
 					<nav aria-labelledby="footer-resources">
@@ -147,13 +194,13 @@ export default function HomePage() {
 								</a>
 							</li>
 							<li>
-								<a
-									href="https://yam.codes"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									Created by Yam
-								</a>
+						<a
+							href="https://yam.codes"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							@yamcodes
+						</a>
 							</li>
 							<li>
 								<a
@@ -171,7 +218,7 @@ export default function HomePage() {
 				<div className="home-aurora__footer-meta">
 					<span className="home-aurora__wordmark">ArkEnv</span>
 					<span>
-						Released under the MIT License · Copyright © 2025-present Yam
+						Free and open-source software · Copyright © 2025-present Yam
 						Borodetsky
 					</span>
 				</div>

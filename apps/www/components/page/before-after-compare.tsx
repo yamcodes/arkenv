@@ -1,75 +1,59 @@
-"use client";
+import { BeforeAfterCompareView } from "./before-after-compare-view";
+import { highlightTs } from "./highlight-ts";
 
-/**
- * Before / after code compare with a draggable vertical reveal.
- * Pure CSS clip + range input — no card chrome.
- */
-export function BeforeAfterCompare() {
-	return (
-		<section
-			className="home-aurora__pitch"
-			aria-labelledby="home-before-after"
-			id="why"
-		>
-			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label">01 — Friction</p>
-				<h2 id="home-before-after">Delete the boilerplate</h2>
-				<p>
-					Manual <code>process.env</code> checks, throws, and{" "}
-					<code>parseInt</code> coercion — or one schema.
-				</p>
-			</header>
-
-			<div className="home-aurora__compare">
-				<input
-					type="range"
-					min={8}
-					max={92}
-					defaultValue={50}
-					aria-label="Reveal ArkEnv vs the old way"
-					className="home-aurora__compare-range"
-					onInput={(event) => {
-						const value = `${(event.target as HTMLInputElement).value}%`;
-						event.currentTarget.parentElement?.style.setProperty(
-							"--compare",
-							value,
-						);
-					}}
-				/>
-				<div className="home-aurora__compare-pane home-aurora__compare-pane--after">
-					<p className="home-aurora__compare-eyebrow">The ArkEnv way</p>
-					<pre className="home-aurora__code">
-						<code>{`import arkenv from "arkenv";
-
-export const env = arkenv({
-  DATABASE_URL: "string.url",
-  PORT: "0 <= number.integer <= 65535 = 3000",
-  NODE_ENV: "'development' | 'production'",
-});
-
-// env.PORT is number — validated at boot`}</code>
-					</pre>
-				</div>
-				<div className="home-aurora__compare-pane home-aurora__compare-pane--before">
-					<p className="home-aurora__compare-eyebrow">The old way</p>
-					<pre className="home-aurora__code">
-						<code>{`const url = process.env.DATABASE_URL;
-if (!url) throw new Error("DATABASE_URL missing");
+const BEFORE = `// The old way
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) throw new Error("DATABASE_URL missing");
+if (!/^https?:\\/\\//.test(DATABASE_URL)) {
+  throw new Error("DATABASE_URL must be http(s)");
+}
 
 const portRaw = process.env.PORT ?? "3000";
 const PORT = Number.parseInt(portRaw, 10);
 if (Number.isNaN(PORT)) throw new Error("PORT invalid");
+if (PORT < 0 || PORT > 65535) {
+  throw new Error("PORT out of range");
+}
 
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 if (!["development", "production"].includes(NODE_ENV)) {
   throw new Error("NODE_ENV invalid");
 }
 
-export const env = { DATABASE_URL: url, PORT, NODE_ENV };`}</code>
-					</pre>
-				</div>
-				<div className="home-aurora__compare-handle" aria-hidden="true" />
-			</div>
-		</section>
+export const env = { DATABASE_URL, PORT, NODE_ENV };`;
+
+const AFTER = `// The ArkEnv way
+import arkenv from "arkenv";
+
+export const env = arkenv({
+  DATABASE_URL: "string.url",
+  PORT: "0 <= number.integer <= 65535 = 3000",
+  NODE_ENV: "'development' | 'production'",
+});`;
+
+function countLines(source: string) {
+	return source.trimEnd().split("\n").length;
+}
+
+/**
+ * Server entry: Shiki-highlights the snippets, then hands off to the
+ * interactive client reveal.
+ */
+export async function BeforeAfterCompare() {
+	const [beforeHtml, afterHtml] = await Promise.all([
+		highlightTs(BEFORE),
+		highlightTs(AFTER),
+	]);
+
+	const reduction = Math.round(
+		(1 - countLines(AFTER) / countLines(BEFORE)) * 100,
+	);
+
+	return (
+		<BeforeAfterCompareView
+			beforeHtml={beforeHtml}
+			afterHtml={afterHtml}
+			reduction={reduction}
+		/>
 	);
 }

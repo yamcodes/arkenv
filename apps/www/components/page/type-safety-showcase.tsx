@@ -1,15 +1,21 @@
 /**
- * Simulated IDE autocomplete — proves typesafe env access without a video.
+ * Simulated IDE autocomplete - proves typesafe env access without a video.
  */
+import { WindowChrome } from "./window-chrome";
+
 export function TypeSafetyShowcase() {
 	return (
 		<section className="home-aurora__pitch" aria-labelledby="home-dx" id="dx">
 			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label">02 — Typesafety</p>
-				<h2 id="home-dx">Stop guessing your env vars</h2>
-				<p>
-					Full IDE autocomplete and type inference across your stack — from
-					editor to runtime.
+				<p className="home-aurora__pitch-label" data-reveal="fade">
+					02 - TYPESAFE
+				</p>
+				<h2 id="home-dx" data-reveal="blur">
+					No more guessing env vars.
+				</h2>
+				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
+					Get autocomplete and types in your editor, then the same guarantees at
+					runtime, and even build time.
 				</p>
 			</header>
 
@@ -17,19 +23,19 @@ export function TypeSafetyShowcase() {
 				className="home-aurora__ide"
 				role="img"
 				aria-label="IDE showing env autocomplete for DATABASE_URL and PORT"
+				data-reveal
+				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				<div className="home-aurora__ide-chrome">
-					<span className="home-aurora__ide-dot" />
-					<span className="home-aurora__ide-dot" />
-					<span className="home-aurora__ide-dot" />
-					<span className="home-aurora__ide-tab">app.ts</span>
-				</div>
+				<WindowChrome title="app.ts" />
 				<pre className="home-aurora__ide-body">
 					<code>
 						<span className="home-aurora__tok-kw">import</span>
-						{" { env } "}
+						{" { "}
+						<span className="home-aurora__tok-id">env</span>
+						{" } "}
 						<span className="home-aurora__tok-kw">from</span>
-						{` "./env";\n\n`}
+						<span className="home-aurora__tok-str">{` "./env"`}</span>
+						{`;\n\n`}
 						<span className="home-aurora__tok-kw">const</span>
 						{" db = "}
 						<span className="home-aurora__tok-id">env</span>

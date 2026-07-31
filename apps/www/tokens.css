@@ -20,6 +20,10 @@
 	--color-success: oklch(72% 0.14 155);
 	--color-danger: oklch(65% 0.18 25);
 	--color-danger-ink: oklch(78% 0.14 25);
+	--color-cmd: oklch(78% 0.19 55);
+	--color-traffic-close: oklch(68% 0.18 25);
+	--color-traffic-min: oklch(78% 0.14 85);
+	--color-traffic-max: oklch(72% 0.16 145);
 
 	--font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 	--font-body: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -50,9 +54,12 @@
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--ease-in: cubic-bezier(0.7, 0, 0.84, 0);
 	--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+	/* open-slide rise / blur-reveal */
+	--ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
 	--dur-micro: 120ms;
 	--dur-short: 220ms;
 	--dur-long: 420ms;
+	--dur-reveal: 800ms;
 
 	--rule-hair: 1px;
 	--radius-pill: 999px;

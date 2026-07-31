@@ -5,6 +5,7 @@ import Image from "next/image";
 import BackgroundVideo from "next-video/background-video";
 import { useState } from "react";
 import demo from "~/videos/demo.mp4";
+import { WindowChrome } from "./window-chrome";
 
 const WIDTH = 2048;
 const HEIGHT = 1672;
@@ -13,7 +14,7 @@ const getAspectRatio = (width: number, height: number) =>
 	`${width} / ${height}`;
 
 /**
- * Product demo framed for the home workbench — no redrawn browser chrome.
+ * Product demo in a faux window frame (main-branch pattern, Aurora tokens).
  * Click opens the StackBlitz playground.
  */
 export function VideoDemo() {
@@ -38,6 +39,10 @@ export function VideoDemo() {
 				onClick={handleVideoClick}
 				aria-label="Open interactive demo in a new tab"
 			>
+				<WindowChrome
+					title="basic - index.ts"
+					className="home-aurora__frame-chrome"
+				/>
 				<div className="home-aurora__frame-media">
 					{videoError ? (
 						<Image
@@ -68,9 +73,6 @@ export function VideoDemo() {
 					</div>
 				</div>
 			</button>
-			<figcaption className="home-aurora__caption">
-				basic · index.ts — click to open the live playground
-			</figcaption>
 		</figure>
 	);
 }

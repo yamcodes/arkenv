@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-/** Physics tuned for a quiet Aurora field — push ripples, then settle. */
+/** Physics tuned for a quiet Aurora field - push ripples, then settle. */
 const SPACING = 24;
 const DOT_RADIUS = 1;
 const INFLUENCE = 110;

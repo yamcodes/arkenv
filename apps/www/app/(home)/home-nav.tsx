@@ -13,21 +13,23 @@ export function HomeNav() {
 			</a>
 			<ul className="home-aurora__nav-links">
 				<li>
-					<a href="/docs/arkenv">Docs</a>
+					<a href="/#why">Why ArkEnv?</a>
 				</li>
 				<li>
 					<a href="/docs/cli/hosting-presets">Presets</a>
 				</li>
 				<li>
-					<a href="/#why">Why ArkEnv?</a>
+					<a href="/docs/arkenv">Docs</a>
 				</li>
 			</ul>
 			<div className="home-aurora__nav-actions">
-				<SearchToggle />
-				<ThemeToggle />
-				<HeaderGithubLink className="hidden md:inline-flex items-center gap-1.5 h-8 px-2 text-[var(--color-ink-2)] hover:text-[var(--color-ink)]" />
+				<div className="home-aurora__nav-utils">
+					<SearchToggle />
+					<ThemeToggle />
+					<HeaderGithubLink className="home-aurora__nav-github" />
+				</div>
 				<a className="home-aurora__nav-cta" href="/docs/arkenv/quickstart">
-					Get Started
+					Get started →
 				</a>
 			</div>
 		</nav>
