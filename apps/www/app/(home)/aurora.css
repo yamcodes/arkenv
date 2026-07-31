@@ -303,6 +303,50 @@
 	max-width: 42rem;
 }
 
+/* Mobile secondary CTA — below Star us; hidden with install panel on ≥40rem */
+.home-aurora__docs-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	width: 100%;
+	min-height: 3rem;
+	padding: 0.75rem 1.1rem;
+	border: var(--rule-hair) solid var(--color-rule);
+	border-radius: var(--radius-pill);
+	background: color-mix(in oklch, var(--color-paper-2) 90%, transparent);
+	color: var(--color-ink-2);
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: 500;
+	text-decoration: none;
+	transition:
+		color var(--dur-micro) var(--ease-out),
+		border-color var(--dur-micro) var(--ease-out),
+		background-color var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__docs-cta:hover {
+	color: var(--color-ink);
+	border-color: color-mix(in oklch, var(--color-accent) 40%, var(--color-rule));
+	background: var(--color-paper-3);
+}
+
+.home-aurora__docs-cta:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+.home-aurora__docs-cta:active {
+	opacity: 0.9;
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__docs-cta {
+		display: none;
+	}
+}
+
 /* Install · Command / Prompt tabs — desktop/tablet only */
 .home-aurora__install {
 	display: none;
@@ -659,6 +703,7 @@
 @media (prefers-reduced-motion: reduce) {
 	.home-aurora__frame-hint,
 	.home-aurora__cta,
+	.home-aurora__docs-cta,
 	.home-aurora__nav-cta,
 	.home-aurora__nav-links a,
 	.home-aurora__install-tab,

@@ -2,8 +2,8 @@
 
 export function QuickstartButton() {
 	return (
-		<a href="/docs/arkenv/quickstart" className="home-aurora__cta">
-			Get Started
+		<a href="/docs/arkenv" className="home-aurora__docs-cta">
+			Read the docs
 			<span aria-hidden="true">→</span>
 		</a>
 	);
