@@ -29,9 +29,9 @@ export default function HomePage() {
 					</span>
 				</h1>
 				<p className="home-aurora__summary">
-					One function for validated, parsed, and typesafe <code>env</code>{" "}
-					vars. Works with ArkType, Zod, Valibot, or any Standard Schema. Ready
-					for your agent, managed from the CLI.
+					One function for validated, parsed, and typesafe env vars. Works with
+					ArkType, Zod, Valibot, or any Standard Schema. Start from the CLI, or
+					let your agent handle it.
 				</p>
 				<CompatibilityRails className="home-aurora__rails-host" />
 				<div className="home-aurora__install-row">
