@@ -303,11 +303,17 @@
 	max-width: 42rem;
 }
 
-/* Install · Command / Prompt tabs */
+/* Install · Command / Prompt tabs — desktop/tablet only */
 .home-aurora__install {
-	display: grid;
+	display: none;
 	gap: var(--space-xs);
 	width: 100%;
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__install {
+		display: grid;
+	}
 }
 
 .home-aurora__install-tabs {
