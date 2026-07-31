@@ -4,6 +4,7 @@ import { AnnouncementBadge } from "~/components/announcement-badge";
 import {
 	CompatibilityRails,
 	InstallPanel,
+	QuickstartButton,
 	StarUsButton,
 	VideoDemo,
 } from "~/components/page";
@@ -37,6 +38,7 @@ export default function HomePage() {
 				<div className="home-aurora__install-row">
 					<InstallPanel />
 					<StarUsButton />
+					<QuickstartButton />
 				</div>
 			</section>
 
