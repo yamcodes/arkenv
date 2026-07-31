@@ -229,8 +229,7 @@
 	width: min(90rem, 100%);
 	margin-inline: auto;
 	/* Mobile: clear the floating pill without a tall empty band */
-	padding: calc(3.75rem + var(--space-xs)) clamp(0.75rem, 2.5vw, 1.75rem)
-		var(--space-2xl);
+	padding: calc(3.75rem + var(--space-xs)) clamp(0.75rem, 2.5vw, 1.75rem) var(--space-2xl);
 }
 
 @media (min-width: 40rem) {
