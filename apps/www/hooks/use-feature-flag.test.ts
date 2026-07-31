@@ -1,8 +1,8 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import posthog from "posthog-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useFeatureFlag } from "./use-feature-flag";
 import { FeatureFlag } from "~/lib/posthog/feature-flags";
+import { useFeatureFlag } from "./use-feature-flag";
 
 vi.mock("posthog-js", () => ({
 	default: {
