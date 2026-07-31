@@ -96,7 +96,7 @@
 /* N5 · Floating pill */
 .home-aurora__nav {
 	position: fixed;
-	inset: var(--space-md) auto auto 50%;
+	inset: var(--space-sm) auto auto 50%;
 	transform: translateX(-50%);
 	z-index: 40;
 	display: inline-flex;
@@ -109,6 +109,12 @@
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: var(--radius-pill);
 	box-shadow: var(--shadow-nav);
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__nav {
+		inset-block-start: var(--space-md);
+	}
 }
 
 .home-aurora__nav-links {
@@ -222,15 +228,30 @@
 .home-aurora__shell {
 	width: min(90rem, 100%);
 	margin-inline: auto;
-	padding: calc(var(--space-3xl) + var(--space-sm)) clamp(0.75rem, 2.5vw, 1.75rem) var(--space-2xl);
+	/* Mobile: clear the floating pill without a tall empty band */
+	padding: calc(3.75rem + var(--space-xs)) clamp(0.75rem, 2.5vw, 1.75rem)
+		var(--space-2xl);
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__shell {
+		padding-top: calc(var(--space-3xl) + var(--space-sm));
+	}
 }
 
 /* Workbench · hanging intro */
 .home-aurora__intro {
 	display: grid;
-	gap: var(--space-md);
+	gap: var(--space-sm);
 	max-width: none;
-	padding-block: var(--space-xl) var(--space-lg);
+	padding-block: var(--space-2xs) var(--space-md);
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__intro {
+		gap: var(--space-md);
+		padding-block: var(--space-xl) var(--space-lg);
+	}
 }
 
 .home-aurora__badge {
@@ -247,9 +268,9 @@
 .home-aurora__intro h1,
 .home-aurora__tagline {
 	margin: 0;
-	max-width: none;
+	max-width: 100%;
 	font-family: var(--font-display);
-	font-size: clamp(2.75rem, 6.5vw + 1rem, 5rem);
+	font-size: clamp(2.25rem, 7vw + 0.65rem, 5rem);
 	line-height: 1.05;
 	letter-spacing: -0.035em;
 	color: var(--color-ink);
@@ -271,9 +292,17 @@
 	color: inherit;
 }
 
+/* Prefer one line; wrap between the two words when the viewport is too narrow */
 .home-aurora__digital-accent {
 	color: var(--color-accent);
-	white-space: nowrap;
+	display: inline;
+	white-space: normal;
+}
+
+@media (min-width: 36rem) {
+	.home-aurora__digital-accent {
+		white-space: nowrap;
+	}
 }
 
 .home-aurora__summary {
