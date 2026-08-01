@@ -1858,13 +1858,19 @@
 	box-shadow: var(--shadow-nav);
 }
 
-/* Bookend · callback to the hero promise + install CTAs */
+/* Bookend · callback to the hero promise + install CTAs (desktop only) */
 .home-aurora__outro {
-	margin-top: var(--space-2xl);
-	padding-block: var(--space-xl) var(--space-md);
-	border-top: var(--rule-hair) solid var(--color-rule);
-	display: grid;
-	gap: var(--space-sm);
+	display: none;
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__outro {
+		margin-top: var(--space-2xl);
+		padding-block: var(--space-xl) var(--space-md);
+		border-top: var(--rule-hair) solid var(--color-rule);
+		display: grid;
+		gap: var(--space-sm);
+	}
 }
 
 .home-aurora__outro-title {
