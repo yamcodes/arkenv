@@ -745,8 +745,9 @@
 	max-width: 48ch;
 	font-family: var(--font-body);
 	font-size: clamp(0.95rem, 0.35vw + 0.8rem, 1.05rem);
+	font-weight: 400;
 	line-height: 1.55;
-	color: var(--color-ink-2);
+	color: color-mix(in oklch, var(--color-ink-2) 80%, var(--color-muted));
 	transform: translateY(-0.35rem);
 	opacity: 0.4;
 	transition:

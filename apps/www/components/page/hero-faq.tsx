@@ -18,11 +18,9 @@ const FAQ: readonly {
 		question: "Why do I need ArkEnv?",
 		teaser: (
 			<>
-				Environment variables fail silently when you least expect it: CI
-				deployments miss required keys, <code>&quot;false&quot;</code> evaluates
-				as a truthy string, and unannounced schema updates break downstream
-				code. ArkEnv checks your process against your schema at boot, halting
-				broken builds before your application code ever executes.
+				Missing CI keys, unparsed <code>&quot;false&quot;</code> booleans, and
+				silent schema drift trigger hard-to-trace bugs. ArkEnv validates your
+				env at boot before application code runs.
 			</>
 		),
 	},
