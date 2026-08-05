@@ -6,7 +6,12 @@ import { useCallback, useEffect, useId, useState } from "react";
  * Homepage FAQ picks - questions + anchors match `/docs/arkenv/faq` (source of truth).
  * Keep answers as short teasers; link out for the full write-up.
  */
-const FAQ = [
+const FAQ: readonly {
+	id: string;
+	href: string;
+	question: React.ReactNode;
+	teaser: React.ReactNode;
+}[] = [
 	{
 		id: "why",
 		href: "/docs/arkenv/faq#why-do-i-need-arkenv",
@@ -17,9 +22,17 @@ const FAQ = [
 	{
 		id: "env-files",
 		href: "/docs/arkenv/faq#does-arkenv-load-my-env-files",
-		question: "Does ArkEnv load my `.env` files?",
-		teaser:
-			"No. ArkEnv validates the env your framework already loaded. It does not read `.env` files itself.",
+		question: (
+			<>
+				Does ArkEnv load my <code>.env</code> files?
+			</>
+		),
+		teaser: (
+			<>
+				No. ArkEnv validates the env your framework already loaded. It does not
+				read <code>.env</code> files itself.
+			</>
+		),
 	},
 	{
 		id: "arktype",
@@ -40,10 +53,15 @@ const FAQ = [
 		href: "/docs/arkenv/faq#does-arkenv-support-ai-development-tools-like-claude-code-or-cursor",
 		question:
 			"Does ArkEnv support AI development tools like Claude Code or Cursor?",
-		teaser:
-			"Yes. Install the agent skill and your assistant updates env schemas as the code changes.",
+		teaser: (
+			<>
+				Yes. Point the agent skill at your <code>.env.example</code> to
+				intelligently set up validation and guide your assistant through schema
+				maintenance.
+			</>
+		),
 	},
-] as const;
+];
 
 const DOCS_FAQ_HREF = "/docs/arkenv/faq";
 
