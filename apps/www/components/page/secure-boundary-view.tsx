@@ -91,29 +91,35 @@ export function SecureBoundaryView({
 								</button>
 							</div>
 						</div>
-						<div
-							className="home-aurora__shiki min-h-[175px] flex-1 flex flex-col justify-start"
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
-							dangerouslySetInnerHTML={{
-								__html: activeTab === "schema" ? envHtml : bundleHtml,
-							}}
-						/>
+						<div className="relative min-h-[165px] flex-1">
+							<div
+								className={`home-aurora__shiki transition-opacity duration-150 ${activeTab === "schema" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
+								dangerouslySetInnerHTML={{ __html: envHtml }}
+							/>
+							<div
+								className={`home-aurora__shiki transition-opacity duration-150 ${activeTab === "bundle" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
+								dangerouslySetInnerHTML={{ __html: bundleHtml }}
+							/>
+						</div>
 					</figure>
 
-					<p className="text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans min-h-[2.5rem]">
-						{activeTab === "schema" ? (
-							<>
-								Define server & client variables in one flat schema. Non-
-								<code>NEXT_PUBLIC_</code> keys are automatically identified.
-							</>
-						) : (
-							<>
-								Secret values like <code>DATABASE_URL</code>{" "}
-								(&quot;postgresql://db...&quot;) are stripped at build time.
-								Only public values reach the client.
-							</>
-						)}
-					</p>
+					<div className="relative min-h-[2.75rem]">
+						<p
+							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans transition-opacity duration-150 ${activeTab === "schema" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+						>
+							Define server & client variables in one flat schema. Non-
+							<code>NEXT_PUBLIC_</code> keys are automatically identified.
+						</p>
+						<p
+							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans transition-opacity duration-150 ${activeTab === "bundle" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+						>
+							Secret values like <code>DATABASE_URL</code>{" "}
+							(&quot;postgresql://db...&quot;) are stripped at build time. Only
+							public values reach the client.
+						</p>
+					</div>
 				</div>
 
 				{/* Right Column: Anchored SSR Error Overlay */}
