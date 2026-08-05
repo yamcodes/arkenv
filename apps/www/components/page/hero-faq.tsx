@@ -18,11 +18,11 @@ const FAQ: readonly {
 		question: "Why do I need ArkEnv?",
 		teaser: (
 			<>
-				Unvalidated env vars fail silently: missing keys break deployments,
-				unparsed booleans (<code>&quot;false&quot;</code>) evaluate as truthy,
-				and unannounced schema changes trigger untraceable production bugs.
-				ArkEnv enforces your configuration schema at boot before application
-				code runs.
+				Environment variables fail silently when you least expect it: CI
+				deployments miss required keys, <code>&quot;false&quot;</code> evaluates
+				as a truthy string, and unannounced schema updates break downstream
+				code. ArkEnv checks your process against your schema at boot, halting
+				broken builds before your application code ever executes.
 			</>
 		),
 	},
