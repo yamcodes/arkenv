@@ -647,11 +647,11 @@
 	justify-content: space-between;
 	gap: var(--space-sm);
 	width: 100%;
-	padding: 0.85rem 0;
+	padding: 1.05rem 0;
 	border: 0;
 	background: transparent;
 	font-family: var(--font-display);
-	font-size: var(--text-sm);
+	font-size: clamp(1rem, 0.4vw + 0.85rem, 1.15rem);
 	font-weight: 500;
 	color: var(--color-ink);
 	text-align: left;
@@ -744,7 +744,7 @@
 	margin: 0 0 var(--space-sm);
 	max-width: 48ch;
 	font-family: var(--font-body);
-	font-size: var(--text-sm);
+	font-size: clamp(0.95rem, 0.35vw + 0.8rem, 1.05rem);
 	line-height: 1.55;
 	color: var(--color-ink-2);
 	transform: translateY(-0.35rem);
