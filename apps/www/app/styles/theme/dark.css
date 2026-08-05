@@ -1,28 +1,48 @@
 .dark {
-	--background: #081021;
-	--foreground: hsl(0 0% 98%);
-	--card: hsl(240 10% 3.9%);
-	--card-foreground: hsl(0 0% 98%);
-	--popover: hsl(240 10% 3.9%);
-	--popover-foreground: hsl(0 0% 98%);
-	--primary: rgb(158, 203, 255);
-	--primary-foreground: rgb(10, 52, 93);
-	--fd-primary: rgb(158, 203, 255);
-	--color-fd-primary: rgb(158, 203, 255);
-	/** can be rgb(3, 47, 98) */
-	--secondary: color-mix(in srgb, var(--background) 80%, transparent);
-	--secondary-foreground: hsl(0 0% 98%);
-	--muted: hsl(240 3.7% 15.9%);
-	--muted-foreground: hsl(240 5% 70%);
-	/* WCAG AA compliant: 8.88:1 contrast */
-	--accent: hsl(240 3.7% 15.9%);
-	--accent-foreground: hsl(0 0% 98%);
-	--destructive: hsl(0 62.8% 30.6%);
-	--destructive-foreground: hsl(0 0% 98%);
-	--border: var(--color-fd-border);
-	--input: hsl(240 3.7% 15.9%);
-	--ring: hsl(240 4.9% 83.9%);
-	--chart-1: hsl(220 70% 50%);
+	/* Surfaces — Aurora paper (hue 200), not ocean navy */
+	--background: oklch(13% 0.018 200);
+	--foreground: oklch(95% 0.01 200);
+	--card: oklch(17% 0.02 200);
+	--card-foreground: oklch(95% 0.01 200);
+	--popover: oklch(17% 0.02 200);
+	--popover-foreground: oklch(95% 0.01 200);
+
+	/* Brand accent */
+	--primary: oklch(74% 0.13 195);
+	--primary-foreground: oklch(14% 0.02 200);
+	--fd-primary: oklch(74% 0.13 195);
+	--color-fd-primary: oklch(74% 0.13 195);
+	--color-fd-primary-foreground: oklch(14% 0.02 200);
+
+	--secondary: oklch(21% 0.022 200);
+	--secondary-foreground: oklch(78% 0.02 200);
+	--muted: oklch(17% 0.02 200);
+	--muted-foreground: oklch(62% 0.025 200);
+	--accent: oklch(21% 0.022 200);
+	--accent-foreground: oklch(95% 0.01 200);
+	--destructive: oklch(65% 0.18 25);
+	--destructive-foreground: oklch(95% 0.01 200);
+	--border: oklch(30% 0.02 200);
+	--input: oklch(21% 0.022 200);
+	--ring: oklch(78% 0.12 195);
+
+	/* fumadocs ocean overrides — search dialog + docs chrome */
+	--color-fd-background: oklch(13% 0.018 200);
+	--color-fd-foreground: oklch(95% 0.01 200);
+	--color-fd-muted: oklch(17% 0.02 200);
+	--color-fd-muted-foreground: oklch(62% 0.025 200);
+	--color-fd-popover: oklch(17% 0.02 200);
+	--color-fd-popover-foreground: oklch(95% 0.01 200);
+	--color-fd-card: oklch(17% 0.02 200);
+	--color-fd-card-foreground: oklch(95% 0.01 200);
+	--color-fd-border: oklch(30% 0.02 200);
+	--color-fd-secondary: oklch(21% 0.022 200);
+	--color-fd-secondary-foreground: oklch(78% 0.02 200);
+	--color-fd-accent: oklch(21% 0.022 200);
+	--color-fd-accent-foreground: oklch(95% 0.01 200);
+	--color-fd-ring: oklch(78% 0.12 195);
+
+	--chart-1: hsl(195 70% 50%);
 	--chart-2: hsl(160 60% 45%);
 	--chart-3: hsl(30 80% 55%);
 	--chart-4: hsl(280 65% 60%);

@@ -1,26 +1,47 @@
 :root {
-	--background: #fefefe;
-	--foreground: hsl(240 10% 3.9%);
-	--card: hsl(0 0% 100%);
-	--card-foreground: hsl(240 10% 3.9%);
-	--popover: hsl(0 0% 100%);
-	--popover-foreground: hsl(240 10% 3.9%);
-	--primary: #1e40af;
-	--primary-foreground: hsl(0 0% 98%);
-	--fd-primary: var(--primary);
-	--color-fd-primary: var(--primary);
-	--secondary: rgb(247, 249, 252);
-	--secondary-foreground: hsl(240 5.9% 10%);
-	--muted: hsl(240 4.8% 95.9%);
-	--muted-foreground: hsl(240 4% 45%);
-	--accent: rgb(244, 244, 245);
-	--accent-foreground: hsl(240 5.9% 10%);
-	--destructive: hsl(0 84.2% 60.2%);
-	--destructive-foreground: hsl(0 0% 98%);
-	--border: hsl(240 5.9% 90%);
-	--input: hsl(240 5.9% 90%);
-	--ring: hsl(240 10% 3.9%);
-	--chart-1: hsl(12 76% 61%);
+	--background: oklch(99% 0.005 200);
+	--foreground: oklch(18% 0.02 200);
+	--card: oklch(100% 0 0);
+	--card-foreground: oklch(18% 0.02 200);
+	--popover: oklch(100% 0 0);
+	--popover-foreground: oklch(18% 0.02 200);
+
+	/* Aurora accent — darker for light surfaces */
+	--primary: oklch(48% 0.11 195);
+	--primary-foreground: oklch(98% 0.01 195);
+	--fd-primary: oklch(48% 0.11 195);
+	--color-fd-primary: oklch(48% 0.11 195);
+	--color-fd-primary-foreground: oklch(98% 0.01 195);
+
+	--secondary: oklch(96% 0.01 200);
+	--secondary-foreground: oklch(22% 0.02 200);
+	--muted: oklch(96% 0.01 200);
+	--muted-foreground: oklch(45% 0.02 200);
+	--accent: oklch(96% 0.01 200);
+	--accent-foreground: oklch(22% 0.02 200);
+	--destructive: oklch(55% 0.2 25);
+	--destructive-foreground: oklch(98% 0.01 200);
+	--border: oklch(90% 0.015 200);
+	--input: oklch(90% 0.015 200);
+	--ring: oklch(48% 0.11 195);
+
+	/* fumadocs ocean overrides */
+	--color-fd-background: oklch(99% 0.005 200);
+	--color-fd-foreground: oklch(18% 0.02 200);
+	--color-fd-muted: oklch(96% 0.01 200);
+	--color-fd-muted-foreground: oklch(45% 0.02 200);
+	--color-fd-popover: oklch(100% 0 0);
+	--color-fd-popover-foreground: oklch(18% 0.02 200);
+	--color-fd-card: oklch(100% 0 0);
+	--color-fd-card-foreground: oklch(18% 0.02 200);
+	--color-fd-border: oklch(90% 0.015 200);
+	--color-fd-secondary: oklch(96% 0.01 200);
+	--color-fd-secondary-foreground: oklch(22% 0.02 200);
+	--color-fd-accent: oklch(96% 0.01 200);
+	--color-fd-accent-foreground: oklch(22% 0.02 200);
+	--color-fd-ring: oklch(48% 0.11 195);
+
+	--chart-1: hsl(195 70% 40%);
 	--chart-2: hsl(173 58% 39%);
 	--chart-3: hsl(197 37% 24%);
 	--chart-4: hsl(43 74% 66%);

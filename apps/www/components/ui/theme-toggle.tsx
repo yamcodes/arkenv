@@ -9,6 +9,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { useFeatureFlag } from "~/hooks/use-feature-flag";
+import { FeatureFlag } from "~/lib/posthog/feature-flags";
 import { cn } from "~/lib/utils";
 
 type Option = {
@@ -22,6 +24,7 @@ let hydrated = false;
 let cachedTheme: string | undefined;
 
 export function ThemeToggle({ className }: { className?: string }) {
+	const themeToggleEnabled = useFeatureFlag(FeatureFlag.THEME_TOGGLE);
 	const { theme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(hydrated);
 
@@ -34,6 +37,10 @@ export function ThemeToggle({ className }: { className?: string }) {
 		hydrated = true;
 		setMounted(true);
 	}, []);
+
+	if (themeToggleEnabled !== true) {
+		return null;
+	}
 
 	const options = [
 		{ value: "light", icon: Sun, label: "Light" },

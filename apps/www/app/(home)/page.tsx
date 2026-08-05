@@ -1,113 +1,221 @@
-import { ExternalLink } from "@arkenv/fumadocs-ui/components";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { AnnouncementBadge } from "~/components/announcement-badge";
-import { HeroGradientOverlay } from "~/components/hero-gradient-overlay";
-import { HeroVisual } from "~/components/hero-visual";
 import {
-	CLICommand,
+	AgentNativePitch,
+	BeforeAfterCompare,
+	BringYourOwnValidator,
 	CompatibilityRails,
+	HeroFaq,
+	InstallPanel,
 	QuickstartButton,
+	SecureBoundary,
 	StarUsButton,
+	TypeSafetyShowcase,
 	VideoDemo,
 } from "~/components/page";
+import { Logo } from "~/components/page/logo";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
-	description: "Environment variable validation from editor to runtime",
+	description: "The simple way to validate environment variables.",
 };
 
 export default function HomePage() {
 	return (
-		<div className="flex flex-1 flex-col items-center justify-center relative w-full overflow-hidden">
-			{/* Top gradient overlay for dark mode - SVG version */}
-			<HeroGradientOverlay />
-
-			<div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:pl-20 lg:pr-6 max-w-screen-2xl mx-auto w-full gap-4 md:gap-8 lg:gap-12 lg:mt-20">
-				<div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:flex-[1.4] relative z-20 mt-12 w-full max-w-full">
-					<div className="lg:mb-6 mb-0">
-						<AnnouncementBadge href="docs/cli/hosting-presets" new>
-							Next.js, Netlify presets
-						</AnnouncementBadge>
-					</div>
-					<h1 className="mb-4 mt-6 lg:mt-0 w-full max-w-2xl">
-						<div className="text-5xl md:text-6xl font-semibold tracking-tighter lg:whitespace-nowrap">
-							Better{" "}
-							<span className="bg-linear-to-br from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent inline-block pr-1 -mr-1">
-								typesafe
-							</span>{" "}
-							than sorry
-						</div>
-						<div className="text-xl md:text-2xl mt-4 text-gray-600 dark:text-gray-400">
-							Environment variable validation from editor to runtime
-						</div>
-					</h1>
-					<CompatibilityRails className="order-2 md:order-1" />
-					<div className="flex flex-col sm:flex-row justify-center lg:justify-start my-4 gap-4 sm:mb-6 mb-6 w-full sm:w-auto sm:max-w-none order-1 md:order-2 items-center">
-						<QuickstartButton />
-						<CLICommand />
-						<StarUsButton />
-					</div>
-				</div>
-				<div className="hidden md:flex lg:flex-1 w-full justify-center lg:justify-end relative z-0">
-					<HeroVisual />
-				</div>
-			</div>
-
-			<div className="sm:mt-8 max-w-5xl mx-auto w-full relative z-20 px-4">
-				<VideoDemo />
-			</div>
-
-			{/* Homepage Footer with Fade Gradient and Stylized Separator */}
-			<div className="w-full relative mt-8 md:mt-32">
-				{/* Background fade gradient */}
+		<div className="home-aurora__shell">
+			<section className="home-aurora__intro" aria-labelledby="home-hero">
 				<div
-					className="absolute inset-0 bg-linear-to-b from-transparent to-gray-200/90 dark:to-black/80 -z-10"
-					aria-hidden="true"
-				/>
+					className="home-aurora__badge rise"
+					style={{ animationDelay: "40ms" }}
+				>
+					<AnnouncementBadge href="docs/cli/hosting-presets" new>
+						Next.js, Netlify presets
+					</AnnouncementBadge>
+				</div>
+				<h1
+					id="home-hero"
+					className="home-aurora__tagline rise-blur"
+					style={{ animationDelay: "120ms" }}
+				>
+					<span className="home-aurora__lead">The simple way to validate</span>{" "}
+					<span className="home-aurora__digital home-aurora__digital-accent">
+						<span className="home-aurora__digital-word">
+							environment variables
+						</span>
+					</span>
+				</h1>
+				<p
+					className="home-aurora__summary rise-blur"
+					style={{ animationDelay: "240ms" }}
+				>
+					One function validates, parses, and keeps your <code>env</code> vars
+					typesafe. Use ArkType, Zod, or any Standard Schema. Fail fast, ship
+					faster.
+				</p>
+				<div className="rise" style={{ animationDelay: "320ms" }}>
+					<CompatibilityRails className="home-aurora__rails-host" />
+				</div>
+				<div
+					className="home-aurora__install-row rise"
+					style={{ animationDelay: "400ms" }}
+				>
+					<InstallPanel />
+					<StarUsButton />
+					<QuickstartButton />
+				</div>
+			</section>
 
-				<footer className="relative z-20">
-					{/* Stylized Divider: ----------(space)(icon)(space)---------- */}
-					<div className="flex items-center w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
-						<div className="h-px flex-1 bg-linear-to-r from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
-						<div className="px-3 md:px-6 flex items-center justify-center">
-							<div className="relative group" aria-hidden="true">
-								<Image
-									src="/assets/icon.svg"
-									alt=""
-									aria-hidden="true"
-									width={22}
-									height={22}
-									className="opacity-80 grayscale brightness-0 dark:brightness-0 dark:invert group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:invert-0 transition-all duration-500"
-								/>
-								<div
-									className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-									aria-hidden="true"
-								/>
-							</div>
-						</div>
-						<div className="h-px flex-1 bg-linear-to-l from-transparent via-gray-500/10 to-gray-500/30 dark:via-blue-500/10 dark:to-blue-500/30" />
+			<section className="home-aurora__bench" aria-label="Interactive Demo">
+				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
+					<VideoDemo />
+				</div>
+			</section>
+
+			<BeforeAfterCompare />
+			<TypeSafetyShowcase />
+			<SecureBoundary />
+			<BringYourOwnValidator />
+			<AgentNativePitch />
+
+			<HeroFaq />
+
+			<section className="home-aurora__outro" aria-labelledby="home-outro">
+				<h2
+					id="home-outro"
+					className="home-aurora__outro-title"
+					data-reveal="blur"
+				>
+					Try ArkEnv now.
+				</h2>
+				<div
+					className="home-aurora__install-row home-aurora__install-row--outro"
+					data-reveal
+					style={{ ["--reveal-delay" as string]: "80ms" }}
+				>
+					<InstallPanel />
+					<a href="/docs/arkenv/quickstart" className="home-aurora__outro-docs">
+						Read the docs
+						<span aria-hidden="true">→</span>
+					</a>
+				</div>
+			</section>
+
+			<footer className="home-aurora__footer" data-reveal="fade">
+				<div className="home-aurora__footer-grid">
+					<div className="home-aurora__footer-brand">
+						<a
+							href="/"
+							className="home-aurora__wordmark"
+							aria-label="ArkEnv home"
+						>
+							<Logo />
+						</a>
+						<p>The simple way to validate environment variables.</p>
+						<p className="home-aurora__footer-license">MIT License</p>
 					</div>
 
-					<div className="max-w-screen-2xl mx-auto py-8 md:py-14 px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center gap-4">
-						<div className="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
-							Proud part of the{" "}
-							<ExternalLink
-								href="https://arktype.io/docs/ecosystem#arkenv"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="text-gray-900 dark:text-gray-100 transition-colors"
-							>
-								ArkType ecosystem
-							</ExternalLink>
-						</div>
-						<div className="flex flex-col gap-1.5 items-center text-gray-500 dark:text-gray-500 text-sm">
-							<div>Released under the MIT License</div>
-							<div>Copyright © 2025-present Yam Borodetsky</div>
-						</div>
-					</div>
-				</footer>
-			</div>
+					<nav aria-labelledby="footer-resources">
+						<h3 id="footer-resources">Resources</h3>
+						<ul>
+							<li>
+								<a href="/docs/arkenv">Documentation</a>
+							</li>
+							<li>
+								<a href="/docs/arkenv/quickstart">Quick Start</a>
+							</li>
+							<li>
+								<a href="/docs/nextjs">Next.js</a>
+							</li>
+							<li>
+								<a href="/docs/cli/hosting-presets">Hosting presets</a>
+							</li>
+						</ul>
+					</nav>
+
+					<nav aria-labelledby="footer-ecosystem">
+						<h3 id="footer-ecosystem">Ecosystem</h3>
+						<ul>
+							<li>
+								<a
+									href="https://github.com/yamcodes/arkenv"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									GitHub
+								</a>
+							</li>
+							<li>
+								<a
+									href="https://www.npmjs.com/package/arkenv"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									npm
+								</a>
+							</li>
+							<li>
+								<a
+									href="https://github.com/yamcodes/arkenv/releases"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Releases
+								</a>
+							</li>
+							<li>
+								<a
+									href="https://arktype.io/docs/ecosystem#arkenv"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									ArkType ecosystem
+								</a>
+							</li>
+						</ul>
+					</nav>
+
+					<nav aria-labelledby="footer-community">
+						<h3 id="footer-community">Community</h3>
+						<ul>
+							<li>
+								<a
+									href="https://github.com/sponsors/yamcodes"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Sponsor
+								</a>
+							</li>
+							<li>
+								<a
+									href="https://yam.codes"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									@yamcodes
+								</a>
+							</li>
+							<li>
+								<a
+									href="https://discord.gg/zAmUyuxXH9"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Discord
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+
+				<div className="home-aurora__footer-meta">
+					<span className="home-aurora__wordmark">ArkEnv</span>
+					<span>
+						Free and open-source software · Copyright © 2025-present Yam
+						Borodetsky
+					</span>
+				</div>
+			</footer>
 		</div>
 	);
 }

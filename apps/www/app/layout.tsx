@@ -2,19 +2,12 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
+import { GeistMono } from "geist/font/mono";
+import { GeistPixelGrid } from "geist/font/pixel";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-import { Geist, JetBrains_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { Toaster } from "~/components/ui/toaster";
-
-const geist = Geist({
-	subsets: ["latin"],
-});
-
-const mono = JetBrains_Mono({
-	variable: "--font-mono",
-	subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
 	metadataBase: new URL("https://arkenv.js.org"),
@@ -40,7 +33,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<html
 			lang="en"
-			className={`${geist.className} ${mono.variable}`}
+			className={`${GeistSans.className} ${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable}`}
 			suppressHydrationWarning
 			data-scroll-behavior="smooth"
 		>
@@ -54,6 +47,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 					theme={{
 						enableColorScheme: true,
 						enableSystem: true,
+						defaultTheme: "dark",
 						themes: ["system", "light", "dark"],
 					}}
 				>

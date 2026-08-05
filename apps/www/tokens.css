@@ -1,0 +1,69 @@
+/* Hallmark · genre: atmospheric · macrostructure: Workbench · tone: atmospheric
+ * theme: Aurora · anchor hue: 200 · nav: N5 · footer: Ft5 · enrichment: product-demo
+ * axes: dark / geist-sans + geist-mono + geist-pixel-grid / cool-cyan
+ * fonts: Geist · Geist Mono · Geist Pixel Grid
+ */
+
+:root {
+	--color-paper: oklch(13% 0.018 200);
+	--color-paper-2: oklch(17% 0.02 200);
+	--color-paper-3: oklch(21% 0.022 200);
+	--color-ink: oklch(95% 0.01 200);
+	--color-ink-2: oklch(78% 0.02 200);
+	--color-muted: oklch(62% 0.025 200);
+	--color-rule: oklch(30% 0.02 200);
+	--color-accent: oklch(74% 0.13 195);
+	--color-accent-ink: oklch(14% 0.02 200);
+	--color-focus: oklch(78% 0.12 195);
+	--color-bloom-a: oklch(52% 0.11 195 / 0.32);
+	--color-bloom-b: oklch(42% 0.09 220 / 0.22);
+	--color-success: oklch(72% 0.14 155);
+	--color-danger: oklch(65% 0.18 25);
+	--color-danger-ink: oklch(78% 0.14 25);
+	--color-cmd: oklch(78% 0.19 55);
+	--color-traffic-close: oklch(68% 0.18 25);
+	--color-traffic-min: oklch(78% 0.14 85);
+	--color-traffic-max: oklch(72% 0.16 145);
+
+	--font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	--font-body: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	--font-outlier: var(--font-geist-mono), ui-monospace, monospace;
+	--font-mono: var(--font-geist-mono), ui-monospace, monospace;
+	/* --font-geist-pixel-grid is provided by geist/font/pixel (GeistPixelGrid) */
+
+	--space-3xs: 0.25rem;
+	--space-2xs: 0.5rem;
+	--space-xs: 0.75rem;
+	--space-sm: 1rem;
+	--space-md: 1.5rem;
+	--space-lg: 2rem;
+	--space-xl: 3rem;
+	--space-2xl: 4.5rem;
+	--space-3xl: 7rem;
+	--page-gutter: clamp(1rem, 4vw, 2.5rem);
+
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-md: 1.125rem;
+	--text-lg: 1.375rem;
+	--text-xl: 1.75rem;
+	--text-2xl: 2.25rem;
+	--text-display-s: clamp(2rem, 4vw + 0.5rem, 3rem);
+	--text-display: clamp(2.5rem, 5vw + 0.75rem, 4.25rem);
+
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+	--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+	/* open-slide rise / blur-reveal */
+	--ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+	--dur-micro: 120ms;
+	--dur-short: 220ms;
+	--dur-long: 420ms;
+	--dur-reveal: 800ms;
+
+	--rule-hair: 1px;
+	--radius-pill: 999px;
+	--radius-frame: 0.75rem;
+	--shadow-frame: 0 24px 60px -28px oklch(0% 0 0 / 0.55);
+	--shadow-nav: 0 8px 24px -12px oklch(0% 0 0 / 0.35);
+}

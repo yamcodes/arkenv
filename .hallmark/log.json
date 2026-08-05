@@ -1,0 +1,20 @@
+[
+	{
+		"date": "2026-07-31",
+		"macrostructure": "Workbench",
+		"theme": "Aurora",
+		"enrichment": "product-demo + interactive-dot-field",
+		"brief": "ArkEnv landing · interactive faded dots (open-slide DNA)",
+		"nav": "N5",
+		"footer": "Ft5"
+	},
+	{
+		"date": "2026-07-31",
+		"macrostructure": "Workbench",
+		"theme": "Aurora",
+		"enrichment": "product-demo",
+		"brief": "ArkEnv landing · Aurora redesign",
+		"nav": "N5",
+		"footer": "Ft5"
+	}
+]

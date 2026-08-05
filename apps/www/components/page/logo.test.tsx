@@ -14,6 +14,12 @@ describe("Logo", () => {
 		expect(logoText).toBeInTheDocument();
 	});
 
+	it("hides the wordmark when wordmark is false", () => {
+		render(<Logo wordmark={false} />);
+
+		expect(screen.queryByText("ArkEnv")).not.toBeInTheDocument();
+	});
+
 	it("accepts custom className", () => {
 		render(<Logo className="custom-class" />);
 

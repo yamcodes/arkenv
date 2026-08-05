@@ -105,11 +105,11 @@ function MarqueeRow({
 		: "animate-marquee";
 
 	return (
-		<div className="flex items-center gap-4 w-full group/rail">
+		<div className="flex items-center gap-4 w-full min-w-0 group/rail">
 			<span className="hidden sm:block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 whitespace-nowrap w-21.25 text-left">
 				{label}
 			</span>
-			<div className="relative flex overflow-hidden flex-1 select-none mask-[linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+			<div className="relative flex overflow-hidden flex-1 min-w-0 select-none mask-[linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
 				<div
 					className={`flex shrink-0 items-center justify-around gap-6 min-w-full ${animationClass}`}
 					style={{ "--marquee-duration": "75s" } as React.CSSProperties}
@@ -139,12 +139,12 @@ export function CompatibilityRails({ className }: { className?: string }) {
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-3 w-full max-w-lg mx-auto lg:mx-0 py-2 md:py-6 pause-on-hover px-1 overflow-hidden",
+				"flex flex-col gap-3 w-full max-w-lg min-w-0 mx-auto lg:mx-0 py-2 md:py-6 pause-on-hover px-1 overflow-hidden",
 				className,
 			)}
 		>
-			<MarqueeRow label="Works with" items={validators} />
-			<MarqueeRow label="Built for" items={platforms} reverse />
+			<MarqueeRow label="Runs on" items={platforms} />
+			<MarqueeRow label="Works with" items={validators} reverse />
 		</div>
 	);
 }

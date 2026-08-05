@@ -3,8 +3,12 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import { cn } from "~/lib/utils";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
+/**
+ * Single GitHub badge: icon + star count in one hit target.
+ */
 export function HeaderGithubLink({
 	className,
 	iconClassName,
@@ -34,21 +38,32 @@ export function HeaderGithubLink({
 		fetchStarCount();
 	}, []);
 
+	const label =
+		starCount !== null
+			? `GitHub · ${starCount.toLocaleString()} stars`
+			: "GitHub";
+
 	return (
 		<a
 			href={`https://github.com/${owner}/${repo}`}
 			target="_blank"
 			rel="noopener noreferrer"
-			aria-label="GitHub"
-			className={`group flex items-center justify-center gap-2 transition-colors ${className || ""}`}
-		>
-			<SiGithub className={iconClassName || "size-5"} />
-			{starCount !== null && (
-				<div className="hidden md:flex items-center gap-1 rounded-md border bg-fd-secondary/50 px-1.5 py-0.5 text-xs font-medium text-fd-secondary-foreground transition-colors group-hover:bg-fd-secondary/80">
-					<Star className="size-3" />
-					<span>{starCount.toLocaleString()}</span>
-				</div>
+			aria-label={label}
+			className={cn(
+				"inline-flex items-center justify-center gap-1.5 transition-colors",
+				className,
 			)}
+		>
+			<SiGithub
+				aria-hidden="true"
+				className={cn("size-5 shrink-0", iconClassName)}
+			/>
+			{starCount !== null ? (
+				<span className="inline-flex items-center gap-1 text-xs font-medium tabular-nums">
+					<Star aria-hidden="true" className="size-3 shrink-0" />
+					{starCount.toLocaleString()}
+				</span>
+			) : null}
 		</a>
 	);
 }
