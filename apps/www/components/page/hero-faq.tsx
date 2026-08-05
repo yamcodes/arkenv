@@ -16,8 +16,15 @@ const FAQ: readonly {
 		id: "why",
 		href: "/docs/arkenv/faq#why-do-i-need-arkenv",
 		question: "Why do I need ArkEnv?",
-		teaser:
-			'Env vars go missing in CI, turn "false" into a truthy string, and fail at runtime. ArkEnv validates at boot so your process matches the schema before app code runs.',
+		teaser: (
+			<>
+				Unvalidated env vars fail silently: missing keys break deployments,
+				unparsed booleans (<code>&quot;false&quot;</code>) evaluate as truthy,
+				and unannounced schema changes trigger untraceable production bugs.
+				ArkEnv enforces your configuration schema at boot before application
+				code runs.
+			</>
+		),
 	},
 	{
 		id: "env-files",
