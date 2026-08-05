@@ -18,12 +18,16 @@ const FAQ: readonly {
 		question: "Why do I need ArkEnv?",
 		teaser: (
 			<>
-				When environment variables fail, the results can be silent, unexpected,
-				and catastrophic. CI deployments miss required keys, stringified
-				booleans like <code>&quot;false&quot;</code> evaluate as truthy, and
-				schema updates break downstream code. ArkEnv protects against this by
-				validating the environment against your schema before a single line of
-				code runs.
+				<p>
+					When environment variables fail, the results can be silent,
+					unexpected, and catastrophic. CI deployments miss required keys,
+					stringified booleans like <code>&quot;false&quot;</code> evaluate as
+					truthy, and schema updates break downstream code.
+				</p>
+				<p>
+					ArkEnv protects against this by validating the environment against
+					your schema before a single line of code runs.
+				</p>
 			</>
 		),
 	},
