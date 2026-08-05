@@ -48,50 +48,49 @@ export function SecureBoundaryView({
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				{/* Left Column: Tabbed Switcher (src/env.ts <-> .next/static/chunks/app-client.js) */}
+				{/* Left Column: Window with integrated tab switcher */}
 				<div className="flex flex-col gap-3 min-w-0">
-					<div
-						className="home-aurora__install-tabs"
-						role="tablist"
-						aria-label="Schema and bundle view"
-					>
-						<button
-							type="button"
-							role="tab"
-							id={`${baseId}-tab-schema`}
-							aria-selected={activeTab === "schema"}
-							tabIndex={activeTab === "schema" ? 0 : -1}
-							className="home-aurora__install-tab"
-							data-active={activeTab === "schema" ? "true" : undefined}
-							onClick={() => setActiveTab("schema")}
-						>
-							src/env.ts
-						</button>
-						<button
-							type="button"
-							role="tab"
-							id={`${baseId}-tab-bundle`}
-							aria-selected={activeTab === "bundle"}
-							tabIndex={activeTab === "bundle" ? 0 : -1}
-							className="home-aurora__install-tab"
-							data-active={activeTab === "bundle" ? "true" : undefined}
-							onClick={() => setActiveTab("bundle")}
-						>
-							app-client.js
-						</button>
-					</div>
-
 					<figure
 						className="home-aurora__secure-pane h-full"
 						data-side={activeTab}
 					>
-						<WindowChrome
-							title={
-								activeTab === "schema"
-									? "src/env.ts"
-									: ".next/static/chunks/app-client.js"
-							}
-						/>
+						<div className="home-aurora__window-chrome" aria-hidden="true">
+							<span className="home-aurora__window-traffic">
+								<span data-tone="close" />
+								<span data-tone="min" />
+								<span data-tone="max" />
+							</span>
+							<div
+								className="home-aurora__install-tabs ml-2"
+								role="tablist"
+								aria-label="Schema and bundle view"
+							>
+								<button
+									type="button"
+									role="tab"
+									id={`${baseId}-tab-schema`}
+									aria-selected={activeTab === "schema"}
+									tabIndex={activeTab === "schema" ? 0 : -1}
+									className="home-aurora__install-tab text-xs py-0.5"
+									data-active={activeTab === "schema" ? "true" : undefined}
+									onClick={() => setActiveTab("schema")}
+								>
+									src/env.ts
+								</button>
+								<button
+									type="button"
+									role="tab"
+									id={`${baseId}-tab-bundle`}
+									aria-selected={activeTab === "bundle"}
+									tabIndex={activeTab === "bundle" ? 0 : -1}
+									className="home-aurora__install-tab text-xs py-0.5"
+									data-active={activeTab === "bundle" ? "true" : undefined}
+									onClick={() => setActiveTab("bundle")}
+								>
+									app-client.js
+								</button>
+							</div>
+						</div>
 						<div
 							className="home-aurora__shiki"
 							// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
