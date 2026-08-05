@@ -518,14 +518,14 @@
 	color: inherit;
 }
 
-/* Prefer one line; wrap between the two words when the viewport is too narrow */
+/* Allow wrapping between the two words when the viewport is too narrow for single line */
 .home-aurora__digital-accent {
 	color: var(--color-accent);
 	display: inline;
 	white-space: normal;
 }
 
-@media (min-width: 36rem) {
+@media (min-width: 62rem) {
 	.home-aurora__digital-accent {
 		white-space: nowrap;
 	}
