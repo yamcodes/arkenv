@@ -91,29 +91,29 @@ export function SecureBoundaryView({
 								</button>
 							</div>
 						</div>
-						<div className="relative min-h-[165px] flex-1">
+						<div className="relative">
 							<div
-								className={`home-aurora__shiki transition-opacity duration-150 ${activeTab === "schema" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+								className={`home-aurora__shiki ${activeTab === "schema" ? "block" : "invisible opacity-0"}`}
 								// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 								dangerouslySetInnerHTML={{ __html: envHtml }}
 							/>
 							<div
-								className={`home-aurora__shiki transition-opacity duration-150 ${activeTab === "bundle" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+								className={`home-aurora__shiki absolute inset-0 ${activeTab === "bundle" ? "block" : "invisible opacity-0"}`}
 								// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 								dangerouslySetInnerHTML={{ __html: bundleHtml }}
 							/>
 						</div>
 					</figure>
 
-					<div className="relative min-h-[2.75rem]">
+					<div className="relative">
 						<p
-							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans transition-opacity duration-150 ${activeTab === "schema" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans ${activeTab === "schema" ? "block" : "invisible opacity-0 absolute inset-0"}`}
 						>
 							Define server & client variables in one flat schema. Non-
 							<code>NEXT_PUBLIC_</code> keys are automatically identified.
 						</p>
 						<p
-							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans transition-opacity duration-150 ${activeTab === "bundle" ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans ${activeTab === "bundle" ? "block" : "invisible opacity-0 absolute inset-0"}`}
 						>
 							Secret values like <code>DATABASE_URL</code>{" "}
 							(&quot;postgresql://db...&quot;) are stripped at build time. Only
