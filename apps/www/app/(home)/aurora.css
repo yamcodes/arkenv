@@ -600,7 +600,7 @@
 .home-aurora__faq-head p {
 	margin: 0;
 	font-family: var(--font-body);
-	font-size: var(--text-sm);
+	font-size: clamp(1rem, 0.4vw + 0.85rem, 1.15rem);
 	line-height: 1.5;
 	color: var(--color-ink-2);
 }

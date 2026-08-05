@@ -81,20 +81,19 @@ export function TypeSafetyShowcase() {
 							</span>
 						</div>
 						<div className="font-semibold text-rose-100 text-xs sm:text-sm">
-							[ArkEnvError] Invalid environment variables:
+							ArkEnvError: Errors found while validating environment variables
 						</div>
-						<div className="text-zinc-300 text-xs leading-relaxed space-y-1.5 pl-1">
+						<div className="text-zinc-300 text-xs leading-relaxed space-y-1.5 pl-2 border-l-2 border-rose-500/40">
 							<div>
-								•{" "}
-								<span className="text-rose-300 font-semibold">
+								<span className="text-amber-300 font-semibold">
 									DATABASE_URL
-								</span>
-								: Must be a valid URL starting with postgresql:// or mysql://
-								(got &quot;localhost/db&quot;)
+								</span>{" "}
+								must be a valid URL starting with postgresql:// or mysql:// (was
+								&quot;localhost/db&quot;)
 							</div>
 							<div>
-								• <span className="text-rose-300 font-semibold">PORT</span>:
-								Expected integer between 0 and 65535 (got &quot;8080a&quot;)
+								<span className="text-amber-300 font-semibold">PORT</span> must
+								be an integer between 0 and 65535 (was &quot;8080a&quot;)
 							</div>
 						</div>
 					</div>
