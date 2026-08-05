@@ -92,7 +92,7 @@ export function SecureBoundaryView({
 							</div>
 						</div>
 						<div
-							className="home-aurora__shiki"
+							className="home-aurora__shiki min-h-[175px] flex-1 flex flex-col justify-start"
 							// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 							dangerouslySetInnerHTML={{
 								__html: activeTab === "schema" ? envHtml : bundleHtml,
@@ -100,7 +100,7 @@ export function SecureBoundaryView({
 						/>
 					</figure>
 
-					<p className="text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans">
+					<p className="text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans min-h-[2.5rem]">
 						{activeTab === "schema" ? (
 							<>
 								Define server & client variables in one flat schema. Non-
