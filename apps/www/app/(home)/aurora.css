@@ -1666,6 +1666,21 @@
 	}
 }
 
+/* Typesafe split (IDE Autocomplete + Terminal Error) */
+.home-aurora__typesafe-split {
+	display: grid;
+	gap: var(--space-sm);
+	width: 100%;
+	max-width: 56rem;
+}
+
+@media (min-width: 48rem) {
+	.home-aurora__typesafe-split {
+		grid-template-columns: 1fr 1fr;
+		align-items: stretch;
+	}
+}
+
 /* Agent split */
 .home-aurora__agent-split {
 	display: grid;
