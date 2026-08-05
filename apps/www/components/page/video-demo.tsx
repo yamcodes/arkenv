@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import BackgroundVideo from "next-video/background-video";
 import { useState } from "react";
@@ -31,48 +31,58 @@ export function VideoDemo() {
 	};
 
 	return (
-		<figure className="home-aurora__frame">
-			<button
-				type="button"
-				className="home-aurora__frame-button"
-				style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
-				onClick={handleVideoClick}
-				aria-label="Open interactive demo in a new tab"
-			>
-				<WindowChrome
-					title="basic - index.ts"
-					className="home-aurora__frame-chrome"
-				/>
-				<div className="home-aurora__frame-media">
-					{videoError ? (
-						<Image
-							src="/assets/demo.gif"
-							alt="ArkEnv Demo"
-							fill
-							className="object-contain"
-							sizes="100vw"
-							unoptimized
-						/>
-					) : (
-						<BackgroundVideo
-							src={demo}
-							poster="/assets/demo.png"
-							onError={handleVideoError}
-							autoPlay
-							loop
-							muted
-							playsInline
-							className="absolute inset-0 w-full h-full object-contain"
-						/>
-					)}
-					<div className="home-aurora__frame-hint">
-						<span>
-							Open interactive playground
-							<ArrowUpRight className="w-4 h-4 opacity-70" />
-						</span>
+		<div className="flex flex-col items-center w-full gap-4">
+			<figure className="home-aurora__frame w-full">
+				<button
+					type="button"
+					className="home-aurora__frame-button"
+					style={{ aspectRatio: getAspectRatio(WIDTH, HEIGHT) }}
+					onClick={handleVideoClick}
+					aria-label="Open interactive demo in a new tab"
+				>
+					<WindowChrome
+						title="basic - index.ts"
+						className="home-aurora__frame-chrome"
+					/>
+					<div className="home-aurora__frame-media">
+						{videoError ? (
+							<Image
+								src="/assets/demo.gif"
+								alt="ArkEnv Demo"
+								fill
+								className="object-contain"
+								sizes="100vw"
+								unoptimized
+							/>
+						) : (
+							<BackgroundVideo
+								src={demo}
+								poster="/assets/demo.png"
+								onError={handleVideoError}
+								autoPlay
+								loop
+								muted
+								playsInline
+								className="absolute inset-0 w-full h-full object-contain"
+							/>
+						)}
+						<div className="home-aurora__frame-hint">
+							<span>
+								Open interactive playground
+								<ArrowUpRight className="w-4 h-4 opacity-70" />
+							</span>
+						</div>
 					</div>
-				</div>
-			</button>
-		</figure>
+				</button>
+			</figure>
+
+			<a
+				href="/docs/arkenv/examples"
+				className="group inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--color-ink-2)] hover:text-[var(--color-ink)] transition-colors rounded-full hover:bg-[color-mix(in_oklch,var(--color-accent)_10%,transparent)]"
+			>
+				View more examples
+				<ArrowRight className="w-4 h-4 text-[var(--color-accent)] transition-transform group-hover:translate-x-1" />
+			</a>
+		</div>
 	);
 }

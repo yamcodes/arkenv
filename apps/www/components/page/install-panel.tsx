@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Sparkles, Terminal } from "lucide-react";
+import { Check, Copy, Sparkles } from "lucide-react";
 import { useId, useState } from "react";
 import { useCopyCommand } from "~/hooks/use-copy-command";
 
@@ -53,7 +53,7 @@ export function InstallPanel() {
 					data-active={tab === "command" ? "true" : undefined}
 					onClick={() => setTab("command")}
 				>
-					Command
+					For you
 				</button>
 				<button
 					type="button"
@@ -66,7 +66,7 @@ export function InstallPanel() {
 					data-active={tab === "prompt" ? "true" : undefined}
 					onClick={() => setTab("prompt")}
 				>
-					<span aria-hidden="true">✨</span> Prompt
+					For your agent
 				</button>
 			</div>
 
@@ -89,10 +89,12 @@ export function InstallPanel() {
 							data-active={tab === "command" ? "true" : undefined}
 							aria-hidden={tab !== "command"}
 						>
-							<Terminal
-								className="home-aurora__install-icon"
+							<span
+								className="home-aurora__install-prompt-symbol"
 								aria-hidden="true"
-							/>
+							>
+								$
+							</span>
 							<code className="home-aurora__install-code">
 								<span className="home-aurora__install-prompt-token">npx </span>
 								<span>arkenv@latest init</span>

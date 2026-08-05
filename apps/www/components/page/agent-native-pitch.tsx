@@ -12,15 +12,21 @@ export function AgentNativePitch() {
 		>
 			<header className="home-aurora__pitch-head">
 				<p className="home-aurora__pitch-label" data-reveal="fade">
-					05 - AGENTIC
+					05 / AGENT-READY
 				</p>
 				<h2 id="home-agent" data-reveal="blur">
-					For humans and{" "}
-					<span className="home-aurora__digital">their agents</span>.
+					For humans.{" "}
+					<span className="home-aurora__digital">And their agents.</span>
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Run the interactive CLI, or point the agent skill at your{" "}
-					<code>.env</code> in Cursor, Claude Code, or Codex.
+					Run the interactive CLI, or point the{" "}
+					<a
+						href="/docs/arkenv/integrations/ai/skills"
+						className="underline decoration-cyan-500/40 underline-offset-4 hover:decoration-cyan-400"
+					>
+						agent skill
+					</a>{" "}
+					at your <code>.env.example</code> in Cursor, Claude Code, or Codex.
 				</p>
 			</header>
 
@@ -56,8 +62,14 @@ export function AgentNativePitch() {
 
 				<div className="home-aurora__transcript">
 					<p className="home-aurora__transcript-prompt">
-						Set up <span className="home-aurora__tok-cmd">/arkenv</span> for my
-						.env
+						Set up{" "}
+						<a
+							href="/docs/arkenv/integrations/ai/skills"
+							className="home-aurora__tok-cmd hover:underline"
+						>
+							/arkenv
+						</a>{" "}
+						for my .env.example
 					</p>
 					<p className="home-aurora__transcript-status">Worked for 2.4s</p>
 					<div className="home-aurora__transcript-reply">

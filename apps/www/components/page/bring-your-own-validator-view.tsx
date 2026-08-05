@@ -33,7 +33,7 @@ export function BringYourOwnValidatorView({
 		>
 			<header className="home-aurora__pitch-head">
 				<p className="home-aurora__pitch-label" data-reveal="fade">
-					04 - MODULAR
+					04 / MODULAR
 				</p>
 				<h2 id="home-modular" data-reveal="blur">
 					Bring your own validator.
@@ -43,7 +43,7 @@ export function BringYourOwnValidatorView({
 					<a href="/docs/arkenv/integrations/standard-schema">
 						Standard Schema
 					</a>{" "}
-					library. You keep the same <code>env</code> API.
+					library. Either way, you get the same <code>env</code> API.
 				</p>
 			</header>
 

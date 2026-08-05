@@ -29,7 +29,7 @@ export function HomeNav() {
 					<HeaderGithubLink className="home-aurora__nav-github" />
 				</div>
 				<a className="home-aurora__nav-cta" href="/docs/arkenv/quickstart">
-					Get started →
+					Get started <span aria-hidden="true">→</span>
 				</a>
 			</div>
 		</nav>

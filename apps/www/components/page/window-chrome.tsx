@@ -1,12 +1,14 @@
 /**
- * Shared faux-window traffic lights + optional title.
+ * Shared faux-window traffic lights + optional title or URL address bar.
  * Used by CLI, IDE mock, before/after compare, and playground frame.
  */
 export function WindowChrome({
 	title,
+	url,
 	className,
 }: {
 	title?: string;
+	url?: string;
 	className?: string;
 }) {
 	return (
@@ -21,7 +23,11 @@ export function WindowChrome({
 				<span data-tone="min" />
 				<span data-tone="max" />
 			</span>
-			{title ? (
+			{url ? (
+				<div className="home-aurora__window-url-bar">
+					<span className="home-aurora__window-url">{url}</span>
+				</div>
+			) : title ? (
 				<span className="home-aurora__window-title">{title}</span>
 			) : null}
 		</div>

@@ -8,7 +8,7 @@ export function TypeSafetyShowcase() {
 		<section className="home-aurora__pitch" aria-labelledby="home-dx" id="dx">
 			<header className="home-aurora__pitch-head">
 				<p className="home-aurora__pitch-label" data-reveal="fade">
-					02 - TYPESAFE
+					02 / TYPESAFE
 				</p>
 				<h2 id="home-dx" data-reveal="blur">
 					Editor autocomplete with fail-fast at runtime.

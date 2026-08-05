@@ -23,7 +23,7 @@ if (!["development", "production"].includes(NODE_ENV)) {
 export const env = { DATABASE_URL, PORT, NODE_ENV };`;
 
 const AFTER = `// The ArkEnv way
-import arkenv from "arkenv";
+import arkenv from "@arkenv/core";
 
 export const env = arkenv({
   DATABASE_URL: "string.url",

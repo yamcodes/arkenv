@@ -9,9 +9,13 @@ type BeforeAfterCompareViewProps = {
 	reduction: number;
 };
 
+type MobileView = "arkenv" | "old";
+
+const NARROW_MQ = "(max-width: 39.99rem)";
+
 /**
- * Scroll-driven before/after reveal. Drag still works as a manual override.
- * Full 0–100% travel; pane padding keeps labels readable at the edges.
+ * Desktop: scroll-driven before/after reveal (drag still works as override).
+ * Mobile: ArkEnv snippet by default, with a toggle for the old way.
  */
 export function BeforeAfterCompareView({
 	beforeHtml,
@@ -20,11 +24,16 @@ export function BeforeAfterCompareView({
 }: BeforeAfterCompareViewProps) {
 	const [compare, setCompare] = useState(100);
 	const [manual, setManual] = useState(false);
+	const [mobileView, setMobileView] = useState<MobileView>("arkenv");
 	const compareRef = useRef<HTMLDivElement>(null);
 	const labelId = useId();
+	const toggleId = useId();
 
 	useEffect(() => {
 		if (manual) return;
+
+		const narrow = window.matchMedia(NARROW_MQ);
+		if (narrow.matches) return;
 
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 		if (reduceMotion.matches) {
@@ -61,7 +70,7 @@ export function BeforeAfterCompareView({
 		>
 			<header className="home-aurora__pitch-head">
 				<p className="home-aurora__pitch-label" data-reveal="fade">
-					01 - DECLARATIVE
+					01 / DECLARATIVE
 				</p>
 				<h2 id="home-before-after" data-reveal="blur">
 					<a
@@ -89,16 +98,49 @@ export function BeforeAfterCompareView({
 			</header>
 
 			<div
+				className="home-aurora__compare-toggle"
+				role="group"
+				aria-labelledby={toggleId}
+				data-reveal
+				style={{ ["--reveal-delay" as string]: "160ms" }}
+			>
+				<p id={toggleId} className="sr-only">
+					Code sample
+				</p>
+				<button
+					type="button"
+					className="home-aurora__compare-toggle-btn"
+					aria-pressed={mobileView === "arkenv"}
+					data-active={mobileView === "arkenv" ? "true" : undefined}
+					onClick={() => setMobileView("arkenv")}
+				>
+					ArkEnv way
+				</button>
+				<button
+					type="button"
+					className="home-aurora__compare-toggle-btn"
+					aria-pressed={mobileView === "old"}
+					data-active={mobileView === "old" ? "true" : undefined}
+					onClick={() => setMobileView("old")}
+				>
+					Old way
+				</button>
+			</div>
+
+			<div
 				className="home-aurora__compare-window"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "180ms" }}
 			>
-				<WindowChrome title="env.ts" />
+				<WindowChrome
+					title={mobileView === "old" ? "env.ts · old" : "env.ts"}
+				/>
 				<div
 					ref={compareRef}
 					className="home-aurora__compare"
 					style={{ "--compare": `${compare}%` } as CSSProperties}
 					data-manual={manual ? "true" : undefined}
+					data-mobile-view={mobileView}
 				>
 					{/* Invisible sizer so the frame fits the full old-way snippet */}
 					<div
@@ -127,12 +169,13 @@ export function BeforeAfterCompareView({
 
 					<div
 						className="home-aurora__compare-pane home-aurora__compare-pane--after"
+						aria-hidden={mobileView === "old" ? true : undefined}
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 						dangerouslySetInnerHTML={{ __html: afterHtml }}
 					/>
 					<div
 						className="home-aurora__compare-pane home-aurora__compare-pane--before"
-						aria-hidden="true"
+						aria-hidden={mobileView !== "old" ? true : undefined}
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 						dangerouslySetInnerHTML={{ __html: beforeHtml }}
 					/>

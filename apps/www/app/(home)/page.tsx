@@ -17,7 +17,7 @@ import { Logo } from "~/components/page/logo";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
-	description: "The happy path for environment variables.",
+	description: "The simple way to validate environment variables.",
 };
 
 export default function HomePage() {
@@ -37,20 +37,20 @@ export default function HomePage() {
 					className="home-aurora__tagline rise-blur"
 					style={{ animationDelay: "120ms" }}
 				>
-					<span className="home-aurora__lead">The happy path for</span>{" "}
+					<span className="home-aurora__lead">The simple way to validate</span>{" "}
 					<span className="home-aurora__digital home-aurora__digital-accent">
-						environment{" "}
-						<span className="home-aurora__digital-word">variables</span>
+						<span className="home-aurora__digital-word">
+							environment variables
+						</span>
 					</span>
-					.
 				</h1>
 				<p
 					className="home-aurora__summary rise-blur"
 					style={{ animationDelay: "240ms" }}
 				>
-					One function validates and types your <code>env</code> vars. Use
-					ArkType, Zod, or any Standard Schema. Run the CLI, or hand setup to
-					your agent.
+					One function validates, parses, and keeps your <code>env</code> vars
+					typesafe. Use ArkType, Zod, or any Standard Schema. Fail fast, ship
+					faster.
 				</p>
 				<div className="rise" style={{ animationDelay: "320ms" }}>
 					<CompatibilityRails className="home-aurora__rails-host" />
@@ -65,25 +65,17 @@ export default function HomePage() {
 				</div>
 			</section>
 
+			<section className="home-aurora__bench" aria-label="Interactive Demo">
+				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
+					<VideoDemo />
+				</div>
+			</section>
+
 			<BeforeAfterCompare />
 			<TypeSafetyShowcase />
 			<SecureBoundary />
 			<BringYourOwnValidator />
 			<AgentNativePitch />
-
-			<section className="home-aurora__bench" aria-labelledby="home-bench">
-				<header className="home-aurora__bench-head">
-					<h2 id="home-bench" data-reveal="blur">
-						Try it live!
-					</h2>
-					<p data-reveal style={{ ["--reveal-delay" as string]: "100ms" }}>
-						Click the demo to open the playground.
-					</p>
-				</header>
-				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
-					<VideoDemo />
-				</div>
-			</section>
 
 			<HeroFaq />
 
@@ -118,7 +110,7 @@ export default function HomePage() {
 						>
 							<Logo />
 						</a>
-						<p>The happy path for environment variables.</p>
+						<p>The simple way to validate environment variables.</p>
 						<p className="home-aurora__footer-license">MIT License</p>
 					</div>
 
