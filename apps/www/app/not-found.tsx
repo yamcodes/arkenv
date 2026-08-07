@@ -2,9 +2,9 @@ import { Header } from "@arkenv/fumadocs-ui/components";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import Link from "next/link";
+import { DiscordListItem } from "~/components/discord-list-item";
 import { Logo } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
-import { DiscordListItem } from "~/components/discord-list-item";
 import { getGithubRepoUrl } from "~/lib/github-links";
 
 export default function NotFound() {

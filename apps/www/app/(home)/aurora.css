@@ -2118,31 +2118,9 @@
 	z-index: 0;
 	pointer-events: none;
 	overflow: hidden;
-	background-image:
-		radial-gradient(
-			ellipse 42% 48% at 88% 70%,
-			var(--color-bloom-a),
-			transparent 70%
-		),
-		radial-gradient(
-			ellipse 38% 42% at 14% 30%,
-			var(--color-bloom-b),
-			transparent 72%
-		);
-	mask-image: linear-gradient(
-		to bottom,
-		transparent 0%,
-		#000 22%,
-		#000 78%,
-		transparent 100%
-	);
-	-webkit-mask-image: linear-gradient(
-		to bottom,
-		transparent 0%,
-		#000 22%,
-		#000 78%,
-		transparent 100%
-	);
+	background-image: radial-gradient(ellipse 42% 48% at 88% 70%, var(--color-bloom-a), transparent 70%), radial-gradient(ellipse 38% 42% at 14% 30%, var(--color-bloom-b), transparent 72%);
+	mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+	-webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
 }
 
 .home-aurora__outro > :not(.home-aurora__outro-atmosphere) {
