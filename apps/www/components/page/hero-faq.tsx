@@ -171,6 +171,7 @@ export function HeroFaq() {
 									<span className="home-aurora__faq-icon-v" />
 								</span>
 							</button>
+							{/* biome-ignore lint/a11y/useSemanticElements: accordion panel region */}
 							<div
 								id={panelId}
 								role="region"
