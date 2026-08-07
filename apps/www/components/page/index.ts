@@ -5,6 +5,7 @@ export * from "./cli-command";
 export * from "./compatibility-rails";
 export * from "./copy-button";
 export * from "./dot-grid";
+export * from "./hero-endorsement";
 export * from "./hero-faq";
 export * from "./install-panel";
 export * from "./logo";
