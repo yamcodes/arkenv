@@ -54,8 +54,8 @@ export function SecureBoundaryView({
 						className="home-aurora__secure-pane h-full"
 						data-side={activeTab}
 					>
-						<div className="home-aurora__window-chrome" aria-hidden="true">
-							<span className="home-aurora__window-traffic">
+						<div className="home-aurora__window-chrome">
+							<span className="home-aurora__window-traffic" aria-hidden="true">
 								<span data-tone="close" />
 								<span data-tone="min" />
 								<span data-tone="max" />
