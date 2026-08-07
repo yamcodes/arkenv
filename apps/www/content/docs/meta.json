@@ -1,3 +1,13 @@
 {
-	"pages": ["arkenv", "cli", "nextjs", "nuxt", "vite-plugin", "bun-plugin"]
+  "pages": [
+    "index",
+    "getting-started",
+    "validating-environment-variables",
+    "reference",
+    "core-concepts",
+    "guides",
+    "community",
+    "support-policy",
+    "changelog"
+  ]
 }

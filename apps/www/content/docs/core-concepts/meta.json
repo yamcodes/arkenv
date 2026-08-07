@@ -1,0 +1,9 @@
+{
+  "title": "Core concepts",
+  "pages": [
+    "security-model",
+    "coercion",
+    "standard-schema",
+    "presets"
+  ]
+}

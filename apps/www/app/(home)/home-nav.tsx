@@ -19,7 +19,7 @@ export function HomeNav() {
 					<a href="/docs/cli/hosting-presets">Presets</a>
 				</li>
 				<li>
-					<a href="/docs/arkenv">Docs</a>
+					<a href="/docs">Docs</a>
 				</li>
 			</ul>
 			<div className="home-aurora__nav-actions">
@@ -28,7 +28,7 @@ export function HomeNav() {
 					<ThemeToggle />
 					<HeaderGithubLink className="home-aurora__nav-github" />
 				</div>
-				<a className="home-aurora__nav-cta" href="/docs/arkenv/quickstart">
+				<a className="home-aurora__nav-cta" href="/docs/getting-started">
 					Get started <span aria-hidden="true">→</span>
 				</a>
 			</div>
