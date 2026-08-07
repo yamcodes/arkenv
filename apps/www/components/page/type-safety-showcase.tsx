@@ -92,8 +92,8 @@ export function TypeSafetyShowcase() {
 								&quot;localhost/db&quot;)
 							</div>
 							<div>
-								<span className="text-amber-300 font-semibold">PORT</span> must
-								be an integer between 0 and 65535 (was &quot;8080a&quot;)
+								<span className="text-amber-300 font-semibold">PORT</span>{" "}
+								must be an integer between 0 and 65535 (was &quot;8080a&quot;)
 							</div>
 						</div>
 					</div>
