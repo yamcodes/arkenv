@@ -9,7 +9,8 @@
 @import "../../tokens.css";
 
 /* Mono/outlier surfaces: don't inherit Sans stylistic sets from html */
-.home-aurora :is(
+.home-aurora
+:is(
 	.home-aurora__summary code,
 	.home-aurora__faq-panel-inner code,
 	.home-aurora__install-prompt-symbol,
