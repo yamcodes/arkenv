@@ -39,6 +39,8 @@
 	--color-fd-secondary-foreground: oklch(22% 0.02 200);
 	--color-fd-accent: oklch(96% 0.01 200);
 	--color-fd-accent-foreground: oklch(22% 0.02 200);
+	/* Drill-in sidebar hover/active pill — between subtle accent (96%) and strong (90%) */
+	--color-fd-sidebar-pill: oklch(93% 0.01 200);
 	--color-fd-ring: oklch(48% 0.11 195);
 
 	--chart-1: hsl(195 70% 40%);

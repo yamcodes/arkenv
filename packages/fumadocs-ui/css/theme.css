@@ -213,16 +213,17 @@ aside .theme-toggle {
 	background-color: transparent;
 }
 
-/* Drill-in Sidebar: Turbo-like active pill, ArkEnv tokens */
-#nd-sidebar [data-drill-item][data-active="true"],
-#nd-sidebar-mobile [data-drill-item][data-active="true"] {
-	background-color: var(--color-fd-accent);
+/* Drill-in Sidebar: Turbo-like hover/active pill (stronger than default fd-accent) */
+#nd-sidebar [data-drill-item]:is([data-active="true"], :hover),
+#nd-sidebar-mobile [data-drill-item]:is([data-active="true"], :hover) {
+	background-color: var(--color-fd-sidebar-pill);
 	color: var(--color-fd-foreground);
 }
 
-#nd-sidebar [data-drill-item]:hover,
-#nd-sidebar-mobile [data-drill-item]:hover {
-	color: var(--color-fd-foreground);
+/* Nested Folder leaves (n=2) — same muted color as the section back title */
+#nd-sidebar [data-drill-item][data-muted]:not([data-active="true"]):not(:hover),
+#nd-sidebar-mobile [data-drill-item][data-muted]:not([data-active="true"]):not(:hover) {
+	color: var(--color-fd-muted-foreground);
 }
 
 /* Sidebar section header font weight */

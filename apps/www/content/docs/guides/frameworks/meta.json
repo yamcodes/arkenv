@@ -1,4 +1,4 @@
 {
 	"title": "Frameworks",
-	"pages": ["index"]
+	"pages": ["index", "nextjs", "nuxt", "vite", "bun"]
 }

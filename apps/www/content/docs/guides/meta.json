@@ -1,4 +1,4 @@
 {
 	"title": "Guides",
-	"pages": ["index", "frameworks"]
+	"pages": ["index", "ai", "frameworks", "migrating-from-t3-env"]
 }

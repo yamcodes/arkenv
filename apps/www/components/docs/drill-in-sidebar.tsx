@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type * as PageTree from "fumadocs-core/page-tree";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import {
 	type ReactNode,
 	useEffect,
@@ -90,12 +90,8 @@ function nestedChildren(folder: PageTree.Folder): PageTree.Node[] {
 	);
 }
 
-function itemClassName(active: boolean): string {
-	return cn(
-		"group/item relative flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-sm font-medium text-start text-fd-foreground transition-colors",
-		"hover:bg-fd-accent/50",
-		active && "bg-fd-accent",
-	);
+function itemClassName(_active: boolean): string {
+	return "group/item relative flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-sm font-medium text-start text-fd-foreground transition-colors";
 }
 
 /** Turbo-style group labels: smaller, dimmer, not interactive. */
@@ -118,13 +114,19 @@ function usePrefersReducedMotion(): boolean {
 function LeafItem({
 	item,
 	pathname,
+	muted = false,
 }: {
 	item: PageTree.Item;
 	pathname: string;
+	/** Nested Folder children — slightly dimmer than section-level leaves. */
+	muted?: boolean;
 }) {
 	const active = !item.external && isPathExact(item.url, pathname);
 	const external = item.external ?? /^https?:\/\//.test(item.url);
-	const className = itemClassName(active);
+	const className = cn(
+		itemClassName(active),
+		muted && "font-normal text-fd-muted-foreground",
+	);
 	const content = (
 		<>
 			{item.icon}
@@ -149,6 +151,7 @@ function LeafItem({
 				rel="noreferrer noopener"
 				data-drill-item=""
 				data-active={active}
+				data-muted={muted || undefined}
 				data-no-arrow=""
 				className={className}
 			>
@@ -162,6 +165,7 @@ function LeafItem({
 			href={item.url}
 			data-drill-item=""
 			data-active={active}
+			data-muted={muted || undefined}
 			aria-current={active ? "page" : undefined}
 			className={className}
 		>
@@ -170,7 +174,7 @@ function LeafItem({
 	);
 }
 
-function NestedGroup({
+function NestedFolder({
 	folder,
 	pathname,
 }: {
@@ -179,35 +183,71 @@ function NestedGroup({
 }) {
 	const index = resolveFolderIndex(folder);
 	const children = nestedChildren(folder);
+	const containsActive = folderContainsPath(folder, pathname);
+	const indexActive = Boolean(index && isPathExact(index.url, pathname));
+	const [open, setOpen] = useState(true);
 
-	// Turbo-style: Nested Groups are headers + always-visible children (max depth 2).
-	// No collapse — collapsing clipped siblings under the drill-in height lock.
+	useEffect(() => {
+		if (containsActive) setOpen(true);
+	}, [containsActive]);
+
+	const title = (
+		<span className="min-w-0 flex-1 text-pretty text-start leading-snug">
+			{folder.name}
+		</span>
+	);
+
 	return (
 		<div className="flex flex-col gap-0.5">
-			<p className={groupLabelClassName()}>
-				{folder.name}
-			</p>
-			{index ? (
-				<LeafItem
-					item={{
-						...index,
-						icon: folder.icon ?? index.icon,
-					}}
-					pathname={pathname}
-				/>
+			<div className="flex items-center gap-0.5">
+				{index ? (
+					<Link
+						href={index.url}
+						data-drill-item=""
+						data-active={indexActive}
+						aria-current={indexActive ? "page" : undefined}
+						className={cn(itemClassName(indexActive), "w-auto min-w-0 flex-1")}
+					>
+						{folder.icon}
+						{title}
+					</Link>
+				) : (
+					<span className={cn(itemClassName(false), "w-auto min-w-0 flex-1")}>
+						{title}
+					</span>
+				)}
+				<button
+					type="button"
+					aria-expanded={open}
+					aria-label={`${open ? "Collapse" : "Expand"} ${String(folder.name)}`}
+					onClick={() => setOpen((value) => !value)}
+					className="flex size-8 shrink-0 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-[var(--color-fd-sidebar-pill)] hover:text-fd-foreground"
+				>
+					<ChevronDown
+						className={cn(
+							"size-4 opacity-60 transition-transform",
+							!open && "-rotate-90",
+						)}
+						aria-hidden="true"
+					/>
+				</button>
+			</div>
+			{open ? (
+				<div className="flex flex-col gap-0.5 ps-3">
+					{children.map((child, childIndex) => (
+						<NestedChild
+							key={nodeKey(child, childIndex)}
+							node={child}
+							pathname={pathname}
+						/>
+					))}
+				</div>
 			) : null}
-			{children.map((child, childIndex) => (
-				<NestedChild
-					key={nodeKey(child, childIndex)}
-					node={child}
-					pathname={pathname}
-				/>
-			))}
 		</div>
 	);
 }
 
-/** Children of a Nested Group: pages only (no further nesting). */
+/** Children of a Nested Folder: pages only (no further nesting). */
 function NestedChild({
 	node,
 	pathname,
@@ -233,10 +273,11 @@ function NestedChild({
 					icon: node.icon ?? index.icon,
 				}}
 				pathname={pathname}
+				muted
 			/>
 		);
 	}
-	return <LeafItem item={node} pathname={pathname} />;
+	return <LeafItem item={node} pathname={pathname} muted />;
 }
 
 function SectionChild({
@@ -256,7 +297,7 @@ function SectionChild({
 	if (node.type === "folder") {
 		const index = resolveFolderIndex(node);
 		const children = nestedChildren(node);
-		// Index-only folders are leaves (no Nested Group chrome for an empty list).
+		// Index-only folders are leaves (no Nested Folder chrome for an empty list).
 		if (children.length === 0) {
 			if (!index) return null;
 			return (
@@ -270,7 +311,7 @@ function SectionChild({
 				/>
 			);
 		}
-		return <NestedGroup folder={node} pathname={pathname} />;
+		return <NestedFolder folder={node} pathname={pathname} />;
 	}
 	return <LeafItem item={node} pathname={pathname} />;
 }
@@ -310,6 +351,7 @@ function RootNode({
 		);
 
 		// Match Turbo: Section click opens the Overview so a leaf is always selected.
+		// After Back (URL unchanged), same-href Link is a no-op — re-drill explicitly.
 		if (index) {
 			return (
 				<Link
@@ -317,6 +359,9 @@ function RootNode({
 					data-drill-item=""
 					data-active={under}
 					className={className}
+					onClick={() => {
+						if (under) onDrill(node);
+					}}
 				>
 					{content}
 				</Link>
@@ -356,14 +401,15 @@ function SectionPage({
 			<button
 				type="button"
 				onClick={onBack}
-				className={cn(
-					"mb-1 flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-fd-muted-foreground",
-					"hover:text-fd-foreground",
-				)}
+				data-drill-item=""
+				className="relative mb-2 flex w-full items-center justify-center rounded-md px-2.5 py-1.5 text-sm text-fd-muted-foreground transition-colors"
 				aria-label="Back to all documentation sections"
 			>
-				<ChevronLeft className="size-4 shrink-0" aria-hidden="true" />
-				<span className="truncate">{section.name}</span>
+				<ChevronLeft
+					className="pointer-events-none absolute left-2.5 size-4 shrink-0"
+					aria-hidden="true"
+				/>
+				<span className="truncate px-6 text-center">{section.name}</span>
 			</button>
 			{index ? (
 				<LeafItem
@@ -406,7 +452,7 @@ function DrillInTree() {
 		override === "root" ? null : override === "url" ? urlSection : override;
 	const drilled = Boolean(section);
 
-	// Keep the sliding viewport tall enough for the visible panel (incl. Nested Groups).
+	// Keep the sliding viewport tall enough for the visible panel (incl. Nested Folders).
 	useLayoutEffect(() => {
 		const el = drilled ? sectionRef.current : rootRef.current;
 		if (!el) return;

@@ -312,9 +312,9 @@ _Avoid_: Panel, screen, view (when referring to sidebar navigation state)
 A root-level folder in the docs page tree that drills into its own **Sidebar Page** (trailing chevron on the root list). Drill-in is one level only.
 _Avoid_: Category, group, accordion, folder (in UX copy)
 
-**Nested Group**:
-A folder deeper than a **Section**. It does not open another **Sidebar Page**; it renders as a header with always-visible children on the current **Sidebar Page** (max depth 2).
-_Avoid_: Section (reserved for root drill-in), sub-section (vague), accordion (for n=2)
+**Nested Folder**:
+A real folder under a **Section** (true URL depth n=2, e.g. `/docs/guides/frameworks/nextjs`). Stays on the current **Sidebar Page**; title navigates to the folder’s overview page; a separate chevron toggles **indented** child **Leaves** (starts expanded). Max one Nested Folder level inside a Section (no n=3).
+_Avoid_: Nested Group (retired — conflated with Separator), Section (root drill-in only), sub-section (vague)
 
 **Leaf**:
 A sidebar item that navigates to a docs URL without changing **Sidebar Page**.
@@ -329,15 +329,15 @@ A **Leaf** that leaves the docs site (external URL), shown with an external-link
 _Avoid_: Outlink (unless needed in code)
 
 **Separator**:
-A non-interactive label that groups items on a **Sidebar Page** (from meta `---Label---` entries). Visually the same as a **Nested Group** header when the group has no dedicated folder overview.
-_Avoid_: Divider, heading (when referring to nav chrome)
+A non-interactive muted label that only **groups** sibling **Leaves** on a **Sidebar Page** (from meta `---Label---` entries). URLs stay flat under the **Section** (n=1), e.g. `/docs/reference/system-environment-variables` with a “Configuration” label above — not a Nested Folder. Page-header taglines treat these as Section-only (`X`), never `X > Y`.
+_Avoid_: Nested Folder, divider, heading (when referring to nav chrome)
 
 **Relationships**:
 
 - A **Drill-in Sidebar** shows exactly one **Sidebar Page** at a time
 - Only **Sections** (root folders) open a child **Sidebar Page**; Back returns to the root **Sidebar Page**
-- Depth beyond one level uses **Nested Groups** or **Separators** (always visible; no further drill-in, no collapse)
-- **Nested Groups** are at most one level inside a **Section** (n=2 max)
+- Inside a **Section**, authors choose **Nested Folder** (true n=2 URL + collapsible indented children) or **Separator** (visual group only, flat URLs)
+- **Nested Folders** are at most one level inside a **Section** (n=2 max); they collapse/expand and do not drill
 - **Sidebar Page** selection is **URL-driven** on load and when the docs URL changes
 - Every **Section** has an **Overview** index; clicking a **Section** opens that Overview (drill + navigate) so a **Leaf** is always selected on the section **Sidebar Page**
 - **Leaf** clicks change the URL; Back returns to the root **Sidebar Page** without changing the URL
@@ -346,13 +346,14 @@ _Avoid_: Divider, heading (when referring to nav chrome)
 **Example dialogue**:
 
 > **Dev:** "If Guides has a Continuous Integration folder under it, do we drill in again?"
-> **Domain expert:** "No. Guides is the **Section**. Continuous Integration is a **Nested Group** — header plus always-visible children on that **Sidebar Page**."
+> **Domain expert:** "No. Guides is the **Section**. Continuous Integration is a **Nested Folder** — collapsible header, indented children, URL like `/docs/guides/ci-vendors/vercel`. API reference’s “Configuration” label is a **Separator** over flat pages — not the same thing."
 
 **Flagged ambiguities**:
 
 - "paged sidebar" → **Drill-in Sidebar** / **Sidebar Page**
+- "n=2" / "Nested Group" → **Nested Folder** (URL depth) vs **Separator** (visual only)
 - Visual direction is **hybrid**: Turbo structure/motion/active-pill; ArkEnv color tokens
-- Sidebar Install banner removed; Guides/Reference separators migrate to **Nested Groups**
+- Sidebar Install banner removed; use **Separators** for flat reference groupings and **Nested Folders** only when the URL is truly nested
 
 ### Environment Variable Validation
 

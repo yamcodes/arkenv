@@ -7,6 +7,8 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
+import { DocsBreadcrumb } from "~/components/docs/docs-breadcrumb";
+import { docsTocSlots } from "~/components/docs/docs-toc";
 import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
@@ -19,9 +21,15 @@ export default async function Page(props: {
 	if (!page) notFound();
 
 	const MDX = page.data.body;
+	const full = page.data.full;
 
 	return (
-		<DocsPage toc={page.data.toc} full={page.data.full}>
+		<DocsPage
+			toc={page.data.toc}
+			full={full}
+			tableOfContent={{ enabled: !full }}
+			slots={{ breadcrumb: DocsBreadcrumb, toc: docsTocSlots }}
+		>
 			<div className="grow">
 				<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 				<DocsDescription>{page.data.description}</DocsDescription>

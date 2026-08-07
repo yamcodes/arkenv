@@ -1,4 +1,11 @@
 {
 	"title": "Core concepts",
-	"pages": ["index"]
+	"pages": [
+		"index",
+		"validation",
+		"morphs",
+		"coercion",
+		"typesafety",
+		"standard-schema"
+	]
 }
