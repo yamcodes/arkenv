@@ -689,8 +689,7 @@
 .home-aurora__endorsement-thumb {
 	display: inline-block;
 	transform-origin: 70% 70%;
-	animation: home-aurora-endorsement-thumb 900ms var(--ease-out-strong) 700ms
-		both;
+	animation: home-aurora-endorsement-thumb 900ms var(--ease-out-strong) 700ms both;
 }
 
 .home-aurora__install-row {
