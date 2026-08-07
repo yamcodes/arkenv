@@ -3,10 +3,20 @@
 		@apply border-border outline-ring/50;
 	}
 
+	html {
+		/* Geist Sans alternate a (no spur) + open-slide-matching features */
+		font-feature-settings: var(--font-feature-sans, "ss01", "cv11", "calt");
+	}
+
 	@media (prefers-reduced-motion: no-preference) {
 		html {
 			scroll-behavior: smooth;
 		}
+	}
+
+	/* Geist Mono surfaces: don't inherit Sans stylistic sets from html */
+	:where(code, kbd, samp, pre, .font-mono) {
+		font-feature-settings: var(--font-feature-mono, normal);
 	}
 
 	code,
