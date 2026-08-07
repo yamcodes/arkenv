@@ -5,8 +5,8 @@
     "": {
       "name": "arkenv-example-with-bun-react",
       "dependencies": {
-        "@arkenv/bun-plugin": "^0.1.10",
-        "arkenv": "^0.12.2",
+        "@arkenv/bun-plugin": "^0.1.13",
+        "arkenv": "^0.12.3",
         "arktype": "^2.2.0",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
@@ -24,7 +24,9 @@
 
     "@ark/util": ["@ark/util@0.56.0", "", {}, "sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA=="],
 
-    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@0.1.10", "", { "dependencies": { "arkenv": "0.12.2" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-ZfUI3YVoRWE0y6ResUG3EsxfiTerqf0J/VVucfGCHTpcxMlFYolA1PETUmBXlUMFZ1nRv5iFurREqGzqhyRCMQ=="],
+    "@arkenv/build": ["@arkenv/build@0.0.3", "", { "dependencies": { "chokidar": "^4.0.3" } }, "sha512-Iqedb7OgK1Iau4ayPaVxaaxbEEs3y3LfZwU+8vWRqtTcqkMiLiiDahEnj/+6QzGTsyYt7Noprlxh2BHlt7xZlw=="],
+
+    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@0.1.13", "", { "dependencies": { "@arkenv/build": "0.0.3", "arkenv": "0.12.3" }, "peerDependencies": { "arktype": "^2.1.22", "bun": "^1.0.0" } }, "sha512-vGdGTeKGtfWUnexUQJZETxcM90LY3iGCgiPgeyRMlFNbtAIKNraT4cYuqK4SdoazDuPVjf5Y531a9F5N6YYeiw=="],
 
     "@oven/bun-darwin-aarch64": ["@oven/bun-darwin-aarch64@1.3.13", "", { "os": "darwin", "cpu": "arm64" }, "sha512-qAS6Hg8Q14ckfBuqJ2Zh7gBQSVSUHeibSq4OFqBTv6DzyJuxYlr0sdYQzmYmnbPxbqobekqUDTa/4XEaqRi7vg=="],
 
@@ -58,7 +60,7 @@
 
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
-    "arkenv": ["arkenv@0.12.2", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-PdR+gPNc/YQKTD75qDjREhmJc9nBaY/+zR5JLYQY3uB2zIiN+kwAv+A+kpV9a4A+9ivvYJvZURNcLaoFa9FMhg=="],
+    "arkenv": ["arkenv@0.12.3", "", { "peerDependencies": { "arktype": "^2.1.22" }, "optionalPeers": ["arktype"] }, "sha512-MX1/O52eG+XysuCotCyBvjZBbBk4qFbefqSYcb337gLwYOgNQhbtDrTOr+biMhjfAyGo3s+3Kn+fLH4aYgxTtg=="],
 
     "arkregex": ["arkregex@0.0.5", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw=="],
 
@@ -71,6 +73,8 @@
     "bun": ["bun@1.3.13", "", { "optionalDependencies": { "@oven/bun-darwin-aarch64": "1.3.13", "@oven/bun-darwin-x64": "1.3.13", "@oven/bun-darwin-x64-baseline": "1.3.13", "@oven/bun-linux-aarch64": "1.3.13", "@oven/bun-linux-aarch64-musl": "1.3.13", "@oven/bun-linux-x64": "1.3.13", "@oven/bun-linux-x64-baseline": "1.3.13", "@oven/bun-linux-x64-musl": "1.3.13", "@oven/bun-linux-x64-musl-baseline": "1.3.13", "@oven/bun-windows-aarch64": "1.3.13", "@oven/bun-windows-x64": "1.3.13", "@oven/bun-windows-x64-baseline": "1.3.13" }, "os": [ "linux", "win32", "darwin", ], "cpu": [ "x64", "arm64", ], "bin": { "bun": "bin/bun.exe", "bunx": "bin/bunx.exe" } }, "sha512-b9T4xZ8KqCHs4+TkHJv540LG1B8OD7noKu0Qaizusx3jFtMDHY6osNqgbaOlwW2B8RB2AKzz+sjzlGKIGxIjZw=="],
 
     "bun-types": ["bun-types@1.3.13", "", { "dependencies": { "@types/node": "*" } }, "sha512-QXKeHLlOLqQX9LgYaHJfzdBaV21T63HhFJnvuRCcjZiaUDpbs5ED1MgxbMra71CsryN/1dAoXuJJJwIv/2drVA=="],
+
+    "chokidar": ["chokidar@4.0.3", "", { "dependencies": { "readdirp": "^4.0.1" } }, "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA=="],
 
     "csstype": ["csstype@3.2.3", "", {}, "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ=="],
 
@@ -89,6 +93,8 @@
     "react": ["react@19.2.5", "", {}, "sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA=="],
 
     "react-dom": ["react-dom@19.2.5", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.5" } }, "sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag=="],
+
+    "readdirp": ["readdirp@4.1.2", "", {}, "sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg=="],
 
     "rimraf": ["rimraf@6.1.3", "", { "dependencies": { "glob": "^13.0.3", "package-json-from-dist": "^1.0.1" }, "bin": { "rimraf": "dist/esm/bin.mjs" } }, "sha512-LKg+Cr2ZF61fkcaK1UdkH2yEBBKnYjTyWzTJT6KNPcSPaiT7HSdhtMXQuN5wkTX0Xu72KQ1l8S42rlmexS2hSA=="],
 

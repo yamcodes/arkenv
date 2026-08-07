@@ -45,14 +45,17 @@ for (const line of remainingLines) {
 	}
 }
 
-// Clean up existing vite and @vitejs/plugin-react overrides
+// Clean up existing vite, @vitejs/plugin-react, and @types/node overrides
 const cleanOverridesLines = overridesLines.filter((line) => {
 	const trimmed = line.trim();
 	const isViteOverride = trimmed.startsWith("vite:");
 	const isReactPluginOverride =
 		trimmed.startsWith('"@vitejs/plugin-react":') ||
 		trimmed.startsWith("'@vitejs/plugin-react':");
-	return !isViteOverride && !isReactPluginOverride;
+	const isTypesNodeOverride =
+		trimmed.startsWith('"@types/node":') ||
+		trimmed.startsWith("'@types/node':");
+	return !isViteOverride && !isReactPluginOverride && !isTypesNodeOverride;
 });
 
 if (arg === "--restore") {
@@ -72,10 +75,15 @@ if (!reactPluginVersion) {
 	process.exit(1);
 }
 
+// Extract catalog version for @types/node from pnpm-workspace.yaml
+const typesNodeMatch = content.match(/['"]?@types\/node['"]?:\s*([^\s\n]+)/);
+const catalogTypesNode = typesNodeMatch ? typesNodeMatch[1] : "24.12.2";
+
 // Insert new overrides at the beginning of the clean overrides block
 const newOverridesLines = [
 	`  vite: "^${arg}.0.0"`,
 	`  "@vitejs/plugin-react": "${reactPluginVersion}"`,
+	`  "@types/node": "${catalogTypesNode}"`,
 	...cleanOverridesLines,
 ];
 
@@ -86,5 +94,5 @@ const newContent = [
 ].join("\n");
 fs.writeFileSync("pnpm-workspace.yaml", newContent, "utf8");
 console.log(
-	`Successfully added overrides for Vite ${arg} and @vitejs/plugin-react ${reactPluginVersion}`,
+	`Successfully added overrides for Vite ${arg}, @vitejs/plugin-react ${reactPluginVersion}, and @types/node ${catalogTypesNode}`,
 );
