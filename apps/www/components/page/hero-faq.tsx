@@ -4,17 +4,18 @@ import { useCallback, useEffect, useId, useState } from "react";
 
 /**
  * Homepage FAQ picks - questions + anchors match `/docs/arkenv/faq` (source of truth).
- * Keep answers as short teasers; link out for the full write-up.
+ * Keep answers as short teasers; long items may link out with `continueHref`.
  */
 const FAQ: readonly {
 	id: string;
-	href: string;
 	question: React.ReactNode;
 	teaser: React.ReactNode;
+	/** Optional deep link when the teaser is truncated (same FAQ page + hash). */
+	continueHref?: string;
 }[] = [
 	{
 		id: "why",
-		href: "/docs/arkenv/faq#why-do-i-need-arkenv",
+		continueHref: "/docs/arkenv/faq#why-do-i-need-arkenv",
 		question: "Why do I need ArkEnv?",
 		teaser: (
 			<>
@@ -33,7 +34,6 @@ const FAQ: readonly {
 	},
 	{
 		id: "env-files",
-		href: "/docs/arkenv/faq#does-arkenv-load-my-env-files",
 		question: (
 			<>
 				Does ArkEnv load my <code>.env</code> files?
@@ -48,21 +48,18 @@ const FAQ: readonly {
 	},
 	{
 		id: "arktype",
-		href: "/docs/arkenv/faq#do-i-have-to-use-arktype",
 		question: "Do I have to use ArkType?",
 		teaser:
 			"No. Use any Standard Schema validator: Zod, Valibot, Typia, and others.",
 	},
 	{
 		id: "zod",
-		href: "/docs/arkenv/faq#does-arkenv-work-with-zod",
 		question: "Does ArkEnv work with Zod?",
 		teaser:
 			"Yes. Zod has a first-class example, and the CLI can scaffold ArkEnv + Zod for you.",
 	},
 	{
 		id: "agents",
-		href: "/docs/arkenv/faq#does-arkenv-support-ai-development-tools-like-claude-code-or-cursor",
 		question:
 			"Does ArkEnv support AI development tools like Claude Code or Cursor?",
 		teaser: (
@@ -181,9 +178,11 @@ export function HeroFaq() {
 							>
 								<div className="home-aurora__faq-panel-inner">
 									<p>{item.teaser}</p>
-									<p className="home-aurora__faq-more">
-										<a href={item.href}>Read full answer →</a>
-									</p>
+									{item.continueHref ? (
+										<p className="home-aurora__faq-more">
+											<a href={item.continueHref}>Continue in the FAQ →</a>
+										</p>
+									) : null}
 								</div>
 							</div>
 						</div>

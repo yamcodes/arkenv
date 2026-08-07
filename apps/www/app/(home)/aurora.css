@@ -2099,12 +2099,55 @@
 
 @media (min-width: 40rem) {
 	.home-aurora__outro {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
 		margin-top: var(--space-2xl);
-		padding-block: var(--space-xl) var(--space-md);
-		border-top: var(--rule-hair) solid var(--color-rule);
+		padding: var(--space-2xl) var(--space-xl) var(--space-xl);
 		display: grid;
 		gap: var(--space-sm);
+		border: var(--rule-hair) solid var(--color-rule);
+		border-radius: var(--radius-frame);
 	}
+}
+
+/* Mirrored hero atmosphere: blooms + interactive dots, soft edge fade */
+.home-aurora__outro-atmosphere {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	overflow: hidden;
+	background-image:
+		radial-gradient(
+			ellipse 42% 48% at 88% 70%,
+			var(--color-bloom-a),
+			transparent 70%
+		),
+		radial-gradient(
+			ellipse 38% 42% at 14% 30%,
+			var(--color-bloom-b),
+			transparent 72%
+		);
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0%,
+		#000 22%,
+		#000 78%,
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0%,
+		#000 22%,
+		#000 78%,
+		transparent 100%
+	);
+}
+
+.home-aurora__outro > :not(.home-aurora__outro-atmosphere) {
+	position: relative;
+	z-index: 1;
 }
 
 .home-aurora__outro-title {
@@ -2167,13 +2210,15 @@
 
 .home-aurora__footer-grid {
 	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: var(--space-lg);
 }
 
-@media (min-width: 40rem) {
-	.home-aurora__footer-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
+.home-aurora__footer-brand {
+	grid-column: 1 / -1;
+	display: grid;
+	gap: var(--space-xs);
+	align-content: start;
 }
 
 @media (min-width: 64rem) {
@@ -2181,28 +2226,21 @@
 		grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
 		gap: var(--space-xl);
 	}
-}
 
-.home-aurora__footer-brand {
-	display: grid;
-	gap: var(--space-xs);
-	align-content: start;
+	.home-aurora__footer-brand {
+		grid-column: auto;
+	}
+
+	.home-aurora__footer-brand p {
+		max-width: 28ch;
+	}
 }
 
 .home-aurora__footer-brand p {
 	margin: 0;
-	max-width: 28ch;
 	color: var(--color-ink-2);
 	font-size: var(--text-sm);
 	line-height: 1.45;
-}
-
-.home-aurora__footer-license {
-	color: var(--color-muted) !important;
-	font-family: var(--font-outlier);
-	font-size: var(--text-xs) !important;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
 }
 
 .home-aurora__footer-grid h3 {
@@ -2251,6 +2289,23 @@
 	color: var(--color-muted);
 	font-family: var(--font-display);
 	font-size: var(--text-sm);
+}
+
+.home-aurora__footer-meta a {
+	color: var(--color-ink);
+	text-decoration: none;
+	transition: color var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__footer-meta a:hover {
+	color: var(--color-ink);
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.home-aurora__footer-meta a:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -12,7 +12,7 @@ import type { ComponentProps } from "react";
 function DocsTOCMain(props: ComponentProps<typeof TOC>) {
 	const items = useTOCItems();
 
-	if (items.length === 0) {
+	if (items.length === 0 && !props.footer && !props.header) {
 		return (
 			<div
 				id="nd-toc"

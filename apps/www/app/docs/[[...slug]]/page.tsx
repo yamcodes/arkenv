@@ -11,6 +11,7 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
+import { DocsTocLinks } from "~/components/docs/toc-links";
 import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
@@ -24,12 +25,14 @@ export default async function Page(props: {
 
 	const MDX = page.data.body;
 	const full = page.data.full;
+	const tocLinks = <DocsTocLinks pageTitle={page.data.title} />;
 
 	return (
 		<DocsPage
 			toc={page.data.toc}
 			full={full}
-			tableOfContent={{ enabled: !full }}
+			tableOfContent={{ enabled: !full, footer: tocLinks }}
+			tableOfContentPopover={{ footer: tocLinks }}
 			slots={{ breadcrumb: DocsBreadcrumb, toc: docsTocSlots }}
 		>
 			<div className="grow">

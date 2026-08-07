@@ -4,8 +4,12 @@ import { HomeLayout } from "fumadocs-ui/layouts/home";
 import Link from "next/link";
 import { Logo } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { DiscordListItem } from "~/components/discord-list-item";
+import { getGithubRepoUrl } from "~/lib/github-links";
 
 export default function NotFound() {
+	const githubRepoUrl = getGithubRepoUrl();
+
 	return (
 		<HomeLayout
 			nav={{
@@ -16,7 +20,7 @@ export default function NotFound() {
 						actions={[
 							<a
 								key="github"
-								href="https://github.com/yamcodes/arkenv"
+								href={githubRepoUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 								aria-label="GitHub"
@@ -58,7 +62,7 @@ export default function NotFound() {
 						</li>
 						<li>
 							<a
-								href="https://github.com/yamcodes/arkenv"
+								href={githubRepoUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="underline hover:text-foreground"
@@ -66,16 +70,7 @@ export default function NotFound() {
 								GitHub
 							</a>
 						</li>
-						<li>
-							<a
-								href="https://discord.gg/zAmUyuxXH9"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="underline hover:text-foreground"
-							>
-								Discord
-							</a>
-						</li>
+						<DiscordListItem className="underline hover:text-foreground" />
 					</ul>
 				</div>
 			</div>
