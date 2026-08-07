@@ -3,9 +3,7 @@ import { expect, test } from "@playwright/test";
 test.describe("Homepage Interactivity", () => {
 	test("should have functional 'Quickstart' button", async ({ page }) => {
 		await page.goto("/");
-		const sailButton = page
-			.locator("a[href='/docs/getting-started']")
-			.first();
+		const sailButton = page.locator("a[href='/docs/getting-started']").first();
 		await expect(sailButton).toBeVisible();
 
 		await Promise.all([
