@@ -1,7 +1,6 @@
-import { Header } from "@arkenv/fumadocs-ui/components";
+import { drillInSidebarSlots, Header } from "@arkenv/fumadocs-ui/components";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { CSSProperties, ReactNode } from "react";
-import { drillInSidebarSlots } from "~/components/docs/drill-in-sidebar";
 import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";

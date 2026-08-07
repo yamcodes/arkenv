@@ -1,4 +1,8 @@
-import { AIActions } from "@arkenv/fumadocs-ui/components";
+import {
+	AIActions,
+	DocsBreadcrumb,
+	docsTocSlots,
+} from "@arkenv/fumadocs-ui/components";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import {
 	DocsBody,
@@ -7,8 +11,6 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { DocsBreadcrumb } from "~/components/docs/docs-breadcrumb";
-import { docsTocSlots } from "~/components/docs/docs-toc";
 import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";

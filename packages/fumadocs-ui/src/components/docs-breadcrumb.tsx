@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment, useMemo } from "react";
-import { cn } from "~/lib/utils/cn";
+import { cn } from "@/utils/cn";
 
 function norm(path: string): string {
 	return path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;

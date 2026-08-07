@@ -29,7 +29,7 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { cn } from "~/lib/utils/cn";
+import { cn } from "@/utils/cn";
 
 type DrillOverride = "url" | "root" | PageTree.Folder;
 

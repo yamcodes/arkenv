@@ -17,7 +17,7 @@ Conflating those as one “Nested Group” (always-visible, non-collapsible) was
 
 ## Decision
 
-We will implement a **Drill-in Sidebar** for the docs site via Fumadocs `DocsLayout` sidebar slots, keeping the Fumadocs page tree as the source of truth. The interactive chrome currently lives in `apps/www` (same module graph as `fumadocs-ui` / `fumadocs-core`) so React context stays shared; extract into `@arkenv/fumadocs-ui` once peer dependency resolution is deduped.
+We will implement a **Drill-in Sidebar** for the docs site via Fumadocs `DocsLayout` sidebar slots, keeping the Fumadocs page tree as the source of truth. The interactive chrome lives in **`@arkenv/fumadocs-ui`**, importing `fumadocs-ui` / `fumadocs-core` as **peer dependencies** (same pattern as Header / AIActions) so the built package leaves those imports external and `apps/www` supplies a single shared module graph — no duplicate React context.
 
 - One drill-in level only: root folders are **Sections**.
 - Inside a **Section**:
