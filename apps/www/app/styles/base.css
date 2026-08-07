@@ -3,6 +3,11 @@
 		@apply border-border outline-ring/50;
 	}
 
+	html {
+		/* Geist Sans alternate a (no spur) + open-slide-matching features */
+		font-feature-settings: "ss01", "cv11", "calt";
+	}
+
 	@media (prefers-reduced-motion: no-preference) {
 		html {
 			scroll-behavior: smooth;
@@ -12,6 +17,7 @@
 	code,
 	pre {
 		font-family: var(--font-geist-mono), var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+		font-feature-settings: normal;
 	}
 
 	button:not(:disabled) {
