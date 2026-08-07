@@ -96,4 +96,3 @@ fs.writeFileSync("pnpm-workspace.yaml", newContent, "utf8");
 console.log(
 	`Successfully added overrides for Vite ${arg}, @vitejs/plugin-react ${reactPluginVersion}, and @types/node ${catalogTypesNode}`,
 );
-
