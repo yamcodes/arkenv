@@ -17,7 +17,7 @@ Conflating those as one “Nested Group” (always-visible, non-collapsible) was
 
 ## Decision
 
-We will implement a **Drill-in Sidebar** for the docs site via Fumadocs `DocsLayout` sidebar slots, keeping the Fumadocs page tree as the source of truth. The interactive chrome lives in **`@arkenv/fumadocs-ui`**, importing `fumadocs-ui` / `fumadocs-core` as **peer dependencies** (same pattern as Header / AIActions) so the built package leaves those imports external and `apps/www` supplies a single shared module graph — no duplicate React context.
+We will implement a **Drill-in Sidebar** for the docs site via Fumadocs `DocsLayout` sidebar slots, keeping the Fumadocs page tree as the source of truth. The interactive chrome lives in **`@arkenv/fumadocs-ui`**, importing `fumadocs-ui` / `fumadocs-core` as **peer dependencies** (same pattern as Header / AIActions) so the built package leaves those imports external and `apps/www` supplies a single shared module graph — no duplicate React context. Divergent transitive `zod` versions can split that peer graph under pnpm; the workspace pins `zod` to the catalog version so RootProvider and package chrome share one `FrameworkProvider`.
 
 - One drill-in level only: root folders are **Sections**.
 - Inside a **Section**:
@@ -32,6 +32,7 @@ We will implement a **Drill-in Sidebar** for the docs site via Fumadocs `DocsLay
 ## Consequences
 
 - Docs nav chrome diverges from stock Fumadocs; upgrades may need adapter work around sidebar slots/APIs.
+- Context-sensitive Fumadocs imports from `@arkenv/fumadocs-ui` require one resolved `fumadocs-ui` / `fumadocs-core` peer graph (workspace `zod` pin); otherwise drill-in / Header hit `FrameworkProvider` errors.
 - Content authors must pick deliberately: **Nested Folder** when the URL should nest; **Separator** when grouping flat reference pages. Every **Section** needs an `index` Overview page.
 - Users get clearer section focus and Turbo-familiar motion; one-level drill-in plus in-section collapse covers Turbo’s Guides and API reference patterns without a second sidebar page.
 - Install CTA must live outside the sidebar if we still want it.

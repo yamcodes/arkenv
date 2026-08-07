@@ -50,6 +50,9 @@ overrides:
   '@playwright/test': 1.59.1
   import-in-the-middle: 2.0.6
   require-in-the-middle: 8.0.1
+  # Keep a single fumadocs peer graph so @arkenv/fumadocs-ui shares
+  # RootProvider / FrameworkProvider context with apps/www (catalog zod).
+  zod: 4.4.1
 publicHoistPattern:
   - '*import-in-the-middle*'
   - '*require-in-the-middle*'
