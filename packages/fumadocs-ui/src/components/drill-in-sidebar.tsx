@@ -232,7 +232,7 @@ function NestedFolder({
 					aria-expanded={open}
 					aria-label={`${open ? "Collapse" : "Expand"} ${String(folder.name)}`}
 					onClick={() => setOpen((value) => !value)}
-					className="flex size-8 shrink-0 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-[var(--color-fd-sidebar-pill)] hover:text-fd-foreground"
+					className="flex size-8 shrink-0 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-[var(--color-fd-sidebar-pill,var(--color-fd-accent))] hover:text-fd-foreground"
 				>
 					<ChevronDown
 						className={cn(

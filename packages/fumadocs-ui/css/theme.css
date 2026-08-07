@@ -6,11 +6,14 @@
 	--fd-header-height: 80px !important;
 	/* WCAG AA compliant: 6.13:1 contrast on white background */
 	--color-fd-muted-foreground: hsl(240 4% 40%);
+	/* Drill-in hover/active pill — consumers may override; falls back to fd-accent */
+	--color-fd-sidebar-pill: var(--color-fd-accent);
 }
 
 .dark {
 	/* WCAG AA compliant: 8.61:1 contrast on dark background */
 	--color-fd-muted-foreground: hsl(240 5% 70%);
+	--color-fd-sidebar-pill: var(--color-fd-accent);
 }
 
 @theme inline {
@@ -216,7 +219,7 @@ aside .theme-toggle {
 /* Drill-in Sidebar: Turbo-like hover/active pill (stronger than default fd-accent) */
 #nd-sidebar [data-drill-item]:is([data-active="true"], :hover),
 #nd-sidebar-mobile [data-drill-item]:is([data-active="true"], :hover) {
-	background-color: var(--color-fd-sidebar-pill);
+	background-color: var(--color-fd-sidebar-pill, var(--color-fd-accent));
 	color: var(--color-fd-foreground);
 }
 
