@@ -91,7 +91,7 @@ function nestedChildren(folder: PageTree.Folder): PageTree.Node[] {
 }
 
 function itemClassName(_active: boolean): string {
-	return "group/item relative flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-sm font-medium text-start text-fd-foreground transition-colors";
+	return "group/item relative flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-start text-fd-foreground transition-colors";
 }
 
 /** Turbo-style group labels: smaller, dimmer, not interactive. */
@@ -402,7 +402,7 @@ function SectionPage({
 				type="button"
 				onClick={onBack}
 				data-drill-item=""
-				className="relative mb-2 flex w-full items-center justify-center rounded-md px-2.5 py-1.5 text-sm text-fd-muted-foreground transition-colors"
+				className="relative mb-2 flex w-full items-center justify-center rounded-md px-2.5 py-2 text-sm text-fd-muted-foreground transition-colors"
 				aria-label="Back to all documentation sections"
 			>
 				<ChevronLeft
