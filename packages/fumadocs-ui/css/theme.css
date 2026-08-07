@@ -193,25 +193,41 @@ aside .theme-toggle {
 
 /* Sidebar item base styles */
 #nd-sidebar a,
-#nd-sidebar button {
+#nd-sidebar button,
+#nd-sidebar-mobile a,
+#nd-sidebar-mobile button {
 	@apply font-normal;
-	transition: color 150ms;
+	transition:
+		color 150ms,
+		background-color 150ms;
 }
 
-/* Remove rectangular hover background - use text color transition instead */
+/* Legacy Fumadocs wrap-anywhere items: text-only hover (non drill-in) */
 #nd-sidebar a.wrap-anywhere:hover,
 #nd-sidebar button.wrap-anywhere:hover {
 	background-color: transparent;
 	color: var(--color-fd-primary);
 }
 
-/* Remove rectangular active background */
 #nd-sidebar a.wrap-anywhere[data-active="true"] {
 	background-color: transparent;
 }
 
+/* Drill-in Sidebar: Turbo-like active pill, ArkEnv tokens */
+#nd-sidebar [data-drill-item][data-active="true"],
+#nd-sidebar-mobile [data-drill-item][data-active="true"] {
+	background-color: var(--color-fd-accent);
+	color: var(--color-fd-foreground);
+}
+
+#nd-sidebar [data-drill-item]:hover,
+#nd-sidebar-mobile [data-drill-item]:hover {
+	color: var(--color-fd-foreground);
+}
+
 /* Sidebar section header font weight */
-#nd-sidebar p {
+#nd-sidebar p,
+#nd-sidebar-mobile p {
 	@apply font-medium;
 }
 

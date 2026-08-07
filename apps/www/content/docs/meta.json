@@ -8,6 +8,6 @@
 		"guides",
 		"community",
 		"support-policy",
-		"changelog"
+		"external:[Changelog](https://github.com/yamcodes/arkenv/releases)"
 	]
 }

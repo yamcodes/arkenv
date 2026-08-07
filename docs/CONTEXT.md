@@ -296,6 +296,64 @@ Module setup / `nuxt build` may still run core validation against the build envi
 > **Dev:** “Can we make Nuxt completely Vite-plugin-based like Solid Start?”
 > **Domain expert:** “Not as the only transport. Solid Start’s public keys are build-time; Nuxt’s can change via a **Nitro boot override**. Honesty requires the **Nuxt honesty transport** — the **Nuxt boot gate** (module-loaded schema, **boot gate scheduling**) coerces into `runtimeConfig` after that override, then **symmetric thin accessors**. The Vite plugin stays for import blocking; **client validator isolation** is a thin package entry, not a #1328-style rewrite. Keep the **Build-time schema check** for CI, but don’t confuse it with deploy honesty.”
 
+### Docs site navigation
+
+Language for the documentation website (`apps/www`) nav chrome. See **ADR 0022**.
+
+**Drill-in Sidebar**:
+A docs sidebar where opening a **Section** replaces the current list with that section’s children, instead of expanding them inline.
+_Avoid_: Accordion sidebar (for the root↔section transition), paged sidebar (informal)
+
+**Sidebar Page**:
+One full list view inside a **Drill-in Sidebar** (root index, or the contents of one **Section**).
+_Avoid_: Panel, screen, view (when referring to sidebar navigation state)
+
+**Section**:
+A root-level folder in the docs page tree that drills into its own **Sidebar Page** (trailing chevron on the root list). Drill-in is one level only.
+_Avoid_: Category, group, accordion, folder (in UX copy)
+
+**Nested Group**:
+A folder deeper than a **Section**. It does not open another **Sidebar Page**; it renders as a header with always-visible children on the current **Sidebar Page** (max depth 2).
+_Avoid_: Section (reserved for root drill-in), sub-section (vague), accordion (for n=2)
+
+**Leaf**:
+A sidebar item that navigates to a docs URL without changing **Sidebar Page**.
+_Avoid_: Link item, page link (when contrasting with Section)
+
+**Overview**:
+The index page of a **Section**, listed first on that section’s **Sidebar Page**. Opening the **Section** navigates here so a **Leaf** is always selected.
+_Avoid_: Section landing (informal), index (when speaking in UX terms)
+
+**External Leaf**:
+A **Leaf** that leaves the docs site (external URL), shown with an external-link affordance.
+_Avoid_: Outlink (unless needed in code)
+
+**Separator**:
+A non-interactive label that groups items on a **Sidebar Page** (from meta `---Label---` entries). Visually the same as a **Nested Group** header when the group has no dedicated folder overview.
+_Avoid_: Divider, heading (when referring to nav chrome)
+
+**Relationships**:
+
+- A **Drill-in Sidebar** shows exactly one **Sidebar Page** at a time
+- Only **Sections** (root folders) open a child **Sidebar Page**; Back returns to the root **Sidebar Page**
+- Depth beyond one level uses **Nested Groups** or **Separators** (always visible; no further drill-in, no collapse)
+- **Nested Groups** are at most one level inside a **Section** (n=2 max)
+- **Sidebar Page** selection is **URL-driven** on load and when the docs URL changes
+- Every **Section** has an **Overview** index; clicking a **Section** opens that Overview (drill + navigate) so a **Leaf** is always selected on the section **Sidebar Page**
+- **Leaf** clicks change the URL; Back returns to the root **Sidebar Page** without changing the URL
+- **Changelog** is an **External Leaf** to GitHub Releases; no Glossary **External Leaf** until a glossary exists
+
+**Example dialogue**:
+
+> **Dev:** "If Guides has a Continuous Integration folder under it, do we drill in again?"
+> **Domain expert:** "No. Guides is the **Section**. Continuous Integration is a **Nested Group** — header plus always-visible children on that **Sidebar Page**."
+
+**Flagged ambiguities**:
+
+- "paged sidebar" → **Drill-in Sidebar** / **Sidebar Page**
+- Visual direction is **hybrid**: Turbo structure/motion/active-pill; ArkEnv color tokens
+- Sidebar Install banner removed; Guides/Reference separators migrate to **Nested Groups**
+
 ### Environment Variable Validation
 
 - ArkEnv uses ArkType's type system to validate environment variables

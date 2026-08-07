@@ -1,7 +1,7 @@
 import { Header } from "@arkenv/fumadocs-ui/components";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { CSSProperties, ReactNode } from "react";
-import { InstallButton } from "~/components/docs/install-button";
+import { drillInSidebarSlots } from "~/components/docs/drill-in-sidebar";
 import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
@@ -22,12 +22,10 @@ export default function Layout({ children }: { children: ReactNode }) {
 			<DocsLayout
 				tree={source.pageTree}
 				sidebar={{
-					banner: (
-						<div className="hidden lg:block">
-							<InstallButton />
-						</div>
-					),
 					collapsible: false,
+				}}
+				slots={{
+					sidebar: drillInSidebarSlots,
 				}}
 				themeSwitch={{ enabled: false }}
 				searchToggle={{ enabled: false }}

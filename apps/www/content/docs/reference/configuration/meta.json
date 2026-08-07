@@ -1,0 +1,4 @@
+{
+	"title": "Configuration",
+	"pages": ["index", "options", "keywords", "schema", "env"]
+}

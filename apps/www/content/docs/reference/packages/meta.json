@@ -1,0 +1,12 @@
+{
+	"title": "Packages",
+	"pages": [
+		"arkenv",
+		"core",
+		"standard",
+		"nextjs",
+		"nuxt",
+		"vite-plugin",
+		"bun-plugin"
+	]
+}
