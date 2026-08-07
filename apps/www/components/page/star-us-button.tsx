@@ -3,8 +3,8 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Star } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import { useGithubStarCount } from "~/lib/use-github-star-count";
 import { cn } from "~/lib/utils/cn";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
@@ -36,34 +36,14 @@ type StarUsProps = {
 } & VariantProps<typeof starUsButtonVariants>;
 
 export function StarUsButton({ className }: StarUsProps) {
-	const [starCount, setStarCount] = useState<number | null>(null);
+	const starCount = useGithubStarCount();
 
-	// Compute githubUrl once and extract owner/repo
 	const githubUrl =
 		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
 	const { owner, repo } = breakDownGithubUrl(githubUrl);
 
-	// Fetch star count from our API route (server-side with caching)
-	useEffect(() => {
-		const fetchStarCount = async () => {
-			try {
-				const response = await fetch("/api/github/stars");
-				if (response.ok) {
-					const data = (await response.json()) as { stars: number };
-					setStarCount(data.stars);
-				}
-			} catch {
-				// Silently fail - we'll just not show the count
-			}
-		};
-
-		fetchStarCount();
-	}, []);
-
 	return (
 		<div className="sm:hidden w-full relative">
-			{/* Shadow element for mobile */}
-
 			<Button
 				asChild
 				variant="outline"

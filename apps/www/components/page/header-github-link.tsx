@@ -2,12 +2,12 @@
 
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useGithubStarCount } from "~/lib/use-github-star-count";
 import { cn } from "~/lib/utils";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
 /**
- * Single GitHub badge: icon + star count in one hit target.
+ * Single GitHub badge: icon (+ optional star count) in one hit target.
  */
 export function HeaderGithubLink({
 	className,
@@ -16,27 +16,11 @@ export function HeaderGithubLink({
 	className?: string;
 	iconClassName?: string;
 }) {
-	const [starCount, setStarCount] = useState<number | null>(null);
+	const starCount = useGithubStarCount();
 
 	const githubUrl =
 		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
 	const { owner, repo } = breakDownGithubUrl(githubUrl);
-
-	useEffect(() => {
-		const fetchStarCount = async () => {
-			try {
-				const response = await fetch("/api/github/stars");
-				if (response.ok) {
-					const data = (await response.json()) as { stars: number };
-					setStarCount(data.stars);
-				}
-			} catch {
-				// Silently fail - we'll just not show the count
-			}
-		};
-
-		fetchStarCount();
-	}, []);
 
 	const label =
 		starCount !== null
