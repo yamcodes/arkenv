@@ -532,8 +532,8 @@ function SidebarDrawer({
 	...props
 }: {
 	children: ReactNode;
-	className?: string;
-} & React.ComponentProps<"aside">) {
+	className?: string | undefined;
+} & Omit<React.ComponentProps<"aside">, "children" | "className">) {
 	return (
 		<>
 			<SidebarDrawerOverlay className="fixed z-40 inset-0 backdrop-blur-xs data-[state=open]:animate-fd-fade-in data-[state=closed]:animate-fd-fade-out" />
@@ -561,8 +561,8 @@ function DocsSidebarShell({
 	...props
 }: {
 	children: ReactNode;
-	className?: string;
-} & React.ComponentProps<"aside">) {
+	className?: string | undefined;
+} & Omit<React.ComponentProps<"aside">, "children" | "className">) {
 	return (
 		<SidebarContentPrimitive>
 			{({ ref, collapsed, hovered, onPointerEnter, onPointerLeave }) => (
@@ -603,7 +603,7 @@ function DocsSidebarShell({
  */
 function DrillInViewport() {
 	return (
-		<SidebarViewport className="p-3 pe-2">
+		<SidebarViewport viewport={{ className: "p-3 pe-2" }}>
 			<div className="flex flex-col gap-0.5">
 				<DrillInTree />
 			</div>

@@ -20,16 +20,17 @@ test.describe("Smoke Tests", () => {
 
 	const topRoutes = [
 		"/",
-		"/docs/arkenv",
-		"/docs/arkenv/quickstart",
-		"/docs/arkenv/examples",
-		"/docs/arkenv/coercion",
-		"/docs/arkenv/standard",
-		"/docs/arkenv/integrations/ide/vscode",
-		"/docs/arkenv/integrations/ide/jetbrains",
-		"/docs/arkenv/how-to/load-environment-variables",
-		"/docs/vite-plugin",
-		"/docs/vite-plugin/arkenv-in-viteconfig",
+		"/docs",
+		"/docs/getting-started",
+		"/docs/getting-started/installation",
+		"/docs/validating-environment-variables",
+		"/docs/reference",
+		"/docs/core-concepts",
+		"/docs/guides",
+		"/docs/guides/frameworks",
+		"/docs/guides/frameworks/nextjs",
+		"/docs/community",
+		"/docs/support-policy",
 	];
 
 	for (const url of topRoutes) {

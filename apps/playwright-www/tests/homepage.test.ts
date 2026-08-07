@@ -4,15 +4,15 @@ test.describe("Homepage Interactivity", () => {
 	test("should have functional 'Quickstart' button", async ({ page }) => {
 		await page.goto("/");
 		const sailButton = page
-			.locator("a[href='/docs/arkenv/quickstart']")
+			.locator("a[href='/docs/getting-started']")
 			.first();
 		await expect(sailButton).toBeVisible();
 
 		await Promise.all([
-			page.waitForURL("**/docs/arkenv/quickstart", { timeout: 30000 }),
+			page.waitForURL("**/docs/getting-started", { timeout: 30000 }),
 			sailButton.click(),
 		]);
-		await expect(page).toHaveURL("/docs/arkenv/quickstart");
+		await expect(page).toHaveURL("/docs/getting-started");
 	});
 
 	test("should have GitHub star link with correct security attributes", async ({
@@ -21,8 +21,7 @@ test.describe("Homepage Interactivity", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// On desktop, the header GitHub action is visible; mobile CTA is hidden (`sm:hidden`).
-		const githubLink = page.getByRole("link", { name: /^GitHub$/i });
+		const githubLink = page.locator("a.home-aurora__nav-github");
 
 		await expect(githubLink).toBeVisible();
 		await expect(githubLink).toHaveAttribute("target", "_blank");
