@@ -84,9 +84,9 @@ export function BringYourOwnValidatorView({
 						className="home-aurora__validator-body"
 						key={example.id}
 					>
-						{/* biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server */}
 						<div
 							className="home-aurora__shiki"
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 							dangerouslySetInnerHTML={{ __html: example.html }}
 						/>
 					</div>

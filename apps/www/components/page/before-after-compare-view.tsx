@@ -97,6 +97,7 @@ export function BeforeAfterCompareView({
 				</p>
 			</header>
 
+			{/* biome-ignore lint/a11y/useSemanticElements: toggle button group container */}
 			<div
 				className="home-aurora__compare-toggle"
 				role="group"
@@ -170,12 +171,14 @@ export function BeforeAfterCompareView({
 					<div
 						className="home-aurora__compare-pane home-aurora__compare-pane--after"
 						aria-hidden={mobileView === "old" ? true : undefined}
+						inert={mobileView === "old" ? true : undefined}
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 						dangerouslySetInnerHTML={{ __html: afterHtml }}
 					/>
 					<div
 						className="home-aurora__compare-pane home-aurora__compare-pane--before"
 						aria-hidden={mobileView !== "old" ? true : undefined}
+						inert={mobileView !== "old" ? true : undefined}
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
 						dangerouslySetInnerHTML={{ __html: beforeHtml }}
 					/>
