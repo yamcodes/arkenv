@@ -16,7 +16,7 @@
 	.home-aurora__install-prompt-symbol,
 	.home-aurora__install-code,
 	.home-aurora__pitch-label,
-	.home-aurora__endorsement-from,
+	.home-aurora__endorsement-attr,
 	.home-aurora__compare-stat,
 	.home-aurora__pitch-head code,
 	.home-aurora__compare .shiki,
@@ -584,7 +584,7 @@
 	border: var(--rule-hair) solid var(--color-rule);
 }
 
-/* Hero endorsement — email-sourced quote, typographic (no card) */
+/* Hero endorsement — tweet-style founder shout-out */
 @keyframes home-aurora-endorsement-thumb {
 	0%,
 	100% {
@@ -599,24 +599,102 @@
 }
 
 .home-aurora__endorsement {
-	display: grid;
-	gap: 0.35rem;
+	display: block;
 	width: fit-content;
-	max-width: min(36rem, 100%);
-	margin: var(--space-2xs) 0 0;
-	padding: 0.15rem 0 0.15rem 0.9rem;
-	border-left: 2px solid color-mix(in oklch, var(--color-accent) 55%, transparent);
+	max-width: min(22.5rem, 100%);
+	margin: var(--space-xs) 0 0;
+	min-width: 0;
+	text-decoration: none;
+	color: inherit;
+	border-radius: var(--radius-frame);
+	transition: transform var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__endorsement:hover {
+	transform: translateY(-1px);
+}
+
+.home-aurora__endorsement:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 3px;
+}
+
+.home-aurora__endorsement-card {
+	display: grid;
+	gap: 0.65rem;
+	margin: 0;
+	padding: 0.95rem 1.05rem 1rem;
+	border: var(--rule-hair) solid var(--color-rule);
+	border-radius: var(--radius-frame);
+	background: color-mix(in oklch, var(--color-paper-2) 78%, transparent);
+	backdrop-filter: blur(12px) saturate(120%);
+	box-shadow: var(--shadow-nav);
+	transition:
+		border-color var(--dur-micro) var(--ease-out),
+		background-color var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__endorsement:hover .home-aurora__endorsement-card {
+	border-color: color-mix(in oklch, var(--color-accent) 35%, var(--color-rule));
+	background: color-mix(in oklch, var(--color-paper-3) 72%, transparent);
+}
+
+.home-aurora__endorsement-head {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 0.65rem;
 	min-width: 0;
 }
 
-.home-aurora__endorsement-from {
-	margin: 0;
-	font-family: var(--font-outlier);
+.home-aurora__endorsement-avatar {
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 999px;
+	object-fit: cover;
+	background: var(--color-paper-3);
+	box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-ink) 12%, transparent);
+}
+
+.home-aurora__endorsement-meta {
+	display: grid;
+	gap: 0.05rem;
+	min-width: 0;
+}
+
+.home-aurora__endorsement-name {
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	color: var(--color-ink);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.home-aurora__endorsement-handle {
+	font-family: var(--font-body);
 	font-size: var(--text-xs);
-	font-weight: 500;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
 	color: var(--color-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.home-aurora__endorsement-x {
+	width: 1rem;
+	height: 1rem;
+	color: var(--color-muted);
+	opacity: 0.7;
+	transition:
+		color var(--dur-micro) var(--ease-out),
+		opacity var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__endorsement:hover .home-aurora__endorsement-x {
+	color: var(--color-ink);
+	opacity: 1;
 }
 
 .home-aurora__endorsement blockquote {
@@ -625,18 +703,12 @@
 
 .home-aurora__endorsement blockquote p {
 	margin: 0;
-	font-family: var(--font-display);
-	font-size: clamp(1.15rem, 0.8vw + 0.95rem, 1.45rem);
-	font-weight: 500;
-	letter-spacing: -0.02em;
-	line-height: 1.35;
+	font-family: var(--font-body);
+	font-size: clamp(1.05rem, 0.35vw + 0.95rem, 1.2rem);
+	font-weight: 400;
+	letter-spacing: -0.01em;
+	line-height: 1.4;
 	color: var(--color-ink);
-}
-
-.home-aurora__endorsement-mark {
-	color: color-mix(in oklch, var(--color-accent) 75%, var(--color-ink));
-	font-weight: 500;
-	margin-right: 0.05em;
 }
 
 .home-aurora__endorsement-thumb {
@@ -647,35 +719,11 @@
 
 .home-aurora__endorsement-attr {
 	margin: 0;
-}
-
-.home-aurora__endorsement-role {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	color: var(--color-ink-2);
-	font-family: var(--font-display);
-	font-size: var(--text-sm);
+	font-family: var(--font-outlier);
+	font-size: var(--text-xs);
 	font-weight: 500;
-	text-decoration: none;
-	transition: color var(--dur-micro) var(--ease-out);
-}
-
-.home-aurora__endorsement-role:hover {
-	color: var(--color-ink);
-}
-
-.home-aurora__endorsement-role:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 3px;
-	border-radius: 2px;
-}
-
-.home-aurora__endorsement-zod {
-	width: 0.95rem;
-	height: 0.95rem;
-	color: var(--color-accent);
-	opacity: 0.9;
+	letter-spacing: 0.04em;
+	color: var(--color-muted);
 }
 
 .home-aurora__install-row {
