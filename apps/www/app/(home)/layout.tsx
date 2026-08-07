@@ -1,7 +1,7 @@
 import "./aurora.css";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import type { CSSProperties, ReactNode } from "react";
-import { DotGrid, ScrollReveal } from "~/components/page";
+import { DotGrid, HeroMotion, ScrollReveal } from "~/components/page";
 import { HomeNav } from "./home-nav";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -10,6 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 			<div className="home-aurora__atmosphere" aria-hidden="true">
 				<DotGrid />
 			</div>
+			<HeroMotion />
 			<ScrollReveal />
 			<HomeLayout
 				style={

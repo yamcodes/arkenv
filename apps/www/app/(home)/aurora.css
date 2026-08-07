@@ -8,7 +8,8 @@
 
 @import "../../tokens.css";
 
-/* Load-time rise (open-slide). `backwards` avoids pinning filter after the run. */
+/* Load-time rise (open-slide). Gated by HeroMotion (`data-hero-motion`) so
+ * client remounts of HomeLayout do not restart mid-flight animations. */
 @keyframes home-aurora-rise {
 	from {
 		opacity: 0;
@@ -33,12 +34,31 @@
 	}
 }
 
-.home-aurora .rise {
-	animation: home-aurora-rise 900ms var(--ease-out-strong) backwards;
+/* SSR / no-js: fully visible. Prep/play/done set by HeroMotion after hydrate. */
+.home-aurora[data-hero-motion="prep"] .rise,
+.home-aurora[data-hero-motion="prep"] .rise-blur {
+	opacity: 0;
+	transform: translateY(14px);
 }
 
-.home-aurora .rise-blur {
-	animation: home-aurora-rise-blur 1s var(--ease-out-strong) backwards;
+.home-aurora[data-hero-motion="prep"] .rise-blur {
+	transform: translateY(16px);
+	filter: blur(8px);
+}
+
+.home-aurora[data-hero-motion="play"] .rise {
+	animation: home-aurora-rise 900ms var(--ease-out-strong) both;
+}
+
+.home-aurora[data-hero-motion="play"] .rise-blur {
+	animation: home-aurora-rise-blur 1s var(--ease-out-strong) both;
+}
+
+.home-aurora[data-hero-motion="done"] .rise,
+.home-aurora[data-hero-motion="done"] .rise-blur {
+	opacity: 1;
+	transform: none;
+	filter: none;
 }
 
 /* Scroll reveals - ScrollReveal only adds .reveal-hidden below the fold */
@@ -118,8 +138,15 @@
 	}
 
 	.home-aurora .rise,
-	.home-aurora .rise-blur {
+	.home-aurora .rise-blur,
+	.home-aurora[data-hero-motion="prep"] .rise,
+	.home-aurora[data-hero-motion="prep"] .rise-blur,
+	.home-aurora[data-hero-motion="play"] .rise,
+	.home-aurora[data-hero-motion="play"] .rise-blur {
 		animation: none;
+		opacity: 1;
+		transform: none;
+		filter: none;
 	}
 
 	.home-aurora__validator-body {
