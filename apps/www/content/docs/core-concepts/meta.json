@@ -1,9 +1,4 @@
 {
-  "title": "Core concepts",
-  "pages": [
-    "security-model",
-    "coercion",
-    "standard-schema",
-    "presets"
-  ]
+	"title": "Core concepts",
+	"pages": ["security-model", "coercion", "standard-schema", "presets"]
 }

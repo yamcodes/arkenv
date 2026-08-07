@@ -1,14 +1,14 @@
 {
-  "title": "Validating environment variables",
-  "pages": [
-    "index",
-    "structuring-your-schema",
-    "defining-types",
-    "client-vs-server",
-    "coercion-and-parsing",
-    "error-reporting",
-    "reusing-schemas",
-    "framework-integration",
-    "hosting-presets"
-  ]
+	"title": "Validating environment variables",
+	"pages": [
+		"index",
+		"structuring-your-schema",
+		"defining-types",
+		"client-vs-server",
+		"coercion-and-parsing",
+		"error-reporting",
+		"reusing-schemas",
+		"framework-integration",
+		"hosting-presets"
+	]
 }

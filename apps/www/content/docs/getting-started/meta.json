@@ -1,11 +1,11 @@
 {
-  "title": "Getting started",
-  "defaultOpen": true,
-  "pages": [
-    "index",
-    "installation",
-    "examples",
-    "add-to-existing-repository",
-    "editor-integration"
-  ]
+	"title": "Getting started",
+	"defaultOpen": true,
+	"pages": [
+		"index",
+		"installation",
+		"examples",
+		"add-to-existing-repository",
+		"editor-integration"
+	]
 }

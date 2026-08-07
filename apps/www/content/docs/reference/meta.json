@@ -1,19 +1,19 @@
 {
-  "title": "API reference",
-  "pages": [
-    "---Configuration---",
-    "configuration",
-    "options",
-    "keywords",
-    "---Commands---",
-    "cli",
-    "---Packages---",
-    "core",
-    "arkenv",
-    "nextjs",
-    "nuxt",
-    "vite-plugin",
-    "bun-plugin",
-    "standard"
-  ]
+	"title": "API reference",
+	"pages": [
+		"---Configuration---",
+		"configuration",
+		"options",
+		"keywords",
+		"---Commands---",
+		"cli",
+		"---Packages---",
+		"core",
+		"arkenv",
+		"nextjs",
+		"nuxt",
+		"vite-plugin",
+		"bun-plugin",
+		"standard"
+	]
 }

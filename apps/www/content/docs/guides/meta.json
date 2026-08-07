@@ -1,12 +1,4 @@
 {
-  "title": "Guides",
-  "pages": [
-    "index",
-    "ai",
-    "---Frameworks---",
-    "nextjs",
-    "nuxt",
-    "vite",
-    "bun"
-  ]
+	"title": "Guides",
+	"pages": ["index", "ai", "---Frameworks---", "nextjs", "nuxt", "vite", "bun"]
 }
