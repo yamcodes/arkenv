@@ -302,35 +302,35 @@ Language for the documentation website (`apps/www`) nav chrome. See **ADR 0022**
 
 **Drill-in Sidebar**:
 A docs sidebar where opening a **Section** replaces the current list with that section’s children, instead of expanding them inline.
-_Avoid_: Accordion sidebar (for the root↔section transition), paged sidebar (informal)
+*Avoid*: Accordion sidebar (for the root↔section transition), paged sidebar (informal)
 
 **Sidebar Page**:
 One full list view inside a **Drill-in Sidebar** (root index, or the contents of one **Section**).
-_Avoid_: Panel, screen, view (when referring to sidebar navigation state)
+*Avoid*: Panel, screen, view (when referring to sidebar navigation state)
 
 **Section**:
 A root-level folder in the docs page tree that drills into its own **Sidebar Page** (trailing chevron on the root list). Drill-in is one level only.
-_Avoid_: Category, group, accordion, folder (in UX copy)
+*Avoid*: Category, group, accordion, folder (in UX copy)
 
 **Nested Folder**:
 A real folder under a **Section** (true URL depth n=2, e.g. `/docs/guides/frameworks/nextjs`). Stays on the current **Sidebar Page**; title navigates to the folder’s overview page; a separate chevron toggles **indented** child **Leaves** (starts expanded). Max one Nested Folder level inside a Section (no n=3).
-_Avoid_: Nested Group (retired — conflated with Separator), Section (root drill-in only), sub-section (vague)
+*Avoid*: Nested Group (retired — conflated with Separator), Section (root drill-in only), sub-section (vague)
 
 **Leaf**:
 A sidebar item that navigates to a docs URL without changing **Sidebar Page**.
-_Avoid_: Link item, page link (when contrasting with Section)
+*Avoid*: Link item, page link (when contrasting with Section)
 
 **Overview**:
 The index page of a **Section**, listed first on that section’s **Sidebar Page**. Opening the **Section** navigates here so a **Leaf** is always selected.
-_Avoid_: Section landing (informal), index (when speaking in UX terms)
+*Avoid*: Section landing (informal), index (when speaking in UX terms)
 
 **External Leaf**:
 A **Leaf** that leaves the docs site (external URL), shown with an external-link affordance.
-_Avoid_: Outlink (unless needed in code)
+*Avoid*: Outlink (unless needed in code)
 
 **Separator**:
 A non-interactive muted label that only **groups** sibling **Leaves** on a **Sidebar Page** (from meta `---Label---` entries). URLs stay flat under the **Section** (n=1), e.g. `/docs/reference/system-environment-variables` with a “Configuration” label above — not a Nested Folder. Page-header taglines treat these as Section-only (`X`), never `X > Y`.
-_Avoid_: Nested Folder, divider, heading (when referring to nav chrome)
+*Avoid*: Nested Folder, divider, heading (when referring to nav chrome)
 
 **Relationships**:
 
