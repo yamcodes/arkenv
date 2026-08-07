@@ -1,22 +1,27 @@
 "use client";
 
-import { useTreeContext } from "fumadocs-ui/contexts/tree";
+import type * as PageTree from "fumadocs-core/page-tree";
 import {
 	SidebarContent as SidebarContentPrimitive,
 	SidebarDrawerContent,
 	SidebarDrawerOverlay,
 	SidebarViewport,
 } from "fumadocs-ui/components/sidebar/base";
+import { useTreeContext } from "fumadocs-ui/contexts/tree";
 import type { SidebarProps } from "fumadocs-ui/layouts/docs/slots/sidebar";
 import {
 	SidebarProvider,
 	SidebarTrigger,
 	useSidebar,
 } from "fumadocs-ui/layouts/docs/slots/sidebar";
+import {
+	ArrowUpRight,
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type * as PageTree from "fumadocs-core/page-tree";
-import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import {
 	type ReactNode,
 	useEffect,
@@ -42,11 +47,15 @@ function isPathUnder(url: string, pathname: string): boolean {
 	return pathname.startsWith(prefix);
 }
 
-function folderContainsPath(folder: PageTree.Folder, pathname: string): boolean {
+function folderContainsPath(
+	folder: PageTree.Folder,
+	pathname: string,
+): boolean {
 	if (folder.index && isPathUnder(folder.index.url, pathname)) return true;
 	for (const child of folder.children) {
 		if (child.type === "page" && isPathUnder(child.url, pathname)) return true;
-		if (child.type === "folder" && folderContainsPath(child, pathname)) return true;
+		if (child.type === "folder" && folderContainsPath(child, pathname))
+			return true;
 	}
 	return false;
 }
@@ -73,7 +82,9 @@ function nodeKey(node: PageTree.Node, index: number): string {
 }
 
 /** Prefer `folder.index`; fall back when Fumadocs only exposes the overview as a child page. */
-function resolveFolderIndex(folder: PageTree.Folder): PageTree.Item | undefined {
+function resolveFolderIndex(
+	folder: PageTree.Folder,
+): PageTree.Item | undefined {
 	if (folder.index) return folder.index;
 	const pages = folder.children.filter(
 		(child): child is PageTree.Item => child.type === "page",
@@ -256,11 +267,7 @@ function NestedChild({
 	pathname: string;
 }) {
 	if (node.type === "separator") {
-		return (
-			<p className={groupLabelClassName()}>
-				{node.name}
-			</p>
-		);
+		return <p className={groupLabelClassName()}>{node.name}</p>;
 	}
 	if (node.type === "folder") {
 		const index = resolveFolderIndex(node);
@@ -288,11 +295,7 @@ function SectionChild({
 	pathname: string;
 }) {
 	if (node.type === "separator") {
-		return (
-			<p className={groupLabelClassName()}>
-				{node.name}
-			</p>
-		);
+		return <p className={groupLabelClassName()}>{node.name}</p>;
 	}
 	if (node.type === "folder") {
 		const index = resolveFolderIndex(node);
@@ -326,11 +329,7 @@ function RootNode({
 	onDrill: (folder: PageTree.Folder) => void;
 }) {
 	if (node.type === "separator") {
-		return (
-			<p className={groupLabelClassName()}>
-				{node.name}
-			</p>
-		);
+		return <p className={groupLabelClassName()}>{node.name}</p>;
 	}
 
 	if (node.type === "folder") {
@@ -444,6 +443,8 @@ function DrillInTree() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const [height, setHeight] = useState<number>();
 
+	// Reset drill override on route change (pathname is the trigger, not a value used in-body).
+	// biome-ignore lint/correctness/useExhaustiveDependencies: re-run when pathname changes
 	useEffect(() => {
 		setOverride("url");
 	}, [pathname]);
@@ -452,7 +453,8 @@ function DrillInTree() {
 		override === "root" ? null : override === "url" ? urlSection : override;
 	const drilled = Boolean(section);
 
-	// Keep the sliding viewport tall enough for the visible panel (incl. Nested Folders).
+	// Remeasure when the visible panel or its content changes (Nested Folders, route, tree).
+	// biome-ignore lint/correctness/useExhaustiveDependencies: section/pathname/tree change panel content height
 	useLayoutEffect(() => {
 		const el = drilled ? sectionRef.current : rootRef.current;
 		if (!el) return;
@@ -504,9 +506,7 @@ function DrillInTree() {
 			</nav>
 			<nav
 				ref={sectionRef}
-				aria-label={
-					section ? `${String(section.name)} pages` : "Section pages"
-				}
+				aria-label={section ? `${String(section.name)} pages` : "Section pages"}
 				className={cn(
 					"absolute inset-x-0 top-0 flex w-full flex-col gap-0.5",
 					!reduceMotion && panelMotionClass,
@@ -519,11 +519,7 @@ function DrillInTree() {
 				{...(!drilled ? { inert: true as const } : {})}
 			>
 				{section ? (
-					<SectionPage
-						section={section}
-						pathname={pathname}
-						onBack={goBack}
-					/>
+					<SectionPage section={section} pathname={pathname} onBack={goBack} />
 				) : null}
 			</nav>
 		</div>
@@ -569,13 +565,7 @@ function DocsSidebarShell({
 } & React.ComponentProps<"aside">) {
 	return (
 		<SidebarContentPrimitive>
-			{({
-				ref,
-				collapsed,
-				hovered,
-				onPointerEnter,
-				onPointerLeave,
-			}) => (
+			{({ ref, collapsed, hovered, onPointerEnter, onPointerLeave }) => (
 				<div
 					data-sidebar-placeholder=""
 					className="sticky top-(--fd-docs-row-1) z-20 [grid-area:sidebar] pointer-events-none *:pointer-events-auto h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] md:layout:[--fd-sidebar-width:300px] max-md:hidden"

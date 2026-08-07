@@ -1,10 +1,10 @@
 "use client";
 
-import { useTreePath } from "fumadocs-ui/contexts/tree";
 import type * as PageTree from "fumadocs-core/page-tree";
+import { useTreePath } from "fumadocs-ui/contexts/tree";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight } from "lucide-react";
 import { Fragment, useMemo } from "react";
 import { cn } from "~/lib/utils/cn";
 
@@ -111,7 +111,7 @@ export function DocsBreadcrumb({
 						: "text-fd-muted-foreground",
 				);
 				return (
-					<Fragment key={`${String(item.name)}-${i}`}>
+					<Fragment key={item.url ?? String(item.name)}>
 						{i !== 0 ? (
 							<ChevronRight
 								className="size-3.5 shrink-0 text-fd-muted-foreground"
