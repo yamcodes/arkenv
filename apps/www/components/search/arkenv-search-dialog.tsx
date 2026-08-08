@@ -50,9 +50,7 @@ export default function ArkenvSearchDialog({
 					<SearchDialogInput />
 					<SearchDialogClose />
 				</SearchDialogHeader>
-				<SearchDialogList
-					items={query.data !== "empty" ? query.data : null}
-				/>
+				<SearchDialogList items={query.data !== "empty" ? query.data : null} />
 			</SearchDialogContent>
 		</SearchDialog>
 	);

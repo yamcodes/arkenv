@@ -34,7 +34,7 @@ The shared translucent surface language for site chrome — hairline border, sof
 *Avoid*: treating home and docs as separate visual systems; “frosted glass” as a distinct product term
 
 **Site Nav**:
-The primary site-wide navigation chrome for www. One header everywhere: **Glass material**, **Floating bar**, **logo top-left**, centered **Nav core** links, theme + GitHub on the right, then a shared right **action pill**. Owned as www site chrome — not a generic docs-kit primitive.
+The primary site-wide navigation chrome for [www](http://www). One header everywhere: **Glass material**, **Floating bar**, **logo top-left**, centered **Nav core** links, theme + GitHub on the right, then a shared right **action pill**. Owned as www site chrome — not a generic docs-kit primitive.
 *Avoid*: Header (when meaning the whole site chrome); separate home vs docs chrome families; centered content-sized pill; publishing Site Nav as `@arkenv/fumadocs-ui` API; search on home
 
 **Nav core**:

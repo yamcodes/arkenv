@@ -21,10 +21,7 @@
 	--site-nav-action-pad-x: 0.75rem;
 	/* Match docs/home page column — do not stretch on ultrawide */
 	--site-nav-layout-width: var(--fd-layout-width, 1400px);
-	--site-nav-layout-offset: max(
-		0px,
-		calc(50vw - var(--site-nav-layout-width) / 2)
-	);
+	--site-nav-layout-offset: max(0px, calc(50vw - var(--site-nav-layout-width) / 2));
 
 	/*
 	 * Sticky + zero-height root keeps the bar viewport-pinned without
