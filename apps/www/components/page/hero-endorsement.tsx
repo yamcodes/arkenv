@@ -9,8 +9,9 @@ export function HeroEndorsement() {
 		<figure className="home-aurora__endorsement">
 			<blockquote>
 				<p>
-					Cool project btw!{" "}
-					<span className="home-aurora__endorsement-thumb">👍</span>
+					Cool project
+					<br />
+					btw! <span className="home-aurora__endorsement-thumb">👍</span>
 				</p>
 			</blockquote>
 			<figcaption className="home-aurora__endorsement-attr">
