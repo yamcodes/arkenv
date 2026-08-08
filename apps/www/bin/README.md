@@ -15,7 +15,7 @@ The Twoslash Content Parser. This tool allows you to verify how TypeScript code 
 pnpm twoslash <path-to-mdx-file>
 
 # Example
-pnpm twoslash content/docs/arkenv/index.mdx
+pnpm twoslash content/docs/index.mdx
 ```
 
 **Features:**

@@ -8,12 +8,12 @@ vi.mock("~/lib/source", () => ({
 			children: [
 				{
 					type: "folder",
-					$ref: "arkenv/meta.json",
+					$ref: "getting-started/meta.json",
 					children: [
 						{
 							type: "page",
-							url: "/docs/arkenv",
-							name: "ArkEnv",
+							url: "/docs/getting-started",
+							name: "Getting started",
 						},
 					],
 				},
@@ -33,9 +33,11 @@ import { source } from "~/lib/source";
 import { GET, generateStaticParams } from "./route";
 
 describe("/docs/[package]/llms.txt route", () => {
-	it("should return the package-specific llms.txt content for arkenv", async () => {
-		const req = new Request("https://arkenv.js.org/docs/arkenv/llms.txt");
-		const params = Promise.resolve({ package: "arkenv" });
+	it("should return the section-specific llms.txt content", async () => {
+		const req = new Request(
+			"https://arkenv.js.org/docs/getting-started/llms.txt",
+		);
+		const params = Promise.resolve({ package: "getting-started" });
 		const response = await GET(req, { params });
 
 		expect(response.status).toBe(200);
@@ -45,7 +47,7 @@ describe("/docs/[package]/llms.txt route", () => {
 
 		const body = await response.text();
 		expect(body).toBeTypeOf("string");
-		expect(body).toContain("arkenv");
+		expect(body).toContain("getting-started");
 	});
 
 	it("should return 404 for a nonexistent package", async () => {
@@ -55,39 +57,37 @@ describe("/docs/[package]/llms.txt route", () => {
 		await expect(GET(req, { params })).rejects.toThrow();
 	});
 
-	it("should return static params for all expected packages", () => {
+	it("should return static params for all expected top-level sections", () => {
 		const spy = vi.spyOn(source, "getPages").mockReturnValue([
 			{
-				slugs: ["arkenv", "intro"],
-				url: "/docs/arkenv",
-				data: { title: "ArkEnv" },
-			},
-			{ slugs: ["cli", "intro"], url: "/docs/cli", data: { title: "CLI" } },
-			{
-				slugs: ["bun-plugin", "intro"],
-				url: "/docs/bun-plugin",
-				data: { title: "Bun Plugin" },
+				slugs: ["getting-started", "installation"],
+				url: "/docs/getting-started/installation",
+				data: { title: "Installation" },
 			},
 			{
-				slugs: ["nextjs", "intro"],
-				url: "/docs/nextjs",
-				data: { title: "NextJS" },
+				slugs: ["reference", "init"],
+				url: "/docs/reference/init",
+				data: { title: "init" },
 			},
 			{
-				slugs: ["vite-plugin", "intro"],
-				url: "/docs/vite-plugin",
-				data: { title: "Vite Plugin" },
+				slugs: ["guides", "frameworks", "bun"],
+				url: "/docs/guides/frameworks/bun",
+				data: { title: "Bun" },
+			},
+			{
+				slugs: ["core-concepts", "coercion"],
+				url: "/docs/core-concepts/coercion",
+				data: { title: "Coercion" },
 			},
 		] as any);
 
 		const params = generateStaticParams();
 
 		expect(params).toEqual([
-			{ package: "arkenv" },
-			{ package: "cli" },
-			{ package: "bun-plugin" },
-			{ package: "nextjs" },
-			{ package: "vite-plugin" },
+			{ package: "getting-started" },
+			{ package: "reference" },
+			{ package: "guides" },
+			{ package: "core-concepts" },
 		]);
 
 		spy.mockRestore();

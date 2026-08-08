@@ -3,19 +3,18 @@
 import { useCallback, useEffect, useId, useState } from "react";
 
 /**
- * Homepage FAQ picks - questions + anchors match `/docs/arkenv/faq` (source of truth).
+ * Homepage FAQ picks shown on the landing page.
  * Keep answers as short teasers; long items may link out with `continueHref`.
  */
 const FAQ: readonly {
 	id: string;
 	question: React.ReactNode;
 	teaser: React.ReactNode;
-	/** Optional deep link when the teaser is truncated (same FAQ page + hash). */
+	/** Optional deep link when the teaser is truncated. */
 	continueHref?: string;
 }[] = [
 	{
 		id: "why",
-		continueHref: "/docs/arkenv/faq#why-do-i-need-arkenv",
 		question: "Why do I need ArkEnv?",
 		teaser: (
 			<>
@@ -72,10 +71,8 @@ const FAQ: readonly {
 	},
 ];
 
-const DOCS_FAQ_HREF = "/docs/arkenv/faq";
-
 /**
- * Landing FAQ - select questions from the docs FAQ, with links back to SoT.
+ * Landing FAQ accordion.
  * `#why` expands the first item and scrolls to the section.
  */
 export function HeroFaq() {
@@ -133,7 +130,7 @@ export function HeroFaq() {
 					Frequently asked questions.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Picked from the docs. <a href={DOCS_FAQ_HREF}>Read the full FAQ →</a>
+					Common questions about validating environment variables with ArkEnv.
 				</p>
 			</header>
 

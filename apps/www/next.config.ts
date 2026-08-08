@@ -28,7 +28,7 @@ const config = {
 		// Can be reverted if any instability is observed in Next.js 16.
 		webpackMemoryOptimizations: true,
 	},
-	// Redirect /docs to /docs/arkenv
+	// Permanent redirects from the pre-revamp package-scoped docs tree.
 	async redirects() {
 		return [
 			{
@@ -37,18 +37,222 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/docs/standard-schema",
+				destination: "/docs/core-concepts/standard-schema",
+				permanent: true,
+			},
+
+			// --- @arkenv/core (formerly /docs/arkenv) ---
+			// Never 301 back to `/docs`: browsers may still have cached the old
+			// permanent `/docs` → `/docs/arkenv` redirect and would loop.
+			{
+				source: "/docs/arkenv",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/quickstart",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/examples",
+				destination: "/docs/getting-started/examples",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/faq",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/comparison",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/coercion",
+				destination: "/docs/core-concepts/coercion",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/keywords",
+				destination: "/docs/reference/keywords",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/options",
+				destination: "/docs/reference/options",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/standard",
+				destination: "/docs/reference/standard",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations",
+				destination: "/docs/guides",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/standard-schema",
+				destination: "/docs/core-concepts/standard-schema",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ai",
+				destination: "/docs/guides/ai",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ai/:path*",
+				destination: "/docs/guides/ai",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ide",
+				destination: "/docs/getting-started/editor-integration",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ide/:path*",
+				destination: "/docs/getting-started/editor-integration",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/how-to/reuse-schemas",
+				destination: "/docs/validating-environment-variables",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/how-to/load-environment-variables",
+				destination: "/docs/validating-environment-variables",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/how-to/:path*",
+				destination: "/docs/validating-environment-variables",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/:path*",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+
+			// --- @arkenv/nextjs ---
+			{
+				source: "/docs/nextjs",
+				destination: "/docs/guides/frameworks/nextjs",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
 				source: "/docs/nextjs/layouts/simple",
-				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				destination: "/docs/guides/frameworks/nextjs",
 				permanent: true,
 			},
 			{
 				source: "/docs/nextjs/migration/nested-to-flat",
-				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				destination: "/docs/guides/frameworks/nextjs",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/:path*",
+				destination: "/docs/guides/frameworks/nextjs",
+				permanent: true,
+			},
+
+			// --- @arkenv/nuxt ---
+			{
+				source: "/docs/nuxt",
+				destination: "/docs/guides/frameworks/nuxt",
+				permanent: true,
+			},
+			{
+				source: "/docs/nuxt/llms.txt",
+				destination: "/llms.txt",
 				permanent: true,
 			},
 			{
 				source: "/docs/nuxt/layouts/simple",
-				destination: "/docs/nuxt/layouts/flat",
+				destination: "/docs/guides/frameworks/nuxt",
+				permanent: true,
+			},
+			{
+				source: "/docs/nuxt/:path*",
+				destination: "/docs/guides/frameworks/nuxt",
+				permanent: true,
+			},
+
+			// --- @arkenv/vite-plugin ---
+			{
+				source: "/docs/vite-plugin",
+				destination: "/docs/guides/frameworks/vite",
+				permanent: true,
+			},
+			{
+				source: "/docs/vite-plugin/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/vite-plugin/:path*",
+				destination: "/docs/guides/frameworks/vite",
+				permanent: true,
+			},
+
+			// --- @arkenv/bun-plugin ---
+			{
+				source: "/docs/bun-plugin",
+				destination: "/docs/guides/frameworks/bun",
+				permanent: true,
+			},
+			{
+				source: "/docs/bun-plugin/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/bun-plugin/:path*",
+				destination: "/docs/guides/frameworks/bun",
+				permanent: true,
+			},
+
+			// --- arkenv CLI ---
+			{
+				source: "/docs/cli",
+				destination: "/docs/reference/init",
+				permanent: true,
+			},
+			{
+				source: "/docs/cli/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/cli/hosting-presets",
+				destination: "/docs/validating-environment-variables",
+				permanent: true,
+			},
+			{
+				source: "/docs/cli/machine-readable-output",
+				destination: "/docs/reference/validate",
+				permanent: true,
+			},
+			{
+				source: "/docs/cli/:path*",
+				destination: "/docs/reference",
 				permanent: true,
 			},
 		];

@@ -33,7 +33,7 @@ export function SecureBoundaryView({
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Define a single{" "}
 					<a
-						href="/docs/nextjs/layouts/flat"
+						href="/docs/guides/frameworks/nextjs"
 						className="underline decoration-cyan-500/40 underline-offset-4 hover:decoration-cyan-400"
 					>
 						flat schema

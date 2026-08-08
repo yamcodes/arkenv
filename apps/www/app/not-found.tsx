@@ -16,7 +16,7 @@ export default function NotFound() {
 				component: (
 					<Header
 						logo={<Logo />}
-						links={[{ text: "Documentation", url: "/docs/arkenv" }]}
+						links={[{ text: "Documentation", url: "/docs" }]}
 						actions={[
 							<a
 								key="github"
@@ -54,7 +54,7 @@ export default function NotFound() {
 						</li>
 						<li>
 							<Link
-								href="/docs/arkenv"
+								href="/docs"
 								className="underline hover:text-foreground"
 							>
 								Documentation

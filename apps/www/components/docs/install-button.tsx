@@ -7,21 +7,27 @@ import { Button } from "~/components/ui/button";
 import { useIsFirstSession } from "~/hooks/use-is-first-session";
 
 function useInstallContext(pathname: string | null) {
-	if (pathname?.includes("/docs/vite-plugin"))
+	if (
+		pathname?.includes("/docs/guides/frameworks/vite") ||
+		pathname?.includes("/docs/reference/vite-plugin")
+	)
 		return {
 			key: "vite-plugin",
-			href: "/docs/vite-plugin#installation",
+			href: "/docs/guides/frameworks/vite",
 			label: "Install ArkEnv for Vite",
 		};
-	if (pathname?.includes("/docs/bun-plugin"))
+	if (
+		pathname?.includes("/docs/guides/frameworks/bun") ||
+		pathname?.includes("/docs/reference/bun-plugin")
+	)
 		return {
 			key: "bun-plugin",
-			href: "/docs/bun-plugin#installation",
+			href: "/docs/guides/frameworks/bun",
 			label: "Install ArkEnv for Bun",
 		};
 	return {
 		key: "arkenv",
-		href: "/docs/arkenv/quickstart#install",
+		href: "/docs/getting-started/installation",
 		label: "Install ArkEnv",
 	};
 }

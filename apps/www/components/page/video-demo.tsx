@@ -77,7 +77,7 @@ export function VideoDemo() {
 			</figure>
 
 			<a
-				href="/docs/arkenv/examples"
+				href="/docs/getting-started/examples"
 				className="group inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--color-ink-2)] hover:text-[var(--color-ink)] transition-colors rounded-full hover:bg-[color-mix(in_oklch,var(--color-accent)_10%,transparent)]"
 			>
 				View more examples

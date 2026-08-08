@@ -16,7 +16,7 @@ export function HomeNav() {
 					<a href="/#why">Why ArkEnv?</a>
 				</li>
 				<li>
-					<a href="/docs/cli/hosting-presets">Presets</a>
+					<a href="/docs/validating-environment-variables">Presets</a>
 				</li>
 				<li>
 					<a href="/docs">Docs</a>
