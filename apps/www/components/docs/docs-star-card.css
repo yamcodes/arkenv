@@ -14,6 +14,10 @@
 	background: var(--color-fd-card);
 	color: var(--color-fd-foreground);
 	text-decoration: none;
+	/* Idle twin of the spotlight shadow so animating the property doesn't pop. */
+	box-shadow:
+		0 0 22px -6px oklch(74% 0.13 195 / 0),
+		0 0 36px -4px oklch(74% 0.13 195 / 0);
 	transition:
 		border-color 120ms ease,
 		background-color 120ms ease;
@@ -62,35 +66,20 @@
 	gap: 0.45rem;
 }
 
-.docs-star-card__eyebrow {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 0.5rem;
-	font-size: 0.65rem;
-	font-weight: 500;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-	color: var(--color-fd-muted-foreground);
-}
-
-.docs-star-card__eyebrow-label {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-}
-
 .docs-star-card__count {
+	align-self: flex-end;
+	font-size: 0.7rem;
+	font-weight: 500;
 	font-variant-numeric: tabular-nums;
 	letter-spacing: 0;
-	text-transform: none;
+	color: var(--color-fd-muted-foreground);
 }
 
 .docs-star-card__title {
 	display: flex;
 	align-items: center;
 	gap: 0.4rem;
-	font-size: 0.875rem;
+	font-size: 0.9375rem;
 	font-weight: 600;
 	line-height: 1.25;
 	color: var(--color-fd-foreground);
@@ -98,105 +87,98 @@
 
 .docs-star-card__title-star {
 	flex-shrink: 0;
-	width: 0.875rem;
-	height: 0.875rem;
+	width: 0.95rem;
+	height: 0.95rem;
 	color: oklch(74% 0.13 195);
 }
 
 .docs-star-card__cta {
-	font-size: 0.75rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.2rem;
+	font-size: 0.8125rem;
 	line-height: 1.3;
 	color: var(--color-fd-muted-foreground);
 	transition: color 120ms ease;
+}
+
+.docs-star-card__cta-arrow {
+	width: 0.9rem;
+	height: 0.9rem;
+	flex-shrink: 0;
 }
 
 .docs-star-card:hover .docs-star-card__cta {
 	color: var(--color-fd-foreground);
 }
 
-/* YouTube-style “subscribe” nudge — pulsed glow when feedback heart is tapped. */
+/* Soft edge glow travels top-left → bottom-right when feedback heart is tapped. */
 .docs-star-card--spotlight {
-	animation: docs-star-spotlight 1.8s ease-in-out;
+	/* Linear travel; opacity ease lives in the keyframes. */
+	animation: docs-star-spotlight 1.2s linear;
 }
 
 .docs-star-card--spotlight .docs-star-card__cta {
 	color: var(--color-fd-foreground);
 }
 
-.docs-star-card--spotlight .docs-star-card__title-star {
-	animation: docs-star-spotlight-star 1.8s ease-in-out;
-}
-
 @keyframes docs-star-spotlight {
-	0%,
+	/* Keep blur/spread identical at every stop so only x/y + alpha interpolate. */
+	0% {
+		border-color: var(--color-fd-border);
+		box-shadow:
+			-10px -10px 22px -6px oklch(74% 0.13 195 / 0),
+			-4px -4px 36px -4px oklch(74% 0.13 195 / 0);
+	}
+
+	18% {
+		border-color: color-mix(in oklch, oklch(74% 0.13 195) 45%, var(--color-fd-border));
+		box-shadow:
+			-6px -6px 22px -6px oklch(74% 0.13 195 / 0.42),
+			-4px -4px 36px -4px oklch(74% 0.13 195 / 0.22);
+	}
+
+	50% {
+		border-color: color-mix(in oklch, oklch(74% 0.13 195) 55%, var(--color-fd-border));
+		box-shadow:
+			0 0 22px -6px oklch(74% 0.13 195 / 0.4),
+			0 0 40px -2px oklch(74% 0.13 195 / 0.24);
+	}
+
+	82% {
+		border-color: color-mix(in oklch, oklch(74% 0.13 195) 42%, var(--color-fd-border));
+		box-shadow:
+			6px 6px 22px -6px oklch(74% 0.13 195 / 0.36),
+			4px 4px 36px -4px oklch(74% 0.13 195 / 0.2);
+	}
+
 	100% {
 		border-color: var(--color-fd-border);
-		box-shadow: 0 0 0 0 transparent;
-	}
-
-	12%,
-	38%,
-	64% {
-		border-color: color-mix(in oklch, oklch(74% 0.13 195) 70%, var(--color-fd-border));
 		box-shadow:
-			0 0 0 1px color-mix(in oklch, oklch(74% 0.13 195) 45%, transparent),
-			0 0 18px 2px color-mix(in oklch, oklch(74% 0.13 195) 38%, transparent),
-			0 0 36px 4px color-mix(in oklch, oklch(52% 0.11 195) 22%, transparent);
-	}
-
-	25%,
-	51%,
-	77% {
-		border-color: color-mix(in oklch, oklch(74% 0.13 195) 35%, var(--color-fd-border));
-		box-shadow:
-			0 0 0 1px color-mix(in oklch, oklch(74% 0.13 195) 18%, transparent),
-			0 0 10px 1px color-mix(in oklch, oklch(74% 0.13 195) 16%, transparent);
-	}
-}
-
-@keyframes docs-star-spotlight-star {
-	0%,
-	100% {
-		filter: drop-shadow(0 0 0 transparent);
-		transform: scale(1);
-	}
-
-	12%,
-	38%,
-	64% {
-		filter: drop-shadow(0 0 6px color-mix(in oklch, oklch(74% 0.13 195) 55%, transparent));
-		transform: scale(1.12);
-	}
-
-	25%,
-	51%,
-	77% {
-		filter: drop-shadow(0 0 2px color-mix(in oklch, oklch(74% 0.13 195) 25%, transparent));
-		transform: scale(1.04);
+			10px 10px 22px -6px oklch(74% 0.13 195 / 0),
+			4px 4px 36px -4px oklch(74% 0.13 195 / 0);
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.docs-star-card--spotlight {
-		animation: docs-star-spotlight-static 1.8s ease-out forwards;
-	}
-
-	.docs-star-card--spotlight .docs-star-card__title-star {
-		animation: none;
+		animation: docs-star-spotlight-static 1.2s ease-out forwards;
 	}
 }
 
 @keyframes docs-star-spotlight-static {
 	0% {
 		border-color: var(--color-fd-border);
-		box-shadow: 0 0 0 0 transparent;
+		box-shadow:
+			0 0 22px -6px oklch(74% 0.13 195 / 0),
+			0 0 36px -4px oklch(74% 0.13 195 / 0);
 	}
 
-	20%,
+	30%,
 	100% {
-		border-color: color-mix(in oklch, oklch(74% 0.13 195) 55%, var(--color-fd-border));
+		border-color: color-mix(in oklch, oklch(74% 0.13 195) 50%, var(--color-fd-border));
 		box-shadow:
-			0 0 0 1px color-mix(in oklch, oklch(74% 0.13 195) 30%, transparent),
-			0 0 14px 2px color-mix(in oklch, oklch(74% 0.13 195) 28%, transparent);
+			0 0 22px -6px oklch(74% 0.13 195 / 0.36),
+			0 0 40px -2px oklch(74% 0.13 195 / 0.22);
 	}
 }

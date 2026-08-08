@@ -1,7 +1,6 @@
 "use client";
 
-import { SiGithub } from "@icons-pack/react-simple-icons";
-import { Star } from "lucide-react";
+import { ArrowUpRight, Star } from "lucide-react";
 import { DotGrid } from "~/components/page/dot-grid";
 import { getGithubRepoUrl } from "~/lib/github-links";
 import { useGithubStarCount } from "~/lib/use-github-star-count";
@@ -10,7 +9,7 @@ import "./docs-star-card.css";
 
 /**
  * TOC rail CTA to star the repo — home-outro atmosphere + direct copy.
- * `spotlight` pulses a YouTube-style glow when the feedback heart is tapped.
+ * `spotlight` runs a soft edge glow top-left → bottom-right when the feedback heart is tapped.
  */
 export function DocsStarCard({
 	spotlight = false,
@@ -40,7 +39,9 @@ export function DocsStarCard({
 			onAnimationEnd={(event) => {
 				if (
 					event.target === event.currentTarget &&
-					event.animationName.startsWith("docs-star-spotlight")
+					!event.pseudoElement &&
+					(event.animationName === "docs-star-spotlight" ||
+						event.animationName === "docs-star-spotlight-static")
 				) {
 					onSpotlightEnd?.();
 				}
@@ -51,17 +52,11 @@ export function DocsStarCard({
 			</span>
 
 			<span className="docs-star-card__body">
-				<span className="docs-star-card__eyebrow">
-					<span className="docs-star-card__eyebrow-label">
-						<SiGithub aria-hidden="true" className="size-3 shrink-0" />
-						GitHub
+				{starCount !== null ? (
+					<span className="docs-star-card__count">
+						{starCount.toLocaleString()}
 					</span>
-					{starCount !== null ? (
-						<span className="docs-star-card__count">
-							{starCount.toLocaleString()}
-						</span>
-					) : null}
-				</span>
+				) : null}
 
 				<span className="docs-star-card__title">
 					<Star
@@ -73,8 +68,11 @@ export function DocsStarCard({
 				</span>
 
 				<span className="docs-star-card__cta">
-					Leave a star
-					<span aria-hidden="true"> →</span>
+					Leave a star on GitHub
+					<ArrowUpRight
+						aria-hidden="true"
+						className="docs-star-card__cta-arrow"
+					/>
 				</span>
 			</span>
 		</a>
