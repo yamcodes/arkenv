@@ -5,12 +5,12 @@ import {
 	AgentNativePitch,
 	BeforeAfterCompare,
 	BringYourOwnValidator,
-	CompatibilityRails,
 	DotGrid,
 	HeroFaq,
 	InstallPanel,
 	QuickstartButton,
 	SecureBoundary,
+	SocialProof,
 	StarUsButton,
 	TypeSafetyShowcase,
 	VideoDemo,
@@ -57,16 +57,16 @@ export default function HomePage() {
 					typesafe. Use ArkType, Zod, or any Standard Schema. Fail fast, ship
 					faster.
 				</p>
-				<div className="rise" style={{ animationDelay: "320ms" }}>
-					<CompatibilityRails className="home-aurora__rails-host" />
-				</div>
 				<div
 					className="home-aurora__install-row rise"
-					style={{ animationDelay: "400ms" }}
+					style={{ animationDelay: "320ms" }}
 				>
 					<InstallPanel />
 					<StarUsButton />
 					<QuickstartButton />
+				</div>
+				<div className="rise" style={{ animationDelay: "400ms" }}>
+					<SocialProof />
 				</div>
 			</section>
 
