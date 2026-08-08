@@ -160,7 +160,7 @@ aside .theme-toggle {
 	margin-left: auto;
 }
 
-/* Fumadocs built-in nav backdrop (fallback, overridden by custom Header) */
+/* Fumadocs built-in nav backdrop (fallback when stock #nd-nav is used) */
 #nd-nav {
 	background-color: transparent !important;
 	backdrop-filter: none !important;

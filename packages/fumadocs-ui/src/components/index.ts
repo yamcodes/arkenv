@@ -5,6 +5,5 @@ export * from "./docs-breadcrumb";
 export * from "./docs-toc";
 export * from "./drill-in-sidebar";
 export * from "./external-link";
-export * from "./header";
 export * from "./heading";
 export * from "./type-table";

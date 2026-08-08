@@ -4,11 +4,12 @@ A Fumadocs-ready component and theme package for ArkEnv documentation. It ships 
 
 ## Highlights
 
-- Design system CSS with 0.125rem radius and 80px header/nav height overrides
+- Design system CSS with 0.125rem radius and nav height overrides for docs layouts
 - External link detection with safe targets and visual indicators
 - Anchorable headings with scroll margin for tall headers
 - Enhanced code blocks and AI actions (copy markdown, open in AI assistants)
 - Preconfigured `arkenvComponents` MDX map that layers our overrides onto `fumadocs-ui` defaults
+- Drill-in sidebar slots for Turborepo-like docs navigation
 
 ## Install
 

@@ -1,13 +1,10 @@
-import { drillInSidebarSlots, Header } from "@arkenv/fumadocs-ui/components";
+import { drillInSidebarSlots } from "@arkenv/fumadocs-ui/components";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { CSSProperties, ReactNode } from "react";
 import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
-import { HeaderGithubLink } from "~/components/page/header-github-link";
-import { Logo } from "~/components/page/logo";
 import { SiteFooter } from "~/components/site-footer";
 import "~/components/site-footer.css";
-import { SearchToggle } from "~/components/ui/search-toggle";
-import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { SiteNavBar } from "~/components/site-nav";
 import { source } from "~/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -15,7 +12,6 @@ export default function Layout({ children }: { children: ReactNode }) {
 		<main
 			style={
 				{
-					"--fd-banner-height": "var(--fd-nav-height, 80px)",
 					"--fd-layout-width": "1400px",
 				} as CSSProperties
 			}
@@ -34,41 +30,13 @@ export default function Layout({ children }: { children: ReactNode }) {
 					title: <span className="sr-only">ArkEnv</span>,
 					component: (
 						<>
-							{/* Spacer in the docs grid "header" area so content starts below our fixed header */}
+							{/* Spacer in the docs grid "header" area so content starts below the floating Docs bar */}
 							<div
 								className="[grid-area:header]"
-								style={{ height: "var(--fd-nav-height, 80px)" }}
+								style={{ height: "var(--fd-nav-height)" }}
 								aria-hidden="true"
 							/>
-							<Header
-								logo={<Logo />}
-								sidebarTrigger={<DocsSidebarTrigger />}
-								links={[
-									{ text: "Documentation", url: "/docs" },
-									{
-										text: "Roadmap",
-										url: "https://github.com/yamcodes/arkenv/issues/683",
-									},
-								]}
-								actions={[
-									<SearchToggle key="search" />,
-									<div key="theme-desktop" className="hidden md:block">
-										<ThemeToggle />
-									</div>,
-									<HeaderGithubLink
-										key="github"
-										className="hidden md:flex h-8 text-fd-muted-foreground hover:text-fd-foreground"
-									/>,
-								]}
-								menuActions={[<ThemeToggle key="theme-toggle" />]}
-								menuSocialActions={[
-									<HeaderGithubLink
-										key="github"
-										className="h-8 text-fd-muted-foreground hover:text-fd-foreground"
-										iconClassName="size-6"
-									/>,
-								]}
-							/>
+							<SiteNavBar sidebarTrigger={<DocsSidebarTrigger />} />
 						</>
 					),
 				}}
