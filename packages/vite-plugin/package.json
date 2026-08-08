@@ -20,12 +20,12 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vite": "8.0.10",
+		"vite": "8.0.16",
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "^2.1.22",
-		"vite": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
+		"vite": "^8.0.16 ^8.0.16 ^8.0.16 ^8.0.16 ^8.0.16"
 	},
 	"exports": {
 		"types": "./dist/index.d.ts",
