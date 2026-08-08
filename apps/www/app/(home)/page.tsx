@@ -53,22 +53,22 @@ export default function HomePage() {
 					typesafe. Use ArkType, Zod, or any Standard Schema. Fail fast, ship
 					faster.
 				</p>
-				<div
-					className="home-aurora__endorsement-row rise"
-					style={{ animationDelay: "300ms" }}
-				>
-					<HeroEndorsement />
-				</div>
-				<div className="rise" style={{ animationDelay: "360ms" }}>
+				<div className="rise" style={{ animationDelay: "320ms" }}>
 					<CompatibilityRails className="home-aurora__rails-host" />
 				</div>
 				<div
 					className="home-aurora__install-row rise"
-					style={{ animationDelay: "440ms" }}
+					style={{ animationDelay: "400ms" }}
 				>
 					<InstallPanel />
 					<StarUsButton />
 					<QuickstartButton />
+				</div>
+				<div
+					className="home-aurora__endorsement-row rise"
+					style={{ animationDelay: "480ms" }}
+				>
+					<HeroEndorsement />
 				</div>
 			</section>
 

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 /**
  * Hero social proof — Colin McDonnell's quote from a private email, used with permission.
- * Hallmark T3 · Single huge quote — full-width proof row (not a tweet card).
+ * Hallmark T3 · Single huge quote — full-bleed proof strip with portrait attribution.
  */
 export function HeroEndorsement() {
 	return (
@@ -17,8 +17,8 @@ export function HeroEndorsement() {
 				<Image
 					src="/assets/colin-mcdonnell.jpg"
 					alt=""
-					width={48}
-					height={48}
+					width={112}
+					height={112}
 					className="home-aurora__endorsement-avatar"
 				/>
 				<div className="home-aurora__endorsement-meta">
