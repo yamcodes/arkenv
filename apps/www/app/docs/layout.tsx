@@ -4,6 +4,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
+import { SiteFooter } from "~/components/site-footer";
+import "~/components/site-footer.css";
 import { SearchToggle } from "~/components/ui/search-toggle";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { source } from "~/lib/source";
@@ -73,6 +75,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 			>
 				{children}
 			</DocsLayout>
+			<div className="site-footer-bleed">
+				<div className="site-footer-band">
+					<SiteFooter />
+				</div>
+			</div>
 		</main>
 	);
 }

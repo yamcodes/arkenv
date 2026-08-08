@@ -1,0 +1,137 @@
+/* TOC star CTA — mirrors home outro atmosphere (blooms + dots). */
+.docs-star-card {
+	--docs-star-bloom-a: oklch(52% 0.11 195 / 0.32);
+	--docs-star-bloom-b: oklch(42% 0.09 220 / 0.22);
+
+	position: relative;
+	display: block;
+	isolation: isolate;
+	overflow: hidden;
+	margin-top: 0.25rem;
+	padding: 0.85rem 0.9rem;
+	border: 1px solid var(--color-fd-border);
+	border-radius: 0.75rem;
+	background: var(--color-fd-card);
+	color: var(--color-fd-foreground);
+	text-decoration: none;
+	transition:
+		border-color 120ms ease,
+		background-color 120ms ease;
+}
+
+.docs-star-card:hover {
+	border-color: color-mix(in oklch, oklch(74% 0.13 195) 40%, var(--color-fd-border));
+}
+
+.docs-star-card:focus-visible {
+	outline: 2px solid var(--color-fd-ring);
+	outline-offset: 2px;
+}
+
+.docs-star-card__atmosphere {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	overflow: hidden;
+	background-image:
+		radial-gradient(
+			ellipse 55% 60% at 92% 78%,
+			var(--docs-star-bloom-a),
+			transparent 70%
+		),
+		radial-gradient(
+			ellipse 50% 55% at 8% 18%,
+			var(--docs-star-bloom-b),
+			transparent 72%
+		);
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0%,
+		#000 18%,
+		#000 82%,
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0%,
+		#000 18%,
+		#000 82%,
+		transparent 100%
+	);
+}
+
+.docs-star-card__atmosphere .home-aurora__dot-grid {
+	display: block;
+	width: 100%;
+	height: 100%;
+	color: color-mix(in oklch, var(--color-fd-foreground) 14%, transparent);
+	background-image: radial-gradient(currentColor 0.75px, transparent 1.1px);
+	background-size: var(--dot-spacing, 14px) var(--dot-spacing, 14px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.docs-star-card__atmosphere .home-aurora__dot-grid {
+		opacity: 0.85;
+	}
+}
+
+.docs-star-card__body {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0.45rem;
+}
+
+.docs-star-card__eyebrow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	font-size: 0.65rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--color-fd-muted-foreground);
+}
+
+.docs-star-card__eyebrow-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+
+.docs-star-card__count {
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.docs-star-card__title {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1.25;
+	color: var(--color-fd-foreground);
+}
+
+.docs-star-card__title-star {
+	flex-shrink: 0;
+	width: 0.875rem;
+	height: 0.875rem;
+	color: oklch(74% 0.13 195);
+}
+
+.docs-star-card__cta {
+	font-size: 0.75rem;
+	line-height: 1.3;
+	color: var(--color-fd-muted-foreground);
+	transition: color 120ms ease;
+}
+
+.docs-star-card:hover .docs-star-card__cta {
+	color: var(--color-fd-foreground);
+}

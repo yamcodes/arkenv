@@ -1,0 +1,190 @@
+/* Shared site footer (home Ft5 + docs).
+ * Default to fumadocs tokens — Tailwind's `--color-muted` is a *surface*,
+ * so using it for text makes titles/meta invisible on dark docs chrome.
+ * Aurora ink tokens are applied only under `.home-aurora`. */
+
+.home-aurora__footer {
+	--sf-ink: var(--color-fd-foreground);
+	--sf-ink-2: var(--color-fd-muted-foreground);
+	--sf-muted: var(--color-fd-muted-foreground);
+	--sf-rule: var(--color-fd-border);
+	--sf-focus: var(--color-fd-ring);
+	--sf-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	--sf-font-outlier: var(--font-geist-mono), ui-monospace, monospace;
+	--sf-space-xs: 0.75rem;
+	--sf-space-sm: 1rem;
+	--sf-space-lg: 2rem;
+	--sf-space-xl: 3rem;
+	--sf-text-xs: 0.75rem;
+	--sf-text-sm: 0.875rem;
+	--sf-dur: 120ms;
+	--sf-ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--sf-rule-w: 1px;
+
+	margin-top: var(--sf-space-xl);
+	padding: var(--sf-space-xl) 0 0;
+	display: grid;
+	gap: var(--sf-space-lg);
+}
+
+.home-aurora .home-aurora__footer {
+	--sf-ink: var(--color-ink);
+	--sf-ink-2: var(--color-ink-2);
+	--sf-muted: var(--color-muted);
+	--sf-rule: var(--color-rule);
+	--sf-focus: var(--color-focus);
+	--sf-font-display: var(--font-display);
+	--sf-font-outlier: var(--font-outlier);
+	--sf-space-xs: var(--space-xs);
+	--sf-space-sm: var(--space-sm);
+	--sf-space-lg: var(--space-lg);
+	--sf-space-xl: var(--space-xl);
+	--sf-text-xs: var(--text-xs);
+	--sf-text-sm: var(--text-sm);
+	--sf-dur: var(--dur-micro);
+	--sf-ease: var(--ease-out);
+	--sf-rule-w: var(--rule-hair);
+}
+
+.home-aurora__footer-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--sf-space-lg);
+}
+
+.home-aurora__footer-brand {
+	grid-column: 1 / -1;
+	display: grid;
+	gap: var(--sf-space-xs);
+	align-content: start;
+}
+
+@media (min-width: 64rem) {
+	.home-aurora__footer-grid {
+		grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+		gap: var(--sf-space-xl);
+	}
+
+	.home-aurora__footer-brand {
+		grid-column: auto;
+	}
+
+	.home-aurora__footer-brand p {
+		max-width: 28ch;
+	}
+}
+
+.home-aurora__footer-brand p {
+	margin: 0;
+	color: var(--sf-ink-2);
+	font-size: var(--sf-text-sm);
+	line-height: 1.45;
+}
+
+.home-aurora__footer-grid h3 {
+	margin: 0 0 var(--sf-space-xs);
+	font-family: var(--sf-font-display);
+	font-size: var(--sf-text-sm);
+	font-weight: 400;
+	letter-spacing: normal;
+	color: var(--sf-ink);
+}
+
+.home-aurora__footer-grid ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 0.45rem;
+}
+
+.home-aurora__footer-grid a {
+	color: var(--sf-ink-2);
+	font-family: var(--sf-font-display);
+	font-size: var(--sf-text-sm);
+	text-decoration: none;
+	transition: color var(--sf-dur) var(--sf-ease);
+}
+
+.home-aurora__footer-grid a:hover {
+	color: var(--sf-ink);
+}
+
+.home-aurora__footer-grid a:focus-visible {
+	outline: 2px solid var(--sf-focus);
+	outline-offset: 2px;
+}
+
+.home-aurora__footer-meta {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--sf-space-sm);
+	padding-block-start: var(--sf-space-sm);
+	border-top: var(--sf-rule-w) solid var(--sf-rule);
+	color: var(--sf-muted);
+	font-family: var(--sf-font-display);
+	font-size: var(--sf-text-sm);
+}
+
+.home-aurora__footer-meta a {
+	color: var(--sf-ink);
+	text-decoration: none;
+	transition: color var(--sf-dur) var(--sf-ease);
+}
+
+.home-aurora__footer-meta a:hover {
+	color: var(--sf-ink);
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.home-aurora__footer-meta a:focus-visible {
+	outline: 2px solid var(--sf-focus);
+	outline-offset: 2px;
+}
+
+/* Docs chrome: full-bleed top rule, constrained content */
+.site-footer-bleed {
+	width: 100%;
+	margin-top: 2rem;
+	border-top: 1px solid var(--color-fd-border);
+}
+
+.site-footer-band {
+	width: 100%;
+	max-width: var(--fd-layout-width, 1400px);
+	margin-inline: auto;
+	padding-inline: 1rem;
+	padding-bottom: 2rem;
+}
+
+.site-footer-band .home-aurora__wordmark {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+	color: var(--color-fd-foreground);
+	text-decoration: none;
+}
+
+.site-footer-band .home-aurora__footer {
+	margin-top: 0;
+	padding-top: 2rem;
+}
+
+/* Pin docs footer text to fumadocs tokens (avoid Tailwind surface vars). */
+.site-footer-band .home-aurora__footer-brand p,
+.site-footer-band .home-aurora__footer-meta {
+	color: var(--color-fd-muted-foreground);
+}
+
+.site-footer-band .home-aurora__footer-grid h3,
+.site-footer-band .home-aurora__footer-grid a:hover,
+.site-footer-band .home-aurora__footer-meta a {
+	color: var(--color-fd-foreground);
+}
+
+.site-footer-band .home-aurora__footer-grid a {
+	color: var(--color-fd-muted-foreground);
+}

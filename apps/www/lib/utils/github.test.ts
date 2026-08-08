@@ -55,6 +55,31 @@ describe("github utilities", () => {
 			});
 		});
 
+		it("should use Vercel deploy branch when no manual branch override", () => {
+			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "v1");
+
+			const result = breakDownGithubUrl("https://github.com/yamcodes/arkenv");
+
+			expect(result).toEqual({
+				owner: "yamcodes",
+				repo: "arkenv",
+				defaultBranch: "v1",
+			});
+		});
+
+		it("should prefer NEXT_PUBLIC_GITHUB_BRANCH over Vercel deploy branch", () => {
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "dev");
+			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "simplify-docs");
+
+			const result = breakDownGithubUrl("https://github.com/yamcodes/arkenv");
+
+			expect(result).toEqual({
+				owner: "yamcodes",
+				repo: "arkenv",
+				defaultBranch: "dev",
+			});
+		});
+
 		it("should use fallback URL when no URL is configured", () => {
 			const result = breakDownGithubUrl();
 

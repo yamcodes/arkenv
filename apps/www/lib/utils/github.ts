@@ -10,7 +10,11 @@ export const breakDownGithubUrl = (githubUrl?: string) => {
 		process.env.NEXT_PUBLIC_GITHUB_URL ??
 		"https://github.com/yamcodes/arkenv";
 
-	const defaultBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "dev";
+	// Manual override → Vercel deploy branch → local/default.
+	const defaultBranch =
+		process.env.NEXT_PUBLIC_GITHUB_BRANCH ??
+		process.env.VERCEL_GIT_COMMIT_REF ??
+		"dev";
 	const cleanUrl = url.replace(/\/$/, "");
 	const urlObj = new URL(cleanUrl);
 	const [owner, repo] = urlObj.pathname.split("/").filter(Boolean).slice(-2);
