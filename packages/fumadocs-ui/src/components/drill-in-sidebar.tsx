@@ -5,7 +5,6 @@ import {
 	SidebarContent as SidebarContentPrimitive,
 	SidebarDrawerContent,
 	SidebarDrawerOverlay,
-	SidebarViewport,
 } from "fumadocs-ui/components/sidebar/base";
 import { useTreeContext } from "fumadocs-ui/contexts/tree";
 import type { SidebarProps } from "fumadocs-ui/layouts/docs/slots/sidebar";
@@ -552,8 +551,10 @@ function SidebarDrawer({
 }
 
 /**
- * Mirrors Fumadocs `layouts/docs/slots/sidebar` SidebarContent shell so the
- * docs layout grid (`[grid-area:sidebar]`) and collapse behavior stay intact.
+ * Mirrors Fumadocs / Geistdocs (Turborepo) sidebar shell:
+ * sticky viewport-height track + inner `overflow-y-auto` (no ScrollArea).
+ * When links fit, wheel scrolls the page; when they overflow, the sidebar
+ * scrolls first then chains to the page (default overscroll — do not contain).
  */
 function DocsSidebarShell({
 	children,
@@ -578,9 +579,10 @@ function DocsSidebarShell({
 						onPointerEnter={onPointerEnter}
 						onPointerLeave={onPointerLeave}
 						className={cn(
-							"absolute inset-s-0 inset-y-0 flex w-full flex-col items-end border-e bg-fd-card text-sm duration-250 *:w-(--fd-sidebar-width)",
+							/* ms-auto: sit in the sidebar column, not the left 1fr gutter */
+							"ms-auto h-full w-(--fd-sidebar-width) overflow-y-auto text-sm duration-250",
 							collapsed && [
-								"inset-y-2 w-(--fd-sidebar-width) rounded-xl border transition-transform",
+								"rounded-xl border transition-transform",
 								hovered
 									? "shadow-lg translate-x-2 rtl:-translate-x-2"
 									: "-translate-x-(--fd-sidebar-width) rtl:translate-x-full",
@@ -597,17 +599,17 @@ function DocsSidebarShell({
 	);
 }
 
-/**
- * Turborepo-style Drill-in Sidebar for Fumadocs `DocsLayout`.
- * Use via {@link drillInSidebarSlots}.
- */
-function DrillInViewport() {
+function DrillInNav({ className }: { className?: string }) {
 	return (
-		<SidebarViewport viewport={{ className: "p-3 pe-2" }}>
-			<div className="flex flex-col gap-0.5">
-				<DrillInTree />
-			</div>
-		</SidebarViewport>
+		<div
+			className={cn(
+				/* ps matches Site Nav / home shell gutter (1rem → 1.5rem @ 40rem) */
+				"flex w-full flex-col gap-0.5 ps-4 pe-2 pt-12 pb-4 min-[40rem]:ps-6",
+				className,
+			)}
+		>
+			<DrillInTree />
+		</div>
 	);
 }
 
@@ -622,11 +624,11 @@ export function DrillInSidebar({
 	return (
 		<>
 			<DocsSidebarShell {...rest}>
-				<DrillInViewport />
+				<DrillInNav />
 			</DocsSidebarShell>
 			<SidebarDrawer>
 				<div className="flex flex-col gap-3 p-4 pb-2" />
-				<DrillInViewport />
+				<DrillInNav className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-4" />
 			</SidebarDrawer>
 		</>
 	);

@@ -1,17 +1,18 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { useSearchContext } from "fumadocs-ui/contexts/search";
+import { ArrowUpRight, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
-import { SearchToggle } from "~/components/ui/search-toggle";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { useFeatureFlag } from "~/hooks/use-feature-flag";
+import { FeatureFlag } from "~/lib/posthog/feature-flags";
 import { cn } from "~/lib/utils";
 import "./site-nav.css";
-
-export type SiteNavForm = "pill" | "bar";
 
 type NavLink = {
 	text: string;
@@ -21,20 +22,14 @@ type NavLink = {
 };
 
 const NAV_CORE_LINKS: NavLink[] = [
-	{ text: "Why ArkEnv?", url: "/#why" },
-	{
-		text: "Presets",
-		url: "/docs/validating-environment-variables",
-		activeMatch: "/docs/validating-environment-variables",
-	},
 	{ text: "Docs", url: "/docs", activeMatch: "/docs" },
+	{ text: "Demo", url: "/#demo" },
+	{
+		text: "Roadmap",
+		url: "https://github.com/yamcodes/arkenv/issues/683",
+		external: true,
+	},
 ];
-
-const ROADMAP_LINK: NavLink = {
-	text: "Roadmap",
-	url: "https://github.com/yamcodes/arkenv/issues/683",
-	external: true,
-};
 
 function isLinkActive(pathname: string, link: NavLink): boolean {
 	if (link.external || !link.activeMatch) return false;
@@ -43,33 +38,108 @@ function isLinkActive(pathname: string, link: NavLink): boolean {
 	);
 }
 
+function SiteNavLink({
+	link,
+	pathname,
+	variant,
+	tabIndex,
+	onNavigate,
+}: {
+	link: NavLink;
+	pathname: string;
+	variant: "desktop" | "menu";
+	tabIndex?: number;
+	/** Close mobile menu (same-page hashes don't change pathname). */
+	onNavigate?: () => void;
+}) {
+	const active = isLinkActive(pathname, link);
+	const base = variant === "desktop" ? "site-nav__link" : "site-nav__menu-link";
+	const className = cn(
+		base,
+		active && `${base}--active`,
+		link.external && "site-nav__link--external",
+	);
+
+	if (link.external) {
+		return (
+			<a
+				href={link.url}
+				className={className}
+				target="_blank"
+				rel="noopener noreferrer"
+				tabIndex={tabIndex}
+				onClick={onNavigate}
+			>
+				{link.text}
+				<ArrowUpRight className="site-nav__external-icon" aria-hidden="true" />
+			</a>
+		);
+	}
+
+	return (
+		<a
+			href={link.url}
+			className={className}
+			tabIndex={tabIndex}
+			onClick={onNavigate}
+		>
+			{link.text}
+		</a>
+	);
+}
+
+/** Docs-only — same footprint as Get started (`.site-nav__action`). */
+function SiteNavSearchAction() {
+	const { setOpenSearch } = useSearchContext();
+	const [modifier, setModifier] = useState("Ctrl");
+
+	useEffect(() => {
+		const isMac = /Mac|iPhone|iPod|iPad/i.test(navigator.userAgent);
+		setModifier(isMac ? "⌘" : "Ctrl");
+	}, []);
+
+	return (
+		<button
+			type="button"
+			aria-label="Open Search"
+			className="site-nav__action site-nav__action--search"
+			onClick={() => setOpenSearch(true)}
+		>
+			<Search className="site-nav__action-icon" aria-hidden="true" />
+			<span className="site-nav__action-label">Search</span>
+			<span className="site-nav__action-keys" aria-hidden="true">
+				<kbd>{modifier}</kbd>
+				<kbd>K</kbd>
+			</span>
+		</button>
+	);
+}
+
 export type SiteNavProps = {
-	form: SiteNavForm;
-	/** Docs bar only — mobile sidebar toggle. */
+	/** Home / 404 — Get started in the shared right action slot. */
+	showGetStarted?: boolean;
+	/** Docs — Search in the shared right action slot (same footprint as Get started). */
+	showSearch?: boolean;
+	/** Docs mobile only — sidebar tree toggle. */
 	sidebarTrigger?: ReactNode;
 };
 
-export function SiteNav({ form, sidebarTrigger }: SiteNavProps) {
+export function SiteNav({
+	showGetStarted = false,
+	showSearch = false,
+	sidebarTrigger,
+}: SiteNavProps) {
 	const pathname = usePathname();
+	const themeToggleEnabled = useFeatureFlag(FeatureFlag.THEME_TOGGLE);
 	const [dense, setDense] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
 
-	const isBar = form === "bar";
-	const desktopLinks = isBar
-		? [...NAV_CORE_LINKS, ROADMAP_LINK]
-		: NAV_CORE_LINKS;
-	const menuLinks = isBar ? [...NAV_CORE_LINKS, ROADMAP_LINK] : NAV_CORE_LINKS;
-
 	useEffect(() => {
-		if (!isBar) {
-			setDense(false);
-			return;
-		}
 		const onScroll = () => setDense(window.scrollY > 0);
 		window.addEventListener("scroll", onScroll, { passive: true });
 		onScroll();
 		return () => window.removeEventListener("scroll", onScroll);
-	}, [isBar]);
+	}, []);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: close menu on route change
 	useEffect(() => {
@@ -85,17 +155,11 @@ export function SiteNav({ form, sidebarTrigger }: SiteNavProps) {
 
 	return (
 		<div className="site-nav-root">
-			<header
-				className={cn(
-					"site-nav",
-					isBar ? "site-nav--bar" : "site-nav--pill",
-					isBar && dense && "site-nav--dense",
-				)}
-			>
+			<header className={cn("site-nav", dense && "site-nav--dense")}>
 				<div className="site-nav__surface">
 					<div className="site-nav__inner">
 						<div className="site-nav__start">
-							{isBar && sidebarTrigger ? (
+							{sidebarTrigger ? (
 								<div className="site-nav__sidebar-trigger">
 									{sidebarTrigger}
 								</div>
@@ -107,48 +171,39 @@ export function SiteNav({ form, sidebarTrigger }: SiteNavProps) {
 							>
 								<Logo />
 							</Link>
-							<nav className="site-nav__links" aria-label="Primary">
-								{desktopLinks.map((link) => {
-									const active = isLinkActive(pathname, link);
-									const className = cn(
-										"site-nav__link",
-										active && "site-nav__link--active",
-									);
-									if (link.external) {
-										return (
-											<a
-												key={link.url}
-												href={link.url}
-												className={className}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												{link.text}
-											</a>
-										);
-									}
-									return (
-										<a key={link.url} href={link.url} className={className}>
-											{link.text}
-										</a>
-									);
-								})}
-							</nav>
 						</div>
+
+						<nav className="site-nav__links" aria-label="Primary">
+							{NAV_CORE_LINKS.map((link) => (
+								<SiteNavLink
+									key={link.url}
+									link={link}
+									pathname={pathname}
+									variant="desktop"
+								/>
+							))}
+						</nav>
 
 						<div className="site-nav__end">
 							<div className="site-nav__utils">
-								<SearchToggle />
-								<div className="site-nav__theme">
-									<ThemeToggle />
-								</div>
+								{themeToggleEnabled ? (
+									<div className="site-nav__theme">
+										<ThemeToggle />
+									</div>
+								) : null}
 								<HeaderGithubLink className="site-nav__github" />
 							</div>
-							{!isBar ? (
-								<a className="site-nav__cta" href="/docs/getting-started">
-									Get started <span aria-hidden="true">→</span>
+							{showGetStarted ? (
+								<a
+									className="site-nav__action site-nav__action--cta"
+									href="/docs/getting-started"
+								>
+									<span className="site-nav__action-label">
+										Get started <span aria-hidden="true">→</span>
+									</span>
 								</a>
 							) : null}
+							{showSearch ? <SiteNavSearchAction /> : null}
 							<button
 								type="button"
 								className="site-nav__menu-toggle"
@@ -175,51 +230,33 @@ export function SiteNav({ form, sidebarTrigger }: SiteNavProps) {
 				aria-hidden={!mobileOpen}
 			>
 				<nav className="site-nav__menu-links" aria-label="Primary">
-					{menuLinks.map((link) => {
-						const active = isLinkActive(pathname, link);
-						const className = cn(
-							"site-nav__menu-link",
-							active && "site-nav__menu-link--active",
-						);
-						if (link.external) {
-							return (
-								<a
-									key={link.url}
-									href={link.url}
-									className={className}
-									target="_blank"
-									rel="noopener noreferrer"
-									tabIndex={mobileOpen ? undefined : -1}
-								>
-									{link.text}
-								</a>
-							);
-						}
-						return (
-							<a
-								key={link.url}
-								href={link.url}
-								className={className}
-								tabIndex={mobileOpen ? undefined : -1}
-							>
-								{link.text}
-							</a>
-						);
-					})}
-					{!isBar ? (
+					{NAV_CORE_LINKS.map((link) => (
+						<SiteNavLink
+							key={link.url}
+							link={link}
+							pathname={pathname}
+							variant="menu"
+							tabIndex={mobileOpen ? undefined : -1}
+							onNavigate={() => setMobileOpen(false)}
+						/>
+					))}
+					{showGetStarted ? (
 						<a
 							className="site-nav__menu-cta"
 							href="/docs/getting-started"
 							tabIndex={mobileOpen ? undefined : -1}
+							onClick={() => setMobileOpen(false)}
 						>
 							Get started <span aria-hidden="true">→</span>
 						</a>
 					) : null}
 				</nav>
-				<div className="site-nav__menu-appearance">
-					<span>Appearance</span>
-					<ThemeToggle />
-				</div>
+				{themeToggleEnabled ? (
+					<div className="site-nav__menu-appearance">
+						<span>Appearance</span>
+						<ThemeToggle />
+					</div>
+				) : null}
 				<div className="site-nav__menu-social">
 					<HeaderGithubLink
 						className="site-nav__menu-github"
@@ -231,10 +268,26 @@ export function SiteNav({ form, sidebarTrigger }: SiteNavProps) {
 	);
 }
 
-export function SiteNavPill() {
-	return <SiteNav form="pill" />;
+export function SiteNavHome() {
+	return <SiteNav showGetStarted />;
 }
 
-export function SiteNavBar({ sidebarTrigger }: { sidebarTrigger?: ReactNode }) {
-	return <SiteNav form="bar" sidebarTrigger={sidebarTrigger} />;
+/**
+ * Declared under DocsLayout (SidebarContext) but mounted on `#nd-docs-layout`
+ * so sticky glass isn’t trapped in the short header grid cell.
+ */
+export function SiteNavDocs({
+	sidebarTrigger,
+}: {
+	sidebarTrigger?: ReactNode;
+}) {
+	const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+	useEffect(() => {
+		setPortalTarget(document.getElementById("nd-docs-layout"));
+	}, []);
+
+	const nav = <SiteNav showSearch sidebarTrigger={sidebarTrigger} />;
+	if (!portalTarget) return nav;
+	return createPortal(nav, portalTarget);
 }

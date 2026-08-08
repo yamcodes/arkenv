@@ -25,73 +25,63 @@ The Vite plugin call shape `arkenv(schema)` that validates at build time and inl
 
 ### Site chrome (www)
 
+**Logo top-left**:
+Axiom for www chrome — the brand mark sits at the start of **Site Nav** (top-left of the floating bar), on home, docs, and orphans. The chrome may change form or extras; the logo’s page-corner role does not.
+*Avoid*: centered floating chrome that moves the logo away from the top-left; a third orphan-only placement
+
 **Glass material**:
 The shared translucent surface language for site chrome — hairline border, soft shadow, backdrop blur/saturation — inspired by iOS liquid glass.
 *Avoid*: treating home and docs as separate visual systems; “frosted glass” as a distinct product term
 
 **Site Nav**:
-The primary site-wide navigation chrome for [www](http://www). One shared material (**Glass material**); form adapts by surface. Contents follow **shared core + surface extras**. Cross-route change is an instant form swap (**static kinship**), not a morph. Owned as www site chrome — not a generic docs-kit primitive.
-*Avoid*: Header (when meaning the whole site chrome), HomeNav-as-product-name; identical link sets forced onto both surfaces; visual-only unify with divergent destinations; shared-element morph / chrome crossfade as v1 requirement; publishing Site Nav as `@arkenv/fumadocs-ui` API
+The primary site-wide navigation chrome for www. One header everywhere: **Glass material**, **Floating bar**, **logo top-left**, centered **Nav core** links, theme + GitHub on the right, then a shared right **action pill**. Owned as www site chrome — not a generic docs-kit primitive.
+*Avoid*: Header (when meaning the whole site chrome); separate home vs docs chrome families; centered content-sized pill; publishing Site Nav as `@arkenv/fumadocs-ui` API; search on home
 
 **Nav core**:
-The shared **Site Nav** contents on every surface and breakpoint: primary links **Why ArkEnv?**, **Presets**, and **Docs**; plus utility actions search, theme, and GitHub. On small screens the primary links live in a hamburger menu on both the **Floating pill** and the **Docs bar**.
-*Avoid*: Roadmap or Get started as core; “Documentation” as a separate label from **Docs**; home mobile that hides primary links with no menu
+The shared **Site Nav** contents on every surface and breakpoint: primary links **Docs**, **Demo** (home `#demo`), and **Roadmap** (external, with an up-right icon), centered in the bar; plus theme and GitHub on the right. On small screens the primary links live in a hamburger menu.
+*Avoid*: Why ArkEnv? / Presets as core links; Get started or Search as core links; “Documentation” as a separate label from **Docs**; Roadmap without an external-link affordance
 
-**Surface extras**:
-Affordances that belong to only one **Site Nav** form — Get started on the **Floating pill** (including inside its mobile menu); sidebar trigger and **Roadmap** on the **Docs bar**.
-*Avoid*: stuffing every surface’s extras into the **Nav core**; merging sidebar tree and site links into one mobile menu
+**Action pill**:
+The shared rightmost control slot in **Site Nav** — identical height, min-width, padding, and capsule radius. Home/orphan fills it with **Get started**; docs fills it with **Search**. Not both.
+*Avoid*: differently sized Get started vs Search; search on home; Get started on docs
 
-**Floating pill**:
-The home (and orphan) form of **Site Nav** — centered, content-sized, inset from the viewport edges. Used on home and 404; includes Get started as a **surface extra**.
-*Avoid*: navbar, top bar (for this form); a third orphan-only chrome form
-
-**Docs bar**:
-The docs form of **Site Nav** — a floating wide bar inset from the top and sides, with rounded corners; nearly full viewport width, same floating-glass family as the **Floating pill**. Always shows **Glass material**; uses **Glass densify** on scroll.
-*Avoid*: edge-to-edge top strip; layout-width-capped orphan bar; solid-at-rest / glass-after-scroll swap; Fumadocs default nav as the lasting design intent
+**Floating bar**:
+The shared **Site Nav** geometry — inset from the top and sides, capsule pill radius, **logo top-left**, bounded by the page column (`--fd-layout-width`) so it does not stretch edge-to-edge on ultrawide. On docs, the logo sits above the left sidebar. Uses **Glass densify** on scroll on every surface. Positioned with sticky + absolute (not `position: fixed`) so glass blur can sample page content.
+*Avoid*: viewport-wide chrome on ultrawide; edge-to-edge top strip; solid-at-rest / glass-after-scroll swap; Fumadocs default nav as the lasting design intent
 
 **Menu panel**:
 The solid full-viewport sheet opened by the **Site Nav** hamburger on small screens. Temporary takeover for choosing a destination; not glass.
 *Avoid*: glass mobile drawer; merging with the docs sidebar drawer
 
 **Glass densify**:
-A scroll-driven increase in **Glass material** opacity/blur so content sliding under the **Docs bar** stays readable, without ever dropping to a solid non-glass rest state. Docs-only — the **Floating pill** stays constant glass.
-*Avoid*: opaque header; binary solid↔glass swap; densifying the **Floating pill**
+A scroll-driven increase in **Glass material** opacity/blur so content sliding under the **Floating bar** stays readable, without ever dropping to a solid non-glass rest state.
+*Avoid*: opaque header; binary solid↔glass swap
 
 ## Relationships
 
-- **Site Nav** uses **Glass material** on every surface
-- **Site Nav** takes the **Floating pill** form on home and orphans (404), and the **Docs bar** form on docs
-- Unification means shared **Glass material**, floating placement, and **Nav core** — not identical geometry or identical extras
-- Cross-route continuity is **static kinship** (instant pill ↔ bar swap); no shared-element morph or chrome-only crossfade in the first cut
-- The **Docs bar** is a wide sibling of the **Floating pill**, not a classic sticky header
-- The **Docs bar** uses **Glass densify** on scroll; it is never solid-at-rest
-- The **Floating pill** does not densify — constant glass through home scroll
-- **Surface extras** attach to a form without changing the **Nav core**
-- **Roadmap** is a **Docs bar** surface extra, not part of **Nav core**
-- **Get started** is a **Floating pill** surface extra, not part of **Nav core**
-- On small docs screens, sidebar trigger and hamburger both remain — tree vs site navigation stay separate jobs
-- On small home screens, the **Floating pill** also uses a hamburger for **Nav core** links (plus Get started as a surface extra)
-- The hamburger **menu panel** is a solid full-viewport sheet — glass stays on the persistent **Site Nav**, not the temporary takeover
-- **Site Nav** is www-owned site chrome; it is not published as part of the docs UI kit
-- The package `Header` is removed when **Site Nav** ships — one nav implementation, no parallel chrome
+- **Site Nav** is the same header on home, docs, and orphans
+- **Logo top-left**; **Nav core** links centered; theme + GitHub then the **action pill** on the right
+- Home/orphan **action pill** = **Get started**; docs **action pill** = **Search** (same footprint)
+- Docs still mounts a mobile sidebar trigger (tree access) without changing the shared chrome layout
+- **Roadmap** is part of **Nav core** (external link with icon)
+- **Glass densify** applies on every surface
+- The hamburger **menu panel** is a solid full-viewport sheet
+- **Site Nav** is www-owned; package `Header` is removed when it ships
 
 ## Flagged ambiguities
 
 - **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (Ported to `v1` as **ADR 0021** / `0021-env-object-canonical-surface`; on `dev` it remains `0015-env-object-canonical-surface`. On `v1`, ADR **0015** is still Next.js conditional exports.)
-- **"Header"** was used for both the home pill and the docs top chrome — resolved: canonical term is **Site Nav**; forms are **Floating pill** and **Docs bar**.
-- **Nav core “every surface”** vs home hiding links on mobile — resolved: both forms expose **Nav core** via hamburger on small screens; home no longer drops primary links silently.
-- **Package `Header` vs www chrome** — resolved: **Site Nav** lives in www; do not push pill/bar marketing chrome into `@arkenv/fumadocs-ui`. Package `Header` is removed in the same change (alpha; www was the only consumer).
+- **"Header"** / home vs docs chrome — resolved: one **Site Nav**; home/docs differ only by **action pill** contents (Get started vs Search).
+- **Package `Header` vs www chrome** — resolved: **Site Nav** lives in www; package `Header` removed (alpha; www was the only consumer).
+- **Centered home pill vs logo top-left** — resolved: shared **Floating bar**, logo top-left, links centered.
 
 ## Example dialogue
 
-> **Dev:** "Should docs keep using the fumadocs-ui `Header` and just add blur so it matches the home pill?"
-> **Domain expert:** "No — that's still two chromes. We have one **Site Nav** with **Glass material**. Home and 404 use the **Floating pill**; docs use the **Docs bar**. Same **Nav core**, different form and **surface extras**."
+> **Dev:** "Should home and docs keep slightly different headers?"
+> **Domain expert:** "No — one **Site Nav**. Logo left, links centered, GitHub right. The last control is an **action pill**: Get started on home, Search on docs — same size."
 >
-> **Dev:** "When someone scrolls the docs, should the bar go solid like today?"
-> **Domain expert:** "Never solid-at-rest. Use **Glass densify** — still glass, just denser. The **Floating pill** stays constant; densify is a docs reading aid."
->
-> **Dev:** "On mobile home we hide Why/Presets/Docs — is that fine if docs has a hamburger?"
-> **Domain expert:** "No. **Nav core** includes those links at every breakpoint. Both forms get a hamburger; the **menu panel** is a solid sheet. Docs also keeps the sidebar trigger — tree and site nav are different jobs."
+> **Dev:** "Where does Roadmap go?"
+> **Domain expert:** "In **Nav core**, with an external icon — same on every surface."
 
 ## Tech stack
 

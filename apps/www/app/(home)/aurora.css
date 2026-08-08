@@ -112,16 +112,16 @@
 .home-aurora {
 	--background: var(--color-paper);
 	--foreground: var(--color-ink);
-	--primary: var(--color-accent);
-	--primary-foreground: var(--color-accent-ink);
+	--primary: var(--color-ink);
+	--primary-foreground: var(--color-paper);
 	--muted-foreground: var(--color-muted);
 	--border: var(--color-rule);
 	--ring: var(--color-focus);
-	--fd-primary: var(--color-accent);
-	--color-fd-primary: var(--color-accent);
+	--fd-primary: var(--color-ink);
+	--color-fd-primary: var(--color-ink);
 
 	position: relative;
-	isolation: isolate;
+	/* No isolation: isolate — it breaks Site Nav backdrop-filter glass */
 	min-height: 100dvh;
 	color: var(--color-ink);
 	background-color: var(--color-paper);
@@ -197,17 +197,21 @@
 }
 
 .home-aurora__shell {
-	width: min(90rem, 100%);
+	width: min(var(--fd-layout-width, 1400px), 100%);
 	max-width: 100%;
 	min-width: 0;
 	margin-inline: auto;
-	/* Mobile: clear the floating pill without a tall empty band */
-	padding: calc(3.75rem + var(--space-xs)) clamp(0.75rem, 2.5vw, 1.75rem) var(--space-md);
+	/*
+	 * Side padding matches Site Nav gutter (1rem / 1.5rem) so the install
+	 * pill lines up with the floating bar’s left edge.
+	 */
+	padding: calc(3.75rem + var(--space-xs)) 1rem var(--space-md);
 }
 
 @media (min-width: 40rem) {
 	.home-aurora__shell {
 		padding-top: calc(var(--space-3xl) + var(--space-sm));
+		padding-inline: 1.5rem;
 	}
 }
 
@@ -396,7 +400,7 @@
 .home-aurora__install-row {
 	display: grid;
 	gap: var(--space-sm);
-	margin-top: var(--space-2xs);
+	margin-top: var(--space-md);
 	width: 100%;
 	max-width: 100%;
 }
@@ -849,7 +853,7 @@
 /* Install · Command / Prompt tabs - desktop/tablet only */
 .home-aurora__install {
 	display: none;
-	gap: var(--space-xs);
+	gap: var(--space-md);
 	width: fit-content;
 	max-width: 100%;
 }
@@ -915,10 +919,10 @@
 	gap: var(--space-md);
 	width: max-content;
 	max-width: 100%;
-	min-height: 3rem;
-	padding: 0.65rem 1.15rem 0.65rem 1.25rem;
+	min-height: 3.5rem;
+	padding: 0.85rem 1.5rem 0.85rem 1.6rem;
 	border: var(--rule-hair) solid var(--color-rule);
-	border-radius: var(--radius-frame);
+	border-radius: var(--radius-pill, 999px);
 	background: color-mix(in oklch, var(--color-paper-2) 88%, transparent);
 	color: var(--color-ink);
 	text-align: left;
@@ -1092,6 +1096,7 @@
 	margin-top: var(--space-xl);
 	display: grid;
 	gap: var(--space-md);
+	scroll-margin-top: 6rem;
 }
 
 @media (min-width: 40rem) {
@@ -2142,32 +2147,33 @@
 	overflow-wrap: normal;
 }
 
+/* Match .home-aurora__install-copy pill geometry/chrome — sibling CTAs */
 .home-aurora__outro-docs {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: 0.35rem;
 	width: fit-content;
-	min-height: 3rem;
-	padding: 0.55rem 0.9rem;
-	border: var(--rule-hair) solid transparent;
-	border-radius: var(--radius-frame);
-	background: transparent;
-	color: var(--color-ink-2);
+	min-height: 3.5rem;
+	padding: 0.85rem 1.5rem;
+	border: var(--rule-hair) solid var(--color-rule);
+	border-radius: var(--radius-pill, 999px);
+	background: color-mix(in oklch, var(--color-paper-2) 88%, transparent);
+	color: var(--color-ink);
 	font-family: var(--font-display);
-	font-size: var(--text-sm);
+	font-size: clamp(0.8125rem, 0.25vw + 0.8rem, 0.9375rem);
 	font-weight: 500;
+	line-height: 1.4;
 	text-decoration: none;
 	transition:
-		color var(--dur-micro) var(--ease-out),
-		border-color var(--dur-micro) var(--ease-out),
-		background-color var(--dur-micro) var(--ease-out);
+		border-color var(--dur-short) var(--ease-out),
+		background-color var(--dur-short) var(--ease-out),
+		transform var(--dur-micro) var(--ease-out);
 }
 
 .home-aurora__outro-docs:hover {
-	color: var(--color-ink);
-	border-color: var(--color-rule);
-	background: color-mix(in oklch, var(--color-paper-2) 70%, transparent);
+	border-color: color-mix(in oklch, var(--color-accent) 45%, var(--color-rule));
+	background: var(--color-paper-3);
 }
 
 .home-aurora__outro-docs:focus-visible {
@@ -2176,7 +2182,7 @@
 }
 
 .home-aurora__outro-docs:active {
-	opacity: 0.9;
+	transform: translateY(1px);
 }
 
 /* Footer styles: components/site-footer.css */
@@ -2186,7 +2192,7 @@
 	.home-aurora__cta,
 	.home-aurora__docs-cta,
 	.home-aurora__outro-docs,
-	.site-nav__cta,
+	.site-nav__action,
 	.site-nav__link,
 	.home-aurora__install-tab,
 	.home-aurora__install-copy,

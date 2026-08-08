@@ -12,6 +12,7 @@ import {
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
 import { DocsTocLinks } from "~/components/docs/toc-links";
+import { FeatureFlags } from "~/lib/feature-flags";
 import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
@@ -38,12 +39,17 @@ export default async function Page(props: {
 		<DocsTocLinks pageTitle={page.data.title} editHref={editHref} />
 	);
 
+	// Floating Site Nav conflicts with the sticky TOC popover below xl; keep the desktop TOC rail only.
+	// Re-enable via FeatureFlags.DOCS_TOC_POPOVER / NEXT_PUBLIC_DOCS_TOC_POPOVER=true.
 	return (
 		<DocsPage
 			toc={page.data.toc}
 			full={full}
 			tableOfContent={{ enabled: !full, footer: tocLinks }}
-			tableOfContentPopover={{ footer: tocLinks }}
+			tableOfContentPopover={{
+				enabled: FeatureFlags.DOCS_TOC_POPOVER,
+				footer: tocLinks,
+			}}
 			slots={{ breadcrumb: DocsBreadcrumb, toc: docsTocSlots }}
 		>
 			<div className="grow">

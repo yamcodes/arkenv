@@ -1,2 +1,2 @@
-export type { SiteNavForm, SiteNavProps } from "./site-nav";
-export { SiteNav, SiteNavBar, SiteNavPill } from "./site-nav";
+export type { SiteNavProps } from "./site-nav";
+export { SiteNav, SiteNavDocs, SiteNavHome } from "./site-nav";

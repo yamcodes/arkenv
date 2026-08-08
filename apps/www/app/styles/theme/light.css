@@ -6,12 +6,12 @@
 	--popover: oklch(100% 0 0);
 	--popover-foreground: oklch(18% 0.02 200);
 
-	/* Aurora accent — darker for light surfaces */
-	--primary: oklch(48% 0.11 195);
-	--primary-foreground: oklch(98% 0.01 195);
-	--fd-primary: oklch(48% 0.11 195);
-	--color-fd-primary: oklch(48% 0.11 195);
-	--color-fd-primary-foreground: oklch(98% 0.01 195);
+	/* Active / emphasis — foreground (not aqua); accent stays on --ring / CTAs */
+	--primary: var(--foreground);
+	--primary-foreground: var(--background);
+	--fd-primary: var(--foreground);
+	--color-fd-primary: var(--foreground);
+	--color-fd-primary-foreground: var(--background);
 
 	--secondary: oklch(96% 0.01 200);
 	--secondary-foreground: oklch(22% 0.02 200);

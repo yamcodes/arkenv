@@ -2,7 +2,7 @@ import "./aurora.css";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import type { CSSProperties, ReactNode } from "react";
 import { DotGrid, HeroMotion, ScrollReveal } from "~/components/page";
-import { SiteNavPill } from "~/components/site-nav";
+import { SiteNavHome } from "~/components/site-nav";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
@@ -17,11 +17,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 					{
 						paddingTop: 0,
 						"--fd-nav-height": "0px",
+						"--fd-layout-width": "1400px",
 						background: "transparent",
 					} as CSSProperties
 				}
 				slots={{
-					header: SiteNavPill,
+					header: SiteNavHome,
 				}}
 			>
 				{children}

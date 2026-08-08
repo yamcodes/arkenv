@@ -49,8 +49,10 @@ export default function HomePage() {
 					className="home-aurora__summary rise-blur"
 					style={{ animationDelay: "240ms" }}
 				>
-					One function validates, parses, and keeps your <code>env</code> vars
-					typesafe. Use ArkType, Zod, or any Standard Schema. Fail fast, ship
+					Define your <code>env</code> vars in ArkType, Zod, or any Standard
+					Schema.
+					<br />
+					ArkEnv validates, parses, and keeps them typesafe. Fail fast, ship
 					faster.
 				</p>
 				<div
@@ -66,7 +68,11 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			<section className="home-aurora__bench" aria-label="Interactive Demo">
+			<section
+				id="demo"
+				className="home-aurora__bench"
+				aria-label="Interactive Demo"
+			>
 				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
 					<VideoDemo />
 				</div>

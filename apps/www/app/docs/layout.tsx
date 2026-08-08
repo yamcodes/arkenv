@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
 import { SiteFooter } from "~/components/site-footer";
 import "~/components/site-footer.css";
-import { SiteNavBar } from "~/components/site-nav";
+import { SiteNavDocs } from "~/components/site-nav";
 import { source } from "~/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -36,7 +36,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 								style={{ height: "var(--fd-nav-height)" }}
 								aria-hidden="true"
 							/>
-							<SiteNavBar sidebarTrigger={<DocsSidebarTrigger />} />
+							{/* Must stay under DocsLayout for SidebarContext (mobile trigger) */}
+							<SiteNavDocs sidebarTrigger={<DocsSidebarTrigger />} />
 						</>
 					),
 				}}

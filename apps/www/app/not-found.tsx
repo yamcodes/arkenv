@@ -1,7 +1,8 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { DiscordListItem } from "~/components/discord-list-item";
-import { SiteNavPill } from "~/components/site-nav";
+import { SiteNavHome } from "~/components/site-nav";
 import { getGithubRepoUrl } from "~/lib/github-links";
 
 export default function NotFound() {
@@ -9,8 +10,13 @@ export default function NotFound() {
 
 	return (
 		<HomeLayout
+			style={
+				{
+					"--fd-layout-width": "1400px",
+				} as CSSProperties
+			}
 			nav={{
-				component: <SiteNavPill />,
+				component: <SiteNavHome />,
 			}}
 		>
 			<div className="flex flex-1 flex-col items-center justify-center text-center px-4 py-24 sm:py-32">

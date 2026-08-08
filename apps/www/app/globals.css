@@ -18,8 +18,13 @@
 	background-image: none !important;
 }
 
-html,
-body {
+/*
+ * Clip wide children on page shells (not html/body). Site Nav glass uses
+ * sticky + absolute positioning so backdrop-filter still samples inside
+ * these clipped shells; position:fixed does not.
+ */
+.home-aurora,
+#nd-docs-layout {
 	overflow-x: clip;
 }
 

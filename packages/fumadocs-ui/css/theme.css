@@ -26,11 +26,11 @@
 	--icon-external-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
 }
 
-/* Override Fumadocs :has() selector that sets header height to 64px */
+/* Keep header track in sync with Site Nav clearance (set on main / :root) */
 #nd-notebook-layout,
 #nd-home-layout,
 #nd-docs-layout {
-	--fd-header-height: 80px !important;
+	--fd-header-height: var(--fd-nav-height, 80px) !important;
 }
 
 /* Override search bar and keyboard shortcuts to use minimal radius */
@@ -192,6 +192,12 @@ aside .theme-toggle {
 #nd-nav nav {
 	backdrop-filter: none !important;
 	background-color: transparent !important;
+}
+
+/* Desktop sidebar: seamless with page (no card fill, no end divider) */
+#nd-sidebar {
+	background-color: transparent;
+	border-inline-end: none;
 }
 
 /* Sidebar item base styles */

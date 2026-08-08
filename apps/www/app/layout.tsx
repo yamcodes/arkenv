@@ -1,12 +1,12 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { RootProvider } from "fumadocs-ui/provider/next";
 import { GeistMono } from "geist/font/mono";
 import { GeistPixelGrid } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { AppRootProvider } from "~/components/providers/app-root-provider";
 import { Toaster } from "~/components/ui/toaster";
 
 export const metadata: Metadata = {
@@ -38,24 +38,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 			data-scroll-behavior="smooth"
 		>
 			<body className="flex flex-col min-h-screen">
-				<RootProvider
-					search={{
-						options: {
-							api: "/api/search",
-						},
-					}}
-					theme={{
-						enableColorScheme: true,
-						enableSystem: true,
-						defaultTheme: "dark",
-						themes: ["system", "light", "dark"],
-					}}
-				>
+				<AppRootProvider>
 					{children}
 					<SpeedInsights />
 					<Analytics />
 					<Toaster />
-				</RootProvider>
+				</AppRootProvider>
 			</body>
 		</html>
 	);
