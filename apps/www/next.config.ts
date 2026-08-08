@@ -43,9 +43,11 @@ const config = {
 			},
 
 			// --- @arkenv/core (formerly /docs/arkenv) ---
+			// Never 301 back to `/docs`: browsers may still have cached the old
+			// permanent `/docs` → `/docs/arkenv` redirect and would loop.
 			{
 				source: "/docs/arkenv",
-				destination: "/docs",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
@@ -65,12 +67,12 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/faq",
-				destination: "/docs",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/comparison",
-				destination: "/docs",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
@@ -140,7 +142,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/:path*",
-				destination: "/docs",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 
