@@ -411,11 +411,34 @@
 	}
 }
 
+/*
+ * Outro: tabs on their own row; command pill + “Read the docs” share the
+ * next row so the link centers on the pill (not the whole InstallPanel).
+ */
 .home-aurora__install-row--outro {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-end;
-	gap: var(--space-sm);
+	display: grid;
+	grid-template-columns: max-content auto;
+	align-items: center;
+	column-gap: var(--space-md);
+	row-gap: var(--space-md);
+	width: fit-content;
+	max-width: 100%;
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__install-row--outro .home-aurora__install {
+		display: contents;
+	}
+
+	.home-aurora__install-row--outro .home-aurora__install-tabs {
+		grid-column: 1 / -1;
+	}
+
+	.home-aurora__install-row--outro .home-aurora__outro-docs {
+		grid-column: 2;
+		grid-row: 2;
+		align-self: center;
+	}
 }
 
 /* Hallmark · component: social-proof · genre: atmospheric · theme: Aurora
@@ -2150,42 +2173,45 @@
 	overflow-wrap: normal;
 }
 
-/* Match .home-aurora__install-copy pill geometry/chrome — sibling CTAs */
+/* Quiet text link — same fill as inactive install tabs (“For your agent”) */
 .home-aurora__outro-docs {
 	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	gap: 0.35rem;
-	width: fit-content;
-	min-height: 3.5rem;
-	padding: 0.85rem 1.5rem;
-	border: var(--rule-hair) solid var(--color-rule);
-	border-radius: var(--radius-pill, 999px);
-	background: color-mix(in oklch, var(--color-paper-2) 88%, transparent);
-	color: var(--color-ink);
+	gap: 0.45rem;
+	padding: 0.25rem 0.4rem;
+	border: 0;
+	background: transparent;
+	color: var(--color-ink-2);
 	font-family: var(--font-display);
-	font-size: clamp(0.8125rem, 0.25vw + 0.8rem, 0.9375rem);
-	font-weight: 500;
-	line-height: 1.4;
+	font-size: var(--text-sm);
+	font-weight: 600;
+	letter-spacing: 0.01em;
 	text-decoration: none;
+	white-space: nowrap;
+	opacity: 0.7;
 	transition:
-		border-color var(--dur-short) var(--ease-out),
-		background-color var(--dur-short) var(--ease-out),
-		transform var(--dur-micro) var(--ease-out);
+		color var(--dur-micro) var(--ease-out),
+		opacity var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__outro-docs-arrow {
+	display: inline-block;
+	transition: transform var(--dur-micro) var(--ease-out);
 }
 
 .home-aurora__outro-docs:hover {
-	border-color: color-mix(in oklch, var(--color-accent) 45%, var(--color-rule));
-	background: var(--color-paper-3);
+	color: var(--color-ink);
+	opacity: 1;
+	text-decoration: none;
+}
+
+.home-aurora__outro-docs:hover .home-aurora__outro-docs-arrow {
+	transform: translateX(0.2rem);
 }
 
 .home-aurora__outro-docs:focus-visible {
 	outline: 2px solid var(--color-focus);
 	outline-offset: 2px;
-}
-
-.home-aurora__outro-docs:active {
-	transform: translateY(1px);
 }
 
 /* Footer styles: components/site-footer.css */
@@ -2215,6 +2241,10 @@
 	}
 
 	.home-aurora__frame-button:hover .home-aurora__frame-hint {
+		transform: none;
+	}
+
+	.home-aurora__outro-docs:hover .home-aurora__outro-docs-arrow {
 		transform: none;
 	}
 

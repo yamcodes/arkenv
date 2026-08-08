@@ -105,7 +105,9 @@ export default function HomePage() {
 					<InstallPanel />
 					<a href="/docs/getting-started" className="home-aurora__outro-docs">
 						Read the docs
-						<span aria-hidden="true">→</span>
+						<span className="home-aurora__outro-docs-arrow" aria-hidden="true">
+							→
+						</span>
 					</a>
 				</div>
 			</section>
