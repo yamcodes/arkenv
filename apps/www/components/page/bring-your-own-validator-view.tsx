@@ -40,7 +40,7 @@ export function BringYourOwnValidatorView({
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Use ArkType, Zod, Valibot, or any{" "}
-					<a href="/docs/arkenv/integrations/standard-schema">
+					<a href="/docs/core-concepts/standard-schema">
 						Standard Schema
 					</a>{" "}
 					library. Either way, you get the same <code>env</code> API.
@@ -96,7 +96,7 @@ export function BringYourOwnValidatorView({
 					<span className="home-aurora__tok-muted">via</span>{" "}
 					<code>{example.importLine}</code>
 					{" · "}
-					<a href="/docs/arkenv/integrations/standard-schema">
+					<a href="/docs/core-concepts/standard-schema">
 						See Standard Schema docs →
 					</a>
 				</p>

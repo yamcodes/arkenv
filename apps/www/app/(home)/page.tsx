@@ -101,7 +101,7 @@ export default function HomePage() {
 					style={{ ["--reveal-delay" as string]: "80ms" }}
 				>
 					<InstallPanel />
-					<a href="/docs/arkenv/quickstart" className="home-aurora__outro-docs">
+					<a href="/docs/getting-started" className="home-aurora__outro-docs">
 						Read the docs
 						<span aria-hidden="true">→</span>
 					</a>

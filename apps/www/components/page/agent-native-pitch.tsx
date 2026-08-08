@@ -21,7 +21,7 @@ export function AgentNativePitch() {
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Run the interactive CLI, or point the{" "}
 					<a
-						href="/docs/arkenv/integrations/ai/skills"
+						href="/docs/guides/ai"
 						className="underline decoration-cyan-500/40 underline-offset-4 hover:decoration-cyan-400"
 					>
 						agent skill
@@ -64,7 +64,7 @@ export function AgentNativePitch() {
 					<p className="home-aurora__transcript-prompt">
 						Set up{" "}
 						<a
-							href="/docs/arkenv/integrations/ai/skills"
+							href="/docs/guides/ai"
 							className="home-aurora__tok-cmd hover:underline"
 						>
 							/arkenv

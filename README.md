@@ -16,9 +16,9 @@
 > You are viewing the **v1 branch**, a pre-release (alpha) version of ArkEnv. Track progress on the [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683).
 
 <div align="center">
-  <a href="https://arkenv-v1.vercel.app/docs/arkenv">Docs</a>
+  <a href="https://arkenv-v1.vercel.app/docs">Docs</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv-v1.vercel.app/docs/arkenv/faq">FAQ</a>
+  <a href="https://arkenv-v1.vercel.app/#faq">FAQ</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
@@ -29,7 +29,7 @@
 
 
 <h3 align="center">
-  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv-v1.vercel.app/docs/arkenv/integrations/standard-schema">any Standard Schema library</a>
+  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv-v1.vercel.app/docs/core-concepts/standard-schema">any Standard Schema library</a>
 </h3>
 
 <br />
@@ -81,7 +81,7 @@ bunx arkenv@latest init
 
 <br />
 
-### [Read the docs →](https://arkenv-v1.vercel.app/docs/arkenv/quickstart)
+### [Read the docs →](https://arkenv-v1.vercel.app/docs/getting-started)
 
 <br />
 

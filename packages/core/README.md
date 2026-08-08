@@ -13,9 +13,9 @@
 </p>
 
 <div align="center">
-  <a href="https://arkenv.js.org/docs/arkenv">Docs</a>
+  <a href="https://arkenv.js.org/docs">Docs</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv.js.org/docs/arkenv/faq">FAQ</a>
+  <a href="https://arkenv.js.org/#faq">FAQ</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
@@ -26,7 +26,7 @@
 
 
 <h3 align="center">
-  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv.js.org/docs/arkenv/integrations/standard-schema">any Standard Schema validator</a>
+  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv.js.org/docs/core-concepts/standard-schema">any Standard Schema validator</a>
 </h3>
 
 <br />
@@ -78,7 +78,7 @@ bunx arkenv@latest init
 
 <br />
 
-### [Read the docs →](https://arkenv.js.org/docs/ArkEnv/quickstart)
+### [Read the docs →](https://arkenv.js.org/docs/getting-started)
 
 <br />
 

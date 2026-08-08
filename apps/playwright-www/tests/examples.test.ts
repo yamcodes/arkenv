@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Examples Page", () => {
 	test("should have working external links", async ({ page }) => {
-		await page.goto("/docs/arkenv/examples");
+		await page.goto("/docs/getting-started/examples");
 		await page.waitForLoadState("networkidle");
 
 		// Verify external links have correct security attributes
