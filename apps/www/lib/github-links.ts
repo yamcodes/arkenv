@@ -10,9 +10,10 @@ export function getGithubIssuesUrl(): string {
 	return `${getGithubRepoUrl()}/issues`;
 }
 
-/** Prefill a docs feedback issue title from the current page. */
+/** Prefill a docs feedback Discussion title from the current page. */
 export function getGithubDocsFeedbackUrl(pageTitle: string): string {
-	const url = new URL(`${getGithubRepoUrl()}/issues/new`);
+	const url = new URL(`${getGithubRepoUrl()}/discussions/new`);
+	url.searchParams.set("category", "docs-feedback");
 	url.searchParams.set("title", `Docs feedback: ${pageTitle}`);
 	return url.toString();
 }

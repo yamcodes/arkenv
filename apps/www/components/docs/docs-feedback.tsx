@@ -25,9 +25,8 @@ import type { DocsPageFeedback } from "~/lib/docs-feedback/schema";
 import { cn } from "~/lib/utils/cn";
 
 /**
- * Geist Docs / Turborepo-style feedback popover.
- * Submit path mirrors Fumadocs: opinion + message → server action → thank-you,
- * with GitHub as the durable sink (issue create or prefilled new-issue tab).
+ * Turborepo-style feedback popover UI.
+ * Submit path mirrors Fumadocs: opinion + message → server action → Discussion → thank-you.
  */
 export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 	const pathname = usePathname();
@@ -67,10 +66,6 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 
 		setError(null);
 
-		// Open a blank tab synchronously so popup blockers allow the GitHub
-		// destination after the async server action (prefill / created issue).
-		const pendingTab = window.open("about:blank", "_blank");
-
 		startTransition(async () => {
 			const feedback: DocsPageFeedback = {
 				url: window.location.href,
@@ -82,7 +77,6 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 			const response = await submitDocsFeedback(feedback);
 
 			if (!response.success || !response.githubUrl) {
-				pendingTab?.close();
 				setError(response.error ?? "Could not submit feedback. Try again.");
 				return;
 			}
@@ -95,12 +89,6 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 			setSubmitted(true);
 			setMessage("");
 			setEmotion(null);
-
-			if (pendingTab) {
-				pendingTab.location.href = response.githubUrl;
-			} else {
-				window.open(response.githubUrl, "_blank", "noopener,noreferrer");
-			}
 		});
 	};
 
@@ -116,10 +104,11 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 				</button>
 			</PopoverTrigger>
 			<PopoverContent
-				align="start"
+				align="end"
 				side="top"
 				sideOffset={8}
-				className="w-72 overflow-hidden rounded-lg border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
+				collisionPadding={16}
+				className="w-72 overflow-hidden rounded-xl border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
 			>
 				<div className="overflow-visible">
 					{submitted ? (
@@ -191,7 +180,10 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 											)}
 											onClick={() => setEmotion(e.name)}
 										>
-											<span aria-hidden="true" className="text-base leading-none">
+											<span
+												aria-hidden="true"
+												className="text-base leading-none"
+											>
 												{e.emoji}
 											</span>
 											<span className="sr-only">{e.name}</span>
