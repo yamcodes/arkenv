@@ -604,9 +604,9 @@
 }
 
 /* Hallmark · component: social-proof · genre: atmospheric · theme: Aurora
- * archetype: quote + Designed for logo boxes (no outer container)
- * states: default
- * layout: stacked by default; side-by-side only when 6 logo tiles fit without clipping
+ * archetype: quote + Works with logos (static 6×3 or two-row marquee)
+ * states: default · reduced-motion(pause marquee via globals)
+ * layout: stacked by default; side-by-side when logos fit beside the quote
  */
 .home-aurora__proof {
 	display: grid;
@@ -712,28 +712,68 @@
 	color: var(--color-ink);
 }
 
+/* Max-3-rows rule: static 6×3 only when 6 columns fit; otherwise marquee. */
 .home-aurora__proof-logos-list {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0.5rem;
+	display: none;
 	margin: 0;
 	padding: 0;
 	list-style: none;
 	min-width: 0;
+	gap: 0.5rem;
 }
 
-@media (min-width: 28rem) {
-	.home-aurora__proof-logos-list {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
+.home-aurora__proof-marquee {
+	display: grid;
+	gap: 0.5rem;
+	min-width: 0;
+	overflow: hidden;
+	mask-image: linear-gradient(
+		to right,
+		transparent,
+		#000 8%,
+		#000 92%,
+		transparent
+	);
+	-webkit-mask-image: linear-gradient(
+		to right,
+		transparent,
+		#000 8%,
+		#000 92%,
+		transparent
+	);
 }
 
-/* Soft-clustered 6×3 once each tile can show full labels (~10rem).
- * schemas & build → frameworks & hosts → runtimes & IDEs/agents */
 @media (min-width: 64rem) {
 	.home-aurora__proof-logos-list {
+		display: grid;
 		grid-template-columns: repeat(6, minmax(0, 1fr));
 	}
+
+	.home-aurora__proof-marquee {
+		display: none;
+	}
+}
+
+.home-aurora__proof-marquee-row {
+	overflow: hidden;
+}
+
+.home-aurora__proof-marquee-track {
+	display: flex;
+	align-items: center;
+	width: max-content;
+}
+
+.home-aurora__proof-marquee-set {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-shrink: 0;
+	padding-inline-end: 0.5rem;
+}
+
+.home-aurora__proof-marquee .home-aurora__proof-logo {
+	flex-shrink: 0;
 }
 
 .home-aurora__proof-logo {
@@ -761,7 +801,7 @@
 	font-weight: 500;
 	letter-spacing: -0.015em;
 	line-height: 1.2;
-	overflow-wrap: anywhere;
+	white-space: nowrap;
 }
 
 /* FAQ - end-of-page accordion: +/− spin · panel expand · docs SoT */

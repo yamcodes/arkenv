@@ -110,8 +110,52 @@ const designedFor: LogoItem[] = [
 	},
 ];
 
+const marqueeRowA = designedFor.slice(0, 9);
+const marqueeRowB = designedFor.slice(9);
+
+function LogoTile({ item }: { item: LogoItem }) {
+	return (
+		<span className="home-aurora__proof-logo">
+			<item.icon className="home-aurora__proof-logo-icon" />
+			<span className="home-aurora__proof-logo-name">{item.name}</span>
+		</span>
+	);
+}
+
+function MarqueeRow({
+	items,
+	reverse = false,
+}: {
+	items: LogoItem[];
+	reverse?: boolean;
+}) {
+	return (
+		<div className="home-aurora__proof-marquee-row">
+			<div
+				className={
+					reverse
+						? "home-aurora__proof-marquee-track home-aurora__proof-marquee-track--reverse animate-marquee-reverse"
+						: "home-aurora__proof-marquee-track animate-marquee"
+				}
+				style={{ ["--marquee-duration" as string]: "45s" }}
+			>
+				<div className="home-aurora__proof-marquee-set">
+					{items.map((item) => (
+						<LogoTile key={item.name} item={item} />
+					))}
+				</div>
+				<div className="home-aurora__proof-marquee-set" aria-hidden="true">
+					{items.map((item) => (
+						<LogoTile key={item.name} item={item} />
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}
+
 /**
- * Hero social proof — Colin quote + Designed for logo boxes.
+ * Hero social proof — Colin quote + Works with logos (static 6×3 or marquee).
  */
 export function SocialProof() {
 	return (
@@ -137,16 +181,24 @@ export function SocialProof() {
 
 			<div className="home-aurora__proof-logos">
 				<span className="home-aurora__proof-logos-label">Works with</span>
+
+				{/* Desktop: static 6×3 when the viewport can hold ≤3 rows */}
 				<ul className="home-aurora__proof-logos-list">
 					{designedFor.map((item) => (
 						<li key={item.name}>
-							<span className="home-aurora__proof-logo">
-								<item.icon className="home-aurora__proof-logo-icon" />
-								<span className="home-aurora__proof-logo-name">{item.name}</span>
-							</span>
+							<LogoTile item={item} />
 						</li>
 					))}
 				</ul>
+
+				{/* Narrow viewports: two-row infinite marquee */}
+				<div
+					className="home-aurora__proof-marquee pause-on-hover"
+					aria-label="Works with"
+				>
+					<MarqueeRow items={marqueeRowA} />
+					<MarqueeRow items={marqueeRowB} reverse />
+				</div>
 			</div>
 		</section>
 	);
