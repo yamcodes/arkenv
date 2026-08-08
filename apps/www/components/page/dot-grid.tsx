@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 
 /** Physics tuned for a quiet Aurora field - push ripples, then settle. */
-const SPACING = 24;
-const DOT_RADIUS = 1;
+const DEFAULT_SPACING = 24;
+const DEFAULT_RADIUS = 1;
 const INFLUENCE = 110;
 const STIFFNESS = 130;
 const DAMPING = 9;
@@ -18,7 +18,15 @@ const REST_THRESHOLD = 0.01;
  * Interactive faded-dot atmosphere for the home hero.
  * Static CSS dots paint first; the canvas takes over after hydration.
  */
-export function DotGrid() {
+export function DotGrid({
+	spacing = DEFAULT_SPACING,
+	radius = DEFAULT_RADIUS,
+}: {
+	/** Dot grid pitch in CSS pixels. Smaller = denser / more zoomed-out. */
+	spacing?: number;
+	/** Dot radius in CSS pixels. */
+	radius?: number;
+} = {}) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -60,10 +68,10 @@ export function DotGrid() {
 			for (let row = 0; row < rows; row++) {
 				for (let col = 0; col < cols; col++) {
 					const idx = (row * cols + col) * 4;
-					const x = SPACING / 2 + col * SPACING + dots[idx];
-					const y = SPACING / 2 + row * SPACING + dots[idx + 1];
-					ctx.moveTo(x + DOT_RADIUS, y);
-					ctx.arc(x, y, DOT_RADIUS, 0, Math.PI * 2);
+					const x = spacing / 2 + col * spacing + dots[idx];
+					const y = spacing / 2 + row * spacing + dots[idx + 1];
+					ctx.moveTo(x + radius, y);
+					ctx.arc(x, y, radius, 0, Math.PI * 2);
 				}
 			}
 			ctx.fill();
@@ -73,10 +81,10 @@ export function DotGrid() {
 			const influenceSq = INFLUENCE * INFLUENCE;
 			let moving = false;
 			for (let row = 0; row < rows; row++) {
-				const baseY = SPACING / 2 + row * SPACING;
+				const baseY = spacing / 2 + row * spacing;
 				for (let col = 0; col < cols; col++) {
 					const idx = (row * cols + col) * 4;
-					const baseX = SPACING / 2 + col * SPACING;
+					const baseX = spacing / 2 + col * spacing;
 					let ox = dots[idx];
 					let oy = dots[idx + 1];
 					let vx = dots[idx + 2];
@@ -170,8 +178,8 @@ export function DotGrid() {
 			canvas.width = Math.round(width * dpr);
 			canvas.height = Math.round(height * dpr);
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			cols = Math.ceil(width / SPACING);
-			rows = Math.ceil(height / SPACING);
+			cols = Math.ceil(width / spacing);
+			rows = Math.ceil(height / spacing);
 			dots = new Float32Array(cols * rows * 4);
 			draw();
 		};
@@ -258,9 +266,18 @@ export function DotGrid() {
 			window.removeEventListener("scroll", deactivatePointer);
 			reduceMotion.removeEventListener("change", onMotionPreferenceChange);
 		};
-	}, []);
+	}, [radius, spacing]);
 
 	return (
-		<canvas ref={canvasRef} aria-hidden className="home-aurora__dot-grid" />
+		<canvas
+			ref={canvasRef}
+			aria-hidden
+			className="home-aurora__dot-grid"
+			style={
+				{
+					["--dot-spacing"]: `${spacing}px`,
+				} as CSSProperties
+			}
+		/>
 	);
 }

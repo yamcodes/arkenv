@@ -16,6 +16,14 @@ import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
 
+function getDocsEditHref(pagePath: string): string {
+	const basePath = (
+		process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ?? "apps/www/content/docs/"
+	).replace(/\/$/, "");
+	const normalizedPath = pagePath.replace(/^\//, "");
+	return getLinkTitleAndHref(`${basePath}/${normalizedPath}`).href;
+}
+
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
 }) {
@@ -25,7 +33,10 @@ export default async function Page(props: {
 
 	const MDX = page.data.body;
 	const full = page.data.full;
-	const tocLinks = <DocsTocLinks pageTitle={page.data.title} />;
+	const editHref = getDocsEditHref(page.path);
+	const tocLinks = (
+		<DocsTocLinks pageTitle={page.data.title} editHref={editHref} />
+	);
 
 	return (
 		<DocsPage
@@ -39,21 +50,7 @@ export default async function Page(props: {
 				<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
 				<DocsDescription>{page.data.description}</DocsDescription>
 				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6 mb-8 mt-4">
-					<AIActions
-						markdownUrl={`${page.url}.mdx`}
-						githubUrl={
-							getLinkTitleAndHref(
-								(() => {
-									const basePath = (
-										process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ??
-										"apps/www/content/docs/"
-									).replace(/\/$/, ""); // Remove trailing slash if present
-									const pagePath = page.path.replace(/^\//, ""); // Remove leading slash if present
-									return `${basePath}/${pagePath}`;
-								})(),
-							).href
-						}
-					/>
+					<AIActions markdownUrl={`${page.url}.mdx`} githubUrl={editHref} />
 				</div>
 				<DocsBody>
 					<MDX
