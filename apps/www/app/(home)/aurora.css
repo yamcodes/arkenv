@@ -9,6 +9,31 @@
 @import "../../tokens.css";
 @import "../../components/site-footer.css";
 
+/* Mono/outlier surfaces: don't inherit Sans stylistic sets from html */
+.home-aurora
+:is(
+	.home-aurora__summary code,
+	.home-aurora__faq-panel-inner code,
+	.home-aurora__install-prompt-symbol,
+	.home-aurora__install-code,
+	.home-aurora__pitch-label,
+	.home-aurora__compare-stat,
+	.home-aurora__pitch-head code,
+	.home-aurora__compare .shiki,
+	.home-aurora__window-title,
+	.home-aurora__window-url,
+	.home-aurora__ide-body,
+	.home-aurora__ide-menu li,
+	.home-aurora__validator-note code,
+	.home-aurora__secure-chip,
+	.home-aurora__terminal pre,
+	.home-aurora__transcript-reply code,
+	.home-aurora__footer-license,
+	.home-aurora__footer-grid h3
+) {
+	font-feature-settings: var(--font-feature-mono);
+}
+
 /* Load-time rise (open-slide). Gated by HeroMotion (`data-hero-motion`) so
  * client remounts of HomeLayout do not restart mid-flight animations. */
 @keyframes home-aurora-rise {

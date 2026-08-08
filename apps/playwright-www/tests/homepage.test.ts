@@ -19,7 +19,10 @@ test.describe("Homepage Interactivity", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		const githubLink = page.locator("a.home-aurora__nav-github");
+		// Header nav GitHub control (footer Ecosystem also has a "GitHub" link).
+		const githubLink = page
+			.getByRole("navigation", { name: "Primary" })
+			.getByRole("link", { name: /GitHub/i });
 
 		await expect(githubLink).toBeVisible();
 		await expect(githubLink).toHaveAttribute("target", "_blank");
