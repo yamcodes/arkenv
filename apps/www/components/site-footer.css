@@ -148,8 +148,13 @@
 /* Docs chrome: full-bleed top rule, constrained content */
 .site-footer-bleed {
 	width: 100%;
-	margin-top: 2rem;
+	margin-top: 0;
 	border-top: 1px solid var(--color-fd-border);
+}
+
+/* Space page nav cards off the footer rule (not the old orphaned bleed margin) */
+#nd-page {
+	padding-bottom: 2rem;
 }
 
 .site-footer-band {
