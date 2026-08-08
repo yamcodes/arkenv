@@ -44,9 +44,8 @@ export async function submitDocsFeedback(
 		const pageId = new URL(feedback.url).pathname;
 		const emoji =
 			docsFeedbackEmotions.find((e) => e.name === feedback.opinion)?.emoji ??
-			undefined;
+			feedback.opinion;
 		const body = buildDocsFeedbackBody({
-			opinion: feedback.opinion,
 			message: feedback.message,
 			pageTitle: feedback.pageTitle,
 			url: feedback.url,

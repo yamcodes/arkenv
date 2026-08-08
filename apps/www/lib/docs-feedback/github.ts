@@ -151,21 +151,17 @@ export async function createDocsFeedbackDiscussion(
 
 /** Build the markdown body posted to the Discussion (or comment). */
 export function buildDocsFeedbackBody(input: {
-	opinion: string;
 	message: string;
 	pageTitle: string;
 	url: string;
-	emoji?: string;
+	emoji: string;
 }): string {
-	const label = input.emoji
-		? `${input.emoji} **${input.opinion}**`
-		: `[${input.opinion}]`;
-
 	return [
-		`${label} ${input.message}`,
+		input.emoji,
+		"",
+		input.message,
 		"",
 		`> Forwarded from docs feedback on **${input.pageTitle}**.`,
-		">",
 		`> ${input.url}`,
 	].join("\n");
 }

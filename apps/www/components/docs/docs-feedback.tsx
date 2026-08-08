@@ -1,6 +1,5 @@
 "use client";
 
-import { SiMarkdown } from "@icons-pack/react-simple-icons";
 import { ThumbsUpIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
@@ -25,8 +24,8 @@ import type { DocsPageFeedback } from "~/lib/docs-feedback/schema";
 import { cn } from "~/lib/utils/cn";
 
 /**
- * Turborepo-style feedback popover UI.
- * Submit path mirrors Fumadocs: opinion + message → server action → Discussion → thank-you.
+ * Reaction-first feedback popover (Netflix-style dislike / like / love).
+ * Message field appears after a reaction is chosen; message stays required.
  */
 export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 	const pathname = usePathname();
@@ -60,6 +59,12 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 		restore(storageKey);
 	}, [storageKey]);
 
+	const resetForm = () => {
+		setEmotion(null);
+		setMessage("");
+		setError(null);
+	};
+
 	const submit: FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
 		if (!emotion || message.trim().length === 0) return;
@@ -87,13 +92,18 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 			);
 			setGithubUrl(response.githubUrl);
 			setSubmitted(true);
-			setMessage("");
-			setEmotion(null);
+			resetForm();
 		});
 	};
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover
+			open={open}
+			onOpenChange={(next) => {
+				setOpen(next);
+				if (!next && !submitted) resetForm();
+			}}
+		>
 			<PopoverTrigger asChild>
 				<button
 					type="button"
@@ -138,47 +148,25 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 						</div>
 					) : (
 						<form className="flex flex-col" onSubmit={submit}>
-							<div className="p-2">
-								<textarea
-									autoFocus
-									aria-label="Feedback"
-									autoComplete="off"
-									required
-									value={message}
-									onChange={(e) => setMessage(e.target.value)}
-									placeholder="Leave your feedback…"
-									className="field-sizing-content max-h-48 min-h-24 w-full resize-none rounded-md border border-fd-border bg-transparent px-3 py-2 text-sm text-fd-foreground shadow-none outline-none placeholder:text-fd-muted-foreground focus-visible:border-fd-border focus-visible:ring-1 focus-visible:ring-fd-border"
-									onKeyDown={(e) => {
-										if (!e.shiftKey && e.key === "Enter") {
-											e.currentTarget.form?.requestSubmit();
-										}
-									}}
-								/>
-							</div>
-							<div className="flex items-center justify-end gap-1 px-2 text-fd-muted-foreground">
-								<SiMarkdown className="inline size-3" aria-hidden="true" />
-								<p className="text-xs">supported</p>
-							</div>
-							{error ? (
-								<p className="px-2 pb-1 text-xs text-red-500" role="alert">
-									{error}
-								</p>
-							) : null}
-							<div className="mt-2 flex items-center justify-between border-t border-fd-border bg-fd-muted/40 p-2">
-								<div className="flex items-center gap-px">
+							<div className="flex flex-col gap-2 border-b border-fd-border bg-fd-muted/40 p-3">
+								<p className="text-sm font-medium">How was this page?</p>
+								<div className="flex items-center justify-between gap-1">
 									{docsFeedbackEmotions.map((e) => (
 										<Button
 											key={e.name}
 											type="button"
 											size="sm"
 											variant="ghost"
-											aria-label={e.name}
+											aria-label={e.label}
 											aria-pressed={emotion === e.name}
 											className={cn(
-												"h-8 px-2 text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground",
+												"h-9 flex-1 px-2 text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground",
 												emotion === e.name && "bg-fd-accent text-fd-foreground",
 											)}
-											onClick={() => setEmotion(e.name)}
+											onClick={() => {
+												setEmotion(e.name);
+												setError(null);
+											}}
 										>
 											<span
 												aria-hidden="true"
@@ -186,19 +174,48 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 											>
 												{e.emoji}
 											</span>
-											<span className="sr-only">{e.name}</span>
+											<span className="sr-only">{e.label}</span>
 										</Button>
 									))}
 								</div>
-								<Button
-									type="submit"
-									size="sm"
-									disabled={isPending || !emotion || !message.trim()}
-									className="bg-fd-foreground text-fd-background hover:bg-fd-foreground/90"
-								>
-									{isPending ? "Sending…" : "Send"}
-								</Button>
 							</div>
+
+							{emotion ? (
+								<>
+									<div className="p-2">
+										<textarea
+											autoFocus
+											aria-label="Feedback"
+											autoComplete="off"
+											required
+											value={message}
+											onChange={(e) => setMessage(e.target.value)}
+											placeholder="Tell us more…"
+											className="field-sizing-content max-h-48 min-h-24 w-full resize-none rounded-md border border-fd-border bg-transparent px-3 py-2 text-sm text-fd-foreground shadow-none outline-none placeholder:text-fd-muted-foreground focus-visible:border-fd-border focus-visible:ring-1 focus-visible:ring-fd-border"
+											onKeyDown={(e) => {
+												if (!e.shiftKey && e.key === "Enter") {
+													e.currentTarget.form?.requestSubmit();
+												}
+											}}
+										/>
+									</div>
+									{error ? (
+										<p className="px-2 pb-1 text-xs text-red-500" role="alert">
+											{error}
+										</p>
+									) : null}
+									<div className="flex justify-end border-t border-fd-border p-2">
+										<Button
+											type="submit"
+											size="sm"
+											disabled={isPending || !message.trim()}
+											className="bg-fd-foreground text-fd-background hover:bg-fd-foreground/90"
+										>
+											{isPending ? "Sending…" : "Send"}
+										</Button>
+									</div>
+								</>
+							) : null}
 						</form>
 					)}
 				</div>
