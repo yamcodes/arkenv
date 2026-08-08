@@ -53,7 +53,10 @@ export default function HomePage() {
 					typesafe. Use ArkType, Zod, or any Standard Schema. Fail fast, ship
 					faster.
 				</p>
-				<div className="rise" style={{ animationDelay: "300ms" }}>
+				<div
+					className="home-aurora__endorsement-row rise"
+					style={{ animationDelay: "300ms" }}
+				>
 					<HeroEndorsement />
 				</div>
 				<div className="rise" style={{ animationDelay: "360ms" }}>
