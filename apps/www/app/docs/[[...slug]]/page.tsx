@@ -53,7 +53,9 @@ export default async function Page(props: {
 			slots={{ breadcrumb: DocsBreadcrumb, toc: docsTocSlots }}
 		>
 			<div className="grow">
-				<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
+				<DocsTitle className="mb-4 text-[2.125em] font-medium">
+					{page.data.title}
+				</DocsTitle>
 				<DocsDescription>{page.data.description}</DocsDescription>
 				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6 mb-8 mt-4">
 					<AIActions markdownUrl={`${page.url}.mdx`} githubUrl={editHref} />

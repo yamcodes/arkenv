@@ -19,7 +19,7 @@ export function Heading<T extends Types = "h1">({
 
 	if (!props.id) {
 		return (
-			<As className={cn("font-bold tracking-tight", className)} {...props}>
+			<As className={cn("font-medium tracking-tight", className)} {...props}>
 				{children}
 			</As>
 		);
@@ -28,7 +28,7 @@ export function Heading<T extends Types = "h1">({
 	return (
 		<As
 			className={cn(
-				"group relative scroll-m-32 font-bold tracking-tight", // increased scroll-m to account for taller header
+				"group relative scroll-m-32 font-medium tracking-tight", // increased scroll-m to account for taller header
 				className,
 			)}
 			data-arkenv-heading

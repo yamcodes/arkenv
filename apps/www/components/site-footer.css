@@ -161,8 +161,15 @@
 	width: 100%;
 	max-width: var(--fd-layout-width, 1400px);
 	margin-inline: auto;
+	/* Match Site Nav / home shell gutter */
 	padding-inline: 1rem;
 	padding-bottom: 2rem;
+}
+
+@media (min-width: 40rem) {
+	.site-footer-band {
+		padding-inline: 1.5rem;
+	}
 }
 
 .site-footer-band .home-aurora__wordmark {

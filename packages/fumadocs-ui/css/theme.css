@@ -33,6 +33,29 @@
 	--fd-header-height: var(--fd-nav-height, 80px) !important;
 }
 
+/*
+ * Shared chrome gutter (matches Site Nav / home shell):
+ * 1rem → 1.5rem @ 40rem. Stock fumadocs uses px-4 / md:px-6 / xl:px-8, so
+ * between 40rem–md the article escapes past the floating bar.
+ */
+#nd-page {
+	padding-inline: 1rem;
+}
+
+#nd-toc {
+	padding-inline-end: 1rem;
+}
+
+@media (min-width: 40rem) {
+	#nd-page {
+		padding-inline: 1.5rem;
+	}
+
+	#nd-toc {
+		padding-inline-end: 1.5rem;
+	}
+}
+
 /* Override search bar and keyboard shortcuts to use minimal radius */
 button[data-search-full],
 button[data-search],
@@ -61,6 +84,27 @@ kbd {
 /* Heading anchors: avoid underlines and keep icons aligned */
 [data-arkenv-heading] {
 	overflow: visible;
+}
+
+/* In-article titles — a step under page H1; medium weight (not bold) */
+.prose :is(h2, h3, h4),
+:is(h2, h3, h4)[data-arkenv-heading] {
+	font-weight: 500;
+}
+
+.prose h2,
+h2[data-arkenv-heading] {
+	font-size: 1.35em;
+}
+
+.prose h3,
+h3[data-arkenv-heading] {
+	font-size: 1.2em;
+}
+
+.prose h4,
+h4[data-arkenv-heading] {
+	font-size: 1.1em;
 }
 
 [data-arkenv-heading-link] {
@@ -241,10 +285,13 @@ aside .theme-toggle {
 	@apply font-medium;
 }
 
-/* Remove fumadocs' xl:pt-14 on the docs article - our header spacer handles the top offset */
-@media (min-width: 80rem) {
+/*
+ * Article top inset — just above sidebar / TOC content start (pt-12).
+ * Header spacer already clears the Site Nav.
+ */
+@media (min-width: 48rem) {
 	#nd-page {
-		padding-top: 1.5rem;
+		padding-top: 2.5rem;
 	}
 }
 

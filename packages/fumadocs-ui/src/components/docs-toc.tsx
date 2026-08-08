@@ -14,6 +14,7 @@ const tocColumnClassName =
 /**
  * TOC rail: keep the layout column when a footer exists, but hide the
  * "On this page" / "No Headings" chrome when the page has no headings.
+ * End padding is set in theme.css to match the Site Nav gutter.
  */
 function DocsTOCMain(props: ComponentProps<typeof TOC>) {
 	const items = useTOCItems();

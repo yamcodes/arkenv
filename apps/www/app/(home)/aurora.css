@@ -916,11 +916,12 @@
 .home-aurora__install-copy {
 	display: flex;
 	align-items: center;
-	gap: var(--space-md);
+	gap: var(--space-sm);
 	width: max-content;
 	max-width: 100%;
 	min-height: 3.5rem;
-	padding: 0.85rem 1.5rem 0.85rem 1.6rem;
+	/* Right pad lives on the copy affordance so the icon can optically center */
+	padding: 0.85rem 0 0.85rem 1.6rem;
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: var(--radius-pill, 999px);
 	background: color-mix(in oklch, var(--color-paper-2) 88%, transparent);
@@ -1032,9 +1033,11 @@
 .home-aurora__install-copy-affordance {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	gap: 0.4rem;
 	flex-shrink: 0;
-	padding-left: var(--space-md);
+	/* Slightly more end pad than start — balances the pill’s round cap */
+	padding-inline: 0.85rem 1.2rem;
 	border-left: var(--rule-hair) solid var(--color-rule);
 	color: var(--color-muted);
 	align-self: stretch;
