@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 
 /** Physics tuned for a quiet Aurora field - push ripples, then settle. */
 const DEFAULT_SPACING = 24;

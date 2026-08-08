@@ -49,7 +49,9 @@ function DocsTOCPopover(props: ComponentProps<typeof TOCPopover>) {
 
 	if (items.length === 0) {
 		// Hide TOCItems' empty "No Headings" card; keep trigger + footer.
-		return <TOCPopover {...props} list={{ ...props.list, className: "hidden" }} />;
+		return (
+			<TOCPopover {...props} list={{ ...props.list, className: "hidden" }} />
+		);
 	}
 
 	return <TOCPopover {...props} />;

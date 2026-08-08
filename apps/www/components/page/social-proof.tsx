@@ -192,13 +192,13 @@ export function SocialProof() {
 				</ul>
 
 				{/* Narrow viewports: two-row infinite marquee */}
-				<div
+				<section
 					className="home-aurora__proof-marquee pause-on-hover"
 					aria-label="Works with"
 				>
 					<MarqueeRow items={marqueeRowA} />
 					<MarqueeRow items={marqueeRowB} reverse />
-				</div>
+				</section>
 			</div>
 		</section>
 	);

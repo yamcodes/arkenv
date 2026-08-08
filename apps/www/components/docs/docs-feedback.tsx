@@ -6,6 +6,7 @@ import {
 	type FormEventHandler,
 	useEffect,
 	useEffectEvent,
+	useRef,
 	useState,
 	useTransition,
 } from "react";
@@ -44,6 +45,7 @@ export function DocsFeedbackButton({
 	const [error, setError] = useState<string | null>(null);
 	const [githubUrl, setGithubUrl] = useState<string | null>(null);
 	const [isPending, startTransition] = useTransition();
+	const messageRef = useRef<HTMLTextAreaElement>(null);
 
 	const restore = useEffectEvent((key: string) => {
 		try {
@@ -65,6 +67,12 @@ export function DocsFeedbackButton({
 	useEffect(() => {
 		restore(storageKey);
 	}, [storageKey]);
+
+	useEffect(() => {
+		if (emotion) {
+			messageRef.current?.focus();
+		}
+	}, [emotion]);
 
 	const resetForm = () => {
 		setEmotion(null);
@@ -192,7 +200,7 @@ export function DocsFeedbackButton({
 								<>
 									<div className="p-2">
 										<textarea
-											autoFocus
+											ref={messageRef}
 											aria-label="Feedback"
 											autoComplete="off"
 											required

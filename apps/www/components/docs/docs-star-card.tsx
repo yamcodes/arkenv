@@ -33,7 +33,10 @@ export function DocsStarCard({
 			target="_blank"
 			rel="noopener noreferrer"
 			aria-label={label}
-			className={cn("docs-star-card group", spotlight && "docs-star-card--spotlight")}
+			className={cn(
+				"docs-star-card group",
+				spotlight && "docs-star-card--spotlight",
+			)}
 			onAnimationEnd={(event) => {
 				if (
 					event.target === event.currentTarget &&

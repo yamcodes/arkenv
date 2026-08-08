@@ -34,31 +34,9 @@
 	z-index: 0;
 	pointer-events: none;
 	overflow: hidden;
-	background-image:
-		radial-gradient(
-			ellipse 55% 60% at 92% 78%,
-			var(--docs-star-bloom-a),
-			transparent 70%
-		),
-		radial-gradient(
-			ellipse 50% 55% at 8% 18%,
-			var(--docs-star-bloom-b),
-			transparent 72%
-		);
-	mask-image: linear-gradient(
-		to bottom,
-		transparent 0%,
-		#000 18%,
-		#000 82%,
-		transparent 100%
-	);
-	-webkit-mask-image: linear-gradient(
-		to bottom,
-		transparent 0%,
-		#000 18%,
-		#000 82%,
-		transparent 100%
-	);
+	background-image: radial-gradient(ellipse 55% 60% at 92% 78%, var(--docs-star-bloom-a), transparent 70%), radial-gradient(ellipse 50% 55% at 8% 18%, var(--docs-star-bloom-b), transparent 72%);
+	mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+	-webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
 }
 
 .docs-star-card__atmosphere .home-aurora__dot-grid {

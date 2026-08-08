@@ -23,7 +23,11 @@ export function SiteFooter({
 		>
 			<div className="home-aurora__footer-grid">
 				<div className="home-aurora__footer-brand">
-					<a href="/" className="home-aurora__wordmark" aria-label="ArkEnv home">
+					<a
+						href="/"
+						className="home-aurora__wordmark"
+						aria-label="ArkEnv home"
+					>
 						<Logo />
 					</a>
 					<p>The simple way to validate environment variables.</p>
