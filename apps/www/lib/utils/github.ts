@@ -1,3 +1,14 @@
+/** Prefer the first non-empty trimmed string; treat "" as unset. */
+function firstNonEmpty(
+	...values: Array<string | undefined | null>
+): string | undefined {
+	for (const value of values) {
+		const trimmed = value?.trim();
+		if (trimmed) return trimmed;
+	}
+	return undefined;
+}
+
 /**
  * Breaks down a GitHub URL into its component parts
  * @param githubUrl - Optional GitHub repository URL. If not provided, uses NEXT_PUBLIC_GITHUB_URL from environment
@@ -6,15 +17,16 @@
  */
 export const breakDownGithubUrl = (githubUrl?: string) => {
 	const url =
-		githubUrl ??
-		process.env.NEXT_PUBLIC_GITHUB_URL ??
+		firstNonEmpty(githubUrl, process.env.NEXT_PUBLIC_GITHUB_URL) ??
 		"https://github.com/yamcodes/arkenv";
 
 	// Manual override → Vercel deploy branch → local/default.
+	// Empty env values (common when vars are defined but blank) must not win over fallbacks.
 	const defaultBranch =
-		process.env.NEXT_PUBLIC_GITHUB_BRANCH ??
-		process.env.VERCEL_GIT_COMMIT_REF ??
-		"dev";
+		firstNonEmpty(
+			process.env.NEXT_PUBLIC_GITHUB_BRANCH,
+			process.env.VERCEL_GIT_COMMIT_REF,
+		) ?? "dev";
 	const cleanUrl = url.replace(/\/$/, "");
 	const urlObj = new URL(cleanUrl);
 	const [owner, repo] = urlObj.pathname.split("/").filter(Boolean).slice(-2);
@@ -31,12 +43,13 @@ export const breakDownGithubUrl = (githubUrl?: string) => {
  */
 export const getLinkTitleAndHref = (path: string, githubUrl?: string) => {
 	const url =
-		githubUrl ??
-		process.env.NEXT_PUBLIC_GITHUB_URL ??
+		firstNonEmpty(githubUrl, process.env.NEXT_PUBLIC_GITHUB_URL) ??
 		"https://github.com/yamcodes/arkenv";
 
 	const { owner, repo, defaultBranch } = breakDownGithubUrl(url);
-	const title = `Editing ${repo}/${path} at ${defaultBranch} · ${owner}/${repo}`;
-	const href = `${url}/edit/${defaultBranch}/${path}`;
+	const cleanUrl = url.replace(/\/$/, "");
+	const cleanPath = path.replace(/^\/+/, "");
+	const title = `Editing ${repo}/${cleanPath} at ${defaultBranch} · ${owner}/${repo}`;
+	const href = `${cleanUrl}/edit/${defaultBranch}/${cleanPath}`;
 	return { title, href };
 };

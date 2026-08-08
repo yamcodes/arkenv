@@ -80,7 +80,45 @@ describe("github utilities", () => {
 			});
 		});
 
+		it("should ignore blank NEXT_PUBLIC_GITHUB_BRANCH and use Vercel deploy branch", () => {
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "");
+			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "simplify-docs");
+
+			const result = breakDownGithubUrl("https://github.com/yamcodes/arkenv");
+
+			expect(result).toEqual({
+				owner: "yamcodes",
+				repo: "arkenv",
+				defaultBranch: "simplify-docs",
+			});
+		});
+
+		it("should ignore blank branch env vars and fall back to dev", () => {
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "   ");
+			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "");
+
+			const result = breakDownGithubUrl("https://github.com/yamcodes/arkenv");
+
+			expect(result).toEqual({
+				owner: "yamcodes",
+				repo: "arkenv",
+				defaultBranch: "dev",
+			});
+		});
+
 		it("should use fallback URL when no URL is configured", () => {
+			const result = breakDownGithubUrl();
+
+			expect(result).toEqual({
+				owner: "yamcodes",
+				repo: "arkenv",
+				defaultBranch: "dev",
+			});
+		});
+
+		it("should use fallback URL when NEXT_PUBLIC_GITHUB_URL is blank", () => {
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_URL", "");
+
 			const result = breakDownGithubUrl();
 
 			expect(result).toEqual({
@@ -186,8 +224,33 @@ describe("github utilities", () => {
 
 			expect(result).toEqual({
 				title: "Editing arkenv/src/index.ts at dev · yamcodes/arkenv",
-				href: "https://github.com/yamcodes/arkenv//edit/dev/src/index.ts",
+				href: "https://github.com/yamcodes/arkenv/edit/dev/src/index.ts",
 			});
+		});
+
+		it("should not produce a double slash when branch env is blank", () => {
+			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "");
+			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "");
+
+			const result = getLinkTitleAndHref(
+				"apps/www/content/docs/index.mdx",
+				"https://github.com/yamcodes/arkenv",
+			);
+
+			expect(result.href).toBe(
+				"https://github.com/yamcodes/arkenv/edit/dev/apps/www/content/docs/index.mdx",
+			);
+		});
+
+		it("should strip a leading slash from the file path", () => {
+			const result = getLinkTitleAndHref(
+				"/apps/www/content/docs/index.mdx",
+				"https://github.com/yamcodes/arkenv",
+			);
+
+			expect(result.href).toBe(
+				"https://github.com/yamcodes/arkenv/edit/dev/apps/www/content/docs/index.mdx",
+			);
 		});
 	});
 });
