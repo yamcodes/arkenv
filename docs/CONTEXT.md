@@ -30,7 +30,7 @@ The shared translucent surface language for site chrome — hairline border, sof
 *Avoid*: treating home and docs as separate visual systems; “frosted glass” as a distinct product term
 
 **Site Nav**:
-The primary site-wide navigation chrome for www. One shared material (**Glass material**); form adapts by surface. Contents follow **shared core + surface extras**. Cross-route change is an instant form swap (**static kinship**), not a morph. Owned as www site chrome — not a generic docs-kit primitive.
+The primary site-wide navigation chrome for [www](http://www). One shared material (**Glass material**); form adapts by surface. Contents follow **shared core + surface extras**. Cross-route change is an instant form swap (**static kinship**), not a morph. Owned as www site chrome — not a generic docs-kit primitive.
 *Avoid*: Header (when meaning the whole site chrome), HomeNav-as-product-name; identical link sets forced onto both surfaces; visual-only unify with divergent destinations; shared-element morph / chrome crossfade as v1 requirement; publishing Site Nav as `@arkenv/fumadocs-ui` API
 
 **Nav core**:
