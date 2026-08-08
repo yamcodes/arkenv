@@ -734,7 +734,7 @@
 	font-size: var(--text-sm);
 	font-weight: 500;
 	letter-spacing: -0.01em;
-	color: var(--color-ink);
+	color: oklch(72% 0.02 200);
 }
 
 /* Max-3-rows rule: static 6×3 only when 6 columns fit; otherwise marquee. */

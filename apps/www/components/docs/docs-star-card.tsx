@@ -5,12 +5,20 @@ import { Star } from "lucide-react";
 import { DotGrid } from "~/components/page/dot-grid";
 import { getGithubRepoUrl } from "~/lib/github-links";
 import { useGithubStarCount } from "~/lib/use-github-star-count";
+import { cn } from "~/lib/utils/cn";
 import "./docs-star-card.css";
 
 /**
  * TOC rail CTA to star the repo — home-outro atmosphere + direct copy.
+ * `spotlight` pulses a YouTube-style glow when the feedback heart is tapped.
  */
-export function DocsStarCard() {
+export function DocsStarCard({
+	spotlight = false,
+	onSpotlightEnd,
+}: {
+	spotlight?: boolean;
+	onSpotlightEnd?: () => void;
+}) {
 	const starCount = useGithubStarCount();
 	const githubUrl = getGithubRepoUrl();
 
@@ -25,7 +33,15 @@ export function DocsStarCard() {
 			target="_blank"
 			rel="noopener noreferrer"
 			aria-label={label}
-			className="docs-star-card group"
+			className={cn("docs-star-card group", spotlight && "docs-star-card--spotlight")}
+			onAnimationEnd={(event) => {
+				if (
+					event.target === event.currentTarget &&
+					event.animationName.startsWith("docs-star-spotlight")
+				) {
+					onSpotlightEnd?.();
+				}
+			}}
 		>
 			<span className="docs-star-card__atmosphere" aria-hidden="true">
 				<DotGrid spacing={14} radius={0.75} />
@@ -50,7 +66,7 @@ export function DocsStarCard() {
 						className="docs-star-card__title-star"
 						fill="currentColor"
 					/>
-					Enjoying the docs?
+					Enjoying ArkEnv?
 				</span>
 
 				<span className="docs-star-card__cta">

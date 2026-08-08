@@ -135,3 +135,90 @@
 .docs-star-card:hover .docs-star-card__cta {
 	color: var(--color-fd-foreground);
 }
+
+/* YouTube-style “subscribe” nudge — pulsed glow when feedback heart is tapped. */
+.docs-star-card--spotlight {
+	animation: docs-star-spotlight 1.8s ease-in-out;
+}
+
+.docs-star-card--spotlight .docs-star-card__cta {
+	color: var(--color-fd-foreground);
+}
+
+.docs-star-card--spotlight .docs-star-card__title-star {
+	animation: docs-star-spotlight-star 1.8s ease-in-out;
+}
+
+@keyframes docs-star-spotlight {
+	0%,
+	100% {
+		border-color: var(--color-fd-border);
+		box-shadow: 0 0 0 0 transparent;
+	}
+
+	12%,
+	38%,
+	64% {
+		border-color: color-mix(in oklch, oklch(74% 0.13 195) 70%, var(--color-fd-border));
+		box-shadow:
+			0 0 0 1px color-mix(in oklch, oklch(74% 0.13 195) 45%, transparent),
+			0 0 18px 2px color-mix(in oklch, oklch(74% 0.13 195) 38%, transparent),
+			0 0 36px 4px color-mix(in oklch, oklch(52% 0.11 195) 22%, transparent);
+	}
+
+	25%,
+	51%,
+	77% {
+		border-color: color-mix(in oklch, oklch(74% 0.13 195) 35%, var(--color-fd-border));
+		box-shadow:
+			0 0 0 1px color-mix(in oklch, oklch(74% 0.13 195) 18%, transparent),
+			0 0 10px 1px color-mix(in oklch, oklch(74% 0.13 195) 16%, transparent);
+	}
+}
+
+@keyframes docs-star-spotlight-star {
+	0%,
+	100% {
+		filter: drop-shadow(0 0 0 transparent);
+		transform: scale(1);
+	}
+
+	12%,
+	38%,
+	64% {
+		filter: drop-shadow(0 0 6px color-mix(in oklch, oklch(74% 0.13 195) 55%, transparent));
+		transform: scale(1.12);
+	}
+
+	25%,
+	51%,
+	77% {
+		filter: drop-shadow(0 0 2px color-mix(in oklch, oklch(74% 0.13 195) 25%, transparent));
+		transform: scale(1.04);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.docs-star-card--spotlight {
+		animation: docs-star-spotlight-static 1.8s ease-out forwards;
+	}
+
+	.docs-star-card--spotlight .docs-star-card__title-star {
+		animation: none;
+	}
+}
+
+@keyframes docs-star-spotlight-static {
+	0% {
+		border-color: var(--color-fd-border);
+		box-shadow: 0 0 0 0 transparent;
+	}
+
+	20%,
+	100% {
+		border-color: color-mix(in oklch, oklch(74% 0.13 195) 55%, var(--color-fd-border));
+		box-shadow:
+			0 0 0 1px color-mix(in oklch, oklch(74% 0.13 195) 30%, transparent),
+			0 0 14px 2px color-mix(in oklch, oklch(74% 0.13 195) 28%, transparent);
+	}
+}

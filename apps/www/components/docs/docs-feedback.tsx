@@ -26,8 +26,15 @@ import { cn } from "~/lib/utils/cn";
 /**
  * Reaction-first feedback popover (Netflix-style dislike / like / love).
  * Message field appears after a reaction is chosen; message stays required.
+ * `onEmotionSelect` lets the TOC star CTA react to a heart tap.
  */
-export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
+export function DocsFeedbackButton({
+	pageTitle,
+	onEmotionSelect,
+}: {
+	pageTitle: string;
+	onEmotionSelect?: (emotion: DocsFeedbackEmotion) => void;
+}) {
 	const pathname = usePathname();
 	const storageKey = `docs-feedback-${pathname}`;
 	const [open, setOpen] = useState(false);
@@ -166,6 +173,7 @@ export function DocsFeedbackButton({ pageTitle }: { pageTitle: string }) {
 											onClick={() => {
 												setEmotion(e.name);
 												setError(null);
+												onEmotionSelect?.(e.name);
 											}}
 										>
 											<span
