@@ -21,7 +21,8 @@ type Props = SharedProps & {
 };
 
 /**
- * Fumadocs fetch search dialog — capsule radius matches Site Nav.
+ * Fumadocs fetch search dialog — capsule overlays Site Nav on mobile
+ * (same inset / gutter / bar height; see theme.css).
  */
 export default function ArkenvSearchDialog({
 	api,
@@ -44,8 +45,9 @@ export default function ArkenvSearchDialog({
 			{...props}
 		>
 			<SearchDialogOverlay />
+			{/* Capsule overlays Site Nav on mobile — see theme.css search dialog rules */}
 			<SearchDialogContent className="rounded-full">
-				<SearchDialogHeader>
+				<SearchDialogHeader className="arkenv-search-dialog__bar">
 					<SearchDialogIcon />
 					<SearchDialogInput />
 					<SearchDialogClose />

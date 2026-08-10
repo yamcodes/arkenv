@@ -323,11 +323,12 @@ div:has(+ #nd-sidebar-mobile) {
 }
 
 /*
- * Search dialog: above header (z-50) / mobile sidebar (z-60).
- * Page-width-bound width matches Site Nav / #nd-page gutters
- * (1rem → 1.5rem @ 40rem). Stock fumadocs uses w-[calc(100%-1rem)]
- * (0.5rem each side), so the capsule sits proud of the floating bar.
- * max-w-screen-sm still caps + centers once the guttered width exceeds it.
+ * Search dialog: sit on top of Site Nav (same inset / gutter / bar height)
+ * so the capsule visually replaces the floating header. Header stays in the
+ * DOM underneath; z-65 clears header (50) and mobile sidebar (60).
+ * Stock fumadocs uses w-[calc(100%-1rem)] + top below the nav on mobile.
+ * max-w-screen-sm still caps + centers once the guttered width exceeds it;
+ * from md up, fumadocs’ vertical centering takes over.
  */
 [role="dialog"][data-state] {
 	z-index: 65 !important;
@@ -340,13 +341,31 @@ div:has(+ #nd-sidebar-mobile) {
 	}
 }
 
-/* On mobile: push the search input box below the fixed header,
-   and hide the ESC close hint (no keyboard on mobile) */
 @media (max-width: 767px) {
 	[role="dialog"][data-state] {
-		top: calc(var(--fd-nav-height, 80px) + 0.5rem) !important;
+		/* Match .site-nav top: var(--site-nav-inset) */
+		top: 1rem !important;
 	}
 
+	@media (min-width: 40rem) {
+		[role="dialog"][data-state] {
+			top: 1.5rem !important;
+		}
+	}
+
+	/* Input row: Site Nav bar is border-box 3.5rem including its 1px
+	   border; dialog content also has a 1px border, so the inner bar
+	   must be 2px shorter or the capsule reads taller than the header. */
+	[role="dialog"][data-state] .arkenv-search-dialog__bar {
+		box-sizing: border-box;
+		height: calc(3.5rem - 2px);
+		min-height: calc(3.5rem - 2px);
+		max-height: calc(3.5rem - 2px);
+		padding-block: 0.35rem;
+		padding-inline: 0.75rem;
+	}
+
+	/* No keyboard on mobile — hide the ESC affordance */
 	[role="dialog"][data-state] button.font-mono {
 		display: none;
 	}
