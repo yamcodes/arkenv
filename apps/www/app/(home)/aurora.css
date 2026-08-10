@@ -204,8 +204,9 @@
 	/*
 	 * Side padding matches Site Nav gutter (1rem / 1.5rem) so the install
 	 * pill lines up with the floating bar’s left edge.
+	 * Top: clear sticky nav (inset + bar ≈ 4.5rem) plus room before the badge.
 	 */
-	padding: calc(3.75rem + var(--space-xs)) 1rem var(--space-md);
+	padding: calc(4.5rem + var(--space-lg)) 1rem var(--space-md);
 }
 
 @media (min-width: 40rem) {
@@ -218,7 +219,7 @@
 /* Workbench · hanging intro */
 .home-aurora__intro {
 	display: grid;
-	gap: var(--space-lg);
+	gap: var(--space-md);
 	width: 100%;
 	max-width: 100%;
 	min-width: 0;
@@ -233,13 +234,14 @@
 
 @media (min-width: 40rem) {
 	.home-aurora__intro {
-		gap: var(--space-md);
 		padding-block: var(--space-xl) var(--space-lg);
 	}
 }
 
 .home-aurora__badge {
 	justify-self: start;
+	/* Nudge the heading closer without shrinking later intro gaps */
+	margin-bottom: calc(-1 * var(--space-2xs));
 }
 
 .home-aurora__announce {
@@ -339,12 +341,20 @@
 	max-width: 100%;
 	min-width: 0;
 	font-family: var(--font-display);
-	font-size: clamp(2.5rem, 9.5vw + 0.5rem, 5.85rem);
+	/* Mobile / tablet: a touch smaller; desktop keeps the full display size */
+	font-size: clamp(2.15rem, 7.25vw + 0.35rem, 4.75rem);
 	line-height: 1.05;
 	letter-spacing: -0.035em;
 	color: var(--color-ink);
 	font-weight: 500;
 	overflow-wrap: anywhere;
+}
+
+@media (min-width: 64rem) {
+	.home-aurora__intro h1,
+	.home-aurora__tagline {
+		font-size: clamp(2.5rem, 9.5vw + 0.5rem, 5.85rem);
+	}
 }
 
 /* Keep the Geist lead on one line once the viewport can host it */
@@ -403,6 +413,12 @@
 	margin-top: var(--space-md);
 	width: 100%;
 	max-width: 100%;
+}
+
+/* Hero: a touch more than title↔subtitle above; slightly tighter below */
+.home-aurora__intro .home-aurora__install-row {
+	margin-top: var(--space-xs);
+	margin-bottom: calc(-1 * var(--space-xs));
 }
 
 @media (min-width: 40rem) {
