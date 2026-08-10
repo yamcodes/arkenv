@@ -829,15 +829,16 @@
 	border: var(--rule-hair) solid var(--color-rule);
 }
 
-/* Mobile secondary CTA - below Star us; hidden with install panel on ≥40rem */
+/* Mobile secondary CTA - below Star us; hidden with install panel on ≥40rem.
+ * Height matches site-nav bar / install pill (--site-nav-bar-height: 3.5rem). */
 .home-aurora__docs-cta {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: 0.4rem;
 	width: 100%;
-	min-height: 3rem;
-	padding: 0.75rem 1.1rem;
+	min-height: 3.5rem;
+	padding: 0.85rem 1.1rem;
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: var(--radius-pill);
 	background: color-mix(in oklch, var(--color-paper-2) 90%, transparent);
@@ -2275,9 +2276,11 @@
 	}
 }
 
-/* StarUs mobile - quiet under Aurora */
+/* StarUs mobile - quiet under Aurora; height matches site-nav / docs CTA */
 .home-aurora .home-aurora__install-row a[href*="github.com"] {
 	width: 100% !important;
+	min-height: 3.5rem !important;
+	height: 3.5rem !important;
 	justify-content: center !important;
 	background: color-mix(in oklch, var(--color-paper-2) 90%, transparent) !important;
 	border: var(--rule-hair) solid var(--color-rule) !important;
