@@ -19,9 +19,10 @@ test.describe("Homepage Interactivity", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// Header nav GitHub control (footer Ecosystem also has a "GitHub" link).
+		// Site Nav GitHub control sits in header utils (outside Primary nav links).
+		// Footer Elsewhere also has a "GitHub" link.
 		const githubLink = page
-			.getByRole("navigation", { name: "Primary" })
+			.getByRole("banner")
 			.getByRole("link", { name: /GitHub/i });
 
 		await expect(githubLink).toBeVisible();
