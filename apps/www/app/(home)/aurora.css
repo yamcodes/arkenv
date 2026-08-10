@@ -218,7 +218,7 @@
 /* Workbench · hanging intro */
 .home-aurora__intro {
 	display: grid;
-	gap: var(--space-sm);
+	gap: var(--space-lg);
 	width: 100%;
 	max-width: 100%;
 	min-width: 0;
