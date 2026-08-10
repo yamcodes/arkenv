@@ -829,28 +829,47 @@
 	border: var(--rule-hair) solid var(--color-rule);
 }
 
-/* Mobile secondary CTA - below Star us; hidden with install panel on ≥40rem.
- * Height matches site-nav bar / install pill (--site-nav-bar-height: 3.5rem). */
-.home-aurora__docs-cta {
+/* Mobile CTAs — shared shell (height, type, pill); color via modifiers.
+ * Hidden with install panel on ≥40rem. */
+.home-aurora__mobile-cta {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: 0.4rem;
+	gap: 0.5rem;
 	width: 100%;
-	min-height: 3.5rem;
-	padding: 0.85rem 1.1rem;
-	border: var(--rule-hair) solid var(--color-rule);
+	height: 3.5rem;
+	padding: 0 1.25rem;
+	box-sizing: border-box;
 	border-radius: var(--radius-pill);
-	background: color-mix(in oklch, var(--color-paper-2) 90%, transparent);
-	color: var(--color-ink-2);
 	font-family: var(--font-display);
-	font-size: var(--text-sm);
+	font-size: 1rem;
 	font-weight: 500;
+	line-height: 1;
 	text-decoration: none;
 	transition:
 		color var(--dur-micro) var(--ease-out),
 		border-color var(--dur-micro) var(--ease-out),
-		background-color var(--dur-micro) var(--ease-out);
+		background-color var(--dur-micro) var(--ease-out),
+		background var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__mobile-cta svg {
+	width: 1rem;
+	height: 1rem;
+	flex-shrink: 0;
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__mobile-cta {
+		display: none;
+	}
+}
+
+/* Read the docs — white ink, quiet fill; accent hover */
+.home-aurora__docs-cta {
+	border: var(--rule-hair) solid var(--color-rule);
+	background: color-mix(in oklch, var(--color-paper-2) 90%, transparent);
+	color: var(--color-ink);
 }
 
 .home-aurora__docs-cta:hover {
@@ -868,10 +887,63 @@
 	opacity: 0.9;
 }
 
-@media (min-width: 40rem) {
-	.home-aurora__docs-cta {
-		display: none;
-	}
+/* Star us — colorful yellow/orange (same shell as docs) */
+.home-aurora__star-cta {
+	border: 2px solid #facc15;
+	background: linear-gradient(to right, #fefce8, #fff7ed);
+	color: #854d0e;
+}
+
+.home-aurora__star-cta:hover {
+	border-color: #eab308;
+	background: linear-gradient(to right, #fef9c3, #ffedd5);
+	color: #854d0e;
+}
+
+:is(.dark) .home-aurora__star-cta {
+	border-color: #a16207;
+	background: linear-gradient(
+		to right,
+		color-mix(in oklch, #713f12 20%, transparent),
+		color-mix(in oklch, #7c2d12 20%, transparent)
+	);
+	color: #fef08a;
+}
+
+:is(.dark) .home-aurora__star-cta:hover {
+	border-color: #ca8a04;
+	background: linear-gradient(
+		to right,
+		color-mix(in oklch, #713f12 30%, transparent),
+		color-mix(in oklch, #7c2d12 30%, transparent)
+	);
+	color: #fef08a;
+}
+
+.home-aurora__star-cta-icon {
+	color: #ca8a04;
+}
+
+:is(.dark) .home-aurora__star-cta-icon {
+	color: #facc15;
+}
+
+.home-aurora__star-cta-count {
+	font-variant-numeric: tabular-nums;
+	color: #a16207;
+}
+
+:is(.dark) .home-aurora__star-cta-count {
+	color: #fde047;
+}
+
+.home-aurora__star-cta:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+.home-aurora__star-cta:active {
+	opacity: 0.9;
 }
 
 /* Install · Command / Prompt tabs - desktop/tablet only */
@@ -2220,7 +2292,7 @@
 @media (prefers-reduced-motion: reduce) {
 	.home-aurora__frame-hint,
 	.home-aurora__cta,
-	.home-aurora__docs-cta,
+	.home-aurora__mobile-cta,
 	.home-aurora__outro-docs,
 	.site-nav__action,
 	.site-nav__link,
@@ -2274,26 +2346,6 @@
 	.home-aurora__install-swap-item[data-active="true"] {
 		transform: none;
 	}
-}
-
-/* StarUs mobile - quiet under Aurora; height matches site-nav / docs CTA */
-.home-aurora .home-aurora__install-row a[href*="github.com"] {
-	width: 100% !important;
-	min-height: 3.5rem !important;
-	height: 3.5rem !important;
-	justify-content: center !important;
-	background: color-mix(in oklch, var(--color-paper-2) 90%, transparent) !important;
-	border: var(--rule-hair) solid var(--color-rule) !important;
-	color: var(--color-ink) !important;
-	border-radius: var(--radius-pill) !important;
-	box-shadow: none !important;
-}
-
-.home-aurora .home-aurora__install-row a[href*="github.com"] .text-yellow-600,
-.home-aurora .home-aurora__install-row a[href*="github.com"] .dark\:text-yellow-400,
-.home-aurora .home-aurora__install-row a[href*="github.com"] .text-yellow-700,
-.home-aurora .home-aurora__install-row a[href*="github.com"] .dark\:text-yellow-300 {
-	color: var(--color-accent) !important;
 }
 
 /* Logo accent */
