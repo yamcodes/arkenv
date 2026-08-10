@@ -30,9 +30,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 					title: <span className="sr-only">ArkEnv</span>,
 					component: (
 						<>
-							{/* Spacer in the docs grid "header" area so content starts below the floating Docs bar */}
+							{/* Spacer so docs content clears the floating Site Nav; pointer-events-none so it can't steal clicks. */}
 							<div
-								className="[grid-area:header]"
+								className="pointer-events-none [grid-area:header]"
 								style={{ height: "var(--fd-nav-height)" }}
 								aria-hidden="true"
 							/>
