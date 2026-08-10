@@ -19,11 +19,9 @@ test.describe("Homepage Interactivity", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// Site Nav GitHub control sits in header utils (outside Primary nav links).
-		// Footer Elsewhere also has a "GitHub" link.
-		const githubLink = page
-			.getByRole("banner")
-			.getByRole("link", { name: /GitHub/i });
+		// Header GitHub control (class-scoped: footer Elsewhere also has "GitHub",
+		// and Site Nav <header> is inside fumadocs <main> so it is not a banner).
+		const githubLink = page.locator("a.site-nav__github");
 
 		await expect(githubLink).toBeVisible();
 		await expect(githubLink).toHaveAttribute("target", "_blank");
