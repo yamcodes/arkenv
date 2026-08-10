@@ -322,9 +322,22 @@ div:has(+ #nd-sidebar-mobile) {
 	z-index: 70 !important;
 }
 
-/* Search dialog: raise above header (z-50) and mobile sidebar (z-60) */
+/*
+ * Search dialog: above header (z-50) / mobile sidebar (z-60).
+ * Page-width-bound width matches Site Nav / #nd-page gutters
+ * (1rem → 1.5rem @ 40rem). Stock fumadocs uses w-[calc(100%-1rem)]
+ * (0.5rem each side), so the capsule sits proud of the floating bar.
+ * max-w-screen-sm still caps + centers once the guttered width exceeds it.
+ */
 [role="dialog"][data-state] {
 	z-index: 65 !important;
+	width: calc(100% - 2rem) !important;
+}
+
+@media (min-width: 40rem) {
+	[role="dialog"][data-state] {
+		width: calc(100% - 3rem) !important;
+	}
 }
 
 /* On mobile: push the search input box below the fixed header,
