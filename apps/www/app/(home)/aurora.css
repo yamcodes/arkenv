@@ -902,21 +902,13 @@
 
 :is(.dark) .home-aurora__star-cta {
 	border-color: #a16207;
-	background: linear-gradient(
-		to right,
-		color-mix(in oklch, #713f12 20%, transparent),
-		color-mix(in oklch, #7c2d12 20%, transparent)
-	);
+	background: linear-gradient(to right, color-mix(in oklch, #713f12 20%, transparent), color-mix(in oklch, #7c2d12 20%, transparent));
 	color: #fef08a;
 }
 
 :is(.dark) .home-aurora__star-cta:hover {
 	border-color: #ca8a04;
-	background: linear-gradient(
-		to right,
-		color-mix(in oklch, #713f12 30%, transparent),
-		color-mix(in oklch, #7c2d12 30%, transparent)
-	);
+	background: linear-gradient(to right, color-mix(in oklch, #713f12 30%, transparent), color-mix(in oklch, #7c2d12 30%, transparent));
 	color: #fef08a;
 }
 

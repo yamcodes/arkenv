@@ -22,10 +22,7 @@ export function StarUsButton({ className }: StarUsProps) {
 			href={`https://github.com/${owner}/${repo}`}
 			target="_blank"
 			rel="noopener noreferrer"
-			className={cn(
-				"home-aurora__mobile-cta home-aurora__star-cta",
-				className,
-			)}
+			className={cn("home-aurora__mobile-cta home-aurora__star-cta", className)}
 		>
 			<SiGithub aria-hidden="true" />
 			<span>Star us on GitHub</span>
