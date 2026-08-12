@@ -5,14 +5,14 @@ description: Pick @arkenv/core (ArkType) or @arkenv/standard (Zod, Valibot, and 
 
 ArkEnv ships two engines. Both call `arkenv()`, share the same [options](/docs/reference/options), fail-fast errors, coercion pipeline, and framework plugins. They differ in how you write the schema and which peer dependencies you install.
 
-|                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)  |
-| ------------------------------------------- | -------------------------------------- | ----------------------------------------------- |
-| Schema style                                | ArkType DSL strings + `type()`         | Per-key Standard Schema validators              |
-| Typical libraries                           | ArkType                                | Zod, Valibot, VineJS, Zod Mini, …               |
-| Peer `arktype`                              | Required                               | None                                            |
-| Env keywords (`string.host`, `number.port`) | Yes                                    | Use the validator’s own APIs                    |
+|                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)   |
+| ------------------------------------------- | -------------------------------------- | ------------------------------------------------ |
+| Schema style                                | ArkType DSL strings + `type()`         | Per-key Standard Schema validators               |
+| Typical libraries                           | ArkType                                | Zod, Valibot, VineJS, Zod Mini, …                |
+| Peer `arktype`                              | Required                               | None                                             |
+| Env keywords (`string.host`, `number.port`) | Yes                                    | Use the validator’s own APIs                     |
 | Coercion                                    | Built-in                               | Built-in when fields are Standard JSON Schema v1 |
-| Framework plugins                           | `@arkenv/nextjs`, …                    | Same packages via `/standard` subpaths          |
+| Framework plugins                           | `@arkenv/nextjs`, …                    | Same packages via `/standard` subpaths           |
 
 Neither path is a fallback. Pick the engine that matches the schema library you want to write in.
 
@@ -78,13 +78,13 @@ Engines are separate packages so peer dependencies stay honest. Framework plugin
 
 ArkEnv’s pre-coercion step for `@arkenv/standard` needs **Standard JSON Schema v1** (`~standard.jsonSchema.input` / `.output`). If a validator implements that interface, the converter exists by construction — there is no separate “metadata may or may not be there” check. (Conversion can still throw for unsupported schemas or JSON Schema targets; the spec allows that.)
 
-| Library                                  | Implements Standard JSON Schema v1                         |
-| ---------------------------------------- | ---------------------------------------------------------- |
-| Zod (v4.2+)                              | Yes (on the schema itself)                                 |
+| Library                                  | Implements Standard JSON Schema v1                             |
+| ---------------------------------------- | -------------------------------------------------------------- |
+| Zod (v4.2+)                              | Yes (on the schema itself)                                     |
 | Valibot (v1.2+)                          | Yes, via `toStandardJsonSchema` from `@valibot/to-json-schema` |
-| Zod Mini                                 | Yes, via `z.toJSONSchema(...)`                             |
-| VineJS (v4.3+)                           | Yes                                                        |
-| Other Standard JSON Schema v1 validators | Yes                                                        |
+| Zod Mini                                 | Yes, via `z.toJSONSchema(...)`                                 |
+| VineJS (v4.3+)                           | Yes                                                            |
+| Other Standard JSON Schema v1 validators | Yes                                                            |
 
 Standard Schema alone is not enough for ArkEnv coercion. Pass values that satisfy Standard JSON Schema (including wrappers like Valibot’s `toStandardJsonSchema`), or use the validator’s own coerce helpers / set `coerce: false` and [transform](/docs/core-concepts/transforms) strings yourself. See [Coercion](/docs/core-concepts/coercion).
 
