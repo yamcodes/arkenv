@@ -5,11 +5,11 @@ description: Reshape validated env values with schema-library transforms.
 
 A **transform** reshapes a value as part of validation: trim a string, clamp a number, map an enum. The idea is schema-agnostic. Each validator has its own API name for it:
 
-| Library | Their word | Typical API |
-| --- | --- | --- |
-| ArkType (`@arkenv/core`) | [Morph](https://arktype.io/docs/morphs) (sometimes “transformation”) | `type("string").pipe(...)` |
-| Zod | Transform | `.transform(...)` / `.pipe(...)` |
-| Valibot | Transform / pipe | `pipe(...)`, `transform(...)` |
+| Library                  | Their word                                                           | Typical API                      |
+| ------------------------ | -------------------------------------------------------------------- | -------------------------------- |
+| ArkType (`@arkenv/core`) | [Morph](https://arktype.io/docs/morphs) (sometimes “transformation”) | `type("string").pipe(...)`       |
+| Zod                      | Transform                                                            | `.transform(...)` / `.pipe(...)` |
+| Valibot                  | Transform / pipe                                                     | `pipe(...)`, `transform(...)`    |
 
 ArkEnv docs say **transform** when the behavior is the same across engines. Say **morph** when you mean ArkType’s morph specifically.
 
@@ -21,8 +21,8 @@ Everyday string-to-number and string-to-boolean conversion is [coercion](/docs/c
 import arkenv, { type } from "@arkenv/core";
 
 export const env = arkenv({
-	BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
-	PORT: "number.port = 3000",
+  BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+  PORT: "number.port = 3000",
 });
 ```
 
@@ -36,10 +36,10 @@ Coercion can feed a transform. Here the string `"42"` becomes a number before yo
 import arkenv, { type } from "@arkenv/core";
 
 export const env = arkenv(
-	{
-		RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
-	},
-	{ env: { RETRY_COUNT: "3" } },
+  {
+    RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
+  },
+  { env: { RETRY_COUNT: "3" } },
 );
 
 env.RETRY_COUNT; // 3
@@ -49,10 +49,10 @@ With `{ coerce: false }`, `"3"` never becomes a number unless the transform acce
 
 ## Transform vs coerce
 
-| Need | Prefer |
-| --- | --- |
-| `"3000"` → `number`, `"true"` → `boolean` | [Coercion](/docs/core-concepts/coercion) (default on) |
-| Trim, normalize, clamp, map enums | Transform (ArkType morph / Zod `.transform` / …) |
+| Need                                                | Prefer                                                    |
+| --------------------------------------------------- | --------------------------------------------------------- |
+| `"3000"` → `number`, `"true"` → `boolean`           | [Coercion](/docs/core-concepts/coercion) (default on)     |
+| Trim, normalize, clamp, map enums                   | Transform (ArkType morph / Zod `.transform` / …)          |
 | Validator-owned pipelines on Standard Schema fields | [`@arkenv/standard`](/docs/core-concepts/standard-schema) |
 
 ## Standard Schema transforms
@@ -64,9 +64,9 @@ import arkenv from "@arkenv/standard";
 import { z } from "zod";
 
 export const env = arkenv({
-	BUILD_ID: z
-		.string()
-		.transform((value) => value.trim().toUpperCase()),
+  BUILD_ID: z
+    .string()
+    .transform((value) => value.trim().toUpperCase()),
 });
 ```
 
