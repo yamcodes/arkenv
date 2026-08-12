@@ -1,8 +1,78 @@
 ---
 title: Coercion
-description: How ArkEnv coerces string env values into typed outputs.
+description: How ArkEnv turns string environment values into typed outputs.
 ---
 
-Stub for coercion rules, defaults, and common env string → typed conversions.
+Environment variables arrive as strings. Coercion is ArkEnv's built-in step that converts those strings toward the types your schema declares so `PORT` is a `number` and `DEBUG` is a `boolean` in application code.
 
-> Content TBD — Core concepts leaf.
+## Defaults
+
+Coercion is **on** by default (`coerce: true`) for both [`@arkenv/core`](/docs/reference/core) and [`@arkenv/standard`](/docs/reference/standard).
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{
+		PORT: "number.port",
+		DEBUG: "boolean = false",
+		TAGS: "string[]",
+	},
+	{
+		env: {
+			PORT: "8080",
+			DEBUG: "true",
+			TAGS: "web, api",
+		},
+	},
+);
+
+env.PORT; // number
+env.DEBUG; // boolean
+env.TAGS; // string[]
+```
+
+## Pre-coercion model
+
+ArkEnv does not wrap your schema in a coercion `.pipe`. It uses a shared pre-coercion pipeline:
+
+1. **Introspect** the schema's JSON Schema (ArkType `.in.toJsonSchema`, or Standard Schema metadata)
+2. **Find paths** that need conversion (numbers, booleans, arrays, objects)
+3. **Copy** the input record and coerce only those paths on the copy
+4. **Validate** the copy with the original, unmodified schema
+
+`process.env` is never mutated. Morphs and refinements on the schema still see the coerced values.
+
+## Arrays and objects
+
+| Shape | Default parsing |
+| --- | --- |
+| Arrays | Comma-separated (`"a, b"`), or JSON when `arrayFormat: "json"` |
+| Objects | JSON strings; nested fields are coerced recursively |
+
+Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing).
+
+## Standard Schema limits
+
+Automatic coercion in `@arkenv/standard` needs a validator that exposes JSON Schema ArkEnv can read (Zod 4.2+, Valibot with `@valibot/to-json-schema`, Zod Mini, VineJS 4.3+, and other Standard JSON Schema v1 libraries). You can also use the validator's own coerce helpers (`z.coerce.number()`) and treat ArkEnv coercion as a backup.
+
+## Disabling coercion
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{ PORT: "string" },
+	{ coerce: false, env: { PORT: "3000" } },
+);
+
+env.PORT; // "3000"
+```
+
+With `coerce: false`, a `"number"` schema rejects `"3000"` unless you morph the string yourself.
+
+## Related
+
+- [Morphs](/docs/core-concepts/morphs)
+- [options.coerce](/docs/reference/options#coerce)
+- [Validation](/docs/core-concepts/validation)

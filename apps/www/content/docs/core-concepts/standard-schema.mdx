@@ -1,8 +1,47 @@
 ---
-title: Standard schema
-description: Use any Standard Schema validator with ArkEnv.
+title: Standard Schema
+description: Validate environment variables with Zod, Valibot, and other Standard Schema libraries.
 ---
 
-Stub for Standard Schema support (Zod, Valibot, and others) alongside ArkType.
+[Standard Schema](https://standardschema.dev/) is a shared interface for TypeScript validators. `@arkenv/standard` speaks that interface so you can keep Zod or Valibot without installing ArkType.
 
-> Content TBD — Core concepts leaf.
+## Two engines
+
+| | `@arkenv/core` | `@arkenv/standard` |
+| --- | --- | --- |
+| DSL | ArkType strings + `type()` | Per-key Standard Schema validators |
+| Keywords | `string.host`, `number.port` | None |
+| Peer `arktype` | Required | None |
+| Coercion | Built-in | When the validator exposes JSON Schema |
+| Plugins | `@arkenv/*/…` | Matching `/standard` subpaths |
+
+Prefer `@arkenv/core` for new TypeScript apps that can take ArkType. Reach for `@arkenv/standard` when you are migrating an existing Zod/Valibot schema or must stay ArkType-free.
+
+## Usage
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+	DATABASE_URL: z.string().url(),
+	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+});
+```
+
+Runtime [options](/docs/reference/options) match core: `env`, `coerce`, `safe`, `arrayFormat`, and the rest.
+
+## Packaging
+
+Engines are separate packages so peer dependencies stay honest. Framework plugins stay single packages with `/standard` subpaths (`@arkenv/nextjs/standard`, `@arkenv/vite-plugin/standard`, and so on) instead of a second npm package per host.
+
+## Coercion note
+
+ArkEnv still pre-coerces when it can read JSON Schema from the validator. Libraries without that metadata need their own coerce helpers (for example `z.coerce.number()`). See [Coercion](/docs/core-concepts/coercion).
+
+## Related
+
+- [`@arkenv/standard`](/docs/reference/standard)
+- [schema](/docs/reference/schema)
+- [Defining types](/docs/validating-environment-variables/defining-types)
