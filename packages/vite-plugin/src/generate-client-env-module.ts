@@ -25,7 +25,7 @@ export function generateClientEnvModule(
 			`  get [${JSON.stringify(key)}]() {`,
 			`    const error = new Error(${JSON.stringify(message)});`,
 			`    error.name = "ArkEnvError";`,
-			`    throw error;`,
+			"    throw error;",
 			"  },",
 		);
 	}
