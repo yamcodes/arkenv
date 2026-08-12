@@ -50,8 +50,12 @@ function isViewingFolderIndex(
  * Turbo-style docs tagline segments above the page title.
  *
  * - Section / Nested Folder Overview → hidden (`[]`)
- * - Flat / Separator leaf (URL depth n=1) → `[Section]`
- * - Nested Folder leaf (URL depth n=2) → `[NestedFolder, PageTitle]`
+ * - Flat / Separator leaf (one folder) → `[Section]`
+ * - Nested Folder leaf (two or more folders) → `[InnermostFolder, PageTitle]`
+ *
+ * Deeper trees always collapse to those two segments (innermost folder + page).
+ * Intermediate ancestors are omitted on purpose for Turbo parity — the tagline
+ * is not a full breadcrumb trail.
  *
  * Separator labels are never included (they are not folders in the page tree).
  */
@@ -73,7 +77,7 @@ export function getDocsTaglineSegments(
 		.reverse()
 		.find((node): node is PageTree.Item => node.type === "page");
 
-	// Nested Folder leaf: X > Y (folder name, then page title).
+	// Nested leaf: innermost folder + page title (even when folders.length > 2).
 	if (folders.length >= 2 && page) {
 		const nested = folders[folders.length - 1];
 		return [String(nested.name), String(page.name)];

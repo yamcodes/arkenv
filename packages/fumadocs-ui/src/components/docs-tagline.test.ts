@@ -70,6 +70,23 @@ describe("getDocsTaglineSegments", () => {
 		).toEqual(["Frameworks", "Next.js"]);
 	});
 
+	it("collapses 3+ folder depths to innermost folder + page", () => {
+		const adaptersIndex = page("Adapters", "/docs/guides/frameworks/adapters");
+		const vite = page("Vite", "/docs/guides/frameworks/adapters/vite");
+		const adapters = folder(
+			"Adapters",
+			[adaptersIndex, vite],
+			adaptersIndex,
+		);
+
+		expect(
+			getDocsTaglineSegments(
+				[guides, frameworks, adapters, vite],
+				"/docs/guides/frameworks/adapters/vite",
+			),
+		).toEqual(["Adapters", "Vite"]);
+	});
+
 	it("returns the section name for a section-level guide leaf", () => {
 		expect(getDocsTaglineSegments([guides, ai], "/docs/guides/ai")).toEqual([
 			"Guides",

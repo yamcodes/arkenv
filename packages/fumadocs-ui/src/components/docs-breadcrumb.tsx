@@ -10,9 +10,13 @@ import { getDocsTaglineSegments } from "./docs-tagline";
 /**
  * Turbo-style docs tagline above the page title:
  * - Overview pages → hidden
- * - n=1 (flat / Separator leaf) → section name (`API reference`)
- * - n=2 (Nested Folder leaf) → `NestedFolder > Page` (`Frameworks > Next.js`)
+ * - Flat / Separator leaf → section name (`API reference`)
+ * - Nested Folder leaf → `InnermostFolder > Page` (`Frameworks > Next.js`)
+ *   (3+ folder depths still collapse to those two segments)
  * Neutral foreground (not primary/cyan). Separator labels are never segments.
+ *
+ * Still exported as the `breadcrumb` layout slot for API compatibility, but
+ * renders plain text (not linked crumbs).
  */
 export function DocsBreadcrumb({
 	className,
@@ -31,7 +35,6 @@ export function DocsBreadcrumb({
 	return (
 		<div
 			{...props}
-			data-docs-breadcrumb=""
 			data-docs-tagline=""
 			className={cn(
 				"mb-1 flex items-center gap-1.5 text-sm text-fd-muted-foreground",
