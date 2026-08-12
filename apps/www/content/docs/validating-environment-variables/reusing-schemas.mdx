@@ -3,11 +3,18 @@ title: Reusing schemas
 description: Define a schema once and validate it across runtimes and packages.
 ---
 
-Calling `arkenv({ ... })` defines the schema and parses the current environment in one step. Two runtimes that need the same keys (Vite config on Node and the browser client, or several packages in a monorepo) should extract the schema with `type()` and pass it into each `arkenv()` call.
+Calling `arkenv({ ... })` both defines the schema and parses the current environment. That is the happy path for a single process. The moment the same keys must be validated in more than one place, extract the schema once and pass it into each `arkenv()` call.
+
+Common cases:
+
+- **Two runtimes in one app.** Vite's `vite.config.ts` runs in Node while the browser client reads `VITE_*` keys. Both need the same shape; only the env source differs.
+- **Monorepos.** Several packages share `DATABASE_URL` / public API URLs but each app still exports its own `env`.
+- **Tests.** Feed `{ env: { ... } }` fixtures without redefining the schema.
+- **Custom integrations.** Workers bindings, CLI tools, and advanced boot paths that re-parse the same schema against a different record.
 
 ## Shared `type()` definition
 
-```ts title="./env-schema.ts"
+```ts title="./env-schema.ts" twoslash
 import arkenv, { type } from "@arkenv/core";
 
 export const Env = type({
@@ -75,7 +82,7 @@ export const env = arkenv(AppEnv);
 
 Each app still owns its `env` export. Shared packages export schemas, not a process-wide singleton, so tests can pass a custom `{ env: ... }` per case.
 
-## Standard Schema maps
+## Standard Schema maps (Zod, Valibot, etc.)
 
 With `@arkenv/standard`, reuse means exporting the same field map:
 

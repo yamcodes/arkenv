@@ -3,29 +3,32 @@ title: Client vs. server
 description: Keep public env keys out of private secrets and off the browser bundle.
 ---
 
-Public keys belong in the client schema. Secrets belong only on the server. Mixing them is how `DATABASE_URL` ends up in a browser bundle.
+Browser bundles and server processes do not share the same trust boundary. A secret that reaches the client is gone: anyone can read it from the network tab or a published chunk. That is why frameworks invented public prefixes (`NEXT_PUBLIC_*`, `VITE_*`, and friends), and why env libraries treat "which keys may ship to the browser" as a first-class problem.
 
-ArkEnv core has no client/server split. Framework packages and plugins enforce the boundary using each host's public prefix.
+ArkEnv validates that split. The core `arkenv()` API stays a flat schema call; the Next.js, Nuxt, Vite, and Bun packages enforce prefixes, strip server values from client graphs, and throw when application code reaches across the boundary. You still write one schema style. The integration owns the fence.
+
+Public keys belong in the client-visible set. Secrets stay server-only. Mixing them is how `DATABASE_URL` ends up in a browser bundle.
 
 <Callout type="error">
-  Importing a server schema into client code exposes secrets. Treat that as a
-  broken build, not a soft warning.
+	ArkEnv treats a server secret read from client code as a hard failure. The
+	runtime proxy throws; strict layouts also keep the server schema out of the
+	client module graph. Do not soften that into a warning.
 </Callout>
 
 ## Public prefixes
 
-| Framework     | Client-visible prefix |
-| ------------- | --------------------- |
-| Next.js       | `NEXT_PUBLIC_*`       |
-| Nuxt          | `NUXT_PUBLIC_*`       |
-| Vite          | `VITE_*`              |
-| Bun (bundler) | `BUN_PUBLIC_*`        |
+| Framework | Client-visible prefix |
+| --- | --- |
+| Next.js | `NEXT_PUBLIC_*` |
+| Nuxt | `NUXT_PUBLIC_*` |
+| Vite | `VITE_*` |
+| Bun (bundler) | `BUN_PUBLIC_*` |
 
 Keys without the prefix stay server-only. `NODE_ENV` is treated as shared on Next.js.
 
-## Flat layout
+## Flat layout (Recommended)
 
-Flat mode uses one `env.ts`. Prefixes decide which keys reach the client. This is the default when you run `arkenv init`.
+Flat layout uses one `env.ts`. Prefixes decide which keys reach the client. This is the default when you run `arkenv init`, and the right choice for most apps.
 
 ```ts title="./env.ts"
 import arkenv from "@/generated/env.gen";
@@ -48,37 +51,43 @@ const nextConfig: NextConfig = {};
 export default withArkEnv(nextConfig);
 ```
 
-On Nuxt flat mode, import from `@arkenv/nuxt` and register `@arkenv/nuxt/module`. Vite and Bun plugins read the same schema and only inline public keys into the client.
+On Nuxt flat layout, import from `@arkenv/nuxt` and register `@arkenv/nuxt/module`. Vite and Bun plugins read the same schema and only inline public keys into the client.
 
-### What flat mode protects
+### What flat layout protects
 
-|        | Secret **value** in client bundle | Variable **name + type** in client       |
-| ------ | --------------------------------- | ---------------------------------------- |
-| Flat   | Blocked                           | Visible (schema ships with client types) |
-| Strict | Blocked                           | Blocked (separate modules)               |
+| | Secret **value** in client bundle | Variable **name + type** in client |
+| --- | --- | --- |
+| Flat layout | Blocked | Visible (schema ships with client types) |
+| Strict layout | Blocked | Blocked (separate modules) |
 
-Flat mode relies on a runtime proxy: reading `env.DATABASE_URL` in a Client Component throws. Autocomplete may still show the key because TypeScript sees one schema file. [`@t3-oss/env-nextjs`](https://env.t3.gg) uses the same single-file pattern.
+Values stay off the wire. Flat layout still types the full schema in one file, so TypeScript may autocomplete server keys in Client Components and the **names and types** of those keys can appear in the client type graph. A runtime proxy throws if you read a server key on the client.
 
-Use strict mode when variable **names** reveal infrastructure you want out of the client graph.
+[`@t3-oss/env-nextjs`](https://env.t3.gg) uses the same single-file pattern for DX, and both projects recommend a split-file layout when you need names and types out of the client graph as well as values.
+
+Pick strict layout when secret **names or types** reveal infrastructure you refuse to ship in client types (internal hostnames, vendor-shaped keys, and similar).
 
 ## Strict layout
 
-Strict mode splits files so the server schema never enters the client module graph:
+Strict layout splits files so the server schema never enters the client module graph:
+
+<Callout type="info">
+	Most apps do not need this. Flat layout already blocks secret values and
+	throws on misuse. Strict layout costs more files and import discipline for a
+	tighter TypeScript boundary. Use it when that boundary is a requirement, not
+	by default.
+</Callout>
 
 <Files>
-  <Folder name="env" defaultOpen>
-    <File name="client.ts" />
-
-    <File name="server.ts" />
-
-    <Folder name="generated" defaultOpen>
-      <File name="env.gen.ts" />
-    </Folder>
-
-    <Folder name="internal" defaultOpen>
-      <File name="shared.ts" />
-    </Folder>
-  </Folder>
+	<Folder name="env" defaultOpen>
+		<File name="client.ts" />
+		<File name="server.ts" />
+		<Folder name="generated" defaultOpen>
+			<File name="env.gen.ts" />
+		</Folder>
+		<Folder name="internal" defaultOpen>
+			<File name="shared.ts" />
+		</Folder>
+	</Folder>
 </Files>
 
 ```ts title="./env/internal/shared.ts"
@@ -119,12 +128,7 @@ Scaffold with:
 pnpm dlx arkenv@latest init --strict
 ```
 
-Nuxt strict uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Omitting `extends` can auto-merge shared and client schemas via Nuxt virtual aliases. Details live in the [Next.js](/docs/guides/frameworks/nextjs) and [Nuxt](/docs/guides/frameworks/nuxt) guides.
-
-## Choosing a layout
-
-- **Flat** for most apps: one file, full autocomplete, runtime guard on misuse.
-- **Strict** when you need compile-time isolation or secret names out of client types.
+Nuxt strict layout uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Omitting `extends` can auto-merge shared and client schemas via Nuxt virtual aliases. Details live in the [Next.js](/docs/guides/frameworks/nextjs) and [Nuxt](/docs/guides/frameworks/nuxt) guides.
 
 ## Next steps
 

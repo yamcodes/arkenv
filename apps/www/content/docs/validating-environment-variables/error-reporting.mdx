@@ -3,7 +3,7 @@ title: Error reporting
 description: Fail fast on invalid env with clear console output and structured issues.
 ---
 
-ArkEnv throws at the call site when a required variable is missing or a value fails the schema. Bad config stays out of running processes.
+ArkEnv throws at the call site when a required variable is missing or a value fails the schema. Bad config stays out of running processes, builds, and plugin runs.
 
 ## What you see in the console
 
@@ -16,6 +16,8 @@ Errors found while validating environment variables
 ```
 
 Paths are highlighted; the header is red when ANSI color is available.
+
+Most apps let that throw stop the process. You do not need a `try/catch` around every `arkenv()` call. Catch only when you want to inspect `ArkEnvError` yourself (custom boot UI, tests, or a wrapper):
 
 ```ts title="./boot.ts"
 import arkenv, { ArkEnvError } from "@arkenv/core";
@@ -41,33 +43,35 @@ try {
 
 Each entry in `error.issues` includes a machine-readable `code`:
 
-| Code                                  | Typical cause                                 |
-| ------------------------------------- | --------------------------------------------- |
-| `MISSING_VARIABLE`                    | Required key absent                           |
-| `INVALID_TYPE`                        | Value could not match the declared type       |
-| `VALUE_TOO_SMALL` / `VALUE_TOO_LARGE` | Numeric or length bounds                      |
-| `PATTERN_MISMATCH`                    | String failed a pattern                       |
-| `INVALID_FORMAT`                      | Format keyword failed (for example host/port) |
-| `UNDECLARED_KEY`                      | Extra key with `onUndeclaredKey: "reject"`    |
-| `INVALID_SCHEMA`                      | Schema itself is invalid                      |
-| `CUSTOM`                              | Validator-specific failure                    |
+| Code | Typical cause |
+| --- | --- |
+| `MISSING_VARIABLE` | Required key absent |
+| `INVALID_TYPE` | Value could not match the declared type |
+| `VALUE_TOO_SMALL` / `VALUE_TOO_LARGE` | Numeric or length bounds |
+| `PATTERN_MISMATCH` | String failed a pattern |
+| `INVALID_FORMAT` | Format keyword failed (for example host/port) |
+| `UNDECLARED_KEY` | Extra key with `onUndeclaredKey: "reject"` |
+| `INVALID_SCHEMA` | Schema itself is invalid |
+| `CUSTOM` | Validator-specific failure |
 
 Use these codes in CI scripts and health checks instead of scraping message text.
 
 ## Secret redaction
 
-Values for sensitive keys are redacted in error output by default. Set `debugSecrets: true` on the config object, or export `ARKENV_DEBUG_SECRETS=1`, when you need the raw value while debugging locally.
+Values for sensitive keys are redacted in error output by default. Leave that alone in CI and production.
+
+`debugSecrets: true` (or `ARKENV_DEBUG_SECRETS=1`) prints the raw value. Treat it as a local escape hatch only.
 
 <Callout type="warn">
-  Leave secret debugging off in shared CI logs and production. Redaction exists
-  so a failed boot does not print credentials.
+	Do not enable secret debugging in shared logs. Redaction exists so a failed
+	boot does not print credentials.
 </Callout>
 
 ## Safe mode
 
 Pass `{ safe: true }` when you want a result object instead of a throw (tests, custom boot UI):
 
-```ts title="./env.ts"
+```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
 
 const result = arkenv(
@@ -80,17 +84,19 @@ if (!result.success) {
 }
 ```
 
-Framework adapters omit `safe` so a bad env still fails the build or server start.
+Framework integrations do not expose `safe`. Invalid env still fails the build or server start there on purpose.
 
 ## Framework boundary errors
 
-Client/server misuse raises a different message than schema validation:
+Reading a server-only key from client code raises a boundary error, not a schema `ArkEnvError`:
 
 ```txt
 ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
 ```
 
-On Nuxt strict layouts, importing the server schema into client code fails at build time. See [client vs. server](/docs/validating-environment-variables/client-vs-server).
+That `"ArkEnv Error:"` prefix differs from the validation header (`Errors found while validating environment variables`). Tracking: [#1558](https://github.com/yamcodes/arkenv/issues/1558).
+
+Next.js, Nuxt, Vite, and Bun each enforce the boundary (runtime proxy, build-time import bans, or both). See [client vs. server](/docs/validating-environment-variables/client-vs-server).
 
 ## Next steps
 
