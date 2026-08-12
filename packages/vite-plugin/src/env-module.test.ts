@@ -59,6 +59,9 @@ describe("transform mode helpers", () => {
 		expect(code).toContain(
 			"Attempted to access server environment variable 'DATABASE_URL' on the client",
 		);
+		expect(code).toContain('error.name = "ArkEnvError"');
+		expect(code).not.toContain("ArkEnv Error:");
+		expect(code).not.toMatch(/import\b.*ArkEnvError/);
 		expect(code).not.toContain("arkenv");
 		expect(code).not.toContain("arktype");
 	});
@@ -113,6 +116,8 @@ describe("transform mode plugin", () => {
 		expect(bundle).toContain(
 			"Attempted to access server environment variable 'DATABASE_URL' on the client",
 		);
+		expect(bundle).toContain('error.name = "ArkEnvError"');
+		expect(bundle).not.toContain("ArkEnv Error:");
 		expect(bundle).not.toMatch(/from ["']@arkenv\/core["']/);
 		expect(bundle).not.toMatch(/from ["']arktype["']/);
 		expect(bundle).not.toContain("postgres://fixture:5432/db");
@@ -147,9 +152,19 @@ describe("transform mode plugin", () => {
 		expect(mod.config.apiUrl).toBe("https://fixture.example.com");
 		expect(mod.config.debug).toBe(true);
 		expect(mod.config.port).toBe(8080);
-		expect(() => mod.readServerSecret()).toThrow(
-			/Attempted to access server environment variable 'DATABASE_URL' on the client/,
-		);
+		try {
+			mod.readServerSecret();
+			expect.fail("Expected boundary access error");
+		} catch (error) {
+			expect(error).toBeInstanceOf(Error);
+			expect((error as Error).name).toBe("ArkEnvError");
+			expect((error as Error).message).toMatch(
+				/Attempted to access server environment variable 'DATABASE_URL' on the client/,
+			);
+			expect(String(error)).toMatch(
+				/^ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client/,
+			);
+		}
 	});
 
 	it("passes through the env module unchanged in the SSR graph", async () => {

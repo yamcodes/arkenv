@@ -1,3 +1,4 @@
+import { ArkEnvError } from "@arkenv/core";
 import { afterEach, describe, expect, it } from "vitest";
 import { resetBootGateForTests } from "./boot-gate";
 import {
@@ -94,11 +95,20 @@ describe("arkenv (Nuxt runtime)", () => {
 			expect(env.NUXT_PUBLIC_API_URL).toBe("https://api.example.com");
 			expect(env.NODE_ENV).toBe("test");
 
-			expect(() => {
+			try {
 				env.DATABASE_URL;
-			}).toThrow(
-				"Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.",
-			);
+				expect.fail("Expected boundary access error");
+			} catch (error) {
+				expect(error).toBeInstanceOf(Error);
+				expect(error).not.toBeInstanceOf(ArkEnvError);
+				expect((error as Error).name).toBe("ArkEnvError");
+				expect((error as Error).message).toBe(
+					"Attempted to access server environment variable 'DATABASE_URL' on the client.",
+				);
+				expect(String(error)).toMatch(
+					/^ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client\./,
+				);
+			}
 
 			const keys = Object.keys(env);
 			expect(keys).toContain("NUXT_PUBLIC_API_URL");

@@ -351,9 +351,11 @@ function createSecurityProxy(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					throw new Error(
-						`Accessing server-side environment variable '${prop}' on the client is not allowed.`,
+					const error = new Error(
+						`Attempted to access server environment variable '${prop}' on the client.`,
 					);
+					error.name = "ArkEnvError";
+					throw error;
 				}
 
 				if (!allKeys.has(prop) && !(prop in Object.prototype)) {

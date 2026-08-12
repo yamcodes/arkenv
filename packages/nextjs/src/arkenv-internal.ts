@@ -296,9 +296,11 @@ export function arkenvInternal(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					throw new Error(
-						`ArkEnv Error: Attempted to access server environment variable '${prop}' on the client.`,
+					const error = new Error(
+						`Attempted to access server environment variable '${prop}' on the client.`,
 					);
+					error.name = "ArkEnvError";
+					throw error;
 				}
 
 				// Allow schema keys and standard Object prototype properties

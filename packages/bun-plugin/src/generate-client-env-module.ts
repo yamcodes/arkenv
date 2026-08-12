@@ -20,10 +20,12 @@ export function generateClientEnvModule(
 	}
 
 	for (const key of serverKeys) {
-		const message = `ArkEnv Error: Attempted to access server environment variable '${key}' on the client.`;
+		const message = `Attempted to access server environment variable '${key}' on the client.`;
 		lines.push(
 			`  get [${JSON.stringify(key)}]() {`,
-			`    throw new Error(${JSON.stringify(message)});`,
+			`    const error = new Error(${JSON.stringify(message)});`,
+			`    error.name = "ArkEnvError";`,
+			`    throw error;`,
 			"  },",
 		);
 	}

@@ -1,6 +1,26 @@
+import { ArkEnvError } from "@arkenv/core";
 import { describe, expect, it } from "vitest";
 import { arkenv as clientArkenv } from "./index";
 import { arkenv as serverArkenv } from "./react-server";
+
+function expectBoundaryAccessError(run: () => unknown, key: string): void {
+	try {
+		run();
+		expect.fail("Expected boundary access error");
+	} catch (error) {
+		expect(error).toBeInstanceOf(Error);
+		expect(error).not.toBeInstanceOf(ArkEnvError);
+		expect((error as Error).name).toBe("ArkEnvError");
+		expect((error as Error).message).toBe(
+			`Attempted to access server environment variable '${key}' on the client.`,
+		);
+		expect(String(error)).toMatch(
+			new RegExp(
+				`^ArkEnvError: Attempted to access server environment variable '${key}' on the client\\.`,
+			),
+		);
+	}
+}
 
 describe("arkenv (RSC / Server Entrypoint)", () => {
 	it("should parse a basic environment variable", () => {
@@ -138,11 +158,7 @@ describe("arkenv (Client / SSR Entrypoint)", () => {
 		});
 
 		// Accessing server key must throw an error, even if running on Node (simulating Server-Side Rendering of Client Components)
-		expect(() => {
-			env.DATABASE_URL;
-		}).toThrow(
-			"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
-		);
+		expectBoundaryAccessError(() => env.DATABASE_URL, "DATABASE_URL");
 	});
 
 	it("should support default values in schema when omitted or undefined in runtimeEnv", () => {
@@ -185,10 +201,9 @@ describe("arkenv (Client / SSR Entrypoint)", () => {
 			expect(env.NODE_ENV).toBe("test");
 			expect((env as any).CUSTOM_VAR).toBe("custom_val");
 
-			expect(() => {
-				(env as any).DATABASE_URL;
-			}).toThrow(
-				"ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.",
+			expectBoundaryAccessError(
+				() => (env as any).DATABASE_URL,
+				"DATABASE_URL",
 			);
 		});
 
