@@ -38,12 +38,18 @@ test.describe("Docs search dialog", () => {
 
 		const titleHit = await result.evaluate((el) => {
 			const box = el.getBoundingClientRect();
-			const top = document.elementFromPoint(box.left + 12, box.top + box.height / 2);
-			return Boolean(top && (el === top || el.contains(top) || top.contains(el)));
+			const top = document.elementFromPoint(
+				box.left + 12,
+				box.top + box.height / 2,
+			);
+			return Boolean(
+				top && (el === top || el.contains(top) || top.contains(el)),
+			);
 		});
-		expect(titleHit, "result title should not be clipped by the dialog mask").toBe(
-			true,
-		);
+		expect(
+			titleHit,
+			"result title should not be clipped by the dialog mask",
+		).toBe(true);
 
 		await page.keyboard.press("Escape");
 		await expect(dialog).toBeHidden();

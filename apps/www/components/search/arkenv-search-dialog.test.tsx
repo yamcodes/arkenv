@@ -26,7 +26,9 @@ vi.mock("fumadocs-ui/contexts/i18n", () => ({
 }));
 
 vi.mock("fumadocs-ui/components/dialog/search", () => ({
-	SearchDialog: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+	SearchDialog: ({ children }: { children: ReactNode }) => (
+		<div>{children}</div>
+	),
 	SearchDialogOverlay: () => <div data-testid="search-overlay" />,
 	SearchDialogContent: ({
 		children,
