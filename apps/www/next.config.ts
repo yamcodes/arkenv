@@ -72,7 +72,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/comparison",
-				destination: "/docs/getting-started",
+				destination: "/docs/guides/migrating-from-t3-env",
 				permanent: true,
 			},
 			{
@@ -127,12 +127,13 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/how-to/reuse-schemas",
-				destination: "/docs/validating-environment-variables",
+				destination: "/docs/validating-environment-variables/reusing-schemas",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/how-to/load-environment-variables",
-				destination: "/docs/validating-environment-variables",
+				destination:
+					"/docs/validating-environment-variables/framework-integration",
 				permanent: true,
 			},
 			{
@@ -242,12 +243,12 @@ const config = {
 			},
 			{
 				source: "/docs/cli/hosting-presets",
-				destination: "/docs/validating-environment-variables",
+				destination: "/docs/validating-environment-variables/hosting-presets",
 				permanent: true,
 			},
 			{
 				source: "/docs/cli/machine-readable-output",
-				destination: "/docs/reference/validate",
+				destination: "/docs/reference/init",
 				permanent: true,
 			},
 			{

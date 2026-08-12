@@ -29,7 +29,10 @@ export default function HomePage() {
 					className="home-aurora__badge rise"
 					style={{ animationDelay: "40ms" }}
 				>
-					<AnnouncementBadge href="docs/cli/hosting-presets" new>
+					<AnnouncementBadge
+						href="/docs/validating-environment-variables/hosting-presets"
+						new
+					>
 						Next.js, Netlify presets
 					</AnnouncementBadge>
 				</div>
