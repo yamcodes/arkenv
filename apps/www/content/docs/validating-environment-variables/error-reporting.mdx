@@ -43,16 +43,16 @@ try {
 
 Each entry in `error.issues` includes a machine-readable `code`:
 
-| Code | Typical cause |
-| --- | --- |
-| `MISSING_VARIABLE` | Required key absent |
-| `INVALID_TYPE` | Value could not match the declared type |
-| `VALUE_TOO_SMALL` / `VALUE_TOO_LARGE` | Numeric or length bounds |
-| `PATTERN_MISMATCH` | String failed a pattern |
-| `INVALID_FORMAT` | Format keyword failed (for example host/port) |
-| `UNDECLARED_KEY` | Extra key with `onUndeclaredKey: "reject"` |
-| `INVALID_SCHEMA` | Schema itself is invalid |
-| `CUSTOM` | Validator-specific failure |
+| Code                                  | Typical cause                                 |
+| ------------------------------------- | --------------------------------------------- |
+| `MISSING_VARIABLE`                    | Required key absent                           |
+| `INVALID_TYPE`                        | Value could not match the declared type       |
+| `VALUE_TOO_SMALL` / `VALUE_TOO_LARGE` | Numeric or length bounds                      |
+| `PATTERN_MISMATCH`                    | String failed a pattern                       |
+| `INVALID_FORMAT`                      | Format keyword failed (for example host/port) |
+| `UNDECLARED_KEY`                      | Extra key with `onUndeclaredKey: "reject"`    |
+| `INVALID_SCHEMA`                      | Schema itself is invalid                      |
+| `CUSTOM`                              | Validator-specific failure                    |
 
 Use these codes in CI scripts and health checks instead of scraping message text.
 
@@ -63,8 +63,8 @@ Values for sensitive keys are redacted in error output by default. Leave that al
 `debugSecrets: true` (or `ARKENV_DEBUG_SECRETS=1`) prints the raw value. Treat it as a local escape hatch only.
 
 <Callout type="warn">
-	Do not enable secret debugging in shared logs. Redaction exists so a failed
-	boot does not print credentials.
+  Do not enable secret debugging in shared logs. Redaction exists so a failed
+  boot does not print credentials.
 </Callout>
 
 ## Safe mode

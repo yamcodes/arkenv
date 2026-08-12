@@ -34,10 +34,10 @@ console.log(`listening on ${env.HOST}:${env.PORT}`);
 ```
 
 <Callout type="info">
-	The validated `env` object is the product. Read `env.DATABASE_URL`, not
-	`process.env.DATABASE_URL` or `import.meta.env.DATABASE_URL`. Raw env maps stay
-	untyped strings; `env` is coerced, defaulted, and typed. That surface is
-	canonical across Node, Next.js, Nuxt, Vite, and Bun ([typesafety](/docs/core-concepts/typesafety)).
+  The validated `env` object is the product. Read `env.DATABASE_URL`, not
+  `process.env.DATABASE_URL` or `import.meta.env.DATABASE_URL`. Raw env maps stay
+  untyped strings; `env` is coerced, defaulted, and typed. That surface is
+  canonical across Node, Next.js, Nuxt, Vite, and Bun ([typesafety](/docs/core-concepts/typesafety)).
 </Callout>
 
 ## What belongs in the schema
@@ -56,14 +56,17 @@ Put every variable your process reads into the schema: secrets, public keys, tun
 A single `env.ts` is the default layout for ArkEnv (Node apps and [flat layout](/docs/validating-environment-variables/client-vs-server#flat-layout-recommended) frameworks):
 
 <Files>
-	<Folder name="my-app" defaultOpen>
-		<File name="env.ts" />
-		<File name=".env" />
-		<File name=".env.example" />
-		<Folder name="src">
-			<File name="index.ts" />
-		</Folder>
-	</Folder>
+  <Folder name="my-app" defaultOpen>
+    <File name="env.ts" />
+
+    <File name=".env" />
+
+    <File name=".env.example" />
+
+    <Folder name="src">
+      <File name="index.ts" />
+    </Folder>
+  </Folder>
 </Files>
 
 Keep `.env.example` in sync with the schema so new contributors know which keys to set.
