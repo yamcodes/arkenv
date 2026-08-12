@@ -13,6 +13,7 @@ import {
 } from "fumadocs-ui/components/dialog/search";
 import { useI18n } from "fumadocs-ui/contexts/i18n";
 import type { SharedProps } from "fumadocs-ui/contexts/search";
+import { cn } from "~/lib/utils";
 
 type Props = SharedProps & {
 	api?: string;
@@ -23,6 +24,10 @@ type Props = SharedProps & {
 /**
  * Fumadocs fetch search dialog — capsule overlays Site Nav on mobile
  * (same inset / gutter / bar height; see theme.css).
+ *
+ * Keep full-pill radius only while the results list is collapsed. Fumadocs
+ * `SearchDialogContent` uses `overflow-hidden`; `rounded-full` on a tall
+ * panel clips titles and excerpts into a circular mask.
  */
 export default function ArkenvSearchDialog({
 	api,
@@ -36,6 +41,7 @@ export default function ArkenvSearchDialog({
 			? { type: "fetch", api, locale, delayMs }
 			: { type: "static", from: api, locale, delayMs },
 	);
+	const resultsOpen = query.data !== "empty";
 
 	return (
 		<SearchDialog
@@ -46,13 +52,18 @@ export default function ArkenvSearchDialog({
 		>
 			<SearchDialogOverlay />
 			{/* Capsule overlays Site Nav on mobile — see theme.css search dialog rules */}
-			<SearchDialogContent className="rounded-full">
+			<SearchDialogContent
+				className={cn(
+					"arkenv-search-dialog",
+					resultsOpen ? "rounded-2xl" : "rounded-full",
+				)}
+			>
 				<SearchDialogHeader className="arkenv-search-dialog__bar">
 					<SearchDialogIcon />
 					<SearchDialogInput />
 					<SearchDialogClose />
 				</SearchDialogHeader>
-				<SearchDialogList items={query.data !== "empty" ? query.data : null} />
+				<SearchDialogList items={resultsOpen ? query.data : null} />
 			</SearchDialogContent>
 		</SearchDialog>
 	);
