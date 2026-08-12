@@ -26,7 +26,7 @@ export const env = arkenv(
 
 Default: `process.env`
 
-Input record to validate. Values must be `string | undefined`, matching `process.env` semantics. Pass a custom object in tests, Cloudflare Workers, or when using Vite `loadEnv`.
+Input record to validate. Values must be `string | undefined`, matching `process.env` semantics. Pass a custom object in tests or when using Vite `loadEnv`.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -43,7 +43,7 @@ Default: `true`
 
 Coerce string values toward the types declared in your schema (numbers, booleans, arrays, objects) before validation. See [Coercion and parsing](/docs/validating-environment-variables).
 
-Set `false` when you need raw strings and morph them yourself.
+Set `false` when you morph raw strings yourself.
 
 ### `onUndeclaredKey`
 
@@ -72,13 +72,13 @@ How array fields parse when `coerce` is enabled:
 
 Default: `false`
 
-Treat `""` as missing before validation. With `PORT=` and a default on the schema, the default applies instead of failing a numeric parse.
+Treat `""` as missing before validation. With `PORT=` and a default on the schema, the default applies.
 
 ### `debugSecrets`
 
 Default: `true` when `ARKENV_DEBUG_SECRETS` is `"true"` or `"1"`, otherwise `false`
 
-Bypass secret redaction in error messages. Leave this off in shared CI and production logs.
+Bypass secret redaction in error messages. Keep this off in shared CI and production logs.
 
 ### `safe`
 
@@ -105,4 +105,4 @@ if (!result.success) {
 
 ## Framework-only options
 
-`extends` is **not** part of core `ArkEnvConfig`. Next.js and Nuxt wrappers accept `extends` to merge shared or client env objects into a server schema. See [Client vs. server](/docs/validating-environment-variables).
+Next.js and Nuxt wrappers accept `extends` to merge shared or client env objects into a server schema. That field lives outside core `ArkEnvConfig`. See [Client vs. server](/docs/validating-environment-variables).

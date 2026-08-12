@@ -38,7 +38,7 @@ export const env = arkenv({
 
 ### Transform options
 
-Pass a config object (not a schema map):
+Pass a config object (a schema map belongs in schema/define mode):
 
 | Option                | Default                    | Meaning                                                            |
 | --------------------- | -------------------------- | ------------------------------------------------------------------ |
@@ -47,7 +47,7 @@ Pass a config object (not a schema map):
 | Plus                  | (none)                     | All [`ArkEnvConfig`](/docs/reference/options) fields except `safe` |
 | `logger` / `logLevel` | (none)                     | Logging                                                            |
 
-Empty `arkenv({})` is treated as **schema/define** mode, not transform. Call `arkenv()` with no args (or an explicit options object that includes transform fields) for transform mode.
+Empty `arkenv({})` enters **schema/define** mode. Call `arkenv()` with no args, or an options object that includes transform fields, for transform mode.
 
 ## Schema / `define` mode
 
@@ -78,7 +78,7 @@ export default defineConfig(({ mode }) => {
 import type { ImportMetaEnvAugmented } from "@arkenv/vite-plugin";
 ```
 
-Prefer importing the validated `env` object from your schema module over reading `import.meta.env` in app code.
+Import the validated `env` object from your schema module. Treat `import.meta.env` as a secondary surface.
 
 ## Related
 

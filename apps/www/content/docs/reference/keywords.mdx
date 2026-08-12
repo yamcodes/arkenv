@@ -4,8 +4,7 @@ description: ArkEnv keywords that extend ArkType for common environment shapes.
 ---
 
 <Callout type="info" title="ArkType only">
-  Keywords work with [`@arkenv/core`](/docs/reference/core). They are not part of
-  [`@arkenv/standard`](/docs/reference/standard).
+  Keywords work with [`@arkenv/core`](/docs/reference/core). [`@arkenv/standard`](/docs/reference/standard) has its own validator map.
 </Callout>
 
 ArkEnv adds two env-oriented keywords on top of [ArkType's keyword set](https://arktype.io/docs/primitives). Use them in `arkenv({ ... })` or `type()` from `@arkenv/core`.
@@ -40,7 +39,7 @@ An IP address (`string.ip`) or the literal `"localhost"`.
 
 ## `number.port`
 
-An integer port in the range `0`–`65535`.
+An integer port in the range `0`-`65535`.
 
 <Tabs items={["arkenv", "type"]}>
   <Tab value="arkenv">
@@ -64,7 +63,7 @@ An integer port in the range `0`–`65535`.
   </Tab>
 </Tabs>
 
-<TypeTable expandAll type={{ "number.port": { type: "0 <= number.integer <= 65535", description: "An integer port in the range 0–65535." } }} />
+<TypeTable expandAll type={{ "number.port": { type: "0 <= number.integer <= 65535", description: "An integer port in the range 0-65535." } }} />
 
 ## Everything else
 

@@ -41,7 +41,7 @@ See [Reusing schemas](/docs/validating-environment-variables).
 
 ## Standard Schema maps
 
-With [`@arkenv/standard`](/docs/reference/standard), every value must be a Standard Schema validator (Zod, Valibot, and others). ArkType DSL strings are rejected:
+With [`@arkenv/standard`](/docs/reference/standard), every value must be a Standard Schema validator (Zod, Valibot, and others). ArkType DSL strings fail:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -71,7 +71,7 @@ export type Env = Infer<typeof schema>;
 
 ## Client and server schemas
 
-Core has no client/server split. Framework packages add layouts and prefixes:
+Framework packages add layouts and prefixes:
 
 - Flat: one schema; public prefixes decide client exposure
 - Strict: separate client/server/shared modules with `extends`

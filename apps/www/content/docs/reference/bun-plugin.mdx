@@ -3,7 +3,7 @@ title: "@arkenv/bun-plugin"
 description: Bun bundler plugin for build-time validation and BUN_PUBLIC_ isolation.
 ---
 
-`@arkenv/bun-plugin` validates environment variables for Bun builds and fullstack apps that inline client env. Plain Bun **backend** scripts can stay on [`@arkenv/core`](/docs/reference/core) alone.
+`@arkenv/bun-plugin` validates environment variables for Bun builds and fullstack apps that inline client env. Backend-only Bun scripts use [`@arkenv/core`](/docs/reference/core).
 
 ## Install
 
@@ -55,7 +55,7 @@ Same dual call shapes as [`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
 1. **Transform:** `arkenv()` or `arkenv({ schemaPath, clientPrefix, ... })` rewrites the schema module in the client graph.
 2. **Schema / define:** `arkenv(schema)` or `arkenv(schema, config)` validates and rewrites `process.env` accessors for SPA builds.
 
-`safe` is omitted from plugin config so failed validation cannot soft-fail into the bundle.
+Plugin config omits `safe` so failed validation cannot soft-fail into the bundle.
 
 ## Types
 
