@@ -2,6 +2,7 @@ export * from "./ai-actions";
 export * from "./code-blocks";
 export * from "./collapsible";
 export * from "./docs-breadcrumb";
+export * from "./docs-tagline";
 export * from "./docs-toc";
 export * from "./drill-in-sidebar";
 export * from "./external-link";
