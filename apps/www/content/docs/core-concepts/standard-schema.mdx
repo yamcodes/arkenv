@@ -5,6 +5,22 @@ description: Validate environment variables with Zod, Valibot, and other Standar
 
 [Standard Schema](https://standardschema.dev/) is a shared interface for TypeScript validators. `@arkenv/standard` speaks that interface so you can keep Zod or Valibot without installing ArkType.
 
+For coercion, ArkEnv introspects each validator's **JSON Schema** metadata (when the library exposes Standard JSON Schema v1) to decide which string paths need conversion before validation runs.
+
+## JSON Schema interop
+
+ArkEnv's pre-coercion step needs to know target types. For Standard Schema validators it reads JSON Schema through the library's metadata hooks:
+
+| Library | JSON Schema support |
+| --- | --- |
+| Zod (v4.2+) | Yes |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | Yes |
+| Zod Mini | Yes |
+| VineJS (v4.3+) | Yes |
+| Other Standard JSON Schema v1 validators | Yes, when metadata is available |
+
+When metadata is missing, rely on the validator's own coercion (`z.coerce.number()`) or disable ArkEnv coercion and validate raw strings. See [Coercion](/docs/core-concepts/coercion).
+
 ## Two engines
 
 |                | `@arkenv/core`               | `@arkenv/standard`                     |
@@ -44,4 +60,4 @@ ArkEnv still pre-coerces when it can read JSON Schema from the validator. Librar
 
 - [`@arkenv/standard`](/docs/reference/standard)
 - [schema](/docs/reference/schema)
-- [Defining types](/docs/validating-environment-variables)
+- [Defining types](/docs/validating-environment-variables/defining-types)
