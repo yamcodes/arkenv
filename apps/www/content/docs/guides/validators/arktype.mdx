@@ -59,10 +59,10 @@ Disable with `{ coerce: false }` when you want raw strings and [morphs](/docs/co
 
 ## Defaults and optionals
 
-| Pattern                 | Meaning                                      |
-| ----------------------- | -------------------------------------------- |
-| `= 'value'` / `= 3000`  | Default when the key is missing              |
-| `string \| undefined`   | Optional key                                 |
+| Pattern                  | Meaning                                    |
+| ------------------------ | ------------------------------------------ |
+| `= 'value'` / `= 3000`   | Default when the key is missing            |
+| `string \| undefined`    | Optional key                               |
 | `emptyAsUndefined: true` | Treat `PORT=` as missing so defaults apply |
 
 Keywords (`string.host`, `number.port`): [keywords](/docs/reference/keywords). Richer morphs and `type()`: [Defining types](/docs/validating-environment-variables/defining-types).

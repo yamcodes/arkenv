@@ -30,12 +30,12 @@ export const env = arkenv({
 
 ## Compared to `@arkenv/core`
 
-|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                              |
-| --------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------- |
-| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                        |
-| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                              |
-| Peer `arktype`                          | Required                    | None                                                                                            |
-| [Options](/docs/reference/options)      | Same                        | Same                                                                                            |
+|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                                                                     |
+| --------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                                                               |
+| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                     |
+| Peer `arktype`                          | Required                    | None                                                                                                                                   |
+| [Options](/docs/reference/options)      | Same                        | Same                                                                                                                                   |
 | Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) for Valibot-style converters |
 
 ## Exports
