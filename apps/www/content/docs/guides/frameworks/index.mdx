@@ -1,8 +1,16 @@
 ---
 title: Frameworks
-description: Use ArkEnv with your framework of choice.
+description: Wire ArkEnv into Next.js, Nuxt, Vite, or Bun.
 ---
 
-Guides for integrating ArkEnv with popular frameworks.
+Each guide is a short recipe: install, scaffold or hand-wire, then import `env`. For how integrations fit together (prefixes, `.env` loading, stack choice), see [Framework integration](/docs/validating-environment-variables/framework-integration). Option lists live under [API reference](/docs/reference). Client/server boundaries: [Client vs. server](/docs/validating-environment-variables/client-vs-server).
 
-> Nested Folder overview — children are true n=2 leaves (`/docs/guides/frameworks/nextjs`).
+<Cards>
+  <Card href="/docs/guides/frameworks/nextjs" title="Next.js" description="@arkenv/nextjs, withArkEnv, and env.gen codegen." />
+
+  <Card href="/docs/guides/frameworks/nuxt" title="Nuxt" description="@arkenv/nuxt module and NUXT_PUBLIC_ keys." />
+
+  <Card href="/docs/guides/frameworks/vite" title="Vite" description="@arkenv/vite-plugin transform mode and VITE_ keys." />
+
+  <Card href="/docs/guides/frameworks/bun" title="Bun" description="@arkenv/bun-plugin for Bun bundler / fullstack apps." />
+</Cards>
