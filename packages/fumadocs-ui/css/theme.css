@@ -137,30 +137,38 @@ article a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 }
 
 /*
- * Linked-only inline code (`[`foo`](url)`): the code chip background sits flush
- * against the anchor border-bottom and clips it. Paint the underline under the
- * chip with box-shadow instead.
+ * Links that include inline code (code-only or mixed with text): use a continuous
+ * text underline so the line runs through plain text and inside the code chip at
+ * the same baseline (border-bottom on the <a> is covered by the chip background).
  */
-article a:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]),
-[data-external-link]:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) {
+article a:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]),
+[data-external-link]:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) {
 	border-bottom: none;
 	padding-bottom: 0;
+	text-decoration: underline;
+	text-decoration-color: currentColor;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.18em;
+	text-decoration-skip-ink: none;
+	transition:
+		text-decoration-thickness 0.1s ease,
+		text-underline-offset 0.1s ease;
 }
 
-article a:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover,
-[data-external-link]:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover {
+article a:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover,
+[data-external-link]:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover {
 	border-bottom-width: 0;
+	text-decoration-thickness: 3px;
 }
 
-article a:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) > code,
-[data-external-link]:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) > code {
-	box-shadow: 0 2px 0 0 currentColor;
-	transition: box-shadow 0.1s ease;
-}
-
-article a:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover > code,
-[data-external-link]:has(> code:only-child):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover > code {
-	box-shadow: 0 3px 0 0 currentColor;
+/* Paint the underline on the chip too so it sits above the code background */
+article a:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) code,
+[data-external-link]:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) code {
+	text-decoration: underline;
+	text-decoration-color: currentColor;
+	text-decoration-thickness: inherit;
+	text-underline-offset: inherit;
+	text-decoration-skip-ink: none;
 }
 
 /* External links in documentation */
