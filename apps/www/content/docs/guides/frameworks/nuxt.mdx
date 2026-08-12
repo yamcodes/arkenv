@@ -29,10 +29,10 @@ pnpm add @arkenv/standard @arkenv/nuxt zod
 
 ```ts title="./nuxt.config.ts"
 export default defineNuxtConfig({
-	modules: ["@arkenv/nuxt/module"],
-	arkenv: {
-		layout: "flat",
-	},
+  modules: ["@arkenv/nuxt/module"],
+  arkenv: {
+    layout: "flat",
+  },
 });
 ```
 
@@ -42,9 +42,9 @@ export default defineNuxtConfig({
 import arkenv from "@arkenv/nuxt";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  DATABASE_URL: "string",
+  NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 

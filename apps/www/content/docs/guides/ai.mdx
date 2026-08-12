@@ -75,10 +75,10 @@ Parse `status: "success"` and use fields such as the scaffolded schema path.
 
 ```json
 {
-	"status": "error",
-	"code": "GIT_TREE_DIRTY",
-	"message": "Git working tree is not clean.",
-	"retryWith": ["--force"]
+  "status": "error",
+  "code": "GIT_TREE_DIRTY",
+  "message": "Git working tree is not clean.",
+  "retryWith": ["--force"]
 }
 ```
 
@@ -100,16 +100,16 @@ Tell assistants explicitly: **sync schema, `.env.example`, and docs together** w
 
 Treat these as hard rules unless a human overrides them:
 
-| Rule | Why |
-| ---- | --- |
-| Run `init --agent` (or `add host … --agent`) for setup | Avoids drift from hand-scaffolded config |
-| Validate through `arkenv()` from `@arkenv/core` or a framework entry | The `arkenv` npm package is the CLI, not the runtime |
-| Use framework public prefixes for client-exposed keys | `NEXT_PUBLIC_*`, `NUXT_PUBLIC_*`, `VITE_*`, `BUN_PUBLIC_*` |
-| Never put secrets in client-prefixed keys | Client bundles and flat layouts still leak key names |
-| Do not reintroduce T3-style `runtimeEnv` maps | `withArkEnv` codegen owns the mapping in Next.js |
-| Do not skip validation or read `process.env` ad hoc after setup | Defeats the typed `env` object |
-| Respect `--agent` refusals | Dirty trees and requirement failures are intentional |
-| Commit `.env.example`, not `.env` | Local secrets stay local |
+| Rule                                                                 | Why                                                        |
+| -------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Run `init --agent` (or `add host … --agent`) for setup               | Avoids drift from hand-scaffolded config                   |
+| Validate through `arkenv()` from `@arkenv/core` or a framework entry | The `arkenv` npm package is the CLI, not the runtime       |
+| Use framework public prefixes for client-exposed keys                | `NEXT_PUBLIC_*`, `NUXT_PUBLIC_*`, `VITE_*`, `BUN_PUBLIC_*` |
+| Never put secrets in client-prefixed keys                            | Client bundles and flat layouts still leak key names       |
+| Do not reintroduce T3-style `runtimeEnv` maps                        | `withArkEnv` codegen owns the mapping in Next.js           |
+| Do not skip validation or read `process.env` ad hoc after setup      | Defeats the typed `env` object                             |
+| Respect `--agent` refusals                                           | Dirty trees and requirement failures are intentional       |
+| Commit `.env.example`, not `.env`                                    | Local secrets stay local                                   |
 
 For layout and client/server tradeoffs, link assistants to [Client vs. server](/docs/validating-environment-variables/client-vs-server) instead of inventing a third layout.
 
