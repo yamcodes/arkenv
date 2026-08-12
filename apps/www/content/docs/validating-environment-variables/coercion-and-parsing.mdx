@@ -164,7 +164,7 @@ ArkEnv's built-in coercion still handles the common string-to-number and string-
 
 ## Coercion with Standard Schema validators
 
-The same `coerce` option works with `@arkenv/standard` when the validator exposes JSON Schema ArkEnv can introspect (Zod 4.2+, Valibot with `@valibot/to-json-schema`, Zod Mini, VineJS 4.3+, and other libraries on the [Standard JSON Schema](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec) list).
+The same `coerce` option works with `@arkenv/standard` when each field is [Standard JSON Schema v1](https://standardschema.dev/json-schema) — not merely Standard Schema. Those specs are orthogonal. Zod 4.2+ and VineJS 4.3+ implement the converter on the schema; Valibot and Zod Mini need wrappers (`toStandardJsonSchema` / `z.toJSONSchema`) so the value you pass is Standard JSON Schema. See the [compatible libraries list](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec).
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
