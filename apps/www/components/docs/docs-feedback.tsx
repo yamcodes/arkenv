@@ -136,10 +136,11 @@ export function DocsFeedbackButton({
 				side={popoverSide}
 				sideOffset={8}
 				collisionPadding={16}
-				// Shared popover sets max-h to available space + overflow-y-auto. Near the
-				// top of the viewport that shrinks this widget into a scrollbar.
-				style={{ maxHeight: "none" }}
-				className="w-72 max-h-none overflow-hidden overflow-y-hidden rounded-xl border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
+				// Shared popover caps height at leftover space beside the trigger, which
+				// shrinks this widget into a scrollbar when the TOC rail sits near the
+				// top. 80vh is large enough to avoid that, but still lets the form
+				// scroll on short viewports instead of clipping off-screen.
+				className="w-72 max-h-[80vh] rounded-xl border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
 			>
 				<div className="overflow-visible">
 					{submitted ? (
