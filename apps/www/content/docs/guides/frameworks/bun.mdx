@@ -48,7 +48,7 @@ plugins = ["@arkenv/bun-plugin"]
 
 ### Bun.build
 
-```ts title="./build.ts"
+```ts title="./build.ts" twoslash
 import arkenv from "@arkenv/bun-plugin";
 
 await Bun.build({
@@ -77,8 +77,17 @@ export const env = arkenv({
 
 Optional ambient helper for accessor-style SPAs:
 
-```ts
+```ts title="./src/env.d.ts" twoslash
 import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
+import { type } from "@arkenv/core";
+
+export const Env = type({
+	BUN_PUBLIC_API_URL: "string",
+});
+
+declare namespace NodeJS {
+	interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
+}
 ```
 
 Prefer the exported `env` object for fullstack apps. See [`@arkenv/bun-plugin`](/docs/reference/bun-plugin).

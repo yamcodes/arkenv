@@ -33,7 +33,7 @@ pnpm remove @t3-oss/env-nextjs
 
 ### 2. Wrap the config
 
-```ts title="./next.config.ts"
+```ts title="./next.config.ts" twoslash
 import type { NextConfig } from "next";
 import { withArkEnv } from "@arkenv/nextjs/config";
 
@@ -68,7 +68,7 @@ export const env = createEnv({
 
 After (ArkEnv flat + ArkType):
 
-```ts title="./env.ts"
+```ts title="./env.ts" twoslash
 import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
@@ -79,7 +79,7 @@ export const env = arkenv({
 
 After (ArkEnv flat + Zod):
 
-```ts title="./env.ts"
+```ts title="./env.ts" twoslash
 import arkenv from "@/generated/env.gen";
 import { z } from "zod";
 

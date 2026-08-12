@@ -29,7 +29,7 @@ pnpm add @arkenv/standard @arkenv/nextjs zod
 
 ### Wrap the Next.js config
 
-```ts title="./next.config.ts"
+```ts title="./next.config.ts" twoslash
 import type { NextConfig } from "next";
 import { withArkEnv } from "@arkenv/nextjs/config";
 
@@ -40,7 +40,7 @@ export default withArkEnv(nextConfig);
 
 ### Flat schema (default)
 
-```ts title="./env.ts"
+```ts title="./env.ts" twoslash
 import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
@@ -62,8 +62,11 @@ Splits `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts` so the ser
 
 ## Standard Schema
 
-```ts title="./next.config.ts"
+```ts title="./next.config.ts" twoslash
+import type { NextConfig } from "next";
 import { withArkEnv } from "@arkenv/nextjs/standard/config";
+
+const nextConfig: NextConfig = {};
 
 export default withArkEnv(nextConfig);
 ```
