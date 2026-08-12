@@ -57,54 +57,54 @@ Every preset field is **optional** (present only on that provider). Fields split
 
 ### Vercel
 
-| Variable | Type | Exposure |
-| --- | --- | --- |
-| `VERCEL` | `string` (optional) | Server-only |
+| Variable     | Type                                                    | Exposure       |
+| ------------ | ------------------------------------------------------- | -------------- |
+| `VERCEL`     | `string` (optional)                                     | Server-only    |
 | `VERCEL_ENV` | `"production" \| "preview" \| "development"` (optional) | Client-exposed |
-| `VERCEL_URL` | `string` (optional) | Client-exposed |
+| `VERCEL_URL` | `string` (optional)                                     | Client-exposed |
 
 ### Netlify
 
-| Variable | Type | Exposure |
-| --- | --- | --- |
-| `NETLIFY` | `string` (optional) | Server-only |
-| `DEPLOY_URL` | `string` (optional) | Server-only |
-| `CONTEXT` | `"production" \| "deploy-preview" \| "branch-deploy"` (optional) | Client-exposed |
-| `URL` | `string` (optional) | Client-exposed |
+| Variable     | Type                                                             | Exposure       |
+| ------------ | ---------------------------------------------------------------- | -------------- |
+| `NETLIFY`    | `string` (optional)                                              | Server-only    |
+| `DEPLOY_URL` | `string` (optional)                                              | Server-only    |
+| `CONTEXT`    | `"production" \| "deploy-preview" \| "branch-deploy"` (optional) | Client-exposed |
+| `URL`        | `string` (optional)                                              | Client-exposed |
 
 ### Cloudflare Pages/Workers
 
-| Variable | Type | Exposure |
-| --- | --- | --- |
-| `CF_PAGES` | `string` (optional) | Server-only |
-| `CF_PAGES_COMMIT_SHA` | `string` (optional) | Server-only |
-| `CF_PAGES_BRANCH` | `string` (optional) | Client-exposed |
-| `CF_PAGES_URL` | `string` (optional) | Client-exposed |
+| Variable              | Type                | Exposure       |
+| --------------------- | ------------------- | -------------- |
+| `CF_PAGES`            | `string` (optional) | Server-only    |
+| `CF_PAGES_COMMIT_SHA` | `string` (optional) | Server-only    |
+| `CF_PAGES_BRANCH`     | `string` (optional) | Client-exposed |
+| `CF_PAGES_URL`        | `string` (optional) | Client-exposed |
 
 ### Railway
 
-| Variable | Type | Exposure |
-| --- | --- | --- |
+| Variable                   | Type                | Exposure    |
+| -------------------------- | ------------------- | ----------- |
 | `RAILWAY_ENVIRONMENT_NAME` | `string` (optional) | Server-only |
-| `RAILWAY_PUBLIC_DOMAIN` | `string` (optional) | Server-only |
-| `RAILWAY_SERVICE_NAME` | `string` (optional) | Server-only |
-| `RAILWAY_GIT_COMMIT_SHA` | `string` (optional) | Server-only |
+| `RAILWAY_PUBLIC_DOMAIN`    | `string` (optional) | Server-only |
+| `RAILWAY_SERVICE_NAME`     | `string` (optional) | Server-only |
+| `RAILWAY_GIT_COMMIT_SHA`   | `string` (optional) | Server-only |
 
 ### Render
 
-| Variable | Type | Exposure |
-| --- | --- | --- |
-| `RENDER` | `string` (optional) | Server-only |
-| `RENDER_SERVICE_ID` | `string` (optional) | Server-only |
+| Variable              | Type                | Exposure    |
+| --------------------- | ------------------- | ----------- |
+| `RENDER`              | `string` (optional) | Server-only |
+| `RENDER_SERVICE_ID`   | `string` (optional) | Server-only |
 | `RENDER_SERVICE_TYPE` | `string` (optional) | Server-only |
 | `RENDER_EXTERNAL_URL` | `string` (optional) | Server-only |
 
 ### Fly.io
 
-| Variable | Type | Exposure |
-| --- | --- | --- |
+| Variable       | Type                | Exposure    |
+| -------------- | ------------------- | ----------- |
 | `FLY_APP_NAME` | `string` (optional) | Server-only |
-| `FLY_REGION` | `string` (optional) | Server-only |
+| `FLY_REGION`   | `string` (optional) | Server-only |
 | `FLY_ALLOC_ID` | `string` (optional) | Server-only |
 
 ## Example: Vercel + ArkType flat schema

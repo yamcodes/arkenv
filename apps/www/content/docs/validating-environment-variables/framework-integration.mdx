@@ -10,26 +10,13 @@ Pick the package that matches your host, then follow the linked guide for layout
 ## Choose your stack
 
 <Cards>
-	<Card
-		href="/docs/guides/frameworks/nextjs"
-		title="Next.js"
-		description="@arkenv/nextjs with withArkEnv, flat or strict layouts, and env.gen codegen."
-	/>
-	<Card
-		href="/docs/guides/frameworks/nuxt"
-		title="Nuxt"
-		description="@arkenv/nuxt module, runtimeConfig mapping, and NUXT_PUBLIC_ boundaries."
-	/>
-	<Card
-		href="/docs/guides/frameworks/vite"
-		title="Vite"
-		description="@arkenv/vite-plugin for build and dev validation of VITE_ keys."
-	/>
-	<Card
-		href="/docs/guides/frameworks/bun"
-		title="Bun"
-		description="@arkenv/bun-plugin for Bun bundler apps that inline BUN_PUBLIC_ keys."
-	/>
+  <Card href="/docs/guides/frameworks/nextjs" title="Next.js" description="@arkenv/nextjs with withArkEnv, flat or strict layouts, and env.gen codegen." />
+
+  <Card href="/docs/guides/frameworks/nuxt" title="Nuxt" description="@arkenv/nuxt module, runtimeConfig mapping, and NUXT_PUBLIC_ boundaries." />
+
+  <Card href="/docs/guides/frameworks/vite" title="Vite" description="@arkenv/vite-plugin for build and dev validation of VITE_ keys." />
+
+  <Card href="/docs/guides/frameworks/bun" title="Bun" description="@arkenv/bun-plugin for Bun bundler apps that inline BUN_PUBLIC_ keys." />
 </Cards>
 
 ## Install pattern
@@ -55,12 +42,12 @@ pnpm dlx arkenv@latest init --strict
 
 ## What each integration adds
 
-| Host | Package | Boundary mechanism |
-| --- | --- | --- |
-| Next.js | `@arkenv/nextjs` | `withArkEnv` codegen, `NEXT_PUBLIC_*`, runtime proxy, optional strict file split |
-| Nuxt | `@arkenv/nuxt` | Nuxt module, `NUXT_PUBLIC_*`, client/server entrypoints |
-| Vite | `@arkenv/vite-plugin` | Dev/build validation; only `VITE_*` (and optional `NODE_ENV`) reach the client |
-| Bun | `@arkenv/bun-plugin` | Bun bundler / fullstack inlining for `BUN_PUBLIC_*` |
+| Host    | Package               | Boundary mechanism                                                               |
+| ------- | --------------------- | -------------------------------------------------------------------------------- |
+| Next.js | `@arkenv/nextjs`      | `withArkEnv` codegen, `NEXT_PUBLIC_*`, runtime proxy, optional strict file split |
+| Nuxt    | `@arkenv/nuxt`        | Nuxt module, `NUXT_PUBLIC_*`, client/server entrypoints                          |
+| Vite    | `@arkenv/vite-plugin` | Dev/build validation; only `VITE_*` (and optional `NODE_ENV`) reach the client   |
+| Bun     | `@arkenv/bun-plugin`  | Bun bundler / fullstack inlining for `BUN_PUBLIC_*`                              |
 
 Plain Node or Bun **backend** scripts can stay on `@arkenv/core` alone. The Bun plugin targets apps that ship a browser bundle through Bun's bundler.
 

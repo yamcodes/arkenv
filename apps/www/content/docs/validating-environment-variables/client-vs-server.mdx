@@ -8,18 +8,18 @@ Public keys belong in the client schema. Secrets belong only on the server. Mixi
 ArkEnv core has no client/server split. Framework packages and plugins enforce the boundary using each host's public prefix.
 
 <Callout type="error">
-	Importing a server schema into client code exposes secrets. Treat that as a
-	broken build, not a soft warning.
+  Importing a server schema into client code exposes secrets. Treat that as a
+  broken build, not a soft warning.
 </Callout>
 
 ## Public prefixes
 
-| Framework | Client-visible prefix |
-| --- | --- |
-| Next.js | `NEXT_PUBLIC_*` |
-| Nuxt | `NUXT_PUBLIC_*` |
-| Vite | `VITE_*` |
-| Bun (bundler) | `BUN_PUBLIC_*` |
+| Framework     | Client-visible prefix |
+| ------------- | --------------------- |
+| Next.js       | `NEXT_PUBLIC_*`       |
+| Nuxt          | `NUXT_PUBLIC_*`       |
+| Vite          | `VITE_*`              |
+| Bun (bundler) | `BUN_PUBLIC_*`        |
 
 Keys without the prefix stay server-only. `NODE_ENV` is treated as shared on Next.js.
 
@@ -52,10 +52,10 @@ On Nuxt flat mode, import from `@arkenv/nuxt` and register `@arkenv/nuxt/module`
 
 ### What flat mode protects
 
-| | Secret **value** in client bundle | Variable **name + type** in client |
-| --- | --- | --- |
-| Flat | Blocked | Visible (schema ships with client types) |
-| Strict | Blocked | Blocked (separate modules) |
+|        | Secret **value** in client bundle | Variable **name + type** in client       |
+| ------ | --------------------------------- | ---------------------------------------- |
+| Flat   | Blocked                           | Visible (schema ships with client types) |
+| Strict | Blocked                           | Blocked (separate modules)               |
 
 Flat mode relies on a runtime proxy: reading `env.DATABASE_URL` in a Client Component throws. Autocomplete may still show the key because TypeScript sees one schema file. [`@t3-oss/env-nextjs`](https://env.t3.gg) uses the same single-file pattern.
 
@@ -66,13 +66,15 @@ Use strict mode when variable **names** reveal infrastructure you want out of th
 Strict mode splits files so the server schema never enters the client module graph:
 
 <Files>
-	<Folder name="env" defaultOpen>
-		<File name="client.ts" />
-		<File name="server.ts" />
-		<Folder name="internal" defaultOpen>
-			<File name="shared.ts" />
-		</Folder>
-	</Folder>
+  <Folder name="env" defaultOpen>
+    <File name="client.ts" />
+
+    <File name="server.ts" />
+
+    <Folder name="internal" defaultOpen>
+      <File name="shared.ts" />
+    </Folder>
+  </Folder>
 </Files>
 
 ```ts title="./env/internal/shared.ts"

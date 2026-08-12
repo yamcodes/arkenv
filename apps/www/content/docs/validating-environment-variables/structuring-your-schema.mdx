@@ -34,9 +34,9 @@ console.log(`listening on ${env.HOST}:${env.PORT}`);
 ```
 
 <Callout type="info">
-	Prefer importing `env` over reading `process.env` directly. The typed object
-	is the [canonical surface](/docs/core-concepts/typesafety) across Node, Next.js,
-	Nuxt, Vite, and Bun.
+  Prefer importing `env` over reading `process.env` directly. The typed object
+  is the [canonical surface](/docs/core-concepts/typesafety) across Node, Next.js,
+  Nuxt, Vite, and Bun.
 </Callout>
 
 ## What belongs in the schema
@@ -54,15 +54,19 @@ Leave host-injected platform variables to [hosting presets](/docs/validating-env
 A single `env.ts` is the default for Node apps and for [flat](/docs/validating-environment-variables/client-vs-server#flat-layout) framework setups:
 
 <Files>
-	<Folder name="my-app" defaultOpen>
-		<File name="env.ts" />
-		<File name=".env" />
-		<File name=".env.example" />
-		<File name="package.json" />
-		<Folder name="src">
-			<File name="index.ts" />
-		</Folder>
-	</Folder>
+  <Folder name="my-app" defaultOpen>
+    <File name="env.ts" />
+
+    <File name=".env" />
+
+    <File name=".env.example" />
+
+    <File name="package.json" />
+
+    <Folder name="src">
+      <File name="index.ts" />
+    </Folder>
+  </Folder>
 </Files>
 
 Keep `.env.example` in sync with the schema so new contributors know which keys to set. ArkEnv does not load `.env` files; your framework or a loader such as `dotenv` does that before `arkenv()` runs.
