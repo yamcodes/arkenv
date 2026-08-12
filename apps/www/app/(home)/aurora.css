@@ -169,8 +169,8 @@
 	.home-aurora .rise-blur,
 	.home-aurora[data-hero-motion="prep"] .rise,
 	.home-aurora[data-hero-motion="prep"] .rise-blur,
-	.home-aurora[data-hero-motion="play"] .rise,
-	.home-aurora[data-hero-motion="play"] .rise-blur,
+	/* Same specificity as the play animation so a live reduced-motion
+	 * toggle cancels an in-flight rise (JS never re-runs the effect). */
 	.home-aurora[data-hero-motion="play"] .rise[data-hero-run],
 	.home-aurora[data-hero-motion="play"] .rise-blur[data-hero-run] {
 		animation: none;
