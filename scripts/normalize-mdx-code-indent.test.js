@@ -27,30 +27,24 @@ describe("normalizeFenceBodyIndent", () => {
 	it("converts leading tabs to two spaces", () => {
 		expect(
 			normalizeFenceBodyIndent(
-				["export const Env = type({", "\tNODE_ENV: \"string\",", "});"].join(
+				["export const Env = type({", '\tNODE_ENV: "string",', "});"].join(
 					"\n",
 				),
 			),
 		).toBe(
-			["export const Env = type({", "  NODE_ENV: \"string\",", "});"].join(
-				"\n",
-			),
+			["export const Env = type({", '  NODE_ENV: "string",', "});"].join("\n"),
 		);
 	});
 
 	it("preserves space-based indentation including trees", () => {
-		const body = [
-			"src/",
-			"└── shared/",
-			"    └── ports/",
-		].join("\n");
+		const body = ["src/", "└── shared/", "    └── ports/"].join("\n");
 		expect(normalizeFenceBodyIndent(body)).toBe(body);
 	});
 
 	it("leaves two-space indent unchanged", () => {
 		const body = [
 			"export const Env = type({",
-			"  NODE_ENV: \"string\",",
+			'  NODE_ENV: "string",',
 			"});",
 		].join("\n");
 		expect(normalizeFenceBodyIndent(body)).toBe(body);
@@ -66,7 +60,7 @@ describe("normalizeMdxCodeIndentContent", () => {
 			"",
 			"```ts",
 			"export const Env = type({",
-			"\tDATABASE_URL: \"string\",",
+			'\tDATABASE_URL: "string",',
 			"});",
 			"```",
 			"",
@@ -84,7 +78,7 @@ describe("normalizeMdxCodeIndentContent", () => {
 				"",
 				"```ts",
 				"export const Env = type({",
-				"  DATABASE_URL: \"string\",",
+				'  DATABASE_URL: "string",',
 				"});",
 				"```",
 				"",
