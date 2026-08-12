@@ -21,15 +21,15 @@ Peers: `next`, `react`. `@arkenv/core` / `@arkenv/standard` / `arktype` are opti
 
 ## Subpaths
 
-| Subpath | Role |
-| --- | --- |
-| `.` | Unified `arkenv` (`react-server` condition for RSC, default for client/SSR) |
-| `./server` | Server-only `arkenv` (`server-only`) |
-| `./client` | Client `arkenv` |
-| `./config` | `withArkEnv`, `runCodegen`, config types |
-| `./standard` | Standard Schema unified entry |
-| `./standard/server`, `./standard/client`, `./standard/shared` | Split Standard entries |
-| `./standard/config` | Standard `withArkEnv` (forces Standard codegen) |
+| Subpath                                                       | Role                                                                        |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `.`                                                           | Unified `arkenv` (`react-server` condition for RSC, default for client/SSR) |
+| `./server`                                                    | Server-only `arkenv` (`server-only`)                                        |
+| `./client`                                                    | Client `arkenv`                                                             |
+| `./config`                                                    | `withArkEnv`, `runCodegen`, config types                                    |
+| `./standard`                                                  | Standard Schema unified entry                                               |
+| `./standard/server`, `./standard/client`, `./standard/shared` | Split Standard entries                                                      |
+| `./standard/config`                                           | Standard `withArkEnv` (forces Standard codegen)                             |
 
 ## Config plugin
 
@@ -44,14 +44,14 @@ export default withArkEnv(nextConfig);
 
 ### `withArkEnv` options
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `codegen` | `true` | Write `env.gen.ts` |
-| `validate` | `true` | Validate during config/build |
-| `layout` | `"flat"` | `"flat"` or `"strict"` |
-| `schemaPath` | auto | Schema entry path |
-| `outputPath` | auto | Generated file path |
-| `standard` | `false` | Standard Schema codegen |
+| Option       | Default  | Meaning                      |
+| ------------ | -------- | ---------------------------- |
+| `codegen`    | `true`   | Write `env.gen.ts`           |
+| `validate`   | `true`   | Validate during config/build |
+| `layout`     | `"flat"` | `"flat"` or `"strict"`       |
+| `schemaPath` | auto     | Schema entry path            |
+| `outputPath` | auto     | Generated file path          |
+| `standard`   | `false`  | Standard Schema codegen      |
 
 See [codegen](/docs/reference/codegen).
 

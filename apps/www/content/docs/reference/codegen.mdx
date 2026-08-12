@@ -33,14 +33,14 @@ export const env = arkenv({
 
 ## Config options
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `codegen` | `true` | Write `env.gen.ts` |
-| `validate` | `true` | Validate the schema during config/build |
-| `schemaPath` | auto | Path to your schema entry |
-| `outputPath` | auto | Path for the generated file |
-| `layout` | `"flat"` | `"flat"` or `"strict"` (`"simple"` is deprecated) |
-| `standard` | `false` | Generate for `@arkenv/standard` schemas |
+| Option       | Default  | Meaning                                           |
+| ------------ | -------- | ------------------------------------------------- |
+| `codegen`    | `true`   | Write `env.gen.ts`                                |
+| `validate`   | `true`   | Validate the schema during config/build           |
+| `schemaPath` | auto     | Path to your schema entry                         |
+| `outputPath` | auto     | Path for the generated file                       |
+| `layout`     | `"flat"` | `"flat"` or `"strict"` (`"simple"` is deprecated) |
+| `standard`   | `false`  | Generate for `@arkenv/standard` schemas           |
 
 Skip generation during CLI scaffolds with `arkenv init --no-codegen`.
 

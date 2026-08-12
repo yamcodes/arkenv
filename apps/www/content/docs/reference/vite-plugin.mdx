@@ -40,12 +40,12 @@ export const env = arkenv({
 
 Pass a config object (not a schema map):
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `schemaPath` | auto (`env.ts`) | Schema module to transform |
-| `clientPrefix` | Vite `envPrefix` (`VITE_`) | Keys exposed to the client |
-| Plus | (none) | All [`ArkEnvConfig`](/docs/reference/options) fields except `safe` |
-| `logger` / `logLevel` | (none) | Logging |
+| Option                | Default                    | Meaning                                                            |
+| --------------------- | -------------------------- | ------------------------------------------------------------------ |
+| `schemaPath`          | auto (`env.ts`)            | Schema module to transform                                         |
+| `clientPrefix`        | Vite `envPrefix` (`VITE_`) | Keys exposed to the client                                         |
+| Plus                  | (none)                     | All [`ArkEnvConfig`](/docs/reference/options) fields except `safe` |
+| `logger` / `logLevel` | (none)                     | Logging                                                            |
 
 Empty `arkenv({})` is treated as **schema/define** mode, not transform. Call `arkenv()` with no args (or an explicit options object that includes transform fields) for transform mode.
 

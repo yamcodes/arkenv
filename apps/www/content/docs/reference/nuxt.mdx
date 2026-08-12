@@ -19,13 +19,13 @@ pnpm add @arkenv/standard @arkenv/nuxt zod
 
 ## Subpaths
 
-| Subpath | Role |
-| --- | --- |
-| `.` | Runtime `arkenv` for flat layouts |
-| `./server` | Server-only entry |
-| `./client` | Client entry |
-| `./module` | Nuxt module (`modules: ["@arkenv/nuxt/module"]`) |
-| `./config` | `setupArkEnv` and config types |
+| Subpath                         | Role                                                     |
+| ------------------------------- | -------------------------------------------------------- |
+| `.`                             | Runtime `arkenv` for flat layouts                        |
+| `./server`                      | Server-only entry                                        |
+| `./client`                      | Client entry                                             |
+| `./module`                      | Nuxt module (`modules: ["@arkenv/nuxt/module"]`)         |
+| `./config`                      | `setupArkEnv` and config types                           |
 | `./standard` and `./standard/*` | Standard Schema variants (including `./standard/module`) |
 
 ## Module setup
@@ -41,12 +41,12 @@ export default defineNuxtConfig({
 
 ### Module options (`arkenv` in `nuxt.config`)
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `validate` | `true` | Validate during Nuxt build/dev |
-| `layout` | `"flat"` | `"flat"` or `"strict"` |
-| `schemaPath` | auto | Schema entry path |
-| `logger` / `logLevel` | (none) | Logging controls |
+| Option                | Default  | Meaning                        |
+| --------------------- | -------- | ------------------------------ |
+| `validate`            | `true`   | Validate during Nuxt build/dev |
+| `layout`              | `"flat"` | `"flat"` or `"strict"`         |
+| `schemaPath`          | auto     | Schema entry path              |
+| `logger` / `logLevel` | (none)   | Logging controls               |
 
 Nuxt does **not** emit `env.gen.ts`. The schema module is the surface.
 

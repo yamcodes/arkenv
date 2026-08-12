@@ -22,12 +22,12 @@ Invalid or missing values throw [`ArkEnvError`](/docs/validating-environment-var
 
 ## Framework build validation
 
-| Integration | How validation runs |
-| --- | --- |
-| Next.js | [`withArkEnv`](/docs/reference/nextjs) runs schema validation during config/build (`validate` defaults to `true`) |
-| Nuxt | [`@arkenv/nuxt/module`](/docs/reference/nuxt) validates via `arkenv.validate` (default `true`) |
-| Vite | [`@arkenv/vite-plugin`](/docs/reference/vite-plugin) validates in dev and build |
-| Bun | [`@arkenv/bun-plugin`](/docs/reference/bun-plugin) validates during Bun bundler builds |
+| Integration | How validation runs                                                                                               |
+| ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| Next.js     | [`withArkEnv`](/docs/reference/nextjs) runs schema validation during config/build (`validate` defaults to `true`) |
+| Nuxt        | [`@arkenv/nuxt/module`](/docs/reference/nuxt) validates via `arkenv.validate` (default `true`)                    |
+| Vite        | [`@arkenv/vite-plugin`](/docs/reference/vite-plugin) validates in dev and build                                   |
+| Bun         | [`@arkenv/bun-plugin`](/docs/reference/bun-plugin) validates during Bun bundler builds                            |
 
 Disable framework validation only when you have a deliberate reason (for example a docs site that must build without secrets). Prefer failing the build over shipping with unchecked config.
 

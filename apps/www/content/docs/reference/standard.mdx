@@ -30,23 +30,23 @@ export const env = arkenv({
 
 ## Compared to `@arkenv/core`
 
-| | `@arkenv/core` | `@arkenv/standard` |
-| --- | --- | --- |
-| Validator | ArkType DSL + `type()` | Standard Schema map only |
-| Keywords (`string.host`, `number.port`) | Yes | No |
-| Peer `arktype` | Required | None |
-| [Options](/docs/reference/options) | Same | Same |
-| Coercion | Built-in for ArkType shapes | Needs JSON Schema introspection (Zod 4.2+, Valibot with `@valibot/to-json-schema`, and similar) |
+|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                              |
+| --------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------- |
+| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                        |
+| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                              |
+| Peer `arktype`                          | Required                    | None                                                                                            |
+| [Options](/docs/reference/options)      | Same                        | Same                                                                                            |
+| Coercion                                | Built-in for ArkType shapes | Needs JSON Schema introspection (Zod 4.2+, Valibot with `@valibot/to-json-schema`, and similar) |
 
 ## Exports
 
-| Export | Kind | Role |
-| --- | --- | --- |
-| `arkenv` | function (default + named) | Validate a Standard Schema field map |
-| `ArkEnvError` | class | Thrown on validation failure |
-| `formatIssues` | function | Format issues |
-| `getSchemaKeys` | function | List schema keys |
-| Config / issue types | types | Same shapes as core (`StandardEnvConfig` aliases core options) |
+| Export               | Kind                       | Role                                                           |
+| -------------------- | -------------------------- | -------------------------------------------------------------- |
+| `arkenv`             | function (default + named) | Validate a Standard Schema field map                           |
+| `ArkEnvError`        | class                      | Thrown on validation failure                                   |
+| `formatIssues`       | function                   | Format issues                                                  |
+| `getSchemaKeys`      | function                   | List schema keys                                               |
+| Config / issue types | types                      | Same shapes as core (`StandardEnvConfig` aliases core options) |
 
 ## Framework `/standard` subpaths
 

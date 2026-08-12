@@ -51,11 +51,11 @@ Default: `"delete"`
 
 How to treat keys present in `env` but missing from the schema:
 
-| Value | Behavior |
-| --- | --- |
-| `"delete"` | Allowed on input; stripped from the output object |
+| Value      | Behavior                                                     |
+| ---------- | ------------------------------------------------------------ |
+| `"delete"` | Allowed on input; stripped from the output object            |
 | `"ignore"` | Allowed and kept on the output (ArkType's default elsewhere) |
-| `"reject"` | Validation fails with `UNDECLARED_KEY` |
+| `"reject"` | Validation fails with `UNDECLARED_KEY`                       |
 
 ArkEnv defaults to `"delete"` so the returned object only contains keys you declared.
 
@@ -100,8 +100,8 @@ if (!result.success) {
 ```
 
 <Callout type="warn">
-	Framework plugins omit `safe`. A failed build or boot must not inject `{
-	success: false }` into the client bundle.
+  Framework plugins omit `safe`. A failed build or boot must not inject `{
+  	success: false }` into the client bundle.
 </Callout>
 
 ## Framework-only options
