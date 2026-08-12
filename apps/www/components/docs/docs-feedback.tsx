@@ -32,9 +32,12 @@ import { cn } from "~/lib/utils/cn";
 export function DocsFeedbackButton({
 	pageTitle,
 	onEmotionSelect,
+	popoverSide = "top",
 }: {
 	pageTitle: string;
 	onEmotionSelect?: (emotion: DocsFeedbackEmotion) => void;
+	/** Prefer `bottom` when the trigger sits near the top of the viewport (empty TOC). */
+	popoverSide?: "top" | "bottom";
 }) {
 	const pathname = usePathname();
 	const storageKey = `docs-feedback-${pathname}`;
@@ -130,10 +133,13 @@ export function DocsFeedbackButton({
 			</PopoverTrigger>
 			<PopoverContent
 				align="end"
-				side="top"
+				side={popoverSide}
 				sideOffset={8}
 				collisionPadding={16}
-				className="w-72 overflow-hidden rounded-xl border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
+				// Shared popover sets max-h to available space + overflow-y-auto. Near the
+				// top of the viewport that shrinks this widget into a scrollbar.
+				style={{ maxHeight: "none" }}
+				className="w-72 max-h-none overflow-hidden overflow-y-hidden rounded-xl border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
 			>
 				<div className="overflow-visible">
 					{submitted ? (
