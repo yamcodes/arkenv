@@ -247,7 +247,17 @@ const config = {
 			},
 			{
 				source: "/docs/cli/machine-readable-output",
-				destination: "/docs/reference/validate",
+				destination: "/docs/reference/init",
+				permanent: true,
+			},
+			{
+				source: "/docs/reference/validate",
+				destination: "/docs/reference",
+				permanent: true,
+			},
+			{
+				source: "/docs/reference/codegen",
+				destination: "/docs/reference/nextjs",
 				permanent: true,
 			},
 			{
