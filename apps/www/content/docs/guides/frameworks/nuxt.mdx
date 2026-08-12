@@ -3,6 +3,8 @@ title: Nuxt
 description: Validate Nuxt env vars with @arkenv/nuxt.
 ---
 
+Recipe for Nuxt. Overview: [Framework integration](/docs/validating-environment-variables/framework-integration).
+
 `@arkenv/nuxt` validates environment variables for server and browser, maps public keys through Nuxt runtime config, and keeps server secrets off the client.
 
 ## Quickstart
@@ -54,7 +56,7 @@ Public keys use the `NUXT_PUBLIC_` prefix. Nuxt does not emit `env.gen.ts`; this
 pnpm dlx arkenv@latest init --strict
 ```
 
-Use `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Shared/client schemas can auto-merge via Nuxt virtual aliases when you omit `extends`. See [Client vs. server](/docs/validating-environment-variables).
+Use `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Shared/client schemas can auto-merge via Nuxt virtual aliases when you omit `extends`. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).
 
 ## Standard Schema
 
@@ -63,5 +65,5 @@ Point the module at a Standard Schema entry and import from `@arkenv/nuxt/standa
 ## Next steps
 
 - Module options under [`@arkenv/nuxt`](/docs/reference/nuxt)
-- [Hosting presets](/docs/validating-environment-variables)
+- [Hosting presets](/docs/validating-environment-variables/hosting-presets)
 - Official [Nuxt configuration](https://nuxt.com/docs/getting-started/configuration) docs
