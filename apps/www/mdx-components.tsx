@@ -12,11 +12,10 @@ import {
 	CalloutDescription,
 	CalloutTitle,
 } from "fumadocs-ui/components/callout";
-import { Cards } from "fumadocs-ui/components/card";
+import { Card, Cards } from "fumadocs-ui/components/card";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
 import { cn } from "~/lib/cn";
 
 const generator = createGenerator({

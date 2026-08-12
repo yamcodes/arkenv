@@ -1,8 +1,87 @@
 ---
 title: Bun
-description: Use ArkEnv with Bun.
+description: Validate Bun bundler env vars with @arkenv/bun-plugin.
 ---
 
-Stub guide for `@arkenv/bun-plugin` setup and Bun runtime validation.
+Use `@arkenv/bun-plugin` when Bun builds or serves a client bundle that inlines public env (`BUN_PUBLIC_*` by default). Plain Bun **backends** can call [`@arkenv/core`](/docs/reference/core) directly without the plugin.
 
-> Content TBD — Nested Folder leaf (`/docs/guides/frameworks/bun`).
+## Quickstart
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init
+```
+
+## Manual install
+
+```package-install
+pnpm add @arkenv/core arktype
+pnpm add -D @arkenv/bun-plugin
+```
+
+```package-install
+pnpm add @arkenv/standard zod
+pnpm add -D @arkenv/bun-plugin
+```
+
+Standard Schema plugin entry: `@arkenv/bun-plugin/standard`.
+
+### Schema module
+
+```ts title="./src/env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+	BUN_PUBLIC_API_URL: "string",
+	BUN_PUBLIC_DEBUG: "boolean = false",
+});
+```
+
+### Bun.serve (dev)
+
+```toml title="./bunfig.toml"
+[serve.static]
+plugins = ["@arkenv/bun-plugin"]
+```
+
+### Bun.build
+
+```ts title="./build.ts"
+import arkenv from "@arkenv/bun-plugin";
+
+await Bun.build({
+	entrypoints: ["./src/index.tsx"],
+	outdir: "./dist",
+	plugins: [arkenv()],
+});
+```
+
+Import `{ env } from "./env"` in application code. Transform mode rewrites the client graph the same way the Vite plugin does.
+
+## Backend-only Bun
+
+Skip the plugin:
+
+```ts title="./src/env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+	PORT: "number.port = 3000",
+});
+```
+
+## Types
+
+Optional ambient helper for accessor-style SPAs:
+
+```ts
+import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
+```
+
+Prefer the exported `env` object for fullstack apps. See [`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
+
+## Next steps
+
+- [Client vs. server](/docs/validating-environment-variables/client-vs-server)
+- [Bun fullstack bundler](https://bun.sh/docs/bundler/fullstack) docs

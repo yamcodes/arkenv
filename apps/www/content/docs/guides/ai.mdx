@@ -1,8 +1,70 @@
 ---
 title: Using AI with ArkEnv
-description: Use AI coding assistants with ArkEnv schemas and tooling.
+description: Pair ArkEnv with AI coding assistants via skills and --agent init.
 ---
 
-Stub guide for pairing ArkEnv with AI coding assistants (CLI agent mode, schemas, and recipes).
+AI assistants write better ArkEnv code when they have the project skill and when setup goes through the CLI's machine-readable agent mode.
 
-> Content TBD — Guides section leaf.
+## Install the skill
+
+```bash title="Terminal"
+pnpm dlx skills add yamcodes/arkenv
+```
+
+That installs the ArkEnv skill into the project (see [skills.sh](https://skills.sh)). Assistants that support skills load it when they see `env.ts`, ArkEnv imports, or env-validation questions.
+
+The skill covers schema definition (ArkType and Standard Schema), framework wiring, and CLI init patterns.
+
+## Scaffold with `--agent`
+
+Agents should initialize projects through the CLI instead of hand-writing config:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --agent
+pnpm dlx arkenv@latest init --agent --flat
+pnpm dlx arkenv@latest init --agent --strict -H vercel
+```
+
+`--agent` implies `--yes --quiet --json`. It does **not** imply `--force`.
+
+Success and refusal payloads land on stdout as JSON. Other logs go to stderr.
+
+### Success
+
+Parse `status: "success"` and use fields such as the scaffolded schema path.
+
+### Refusals
+
+`--agent` still honors safety checks (dirty git tree, unmet requirements). A refusal looks like:
+
+```json
+{
+	"status": "error",
+	"code": "GIT_TREE_DIRTY",
+	"message": "Git working tree is not clean.",
+	"retryWith": ["--force"]
+}
+```
+
+Run without `--force` first. Only re-run with flags from `retryWith` after you decide the bypass is safe. An empty `retryWith` means the refusal is not bypassable. `code: "INTERNAL"` means the CLI failed; retry flags will not help.
+
+Full flag list: [init](/docs/reference/init).
+
+## Patterns the skill enforces
+
+- Export a single `env` object from `env.ts` (or the strict `env/` tree)
+- Prefer ArkType strings in `@arkenv/core` when the project already uses ArkType
+- Keep secrets out of client schemas; use framework public prefixes
+- Load `.env` via the framework or dotenv; ArkEnv only validates
+
+## Add a hosting preset later
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest add host vercel --agent
+```
+
+## Next steps
+
+- [Framework guides](/docs/guides/frameworks)
+- [Validating environment variables](/docs/validating-environment-variables)
+- [skills.sh](https://skills.sh)

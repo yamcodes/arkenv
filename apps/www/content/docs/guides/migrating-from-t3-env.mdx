@@ -1,8 +1,116 @@
 ---
 title: Migrating from T3 Env
-description: Move an existing T3 Env setup to ArkEnv.
+description: Move a T3 Env project to ArkEnv without keeping runtimeEnv sync.
 ---
 
-Stub guide for migrating schemas, config, and framework wiring from T3 Env to ArkEnv.
+[T3 Env](https://env.t3.gg) inspired ArkEnv's Next.js security model. Migration drops the manual `runtimeEnv` map and the required `server` / `client` blocks for most apps.
 
-> Content TBD — Guides section leaf.
+## What changes
+
+| T3 Env | ArkEnv |
+| --- | --- |
+| `createEnv` from `@t3-oss/env-nextjs` (or `/core`) | `arkenv` from `@arkenv/nextjs` codegen or `@arkenv/core` |
+| Nested `{ server, client, runtimeEnv }` | Flat schema (default) or strict file split |
+| Hand-maintained `runtimeEnv` inlining | `withArkEnv` codegen writes the mapping |
+| Zod (usual) | Zod via `@arkenv/standard`, or ArkType via `@arkenv/core` |
+
+Flat ArkEnv matches T3 Env single-file security: full inference plus a runtime Proxy that throws on server-key access in the client. Schema **names** still ship to the client in flat mode; use `--strict` if names must stay out of the client graph.
+
+## Next.js migration
+
+### 1. Install ArkEnv
+
+```package-install
+pnpm add @arkenv/core @arkenv/nextjs arktype
+```
+
+Or keep Zod:
+
+```package-install
+pnpm add @arkenv/standard @arkenv/nextjs zod
+pnpm remove @t3-oss/env-nextjs
+```
+
+### 2. Wrap the config
+
+```ts title="./next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+For Zod, import `withArkEnv` from `@arkenv/nextjs/standard/config`.
+
+### 3. Replace the schema
+
+Before (T3 Env sketch):
+
+```ts title="./src/env.js"
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
+
+export const env = createEnv({
+	server: {
+		DATABASE_URL: z.string().url(),
+	},
+	client: {
+		NEXT_PUBLIC_APP_URL: z.string().url(),
+	},
+	runtimeEnv: {
+		DATABASE_URL: process.env.DATABASE_URL,
+		NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+	},
+});
+```
+
+After (ArkEnv flat + ArkType):
+
+```ts title="./env.ts"
+import arkenv from "@/generated/env.gen";
+
+export const env = arkenv({
+	DATABASE_URL: "string.url",
+	NEXT_PUBLIC_APP_URL: "string.url",
+});
+```
+
+After (ArkEnv flat + Zod):
+
+```ts title="./env.ts"
+import arkenv from "@/generated/env.gen";
+import { z } from "zod";
+
+export const env = arkenv({
+	DATABASE_URL: z.string().url(),
+	NEXT_PUBLIC_APP_URL: z.string().url(),
+});
+```
+
+Delete `runtimeEnv`. Prefixes (`NEXT_PUBLIC_*`) decide the client bucket.
+
+### 4. Update imports
+
+Point every `import { env } from "~/env"` (or similar) at the new module. Remove `@t3-oss/env-*` packages when nothing imports them.
+
+### 5. Optional: strict layout
+
+If you relied on separate server/client modules for compile-time isolation:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --strict
+```
+
+Then move keys into `env/server.ts` and `env/client.ts` as in [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+
+## Nuxt and other hosts
+
+Same idea: flat schema, framework public prefix, no `runtimeEnv`. Use [`@arkenv/nuxt`](/docs/guides/frameworks/nuxt) or the matching Vite/Bun guide.
+
+## Next steps
+
+- [Next.js guide](/docs/guides/frameworks/nextjs)
+- [`@arkenv/standard`](/docs/reference/standard) if you stay on Zod
+- [Hosting presets](/docs/validating-environment-variables/hosting-presets)
