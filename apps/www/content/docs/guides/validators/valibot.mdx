@@ -3,9 +3,9 @@ title: Valibot
 description: Validate env vars with @arkenv/standard and Valibot.
 ---
 
-Recipe for Valibot via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+Valibot via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
 
-Valibot implements Standard Schema validation but keeps JSON Schema conversion in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) rather than on each schema value. Wire ArkEnv’s optional `toJsonSchema` callback once so `v.number()` and `v.boolean()` pre-coerce like Zod.
+Valibot implements Standard Schema validation. JSON Schema conversion lives in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/), not on each schema value. Pass ArkEnv's optional `toJsonSchema` callback once so `v.number()` and `v.boolean()` pre-coerce the way Zod fields do.
 
 ## Install
 
@@ -40,11 +40,11 @@ export const env = arkenv(
 );
 ```
 
-Prefer `v.number()` / `v.boolean()` with this wiring — do **not** reach for `v.transform(Number)` just to satisfy env strings.
+Use `v.number()` / `v.boolean()` with this callback. Skip `v.transform(Number)` for env strings.
 
 ## Coercion (`toJsonSchema`)
 
-Pass an explicit wrapper (not a bare `{ toJsonSchema }` function reference):
+Pass an explicit wrapper. A bare `{ toJsonSchema }` function reference uses Valibot's default `typeMode: "ignore"`, which mis-coerces piped schemas.
 
 ```ts
 toJsonSchema: (schema) =>
@@ -54,12 +54,12 @@ toJsonSchema: (schema) =>
   }),
 ```
 
-- `target: "draft-07"` matches ArkEnv’s built-in probes.
-- `typeMode: "input"` coerces env strings toward the schema’s input type. Valibot’s default `typeMode` is `"ignore"`, which can silently mis-coerce piped schemas if you pass the function by reference.
-- The callback runs **only** after Standard JSON Schema probes fail for that key. Zod fields in a hybrid schema still coerce without it.
-- Return `undefined` to skip one key; throwing or returning a non-plain object fails the parse with `ArkEnvError` for that key.
+- `target: "draft-07"` matches ArkEnv's built-in probes.
+- `typeMode: "input"` coerces env strings toward the schema's input type.
+- ArkEnv calls the callback after Standard JSON Schema probes fail for that key. Zod fields in a hybrid schema still coerce without it.
+- Return `undefined` to skip one key. A throw or non-plain object fails the parse with `ArkEnvError` for that key.
 
-Do **not** wrap every field with a per-key `toStandardJsonSchema(...)` helper as the happy path — configure `toJsonSchema` once on `arkenv()`.
+Configure `toJsonSchema` once on `arkenv()`. Per-key `toStandardJsonSchema(...)` wrappers are not the intended path.
 
 ## Defaults and optionals
 
@@ -71,15 +71,15 @@ Do **not** wrap every field with a per-key `toStandardJsonSchema(...)` helper as
 
 ## Frameworks
 
-Use each host’s `/standard` entry and pass the same `toJsonSchema` option in plugin config (it aliases `ParseStandardConfig` / `StandardEnvConfig`):
+Use each host's `/standard` entry and pass the same `toJsonSchema` option (plugin configs alias `ParseStandardConfig` / `StandardEnvConfig`):
 
-- [Next.js](/docs/guides/frameworks/nextjs) — `@arkenv/nextjs/standard`
+- [Next.js](/docs/guides/frameworks/nextjs) (`@arkenv/nextjs/standard`)
 - [Nuxt](/docs/guides/frameworks/nuxt)
-- [Vite](/docs/guides/frameworks/vite) — `@arkenv/vite-plugin/standard`
-- [Bun](/docs/guides/frameworks/bun) — `@arkenv/bun-plugin/standard`
+- [Vite](/docs/guides/frameworks/vite) (`@arkenv/vite-plugin/standard`)
+- [Bun](/docs/guides/frameworks/bun) (`@arkenv/bun-plugin/standard`)
 
 ## Next steps
 
-- [Coercion → Valibot](/docs/core-concepts/coercion#valibot-tojsonschema)
+- [Coercion: Valibot](/docs/core-concepts/coercion#valibot-tojsonschema)
 - [`@arkenv/standard`](/docs/reference/standard)
-- Runnable example: [`examples/with-valibot`](https://github.com/yamcodes/arkenv/tree/main/examples/with-valibot)
+- Example: [`examples/with-valibot`](https://github.com/yamcodes/arkenv/tree/main/examples/with-valibot)

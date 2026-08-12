@@ -3,7 +3,7 @@ title: Choosing an engine
 description: Pick @arkenv/core (ArkType) or @arkenv/standard (Zod, Valibot, and friends).
 ---
 
-ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors, the coercion pipeline, and framework plugins. Most [options](/docs/reference/options) apply to both; `toJsonSchema` is **standard-mode only**. They differ in how you write the schema and which peer dependencies you install.
+ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors, the coercion pipeline, and framework plugins. Most [options](/docs/reference/options) apply to both. `toJsonSchema` is standard-mode only. The engines differ in schema style and peer dependencies.
 
 |                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)                             |
 | ------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------- |
@@ -14,7 +14,7 @@ ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors, the coer
 | Coercion                                    | Built-in                               | Built-in when fields expose Standard JSON Schema v1, or via `toJsonSchema` |
 | Framework plugins                           | `@arkenv/nextjs`, …                    | Same packages via `/standard` subpaths                                     |
 
-Neither path is a fallback. Pick the engine that matches the schema library you want to write in. Cookbooks: [Validators](/docs/guides/validators).
+Pick the engine that matches the schema library you write. Cookbooks: [Validators](/docs/guides/validators).
 
 ## Side by side
 
@@ -83,7 +83,7 @@ ArkEnv’s pre-coercion step for `@arkenv/standard` prefers **Standard JSON Sche
 | Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                               |
 | VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                               |
 | Zod Mini                                       | Via probes / helpers (see library docs)                              |
-| Valibot (v1.2+ with `@valibot/to-json-schema`) | Wire `toJsonSchema` — see [Valibot](/docs/guides/validators/valibot) |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | Wire `toJsonSchema` (see [Valibot](/docs/guides/validators/valibot)) |
 | Other Standard JSON Schema v1 validators       | On the value                                                         |
 
 See [Coercion](/docs/core-concepts/coercion).

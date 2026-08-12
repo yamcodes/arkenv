@@ -3,9 +3,9 @@ title: Zod
 description: Validate env vars with @arkenv/standard and Zod.
 ---
 
-Recipe for Zod via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+Zod via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
 
-Zod 4.2+ embeds [Standard JSON Schema](https://standardschema.dev/json-schema) on the schema value. ArkEnv’s built-in probes read that metadata and pre-coerce env strings — **no** `toJsonSchema` callback.
+Zod 4.2+ embeds [Standard JSON Schema](https://standardschema.dev/json-schema) on the schema value. ArkEnv's probes read that metadata and pre-coerce env strings. Omit `toJsonSchema`.
 
 ## Install
 
@@ -29,11 +29,11 @@ export const env = arkenv({
 });
 ```
 
-Prefer `z.number()` / `z.boolean()` when you want ArkEnv coercion. You can also use `z.coerce.number()` (and friends) and keep ArkEnv’s `coerce` option as a backup.
+Use `z.number()` / `z.boolean()` for ArkEnv coercion. `z.coerce.number()` (and similar) still works; ArkEnv's `coerce` option stays as a backup.
 
 ## Coercion
 
-Standard JSON Schema is already on the value. Omit `toJsonSchema`. Hybrid schemas that mix Zod with Valibot still coerce Zod keys without a callback; only Valibot keys need the [Valibot](/docs/guides/validators/valibot) escape hatch.
+Standard JSON Schema is already on the value, so leave `toJsonSchema` unset. In a Zod + Valibot hybrid, Zod keys still coerce without a callback. Valibot keys need the [Valibot](/docs/guides/validators/valibot) wiring.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -69,15 +69,15 @@ env.TAGS; // string[]
 
 ## Frameworks
 
-Use each host’s `/standard` entry with the same Zod schema:
+Use each host's `/standard` entry with the same Zod schema:
 
-- [Next.js](/docs/guides/frameworks/nextjs) — `@arkenv/nextjs/standard`
+- [Next.js](/docs/guides/frameworks/nextjs) (`@arkenv/nextjs/standard`)
 - [Nuxt](/docs/guides/frameworks/nuxt)
-- [Vite](/docs/guides/frameworks/vite) — `@arkenv/vite-plugin/standard`
-- [Bun](/docs/guides/frameworks/bun) — `@arkenv/bun-plugin/standard`
+- [Vite](/docs/guides/frameworks/vite) (`@arkenv/vite-plugin/standard`)
+- [Bun](/docs/guides/frameworks/bun) (`@arkenv/bun-plugin/standard`)
 
 ## Next steps
 
 - [`@arkenv/standard`](/docs/reference/standard)
 - [Coercion](/docs/core-concepts/coercion)
-- Runnable example: [`examples/with-zod`](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod)
+- Example: [`examples/with-zod`](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod)

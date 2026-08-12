@@ -64,7 +64,7 @@ Coercion is **on** by default (`coerce: true`).
   </Tab>
 </Tabs>
 
-You can also lean on the validator’s own coerce helpers (for example `z.coerce.number()`) and keep ArkEnv’s `coerce` option as a backup.
+You can also use the validator's own coerce helpers (for example `z.coerce.number()`) and keep ArkEnv's `coerce` option as a backup.
 
 ## Pre-coercion model
 
@@ -91,13 +91,13 @@ Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables
   v1](https://standardschema.dev/json-schema) on the value **or** a
   [`toJsonSchema`](#valibot-tojsonschema) fallback. Those specs are orthogonal to
   Standard Schema validation. Zod 4.2+ and VineJS 4.3+ put the converter on the
-  schema; Valibot keeps conversion in `@valibot/to-json-schema` — wire the escape
-  hatch once (see [Valibot guide](/docs/guides/validators/valibot)).
+  schema. Valibot keeps conversion in `@valibot/to-json-schema`; wire the
+  callback once (see [Valibot guide](/docs/guides/validators/valibot)).
 </Callout>
 
 ## Valibot (`toJsonSchema`)
 
-When a key has no Standard JSON Schema on the value, pass an optional `toJsonSchema` callback. ArkEnv invokes it **only after** built-in probes fail for that key:
+Pass an optional `toJsonSchema` callback for keys without Standard JSON Schema on the value. ArkEnv invokes it after built-in probes fail for that key:
 
 ```ts title="./env.ts"
 import arkenv from "@arkenv/standard";
@@ -117,9 +117,9 @@ export const env = arkenv(
 ```
 
 - `target: "draft-07"` matches built-in probes.
-- `typeMode: "input"` coerces env strings toward the schema’s input type. Do **not** pass a bare `{ toJsonSchema }` function reference — Valibot’s default `typeMode` is `"ignore"`.
-- Install `@valibot/to-json-schema` yourself; `@arkenv/standard` does not depend on it.
-- Full recipe: [Valibot](/docs/guides/validators/valibot).
+- `typeMode: "input"` coerces env strings toward the schema's input type. A bare `{ toJsonSchema }` function reference uses Valibot's default `typeMode: "ignore"`.
+- Install `@valibot/to-json-schema` yourself. `@arkenv/standard` does not depend on it.
+- Recipe: [Valibot](/docs/guides/validators/valibot).
 
 ## Disabling coercion
 

@@ -3,13 +3,13 @@ title: options
 description: Configuration object passed as the second argument to arkenv().
 ---
 
-The second argument to `arkenv()` is an optional configuration object. Most fields apply to both [`@arkenv/core`](/docs/reference/core) and [`@arkenv/standard`](/docs/reference/standard). `toJsonSchema` is **standard-mode only** (see below).
+The second argument to `arkenv()` is an optional configuration object. Most fields apply to both [`@arkenv/core`](/docs/reference/core) and [`@arkenv/standard`](/docs/reference/standard). `toJsonSchema` is standard-mode only (see below).
 
 ## Configuration options
 
 <AutoTypeTable path="../../packages/core/src/arkenv.ts" name="ArkEnvConfig" expandAll />
 
-`ArkEnvConfig` is the ArkType engine table. Standard Schema adds optional `toJsonSchema` on `StandardEnvConfig` / `ParseStandardConfig` — documented under [toJsonSchema](#tojsonschema-standard-mode-only).
+`ArkEnvConfig` is the ArkType engine table. Standard Schema adds optional `toJsonSchema` on `StandardEnvConfig` / `ParseStandardConfig`. See [toJsonSchema](#tojsonschema-standard-mode-only).
 
 ## Examples
 
@@ -83,9 +83,9 @@ env.DEBUG; // false
 
 ### `toJsonSchema` (standard mode only)
 
-When a Standard Schema validator does not expose JSON Schema on the value (notably Valibot), pass a fallback converter. Invoked per key only after built-in probes fail. Full wiring: [Valibot](/docs/guides/validators/valibot) and [Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
+Pass a fallback converter for Standard Schema validators that omit JSON Schema on the value (notably Valibot). ArkEnv invokes it per key after built-in probes fail. Wiring: [Valibot](/docs/guides/validators/valibot) and [Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
 
-This field is **not** on ArkType `ArkEnvConfig`. Vite/Bun `/standard` plugin configs that alias `ParseStandardConfig` inherit it.
+This field is absent from ArkType `ArkEnvConfig`. Vite/Bun `/standard` plugin configs that alias `ParseStandardConfig` inherit it.
 
 ### Rejecting undeclared keys
 

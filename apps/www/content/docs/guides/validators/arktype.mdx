@@ -3,9 +3,9 @@ title: ArkType
 description: Validate env vars with @arkenv/core and ArkType.
 ---
 
-Recipe for ArkType via [`@arkenv/core`](/docs/reference/core). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+ArkType via [`@arkenv/core`](/docs/reference/core). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
 
-`@arkenv/core` is the default ArkEnv engine. You write ArkType DSL strings (or `type()`), get ArkEnv keywords like `number.port`, and rely on built-in [coercion](/docs/core-concepts/coercion).
+`@arkenv/core` is the default ArkEnv engine. Write ArkType DSL strings or `type()`, use keywords like `number.port`, and keep built-in [coercion](/docs/core-concepts/coercion).
 
 ## Install
 
@@ -26,11 +26,11 @@ export const env = arkenv({
 });
 ```
 
-Import `{ env } from "./env"` wherever the process boots. Missing or invalid values throw [`ArkEnvError`](/docs/reference/core) at startup.
+Import `{ env } from "./env"` at process boot. ArkEnv throws [`ArkEnvError`](/docs/reference/core) if a value is missing or invalid.
 
 ## Coercion
 
-ArkType schemas coerce through ArkEnv’s pre-coercion pipeline (JSON Schema introspection of the compiled type). No extra callback is required.
+ArkEnv introspects the compiled ArkType schema's JSON Schema and pre-coerces env strings. You do not pass a callback.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -55,7 +55,7 @@ env.DEBUG; // boolean
 env.TAGS; // string[]
 ```
 
-Disable with `{ coerce: false }` when you want raw strings and [morphs](/docs/core-concepts/transforms) instead. Details: [Coercion](/docs/core-concepts/coercion).
+Set `{ coerce: false }` for raw strings and [morphs](/docs/core-concepts/transforms). See [Coercion](/docs/core-concepts/coercion).
 
 ## Defaults and optionals
 
@@ -65,11 +65,11 @@ Disable with `{ coerce: false }` when you want raw strings and [morphs](/docs/co
 | `string \| undefined`    | Optional key                               |
 | `emptyAsUndefined: true` | Treat `PORT=` as missing so defaults apply |
 
-Keywords (`string.host`, `number.port`): [keywords](/docs/reference/keywords). Richer morphs and `type()`: [Defining types](/docs/validating-environment-variables/defining-types).
+Keywords (`string.host`, `number.port`): [keywords](/docs/reference/keywords). Morphs and `type()`: [Defining types](/docs/validating-environment-variables/defining-types).
 
 ## Frameworks
 
-Wire the same `env.ts` into a host:
+Point the host at the same `env.ts`:
 
 - [Next.js](/docs/guides/frameworks/nextjs)
 - [Nuxt](/docs/guides/frameworks/nuxt)
