@@ -62,13 +62,11 @@
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/node": "catalog:",
-		"@valibot/to-json-schema": "1.6.0",
 		"arktype": "catalog:",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"valibot": "catalog:",
 		"vitest": "catalog:",
 		"zod": "catalog:"
 	},

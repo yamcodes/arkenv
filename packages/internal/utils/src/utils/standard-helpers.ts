@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvError } from "../core";
+import { ArkEnvError } from "@/core";
 import { buildEnvIssue } from "./errors";
 
 /**

@@ -1,9 +1,9 @@
-import { ArkEnvError, arkenv } from "@arkenv/standard";
 import { toJsonSchema } from "@valibot/to-json-schema";
 import type { GenericSchema } from "valibot";
 import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
+import { ArkEnvError, arkenv } from "./index";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({

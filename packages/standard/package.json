@@ -16,6 +16,8 @@
 	"scripts": {
 		"build": "tsdown",
 		"size": "size-limit --json > .size-limit.json",
+		"test": "vitest",
+		"test:once": "vitest run",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"fix": "pnpm -w run fix"
@@ -53,10 +55,14 @@
 		"@size-limit/esbuild-why": "catalog:",
 		"@size-limit/preset-small-lib": "catalog:",
 		"@types/node": "catalog:",
+		"@valibot/to-json-schema": "1.6.0",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"valibot": "catalog:",
+		"vitest": "catalog:",
+		"zod": "catalog:"
 	},
 	"size-limit": [
 		{
