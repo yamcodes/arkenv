@@ -56,7 +56,7 @@ Import `env` in Server Components, Route Handlers, and Client Components. Readin
 pnpm dlx arkenv@latest init --strict
 ```
 
-Splits `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts` so the server schema never enters the client module graph. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+Splits `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts` so the server schema never enters the client module graph. See [Client vs. server](/docs/validating-environment-variables).
 
 ## Standard Schema
 
@@ -71,5 +71,5 @@ Use `@arkenv/standard` validators in the schema. Details: [`@arkenv/nextjs`](/do
 ## Next steps
 
 - [codegen](/docs/reference/codegen) for `env.gen.ts` options
-- [Hosting presets](/docs/validating-environment-variables/hosting-presets) for Vercel system vars
+- [Hosting presets](/docs/validating-environment-variables) for Vercel system vars
 - Official [Next.js environment variables](https://nextjs.org/docs/app/guides/environment-variables) guide
