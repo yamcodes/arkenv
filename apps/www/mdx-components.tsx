@@ -18,13 +18,15 @@ import {
 import { Card, Cards } from "fumadocs-ui/components/card";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
-import { createElement, isValidElement } from "react";
+import { type ComponentProps, createElement, isValidElement } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/cn";
 
 const generator = createGenerator({
 	cache: createFileSystemGeneratorCache(".next/fumadocs-typescript"),
 });
+
+type TypeTableProps = ComponentProps<typeof TypeTable>;
 
 /**
  * fumadocs-typescript hardcodes stock `fumadocs-ui` TypeTable, which ignores
@@ -38,7 +40,7 @@ async function AutoTypeTable(
 	return tables.map((node, index) => {
 		if (!isValidElement(node)) return node;
 		return createElement(TypeTable, {
-			...(node.props as object),
+			...(node.props as TypeTableProps),
 			key: node.key ?? index,
 		});
 	});
