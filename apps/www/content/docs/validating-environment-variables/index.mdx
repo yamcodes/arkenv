@@ -1,19 +1,62 @@
 ---
 title: Validating environment variables
-description: Step-by-step guides for designing, parsing, and securing environment variables with ArkEnv.
+description: Design, parse, and secure environment variables with ArkEnv.
 ---
 
-Architecting environment validation ensures your application crashes immediately at startup if critical configuration or secrets are missing.
+Missing or malformed environment variables should stop your app at startup. These guides walk you through designing a schema, parsing values, and keeping secrets off the client.
 
-These guides walk you through designing, structuring, and running env-var validation with ArkEnv.
+Read them in order when you are new to ArkEnv. Jump ahead when you already know the shape you need.
 
-## Step-by-Step Guides
+<Callout type="info">
+	ArkEnv validates and types your environment. Loading `.env` files is still
+	your runtime or framework's job. See [loaders and frameworks](/docs/validating-environment-variables/framework-integration).
+</Callout>
 
-1. **[1. Structuring your schema](/docs/validating-environment-variables/structuring-your-schema)**: Design where and how to define your `env.ts` schema.
-2. **[2. Defining types & primitives](/docs/validating-environment-variables/defining-types)**: Learn how to define string, boolean, numeric, and complex enum types.
-3. **[3. Client vs. Server boundaries](/docs/validating-environment-variables/client-vs-server)**: Enforce strict separation between public keys and private server secrets.
-4. **[4. Type coercion & parsing](/docs/validating-environment-variables/coercion-and-parsing)**: Automatically coerce raw string environment values to real numbers, booleans, and JSON objects.
-5. **[5. Fail-fast error reporting](/docs/validating-environment-variables/error-reporting)**: Understand error formatting and fail-fast startup behavior.
-6. **[6. Reusing & sharing schemas](/docs/validating-environment-variables/reusing-schemas)**: Share environment schemas across packages in monorepos.
-7. **[7. Integrating your framework](/docs/validating-environment-variables/framework-integration)**: Connect ArkEnv to Next.js, Nuxt, Vite, or Bun.
-8. **[8. Hosting presets & deployment](/docs/validating-environment-variables/hosting-presets)**: Manage hosting provider environment variables across deployment environments.
+## From schema to deploy
+
+<Cards>
+	<Card
+		href="/docs/validating-environment-variables/structuring-your-schema"
+		title="1. Structuring your schema"
+		description="Put env.ts in the right place and export a typed env object."
+	/>
+	<Card
+		href="/docs/validating-environment-variables/defining-types"
+		title="2. Defining types"
+		description="Declare strings, numbers, booleans, enums, and ArkEnv keywords."
+	/>
+	<Card
+		href="/docs/validating-environment-variables/client-vs-server"
+		title="3. Client vs. server"
+		description="Keep public keys and private secrets in separate buckets."
+	/>
+	<Card
+		href="/docs/validating-environment-variables/coercion-and-parsing"
+		title="4. Coercion and parsing"
+		description="Turn raw strings into numbers, booleans, arrays, and objects."
+	/>
+	<Card
+		href="/docs/validating-environment-variables/error-reporting"
+		title="5. Error reporting"
+		description="Fail fast with clear console output and issue codes."
+	/>
+	<Card
+		href="/docs/validating-environment-variables/reusing-schemas"
+		title="6. Reusing schemas"
+		description="Share one schema across runtimes and packages."
+	/>
+	<Card
+		href="/docs/validating-environment-variables/framework-integration"
+		title="7. Framework integration"
+		description="Wire ArkEnv into Next.js, Nuxt, Vite, or Bun."
+	/>
+	<Card
+		href="/docs/validating-environment-variables/hosting-presets"
+		title="8. Hosting presets"
+		description="Add Vercel, Netlify, Cloudflare, and other provider vars."
+	/>
+</Cards>
+
+## Next steps
+
+Start with [structuring your schema](/docs/validating-environment-variables/structuring-your-schema), or skim [Getting started](/docs/getting-started) if you still need to install packages.

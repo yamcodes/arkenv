@@ -1,0 +1,156 @@
+---
+title: Coercion and parsing
+description: Turn raw string env values into numbers, booleans, arrays, and objects.
+---
+
+Environment variables arrive as strings. ArkEnv coerces those strings into the types your schema declares so application code can treat `PORT` as a number and `DEBUG` as a boolean.
+
+Coercion runs on a copy of the input before validation. Disable it with `{ coerce: false }` when you need the raw strings.
+
+## Numbers
+
+Any field typed as `number` or a numeric subtype (including [`number.port`](/docs/reference/keywords)) is parsed from the string form:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{
+		PORT: "number.port",
+		RETRY_COUNT: "number.integer = 3",
+		AGE: "0 <= number.integer <= 120",
+	},
+	{
+		env: {
+			PORT: "8080",
+			RETRY_COUNT: "5",
+			AGE: "30",
+		},
+	},
+);
+
+env.PORT; // number
+```
+
+## Booleans
+
+`boolean` accepts `"true"` and `"false"`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{ DEBUG: "boolean = false" },
+	{ env: { DEBUG: "true" } },
+);
+
+env.DEBUG; // true
+```
+
+## Arrays
+
+By default ArkEnv splits on commas and trims each entry:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{
+		TAGS: "string[]",
+		PORTS: "number[]",
+	},
+	{
+		env: {
+			TAGS: "web, app, api",
+			PORTS: "3000, 8080",
+		},
+	},
+);
+```
+
+Switch to JSON arrays with `arrayFormat: "json"`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{ TAGS: "string[]" },
+	{
+		arrayFormat: "json",
+		env: { TAGS: '["web", "app"]' },
+	},
+);
+```
+
+## Objects
+
+JSON strings map onto nested object schemas. Nested fields are coerced too:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{
+		DATABASE: {
+			HOST: "string",
+			PORT: "number",
+		},
+	},
+	{
+		env: {
+			DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
+		},
+	},
+);
+
+env.DATABASE.PORT; // number
+```
+
+## Morphs
+
+For custom transforms, use ArkType `.pipe` via `type()`:
+
+```ts title="./env.ts" twoslash
+import arkenv, { type } from "@arkenv/core";
+
+export const env = arkenv({
+	BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+});
+```
+
+Morphs run as part of ArkType validation. Coercion still handles the common string-to-number and string-to-boolean cases first.
+
+## Standard Schema coercion
+
+[`@arkenv/standard`](/docs/reference/standard) coerces when the validator exposes JSON Schema that ArkEnv can introspect. Support includes Zod (v4.2+), Valibot (v1.2+ with `@valibot/to-json-schema`), Zod Mini, VineJS (v4.3+), and other Standard JSON Schema v1 libraries.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+	PORT: z.number().int(),
+	DEBUG: z.boolean(),
+});
+```
+
+You can also lean on the validator's own coercion (`z.coerce.number()`) and keep ArkEnv's `coerce` option as a backup.
+
+## Disabling coercion
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{ PORT: "string" },
+	{ coerce: false, env: { PORT: "3000" } },
+);
+
+env.PORT; // "3000"
+```
+
+With `coerce: false`, a schema of `"number"` rejects `"3000"` unless you morph it yourself.
+
+## Next steps
+
+See what happens when a value fails validation under [error reporting](/docs/validating-environment-variables/error-reporting).

@@ -1,0 +1,106 @@
+---
+title: Defining types
+description: Declare string, number, boolean, enum, and keyword schemas for env keys.
+---
+
+Environment values arrive as strings. Your schema tells ArkEnv which TypeScript types you want after validation. This guide covers the ArkType DSL used by `@arkenv/core`.
+
+## Strings and defaults
+
+A bare `string` requires the key. Append `= 'value'` for a default when the key is missing:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	API_URL: "string",
+	APP_NAME: "string = 'My App'",
+	OPTIONAL_NOTE: "string | undefined",
+});
+```
+
+`string | undefined` accepts a missing key. An empty string (`NOTE=`) still counts as present unless you set [`emptyAsUndefined`](/docs/reference/options).
+
+## Numbers and booleans
+
+Declare numeric and boolean targets. ArkEnv [coerces](/docs/validating-environment-variables/coercion-and-parsing) `"3000"` and `"true"` for you when coercion is on (the default):
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	PORT: "number.port = 3000",
+	RETRY_COUNT: "number.integer = 3",
+	DEBUG: "boolean = false",
+});
+```
+
+`env.PORT` is a `number`. `env.DEBUG` is a `boolean`.
+
+## Enums and unions
+
+Use ArkType string literals for fixed sets of values:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+	LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+});
+```
+
+## ArkEnv keywords
+
+`@arkenv/core` adds env-oriented keywords on top of [ArkType's primitives](https://arktype.io/docs/primitives):
+
+| Keyword | Meaning |
+| --- | --- |
+| `string.host` | An IP address or `"localhost"` |
+| `number.port` | An integer from `0` to `65535` |
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	HOST: "string.host = 'localhost'",
+	PORT: "number.port = 3000",
+});
+```
+
+Keywords work only with `@arkenv/core` and ArkType. Full details live under [keywords](/docs/reference/keywords).
+
+## Richer definitions with `type()`
+
+For morphs, function defaults, or reuse across files, build the field with `type()`:
+
+```ts title="./env.ts" twoslash
+import arkenv, { type } from "@arkenv/core";
+
+export const env = arkenv({
+	PORT: "number.port = 3000",
+	FEATURE_FLAGS: type("string[]").default(() => []),
+	BUILD_ID: type("string").pipe((value) => value.trim()),
+});
+```
+
+See [reusing schemas](/docs/validating-environment-variables/reusing-schemas) when the whole schema should be a shared `type()` object.
+
+## Standard Schema validators
+
+With `@arkenv/standard`, pass Zod (or Valibot, ArkType via Standard Schema, and others) schemas as values:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+	DEBUG: z.coerce.boolean().default(false),
+});
+```
+
+## Next steps
+
+If the app has a browser bundle, set [client vs. server boundaries](/docs/validating-environment-variables/client-vs-server) next.

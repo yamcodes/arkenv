@@ -1,0 +1,104 @@
+---
+title: Reusing schemas
+description: Define a schema once and validate it across runtimes and packages.
+---
+
+Calling `arkenv({ ... })` defines the schema and parses the current environment in one step. Two runtimes that need the same keys (Vite config on Node and the browser client, or several packages in a monorepo) should extract the schema with `type()` and pass it into each `arkenv()` call.
+
+## Shared `type()` definition
+
+```ts title="./env-schema.ts" twoslash
+import { type } from "@arkenv/core";
+
+export const Env = type({
+	HOST: "string.host = 'localhost'",
+	PORT: "number.port = 3000",
+	VITE_API_URL: "string",
+	DATABASE_URL: "string",
+});
+```
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+import { Env } from "./env-schema";
+
+export const env = arkenv(Env);
+```
+
+```ts title="./vite.config.ts"
+import { defineConfig, loadEnv } from "vite";
+import arkenvPlugin from "@arkenv/vite-plugin";
+import { Env } from "./env-schema";
+import arkenv from "@arkenv/core";
+
+const rootEnv = arkenv(Env, { env: loadEnv("development", process.cwd(), "") });
+
+export default defineConfig({
+	plugins: [arkenvPlugin(Env)],
+	server: { port: rootEnv.PORT },
+});
+```
+
+TypeScript keeps full inference on every call site. Keywords such as `string.host` and `number.port` work inside `type()` the same way they do inside `arkenv()`.
+
+## Extending schemas in frameworks
+
+Next.js and Nuxt strict layouts compose schemas with `extends` instead of object-spreading validators:
+
+```ts title="./env/server.ts"
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+	{ DATABASE_URL: "string" },
+	{ extends: [clientEnv] },
+);
+```
+
+`extends` merges shared and client definitions into the server env object. See [client vs. server](/docs/validating-environment-variables/client-vs-server#strict-layout).
+
+## Monorepo packages
+
+Put the compiled schema in an internal package, then call the host `arkenv` (or plugin) from each app:
+
+```ts title="./packages/env/src/schema.ts"
+import { type } from "@arkenv/core";
+
+export const AppEnv = type({
+	DATABASE_URL: "string",
+	NEXT_PUBLIC_API_URL: "string",
+});
+```
+
+```ts title="./apps/web/env.ts"
+import arkenv from "@/generated/env.gen";
+import { AppEnv } from "@repo/env";
+
+export const env = arkenv(AppEnv);
+```
+
+Each app still owns its `env` export. Shared packages export schemas, not a process-wide singleton, so tests can pass a custom `{ env: ... }` per case.
+
+## Standard Schema maps
+
+With `@arkenv/standard`, reuse means exporting the same field map:
+
+```ts title="./env-schema.ts"
+import { z } from "zod";
+
+export const schema = {
+	PORT: z.coerce.number(),
+	HOST: z.string().default("localhost"),
+} as const;
+```
+
+```ts title="./env.ts"
+import arkenv from "@arkenv/standard";
+import { schema } from "./env-schema";
+
+export const env = arkenv(schema);
+```
+
+## Next steps
+
+Connect the schema to your bundler or framework with [framework integration](/docs/validating-environment-variables/framework-integration).

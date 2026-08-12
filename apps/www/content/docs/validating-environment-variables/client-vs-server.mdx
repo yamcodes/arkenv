@@ -1,0 +1,125 @@
+---
+title: Client vs. server
+description: Keep public env keys out of private secrets and off the browser bundle.
+---
+
+Public keys belong in the client schema. Secrets belong only on the server. Mixing them is how `DATABASE_URL` ends up in a browser bundle.
+
+ArkEnv core has no client/server split. Framework packages and plugins enforce the boundary using each host's public prefix.
+
+<Callout type="error">
+	Importing a server schema into client code exposes secrets. Treat that as a
+	broken build, not a soft warning.
+</Callout>
+
+## Public prefixes
+
+| Framework | Client-visible prefix |
+| --- | --- |
+| Next.js | `NEXT_PUBLIC_*` |
+| Nuxt | `NUXT_PUBLIC_*` |
+| Vite | `VITE_*` |
+| Bun (bundler) | `BUN_PUBLIC_*` |
+
+Keys without the prefix stay server-only. `NODE_ENV` is treated as shared on Next.js.
+
+## Flat layout
+
+Flat mode uses one `env.ts`. Prefixes decide which keys reach the client. This is the default when you run `arkenv init`.
+
+```ts title="./env.ts"
+import arkenv from "@/generated/env.gen";
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Wire the Next.js config plugin so codegen and build-time exclusion run:
+
+```ts title="./next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+On Nuxt flat mode, import from `@arkenv/nuxt` and register `@arkenv/nuxt/module`. Vite and Bun plugins read the same schema and only inline public keys into the client.
+
+### What flat mode protects
+
+| | Secret **value** in client bundle | Variable **name + type** in client |
+| --- | --- | --- |
+| Flat | Blocked | Visible (schema ships with client types) |
+| Strict | Blocked | Blocked (separate modules) |
+
+Flat mode relies on a runtime proxy: reading `env.DATABASE_URL` in a Client Component throws. Autocomplete may still show the key because TypeScript sees one schema file. [`@t3-oss/env-nextjs`](https://env.t3.gg) uses the same single-file pattern.
+
+Use strict mode when variable **names** reveal infrastructure you want out of the client graph.
+
+## Strict layout
+
+Strict mode splits files so the server schema never enters the client module graph:
+
+<Files>
+	<Folder name="env" defaultOpen>
+		<File name="client.ts" />
+		<File name="server.ts" />
+		<Folder name="internal" defaultOpen>
+			<File name="shared.ts" />
+		</Folder>
+	</Folder>
+</Files>
+
+```ts title="./env/internal/shared.ts"
+import { type } from "@arkenv/core";
+
+export const SharedSchema = type({
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+```ts title="./env/client.ts"
+import arkenv from "./generated/env.gen";
+import { SharedSchema } from "./internal/shared";
+
+export const env = arkenv(
+	{
+		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	},
+	{ extends: [SharedSchema] },
+);
+```
+
+```ts title="./env/server.ts"
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+	{
+		DATABASE_URL: "string",
+	},
+	{ extends: [clientEnv] },
+);
+```
+
+Scaffold with:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --strict
+```
+
+Nuxt strict uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Omitting `extends` can auto-merge shared and client schemas via Nuxt virtual aliases. Details live in the [Next.js](/docs/guides/frameworks/nextjs) and [Nuxt](/docs/guides/frameworks/nuxt) guides.
+
+## Choosing a layout
+
+- **Flat** for most apps: one file, full autocomplete, runtime guard on misuse.
+- **Strict** when you need compile-time isolation or secret names out of client types.
+
+## Next steps
+
+With boundaries set, configure [coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing) for non-string values.

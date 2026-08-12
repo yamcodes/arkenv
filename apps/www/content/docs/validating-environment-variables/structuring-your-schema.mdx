@@ -1,0 +1,103 @@
+---
+title: Structuring your schema
+description: Decide where env.ts lives and how you export a typed env object.
+---
+
+Define the schema once and import a typed `env` object everywhere else. This guide covers where that file lives and how to call `arkenv()`.
+
+## Getting started
+
+Install the core package and ArkType:
+
+```package-install
+pnpm add @arkenv/core arktype
+```
+
+Create `env.ts` at the root of the app or package that boots first:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	HOST: "string.host = 'localhost'",
+	PORT: "number.port = 3000",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import that object from application code:
+
+```ts title="./src/server.ts"
+import { env } from "../env";
+
+console.log(`listening on ${env.HOST}:${env.PORT}`);
+```
+
+<Callout type="info">
+	Prefer importing `env` over reading `process.env` directly. The typed object
+	is the [canonical surface](/docs/core-concepts/typesafety) across Node, Next.js,
+	Nuxt, Vite, and Bun.
+</Callout>
+
+## What belongs in the schema
+
+Put every variable your process reads into the schema:
+
+- Required secrets (`DATABASE_URL`, `API_KEY`)
+- Tunables with defaults (`PORT`, `LOG_LEVEL`)
+- Framework public keys (`NEXT_PUBLIC_*`, `VITE_*`, `NUXT_PUBLIC_*`, `BUN_PUBLIC_*`)
+
+Leave host-injected platform variables to [hosting presets](/docs/validating-environment-variables/hosting-presets) when you scaffold with the CLI.
+
+## Single-file layout
+
+A single `env.ts` is the default for Node apps and for [flat](/docs/validating-environment-variables/client-vs-server#flat-layout) framework setups:
+
+<Files>
+	<Folder name="my-app" defaultOpen>
+		<File name="env.ts" />
+		<File name=".env" />
+		<File name=".env.example" />
+		<File name="package.json" />
+		<Folder name="src">
+			<File name="index.ts" />
+		</Folder>
+	</Folder>
+</Files>
+
+Keep `.env.example` in sync with the schema so new contributors know which keys to set. ArkEnv does not load `.env` files; your framework or a loader such as `dotenv` does that before `arkenv()` runs.
+
+## Custom env source
+
+By default `arkenv()` reads `process.env`. Pass a custom record when the host injects env another way (tests, Cloudflare Workers, Vite `loadEnv`):
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{ PORT: "number.port" },
+	{ env: { PORT: "3000" } },
+);
+```
+
+See [options](/docs/reference/options) for `coerce`, `arrayFormat`, `emptyAsUndefined`, and `safe`.
+
+## Standard Schema alternative
+
+If the project already uses Zod, Valibot, or another [Standard Schema](https://standardschema.dev/) validator, swap the import:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+	PORT: z.coerce.number().int().min(0).max(65535),
+	HOST: z.string().default("localhost"),
+});
+```
+
+[`@arkenv/standard`](/docs/reference/standard) skips ArkType keywords and the ArkType DSL. Prefer `@arkenv/core` for new TypeScript projects.
+
+## Next steps
+
+With a file in place, [define the types](/docs/validating-environment-variables/defining-types) for each key.

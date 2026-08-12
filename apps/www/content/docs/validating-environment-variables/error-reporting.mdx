@@ -1,0 +1,97 @@
+---
+title: Error reporting
+description: Fail fast on invalid env with clear console output and structured issues.
+---
+
+ArkEnv throws at the call site when a required variable is missing or a value fails the schema. Bad config stays out of running processes.
+
+## What you see in the console
+
+Invalid input raises `ArkEnvError`. The message lists every failing path:
+
+```txt
+Errors found while validating environment variables
+  PORT must be an integer between 0 and 65535 (was "abc")
+  DATABASE_URL is required
+```
+
+Paths are highlighted; the header is red when ANSI color is available.
+
+```ts title="./boot.ts" twoslash
+import arkenv, { ArkEnvError } from "@arkenv/core";
+
+try {
+	arkenv(
+		{
+			PORT: "number.port",
+			DATABASE_URL: "string",
+		},
+		{ env: { PORT: "abc" } },
+	);
+} catch (error) {
+	if (error instanceof ArkEnvError) {
+		console.error(error.message);
+		console.error(error.issues);
+	}
+	throw error;
+}
+```
+
+## Issue codes
+
+Each entry in `error.issues` includes a machine-readable `code`:
+
+| Code | Typical cause |
+| --- | --- |
+| `MISSING_VARIABLE` | Required key absent |
+| `INVALID_TYPE` | Value could not match the declared type |
+| `VALUE_TOO_SMALL` / `VALUE_TOO_LARGE` | Numeric or length bounds |
+| `PATTERN_MISMATCH` | String failed a pattern |
+| `INVALID_FORMAT` | Format keyword failed (for example host/port) |
+| `UNDECLARED_KEY` | Extra key with `onUndeclaredKey: "reject"` |
+| `INVALID_SCHEMA` | Schema itself is invalid |
+| `CUSTOM` | Validator-specific failure |
+
+Use these codes in CI scripts and health checks instead of scraping message text.
+
+## Secret redaction
+
+Values for sensitive keys are redacted in error output by default. Set `debugSecrets: true` on the config object, or export `ARKENV_DEBUG_SECRETS=1`, when you need the raw value while debugging locally.
+
+<Callout type="warn">
+	Leave secret debugging off in shared CI logs and production. Redaction exists
+	so a failed boot does not print credentials.
+</Callout>
+
+## Safe mode
+
+Pass `{ safe: true }` when you want a result object instead of a throw (tests, custom boot UI):
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+const result = arkenv(
+	{ PORT: "number.port" },
+	{ safe: true, env: { PORT: "nope" } },
+);
+
+if (!result.success) {
+	console.error(result.issues);
+}
+```
+
+Framework adapters omit `safe` so a bad env still fails the build or server start.
+
+## Framework boundary errors
+
+Client/server misuse raises a different message than schema validation:
+
+```txt
+ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
+```
+
+On Nuxt strict layouts, importing the server schema into client code fails at build time. See [client vs. server](/docs/validating-environment-variables/client-vs-server).
+
+## Next steps
+
+Reuse the schema across runtimes with [reusing schemas](/docs/validating-environment-variables/reusing-schemas).
