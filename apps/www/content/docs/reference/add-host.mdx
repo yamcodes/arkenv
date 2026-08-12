@@ -33,25 +33,25 @@ If the schema file is missing or unparseable, the CLI prints the proposed fields
 
 Global flags apply:
 
-| Flag | Meaning |
-| --- | --- |
-| `--yes` / `-y` | Skip prompts. Omitted provider defaults to `vercel`. |
-| `--quiet` / `-q` | Quiet logs |
-| `--json` / `-j` | JSON on stdout |
-| `--agent` | Macro for `--yes --quiet --json` |
+| Flag             | Meaning                                              |
+| ---------------- | ---------------------------------------------------- |
+| `--yes` / `-y`   | Skip prompts. Omitted provider defaults to `vercel`. |
+| `--quiet` / `-q` | Quiet logs                                           |
+| `--json` / `-j`  | JSON on stdout                                       |
+| `--agent`        | Macro for `--yes --quiet --json`                     |
 
 ## Provider fields
 
 Every preset field is optional (present only on that host). See [Hosting presets](/docs/validating-environment-variables) for the full key tables.
 
-| Provider | Server-only examples | Client-exposed examples |
-| --- | --- | --- |
-| Vercel | `VERCEL` | `VERCEL_ENV`, `VERCEL_URL` |
-| Netlify | `NETLIFY`, `DEPLOY_URL` | `CONTEXT`, `URL` |
+| Provider   | Server-only examples              | Client-exposed examples           |
+| ---------- | --------------------------------- | --------------------------------- |
+| Vercel     | `VERCEL`                          | `VERCEL_ENV`, `VERCEL_URL`        |
+| Netlify    | `NETLIFY`, `DEPLOY_URL`           | `CONTEXT`, `URL`                  |
 | Cloudflare | `CF_PAGES`, `CF_PAGES_COMMIT_SHA` | `CF_PAGES_BRANCH`, `CF_PAGES_URL` |
-| Railway | `RAILWAY_*` | (none) |
-| Render | `RENDER*` | (none) |
-| Fly.io | `FLY_*` | (none) |
+| Railway    | `RAILWAY_*`                       | (none)                            |
+| Render     | `RENDER*`                         | (none)                            |
+| Fly.io     | `FLY_*`                           | (none)                            |
 
 ## Related
 
