@@ -251,16 +251,6 @@ const config = {
 				permanent: true,
 			},
 			{
-				source: "/docs/reference/validate",
-				destination: "/docs/reference",
-				permanent: true,
-			},
-			{
-				source: "/docs/reference/codegen",
-				destination: "/docs/reference/nextjs",
-				permanent: true,
-			},
-			{
 				source: "/docs/cli/:path*",
 				destination: "/docs/reference",
 				permanent: true,
