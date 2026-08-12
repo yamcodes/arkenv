@@ -5,7 +5,10 @@ import {
 	createFileSystemGeneratorCache,
 	createGenerator,
 } from "fumadocs-typescript";
-import { AutoTypeTable } from "fumadocs-typescript/ui";
+import {
+	type AutoTypeTableProps,
+	AutoTypeTable as FumaAutoTypeTable,
+} from "fumadocs-typescript/ui";
 import {
 	Callout,
 	CalloutContainer,
@@ -15,12 +18,31 @@ import {
 import { Card, Cards } from "fumadocs-ui/components/card";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
+import { createElement, isValidElement } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/cn";
 
 const generator = createGenerator({
 	cache: createFileSystemGeneratorCache(".next/fumadocs-typescript"),
 });
+
+/**
+ * fumadocs-typescript hardcodes stock `fumadocs-ui` TypeTable, which ignores
+ * `expandAll`. Re-render generated tables through `@arkenv/fumadocs-ui`.
+ */
+async function AutoTypeTable(
+	props: Omit<AutoTypeTableProps, "generator"> & { expandAll?: boolean },
+) {
+	const pending = await FumaAutoTypeTable({ ...props, generator });
+	const tables = await Promise.all(pending);
+	return tables.map((node, index) => {
+		if (!isValidElement(node)) return node;
+		return createElement(TypeTable, {
+			...(node.props as object),
+			key: node.key ?? index,
+		});
+	});
+}
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
 	// biome-ignore lint/suspicious/noExplicitAny: arkenvComponents type is complex but we know it might have table
@@ -34,9 +56,7 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		CalloutDescription,
 		CalloutTitle,
 		Card,
-		AutoTypeTable: (props: any) => (
-			<AutoTypeTable {...props} generator={generator} />
-		),
+		AutoTypeTable,
 		TypeTable,
 		Cards,
 		Files,

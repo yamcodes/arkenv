@@ -1,8 +1,125 @@
 ---
 title: options
-description: Runtime and schema options passed to ArkEnv.
+description: Configuration object passed as the second argument to arkenv().
 ---
 
-Stub reference for ArkEnv constructor and helper options (for example `env`, `skip`, and coercion settings).
+The second argument to `arkenv()` is an optional configuration object. The same fields apply to [`@arkenv/core`](/docs/reference/core) and [`@arkenv/standard`](/docs/reference/standard).
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+## Configuration options
+
+<AutoTypeTable path="../../packages/core/src/arkenv.ts" name="ArkEnvConfig" expandAll />
+
+## Examples
+
+### Custom env source
+
+Pass a record instead of `process.env` in tests, Cloudflare Workers, or when using Vite `loadEnv`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "number.port" },
+  { env: { PORT: "3000" } },
+);
+```
+
+### Disabling coercion
+
+Coercion is on by default. Turn it off when you want raw strings and morph them yourself:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "string" },
+  { coerce: false, env: { PORT: "3000" } },
+);
+
+env.PORT; // "3000"
+```
+
+See [Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing).
+
+### JSON arrays
+
+Comma-separated arrays are the default. Use JSON when your host stores array env as JSON strings:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { TAGS: "string[]" },
+  { arrayFormat: "json", env: { TAGS: '["web", "app"]' } },
+);
+```
+
+### Empty strings as missing
+
+With `PORT=` in a `.env` file, `emptyAsUndefined` treats the value as absent so schema defaults apply:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    PORT: "number.port = 3000",
+    DEBUG: "boolean = false",
+  },
+  {
+    emptyAsUndefined: true,
+    env: {
+      PORT: "",
+      DEBUG: "",
+    },
+  },
+);
+
+env.PORT; // 3000
+env.DEBUG; // false
+```
+
+### Rejecting undeclared keys
+
+ArkEnv defaults to `"delete"`: undeclared keys may appear on input and are stripped from the output. Fail instead when you want a strict inventory:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "number.port" },
+  {
+    onUndeclaredKey: "reject",
+    env: { PORT: "3000", EXTRA: "nope" },
+  },
+);
+```
+
+### Safe results instead of throws
+
+Return `{ success, data | issues }` when you handle failures yourself (tests, custom boot UI):
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+const result = arkenv(
+  { PORT: "number.port" },
+  { safe: true, env: { PORT: "invalid" } },
+);
+
+if (!result.success) {
+  console.error(result.issues);
+} else {
+  console.log(result.data.PORT);
+}
+```
+
+<Callout type="warn">
+  Framework plugins omit `safe` so a failed validation cannot soft-fail into the
+  client bundle. Call `arkenv()` yourself if you need programmatic failure
+  handling outside a plugin.
+</Callout>
+
+## Framework-only options
+
+Next.js and Nuxt wrappers accept `extends` to merge shared or client env objects into a server schema. That field lives outside core `ArkEnvConfig`. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).

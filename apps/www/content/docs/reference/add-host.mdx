@@ -1,0 +1,59 @@
+---
+title: add host
+description: Merge a hosting provider preset into an existing ArkEnv schema.
+---
+
+`arkenv add host` injects provider system environment variables into a schema you already have. Use it when you change hosts or finish a schema that started without a preset.
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest add host vercel
+pnpm dlx arkenv@latest add host
+```
+
+## Usage
+
+```txt
+arkenv add host [provider] [options]
+```
+
+`provider` is optional. Omit it to pick interactively.
+
+Accepted providers: `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`.
+
+## Behavior
+
+The command detects layout (flat `env.ts` vs strict `env/client.ts` + `env/server.ts`), framework prefix (`NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `VITE_`), and validator dialect (ArkType, Zod, Valibot). Then the CLI:
+
+1. Partitions preset keys into server-only and client-exposed groups
+2. Writes those groups into the matching schema files, leaving existing keys unchanged
+
+If the schema file is missing or unparseable, the CLI prints the proposed fields for you to paste.
+
+## Options
+
+Global flags apply:
+
+| Flag             | Meaning                                              |
+| ---------------- | ---------------------------------------------------- |
+| `--yes` / `-y`   | Skip prompts. Omitted provider defaults to `vercel`. |
+| `--quiet` / `-q` | Quiet logs                                           |
+| `--json` / `-j`  | JSON on stdout                                       |
+| `--agent`        | Macro for `--yes --quiet --json`                     |
+
+## Provider fields
+
+Every preset field is optional (present only on that host). See [Hosting presets](/docs/validating-environment-variables/hosting-presets) for the full key tables.
+
+| Provider   | Server-only examples              | Client-exposed examples           |
+| ---------- | --------------------------------- | --------------------------------- |
+| Vercel     | `VERCEL`                          | `VERCEL_ENV`, `VERCEL_URL`        |
+| Netlify    | `NETLIFY`, `DEPLOY_URL`           | `CONTEXT`, `URL`                  |
+| Cloudflare | `CF_PAGES`, `CF_PAGES_COMMIT_SHA` | `CF_PAGES_BRANCH`, `CF_PAGES_URL` |
+| Railway    | `RAILWAY_*`                       | (none)                            |
+| Render     | `RENDER*`                         | (none)                            |
+| Fly.io     | `FLY_*`                           | (none)                            |
+
+## Related
+
+- [`init --host-preset`](/docs/reference/init#--host-preset--h) when scaffolding a new project
+- [Hosting presets](/docs/validating-environment-variables/hosting-presets) for field-level detail

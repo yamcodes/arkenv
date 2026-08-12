@@ -1,12 +1,96 @@
 ---
 title: init
-description: Scaffold ArkEnv in a new or existing project.
+description: Scaffold ArkEnv schemas, layouts, and hosting presets with the CLI.
 ---
 
-```bash
+`arkenv` on npm is the CLI. It scaffolds schemas and wires framework config. Validation lives in `@arkenv/core` or `@arkenv/standard`.
+
+```bash title="Terminal"
 pnpm dlx arkenv@latest init
+pnpm dlx arkenv@latest init my-app --example with-vite-react -H vercel
+pnpm dlx arkenv@latest init --agent --flat
 ```
 
-Stub reference for project initialization, layout selection (`--strict` / `--simple`), and agent mode (`--agent`).
+Install locally when you want a project binary:
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+```package-install
+pnpm add -D arkenv
+```
+
+## Usage
+
+```txt
+arkenv init [project-name] [options]
+```
+
+Omit `project-name` to mutate the current directory. Pass a name to create a new folder (optionally from `--example`).
+
+## Options
+
+### `--yes` / `-y`
+
+Skip interactive prompts. Use this in scripts unless you pass `--agent`.
+
+### `--quiet` / `-q`
+
+Reduce log noise.
+
+### `--json` / `-j`
+
+Emit JSON on stdout.
+
+### `--agent`
+
+Implies `--yes --quiet --json`. Leaves `--force` off unless you pass it.
+
+### `--force` / `-f`
+
+Bypass dirty-git and other safety checks.
+
+### `--flat`
+
+Scaffold a single `env.ts`. This is the default layout.
+
+### `--strict`
+
+Scaffold `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`.
+
+### `--no-codegen`
+
+Skip Next.js `env.gen.ts` generation and related `withArkEnv` wiring.
+
+### `--host-preset` / `-H`
+
+Pre-populate provider system variables. Values: `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`.
+
+See [Hosting presets](/docs/validating-environment-variables). To add a preset later, use [`add host`](/docs/reference/add-host).
+
+### `--example <name>`
+
+Scaffold from a named example when creating a new project. Short `-e` is reserved and rejected.
+
+### `--help` / `-h`
+
+Print help.
+
+## Output
+
+Depending on the detected framework and flags:
+
+- Schema file(s): `env.ts` or the strict `env/` tree (often under `src/`)
+- `.env` / `.env.example` when missing
+- Next.js: `withArkEnv` in `next.config.*`, optional `generated/env.gen.ts`
+- Vite / Bun: type augmentation files (`vite-env.d.ts`, `bun-env.d.ts`)
+- Dependency installs for the chosen dialect (`@arkenv/core`, plugins, Zod/Valibot)
+
+## Import the validator from core
+
+```ts
+// Wrong: arkenv is the CLI package
+import arkenv from "arkenv";
+
+// Right
+import arkenv from "@arkenv/core";
+```
+
+Importing `arkenv` as a library throws and points you at `@arkenv/core`.

@@ -1,8 +1,50 @@
 ---
 title: "@arkenv/core"
-description: Core runtime for typesafe environment validation.
+description: ArkType-powered environment validation for TypeScript projects.
 ---
 
-Stub reference for the core `arkenv()` API, schema helpers, and error types.
+`@arkenv/core` is the primary validation library. It exports `arkenv()` and an ArkType `type()` bound to ArkEnv keywords.
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+## Install
+
+```package-install
+pnpm add @arkenv/core arktype
+```
+
+Peer dependency: `arktype` (^2.1.22).
+
+## Quick start
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+});
+```
+
+## Exports
+
+| Export             | Kind                       | Role                                                       |
+| ------------------ | -------------------------- | ---------------------------------------------------------- |
+| `arkenv`           | function (default + named) | Validate and return a typed env object                     |
+| `type`             | function                   | ArkType `type` with [`keywords`](/docs/reference/keywords) |
+| `ArkEnvError`      | class                      | Thrown on validation failure                               |
+| `formatIssues`     | function                   | Format `EnvIssue[]` for display                            |
+| `getSchemaKeys`    | function                   | List keys declared on a schema                             |
+| `ArkEnvConfig`     | type                       | [Options](/docs/reference/options) object                  |
+| `EnvSchema`        | type                       | Declarative schema map                                     |
+| `Infer`            | type                       | Infer output from a schema                                 |
+| `SafeArkEnvResult` | type                       | Result shape when `safe: true`                             |
+| `EnvIssue`         | type                       | Structured validation issue                                |
+
+Package export surface: `"."` only.
+
+## Related
+
+- [options](/docs/reference/options)
+- [keywords](/docs/reference/keywords)
+- [schema](/docs/reference/schema)
+- [`@arkenv/standard`](/docs/reference/standard) for an ArkType-free entry
