@@ -32,11 +32,11 @@ pnpm dlx arkenv@latest init
 
 Init detects whether you are brownfield or greenfield:
 
-| Situation | Flow |
-| --------- | ---- |
-| Directory contains `package.json` | Existing-project wizard (this guide) |
-| Empty directory | New-project scaffold (pick an example or blank template) |
-| `--example` flag | Always new-project, even in a non-empty directory |
+| Situation                         | Flow                                                     |
+| --------------------------------- | -------------------------------------------------------- |
+| Directory contains `package.json` | Existing-project wizard (this guide)                     |
+| Empty directory                   | New-project scaffold (pick an example or blank template) |
+| `--example` flag                  | Always new-project, even in a non-empty directory        |
 
 Useful flags for existing repos:
 
@@ -79,11 +79,15 @@ Typical output for a Next.js flat layout:
 <Files>
   <Folder name="my-app" defaultOpen>
     <File name="env.ts" />
+
     <File name=".env.example" />
+
     <File name=".env" />
+
     <Folder name="generated">
       <File name="env.gen.ts" />
     </Folder>
+
     <File name="next.config.ts" />
   </Folder>
 </Files>
@@ -133,12 +137,12 @@ pnpm dlx arkenv@latest init --yes --host-preset vercel --agent
 
 ## Troubleshooting
 
-| Problem | Fix |
-| ------- | --- |
-| Git working tree is not clean | Commit, stash (`git stash -u` for untracked files), or use `--force` |
-| Technical requirements not met | Enable TypeScript strict mode, or use `--force` to bypass checks |
+| Problem                                    | Fix                                                                     |
+| ------------------------------------------ | ----------------------------------------------------------------------- |
+| Git working tree is not clean              | Commit, stash (`git stash -u` for untracked files), or use `--force`    |
+| Technical requirements not met             | Enable TypeScript strict mode, or use `--force` to bypass checks        |
 | Non-empty directory without `package.json` | Run in a subdirectory, use `--example` for a new scaffold, or `--force` |
-| `--simple` flag | Deprecated — remove it; flat layout is the default |
+| `--simple` flag                            | Deprecated — remove it; flat layout is the default                      |
 
 The deprecated `--simple` layout hard-fails on Next.js. Use flat layout (default) or `--strict` when you need a split schema.
 
