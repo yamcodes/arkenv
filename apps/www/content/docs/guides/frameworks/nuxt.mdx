@@ -1,8 +1,69 @@
 ---
 title: Nuxt
-description: Use ArkEnv with Nuxt.
+description: Validate Nuxt env vars with @arkenv/nuxt.
 ---
 
-Stub guide for `@arkenv/nuxt` setup and Nuxt-specific env wiring.
+Recipe for Nuxt. Overview: [Framework integration](/docs/validating-environment-variables/framework-integration).
 
-> Content TBD — Nested Folder leaf (`/docs/guides/frameworks/nuxt`).
+`@arkenv/nuxt` validates environment variables for server and browser, maps public keys through Nuxt runtime config, and keeps server secrets off the client.
+
+## Quickstart
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init
+```
+
+The CLI registers `@arkenv/nuxt/module` and scaffolds a flat `env.ts` (or `--strict` files).
+
+## Manual install
+
+```package-install
+pnpm add @arkenv/core @arkenv/nuxt arktype
+```
+
+```package-install
+pnpm add @arkenv/standard @arkenv/nuxt zod
+```
+
+### Register the module
+
+```ts title="./nuxt.config.ts"
+export default defineNuxtConfig({
+  modules: ["@arkenv/nuxt/module"],
+  arkenv: {
+    layout: "flat",
+  },
+});
+```
+
+### Flat schema
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/nuxt";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Public keys use the `NUXT_PUBLIC_` prefix. Nuxt does not emit `env.gen.ts`; this module is the surface.
+
+### Strict layout
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --strict
+```
+
+Use `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Shared/client schemas can auto-merge via Nuxt virtual aliases when you omit `extends`. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+
+## Standard Schema
+
+Point the module at a Standard Schema entry and import from `@arkenv/nuxt/standard` (or the `/standard/module` path). Package map: [`@arkenv/nuxt`](/docs/reference/nuxt).
+
+## Next steps
+
+- Module options under [`@arkenv/nuxt`](/docs/reference/nuxt)
+- [Hosting presets](/docs/validating-environment-variables/hosting-presets)
+- Official [Nuxt configuration](https://nuxt.com/docs/getting-started/configuration) docs

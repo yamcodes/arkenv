@@ -1,8 +1,80 @@
 ---
 title: Next.js
-description: Use ArkEnv with Next.js.
+description: Validate Next.js env vars with @arkenv/nextjs and withArkEnv.
 ---
 
-Stub guide for `@arkenv/nextjs` setup, `withArkEnv`, and codegen.
+Recipe for Next.js. Overview and stack comparison: [Framework integration](/docs/validating-environment-variables/framework-integration).
 
-> Content TBD — Nested Folder leaf (`/docs/guides/frameworks/nextjs`).
+`@arkenv/nextjs` validates server and client environment variables, generates a typed factory, and blocks server secrets from Client Components.
+
+## Quickstart
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init
+```
+
+The CLI detects Next.js, installs packages, wraps `next.config` with `withArkEnv`, and scaffolds a flat `env.ts` (or `--strict` split files).
+
+## Manual install
+
+Choose one engine:
+
+```package-install
+pnpm add @arkenv/core @arkenv/nextjs arktype
+```
+
+```package-install
+pnpm add @arkenv/standard @arkenv/nextjs zod
+```
+
+### Wrap the Next.js config
+
+```ts title="./next.config.ts" twoslash
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+### Flat schema (default)
+
+```ts title="./env.ts" twoslash
+import arkenv from "@/generated/env.gen";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import `env` in Server Components, Route Handlers, and Client Components. Reading `DATABASE_URL` on the client throws at runtime.
+
+### Strict layout
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --strict
+```
+
+Splits `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts` so the server schema never enters the client module graph. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+
+## Standard Schema
+
+```ts title="./next.config.ts" twoslash
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/standard/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+Use `@arkenv/standard` validators in the schema. Details: [`@arkenv/nextjs`](/docs/reference/nextjs).
+
+## Next steps
+
+- [codegen](/docs/reference/codegen) for `env.gen.ts` options
+- [Hosting presets](/docs/validating-environment-variables/hosting-presets) for Vercel system vars
+- Official [Next.js environment variables](https://nextjs.org/docs/app/guides/environment-variables) guide

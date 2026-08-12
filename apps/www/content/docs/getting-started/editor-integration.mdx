@@ -3,6 +3,69 @@ title: Editor integration
 description: Configure your editor for ArkEnv auto-imports and validation tooltips.
 ---
 
-Stub guide for editor/IDE setup (TypeScript, auto-imports, and schema feedback).
+ArkEnv leans on TypeScript inference and the ArkType VS Code extension. There is no separate ArkEnv IDE plugin.
 
-> Content TBD — Getting started leaf.
+## ArkType VS Code extension
+
+Install the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) (`arktypeio.arkdark`). It highlights ArkType schema strings when the import uses the default export name `arkenv`:
+
+```ts title="./env.ts"
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  API_URL: "string.url",
+});
+```
+
+Keep that import name. Auto-import then picks up highlighting without a rename. See [ADR 0008](https://github.com/yamcodes/arkenv/blob/main/docs/adr/0008-default-export-and-function-naming.md).
+
+## Autocomplete on `env.*`
+
+TypeScript reads keys and types from the schema you pass to `arkenv()`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import `{ env }` in application code. `env.PORT` is a `number`; `process.env.PORT` stays an untyped string.
+
+## Framework type augmentation
+
+Some hosts expose env through globals. `arkenv init` can scaffold these declaration files.
+
+### Vite: `vite-env.d.ts`
+
+```ts title="./vite-env.d.ts"
+/// <reference types="vite/client" />
+
+type ImportMetaEnvAugmented =
+  import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+    typeof import("./env").Env
+  >;
+
+interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+```
+
+`import.meta.env.VITE_*` keys autocomplete in client code. Keys without the `VITE_` prefix error there.
+
+### Bun fullstack: `bun-env.d.ts`
+
+```ts title="./bun-env.d.ts"
+/// <reference types="bun-types" />
+
+type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+  typeof import("./env").Env
+>;
+
+declare namespace NodeJS {
+  interface ProcessEnv extends ProcessEnvAugmented {}
+}
+```
+
+Next.js uses `withArkEnv` codegen (`env.gen.ts`) for the same kind of boundary typing. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).

@@ -7,23 +7,44 @@ Define the schema once and import a typed `env` object everywhere else. This gui
 
 ## Getting started
 
-Install the core package and ArkType (or skip ahead to [Standard Schema](#standard-schema-zod-valibot-etc) if you are on Zod/Valibot without ArkType):
+Install either engine, then create `env.ts` next to the code that boots first. Root of the app or package is common; `src/env.ts` is fine when the rest of your entrypoints already live under `src/`.
 
-```package-install
-pnpm add @arkenv/core arktype
-```
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```package-install
+    pnpm add @arkenv/core arktype
+    ```
 
-Create `env.ts` next to the code that boots first. Root of the app or package is common; `src/env.ts` is fine when the rest of your entrypoints already live under `src/`:
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+    export const env = arkenv({
+    	HOST: "string.host = 'localhost'",
+    	PORT: "number.port = 3000",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
 
-export const env = arkenv({
-  HOST: "string.host = 'localhost'",
-  PORT: "number.port = 3000",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+  <Tab value="Zod (@arkenv/standard)">
+    ```package-install
+    pnpm add @arkenv/standard zod
+    ```
+
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	HOST: z.string().default("localhost"),
+    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Import that object from application code:
 
@@ -86,19 +107,11 @@ export const env = arkenv(
 
 Framework plugins (Next.js, Nuxt, Vite, Bun) wire the usual sources for you. See [options](/docs/reference/options) for `coerce`, `arrayFormat`, `emptyAsUndefined`, and `safe`.
 
-## Standard Schema (Zod, Valibot, etc.)
-
-Use [`@arkenv/standard`](/docs/reference/standard) when the project has no ArkType dependency and you want Zod, Valibot, or another [Standard Schema](https://standardschema.dev/) validator only. ArkType already implements Standard Schema; if you already depend on ArkType, stay on `@arkenv/core`.
-
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/standard";
-import { z } from "zod";
-
-export const env = arkenv({
-  PORT: z.coerce.number().int().min(0).max(65535),
-  HOST: z.string().default("localhost"),
-});
-```
+<Callout type="info" title="Already on ArkType?">
+  ArkType implements Standard Schema, but if you already depend on ArkType stay
+  on `@arkenv/core` rather than wrapping it through `@arkenv/standard`. See
+  [Choosing an engine](/docs/core-concepts/standard-schema).
+</Callout>
 
 ## Next steps
 

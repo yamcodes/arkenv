@@ -3,6 +3,109 @@ title: Add to an existing repository
 description: Add ArkEnv environment validation to an existing project.
 ---
 
-Stub guide for wiring ArkEnv into a repo that already has application code.
+When `arkenv init` finds a `package.json`, it runs the existing-project flow: detect your stack, read env keys already in use, generate schema files, and wire framework integrations.
 
-> Content TBD — Getting started leaf.
+## Adding ArkEnv to your repository
+
+### 1. Commit or stash first
+
+By default, `arkenv init` refuses to run when the git working tree is dirty. Pass `--force` only when you accept overwriting generated files and skipping that check.
+
+TypeScript with `strict: true` is the supported path. The wizard can enable strict mode when it is missing.
+
+### 2. Run init
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init
+```
+
+| Situation                         | Flow                                 |
+| --------------------------------- | ------------------------------------ |
+| Directory contains `package.json` | Existing-project wizard (this guide) |
+| Empty directory                   | New-project scaffold                 |
+| `--example` flag                  | Always new-project                   |
+
+Common flags:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --yes
+pnpm dlx arkenv@latest init --strict
+pnpm dlx arkenv@latest init --host-preset vercel
+pnpm dlx arkenv@latest init --agent
+```
+
+`--yes` skips prompts (flat layout default for Next/Nuxt). `--strict` uses the [strict client/server split](/docs/validating-environment-variables/client-vs-server#strict-layout). `--agent` implies `--yes`, `--quiet`, and JSON output. Hosting preset values are listed in [hosting presets](/docs/validating-environment-variables/hosting-presets).
+
+### 3. Answer the wizard
+
+Init inspects the repo and asks about:
+
+1. Framework (Next.js, Nuxt, Vite, Bun fullstack, or vanilla)
+2. Layout (flat or strict for Next.js / Nuxt)
+3. Overwriting an existing schema
+4. Env keys from `.env.example`, or from `process.env` / `import.meta.env` / `env.*` usage in source
+5. Validator (ArkType, Zod, or Valibot)
+6. Hosting preset
+
+When `.env.example` exists:
+
+```txt
+Detected .env.example with 12 keys. Use them for your schema?
+```
+
+When only source usage is found:
+
+```txt
+Detected 8 environment variables used in your project. Use them for your schema?
+```
+
+### 4. Review generated files
+
+Typical Next.js flat layout:
+
+<Files>
+  <Folder name="my-app" defaultOpen>
+    <File name="env.ts" />
+
+    <File name=".env.example" />
+
+    <File name=".env" />
+
+    <Folder name="generated">
+      <File name="env.gen.ts" />
+    </Folder>
+
+    <File name="next.config.ts" />
+  </Folder>
+</Files>
+
+Init may also wrap `next.config.ts` with `withArkEnv`, scaffold `vite-env.d.ts` or `bun-env.d.ts`, append `.env` / `.env.local` to `.gitignore`, create `.env` from `.env.example`, or create `.env.example` from `.env` with values stripped.
+
+<Callout type="info">
+  ArkEnv does not load `.env` files. Your framework, Bun, or a tool like
+  `tsx --env-file` must populate `process.env` before `arkenv()` runs. See
+  [Loading .env files](/docs/validating-environment-variables/framework-integration#loading-env-files).
+</Callout>
+
+### 5. Use the validated `env` object
+
+```bash title="Terminal"
+cp .env.example .env
+```
+
+```ts title="./src/server.ts"
+import { env } from "../env";
+
+console.log(env.DATABASE_URL);
+```
+
+Read [Client vs. server](/docs/validating-environment-variables/client-vs-server) for public prefixes, then the guide for your stack: [Next.js](/docs/guides/frameworks/nextjs), [Nuxt](/docs/guides/frameworks/nuxt), [Vite](/docs/guides/frameworks/vite), or [Bun](/docs/guides/frameworks/bun).
+
+## Troubleshooting
+
+| Problem                                    | Fix                                               |
+| ------------------------------------------ | ------------------------------------------------- |
+| Git working tree is not clean              | Commit, stash (`git stash -u`), or use `--force`  |
+| Technical requirements not met             | Enable TypeScript strict mode, or use `--force`   |
+| Non-empty directory without `package.json` | Use a subdirectory, `--example`, or `--force`     |
+| `--simple` flag                            | Deprecated; remove it. Flat layout is the default |

@@ -1,0 +1,106 @@
+---
+title: Transforms
+description: Reshape validated env values during schema validation.
+---
+
+A **transform** reshapes a value as part of validation: trim a string, clamp a number, map an enum. ArkEnv uses that word for the idea across engines. Your schema library may call it something else:
+
+| Library | Their word                                                      | Typical API                      |
+| ------- | --------------------------------------------------------------- | -------------------------------- |
+| ArkType | [Morph](https://arktype.io/docs/morphs) (also “transformation”) | `type("string").pipe(...)`       |
+| Zod     | Transform                                                       | `.transform(...)` / `.pipe(...)` |
+| Valibot | Transform / pipe                                                | `pipe(...)`, `transform(...)`    |
+
+Everyday string-to-number and string-to-boolean conversion is [coercion](/docs/core-concepts/coercion). Coercion runs first on a copy of the input. Transforms run during schema validation after that.
+
+## Basic transform
+
+Trim and normalize a string field:
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
+
+    export const env = arkenv({
+    	BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+    	PORT: "number.port = 3000",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	BUILD_ID: z
+    		.string()
+    		.transform((value) => value.trim().toUpperCase()),
+    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+`BUILD_ID` is validated as a string, then reshaped. `PORT` uses coercion (or Zod’s `z.coerce`), not a custom transform.
+
+## Transform after coercion
+
+Coercion can feed a transform. The string `"3"` becomes a number before your pipe runs:
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
+
+    export const env = arkenv(
+    	{
+    		RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
+    	},
+    	{ env: { RETRY_COUNT: "3" } },
+    );
+
+    env.RETRY_COUNT; // 3
+    ```
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv(
+    	{
+    		RETRY_COUNT: z.number().transform((n) => Math.max(0, n)),
+    	},
+    	{ env: { RETRY_COUNT: "3" } },
+    );
+
+    env.RETRY_COUNT; // 3
+    ```
+  </Tab>
+</Tabs>
+
+With `{ coerce: false }`, `"3"` never becomes a number unless the transform accepts a string itself (or you use the library’s own coerce helpers).
+
+## Transform vs coerce
+
+| Need                                      | Prefer                                                                     |
+| ----------------------------------------- | -------------------------------------------------------------------------- |
+| `"3000"` → `number`, `"true"` → `boolean` | [Coercion](/docs/core-concepts/coercion) (default on), or Zod `z.coerce.*` |
+| Trim, normalize, clamp, map enums         | Transform on the field schema                                              |
+| Multi-step pipelines                      | ArkType `.pipe` chains / Zod `.pipe` / Valibot `pipe`                      |
+
+## Related
+
+<Cards>
+  <Card href="/docs/validating-environment-variables/defining-types" title="Defining types" description="Strings, numbers, booleans, enums, and keywords." />
+
+  <Card href="/docs/core-concepts/coercion" title="Coercion" description="String-to-type conversion before your schema runs." />
+
+  <Card href="/docs/validating-environment-variables/coercion-and-parsing" title="Coercion and parsing" description="Cookbook examples for numbers, booleans, arrays, and objects." />
+
+  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
+</Cards>

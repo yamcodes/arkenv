@@ -1,18 +1,44 @@
 ---
 title: API reference
-description: API reference for ArkEnv configuration, CLI, and packages.
+description: Configuration, CLI, and package APIs for ArkEnv.
 ---
 
-ArkEnv’s API reference is broken up into the following sections:
+Options, CLI commands, and package exports. For setup walkthroughs, open [Validating environment variables](/docs/validating-environment-variables).
 
 ## Configuration
 
-Schema options, keywords, and environment loading behavior.
+<Cards>
+  <Card href="/docs/reference/options" title="options" description="Second-argument config for arkenv(): env, coerce, safe, and more." />
+
+  <Card href="/docs/reference/keywords" title="keywords" description="ArkEnv keywords string.host and number.port for @arkenv/core." />
+
+  <Card href="/docs/reference/schema" title="schema" description="Schema shapes: raw objects, type(), and Standard Schema maps." />
+
+  <Card href="/docs/reference/env" title="env" description="The validated env object, Infer, and framework Proxies." />
+</Cards>
 
 ## Commands
 
-CLI entrypoints for init, validate, and codegen.
+The `arkenv` npm package is the CLI. Import validation from `@arkenv/core` or `@arkenv/standard`.
+
+<Cards>
+  <Card href="/docs/reference/init" title="init" description="Scaffold schemas, layouts, and hosting presets into a project." />
+
+  <Card href="/docs/reference/add-host" title="add host" description="Merge a hosting provider preset into an existing schema." />
+</Cards>
 
 ## Packages
 
-Published packages: `@arkenv/core`, `@arkenv/standard`, and framework plugins.
+<Cards>
+  <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType-powered arkenv() and type()." />
+
+  <Card href="/docs/reference/standard" title="@arkenv/standard" description="ArkType-free entry for Zod, Valibot, and other Standard Schema validators." />
+
+  <Card href="/docs/reference/nextjs" title="@arkenv/nextjs" description="withArkEnv, client/server entries, and env.gen.ts codegen." />
+
+  <Card href="/docs/reference/nuxt" title="@arkenv/nuxt" description="Nuxt module and client/server entries." />
+
+  <Card href="/docs/reference/vite-plugin" title="@arkenv/vite-plugin" description="Vite transform and schema/define modes." />
+
+  <Card href="/docs/reference/bun-plugin" title="@arkenv/bun-plugin" description="Bun bundler plugin for BUN_PUBLIC_ apps." />
+</Cards>

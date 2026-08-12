@@ -1,8 +1,133 @@
 ---
 title: Using AI with ArkEnv
-description: Use AI coding assistants with ArkEnv schemas and tooling.
+description: Pair ArkEnv with AI coding assistants via skills, prompts, .env.example, and guardrails.
 ---
 
-Stub guide for pairing ArkEnv with AI coding assistants (CLI agent mode, schemas, and recipes).
+AI assistants write better ArkEnv code when they have the project skill, when setup goes through the CLI's machine-readable agent mode, and when you give them explicit constraints about env files and client boundaries.
 
-> Content TBD — Guides section leaf.
+## Install the skill
+
+```bash title="Terminal"
+pnpm dlx skills add yamcodes/arkenv
+```
+
+That installs the ArkEnv skill into the project (see [skills.sh](https://skills.sh)). Assistants that support skills load it when they see `env.ts`, ArkEnv imports, or env-validation questions.
+
+The skill covers schema definition (ArkType and Standard Schema), framework wiring, and CLI init patterns.
+
+## Prompts that work well
+
+Copy these into your assistant when you want predictable output:
+
+**Greenfield setup**
+
+```text
+Add ArkEnv to this repo. Run `pnpm dlx arkenv@latest init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass. Do not hand-write next.config or env.ts unless init fails.
+```
+
+**Existing keys**
+
+```text
+We already have a .env.example. Run `arkenv init --agent` and accept the detected keys for the schema. Keep .env.example values empty or placeholder-only; never copy secrets from .env into git.
+```
+
+**Migrate raw process.env usage**
+
+```text
+Find direct `process.env` / `import.meta.env` reads and route them through the typed `env` export from env.ts (or strict env/client.ts and env/server.ts). Do not add a runtimeEnv map. Match the framework public prefix (NEXT_PUBLIC_, NUXT_PUBLIC_, VITE_, BUN_PUBLIC_).
+```
+
+**Add a variable**
+
+```text
+Add DATABASE_URL to the ArkEnv schema with the right type, update .env.example with an empty value, and document the key in a comment if it is non-obvious. Do not expose server keys on the client.
+```
+
+**Hosting preset**
+
+```text
+Add the Vercel hosting preset with `pnpm dlx arkenv@latest add host vercel --agent` and merge any new system vars into the schema.
+```
+
+Point the assistant at this page and [Framework integration](/docs/validating-environment-variables/framework-integration) when it needs host context.
+
+## Scaffold with `--agent`
+
+Agents should initialize projects through the CLI instead of hand-writing config:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --agent
+pnpm dlx arkenv@latest init --agent --flat
+pnpm dlx arkenv@latest init --agent --strict -H vercel
+```
+
+`--agent` implies `--yes --quiet --json`. It does **not** imply `--force`.
+
+Success and refusal payloads land on stdout as JSON. Other logs go to stderr.
+
+### Success
+
+Parse `status: "success"` and use fields such as the scaffolded schema path.
+
+### Refusals
+
+`--agent` still honors safety checks (dirty git tree, unmet requirements). A refusal looks like:
+
+```json
+{
+  "status": "error",
+  "code": "GIT_TREE_DIRTY",
+  "message": "Git working tree is not clean.",
+  "retryWith": ["--force"]
+}
+```
+
+Run without `--force` first. Only re-run with flags from `retryWith` after you decide the bypass is safe. An empty `retryWith` means the refusal is not bypassable. `code: "INTERNAL"` means the CLI failed; retry flags will not help.
+
+Full flag list: [init](/docs/reference/init).
+
+## Keep `.env.example` honest
+
+The CLI treats `.env.example` as the onboarding contract:
+
+- **Init on an existing repo**: if `.env.example` exists, init can detect keys and offer them for the schema (see [structuring your schema](/docs/validating-environment-variables/structuring-your-schema)).
+- **Missing files**: init may create `.env` and `.env.example` with framework defaults, copy `.env.example` to `.env` when only the template exists, or strip values from `.env` into a new `.env.example` so secrets do not land in git.
+- **After schema changes**: add new keys to `.env.example` with empty or placeholder values. Commit the template; keep `.env` and `.env.local` gitignored.
+
+Tell assistants explicitly: **sync schema, `.env.example`, and docs together** when adding or renaming variables.
+
+## Guardrails for assistants
+
+Treat these as hard rules unless a human overrides them:
+
+| Rule                                                                 | Why                                                        |
+| -------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Run `init --agent` (or `add host … --agent`) for setup               | Avoids drift from hand-scaffolded config                   |
+| Validate through `arkenv()` from `@arkenv/core` or a framework entry | The `arkenv` npm package is the CLI, not the runtime       |
+| Use framework public prefixes for client-exposed keys                | `NEXT_PUBLIC_*`, `NUXT_PUBLIC_*`, `VITE_*`, `BUN_PUBLIC_*` |
+| Never put secrets in client-prefixed keys                            | Client bundles and flat layouts still leak key names       |
+| Do not reintroduce T3-style `runtimeEnv` maps                        | `withArkEnv` codegen owns the mapping in Next.js           |
+| Do not skip validation or read `process.env` ad hoc after setup      | Defeats the typed `env` object                             |
+| Respect `--agent` refusals                                           | Dirty trees and requirement failures are intentional       |
+| Commit `.env.example`, not `.env`                                    | Local secrets stay local                                   |
+
+For layout and client/server tradeoffs, link assistants to [Client vs. server](/docs/validating-environment-variables/client-vs-server) instead of inventing a third layout.
+
+## Patterns the skill enforces
+
+- Export a single `env` object from `env.ts` (or the strict `env/` tree)
+- Prefer ArkType strings in `@arkenv/core` when the project already uses ArkType
+- Keep secrets out of client schemas; use framework public prefixes
+- Load `.env` via the framework or dotenv; ArkEnv only validates
+
+## Add a hosting preset later
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest add host vercel --agent
+```
+
+## Next steps
+
+- [Framework guides](/docs/guides/frameworks)
+- [Framework integration](/docs/validating-environment-variables/framework-integration)
+- [skills.sh](https://skills.sh)
