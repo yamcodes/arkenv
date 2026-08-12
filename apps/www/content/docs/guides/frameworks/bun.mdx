@@ -82,11 +82,11 @@ import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
 import { type } from "@arkenv/core";
 
 export const Env = type({
-	BUN_PUBLIC_API_URL: "string",
+  BUN_PUBLIC_API_URL: "string",
 });
 
 declare namespace NodeJS {
-	interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
+  interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
 }
 ```
 
