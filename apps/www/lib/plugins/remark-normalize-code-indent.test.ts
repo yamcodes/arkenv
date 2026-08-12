@@ -9,7 +9,7 @@ describe("remarkNormalizeCodeIndent", () => {
 				{
 					type: "code",
 					lang: "ts",
-					value: "export const Env = type({\n\tNODE_ENV: \"string\",\n});",
+					value: 'export const Env = type({\n\tNODE_ENV: "string",\n});',
 				},
 			],
 		};
