@@ -66,11 +66,15 @@ Typical Next.js flat layout:
 <Files>
   <Folder name="my-app" defaultOpen>
     <File name="env.ts" />
+
     <File name=".env.example" />
+
     <File name=".env" />
+
     <Folder name="generated">
       <File name="env.gen.ts" />
     </Folder>
+
     <File name="next.config.ts" />
   </Folder>
 </Files>
@@ -99,9 +103,9 @@ Read [Client vs. server](/docs/validating-environment-variables/client-vs-server
 
 ## Troubleshooting
 
-| Problem                                    | Fix                                                     |
-| ------------------------------------------ | ------------------------------------------------------- |
-| Git working tree is not clean              | Commit, stash (`git stash -u`), or use `--force`        |
-| Technical requirements not met             | Enable TypeScript strict mode, or use `--force`         |
-| Non-empty directory without `package.json` | Use a subdirectory, `--example`, or `--force`           |
-| `--simple` flag                            | Deprecated; remove it. Flat layout is the default       |
+| Problem                                    | Fix                                               |
+| ------------------------------------------ | ------------------------------------------------- |
+| Git working tree is not clean              | Commit, stash (`git stash -u`), or use `--force`  |
+| Technical requirements not met             | Enable TypeScript strict mode, or use `--force`   |
+| Non-empty directory without `package.json` | Use a subdirectory, `--example`, or `--force`     |
+| `--simple` flag                            | Deprecated; remove it. Flat layout is the default |
