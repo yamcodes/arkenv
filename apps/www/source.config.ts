@@ -10,6 +10,7 @@ import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
+import { remarkNormalizeCodeIndent } from "./lib/plugins/remark-normalize-code-indent";
 import { arktypeTwoslashOptions } from "./lib/twoslash-options";
 
 const CALLOUT_CONTAINER = "CalloutContainer";
@@ -145,6 +146,7 @@ export default defineConfig({
 			remarkGemoji,
 			remarkNpm,
 			remarkSteps,
+			remarkNormalizeCodeIndent,
 			remarkBunXToBunx,
 			remarkDirective,
 			[

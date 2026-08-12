@@ -10,13 +10,6 @@
 	--color-fd-sidebar-pill: var(--color-fd-accent);
 }
 
-/* Docs + MDX code blocks: tabs render as 2 spaces */
-.shiki,
-pre,
-code {
-	tab-size: 2;
-}
-
 .dark {
 	/* WCAG AA compliant: 8.61:1 contrast on dark background */
 	--color-fd-muted-foreground: hsl(240 5% 70%);
