@@ -34,8 +34,9 @@
 	font-feature-settings: var(--font-feature-mono);
 }
 
-/* Load-time rise (open-slide). Gated by HeroMotion (`data-hero-motion`) so
- * client remounts of HomeLayout do not restart mid-flight animations. */
+/* Load-time rise (open-slide). `backwards` (not `both`): first paint is the
+ * from-keyframe so content never flashes visible-then-hidden, and a forwards
+ * fill would pin transform/filter and block hover/press. */
 @keyframes home-aurora-rise {
 	from {
 		opacity: 0;
@@ -45,6 +46,10 @@
 		opacity: 1;
 		transform: translateY(0);
 	}
+}
+
+.home-aurora .rise {
+	animation: home-aurora-rise 900ms var(--ease-out-strong) backwards;
 }
 
 @keyframes home-aurora-rise-blur {
@@ -60,33 +65,8 @@
 	}
 }
 
-/* SSR / no-js: fully visible. Prep/play/done set by HeroMotion after hydrate. */
-.home-aurora[data-hero-motion="prep"] .rise,
-.home-aurora[data-hero-motion="prep"] .rise-blur {
-	opacity: 0;
-	transform: translateY(14px);
-}
-
-.home-aurora[data-hero-motion="prep"] .rise-blur {
-	transform: translateY(16px);
-	filter: blur(8px);
-}
-
-/* Stamp (`data-hero-run`) is set on the nodes that existed when play started.
- * HomeLayout remounts would otherwise restart these animations on new nodes. */
-.home-aurora[data-hero-motion="play"] .rise[data-hero-run] {
-	animation: home-aurora-rise 900ms var(--ease-out-strong) both;
-}
-
-.home-aurora[data-hero-motion="play"] .rise-blur[data-hero-run] {
-	animation: home-aurora-rise-blur 1s var(--ease-out-strong) both;
-}
-
-.home-aurora[data-hero-motion="done"] .rise,
-.home-aurora[data-hero-motion="done"] .rise-blur {
-	opacity: 1;
-	transform: none;
-	filter: none;
+.home-aurora .rise-blur {
+	animation: home-aurora-rise-blur 1s var(--ease-out-strong) backwards;
 }
 
 /* Scroll reveals - ScrollReveal only adds .reveal-hidden below the fold */
@@ -121,6 +101,7 @@
 	--ring: var(--color-focus);
 	--fd-primary: var(--color-ink);
 	--color-fd-primary: var(--color-ink);
+	--fd-layout-width: 1400px;
 
 	position: relative;
 	/* No isolation: isolate — it breaks Site Nav backdrop-filter glass */
@@ -166,17 +147,8 @@
 	}
 
 	.home-aurora .rise,
-	.home-aurora .rise-blur,
-	.home-aurora[data-hero-motion="prep"] .rise,
-	.home-aurora[data-hero-motion="prep"] .rise-blur,
-	/* Same specificity as the play animation so a live reduced-motion
-	 * toggle cancels an in-flight rise (JS never re-runs the effect). */
-	.home-aurora[data-hero-motion="play"] .rise[data-hero-run],
-	.home-aurora[data-hero-motion="play"] .rise-blur[data-hero-run] {
+	.home-aurora .rise-blur {
 		animation: none;
-		opacity: 1;
-		transform: none;
-		filter: none;
 	}
 
 	.home-aurora__validator-body {
