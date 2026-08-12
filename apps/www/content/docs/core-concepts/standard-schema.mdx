@@ -1,8 +1,101 @@
 ---
-title: Standard schema
-description: Use any Standard Schema validator with ArkEnv.
+title: Choosing an engine
+description: Pick @arkenv/core (ArkType) or @arkenv/standard (Zod, Valibot, and friends).
 ---
 
-Stub for Standard Schema support (Zod, Valibot, and others) alongside ArkType.
+ArkEnv ships two engines. Both call `arkenv()`, share the same [options](/docs/reference/options), fail-fast errors, coercion pipeline, and framework plugins. They differ in how you write the schema and which peer dependencies you install.
 
-> Content TBD — Core concepts leaf.
+|                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)   |
+| ------------------------------------------- | -------------------------------------- | ------------------------------------------------ |
+| Schema style                                | ArkType DSL strings + `type()`         | Per-key Standard Schema validators               |
+| Typical libraries                           | ArkType                                | Zod, Valibot, VineJS, Zod Mini, …                |
+| Peer `arktype`                              | Required                               | None                                             |
+| Env keywords (`string.host`, `number.port`) | Yes                                    | Use the validator’s own APIs                     |
+| Coercion                                    | Built-in                               | Built-in when fields are Standard JSON Schema v1 |
+| Framework plugins                           | `@arkenv/nextjs`, …                    | Same packages via `/standard` subpaths           |
+
+Neither path is a fallback. Pick the engine that matches the schema library you want to write in.
+
+## Side by side
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	PORT: "number.port = 3000",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.string().url(),
+    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+Install either stack the same way you would any env schema: one validation package, then framework plugins if you need them.
+
+```package-install
+# ArkType engine
+pnpm add @arkenv/core arktype
+
+# Standard Schema engine (Zod shown)
+pnpm add @arkenv/standard zod
+```
+
+## When each fits
+
+| Situation                                                 | Engine             |
+| --------------------------------------------------------- | ------------------ |
+| You want ArkType’s DSL and ArkEnv keywords                | `@arkenv/core`     |
+| The app already uses Zod or Valibot for other schemas     | `@arkenv/standard` |
+| You must stay ArkType-free                                | `@arkenv/standard` |
+| You are scaffolding a new TypeScript app and like ArkType | `@arkenv/core`     |
+
+ArkType itself implements Standard Schema. If you already depend on ArkType, stay on `@arkenv/core` rather than wrapping ArkType types through `@arkenv/standard`.
+
+## Packaging
+
+Engines are separate packages so peer dependencies stay honest. Framework plugins stay single packages with `/standard` subpaths (`@arkenv/nextjs/standard`, `@arkenv/vite-plugin/standard`, and so on) instead of a second npm package per host.
+
+## JSON Schema and coercion
+
+[Standard Schema](https://standardschema.dev/) and [Standard JSON Schema](https://standardschema.dev/json-schema) are **orthogonal** specs: one is about validation, the other about converting a type to JSON Schema. A value can implement one, both, or neither.
+
+ArkEnv’s pre-coercion step for `@arkenv/standard` needs **Standard JSON Schema v1** (`~standard.jsonSchema.input` / `.output`). If a validator implements that interface, the converter exists by construction. (Conversion can still throw for unsupported schemas or JSON Schema targets; the spec allows that.)
+
+| Library                                        | Implements Standard JSON Schema v1 |
+| ---------------------------------------------- | ---------------------------------- |
+| Zod (v4.2+)                                    | Yes                                |
+| VineJS (v4.3+)                                 | Yes                                |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | Yes                                |
+| Zod Mini                                       | Yes                                |
+| Other Standard JSON Schema v1 validators       | Yes                                |
+
+Some libraries keep conversion in a separate helper for bundle size (Valibot, Zod Mini). Prefer Zod/VineJS-style schemas that carry Standard JSON Schema on the value itself, or use the validator’s own coerce/transform helpers and set `coerce: false` when needed. See [Coercion](/docs/core-concepts/coercion).
+
+## Related
+
+<Cards>
+  <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
+
+  <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
+
+  <Card href="/docs/validating-environment-variables/defining-types" title="Defining types" description="Declare field types for either engine." />
+
+  <Card href="/docs/reference/schema" title="schema" description="The schema object you pass to arkenv()." />
+</Cards>
