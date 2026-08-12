@@ -7,12 +7,12 @@ description: Move a T3 Env project to ArkEnv without keeping runtimeEnv sync.
 
 ## What changes
 
-| T3 Env | ArkEnv |
-| --- | --- |
-| `createEnv` from `@t3-oss/env-nextjs` (or `/core`) | `arkenv` from `@arkenv/nextjs` codegen or `@arkenv/core` |
-| Nested `{ server, client, runtimeEnv }` | Flat schema (default) or strict file split |
-| Hand-maintained `runtimeEnv` inlining | `withArkEnv` codegen writes the mapping |
-| Zod (usual) | Zod via `@arkenv/standard`, or ArkType via `@arkenv/core` |
+| T3 Env                                             | ArkEnv                                                    |
+| -------------------------------------------------- | --------------------------------------------------------- |
+| `createEnv` from `@t3-oss/env-nextjs` (or `/core`) | `arkenv` from `@arkenv/nextjs` codegen or `@arkenv/core`  |
+| Nested `{ server, client, runtimeEnv }`            | Flat schema (default) or strict file split                |
+| Hand-maintained `runtimeEnv` inlining              | `withArkEnv` codegen writes the mapping                   |
+| Zod (usual)                                        | Zod via `@arkenv/standard`, or ArkType via `@arkenv/core` |
 
 Flat ArkEnv matches T3 Env single-file security: full inference plus a runtime Proxy that throws on server-key access in the client. Schema **names** still ship to the client in flat mode; use `--strict` if names must stay out of the client graph.
 
