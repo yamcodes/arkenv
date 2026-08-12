@@ -72,11 +72,13 @@
 	filter: blur(8px);
 }
 
-.home-aurora[data-hero-motion="play"] .rise {
+/* Stamp (`data-hero-run`) is set on the nodes that existed when play started.
+ * HomeLayout remounts would otherwise restart these animations on new nodes. */
+.home-aurora[data-hero-motion="play"] .rise[data-hero-run] {
 	animation: home-aurora-rise 900ms var(--ease-out-strong) both;
 }
 
-.home-aurora[data-hero-motion="play"] .rise-blur {
+.home-aurora[data-hero-motion="play"] .rise-blur[data-hero-run] {
 	animation: home-aurora-rise-blur 1s var(--ease-out-strong) both;
 }
 
@@ -168,7 +170,9 @@
 	.home-aurora[data-hero-motion="prep"] .rise,
 	.home-aurora[data-hero-motion="prep"] .rise-blur,
 	.home-aurora[data-hero-motion="play"] .rise,
-	.home-aurora[data-hero-motion="play"] .rise-blur {
+	.home-aurora[data-hero-motion="play"] .rise-blur,
+	.home-aurora[data-hero-motion="play"] .rise[data-hero-run],
+	.home-aurora[data-hero-motion="play"] .rise-blur[data-hero-run] {
 		animation: none;
 		opacity: 1;
 		transform: none;

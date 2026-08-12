@@ -11,13 +11,21 @@ const HERO_MOTION_DONE_MS = 1500;
  */
 let heroMotionCompleted = false;
 
+/** Clears the one-shot gate. Used by unit tests. */
+export function resetHeroMotion() {
+	heroMotionCompleted = false;
+}
+
 /**
  * One-shot hero entrance. CSS `.rise` / `.rise-blur` only animate while
- * `.home-aurora[data-hero-motion=play]`.
+ * `.home-aurora[data-hero-motion=play]` **and** the node is stamped
+ * `[data-hero-run]`.
  *
  * Why this is careful:
  * - `HomeLayout` is a client boundary; its children can remount after hydrate.
- *   Leaving `play` on forever restarts CSS animations on the new nodes.
+ *   A parent `play` selector would restart CSS animations on the new nodes
+ *   (double fade). Stamping the nodes that existed at play-time means
+ *   replacements stay static.
  * - React Strict Mode runs effects twice; we must not flip to `done` before
  *   `play` has actually started, or the entrance is skipped.
  */
@@ -42,11 +50,9 @@ export function HeroMotion() {
 
 		let cancelled = false;
 		let doneTimer = 0;
-		let observer: MutationObserver | undefined;
 
 		const finish = () => {
 			heroMotionCompleted = true;
-			observer?.disconnect();
 			root.setAttribute("data-hero-motion", "done");
 		};
 
@@ -60,27 +66,11 @@ export function HeroMotion() {
 				requestAnimationFrame(() => {
 					if (cancelled || heroMotionCompleted) return;
 
+					heroMotionCompleted = true;
+					for (const el of root.querySelectorAll(".rise, .rise-blur")) {
+						el.setAttribute("data-hero-run", "");
+					}
 					root.setAttribute("data-hero-motion", "play");
-
-					// If HomeLayout replaces `.rise` nodes while `play` is set,
-					// flip to `done` before the next paint so the new nodes do not
-					// restart the CSS animation (double fade).
-					observer = new MutationObserver((mutations) => {
-						if (root.getAttribute("data-hero-motion") !== "play") return;
-						for (const mutation of mutations) {
-							for (const node of mutation.addedNodes) {
-								if (!(node instanceof HTMLElement)) continue;
-								if (
-									node.matches(".rise, .rise-blur") ||
-									node.querySelector(".rise, .rise-blur")
-								) {
-									finish();
-									return;
-								}
-							}
-						}
-					});
-					observer.observe(root, { childList: true, subtree: true });
 
 					doneTimer = window.setTimeout(finish, HERO_MOTION_DONE_MS);
 				});
@@ -90,12 +80,11 @@ export function HeroMotion() {
 		return () => {
 			cancelled = true;
 			window.clearTimeout(startTimer);
-			// If `play` already started, leave the done timer + observer alone so a
-			// remount cannot re-arm the entrance. Otherwise reset prep so the
-			// Strict Mode remount can start cleanly.
+			// If `play` already started, leave the done timer alone so a remount
+			// cannot re-arm the entrance. Otherwise reset prep so the Strict Mode
+			// remount can start cleanly.
 			if (root.getAttribute("data-hero-motion") === "play") return;
 			window.clearTimeout(doneTimer);
-			observer?.disconnect();
 			if (root.getAttribute("data-hero-motion") === "prep") {
 				root.removeAttribute("data-hero-motion");
 			}
