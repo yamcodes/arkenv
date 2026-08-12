@@ -25,6 +25,7 @@ Import a validated object. Do not sprinkle `process.env` reads through the app.
     env.PORT; // number
     ```
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
@@ -47,11 +48,11 @@ This object surface is the product default across Next.js, Nuxt, Vite, and Bun. 
 
 ## Inference paths
 
-| Input | Result |
-| --- | --- |
-| ArkType declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>` from `@arkenv/core` |
-| Compiled `type({ ... })` | `typeof Env.infer` / `Infer<typeof Env>` |
-| Standard Schema field map (Zod, Valibot, …) | `typeof env` after `arkenv(schema)`, or each validator’s own infer helper |
+| Input                                          | Result                                                                    |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| ArkType declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>` from `@arkenv/core`                                |
+| Compiled `type({ ... })`                       | `typeof Env.infer` / `Infer<typeof Env>`                                  |
+| Standard Schema field map (Zod, Valibot, …)    | `typeof env` after `arkenv(schema)`, or each validator’s own infer helper |
 
 Hovering `env` in the editor shows the coerced output types when coercion is enabled.
 

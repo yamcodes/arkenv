@@ -36,6 +36,7 @@ Coercion is **on** by default (`coerce: true`).
     env.TAGS; // string[]
     ```
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
@@ -78,18 +79,18 @@ ArkEnv does not wrap your schema in a coercion pipe. It uses a shared pre-coerci
 
 ## Arrays and objects
 
-| Shape | Default parsing |
-| --- | --- |
-| Arrays | Comma-separated (`"a, b"`), or JSON when `arrayFormat: "json"` |
-| Objects | JSON strings; nested fields are coerced recursively |
+| Shape   | Default parsing                                                |
+| ------- | -------------------------------------------------------------- |
+| Arrays  | Comma-separated (`"a, b"`), or JSON when `arrayFormat: "json"` |
+| Objects | JSON strings; nested fields are coerced recursively            |
 
 Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing).
 
 <Callout type="info" title="JSON Schema for Standard Schema">
-	Automatic coercion with `@arkenv/standard` needs a validator that exposes JSON
-	Schema ArkEnv can read (Zod 4.2+, Valibot with `@valibot/to-json-schema`, Zod
-	Mini, VineJS 4.3+, and other Standard JSON Schema v1 libraries). Without that
-	metadata, use the validator’s own coerce helpers or disable ArkEnv coercion.
+  Automatic coercion with `@arkenv/standard` needs a validator that exposes JSON
+  Schema ArkEnv can read (Zod 4.2+, Valibot with `@valibot/to-json-schema`, Zod
+  Mini, VineJS 4.3+, and other Standard JSON Schema v1 libraries). Without that
+  metadata, use the validator’s own coerce helpers or disable ArkEnv coercion.
 </Callout>
 
 ## Disabling coercion
@@ -107,6 +108,7 @@ Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables
     env.PORT; // "3000"
     ```
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";

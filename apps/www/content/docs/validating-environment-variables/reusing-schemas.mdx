@@ -50,6 +50,7 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
 
     Keywords such as `string.host` and `number.port` work inside `type()` the same way they do inside `arkenv()`.
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env-schema.ts"
     import { z } from "zod";
@@ -98,8 +99,8 @@ import arkenv from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{ DATABASE_URL: "string" },
-	{ extends: [clientEnv] },
+  { DATABASE_URL: "string" },
+  { extends: [clientEnv] },
 );
 ```
 
@@ -127,6 +128,7 @@ Put the shared schema in an internal package, then call the host `arkenv` (or pl
     export const env = arkenv(AppEnv);
     ```
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./packages/env/src/schema.ts"
     import { z } from "zod";

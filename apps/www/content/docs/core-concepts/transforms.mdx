@@ -5,11 +5,11 @@ description: Reshape validated env values during schema validation.
 
 A **transform** reshapes a value as part of validation: trim a string, clamp a number, map an enum. ArkEnv uses that word for the idea across engines. Your schema library may call it something else:
 
-| Library | Their word | Typical API |
-| --- | --- | --- |
-| ArkType | [Morph](https://arktype.io/docs/morphs) (also “transformation”) | `type("string").pipe(...)` |
-| Zod | Transform | `.transform(...)` / `.pipe(...)` |
-| Valibot | Transform / pipe | `pipe(...)`, `transform(...)` |
+| Library | Their word                                                      | Typical API                      |
+| ------- | --------------------------------------------------------------- | -------------------------------- |
+| ArkType | [Morph](https://arktype.io/docs/morphs) (also “transformation”) | `type("string").pipe(...)`       |
+| Zod     | Transform                                                       | `.transform(...)` / `.pipe(...)` |
+| Valibot | Transform / pipe                                                | `pipe(...)`, `transform(...)`    |
 
 Everyday string-to-number and string-to-boolean conversion is [coercion](/docs/core-concepts/coercion). Coercion runs first on a copy of the input. Transforms run during schema validation after that.
 
@@ -28,6 +28,7 @@ Trim and normalize a string field:
     });
     ```
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
@@ -64,6 +65,7 @@ Coercion can feed a transform. The string `"3"` becomes a number before your pip
     env.RETRY_COUNT; // 3
     ```
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
@@ -85,11 +87,11 @@ With `{ coerce: false }`, `"3"` never becomes a number unless the transform acce
 
 ## Transform vs coerce
 
-| Need | Prefer |
-| --- | --- |
+| Need                                      | Prefer                                                                     |
+| ----------------------------------------- | -------------------------------------------------------------------------- |
 | `"3000"` → `number`, `"true"` → `boolean` | [Coercion](/docs/core-concepts/coercion) (default on), or Zod `z.coerce.*` |
-| Trim, normalize, clamp, map enums | Transform on the field schema |
-| Multi-step pipelines | ArkType `.pipe` chains / Zod `.pipe` / Valibot `pipe` |
+| Trim, normalize, clamp, map enums         | Transform on the field schema                                              |
+| Multi-step pipelines                      | ArkType `.pipe` chains / Zod `.pipe` / Valibot `pipe`                      |
 
 ## Related
 

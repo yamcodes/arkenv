@@ -25,6 +25,7 @@ Install either engine, then create `env.ts` next to the code that boots first. R
     });
     ```
   </Tab>
+
   <Tab value="Zod (@arkenv/standard)">
     ```package-install
     pnpm add @arkenv/standard zod
@@ -107,9 +108,9 @@ export const env = arkenv(
 Framework plugins (Next.js, Nuxt, Vite, Bun) wire the usual sources for you. See [options](/docs/reference/options) for `coerce`, `arrayFormat`, `emptyAsUndefined`, and `safe`.
 
 <Callout type="info" title="Already on ArkType?">
-	ArkType implements Standard Schema, but if you already depend on ArkType stay
-	on `@arkenv/core` rather than wrapping it through `@arkenv/standard`. See
-	[Choosing an engine](/docs/core-concepts/standard-schema).
+  ArkType implements Standard Schema, but if you already depend on ArkType stay
+  on `@arkenv/core` rather than wrapping it through `@arkenv/standard`. See
+  [Choosing an engine](/docs/core-concepts/standard-schema).
 </Callout>
 
 ## Next steps
